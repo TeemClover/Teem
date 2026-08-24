@@ -1,6 +1,12 @@
-/* TeamBook 1.4 — per-book people capacity.
-   Canon: 1..11 people, default 5. PET never consumes a people slot.
-   Board renders only real people + PET + one quiet open-slot card. */
+/* TeamBook 1.5 — per-book people capacity UI.
+
+   Canon:
+   - every book has a fixed member limit 1..11, owner included;
+   - old books with no stored memberLimit are resolved by the server as 5;
+   - PET never consumes a people slot;
+   - Home/Public list capacity is NOT owned here anymore;
+   - /p uses the server-resolved limit and the latest party member list.
+*/
 
 import { cardById } from './cards.js';
 import { speciesById } from './avatars.js';
@@ -13,9 +19,9 @@ const clamp = value => Math.min(MAX, Math.max(MIN, Math.floor(Number(value || DE
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[char]));
 
 function installStyle() {
-  if ($('tb-member-capacity-v14-style')) return;
+  if ($('tb-member-capacity-v15-style')) return;
   const style = document.createElement('style');
-  style.id = 'tb-member-capacity-v14-style';
+  style.id = 'tb-member-capacity-v15-style';
   style.textContent = `
     .tb-capacity-step{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0 4px}
     .tb-capacity-copy{min-width:0}.tb-capacity-copy b{display:block;font-size:16px}.tb-capacity-copy small{display:block;margin-top:4px;color:var(--xty-muted);line-height:1.5}
@@ -24,6 +30,7 @@ function installStyle() {
     .tb-capacity-control button:disabled{opacity:.28;cursor:default}
     .tb-capacity-value{font-weight:950;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
     .tb-open-seat{min-height:0!important;aspect-ratio:63/88;border:1.5px dashed rgba(38,65,52,.28)!important;background:rgba(255,255,255,.42)!important;box-shadow:none!important;display:grid!important;place-items:center!important;padding:10px!important;text-align:center;color:var(--xty-muted);font-size:12px;font-weight:850;line-height:1.45}
+    #seatHint[data-capacity-ready="0"]{visibility:hidden!important}
     @media(max-width:420px){.tb-capacity-step{align-items:flex-start}.tb-capacity-control{grid-template-columns:40px minmax(68px,auto) 40px}.tb-capacity-control button{width:40px;height:42px}}
   `;
   document.head.appendChild(style);
@@ -41,7 +48,7 @@ function installCreateStepper() {
   row.className = 'tb-capacity-step';
   row.id = 'tbMemberCapacity';
   row.innerHTML = `
-    <div class="tb-capacity-copy"><b>สมุดเล่มนี้รับกี่คน?</b><small>แนะนำ 5 คน · เริ่มคนเดียวก็ได้ · สูงสุด 11 คน</small></div>
+    <div class="tb-capacity-copy"><b>สมุดเล่มนี้รับกี่คน?</b><small>แนะนำ 5 คน · เริ่มคนเดียวก็ได้ · สูงสุด 11 คน · นับเจ้าของสมุดด้วย</small></div>
     <div class="tb-capacity-control" role="group" aria-label="จำนวนคนในสมุด">
       <button type="button" data-delta="-1" aria-label="ลดจำนวนคน">−</button>
       <span class="tb-capacity-value">5 คน</span>
@@ -68,7 +75,8 @@ function installCreateStepper() {
       try {
         const url = new URL(typeof input === 'string' ? input : input?.url || '', location.origin);
         const method = String(init.method || (typeof input !== 'string' ? input?.method : '') || 'GET').toUpperCase();
-        if (method === 'POST' && url.pathname === '/api/teambook-v12' && url.searchParams.get('action') === 'create' && typeof init.body === 'string') {
+        if (method === 'POST' && url.pathname === '/api/teambook-v12'
+            && url.searchParams.get('action') === 'create' && typeof init.body === 'string') {
           const body = JSON.parse(init.body);
           init = { ...init, body: JSON.stringify({ ...body, memberLimit: clamp(globalThis.__teambookMemberLimit) }) };
         }
@@ -82,9 +90,11 @@ async function capacityForCodes(codes) {
   const wanted = [...new Set(codes.filter(code => /^\d{5}$/.test(code)))];
   if (!wanted.length) return {};
   try {
-    const response = await fetch(`/api/teambook-member-limit-v14?code=${encodeURIComponent(wanted.join(','))}`, { credentials:'same-origin', cache:'no-store' });
+    const response = await fetch(`/api/teambook-member-limit-v14?code=${encodeURIComponent(wanted.join(','))}`, {
+      credentials:'same-origin', cache:'no-store', headers:{ accept:'application/json' },
+    });
     const data = await response.json();
-    return data?.books || {};
+    return response.ok && data?.books ? data.books : {};
   } catch { return {}; }
 }
 
@@ -107,7 +117,7 @@ function ictDayKey(value = Date.now()) {
 
 function memberPortrait(member) {
   const card = cardById(String(member?.avatar || '').toUpperCase());
-  if (card) return { art: card.art || card.imageFull || card.image || '', color: card.color || member.avatarColor || 'green', isCard:true };
+  if (card) return { art: card.imageFull || card.art || card.image || '', color: card.color || member.avatarColor || 'green', isCard:true };
   const species = speciesById(member?.avatar) || speciesById('orange_cat');
   return { art: species?.art || '', color: member?.avatarColor || 'green', isCard:false };
 }
@@ -148,69 +158,81 @@ async function installBookOpenSeat() {
   if (!/^\/p\/?$/.test(location.pathname)) return;
   const code = currentCode();
   const seats = $('seats');
+  const hint = $('seatHint');
   if (!code || !seats) return;
   installStyle();
-  const capacity = (await capacityForCodes([code]))[code] || { memberLimit:DEFAULT, memberCount:0, remaining:DEFAULT };
+  if (hint) hint.dataset.capacityReady = '0';
+
+  const info = (await capacityForCodes([code]))[code];
+  if (!info) {
+    if (hint) {
+      hint.textContent = 'ยังอ่านจำนวนคนของสมุดไม่สำเร็จ';
+      hint.dataset.capacityReady = '1';
+    }
+    return;
+  }
+  const limit = clamp(info.memberLimit);
   let scheduled = false;
+  let painting = false;
 
   const paint = () => {
     scheduled = false;
+    if (painting) return;
+    painting = true;
     const party = cachedParty(code);
     if (party) renderExtraMembers(seats, party);
 
-    const limit = clamp(capacity.memberLimit);
-    const count = Math.max(0, Number(capacity.memberCount || party?.members?.length || 0));
+    /* Member list is live and may change after the capacity endpoint response.
+       Use the latest party membership when available; the limit is immutable. */
+    const partyCount = Array.isArray(party?.members) ? party.members.length : null;
+    const count = Math.max(0, Number.isFinite(partyCount) ? partyCount : Number(info.memberCount || 0));
     const remaining = Math.max(0, limit - count);
-    const desired = remaining > 0 ? `สมุดเปิดรับอีก ${remaining} คน` : '';
     const legacyOpen = [...seats.querySelectorAll(':scope > .seat.open:not(.pet-card):not(.tb-open-seat)')];
+    legacyOpen.forEach(node => node.remove());
+
     let open = seats.querySelector(':scope > .tb-open-seat');
-
-    if (legacyOpen.length) legacyOpen.forEach(node => node.remove());
-
     if (remaining > 0) {
       if (!open) {
         open = document.createElement('div');
         open.className = 'seat tb-open-seat';
         seats.appendChild(open);
       }
-      if (open.textContent !== desired) open.textContent = desired;
-      const aria = `สมุดเปิดรับอีก ${remaining} คน`;
-      if (open.getAttribute('aria-label') !== aria) open.setAttribute('aria-label', aria);
-      if ($('seatHint')?.textContent) $('seatHint').textContent = '';
+      const text = `สมุดเปิดรับอีก ${remaining} คน`;
+      if (open.textContent !== text) open.textContent = text;
+      open.setAttribute('aria-label', text);
+      if (hint) hint.textContent = `มี ${count}/${limit} คน · ยังรับได้อีก ${remaining} คน`;
     } else {
       open?.remove();
-      if ($('seatHint') && $('seatHint').textContent !== 'สมุดเต็มแล้ว') $('seatHint').textContent = 'สมุดเต็มแล้ว';
+      if (hint) hint.textContent = `สมุดเต็มแล้ว · ${count}/${limit} คน`;
     }
-
-    const boardAria = `คนในสมุด ${count} จาก ${limit} คน และเพื่อนร่วมทาง`;
-    if (seats.getAttribute('aria-label') !== boardAria) seats.setAttribute('aria-label', boardAria);
+    if (hint) hint.dataset.capacityReady = '1';
+    seats.setAttribute('aria-label', `คนในสมุด ${count} จาก ${limit} คน และเพื่อนร่วมทาง`);
+    painting = false;
   };
 
-  const requestPaint = () => {
-    if (scheduled) return;
+  const schedule = () => {
+    if (scheduled || painting) return;
     scheduled = true;
-    requestAnimationFrame(paint);
+    queueMicrotask(paint);
   };
 
-  requestPaint();
+  schedule();
   const observer = new MutationObserver(records => {
-    const meaningful = records.some(record => [...record.addedNodes, ...record.removedNodes]
-      .some(node => node.nodeType === 1
+    const relevant = records.some(record => {
+      if (record.target === hint) return true;
+      return [...record.addedNodes, ...record.removedNodes].some(node =>
+        node.nodeType === 1
         && !node.classList?.contains('tb-open-seat')
-        && !node.classList?.contains('tb-capacity-extra-member')));
-    if (meaningful) {
+        && !node.classList?.contains('tb-capacity-extra-member'));
+    });
+    if (relevant) {
       seats.dataset.tbCapacityExtras = '';
-      requestPaint();
+      schedule();
     }
   });
   observer.observe(seats, { childList:true });
+  if (hint) observer.observe(hint, { childList:true, characterData:true, subtree:true });
 }
-
-/* Public/Home cards now receive memberCount and maxMembers from the canonical
-   public-list API. Do not walk arbitrary ancestors and rewrite every n/n text:
-   that old compatibility pass could climb from a book row to the whole Home
-   and overwrite the unrelated “ช่องสมุดของคุณ” counters three times during
-   boot. Per-book people capacity stays scoped to create and the live book. */
 
 installCreateStepper();
 installBookOpenSeat();
