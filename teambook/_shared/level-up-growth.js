@@ -129,34 +129,12 @@ async function showCachedLevelUp() {
   if (found) await showLevelUp(found.info, found.marker);
 }
 
-function installFinishInterceptor() {
-  if (window.__teambookLevelUpFetchInstalled) return;
-  window.__teambookLevelUpFetchInstalled = true;
-  const nativeFetch = window.fetch.bind(window);
-  window.fetch = async (...args) => {
-    const input = args[0];
-    const init = args[1] || {};
-    const url = typeof input === 'string' ? input : input?.url || '';
-    const method = String(init.method || (typeof input !== 'string' && input?.method) || 'GET').toUpperCase();
-    const isFinish = method === 'POST' && /\/api\/teambook\/party\/\d{5}\/finish(?:\?|$)/.test(url);
-    const response = await nativeFetch(...args);
-    if (!isFinish || !response.ok) return response;
-    try {
-      const data = await response.clone().json();
-      if (data?.levelUp) {
-        const code = (url.match(/\/party\/(\d{5})\/finish/) || [])[1] || codeFromLocation();
-        const synthetic = {
-          actorId: partyIdentity(code)?.userId || 'me',
-          data: data.levelUp,
-        };
-        await showLevelUp(data.levelUp, eventKey(code, synthetic));
-      }
-    } catch {}
-    return response;
-  };
-}
-
-installFinishInterceptor();
+addEventListener('teambook:level-up', event => {
+  const code = String(event.detail?.code || codeFromLocation());
+  const info = event.detail?.levelUp;
+  const synthetic = { actorId: partyIdentity(code)?.userId || 'me', data: info };
+  void showLevelUp(info, eventKey(code, synthetic));
+});
 
 /* A member who did not press “ปิดเล่ม” still deserves the celebration when
    they return. The canonical MEMBER_LEVEL_UP event is already in the cached

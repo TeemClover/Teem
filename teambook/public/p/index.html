@@ -83,6 +83,8 @@ import { avatarById } from '/_shared/avatars.js';
 import { cardById as xtyCardById, cardDescriptorTh } from '/_shared/cards.js';
 import { cardMarkup } from '/_shared/card-ui.js';
 import { bookCapacity } from '/_shared/book-capacity-v15.js';
+import { bookActivityLine } from '/_shared/book-mode.js';
+import { renderPublicActivityDetails } from '/_shared/activity-ux.js';
 import { PET_BY_ID } from '/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
@@ -190,7 +192,8 @@ function render(party) {
   if (!capacity) throw new Error('BOOK_CAPACITY_MISSING');
 
   document.title = `${party.name} — TeamBook`;
-  $('name').textContent=party.name; $('activity').textContent=party.activity || 'ยังไม่ระบุกิจกรรม';
+  $('name').textContent=party.name;
+  $('activity').textContent=bookActivityLine(party, 'ยังไม่ระบุกิจกรรม');
   $('rule').textContent=party.commitRule || 'เจ้าของสมุดยังไม่ได้เขียนวันนี้ลงชื่อได้เมื่อ';
   const mode=party.verificationMode==='confirm'?'ต้อง เห็นแล้ว':'เชื่อใจกัน';
   $('meta').innerHTML=`<span>${esc(mode)}</span><span>${capacity.memberCount}/${capacity.memberLimit} คน</span><span>${party.durationDays} วัน</span><span>${esc(coverName(party))}</span>`;
@@ -206,6 +209,7 @@ function render(party) {
     $('join').style.opacity='.5';
   }
   $('loading').hidden=true; $('view').hidden=false;
+  renderPublicActivityDetails(party).catch(error => console.warn('TeamBook activity detail unavailable', error));
 }
 
 async function start() {

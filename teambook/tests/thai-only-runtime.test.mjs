@@ -15,8 +15,8 @@ test('profile has no language selector or language localStorage code', () => {
   assert.doesNotMatch(profile, /xtyLanguageCard|xtyLangPlain|xtyLangXty|teambook_language_mode/);
 });
 
-test('party size canon is 1 to 5', () => {
+test('party size canon is per-book 1 to 11', () => {
   const patch = read('docs/PATCH-NOTES-1.4.md');
-  assert.match(patch, /1–5 คน/);
-  assert.match(patch, /solo book 1\/5/);
+  assert.match(patch, /1–11 คน/);
+  assert.match(patch, /solo book.*1\/memberLimit/);
 });

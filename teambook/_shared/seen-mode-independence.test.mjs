@@ -9,12 +9,12 @@ const firstReceived = readFileSync(join(ROOT, '_shared/first-received-seen.js'),
 const publicSeen = readFileSync(join(ROOT, 'api/teambook-public-seen.js'), 'utf8');
 const trustConfirm = readFileSync(join(ROOT, 'api/teambook/party/[code]/confirm.js'), 'utf8');
 const publicList = readFileSync(join(ROOT, 'api/teambook-public-list-v13.js'), 'utf8');
-const runtime = readFileSync(join(ROOT, '_shared/runtime.js'), 'utf8');
+const runtime = readFileSync(join(ROOT, '_shared/language.js'), 'utf8');
 
 test('Trust passes immediately but still exposes Seen inside the book', () => {
   assert.match(trustSeen, /✓ ผ่านทันที · เชื่อใจกัน/);
   assert.match(trustSeen, /◎ เห็นแล้ว/);
-  assert.match(trustSeen, /confirmCommit\(code, post\.seq\)/);
+  assert.match(trustSeen, /trustSeenCommit\(code, post\.seq\)/);
   assert.match(trustConfirm, /trustPassUnaffected: true/);
 });
 

@@ -81,7 +81,7 @@
     <div class="first-welcome-copy">
       <span class="first-welcome-sticker" id="firstWelcomeSticker">หน้าแรก</span>
       <p class="kicker" id="firstWelcomeKicker">ยินดีต้อนรับสู่ TeamBook</p>
-      <h1 class="title" id="firstWelcomeTitle">มีสมุดเล่มหนึ่ง<br>กำลังรอเรื่องของคน 2–5 คน</h1>
+      <h1 class="title" id="firstWelcomeTitle">มีสมุดเล่มหนึ่ง<br>กำลังรอเรื่องของคน 1–11 คน</h1>
       <p class="lede" id="firstWelcomeLede">ไม่ต้องว่างพร้อมกัน ไม่ต้องทำเรื่องเดียวกัน วันละประมาณ 1 นาที ก็พอ</p>
       <ul class="first-welcome-trust" aria-label="สิ่งที่ TeamBook ไม่เรียกร้อง">
         <li>ไม่ต้องโหลดแอพ</li>
@@ -143,14 +143,6 @@
     </div>
 
     <div id="mainParty"></div>
-
-    <section class="home-public-discovery" id="publicDiscovery" hidden aria-labelledby="publicDiscoveryTitle">
-      <p class="kicker">สมุดสาธารณะ</p>
-      <h2 class="title" id="publicDiscoveryTitle">ตอนนี้มีใครกำลังเขียนอะไรอยู่บ้าง</h2>
-      <p class="lede">เริ่มจากการเห็นก่อนก็ได้ ดูสมุดที่กำลังมีชีวิตอยู่ แล้วค่อยเลือกว่าจะเข้าไปอยู่ในเล่มไหน</p>
-      <div class="home-public-list" id="homePublicList"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
-      <div class="home-public-footer"><a class="about-link" href="/public/">เปิด Lobby ทั้งหมด ›</a></div>
-    </section>
 
     <div class="home-actions" id="homeActions">
       <a class="btn gold" id="publicBookButton" href="/public/">ดูสมุดสาธารณะ</a>
@@ -225,7 +217,6 @@ import { saveCloudProgress, syncXtyProfile } from '/_shared/account.js';
 
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
-let publicDiscoveryLoaded = false;
 
 function inviteCodeFromUrl() {
   const value = new URLSearchParams(location.search).get('c');
@@ -280,7 +271,7 @@ function showFirstWelcome() {
 function joinErrorText(code) {
   const messages = {
     NOT_FOUND: 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง',
-    FULL: 'สมุดนี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)',
+    FULL: 'สมุดนี้เต็มแล้วตามจำนวนสมาชิกที่เจ้าของสมุดตั้งไว้',
     PARTY_CLOSED: 'สมุดนี้จบแล้วและไม่รับสมาชิกเพิ่ม',
     MEMBERSHIP_CLOSED: 'ช่วงการร่วมทางของคุณในสมุดนี้ถูกปิดแล้ว',
     JOINED_PARTY_LIMIT: 'ช่องเข้าร่วมสมุดเต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 สมุด',
@@ -471,7 +462,7 @@ function paintPartyList(p, mine) {
     $('mainParty').innerHTML = `<div class="card main-party">`
       + mainCover
       + `<div><span class="party-state">MAIN PARTY</span>`
-      + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
+      + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(bookActivityLine(main))}</p>`
       + `<p class="whisper">${mainDone}/${main.members.length} ลงชื่อวันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
       + `<a class="btn gold sm" href="/p/?c=${encodeURIComponent(main.code)}">เข้าร่วมสมุด / ลงชื่อ</a></div></div>`;
   } else {
@@ -484,75 +475,16 @@ function paintPartyList(p, mine) {
   fillPartyGroup($('joinedPartyRows'), $('joinedPartyEmpty'), $('joinedPartyCount'), joinedParties);
 }
 
-function publicIsFull(party) {
-  const members = Number(party.memberCount || 0);
-  const max = Number(party.maxMembers || 0);
-  return max > 0 && members >= max;
-}
-
-function publicCoverMarkup(party) {
-  const card = cardById(party.coverValue);
-  if (card) return cardMarkup(card);
-  if (party.coverType === 'card_back') return '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>';
-  let snapshot = { species: party.lead?.avatar, color: party.lead?.avatarColor };
-  try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
-  const avatar = avatarById(snapshot.species);
-  return `<div class="avatar-cover" data-color="${escapeHtml(snapshot.color || 'green')}" aria-label="Starter · ${escapeHtml(avatar.nameTh)}"><img src="${avatar.art}" alt=""></div>`;
-}
-
-function publicPartyMarkup(party) {
-  const full = publicIsFull(party);
-  const mode = party.verificationMode === 'confirm' ? 'ต้อง เห็นแล้ว' : 'เชื่อใจกัน';
-  const availability = full
-    ? `<span class="status-pill">${party.memberCount}/${party.maxMembers} · เต็มแล้ว · กำลังเขียน</span>`
-    : `<span class="status-pill">เปิดรับ · ${party.memberCount}/${party.maxMembers}</span>`;
-  return `${publicCoverMarkup(party)}<div><div class="home-public-status">${availability}<span class="status-pill">${mode}</span></div>`
-    + `<h2>${escapeHtml(party.name)}</h2>`
-    + `<p>${escapeHtml(bookActivityLine(party, 'กิจกรรมที่ตกลงกันในสมุด'))}</p>`
-    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
-    + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">${full ? 'เต็มแล้ว · แวะดูได้' : 'ดูรายละเอียด · อ่านเรื่องในสมุด'}</a>`
-    + '</div>';
-}
-
-async function loadHomePublicDiscovery() {
-  if (publicDiscoveryLoaded) return;
-  publicDiscoveryLoaded = true;
-  const list = $('homePublicList');
-  list.innerHTML = '<div class="empty">กำลังเปิดสมุดสาธารณะ…</div>';
-  try {
-    const response = await fetch('/api/teambook/public', { headers: { accept: 'application/json' }, credentials: 'same-origin' });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'HTTP');
-    const parties = [...(data.parties || [])]
-      .sort((a, b) => Number(publicIsFull(a)) - Number(publicIsFull(b)))
-      .slice(0, 4);
-    list.replaceChildren();
-    parties.forEach(party => {
-      const article = document.createElement('article');
-      article.className = `card public-party home-public-party${publicIsFull(party) ? ' home-public-full' : ''}`;
-      article.innerHTML = publicPartyMarkup(party);
-      list.appendChild(article);
-    });
-    if (!parties.length) list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะตอนนี้ · เปิดสมุดของคุณเป็นเล่มแรกได้เลย</div>';
-  } catch {
-    list.innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองเปิดหน้าสมุดสาธารณะอีกครั้ง</div>';
-  }
-}
-
-async function applyHomePriority() {
+function applyHomePriority() {
   const { list, active } = myBookSnapshot();
   const hasActiveBook = active.length > 0;
 
-  $('publicDiscovery').hidden = hasActiveBook;
   $('publicBookButton').hidden = !hasActiveBook;
   $('capacityCard').hidden = !hasActiveBook;
   $('partyHeading').textContent = hasActiveBook ? 'สมุดทั้งหมด' : 'สมุดที่ผ่านมา';
   if (!list.length) $('allPartiesSection').hidden = true;
 
-  if (hasActiveBook) return;
-
-  $('mainParty').innerHTML = '';
-  await loadHomePublicDiscovery();
+  if (!hasActiveBook) $('mainParty').innerHTML = '';
 }
 
 function escState(value) {
@@ -616,7 +548,7 @@ async function boot() {
     updateAccountState();
   }
 
-  if (hasProfile()) await applyHomePriority();
+  if (hasProfile()) applyHomePriority();
 }
 
 function updateAccountState() {

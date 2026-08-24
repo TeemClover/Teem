@@ -5,19 +5,6 @@ responsiveStyle.rel = 'stylesheet';
 responsiveStyle.href = '/_shared/entry-mobile.css?v=20260822-responsive3';
 document.head.append(responsiveStyle);
 
-/* Patch 1.3: a one-person Book is already complete. Entry/read pages are a
-   separate lightweight runtime from the app shell, so keep the 1–5 canon here
-   too instead of leaving old 2–5 copy behind. */
-(function applyV13OccupancyCopy() {
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  const nodes = [];
-  while (walker.nextNode()) nodes.push(walker.currentNode);
-  nodes.forEach(node => {
-    if (node.parentElement?.closest('script,style,textarea,input')) return;
-    if (node.nodeValue?.includes('2–5')) node.nodeValue = node.nodeValue.replaceAll('2–5', '1–5');
-  });
-})();
-
 /* Thai display text needs more vertical breathing room than Latin at the
    same nominal line-height. Keep this scoped to /read so other entry flows
    retain their existing geometry.

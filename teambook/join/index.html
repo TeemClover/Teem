@@ -120,7 +120,7 @@
     <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
   </div>
 
-  <p class="note">รหัสนี้ใช้เข้าร่วมสมุดข้ามเครื่องได้ สมาชิกหนึ่งสมุดมีได้ 2–5 คน และสมาชิกในสมุดจะเห็น เรื่องในสมุด ร่วมกัน</p>
+  <p class="note">รหัสนี้ใช้เข้าร่วมสมุดข้ามเครื่องได้ สมาชิกหนึ่งสมุดมีได้ 1–11 คน (เจ้าของสมุดนับเป็นสมาชิกด้วย) และสมาชิกในสมุดจะเห็นเรื่องในสมุดร่วมกัน</p>
 </main>
 
 <script type="module">
@@ -177,7 +177,13 @@ function initJoin(initialCode) {
       const res = await fetch(`/api/teambook/party/${encodeURIComponent(code)}`, { headers: { accept: 'application/json' } });
       const data = await res.json();
       if (peeked !== code) return;             // the code moved on while we waited
-      if (!data.ok || !data.party) return forget();
+      if (!data.ok || !data.party) {
+        forget();
+        err.textContent = 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง';
+        err.hidden = false;
+        syncReady();
+        return;
+      }
       bookMode = normalizeMode(data.party.activityMode);
       if (bookMode === SHARED) {
         $('sharedActivityField').hidden = false;
@@ -196,17 +202,18 @@ function initJoin(initialCode) {
       }
       syncReady();
     } catch (error) {
-      /* Offline or a slow network is not a reason to block the code box.
-         The join itself will report the real problem. */
       forget();
+      err.textContent = 'ยังอ่านข้อมูลสมุดไม่สำเร็จ · เช็กเน็ตแล้วลองอีกครั้ง';
+      err.hidden = false;
       syncReady();
     }
   }
 
   function syncReady() {
     const codeReady = input.value.length === 5;
+    const modeReady = bookMode === SHARED || bookMode === INDIVIDUAL;
     const activityReady = bookMode !== INDIVIDUAL || ownActivity.complete;
-    go.disabled = !codeReady || !activityReady;
+    go.disabled = !codeReady || !modeReady || !activityReady;
   }
 
   /* Deliberately after the state above: replaying the input event is what
@@ -279,7 +286,7 @@ function initJoin(initialCode) {
       return;
     }
     if (res.error === 'FULL') {
-      err.textContent = 'สมุดนี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
+      err.textContent = `สมุดนี้เต็มแล้ว (รับได้ไม่เกิน ${Number(res.memberLimit) || 11} คน)`;
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');

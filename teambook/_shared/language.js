@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-profile-card-bg-v23';
+const CAPACITY_REV = '20260825-canonical-party-board-v26';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -65,13 +65,6 @@ function installNetworkGuard() {
   globalThis.fetch = function teambookV15Fetch(input, init) {
     const { method, url } = requestInfo(input, init);
 
-    if (PATH === '/' && method === 'GET' && url?.origin === location.origin
-        && url.pathname === '/api/teambook/public') {
-      return Promise.resolve(new Response(JSON.stringify({
-        ok:true, parties:[], nextCursor:null, legacyHomePublicSuppressed:true,
-      }), { status:200, headers:{ 'content-type':'application/json' } }));
-    }
-
     const key = shareKey(method, url);
     if (!key) return nativeFetch(input, init);
     if (!pending.has(key)) {
@@ -113,9 +106,8 @@ async function boot() {
 
   if (/^\/p\/?$/.test(PATH)) {
     await importMany([
-      `./member-capacity-v14.js?v=${CAPACITY_REV}`,
       './activity-ux.js',
-      './v13-public-first.js',
+      './party-public-seen-v15.js',
       './trust-seen.js',
       './live-sync.js',
       './owner-label-v13.js',
@@ -124,7 +116,6 @@ async function boot() {
       './party-profile-covers.js',
       './party-log-viewport.js',
       './party-event-copy-v2.js',
-      './party-pet-seat-v2.js',
       './party-invite-copy.js',
       './party-log-export.js',
       './party-teambook-cards.js',
@@ -132,18 +123,20 @@ async function boot() {
       './party-visibility-status.js',
       './party-character-save-v14.js',
       `./party-card-picker-v15.js?v=${CAPACITY_REV}`,
+      `./collection-skin-picker.js?v=${CAPACITY_REV}`,
       './v12-party-query.js',
       './v12-ending-image-auth.js',
       './level-up-growth.js',
       './v12-gameplay.js',
     ]);
+    /* /p/index.html is the only board renderer. Route modules may add state
+       interactions, but none may replace or reclassify its seat DOM. */
     return;
   }
 
   if (/^\/public\/p\/?$/.test(PATH)) {
     await importMany([
-      './activity-ux.js',
-      './v13-public-first.js',
+      './public-seen-v15.js',
       './trust-seen.js',
       './owner-label-v13.js',
       './public-member-identity-v13.js',
@@ -157,7 +150,6 @@ async function boot() {
   if (/^\/new\/?$/.test(PATH)) {
     await importMany([
       `./member-capacity-v14.js?v=${CAPACITY_REV}`,
-      './v13-public-first.js',
       './v12-new-reuse.js',
       './new-cover-v3.js',
       './new-cover-size-fix.js',

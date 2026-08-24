@@ -14,8 +14,10 @@ import {
   partyImageSeqFromUrl, partyImageUrl, refreshPartyMediaCookie, storePartyImage,
 } from '../_lib/xty-image.js';
 import { promoteCardUnlocks } from '../_lib/xty-bind.js';
+import { handleJoinPartyV2 } from '../_lib/xty-join-v2.js';
+import handlePublicListV13 from '../teambook-public-list-v13.js';
+import { memberLimitSql, normalizeMemberLimit } from '../_lib/member-limit.js';
 
-const PARTY_MAX = 5;
 const MAX_JOINED_ACTIVE = 3;
 const BUDGETS = Object.freeze({ quiet: 1, normal: 3, social: 5 });
 const DEFAULT_BUDGET = 'normal';
@@ -59,8 +61,9 @@ async function partyByCode(sql, value) {
   const rows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,commit_rule,budget,pet_id,owner_id,
     state,created_at,updated_at,head_seq,pet_last_wake,lead_card_id,npc_card_id,started_at,ended_at,timezone,
     verification_mode,scheduled_end_at,cover_type,cover_value,
-    activity_mode,shared_activity_description,shared_activity_color
-    FROM teambook_books WHERE code=$1`, [value]);
+    activity_mode,shared_activity_description,shared_activity_color,
+    ${memberLimitSql('p.id')} AS member_limit
+    FROM teambook_books p WHERE code=$1`, [value]);
   return rows[0] || null;
 }
 
@@ -408,6 +411,7 @@ function shape(row, memberHistory, posts, events, rewardClaims = []) {
     sharedActivityDescription: row.activity_mode === 'individual' ? null : (row.shared_activity_description || ''),
     sharedActivityColor: row.activity_mode === 'individual' ? null : (row.shared_activity_color || null),
     durationDays: Number(row.duration_days || 7), color: row.color || 'green',
+    memberLimit: normalizeMemberLimit(row.member_limit),
     visibility: row.visibility || 'private',
     verificationMode,
     commitRule: row.commit_rule || '', budget: BUDGETS[row.budget] ? row.budget : DEFAULT_BUDGET,
@@ -612,56 +616,9 @@ export default async function handler(req, res) {
     if (parts[0] === 'admin') return handleXtyAdmin(req, res, sql, method, parts);
 
     if (method === 'GET' && parts[0] === 'public') {
-      const pageSize = 16;
-      let offset = 0;
-      try {
-        const raw = String(req.query?.cursor || '');
-        if (raw) offset = Math.max(0, Number(Buffer.from(raw, 'base64url').toString('utf8')) || 0);
-      } catch { offset = 0; }
-      const key = dayKey();
-      const rows = await sql.query(`SELECT p.id,p.code,p.name,p.activity,p.duration_days,p.state,p.started_at,
-          p.scheduled_end_at,p.timezone,p.verification_mode,p.cover_type,p.cover_value,p.lead_card_id,p.npc_card_id,p.pet_id,
-          COUNT(DISTINCT m.user_id) FILTER (WHERE m.left_at IS NULL)::int member_count,
-          COUNT(DISTINCT c.user_id) FILTER (WHERE c.kind='commit' AND c.retracted=FALSE)::int commit_count,
-          MAX(m.alias) FILTER (WHERE m.role='lead' AND m.left_at IS NULL) lead_alias,
-          MAX(m.avatar) FILTER (WHERE m.role='lead' AND m.left_at IS NULL) lead_avatar,
-          MAX(m.avatar_color) FILTER (WHERE m.role='lead' AND m.left_at IS NULL) lead_avatar_color
-        FROM teambook_books p
-        LEFT JOIN teambook_book_members m ON m.book_id=p.id
-        LEFT JOIN teambook_book_entries c ON c.book_id=p.id AND c.day_key=$1::date
-        WHERE p.visibility='public' AND p.state = ANY($2::text[])
-        GROUP BY p.id ORDER BY p.updated_at DESC,p.id DESC LIMIT $3 OFFSET $4`,
-      [key, ACTIVE_STATES, pageSize + 1, offset]);
-      const page = rows.slice(0, pageSize).map(row => ({
-        code: row.code,
-        name: row.name,
-        activity: row.activity || '',
-        verificationMode: normalizeVerificationMode(row.verification_mode),
-        day: Math.min(Number(row.duration_days || 7), partyDay(row)),
-        durationDays: Number(row.duration_days || 7),
-        memberCount: Number(row.member_count || 0),
-        maxMembers: PARTY_MAX,
-        todayCommitCount: Number(row.commit_count || 0),
-        lead: {
-          alias: row.lead_alias || 'เจ้าของสมุด',
-          avatar: row.lead_avatar || 'orange_cat',
-          avatarColor: row.lead_avatar_color || 'green',
-        },
-        /* Member-uploaded pictures stay private even when the notebook is
-           discoverable. A separate public derivative can replace this
-           neutral cover later; never leak the private Blob locator here. */
-        coverType: row.cover_type === 'image' ? 'card_back' : (row.cover_type || 'card_back'),
-        coverValue: row.cover_type === 'image'
-          ? 'notebook-rgbs-v1'
-          : (row.cover_value || row.lead_card_id || null),
-        npcCardId: row.npc_card_id || null,
-        petId: row.pet_id || null,
-        joinable: Number(row.member_count || 0) < PARTY_MAX,
-      }));
-      const nextCursor = rows.length > pageSize
-        ? Buffer.from(String(offset + pageSize)).toString('base64url')
-        : null;
-      return sendJson(res, { ok: true, parties: page, nextCursor });
+      /* Compatibility URL, canonical implementation. Keeping two independent
+         Public list queries is how fixed N/5 returned after 1..11 shipped. */
+      return handlePublicListV13(req, res);
     }
 
     if (method === 'POST' && parts[0] === 'bind') {
@@ -825,65 +782,11 @@ export default async function handler(req, res) {
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
 
     if (method === 'POST' && parts[2] === 'join') {
-      const body = bodyOf(req); const alias = clean(body.alias, 24);
-      if (!alias) return sendJson(res, { ok: false, error: 'INVALID_ALIAS' }, 400);
-      if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
-      const identity = await identityFor(req, sql, body);
-      if (!identity.primary) return sendJson(res, { ok: false, error: 'PROFILE_REQUIRED' }, 400);
-      let existingMember = await memberFor(req, sql, row.id);
-      if (!existingMember && identity.ids[1]) {
-        const sameLocal = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,left_at,removal_reason FROM teambook_book_members
-          WHERE book_id=$1 AND user_id IN ($2,$3) ORDER BY left_at NULLS FIRST LIMIT 1`, [row.id, identity.ids[0], identity.ids[1]]);
-        existingMember = sameLocal[0] || null;
-      }
-      if (existingMember) {
-        if (existingMember.left_at) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 403);
-        const memberToken = token();
-        const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
-        await sql.query(`UPDATE teambook_book_members SET alias=$1,avatar=$2,avatar_color=$3,auth_hash=$4
-          WHERE book_id=$5 AND user_id=$6`, [
-          alias, clean(body.avatar, 40) || 'orange_cat', avatarColor,
-          await sha256(memberToken), row.id, existingMember.user_id,
-        ]);
-        return sendJson(res, {
-          ...(await stateFor(sql, row, { ...existingMember, alias })), token: memberToken,
-        });
-      }
-      const usage = await capacityUsage(sql, identity.ids);
-      if (usage.joined >= MAX_JOINED_ACTIVE) return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT' }, 409);
-      if (usage.total >= usage.maxTotal) return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
-      const userId = identity.primary;
-      const memberToken = token(); const authHash = await sha256(memberToken); const now = new Date();
-      const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
-      const inserted = await sql.query(`WITH guard AS (
-          SELECT pg_advisory_xact_lock(hashtext($8))
-        ), locked AS (
-          SELECT p.id FROM teambook_books p,guard WHERE p.id=$1 AND p.state = ANY($11::text[]) FOR UPDATE
-        ), capacity AS (
-          SELECT id FROM locked WHERE (SELECT COUNT(*) FROM teambook_book_members WHERE book_id=$1 AND left_at IS NULL) < $7
-            AND (SELECT COUNT(DISTINCT p.id) FROM teambook_book_members m JOIN teambook_books p ON p.id=m.book_id
-              WHERE m.user_id IN ($8,$9) AND m.left_at IS NULL AND p.state = ANY($11::text[])) < $10
-            AND (SELECT COUNT(DISTINCT p.id) FROM teambook_book_members m JOIN teambook_books p ON p.id=m.book_id
-              WHERE m.user_id IN ($8,$9) AND m.left_at IS NULL AND m.role <> 'lead'
-                AND p.state = ANY($11::text[])) < $12
-        ), joined AS (
-          INSERT INTO teambook_book_members (book_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at)
-          SELECT id,$2,$3,$4,$15,'member',$5,$6 FROM capacity RETURNING book_id
-        ) INSERT INTO teambook_book_events (book_id,type,actor_id,party_day,data_json,created_at)
-          SELECT book_id,'MEMBER_JOINED',$2,$14,$13::jsonb,$6 FROM joined RETURNING book_id`,
-      [row.id, userId, alias, clean(body.avatar, 40) || 'orange_cat', authHash, now, PARTY_MAX,
-        identity.ids[0], identity.ids[1], usage.maxTotal, ACTIVE_STATES, MAX_JOINED_ACTIVE,
-        JSON.stringify({ alias }), partyDay(row, now), avatarColor]);
-      if (!inserted[0]) {
-        const count = await sql.query('SELECT COUNT(*)::int n FROM teambook_book_members WHERE book_id=$1 AND left_at IS NULL', [row.id]);
-        if (Number(count[0]?.n || 0) >= PARTY_MAX) return sendJson(res, { ok: false, error: 'FULL' }, 409);
-        const latest = await capacityUsage(sql, identity.ids);
-        if (latest.joined >= MAX_JOINED_ACTIVE) return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT' }, 409);
-        return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
-      }
-      await sql.query('UPDATE teambook_books SET updated_at=$1 WHERE id=$2', [now, row.id]);
-      row.updated_at = now;
-      return sendJson(res, { ...(await stateFor(sql, row, { user_id: userId })), token: memberToken }, 201);
+      /* Compatibility route, canonical join. This preserves per-book capacity
+         and refuses an individual-mode join without its own activity/rule. */
+      req.query ||= {};
+      req.query.code = row.code;
+      return handleJoinPartyV2(req, res, handler);
     }
 
     const member = await memberFor(req, sql, row.id);

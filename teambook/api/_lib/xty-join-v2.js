@@ -3,10 +3,9 @@ import {
   clean, currentUser, database, ensureSchema, sameOrigin, sendJson, sha256,
 } from './core.js';
 import { TEAMBOOK_TIMEZONE, partyDayNumber } from './xty-rules.js';
+import { memberLimitForBook } from './member-limit.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
-const PARTY_MAX = 11;
-const PARTY_DEFAULT = 5;
 const MAX_JOINED_ACTIVE = 3;
 
 function bodyOf(req) {
@@ -61,15 +60,6 @@ async function joinedUsage(sql, quotaKey, identityIds) {
     WHERE q.quota_key=$1 AND q.role='member' AND q.released_at IS NULL
       AND p.state = ANY($2::text[])`, [quotaKey, ACTIVE_STATES, [...new Set(identityIds.filter(Boolean))]]);
   return Number(rows[0]?.n || 0);
-}
-
-async function memberLimitFor(sql, partyId) {
-  const rows = await sql.query(`SELECT data_json->>'memberLimit' AS member_limit
-    FROM teambook_book_events
-    WHERE book_id=$1 AND type='PARTY_CREATED'
-    ORDER BY created_at ASC LIMIT 1`, [partyId]);
-  const wanted = Math.floor(Number(rows[0]?.member_limit || PARTY_DEFAULT));
-  return Number.isFinite(wanted) ? Math.min(PARTY_MAX, Math.max(1, wanted)) : PARTY_DEFAULT;
 }
 
 function partyDay(row, at) {
@@ -134,7 +124,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     if (!ACTIVE_STATES.includes(String(row.state || '').toUpperCase())) {
       return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     }
-    const memberLimit = await memberLimitFor(sql, row.id);
+    const memberLimit = await memberLimitForBook(sql, row.id);
 
     const account = await currentUser(req, sql);
     const localId = localIdentity(body);
@@ -157,11 +147,11 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     const memberActivityDescription = mode === 'individual'
       ? clean(body.activityDescription, 120)
       : clean(row.shared_activity_description, 120);
-    const memberActivityColor = ['red', 'green', 'blue', 'silver'].includes(body.activityColor)
-      ? body.activityColor
-      : (mode === 'individual' ? null : (row.shared_activity_color || null));
+    const memberActivityColor = mode === 'individual'
+      ? (['red', 'green', 'blue', 'silver'].includes(body.activityColor) ? body.activityColor : null)
+      : (row.shared_activity_color || null);
     const memberSuccessRule = clean(body.successRule, 60);
-    if (mode === 'individual' && (!memberActivityId || !memberActivityLabel)) {
+    if (mode === 'individual' && (!memberActivityId || !memberActivityLabel || !memberSuccessRule)) {
       return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
     }
     const existing = await findExistingMember(req, sql, row.id, identityIds);

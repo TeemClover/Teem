@@ -4,13 +4,14 @@
    - Public list API supplies both memberCount and maxMembers.
    - maxMembers already includes the historical 5-person fallback for old books.
    - this renderer never invents N/5 and never patches capacity after paint.
-   - one fetch -> one canonical render. Legacy Home Public DOM stays hidden.
+   - one fetch -> one canonical render.
 */
 
 import { avatarById } from './avatars.js';
 import { cardById } from './cards.js';
 import { cardMarkup } from './card-ui.js';
 import { bookCapacity } from './book-capacity-v15.js';
+import { bookActivityLine } from './book-mode.js';
 import { allParties, myPartyCodes, isActiveParty } from './store.js';
 
 const HIDDEN_KEY = 'teambook_public_home_hidden_v13';
@@ -63,9 +64,6 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-home-public-v15-style';
   style.textContent = `
-    /* Old inline Home Public renderer is retired, not raced. */
-    #publicDiscovery,#homePublicList{display:none!important}
-
     .v13-create-book{margin:18px 0 4px;padding:18px;border:1px solid rgba(41,136,87,.25);border-radius:22px;background:linear-gradient(145deg,rgba(241,250,240,.96),rgba(255,252,239,.95));box-shadow:0 12px 36px rgba(41,136,87,.10)}
     .v13-create-book h2{margin:0 0 5px;font-size:clamp(22px,6vw,29px)}
     .v13-create-book p{margin:0;color:var(--xty-muted);font-size:14px;line-height:1.6}
@@ -176,7 +174,7 @@ function canonicalParties(parties) {
 function signature(parties) {
   return parties.map(p => [
     p.code,p.name,p.__capacity.memberCount,p.__capacity.memberLimit,
-    p.verificationMode,p.status,p.updateCount,p.ownerAlias,p.activity,
+    p.verificationMode,p.status,p.updateCount,p.ownerAlias,p.activityMode,p.activity,
     p.coverType,p.coverValue,
   ].join(':')).join('|');
 }
@@ -209,7 +207,7 @@ function render(parties) {
     article.innerHTML = `${coverMarkup(party)}<div>`
       + `<div class="tb15-public-status"><span class="status-pill">${esc(occupancy)}</span><span class="status-pill">${esc(modeCopy(party.verificationMode))}</span></div>`
       + `<h2>${esc(party.name || 'สมุดสาธารณะ')}</h2>`
-      + `<p class="tb15-public-owner">เจ้าของ ${esc(party.ownerAlias || party.lead?.alias || 'เจ้าของสมุด')} · ${esc(party.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
+      + `<p class="tb15-public-owner">เจ้าของ ${esc(party.ownerAlias || party.lead?.alias || 'เจ้าของสมุด')} · ${esc(bookActivityLine(party))}</p>`
       + `<div class="tb15-public-state"><span class="tb15-public-dot ${state.cls}" aria-hidden="true"></span><span>${esc(state.label)}</span></div>`
       + `<div class="tb15-public-meta"><span>${Number(party.updateCount || 0)} อัปเดต</span></div>`
       + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">เปิดดู</a>`

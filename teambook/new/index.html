@@ -254,10 +254,10 @@ function init() {
     button.innerHTML = `<img src="${item.art}" alt=""><span><b>${item.labelTh}</b><small>${item.hintTh}</small></span>`;
     return { id: item.id, button };
   });
-  let verificationMode = 'trust';
+  let verificationMode = 'confirm';
   radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; });
 
-  let durationDays = 7;
+  let durationDays = 3;
   const durationButtons = [7, 14, 28].map(days => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
@@ -277,7 +277,7 @@ function init() {
     return activityMode === SHARED ? (picked.color || 'green') : 'green';
   }
 
-  let visibility = 'private';
+  let visibility = 'public';
   const visibilityButtons = [
     ['private', '🔒', 'ส่วนตัว', 'เข้าด้วยรหัส 5 หลัก'],
     ['public', '☀️', 'สาธารณะ', 'แสดงในหน้าเปิดสมุด'],
@@ -359,6 +359,7 @@ function init() {
   }
 
   $('pname').addEventListener('input', syncReady);
+  $('prule').addEventListener('input', syncReady);
 
   syncReady();
 
@@ -372,6 +373,7 @@ function init() {
         activityMode,
         activityDescription: picked.description,
         activityColor: picked.color,
+        successRule: activityMode === INDIVIDUAL ? $('prule').value.trim() : '',
         verificationMode, durationDays,
         color: bookColor(), visibility, commitRule: $('prule').value,
         budget, petId, coverType, leadCardId, npcCardId,
@@ -393,7 +395,8 @@ function init() {
   });
 
   function syncReady() {
-    $('go').disabled = $('pname').value.trim().length < 1 || !picked.complete || !coverType;
+    const ownerRuleReady = activityMode !== INDIVIDUAL || $('prule').value.trim().length > 0;
+    $('go').disabled = $('pname').value.trim().length < 1 || !picked.complete || !coverType || !ownerRuleReady;
   }
 }
 

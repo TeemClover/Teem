@@ -1,5 +1,6 @@
 import { TEAMBOOK_CARDS, TEAMBOOK_CARD_COLORS, TEAMBOOK_CARD_RARITIES, cardById } from '../../_shared/cards.js';
 import { TEAMBOOK_TIMEZONE, partyDayNumber, scheduledEndAt, startOfPartyDay } from './xty-rules.js';
+import { memberLimitSql, normalizeMemberLimit } from './member-limit.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const LIST_LIMIT = 50;
@@ -307,8 +308,8 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
   if (query.visibility) where.push(`p.visibility=${add(query.visibility)}`);
   if (query.verification) where.push(`p.verification_mode=${add(query.verification)}`);
   if (query.duration) where.push(`p.duration_days=${add(query.duration)}`);
-  if (query.occupancy === 'full') where.push('COALESCE(ms.member_count,0)>=5');
-  if (query.occupancy === 'joinable') where.push('p.state=ANY($1::text[]) AND COALESCE(ms.member_count,0)<5');
+  if (query.occupancy === 'full') where.push(`COALESCE(ms.member_count,0)>=${memberLimitSql('p.id')}`);
+  if (query.occupancy === 'joinable') where.push(`p.state=ANY($1::text[]) AND COALESCE(ms.member_count,0)<${memberLimitSql('p.id')}`);
   const sorts = {
     newest: 'p.created_at', oldest: 'p.created_at', last_activity: 'last_activity', members: 'member_count',
     commits: 'commits_today', messages: 'messages_today', reactions: 'reactions_today',
@@ -318,6 +319,7 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
   values.push(query.limit + 1, query.offset);
   const rows = await sql.query(`SELECT p.id,p.code,p.name,p.activity,p.activity_id,p.state,p.visibility,p.verification_mode,
       p.duration_days,p.created_at,p.started_at,p.ended_at,p.scheduled_end_at,p.timezone,
+      ${memberLimitSql('p.id')}::int member_limit,
       COALESCE(ms.member_count,0)::int member_count,ms.lead_alias,ms.lead_avatar,
       COALESCE(ps.commits_today,0)::int commits_today,COALESCE(ps.messages_today,0)::int messages_today,
       COALESCE(rs.reactions_today,0)::int reactions_today,COALESCE(cs.pending_confirms,0)::int pending_confirms,
@@ -341,7 +343,7 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
     code: row.code, name: row.name, activity: row.activity || '', activityId: row.activity_id || 'custom',
     state: row.state, visibility: row.visibility, verificationMode: row.verification_mode,
     day: Math.min(count(row.duration_days) || 7, partyDayNumber(row.started_at || row.created_at, at, row.timezone || TEAMBOOK_TIMEZONE)),
-    durationDays: count(row.duration_days) || 7, members: count(row.member_count), maxMembers: 5,
+    durationDays: count(row.duration_days) || 7, members: count(row.member_count), maxMembers: normalizeMemberLimit(row.member_limit),
     lead: { alias: row.lead_alias || '—', avatar: row.lead_avatar || 'orange_cat' },
     commitsToday: count(row.commits_today), messagesToday: count(row.messages_today),
     reactionsToday: count(row.reactions_today), pendingConfirms: count(row.pending_confirms),
@@ -353,8 +355,9 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
 
 export async function getAdminPartyDetail(sql, code, at = new Date()) {
   const parties = await sql.query(`SELECT id,code,name,activity,activity_id,commit_rule,state,visibility,verification_mode,
-    duration_days,created_at,started_at,ended_at,scheduled_end_at,timezone,lead_card_id,npc_card_id,pet_id
-    FROM teambook_books WHERE code=$1 LIMIT 1`, [String(code || '')]);
+    duration_days,created_at,started_at,ended_at,scheduled_end_at,timezone,lead_card_id,npc_card_id,pet_id,
+    ${memberLimitSql('p.id')}::int member_limit
+    FROM teambook_books p WHERE p.code=$1 LIMIT 1`, [String(code || '')]);
   const party = parties[0]; if (!party) return null;
   const [members, progress, activity, reward, events] = await Promise.all([
     sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,left_at,removal_reason
@@ -376,11 +379,13 @@ export async function getAdminPartyDetail(sql, code, at = new Date()) {
       WHERE book_id=$1 ORDER BY created_at DESC LIMIT 200`, [party.id]),
   ]);
   const durationDays = count(party.duration_days) || 7;
+  const memberCount = members.filter(member => !member.left_at).length;
   return {
     party: {
       code: party.code, name: party.name, activity: party.activity || '', activityId: party.activity_id || 'custom',
       commitRule: party.commit_rule || '', state: party.state, visibility: party.visibility,
       verificationMode: party.verification_mode, durationDays,
+      memberCount, maxMembers: normalizeMemberLimit(party.member_limit),
       day: Math.min(durationDays, partyDayNumber(party.started_at || party.created_at, at, party.timezone || TEAMBOOK_TIMEZONE)),
       createdAt: iso(party.created_at), startedAt: iso(party.started_at), actualEndAt: iso(party.ended_at),
       scheduledEndAt: iso(party.scheduled_end_at || scheduledEndAt(party.started_at || party.created_at, durationDays)),

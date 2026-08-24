@@ -5,14 +5,10 @@ import {
   prepareLineageForCreate,
   recordCreatedBookLineage,
 } from './xty-lineage.js';
+import { normalizeMemberLimit } from './member-limit.js';
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
-}
-
-function memberLimitOf(body) {
-  const wanted = Math.floor(Number(body?.memberLimit || 5));
-  return Number.isFinite(wanted) ? Math.min(11, Math.max(1, wanted)) : 5;
 }
 
 async function captureV3(req) {
@@ -40,7 +36,15 @@ export async function handleCreatePartyV4(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const requestBody = bodyOf(req);
-    const memberLimit = memberLimitOf(requestBody);
+    if (requestBody.activityMode === 'individual') {
+      const hasOwnerActivity = String(requestBody.activityId || '').trim()
+        && String(requestBody.activity || '').trim()
+        && String(requestBody.successRule || '').trim();
+      if (!hasOwnerActivity) {
+        return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
+      }
+    }
+    const memberLimit = normalizeMemberLimit(requestBody.memberLimit);
     const identityIds = await identityIdsForLineage(req, sql, currentUser);
     const prepared = await prepareLineageForCreate(sql, requestBody, identityIds);
 

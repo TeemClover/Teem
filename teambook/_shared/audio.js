@@ -3,8 +3,8 @@ const KEY = 'teambook_sfx_muted';
 /* TeamBook-owned physical-card samples only. Keep these at the top because we
    prepare every asset as soon as the module is evaluated — before first tap. */
 const SAMPLES = {
-  cardFlip: '/teambook/assets/audio/card-flip.mp3',
-  cardSwap: '/teambook/assets/audio/card-swap.mp3',
+  cardFlip: '/assets/audio/card-flip.mp3',
+  cardSwap: '/assets/audio/card-swap.mp3',
 };
 
 let context = null;

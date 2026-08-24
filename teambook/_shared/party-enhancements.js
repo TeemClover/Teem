@@ -95,6 +95,7 @@ function eventText(event) {
     case 'RULE_CHANGED': return 'กติกาการลงชื่อถูกเปลี่ยน และเก็บกติกาเดิมไว้ในประวัติ';
     case 'LEAD_CARD_CHANGED': return 'เจ้าของสมุดเปลี่ยนปกสมุด';
     case 'NPC_CHANGED': return 'สมุดเปลี่ยนเพื่อนร่วมทาง';
+    case 'PUBLIC_SEEN': return data.message || `👀 มีใครบางคนนอกสมุดเห็นสิ่งที่ ${data.alias || 'ใครบางคน'} ทำแล้ว`;
     case 'FIRST_SEEN_REWARD_EARNED': return `${data.alias || actor?.alias || 'สมาชิก'} กด “เห็นแล้ว” ครั้งแรก · ได้การ์ด 1 ใบ`;
     case 'PARTY_COMPLETED': return 'ปิดเล่มสำเร็จ';
     case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';

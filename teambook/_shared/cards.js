@@ -100,37 +100,73 @@ const RARE_SCENES = Object.freeze({
     blue: { variant: 'seaside-compass', description: 'หมาถือเข็มทิศริมทะเลสีฟ้า ชวนทีมฟังคลื่นและเลือกทางที่สบายใจ', flavor: 'เข็มทิศที่ดี พาเรากลับมาฟังตัวเอง' },
     silver: { variant: 'star-trail', description: 'หมาลากเส้นดาวสีเงินบนฟ้า ทำเครื่องหมายทุกก้าวที่ทีมเคยผ่าน', flavor: 'ทุกก้าวที่ผ่านไป กลายเป็นดาวนำทางดวงใหม่' },
   },
+  pig: {
+    red: [
+      { variant: 'berry-pie', description: 'หมูนวดแป้งทำพายเบอร์รีในครัวสมุด พร้อมผ้าพันคอและชุดทำครัวสีแดง', flavor: 'ของอร่อยเริ่มจากสองกีบที่ยอมลงมือ' },
+      { variant: 'picnic-wagon', description: 'หมูออกแรงลากรถเข็นปิกนิกสีแดง พาของอร่อยไปแบ่งเพื่อนที่สวน', flavor: 'ความสุขเบาลง เมื่อเราช่วยกันลาก' },
+    ],
+    green: [
+      { variant: 'seedling-garden', description: 'หมูคุกเข่ารดน้ำต้นอ่อนด้วยบัวรดน้ำสีเขียว เฝ้าดูใบแรกอย่างตั้งใจ', flavor: 'ดูแลวันละนิด แล้วสิ่งเล็ก ๆ จะเติบโต' },
+      { variant: 'birdhouse-builder', description: 'หมูเขย่งติดบ้านนกสีเขียวบนต้นไม้ พร้อมกระเป๋าเครื่องมือคู่ใจ', flavor: 'มุมเล็ก ๆ ที่เราสร้าง อาจเป็นบ้านของใครสักคน' },
+    ],
+    blue: [
+      { variant: 'parade-drum', description: 'หมูเดินขบวนตีกลองสีน้ำเงิน เติมจังหวะสนุกให้ทางเดินของทีม', flavor: 'ก้าวของเราไม่ต้องเหมือนกัน แค่ยังฟังจังหวะกัน' },
+      { variant: 'windy-pinwheel', description: 'หมูวิ่งรับลมพร้อมกังหันสีน้ำเงิน ปล่อยผ้าพันคอพลิ้วไปตามทาง', flavor: 'ลมเปลี่ยนทิศได้ แต่ความสนุกยังวิ่งต่อ' },
+    ],
+    silver: [
+      { variant: 'music-box', description: 'หมูนั่งหมุนกล่องดนตรีสีเงิน ฟังดาวกระดาษเต้นรอบตัวอย่างสงบ', flavor: 'บางจังหวะไม่ต้องดัง ก็ทำให้ใจยิ้มได้' },
+      { variant: 'winter-skater', description: 'หมูไอซ์สเกตขาเดียวด้วยผ้าพันคอและรองเท้าสีเงินบนบึงฤดูหนาว', flavor: 'เสียหลักนิดหน่อย ก็ยังหมุนเป็นท่าใหม่ได้' },
+    ],
+  },
+  buffalo: {
+    red: [
+      { variant: 'gift-wrap', description: 'ลูกควายนั่งห่อของขวัญด้วยริบบิ้นสีแดง ตั้งใจพับทุกมุมให้เรียบร้อย', flavor: 'ความตั้งใจเล็ก ๆ ทำให้ของขวัญอบอุ่นขึ้น' },
+      { variant: 'windy-kite', description: 'ลูกควายเอนตัวรับลม พลางประคองว่าวสีแดงให้ลอยสูงเหนือทุ่ง', flavor: 'ลมแรงแค่ไหน เรายังจับสายแห่งความหวังไว้ได้' },
+    ],
+    green: [
+      { variant: 'painted-stool', description: 'ลูกควายคุกเข่าทาสีเก้าอี้ไม้เป็นสีเขียว เติมชีวิตใหม่ให้ของชิ้นเดิม', flavor: 'ลงมือทีละปาด ของธรรมดาก็สดใสขึ้นได้' },
+      { variant: 'apple-harvest', description: 'ลูกควายเขย่งเก็บแอปเปิลใส่ตะกร้าสีเขียว เลือกลูกสวยไว้แบ่งเพื่อน', flavor: 'ผลที่เก็บด้วยกัน หวานขึ้นเมื่อได้แบ่งกัน' },
+    ],
+    blue: [
+      { variant: 'jump-rope', description: 'ลูกควายกระโดดเชือกสีน้ำเงินกลางลาน กะจังหวะให้เขาและกีบลอยพ้นเชือก', flavor: 'จับจังหวะของตัวเอง แล้วความหนักก็เบาลง' },
+      { variant: 'paper-boat', description: 'ลูกควายนอนคว่ำบนสะพานไม้ ปล่อยเรือกระดาษสีน้ำเงินออกเดินทางตามลำธาร', flavor: 'ปล่อยความฝันลำเล็ก แล้วดูว่ามันจะไปไกลแค่ไหน' },
+    ],
+    silver: [
+      { variant: 'clock-repair', description: 'ลูกควายนั่งซ่อมนาฬิกาปลุกสีเงินในห้องใต้หลังคา จัดเฟืองเล็ก ๆ อย่างใจเย็น', flavor: 'เวลาที่ค่อย ๆ ดูแล จะกลับมาเดินอีกครั้ง' },
+      { variant: 'ring-toss', description: 'ลูกควายพุ่งตัวโยนห่วงสีเงินเข้าเป้าในงานวัด สนุกกับจังหวะที่กีบปล่อยห่วง', flavor: 'เล็งให้ดี แล้วกล้าปล่อยในจังหวะของเรา' },
+    ],
+  },
   chicken: {
-    red: {
-      variant: 'country-kitchen-pancake', accessoryType: 'apron',
-      description: 'ไก่สวมผ้ากันเปื้อนสีแดง พลิกแพนเค้กในครัวสมุดด้วยจังหวะสนุก ๆ',
-      flavor: 'เช้านี้เริ่มได้ด้วยของอร่อยชิ้นเล็ก ๆ',
-    },
-    green: {
-      variant: 'birdhouse-workshop', accessoryType: 'tool-belt',
-      description: 'ไก่คาดเข็มขัดเครื่องมือสีเขียว ค่อย ๆ ต่อบ้านนกบนโต๊ะงานไม้',
-      flavor: 'วางทีละชิ้น เดี๋ยวบ้านหลังเล็กก็เป็นรูปเป็นร่าง',
-    },
-    blue: {
-      variant: 'xylophone-rehearsal', accessoryType: 'bow-tie',
-      description: 'ไก่ผูกหูกระต่ายสีน้ำเงิน ตีไซโลโฟนเป็นจังหวะสดใสในห้องดนตรี',
-      flavor: 'ทำนองสั้น ๆ ก็ชวนทั้งห้องขยับตามได้',
-    },
-    silver: {
-      variant: 'winter-pond-skate', accessoryType: 'earmuffs-and-skates',
-      description: 'ไก่ใส่ที่ครอบหูและรองเท้าสเก็ตสีเงิน กางปีกไถลบนบ่อน้ำแข็ง',
-      flavor: 'รักษาสมดุลไว้ แล้วปล่อยให้ทางโค้งพาเราไป',
-    },
+    red: [
+      { variant: 'morning-bell', description: 'ไก่เอนตัวดึงเชือกสีแดง ตีระฆังรับแสงเช้าให้หมู่บ้านเริ่มวันใหม่', flavor: 'เสียงเริ่มต้นหนึ่งครั้ง อาจปลุกความกล้าทั้งวัน' },
+      { variant: 'popcorn-maker', description: 'ไก่หมุนเครื่องทำป๊อปคอร์นกรอบสีแดงในงานวัด พร้อมรับเมล็ดฟูใส่ถุง', flavor: 'หมุนต่ออีกนิด ความสนุกก็พร้อมแบ่งเต็มถุง' },
+    ],
+    green: [
+      { variant: 'bubble-garden', description: 'ไก่นั่งริมกำแพงสวน เป่าฟองสบู่จากก้านวงและถ้วยสีเขียวให้ลอยรับแดด', flavor: 'เป่าเบา ๆ แล้วปล่อยเรื่องหนักให้ลอยขึ้น' },
+      { variant: 'mini-golf', description: 'ไก่ย่อตัวเล็งมินิกอล์ฟ จับจังหวะก่อนตีลูกสีเขียวเข้าสู่ทางโค้งในสวน', flavor: 'มองลูกตรงหน้า แล้วค่อยตีหนึ่งจังหวะ' },
+    ],
+    blue: [
+      { variant: 'field-cheer', description: 'ไก่ทรงตัวบนตอไม้ ส่งเสียงเชียร์ผ่านโทรโข่งสีน้ำเงินในงานกีฬากลางทุ่ง', flavor: 'เสียงเชียร์หนึ่งเสียง ทำให้ก้าวของเพื่อนไม่เดียวดาย' },
+      { variant: 'attic-xylophone', description: 'ไก่นั่งเล่นไซโลโฟนกรอบสีน้ำเงินในห้องใต้หลังคา ตีสองจังหวะสลับกันอย่างร่าเริง', flavor: 'เล่นคนละจังหวะ ก็กลายเป็นทำนองเดียวกัน' },
+    ],
+    silver: [
+      { variant: 'snow-globe', description: 'ไก่หมุนตัวประคองลูกแก้วหิมะฐานสีเงิน ชมเกล็ดขาวร่วงรอบบ้านหลังจิ๋ว', flavor: 'เขย่าโลกใบเล็ก แล้วดูความมหัศจรรย์ค่อย ๆ ตกลงมา' },
+      { variant: 'badminton-lunge', description: 'ไก่พุ่งลันจ์รับลูกแบดด้วยแร็กเก็ตสีเงินใต้แสงโคมยามเย็น', flavor: 'ตั้งหลักให้มั่น แล้วส่งจังหวะกลับไปด้วยรอยยิ้ม' },
+    ],
   },
 });
 
-function makeRareCard(animal, color) {
-  const scene = RARE_SCENES[animal.id]?.[color];
+function makeRareCard(animal, color, variant = 1) {
+  const sceneSet = RARE_SCENES[animal.id]?.[color];
+  const scene = Array.isArray(sceneSet) ? sceneSet[variant - 1] : variant === 1 ? sceneSet : null;
   if (!scene) return null;
   const card = baseCard(animal, color, 'rare');
-  const path = `/assets/cards/rare/${animal.id.replaceAll('_', '-')}-${color}-rare-001.webp`;
+  const suffix = String(variant).padStart(3, '0');
+  const path = `/assets/cards/rare/${animal.id.replaceAll('_', '-')}-${color}-rare-${suffix}.webp`;
   return Object.freeze({
-    ...card, artVariant: scene.variant, accessoryType: scene.accessoryType || 'clover-charm', accessoryColor: color,
+    ...card,
+    cardId: printedId(animal.id, color, 'rare', variant),
+    artVariant: scene.variant, accessoryType: 'clover-charm', accessoryColor: color,
     description: scene.description, descriptionTh: scene.description,
     flavorText: scene.flavor, flavorTh: scene.flavor,
     image: path, imageThumb: path, imageFull: path, art: path,
@@ -159,9 +195,12 @@ const PRINTED = Object.freeze({
       species, color, variant: index + 1,
       art: `/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
     })))),
-  /* the original painted scenes, kept at their existing ids */
-  rare: ['orange_cat', 'white_pom', 'white_cat', 'chicken']
-    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
+  /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
+  rare: ['orange_cat', 'white_pom', 'white_cat']
+    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
+    .concat(['pig', 'buffalo', 'chicken'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+      species, color, variant, scene: true,
+    }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
   epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
@@ -190,7 +229,7 @@ function printedId(species, color, rarity, variant) {
 function makePrintedCard(rarity, entry) {
   const animal = speciesById(entry.species);
   if (!animal) return null;
-  if (rarity === 'rare') return makeRareCard(animal, entry.color);
+  if (rarity === 'rare') return makeRareCard(animal, entry.color, entry.variant);
   const card = baseCard(animal, entry.color, rarity);
   return Object.freeze({
     ...card,

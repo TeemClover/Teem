@@ -4,17 +4,11 @@ import {
 } from './core.js';
 import { normalizeVerificationMode } from './xty-rules.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
+import { normalizeMemberLimit } from './member-limit.js';
 
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
 const HIA_ID = 'monitor_lizard';
-const DEFAULT_MEMBER_LIMIT = 5;
-const MAX_MEMBER_LIMIT = 11;
-
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
-function memberLimitOf(body) {
-  const wanted = Math.floor(Number(body?.memberLimit || DEFAULT_MEMBER_LIMIT));
-  return Number.isFinite(wanted) ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted)) : DEFAULT_MEMBER_LIMIT;
-}
 function localIdentity(body) {
   const id = clean(body?.profileId, 80);
   return /^[a-z0-9_-]{6,80}$/i.test(id) ? `local:${id}` : '';
@@ -89,7 +83,13 @@ export async function handleV12Create(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const original = bodyOf(req);
-    const memberLimit = memberLimitOf(original);
+    if (original.activityMode === 'individual') {
+      const hasOwnerActivity = String(original.activityId || '').trim()
+        && String(original.activity || '').trim()
+        && String(original.successRule || '').trim();
+      if (!hasOwnerActivity) return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
+    }
+    const memberLimit = normalizeMemberLimit(original.memberLimit);
     const roomSettings = requestedRoomSettings(original);
     const ids = await identityIds(req, sql, original);
     const level = await levelFor(sql, ids);

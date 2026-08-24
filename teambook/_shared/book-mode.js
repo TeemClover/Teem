@@ -174,7 +174,7 @@ export function bookActivity(book = {}) {
    listed. In individual mode there is no single answer, and inventing one
    tells four people they are all doing the same thing — so the honest line
    says that instead of naming somebody's activity. */
-export const INDIVIDUAL_BOOK_LINE = 'ต่างคนต่างทำ · แต่ละคนมีเรื่องของตัวเอง';
+export const INDIVIDUAL_BOOK_LINE = 'ต่างคนต่างทำ';
 
 export function bookActivityLine(book = {}, fallback = 'ยังไม่ระบุกิจกรรม') {
   if (normalizeMode(book.activityMode ?? book.activity_mode) === INDIVIDUAL) return INDIVIDUAL_BOOK_LINE;

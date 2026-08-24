@@ -177,34 +177,6 @@ function installStyle() {
       transform:none!important;
     }
 
-    /* Board seats: both Starter and collectible identities fill the seat. */
-    html body #seats>.tb-person-seat.seat>.av,
-    html body #seats>.tb-person-seat.seat>.av.is-card{
-      position:absolute!important;
-      inset:0!important;
-      width:100%!important;
-      height:100%!important;
-      max-width:none!important;
-      max-height:none!important;
-      margin:0!important;
-      transform:none!important;
-      aspect-ratio:${A}!important;
-      overflow:hidden!important;
-      border-radius:13px!important;
-    }
-    html body #seats>.tb-person-seat.seat>.av>img{
-      display:block!important;
-      width:100%!important;
-      height:100%!important;
-      max-width:none!important;
-      max-height:none!important;
-      margin:0!important;
-      border-radius:0!important;
-      object-fit:cover!important;
-      object-position:center!important;
-      transform:none!important;
-    }
-
     /* Public/member strips follow the same fill rule. */
     html body #members .tb-public-member-visual,
     html body .tb-member-status .tb-book-member-visual{

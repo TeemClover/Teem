@@ -12,8 +12,26 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 16, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 105);
+  assert.deepEqual(by, { common: 64, rare: 36, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 125);
+});
+
+test('Pig, Buffalo, and Chicken each have two distinct Rare cards in every colour', () => {
+  for (const species of ['pig', 'buffalo', 'chicken']) {
+    const rareCards = TEAMBOOK_CARDS.filter(card => card.species === species && card.rarity === 'rare');
+    assert.equal(rareCards.length, 8);
+    assert.equal(new Set(rareCards.map(card => card.cardId)).size, 8);
+    assert.equal(new Set(rareCards.map(card => card.imageFull)).size, 8);
+    for (const color of TEAMBOOK_CARD_COLORS) {
+      const expectedIds = [1, 2].map(variant => (
+        `${species.toUpperCase()}_${color.toUpperCase()}_RARE_${String(variant).padStart(3, '0')}`
+      ));
+      assert.deepEqual(
+        rareCards.filter(card => card.color === color).map(card => card.cardId).sort(),
+        expectedIds,
+      );
+    }
+  }
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {
@@ -112,28 +130,6 @@ test('cards already owned before the reprint still resolve', () => {
   /* These ids predate the new art and exist in live profiles. */
   for (const id of ['ORANGE_CAT_RED_RARE_001', 'WHITE_POM_SILVER_RARE_001', 'ORANGE_CAT_RED_COMMON_001']) {
     assert.ok(cardById(id), `${id} must still be a known card`);
-  }
-});
-
-test('the reviewed chicken Rare set contains all four colours and activities', () => {
-  const expected = [
-    ['red', 'country-kitchen-pancake', 'apron'],
-    ['green', 'birdhouse-workshop', 'tool-belt'],
-    ['blue', 'xylophone-rehearsal', 'bow-tie'],
-    ['silver', 'winter-pond-skate', 'earmuffs-and-skates'],
-  ];
-  const cards = TEAMBOOK_CARDS.filter(card => card.species === 'chicken' && card.rarity === 'rare');
-  assert.equal(cards.length, expected.length);
-  for (const [color, artVariant, accessoryType] of expected) {
-    const card = cardById(`CHICKEN_${color.toUpperCase()}_RARE_001`);
-    assert.ok(card);
-    assert.equal(card.species, 'chicken');
-    assert.equal(card.color, color);
-    assert.equal(card.rarity, 'rare');
-    assert.equal(card.artVariant, artVariant);
-    assert.equal(card.accessoryType, accessoryType);
-    assert.equal(card.accessoryColor, color);
-    assert.equal(card.imageFull, `/assets/cards/rare/chicken-${color}-rare-001.webp`);
   }
 });
 
