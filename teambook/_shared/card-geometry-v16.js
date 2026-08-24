@@ -225,9 +225,7 @@ function installStyle() {
     }
 
     /* ---------- Profile ----------
-       Keep the original 1:1 silhouette. The old blank inset came from the img
-       being 68x68 inside a 76x76 frame. Make the image fill the square instead.
-       Equipped cards still use card.color for the frame. */
+       Keep the original 1:1 silhouette. The image fills the square. */
     html body .profile-avatar,
     html body .profile-avatar.is-card{
       --tb-profile-frame:var(--xty-green);
@@ -248,6 +246,11 @@ function installStyle() {
     html body .profile-avatar[data-color="green"]{--tb-profile-frame:var(--xty-green)!important}
     html body .profile-avatar[data-color="blue"]{--tb-profile-frame:var(--xty-blue)!important}
     html body .profile-avatar[data-color="silver"]{--tb-profile-frame:var(--xty-silver)!important}
+    /* Equipped card artwork can contain transparent/rounded source pixels.
+       Paint the card colour behind it so no page-cream sliver can show through. */
+    html body .profile-avatar.is-card{
+      background:var(--tb-profile-frame)!important;
+    }
     html body .profile-avatar>img,
     html body .profile-avatar.is-card>img{
       display:block!important;
@@ -263,12 +266,6 @@ function installStyle() {
       object-position:center!important;
       transform:none!important;
       clip-path:none!important;
-    }
-    /* A vertical 63:88 collectible must crop to fit the square Profile.
-       Bias only equipped card art upward so the printed top ornament/frame is
-       retained; Starter portrait positioning remains exactly as before. */
-    html body .profile-avatar.is-card>img{
-      object-position:center 42%!important;
     }
 
     @media(max-width:380px){
