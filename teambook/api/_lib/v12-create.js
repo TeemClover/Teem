@@ -6,8 +6,14 @@ import { normalizeVerificationMode } from './xty-rules.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
 
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
+const DEFAULT_MEMBER_LIMIT = 5;
+const MAX_MEMBER_LIMIT = 11;
 
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
+function memberLimitOf(body) {
+  const wanted = Math.floor(Number(body?.memberLimit || DEFAULT_MEMBER_LIMIT));
+  return Number.isFinite(wanted) ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted)) : DEFAULT_MEMBER_LIMIT;
+}
 function localIdentity(body) {
   const id = clean(body?.profileId, 80);
   return /^[a-z0-9_-]{6,80}$/i.test(id) ? `local:${id}` : '';
@@ -66,9 +72,6 @@ function petForNpc(cardId, fallbackPetId) {
   return cardId ? null : (fallbackPetId || null);
 }
 
-/* The outer V1.2 adapter is the final authority for room choices. Legacy
-   create layers may still supply defaults, but they must never silently turn
-   a visibly selected Public/Confirm room back into Private/Trust. */
 export function requestedRoomSettings(body = {}) {
   return {
     visibility: ['public', 'private'].includes(body.visibility) ? body.visibility : 'private',
@@ -84,6 +87,7 @@ export async function handleV12Create(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const original = bodyOf(req);
+    const memberLimit = memberLimitOf(original);
     const roomSettings = requestedRoomSettings(original);
     const ids = await identityIds(req, sql, original);
     const level = await levelFor(sql, ids);
@@ -91,8 +95,6 @@ export async function handleV12Create(req, res) {
     const requestedLead = clean(original.leadCardId, 80).toUpperCase() || null;
     const requestedNpc = clean(original.npcCardId, 80).toUpperCase() || null;
 
-    /* Validate every card choice before creating membership/quota. This is
-       what makes a bad mixed-picker state fail without leaving a ghost book. */
     if (requestedLead && requestedNpc && requestedLead === requestedNpc) {
       return sendJson(res, { ok: false, error: 'INVALID_CARD_PLACEMENT' }, 409);
     }
@@ -107,12 +109,9 @@ export async function handleV12Create(req, res) {
       if (!(await ownsCard(sql, ids, requestedNpc))) return sendJson(res, { ok: false, error: 'CARD_NOT_OWNED' }, 403);
     }
 
-    /* Canonical V3 owns quota, timing, identity and duration gates. Remove
-       card placement only for the insert because legacy V3 still treats a
-       card as occupied by another active book. Room choices are explicitly
-       carried through this boundary as well. */
     const sanitized = {
       ...original,
+      memberLimit,
       visibility: roomSettings.visibility,
       verificationMode: roomSettings.verificationMode,
       coverType: level <= 1 ? 'avatar' : 'card_back',
@@ -151,15 +150,12 @@ export async function handleV12Create(req, res) {
       visibility: roomSettings.visibility,
       verificationMode: roomSettings.verificationMode,
       reusableCards: true,
+      memberLimit,
     };
     await sql.query(`UPDATE teambook_book_events
       SET data_json=COALESCE(data_json,'{}'::jsonb) || $1::jsonb
       WHERE book_id=$2 AND type='PARTY_CREATED'`, [JSON.stringify(eventPatch), party.id]);
 
-    /* Do not re-read through the party endpoint here: a brand-new local user
-       does not yet have the bearer token installed in request headers. Patch
-       the canonical create snapshot and return the token from V3 in the same
-       response; the client stores it before its first refresh. */
     party.coverType = finalType;
     party.coverValue = finalCoverValue;
     party.leadCardId = finalLead;
@@ -167,13 +163,14 @@ export async function handleV12Create(req, res) {
     party.petId = finalPet;
     party.visibility = roomSettings.visibility;
     party.verificationMode = roomSettings.verificationMode;
+    party.memberLimit = memberLimit;
     party.updatedAt = at.toISOString();
     if (Array.isArray(party.events)) {
       party.events = party.events.map(event => event.type === 'PARTY_CREATED'
         ? { ...event, data: { ...(event.data || {}), ...eventPatch } }
         : event);
     }
-    return sendJson(res, { ...created.data, party, reusableCards: true }, created.status || 201);
+    return sendJson(res, { ...created.data, party, reusableCards: true, memberLimit }, created.status || 201);
   } catch (error) {
     console.error('TeamBook V1.2 create failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
