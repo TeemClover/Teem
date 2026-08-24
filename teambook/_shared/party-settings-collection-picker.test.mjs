@@ -35,3 +35,10 @@ test('settings picker does not duplicate the character picker or observe the who
   assert.match(picker, /conflictKey: 'npcCardId'/);
   assert.match(picker, /conflictKey: 'leadCardId'/);
 });
+
+test('picker adapts to canonical V1.2 dropdown values and reusable cards', () => {
+  assert.match(picker, /`v12:card:\$\{cardId\}`/);
+  assert.match(picker, /V1\.2 cards are reusable across books/);
+  assert.match(picker, /ownedCardsForBookRole\(role\)/);
+  assert.doesNotMatch(picker, /availableOwnedCards\(\{ role, exceptPartyCode: code \}\)/);
+});

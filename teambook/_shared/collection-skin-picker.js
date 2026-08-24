@@ -7,7 +7,7 @@
 
 import { mountCardPicker } from './card-picker.js';
 import { cardById, cardDescriptorTh } from './cards.js';
-import { availableOwnedCards, getParty } from './store.js';
+import { availableOwnedCards, getParty, getProfile, ownedCards } from './store.js';
 
 const $ = id => document.getElementById(id);
 let dialog = null;
@@ -155,7 +155,18 @@ function partyCode() {
   return String(new URLSearchParams(location.search).get('c') || '').toUpperCase();
 }
 
-function addCollectionButton({ id, select, title, hint, role, conflictKey, valueFor }) {
+function ownedCardsForBookRole(role) {
+  const seen = new Set();
+  return ownedCards(getProfile())
+    .map(entry => cardById(entry.cardId))
+    .filter(card => {
+      if (!card?.eligibility?.[role] || seen.has(card.cardId)) return false;
+      seen.add(card.cardId);
+      return true;
+    });
+}
+
+function addCollectionButton({ id, select, title, hint, role, conflictKey, valuesFor }) {
   if (!select || $(id)) return null;
   const button = document.createElement('button');
   button.type = 'button';
@@ -166,7 +177,9 @@ function addCollectionButton({ id, select, title, hint, role, conflictKey, value
   button.addEventListener('click', () => {
     const code = partyCode();
     const party = getParty(code);
-    const available = availableOwnedCards({ role, exceptPartyCode: code })
+    /* V1.2 cards are reusable across books. Only the other role in this same
+       book can conflict, matching party-profile-covers and the server. */
+    const available = ownedCardsForBookRole(role)
       .filter(card => card.cardId !== party?.[conflictKey]);
     openCollectionPicker({
       title,
@@ -174,8 +187,8 @@ function addCollectionButton({ id, select, title, hint, role, conflictKey, value
       selectedCardId: role === 'lead' ? (party?.leadCardId || '') : (party?.npcCardId || ''),
       allowedCardIds: new Set(available.map(card => card.cardId)),
       onPick(choice, card, status) {
-        const value = valueFor(choice.cardId);
-        const option = [...select.options].find(item => item.value === value);
+        const values = valuesFor(choice.cardId);
+        const option = [...select.options].find(item => values.includes(item.value));
         if (!option) {
           status.textContent = role === 'lead'
             ? 'การ์ดใบนี้ยังไม่ว่างสำหรับใช้เป็นปกสมุดเล่มนี้'
@@ -183,7 +196,7 @@ function addCollectionButton({ id, select, title, hint, role, conflictKey, value
           status.classList.add('error');
           return false;
         }
-        select.value = value;
+        select.value = option.value;
         option.textContent = `การ์ด · ${cardDescriptorTh(card)}`;
         select.dispatchEvent(new Event('change', { bubbles: true }));
         return true;
@@ -205,7 +218,7 @@ function installPartySettingsPickers() {
     hint: 'เลือกจากการ์ดที่ใช้เป็นปกได้ แล้วกด “เปลี่ยน” เพื่อบันทึก',
     role: 'lead',
     conflictKey: 'npcCardId',
-    valueFor: cardId => cardId,
+    valuesFor: cardId => [`v12:card:${cardId}`, cardId],
   });
   if (coverButton) {
     const syncCoverLock = () => {
@@ -223,7 +236,7 @@ function installPartySettingsPickers() {
     hint: 'เลือกจากการ์ดที่ใช้เป็นเพื่อนร่วมทางได้ แล้วกด “เปลี่ยน” เพื่อบันทึก',
     role: 'npc',
     conflictKey: 'leadCardId',
-    valueFor: cardId => `card:${cardId}`,
+    valuesFor: cardId => [`v12:card:${cardId}`, `card:${cardId}`],
   });
 }
 
