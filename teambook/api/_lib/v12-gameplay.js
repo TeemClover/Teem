@@ -8,6 +8,7 @@ import { partyDayNumber, TEAMBOOK_TIMEZONE } from './xty-rules.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
+const HIA_ID = 'monitor_lizard';
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -110,6 +111,7 @@ function coverName(type, cardId) {
 function companionPetId(cardId, fallbackPetId = null) {
   const card = cardId ? cardById(cardId) : null;
   if (card?.species === 'white_cat') return WHITE_CAT_GUIDE_ID;
+  if (card?.species === HIA_ID) return HIA_ID;
   return cardId ? null : fallbackPetId;
 }
 

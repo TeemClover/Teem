@@ -31,6 +31,7 @@ const ACTIVE_STATES = ['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE'];
    out before any Party Log read or AI call; QUIET would still be a chat read. */
 const MUTE_PET_ID = 'unicorn';
 const WHITE_CAT_ID = 'xvisor_white_cat_silver';
+const HIA_ID = 'monitor_lizard';
 const WHITE_CAT_INTRO = 'อยู่ด้วยกันตรงนี้นะ 🐈 ถ้าอยากถามอะไร พิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้เลย — เรื่อง Xircle, RoutineX, ABCD หรือสมุดนี้ก็ได้';
 
 function wakeWindow(now = new Date()) {
@@ -246,7 +247,9 @@ async function firstWakeCatchup(req, res, sql) {
   const code = String(body.code || '').trim();
   if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
   const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
-      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      COALESCE(pet_id, CASE
+        WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}'
+        WHEN npc_card_id LIKE 'MONITOR_LIZARD_%' THEN '${HIA_ID}' END) AS pet_id,
       pet_last_wake,state,created_at,started_at
     FROM teambook_books WHERE code=$1`, [code]);
   const party = rows[0];
@@ -285,7 +288,9 @@ async function directReply(req, res, sql) {
   const code = String(body.code || '').trim();
   if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
   const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
-      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      COALESCE(pet_id, CASE
+        WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}'
+        WHEN npc_card_id LIKE 'MONITOR_LIZARD_%' THEN '${HIA_ID}' END) AS pet_id,
       pet_last_wake,state
     FROM teambook_books WHERE code=$1`, [code]);
   const party = rows[0];
@@ -343,7 +348,9 @@ async function whiteCatIntro(req, res, sql) {
   const code = String(body.code || '').trim();
   if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
   const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
-      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      COALESCE(pet_id, CASE
+        WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}'
+        WHEN npc_card_id LIKE 'MONITOR_LIZARD_%' THEN '${HIA_ID}' END) AS pet_id,
       pet_last_wake,state
     FROM teambook_books WHERE code=$1`, [code]);
   const party = rows[0];
@@ -394,15 +401,19 @@ export default async function handler(req, res) {
     const liveStateSql = "('DRAFT','RECRUITING','STARTED','ACTIVE')";
     const due = force
       ? await sql.query(`SELECT id,code,name,activity,commit_rule,
-          COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+          COALESCE(pet_id, CASE
+            WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}'
+            WHEN npc_card_id LIKE 'MONITOR_LIZARD_%' THEN '${HIA_ID}' END) AS pet_id,
           pet_last_wake FROM teambook_books
-          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state IN ${liveStateSql}
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%' OR npc_card_id LIKE 'MONITOR_LIZARD_%') AND state IN ${liveStateSql}
           AND COALESCE(pet_id,'') <> '${MUTE_PET_ID}'
           ORDER BY updated_at DESC LIMIT 1`)
       : await sql.query(`SELECT id,code,name,activity,commit_rule,
-          COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+          COALESCE(pet_id, CASE
+            WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}'
+            WHEN npc_card_id LIKE 'MONITOR_LIZARD_%' THEN '${HIA_ID}' END) AS pet_id,
           pet_last_wake FROM teambook_books
-          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state IN ${liveStateSql}
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%' OR npc_card_id LIKE 'MONITOR_LIZARD_%') AND state IN ${liveStateSql}
           AND COALESCE(pet_id,'') <> '${MUTE_PET_ID}'
           AND (pet_last_wake IS NULL OR pet_last_wake < $1)
           ORDER BY updated_at DESC`, [wake.start]);

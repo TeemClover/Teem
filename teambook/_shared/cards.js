@@ -35,6 +35,7 @@ export const TEAMBOOK_PERSONALITIES = Object.freeze({
   fox: { id: 'fox-playful-planner', nameTh: 'นักวางแผนขี้เล่น', descriptionTh: 'ปรับแผนเก่ง ทดลองสนุก และไม่ยอมให้แผนเดิมขวางเป้าหมายจริง', flavorTh: 'เปลี่ยนแผนได้ เป้าหมายยังอยู่' },
   owl: { id: 'owl-night-librarian', nameTh: 'บรรณารักษ์กลางคืน', descriptionTh: 'เก็บบทเรียนของวันอย่างเป็นระเบียบ แล้ววางมันลงก่อนพัก', flavorTh: 'เก็บบทเรียนไว้ แล้วปิดวันเบา ๆ' },
   unicorn: { id: 'unicorn-bright-dreamer', nameTh: 'นักฝันสีสด', descriptionTh: 'ทำให้ภาพในใจกลายเป็นก้าวเล็กที่จับต้องได้โดยไม่กลัวความแปลกใหม่', flavorTh: 'ของจริงเริ่มจากสิ่งที่กล้าจินตนาการ' },
+  monitor_lizard: { id: 'monitor-lizard-gremlin-max', nameTh: 'GREMLIN MAX', descriptionTh: 'สัตว์ลับที่อ่านเรื่องจริงในสมุด จับ contradiction และขุด receipt มากวนแบบเพื่อนสนิท', flavorTh: 'กูไม่ได้เสือก กูอ่าน Party Log' },
 });
 
 export function cardIdFor(species, color = 'green', rarity = 'common') {
@@ -56,7 +57,8 @@ function baseCard(animal, color, rarity) {
   const partyCover = rarityMeta.partyCover;
   return {
     cardId: cardIdFor(animal.id, color, rarity), collection: 'pet',
-    name: animal.nameTh, species: animal.id, speciesNameTh: animal.nameTh, color,
+    name: animal.nameTh, nameEn: animal.nameEn, species: animal.id,
+    speciesNameTh: animal.nameTh, speciesNameEn: animal.nameEn, color,
     colorNameTh: AVATAR_FRAMES[color].labelTh, rarity, series: TEAMBOOK_CARD_SERIES,
     personalityId: personality.id, personalityNameTh: personality.nameTh,
     personalityPath: personality === PLAIN_PERSONALITY ? null : `/cards/personalities/${personality.id}.md`,
@@ -143,12 +145,16 @@ const PRINTED = Object.freeze({
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
       species, color, variant: 1,
       art: `/assets/cards/epic/${species.replaceAll('_', '-')}-${color}.webp`,
+    }))).concat(TEAMBOOK_CARD_COLORS.map(color => ({
+      species: 'monitor_lizard', color, variant: 1,
+      art: `/assets/cards/epic/monitor-lizard-${color}.webp`,
     }))),
   /* one colour each, on purpose — no set to complete */
   legendary: [
     ['orange_cat', 'blue'], ['white_cat', 'silver'], ['white_pom', 'green'],
     ['buffalo', 'silver'], ['chicken', 'red'], ['crow', 'blue'],
     ['pig', 'red'], ['unicorn', 'green'],
+    ['monitor_lizard', 'silver'],
   ].map(([species, color]) => ({
     species, color, variant: 1,
     art: `/assets/cards/legendary/${species.replaceAll('_', '-')}-${color}.webp`,

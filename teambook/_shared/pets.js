@@ -50,13 +50,13 @@ export const RGBS = Object.freeze({
 
 function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
   return Object.freeze({
-    id, nameTh, emoji, color, series, persona,
+    id, nameTh, nameEn: opts.nameEn || id, emoji, color, series, persona,
     /* TeamBook-owned or explicitly licensed portrait asset. */
     art: opts.art || null,
     /* craftArt: Silver only — what human hands make of it (§4) */
     craftArt: opts.craftArt || null,
     unlockedByDefault: series === 'starter',
-    secret: series === 'legend',
+    secret: opts.secret === true || series === 'legend',
   });
 }
 
@@ -80,7 +80,9 @@ export const PETS = Object.freeze([
   pet('rhino',   'แรด',   '🦏', 'silver', 'beast', 'หน้าด้านแบบมีเป้าหมาย ลุยจนเสร็จ', { craftArt: 'งานคราฟต์จากลายนอ' }),
 
   /* 04 WILD — opt-in intensity, roast the commitment not the person (§8) */
-  pet('monitor_lizard', 'เหี้ย', '🦎', 'red',    'wild', 'ประชด กวนตรง ๆ แบบเพื่อนสนิท'),
+  pet('monitor_lizard', 'เหี้ย', '🦎', 'red',    'wild', 'GREMLIN MAX · กวน แซะ และขุด receipt จากเรื่องจริงในสมุด', {
+    nameEn: 'HIA', art: '/assets/art/pets/monitor-lizard.webp', secret: true,
+  }),
   pet('snake',   'งู',    '🐍', 'green',  'wild', 'ประชดสุภาพ พูดดีแต่แทงตรงจุด'),
   pet('owl',     'นกฮูก', '🦉', 'blue',   'wild', 'อธิบายละเอียดจนคนรู้ว่าข้ออ้างตัวเองไม่สมเหตุผล'),
   pet('crocodile','จระเข้','🐊', 'silver', 'wild', 'พูดน้อย ต่อยหนัก ประโยคสั้นแต่จบ', { craftArt: 'กระเป๋าหนัง' }),

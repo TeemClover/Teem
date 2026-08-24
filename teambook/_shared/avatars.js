@@ -14,13 +14,14 @@
    TeamBook 1.4 architecture: this file is pure data/presentation. It MUST NOT
    boot the app runtime or import the bootstrap as a side effect. */
 
-function species(id, slug, nameTh, fallback, starter = true) {
+function species(id, slug, nameTh, fallback, starter = true, nameEn = '', artOverride = '') {
   return Object.freeze({
     id,
     nameTh,
+    nameEn: nameEn || id,
     fallback,
     starter,
-    art: `/assets/art/avatars/${slug}.webp`,
+    art: artOverride || `/assets/art/avatars/${slug}.webp`,
   });
 }
 
@@ -37,6 +38,8 @@ export const TEAMBOOK_SPECIES = Object.freeze([
   species('fox', 'fox', 'จิ้งจอก', '🦊'),
   species('owl', 'owl', 'นกฮูก', '🦉'),
   species('unicorn', 'unicorn', 'ยูนิคอร์น', '🦄'),
+  /* Secret collectible species: card-only, never offered in Starter. */
+  species('monitor_lizard', 'monitor-lizard', 'เหี้ย', '🦎', false, 'HIA', '/assets/art/pets/monitor-lizard.webp'),
 ]);
 
 export const SPECIES_BY_ID = Object.freeze(

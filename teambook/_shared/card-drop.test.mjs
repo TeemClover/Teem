@@ -12,8 +12,8 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 12, epic: 4, legendary: 8 });
-  assert.equal(TEAMBOOK_CARDS.length, 88);
+  assert.deepEqual(by, { common: 64, rare: 12, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 101);
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {
@@ -25,6 +25,17 @@ test('no starter animal is printed as a card, and every card has a colour', () =
 
 test('cow is not findable yet', () => {
   assert.equal(TEAMBOOK_CARDS.some(card => card.species === 'cow'), false);
+});
+
+test('HIA is a secret card-only animal with exactly four Epic and one Legendary', () => {
+  const hia = TEAMBOOK_CARDS.filter(card => card.species === 'monitor_lizard');
+  assert.deepEqual(
+    hia.map(card => `${card.rarity}:${card.color}`).sort(),
+    ['epic:blue', 'epic:green', 'epic:red', 'epic:silver', 'legendary:silver'],
+  );
+  assert.equal(hia.some(card => ['common', 'rare'].includes(card.rarity)), false);
+  assert.equal(speciesById('monitor_lizard')?.starter, false);
+  assert.equal(speciesById('monitor_lizard')?.nameEn, 'HIA');
 });
 
 /* Starter is a roster, not "every animal". It stays at twelve while the
@@ -88,7 +99,7 @@ test('legendary is one colour per animal — there is no set to complete', () =>
   const legendary = TEAMBOOK_CARDS.filter(card => card.rarity === 'legendary');
   const species = legendary.map(card => card.species);
   assert.equal(new Set(species).size, species.length, 'each animal appears once');
-  assert.equal(legendary.length, 8);
+  assert.equal(legendary.length, 9);
 });
 
 test('card ids stay unique and stay within the member avatar column', () => {

@@ -6,6 +6,7 @@ import { normalizeVerificationMode } from './xty-rules.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
 
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
+const HIA_ID = 'monitor_lizard';
 const DEFAULT_MEMBER_LIMIT = 5;
 const MAX_MEMBER_LIMIT = 11;
 
@@ -69,6 +70,7 @@ function coverName(type, cardId) {
 function petForNpc(cardId, fallbackPetId) {
   const card = cardId ? cardById(cardId) : null;
   if (card?.species === 'white_cat') return WHITE_CAT_GUIDE_ID;
+  if (card?.species === HIA_ID) return HIA_ID;
   return cardId ? null : (fallbackPetId || null);
 }
 

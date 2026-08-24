@@ -13,8 +13,12 @@ import crow from './crow.js';
 import cat from './cat.js';
 import chicken from './chicken.js';
 import turtle from './turtle.js';
+import monitorLizard from './monitor-lizard.js';
 
-const ALL = [pig, buffalo, horse, elephant, cow, whiteCat, dog, unicorn, crow, cat, chicken, turtle];
+const ALL = [
+  pig, buffalo, horse, elephant, cow, whiteCat, dog, unicorn, crow, cat, chicken, turtle,
+  monitorLizard,
+];
 
 export const PET_SAUCE = Object.freeze(ALL.reduce((map, item) => {
   map[item.id] = Object.freeze(item);
