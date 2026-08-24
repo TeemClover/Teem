@@ -23,12 +23,14 @@ test('Ending image engine falls back to Vercel AI Gateway with OIDC', () => {
   const health = source('api/health.js');
   const vercel = JSON.parse(source('vercel.json'));
 
+  assert.match(engine, /getVercelOidcToken/);
   assert.match(engine, /process\.env\.AI_GATEWAY_API_KEY \|\| process\.env\.VERCEL_OIDC_TOKEN/);
   assert.match(engine, /https:\/\/ai-gateway\.vercel\.sh\/v1\/images\/generations/);
   assert.match(engine, /openai\/gpt-image-2/);
   assert.match(engine, /response_format: 'b64_json'/);
   assert.match(engine, /Promise\.all\(briefs\.map\(brief => providerImage/);
-  assert.match(health, /endingImageConfigured:[\s\S]*VERCEL_OIDC_TOKEN/);
+  assert.match(health, /oidcConfigured = !!await getVercelOidcToken\(\)/);
+  assert.match(health, /endingImageConfigured:[\s\S]*oidcConfigured/);
   assert.equal(vercel.functions['api/teambook-ending.js'].maxDuration, 300);
 });
 

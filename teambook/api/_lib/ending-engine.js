@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { getVercelOidcToken } from '@vercel/oidc';
 import legacyXtyHandler from '../teambook/[...path].js';
 import {
   clean, currentUser, database, ensureSchema, sameOrigin, sendJson, sha256,
@@ -118,11 +119,15 @@ function companionPersonaId(party) {
   return card?.species || value;
 }
 
-function generatorConfig() {
+async function generatorConfig() {
   const adapterEndpoint = String(process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT || '').trim();
-  const gatewayToken = String(
+  let gatewayToken = String(
     process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || '',
   ).trim();
+  if (!adapterEndpoint && !gatewayToken) {
+    try { gatewayToken = String(await getVercelOidcToken() || '').trim(); }
+    catch { gatewayToken = ''; }
+  }
   const useGateway = !adapterEndpoint && !!gatewayToken;
   return {
     endpoint: adapterEndpoint || (useGateway ? VERCEL_GATEWAY_IMAGE_ENDPOINT : ''),
@@ -187,7 +192,7 @@ function candidateProxyUrl(code, candidateId) {
   return `/api/teambook-ending-image?code=${encodeURIComponent(code)}&candidate=${encodeURIComponent(candidateId)}`;
 }
 
-function publicEnding(record, voteState, member, partyCode) {
+async function publicEnding(record, voteState, member, partyCode) {
   const evidence = parseJson(record?.evidence_json, {});
   const briefs = parseJson(record?.briefs_json, []);
   const candidates = parseJson(record?.candidates_json, []);
@@ -197,7 +202,7 @@ function publicEnding(record, voteState, member, partyCode) {
     selectedCandidate: record?.selected_candidate || null,
     generatedAt: record?.generated_at ? new Date(record.generated_at).toISOString() : null,
     finalizedAt: record?.finalized_at ? new Date(record.finalized_at).toISOString() : null,
-    generatorReady: generatorConfig().ready,
+    generatorReady: (await generatorConfig()).ready,
     errorCode: member?.role === 'lead' ? (record?.error_code || null) : null,
     evidence,
     briefs: briefs.map(brief => ({
@@ -333,7 +338,7 @@ async function generateEnding(sql, req, party, member) {
     error.code = 'LEAD_REQUIRED';
     throw error;
   }
-  const config = generatorConfig();
+  const config = await generatorConfig();
   if (!config.ready) {
     const error = new Error('ENDING_IMAGE_PROVIDER_NOT_CONFIGURED');
     error.code = 'ENDING_IMAGE_PROVIDER_NOT_CONFIGURED';
@@ -510,7 +515,7 @@ export default async function endingHandler(req, res) {
       } else return sendJson(res, { ok: false, error: 'BAD_ACTION' }, 400);
     }
 
-    return sendJson(res, publicEnding(
+    return sendJson(res, await publicEnding(
       record,
       await votesOf(sql, party.id, member.user_id),
       member,

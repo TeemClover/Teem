@@ -28,8 +28,9 @@ different values, but both must point only to TeamBook-owned resources.
 | `LINE_CHANNEL_SECRET` | Optional | LINE | LINE sign-in secret |
 
 If `TEAMBOOK_ENDING_IMAGE_ENDPOINT` is not configured, a Vercel deployment uses
-AI Gateway with its automatically injected `VERCEL_OIDC_TOKEN` and defaults to
-`openai/gpt-image-2`. Local/non-OIDC runtimes may set `AI_GATEWAY_API_KEY`.
+AI Gateway with the OIDC token supplied by its Function request context and
+defaults to `openai/gpt-image-2`. Local/non-OIDC runtimes may set
+`AI_GATEWAY_API_KEY`.
 If neither route is available, TeamBook still builds the Ending Evidence and the
 3 Art Brief directions; it does not fill the missing candidates with unrelated
 stock/random imagery. A custom adapter receives

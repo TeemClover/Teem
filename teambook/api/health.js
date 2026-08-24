@@ -1,4 +1,5 @@
 import { database, ensureSchema, hasDatabaseConfig } from './_lib/core.js';
+import { getVercelOidcToken } from '@vercel/oidc';
 
 function reply(res, body, status = 200) {
   res.statusCode = status;
@@ -19,6 +20,10 @@ export default async function handler(req, res) {
   }
 
   const configured = hasDatabaseConfig();
+  let oidcConfigured = false;
+  if (!process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT && !process.env.AI_GATEWAY_API_KEY) {
+    try { oidcConfigured = !!await getVercelOidcToken(); } catch { oidcConfigured = false; }
+  }
   let databaseConnected = false;
   let schemaReady = false;
   let databaseError = null;
@@ -47,7 +52,8 @@ export default async function handler(req, res) {
     blobConfigured: !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID),
     endingImageConfigured: !!process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT
       || !!process.env.AI_GATEWAY_API_KEY
-      || !!process.env.VERCEL_OIDC_TOKEN,
+      || !!process.env.VERCEL_OIDC_TOKEN
+      || oidcConfigured,
     cronConfigured: !!process.env.CRON_SECRET,
     emailConfigured: !!process.env.RESEND_API_KEY && !!process.env.TEAMBOOK_FROM_EMAIL,
   };
