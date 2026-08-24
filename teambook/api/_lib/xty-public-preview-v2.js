@@ -1,6 +1,8 @@
 import { database, ensureSchema, sendJson } from './core.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
+const DEFAULT_MEMBER_LIMIT = 5;
+const MAX_MEMBER_LIMIT = 11;
 
 function codeOf(req) {
   const value = Array.isArray(req.query?.code) ? req.query.code[0] : req.query?.code;
@@ -10,6 +12,13 @@ function codeOf(req) {
 function dataOf(value) {
   if (value && typeof value === 'object') return value;
   try { return JSON.parse(value || '{}'); } catch { return {}; }
+}
+
+function memberLimitOf(value) {
+  const wanted = Math.floor(Number(value || DEFAULT_MEMBER_LIMIT));
+  return Number.isFinite(wanted)
+    ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted))
+    : DEFAULT_MEMBER_LIMIT;
 }
 
 export async function handlePublicPreviewV2(req, res) {
@@ -82,6 +91,12 @@ export async function handlePublicPreviewV2(req, res) {
       at: new Date(event.created_at).toISOString(),
     }));
 
+    /* PARTY_CREATED is the canonical immutable source for this book's people
+       limit. Old books do not have memberLimit there, so and only so they keep
+       the historical 5-person maximum. Owner is already one active member. */
+    const created = safeEvents.find(event => event.type === 'PARTY_CREATED');
+    const memberLimit = memberLimitOf(created?.data?.memberLimit);
+    const memberCount = activeMembers.length;
     const state = String(row.state || 'ACTIVE').toUpperCase();
     const activityMode = row.activity_mode === 'individual' ? 'individual' : 'shared';
     return sendJson(res, {
@@ -108,7 +123,10 @@ export async function handlePublicPreviewV2(req, res) {
         coverValue: row.cover_value || row.lead_card_id || null,
         leadCardId: row.lead_card_id || null,
         state,
-        joinable: ACTIVE_STATES.includes(state) && activeMembers.length < 5,
+        memberCount,
+        memberLimit,
+        maxMembers: memberLimit,
+        joinable: ACTIVE_STATES.includes(state) && memberCount < memberLimit,
         createdAt: new Date(row.created_at).toISOString(),
         startAt: new Date(row.started_at || row.created_at).toISOString(),
         scheduledEndAt: row.scheduled_end_at ? new Date(row.scheduled_end_at).toISOString() : null,
