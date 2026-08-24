@@ -206,44 +206,11 @@ async function installBookOpenSeat() {
   observer.observe(seats, { childList:true });
 }
 
-function codeFromLink(link) {
-  try {
-    const url = new URL(link.href, location.origin);
-    return url.searchParams.get('c') || '';
-  } catch { return ''; }
-}
-
-function replaceCountText(root, info) {
-  if (!root || !info) return;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  const nodes = [];
-  while (walker.nextNode()) nodes.push(walker.currentNode);
-  for (const node of nodes) {
-    const text = node.nodeValue || '';
-    if (!/\b\d+\s*\/\s*\d+\b/.test(text)) continue;
-    node.nodeValue = text.replace(/\b\d+\s*\/\s*\d+\b/g, `${info.memberCount}/${info.memberLimit}`)
-      .replace(/เปิดอยู่(?=\s*·?\s*\d+\/\d+)/, info.full ? 'เต็มแล้ว' : 'เปิดอยู่');
-  }
-}
-
-async function syncVisibleBookCounts() {
-  if (location.pathname !== '/' && !/^\/public\/?$/.test(location.pathname)) return;
-  const links = [...document.querySelectorAll('a[href*="?c="],a[href*="&c="]')];
-  const pairs = links.map(link => [link, codeFromLink(link)]).filter(([, code]) => /^\d{5}$/.test(code));
-  const info = await capacityForCodes(pairs.map(([, code]) => code));
-  for (const [link, code] of pairs) {
-    let root = link;
-    for (let i = 0; i < 5 && root.parentElement; i += 1) {
-      if (root.matches?.('article,.card,.home-public-party,.public-book,.party-card')) break;
-      root = root.parentElement;
-    }
-    replaceCountText(root, info[code]);
-  }
-}
+/* Public/Home cards now receive memberCount and maxMembers from the canonical
+   public-list API. Do not walk arbitrary ancestors and rewrite every n/n text:
+   that old compatibility pass could climb from a book row to the whole Home
+   and overwrite the unrelated “ช่องสมุดของคุณ” counters three times during
+   boot. Per-book people capacity stays scoped to create and the live book. */
 
 installCreateStepper();
 installBookOpenSeat();
-if (location.pathname === '/' || /^\/public\/?$/.test(location.pathname)) {
-  [0, 180, 650].forEach(delay => setTimeout(syncVisibleBookCounts, delay));
-  window.addEventListener('pageshow', () => syncVisibleBookCounts(), { passive:true });
-}
