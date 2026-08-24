@@ -125,6 +125,14 @@ const PERSONAS = Object.freeze({
     endingSignature: 'put the day in its place, then let it rest',
     avoid: ['all-knowing oracle', 'lecture pose', 'mystic prophecy'],
   },
+  monitor_lizard: {
+    id: 'monitor_lizard', label: 'GREMLIN MAX',
+    bodyLanguage: ['full-body monitor lizard posture', 'mischievous sideways glance', 'one claw near a real notebook detail'],
+    energy: ['sharp', 'playfully confrontational', 'observant'],
+    visualHumor: 'a cheeky self-aware reaction to a real receipt from the book; never random cruelty',
+    endingSignature: 'one real contradiction or callback becomes the memorable final wink',
+    avoid: ['generic gecko', 'dinosaur', 'dragon', 'extra tails', 'member humiliation', 'invented evidence'],
+  },
   xvisor_white_cat_silver: {
     id: 'xvisor_white_cat_silver', label: 'PATTERN CARETAKER',
     bodyLanguage: ['calm sitting', 'one paw on one real detail', 'attention on the notebook rather than camera'],

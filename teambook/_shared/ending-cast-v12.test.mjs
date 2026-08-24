@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { TEAMBOOK_CARDS } from './cards.js';
-import { buildFinalCastSnapshot, finalCastPrompt } from './ending-cast-v12.js';
+import {
+  buildFinalCastSnapshot, finalCastPrompt, finalCastReferences,
+} from './ending-cast-v12.js';
 
 test('final cast uses final members and preserves duplicate animals with different marker colors', () => {
   const party = {
@@ -55,4 +57,67 @@ test('Ending cast prompt knows owner, member, companion, persona and forbids hum
   assert.match(prompt, /marker color is blue/i);
   assert.match(prompt, /COMPANION, not another member/);
   assert.match(prompt, /Old avatar\/card\/companion choices.*MUST NOT appear/);
+});
+
+test('visual references use Starter portraits, collectible art, and the canonical PET portrait', () => {
+  const card = TEAMBOOK_CARDS.find(item => item?.species === 'pig' && item?.rarity === 'rare');
+  assert.ok(card);
+  const snapshot = buildFinalCastSnapshot({
+    members: [
+      { userId: 'u1', alias: 'Starter', role: 'lead', avatar: 'white_cat', avatarColor: 'green' },
+      { userId: 'u2', alias: 'Collector', role: 'member', avatar: card.cardId, avatarColor: 'red' },
+    ],
+    petId: 'buffalo',
+  });
+  const references = finalCastReferences(snapshot);
+  assert.deepEqual(references.map(item => item.assetPath), [
+    '/assets/art/avatars/white-cat.webp',
+    card.imageFull,
+    '/assets/art/pets/buffalo.webp',
+  ]);
+  assert.deepEqual(references.map(item => item.entities[0].roleAtClose), ['lead', 'member', 'companion']);
+});
+
+test('duplicate Starter animals share one visual input while members stay distinct', () => {
+  const snapshot = buildFinalCastSnapshot({
+    members: [
+      { userId: 'u1', alias: 'Green', role: 'lead', avatar: 'white_cat', avatarColor: 'green' },
+      { userId: 'u2', alias: 'Blue', role: 'member', avatar: 'white_cat', avatarColor: 'blue' },
+    ],
+  });
+  const references = finalCastReferences(snapshot);
+  assert.equal(references.length, 1);
+  assert.deepEqual(references[0].entities.map(item => item.alias), ['Green', 'Blue']);
+});
+
+test('HIA companion uses the exact equipped collectible artwork and GREMLIN MAX persona', () => {
+  const hia = TEAMBOOK_CARDS.find(item => item.species === 'monitor_lizard' && item.rarity === 'legendary');
+  assert.ok(hia);
+  const snapshot = buildFinalCastSnapshot({
+    members: [{ userId: 'u1', alias: 'Owner', role: 'lead', avatar: 'orange_cat', avatarColor: 'green' }],
+    npcCardId: hia.cardId,
+  });
+  const prompt = finalCastPrompt(snapshot);
+  const reference = finalCastReferences(snapshot).find(item => item.entities.some(entity => entity.roleAtClose === 'companion'));
+  assert.match(prompt, /GREMLIN MAX/);
+  assert.equal(reference?.assetPath, hia.imageFull);
+});
+
+test('memberLimit 11 plus companion produces the full canonical reference cast', () => {
+  const species = [
+    'orange_cat', 'white_pom', 'white_cat', 'pig', 'buffalo', 'crow',
+    'turtle', 'chicken', 'rabbit', 'fox', 'owl',
+  ];
+  const snapshot = buildFinalCastSnapshot({
+    members: species.map((avatar, index) => ({
+      userId: `u${index + 1}`,
+      alias: `Member ${index + 1}`,
+      role: index === 0 ? 'lead' : 'member',
+      avatar,
+      avatarColor: ['red', 'green', 'blue', 'silver'][index % 4],
+    })),
+    petId: 'monitor_lizard',
+  });
+  assert.equal(snapshot.members.length, 11);
+  assert.equal(finalCastReferences(snapshot).length, 12);
 });

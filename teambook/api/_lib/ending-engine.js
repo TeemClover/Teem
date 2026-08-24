@@ -12,12 +12,19 @@ import { endingPersonaPrompt } from '../../_shared/ending-personas.js';
 import {
   buildEndingArtBriefs, buildEndingEvidence, endingVoteWinner,
 } from '../../_shared/ending-evidence.js';
+import {
+  buildFinalCastSnapshot, finalCastPrompt, finalCastReferences,
+} from '../../_shared/ending-cast-v12.js';
+import {
+  buildGatewayReferenceRequest, buildGatewayTextImageRequest,
+  DEFAULT_ENDING_IMAGE_MODEL, DEFAULT_ENDING_REFERENCE_MODEL,
+  generatedImageValue, GATEWAY_IMAGE_ENDPOINT, GATEWAY_MULTIMODAL_ENDPOINT,
+  referenceManifestPrompt,
+} from '../../_shared/ending-image-request.js';
 
 const TERMINAL_STATES = new Set(['COMPLETED', 'DISSOLVED']);
 const CANDIDATE_IDS = Object.freeze(['A', 'B', 'C']);
 const MAX_GENERATED_IMAGE_BYTES = 8 * 1024 * 1024;
-const VERCEL_GATEWAY_IMAGE_ENDPOINT = 'https://ai-gateway.vercel.sh/v1/images/generations';
-const DEFAULT_ENDING_IMAGE_MODEL = 'openai/gpt-image-2';
 
 const ENDING_SCHEMA = [
   `CREATE TABLE IF NOT EXISTS teambook_endings (
@@ -119,6 +126,26 @@ function companionPersonaId(party) {
   return card?.species || value;
 }
 
+function publicAssetOrigin() {
+  const explicit = String(process.env.TEAMBOOK_PUBLIC_ORIGIN || '').trim().replace(/\/$/, '');
+  if (/^https:\/\/[a-z0-9.-]+(?::\d+)?$/i.test(explicit)) return explicit;
+  const vercelHost = String(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || '',
+  ).trim().replace(/^https?:\/\//i, '').replace(/\/$/, '');
+  if (/^[a-z0-9.-]+(?::\d+)?$/i.test(vercelHost)) return `https://${vercelHost}`;
+  return 'https://www.teambook.me';
+}
+
+function absoluteCastReferences(references = []) {
+  const origin = publicAssetOrigin();
+  return references.map(reference => ({
+    ...reference,
+    url: /^https:\/\//i.test(reference.assetPath)
+      ? reference.assetPath
+      : `${origin}/${String(reference.assetPath || '').replace(/^\/+/, '')}`,
+  }));
+}
+
 async function generatorConfig() {
   const adapterEndpoint = String(process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT || '').trim();
   let gatewayToken = String(
@@ -130,12 +157,15 @@ async function generatorConfig() {
   }
   const useGateway = !adapterEndpoint && !!gatewayToken;
   return {
-    endpoint: adapterEndpoint || (useGateway ? VERCEL_GATEWAY_IMAGE_ENDPOINT : ''),
+    endpoint: adapterEndpoint || (useGateway ? GATEWAY_IMAGE_ENDPOINT : ''),
+    referenceEndpoint: adapterEndpoint || (useGateway ? GATEWAY_MULTIMODAL_ENDPOINT : ''),
     token: adapterEndpoint
       ? String(process.env.TEAMBOOK_ENDING_IMAGE_TOKEN || '').trim()
       : gatewayToken,
     model: String(process.env.TEAMBOOK_ENDING_IMAGE_MODEL || '').trim()
       || (useGateway ? DEFAULT_ENDING_IMAGE_MODEL : ''),
+    referenceModel: String(process.env.TEAMBOOK_ENDING_REFERENCE_MODEL || '').trim()
+      || (useGateway ? DEFAULT_ENDING_REFERENCE_MODEL : ''),
     mode: useGateway ? 'vercel-gateway' : 'adapter',
     ready: !!(adapterEndpoint || useGateway) && blobConfigured(),
   };
@@ -232,30 +262,13 @@ function decodeDataUrl(value) {
   } catch { return null; }
 }
 
-async function providerImage(config, prompt) {
+async function callImageProvider(config, request) {
   const headers = { 'content-type': 'application/json', accept: 'application/json' };
   if (config.token) headers.authorization = `Bearer ${config.token}`;
-  const body = config.mode === 'vercel-gateway'
-    ? {
-      model: config.model || DEFAULT_ENDING_IMAGE_MODEL,
-      prompt,
-      n: 1,
-      response_format: 'b64_json',
-      size: '1024x1536',
-    }
-    : {
-      model: config.model || undefined,
-      prompt,
-      aspectRatio: '63:88',
-      width: 1008,
-      height: 1408,
-      n: 1,
-      responseFormat: 'base64',
-    };
-  const response = await fetch(config.endpoint, {
+  const response = await fetch(request.endpoint, {
     method: 'POST',
     headers,
-    body: JSON.stringify(body),
+    body: JSON.stringify(request.body),
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -264,17 +277,11 @@ async function providerImage(config, prompt) {
     throw error;
   }
 
-  const encoded = payload.imageBase64
-    || payload.image_base64
-    || payload.b64_json
-    || payload.data?.[0]?.b64_json
-    || payload.images?.[0]?.base64
-    || payload.images?.[0]?.b64_json
-    || '';
-  if (encoded) {
-    const decoded = decodeDataUrl(encoded) || (() => {
+  const value = generatedImageValue(payload);
+  if (value && !/^https:\/\//i.test(String(value))) {
+    const decoded = decodeDataUrl(value) || (() => {
       try {
-        const buffer = Buffer.from(String(encoded), 'base64');
+        const buffer = Buffer.from(String(value), 'base64');
         return buffer.length ? { buffer, contentType: sniffImageType(buffer) } : null;
       } catch { return null; }
     })();
@@ -286,7 +293,7 @@ async function providerImage(config, prompt) {
     return decoded;
   }
 
-  const remoteUrl = payload.url || payload.data?.[0]?.url || payload.images?.[0]?.url || '';
+  const remoteUrl = value;
   if (!/^https:\/\//i.test(String(remoteUrl))) {
     const error = new Error('ENDING_PROVIDER_NO_IMAGE');
     error.code = 'ENDING_PROVIDER_NO_IMAGE';
@@ -306,6 +313,54 @@ async function providerImage(config, prompt) {
     throw error;
   }
   return { buffer, contentType };
+}
+
+async function providerImage(config, prompt, references = []) {
+  if (config.mode === 'vercel-gateway' && references.length) {
+    const referenceRequest = buildGatewayReferenceRequest({
+      prompt,
+      references,
+      model: config.referenceModel || DEFAULT_ENDING_REFERENCE_MODEL,
+    });
+    try {
+      return await callImageProvider(config, referenceRequest);
+    } catch (error) {
+      /* Keep Ending usable if the preview multimodal model is temporarily
+         unavailable. The fallback retains the exact cast manifest as text,
+         while the next generation can use visual references again. */
+      console.warn('TeamBook Ending reference generation failed; using text-only fallback', {
+        code: error?.code || 'ENDING_REFERENCE_PROVIDER_FAILED',
+        model: config.referenceModel,
+      });
+      const fallbackPrompt = `${prompt}\n\n${referenceManifestPrompt(references)}`.trim();
+      return callImageProvider(config, buildGatewayTextImageRequest({
+        prompt: fallbackPrompt,
+        model: config.model || DEFAULT_ENDING_IMAGE_MODEL,
+      }));
+    }
+  }
+
+  if (config.mode === 'vercel-gateway') {
+    return callImageProvider(config, buildGatewayTextImageRequest({
+      prompt,
+      model: config.model || DEFAULT_ENDING_IMAGE_MODEL,
+    }));
+  }
+
+  return callImageProvider(config, {
+    endpoint: config.referenceEndpoint || config.endpoint,
+    body: {
+      model: references.length ? (config.referenceModel || config.model || undefined) : (config.model || undefined),
+      prompt: references.length ? `${prompt}\n\n${referenceManifestPrompt(references)}`.trim() : prompt,
+      referenceImages: references.map(reference => reference.url),
+      references,
+      aspectRatio: '63:88',
+      width: 1008,
+      height: 1408,
+      n: 1,
+      responseFormat: 'base64',
+    },
+  });
 }
 
 async function storeCandidate(code, brief, generated) {
@@ -345,7 +400,10 @@ async function generateEnding(sql, req, party, member) {
     throw error;
   }
 
-  await rebuildBrief(sql, req, party);
+  const rebuilt = await rebuildBrief(sql, req, party);
+  const cast = buildFinalCastSnapshot(rebuilt.state.party);
+  const castPrompt = finalCastPrompt(cast);
+  const castReferences = absoluteCastReferences(finalCastReferences(cast));
   let current = await endingRow(sql, party.id);
   const existing = parseJson(current?.candidates_json, []);
   if (existing.length === CANDIDATE_IDS.length && ['READY', 'FINALIZED'].includes(current?.status)) return current;
@@ -367,7 +425,11 @@ async function generateEnding(sql, req, party, member) {
   try {
     /* These are three independent art directions. Generate them together so
        the owner is not forced through three provider round trips in series. */
-    const generated = await Promise.all(briefs.map(brief => providerImage(config, brief.prompt)));
+    const generated = await Promise.all(briefs.map(brief => providerImage(
+      config,
+      brief.direction === 'objects' ? brief.prompt : `${brief.prompt}\n\n${castPrompt}`,
+      brief.direction === 'objects' ? [] : castReferences,
+    )));
     const candidates = await Promise.all(briefs.map((brief, index) => (
       storeCandidate(party.code, brief, generated[index])
     )));

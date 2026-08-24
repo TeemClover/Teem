@@ -4,10 +4,12 @@
    The Ending receives only the character state that exists when the book
    closes: final member avatar/card, final marker color, final role, and final
    companion. This module is intentionally pure so it can be unit-tested and
-   reused by the future image-provider adapter. */
+   reused by the image-provider adapter. */
 
 import { cardById } from './cards.js';
 import { endingPersonaPrompt, endingVisualPersonaFor } from './ending-personas.js';
+import { speciesById } from './avatars.js';
+import { PET_BY_ID } from './pets.js';
 
 const COLORS = new Set(['red', 'green', 'blue', 'silver']);
 
@@ -124,4 +126,49 @@ export function finalCastPersonaSummary(snapshot) {
     markerColor: member.markerColor,
     persona: endingVisualPersonaFor(member.personaId).label,
   }));
+}
+
+function referenceAsset(entity) {
+  if (!entity) return '';
+  if (entity.cardId) {
+    const card = cardById(entity.cardId);
+    return card?.imageFull || card?.art || card?.image || '';
+  }
+  if (entity.roleAtClose === 'companion') {
+    const pet = PET_BY_ID[entity.species];
+    if (pet?.art) return pet.art;
+  }
+  return speciesById(entity.species)?.art || PET_BY_ID[entity.species]?.art || '';
+}
+
+/* One visual reference may represent more than one member wearing the same
+   Starter animal. Keep the entities separate in the cast prompt, but send the
+   shared artwork only once to avoid wasting image-input budget. */
+export function finalCastReferences(snapshot) {
+  const references = new Map();
+  const add = entity => {
+    const assetPath = referenceAsset(entity);
+    if (!assetPath) return;
+    const current = references.get(assetPath) || {
+      assetPath,
+      species: entity.species,
+      identitySource: entity.identitySource,
+      entities: [],
+    };
+    current.entities.push(Object.freeze({
+      entityId: entity.entityId,
+      alias: entity.alias,
+      roleAtClose: entity.roleAtClose,
+      markerColor: entity.markerColor,
+      cardId: entity.cardId,
+    }));
+    references.set(assetPath, current);
+  };
+
+  for (const member of snapshot?.members || []) add(member);
+  add(snapshot?.companion);
+  return Object.freeze([...references.values()].map(reference => Object.freeze({
+    ...reference,
+    entities: Object.freeze(reference.entities),
+  })));
 }
