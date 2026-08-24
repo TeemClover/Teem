@@ -205,18 +205,18 @@ export async function getAdminActivity(sql, rangeValue, at = new Date()) {
   const values = [range.start, range.end];
   const warnings = [];
   const [posts, reactions, confirms, partyEvents] = await Promise.all([
-    safeQuery(sql, 'activity.posts', `SELECT (sent_at AT TIME ZONE 'Asia/Bangkok')::date day,
+    safeQuery(sql, 'activity.posts', `SELECT (sent_at AT TIME ZONE 'Asia/Bangkok')::date AS bucket_day,
         COUNT(*) FILTER (WHERE kind='commit' AND retracted=FALSE)::int commits,
         COUNT(*) FILTER (WHERE kind='message' AND retracted=FALSE)::int messages
       FROM teambook_book_entries WHERE ($1::timestamptz IS NULL OR sent_at >= $1) AND sent_at <= $2
       GROUP BY 1 ORDER BY 1`, values, warnings),
-    safeQuery(sql, 'activity.reactions', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date day,COUNT(*)::int reactions
+    safeQuery(sql, 'activity.reactions', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date AS bucket_day,COUNT(*)::int reactions
       FROM teambook_reactions WHERE created_at IS NOT NULL AND ($1::timestamptz IS NULL OR created_at >= $1) AND created_at <= $2
       GROUP BY 1 ORDER BY 1`, values, warnings),
-    safeQuery(sql, 'activity.confirms', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date day,COUNT(*)::int confirms
+    safeQuery(sql, 'activity.confirms', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date AS bucket_day,COUNT(*)::int confirms
       FROM teambook_confirmations WHERE ($1::timestamptz IS NULL OR created_at >= $1) AND created_at <= $2
       GROUP BY 1 ORDER BY 1`, values, warnings),
-    safeQuery(sql, 'activity.partyEvents', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date day,
+    safeQuery(sql, 'activity.partyEvents', `SELECT (created_at AT TIME ZONE 'Asia/Bangkok')::date AS bucket_day,
         COUNT(*) FILTER (WHERE type='PARTY_CREATED')::int parties_created,
         COUNT(*) FILTER (WHERE type='PARTY_COMPLETED')::int parties_completed
       FROM teambook_book_events WHERE ($1::timestamptz IS NULL OR created_at >= $1) AND created_at <= $2
@@ -229,10 +229,10 @@ export async function getAdminActivity(sql, rangeValue, at = new Date()) {
     if (!days.has(key)) days.set(key, { date: key, commits: 0, messages: 0, reactions: 0, confirms: 0, partiesCreated: 0, partiesCompleted: 0 });
     return days.get(key);
   };
-  posts.forEach(row => Object.assign(touch(row.day), { commits: n(row.commits), messages: n(row.messages) }));
-  reactions.forEach(row => { touch(row.day).reactions = n(row.reactions); });
-  confirms.forEach(row => { touch(row.day).confirms = n(row.confirms); });
-  partyEvents.forEach(row => Object.assign(touch(row.day), { partiesCreated: n(row.parties_created), partiesCompleted: n(row.parties_completed) }));
+  posts.forEach(row => Object.assign(touch(row.bucket_day), { commits: n(row.commits), messages: n(row.messages) }));
+  reactions.forEach(row => { touch(row.bucket_day).reactions = n(row.reactions); });
+  confirms.forEach(row => { touch(row.bucket_day).confirms = n(row.confirms); });
+  partyEvents.forEach(row => Object.assign(touch(row.bucket_day), { partiesCreated: n(row.parties_created), partiesCompleted: n(row.parties_completed) }));
 
   return { range: range.key, warnings, buckets: [...days.values()].sort((a, b) => a.date.localeCompare(b.date)) };
 }
