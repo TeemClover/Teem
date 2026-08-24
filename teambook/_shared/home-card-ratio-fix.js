@@ -23,6 +23,13 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-home-card-r
       aspect-ratio:var(--xty-card-aspect)!important;
     }
 
+    /* Main collectible covers own their visible edge, just like Starter. The
+       wrapper supplies size only and must not clip the coloured frame/shadow. */
+    html body #home #mainParty .xty-home-cover:has(> .animal-card:not(.card-back)) {
+      overflow:visible!important;
+      border-radius:16px!important;
+    }
+
     /* A Book cover never prints the collectible card name/rarity over its art.
        Starter is a different renderer, so its dedicated STARTER pill remains. */
     html body #home #mainParty .animal-card .card-copy,
