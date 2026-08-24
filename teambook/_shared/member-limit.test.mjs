@@ -27,10 +27,10 @@ test('capacity SQL is shared, bounded, and rejects request-authored fragments', 
 test('admin stats and member book state use the same per-book limit', () => {
   const admin = readFileSync(join(ROOT, 'api/_lib/xty-admin-stats-v2.js'), 'utf8');
   const partyRoute = readFileSync(join(ROOT, 'api/teambook/[...path].js'), 'utf8');
-  const partyPage = readFileSync(join(ROOT, 'p/index.html'), 'utf8');
+  const partyBoard = readFileSync(join(ROOT, '_shared/party-board-model.js'), 'utf8');
   assert.match(admin, /memberLimitSql\('p\.id'\)/);
   assert.match(admin, /maxMembers: normalizeMemberLimit\(row\.member_limit\)/);
   assert.match(partyRoute, /memberLimit: normalizeMemberLimit\(row\.member_limit\)/);
-  assert.match(partyPage, /normalizeMemberLimit\(p\.memberLimit\)/);
+  assert.match(partyBoard, /normalizeMemberLimit\(party\?\.memberLimit\)/);
   assert.doesNotMatch(admin, /maxMembers:\s*5|member_count[^\n]*(?:>=|<)\s*5/);
 });

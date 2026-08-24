@@ -1,8 +1,6 @@
 import {
   confirmCommit, dayKey, getParty, isActiveParty, partyIdentity,
 } from './store.js';
-import { PET_BY_ID } from './pets.js';
-import { cardById } from './cards.js';
 
 const code = new URLSearchParams(location.search).get('c');
 let scheduled = false;
@@ -14,15 +12,8 @@ function install() {
   injectStyle();
   document.addEventListener('click', interceptProfileOrSeen, true);
   document.addEventListener('keydown', interceptKeyboard, true);
-  const view = document.getElementById('view');
-  if (view) {
-    new MutationObserver(schedule).observe(view, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['class', 'role', 'tabindex'],
-    });
-  }
+  const seats = document.getElementById('seats');
+  if (seats) new MutationObserver(schedule).observe(seats, { childList: true });
   schedule();
 }
 
@@ -96,23 +87,15 @@ function injectStyle() {
       width:100%!important;height:100%!important;
       object-fit:contain!important;border-radius:12px!important;
     }
-    #seats>.tb-person-seat.seat>.av.is-card{
-      width:100%!important;height:100%!important;aspect-ratio:auto!important;
+    /* Only an actual collectible identity gets this full-art shell. */
+    #seats>.tb-real-card-seat{
+      display:block!important;padding:0!important;
+      border:0!important;background:transparent!important;
     }
-    #seats>.tb-person-seat.seat>.av.is-card img{
-      object-fit:cover!important;border-radius:13px!important;
-    }
-
-    /* Full-art wrappers continue to clip their own artwork, while the outer
-       slot can let the owner label sit outside the card. */
     #seats>.tb-person-seat>.animal-card,
-    #seats>.tb-person-seat>.xty-image-seat,
-    #seats>.tb-person-seat>.xty-back-seat,
-    #seats>.tb-person-seat>.xty-collection-seat__card,
-    #seats>.tb-person-seat>.xty-collection-seat__svg,
-    #seats>.tb-companion-seat>.animal-card,
-    #seats>.tb-companion-seat>.xty-collection-seat__card,
-    #seats>.tb-companion-seat>.xty-collection-seat__svg{
+    #seats>.tb-companion-seat>.animal-card{
+      width:100%!important;height:100%!important;
+      max-width:none!important;max-height:none!important;
       border-radius:14px!important;overflow:hidden!important;
     }
 
@@ -154,23 +137,30 @@ function injectStyle() {
 
     /* Companion uses the same card skeleton, but never participates in
        Signature/Seen. Its semantic slot simply says เพื่อนร่วมทาง. */
-    #seats>.tb-companion-seat.seat{
+    #seats>.tb-starter-companion-seat,
+    #seats>.tb-empty-companion-seat{
       display:block!important;padding:0!important;
       background:var(--xty-surface)!important;border:1px solid var(--xty-border)!important;
     }
-    #seats>.tb-companion-seat.seat>.av{
+    #seats>.tb-starter-companion-seat>.av,
+    #seats>.tb-empty-companion-seat>.av{
       position:absolute!important;left:50%!important;top:50%!important;
       width:86%!important;height:72%!important;transform:translate(-50%,-50%)!important;
-      display:grid!important;place-items:center!important;
+      display:grid!important;place-items:center!important;background:transparent!important;
     }
-    #seats>.tb-companion-seat.seat>.av img{
-      width:100%!important;height:100%!important;object-fit:contain!important;
+    #seats>.tb-starter-companion-seat>.av img{
+      display:block!important;width:100%!important;height:100%!important;
+      max-width:100%!important;max-height:100%!important;
+      object-fit:contain!important;object-position:center!important;
+      border:0!important;border-radius:0!important;background:transparent!important;
+      filter:drop-shadow(0 3px 0 rgba(62,51,44,.08));
     }
     .tb-companion-label{
       position:absolute;left:50%;bottom:9px;z-index:35;transform:translateX(-50%);
       max-width:calc(100% - 16px);padding:4px 8px;
-      color:var(--xty-primary);font:900 clamp(8px,2.2vw,10px)/1 var(--thai),var(--sans);
-      text-align:center;white-space:nowrap;border-radius:999px;background:rgba(255,254,248,.92);
+      color:#fff;font:900 clamp(8px,2.2vw,10px)/1 var(--thai),var(--sans);
+      text-align:center;white-space:nowrap;border:1px solid var(--xty-green);
+      border-radius:999px;background:var(--xty-green);
       pointer-events:none;
     }
 
@@ -203,9 +193,9 @@ function schedule() {
 }
 
 function membersInSeatOrder(party) {
-  const owner = party.members.find(member => member.role === 'lead') || null;
-  const others = party.members.filter(member => member.role !== 'lead');
-  return [owner, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
+  const members = (party.members || []).filter(member => member && !member.leftAt);
+  const owner = members.find(member => member.role === 'lead') || null;
+  return owner ? [owner, ...members.filter(member => member !== owner)] : members;
 }
 
 function todayCommit(party, userId) {
@@ -313,29 +303,6 @@ function syncHumanSeat(node, member, index, party) {
   node.dataset.tbSlot = String(index + 1);
 }
 
-function companionName(party) {
-  const npc = party.npcCardId ? cardById(party.npcCardId) : null;
-  if (npc) return npc.personalityNameTh || npc.nameTh || 'เพื่อนร่วมทาง';
-  const pet = party.petId ? PET_BY_ID[party.petId] : null;
-  return pet?.nameTh || 'เพื่อนร่วมทาง';
-}
-
-function syncCompanion(node, party) {
-  node.classList.add('tb-companion-seat');
-  node.classList.remove('tb-person-seat');
-  clearLegacyProfileInteraction(node);
-  node.classList.remove('tb-can-seen');
-  if (node.hasAttribute('role')) node.removeAttribute('role');
-  if (node.hasAttribute('tabindex')) node.removeAttribute('tabindex');
-  node.removeAttribute('data-tb-user-id');
-  node.removeAttribute('data-tb-state');
-  node.removeAttribute('data-tb-commit-seq');
-  node.querySelector(':scope > .tb-daily-state')?.remove();
-  node.querySelector(':scope > .tb-owner-label')?.remove();
-  ensureTextOverlay(node, 'tb-card-name', companionName(party));
-  ensureTextOverlay(node, 'tb-companion-label', 'เพื่อนร่วมทาง');
-}
-
 function syncOverviewDots(party) {
   const dots = document.querySelectorAll('#dots > i');
   membersInSeatOrder(party).filter(Boolean).forEach((member, index) => {
@@ -362,15 +329,12 @@ function sync() {
   if (!party || !seats) return;
   seats.classList.add('tb-card-grid');
 
-  const members = membersInSeatOrder(party);
-  members.forEach((member, index) => {
-    const node = seats.children[index];
-    if (!member || !node) return;
-    syncHumanSeat(node, member, index, party);
+  const members = new Map(membersInSeatOrder(party).map(member => [member.userId, member]));
+  const humanSeats = seats.querySelectorAll(':scope > [data-tb-user-id]');
+  humanSeats.forEach((node, index) => {
+    const member = members.get(node.dataset.tbUserId);
+    if (member) syncHumanSeat(node, member, index, party);
   });
-
-  const companion = seats.children[5];
-  if (companion) syncCompanion(companion, party);
   syncOverviewDots(party);
   disableDeferredProfiles();
 }

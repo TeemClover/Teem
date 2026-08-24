@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-party-board-v25';
+const CAPACITY_REV = '20260825-canonical-party-board-v26';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -116,7 +116,6 @@ async function boot() {
       './party-profile-covers.js',
       './party-log-viewport.js',
       './party-event-copy-v2.js',
-      './party-pet-seat-v2.js',
       './party-invite-copy.js',
       './party-log-export.js',
       './party-teambook-cards.js',
@@ -130,10 +129,8 @@ async function boot() {
       './level-up-growth.js',
       './v12-gameplay.js',
     ]);
-    /* This must load after the competing historical seat renderers above.
-       It restores only the inside-book board: Starter portraits remain quiet,
-       real cards may fill their seat, and Companion labels cannot disappear. */
-    await importOnce(`./party-board-portrait-v21.js?v=${CAPACITY_REV}`);
+    /* /p/index.html is the only board renderer. Route modules may add state
+       interactions, but none may replace or reclassify its seat DOM. */
     return;
   }
 

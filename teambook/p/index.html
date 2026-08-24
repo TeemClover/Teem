@@ -235,7 +235,7 @@ import { cardById, cardDescriptorTh, cardNameTh, TEAMBOOK_RARITY_META } from '/_
 import { cardMarkup } from '/_shared/card-ui.js';
 import { compressForChat, isSupportedImage, readableBytes } from '/_shared/image-compress.js';
 import { resolveMemberAvatar } from '/_shared/card-picker.js';
-import { normalizeMemberLimit } from '/_shared/member-limit.js';
+import { partyBoardPlan } from '/_shared/party-board-model.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -286,29 +286,6 @@ function avatarMarkup(value) {
   if (resolved) return `<img src="${resolved.speciesArt}" alt="">`;
   const avatar = AVATAR_BY_ID[value];
   return avatar ? `<img src="${avatar.art}" alt="">` : esc(value || '🍀');
-}
-
-/* The six party seats are the one place the rare drawing gets shown —
-   glanced at, not scrolled past, and few enough to stay legible. */
-function seatAvatarMarkup(value) {
-  const resolved = resolveMemberAvatar(value);
-  if (resolved) return `<img src="${resolved.cardArt}" alt="">`;
-  return avatarMarkup(value);
-}
-
-/* A seat holding a card takes the card's shape. In the square avatar box a
-   5:7 card had to letterbox, which left the very gaps a card should never
-   have; a starter animal keeps the square because its art is square. */
-function seatIsCard(value) {
-  return (resolveMemberAvatar(value)?.rarity || 'starter') !== 'starter';
-}
-
-/* The card's colour is the only property it carries, and this is where it
-   is spent: the ring around the member's seat. A starter animal has no
-   colour, so it keeps whatever frame the player picked. */
-function seatColorFor(value, fallback) {
-  const resolved = resolveMemberAvatar(value);
-  return resolved?.color || fallback || 'green';
 }
 
 function stamp(iso) {
@@ -379,42 +356,35 @@ function render() {
     progress.appendChild(day);
   });
 
-  /* Render every real member (1–11), one compact vacancy card when joinable,
-     then the companion. PET never consumes a member slot. */
+  /* Canonical /p board renderer. A valid equipped card id is the only thing
+     that selects full-art. Starter portraits and the semantic Companion seat
+     are rendered directly here; no compatibility module may replace them. */
   const seats = $('seats');
   seats.innerHTML = '';
-  const lead = p.members.find(m => m.role === 'lead') || null;
-  const leadCard = cardById(p.leadCardId);
-  const others = p.members.filter(m => m.role !== 'lead');
-  const slots = [lead, ...others].filter(Boolean);
-  slots.forEach((m, index) => {
+  const board = partyBoardPlan(p);
+  board.members.forEach(({ member: m, identity }, index) => {
     const d = document.createElement('div');
-    const committed = done.has(m.userId);
-    if (m.role === 'lead' && leadCard) {
-      d.className = 'seat-card-wrap';
-      d.innerHTML = cardMarkup(leadCard, { role: 'lead', foil: !foilPlayed })
-        + `<span class="seat-card-name" title="${esc(m.alias)}">${esc(m.alias)} · ${committed ? '✓' : '○'}</span>`;
-      seats.appendChild(d);
+    d.dataset.tbUserId = m.userId;
+    d.dataset.tbSlot = String(index + 1);
+    d.dataset.tbSeatKind = identity.kind;
+    if (identity.kind === 'collectible') {
+      d.className = 'seat-card-wrap tb-person-seat tb-real-card-seat';
+      d.dataset.tbCardId = identity.cardId;
+      d.innerHTML = cardMarkup(identity.card, { foil: !foilPlayed })
+        + `<span class="tb-card-name" title="${esc(m.alias)}">${esc(m.alias)}</span>`;
       foilPlayed = true;
-      return;
+    } else {
+      d.className = `seat xty-card tb-person-seat tb-starter-member-seat${m.role === 'lead' ? ' lead' : ' member'}`;
+      const portrait = identity.art
+        ? `<img src="${esc(identity.art)}" alt="" loading="eager" decoding="async">`
+        : esc(identity.fallback);
+      d.innerHTML = `<div class="av member-avatar" data-color="${esc(identity.color)}">${portrait}</div>`
+        + `<span class="tb-card-name" title="${esc(m.alias)}">${esc(m.alias)}</span>`;
     }
-    if (m.role === 'lead' && p.coverType === 'card_back') {
-      d.className = 'seat-card-wrap';
-      d.innerHTML = '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>'
-        + `<span class="seat-card-name" title="${esc(m.alias)}">${esc(m.alias)} · ${committed ? '✓' : '○'}</span>`;
-      seats.appendChild(d); return;
-    }
-    d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
-    d.innerHTML =
-      `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
-      `<div class="av member-avatar${seatIsCard(m.avatar) ? ' is-card' : ''}" data-color="${esc(seatColorFor(m.avatar, m.avatarColor))}">${seatAvatarMarkup(m.avatar)}</div>` +
-      `<div class="al" title="${esc(m.alias)}">${esc(m.alias)}</div>` +
-      `<div class="rl">${m.role === 'lead' ? 'เจ้าของสมุด' : 'สมาชิก'}</div>` +
-      `<div class="commit-state" aria-label="${committed ? 'ลงชื่อแล้ว' : 'ยังไม่ได้ลงชื่อ'}">${committed ? '✓' : '○'}</div>`;
     seats.appendChild(d);
   });
-  const memberLimit = normalizeMemberLimit(p.memberLimit);
-  const left = Math.max(0, memberLimit - p.members.length);
+  const memberLimit = board.memberLimit;
+  const left = board.remaining;
   if (left > 0) {
     const open = document.createElement('div');
     open.className = 'seat xty-card open tb-open-seat';
@@ -428,24 +398,31 @@ function render() {
     : `สมุดเต็มแล้ว · ${p.members.length}/${memberLimit} คน`;
   seats.setAttribute('aria-label', `คนในสมุด ${p.members.length} จาก ${memberLimit} คน และเพื่อนร่วมทาง`);
 
-  const npc = cardById(p.npcCardId);
-  const pet = p.petId ? PET_BY_ID[p.petId] : null;
+  const companion = board.companion;
   const petCard = document.createElement('div');
-  if (npc) {
-    petCard.className = 'seat-card-wrap';
-    petCard.innerHTML = cardMarkup(npc, { role: 'npc' })
-      + `<span class="seat-card-name">${esc(npc.personalityNameTh)}</span>`;
-    $('petLine').textContent = `${cardDescriptorTh(npc)} — ${npc.flavorTh}`;
-  } else if (pet) {
-    petCard.className = 'seat-card-wrap';
-    petCard.innerHTML = `<div class="animal-card companion-card" data-color="${pet.color}">`
-      + '<span class="role-badge">PET</span>'
-      + `${pet.art ? `<img class="card-art" src="${pet.art}" alt="" width="256" height="256" loading="lazy">` : `<span class="card-art">${pet.emoji}</span>`}`
-      + `<span class="card-copy"><b>${esc(pet.nameTh)}</b><small>V1 COMPANION</small></span></div>`;
-    $('petLine').textContent = `${pet.emoji} ${pet.nameTh} — ${pet.persona}`;
+  petCard.dataset.tbCompanion = 'true';
+  petCard.dataset.tbCompanionKind = companion.kind;
+  if (companion.kind === 'collectible-companion') {
+    petCard.className = 'seat-card-wrap tb-companion-seat tb-real-card-seat';
+    petCard.dataset.tbCardId = companion.cardId;
+    petCard.dataset.tbPetId = companion.petId || '';
+    petCard.innerHTML = cardMarkup(companion.card, { role: 'npc' })
+      + `<span class="tb-card-name">${esc(companion.nameTh)}</span>`
+      + '<span class="tb-companion-label">เพื่อนร่วมทาง</span>';
+    $('petLine').textContent = `${cardDescriptorTh(companion.card)} · เพื่อนร่วมทาง`;
+  } else if (companion.kind === 'starter-companion') {
+    petCard.className = 'seat xty-card pet-card tb-companion-seat tb-starter-companion-seat';
+    petCard.dataset.tbPetId = companion.petId;
+    const portrait = companion.art
+      ? `<img src="${esc(companion.art)}" alt="" width="512" height="512" loading="eager" decoding="async">`
+      : esc(companion.fallback);
+    petCard.innerHTML = `<div class="av">${portrait}</div>`
+      + `<span class="tb-card-name">${esc(companion.nameTh)}</span>`
+      + '<span class="tb-companion-label">เพื่อนร่วมทาง</span>';
+    $('petLine').textContent = `${companion.fallback} ${companion.nameTh} · เพื่อนร่วมทาง`;
   } else {
-    petCard.className = 'seat xty-card pet-card open';
-    petCard.innerHTML = '<span class="slot-label">🐾 PET</span><div class="av">🐾</div><div class="al">เลือกทีหลังได้</div>';
+    petCard.className = 'seat xty-card pet-card open tb-companion-seat tb-empty-companion-seat';
+    petCard.innerHTML = '<div class="av">🐾</div><span class="tb-card-name">สัตว์</span><span class="tb-companion-label">เพื่อนร่วมทาง</span>';
     $('petLine').textContent = 'สมุดนี้ยังไม่มี เพื่อนร่วมทาง — เลือกทีหลังได้';
   }
   seats.appendChild(petCard);
