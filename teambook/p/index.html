@@ -664,11 +664,6 @@ function renderLog(p) {
        Legendary reads as an event from across the log. */
     if (rewardCard) el.dataset.rarity = rewardCard.rarity || 'common';
 
-    const rewardReason = post.rewardSource === 'first_seen'
-      ? 'รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก'
-      : (post.rewardSource === 'first_seen_pending'
-        ? 'เห็นความพยายามของคนอื่นเป็นครั้งแรก'
-        : (post.rewardSource === 'party_stars' ? 'รางวัลครบ 3 ดาวในสมุดนี้' : ''));
     const body = post.retracted
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
       : (pendingFirstSeen
@@ -680,14 +675,14 @@ function renderLog(p) {
             + `<img src="/assets/card-back.webp" alt="การ์ดรอ ${esc(post.alias)} เปิด" width="630" height="880">`
             + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>รอเจ้าของการ์ดเปิดเอง</small></span></div>`)
         : (isReward && rewardCard
-          ? `<div class="reward-log-card">`
-            + (rewardReason ? `<p class="reward-log-reason"><b>${esc(rewardReason)}</b></p>` : '')
-            + `${cardMarkup(rewardCard)}`
-            + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
-            + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
+          ? `<div class="reward-log-card" data-rarity="${esc(rewardCard.rarity || 'common')}">`
+            + `<div class="reward-log-thumb">${cardMarkup(rewardCard)}</div>`
+            + `<div class="reward-log-copy"><b>เปิดการ์ด</b>`
+            + `<small>${esc(cardNameTh(rewardCard))}<span class="reward-rarity-label">`
+            + `${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</span></small></div></div>`
           : esc(post.body)));
     const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>'
-      : (isReward ? `<span class="tag reward-tag">เจอการ์ดใหม่ 1 ใบ</span>` : '');
+      : (pendingFirstSeen ? `<span class="tag reward-tag">เจอการ์ดใหม่ 1 ใบ</span>` : '');
 
     /* pet turns are written by the scheduled worker and carry the pet's
        own identity rather than a member's */
