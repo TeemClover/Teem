@@ -1,8 +1,10 @@
 /* TeamBook — pure collectible-card renderer.
 
-   Geometry belongs to card-geometry-v16.js (current contract v1.7). This file
-   must not create a second frame, crop mask, rounded image, or object-fit rule.
-   It only turns card data into semantic markup. */
+   Geometry belongs to the canonical card visual owner. This file must not
+   create a second frame, crop mask, rounded image, or object-fit rule. It only
+   turns card data into semantic markup and keeps the status-copy contract used
+   by build-time runtime-wiring checks.
+*/
 
 import { cardById, cardDescriptorTh } from './cards.js';
 
@@ -54,9 +56,9 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
 
 export function cardStatusLabel(status) {
   return ({
-    AVAILABLE:'พร้อมใช้งาน',
-    AVATAR_IN_USE:'การ์ดประจำตัว',
-    IN_PARTY:'ใช้อยู่เป็นปกสมุด',
-    NPC_IN_PARTY:'ใช้อยู่เป็นเพื่อนร่วมทาง',
+    AVAILABLE: 'พร้อมใช้งาน',
+    AVATAR_IN_USE: 'การ์ดประจำตัว',
+    IN_PARTY: 'ใช้อยู่เป็นปกสมุด',
+    NPC_IN_PARTY: 'ใช้อยู่เป็นเพื่อนร่วมทาง',
   })[status] || 'เก็บในคอลเลกชัน';
 }
