@@ -8,6 +8,7 @@ import {
   normalizeAdminRange,
 } from './xty-admin-stats.js';
 import { TEAMBOOK_TIMEZONE, partyDayNumber, startOfPartyDay } from './xty-rules.js';
+import { memberLimitSql, normalizeMemberLimit } from './member-limit.js';
 
 export { getAdminCards, getAdminEvents, getAdminPartyDetail, getAdminSystem, getAdminUsers };
 
@@ -253,10 +254,10 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
   if (query.visibility) where.push(`p.visibility=${add(query.visibility)}`);
   if (query.verification) where.push(`p.verification_mode=${add(query.verification)}`);
   if (query.duration) where.push(`p.duration_days=${add(query.duration)}`);
-  if (query.occupancy === 'full') where.push(`(SELECT COUNT(*) FROM teambook_book_members m WHERE m.book_id=p.id AND m.left_at IS NULL)>=5`);
+  if (query.occupancy === 'full') where.push(`(SELECT COUNT(*) FROM teambook_book_members m WHERE m.book_id=p.id AND m.left_at IS NULL)>=${memberLimitSql('p.id')}`);
   if (query.occupancy === 'joinable') {
     where.push(`p.state=ANY(${activeParam()}::text[])`);
-    where.push(`(SELECT COUNT(*) FROM teambook_book_members m WHERE m.book_id=p.id AND m.left_at IS NULL)<5`);
+    where.push(`(SELECT COUNT(*) FROM teambook_book_members m WHERE m.book_id=p.id AND m.left_at IS NULL)<${memberLimitSql('p.id')}`);
   }
 
   const sorts = {
@@ -270,6 +271,7 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
 
   const statement = `SELECT p.id,p.code,p.name,p.activity,p.activity_id,p.state,p.visibility,p.verification_mode,
       p.duration_days,p.created_at,p.started_at,p.ended_at,p.scheduled_end_at,p.timezone,p.updated_at,
+      ${memberLimitSql('p.id')}::int member_limit,
       (SELECT COUNT(*) FROM teambook_book_members m WHERE m.book_id=p.id AND m.left_at IS NULL)::int member_count,
       (SELECT m.alias FROM teambook_book_members m WHERE m.book_id=p.id AND m.role='lead' AND m.left_at IS NULL ORDER BY m.joined_at LIMIT 1) lead_alias,
       (SELECT m.avatar FROM teambook_book_members m WHERE m.book_id=p.id AND m.role='lead' AND m.left_at IS NULL ORDER BY m.joined_at LIMIT 1) lead_avatar,
@@ -293,7 +295,7 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
     const fallbackValues = [query.limit + 1, query.offset];
     rows = await safeQuery(sql, 'parties.fallback', `SELECT id,code,name,activity,activity_id,state,visibility,verification_mode,
         duration_days,created_at,started_at,ended_at,scheduled_end_at,timezone,updated_at,
-        0::int member_count,NULL::text lead_alias,NULL::text lead_avatar,0::int commits_today,0::int messages_today,
+        ${normalizeMemberLimit()}::int member_limit,0::int member_count,NULL::text lead_alias,NULL::text lead_avatar,0::int commits_today,0::int messages_today,
         0::int reactions_today,0::int pending_confirms
       FROM teambook_books ORDER BY updated_at DESC,id DESC LIMIT $1 OFFSET $2`, fallbackValues, warnings);
   }
@@ -302,7 +304,7 @@ export async function getAdminParties(sql, rawQuery = {}, at = new Date()) {
     code: row.code, name: row.name, activity: row.activity || '', activityId: row.activity_id || 'custom',
     state: row.state, visibility: row.visibility || 'private', verificationMode: row.verification_mode || 'trust',
     day: Math.min(n(row.duration_days) || 7, partyDayNumber(row.started_at || row.created_at, at, row.timezone || TEAMBOOK_TIMEZONE)),
-    durationDays: n(row.duration_days) || 7, members: n(row.member_count), maxMembers: 5,
+    durationDays: n(row.duration_days) || 7, members: n(row.member_count), maxMembers: normalizeMemberLimit(row.member_limit),
     lead: { alias: row.lead_alias || '—', avatar: row.lead_avatar || 'orange_cat' },
     commitsToday: n(row.commits_today), messagesToday: n(row.messages_today), reactionsToday: n(row.reactions_today),
     pendingConfirms: n(row.pending_confirms), createdAt: iso(row.created_at), startedAt: iso(row.started_at),

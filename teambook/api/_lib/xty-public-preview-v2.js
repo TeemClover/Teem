@@ -1,8 +1,7 @@
 import { database, ensureSchema, sendJson } from './core.js';
+import { memberLimitSql, normalizeMemberLimit } from './member-limit.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
-const DEFAULT_MEMBER_LIMIT = 5;
-const MAX_MEMBER_LIMIT = 11;
 
 function codeOf(req) {
   const value = Array.isArray(req.query?.code) ? req.query.code[0] : req.query?.code;
@@ -12,13 +11,6 @@ function codeOf(req) {
 function dataOf(value) {
   if (value && typeof value === 'object') return value;
   try { return JSON.parse(value || '{}'); } catch { return {}; }
-}
-
-function memberLimitOf(value) {
-  const wanted = Math.floor(Number(value || DEFAULT_MEMBER_LIMIT));
-  return Number.isFinite(wanted)
-    ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted))
-    : DEFAULT_MEMBER_LIMIT;
 }
 
 export async function handlePublicPreviewV2(req, res) {
@@ -34,8 +26,9 @@ export async function handlePublicPreviewV2(req, res) {
     const rows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,
       commit_rule,budget,pet_id,owner_id,state,created_at,updated_at,started_at,ended_at,timezone,
       verification_mode,scheduled_end_at,cover_type,cover_value,lead_card_id,npc_card_id,
-      activity_mode,shared_activity_description,shared_activity_color
-      FROM teambook_books WHERE code=$1 AND visibility='public' LIMIT 1`, [code]);
+      activity_mode,shared_activity_description,shared_activity_color,
+      ${memberLimitSql('p.id')} AS member_limit
+      FROM teambook_books p WHERE code=$1 AND visibility='public' LIMIT 1`, [code]);
     const row = rows[0];
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
 
@@ -91,11 +84,7 @@ export async function handlePublicPreviewV2(req, res) {
       at: new Date(event.created_at).toISOString(),
     }));
 
-    /* PARTY_CREATED is the canonical immutable source for this book's people
-       limit. Old books do not have memberLimit there, so and only so they keep
-       the historical 5-person maximum. Owner is already one active member. */
-    const created = safeEvents.find(event => event.type === 'PARTY_CREATED');
-    const memberLimit = memberLimitOf(created?.data?.memberLimit);
+    const memberLimit = normalizeMemberLimit(row.member_limit);
     const memberCount = activeMembers.length;
     const state = String(row.state || 'ACTIVE').toUpperCase();
     const activityMode = row.activity_mode === 'individual' ? 'individual' : 'shared';
@@ -104,7 +93,7 @@ export async function handlePublicPreviewV2(req, res) {
       party: {
         code: row.code,
         name: row.name,
-        activity: row.activity || '',
+        activity: activityMode === 'shared' ? (row.activity || '') : '',
         activityId: row.activity_id || 'custom',
         activityMode,
         sharedActivityId: activityMode === 'shared' ? (row.activity_id || null) : null,

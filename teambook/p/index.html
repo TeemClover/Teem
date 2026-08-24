@@ -78,7 +78,7 @@
         <div class="progress-grid" id="progress" aria-label="ความคืบหน้ารายวัน"></div>
       </div>
 
-      <div class="party-table" id="seats" aria-label="คนในสมุด 5 ที่และ เพื่อนร่วมทาง 1 ที่"></div>
+      <div class="party-table" id="seats" aria-label="คนในสมุดและเพื่อนร่วมทาง"></div>
       <p class="whisper" id="petLine" style="margin-top:14px"></p>
     </div>
 
@@ -224,7 +224,7 @@ import {
   getParty, postToParty, getProfile, toggleReaction, retractPost,
   confirmCommit,
   committedToday, hasCommittedToday, messageAllowance,
-  dayKey, PARTY_MAX, MESSAGE_MAX_CHARS, REACTIONS, refreshParty, partyIdentity,
+  dayKey, MESSAGE_MAX_CHARS, REACTIONS, refreshParty, partyIdentity,
   partyProgress, isActiveParty, availableOwnedCards, renameParty, manageParty,
   changeLeadCard, changeNpcCard, kickPartyMember, finishParty, updatePartyIdentity,
   cardRewardForQuest, downloadEndingMarkdown, partyCompletionState,
@@ -235,6 +235,7 @@ import { cardById, cardDescriptorTh, cardNameTh, TEAMBOOK_RARITY_META } from '/_
 import { cardMarkup } from '/_shared/card-ui.js';
 import { compressForChat, isSupportedImage, readableBytes } from '/_shared/image-compress.js';
 import { resolveMemberAvatar } from '/_shared/card-picker.js';
+import { normalizeMemberLimit } from '/_shared/member-limit.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -378,22 +379,16 @@ function render() {
     progress.appendChild(day);
   });
 
-  /* Fixed 3×2 table: Lead, four Members, then Pet. Empty human slots and
-     the Pet slot remain visible at every viewport width. */
+  /* Render every real member (1–11), one compact vacancy card when joinable,
+     then the companion. PET never consumes a member slot. */
   const seats = $('seats');
   seats.innerHTML = '';
   const lead = p.members.find(m => m.role === 'lead') || null;
   const leadCard = cardById(p.leadCardId);
   const others = p.members.filter(m => m.role !== 'lead');
-  const slots = [lead, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
+  const slots = [lead, ...others].filter(Boolean);
   slots.forEach((m, index) => {
     const d = document.createElement('div');
-    if (!m) {
-      d.className = 'seat xty-card open';
-      d.innerHTML = `<span class="slot-label">SLOT ${index + 1}</span><div class="av">+</div><div class="al">ที่ว่าง</div>`;
-      seats.appendChild(d);
-      return;
-    }
     const committed = done.has(m.userId);
     if (m.role === 'lead' && leadCard) {
       d.className = 'seat-card-wrap';
@@ -418,10 +413,20 @@ function render() {
       `<div class="commit-state" aria-label="${committed ? 'ลงชื่อแล้ว' : 'ยังไม่ได้ลงชื่อ'}">${committed ? '✓' : '○'}</div>`;
     seats.appendChild(d);
   });
-  const left = PARTY_MAX - p.members.length;
+  const memberLimit = normalizeMemberLimit(p.memberLimit);
+  const left = Math.max(0, memberLimit - p.members.length);
+  if (left > 0) {
+    const open = document.createElement('div');
+    open.className = 'seat xty-card open tb-open-seat';
+    const openText = `สมุดเปิดรับอีก ${left} คน`;
+    open.innerHTML = `<span class="slot-label">OPEN</span><div class="av">+</div><div class="al">${openText}</div>`;
+    open.setAttribute('aria-label', openText);
+    seats.appendChild(open);
+  }
   $('seatHint').textContent = left > 0
-    ? `ยังรับได้อีก ${left} คน (สมุดหนึ่งไม่เกิน ${PARTY_MAX})`
-    : 'สมุดเต็มแล้ว — อยากชวนเพิ่มต้องเปิดสมุดใหม่';
+    ? `มี ${p.members.length}/${memberLimit} คน · ยังรับได้อีก ${left} คน`
+    : `สมุดเต็มแล้ว · ${p.members.length}/${memberLimit} คน`;
+  seats.setAttribute('aria-label', `คนในสมุด ${p.members.length} จาก ${memberLimit} คน และเพื่อนร่วมทาง`);
 
   const npc = cardById(p.npcCardId);
   const pet = p.petId ? PET_BY_ID[p.petId] : null;

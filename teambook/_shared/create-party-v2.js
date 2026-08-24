@@ -8,6 +8,7 @@ import {
 } from './store.js';
 import { avatarById } from './avatars.js';
 import { applyXircleCreateDefaults } from './xvisor-care.js';
+import { normalizeMemberLimit } from './member-limit.js';
 
 const K_PARTIES = 'teambook_books_v1';
 const K_TOKENS = 'teambook_book_tokens_v1';
@@ -175,6 +176,9 @@ export async function createPartyV2(options = {}) {
       body: JSON.stringify({
         name, activity: finalActivity, activityId: finalActivityId, preset: finalPreset, verificationMode, durationDays: finalDurationDays, color, visibility, commitRule,
         activityMode, activityDescription, activityColor, successRule,
+        memberLimit: normalizeMemberLimit(
+          typeof window !== 'undefined' ? window.__teambookMemberLimit : undefined,
+        ),
         budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
         petId: petId || null,
         coverType: finalCoverType,

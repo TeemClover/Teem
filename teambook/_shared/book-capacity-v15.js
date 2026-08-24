@@ -6,14 +6,18 @@
    then be overwritten by a legacy N/5 fallback.
 */
 
-export const TEAMBOOK_MEMBER_LIMIT_MAX = 11;
+import { MAX_MEMBER_LIMIT, MIN_MEMBER_LIMIT } from './member-limit.js';
+
+export const TEAMBOOK_MEMBER_LIMIT_MAX = MAX_MEMBER_LIMIT;
 
 export function bookCapacity(book = {}) {
   const memberCount = Math.max(0, Math.floor(Number(book.memberCount ?? book.member_count ?? 0)) || 0);
   const rawLimit = book.maxMembers ?? book.memberLimit ?? book.member_limit;
   const memberLimit = Math.floor(Number(rawLimit));
 
-  if (!Number.isFinite(memberLimit) || memberLimit < 1 || memberLimit > TEAMBOOK_MEMBER_LIMIT_MAX) {
+  if (!Number.isFinite(memberLimit)
+      || memberLimit < MIN_MEMBER_LIMIT
+      || memberLimit > TEAMBOOK_MEMBER_LIMIT_MAX) {
     return null;
   }
 

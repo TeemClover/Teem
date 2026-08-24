@@ -6,43 +6,41 @@ import { join } from 'node:path';
 const ROOT = new URL('..', import.meta.url).pathname;
 const home = readFileSync(join(ROOT, 'index.html'), 'utf8');
 const lobby = readFileSync(join(ROOT, 'public/index.html'), 'utf8');
-const v13 = readFileSync(join(ROOT, '_shared/v13-public-first.js'), 'utf8');
-const runtime = readFileSync(join(ROOT, '_shared/runtime.js'), 'utf8');
+const publicHome = readFileSync(join(ROOT, '_shared/home-public-v15.js'), 'utf8');
+const bootstrap = readFileSync(join(ROOT, '_shared/language.js'), 'utf8');
 
-test('V1.3 boots before legacy Home and makes Public visible by default', () => {
-  assert.match(runtime, /import '\.\/v13-public-first\.js\?v=20260823-v13a';/);
-  assert.match(home, /id="publicDiscovery"/);
-  assert.match(v13, /HOME_PUBLIC_HIDDEN_KEY = 'teambook_public_home_hidden_v13'/);
-  assert.match(v13, /section\.hidden = hidden/);
-  assert.match(v13, /loadHomeLobby\(\)/);
+test('V1.5 boots one canonical Home Public owner', () => {
+  assert.match(bootstrap, /home-public-v15\.js/);
+  assert.doesNotMatch(home, /id="publicDiscovery"|id="homePublicList"/);
+  assert.match(publicHome, /HIDDEN_KEY = 'teambook_public_home_hidden_v13'/);
+  assert.match(publicHome, /const LIST_API = '\/api\/teambook-public-list-v13'/);
 });
 
 test('hidden Home Public preference prevents the Lobby request until reopened', () => {
-  assert.match(v13, /if \(homePublicHidden\(\)\) \{[\s\S]*hiddenByUser: true/);
-  assert.match(v13, /storageSet\(HOME_PUBLIC_HIDDEN_KEY, '1'\)/);
-  assert.match(v13, /storageRemove\(HOME_PUBLIC_HIDDEN_KEY\)/);
-  assert.match(v13, /await loadHomeLobby\(true\)/);
+  assert.match(publicHome, /if \(isHidden\(\)\) return \[\];/);
+  assert.match(publicHome, /setHidden\(true\)/);
+  assert.match(publicHome, /setHidden\(false\)/);
+  assert.match(publicHome, /render\(await load\(\)\)/);
 });
 
 test('Home order promotes opening a new solo-capable book and keeps Public before closed books', () => {
-  assert.match(v13, /\+ เปิดสมุดใหม่/);
-  assert.match(v13, /เริ่มคนเดียวได้/);
-  assert.match(v13, /ทำเรื่องเดียวกัน/);
-  assert.match(v13, /สาธารณะ/);
-  assert.match(v13, /3 วัน/);
-  assert.match(v13, /ต้องมีคนเห็นแล้ว/);
-  assert.match(v13, /all\.insertBefore\(section, closed\)/);
+  assert.match(publicHome, /\+ เปิดสมุดเล่มใหม่/);
+  assert.match(publicHome, /ทำเรื่องเดียวกัน/);
+  assert.match(publicHome, /สาธารณะ/);
+  assert.match(publicHome, /3 วัน/);
+  assert.match(publicHome, /ต้องมีคนเห็น/);
+  assert.match(publicHome, /parent\.insertBefore\(node, before\)/);
 });
 
 test('home and full public lobby keep full books visible', () => {
-  assert.match(v13, /sort\(\(a, b\) => Number\(publicFull\(a\)\) - Number\(publicFull\(b\)\)\)/);
-  assert.match(v13, /slice\(0, 8\)/);
+  assert.match(publicHome, /sort\(\(a, b\) => Number\(a\.__capacity\.full\) - Number\(b\.__capacity\.full\)\)/);
+  assert.match(publicHome, /slice\(0, 8\)/);
   assert.match(lobby, /return saved === null \? false : saved === '1';/);
   assert.match(lobby, /เต็มแล้ว · กำลังเขียน/);
 });
 
-test('legacy no-active-only policy is superseded rather than trusted as V1.3 behavior', () => {
-  assert.match(home, /async function applyHomePriority\(\)/);
-  assert.match(v13, /Public-first patch/);
-  assert.match(v13, /Home order is Create -> Active -> Public -> Finished/);
+test('legacy Home public renderer is deleted instead of intercepted', () => {
+  assert.match(home, /function applyHomePriority\(\)/);
+  assert.doesNotMatch(home, /fetch\('\/api\/teambook\/public'/);
+  assert.doesNotMatch(bootstrap, /legacyHomePublicSuppressed|url\.pathname === '\/api\/teambook\/public'/);
 });

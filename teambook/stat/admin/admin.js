@@ -102,7 +102,8 @@ async function openParty(code) {
   $('partyDialogTitle').textContent = `${p.name} · ${p.code}`;
   const details = [
     ['Status', badge(p.state)], ['Visibility', badge(p.visibility)], ['Mode', badge(p.verificationMode)],
-    ['Activity', escapeHtml(p.activity)], ['Day', `${n(p.day)} / ${n(p.durationDays)}`], ['Scheduled end', when(p.scheduledEndAt)],
+    ['Activity', escapeHtml(p.activity)], ['Members', `${n(p.memberCount)} / ${n(p.maxMembers)}`],
+    ['Day', `${n(p.day)} / ${n(p.durationDays)}`], ['Scheduled end', when(p.scheduledEndAt)],
   ].map(([label,value]) => `<article><small>${label}</small><b>${value}</b></article>`).join('');
   const roster = data.roster.map(row => `<tr><td>${escapeHtml(row.alias)}</td><td>${escapeHtml(row.userId)}</td><td>${badge(row.role)}</td><td>${when(row.joinedAt)}</td><td>${when(row.leftAt)}</td></tr>`);
   const progress = data.progress.map(row => `<tr><td>${escapeHtml(row.date)}</td><td>${n(row.submitted)}</td><td>${n(row.valid)}</td><td>${n(row.waiting)}</td></tr>`);

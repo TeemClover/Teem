@@ -34,7 +34,7 @@ test('local party bearer sessions become path-scoped HttpOnly media cookies', ()
 
 test('deployment writes public blobs while TeamBook state routes stay gated', () => {
   const image = readFileSync(join(ROOT, 'api/_lib/xty-image.js'), 'utf8');
-  const party = readFileSync(join(ROOT, 'api/teambook/[...path].js'), 'utf8');
+  const publicList = readFileSync(join(ROOT, 'api/teambook-public-list-v13.js'), 'utf8');
   const media = readFileSync(join(ROOT, 'api/teambook-media.js'), 'utf8');
   const pet = readFileSync(join(ROOT, 'api/_lib/pet-brain.js'), 'utf8');
   const config = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
@@ -46,8 +46,8 @@ test('deployment writes public blobs while TeamBook state routes stay gated', ()
   assert.match(media, /readStoredImage/);
   assert.match(media, /Cache-Control', 'private, max-age=300'/);
   assert.match(pet, /storedImageDataUrl/);
-  assert.match(party, /row\.cover_type === 'image' \? 'card_back'/);
-  assert.doesNotMatch(party, /coverValue: row\.cover_value \|\| row\.lead_card_id/);
+  assert.match(publicList, /row\.cover_type === 'image' \? 'card_back'/);
+  assert.doesNotMatch(publicList, /coverValue: row\.cover_value \|\| row\.lead_card_id/);
 
   const mediaRewrite = config.rewrites.findIndex(item => item.destination.startsWith('/api/teambook-media'));
   const catchAllRewrite = config.rewrites.findIndex(item => item.source === '/api/teambook/:path*');

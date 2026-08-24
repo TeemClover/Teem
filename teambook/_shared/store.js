@@ -61,8 +61,6 @@ function applyDataEpoch() {
 }
 applyDataEpoch();
 
-export const PARTY_MIN = 2;
-export const PARTY_MAX = 5;
 /* Absolute v0.4 caps. A new free profile starts at 1 owned slot; the
    effective value still comes from level + unlocked paid milestones. */
 export const MAX_OWNED_ACTIVE_PARTIES = 7;
@@ -903,7 +901,13 @@ export async function finishParty(code, mode = 'complete') {
   const result = await api(`/api/teambook/party/${encodeURIComponent(wanted)}/finish`, {
     method: 'POST', code: wanted, body: { mode: mode === 'dissolve' ? 'dissolve' : 'complete' },
   });
-  return rememberResponse(wanted, result);
+  const remembered = rememberResponse(wanted, result);
+  if (result?.levelUp && typeof globalThis.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+    globalThis.dispatchEvent(new CustomEvent('teambook:level-up', {
+      detail: { code: wanted, levelUp: result.levelUp },
+    }));
+  }
+  return remembered;
 }
 
 export function partyCompletionState(party, at = new Date()) {

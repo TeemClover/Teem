@@ -110,10 +110,7 @@ async function installBookActivityButton() {
   }
 }
 
-let publicParty = null;
-let publicEnhanceTimer = 0;
-
-async function enhancePublicDetail() {
+export async function renderPublicActivityDetails(publicParty) {
   if (!IS_PUBLIC_DETAIL || !publicParty) return;
   const [{ activityById }, { avatarById }, { resolveMemberAvatar }] = await Promise.all([
     import('./activities.js'), import('./avatars.js'), import('./card-picker.js'),
@@ -187,32 +184,4 @@ async function enhancePublicDetail() {
   });
 }
 
-function schedulePublicEnhance() {
-  clearTimeout(publicEnhanceTimer);
-  [0, 80, 260, 700].forEach(delay => {
-    publicEnhanceTimer = setTimeout(() => enhancePublicDetail().catch(() => {}), delay);
-  });
-}
-
-function installPublicPreviewCapture() {
-  if (!IS_PUBLIC_DETAIL || window.__teambookActivityFetchInstalled) return;
-  window.__teambookActivityFetchInstalled = true;
-  const nativeFetch = window.fetch.bind(window);
-  window.fetch = async (...args) => {
-    const input = args[0];
-    const url = typeof input === 'string' ? input : input?.url || '';
-    const response = await nativeFetch(...args);
-    if (response.ok && /public-preview-v2/.test(url)) {
-      response.clone().json().then(data => {
-        if (data?.party) {
-          publicParty = data.party;
-          schedulePublicEnhance();
-        }
-      }).catch(() => {});
-    }
-    return response;
-  };
-}
-
-if (IS_PUBLIC_DETAIL) installPublicPreviewCapture();
 if (IS_BOOK) installBookActivityButton().catch(error => console.warn('TeamBook activity rules unavailable', error));

@@ -13,6 +13,8 @@ const join = readFileSync('api/_lib/xty-join-v2.js', 'utf8');
 const route = readFileSync('api/teambook/[...path].js', 'utf8');
 const newPage = readFileSync('new/index.html', 'utf8');
 const joinPage = readFileSync('join/index.html', 'utf8');
+const publicList = readFileSync('api/teambook-public-list-v13.js', 'utf8');
+const homePublic = readFileSync('_shared/home-public-v15.js', 'utf8');
 
 test('the columns the feature needs all exist', () => {
   for (const column of ['activity_mode', 'shared_activity_description', 'shared_activity_color']) {
@@ -58,6 +60,9 @@ test('an individual book never reports an activity of its own', () => {
       `${name} must null the book-wide label in individual mode`);
   }
   assert.match(route, /sharedActivityId: row\.activity_mode === 'individual' \? null/);
+  assert.match(publicList, /activity: row\.activity_mode === 'individual' \? ''/);
+  assert.match(publicList, /activityMode: row\.activity_mode === 'individual' \? 'individual'/);
+  assert.match(homePublic, /bookActivityLine\(party\)/);
 });
 
 test('a stranger is told which kind of book this is before they join', () => {
@@ -72,7 +77,7 @@ test('joining an individual book without choosing is refused, not guessed at', (
   assert.match(joinPage, /ACTIVITY_REQUIRED/, 'and the page must say so in words');
   /* Refusing on the server is what makes it true; the button being disabled
      is a courtesy that a direct request would walk straight past. */
-  assert.match(join, /mode === 'individual' && \(!memberActivityId \|\| !memberActivityLabel\)/);
+  assert.match(join, /mode === 'individual'[\s\S]*!memberActivityId[\s\S]*!memberActivityLabel[\s\S]*!memberSuccessRule/);
 });
 
 test('joining a shared book does not ask for an activity at all', () => {

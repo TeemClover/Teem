@@ -166,7 +166,7 @@ export async function handleCreatePartyV2(req, res) {
     const preset = CONTEXT_PRESETS.includes(requestedPreset)
       ? requestedPreset
       : (verificationMode === 'confirm' ? 'verified' : 'casual');
-    const durationDays = [7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 7;
+    const durationDays = [3, 7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 7;
     const color = ['red', 'green', 'blue', 'silver'].includes(body.color) ? body.color : 'green';
     /* Two modes and nothing else. A book from before the question existed,
        or a request with a typo in it, is a shared book — that is the read
@@ -176,6 +176,10 @@ export async function handleCreatePartyV2(req, res) {
       ? body.activityColor : null;
     const activityDescription = clean(body.activityDescription, 120);
     const successRule = clean(body.successRule, 60);
+    if (activityMode === 'individual'
+      && (!clean(body.activityId, 40) || !clean(body.activity, 60) || !successRule)) {
+      return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
+    }
     const visibility = ['public', 'private'].includes(body.visibility) ? body.visibility : 'private';
     const avatar = clean(body.avatar, 40) || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
