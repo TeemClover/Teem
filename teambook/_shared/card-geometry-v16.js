@@ -264,6 +264,12 @@ function installStyle() {
       transform:none!important;
       clip-path:none!important;
     }
+    /* A vertical 63:88 collectible must crop to fit the square Profile.
+       Bias only equipped card art upward so the printed top ornament/frame is
+       retained; Starter portrait positioning remains exactly as before. */
+    html body .profile-avatar.is-card>img{
+      object-position:center 42%!important;
+    }
 
     @media(max-width:380px){
       html body #home .party-group .xty-party-row-cover,
