@@ -23,6 +23,16 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-home-card-r
       aspect-ratio:var(--xty-card-aspect)!important;
     }
 
+    /* The compact Home rows use the artwork itself as the book cover. Card
+       names/labels belong in the row copy, not painted on top of the artwork. */
+    html body #home .party-group .xty-party-row-cover .animal-card .card-copy,
+    html body #home .party-group .xty-party-row-cover .animal-card .role-badge,
+    html body #home .party-group .xty-party-row-cover .animal-card .rarity-badge,
+    html body #home .party-group .xty-party-row-cover .avatar-cover > b,
+    html body #home .party-group .xty-party-row-cover .avatar-cover > small {
+      display:none!important;
+    }
+
     /* The frame owns 63:88. Fill it consistently with the other card views. */
     html body #home #mainParty .xty-home-real-back img,
     html body #home #mainParty .xty-home-cover > .animal-card .card-art,
