@@ -12,8 +12,8 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 12, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 101);
+  assert.deepEqual(by, { common: 64, rare: 13, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 102);
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {
@@ -113,6 +113,18 @@ test('cards already owned before the reprint still resolve', () => {
   for (const id of ['ORANGE_CAT_RED_RARE_001', 'WHITE_POM_SILVER_RARE_001', 'ORANGE_CAT_RED_COMMON_001']) {
     assert.ok(cardById(id), `${id} must still be a known card`);
   }
+});
+
+test('the first chicken Rare is the reviewed red morning-bell card', () => {
+  const card = cardById('CHICKEN_RED_RARE_001');
+  assert.ok(card);
+  assert.equal(card.species, 'chicken');
+  assert.equal(card.color, 'red');
+  assert.equal(card.rarity, 'rare');
+  assert.equal(card.artVariant, 'morning-bell');
+  assert.equal(card.accessoryType, 'morning-bell');
+  assert.equal(card.accessoryColor, 'red');
+  assert.equal(card.imageFull, '/assets/cards/rare/chicken-red-rare-001.webp');
 });
 
 test('the odds are the stated ones and sum to 100', () => {

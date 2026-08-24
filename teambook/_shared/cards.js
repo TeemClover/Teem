@@ -100,6 +100,13 @@ const RARE_SCENES = Object.freeze({
     blue: { variant: 'seaside-compass', description: 'หมาถือเข็มทิศริมทะเลสีฟ้า ชวนทีมฟังคลื่นและเลือกทางที่สบายใจ', flavor: 'เข็มทิศที่ดี พาเรากลับมาฟังตัวเอง' },
     silver: { variant: 'star-trail', description: 'หมาลากเส้นดาวสีเงินบนฟ้า ทำเครื่องหมายทุกก้าวที่ทีมเคยผ่าน', flavor: 'ทุกก้าวที่ผ่านไป กลายเป็นดาวนำทางดวงใหม่' },
   },
+  chicken: {
+    red: {
+      variant: 'morning-bell', accessoryType: 'morning-bell',
+      description: 'ไก่ดึงเชือกระฆังสีแดงยามเช้า ชวนเพื่อนเริ่มวันใหม่ไปพร้อมกัน',
+      flavor: 'เสียงเช้าเบา ๆ บอกว่าเราลองใหม่ได้เสมอ',
+    },
+  },
 });
 
 function makeRareCard(animal, color) {
@@ -108,7 +115,7 @@ function makeRareCard(animal, color) {
   const card = baseCard(animal, color, 'rare');
   const path = `/assets/cards/rare/${animal.id.replaceAll('_', '-')}-${color}-rare-001.webp`;
   return Object.freeze({
-    ...card, artVariant: scene.variant, accessoryType: 'clover-charm', accessoryColor: color,
+    ...card, artVariant: scene.variant, accessoryType: scene.accessoryType || 'clover-charm', accessoryColor: color,
     description: scene.description, descriptionTh: scene.description,
     flavorText: scene.flavor, flavorTh: scene.flavor,
     image: path, imageThumb: path, imageFull: path, art: path,
@@ -139,7 +146,8 @@ const PRINTED = Object.freeze({
     })))),
   /* the original painted scenes, kept at their existing ids */
   rare: ['orange_cat', 'white_pom', 'white_cat']
-    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
+    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
+    .concat([{ species: 'chicken', color: 'red', variant: 1, scene: true }]),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
   epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
