@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-card-geometry-v16';
+const CAPACITY_REV = '20260824-card-geometry-v17-filter1';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -65,8 +65,6 @@ function installNetworkGuard() {
   globalThis.fetch = function teambookV15Fetch(input, init) {
     const { method, url } = requestInfo(input, init);
 
-    /* Retired inline Home Public loader must never fetch or paint its old
-       fixed-capacity payload. Home Public has one owner: home-public-v15. */
     if (PATH === '/' && method === 'GET' && url?.origin === location.origin
         && url.pathname === '/api/teambook/public') {
       return Promise.resolve(new Response(JSON.stringify({
@@ -93,9 +91,9 @@ async function boot() {
   globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
-  /* Geometry is a product-level invariant, not a route feature. Load the
-     high-specificity guard once for every TeamBook surface so later legacy
-     renderers cannot turn a 63:88 slot back into a square or a fixed 54x76. */
+  /* 63:88 is product geometry, not a page feature. Load it everywhere,
+     including Profile, Collection and Public, and retire the old Home-only
+     geometry patch so two frame systems can no longer fight each other. */
   await importOnce(`./card-geometry-v16.js?v=${CAPACITY_REV}`);
 
   if (PATH === '/') {
@@ -106,7 +104,6 @@ async function boot() {
       './home-canonical-guard.js',
       './home-cover-v3.js',
       './home-daily-meta-v14.js',
-      `./home-card-ratio-fix.js?v=${CAPACITY_REV}`,
       './home-self-status-v14.js',
       './home-carousel-desktop.js',
       './v12-home-active-only.js',
@@ -134,6 +131,7 @@ async function boot() {
       './party-today-details.js',
       './party-visibility-status.js',
       './party-character-save-v14.js',
+      `./party-card-picker-v15.js?v=${CAPACITY_REV}`,
       './v12-party-query.js',
       './v12-ending-image-auth.js',
       './level-up-growth.js',
@@ -170,6 +168,7 @@ async function boot() {
   }
 
   if (/^\/public\/?$/.test(PATH)) return;
+  if (/^\/profile\/?$/.test(PATH)) return;
 
   if (/^\/collection\/?$/.test(PATH)) {
     await importMany([
