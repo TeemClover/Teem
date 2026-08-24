@@ -161,14 +161,18 @@ async function installBookOpenSeat() {
   const hint = $('seatHint');
   if (!code || !seats) return;
   installStyle();
-  if (hint) hint.dataset.capacityReady = '0';
+
+  const setHint = (text, ready = true) => {
+    if (!hint) return;
+    if (hint.textContent !== text) hint.textContent = text;
+    const wanted = ready ? '1' : '0';
+    if (hint.dataset.capacityReady !== wanted) hint.dataset.capacityReady = wanted;
+  };
+  setHint('', false);
 
   const info = (await capacityForCodes([code]))[code];
   if (!info) {
-    if (hint) {
-      hint.textContent = 'ยังอ่านจำนวนคนของสมุดไม่สำเร็จ';
-      hint.dataset.capacityReady = '1';
-    }
+    setHint('ยังอ่านจำนวนคนของสมุดไม่สำเร็จ');
     return;
   }
   const limit = clamp(info.memberLimit);
@@ -199,14 +203,14 @@ async function installBookOpenSeat() {
       }
       const text = `สมุดเปิดรับอีก ${remaining} คน`;
       if (open.textContent !== text) open.textContent = text;
-      open.setAttribute('aria-label', text);
-      if (hint) hint.textContent = `มี ${count}/${limit} คน · ยังรับได้อีก ${remaining} คน`;
+      if (open.getAttribute('aria-label') !== text) open.setAttribute('aria-label', text);
+      setHint(`มี ${count}/${limit} คน · ยังรับได้อีก ${remaining} คน`);
     } else {
       open?.remove();
-      if (hint) hint.textContent = `สมุดเต็มแล้ว · ${count}/${limit} คน`;
+      setHint(`สมุดเต็มแล้ว · ${count}/${limit} คน`);
     }
-    if (hint) hint.dataset.capacityReady = '1';
-    seats.setAttribute('aria-label', `คนในสมุด ${count} จาก ${limit} คน และเพื่อนร่วมทาง`);
+    const aria = `คนในสมุด ${count} จาก ${limit} คน และเพื่อนร่วมทาง`;
+    if (seats.getAttribute('aria-label') !== aria) seats.setAttribute('aria-label', aria);
     painting = false;
   };
 
@@ -219,7 +223,7 @@ async function installBookOpenSeat() {
   schedule();
   const observer = new MutationObserver(records => {
     const relevant = records.some(record => {
-      if (record.target === hint) return true;
+      if (record.target === hint || record.target?.parentElement === hint) return true;
       return [...record.addedNodes, ...record.removedNodes].some(node =>
         node.nodeType === 1
         && !node.classList?.contains('tb-open-seat')
