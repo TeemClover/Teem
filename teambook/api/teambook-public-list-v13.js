@@ -1,8 +1,10 @@
 import { database, ensureSchema, sendJson } from './_lib/core.js';
-import { confirmDeadlineForDayKey, partyDateKey } from './_lib/xty-rules.js';
+import { TEAMBOOK_TIMEZONE, confirmDeadlineForDayKey, partyDateKey, partyDayNumber } from './_lib/xty-rules.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const PAGE_SIZE = 16;
+const DEFAULT_MEMBER_LIMIT = 5;
+const MAX_MEMBER_LIMIT = 11;
 
 function decodeCursor(value) {
   try {
@@ -12,6 +14,13 @@ function decodeCursor(value) {
 
 function encodeCursor(value) {
   return Buffer.from(String(value)).toString('base64url');
+}
+
+function memberLimit(value) {
+  const wanted = Math.floor(Number(value || DEFAULT_MEMBER_LIMIT));
+  return Number.isFinite(wanted)
+    ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted))
+    : DEFAULT_MEMBER_LIMIT;
 }
 
 function statusRank(status) {
@@ -33,12 +42,19 @@ export default async function handler(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const offset = decodeCursor(req.query?.cursor);
-    const todayKey = partyDateKey(new Date());
-    const yesterday = new Date();
+    const nowDate = new Date();
+    const todayKey = partyDateKey(nowDate);
+    const yesterday = new Date(nowDate);
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
     const yesterdayKey = partyDateKey(yesterday);
     const rows = await sql.query(`SELECT p.id,p.code,p.name,p.activity,p.duration_days,p.state,p.started_at,p.created_at,
         p.timezone,p.verification_mode,p.cover_type,p.cover_value,p.lead_card_id,p.npc_card_id,p.pet_id,p.updated_at,
+        COALESCE((
+          SELECT e0.data_json->>'memberLimit'
+          FROM teambook_book_events e0
+          WHERE e0.book_id=p.id AND e0.type='PARTY_CREATED'
+          ORDER BY e0.created_at ASC LIMIT 1
+        ), '5') AS member_limit,
         COUNT(DISTINCT m.user_id) FILTER (WHERE m.left_at IS NULL)::int member_count,
         MAX(m.alias) FILTER (WHERE m.role='lead' AND m.left_at IS NULL) lead_alias,
         MAX(m.avatar) FILTER (WHERE m.role='lead' AND m.left_at IS NULL) lead_avatar,
@@ -56,23 +72,29 @@ export default async function handler(req, res) {
       ORDER BY p.updated_at DESC,p.id DESC
       LIMIT $4 OFFSET $5`, [todayKey, yesterdayKey, ACTIVE_STATES, PAGE_SIZE + 1, offset]);
 
-    const now = Date.now();
+    const now = nowDate.getTime();
     const parties = rows.slice(0, PAGE_SIZE).map(row => {
       const verificationMode = String(row.verification_mode || 'trust') === 'confirm' ? 'confirm' : 'trust';
       let yesterdayPending = verificationMode === 'confirm' ? Number(row.yesterday_pending_count || 0) : 0;
-      const deadline = confirmDeadlineForDayKey(yesterdayKey, row.timezone || 'Asia/Bangkok');
+      const timezone = row.timezone || TEAMBOOK_TIMEZONE;
+      const deadline = confirmDeadlineForDayKey(yesterdayKey, timezone);
       if (!deadline || now >= deadline.getTime()) yesterdayPending = 0;
       const todayCommitCount = Number(row.today_commit_count || 0);
       const todayPendingCount = verificationMode === 'confirm' ? Number(row.today_pending_count || 0) : 0;
       const status = bookStatus({ verificationMode, todayCommitCount, todayPendingCount, yesterdayPending });
+      const memberCount = Number(row.member_count || 0);
+      const maxMembers = memberLimit(row.member_limit);
+      const durationDays = Number(row.duration_days || 3);
+      const day = Math.min(durationDays, partyDayNumber(row.started_at || row.created_at || nowDate, nowDate, timezone));
       return {
         code: row.code,
         name: row.name,
         activity: row.activity || '',
         verificationMode,
-        durationDays: Number(row.duration_days || 3),
-        memberCount: Number(row.member_count || 0),
-        maxMembers: 5,
+        durationDays,
+        day,
+        memberCount,
+        maxMembers,
         ownerAlias: row.lead_alias || 'เจ้าของสมุด',
         updateCount: Number(row.update_count || 0),
         todayCommitCount,
@@ -88,7 +110,7 @@ export default async function handler(req, res) {
         coverValue: row.cover_type === 'image' ? 'notebook-rgbs-v1' : (row.cover_value || row.lead_card_id || null),
         npcCardId: row.npc_card_id || null,
         petId: row.pet_id || null,
-        joinable: Number(row.member_count || 0) < 5,
+        joinable: memberCount < maxMembers,
       };
     });
 
