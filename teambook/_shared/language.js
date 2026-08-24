@@ -1,34 +1,31 @@
-/* TeamBook 1.4 — SINGLE BOOTSTRAP · THAI ONLY
+/* TeamBook 1.5 — SINGLE BOOTSTRAP · THAI ONLY
 
    Historical filename only: HTML pages already point at /_shared/language.js.
    There is NO language module, locale switcher, runtime translation, or
-   language state in TeamBook 1.4. This URL is kept only as the single product
-   bootstrap so current pages do not add another compatibility layer.
+   language state. This URL is the single product bootstrap.
 
-   V1.4 rules:
+   V1.5 rules:
    1. This file is the only route owner.
    2. Feature modules load only on routes that use them.
-   3. Utilities (especially card-ui.js) never boot route features.
-   4. Active modules use one canonical URL, without version-query variants, so
-      the browser ES-module registry deduplicates them naturally.
-   5. Concurrent identical Public GETs share one in-flight response.
-   6. Retired compatibility modules are not loaded.
-   7. Human-language UI is Thai only until a future deliberate localization
-      project replaces this architecture.
+   3. Utilities never boot route features.
+   4. Public/Home occupancy is rendered only from canonical server capacity.
+   5. Per-book capacity compatibility code never runs on Home/Public lists.
+   6. Concurrent identical Public GETs share one in-flight response.
+   7. Human-language UI is Thai only until a deliberate localization project.
 */
 
 const PATH = location.pathname;
 const loaded = new Set();
 
-globalThis.__TEAMBOOK_VERSION__ = '1.4';
-document.documentElement.dataset.teambookVersion = '1.4';
+globalThis.__TEAMBOOK_VERSION__ = '1.5';
+document.documentElement.dataset.teambookVersion = '1.5';
 
 function importOnce(path) {
   if (loaded.has(path)) return Promise.resolve();
   loaded.add(path);
   return import(path).catch(error => {
     loaded.delete(path);
-    console.warn(`TeamBook 1.4 module unavailable: ${path}`, error);
+    console.warn(`TeamBook 1.5 module unavailable: ${path}`, error);
   });
 }
 
@@ -37,8 +34,8 @@ function importMany(paths) {
 }
 
 function installNetworkGuard() {
-  if (globalThis.__teambookV14FetchGuard || typeof fetch !== 'function') return;
-  globalThis.__teambookV14FetchGuard = true;
+  if (globalThis.__teambookV15FetchGuard || typeof fetch !== 'function') return;
+  globalThis.__teambookV15FetchGuard = true;
 
   const nativeFetch = globalThis.fetch.bind(globalThis);
   const pending = new Map();
@@ -64,12 +61,15 @@ function installNetworkGuard() {
     return `${method} ${url.pathname}?${url.searchParams.toString()}`;
   }
 
-  globalThis.fetch = function teambookV14Fetch(input, init) {
+  globalThis.fetch = function teambookV15Fetch(input, init) {
     const { method, url } = requestInfo(input, init);
+
+    /* Retired inline Home Public loader must never fetch or paint its old
+       fixed-capacity payload. Home Public has one owner: home-public-v15. */
     if (PATH === '/' && method === 'GET' && url?.origin === location.origin
         && url.pathname === '/api/teambook/public') {
       return Promise.resolve(new Response(JSON.stringify({
-        ok:true, parties:[], nextCursor:null, v14LegacySuppressed:true,
+        ok:true, parties:[], nextCursor:null, legacyHomePublicSuppressed:true,
       }), { status:200, headers:{ 'content-type':'application/json' } }));
     }
 
@@ -88,16 +88,15 @@ function installNetworkGuard() {
 installNetworkGuard();
 
 async function boot() {
-  if (globalThis.__teambookV14Runtime) return;
-  globalThis.__teambookV14Runtime = true;
+  if (globalThis.__teambookV15Runtime) return;
+  globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
 
   if (PATH === '/') {
     await importMany([
       './home-onboarding-v14.js',
-      './home-public-v14.js',
-      './member-capacity-v14.js',
+      './home-public-v15.js?v=20260824-capacity-canon1',
       './home-create-capacity.js',
       './home-canonical-guard.js',
       './home-cover-v3.js',
@@ -140,7 +139,6 @@ async function boot() {
 
   if (/^\/public\/p\/?$/.test(PATH)) {
     await importMany([
-      './member-capacity-v14.js',
       './activity-ux.js',
       './v13-public-first.js',
       './trust-seen.js',
@@ -167,7 +165,6 @@ async function boot() {
   }
 
   if (/^\/public\/?$/.test(PATH)) {
-    await importOnce('./member-capacity-v14.js');
     return;
   }
 
