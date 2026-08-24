@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-capacity-cover-final2';
+const CAPACITY_REV = '20260824-card-geometry-v16';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -93,6 +93,10 @@ async function boot() {
   globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
+  /* Geometry is a product-level invariant, not a route feature. Load the
+     high-specificity guard once for every TeamBook surface so later legacy
+     renderers cannot turn a 63:88 slot back into a square or a fixed 54x76. */
+  await importOnce(`./card-geometry-v16.js?v=${CAPACITY_REV}`);
 
   if (PATH === '/') {
     await importMany([
