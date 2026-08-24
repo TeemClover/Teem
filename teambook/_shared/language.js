@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-capacity-canon1';
+const CAPACITY_REV = '20260824-capacity-cover-final2';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -102,7 +102,7 @@ async function boot() {
       './home-canonical-guard.js',
       './home-cover-v3.js',
       './home-daily-meta-v14.js',
-      './home-card-ratio-fix.js',
+      `./home-card-ratio-fix.js?v=${CAPACITY_REV}`,
       './home-self-status-v14.js',
       './home-carousel-desktop.js',
       './v12-home-active-only.js',
