@@ -256,11 +256,7 @@
       </div>
       <div class="xircle-visual-stack">
         <button class="whitecat-companion" id="whitecat-companion" type="button" aria-label="แตะแมวขาวเพื่อฟังเสียงสุ่ม">
-          <span class="cat-orb cat-orb-eat" aria-hidden="true"></span>
-          <span class="cat-orb cat-orb-move" aria-hidden="true"></span>
-          <span class="cat-orb cat-orb-sleep" aria-hidden="true"></span>
           <img src="/ako/assets/whitecat-xvisor-guide.webp" alt="แมวขาวประจำห้องที่เอโกะดูแล">
-          <span class="whitecat-hint">แตะแมวขาวดูสิ</span>
         </button>
         <a class="xircle-button" href="https://www.myclover.com/xircle/?xty=51644&amp;xvisor=1" aria-label="ทำแบบทดสอบและเข้าห้องแมวขาวของเอโกะ">
           <img src="/ako/assets/xircle-routinex-eat-move-sleep-hero.webp" alt="Xircle ช่วยเข้าใจชีวิตและสร้างกิจวัตรที่เหมาะกับคุณ">
@@ -321,27 +317,7 @@
       activeVoice = new Audio(whitecatVoices[nextVoice]);
       activeVoice.volume = 0.9;
       activeVoice.play().catch(() => {});
-
-      whitecat.classList.remove('is-speaking');
-      void whitecat.offsetWidth;
-      whitecat.classList.add('is-speaking');
-      window.setTimeout(() => whitecat.classList.remove('is-speaking'), 620);
     });
-
-    if (whitecat && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      let parallaxFrame = 0;
-      const updateWhitecatParallax = () => {
-        const rect = whitecat.getBoundingClientRect();
-        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-        const shift = Math.max(-18, Math.min(18, (progress - 0.5) * 36));
-        whitecat.style.setProperty('--cat-shift', `${shift}px`);
-        parallaxFrame = 0;
-      };
-      window.addEventListener('scroll', () => {
-        if (!parallaxFrame) parallaxFrame = window.requestAnimationFrame(updateWhitecatParallax);
-      }, { passive: true });
-      updateWhitecatParallax();
-    }
   </script>
 </body>
 </html>
