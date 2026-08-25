@@ -172,6 +172,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'fair-magic', description: 'อีกาแสดงมายากลบนเวทีงานวัด คาบสายดาวกระดาษขึ้นจากหมวกสีเงินท่ามกลางแสงโคม', flavor: 'ความมหัศจรรย์เกิดขึ้น เมื่อกล้าเปิดหมวกดู' },
     ],
   },
+  turtle: {
+    red: [
+      { variant: 'pottery-wheel', description: 'เต่ายืนประคองดินเหนียวบนแป้นหมุนขอบสีแดง ปั้นชามใบเล็กในห้องเครื่องปั้นดินเผาอย่างใจเย็น', flavor: 'ค่อย ๆ ประคอง ดินก้อนเดิมก็เปลี่ยนรูปได้' },
+      { variant: 'garden-hand-pump', description: 'เต่าเอนตัวโยกคันปั๊มน้ำสีแดงในสวน ส่งสายน้ำใสลงถังโลหะข้างแปลงดอกไม้', flavor: 'ออกแรงเป็นจังหวะ แล้วน้ำใสก็ไหลมา' },
+    ],
+    green: [
+      { variant: 'forest-camp-tent', description: 'เต่าย่อตัวกางเต็นท์สีเขียวในลานป่า ยกเสาและดึงเชือกให้มุมพักพร้อมก่อนค่ำ', flavor: 'เตรียมมุมพักให้พร้อม แล้วทางไกลก็น่าเดินต่อ' },
+      { variant: 'weaving-loom', description: 'เต่ายืนสอดกระสวยสีเขียวผ่านเส้นด้ายบนกี่ทอผ้า ค่อย ๆ ต่อแถบลายให้เต็มผืน', flavor: 'สอดทีละเส้น ลายที่คิดไว้ค่อย ๆ ชัดขึ้น' },
+    ],
+    blue: [
+      { variant: 'tide-pool-study', description: 'เต่าย่อตัวใช้แว่นขยายด้ามสีน้ำเงินสำรวจเปลือกหอยและดาวทะเลในแอ่งน้ำริมฝั่ง', flavor: 'ก้มมองใกล้อีกนิด โลกเล็ก ๆ ก็มีเรื่องให้ค้นพบ' },
+      { variant: 'hilltop-telescope', description: 'เต่ายืนปรับกล้องโทรทรรศน์สีน้ำเงินบนหอดูดาวยอดเนิน เฝ้ามองดาวดวงแรกเหนือขอบฟ้า', flavor: 'มองไกลอย่างใจเย็น แล้วดาวดวงใหม่จะปรากฏ' },
+    ],
+    silver: [
+      { variant: 'garden-chess-puzzle', description: 'เต่ายืนครุ่นคิดข้างกระดานหมากรุก ยกม้าเงินขึ้นพิจารณาในเรือนกระจกกลางสวน', flavor: 'ยังไม่ต้องรีบเดินหมาก มองอีกมุมก่อนก็ได้' },
+      { variant: 'meadow-metal-detector', description: 'เต่าก้าวช้า ๆ กวาดเครื่องตรวจโลหะสีเงินเหนือทุ่งใบไม้ ตามสัญญาณไปหาเหรียญที่ซ่อนอยู่', flavor: 'ค่อย ๆ ฟังสัญญาณ สิ่งที่หายอาจอยู่ใกล้กว่าที่คิด' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -216,7 +234,7 @@ const PRINTED = Object.freeze({
   /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(['pig', 'buffalo', 'chicken', 'crow'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+    .concat(['pig', 'buffalo', 'chicken', 'crow', 'turtle'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
       species, color, variant, scene: true,
     }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
