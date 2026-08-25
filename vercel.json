@@ -74,28 +74,6 @@
       "permanent": false
     },
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "ako.myclover.com"
-        }
-      ],
-      "destination": "https://youtube.com/@akosohungry",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "ako.myclover.com"
-        }
-      ],
-      "destination": "https://youtube.com/@akosohungry",
-      "permanent": false
-    },
-    {
       "source": "/guild",
       "destination": "/guild/",
       "permanent": false
@@ -379,6 +357,11 @@
       "source": "/core7/assets/core7-rules-overview.png",
       "destination": "/core7/assets/core7-rules-overview.webp",
       "permanent": true
+    },
+    {
+      "source": "/ako",
+      "destination": "/ako/",
+      "permanent": false
     }
   ],
   "headers": [
@@ -488,6 +471,16 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "ako.myclover.com"
+        }
+      ],
+      "destination": "/ako/index.html"
+    },
+    {
       "source": "/api/teambook/party/:code/image/:seq",
       "destination": "/api/teambook-media?code=:code&seq=:seq"
     },
@@ -513,3 +506,4 @@
     }
   ]
 }
+
