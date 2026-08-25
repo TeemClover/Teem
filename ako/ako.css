@@ -764,16 +764,17 @@ details[open] summary span { transform: rotate(45deg); }
 }
 
 .whitecat-companion {
-  align-self: flex-end;
+  align-self: center;
   appearance: none;
   background: transparent;
   border: 0;
   cursor: pointer;
   filter: drop-shadow(0 18px 22px rgba(23, 53, 44, 0.18));
-  margin: 0 20px 18px 0;
-  padding: 0;
+  margin: 0 0 24px;
+  padding: 42px;
   position: relative;
-  width: min(58%, 230px);
+  -webkit-tap-highlight-color: transparent;
+  width: min(72%, 310px);
   z-index: 2;
 }
 
@@ -784,6 +785,66 @@ details[open] summary span { transform: rotate(45deg); }
   inset: 7% -18% 0;
   position: absolute;
   z-index: -1;
+}
+
+.routine-orbit {
+  animation: routine-orbit-spin 18s linear infinite;
+  border: 1px solid rgba(23, 53, 44, 0.13);
+  border-radius: 50%;
+  inset: 13px;
+  position: absolute;
+  z-index: 1;
+}
+
+.routine-orbit::after {
+  border: 1px dashed rgba(255, 253, 248, 0.72);
+  border-radius: inherit;
+  content: "";
+  inset: 7px;
+  position: absolute;
+}
+
+.routine-node {
+  align-items: center;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 253, 248, 0.92);
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  box-shadow: 0 10px 24px rgba(23, 53, 44, 0.16), inset 0 0 0 4px rgba(255, 255, 255, 0.72);
+  display: flex;
+  height: 58px;
+  justify-content: center;
+  position: absolute;
+  width: 58px;
+  z-index: 2;
+}
+
+.routine-node b {
+  animation: routine-orbit-label 18s linear infinite reverse;
+  color: var(--ink);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.routine-node-eat {
+  color: #ef715f;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+.routine-node-move {
+  bottom: 8%;
+  color: #54ad72;
+  left: 4%;
+  transform: translate(-50%, 50%);
+}
+
+.routine-node-sleep {
+  bottom: 8%;
+  color: #59aee3;
+  right: 4%;
+  transform: translate(50%, 50%);
 }
 
 .whitecat-companion img {
@@ -797,6 +858,41 @@ details[open] summary span { transform: rotate(45deg); }
 .whitecat-companion:focus-visible {
   outline: 3px solid var(--forest);
   outline-offset: 6px;
+}
+
+.whitecat-companion.is-speaking img {
+  animation: whitecat-answer 760ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.whitecat-companion.is-speaking .routine-orbit {
+  animation-duration: 3.2s;
+}
+
+@keyframes routine-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes routine-orbit-label {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes whitecat-answer {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  28% {
+    transform: translateY(-10px) rotate(-2deg);
+  }
+  55% {
+    transform: translateY(1px) rotate(2deg);
+  }
+  76% {
+    transform: translateY(-4px) rotate(-1deg);
+  }
 }
 
 
@@ -980,8 +1076,23 @@ footer > span { color: rgba(255, 255, 255, 0.6); justify-self: end; }
 
   .whitecat-companion {
     align-self: center;
-    margin: 0 0 20px;
-    width: min(48%, 190px);
+    margin: 0 0 22px;
+    padding: 34px;
+    width: min(74%, 255px);
+  }
+
+  .routine-orbit {
+    inset: 10px;
+  }
+
+  .routine-node {
+    border-width: 2px;
+    height: 48px;
+    width: 48px;
+  }
+
+  .routine-node b {
+    font-size: 8px;
   }
 
   .closing-actions .button {
@@ -1006,6 +1117,12 @@ footer > span { color: rgba(255, 255, 255, 0.6); justify-self: end; }
 
   .button {
     transition: none;
+  }
+
+  .routine-orbit,
+  .routine-node b,
+  .whitecat-companion.is-speaking img {
+    animation: none;
   }
 
 }
