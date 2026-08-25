@@ -771,10 +771,10 @@ details[open] summary span { transform: rotate(45deg); }
   cursor: pointer;
   filter: drop-shadow(0 18px 22px rgba(23, 53, 44, 0.18));
   margin: 0 0 24px;
-  padding: 42px;
+  padding: 48px;
   position: relative;
   -webkit-tap-highlight-color: transparent;
-  width: min(72%, 310px);
+  width: min(78%, 336px);
   z-index: 2;
 }
 
@@ -788,63 +788,94 @@ details[open] summary span { transform: rotate(45deg); }
 }
 
 .routine-orbit {
-  animation: routine-orbit-spin 18s linear infinite;
-  border: 1px solid rgba(23, 53, 44, 0.13);
-  border-radius: 50%;
-  inset: 13px;
+  inset: 0;
+  pointer-events: none;
   position: absolute;
-  z-index: 1;
-}
-
-.routine-orbit::after {
-  border: 1px dashed rgba(255, 253, 248, 0.72);
-  border-radius: inherit;
-  content: "";
-  inset: 7px;
-  position: absolute;
+  z-index: 3;
 }
 
 .routine-node {
-  align-items: center;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 253, 248, 0.92);
-  border: 3px solid currentColor;
-  border-radius: 50%;
-  box-shadow: 0 10px 24px rgba(23, 53, 44, 0.16), inset 0 0 0 4px rgba(255, 255, 255, 0.72);
-  display: flex;
-  height: 58px;
-  justify-content: center;
-  position: absolute;
-  width: 58px;
-  z-index: 2;
-}
-
-.routine-node b {
-  animation: routine-orbit-label 18s linear infinite reverse;
-  color: var(--ink);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-}
-
-.routine-node-eat {
-  color: #ef715f;
+  animation: routine-orb-travel 21s linear infinite;
+  height: 0;
   left: 50%;
+  position: absolute;
+  top: 50%;
+  width: 0;
+}
+
+.routine-node-inner {
+  align-items: center;
+  animation: routine-orb-upright 21s linear infinite;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  left: 128px;
+  position: absolute;
   top: 0;
   transform: translate(-50%, -50%);
 }
 
+.routine-node-eat {
+  animation-delay: 0s;
+}
+
 .routine-node-move {
-  bottom: 8%;
-  color: #54ad72;
-  left: 4%;
-  transform: translate(-50%, 50%);
+  animation-delay: -7s;
 }
 
 .routine-node-sleep {
-  bottom: 8%;
-  color: #59aee3;
-  right: 4%;
-  transform: translate(50%, 50%);
+  animation-delay: -14s;
+}
+
+.routine-node-eat .routine-node-inner {
+  animation-delay: 0s;
+}
+
+.routine-node-move .routine-node-inner {
+  animation-delay: -7s;
+}
+
+.routine-node-sleep .routine-node-inner {
+  animation-delay: -14s;
+}
+
+.routine-orb-visual {
+  animation: routine-orb-breathe 3.8s ease-in-out infinite alternate;
+  background-image: url("/ako/assets/xircle-routine-orbs-sprite.png");
+  background-position-y: center;
+  background-repeat: no-repeat;
+  background-size: 300% auto;
+  display: block;
+  filter: drop-shadow(0 9px 14px rgba(23, 53, 44, 0.18));
+  height: 76px;
+  width: 76px;
+}
+
+.routine-node-eat .routine-orb-visual {
+  background-position-x: left;
+}
+
+.routine-node-move .routine-orb-visual {
+  animation-delay: -1.2s;
+  background-position-x: center;
+}
+
+.routine-node-sleep .routine-orb-visual {
+  animation-delay: -2.4s;
+  background-position-x: right;
+}
+
+.routine-node b {
+  background: rgba(255, 253, 248, 0.84);
+  border: 1px solid rgba(23, 53, 44, 0.1);
+  border-radius: 999px;
+  box-shadow: 0 5px 14px rgba(23, 53, 44, 0.08);
+  color: var(--ink);
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  padding: 5px 8px 4px;
 }
 
 .whitecat-companion img {
@@ -861,37 +892,70 @@ details[open] summary span { transform: rotate(45deg); }
 }
 
 .whitecat-companion.is-speaking img {
-  animation: whitecat-answer 760ms cubic-bezier(0.2, 0.8, 0.25, 1);
+  animation: whitecat-answer 1100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.whitecat-companion.is-speaking .routine-orbit {
-  animation-duration: 3.2s;
+.whitecat-companion.is-speaking .routine-orb-visual {
+  animation: routine-orb-listen 1100ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes routine-orbit-spin {
+@keyframes routine-orb-travel {
+  0%, 100% {
+    opacity: 0.78;
+    transform: rotate(0deg);
+  }
+  24%, 76% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.68;
+    transform: rotate(180deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes routine-orbit-label {
+@keyframes routine-orb-upright {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
   to {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+@keyframes routine-orb-breathe {
+  from {
+    opacity: 0.88;
+    transform: translateY(2px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.04);
+  }
+}
+
+@keyframes routine-orb-listen {
+  0%, 100% {
+    filter: drop-shadow(0 9px 14px rgba(23, 53, 44, 0.18));
+    transform: scale(1);
+  }
+  42% {
+    filter: drop-shadow(0 12px 22px rgba(23, 53, 44, 0.28));
+    transform: scale(1.09);
   }
 }
 
 @keyframes whitecat-answer {
   0%, 100% {
-    transform: translateY(0) rotate(0);
+    transform: translateY(0) scale(1);
   }
-  28% {
-    transform: translateY(-10px) rotate(-2deg);
+  38% {
+    transform: translateY(-5px) scale(1.018);
   }
-  55% {
-    transform: translateY(1px) rotate(2deg);
-  }
-  76% {
-    transform: translateY(-4px) rotate(-1deg);
+  72% {
+    transform: translateY(-2px) scale(1.006);
   }
 }
 
@@ -1077,22 +1141,22 @@ footer > span { color: rgba(255, 255, 255, 0.6); justify-self: end; }
   .whitecat-companion {
     align-self: center;
     margin: 0 0 22px;
-    padding: 34px;
-    width: min(74%, 255px);
+    padding: 40px;
+    width: min(82%, 278px);
   }
 
-  .routine-orbit {
-    inset: 10px;
+  .routine-node-inner {
+    left: 104px;
   }
 
-  .routine-node {
-    border-width: 2px;
-    height: 48px;
-    width: 48px;
+  .routine-orb-visual {
+    height: 62px;
+    width: 62px;
   }
 
   .routine-node b {
-    font-size: 8px;
+    font-size: 7px;
+    padding: 4px 7px 3px;
   }
 
   .closing-actions .button {
@@ -1119,9 +1183,11 @@ footer > span { color: rgba(255, 255, 255, 0.6); justify-self: end; }
     transition: none;
   }
 
-  .routine-orbit,
-  .routine-node b,
-  .whitecat-companion.is-speaking img {
+  .routine-node,
+  .routine-node-inner,
+  .routine-orb-visual,
+  .whitecat-companion.is-speaking img,
+  .whitecat-companion.is-speaking .routine-orb-visual {
     animation: none;
   }
 
