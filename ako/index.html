@@ -257,9 +257,9 @@
       <div class="xircle-visual-stack">
         <button class="whitecat-companion" id="whitecat-companion" type="button" aria-label="แตะแมวขาวเพื่อฟังเสียงสุ่ม">
           <span class="routine-orbit" aria-hidden="true">
-            <span class="routine-node routine-node-eat"><b>EAT</b></span>
-            <span class="routine-node routine-node-move"><b>MOVE</b></span>
-            <span class="routine-node routine-node-sleep"><b>SLEEP</b></span>
+            <span class="routine-node routine-node-eat"><span class="routine-node-inner"><i class="routine-orb-visual"></i><b>EAT</b></span></span>
+            <span class="routine-node routine-node-move"><span class="routine-node-inner"><i class="routine-orb-visual"></i><b>MOVE</b></span></span>
+            <span class="routine-node routine-node-sleep"><span class="routine-node-inner"><i class="routine-orb-visual"></i><b>SLEEP</b></span></span>
           </span>
           <img src="/ako/assets/whitecat-xvisor-guide.webp" alt="แมวขาวผู้ช่วยติดตามการกิน การขยับ และการพักผ่าน Xircle">
         </button>
@@ -330,7 +330,7 @@
       whitecat.classList.add('is-speaking');
       whitecatMotionTimer = window.setTimeout(() => {
         whitecat.classList.remove('is-speaking');
-      }, 760);
+      }, 1100);
     });
   </script>
 </body>
