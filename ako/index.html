@@ -256,7 +256,12 @@
       </div>
       <div class="xircle-visual-stack">
         <button class="whitecat-companion" id="whitecat-companion" type="button" aria-label="แตะแมวขาวเพื่อฟังเสียงสุ่ม">
-          <img src="/ako/assets/whitecat-xvisor-guide.webp" alt="แมวขาวประจำห้องที่เอโกะดูแล">
+          <span class="routine-orbit" aria-hidden="true">
+            <span class="routine-node routine-node-eat"><b>EAT</b></span>
+            <span class="routine-node routine-node-move"><b>MOVE</b></span>
+            <span class="routine-node routine-node-sleep"><b>SLEEP</b></span>
+          </span>
+          <img src="/ako/assets/whitecat-xvisor-guide.webp" alt="แมวขาวผู้ช่วยติดตามการกิน การขยับ และการพักผ่าน Xircle">
         </button>
         <a class="xircle-button" href="https://www.myclover.com/xircle/?xty=51644&amp;xvisor=1" aria-label="ทำแบบทดสอบและเข้าห้องแมวขาวของเอโกะ">
           <img src="/ako/assets/xircle-routinex-eat-move-sleep-hero.webp" alt="Xircle ช่วยเข้าใจชีวิตและสร้างกิจวัตรที่เหมาะกับคุณ">
@@ -304,6 +309,7 @@
     ];
     let lastVoice = -1;
     let activeVoice;
+    let whitecatMotionTimer;
 
     whitecat?.addEventListener('click', () => {
       let nextVoice = Math.floor(Math.random() * whitecatVoices.length);
@@ -317,6 +323,14 @@
       activeVoice = new Audio(whitecatVoices[nextVoice]);
       activeVoice.volume = 0.9;
       activeVoice.play().catch(() => {});
+
+      window.clearTimeout(whitecatMotionTimer);
+      whitecat.classList.remove('is-speaking');
+      void whitecat.offsetWidth;
+      whitecat.classList.add('is-speaking');
+      whitecatMotionTimer = window.setTimeout(() => {
+        whitecat.classList.remove('is-speaking');
+      }, 760);
     });
   </script>
 </body>
