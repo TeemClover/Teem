@@ -12,12 +12,12 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 44, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 133);
+  assert.deepEqual(by, { common: 64, rare: 52, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 141);
 });
 
 test('expanded Rare species each have two distinct cards in every colour', () => {
-  for (const species of ['pig', 'buffalo', 'chicken', 'crow']) {
+  for (const species of ['pig', 'buffalo', 'chicken', 'crow', 'turtle']) {
     const rareCards = TEAMBOOK_CARDS.filter(card => card.species === species && card.rarity === 'rare');
     assert.equal(rareCards.length, 8);
     assert.equal(new Set(rareCards.map(card => card.cardId)).size, 8);
@@ -105,7 +105,8 @@ test('a species can print cards without being on the Starter roster', async () =
     const cards = await import('./cards.js?card-only-species');
     assert.equal(cards.TEAMBOOK_CARDS.length, TEAMBOOK_CARDS.length, 'the printed set does not shrink');
     assert.equal(
-      cards.TEAMBOOK_CARDS.filter(card => card.species === 'turtle').length, 8,
+      cards.TEAMBOOK_CARDS.filter(card => card.species === 'turtle').length,
+      TEAMBOOK_CARDS.filter(card => card.species === 'turtle').length,
       'a card-only animal keeps every card its art supports'
     );
   } finally {

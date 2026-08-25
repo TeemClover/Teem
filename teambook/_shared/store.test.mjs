@@ -48,7 +48,7 @@ test('catalog matches the printed set with a minimal canonical card face', () =>
     + cards.TEAMBOOK_EPIC_CARDS.length + cards.TEAMBOOK_LEGENDARY_CARDS.length;
   assert.equal(cards.TEAMBOOK_CARDS.length, total);
   assert.equal(cards.TEAMBOOK_COMMON_CARDS.length, 64);
-  assert.equal(cards.TEAMBOOK_RARE_CARDS.length, 44);
+  assert.equal(cards.TEAMBOOK_RARE_CARDS.length, 52);
   assert.equal(cards.TEAMBOOK_EPIC_CARDS.length, 16);
   assert.equal(cards.TEAMBOOK_LEGENDARY_CARDS.length, 9);
   assert.equal(new Set(cards.TEAMBOOK_CARDS.map(card => card.cardId)).size, total);
