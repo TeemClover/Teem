@@ -154,6 +154,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'badminton-lunge', description: 'ไก่พุ่งลันจ์รับลูกแบดด้วยแร็กเก็ตสีเงินใต้แสงโคมยามเย็น', flavor: 'ตั้งหลักให้มั่น แล้วส่งจังหวะกลับไปด้วยรอยยิ้ม' },
     ],
   },
+  crow: {
+    red: [
+      { variant: 'post-office-stamp', description: 'อีกาประทับตราสีแดงลงบนโปสการ์ดในห้องไปรษณีย์เล็ก ๆ จัดจดหมายทุกฉบับให้พร้อมออกเดินทาง', flavor: 'ข้อความเล็ก ๆ ไปได้ไกล เมื่อเราตั้งใจส่ง' },
+      { variant: 'garden-bowling', description: 'อีกาพุ่งตัวปล่อยลูกโบว์ลิงสีแดงไปตามลานไม้กลางสวน ลุ้นให้ล้มครบทุกพิน', flavor: 'เล็งทางให้ชัด แล้วปล่อยแรงที่ซ้อมมา' },
+    ],
+    green: [
+      { variant: 'domino-run', description: 'อีกาก้าวข้างตามแนวโดมิโนสีเขียวที่กำลังล้มต่อกันบนระเบียงสวน เฝ้าดูแผนเล็ก ๆ เดินหน้าจนครบ', flavor: 'เริ่มหนึ่งชิ้น แล้วแรงต่อเนื่องจะพาไปเอง' },
+      { variant: 'pogo-square', description: 'อีกากระเด้งตัวบนโปโกสติ๊กสีเขียวกลางลานหมู่บ้าน ใช้จะงอยปากจับแฮนด์และกางปีกทรงตัว', flavor: 'หาจังหวะให้เจอ แล้วเด้งผ่านก้าวยากไป' },
+    ],
+    blue: [
+      { variant: 'treehouse-telegraph', description: 'อีกานั่งส่งสัญญาณด้วยเครื่องโทรเลขสีน้ำเงินในบ้านต้นไม้ ตั้งใจเคาะสารให้ไปถึงปลายทาง', flavor: 'สัญญาณสั้น ๆ ก็เชื่อมเราเข้าหากันได้' },
+      { variant: 'toy-biplane', description: 'อีกาใช้จะงอยปากกับเท้าควบคุมเครื่องบินของเล่นสีน้ำเงินให้โฉบเหนือทุ่งดอกไม้', flavor: 'วางแผนจากพื้น แล้วส่งความฝันขึ้นฟ้า' },
+    ],
+    silver: [
+      { variant: 'balance-scale', description: 'อีกาคาบก้อนหินวางบนตาชั่งสีเงิน เปรียบเทียบสมบัติชิ้นเล็กกับลูกโอ๊กอย่างละเอียด', flavor: 'คำตอบที่พอดี เริ่มจากการชั่งอย่างใจเย็น' },
+      { variant: 'fair-magic', description: 'อีกาแสดงมายากลบนเวทีงานวัด คาบสายดาวกระดาษขึ้นจากหมวกสีเงินท่ามกลางแสงโคม', flavor: 'ความมหัศจรรย์เกิดขึ้น เมื่อกล้าเปิดหมวกดู' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -198,7 +216,7 @@ const PRINTED = Object.freeze({
   /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(['pig', 'buffalo', 'chicken'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+    .concat(['pig', 'buffalo', 'chicken', 'crow'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
       species, color, variant, scene: true,
     }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */

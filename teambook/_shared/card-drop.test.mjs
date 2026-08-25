@@ -12,12 +12,12 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 36, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 125);
+  assert.deepEqual(by, { common: 64, rare: 44, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 133);
 });
 
-test('Pig, Buffalo, and Chicken each have two distinct Rare cards in every colour', () => {
-  for (const species of ['pig', 'buffalo', 'chicken']) {
+test('expanded Rare species each have two distinct cards in every colour', () => {
+  for (const species of ['pig', 'buffalo', 'chicken', 'crow']) {
     const rareCards = TEAMBOOK_CARDS.filter(card => card.species === species && card.rarity === 'rare');
     assert.equal(rareCards.length, 8);
     assert.equal(new Set(rareCards.map(card => card.cardId)).size, 8);
