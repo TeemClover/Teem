@@ -63,7 +63,7 @@
             <source src="/ako/assets/ako-xvisor-ep04-otaku-weight-loss-web.m4v" type="video/mp4">
           </video>
           <div class="video-label">
-            <span>EP.04 · เอโกะตัวจริง</span>
+            <span>เอโกะตัวจริง</span>
             <p>โอตาคุลดน้ำหนัก</p>
           </div>
         </div>
@@ -99,6 +99,10 @@
             <span class="line-icon" aria-hidden="true">LINE</span>
             <span><strong>คุยกับเอโกะทาง LINE</strong><small>เพิ่มเพื่อน LINE Official →</small></span>
           </a>
+          <a class="contact-button tiktok-button" href="https://www.tiktok.com/@ako.routinex" target="_blank" rel="noopener noreferrer">
+            <span class="tiktok-icon" aria-hidden="true">TikTok</span>
+            <span><strong>ติดตาม Ako RoutineX</strong><small>ดูรูทีนล่าสุดบน TikTok →</small></span>
+          </a>
         </div>
       </div>
     </section>
@@ -128,6 +132,23 @@
           </video>
           <div><span>ค่อยๆ ปรับ</span><h3>เปลี่ยนแบบไม่ต้องหวือหวา</h3></div>
         </article>
+      </div>
+    </section>
+
+    <section class="tiktok-section" aria-labelledby="tiktok-heading">
+      <div class="tiktok-copy">
+        <p class="eyebrow">AKO ON TIKTOK</p>
+        <h2 id="tiktok-heading">คลิปล่าสุดของเอโกะ<br>ดูต่อได้ตรงนี้</h2>
+        <p>
+          รูทีนไม่ได้เรียงเป็นตอน เพราะแต่ละคลิปเริ่มได้จากวันที่คุณเจอมัน
+          ติดตามเรื่องกิน การขยับ และการดูแลตัวเองแบบเอโกะได้ที่ <strong>@ako.routinex</strong>
+        </p>
+        <a class="button tiktok-profile-link" href="https://www.tiktok.com/@ako.routinex" target="_blank" rel="noopener noreferrer">เปิด TikTok ของเอโกะ →</a>
+      </div>
+      <div class="tiktok-embed-shell">
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@ako.routinex" data-unique-id="ako.routinex" data-embed-type="creator" style="max-width: 720px; min-width: 288px;">
+          <section><a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@ako.routinex?refer=creator_embed">@ako.routinex</a></section>
+        </blockquote>
       </div>
     </section>
 
@@ -226,7 +247,7 @@
               <source src="/ako/assets/ako-xvisor-ep06-no-starving-web.m4v" type="video/mp4">
             </video>
           </div>
-          <div><span>EP.06</span><h3>ดูแลตัวเอง ไม่ได้แปลว่าต้องอด</h3><p>เริ่มจากเข้าใจมื้อของเรา ก่อนพยายามตัดทุกอย่างออก</p></div>
+          <div><span>กินให้เข้าใจ</span><h3>ดูแลตัวเอง ไม่ได้แปลว่าต้องอด</h3><p>เริ่มจากเข้าใจมื้อของเรา ก่อนพยายามตัดทุกอย่างออก</p></div>
         </article>
         <article class="journey-video-card journey-video-offset">
           <div class="journey-video-wrap">
@@ -234,7 +255,7 @@
               <source src="/ako/assets/ako-xvisor-ep07-snacking-hunger-web.m4v" type="video/mp4">
             </video>
           </div>
-          <div><span>EP.07</span><h3>หิวจุกจิก อาจไม่ได้แปลว่าคุณไม่มีวินัย</h3><p>บางครั้งสิ่งที่ต้องแก้ ไม่ใช่ความอยาก แต่คือรูทีนก่อนหน้านั้น</p></div>
+          <div><span>ฟังสัญญาณความหิว</span><h3>หิวจุกจิก อาจไม่ได้แปลว่าคุณไม่มีวินัย</h3><p>บางครั้งสิ่งที่ต้องแก้ ไม่ใช่ความอยาก แต่คือรูทีนก่อนหน้านั้น</p></div>
         </article>
       </div>
     </section>
@@ -296,12 +317,14 @@
       <a class="brand footer-brand" href="#top"><img class="brand-logo" src="/ako/assets/ako-logo.png" alt=""><span>AKO</span></a>
       <p>Small routines. Real life. Keep going.</p>
       <a class="footer-xircle" href="https://www.myclover.com/xircle/?xty=51644&amp;xvisor=1">Xircle ↗</a>
+      <a class="footer-tiktok" href="https://www.tiktok.com/@ako.routinex" target="_blank" rel="noopener noreferrer">TikTok ↗</a>
       <a class="footer-line" href="https://lin.ee/tb4HUwl">LINE Official ↗</a>
       <span>ako.myclover.com</span>
     </footer>
   </main>
   <script>
     const whitecat = document.getElementById('whitecat-companion');
+    const tiktokEmbedShell = document.querySelector('.tiktok-embed-shell');
     const whitecatVoices = [
       '/ako/assets/whitecat-voice-01.wav',
       '/ako/assets/whitecat-voice-02.wav',
@@ -310,6 +333,26 @@
     let lastVoice = -1;
     let activeVoice;
     let whitecatMotionTimer;
+
+    const loadTikTokEmbed = () => {
+      if (document.querySelector('script[data-tiktok-embed]')) return;
+      const script = document.createElement('script');
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      script.dataset.tiktokEmbed = 'true';
+      document.body.appendChild(script);
+    };
+
+    if (tiktokEmbedShell && 'IntersectionObserver' in window) {
+      const tiktokObserver = new IntersectionObserver((entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        loadTikTokEmbed();
+        observer.disconnect();
+      }, { rootMargin: '500px 0px' });
+      tiktokObserver.observe(tiktokEmbedShell);
+    } else if (tiktokEmbedShell) {
+      loadTikTokEmbed();
+    }
 
     whitecat?.addEventListener('click', () => {
       let nextVoice = Math.floor(Math.random() * whitecatVoices.length);
