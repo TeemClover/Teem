@@ -228,13 +228,34 @@
       if (a.tagName === "A") a.href = whiteCatBridgeUrl();
     });
 
-    Array.prototype.forEach.call(document.querySelectorAll(".xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"), function (el) {
-      el.setAttribute("role", "link");
-      el.setAttribute("tabindex", "0");
-      el.setAttribute("aria-label", h ? "เข้าสมุดแมวขาว " + h.partyCode : "เปิดสมุดแมวขาว");
-      el.setAttribute("data-whitecat-cutout", "1");
-      el.style.cursor = "pointer";
+    Array.prototype.forEach.call(document.querySelectorAll('img[src*="whitecat-guide-cutout.webp"]'), function (img) {
+      img.setAttribute("role", "button");
+      img.setAttribute("tabindex", "0");
+      img.setAttribute("aria-label", "เล่นเสียงแมวขาว");
+      img.setAttribute("data-whitecat-sound", "1");
+      img.style.cursor = "pointer";
     });
+  }
+
+  var whiteCatVoices = [
+    "/xircle/assets/v5/whitecat-voice-01.wav",
+    "/xircle/assets/v5/whitecat-voice-02.wav",
+    "/xircle/assets/v5/whitecat-voice-03.wav"
+  ];
+  var lastWhiteCatVoice = -1;
+  var activeWhiteCatVoice = null;
+
+  function playWhiteCatVoice() {
+    var nextVoice = Math.floor(Math.random() * whiteCatVoices.length);
+    if (nextVoice === lastWhiteCatVoice) nextVoice = (nextVoice + 1) % whiteCatVoices.length;
+    lastWhiteCatVoice = nextVoice;
+    if (activeWhiteCatVoice) {
+      activeWhiteCatVoice.pause();
+      activeWhiteCatVoice.currentTime = 0;
+    }
+    activeWhiteCatVoice = new Audio(whiteCatVoices[nextVoice]);
+    activeWhiteCatVoice.volume = 0.9;
+    activeWhiteCatVoice.play().catch(function () {});
   }
 
   function enhancePartyPage() {
@@ -283,8 +304,14 @@
 
   function activateWhiteCat(target, event) {
     if (!target || !target.closest) return false;
-    var hit = target.closest("[data-whitecat-link], .xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]");
-    if (!hit) return false;
+    var cat = target.closest('img[src*="whitecat-guide-cutout.webp"]');
+    if (cat) {
+      stopHandledEvent(event);
+      playWhiteCatVoice();
+      return true;
+    }
+    var link = target.closest("[data-whitecat-link]");
+    if (!link) return false;
     stopHandledEvent(event);
     location.href = whiteCatActionUrl();
     return true;
@@ -417,9 +444,9 @@
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Enter" && event.key !== " ") return;
     var target = event.target;
-    if (!target || !target.matches || !target.matches("[data-whitecat-cutout]")) return;
+    if (!target || !target.matches || !target.matches('img[src*="whitecat-guide-cutout.webp"]')) return;
     event.preventDefault();
-    location.href = whiteCatActionUrl();
+    playWhiteCatVoice();
   });
 
   captureXtyInvite();
