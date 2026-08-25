@@ -88,6 +88,15 @@ body { background: #f8f3e7; }
 .funnel-trust h2 span,
 .funnel-final h2 span { color: var(--forest); }
 
+.headline-fixed .headline-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.headline-fixed .headline-plain {
+  color: inherit !important;
+}
+
 .funnel-hero-copy .hero-lede {
   font-size: clamp(18px, 1.55vw, 23px);
   line-height: 1.8;
@@ -350,13 +359,13 @@ body { background: #f8f3e7; }
   .nav-cta { font-size: 13px; padding: 10px 14px; }
   .funnel-hero { gap: 36px; min-height: 0; padding: 18px 18px 72px; }
   .funnel-hero-media { border-radius: 26px; max-height: none; }
-  .funnel-hero-copy h1 { font-size: clamp(44px, 13vw, 62px); }
+  .funnel-hero-copy h1 { font-size: clamp(38px, 12vw, 62px); }
   .funnel-hero-copy .hero-lede { font-size: 17px; line-height: 1.75; margin: 24px 0; }
   .funnel-hero .hero-actions, .funnel-xircle .closing-actions, .proof-links { align-items: stretch; flex-direction: column; }
   .funnel-hero .button, .funnel-xircle .button, .funnel-proof .button { width: 100%; }
   .funnel-hero .text-link, .funnel-xircle .text-link, .proof-links .text-link { align-self: center; }
   .funnel-method, .funnel-xircle { padding-left: 18px; padding-right: 18px; }
-  .funnel-heading h2, .funnel-xircle h2, .funnel-proof h2, .funnel-trust h2, .funnel-final h2 { font-size: clamp(38px, 11vw, 52px); }
+  .funnel-heading h2, .funnel-xircle h2, .funnel-proof h2, .funnel-trust h2, .funnel-final h2 { font-size: clamp(32px, 10vw, 52px); }
   .method-cards { grid-template-columns: 1fr; margin-top: 48px; }
   .method-cards article { min-height: 0; padding: 28px; }
   .method-cards article:first-child { border-radius: 22px 22px 0 0; }
