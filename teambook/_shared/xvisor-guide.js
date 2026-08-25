@@ -8,7 +8,9 @@ export const XVISOR_GUIDE = Object.freeze({
   nameTh: 'แมวขาว',
   emoji: '🐈',
   color: 'silver',
-  art: '/assets/art/avatars/white-cat.webp',
+  /* Pet art is full-body, matching every other TeamBook animal. The same
+     registry art is used by the companion card and animal chat speaker. */
+  art: '/assets/art/pets/white-cat.webp',
   persona: 'PATTERN CARETAKER · เห็นสิ่งที่เกิดขึ้นจริง แล้วช่วยให้วงมองต่อทีละหนึ่งจุด',
   xvisorOnly: true,
   secret: true,
