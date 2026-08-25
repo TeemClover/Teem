@@ -1,0 +1,344 @@
+/* Conversion-focused layout layered over the original Ako design tokens. */
+body { background: #f8f3e7; }
+
+.site-header {
+  background: rgba(248, 243, 231, 0.86);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(23, 53, 44, 0.08);
+  max-width: none;
+  padding-left: max(28px, calc((100vw - 1280px) / 2));
+  padding-right: max(28px, calc((100vw - 1280px) / 2));
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.site-header nav a:not(.nav-cta) { opacity: 0.68; }
+.site-header nav a:hover, .site-header nav a:focus-visible { opacity: 1; }
+
+.funnel-hero {
+  align-items: center;
+  display: grid;
+  gap: clamp(44px, 7vw, 100px);
+  grid-template-columns: minmax(360px, 0.82fr) minmax(0, 1.18fr);
+  margin: 0 auto;
+  max-width: 1280px;
+  min-height: calc(100svh - 95px);
+  padding: clamp(44px, 7vw, 92px) 32px clamp(76px, 9vw, 120px);
+}
+
+.funnel-hero-media {
+  aspect-ratio: 4 / 5;
+  border-radius: 38px;
+  box-shadow: 0 28px 80px rgba(23, 53, 44, 0.17);
+  isolation: isolate;
+  max-height: 760px;
+  overflow: hidden;
+  position: relative;
+}
+
+.funnel-hero-media::after {
+  background: linear-gradient(180deg, transparent 64%, rgba(12, 38, 30, 0.52));
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.funnel-hero-media video {
+  height: 100%;
+  object-fit: cover;
+  object-position: 57% center;
+  transform: scale(1.01);
+  width: 100%;
+}
+
+.funnel-hero-stamp {
+  bottom: 24px;
+  color: white;
+  display: flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 8px;
+  left: 24px;
+  letter-spacing: 0.08em;
+  position: absolute;
+  z-index: 2;
+}
+
+.funnel-hero-stamp span {
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 999px;
+  padding: 7px 11px;
+}
+
+.funnel-hero-copy h1 { font-size: clamp(52px, 6.5vw, 94px); line-height: 0.99; max-width: 830px; }
+
+.funnel-hero-copy h1 span,
+.funnel-heading h2 span,
+.funnel-xircle h2 span,
+.funnel-proof h2 span,
+.funnel-trust h2 span,
+.funnel-final h2 span { color: var(--forest); }
+
+.funnel-hero-copy .hero-lede {
+  font-size: clamp(18px, 1.55vw, 23px);
+  line-height: 1.8;
+  margin: 32px 0 28px;
+  max-width: 710px;
+}
+
+.funnel-hero .hero-actions, .funnel-xircle .closing-actions, .proof-links {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.funnel-hero .button, .funnel-xircle .button, .funnel-proof .button, .funnel-final .button {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 58px;
+  padding: 15px 24px;
+}
+
+.text-link { border-bottom: 1px solid currentColor; font-weight: 750; padding: 5px 0; }
+.trust-line { color: rgba(23, 53, 44, 0.58); font-size: 13px; font-weight: 650; margin: 18px 0 0; }
+
+.funnel-method {
+  background: var(--ink);
+  color: white;
+  overflow: hidden;
+  padding: clamp(88px, 11vw, 148px) max(32px, calc((100vw - 1280px) / 2));
+  position: relative;
+}
+
+.funnel-method::before {
+  background: rgba(220, 236, 173, 0.1);
+  border-radius: 50%;
+  content: "";
+  height: 620px;
+  position: absolute;
+  right: -280px;
+  top: -260px;
+  width: 620px;
+}
+
+.funnel-heading {
+  display: grid;
+  gap: 36px 8vw;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+  position: relative;
+}
+
+.funnel-heading .eyebrow, .funnel-final .eyebrow { color: var(--lime); grid-column: 1 / -1; margin-bottom: 0; }
+
+.funnel-heading h2, .funnel-xircle h2, .funnel-proof h2, .funnel-trust h2, .funnel-final h2 {
+  font-family: "Mitr", "Noto Sans Thai", sans-serif;
+  font-size: clamp(42px, 5vw, 72px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.06;
+  margin: 0;
+}
+
+.funnel-method .funnel-heading h2 span { color: var(--lime); }
+.funnel-heading > p:last-child { align-self: end; color: rgba(255,255,255,.72); font-size: clamp(18px, 1.5vw, 22px); line-height: 1.85; margin: 0; }
+
+.method-cards { display: grid; gap: 1px; grid-template-columns: repeat(3, 1fr); margin-top: 70px; }
+.method-cards article { background: rgba(255,255,255,.06); min-height: 250px; padding: 34px; }
+.method-cards article:first-child { border-radius: 26px 0 0 26px; }
+.method-cards article:last-child { border-radius: 0 26px 26px 0; }
+
+.method-dot {
+  align-items: center;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 12px;
+  font-weight: 800;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.method-dot-eat { background: #ed715d; }
+.method-dot-notice { background: #61ae7e; }
+.method-dot-repeat { background: #5ba7d5; }
+.method-cards h3 { font-size: 25px; margin: 32px 0 10px; }
+.method-cards p { color: rgba(255,255,255,.66); line-height: 1.7; margin: 0; }
+.funnel-method blockquote { border: 0; color: var(--lime); font-family: "Mitr", "Noto Sans Thai", sans-serif; font-size: clamp(26px, 3vw, 42px); margin: 72px auto 0; max-width: 900px; padding: 0; text-align: center; }
+
+.funnel-xircle {
+  align-items: center;
+  background: #efd6c4;
+  display: grid;
+  gap: clamp(48px, 8vw, 120px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(350px, 0.75fr);
+  padding: clamp(88px, 11vw, 150px) max(32px, calc((100vw - 1280px) / 2));
+}
+
+.funnel-xircle-copy > p:not(.eyebrow):not(.trust-line) { color: rgba(23, 53, 44, 0.72); font-size: clamp(17px, 1.4vw, 21px); line-height: 1.85; margin: 28px 0; max-width: 720px; }
+.xircle-reward { border-bottom: 1px solid rgba(23, 53, 44, .18); border-top: 1px solid rgba(23, 53, 44, .18); display: grid; gap: 5px; margin: 34px 0; padding: 22px 0; }
+.xircle-reward strong { font-size: 18px; }
+.xircle-reward span { color: rgba(23, 53, 44, .65); }
+.funnel-xircle-visual { min-height: 640px; position: relative; }
+
+.funnel-xircle-visual .whitecat-companion {
+  left: 50%;
+  position: absolute;
+  top: -4%;
+  transform: translateX(-50%);
+  width: min(92%, 440px);
+  z-index: 3;
+}
+
+.funnel-xircle-visual .whitecat-companion.is-speaking { transform: translateX(-50%); }
+
+.xircle-mini-card {
+  background: var(--ink);
+  border-radius: 28px;
+  bottom: 0;
+  box-shadow: 0 28px 70px rgba(23,53,44,.19);
+  color: white;
+  display: block;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+}
+
+.xircle-mini-card img { aspect-ratio: 4 / 3; display: block; object-fit: cover; width: 100%; }
+.xircle-mini-card > span { align-items: center; display: flex; gap: 18px; justify-content: space-between; padding: 20px 24px; }
+.xircle-mini-card b { color: var(--lime); font-size: 13px; letter-spacing: .08em; }
+.xircle-mini-card strong { font-size: 16px; }
+
+.funnel-proof {
+  align-items: center;
+  display: grid;
+  gap: clamp(56px, 8vw, 110px);
+  grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr);
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: clamp(88px, 11vw, 150px) 32px;
+}
+
+.proof-copy > p:not(.eyebrow) { color: rgba(23,53,44,.7); font-size: 18px; line-height: 1.85; margin: 28px 0; }
+.button-dark { background: #101010; color: white; }
+.funnel-proof .tiktok-embed-shell { background: white; border: 1px solid rgba(23,53,44,.1); border-radius: 32px; box-shadow: 0 24px 70px rgba(23,53,44,.1); padding: 22px; }
+
+.funnel-trust {
+  border-bottom: 1px solid rgba(23,53,44,.12);
+  border-top: 1px solid rgba(23,53,44,.12);
+  display: grid;
+  gap: 56px 8vw;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: clamp(80px, 9vw, 120px) 32px;
+}
+
+.trust-copy { align-self: end; }
+.trust-copy p { color: rgba(23,53,44,.7); font-size: 18px; line-height: 1.9; margin: 0 0 22px; }
+
+.funnel-final {
+  align-items: center;
+  background: var(--ink);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 86svh;
+  padding: clamp(90px, 12vw, 160px) 28px;
+  text-align: center;
+}
+
+.funnel-final > img { height: 70px; margin-bottom: 32px; width: 70px; }
+.funnel-final h2 span { color: var(--lime); }
+.button-light { background: var(--lime); color: var(--ink); margin-top: 42px; }
+.final-follow { color: rgba(255,255,255,.7); margin-top: 24px; text-decoration: underline; text-underline-offset: 5px; }
+
+.sticky-routine-cta {
+  background: var(--ink);
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 999px;
+  bottom: 18px;
+  box-shadow: 0 14px 42px rgba(23,53,44,.26);
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  left: 50%;
+  opacity: 0;
+  padding: 14px 22px;
+  pointer-events: none;
+  position: fixed;
+  transform: translate(-50%, 18px);
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 80;
+}
+
+.sticky-routine-cta.is-visible { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+
+.funnel-footer {
+  align-items: center;
+  background: #102b23;
+  color: white;
+  display: grid;
+  gap: 20px 34px;
+  grid-template-columns: auto 1fr auto;
+  padding: 52px max(32px, calc((100vw - 1280px) / 2));
+}
+
+.funnel-footer p { color: rgba(255,255,255,.62); margin: 0; }
+.funnel-footer > div { display: flex; flex-wrap: wrap; gap: 18px; font-weight: 700; }
+.funnel-footer small { color: rgba(255,255,255,.48); grid-column: 1 / -1; line-height: 1.6; max-width: 840px; }
+
+@media (max-width: 900px) {
+  .site-header nav a:not(.nav-cta) { display: none; }
+  .funnel-hero { grid-template-columns: 1fr; padding-top: 28px; }
+  .funnel-hero-media { aspect-ratio: 4 / 4.7; max-height: 68svh; order: 1; }
+  .funnel-hero-copy { order: 2; }
+  .funnel-heading, .funnel-xircle, .funnel-proof, .funnel-trust { grid-template-columns: 1fr; }
+  .funnel-heading .eyebrow { grid-column: auto; }
+  .funnel-heading > p:last-child { max-width: 650px; }
+  .funnel-xircle-visual { margin: 0 auto; max-width: 560px; min-height: 640px; width: 100%; }
+  .funnel-proof .tiktok-embed-shell { margin: 0 auto; max-width: 620px; width: 100%; }
+  .funnel-footer { grid-template-columns: 1fr; text-align: center; }
+  .funnel-footer > * { justify-self: center; }
+  .funnel-footer small { grid-column: auto; }
+}
+
+@media (max-width: 600px) {
+  .site-header { padding: 14px 18px; }
+  .site-header .brand-logo { height: 40px; width: 40px; }
+  .nav-cta { font-size: 13px; padding: 10px 14px; }
+  .funnel-hero { gap: 36px; min-height: 0; padding: 18px 18px 72px; }
+  .funnel-hero-media { border-radius: 26px; max-height: none; }
+  .funnel-hero-copy h1 { font-size: clamp(44px, 13vw, 62px); }
+  .funnel-hero-copy .hero-lede { font-size: 17px; line-height: 1.75; margin: 24px 0; }
+  .funnel-hero .hero-actions, .funnel-xircle .closing-actions, .proof-links { align-items: stretch; flex-direction: column; }
+  .funnel-hero .button, .funnel-xircle .button, .funnel-proof .button { width: 100%; }
+  .funnel-hero .text-link, .funnel-xircle .text-link, .proof-links .text-link { align-self: center; }
+  .funnel-method, .funnel-xircle { padding-left: 18px; padding-right: 18px; }
+  .funnel-heading h2, .funnel-xircle h2, .funnel-proof h2, .funnel-trust h2, .funnel-final h2 { font-size: clamp(38px, 11vw, 52px); }
+  .method-cards { grid-template-columns: 1fr; margin-top: 48px; }
+  .method-cards article { min-height: 0; padding: 28px; }
+  .method-cards article:first-child { border-radius: 22px 22px 0 0; }
+  .method-cards article:last-child { border-radius: 0 0 22px 22px; }
+  .method-cards h3 { margin-top: 22px; }
+  .funnel-method blockquote { margin-top: 54px; }
+  .funnel-xircle-visual { min-height: 530px; }
+  .funnel-xircle-visual .whitecat-companion { top: 0; width: 88%; }
+  .xircle-mini-card > span { align-items: flex-start; flex-direction: column; gap: 5px; padding: 17px 20px; }
+  .funnel-proof { padding-left: 18px; padding-right: 18px; }
+  .funnel-proof .tiktok-embed-shell { border-radius: 24px; padding: 10px; }
+  .funnel-trust { margin: 0 18px; padding-left: 0; padding-right: 0; }
+  .funnel-final { min-height: 78svh; }
+  .sticky-routine-cta { bottom: 12px; text-align: center; width: calc(100% - 28px); }
+  .funnel-footer { padding-left: 24px; padding-right: 24px; }
+  .funnel-footer > div { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) { .sticky-routine-cta { transition: none; } }
