@@ -1,3 +1,9 @@
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 .story-header {
   background: rgba(247, 243, 232, .88);
   backdrop-filter: blur(18px);
