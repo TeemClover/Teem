@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="/ako/ako.css">
   <link rel="stylesheet" href="/ako/story.css">
 </head>
-<body>
+<body data-page="story">
   <header class="site-header story-header">
     <a class="brand" href="/ako/" aria-label="กลับหน้าแรกของเอโกะ">
       <img class="brand-logo" src="/ako/assets/ako-logo.png" alt="">
@@ -30,12 +30,12 @@
       <a href="#about">รู้จักเอโกะ</a>
       <a href="#work">สิ่งที่เอโกะทำ</a>
       <a href="#xvisor">บทบาท X-VISOR</a>
-      <a class="nav-cta story-line-nav" href="https://lin.ee/tb4HUwl"><span>LINE</span> คุยกับเอโกะ</a>
+      <a class="nav-cta story-line-nav" data-track="story-nav-line" href="https://lin.ee/tb4HUwl"><span>LINE</span> คุยกับเอโกะ</a>
     </nav>
   </header>
 
   <main>
-    <section class="story-hero" id="top">
+    <section class="story-hero" id="top" data-track-section="story-hero">
       <div class="story-hero-copy">
         <a class="story-back" href="/ako/">← กลับหน้าหลัก</a>
         <p class="eyebrow">AKO IN REAL LIFE</p>
@@ -45,9 +45,16 @@
           ให้ยังมีแรง ใช้ชีวิต และทำสิ่งที่รักต่อไปได้ โดยไม่ต้องฝืนจนหมดความสุข
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#about">รู้จักเอโกะต่อ ↓</a>
-          <a class="button button-secondary" href="https://lin.ee/tb4HUwl">ทัก LINE เอโกะ</a>
+          <a class="button button-primary" data-track="story-hero-about" href="#about">รู้จักเอโกะต่อ ↓</a>
+          <a class="button button-secondary" data-track="story-hero-line" href="https://lin.ee/tb4HUwl">ทัก LINE เอโกะ</a>
         </div>
+        <nav class="story-jump-links" aria-label="ข้ามไปดูเนื้อหาที่สนใจ">
+          <span>ข้ามไปดู</span>
+          <a data-track="story-jump-clips" href="#clips">คลิปจริง</a>
+          <a data-track="story-jump-routinex" href="#routinex">RoutineX</a>
+          <a data-track="story-jump-xvisor" href="#xvisor">X-VISOR</a>
+          <a data-track="story-jump-interview" href="#interview">บทสัมภาษณ์</a>
+        </nav>
       </div>
       <div class="story-hero-video">
         <video controls playsinline preload="metadata" poster="/ako/assets/ako-xvisor-ep04-otaku-weight-loss-poster.png">
@@ -57,7 +64,7 @@
       </div>
     </section>
 
-    <section class="about-section" id="about">
+    <section class="about-section" id="about" data-track-section="story-about">
       <div class="about-visual">
         <div class="about-logo-wrap"><img src="/ako/assets/ako-logo.png" alt="สัญลักษณ์เอโกะ"></div>
         <p>กินจริง สนุกจริง<br>ดูแลตัวเองจากชีวิตจริง</p>
@@ -75,11 +82,11 @@
           แต่เป็นบันทึกการทดลองของคนที่รักการกินและอยากทำสิ่งที่รักต่อไปให้นานที่สุด
         </p>
         <div class="contact-links story-contact-links">
-          <a class="contact-button youtube-button" href="https://www.youtube.com/@akosohungry" target="_blank" rel="noopener noreferrer">
+          <a class="contact-button youtube-button" data-track="story-about-youtube" href="https://www.youtube.com/@akosohungry" target="_blank" rel="noopener noreferrer">
             <span class="youtube-icon" aria-hidden="true"></span>
             <span><strong>ดูช่อง Ako so Hungry</strong><small>คลิปกินจุและชาเลนจ์ของเอโกะ →</small></span>
           </a>
-          <a class="contact-button line-button" href="https://lin.ee/tb4HUwl" target="_blank" rel="noopener noreferrer">
+          <a class="contact-button line-button" data-track="story-about-line" href="https://lin.ee/tb4HUwl" target="_blank" rel="noopener noreferrer">
             <span class="line-icon" aria-hidden="true">LINE</span>
             <span><strong>ทักมาคุยกับเอโกะ</strong><small>เพิ่มเพื่อน LINE Official →</small></span>
           </a>
@@ -87,7 +94,7 @@
       </div>
     </section>
 
-    <section class="story-work" id="work">
+    <section class="story-work" id="work" data-track-section="story-work">
       <div class="section-heading">
         <p class="eyebrow">สิ่งที่เอโกะทำ</p>
         <h2>จากหน้ากล้อง<br>สู่การทดลองในชีวิตจริง</h2>
@@ -100,7 +107,7 @@
       </div>
     </section>
 
-    <section class="clip-section story-clips" aria-labelledby="story-clips-title">
+    <section class="clip-section story-clips" id="clips" data-track-section="story-clips" aria-labelledby="story-clips-title">
       <div class="section-heading clip-heading">
         <p class="eyebrow">รูทีนจริงใน 7 วินาที</p>
         <h2 id="story-clips-title">หนึ่งคลิป หนึ่งความคิด</h2>
@@ -108,21 +115,21 @@
       </div>
       <div class="clip-grid">
         <article class="clip-card">
-          <video loop muted playsinline controls preload="metadata" poster="/ako/assets/ako-morning-stretch-poster.jpg"><source src="/ako/assets/ako-morning-stretch.mp4" type="video/mp4"></video>
+          <video loop muted playsinline controls preload="none" poster="/ako/assets/ako-morning-stretch-poster.jpg"><source src="/ako/assets/ako-morning-stretch.mp4" type="video/mp4"></video>
           <div><span>เริ่มจากเช้า</span><h3>เช้าที่ดีไม่ต้องสมบูรณ์</h3></div>
         </article>
         <article class="clip-card featured-clip">
-          <video loop muted playsinline controls preload="metadata" poster="/ako/assets/ako-food-choice-poster.jpg"><source src="/ako/assets/ako-food-choice.mp4" type="video/mp4"></video>
+          <video loop muted playsinline controls preload="none" poster="/ako/assets/ako-food-choice-poster.jpg"><source src="/ako/assets/ako-food-choice.mp4" type="video/mp4"></video>
           <div><span>กินแบบเอโกะ</span><h3>อาหารที่ดีควรอร่อย</h3></div>
         </article>
         <article class="clip-card">
-          <video loop muted playsinline controls preload="metadata" poster="/ako/assets/ako-soft-change-poster.jpg"><source src="/ako/assets/ako-soft-change.mp4" type="video/mp4"></video>
+          <video loop muted playsinline controls preload="none" poster="/ako/assets/ako-soft-change-poster.jpg"><source src="/ako/assets/ako-soft-change.mp4" type="video/mp4"></video>
           <div><span>ค่อยๆ ปรับ</span><h3>เปลี่ยนแบบไม่ต้องหวือหวา</h3></div>
         </article>
       </div>
     </section>
 
-    <section class="routinex-section" id="routinex">
+    <section class="routinex-section" id="routinex" data-track-section="story-routinex">
       <div class="routinex-copy">
         <p class="eyebrow">ROUTINEX WITH AKO</p>
         <h2>รูทีนไม่ใช่กฎ<br>มันคือการทดลอง</h2>
@@ -136,7 +143,7 @@
       </div>
     </section>
 
-    <section class="xvisor-section" id="xvisor" aria-labelledby="xvisor-title">
+    <section class="xvisor-section" id="xvisor" data-track-section="story-xvisor" aria-labelledby="xvisor-title">
       <div class="xvisor-intro">
         <p class="eyebrow">บทบาท X-VISOR ของเอโกะ</p>
         <h2 id="xvisor-title">เข้าใจชีวิตก่อน<br>ค่อยออกแบบรูทีน</h2>
@@ -152,22 +159,22 @@
       </div>
       <div class="journey-videos">
         <article class="journey-video-card">
-          <div class="journey-video-wrap"><video controls playsinline preload="metadata" poster="/ako/assets/ako-xvisor-ep06-no-starving-poster.png"><source src="/ako/assets/ako-xvisor-ep06-no-starving-web.m4v" type="video/mp4"></video></div>
+          <div class="journey-video-wrap"><video controls playsinline preload="none" poster="/ako/assets/ako-xvisor-ep06-no-starving-poster.png"><source src="/ako/assets/ako-xvisor-ep06-no-starving-web.m4v" type="video/mp4"></video></div>
           <div><span>กินให้เข้าใจ</span><h3>ดูแลตัวเอง ไม่ได้แปลว่าต้องอด</h3><p>เริ่มจากเข้าใจมื้อของเรา ก่อนพยายามตัดทุกอย่างออก</p></div>
         </article>
         <article class="journey-video-card journey-video-offset">
-          <div class="journey-video-wrap"><video controls playsinline preload="metadata" poster="/ako/assets/ako-xvisor-ep07-snacking-hunger-poster.png"><source src="/ako/assets/ako-xvisor-ep07-snacking-hunger-web.m4v" type="video/mp4"></video></div>
+          <div class="journey-video-wrap"><video controls playsinline preload="none" poster="/ako/assets/ako-xvisor-ep07-snacking-hunger-poster.png"><source src="/ako/assets/ako-xvisor-ep07-snacking-hunger-web.m4v" type="video/mp4"></video></div>
           <div><span>ฟังสัญญาณความหิว</span><h3>หิวจุกจิก อาจไม่ได้แปลว่าไม่มีวินัย</h3><p>บางครั้งสิ่งที่ต้องมอง อาจเป็นรูทีนก่อนหน้านั้น</p></div>
         </article>
       </div>
     </section>
 
-    <section class="youtube-feature youtube-feature-deep" aria-labelledby="interview-title">
+    <section class="youtube-feature youtube-feature-deep" id="interview" data-track-section="story-interview" aria-labelledby="interview-title">
       <div class="youtube-feature-copy">
         <p class="eyebrow">ชีวิตจริงหลังกล้อง</p>
         <h2 id="interview-title">ชีวิตจริงของนักกินจุ<br>เป็นอย่างไร?</h2>
         <p>ทีมงานของ Joke iScream หรือ Mr.ไบรอัน ชวนเอโกะคุยถึงการเตรียมตัว การดูแลร่างกาย และสิ่งที่คนดูไม่เคยเห็นหลังกล้อง</p>
-        <a class="contact-button youtube-button" href="https://www.youtube.com/watch?v=uEEsjs91iT8" target="_blank" rel="noopener noreferrer">
+        <a class="contact-button youtube-button" data-track="story-interview-youtube" href="https://www.youtube.com/watch?v=uEEsjs91iT8" target="_blank" rel="noopener noreferrer">
           <span class="youtube-icon" aria-hidden="true"></span>
           <span><strong>ดูบทสัมภาษณ์บน YouTube</strong><small>เปิดคลิปเต็ม →</small></span>
         </a>
@@ -177,13 +184,13 @@
       </div>
     </section>
 
-    <section class="story-closing">
+    <section class="story-closing" data-track-section="story-final">
       <img src="/ako/assets/ako-logo.png" alt="">
       <p class="eyebrow">อยากเริ่มจากชีวิตของคุณบ้างไหม?</p>
       <h2>ไม่ต้องทำเหมือนเอโกะ<br><span>แค่เริ่มจากสิ่งที่เหมาะกับคุณ</span></h2>
       <div>
-        <a class="button button-primary" href="https://www.myclover.com/xircle/?xty=51644&amp;xvisor=1">ลอง Xircle กับเอโกะ →</a>
-        <a class="button story-line-button" href="https://lin.ee/tb4HUwl"><span>LINE</span> ทักมาคุยกับเอโกะ</a>
+        <a class="button button-primary" data-track="story-final-routine" href="https://www.myclover.com/xircle/?xty=51644&amp;xvisor=1">ลอง Routine ของคุณ →</a>
+        <a class="button story-line-button" data-track="story-final-line" href="https://lin.ee/tb4HUwl"><span>LINE</span> ทักมาคุยกับเอโกะ</a>
       </div>
       <a class="story-home-link" href="/ako/">กลับไปหน้าหลักแบบสั้นกระชับ</a>
     </section>
