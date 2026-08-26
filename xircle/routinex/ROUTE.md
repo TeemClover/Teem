@@ -1,10 +1,40 @@
 # Route Guard — /xircle/routinex/
 
-Job: interactive route จาก “รู้ว่าจะทำอะไร” ไป “วางให้ทำซ้ำ” แล้วค่อยเปิด product support.
+> Reviewed: 2026-08-26  
+> Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
+> Runtime: `index.html`  
+> Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
 
-Entry: X-VISOR simulator
-Exit: ดูสินค้า หรือไปสมุดแมวขาว
+## Job
+จากรู้ว่าจะทำอะไร ไปวางให้ทำซ้ำและค่อยเปิด product support
 
-Must preserve: A → B → C → D → F → Loop summary → payoff. Canonical = `ABCD + Flavor+`; **NO E**; C ไม่มีขาย.
+## Flow
+- **Entry:** X-VISOR simulator
+- **Exit:** สินค้า RoutineX หรือสมุดแมวขาว
 
-UX lock: diagram nodes ห้าม clip; connection/loop animation เป็นส่วนของความหมาย; CTA ตำแหน่งคงที่; Reduce Motion ยังเข้าใจได้; final hero ต้อง hug ratio จริง.
+## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
+A → B → C → D → Flavor+ → Loop summary → real-life payoff
+
+## Locks — ห้ามทำหาย
+Canonical = ABCD + Flavor+; NO E; C ไม่มีขาย; diagram ห้าม clip; CTA fixed; loop animation มีความหมาย
+
+## Dependencies / จุดเชื่อม
+story-v6.js/CSS, routinex-v10.css, routinex-fit.js, xircle-routinex-hero.webp
+
+## กฎร่วม
+- อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า
+- Thai-first; ใช้ศัพท์อังกฤษเมื่อเป็นชื่อระบบ/ผลิตภัณฑ์ที่จำเป็น
+- ฝั่ง White Cat ใช้คำหลัก **สมุดแมวขาว**; ชื่อระบบเมื่อจำเป็นคือ **White Cat Care**
+- `/xty/` คงเป็น technical route ได้ แต่ห้ามดึง XTY/ตี้กลับมาเป็น narrative หลัก
+- ใช้คำ **ข้อมูลเชิงลึก**; ห้ามใช้คำเก่าที่ owner เลิกใช้
+- Health data = sensitive data: consent, เห็นเท่าที่จำเป็น, ไม่วินิจฉัย
+- ตรวจ ratio จาก artwork จริง; อย่าครอป baked UI/text สำคัญ
+- Controls ต้องใช้ได้ทันที; feedback/copy ต้องไม่ทำให้ CTA กระโดดตำแหน่ง
+- Product/claim/revenue/formula ที่ไม่ยืนยัน: ไป Source/Unresolved และ **ห้ามเดา**
+
+## Before merge
+- เดิน **entry → interaction → exit** จริงบน mobile และ desktop
+- ตรวจ CTA/feedback ไม่กระโดด, links ไม่ตัน, naming ไม่ย้อนคำเก่า
+- ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
+- ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
+- ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
