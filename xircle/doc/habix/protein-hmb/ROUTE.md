@@ -1,6 +1,6 @@
 # Route Guard — /xircle/doc/habix/protein-hmb/
 
-> Reviewed: 2026-08-26  
+> Reviewed: 2026-08-27
 > Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
 > Runtime: `index.html`  
 > Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
@@ -10,16 +10,16 @@ product education ของ B · Build / protein-muscle support
 
 ## Flow
 - **Entry:** Habix/Products/RoutineX B
-- **Exit:** G.U.S.+, RoutineX, Habix
+- **Exit:** HMB knowledge topic, G.U.S.+, RoutineX, Habix
 
 ## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
 support nutrition/muscle while behavior central
 
 ## Locks — ห้ามทำหาย
-dose/claims/safety ตาม current source; ห้าม treatment/guarantee
+dose/claims/safety ตาม current source; ห้าม treatment/guarantee; ห้ามทำให้คลิปแพทย์ภายนอกดูเป็นการรับรองสินค้า
 
 ## Dependencies / จุดเชื่อม
-deep story CSS
+deep story CSS, HMB_STORY_AND_CLAIMS_PLAYBOOK.md, /xircle/learn/topic/?t=hmb-myhmb
 
 ## กฎร่วม
 - อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า

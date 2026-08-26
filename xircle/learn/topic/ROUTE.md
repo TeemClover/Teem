@@ -1,6 +1,6 @@
 # Route Guard — /xircle/learn/topic/
 
-> Reviewed: 2026-08-26  
+> Reviewed: 2026-08-27
 > Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
 > Runtime: `index.html`  
 > Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
@@ -10,13 +10,13 @@ render บทความสั้นรายหัวข้อ summary → poi
 
 ## Flow
 - **Entry:** /xircle/learn/
-- **Exit:** เรื่องถัดไป / เลือกเรื่องอื่น / explore / deep doc
+- **Exit:** เรื่องถัดไป / เลือกเรื่องอื่น / explore / deep doc / external knowledge เฉพาะหัวข้อที่กำหนด
 
 ## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
 จำเพียงไม่กี่ข้อ แล้วค่อยอ่านลึกเมื่อจำเป็น
 
 ## Locks — ห้ามทำหาย
-?t unknown ต้อง fallback; boundary ห้ามหาย; deep info แยก /doc/
+?t unknown ต้อง fallback; boundary ห้ามหาย; deep info แยก /doc/; external video ต้องมีที่มาและไม่ทำให้เข้าใจว่าแพทย์รับรองสินค้า
 
 ## Dependencies / จุดเชื่อม
 library-founder-v1.js, library-simple-v1.js, state.js

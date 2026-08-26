@@ -1,6 +1,6 @@
 # Route Guard — /xircle/learn/
 
-> Reviewed: 2026-08-26  
+> Reviewed: 2026-08-27
 > Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
 > Runtime: `index.html`  
 > Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
@@ -10,13 +10,13 @@ bite-size knowledge hub: ถามเรื่องไหนเปิดเร�
 
 ## Flow
 - **Entry:** explore/Human Care/deep links
-- **Exit:** learn/topic; deep ไป /xircle/doc/
+- **Exit:** learn/topic; deep ไป /xircle/doc/; หัวข้อ HMB ไปแหล่งความรู้ภายนอกได้
 
 ## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
 แมวขาวสรุปก่อน ไม่ต้องอ่านเรียง
 
 ## Locks — ห้ามทำหาย
-bite-size; ห้ามถม source/technical jargon; mobile hero full-bleed
+bite-size; ห้ามถม source/technical jargon; mobile hero full-bleed; หัวข้อสุขภาพต้องแยก knowledge ออกจาก product claim
 
 ## Dependencies / จุดเชื่อม
 library-founder-v1.js, library-simple-v1.js, state.js
