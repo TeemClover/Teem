@@ -1,1 +1,15 @@
 :root{--xty-card-aspect:63/88}
+
+/* Keep joined-book rows as one reliable tap target on touch browsers. */
+#joinedPartyGroup{position:relative;isolation:isolate}
+#joinedPartyGroup .rows{position:relative;z-index:1}
+#joinedPartyGroup .row{
+  position:relative;
+  z-index:2;
+  width:100%;
+  min-height:72px;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(41,136,87,.12);
+  pointer-events:auto;
+}
+#joinedPartyGroup .row>*{pointer-events:none}
