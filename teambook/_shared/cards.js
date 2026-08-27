@@ -190,6 +190,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'meadow-metal-detector', description: 'เต่าก้าวช้า ๆ กวาดเครื่องตรวจโลหะสีเงินเหนือทุ่งใบไม้ ตามสัญญาณไปหาเหรียญที่ซ่อนอยู่', flavor: 'ค่อย ๆ ฟังสัญญาณ สิ่งที่หายอาจอยู่ใกล้กว่าที่คิด' },
     ],
   },
+  rabbit: {
+    red: [
+      { variant: 'pasta-crank', description: 'กระต่ายยืนหมุนเครื่องทำเส้นพาสตาสีแดงในครัว รับเส้นสดที่ค่อย ๆ ไหลออกมาด้วยสองอุ้งเท้า', flavor: 'หมุนทีละรอบ แล้วมื้อพิเศษก็ค่อย ๆ เป็นรูปเป็นร่าง' },
+      { variant: 'garden-yoyo', description: 'กระต่ายทรงตัวขาเดียว เล่นโยโย่สีแดงเป็นวงโค้งบนเวทีเล็กกลางสวน', flavor: 'จับจังหวะให้พอดี แล้วปล่อยความสนุกหมุนกลับมา' },
+    ],
+    green: [
+      { variant: 'forest-zipline', description: 'กระต่ายโหนซิปไลน์ด้วยสายรัดสีเขียว ส่งตะกร้าปิกนิกข้ามลานป่าอย่างร่าเริง', flavor: 'จับให้มั่น แล้วความตั้งใจเล็ก ๆ จะเดินทางไปถึง' },
+      { variant: 'heart-topiary', description: 'กระต่ายย่อตัวใช้กรรไกรสีเขียว ตัดแต่งพุ่มไม้เป็นรูปหัวใจในสวนกระดาษ', flavor: 'ค่อย ๆ เล็มทีละใบ รูปที่ตั้งใจก็ชัดขึ้น' },
+    ],
+    blue: [
+      { variant: 'cello-practice', description: 'กระต่ายนั่งเล่นเชลโลสีน้ำเงินในห้องซ้อมอุ่น ๆ ลากคันชักอย่างตั้งใจ', flavor: 'ฟังเสียงทีละเส้น แล้วทำนองของเราจะค่อย ๆ มา' },
+      { variant: 'meadow-flying-disc', description: 'กระต่ายกระโดดด้านข้าง รับจานร่อนสีน้ำเงินเหนือทุ่งดอกไม้กลางแดด', flavor: 'มองเป้าหมายให้ชัด แล้วกระโดดในจังหวะของเรา' },
+    ],
+    silver: [
+      { variant: 'firefly-camera', description: 'กระต่ายย่อตัวใช้กล้องสีเงิน ถ่ายแสงหิ่งห้อยในสวนยามพลบค่ำ', flavor: 'หยุดมองให้นานพอ แสงเล็ก ๆ ก็กลายเป็นความทรงจำ' },
+      { variant: 'porch-wind-chime', description: 'กระต่ายยืนบนบันไดเตี้ย แขวนโมบายลมสีเงินไว้ข้างระเบียงรับแสงเช้า', flavor: 'แขวนความตั้งใจไว้ แล้วปล่อยให้ลมช่วยบรรเลง' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -234,7 +252,7 @@ const PRINTED = Object.freeze({
   /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(['pig', 'buffalo', 'chicken', 'crow', 'turtle'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+    .concat(['pig', 'buffalo', 'chicken', 'crow', 'turtle', 'rabbit'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
       species, color, variant, scene: true,
     }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
