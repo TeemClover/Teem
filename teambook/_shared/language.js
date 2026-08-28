@@ -110,7 +110,6 @@ async function boot() {
       './party-public-seen-v15.js',
       './trust-seen.js',
       './live-sync.js',
-      './owner-label-v13.js',
       './reward-history-v13.js',
       './party-enhancements.js',
       './party-profile-covers.js',
@@ -129,6 +128,9 @@ async function boot() {
       './level-up-growth.js',
       './v12-gameplay.js',
     ]);
+    /* Owner semantics are applied after all board modules and kept authoritative
+       across late rerenders: role above, alias inside the card. */
+    await importOnce('./owner-label-v14.js?v=20260828-owner-semantics');
     /* /p/index.html is the only board renderer. Route modules may add state
        interactions, but none may replace or reclassify its seat DOM. */
     return;
@@ -138,12 +140,12 @@ async function boot() {
     await importMany([
       './public-seen-v15.js',
       './trust-seen.js',
-      './owner-label-v13.js',
       './public-member-identity-v13.js',
       './reward-history-v13.js',
       `./public-detail-v15.js?v=${CAPACITY_REV}`,
       './public-detail-edge-fix-v14.js',
     ]);
+    await importOnce('./owner-label-v14.js?v=20260828-owner-semantics');
     return;
   }
 
