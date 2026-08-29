@@ -1,3 +1,2 @@
-Redeploy requested: 2026-08-17T21:55:00+07:00
-Xircle production commit: fb1e20211eb1e210d10332c4d87da4926d209186
-Reason: force a fresh Vercel production deploy so the merged Xircle mobile full-bleed and 28-day Circle simulator changes move from Ready preview to Production.
+Redeploy requested: 2026-08-29T15:10:00+07:00
+Reason: publish the new /meet/ (Meet Teem & Ako) experience to production.
