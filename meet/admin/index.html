@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Meet Control Room · myClover</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css?v=20260829-1">
+</head>
+<body>
+  <header>
+    <a href="/meet/" class="brand">← /meet</a>
+    <div><small>PRIVATE</small><strong>Meet Control Room</strong></div>
+    <button id="refreshButton" type="button" hidden>↻ รีเฟรช</button>
+  </header>
+
+  <main>
+    <section id="loginPanel" class="login-panel">
+      <div class="medal">🍀</div>
+      <p>PRIVATE ADMIN</p>
+      <h1>เปิดคิวนัด</h1>
+      <span>ใส่ MEET_ADMIN_KEY · รหัสจะจำไว้เฉพาะแท็บนี้</span>
+      <form id="loginForm">
+        <input id="adminKey" type="password" autocomplete="current-password" placeholder="รหัสผ่าน" required>
+        <button type="submit">เข้าสู่ระบบ →</button>
+      </form>
+      <div id="loginMessage" class="message" hidden></div>
+    </section>
+
+    <section id="dashboard" hidden>
+      <div id="channelWarning" class="message warn" hidden></div>
+
+      <div class="stats" aria-label="สรุปสถานะ">
+        <article><span>ใหม่</span><strong id="statNew">0</strong><small>ยังไม่ได้ติดต่อ</small></article>
+        <article><span>ติดต่อแล้ว</span><strong id="statContacted">0</strong><small>รอเคาะเวลา</small></article>
+        <article><span>นัดแล้ว</span><strong id="statScheduled">0</strong><small>มีเวลาแน่นอน</small></article>
+        <article><span>แจ้งเตือนพลาด</span><strong id="statFailed">0</strong><small>ต้องกด retry</small></article>
+      </div>
+
+      <div class="toolbar">
+        <label>ค้นหา <input id="searchInput" type="search" placeholder="ชื่อ · LINE · เบอร์ · อ้างอิง"></label>
+        <div class="filters" role="group" aria-label="กรองสถานะ">
+          <button class="active" data-filter="all">ทั้งหมด</button>
+          <button data-filter="new">ใหม่</button>
+          <button data-filter="contacted">ติดต่อแล้ว</button>
+          <button data-filter="scheduled">นัดแล้ว</button>
+          <button data-filter="done">จบแล้ว</button>
+        </div>
+      </div>
+
+      <div id="dashboardMessage" class="message" hidden></div>
+      <div id="bookingList"></div>
+      <p id="emptyState" class="empty" hidden>ยังไม่มีใครลงนัดเข้ามา</p>
+    </section>
+  </main>
+
+  <script src="./admin.js?v=20260829-1"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@
   }
 
   /* ---------- config ---------- */
-  var BOOKING_ENDPOINT = null; // wire to Cal.com / LINE / API later
+  var BOOKING_ENDPOINT = "/api/meet";
 
   var INTENTS = [
     {
@@ -200,12 +200,16 @@
   /* ---------- BOOKING flow ---------- */
   var sheet = {
     open: false, step: 0, intent: null, mode: null, day: null,
-    time: null, name: "", contact: "", note: "", done: false
+    time: null, name: "", contact: "", note: "", done: false,
+    sending: false, error: "", reference: ""
   };
 
   function openBooking(source) {
     sheet.open = true;
     sheet.done = false;
+    sheet.sending = false;
+    sheet.error = "";
+    sheet.reference = "";
     sheet.intent = state.intent;
     sheet.step = state.intent ? 1 : 0;
     byId("sheet-root").hidden = false;
@@ -294,7 +298,9 @@
         if (v) w.appendChild(el("span", "meet-chip", v));
       });
       d.appendChild(w);
-      d.appendChild(el("p", "preview-note", "โหมดพรีวิว · ยังไม่ได้ส่งข้อมูลจริง (ยังไม่ได้เชื่อมระบบนัดหมาย)"));
+      d.appendChild(el("p", "preview-note", sheet.reference
+        ? "เราจะทักกลับไปที่ " + sheet.contact.trim() + " เพื่อเคาะเวลาให้ลงตัว · อ้างอิง " + sheet.reference
+        : "เราจะทักกลับไปที่ " + sheet.contact.trim() + " เพื่อเคาะเวลาให้ลงตัว"));
       body.appendChild(d);
       return;
     }
@@ -350,18 +356,54 @@
     }
     body.appendChild(block);
 
-    byId("sheet-next").textContent = sheet.step === 3 ? "ยืนยันลงนัด" : "ต่อไป";
+    if (sheet.error) {
+      var err = el("p", "sheet-error", sheet.error + " · ข้อมูลที่กรอกยังอยู่ กดยืนยันอีกครั้งได้เลย");
+      err.setAttribute("role", "alert");
+      body.appendChild(err);
+    }
+
+    byId("sheet-next").textContent = sheet.sending
+      ? "กำลังส่ง…"
+      : (sheet.step === 3 ? (sheet.error ? "ลองอีกครั้ง" : "ยืนยันลงนัด") : "ต่อไป");
     syncNext();
   }
 
-  function syncNext() { byId("sheet-next").disabled = !canNext(); }
+  function syncNext() { byId("sheet-next").disabled = sheet.sending || !canNext(); }
 
   function submit() {
+    if (sheet.sending) return;
     track("meet_submit", { intent: sheet.intent || "none", mode: sheet.mode || "none" });
-    if (BOOKING_ENDPOINT) { /* production submission wires here */ }
-    sheet.done = true;
-    track("meet_complete", { intent: sheet.intent || "none" });
+    sheet.sending = true;
+    sheet.error = "";
     renderSheet();
+
+    var payload = {
+      intent: sheet.intent, mode: sheet.mode, day: sheet.day, time: sheet.time,
+      name: sheet.name.trim(), contact: sheet.contact.trim(), note: sheet.note.trim()
+    };
+
+    fetch(BOOKING_ENDPOINT, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (response) {
+      return response.json().catch(function () { return {}; }).then(function (result) {
+        if (!response.ok || !result.ok) throw new Error(result.message || "ส่งข้อมูลไม่สำเร็จ");
+        return result;
+      });
+    }).then(function (result) {
+      sheet.sending = false;
+      sheet.done = true;
+      sheet.reference = result.reference || "";
+      track("meet_complete", { intent: sheet.intent || "none" });
+      renderSheet();
+    }).catch(function (error) {
+      // Keep every answer on screen so retrying costs one tap, not a refill.
+      sheet.sending = false;
+      sheet.error = error.message || "ส่งข้อมูลไม่สำเร็จ";
+      track("meet_submit_failed", { intent: sheet.intent || "none" });
+      renderSheet();
+    });
   }
 
   /* ---------- wiring ---------- */

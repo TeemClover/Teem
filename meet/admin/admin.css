@@ -1,0 +1,107 @@
+:root {
+  --ink: #1d1f1c;
+  --ink-soft: #5f6560;
+  --paper: #f7f6f1;
+  --card: #ffffff;
+  --line: #e3e2da;
+  --clover-solid: #2f7d4f;
+  --gold: #b8873a;
+  --alert: #c0392b;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "IBM Plex Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+header {
+  display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 1rem;
+  padding: 0.875rem 1.25rem; background: var(--card); border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 5;
+}
+header .brand { color: var(--ink-soft); text-decoration: none; font-size: 0.875rem; }
+header .brand:hover { color: var(--ink); }
+header div small { display: block; font-size: 0.6875rem; letter-spacing: 0.12em; color: var(--ink-soft); }
+header div strong { font-size: 1rem; }
+header button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 0.5rem 0.875rem; cursor: pointer; font: inherit; }
+
+main { max-width: 60rem; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+.login-panel {
+  max-width: 24rem; margin: 4rem auto; background: var(--card); border: 1px solid var(--line);
+  border-radius: 1.25rem; padding: 2rem; text-align: center;
+}
+.login-panel .medal { font-size: 2.5rem; }
+.login-panel p { margin: 0.5rem 0 0; font-size: 0.6875rem; letter-spacing: 0.14em; color: var(--ink-soft); }
+.login-panel h1 { margin: 0.25rem 0 0.5rem; font-size: 1.5rem; }
+.login-panel span { display: block; font-size: 0.8125rem; color: var(--ink-soft); margin-bottom: 1.25rem; }
+.login-panel form { display: grid; gap: 0.625rem; }
+input, select, textarea, button { font: inherit; }
+input, select, textarea {
+  width: 100%; padding: 0.625rem 0.75rem; border: 1px solid var(--line);
+  border-radius: 0.625rem; background: var(--card); color: var(--ink);
+}
+.login-panel button[type="submit"] {
+  padding: 0.6875rem; border: 0; border-radius: 0.625rem; cursor: pointer;
+  background: var(--clover-solid); color: #fff; font-weight: 600;
+}
+
+.message { margin: 1rem 0; padding: 0.75rem 0.875rem; border-radius: 0.75rem; font-size: 0.8125rem; border: 1px solid var(--line); background: var(--card); }
+.message.warn { border-color: color-mix(in oklab, var(--gold) 45%, var(--line)); background: color-mix(in oklab, var(--gold) 8%, var(--card)); }
+.message.error { border-color: color-mix(in oklab, var(--alert) 45%, var(--line)); background: color-mix(in oklab, var(--alert) 7%, var(--card)); color: color-mix(in oklab, var(--alert) 75%, var(--ink)); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+.stats article { background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 0.875rem 1rem; }
+.stats span { font-size: 0.75rem; color: var(--ink-soft); }
+.stats strong { display: block; font-size: 1.75rem; line-height: 1.2; }
+.stats small { font-size: 0.6875rem; color: var(--ink-soft); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; justify-content: space-between; margin-bottom: 1rem; }
+.toolbar label { font-size: 0.75rem; color: var(--ink-soft); display: grid; gap: 0.25rem; min-width: 14rem; flex: 1; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.filters button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 0.375rem 0.75rem; cursor: pointer; font-size: 0.8125rem; }
+.filters button.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.booking-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 1rem;
+  padding: 1rem 1.125rem; margin-bottom: 0.75rem; display: grid; gap: 0.75rem;
+}
+.booking-card header { all: unset; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: baseline; justify-content: space-between; }
+.booking-card .who { display: grid; gap: 0.125rem; }
+.booking-card .who strong { font-size: 1.0625rem; }
+.booking-card .who a { color: var(--clover-solid); font-size: 0.9375rem; text-decoration: none; }
+.booking-card .who a:hover { text-decoration: underline; }
+.booking-card .who small { color: var(--ink-soft); font-size: 0.75rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.badge { font-size: 0.6875rem; padding: 0.25rem 0.5rem; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-soft); }
+.badge.new { background: color-mix(in oklab, var(--gold) 14%, var(--card)); color: color-mix(in oklab, var(--gold) 75%, var(--ink)); border-color: transparent; }
+.badge.contacted { background: #eceef1; border-color: transparent; }
+.badge.scheduled { background: color-mix(in oklab, var(--clover-solid) 16%, var(--card)); color: color-mix(in oklab, var(--clover-solid) 78%, var(--ink)); border-color: transparent; }
+.badge.done { background: var(--ink); color: var(--paper); border-color: transparent; }
+.badge.dropped { text-decoration: line-through; }
+.badge.failed { background: color-mix(in oklab, var(--alert) 12%, var(--card)); color: color-mix(in oklab, var(--alert) 75%, var(--ink)); border-color: transparent; }
+.badge.unconfigured { background: color-mix(in oklab, var(--gold) 12%, var(--card)); border-color: transparent; }
+
+.facts { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.facts span { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; background: var(--paper); }
+.said { font-size: 0.875rem; margin: 0; padding: 0.625rem 0.75rem; background: var(--paper); border-radius: 0.625rem; white-space: pre-wrap; }
+
+.controls { display: grid; gap: 0.5rem; }
+.control-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.control-row input[type="datetime-local"] { width: auto; flex: 1; min-width: 12rem; }
+.control-row textarea { min-height: 3rem; resize: vertical; }
+.controls button {
+  border: 1px solid var(--line); background: var(--card); border-radius: 0.625rem;
+  padding: 0.4375rem 0.75rem; cursor: pointer; font-size: 0.8125rem;
+}
+.controls button:hover { border-color: var(--ink-soft); }
+.controls button.primary { background: var(--clover-solid); color: #fff; border-color: transparent; }
+.controls button.ghost { color: var(--ink-soft); }
+
+.empty { text-align: center; color: var(--ink-soft); padding: 3rem 0; }
+
+@media (max-width: 40rem) {
+  header { grid-template-columns: auto minmax(0,1fr); }
+  header button { grid-column: 1 / -1; }
+}
