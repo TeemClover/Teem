@@ -79,6 +79,16 @@
       "permanent": false
     },
     {
+      "source": "/meet",
+      "destination": "/meet/",
+      "permanent": false
+    },
+    {
+      "source": "/meet/admin",
+      "destination": "/meet/admin/",
+      "permanent": false
+    },
+    {
       "source": "/xircle",
       "destination": "/xircle/",
       "permanent": false
