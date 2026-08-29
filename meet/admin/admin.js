@@ -36,9 +36,30 @@
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
 
-  const thaiTime = value => value
-    ? new Date(value).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })
-    : '—';
+  const adminTimeFormatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Bangkok',
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  });
+
+  function adminTime(value) {
+    if (!value) return '—';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '—';
+    const parts = adminTimeFormatter.formatToParts(date);
+    const get = type => parts.find(part => part.type === type)?.value || '';
+    return [
+      get('weekday').toUpperCase(),
+      get('day'),
+      get('month').toUpperCase(),
+      get('year'),
+    ].join(' ') + ` · ${get('hour')}:${get('minute')}`;
+  }
 
   async function api(method = 'GET', body) {
     const response = await fetch('/api/meet', {
@@ -81,7 +102,7 @@
         <div class="who">
           <strong>${esc(row.name)}</strong>
           ${contact}
-          <small>${esc(row.reference)} · เข้ามา ${esc(thaiTime(row.created_at))}</small>
+          <small>${esc(row.reference)} · เข้ามา ${esc(adminTime(row.created_at))}</small>
         </div>
         <div class="badges">
           <span class="badge ${esc(row.status)}">${esc(STATUS[row.status] || row.status)}</span>
@@ -92,7 +113,7 @@
         <span>${esc(INTENT[row.intent] || row.intent)}</span>
         <span>${esc(row.meet_mode)}</span>
         <span>สะดวก ${esc(row.pref_day)} ${esc(row.pref_time)}</span>
-        ${row.scheduled_at ? `<span>นัดจริง ${esc(thaiTime(row.scheduled_at))}</span>` : ''}
+        ${row.scheduled_at ? `<span>นัดจริง ${esc(adminTime(row.scheduled_at))}</span>` : ''}
       </div>
       ${row.note ? `<p class="said">${esc(row.note)}</p>` : ''}
       <div class="controls">
