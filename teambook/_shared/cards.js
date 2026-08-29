@@ -208,6 +208,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'porch-wind-chime', description: 'กระต่ายยืนบนบันไดเตี้ย แขวนโมบายลมสีเงินไว้ข้างระเบียงรับแสงเช้า', flavor: 'แขวนความตั้งใจไว้ แล้วปล่อยให้ลมช่วยบรรเลง' },
     ],
   },
+  fox: {
+    red: [
+      { variant: 'pancake-flip', description: 'จิ้งจอกเอนตัวพลิกแพนเค้กด้วยกระทะสีแดงในครัวเช้า จับจังหวะแพนเค้กกลางอากาศอย่างร่าเริง', flavor: 'กะจังหวะให้พอดี แล้วมื้อธรรมดาก็กลายเป็นโชว์เล็ก ๆ' },
+      { variant: 'balloon-floor-pump', description: 'จิ้งจอกเหยียบปั๊มลมสีแดงในลานสวน เติมลูกโป่งใบใหญ่ให้ค่อย ๆ ลอยสูงขึ้น', flavor: 'ออกแรงทีละปั๊ม แล้วความตั้งใจก็พองโตขึ้นจริง' },
+    ],
+    green: [
+      { variant: 'footprint-detective', description: 'จิ้งจอกคุกเข่าส่องรอยเท้าด้วยแว่นขยายสีเขียวบนทางป่าหลังฝน ตามเบาะแสผ่านแอ่งน้ำเล็ก ๆ', flavor: 'รอยเล็กแค่ไหนก็พาไปต่อได้ ถ้าเรายอมก้มมอง' },
+      { variant: 'twig-raft', description: 'จิ้งจอกนั่งริมลำธาร ผูกแพกิ่งไม้ด้วยเชือกสีเขียวและค่อย ๆ มัดปมให้แน่น', flavor: 'ของที่ดูแยกกัน ลอยไปด้วยกันได้เมื่อผูกอย่างตั้งใจ' },
+    ],
+    blue: [
+      { variant: 'butterfly-net', description: 'จิ้งจอกวิ่งผ่านทุ่งดอกไม้พร้อมสวิงสีน้ำเงิน โบกทักผีเสื้อที่บินอยู่เหนือทางเดิน', flavor: 'วิ่งตามความสงสัยได้ โดยไม่ต้องจับทุกอย่างไว้' },
+      { variant: 'rolling-hoop', description: 'จิ้งจอกวิ่งใช้ไม้สีน้ำเงินกลิ้งห่วงไปตามทางสวน รักษาห่วงให้ตั้งตรงผ่านโค้งเล็ก ๆ', flavor: 'แตะเบา ๆ ให้ถูกจังหวะ แล้วสิ่งที่กลิ้งก็ไปต่อได้ไกล' },
+    ],
+    silver: [
+      { variant: 'hand-crank-projector', description: 'จิ้งจอกหมุนเครื่องฉายหนังสีเงินในห้องใต้หลังคา ฉายแสงรูปดาวและพระจันทร์ลงบนผนัง', flavor: 'หมุนเรื่องเล่าให้เดินหน้า แล้วแสงเล็ก ๆ จะเติมเต็มห้อง' },
+      { variant: 'tin-robot', description: 'จิ้งจอกคุกเข่าใช้ไขควงประกอบหุ่นยนต์กระป๋องสีเงินบนพรมในห้องช่างยามเช้า', flavor: 'ชิ้นส่วนแต่ละชิ้นมีที่ของมัน เมื่อเราค่อย ๆ ลองประกอบ' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -252,7 +270,7 @@ const PRINTED = Object.freeze({
   /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(['pig', 'buffalo', 'chicken', 'crow', 'turtle', 'rabbit'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+    .concat(['pig', 'buffalo', 'chicken', 'crow', 'turtle', 'rabbit', 'fox'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
       species, color, variant, scene: true,
     }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
