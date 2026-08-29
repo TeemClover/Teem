@@ -247,30 +247,35 @@ body { background: #f8f3e7; }
 .xircle-reward { border-bottom: 1px solid rgba(23, 53, 44, .18); border-top: 1px solid rgba(23, 53, 44, .18); display: grid; gap: 5px; margin: 34px 0; padding: 22px 0; }
 .xircle-reward strong { font-size: 18px; }
 .xircle-reward span { color: rgba(23, 53, 44, .65); }
-.funnel-xircle-visual { min-height: 640px; position: relative; }
+.funnel-xircle-visual {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
 
 .funnel-xircle-visual .whitecat-companion {
-  left: 50%;
-  position: absolute;
-  top: -4%;
-  transform: translateX(-50%);
-  width: min(92%, 440px);
+  left: auto;
+  margin: 0 auto 18px;
+  position: relative;
+  top: auto;
+  transform: none;
+  width: min(78%, 340px);
   z-index: 3;
 }
 
-.funnel-xircle-visual .whitecat-companion.is-speaking { transform: translateX(-50%); }
+.funnel-xircle-visual .whitecat-companion.is-speaking { transform: none; }
 
 .xircle-mini-card {
   background: var(--ink);
   border-radius: 28px;
-  bottom: 0;
   box-shadow: 0 28px 70px rgba(23,53,44,.19);
   color: white;
   display: block;
-  left: 0;
   overflow: hidden;
-  position: absolute;
-  right: 0;
+  position: relative;
+  width: 100%;
 }
 
 .xircle-mini-card img { aspect-ratio: 4 / 3; display: block; object-fit: cover; width: 100%; }
@@ -393,7 +398,7 @@ body { background: #f8f3e7; }
   .funnel-heading, .funnel-xircle, .funnel-proof, .funnel-trust { grid-template-columns: 1fr; }
   .funnel-heading .eyebrow { grid-column: auto; }
   .funnel-heading > p:last-child { max-width: 650px; }
-  .funnel-xircle-visual { margin: 0 auto; max-width: 560px; min-height: 640px; width: 100%; }
+  .funnel-xircle-visual { margin: 0 auto; max-width: 560px; min-height: 0; width: 100%; }
   .funnel-proof .tiktok-embed-shell { margin: 0 auto; max-width: 620px; width: 100%; }
   .funnel-footer { grid-template-columns: 1fr; text-align: center; }
   .funnel-footer > * { justify-self: center; }
