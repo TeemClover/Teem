@@ -280,7 +280,8 @@
     byId("sheet-title").textContent = sheet.done ? "นัดกันแล้ว 🍀" : "มาเจอกัน";
     byId("sheet-sub").textContent = sheet.done ? "ไว้เจอกัน" : "เลือกแบบที่สบายกับคุณ";
     prog.hidden = sheet.done;
-    foot.hidden = sheet.done;
+    foot.hidden = false;
+    byId("sheet-back").hidden = sheet.done;
 
     Array.prototype.forEach.call(prog.children, function (s, i) {
       s.setAttribute("data-on", String(i <= sheet.step));
@@ -302,6 +303,8 @@
         ? "เราจะทักกลับไปที่ " + sheet.contact.trim() + " เพื่อเคาะเวลาให้ลงตัว · อ้างอิง " + sheet.reference
         : "เราจะทักกลับไปที่ " + sheet.contact.trim() + " เพื่อเคาะเวลาให้ลงตัว"));
       body.appendChild(d);
+      byId("sheet-next").textContent = "ส่งเสร็จแล้ว ✓";
+      byId("sheet-next").disabled = true;
       return;
     }
 
