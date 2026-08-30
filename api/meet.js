@@ -13,6 +13,8 @@ const INTENTS = new Set(['health', 'opportunity', 'curious']);
 const MODES = new Set(['ออนไลน์', 'เจอกันจริง', 'เจอกัน + Body Check-in', 'Coffee / Buffet']);
 const LEGACY_DAYS = new Set(['วันนี้', 'พรุ่งนี้', 'สุดสัปดาห์', 'สัปดาห์หน้า']);
 const LEGACY_TIMES = new Set(['เช้า', 'บ่าย', 'เย็น', 'ค่ำ']);
+const FLEXIBLE_DAY = 'flexible';
+const FLEXIBLE_TIME = 'เวลาไหนก็ได้';
 const STATUSES = ['new', 'contacted', 'scheduled', 'done', 'dropped'];
 
 function clean(value, max = 200) {
@@ -43,13 +45,13 @@ function reference() {
   return `MEET-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`;
 }
 function validRequestedDay(value) {
-  if (LEGACY_DAYS.has(value)) return true;
+  if (value === FLEXIBLE_DAY || LEGACY_DAYS.has(value)) return true;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const date = new Date(`${value}T12:00:00+07:00`);
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 function validRequestedTime(value) {
-  if (LEGACY_TIMES.has(value)) return true;
+  if (value === FLEXIBLE_TIME || LEGACY_TIMES.has(value)) return true;
   if (!/^\d{2}:\d{2}$/.test(value)) return false;
   const [hour, minute] = value.split(':').map(Number);
   return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
