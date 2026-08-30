@@ -2,16 +2,11 @@
 <html lang="th">
   <head>
     <meta charset="utf-8">
-    <script>
-      if (location.pathname === "/xvisor" || location.pathname === "/xvisor/") {
-        location.replace("/xvisor/index.html");
-      }
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#17384f">
     <meta name="description" content="X-VISOR QUEST เกมบริหาร pixel ที่พาคุณเริ่มจากตัวเอง ดูแลลูกค้าคนแรก และสร้างทีมที่เติบโตต่อได้">
     <title>X-VISOR QUEST</title>
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1">
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=4">
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
@@ -26,6 +21,7 @@
           </div>
         </div>
         <div class="header-tools">
+          <button class="tool-button" id="monthButton" type="button" hidden>จบเดือน</button>
           <button class="tool-button" id="incomeButton" type="button" hidden>ดูรายได้</button>
           <button class="tool-button" id="soundButton" type="button" aria-pressed="true">เสียง: เปิด</button>
           <button class="tool-button tool-button--icon" id="resetButton" type="button" aria-label="เริ่มเกมใหม่" title="เริ่มเกมใหม่">↺</button>
@@ -34,13 +30,17 @@
 
       <section class="status-strip" aria-label="สถานะปัจจุบัน">
         <div class="status-item status-item--month">
-          <span>เวลาในเกม</span>
-          <strong id="hudMonth">ก่อนเริ่ม</strong>
+          <span id="hudPhaseLabel">ช่วงการเรียนรู้</span>
+          <strong id="hudMonth">PRE-SEASON</strong>
         </div>
-        <div class="status-item status-item--time">
-          <span>เวลาที่เหลือ</span>
-          <strong id="hudTime">—</strong>
-          <div class="time-meter" id="timeMeter" aria-hidden="true"></div>
+        <button class="status-item status-item--button status-item--energy" id="hudEnergyButton" type="button" aria-label="ดูความหมายของพลังงาน">
+          <span id="hudEnergyLabel">ความพร้อม 28 วัน <b aria-hidden="true">?</b></span>
+          <strong id="hudEnergy">⚡ 0 / 28</strong>
+          <div class="time-meter" id="energyMeter" aria-hidden="true"></div>
+        </button>
+        <div class="status-item status-item--customers">
+          <span>ลูกค้า</span>
+          <strong id="hudCustomers">0 คน</strong>
         </div>
         <button class="status-item status-item--button" id="hudXVButton" type="button" aria-label="ดูความหมายของ XV">
           <span>XV เดือนนี้ <b aria-hidden="true">?</b></span>
@@ -69,7 +69,7 @@
           </article>
 
           <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น">
-            <div class="world-frame__label"><span>CLOVER NEIGHBORHOOD</span><b>LIVE</b></div>
+            <div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>LIVE</b></div>
             <canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas>
             <span class="milestone-badge" id="milestoneBadge" hidden></span>
           </figure>
@@ -95,6 +95,11 @@
 
       <footer class="game-footer">
         <p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้</p>
+        <nav aria-label="ความรู้เพิ่มเติม">
+          <a href="/xircle/hardware/">Xircle</a>
+          <a href="/xircle/routinex/">RoutineX</a>
+          <a href="/xircle/products/">ผลิตภัณฑ์</a>
+        </nav>
         <span>บันทึกอัตโนมัติบนอุปกรณ์นี้</span>
       </footer>
     </main>
@@ -106,6 +111,6 @@
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div>
     <div class="sr-only" id="liveRegion" aria-live="polite"></div>
 
-    <script type="module" src="/xvisor/quest/game.js?v=1"></script>
+    <script type="module" src="/xvisor/quest/game.js?v=4"></script>
   </body>
 </html>
