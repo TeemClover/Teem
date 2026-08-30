@@ -411,3 +411,12 @@ textarea.field { min-height: 88px; resize: vertical; }.field-meta { display: fle
   font-size:.88rem;
 }
 .draft-resume button { font:inherit; }
+
+/* Show the full room instead of cropping the proof photo into a narrow strip. */
+.crowd-proof img {
+  height:clamp(180px, 33.36vw, 430px);
+  object-position:50% 50%;
+}
+@media (min-width: 860px) {
+  .crowd-proof img { height:clamp(300px, 33.36vw, 430px); }
+}
