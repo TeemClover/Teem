@@ -11,8 +11,8 @@ import { randomUUID, timingSafeEqual } from 'node:crypto';
 
 const INTENTS = new Set(['health', 'opportunity', 'curious']);
 const MODES = new Set(['ออนไลน์', 'เจอกันจริง', 'เจอกัน + Body Check-in', 'Coffee / Buffet']);
-const DAYS = new Set(['วันนี้', 'พรุ่งนี้', 'สุดสัปดาห์', 'สัปดาห์หน้า']);
-const TIMES = new Set(['เช้า', 'บ่าย', 'เย็น', 'ค่ำ']);
+const LEGACY_DAYS = new Set(['วันนี้', 'พรุ่งนี้', 'สุดสัปดาห์', 'สัปดาห์หน้า']);
+const LEGACY_TIMES = new Set(['เช้า', 'บ่าย', 'เย็น', 'ค่ำ']);
 const STATUSES = ['new', 'contacted', 'scheduled', 'done', 'dropped'];
 
 function clean(value, max = 200) {
@@ -41,6 +41,18 @@ function authorized(req) {
 }
 function reference() {
   return `MEET-${randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()}`;
+}
+function validRequestedDay(value) {
+  if (LEGACY_DAYS.has(value)) return true;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T12:00:00+07:00`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+function validRequestedTime(value) {
+  if (LEGACY_TIMES.has(value)) return true;
+  if (!/^\d{2}:\d{2}$/.test(value)) return false;
+  const [hour, minute] = value.split(':').map(Number);
+  return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
 }
 
 export async function ensureMeetSchema(sql) {
@@ -113,7 +125,7 @@ export default async function handler(req, res) {
 
       if (!INTENTS.has(intent)) return sendJson(res, { ok: false, field: 'intent', message: 'ยังไม่ได้เลือกเรื่องที่อยากคุย' }, 400);
       if (!MODES.has(mode)) return sendJson(res, { ok: false, field: 'mode', message: 'ยังไม่ได้เลือกรูปแบบการเจอ' }, 400);
-      if (!DAYS.has(day) || !TIMES.has(time)) return sendJson(res, { ok: false, field: 'day', message: 'ยังไม่ได้เลือกวันและช่วงเวลา' }, 400);
+      if (!validRequestedDay(day) || !validRequestedTime(time)) return sendJson(res, { ok: false, field: 'day', message: 'วันหรือเวลาที่ขอไม่ถูกต้อง' }, 400);
       if (!name) return sendJson(res, { ok: false, field: 'name', message: 'ยังไม่ได้ใส่ชื่อที่อยากให้เรียก' }, 400);
       if (!contact) return sendJson(res, { ok: false, field: 'contact', message: 'ยังไม่ได้ใส่ LINE หรือเบอร์ที่ติดต่อได้' }, 400);
 

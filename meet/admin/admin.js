@@ -7,7 +7,7 @@
   const esc = value => String(value ?? '').replace(/[&<>'"]/g, char =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 
-  const INTENT = { health: 'สุขภาพ', opportunity: 'โอกาสใหม่', curious: 'ยังไม่แน่ใจ' };
+  const INTENT = { health: 'สุขภาพ', opportunity: 'เตรียมสอบและระบบดูแล', curious: 'ยังไม่แน่ใจ' };
   const STATUS = { new: 'ใหม่', contacted: 'ติดต่อแล้ว', scheduled: 'นัดแล้ว', done: 'จบแล้ว', dropped: 'ไม่ไปต่อ' };
   const NOTIFY = { delivered: 'แจ้งเตือนส่งแล้ว', failed: 'แจ้งเตือนไม่ออก', unconfigured: 'ยังไม่ตั้งช่องทาง', pending: 'รอส่ง' };
 
@@ -61,6 +61,17 @@
     ].join(' ') + ` · ${get('hour')}:${get('minute')}`;
   }
 
+  function requestedTime(day, time) {
+    const value = String(day || '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return `สะดวก ${value} ${time || ''}`.trim();
+    const date = new Date(`${value}T12:00:00+07:00`);
+    if (Number.isNaN(date.getTime())) return `สะดวก ${value} ${time || ''}`.trim();
+    const label = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Bangkok', weekday: 'short', day: '2-digit', month: 'short', year: 'numeric',
+    }).format(date).toUpperCase().replace(',', '');
+    return `เวลาที่ขอ ${label} · ${time || '—'}`;
+  }
+
   async function api(method = 'GET', body) {
     const response = await fetch('/api/meet', {
       method,
@@ -112,7 +123,7 @@
       <div class="facts">
         <span>${esc(INTENT[row.intent] || row.intent)}</span>
         <span>${esc(row.meet_mode)}</span>
-        <span>สะดวก ${esc(row.pref_day)} ${esc(row.pref_time)}</span>
+        <span>${esc(requestedTime(row.pref_day, row.pref_time))}</span>
         ${row.scheduled_at ? `<span>นัดจริง ${esc(adminTime(row.scheduled_at))}</span>` : ''}
       </div>
       ${row.note ? `<p class="said">${esc(row.note)}</p>` : ''}

@@ -132,3 +132,8 @@ test('a stored row maps onto the notification shape', () => {
   assert.ok(text.includes('สุดสัปดาห์ บ่าย'));
   assert.ok(!text.includes('undefined'));
 });
+
+test('a Gregorian requested slot survives notification formatting unchanged', () => {
+  const text = notificationText({ ...booking, day: '2026-09-01', time: '18:30' }, '');
+  assert.ok(text.includes('2026-09-01 18:30'));
+});

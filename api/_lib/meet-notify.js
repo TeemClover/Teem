@@ -8,7 +8,7 @@ const TIMEOUT_MS = 8000;
 
 const INTENT_LABELS = {
   health: 'สุขภาพ · อยากรู้จักร่างกายตัวเอง',
-  opportunity: 'โอกาสใหม่ · อยากมองทางเลือกใหม่',
+  opportunity: 'เตรียมสอบใบอนุญาต · ระบบติดตาม Routine',
   curious: 'ยังไม่แน่ใจ · แค่อยากรู้จักกันก่อน',
 };
 
