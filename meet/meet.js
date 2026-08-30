@@ -19,28 +19,28 @@
   const INTENTS = [
     {
       id: 'health', label: 'สุขภาพและ Routine', short: 'อยากรู้จักร่างกายและสิ่งที่ทำได้จริง',
-      kicker: 'BODY & ROUTINE', head: 'เริ่มจากชีวิตที่คุณกำลังใช้จริง',
+      kicker: 'XIRCLE SCALE → HEALTH PLAN', head: 'วัดให้เห็นก่อน แล้วเลือกจุดเริ่มที่ทำได้จริง',
       outcomes: [
-        'เข้าใจข้อมูลร่างกายโดยไม่ตัดสินจากน้ำหนักอย่างเดียว',
-        'เห็น Eat · Move · Sleep และ Routine ที่กำลังส่งผลกับคุณ',
-        'กลับไปพร้อมหนึ่งจุดเริ่มที่ทำได้จริงในชีวิตปัจจุบัน',
+        'วัดองค์ประกอบร่างกายด้วย Xircle Scale และอ่าน baseline ให้เข้าใจง่าย',
+        'เชื่อมข้อมูลกับ Eat · Move · Sleep และ Routine ที่เกิดขึ้นจริงในชีวิตคุณ',
+        'กลับไปพร้อม 1–2 จุดเริ่มที่ทำได้ทันที และมีค่าไว้เทียบครั้งต่อไป',
       ],
-      qualifier: 'ถ้าคำแนะนำครั้งนี้พอแล้ว จบตรงนั้นได้เลย ไม่ต้องซื้อผลิตภัณฑ์',
-      cta: 'นัด Body & Routine Session',
-      ack: ['เรื่องนี้เราจะไม่เริ่มจากการห้ามกินหรือบอกให้เปลี่ยนทุกอย่าง', 'ทีมจะช่วยมองระบบ ส่วนเอโกะจะช่วยปรับ Routine ให้เข้ากับชีวิตจริงของคุณ'],
+      qualifier: 'ไม่ต้องซื้อผลิตภัณฑ์เพื่อมาวัดและวางแผนกับเรา',
+      cta: 'นัด Xircle Body Check-in',
+      ack: ['เราจะเริ่มจากข้อมูลร่างกายจริงของคุณ ไม่ใช่การเดา', 'แล้วช่วยกันเลือกเพียง 1–2 จุดที่เหมาะกับชีวิตจริงและเริ่มได้ทันที'],
       color: '#287354', icon: 'body',
     },
     {
-      id: 'opportunity', label: 'สอบใบอนุญาตและระบบดูแล', short: 'อยากรู้วิธีเตรียมสอบและระบบที่มีให้ใช้',
-      kicker: 'EXAM & CARE SYSTEM', head: 'คุณเลือกเส้นทาง เราช่วยให้คุณเตรียมพร้อม',
+      id: 'opportunity', label: 'ต่อยอดเป็นธุรกิจ', short: 'อยากรู้ว่าเราช่วยต่อยอดเส้นทางนี้ยังไง',
+      kicker: 'SERVICE → BUSINESS', head: 'เริ่มจากการดูแลคนให้ดี แล้วค่อยต่อยอดเป็นงาน',
       outcomes: [
-        'เห็นภาพสิ่งที่ต้องเรียน ข้อกำหนด และวิธีเตรียมตัวสอบใบอนุญาต',
-        'รู้จักระบบติวของเรา โดยไม่รับประกันผลสอบ',
-        'เห็นระบบแอปติดตาม Routine ที่ช่วยให้การดูแลต่อเนื่องเป็นรูปธรรม',
+        'เห็นก่อนว่าคุณอยากช่วยใคร และบริการแบบไหนที่เหมาะกับคุณ',
+        'ถ้าอยากต่อยอดเป็นอาชีพ เราช่วยวางเส้นทางและเตรียมสอบใบอนุญาตให้',
+        'มีเครื่องมือ Routine และระบบดูแลต่อเนื่องให้ใช้หลังเริ่มต้น ไม่ต้องเริ่มจากการขาย',
       ],
-      qualifier: 'เราไม่สามารถชวนหรือรับสมัครคุณได้ การเลือกสอบต้องมาจากคุณเอง และเราไม่รับประกันว่าสอบผ่าน',
-      cta: 'นัด Exam & Care System Session',
-      ack: ['ถ้าคุณเลือกเส้นทางสอบด้วยตัวเอง ทีมจะช่วยให้เห็นโครงสร้างการเรียนและวิธีเตรียมตัว', 'เอโกะจะช่วยให้เห็นว่าระบบ Routine ถูกนำไปใช้ดูแลในชีวิตจริงอย่างไร—โดยไม่มีแรงกดดันให้ตัดสินใจวันนั้น'],
+      qualifier: 'บริการและคุณค่าที่คุณให้คนคือแกนหลัก ธุรกิจเป็นทางเลือก ไม่ใช่เงื่อนไขของการมาเจอเรา',
+      cta: 'นัดคุยเรื่องการต่อยอด',
+      ack: ['ถ้าคุณอยากต่อยอด เราจะเริ่มจากการดูแลคนและคุณค่าที่คุณอยากสร้างก่อน', 'จากนั้นค่อยเปิดให้ดูเส้นทางเตรียมสอบ เครื่องมือ Routine และระบบสนับสนุนที่มีให้ใช้'],
       color: '#4f8cff', icon: 'path',
     },
     {
@@ -192,7 +192,7 @@
   }
 
   const booking = {
-    open: false, step: 0, schedulePart: 'date', intent: null, mode: null, day: null, time: null,
+    open: false, step: 0, schedulePart: 'date', scheduleWeek: null, intent: null, mode: null, day: null, time: null,
     name: '', contact: '', note: '', consent: false, preparing: false, sending: false,
     done: false, error: '', reference: '', closeConfirm: false, opener: null,
   };
@@ -224,17 +224,89 @@
     return `${y}-${m}-${d}`;
   }
 
+  function localNoon(date = new Date()) {
+    const copy = new Date(date);
+    copy.setHours(12, 0, 0, 0);
+    return copy;
+  }
+
+  function addDays(date, amount) {
+    const copy = localNoon(date);
+    copy.setDate(copy.getDate() + amount);
+    return copy;
+  }
+
+  function timesForMode(mode = booking.mode) {
+    return mode === 'ออนไลน์' ? ONLINE_TIMES : IN_PERSON_TIMES;
+  }
+
+  function availableTimesForDate(date) {
+    let values = timesForMode().slice();
+    if (dateKey(date) === dateKey(new Date())) {
+      const now = new Date();
+      const cutoff = now.getHours() * 60 + now.getMinutes() + 60;
+      values = values.filter(value => {
+        const [hour, minute] = value.split(':').map(Number);
+        return hour * 60 + minute > cutoff;
+      });
+    }
+    return values;
+  }
+
   function requestDates() {
     const dates = [];
-    const start = new Date();
-    start.setHours(12, 0, 0, 0);
-    if (new Date().getHours() >= 18) start.setDate(start.getDate() + 1);
+    const start = localNoon();
     for (let index = 0; index < 14; index += 1) {
-      const date = new Date(start);
-      date.setDate(start.getDate() + index);
+      const date = addDays(start, index);
+      if (index === 0 && availableTimesForDate(date).length === 0) continue;
       dates.push(date);
     }
     return dates;
+  }
+
+  function weekStart(date) {
+    const copy = localNoon(date);
+    const mondayOffset = (copy.getDay() + 6) % 7;
+    copy.setDate(copy.getDate() - mondayOffset);
+    return copy;
+  }
+
+  function thaiShortDate(date) {
+    return new Intl.DateTimeFormat('th-TH', { weekday: 'short', day: 'numeric', month: 'short' }).format(date);
+  }
+
+  function thaiDayName(date) {
+    return new Intl.DateTimeFormat('th-TH', { weekday: 'long' }).format(date);
+  }
+
+  function thaiCompactDate(date) {
+    return new Intl.DateTimeFormat('th-TH', { day: 'numeric', month: 'short' }).format(date);
+  }
+
+  function weekRangeLabel(dates) {
+    if (!dates.length) return '';
+    return `${thaiCompactDate(dates[0])} – ${thaiCompactDate(dates[dates.length - 1])}`;
+  }
+
+  function scheduleGroups() {
+    const today = localNoon();
+    const tomorrow = addDays(today, 1);
+    const dayAfter = addDays(today, 2);
+    const dates = requestDates();
+    const byKey = new Map(dates.map(date => [dateKey(date), date]));
+    const direct = [
+      { label: 'วันนี้', date: byKey.get(dateKey(today)) },
+      { label: 'พรุ่งนี้', date: byKey.get(dateKey(tomorrow)) },
+      { label: 'มะรืนนี้', date: byKey.get(dateKey(dayAfter)) },
+    ].filter(item => item.date);
+
+    const thisWeekStart = weekStart(today);
+    const nextWeekStart = addDays(thisWeekStart, 7);
+    const afterNextWeek = addDays(nextWeekStart, 7);
+    const later = dates.filter(date => date > dayAfter);
+    const thisWeek = later.filter(date => date >= thisWeekStart && date < nextWeekStart);
+    const nextWeek = later.filter(date => date >= nextWeekStart && date < afterNextWeek);
+    return { direct, thisWeek, nextWeek };
   }
 
   function dateParts(value) {
@@ -261,6 +333,7 @@
     booking.opener = document.activeElement;
     booking.step = page.intent ? 1 : 0;
     booking.schedulePart = 'date';
+    booking.scheduleWeek = null;
     booking.intent = page.intent;
     booking.mode = null; booking.day = null; booking.time = null;
     booking.name = ''; booking.contact = ''; booking.note = ''; booking.consent = false;
@@ -335,6 +408,21 @@
     set.className = `choice-set ${className}`.trim();
     items.forEach(item => set.appendChild(item));
     return set;
+  }
+
+  function dateChoiceButton(date) {
+    const value = dateKey(date);
+    const part = dateParts(value);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'choice date-choice';
+    button.innerHTML = `<span>${part.weekday}</span><strong>${part.day} ${part.month}</strong><small>${part.year}</small>`;
+    button.setAttribute('aria-label', `${thaiDayName(date)} ${thaiCompactDate(date)}`);
+    button.addEventListener('click', () => pacedAdvance(() => {
+      booking.day = value;
+      booking.scheduleWeek = null;
+    }, () => { booking.schedulePart = 'time'; }));
+    return button;
   }
 
   function pacedAdvance(apply, next) {
@@ -419,6 +507,7 @@
     const buttons = modes.map(mode => choiceButton(mode.label, mode.meta, () => {
       pacedAdvance(() => {
         booking.mode = mode.value;
+        booking.scheduleWeek = null;
         track('meet_mode_selected', { intent: booking.intent, mode: mode.value });
       }, () => { booking.step = 2; booking.schedulePart = 'date'; });
     }));
@@ -426,35 +515,78 @@
   }
 
   function renderScheduleStep(thread) {
-    if (booking.schedulePart === 'date' || !booking.day) {
-      thread.appendChild(guideMessage(['ช่วงไหนที่คุณอยากเก็บไว้ให้เรา?', 'เวลานี้ยังเป็นคำขอ เราจะติดต่อกลับเพื่อยืนยันอีกครั้ง']));
-      const dateButtons = requestDates().map(date => {
-        const value = dateKey(date); const part = dateParts(value);
-        const button = document.createElement('button');
-        button.type = 'button'; button.className = 'choice date-choice';
-        button.innerHTML = `<span>${part.weekday}</span><strong>${part.day} ${part.month}</strong><small>${part.year}</small>`;
-        button.addEventListener('click', () => pacedAdvance(() => { booking.day = value; }, () => { booking.schedulePart = 'time'; }));
-        return button;
-      });
-      thread.appendChild(choices(dateButtons, 'date-set'));
+    if (booking.schedulePart === 'date') {
+      thread.appendChild(guideMessage(['อยากเจอกันเมื่อไหร่?', 'เราจะโชว์เฉพาะวันที่ยังมีช่วงเวลาที่เป็นไปได้จากเวลาในเครื่องนี้']));
+      const groups = scheduleGroups();
+      const buttons = groups.direct.map(item => choiceButton(item.label, thaiShortDate(item.date), () => {
+        pacedAdvance(() => {
+          booking.day = dateKey(item.date);
+          booking.scheduleWeek = null;
+        }, () => { booking.schedulePart = 'time'; });
+      }));
+      if (groups.thisWeek.length || groups.nextWeek.length) {
+        buttons.push(choiceButton('หลังจากนั้น', 'เลือกสัปดาห์ก่อน แล้วค่อยเลือกวัน', () => {
+          booking.schedulePart = 'week';
+          booking.scheduleWeek = null;
+          track('meet_later_dates_opened', { intent: booking.intent });
+          renderBooking();
+        }));
+      }
+      thread.appendChild(choices(buttons, 'date-near-set'));
       thread.appendChild(choices([choiceButton('วันไหนก็ได้', 'ให้เราเสนอเวลาที่ว่างให้', () => {
         pacedAdvance(() => {
           booking.day = FLEXIBLE_DAY;
+          booking.scheduleWeek = null;
           track('meet_flexible_day_selected', { intent: booking.intent });
         }, () => { booking.schedulePart = 'time'; });
       }, 'choice-soft')]));
       return;
     }
-    thread.appendChild(guideMessage([booking.day === FLEXIBLE_DAY ? 'ปกติสะดวกช่วงไหนของวัน?' : `${dateLabel(booking.day)} สะดวกช่วงไหนที่สุด?`]));
-    let values = booking.mode === 'ออนไลน์' ? ONLINE_TIMES : IN_PERSON_TIMES;
-    if (booking.day === dateKey(new Date())) {
-      const now = new Date();
-      const cutoff = now.getHours() * 60 + now.getMinutes() + 60;
-      values = values.filter(value => {
-        const [hour, minute] = value.split(':').map(Number);
-        return hour * 60 + minute > cutoff;
-      });
+
+    if (booking.schedulePart === 'week') {
+      thread.appendChild(guideMessage(['หลังจากนั้น อยากดูช่วงไหน?', 'เลือกสัปดาห์ก่อน จะได้ไม่ต้องเห็นวันยาว ๆ ทีเดียว']));
+      const groups = scheduleGroups();
+      const buttons = [];
+      if (groups.thisWeek.length) {
+        buttons.push(choiceButton('สัปดาห์นี้', weekRangeLabel(groups.thisWeek), () => {
+          booking.scheduleWeek = 'this';
+          booking.schedulePart = 'week-day';
+          renderBooking();
+        }));
+      }
+      if (groups.nextWeek.length) {
+        buttons.push(choiceButton('สัปดาห์หน้า', weekRangeLabel(groups.nextWeek), () => {
+          booking.scheduleWeek = 'next';
+          booking.schedulePart = 'week-day';
+          renderBooking();
+        }));
+      }
+      if (!buttons.length) {
+        booking.schedulePart = 'date';
+        booking.scheduleWeek = null;
+        return renderScheduleStep(thread);
+      }
+      thread.appendChild(choices(buttons));
+      return;
     }
+
+    if (booking.schedulePart === 'week-day') {
+      const groups = scheduleGroups();
+      const dates = booking.scheduleWeek === 'this' ? groups.thisWeek : groups.nextWeek;
+      if (!dates.length) {
+        booking.schedulePart = 'week';
+        booking.scheduleWeek = null;
+        return renderScheduleStep(thread);
+      }
+      thread.appendChild(guideMessage([booking.scheduleWeek === 'this' ? 'สัปดาห์นี้ วันไหนสะดวก?' : 'สัปดาห์หน้า วันไหนสะดวก?', 'เลือกวันก่อน แล้วค่อยเลือกเวลา']));
+      thread.appendChild(choices(dates.map(dateChoiceButton), 'date-set'));
+      return;
+    }
+
+    thread.appendChild(guideMessage([booking.day === FLEXIBLE_DAY ? 'ปกติสะดวกช่วงไหนของวัน?' : `${dateLabel(booking.day)} สะดวกช่วงไหนที่สุด?`]));
+    let values = booking.day === FLEXIBLE_DAY
+      ? timesForMode().slice()
+      : availableTimesForDate(new Date(`${booking.day}T12:00:00`));
     const buttons = values.map(value => choiceButton(`${value} น.`, '', () => {
       pacedAdvance(() => {
         booking.time = value;
@@ -527,11 +659,11 @@
     edit.addEventListener('click', () => {
       booking.step = step; booking.error = '';
       if (step === 0) {
-        booking.intent = null; booking.mode = null; booking.day = null; booking.time = null;
+        booking.intent = null; booking.mode = null; booking.day = null; booking.time = null; booking.scheduleWeek = null;
       } else if (step === 1) {
-        booking.mode = null; booking.day = null; booking.time = null;
+        booking.mode = null; booking.day = null; booking.time = null; booking.scheduleWeek = null;
       } else if (step === 2) {
-        booking.day = null; booking.time = null; booking.schedulePart = 'date';
+        booking.day = null; booking.time = null; booking.schedulePart = 'date'; booking.scheduleWeek = null;
       }
       renderBooking();
     });
@@ -573,8 +705,8 @@
   }
 
   function submitLabel(intent) {
-    if (intent === 'health') return 'ส่งคำขอ Body & Routine Session';
-    if (intent === 'opportunity') return 'ส่งคำขอ Exam & Care System Session';
+    if (intent === 'health') return 'ส่งคำขอ Xircle Body Check-in';
+    if (intent === 'opportunity') return 'ส่งคำขอคุยเรื่องการต่อยอด';
     return 'ส่งคำขอ Open Table Session';
   }
 
@@ -656,13 +788,19 @@
     if (booking.done) return closeBooking(true);
     if (booking.step === 0) return closeBooking();
     booking.error = '';
-    if (booking.step === 2 && booking.schedulePart === 'time') {
-      booking.day = null; booking.time = null; booking.schedulePart = 'date';
+    if (booking.step === 2 && booking.schedulePart === 'week-day') {
+      booking.schedulePart = 'week';
+      booking.scheduleWeek = null;
+    } else if (booking.step === 2 && booking.schedulePart === 'week') {
+      booking.schedulePart = 'date';
+      booking.scheduleWeek = null;
+    } else if (booking.step === 2 && booking.schedulePart === 'time') {
+      booking.day = null; booking.time = null; booking.schedulePart = 'date'; booking.scheduleWeek = null;
     } else {
       if (booking.step === 1) {
-        booking.intent = null; booking.mode = null; booking.day = null; booking.time = null;
+        booking.intent = null; booking.mode = null; booking.day = null; booking.time = null; booking.scheduleWeek = null;
       } else if (booking.step === 2) {
-        booking.mode = null; booking.day = null; booking.time = null;
+        booking.mode = null; booking.day = null; booking.time = null; booking.scheduleWeek = null;
       } else if (booking.step === 3) {
         booking.time = null;
       }
@@ -702,7 +840,7 @@
     try {
       if (booking.done || !(booking.intent || booking.day || booking.name.trim() || booking.contact.trim())) return;
       window.localStorage.setItem(CONFIG.draftKey, JSON.stringify({
-        savedAt: Date.now(), step: booking.step, schedulePart: booking.schedulePart,
+        savedAt: Date.now(), step: booking.step, schedulePart: booking.schedulePart, scheduleWeek: booking.scheduleWeek,
         intent: booking.intent, mode: booking.mode, day: booking.day, time: booking.time,
         name: booking.name, contact: booking.contact, note: booking.note,
       }));
@@ -719,7 +857,9 @@
       if (!raw) return null;
       const draft = JSON.parse(raw);
       if (!draft || Date.now() - (draft.savedAt || 0) > 14 * 864e5) { clearDraft(); return null; }
-      if (draft.day && draft.day !== FLEXIBLE_DAY && draft.day < dateKey(new Date())) { draft.day = null; draft.time = null; draft.schedulePart = 'date'; draft.step = Math.min(draft.step || 0, 2); }
+      if (draft.day && draft.day !== FLEXIBLE_DAY && draft.day < dateKey(new Date())) {
+        draft.day = null; draft.time = null; draft.schedulePart = 'date'; draft.scheduleWeek = null; draft.step = Math.min(draft.step || 0, 2);
+      }
       return draft;
     } catch (error) { return null; }
   }
@@ -727,7 +867,7 @@
   function resumeBooking(draft) {
     openBooking('draft');
     Object.assign(booking, {
-      step: Math.min(4, Math.max(0, draft.step || 0)), schedulePart: draft.schedulePart || 'date',
+      step: Math.min(4, Math.max(0, draft.step || 0)), schedulePart: draft.schedulePart || 'date', scheduleWeek: draft.scheduleWeek || null,
       intent: draft.intent || null, mode: draft.mode || null, day: draft.day || null, time: draft.time || null,
       name: draft.name || '', contact: draft.contact || '', note: draft.note || '',
     });
