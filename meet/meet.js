@@ -3,6 +3,14 @@
   'use strict';
 
   const BOOKING_ENDPOINT = '/api/meet';
+  /* editable settings — safe to change without touching logic below */
+  const CONFIG = {
+    lineUrl: '',                       // e.g. 'https://lin.ee/xxxxxxx' — leave '' to hide LINE shortcuts
+    replyWindow: 'ภายใน 24 ชม.',
+    draftKey: 'myclover.meet.draft.v1',
+  };
+  const FLEXIBLE_DAY = 'flexible';
+  const FLEXIBLE_TIME = 'เวลาไหนก็ได้';
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const root = document.querySelector('#session-root');
   const $ = selector => document.querySelector(selector);
@@ -238,6 +246,7 @@
 
   function dateLabel(value, includeYear = true) {
     if (!value) return '';
+    if (value === FLEXIBLE_DAY) return 'วันไหนก็ได้ (ให้เราเสนอมา)';
     const part = dateParts(value);
     return `${part.weekday} ${part.day} ${part.month}${includeYear ? ` ${part.year}` : ''}`;
   }
@@ -349,12 +358,13 @@
     if (!booking.mode) return;
     thread.appendChild(visitorMessage(modeLabel(booking.mode)));
     if (booking.day) thread.appendChild(visitorMessage(dateLabel(booking.day)));
-    if (booking.time) thread.appendChild(visitorMessage(`${booking.time} น.`));
+    if (booking.time) thread.appendChild(visitorMessage(booking.time === FLEXIBLE_TIME ? FLEXIBLE_TIME : `${booking.time} น.`));
     if (booking.name.trim()) thread.appendChild(visitorMessage(`เรียกฉันว่า ${booking.name.trim()} · ติดต่อ ${booking.contact.trim() || 'ยังไม่ระบุ'}`));
   }
 
   function renderBooking() {
     setProgress(booking.step);
+    saveDraft();
     const conversation = $('#conversation');
     const footer = $('#booking-footer');
     const back = $('#booking-back');
@@ -427,9 +437,15 @@
         return button;
       });
       thread.appendChild(choices(dateButtons, 'date-set'));
+      thread.appendChild(choices([choiceButton('วันไหนก็ได้', 'ให้เราเสนอเวลาที่ว่างให้', () => {
+        pacedAdvance(() => {
+          booking.day = FLEXIBLE_DAY;
+          track('meet_flexible_day_selected', { intent: booking.intent });
+        }, () => { booking.schedulePart = 'time'; });
+      }, 'choice-soft')]));
       return;
     }
-    thread.appendChild(guideMessage([`${dateLabel(booking.day)} สะดวกช่วงไหนที่สุด?`]));
+    thread.appendChild(guideMessage([booking.day === FLEXIBLE_DAY ? 'ปกติสะดวกช่วงไหนของวัน?' : `${dateLabel(booking.day)} สะดวกช่วงไหนที่สุด?`]));
     let values = booking.mode === 'ออนไลน์' ? ONLINE_TIMES : IN_PERSON_TIMES;
     if (booking.day === dateKey(new Date())) {
       const now = new Date();
@@ -445,7 +461,18 @@
         track('meet_slot_requested', { intent: booking.intent, day: booking.day, time: value });
       }, () => { booking.step = 3; });
     }));
+    buttons.push(choiceButton(FLEXIBLE_TIME, 'ให้เราเสนอเวลาให้', () => {
+      pacedAdvance(() => {
+        booking.time = FLEXIBLE_TIME;
+        track('meet_flexible_time_selected', { intent: booking.intent });
+      }, () => { booking.step = 3; });
+    }, 'choice-soft'));
     thread.appendChild(choices(buttons));
+  }
+
+  function slotLabel() {
+    if (booking.time === FLEXIBLE_TIME) return `${dateLabel(booking.day)} · ${FLEXIBLE_TIME}`;
+    return `${dateLabel(booking.day)} · ${booking.time} น.`;
   }
 
   function field(label, id, value, placeholder, multiline = false) {
@@ -469,6 +496,14 @@
     const contact = field('LINE หรือเบอร์ที่ติดต่อได้', 'session-contact', booking.contact, '@line / 08x-xxx-xxxx');
     const note = field('มีอะไรที่อยากให้เราเตรียมก่อนไหม?', 'session-note', booking.note, 'ไม่จำเป็นต้องกรอก', true);
     card.append(name.wrap, contact.wrap, note.wrap); thread.appendChild(card);
+    if (CONFIG.lineUrl) {
+      const shortcut = document.createElement('a');
+      shortcut.className = 'button button-quiet line-shortcut';
+      shortcut.href = CONFIG.lineUrl; shortcut.target = '_blank'; shortcut.rel = 'noopener noreferrer';
+      shortcut.textContent = 'เพิ่มเราใน LINE แล้วทักได้เลย';
+      shortcut.addEventListener('click', () => track('meet_line_shortcut_clicked', { step: 'contact' }));
+      thread.appendChild(shortcut);
+    }
 
     const sync = () => {
       booking.name = name.input.value; booking.contact = contact.input.value; booking.note = note.input.value;
@@ -511,7 +546,7 @@
     card.append(title,
       reviewRow('เรื่อง', intent?.label || '', 0),
       reviewRow('รูปแบบ', modeLabel(booking.mode), 1),
-      reviewRow('เวลาที่ขอ', `${dateLabel(booking.day)} · ${booking.time} น.`, 2),
+      reviewRow('เวลาที่ขอ', slotLabel(), 2),
       reviewRow('ติดต่อ', `${booking.name.trim()} · ${booking.contact.trim()}`, 3));
     thread.appendChild(card);
 
@@ -522,6 +557,10 @@
     if (booking.error) {
       const error = document.createElement('p'); error.className = 'booking-error'; error.setAttribute('role','alert'); error.textContent = `${booking.error} · ข้อมูลที่กรอกยังอยู่`; thread.appendChild(error);
     }
+
+    const risk = document.createElement('p'); risk.className = 'booking-risk';
+    risk.textContent = 'ไม่มีค่าใช้จ่าย · ไม่ต้องซื้ออะไร · เลื่อนหรือยกเลิกได้';
+    thread.appendChild(risk);
 
     const sync = () => { booking.consent = checkbox.checked; next.disabled = booking.sending || !booking.consent; };
     checkbox.addEventListener('change', sync);
@@ -552,6 +591,7 @@
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.message || 'ส่งคำขอนัดไม่สำเร็จ');
       booking.sending = false; booking.done = true; booking.reference = result.reference || '';
+      clearDraft();
       track('meet_request_completed', { intent: booking.intent, mode: booking.mode });
       renderBooking();
     } catch (error) {
@@ -570,9 +610,27 @@
     const title = document.createElement('div'); title.className = 'review-title'; title.textContent = booking.reference || 'MYCLOVER SESSION';
     card.append(title,
       plainReviewRow('เรื่อง', intent?.label || ''), plainReviewRow('รูปแบบ', modeLabel(booking.mode)),
-      plainReviewRow('เวลาที่ขอ', `${dateLabel(booking.day)} · ${booking.time} น.`), plainReviewRow('ติดต่อกลับ', booking.contact.trim()));
-    const close = document.createElement('button'); close.type = 'button'; close.className = 'button button-primary'; close.style.marginTop = '1.2rem'; close.textContent = 'ปิด'; close.addEventListener('click', () => closeBooking(true));
-    success.append(card, close); thread.appendChild(success);
+      plainReviewRow('เวลาที่ขอ', slotLabel()), plainReviewRow('ติดต่อกลับ', booking.contact.trim()));
+    const nextLine = document.createElement('p'); nextLine.className = 'success-next';
+    nextLine.textContent = `เราจะติดต่อกลับตามช่องทางที่คุณให้ไว้ ${CONFIG.replyWindow} เพื่อยืนยันเวลา`;
+
+    const actions = document.createElement('div'); actions.className = 'success-actions';
+    if (booking.day && booking.day !== FLEXIBLE_DAY && booking.time && booking.time !== FLEXIBLE_TIME) {
+      const ics = document.createElement('button'); ics.type = 'button'; ics.className = 'button button-quiet';
+      ics.textContent = 'เพิ่มลงปฏิทิน';
+      ics.addEventListener('click', downloadInvite);
+      actions.appendChild(ics);
+    }
+    if (CONFIG.lineUrl) {
+      const line = document.createElement('a'); line.className = 'button button-quiet';
+      line.href = CONFIG.lineUrl; line.target = '_blank'; line.rel = 'noopener noreferrer';
+      line.textContent = 'ทักหาเราใน LINE';
+      line.addEventListener('click', () => track('meet_line_shortcut_clicked', { step: 'success' }));
+      actions.appendChild(line);
+    }
+    const close = document.createElement('button'); close.type = 'button'; close.className = 'button button-primary'; close.textContent = 'ปิด'; close.addEventListener('click', () => closeBooking(true));
+    actions.appendChild(close);
+    success.append(card, nextLine, actions); thread.appendChild(success);
   }
 
   function plainReviewRow(label, value) {
@@ -614,6 +672,88 @@
     renderBooking();
   }
 
+  function icsStamp(date) {
+    return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, '0')}${String(date.getUTCDate()).padStart(2, '0')}T${String(date.getUTCHours()).padStart(2, '0')}${String(date.getUTCMinutes()).padStart(2, '0')}00Z`;
+  }
+
+  function downloadInvite() {
+    const [hour, minute] = String(booking.time).split(':').map(Number);
+    const start = new Date(`${booking.day}T00:00:00+07:00`);
+    start.setTime(start.getTime() + (hour * 60 + minute) * 60000);
+    const end = new Date(start.getTime() + (booking.mode === 'ออนไลน์' ? 25 : 45) * 60000);
+    const lines = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//myClover//Session//TH', 'BEGIN:VEVENT',
+      `UID:${(booking.reference || Date.now())}@myclover.com`,
+      `DTSTAMP:${icsStamp(new Date())}`, `DTSTART:${icsStamp(start)}`, `DTEND:${icsStamp(end)}`,
+      'SUMMARY:myClover Session',
+      `DESCRIPTION:${modeLabel(booking.mode)} — รอการยืนยันเวลาจากทีมงาน`,
+      'END:VEVENT', 'END:VCALENDAR',
+    ];
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url; link.download = 'myclover-session.ics';
+    document.body.appendChild(link); link.click(); link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 2000);
+    track('meet_ics_downloaded', { intent: booking.intent });
+  }
+
+  function saveDraft() {
+    try {
+      if (booking.done || !(booking.intent || booking.day || booking.name.trim() || booking.contact.trim())) return;
+      window.localStorage.setItem(CONFIG.draftKey, JSON.stringify({
+        savedAt: Date.now(), step: booking.step, schedulePart: booking.schedulePart,
+        intent: booking.intent, mode: booking.mode, day: booking.day, time: booking.time,
+        name: booking.name, contact: booking.contact, note: booking.note,
+      }));
+    } catch (error) { /* storage unavailable */ }
+  }
+
+  function clearDraft() {
+    try { window.localStorage.removeItem(CONFIG.draftKey); } catch (error) { /* noop */ }
+  }
+
+  function readDraft() {
+    try {
+      const raw = window.localStorage.getItem(CONFIG.draftKey);
+      if (!raw) return null;
+      const draft = JSON.parse(raw);
+      if (!draft || Date.now() - (draft.savedAt || 0) > 14 * 864e5) { clearDraft(); return null; }
+      if (draft.day && draft.day !== FLEXIBLE_DAY && draft.day < dateKey(new Date())) { draft.day = null; draft.time = null; draft.schedulePart = 'date'; draft.step = Math.min(draft.step || 0, 2); }
+      return draft;
+    } catch (error) { return null; }
+  }
+
+  function resumeBooking(draft) {
+    openBooking('draft');
+    Object.assign(booking, {
+      step: Math.min(4, Math.max(0, draft.step || 0)), schedulePart: draft.schedulePart || 'date',
+      intent: draft.intent || null, mode: draft.mode || null, day: draft.day || null, time: draft.time || null,
+      name: draft.name || '', contact: draft.contact || '', note: draft.note || '',
+    });
+    if (booking.intent) selectIntent(booking.intent, 'draft');
+    track('meet_draft_resumed', { intent: booking.intent || 'none' });
+    renderBooking();
+  }
+
+  function initDraftResume() {
+    const draft = readDraft();
+    const host = $('#ready');
+    if (!draft || !host) return;
+    const bar = document.createElement('div');
+    bar.className = 'draft-resume';
+    const label = document.createElement('span');
+    label.textContent = 'คุณเริ่มลงนัดไว้แล้ว คำตอบเดิมยังอยู่';
+    const resume = document.createElement('button');
+    resume.type = 'button'; resume.className = 'button button-quiet'; resume.textContent = 'กลับไปลงนัดต่อ';
+    resume.addEventListener('click', () => resumeBooking(draft));
+    const drop = document.createElement('button');
+    drop.type = 'button'; drop.className = 'edit-answer'; drop.textContent = 'เริ่มใหม่';
+    drop.addEventListener('click', () => { clearDraft(); bar.remove(); });
+    bar.append(label, resume, drop);
+    host.appendChild(bar);
+  }
+
   function initBooking() {
     $('#booking-close').addEventListener('click', () => closeBooking());
     $('#booking-scrim').addEventListener('click', () => closeBooking());
@@ -627,5 +767,6 @@
   syncBookingLabels();
   initPageInteractions();
   initBooking();
+  initDraftResume();
   track('meet_view');
 })();
