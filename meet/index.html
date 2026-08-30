@@ -20,6 +20,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="/meet/meet.css?v=20260830-1" />
+<style>
+  .person[data-profile-card] { cursor: pointer; }
+  .person[data-profile-card]:focus-visible { outline: 2px solid rgba(255,255,255,.9); outline-offset: 6px; }
+  .person-profile-link {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    margin-top: .75rem;
+    padding: .5rem .85rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    background: rgba(255,255,255,.08);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(6px);
+    pointer-events: none;
+    transition: opacity .28s ease, transform .28s ease, background .2s ease;
+  }
+  .person[data-revealed="true"] .person-profile-link { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .person-profile-link:hover { background: rgba(255,255,255,.16); }
+</style>
 </head>
 <body>
 <div class="session-root" id="session-root" data-intent="neutral">
@@ -82,12 +106,13 @@
         <h2 class="display">คนละด้าน<br />แต่ดูเรื่องเดียวกันคือคุณ</h2>
       </div>
       <div class="duo-stage">
-        <article class="person person-teem">
+        <article class="person person-teem" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักทีมเพิ่ม">
           <div class="person-image"><img src="/meet/img/teem.jpg" alt="ทีม" loading="lazy" width="900" height="1500" /></div>
           <div class="person-copy">
             <p class="person-label">19 YEARS · PEOPLE · SYSTEMS</p><h3 class="display">ทีม</h3>
             <p class="person-statement">มองว่าอะไรทำให้คุณไปได้ไกล</p>
             <p>สร้างระบบดูแลสุขภาพ พัฒนาทีม และเทรนคนหลักพันจากการทำงานกับคนจริง</p>
+            <a class="person-profile-link" href="https://teem.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักทีมเพิ่ม ↗</a>
           </div>
         </article>
         <div class="you-node" aria-label="คุณ — ชีวิต เป้าหมาย และจังหวะของคุณ">
@@ -98,12 +123,13 @@
           </svg>
           <strong class="display">YOU</strong><span>ชีวิต เป้าหมาย และจังหวะของคุณ</span>
         </div>
-        <article class="person person-ako">
+        <article class="person person-ako" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักเอโกะเพิ่ม">
           <div class="person-image"><img src="/meet/img/ako.jpg" alt="เอโกะ" loading="lazy" width="900" height="1500" /></div>
           <div class="person-copy">
             <p class="person-label">ROUTINE · FOOD · REAL LIFE</p><h3 class="display">เอโกะ</h3>
             <p class="person-statement">มองว่าอะไรทำให้คุณทำได้ทุกวัน</p>
             <p>ปรับ Routine ขั้นเทพให้เข้ากับกิจวัตร พร้อมความเชื่อว่าสุขภาพดีไม่ควรทำให้ชีวิตหมดความอร่อย</p>
+            <a class="person-profile-link" href="https://ako.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักเอโกะเพิ่ม ↗</a>
           </div>
         </article>
       </div>
@@ -125,21 +151,21 @@
     <section class="closed-folder" id="closed-folder" hidden>
       <div class="folder-visual" aria-hidden="true"><div class="folder-tab">X–VISOR</div><div class="folder-cover"><span>PRIVATE CONVERSATION FILE</span><strong class="display">X</strong><i></i></div></div>
       <div class="folder-copy">
-        <p class="eyebrow eyebrow-light">EXAM &amp; CARE SYSTEM</p>
-        <h2 class="display">แฟ้มนี้ไม่ได้มีไว้<br />ส่งให้ทุกคนอ่าน</h2>
-        <p class="folder-lead">มันมีไว้เปิดคุยกับคนตรงหน้า</p>
-        <p>เราจะเปิดเฉพาะหน้าที่ช่วยตอบคำถามของคุณ เพื่อให้เห็นทั้งระบบ สิ่งที่ต้องเรียน สิ่งที่ต้องทำ และสิ่งที่ยังรับประกันให้กันไม่ได้</p>
-        <small>ข้อมูลผลิตภัณฑ์ เงื่อนไข และรายได้ต้องพิจารณาจากเอกสารทางการและผลลัพธ์ของแต่ละบุคคล</small>
+        <p class="eyebrow eyebrow-light">SERVICE → BUSINESS SUPPORT</p>
+        <h2 class="display">บริการคือแกนหลัก<br />ธุรกิจคือทางเลือกต่อยอด</h2>
+        <p class="folder-lead">ถ้าคุณอยากเปลี่ยนสิ่งที่เรียนรู้ให้เป็นงาน เรามีระบบช่วย</p>
+        <p>เราเริ่มจากการดูแลคนให้ดี แล้วค่อยช่วยต่อยอดตั้งแต่เข้าใจบทบาท เตรียมสอบใบอนุญาต ไปจนถึงเครื่องมือ Routine และระบบดูแลหลังเริ่มต้น โดยไม่จำเป็นต้องเลือกเส้นทางธุรกิจเพื่อรับคุณค่าจาก Session นี้</p>
+        <small>ข้อมูลผลิตภัณฑ์ เงื่อนไข และรายได้ต้องพิจารณาจากเอกสารทางการและผลลัพธ์ของแต่ละบุคคล และเราไม่รับประกันผลสอบหรือรายได้</small>
       </div>
     </section>
 
     <section class="section honest-section" id="honest">
       <div class="section-heading"><p class="eyebrow">HONEST BEFORE WE MEET</p><h2 class="display">เรื่องที่เราพูดตรง ๆ ก่อนนัด</h2></div>
       <div class="accordion" id="honest-accordion">
-        <details><summary>นี่คือธุรกิจเครือข่ายไหม?<span aria-hidden="true">+</span></summary><p>ไม่ เราไม่ได้ชวนสร้างสายสมาชิกหรือขยายเครือข่าย สิ่งที่เราสร้างคือระบบช่วยเตรียมคนที่เลือกเส้นทางนี้ด้วยตัวเอง ให้เข้าใจการดูแลลูกค้าและใช้ข้อมูล Routine อย่างต่อเนื่อง</p></details>
-        <details><summary>ทีมกับเอโกะรับสมัครเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ไม่ได้ เราไม่สามารถชวนหรือรับสมัครคุณได้ การเลือกสอบใบอนุญาตต้องเป็นการตัดสินใจของคุณเอง Session นี้มีไว้ให้ข้อมูลและช่วยดูว่าเส้นทางนี้เหมาะกับคุณหรือไม่</p></details>
-        <details><summary>ถ้าอยากสอบใบอนุญาต เราช่วยอะไรได้?<span aria-hidden="true">+</span></summary><p>เรามีระบบติวและช่วยเตรียมตัวสอบ พร้อมระบบแอปสำหรับติดตาม Routine และดูแลต่อเนื่อง เราจะอธิบายสิ่งที่ต้องเรียน วิธีเตรียมตัว และมาตรฐานการทำงานอย่างตรงไปตรงมา แต่ไม่รับประกันว่าสอบผ่าน</p></details>
-        <details><summary>ถ้าอยากคุยเรื่องสุขภาพอย่างเดียวได้ไหม?<span aria-hidden="true">+</span></summary><p>ได้ เรื่องสุขภาพและเส้นทางอาชีพแยกจากกัน คุณไม่จำเป็นต้องเปลี่ยนบทบาทหรือทำงานร่วมกับเรา หากนั่นไม่ใช่สิ่งที่คุณกำลังหา</p></details>
+        <details><summary>ถ้าสนใจโอกาสทางธุรกิจ คุยกับเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ได้ ถ้าคุณสนใจ เราอธิบายเส้นทางและระบบสนับสนุนให้ดูได้ตรงไปตรงมา แต่เราไม่เริ่มจากการชวนสมัคร แกนของเราคือช่วยให้คุณเข้าใจการดูแลคนและสร้างคุณค่าก่อน แล้วคุณค่อยตัดสินใจเองว่าอยากต่อยอดเป็นธุรกิจหรือไม่</p></details>
+        <details><summary>ทีมกับเอโกะสนับสนุนเราได้แค่ไหน?<span aria-hidden="true">+</span></summary><p>ถ้าคุณเลือกเส้นทางนี้ด้วยตัวเอง เราช่วยเตรียมสอบ อธิบายระบบ ฝึกใช้เครื่องมือ Routine และช่วยวางวิธีดูแลคนต่อเนื่องได้ แต่เราไม่สามารถชวนหรือรับสมัครคุณแทนการตัดสินใจของคุณเอง และไม่รับประกันผลสอบหรือรายได้</p></details>
+        <details><summary>ต้องทำธุรกิจถึงจะใช้บริการของเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ไม่ต้อง สุขภาพ Routine และ myClover Session มีคุณค่าในตัวเอง คุณจะมาใช้บริการ รับข้อมูล แล้วจบตรงนั้นก็ได้ เส้นทางธุรกิจเป็นเพียงทางเลือกสำหรับคนที่อยากต่อยอดสิ่งนี้เป็นงาน</p></details>
+        <details><summary>ถ้าเลือกต่อยอด เราช่วยเริ่มต้นยังไง?<span aria-hidden="true">+</span></summary><p>เราจะช่วยให้เห็นสิ่งที่ต้องเรียน วิธีเตรียมตัวสอบ มาตรฐานการทำงาน และระบบที่มีให้ใช้หลังเริ่มต้น เพื่อให้คุณดูแลคนได้อย่างเป็นระบบ ไม่ใช่แค่รู้ว่าจะขายอะไร</p></details>
       </div>
     </section>
 
@@ -171,5 +197,69 @@
 
 </div>
 <script src="/meet/meet.js?v=20260830-1" defer></script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-profile-card]').forEach(function (card) {
+    var link = card.querySelector('.person-profile-link');
+    function reveal() {
+      if (card.getAttribute('data-revealed') === 'true') return;
+      card.setAttribute('data-revealed', 'true');
+      link.removeAttribute('aria-hidden');
+      link.setAttribute('tabindex', '0');
+    }
+    card.addEventListener('click', function (event) {
+      if (event.target.closest('.person-profile-link')) return;
+      reveal();
+    });
+    card.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      if (event.target.closest('.person-profile-link')) return;
+      event.preventDefault();
+      reveal();
+    });
+    link.addEventListener('click', function (event) { event.stopPropagation(); });
+  });
+
+  var root = document.getElementById('session-root');
+  var grid = document.getElementById('intent-grid');
+  var panel = document.getElementById('value-panel');
+
+  function setText(node, text) {
+    if (node && node.textContent !== text) node.textContent = text;
+  }
+
+  function rewriteOpportunity() {
+    if (grid) {
+      grid.querySelectorAll('.intent-card').forEach(function (card) {
+        var strong = card.querySelector('.intent-copy strong');
+        if (!strong) return;
+        if (strong.textContent === 'สอบใบอนุญาตและระบบดูแล' || strong.textContent === 'ต่อยอดเป็นธุรกิจ') {
+          setText(strong, 'ต่อยอดเป็นธุรกิจ');
+          setText(card.querySelector('.intent-copy small'), 'อยากรู้ว่า ถ้าเลือกเส้นทางนี้ เรามีระบบช่วยอะไรบ้าง');
+        }
+      });
+    }
+
+    if (!root || root.getAttribute('data-intent') !== 'opportunity') return;
+    var shell = panel && panel.querySelector('.value-shell');
+    if (shell) {
+      setText(shell.querySelector('.value-kicker'), 'SERVICE → BUSINESS');
+      setText(shell.querySelector('h3'), 'เริ่มจากการดูแลคนให้ดี แล้วค่อยต่อยอดเป็นงาน');
+      var items = shell.querySelectorAll('.outcome-list li');
+      setText(items[0], 'เห็นก่อนว่าคุณอยากช่วยใคร และบริการแบบไหนที่เหมาะกับคุณ');
+      setText(items[1], 'ถ้าอยากต่อยอดเป็นอาชีพ เราช่วยวางเส้นทางและเตรียมสอบใบอนุญาตให้');
+      setText(items[2], 'มีเครื่องมือ Routine และระบบดูแลต่อเนื่องให้ใช้หลังเริ่มต้น ไม่ต้องเริ่มจากการขาย');
+      setText(shell.querySelector('.value-qualifier'), 'บริการและคุณค่าที่คุณให้คนคือแกนหลัก ธุรกิจเป็นทางเลือก ไม่ใช่เงื่อนไขของการมาเจอเรา');
+      setText(shell.querySelector('.value-cta'), 'นัดคุยเรื่องการต่อยอด');
+    }
+    setText(document.querySelector('#sticky-book .button'), 'นัดคุยเรื่องการต่อยอด');
+  }
+
+  rewriteOpportunity();
+  if (grid) new MutationObserver(rewriteOpportunity).observe(grid, { childList: true, subtree: true });
+  if (panel) new MutationObserver(rewriteOpportunity).observe(panel, { childList: true, subtree: true });
+  if (root) new MutationObserver(rewriteOpportunity).observe(root, { attributes: true, attributeFilter: ['data-intent'] });
+});
+</script>
 </body>
 </html>
