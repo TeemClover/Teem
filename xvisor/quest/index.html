@@ -13,10 +13,10 @@
 <body>
 <div class="toasts" id="toasts"></div>
 <div class="app">
-  <div class="panel title"><h1>X-VISOR QUEST</h1><p>ขายให้เป็น · ดูแลให้ต่อ · สร้างคน · สร้างระบบ</p></div>
+  <div class="panel title"><h1>X-VISOR QUEST</h1><p>เริ่มจากตัวเอง · หาลูกค้าคนแรก · ดูแลให้เห็นผล · สร้างทีมของคุณ</p></div>
   <div class="panel hud">
     <div class="hudtop"><span class="month">เดือนที่ <b class="num" id="hMonth">1</b> / 24</span><span class="badge" id="hRank">🧪 XVISOR CANDIDATE</span></div>
-    <div class="apbar"><span class="lbl">แรงเดือนนี้</span><span class="pips" id="hPips"></span><span class="num" id="hAp">20</span></div>
+    <div class="apbar"><span class="lbl">พลังที่เหลือ</span><span class="pips" id="hPips"></span><span class="num" id="hAp">20</span></div>
     <div class="stats">
       <div class="stat"><span class="k">XV เดือนนี้</span><span class="v num" id="hXv">0</span></div>
       <div class="stat"><span class="k">ขั้นรายได้</span><span class="v num" id="hTier">20%</span></div>
@@ -25,19 +25,20 @@
     </div>
     <div class="tierline" id="hNext">อีก 40,000 XV → ROOKIE 23%</div>
   </div>
-  <div class="goal"><div class="top"><span><span class="eyebrow">เป้าหมายถัดไป</span><strong id="goalTitle">เริ่มจากตัวเอง</strong></span></div><div class="step" id="goalSub">ทำทีละขั้น</div><div class="goalbar"><i id="goalBar"></i></div></div>
+  <div class="goal"><div class="top"><span><span class="eyebrow">เป้าหมายของคุณ</span><strong id="goalTitle">เริ่มจากตัวเอง</strong></span></div><div class="step" id="goalSub">ทำทีละขั้น</div><div class="goalbar"><i id="goalBar"></i></div></div>
   <div class="tabs">
-    <button class="tab" id="tabPeople" aria-selected="true">คน <span class="num" id="nPeople">0</span></button>
-    <button class="tab" id="tabTeam" aria-selected="false">ทีม G1 <span class="num" id="nTeam">0</span></button>
-    <button class="tab" id="tabOrg" aria-selected="false">สังกัด</button>
+    <button class="tab" id="tabPeople" aria-selected="true">คนที่รู้จัก <span class="num" id="nPeople">0</span></button>
+    <button class="tab" id="tabTeam" aria-selected="false">ทีมของคุณ <span class="num" id="nTeam">0</span></button>
+    <button class="tab" id="tabOrg" aria-selected="false">ภาพรวมทีม</button>
   </div>
   <div class="panel board" id="board"></div>
   <div class="panel acts" id="acts"></div>
-  <p class="credit">เกมจำลองเพื่อให้เข้าใจยอดขาย · XV · รายได้ · การดูแล · การสร้างทีม ไม่ใช่การรับประกันรายได้</p>
+  <p class="credit">ลองเล่นเพื่อเห็นเส้นทางตั้งแต่ลูกค้าคนแรกจนถึงการสร้างทีม ตัวเลขรายได้เป็นตัวอย่างเพื่อช่วยให้เข้าใจแผน</p>
 </div>
-<div class="endbar"><div class="inner"><button class="endbtn" id="btnEnd">จบเดือน ▶ ปิดยอดและรับรายได้</button></div></div>
+<div class="endbar"><div class="inner"><button class="endbtn" id="btnEnd">จบเดือน ▶ สรุปยอดและรับรายได้</button></div></div>
 <div class="veil" id="veil" hidden><div class="sheet" id="sheet"></div></div>
 <script src="./quest-classic-v3.js?v=1"></script>
 <script src="./quest-pixel-fx.js?v=1"></script>
+<script src="./quest-player-copy.js?v=1"></script>
 </body>
 </html>
