@@ -314,16 +314,6 @@
       "permanent": false
     },
     {
-      "source": "/xvisor",
-      "destination": "/xircle/doc/xvisor/",
-      "permanent": false
-    },
-    {
-      "source": "/xvisor/",
-      "destination": "/xircle/doc/xvisor/",
-      "permanent": false
-    },
-    {
       "source": "/xos",
       "destination": "/xircle/doc/xos/",
       "permanent": false
@@ -480,6 +470,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/xvisor",
+      "destination": "/xvisor/quest/index.html"
+    },
+    {
+      "source": "/xvisor/",
+      "destination": "/xvisor/quest/index.html"
+    },
     {
       "source": "/",
       "has": [
