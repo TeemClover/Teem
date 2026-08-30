@@ -21,449 +21,182 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="/meet/meet.css?v=20260830-1" />
 <style>
-  /* Premium motion layer — movement without turning the page into a demo reel. */
-  .hero-atmosphere {
-    background-size: 138% 138%, 100% 100%;
-    animation: meet-atmosphere-drift 16s ease-in-out infinite alternate;
-  }
-  .orb { animation: meet-orb-breathe 8s ease-in-out infinite alternate; }
-  .orb-b { animation-delay: -3.4s; }
-
-  .button-primary::before { animation: meet-cta-breathe 2.8s ease-in-out infinite; }
-
-  .intent-card { isolation: isolate; }
-  .intent-card::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -70% 42% -70% -30%;
-    background: linear-gradient(100deg, transparent 22%, color-mix(in srgb, var(--card-accent) 13%, transparent) 50%, transparent 78%);
-    transform: translateX(-85%) skewX(-12deg);
-    opacity: 0;
-    pointer-events: none;
-  }
-  .intent-card[aria-pressed="true"] { animation: meet-intent-select .52s cubic-bezier(.2,.9,.2,1) both; }
-  .intent-card[aria-pressed="true"]::after { animation: meet-intent-sweep .7s .04s cubic-bezier(.2,.9,.2,1) both; }
-  .intent-card[aria-pressed="true"] .intent-icon { animation: meet-icon-pop .5s cubic-bezier(.2,.9,.2,1) both; }
-  .intent-card:hover .intent-arrow { transform: translate(2px,-2px); }
-  .intent-card[aria-pressed="true"]:hover .intent-arrow { transform: rotate(45deg) translate(2px,-2px); }
-
-  .value-shell { animation: meet-value-arrive .58s cubic-bezier(.2,.9,.2,1) both; }
-  .value-shell::after { animation: meet-value-glow 6s ease-in-out infinite alternate; }
-  .value-shell .value-kicker,
-  .value-shell h3,
-  .value-shell .outcome-title,
-  .value-shell .outcome-list li,
-  .value-shell .value-qualifier,
-  .value-shell .value-cta { animation: meet-value-child .5s cubic-bezier(.2,.9,.2,1) both; }
-  .value-shell h3 { animation-delay: .04s; }
-  .value-shell .outcome-title { animation-delay: .08s; }
-  .value-shell .outcome-list li:nth-child(1) { animation-delay: .12s; }
-  .value-shell .outcome-list li:nth-child(2) { animation-delay: .17s; }
-  .value-shell .outcome-list li:nth-child(3) { animation-delay: .22s; }
-  .value-shell .value-qualifier { animation-delay: .27s; }
-  .value-shell .value-cta { animation-delay: .31s; }
-
-  .person[data-profile-card] {
-    position: relative;
-    isolation: isolate;
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform .5s cubic-bezier(.2,.9,.2,1), border-color .4s ease, background .4s ease, box-shadow .4s ease;
-  }
-  .person[data-profile-card]::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -45% -30%;
-    background: radial-gradient(circle at 50% 50%, rgba(141,181,255,.16), transparent 50%);
-    opacity: 0;
-    transform: scale(.72);
-    transition: opacity .5s ease, transform .7s cubic-bezier(.2,.9,.2,1);
-    pointer-events: none;
-  }
-  .person[data-profile-card]:hover,
-  .person[data-profile-card]:focus-visible { transform: translateY(-4px); border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.065); box-shadow: 0 26px 60px -42px rgba(104,162,255,.7); }
-  .person[data-profile-card]:hover::after,
-  .person[data-profile-card]:focus-visible::after,
-  .person[data-revealed="true"]::after { opacity: 1; transform: scale(1); }
-  .person[data-profile-card]:focus-visible { outline: 2px solid rgba(255,255,255,.9); outline-offset: 6px; }
-  .person[data-profile-card] .person-image img { will-change: transform; }
-  .person[data-profile-card]:hover .person-image img,
-  .person[data-profile-card]:focus-visible .person-image img,
-  .person[data-revealed="true"] .person-image img { transform: scale(1.29) translate3d(var(--card-x,0),var(--card-y,0),0); }
-  .person[data-revealed="true"] { border-color: rgba(200,168,93,.32); }
-  .person-profile-link {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    margin-top: .75rem;
-    padding: .5rem .85rem;
-    border: 1px solid currentColor;
-    border-radius: 999px;
-    color: inherit;
-    background: rgba(255,255,255,.08);
-    text-decoration: none;
-    font-size: .82rem;
-    font-weight: 600;
-    opacity: 0;
-    transform: translateY(8px) scale(.98);
-    pointer-events: none;
-    transition: opacity .35s ease, transform .45s cubic-bezier(.2,.9,.2,1), background .2s ease;
-  }
-  .person[data-revealed="true"] .person-profile-link { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-  .person-profile-link:hover { background: rgba(255,255,255,.16); }
-
-  .duo-stage.is-visible .duo-line {
-    animation: line-connect .9s cubic-bezier(.2,.9,.2,1) forwards, meet-line-glow 3.8s 1.1s ease-in-out infinite;
-  }
-  .duo-stage.is-visible .duo-line-right { animation-delay: .12s, 1.25s; }
-  .duo-stage.is-visible .you-node svg circle {
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: meet-node-breathe 2.7s 1.05s ease-in-out infinite;
-  }
-  .duo-stage.is-visible .you-node strong { text-shadow: 0 0 24px rgba(200,168,93,.22); }
-
-  .method-line span { position: relative; box-shadow: 0 0 16px rgba(var(--accent-rgb),.16); }
-  .method-line span::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 5px rgba(var(--accent-rgb),.11), 0 0 18px rgba(var(--accent-rgb),.42);
-    transform: translateX(-50%);
-  }
-  .method-step.is-visible { animation: meet-method-arrive .62s cubic-bezier(.2,.9,.2,1) both; }
-  .method-step.is-visible .method-number { animation: meet-number-pop .5s .12s cubic-bezier(.2,.9,.2,1) both; }
-
-  .folder-cover { animation: meet-folder-breathe 6.5s 1s ease-in-out infinite; transform-origin: 50% 50%; }
-  .promise-clover { animation: meet-clover-breathe 5s ease-in-out infinite; }
-
-  .motion-target { opacity: 0; transform: translateY(20px); filter: blur(3px); }
-  .motion-target.motion-in {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-    transition: opacity .72s var(--motion-delay,0ms) ease, transform .82s var(--motion-delay,0ms) cubic-bezier(.2,.9,.2,1), filter .72s var(--motion-delay,0ms) ease;
-  }
-
-  @keyframes meet-atmosphere-drift {
-    from { background-position: 0% 0%, 0 0; }
-    to { background-position: 16% 9%, 0 0; }
-  }
-  @keyframes meet-orb-breathe {
-    from { opacity: .13; filter: blur(74px) saturate(.92); }
-    to { opacity: .23; filter: blur(62px) saturate(1.06); }
-  }
-  @keyframes meet-cta-breathe {
-    0%,100% { box-shadow: 0 0 0 4px rgba(var(--accent-rgb),.14); transform: scale(.94); }
-    50% { box-shadow: 0 0 0 7px rgba(var(--accent-rgb),.05); transform: scale(1); }
-  }
-  @keyframes meet-intent-select {
-    0% { transform: scale(.985); }
-    55% { transform: scale(1.008); }
-    100% { transform: scale(1); }
-  }
-  @keyframes meet-intent-sweep {
-    0% { opacity: 0; transform: translateX(-85%) skewX(-12deg); }
-    28% { opacity: 1; }
-    100% { opacity: 0; transform: translateX(175%) skewX(-12deg); }
-  }
-  @keyframes meet-icon-pop {
-    0% { transform: scale(.86); }
-    65% { transform: scale(1.07); }
-    100% { transform: scale(1); }
-  }
-  @keyframes meet-value-arrive {
-    from { opacity: 0; transform: translateY(12px) scale(.992); clip-path: inset(0 0 12% 0 round 28px); }
-    to { opacity: 1; transform: translateY(0) scale(1); clip-path: inset(0 0 0 0 round 28px); }
-  }
-  @keyframes meet-value-child {
-    from { opacity: 0; transform: translateY(9px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes meet-value-glow {
-    from { transform: translate3d(-4%,2%,0) scale(.94); opacity: .62; }
-    to { transform: translate3d(5%,-3%,0) scale(1.07); opacity: 1; }
-  }
-  @keyframes meet-line-glow {
-    0%,100% { opacity: .48; filter: drop-shadow(0 0 0 rgba(141,181,255,0)); }
-    50% { opacity: .9; filter: drop-shadow(0 0 5px rgba(141,181,255,.55)); }
-  }
-  @keyframes meet-node-breathe {
-    0%,100% { transform: scale(.88); opacity: .72; filter: drop-shadow(0 0 2px rgba(200,168,93,.2)); }
-    50% { transform: scale(1.18); opacity: 1; filter: drop-shadow(0 0 8px rgba(200,168,93,.65)); }
-  }
-  @keyframes meet-method-arrive {
-    from { opacity: .35; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes meet-number-pop {
-    0% { opacity: .3; transform: scale(.82); }
-    70% { opacity: 1; transform: scale(1.12); }
-    100% { opacity: 1; transform: scale(1); }
-  }
-  @keyframes meet-folder-breathe {
-    0%,100% { transform: rotateY(-6deg) rotateX(2deg) translateY(0); }
-    50% { transform: rotateY(-3.5deg) rotateX(1deg) translateY(-5px); }
-  }
-  @keyframes meet-clover-breathe {
-    0%,100% { transform: scale(.96); opacity: .62; }
-    50% { transform: scale(1.04); opacity: .82; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-atmosphere, .orb, .button-primary::before, .intent-card, .intent-card::after,
-    .intent-icon, .value-shell, .value-shell::after, .value-shell *,
-    .duo-stage.is-visible .duo-line, .duo-stage.is-visible .you-node svg circle,
-    .method-step.is-visible, .method-step.is-visible .method-number,
-    .folder-cover, .promise-clover {
-      animation: none !important;
-    }
-    .motion-target { opacity: 1 !important; transform: none !important; filter: none !important; }
-    .person[data-profile-card], .person[data-profile-card] .person-image img, .person-profile-link { transition-duration: .01ms !important; }
+  .hero-atmosphere { background-size:138% 138%,100% 100%; animation:meet-atmosphere-drift 16s ease-in-out infinite alternate; }
+  .orb { animation:meet-orb-breathe 8s ease-in-out infinite alternate; }
+  .orb-b { animation-delay:-3.4s; }
+  .button-primary::before { animation:meet-cta-breathe 2.8s ease-in-out infinite; }
+  .intent-card { isolation:isolate; }
+  .intent-card::after { content:""; position:absolute; z-index:-1; inset:-70% 42% -70% -30%; background:linear-gradient(100deg,transparent 22%,color-mix(in srgb,var(--card-accent) 13%,transparent) 50%,transparent 78%); transform:translateX(-85%) skewX(-12deg); opacity:0; pointer-events:none; }
+  .intent-card[aria-pressed="true"] { animation:meet-intent-select .52s cubic-bezier(.2,.9,.2,1) both; }
+  .intent-card[aria-pressed="true"]::after { animation:meet-intent-sweep .7s .04s cubic-bezier(.2,.9,.2,1) both; }
+  .intent-card[aria-pressed="true"] .intent-icon { animation:meet-icon-pop .5s cubic-bezier(.2,.9,.2,1) both; }
+  .intent-card:hover .intent-arrow { transform:translate(2px,-2px); }
+  .intent-card[aria-pressed="true"]:hover .intent-arrow { transform:rotate(45deg) translate(2px,-2px); }
+  .value-shell { animation:meet-value-arrive .58s cubic-bezier(.2,.9,.2,1) both; }
+  .value-shell::after { animation:meet-value-glow 6s ease-in-out infinite alternate; }
+  .value-shell .value-kicker,.value-shell h3,.value-shell .outcome-title,.value-shell .outcome-list li,.value-shell .value-qualifier,.value-shell .value-cta { animation:meet-value-child .5s cubic-bezier(.2,.9,.2,1) both; }
+  .value-shell h3 { animation-delay:.04s; }.value-shell .outcome-title { animation-delay:.08s; }
+  .value-shell .outcome-list li:nth-child(1) { animation-delay:.12s; }.value-shell .outcome-list li:nth-child(2) { animation-delay:.17s; }.value-shell .outcome-list li:nth-child(3) { animation-delay:.22s; }
+  .value-shell .value-qualifier { animation-delay:.27s; }.value-shell .value-cta { animation-delay:.31s; }
+  .person[data-profile-card] { position:relative; isolation:isolate; cursor:pointer; overflow:hidden; transition:transform .5s cubic-bezier(.2,.9,.2,1),border-color .4s ease,background .4s ease,box-shadow .4s ease; }
+  .person[data-profile-card]::after { content:""; position:absolute; z-index:-1; inset:-45% -30%; background:radial-gradient(circle at 50% 50%,rgba(141,181,255,.16),transparent 50%); opacity:0; transform:scale(.72); transition:opacity .5s ease,transform .7s cubic-bezier(.2,.9,.2,1); pointer-events:none; }
+  .person[data-profile-card]:hover,.person[data-profile-card]:focus-visible { transform:translateY(-4px); border-color:rgba(255,255,255,.24); background:rgba(255,255,255,.065); box-shadow:0 26px 60px -42px rgba(104,162,255,.7); }
+  .person[data-profile-card]:hover::after,.person[data-profile-card]:focus-visible::after,.person[data-revealed="true"]::after { opacity:1; transform:scale(1); }
+  .person[data-profile-card]:focus-visible { outline:2px solid rgba(255,255,255,.9); outline-offset:6px; }
+  .person[data-profile-card] .person-image img { will-change:transform; }
+  .person[data-profile-card]:hover .person-image img,.person[data-profile-card]:focus-visible .person-image img,.person[data-revealed="true"] .person-image img { transform:scale(1.29) translate3d(var(--card-x,0),var(--card-y,0),0); }
+  .person[data-revealed="true"] { border-color:rgba(200,168,93,.32); }
+  .person-profile-link { display:inline-flex; align-items:center; width:fit-content; margin-top:.75rem; padding:.5rem .85rem; border:1px solid currentColor; border-radius:999px; color:inherit; background:rgba(255,255,255,.08); text-decoration:none; font-size:.82rem; font-weight:600; opacity:0; transform:translateY(8px) scale(.98); pointer-events:none; transition:opacity .35s ease,transform .45s cubic-bezier(.2,.9,.2,1),background .2s ease; }
+  .person[data-revealed="true"] .person-profile-link { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  .person-profile-link:hover { background:rgba(255,255,255,.16); }
+  .duo-stage.is-visible .duo-line { animation:line-connect .9s cubic-bezier(.2,.9,.2,1) forwards,meet-line-glow 3.8s 1.1s ease-in-out infinite; }
+  .duo-stage.is-visible .duo-line-right { animation-delay:.12s,1.25s; }
+  .duo-stage.is-visible .you-node svg circle { transform-box:fill-box; transform-origin:center; animation:meet-node-breathe 2.7s 1.05s ease-in-out infinite; }
+  .duo-stage.is-visible .you-node strong { text-shadow:0 0 24px rgba(200,168,93,.22); }
+  .method-line span { position:relative; box-shadow:0 0 16px rgba(var(--accent-rgb),.16); }
+  .method-line span::after { content:""; position:absolute; left:50%; bottom:-4px; width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 5px rgba(var(--accent-rgb),.11),0 0 18px rgba(var(--accent-rgb),.42); transform:translateX(-50%); }
+  .method-step.is-visible { animation:meet-method-arrive .62s cubic-bezier(.2,.9,.2,1) both; }
+  .method-step.is-visible .method-number { animation:meet-number-pop .5s .12s cubic-bezier(.2,.9,.2,1) both; }
+  .folder-cover { animation:meet-folder-breathe 6.5s 1s ease-in-out infinite; transform-origin:50% 50%; }
+  .promise-clover { animation:meet-clover-breathe 5s ease-in-out infinite; }
+  .intent-showcase { width:min(calc(100% - 1.5rem),70rem); margin:0 auto 2rem; border-radius:34px; overflow:hidden; animation:meet-showcase-enter .65s cubic-bezier(.2,.9,.2,1) both; }
+  .showcase-copy h2 { margin-top:.8rem; font-size:clamp(2rem,8vw,4.25rem); }
+  .showcase-copy .showcase-lead { margin:1rem 0 0; font-family:"Anuphan",sans-serif; font-size:clamp(1.05rem,3vw,1.3rem); font-weight:500; line-height:1.6; }
+  .showcase-copy > p:not(.eyebrow):not(.showcase-lead),.showcase-copy li { line-height:1.72; }
+  .showcase-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.25rem; }
+  .showcase-chip { display:inline-flex; align-items:center; min-height:34px; padding:.35rem .75rem; border:1px solid currentColor; border-radius:999px; font-size:.7rem; font-weight:600; opacity:.76; }
+  .health-showcase { display:grid; gap:2rem; align-items:center; padding:3.25rem 1.25rem; border:1px solid rgba(40,115,84,.16); background:radial-gradient(70% 90% at 12% 30%,rgba(40,115,84,.13),transparent 70%),linear-gradient(150deg,#fbfaf4,#edf4ec); color:var(--ink); }
+  .health-visual { display:grid; gap:1rem; width:min(86vw,25rem); margin:0 auto; }
+  .xircle-scale { position:relative; width:100%; aspect-ratio:1/1; border:1px solid rgba(40,115,84,.22); border-radius:34%; background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.98),rgba(239,244,238,.92) 62%,rgba(218,232,221,.9)); box-shadow:0 36px 70px -44px rgba(24,73,53,.65),inset 0 1px 0 rgba(255,255,255,.9); transform:perspective(800px) rotateX(7deg); animation:meet-scale-float 6s ease-in-out infinite; }
+  .xircle-scale::before { content:""; position:absolute; inset:9%; border:1px solid rgba(40,115,84,.12); border-radius:30%; }
+  .scale-sensor { position:absolute; width:23%; aspect-ratio:1; border-radius:50%; border:1px solid rgba(40,115,84,.22); background:radial-gradient(circle,rgba(255,255,255,.96),rgba(194,216,201,.7)); box-shadow:inset 0 0 0 8px rgba(255,255,255,.42); }
+  .scale-sensor.s1 { top:14%; left:14%; }.scale-sensor.s2 { top:14%; right:14%; }.scale-sensor.s3 { bottom:14%; left:14%; }.scale-sensor.s4 { bottom:14%; right:14%; }
+  .scale-readout { position:absolute; inset:50% auto auto 50%; width:46%; transform:translate(-50%,-50%); padding:1rem .6rem; border:1px solid rgba(40,115,84,.18); border-radius:20px; background:rgba(252,250,245,.85); backdrop-filter:blur(12px); text-align:center; box-shadow:0 18px 44px -32px rgba(40,115,84,.8); }
+  .scale-readout span { display:block; color:var(--green); font-size:.55rem; font-weight:700; letter-spacing:.22em; }
+  .scale-readout strong { display:block; margin-top:.35rem; font-family:"Anuphan",sans-serif; font-size:1.05rem; letter-spacing:.02em; }
+  .scale-readout small { display:block; margin-top:.25rem; color:var(--ink-soft); font-size:.58rem; }
+  .health-route { display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; }
+  .health-route div { min-height:76px; padding:.75rem; border:1px solid rgba(40,115,84,.13); border-radius:18px; background:rgba(255,255,255,.46); }
+  .health-route span { color:var(--green); font-size:.58rem; font-weight:700; letter-spacing:.12em; }
+  .health-route strong { display:block; margin-top:.25rem; font-family:"Anuphan",sans-serif; font-size:.78rem; line-height:1.4; }
+  .health-showcase .showcase-copy { max-width:36rem; }
+  .health-showcase .showcase-lead { color:var(--green); }
+  .health-list { display:grid; gap:.75rem; margin:1.25rem 0 0; padding:0; list-style:none; }
+  .health-list li { display:grid; grid-template-columns:1.6rem 1fr; gap:.55rem; color:var(--ink-soft); font-size:.86rem; }
+  .health-list li::before { content:"✓"; display:grid; width:1.45rem; height:1.45rem; place-items:center; border-radius:50%; background:rgba(40,115,84,.1); color:var(--green); font-weight:700; }
+  .health-note { display:block; margin-top:1.15rem; color:var(--ink-soft); font-size:.7rem; line-height:1.65; }
+  .curious-showcase { display:grid; gap:2rem; align-items:center; padding:3.25rem 1.25rem; border:1px solid rgba(200,168,93,.2); background:radial-gradient(65% 90% at 90% 15%,rgba(200,168,93,.18),transparent 68%),#101914; color:white; }
+  .curious-table { position:relative; width:min(86vw,26rem); aspect-ratio:1/1; margin:0 auto; border:1px solid rgba(255,255,255,.1); border-radius:50%; background:radial-gradient(circle at 50% 50%,rgba(200,168,93,.12),transparent 58%); animation:meet-table-breathe 7s ease-in-out infinite; }
+  .curious-table::before,.curious-table::after { content:""; position:absolute; inset:14%; border:1px dashed rgba(200,168,93,.22); border-radius:50%; }
+  .curious-table::after { inset:31%; border-style:solid; opacity:.6; }
+  .table-node { position:absolute; display:grid; place-items:center; width:30%; aspect-ratio:1; border:1px solid rgba(255,255,255,.13); border-radius:50%; background:rgba(255,255,255,.05); backdrop-filter:blur(10px); text-align:center; box-shadow:0 18px 50px -36px rgba(200,168,93,.8); }
+  .table-node strong { font-family:"Anuphan",sans-serif; font-size:1rem; }.table-node span { margin-top:.15rem; color:rgba(255,255,255,.5); font-size:.53rem; letter-spacing:.12em; }
+  .table-node.teem { left:6%; top:18%; }.table-node.ako { right:6%; top:18%; }.table-node.you { left:35%; bottom:6%; border-color:rgba(200,168,93,.4); color:#e8cc86; }
+  .table-topic { position:absolute; left:50%; top:50%; width:42%; transform:translate(-50%,-50%); text-align:center; }
+  .table-topic small { display:block; color:rgba(255,255,255,.42); font-size:.53rem; letter-spacing:.2em; }.table-topic strong { display:block; margin-top:.35rem; color:#e8cc86; font-family:"Anuphan",sans-serif; font-size:1.05rem; line-height:1.4; }
+  .curious-showcase .showcase-copy { max-width:37rem; }.curious-showcase .showcase-lead { color:#e8cc86; }
+  .curious-reasons { display:grid; gap:.65rem; margin-top:1.35rem; }
+  .curious-reason { padding:.9rem 1rem; border:1px solid rgba(255,255,255,.1); border-radius:18px; background:rgba(255,255,255,.035); }
+  .curious-reason strong { display:block; font-family:"Anuphan",sans-serif; font-size:.92rem; }.curious-reason span { display:block; margin-top:.25rem; color:rgba(255,255,255,.56); font-size:.78rem; line-height:1.6; }
+  .curious-showcase .showcase-chip { color:#e8cc86; }
+  .motion-target { opacity:0; transform:translateY(20px); filter:blur(3px); }
+  .motion-target.motion-in { opacity:1; transform:translateY(0); filter:blur(0); transition:opacity .72s var(--motion-delay,0ms) ease,transform .82s var(--motion-delay,0ms) cubic-bezier(.2,.9,.2,1),filter .72s var(--motion-delay,0ms) ease; }
+  @media (min-width:760px) { .health-showcase,.curious-showcase { grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); padding:4rem; } }
+  @keyframes meet-atmosphere-drift { from{background-position:0% 0%,0 0} to{background-position:16% 9%,0 0} }
+  @keyframes meet-orb-breathe { from{opacity:.13;filter:blur(74px) saturate(.92)} to{opacity:.23;filter:blur(62px) saturate(1.06)} }
+  @keyframes meet-cta-breathe { 0%,100%{box-shadow:0 0 0 4px rgba(var(--accent-rgb),.14);transform:scale(.94)} 50%{box-shadow:0 0 0 7px rgba(var(--accent-rgb),.05);transform:scale(1)} }
+  @keyframes meet-intent-select { 0%{transform:scale(.985)} 55%{transform:scale(1.008)} 100%{transform:scale(1)} }
+  @keyframes meet-intent-sweep { 0%{opacity:0;transform:translateX(-85%) skewX(-12deg)} 28%{opacity:1} 100%{opacity:0;transform:translateX(175%) skewX(-12deg)} }
+  @keyframes meet-icon-pop { 0%{transform:scale(.86)} 65%{transform:scale(1.07)} 100%{transform:scale(1)} }
+  @keyframes meet-value-arrive { from{opacity:0;transform:translateY(12px) scale(.992);clip-path:inset(0 0 12% 0 round 28px)} to{opacity:1;transform:translateY(0) scale(1);clip-path:inset(0 0 0 0 round 28px)} }
+  @keyframes meet-value-child { from{opacity:0;transform:translateY(9px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes meet-value-glow { from{transform:translate3d(-4%,2%,0) scale(.94);opacity:.62} to{transform:translate3d(5%,-3%,0) scale(1.07);opacity:1} }
+  @keyframes meet-line-glow { 0%,100%{opacity:.48;filter:drop-shadow(0 0 0 rgba(141,181,255,0))} 50%{opacity:.9;filter:drop-shadow(0 0 5px rgba(141,181,255,.55))} }
+  @keyframes meet-node-breathe { 0%,100%{transform:scale(.88);opacity:.72;filter:drop-shadow(0 0 2px rgba(200,168,93,.2))} 50%{transform:scale(1.18);opacity:1;filter:drop-shadow(0 0 8px rgba(200,168,93,.65))} }
+  @keyframes meet-method-arrive { from{opacity:.35;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes meet-number-pop { 0%{opacity:.3;transform:scale(.82)} 70%{opacity:1;transform:scale(1.12)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes meet-folder-breathe { 0%,100%{transform:rotateY(-6deg) rotateX(2deg) translateY(0)} 50%{transform:rotateY(-3.5deg) rotateX(1deg) translateY(-5px)} }
+  @keyframes meet-clover-breathe { 0%,100%{transform:scale(.96);opacity:.62} 50%{transform:scale(1.04);opacity:.82} }
+  @keyframes meet-showcase-enter { from{opacity:0;transform:translateY(18px) scale(.992)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes meet-scale-float { 0%,100%{transform:perspective(800px) rotateX(7deg) translateY(0)} 50%{transform:perspective(800px) rotateX(5deg) translateY(-5px)} }
+  @keyframes meet-table-breathe { 0%,100%{transform:scale(.985);box-shadow:0 0 0 rgba(200,168,93,0)} 50%{transform:scale(1);box-shadow:0 0 60px -36px rgba(200,168,93,.55)} }
+  @media (prefers-reduced-motion:reduce) {
+    .hero-atmosphere,.orb,.button-primary::before,.intent-card,.intent-card::after,.intent-icon,.value-shell,.value-shell::after,.value-shell *,
+    .duo-stage.is-visible .duo-line,.duo-stage.is-visible .you-node svg circle,.method-step.is-visible,.method-step.is-visible .method-number,
+    .folder-cover,.promise-clover,.intent-showcase,.xircle-scale,.curious-table { animation:none!important; }
+    .motion-target { opacity:1!important; transform:none!important; filter:none!important; }
+    .person[data-profile-card],.person[data-profile-card] .person-image img,.person-profile-link { transition-duration:.01ms!important; }
   }
 </style>
 </head>
 <body>
 <div class="session-root" id="session-root" data-intent="neutral">
-
   <header class="session-header" id="session-header">
-    <a class="brand-lockup" href="#top" aria-label="myClover Session — กลับด้านบน">
-      <span class="brand-name display">myClover</span>
-      <span class="brand-session">SESSION</span>
-    </a>
+    <a class="brand-lockup" href="#top" aria-label="myClover Session — กลับด้านบน"><span class="brand-name display">myClover</span><span class="brand-session">SESSION</span></a>
     <button class="button button-quiet" data-book="header">ลงนัด</button>
   </header>
-
   <main>
     <section class="hero" id="top">
-      <div class="hero-atmosphere" aria-hidden="true">
-        <span class="orb orb-a"></span>
-        <span class="orb orb-b"></span>
-      </div>
-      <svg class="hero-traces" viewBox="0 0 1000 720" fill="none" aria-hidden="true">
-        <path class="trace trace-system" pathLength="1" d="M-30 132 C190 128 265 256 420 340 C500 384 561 391 631 365" />
-        <path class="trace trace-life" pathLength="1" d="M1025 52 C846 89 841 231 719 309 C662 345 633 358 601 369" />
-        <g class="trace-clover" transform="translate(616 368)">
-          <circle cx="0" cy="-15" r="15" /><circle cx="-15" cy="0" r="15" />
-          <circle cx="15" cy="0" r="15" /><circle cx="0" cy="15" r="15" />
-        </g>
-      </svg>
-      <div class="hero-photo" aria-hidden="true">
-        <img src="/meet/img/hero.jpg" alt="" fetchpriority="high" width="900" height="1404" />
-        <span class="hero-photo-fade"></span>
-      </div>
-      <div class="hero-copy">
-        <p class="eyebrow reveal-up">MYCLOVER SESSION · BANGKOK / ONLINE</p>
-        <h1 class="display reveal-up delay-1">มาเจอกันก่อน</h1>
-        <p class="hero-promise display reveal-up delay-2">แล้วกลับไปพร้อมก้าวต่อไป<br />ที่ชัดกว่าเดิม</p>
-        <div class="hero-proof reveal-up delay-3">
-          <p><strong>ทีม</strong> ใช้เวลา 19 ปีสร้างระบบดูแลสุขภาพและเทรนคนหลักพัน</p>
-          <p><strong>เอโกะ</strong> เปลี่ยน Routine ให้เข้ากับชีวิตจริง—ทั้งคลีนและอร่อย</p>
-        </div>
-        <p class="hero-value reveal-up delay-4">เราจะเริ่มจากเรื่องของคุณ แล้วช่วยกันดูว่าอะไรเหมาะกับชีวิตคุณจริง ๆ</p>
-        <div class="hero-actions reveal-up delay-5">
-          <button class="button button-primary" id="hero-choose">เลือกเรื่องที่อยากเอามาคุย</button>
-        </div>
-        <p class="practical reveal-up delay-5">Session แรกไม่มีค่าใช้จ่าย · Online 25 นาที · เจอจริง 45 นาที</p>
-      </div>
+      <div class="hero-atmosphere" aria-hidden="true"><span class="orb orb-a"></span><span class="orb orb-b"></span></div>
+      <svg class="hero-traces" viewBox="0 0 1000 720" fill="none" aria-hidden="true"><path class="trace trace-system" pathLength="1" d="M-30 132 C190 128 265 256 420 340 C500 384 561 391 631 365"/><path class="trace trace-life" pathLength="1" d="M1025 52 C846 89 841 231 719 309 C662 345 633 358 601 369"/><g class="trace-clover" transform="translate(616 368)"><circle cx="0" cy="-15" r="15"/><circle cx="-15" cy="0" r="15"/><circle cx="15" cy="0" r="15"/><circle cx="0" cy="15" r="15"/></g></svg>
+      <div class="hero-photo" aria-hidden="true"><img src="/meet/img/hero.jpg" alt="" fetchpriority="high" width="900" height="1404"/><span class="hero-photo-fade"></span></div>
+      <div class="hero-copy"><p class="eyebrow reveal-up">MYCLOVER SESSION · BANGKOK / ONLINE</p><h1 class="display reveal-up delay-1">มาเจอกันก่อน</h1><p class="hero-promise display reveal-up delay-2">แล้วกลับไปพร้อมก้าวต่อไป<br/>ที่ชัดกว่าเดิม</p><div class="hero-proof reveal-up delay-3"><p><strong>ทีม</strong> ใช้เวลา 19 ปีสร้างระบบดูแลสุขภาพและเทรนคนหลักพัน</p><p><strong>เอโกะ</strong> เปลี่ยน Routine ให้เข้ากับชีวิตจริง—ทั้งคลีนและอร่อย</p></div><p class="hero-value reveal-up delay-4">เราจะเริ่มจากเรื่องของคุณ แล้วช่วยกันดูว่าอะไรเหมาะกับชีวิตคุณจริง ๆ</p><div class="hero-actions reveal-up delay-5"><button class="button button-primary" id="hero-choose">เลือกเรื่องที่อยากเอามาคุย</button></div><p class="practical reveal-up delay-5">Session แรกไม่มีค่าใช้จ่าย · Online 25 นาที · เจอจริง 45 นาที</p></div>
     </section>
-
-    <section class="section intent-section" id="choose">
-      <div class="section-heading">
-        <p class="eyebrow">START WITH YOU</p>
-        <h2 class="display">วันนี้อะไรพาคุณมาหาเรา?</h2>
-        <p>เลือกเรื่องเดียวก่อน ที่เหลือเราจะเตรียมให้ตรงกับคุณ</p>
-      </div>
-      <div class="intent-grid" id="intent-grid" aria-label="เลือกเรื่องที่อยากคุย"></div>
-      <div class="value-panel" id="value-panel" aria-live="polite"></div>
-    </section>
-
+    <section class="section intent-section" id="choose"><div class="section-heading"><p class="eyebrow">START WITH YOU</p><h2 class="display">วันนี้อะไรพาคุณมาหาเรา?</h2><p>เลือกเรื่องเดียวก่อน ที่เหลือเราจะเตรียมให้ตรงกับคุณ</p></div><div class="intent-grid" id="intent-grid" aria-label="เลือกเรื่องที่อยากคุย"></div><div class="value-panel" id="value-panel" aria-live="polite"></div></section>
     <section class="duo-section section-wide" id="duo">
-      <div class="duo-intro">
-        <p class="eyebrow eyebrow-light">TWO PERSPECTIVES · ONE PERSON</p>
-        <h2 class="display">คนละด้าน<br />แต่ดูเรื่องเดียวกันคือคุณ</h2>
-      </div>
+      <div class="duo-intro"><p class="eyebrow eyebrow-light">TWO PERSPECTIVES · ONE PERSON</p><h2 class="display">คนละด้าน<br/>แต่ดูเรื่องเดียวกันคือคุณ</h2></div>
       <div class="duo-stage">
-        <article class="person person-teem" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักทีมเพิ่ม">
-          <div class="person-image"><img src="/meet/img/teem.jpg" alt="ทีม" loading="lazy" width="900" height="1500" /></div>
-          <div class="person-copy">
-            <p class="person-label">19 YEARS · PEOPLE · SYSTEMS</p><h3 class="display">ทีม</h3>
-            <p class="person-statement">มองว่าอะไรทำให้คุณไปได้ไกล</p>
-            <p>สร้างระบบดูแลสุขภาพ พัฒนาทีม และเทรนคนหลักพันจากการทำงานกับคนจริง</p>
-            <a class="person-profile-link" href="https://teem.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักทีมเพิ่ม ↗</a>
-          </div>
-        </article>
-        <div class="you-node" aria-label="คุณ — ชีวิต เป้าหมาย และจังหวะของคุณ">
-          <svg viewBox="0 0 200 110" fill="none" aria-hidden="true">
-            <path class="duo-line duo-line-left" pathLength="1" d="M0 24 C55 24 55 56 94 56" />
-            <path class="duo-line duo-line-right" pathLength="1" d="M200 24 C145 24 145 56 106 56" />
-            <circle cx="100" cy="56" r="6" />
-          </svg>
-          <strong class="display">YOU</strong><span>ชีวิต เป้าหมาย และจังหวะของคุณ</span>
-        </div>
-        <article class="person person-ako" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักเอโกะเพิ่ม">
-          <div class="person-image"><img src="/meet/img/ako.jpg" alt="เอโกะ" loading="lazy" width="900" height="1500" /></div>
-          <div class="person-copy">
-            <p class="person-label">ROUTINE · FOOD · REAL LIFE</p><h3 class="display">เอโกะ</h3>
-            <p class="person-statement">มองว่าอะไรทำให้คุณทำได้ทุกวัน</p>
-            <p>ปรับ Routine ขั้นเทพให้เข้ากับกิจวัตร พร้อมความเชื่อว่าสุขภาพดีไม่ควรทำให้ชีวิตหมดความอร่อย</p>
-            <a class="person-profile-link" href="https://ako.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักเอโกะเพิ่ม ↗</a>
-          </div>
-        </article>
+        <article class="person person-teem" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักทีมเพิ่ม"><div class="person-image"><img src="/meet/img/teem.jpg" alt="ทีม" loading="lazy" width="900" height="1500"/></div><div class="person-copy"><p class="person-label">19 YEARS · PEOPLE · SYSTEMS</p><h3 class="display">ทีม</h3><p class="person-statement">มองว่าอะไรทำให้คุณไปได้ไกล</p><p>สร้างระบบดูแลสุขภาพ พัฒนาทีม และเทรนคนหลักพันจากการทำงานกับคนจริง</p><a class="person-profile-link" href="https://teem.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักทีมเพิ่ม ↗</a></div></article>
+        <div class="you-node" aria-label="คุณ — ชีวิต เป้าหมาย และจังหวะของคุณ"><svg viewBox="0 0 200 110" fill="none" aria-hidden="true"><path class="duo-line duo-line-left" pathLength="1" d="M0 24 C55 24 55 56 94 56"/><path class="duo-line duo-line-right" pathLength="1" d="M200 24 C145 24 145 56 106 56"/><circle cx="100" cy="56" r="6"/></svg><strong class="display">YOU</strong><span>ชีวิต เป้าหมาย และจังหวะของคุณ</span></div>
+        <article class="person person-ako" data-profile-card data-revealed="false" role="button" tabindex="0" aria-label="รู้จักเอโกะเพิ่ม"><div class="person-image"><img src="/meet/img/ako.jpg" alt="เอโกะ" loading="lazy" width="900" height="1500"/></div><div class="person-copy"><p class="person-label">ROUTINE · FOOD · REAL LIFE</p><h3 class="display">เอโกะ</h3><p class="person-statement">มองว่าอะไรทำให้คุณทำได้ทุกวัน</p><p>ปรับ Routine ขั้นเทพให้เข้ากับกิจวัตร พร้อมความเชื่อว่าสุขภาพดีไม่ควรทำให้ชีวิตหมดความอร่อย</p><a class="person-profile-link" href="https://ako.myclover.com" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">รู้จักเอโกะเพิ่ม ↗</a></div></article>
       </div>
-      <p class="duo-conclusion display">ทีมทำให้สิ่งที่ดีมีระบบ<br />เอโกะทำให้ระบบนั้นอยู่ในชีวิตจริงได้</p>
+      <p class="duo-conclusion display">ทีมทำให้สิ่งที่ดีมีระบบ<br/>เอโกะทำให้ระบบนั้นอยู่ในชีวิตจริงได้</p>
     </section>
-
-    <section class="section method-section" id="method">
-      <div class="section-heading"><p class="eyebrow">THE MYCLOVER SESSION</p><h2 class="display">นัดแล้วเกิดอะไรขึ้น</h2></div>
-      <div class="method-line" aria-hidden="true"><span></span></div>
-      <ol class="method-list">
-        <li class="method-step"><span class="method-number">01</span><p class="method-en">LISTEN</p><h3 class="display">เริ่มจากเรื่องของคุณ</h3></li>
-        <li class="method-step"><span class="method-number">02</span><p class="method-en">SEE</p><h3 class="display">เห็นสิ่งที่อาจมองข้าม</h3></li>
-        <li class="method-step"><span class="method-number">03</span><p class="method-en">CONNECT</p><h3 class="display">เชื่อมทางเลือกที่ตรงกับคุณ</h3></li>
-        <li class="method-step"><span class="method-number">04</span><p class="method-en">CHOOSE</p><h3 class="display">คุณเป็นคนเลือกว่าจะไปต่อไหม</h3></li>
-      </ol>
-      <p class="method-note">ไม่มี Slide 40 หน้า · ไม่มี Script บังคับ · ไม่มีความจำเป็นต้องปิดการขายในวันนั้น</p>
+    <section class="section method-section" id="method"><div class="section-heading"><p class="eyebrow">THE MYCLOVER SESSION</p><h2 class="display">นัดแล้วเกิดอะไรขึ้น</h2></div><div class="method-line" aria-hidden="true"><span></span></div><ol class="method-list"><li class="method-step"><span class="method-number">01</span><p class="method-en">LISTEN</p><h3 class="display">เริ่มจากเรื่องของคุณ</h3></li><li class="method-step"><span class="method-number">02</span><p class="method-en">SEE</p><h3 class="display">เห็นสิ่งที่อาจมองข้าม</h3></li><li class="method-step"><span class="method-number">03</span><p class="method-en">CONNECT</p><h3 class="display">เชื่อมทางเลือกที่ตรงกับคุณ</h3></li><li class="method-step"><span class="method-number">04</span><p class="method-en">CHOOSE</p><h3 class="display">คุณเป็นคนเลือกว่าจะไปต่อไหม</h3></li></ol><p class="method-note">ไม่มี Slide 40 หน้า · ไม่มี Script บังคับ · ไม่มีความจำเป็นต้องปิดการขายในวันนั้น</p></section>
+    <section class="intent-showcase health-showcase" id="health-showcase" hidden>
+      <div class="health-visual" aria-hidden="true"><div class="xircle-scale"><span class="scale-sensor s1"></span><span class="scale-sensor s2"></span><span class="scale-sensor s3"></span><span class="scale-sensor s4"></span><div class="scale-readout"><span>XIRCLE SCALE</span><strong>BASELINE 01</strong><small>BODY COMPOSITION · DEMO</small></div></div><div class="health-route"><div><span>01 · MEASURE</span><strong>วัดให้เห็นก่อน</strong></div><div><span>02 · PLAN</span><strong>เลือกจุดเริ่ม</strong></div><div><span>03 · START</span><strong>เริ่มได้วันนี้</strong></div></div></div>
+      <div class="showcase-copy"><p class="eyebrow">XIRCLE SCALE · BODY CHECK-IN</p><h2 class="display">วัดให้เห็นก่อน<br/>แล้ววางแผนที่เริ่มได้ทันที</h2><p class="showcase-lead">เราเอา Xircle Scale ไปด้วย เพื่อให้บทสนทนาเริ่มจากข้อมูลร่างกายจริงของคุณ ไม่ใช่การเดา</p><ul class="health-list"><li>วัดองค์ประกอบร่างกายและช่วยอ่านภาพรวมให้เข้าใจง่าย</li><li>มองต่อว่า Eat · Move · Sleep และ Routine ตรงไหนกำลังมีผลกับชีวิตคุณ</li><li>เลือกเพียง 1–2 จุดที่เหมาะกับชีวิตจริง ไม่ต้องเปลี่ยนทุกอย่างพร้อมกัน</li><li>กลับไปพร้อมแผนเริ่มต้นที่ทำได้ทันที และเก็บ baseline ไว้เทียบครั้งต่อไป</li></ul><div class="showcase-chips"><span class="showcase-chip">Xircle Scale</span><span class="showcase-chip">Body Composition</span><span class="showcase-chip">Routine</span><span class="showcase-chip">Start Now</span></div><small class="health-note">Body Check-in แรกไม่มีค่าใช้จ่าย · ไม่ต้องซื้อผลิตภัณฑ์เพื่อมาวัดและคุยกับเรา · ข้อมูลนี้ใช้เพื่อการติดตามและวาง Routine ไม่ใช่การวินิจฉัยโรค</small></div>
     </section>
-
-    <section class="closed-folder" id="closed-folder" hidden>
-      <div class="folder-visual" aria-hidden="true"><div class="folder-tab">X–VISOR</div><div class="folder-cover"><span>PRIVATE CONVERSATION FILE</span><strong class="display">X</strong><i></i></div></div>
-      <div class="folder-copy">
-        <p class="eyebrow eyebrow-light">SERVICE → BUSINESS SUPPORT</p>
-        <h2 class="display">บริการคือแกนหลัก<br />ธุรกิจคือทางเลือกต่อยอด</h2>
-        <p class="folder-lead">ถ้าคุณอยากเปลี่ยนสิ่งที่เรียนรู้ให้เป็นงาน เรามีระบบช่วย</p>
-        <p>เราเริ่มจากการดูแลคนให้ดี แล้วค่อยช่วยต่อยอดตั้งแต่เข้าใจบทบาท เตรียมสอบใบอนุญาต ไปจนถึงเครื่องมือ Routine และระบบดูแลหลังเริ่มต้น โดยไม่จำเป็นต้องเลือกเส้นทางธุรกิจเพื่อรับคุณค่าจาก Session นี้</p>
-        <small>ข้อมูลผลิตภัณฑ์ เงื่อนไข และรายได้ต้องพิจารณาจากเอกสารทางการและผลลัพธ์ของแต่ละบุคคล และเราไม่รับประกันผลสอบหรือรายได้</small>
-      </div>
+    <section class="closed-folder" id="closed-folder" hidden><div class="folder-visual" aria-hidden="true"><div class="folder-tab">X–VISOR</div><div class="folder-cover"><span>PRIVATE CONVERSATION FILE</span><strong class="display">X</strong><i></i></div></div><div class="folder-copy"><p class="eyebrow eyebrow-light">SERVICE → BUSINESS SUPPORT</p><h2 class="display">บริการคือแกนหลัก<br/>ธุรกิจคือทางเลือกต่อยอด</h2><p class="folder-lead">ถ้าคุณอยากเปลี่ยนสิ่งที่เรียนรู้ให้เป็นงาน เรามีระบบช่วย</p><p>เราเริ่มจากการดูแลคนให้ดี แล้วค่อยช่วยต่อยอดตั้งแต่เข้าใจบทบาท เตรียมสอบใบอนุญาต ไปจนถึงเครื่องมือ Routine และระบบดูแลหลังเริ่มต้น โดยไม่จำเป็นต้องเลือกเส้นทางธุรกิจเพื่อรับคุณค่าจาก Session นี้</p><small>ข้อมูลผลิตภัณฑ์ เงื่อนไข และรายได้ต้องพิจารณาจากเอกสารทางการและผลลัพธ์ของแต่ละบุคคล และเราไม่รับประกันผลสอบหรือรายได้</small></div></section>
+    <section class="intent-showcase curious-showcase" id="curious-showcase" hidden>
+      <div class="curious-table" aria-hidden="true"><div class="table-node teem"><div><strong>ทีม</strong><span>SYSTEM · AI</span></div></div><div class="table-node ako"><div><strong>เอโกะ</strong><span>FOOD · LIFE</span></div></div><div class="table-node you"><div><strong>YOU</strong><span>YOUR STORY</span></div></div><div class="table-topic"><small>OPEN TABLE</small><strong>เอาเรื่องที่คิดอยู่มาวางตรงกลาง</strong></div></div>
+      <div class="showcase-copy"><p class="eyebrow eyebrow-light">OPEN TABLE · NO PITCH REQUIRED</p><h2 class="display">ยังไม่ต้องมีคำตอบ<br/>แค่มาเจอกันก่อนก็ได้</h2><p class="showcase-lead">บางคนไม่ได้มาหาเราเพราะรู้ว่าต้องการอะไร แต่อยากคุยกับคน 2 แบบที่มองเรื่องเดียวกันคนละด้าน</p><div class="curious-reasons"><div class="curious-reason"><strong>ทีมมองระบบและทิศทาง</strong><span>ชอบแกะเรื่องยากให้เห็นโครงสร้าง ทางเลือก และสิ่งที่ทำต่อได้จริง</span></div><div class="curious-reason"><strong>เอโกะมองชีวิตจริงและความต่อเนื่อง</strong><span>โดยเฉพาะ Routine สุขภาพ ของกิน และวิธีที่สิ่งดี ๆ จะอยู่กับชีวิตได้โดยไม่ฝืน</span></div><div class="curious-reason"><strong>คุณไม่ต้องเตรียมหัวข้อให้สวย</strong><span>สุขภาพ งาน AI ของกิน เป้าหมายชีวิต หรือเรื่องที่ยังคิดไม่ตก—เอามาคุยได้หมด</span></div></div><div class="showcase-chips"><span class="showcase-chip">Coffee / Buffet</span><span class="showcase-chip">คุยสบาย ๆ</span><span class="showcase-chip">ไม่ต้องเตรียมตัว</span><span class="showcase-chip">ไม่ต้องตัดสินใจวันนั้น</span></div></div>
     </section>
-
-    <section class="section honest-section" id="honest">
-      <div class="section-heading"><p class="eyebrow">HONEST BEFORE WE MEET</p><h2 class="display">เรื่องที่เราพูดตรง ๆ ก่อนนัด</h2></div>
-      <div class="accordion" id="honest-accordion">
-        <details><summary>ถ้าสนใจโอกาสทางธุรกิจ คุยกับเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ได้ ถ้าคุณสนใจ เราอธิบายเส้นทางและระบบสนับสนุนให้ดูได้ตรงไปตรงมา แต่เราไม่เริ่มจากการชวนสมัคร แกนของเราคือช่วยให้คุณเข้าใจการดูแลคนและสร้างคุณค่าก่อน แล้วคุณค่อยตัดสินใจเองว่าอยากต่อยอดเป็นธุรกิจหรือไม่</p></details>
-        <details><summary>ทีมกับเอโกะสนับสนุนเราได้แค่ไหน?<span aria-hidden="true">+</span></summary><p>ถ้าคุณเลือกเส้นทางนี้ด้วยตัวเอง เราช่วยเตรียมสอบ อธิบายระบบ ฝึกใช้เครื่องมือ Routine และช่วยวางวิธีดูแลคนต่อเนื่องได้ แต่เราไม่สามารถชวนหรือรับสมัครคุณแทนการตัดสินใจของคุณเอง และไม่รับประกันผลสอบหรือรายได้</p></details>
-        <details><summary>ต้องทำธุรกิจถึงจะใช้บริการของเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ไม่ต้อง สุขภาพ Routine และ myClover Session มีคุณค่าในตัวเอง คุณจะมาใช้บริการ รับข้อมูล แล้วจบตรงนั้นก็ได้ เส้นทางธุรกิจเป็นเพียงทางเลือกสำหรับคนที่อยากต่อยอดสิ่งนี้เป็นงาน</p></details>
-        <details><summary>ถ้าเลือกต่อยอด เราช่วยเริ่มต้นยังไง?<span aria-hidden="true">+</span></summary><p>เราจะช่วยให้เห็นสิ่งที่ต้องเรียน วิธีเตรียมตัวสอบ มาตรฐานการทำงาน และระบบที่มีให้ใช้หลังเริ่มต้น เพื่อให้คุณดูแลคนได้อย่างเป็นระบบ ไม่ใช่แค่รู้ว่าจะขายอะไร</p></details>
-      </div>
-    </section>
-
-    <section class="promise-section">
-      <div class="promise-clover" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <p class="eyebrow">OUR STANDARD</p><h2 class="display">ใครเจอเรา<br />คนนั้นโชคดี</h2>
-      <p>เราไม่รับประกันว่าทุกอย่างที่เรามีจะเหมาะกับคุณ แต่เรารับผิดชอบให้เวลาที่คุณมาเจอไม่สูญเปล่า</p>
-      <p>ต่อให้สุดท้ายคุณไม่ได้ซื้อ ไม่ได้เลือกสอบ หรือยังไม่พร้อมไปต่อ คุณควรกลับไปพร้อมข้อมูล มุมมอง หรือก้าวถัดไปที่ชัดกว่าเดิม</p>
-      <button class="button button-primary" data-book="signature">เริ่ม myClover Session</button>
-    </section>
+    <section class="section honest-section" id="honest"><div class="section-heading"><p class="eyebrow">HONEST BEFORE WE MEET</p><h2 class="display">เรื่องที่เราพูดตรง ๆ ก่อนนัด</h2></div><div class="accordion" id="honest-accordion"><details><summary>ถ้าสนใจโอกาสทางธุรกิจ คุยกับเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ได้ ถ้าคุณสนใจ เราอธิบายเส้นทางและระบบสนับสนุนให้ดูได้ตรงไปตรงมา แต่เราไม่เริ่มจากการชวนสมัคร แกนของเราคือช่วยให้คุณเข้าใจการดูแลคนและสร้างคุณค่าก่อน แล้วคุณค่อยตัดสินใจเองว่าอยากต่อยอดเป็นธุรกิจหรือไม่</p></details><details><summary>ทีมกับเอโกะสนับสนุนเราได้แค่ไหน?<span aria-hidden="true">+</span></summary><p>ถ้าคุณเลือกเส้นทางนี้ด้วยตัวเอง เราช่วยเตรียมสอบ อธิบายระบบ ฝึกใช้เครื่องมือ Routine และช่วยวางวิธีดูแลคนต่อเนื่องได้ แต่เราไม่สามารถชวนหรือรับสมัครคุณแทนการตัดสินใจของคุณเอง และไม่รับประกันผลสอบหรือรายได้</p></details><details><summary>ต้องทำธุรกิจถึงจะใช้บริการของเราได้ไหม?<span aria-hidden="true">+</span></summary><p>ไม่ต้อง สุขภาพ Routine และ myClover Session มีคุณค่าในตัวเอง คุณจะมาใช้บริการ รับข้อมูล แล้วจบตรงนั้นก็ได้ เส้นทางธุรกิจเป็นเพียงทางเลือกสำหรับคนที่อยากต่อยอดสิ่งนี้เป็นงาน</p></details><details><summary>ถ้าเลือกต่อยอด เราช่วยเริ่มต้นยังไง?<span aria-hidden="true">+</span></summary><p>เราจะช่วยให้เห็นสิ่งที่ต้องเรียน วิธีเตรียมตัวสอบ มาตรฐานการทำงาน และระบบที่มีให้ใช้หลังเริ่มต้น เพื่อให้คุณดูแลคนได้อย่างเป็นระบบ ไม่ใช่แค่รู้ว่าจะขายอะไร</p></details></div></section>
+    <section class="promise-section"><div class="promise-clover" aria-hidden="true"><span></span><span></span><span></span><span></span></div><p class="eyebrow">OUR STANDARD</p><h2 class="display">ใครเจอเรา<br/>คนนั้นโชคดี</h2><p>เราไม่รับประกันว่าทุกอย่างที่เรามีจะเหมาะกับคุณ แต่เรารับผิดชอบให้เวลาที่คุณมาเจอไม่สูญเปล่า</p><p>ต่อให้สุดท้ายคุณไม่ได้ซื้อ ไม่ได้เลือกต่อยอดธุรกิจ หรือยังไม่พร้อมไปต่อ คุณควรกลับไปพร้อมข้อมูล มุมมอง หรือก้าวถัดไปที่ชัดกว่าเดิม</p><button class="button button-primary" data-book="signature">เริ่ม myClover Session</button></section>
   </main>
-
   <footer class="site-footer"><p class="display">myClover Session</p><p>Meet Teem &amp; Ako · Bangkok / Online</p></footer>
   <div class="sticky-book" id="sticky-book" aria-hidden="true"><button class="button button-primary" data-book="sticky">เริ่ม myClover Session</button></div>
-
-  <div class="booking-root" id="booking-root" hidden>
-    <button class="booking-scrim" id="booking-scrim" aria-label="ปิดหน้าลงนัด"></button>
-    <section class="booking-dialog" role="dialog" aria-modal="true" aria-labelledby="booking-title">
-      <header class="booking-header">
-        <div><p class="booking-kicker">MYCLOVER</p><h2 class="display" id="booking-title">Session</h2><p>รู้จักคุณทีละนิด ก่อนเราจะได้เจอกัน</p></div>
-        <button class="button button-icon" id="booking-close" aria-label="ปิด">×</button>
-      </header>
-      <div class="conversation-progress" id="conversation-progress" aria-label="ขั้นตอนการลงนัด"><span></span><span></span><span></span><span></span><span></span></div>
-      <p class="sr-only" id="progress-text" aria-live="polite"></p>
-      <div class="conversation" id="conversation" aria-live="polite"></div>
-      <footer class="booking-footer" id="booking-footer"><button class="button button-quiet" id="booking-back">ย้อนกลับ</button><button class="button button-primary" id="booking-next" hidden>ต่อไป</button></footer>
-    </section>
-  </div>
-
+  <div class="booking-root" id="booking-root" hidden><button class="booking-scrim" id="booking-scrim" aria-label="ปิดหน้าลงนัด"></button><section class="booking-dialog" role="dialog" aria-modal="true" aria-labelledby="booking-title"><header class="booking-header"><div><p class="booking-kicker">MYCLOVER</p><h2 class="display" id="booking-title">Session</h2><p>รู้จักคุณทีละนิด ก่อนเราจะได้เจอกัน</p></div><button class="button button-icon" id="booking-close" aria-label="ปิด">×</button></header><div class="conversation-progress" id="conversation-progress" aria-label="ขั้นตอนการลงนัด"><span></span><span></span><span></span><span></span><span></span></div><p class="sr-only" id="progress-text" aria-live="polite"></p><div class="conversation" id="conversation" aria-live="polite"></div><footer class="booking-footer" id="booking-footer"><button class="button button-quiet" id="booking-back">ย้อนกลับ</button><button class="button button-primary" id="booking-next" hidden>ต่อไป</button></footer></section></div>
 </div>
 <script src="/meet/meet.js?v=20260830-1" defer></script>
 <script>
 window.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-profile-card]').forEach(function (card) {
     var link = card.querySelector('.person-profile-link');
-    function reveal() {
-      if (card.getAttribute('data-revealed') === 'true') return;
-      card.setAttribute('data-revealed', 'true');
-      link.removeAttribute('aria-hidden');
-      link.setAttribute('tabindex', '0');
-    }
-    card.addEventListener('click', function (event) {
-      if (event.target.closest('.person-profile-link')) return;
-      reveal();
-    });
-    card.addEventListener('keydown', function (event) {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      if (event.target.closest('.person-profile-link')) return;
-      event.preventDefault();
-      reveal();
-    });
+    function reveal() { if (card.getAttribute('data-revealed') === 'true') return; card.setAttribute('data-revealed','true'); link.removeAttribute('aria-hidden'); link.setAttribute('tabindex','0'); }
+    card.addEventListener('click', function (event) { if (!event.target.closest('.person-profile-link')) reveal(); });
+    card.addEventListener('keydown', function (event) { if (event.key !== 'Enter' && event.key !== ' ') return; if (event.target.closest('.person-profile-link')) return; event.preventDefault(); reveal(); });
     link.addEventListener('click', function (event) { event.stopPropagation(); });
   });
-
-  var root = document.getElementById('session-root');
-  var grid = document.getElementById('intent-grid');
-  var panel = document.getElementById('value-panel');
-
-  function setText(node, text) {
-    if (node && node.textContent !== text) node.textContent = text;
+  var root=document.getElementById('session-root'),grid=document.getElementById('intent-grid'),panel=document.getElementById('value-panel'),healthShowcase=document.getElementById('health-showcase'),businessShowcase=document.getElementById('closed-folder'),curiousShowcase=document.getElementById('curious-showcase');
+  function setText(node,text){ if(node&&node.textContent!==text) node.textContent=text; }
+  function syncIntentCopy(){
+    if(grid){ grid.querySelectorAll('.intent-card').forEach(function(card){ var strong=card.querySelector('.intent-copy strong'),small=card.querySelector('.intent-copy small'); if(!strong)return; if(strong.textContent==='สอบใบอนุญาตและระบบดูแล'||strong.textContent==='ต่อยอดเป็นธุรกิจ'){ setText(strong,'ต่อยอดเป็นธุรกิจ'); setText(small,'อยากรู้ว่าเราช่วยต่อยอดเส้นทางนี้ยังไง'); } }); }
+    if(!root)return; var intent=root.getAttribute('data-intent'),shell=panel&&panel.querySelector('.value-shell'); if(!shell)return; var items=shell.querySelectorAll('.outcome-list li');
+    if(intent==='health'){ setText(shell.querySelector('.value-kicker'),'XIRCLE SCALE → HEALTH PLAN'); setText(shell.querySelector('h3'),'วัดให้เห็นก่อน แล้วเลือกจุดเริ่มที่ทำได้จริง'); setText(items[0],'วัดองค์ประกอบร่างกายด้วย Xircle Scale และอ่าน baseline ให้เข้าใจง่าย'); setText(items[1],'เชื่อมข้อมูลกับ Eat · Move · Sleep และ Routine ที่เกิดขึ้นจริงในชีวิตคุณ'); setText(items[2],'กลับไปพร้อม 1–2 จุดเริ่มที่ทำได้ทันที และมีค่าไว้เทียบครั้งต่อไป'); setText(shell.querySelector('.value-qualifier'),'ไม่ต้องซื้อผลิตภัณฑ์เพื่อมาวัดและวางแผนกับเรา'); setText(shell.querySelector('.value-cta'),'นัด Xircle Body Check-in'); setText(document.querySelector('#sticky-book .button'),'นัด Xircle Body Check-in'); }
+    if(intent==='opportunity'){ setText(shell.querySelector('.value-kicker'),'SERVICE → BUSINESS'); setText(shell.querySelector('h3'),'เริ่มจากการดูแลคนให้ดี แล้วค่อยต่อยอดเป็นงาน'); setText(items[0],'เห็นก่อนว่าคุณอยากช่วยใคร และบริการแบบไหนที่เหมาะกับคุณ'); setText(items[1],'ถ้าอยากต่อยอดเป็นอาชีพ เราช่วยวางเส้นทางและเตรียมสอบใบอนุญาตให้'); setText(items[2],'มีเครื่องมือ Routine และระบบดูแลต่อเนื่องให้ใช้หลังเริ่มต้น ไม่ต้องเริ่มจากการขาย'); setText(shell.querySelector('.value-qualifier'),'บริการและคุณค่าที่คุณให้คนคือแกนหลัก ธุรกิจเป็นทางเลือก ไม่ใช่เงื่อนไขของการมาเจอเรา'); setText(shell.querySelector('.value-cta'),'นัดคุยเรื่องการต่อยอด'); setText(document.querySelector('#sticky-book .button'),'นัดคุยเรื่องการต่อยอด'); }
   }
-
-  function rewriteOpportunity() {
-    if (grid) {
-      grid.querySelectorAll('.intent-card').forEach(function (card) {
-        var strong = card.querySelector('.intent-copy strong');
-        if (!strong) return;
-        if (strong.textContent === 'สอบใบอนุญาตและระบบดูแล' || strong.textContent === 'ต่อยอดเป็นธุรกิจ') {
-          setText(strong, 'ต่อยอดเป็นธุรกิจ');
-          setText(card.querySelector('.intent-copy small'), 'อยากรู้ว่า ถ้าเลือกเส้นทางนี้ เรามีระบบช่วยอะไรบ้าง');
-        }
-      });
-    }
-
-    if (!root || root.getAttribute('data-intent') !== 'opportunity') return;
-    var shell = panel && panel.querySelector('.value-shell');
-    if (shell) {
-      setText(shell.querySelector('.value-kicker'), 'SERVICE → BUSINESS');
-      setText(shell.querySelector('h3'), 'เริ่มจากการดูแลคนให้ดี แล้วค่อยต่อยอดเป็นงาน');
-      var items = shell.querySelectorAll('.outcome-list li');
-      setText(items[0], 'เห็นก่อนว่าคุณอยากช่วยใคร และบริการแบบไหนที่เหมาะกับคุณ');
-      setText(items[1], 'ถ้าอยากต่อยอดเป็นอาชีพ เราช่วยวางเส้นทางและเตรียมสอบใบอนุญาตให้');
-      setText(items[2], 'มีเครื่องมือ Routine และระบบดูแลต่อเนื่องให้ใช้หลังเริ่มต้น ไม่ต้องเริ่มจากการขาย');
-      setText(shell.querySelector('.value-qualifier'), 'บริการและคุณค่าที่คุณให้คนคือแกนหลัก ธุรกิจเป็นทางเลือก ไม่ใช่เงื่อนไขของการมาเจอเรา');
-      setText(shell.querySelector('.value-cta'), 'นัดคุยเรื่องการต่อยอด');
-    }
-    setText(document.querySelector('#sticky-book .button'), 'นัดคุยเรื่องการต่อยอด');
-  }
-
-  rewriteOpportunity();
-  if (grid) new MutationObserver(rewriteOpportunity).observe(grid, { childList: true, subtree: true });
-  if (panel) new MutationObserver(rewriteOpportunity).observe(panel, { childList: true, subtree: true });
-  if (root) new MutationObserver(rewriteOpportunity).observe(root, { attributes: true, attributeFilter: ['data-intent'] });
-
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var motionTargets = document.querySelectorAll('.section-heading, .duo-intro, .duo-conclusion, .folder-copy, .method-note, .honest-section .accordion, .promise-section');
-  motionTargets.forEach(function (node, index) {
-    node.classList.add('motion-target');
-    node.style.setProperty('--motion-delay', String((index % 3) * 55) + 'ms');
-  });
-
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    motionTargets.forEach(function (node) { node.classList.add('motion-in'); });
-  } else {
-    var motionObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('motion-in');
-        motionObserver.unobserve(entry.target);
-      });
-    }, { threshold: .12, rootMargin: '0px 0px -7% 0px' });
-    motionTargets.forEach(function (node) { motionObserver.observe(node); });
-  }
+  function syncShowcases(){ if(!root)return; var intent=root.getAttribute('data-intent'); if(healthShowcase)healthShowcase.hidden=intent!=='health'; if(businessShowcase)businessShowcase.hidden=intent!=='opportunity'; if(curiousShowcase)curiousShowcase.hidden=intent!=='curious'; }
+  function syncIntentUI(){ syncIntentCopy(); syncShowcases(); }
+  syncIntentUI();
+  if(grid)new MutationObserver(syncIntentCopy).observe(grid,{childList:true,subtree:true});
+  if(panel)new MutationObserver(syncIntentCopy).observe(panel,{childList:true,subtree:true});
+  if(root)new MutationObserver(syncIntentUI).observe(root,{attributes:true,attributeFilter:['data-intent']});
+  var reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motionTargets=document.querySelectorAll('.section-heading,.duo-intro,.duo-conclusion,.folder-copy,.method-note,.honest-section .accordion,.promise-section,.health-showcase .showcase-copy,.health-visual,.curious-showcase .showcase-copy,.curious-table');
+  motionTargets.forEach(function(node,index){ node.classList.add('motion-target'); node.style.setProperty('--motion-delay',String((index%3)*55)+'ms'); });
+  if(reduceMotion||!('IntersectionObserver'in window)){ motionTargets.forEach(function(node){node.classList.add('motion-in');}); } else { var motionObserver=new IntersectionObserver(function(entries){ entries.forEach(function(entry){ if(!entry.isIntersecting)return; entry.target.classList.add('motion-in'); motionObserver.unobserve(entry.target); }); },{threshold:.12,rootMargin:'0px 0px -7% 0px'}); motionTargets.forEach(function(node){motionObserver.observe(node);}); }
 });
 </script>
 </body>
