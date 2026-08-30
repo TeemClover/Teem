@@ -1,1 +1,750 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>X-VISOR QUEST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Silkscreen:wght@400;700&display=swap">
+<style>
+:root{
+  --sky:#6FBEE0;
+  --sky-2:#4FA3CC;
+  --grass:#3FAE5A;
+  --grass-d:#2A8442;
+  --gold:#FFC53D;
+  --gold-d:#E09A0B;
+  --coral:#FF6B5A;
+  --coral-d:#D4402F;
+  --violet:#7B5EE8;
+  --violet-d:#553CBF;
+  --paper:#FFF6E0;
+  --paper-2:#FFE9BE;
+  --ink:#1A2430;
+  --ink-2:#4A5A6E;
+  --line:#1A2430;
+  --ok:#2A8442;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--sky);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(255,255,255,.35) 0 3px, transparent 3px),
+    radial-gradient(circle at 78% 22%, rgba(255,255,255,.28) 0 4px, transparent 4px),
+    radial-gradient(circle at 40% 65%, rgba(255,255,255,.22) 0 3px, transparent 3px);
+  color:var(--ink);
+  font-family:'Mitr',system-ui,sans-serif;
+  font-weight:400;
+  line-height:1.5;
+  min-height:100vh;
+  padding:10px 10px 96px;
+}
+.num{font-family:'Silkscreen','Mitr',monospace;font-weight:700;letter-spacing:.02em}
+
+.app{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+
+/* ---- chunky panel ---- */
+.panel{
+  background:var(--paper);
+  border:3px solid var(--line);
+  border-radius:14px;
+  box-shadow:0 5px 0 var(--line), 0 5px 0 3px rgba(0,0,0,.12);
+  padding:12px;
+}
+
+/* ---- title ---- */
+.title{
+  text-align:center;padding:14px 12px;
+  background:linear-gradient(180deg,var(--grass),var(--grass-d));
+  color:#fff;
+}
+.title h1{
+  margin:0;font-family:'Silkscreen',sans-serif;font-weight:700;
+  font-size:clamp(20px,6.4vw,30px);letter-spacing:.06em;
+  text-shadow:0 3px 0 var(--ink);
+}
+.title p{margin:6px 0 0;font-size:12.5px;font-weight:300;opacity:.95}
+
+/* ---- HUD ---- */
+.hud{display:flex;flex-direction:column;gap:9px;padding:11px}
+.hud-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.month{font-size:13px;font-weight:500}
+.month b{font-family:'Silkscreen';font-size:16px}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  border:2.5px solid var(--line);border-radius:99px;
+  padding:2px 11px;font-size:12px;font-weight:500;
+  background:var(--paper-2);box-shadow:0 2.5px 0 var(--line);
+}
+.badge.lead{background:var(--violet);color:#fff}
+.badge.gen{background:var(--gold);color:var(--ink)}
+
+.apbar{display:flex;align-items:center;gap:7px}
+.apbar .lbl{font-size:11.5px;font-weight:500;color:var(--ink-2);min-width:56px}
+.pips{display:flex;gap:2.5px;flex-wrap:wrap;flex:1}
+.pip{width:11px;height:15px;border:2px solid var(--line);border-radius:3px;background:#fff}
+.pip.on{background:var(--gold);box-shadow:inset 0 -3px 0 var(--gold-d)}
+
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.stat{
+  border:2.5px solid var(--line);border-radius:10px;padding:6px 5px;text-align:center;
+  background:#fff;box-shadow:0 2.5px 0 var(--line);
+}
+.stat .k{font-size:10px;font-weight:400;color:var(--ink-2);display:block;line-height:1.3}
+.stat .v{font-size:15px;line-height:1.25;display:block}
+.stat.money .v{color:var(--grass-d)}
+.stat.tier .v{font-size:14px}
+
+.tierline{font-size:11px;color:var(--ink-2);text-align:center;font-weight:300}
+.tierline b{color:var(--ink);font-weight:500}
+
+/* ---- tabs ---- */
+.tabs{display:flex;gap:6px}
+.tab{
+  flex:1;border:3px solid var(--line);border-radius:11px;
+  background:var(--paper-2);color:var(--ink);
+  font-family:'Mitr';font-size:12.5px;font-weight:500;
+  padding:7px 4px;cursor:pointer;box-shadow:0 3.5px 0 var(--line);
+  transition:transform .06s, box-shadow .06s;
+}
+.tab .n{font-family:'Silkscreen';font-size:11px}
+.tab[aria-selected="true"]{background:var(--grass);color:#fff}
+.tab:active{transform:translateY(3px);box-shadow:0 .5px 0 var(--line)}
+
+/* ---- people grid ---- */
+.gridwrap{min-height:190px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.who{
+  border:2.5px solid var(--line);border-radius:11px;background:#fff;
+  padding:7px 5px 6px;text-align:center;cursor:pointer;position:relative;
+  box-shadow:0 3px 0 var(--line);transition:transform .06s, box-shadow .06s;
+}
+.who:active{transform:translateY(3px);box-shadow:0 0 0 var(--line)}
+.who.sel{background:var(--gold);box-shadow:0 3px 0 var(--line), 0 0 0 3px var(--violet)}
+.who .face{font-size:27px;line-height:1.15;display:block}
+.who .nm{display:block;font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who .sub{display:block;font-size:9.5px;color:var(--ink-2);font-weight:300;line-height:1.35}
+.who .xv{display:block;font-family:'Silkscreen';font-size:10px;color:var(--grass-d)}
+.hp{display:block;height:7px;border:2px solid var(--line);border-radius:4px;background:#fff;margin-top:4px;overflow:hidden}
+.hp i{display:block;height:100%;background:var(--coral);transition:width .3s}
+.hp i.good{background:var(--grass)}
+.hp i.mid{background:var(--gold)}
+.tagx{
+  position:absolute;top:-8px;right:-5px;font-size:9px;font-family:'Silkscreen';
+  background:var(--violet);color:#fff;border:2px solid var(--line);border-radius:6px;
+  padding:0 4px;box-shadow:0 2px 0 var(--line);
+}
+.tagx.gen{background:var(--gold);color:var(--ink)}
+.done{position:absolute;top:2px;left:4px;font-size:12px}
+
+.empty{
+  text-align:center;padding:26px 14px;font-size:12.5px;font-weight:300;color:var(--ink-2);
+  border:3px dashed var(--ink-2);border-radius:12px;
+}
+.empty b{display:block;font-weight:500;color:var(--ink);font-size:13.5px;margin-bottom:4px}
+
+/* ---- org view ---- */
+.org{display:flex;flex-direction:column;gap:8px;font-size:12px}
+.orgrow{
+  display:flex;align-items:center;gap:8px;border:2.5px solid var(--line);
+  border-radius:10px;padding:7px 9px;background:#fff;box-shadow:0 2.5px 0 var(--line);
+}
+.orgrow.me{background:var(--grass);color:#fff}
+.orgrow.g2{margin-left:22px;background:var(--paper-2);font-size:11.5px}
+.orgrow .f{font-size:20px}
+.orgrow .g{flex:1;line-height:1.35}
+.orgrow small{display:block;font-size:10px;font-weight:300;opacity:.85}
+.orgrow .v{font-family:'Silkscreen';font-size:12px}
+.tgvbar{border:3px solid var(--line);border-radius:10px;background:#fff;height:22px;position:relative;overflow:hidden;box-shadow:0 3px 0 var(--line)}
+.tgvbar i{display:block;height:100%;background:linear-gradient(180deg,var(--violet),var(--violet-d));transition:width .5s}
+.tgvbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Silkscreen';font-size:11px;color:var(--ink);text-shadow:0 0 4px #fff,0 0 4px #fff}
+
+/* ---- actions ---- */
+.acts{display:flex;flex-direction:column;gap:7px}
+.acthead{font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px}
+.acthead .f{font-size:19px}
+.btn{
+  width:100%;display:flex;align-items:center;gap:8px;text-align:left;
+  border:3px solid var(--line);border-radius:11px;padding:8px 10px;
+  background:#fff;color:var(--ink);cursor:pointer;
+  font-family:'Mitr';font-size:12.5px;font-weight:500;
+  box-shadow:0 3.5px 0 var(--line);transition:transform .06s, box-shadow .06s;
+}
+.btn:active:not(:disabled){transform:translateY(3.5px);box-shadow:0 0 0 var(--line)}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:0 3.5px 0 var(--ink-2);border-color:var(--ink-2)}
+.btn .ico{font-size:19px;line-height:1}
+.btn .t{flex:1;line-height:1.3}
+.btn .t small{display:block;font-size:10px;font-weight:300;color:var(--ink-2)}
+.btn .cost{font-family:'Silkscreen';font-size:11px;background:var(--gold);border:2px solid var(--line);border-radius:6px;padding:1px 5px}
+.btn.warn{background:var(--coral);color:#fff}
+.btn.warn .t small{color:rgba(255,255,255,.85)}
+.btn.hero{background:var(--violet);color:#fff}
+.btn.hero .t small{color:rgba(255,255,255,.85)}
+
+/* ---- end month ---- */
+.endbar{
+  position:fixed;left:0;right:0;bottom:0;padding:10px;
+  background:linear-gradient(180deg,rgba(111,190,224,0),rgba(111,190,224,.95) 40%);
+}
+.endbar .inner{max-width:520px;margin:0 auto}
+.endbtn{
+  width:100%;border:3px solid var(--line);border-radius:13px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-d));color:var(--ink);
+  font-family:'Mitr';font-weight:600;font-size:16px;padding:11px;cursor:pointer;
+  box-shadow:0 5px 0 var(--line);transition:transform .06s, box-shadow .06s;
+}
+.endbtn:active{transform:translateY(5px);box-shadow:0 0 0 var(--line)}
+
+/* ---- modal ---- */
+.veil{
+  position:fixed;inset:0;background:rgba(12,22,34,.72);z-index:50;
+  display:flex;align-items:center;justify-content:center;padding:14px;
+}
+.veil[hidden]{display:none}
+.sheet{
+  background:var(--paper);border:3px solid var(--line);border-radius:16px;
+  box-shadow:0 7px 0 var(--line);max-width:460px;width:100%;
+  max-height:86vh;overflow:auto;padding:14px;
+  animation:pop .18s cubic-bezier(.2,1.4,.5,1);
+}
+@keyframes pop{from{transform:scale(.9) translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.sheet h2{
+  margin:0 0 10px;font-family:'Silkscreen';font-size:15px;letter-spacing:.03em;
+  text-align:center;padding-bottom:9px;border-bottom:3px dashed var(--ink-2);
+}
+.rcp{display:flex;flex-direction:column;gap:5px;font-size:12.5px}
+.rcp .r{display:flex;justify-content:space-between;gap:9px;align-items:baseline;padding:3px 0}
+.rcp .r span:first-child{font-weight:400}
+.rcp .r small{display:block;font-size:10px;font-weight:300;color:var(--ink-2)}
+.rcp .r b{font-family:'Silkscreen';font-size:13px;white-space:nowrap}
+.rcp .r.zero b{color:var(--ink-2)}
+.rcp .tot{
+  border-top:3px solid var(--line);margin-top:5px;padding-top:8px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.rcp .tot b{font-family:'Silkscreen';font-size:22px;color:var(--grass-d)}
+.note{
+  border:2.5px solid var(--gold-d);background:#FFF3D0;border-radius:9px;
+  padding:7px 9px;font-size:11.5px;font-weight:300;line-height:1.45;margin-top:9px;
+}
+.note.bad{border-color:var(--coral-d);background:#FFE4E0}
+.note.good{border-color:var(--grass-d);background:#E2F6E5}
+.note b{font-weight:500}
+.logline{font-size:11.5px;font-weight:300;padding:3px 0;border-bottom:1px dotted var(--ink-2)}
+.logline:last-child{border:0}
+
+.sheet .btn{margin-top:11px;justify-content:center;text-align:center;background:var(--grass);color:#fff}
+.sheet .btn .t{flex:0}
+
+.evtface{font-size:44px;text-align:center;display:block;margin:4px 0}
+.evttext{text-align:center;font-size:13px;line-height:1.5}
+
+/* ---- toast ---- */
+.toasts{position:fixed;top:8px;left:0;right:0;z-index:60;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none}
+.toast{
+  background:var(--ink);color:#fff;border:2.5px solid #fff;border-radius:99px;
+  padding:4px 14px;font-size:12px;font-weight:500;
+  animation:up 1.9s ease forwards;
+}
+@keyframes up{0%{transform:translateY(-12px);opacity:0}12%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateY(-10px);opacity:0}}
+
+.help{font-size:11px;font-weight:300;color:var(--ink-2);text-align:center;line-height:1.5}
+.credit{text-align:center;font-size:10px;font-weight:300;color:rgba(26,36,48,.6);padding:2px 8px 0;line-height:1.5}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="toasts" id="toasts"></div>
+
+<div class="app">
+
+  <div class="panel title">
+    <h1>X-VISOR QUEST</h1>
+    <p>ดูแลลูกค้า · สอบ X-LEAD · ปั้นทีม · สร้างสังกัด</p>
+  </div>
+
+  <div class="panel hud">
+    <div class="hud-top">
+      <span class="month">เดือนที่ <b class="num" id="hMonth">1</b> / 24</span>
+      <span class="badge" id="hRank">🌱 X-VISOR</span>
+    </div>
+    <div class="apbar">
+      <span class="lbl">แรงเดือนนี้</span>
+      <span class="pips" id="hPips"></span>
+      <span class="num" id="hAp" style="font-size:13px">20</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="k">XV ส่วนตัว</span><span class="v num" id="hXv">0</span></div>
+      <div class="stat tier"><span class="k">ขั้นค่าตอบแทน</span><span class="v num" id="hTier">20%</span></div>
+      <div class="stat money"><span class="k">รายได้เดือนก่อน</span><span class="v num" id="hCash">0</span></div>
+    </div>
+    <div class="tierline" id="hNext">ขายอีก 40,000 XV ขยับเป็น SPARK 23%</div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabCus" aria-selected="true">ลูกค้า <span class="n" id="nCus">0</span></button>
+    <button class="tab" role="tab" id="tabTeam" aria-selected="false">ทีม G1 <span class="n" id="nTeam">0</span></button>
+    <button class="tab" role="tab" id="tabOrg" aria-selected="false">สังกัด</button>
+  </div>
+
+  <div class="panel gridwrap" id="board"></div>
+
+  <div class="panel acts" id="acts"></div>
+
+  <p class="credit">ตัวเลขทั้งหมดเป็นการจำลองเพื่อฝึกอ่านแผน ไม่ใช่การรับประกันรายได้<br>1 เซต = 7,000 XV = 7,490 บาท</p>
+</div>
+
+<div class="endbar"><div class="inner">
+  <button class="endbtn" id="btnEnd">จบเดือน ▶</button>
+</div></div>
+
+<div class="veil" id="veil" hidden><div class="sheet" id="sheet"></div></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============ ค่าคงที่จากแผน X-Commerce ============ */
+var XV_SET = 7000, BAHT_SET = 7490;
+var TGV_GEN = 3000000;
+var MONTHS = 24;
+
+function tierOf(xv){
+  if(xv >= 100000) return {lv:3, rate:.25, mentor:.05,  name:'STAR 25%',  short:'25%'};
+  if(xv >=  40000) return {lv:2, rate:.23, mentor:.046, name:'SPARK 23%', short:'23%'};
+  return                 {lv:1, rate:.20, mentor:.04,  name:'เริ่มต้น 20%', short:'20%'};
+}
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+function pct(r){ return (r*100).toFixed(r*100%1===0?0:1)+'%'; }
+function rnd(a,b){ return a + Math.random()*(b-a); }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+/* ============ สถานะเกม ============ */
+var NAMES = ['ก้อย','เบิร์ด','หนึ่ง','แนน','โอ๊ต','ปุ๋ย','ตูน','มิ้นท์','เจมส์','ฝ้าย','บอส','ใบเตย','ต้น','พลอย','กิ๊ฟ','นัท','อ้อม','โจ','แพร','ซัน','หมิว','เอิร์ธ','ตาล','วิน'];
+var FACES = ['🧑','👩','🧔','👵','👨‍🦱','👩‍🦰','🧑‍🦳','👨','👩‍🦱','🧓','👱','👩‍🎓'];
+
+var G, view='cus', sel=null;
+
+function newGame(){
+  G = {
+    month:1, ap:20, apMax:20, rank:'visor',
+    cash:0, lastIncome:0, lastXv:0, prevTier:1, best:0,
+    customers:[], team:[], log:[], over:false, taughtThisMonth:{}
+  };
+  for(var i=0;i<3;i++){ var c=mkCustomer(rnd(55,75)); c.sets=1; G.customers.push(c); }
+  G.lastXv = 0;
+}
+var nid=0;
+function mkCustomer(h){
+  return {id:++nid, n:pick(NAMES), f:pick(FACES), heart:Math.round(h), sets:0, cared:false};
+}
+
+/* ============ คำนวณ ============ */
+function personalXv(){
+  return G.customers.reduce(function(a,c){ return a+c.sets*XV_SET; },0);
+}
+function teamG1Xv(){ return G.team.reduce(function(a,m){ return a+m.xv; },0); }
+function teamG2Xv(){ return G.team.reduce(function(a,m){ return a+m.teamXv; },0); }
+function tgv(){ return personalXv()+teamG1Xv()+teamG2Xv(); }
+
+function income(){
+  var p = personalXv(), t = tierOf(p);
+  var c1 = p*t.rate;
+  var c2 = 0;
+  if(G.rank!=='visor'){
+    c2 = G.team.reduce(function(a,m){ return a + m.xv*tierOf(m.xv).mentor; },0);
+  }
+  var v = tgv();
+  var c3 = (v >= TGV_GEN) ? v*.05 : 0;
+  return {p:p,t:t,c1:c1,c2:c2,c3:c3,tgv:v,total:c1+c2+c3};
+}
+
+/* ============ วาดหน้าจอ ============ */
+function $(id){ return document.getElementById(id); }
+
+function draw(){
+  var inc = income();
+  $('hMonth').textContent = G.month;
+  $('hXv').textContent = fmt(inc.p);
+  $('hTier').textContent = inc.t.short;
+  $('hCash').textContent = fmt(G.lastIncome);
+  $('nCus').textContent = G.customers.length;
+  $('nTeam').textContent = G.team.length;
+
+  var rb = $('hRank');
+  rb.className = 'badge' + (G.rank==='gen'?' gen':G.rank==='lead'?' lead':'');
+  rb.textContent = G.rank==='gen' ? '👑 X-GEN' : G.rank==='lead' ? '⚔️ X-LEAD' : '🌱 X-VISOR';
+
+  var pips=''; for(var i=0;i<G.apMax;i++) pips += '<i class="pip'+(i<G.ap?' on':'')+'"></i>';
+  $('hPips').innerHTML = pips;
+  $('hAp').textContent = G.ap;
+
+  if(inc.t.lv===3){
+    $('hNext').innerHTML = 'ขั้นสูงสุดแล้ว — ทุก XV ได้ <b>25%</b> เต็ม';
+  }else{
+    var nx = inc.t.lv===1?40000:100000;
+    $('hNext').innerHTML = 'อีก <b>'+fmt(nx-inc.p)+' XV</b> ('+Math.ceil((nx-inc.p)/XV_SET)+' เซต) ขยับเป็น <b>'+tierOf(nx).name+'</b>';
+  }
+
+  ['tabCus','tabTeam','tabOrg'].forEach(function(id,i){
+    $(id).setAttribute('aria-selected', view===['cus','team','org'][i]);
+  });
+
+  drawBoard(inc);
+  drawActs(inc);
+}
+
+function heartCls(h){ return h>=70?'good':h>=40?'mid':''; }
+function moodFace(c){
+  if(c.heart>=80) return '😊'; if(c.heart>=55) return '🙂';
+  if(c.heart>=30) return '😐'; return '😞';
+}
+
+function drawBoard(inc){
+  var b = $('board');
+  if(view==='org'){ drawOrg(b, inc); return; }
+  b.className='panel gridwrap';
+
+  var list = view==='cus' ? G.customers : G.team;
+  if(!list.length){
+    b.innerHTML = view==='cus'
+      ? '<div class="empty"><b>ยังไม่มีลูกค้า</b>กด “หาลูกค้าใหม่” ด้านล่าง<br>ลูกค้าคือคนที่ซื้อของใช้เอง ยังไม่ได้ทำธุรกิจ</div>'
+      : '<div class="empty"><b>ยังไม่มีทีม G1</b>ทำใจลูกค้าให้ถึง 85 แล้วชวนเขาเปิดรหัส<br>เขาจะกลายเป็น X-Visor ในทีมคุณ</div>';
+    return;
+  }
+  var h='<div class="grid">';
+  list.forEach(function(x){
+    var isSel = sel && sel.id===x.id;
+    if(view==='cus'){
+      h += '<button class="who'+(isSel?' sel':'')+'" data-id="'+x.id+'">'+
+           (x.cared?'<span class="done">✅</span>':'')+
+           '<span class="face">'+moodFace(x)+'</span>'+
+           '<span class="nm">'+x.n+'</span>'+
+           '<span class="sub">ซื้อ '+x.sets+' เซต</span>'+
+           '<span class="hp"><i class="'+heartCls(x.heart)+'" style="width:'+x.heart+'%"></i></span>'+
+           '</button>';
+    }else{
+      h += '<button class="who'+(isSel?' sel':'')+'" data-id="'+x.id+'">'+
+           (x.isLead?'<span class="tagx">LEAD</span>':'')+
+           (x.taught?'<span class="done">✅</span>':'')+
+           '<span class="face">'+x.f+'</span>'+
+           '<span class="nm">'+x.n+'</span>'+
+           '<span class="xv">'+fmt(x.xv)+'</span>'+
+           '<span class="sub">'+tierOf(x.xv).short+' → คุณ '+pct(tierOf(x.xv).mentor)+'</span>'+
+           '<span class="hp"><i class="'+heartCls(x.heart)+'" style="width:'+x.heart+'%"></i></span>'+
+           '</button>';
+    }
+  });
+  h+='</div>';
+  b.innerHTML = h;
+  Array.prototype.forEach.call(b.querySelectorAll('.who'), function(el){
+    el.addEventListener('click', function(){
+      var id=+el.dataset.id;
+      var arr = view==='cus'?G.customers:G.team;
+      var f = arr.filter(function(x){return x.id===id;})[0];
+      sel = (sel && sel.id===id) ? null : f;
+      draw();
+    });
+  });
+}
+
+function drawOrg(b, inc){
+  var g1 = teamG1Xv(), g2 = teamG2Xv();
+  var v = inc.tgv, prog = Math.min(100, v/TGV_GEN*100);
+  var h = '<div class="org">';
+  h += '<div class="tgvbar"><i style="width:'+prog+'%"></i><span>TGV '+fmt(v)+' / '+fmt(TGV_GEN)+'</span></div>';
+  h += '<p class="help" style="margin:2px 0 4px">ช่อง 3 ค่าบริหารสังกัด 5% ของ TGV จะเปิดเมื่อยอดทั้งสังกัดถึง 3 ล้าน XV ต่อเดือน</p>';
+  h += '<div class="orgrow me"><span class="f">🧑‍🚀</span><span class="g">คุณ<small>ยอดส่วนตัว · '+inc.t.name+'</small></span><span class="v">'+fmt(inc.p)+'</span></div>';
+  if(!G.team.length){
+    h += '<div class="empty" style="margin-top:4px"><b>สังกัดยังว่าง</b>สังกัดโตจากลูกทีม G1 ที่โตจนมีทีมของตัวเอง</div>';
+  }
+  G.team.forEach(function(m){
+    h += '<div class="orgrow"><span class="f">'+m.f+'</span><span class="g">'+m.n+
+         '<small>'+(m.isLead?'X-LEAD · มีทีมของตัวเอง '+m.teamN+' คน':'X-VISOR · '+tierOf(m.xv).short)+'</small></span>'+
+         '<span class="v">'+fmt(m.xv)+'</span></div>';
+    if(m.teamXv>0){
+      h += '<div class="orgrow g2"><span class="f">👥</span><span class="g">ทีมของ'+m.n+'<small>นับเข้า TGV แต่ไม่เข้าช่อง 2</small></span><span class="v">'+fmt(m.teamXv)+'</span></div>';
+    }
+  });
+  h += '<div class="orgrow" style="background:var(--paper-2)"><span class="f">📊</span><span class="g">รวมยอด G1<small>ฐานคิดช่อง 2</small></span><span class="v">'+fmt(g1)+'</span></div>';
+  h += '<div class="orgrow" style="background:var(--paper-2)"><span class="f">🌐</span><span class="g">รวมยอด G2 ลงไป<small>นับเข้า TGV อย่างเดียว</small></span><span class="v">'+fmt(g2)+'</span></div>';
+  h += '</div>';
+  b.innerHTML = h;
+}
+
+/* ============ แอ็คชั่น ============ */
+function spend(n){ if(G.ap<n){ toast('แรงไม่พอ'); return false; } G.ap-=n; return true; }
+function toast(m){
+  var d=document.createElement('div'); d.className='toast'; d.textContent=m;
+  $('toasts').appendChild(d); setTimeout(function(){ d.remove(); },1900);
+}
+
+function findRate(){ return Math.max(.35, .85 - .04*G.customers.length); }
+
+function drawActs(inc){
+  var a = $('acts'), h='';
+
+  if(sel && view==='cus'){
+    h += '<div class="acthead"><span class="f">'+moodFace(sel)+'</span> '+sel.n+' — ใจ '+sel.heart+'/100</div>';
+    h += btn('care','🤝','ดูแลลูกค้า','โทร/ส่งของ/ถามอาการ — ใจ +32',1, G.ap<1);
+    var canPromote = sel.heart>=85;
+    h += btn('promote','⭐','ชวนเปิดรหัสเป็น X-Visor', canPromote
+        ? 'เขาจะไปเปิดรหัสเอง — ยอดของเขาจะออกจากยอดส่วนตัวคุณ'
+        : 'ต้องทำใจให้ถึง 85 ก่อน (ตอนนี้ '+sel.heart+')', 4, !canPromote || G.ap<4, 'hero');
+    h += '<hr style="border:0;border-top:2px dashed var(--ink-2);margin:3px 0">';
+  }
+  if(sel && view==='team'){
+    h += '<div class="acthead"><span class="f">'+sel.f+'</span> '+sel.n+' — ใจ '+sel.heart+'/100 · '+fmt(sel.xv)+' XV</div>';
+    h += btn('coach','📣','สอนงานลูกทีม','ยอดเขา +14,000 XV · ใจ +25 · คุณได้ '+pct(tierOf(sel.xv).mentor)+' ของยอดเขา',4, G.ap<4);
+    h += '<hr style="border:0;border-top:2px dashed var(--ink-2);margin:3px 0">';
+  }
+
+  h += btn('find','🔍','หาลูกค้าใหม่','โอกาสสำเร็จ '+Math.round(findRate()*100)+'% — ยิ่งลูกค้าเยอะ ตลาดเย็นยิ่งหายาก',3, G.ap<3);
+  h += btn('blast','📨','ส่งข่าวถึงทุกคน','ใจลูกค้าทุกคน +12 — ถูกกว่าดูแลทีละคน แต่ตื้นกว่า',3, G.ap<3 || !G.customers.length);
+
+  if(G.rank==='visor'){
+    var ok = G.lastXv>=40000 && G.team.length>=1;
+    h += btn('exam','📜','สอบคุณสมบัติ X-LEAD', ok
+        ? 'ผ่านแล้วช่อง 2 ค่าสอนงานเปิดทันที'
+        : 'ต้องมียอดส่วนตัวเดือนก่อน 40,000 XV ('+fmt(G.lastXv)+') และมีทีม G1 อย่างน้อย 1 คน ('+G.team.length+')',
+        6, !ok || G.ap<6, ok?'hero':'');
+  }
+
+  if(G.rank==='visor' && G.team.length){
+    h += '<p class="help">⚠️ ยังไม่ผ่าน X-LEAD — ทีม G1 ขายได้ แต่ช่อง 2 จ่ายคุณ 0 บาท</p>';
+  }
+
+  a.innerHTML = h;
+  Array.prototype.forEach.call(a.querySelectorAll('.btn'), function(el){
+    el.addEventListener('click', function(){ act(el.dataset.a); });
+  });
+}
+function btn(a,ico,t,sub,cost,dis,cls){
+  return '<button class="btn '+(cls||'')+'" data-a="'+a+'"'+(dis?' disabled':'')+'>'+
+    '<span class="ico">'+ico+'</span><span class="t">'+t+'<small>'+sub+'</small></span>'+
+    '<span class="cost">'+cost+' AP</span></button>';
+}
+
+function act(a){
+  if(a==='care'){
+    if(!spend(1)) return;
+    sel.heart = Math.min(100, sel.heart+32); sel.cared = true;
+    toast(sel.n+' ใจ +32');
+  }
+  if(a==='promote'){
+    if(!spend(4)) return;
+    var c = sel;
+    G.customers = G.customers.filter(function(x){ return x.id!==c.id; });
+    G.team.push({id:++nid,n:c.n,f:c.f,xv:2*XV_SET,heart:70,isLead:false,teamXv:0,teamN:0,streak:0,taught:false});
+    sel=null; view='team';
+    toast(c.n+' เปิดรหัสแล้ว! ยอดส่วนตัวคุณลดลง');
+  }
+  if(a==='coach'){
+    if(!spend(4)) return;
+    sel.xv += 2*XV_SET; sel.heart = Math.min(100, sel.heart+25); sel.taught = true;
+    toast(sel.n+' +14,000 XV');
+  }
+  if(a==='find'){
+    if(!spend(3)) return;
+    if(Math.random() < findRate()){
+      var c = mkCustomer(rnd(50,68)); G.customers.push(c);
+      toast('เจอลูกค้าใหม่: '+c.n);
+    } else toast('เดือนนี้ยังไม่มีใครสนใจ');
+  }
+  if(a==='blast'){
+    if(!spend(3)) return;
+    G.customers.forEach(function(c){ c.heart=Math.min(100,c.heart+12); });
+    toast('ส่งข่าวถึงลูกค้า '+G.customers.length+' คน');
+  }
+  if(a==='exam'){
+    if(!spend(6)) return;
+    G.rank='lead'; G.apMax=22; G.ap+=2;
+    modal('<h2>ผ่าน X-LEAD</h2>'+
+      '<span class="evtface">⚔️</span>'+
+      '<p class="evttext">ตั้งแต่เดือนนี้ <b>ช่อง 2 ค่าสอนงาน G1</b> เปิดแล้ว<br>คุณจะได้ 4% / 4.6% / 5% ของยอดลูกทีมแต่ละคน ตามขั้นของ<u>เขา</u> ไม่ใช่ของคุณ</p>'+
+      '<div class="note good">บริษัทจ่ายเพิ่มให้คุณ ไม่ได้หักจากลูกทีม · แรงต่อเดือนเพิ่มเป็น 22</div>'+
+      '<button class="btn" data-close>รับทราบ</button>');
+  }
+  draw();
+}
+
+/* ============ จบเดือน ============ */
+function endMonth(){
+  var log = [];
+  var beforeTier = tierOf(personalXv()).lv;
+
+  /* --- ลูกค้าซื้อของ / ใจลด / หลุด --- */
+  var churn=[];
+  G.customers.forEach(function(c){
+    if(c.heart>=75) c.sets=2;
+    else if(c.heart>=45) c.sets=1;
+    else if(c.heart>=20) c.sets = Math.random()<.5?1:0;
+    else c.sets=0;
+    c.heart = Math.max(0, c.heart - Math.round(rnd(14,22)));
+    c.cared = false;
+  });
+  G.customers = G.customers.filter(function(c){
+    if(c.heart<15 && Math.random()<.55){ churn.push(c.n); return false; }
+    return true;
+  });
+  if(churn.length) log.push('😞 ลูกค้าหายไป '+churn.length+' คน: '+churn.join(', ')+' — ไม่ได้ดูแลนานเกินไป');
+
+  /* --- ลูกทีมเดิน --- */
+  var quit=[];
+  G.team.forEach(function(m){
+    if(m.isLead){
+      /* ผ่าน X-LEAD แล้วเดินเองได้ ไม่ต้องพึ่งแรงคุณ */
+      m.xv += XV_SET;
+      m.heart = Math.max(40, m.heart - 4);
+      m.teamN += 1 + (Math.random()<.35?1:0);
+      m.teamXv = m.teamN * 50000;
+    }else{
+      if(!m.taught) m.xv = Math.round(m.xv*.8);
+      m.heart = Math.max(0, m.heart - Math.round(rnd(10,18)));
+      if(m.xv>=100000 && m.heart>=60) m.streak++; else m.streak=0;
+      if(m.streak>=2){
+        m.isLead=true; m.teamN=1; m.teamXv=50000;
+        log.push('⚔️ '+m.n+' สอบผ่าน X-LEAD แล้ว — ตั้งแต่นี้เขาเดินเอง และเริ่มมีทีมของตัวเอง');
+      }
+    }
+    m.taught = false;
+  });
+  G.team = G.team.filter(function(m){
+    if(m.heart<12 && Math.random()<.5){ quit.push(m.n); return false; }
+    return true;
+  });
+  if(quit.length) log.push('💔 ลูกทีมเลิกทำ: '+quit.join(', ')+' — ไม่ได้สอนงานนานเกินไป');
+
+  /* --- คิดเงิน --- */
+  var inc = income();
+  G.lastIncome = inc.total; G.lastXv = inc.p; G.cash += inc.total;
+  if(inc.total > G.best) G.best = inc.total;
+
+  var afterTier = inc.t.lv;
+  var tierDrop = afterTier < beforeTier;
+
+  if(inc.tgv >= TGV_GEN && G.rank!=='gen'){ G.rank='gen'; G.apMax=24; log.push('👑 สังกัดถึง 3 ล้าน XV — คุณเป็น X-GEN แล้ว'); }
+
+  /* --- ใบสรุป --- */
+  var h = '<h2>สรุปเดือนที่ '+G.month+'</h2><div class="rcp">';
+  h += row('ช่อง 1 · กำไรขายส่วนตัว', fmt(inc.p)+' XV × '+pct(inc.t.rate)+' ('+Math.round(inc.p/XV_SET)+' เซต)', inc.c1);
+  h += row('ช่อง 2 · ค่าสอนงาน G1',
+        G.rank==='visor' ? 'ยังไม่ผ่าน X-LEAD จึงยังไม่จ่าย' : G.team.length+' คน · ยอดรวม '+fmt(teamG1Xv())+' XV',
+        inc.c2);
+  h += row('ช่อง 3 · ค่าบริหารสังกัด',
+        inc.c3 ? 'TGV '+fmt(inc.tgv)+' × 5%' : 'TGV '+fmt(inc.tgv)+' — ยังไม่ถึง 3 ล้าน',
+        inc.c3);
+  h += '<div class="tot"><span>รวมเดือนนี้</span><b>'+fmt(inc.total)+'</b></div></div>';
+
+  if(tierDrop){
+    h += '<div class="note bad"><b>ขั้นค่าตอบแทนตก</b> เหลือ '+inc.t.name+' — ทุกบาทที่ขายเดือนนี้ได้เปอร์เซ็นต์น้อยลง เพราะขั้นนับใหม่ทุกเดือน ไม่สะสม</div>';
+  }
+  if(G.rank==='visor' && G.team.length){
+    var lost = G.team.reduce(function(a,m){ return a+m.xv*tierOf(m.xv).mentor; },0);
+    h += '<div class="note bad"><b>เสียไปฟรี '+fmt(lost)+' บาท</b> ทีมคุณขายได้ แต่ยังไม่ผ่าน X-LEAD ช่อง 2 เลยเป็นศูนย์</div>';
+  }
+  if(log.length){
+    h += '<div class="note">'+log.map(function(l){ return '<div class="logline">'+l+'</div>'; }).join('')+'</div>';
+  }
+
+  G.month++;
+  G.ap = G.apMax;
+  sel = null;
+
+  if(G.month > MONTHS){
+    h += '<button class="btn" data-final>ดูผลรวม 24 เดือน</button>';
+  }else{
+    h += '<button class="btn" data-close>เดือนที่ '+G.month+' ▶</button>';
+  }
+  modal(h, function(){ if(G.month<=MONTHS) maybeEvent(); });
+  draw();
+}
+function row(t,sub,v){
+  return '<div class="r'+(v?'':' zero')+'"><span>'+t+'<small>'+sub+'</small></span><b>'+fmt(v)+'</b></div>';
+}
+
+/* ============ เหตุการณ์สุ่ม ============ */
+var EVENTS = [
+  {f:'🎉',t:'ลูกค้าบอกต่อ! มีคนทักมาเอง',go:function(){ var c=mkCustomer(rnd(60,80)); G.customers.push(c); return 'ได้ลูกค้าใหม่: '+c.n; }},
+  {f:'🤒',t:'เดือนนี้งานประจำถล่ม',go:function(){ G.ap=Math.max(4,G.ap-5); return 'แรงเหลือ '+G.ap; }},
+  {f:'🔥',t:'ลูกทีมคนหนึ่งไฟลุกเอง',go:function(){ if(!G.team.length) return 'แต่คุณยังไม่มีทีม — โอกาสผ่านไป'; var m=pick(G.team); m.xv+=3*XV_SET; return m.n+' ขายเพิ่มเอง +21,000 XV'; }},
+  {f:'📉',t:'ของขาดสต็อก 1 สัปดาห์',go:function(){ G.customers.forEach(function(c){ c.heart=Math.max(0,c.heart-10); }); return 'ใจลูกค้าทุกคน -10'; }},
+  {f:'🏆',t:'บริษัทจัดเวทีเชิดชู',go:function(){ G.team.forEach(function(m){ m.heart=Math.min(100,m.heart+22); }); return 'ใจลูกทีมทุกคน +22'; }},
+  {f:'💬',t:'มีคนโพสต์ด่าธุรกิจในกลุ่ม',go:function(){ var n=Math.min(2,G.customers.length); for(var i=0;i<n;i++) G.customers[i].heart=Math.max(0,G.customers[i].heart-18); return 'ลูกค้า '+n+' คนใจตก -18'; }}
+];
+function maybeEvent(){
+  if(Math.random()>.42) return;
+  var e = pick(EVENTS), r = e.go();
+  modal('<h2>เหตุการณ์</h2><span class="evtface">'+e.f+'</span>'+
+    '<p class="evttext">'+e.t+'<br><b>'+r+'</b></p><button class="btn" data-close>ต่อไป</button>');
+  draw();
+}
+
+/* ============ จบเกม ============ */
+function finale(){
+  var inc = income();
+  var title, face, verdict;
+  if(G.rank==='gen'){ title='X-GEN'; face='👑'; verdict='คุณสร้างสังกัดที่เดินได้เองแล้ว ช่อง 3 จ่ายทุกเดือนโดยไม่ต้องขายเพิ่ม'; }
+  else if(G.team.length>=5 && G.rank==='lead'){ title='X-LEAD ตัวจริง'; face='⚔️'; verdict='ทีมเริ่มเดินเอง แต่ยังไม่ถึง 3 ล้าน — ช่อง 3 ยังไม่เปิด'; }
+  else if(G.rank==='lead'){ title='X-LEAD หน้าใหม่'; face='🛡️'; verdict='ผ่านคุณสมบัติแล้ว แต่ทีมยังบางเกินไป ช่อง 2 เลยยังน้อย'; }
+  else { title='นักขายเดี่ยว'; face='🌱'; verdict='รายได้มาจากช่อง 1 อย่างเดียว หยุดขายเมื่อไหร่รายได้หยุดทันที'; }
+
+  modal('<h2>จบ 24 เดือน</h2><span class="evtface">'+face+'</span>'+
+    '<p class="evttext"><b style="font-size:17px">'+title+'</b></p>'+
+    '<div class="rcp" style="margin-top:8px">'+
+      row('รายได้เดือนสุดท้าย','', G.lastIncome)+
+      row('รายได้สูงสุดที่เคยทำได้','', G.best)+
+      row('รายได้สะสมทั้งหมด','24 เดือน', G.cash)+
+      '<div class="r"><span>ลูกค้า / ทีม G1<small>TGV เดือนสุดท้าย '+fmt(inc.tgv)+' XV</small></span><b>'+G.customers.length+' / '+G.team.length+'</b></div>'+
+    '</div>'+
+    '<div class="note">'+verdict+'</div>'+
+    '<div class="note good"><b>สิ่งที่เกมนี้พยายามสอน</b> ช่อง 1 โตตามแรงคุณ ช่อง 2 โตตามคนที่คุณสอน ช่อง 3 โตตามระบบที่เดินเองได้ — คนที่ติดอยู่ช่อง 1 ไม่ใช่เพราะขายไม่เก่ง แต่เพราะใช้แรงหมดไปกับการขายจนไม่เหลือแรงไปสอนใคร</div>'+
+    '<button class="btn" data-restart>เล่นใหม่</button>');
+}
+
+/* ============ modal ============ */
+var afterClose=null;
+function modal(html, after){
+  afterClose = after||null;
+  $('sheet').innerHTML = html;
+  $('veil').hidden = false;
+  var s=$('sheet');
+  var c=s.querySelector('[data-close]'); if(c) c.addEventListener('click', close);
+  var f=s.querySelector('[data-final]'); if(f) f.addEventListener('click', function(){ $('veil').hidden=true; finale(); });
+  var r=s.querySelector('[data-restart]'); if(r) r.addEventListener('click', function(){ $('veil').hidden=true; newGame(); draw(); intro(); });
+}
+function close(){
+  $('veil').hidden = true;
+  var a=afterClose; afterClose=null;
+  if(a) a();
+}
+
+function intro(){
+  modal('<h2>คุณคือ X-VISOR</h2>'+
+    '<span class="evtface">🌱</span>'+
+    '<p class="evttext">มีเวลา 24 เดือน แรงเดือนละ 20 หน่วย<br>เป้าหมายคือไปให้ถึง <b>X-GEN</b> — สังกัดยอด 3 ล้าน XV ต่อเดือน</p>'+
+    '<div class="note"><b>กติกาที่ต้องรู้ก่อน 3 ข้อ</b><br>'+
+      '1. ขั้นค่าตอบแทน (20% / 23% / 25%) <b>นับใหม่ทุกเดือน</b> ไม่สะสม เดือนไหนยอดตก เปอร์เซ็นต์ตกทันที<br>'+
+      '2. ช่อง 2 ค่าสอนงานจ่ายเฉพาะคนที่ผ่าน <b>X-LEAD</b> แล้ว ทีมขายได้แต่คุณไม่ได้ ถ้ายังไม่สอบ<br>'+
+      '3. ตอนดันลูกค้าขึ้นเป็น X-Visor <b>ยอดของเขาจะออกจากยอดส่วนตัวคุณ</b> เจ็บก่อน แล้วค่อยคุ้มทีหลัง</div>'+
+    '<button class="btn" data-close>เริ่มเดือนที่ 1</button>');
+}
+
+/* ============ bind ============ */
+$('tabCus').addEventListener('click', function(){ view='cus'; sel=null; draw(); });
+$('tabTeam').addEventListener('click', function(){ view='team'; sel=null; draw(); });
+$('tabOrg').addEventListener('click', function(){ view='org'; sel=null; draw(); });
+$('btnEnd').addEventListener('click', function(){ if(!$('veil').hidden) return; endMonth(); });
+$('veil').addEventListener('click', function(e){ if(e.target===$('veil')) close(); });
+
+newGame(); draw(); intro();
+})();
+</script>
+</body>
+</html>
