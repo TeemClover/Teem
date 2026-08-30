@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b3d">
+  <meta name="description" content="ลองใช้ชีวิต X-VISOR ผ่านเกมบริหารแบบ pixel ตั้งแต่เริ่มจากตัวเอง ดูแลลูกค้าคนแรก ไปจนถึงการสร้างทีมและเข้าใจรายได้">
+  <title>X-VISOR QUEST — ลองใช้ชีวิต X-VISOR</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --navy:#102b3d;--navy2:#17384f;--ink:#17384f;--cream:#fffaf0;--paper:#fffdf8;
+      --green:#4fbd83;--green2:#8ed9aa;--gold:#f1be47;--line:#244b64;--muted:#667e8b;
+      --shadow:0 7px 0 #0a2231;--thai:"Leelawadee UI","Noto Sans Thai",Tahoma,system-ui,sans-serif;
+      --mono:"Cascadia Mono","SFMono-Regular",Consolas,monospace;
+    }
+    *{box-sizing:border-box}
+    html{min-width:320px;background:var(--navy);scroll-behavior:smooth}
+    body{margin:0;min-width:320px;min-height:100vh;color:var(--ink);font-family:var(--thai);font-size:17px;line-height:1.55;background:
+      radial-gradient(circle at 12% 0,#2e6e83 0,transparent 33%),
+      linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/24px 24px,
+      linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/24px 24px,
+      var(--navy)}
+    a{-webkit-tap-highlight-color:transparent}
+    a:focus-visible{outline:4px solid #ffe176;outline-offset:4px}
+    .shell{width:min(1160px,calc(100% - 28px));margin:auto;padding:max(18px,env(safe-area-inset-top)) 0 max(32px,env(safe-area-inset-bottom))}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#fff;margin-bottom:14px}
+    .brand{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-weight:800;letter-spacing:.08em}
+    .mark{width:32px;height:32px;display:grid;grid-template-columns:repeat(2,12px);grid-template-rows:repeat(2,12px);gap:3px;padding:2px;transform:rotate(45deg);position:relative}
+    .mark:after{content:"";position:absolute;width:5px;height:15px;right:-4px;bottom:-8px;background:var(--green2)}
+    .mark i{background:var(--green);border:2px solid #d8ffe7}
+    .top small{font-weight:700;color:#c9e8d5}
+    .hero{position:relative;min-height:610px;overflow:hidden;border:3px solid var(--line);border-radius:20px;background:#ead1a8;box-shadow:var(--shadow)}
+    .hero-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;image-rendering:auto}
+    .hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,249,235,.98) 0%,rgba(255,249,235,.94) 34%,rgba(255,249,235,.54) 53%,rgba(255,249,235,0) 70%)}
+    .hero-copy{position:relative;z-index:2;width:min(540px,52%);padding:clamp(34px,6vw,74px)}
+    .kicker{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:7px 10px;border:2px solid var(--line);border-radius:999px;background:#fff9e9;font:800 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(44px,7vw,78px);line-height:.98;letter-spacing:-.045em}
+    h1 span{display:block;color:#319768;font-family:var(--mono);font-size:.45em;letter-spacing:.07em;margin-bottom:8px}
+    .lead{max-width:500px;margin:22px 0 0;font-size:clamp(19px,2vw,24px);line-height:1.45;font-weight:750}
+    .sub{margin:14px 0 0;max-width:485px;color:#405d6c;font-size:16px}
+    .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px}
+    .cta{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:13px 23px;color:#fff;text-decoration:none;font-weight:900;font-size:18px;background:var(--navy2);border:3px solid #0a2231;border-radius:11px;box-shadow:0 5px 0 #0a2231;transition:transform .15s ease,box-shadow .15s ease}
+    .cta:hover{transform:translateY(-2px);box-shadow:0 7px 0 #0a2231}.cta:active{transform:translateY(4px);box-shadow:0 1px 0 #0a2231}
+    .cta-note{font-size:13px;font-weight:700;color:#58717d}
+    .energy{display:flex;align-items:center;gap:9px;margin-top:25px;font:800 13px/1.2 var(--mono);color:#526a73}
+    .energy b{font-size:22px;color:#d88b00}.bar{width:135px;height:12px;border:2px solid var(--line);background:#fff;border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:var(--gold);animation:charge 2.1s .5s ease forwards}
+    @keyframes charge{to{width:100%}}
+    .intro{margin-top:18px;padding:28px;border:3px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:var(--shadow)}
+    .intro-head{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:end;margin-bottom:24px}
+    .intro h2{margin:0;font-size:clamp(29px,4vw,43px);line-height:1.08}.intro-head p{margin:0;color:var(--muted);font-weight:650}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .step{min-height:160px;padding:18px;border:2px solid #b9c8c7;border-radius:12px;background:#fff}.step b{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:31px;margin-bottom:13px;padding:0 9px;border:2px solid var(--line);border-radius:7px;background:#e6f7ec;font:900 13px var(--mono)}
+    .step h3{margin:0 0 7px;font-size:19px}.step p{margin:0;color:#5d747d;font-size:14px}
+    .why{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+    .panel{padding:25px;border:3px solid var(--line);border-radius:16px;background:#fffdf8;box-shadow:0 5px 0 #0a2231}.panel.dark{color:#fff;background:#17384f}.panel h2{margin:0 0 12px;font-size:27px}.panel p{margin:0;color:#5c747e}.panel.dark p{color:#d4e4e9}.panel strong{color:#319768}.panel.dark strong{color:#a8e3bd}
+    .bottom-cta{text-align:center;padding:46px 20px 24px;color:#fff}.bottom-cta h2{margin:0 auto 12px;max-width:720px;font-size:clamp(30px,5vw,48px);line-height:1.1}.bottom-cta p{margin:0 auto 22px;max-width:650px;color:#c6d9df}.bottom-cta .cta{background:var(--green);color:#102b3d;border-color:#d8ffe7;box-shadow:0 5px 0 #17384f}
+    footer{display:flex;justify-content:space-between;gap:18px;padding-top:18px;color:#a9c1ca;font-size:12px;border-top:1px solid rgba(255,255,255,.15)}
+    @media(max-width:760px){
+      body{font-size:16px}.top small{display:none}.hero{min-height:auto;padding-top:72%}.hero-art{height:56%;object-position:62% 50%;background:#ead1a8}.hero:after{background:linear-gradient(180deg,rgba(255,249,235,0) 20%,rgba(255,249,235,.7) 46%,rgba(255,249,235,1) 57%)}
+      .hero-copy{width:100%;padding:24px 20px 28px}.lead{font-size:20px}.sub{font-size:15px}.cta{width:100%}.cta-note{width:100%;text-align:center}.energy{justify-content:center}
+      .intro{padding:20px}.intro-head{grid-template-columns:1fr;gap:10px}.steps{grid-template-columns:1fr 1fr}.why{grid-template-columns:1fr}.step{min-height:145px}footer{flex-direction:column}
+    }
+    @media(max-width:430px){.steps{grid-template-columns:1fr}.step{min-height:0}.hero{padding-top:78%}h1{font-size:42px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{animation:none;width:100%}.cta{transition:none}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>X-VISOR QUEST</span></div>
+      <small>ลองก่อน · เข้าใจก่อน · ค่อยออกไปทำจริง</small>
+    </header>
+
+    <section class="hero" aria-labelledby="heroTitle">
+      <img class="hero-art" src="/xvisor/assets/xvisor-intro-hero.webp" alt="ภาพประกอบเกม pixel แสดงโลกการทำงานของ X-VISOR พร้อม Xircle Scale และพื้นที่ให้คำปรึกษา">
+      <div class="hero-copy">
+        <p class="kicker">PIXEL MANAGEMENT SIM</p>
+        <h1 id="heroTitle"><span>X-VISOR QUEST</span>ลองใช้ชีวิต<br>X-VISOR</h1>
+        <p class="lead">เริ่มจากลูกค้า 0 คน แล้วลองดูด้วยตัวเองว่า ต้องทำอะไร ดูแลคนยังไง และรายได้ค่อย ๆ เกิดขึ้นตรงไหน</p>
+        <p class="sub">เริ่มจากศึกษาตัวเอง 28 วัน → สอบ Certification → หาลูกค้าคนแรก → ใช้ Xircle → วาง Routine → ดูแลให้ไปต่อ → พัฒนาทีมของคุณ</p>
+        <div class="cta-row">
+          <a class="cta" id="startGame" href="/xvisor/quest/">เริ่มเกม ▶</a>
+          <span class="cta-note">เล่นบนเว็บ · บันทึกอัตโนมัติบนเครื่องนี้</span>
+        </div>
+        <div class="energy" aria-label="พลังงาน 0 ถึง 28"><b>⚡</b><span>0</span><span class="bar" aria-hidden="true"><i></i></span><span>28</span></div>
+      </div>
+    </section>
+
+    <section class="intro" aria-labelledby="whatTitle">
+      <div class="intro-head">
+        <h2 id="whatTitle">เกมนี้ไม่ได้ให้มึงท่องว่า X-VISOR คืออะไร — มันให้มึงลองทำ</h2>
+        <p>คนไม่เล่นเกมก็เล่นได้ เพราะทุกช่วงมีเป้าหมายเดียวชัด ๆ และบอกสิ่งที่ทำต่อได้ไม่เกินไม่กี่อย่าง</p>
+      </div>
+      <div class="steps">
+        <article class="step"><b>01</b><h3>สร้าง 28 ⚡</h3><p>ใช้ RoutineX กับตัวเอง เรียนรู้ Band, Scale, Xircle และบทบาทของผลิตภัณฑ์ ก่อนดูแลคนอื่น</p></article>
+        <article class="step"><b>02</b><h3>ดูแลคนแรก</h3><p>ฟังบริบท ดู Baseline เลือก Next Action วาง Routine แล้วติดตาม ไม่ใช่เปิดเกมมาก็กดขาย</p></article>
+        <article class="step"><b>03</b><h3>เห็นเงินเป็นขั้น</h3><p>เห็นให้ชัดว่ายอดสินค้า, XV และรายได้ไม่ใช่เลขเดียวกัน และเงินเกิดจากคุณค่าที่สร้างจริง</p></article>
+        <article class="step"><b>04</b><h3>ทำให้ทีมทำได้</h3><p>เมื่อคนที่พัฒนาทำเองได้ พลังงานของคุณไม่ต้องหมดกับทุกเรื่อง และโลกในเกมจะค่อย ๆ โตขึ้น</p></article>
+      </div>
+    </section>
+
+    <section class="why" aria-label="แนวคิดของเกม">
+      <article class="panel dark"><h2>นี่ไม่ใช่เกมยัดสินค้า</h2><p><strong>Band</strong> ช่วยเห็นสิ่งที่ทำ · <strong>Scale</strong> ช่วยเห็นสิ่งที่ร่างกายตอบ · <strong>Xircle</strong> ช่วยแปลข้อมูล · ผลิตภัณฑ์เป็นตัวช่วยตามบริบท และบางครั้งสิ่งที่ควรทำก่อนคือพฤติกรรมที่ซื้อไม่ได้</p></article>
+      <article class="panel"><h2>ปลายทางไม่ใช่ขายให้มากที่สุดคนเดียว</h2><p>ช่วงแรกคุณทำเองเพื่อให้คนเห็นผล ต่อมาคุณพัฒนา X-VISOR ให้ดูแลคนได้ และจะเริ่มเห็นว่าทีมกับรายได้เติบโตต่างจากการทำทุกอย่างคนเดียวยังไง</p></article>
+    </section>
+
+    <section class="bottom-cta">
+      <h2>ถ้าพรุ่งนี้ต้องเริ่มจริง — คุณรู้หรือยังว่าต้องทำอะไรก่อน?</h2>
+      <p>ลองเส้นทางในเกมก่อน โดยไม่ต้องเอาคนจริง เงินจริง หรือเวลาหลายเดือนไปลองผิดลองถูก</p>
+      <a class="cta" id="startGameBottom" href="/xvisor/quest/">ลองใช้ชีวิต X-VISOR ▶</a>
+    </section>
+
+    <footer>
+      <span>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทาง X-VISOR และโครงสร้างการทำงาน</span>
+      <span>ไม่ใช่การรับประกันรายได้หรือผลลัพธ์ด้านสุขภาพ</span>
+    </footer>
+  </main>
+  <script>
+    (function(){
+      var hasSave = false;
+      try { hasSave = !!localStorage.getItem('xvisorQuestRebootV1'); } catch (e) {}
+      if (!hasSave) return;
+      ['startGame','startGameBottom'].forEach(function(id){
+        var el=document.getElementById(id); if(el) el.textContent=id==='startGame'?'กลับไปเล่นต่อ ▶':'เล่นต่อจากที่บันทึกไว้ ▶';
+      });
+    }());
+  </script>
+</body>
+</html>
