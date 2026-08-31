@@ -3,6 +3,7 @@ import {
   clean, currentUser, database, ensureSchema, sameOrigin, sendJson, sha256,
 } from './core.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
+import { cardCanBePartyCover } from '../../_shared/cover-eligibility.js';
 import { TEAMBOOK_V1_PETS } from '../../_shared/pets.js';
 import { partyDayNumber, TEAMBOOK_TIMEZONE } from './xty-rules.js';
 
@@ -134,7 +135,7 @@ async function handlePlaceCover(req, res, sql, row, member) {
   if (requestedType === 'card') {
     const cardId = clean(body.leadCardId, 80).toUpperCase();
     const card = cardById(cardId);
-    if (!card?.eligibility?.partyCover) {
+    if (!cardCanBePartyCover(card)) {
       return sendJson(res, { ok: false, error: 'CARD_NOT_COVER_ELIGIBLE' }, 400);
     }
     if (!(await ownsCard(sql, ids, cardId))) {
