@@ -1,0 +1,34 @@
+name: X-VISOR V9 Pre-Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'xvisor/**'
+      - 'api/xvisor-scores.js'
+      - 'package.json'
+      - '.github/workflows/xvisor-v9-pre-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Syntax check V9 modules
+        run: |
+          node --check xvisor/quest/game-data-v9.js
+          node --check xvisor/quest/game-copy-v9.js
+          node --check xvisor/quest/game-v9-ui.js
+          node --check api/xvisor-scores.js
+      - name: X-VISOR tests
+        run: npm run test:xvisor
