@@ -13,6 +13,7 @@ import {
   MIN_MEMBER_LIMIT as MIN,
   normalizeMemberLimit,
 } from './member-limit.js';
+import { getProfile } from './store.js';
 
 const $ = id => document.getElementById(id);
 
@@ -21,7 +22,10 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-member-capacity-v15-style';
   style.textContent = `
-    .tb-capacity-step{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0 4px}
+    .tb-capacity-details{margin:0 0 14px;padding:12px 14px;border:1px solid var(--xty-border);border-radius:14px;background:rgba(255,255,255,.58)}
+    .tb-capacity-details>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;font-size:13px;font-weight:850}
+    .tb-capacity-details>summary span{color:var(--xty-muted);font-size:12px}
+    .tb-capacity-step{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0 2px}
     .tb-capacity-copy{min-width:0}.tb-capacity-copy b{display:block;font-size:16px}.tb-capacity-copy small{display:block;margin-top:4px;color:var(--xty-muted);line-height:1.5}
     .tb-capacity-control{display:grid;grid-template-columns:44px minmax(76px,auto) 44px;align-items:center;border:1px solid var(--xty-border);border-radius:999px;background:var(--xty-paper);overflow:hidden;flex:none}
     .tb-capacity-control button{width:44px;height:44px;border:0;background:transparent;font-size:22px;cursor:pointer}
@@ -40,20 +44,29 @@ function installCreateStepper() {
 
   let value = DEFAULT;
   globalThis.__teambookMemberLimit = value;
+  const firstBook = Math.max(1, Number(getProfile()?.level || 1)) <= 1;
+  if (firstBook) return;
+
+  const details = document.createElement('details');
+  details.className = 'tb-capacity-details';
+  details.innerHTML = '<summary>จำนวนคนสูงสุด <span>5 คน</span></summary>';
   const row = document.createElement('div');
   row.className = 'tb-capacity-step';
   row.id = 'tbMemberCapacity';
   row.innerHTML = `
-    <div class="tb-capacity-copy"><b>สมุดเล่มนี้รับกี่คน?</b><small>แนะนำ 5 คน · เริ่มคนเดียวก็ได้ · สูงสุด 11 คน · นับเจ้าของสมุดด้วย</small></div>
+    <div class="tb-capacity-copy"><b>รับได้กี่คน?</b><small>นับเจ้าของสมุดด้วย · สูงสุด 11 คน</small></div>
     <div class="tb-capacity-control" role="group" aria-label="จำนวนคนในสมุด">
       <button type="button" data-delta="-1" aria-label="ลดจำนวนคน">−</button>
       <span class="tb-capacity-value">5 คน</span>
       <button type="button" data-delta="1" aria-label="เพิ่มจำนวนคน">+</button>
     </div>`;
-  visibility.insertBefore(row, $('visibilityPick'));
+  details.appendChild(row);
+  $('visibilityPick').insertAdjacentElement('afterend', details);
   const label = row.querySelector('.tb-capacity-value');
+  const summaryValue = details.querySelector('summary span');
   const sync = () => {
     label.textContent = `${value} คน`;
+    summaryValue.textContent = `${value} คน`;
     globalThis.__teambookMemberLimit = value;
     row.querySelector('[data-delta="-1"]').disabled = value <= MIN;
     row.querySelector('[data-delta="1"]').disabled = value >= MAX;

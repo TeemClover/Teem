@@ -24,11 +24,9 @@ test('hidden Home Public preference prevents the Lobby request until reopened', 
 });
 
 test('Home order promotes opening a new solo-capable book and keeps Public before closed books', () => {
-  assert.match(publicHome, /\+ เปิดสมุดเล่มใหม่/);
-  assert.match(publicHome, /ทำเรื่องเดียวกัน/);
-  assert.match(publicHome, /สาธารณะ/);
-  assert.match(publicHome, /3 วัน/);
-  assert.match(publicHome, /ต้องมีคนเห็น/);
+  assert.match(publicHome, /เปิดสมุดเล่มแรก/);
+  assert.match(publicHome, /เลือกสิ่งที่อยากทำ แล้วเปิดสมุดได้เลย/);
+  assert.doesNotMatch(publicHome, /v13-create-defaults|v13-first-book-note/);
   assert.match(publicHome, /parent\.insertBefore\(node, before\)/);
 });
 

@@ -6,19 +6,21 @@ import { join } from 'node:path';
 const ROOT = new URL('..', import.meta.url).pathname;
 const onboarding = readFileSync(join(ROOT, '_shared/home-onboarding-v14.js'), 'utf8');
 const create = readFileSync(join(ROOT, 'new/index.html'), 'utf8');
+const joinPage = readFileSync(join(ROOT, 'join/index.html'), 'utf8');
+const partyPage = readFileSync(join(ROOT, 'p/index.html'), 'utf8');
 const publicPanel = readFileSync(join(ROOT, '_shared/public-seen-v15.js'), 'utf8');
 const partyPanel = readFileSync(join(ROOT, '_shared/party-public-seen-v15.js'), 'utf8');
 const endpoint = readFileSync(join(ROOT, 'api/teambook-public-seen.js'), 'utf8');
 const duration = readFileSync(join(ROOT, '_shared/duration-gate.js'), 'utf8');
 const partyTimeline = readFileSync(join(ROOT, '_shared/party-enhancements.js'), 'utf8');
 
-test('onboarding stores alias first and gives safe random look fallbacks', () => {
+test('onboarding asks only for a name and assigns a safe Starter look', () => {
   assert.match(onboarding, /อยากให้เราเรียกคุณว่าอะไร\?/);
-  assert.match(onboarding, /ไม่จำเป็นต้องเป็นชื่อจริง/);
-  assert.match(onboarding, /createProfile\(\{ alias: name, \.\.\.look \}\)/);
+  assert.match(onboarding, /ไม่ต้องใช้ชื่อจริง/);
+  assert.match(onboarding, /createProfile\(\{ alias: name, \.\.\.randomLook\(\) \}\)/);
   assert.match(onboarding, /randomLook\(\)/);
-  assert.match(onboarding, /เลือกตัวแทนของคุณ/);
-  assert.match(onboarding, /เลือกสีที่ชอบ/);
+  assert.match(onboarding, /location\.href = nextHref\(\)/);
+  assert.doesNotMatch(onboarding, /tb14AvatarGrid|tb14ColorGrid/);
 });
 
 test('new-book defaults are shared, public, 3-day and Seen-required without a UI patch', () => {
@@ -27,6 +29,23 @@ test('new-book defaults are shared, public, 3-day and Seen-required without a UI
   assert.match(create, /let durationDays = 3;/);
   assert.match(create, /let visibility = 'public';/);
   assert.match(duration, /let selected = whiteCatRoute \? 28 : 3;/);
+});
+
+test('new-book setup reveals one question at a time and keeps the first cover automatic', () => {
+  assert.match(create, /data-wizard-step="mode"/);
+  assert.match(create, /data-wizard-step="companion"/);
+  assert.match(create, /if \(!levelOne\) wizardSteps\.push\(\{ node: \$\('coverSection'\)/);
+  assert.match(create, /threeMessageBudget/);
+  assert.doesNotMatch(create, /id="prule"/);
+});
+
+test('joining keeps optional identity choices and book management collapsed', () => {
+  assert.match(joinPage, /<details class="join-options">/);
+  assert.match(joinPage, /id="bookPreview" hidden/);
+  assert.doesNotMatch(joinPage, /id="sharedRule"|askSuccessRule:\s*true/);
+  assert.match(partyPage, /id="moreTools"/);
+  assert.ok(partyPage.indexOf('id="moreTools"') < partyPage.indexOf('id="myCharacterTools"'));
+  assert.ok(partyPage.indexOf('id="myCharacterTools"') < partyPage.indexOf('id="partyTools"'));
 });
 
 test('Public Seen settles the author anonymously and writes the canonical event copy', () => {

@@ -28,6 +28,7 @@
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<link rel="stylesheet" href="/_shared/create-wizard.css?v=20260831-clean1">
 <script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
 </head>
 <body>
@@ -36,82 +37,83 @@
   <a class="back" href="/">ยกเลิก</a>
 </header>
 
-<main class="wrap create-page">
-  <p class="kicker">เปิดสมุดเล่มใหม่</p>
-  <h1 class="title">เปิดสมุดในหน้าเดียว</h1>
-  <p class="lede">เลือกของที่ตรงใจ แล้วออกไปทำในชีวิตจริงได้เลย</p>
+<main class="wrap create-page" id="createWizard">
+  <div class="wizard-heading">
+    <div>
+      <p class="kicker">เปิดสมุดเล่มใหม่</p>
+      <h1 class="title">เลือกทีละอย่าง</h1>
+    </div>
+    <p class="wizard-count" id="wizardCount" aria-live="polite"></p>
+  </div>
+  <div class="wizard-progress" aria-hidden="true"><i id="wizardBar"></i></div>
+  <p class="wizard-note">ไม่ต้องคิดให้สมบูรณ์ · แก้ทีหลังได้</p>
 
-  <section class="notebook-card" id="coverSection">
-    <span class="step-sticker">1</span>
-    <h2>เลือกปกสมุด</h2>
-    <p class="whisper" id="coverHint">สมุดเล่มแรกใช้สัตว์ของคุณเป็นปกอัตโนมัติ</p>
-    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือกปกสมุด"></div>
-  </section>
-
-  <section class="notebook-card">
-    <span class="step-sticker">2</span>
+  <section class="notebook-card wizard-step is-current" id="modeStep" data-wizard-step="mode">
+    <span class="step-sticker" aria-hidden="true"></span>
     <h2>ในเล่มนี้จะทำแบบไหน?</h2>
-    <div class="mode-grid" id="modePick" role="radiogroup" aria-label="เลือกวิธีเล่นของสมุด"></div>
+    <div class="mode-grid" id="modePick" role="radiogroup" aria-label="เลือกวิธีทำกิจกรรมในสมุด"></div>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">3</span>
+  <section class="notebook-card wizard-step" id="activityStep" data-wizard-step="activity" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
     <h2 id="activityTitle">เลือกกิจกรรมของสมุด</h2>
-    <p class="whisper" id="activityHint">ทุกคนในเล่มนี้ทำกิจกรรมเดียวกัน แต่ตั้งเป้าของตัวเองได้</p>
+    <p class="whisper" id="activityHint">เลือกเรื่องที่อยากกลับมาทำ</p>
     <div id="activityPick"></div>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">4</span>
-    <h2>เลือกรูปแบบการเล่น</h2>
-    <div class="preset-grid" id="verificationPick" role="radiogroup" aria-label="เลือกรูปแบบการเล่น"></div>
+  <section class="notebook-card wizard-step" id="verificationStep" data-wizard-step="verification" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
+    <h2>ลงชื่อแบบไหน?</h2>
+    <div class="preset-grid" id="verificationPick" role="radiogroup" aria-label="เลือกวิธียืนยันการลงชื่อ"></div>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">5</span>
-    <h2>เล่นกันกี่วัน?</h2>
+  <section class="notebook-card wizard-step" id="durationStep" data-wizard-step="duration" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
+    <h2>ทำกันกี่วัน?</h2>
     <div class="choice-row" id="durationPick" role="radiogroup" aria-label="เลือกระยะเวลา"></div>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">6</span>
-    <h2>ตั้งชื่อและกติกา</h2>
+  <section class="notebook-card wizard-step" id="nameStep" data-wizard-step="name" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
+    <h2>ตั้งชื่อสมุด</h2>
     <div class="field">
       <label for="pname">ชื่อสมุด</label>
       <input id="pname" type="text" maxlength="40" placeholder="เช่น อ่านก่อนนอนแก๊งเรา">
     </div>
-    <div class="field">
-      <label for="prule">แบบไหนถึงนับว่า ลงชื่อ</label>
-      <input id="prule" type="text" maxlength="120" placeholder="เช่น อ่านอย่างน้อย 10 หน้า">
-      <p class="hint">เว้นว่างได้ แล้วค่อยตกลงกันในสมุด</p>
-    </div>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">7</span>
+  <section class="notebook-card wizard-step" id="visibilityStep" data-wizard-step="visibility" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
     <h2>ใครเข้าร่วมได้?</h2>
     <div class="choice-row two" id="visibilityPick" role="radiogroup" aria-label="เลือกการมองเห็น"></div>
-    <p class="hint">สมุดส่วนตัวใช้รหัส 5 หลักชวนเพื่อนเข้ามา</p>
   </section>
 
-  <section class="notebook-card">
-    <span class="step-sticker">8</span>
+  <section class="notebook-card wizard-step" id="companionStep" data-wizard-step="companion" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
     <h2>เลือกเพื่อนร่วมทาง</h2>
-    <p class="whisper">ใช้เพื่อนร่วมทางชุดเดิม หรือวางการ์ดที่ปลดล็อกแล้วเป็นเพื่อนร่วมทางก็ได้ · ข้ามได้</p>
+    <p class="whisper">เลือกได้ หรือข้ามไปก่อน</p>
     <div class="pet-art-grid" id="petPick" role="radiogroup" aria-label="เลือก เพื่อนร่วมทาง ประจำสมุด"></div>
-    <p class="label" style="margin-top:18px">ANIMAL CARD AS เพื่อนร่วมทาง</p>
+    <p class="label" style="margin-top:18px">การ์ดเป็นเพื่อนร่วมทาง</p>
     <div class="card-select-grid" id="npcCardPick" role="radiogroup" aria-label="เลือกการ์ดเป็นเพื่อนร่วมทาง"></div>
-    <p class="hint" id="petHint">ยังไม่ได้เลือก เพื่อนร่วมทาง</p>
+    <p class="hint" id="petHint">ยังไม่เลือกก็ได้</p>
   </section>
 
-  <details class="advanced-card">
-    <summary>ตัวเลือกเพิ่มเติม</summary>
-    <p class="whisper">ข้อความ มีเพดานเพื่อให้กลับมาอ่านแล้วตามทัน ส่วน ลงชื่อ, ส่งกำลังใจ และ เห็นแล้ว ไม่กินโควตานี้</p>
-    <div class="choice-row three" id="budgetPick" role="radiogroup" aria-label="เลือกโควตา ข้อความ"></div>
-  </details>
+  <section class="notebook-card wizard-step" id="coverSection" data-wizard-step="cover" hidden>
+    <span class="step-sticker" aria-hidden="true"></span>
+    <h2>เลือกปกสมุด</h2>
+    <p class="whisper" id="coverHint">เลือกจากคอลเลกชันของคุณ</p>
+    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือกปกสมุด"></div>
+    <details class="advanced-card compact-options" id="messageOptions">
+      <summary>จำนวนข้อความต่อวัน</summary>
+      <div class="choice-row three" id="budgetPick" role="radiogroup" aria-label="เลือกจำนวนข้อความต่อวัน"></div>
+    </details>
+  </section>
 
-  <button class="btn gold" id="go" disabled>สร้างสมุด</button>
-  <p class="note">ตอนกดสร้าง ระบบจะเขียนสมุดและรับรหัสให้ · ปุ่มจะขยับตลอดเวลาที่กำลังบันทึก เพื่อให้รู้ว่าระบบยังทำงานอยู่<br>หนึ่งคนสร้างสมุดที่กำลังเขียนได้ตาม Level และเข้าร่วมสมุดของเพื่อนได้ 3 สมุด</p>
+  <div class="wizard-actions">
+    <button class="btn ghost" id="wizardBack" type="button" hidden>ย้อนกลับ</button>
+    <button class="btn gold" id="wizardNext" type="button">ต่อไป</button>
+    <button class="btn gold" id="go" type="button" disabled hidden>สร้างสมุด</button>
+  </div>
 </main>
 
 <div class="toast" id="toast" role="status"></div>
@@ -119,7 +121,7 @@
 <script type="module">
 import {
   hasProfile, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET,
-  availableOwnedCards, allParties, partyIdentity,
+  availableOwnedCards,
 } from '/_shared/store.js';
 import { createPartyV2 } from '/_shared/create-party-v2.js';
 import { TEAMBOOK_V1_PETS, PET_BY_ID } from '/_shared/pets.js';
@@ -162,6 +164,8 @@ function radioGroup(container, buttons, initial, onPick) {
 
 function init() {
   const profile = getProfile();
+  let wizardSteps = [];
+  let wizardIndex = 0;
   /* A card unlocks its animal for the Pet seat. It does not restyle it:
      the free pets are Starter and keep their own art. */
   const petSpecies = petSpeciesFor(profile.petIds, profile);
@@ -216,8 +220,8 @@ function init() {
       addCoverButton(button, 'card', card.cardId);
     });
     $('coverHint').textContent = leadCards.length
-      ? 'ใช้ Card Back หรือ Rare / Epic / Legendary ที่ปลดแล้ว · Common ใช้เป็นปกไม่ได้'
-      : 'ใช้ Card Back ได้เลย · Rare / Epic / Legendary ที่ได้ภายหลังจะใช้เป็นปกสมุดได้';
+      ? 'เลือกหลังการ์ด หรือการ์ดในคอลเลกชัน'
+      : 'ใช้หลังการ์ดได้เลย';
   }
 
   /* Which activity is being chosen here depends on the mode: the book's
@@ -246,8 +250,8 @@ function init() {
   });
 
   const verificationButtons = [
-    { id: 'trust', labelTh: 'เชื่อใจกัน', hintTh: 'ลงชื่อแล้วผ่านทันที', art: '/assets/art/activities/activity-walk.webp' },
-    { id: 'confirm', labelTh: 'ต้อง เห็นแล้ว', hintTh: 'ให้เพื่อนอย่างน้อย 1 คน เห็นแล้ว · ย้อนหลังได้ถึงวันถัดไป', art: '/assets/art/activities/activity-study.webp' },
+    { id: 'trust', labelTh: 'ลงชื่อได้เลย', hintTh: 'เชื่อใจกัน', art: '/assets/art/activities/activity-walk.webp' },
+    { id: 'confirm', labelTh: 'ให้เพื่อนเห็นก่อน', hintTh: 'เพื่อน 1 คนกด “เห็นแล้ว”', art: '/assets/art/activities/activity-study.webp' },
   ].map(item => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'preset-choice'; button.setAttribute('role', 'radio');
@@ -255,20 +259,16 @@ function init() {
     return { id: item.id, button };
   });
   let verificationMode = 'confirm';
-  radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; });
+  radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; syncReady(); });
 
   let durationDays = 3;
-  const durationButtons = [7, 14, 28].map(days => {
+  const durationButtons = [3, 7, 14, 28].map(days => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
     button.innerHTML = `<b>${days}</b><small>วัน</small>`;
     return { id: days, button };
   });
-  const disabledDuration = document.createElement('button');
-  disabledDuration.type = 'button'; disabledDuration.className = 'pill-choice'; disabledDuration.disabled = true;
-  disabledDuration.innerHTML = '<b>กำหนดเอง</b><small>เร็ว ๆ นี้</small>';
-  radioGroup($('durationPick'), durationButtons, durationDays, id => { durationDays = Number(id); });
-  $('durationPick').appendChild(disabledDuration);
+  radioGroup($('durationPick'), durationButtons, durationDays, id => { durationDays = Number(id); syncReady(); });
 
   /* A book's colour is the colour of what it is about. In individual mode
      nobody is all doing one thing, so the book keeps a neutral one and the
@@ -279,15 +279,15 @@ function init() {
 
   let visibility = 'public';
   const visibilityButtons = [
-    ['private', '🔒', 'ส่วนตัว', 'เข้าด้วยรหัส 5 หลัก'],
-    ['public', '☀️', 'สาธารณะ', 'แสดงในหน้าเปิดสมุด'],
+    ['private', '🔒', 'คนที่มีรหัส', 'ส่งรหัสให้คนที่อยากชวน'],
+    ['public', '☀️', 'ทุกคน', 'คนอื่นเปิดดูและเข้าร่วมได้'],
   ].map(([id, icon, label, hint]) => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'wide-choice'; button.setAttribute('role', 'radio');
     button.innerHTML = `<span>${icon}</span><b>${label}</b><small>${hint}</small>`;
     return { id, button };
   });
-  radioGroup($('visibilityPick'), visibilityButtons, visibility, id => { visibility = id; });
+  radioGroup($('visibilityPick'), visibilityButtons, visibility, id => { visibility = id; syncReady(); });
 
   let petId = null;
   ownedPets.forEach(pet => {
@@ -306,8 +306,9 @@ function init() {
         const on = x === button && petId === pet.id;
         x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false');
       });
-      $('petHint').textContent = petId ? `${PET_BY_ID[petId].nameTh} จะเป็นเพื่อนประจำสมุด` : 'ยังไม่ได้เลือก เพื่อนร่วมทาง';
+      $('petHint').textContent = petId ? `เลือก ${PET_BY_ID[petId].nameTh} แล้ว` : 'ยังไม่เลือกก็ได้';
       renderNpcCards();
+      syncReady();
     });
     $('petPick').appendChild(button);
   });
@@ -316,7 +317,7 @@ function init() {
     const box = $('npcCardPick'); box.innerHTML = '';
     const choices = availableOwnedCards({ role: 'npc', profile }).filter(card => card.cardId !== leadCardId);
     if (!choices.length) {
-      box.innerHTML = '<p class="whisper" style="grid-column:1/-1;margin:0">ยังไม่มีการ์ดว่างอีกใบ — เปิดได้หลังปิดเล่ม แรก</p>';
+      box.innerHTML = '<p class="whisper" style="grid-column:1/-1;margin:0">การ์ดจะเพิ่มหลังปิดสมุดเล่มแรก</p>';
       return;
     }
     choices.forEach(card => {
@@ -335,16 +336,18 @@ function init() {
         }
         renderNpcCards();
         $('petHint').textContent = npcCardId
-          ? `${cardDescriptorTh(cardById(npcCardId))} จะร่วมสมุดเป็น เพื่อนร่วมทาง`
-          : 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
+          ? `เลือก ${cardDescriptorTh(cardById(npcCardId))} แล้ว`
+          : 'ยังไม่เลือกก็ได้';
+        syncReady();
       });
       box.appendChild(button);
     });
   }
   renderNpcCards();
-  if (npcCardId) $('petHint').textContent = `${cardDescriptorTh(cardById(npcCardId))} จะร่วมสมุดเป็น เพื่อนร่วมทาง`;
+  if (npcCardId) $('petHint').textContent = `เลือก ${cardDescriptorTh(cardById(npcCardId))} แล้ว`;
 
-  let budget = DEFAULT_BUDGET;
+  const threeMessageBudget = Object.values(MESSAGE_BUDGETS).find(item => item.perDay === 3)?.id || DEFAULT_BUDGET;
+  let budget = levelOne ? threeMessageBudget : DEFAULT_BUDGET;
   const budgetButtons = Object.values(MESSAGE_BUDGETS).map(item => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
@@ -355,13 +358,59 @@ function init() {
 
   if (qs.get('template') === 'xircle') {
     $('pname').value = 'สมุดสุขภาพของเรา';
-    $('prule').value = 'วันนี้ปรับหนึ่งอย่างที่ตั้งใจไว้';
   }
 
   $('pname').addEventListener('input', syncReady);
-  $('prule').addEventListener('input', syncReady);
 
-  syncReady();
+  wizardSteps = [
+    { node: $('modeStep'), ready: () => true },
+    { node: $('activityStep'), ready: () => picked.complete },
+    { node: $('verificationStep'), ready: () => true },
+    { node: $('durationStep'), ready: () => true },
+    { node: $('nameStep'), ready: () => $('pname').value.trim().length > 0 },
+    { node: $('visibilityStep'), ready: () => true },
+    { node: $('companionStep'), ready: () => true },
+  ];
+  if (!levelOne) wizardSteps.push({ node: $('coverSection'), ready: () => !!coverType });
+  else $('coverSection').hidden = true;
+
+  function showWizardStep(index, { focus = false } = {}) {
+    wizardIndex = Math.max(0, Math.min(index, wizardSteps.length - 1));
+    wizardSteps.forEach((step, i) => {
+      const current = i === wizardIndex;
+      step.node.hidden = !current;
+      step.node.classList.toggle('is-current', current);
+      const sticker = step.node.querySelector('.step-sticker');
+      if (sticker) sticker.textContent = String(i + 1);
+    });
+    $('wizardCount').textContent = `${wizardIndex + 1} / ${wizardSteps.length}`;
+    $('wizardBar').style.width = `${((wizardIndex + 1) / wizardSteps.length) * 100}%`;
+    $('wizardBack').hidden = wizardIndex === 0;
+    const finalStep = wizardIndex === wizardSteps.length - 1;
+    $('wizardNext').hidden = finalStep;
+    $('go').hidden = !finalStep;
+    syncReady();
+    if (focus) {
+      document.querySelector('.wizard-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      requestAnimationFrame(() => {
+        if (wizardSteps[wizardIndex].node === $('nameStep')) $('pname').focus();
+        else wizardSteps[wizardIndex].node.querySelector('button:not([disabled]),input')?.focus({ preventScroll: true });
+      });
+    }
+  }
+
+  $('wizardNext').addEventListener('click', () => {
+    if (!wizardSteps[wizardIndex].ready()) return;
+    showWizardStep(wizardIndex + 1, { focus: true });
+  });
+  $('wizardBack').addEventListener('click', () => showWizardStep(wizardIndex - 1, { focus: true }));
+  $('pname').addEventListener('keydown', event => {
+    if (event.key === 'Enter' && wizardSteps[wizardIndex]?.node === $('nameStep') && !$('wizardNext').disabled) {
+      event.preventDefault();
+      $('wizardNext').click();
+    }
+  });
+  showWizardStep(0);
 
   $('go').addEventListener('click', async () => {
     const go = $('go'); go.disabled = true; go.classList.add('is-loading');
@@ -373,9 +422,9 @@ function init() {
         activityMode,
         activityDescription: picked.description,
         activityColor: picked.color,
-        successRule: activityMode === INDIVIDUAL ? $('prule').value.trim() : '',
+        successRule: activityMode === INDIVIDUAL ? 'ทำสิ่งที่ตั้งใจไว้แล้ว' : '',
         verificationMode, durationDays,
-        color: bookColor(), visibility, commitRule: $('prule').value,
+        color: bookColor(), visibility, commitRule: 'ทำสิ่งที่ตั้งใจไว้แล้ว',
         budget, petId, coverType, leadCardId, npcCardId,
       });
       location.href = `/p/?c=${encodeURIComponent(party.code)}&new=1`;
@@ -395,8 +444,10 @@ function init() {
   });
 
   function syncReady() {
-    const ownerRuleReady = activityMode !== INDIVIDUAL || $('prule').value.trim().length > 0;
-    $('go').disabled = $('pname').value.trim().length < 1 || !picked.complete || !coverType || !ownerRuleReady;
+    const current = wizardSteps[wizardIndex];
+    if (current) $('wizardNext').disabled = !current.ready();
+    const blocked = $('go').dataset.capacityBlocked === '1';
+    $('go').disabled = blocked || $('pname').value.trim().length < 1 || !picked.complete || !coverType;
   }
 }
 
