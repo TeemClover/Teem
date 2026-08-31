@@ -5,6 +5,7 @@
 
 import { allParties, getProfile, isActiveParty, ownedCards, partyIdentity } from './store.js';
 import { cardById, cardDescriptorTh } from './cards.js';
+import { cardCanBePartyCover } from './cover-eligibility.js';
 
 const DEBUG_MAX7_CODE = 'max7books';
 const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
@@ -87,7 +88,7 @@ function syncDetail() {
   const cover = document.getElementById('useCover');
   const npc = document.getElementById('useNpc');
   if (cover) {
-    setHidden(cover, !card.eligibility?.partyCover);
+    setHidden(cover, !cardCanBePartyCover(card));
     setHref(cover, `/new/?lead=${encodeURIComponent(card.cardId)}`);
   }
   if (npc) {
