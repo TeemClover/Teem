@@ -8,6 +8,11 @@
   ],
   "redirects": [
     {
+      "source": "/xvisor",
+      "destination": "/xvisor/",
+      "permanent": true
+    },
+    {
       "source": "/",
       "has": [
         {

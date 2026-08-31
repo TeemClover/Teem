@@ -44,6 +44,12 @@
     <section class="bottom-cta"><h2>ถ้าพรุ่งนี้ต้องเริ่มจริง — คุณรู้หรือยังว่าต้องทำอะไรก่อน?</h2><p>ลองเส้นทางในเกมก่อน โดยไม่ต้องเอาคนจริง เงินจริง หรือเวลาหลายเดือนไปลองผิดลองถูก</p><a class="cta" id="startGameBottom" href="/xvisor/quest/">ลองใช้ชีวิต X-VISOR ▶</a></section>
     <footer><span>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทาง X-VISOR และโครงสร้างการทำงาน</span><span>ไม่ใช่การรับประกันรายได้หรือผลลัพธ์ด้านสุขภาพ</span></footer>
   </main>
-  <script>(function(){var hasSave=false;try{hasSave=!!localStorage.getItem('xvisorQuestRebootV1')}catch(e){}if(!hasSave)return;['startGame','startGameBottom'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=id==='startGame'?'กลับไปเล่นต่อ ▶':'เล่นต่อจากที่บันทึกไว้ ▶'})}());</script>
+  <script type="module">
+    import { hasQuestSave } from "/xvisor/quest/game-save.js";
+    if (hasQuestSave(window.localStorage)) {
+      document.getElementById("startGame").textContent = "กลับไปเล่นต่อ ▶";
+      document.getElementById("startGameBottom").textContent = "เล่นต่อจากที่บันทึกไว้ ▶";
+    }
+  </script>
 </body>
 </html>
