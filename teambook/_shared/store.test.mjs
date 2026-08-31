@@ -52,11 +52,11 @@ test('catalog matches the printed set with a minimal canonical card face', () =>
   assert.equal(cards.TEAMBOOK_EPIC_CARDS.length, 16);
   assert.equal(cards.TEAMBOOK_LEGENDARY_CARDS.length, 9);
   assert.equal(new Set(cards.TEAMBOOK_CARDS.map(card => card.cardId)).size, total);
-  assert.equal(cards.TEAMBOOK_COMMON_CARDS.every(card => !card.eligibility.partyCover), true);
+  assert.equal(cards.TEAMBOOK_COMMON_CARDS.every(card => card.eligibility.partyCover), true);
   assert.equal(cards.TEAMBOOK_RARE_CARDS.every(card => card.eligibility.partyCover), true);
   assert.equal(cards.TEAMBOOK_RARE_CARDS.every(card => /\/assets\/cards\/rare\/.+\.webp$/.test(card.imageFull)), true);
   assert.deepEqual(cards.TEAMBOOK_CARD_RARITIES, ['common', 'rare', 'epic', 'legendary']);
-  assert.equal(cards.TEAMBOOK_CARD_RULES.common.partyCover, false);
+  assert.equal(cards.TEAMBOOK_CARD_RULES.common.partyCover, true);
   assert.equal(cards.TEAMBOOK_CARD_RULES.epic.frame, 'premium-gold');
   assert.equal(cards.TEAMBOOK_CARD_RULES.legendary.maxPerSpecies, 1);
   assert.equal(cards.TEAMBOOK_CARD_RULES.legendary.colorVariants, false);

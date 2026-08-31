@@ -228,13 +228,9 @@ export function activityOfSignature(signature = {}, book = {}) {
    Shared mode inherits the activity, so joining is one short step; in
    individual mode the same person has a choice to make first. */
 export function joinSteps(book = {}) {
-  const mode = normalizeMode(book.activityMode ?? book.activity_mode);
-  const steps = ['character'];
-  if (mode === INDIVIDUAL) steps.push('color', 'activity');
-  steps.push('successRule');
-  return Object.freeze(steps);
+  return Object.freeze(['name', 'character']);
 }
 
 export function successRuleRequired(book = {}) {
-  return normalizeMode(book.activityMode ?? book.activity_mode) === INDIVIDUAL;
+  return false;
 }

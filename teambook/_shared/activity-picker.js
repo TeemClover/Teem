@@ -35,6 +35,7 @@ function el(tag, className, text) {
  */
 export function mountActivityPicker(mount, {
   value = null,
+  customLabel = '',
   askSuccessRule = false,
   successRule = '',
   onChange = () => {},
@@ -45,7 +46,6 @@ export function mountActivityPicker(mount, {
 
   let activeColor = colorOf(value) || COLOR_IDS[0];
   let activityId = value || null;
-  let customLabel = '';
   let rule = String(successRule || '');
 
   const tabs = el('div', 'act-tabs');
@@ -63,6 +63,7 @@ export function mountActivityPicker(mount, {
   customInput.type = 'text';
   customInput.maxLength = CUSTOM_LABEL_MAX_CHARS;
   customInput.placeholder = 'เช่น ซ้อมกีตาร์';
+  customInput.value = String(customLabel || '').trim().slice(0, CUSTOM_LABEL_MAX_CHARS);
   customInput.id = `actCustom-${Math.random().toString(36).slice(2, 8)}`;
   customLabelEl.htmlFor = customInput.id;
   customField.append(customLabelEl, customInput);
@@ -171,6 +172,8 @@ export function mountActivityPicker(mount, {
 
   paintTabs();
   paintCards();
+  customField.hidden = !isCustomId(activityId)
+    || (!!colorOf(activityId) && colorOf(activityId) !== activeColor);
   mount.append(tabs, grid, customField, ruleField);
   emit();
 

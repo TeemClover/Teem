@@ -91,7 +91,7 @@ function syncCharacterControls() {
   if (!avatar || !color || !save || !tools) return;
 
   syncing = true;
-  if (save.textContent !== '💾 SAVE') save.textContent = '💾 SAVE';
+  if (save.textContent !== 'บันทึกการเปลี่ยนแปลง') save.textContent = 'บันทึกการเปลี่ยนแปลง';
 
   /* /p's canonical render rebuilds Starter options. Restore only the selected
      per-Book Collection card as one synthetic option; do not rebuild any card

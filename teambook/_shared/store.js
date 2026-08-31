@@ -888,10 +888,10 @@ export function kickPartyMember(code, userId) {
   return manageParty(code, 'kick', { userId });
 }
 
-export async function updatePartyIdentity(code, { alias, avatar, avatarColor }) {
+export async function updatePartyIdentity(code, patch = {}) {
   const wanted = String(code || '').toUpperCase();
-  const result = await api(`/api/teambook/party/${encodeURIComponent(wanted)}/me`, {
-    method: 'POST', code: wanted, body: { alias, avatar, avatarColor },
+  const result = await api(`/api/teambook-party-finish?op=identity-v2&code=${encodeURIComponent(wanted)}`, {
+    method: 'POST', code: wanted, body: patch,
   });
   return rememberResponse(wanted, result);
 }

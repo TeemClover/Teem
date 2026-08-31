@@ -3,6 +3,7 @@ import {
 } from './core.js';
 import { TEAMBOOK_TIMEZONE, partyDayNumber } from './xty-rules.js';
 import { cardById as xtyCardById, cardDescriptorTh } from '../../_shared/cards.js';
+import { isActivityComplete, resolveActivity } from '../../_shared/book-mode.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const MAX_JOINED = 3;
@@ -39,19 +40,23 @@ async function ensureQuotaV2(sql) {
 }
 async function partyByCode(sql, code) {
   const rows = await sql.query(`SELECT id,code,name,state,owner_id,created_at,started_at,updated_at,timezone,
-    lead_card_id,npc_card_id,cover_type,cover_value FROM teambook_books WHERE code=$1`, [code]);
+    lead_card_id,npc_card_id,cover_type,cover_value,activity_mode,activity_id,activity,
+    shared_activity_description,shared_activity_color,commit_rule
+    FROM teambook_books WHERE code=$1`, [code]);
   return rows[0] || null;
 }
 async function memberFor(req, sql, partyId) {
   const account = await currentUser(req, sql);
   if (account) {
-    const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at
+    const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,
+      activity_id,activity_label,activity_description,activity_color,success_rule
       FROM teambook_book_members WHERE book_id=$1 AND user_id=$2 AND left_at IS NULL`, [partyId, `account:${account.id}`]);
     if (rows[0]) return { account, member: rows[0] };
   }
   const token = bearer(req);
   if (!token) return { account, member: null };
-  const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at
+  const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,
+    activity_id,activity_label,activity_description,activity_color,success_rule
     FROM teambook_book_members WHERE book_id=$1 AND auth_hash=$2 AND left_at IS NULL`, [partyId, await sha256(token)]);
   return { account, member: rows[0] || null };
 }
@@ -196,19 +201,73 @@ export async function handleIdentityV2(req, res, legacyXtyHandler) {
     }
     const body = bodyOf(req); const alias = clean(body.alias, 24) || member.alias; const avatar = clean(body.avatar, 40) || member.avatar || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : (member.avatar_color || 'green');
+    const mode = row.activity_mode === 'individual' ? 'individual' : 'shared';
+    const successRule = clean(body.successRule, 60)
+      || clean(member.success_rule, 60)
+      || (mode === 'shared' ? (clean(row.commit_rule, 60) || 'ทำกิจกรรมของวันนี้แล้ว') : '');
+    if (!successRule) return sendJson(res, { ok: false, error: 'RULE_REQUIRED' }, 400);
+
+    let activity = {
+      activityId: row.activity_id || null,
+      label: clean(row.activity, 60),
+      description: clean(row.shared_activity_description, 120),
+      color: row.shared_activity_color || null,
+    };
+    if (mode === 'individual') {
+      activity = resolveActivity({
+        activityId: clean(body.activityId, 40),
+        label: clean(body.activityLabel, 60),
+        description: clean(body.activityDescription, 120),
+        color: body.activityColor,
+      });
+      if (!isActivityComplete(activity)) {
+        return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
+      }
+    }
+
     const aliasChanged = alias !== member.alias; const avatarChanged = avatar !== member.avatar || avatarColor !== member.avatar_color;
-    if (!aliasChanged && !avatarChanged) return sendJson(res, { ok: true, changed: false });
+    const activityChanged = mode === 'individual' && (
+      activity.activityId !== member.activity_id
+      || activity.label !== (member.activity_label || '')
+      || activity.description !== (member.activity_description || '')
+      || activity.color !== member.activity_color
+    );
+    const ruleChanged = successRule !== (member.success_rule || '');
+    if (!aliasChanged && !avatarChanged && !activityChanged && !ruleChanged) {
+      return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));
+    }
     const aliasType = aliasChanged ? 'MEMBER_ALIAS_CHANGED' : ''; const avatarType = avatarChanged ? 'MEMBER_AVATAR_CHANGED' : '';
+    const activityType = activityChanged ? 'MEMBER_ACTIVITY_CHANGED' : '';
+    const ruleType = ruleChanged ? 'MEMBER_RULE_CHANGED' : '';
     const aliasData = JSON.stringify({ from: member.alias, to: alias, alias });
     const avatarData = JSON.stringify({ alias, fromAvatar: member.avatar || 'orange_cat', toAvatar: avatar, fromColor: member.avatar_color || 'green', toColor: avatarColor });
-    await sql.query(`WITH changed AS (UPDATE teambook_book_members SET alias=$1,avatar=$2,avatar_color=$3
-        WHERE book_id=$4 AND user_id=$5 AND left_at IS NULL RETURNING book_id),
-      touched AS (UPDATE teambook_books SET updated_at=$6 WHERE id=$4 AND EXISTS (SELECT 1 FROM changed) RETURNING id)
-      INSERT INTO teambook_book_events (book_id,type,actor_id,party_day,data_json,created_at)
-      SELECT touched.id,v.type,$5,$7,v.data::jsonb,$6 FROM touched
-      CROSS JOIN (VALUES ($8::text,$9::text),($10::text,$11::text)) AS v(type,data) WHERE v.type<>''`,
-    [alias, avatar, avatarColor, row.id, member.user_id, at, partyDay(row, at), aliasType, aliasData, avatarType, avatarData]);
-    return sendJson(res, { ok: true, changed: true });
+    const activityData = JSON.stringify({
+      alias,
+      from: member.activity_label || '',
+      to: activity.label,
+      fromId: member.activity_id || null,
+      toId: activity.activityId,
+    });
+    const ruleData = JSON.stringify({ alias, from: member.success_rule || '', to: successRule });
+    await sql.query(`WITH changed AS (
+        UPDATE teambook_book_members SET alias=$1,avatar=$2,avatar_color=$3,
+          activity_id=$4,activity_label=$5,activity_description=$6,activity_color=$7,success_rule=$8
+        WHERE book_id=$9 AND user_id=$10 AND left_at IS NULL RETURNING book_id
+      ), touched AS (
+        UPDATE teambook_books SET updated_at=$11 WHERE id=$9 AND EXISTS (SELECT 1 FROM changed) RETURNING id
+      ) INSERT INTO teambook_book_events (book_id,type,actor_id,party_day,data_json,created_at)
+      SELECT touched.id,v.type,$10,$12,v.data::jsonb,$11 FROM touched
+      CROSS JOIN (VALUES
+        ($13::text,$14::text),($15::text,$16::text),
+        ($17::text,$18::text),($19::text,$20::text)
+      ) AS v(type,data) WHERE v.type<>''`, [
+      alias, avatar, avatarColor,
+      activity.activityId, activity.label, activity.description, activity.color, successRule,
+      row.id, member.user_id, at, partyDay(row, at),
+      aliasType, aliasData, avatarType, avatarData,
+      activityType, activityData, ruleType, ruleData,
+    ]);
+    return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));
   } catch (error) {
     console.error('TeamBook identity v2 failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);

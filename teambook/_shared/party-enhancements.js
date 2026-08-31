@@ -90,6 +90,10 @@ function eventText(event) {
       }
       return `${alias} เปลี่ยนตัวละครเป็น ${characterName(data.avatar, data.avatarColor)}`;
     }
+    case 'MEMBER_ACTIVITY_CHANGED':
+      return `${data.alias || 'สมาชิก'} เปลี่ยนกิจกรรมเป็น ${data.to || 'กิจกรรมใหม่'}`;
+    case 'MEMBER_RULE_CHANGED':
+      return `${data.alias || 'สมาชิก'} เปลี่ยนว่า 1 ลงชื่อ = ${data.to || 'สิ่งที่ตั้งใจไว้'}`;
     case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่เจ้าของสมุดต่อจาก ${data.from || 'เจ้าของสมุดเดิม'}`;
     case 'PARTY_RENAMED': return `เปลี่ยนชื่อสมุดจาก “${data.from || ''}” → “${data.to || ''}”`;
     case 'RULE_CHANGED': return 'กติกาการลงชื่อถูกเปลี่ยน และเก็บกติกาเดิมไว้ในประวัติ';
@@ -320,6 +324,7 @@ function syncIdentityLock() {
   const alias = document.getElementById('myAliasInput');
   const avatar = document.getElementById('myAvatarSelect');
   const color = document.getElementById('myColorSelect');
+  const successRule = document.getElementById('mySuccessRuleInput');
   const button = document.getElementById('saveMyCharacter');
   const summary = tools.querySelector('summary');
   const note = tools.querySelector('.whisper');
@@ -327,12 +332,16 @@ function syncIdentityLock() {
   if (alias) alias.disabled = state.locked;
   if (avatar) avatar.disabled = state.locked;
   if (color) color.disabled = state.locked;
+  if (successRule) successRule.disabled = state.locked;
+  tools.querySelectorAll('#myActivityPick button,#myActivityPick input').forEach(control => {
+    control.disabled = state.locked;
+  });
   if (button) button.disabled = state.locked;
-  if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในสมุดนี้ · ล็อกแล้ว' : 'ตัวละครของฉันในสมุดนี้';
+  if (summary) summary.textContent = state.locked ? 'ตัวละครและกิจกรรมของฉัน · ล็อกแล้ว' : 'ตัวละครของฉันในสมุดนี้';
   if (note) {
     note.textContent = state.locked
-      ? `ครบ 24 ชม. แล้ว · ชื่อและสัตว์ถูกล็อกตั้งแต่ ${lockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนปิดเล่ม`
-      : `เหลือเวลาเปลี่ยนได้อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
+      ? `ครบ 24 ชม. แล้ว · ชื่อ ตัวละคร และกิจกรรมถูกล็อกตั้งแต่ ${lockStamp(state.lockedAt)}`
+      : `ชื่อ ตัวละคร และกิจกรรมเปลี่ยนได้อีก ${timeRemaining(state.lockedAt)} · ถึง ${lockStamp(state.lockedAt)}`;
   }
 
   if (identityLockTimer) clearTimeout(identityLockTimer);
@@ -463,7 +472,18 @@ function installIdentityCapture() {
     const member = party?.members?.find(item => item.userId === identity?.userId);
     if (!party || !member || identityLockState(party, member).locked) {
       syncIdentityLock();
-      toast('ชื่อและสัตว์ล็อกแล้วหลังครบ 24 ชม.');
+      toast('ชื่อ ตัวละคร และกิจกรรมล็อกแล้วหลังครบ 24 ชม.');
+      return;
+    }
+    const individual = party.activityMode === 'individual';
+    const activityPick = document.getElementById('myActivityPick');
+    if (individual && activityPick?.dataset.complete !== '1') {
+      toast('เลือกกิจกรรมจาก 16 อย่าง หรือเขียนใหม่เองก่อน');
+      return;
+    }
+    const successRule = document.getElementById('mySuccessRuleInput')?.value.trim() || '';
+    if (!successRule) {
+      toast('ใส่ว่าทำอะไรถึงนับว่า 1 ลงชื่อ');
       return;
     }
     button.disabled = true;
@@ -471,16 +491,23 @@ function installIdentityCapture() {
       alias: document.getElementById('myAliasInput')?.value || '',
       avatar: document.getElementById('myAvatarSelect')?.value || '',
       avatarColor: document.getElementById('myColorSelect')?.value || 'green',
+      activityId: document.getElementById('myActivityId')?.value || '',
+      activityLabel: document.getElementById('myActivityLabel')?.value || '',
+      activityDescription: document.getElementById('myActivityDescription')?.value || '',
+      activityColor: document.getElementById('myActivityColor')?.value || '',
+      successRule,
     });
     button.disabled = false;
     if (result.error === 'IDENTITY_LOCKED') {
       syncIdentityLock();
-      toast('ครบ 24 ชม. แล้ว · ชื่อและสัตว์ถูกล็อก');
+      toast('ครบ 24 ชม. แล้ว · ชื่อ ตัวละคร และกิจกรรมถูกล็อก');
       return;
     }
+    if (result.error === 'ACTIVITY_REQUIRED') { toast('เลือกกิจกรรมก่อนบันทึก'); return; }
+    if (result.error === 'RULE_REQUIRED') { toast('ใส่ว่าทำอะไรถึงนับว่า 1 ลงชื่อ'); return; }
     if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }
     rememberParty(result);
-    toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ในเรื่องในสมุด');
+    toast('บันทึกชื่อ ตัวละคร และกิจกรรมแล้ว');
     setTimeout(() => location.reload(), 250);
   }, true);
 }

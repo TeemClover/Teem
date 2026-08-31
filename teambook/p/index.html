@@ -34,6 +34,10 @@
   .more-tools>.more-tools-body{padding-top:2px}
   .more-tools .party-tools{margin-top:10px;background:rgba(255,255,255,.58);box-shadow:none}
   .more-tools>summary{font-size:13px;color:var(--xty-muted)}
+  .my-activity-editor{margin:16px 0;padding:14px;border:1px solid var(--xty-border);border-radius:16px;background:rgba(255,255,255,.64)}
+  .my-activity-editor h3{margin:0 0 5px;font-size:16px}.my-activity-editor>.whisper{margin:0 0 12px}
+  .my-activity-editor .field{margin-top:12px}.my-activity-editor .field:first-child{margin-top:0}
+  #mySharedActivityName{margin:0;font-weight:850}
 </style>
 <script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
 </head>
@@ -154,7 +158,8 @@
       <summary>ตัวเลือกเพิ่มเติม</summary>
       <div class="more-tools-body">
         <details class="party-tools" id="myCharacterTools">
-          <summary>ตัวละครของฉัน</summary>
+          <summary>ตัวละครของฉันในสมุดนี้</summary>
+          <p class="whisper" id="myCharacterWindow">เปลี่ยนชื่อ ตัวละคร และกิจกรรมได้ใน 24 ชั่วโมงแรก</p>
           <div class="tool-row">
             <div class="field"><label for="myAliasInput">ชื่อในสมุด</label><input id="myAliasInput" maxlength="24"></div>
           </div>
@@ -162,7 +167,26 @@
             <div class="field"><label for="myAvatarSelect">ตัวละคร</label><select id="myAvatarSelect"></select></div>
             <div class="field"><label for="myColorSelect">สี</label><select id="myColorSelect"></select></div>
           </div>
-          <button class="btn ghost sm" id="saveMyCharacter">บันทึก</button>
+          <section class="my-activity-editor" id="myActivityEditor">
+            <h3>กิจกรรมของฉัน</h3>
+            <div id="mySharedActivityField" hidden>
+              <p class="whisper" style="margin:0 0 5px">กิจกรรมของสมุด</p>
+              <p id="mySharedActivityName"></p>
+            </div>
+            <div id="myIndividualActivityField" hidden>
+              <p class="whisper">เลือกจาก 16 กิจกรรม หรือเขียนใหม่เอง</p>
+              <div id="myActivityPick"></div>
+            </div>
+            <div class="field">
+              <label for="mySuccessRuleInput">ทำอะไร = ลงชื่อ</label>
+              <input id="mySuccessRuleInput" maxlength="60" placeholder="เช่น อ่าน 10 หน้า">
+            </div>
+            <input id="myActivityId" type="hidden">
+            <input id="myActivityLabel" type="hidden">
+            <input id="myActivityDescription" type="hidden">
+            <input id="myActivityColor" type="hidden">
+          </section>
+          <button class="btn ghost sm" id="saveMyCharacter">บันทึกการเปลี่ยนแปลง</button>
         </details>
 
         <details class="party-tools" id="partyTools">
@@ -242,6 +266,8 @@ import { cardMarkup } from '/_shared/card-ui.js';
 import { compressForChat, isSupportedImage, readableBytes } from '/_shared/image-compress.js';
 import { resolveMemberAvatar } from '/_shared/card-picker.js';
 import { partyBoardPlan } from '/_shared/party-board-model.js';
+import { mountActivityPicker } from '/_shared/activity-picker.js';
+import { INDIVIDUAL, normalizeMode } from '/_shared/book-mode.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -249,6 +275,9 @@ const me = getProfile();
 let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 'anon');
 let foilPlayed = false;
 let terminalReward = null;
+let myActivityPicker = null;
+let activityEditorMemberId = '';
+let activityPromptOpened = false;
 
 let pendingRewardNoticeShown = false;
 function openRecoveredFirstSeen(result) {
@@ -308,13 +337,58 @@ function toast(text) {
   setTimeout(() => t.classList.remove('on'), 2800);
 }
 
+function writeActivityChoice(value = {}) {
+  $('myActivityId').value = value.activityId || '';
+  $('myActivityLabel').value = value.label || '';
+  $('myActivityDescription').value = value.description || '';
+  $('myActivityColor').value = value.color || '';
+  $('myActivityPick').dataset.complete = value.complete ? '1' : '0';
+}
+
+function renderMyActivityEditor(party, member) {
+  const mode = normalizeMode(party.activityMode);
+  const individual = mode === INDIVIDUAL;
+  $('mySharedActivityField').hidden = individual;
+  $('myIndividualActivityField').hidden = !individual;
+  $('mySharedActivityName').textContent = party.sharedActivityLabel || party.activity || 'กิจกรรมของสมุด';
+
+  if (document.activeElement !== $('mySuccessRuleInput')) {
+    $('mySuccessRuleInput').value = member.successRule
+      || party.commitRule
+      || (individual ? 'ทำกิจกรรมที่เลือกไว้แล้ว' : 'ทำกิจกรรมของวันนี้แล้ว');
+  }
+
+  if (!individual) {
+    writeActivityChoice({
+      activityId: party.sharedActivityId || party.activityId,
+      label: party.sharedActivityLabel || party.activity,
+      description: party.sharedActivityDescription || '',
+      color: party.sharedActivityColor || party.color,
+      complete: true,
+    });
+    return;
+  }
+
+  if (!myActivityPicker || activityEditorMemberId !== member.userId) {
+    activityEditorMemberId = member.userId;
+    myActivityPicker = mountActivityPicker($('myActivityPick'), {
+      value: member.activityId || null,
+      customLabel: member.activityLabel || '',
+      onChange: writeActivityChoice,
+    });
+  }
+}
+
 function render() {
   const p = getParty(code);
+  const myMember = p.members.find(member => member.userId === myId);
   $('shell').hidden = true;
   $('view').hidden = false;
   document.title = p.name + ' — TeamBook';
   $('pname').textContent = p.name;
-  $('act').textContent = p.activity || 'ยังไม่ระบุกิจกรรม';
+  $('act').textContent = normalizeMode(p.activityMode) === INDIVIDUAL
+    ? (myMember?.activityLabel || 'ต่างคนต่างทำ')
+    : (p.activity || 'ยังไม่ระบุกิจกรรม');
   $('code').textContent = p.code;
 
   /* today's state */
@@ -333,10 +407,11 @@ function render() {
   const todayPosts = p.log.filter(x => dayKey(x.sentAt) === dayKey()).length;
   $('updates').textContent = todayPosts ? `${todayPosts} อัปเดตวันนี้` : 'ยังไม่มีอัปเดตวันนี้';
 
-  if (p.commitRule) {
-    $('ruleText').textContent = p.commitRule;
+  const effectiveRule = myMember?.successRule || p.commitRule || '';
+  if (effectiveRule) {
+    $('ruleText').textContent = effectiveRule;
     $('ruleBox').hidden = false;
-    $('sheetRule').textContent = p.commitRule;
+    $('sheetRule').textContent = `1 ลงชื่อ = ${effectiveRule}`;
   } else {
     $('ruleBox').hidden = true;
     $('sheetRule').textContent = 'สมุดนี้ยังไม่ได้ตั้งกติกา — ลงชื่อได้เลยถ้าทำสิ่งที่ตกลงกันแล้ว';
@@ -347,11 +422,18 @@ function render() {
 
   const already = hasCommittedToday(p, myId);
   const active = isActiveParty(p);
+  const needsActivity = active && normalizeMode(p.activityMode) === INDIVIDUAL
+    && (!myMember?.activityId || !myMember?.activityLabel);
   const cb = $('commitBtn');
-  cb.textContent = already ? '✓ ลงชื่อแล้ววันนี้' : '✓ ลงชื่อวันนี้';
+  cb.textContent = needsActivity ? 'เลือกกิจกรรมก่อนลงชื่อ' : (already ? '✓ ลงชื่อแล้ววันนี้' : '✓ ลงชื่อวันนี้');
   cb.classList.toggle('done', already);
-  cb.disabled = already || !active;
+  cb.disabled = already || !active || needsActivity;
   cb.parentElement.hidden = !active;
+  if (needsActivity && !activityPromptOpened) {
+    activityPromptOpened = true;
+    $('moreTools').open = true;
+    $('myCharacterTools').open = true;
+  }
 
   const progress = $('progress'); progress.innerHTML = '';
   partyProgress(p).forEach(item => {
@@ -449,9 +531,9 @@ function render() {
   }
   document.querySelector('.composer').hidden = p.state === 'DISSOLVED';
 
-  const myMember = p.members.find(member => member.userId === myId);
   $('myCharacterTools').hidden = !active || !myMember;
   if (myMember) {
+    renderMyActivityEditor(p, myMember);
     if (document.activeElement !== $('myAliasInput')) $('myAliasInput').value = myMember.alias || '';
     const avatarSelect = $('myAvatarSelect'); const colorSelect = $('myColorSelect');
     avatarSelect.innerHTML = ''; colorSelect.innerHTML = '';
@@ -950,10 +1032,18 @@ $('commitDo').addEventListener('click', async () => {
   $('commitDo').disabled = false;
   const failedImage = imageError(res.error);
   if (failedImage) { toast(failedImage); return; }
+  if (res.error === 'ACTIVITY_REQUIRED') {
+    sheet.hidden = true;
+    $('moreTools').open = true;
+    $('myCharacterTools').open = true;
+    toast('เลือกกิจกรรมของคุณก่อนลงชื่อ');
+    return;
+  }
+  if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ ลงชื่อ ไปแล้ว'); return; }
+  if (res.error) { toast('ยังลงชื่อไม่ได้ ลองอีกครั้ง'); return; }
   sheet.hidden = true;
   $('commitNote').value = '';
   clearAttachment('commit');
-  if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ ลงชื่อ ไปแล้ว'); return; }
   render();
   toast('ลงชื่อแล้ว — เจอกันพรุ่งนี้');
 });
@@ -1008,15 +1098,28 @@ msg.addEventListener('keydown', e => {
 });
 
 $('saveMyCharacter').addEventListener('click', async () => {
+  const party = getParty(code);
+  const individual = normalizeMode(party?.activityMode) === INDIVIDUAL;
+  if (individual && $('myActivityPick').dataset.complete !== '1') {
+    toast('เลือกกิจกรรมจาก 16 อย่าง หรือเขียนใหม่เองก่อน');
+    return;
+  }
+  const successRule = $('mySuccessRuleInput').value.trim();
+  if (!successRule) { toast('ใส่ว่าทำอะไรถึงนับว่า 1 ลงชื่อ'); return; }
   const button = $('saveMyCharacter'); button.disabled = true;
   const result = await updatePartyIdentity(code, {
     alias: $('myAliasInput').value,
     avatar: $('myAvatarSelect').value,
     avatarColor: $('myColorSelect').value,
+    activityId: $('myActivityId').value,
+    activityLabel: $('myActivityLabel').value,
+    activityDescription: $('myActivityDescription').value,
+    activityColor: $('myActivityColor').value,
+    successRule,
   });
   button.disabled = false;
-  if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }
-  render(); toast('เปลี่ยนตัวละครเฉพาะสมุดนี้แล้ว');
+  if (result.error) { toast('ยังบันทึกการเปลี่ยนแปลงไม่ได้'); return; }
+  render(); toast('บันทึกชื่อ ตัวละคร และกิจกรรมแล้ว');
 });
 
 /* ---------- lead-only party tools ---------- */

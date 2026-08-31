@@ -39,11 +39,15 @@ test('new-book setup reveals one question at a time and keeps the first cover au
   assert.doesNotMatch(create, /id="prule"/);
 });
 
-test('joining keeps optional identity choices and book management collapsed', () => {
-  assert.match(joinPage, /<details class="join-options">/);
+test('joining shows editable default identity and keeps book management collapsed', () => {
+  assert.match(joinPage, /id="joinAlias"/);
+  assert.match(joinPage, /ชื่อและตัวละครในสมุดนี้/);
+  assert.doesNotMatch(joinPage, /<details class="join-options">/);
   assert.match(joinPage, /id="bookPreview" hidden/);
-  assert.doesNotMatch(joinPage, /id="sharedRule"|askSuccessRule:\s*true/);
+  assert.doesNotMatch(joinPage, /id="sharedRule"|askSuccessRule:\s*true|ownActivityPick/);
   assert.match(partyPage, /id="moreTools"/);
+  assert.match(partyPage, /id="myActivityPick"/);
+  assert.match(partyPage, /id="mySuccessRuleInput"/);
   assert.ok(partyPage.indexOf('id="moreTools"') < partyPage.indexOf('id="myCharacterTools"'));
   assert.ok(partyPage.indexOf('id="myCharacterTools"') < partyPage.indexOf('id="partyTools"'));
 });

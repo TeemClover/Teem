@@ -13,6 +13,8 @@ const join = readFileSync('api/_lib/xty-join-v2.js', 'utf8');
 const route = readFileSync('api/teambook/[...path].js', 'utf8');
 const newPage = readFileSync('new/index.html', 'utf8');
 const joinPage = readFileSync('join/index.html', 'utf8');
+const memberActions = readFileSync('api/_lib/xty-member-actions-v2.js', 'utf8');
+const partyPage = readFileSync('p/index.html', 'utf8');
 const publicList = readFileSync('api/teambook-public-list-v13.js', 'utf8');
 const homePublic = readFileSync('_shared/home-public-v15.js', 'utf8');
 
@@ -72,18 +74,23 @@ test('a stranger is told which kind of book this is before they join', () => {
     'and the join page must actually ask');
 });
 
-test('joining an individual book without choosing is refused, not guessed at', () => {
-  assert.match(join, /ACTIVITY_REQUIRED/, 'the server must refuse it');
-  assert.match(joinPage, /ACTIVITY_REQUIRED/, 'and the page must say so in words');
-  /* Refusing on the server is what makes it true; the button being disabled
-     is a courtesy that a direct request would walk straight past. */
-  assert.match(join, /mode === 'individual'[\s\S]*!memberActivityId[\s\S]*!memberActivityLabel[\s\S]*!memberSuccessRule/);
+test('joining is identity-only and activity moves into the 24-hour in-book editor', () => {
+  assert.doesNotMatch(joinPage, /ownActivityPick|mountActivityPicker|ACTIVITY_REQUIRED/);
+  assert.match(joinPage, /id="joinAlias"/);
+  assert.match(joinPage, /id="avatarPick"/);
+  assert.match(join, /Join is identity-only/);
+  assert.match(memberActions, /IDENTITY_EDIT_WINDOW_MS = 24 \* 60 \* 60 \* 1000/);
+  assert.match(memberActions, /activity_id=\$4,activity_label=\$5,activity_description=\$6,activity_color=\$7,success_rule=\$8/);
+  assert.match(partyPage, /เลือกจาก 16 กิจกรรม หรือเขียนใหม่เอง/);
+  assert.match(partyPage, /ทำอะไร = ลงชื่อ/);
 });
 
-test('joining a shared book does not ask for an activity at all', () => {
-  assert.match(join, /: \(row\.activity_id \|\| null\)/,
+test('a shared book inherits its activity while an individual join starts blank', () => {
+  assert.match(join, /mode === 'shared' \? \(row\.activity_id \|\| null\) : null/,
     'a shared book fills the member activity in from its own');
-  assert.match(joinPage, /sharedActivityField/, 'and the page shows it rather than asking');
+  assert.match(join, /mode === 'shared'[\s\S]*: null/,
+    'an individual member chooses later instead of guessing at join');
+  assert.doesNotMatch(joinPage, /sharedActivityField|ownActivityField/);
 });
 
 test('the create page asks the mode question before the activity question', () => {

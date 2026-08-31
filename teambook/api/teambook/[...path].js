@@ -514,8 +514,16 @@ async function appendPost(sql, row, member, kind, text, image = null) {
   if (!activeParty(row)) return { error: 'PARTY_CLOSED', status: 409 };
 
   try {
-    const rows = await sql.query(`WITH next AS (
-        UPDATE teambook_books SET head_seq=head_seq+1,updated_at=$4 WHERE id=$1 RETURNING head_seq
+    const rows = await sql.query(`WITH ready AS (
+        SELECT p.id FROM teambook_books p
+        JOIN teambook_book_members m ON m.book_id=p.id AND m.user_id=$2
+        WHERE p.id=$1 AND (
+          p.activity_mode<>'individual'
+          OR (m.activity_id IS NOT NULL AND NULLIF(m.activity_label,'') IS NOT NULL)
+        )
+      ), next AS (
+        UPDATE teambook_books p SET head_seq=p.head_seq+1,updated_at=$4
+        FROM ready r WHERE p.id=r.id RETURNING p.head_seq
       )
       INSERT INTO teambook_book_entries (
         book_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h,
@@ -534,6 +542,7 @@ async function appendPost(sql, row, member, kind, text, image = null) {
       JOIN teambook_book_members m ON m.book_id=$1 AND m.user_id=$2
       RETURNING seq`,
     [row.id, member.user_id, text, now, key, imageUrl, imageW, imageH]);
+    if (!rows[0]) return { error: 'ACTIVITY_REQUIRED', status: 409 };
     row.head_seq = Number(rows[0].seq); return { seq: row.head_seq };
   } catch (error) {
     if (error.code === '23505') return { error: 'ALREADY_COMMITTED', status: 409 };
