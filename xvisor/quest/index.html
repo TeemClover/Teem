@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#17384f">
-    <meta name="description" content="X-VISOR QUEST V8 เกมบริหาร 12 เดือน: สร้างลูกค้า ทีม X-VISOR และ Organization ที่เติบโตต่อได้">
-    <title>X-VISOR QUEST V8</title>
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=8">
+    <meta name="description" content="X-VISOR QUEST V8 R4 เกมบริหาร 12 เดือน: สร้างลูกค้า ทีม X-VISOR และ Organization ที่เติบโตต่อได้">
+    <title>X-VISOR QUEST V8 R4</title>
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=8r4">
     <script type="importmap">
       {
         "imports": {
@@ -20,7 +20,7 @@
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
-    <main class="game-shell" id="gameApp">
+    <main class="game-shell" id="gameApp" data-game-version="V8 R4">
       <header class="game-header">
         <div class="brand-lockup" aria-label="X-VISOR QUEST"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><p>X-VISOR</p><h1>QUEST</h1></div></div>
         <div class="header-tools">
@@ -38,6 +38,7 @@
         <div class="status-item status-item--income"><span>รายได้รวม</span><strong id="hudIncome">฿0</strong></div>
       </section>
       <div class="rank-row">
+        <span class="rank-chip" aria-label="เวอร์ชันเกม">V8 R4</span>
         <button class="rank-chip rank-chip--button" id="skillButton" type="button" aria-label="ดูความเก่งของคุณ"><span id="hudRank">CANDIDATE</span></button>
         <span class="rank-chip rank-chip--team" id="teamChip" hidden>ทีม 1 X-VISOR</span>
         <button class="rank-chip rank-chip--button rank-chip--people" id="peopleButton" type="button" hidden>คนของคุณ <b id="peopleCount">0</b></button>
@@ -45,19 +46,19 @@
       <section class="game-layout">
         <div class="game-layout__world">
           <article class="goal-card" id="goalCard"><div class="goal-card__copy"><span id="goalEyebrow">เป้าหมายของคุณ</span><h2 id="goalTitle">เริ่มเส้นทาง X-VISOR</h2><p id="goalReason">เริ่มจากตัวเอง ดูแลคนแรก แล้วค่อยสร้างทีม</p></div><div class="goal-progress" aria-label="ความคืบหน้าของเส้นทาง"><i id="goalProgress"></i></div></article>
-          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>V8</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
+          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>V8 R4</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
         </div>
         <aside class="game-layout__controls" aria-label="เหตุการณ์และสิ่งที่ทำต่อ">
           <section class="dialogue-card"><span class="dialogue-card__speaker" id="dialogueSpeaker">X-VISOR QUEST</span><p id="dialogueText">เกมนี้จะพาคุณลองทำงานจริงทีละขั้น</p><div id="sceneDetails"></div></section>
           <section class="action-dock" id="actionDock" data-empty="false" aria-label="สิ่งที่ทำได้ตอนนี้"><div class="action-dock__heading"><span>ทำอะไรต่อ</span><small>เลือกสิ่งที่คุ้มที่สุด</small></div><div class="action-bar" id="actionBar"></div><div class="waiting-state" id="waitingState" hidden>กำลังดำเนินการ…</div></section>
         </aside>
       </section>
-      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
+      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>V8 R4 · บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
     </main>
     <dialog class="game-dialog" id="gameDialog" aria-label="รายละเอียดเกม"><div class="game-dialog__content" id="dialogContent"></div></dialog>
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div><div class="sr-only" id="liveRegion" aria-live="polite"></div>
-    <script type="module" src="/xvisor/quest/game.js?v=8"></script>
-    <script type="module" src="/xvisor/quest/game-v8-ui.js?v=8"></script>
-    <script type="module" src="/xvisor/quest/game-v8-dialog-hotfix.js?v=8"></script>
+    <script type="module" src="/xvisor/quest/game.js?v=8r4"></script>
+    <script type="module" src="/xvisor/quest/game-v8-ui.js?v=8r4"></script>
+    <script type="module" src="/xvisor/quest/game-v8-dialog-hotfix.js?v=8r4"></script>
   </body>
 </html>
