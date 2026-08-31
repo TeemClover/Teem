@@ -42,7 +42,7 @@ function pick(seed, list) {
   return { value: list[nextSeed % list.length], nextSeed };
 }
 
-export function createPerson({ seed, usedNames = [], source = "relationship", index = 1, tutorial = false }) {
+export function createPerson({ seed, usedNames = [], source = "known", index = 1, tutorial = false }) {
   const availableNames = NAME_POOL.filter((name) => !usedNames.includes(name));
   const names = availableNames.length ? availableNames : NAME_POOL;
   const namePick = pick(seed, names);
@@ -79,6 +79,14 @@ export function createPerson({ seed, usedNames = [], source = "relationship", in
       referralReady: false,
       referralAsked: false,
       nextOfferMonth: null,
+      scheduled: false,
+      meetings: 0,
+      lastContactMonth: 0,
+      advocacy: 0,
+      xvisorInterest: false,
+      xvisorStage: null,
+      candidateProgress: 0,
+      selfDirected: false,
     },
   };
 }

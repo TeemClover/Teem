@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#17384f">
     <meta name="description" content="X-VISOR QUEST เกมบริหาร pixel ที่พาคุณเริ่มจากตัวเอง ดูแลลูกค้าคนแรก และสร้างทีมที่เติบโตต่อได้">
     <title>X-VISOR QUEST</title>
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=4">
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=5">
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
@@ -53,8 +53,9 @@
       </section>
 
       <div class="rank-row">
-        <span class="rank-chip" id="hudRank">CANDIDATE</span>
+        <button class="rank-chip rank-chip--button" id="skillButton" type="button" aria-label="ดูความเก่งของคุณ"><span id="hudRank">CANDIDATE</span></button>
         <span class="rank-chip rank-chip--team" id="teamChip" hidden>ทีม 1 X-VISOR</span>
+        <button class="rank-chip rank-chip--button rank-chip--people" id="peopleButton" type="button" hidden>คนของคุณ <b id="peopleCount">0</b></button>
       </div>
 
       <section class="game-layout">
@@ -111,6 +112,6 @@
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div>
     <div class="sr-only" id="liveRegion" aria-live="polite"></div>
 
-    <script type="module" src="/xvisor/quest/game.js?v=4"></script>
+    <script type="module" src="/xvisor/quest/game.js?v=5"></script>
   </body>
 </html>

@@ -81,6 +81,25 @@ export const INCOME_RULE = Object.freeze({
   ]),
 });
 
+// Direct Mentoring is intentionally hidden from the income UI until an
+// official rule is supplied here. Keeping it as data prevents gameplay copy
+// from turning an unconfirmed draft into a commercial promise.
+export const DIRECT_MENTORING_RULE = Object.freeze({
+  id: "direct-mentoring",
+  rate: null,
+  effectiveDate: null,
+  source: null,
+  status: COMMERCIAL_STATUS.TO_CONFIRM,
+});
+
+// Ads are a pacing mechanic only. The budget is displayed separately from
+// income and never treated as an official media recommendation.
+export const ADS_GAMEPLAY_CONFIG = Object.freeze({
+  budgetPerCampaign: 1000,
+  effectiveDate: null,
+  status: COMMERCIAL_STATUS.SIMULATION,
+});
+
 export function getRetailTier(xv) {
   const amount = Math.max(0, Number(xv || 0));
   return INCOME_RULE.tiers.find((tier) => tier.max == null || amount <= tier.max)
