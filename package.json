@@ -8,7 +8,7 @@
     "test:first-class": "node --test first-class/first-class.test.mjs",
     "test:pet-brain": "node --test api/_lib/pet-brain.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs",
     "test:pet-wake": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs api/_lib/pet-runtime-wiring.test.mjs",
-    "test:xvisor": "node --test xvisor/quest/game-data.test.mjs",
+    "test:xvisor": "node --test xvisor/quest/game-data.test.mjs xvisor/quest/game-v9.test.mjs",
     "reset:teambook": "node scripts/reset-teambook.mjs"
   },
   "dependencies": {
