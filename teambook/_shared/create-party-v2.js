@@ -5,6 +5,7 @@
 import { memberAvatarValue } from './card-picker.js';
 import {
   getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET, myPartyCodes, refreshParty,
+  ownedCards, syncCollectionDebugCode,
 } from './store.js';
 import { avatarById } from './avatars.js';
 import { applyXircleCreateDefaults } from './xvisor-care.js';
@@ -43,6 +44,25 @@ function remember(result) {
 function onCreatePage() {
   if (typeof window === 'undefined' || typeof document === 'undefined') return false;
   return /^\/new\/?$/.test(location.pathname);
+}
+
+/* Older Collection debug cards could exist only in localStorage. The V1.2
+   create API correctly checks the canonical server collection, so choosing one
+   of those cards produced CARD_NOT_OWNED even though the Collection visibly
+   showed it. Repair only test-origin cards through the existing debug sync
+   route before submit; real cards still have to pass normal server ownership. */
+function isLegacyTestCard(profile, cardId) {
+  const wanted = String(cardId || '').toUpperCase();
+  if (!wanted) return false;
+  return ownedCards(profile).some(entry => (
+    String(entry.cardId || '').toUpperCase() === wanted
+    && /^(?:debug:|quest:code:)/.test(String(entry.acquiredFrom || ''))
+  ));
+}
+
+async function syncLegacyTestCards(profile, leadCardId, npcCardId) {
+  if (![leadCardId, npcCardId].some(cardId => isLegacyTestCard(profile, cardId))) return;
+  try { await syncCollectionDebugCode('getallitem'); } catch { /* create will report canonical ownership if repair is impossible */ }
 }
 
 /* The page's visible radio state is the last word at submit time. This closes
@@ -167,6 +187,11 @@ export async function createPartyV2(options = {}) {
     ? window.__xtyActivityOverride : null;
   const finalActivityId = activityOverride?.id || activityId;
   const finalActivity = activityOverride?.labelTh || activity;
+
+  /* A visible test card from an older build may predate server-side Collection
+     sync. Bring the debug collection into the canonical DB before the V1.2
+     ownership check, so selecting that visible card does not contradict the UI. */
+  await syncLegacyTestCards(profile, finalLeadCardId, finalNpcCardId);
 
   let response;
   try {
