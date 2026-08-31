@@ -90,6 +90,7 @@ function xtyArt(card) {
 }
 function setOverride(item) {
   window.__xtyCoverV2 = { coverType: item.coverType, leadCardId: item.leadCardId || null };
+  window.__teambookCoverV2 = window.__xtyCoverV2;
 }
 
 function install() {
@@ -100,6 +101,7 @@ function install() {
   const levelOne = Math.max(1, Number(profile?.level || 1)) <= 1;
   if (levelOne) {
     window.__xtyCoverV2 = { coverType: 'avatar', leadCardId: null };
+    window.__teambookCoverV2 = window.__xtyCoverV2;
     return;
   }
   host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
@@ -116,8 +118,14 @@ function install() {
 
   const unlockedCovers = xtyCards.length;
   const total = 1 + unlockedCovers;
-  let selected = groups.back[0];
-  let activeCategory = 'back';
+  const requestedLead = String(
+    window.__teambookCoverV2?.leadCardId
+      || window.__xtyCoverV2?.leadCardId
+      || new URLSearchParams(location.search).get('lead')
+      || ''
+  ).toUpperCase();
+  let selected = groups.xty.find(item => item.leadCardId === requestedLead) || groups.back[0];
+  let activeCategory = selected.category;
   setOverride(selected);
 
   const shell = document.createElement('div'); shell.className = 'xty-cover-picker';
@@ -169,6 +177,7 @@ function install() {
       option.addEventListener('click', () => {
         selected = item; setOverride(selected); syncCurrent(); library.hidden = true;
         open.textContent = unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ใช้ได้ตอนนี้';
+        document.querySelectorAll('.tb12-reuse').forEach(node => node.dispatchEvent(new CustomEvent('tb12refresh')));
       });
       grid.appendChild(option);
     }
