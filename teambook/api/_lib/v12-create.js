@@ -4,6 +4,7 @@ import {
 } from './core.js';
 import { normalizeVerificationMode } from './xty-rules.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
+import { cardCanBePartyCover } from '../../_shared/cover-eligibility.js';
 import { normalizeMemberLimit } from './member-limit.js';
 
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
@@ -102,7 +103,7 @@ export async function handleV12Create(req, res) {
     }
     if (level > 1 && requestedType === 'card') {
       const card = cardById(requestedLead);
-      if (!card?.eligibility?.partyCover) return sendJson(res, { ok: false, error: 'CARD_NOT_COVER_ELIGIBLE' }, 400);
+      if (!cardCanBePartyCover(card)) return sendJson(res, { ok: false, error: 'CARD_NOT_COVER_ELIGIBLE' }, 400);
       if (!(await ownsCard(sql, ids, requestedLead))) return sendJson(res, { ok: false, error: 'CARD_NOT_OWNED' }, 403);
     }
     if (requestedNpc) {
