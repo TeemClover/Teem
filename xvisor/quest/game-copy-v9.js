@@ -13,10 +13,45 @@ function fmt(value) {
   return Math.round(Number(value || 0)).toLocaleString('th-TH');
 }
 
+function selectedPerson(state) {
+  const people = [...(state.prospects || []), ...(state.customers || []), ...(state.team || [])];
+  return people.find((person) => person.id === state.selectedPersonId) || people[0] || null;
+}
+
+function nameTutorialActions(state, content) {
+  const target = selectedPerson(state);
+  if (!target?.name || !Array.isArray(content?.actions)) return content;
+  const name = target.name;
+  const labels = {
+    [EVENTS.TALK]: `💬 คุยกับ ${name}`,
+    [EVENTS.REQUEST_CONSENT]: `🛡️ ขอ consent จาก ${name}`,
+    [EVENTS.START_CUSTOMER_BASELINE]: `⚖️ ดู Baseline กับ ${name}`,
+    [EVENTS.OPEN_ROUTINE_BUILDER]: `🧩 วาง Routine ให้ ${name}`,
+    [EVENTS.MAKE_OFFER]: `📁 คุยแฟ้ม X กับ ${name}`,
+    [EVENTS.CLOSE_RECEIPT]: `❤️ ดูแล ${name} ต่อ`,
+    [EVENTS.START_ONBOARDING]: `🧭 Onboarding ${name} และนัดติดตาม`,
+    [EVENTS.FOLLOW_UP_CUSTOMER]: `❤️ ติดตาม ${name} ถึง Day 28`,
+    [EVENTS.START_CUSTOMER_REVIEW]: `📊 วัดซ้ำกับ ${name}`,
+    [EVENTS.SAVE_SUCCESS]: `✅ บันทึก Success Case · ${name}`,
+    [EVENTS.CONTINUE_CARE]: `❤️ ดูแล ${name} ต่อ`,
+    [EVENTS.EXPLAIN_XVISOR]: `✨ เล่าเส้นทาง X-VISOR ให้ ${name}`,
+    [EVENTS.PREPARE_G1]: `🌱 เตรียม ${name} เป็น X-VISOR`,
+    [EVENTS.START_WEEKLY]: `🎓 พา ${name} เข้า Xcademy`,
+  };
+  return {
+    ...content,
+    actions: content.actions.map((item) => labels[item.event] ? { ...item, label: labels[item.event] } : item),
+  };
+}
+
 function quick3(state) {
   return getBestNextActions(state, 3).map((item) => (
     item?.targetId && !item.id ? { ...item, id: item.targetId } : item
   ));
+}
+
+function finish(state, content) {
+  return nameTutorialActions(state, content);
 }
 
 export function getStageContent(state) {
@@ -25,7 +60,7 @@ export function getStageContent(state) {
   if (state.organizationMode) {
     const economy = calculateEconomy(state);
     const agg = state.organization?.aggregate || {};
-    return {
+    return finish(state, {
       ...base,
       scene: 'management_org',
       progress: 100,
@@ -42,12 +77,12 @@ export function getStageContent(state) {
       management: null,
       monthSummary: null,
       actions: [{ label: '▶ ผ่านไปอีก 1 เดือน', event: EVENTS.END_MONTH, icon: 'month' }],
-    };
+    });
   }
 
   if (state.campaignComplete && state.campaignScore?.locked && !state.organizationMode) {
     const score = state.campaignScore;
-    return {
+    return finish(state, {
       ...base,
       scene: 'season_review',
       progress: 100,
@@ -65,12 +100,12 @@ export function getStageContent(state) {
       management: null,
       monthSummary: null,
       actions: [{ label: '🏆 ดูผลและลงชื่อ High Score', ui: 'v9-finale', icon: 'certificate' }],
-    };
+    });
   }
 
   if (state.sceneReport?.kind === 'xgen-qualified' && !state.career?.xgenCertified) {
     const rolling = Number(state.sceneReport.rolling3TGV || getRolling3TGV(state));
-    return {
+    return finish(state, {
       ...base,
       scene: 'xgen',
       eyebrow: '🔓 XGEN QUALIFICATION',
@@ -84,11 +119,11 @@ export function getStageContent(state) {
         ['ขั้นถัดไป', 'สอบ XGEN เพื่อปลดล็อก ③'],
       ],
       actions: quick3(state),
-    };
+    });
   }
 
   if (state.sceneReport?.kind === 'xgen-exam') {
-    return {
+    return finish(state, {
       ...base,
       scene: 'xgen',
       eyebrow: '🎓 XGEN EXAM · PASSED',
@@ -97,16 +132,16 @@ export function getStageContent(state) {
       speaker: 'Xcademy',
       dialogue: '③ รายได้จากการบริหาร Organization ปลดล็อกแล้ว',
       actions: quick3(state),
-    };
+    });
   }
 
   if (state.stage === 'management' || state.sceneReport?.kind === 'the-xircle' || state.sceneReport?.kind === 'xircle-announcement' || state.sceneReport?.kind === 'xlead-exam') {
-    return { ...base, actions: quick3(state) };
+    return finish(state, { ...base, actions: quick3(state) });
   }
 
   if (Number(state.month || 0) > 0 && Number(state.month || 0) <= CAMPAIGN_MONTHS && base.management) {
-    return { ...base, actions: quick3(state) };
+    return finish(state, { ...base, actions: quick3(state) });
   }
 
-  return base;
+  return finish(state, base);
 }
