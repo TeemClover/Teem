@@ -1,5 +1,6 @@
-import { getProfile, availableOwnedCards } from './store.js';
-import { cardNameTh } from './cards.js';
+import { getProfile, ownedCards } from './store.js';
+import { cardById, cardNameTh } from './cards.js';
+import { cardCanBePartyCover } from './cover-eligibility.js';
 
 function escAttr(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({
@@ -102,7 +103,9 @@ function install() {
     return;
   }
   host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
-  const xtyCards = availableOwnedCards({ role: 'lead', profile });
+  const xtyCards = ownedCards(profile)
+    .map(entry => cardById(entry.cardId))
+    .filter(cardCanBePartyCover);
   const groups = {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
