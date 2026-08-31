@@ -7,6 +7,7 @@
 
 import { mountCardPicker } from './card-picker.js';
 import { cardById, cardDescriptorTh } from './cards.js';
+import { cardCanBePartyCover } from './cover-eligibility.js';
 import { availableOwnedCards, getParty, getProfile, ownedCards } from './store.js';
 
 const $ = id => document.getElementById(id);
@@ -160,7 +161,8 @@ function ownedCardsForBookRole(role) {
   return ownedCards(getProfile())
     .map(entry => cardById(entry.cardId))
     .filter(card => {
-      if (!card?.eligibility?.[role] || seen.has(card.cardId)) return false;
+      const eligible = role === 'lead' ? cardCanBePartyCover(card) : !!card?.eligibility?.[role];
+      if (!eligible || seen.has(card.cardId)) return false;
       seen.add(card.cardId);
       return true;
     });
