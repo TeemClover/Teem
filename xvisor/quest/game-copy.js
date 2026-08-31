@@ -1,9 +1,9 @@
 import {
   EVENTS,
-  ENERGY_COSTS,
   MAX_ENERGY,
   STAGES,
   calculateEconomy,
+  getBestNextActions,
   getCurrentExamQuestion,
 } from "./game-data.js";
 import { commercialStatusLabel, TUTORIAL_OFFER } from "./game-commercial-config.js";
@@ -106,7 +106,7 @@ const missionAction = (mission) => {
     routine: ["วาง Routine", EVENTS.OPEN_MANAGEMENT_ROUTINE, "plan", 0],
     offer: ["คุยแผน", EVENTS.OFFER_PROSPECT, "offer", 1],
     decision: [`ติดตาม ${name}`, EVENTS.FOLLOW_UP_DECISION, "care", 1],
-    reorder: [`ชวน ${name} ทำต่อ`, EVENTS.REORDER_CUSTOMER, "offer", 1],
+    reorder: [`📦 ต่อ RoutineX เดือนใหม่`, EVENTS.REORDER_CUSTOMER, "offer", 1],
     referral: [`ขอให้ ${name} แนะนำเพื่อน`, EVENTS.ASK_REFERRAL, "talk", 1],
     xvisor: [`ชวน ${name} รู้จัก X-VISOR`, EVENTS.INVITE_XVISOR, "academy", 1],
     "candidate-start": [`ชวน ${name} เรียน Xcademy`, EVENTS.START_CANDIDATE_XCADEMY, "academy", 1],
@@ -118,19 +118,27 @@ const missionAction = (mission) => {
   return value && action(value[0], value[1], { id: mission.targetId, icon: value[2], cost: value[3] });
 };
 
+const quickAction = (item) => {
+  if (item.mission) return missionAction(item.mission);
+  const icon = item.type === "open-house" ? "people" : item.type === "xcademy" ? "academy" : item.type === "skill" ? "skill" : item.type === "end-month" ? "month" : "talk";
+  return action(item.label, item.event, {
+    icon,
+    cost: item.cost,
+    id: item.targetId || item.payload?.id,
+    source: item.payload?.source,
+    skill: item.payload?.skill,
+  });
+};
+
 function managementContent(state) {
-  const actions = state.energy === 0
-    ? [action("สรุปเดือนและไปเดือนถัดไป", EVENTS.END_MONTH, { icon: "month" })]
-    : state.missions.map(missionAction).filter(Boolean).slice(0, 2);
-  if (state.energy > 0) actions.push(action("เปิดเมนูคน", null, { ui: "people", icon: "team" }));
-  if (state.energy > 0 && actions.length === 1) actions.unshift(action("เรียนเพิ่มให้เดือนหน้าคุ้มขึ้น", null, { ui: "skills", icon: "academy", cost: ENERGY_COSTS.skill }));
+  const actions = getBestNextActions(state, 3).map(quickAction).filter(Boolean);
   const teamReport = state.monthStats.teamActions > 0
     ? `ทีมทำเองแล้ว ${state.monthStats.teamActions} งานในเดือนนี้ โดยไม่ใช้พลังงานของคุณ`
     : null;
   return {
     scene: state.monthStats.weeklyDone ? "management_team" : "management",
     progress: Math.min(98, 76 + state.month), eyebrow: `MONTH ${state.month} · MANAGEMENT`,
-    title: state.energy === 0 ? "พลังงานเดือนนี้หมดแล้ว" : state.missions[0]?.label || "เลือกลงทุนกับคน งาน หรือ Skill",
+    title: state.energy === 0 ? "พลังงานเดือนนี้หมดแล้ว" : actions[0]?.label || "เลือกลงทุนกับคน งาน หรือ Skill",
     reason: state.energy === 0 ? "ดูว่าสิ่งที่คุณทำและสิ่งที่ทีมทำเองสร้างอะไร แล้วเริ่มเดือนใหม่ที่ ⚡ 28" : "Skill ทำให้งานเดิมคุ้มขึ้น ส่วนทีมที่ทำเองได้จะสร้างผลโดยไม่ใช้พลังงานของคุณ",
     speaker: "XOS · วันนี้ควรดูใครก่อน",
     dialogue: state.lastMessage || teamReport || "คน ลูกค้า และทีมมีจังหวะไม่เหมือนกัน ใช้พลังงานกับสิ่งสำคัญที่สุดก่อน",
@@ -144,7 +152,7 @@ function managementContent(state) {
         ...state.team.map((person) => person.personId || person.id),
       ]).size,
     },
-    actions: actions.slice(0, 3), energyEmpty: state.energy === 0,
+    actions, energyEmpty: state.energy === 0,
   };
 }
 
@@ -163,17 +171,17 @@ function eventSceneContent(state) {
       reason: "ทุกคนยังต้องคุย นัด ดู Baseline และรับการดูแลเหมือนเดิม",
       speaker: "Campaign report", dialogue: state.lastMessage, status: "ads",
     },
-    [STAGES.CENTER_RUNNING]: {
-      scene: "center_running", eyebrow: "CENTER · CASE REVIEW",
+    [STAGES.XCADEMY_RUNNING]: {
+      scene: "xcademy_running", eyebrow: "🎓 XCADEMY · BATCH TRAINING",
       title: "หลายคนได้ Next Action ในเวลาเดียวกัน",
-      reason: "Center ใช้ 2 ⚡ เพราะช่วย Team และ Candidate หลายคนพร้อมกัน",
-      speaker: "Center recap", dialogue: report.messages?.join(" · ") || state.lastMessage, status: "center",
+      reason: "Xcademy ใช้ 2 ⚡ และเปิดได้ 4 ครั้งต่อเดือน เพื่อช่วย OPP, Candidate และทีมพร้อมกัน",
+      speaker: report.room || "Xcademy recap", dialogue: report.messages?.join(" · ") || state.lastMessage, status: "xcademy",
     },
-    [STAGES.GOOD_LUCK_RUNNING]: {
-      scene: "goodluck_running", eyebrow: "GOOD LUCK · COMMUNITY",
-      title: "Community สร้างความสนใจและความมั่นใจ",
-      reason: "Good Luck ไม่ mint Sale แต่เปิด Referral, Interest และความรู้สึกว่าอยากไปต่อ",
-      speaker: "Good Luck recap", dialogue: report.messages?.join(" · ") || state.lastMessage, status: "goodluck",
+    [STAGES.OPEN_HOUSE_RUNNING]: {
+      scene: "open_house_running", eyebrow: "🏠 OPEN HOUSE · BATCH IMPACT",
+      title: `ชวน ${report.invited || 0} · มา ${report.attended || 0}`,
+      reason: "2 ⚡ เปลี่ยนคนทั้งกลุ่มให้มี Next Action โดยยังไม่แจก Sale อัตโนมัติ",
+      speaker: "Open House recap", dialogue: report.messages?.join(" · ") || state.lastMessage, status: "openhouse",
     },
     [STAGES.G1_CELEBRATION]: {
       scene: "first_g1", eyebrow: report.first ? "FIRST G1" : `X-VISOR คนที่ ${state.team.length}`,
@@ -182,12 +190,21 @@ function eventSceneContent(state) {
       speaker: report.name || "X-VISOR ใหม่", dialogue: "“ต่อไปอยากลองดูแลเคสของตัวเอง และกลับมา Review กับทีม”", status: "g1", milestone: report.first ? "FIRST G1 · เกมยังไปต่อ" : "TEAM GROWTH",
     },
     [STAGES.XLEAD_MILESTONE]: {
-      scene: "xlead", eyebrow: "LEADER PATH · GAME CRITERIA",
-      title: "คุณก้าวสู่ XLEAD ในเกม",
-      reason: "เกิดจาก Success Case, Active X-VISOR, Center, Team Activity และความสามารถในการพาคน—not ยอดอย่างเดียว",
-      speaker: "Organization map unlocked", dialogue: "จากนี้ Review ผู้นำรุ่นถัดไปและมองผลลัพธ์ทั้งทีม แทนการ micro ทุกคน", status: "xlead", milestone: "XLEAD",
+      scene: "xlead", eyebrow: "🌱 XLEAD · MONEY MOMENT",
+      title: "ปลดล็อก ② รายได้จากการพัฒนา G1",
+      reason: "X-VISOR ใน G1 ได้คอมเท่าไร คุณได้ 20% ของคอมที่เขาได้ โดยคิดแยกคนตาม tier",
+      speaker: "Organization map unlocked", dialogue: `ช่อง 2 เดือนนี้ ฿${Number(report.channel2 || calculateEconomy(state).channel2).toLocaleString("th-TH")} · ทีมทำไว้แล้วจึงเห็นผลทันที`, status: "xlead", milestone: "XLEAD · CHANNEL ② OPEN",
+    },
+    [STAGES.XGEN_MILESTONE]: {
+      scene: "xgen", eyebrow: "🏆 3,000,000 TGV · XGEN",
+      title: "คุณสร้างองค์กรถึง XGEN แล้ว",
+      reason: "Save ไม่ถูกรีเซ็ต และยังเล่น Endless ต่อเพื่อทำ Best TGV รายได้ และองค์กรให้โตขึ้นได้",
+      speaker: "X-VISOR QUEST", dialogue: `TGV ${Number(report.tgv || state.organization.tgv).toLocaleString("th-TH")} · รายได้รวม ฿${Number(report.totalIncome || state.economy.totalIncome).toLocaleString("th-TH")}`, status: "xgen", milestone: "XGEN · ENDLESS UNLOCKED",
+      actions: [action("เล่นต่อ ▶", EVENTS.START_NEXT_MONTH, { icon: "play" })],
     },
   };
+  scenes[STAGES.CENTER_RUNNING] = scenes[STAGES.XCADEMY_RUNNING];
+  scenes[STAGES.GOOD_LUCK_RUNNING] = scenes[STAGES.OPEN_HOUSE_RUNNING];
   return { progress: Math.min(99, 78 + state.month), actions: [], ...scenes[state.stage] };
 }
 
@@ -198,7 +215,7 @@ export function getStageContent(state) {
   if (state.stage === STAGES.M1_ROUTINE) return routineContent(state);
   if (state.stage === STAGES.MANAGEMENT_ROUTINE) return routineContent(state, true);
   if (state.stage === STAGES.MANAGEMENT) return managementContent(state);
-  if ([STAGES.CONTENT_RUNNING, STAGES.ADS_RUNNING, STAGES.CENTER_RUNNING, STAGES.GOOD_LUCK_RUNNING, STAGES.G1_CELEBRATION, STAGES.XLEAD_MILESTONE].includes(state.stage)) return eventSceneContent(state);
+  if ([STAGES.CONTENT_RUNNING, STAGES.ADS_RUNNING, STAGES.XCADEMY_RUNNING, STAGES.OPEN_HOUSE_RUNNING, STAGES.CENTER_RUNNING, STAGES.GOOD_LUCK_RUNNING, STAGES.G1_CELEBRATION, STAGES.XLEAD_MILESTONE, STAGES.XGEN_MILESTONE].includes(state.stage)) return eventSceneContent(state);
 
   const person = selectedPerson(state);
   const name = person?.name || "คนแรก";
@@ -396,11 +413,11 @@ export function getStageContent(state) {
       scene: "first_g1", progress: 89, eyebrow: "FIRST G1", title: "ทีมของคุณเริ่มต้นแล้ว — เกมยังไม่จบ",
       reason: `${name}เป็น X-VISOR ใหม่ แต่ยังมีลูกค้า 0 และยังต้องฝึกจากเคสจริง`, speaker: name,
       dialogue: "“เรายังไม่มั่นใจว่าจะเริ่มคุยกับใครก่อน”", milestone: "FIRST G1 · เกมยังไปต่อ",
-      actions: [action("พาทีมเข้า Center", EVENTS.START_WEEKLY, { icon: "weekly", cost: 2 })],
+      actions: [action("พาทีมเข้า Xcademy", EVENTS.START_WEEKLY, { icon: "weekly", cost: 2 })],
     },
     [STAGES.M1_WEEKLY_RUNNING]: {
-      scene: "weekly", progress: 90, eyebrow: "CENTER", title: "ช่วยทุกคนเลือก Next Action",
-      reason: "Center ช่วยหลายคนพร้อมกันและทำให้แต่ละคนเห็นเคสถัดไป", speaker: "Center Case Table",
+      scene: "weekly", progress: 90, eyebrow: "XCADEMY · TRAINING", title: "ช่วยทุกคนเลือก Next Action",
+      reason: "Xcademy ช่วยหลายคนพร้อมกันและทำให้แต่ละคนเห็นเคสถัดไป", speaker: "Xcademy Case Table",
       dialogue: "กำลังทบทวนคนที่ควรคุย เคสที่ควรติดตาม และสิ่งที่แต่ละคนจะทำต่อ…", status: "weekly", actions: [],
     },
     [STAGES.M1_TEAM_STARTED]: {
@@ -412,11 +429,11 @@ export function getStageContent(state) {
     [STAGES.MONTH_CLOSED]: {
       scene: "month_closed", progress: Math.min(98, 75 + state.month), eyebrow: `ปิดรอบ · MONTH ${state.month}`, title: "สรุปคุณค่าที่สร้างในเดือนนี้",
       reason: "รายได้ประมาณถูกปิดรอบและเพิ่มเข้าเงินรับแล้วในแบบจำลองเกม", speaker: "MONTH SUMMARY",
-      dialogue: state.month < 24 ? "เดือนใหม่จะรีเซ็ตพลังงานเป็น ⚡ 28 / 28" : "ครบ 24 เดือนแล้ว",
-      monthSummary: state.monthSummaries.at(-1), actions: [action(state.month < 24 ? `เริ่มเดือน ${state.month + 1}` : "ดู Season Review", EVENTS.START_NEXT_MONTH, { icon: "month" })],
+      dialogue: "เดือนใหม่จะรีเซ็ตพลังงานเป็น ⚡ 28 / 28 แต่ฐานลูกค้า ทีม รายได้รวม และ Best TGV ยังอยู่",
+      monthSummary: state.monthSummaries.at(-1), actions: [action(`▶ เริ่มเดือน ${state.month + 1}`, EVENTS.START_NEXT_MONTH, { icon: "month" })],
     },
     [STAGES.SEASON_REVIEW]: {
-      scene: "season_review", progress: 100, eyebrow: "24-MONTH REVIEW", title: "องค์กรโตจากคนที่ทำได้เอง",
+      scene: "season_review", progress: 100, eyebrow: "ENDLESS ORGANIZATION", title: "องค์กรโตจากคนที่ทำได้เอง",
       reason: "Reach · Sell · Care · Retain · Mentor · Build Systems — ไม่มีรายได้เพราะมีชื่ออยู่ใต้ทีมเฉย ๆ", speaker: "X-VISOR QUEST",
       dialogue: "ช่วงแรกคุณทำเอง ต่อมาคุณทำให้คนอื่นทำได้ และรายได้จึงโตตามคุณค่าที่ทีมสร้างจริง", actions: [],
     },
@@ -425,7 +442,7 @@ export function getStageContent(state) {
 }
 
 export const TERM_HELP = Object.freeze({
-  XV: "หน่วยยอดในเกมที่ใช้คำนวณขั้นรายได้ตาม config ไม่ใช่เงินบาท และค่าปัจจุบันเป็นแบบจำลองจนกว่าจะยืนยันเชิงพาณิชย์",
+  XV: "หน่วย Volume ของเกม ไม่ใช่เงินบาท ช่อง 1 คิดจากยอดขายบาท ส่วน TGV รวม XV ของทั้งองค์กรในเดือนนี้",
   ENERGY: `พลังงานคือเวลาที่คุณลงทุนกับคน งาน หรือ Skill ในเดือนนี้ สูงสุด ${MAX_ENERGY} ทีมที่ทำเองได้จะสร้างผลเพิ่มโดยไม่หักพลังงานของคุณ`,
   XIRCLE: "Data → Meaning → Next Action: Band ช่วยเห็นสิ่งที่ทำ ส่วน Scale ช่วยเห็นสิ่งที่ร่างกายตอบ",
   XOS: "รายการช่วยจัดลำดับว่าวันนี้ควรดูใครก่อน แต่ไม่ทำงานแทนผู้เล่น",

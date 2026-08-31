@@ -58,16 +58,24 @@ export const PRODUCT_CONFIG = Object.freeze({
   }),
 });
 
-// These placeholder values preserve a playable economy while the commercial
-// plan is being reconfirmed. TO_CONFIRM must always be visible beside them;
-// they are not an official price, qualification, or income promise.
 export const TUTORIAL_OFFER = Object.freeze({
-  id: "routinex-game-simulation",
-  name: "RoutineX 28 วัน",
+  id: "routinex-monthly",
+  name: "RoutineX",
   price: 7490,
   xv: 7000,
+  cycle: "monthly",
   effectiveDate: null,
-  status: COMMERCIAL_STATUS.TO_CONFIRM,
+  status: COMMERCIAL_STATUS.SIMULATION,
+});
+
+export const XIRCLE_STARTER = Object.freeze({
+  id: "xircle-band-scale",
+  name: "Xircle Band + Scale",
+  price: 4990,
+  xv: 2495,
+  cycle: "first_customer_only",
+  effectiveDate: null,
+  status: COMMERCIAL_STATUS.SIMULATION,
 });
 
 export const INCOME_RULE = Object.freeze({
@@ -81,15 +89,28 @@ export const INCOME_RULE = Object.freeze({
   ]),
 });
 
-// Direct Mentoring is intentionally hidden from the income UI until an
-// official rule is supplied here. Keeping it as data prevents gameplay copy
-// from turning an unconfirmed draft into a commercial promise.
 export const DIRECT_MENTORING_RULE = Object.freeze({
   id: "direct-mentoring",
-  rate: null,
+  rate: 0.20,
   effectiveDate: null,
-  source: null,
-  status: COMMERCIAL_STATUS.TO_CONFIRM,
+  source: "XVISOR_QUEST_PATCH_V7_3M",
+  status: COMMERCIAL_STATUS.SIMULATION,
+});
+
+export const ORGANIZATION_INCOME_RULE = Object.freeze({
+  id: "organization-income",
+  rate: 0.05,
+  effectiveDate: null,
+  source: "XVISOR_QUEST_PATCH_V7_3M",
+  status: COMMERCIAL_STATUS.SIMULATION,
+});
+
+export const BREAKAWAY_INCOME_RULE = Object.freeze({
+  id: "breakaway-income",
+  rate: 0.0175,
+  effectiveDate: null,
+  source: "XVISOR_QUEST_PATCH_V7_3M",
+  status: COMMERCIAL_STATUS.SIMULATION,
 });
 
 // Ads are a pacing mechanic only. The budget is displayed separately from
@@ -100,8 +121,8 @@ export const ADS_GAMEPLAY_CONFIG = Object.freeze({
   status: COMMERCIAL_STATUS.SIMULATION,
 });
 
-export function getRetailTier(xv) {
-  const amount = Math.max(0, Number(xv || 0));
+export function getRetailTier(personalSalesBaht) {
+  const amount = Math.max(0, Number(personalSalesBaht || 0));
   return INCOME_RULE.tiers.find((tier) => tier.max == null || amount <= tier.max)
     || INCOME_RULE.tiers[0];
 }
