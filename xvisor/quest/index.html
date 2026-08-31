@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#17384f">
     <meta name="description" content="X-VISOR QUEST เกมบริหาร pixel ที่พาคุณเริ่มจากตัวเอง ดูแลลูกค้าคนแรก และสร้างทีมที่เติบโตต่อได้">
     <title>X-VISOR QUEST</title>
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=5">
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=7">
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
@@ -43,11 +43,11 @@
           <strong id="hudCustomers">0 คน</strong>
         </div>
         <button class="status-item status-item--button" id="hudXVButton" type="button" aria-label="ดูความหมายของ XV">
-          <span>XV เดือนนี้ <b aria-hidden="true">?</b></span>
+          <span id="hudVolumeLabel">XV เดือนนี้ <b aria-hidden="true">?</b></span>
           <strong id="hudXV">0 XV</strong>
         </button>
         <div class="status-item status-item--income">
-          <span>รายได้ประมาณ</span>
+          <span>รายได้รวม</span>
           <strong id="hudIncome">฿0</strong>
         </div>
       </section>
@@ -112,6 +112,6 @@
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div>
     <div class="sr-only" id="liveRegion" aria-live="polite"></div>
 
-    <script type="module" src="/xvisor/quest/game.js?v=5"></script>
+    <script type="module" src="/xvisor/quest/game.js?v=7"></script>
   </body>
 </html>

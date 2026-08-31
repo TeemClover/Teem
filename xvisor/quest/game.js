@@ -1,11 +1,12 @@
 import {
+  CUSTOMER_STATES,
   EVENTS,
   ENERGY_COSTS,
   MAX_ENERGY,
   PRODUCT_CONFIG,
-  ROUTINEX,
   SAVE_KEY,
   STAGES,
+  XGEN_TGV_TARGET,
   calculateEconomy,
   canDispatch,
   isExamStage,
@@ -19,7 +20,6 @@ import {
   PLAYER_UNLOCKS,
   SKILL_DEFINITIONS,
   SKILL_IDS,
-  directMentoringAvailable,
   getSkillBenefit,
   getSkillSnapshot,
   getXleadProgress,
@@ -113,6 +113,7 @@ function playForEvent(event, payload = {}) {
     [EVENTS.MAKE_OFFER]: "sale", [EVENTS.OFFER_PROSPECT]: "sale", [EVENTS.REORDER_CUSTOMER]: "reorder",
     [EVENTS.START_WEEKLY]: "meeting", [EVENTS.RUN_WEEKLY]: "meeting", [EVENTS.WEEKLY_COMPLETE]: "meetingDone",
     [EVENTS.RUN_MONTHLY_EVENT]: "event", [EVENTS.END_MONTH]: "monthClose", [EVENTS.START_NEXT_MONTH]: "month",
+    [EVENTS.RUN_XCADEMY]: "meeting", [EVENTS.RUN_OPEN_HOUSE]: "event",
     [EVENTS.RUN_CENTER]: "meeting", [EVENTS.RUN_GOOD_LUCK]: "event", [EVENTS.TRAIN_SKILL]: "knowledge",
     [EVENTS.CREATE_LEAD]: payload?.source === "content" || payload?.source === "ads" ? "notify" : "confirm",
     [EVENTS.CERTIFY_CANDIDATE]: "certificate", [EVENTS.SCENE_COMPLETE]: "meetingDone",
@@ -211,6 +212,8 @@ function scheduleAutomaticTransition() {
     [STAGES.M1_WEEKLY_RUNNING]: [EVENTS.WEEKLY_COMPLETE, reducedMotion.matches ? 160 : 2100],
     [STAGES.CONTENT_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 180 : 2100],
     [STAGES.ADS_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 180 : 2300],
+    [STAGES.XCADEMY_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2600],
+    [STAGES.OPEN_HOUSE_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 220 : 2900],
     [STAGES.CENTER_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2600],
     [STAGES.GOOD_LUCK_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 220 : 2900],
     [STAGES.G1_CELEBRATION]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2350],
@@ -233,18 +236,23 @@ function renderHud() {
   const preseason = state.month === 0 && !exam && state.stage !== STAGES.CERTIFIED;
   const visibleEnergy = state.stage === STAGES.PRE_MONTAGE ? montageVisualDay : state.energy;
   $("#hudPhaseLabel").textContent = preseason ? "ช่วงการเรียนรู้" : exam ? "สถานที่" : "เวลาในเกม";
-  $("#hudMonth").textContent = preseason ? `DAY ${state.preseason.day} / 28` : exam ? "EXAM ROOM" : state.stage === STAGES.CERTIFIED ? "CERTIFIED" : `เดือน ${state.month} / 24`;
+  $("#hudMonth").textContent = preseason ? `DAY ${state.preseason.day} / 28` : exam ? "EXAM ROOM" : state.stage === STAGES.CERTIFIED ? "CERTIFIED" : `เดือน ${state.month}`;
   $("#hudEnergyLabel").innerHTML = `${preseason ? "ความพร้อม 28 วัน" : "พลังงานในเดือนนี้"} <b aria-hidden="true">?</b>`;
   $("#hudEnergy").textContent = `⚡ ${visibleEnergy} / ${MAX_ENERGY}`;
   $("#energyMeter").style.setProperty("--energy", `${(visibleEnergy / MAX_ENERGY) * 100}%`);
   const customerCount = state.customers.length + state.prospects.filter((person) => person.activePlan).length;
   $("#hudCustomers").textContent = `${customerCount} คน`;
-  $("#hudXV").textContent = `${formatNumber(economy.personalXV)} XV`;
-  $("#hudIncome").textContent = formatBaht(economy.projectedIncome);
+  const organizationVisible = state.milestones.firstG1 || state.team.length > 0;
+  $("#hudVolumeLabel").innerHTML = `${organizationVisible ? "🏙️ TGV เดือนนี้" : "XV เดือนนี้"} <b aria-hidden="true">?</b>`;
+  $("#hudXV").textContent = organizationVisible
+    ? `${formatNumber(economy.tgv)} / ${formatNumber(XGEN_TGV_TARGET)}`
+    : `${formatNumber(economy.personalXV)} XV`;
+  $("#hudIncome").textContent = formatBaht(economy.lifetimeIncome);
   const skillSnapshot = getSkillSnapshot(state);
-  $("#hudRank").textContent = state.rank === "candidate" ? "CANDIDATE" : `⭐ ${state.rank === "xlead" ? "XLEAD" : "X-VISOR"} Lv.${skillSnapshot.playerLevel}`;
+  const rankLabel = state.rank === "xgen" ? "XGEN" : state.rank === "xlead" ? "XLEAD" : "X-VISOR";
+  $("#hudRank").textContent = state.rank === "candidate" ? "CANDIDATE" : `⭐ ${rankLabel} Lv.${skillSnapshot.playerLevel}`;
   $("#teamChip").hidden = !state.milestones.firstG1;
-  $("#teamChip").textContent = `ทีม ${state.team.length} X-VISOR`;
+  $("#teamChip").textContent = `ทีม ${state.team.length} X-VISOR · ${state.organization.xleads?.length || 0} XLEAD`;
   $("#peopleButton").hidden = state.month < 1;
   $("#peopleCount").textContent = String(uniquePeopleCount());
   $("#skillButton").disabled = state.rank === "candidate";
@@ -325,12 +333,13 @@ function renderReceipt(container, transaction) {
   if (!transaction) return;
   const receipt = document.createElement("div");
   receipt.className = "receipt receipt--inline";
+  const itemRows = (transaction.items || []).map((item) => `<div><span>${escapeHtml(item.name)}${item.cycle === "monthly" ? " · รายเดือน" : " · ครั้งแรกครั้งเดียว"}</span><strong>${formatBaht(item.price)} · ${formatNumber(item.xv)} XV</strong></div>`).join("");
   receipt.innerHTML = `
-    <div><span>ยอดสินค้า</span><strong>${formatBaht(transaction.price)}</strong></div>
-    <div><span>XV ที่เพิ่ม</span><strong>+${formatNumber(transaction.xv)} XV</strong></div>
+    ${itemRows}
+    <div class="receipt__total"><span>ยอดรวม</span><strong>${formatBaht(transaction.price)} · ${formatNumber(transaction.xv)} XV</strong></div>
     <div><span>รายได้ก่อนรายการนี้</span><strong>${formatBaht(transaction.incomeBefore)}</strong></div>
     <div><span>รายได้เพิ่มจากรายการนี้</span><strong>+${formatBaht(transaction.incomeDelta)}</strong></div>
-    <div class="receipt__total"><span>รายได้ประมาณเดือนนี้</span><strong>${formatBaht(transaction.incomeAfter)}</strong></div>
+    <div><span>① รายได้เดือนนี้หลังรายการ</span><strong>${formatBaht(transaction.incomeAfter)}</strong></div>
     <small>${escapeHtml(commercialStatusLabel(transaction.status))} · ไม่ใช่การรับประกันรายได้จริง</small>`;
   container.appendChild(receipt);
 }
@@ -356,13 +365,13 @@ function renderManagement(container, data) {
   container.appendChild(missions);
   const board = document.createElement("div");
   board.className = "management-board";
-  [["กำลังคุย", data.prospects.length], ["ลูกค้า", data.customers.length], ["ทีม", data.team.length], ["พลังงาน", `⚡ ${state.energy}`]].forEach(([label, value]) => {
+  [["🏙️ TGV", formatNumber(data.economy.tgv)], ["ลูกค้า", data.customers.length], ["🌱 ทีม", data.team.length], ["พลังงาน", `⚡ ${state.energy}`]].forEach(([label, value]) => {
     board.insertAdjacentHTML("beforeend", `<div><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`);
   });
   container.appendChild(board);
   const tools = document.createElement("div");
   tools.className = "management-tools";
-  tools.innerHTML = `<button type="button" data-open-work="true">เติบโตและพาทีม</button><button type="button" data-open-skills="true">ความเก่งของคุณ · Lv.${data.skills.playerLevel}</button>`;
+  tools.innerHTML = `<button type="button" data-open-work="true">🧭 เปิดแผนงาน</button><button type="button" data-open-skills="true">⭐ Skill · Lv.${data.skills.playerLevel}</button>`;
   container.appendChild(tools);
   if (data.stats.teamOutput?.length) {
     const teamOutput = document.createElement("section");
@@ -370,11 +379,13 @@ function renderManagement(container, data) {
     teamOutput.innerHTML = `<div class="panel-heading"><strong>ทีมทำเองในเดือนนี้</strong><span>${data.stats.teamActions} งาน</span></div>`;
     data.stats.teamOutput.slice(0, 4).forEach((member) => {
       const outcomes = [
+        member.selfUse ? "ต่อ RoutineX เอง" : "",
         member.newPeople ? `คนใหม่ ${member.newPeople}` : "",
         member.followups ? `ติดตาม ${member.followups}` : "",
         member.customers ? `ลูกค้าใหม่ ${member.customers}` : "",
-        member.sales ? `Sale ${member.sales}` : "",
-        member.reorders ? `ทำต่อ ${member.reorders}` : "",
+        member.newStarts ? `ลูกค้าเริ่มใหม่ ${member.newStarts}` : "",
+        member.reorders ? `Repeat ${member.reorders}` : "",
+        member.newXvisors ? `X-VISOR ใหม่ ${member.newXvisors}` : "",
         member.referrals ? `Referral ${member.referrals}` : "",
       ].filter(Boolean).join(" · ") || "ลงมือทำ Next Action";
       teamOutput.insertAdjacentHTML("beforeend", `<div><strong>${escapeHtml(member.name)}</strong><span>${escapeHtml(outcomes)}</span></div>`);
@@ -397,12 +408,16 @@ function renderMonthSummary(container, summary) {
   const previous = Number(summary.previousIncome || 0);
   const delta = Number(summary.projectedIncome || 0) - previous;
   const comparison = previous > 0 ? `${delta >= 0 ? "↑" : "↓"} ${formatBaht(Math.abs(delta))} จากเดือนก่อน` : "เดือนแรกที่มีข้อมูลเปรียบเทียบ";
+  const priorBestIncome = Math.max(0, ...state.monthSummaries.slice(0, -1).map((item) => Number(item.projectedIncome || 0)));
+  const incomeRecord = Number(summary.projectedIncome || 0) > priorBestIncome;
+  const tgvBefore = Number(state.monthSummaries.at(-2)?.tgv || 0);
+  const tgvGrowth = tgvBefore ? Math.round(((Number(summary.tgv || 0) - tgvBefore) / tgvBefore) * 100) : null;
   const sections = [
-    ["คน", [["คนใหม่", summary.newPeople], ["นัดหมาย", summary.appointments], ["ลูกค้าใหม่", summary.newCustomers], ["Referral", summary.referrals]]],
-    ["ผลลัพธ์", [["ติดตาม", summary.customersCared], ["วัดซ้ำ", summary.remeasures], ["Success Case", summary.successCases], ["ทำต่อ", summary.reorders]]],
-    ["ทีม", [["Candidate", summary.candidates], ["X-VISOR ใหม่", summary.newXvisors], ["ลูกค้าจากทีม", summary.teamCustomers], ["Sale จากทีม", summary.teamSales]]],
-    ["รายได้", [["ยอดสินค้า", formatBaht(summary.productSales)], ["XV", formatNumber(summary.xv)], ["ประมาณเดือนนี้", formatBaht(summary.projectedIncome)], ["เงินรับแล้วรวม", formatBaht(summary.receivedIncomeTotal)]]],
-    ["แรงทวีคูณ", [["คุณทำเอง", `${summary.leverage?.player || 0} งาน`], ["ทีมทำเอง", `${summary.leverage?.team || 0} งาน`], ["ที่มา", `Sale ${summary.sources?.newSales || 0} · ทำต่อ ${summary.sources?.reorders || 0} · Team ${summary.sources?.teamSales || 0}`], ["เทียบเดือนก่อน", comparison]]],
+    ["💰 เงิน", [["เดือนนี้", formatBaht(summary.projectedIncome)], ["รวม", formatBaht(summary.receivedIncomeTotal)], ["สถานะ", incomeRecord ? "NEW RECORD" : comparison]]],
+    ["🏙️ TGV", [["เดือนนี้", `${formatNumber(summary.tgv)} / ${formatNumber(XGEN_TGV_TARGET)}`], ["เทียบเดือนก่อน", tgvGrowth == null ? "เดือนแรก" : `${tgvGrowth >= 0 ? "↑" : "↓"} ${Math.abs(tgvGrowth)}%`]]],
+    ["👥 ลูกค้า", [["ใหม่", summary.newCustomers], ["ต่อ Routine", summary.reorders], ["ซื้อเอง", summary.autoReorders || 0]]],
+    ["🌱 ทีม", [["X-VISOR", summary.team], ["XLEAD", summary.xleads || 0], ["ทีมทำเอง", `${summary.leverage?.team || 0} งาน`]]],
+    ["⭐ ไฮไลต์", [["Candidate ใหม่", summary.candidates + summary.teamCandidates], ["ทีมสร้างรุ่นถัดไป", summary.downstreamXvisors || 0], ["Open House", summary.openHouseDone ? "เกิด batch impact" : "ไว้เดือนหน้า"]]],
   ];
   const wrap = document.createElement("div");
   wrap.className = "month-summary-sections";
@@ -455,6 +470,8 @@ function buildActionButton(item, index) {
   button.dataset.actionIndex = String(index);
   if (item.event) button.dataset.event = item.event;
   if (item.id) button.dataset.id = item.id;
+  if (item.source) button.dataset.source = item.source;
+  if (item.skill) button.dataset.skill = item.skill;
   if (item.value) button.dataset.value = item.value;
   if (item.ui) button.dataset.ui = item.ui;
   button.disabled = Boolean(item.disabled || (item.cost && state.month >= 1 && item.cost > state.energy));
@@ -477,9 +494,9 @@ function renderActions() {
     scan: "ข้อมูลกำลังขึ้นทีละค่า", montage: `DAY ${montageVisualDay} · ENERGY +1`,
     examTransit: "กำลังเดินเข้าห้องสอบและนั่งประจำโต๊ะ", ceremony: "กำลังรับใบรับรอง",
     weekly: "ทีมกำลังเลือก Next Action", content: "กำลังโพสต์และรอ notification",
-    ads: "Campaign กำลังสร้าง Interest", center: "ทีมกำลัง Review Case",
-    goodluck: "Community กำลังแลกเปลี่ยน Case", g1: "ต้อนรับ X-VISOR คนใหม่",
-    xlead: "กำลังเปิด Team Zone และ Organization Map",
+    ads: "Campaign กำลังสร้าง Interest", xcademy: "Xcademy กำลังช่วยหลายคนพร้อมกัน",
+    openhouse: "Open House กำลังสรุป batch impact", g1: "ต้อนรับ X-VISOR คนใหม่",
+    xlead: "กำลังเปิดช่อง ② และ Organization Map", xgen: "ปลดล็อก Endless Mode แล้ว",
   };
   $("#waitingState").textContent = waiting[content.status] || "กำลังดำเนินการ…";
 }
@@ -497,9 +514,10 @@ function render() {
   const exam = isExamStage(state.stage);
   $("#worldLabel").textContent = exam
     ? "XCADEMY EXAM ROOM"
-    : state.stage === STAGES.GOOD_LUCK_RUNNING ? "GOOD LUCK COMMUNITY"
-      : state.stage === STAGES.CENTER_RUNNING ? "CLOVER CENTER"
-        : state.rank === "xlead" ? "XLEAD TEAM ZONE"
+    : [STAGES.OPEN_HOUSE_RUNNING, STAGES.GOOD_LUCK_RUNNING].includes(state.stage) ? "OPEN HOUSE"
+      : [STAGES.XCADEMY_RUNNING, STAGES.CENTER_RUNNING].includes(state.stage) ? "XCADEMY"
+        : state.rank === "xgen" ? "XGEN ORGANIZATION"
+          : state.rank === "xlead" ? "XLEAD TEAM ZONE"
           : state.month >= 2 ? "CLOVER MANAGEMENT HUB" : state.month === 1 ? "CLOVER NEIGHBORHOOD" : "PRE-SEASON ROOM";
   if (lastRenderedStage !== state.stage) {
     $("#worldFrame").classList.remove("is-changing");
@@ -532,20 +550,20 @@ function showReceipt(transaction) {
 
 function showIncome() {
   const economy = calculateEconomy(state);
-  const previous = Number(state.monthSummaries.at(-1)?.projectedIncome || 0);
-  const delta = economy.projectedIncome - previous;
-  const comparison = previous > 0 ? `${delta >= 0 ? "↑" : "↓"} ${formatBaht(Math.abs(delta))}` : "ยังไม่มีเดือนก่อน";
-  showDialog("income", `<div class="dialog-kicker">รายได้ประมาณเดือนนี้ · ${escapeHtml(commercialStatusLabel(economy.status))}</div>
-    <h2>${formatBaht(economy.projectedIncome)}</h2>
-    <div class="income-sections"><section><div class="income-heading"><span>คุณขายเอง</span><b>${formatBaht(economy.activeRetail)}</b></div>
-      <dl><div><dt>ยอดสินค้าในเกม</dt><dd>${state.economy.sets} รายการ · ${formatBaht(economy.productSales)}</dd></div>
-      <div><dt>XV เดือนนี้</dt><dd>${formatNumber(economy.personalXV)} XV</dd></div><div><dt>ขั้นจำลอง</dt><dd>${escapeHtml(economy.tier.label)}</dd></div></dl></section>
-      <section><div class="income-heading"><span>ผลลัพธ์จากทีม</span><b>${state.monthStats.teamSales} Sale</b></div><p>ยอดสินค้าทีม ${formatBaht(economy.teamProductSales)} · ${formatNumber(economy.teamXV)} XV</p><p>รายได้จากทีมยังเป็น ฿0 จนกว่ากติกาเชิงพาณิชย์จะยืนยันใน config</p></section></div>
-    <div class="income-source-grid"><div><span>Sale ใหม่</span><b>${state.monthStats.sales}</b></div><div><span>ทำต่อ</span><b>${state.monthStats.reorders}</b></div><div><span>Sale จากทีม</span><b>${state.monthStats.teamSales}</b></div><div><span>เทียบเดือนก่อน</span><b>${comparison}</b></div></div>
-    <div class="income-total"><span>เงินรับแล้วจากรอบที่ปิด</span><strong>${formatBaht(economy.receivedIncome)}</strong></div>
-    ${directMentoringAvailable() ? `<p class="dialog-note">Direct Mentoring เปิดตามกติกาที่ได้รับการยืนยันแล้ว</p>` : ""}
-    <p class="dialog-note">Commercial numbers ปัจจุบันเป็น TO_CONFIRM; SKU, rate และ effective date เก็บใน config เดียว ไม่ใช่การรับประกันรายได้</p>
-    <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`);
+  const mentoringRows = economy.mentoringBreakdown.slice(0, 6).map((item) => `<li><span>${escapeHtml(item.name)} · คอม ${formatBaht(item.commission)}</span><b>${formatBaht(item.mentorIncome)}</b></li>`).join("");
+  const history = [...economy.incomeHistory].reverse().slice(0, 12).map((item) => `<tr><th>เดือน ${item.month}</th><td>${formatBaht(item.channel1)}</td><td>${formatBaht(item.channel2)}</td><td>${formatBaht(item.channel3)}</td><td>${formatBaht(item.channel4)}</td><td><b>${formatBaht(item.total)}</b></td></tr>`).join("");
+  showDialog("income", `<div class="dialog-kicker">REVENUE STACK · ${escapeHtml(commercialStatusLabel(economy.status))}</div>
+    <h2>เดือนนี้ ${formatBaht(economy.projectedIncome)} · รวม ${formatBaht(economy.lifetimeIncome)}</h2>
+    <div class="income-sections">
+      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${formatBaht(economy.channel1)}</b></div><p>ยอดขาย ${formatBaht(economy.personalSalesBaht)} × ${escapeHtml(economy.tier.label)} · XV แยกเป็น ${formatNumber(economy.personalXV)}</p></section>
+      <section><div class="income-heading"><span>② พัฒนา G1 ${economy.mentoringUnlocked ? "" : "· เปิดเมื่อ XLEAD"}</span><b>${economy.mentoringUnlocked ? formatBaht(economy.channel2) : "🔒"}</b></div><p>20% ของ commission ที่ G1 แต่ละคนได้ คิดแยก tier รายคน</p>${economy.mentoringUnlocked ? `<ul class="income-breakdown">${mentoringRows || "<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>"}</ul>` : ""}</section>
+      <section><div class="income-heading"><span>③ บริหารองค์กร ${state.organization.xgen ? "" : "· เปิดที่ XGEN"}</span><b>${state.organization.xgen ? formatBaht(economy.channel3) : "🔒"}</b></div><p>5% ของ TGV · แบบจำลองจากโครงสร้างแผนปัจจุบัน</p></section>
+      <section><div class="income-heading"><span>④ ขยายองค์กร ${economy.breakawayVolume ? "" : "· รอ breakaway"}</span><b>${economy.breakawayVolume ? formatBaht(economy.channel4) : "🔒"}</b></div><p>1.75% ของ breakaway volume · แบบจำลองจากโครงสร้างแผนปัจจุบัน</p></section>
+    </div>
+    <div class="income-total"><span>รายได้รวมจากเดือนที่ปิดแล้ว</span><strong>${formatBaht(economy.totalIncome)}</strong></div>
+    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history ? `<div class="table-scroll"><table><thead><tr><th>เดือน</th><th>①</th><th>②</th><th>③</th><th>④</th><th>รวม</th></tr></thead><tbody>${history}</tbody></table></div>` : "<p>ปิดเดือนแรกเพื่อเริ่มเก็บ history</p>"}</section>
+    <p class="dialog-note">ตัวเลขเชิงพาณิชย์ทั้งหมดอ่านจาก config ของเกมและแสดงสถานะจำลอง/TO_CONFIRM ไม่ใช่การรับประกันรายได้จริง</p>
+    <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`, { kind: "wide" });
 }
 
 function workButton(label, event, options = {}) {
@@ -555,7 +573,7 @@ function workButton(label, event, options = {}) {
 }
 
 function actionForPerson(person, kind) {
-  if (kind === "team") return person.active ? { label: `Review เคสกับ ${person.name}`, event: EVENTS.MENTOR_TEAM_MEMBER, cost: 1 } : null;
+  if (kind === "team") return person.active && person.autonomy < 85 ? { label: `Review เคสกับ ${person.name}`, event: EVENTS.MENTOR_TEAM_MEMBER, cost: 1 } : null;
   if (kind === "conversation") {
     const byJourney = {
       new: { label: `ทัก ${person.name}`, event: EVENTS.CONTACT_PROSPECT, cost: 1 },
@@ -564,7 +582,9 @@ function actionForPerson(person, kind) {
       discovery: { label: `วัด Baseline กับ ${person.name}`, event: EVENTS.BASELINE_PROSPECT, cost: 2 },
       baseline: { label: `วาง Routine ให้ ${person.name}`, event: EVENTS.OPEN_MANAGEMENT_ROUTINE, cost: 0 },
       recommendation: { label: `คุยแผนกับ ${person.name}`, event: EVENTS.OFFER_PROSPECT, cost: 1 },
-      waiting: { label: `ติดตาม ${person.name}`, event: EVENTS.FOLLOW_UP_DECISION, cost: 1 },
+      waiting: Number(person.nextOfferMonth || 0) <= state.month && Number(person.decisionAttempts || 0) < 2
+        ? { label: `คุยให้รู้ผลกับ ${person.name}`, event: EVENTS.FOLLOW_UP_DECISION, cost: 1 }
+        : null,
     };
     return byJourney[person.journey] || null;
   }
@@ -572,10 +592,12 @@ function actionForPerson(person, kind) {
   if (person.xvisorStage === "xcademy") return { label: `Review Case กับ ${person.name}`, event: EVENTS.REVIEW_CANDIDATE, cost: 1 };
   if (person.xvisorStage === "case") return { label: `ติดตาม Certification ของ ${person.name}`, event: EVENTS.CERTIFY_CANDIDATE, cost: 1 };
   if (person.xvisorInterest && !person.xvisorStage) return { label: `ชวน ${person.name} รู้จัก X-VISOR`, event: EVENTS.INVITE_XVISOR, cost: 1 };
-  if (person.day < 28 && !person.selfDirected) return { label: `ติดตาม ${person.name}`, event: EVENTS.CARE_CUSTOMER, cost: 1 };
-  if (!person.measuredAgain) return { label: `ไปวัดซ้ำกับ ${person.name}`, event: EVENTS.REMEASURE_CUSTOMER, cost: 2 };
   if (person.referralReady && !person.referralAsked) return { label: `ขอให้ ${person.name} แนะนำเพื่อน`, event: EVENTS.ASK_REFERRAL, cost: 1 };
-  return { label: `ชวน ${person.name} ทำต่อ`, event: EVENTS.REORDER_CUSTOMER, cost: 1 };
+  if (person.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(person.customerState)) return null;
+  if (person.customerState === CUSTOMER_STATES.READY_TO_BUY) return { label: `📦 ต่อ RoutineX เดือนใหม่`, event: EVENTS.REORDER_CUSTOMER, cost: 1 };
+  if (person.day < 28) return { label: `ช่วย ${person.name} ที่จุดติดขัด`, event: EVENTS.CARE_CUSTOMER, cost: 1 };
+  if (!person.measuredAgain) return { label: `ไปวัดซ้ำกับ ${person.name}`, event: EVENTS.REMEASURE_CUSTOMER, cost: 2 };
+  return null;
 }
 
 function trustLabel(value) {
@@ -631,8 +653,10 @@ function showPeople(tab = "all", query = "", focusId = null) {
     if (kind === "team") {
       const human = teamHumanStatus(person);
       const output = person.monthlyOutput || {};
-      return `<article class="people-card people-card--team"><div class="people-card__top"><div><h3>${escapeHtml(person.name)}</h3><span>Certified X-VISOR</span></div><b>${person.active ? "กำลังทำงาน" : "พักอยู่"}</b></div>
-        <dl><div><dt>ลูกค้า</dt><dd>${person.customers}</dd></div><div><dt>Sale เดือนนี้</dt><dd>${output.sales || 0}</dd></div><div><dt>ความมั่นใจ</dt><dd>${human.confidence}</dd></div><div><dt>ทำเองได้</dt><dd>${human.autonomy}</dd></div></dl>
+      const mentorShare = person.parentId === "player" && ["xlead", "xgen"].includes(state.rank) ? Math.round(Number(person.commission || 0) * 0.2) : 0;
+      return `<article class="people-card people-card--team"><div class="people-card__top"><div><h3>${escapeHtml(person.name)}</h3><span>${person.rank === "xlead" ? "XLEAD" : "Certified X-VISOR"} · G${person.generation || 1}</span></div><b>${person.active ? "กำลังทำงาน" : "พักอยู่"}</b></div>
+        <dl><div><dt>💰 รายได้เดือนนี้</dt><dd>${formatBaht(person.commission)}</dd></div><div><dt>📦 ยอดส่วนตัว</dt><dd>${formatBaht(person.personalSalesBaht)}</dd></div><div><dt>XV</dt><dd>${formatNumber(person.personalXV)}</dd></div><div><dt>ลูกค้า</dt><dd>${person.customers}</dd></div><div><dt>ทีมย่อย</dt><dd>${person.downstreamXvisors || 0}</dd></div><div><dt>ทำเองได้</dt><dd>${human.autonomy}</dd></div></dl>
+        ${mentorShare ? `<p><b>จาก ${escapeHtml(person.name)} คุณได้ 20% ของคอมเขา = ${formatBaht(mentorShare)}</b></p>` : ""}
         <p><b>ล่าสุด:</b> ${escapeHtml(person.status)}<br><b>ต่อไป:</b> ${person.customers ? "ดูแลเคสถัดไป" : "หาลูกค้าคนแรก"}</p>
         ${next ? workButton(next.label, next.event, { id: person.id, cost: next.cost, detail: "ช่วยให้เขาทำเองได้มากขึ้น" }) : ""}</article>`;
     }
@@ -647,7 +671,7 @@ function showPeople(tab = "all", query = "", focusId = null) {
     ${focusId ? `<button class="people-back" type="button" data-people-tab="all">← ดูคนทั้งหมด</button>` : `<div class="people-tabs" role="tablist">${tabs.map(([id, label]) => `<button type="button" role="tab" data-people-tab="${id}" aria-selected="${tab === id}">${label}</button>`).join("")}</div>
       ${uniquePeopleCount() > 7 ? `<label class="people-search">ค้นหาชื่อ <input type="search" data-people-search value="${escapeHtml(query)}" placeholder="เช่น นนท์"></label>` : ""}`}
     <div class="people-grid">${cards || "<p class=\"work-empty\">ยังไม่มีคนในกลุ่มนี้</p>"}</div>
-    <div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-dialog-action="work">เติบโตและพาทีม</button><button class="dialog-button" type="button" data-dialog-action="close">กลับกระดาน</button></div>`, { kind: "wide" });
+    <div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-dialog-action="work">🧭 เปิดแผนงาน</button><button class="dialog-button" type="button" data-dialog-action="close">กลับกระดาน</button></div>`, { kind: "wide" });
   $("#gameDialog").dataset.peopleTab = tab;
 }
 
@@ -664,7 +688,7 @@ function showSkills() {
       ${workButton(skill.definition.practice, EVENTS.TRAIN_SKILL, { skill: id, cost: 1, detail: "+2 XP · งานเดิมคุ้มขึ้น" })}</article>`;
   }).join("");
   const xlead = progress.criteria.map((item) => `<li class="${item.current >= item.target ? "is-done" : ""}"><span>${escapeHtml(item.label)}</span><b>${item.current} / ${item.target}</b></li>`).join("");
-  showDialog("skills", `<div class="dialog-kicker">⭐ ${state.rank === "xlead" ? "XLEAD" : "X-VISOR"} Lv.${snapshot.playerLevel}</div><h2>ความเก่งของคุณ</h2><p class="dialog-note">ลงทุน 1 ⚡ วันนี้ เพื่อให้งานเดิมสร้างผลมากขึ้นในเดือนต่อไป ทุก action ยังมี floor อย่างน้อย 1 ⚡</p>
+  showDialog("skills", `<div class="dialog-kicker">⭐ ${state.rank === "xgen" ? "XGEN" : state.rank === "xlead" ? "XLEAD" : "X-VISOR"} Lv.${snapshot.playerLevel}</div><h2>ความเก่งของคุณ</h2><p class="dialog-note">ลงทุน 1 ⚡ เพื่อเปลี่ยนวิธีเล่น เมื่อถึง Lv.10 ลูกค้าและทีมจะทำงานปกติเอง คุณดูเฉพาะเรื่องสำคัญ</p>
     <div class="skill-grid">${cards}</div>
     <section class="xlead-progress"><h3>เส้นทาง XLEAD ในเกม</h3><ul>${xlead}</ul><small>${escapeHtml(progress.note)}</small></section>
     <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`, { kind: "wide" });
@@ -674,7 +698,7 @@ function showWorkMenu() {
   const skills = getSkillSnapshot(state);
   const contentLocked = skills.playerLevel < PLAYER_UNLOCKS.content;
   const adsLocked = skills.playerLevel < PLAYER_UNLOCKS.ads;
-  const mentors = state.team.filter((member) => member.active).map((member) => workButton(`Review เคสกับ ${member.name}`, EVENTS.MENTOR_TEAM_MEMBER, { id: member.id, cost: 1, detail: `${member.customers} ลูกค้า · ${member.autonomy >= 70 ? "ทำเองได้คล่อง" : member.autonomy >= 45 ? "เริ่มทำเองได้" : "ยังต้องซ้อมด้วยกัน"}` })).join("");
+  const mentors = state.team.filter((member) => member.active && member.autonomy < 85).slice(0, 8).map((member) => workButton(`Review เคสกับ ${member.name}`, EVENTS.MENTOR_TEAM_MEMBER, { id: member.id, cost: 1, detail: `${member.customers} ลูกค้า · ${member.autonomy >= 70 ? "ใกล้ทำเองเต็มที่" : member.autonomy >= 45 ? "เริ่มทำเองได้" : "ยังต้องซ้อมด้วยกัน"}` })).join("");
   const training = SKILL_IDS.map((id) => workButton(`${SKILL_DEFINITIONS[id].icon} ${SKILL_DEFINITIONS[id].practice}`, EVENTS.TRAIN_SKILL, { skill: id, cost: 1, detail: `${SKILL_DEFINITIONS[id].name} Lv.${skills.skills[id].level} · ${getSkillBenefit(id, Math.min(10, skills.skills[id].level + 1))}` })).join("");
   showDialog("work", `<div class="dialog-kicker">แผนเติบโต · เดือน ${state.month}</div><h2>ลงทุนเวลาให้ผลเดือนต่อไปทวีคูณ</h2>
     <section class="work-section"><h3>สร้างโอกาสใหม่</h3><div class="work-grid">
@@ -682,10 +706,10 @@ function showWorkMenu() {
       ${workButton("ทำคอนเทนต์", EVENTS.CREATE_LEAD, { source: "content", cost: 1, disabled: contentLocked, detail: contentLocked ? "เปิดที่ X-VISOR Lv.2" : "Journey / ความรู้ / Routine · สร้าง Interest" })}
       ${workButton("ยิง Ads จำลอง", EVENTS.CREATE_LEAD, { source: "ads", cost: 1, disabled: adsLocked, detail: adsLocked ? "เปิดที่ X-VISOR Lv.4" : `Budget จำลอง ${formatBaht(ADS_GAMEPLAY_CONFIG.budgetPerCampaign)} แยกจากรายได้` })}</div></section>
     <section class="work-section"><h3>ฝึกให้ 1 ⚡ คุ้มขึ้น</h3><div class="work-grid">${training}</div></section>
-    <section class="work-section"><h3>พาทีมและ Community</h3><div class="work-grid">${mentors}
-      ${workButton("พาทีมเข้า Center", EVENTS.RUN_CENTER, { cost: 2, disabled: state.monthStats.centerDone, detail: state.monthStats.centerDone ? "ทำแล้วในเดือนนี้" : "Case Review · ช่วยหลายคนพร้อมกัน" })}
-      ${workButton("พาทีมเข้า Good Luck", EVENTS.RUN_GOOD_LUCK, { cost: 3, disabled: state.monthStats.goodLuckDone, detail: state.monthStats.goodLuckDone ? "ทำแล้วในเดือนนี้" : "Community · Referral · X-VISOR Interest" })}
-      ${state.rank === "xlead" ? workButton("Review ผู้นำรุ่นถัดไป", EVENTS.REVIEW_TEAM_LEADERS, { cost: 1, detail: "เพิ่มความพร้อมให้ทีมทำเอง" }) : ""}</div></section>
+    <section class="work-section"><h3>🎓 Batch และทีม</h3><div class="work-grid">${mentors}
+      ${workButton(`Xcademy · ครั้ง ${Number(state.monthStats.xcademySessions || 0) + 1}/4`, EVENTS.RUN_XCADEMY, { cost: 2, disabled: Number(state.monthStats.xcademySessions || 0) >= 4, detail: Number(state.monthStats.xcademySessions || 0) >= 4 ? "ครบ 4 ครั้งเดือนนี้" : "OPP + Training · เลือกคนที่เหมาะสมอัตโนมัติ" })}
+      ${workButton("🏠 Open House", EVENTS.RUN_OPEN_HOUSE, { cost: 2, disabled: state.monthStats.openHouseDone, detail: state.monthStats.openHouseDone ? "ทำแล้วในเดือนนี้" : "ชวนทุกคนที่เหมาะสม · batch impact" })}
+      ${["xlead", "xgen"].includes(state.rank) ? workButton("Review ผู้นำรุ่นถัดไป", EVENTS.REVIEW_TEAM_LEADERS, { cost: 1, detail: "เพิ่มความพร้อมให้ทีมทำเอง" }) : ""}</div></section>
     <div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-dialog-action="people">เปิดคนของคุณ</button><button class="dialog-button" type="button" data-dialog-action="close">กลับกระดาน</button></div>`, { kind: "wide" });
 }
 
@@ -728,6 +752,8 @@ $("#actionBar").addEventListener("click", (event) => {
   const payload = {};
   if (button.dataset.id) payload.id = button.dataset.id;
   if (button.dataset.value) payload.value = button.dataset.value;
+  if (button.dataset.source) payload.source = button.dataset.source;
+  if (button.dataset.skill) payload.skill = button.dataset.skill;
   state = { ...state, tutorialSeen: { ...state.tutorialSeen, [state.stage]: true } };
   dispatch(gameEvent, payload);
 });
@@ -859,7 +885,7 @@ function drawScene(time) {
   context.imageSmoothingEnabled = false;
   const scene = content.scene || "opening";
   const exam = scene.startsWith("exam") || scene === "ceremony";
-  const management = scene.startsWith("management") || ["team_started", "month_closed", "season_review", "content_running", "ads_running", "center_running", "goodluck_running", "xlead"].includes(scene);
+  const management = scene.startsWith("management") || ["team_started", "month_closed", "season_review", "content_running", "ads_running", "xcademy_running", "open_house_running", "center_running", "goodluck_running", "xlead", "xgen"].includes(scene);
   drawRoom(exam ? "exam" : management ? "management" : state.month === 0 ? "pre" : "office");
   const person = selectedPerson();
   const npc = person?.appearance || { skin: "#e0a17a", hair: "#513943", shirt: "#ef8078", accent: "#fff2d4" };
@@ -917,7 +943,7 @@ function drawScene(time) {
     drawTable(195, 154, 119); drawSittingCharacter(154, 159, playerPalette, "right"); drawLaptop(224, 112, true);
     rect(58, 50, 91, 68, "#24445b"); rect(63, 55, 81, 58, "#fffdf2"); rect(72, 65, 63, 8, "#dbe8e5"); rect(72, 65, Math.min(63, stageAge / 25), 8, "#62bd83");
     [0, 1, 2].slice(0, reducedMotion.matches ? 3 : Math.floor(stageAge / 520)).forEach((index) => drawNotification(66 + index * 33, 82 + (index % 2) * 20, "#6cb4df"));
-  } else if (scene === "center_running") {
+  } else if (["xcademy_running", "center_running"].includes(scene)) {
     drawWhiteboard(139, 31); drawRoundTable(143, 137); drawCharacterAtFeet(49, 176, playerPalette, { direction: "right", pose: "talk", band: true });
     const participants = state.team.filter((member) => member.active).slice(0, 3);
     participants.forEach((member, index) => {
@@ -925,7 +951,7 @@ function drawScene(time) {
       drawCharacterAtFeet(276 + index * 34 + (1 - progress) * 55, 176, member.appearance || npc, { direction: "left", walk: progress < 1 ? time / 90 : 0, band: true });
     });
     if (!participants.length) drawCharacterAtFeet(284, 176, npc, { direction: "left", idle: true, band: true });
-  } else if (scene === "goodluck_running") {
+  } else if (["open_house_running", "goodluck_running"].includes(scene)) {
     rect(112, 112, 160, 9, "#24445b"); rect(122, 78, 140, 34, "#4f9a78"); rect(154, 49, 76, 24, "#24445b"); rect(159, 54, 66, 14, "#f6ce5a");
     drawCharacterAtFeet(178, 112, proctorPalette, { pose: "talk", band: true });
     const crowd = [playerPalette, npc, ...state.team.slice(0, 3).map((member) => member.appearance || npc)].slice(0, 5);
@@ -942,7 +968,7 @@ function drawScene(time) {
     if (state.customers.length >= 3) { drawChair(12, 119, "#73a9c3"); drawTable(15, 154, 55); }
     if (state.team.length >= 1) { rect(215, 53, 38, 28, "#24445b"); rect(219, 57, 30, 20, "#d9f2ef"); }
     if (state.rank === "xlead") { rect(105, 27, 76, 27, "#24445b"); rect(110, 32, 66, 17, "#f6ce5a"); fill("#24445b"); context.font = "bold 8px monospace"; context.fillText("TEAM ZONE", 119, 43); }
-  } else if (scene === "xlead") {
+  } else if (["xlead", "xgen"].includes(scene)) {
     drawWhiteboard(138, 29); drawCharacterAtFeet(55, 176, playerPalette, { pose: "celebrate", band: true });
     state.team.slice(0, 4).forEach((member, index) => drawCharacterAtFeet(210 + index * 40, 176, member.appearance || npc, { direction: "left", idle: true, band: true }));
     rect(50, 42, 65, 25, "#24445b"); rect(55, 47, 55, 15, "#f6ce5a");
