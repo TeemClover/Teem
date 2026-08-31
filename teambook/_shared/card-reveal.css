@@ -50,10 +50,36 @@
   inset:0;
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
-  transform-style:preserve-3d;
-  -webkit-transform-style:preserve-3d;
 }
-.reveal-front{transform:rotateY(180deg)}
+
+/* Do not trust backface-visibility as the only guard. Some browser/GPU
+   compositor paths can briefly paint the 180deg front face before the flip,
+   which looks exactly like a horizontally mirrored card. State-gate the faces
+   as well: the real back is authoritative before opening; the collectible face
+   is not paintable until the turn has reached its midpoint. */
+.reveal-card .card-back{
+  z-index:2;
+  opacity:1;
+  visibility:visible;
+  transition:opacity .08s linear .36s,visibility 0s linear .44s;
+}
+.reveal-front{
+  z-index:1;
+  opacity:0;
+  visibility:hidden;
+  transform:rotateY(180deg);
+  transition:opacity .08s linear .36s,visibility 0s linear .36s;
+}
+.reveal-card.is-open .card-back{
+  z-index:1;
+  opacity:0;
+  visibility:hidden;
+}
+.reveal-card.is-open .reveal-front{
+  z-index:2;
+  opacity:1;
+  visibility:visible;
+}
 
 /* Light sweep disappears
    as soon as the card starts turning. */
@@ -73,6 +99,7 @@
 @media (prefers-reduced-motion: reduce){
   .reveal-card,
   .reveal-inner,
+  .reveal-face,
   .reveal-card:not(.is-open)::after{
     animation:none;transition:none
   }
