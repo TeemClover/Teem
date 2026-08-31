@@ -1,6 +1,6 @@
 import { clean, database, sameOrigin, sendJson } from './_lib/core.js';
 
-const SCORE_VERSION = 'v9-pre-release-1';
+const SCORE_VERSION = '1.0';
 let schemaPromise;
 
 async function ensureScoreSchema(sql) {
