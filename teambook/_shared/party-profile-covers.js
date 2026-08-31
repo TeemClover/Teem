@@ -1,5 +1,6 @@
 import { getParty, getProfile, partyIdentity, ownedCards } from './store.js';
 import { cardById as xtyCardById, cardDescriptorTh } from './cards.js';
+import { cardCanBePartyCover } from './cover-eligibility.js';
 import { TEAMBOOK_V1_PETS } from './pets.js';
 
 const code = new URLSearchParams(location.search).get('c');
@@ -44,7 +45,7 @@ function ownedCardObjects(role) {
   return ownedCards(getProfile())
     .map(entry => xtyCardById(entry.cardId))
     .filter(Boolean)
-    .filter(card => card.eligibility?.[role]);
+    .filter(card => role === 'partyCover' ? cardCanBePartyCover(card) : card.eligibility?.[role]);
 }
 
 async function callPlacement(action, body) {
