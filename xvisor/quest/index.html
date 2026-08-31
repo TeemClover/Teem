@@ -4,17 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#17384f">
-    <meta name="description" content="X-VISOR QUEST V9 PRE-RELEASE เกมบริหาร 12 เดือน: สร้างลูกค้า ทีม รายได้ และ Organization ที่เติบโตต่อได้">
-    <title>X-VISOR QUEST · V9 PRE-RELEASE</title>
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=9pre1">
+    <meta name="description" content="X-VISOR QUEST 1.0 เกมบริหาร 24 เดือน: สร้างลูกค้า ทีม รายได้ และ Organization แล้วกลับมาเล่น NEW GAME+">
+    <title>X-VISOR QUEST · 1.0</title>
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1">
     <script>
-      // Pre-release policy: incompatible run saves are disposable. Do this before game.js hydrates.
+      // 1.0 is the final intentional test-save reset before public testing.
       try {
         const key = 'xvisorQuestContinueV4';
         const raw = localStorage.getItem(key);
         if (raw) {
           const value = JSON.parse(raw);
-          if (value?.v9SaveVersion !== 'v9-pre-release-1') localStorage.removeItem(key);
+          if (value?.releaseVersion !== '1.0' || value?.v1SaveVersion !== '1.0') {
+            localStorage.removeItem(key);
+            sessionStorage.setItem('xvisor10Reset', '1');
+          }
         }
       } catch {
         try { localStorage.removeItem('xvisorQuestContinueV4'); } catch {}
@@ -23,17 +26,18 @@
     <script type="importmap">
       {
         "imports": {
-          "./game-data.js": "./game-data-v9.js?v=9pre1",
+          "./game-data.js": "./game-data-v1.js?v=1",
           "./game-progression.js": "./game-progression-v8.js?v=8r4",
           "./game-commercial-config.js": "./game-commercial-config-v8.js?v=8r4",
-          "./game-copy.js": "./game-copy-v9.js?v=9pre1"
+          "./game-copy.js": "./game-copy-v9.js?v=1",
+          "./game.js?v=1": "./game.js?v=9pre1"
         }
       }
     </script>
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
-    <main class="game-shell" id="gameApp" data-game-version="V9 PRE-RELEASE">
+    <main class="game-shell" id="gameApp" data-game-version="1.0">
       <header class="game-header">
         <div class="brand-lockup" aria-label="X-VISOR QUEST"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><p>X-VISOR</p><h1>QUEST</h1></div></div>
         <div class="header-tools">
@@ -51,7 +55,7 @@
         <div class="status-item status-item--income"><span>รายได้รวม</span><strong id="hudIncome">฿0</strong></div>
       </section>
       <div class="rank-row">
-        <span class="rank-chip" aria-label="เวอร์ชันเกม">V9 PRE-RELEASE</span>
+        <span class="rank-chip" aria-label="เวอร์ชันเกม">1.0</span>
         <button class="rank-chip rank-chip--button" id="skillButton" type="button" aria-label="ดูความเก่งของคุณ"><span id="hudRank">CANDIDATE</span></button>
         <span class="rank-chip rank-chip--team" id="teamChip" hidden>ทีม 1 X-VISOR</span>
         <button class="rank-chip rank-chip--button rank-chip--people" id="peopleButton" type="button" hidden>คนของคุณ <b id="peopleCount">0</b></button>
@@ -59,18 +63,19 @@
       <section class="game-layout">
         <div class="game-layout__world">
           <article class="goal-card" id="goalCard"><div class="goal-card__copy"><span id="goalEyebrow">เป้าหมายของคุณ</span><h2 id="goalTitle">เริ่มเส้นทาง X-VISOR</h2><p id="goalReason">เริ่มจากตัวเอง ดูแลคนแรก แล้วค่อยสร้างทีม</p></div><div class="goal-progress" aria-label="ความคืบหน้าของเส้นทาง"><i id="goalProgress"></i></div></article>
-          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>V9 PRE-RELEASE</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
+          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>1.0</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
         </div>
         <aside class="game-layout__controls" aria-label="เหตุการณ์และสิ่งที่ทำต่อ">
           <section class="dialogue-card"><span class="dialogue-card__speaker" id="dialogueSpeaker">X-VISOR QUEST</span><p id="dialogueText">เกมนี้จะพาคุณลองทำงานจริงทีละขั้น</p><div id="sceneDetails"></div></section>
           <section class="action-dock" id="actionDock" data-empty="false" aria-label="สิ่งที่ทำได้ตอนนี้"><div class="action-dock__heading"><span>ทำอะไรต่อ</span><small>เลือกสิ่งที่คุ้มที่สุด</small></div><div class="action-bar" id="actionBar"></div><div class="waiting-state" id="waitingState" hidden>กำลังดำเนินการ…</div></section>
         </aside>
       </section>
-      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>V9 PRE-RELEASE · บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
+      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>1.0 · บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
     </main>
     <dialog class="game-dialog" id="gameDialog" aria-label="รายละเอียดเกม"><div class="game-dialog__content" id="dialogContent"></div></dialog>
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div><div class="sr-only" id="liveRegion" aria-live="polite"></div>
     <script type="module" src="/xvisor/quest/game.js?v=9pre1"></script>
-    <script type="module" src="/xvisor/quest/game-v9-ui.js?v=9pre1"></script>
+    <script type="module" src="/xvisor/quest/game-v9-ui.js?v=1compat"></script>
+    <script type="module" src="/xvisor/quest/game-v1-ui.js?v=1"></script>
   </body>
 </html>
