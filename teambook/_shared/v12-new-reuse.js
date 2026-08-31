@@ -6,6 +6,7 @@
 
 import { getProfile, ownedCards } from './store.js';
 import { cardById, cardDescriptorTh } from './cards.js';
+import { cardCanBePartyCover } from './cover-eligibility.js';
 import { cardMarkup } from './card-ui.js';
 
 function esc(value) {
@@ -37,7 +38,7 @@ function owned(role) {
   return ownedCards(getProfile())
     .map(item => cardById(item.cardId))
     .filter(Boolean)
-    .filter(card => card.eligibility?.[role]);
+    .filter(card => role === 'partyCover' ? cardCanBePartyCover(card) : card.eligibility?.[role]);
 }
 
 function mountShelf({ host, kind, cards, title, note }) {
@@ -108,12 +109,18 @@ function install() {
   const level = Math.max(1, Number(profile.level || 1));
   const coverHost = document.getElementById('coverSection');
   const companionHost = document.getElementById('npcCardPick')?.closest('.notebook-card') || document.getElementById('petPick')?.closest('.notebook-card');
+  const coverCards = level > 1 ? owned('partyCover') : [];
+  const requestedLead = String(new URLSearchParams(location.search).get('lead') || '').toUpperCase();
+  if (requestedLead && coverCards.some(card => card.cardId === requestedLead)) {
+    window.__teambookCoverV2 = { coverType: 'card', leadCardId: requestedLead };
+    window.__xtyCoverV2 = window.__teambookCoverV2;
+  }
 
   if (level > 1) {
     mountShelf({
       host: coverHost,
       kind: 'cover',
-      cards: owned('partyCover'),
+      cards: coverCards,
       title: 'การ์ดของคุณที่ใช้เป็นปกได้',
       note: 'การ์ดใบเดียวกันใช้เป็นปกให้หลายสมุดได้ แต่ในสมุดเดียวกันจะเป็นทั้งปกและเพื่อนร่วมทางพร้อมกันไม่ได้',
     });
