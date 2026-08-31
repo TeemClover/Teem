@@ -1,39 +1,82 @@
-import {
-  EVENTS,
-  ORGANIZATION_END_MONTH,
-  getBestNextActions,
-  makeInitialState,
-  reduceGame,
-  serializeState,
-  parseSavedState,
-} from '../xvisor/quest/game-data-v1.js';
-import { makeTeamMember } from '../xvisor/quest/game-progression-v8.js';
-import { createPerson } from '../xvisor/quest/game-people.js';
-
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function sourceImports(source) {
+  const matches = [];
+  const pattern = /((?:import|export)\s+(?:[^'";]*?\s+from\s+)?['"])([^'"]+)(['"])/g;
+  let match;
+  while ((match = pattern.exec(source))) matches.push({ start: match.index + match[1].length, end: match.index + match[1].length + match[2].length, specifier: match[2] });
+  return matches;
+}
+
+async function moduleLoader(origin) {
+  const dataUrlCache = new Map();
+  const building = new Set();
+
+  async function toDataUrl(urlLike) {
+    const url = new URL(urlLike, origin).href;
+    if (dataUrlCache.has(url)) return dataUrlCache.get(url);
+    if (building.has(url)) throw new Error(`CYCLIC_MODULE:${url}`);
+    building.add(url);
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`FETCH_MODULE_${response.status}:${url}`);
+    let source = await response.text();
+    const imports = sourceImports(source).filter((entry) => entry.specifier.startsWith('.') || entry.specifier.startsWith('/'));
+    for (const entry of [...imports].reverse()) {
+      const dependencyUrl = new URL(entry.specifier, url).href;
+      const dependencyDataUrl = await toDataUrl(dependencyUrl);
+      source = source.slice(0, entry.start) + dependencyDataUrl + source.slice(entry.end);
+    }
+    building.delete(url);
+    const encoded = Buffer.from(`${source}\n//# sourceURL=${url.split('?')[0]}\n`, 'utf8').toString('base64');
+    const dataUrl = `data:text/javascript;base64,${encoded}`;
+    dataUrlCache.set(url, dataUrl);
+    return dataUrl;
+  }
+
+  async function load(path) {
+    const dataUrl = await toDataUrl(new URL(path, origin).href);
+    return import(dataUrl);
+  }
+
+  return { load };
 }
 
 function management(state, month = 12) {
   return { ...state, month, stage: 'management', phase: 'management', energy: 28, rank: 'xvisor', milestones: { ...state.milestones, certified: true } };
 }
 
-function withCoreTeam(seed = 11) {
-  let state = management(makeInitialState({ seed }), 12);
-  const member = makeTeamMember({ id: 'person-jen', personId: 'person-jen', name: 'เจน', source: 'known', appearance: {} }, state, { id: 'member-jen', parentId: 'player', generation: 1 });
-  return {
-    ...state,
-    team: [{ ...member, active: true, certifiedMonth: 3, customers: 8, confidence: 72, autonomy: 68, teamSkill: 5, candidatePipeline: 3, leaderReadiness: 55 }],
-    customers: [{ id: 'customer-mei', personId: 'person-mei', name: 'เมย์', activePlan: true, satisfaction: 86, selfDirected: true, day: 28, followups: 3, adherence: 88 }],
-    career: { ...state.career, xleadCertified: true, xgenCertified: true },
-    rank: 'xgen',
-    campaignComplete: true,
-    campaignScore: { locked: true, completedMonth: 12, bestTgv: 1_500_000, totalIncome: 500_000, bestMonthlyIncome: 90_000, organizationSize: 1, scoreVersion: '1.0', runId: state.runId, completedAt: Date.now() },
-  };
-}
-
 export default async function handler(req, res) {
   try {
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const proto = req.headers['x-forwarded-proto'] || 'https';
+    const origin = `${proto}://${host}`;
+    const loader = await moduleLoader(origin);
+    const game = await loader.load('/xvisor/quest/game-data-v1.js?v=1');
+    const progression = await loader.load('/xvisor/quest/game-progression-v8.js?v=8r4');
+    const people = await loader.load('/xvisor/quest/game-people.js?v=1');
+    const {
+      EVENTS, ORGANIZATION_END_MONTH, getBestNextActions, makeInitialState,
+      reduceGame, serializeState, parseSavedState,
+    } = game;
+    const { makeTeamMember } = progression;
+    const { createPerson } = people;
+
+    function withCoreTeam(seed = 11) {
+      let state = management(makeInitialState({ seed }), 12);
+      const member = makeTeamMember({ id: 'person-jen', personId: 'person-jen', name: 'เจน', source: 'known', appearance: {} }, state, { id: 'member-jen', parentId: 'player', generation: 1 });
+      return {
+        ...state,
+        team: [{ ...member, active: true, certifiedMonth: 3, customers: 8, confidence: 72, autonomy: 68, teamSkill: 5, candidatePipeline: 3, leaderReadiness: 55 }],
+        customers: [{ id: 'customer-mei', personId: 'person-mei', name: 'เมย์', activePlan: true, satisfaction: 86, selfDirected: true, day: 28, followups: 3, adherence: 88 }],
+        career: { ...state.career, xleadCertified: true, xgenCertified: true },
+        rank: 'xgen',
+        campaignComplete: true,
+        campaignScore: { locked: true, completedMonth: 12, bestTgv: 1_500_000, totalIncome: 500_000, bestMonthlyIncome: 90_000, organizationSize: 1, scoreVersion: '1.0', runId: state.runId, completedAt: Date.now() },
+      };
+    }
+
     const initial = makeInitialState({ seed: 1 });
     assert(parseSavedState(serializeState(initial)), '1.0 save roundtrip failed');
 
@@ -78,9 +121,14 @@ export default async function handler(req, res) {
     }
     assert(new Set(names).size === 200, 'name pool duplicated before 200');
 
-    return res.status(200).json({ ok: true, release: '1.0', checks: ['save', 'organization-one-click', 'transaction-tgv', 'xircle-schedule', 'month24-stop', 'new-game-plus', 'fast-track', 'name-pool'], sample: { month13Tgv: month14.lastOrganizationReport.tgv, month13Xvisors: month14.lastOrganizationReport.xvisorCount } });
+    return res.status(200).json({
+      ok: true,
+      release: '1.0',
+      checks: ['actual-browser-module-graph', 'save', 'organization-one-click', 'transaction-tgv', 'xircle-schedule', 'month24-stop', 'new-game-plus', 'fast-track', 'name-pool'],
+      sample: { month13Tgv: month14.lastOrganizationReport.tgv, month13Xvisors: month14.lastOrganizationReport.xvisorCount },
+    });
   } catch (error) {
     console.error('xvisor selftest failed', error);
-    return res.status(500).json({ ok: false, error: error?.message || String(error) });
+    return res.status(500).json({ ok: false, error: error?.stack || error?.message || String(error) });
   }
 }
