@@ -11,8 +11,6 @@
 import { cardById } from './cards.js';
 import { getProfile } from './store.js';
 
-const A = 'var(--xty-card-aspect,63/88)';
-
 function installStyle() {
   document.getElementById('tb-card-geometry-v16')?.remove();
   if (document.getElementById('tb-card-geometry-v17')) return;
@@ -27,7 +25,7 @@ function installStyle() {
       position:relative!important;
       width:100%!important;
       height:auto!important;
-      aspect-ratio:${A}!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       margin:0!important;
       padding:0!important;
       border:0!important;
@@ -92,7 +90,7 @@ function installStyle() {
     html body #members .tb-public-member-visual,
     html body .tb-member-status .tb-book-member-visual{
       box-sizing:border-box!important;
-      aspect-ratio:${A}!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       height:auto!important;
     }
 
@@ -115,7 +113,7 @@ function installStyle() {
     html body .tb-char-card>.animal-card:not(.card-back){
       width:100%!important;
       height:auto!important;
-      aspect-ratio:${A}!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       border-radius:14px!important;
       overflow:hidden!important;
     }
@@ -131,7 +129,7 @@ function installStyle() {
     html body .xty-cover-current-art[data-category="xty"],
     html body .xty-cover-option[data-category="xty"] .xty-cover-thumb{
       box-sizing:border-box!important;
-      aspect-ratio:${A}!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       border-radius:14px!important;
       overflow:hidden!important;
       background:transparent!important;
@@ -157,7 +155,7 @@ function installStyle() {
     html body .preview-cover>.avatar-cover,
     html body #cover>.avatar-cover{
       box-sizing:border-box!important;
-      aspect-ratio:${A}!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       overflow:hidden!important;
     }
     html body #home .xty-home-cover.avatar-cover>img,
@@ -249,7 +247,7 @@ function installStyle() {
         width:54px!important;
         min-width:54px!important;
         height:auto!important;
-        aspect-ratio:${A}!important;
+        aspect-ratio:var(--xty-card-aspect)!important;
       }
     }
   `;

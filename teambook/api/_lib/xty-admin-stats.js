@@ -124,13 +124,6 @@ async function integrityReport(sql) {
   for (const row of ownedIds) {
     if (!cardById(row.card_id)) issues.push({ type: 'CARD_MISSING_CATALOG', cardId: String(row.card_id || '').slice(0, 80) });
   }
-  const commonCovers = await sql.query(`SELECT code,lead_card_id FROM teambook_books
-    WHERE state=ANY($1::text[]) AND lead_card_id IS NOT NULL`, [ACTIVE_STATES]);
-  commonCovers.forEach(row => {
-    if (cardById(row.lead_card_id)?.rarity === 'common') {
-      issues.push({ type: 'COMMON_USED_AS_PARTY_COVER', party: row.code, cardId: row.lead_card_id });
-    }
-  });
   return { issues: issues.length, rows: issues.slice(0, 100) };
 }
 

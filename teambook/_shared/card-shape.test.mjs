@@ -49,7 +49,8 @@ test('no card slot writes its own ratio', () => {
     const matches = file.text.match(/aspect-ratio:\s*(?!var\()[^;!}`'"\n]+/g) || [];
     for (const match of matches) {
       const value = match.split(':')[1].trim();
-      if (['1', '4/3', '3/2', '1.15'].includes(value)) continue; // square, scene and banner slots
+      const compactValue = value.replaceAll(' ', '');
+      if (['1', '1/1', '4/3', '3/2', '1.15'].includes(compactValue)) continue; // square, scene and banner slots
       /* auto is a slot deliberately taking its shape from its content — the
          About hero art and a seat showing a whole card, neither of which is a
          card slot the ratio has to govern. */
@@ -93,4 +94,12 @@ test('nothing placed in a card slot is allowed to letterbox', () => {
       `${file.path}: a card face must fill its slot (allowed exceptions: ${allowed.length} avatar tiles)`
     );
   }
+});
+
+test('card backs and legacy character tiles derive height from the 63:88 token', () => {
+  const cardUi = files.find(file => file.path === '_shared/card-ui.js')?.text || '';
+  const sharedCss = files.find(file => file.path === '_shared/xty.css')?.text || '';
+  assert.match(cardUi, /\.animal-card\.card-back\{[^}]*height:auto!important;[^}]*min-height:0!important;[^}]*aspect-ratio:var\(--xty-card-aspect\)!important;/s);
+  assert.match(sharedCss, /\.pc\.avatar-card\{aspect-ratio:var\(--xty-card-aspect\);/);
+  assert.doesNotMatch(sharedCss, /\.pc\.avatar-card\{aspect-ratio:1;/);
 });

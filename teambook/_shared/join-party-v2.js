@@ -60,7 +60,6 @@ function remember(result, fallbackCode = '') {
 
 export async function joinPartyV2(code, {
   alias, avatar, avatarColor,
-  activityId, activityLabel, activityDescription, activityColor, successRule,
 } = {}) {
   const wanted = String(code || '').replace(/\D/g, '').slice(0, 5);
   if (!/^\d{5}$/.test(wanted)) return { ok: false, error: 'INVALID_CODE' };
@@ -76,9 +75,6 @@ export async function joinPartyV2(code, {
     alias: String(alias || profile.alias || '').trim(),
     avatar: avatar || profile.avatarId || profile.avatarFallback || 'orange_cat',
     avatarColor: avatarColor || profile.avatarFrame || 'green',
-    activityId: activityId || '', activityLabel: activityLabel || '',
-    activityDescription: activityDescription || '', activityColor: activityColor || '',
-    successRule: successRule || '',
   };
   write(K_PENDING_JOIN, { code: wanted, payload: pendingPayload, attemptedAt: new Date().toISOString() });
 
@@ -94,13 +90,6 @@ export async function joinPartyV2(code, {
         avatarColor: avatarColor || profile.avatarFrame || 'green',
         profileId: profile.id,
         quotaSystem: 'v2-separated',
-        /* Only meaningful in an individual book; a shared book fills these
-           in from its own activity and ignores whatever arrives here. */
-        activityId: activityId || '',
-        activityLabel: activityLabel || '',
-        activityDescription: activityDescription || '',
-        activityColor: activityColor || '',
-        successRule: successRule || '',
       }),
     });
   } catch {

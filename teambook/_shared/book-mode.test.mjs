@@ -108,13 +108,12 @@ test('a day signed before snapshots existed falls back to the book, not to today
   assert.equal(orphan.fromSnapshot, false);
 });
 
-test('joining a shared book is shorter than joining an individual one', () => {
-  assert.deepEqual([...joinSteps({ activityMode: SHARED })], ['character', 'successRule']);
-  assert.deepEqual([...joinSteps({ activityMode: INDIVIDUAL })],
-    ['character', 'color', 'activity', 'successRule']);
+test('joining only asks for the name and character in either book mode', () => {
+  assert.deepEqual([...joinSteps({ activityMode: SHARED })], ['name', 'character']);
+  assert.deepEqual([...joinSteps({ activityMode: INDIVIDUAL })], ['name', 'character']);
   assert.equal(successRuleRequired({ activityMode: SHARED }), false,
-    'inheriting the book activity is enough to be in it');
-  assert.equal(successRuleRequired({ activityMode: INDIVIDUAL }), true);
+    'activity belongs in the in-book editor, not the join gate');
+  assert.equal(successRuleRequired({ activityMode: INDIVIDUAL }), false);
 });
 
 test('a rule is one line of plain words, kept to a length a card can hold', () => {

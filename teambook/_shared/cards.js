@@ -9,14 +9,14 @@ export const TEAMBOOK_CARD_SERIES = 'TeamBook';
 export const TEAMBOOK_CARD_COLORS = Object.freeze(['red', 'green', 'blue', 'silver']);
 export const TEAMBOOK_CARD_RARITIES = Object.freeze(['common', 'rare', 'epic', 'legendary']);
 export const TEAMBOOK_RARITY_META = Object.freeze({
-  common: Object.freeze({ id: 'common', label: 'COMMON', labelTh: 'คอมมอน', partyCover: false }),
+  common: Object.freeze({ id: 'common', label: 'COMMON', labelTh: 'คอมมอน', partyCover: true }),
   rare: Object.freeze({ id: 'rare', label: 'RARE', labelTh: 'แรร์', partyCover: true }),
   epic: Object.freeze({ id: 'epic', label: 'EPIC', labelTh: 'อีพิก', partyCover: true }),
   legendary: Object.freeze({ id: 'legendary', label: 'LEGENDARY', labelTh: 'เลเจนดารี', partyCover: true }),
 });
 export const TEAMBOOK_CARD_RULES = Object.freeze({
   generic: Object.freeze({ collectible: false, reward: false, partyCover: false }),
-  common: Object.freeze({ collectible: true, background: 'flat-rgbs', partyCover: false }),
+  common: Object.freeze({ collectible: true, background: 'flat-rgbs', partyCover: true }),
   rare: Object.freeze({ collectible: true, background: 'notebook-colored-pencil', partyCover: true }),
   epic: Object.freeze({ collectible: true, frame: 'premium-gold', partyCover: true }),
   legendary: Object.freeze({ collectible: true, maxPerSpecies: 1, colorVariants: false, partyCover: true }),
@@ -356,8 +356,7 @@ export function validateCardCatalog(catalog = TEAMBOOK_CARDS) {
   for (const card of catalog) {
     if (!TEAMBOOK_CARD_RARITIES.includes(card.rarity)) issues.push(`${card.cardId}:rarity`);
     if (card.rarity !== 'legendary' && card.accessoryColor !== card.color) issues.push(`${card.cardId}:accessory-color`);
-    if (card.rarity === 'common' && card.eligibility?.partyCover) issues.push(`${card.cardId}:common-cover`);
-    if (card.rarity !== 'common' && !card.eligibility?.partyCover) issues.push(`${card.cardId}:collectible-cover`);
+    if (!card.eligibility?.partyCover) issues.push(`${card.cardId}:collectible-cover`);
     if (card.rarity === 'legendary') {
       const count = (legendaryBySpecies.get(card.species) || 0) + 1;
       legendaryBySpecies.set(card.species, count);

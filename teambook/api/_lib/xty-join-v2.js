@@ -117,7 +117,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     await ensureQuotaV2(sql);
 
     const partyRows = await sql.query(`SELECT id,code,state,started_at,created_at,timezone,
-      activity_mode,activity_id,activity,shared_activity_description,shared_activity_color
+      activity_mode,activity_id,activity,shared_activity_description,shared_activity_color,commit_rule
       FROM teambook_books WHERE code=$1`, [code]);
     const row = partyRows[0];
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
@@ -138,38 +138,27 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
 
     const mode = row.activity_mode === 'individual' ? 'individual' : 'shared';
-    const memberActivityId = mode === 'individual'
-      ? (clean(body.activityId, 40) || null)
-      : (row.activity_id || null);
-    const memberActivityLabel = mode === 'individual'
-      ? clean(body.activityLabel, 60)
-      : clean(row.activity, 60);
-    const memberActivityDescription = mode === 'individual'
-      ? clean(body.activityDescription, 120)
-      : clean(row.shared_activity_description, 120);
-    const memberActivityColor = mode === 'individual'
-      ? (['red', 'green', 'blue', 'silver'].includes(body.activityColor) ? body.activityColor : null)
-      : (row.shared_activity_color || null);
-    const memberSuccessRule = clean(body.successRule, 60);
-    if (mode === 'individual' && (!memberActivityId || !memberActivityLabel || !memberSuccessRule)) {
-      return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
-    }
+    /* Join is identity-only. Shared books can safely inherit the book's
+       activity and a useful default rule. Individual books start blank and
+       let the member choose inside the book during the same 24-hour identity
+       window as their name and character. */
+    const memberActivityId = mode === 'shared' ? (row.activity_id || null) : null;
+    const memberActivityLabel = mode === 'shared' ? clean(row.activity, 60) : '';
+    const memberActivityDescription = mode === 'shared' ? clean(row.shared_activity_description, 120) : '';
+    const memberActivityColor = mode === 'shared' ? (row.shared_activity_color || null) : null;
+    const memberSuccessRule = mode === 'shared'
+      ? (clean(row.commit_rule, 60) || 'ทำกิจกรรมของวันนี้แล้ว')
+      : '';
     const existing = await findExistingMember(req, sql, row.id, identityIds);
 
     if (existing) {
       if (existing.left_at) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 403);
       const token = memberToken();
       const at = new Date();
-      await sql.query(`UPDATE teambook_book_members SET alias=$1,avatar=$2,avatar_color=$3,auth_hash=$4,
-          activity_id=COALESCE($7,activity_id),
-          activity_label=COALESCE(NULLIF($8,''),activity_label),
-          activity_description=COALESCE(NULLIF($9,''),activity_description),
-          activity_color=COALESCE($10,activity_color),
-          success_rule=COALESCE(NULLIF($11,''),success_rule)
+      await sql.query(`UPDATE teambook_book_members
+        SET alias=$1,avatar=$2,avatar_color=$3,auth_hash=$4
         WHERE book_id=$5 AND user_id=$6`, [
         alias, avatar, avatarColor, await sha256(token), row.id, existing.user_id,
-        memberActivityId, memberActivityLabel, memberActivityDescription,
-        memberActivityColor, memberSuccessRule,
       ]);
       if (existing.role !== 'lead') await attachQuota(sql, quotaKey, row.id, at);
       return sendJson(res, {

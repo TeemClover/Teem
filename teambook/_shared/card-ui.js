@@ -15,6 +15,10 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-b
   style.id = 'xty-canonical-back-style';
   style.textContent = `
     .animal-card.card-back{
+      box-sizing:border-box!important;
+      width:100%!important;
+      height:auto!important;
+      min-height:0!important;
       aspect-ratio:var(--xty-card-aspect)!important;
       background:#13291d url('/assets/card-back.webp') center/cover no-repeat!important;
       border:0!important;
