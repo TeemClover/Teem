@@ -20,9 +20,10 @@ function installStyles() {
   const style = document.createElement('style');
   style.id = 'tb12-new-reuse-style';
   style.textContent = `
-    .tb12-reuse{margin-top:14px;padding-top:14px;border-top:1px dashed var(--xty-border)}
-    .tb12-reuse-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-    .tb12-reuse-head b{font-size:13px}.tb12-reuse-head small{color:var(--xty-muted);font-size:10.5px}
+    .tb12-reuse{margin-top:14px;padding:12px 14px;border:1px solid var(--xty-border);border-radius:14px;background:rgba(255,255,255,.55)}
+    .tb12-reuse>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:13px;font-weight:850}
+    .tb12-reuse>summary span{color:var(--xty-muted);font-size:11px;font-weight:750}
+    .tb12-reuse-body{padding-top:12px}
     .tb12-reuse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px}
     .tb12-reuse-card{padding:0;border:0;background:transparent;border-radius:12px;overflow:visible;text-align:left}
     .tb12-reuse-card[aria-checked="true"]{outline:3px solid rgba(85,181,106,.3);outline-offset:3px}
@@ -43,10 +44,10 @@ function owned(role) {
 
 function mountShelf({ host, kind, cards, title, note }) {
   if (!host || !cards.length) return;
-  const shell = document.createElement('div');
+  const shell = document.createElement('details');
   shell.className = 'tb12-reuse';
   shell.dataset.kind = kind;
-  shell.innerHTML = `<div class="tb12-reuse-head"><b>${esc(title)}</b><small>V1.2 · ใช้ซ้ำข้ามสมุดได้</small></div><div class="tb12-reuse-grid"></div><p class="tb12-reuse-note">${esc(note)}</p>`;
+  shell.innerHTML = `<summary>${esc(title)}<span>${cards.length} ใบ</span></summary><div class="tb12-reuse-body"><div class="tb12-reuse-grid"></div><p class="tb12-reuse-note">${esc(note)}</p></div>`;
   const grid = shell.querySelector('.tb12-reuse-grid');
 
   function selectedId() {

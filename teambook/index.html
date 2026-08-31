@@ -79,18 +79,12 @@
       <p class="first-welcome-slogan">มีฉัน มีเธอ มีเรื่องของเรา</p>
     </div>
     <div class="first-welcome-copy">
-      <span class="first-welcome-sticker" id="firstWelcomeSticker">หน้าแรก</span>
-      <p class="kicker" id="firstWelcomeKicker">ยินดีต้อนรับสู่ TeamBook</p>
-      <h1 class="title" id="firstWelcomeTitle">มีสมุดเล่มหนึ่ง<br>กำลังรอเรื่องของคุณ</h1>
-      <p class="lede" id="firstWelcomeLede">เริ่มจากตัวเอง หรือชวนใครมาทำอะไรบางอย่างไปด้วยกัน ไม่ต้องว่างพร้อมกัน ไม่ต้องทำเรื่องเดียวกัน วันละประมาณ 1 นาที ก็พอ</p>
-      <ul class="first-welcome-trust" aria-label="สิ่งที่ TeamBook ไม่เรียกร้อง">
-        <li>ไม่ต้องโหลดแอพ</li>
-        <li>ไม่มี Notification</li>
-        <li>ไม่บังคับ Login เพื่อเริ่ม</li>
-      </ul>
-      <button class="btn gold" id="enterRoom" type="button">เปิด TeamBook</button>
-      <a class="about-link" id="welcomeRead" href="/read/">อ่านเรื่องของสมุดก่อน →</a>
-      <p class="first-welcome-note">เริ่มด้วยชื่อในสมุดและสัตว์แทนตัวคุณ · เปลี่ยนทีหลังได้</p>
+      <span class="first-welcome-sticker" id="firstWelcomeSticker">เริ่มได้ทันที</span>
+      <p class="kicker" id="firstWelcomeKicker">ยินดีต้อนรับ</p>
+      <h1 class="title" id="firstWelcomeTitle">เปิดสมุด<br>เล่มแรกของคุณ</h1>
+      <p class="lede" id="firstWelcomeLede">ตั้งชื่อ เลือกสิ่งที่อยากทำ แล้วเริ่มได้เลย</p>
+      <button class="btn gold" id="enterRoom" type="button">เริ่ม</button>
+      <a class="about-link" id="welcomeRead" href="/read/">TeamBook คืออะไร?</a>
     </div>
   </div>
 </div>
@@ -163,14 +157,15 @@
       </div>
     </div>
 
-    <div class="card" id="capacityCard" style="margin-top:12px">
-      <span class="label">ช่องสมุดของคุณ</span>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="capacity-number" id="ownedCapacityN">0 / 1<small>สร้างสมุด</small></div>
-        <div class="capacity-number" id="joinedCapacityN">0 / 3<small>เข้าร่วม</small></div>
+    <details class="party-group" id="capacityCard" style="margin-top:12px">
+      <summary><span>ข้อมูลสมุด</span><span class="party-group-count">ดูเพิ่มเติม</span></summary>
+      <div style="padding:0 15px 15px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="capacity-number" id="ownedCapacityN">0 / 1<small>สร้างสมุด</small></div>
+          <div class="capacity-number" id="joinedCapacityN">0 / 3<small>เข้าร่วม</small></div>
+        </div>
       </div>
-      <p class="whisper">ช่องสร้างสมุดและช่องเข้าร่วมนับแยกกัน</p>
-    </div>
+    </details>
 
     <section id="allPartiesSection">
       <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">สมุดทั้งหมด</h2>
@@ -190,7 +185,6 @@
 
     <div class="about-links">
       <a class="about-link" href="/read/">รู้จัก TeamBook →</a>
-      <a class="about-link" href="/read/why/">ทำไมต้องมี TeamBook →</a>
     </div>
 
     <nav class="tabs">
@@ -237,11 +231,11 @@ function configureFirstWelcome() {
   const code = inviteCodeFromUrl();
   if (!code) return;
   $('firstWelcomeSticker').textContent = 'มีคนเว้นหน้าไว้ให้คุณ';
-  $('firstWelcomeKicker').textContent = 'คำชวนจากสมุดเล่มหนึ่ง';
-  $('firstWelcomeTitle').innerHTML = 'มีคนชวนคุณมาเขียน<br>สมุดเล่มเดียวกัน';
-  $('firstWelcomeLede').textContent = 'เขาไม่ได้ชวนคุณมาเล่นอีกแอพหนึ่ง แค่อยากมีช่วงเวลาสั้น ๆ ที่ได้เห็นกัน วันละประมาณ 1 นาที';
-  $('enterRoom').textContent = 'เปิดดูสมุดเล่มนี้';
-  $('welcomeRead').textContent = 'TeamBook คืออะไร? →';
+  $('firstWelcomeKicker').textContent = 'คำชวนจากเพื่อน';
+  $('firstWelcomeTitle').innerHTML = 'มีคนชวนคุณ<br>เข้าร่วมสมุด';
+  $('firstWelcomeLede').textContent = 'ตั้งชื่อแล้วเข้าเล่มได้เลย';
+  $('enterRoom').textContent = 'ไปต่อ';
+  $('welcomeRead').textContent = 'TeamBook คืออะไร?';
   $('welcomeRead').href = `/read/?c=${encodeURIComponent(code)}`;
 }
 

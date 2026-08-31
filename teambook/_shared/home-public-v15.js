@@ -68,9 +68,6 @@ function installStyle() {
     .v13-create-book h2{margin:0 0 5px;font-size:clamp(22px,6vw,29px)}
     .v13-create-book p{margin:0;color:var(--xty-muted);font-size:14px;line-height:1.6}
     .v13-create-book .btn{width:100%;margin-top:13px;min-height:56px;font-size:17px}
-    .v13-create-defaults{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
-    .v13-create-defaults span{padding:5px 8px;border:1px solid rgba(41,136,87,.18);border-radius:999px;background:rgba(255,255,255,.65);font-size:10px;font-weight:800;color:var(--xty-muted)}
-    .v13-first-book-note{margin-top:13px!important;padding-top:11px;border-top:1px dashed rgba(41,136,87,.2);font-size:12.5px!important}
 
     #tb15PublicDiscovery{margin:22px 0 4px;padding:20px 0 4px;border-top:1px dashed var(--xty-border)}
     #allPartiesSection>#tb15PublicDiscovery{margin-top:18px}
@@ -128,17 +125,11 @@ function ensureCreateHero() {
   const first = !hasAnyBook();
   node.innerHTML = first ? `
     <p class="kicker">สมุดเล่มแรกของคุณ</p>
+    <h2>พร้อมเริ่มแล้ว</h2>
+    <p>เลือกสิ่งที่อยากทำ แล้วเปิดสมุดได้เลย</p>
+    <a class="btn gold" href="/new/?quick=1">เปิดสมุดเล่มแรก</a>` : `
     <h2>เปิดสมุดเล่มใหม่</h2>
-    <p>เริ่มจากเรื่องหนึ่งที่อยากทำ แล้วค่อยชวนเพื่อนเข้ามาเขียนในเล่มเดียวกันได้</p>
-    <div class="v13-create-defaults" aria-label="ค่าเริ่มต้นของสมุดเล่มแรก">
-      <span>ทำเรื่องเดียวกัน</span><span>สาธารณะ</span><span>3 วัน</span><span>ต้องมีคนเห็น</span>
-    </div>
-    <p class="v13-first-book-note">สมุดเล่มแรกคือจุดเริ่มต้นของเรื่องของคุณ · เปิดก่อน แล้วค่อยเลือกว่าจะเขียนกับใคร</p>
-    <a class="btn gold" href="/new/?quick=1">+ เปิดสมุดเล่มใหม่</a>` : `
-    <p class="kicker">เปิดเรื่องต่อไป</p>
-    <h2>เปิดสมุดเล่มใหม่</h2>
-    <p>เล่มเดิมจบแล้วก็เริ่มเรื่องใหม่ได้ เมื่อพร้อมค่อยชวนเพื่อนเข้ามาเขียนด้วยกัน</p>
-    <a class="btn gold" href="/new/?quick=1">+ เปิดสมุดเล่มใหม่</a>`;
+    <a class="btn gold" href="/new/?quick=1">เปิดสมุด</a>`;
   if (node.nextElementSibling !== main) main.insertAdjacentElement('beforebegin', node);
   return node;
 }

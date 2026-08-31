@@ -28,6 +28,20 @@
 <meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
+<style>
+  .join-page{width:min(100%,640px)}
+  .join-page>.kicker{margin-bottom:6px}.join-page>.title{margin:0}.join-page>.lede{margin:8px 0 18px}
+  .join-card{padding:clamp(18px,5vw,26px)}
+  .join-preview{margin:16px 0;padding:16px;border:1px solid rgba(85,181,106,.38);border-radius:16px;background:#f2fbef}
+  .join-preview span{color:var(--xty-muted);font:850 10px/1.3 var(--sans);letter-spacing:.1em}
+  .join-preview h2{margin:5px 0 3px;font-size:21px}.join-preview p{margin:0;color:var(--xty-muted);font-size:13px}
+  .join-requirement{margin:12px 0 0!important;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.7)}
+  .join-options{margin-top:16px;padding:13px 14px;border:1px solid var(--xty-border);border-radius:14px;background:rgba(255,255,255,.52)}
+  .join-options>summary{cursor:pointer;font-size:13px;font-weight:850}
+  .join-options[open]>summary{margin-bottom:12px}
+  .join-options .field{margin-top:0}
+  #go{width:100%;min-height:56px}
+</style>
 <script>
 (() => {
   const value = new URLSearchParams(location.search).get('c');
@@ -75,52 +89,49 @@
   <a class="back" href="/">ยกเลิก</a>
 </header>
 
-<main class="wrap">
+<main class="wrap join-page">
   <p class="kicker">เข้าร่วมสมุด</p>
   <h1 class="title">เข้าร่วมสมุด</h1>
   <p class="lede">ใส่รหัสที่เพื่อนส่งมา</p>
 
-  <div class="card">
-    <div class="field" style="margin-top:0">
+  <div class="card join-card">
+    <div class="field" id="codeField" style="margin-top:0">
       <label for="code">รหัสสมุด</label>
       <input id="code" type="text" inputmode="numeric" maxlength="5" placeholder="00427"
              autocomplete="one-time-code" spellcheck="false"
              style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;font-size:19px">
     </div>
-    <div class="field">
-      <label>เล่นสมุดนี้เป็นตัวไหนดี?</label>
-      <p class="whisper" style="margin:0 0 12px">เลือกสัตว์เริ่มต้น หรือการ์ดที่ปลดล็อกแล้วในคอลเลกชัน</p>
-      <div id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครหรือการ์ดประจำสมุด"></div>
-      <div id="frameField">
-        <p class="label" style="margin:14px 0 8px">สีกรอบ Starter</p>
-        <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำสมุด"></div>
-      </div>
-      <p class="hint" id="avatarHint">Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะสมุดนี้ได้ และใช้หน้าตาซ้ำข้ามสมุดได้</p>
+    <div class="join-preview" id="bookPreview" hidden>
+      <span>สมุดที่กำลังจะเข้าร่วม</span>
+      <h2 id="bookName"></h2>
+      <p id="bookMeta"></p>
     </div>
 
-    <div class="field" id="sharedActivityField" hidden>
-      <label>กิจกรรมของสมุดนี้</label>
-      <p class="whisper" style="margin:0 0 10px">ทุกคนในเล่มนี้ทำเรื่องเดียวกัน แต่ตั้งเป้าของตัวเองได้</p>
+    <div class="field join-requirement" id="sharedActivityField" hidden>
+      <span class="label">กิจกรรม</span>
       <p class="shared-activity" id="sharedActivityName"></p>
-      <div class="field" style="margin-top:14px">
-        <label for="sharedRule" id="sharedRuleLabel"></label>
-        <input id="sharedRule" type="text" maxlength="60" placeholder="เช่น อ่าน 10 หน้า">
-        <p class="hint">ไม่ใส่ก็ได้ · เขียนสั้น ๆ ด้วยคำของตัวเอง เปลี่ยนทีหลังได้</p>
-      </div>
     </div>
 
     <div class="field" id="ownActivityField" hidden>
-      <label>เล่มนี้ต่างคนต่างทำ — เลือกเรื่องของคุณ</label>
-      <p class="whisper" style="margin:0 0 12px">เลือกกิจกรรมของตัวเอง แล้วกลับมาลงชื่อในสมุดเดียวกันกับคนอื่น</p>
+      <label>เลือกกิจกรรมของคุณ</label>
       <div id="ownActivityPick"></div>
     </div>
 
-    <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าร่วมสมุด</button>
-    <p class="hint" id="joinWait" style="margin-top:12px">ตอนกดเข้าร่วม ปุ่มจะขยับขณะกำลังเขียนชื่อคุณลงสมุด · พอยืนยันสมาชิกแล้วจะพาเข้าเล่มทันที</p>
+    <details class="join-options">
+      <summary>เปลี่ยนตัวละครในสมุดนี้</summary>
+      <div class="field">
+        <div id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครหรือการ์ดประจำสมุด"></div>
+        <div id="frameField">
+          <p class="label" style="margin:14px 0 8px">สีกรอบ</p>
+          <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำสมุด"></div>
+        </div>
+        <p class="hint" id="avatarHint">เปลี่ยนเฉพาะสมุดนี้ได้</p>
+      </div>
+    </details>
+
+    <button class="btn gold" id="go" style="margin-top:18px" disabled>เข้าร่วมเลย</button>
     <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
   </div>
-
-  <p class="note">รหัสนี้ใช้เข้าร่วมสมุดข้ามเครื่องได้ สมาชิกหนึ่งสมุดมีได้ 1–11 คน (เจ้าของสมุดนับเป็นสมาชิกด้วย) และสมาชิกในสมุดจะเห็นเรื่องในสมุดร่วมกัน</p>
 </main>
 
 <script type="module">
@@ -128,7 +139,7 @@ import { hasProfile, getProfile } from '/_shared/store.js';
 import { joinPartyV2 } from '/_shared/join-party-v2.js';
 import { AVATAR_FRAMES } from '/_shared/avatars.js';
 import { mountCardPicker } from '/_shared/card-picker.js';
-import { SHARED, INDIVIDUAL, SUCCESS_RULE_PROMPT, normalizeMode } from '/_shared/book-mode.js';
+import { SHARED, INDIVIDUAL, normalizeMode } from '/_shared/book-mode.js';
 import { mountActivityPicker } from '/_shared/activity-picker.js';
 
 const $ = id => document.getElementById(id);
@@ -166,6 +177,8 @@ function initJoin(initialCode) {
   function forget() {
     bookMode = null;
     peeked = '';
+    $('codeField').hidden = false;
+    $('bookPreview').hidden = true;
     $('sharedActivityField').hidden = true;
     $('ownActivityField').hidden = true;
   }
@@ -185,17 +198,19 @@ function initJoin(initialCode) {
         return;
       }
       bookMode = normalizeMode(data.party.activityMode);
+      if (initialCode === code) $('codeField').hidden = true;
+      $('bookName').textContent = data.party.name || 'สมุดของเรา';
+      $('bookMeta').textContent = `${Number(data.party.durationDays || 7)} วัน`;
+      $('bookPreview').hidden = false;
       if (bookMode === SHARED) {
         $('sharedActivityField').hidden = false;
         $('ownActivityField').hidden = true;
         $('sharedActivityName').textContent = data.party.sharedActivityLabel || data.party.activity || 'ยังไม่ระบุกิจกรรม';
-        $('sharedRuleLabel').textContent = SUCCESS_RULE_PROMPT;
       } else {
         $('sharedActivityField').hidden = true;
         $('ownActivityField').hidden = false;
         if (!ownPicker) {
           ownPicker = mountActivityPicker($('ownActivityPick'), {
-            askSuccessRule: true,
             onChange: value => { ownActivity = value; syncReady(); },
           });
         }
@@ -232,8 +247,8 @@ function initJoin(initialCode) {
     const usingCard = kind === 'card';
     $('frameField').hidden = usingCard;
     $('avatarHint').textContent = usingCard
-      ? 'การ์ดใช้สีของการ์ดเอง · เลือกเฉพาะสมุดนี้ได้ และไม่เปลี่ยนสัตว์เริ่มต้นในโปรไฟล์'
-      : 'Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะสมุดนี้ได้ และใช้หน้าตาซ้ำข้ามสมุดได้';
+      ? 'การ์ดใช้สีของการ์ดเอง'
+      : 'เปลี่ยนเฉพาะสมุดนี้ได้';
   }
 
   mountCardPicker($('avatarPick'), {
@@ -274,15 +289,15 @@ function initJoin(initialCode) {
         activityLabel: ownActivity.label,
         activityDescription: ownActivity.description,
         activityColor: ownActivity.color,
-        successRule: ownActivity.successRule,
-      } : { successRule: $('sharedRule').value.trim() }),
+        successRule: ownActivity.successRule || 'ทำสิ่งที่ตั้งใจไว้แล้ว',
+      } : { successRule: 'ทำสิ่งที่ตั้งใจไว้แล้ว' }),
     });
     if (res.error === 'NOT_FOUND') {
       err.textContent = 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง';
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error === 'FULL') {
@@ -290,7 +305,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error === 'PARTY_CLOSED') {
@@ -298,7 +313,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error === 'MEMBERSHIP_CLOSED') {
@@ -306,7 +321,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error === 'ACTIVITY_REQUIRED') {
@@ -314,7 +329,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error === 'JOINED_PARTY_LIMIT') {
@@ -322,7 +337,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     if (res.error) {
@@ -330,7 +345,7 @@ function initJoin(initialCode) {
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');
-      go.textContent = 'เข้าร่วมสมุด';
+      go.textContent = 'เข้าร่วมเลย';
       return;
     }
     location.href = `/p/?c=${encodeURIComponent(res.party?.code || res.code || input.value)}`;

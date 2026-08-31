@@ -29,6 +29,12 @@
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<style>
+  .more-tools{margin-top:12px}
+  .more-tools>.more-tools-body{padding-top:2px}
+  .more-tools .party-tools{margin-top:10px;background:rgba(255,255,255,.58);box-shadow:none}
+  .more-tools>summary{font-size:13px;color:var(--xty-muted)}
+</style>
 <script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
 </head>
 <body>
@@ -74,7 +80,7 @@
       </div>
 
       <div style="margin-top:18px">
-        <span class="label">ความคืบหน้ารายวัน · ไม่มีคะแนนแข่งกัน</span>
+        <span class="label">ความคืบหน้า</span>
         <div class="progress-grid" id="progress" aria-label="ความคืบหน้ารายวัน"></div>
       </div>
 
@@ -95,7 +101,7 @@
     </div>
 
     <div class="card">
-      <span class="label">ชวนคนเข้าร่วมสมุด</span>
+      <span class="label">ชวนเพื่อน</span>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <span class="code-chip" id="code"></span>
         <button class="btn ghost sm" id="copy">แชร์คำเชิญ</button>
@@ -108,7 +114,7 @@
         <span class="label" style="margin:0">เรื่องในสมุด</span>
         <button class="btn ghost sm" id="refresh" style="min-height:36px;padding:0 13px">↻ ดึงอัปเดต</button>
       </div>
-      <p class="whisper" style="margin:0">ลงชื่อทุกวัน · หลังปิดเล่ม ทุกคนได้ ข้อความสุดท้าย อีกหนึ่งรอบ · ส่งกำลังใจ ไม่กินโควตา</p>
+      <p class="whisper" style="margin:0">กลับมาเขียนและเห็นกันตรงนี้</p>
 
       <div class="reward-status-list" id="rewardStatuses"></div>
       <div class="log" id="log"></div>
@@ -129,7 +135,6 @@
 
     <section class="card quest-ending-panel" id="questFinishPanel" hidden>
       <span class="label">ฉากจบของเล่ม</span>
-      <p class="whisper" style="margin:0">ปุ่มอยู่ตรงนี้ตลอดสำหรับเจ้าของสมุด แต่จะเปิดให้กดเมื่อผ่านวันสุดท้ายของเล่มแล้วเท่านั้น</p>
       <p class="complete-gate" id="completeGate">กำลังตรวจวันของเล่ม…</p>
       <button class="btn ghost quest-locked" id="completeParty" disabled>ปิดเล่ม · ยังไม่ครบวัน</button>
     </section>
@@ -145,46 +150,47 @@
       <button class="btn ghost sm" type="button" id="endingCoverUpload" style="margin-top:10px">🖼 อัปโหลดภาพฉากจบ</button>
     </section>
 
-    <details class="party-tools" id="myCharacterTools">
-      <summary>ตัวละครของฉันในสมุดนี้</summary>
-      <p class="whisper">เปลี่ยนเฉพาะสมุดนี้ได้ โดยไม่เปลี่ยน Default สัตว์ ในโปรไฟล์</p>
-      <div class="tool-row">
-        <div class="field"><label for="myAliasInput">ชื่อในสมุด</label><input id="myAliasInput" maxlength="24"></div>
-      </div>
-      <div class="tool-row">
-        <div class="field"><label for="myAvatarSelect">Animal</label><select id="myAvatarSelect"></select></div>
-        <div class="field"><label for="myColorSelect">Color</label><select id="myColorSelect"></select></div>
-      </div>
-      <button class="btn ghost sm" id="saveMyCharacter">บันทึกตัวละครสมุดนี้</button>
-    </details>
+    <details class="party-tools more-tools" id="moreTools">
+      <summary>ตัวเลือกเพิ่มเติม</summary>
+      <div class="more-tools-body">
+        <details class="party-tools" id="myCharacterTools">
+          <summary>ตัวละครของฉัน</summary>
+          <div class="tool-row">
+            <div class="field"><label for="myAliasInput">ชื่อในสมุด</label><input id="myAliasInput" maxlength="24"></div>
+          </div>
+          <div class="tool-row">
+            <div class="field"><label for="myAvatarSelect">ตัวละคร</label><select id="myAvatarSelect"></select></div>
+            <div class="field"><label for="myColorSelect">สี</label><select id="myColorSelect"></select></div>
+          </div>
+          <button class="btn ghost sm" id="saveMyCharacter">บันทึก</button>
+        </details>
 
-    <details class="party-tools" id="partyTools">
-      <summary id="manage">จัดการสมุด</summary>
-      <p class="whisper">ทุกการเปลี่ยนแปลงเก็บเป็น Event สำหรับเล่า Ending โดยไม่แก้ประวัติเดิม</p>
+        <details class="party-tools" id="partyTools">
+          <summary id="manage">จัดการสมุด</summary>
+          <div class="tool-row">
+            <div class="field"><label for="renameInput">ชื่อสมุด</label><input id="renameInput" maxlength="40"></div>
+            <button class="btn ghost sm" id="renameBtn">บันทึก</button>
+          </div>
+          <div class="tool-row">
+            <div class="field"><label for="ruleInput">เงื่อนไขลงชื่อ</label><input id="ruleInput" maxlength="120"></div>
+            <button class="btn ghost sm" id="ruleBtn">บันทึก</button>
+          </div>
+          <div class="tool-row">
+            <div class="field"><label for="leadSelect">ปกสมุด</label><select id="leadSelect"></select></div>
+            <button class="btn ghost sm" id="leadBtn">เปลี่ยน</button>
+          </div>
+          <div class="tool-row">
+            <div class="field"><label for="npcSelect">เพื่อนร่วมทาง</label><select id="npcSelect"></select></div>
+            <button class="btn ghost sm" id="npcBtn">เปลี่ยน</button>
+          </div>
 
-      <div class="tool-row">
-        <div class="field"><label for="renameInput">ชื่อสมุด</label><input id="renameInput" maxlength="40"></div>
-        <button class="btn ghost sm" id="renameBtn">บันทึก</button>
-      </div>
-      <div class="tool-row">
-        <div class="field"><label for="ruleInput">วันนี้ลงชื่อได้เมื่อ</label><input id="ruleInput" maxlength="120"></div>
-        <button class="btn ghost sm" id="ruleBtn">บันทึก</button>
-      </div>
-      <div class="tool-row">
-        <div class="field"><label for="leadSelect">การ์ดเปิดสมุด</label><select id="leadSelect"></select></div>
-        <button class="btn ghost sm" id="leadBtn">เปลี่ยน</button>
-      </div>
-      <div class="tool-row">
-        <div class="field"><label for="npcSelect">เพื่อนร่วมทาง</label><select id="npcSelect"></select></div>
-        <button class="btn ghost sm" id="npcBtn">เปลี่ยน</button>
-      </div>
+          <span class="label" style="margin-top:18px">คนในสมุด</span>
+          <div class="member-tools" id="memberTools"></div>
 
-      <span class="label" style="margin-top:18px">คนในสมุด</span>
-      <div class="member-tools" id="memberTools"></div>
-
-      <div class="danger-zone">
-        <p class="whisper">ปิดสมุดทำได้ทันทีและจะบันทึกว่าปิดก่อนจบ โดยไม่ปลอมว่าเล่มนี้จบสำเร็จ</p>
-        <button class="btn danger" id="dissolveParty">ปิดสมุด</button>
+          <div class="danger-zone">
+            <button class="btn danger" id="dissolveParty">ปิดสมุด</button>
+          </div>
+        </details>
       </div>
     </details>
 
