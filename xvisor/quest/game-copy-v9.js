@@ -13,6 +13,12 @@ function fmt(value) {
   return Math.round(Number(value || 0)).toLocaleString('th-TH');
 }
 
+function quick3(state) {
+  return getBestNextActions(state, 3).map((item) => (
+    item?.targetId && !item.id ? { ...item, id: item.targetId } : item
+  ));
+}
+
 export function getStageContent(state) {
   const base = v8copy.getStageContent(state);
 
@@ -77,7 +83,7 @@ export function getStageContent(state) {
         ['Qualification', 'ผ่านแล้วถาวรในรอบนี้'],
         ['ขั้นถัดไป', 'สอบ XGEN เพื่อปลดล็อก ③'],
       ],
-      actions: getBestNextActions(state, 3),
+      actions: quick3(state),
     };
   }
 
@@ -90,16 +96,16 @@ export function getStageContent(state) {
       reason: 'ผ่าน Qualification แล้ว และการสอบคือสิ่งที่ปลดล็อกรายได้จากการบริหาร Organization',
       speaker: 'Xcademy',
       dialogue: '③ รายได้จากการบริหาร Organization ปลดล็อกแล้ว',
-      actions: getBestNextActions(state, 3),
+      actions: quick3(state),
     };
   }
 
   if (state.stage === 'management' || state.sceneReport?.kind === 'the-xircle' || state.sceneReport?.kind === 'xircle-announcement' || state.sceneReport?.kind === 'xlead-exam') {
-    return { ...base, actions: getBestNextActions(state, 3) };
+    return { ...base, actions: quick3(state) };
   }
 
   if (Number(state.month || 0) > 0 && Number(state.month || 0) <= CAMPAIGN_MONTHS && base.management) {
-    return { ...base, actions: getBestNextActions(state, 3) };
+    return { ...base, actions: quick3(state) };
   }
 
   return base;
