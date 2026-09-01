@@ -19,8 +19,8 @@ const canonicalModules = [
 test('public shell boots 1.0b from one canonical stylesheet and one canonical module', async () => {
   const html = await source('index.html');
   assert.match(html, /data-game-version="1\.0b"/);
-  assert.match(html, /game\.css\?v=1\.0b-canonical2/);
-  assert.match(html, /game-ui\.js\?v=1\.0b-canonical2/);
+  assert.match(html, /game\.css\?v=1\.0b-canonical3/);
+  assert.match(html, /game-ui\.js\?v=1\.0b-canonical3/);
   assert.doesNotMatch(html, /type="importmap"/);
   assert.doesNotMatch(html, /game-(?:1b|v8|v9|v1|v1a|v1b-core)/);
   assert.match(html, /1\.0b-20260901-hotfix1/);
@@ -71,6 +71,19 @@ test('campaign END_MONTH click is handled once by the canonical action bar', asy
   const ui = await source('game-ui.js');
   assert.match(ui, /gameEvent === EVENTS\.END_MONTH/);
   assert.match(ui, /event\.stopImmediatePropagation\(\)/);
+});
+
+test('gameplay state is saved and rendered before optional audio effects', async () => {
+  const ui = await source('game-ui.js');
+  const dispatchBody = ui.slice(ui.indexOf('function dispatch(event, payload = {})'), ui.indexOf('function clearAutomation()'));
+  const stateCommit = dispatchBody.indexOf('state = next;');
+  const saveCommit = dispatchBody.indexOf('save();', stateCommit);
+  const renderCommit = dispatchBody.indexOf('render();', stateCommit);
+  const soundEffect = dispatchBody.indexOf('playForEvent(event, payload);', stateCommit);
+  assert.ok(stateCommit >= 0 && saveCommit > stateCommit);
+  assert.ok(renderCommit > saveCommit);
+  assert.ok(soundEffect > renderCommit);
+  assert.match(dispatchBody, /try \{\s*audio\.unlock\(\);\s*\} catch/);
 });
 
 test('canonical UI retains the Month 12 score gate and Month 24 NEW GAME+ finale', async () => {

@@ -186,7 +186,10 @@ function spawnEffect(kind) {
   }
 }
 function dispatch(event, payload = {}) {
-  audio.unlock();
+  try {
+    audio.unlock();
+  } catch {
+  }
   if (!canDispatch(state, event)) {
     audio.play("warning");
     return;
@@ -200,7 +203,22 @@ function dispatch(event, payload = {}) {
     return;
   }
   state = next;
-  playForEvent(event, payload);
+  const reportChanged = Number(previous.lastOrganizationReport?.month || 0) !== Number(state.lastOrganizationReport?.month || 0);
+  const sceneReportChanged = previous.sceneReport?.kind !== state.sceneReport?.kind;
+  if (previous.stage !== state.stage || reportChanged || sceneReportChanged) {
+    activeDialogKey = null;
+    stageStartedAt = performance.now();
+  }
+  // Commit gameplay before optional audio and visual effects. Mobile Safari can
+  // interrupt AudioContext (for example while screen recording); that must never
+  // leave a reduced state in memory without saving or rendering it.
+  save();
+  render();
+  scheduleAutomaticTransition();
+  try {
+    playForEvent(event, payload);
+  } catch {
+  }
   const correct = state.lastEvent?.endsWith("_CORRECT");
   const wrong = state.lastEvent?.endsWith("_WRONG");
   if (correct) toast("ผ่านหลักนี้แล้ว", "success");
@@ -220,12 +238,6 @@ function dispatch(event, payload = {}) {
     audio.play("income");
     if (state.stage !== STAGES.M1_SALE_RECEIPT) queueMicrotask(() => showReceipt(state.economy.lastTransaction));
   }
-  const reportChanged = Number(previous.lastOrganizationReport?.month || 0) !== Number(state.lastOrganizationReport?.month || 0);
-  const sceneReportChanged = previous.sceneReport?.kind !== state.sceneReport?.kind;
-  if (previous.stage !== state.stage || reportChanged || sceneReportChanged) {
-    activeDialogKey = null;
-    stageStartedAt = performance.now();
-  }
   if (!previous.campaignScore?.locked && state.campaignScore?.locked) {
     audio.play("score");
     spawnEffect("confetti");
@@ -237,9 +249,6 @@ function dispatch(event, payload = {}) {
     const report = state.lastOrganizationReport;
     window.setTimeout(() => audio.play(report.trip ? "trip" : report.activities?.xircle ? "xircleDone" : report.newXleads || report.newXvisors ? "promotion" : "income"), 130);
   }
-  save();
-  render();
-  scheduleAutomaticTransition();
 }
 function clearAutomation() {
   window.clearTimeout(stageTimer);
