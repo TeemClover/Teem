@@ -1,6 +1,6 @@
 /* 1 Sep 2026 non-destructive UI hotfix.
-   Keep Year 2 on one full-width column and keep Recognition Trip art pinned
-   for the whole travel month. */
+   Keep Year 2 on one full-width column, keep the Organization controls visible
+   below the board, and keep Recognition Trip art pinned for the whole travel month. */
 
 #gameApp.is-organization-mode .game-layout {
   grid-template-columns: minmax(0, 1fr) !important;
@@ -9,13 +9,20 @@
 
 #gameApp.is-organization-mode .game-layout__world,
 #gameApp.is-organization-mode .goal-card,
-#gameApp.is-organization-mode .world-frame {
+#gameApp.is-organization-mode .world-frame,
+#gameApp.is-organization-mode .game-layout__controls {
   width: 100%;
   max-width: none;
 }
 
+/* Year 2 is still interactive. The controls must remain visible so the
+   "ผ่านไปอีก 1 เดือน" action and Organization report never disappear. */
 #gameApp.is-organization-mode .game-layout__controls {
-  display: none !important;
+  display: grid !important;
+  position: static !important;
+  top: auto !important;
+  margin-top: 14px;
+  gap: 12px;
 }
 
 #gameApp.is-organization-mode #worldCanvas {
@@ -52,5 +59,9 @@
   #gameApp.is-organization-mode .world-frame,
   #gameApp.is-organization-mode .goal-card {
     margin-inline: 0;
+  }
+
+  #gameApp.is-organization-mode .game-layout__controls {
+    margin-top: 12px;
   }
 }
