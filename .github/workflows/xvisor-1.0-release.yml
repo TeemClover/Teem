@@ -31,14 +31,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Syntax check release modules
+      - name: Syntax check active 1.0b release modules
         run: |
           node --check xvisor/quest/game.js
           node --check xvisor/quest/game-audio.js
-          node --check xvisor/quest/game-data-v1.js
-          node --check xvisor/quest/game-copy-v9.js
+          node --check xvisor/quest/game-data-v1b-core.js
+          node --check xvisor/quest/game-copy-v9a.js
           node --check xvisor/quest/game-v9-ui.js
           node --check xvisor/quest/game-v1-ui.js
+          node --check xvisor/quest/game-1b-final.js
           node --check api/xvisor-scores.js
-      - name: X-VISOR 1.0 tests
+      - name: X-VISOR 1.0b tests
         run: npm run test:xvisor
