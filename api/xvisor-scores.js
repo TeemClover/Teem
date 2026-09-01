@@ -22,7 +22,6 @@ async function ensureScoreSchema(sql) {
       UNIQUE (run_id, score_version)
     )`);
     await sql.query('CREATE INDEX IF NOT EXISTS idx_xvisor_scores_version_tgv ON xvisor_campaign_scores(score_version, best_tgv DESC, completed_at ASC)');
-    // Public 1.0b launch starts a clean scoreboard. The fixed cutoff makes this safe on every serverless cold start.
     await sql.query('DELETE FROM xvisor_campaign_scores WHERE score_version=$1 AND created_at < $2', [SCORE_VERSION, RELEASE_RESET_BEFORE]);
   })().catch((error) => { schemaPromise = undefined; throw error; });
   return schemaPromise;
@@ -52,9 +51,12 @@ function normalizeBody(body) {
 }
 
 function publicRow(row) {
+  const runMode = row.run_mode === 'NEW_GAME_PLUS' ? 'NEW_GAME_PLUS' : 'FIRST_RUN';
+  const rawName = String(row.display_name || '').replace(/^🌟\s*/, '');
   return {
-    displayName: row.display_name,
-    runMode: row.run_mode,
+    displayName: runMode === 'NEW_GAME_PLUS' ? `🌟 ${rawName}` : rawName,
+    rawDisplayName: rawName,
+    runMode,
     bestTgv: Number(row.best_tgv || 0),
     totalIncome: Number(row.total_income || 0),
     bestMonthlyIncome: Number(row.best_monthly_income || 0),
@@ -87,6 +89,7 @@ export default async function handler(req, res) {
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW())
         ON CONFLICT (run_id,score_version) DO UPDATE SET
           display_name=EXCLUDED.display_name,
+          run_mode=EXCLUDED.run_mode,
           updated_at=NOW()
         RETURNING display_name,run_mode,best_tgv,total_income,best_monthly_income,organization_size,completed_at,score_version`, [
         score.runId, score.scoreVersion, score.displayName, score.runMode,
