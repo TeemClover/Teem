@@ -1,6 +1,6 @@
-export * from './game-data-v9.js?v=9pre1';
-import * as v9 from './game-data-v9.js?v=9pre1';
-import { addSkillXp, getSkillLevel, simulateTeamCycle } from './game-progression-v8.js?v=8r4';
+export * from './game-data-v9.js?v=1.0-core';
+import * as v9 from './game-data-v9.js?v=1.0-core';
+import { addSkillXp, getSkillLevel, simulateTeamCycle } from './game-progression-v8.js?v=1.0-core';
 
 export const GAME_VERSION = 'X-VISOR QUEST 1.0';
 export const RELEASE_VERSION = '1.0';
@@ -602,19 +602,4 @@ export function parseSavedState(raw) {
   } catch {
     return null;
   }
-}
-
-export function debugV1Snapshot(state) {
-  return {
-    gameVersion: GAME_VERSION,
-    saveVersion: V1_SAVE_VERSION,
-    runId: state?.runId,
-    runMode: state?.runMode,
-    month: Number(state?.month || 0),
-    organizationMode: Boolean(state?.organizationMode),
-    runComplete: Boolean(state?.runComplete),
-    currentTGV: v9.getCurrentTGV(state),
-    xvisorCount: state?.organization?.aggregate?.xvisorCount ?? uniqueTeamCount(state),
-    xleadCount: state?.organization?.aggregate?.xleadCount ?? xleadCount(state),
-  };
 }

@@ -1,5 +1,5 @@
-export * from './game-copy-v8.js?v=8r4';
-import * as v8copy from './game-copy-v8.js?v=8r4';
+export * from './game-copy-v8.js?v=1.0-core';
+import * as v8copy from './game-copy-v8.js?v=1.0-core';
 import {
   CAMPAIGN_MONTHS,
   EVENTS,
@@ -7,7 +7,7 @@ import {
   calculateEconomy,
   getBestNextActions,
   getRolling3TGV,
-} from './game-data-v9.js?v=9pre1';
+} from './game-data-v9.js?v=1.0-core';
 
 function fmt(value) {
   return Math.round(Number(value || 0)).toLocaleString('th-TH');

@@ -88,6 +88,9 @@ test('Year 2 is one-click and TGV comes from transactions, not previousTGV compo
   assert.equal(month13.month, 13);
   assert.equal(month13.economy.personalXV, 0);
   assert.equal(month13.economy.teamXV, 0);
+  const year2Actions = getBestNextActions(month13, 3);
+  assert.equal(year2Actions.length, 1);
+  assert.equal(year2Actions[0].label, '▶ ผ่านไปอีก 1 เดือน');
   const month14 = reduceGame(month13, EVENTS.END_MONTH);
   const report = month14.lastOrganizationReport;
   assert.equal(report.month, 13);

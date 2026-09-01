@@ -1,12 +1,10 @@
-import { dispatchForDebug } from './game.js?v=9pre1';
+import { dispatchForUi } from './game.js';
 import {
   CUSTOMER_STATES,
   EVENTS,
-  GAME_VERSION,
   PEOPLE_RENDER_LIMIT,
   SAVE_KEY,
   V9_SCORE_VERSION,
-  V9_SAVE_VERSION,
   buildPersonAction,
   calculateEconomy,
   findPerson,
@@ -14,11 +12,11 @@ import {
   getRolling3TGV,
   getTgvHistory,
   parseSavedState,
-} from './game-data-v9.js?v=9pre1';
-import { getSkillSnapshot } from './game-progression-v8.js?v=8r4';
+} from './game-data-v9.js?v=1.0-core';
+import { getSkillSnapshot } from './game-progression-v8.js?v=1.0-core';
 
 const PROFILE_KEY = 'mc_xvisor_certified';
-const SCORE_SENT_PREFIX = 'mc_xvisor_v9_score_sent:';
+const SCORE_SENT_PREFIX = 'mc_xvisor_1_score_sent:';
 const $ = (selector, root = document) => root.querySelector(selector);
 const dialog = $('#gameDialog');
 const dialogContent = $('#dialogContent');
@@ -179,13 +177,16 @@ function renderIncome() {
   const economy = calculateEconomy(state);
   const top = (economy.mentoringBreakdown || []).slice().sort((a, b) => b.mentorIncome - a.mentorIncome).slice(0, 5);
   const history = [...(economy.incomeHistory || [])].reverse().slice(0, 12);
-  showDialog(`<div class="dialog-kicker">REVENUE STACK · V9</div><h2>เดือนนี้ ${baht(economy.projectedIncome)} · รวม ${baht(economy.lifetimeIncome)}</h2>
+  const historyCards = history.map((item) => `<details class="income-history-card"><summary><span>เดือน ${item.month}</span><span>${fmt(item.tgv)} XV</span><b>${baht(item.total)}</b></summary><div><span>① ลูกค้า <b>${baht(item.channel1)}</b></span><span>② พัฒนา G1 <b>${baht(item.channel2)}</b></span><span>③ Organization <b>${baht(item.channel3)}</b></span></div></details>`).join('');
+  showDialog(`<div class="dialog-kicker">REVENUE STACK · 1.0</div><h2>เดือนนี้ ${baht(economy.projectedIncome)}</h2>
+    <div class="revenue-hero"><div><span>💰 รายได้เดือนนี้</span><strong>${baht(economy.projectedIncome)}</strong></div><div><span>∑ รายได้สะสม</span><strong>${baht(economy.lifetimeIncome)}</strong></div></div>
     <div class="income-sections">
-      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${baht(economy.channel1)}</b></div><p>${fmt(economy.personalXV)} XV · คำนวณจาก XV ไม่ใช่ยอดบาท</p></section>
+      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${baht(economy.channel1)}</b></div><p>ยอดขาย ${baht(economy.personalSalesBaht)} × ${escapeHtml(economy.tier?.label || 'tier ปัจจุบัน')} · XV ${fmt(economy.personalXV)} ใช้เป็น Volume แยกจากยอดบาท</p></section>
       <section><div class="income-heading"><span>② พัฒนา Direct G1 ${economy.mentoringUnlocked ? '' : '· รอ Certified XLEAD'}</span><b>${economy.mentoringUnlocked ? baht(economy.channel2) : '🔒'}</b></div><p>20% ของ commission G1 แต่ละคน</p>${economy.mentoringUnlocked ? `<ul class="income-breakdown">${top.map((item) => `<li><span>${escapeHtml(item.name)} · ${fmt(item.personalXV)} XV · คอม ${baht(item.commission)}</span><b>${baht(item.mentorIncome)}</b></li>`).join('') || '<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>'}</ul>` : ''}</section>
       <section><div class="income-heading"><span>③ บริหาร Organization ${state.career?.xgenCertified ? '' : '· รอ Certified XGEN'}</span><b>${state.career?.xgenCertified ? baht(economy.channel3) : '🔒'}</b></div><p>5% ของ TGV <b>เดือนปัจจุบันเท่านั้น</b> · ปิดเดือนแล้วไม่จ่ายยอดเดิมซ้ำ</p></section>
     </div>
-    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3><div class="table-scroll"><table><thead><tr><th>เดือน</th><th>TGV</th><th>①</th><th>②</th><th>③</th><th>รวม</th></tr></thead><tbody>${history.map((item) => `<tr><th>${item.month}</th><td>${fmt(item.tgv)} XV</td><td>${baht(item.channel1)}</td><td>${baht(item.channel2)}</td><td>${baht(item.channel3)}</td><td><b>${baht(item.total)}</b></td></tr>`).join('')}</tbody></table></div></section>
+    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history.length ? `<div class="income-history-cards">${historyCards}</div><div class="table-scroll income-history-table"><table><thead><tr><th>เดือน</th><th>TGV</th><th>①</th><th>②</th><th>③</th><th>รวม</th></tr></thead><tbody>${history.map((item) => `<tr><th>${item.month}</th><td>${fmt(item.tgv)} XV</td><td>${baht(item.channel1)}</td><td>${baht(item.channel2)}</td><td>${baht(item.channel3)}</td><td><b>${baht(item.total)}</b></td></tr>`).join('')}</tbody></table></div>` : '<p>ปิดเดือนแรกเพื่อเริ่มเก็บประวัติรายได้</p>'}</section>
+    <p class="dialog-note">ตัวเลขเชิงพาณิชย์อ่านจาก config ของเกมและมีสถานะจำลอง / TO_CONFIRM ไม่ใช่การรับประกันรายได้จริง</p>
     <button class="dialog-button" type="button" data-v9-close>กลับเกม</button>`, 'wide', 'income');
 }
 
@@ -203,7 +204,7 @@ function renderMonthConfirm() {
   if (!state) return;
   if (state.organizationMode) {
     hardClose();
-    dispatchForDebug(EVENTS.END_MONTH);
+    dispatchForUi(EVENTS.END_MONTH);
     return;
   }
   const economy = calculateEconomy(state);
@@ -328,9 +329,6 @@ function patchHud() {
       people.innerHTML = `Organization <b>${fmt(count)}</b>`;
     }
   }
-  document.querySelectorAll('.rank-chip[aria-label="เวอร์ชันเกม"], .world-frame__label b').forEach((node) => {
-    if (node.textContent !== 'V9 PRE-RELEASE') node.textContent = 'V9 PRE-RELEASE';
-  });
   patchPersonActions(state);
   patchMonthSummaryCopy();
   patchMaxSkillButtons(state);
@@ -364,34 +362,10 @@ function persistCertification() {
   syncCertifiedToCloud();
 }
 
-function installNgPlusButton() {
-  const state = stateNow();
-  if (!state || state.stage !== 'opening' || !profileCertified()) return;
-  const bar = $('#actionBar');
-  if (!bar || $('[data-v9-ngplus]', bar)) return;
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'action-button action-button--primary';
-  button.dataset.v9Ngplus = '1';
-  button.innerHTML = '<span class="action-button__icon">⚡</span><span class="action-button__copy"><strong>NEW GAME+ · เริ่ม Month 1 เลย</strong><small>เคยผ่าน Certification แล้ว · ข้าม PRE-SEASON</small></span>';
-  bar.prepend(button);
-}
-
-function injectStyles() {
-  if ($('#v9Styles')) return;
-  const style = document.createElement('style');
-  style.id = 'v9Styles';
-  style.textContent = `.v9-score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.v9-score-grid>div{border:2px solid #244b64;border-radius:12px;padding:14px;background:#fffdf8}.v9-score-grid span{display:block;font-size:13px;color:#667e8b}.v9-score-grid strong{display:block;font-size:22px;margin-top:4px}.v9-score-name{display:grid;gap:7px;font-weight:800;margin:16px 0}.v9-score-name input{min-height:50px;border:2px solid #244b64;border-radius:9px;padding:10px 12px;font:inherit}.v9-revelation{font-weight:700;line-height:1.7}.v9-quote{margin:16px 0;padding:14px 16px;border-left:5px solid #4fbd83;background:#effaf3;font-weight:850}@media(max-width:620px){.v9-score-grid{grid-template-columns:1fr}.v9-score-grid strong{font-size:19px}}`;
-  document.head.appendChild(style);
-}
-
-// Capture before legacy game.js listeners so V9 owns the fragile surfaces.
+// Capture before the base renderer so release-specific surfaces stay consistent.
 document.addEventListener('click', (event) => {
   const close = event.target.closest('[data-v9-close]');
   if (close) { event.preventDefault(); event.stopImmediatePropagation(); hardClose(); return; }
-
-  const ng = event.target.closest('[data-v9-ngplus]');
-  if (ng) { event.preventDefault(); event.stopImmediatePropagation(); dispatchForDebug(EVENTS.NEW_GAME_PLUS); return; }
 
   const finale = event.target.closest('[data-ui="v9-finale"]');
   if (finale) { event.preventDefault(); event.stopImmediatePropagation(); showFinale(); return; }
@@ -417,7 +391,7 @@ document.addEventListener('click', (event) => {
   if (monthTrigger) { event.preventDefault(); event.stopImmediatePropagation(); renderMonthConfirm(); return; }
 
   const orgPass = event.target.closest('#actionBar button[data-event="END_MONTH"]');
-  if (orgPass && stateNow()?.organizationMode) { event.preventDefault(); event.stopImmediatePropagation(); dispatchForDebug(EVENTS.END_MONTH); return; }
+  if (orgPass && stateNow()?.organizationMode) { event.preventDefault(); event.stopImmediatePropagation(); dispatchForUi(EVENTS.END_MONTH); return; }
 
   const work = event.target.closest('#gameDialog [data-work-event]');
   if (work && !work.disabled) {
@@ -428,12 +402,12 @@ document.addEventListener('click', (event) => {
     if (work.dataset.skill) payload.skill = work.dataset.skill;
     const gameEvent = work.dataset.workEvent;
     hardClose();
-    dispatchForDebug(gameEvent, payload);
+    dispatchForUi(gameEvent, payload);
     return;
   }
 
   const endMonth = event.target.closest('[data-v9-end-month]');
-  if (endMonth) { event.preventDefault(); event.stopImmediatePropagation(); hardClose(); dispatchForDebug(EVENTS.END_MONTH); return; }
+  if (endMonth) { event.preventDefault(); event.stopImmediatePropagation(); hardClose(); dispatchForUi(EVENTS.END_MONTH); return; }
 
   const tab = event.target.closest('[data-v9-people-tab]');
   if (tab) { event.preventDefault(); event.stopImmediatePropagation(); peopleTab = tab.dataset.v9PeopleTab; peoplePage = 0; peopleFocusId = null; renderPeople(); return; }
@@ -448,7 +422,7 @@ document.addEventListener('click', (event) => {
   if (submit) { event.preventDefault(); event.stopImmediatePropagation(); submitScore(); return; }
 
   const enter = event.target.closest('[data-v9-enter-org]');
-  if (enter) { event.preventDefault(); event.stopImmediatePropagation(); hardClose(); dispatchForDebug(EVENTS.ENTER_ORGANIZATION); return; }
+  if (enter) { event.preventDefault(); event.stopImmediatePropagation(); hardClose(); dispatchForUi(EVENTS.ENTER_ORGANIZATION); return; }
 
   const newRun = event.target.closest('[data-v9-new-run]');
   if (newRun) {
@@ -476,14 +450,9 @@ dialog?.addEventListener('cancel', (event) => { event.preventDefault(); hardClos
 
 const observer = new MutationObserver(() => {
   persistCertification();
-  installNgPlusButton();
   queuePatch();
 });
 observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'data-stage'] });
 
-injectStyles();
 persistCertification();
-installNgPlusButton();
 queuePatch();
-
-console.info('[X-VISOR QUEST]', { gameVersion: GAME_VERSION, saveVersion: V9_SAVE_VERSION });

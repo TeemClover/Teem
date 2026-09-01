@@ -1,10 +1,10 @@
-import { dispatchForDebug } from './game.js?v=1';
+import { dispatchForUi } from './game.js';
 import {
   EVENTS,
   SAVE_KEY,
   V1_SCORE_VERSION,
   parseSavedState,
-} from './game-data-v1.js?v=1';
+} from './game-data-v1.js?v=1.0';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const SCORE_SENT_PREFIX = 'mc_xvisor_1_score_sent:';
@@ -42,25 +42,10 @@ function queuePatch() {
 function claimVersionLabels() {
   const app = $('#gameApp');
   if (app?.dataset.gameVersion !== '1.0') app.dataset.gameVersion = '1.0';
-
-  // Remove selectors used by the V9 compatibility observer so the two layers cannot fight forever.
-  const oldChip = $('.rank-chip[aria-label="เวอร์ชันเกม"]');
-  if (oldChip) {
-    oldChip.removeAttribute('aria-label');
-    oldChip.dataset.releaseVersion = '1.0';
-    setText(oldChip, '1.0');
-  }
-  const claimedChip = $('.rank-chip[data-release-version="1.0"]');
-  setText(claimedChip, '1.0');
-
-  const oldWorldVersion = $('.world-frame__label b');
-  if (oldWorldVersion) {
-    const replacement = document.createElement('span');
-    replacement.className = 'v1-world-version';
-    replacement.textContent = '1.0';
-    oldWorldVersion.replaceWith(replacement);
-  }
-  setText($('.v1-world-version'), '1.0');
+  const chip = $('.rank-chip[aria-label="เวอร์ชันเกม"], .rank-chip[data-release-version="1.0"]');
+  if (chip) chip.dataset.releaseVersion = '1.0';
+  setText(chip, '1.0');
+  setText($('.world-frame__label b, .v1-world-version'), '1.0');
 
   setText($('.game-footer > span:last-child'), '1.0 · บันทึกอัตโนมัติบนอุปกรณ์นี้');
 }
@@ -76,13 +61,19 @@ function patchScoreFinale(state) {
   }
   const kicker = dialog.querySelector('.dialog-kicker');
   if (kicker?.textContent?.includes('MONTH 12')) setText(kicker, '🏆 MONTH 12 · X-VISOR QUEST 1.0');
+  const quote = dialog.querySelector('.v9-quote');
+  if (quote && !dialog.querySelector('.v1-revelation-story')) {
+    quote.insertAdjacentHTML('afterend', `<div class="v1-revelation-story" aria-label="เส้นทาง 12 เดือน">
+      <span><b>01</b> คนเดียว</span><i>→</i><span><b>02</b> ลูกค้า</span><i>→</i><span><b>03</b> ทีม</span><i>→</i><span><b>04</b> Organization</span>
+    </div>`);
+  }
 }
 
 function organizationReportHtml(report) {
   if (!report) return '<p>กด <b>ผ่านไปอีก 1 เดือน</b> แล้วระบบจะรันงานประจำองค์กรให้ครบในครั้งเดียว</p>';
   const xircle = report.activities?.xircle ? '<span>🏕️ The Xircle ×1</span>' : '';
   return `<div class="v1-org-report">
-    <div class="v1-org-rhythm"><span>🎓 Xcademy ×4</span><span>🏠 Open House ×1</span>${xircle}</div>
+    <div class="v1-report-headline"><div><span>🏙️ TGV · MONTH ${report.month}</span><strong>${fmt(report.tgv)} XV</strong></div><div><span>💰 รายได้เดือนนี้</span><strong>${baht(report.income)}</strong></div></div>
     <div class="v1-org-grid">
       <div><span>🆕 ลูกค้าใหม่</span><strong>${fmt(report.newCustomers)}</strong></div>
       <div><span>📦 RoutineX Repeat</span><strong>${fmt(report.repeatCustomers)}</strong></div>
@@ -91,17 +82,32 @@ function organizationReportHtml(report) {
       <div><span>🌱 X-VISOR ใหม่</span><strong>+${fmt(report.newXvisors)}</strong></div>
       <div><span>👑 XLEAD ใหม่</span><strong>+${fmt(report.newXleads)}</strong></div>
     </div>
-    <p><b>🏙️ TGV เดือน ${report.month}</b> ${fmt(report.tgv)} XV · <b>💰 รายได้</b> ${baht(report.income)}</p>
+    <p class="v1-story-note">${report.newXleads ? `👑 ทีมสร้างผู้นำใหม่ ${fmt(report.newXleads)} คน` : report.newXvisors ? `🌱 ทีมสร้าง X-VISOR ใหม่ ${fmt(report.newXvisors)} คน` : report.newCustomers ? `❤️ ทีมสร้างลูกค้าใหม่ ${fmt(report.newCustomers)} คน` : '🌱 ระบบยังเดินต่อจากทีมที่คุณสร้างไว้'}</p>
+    <details class="v1-rhythm-details"><summary>สิ่งที่ระบบทำให้เดือนนี้</summary><div class="v1-org-rhythm"><span>🎓 Xcademy ×4</span><span>🏠 Open House ×1</span>${xircle}</div></details>
   </div>`;
 }
 
+function roleLabel(member) {
+  if (member.rank === 'xlead') return '👑 XLEAD';
+  return member.specialtyLabel || ({ sales: '💰 ขายเก่ง', care: '❤️ ดูแลเก่ง', builder: '🌱 สร้างทีมเก่ง', balanced: '⚖️ สมดุล' })[member.specialty] || '⚖️ สมดุล';
+}
+
+function twoYearFinaleHtml(state) {
+  return `<div class="dialog-kicker">🏁 MONTH 24 · TRUE ENDING</div>
+    <h2>2 ปีต่อมา — ระบบเดินได้ไกลกว่าคนเดียว</h2>
+    ${finaleDetails(state)}
+    <p class="dialog-note">NEW GAME+ จะข้าม PRE-SEASON เริ่ม Month 1 ทันที และเปิด Management เต็มรูปแบบเพื่อทำลายสถิติเดิม</p>
+    <button class="dialog-button" type="button" data-v9-close>กลับไปกด ⚡ NEW GAME+</button>`;
+}
+
 function organizationDialogHtml(state) {
+  if (state.runComplete) return twoYearFinaleHtml(state);
   const report = state.lastOrganizationReport;
   const agg = state.organization?.aggregate || {};
   const leaders = (state.team || []).filter((member) => member.active !== false)
     .sort((a, b) => Number(b.personalXV || 0) - Number(a.personalXV || 0)).slice(0, 8);
   return `<div class="dialog-kicker">🏙️ ORGANIZATION YEAR · MONTH ${state.month}</div>
-    <h2>${state.runComplete ? '🏁 2 ปีผ่านไปแล้ว' : 'ระบบที่สร้างไว้กำลังเดินต่อ'}</h2>
+    <h2>ระบบที่สร้างไว้กำลังเดินต่อ</h2>
     ${organizationReportHtml(report)}
     <div class="v1-org-grid v1-org-grid--totals">
       <div><span>❤️ Active Customers</span><strong>${fmt(agg.activeCustomers)}</strong></div>
@@ -109,7 +115,7 @@ function organizationDialogHtml(state) {
       <div><span>👑 XLEAD</span><strong>${fmt(agg.xleadCount)}</strong></div>
       <div><span>🏙️ Organization Size</span><strong>${fmt(agg.organizationSize ?? agg.xvisorCount)}</strong></div>
     </div>
-    <section class="work-section"><h3>ผู้นำเด่นเดือนล่าสุด</h3><div class="income-breakdown">${leaders.map((member) => `<div class="v1-leader"><span>${escapeHtml(member.name)} · ${member.rank === 'xlead' ? 'XLEAD' : 'X-VISOR'}</span><b>${fmt(member.personalXV)} XV</b></div>`).join('') || '<p>ยังไม่มีทีม</p>'}</div></section>
+    <section class="work-section"><h3>คนที่กำลังสร้างผลลัพธ์</h3><div class="income-breakdown">${leaders.map((member) => `<div class="v1-leader"><span><b>${escapeHtml(member.name)}</b><small>${escapeHtml(roleLabel(member))}</small></span><b>${fmt(member.personalXV)} XV</b></div>`).join('') || '<p>ยังไม่มีทีม</p>'}</div></section>
     <button class="dialog-button" type="button" data-v9-close>กลับกระดาน</button>`;
 }
 
@@ -125,14 +131,15 @@ function patchOrganizationDialog(state) {
 
 function finaleDetails(state) {
   const summary = state.twoYearSummary || {};
-  return `<div class="v1-finale-grid">
+  return `<div class="v1-two-year-journey"><div><span>วันแรก</span><strong>โต๊ะ 1 ตัว · คุณ 1 คน</strong></div><i>→</i><div><span>2 ปีต่อมา</span><strong>${fmt(summary.activeCustomers)} ลูกค้า · ${fmt(summary.xvisorCount)} X-VISOR · ${fmt(summary.xleadCount)} XLEAD</strong></div></div>
+  <div class="v1-finale-grid" aria-label="ผลลัพธ์เมื่อจบเดือน 24">
     <div><span>🏙️ Month 24 TGV</span><strong>${fmt(summary.month24TGV)} XV</strong></div>
     <div><span>💰 Month 24 Income</span><strong>${baht(summary.month24Income)}</strong></div>
     <div><span>❤️ Active Customers</span><strong>${fmt(summary.activeCustomers)}</strong></div>
     <div><span>🌱 X-VISOR</span><strong>${fmt(summary.xvisorCount)}</strong></div>
     <div><span>👑 XLEAD</span><strong>${fmt(summary.xleadCount)}</strong></div>
     <div><span>💰 รายได้สะสม 2 ปี</span><strong>${baht(summary.totalIncome)}</strong></div>
-  </div>`;
+  </div><blockquote class="v1-ending-quote">คุณสร้างคนที่สร้างคน และระบบที่ไม่ต้องรอคุณทำทุกอย่างเอง</blockquote>`;
 }
 
 function patchOrganizationBoard(state) {
@@ -149,13 +156,16 @@ function patchOrganizationBoard(state) {
   setHidden(teamChip, false);
   setText(teamChip, `ทีม ${fmt(agg.xvisorCount)} X-VISOR · ${fmt(agg.xleadCount)} XLEAD`);
   setText($('#hudCustomers'), `${fmt(agg.activeCustomers)} คน`);
+  setText($('#hudVolumeLabel'), report ? `🏙️ TGV ล่าสุด · M${report.month}` : '🏙️ TGV เดือนนี้');
+  setText($('#hudXV'), `${fmt(report?.tgv)} XV`);
+  setText($('.status-item--income span'), 'รายได้ล่าสุด · สะสม');
+  setText($('#hudIncome'), `${baht(report?.income)} · Σ${baht(state.economy?.totalIncome)}`);
 
   const people = $('#peopleButton');
   if (people) {
     setHidden(people, false);
     setHtml(people, `Organization <b>${fmt(agg.xvisorCount)}</b>`);
   }
-  setText($('.status-item--income span'), 'รายได้สะสม');
   setText($('#goalEyebrow'), state.runComplete ? 'จบเส้นทาง 24 เดือน' : 'YEAR 2 · ORGANIZATION');
   setText($('#goalTitle'), state.runComplete ? '🏁 2 ปีผ่านไปแล้ว' : `Organization Year · เดือน ${state.month}`);
   setText($('#goalReason'), state.runComplete
@@ -168,6 +178,8 @@ function patchOrganizationBoard(state) {
 
   const details = $('#sceneDetails');
   setHtml(details, state.runComplete ? finaleDetails(state) : organizationReportHtml(report));
+  setText($('.action-dock__heading span'), state.runComplete ? 'เล่นให้ดีกว่าเดิม' : 'เดินระบบองค์กร');
+  setText($('.action-dock__heading small'), state.runComplete ? 'เริ่มรอบใหม่ทันที' : 'หนึ่งปุ่ม · หนึ่งเดือน');
 
   const actionBar = $('#actionBar');
   if (!actionBar) return;
@@ -175,21 +187,24 @@ function patchOrganizationBoard(state) {
   if (actionBar.dataset.v1Mode === mode && actionBar.querySelector(state.runComplete ? '[data-v1-new-game-plus]' : '[data-v1-org-pass]')) return;
   actionBar.dataset.v1Mode = mode;
   setHtml(actionBar, state.runComplete
-    ? '<button class="action-button action-button--primary" type="button" data-v1-new-game-plus><span class="action-button__icon">⚡</span><span class="action-button__copy"><strong>NEW GAME+</strong><small>เริ่ม Month 1 ทันที · เปิด Management เต็มรูปแบบ</small></span></button>'
-    : '<button class="action-button action-button--primary" type="button" data-v1-org-pass><span class="action-button__icon">▶</span><span class="action-button__copy"><strong>ผ่านไปอีก 1 เดือน</strong><small>Xcademy ×4 · Open House ×1 · The Xircle ตามรอบ · สรุปครั้งเดียว</small></span></button>');
+    ? '<button class="action-button action-button--primary" type="button" data-v1-new-game-plus><span class="action-button__icon">⚡</span><span class="action-button__copy"><strong>⚡ NEW GAME+</strong><small>ข้าม PRE-SEASON · เริ่ม Month 1 · ทำลายสถิติเดิม</small></span></button>'
+    : '<button class="action-button action-button--primary" type="button" data-v1-org-pass><span class="action-button__icon" aria-hidden="true">▶</span><span class="action-button__copy"><strong>ผ่านไปอีก 1 เดือน</strong><small>Xcademy ×4 · Open House ×1 · The Xircle ตามรอบ · สรุปครั้งเดียว</small></span></button>');
 }
 
 function patchNewGamePlusIntro(state) {
   if (state.runMode !== 'NEW_GAME_PLUS' || state.month !== 1 || state.organizationMode) return;
   setText($('#goalEyebrow'), '⚡ NEW GAME+');
+  setText($('#goalTitle'), 'เริ่ม Month 1 ทันที — ทำลายสถิติเดิม');
+  setText($('#goalReason'), 'ข้าม PRE-SEASON · Certified X-VISOR แล้ว · เปิด Management เต็มรูปแบบ');
   const previous = state.previousRunScore;
-  if (previous) setHtml($('#sceneDetails'), `<div class="v1-ng-score"><b>รอบก่อน</b> · Best TGV ${fmt(previous.bestTgv)} XV · รายได้รวม ${baht(previous.totalIncome)} · Organization ${fmt(previous.organizationSize)}</div>`);
+  if (previous) setHtml($('#sceneDetails'), `<div class="v1-ng-score"><span>สถิติที่ต้องชนะ</span><strong>Best TGV ${fmt(previous.bestTgv)} XV</strong><small>รายได้รวม ${baht(previous.totalIncome)} · Organization ${fmt(previous.organizationSize)}</small></div><div class="v1-ng-promises"><span>✓ Certified แล้ว</span><span>✓ เริ่ม Month 1</span><span>✓ อิสระเต็มรูปแบบ</span></div>`);
 }
 
 function patchReleaseUi() {
   claimVersionLabels();
   const state = stateNow();
   if (!state) return;
+  document.body.dataset.releaseMoment = state.runComplete ? 'month24' : state.campaignScore?.locked && !state.organizationMode ? 'month12' : state.runMode === 'NEW_GAME_PLUS' && state.month === 1 ? 'new-game-plus' : 'play';
   patchScoreFinale(state);
   if (state.organizationMode) {
     patchOrganizationBoard(state);
@@ -244,26 +259,21 @@ document.addEventListener('click', (event) => {
   }
   const pass = event.target.closest('[data-v1-org-pass]');
   if (pass) {
-    event.preventDefault(); event.stopImmediatePropagation(); dispatchForDebug(EVENTS.END_MONTH); return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    document.body.classList.add('is-month-passing');
+    dispatchForUi(EVENTS.END_MONTH);
+    window.setTimeout(() => document.body.classList.remove('is-month-passing'), 720);
+    return;
   }
   const ng = event.target.closest('[data-v1-new-game-plus]');
   if (ng) {
     event.preventDefault(); event.stopImmediatePropagation();
-    dispatchForDebug(EVENTS.NEW_GAME_PLUS);
-    location.reload();
+    document.body.classList.add('is-ng-transition');
+    dispatchForUi(EVENTS.NEW_GAME_PLUS);
+    window.setTimeout(() => location.reload(), 520);
   }
 }, true);
-
-const style = document.createElement('style');
-style.id = 'v1Styles';
-style.textContent = `
-  .v1-world-version{font-weight:800}.v1-org-rhythm{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.v1-org-rhythm span{padding:6px 9px;border:1px solid #bdd0c8;border-radius:999px;background:#f1f7f2;font-weight:800}
-  .v1-org-grid,.v1-finale-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}.v1-org-grid>div,.v1-finale-grid>div{padding:10px;border:1px solid #c9d7d1;border-radius:10px;background:#fff}.v1-org-grid span,.v1-finale-grid span{display:block;font-size:12px;color:#60777f}.v1-org-grid strong,.v1-finale-grid strong{font-size:18px}.v1-leader{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #dfe7e3}.v1-ng-score{margin-top:8px;padding:9px;border-radius:9px;background:#eef7f0}
-  @media(max-width:700px){.v1-org-grid,.v1-finale-grid{grid-template-columns:1fr 1fr}.income-history .table-scroll{overflow:visible}.income-history table{min-width:0!important;width:100%}.income-history th:nth-child(3),.income-history th:nth-child(4),.income-history th:nth-child(5),.income-history td:nth-child(3),.income-history td:nth-child(4),.income-history td:nth-child(5){display:none}}
-`;
-if (!$('#v1Styles')) document.head.appendChild(style);
 
 const observer = new MutationObserver(queuePatch);
 observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'data-stage', 'open'] });
 queuePatch();
-console.info('[X-VISOR QUEST 1.0]', { saveVersion: '1.0', scoreVersion: V1_SCORE_VERSION });
