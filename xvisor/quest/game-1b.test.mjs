@@ -81,7 +81,25 @@ test('channel 2 is 20% of each Direct G1 commission using that persons baht tier
   assert.equal(economy.channel2, 3_220);
 });
 
-test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month', () => {
+test('legacy rolling-3 XGEN flags never unlock 5% or an exam below 3M current-month TGV', () => {
+  const base = management(31, 10);
+  const ghost = {
+    ...base,
+    rank: 'xlead',
+    energy: 0,
+    career: { ...base.career, xleadCertified: true, xgenQualified: true, xgenCertified: false, xgenQualificationRule: null },
+    sceneReport: { kind: 'xgen-qualified', rolling3TGV: 3_200_000 },
+    economy: { ...base.economy, personalXV: 381_590, teamXV: 1_300_000, productSales: 120_000 },
+  };
+  const economy = calculateEconomy(ghost);
+  assert.equal(economy.tgv, 1_681_590);
+  assert.equal(economy.channel3, 0);
+  const actions = getBestNextActions(ghost, 3);
+  assert.equal(actions.some((item) => item.event === EVENTS.XGEN_EXAM), false);
+  assert.equal(actions[0].event, EVENTS.END_MONTH);
+});
+
+test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month without a second exam gate', () => {
   let state = management(4, 6);
   state = {
     ...state,
@@ -89,6 +107,7 @@ test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same 
   };
   const live = calculateEconomy(state);
   assert.equal(live.channel3, 150_000);
+  assert.equal(getBestNextActions(state, 8).some((item) => item.event === EVENTS.XGEN_EXAM), false);
   state = reduceGame(state, EVENTS.END_MONTH);
   assert.equal(state.career.xgenQualifiedSingleMonth, true);
   assert.equal(state.career.xgenQualificationRule, 'single-month');
