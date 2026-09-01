@@ -84,9 +84,9 @@ function routineContent(state, management = false) {
     routineBuilder: {
       fitProducts: person?.fitProducts || [],
       choices: [
-        ["control", "เริ่มจาก C · Control", "ไม่มีสินค้า · เลือกพฤติกรรมเดียวที่ทำซ้ำได้"],
-        ["fit", "วางตามบริบท", "ใช้ A / B / D เฉพาะเมื่อสอดคล้องกับสิ่งที่ฟังมา"],
-        ["all", "ใส่ทุกตัว", "แผนใหญ่ที่สุด แต่ไม่ใช่กลยุทธ์ที่ดีที่สุด"],
+        ["control", "เริ่มจาก C", "เริ่มจากพฤติกรรมเดียวที่ทำซ้ำได้ · ยังไม่ต้องซื้อสินค้า"],
+        ["fit", "ดู ABCD", "ใช้ A / B / D เท่าที่ตรงกับบริบทและสิ่งที่ฟังมา"],
+        ["all", "ครบชุด", "ทางเลือกแรงและเสี่ยงกว่า · คุ้มเมื่อ Skill ผลลัพธ์ Trust และความพร้อมถึงจริง"],
       ],
     },
     actions: [], routineEvent: management ? EVENTS.CHOOSE_MANAGEMENT_ROUTINE : EVENTS.CHOOSE_ROUTINE,
@@ -198,8 +198,8 @@ function eventSceneContent(state) {
     [STAGES.XGEN_MILESTONE]: {
       scene: "xgen", eyebrow: "🏆 3,000,000 TGV · XGEN",
       title: "คุณสร้างองค์กรถึง XGEN แล้ว",
-      reason: "Save ไม่ถูกรีเซ็ต และยังเล่น Endless ต่อเพื่อทำ Best TGV รายได้ และองค์กรให้โตขึ้นได้",
-      speaker: "X-VISOR QUEST", dialogue: `TGV ${Number(report.tgv || state.organization.tgv).toLocaleString("th-TH")} · รายได้รวม ฿${Number(report.totalIncome || state.economy.totalIncome).toLocaleString("th-TH")}`, status: "xgen", milestone: "XGEN · ENDLESS UNLOCKED",
+      reason: "Save และ High Score ไม่ถูกรีเซ็ต · เส้นทางองค์กรยังเดินต่อถึงบทสรุป Month 24",
+      speaker: "X-VISOR QUEST", dialogue: `TGV ${Number(report.tgv || state.organization.tgv).toLocaleString("th-TH")} · รายได้รวม ฿${Number(report.totalIncome || state.economy.totalIncome).toLocaleString("th-TH")}`, status: "xgen", milestone: "XGEN · ORGANIZATION LEADER",
       actions: [action("เล่นต่อ ▶", EVENTS.START_NEXT_MONTH, { icon: "play" })],
     },
   };

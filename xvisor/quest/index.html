@@ -21,7 +21,7 @@
     <meta name="twitter:title" content="X-VISOR QUEST 1.0 — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?">
     <meta name="twitter:description" content="ลองบริหาร X-VISOR แบบเกม 12 เดือน สร้างลูกค้า พัฒนาทีม ดู TGV และรายได้ แล้วดูองค์กรเดินต่อถึงเดือน 24">
     <meta name="twitter:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0-share-20260901">
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1.0-final">
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1.0a-final">
     <script>
       // Release 1.0 accepts only its own save schema.
       try {
@@ -41,12 +41,12 @@
     <script type="importmap">
       {
         "imports": {
-          "./game-data.js": "./game-data-v1.js?v=1.0",
+          "./game-data.js": "./game-data-v1.js?v=1.0a",
           "./game-progression.js": "./game-progression-v8.js?v=1.0-core",
           "./game-commercial-config.js": "./game-commercial-config-v8.js?v=1.0-core",
-          "./game-copy.js": "./game-copy-v9.js?v=1.0",
-          "./game-audio.js": "./game-audio.js?v=1.0",
-          "./game.js": "./game.js?v=1.0"
+          "./game-copy.js": "./game-copy-v9.js?v=1.0a",
+          "./game-audio.js": "./game-audio.js?v=1.0a",
+          "./game.js": "./game.js?v=1.0a"
         }
       }
     </script>
@@ -87,7 +87,7 @@
       <section class="game-layout">
         <div class="game-layout__world">
           <article class="goal-card" id="goalCard"><div class="goal-card__copy"><span id="goalEyebrow">เป้าหมายของคุณ</span><h2 id="goalTitle">เริ่มเส้นทาง X-VISOR</h2><p id="goalReason">เริ่มจากตัวเอง ดูแลคนแรก แล้วค่อยสร้างทีม</p></div><div class="goal-progress" aria-label="ความคืบหน้าของเส้นทาง"><i id="goalProgress"></i></div></article>
-          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>1.0</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
+          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>1.0</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><div class="world-event-card" id="worldEventCard" hidden aria-live="polite"><span id="worldEventKicker"></span><strong id="worldEventTitle"></strong><small id="worldEventDetail"></small></div><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
         </div>
         <aside class="game-layout__controls" aria-label="เหตุการณ์และสิ่งที่ทำต่อ">
           <section class="dialogue-card"><span class="dialogue-card__speaker" id="dialogueSpeaker">X-VISOR QUEST</span><p id="dialogueText">เกมนี้จะพาคุณลองทำงานจริงทีละขั้น</p><div id="sceneDetails"></div></section>
@@ -98,8 +98,8 @@
     </main>
     <dialog class="game-dialog" id="gameDialog" aria-label="รายละเอียดเกม"><div class="game-dialog__content" id="dialogContent"></div></dialog>
     <div class="toast-region" id="toastRegion" aria-hidden="true"></div><div class="sr-only" id="liveRegion" aria-live="polite"></div>
-    <script type="module" src="/xvisor/quest/game.js?v=1.0"></script>
-    <script type="module" src="/xvisor/quest/game-v9-ui.js?v=1.0"></script>
-    <script type="module" src="/xvisor/quest/game-v1-ui.js?v=1.0"></script>
+    <script type="module" src="/xvisor/quest/game.js?v=1.0a-final"></script>
+    <script type="module" src="/xvisor/quest/game-v9-ui.js?v=1.0a-final"></script>
+    <script type="module" src="/xvisor/quest/game-v1-ui.js?v=1.0a-final"></script>
   </body>
 </html>

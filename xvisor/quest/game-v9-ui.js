@@ -175,15 +175,21 @@ function renderIncome() {
   const state = stateNow();
   if (!state) return;
   const economy = calculateEconomy(state);
+  const report = state.organizationMode ? state.lastOrganizationReport : null;
+  const shownIncome = report ? Number(report.income || 0) : Number(economy.projectedIncome || 0);
+  const shownLifetime = report ? Number(report.totalIncome || state.economy?.totalIncome || 0) : Number(economy.lifetimeIncome || 0);
+  const shownChannel1 = report ? Number(report.incomeBreakdown?.channel1 || 0) : Number(economy.channel1 || 0);
+  const shownChannel2 = report ? Number(report.incomeBreakdown?.channel2 || 0) : Number(economy.channel2 || 0);
+  const shownChannel3 = report ? Number(report.incomeBreakdown?.channel3 || 0) : Number(economy.channel3 || 0);
   const top = (economy.mentoringBreakdown || []).slice().sort((a, b) => b.mentorIncome - a.mentorIncome).slice(0, 5);
   const history = [...(economy.incomeHistory || [])].reverse().slice(0, 12);
   const historyCards = history.map((item) => `<details class="income-history-card"><summary><span>เดือน ${item.month}</span><span>${fmt(item.tgv)} XV</span><b>${baht(item.total)}</b></summary><div><span>① ลูกค้า <b>${baht(item.channel1)}</b></span><span>② พัฒนา G1 <b>${baht(item.channel2)}</b></span><span>③ Organization <b>${baht(item.channel3)}</b></span></div></details>`).join('');
-  showDialog(`<div class="dialog-kicker">REVENUE STACK · 1.0</div><h2>เดือนนี้ ${baht(economy.projectedIncome)}</h2>
-    <div class="revenue-hero"><div><span>💰 รายได้เดือนนี้</span><strong>${baht(economy.projectedIncome)}</strong></div><div><span>∑ รายได้สะสม</span><strong>${baht(economy.lifetimeIncome)}</strong></div></div>
+  showDialog(`<div class="dialog-kicker">REVENUE STACK · 1.0</div><h2>${report ? `เดือน ${report.month}` : 'เดือนนี้'} ${baht(shownIncome)}</h2>
+    <div class="revenue-hero"><div><span>💰 ${report ? 'รายได้เดือนล่าสุด' : 'รายได้เดือนนี้'}</span><strong>${baht(shownIncome)}</strong></div><div><span>∑ รายได้สะสม</span><strong>${baht(shownLifetime)}</strong></div></div>
     <div class="income-sections">
-      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${baht(economy.channel1)}</b></div><p>ยอดขาย ${baht(economy.personalSalesBaht)} × ${escapeHtml(economy.tier?.label || 'tier ปัจจุบัน')} · XV ${fmt(economy.personalXV)} ใช้เป็น Volume แยกจากยอดบาท</p></section>
-      <section><div class="income-heading"><span>② พัฒนา Direct G1 ${economy.mentoringUnlocked ? '' : '· รอ Certified XLEAD'}</span><b>${economy.mentoringUnlocked ? baht(economy.channel2) : '🔒'}</b></div><p>20% ของ commission G1 แต่ละคน</p>${economy.mentoringUnlocked ? `<ul class="income-breakdown">${top.map((item) => `<li><span>${escapeHtml(item.name)} · ${fmt(item.personalXV)} XV · คอม ${baht(item.commission)}</span><b>${baht(item.mentorIncome)}</b></li>`).join('') || '<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>'}</ul>` : ''}</section>
-      <section><div class="income-heading"><span>③ บริหาร Organization ${state.career?.xgenCertified ? '' : '· รอ Certified XGEN'}</span><b>${state.career?.xgenCertified ? baht(economy.channel3) : '🔒'}</b></div><p>5% ของ TGV <b>เดือนปัจจุบันเท่านั้น</b> · ปิดเดือนแล้วไม่จ่ายยอดเดิมซ้ำ</p></section>
+      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${baht(shownChannel1)}</b></div><p>${report ? `ยอดขายบาท ${baht(report.personalSalesBaht)} · XV ${fmt(report.personalXV)} แยกเป็น Volume` : `ยอดขาย ${baht(economy.personalSalesBaht)} × ${escapeHtml(economy.tier?.label || 'tier ปัจจุบัน')} · XV ${fmt(economy.personalXV)} ใช้เป็น Volume แยกจากยอดบาท`}</p></section>
+      <section><div class="income-heading"><span>② พัฒนา Direct G1 ${economy.mentoringUnlocked ? '' : '· รอ Certified XLEAD'}</span><b>${economy.mentoringUnlocked ? baht(shownChannel2) : '🔒'}</b></div><p>20% ของ commission G1 แต่ละคน</p>${!report && economy.mentoringUnlocked ? `<ul class="income-breakdown">${top.map((item) => `<li><span>${escapeHtml(item.name)} · ${fmt(item.personalXV)} XV · คอม ${baht(item.commission)}</span><b>${baht(item.mentorIncome)}</b></li>`).join('') || '<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>'}</ul>` : ''}</section>
+      <section><div class="income-heading"><span>③ บริหาร Organization ${state.career?.xgenCertified ? '' : '· รอ Certified XGEN'}</span><b>${state.career?.xgenCertified ? baht(shownChannel3) : '🔒'}</b></div><p>5% ของ TGV <b>เดือนนั้นเท่านั้น</b> · ปิดเดือนแล้วไม่จ่ายยอดเดิมซ้ำ</p></section>
     </div>
     <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history.length ? `<div class="income-history-cards">${historyCards}</div><div class="table-scroll income-history-table"><table><thead><tr><th>เดือน</th><th>TGV</th><th>①</th><th>②</th><th>③</th><th>รวม</th></tr></thead><tbody>${history.map((item) => `<tr><th>${item.month}</th><td>${fmt(item.tgv)} XV</td><td>${baht(item.channel1)}</td><td>${baht(item.channel2)}</td><td>${baht(item.channel3)}</td><td><b>${baht(item.total)}</b></td></tr>`).join('')}</tbody></table></div>` : '<p>ปิดเดือนแรกเพื่อเริ่มเก็บประวัติรายได้</p>'}</section>
     <p class="dialog-note">ตัวเลขเชิงพาณิชย์อ่านจาก config ของเกมและมีสถานะจำลอง / TO_CONFIRM ไม่ใช่การรับประกันรายได้จริง</p>
