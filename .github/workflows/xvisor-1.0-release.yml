@@ -35,6 +35,7 @@ jobs:
         run: |
           node --check xvisor/quest/game.js
           node --check xvisor/quest/game-audio.js
+          node --check xvisor/quest/game-data-v1.js
           node --check xvisor/quest/game-data-v1b-core.js
           node --check xvisor/quest/game-copy-v9a.js
           node --check xvisor/quest/game-v9-ui.js
