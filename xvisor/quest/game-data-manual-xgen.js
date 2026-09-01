@@ -138,7 +138,7 @@ function certifyXgen(state) {
   const tgv = currentTgv(before);
   return {
     ...before,
-    stage: base.STAGES.XGEN_MILESTONE,
+    stage: base.STAGES.MANAGEMENT,
     phase: "management",
     rank: "xgen",
     career: {
