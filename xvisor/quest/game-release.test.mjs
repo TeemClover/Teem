@@ -10,7 +10,7 @@ import {
   getBestNextActions,
   makeInitialState,
   reduceGame,
-} from './game-data-v1.js';
+} from './game-data.js';
 
 function management(seed = 1, month = 1) {
   const state = makeInitialState({ seed });
@@ -148,4 +148,20 @@ test('NEW GAME+ always returns to playable Month 1 management with actions', () 
   assert.equal(ng.customers.length, 0);
   assert.equal(ng.team.length, 0);
   assert.ok(getBestNextActions(ng, 3).length > 0);
+});
+
+test('Month 12 enters Year 2, Month 24 hard-stops, and the finale can start NEW GAME+', () => {
+  let state = reduceGame(campaignReady({ seed: 10, xgen: true }), EVENTS.ENTER_ORGANIZATION);
+  assert.equal(state.organizationMode, true);
+  assert.equal(state.month, 13);
+
+  while (!state.runComplete) state = reduceGame(state, EVENTS.END_MONTH);
+  assert.equal(state.month, 24);
+  assert.equal(state.runComplete, true);
+  assert.equal(state.twoYearSummary.year2Path, 'xgen');
+
+  const next = reduceGame(state, EVENTS.NEW_GAME_PLUS);
+  assert.equal(next.runMode, 'NEW_GAME_PLUS');
+  assert.equal(next.month, 1);
+  assert.ok(getBestNextActions(next, 3).length > 0);
 });
