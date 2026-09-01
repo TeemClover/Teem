@@ -19,8 +19,8 @@ const canonicalModules = [
 test('public shell boots 1.0b from one canonical stylesheet and one canonical module', async () => {
   const html = await source('index.html');
   assert.match(html, /data-game-version="1\.0b"/);
-  assert.match(html, /game\.css\?v=1\.0b-canonical1/);
-  assert.match(html, /game-ui\.js\?v=1\.0b-canonical1/);
+  assert.match(html, /game\.css\?v=1\.0b-canonical2/);
+  assert.match(html, /game-ui\.js\?v=1\.0b-canonical2/);
   assert.doesNotMatch(html, /type="importmap"/);
   assert.doesNotMatch(html, /game-(?:1b|v8|v9|v1|v1a|v1b-core)/);
   assert.match(html, /1\.0b-20260901-hotfix1/);
@@ -61,10 +61,16 @@ test('canonical copy keeps the 1.0b XGEN goal and The Xircle scene', async () =>
   const copy = await source('game-copy.js');
   assert.match(copy, /XGEN_GOAL_VISIBLE_AT = 15e5/);
   assert.match(copy, /ตอนนี้ยังไม่ Qualified/);
-  assert.match(copy, /ไม่นับเป็นเกณฑ์ XGEN/);
+  assert.doesNotMatch(copy, /Rolling 3 เดือน|ไม่นับเป็นเกณฑ์ XGEN/);
   assert.match(copy, /แตะ 3,000,000 XV ในเดือนเดียวแล้ว/);
   assert.match(copy, /scene: "the-xircle"/);
   assert.match(copy, /ไม่ใช้ฉาก Open House/);
+});
+
+test('campaign END_MONTH click is handled once by the canonical action bar', async () => {
+  const ui = await source('game-ui.js');
+  assert.match(ui, /gameEvent === EVENTS\.END_MONTH/);
+  assert.match(ui, /event\.stopImmediatePropagation\(\)/);
 });
 
 test('canonical UI retains the Month 12 score gate and Month 24 NEW GAME+ finale', async () => {

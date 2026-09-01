@@ -879,8 +879,7 @@ function getStageContent3(state) {
       dialogue: `TGV เดือนนี้ ${fmt(tgv)} / ${fmt(XGEN_SINGLE_MONTH_TARGET)} XV`,
       facts: [
         ["ช่วงที่วัด", "เดือนปัจจุบันเดือนเดียว"],
-        ["Qualification", "ยังไม่ผ่าน"],
-        ["Rolling 3 เดือน", "ไม่นับเป็นเกณฑ์ XGEN"]
+        ["Qualification", "ยังไม่ผ่าน"]
       ],
       actions: quick3(state)
     });

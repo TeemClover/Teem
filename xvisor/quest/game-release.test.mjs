@@ -97,6 +97,12 @@ test('legacy rolling-3 XGEN flags never unlock 5% or an exam below 3M current-mo
   const actions = getBestNextActions(ghost, 3);
   assert.equal(actions.some((item) => item.event === EVENTS.XGEN_EXAM), false);
   assert.equal(actions[0].event, EVENTS.END_MONTH);
+
+  const closed = reduceGame(ghost, EVENTS.END_MONTH);
+  assert.equal(closed.stage, 'month_closed');
+  assert.equal(closed.month, 10);
+  assert.equal(closed.settlements['10'].currentTGV, 1_681_590);
+  assert.equal(closed.career.xgenQualifiedSingleMonth, false);
 });
 
 test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month without a second exam gate', () => {

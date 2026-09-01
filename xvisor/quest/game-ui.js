@@ -900,7 +900,8 @@ function resetGame() {
   toast("เริ่ม PRE-SEASON ใหม่ที่ ⚡ 0 / 28", "success");
 }
 $("#actionBar").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-action-index]");
+  const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+  const button = target?.closest("button[data-action-index]");
   if (!button || button.disabled) return;
   if (button.dataset.ui === "work") return showWorkMenu();
   if (button.dataset.ui === "people") return showPeople();
@@ -913,6 +914,10 @@ $("#actionBar").addEventListener("click", (event) => {
   if (button.dataset.source) payload.source = button.dataset.source;
   if (button.dataset.skill) payload.skill = button.dataset.skill;
   state = { ...state, tutorialSeen: { ...state.tutorialSeen, [state.stage]: true } };
+  if (gameEvent === EVENTS.END_MONTH) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
   dispatch(gameEvent, payload);
 });
 $("#sceneDetails").addEventListener("click", (event) => {
