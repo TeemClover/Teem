@@ -1,0 +1,56 @@
+/* 1 Sep 2026 non-destructive UI hotfix.
+   Keep Year 2 on one full-width column and keep Recognition Trip art pinned
+   for the whole travel month. */
+
+#gameApp.is-organization-mode .game-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+  width: 100%;
+}
+
+#gameApp.is-organization-mode .game-layout__world,
+#gameApp.is-organization-mode .goal-card,
+#gameApp.is-organization-mode .world-frame {
+  width: 100%;
+  max-width: none;
+}
+
+#gameApp.is-organization-mode .game-layout__controls {
+  display: none !important;
+}
+
+#gameApp.is-organization-mode #worldCanvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.world-frame .trip-scene-lock {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+#gameApp.is-travel-month .world-frame {
+  isolation: isolate;
+}
+
+#gameApp.is-travel-month #worldEventCard {
+  z-index: 5;
+}
+
+@media (max-width: 760px) {
+  #gameApp.is-organization-mode .game-layout {
+    display: block;
+  }
+
+  #gameApp.is-organization-mode .world-frame,
+  #gameApp.is-organization-mode .goal-card {
+    margin-inline: 0;
+  }
+}
