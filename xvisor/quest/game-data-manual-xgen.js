@@ -257,7 +257,11 @@ export function reduceGame(currentState, event, payload = {}) {
 
   const wasQualified = isQualified(before);
   const afterBase = base.reduceGame(before, event, payload);
-  let after = manualizeXgen(afterBase, { hasPolicy: true, examPassed: isExamPassed(before) || afterBase?.career?.xgenExamPassed === true });
+  const resetExam = event === base.EVENTS.NEW_GAME_PLUS;
+  let after = manualizeXgen(afterBase, {
+    hasPolicy: true,
+    examPassed: resetExam ? false : isExamPassed(before) || afterBase?.career?.xgenExamPassed === true
+  });
 
   if (!wasQualified && isQualified(after) && !isExamPassed(after)) {
     const tgv = currentTgv(after);
