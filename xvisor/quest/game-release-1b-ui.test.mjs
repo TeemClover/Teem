@@ -23,18 +23,28 @@ test('1.0b mobile finale is viewport-bounded and stacks dense result grids', asy
   assert.match(css, /\.v1-finale-grid,.v1-org-grid\{grid-template-columns:1fr!important\}/);
 });
 
-test('scoreboard and finale use the 1.0b namespace and keep NEW GAME+ reachable', async () => {
+test('Month 12 requires a High Score name before Year 2 can open', async () => {
+  const finalUi = await source('game-1b-final.js');
+  assert.match(finalUi, /ยังไปต่อไม่ได้จนกว่าจะบันทึกชื่อ High Score/);
+  assert.match(finalUi, /data-v1b-submit-score/);
+  assert.match(finalUi, /data-v1b-enter-org/);
+  assert.match(finalUi, /ดูสิ่งที่คุณสร้างโตเอง 1 เดือน/);
+  assert.match(finalUi, /scoreName\(state\)/);
+  assert.match(finalUi, /EVENTS\.ENTER_ORGANIZATION/);
+});
+
+test('scoreboard uses 1.0b and marks NEW GAME+ names with a leading star', async () => {
   const [api, finalUi] = await Promise.all([source('../../api/xvisor-scores.js'), source('game-1b-final.js')]);
   assert.match(api, /const SCORE_VERSION = '1\.0b'/);
   assert.match(api, /RELEASE_RESET_BEFORE/);
+  assert.match(api, /`🌟 \$\{rawName\}`/);
   assert.match(finalUi, /scoreVersion: V1_SCORE_VERSION/);
   assert.match(finalUi, /data-v1b-new-game-plus/);
   assert.match(finalUi, /EVENTS\.NEW_GAME_PLUS/);
-  assert.match(finalUi, /Scoreboard 1\.0b/);
 });
 
 test('1.0b release data distinguishes XGEN and XLEAD paths plus fixed event months', async () => {
-  const [data, copy] = await Promise.all([source('game-data-v1b-core.js'), source('game-copy-v9.js')]);
+  const [data, copy] = await Promise.all([source('game-data-v1b-core.js'), source('game-copy-v9a.js')]);
   assert.match(data, /TRAVEL_MONTHS=Object\.freeze\(\[16,22\]\)/);
   assert.match(data, /ORGANIZATION_XIRCLE_MONTHS=Object\.freeze\(\[15,18,21,24\]\)/);
   assert.match(copy, /XLEAD ORGANIZATION/);
