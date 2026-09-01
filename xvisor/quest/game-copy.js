@@ -867,7 +867,7 @@ function getStageContent3(state) {
       actions: quick3(state)
     });
   }
-  if (!singleMonthQualified && Number(state.month || 0) >= 1 && Number(state.month || 0) <= CAMPAIGN_MONTHS && tgv >= XGEN_GOAL_VISIBLE_AT) {
+  if (!singleMonthQualified && state.stage === STAGES.MANAGEMENT && Number(state.month || 0) >= 1 && Number(state.month || 0) <= CAMPAIGN_MONTHS && tgv >= XGEN_GOAL_VISIBLE_AT) {
     const remaining = Math.max(0, XGEN_SINGLE_MONTH_TARGET - tgv);
     return finish(state, {
       ...base,

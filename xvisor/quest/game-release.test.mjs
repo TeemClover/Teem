@@ -7,8 +7,10 @@ import {
   V1_SCORE_VERSION,
   V1_SAVE_VERSION,
   calculateEconomy,
+  canDispatch,
   getBestNextActions,
   makeInitialState,
+  parseSavedState,
   reduceGame,
 } from './game-data.js';
 
@@ -103,6 +105,54 @@ test('legacy rolling-3 XGEN flags never unlock 5% or an exam below 3M current-mo
   assert.equal(closed.month, 10);
   assert.equal(closed.settlements['10'].currentTGV, 1_681_590);
   assert.equal(closed.career.xgenQualifiedSingleMonth, false);
+});
+
+test('a saved rolling-XGEN milestone is recovered to a playable Month 10 without losing progress', () => {
+  const base = management(32, 10);
+  const stuck = {
+    ...base,
+    stage: 'xgen_milestone',
+    rank: 'xlead',
+    energy: 0,
+    career: { ...base.career, xleadCertified: true, xgenQualified: true, xgenCertified: false, xgenQualificationRule: null },
+    sceneReport: { kind: 'xgen-qualified', rolling3TGV: 3_200_000 },
+    economy: { ...base.economy, personalXV: 381_590, teamXV: 1_431_475, productSales: 120_000 },
+  };
+  const recovered = parseSavedState(JSON.stringify(stuck));
+  assert.equal(recovered.stage, 'management');
+  assert.equal(recovered.month, 10);
+  assert.equal(calculateEconomy(recovered).tgv, 1_813_065);
+  assert.equal(canDispatch(recovered, EVENTS.END_MONTH), true);
+
+  const closed = reduceGame(recovered, EVENTS.END_MONTH);
+  assert.equal(closed.stage, 'month_closed');
+  assert.equal(closed.settlements['10'].currentTGV, 1_813_065);
+});
+
+test('an already-settled ghost XGEN month resumes at Month 11 without settling twice', () => {
+  const base = management(33, 10);
+  const settlement = { month: 10, currentTGV: 1_813_065, tgv: 1_813_065, totalIncome: 53_949, total: 53_949, settled: true };
+  const stuck = {
+    ...base,
+    stage: 'xgen_milestone',
+    rank: 'xlead',
+    energy: 0,
+    career: { ...base.career, xleadCertified: true, xgenQualified: true, xgenCertified: false, xgenQualificationRule: null },
+    sceneReport: { kind: 'xgen-qualified', rolling3TGV: 3_200_000 },
+    economy: { ...base.economy, personalXV: 381_590, teamXV: 1_431_475, productSales: 120_000, totalIncome: 205_967, receivedIncome: 205_967 },
+    settlements: { ...base.settlements, '10': settlement },
+  };
+  const recovered = parseSavedState(JSON.stringify(stuck));
+  assert.equal(recovered.stage, 'month_closed');
+  const actions = getBestNextActions(recovered, 3);
+  assert.equal(actions[0].event, EVENTS.START_NEXT_MONTH);
+  assert.equal(canDispatch(recovered, EVENTS.START_NEXT_MONTH), true);
+
+  const next = reduceGame(recovered, EVENTS.START_NEXT_MONTH);
+  assert.equal(next.month, 11);
+  assert.equal(next.stage, 'management');
+  assert.equal(next.economy.totalIncome, 205_967);
+  assert.equal(Object.keys(next.settlements).filter((month) => month === '10').length, 1);
 });
 
 test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month without a second exam gate', () => {

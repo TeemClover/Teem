@@ -4505,8 +4505,12 @@ function sanitizeXgen(state) {
   else if (rank === "xgen") rank = career.xleadCertified ? "xlead" : "xvisor";
   const ghostScene = !qualified2 && ["xgen-qualified", "xgen-qualified-1b", "xgen-exam"].includes(state.sceneReport?.kind);
   const ghostMessage = !qualified2 && /XGEN|3,000,000/.test(String(state.lastMessage || ""));
+  const ghostMilestone = !qualified2 && state.stage === STAGES.XGEN_MILESTONE;
+  const recoveredStage = ghostMilestone ? state.settlements?.[String(month)] ? STAGES.MONTH_CLOSED : STAGES.MANAGEMENT : state.stage;
   return {
     ...state,
+    stage: recoveredStage,
+    phase: ghostMilestone ? "management" : state.phase,
     rank,
     career,
     organization: { ...state.organization || {}, xgen: qualified2 },
@@ -4539,6 +4543,9 @@ function canDispatch6(state, event) {
 }
 function getBestNextActions6(state, limit = 3) {
   const clean = sanitizeXgen(state);
+  if (clean.stage === STAGES.MONTH_CLOSED && Number(clean.month || 0) < CAMPAIGN_MONTHS2) {
+    return [{ type: "start-next-month", event: EVENTS5.START_NEXT_MONTH, label: `▶ เริ่มเดือน ${Number(clean.month || 0) + 1}`, cost: 0, score: 1e3 }];
+  }
   const requested = Math.max(8, Number(limit || 3) + 5);
   let actions = getBestNextActions5(clean, requested).filter((action) => action?.event !== EVENTS5.XGEN_EXAM && action?.type !== "xgen-exam");
   const canClose = canCloseCampaignMonth(clean);

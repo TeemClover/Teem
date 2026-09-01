@@ -19,8 +19,8 @@ const canonicalModules = [
 test('public shell boots 1.0b from one canonical stylesheet and one canonical module', async () => {
   const html = await source('index.html');
   assert.match(html, /data-game-version="1\.0b"/);
-  assert.match(html, /game\.css\?v=1\.0b-canonical3/);
-  assert.match(html, /game-ui\.js\?v=1\.0b-canonical3/);
+  assert.match(html, /game\.css\?v=1\.0b-canonical4/);
+  assert.match(html, /game-ui\.js\?v=1\.0b-canonical4/);
   assert.doesNotMatch(html, /type="importmap"/);
   assert.doesNotMatch(html, /game-(?:1b|v8|v9|v1|v1a|v1b-core)/);
   assert.match(html, /1\.0b-20260901-hotfix1/);
