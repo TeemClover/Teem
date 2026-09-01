@@ -31,8 +31,8 @@ const $ = (selector) => document.querySelector(selector);
 const canvas = $("#worldCanvas");
 const context = canvas.getContext("2d", { alpha: false });
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-const playerPalette = { skin: "#cb8f69", hair: "#263e4b", shirt: "#4db783", accent: "#f6ce5a" };
-const proctorPalette = { skin: "#b9785d", hair: "#253948", shirt: "#5f8fd3", accent: "#f6ce5a" };
+const playerPalette = { skin: "#e0aa80", hair: "#1f3541", shirt: "#4db783", accent: "#f6ce5a" };
+const proctorPalette = { skin: "#c98f6c", hair: "#203541", shirt: "#5f8fd3", accent: "#f6ce5a" };
 
 function loadStoredState() {
   try { return parseSavedState(localStorage.getItem(SAVE_KEY)); } catch { return null; }
@@ -58,7 +58,7 @@ const iconGlyphs = Object.freeze({
 });
 
 const productVisuals = Object.freeze({
-  gus: ["G", "#65bd86"], "protein-hmb": ["P", "#ee9a5c"], "vita-matrix": ["V", "#68aee1"], astamega: ["A", "#8e78c8"],
+  gus: ["#65bd86", "#2f7359"], "protein-hmb": ["#ee9a5c", "#b85f43"], "vita-matrix": ["#68aee1", "#356f9a"], astamega: ["#8e78c8", "#5c4d91"],
 });
 
 function formatNumber(value) { return Math.round(Number(value || 0)).toLocaleString("th-TH"); }
@@ -186,7 +186,7 @@ function dispatch(event, payload = {}) {
     spawnEffect("confetti");
   } else if (reportChanged && state.lastOrganizationReport) {
     const report = state.lastOrganizationReport;
-    window.setTimeout(() => audio.play(report.activities?.xircle ? "xircleDone" : report.newXleads || report.newXvisors ? "promotion" : "income"), 130);
+    window.setTimeout(() => audio.play(report.trip ? "trip" : report.activities?.xircle ? "xircleDone" : report.newXleads || report.newXvisors ? "promotion" : "income"), 130);
   }
   save();
   render();
@@ -517,7 +517,7 @@ function renderActions() {
     weekly: "ทีมกำลังเลือก Next Action", content: "กำลังโพสต์และรอ notification",
     ads: "Campaign กำลังสร้าง Interest", xcademy: "Xcademy กำลังช่วยหลายคนพร้อมกัน",
     openhouse: "Open House กำลังสรุป batch impact", g1: "ต้อนรับ X-VISOR คนใหม่",
-    xlead: "กำลังเปิดช่อง ② และ Organization Map", xgen: "ปลดล็อก Endless Mode แล้ว",
+    xlead: "กำลังเปิดช่อง ② และ Organization Map", xgen: "พร้อมนำ Organization แล้ว",
   };
   $("#waitingState").textContent = waiting[content.status] || "กำลังดำเนินการ…";
 }
@@ -565,6 +565,87 @@ function worldLabelForState(scene) {
   return "PRE-SEASON ROOM";
 }
 
+let lastWorldEventKey = "";
+
+function organizationVisualMode(stageAge) {
+  const report = state.lastOrganizationReport;
+  let cursor = 0;
+  if (report?.trip) {
+    if (stageAge < 2_050) return { kind: "travel", report };
+    cursor += 2_050;
+  }
+  if (report?.activities?.xircle) {
+    if (stageAge < cursor + 2_150) return { kind: "xircle", report };
+    cursor += 2_150;
+  }
+  if (state.runComplete) return { kind: "finale", report };
+  return { kind: "organization", report };
+}
+
+function eventCardForScene(scene, stageAge, organizationMode) {
+  const report = organizationMode?.report;
+  if (!organizationMode && state.runMode === "NEW_GAME_PLUS" && state.month === 1 && stageAge < 2_200) return { kicker: "NEW GAME+ · MONTH 1", title: "BEAT YOUR BEST", detail: "Certified แล้ว · เปิด Management เต็มรูปแบบ", tone: "finale" };
+  if (organizationMode?.kind === "travel") return {
+    kicker: `RECOGNITION TRIP ${report.trip.number}`,
+    title: report.trip.destination,
+    detail: report.trip.landmark,
+    tone: "travel",
+    label: `TRAVEL REWARD · ${report.trip.destination.toUpperCase()}`,
+  };
+  if (organizationMode?.kind === "xircle") return {
+    kicker: `MONTH ${report.month} · SPECIAL EVENT`,
+    title: "THE XIRCLE",
+    detail: `RESET · RECONNECT · RISE · ทีมกลับมา ${formatNumber(report.comebackMembers)} คน`,
+    tone: "xircle",
+    label: "THE XIRCLE · TEAM CAMP",
+  };
+  if (organizationMode?.kind === "finale") return {
+    kicker: "MONTH 24 · TRUE ENDING",
+    title: "2 YEARS LATER",
+    detail: `${formatNumber(state.twoYearSummary?.xvisorCount)} X-VISOR · ${formatNumber(state.twoYearSummary?.activeCustomers)} ACTIVE CUSTOMERS`,
+    tone: "finale",
+    label: "MONTH 24 · ORGANIZATION LEGACY",
+  };
+  if (organizationMode?.kind === "organization" && report && stageAge < 2_450) {
+    if (stageAge < 650) return { kicker: `MONTH ${report.month} · AUTO PLAN`, title: "XCADEMY ×4", detail: "ทีมเรียนรู้และ Review Case ร่วมกัน", tone: "academy" };
+    if (stageAge < 1_300) return { kicker: `MONTH ${report.month} · AUTO PLAN`, title: "OPEN HOUSE ×1", detail: `คนใหม่เข้าระบบ ${formatNumber(report.newPeople)} คน`, tone: "open-house" };
+    return { kicker: `MONTH ${report.month} · RESULT`, title: `${formatNumber(report.tgv)} XV`, detail: `รายได้ ${formatBaht(report.income)} · ทีมสุทธิ ${report.netXvisors > 0 ? "+" : ""}${formatNumber(report.netXvisors)}`, tone: "result" };
+  }
+  const cards = {
+    pre_montage: { kicker: "28-DAY ROUTINEX", title: `DAY ${String(montageVisualDay).padStart(2, "0")}`, detail: `ความพร้อมเพิ่มเป็น ⚡ ${montageVisualDay} / 28`, tone: "day" },
+    xcademy_running: { kicker: "TEAM LEARNING", title: "XCADEMY", detail: "เรียนรู้จาก Case จริงด้วยกัน", tone: "academy" },
+    center_running: { kicker: "TEAM LEARNING", title: "XCADEMY", detail: "เรียนรู้จาก Case จริงด้วยกัน", tone: "academy" },
+    open_house_running: { kicker: "PIPELINE EVENT", title: "OPEN HOUSE", detail: "คนใหม่เข้ามาเห็นบทบาทและเส้นทาง", tone: "open-house" },
+    goodluck_running: { kicker: "PIPELINE EVENT", title: "OPEN HOUSE", detail: "คนใหม่เข้ามาเห็นบทบาทและเส้นทาง", tone: "open-house" },
+    "the-xircle": { kicker: "SPECIAL EVENT", title: "THE XIRCLE", detail: "RESET · RECONNECT · RISE", tone: "xircle" },
+    xlead: { kicker: "ROLE MILESTONE", title: "CERTIFIED XLEAD", detail: "ปลดล็อกรายได้จากการพัฒนา Direct G1", tone: "result" },
+    xgen: { kicker: "ROLE MILESTONE", title: "CERTIFIED XGEN", detail: "พร้อมบริหาร Organization", tone: "result" },
+    season_review: { kicker: "MONTH 12 · REVELATION", title: "จากคนเดียว สู่ระบบที่เดินได้", detail: "High Score ถูกล็อกแล้ว", tone: "finale" },
+    first_g1: { kicker: "TEAM MILESTONE", title: "NEW X-VISOR", detail: "ทีมเริ่มจากคนแรก และเกมยังเดินต่อ", tone: "result" },
+  };
+  const card = cards[scene];
+  if (!card || (stageAge > 2_700 && !["season_review"].includes(scene))) return null;
+  return card;
+}
+
+function renderWorldEventCard(scene, stageAge, organizationMode) {
+  const card = eventCardForScene(scene, stageAge, organizationMode);
+  const root = $("#worldEventCard");
+  const label = organizationMode?.kind === "organization"
+    ? worldLabelForState(scene)
+    : card?.label || worldLabelForState(scene);
+  if ($("#worldLabel").textContent !== label) $("#worldLabel").textContent = label;
+  const key = card ? `${card.tone}:${card.kicker}:${card.title}:${card.detail}` : "hidden";
+  if (key === lastWorldEventKey) return;
+  lastWorldEventKey = key;
+  root.hidden = !card;
+  root.dataset.tone = card?.tone || "";
+  if (!card) return;
+  $("#worldEventKicker").textContent = card.kicker;
+  $("#worldEventTitle").textContent = card.title;
+  $("#worldEventDetail").textContent = card.detail;
+}
+
 function render() {
   content = getStageContent(state);
   renderHud();
@@ -610,17 +691,16 @@ function showReceipt(transaction) {
 function showIncome() {
   const economy = calculateEconomy(state);
   const mentoringRows = economy.mentoringBreakdown.slice(0, 6).map((item) => `<li><span>${escapeHtml(item.name)} · คอม ${formatBaht(item.commission)}</span><b>${formatBaht(item.mentorIncome)}</b></li>`).join("");
-  const history = [...economy.incomeHistory].reverse().slice(0, 12).map((item) => `<tr><th>เดือน ${item.month}</th><td>${formatBaht(item.channel1)}</td><td>${formatBaht(item.channel2)}</td><td>${formatBaht(item.channel3)}</td><td>${formatBaht(item.channel4)}</td><td><b>${formatBaht(item.total)}</b></td></tr>`).join("");
+  const history = [...economy.incomeHistory].reverse().slice(0, 12).map((item) => `<tr><th>เดือน ${item.month}</th><td>${formatBaht(item.channel1)}</td><td>${formatBaht(item.channel2)}</td><td>${formatBaht(item.channel3)}</td><td><b>${formatBaht(item.total)}</b></td></tr>`).join("");
   showDialog("income", `<div class="dialog-kicker">REVENUE STACK · ${escapeHtml(commercialStatusLabel(economy.status))}</div>
     <h2>เดือนนี้ ${formatBaht(economy.projectedIncome)} · รวม ${formatBaht(economy.lifetimeIncome)}</h2>
     <div class="income-sections">
       <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${formatBaht(economy.channel1)}</b></div><p>ยอดขาย ${formatBaht(economy.personalSalesBaht)} × ${escapeHtml(economy.tier.label)} · XV แยกเป็น ${formatNumber(economy.personalXV)}</p></section>
       <section><div class="income-heading"><span>② พัฒนา G1 ${economy.mentoringUnlocked ? "" : "· เปิดเมื่อ XLEAD"}</span><b>${economy.mentoringUnlocked ? formatBaht(economy.channel2) : "🔒"}</b></div><p>20% ของ commission ที่ G1 แต่ละคนได้ คิดแยก tier รายคน</p>${economy.mentoringUnlocked ? `<ul class="income-breakdown">${mentoringRows || "<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>"}</ul>` : ""}</section>
       <section><div class="income-heading"><span>③ บริหารองค์กร ${state.organization.xgen ? "" : "· เปิดที่ XGEN"}</span><b>${state.organization.xgen ? formatBaht(economy.channel3) : "🔒"}</b></div><p>5% ของ TGV · แบบจำลองจากโครงสร้างแผนปัจจุบัน</p></section>
-      <section><div class="income-heading"><span>④ ขยายองค์กร ${economy.breakawayVolume ? "" : "· รอ breakaway"}</span><b>${economy.breakawayVolume ? formatBaht(economy.channel4) : "🔒"}</b></div><p>1.75% ของ breakaway volume · แบบจำลองจากโครงสร้างแผนปัจจุบัน</p></section>
     </div>
     <div class="income-total"><span>รายได้รวมจากเดือนที่ปิดแล้ว</span><strong>${formatBaht(economy.totalIncome)}</strong></div>
-    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history ? `<div class="table-scroll"><table><thead><tr><th>เดือน</th><th>①</th><th>②</th><th>③</th><th>④</th><th>รวม</th></tr></thead><tbody>${history}</tbody></table></div>` : "<p>ปิดเดือนแรกเพื่อเริ่มเก็บ history</p>"}</section>
+    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history ? `<div class="table-scroll"><table><thead><tr><th>เดือน</th><th>①</th><th>②</th><th>③</th><th>รวม</th></tr></thead><tbody>${history}</tbody></table></div>` : "<p>ปิดเดือนแรกเพื่อเริ่มเก็บ history</p>"}</section>
     <p class="dialog-note">ตัวเลขเชิงพาณิชย์ทั้งหมดอ่านจาก config ของเกมและแสดงสถานะจำลอง/TO_CONFIRM ไม่ใช่การรับประกันรายได้จริง</p>
     <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`, { kind: "wide" });
 }
@@ -931,7 +1011,14 @@ function drawTable(x, y, width = 92) { rect(x, y, width, 9, "#24445b"); rect(x +
 function drawChair(x, y, color = "#5f82a2") { rect(x, y, 24, 7, "#24445b"); rect(x + 3, y + 3, 18, 18, color); rect(x + 2, y + 21, 5, 17, "#24445b"); rect(x + 17, y + 21, 5, 17, "#24445b"); }
 function drawScale(x, footY, active = false) { rect(x, footY - 8, 34, 7, "#24445b"); rect(x + 3, footY - 13, 28, 9, active ? "#77d6c2" : "#e4eff0"); rect(x + 12, footY - 10, 10, 2, "#24445b"); }
 function drawBand(x, y, active = false) { rect(x, y, 13, 5, "#24445b"); rect(x + 4, y - 2, 5, 9, active ? "#71ddc5" : "#66a8cb"); }
-function drawProduct(x, y, id = "gus") { const [glyph, color] = productVisuals[id] || ["R", "#67bd83"]; rect(x, y, 22, 31, "#24445b"); rect(x + 3, y + 3, 16, 25, "#eff8e8"); rect(x + 3, y + 3, 16, 7, color); fill("#24445b"); context.font = "bold 8px monospace"; context.fillText(glyph, x + 8, y + 22); }
+function drawProduct(x, y, id = "gus") {
+  const [color, accent] = productVisuals[id] || ["#67bd83", "#2f7359"];
+  rect(x, y, 22, 31, "#24445b"); rect(x + 3, y + 3, 16, 25, "#eff8e8"); rect(x + 3, y + 3, 16, 7, color);
+  if (id === "gus") { rect(x + 7, y + 14, 8, 9, accent); rect(x + 10, y + 12, 5, 3, accent); }
+  else if (id === "protein-hmb") { rect(x + 6, y + 14, 10, 3, accent); rect(x + 8, y + 17, 6, 7, accent); }
+  else if (id === "vita-matrix") { rect(x + 6, y + 14, 10, 2, accent); rect(x + 6, y + 19, 10, 2, accent); rect(x + 6, y + 24, 10, 2, accent); }
+  else { rect(x + 7, y + 14, 8, 8, accent); rect(x + 9, y + 12, 4, 12, accent); }
+}
 function drawCertificate(x, y) { rect(x, y, 40, 29, "#24445b"); rect(x + 3, y + 3, 34, 23, "#fff7d8"); rect(x + 9, y + 9, 22, 3, "#67bd83"); rect(x + 14, y + 17, 12, 2, "#e4b947"); }
 function drawDataPanel(x, y, improved = false) { rect(x, y, 90, 70, "#24445b"); rect(x + 4, y + 4, 82, 62, "#f7fbf6"); [26, improved ? 60 : 38, improved ? 66 : 32].forEach((width, index) => { rect(x + 12, y + 14 + index * 16, 64, 7, "#dce7e5"); rect(x + 12, y + 14 + index * 16, width, 7, improved ? "#62bd83" : "#e7a65a"); }); }
 function drawClock(x, y) { rect(x, y, 34, 34, "#24445b"); rect(x + 4, y + 4, 26, 26, "#fff9e8"); rect(x + 16, y + 8, 3, 10, "#24445b"); rect(x + 17, y + 16, 8, 3, "#24445b"); }
@@ -969,7 +1056,7 @@ function worldGrowthPhase() {
 
 function drawOfficeGrowth(scene) {
   const phase = worldGrowthPhase();
-  if (!phase || scene === "the-xircle") return;
+  if (!phase || ["the-xircle", "management_org", "season_review", "open_house_running", "goodluck_running", "xcademy_running", "center_running"].includes(scene)) return;
   if (phase >= 1) {
     rect(111, 30, 47, 35, "#24445b"); rect(115, 34, 39, 27, "#fff8df");
     rect(121, 40, 18, 3, "#e49d57"); rect(121, 48, 27, 3, "#6a8ca0");
@@ -978,7 +1065,7 @@ function drawOfficeGrowth(scene) {
   if (phase >= 3) { drawShelf(286, 99, phase >= 5); drawPlant(335, 99, phase >= 5); }
   if (phase >= 4) {
     rect(170, 30, 83, 25, "#24445b"); rect(175, 35, 73, 15, "#f6ce5a");
-    fill("#24445b"); context.font = "bold 8px monospace"; context.fillText("TEAM ZONE", 188, 46);
+    [0, 1, 2, 3].forEach((index) => { rect(182 + index * 15, 39, 8, 7, ["#65bd86", "#68aee1", "#ef8f75", "#8e78c8"][index]); rect(184 + index * 15, 37, 4, 2, "#24445b"); });
   }
   if (phase >= 5) {
     rect(262, 25, 96, 52, "#24445b"); rect(267, 30, 86, 42, "#e8f5ef");
@@ -988,73 +1075,125 @@ function drawOfficeGrowth(scene) {
 }
 
 const roleMarkers = Object.freeze({
-  sales: { glyph: "$", color: "#ef8f75" },
-  care: { glyph: "♥", color: "#62bd83" },
-  builder: { glyph: "↑", color: "#68aee1" },
-  balanced: { glyph: "◆", color: "#f1be47" },
+  sales: { color: "#ef8f75" },
+  care: { color: "#62bd83" },
+  builder: { color: "#68aee1" },
+  balanced: { color: "#8e78c8" },
 });
 
 function drawRoleMarker(x, footY, member = {}) {
-  const role = member.rank === "xlead" ? { glyph: "L", color: "#f1be47" } : roleMarkers[member.specialty] || roleMarkers.balanced;
-  rect(x + 8, footY - 73, 16, 13, "#24445b");
-  rect(x + 10, footY - 71, 12, 9, role.color);
-  fill("#17384f"); context.font = "bold 8px monospace"; context.fillText(role.glyph, x + 13, footY - 64);
+  const role = member.rank === "xlead" ? { color: "#f1be47" } : roleMarkers[member.specialty] || roleMarkers.balanced;
+  rect(x + 5, footY + 1, 25, member.rank === "xlead" ? 5 : 4, "#24445b");
+  rect(x + 8, footY + 2, 19, member.rank === "xlead" ? 3 : 2, role.color);
+  if (member.rank === "xlead") { rect(x + 12, footY - 1, 3, 3, role.color); rect(x + 20, footY - 1, 3, 3, role.color); }
 }
 
 function drawTeamCharacter(member, x, footY = 176, options = {}) {
-  drawCharacterAtFeet(x, footY, member?.appearance || proctorPalette, { idle: true, band: true, ...options });
   drawRoleMarker(x, footY, member);
+  drawCharacterAtFeet(x, footY, member?.appearance || proctorPalette, { idle: true, band: true, ...options });
 }
 
-function drawEventBanner(title, detail = "") {
-  const width = detail ? 244 : 178;
-  const x = Math.round((384 - width) / 2);
-  rect(x, 183, width, 25, "#17384f");
-  rect(x + 3, 186, width - 6, 19, "#fff8df");
-  fill("#17384f"); context.font = "bold 9px monospace"; context.fillText(title, x + 9, 198);
-  if (detail) { fill("#35647c"); context.font = "bold 7px monospace"; context.fillText(detail, x + 9 + Math.min(112, title.length * 6), 198); }
+function drawXircleMark(x, y, scale = 1) {
+  const unit = 6 * scale;
+  rect(x + unit, y, unit, unit, "#f1be47");
+  rect(x, y + unit, unit, unit, "#65bd86");
+  rect(x + unit * 2, y + unit, unit, unit, "#68aee1");
+  rect(x + unit, y + unit * 2, unit, unit, "#ef8f75");
+  rect(x + unit, y + unit, unit, unit, "#fff8df");
 }
 
 function drawXircleScene(time, npc) {
-  rect(0, 0, 384, 128, "#315b72"); rect(0, 128, 384, 88, "#5c8b63");
-  rect(0, 118, 384, 10, "#24445b");
-  for (let x = 10; x < 384; x += 48) { rect(x + 13, 71, 6, 48, "#634d3d"); rect(x, 56, 32, 28, "#357a55"); }
-  rect(146, 113, 92, 8, "#24445b"); rect(160, 82, 64, 31, "#f1be47"); rect(176, 72, 32, 10, "#ef8f75");
-  const jump = !reducedMotion.matches && Math.floor(time / 520) % 2 ? 2 : 0;
-  drawCharacterAtFeet(35, 176, playerPalette, { pose: "celebrate", jump, band: true });
-  const members = (state.team || []).slice(0, 4);
-  (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, 245 + index * 34, 176, { direction: "left" }));
-  rect(182, 151, 20, 8, "#6f4f35"); rect(187, 141 - jump, 10, 12, "#f1be47"); rect(190, 136 - jump, 5, 9, "#ef8f75");
+  rect(0, 0, 384, 76, "#20384f"); rect(0, 76, 384, 58, "#315b72"); rect(0, 134, 384, 82, "#456f55");
+  rect(298, 24, 22, 22, "#fff1b8"); rect(303, 24, 17, 17, "#20384f");
+  [[22, 29], [61, 18], [104, 37], [347, 26], [274, 54]].forEach(([x, y]) => rect(x, y, 3, 3, "#f8df8b"));
+  for (let x = 0; x < 384; x += 38) { rect(x + 13, 93, 7, 43, "#273f38"); rect(x, 77 + (x % 3) * 5, 34, 27, "#2f6047"); }
+  rect(22, 54, 5, 101, "#24445b"); rect(357, 54, 5, 101, "#24445b");
+  for (let index = 0; index < 12; index += 1) rect(31 + index * 28, 59 + Math.abs(5 - index) * 2, 5, 5, index % 3 === 0 ? "#ef8f75" : index % 2 ? "#f1be47" : "#68aee1");
+  rect(139, 76, 106, 55, "#17384f"); rect(145, 82, 94, 43, "#2f7359"); drawXircleMark(178, 87, 2);
+  const pulse = !reducedMotion.matches && Math.floor(time / 360) % 2 ? 2 : 0;
+  rect(176, 181, 35, 6, "#6f4f35"); rect(184, 167 - pulse, 20, 16 + pulse, "#ef8f75"); rect(189, 158 - pulse, 10, 14, "#f1be47");
+  drawCharacterAtFeet(35, 198, playerPalette, { pose: "celebrate", band: true, direction: "right" });
+  const members = (state.team || []).filter((member) => member.active !== false).slice(0, 5);
+  const positions = [92, 238, 279, 322, 348];
+  (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 198, { direction: index ? "left" : "right", pose: index < 2 ? "celebrate" : "idle" }));
 }
 
 function drawOrganizationScene(time, npc, stageAge) {
   const phase = worldGrowthPhase();
-  if (phase >= 8) {
-    rect(103, 19, 266, 64, "#24445b"); rect(108, 24, 256, 54, "#bfe3ed");
-    for (let x = 114; x < 360; x += 25) rect(x, 48 - ((x / 25) % 3) * 7, 16, 30 + ((x / 25) % 3) * 7, "#5f8293");
-  }
-  if (phase >= 9) { rect(0, 128, 384, 4, "#f1be47"); drawPlant(8, 96, true); }
-  drawWhiteboard(139, 24);
-  drawCharacterAtFeet(28, 176, playerPalette, { direction: "right", pose: state.runComplete ? "celebrate" : "talk", band: true });
+  rect(0, 0, 384, 137, phase >= 9 ? "#dcefe8" : "#e8f3ed"); rect(0, 137, 384, 79, "#b69b72");
+  for (let x = 0; x < 384; x += 32) rect(x + ((x / 32) % 2 ? 16 : 0), 139, 16, 77, "#c8ad83");
+  rect(150, 18, 220, 84, "#17384f"); rect(156, 24, 208, 72, "#a9d8e7");
+  for (let x = 160; x < 362; x += 23) { const height = 20 + ((x / 23) % 5) * 9; rect(x, 96 - height, 16, height, "#52758a"); rect(x + 4, 87 - height, 3, 3, "#f4d36d"); }
+  rect(17, 24, 118, 77, "#24445b"); rect(22, 29, 108, 67, "#f8fbf5");
+  [[31, 73, 52, 52], [52, 52, 85, 69], [85, 69, 114, 42]].forEach(([x1, y1, x2, y2]) => { const minX = Math.min(x1, x2); const minY = Math.min(y1, y2); rect(minX, minY, Math.abs(x2 - x1) + 3, 3, "#77b997"); rect(x1, y1, 7, 7, "#f1be47"); rect(x2, y2, 7, 7, "#68aee1"); });
+  rect(0, 130, 384, 7, phase >= 9 ? "#f1be47" : "#4f9a78");
+  drawCharacterAtFeet(18, 196, playerPalette, { direction: "right", pose: state.runComplete ? "celebrate" : "talk", band: true });
   const aggregate = state.organization?.aggregate || {};
   const total = Math.max(Number(aggregate.xvisorCount || 0), Number(state.team?.length || 0));
-  const visibleTarget = phase >= 9 ? 6 : phase >= 8 ? 5 : 3;
+  const visibleTarget = phase >= 9 ? 7 : phase >= 8 ? 6 : 4;
   const visible = Math.max(2, Math.min(visibleTarget, total || 2));
-  const positions = [84, 124, 164, 238, 278, 318];
+  const positions = [70, 112, 154, 210, 252, 294, 336];
   for (let index = 0; index < visible; index += 1) {
     const member = state.team?.[index] || { appearance: index % 2 ? npc : proctorPalette, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
-    drawTeamCharacter(member, positions[index], 176, { direction: index < 3 ? "right" : "left", walk: !reducedMotion.matches && stageAge < 900 ? time / 110 + index : 0 });
+    drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", walk: !reducedMotion.matches && stageAge < 620 ? time / 110 + index : 0 });
   }
-  rect(285, 88, 83, 25, "#24445b"); rect(289, 92, 75, 17, "#eef8f2");
-  fill("#17384f"); context.font = "bold 8px monospace"; context.fillText(`ORG x${formatNumber(total)}`, 296, 103);
+  const blocks = Math.min(12, Math.max(2, Math.ceil(Math.log2(Math.max(2, total))) + 2));
+  for (let index = 0; index < blocks; index += 1) rect(24 + index * 8, 109, 5, 5 + (index % 3) * 3, ["#65bd86", "#68aee1", "#f1be47"][index % 3]);
+}
 
-  const report = state.lastOrganizationReport;
-  if (report && stageAge < (report.activities?.xircle ? 2450 : 1850)) {
-    if (stageAge < 620) drawEventBanner("XCADEMY x4", "TEAM LEARNS");
-    else if (stageAge < 1240) drawEventBanner("OPEN HOUSE x1", "NEW PEOPLE");
-    else if (report.activities?.xircle && stageAge < 1860) drawEventBanner("THE XIRCLE x1", "POWER-UP");
-    else drawEventBanner(`MONTH ${report.month} RESULT`, `${formatNumber(report.tgv)} XV`);
-  } else if (state.runComplete) drawEventBanner("2 YEARS LATER", "NEW GAME+ READY");
+function drawTravelScene(destination, time, npc) {
+  rect(0, 0, 384, 144, "#8fd0e3"); rect(0, 144, 384, 72, "#d9c18e");
+  rect(18, 24, 34, 34, "#fff2b0");
+  if (destination === "Tokyo") {
+    for (let x = 0; x < 384; x += 32) rect(x, 99 + (x % 4) * 5, 26, 47, "#526d82");
+    rect(187, 43, 8, 102, "#d85d52"); rect(167, 86, 48, 7, "#eff5ef"); rect(174, 111, 34, 6, "#eff5ef"); rect(190, 31, 3, 18, "#d85d52");
+  } else if (destination === "Seoul") {
+    rect(0, 111, 384, 35, "#5a8864"); rect(184, 48, 8, 82, "#e7edf0"); rect(174, 45, 28, 13, "#4d6a80"); rect(187, 27, 3, 22, "#4d6a80");
+  } else if (destination === "Shanghai") {
+    rect(183, 43, 9, 103, "#8c7fc1"); rect(169, 64, 38, 16, "#ef8f75"); rect(174, 100, 28, 13, "#ef8f75"); rect(187, 25, 3, 22, "#8c7fc1");
+    for (let x = 16; x < 370; x += 37) rect(x, 100 + (x % 3) * 8, 27, 46, "#56788c");
+  } else if (destination === "Taipei") {
+    for (let tier = 0; tier < 6; tier += 1) rect(174 + tier * 2, 43 + tier * 16, 36 - tier * 4, 15, "#4f8c87"); rect(190, 29, 3, 16, "#355b62");
+  } else if (destination === "Paris") {
+    rect(188, 42, 7, 105, "#5d6268"); rect(151, 139, 81, 8, "#5d6268"); rect(160, 112, 64, 7, "#5d6268"); rect(171, 81, 42, 6, "#5d6268");
+    for (let row = 0; row < 5; row += 1) { rect(161 + row * 6, 112 - row * 15, 6, 30, "#5d6268"); rect(217 - row * 6, 112 - row * 15, 6, 30, "#5d6268"); }
+  } else if (destination === "Dubai") {
+    rect(0, 129, 384, 24, "#d8b56f"); for (let tier = 0; tier < 8; tier += 1) rect(181 + tier, 31 + tier * 14, 24 - tier * 2, 14, "#5d7f91"); rect(192, 17, 2, 18, "#5d7f91");
+  } else if (destination === "Santorini") {
+    rect(0, 119, 384, 31, "#3f95bd"); [42, 101, 165, 229, 295].forEach((x, index) => { rect(x, 86 - (index % 2) * 12, 49, 59, "#fffdf1"); rect(x + 13, 76 - (index % 2) * 12, 23, 13, "#3e83b2"); rect(x + 20, 108, 10, 37, "#4d89b2"); });
+  } else if (destination === "London") {
+    rect(167, 54, 47, 92, "#aa8355"); rect(175, 64, 31, 31, "#f2e6c7"); rect(185, 71, 12, 12, "#5b6d77"); rect(178, 43, 25, 13, "#665a54"); rect(188, 26, 5, 20, "#665a54"); rect(56, 119, 70, 28, "#c84f49"); rect(64, 125, 54, 10, "#dce9ee");
+  } else {
+    rect(0, 117, 384, 99, "#3f92b8"); rect(92, 91, 203, 48, "#f5f4eb"); rect(126, 62, 131, 32, "#f5f4eb"); rect(151, 47, 76, 18, "#f5f4eb"); rect(111, 136, 169, 7, "#24445b");
+  }
+  rect(0, 145, 384, 7, "#24445b");
+  const wave = !reducedMotion.matches && Math.floor(time / 420) % 2 ? "celebrate" : "idle";
+  drawCharacterAtFeet(35, 202, playerPalette, { pose: wave, band: true, direction: "right" });
+  const companions = (state.team || []).filter((member) => member.active !== false).slice(0, 3);
+  (companions.length ? companions : [{ appearance: npc }, { appearance: proctorPalette }]).forEach((member, index) => drawCharacterAtFeet(282 + index * 34, 202, member.appearance || npc, { pose: index === 0 ? wave : "idle", band: true, direction: "left" }));
+}
+
+function drawMonth12Scene(npc) {
+  rect(0, 0, 384, 132, "#17384f"); rect(0, 132, 384, 84, "#b79562");
+  rect(18, 18, 348, 93, "#24445b"); rect(24, 24, 336, 81, "#9bd2df");
+  for (let x = 28; x < 356; x += 30) rect(x, 67 + (x % 4) * 6, 22, 38, "#4e7184");
+  rect(0, 126, 384, 7, "#f1be47"); drawXircleMark(180, 49, 2);
+  drawCharacterAtFeet(27, 196, playerPalette, { pose: "celebrate", band: true, direction: "right" });
+  const members = (state.team || []).slice(0, 7);
+  const positions = [82, 124, 166, 222, 264, 306, 344];
+  (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", pose: index % 3 === 0 ? "celebrate" : "idle" }));
+}
+
+function drawFinaleScene(npc) {
+  rect(0, 0, 384, 76, "#e7b56e"); rect(0, 76, 384, 58, "#9bd4df"); rect(0, 134, 384, 82, "#6d936d");
+  rect(143, 33, 98, 105, "#24445b"); rect(151, 41, 82, 97, "#e7f1e7");
+  for (let row = 0; row < 4; row += 1) for (let col = 0; col < 3; col += 1) rect(160 + col * 23, 52 + row * 18, 12, 9, (row + col) % 2 ? "#f1be47" : "#68aee1");
+  drawXircleMark(177, 113, 1);
+  rect(0, 132, 384, 7, "#f1be47");
+  drawCharacterAtFeet(176, 198, playerPalette, { pose: "celebrate", band: true });
+  const members = (state.team || []).filter((member) => member.active !== false).slice(0, 8);
+  const positions = [18, 57, 96, 135, 220, 259, 298, 337];
+  (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 198, { direction: index < 4 ? "right" : "left", pose: index % 4 === 0 ? "celebrate" : "idle" }));
 }
 
 function drawCharacterAtFeet(x, footY, palette = playerPalette, options = {}) {
@@ -1093,14 +1232,23 @@ function drawScene(time) {
   drawRoom(exam ? "exam" : management ? "management" : state.month === 0 ? "pre" : "office");
   if (!exam) drawOfficeGrowth(scene);
   const person = selectedPerson();
-  const npc = person?.appearance || { skin: "#e0a17a", hair: "#513943", shirt: "#ef8078", accent: "#fff2d4" };
+  const npc = person?.appearance || { skin: "#dfaa83", hair: "#263844", shirt: "#ef8078", accent: "#fff2d4" };
   const idle = { idle: true, band: state.preseason.day > 0 || state.month >= 1, bandActive: scene === "pre_montage" };
   const stageAge = time - stageStartedAt;
+  const organizationMode = state.organizationMode ? organizationVisualMode(stageAge) : null;
 
-  if (scene === "the-xircle") {
+  if (organizationMode?.kind === "travel") {
+    drawTravelScene(organizationMode.report.trip.destination, time, npc);
+  } else if (organizationMode?.kind === "xircle") {
+    drawXircleScene(time, npc);
+  } else if (organizationMode?.kind === "finale") {
+    drawFinaleScene(npc);
+  } else if (scene === "the-xircle") {
     drawXircleScene(time, npc);
   } else if (scene === "management_org") {
     drawOrganizationScene(time, npc, stageAge);
+  } else if (scene === "season_review") {
+    drawMonth12Scene(npc);
   } else if (exam) {
     drawDoor(16, scene === "exam_transit"); drawClock(326, 26); drawTable(142, 150, 106); drawChair(110, 121, "#708ba1"); drawChair(254, 121, "#8d779d");
     drawCharacterAtFeet(286, 176, proctorPalette, { direction: "left", idle: true });
@@ -1122,7 +1270,7 @@ function drawScene(time) {
     if (scene === "pre_band") drawBand(271, 116, true);
     if (scene === "pre_montage") {
       rect(249, 72, 59, 56, "#24445b"); rect(254, 78, 49, 45, "#fff8df"); rect(254, 78, 49, 9, "#ef8078");
-      fill("#24445b"); context.font = "bold 14px monospace"; context.fillText(String(montageVisualDay).padStart(2, "0"), 269, 110);
+      for (let index = 0; index < 28; index += 1) rect(258 + (index % 7) * 6, 91 + Math.floor(index / 7) * 7, 4, 4, index < montageVisualDay ? "#4fbd83" : "#d7dfd9");
     } else if (scene === "pre_abcd") ["gus", "protein-hmb", "vita-matrix", "astamega"].forEach((id, index) => drawProduct(231 + index * 24, 117, id));
     else if (scene.startsWith("practice")) { drawSittingCharacter(254, 159, npc, "left"); rect(180, 113, 34, 25, "#24445b"); rect(183, 116, 28, 19, "#d9f2ef"); }
   } else if (scene === "opening") {
@@ -1197,14 +1345,7 @@ function drawScene(time) {
     drawCharacterAtFeet(176, 176, playerPalette, { pose: "celebrate", jump, band: true }); drawCertificate(174, 72);
   }
 
-  if (["xcademy_running", "center_running"].includes(scene)) drawEventBanner("XCADEMY", "LEARN TOGETHER");
-  if (["open_house_running", "goodluck_running"].includes(scene)) drawEventBanner("OPEN HOUSE", "NEW PEOPLE ARRIVE");
-  if (scene === "the-xircle") drawEventBanner("THE XIRCLE", "TEAM POWER-UP");
-  if (scene === "xlead") drawEventBanner("CERTIFIED XLEAD", "CHANNEL 2 UNLOCKED");
-  if (scene === "xgen") drawEventBanner("CERTIFIED XGEN", "ORGANIZATION LEADER");
-  if (scene === "season_review") drawEventBanner("MONTH 12 REVELATION", "HIGH SCORE LOCKED");
-  if (scene === "first_g1") drawEventBanner("NEW X-VISOR", "TEAM STARTS HERE");
-  if (state.runMode === "NEW_GAME_PLUS" && state.month === 1 && stageAge < 2200) drawEventBanner("NEW GAME+", "BEAT YOUR BEST");
+  renderWorldEventCard(scene, stageAge, organizationMode);
 
   effects = effects.filter((particle) => particle.life > 0);
   effects.forEach((particle) => { rect(particle.x, particle.y, particle.size, particle.size, particle.color); particle.x += particle.vx; particle.y += particle.vy; particle.vy += 0.06; particle.life -= 1; });

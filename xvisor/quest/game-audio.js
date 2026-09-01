@@ -39,6 +39,7 @@ const NOTES = Object.freeze({
   monthClose: [[659, 0.06, "triangle", 0], [523, 0.06, "triangle", 0.07], [392, 0.14, "triangle", 0.14]],
   score: [[523, 0.08, "triangle", 0], [659, 0.08, "triangle", 0.09], [784, 0.09, "triangle", 0.18], [1047, 0.24, "sine", 0.28]],
   ending: [[392, 0.1, "sine", 0], [523, 0.1, "sine", 0.12], [659, 0.12, "sine", 0.24], [1047, 0.3, "sine", 0.38]],
+  trip: [[523, 0.06, "triangle", 0], [659, 0.07, "triangle", 0.07], [784, 0.08, "triangle", 0.14], [1047, 0.1, "sine", 0.22], [1319, 0.22, "sine", 0.34]],
   newGame: [[784, 0.055, "square", 0], [1047, 0.07, "square", 0.07], [1319, 0.09, "square", 0.15], [1568, 0.18, "triangle", 0.25]],
   notify: [[760, 0.05, "sine", 0], [980, 0.09, "sine", 0.07]],
 });

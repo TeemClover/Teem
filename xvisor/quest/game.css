@@ -48,6 +48,8 @@ body {
   font-family: var(--font-thai);
   font-size: 16px;
   line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  text-rendering: optimizeLegibility;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 24px 24px,
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 24px 24px,
@@ -2621,6 +2623,316 @@ body.is-ng-transition::before {
   border-left: 5px solid #4fbd83;
 }
 
+.world-event-card {
+  position: absolute;
+  z-index: 5;
+  top: 45px;
+  right: 10px;
+  display: grid;
+  gap: 2px;
+  width: min(258px, 62%);
+  padding: 9px 11px 10px;
+  color: white;
+  pointer-events: none;
+  background: rgba(16, 43, 61, 0.94);
+  border: 3px solid #fffdf5;
+  border-right-color: var(--green-300);
+  border-bottom-color: var(--green-300);
+  border-radius: 7px;
+  box-shadow: 4px 4px 0 rgba(7, 29, 43, 0.76);
+  animation: world-card-in 220ms steps(3, end) both;
+}
+
+.world-event-card span,
+.world-event-card strong,
+.world-event-card small {
+  overflow-wrap: anywhere;
+  text-shadow: none;
+}
+
+.world-event-card span {
+  color: var(--green-300);
+  font: 900 8px/1.25 var(--font-pixel);
+  letter-spacing: 0.07em;
+}
+
+.world-event-card strong {
+  font: 950 clamp(13px, 2.2vw, 20px)/1.2 var(--font-pixel);
+  letter-spacing: 0.02em;
+}
+
+.world-event-card small {
+  color: #e4f4eb;
+  font-size: clamp(9px, 1.35vw, 12px);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.world-event-card[data-tone="xircle"] {
+  color: #fff8d8;
+  background: rgba(31, 49, 76, 0.96);
+  border-color: #f1be47 #68aee1 #65bd86 #ef8f75;
+}
+
+.world-event-card[data-tone="xircle"] span {
+  color: #f1be47;
+}
+
+.world-event-card[data-tone="travel"] {
+  color: var(--navy-950);
+  background: rgba(255, 248, 223, 0.97);
+  border-color: var(--navy-950) var(--blue-500) var(--blue-500) var(--navy-950);
+}
+
+.world-event-card[data-tone="travel"] span,
+.world-event-card[data-tone="travel"] small {
+  color: var(--navy-700);
+}
+
+.world-event-card[data-tone="finale"] {
+  color: #fff9dc;
+  background: rgba(23, 56, 79, 0.97);
+  border-color: var(--gold-300);
+}
+
+.v1-auto-plan {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+  padding: 11px 12px;
+  background: #edf8f1;
+  border: 2px solid #a9ceb7;
+  border-radius: 10px;
+}
+
+.v1-auto-plan > div:first-child span,
+.v1-auto-plan > div:first-child strong {
+  display: block;
+}
+
+.v1-auto-plan > div:first-child span {
+  color: var(--green-600);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.v1-auto-plan > div:first-child strong {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.v1-org-rhythm .is-xircle {
+  color: #fff7d5;
+  background: #273f58;
+  border-color: #f1be47;
+}
+
+.v1-report-headline small {
+  display: block;
+  margin-top: 3px;
+  color: #d8ede1;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.v1-flow-section {
+  margin: 11px 0;
+  padding: 10px;
+  background: #f8fbf8;
+  border: 2px solid #d0ddd7;
+  border-radius: 10px;
+}
+
+.v1-flow-section h3 {
+  margin: 0 0 7px;
+  color: var(--navy-900);
+  font-size: 13px;
+}
+
+.v1-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(72px, 1fr));
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.v1-flow-grid > div {
+  min-width: 72px;
+  padding: 8px 6px;
+  text-align: center;
+  background: white;
+  border: 1px solid #c9d9d2;
+  border-radius: 7px;
+}
+
+.v1-flow-grid span,
+.v1-flow-grid b {
+  display: block;
+}
+
+.v1-flow-grid span {
+  min-height: 30px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.v1-flow-grid b {
+  margin-top: 3px;
+  color: var(--green-600);
+  font-size: 16px;
+}
+
+.v1-flow-grid .is-warning b { color: #ad7719; }
+.v1-flow-grid .is-loss b { color: var(--coral-600); }
+.v1-flow-grid .is-comeback b { color: #337ca1; }
+.v1-flow-grid .is-net { background: var(--navy-900); border-color: var(--navy-950); }
+.v1-flow-grid .is-net span { color: #bde7cd; }
+.v1-flow-grid .is-net b { color: white; }
+
+.v1-xircle-bonus {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) 1.3fr;
+  gap: 12px;
+  margin: 13px 0;
+  padding: 14px;
+  overflow: hidden;
+  color: #fff8d8;
+  background: linear-gradient(135deg, #20364e, #315b72 60%, #2f7359);
+  border: 3px solid #f1be47;
+  border-radius: 11px;
+  box-shadow: 0 4px 0 #142b3d;
+}
+
+.v1-xircle-bonus::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.45;
+  background: conic-gradient(from 45deg, #f1be47 0 25%, #68aee1 0 50%, #ef8f75 0 75%, #65bd86 0);
+  transform: rotate(45deg);
+}
+
+.v1-xircle-bonus span,
+.v1-xircle-bonus strong {
+  display: block;
+  font-family: var(--font-pixel);
+}
+
+.v1-xircle-bonus span {
+  color: #f1be47;
+  font-size: 10px;
+}
+
+.v1-xircle-bonus strong {
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.v1-xircle-bonus ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0 34px 0 0;
+  list-style: none;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.v1-travel-reward {
+  display: grid;
+  gap: 2px;
+  margin: 13px 0;
+  padding: 13px 15px;
+  color: var(--navy-950);
+  background: linear-gradient(120deg, #fff8df 0 65%, #bfe9f1 65%);
+  border: 3px solid var(--navy-900);
+  border-radius: 10px;
+  box-shadow: 0 4px 0 var(--blue-500);
+}
+
+.v1-travel-reward span { color: var(--blue-500); font: 900 10px var(--font-pixel); }
+.v1-travel-reward strong { font: 950 24px var(--font-pixel); }
+.v1-travel-reward small { color: var(--muted); font-weight: 750; }
+
+.v1-income-mini {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.v1-income-mini span {
+  display: flex;
+  justify-content: space-between;
+  gap: 7px;
+  padding: 8px;
+  background: white;
+  border: 1px solid #d4dfda;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.v1-trip-stamps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.v1-trip-stamps > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font: 900 11px var(--font-pixel);
+  background: #e7f5f7;
+  border: 2px solid var(--navy-900);
+  border-radius: 7px;
+}
+
+.v1-trip-stamps small {
+  color: var(--muted);
+  font: 800 9px var(--font-pixel);
+}
+
+.v1-trip-stamps .is-empty {
+  color: var(--muted);
+  font-family: var(--font-thai);
+  font-weight: 700;
+  background: #f5f5f1;
+  border-color: #cbd5d1;
+}
+
+.dialog-button--ghost {
+  width: 100%;
+  margin-top: 9px;
+  color: var(--muted);
+  background: transparent;
+  border-color: #c9d5d0;
+  box-shadow: none;
+}
+
+.v1-finale-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@keyframes world-card-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes scene-enter {
+  0% { opacity: 0.35; }
+  100% { opacity: 1; }
+}
+
 @keyframes release-month-pass {
   0% { filter: brightness(1); transform: translateX(0); }
   45% { filter: brightness(1.15); transform: translateX(-3px); }
@@ -2713,6 +3025,46 @@ body.is-ng-transition::before {
   .v9-score-grid strong {
     font-size: 19px;
   }
+
+  .world-event-card {
+    top: 36px;
+    right: 6px;
+    width: min(220px, 68%);
+    padding: 7px 8px;
+    border-width: 2px;
+    box-shadow: 3px 3px 0 rgba(7, 29, 43, 0.72);
+  }
+
+  .world-event-card span { font-size: 7px; }
+  .world-event-card strong { font-size: 12px; }
+  .world-event-card small { font-size: 9px; }
+
+  .v1-auto-plan,
+  .v1-xircle-bonus {
+    grid-template-columns: 1fr;
+  }
+
+  .v1-auto-plan .v1-org-rhythm {
+    margin-top: 0;
+  }
+
+  .v1-flow-grid {
+    grid-template-columns: repeat(7, 82px);
+    scroll-snap-type: x proximity;
+  }
+
+  .v1-flow-grid > div {
+    scroll-snap-align: start;
+  }
+
+  .v1-income-mini,
+  .v1-finale-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .v1-travel-reward strong {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 370px) {
@@ -2730,5 +3082,9 @@ body.is-ng-transition::before {
   body.is-ng-transition::before {
     animation: none;
     opacity: 1;
+  }
+
+  .world-event-card {
+    animation: none;
   }
 }

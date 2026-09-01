@@ -34,22 +34,22 @@ export const NAME_POOL = Object.freeze([
 ]);
 
 export const APPEARANCES = Object.freeze([
-  { skin: "#cb8f69", hair: "#263e4b", shirt: "#4db783", accent: "#f6ce5a" },
-  { skin: "#e0a17a", hair: "#513943", shirt: "#ef8078", accent: "#fff2d4" },
-  { skin: "#b9785d", hair: "#253948", shirt: "#5fa9d7", accent: "#f6ce5a" },
-  { skin: "#e0ab78", hair: "#6e4d35", shirt: "#e4b94e", accent: "#ffffff" },
-  { skin: "#9f664f", hair: "#222d38", shirt: "#8d78c7", accent: "#f4d35e" },
-  { skin: "#d49a78", hair: "#342d4b", shirt: "#e58ca9", accent: "#f8efd4" },
-  { skin: "#bd7c5e", hair: "#553a2d", shirt: "#6eb6a0", accent: "#ffe177" },
-  { skin: "#efba8f", hair: "#27364a", shirt: "#ed9659", accent: "#fff0c7" },
-  { skin: "#8f5d49", hair: "#1e2c35", shirt: "#5f8fd3", accent: "#d8f09b" },
-  { skin: "#d8946c", hair: "#6a3440", shirt: "#54b7a9", accent: "#ffd565" },
-  { skin: "#b26f50", hair: "#3a2f28", shirt: "#d77969", accent: "#d7f2ff" },
-  { skin: "#e8ad86", hair: "#263e4b", shirt: "#7b9bd4", accent: "#fff2a3" },
-  { skin: "#a86d54", hair: "#493341", shirt: "#81b85f", accent: "#ffdf78" },
-  { skin: "#d08b68", hair: "#203240", shirt: "#d88ab7", accent: "#dff8ec" },
-  { skin: "#f0bb91", hair: "#68432f", shirt: "#55a3c8", accent: "#f5ce5c" },
-  { skin: "#985f49", hair: "#252a36", shirt: "#c98a54", accent: "#d8f4ff" },
+  { skin: "#f0bf98", hair: "#1f3039", shirt: "#4db783", accent: "#f6ce5a" },
+  { skin: "#e8b38b", hair: "#29323b", shirt: "#ef8078", accent: "#fff2d4" },
+  { skin: "#d99d78", hair: "#20333f", shirt: "#5fa9d7", accent: "#f6ce5a" },
+  { skin: "#efb98f", hair: "#2d333b", shirt: "#e4b94e", accent: "#ffffff" },
+  { skin: "#c98667", hair: "#1e2c35", shirt: "#8d78c7", accent: "#f4d35e" },
+  { skin: "#dfa781", hair: "#302e39", shirt: "#e58ca9", accent: "#f8efd4" },
+  { skin: "#d29470", hair: "#25313a", shirt: "#6eb6a0", accent: "#ffe177" },
+  { skin: "#f2c19a", hair: "#24333e", shirt: "#ed9659", accent: "#fff0c7" },
+  { skin: "#bd7f62", hair: "#1d2b34", shirt: "#5f8fd3", accent: "#d8f09b" },
+  { skin: "#e4aa82", hair: "#352d34", shirt: "#54b7a9", accent: "#ffd565" },
+  { skin: "#ca8969", hair: "#242c33", shirt: "#d77969", accent: "#d7f2ff" },
+  { skin: "#edb790", hair: "#20323d", shirt: "#7b9bd4", accent: "#fff2a3" },
+  { skin: "#c38364", hair: "#2d3038", shirt: "#81b85f", accent: "#ffdf78" },
+  { skin: "#d99b76", hair: "#1e303a", shirt: "#d88ab7", accent: "#dff8ec" },
+  { skin: "#f3c49d", hair: "#303038", shirt: "#55a3c8", accent: "#f5ce5c" },
+  { skin: "#b9795e", hair: "#202b34", shirt: "#c98a54", accent: "#d8f4ff" },
 ]);
 
 export const PERSONAS = Object.freeze([
