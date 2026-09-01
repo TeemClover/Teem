@@ -3,11 +3,10 @@ import * as v8copy from './game-copy-v8.js?v=1.0-core';
 import {
   CAMPAIGN_MONTHS,
   EVENTS,
-  XGEN_ROLLING_TARGET,
+  XGEN_SINGLE_MONTH_TARGET,
   calculateEconomy,
   getBestNextActions,
-  getRolling3TGV,
-} from './game-data-v9.js?v=1.0-core';
+} from './game-data.js';
 
 function fmt(value) {
   return Math.round(Number(value || 0)).toLocaleString('th-TH');
@@ -60,19 +59,20 @@ export function getStageContent(state) {
   if (state.organizationMode) {
     const economy = calculateEconomy(state);
     const agg = state.organization?.aggregate || {};
+    const xgenPath = state.year2Path === 'xgen';
     return finish(state, {
       ...base,
-      scene: 'management_org',
+      scene: base.scene,
       progress: 100,
-      eyebrow: `🏙️ ORGANIZATION MODE · MONTH ${state.month}`,
+      eyebrow: `${xgenPath ? '⭐ XGEN' : '👑 XLEAD'} ORGANIZATION · MONTH ${state.month}`,
       title: `องค์กรเดินต่อ · ${fmt(economy.tgv)} XV`,
-      reason: 'หลัง 12 เดือน ไม่มี Energy และไม่มีงานรายคนให้ grind — ดูภาพใหญ่แล้วปล่อยระบบเดินต่อ',
+      reason: 'ปีที่ 2 คุณไม่ต้องกลับไปขายหรือตามรายคน — กดเดือนละครั้งแล้วดูระบบที่สร้างไว้ทำงานต่อ',
       speaker: 'XOS · Organization',
       dialogue: `❤️ ลูกค้า active ${fmt(agg.activeCustomers)} · 🌱 X-VISOR ${fmt(agg.xvisorCount || state.team?.length)} · 👑 XLEAD ${fmt(agg.xleadCount)}`,
       facts: [
         ['🏙️ TGV เดือนนี้', `${fmt(economy.tgv)} XV`],
         ['💰 รายได้เดือนนี้', `฿${fmt(economy.projectedIncome)}`],
-        ['⭐ เรื่องขององค์กร', state.sceneReport?.story || state.lastMessage || 'ระบบยังเดินต่อ'],
+        ['เส้นทางปีที่ 2', xgenPath ? 'XGEN · มี ③ Organization 5% + Recognition Trip' : 'XLEAD · ไม่มี ③ และไม่มี Recognition Trip'],
       ],
       management: null,
       monthSummary: null,
@@ -88,9 +88,11 @@ export function getStageContent(state) {
       progress: 100,
       eyebrow: '🏆 MONTH 12 · REVELATION',
       title: '12 เดือนแรกจบแล้ว',
-      reason: 'จากคนเดียว → ลูกค้า → X-VISOR → XLEAD → Organization ที่เริ่มเดินได้โดยไม่ต้องรอคุณทุกเรื่อง',
+      reason: 'High Score ถูกล็อกตรงนี้ — ใส่ชื่อก่อน แล้วค่อยดูสิ่งที่คุณสร้างเดินต่อเองใน Year 2',
       speaker: 'X-VISOR QUEST',
-      dialogue: 'คุณไม่ได้หยุดทำธุรกิจ แต่ธุรกิจไม่ต้องรอคุณทำทุกอย่างด้วยตัวเองอีกแล้ว',
+      dialogue: state.campaignOutcome?.xgenByMonth12
+        ? '⭐ คุณแตะ 3,000,000 XV ในเดือนเดียวสำเร็จ · Year 2 เปิด XGEN Path'
+        : '👑 รอบนี้ยังไม่แตะ 3,000,000 XV ในเดือนเดียว · Year 2 จะเป็น XLEAD Path',
       facts: [
         ['🏆 Best TGV', `${fmt(score.bestTgv)} XV`],
         ['💰 รายได้รวม 12 เดือน', `฿${fmt(score.totalIncome)}`],
@@ -99,24 +101,24 @@ export function getStageContent(state) {
       ],
       management: null,
       monthSummary: null,
-      actions: [{ label: '🏆 ดูผลและลงชื่อ High Score', ui: 'v9-finale', icon: 'certificate' }],
+      actions: [{ label: '🏆 ใส่ชื่อ High Score ก่อน', ui: 'v9-finale', icon: 'certificate' }],
     });
   }
 
-  if (state.sceneReport?.kind === 'xgen-qualified' && !state.career?.xgenCertified) {
-    const rolling = Number(state.sceneReport.rolling3TGV || getRolling3TGV(state));
+  if (['xgen-qualified', 'xgen-qualified-1b'].includes(state.sceneReport?.kind)) {
+    const tgv = Number(state.sceneReport?.tgv || calculateEconomy(state).tgv || 0);
     return finish(state, {
       ...base,
       scene: 'xgen',
-      eyebrow: '🔓 XGEN QUALIFICATION',
-      title: 'คุณค้นพบเส้นทาง XGEN แล้ว',
-      reason: 'องค์กรของคุณโตถึงจุดที่มีสิทธิ์เข้าสอบ XGEN — Qualification เกิดครั้งเดียวและไม่หาย',
+      eyebrow: '🏆 XGEN QUALIFIED',
+      title: 'แตะ 3,000,000 XV ในเดือนเดียวแล้ว',
+      reason: 'ผ่านครั้งเดียวและอยู่ถาวรในรอบนี้ — ③ Organization 5% เริ่มนับตั้งแต่เดือนที่ผ่านทันที',
       speaker: 'XOS · Organization',
-      dialogue: `3-Month TGV ล่าสุด ${fmt(rolling)} XV · ผ่านเกณฑ์ ${fmt(XGEN_ROLLING_TARGET)} XV แล้ว`,
+      dialogue: `TGV เดือนนี้ ${fmt(tgv)} XV · เกณฑ์ ${fmt(XGEN_SINGLE_MONTH_TARGET)} XV`,
       facts: [
-        ['ช่วงที่วัด', '3 เดือนล่าสุด'],
+        ['ช่วงที่วัด', 'เดือนปัจจุบันเดือนเดียว'],
         ['Qualification', 'ผ่านแล้วถาวรในรอบนี้'],
-        ['ขั้นถัดไป', 'สอบ XGEN เพื่อปลดล็อก ③'],
+        ['③ Organization', '5% ของ TGV เดือนนี้เริ่มทันที'],
       ],
       actions: quick3(state),
     });
@@ -126,11 +128,11 @@ export function getStageContent(state) {
     return finish(state, {
       ...base,
       scene: 'xgen',
-      eyebrow: '🎓 XGEN EXAM · PASSED',
-      title: 'Certified XGEN',
-      reason: 'ผ่าน Qualification แล้ว และการสอบคือสิ่งที่ปลดล็อกรายได้จากการบริหาร Organization',
+      eyebrow: '🎓 XGEN · CONFIRMED',
+      title: 'XGEN Path เปิดแล้ว',
+      reason: 'ตัวชี้ขาดทางเศรษฐกิจคือ TGV แตะ 3,000,000 XV ในเดือนเดียว',
       speaker: 'Xcademy',
-      dialogue: '③ รายได้จากการบริหาร Organization ปลดล็อกแล้ว',
+      dialogue: 'Qualification ของรอบนี้ถูกบันทึกแล้ว',
       actions: quick3(state),
     });
   }
