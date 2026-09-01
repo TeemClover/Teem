@@ -10,9 +10,10 @@ test('public quest shell is visibly 1.0b and boots from the single release core'
   assert.match(html, /data-game-version="1\.0b"/);
   assert.match(html, />1\.0b</);
   assert.match(html, /game-data-v1b-core\.js\?v=1\.0b-release1/);
-  assert.match(html, /game-1b\.css\?v=1\.0b-release1/);
+  assert.match(html, /game-copy-v9a\.js\?v=1\.0b-release2/);
+  assert.match(html, /game-1b\.css\?v=1\.0b-release2/);
   assert.doesNotMatch(html, /game-1b-ui\.js/);
-  assert.match(html, /game-1b-final\.js\?v=1\.0b-release1/);
+  assert.match(html, /game-1b-final\.js\?v=1\.0b-release2/);
   assert.match(html, /mc_xvisor_public_release/);
 });
 
