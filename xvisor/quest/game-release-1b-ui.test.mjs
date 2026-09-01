@@ -44,11 +44,11 @@ test('scoreboard uses 1.0b and marks NEW GAME+ names with a leading star', async
 });
 
 test('1.0b release data distinguishes XGEN and XLEAD paths plus fixed event months', async () => {
-  const [data, copy] = await Promise.all([source('game-data-v1b-core.js'), source('game-copy-v9a.js')]);
+  const [data, finalUi] = await Promise.all([source('game-data-v1b-core.js'), source('game-1b-final.js')]);
   assert.match(data, /TRAVEL_MONTHS=Object\.freeze\(\[16,22\]\)/);
   assert.match(data, /ORGANIZATION_XIRCLE_MONTHS=Object\.freeze\(\[15,18,21,24\]\)/);
-  assert.match(copy, /XLEAD ORGANIZATION/);
-  assert.match(copy, /XGEN ORGANIZATION/);
+  assert.match(finalUi, /XGEN Path/);
+  assert.match(finalUi, /XLEAD Path/);
 });
 
 test('landing page announces the public launch date and 1.0b version', async () => {
