@@ -1,4 +1,4 @@
-/* X-VISOR QUEST 1.0b — corrective presentation overlay */
+/* X-VISOR QUEST 1.0b — public release corrections */
 .routine-choices button.routine-choice--locked,
 .routine-choices button[aria-disabled="true"]{opacity:.5;filter:grayscale(.35);cursor:not-allowed}
 .receipt-1b{display:grid;gap:0;border:3px solid var(--navy-900,#17384f);background:#fffaf0;padding:10px;border-radius:8px}
@@ -9,11 +9,16 @@
 .receipt-1b__income strong{color:#268d61}
 .receipt-1b__grand{font-size:16px;font-weight:900;background:#e8f6ed;border-bottom:0}
 .receipt-1b small{padding:8px 4px 2px;color:#647985;line-height:1.45}
-/* 1.0b owns the visible world canvas. Legacy canvas keeps running hidden so old code stays compatible. */
-#worldCanvas[hidden]{display:none!important}
-.world-canvas-1b{display:block;width:100%;height:auto;aspect-ratio:16/9;image-rendering:pixelated;image-rendering:crisp-edges;background:#e9f2ec}
-#worldEventCard{display:none!important}
-.world-event-card--1b{z-index:4}
+
+.v1-score-required{margin-top:16px;padding:18px;border:3px solid var(--navy-900,#17384f);border-radius:12px;background:#fff6d8;box-shadow:0 5px 0 #d9a82f}
+.v1-score-required>strong{display:block;font-size:18px;margin-bottom:4px}
+.v1-score-required p{margin:4px 0 12px}
+.v1-score-required .v9-score-name{display:grid;gap:7px;font-weight:800}
+.v1-score-required .v9-score-name input{width:100%;min-height:50px;padding:10px 12px;border:2px solid var(--navy-900,#17384f);border-radius:8px;background:#fff;font:inherit;font-size:18px}
+.v1-score-required>.dialog-button{width:100%;margin-top:10px;min-height:54px}
+.v1-score-lock-success{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:16px 0;padding:14px 16px;border:2px solid #3b9b6d;border-radius:10px;background:#eaf8ef}
+.v1-score-lock-success strong{color:#217653}
+
 .game-dialog[data-kind="wide"]{max-width:min(920px,calc(100vw - 16px))}
 @media(max-width:640px){
   .game-dialog,.game-dialog[data-kind="wide"]{width:calc(100vw - 12px);max-width:calc(100vw - 12px);max-height:calc(100svh - 12px);margin:auto;overflow:auto}
@@ -21,6 +26,7 @@
   .v1-finale-grid,.v1-org-grid{grid-template-columns:1fr!important}
   .v1-finale-compare{grid-template-columns:1fr!important}
   .v1-trip-row{display:flex;flex-wrap:wrap;gap:6px}
+  .v1-score-lock-success{align-items:flex-start;flex-direction:column}
   .receipt-1b__row,.receipt-1b__total,.receipt-1b__tier,.receipt-1b__grand{align-items:flex-start}
   .receipt-1b__row span,.receipt-1b__total span,.receipt-1b__tier span,.receipt-1b__grand span{max-width:46%}
 }
