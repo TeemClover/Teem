@@ -4,6 +4,8 @@ export * from "./game-data.js?base=canonical4";
 
 const XGEN_EXAM_POLICY = "manual-xgen-exam-20260901";
 const XGEN_TARGET = Number(base.XGEN_TGV_TARGET || 3_000_000);
+const NEW_GAME_PLUS = "NEW_GAME_PLUS";
+const NEW_GAME_PLUS_FREE = "NEW_GAME_PLUS_FREE";
 
 function number(value) {
   const parsed = Number(value || 0);
@@ -46,6 +48,60 @@ function isQualified(state) {
     state?.campaignScore?.xgenByMonth12 ||
     isExamPassed(state)
   );
+}
+
+function allTutorialStagesSeen(existing = {}) {
+  const seen = { ...existing };
+  for (const stage of Object.values(base.STAGES || {})) seen[stage] = true;
+  return seen;
+}
+
+function normalizeNewGamePlusMode(state) {
+  if (!state) return state;
+  const month = Number(state.month || 0);
+  const inPlayableYearOne = !state.organizationMode && !state.runComplete && month >= 1 && month <= 12;
+
+  // Month 1 of NEW GAME+ must behave like a normal free Management month.
+  // We temporarily use an internal run-mode alias so the legacy UI does not
+  // paint the NEW GAME+ intro card over #sceneDetails (which was deleting the
+  // Routine Builder and Management menu). The canonical runMode is restored
+  // automatically at Month 2, so scoreboard/API semantics remain unchanged.
+  if (state.runMode === NEW_GAME_PLUS && inPlayableYearOne && month === 1) {
+    return {
+      ...state,
+      runMode: NEW_GAME_PLUS_FREE,
+      newGamePlus: true,
+      phase: state.phase === "preseason" ? "management" : state.phase,
+      stage: state.stage === base.STAGES.CERTIFIED ? base.STAGES.MANAGEMENT : state.stage,
+      energy: Math.max(0, Number(state.energy || 0)),
+      tutorialSeen: allTutorialStagesSeen(state.tutorialSeen),
+      lastMessage: state.lastMessage || "⚡ NEW GAME+ · Month 1 · เปิด Management อิสระเต็มรูปแบบ"
+    };
+  }
+
+  if (state.runMode === NEW_GAME_PLUS_FREE && (month >= 2 || state.organizationMode || state.runComplete)) {
+    return {
+      ...state,
+      runMode: NEW_GAME_PLUS,
+      newGamePlus: true,
+      tutorialSeen: allTutorialStagesSeen(state.tutorialSeen)
+    };
+  }
+
+  if (state.runMode === NEW_GAME_PLUS_FREE) {
+    return {
+      ...state,
+      newGamePlus: true,
+      tutorialSeen: allTutorialStagesSeen(state.tutorialSeen)
+    };
+  }
+
+  return state;
+}
+
+function toBaseState(state) {
+  if (state?.runMode !== NEW_GAME_PLUS_FREE) return state;
+  return { ...state, runMode: NEW_GAME_PLUS };
 }
 
 function manualizeXgen(state, options = {}) {
@@ -108,7 +164,7 @@ function manualizeXgen(state, options = {}) {
     lastMessage = `🎓 ถึงเกณฑ์ XGEN แล้ว · TGV เดือนนี้ ${tgv.toLocaleString("th-TH")} XV · กดสอบ XGEN เพื่อปลดล็อก ③ Organization`;
   }
 
-  return {
+  return normalizeNewGamePlusMode({
     ...state,
     stage: autoXgenMilestone ? base.STAGES.MANAGEMENT : state.stage,
     phase: autoXgenMilestone ? "management" : state.phase,
@@ -118,7 +174,7 @@ function manualizeXgen(state, options = {}) {
     milestones: { ...(state.milestones || {}), xgen: passed },
     sceneReport,
     lastMessage
-  };
+  });
 }
 
 function pendingExam(state) {
@@ -136,7 +192,7 @@ function certifyXgen(state) {
   if (!isQualified(before) || isExamPassed(before) || before.organizationMode) return before;
 
   const tgv = currentTgv(before);
-  return {
+  return normalizeNewGamePlusMode({
     ...before,
     stage: base.STAGES.MANAGEMENT,
     phase: "management",
@@ -159,7 +215,7 @@ function certifyXgen(state) {
     lastEvent: base.EVENTS.XGEN_EXAM,
     lastMessage: `🏆 Certified XGEN · TGV ${tgv.toLocaleString("th-TH")} XV · ปลดล็อก ③ Organization 5% ในเดือนนี้`,
     updatedAt: Date.now()
-  };
+  });
 }
 
 export function makeInitialState(options = {}) {
@@ -179,10 +235,13 @@ export function parseSavedState(raw) {
 
 export function serializeState(state) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
-  const serialized = base.serializeState(clean);
+  const serialized = base.serializeState(toBaseState(clean));
   try {
     const parsed = JSON.parse(serialized);
-    return JSON.stringify(manualizeXgen(parsed, { hasPolicy: true, examPassed: isExamPassed(clean) }));
+    const restoredMode = clean.runMode === NEW_GAME_PLUS_FREE && Number(clean.month || 0) === 1
+      ? { ...parsed, runMode: NEW_GAME_PLUS_FREE, newGamePlus: true, tutorialSeen: allTutorialStagesSeen(parsed.tutorialSeen) }
+      : parsed;
+    return JSON.stringify(manualizeXgen(restoredMode, { hasPolicy: true, examPassed: isExamPassed(clean) }));
   } catch {
     return serialized;
   }
@@ -190,7 +249,7 @@ export function serializeState(state) {
 
 export function calculateEconomy(state) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
-  const economy = base.calculateEconomy(clean);
+  const economy = base.calculateEconomy(toBaseState(clean));
   if (isExamPassed(clean)) return economy;
 
   const channel3 = Math.max(0, number(economy.channel3 || economy.organizationIncome));
@@ -217,13 +276,13 @@ export function canDispatch(state, event) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
   if (event === base.EVENTS.XGEN_EXAM) return pendingExam(clean);
   if (event === base.EVENTS.END_MONTH && pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) return true;
-  return base.canDispatch(clean, event);
+  return base.canDispatch(toBaseState(clean), event);
 }
 
 export function getBestNextActions(state, limit = 3) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
   const requested = Math.max(8, Number(limit || 3) + 5);
-  let actions = base.getBestNextActions(clean, requested).filter((item) => item?.event !== base.EVENTS.XGEN_EXAM && item?.type !== "xgen-exam");
+  let actions = base.getBestNextActions(toBaseState(clean), requested).filter((item) => item?.event !== base.EVENTS.XGEN_EXAM && item?.type !== "xgen-exam");
 
   if (pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) {
     actions.unshift({
@@ -256,7 +315,7 @@ export function reduceGame(currentState, event, payload = {}) {
   }
 
   const wasQualified = isQualified(before);
-  const afterBase = base.reduceGame(before, event, payload);
+  const afterBase = base.reduceGame(toBaseState(before), event, payload);
   const resetExam = event === base.EVENTS.NEW_GAME_PLUS;
   let after = manualizeXgen(afterBase, {
     hasPolicy: true,
@@ -272,5 +331,5 @@ export function reduceGame(currentState, event, payload = {}) {
     };
   }
 
-  return after;
+  return normalizeNewGamePlusMode(after);
 }
