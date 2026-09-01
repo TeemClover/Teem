@@ -48,6 +48,7 @@ let lastRenderedStage = null;
 let stageStartedAt = performance.now();
 let effects = [];
 const audio = createAudio(state.soundOn);
+state = { ...state, soundOn: audio.isEnabled() };
 
 const iconGlyphs = Object.freeze({
   play: "▶", band: "⌁", scale: "◎", calendar: "▦", repair: "↺", submit: "✓", next: "→",
@@ -115,6 +116,8 @@ function playForEvent(event, payload = {}) {
     [EVENTS.RUN_MONTHLY_EVENT]: "event", [EVENTS.END_MONTH]: "monthClose", [EVENTS.START_NEXT_MONTH]: "month",
     [EVENTS.RUN_XCADEMY]: "meeting", [EVENTS.RUN_OPEN_HOUSE]: "event",
     [EVENTS.RUN_CENTER]: "meeting", [EVENTS.RUN_GOOD_LUCK]: "event", [EVENTS.TRAIN_SKILL]: "knowledge",
+    [EVENTS.RUN_XIRCLE]: "xircle", [EVENTS.XLEAD_EXAM]: "promotion", [EVENTS.XGEN_EXAM]: "promotion",
+    [EVENTS.ENTER_ORGANIZATION]: "score", [EVENTS.NEW_GAME_PLUS]: "newGame",
     [EVENTS.CREATE_LEAD]: payload?.source === "content" || payload?.source === "ads" ? "notify" : "confirm",
     [EVENTS.CERTIFY_CANDIDATE]: "certificate", [EVENTS.SCENE_COMPLETE]: "meetingDone",
   };
@@ -135,7 +138,10 @@ function spawnEffect(kind) {
 
 function dispatch(event, payload = {}) {
   audio.unlock();
-  if (!canDispatch(state, event)) return;
+  if (!canDispatch(state, event)) {
+    audio.play("warning");
+    return;
+  }
   const previous = state;
   const previousSkills = getSkillSnapshot(previous);
   const previousTransaction = state.economy.lastTransaction?.id;
@@ -162,11 +168,25 @@ function dispatch(event, payload = {}) {
   if (nextSkills.playerLevel > previousSkills.playerLevel) toast(`⭐ X-VISOR Lv.${nextSkills.playerLevel} · ปลดล็อกวิธีสร้างผลที่คุ้มขึ้น`, "success");
   if (state.economy.lastTransaction?.id && state.economy.lastTransaction.id !== previousTransaction) {
     spawnEffect("coins");
+    audio.play("income");
     if (state.stage !== STAGES.M1_SALE_RECEIPT) queueMicrotask(() => showReceipt(state.economy.lastTransaction));
   }
-  if (previous.stage !== state.stage) {
+  const reportChanged = Number(previous.lastOrganizationReport?.month || 0) !== Number(state.lastOrganizationReport?.month || 0);
+  const sceneReportChanged = previous.sceneReport?.kind !== state.sceneReport?.kind;
+  if (previous.stage !== state.stage || reportChanged || sceneReportChanged) {
     activeDialogKey = null;
     stageStartedAt = performance.now();
+  }
+  if (!previous.campaignScore?.locked && state.campaignScore?.locked) {
+    audio.play("score");
+    spawnEffect("confetti");
+  }
+  if (!previous.runComplete && state.runComplete) {
+    audio.play("ending");
+    spawnEffect("confetti");
+  } else if (reportChanged && state.lastOrganizationReport) {
+    const report = state.lastOrganizationReport;
+    window.setTimeout(() => audio.play(report.activities?.xircle ? "xircleDone" : report.newXleads || report.newXvisors ? "promotion" : "income"), 130);
   }
   save();
   render();
@@ -242,12 +262,13 @@ function renderHud() {
   $("#energyMeter").style.setProperty("--energy", `${(visibleEnergy / MAX_ENERGY) * 100}%`);
   const customerCount = state.customers.length + state.prospects.filter((person) => person.activePlan).length;
   $("#hudCustomers").textContent = `${customerCount} คน`;
-  const organizationVisible = state.milestones.firstG1 || state.team.length > 0;
+  const organizationVisible = state.organizationMode || state.milestones.firstG1 || state.team.length > 0;
   $("#hudVolumeLabel").innerHTML = `${organizationVisible ? "🏙️ TGV เดือนนี้" : "XV เดือนนี้"} <b aria-hidden="true">?</b>`;
   $("#hudXV").textContent = organizationVisible
     ? `${formatNumber(economy.tgv)} / ${formatNumber(XGEN_TGV_TARGET)}`
     : `${formatNumber(economy.personalXV)} XV`;
-  $("#hudIncome").textContent = formatBaht(economy.lifetimeIncome);
+  $(".status-item--income span").textContent = "รายได้เดือนนี้ · สะสม";
+  $("#hudIncome").textContent = `${formatBaht(economy.projectedIncome)} · Σ${formatBaht(economy.lifetimeIncome)}`;
   const skillSnapshot = getSkillSnapshot(state);
   const rankLabel = state.rank === "xgen" ? "XGEN" : state.rank === "xlead" ? "XLEAD" : "X-VISOR";
   $("#hudRank").textContent = state.rank === "candidate" ? "CANDIDATE" : `⭐ ${rankLabel} Lv.${skillSnapshot.playerLevel}`;
@@ -501,24 +522,62 @@ function renderActions() {
   $("#waitingState").textContent = waiting[content.status] || "กำลังดำเนินการ…";
 }
 
+function renderAudioControls() {
+  const prefs = audio.getPrefs();
+  const soundButton = $("#soundButton");
+  if (soundButton) {
+    soundButton.setAttribute("aria-pressed", String(!prefs.muted));
+    soundButton.textContent = prefs.muted ? "🔇 ปิด" : "🔊 เปิด";
+  }
+  const musicButton = $("[data-audio-toggle=music]");
+  if (musicButton) {
+    musicButton.setAttribute("aria-pressed", String(prefs.musicEnabled));
+    musicButton.textContent = `♫ BGM: ${prefs.musicEnabled ? "เปิด" : "ปิด"}`;
+  }
+  const sfxButton = $("[data-audio-toggle=sfx]");
+  if (sfxButton) {
+    sfxButton.setAttribute("aria-pressed", String(prefs.sfxEnabled));
+    sfxButton.textContent = `✦ SFX: ${prefs.sfxEnabled ? "เปิด" : "ปิด"}`;
+  }
+}
+
+function worldLabelForState(scene) {
+  const month = Number(state.month || 0);
+  if (state.runComplete) return "2 YEARS LATER · ORGANIZATION";
+  if (state.runMode === "NEW_GAME_PLUS" && month === 1) return "NEW GAME+ · MONTH 1";
+  if (state.organizationMode) {
+    if (month >= 21) return "ORGANIZATION YEAR · FULL SCALE";
+    if (month >= 17) return "ORGANIZATION YEAR · BRANCH NETWORK";
+    return "ORGANIZATION YEAR · TEAM NETWORK";
+  }
+  if (scene.startsWith("exam") || scene === "ceremony") return "XCADEMY EXAM ROOM";
+  if ([STAGES.OPEN_HOUSE_RUNNING, STAGES.GOOD_LUCK_RUNNING].includes(state.stage)) return "OPEN HOUSE";
+  if ([STAGES.XCADEMY_RUNNING, STAGES.CENTER_RUNNING].includes(state.stage)) return "XCADEMY";
+  if (scene === "the-xircle") return "THE XIRCLE · POWER-UP EVENT";
+  if (state.campaignScore?.locked) return "MONTH 12 · REVELATION";
+  if (state.rank === "xgen") return "XGEN ORGANIZATION";
+  if (month >= 11) return "MONTH 11–12 · LIVING OPERATION";
+  if (month >= 9) return "MONTH 9–10 · GROWTH HUB";
+  if (month >= 7) return "MONTH 7–8 · TEAM ZONE";
+  if (month >= 5) return "MONTH 5–6 · EARLY TEAM";
+  if (month >= 3) return "MONTH 3–4 · FIRST CUSTOMERS";
+  if (month >= 1) return "MONTH 1–2 · HUMBLE START";
+  return "PRE-SEASON ROOM";
+}
+
 function render() {
   content = getStageContent(state);
   renderHud();
   renderGoal();
   renderDialogue();
   renderActions();
-  $("#soundButton").setAttribute("aria-pressed", state.soundOn ? "true" : "false");
-  $("#soundButton").textContent = state.soundOn ? "เสียง: เปิด" : "เสียง: ปิด";
+  renderAudioControls();
+  audio.setMode(state.organizationMode ? "organization" : state.month === 0 ? "pre" : "campaign");
   document.body.dataset.stage = state.stage;
+  document.body.dataset.organization = state.organizationMode ? "true" : "false";
+  document.body.dataset.runMode = state.runMode || "FIRST_RUN";
   document.title = `${content.title || "X-VISOR QUEST"} · X-VISOR QUEST`;
-  const exam = isExamStage(state.stage);
-  $("#worldLabel").textContent = exam
-    ? "XCADEMY EXAM ROOM"
-    : [STAGES.OPEN_HOUSE_RUNNING, STAGES.GOOD_LUCK_RUNNING].includes(state.stage) ? "OPEN HOUSE"
-      : [STAGES.XCADEMY_RUNNING, STAGES.CENTER_RUNNING].includes(state.stage) ? "XCADEMY"
-        : state.rank === "xgen" ? "XGEN ORGANIZATION"
-          : state.rank === "xlead" ? "XLEAD TEAM ZONE"
-          : state.month >= 2 ? "CLOVER MANAGEMENT HUB" : state.month === 1 ? "CLOVER NEIGHBORHOOD" : "PRE-SEASON ROOM";
+  $("#worldLabel").textContent = worldLabelForState(content.scene || "opening");
   if (lastRenderedStage !== state.stage) {
     $("#worldFrame").classList.remove("is-changing");
     void $("#worldFrame").offsetWidth;
@@ -778,9 +837,38 @@ $("#peopleButton").addEventListener("click", () => { audio.unlock(); audio.play(
 $("#skillButton").addEventListener("click", () => { if (state.rank !== "candidate") { audio.unlock(); audio.play("tap"); showSkills(); } });
 $("#resetButton").addEventListener("click", () => { audio.unlock(); audio.play("tap"); showResetConfirmation(); });
 $("#soundButton").addEventListener("click", () => {
-  state = { ...state, soundOn: !state.soundOn, updatedAt: Date.now() };
-  audio.setEnabled(state.soundOn); save(); render(); toast(state.soundOn ? "เปิดเสียงแล้ว" : "ปิดเสียงแล้ว");
+  const nextEnabled = !audio.isEnabled();
+  audio.setMuted(!nextEnabled);
+  state = { ...state, soundOn: nextEnabled, updatedAt: Date.now() };
+  save();
+  renderAudioControls();
+  toast(nextEnabled ? "เปิดเสียงแล้ว" : "ปิดเสียงแล้ว");
 });
+$("#audioSettingsButton")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  audio.unlock();
+  const menu = $("#audioMenu");
+  const open = Boolean(menu?.hidden);
+  if (menu) menu.hidden = !open;
+  $("#audioSettingsButton")?.setAttribute("aria-expanded", String(open));
+  audio.play("page");
+});
+$("#audioMenu")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const button = event.target.closest("[data-audio-toggle]");
+  if (!button) return;
+  const prefs = audio.getPrefs();
+  if (button.dataset.audioToggle === "music") audio.setMusicEnabled(!prefs.musicEnabled);
+  if (button.dataset.audioToggle === "sfx") audio.setSfxEnabled(!prefs.sfxEnabled);
+  renderAudioControls();
+});
+document.addEventListener("click", (event) => {
+  if (event.target.closest(".audio-control")) return;
+  const menu = $("#audioMenu");
+  if (menu) menu.hidden = true;
+  $("#audioSettingsButton")?.setAttribute("aria-expanded", "false");
+});
+document.addEventListener("pointerdown", () => audio.unlock(), { once: true, capture: true });
 $("#hudXVButton").addEventListener("click", () => showTerm("XV"));
 $("#hudEnergyButton").addEventListener("click", () => showTerm("ENERGY"));
 
@@ -853,6 +941,122 @@ function drawLaptop(x, y, active = false) { rect(x, y, 43, 28, "#24445b"); rect(
 function drawNotification(x, y, color = "#f6ce5a") { rect(x, y, 30, 18, "#24445b"); rect(x + 3, y + 3, 24, 12, "#fffdf2"); rect(x + 7, y + 6, 7, 6, color); rect(x + 17, y + 7, 7, 3, "#5f7885"); }
 function drawWhiteboard(x, y) { rect(x, y, 106, 65, "#24445b"); rect(x + 5, y + 5, 96, 55, "#fffdf2"); rect(x + 14, y + 16, 29, 5, "#63bd84"); rect(x + 14, y + 30, 70, 4, "#6a8ca0"); rect(x + 14, y + 42, 54, 4, "#e49d57"); }
 
+function drawPlant(x, y, grown = false) {
+  rect(x + 7, y + 18, 16, 15, "#a86643");
+  rect(x + 4, y + 14, 22, 5, "#24445b");
+  rect(x + 12, y + 2, 5, 15, "#357a55");
+  rect(x + (grown ? 0 : 5), y + 2, 12, 8, "#4fbd83");
+  rect(x + 16, y - (grown ? 4 : 0), 12, 9, "#75cf96");
+}
+
+function drawShelf(x, y, full = false) {
+  rect(x, y, 66, 6, "#24445b");
+  rect(x + 4, y + 5, 5, 35, "#24445b");
+  rect(x + 57, y + 5, 5, 35, "#24445b");
+  ["gus", "protein-hmb", ...(full ? ["vita-matrix", "astamega"] : [])].forEach((id, index) => drawProduct(x + 9 + index * 13, y - 23, id));
+}
+
+function worldGrowthPhase() {
+  const month = Number(state.month || 0);
+  if (state.organizationMode) return month >= 21 ? 9 : month >= 17 ? 8 : 7;
+  if (month >= 11) return 6;
+  if (month >= 9) return 5;
+  if (month >= 7) return 4;
+  if (month >= 5) return 3;
+  if (month >= 3) return 2;
+  return month >= 1 ? 1 : 0;
+}
+
+function drawOfficeGrowth(scene) {
+  const phase = worldGrowthPhase();
+  if (!phase || scene === "the-xircle") return;
+  if (phase >= 1) {
+    rect(111, 30, 47, 35, "#24445b"); rect(115, 34, 39, 27, "#fff8df");
+    rect(121, 40, 18, 3, "#e49d57"); rect(121, 48, 27, 3, "#6a8ca0");
+  }
+  if (phase >= 2) { drawScale(113, 133); drawChair(164, 94, "#73a9c3"); }
+  if (phase >= 3) { drawShelf(286, 99, phase >= 5); drawPlant(335, 99, phase >= 5); }
+  if (phase >= 4) {
+    rect(170, 30, 83, 25, "#24445b"); rect(175, 35, 73, 15, "#f6ce5a");
+    fill("#24445b"); context.font = "bold 8px monospace"; context.fillText("TEAM ZONE", 188, 46);
+  }
+  if (phase >= 5) {
+    rect(262, 25, 96, 52, "#24445b"); rect(267, 30, 86, 42, "#e8f5ef");
+    [[276, 58, 20], [304, 47, 35], [336, 36, 48]].forEach(([x, y, height], index) => rect(x, y, 12, height, ["#65bd86", "#68aee1", "#f1be47"][index]));
+  }
+  if (phase >= 6) { rect(0, 128, 384, 4, "#f1be47"); }
+}
+
+const roleMarkers = Object.freeze({
+  sales: { glyph: "$", color: "#ef8f75" },
+  care: { glyph: "♥", color: "#62bd83" },
+  builder: { glyph: "↑", color: "#68aee1" },
+  balanced: { glyph: "◆", color: "#f1be47" },
+});
+
+function drawRoleMarker(x, footY, member = {}) {
+  const role = member.rank === "xlead" ? { glyph: "L", color: "#f1be47" } : roleMarkers[member.specialty] || roleMarkers.balanced;
+  rect(x + 8, footY - 73, 16, 13, "#24445b");
+  rect(x + 10, footY - 71, 12, 9, role.color);
+  fill("#17384f"); context.font = "bold 8px monospace"; context.fillText(role.glyph, x + 13, footY - 64);
+}
+
+function drawTeamCharacter(member, x, footY = 176, options = {}) {
+  drawCharacterAtFeet(x, footY, member?.appearance || proctorPalette, { idle: true, band: true, ...options });
+  drawRoleMarker(x, footY, member);
+}
+
+function drawEventBanner(title, detail = "") {
+  const width = detail ? 244 : 178;
+  const x = Math.round((384 - width) / 2);
+  rect(x, 183, width, 25, "#17384f");
+  rect(x + 3, 186, width - 6, 19, "#fff8df");
+  fill("#17384f"); context.font = "bold 9px monospace"; context.fillText(title, x + 9, 198);
+  if (detail) { fill("#35647c"); context.font = "bold 7px monospace"; context.fillText(detail, x + 9 + Math.min(112, title.length * 6), 198); }
+}
+
+function drawXircleScene(time, npc) {
+  rect(0, 0, 384, 128, "#315b72"); rect(0, 128, 384, 88, "#5c8b63");
+  rect(0, 118, 384, 10, "#24445b");
+  for (let x = 10; x < 384; x += 48) { rect(x + 13, 71, 6, 48, "#634d3d"); rect(x, 56, 32, 28, "#357a55"); }
+  rect(146, 113, 92, 8, "#24445b"); rect(160, 82, 64, 31, "#f1be47"); rect(176, 72, 32, 10, "#ef8f75");
+  const jump = !reducedMotion.matches && Math.floor(time / 520) % 2 ? 2 : 0;
+  drawCharacterAtFeet(35, 176, playerPalette, { pose: "celebrate", jump, band: true });
+  const members = (state.team || []).slice(0, 4);
+  (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, 245 + index * 34, 176, { direction: "left" }));
+  rect(182, 151, 20, 8, "#6f4f35"); rect(187, 141 - jump, 10, 12, "#f1be47"); rect(190, 136 - jump, 5, 9, "#ef8f75");
+}
+
+function drawOrganizationScene(time, npc, stageAge) {
+  const phase = worldGrowthPhase();
+  if (phase >= 8) {
+    rect(103, 19, 266, 64, "#24445b"); rect(108, 24, 256, 54, "#bfe3ed");
+    for (let x = 114; x < 360; x += 25) rect(x, 48 - ((x / 25) % 3) * 7, 16, 30 + ((x / 25) % 3) * 7, "#5f8293");
+  }
+  if (phase >= 9) { rect(0, 128, 384, 4, "#f1be47"); drawPlant(8, 96, true); }
+  drawWhiteboard(139, 24);
+  drawCharacterAtFeet(28, 176, playerPalette, { direction: "right", pose: state.runComplete ? "celebrate" : "talk", band: true });
+  const aggregate = state.organization?.aggregate || {};
+  const total = Math.max(Number(aggregate.xvisorCount || 0), Number(state.team?.length || 0));
+  const visibleTarget = phase >= 9 ? 6 : phase >= 8 ? 5 : 3;
+  const visible = Math.max(2, Math.min(visibleTarget, total || 2));
+  const positions = [84, 124, 164, 238, 278, 318];
+  for (let index = 0; index < visible; index += 1) {
+    const member = state.team?.[index] || { appearance: index % 2 ? npc : proctorPalette, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
+    drawTeamCharacter(member, positions[index], 176, { direction: index < 3 ? "right" : "left", walk: !reducedMotion.matches && stageAge < 900 ? time / 110 + index : 0 });
+  }
+  rect(285, 88, 83, 25, "#24445b"); rect(289, 92, 75, 17, "#eef8f2");
+  fill("#17384f"); context.font = "bold 8px monospace"; context.fillText(`ORG x${formatNumber(total)}`, 296, 103);
+
+  const report = state.lastOrganizationReport;
+  if (report && stageAge < (report.activities?.xircle ? 2450 : 1850)) {
+    if (stageAge < 620) drawEventBanner("XCADEMY x4", "TEAM LEARNS");
+    else if (stageAge < 1240) drawEventBanner("OPEN HOUSE x1", "NEW PEOPLE");
+    else if (report.activities?.xircle && stageAge < 1860) drawEventBanner("THE XIRCLE x1", "POWER-UP");
+    else drawEventBanner(`MONTH ${report.month} RESULT`, `${formatNumber(report.tgv)} XV`);
+  } else if (state.runComplete) drawEventBanner("2 YEARS LATER", "NEW GAME+ READY");
+}
+
 function drawCharacterAtFeet(x, footY, palette = playerPalette, options = {}) {
   const walk = options.walk || 0;
   const step = walk ? Math.sin(walk) : 0;
@@ -885,14 +1089,19 @@ function drawScene(time) {
   context.imageSmoothingEnabled = false;
   const scene = content.scene || "opening";
   const exam = scene.startsWith("exam") || scene === "ceremony";
-  const management = scene.startsWith("management") || ["team_started", "month_closed", "season_review", "content_running", "ads_running", "xcademy_running", "open_house_running", "center_running", "goodluck_running", "xlead", "xgen"].includes(scene);
+  const management = scene.startsWith("management") || ["team_started", "month_closed", "season_review", "content_running", "ads_running", "xcademy_running", "open_house_running", "center_running", "goodluck_running", "the-xircle", "xlead", "xgen"].includes(scene);
   drawRoom(exam ? "exam" : management ? "management" : state.month === 0 ? "pre" : "office");
+  if (!exam) drawOfficeGrowth(scene);
   const person = selectedPerson();
   const npc = person?.appearance || { skin: "#e0a17a", hair: "#513943", shirt: "#ef8078", accent: "#fff2d4" };
   const idle = { idle: true, band: state.preseason.day > 0 || state.month >= 1, bandActive: scene === "pre_montage" };
   const stageAge = time - stageStartedAt;
 
-  if (exam) {
+  if (scene === "the-xircle") {
+    drawXircleScene(time, npc);
+  } else if (scene === "management_org") {
+    drawOrganizationScene(time, npc, stageAge);
+  } else if (exam) {
     drawDoor(16, scene === "exam_transit"); drawClock(326, 26); drawTable(142, 150, 106); drawChair(110, 121, "#708ba1"); drawChair(254, 121, "#8d779d");
     drawCharacterAtFeet(286, 176, proctorPalette, { direction: "left", idle: true });
     rect(178, 118, 28, 18, "#24445b"); rect(181, 121, 22, 12, "#d9f2ef");
@@ -948,7 +1157,7 @@ function drawScene(time) {
     const participants = state.team.filter((member) => member.active).slice(0, 3);
     participants.forEach((member, index) => {
       const progress = reducedMotion.matches ? 1 : Math.min(1, stageAge / (750 + index * 180));
-      drawCharacterAtFeet(276 + index * 34 + (1 - progress) * 55, 176, member.appearance || npc, { direction: "left", walk: progress < 1 ? time / 90 : 0, band: true });
+      drawTeamCharacter(member, 244 + index * 38 + (1 - progress) * 55, 176, { direction: "left", walk: progress < 1 ? time / 90 : 0 });
     });
     if (!participants.length) drawCharacterAtFeet(284, 176, npc, { direction: "left", idle: true, band: true });
   } else if (["open_house_running", "goodluck_running"].includes(scene)) {
@@ -961,31 +1170,54 @@ function drawScene(time) {
     const jump = scene === "first_g1" && stageAge > 420 && stageAge < 850 && !reducedMotion.matches ? Math.sin(((stageAge - 420) / 430) * Math.PI) * 7 : 0;
     drawTable(72, 154, 86); drawTable(226, 154, 86); drawCharacterAtFeet(98, 176, playerPalette, { pose: "celebrate", jump }); drawCharacterAtFeet(250, 176, npc, { pose: "celebrate", jump, band: true }); drawCertificate(173, 70);
   } else if (["weekly", "team_started", "management", "management_team", "month_closed", "season_review"].includes(scene)) {
-    drawRoundTable(142, 132); drawCharacterAtFeet(55, 176, playerPalette, { direction: "right", pose: "talk", band: true });
-    state.team.slice(0, 3).forEach((member, index) => drawCharacterAtFeet(260 + index * 36, 176, member.appearance || npc, { direction: "left", idle: true, band: true }));
-    if (state.team.length === 0) drawCharacterAtFeet(281, 176, npc, { direction: "left", idle: true });
-    drawDataPanel(274, 40, state.monthStats.weeklyDone);
-    if (state.customers.length >= 3) { drawChair(12, 119, "#73a9c3"); drawTable(15, 154, 55); }
-    if (state.team.length >= 1) { rect(215, 53, 38, 28, "#24445b"); rect(219, 57, 30, 20, "#d9f2ef"); }
-    if (state.rank === "xlead") { rect(105, 27, 76, 27, "#24445b"); rect(110, 32, 66, 17, "#f6ce5a"); fill("#24445b"); context.font = "bold 8px monospace"; context.fillText("TEAM ZONE", 119, 43); }
+    const phase = worldGrowthPhase();
+    if (phase <= 1) {
+      drawTable(226, 154, 92); drawLaptop(247, 116, true);
+      drawCharacterAtFeet(112, 176, playerPalette, { direction: "right", idle: true, band: true });
+    } else if (phase === 2) {
+      drawTable(139, 154, 108); drawChair(106, 121, "#73a9c3"); drawChair(257, 121, "#d6a275");
+      drawCharacterAtFeet(65, 176, playerPalette, { direction: "right", pose: "talk", band: true });
+      drawCharacterAtFeet(284, 176, npc, { direction: "left", idle: true, band: true });
+      drawScale(20, 177);
+    } else {
+      drawRoundTable(142, 132); drawCharacterAtFeet(55, 176, playerPalette, { direction: "right", pose: "talk", band: true });
+      const teamPositions = [208, 244, 280, 316, 348];
+      state.team.slice(0, phase >= 4 ? 5 : 3).forEach((member, index) => drawTeamCharacter(member, teamPositions[index], 176, { direction: "left" }));
+      if (state.team.length === 0) drawCharacterAtFeet(281, 176, npc, { direction: "left", idle: true });
+      drawDataPanel(274, 40, state.monthStats.weeklyDone);
+      if (state.customers.length >= 3) { drawChair(12, 119, "#73a9c3"); drawTable(15, 154, 55); }
+      if (state.team.length >= 1) { rect(215, 53, 38, 28, "#24445b"); rect(219, 57, 30, 20, "#d9f2ef"); }
+    }
   } else if (["xlead", "xgen"].includes(scene)) {
     drawWhiteboard(138, 29); drawCharacterAtFeet(55, 176, playerPalette, { pose: "celebrate", band: true });
-    state.team.slice(0, 4).forEach((member, index) => drawCharacterAtFeet(210 + index * 40, 176, member.appearance || npc, { direction: "left", idle: true, band: true }));
+    state.team.slice(0, 4).forEach((member, index) => drawTeamCharacter(member, 190 + index * 43, 176, { direction: "left" }));
     rect(50, 42, 65, 25, "#24445b"); rect(55, 47, 55, 15, "#f6ce5a");
   } else if (scene === "certified") {
     const jump = stageAge > 420 && stageAge < 850 && !reducedMotion.matches ? Math.sin(((stageAge - 420) / 430) * Math.PI) * 7 : 0;
     drawCharacterAtFeet(176, 176, playerPalette, { pose: "celebrate", jump, band: true }); drawCertificate(174, 72);
   }
 
+  if (["xcademy_running", "center_running"].includes(scene)) drawEventBanner("XCADEMY", "LEARN TOGETHER");
+  if (["open_house_running", "goodluck_running"].includes(scene)) drawEventBanner("OPEN HOUSE", "NEW PEOPLE ARRIVE");
+  if (scene === "the-xircle") drawEventBanner("THE XIRCLE", "TEAM POWER-UP");
+  if (scene === "xlead") drawEventBanner("CERTIFIED XLEAD", "CHANNEL 2 UNLOCKED");
+  if (scene === "xgen") drawEventBanner("CERTIFIED XGEN", "ORGANIZATION LEADER");
+  if (scene === "season_review") drawEventBanner("MONTH 12 REVELATION", "HIGH SCORE LOCKED");
+  if (scene === "first_g1") drawEventBanner("NEW X-VISOR", "TEAM STARTS HERE");
+  if (state.runMode === "NEW_GAME_PLUS" && state.month === 1 && stageAge < 2200) drawEventBanner("NEW GAME+", "BEAT YOUR BEST");
+
   effects = effects.filter((particle) => particle.life > 0);
   effects.forEach((particle) => { rect(particle.x, particle.y, particle.size, particle.size, particle.color); particle.x += particle.vx; particle.y += particle.vy; particle.vy += 0.06; particle.life -= 1; });
   requestAnimationFrame(drawScene);
 }
 
-document.addEventListener("visibilitychange", () => { if (!document.hidden) scheduleAutomaticTransition(); });
+document.addEventListener("visibilitychange", () => {
+  audio.setSuspended(document.hidden);
+  if (!document.hidden) scheduleAutomaticTransition();
+});
 reducedMotion.addEventListener?.("change", scheduleAutomaticTransition);
 render();
 scheduleAutomaticTransition();
 requestAnimationFrame(drawScene);
 
-export { dispatch as dispatchForDebug };
+export { dispatch as dispatchForUi };
