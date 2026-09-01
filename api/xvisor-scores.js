@@ -1,6 +1,7 @@
 import { clean, database, sameOrigin, sendJson } from './_lib/core.js';
 
 const SCORE_VERSION = '1.0b';
+const RELEASE_RESET_BEFORE = '2026-09-01T10:58:00.000Z';
 let schemaPromise;
 
 async function ensureScoreSchema(sql) {
@@ -21,6 +22,8 @@ async function ensureScoreSchema(sql) {
       UNIQUE (run_id, score_version)
     )`);
     await sql.query('CREATE INDEX IF NOT EXISTS idx_xvisor_scores_version_tgv ON xvisor_campaign_scores(score_version, best_tgv DESC, completed_at ASC)');
+    // Public 1.0b launch starts a clean scoreboard. The fixed cutoff makes this safe on every serverless cold start.
+    await sql.query('DELETE FROM xvisor_campaign_scores WHERE score_version=$1 AND created_at < $2', [SCORE_VERSION, RELEASE_RESET_BEFORE]);
   })().catch((error) => { schemaPromise = undefined; throw error; });
   return schemaPromise;
 }
