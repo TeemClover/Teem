@@ -8,6 +8,8 @@ import {
   getBestNextActions,
 } from './game-data.js';
 
+const XGEN_GOAL_VISIBLE_AT = 1_500_000;
+
 function fmt(value) {
   return Math.round(Number(value || 0)).toLocaleString('th-TH');
 }
@@ -51,6 +53,16 @@ function quick3(state) {
 
 function finish(state, content) {
   return nameTutorialActions(state, content);
+}
+
+function realSingleMonthXgen(state, tgv) {
+  return Boolean(
+    Number(tgv || 0) >= XGEN_SINGLE_MONTH_TARGET ||
+    state.career?.xgenQualifiedSingleMonth ||
+    state.career?.xgenQualificationRule === 'single-month' ||
+    state.career?.xgenCertified1b ||
+    state.campaignOutcome?.xgenByMonth12
+  );
 }
 
 export function getStageContent(state) {
@@ -105,8 +117,13 @@ export function getStageContent(state) {
     });
   }
 
-  if (['xgen-qualified', 'xgen-qualified-1b'].includes(state.sceneReport?.kind)) {
-    const tgv = Number(state.sceneReport?.tgv || calculateEconomy(state).tgv || 0);
+  // Legacy V8/V9 used rolling-3 history to create xgen-qualified/xgen-exam scenes.
+  // 1.0b accepts only the current-month 3M rule. A stale scene must never claim success.
+  const economy = calculateEconomy(state);
+  const tgv = Number(economy.tgv || 0);
+  const singleMonthQualified = realSingleMonthXgen(state, tgv);
+
+  if (['xgen-qualified', 'xgen-qualified-1b', 'xgen-exam'].includes(state.sceneReport?.kind) && singleMonthQualified) {
     return finish(state, {
       ...base,
       scene: 'xgen',
@@ -124,20 +141,37 @@ export function getStageContent(state) {
     });
   }
 
-  if (state.sceneReport?.kind === 'xgen-exam') {
+  if (!singleMonthQualified && Number(state.month || 0) >= 1 && Number(state.month || 0) <= CAMPAIGN_MONTHS && tgv >= XGEN_GOAL_VISIBLE_AT) {
+    const remaining = Math.max(0, XGEN_SINGLE_MONTH_TARGET - tgv);
     return finish(state, {
       ...base,
-      scene: 'xgen',
-      eyebrow: '🎓 XGEN · CONFIRMED',
-      title: 'XGEN Path เปิดแล้ว',
-      reason: 'ตัวชี้ขาดทางเศรษฐกิจคือ TGV แตะ 3,000,000 XV ในเดือนเดียว',
-      speaker: 'Xcademy',
-      dialogue: 'Qualification ของรอบนี้ถูกบันทึกแล้ว',
+      scene: base.scene,
+      eyebrow: '🏙️ XGEN TARGET',
+      title: `เหลืออีก ${fmt(remaining)} XV ในเดือนนี้`,
+      reason: 'เกณฑ์เดียวคือ TGV 3,000,000 XV ภายในเดือนเดียว — ตอนนี้ยังไม่ Qualified',
+      speaker: 'XOS · Organization',
+      dialogue: `TGV เดือนนี้ ${fmt(tgv)} / ${fmt(XGEN_SINGLE_MONTH_TARGET)} XV`,
+      facts: [
+        ['ช่วงที่วัด', 'เดือนปัจจุบันเดือนเดียว'],
+        ['Qualification', 'ยังไม่ผ่าน'],
+        ['Rolling 3 เดือน', 'ไม่นับเป็นเกณฑ์ XGEN'],
+      ],
       actions: quick3(state),
     });
   }
 
-  if (state.stage === 'management' || state.sceneReport?.kind === 'the-xircle' || state.sceneReport?.kind === 'xircle-announcement' || state.sceneReport?.kind === 'xlead-exam') {
+  if (state.sceneReport?.kind === 'the-xircle' || state.sceneReport?.kind === 'xircle-announcement') {
+    return finish(state, {
+      ...base,
+      scene: 'the-xircle',
+      eyebrow: state.sceneReport?.kind === 'xircle-announcement' ? '🏕️ THE XIRCLE · SPECIAL EVENT' : '🏕️ THE XIRCLE',
+      title: state.sceneReport?.kind === 'xircle-announcement' ? 'ถึงรอบ The Xircle แล้ว' : 'RESET · RECONNECT · RISE',
+      reason: 'กิจกรรมหลักต้องใช้ฉากแคมป์ The Xircle โดยตรง ไม่ใช้ฉาก Open House',
+      actions: quick3(state),
+    });
+  }
+
+  if (state.stage === 'management' || state.sceneReport?.kind === 'xlead-exam') {
     return finish(state, { ...base, actions: quick3(state) });
   }
 
