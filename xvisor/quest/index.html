@@ -4,102 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#17384f">
-    <meta name="description" content="ลองบริหาร X-VISOR แบบเกม 12 เดือน สร้างลูกค้า พัฒนาทีม ดู TGV และรายได้ แล้วปล่อยองค์กรเดินต่อถึงเดือน 24 ก่อนกลับมาเล่น NEW GAME+">
-    <title>X-VISOR QUEST 1.0 — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?</title>
+    <meta name="description" content="ลองบริหาร X-VISOR แบบเกม 12 เดือน สร้างลูกค้า พัฒนาทีม ดู TGV และรายได้ แล้วดูผลของระบบต่อถึงเดือน 24 ก่อนกลับมาเล่น NEW GAME+">
+    <title>X-VISOR QUEST 1.0b — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?</title>
     <link rel="canonical" href="https://www.myclover.com/xvisor/quest/">
-    <meta property="og:locale" content="th_TH">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="myClover">
-    <meta property="og:title" content="X-VISOR QUEST 1.0 — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?">
-    <meta property="og:description" content="ลองบริหาร X-VISOR แบบเกม 12 เดือน สร้างลูกค้า พัฒนาทีม ดู TGV และรายได้ แล้วปล่อยองค์กรเดินต่อถึงเดือน 24 ก่อนกลับมาเล่น NEW GAME+">
+    <meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
+    <meta property="og:title" content="X-VISOR QUEST 1.0b — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?">
+    <meta property="og:description" content="เล่น 12 เดือนเพื่อสร้างลูกค้า ทีม และองค์กร แตะ 3,000,000 XV ในเดือนเดียวเพื่อเปิด XGEN แล้วดูผลของระบบต่อถึงเดือน 24">
     <meta property="og:url" content="https://www.myclover.com/xvisor/quest/">
-    <meta property="og:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0-share-20260901">
-    <meta property="og:image:secure_url" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0-share-20260901">
-    <meta property="og:image:type" content="image/webp">
-    <meta property="og:image:alt" content="ภาพโลกของ X-VISOR QUEST 1.0">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="X-VISOR QUEST 1.0 — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?">
-    <meta name="twitter:description" content="ลองบริหาร X-VISOR แบบเกม 12 เดือน สร้างลูกค้า พัฒนาทีม ดู TGV และรายได้ แล้วดูองค์กรเดินต่อถึงเดือน 24">
-    <meta name="twitter:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0-share-20260901">
-    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1.0a-final">
-    <script>
-      // Release 1.0 accepts only its own save schema.
-      try {
-        const key = 'xvisorQuestContinueV4';
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const value = JSON.parse(raw);
-          if (value?.releaseVersion !== '1.0' || value?.v1SaveVersion !== '1.0') {
-            localStorage.removeItem(key);
-            sessionStorage.setItem('xvisor10Reset', '1');
-          }
-        }
-      } catch {
-        try { localStorage.removeItem('xvisorQuestContinueV4'); } catch {}
-      }
-    </script>
-    <script type="importmap">
-      {
-        "imports": {
-          "./game-data.js": "./game-data-v1.js?v=1.0a",
-          "./game-progression.js": "./game-progression-v8.js?v=1.0-core",
-          "./game-commercial-config.js": "./game-commercial-config-v8.js?v=1.0-core",
-          "./game-copy.js": "./game-copy-v9.js?v=1.0a",
-          "./game-audio.js": "./game-audio.js?v=1.0a",
-          "./game.js": "./game.js?v=1.0a"
-        }
-      }
-    </script>
+    <meta property="og:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0b-share-20260901"><meta property="og:image:secure_url" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0b-share-20260901"><meta property="og:image:type" content="image/webp"><meta property="og:image:alt" content="ภาพโลกของ X-VISOR QUEST 1.0b">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="X-VISOR QUEST 1.0b — 12 เดือนนี้ คุณจะสร้างอะไรได้บ้าง?"><meta name="twitter:description" content="สร้างลูกค้า ทีม และองค์กรใน 12 เดือน แล้วดูว่าระบบที่สร้างไว้จะพาไปได้ไกลแค่ไหน"><meta name="twitter:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp?v=1.0b-share-20260901">
+    <link rel="stylesheet" href="/xvisor/quest/game.css?v=1.0a-final"><link rel="stylesheet" href="/xvisor/quest/game-1b.css?v=1.0b2">
+    <script>try{const key='xvisorQuestContinueV4',raw=localStorage.getItem(key);if(raw){const value=JSON.parse(raw),accepted=new Set(['1.0','1.0a','1.0b']);if(value?.releaseVersion&&!accepted.has(value.releaseVersion)){localStorage.removeItem(key);sessionStorage.setItem('xvisor10bReset','1')}}}catch{try{localStorage.removeItem('xvisorQuestContinueV4')}catch{}}</script>
+    <script type="importmap">{"imports":{"./game-data.js":"./game-data-v1.js?v=1.0b2","./game-progression.js":"./game-progression-v8.js?v=1.0-core","./game-commercial-config.js":"./game-commercial-config-v8.js?v=1.0-core","./game-copy.js":"./game-copy-v9.js?v=1.0b2","./game-audio.js":"./game-audio.js?v=1.0a","./game.js":"./game.js?v=1.0b2"}}</script>
   </head>
   <body>
     <a class="skip-link" href="#actionBar">ข้ามไปที่สิ่งที่ต้องทำต่อ</a>
-    <main class="game-shell" id="gameApp" data-game-version="1.0">
-      <header class="game-header">
-        <div class="brand-lockup" aria-label="X-VISOR QUEST"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><p>X-VISOR</p><h1>QUEST</h1></div></div>
-        <div class="header-tools">
-          <button class="tool-button" id="monthButton" type="button" hidden>จบเดือน</button>
-          <button class="tool-button" id="incomeButton" type="button" hidden>ดูรายได้</button>
-          <div class="audio-control">
-            <button class="tool-button audio-control__main" id="soundButton" type="button" aria-pressed="true">🔊 เปิด</button>
-            <button class="tool-button audio-control__settings" id="audioSettingsButton" type="button" aria-label="ตั้งค่า BGM และ SFX" aria-expanded="false" aria-controls="audioMenu">▾</button>
-            <div class="audio-menu" id="audioMenu" role="group" aria-label="ตั้งค่าเสียง" hidden>
-              <span>เสียงเกม</span>
-              <button type="button" data-audio-toggle="music" aria-pressed="true">♫ BGM: เปิด</button>
-              <button type="button" data-audio-toggle="sfx" aria-pressed="true">✦ SFX: เปิด</button>
-            </div>
-          </div>
-          <button class="tool-button tool-button--icon" id="resetButton" type="button" aria-label="เริ่มเกมใหม่" title="เริ่มเกมใหม่">↺</button>
-        </div>
-      </header>
-      <section class="status-strip" aria-label="สถานะปัจจุบัน">
-        <div class="status-item status-item--month"><span id="hudPhaseLabel">ช่วงการเรียนรู้</span><strong id="hudMonth">PRE-SEASON</strong></div>
-        <button class="status-item status-item--button status-item--energy" id="hudEnergyButton" type="button" aria-label="ดูความหมายของพลังงาน"><span id="hudEnergyLabel">ความพร้อม 28 วัน <b aria-hidden="true">?</b></span><strong id="hudEnergy">⚡ 0 / 28</strong><div class="time-meter" id="energyMeter" aria-hidden="true"></div></button>
-        <div class="status-item status-item--customers"><span>ลูกค้า</span><strong id="hudCustomers">0 คน</strong></div>
-        <button class="status-item status-item--button" id="hudXVButton" type="button" aria-label="ดูความหมายของ XV หรือ TGV"><span id="hudVolumeLabel">XV เดือนนี้ <b aria-hidden="true">?</b></span><strong id="hudXV">0 XV</strong></button>
-        <div class="status-item status-item--income"><span>รายได้เดือนนี้ · สะสม</span><strong id="hudIncome">฿0 · Σ฿0</strong></div>
-      </section>
-      <div class="rank-row">
-        <span class="rank-chip" aria-label="เวอร์ชันเกม">1.0</span>
-        <button class="rank-chip rank-chip--button" id="skillButton" type="button" aria-label="ดูความเก่งของคุณ"><span id="hudRank">CANDIDATE</span></button>
-        <span class="rank-chip rank-chip--team" id="teamChip" hidden>ทีม 1 X-VISOR</span>
-        <button class="rank-chip rank-chip--button rank-chip--people" id="peopleButton" type="button" hidden>คนของคุณ <b id="peopleCount">0</b></button>
-      </div>
-      <section class="game-layout">
-        <div class="game-layout__world">
-          <article class="goal-card" id="goalCard"><div class="goal-card__copy"><span id="goalEyebrow">เป้าหมายของคุณ</span><h2 id="goalTitle">เริ่มเส้นทาง X-VISOR</h2><p id="goalReason">เริ่มจากตัวเอง ดูแลคนแรก แล้วค่อยสร้างทีม</p></div><div class="goal-progress" aria-label="ความคืบหน้าของเส้นทาง"><i id="goalProgress"></i></div></article>
-          <figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>1.0</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><div class="world-event-card" id="worldEventCard" hidden aria-live="polite"><span id="worldEventKicker"></span><strong id="worldEventTitle"></strong><small id="worldEventDetail"></small></div><span class="milestone-badge" id="milestoneBadge" hidden></span></figure>
-        </div>
-        <aside class="game-layout__controls" aria-label="เหตุการณ์และสิ่งที่ทำต่อ">
-          <section class="dialogue-card"><span class="dialogue-card__speaker" id="dialogueSpeaker">X-VISOR QUEST</span><p id="dialogueText">เกมนี้จะพาคุณลองทำงานจริงทีละขั้น</p><div id="sceneDetails"></div></section>
-          <section class="action-dock" id="actionDock" data-empty="false" aria-label="สิ่งที่ทำได้ตอนนี้"><div class="action-dock__heading"><span>ทำอะไรต่อ</span><small>เลือกสิ่งที่คุ้มที่สุด</small></div><div class="action-bar" id="actionBar"></div><div class="waiting-state" id="waitingState" hidden>กำลังดำเนินการ…</div></section>
-        </aside>
-      </section>
-      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>1.0 · บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
+    <main class="game-shell" id="gameApp" data-game-version="1.0b">
+      <header class="game-header"><div class="brand-lockup" aria-label="X-VISOR QUEST"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><div><p>X-VISOR</p><h1>QUEST</h1></div></div><div class="header-tools"><button class="tool-button" id="monthButton" type="button" hidden>จบเดือน</button><button class="tool-button" id="incomeButton" type="button" hidden>ดูรายได้</button><div class="audio-control"><button class="tool-button audio-control__main" id="soundButton" type="button" aria-pressed="true">🔊 เปิด</button><button class="tool-button audio-control__settings" id="audioSettingsButton" type="button" aria-label="ตั้งค่า BGM และ SFX" aria-expanded="false" aria-controls="audioMenu">▾</button><div class="audio-menu" id="audioMenu" role="group" aria-label="ตั้งค่าเสียง" hidden><span>เสียงเกม</span><button type="button" data-audio-toggle="music" aria-pressed="true">♫ BGM: เปิด</button><button type="button" data-audio-toggle="sfx" aria-pressed="true">✦ SFX: เปิด</button></div></div><button class="tool-button tool-button--icon" id="resetButton" type="button" aria-label="เริ่มเกมใหม่" title="เริ่มเกมใหม่">↺</button></div></header>
+      <section class="status-strip" aria-label="สถานะปัจจุบัน"><div class="status-item status-item--month"><span id="hudPhaseLabel">ช่วงการเรียนรู้</span><strong id="hudMonth">PRE-SEASON</strong></div><button class="status-item status-item--button status-item--energy" id="hudEnergyButton" type="button" aria-label="ดูความหมายของพลังงาน"><span id="hudEnergyLabel">ความพร้อม 28 วัน <b aria-hidden="true">?</b></span><strong id="hudEnergy">⚡ 0 / 28</strong><div class="time-meter" id="energyMeter" aria-hidden="true"></div></button><div class="status-item status-item--customers"><span>ลูกค้า</span><strong id="hudCustomers">0 คน</strong></div><button class="status-item status-item--button" id="hudXVButton" type="button" aria-label="ดูความหมายของ XV หรือ TGV"><span id="hudVolumeLabel">XV เดือนนี้ <b aria-hidden="true">?</b></span><strong id="hudXV">0 XV</strong></button><div class="status-item status-item--income"><span>รายได้เดือนนี้ · สะสม</span><strong id="hudIncome">฿0 · Σ฿0</strong></div></section>
+      <div class="rank-row"><span class="rank-chip" aria-label="เวอร์ชันเกม">1.0b</span><button class="rank-chip rank-chip--button" id="skillButton" type="button" aria-label="ดูความเก่งของคุณ"><span id="hudRank">CANDIDATE</span></button><span class="rank-chip rank-chip--team" id="teamChip" hidden>ทีม 1 X-VISOR</span><button class="rank-chip rank-chip--button rank-chip--people" id="peopleButton" type="button" hidden>คนของคุณ <b id="peopleCount">0</b></button></div>
+      <section class="game-layout"><div class="game-layout__world"><article class="goal-card" id="goalCard"><div class="goal-card__copy"><span id="goalEyebrow">เป้าหมายของคุณ</span><h2 id="goalTitle">เริ่มเส้นทาง X-VISOR</h2><p id="goalReason">เริ่มจากตัวเอง ดูแลคนแรก แล้วค่อยสร้างทีม</p></div><div class="goal-progress" aria-label="ความคืบหน้าของเส้นทาง"><i id="goalProgress"></i></div></article><figure class="world-frame" id="worldFrame" aria-label="ฉาก Clover Neighborhood ที่เปลี่ยนตามการเล่น"><div class="world-frame__label"><span id="worldLabel">PRE-SEASON ROOM</span><b>1.0b</b></div><canvas id="worldCanvas" width="384" height="216" role="img" aria-label="ฉาก pixel แสดงกิจกรรมของคุณ ลูกค้า และทีม"></canvas><div class="world-event-card" id="worldEventCard" hidden aria-live="polite"><span id="worldEventKicker"></span><strong id="worldEventTitle"></strong><small id="worldEventDetail"></small></div><span class="milestone-badge" id="milestoneBadge" hidden></span></figure></div><aside class="game-layout__controls" aria-label="เหตุการณ์และสิ่งที่ทำต่อ"><section class="dialogue-card"><span class="dialogue-card__speaker" id="dialogueSpeaker">X-VISOR QUEST</span><p id="dialogueText">เกมนี้จะพาคุณลองทำงานจริงทีละขั้น</p><div id="sceneDetails"></div></section><section class="action-dock" id="actionDock" data-empty="false" aria-label="สิ่งที่ทำได้ตอนนี้"><div class="action-dock__heading"><span>ทำอะไรต่อ</span><small>เลือกสิ่งที่คุ้มที่สุด</small></div><div class="action-bar" id="actionBar"></div><div class="waiting-state" id="waitingState" hidden>กำลังดำเนินการ…</div></section></aside></section>
+      <footer class="game-footer"><p>เกมนี้เป็นแบบจำลองเพื่อช่วยให้เข้าใจเส้นทางการทำงานและโครงสร้างรายได้ ตัวเลขไม่ใช่การรับประกันรายได้จริง</p><nav aria-label="ความรู้เพิ่มเติม"><a href="/xircle/hardware/">Xircle</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/products/">ผลิตภัณฑ์</a></nav><span>1.0b · บันทึกอัตโนมัติบนอุปกรณ์นี้</span></footer>
     </main>
-    <dialog class="game-dialog" id="gameDialog" aria-label="รายละเอียดเกม"><div class="game-dialog__content" id="dialogContent"></div></dialog>
-    <div class="toast-region" id="toastRegion" aria-hidden="true"></div><div class="sr-only" id="liveRegion" aria-live="polite"></div>
-    <script type="module" src="/xvisor/quest/game.js?v=1.0a-final"></script>
-    <script type="module" src="/xvisor/quest/game-v9-ui.js?v=1.0a-final"></script>
-    <script type="module" src="/xvisor/quest/game-v1-ui.js?v=1.0a-final"></script>
+    <dialog class="game-dialog" id="gameDialog" aria-label="รายละเอียดเกม"><div class="game-dialog__content" id="dialogContent"></div></dialog><div class="toast-region" id="toastRegion" aria-hidden="true"></div><div class="sr-only" id="liveRegion" aria-live="polite"></div>
+    <script type="module" src="/xvisor/quest/game.js?v=1.0b2"></script><script type="module" src="/xvisor/quest/game-v9-ui.js?v=1.0b2"></script><script type="module" src="/xvisor/quest/game-v1-ui.js?v=1.0b2"></script><script type="module" src="/xvisor/quest/game-1b-ui.js?v=1.0b2"></script><script type="module" src="/xvisor/quest/game-1b-final.js?v=1.0b2"></script>
   </body>
 </html>

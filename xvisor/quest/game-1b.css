@@ -1,0 +1,27 @@
+/* X-VISOR QUEST 1.0b — corrective presentation overlay */
+.routine-choices button.routine-choice--locked,
+.routine-choices button[aria-disabled="true"]{opacity:.5;filter:grayscale(.35);cursor:not-allowed}
+.receipt-1b{display:grid;gap:0;border:3px solid var(--navy-900,#17384f);background:#fffaf0;padding:10px;border-radius:8px}
+.receipt-1b__row,.receipt-1b__total,.receipt-1b__tier,.receipt-1b__grand{display:flex;justify-content:space-between;gap:12px;padding:8px 4px;border-bottom:1px dashed #b9aa8e}
+.receipt-1b__row strong,.receipt-1b__total strong,.receipt-1b__tier strong,.receipt-1b__grand strong{text-align:right}
+.receipt-1b__total{background:#edf7ef;font-weight:800}
+.receipt-1b__tier{font-size:12px;color:#526a76}
+.receipt-1b__income strong{color:#268d61}
+.receipt-1b__grand{font-size:16px;font-weight:900;background:#e8f6ed;border-bottom:0}
+.receipt-1b small{padding:8px 4px 2px;color:#647985;line-height:1.45}
+/* 1.0b owns the visible world canvas. Legacy canvas keeps running hidden so old code stays compatible. */
+#worldCanvas[hidden]{display:none!important}
+.world-canvas-1b{display:block;width:100%;height:auto;aspect-ratio:16/9;image-rendering:pixelated;image-rendering:crisp-edges;background:#e9f2ec}
+#worldEventCard{display:none!important}
+.world-event-card--1b{z-index:4}
+.game-dialog[data-kind="wide"]{max-width:min(920px,calc(100vw - 16px))}
+@media(max-width:640px){
+  .game-dialog,.game-dialog[data-kind="wide"]{width:calc(100vw - 12px);max-width:calc(100vw - 12px);max-height:calc(100svh - 12px);margin:auto;overflow:auto}
+  .game-dialog__content,.game-dialog[data-kind="wide"] .game-dialog__content{padding:14px 12px calc(18px + env(safe-area-inset-bottom))}
+  .v1-finale-grid,.v1-org-grid{grid-template-columns:1fr!important}
+  .v1-finale-compare{grid-template-columns:1fr!important}
+  .v1-trip-row{display:flex;flex-wrap:wrap;gap:6px}
+  .receipt-1b__row,.receipt-1b__total,.receipt-1b__tier,.receipt-1b__grand{align-items:flex-start}
+  .receipt-1b__row span,.receipt-1b__total span,.receipt-1b__tier span,.receipt-1b__grand span{max-width:46%}
+}
+@media(max-width:390px){.game-dialog h2{font-size:24px}.v1-finale-grid strong{font-size:17px}}
