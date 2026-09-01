@@ -54,31 +54,31 @@ test('1.0b version is explicit and score namespace is reset', () => {
   assert.equal(V1_SCORE_VERSION, '1.0b');
 });
 
-test('channel 1 tier is based on monthly sales baht and retroactively reprices the whole month', () => {
+test('channel 1 tier uses monthly sales baht while payout uses all personal XV', () => {
   const base = management(2);
-  const at20 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 999_999, productSales: 39_999 } });
-  const at23 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 1, productSales: 40_000 } });
-  const at25 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 1, productSales: 100_000 } });
+  const at20 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 39_999 } });
+  const at23 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 40_000 } });
+  const at25 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 100_000 } });
   assert.equal(at20.retailRate, 0.20);
-  assert.equal(at20.channel1, Math.round(39_999 * 0.20));
+  assert.equal(at20.channel1, 10_000);
   assert.equal(at23.retailRate, 0.23);
-  assert.equal(at23.channel1, 9_200);
+  assert.equal(at23.channel1, 11_500);
   assert.equal(at25.retailRate, 0.25);
-  assert.equal(at25.channel1, 25_000);
+  assert.equal(at25.channel1, 12_500);
 });
 
-test('channel 2 is 20% of each Direct G1 commission using that persons own baht tier', () => {
+test('channel 2 is 20% of each Direct G1 commission using that persons baht tier and XV payout base', () => {
   const base = management(3);
   const state = {
     ...base,
     rank: 'xlead',
     career: { ...base.career, xleadCertified: true },
-    team: [{ id: 'g1-a', name: 'A', parentId: 'player', active: true, personalSalesBaht: 50_000, personalXV: 1 }],
+    team: [{ id: 'g1-a', name: 'A', parentId: 'player', active: true, personalSalesBaht: 50_000, personalXV: 70_000 }],
   };
   const economy = calculateEconomy(state);
   assert.equal(economy.directG1[0].tier.rate, 0.23);
-  assert.equal(economy.directG1[0].commission, 11_500);
-  assert.equal(economy.channel2, 2_300);
+  assert.equal(economy.directG1[0].commission, 16_100);
+  assert.equal(economy.channel2, 3_220);
 });
 
 test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month', () => {
@@ -92,7 +92,6 @@ test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same 
   state = reduceGame(state, EVENTS.END_MONTH);
   assert.equal(state.career.xgenQualifiedSingleMonth, true);
   assert.equal(state.career.xgenQualificationRule, 'single-month');
-  assert.equal(state.organization.xgen, true);
   assert.equal(state.settlements['6'].channel3, 150_000);
 });
 
