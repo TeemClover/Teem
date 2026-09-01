@@ -1,4 +1,4 @@
-import { SAVE_KEY, parseSavedState } from "./game-data-manual-xgen.js";
+import { SAVE_KEY } from "./game-save.js";
 
 const TRAVEL_MONTHS = new Set([16, 22]);
 let activeTrip = null;
@@ -8,7 +8,7 @@ let captureTimer = 0;
 function readState() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    return raw ? parseSavedState(raw) : null;
+    return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }
