@@ -106,14 +106,37 @@ function stripMonth24ScoreControls() {
   dialog.querySelector("[data-v1-submit-score]")?.remove();
 }
 
-const observer = new MutationObserver(() => {
+function forceGameLinksToNewTabs(root = document) {
+  const app = document.querySelector("#gameApp");
+  if (!app) return;
+  const scope = root instanceof Element || root instanceof Document ? root : document;
+  const links = scope.querySelectorAll ? scope.querySelectorAll("a[href]") : [];
+  for (const link of links) {
+    if (!app.contains(link)) continue;
+    const href = String(link.getAttribute("href") || "").trim();
+    if (!href || href.startsWith("#") || href.startsWith("javascript:")) continue;
+    link.setAttribute("target", "_blank");
+    const rel = new Set(String(link.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
+    rel.add("noopener");
+    rel.add("noreferrer");
+    link.setAttribute("rel", [...rel].join(" "));
+  }
+}
+
+const observer = new MutationObserver((mutations) => {
   stripMonth24ScoreControls();
   syncStateClasses();
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes || []) {
+      if (node.nodeType === Node.ELEMENT_NODE) forceGameLinksToNewTabs(node);
+    }
+  }
 });
 
 function start() {
   syncStateClasses();
   stripMonth24ScoreControls();
+  forceGameLinksToNewTabs(document);
   observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["open"] });
   window.setInterval(syncStateClasses, 180);
   requestAnimationFrame(paintTravelUi);
