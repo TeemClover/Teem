@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="th">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quest QA · isolated fixtures</title>
+<style>
+  body{margin:0;background:#dfe5df;color:#183e42;font:14px system-ui}header{padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}button,select{font:inherit;padding:9px}iframe{display:block;max-width:100%;border:0;margin:0 auto;background:#17384f}strong{margin-right:auto}#status{padding:8px;text-align:center}
+</style>
+<header><strong>QA fixtures · ไม่ใช้เซฟจริง · ปิดการส่งข้อมูลทั้งหมด</strong>
+<label>ฉาก <select id="scenario"><option value="opening">เริ่มเกม</option><option value="management">Management + Skill</option><option value="exam">ห้องสอบ</option><option value="camp">The Xircle</option><option value="tokyo">Tokyo · Month 16</option><option value="dubai">Dubai · Month 22</option><option value="score">High Score gate</option><option value="finale">Month 24 + NEW GAME+</option></select></label>
+<label>หน้าจอ <select id="width"><option value="1280">Desktop 1280</option><option value="768">Tablet 768</option><option value="390">Mobile 390</option><option value="320">Mobile 320</option></select></label><button id="load">โหลดฉากทดสอบ</button></header>
+<div id="status" role="status">กำลังเตรียม</div><iframe id="preview" title="เกมฉบับทดสอบ" width="1280" height="1000"></iframe>
+<script type="module">
+import { makeInitialState, reduceGame, EVENTS, SAVE_KEY, serializeState } from './game-data.js';
+const first = makeInitialState({seed:17});
+const team = Array.from({length:8},(_,i)=>({id:`qa-team-${i}`,name:['เมย์','ต้น','ภัทร','แพรว','ฟ้า','บีม','นนท์','ดาว'][i],personId:`qa-team-${i}`,parentId:'player',active:true,autonomy:70,confidence:80,rank:i%3?'xvisor':'xlead',specialty:['care','sales','builder','balanced'][i%4],personalXV:40000,customers:8,downstreamXvisors:3,appearance:{skin:i%2?'#d49a74':'#e9ba91',hair:i%2?'#433d3d':'#2c4948',shirt:['#7bb5a0','#c98170','#719db3','#cda968'][i%4],accent:'#edd7a7'}}));
+let management={...first,month:8,phase:'management',stage:'management',rank:'xlead',energy:28,team,skills:{...first.skills,knowledge:{xp:1}},milestones:{...first.milestones,certified:true,firstG1:true},career:{...first.career,xleadCertified:true},economy:{...first.economy,personalXV:78000,teamXV:340000,productSales:55000}};
+const campaign={...management,month:12,campaignComplete:true,rank:'xgen',career:{...management.career,xgenExamPassed:true,xgenCertified:true,xgenCertified1b:true,xgenQualifiedSingleMonth:true,xgenQualificationRule:'single-month'},campaignOutcome:{xgenByMonth12:true},campaignScore:{runId:management.runId,locked:true,completedMonth:12,completedAt:1,bestTgv:4620545,totalIncome:680030,bestMonthlyIncome:292541,organizationSize:86,scoreVersion:'1.0b',xgenByMonth12:true}};
+let year2=reduceGame(campaign,EVENTS.ENTER_ORGANIZATION),tokyo,dubai;
+while(!year2.runComplete){ if(year2.month===16)tokyo=year2;if(year2.month===22)dubai=year2;year2=reduceGame(year2,EVENTS.END_MONTH); }
+const fixtures={opening:first,management,exam:{...first,stage:'exam_question',phase:'exam'},camp:{...management,month:6,sceneReport:{kind:'the-xircle'}},tokyo,dubai,score:campaign,finale:year2};
+const shell=await (await fetch('./index.html')).text();
+async function load(){
+ const scenario=document.querySelector('#scenario').value,width=Number(document.querySelector('#width').value),state=fixtures[scenario];
+ const store=JSON.stringify([[SAVE_KEY,serializeState(state)],['mc_xvisor_audio_1',JSON.stringify({muted:true,musicEnabled:false,sfxEnabled:false})],...(scenario==='score'?[]:[[`mc_xvisor_1b_score_sent:${state.runId}`,'QA fixture']])]);
+ const bootstrap=`const records=new Map(${store});Object.defineProperty(window,'localStorage',{value:{getItem:k=>records.get(k)??null,setItem:(k,v)=>records.set(k,String(v)),removeItem:k=>records.delete(k)}});window.fetch=async()=>new Response(JSON.stringify({ok:false,error:'QA: NETWORK WRITES DISABLED',progress:{}}),{status:503,headers:{'content-type':'application/json'}});import('/xvisor/quest/game-ui.js');`;
+ const html=shell.replace(/<script type="module" src="[^"]+"><\/script>/,`<script type="module">${bootstrap}<\/script>`);
+ const frame=document.querySelector('#preview');frame.width=width;frame.height=width<500?844:1000;frame.srcdoc=html;
+ document.querySelector('#status').textContent=`${scenario} · ${width}px · isolated in-memory save · API writes disabled`;
+}
+document.querySelector('#load').onclick=load;
+document.querySelector('#width').onchange=load;
+document.querySelector('#scenario').onchange=load;
+load();
+</script>
+</html>

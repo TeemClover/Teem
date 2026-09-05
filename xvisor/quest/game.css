@@ -17,10 +17,10 @@
   --coral-400: #f18c7e;
   --coral-600: #c95f59;
   --ink: #17384f;
-  --muted: #667e8b;
+  --muted: #516b77;
   --line: #244b64;
   --panel: #fffdf8;
-  --shadow: 0 6px 0 #102b3d;
+  --shadow: 0 3px 0 #102b3d, 0 12px 32px #061d2b26;
   --shadow-soft: 0 4px 0 rgba(16, 43, 61, 0.18);
   --radius: 12px;
   --font-thai: "Leelawadee UI", "Noto Sans Thai", Tahoma, system-ui, sans-serif;
@@ -316,7 +316,7 @@ a:focus-visible {
 
 .game-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(330px, 0.8fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(350px, 1fr);
   gap: 14px;
   align-items: start;
 }
@@ -408,9 +408,9 @@ a:focus-visible {
   overflow: hidden;
   margin: 0;
   background: #c9a578;
-  border: 4px solid var(--navy-950);
+  border: 3px solid #617e74;
   border-radius: var(--radius);
-  box-shadow: 0 8px 0 #071d2b;
+  box-shadow: 0 5px 0 #071d2b, 0 18px 45px #061d2b45;
   isolation: isolate;
 }
 
@@ -1410,7 +1410,7 @@ a:focus-visible {
   }
 }
 
-/* V4 — preparation, certification, and management simulation */
+/* Preparation, certification, and management components */
 .status-strip {
   grid-template-columns: 1.05fr 1.25fr 0.8fr 0.9fr 1fr;
 }
@@ -1852,7 +1852,7 @@ body[data-stage="certification_ceremony"] .goal-card {
   }
 }
 
-/* V5 management layer */
+/* People, skills, and income panels */
 .rank-chip--button {
   appearance: none;
   cursor: pointer;
@@ -2229,7 +2229,7 @@ body[data-stage="certification_ceremony"] .goal-card {
   }
 }
 
-/* Release 1.0 presentation layer */
+/* Organization reports and campaign milestones */
 .audio-control {
   position: relative;
   display: flex;
@@ -3121,4 +3121,57 @@ body.is-ng-transition::before {
   .world-event-card {
     animation: none;
   }
+}
+
+/* Layout and input comfort shared by both years. */
+.game-header { padding: 4px 0 10px; border-bottom: 1px solid #b7d9d42b; }
+.game-shell { width: min(1280px, calc(100% - 32px)); }
+.goal-card { background: #fffaf0; border-width: 2px; }
+.goal-card h2 { text-wrap: pretty; }
+.dialogue-card, .action-dock { border-width: 2px; }
+.action-button { min-height: 62px; transition: background-color 140ms, transform 140ms; }
+.action-button:hover:not(:disabled) { filter: brightness(1.04); }
+.action-button:active:not(:disabled) { transform: translateY(2px); }
+.action-button__copy { min-width: 0; }
+.action-button__copy strong { text-wrap: pretty; }
+.world-frame__label { max-width: calc(100% - 18px); font-size: 9px; border: 1px solid #d1e0c88c; background: #213f42eb; }
+.world-frame__label span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-item { min-width: 0; }
+.status-item strong, #hudIncome { overflow: visible; white-space: normal; text-overflow: clip; overflow-wrap: anywhere; }
+#hudIncome { font-size: clamp(12px, 1.15vw, 16px); line-height: 1.5; }
+.game-footer { color: #c1d3d5; }
+.game-footer p { color: #c1d3d5; }
+.team-output summary { cursor: pointer; padding: 12px 0; }
+.team-output:not([open]) { padding-block: 0; }
+.people-tabs button { min-height: 44px; }
+.people-search input { min-height: 44px; font: inherit; }
+.game-dialog { overscroll-behavior: contain; }
+.game-dialog::backdrop { background: #071d2bd1; backdrop-filter: blur(5px); }
+.game-dialog input:focus-visible { outline: 3px solid #247758; outline-offset: 2px; }
+@media (min-width: 901px) {
+  .game-layout__world { position: sticky; top: 16px; }
+  .game-layout__controls { position: static; }
+  #gameApp[data-management="true"] .dialogue-card { max-height: min(520px, 55svh); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+}
+@media (max-width: 900px) {
+  .game-layout { grid-template-columns: minmax(0, 1fr); }
+  .game-layout__controls { position: static; }
+  .game-shell { width: calc(100% - 20px); }
+  #hudIncome { font-size: 13px; }
+}
+@media (max-width: 590px) {
+  .game-shell { width: calc(100% - 16px); }
+  .game-header { gap: 8px; }
+  .header-tools { gap: 5px; }
+  .goal-card { min-height: 0; padding: 13px 14px 16px; }
+  .goal-card h2 { font-size: 21px; line-height: 1.45; }
+  .goal-card p { font-size: 13px; }
+  .world-frame { border-width: 2px; }
+  .action-button { min-height: 60px; }
+  .action-dock { padding: 12px; }
+  .dialogue-card { padding: 14px; }
+  .game-footer { line-height: 1.65; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action-button { transition: none; }
 }
