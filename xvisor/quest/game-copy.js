@@ -790,7 +790,7 @@ function nameTutorialActions(state, content) {
   };
 }
 function quick3(state) {
-  return getBestNextActions3(state, 3).map((item) => item?.targetId && !item.id ? { ...item, id: item.targetId } : item);
+  return getBestNextActions3(state, 3).map((item) => ({ ...item, ...item.payload, id: item.id ?? item.payload?.id ?? item.targetId }));
 }
 function finish(state, content) {
   return nameTutorialActions(state, content);
@@ -850,6 +850,15 @@ function getStageContent3(state) {
   const economy = calculateEconomy3(state);
   const tgv = Number(economy.tgv || 0);
   const singleMonthQualified = realSingleMonthXgen(state, tgv);
+  if (singleMonthQualified && !state.career?.xgenExamPassed && !state.organizationMode) {
+    return finish(state, {
+      ...base,
+      eyebrow: "🎓 XGEN EXAM READY",
+      title: "ถึงเกณฑ์แล้ว · สอบ XGEN ได้เลย",
+      reason: "แตะ 3,000,000 XV ในเดือนเดียวแล้ว กดสอบเพื่อรับรองและปลดล็อก ③ Organization ในเดือนนี้",
+      actions: quick3(state)
+    });
+  }
   if (["xgen-qualified", "xgen-qualified-1b", "xgen-exam"].includes(state.sceneReport?.kind) && singleMonthQualified) {
     return finish(state, {
       ...base,
@@ -890,12 +899,13 @@ function getStageContent3(state) {
       scene: "the-xircle",
       eyebrow: state.sceneReport?.kind === "xircle-announcement" ? "🏕️ THE XIRCLE · SPECIAL EVENT" : "🏕️ THE XIRCLE",
       title: state.sceneReport?.kind === "xircle-announcement" ? "ถึงรอบ The Xircle แล้ว" : "RESET · RECONNECT · RISE",
-      reason: "กิจกรรมหลักต้องใช้ฉากแคมป์ The Xircle โดยตรง ไม่ใช้ฉาก Open House",
+      reason: "พักจากงานประจำ เชื่อมความสัมพันธ์ และเติมพลังให้ทีมพร้อมเริ่มอีกครั้ง",
       actions: quick3(state)
     });
   }
   if (state.stage === "management" || state.sceneReport?.kind === "xlead-exam") {
-    return finish(state, { ...base, actions: quick3(state) });
+    const actions = quick3(state);
+    return finish(state, { ...base, title: actions[0]?.label || base.title, actions });
   }
   if (Number(state.month || 0) > 0 && Number(state.month || 0) <= CAMPAIGN_MONTHS && base.management) {
     return finish(state, { ...base, actions: quick3(state) });

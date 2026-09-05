@@ -32,7 +32,7 @@ function campaignReady({ seed = 20, xgen = false } = {}) {
   return {
     ...state,
     campaignComplete: true,
-    career: { ...state.career, xleadCertified: true, xgenQualifiedSingleMonth: xgen, xgenCertified: xgen, xgenCertified1b: xgen, xgenQualificationRule: xgen ? 'single-month' : null },
+    career: { ...state.career, xleadCertified: true, xgenQualifiedSingleMonth: xgen, xgenCertified: xgen, xgenCertified1b: xgen, xgenExamPassed: xgen, xgenQualificationRule: xgen ? 'single-month' : null },
     rank: xgen ? 'xgen' : 'xlead',
     campaignOutcome: { xgenByMonth12: xgen },
     campaignScore: {
@@ -155,15 +155,21 @@ test('an already-settled ghost XGEN month resumes at Month 11 without settling t
   assert.equal(Object.keys(next.settlements).filter((month) => month === '10').length, 1);
 });
 
-test('XGEN qualifies from 3,000,000 XV in one month and 5% is paid in that same month without a second exam gate', () => {
+test('XGEN qualifies from 3,000,000 XV in one month and requires the live release manual exam before paying 5%', () => {
   let state = management(4, 6);
   state = {
     ...state,
     economy: { ...state.economy, personalXV: 1_000_000, teamXV: 2_000_000, productSales: 100_000 },
   };
   const live = calculateEconomy(state);
-  assert.equal(live.channel3, 150_000);
-  assert.equal(getBestNextActions(state, 8).some((item) => item.event === EVENTS.XGEN_EXAM), false);
+  assert.equal(live.channel3, 0);
+  assert.equal(getBestNextActions(state, 8)[0].event, EVENTS.XGEN_EXAM);
+  const waiting = reduceGame(state, EVENTS.END_MONTH);
+  assert.equal(waiting.stage, 'management');
+  assert.equal(waiting.settlements['6'], undefined);
+  state = reduceGame(waiting, EVENTS.XGEN_EXAM);
+  assert.equal(state.career.xgenExamPassed, true);
+  assert.equal(calculateEconomy(state).channel3, 150_000);
   state = reduceGame(state, EVENTS.END_MONTH);
   assert.equal(state.career.xgenQualifiedSingleMonth, true);
   assert.equal(state.career.xgenQualificationRule, 'single-month');
