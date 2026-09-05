@@ -20,6 +20,7 @@ while(!year2.runComplete){ if(year2.month===16)tokyo=year2;if(year2.month===22)d
 const exam=reduceGame(reduceGame({...first,stage:'pre_day28_review'},EVENTS.GO_EXAM),EVENTS.EXAM_TRANSIT_COMPLETE);
 tokyo={...tokyo,activeTravel:{...tokyo.activeTravel,destination:'Tokyo'}};
 dubai={...dubai,activeTravel:{...dubai.activeTravel,destination:'Dubai'}};
+for(const state of [tokyo,dubai]) state.organization={...state.organization,trips:state.organization.trips.map(trip=>trip.month===state.month?state.activeTravel:trip)};
 const fixtures={opening:first,management,exam,camp:{...management,month:6,sceneReport:{kind:'the-xircle',invited:8,attended:7,messages:['ทีมกลับมาพร้อมดูแลคนด้วยกัน']}},tokyo,dubai,score:campaign,finale:year2};
 const shell=await (await fetch('./index.html')).text();
 async function load(){

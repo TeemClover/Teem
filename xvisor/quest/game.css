@@ -3143,6 +3143,7 @@ body.is-ng-transition::before {
 .game-footer p { color: #c1d3d5; }
 .game-footer a { color: #b7e9d2; }
 .game-footer a:hover { color: #fff4c5; }
+.game-dialog h2[tabindex="-1"]:focus { outline: none; }
 .team-output summary { cursor: pointer; padding: 12px 0; }
 .team-output:not([open]) { padding-block: 0; }
 .people-tabs button { min-height: 44px; }
