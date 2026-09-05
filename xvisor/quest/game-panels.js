@@ -2,6 +2,16 @@ import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSIO
 import { getSkillSnapshot } from "./game-progression.js";
 import { getEconomyView } from "./game-presentation.js";
 
+export function focusDialogStart(dialog) {
+  requestAnimationFrame(() => {
+    if (!dialog?.open) return;
+    const start = dialog.querySelector("h2") || dialog.querySelector("input, button");
+    if (start?.tagName === "H2") start.setAttribute("tabindex", "-1");
+    start?.focus({ preventScroll: true });
+    dialog.scrollTop = 0;
+  });
+}
+
 export function mountPanels({ getState, dispatch, requestSync }) {
 var PROFILE_KEY = "mc_xvisor_certified";
 var $2 = (selector, root = document) => root.querySelector(selector);
@@ -66,7 +76,7 @@ function showDialog2(html, kind = "wide", key = "v9") {
   document.body.style.overflow = "hidden";
   if (!dialog.open) dialog.showModal();
   requestSync();
-  requestAnimationFrame(() => dialog.querySelector("button, input")?.focus?.());
+  focusDialogStart(dialog);
 }
 function originLabel(person) {
   const origin = person.origin || {};
@@ -680,7 +690,7 @@ function show(html, kind, key) {
   }
   document.body.style.overflow = "hidden";
   if (!dialog2.open) dialog2.showModal();
-  requestAnimationFrame(() => dialog2.querySelector("input,button")?.focus?.());
+  focusDialogStart(dialog2);
 }
 function campaignScoreDetails(state2) {
   const score = state2.campaignScore || {};

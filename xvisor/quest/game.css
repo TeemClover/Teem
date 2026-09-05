@@ -3141,6 +3141,8 @@ body.is-ng-transition::before {
 #hudIncome { font-size: clamp(12px, 1.15vw, 16px); line-height: 1.5; }
 .game-footer { color: #c1d3d5; }
 .game-footer p { color: #c1d3d5; }
+.game-footer a { color: #b7e9d2; }
+.game-footer a:hover { color: #fff4c5; }
 .team-output summary { cursor: pointer; padding: 12px 0; }
 .team-output:not([open]) { padding-block: 0; }
 .people-tabs button { min-height: 44px; }

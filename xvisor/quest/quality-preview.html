@@ -17,7 +17,10 @@ let management={...first,month:8,phase:'management',stage:'management',rank:'xle
 const campaign={...management,month:12,campaignComplete:true,rank:'xgen',career:{...management.career,xgenExamPassed:true,xgenCertified:true,xgenCertified1b:true,xgenQualifiedSingleMonth:true,xgenQualificationRule:'single-month'},campaignOutcome:{xgenByMonth12:true},campaignScore:{runId:management.runId,locked:true,completedMonth:12,completedAt:1,bestTgv:4620545,totalIncome:680030,bestMonthlyIncome:292541,organizationSize:86,scoreVersion:'1.0b',xgenByMonth12:true}};
 let year2=reduceGame(campaign,EVENTS.ENTER_ORGANIZATION),tokyo,dubai;
 while(!year2.runComplete){ if(year2.month===16)tokyo=year2;if(year2.month===22)dubai=year2;year2=reduceGame(year2,EVENTS.END_MONTH); }
-const fixtures={opening:first,management,exam:{...first,stage:'exam_question',phase:'exam'},camp:{...management,month:6,sceneReport:{kind:'the-xircle'}},tokyo,dubai,score:campaign,finale:year2};
+const exam=reduceGame(reduceGame({...first,stage:'pre_day28_review'},EVENTS.GO_EXAM),EVENTS.EXAM_TRANSIT_COMPLETE);
+tokyo={...tokyo,activeTravel:{...tokyo.activeTravel,destination:'Tokyo'}};
+dubai={...dubai,activeTravel:{...dubai.activeTravel,destination:'Dubai'}};
+const fixtures={opening:first,management,exam,camp:{...management,month:6,sceneReport:{kind:'the-xircle',invited:8,attended:7,messages:['ทีมกลับมาพร้อมดูแลคนด้วยกัน']}},tokyo,dubai,score:campaign,finale:year2};
 const shell=await (await fetch('./index.html')).text();
 async function load(){
  const scenario=document.querySelector('#scenario').value,width=Number(document.querySelector('#width').value),state=fixtures[scenario];

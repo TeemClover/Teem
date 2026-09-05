@@ -424,7 +424,8 @@ function drawScene(time) {
     drawRoom(exam ? "exam" : management ? "management" : state.month === 0 ? "pre" : "office");
     if (!exam) drawOfficeGrowth(scene);
   }
-  canvas.setAttribute("aria-label", organizationMode?.kind === "travel" ? `ทีมรับรางวัลท่องเที่ยวที่ ${organizationMode.report.trip.destination}` : scene === "the-xircle" ? "ทีมร่วมแคมป์ The Xircle ใต้แสงดาว" : "ฉากสำนักงานและทีม X-VISOR");
+  const sceneDescription = organizationMode?.kind === "travel" ? `ทีมรับรางวัลท่องเที่ยวที่ ${organizationMode.report.trip.destination}` : scene === "the-xircle" || organizationMode?.kind === "xircle" ? "ทีมร่วมแคมป์ The Xircle ใต้แสงดาว" : exam ? "ห้องสอบ Xcademy" : "ฉากสำนักงานและทีม X-VISOR";
+  if (canvas.getAttribute("aria-label") !== sceneDescription) canvas.setAttribute("aria-label", sceneDescription);
   if (organizationMode?.kind === "travel") {
     drawTravelScene(organizationMode.report.trip.destination, time, npc);
   } else if (organizationMode?.kind === "xircle") {

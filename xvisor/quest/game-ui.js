@@ -1,5 +1,5 @@
 import { createWorldRenderer } from "./game-world.js";
-import { mountPanels } from "./game-panels.js";
+import { mountPanels, focusDialogStart } from "./game-panels.js";
 import { normalizeAction } from "./game-actions.js";
 import { getEconomyView, signedBaht } from "./game-presentation.js";
 import {
@@ -580,6 +580,8 @@ function render() {
   $("#gameApp").dataset.management = String(management);
   const controls = $(".game-layout__controls");
   const dock = $("#actionDock");
+  $(".action-dock__heading span").textContent = "ทำอะไรต่อ";
+  $(".action-dock__heading small").textContent = "เลือกสิ่งที่คุ้มที่สุด";
   if (management && controls.firstElementChild !== dock) controls.prepend(dock);
   if (!management && controls.lastElementChild !== dock) controls.append(dock);
   renderHud();
@@ -609,7 +611,7 @@ function showDialog(key, html, options = {}) {
   delete $("#gameDialog").dataset.v1OrganizationKey;
   if (!$("#gameDialog").open) $("#gameDialog").showModal();
   requestPanelSync();
-  requestAnimationFrame(() => $("#gameDialog").querySelector("button")?.focus());
+  focusDialogStart($("#gameDialog"));
 }
 function closeDialog() {
   if ($("#gameDialog").open) $("#gameDialog").close();
