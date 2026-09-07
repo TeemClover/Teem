@@ -12,6 +12,7 @@ import {
   readStatOverview,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
+import { handleFrontdoorRequest } from '../../../core7/backend/frontdoor-v2.js';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -99,6 +100,10 @@ async function authenticate(request, room) {
 
 export async function onRequest(context) {
   const { request, env } = context;
+  const v2Path = new URL(request.url).pathname.replace(/\/$/, '');
+  if (v2Path === '/api/core7/analytics/frontdoor' || v2Path === '/api/core7/frontdoor-stats') {
+    return handleFrontdoorRequest(context);
+  }
   if (!env.DB) return json({ ok: false, error: 'CORE7_DB_NOT_CONFIGURED' }, 503);
   const parts = routeParts(context);
   const method = request.method.toUpperCase();

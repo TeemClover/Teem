@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#101914">
+  <title>Front Door · Universe Stat</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./frontdoor.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="brand-row"><a class="back" href="/stat/">← Universe Stat</a><span class="version">TELEMETRY V2</span></div>
+      <div class="title-row"><h1>Front Door</h1><span class="env-badge" id="environment">—</span></div>
+      <p class="lead">เข้ามา · ได้รับคุณค่า · อยากกลับมา</p>
+    </header>
+
+    <details class="filter-panel" id="filter-panel">
+      <summary><span>ช่วงเวลาและตัวกรอง</span><span id="filter-summary">กำลังเตรียม…</span></summary>
+      <form id="filters">
+        <div class="filter-grid">
+          <label>Environment<select name="env" id="env" required></select></label>
+          <label>ตั้งแต่วันที่ (เวลาไทย)<input type="date" name="from" id="from" required></label>
+          <label>ถึงวันที่ (เวลาไทย)<input type="date" name="to" id="to" required></label>
+          <label>Source<select name="source" id="source"></select></label>
+          <label>ผู้มาเยือน<select name="visitorClass" id="visitorClass"></select></label>
+          <label>หน้าจอ<select name="viewport" id="viewport"></select></label>
+          <label>ความสนใจ<select name="intentPrimary" id="intentPrimary"></select></label>
+          <label>ประตู<select name="doorId" id="doorId"></select></label>
+        </div>
+        <div class="filter-actions"><p>แยก local / preview / prod เสมอ</p><button type="submit">ดูข้อมูล</button></div>
+      </form>
+    </details>
+
+    <section class="status" id="state" role="status" aria-live="polite" data-state="loading">
+      <strong id="state-title">LOADING</strong><p id="state-message">กำลังอ่านข้อมูล Front Door…</p>
+      <a id="protected-link" href="https://teem.pages.dev/stat/frontdoor/" hidden>เปิด Stat ที่ป้องกันการเข้าถึง →</a>
+      <button type="button" id="retry" hidden>ลองอีกครั้ง</button>
+    </section>
+
+    <div id="dashboard" hidden>
+      <section aria-labelledby="overview-title" class="overview">
+        <div class="section-heading"><h2 id="overview-title">เกิดอะไรขึ้นที่ประตูหน้า</h2><span id="updated"></span></div>
+        <p class="section-note">ตัวเลขหลัก = installation ที่ไม่ซ้ำในแต่ละเหตุการณ์</p>
+        <div class="kpi-grid" id="primary-kpis"></div>
+      </section>
+
+      <section class="section" aria-labelledby="continuation-title">
+        <div class="section-heading"><h2 id="continuation-title">ไปต่อในแบบของตัวเอง</h2><span>CONTINUATION</span></div>
+        <div class="continuation-grid" id="continuation-kpis"></div>
+      </section>
+
+      <section class="section" aria-labelledby="timing-title">
+        <div class="section-heading"><h2 id="timing-title">ใช้เวลาเท่าไรถึงได้รับสิ่งสำคัญ</h2><span>ACTIVE TIME · MEDIAN</span></div>
+        <div class="timing-grid" id="timings"></div>
+        <p class="section-note">เวลาที่ใช้งานจริง หยุดนับเมื่อซ่อนหน้าเว็บหรือไม่ได้ใช้งาน · ไม่มีตัวอย่างแสดงเป็น —</p>
+      </section>
+
+      <section class="section" aria-labelledby="rates-title">
+        <div class="section-heading"><h2 id="rates-title">จากจุดหนึ่ง ไปถึงอีกจุด</h2><span>LINKED PROGRESSION</span></div>
+        <p class="section-note">นับ installations ที่เดินต่อใน journey เดียวกันตามลำดับ · Save → Return ต้องกลับมาใน visit ใหม่</p>
+        <div class="rates-grid" id="rates"></div>
+      </section>
+
+      <section class="section" aria-labelledby="branches-title">
+        <div class="section-heading"><h2 id="branches-title">ทางผ่านสู่ Dungeon</h2><span>BRANCH DETAIL</span></div>
+        <p class="handoff-note">DUNGEON_HANDOFF นับการออกเดินทางจาก Front Door <strong>ยังไม่ยืนยันว่าถึง Dungeon</strong></p>
+        <div class="continuation-grid" id="branch-kpis"></div>
+        <details class="detail-panel"><summary>ดูการเชื่อมต่อระหว่างจุด</summary><div class="table-scroll" tabindex="0" role="region" aria-label="การเชื่อมต่อระหว่างจุด"><table><thead><tr><th scope="col">จาก → ไป</th><th scope="col">Installations</th><th scope="col">Journeys</th><th scope="col">Events</th></tr></thead><tbody id="transitions"></tbody></table></div></details>
+      </section>
+
+      <section class="section" aria-labelledby="audience-title">
+        <div class="section-heading"><h2 id="audience-title">ใครเข้ามา และสนใจอะไร</h2><span>BREAKDOWNS</span></div>
+        <p class="section-note">แต่ละกลุ่มนับ installations ที่ไม่ซ้ำภายในกลุ่ม คนละกลุ่มอาจซ้ำกันได้</p>
+        <div class="breakdowns-grid" id="breakdowns"></div>
+      </section>
+
+      <section class="section" aria-labelledby="events-title">
+        <details class="detail-panel"><summary id="events-title">เหตุการณ์ทั้งหมด · Canonical P0 registry</summary><div class="table-scroll" tabindex="0" role="region" aria-label="เหตุการณ์ทั้งหมด"><table><thead><tr><th scope="col">Event</th><th scope="col">Installations</th><th scope="col">Journeys</th><th scope="col">Events</th></tr></thead><tbody id="event-rows"></tbody></table></div></details>
+      </section>
+      <footer class="footnote">Installation คือรหัสสุ่มของการติดตั้ง/เบราว์เซอร์ ไม่ใช่จำนวนคนจริง · journey คือเส้นทางหนึ่งครั้ง · V2 แยกจากสถิติเดิม และไม่นำ home-open เดิมมานับเป็น Front Door</footer>
+    </div>
+    <noscript><p class="status" data-state="failed">ต้องเปิด JavaScript เพื่ออ่านข้อมูล Stat</p></noscript>
+  </main>
+</body>
+</html>
