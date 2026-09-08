@@ -15,6 +15,12 @@
   const root = document.querySelector('#session-root');
   const $ = selector => document.querySelector(selector);
   const $$ = selector => Array.from(document.querySelectorAll(selector));
+  // Only this explicitly allowlisted acquisition link changes the existing page.
+  const entryParams = new URLSearchParams(window.location.search);
+  const entryValue = (key, value) => entryParams.getAll(key).length === 1 && entryParams.get(key) === value;
+  const xircleEntry = entryValue('intent', 'health') && entryValue('from', 'xircle');
+  const openXircleBooking = xircleEntry && entryValue('open', 'booking');
+  let pendingXircleDraft = null;
 
   const INTENTS = [
     {
@@ -57,6 +63,22 @@
       color: '#c8a85d', icon: 'open',
     },
   ];
+
+  if (xircleEntry) {
+    root.dataset.entry = 'xircle';
+    Object.assign(INTENTS[0], {
+      kicker: 'XIRCLE · TEAM + AKO',
+      head: 'ดูข้อมูล XIRCLE และกิจวัตรกับทีม + เอโกะ',
+      outcomes: [
+        'ดูแนวโน้มจากข้อมูลที่คุณสะดวกแชร์',
+        'ต่อข้อมูลกับสิ่งที่เกิดขึ้นจริงในชีวิตคุณ',
+        'เลือกหนึ่งก้าวที่พอลองทำได้ หรือคุยเรื่องเริ่มใช้ XIRCLE',
+      ],
+      qualifier: 'มีแอปแล้ว หรือยังไม่มี ก็นัดเริ่มต้นได้ · Session แรกไม่มีค่าใช้จ่าย',
+      cta: 'นัดดูข้อมูลกับทีม + เอโกะ',
+      ack: ['ดูข้อมูล XIRCLE และกิจวัตรกับทีม + เอโกะ', 'มีแอปแล้ว หรือยังไม่มี ก็นัดเริ่มต้นได้'],
+    });
+  }
 
   const ICONS = {
     body: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M7 20c.5-5 2.2-7 5-7s4.5 2 5 7"/><path d="M4 12h3m10 0h3"/></svg>',
@@ -437,7 +459,9 @@
   }
 
   function appendHistory(thread) {
-    thread.appendChild(guideMessage(['ก่อนลงนัด ขอรู้จักคุณนิดหนึ่ง', 'วันนี้อะไรพาคุณมาหาเรา?'], true));
+    if (!(xircleEntry && booking.intent === 'health' && booking.step > 0)) {
+      thread.appendChild(guideMessage(['ก่อนลงนัด ขอรู้จักคุณนิดหนึ่ง', 'วันนี้อะไรพาคุณมาหาเรา?'], true));
+    }
     if (booking.step === 0) return;
     const intent = intentById(booking.intent);
     if (!intent) return;
@@ -470,6 +494,7 @@
 
     if (booking.closeConfirm) return renderCloseConfirm(thread, footer);
     if (booking.done) return renderSuccess(thread, footer);
+    if (pendingXircleDraft) return renderXircleDraftChoice(thread, footer);
 
     appendHistory(thread);
     if (booking.preparing) {
@@ -504,7 +529,9 @@
   function renderModeStep(thread) {
     thread.appendChild(guideMessage(['อยากเริ่มเจอกันแบบไหน?']));
     const modes = MODES[booking.intent] || MODES.curious;
-    const buttons = modes.map(mode => choiceButton(mode.label, mode.meta, () => {
+    const buttons = modes.map(mode => choiceButton(mode.label,
+      xircleEntry && booking.intent === 'health' && mode.value === 'ออนไลน์'
+        ? '25 นาที · เปิดข้อมูลที่คุณสะดวกแชร์ แล้วคุยเรื่องกิจวัตรด้วยกัน' : mode.meta, () => {
       pacedAdvance(() => {
         booking.mode = mode.value;
         booking.scheduleWeek = null;
@@ -705,6 +732,7 @@
   }
 
   function submitLabel(intent) {
+    if (xircleEntry && intent === 'health') return 'ส่งคำขอนัดดูข้อมูลกับทีม + เอโกะ';
     if (intent === 'health') return 'ส่งคำขอ Xircle Body Check-in';
     if (intent === 'opportunity') return 'ส่งคำขอคุยเรื่องการต่อยอด';
     return 'ส่งคำขอ Open Table Session';
@@ -785,6 +813,7 @@
   }
 
   function bookingBack() {
+    if (pendingXircleDraft) return closeBooking(true);
     if (booking.done) return closeBooking(true);
     if (booking.step === 0) return closeBooking();
     booking.error = '';
@@ -838,6 +867,9 @@
 
   function saveDraft() {
     try {
+      // Opening the acquisition link must never overwrite a previous draft.
+      if (pendingXircleDraft) return;
+      if (xircleEntry && !booking.mode && !booking.day && !booking.name.trim() && !booking.contact.trim() && !booking.note.trim()) return;
       if (booking.done || !(booking.intent || booking.day || booking.name.trim() || booking.contact.trim())) return;
       window.localStorage.setItem(CONFIG.draftKey, JSON.stringify({
         savedAt: Date.now(), step: booking.step, schedulePart: booking.schedulePart, scheduleWeek: booking.scheduleWeek,
@@ -894,6 +926,26 @@
     host.appendChild(bar);
   }
 
+  function renderXircleDraftChoice(thread, footer) {
+    footer.hidden = true;
+    thread.appendChild(guideMessage(['คุณมีคำขอนัดที่เริ่มไว้', 'ลงนัดเดิมต่อ หรือเริ่มนัดใหม่จาก XIRCLE?']));
+    thread.appendChild(choices([
+      choiceButton('ลงนัดเดิมต่อ', 'เก็บหัวข้อและคำตอบที่กรอกไว้', () => {
+        const draft = pendingXircleDraft;
+        pendingXircleDraft = null;
+        resumeBooking(draft);
+      }),
+      choiceButton('เริ่มนัดใหม่จาก XIRCLE', 'แทนที่ร่างเดิม เริ่มจากเลือกรูปแบบการคุย', () => {
+        pendingXircleDraft = null;
+        clearDraft();
+        $$('.draft-resume').forEach(bar => bar.remove());
+        selectIntent('health', 'xircle');
+        openBooking('xircle');
+      }),
+    ]));
+    scrollConversation();
+  }
+
   function initBooking() {
     $('#booking-close').addEventListener('click', () => closeBooking());
     $('#booking-scrim').addEventListener('click', () => closeBooking());
@@ -908,5 +960,12 @@
   initPageInteractions();
   initBooking();
   initDraftResume();
+  if (xircleEntry) {
+    selectIntent('health', 'xircle');
+    if (openXircleBooking) {
+      pendingXircleDraft = readDraft();
+      openBooking('xircle');
+    }
+  }
   track('meet_view');
 })();
