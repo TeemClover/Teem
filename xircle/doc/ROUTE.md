@@ -38,3 +38,7 @@ v5 CSS, xircle-reference-hero
 - ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
 - ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
 - ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+
+## V3 optional continuation — 2026-09-09
+
+Accessible without legacy completion flags as the optional knowledge continuation after the appointment payoff. The shared navigation guard preserves existing progress and other journey gates; it offers a return to `/xircle/#appointment`.
