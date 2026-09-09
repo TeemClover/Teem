@@ -44,10 +44,10 @@ workflow, scores, or save changes are included in this release.
   exact recipe count 2. Zero production rows or meeting submissions were created.
 - Independent Stat workerd/D1/browser proof and the original 17-event telemetry
   regression passed. Error-state transport simulations are labeled separately.
-- Public link audit: 761 local targets, zero unresolved references.
+- Public link audit: 753 local targets, zero unresolved references.
 Evidence is kept outside the public repository in the session visualization
 directory: `ako-recipes-v2`, `ako-sharing-v2`, `ako-journey-stat-v2`,
-`stat-v6-expanded`, and `ako-stat-public-links.json`.
+`stat-v6-expanded`, and `ako-stat-only-public-links.json`.
 
 ## Production boundary
 
