@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-10",
+  "tool": "built-in image_gen",
+  "purpose": "Editorial recipe illustrations; not photographs of dishes personally cooked/tested by Ako.",
+  "processing": "Sharp resize and WebP encoding only; no painting, compositing or original replacement.",
+  "assets": [
+    {
+      "name": "egg-salad",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-6fe60fc0-608a-4dbe-aa95-87e469f22459.png",
+      "desktop": "ako/kitchen/art/egg-salad-v1.webp",
+      "mobile": "ako/kitchen/art/egg-salad-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: editorial recipe photography for a Thai food kitchen website. Create a beautiful, appetizing, believable photograph. Subject: One generous but ordinary salad bowl: crisp romaine lettuce, ripe red cherry tomatoes, sliced cucumber, exactly two hard-boiled eggs quartered with fully set golden yolks, a thin creamy yogurt mustard dressing. No other visible ingredients. Bowl complete and uncropped. Scene: warm pale stone kitchen worktop, soft oat linen at one edge, warm natural side light from a window. Composition: 3:2 landscape, close three-quarter overhead angle, entire bowl in the central 70% of the frame with breathing space for responsive cropping. Fine real food texture, fresh crisp produce, restrained shadows, premium culinary magazine quality. No text, no typography, no logos, no people, no hands, no branding, no props shaped like fake food, no extra decorative ingredients. Natural photograph, never 3D or illustration."
+    },
+    {
+      "name": "tofu-mushroom-rice",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-6d0e62f7-26b9-42bd-883f-6bb246affe84.png",
+      "desktop": "ako/kitchen/art/tofu-mushroom-rice-v1.webp",
+      "mobile": "ako/kitchen/art/tofu-mushroom-rice-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: editorial recipe photography for a Thai food kitchen website. Create a beautiful, appetizing, believable photograph. Subject: One satisfying everyday meal in a handmade pale ceramic bowl: steamed brown rice, pan-seared golden firm tofu cubes, sauteed shimeji mushrooms, blanched broccoli florets, a light glossy soy-lime glaze. No other visible ingredients. Bowl complete and uncropped. Scene: warm pale stone kitchen worktop, soft oat linen at one edge, warm natural side light from a window. Composition: 3:2 landscape, close three-quarter overhead angle, entire bowl in the central 70% of the frame with breathing space for responsive cropping. Fine real food texture, fresh crisp produce, restrained shadows, premium culinary magazine quality. No text, no typography, no logos, no people, no hands, no branding, no props shaped like fake food, no extra decorative ingredients. Natural photograph, never 3D or illustration."
+    },
+    {
+      "name": "yogurt-dressing",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-80d8acf0-cfe7-4157-b319-9a94a4853ab7.png",
+      "desktop": "ako/kitchen/art/yogurt-dressing-v1.webp",
+      "mobile": "ako/kitchen/art/yogurt-dressing-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: editorial recipe photography for a Thai food kitchen website. Create a beautiful, appetizing, believable photograph. Subject: A shallow small ivory ceramic bowl of thick but pourable plain yogurt dressing, flecked with freshly ground black pepper, next to one small lemon wedge and a teaspoon with a little wholegrain mustard, a few crisp plain cucumber batons in background. No other visible ingredients. No herbs or garlic. Small sauce bowl complete and uncropped. Scene: warm pale stone kitchen worktop, soft oat linen at one edge, warm natural side light from a window. Composition: 3:2 landscape, close three-quarter overhead angle, entire bowl in the central 70% of the frame with breathing space for responsive cropping. Fine real food texture, fresh crisp produce, restrained shadows, premium culinary magazine quality. No text, no typography, no logos, no people, no hands, no branding, no props shaped like fake food, no extra decorative ingredients. Natural photograph, never 3D or illustration."
+    }
+  ]
+}

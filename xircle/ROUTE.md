@@ -1,43 +1,39 @@
 # Route Guard — /xircle/
 
-> Reviewed: 2026-09-09
-> Reviewed against main: `85f5b2ac13dae3757786403f514e90e40a72434b`
-> Runtime: `index.html`
-> Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
+Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/xircle-experience-v3`), merged as `e7b533a7` into remote main (`1984724c`), with the same V3 runtime. The earlier V2 selection came from stale local remote refs and is superseded.
 
 ## Job
-ทำให้คนลองเห็นคุณค่าจากวันตัวอย่าง จนอยากนัด XIRCLE Experience กับข้อมูลและชีวิตจริงของตัวเอง
 
-## Flow — V3 owner directive, 2026-09-08
-- Entry: `/xircle/` starts a fresh sample; `#appointment` and legacy `#start` return to the appointment invitation.
-- Six actions: sleep → food shutter → movement / day assembly → seven nights → context + Teem / Ako → sample becomes real.
-- Primary exit: `/meet/?intent=health&from=xircle&open=booking`; no account or app prerequisite.
-- Optional exit after the payoff: `/xircle/learn/`. Knowledge, deep information and the explore hub are accessible without old completion flags; other legacy journey gates are preserved.
+ให้ลองประกอบวันตัวอย่างสั้น ๆ เห็นว่าข้อมูลกับบริบทช่วยกันอย่างไร แล้วเลือกนัดดูเรื่องจริงกับทีม + เอโกะ
 
-## Locks
-- V3 supersedes the previous mandatory Human Care exit and V2 registration/download sequence.
-- Sample values are fictional; the same seven bedtimes remain unchanged across contexts. No invented health score or diagnosis.
-- Shutter visibly captures, holds, records and docks before the next question. Back and replay cancel pending motion.
-- State stays in memory. Never read, clear or write legacy journey keys. Five-digit `invite`, `xty`, or `mode=join&c=` links retain the existing TeamBook destination.
-- Preserve the original V5 assets and knowledge ecosystem. App truth remains: Habit Score = Eat + Move + Sleep; body composition is separate.
+## Current flow
 
-## Dependencies
-`index.html`, `experience-v3.js`, `experience-v3.css`, shared typography, repaired `assets/v3`, selected `assets/v5`, and real `/meet/img/` portraits. No legacy runtime or telemetry import. V2 runtime files are retained but not loaded.
+**เลือกคืนตัวอย่าง → ถ่ายมื้อตัวอย่าง → เลือกการขยับ → ดูหลายวัน → เติมบริบทและเห็นข้อสังเกต → “แล้วของคุณล่ะ?” → เลือกนัดลองจริง**
 
-## กฎร่วม
-- อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า
-- Thai-first; ใช้ศัพท์อังกฤษเมื่อเป็นชื่อระบบ/ผลิตภัณฑ์ที่จำเป็น
-- ฝั่ง White Cat ใช้คำหลัก **สมุดแมวขาว**; ชื่อระบบเมื่อจำเป็นคือ **White Cat Care**
-- `/xty/` คงเป็น technical route ได้ แต่ห้ามดึง XTY/ตี้กลับมาเป็น narrative หลัก
-- ใช้คำ **ข้อมูลเชิงลึก**; ห้ามใช้คำเก่าที่ owner เลิกใช้
-- Health data = sensitive data: consent, เห็นเท่าที่จำเป็น, ไม่วินิจฉัย
-- ตรวจ ratio จาก artwork จริง; อย่าครอป baked UI/text สำคัญ
-- Controls ต้องใช้ได้ทันที; feedback/copy ต้องไม่ทำให้ CTA กระโดดตำแหน่ง
-- Product/claim/revenue/formula ที่ไม่ยืนยัน: ไป Source/Unresolved และ **ห้ามเดา**
+- Entry: `/xircle/`, Compass entry, or a compatibility URL in [ROUTE_INDEX.md](ROUTE_INDEX.md).
+- Main exit: `/meet/?intent=health&from=xircle&open=booking`; only a bounded subject deliberately selected before entry may accompany it.
+- Optional exit after the payoff: `/xircle/learn/`. No registration or app-download CTA in this experience.
+- `#appointment` and compatibility `#start` open the appointment invitation without synthesizing a completed example.
+- `/Xircle` is a case alias of `/xircle/`, not a separate source tree or experience.
 
-## Before merge
-- เดิน **entry → interaction → exit** จริงบน mobile และ desktop
-- ตรวจ CTA/feedback ไม่กระโดด, links ไม่ตัน, naming ไม่ย้อนคำเก่า
-- ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
-- ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
-- ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+## Runtime
+
+- `index.html`, `experience-v3.js`, `experience-v3.css`, `_shared/typography.css`, V3 scene plates and selected existing V5 / Meet imagery.
+- V1/V2 experience engines, including the mistaken neutral `experience.js` / `experience.css`, are removed from the active source.
+- `route-contract.js` handles bounded route parameters and read-only legacy invitation compatibility; `entry.css` styles the small Compass continuation.
+- No retired `_shared/state.js`, `story-v6.js`, `v5.js`, Compass overlay, or old worker is needed.
+- Original myClover logo and `/favicon.ico` remain exact assets.
+
+## State and content boundaries
+
+- The day, chart, sleep, food, movement and context choices are clearly marked prepared examples. They are not personal measurements or a health score.
+- Do not send fictional choices into Meet as the visitor's health data.
+- Existing progress, invitations and Front Door checkpoints remain intact. No completion flags are required or rewritten.
+- V3 choices stay in memory; `#appointment` preserves the invitation when returning from Meet. No new storage key is added. Retired V1/V2 progress/session keys, including `xircle.demo.v2.resume`, stay untouched and are not used to restore V3.
+- Valid invitation links remain optional explicit actions. No automatic external navigation or health sharing.
+
+## Verification
+
+Check the full demo, editing/back/restart, Compass subject → Meet, refresh/back continuation, blocked storage, saved invitations and old URLs on mobile and desktop. Useful articles must open directly without replaying the demo.
+
+The current cross-route source is [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md); historical route guards are archived there by reference.

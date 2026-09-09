@@ -29,6 +29,8 @@ function lessonOneFinished() {
 }
 
 function shouldRewriteLink(link) {
+  // The public comic reader offers the original Forge game entry as an optional destination.
+  if (link.dataset.preserveEntry === 'forge') return false;
   const href = link.getAttribute('href') || '';
   if (!href) return false;
   if (/\/core7\/tutorial\//.test(href) && /entry=(forge|walkthrough|journey|main)/.test(href)) return true;

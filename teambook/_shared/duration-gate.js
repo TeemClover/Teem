@@ -13,11 +13,12 @@ function payoutOf(days) {
   if (typeof window === 'undefined' || !/^\/new\/?$/.test(location.pathname)) return;
   const template = new URLSearchParams(location.search).get('template') || '';
   const whiteCatRoute = template === 'xircle_xvisor';
+  const compassEntry = new URLSearchParams(location.search).get('entry') === 'compass' && !new URLSearchParams(location.search).has('template');
   const level = Math.max(1, Math.min(4, Number(getProfile()?.level || 1)));
   const allowed = whiteCatRoute ? [28] : (level >= 2 ? [3, 7, 14, 28] : [3, 7]);
   /* V1.3 public-first starts with the lightest complete experiment. Three
      days is enough to understand Sign -> Seen without asking for a week. */
-  let selected = whiteCatRoute ? 28 : 3;
+  let selected = whiteCatRoute ? 28 : compassEntry ? 7 : 3;
   if (!allowed.includes(selected)) selected = allowed[0];
 
   window.__xtyDurationOverride = selected;

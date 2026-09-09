@@ -31,7 +31,7 @@ test('HMB knowledge topic keeps evidence and product claims separate', () => {
   assert.equal(simple.product.href, '/xircle/doc/habix/protein-hmb/');
 });
 
-test('the doctor video is embedded only in the knowledge topic route', () => {
+test('the restored doctor video keeps its knowledge link and non-endorsement context', () => {
   const topicPage = fs.readFileSync(path.join(here, 'topic', 'index.html'), 'utf8');
   const productPage = fs.readFileSync(
     path.join(xircle, 'doc', 'habix', 'protein-hmb', 'index.html'),
@@ -39,8 +39,8 @@ test('the doctor video is embedded only in the knowledge topic route', () => {
   );
 
   assert.match(topicPage, /youtube-nocookie\.com\/embed\/lqQS_lC50mw/);
-  assert.doesNotMatch(productPage, /youtube-nocookie\.com\/embed\/lqQS_lC50mw/);
+  // Approved restoration in 8df65c25 retained the embed on the product reference too.
+  assert.match(productPage, /youtube-nocookie\.com\/embed\/lqQS_lC50mw/);
   assert.match(productPage, /\/xircle\/learn\/topic\/\?t=hmb-myhmb/);
   assert.match(productPage, /ไม่ใช่การรับรอง Protein HMB\+/);
 });
-

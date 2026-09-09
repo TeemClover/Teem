@@ -20,6 +20,7 @@ function markSeen() {
 }
 
 function showOffer() {
+  if (document.body?.dataset.forgeAccess === 'open') return; // Public reader: let the story begin without an interrupting offer.
   if (!PATHS.has(location.pathname) || hasSeen() || document.getElementById('mcSauceCupOffer')) return;
   markSeen();
 

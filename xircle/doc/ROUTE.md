@@ -1,44 +1,31 @@
 # Route Guard — /xircle/doc/
 
-> Reviewed: 2026-08-26  
-> Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
-> Runtime: `index.html`  
-> Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
+Updated: **2026-09-10**. Status: independent reference content, retained during Xircle consolidation.
 
-## Job
-ชั้นรายละเอียดสำหรับคนอยากตรวจข้อมูล/ที่มา
+## Job and flow
 
-## Flow
-- **Entry:** learn/topic, explore, product/hardware links
-- **Exit:** deep SEE/ACT/CARE/SYSTEM หรือกลับ learn
+เป็นดัชนีข้อมูลเชิงลึกสำหรับคนต้องการอ่านรายละเอียดหรือดูที่มา
 
-## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
-อ่านลึกเท่าที่จำเป็น
+- Entry: direct link, search, another reference or the current Xircle route; no completion flags required.
+- Exit: เอกสารย่อย ห้องความรู้ Xircle ปัจจุบัน หรือการนัดคุย.
+- Reading this material is optional; it is not a stage required before Meet.
 
-## Locks — ห้ามทำหาย
-ใช้ข้อมูลยืนยันแล้ว; ไม่ยืนยันต้องบอก; user-facing = ข้อมูลเชิงลึก
+## Runtime and state
 
-## Dependencies / จุดเชื่อม
-v5 CSS, xircle-reference-hero
+`reference.js` supplies independent navigation; existing document links, typography and styling
 
-## กฎร่วม
-- อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า
-- Thai-first; ใช้ศัพท์อังกฤษเมื่อเป็นชื่อระบบ/ผลิตภัณฑ์ที่จำเป็น
-- ฝั่ง White Cat ใช้คำหลัก **สมุดแมวขาว**; ชื่อระบบเมื่อจำเป็นคือ **White Cat Care**
-- `/xty/` คงเป็น technical route ได้ แต่ห้ามดึง XTY/ตี้กลับมาเป็น narrative หลัก
-- ใช้คำ **ข้อมูลเชิงลึก**; ห้ามใช้คำเก่าที่ owner เลิกใช้
-- Health data = sensitive data: consent, เห็นเท่าที่จำเป็น, ไม่วินิจฉัย
-- ตรวจ ratio จาก artwork จริง; อย่าครอป baked UI/text สำคัญ
-- Controls ต้องใช้ได้ทันที; feedback/copy ต้องไม่ทำให้ CTA กระโดดตำแหน่ง
-- Product/claim/revenue/formula ที่ไม่ยืนยัน: ไป Source/Unresolved และ **ห้ามเดา**
+`reference.css` keeps the reference navigation readable on mobile and desktop.
 
-## Before merge
-- เดิน **entry → interaction → exit** จริงบน mobile และ desktop
-- ตรวจ CTA/feedback ไม่กระโดด, links ไม่ตัน, naming ไม่ย้อนคำเก่า
-- ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
-- ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
-- ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+`reference.js` does not run an old experience, intercept navigation through a completion gate, write localStorage or change legacy progress. Existing article content and independent interactions remain intact. Versioned artwork/CSS names are retained dependencies, not another active Xircle version.
 
-## V3 optional continuation — 2026-09-09
+## Content boundaries
 
-Accessible without legacy completion flags as the optional knowledge continuation after the appointment payoff. The shared navigation guard preserves existing progress and other journey gates; it offers a return to `/xircle/#appointment`.
+คงข้อมูลและ source links; เรื่องที่ยังไม่ยืนยันต้องบอก; user-facing ใช้คำว่าข้อมูลเชิงลึก
+
+Health examples remain examples; no diagnosis or automatic sharing. Existing myClover brand assets remain exact. Product/medical/source facts were not revised by the routing consolidation.
+
+## Verification
+
+Open this URL with fresh storage and verify it stays readable. Check its existing interactions, imagery, ordinary links and return to the current Xircle/Meet flow. The current cross-route source is [XIRCLE_ROUTE_SOURCE.md](/xircle/XIRCLE_ROUTE_SOURCE.md).
+
+The prior HTML and guard were archived unchanged at `archive/xircle-retired-20260910/xircle/doc/` under the visualization archive documented in the global source.

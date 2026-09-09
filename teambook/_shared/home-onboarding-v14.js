@@ -32,7 +32,8 @@ function inviteCode() {
 
 function nextHref() {
   const code = inviteCode();
-  return code ? `/join/?c=${encodeURIComponent(code)}` : '/new/';
+  const compass = new URLSearchParams(location.search).get('entry') === 'compass' || document.documentElement.dataset.tbCompassEntry === '1';
+  return code ? `/join/?c=${encodeURIComponent(code)}` : compass ? '/new/?entry=compass' : '/new/';
 }
 
 function readHref() {

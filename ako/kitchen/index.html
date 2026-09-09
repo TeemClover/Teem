@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17352c">
+  <title>ครัวสลัดเอโกะ — ทำจานธรรมดาให้อร่อย</title>
+  <meta name="description" content="7 สูตรสลัด จานอุ่น และน้ำสลัดง่าย ๆ ปริมาณชัด ทำตามได้ทีละขั้น เลือกจากของที่มีแล้วเริ่มปรุงได้เลย">
+  <link rel="canonical" href="https://www.myclover.com/ako/kitchen/">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta property="og:title" content="ครัวสลัดเอโกะ — วันนี้ทำอะไรอร่อย ๆ กัน">
+  <meta property="og:description" content="ไม่ต้องเก่งทำอาหารก่อน เริ่มด้วยจานง่าย ๆ แล้วค่อยหาจังหวะอร่อยของตัวเอง">
+  <meta property="og:image" content="https://www.myclover.com/frontdoor/art/seed-food-bright-v2.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ako/kitchen/kitchen.css">
+</head>
+<body>
+  <a class="skip-link" href="#recipe">ข้ามไปสูตรอาหาร</a>
+  <header class="kitchen-header">
+    <a class="kitchen-brand" href="/ako/" aria-label="กลับบ้านเอโกะ"><img src="/ako/assets/ako-logo.png" width="46" height="46" alt=""><span>AKO <small>THE EVERYDAY KITCHEN</small></span></a>
+    <nav aria-label="ทางไปต่อ"><a href="/ako/#watch">ดูเอโกะกิน ↗</a><a href="/ako/story/">รู้จักเอโกะ</a><a href="/frontdoor/">กลับไปที่เข็มทิศ</a></nav>
+  </header>
+  <main>
+    <section class="kitchen-intro">
+      <div><p class="eyebrow">ของธรรมดา · ปรุงให้พอดี</p><h1>ครัวสลัด<span>เอโกะ</span></h1><p class="intro-copy">ผักชุดเดิมก็อร่อยได้หลายแบบ<br>เลือกหนึ่งจาน แล้วค่อย ๆ ปรุงไปด้วยกัน</p></div>
+      <p class="kitchen-note">ไม่ต้องซื้อของเต็มตู้<br><strong>เริ่มจากของที่มี<br>และรสที่ชอบ</strong><span>7 สูตร · 3–20 นาที</span></p>
+    </section>
+    <section class="recipe-library" aria-label="สูตรทั้งหมด">
+      <details id="recipe-browse"><summary>เลือกจาก 7 สูตร <span>สลัด · จานอุ่น · น้ำสลัด <b aria-hidden="true">＋</b></span></summary>
+      <div class="library-heading"><h2 id="libraryTitle">วันนี้อยากทำอะไร?</h2><div class="recipe-filters" role="group" aria-label="เลือกประเภทสูตร"><button type="button" data-filter="all" aria-pressed="true">ทั้งหมด</button><button type="button" data-filter="salad" aria-pressed="false">สลัด</button><button type="button" data-filter="meal" aria-pressed="false">จานอุ่น</button><button type="button" data-filter="dressing" aria-pressed="false">น้ำสลัด</button><button type="button" data-filter="saved" aria-pressed="false">ที่เก็บไว้ <span id="saved-count">0</span></button></div></div>
+      <nav class="recipe-list" id="recipe-list" aria-label="เลือกสูตร">
+        <a href="#tomato-lime">มะเขือเทศฉ่ำ · มะนาวสด <span>5 นาที</span></a>
+        <a href="#tomato-sesame">มะเขือเทศแตงกวา · งาคั่ว <span>7 นาที</span></a>
+        <a href="#egg-crunch">สลัดไข่ต้ม · โยเกิร์ตมัสตาร์ด <span>15 นาที</span></a>
+        <a href="#tofu-rice">ข้าวเต้าหู้เห็ด · ซีอิ๊วมะนาว <span>20 นาที</span></a>
+        <a href="#yogurt-mustard">โยเกิร์ตมัสตาร์ด · คนแล้วจบ <span>3 นาที</span></a>
+        <a href="#soy-lime">ซีอิ๊วมะนาว · เบาและสด <span>3 นาที</span></a>
+        <a href="#peanut-lime">ถั่วลิสงมะนาว · ข้นนัว <span>5 นาที</span></a>
+      </nav>
+      <p id="empty-library" class="quiet" hidden>ยังไม่ได้เก็บสูตร ลองเปิดจานที่ชอบ แล้วกด “เก็บสูตรนี้” ได้เลย</p>
+      </details>
+    </section>
+    <article class="recipe" id="recipe" aria-labelledby="recipe-title" tabindex="-1">
+      <div class="recipe-heading"><div><p class="eyebrow" id="recipe-kicker">จานแรกของวันนี้ · 5 นาที</p><h2 id="recipe-title">มะเขือเทศฉ่ำ · มะนาวสด</h2><p id="recipe-short">เปรี้ยวสด กรุบฉ่ำ ไม่ต้องเปิดเตา</p></div><button class="save-recipe" id="save-recipe" type="button" aria-pressed="false">เก็บสูตรนี้ ↗</button></div>
+      <div class="recipe-top">
+        <figure class="recipe-photo" id="recipe-photo"><img id="dish-image" src="/frontdoor/art/seed-food-bright-v2.webp" srcset="/frontdoor/art/seed-food-bright-v2-mobile.webp 600w, /frontdoor/art/seed-food-bright-v2.webp 1000w" sizes="(max-width: 760px) 100vw, 60vw" width="1000" height="667" alt="ภาพประกอบสลัดมะเขือเทศ แตงกวา และมะนาว" decoding="async"><figcaption>ภาพประกอบเมนู · จานของคุณปรุงให้ต่างได้</figcaption></figure>
+        <div class="mixing-note" id="mixing-note" hidden></div>
+        <aside class="technique"><span>เรื่องเล็กที่ทำให้ต่าง</span><p id="technique">ซับผักให้แห้งก่อนคลุก น้ำสลัดจะเกาะผัก และรสไม่ถูกน้ำที่ติดผักเจือจาง</p><div class="technique-sign">ครัวสลัดเอโกะ <span>— ปรุงให้เป็น ไม่ต้องจำเป๊ะ</span></div></aside>
+      </div>
+      <div class="cook-toolbar"><div class="portions" role="group" aria-label="จำนวนที่"><span>ทำให้</span><button type="button" data-portions="1" aria-pressed="false">1 คน</button><button type="button" data-portions="2" aria-pressed="true">2 คน</button><button type="button" data-portions="4" aria-pressed="false">4 คน</button></div><button id="cook-mode" type="button" aria-pressed="false">เปิดโหมดทำอาหาร ↗</button></div>
+      <p class="save-status" id="save-status" role="status" aria-live="polite"></p>
+      <div class="recipe-method">
+        <section class="ingredients"><h3>หยิบของเท่านี้</h3><ul id="ingredients"><li><span>มะเขือเทศเชอร์รี</span><b>200 กรัม</b></li><li><span>แตงกวา</span><b>150 กรัม</b></li><li><span>น้ำมะนาว</span><b>2 ช้อนชา</b></li><li><span>น้ำมันมะกอก</span><b>1 ช้อนชา</b></li><li><span>เกลือ</span><b>หยิบมือเล็ก ๆ แล้วชิม</b></li></ul><p class="measure-note">ช้อนโต๊ะ = 15 มล. · ช้อนชา = 5 มล.<br>เวลาในสูตรเป็นเวลาโดยประมาณ</p><p class="allergens" id="allergens" hidden></p></section>
+        <section class="steps"><div class="steps-heading"><h3>ค่อย ๆ ทำทีละอย่าง</h3><span id="step-progress" role="status">0 / 3</span></div><ol id="steps"><li>ล้างผัก ผ่ามะเขือเทศครึ่งลูก หั่นแตงกวาเป็นชิ้นพอดีคำ แล้วซับน้ำออก</li><li>คนน้ำมะนาว น้ำมัน และเกลือให้เข้ากันในชามที่จะเสิร์ฟ</li><li>ใส่ผัก คลุกเบา ๆ ชิมก่อนเติมเกลือหรือมะนาว แล้วกินตอนที่แตงกวายังกรอบ</li></ol><p id="finished-note" class="finished-note" hidden>จานนี้เสร็จแล้ว ชิมคำแรกให้ตัวเองก่อนเลย</p><button id="reset-steps" class="quiet-button" type="button" hidden>เริ่มทำสูตรนี้อีกครั้ง</button></section>
+      </div>
+      <div class="recipe-endnotes"><div><h3>ถ้าของไม่ครบ</h3><p id="substitution">ใช้มะเขือเทศลูกใหญ่หั่นชิ้นแทนเชอร์รีได้ ถ้ามีน้ำเยอะให้ตักเมล็ดและน้ำออกบางส่วน</p></div><div><h3>ก่อนยกไปกิน</h3><p id="serving-note">เป็นจานข้างที่เสร็จเร็ว จะกินคู่ไข่ต้ม เต้าหู้ หรือข้าวที่มีอยู่ก็ได้</p></div></div>
+      <a class="pair-link" id="pair-link" href="#yogurt-mustard"><small>ครั้งหน้า ลองเปลี่ยนรส</small><span>โยเกิร์ตมัสตาร์ด · คนแล้วจบ <b aria-hidden="true">↗</b></span></a>
+    </article>
+    <section class="kitchen-next"><div><p class="eyebrow">จากหนึ่งจาน · ไปสู่หนึ่งวัน</p><h2>กินอร่อยแล้ว<br>ค่อยดูแลต่อในแบบของคุณ</h2><p>ดูตัวอย่างการกิน การขยับ และการพักใน XIRCLE หรือเลือกคุยเรื่องมื้ออาหารกับทีม + เอโกะได้</p></div><div class="next-links"><a href="/xircle/?entry=compass&amp;focus=food&amp;xty=51644&amp;xvisor=1">ลองเห็นหนึ่งวันใน XIRCLE <span>↗</span></a><a href="/meet/?entry=compass&amp;intent=health&amp;from=xircle&amp;open=booking&amp;focus=food">อยากจัดมื้อให้เข้ากับชีวิต นัดคุยกัน <span>↗</span></a><a href="/ako/#watch">ชอบเรื่องกิน? ไปดูเอโกะกินต่อ <span>↗</span></a></div></section>
+  </main>
+  <footer class="kitchen-footer"><a href="/ako/">AKO · ครัวสลัดเอโกะ</a><p>สูตรพื้นฐานสำหรับลองปรุงที่บ้าน ปรับตามวัตถุดิบและรสที่ชอบได้<br>สูตรและภาพประกอบจัดทำสำหรับหน้านี้ ไม่ใช่คำรับรองผลด้านสุขภาพ</p><a href="https://www.youtube.com/@akosohungry" target="_blank" rel="noopener noreferrer">Ako so Hungry ↗</a></footer>
+  <noscript><p class="noscript-note">สูตรมะเขือเทศมะนาวอ่านได้ครบในหน้านี้ เปิด JavaScript เพื่อเลือกสูตรอื่น ปรับจำนวนที่ และติ๊กขั้นตอน</p></noscript>
+  <script type="module" src="/ako/kitchen/kitchen.js"></script>
+  <script type="module" src="/assets/front-door/outcomes.js"></script>
+</body>
+</html>

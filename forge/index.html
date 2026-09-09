@@ -179,8 +179,9 @@ footer a{color:rgb(var(--green));font-weight:600}
 .prog .tx.is-done{color:rgb(var(--gold))}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
+<link rel="stylesheet" href="/forge/reading-rail.css">
 </head>
-<body>
+<body class="forge-reader-home" data-forge-access="open">
 <header class="bar"><div class="wrap">
   <a class="home disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
   <span class="ttl"><b>เรื่องเล่าจากโรงตีเหล็ก</b></span>
@@ -193,6 +194,7 @@ footer a{color:rgb(var(--green));font-weight:600}
   <div class="startrow">
     <a class="start disp" data-mc-continue="forge:" href="ep1-everyone-gets-to-play/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="start disp" data-mc-demote="forge:ghost" href="ep1-everyone-gets-to-play/">เริ่มอ่านจากตอนแรก</a>
+    <a class="forge-course-link" href="/classroom/">อยากลงมือเลย? เรียน AI ใส่ซอส →</a>
   </div>
   <div class="prog">
     <div class="track"><i data-mc-bar="forge"></i></div>
@@ -203,7 +205,7 @@ footer a{color:rgb(var(--green));font-weight:600}
 
 <main class="wrap">
   <div class="grid">
-    <a class="ep" href="ep1-everyone-gets-to-play/" data-mc-item="forge:ep1-everyone-gets-to-play" data-mc-seq="forge:0">
+    <a class="ep" href="ep1-everyone-gets-to-play/" data-mc-item="forge:ep1-everyone-gets-to-play">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/01-thumb.webp">
@@ -216,7 +218,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ทุกคนมีสิทธิ์ลงเล่น</b>
       </div>
     </a>
-    <a class="ep" href="ep2-the-first-item/" data-mc-item="forge:ep2-the-first-item" data-mc-seq="forge:1">
+    <a class="ep" href="ep2-the-first-item/" data-mc-item="forge:ep2-the-first-item">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/02-thumb.webp">
@@ -229,7 +231,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ไอเท็มชิ้นแรก</b>
       </div>
     </a>
-    <a class="ep" href="ep3-the-item-that-came-back/" data-mc-item="forge:ep3-the-item-that-came-back" data-mc-seq="forge:2">
+    <a class="ep" href="ep3-the-item-that-came-back/" data-mc-item="forge:ep3-the-item-that-came-back">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/03-thumb.webp">
@@ -242,7 +244,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ของที่กลับมาพร้อมรอยใช้</b>
       </div>
     </a>
-    <a class="ep" href="ep4-what-traveled-without-us/" data-mc-item="forge:ep4-what-traveled-without-us" data-mc-seq="forge:3">
+    <a class="ep" href="ep4-what-traveled-without-us/" data-mc-item="forge:ep4-what-traveled-without-us">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/04-thumb.webp">
@@ -255,7 +257,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">สิ่งที่เดินทางแทนเรา</b>
       </div>
     </a>
-    <a class="ep" href="ep5-from-answers-to-a-system/" data-mc-item="forge:ep5-from-answers-to-a-system" data-mc-seq="forge:4">
+    <a class="ep" href="ep5-from-answers-to-a-system/" data-mc-item="forge:ep5-from-answers-to-a-system">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/05-thumb.webp">
@@ -268,7 +270,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">จากคำตอบสู่ระบบ</b>
       </div>
     </a>
-    <a class="ep" href="ep6-the-starter-kit/" data-mc-item="forge:ep6-the-starter-kit" data-mc-seq="forge:5">
+    <a class="ep" href="ep6-the-starter-kit/" data-mc-item="forge:ep6-the-starter-kit">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/06-thumb.webp">
@@ -281,7 +283,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">สำหรับคนที่มาทีหลัง</b>
       </div>
     </a>
-    <a class="ep" href="ep7-a-voice-that-went-further/" data-mc-item="forge:ep7-a-voice-that-went-further" data-mc-seq="forge:6">
+    <a class="ep" href="ep7-a-voice-that-went-further/" data-mc-item="forge:ep7-a-voice-that-went-further">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/07-thumb.webp">
@@ -294,7 +296,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">เวลาที่ได้คืนมา</b>
       </div>
     </a>
-    <a class="ep bonus" href="original/" data-mc-seq="forge:7">
+    <a class="ep bonus" href="original/">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/original-thumb.webp">
@@ -308,22 +310,8 @@ footer a{color:rgb(var(--green));font-weight:600}
       </div>
     </a>
   </div>
-  <p class="moresoon" data-mc-undone="forge">🔒 ตอนถัดไปจะโผล่ขึ้นมาเองเมื่ออ่านตอนนี้จบ — เรื่องนี้เรียงกันมา ข้ามแล้วจะงง</p>
-  <div class="nextup" data-mc-done="forge" hidden>
-    <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
-    <a class="wtcard" href="../walkthrough/" data-ga="go_walkthrough">
-      <span class="wtseal" aria-hidden="true">🗺️</span>
-      <span class="wtbody">
-        <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
-        <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
-        <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
-          ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
-          เป็นเรื่องเดียวกันตรงไหน</span>
-        <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
-      </span>
-      <span class="wtgo disp">เปิดอ่าน →</span>
-    </a>
-  </div>
+  <p class="moresoon">เปิดอ่านได้ครบทุกตอน เลือกตอนที่สนใจ หรือเริ่มตอนแรกแล้วค่อย ๆ เดินไปด้วยกัน</p>
+<section class="forge-next-course" aria-labelledby="forgeCourseTitle"><small>จากเรื่องของเรา · ถึงงานของคุณ</small><h2 id="forgeCourseTitle">คราวนี้ ลองทำให้เป็นของคุณ</h2><p>เริ่มจากเรื่องที่คุณรู้ดีหนึ่งเรื่อง แล้วทำเป็นต้นทางให้ AI รับช่วงต่อ บทแรกของ AI ใส่ซอสพาลงมือได้เลย</p><a class="forge-course-start" href="/classroom/free-ai.html">ทำซอสขวดแรกของคุณ →</a><div class="forge-course-extras"><a href="/classroom/">ดูทั้ง 6 บท</a><a href="/core7/tutorial/?entry=forge" data-preserve-entry="forge">ลองเกมที่สร้างจากวิธีเดียวกัน ↗</a></div></section>
   <details class="finish" id="finishBox" data-mc-done="forge" hidden>
     <summary>
       <span class="fl">⚒️ อ่านครบทั้ง 7 ตอนแล้ว</span>
@@ -409,5 +397,6 @@ gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 <script type="module" src="/assets/track.js"></script>
+<script type="module" src="/assets/front-door/outcomes.js"></script>
 </body>
 </html>

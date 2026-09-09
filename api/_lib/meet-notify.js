@@ -10,6 +10,7 @@ const INTENT_LABELS = {
   health: 'สุขภาพ · อยากรู้จักร่างกายตัวเอง',
   opportunity: 'เตรียมสอบใบอนุญาต · ระบบติดตาม Routine',
   curious: 'ยังไม่แน่ใจ · แค่อยากรู้จักกันก่อน',
+  ai: 'เรียนและใช้ AI กับทีม',
 };
 
 function clean(value, max = 200) {

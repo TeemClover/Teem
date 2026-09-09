@@ -634,6 +634,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
+<script type="module" src="/assets/front-door/outcomes.js"></script>
 </head>
 <body>
 
@@ -1415,6 +1416,7 @@ const STYLES = {
 };
 function codeLines(){
   const t = STYLES[S.style] || STYLES.paper, ph = phrase();
+  const compassEntry = new URLSearchParams(location.search).get('entry') === 'compass' && !S.voice;
   return [
     ['<!doctype html>'],
     ['<html lang="th">'],
@@ -1432,9 +1434,9 @@ function codeLines(){
     ['</style></head>'],
     ['<body data-map="body">', 'body'],
     ['  <article data-map="card">', 'card'],
-    ['    <small data-map="tag">FROM voice.md</small>', 'tag'],
+    ['    <small data-map="tag">' + (compassEntry ? 'YOUR FIRST EDIT' : 'FROM voice.md') + '</small>', 'tag'],
     ['    <h1 data-map="h1">' + ph + '</h1>', 'h1'],
-    ['    <p data-map="p">ประโยคข้างบนไม่ได้ถูกพิมพ์ลงหน้านี้ มันถูกอ่านมาจากซอสที่มึงเซฟไว้เมื่อกี้</p>', 'p'],
+    ['    <p data-map="p">' + (compassEntry ? 'ลองเปลี่ยนประโยคใน h1 แล้วกด RENDER ดูว่าหน้านี้เปลี่ยนตามมือมึงยังไง' : 'ประโยคข้างบนไม่ได้ถูกพิมพ์ลงหน้านี้ มันถูกอ่านมาจากซอสที่มึงเซฟไว้เมื่อกี้') + '</p>', 'p'],
     ['    <b data-map="cta">ไปต่อโดยไม่ต้องเริ่มใหม่</b>', 'cta'],
     ['  </article>'],
     ['</body></html>']
@@ -1524,6 +1526,7 @@ $('renderBtn').addEventListener('click', () => {
   paintLab();
   if (S.viewOpen && !S.browser) claim('browser','dungeon-q2');
   else beep(420,.06);
+  paintLab();
 });
 $('editBtn').addEventListener('click', () => {
   S.editing = !S.editing;
@@ -1536,6 +1539,7 @@ $('renderCode').addEventListener('click', () => {
   paintCode(); paintLab(); renderFrame();
   act('dungeon-code-edit'); fanfare();
   if (!S.browser) claim('browser','dungeon-q2');
+  paintLab();
 });
 $('resetCode').addEventListener('click', () => {
   S.code = null; S.editing = false; save();
@@ -2740,5 +2744,10 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden) chec
 })();
 </script>
 <script type="module" src="/assets/track.js"></script>
+<script type="module">
+if (new URLSearchParams(location.search).get('entry') === 'compass') {
+  import('/frontdoor/craft-handoff.js').then(({ mountDungeonCraftHandoff }) => mountDungeonCraftHandoff()).catch(() => {});
+}
+</script>
 </body>
 </html>

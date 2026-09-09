@@ -30,13 +30,13 @@ function gatePage(pathname, message = '') {
 export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
-  // Backend-first release: keep its local verification sources out of delivery.
+  // The Pages site uses the repository as its asset tree. Keep local-only
+  // Front Door fixtures/reports out of HTTP delivery as on the Vercel host.
   let pathname;
   try { pathname = decodeURIComponent(url.pathname); } catch { return new Response('Not found', { status: 404 }); }
-  if (/^\/assets\/front-door\/[^/]+\.test\.mjs$/.test(pathname)
-      || /^\/core7\/tests\/frontdoor-[^/]+\.test\.mjs$/.test(pathname)
-      || /^\/core7\/tests\/frontdoor-e2e(?:-worker)?\.mjs$/.test(pathname)
-      || pathname === '/core7/tests/helpers/sqlite-d1.mjs') {
+  if (/^\/(?:(?:tests|docs)\/(?:frontdoor|xvisor|ako)|core7\/tests)(?:\/|$)/.test(pathname)
+      || pathname === '/tests/teambook/compass-entry.e2e.mjs'
+      || /^\/(?:frontdoor|assets\/front-door)\/[^/]+\.test\.mjs$/.test(pathname)) {
     return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });
   }
   if (!protectedPath(url.pathname)) return next();

@@ -41,4 +41,3 @@ Exact prompt:
 ```text
 Edit this official XIRCLE Scale photograph accurately. Isolate only the complete white XIRCLE Scale on perfectly uniform flat warm ivory RGB #eae3d4. Preserve EXACT existing perspective, rounded square shape, proportions, four faceted contact zones, silver circular XIRCLE emblem, materials and all physical edges. Remove all background props. Turn off ONLY the illuminated demonstration display so the same rectangular screen becomes neutral inactive glass, absolutely no digits, bars or glowing icons. No product redesign, no new measurements, no invented branding. Whole device fully visible with generous ivory margins. High-quality PNG. Solid ivory background, NO transparency, NO checkerboard, NO texture, NO gradient. Fidelity to the reference device is essential.
 ```
-

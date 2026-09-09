@@ -1,0 +1,5 @@
+/* References keep their artwork; their navigation has no locked/mobile gate. */
+.xp-top .xp-nav[data-current-reference]{display:flex;gap:8px;max-width:calc(100vw - 120px)}
+.xp-top .xp-nav[data-current-reference] a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 11px;font-size:14px;line-height:1.4;white-space:nowrap;color:#fff1d5;text-decoration:none}
+.xp-top .xp-nav[data-current-reference] a:focus-visible{outline:2px solid #fff1d5;outline-offset:3px}
+@media(max-width:360px){.xp-top .xp-nav[data-current-reference]{gap:5px}.xp-top .xp-nav[data-current-reference] a{font-size:13px;padding:8px}}

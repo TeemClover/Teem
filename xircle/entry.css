@@ -1,0 +1,6 @@
+/* The Compass entry context accompanies the approved V3 scene, without a second UI. */
+.compass-continuation{max-width:1600px;margin:auto;padding:10px 4%;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#e7c790;font-size:14px;line-height:1.6}
+.compass-continuation[hidden]{display:none}
+.compass-continuation a{color:#eee6d3;min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:5px;flex-shrink:0}
+.compass-continuation a:focus-visible{outline:2px solid #e7c790;outline-offset:4px}
+@media(max-width:760px){.compass-continuation{padding:0 18px 8px;align-items:flex-start;font-size:12px;gap:8px}.compass-continuation span{padding-top:11px}.compass-continuation a{font-size:12px}}

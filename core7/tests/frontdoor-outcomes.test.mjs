@@ -70,3 +70,13 @@ test('real collector persists the browser client comic → lesson → Meet chain
  const stats=await readFrontdoorStats(db,{from:day,to:day,env:'local'});assert.deepEqual(stats.outcomes.rows,[{door:'forge',opened:1,arrived:1,requested:1}]);
  assert.equal((await db.prepare("SELECT COUNT(*) n FROM fd_v2_events WHERE env='prod'").first()).n,0);
 });
+
+
+test('kitchen, story and onward Xircle receipts count one Ako arrival, never three people',async t=>{
+ const db=sqliteD1();t.after(()=>db.close());await persistFrontdoorEvent(db,departure('ako-chain','ako'));
+ for(const [i,path] of ['/ako/','/ako/kitchen/','/ako/story/','/xircle/'].entries())assert.equal((await post(db,receipt({eventId:`o-kitchen-${i}`,handoffId:'h-out-ako-chain',path}))).status,202);
+ assert.equal((await post(db,receipt({eventId:'o-kitchen-repeat',handoffId:'h-out-ako-chain',path:'/ako/kitchen/'}))).status,202);
+ const stats=await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'local'});
+ assert.deepEqual(stats.outcomes.rows,[{door:'ako',opened:1,arrived:1,requested:0}]);
+ assert.equal((await db.prepare('SELECT COUNT(*) n FROM fd_v2_outcomes').first()).n,4);
+});

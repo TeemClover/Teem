@@ -1,3 +1,4 @@
+import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-contract.js';
 /* Fictional, in-memory experience. No health input, analytics or legacy-state writes. */
 (() => {
   'use strict';
@@ -44,7 +45,7 @@
   function loadImage(img) {
     if (!img || img.hasAttribute('src')) return;
     img.addEventListener('error', () => img.classList.add('image-unavailable'), { once: true });
-    if (img.dataset.srcset) { img.sizes = '(max-width:760px) 100vw,72vw'; img.srcset = img.dataset.srcset; }
+    if (img.dataset.srcset) { img.sizes = img.dataset.sizes || '(max-width:760px) 100vw,72vw'; img.srcset = img.dataset.srcset; }
     if (img.dataset.src) img.src = img.dataset.src;
   }
   function loadWithin(id) { $(id).querySelectorAll('img[data-src]').forEach(loadImage); }
@@ -115,7 +116,7 @@
     if (state.step === 2) { art('art-move'); loadWithin('assembled-day'); loadImage($('art-day')); }
     if (state.step === 3) { art('art-day'); loadWithin('assembled-day'); loadImage($('art-context')); }
     if ([4, 5].includes(state.step)) {
-      art('art-context'); document.querySelectorAll('.night-film i').forEach((night, index) => { night.style.backgroundImage = 'url("/xircle/assets/v5/xircle-s02-sleep.webp")'; night.style.setProperty('--delay', `${(6-index)*.045}s`); night.style.setProperty('--shift', `${(6-index)*70}px`); }); loadWithin('people-reveal');
+      art('art-context'); document.querySelectorAll('.night-film i').forEach((night, index) => { night.style.backgroundImage = 'url("/xircle/assets/v3/sleep-clean-800.webp")'; night.style.setProperty('--delay', `${(6-index)*.045}s`); night.style.setProperty('--shift', `${(6-index)*70}px`); }); loadWithin('people-reveal');
     }
     if (state.step >= 5) loadWithin('real-world'); if (state.step === 6) art(null); if (focus) focusScene();
   }
@@ -126,7 +127,11 @@
   function fly(node, from, to, duration) {
     if (reduced() || !node.animate || !from.width || !to.width) { node.remove(); return; }
     Object.assign(node.style, { position: 'fixed', left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px`, margin: '0', transformOrigin: 'top left' }); document.body.append(node);
-    const animation = node.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${to.left-from.left}px,${to.top-from.top}px) scale(${to.width/from.width},${to.height/from.height})`, opacity: .45 }], { duration, easing: 'cubic-bezier(.22,.75,.25,1)', fill: 'forwards' });
+    // A saved photograph keeps its proportions while moving into the day's record.
+    const scale = Math.min(to.width/from.width, to.height/from.height);
+    const x = to.left-from.left+(to.width-from.width*scale)/2;
+    const y = to.top-from.top+(to.height-from.height*scale)/2;
+    const animation = node.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${x}px,${y}px) scale(${scale})`, opacity: .45 }], { duration, easing: 'cubic-bezier(.22,.75,.25,1)', fill: 'forwards' });
     const flight = { node, animation }; flights.add(flight); animation.onfinish = () => { node.remove(); flights.delete(flight); };
   }
   document.querySelectorAll('[data-sleep]').forEach(button => button.addEventListener('click', event => {
@@ -185,10 +190,36 @@
     $('sound-toggle').setAttribute('aria-pressed', String(soundEnabled)); $('sound-toggle').querySelector('span').textContent = soundEnabled ? 'เสียงเปิด' : 'เสียงปิด'; if (soundEnabled) cue('record');
   });
   $('book-link').addEventListener('click', () => { try { window.history.replaceState(null, '', window.location.pathname + window.location.search + '#appointment'); } catch { /* The booking href works without history. */ } });
+  // Bounded entry context only; fictional sample records never leave this runtime.
   try {
-    const params = new URLSearchParams(window.location.search), invitation = params.get('xty') || params.get('invite') || (params.get('mode') === 'join' ? params.get('c') : '');
-    if (/^\d{5}$/.test(invitation || '')) { $('legacy-invite').href = `https://teambook.me/join/?c=${invitation}`; $('legacy-invite').hidden = false; }
-  } catch { /* Optional invitation does not affect the journey. */ }
+    if (window.location.pathname !== XIRCLE_HOME) window.history.replaceState(null, '', XIRCLE_HOME + window.location.search + window.location.hash);
+  } catch { /* Case aliases remain playable without history access. */ }
+  let storage;
+  try { storage = window.localStorage; } catch { /* Storage is optional. */ }
+  const entry = entryContext(window.location.search, storage);
+  if (entry.focus) headings[0][3] = {
+    food: 'มื้อหนึ่งเกี่ยวกับทั้งวันยังไง?<br>ลองเก็บวันตัวอย่างนี้ด้วยกัน',
+    move: 'การขยับไม่ได้อยู่ลำพัง<br>ลองเห็นทั้งวัน ตั้งแต่คืนก่อนหน้า',
+    sleep: 'เริ่มจากการพักที่คุณเลือก<br>ลองดูว่าเมื่อเก็บไว้ เราจะเห็นอะไรเพิ่ม'
+  }[entry.focus];
+  if (entry.compass) {
+    $('compass-subject').textContent = entry.focus ? `จากเข็มทิศ · วันนี้คุณเลือกใส่ใจ${FOCUS_LABELS[entry.focus]}` : 'เดินต่อจากเข็มทิศ';
+    $('compass-continuation').hidden = false;
+  }
+  if (entry.focus) {
+    document.querySelectorAll('a[href^="/meet/"]').forEach(link => {
+      const href = new URL(link.getAttribute('href'), window.location.origin);
+      href.searchParams.set('focus', entry.focus); link.href = href.pathname + href.search;
+    });
+  }
+  if (entry.invitation || entry.createNotebook) {
+    const link = $('legacy-invite'); link.href = notebookHref(entry);
+    link.textContent = entry.invitation && !entry.createNotebook ? 'เปิดคำเชิญสมุดของคุณ ↗' : 'เปิดสมุดของคุณ ↗';
+    link.hidden = false;
+  }
+  $('knowledge-link').addEventListener('click', () => {
+    try { window.history.replaceState(null, '', window.location.pathname + window.location.search + '#appointment'); } catch { /* Knowledge links work without history. */ }
+  });
   if (['#appointment', '#start'].includes(window.location.hash)) state.step = 6;
   render(); document.querySelector('.skip-link').href = '#experience'; $('experience').hidden = false; $('fallback').hidden = true; $('sound-toggle').hidden = false;
 })();

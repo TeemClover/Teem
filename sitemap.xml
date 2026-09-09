@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.myclover.com/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-09-10</lastmod>
   </url>
   <url>
     <loc>https://www.myclover.com/hall.html</loc>
@@ -91,5 +91,13 @@
   <url>
     <loc>https://www.myclover.com/xty/ideas/</loc>
     <lastmod>2026-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://www.myclover.com/home/</loc>
+    <lastmod>2026-09-10</lastmod>
+  </url>
+  <url>
+    <loc>https://www.myclover.com/ako/kitchen/</loc>
+    <lastmod>2026-09-10</lastmod>
   </url>
 </urlset>

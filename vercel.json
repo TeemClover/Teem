@@ -372,6 +372,11 @@
       "source": "/ako",
       "destination": "/ako/",
       "permanent": false
+    },
+    {
+      "source": "/invite",
+      "destination": "/invite/",
+      "permanent": false
     }
   ],
   "headers": [
@@ -480,6 +485,22 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/Xircle",
+      "destination": "/xircle/index.html"
+    },
+    {
+      "source": "/Xircle/",
+      "destination": "/xircle/index.html"
+    },
+    {
+      "source": "/XIRCLE",
+      "destination": "/xircle/index.html"
+    },
+    {
+      "source": "/XIRCLE/",
+      "destination": "/xircle/index.html"
+    },
     {
       "source": "/",
       "has": [
