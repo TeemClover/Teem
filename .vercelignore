@@ -1,3 +1,9 @@
 # Cloudflare Pages Functions — เป็นโค้ดฝั่งเซิร์ฟเวอร์ของ Cloudflare เท่านั้น
 # ถ้าปล่อยขึ้น Vercel มันจะถูกเสิร์ฟเป็นไฟล์ธรรมดาให้คนเปิดอ่านซอร์สได้
 functions/
+
+# Additive Front Door backend verification is development-only.
+assets/front-door/*.test.mjs
+core7/tests/frontdoor-*.test.mjs
+core7/tests/helpers/sqlite-d1.mjs
+core7/tests/frontdoor-e2e*.mjs

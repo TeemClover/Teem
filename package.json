@@ -10,7 +10,9 @@
     "test:pet-brain": "node --test api/_lib/pet-brain.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs",
     "test:pet-wake": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs api/_lib/pet-runtime-wiring.test.mjs",
     "test:xvisor": "node --test xvisor/quest/game-release.test.mjs xvisor/quest/game-ui.test.mjs",
-    "reset:teambook": "node scripts/reset-teambook.mjs"
+    "reset:teambook": "node scripts/reset-teambook.mjs",
+    "test:frontdoor:backend": "node --test assets/front-door/*.test.mjs core7/tests/frontdoor-backend.test.mjs core7/tests/frontdoor-outcomes.test.mjs core7/tests/frontdoor-outcome-edge.test.mjs core7/tests/analytics.test.mjs",
+    "test:frontdoor:e2e": "node core7/tests/frontdoor-e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",
