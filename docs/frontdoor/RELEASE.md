@@ -105,3 +105,8 @@ runtime. Remote-only `xircle/experience-v2.js` and `.css` were removed explicitl
 after detecting that an ordinary merge retained these obsolete files. The
 real HTTP alias regression now checks V2 URLs as well as unversioned/V1 URLs.
 The files remain recoverable in Git history.
+
+Post-merge tooling correction: the remote-only knowledge-access test still loaded
+the retired Xircle state gate. It now executes the actual reference runtime and
+current route helpers, verifies all 49 reference pages remain ungated, and is
+included in `test:xircle`. Nine checks pass; no public runtime changed.
