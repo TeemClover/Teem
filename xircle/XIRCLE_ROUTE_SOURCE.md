@@ -12,7 +12,7 @@
 
 The owner’s V3 appointment-first directive supersedes the root conversion order in this older ecosystem snapshot. `/xircle/` earns an appointment through a cinematic sample day, seven-night pattern, same-data context comparison and real Teem + Ako / Scale reveal. The primary exit is `/meet/?intent=health&from=xircle&open=booking`, without an account or app prerequisite. `/xircle/learn/` is a quiet optional continuation after the payoff.
 
-The root uses isolated `experience-v3.js` / `.css`, fictional in-memory choices and repaired sibling V3 artwork. It never imports the old story/state runtime or changes progress keys. Original assets and all legacy routes remain intact. The older mandatory root handoff below does not apply to V3. See `blueprint/XIRCLE_V3_STORYBOARD.md` and the root `ROUTE.md`. Owner authorized push and merge on 2026-09-09 after QA.
+The root uses isolated `experience-v3.js` / `.css`, fictional in-memory choices and repaired sibling V3 artwork. It never imports the old story/state runtime or changes progress keys. Original assets and legacy content remain intact. The shared navigation guard now allows knowledge, deep-information and explore routes without old completion flags; other legacy gates remain in place. The older mandatory root handoff below does not apply to V3. See `blueprint/XIRCLE_V3_STORYBOARD.md` and the root `ROUTE.md`. Owner authorized push and merge on 2026-09-09 after QA.
 
 ---
 

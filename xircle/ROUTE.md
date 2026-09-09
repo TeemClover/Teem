@@ -12,7 +12,7 @@
 - Entry: `/xircle/` starts a fresh sample; `#appointment` and legacy `#start` return to the appointment invitation.
 - Six actions: sleep → food shutter → movement / day assembly → seven nights → context + Teem / Ako → sample becomes real.
 - Primary exit: `/meet/?intent=health&from=xircle&open=booking`; no account or app prerequisite.
-- Optional exit after the payoff: `/xircle/learn/`. All legacy ecosystem routes remain directly accessible.
+- Optional exit after the payoff: `/xircle/learn/`. Knowledge, deep information and the explore hub are accessible without old completion flags; other legacy journey gates are preserved.
 
 ## Locks
 - V3 supersedes the previous mandatory Human Care exit and V2 registration/download sequence.

@@ -68,6 +68,14 @@
 
   function isXircleRoute(path) { return path === "/xircle" || path.indexOf("/xircle/") === 0; }
 
+  // V3 makes education an optional continuation, not a completion reward.
+  // This changes navigation only; it never marks the old journey complete.
+  function isKnowledgeRoute(path) {
+    return path === "/xircle/explore" || path === "/xircle/learn" ||
+      path.indexOf("/xircle/learn/") === 0 || path === "/xircle/doc" ||
+      path.indexOf("/xircle/doc/") === 0;
+  }
+
   function addShortcut(nav, href, label, className) {
     var a = document.createElement("a");
     a.href = href;
@@ -148,6 +156,15 @@
     nav.innerHTML = "";
 
     if (!journeyFullyUnlocked()) {
+      if (isKnowledgeRoute(path)) {
+        nav.setAttribute("aria-label", "ทางลัด");
+        addShortcut(nav, "/xircle/#appointment", "ลอง XIRCLE Experience");
+        if (path !== "/xircle/learn") addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
+        addInvitedWhiteCatShortcut(nav, path);
+        nav.hidden = false;
+        renderUnlockVisibility();
+        return;
+      }
       nav.setAttribute("aria-label", "ทางไปต่อ");
       var next = linearNext();
       if (next && normalizedHrefPath(next.href) !== path) {
@@ -186,6 +203,7 @@
   }
 
   function routeAllowedBeforeUnlock(path) {
+    if (isKnowledgeRoute(path)) return true;
     if (path === "/xircle/circle" && currentHandoff()) return true;
     if (isRoutineProductDetour(path)) return true;
     var next = linearNext();
@@ -326,6 +344,8 @@
     try { url = new URL(a.href, location.origin); } catch (e) { return false; }
     var intended = normalizedHrefPath(url.pathname);
     if (url.origin !== location.origin || !isXircleRoute(intended)) return false;
+    if (isKnowledgeRoute(intended)) return false;
+    if (isKnowledgeRoute(normalizedPath()) && intended === "/xircle") return false;
     if (isRoutineProductDetour(intended)) return false;
 
     var next = linearNext();

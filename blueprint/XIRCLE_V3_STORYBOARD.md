@@ -29,7 +29,7 @@ Source of truth: `XIRCLE_V3_APPOINTMENT_FIRST_BUILD_DIRECTIVE_2026-09-08.md`, re
 - Back / replay cancels pending choreography. Rapid taps cannot skip meaningful scenes. Records can be edited without restarting the story.
 - Reduced motion keeps the captured state and meaning, removes travel/parallax/flash, and shortens transitions. Sound is optional and off until an explicit toggle.
 - Load the first art plate first; stage the likely next scenes after interaction. Portraits and Scale wait for later beats. Failed images keep readable live controls and a usable booking fallback.
-- Root runtime remains isolated from legacy progress / telemetry; old keys and knowledge routes are untouched. The existing Meet query contract and draft preservation stay in place. No sample values enter that URL or booking payload.
+- Root runtime remains isolated from legacy progress / telemetry; old progress keys are preserved. The shared navigation guard allows the optional knowledge, deep-information and explore routes without awarding old completion flags. The existing Meet query contract and draft preservation stay in place. No sample values enter that URL or booking payload.
 - No invented Habit Score, calorie analysis, automatic sharing, diagnosis, registration success, or confirmed appointment claim.
 
 ## Review gate
