@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "title": "Shelf — ขวดซอสของเรา",
+  "updated_at": "2026-09-10",
+  "timezone": "Asia/Bangkok",
+  "source_root": "/shelf/source/",
+  "categories": [
+    {
+      "id": "products",
+      "label": "สินค้า"
+    },
+    {
+      "id": "offers",
+      "label": "Offer"
+    },
+    {
+      "id": "programs",
+      "label": "โปรแกรม"
+    },
+    {
+      "id": "questions",
+      "label": "รอยืนยัน"
+    },
+    {
+      "id": "method",
+      "label": "วิธีทำงาน"
+    }
+  ],
+  "sources": [
+    {
+      "id": "clover-x-products-offers",
+      "title": "Clover X — สินค้าและ Offer",
+      "description": "HabiX · RoutineX · Xircle · Lean Lab · Grand Slam พร้อมราคา แหล่งอ้างอิง และประเด็นที่ยังรอยืนยัน",
+      "path": "source/clover-x/products-offers.md",
+      "version": "0.9",
+      "created_at": "2026-09-09",
+      "updated_at": "2026-09-09",
+      "added_to_shelf_at": "2026-09-10",
+      "status": "needs-confirmation",
+      "status_label": "มีข้อมูลรอยืนยัน",
+      "categories": [
+        "products",
+        "offers",
+        "programs"
+      ],
+      "tags": [
+        "Clover X",
+        "HabiX",
+        "Habix",
+        "RoutineX",
+        "Xircle",
+        "Lean Lab",
+        "Leanlab",
+        "Grand Slam",
+        "สินค้า",
+        "ราคา",
+        "โปรโมชัน",
+        "โปรตีน",
+        "FIVES",
+        "ABCD",
+        "GUS",
+        "AstaMega",
+        "DUO",
+        "Protein HMB+"
+      ],
+      "aliases": [
+        "CLOVER_X_PRODUCTS_OFFERS_SOURCE_2026-09-09.md"
+      ],
+      "notes": "ยังไม่รวมเนื้อหาเสียงพี่นุ่นและ YouTube; ไม่ใช่เอกสารบริษัทอนุมัติ",
+      "sections": [
+        {
+          "label": "สินค้าและราคา",
+          "heading": "## 4."
+        },
+        {
+          "label": "Lean Lab",
+          "heading": "## 13."
+        },
+        {
+          "label": "Grand Slam",
+          "heading": "## 14."
+        },
+        {
+          "label": "ประเด็นรอยืนยัน",
+          "heading": "## 16."
+        }
+      ]
+    },
+    {
+      "id": "clover-x-confirmation-questions",
+      "title": "คำถามยืนยันสินค้าและ Grand Slam",
+      "description": "17 คำถามเรื่องสิทธิ์ ราคา สูตรสินค้า และ Lean Lab สำหรับนำคำตอบพร้อมหลักฐานมาอัปเดตซอสหลัก",
+      "path": "source/clover-x/confirmation-questions.md",
+      "version": "0.9.1",
+      "created_at": "2026-09-09",
+      "updated_at": "2026-09-10",
+      "added_to_shelf_at": "2026-09-10",
+      "status": "needs-confirmation",
+      "status_label": "คำถามรอยืนยัน",
+      "categories": [
+        "questions"
+      ],
+      "tags": [
+        "Clover X",
+        "Lean Lab",
+        "Grand Slam",
+        "RoutineX",
+        "พี่นุ่น",
+        "ยืนยัน",
+        "OPEN",
+        "ราคา",
+        "สิทธิ์",
+        "ฉลาก"
+      ],
+      "aliases": [
+        "CLOVER_X_SOURCE_CONFIRMATION_QUESTIONS_2026-09-09.md"
+      ],
+      "notes": "ยังไม่ใช่คำตอบหรือการยืนยันจากบริษัท",
+      "sections": []
+    },
+    {
+      "id": "sauce-working-principle",
+      "title": "หลักการส่งขวดซอส",
+      "description": "ส่งต่อทั้งข้อมูล เกณฑ์ว่างานที่ถูกเป็นอย่างไร และวิธีแก้เมื่อผิด เพื่อให้ผู้รับใช้กับ AI ต่อได้",
+      "path": "source/method/sauce-working-principle.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-10",
+      "updated_at": "2026-09-10",
+      "added_to_shelf_at": "2026-09-10",
+      "status": "working-principle",
+      "status_label": "หลักการทำงาน",
+      "categories": [
+        "method"
+      ],
+      "tags": [
+        "ซอส",
+        "source",
+        "workflow",
+        "AI ใส่ซอส",
+        "ส่งต่อ",
+        "เจนภาพ",
+        "สินค้า",
+        "แก้ภาพ",
+        "QA"
+      ],
+      "aliases": [],
+      "notes": "บันทึกหลักการจากบทสนทนา; ชุดภาพอ้างอิงและคู่มือเจนภาพฉบับเต็มยังไม่ได้รวม",
+      "sections": []
+    }
+  ]
+}
