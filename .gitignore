@@ -27,3 +27,9 @@ reference/
 **/reference/
 PLAN.md
 PLAN-V*.md
+
+# Local browser/test output (keep uploads and source assets in their own folders)
+/e2e-result*.png
+/test-results/
+/playwright-report/
+/coverage/

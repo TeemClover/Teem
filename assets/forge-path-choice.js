@@ -239,6 +239,7 @@ function startDwellWatcher() {
 }
 
 function boot() {
+  if (document.body?.dataset.forgeAccess === 'open') return; // The public reader has a visible, ungated course ending.
   if (!onEp7()) return;
   addStyles();
   patchPersistentRoutes();

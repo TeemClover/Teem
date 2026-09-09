@@ -7,6 +7,14 @@ body {
 
 body { background: #f8f3e7; }
 
+/* A useful kitchen is the first invitation; the existing real video stays. */
+.kitchen-invite{max-width:1280px;margin:0 auto;padding:0 32px 90px;display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center}
+.kitchen-invite-photo{display:block;overflow:hidden;background:#e7e3d1}.kitchen-invite-photo img{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain}
+.kitchen-invite h2{font-family:"Mitr","Noto Sans Thai",sans-serif;font-size:clamp(30px,3.8vw,48px);line-height:1.45;font-weight:500;margin:10px 0 20px;letter-spacing:-.035em}
+.kitchen-invite h2 span{color:var(--forest)}.kitchen-invite>div>p:not(.eyebrow){font-size:16px;line-height:1.9;color:#637266;max-width:46ch}
+.kitchen-invite nav{display:block;margin:22px 0}.kitchen-invite nav a{display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:64px;border-bottom:1px solid #c5ccba;opacity:1;font-size:14px}.kitchen-invite nav small{font-size:11px;color:#6d7865;margin-left:8px}.kitchen-invite nav b{font-size:25px;font-weight:400}.kitchen-invite>.text-link,.kitchen-invite>div>.text-link{font-size:13px}
+@media(max-width:760px){.kitchen-invite{padding:0 24px 48px;grid-template-columns:1fr;gap:27px}.kitchen-invite h2{font-size:31px;margin:10px 0 16px}.kitchen-invite .eyebrow{font-size:10px;margin-bottom:8px}.kitchen-invite>div>p:not(.eyebrow){font-size:15px}.kitchen-invite nav a{font-size:13px}.kitchen-invite nav small{font-size:10px}.kitchen-invite nav{margin:17px 0 23px}}
+
 .site-header {
   background: rgba(248, 243, 231, 0.86);
   backdrop-filter: blur(18px);

@@ -1,40 +1,24 @@
 # Route Guard — /xircle/ghost/
 
-> Reviewed: 2026-08-26  
-> Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
-> Runtime: `index.html`  
-> Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
+Updated: **2026-09-10**. Status: compatibility entry; its former standalone experience is retired by owner decision.
 
-## Job
-อธิบาย pattern ข้ามเวลาและการกลับมาทบทวน
+## Current job and flow
 
-## Flow
-- **Entry:** หลังทำ routine/สมุด
-- **Exit:** กลับ Xircle / สมุดแมวขาว / cycle ต่อ
+Keep existing links working and take them to the single current Xircle experience at `/xircle/`. The shell runs no old story, progress navigation, product sequence or scene engine.
 
-## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
-Day 28 คือ review ไม่ใช่เส้นชัย
+- Entry: direct link, bookmark or historical navigation to this URL.
+- Exit: `/xircle/`, with bounded parameters resolved by `route-contract.js`.
+- Runtime: small `index.html` shell → `/xircle/legacy-entry.js` → current `/xircle/`.
+- A visible ordinary link remains available if JavaScript cannot run.
 
-## Locks — ห้ามทำหาย
-Day 28 ห้ามเป็นผลรับประกัน; naming สมุดแมวขาว
+## Compatibility
 
-## Dependencies / จุดเชื่อม
-state.js, v5 CSS
+Preserve valid explicit or saved invitation context for an optional join/create link on the current page. Do not open TeamBook automatically, change old localStorage, synthesize completion, import `_shared/state.js`, or require the old journey to unlock anything.
 
-## กฎร่วม
-- อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า
-- Thai-first; ใช้ศัพท์อังกฤษเมื่อเป็นชื่อระบบ/ผลิตภัณฑ์ที่จำเป็น
-- ฝั่ง White Cat ใช้คำหลัก **สมุดแมวขาว**; ชื่อระบบเมื่อจำเป็นคือ **White Cat Care**
-- `/xty/` คงเป็น technical route ได้ แต่ห้ามดึง XTY/ตี้กลับมาเป็น narrative หลัก
-- ใช้คำ **ข้อมูลเชิงลึก**; ห้ามใช้คำเก่าที่ owner เลิกใช้
-- Health data = sensitive data: consent, เห็นเท่าที่จำเป็น, ไม่วินิจฉัย
-- ตรวจ ratio จาก artwork จริง; อย่าครอป baked UI/text สำคัญ
-- Controls ต้องใช้ได้ทันที; feedback/copy ต้องไม่ทำให้ CTA กระโดดตำแหน่ง
-- Product/claim/revenue/formula ที่ไม่ยืนยัน: ไป Source/Unresolved และ **ห้ามเดา**
+## Verification
 
-## Before merge
-- เดิน **entry → interaction → exit** จริงบน mobile และ desktop
-- ตรวจ CTA/feedback ไม่กระโดด, links ไม่ตัน, naming ไม่ย้อนคำเก่า
-- ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
-- ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
-- ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+Check direct entry, parameter handling, invitation preservation, latest-page navigation and the no-JavaScript fallback. The canonical route list and current product/content boundaries are in [XIRCLE_ROUTE_SOURCE.md](/xircle/XIRCLE_ROUTE_SOURCE.md) and [ROUTE_INDEX.md](/xircle/ROUTE_INDEX.md).
+
+## Historical reference
+
+The prior HTML and guard were archived unchanged at `archive/xircle-retired-20260910/xircle/ghost/` under the visualization archive documented in the global source. They preserve the former page and its content boundaries, not a second active route specification.

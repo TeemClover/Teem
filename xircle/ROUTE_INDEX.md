@@ -1,66 +1,58 @@
-# Xircle Route Guard Index — myClover
+# Xircle Route Index — current consolidated experience
 
-> สารบัญ route guard สำหรับทุก URL ใต้ `/xircle/` ที่มี `index.html`
+Reviewed: **2026-09-10**. Owner decision: **V3 only**. Source: `6fab7897` (`feat/xircle-experience-v3`), merged as `e7b533a7` into remote main (`1984724c`) with identical V3 runtime files. The prior V2 selection based on stale local refs is superseded.
 
-Reviewed: **2026-08-26**  
-Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
-Route guards: **58 routes**
+Read the local `ROUTE.md` before changing a route and [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md) for connections. Current owner decisions override historical guards.
 
-## วิธีใช้
+## One experience
 
-1. ก่อนแก้ route ไหน อ่าน `ROUTE.md` ใน folder นั้น
-2. ถ้าแก้ flow ข้ามหลายหน้า อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` + guard ของ entry/exit ทุกหน้า
-3. ถ้า runtime เปลี่ยน Job / State / Asset / Naming / Exit ให้ update guard ใน PR เดียวกัน
-4. Owner decision ใหม่ชนะ guard เก่า แต่ต้องแก้ guard ให้ตามในงานเดียวกัน
-5. Route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+`/xircle/`: six actions build a cinematic fictional day, reveal a seven-night pattern, add context with Teem + Ako, and invite the visitor to try it in real life. Runtime: `experience-v3.js` / `experience-v3.css`. Main exit: `/meet/?intent=health&from=xircle&open=booking`; optional knowledge after the payoff. No registration/download sequence, V1/V2 runtime or separate worker.
 
-## Global invariant
+`/Xircle` and `/Xircle/` are case aliases. They must resolve to the same lowercase source, never another copy.
 
-**Xircle website route ไม่ใช่ Xircle App เวอร์ชันเว็บ**
+## Compatibility entries
 
-- Xircle App: `Measure → Record → Score → Trend → Feedback`
-- myClover Xircle Route: `Experience → Understand → Interpret → Choose → Repeat → Care → Together`
+These URLs preserve old links while loading no old experience engine. Each small shell uses `legacy-entry.js` and `route-contract.js`.
 
-Main experience:
+| Existing URL | Current destination |
+|---|---|
+| `/xircle/start/` | `/xircle/` |
+| `/xircle/ghost/` | `/xircle/` |
+| `/xircle/care/` | `/xircle/` |
+| `/xircle/opportunity/` | `/xircle/` |
+| `/xircle/routinex/` | `/xircle/` |
+| `/xircle/explore/` | `/xircle/#start` |
+| `/xircle/circle/` | `/xircle/#start` |
+| `/xircle/care/party/` | `/xircle/#start` |
 
-**Xircle → Human Care → X-VISOR → RoutineX → สมุดแมวขาว / White Cat Care → Review Xircle**
+Bounded Compass context and valid explicit/saved invitations survive according to `route-contract.js`; the destination displays an explicit join/create link where appropriate. Do not restore old progress gates or navigate automatically to TeamBook.
 
-## Experience / activation
-- `/xircle/` — One Day with Xircle
-- `/xircle/start/` — Choose One Thing
-- `/xircle/care/` — Human Care
-- `/xircle/opportunity/` — X-VISOR Simulator
-- `/xircle/routinex/` — RoutineX Interactive Route
-- `/xircle/circle/` — สมุดแมวขาว 28 วัน
-- `/xircle/care/party/` — White Cat Care Handoff
-- `/xircle/ghost/` — Pattern / Review
+## Independent reference routes
 
-## Hub / knowledge
-- `/xircle/explore/` — ห้องแมวขาว / Safe Room Hub
-- `/xircle/learn/` — ห้องความรู้
-- `/xircle/learn/topic/` — Knowledge Topic
-- `/xircle/products/` — RoutineX Product Window
-- `/xircle/hardware/` — Band & Scale Bridge
-- `/xircle/doc/` — ข้อมูลเชิงลึก Hub
+These retain their existing content, artwork and article interactions; `reference.js` supplies navigation and artwork loading without progress checks or storage writes.
 
-## Deep groups
-- Academy: `/xircle/doc/academy/`, `/xircle/doc/academy/certification/`
-- Xircle App: `/xircle/doc/app/` + body/community/eat/habit-score/hardware/maxage/move/sleep
-- Commerce: `/xircle/doc/commerce/` + glossary/revenue/roles
-- Ecosystem: `/xircle/doc/ecosystem/`
-- Habix: `/xircle/doc/habix/` + astamega/fives/flavor/gus/protein-hmb/vita-matrix
-- RoutineX: `/xircle/doc/routinex/` + abcd/day-28
-- Source: `/xircle/doc/source/` + changelog/glossary/sources/unresolved
-- XOS: `/xircle/doc/xos/` + customers/learning/missions/team/wealth
-- X-VISOR: `/xircle/doc/xvisor/` + care/claims/coaching/onboarding/privacy/role
+- `/xircle/learn/`: searchable short knowledge library.
+- `/xircle/learn/topic/`: one short article, with its existing topic fallback and source links.
+- `/xircle/hardware/`: device reference and linked explanations.
+- `/xircle/products/`: product reference and linked sources.
+- `/xircle/doc/`: deep-reference index.
 
-## Definition of Done
-- Job เดิมยังอยู่ หรือเปลี่ยนโดยตั้งใจและ guard ถูก update
-- Entry/Exit ไม่มี dead-end ที่ไม่ได้ตั้งใจ
-- mobile/desktop ผ่าน visual QA
-- CTA ไม่กระโดดเพราะ feedback/copy
-- asset ratio/crop ตัดสินจาก artwork จริง
-- naming ใหม่ไม่ย้อนคำเก่า
-- health/product/business claims มี source และ boundary
-- ไม่สร้าง App runtime ซ้ำใน website experience
-- route ใหม่มี local `ROUTE.md` และถูกเพิ่มใน index
+References are optional. Reading or buying anything is not required to reach Meet.
+
+## Deep-reference groups retained
+
+- Academy: `/xircle/doc/academy/`, `/xircle/doc/academy/certification/`.
+- Xircle App: `/xircle/doc/app/` plus body/community/eat/habit-score/hardware/maxage/move/sleep.
+- Commerce: `/xircle/doc/commerce/` plus glossary/revenue/roles.
+- Ecosystem: `/xircle/doc/ecosystem/`.
+- Habix: `/xircle/doc/habix/` plus astamega/fives/flavor/gus/protein-hmb/vita-matrix.
+- RoutineX: `/xircle/doc/routinex/` plus abcd/day-28.
+- Source: `/xircle/doc/source/` plus changelog/glossary/sources/unresolved.
+- XOS: `/xircle/doc/xos/` plus customers/learning/missions/team/wealth.
+- X-VISOR: `/xircle/doc/xvisor/` plus care/claims/coaching/onboarding/privacy/role.
+
+These are documents, not alternate versions of the main journey. Their historical route labels do not impose a new completion gate.
+
+## Verification boundary
+
+Old links and casing reach the current experience once; invitations remain reachable; direct reference links stay readable; Meet receives only intended context. Preserve every existing localStorage key and exact brand assets. Update the affected guard whenever entry, exit or runtime changes.

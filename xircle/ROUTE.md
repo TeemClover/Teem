@@ -1,40 +1,39 @@
 # Route Guard — /xircle/
 
-> Reviewed: 2026-08-26  
-> Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
-> Runtime: `index.html`  
-> Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
+Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/xircle-experience-v3`), merged as `e7b533a7` into remote main (`1984724c`), with the same V3 runtime. The earlier V2 selection came from stale local remote refs and is superseded.
 
 ## Job
-ทำให้คนเข้าใจคุณค่าของ Xircle ผ่าน 1 วัน ก่อนพาไป Human Care
 
-## Flow
-- **Entry:** direct /xircle/ หรือกลับมาทบทวน
-- **Exit:** /xircle/care/ เป็นทางหลัก
+ให้ลองประกอบวันตัวอย่างสั้น ๆ เห็นว่าข้อมูลกับบริบทช่วยกันอย่างไร แล้วเลือกนัดดูเรื่องจริงกับทีม + เอโกะ
 
-## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
-ความจำไม่ครบ → Eat/Move/Sleep ทำให้เมื่อวานมองเห็น → Habit Score → เลือก 1 อย่าง
+## Current flow
 
-## Locks — ห้ามทำหาย
-Habit Score = Eat + Move + Sleep เท่านั้น; Body Composition ไม่ใช่วงที่ 4; scene flow ต้องไป Human Care; Habit Score label อยู่นอกศูนย์วง
+**เลือกคืนตัวอย่าง → ถ่ายมื้อตัวอย่าง → เลือกการขยับ → ดูหลายวัน → เติมบริบทและเห็นข้อสังเกต → “แล้วของคุณล่ะ?” → เลือกนัดลองจริง**
 
-## Dependencies / จุดเชื่อม
-state.js, story-v6.js, v5/story CSS, assets/v5
+- Entry: `/xircle/`, Compass entry, or a compatibility URL in [ROUTE_INDEX.md](ROUTE_INDEX.md).
+- Main exit: `/meet/?intent=health&from=xircle&open=booking`; only a bounded subject deliberately selected before entry may accompany it.
+- Optional exit after the payoff: `/xircle/learn/`. No registration or app-download CTA in this experience.
+- `#appointment` and compatibility `#start` open the appointment invitation without synthesizing a completed example.
+- `/Xircle` is a case alias of `/xircle/`, not a separate source tree or experience.
 
-## กฎร่วม
-- อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า
-- Thai-first; ใช้ศัพท์อังกฤษเมื่อเป็นชื่อระบบ/ผลิตภัณฑ์ที่จำเป็น
-- ฝั่ง White Cat ใช้คำหลัก **สมุดแมวขาว**; ชื่อระบบเมื่อจำเป็นคือ **White Cat Care**
-- `/xty/` คงเป็น technical route ได้ แต่ห้ามดึง XTY/ตี้กลับมาเป็น narrative หลัก
-- ใช้คำ **ข้อมูลเชิงลึก**; ห้ามใช้คำเก่าที่ owner เลิกใช้
-- Health data = sensitive data: consent, เห็นเท่าที่จำเป็น, ไม่วินิจฉัย
-- ตรวจ ratio จาก artwork จริง; อย่าครอป baked UI/text สำคัญ
-- Controls ต้องใช้ได้ทันที; feedback/copy ต้องไม่ทำให้ CTA กระโดดตำแหน่ง
-- Product/claim/revenue/formula ที่ไม่ยืนยัน: ไป Source/Unresolved และ **ห้ามเดา**
+## Runtime
 
-## Before merge
-- เดิน **entry → interaction → exit** จริงบน mobile และ desktop
-- ตรวจ CTA/feedback ไม่กระโดด, links ไม่ตัน, naming ไม่ย้อนคำเก่า
-- ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
-- ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
-- ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+- `index.html`, `experience-v3.js`, `experience-v3.css`, `_shared/typography.css`, V3 scene plates and selected existing V5 / Meet imagery.
+- V1/V2 experience engines, including the mistaken neutral `experience.js` / `experience.css`, are removed from the active source.
+- `route-contract.js` handles bounded route parameters and read-only legacy invitation compatibility; `entry.css` styles the small Compass continuation.
+- No retired `_shared/state.js`, `story-v6.js`, `v5.js`, Compass overlay, or old worker is needed.
+- Original myClover logo and `/favicon.ico` remain exact assets.
+
+## State and content boundaries
+
+- The day, chart, sleep, food, movement and context choices are clearly marked prepared examples. They are not personal measurements or a health score.
+- Do not send fictional choices into Meet as the visitor's health data.
+- Existing progress, invitations and Front Door checkpoints remain intact. No completion flags are required or rewritten.
+- V3 choices stay in memory; `#appointment` preserves the invitation when returning from Meet. No new storage key is added. Retired V1/V2 progress/session keys, including `xircle.demo.v2.resume`, stay untouched and are not used to restore V3.
+- Valid invitation links remain optional explicit actions. No automatic external navigation or health sharing.
+
+## Verification
+
+Check the full demo, editing/back/restart, Compass subject → Meet, refresh/back continuation, blocked storage, saved invitations and old URLs on mobile and desktop. Useful articles must open directly without replaying the demo.
+
+The current cross-route source is [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md); historical route guards are archived there by reference.

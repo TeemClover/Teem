@@ -101,7 +101,7 @@ async function authenticate(request, room) {
 export async function onRequest(context) {
   const { request, env } = context;
   const v2Path = new URL(request.url).pathname.replace(/\/$/, '');
-  if (v2Path === '/api/core7/analytics/frontdoor' || v2Path === '/api/core7/frontdoor-stats') {
+  if (v2Path === '/api/core7/analytics/frontdoor' || v2Path === '/api/core7/analytics/frontdoor-outcome' || v2Path === '/api/core7/frontdoor-stats') {
     return handleFrontdoorRequest(context);
   }
   if (!env.DB) return json({ ok: false, error: 'CORE7_DB_NOT_CONFIGURED' }, 503);

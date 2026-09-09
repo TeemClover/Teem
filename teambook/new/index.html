@@ -133,7 +133,9 @@ import { cardMarkup } from '/_shared/card-ui.js';
 import { petSpeciesFor } from '/_shared/card-picker.js';
 
 const $ = id => document.getElementById(id);
-if (!hasProfile()) location.replace('/'); else {
+const compassQuery = new URLSearchParams(location.search);
+const compassEntry = compassQuery.get('entry') === 'compass' && !compassQuery.has('template');
+if (!hasProfile()) location.replace(compassEntry ? '/?open=1&entry=compass' : '/'); else {
   fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {});
   init();
 }
@@ -258,10 +260,10 @@ function init() {
     button.innerHTML = `<img src="${item.art}" alt=""><span><b>${item.labelTh}</b><small>${item.hintTh}</small></span>`;
     return { id: item.id, button };
   });
-  let verificationMode = 'confirm';
+  let verificationMode = compassEntry ? 'trust' : 'confirm';
   radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; syncReady(); });
 
-  let durationDays = 3;
+  let durationDays = compassEntry ? 7 : 3;
   const durationButtons = [3, 7, 14, 28].map(days => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
@@ -277,7 +279,7 @@ function init() {
     return activityMode === SHARED ? (picked.color || 'green') : 'green';
   }
 
-  let visibility = 'public';
+  let visibility = compassEntry ? 'private' : 'public';
   const visibilityButtons = [
     ['private', '🔒', 'คนที่มีรหัส', 'ส่งรหัสให้คนที่อยากชวน'],
     ['public', '☀️', 'ทุกคน', 'คนอื่นเปิดดูและเข้าร่วมได้'],
@@ -373,6 +375,25 @@ function init() {
   ];
   if (!levelOne) wizardSteps.push({ node: $('coverSection'), ready: () => !!coverType });
   else $('coverSection').hidden = true;
+
+  if (compassEntry) {
+    // A narrow entry preset: the visitor still chooses the activity and confirms.
+    document.querySelector('.wizard-heading .title').textContent = 'เริ่มสมุด 7 วันของคุณ';
+    document.querySelector('.wizard-note').textContent = 'เฉพาะคนมีรหัส · ลงชื่อเมื่อทำแล้วได้เอง · เริ่มคนเดียวได้';
+    wizardSteps.forEach(step => { step.node.hidden = true; });
+    $('coverSection').hidden = true;
+    $('activityStep').appendChild($('nameStep'));
+    $('nameStep').hidden = false;
+    $('nameStep').classList.remove('wizard-step');
+    $('nameStep').querySelector('.step-sticker').hidden = true;
+    const summary = document.createElement('p'); summary.className = 'wizard-note';
+    summary.textContent = 'สมุดนี้ใช้ 7 วัน ไม่เปิดในรายการสาธารณะ ชวนเพื่อนด้วยรหัสเมื่อพร้อม และลงชื่อเองหลังทำกิจกรรมจริง';
+    $('activityStep').appendChild(summary);
+    wizardSteps = [{ node: $('activityStep'), ready: () => picked.complete && $('pname').value.trim().length > 0 }];
+    $('go').textContent = 'ยืนยันเปิดสมุด 7 วัน';
+    const home = document.createElement('a'); home.href = '/'; home.className = 'back'; home.textContent = 'กลับไปสมุดที่มีอยู่';
+    document.querySelector('.wizard-actions').after(home);
+  }
 
   function showWizardStep(index, { focus = false } = {}) {
     wizardIndex = Math.max(0, Math.min(index, wizardSteps.length - 1));

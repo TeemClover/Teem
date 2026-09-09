@@ -49,6 +49,8 @@ function safePatch(input = {}) {
   }
   if (Number.isSafeInteger(input.activeMs) && input.activeMs >= 0 && input.activeMs <= 604800000) patch.activeMs = input.activeMs;
   if (typeof input.experienceVersion === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(input.experienceVersion)) patch.experienceVersion = input.experienceVersion;
+  // Optional local visual companion. Not part of the analytics envelope.
+  if (typeof input.checkpointRef === 'string' && /^cp-[a-zA-Z0-9_-]{1,64}$/.test(input.checkpointRef)) patch.checkpointRef = input.checkpointRef;
   return patch;
 }
 

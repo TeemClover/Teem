@@ -1,3 +1,17 @@
 # Cloudflare Pages Functions — เป็นโค้ดฝั่งเซิร์ฟเวอร์ของ Cloudflare เท่านั้น
 # ถ้าปล่อยขึ้น Vercel มันจะถูกเสิร์ฟเป็นไฟล์ธรรมดาให้คนเปิดอ่านซอร์สได้
 functions/
+
+# X-VISOR developer fixtures and review reports are not public site assets.
+tests/xvisor/
+docs/xvisor/
+
+# Front Door release ships the experience, not local fixture servers or QA sources.
+tests/frontdoor/
+tests/teambook/compass-entry.e2e.mjs
+docs/frontdoor/
+tests/ako/
+docs/ako/
+core7/tests/
+frontdoor/*.test.mjs
+assets/front-door/*.test.mjs

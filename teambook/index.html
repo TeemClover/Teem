@@ -217,6 +217,11 @@ function inviteCodeFromUrl() {
   return /^\d{5}$/.test(value || '') ? value : '';
 }
 
+const compassEntryFlag = new URLSearchParams(location.search).get('entry') === 'compass';
+if (compassEntryFlag) document.documentElement.dataset.tbCompassEntry = '1';
+function compassEntry() { return compassEntryFlag; }
+const creationHref = () => compassEntry() ? '/new/?entry=compass' : '/new/';
+
 function openIntentFromUrl() {
   return new URLSearchParams(location.search).get('open') === '1';
 }
@@ -240,6 +245,7 @@ function configureFirstWelcome() {
 }
 
 function showFirstWelcome() {
+  if (compassEntry() && !inviteCodeFromUrl()) return Promise.resolve();
   try {
     if (localStorage.getItem(FIRST_WELCOME_KEY)) return Promise.resolve();
   } catch {}
@@ -343,7 +349,7 @@ function renderGate() {
       try { await saveCloudProgress(profile); } catch {}
     }
     if (!nextCode) {
-      location.href = openIntent ? '/new/' : '/';
+      location.href = openIntent ? creationHref() : '/';
       return;
     }
     go.textContent = 'กำลังเข้าร่วมสมุด…';
@@ -513,7 +519,7 @@ async function boot() {
   }
 
   if (hadLocalProfile && openIntent) {
-    location.replace('/new/');
+    location.replace(creationHref());
     return;
   }
 
@@ -532,7 +538,7 @@ async function boot() {
       return;
     }
     if (openIntent) {
-      location.replace('/new/');
+      location.replace(creationHref());
       return;
     }
     $('gate').hidden = true;

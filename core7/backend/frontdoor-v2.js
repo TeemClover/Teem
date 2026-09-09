@@ -3,6 +3,7 @@ import {
   VISITOR_CLASSES, VIEWPORTS, INTENTS, DOORS, validateEvent, dedupeKey,
 } from '../../assets/front-door/contract.js';
 import { onRequest as protectStat } from '../../functions/stat/_middleware.js';
+import { persistOutcome, readOutcomes } from './frontdoor-outcomes.js';
 
 const DAY = 86400000;
 const BKK = 7 * 3600000;
@@ -32,6 +33,7 @@ export function ensureFrontdoorSchema(db) {
       await db.prepare(`CREATE INDEX IF NOT EXISTS fd_v2_time ON ${TABLE}(env, occurred_at, event_name)`).run();
       await db.prepare(`CREATE INDEX IF NOT EXISTS fd_v2_journey ON ${TABLE}(env, install_id, journey_id, event_name, occurred_at)`).run();
       await db.prepare(`CREATE INDEX IF NOT EXISTS fd_v2_stage ON ${TABLE}(env, event_name, occurred_at)`).run();
+      await db.prepare(`CREATE INDEX IF NOT EXISTS fd_v2_handoff ON ${TABLE}(env, handoff_id, event_name, occurred_at)`).run();
     })().catch(error => { schemas.delete(db); throw error; });
     schemas.set(db, pending);
   }
@@ -198,9 +200,13 @@ export async function readFrontdoorStats(db, params = {}) {
       FROM ${TABLE} e WHERE ${where} GROUP BY value ORDER BY installations DESC,value`).bind(...bind).all();
     breakdowns[name] = (result.results || []).map(row => ({ value: row.value, ...numbers(row) }));
   }
+  const seedRows=await db.prepare(`SELECT json_extract(e.properties_json,'$.seedColor') value, ${countFields()}
+    FROM ${TABLE} e WHERE ${where} AND json_extract(e.properties_json,'$.seedColor') IS NOT NULL GROUP BY value`).bind(...bind).all();
+  breakdowns.seedColor=(seedRows.results||[]).map(row=>({value:row.value,...numbers(row)}));
   return { ok: true, status: Object.values(metrics).some(m => m.events) ? 'ready' : 'no-data',
     analyticsVersion: ANALYTICS_VERSION, range: { from, to }, timezone: 'Asia/Bangkok', env: environment,
     metrics, rates, timings, transitions, breakdowns,
+    outcomes: await readOutcomes(db,where,bind,start,end),
     rows: Object.entries(metrics).map(([eventName, values]) => ({ eventName, ...values })),
     handoffMeans: 'departure-not-confirmed-arrival', generatedAt: Date.now() };
 }
@@ -209,6 +215,7 @@ export async function handleFrontdoorRequest(context) {
   const { request, env = {} } = context;
   const pathname = new URL(request.url).pathname.replace(/\/$/, '');
   const isStats = pathname === '/api/core7/frontdoor-stats';
+  const isOutcome = pathname === '/api/core7/analytics/frontdoor-outcome';
   const destination = deploymentEnvironment(request, env);
   const serve = async () => {
     if (!env.DB || !destination) return json({ ok: false, status: 'unwired', error: !env.DB ? 'FRONTDOOR_DB_NOT_CONFIGURED' : 'FRONTDOOR_ENV_NOT_CONFIGURED' }, 503);
@@ -227,7 +234,13 @@ export async function handleFrontdoorRequest(context) {
         return json(await readFrontdoorStats(env.DB, { ...params, env: params.env || destination }));
       }
       if (request.method !== 'POST') return json({ ok: false, error: 'METHOD_NOT_ALLOWED' }, 405, { allow: 'POST' });
-      const parsed = validateEvent(await limitedBody(request));
+      const body = await limitedBody(request);
+      if(isOutcome){
+        if(body?.env!==destination)return json({ok:false,error:'ENV_MISMATCH'},403,cors);
+        await ensureFrontdoorSchema(env.DB);
+        return json(await persistOutcome(env.DB,body),202,cors);
+      }
+      const parsed = validateEvent(body);
       if (!parsed.ok) return json(parsed, parsed.error === 'PAYLOAD_TOO_LARGE' ? 413 : 400, cors);
       if (parsed.event.env !== destination) return json({ ok: false, error: 'ENV_MISMATCH' }, 403, cors);
       return json(await persistFrontdoorEvent(env.DB, parsed.event), 202, cors);

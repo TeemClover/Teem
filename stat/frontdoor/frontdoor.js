@@ -59,6 +59,8 @@ function duration(ms) {
 }
 
 function render(data) {
+  const outcomeRows=data.outcomes?.rows;
+  $('outcome-rows').innerHTML=Array.isArray(outcomeRows)?outcomeRows.map(row=>`<tr><td>${escape(values[row.door]||row.door)}</td><td>${format(row.opened)}</td><td>${format(row.arrived)}</td><td>${format(row.requested)}</td><td>${row.opened?`${number.format(Math.round(row.requested/row.opened*1000)/10)}%`:'—'}</td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีผลลัพธ์ที่เชื่อมกับการเปิดทาง</td></tr>':'<tr><td colspan="5">PIPELINE UNWIRED · ยังไม่มีข้อมูลผลลัพธ์จาก API รุ่นนี้</td></tr>';
   $('primary-kpis').innerHTML = PRIMARY_EVENTS.map(name => kpi(data, name)).join('');
   $('continuation-kpis').innerHTML = ['FRONTDOOR_FREE_ROAM', 'RESUME', 'REBUILD'].map(name => kpi(data, name)).join('');
   $('branch-kpis').innerHTML = ['ANOMALY_START', 'LEGACY_WARNING', 'DUNGEON_HANDOFF'].map(name => kpi(data, name)).join('');
@@ -74,7 +76,7 @@ function render(data) {
   }).join('') || '<p class="empty-row">ยังไม่มี journey สำหรับคำนวณสัดส่วน</p>';
   $('transitions').innerHTML = data.transitions.map(row => `<tr><td>${escape(values[row.from] || labels[row.from] || row.from)} → ${escape(values[row.to] || labels[row.to] || row.to)}</td><td>${format(row.installations)}</td><td>${format(row.journeys)}</td><td>${format(row.events)}</td></tr>`).join('')
     || '<tr><td colspan="4" class="empty-row">ยังไม่มีข้อมูลการเชื่อมต่อ</td></tr>';
-  $('breakdowns').innerHTML = Object.entries(dimensionLabels).map(([key, title]) => {
+  $('breakdowns').innerHTML = Object.entries({...dimensionLabels,seedColor:'RGBS · รอยที่เลือก'}).map(([key, title]) => {
     const rows = data.breakdowns[key] || [];
     return `<article class="breakdown"><h3>${title}</h3><div class="table-scroll" tabindex="0" role="region" aria-label="${title}"><table><thead><tr><th scope="col">กลุ่ม</th><th scope="col">Installations</th><th scope="col">Events</th></tr></thead><tbody>`
       + (rows.map(row => { const value = row.value ?? row.key ?? row.label ?? 'unknown'; return `<tr><td>${escape(values[value] || value || 'ไม่ระบุ')}</td><td>${format(row.installations)}</td><td>${format(row.events)}</td></tr>`; }).join('') || '<tr><td colspan="3" class="empty-row">ยังไม่มีข้อมูล</td></tr>')

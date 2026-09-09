@@ -2,32 +2,23 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<!-- assets/track.js อ่านสองอย่างนี้แล้วยิงเอง ไม่ต้องเขียน JS เพิ่ม -->
-<meta name="mc-act-view" content="home-open">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>myClover — ทางลัด AI ในไม่ถึง 1 ชั่วโมง</title>
-<meta name="description" content="คลิป 44 วินาที เรื่องจริง 2 นาที เกม 1 นาที และบทเรียน AI 6 บท จบคอร์สในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที — ฟรี ไม่ต้องสมัคร">
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#12241b">
+<meta name="robots" content="index,follow">
 <link rel="canonical" href="https://www.myclover.com/">
-<!-- คู่ภาษา: หน้านี้คือฉบับไทยและเป็นค่าเริ่มต้น /en/ เป็นทางเข้าฝั่งอังกฤษ -->
-<link rel="alternate" hreflang="th" href="https://www.myclover.com/">
-<link rel="alternate" hreflang="en" href="https://www.myclover.com/en/">
-<link rel="alternate" hreflang="x-default" href="https://www.myclover.com/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="myClover">
 <meta property="og:locale" content="th_TH">
-<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="myClover">
+<meta property="og:title" content="myClover — โชคดีในแบบของคุณ">
+<meta property="og:description" content="ลองหยิบเข็มทิศ สำรวจสิ่งที่ตรงกับคุณ แล้วเริ่มทำอะไรดี ๆ ไปด้วยกัน">
 <meta property="og:url" content="https://www.myclover.com/">
-<meta property="og:title" content="ทางลัด AI ในไม่ถึง 1 ชั่วโมง · myClover">
-<meta property="og:description" content="🎬 44 วิ → 📖 ตอนละ 2 นาที → 🎮 1 นาที → 🧠 6 บทเรียน จบแล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที">
 <meta property="og:image" content="https://www.myclover.com/img/og-home.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ทางลัด AI ในไม่ถึง 1 ชั่วโมง · myClover">
-<meta name="twitter:description" content="คลิป 44 วินาที เรื่องจริงตอนละ 2 นาที เกม และบทเรียน 6 บท จบแล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที">
+<meta name="twitter:title" content="myClover — โชคดีในแบบของคุณ">
+<meta name="twitter:description" content="ลองหยิบเข็มทิศ สำรวจสิ่งที่ตรงกับคุณ แล้วเริ่มทำอะไรดี ๆ ไปด้วยกัน">
 <meta name="twitter:image" content="https://www.myclover.com/img/og-home.jpg">
-<meta name="theme-color" content="#071d12">
+<title>myClover — โชคดีในแบบของคุณ</title>
+<meta name="description" content="ลองหยิบเข็มทิศ สำรวจสิ่งที่ตรงกับคุณ ทั้ง AI ครัวเอโกะ กิจวัตร และโอกาสใหม่ แล้วเริ่มทำอะไรดี ๆ ไปด้วยกัน">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -35,622 +26,71 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/readable.css">
-<!-- โหลดภาพแรกและวิดีโอพื้นหลังก่อน เพื่อให้หน้าเปิดติดเร็วที่สุด -->
-<link rel="preload" href="/img/home-opening-poster.jpg" as="image" fetchpriority="high">
-<link rel="preload" href="/media/home-opening-bg.mp4" as="video" type="video/mp4" fetchpriority="high">
-<style>
-:root{
-  --deep:#071d12;
-  --gold:#d1a64b;
-  --gold2:#f1d18a;
-  --cream:#fbf6ea;
-}
-*{box-sizing:border-box}
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:var(--deep);
-  color:#fff;
-  overscroll-behavior:none;
-  touch-action:manipulation;
-}
-body{
-  font-family:"Anuphan",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-button,a{font:inherit}
-a{color:inherit;text-decoration:none}
-button{border:0}
-.page{
-  position:relative;
-  height:100dvh;
-  min-height:100dvh;
-  overflow:hidden;
-  isolation:isolate;
-}
-.ambient{
-  position:absolute;
-  inset:-4%;
-  z-index:-3;
-  background:url("/img/home-opening-poster.jpg") center/cover no-repeat;
-  filter:blur(12px) saturate(.88);
-  transform:scale(1.06);
-}
-.shade{
-  position:absolute;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  background:
-    linear-gradient(90deg,rgba(2,12,7,.30) 0%,rgba(2,12,7,.06) 53%,transparent 76%),
-    linear-gradient(0deg,rgba(2,12,7,.20) 0%,transparent 42%);
-}
-.topbar{
-  position:absolute;
-  z-index:20;
-  top:0;
-  left:0;
-  right:0;
-  padding:max(14px,env(safe-area-inset-top)) clamp(18px,4vw,52px) 0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-weight:800;
-  font-size:18px;
-  letter-spacing:-.01em;
-  text-shadow:0 2px 16px rgba(0,0,0,.55);
-}
-.brand img{
-  width:40px;
-  height:40px;
-  object-fit:contain;
-  border-radius:0;
-  box-shadow:none;
-}
-.brand em{font-style:normal;color:#9ee1b4}
-.lang{
-  display:flex;
-  padding:4px;
-  border:1px solid rgba(255,255,255,.20);
-  border-radius:999px;
-  background:rgba(7,29,18,.34);
-}
-.lang button{
-  min-width:45px;
-  padding:8px 12px;
-  border-radius:999px;
-  background:transparent;
-  color:rgba(255,255,255,.72);
-  font-weight:800;
-  cursor:pointer;
-}
-.lang button.active{background:var(--cream);color:var(--deep)}
-.layout{
-  position:relative;
-  width:100%;
-  height:100%;
-}
-.stage{
-  position:absolute;
-  inset:0;
-  z-index:1;
-}
-.stage::before,.stage-label{display:none}
-.stage video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  max-width:none;
-  max-height:none;
-  object-fit:cover;
-  border-radius:0;
-  background:#000;
-  box-shadow:none;
-}
-.copy{
-  position:absolute;
-  z-index:10;
-  left:clamp(24px,6vw,86px);
-  bottom:clamp(28px,7vh,76px);
-  width:min(650px,calc(100% - 48px));
-  padding:clamp(20px,2.5vw,28px);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:24px;
-  background:linear-gradient(
-    135deg,
-    rgba(4,20,12,.30),
-    rgba(4,20,12,.12)
-  );
-  backdrop-filter:blur(2.5px);
-  -webkit-backdrop-filter:blur(2.5px);
-  box-shadow:0 18px 48px rgba(0,0,0,.16);
-}
-.eyebrow{
-  display:inline-flex;
-  align-items:center;
-  padding:7px 12px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(4,20,12,.18);
-  color:var(--gold2);
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:13px;
-  font-weight:800;
-  letter-spacing:.01em;
-  text-shadow:0 2px 12px rgba(0,0,0,.55);
-}
-h1{
-  width:max-content;
-  max-width:100%;
-  margin:17px 0 13px;
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:clamp(38px,4.7vw,66px);
-  line-height:1.02;
-  letter-spacing:-.035em;
-  text-shadow:0 3px 22px rgba(0,0,0,.62);
-}
-.route{
-  display:grid;
-  grid-template-columns:auto 18px auto 18px auto 18px auto;
-  align-items:center;
-  justify-content:start;
-  gap:5px;
-  margin:0;
-}
-.route span{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:32px;
-  padding:5px 9px;
-  border:1px solid rgba(255,255,255,.13);
-  border-radius:999px;
-  background:rgba(4,20,12,.20);
-  color:#fff;
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:12.5px;
-  font-weight:750;
-  white-space:nowrap;
-  text-shadow:0 2px 12px rgba(0,0,0,.55);
-}
-.lead{
-  max-width:45ch;
-  margin:14px 0 0;
-  color:#fff;
-  font-size:clamp(16px,1.35vw,19px);
-  font-weight:600;
-  line-height:1.65;
-  text-shadow:0 2px 18px rgba(0,0,0,.72);
-}
-.actions{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-  margin-top:22px;
-}
-.btn{
-  min-width:0;
-  min-height:82px;
-  padding:13px 16px;
-  border-radius:16px;
-  display:grid;
-  grid-template-columns:36px minmax(0,1fr);
-  align-items:center;
-  gap:10px;
-  text-align:left;
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  cursor:pointer;
-  transition:transform .18s,box-shadow .18s,border-color .18s,background .18s;
-}
-.btn:hover{transform:translateY(-2px)}
-.btn-icon{
-  display:grid;
-  place-items:center;
-  width:36px;
-  height:36px;
-  font-size:24px;
-  line-height:1;
-}
-.btn-copy{
-  min-width:0;
-  min-height:48px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-.btn-copy strong,
-.btn-copy small{
-  display:block;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.btn-copy strong{
-  font-size:15.5px;
-  font-weight:850;
-  line-height:1.35;
-}
-.btn-copy small{
-  margin-top:5px;
-  font-size:12.5px;
-  font-weight:700;
-  line-height:1.35;
-}
-.btn-primary{
-  border:1px solid rgba(255,244,205,.78);
-  background:linear-gradient(135deg,#ffe7ae,var(--gold));
-  color:var(--deep);
-  box-shadow:0 18px 42px -20px rgba(209,166,75,.92);
-}
-.btn-primary .btn-copy small{color:rgba(7,29,18,.68)}
-.btn-secondary{
-  border:1px solid rgba(255,255,255,.23);
-  background:rgba(4,20,12,.22);
-  color:#fff;
-}
-.btn-secondary .btn-copy small{color:rgba(255,255,255,.68)}
-.hint{
-  margin:13px 0 0;
-  color:rgba(255,255,255,.82);
-  font-size:13px;
-  font-weight:650;
-  text-shadow:0 2px 12px rgba(0,0,0,.72);
-}
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:50;
-  display:none;
-  place-items:center;
-  padding:18px;
-  background:rgba(2,10,6,.90);
-  backdrop-filter:blur(8px);
-}
-.modal.open{display:grid}
-.dialog{
-  position:relative;
-  height:min(92svh,980px);
-  max-width:100%;
-}
-.dialog video{
-  height:100%;
-  max-width:100%;
-  border-radius:22px;
-  background:#000;
-  box-shadow:0 40px 100px rgba(0,0,0,.5);
-}
-.close{
-  position:absolute;
-  z-index:2;
-  top:10px;
-  right:10px;
-  width:44px;
-  height:44px;
-  border:1px solid rgba(255,255,255,.25);
-  border-radius:50%;
-  background:rgba(0,0,0,.64);
-  color:#fff;
-  font-size:21px;
-  cursor:pointer;
-}
-@media(max-width:760px){
-  .ambient{display:none}
-  .shade{
-    background:
-      linear-gradient(0deg,rgba(2,12,7,.46) 0%,rgba(2,12,7,.10) 49%,transparent 73%);
-  }
-  .copy{
-    left:16px;
-    right:16px;
-    bottom:max(16px,env(safe-area-inset-bottom));
-    width:auto;
-    padding:18px 16px;
-    border-radius:20px;
-    background:linear-gradient(
-      180deg,
-      rgba(4,20,12,.16),
-      rgba(4,20,12,.32)
-    );
-    backdrop-filter:blur(2.5px);
-    -webkit-backdrop-filter:blur(2.5px);
-    text-align:center;
-  }
-  .eyebrow{font-size:12.5px}
-  h1{
-    width:max-content;
-    max-width:100%;
-    margin:13px auto 11px;
-    font-size:clamp(32px,8.8vw,42px);
-    line-height:1.04;
-  }
-  .route{
-    grid-template-columns:auto 10px auto 10px auto 10px auto;
-    justify-content:center;
-    gap:3px;
-    width:100%;
-  }
-  .route span{
-    min-height:30px;
-    padding:4px 7px;
-    font-size:11px;
-  }
-  .route-arrow{
-    min-width:10px;
-    font-size:12px;
-  }
-  .lead{
-    max-width:34ch;
-    margin:12px auto 0;
-    font-size:15px;
-    line-height:1.58;
-  }
-  .actions{
-    grid-template-columns:1fr;
-    gap:9px;
-    margin-top:17px;
-  }
-  .btn{
-    width:100%;
-    min-height:78px;
-    padding:12px 16px;
-  }
-  .hint{font-size:12.5px}
-}
-@media(max-width:420px){
-  .topbar{padding-left:14px;padding-right:14px}
-  .brand span{display:none}
-  .brand img{width:38px;height:38px}
-  .copy{left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));padding:16px 13px}
-  h1{font-size:36px}
-  .route span{font-size:11.5px}
-  .lead{font-size:14px}
-  .btn-copy strong{font-size:15px}
-  .btn-copy small{font-size:12px}
-  .hint{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-  .btn{transition:none}
-}
-
-h1 .title-line{display:block;white-space:nowrap}
-.route-arrow{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:18px;
-  color:var(--gold2);
-  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:15px;
-  font-weight:800;
-  text-shadow:0 2px 12px rgba(0,0,0,.6);
-}
-@media(max-width:760px){
-  .route-arrow{font-size:14px;min-width:14px}
-}
-@media(max-width:420px){
-  .route{
-    grid-template-columns:auto 8px auto 8px auto 8px auto;
-    gap:2px;
-  }
-  .route span{
-    min-height:28px;
-    padding:4px 6px;
-    font-size:10.5px;
-  }
-  .route-arrow{
-    min-width:8px;
-    font-size:11px;
-  }
-}
-
-.host-link{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;color:inherit;font:inherit;font-weight:inherit}
-</style>
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@graph":[
-    {"@type":"WebSite","@id":"https://www.myclover.com/#website","url":"https://www.myclover.com/","name":"myClover","alternateName":["บ้าน myClover","myclover.com"],"inLanguage":["th-TH","en"]},
-    {"@type":"Organization","@id":"https://www.myclover.com/#organization","name":"myClover","url":"https://www.myclover.com/","logo":{"@type":"ImageObject","url":"https://www.myclover.com/icons/icon-512.png"},"slogan":"ใครเจอเรา คนนั้นโชคดี"},
-    {"@type":"WebPage","@id":"https://www.myclover.com/#webpage","url":"https://www.myclover.com/","name":"myClover — เรียน AI ฟรีผ่านเรื่องเล่า บทเรียน และเกม","isPartOf":{"@id":"https://www.myclover.com/#website"},"about":{"@id":"https://www.myclover.com/#organization"},"inLanguage":"th-TH"}
-  ]
-}
-</script>
+<link rel="preload" href="/frontdoor/art/compass-on-page.webp" as="image" fetchpriority="high">
+<link rel="preload" href="/frontdoor/art/compass-body.webp" as="image" imagesrcset="/frontdoor/art/compass-body-mobile.webp 640w, /frontdoor/art/compass-body.webp 1000w" imagesizes="(max-width:700px) 62vw, 400px">
+<link rel="preload" href="/frontdoor/art/paper-clean.webp" as="image">
+<link rel="preload" href="/frontdoor/art/underpaper-valley.webp" as="image" media="(min-width:701px)">
+<link rel="preload" href="/frontdoor/art/underpaper-valley-mobile.webp" as="image" media="(max-width:700px)">
+<link rel="preload" href="/frontdoor/art/paper-rim.webp" as="image">
+<link rel="stylesheet" href="/frontdoor/styles.css">
+<link rel="stylesheet" href="/frontdoor/path.css">
+<link rel="stylesheet" href="/frontdoor/rewards.css">
+<link rel="stylesheet" href="/frontdoor/exhibit.css">
+<link rel="stylesheet" href="/frontdoor/keepsakes.css">
+<!-- LOCAL_TELEMETRY -->
+<script type="module" src="/frontdoor/app.js"></script>
 </head>
-<body>
-<main class="page">
-  <div class="ambient" aria-hidden="true"></div>
-  <div class="shade" aria-hidden="true"></div>
-
-  <nav class="topbar">
-    <a class="brand" href="/hall.html#quest" aria-label="myClover home">
-      <img src="/icons/icon-192.png" alt="">
-      <span>my<em>Clover</em></span>
-    </a>
-    <div class="lang" aria-label="Language">
-      <button type="button" class="active" data-lang="th">TH</button>
-      <button type="button" data-lang="en">EN</button>
+<body data-phase="opening">
+<main id="playfield" class="playfield">
+  <div class="world" aria-hidden="true">
+    <div class="surround"></div>
+    <div id="film-space" class="film-space">
+      <video id="opening-film" muted playsinline preload="none" poster="/frontdoor/art/compass-on-page.webp"></video>
+      <img id="paper-clean" class="paper-clean" src="/frontdoor/art/paper-clean.webp" alt="" width="810" height="1439">
+      <canvas id="underpaper" class="underpaper"></canvas>
+      <canvas id="paper-crossing" class="paper-crossing"></canvas>
+      <div id="reflection" class="reflection"></div>
     </div>
-  </nav>
-
-  <div class="layout">
-    <section class="copy" aria-labelledby="homeTitle">
-      <span class="eyebrow" data-i18n="eyebrow">🍀 ใครเจอเรา คนนั้นโชคดี</span>
-
-      <h1 id="homeTitle">
-        <span class="title-line" data-i18n="title1">เรียนครั้งเดียว</span>
-        <span class="title-line" data-i18n="title2">ใช้ AI ตัวไหนก็ได้</span>
-      </h1>
-
-      <p class="route" aria-label="ระยะเวลาของเส้นทาง">
-        <span data-i18n="routeVideo">🎬 44 วิ</span>
-        <i class="route-arrow" aria-hidden="true">→</i>
-        <span data-i18n="routeStory">📖 2 นาที</span>
-        <i class="route-arrow" aria-hidden="true">→</i>
-        <span data-i18n="routeGame">🎮 1 นาที</span>
-        <i class="route-arrow" aria-hidden="true">→</i>
-        <span data-i18n="routeLessons">🧠 6 บท</span>
-      </p>
-
-      <p class="lead" data-i18n="lead">จบคอร์สในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที</p>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="openVideo" type="button" data-mc-act="home-video">
-          <span class="btn-icon" aria-hidden="true">▶️</span>
-          <span class="btn-copy">
-            <strong data-i18n="watchTitle">ดูคลิปเปิดบ้าน</strong>
-            <small data-i18n="watchSub">สั้นๆ แค่ 44 วิ</small>
-          </span>
-        </button>
-
-        <a class="btn btn-secondary" href="hall.html" data-mc-act="home-compass">
-          <span class="btn-icon" aria-hidden="true">🧭</span>
-          <span class="btn-copy">
-            <strong data-i18n="journeyTitle">เริ่มเส้นทาง</strong>
-            <small data-i18n="journeySub">ตอนละ 2 นาที</small>
-          </span>
-        </a>
-      </div>
-
-      <p class="hint"><span data-i18n="hint">ฟรี · ไม่ต้องสมัคร · แนะนำให้ดูคลิปก่อน</span> · <a class="host-link" href="/meet/" data-mc-act="home-host-profile" data-i18n="host">พบเจ้าบ้าน</a></p>
-    </section>
-
-    <section class="stage" aria-label="วิดีโอเปิดบ้าน">
-      <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="img/home-opening-poster.jpg">
-        <source src="/media/home-opening-bg.mp4" type="video/mp4">
-      </video>
-      <span class="stage-label" data-i18n="stage">คลิปแนะนำบ้าน · 44 วินาที</span>
-    </section>
+    <div class="world-shade"></div>
   </div>
+  <canvas id="world-assembly" class="world-assembly" aria-hidden="true" hidden></canvas>
+  <div id="seed-exhibit" class="seed-exhibit" hidden></div>
+  <header class="topbar"><a class="brand" href="/" aria-label="myClover home"><img src="/icons/icon-192.png" alt="" width="40" height="40"><span>my<em>Clover</em></span></a><div class="quiet-tools"><button id="motion-toggle" type="button" aria-pressed="true" aria-label="เอฟเฟกต์เคลื่อนไหว" title="การเคลื่อนไหวของเข็มทิศ น้ำ และการประกอบหน้า">เอฟเฟกต์: เปิด</button><button id="sound-toggle" type="button" aria-pressed="false" aria-label="เปิดเสียงเข็มทิศ">เสียงปิด</button></div></header>
+  <section class="invitation" aria-labelledby="welcome-title"><p class="eyebrow">มีบางอย่างรอคุณอยู่</p><h1 id="welcome-title">ใครเจอเรา<br>คนนั้นโชคดี</h1><p class="invitation-line">ลองหยิบเข็มทิศดู</p></section>
+  <button id="pickup" class="pickup" type="button" aria-label="หยิบเข็มทิศ"><span class="pickup-label">หยิบเข็มทิศ <span aria-hidden="true">↗</span></span></button>
+  <div id="instrument" class="instrument" role="slider" tabindex="-1" aria-label="เลื่อนเข็มทิศสำรวจใต้กระดาษ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="44" aria-valuetext="เข็มทิศยังวางอยู่" aria-describedby="touch-hint" aria-hidden="true">
+    <div class="contact-shadow" aria-hidden="true"></div>
+    <div id="artifact" class="artifact" aria-hidden="true">
+      <img class="compass-body" src="/frontdoor/art/compass-body.webp" srcset="/frontdoor/art/compass-body-mobile.webp 640w, /frontdoor/art/compass-body.webp 1000w" sizes="(max-width:700px) 62vw, 400px" alt="" width="1000" height="1000" draggable="false">
+      <div class="dial-light"></div>
+      <img id="needle" class="needle" src="/frontdoor/art/compass-needle.webp" alt="" width="700" height="700" draggable="false">
+      <div class="glass-reflection"></div>
+    </div>
+  </div>
+  <button id="paper-grip" class="paper-grip" type="button" aria-label="ดึงรอยพับเป็นทางข้าม" aria-describedby="crossing-hint" hidden><span>ลองดึง</span></button>
+  <p id="crossing-hint" class="crossing-hint" hidden>ลองดึงรอยพับข้ามน้ำ</p>
+  <div id="discovery-copy" class="discovery-copy" aria-hidden="true"><p id="touch-hint">ลองเลื่อนเข็มทิศดู</p><button id="retry-world" type="button" hidden>ลองเปิดภาพอีกครั้ง</button></div>
+  <footer class="bottom-bar"><span id="opening-footnote">บ้านของความเป็นไปได้เล็ก ๆ</span><button id="put-down" type="button" hidden>วางคืน</button></footer>
+  <button id="continue-discovery" class="continue-discovery" type="button" hidden>อีกฝั่ง มีอะไรรออยู่ <span aria-hidden="true">↗</span></button>
+  <section id="path-copy" class="path-copy" aria-labelledby="path-title" hidden>
+    <p id="path-overline" class="path-overline"></p><h2 id="path-title" tabindex="-1"></h2>
+    <p id="path-line" class="path-line"></p><div id="path-answers" class="path-answers"></div>
+    <button id="visit-house" class="visit-house" type="button" hidden>ตามรอยเจ้าบ้าน <span aria-hidden="true">↗</span></button>
+    <button id="cross-seed" class="cross-seed" type="button" hidden>ลองเดินข้ามมา <span aria-hidden="true">↗</span></button>
+    <div id="seed-reward" class="seed-reward" hidden></div>
+    <p id="path-end" class="path-end" hidden></p>
+    <div id="door-actions" class="door-actions" hidden><a id="open-path" class="open-path" href="#">ไปต่อ</a><button id="save-path" type="button">เก็บทางนี้ไว้</button></div>
+    <div id="seed-next" class="seed-next" hidden><p>อยากไปต่อกับสิ่งนี้?</p><a id="seed-meet" href="#"></a><a id="seed-explore" href="#" hidden></a></div>
+    <p id="path-status" class="path-status" role="status" aria-live="polite"></p>
+    <button id="retry-assembly" type="button" hidden>ลองเปิดภาพอีกครั้ง</button>
+    <button id="rebuild-path" class="rebuild-path" type="button" hidden>ลองเริ่มอีกทาง</button>
+  </section>
+  <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
 </main>
-
-<div class="modal" id="videoModal" aria-hidden="true">
-  <div class="dialog" role="dialog" aria-modal="true" aria-label="คลิปเปิดบ้าน 44 วินาที">
-    <button class="close" id="closeVideo" aria-label="ปิด">✕</button>
-    <video id="fullVideo" controls playsinline preload="none" poster="img/home-opening-poster.jpg">
-      <source src="/media/home-opening-full.mp4" type="video/mp4">
-    </video>
-  </div>
-</div>
-
+<noscript><p class="noscript">เข็มทิศต้องใช้ JavaScript · <a href="/hall.html">เปิดบ้าน myClover</a></p></noscript>
 <script>
-(function(){
-  document.addEventListener("gesturestart",function(e){e.preventDefault()},{passive:false});
-  document.addEventListener("gesturechange",function(e){e.preventDefault()},{passive:false});
-  document.addEventListener("gestureend",function(e){e.preventDefault()},{passive:false});
-
-  var TEXT={
-    th:{
-      eyebrow:"🍀 ใครเจอเรา คนนั้นโชคดี",
-      title1:"เรียนครั้งเดียว",
-      title2:"ใช้ AI ตัวไหนก็ได้",
-      routeVideo:"🎬 44 วิ",
-      routeStory:"📖 2 นาที",
-      routeGame:"🎮 1 นาที",
-      routeLessons:"🧠 6 บท",
-      lead:"จบคอร์สในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที",
-      watchTitle:"ดูคลิปเปิดบ้าน",
-      watchSub:"สั้นๆ แค่ 44 วิ",
-      journeyTitle:"เริ่มเส้นทาง",
-      journeySub:"ตอนละ 2 นาที",
-      hint:"ฟรี · ไม่ต้องสมัคร · แนะนำให้ดูคลิปก่อน",
-      host:"พบเจ้าบ้าน",
-      stage:"คลิปแนะนำบ้าน · 44 วินาที"
-    },
-    en:{
-      eyebrow:"🍀 Those who find us leave with something lucky",
-      title1:"Learn once.",
-      title2:"Use any AI.",
-      routeVideo:"🎬 44 sec",
-      routeStory:"📖 2 min",
-      routeGame:"🎮 1 min",
-      routeLessons:"🧠 6 lessons",
-      lead:"Finish the course in under an hour, then use the same way of thinking to talk, create, work from sources, and build further with any AI.",
-      watchTitle:"Watch the house intro",
-      watchSub:"Takes 44 seconds",
-      journeyTitle:"Start the journey",
-      journeySub:"About 2 min each",
-      hint:"Free · No sign-up · Watch the intro first",
-      host:"Meet the host",
-      stage:"House introduction · 44 seconds"
-    }
-  };
-  function setLang(lang){
-    document.documentElement.lang=lang;
-    document.querySelectorAll("[data-lang]").forEach(function(b){
-      b.classList.toggle("active",b.dataset.lang===lang);
-    });
-    document.querySelectorAll("[data-i18n]").forEach(function(el){
-      el.textContent=TEXT[lang][el.dataset.i18n];
-    });
-    try{localStorage.setItem("mc_lang",lang)}catch(e){}
-  }
-  document.querySelectorAll("[data-lang]").forEach(function(b){
-    b.addEventListener("click",function(){setLang(b.dataset.lang)});
-  });
-  var lang="th";
-  try{lang=localStorage.getItem("mc_lang")||"th"}catch(e){}
-  setLang(lang);
-
-  var modal=document.getElementById("videoModal");
-  var full=document.getElementById("fullVideo");
-  var bg=document.getElementById("bgVideo");
-  var fullPreloadStarted=false;
-
-  // เริ่มโหลดคลิปเต็มหลัง BG เล่นได้แล้ว เพื่อไม่ให้แย่ง bandwidth ตอนเปิดหน้า
-  function preloadFullVideo(){
-    if(fullPreloadStarted)return;
-    fullPreloadStarted=true;
-    full.preload="auto";
-    full.load();
-  }
-  function queueFullVideoPreload(){
-    window.setTimeout(preloadFullVideo,250);
-  }
-
-  if(bg.readyState>=3&&!bg.paused){
-    queueFullVideoPreload();
-  }else{
-    bg.addEventListener("playing",queueFullVideoPreload,{once:true});
-  }
-
-  // fallback สำหรับ browser ที่ไม่ยิง playing ตามคาด
-  window.addEventListener("load",function(){
-    window.setTimeout(function(){
-      if(!fullPreloadStarted&&bg.readyState>=2)preloadFullVideo();
-    },2500);
-  },{once:true});
-
-  function openModal(){
-    preloadFullVideo();
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden","false");
-    bg.pause();
-    full.play().catch(function(){});
-  }
-  function closeModal(){
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden","true");
-    full.pause();
-    full.currentTime=0;
-    bg.play().catch(function(){});
-  }
-  document.getElementById("openVideo").addEventListener("click",openModal);
-  document.getElementById("closeVideo").addEventListener("click",closeModal);
-  modal.addEventListener("click",function(e){if(e.target===modal)closeModal()});
-  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeModal()});
-})();
+// Retain an early human tap while the module graph arrives over a slow connection.
+document.addEventListener('click',event=>{if(!document.body.dataset.runtimeReady&&event.target.closest?.('#pickup')){document.body.dataset.earlyPickup='true';document.body.classList.add('pickup-pending');}},true);
 </script>
-<script type="module" src="/assets/track.js"></script>
 </body>
 </html>

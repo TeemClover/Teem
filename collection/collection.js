@@ -10,7 +10,7 @@ var FORGE=['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-c
 var FORGE_NAME=['ทุกคนมีสิทธิ์ลงเล่น','ไอเท็มชิ้นแรก','ของที่กลับมาพร้อมรอยใช้','สิ่งที่เดินทางแทนเรา','จากคำตอบสู่ระบบ','สำหรับคนที่มาทีหลัง','เวลาที่ได้คืนมา'];
 var LEARN=['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web'];
 var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];
-var LEARN_IMAGE=['../img/classroom-kitchen-20260812-1445/lv1-source.jpeg','../img/classroom-kitchen-20260812-1445/lv2-taste.jpeg','../img/classroom-kitchen-20260812-1445/lv3-cook.jpeg','../img/classroom-kitchen-20260812-1445/lv4-split.jpeg','../img/classroom-kitchen-20260812-1445/lv5-season.jpeg','../img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg'];
+var LEARN_IMAGE=['../img/classroom-kitchen-20260812-1445/lv1-source.webp','../img/classroom-kitchen-20260812-1445/lv2-taste.webp','../img/classroom-kitchen-20260812-1445/lv3-cook.webp','../img/classroom-kitchen-20260812-1445/lv4-split.webp','../img/classroom-kitchen-20260812-1445/lv5-season.webp','../img/classroom-kitchen-20260812-1445/lv6-serve-steak.webp'];
 function raw(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function list(k){return raw(k,'').split(',').filter(Boolean)}
 function json(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
@@ -79,7 +79,7 @@ item({id:'card',kind:'PROOF SAVED',name:'การ์ดประจำตัว
 groups.push({id:'badges',eyebrow:'🏅 BADGES & SECRET ROUTE',title:'🏅 ตราและของที่พบระหว่างทาง',desc:'บางชิ้นบอกเงื่อนไขตรง ๆ บางชิ้นจะไม่เปิดเผยชื่อจนกว่าคุณจะพบเอง',items:[
 item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:on('blacksmith'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'/forge/original/07.jpeg?v=20260813-blacksmith-original'}),
 item({id:'awakened',kind:'SIGIL',name:'ผู้ตื่นรู้',icon:'🌅',on:on('awakened'),hint:'ผ่านบทที่ 7 · ด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}),
-item({id:'hero',kind:'SIGIL · GUILD X',name:'ฮีโร่',icon:'⚔️',on:on('hero'),hint:'ปลดรหัส HERO จาก Guild X',go:'../guild/',image:'../img/achievement-hero-guild-x.jpg'}),
+item({id:'hero',kind:'SIGIL · GUILD X',name:'ฮีโร่',icon:'⚔️',on:on('hero'),hint:'ปลดรหัส HERO จาก Guild X',go:'../guild/',image:'../img/achievement-hero-guild-x.webp'}),
 item({id:'clover-song-2010',kind:'FOUND ITEM · MUSIC',name:'Clover Song · 2010',icon:'💿',on:on('clover-song-2010'),hint:'เปิดเพลงประจำบ้านจากปุ่ม 🎵 ในหน้า Collection',unlockedHint:'เปิดฟัง Clover Song · เวอร์ชันมีเสียงร้อง'}),
 item({id:'seeker',kind:'TITLE',name:'ผู้ค้นพบ',icon:'🔍',on:on('seeker'),hint:'พบโคลเวอร์ที่ซ่อนอยู่ท้ายหน้า Hall',go:'../hall.html',image:'../img/achievement-seeker.webp'}),
 item({id:'notebook-found',kind:'SECRET',name:'สมุดที่หายไป',lockedName:'???',icon:'📔',on:on('notebook-found'),hint:'พบเส้นทางลับด้วยตัวเอง',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-01.jpg',secret:true}),
@@ -87,13 +87,13 @@ item({id:'notebook-restored',kind:'SECRET',name:'สมุดที่ซ่อ�
 item({id:'secret-end',kind:'SECRET ENDING',name:'เพื่อนเล่น · Secret Ending',lockedName:'???',icon:'🏆',on:on('secret-end'),hint:'อ่านตอนพิเศษลับจนจบ',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-09.jpg',secret:true}),
 item({id:'glhf',kind:'TRUE END TAG',name:'GLHF · Well Played',lockedName:'???',icon:'👊🏻',on:on('glhf'),hint:'ทำการกระทำสุดท้ายของ Secret Route',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-10.jpg',secret:true})]});
 groups.push({id:'core7',eyebrow:'🃏 CORE7 ACHIEVEMENTS',title:'🃏 เกมที่เล่นได้จริง',desc:'Achievement อ่านจาก Tutorial, Match, Set และ FIRST HAND Collection ที่ CORE7 เก็บไว้ในเครื่องเดียวกัน',items:[
-item({id:'c7-tutorial',kind:'CORE7 · TUTORIAL',name:'เข้าใจกติกา',icon:'🧠',on:on('c7-tutorial'),hint:'เล่น Tutorial จนจบ',go:'../core7/tutorial/',image:'../img/core7-achievement-01-victory-wheel.jpeg'}),
-item({id:'c7-match',kind:'CORE7 · FIRST MATCH',name:'ดวลครั้งแรก',icon:'⚔️',on:on('c7-match'),hint:'เล่น Match แรกจนจบ',go:'../core7/',image:'../img/core7-achievement-02-first-match.jpeg'}),
-item({id:'c7-win',kind:'CORE7 · BLACK FRAME',name:'ชัยชนะครั้งแรก',icon:'🏅',on:on('c7-win'),hint:'ชนะ CORE7 อย่างน้อย 1 Match',go:'../core7/',image:'../img/core7-achievement-03-first-victory.jpeg'}),
-item({id:'c7-friend',kind:'CORE7 · FRIEND MATCH',name:'เล่นกับเพื่อนครั้งแรก',icon:'🤝',on:on('c7-friend'),hint:'เล่น Match กับเพื่อนจนจบ 1 Match',go:'../core7/play/',image:'../img/core7-achievement-04-first-friend-match.jpeg'}),
-item({id:'c7-set',kind:'CORE7 · SET',name:'ครบ 1 CORE7 Set',icon:'🏆',on:on('c7-set'),hint:'เล่น CORE7 Set จนมีผู้ชนะครบชุด',go:'../core7/play/',image:'../img/core7-achievement-05-first-set.jpeg'}),
-item({id:'c7-hand',kind:'CORE7 · FIRST HAND',name:'มือแรกของฉัน',icon:'🖐️',on:on('c7-hand'),hint:'ปลดล็อก FIRST HAND ครบ 7 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-06-first-hand.jpeg'}),
-item({id:'c7-full',kind:'CORE7 · COLLECTION MASTER',name:'FIRST HAND ครบชุด',icon:'💎',on:on('c7-full'),hint:'สะสม FIRST HAND ครบ 28 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-07-full-collection.jpeg'})]});
+item({id:'c7-tutorial',kind:'CORE7 · TUTORIAL',name:'เข้าใจกติกา',icon:'🧠',on:on('c7-tutorial'),hint:'เล่น Tutorial จนจบ',go:'../core7/tutorial/',image:'../img/core7-achievement-01-victory-wheel.webp'}),
+item({id:'c7-match',kind:'CORE7 · FIRST MATCH',name:'ดวลครั้งแรก',icon:'⚔️',on:on('c7-match'),hint:'เล่น Match แรกจนจบ',go:'../core7/',image:'../img/core7-achievement-02-first-match.webp'}),
+item({id:'c7-win',kind:'CORE7 · BLACK FRAME',name:'ชัยชนะครั้งแรก',icon:'🏅',on:on('c7-win'),hint:'ชนะ CORE7 อย่างน้อย 1 Match',go:'../core7/',image:'../img/core7-achievement-03-first-victory.webp'}),
+item({id:'c7-friend',kind:'CORE7 · FRIEND MATCH',name:'เล่นกับเพื่อนครั้งแรก',icon:'🤝',on:on('c7-friend'),hint:'เล่น Match กับเพื่อนจนจบ 1 Match',go:'../core7/play/',image:'../img/core7-achievement-04-first-friend-match.webp'}),
+item({id:'c7-set',kind:'CORE7 · SET',name:'ครบ 1 CORE7 Set',icon:'🏆',on:on('c7-set'),hint:'เล่น CORE7 Set จนมีผู้ชนะครบชุด',go:'../core7/play/',image:'../img/core7-achievement-05-first-set.webp'}),
+item({id:'c7-hand',kind:'CORE7 · FIRST HAND',name:'มือแรกของฉัน',icon:'🖐️',on:on('c7-hand'),hint:'ปลดล็อก FIRST HAND ครบ 7 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-06-first-hand.webp'}),
+item({id:'c7-full',kind:'CORE7 · COLLECTION MASTER',name:'FIRST HAND ครบชุด',icon:'💎',on:on('c7-full'),hint:'สะสม FIRST HAND ครบ 28 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-07-full-collection.webp'})]});
 if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'🕯️ HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 37 Achievement หลัก',items:[
 item({id:'genesis-scroll',bonus:true,kind:'FORBIDDEN GENESIS · BONUS',name:'คุณเจอ Genesis Prompt ที่ใช้สร้างวิหารแห่งนี้',icon:'📜',on:true,hint:'เลือกทุกหมวดในคลังพรอมพ์ แล้วเปิดม้วนคาถาที่ซ่อนอยู่',go:'../classroom/prompts.html?scroll=forbidden',image:'../img/achievement-genesis-scroll.svg',newBonus:genesisNew})
 ]});

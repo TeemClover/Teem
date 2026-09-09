@@ -1,0 +1,1580 @@
+{
+  "branch": "feat/adaptive-front-door-v1",
+  "base": "fdadc4974964533de17f2217f065c28361417897",
+  "status": "Approved release snapshot; owner X-VISOR work held. Package staged variant preserves published X-VISOR scripts.",
+  "release_files": [
+    {
+      "path": ".gitignore",
+      "status": " M",
+      "sha256": "df0aaec70f987e6e83f0f61d05009d7322e51f4deb8eae4bbc2e6935edd488e3"
+    },
+    {
+      "path": ".vercelignore",
+      "status": " M",
+      "sha256": "0070cb6feb95e2048df3cc9017b5bb7c97ac89d966976e0a97328d0a6e647288"
+    },
+    {
+      "path": "_redirects",
+      "status": " M",
+      "sha256": "5fa746945941fea246574f1768070860b3bd829ff0d51bdc0cbf7ede19780ae5"
+    },
+    {
+      "path": "activity-create.webp",
+      "status": " D"
+    },
+    {
+      "path": "activity-enjoy-food.webp",
+      "status": " D"
+    },
+    {
+      "path": "activity-project.webp",
+      "status": " D"
+    },
+    {
+      "path": "activity-trade.webp",
+      "status": " D"
+    },
+    {
+      "path": "ako/ako-convert.css",
+      "status": " M",
+      "sha256": "243797032873204217e3be2f60a8f32bac9b6ed5a08aa6de34ef68f44a0a441c"
+    },
+    {
+      "path": "ako/ako.css",
+      "status": " M",
+      "sha256": "2f5acff3df76dc13602c864744c60d0ff844f7175c3db1805e1a1fbc62ffac7e"
+    },
+    {
+      "path": "ako/index.html",
+      "status": " M",
+      "sha256": "2b8d8eb5abd4155f1a9c90cdf0a8bcb9cf13e4ef67d3aa3fbcf2ba8c2c648e66"
+    },
+    {
+      "path": "ako/story/index.html",
+      "status": " M",
+      "sha256": "e6b49eec61c876c5f3fb26b371f282ae0c66549bafbfea6666bca99dfc6da32e"
+    },
+    {
+      "path": "api/_lib/meet-notify.js",
+      "status": " M",
+      "sha256": "ae0f8346525d94d6ec4c675300842f943c41690f8f8b972cbde61c48ad21e056"
+    },
+    {
+      "path": "api/meet.js",
+      "status": " M",
+      "sha256": "0cab315026fa4f53e76f2c5faf288ed49fc83577de8bad8d3c1fb5bf64113eb9"
+    },
+    {
+      "path": "assets/forge-path-choice.js",
+      "status": " M",
+      "sha256": "d272d5a1ddbd2a23e9b59aa050672c48da374f53bb667cf3d6373cd922d8ada1"
+    },
+    {
+      "path": "assets/front-door/contract.js",
+      "status": " M",
+      "sha256": "eb3de7db491b5deb22b7aabd74c78bfcb6d4085cd4895c1c0f38bfdccdcc2808"
+    },
+    {
+      "path": "assets/front-door/state.js",
+      "status": " M",
+      "sha256": "5e19d4c28910d0b4497846766bbac8e4aba4883d6d1d52ad9ae9bced8567d7cd"
+    },
+    {
+      "path": "assets/main-quest-core7.js",
+      "status": " M",
+      "sha256": "f25232d6a9d37d5521e62d37a7f1d6b7cfe433b6b8aa4939182eaba04c525708"
+    },
+    {
+      "path": "assets/sauce-cup-entry.js",
+      "status": " M",
+      "sha256": "e9f767b2f9934c0ad10826ffc758601b0162db0060502480e3ebf4fe2bd7e7fc"
+    },
+    {
+      "path": "classroom/clip-ai.html",
+      "status": " M",
+      "sha256": "513f122a23cc481308cea174568555326278a443c5b2ef7108fd9fe7b659f6ee"
+    },
+    {
+      "path": "classroom/dungeon/index.html",
+      "status": " M",
+      "sha256": "b07df1735ecfa4c2340e01559310cb23809bab2c717796873a7cdd5d4dade3f5"
+    },
+    {
+      "path": "classroom/first-web.html",
+      "status": " M",
+      "sha256": "90c6acbd48b2511df354483094dcebc649766aecf2d2611778d67ac36eeab0af"
+    },
+    {
+      "path": "classroom/free-ai.html",
+      "status": " M",
+      "sha256": "fa7b9be87401c1906349dd22a430bed186f0eafd7ca8c895ae5153d1c75a74bf"
+    },
+    {
+      "path": "classroom/image-ai.html",
+      "status": " M",
+      "sha256": "e0e3a73db5f9f4c9b155fa46f9bb2207f2c75b360a789db9b3a79a98e0b0049c"
+    },
+    {
+      "path": "classroom/index.html",
+      "status": " M",
+      "sha256": "9d26294377b735756cc42c08a738c0e30cb7ca9130f2c7e95feea5885da11b08"
+    },
+    {
+      "path": "classroom/lesson-0.html",
+      "status": " M",
+      "sha256": "07fe551c5cd201a21c8f1da922ed90bf399838ed3aae9429fd1b773ae46ef404"
+    },
+    {
+      "path": "classroom/notebooklm.html",
+      "status": " M",
+      "sha256": "c6c935c31eb2d9072e43732351eb461d9e294f15aa624e07730db9a6c88df0b5"
+    },
+    {
+      "path": "classroom/prompts.html",
+      "status": " M",
+      "sha256": "03b4a64fdb71db1cf2178d06003223bea3103d108e9686c01b9d0ba36d547b62"
+    },
+    {
+      "path": "classroom/sauce-cup/index.html",
+      "status": " M",
+      "sha256": "cfca70b3b2c97bc56a9243afc206dd775b2e80b4b089831b4fb5c5542bae5e1c"
+    },
+    {
+      "path": "collection/collection.js",
+      "status": " M",
+      "sha256": "59f857be36aee00807eaed0d9f2a882dd1c847590bfbd82f36e6bc43f5b2b31f"
+    },
+    {
+      "path": "core7/backend/frontdoor-v2.js",
+      "status": " M",
+      "sha256": "af968adaf25da76fc596e27f8f5c47e9b2c9f13d1860fef1bb664e3e9cf31fc7"
+    },
+    {
+      "path": "core7/tests/frontdoor-preview.mjs",
+      "status": " A",
+      "sha256": "8bc1e3dda03206884cd2d7befd3c0040b309a57be9f055fb46ad24c5ce364e91"
+    },
+    {
+      "path": "e2e-result.png",
+      "status": " D"
+    },
+    {
+      "path": "en/index.html",
+      "status": " M",
+      "sha256": "27c6fb61832b43ffae71aedb92bda21f220ea9362817be07b978ca93a6e41383"
+    },
+    {
+      "path": "forge/ep1-everyone-gets-to-play/index.html",
+      "status": " M",
+      "sha256": "7644fe7cdccc5b19f55f89c56971fb4bb5779b5ed851698e00b7beb9a86ea633"
+    },
+    {
+      "path": "forge/ep2-the-first-item/index.html",
+      "status": " M",
+      "sha256": "684db4291c3bb9e14d717322aeb12aee303ed6e11bb873476757c540e2366e36"
+    },
+    {
+      "path": "forge/ep3-the-item-that-came-back/index.html",
+      "status": " M",
+      "sha256": "a41306e73b32b80afebbd09ec0e229d9ec7ab0d6b447731b21c68ff1f30f1bbb"
+    },
+    {
+      "path": "forge/ep4-what-traveled-without-us/index.html",
+      "status": " M",
+      "sha256": "7744c6d0a8be5afeba43a2773fc5a1a1cbddd0abac0da1b1a5b84be836f380c6"
+    },
+    {
+      "path": "forge/ep5-from-answers-to-a-system/index.html",
+      "status": " M",
+      "sha256": "79b389259d3ed377120e2b82aa5e70c27ff07464ddb22e920543e543fff40be3"
+    },
+    {
+      "path": "forge/ep6-the-starter-kit/index.html",
+      "status": " M",
+      "sha256": "e165dbb49deb5e3b7e8549c1c23fb851a9958391468b773ead70905ec194f401"
+    },
+    {
+      "path": "forge/ep7-a-voice-that-went-further/index.html",
+      "status": " M",
+      "sha256": "f5f9ed01d5b0ec8beec26c4b82c15371587005e50ec8315569cdf661fc705665"
+    },
+    {
+      "path": "forge/index.html",
+      "status": " M",
+      "sha256": "c5cfe2cab47181a0faeaa8e5528b65a1bfb1efcbba0a8e3e40e3b612eb36cb26"
+    },
+    {
+      "path": "frontdoor/README.md",
+      "status": " A",
+      "sha256": "debb308f6cc2ef6926d46341667c02f38dfb5a270b1316f24925a7b064100fd5"
+    },
+    {
+      "path": "frontdoor/app.js",
+      "status": " A",
+      "sha256": "fb3fc4239e0898766b45b4d89e9c1392d4dd397c75474e3f2cfd38e1f258c2a4"
+    },
+    {
+      "path": "frontdoor/flow.js",
+      "status": " A",
+      "sha256": "698e1c959ae0653dc810a2a9810ee1f2b1d272da8f6fbb954f7962d425e27c02"
+    },
+    {
+      "path": "frontdoor/flow.test.mjs",
+      "status": " A",
+      "sha256": "fb7cf6e63477c9349f99e98203854a073af809d506309c122ea90b8f82f8826c"
+    },
+    {
+      "path": "frontdoor/index.html",
+      "status": " A",
+      "sha256": "cc18ad166918ffde234b9506e484966941e16f077ce989b92cd9f6f8c599b429"
+    },
+    {
+      "path": "frontdoor/styles.css",
+      "status": " A",
+      "sha256": "430104493d48abf2f12f29776fda09dc8e8dd0d9dd4852ec03e6fd79609cfe62"
+    },
+    {
+      "path": "functions/_middleware.js",
+      "status": " M",
+      "sha256": "f671ab44a3417ac3d3047c60b050813bfc5cfbcc352dcd9c14823c4c278618c4"
+    },
+    {
+      "path": "functions/api/core7/[[path]].js",
+      "status": " M",
+      "sha256": "7fcb590c60949d99aeec77c8bbf497daaac41ba8967176a93602fa1b6d589195"
+    },
+    {
+      "path": "guild/index.html",
+      "status": " M",
+      "sha256": "7d9f01cf9d28648c7ef9bd4403e1084b471e9ca268828731eaf10719c645879e"
+    },
+    {
+      "path": "hall.html",
+      "status": " M",
+      "sha256": "e972b351e2b14ca83ab7355b12e18ffd1609fa73875b8d6f09c2d0566ba6a01d"
+    },
+    {
+      "path": "index.html",
+      "status": " M",
+      "sha256": "8848b2078e4b2a3e14331397f2b65a5bafe5e04d36700fd2b9d07f873b8ffac3"
+    },
+    {
+      "path": "meet/index.html",
+      "status": " M",
+      "sha256": "eda935d79110d4910ff317a6a2c72f3f688b61e262f840921fb069bad3539e70"
+    },
+    {
+      "path": "meet/meet.js",
+      "status": " M",
+      "sha256": "14ffd18849850eea98ffcd46746819c3b671a6cb8bcc933553ed4e6ed2475863"
+    },
+    {
+      "path": "package.json",
+      "status": " M",
+      "sha256": "c72b17db76c82ac7df25b8b50bc24f1d329379e5143683637568f57ece858b18"
+    },
+    {
+      "path": "resume/index.html",
+      "status": " M",
+      "sha256": "eee5e0db5e214a74bc8d2679f0d629d38712d8d19fbffa4f36ce33d5d764aace"
+    },
+    {
+      "path": "sitemap.xml",
+      "status": " M",
+      "sha256": "5af515985bd7a5d69128943f55dca67eae53a0ec9b82666cb089908fc4365a5e"
+    },
+    {
+      "path": "stat/frontdoor/frontdoor.js",
+      "status": " M",
+      "sha256": "f8e0f8cc59d42879d55887bdd3f22af3366598866c9e945f1cd7f5959aec45ee"
+    },
+    {
+      "path": "stat/frontdoor/index.html",
+      "status": " M",
+      "sha256": "f4d449a74ec2520d05029c9b352a31023251e12bda0c071160a156e2361f5659"
+    },
+    {
+      "path": "teambook/_shared/duration-gate.js",
+      "status": " M",
+      "sha256": "bc20b44a1e2d108ceb826c456849a1fc1b296bf01606a9cab60e30097a6fd5e4"
+    },
+    {
+      "path": "teambook/_shared/home-onboarding-v14.js",
+      "status": " M",
+      "sha256": "9959ab30f568cb46e926e47ee8055f68cef9131cdff2968d2d5fb0915e82f5cd"
+    },
+    {
+      "path": "teambook/index.html",
+      "status": " M",
+      "sha256": "b75418653b35b0367930c8d4ffc88459fa17841bdba1a9be5001f71ddaecc71e"
+    },
+    {
+      "path": "teambook/new/index.html",
+      "status": " M",
+      "sha256": "d65e21e4b98909cf741198ac7225fbd2224db1fcb6a8a95c2e2d969b76a699b4"
+    },
+    {
+      "path": "tools/build.py",
+      "status": " M",
+      "sha256": "3429e5e4c3a33c19188fea56d0487acad201f3eb4fd63e5233c4276a82e39594"
+    },
+    {
+      "path": "vercel.json",
+      "status": " M",
+      "sha256": "ecf8aa0692dda72328178ff63f64bd2c788a14535d1702127034e987ed1d29ea"
+    },
+    {
+      "path": "xircle/ROUTE.md",
+      "status": " M",
+      "sha256": "784258886caccc3400052ab7041730f76228ff9f629c6f256214e49b480ef9b1"
+    },
+    {
+      "path": "xircle/ROUTE_INDEX.md",
+      "status": " M",
+      "sha256": "b94da9d431d2504ce88a27ed43efa3ddcef0cea0efac11ab86bffae027af76a0"
+    },
+    {
+      "path": "xircle/XIRCLE_ROUTE_SOURCE.md",
+      "status": " M",
+      "sha256": "95d9defee955c8cf9f68e25d7c2a1573c86f9c1c9ffb6521adcf363b39b103aa"
+    },
+    {
+      "path": "xircle/_shared/analytics.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/party-v6.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/playable.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/playable.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/routinex-fit.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/routinex-v10.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/source-drawer.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/state.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-route-tune.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-v6-3.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-v6-base.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-v6-polish.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-v6.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/story-v6.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v3.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v3.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v4.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v4.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v5-food.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v5-food.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/_shared/v5.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/build/FOUNDATION.md",
+      "status": " M",
+      "sha256": "1bda30f95ead3c00da3bed99d2f072ed560c2efcbbfc838c4cc71df5aeeabab8"
+    },
+    {
+      "path": "xircle/care/ROUTE.md",
+      "status": " M",
+      "sha256": "d7f49a0ff061098a6e6d3d328027bc792fe0e3ca321111cf2c659b153ce1adb9"
+    },
+    {
+      "path": "xircle/care/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/care/party/ROUTE.md",
+      "status": " M",
+      "sha256": "3deba7d426d795f798ba3c7f28526e7e2d8d4a3b0a9f92433c55466086cb3615"
+    },
+    {
+      "path": "xircle/care/party/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/circle/ROUTE.md",
+      "status": " M",
+      "sha256": "3af5692c2284edb1a43b7ed62f5a5eb96778001ab1cae1da8736275ed04845a9"
+    },
+    {
+      "path": "xircle/circle/circle.css",
+      "status": " D"
+    },
+    {
+      "path": "xircle/circle/circle.js",
+      "status": " D"
+    },
+    {
+      "path": "xircle/circle/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/doc/ROUTE.md",
+      "status": " M",
+      "sha256": "7dd7f5c8681695b3863dca6dd2549a051e4a1fbe38144a9c74421b3b41167d09"
+    },
+    {
+      "path": "xircle/doc/index.html",
+      "status": " M",
+      "sha256": "800d894b271442fae8b1a89699661e110175e9bd55a623f3a9e9ef00a362ff10"
+    },
+    {
+      "path": "xircle/explore/ROUTE.md",
+      "status": " M",
+      "sha256": "e22f96d0371916c2582dcb19d9d3bd526d499c719d07ea3ad4810199458407d1"
+    },
+    {
+      "path": "xircle/explore/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/ghost/ROUTE.md",
+      "status": " M",
+      "sha256": "873a899756b4f2db0854a627f666f8fd9af428725abb11d571447ac57023643d"
+    },
+    {
+      "path": "xircle/ghost/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/hardware/ROUTE.md",
+      "status": " M",
+      "sha256": "48dd57e913a4c8c44320a160f34d689f59a5bf7e4842445f76037921c16c6608"
+    },
+    {
+      "path": "xircle/hardware/index.html",
+      "status": " M",
+      "sha256": "95a68dab5c2cd1b51a4e875f8c19d894ad04db6503ca8458a3ac166f71e6c305"
+    },
+    {
+      "path": "xircle/index.html",
+      "status": " M",
+      "sha256": "1fe72137882a38594d6eebdfcbce8be60b920c641577f307a9194808a6e7b274"
+    },
+    {
+      "path": "xircle/learn/ROUTE.md",
+      "status": " M",
+      "sha256": "32e71b28d2e45999b1f98be71c95dcb45d98f160fd8b8b0c28fbde5d8cf6710a"
+    },
+    {
+      "path": "xircle/learn/hmb-knowledge.test.mjs",
+      "status": " M",
+      "sha256": "b53d246c3404713ed3b8be1bf524fc6fb3b42b5d9dbf86f25a7817d3a3d2b956"
+    },
+    {
+      "path": "xircle/learn/index.html",
+      "status": " M",
+      "sha256": "02cb6058c5afc78da56b6969ac0abe68a614e874dcf6ff5cfce63782292aac46"
+    },
+    {
+      "path": "xircle/learn/topic/ROUTE.md",
+      "status": " M",
+      "sha256": "680026b4f6843415cf36b17172a222b0f472677833b46196f26a36fe3a307f46"
+    },
+    {
+      "path": "xircle/learn/topic/index.html",
+      "status": " M",
+      "sha256": "20f0d2ef432b051506cd1d4155e72bba795bcc9158772fab565b445970cdd1b3"
+    },
+    {
+      "path": "xircle/opportunity/ROUTE.md",
+      "status": " M",
+      "sha256": "1203b90e1b1dd7031b3bc8852b729609d49d9420f7903c60c3538a7a122dec88"
+    },
+    {
+      "path": "xircle/opportunity/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/products/ROUTE.md",
+      "status": " M",
+      "sha256": "4d2a3a3c7dea01acbafce186763101d380b5b2e5df934f850cff3f0d82209eb4"
+    },
+    {
+      "path": "xircle/products/index.html",
+      "status": " M",
+      "sha256": "0040f1d10c3598f2236cc449cb3878d1fca238dd77460b616e64a88e9b349cc6"
+    },
+    {
+      "path": "xircle/routinex/ROUTE.md",
+      "status": " M",
+      "sha256": "dc21a9f1a53ad24930808b8aad7cb0f54a20f0baad3cdae802df30ac7b4c73eb"
+    },
+    {
+      "path": "xircle/routinex/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "xircle/start/ROUTE.md",
+      "status": " M",
+      "sha256": "96ec38c6798c90ccdef549363c1db4253d8dce41cfd7d126dc4d797039dc2fd6"
+    },
+    {
+      "path": "xircle/start/index.html",
+      "status": " M",
+      "sha256": "42c7402ba9f2632639f285b86c9c8e3912015174a0bd023a1cd9f83dc33886f5"
+    },
+    {
+      "path": "ako/assets/ako-real-eating-onion-hero-poster.webp",
+      "status": "??",
+      "sha256": "ac8fd315d8e8abeee180bcb82046a08dac788be1292888e78c0fb78a8d5e87fb"
+    },
+    {
+      "path": "ako/assets/ako-xvisor-ep04-otaku-weight-loss-poster.webp",
+      "status": "??",
+      "sha256": "c9895f17dd42ed340f9136e6750093455e18d4fcd5ec61091a825039c3844c26"
+    },
+    {
+      "path": "ako/assets/ako-xvisor-ep06-no-starving-poster.webp",
+      "status": "??",
+      "sha256": "a0b85f9ede2d0c6de9f8ce5aaeba7e32704b20092784407bc03e38ee4822ae5c"
+    },
+    {
+      "path": "ako/assets/ako-xvisor-ep07-snacking-hunger-poster.webp",
+      "status": "??",
+      "sha256": "c7da1660ac503a1a593c47f612df06b787784be5ce6837b84b68278b06589a5b"
+    },
+    {
+      "path": "ako/assets/xircle-routine-orbs-sprite.webp",
+      "status": "??",
+      "sha256": "f475038ed0fa4471a272d211a1f19c6fef98ae6946f08f29a34125bbad29924b"
+    },
+    {
+      "path": "ako/kitchen/art/egg-salad-v1-mobile.webp",
+      "status": "??",
+      "sha256": "9db3c8a95c60e6b959c8ee05f1bb79f91bcb2abdc2b41bc6fdce421600c67e58"
+    },
+    {
+      "path": "ako/kitchen/art/egg-salad-v1.webp",
+      "status": "??",
+      "sha256": "1919ac4428a024b4faacc39d1a3d83655abfb141bc6e6755058cc9f2a04dd8e4"
+    },
+    {
+      "path": "ako/kitchen/art/tofu-mushroom-rice-v1-mobile.webp",
+      "status": "??",
+      "sha256": "b946e3c13380734bb3853688ad15df8575cc389e73a8d4a78f93405fa08cd519"
+    },
+    {
+      "path": "ako/kitchen/art/tofu-mushroom-rice-v1.webp",
+      "status": "??",
+      "sha256": "08f7e31ec039a9921ed07a5bc9a5ecdd54a10ed1e011bab2854e2596457ba97d"
+    },
+    {
+      "path": "ako/kitchen/art/yogurt-dressing-v1-mobile.webp",
+      "status": "??",
+      "sha256": "7dacb2b7d36e5cc23dd606c7ab669b60a6c1d6a27285b3fa58c864f815b77a49"
+    },
+    {
+      "path": "ako/kitchen/art/yogurt-dressing-v1.webp",
+      "status": "??",
+      "sha256": "852119d26dc0524f7bf06439394544a42f9bb188b47ef5c9e1393f24f5b32775"
+    },
+    {
+      "path": "ako/kitchen/index.html",
+      "status": "??",
+      "sha256": "a70c7b11d20e2f2b94c2afe0a5eeb25c3971cf85f679284e39aa3515cbcaed34"
+    },
+    {
+      "path": "ako/kitchen/kitchen.css",
+      "status": "??",
+      "sha256": "1b4d1483b6e9ab194819e236e8eaa354192efd312a7e64c697455a3287d4776b"
+    },
+    {
+      "path": "ako/kitchen/kitchen.js",
+      "status": "??",
+      "sha256": "c4c5233bf4e818ccc12d4473fcb67f89c838f5c98ca0582c2012d593e08e2199"
+    },
+    {
+      "path": "ako/kitchen/recipes.js",
+      "status": "??",
+      "sha256": "6f598cb3e733cbf6f51643f34fc1635ca99cd3b5592a97d6bbeaeb928ab7dbf1"
+    },
+    {
+      "path": "api/_lib/meet-handler.js",
+      "status": "??",
+      "sha256": "4211de7570cfbe35d839d4331ac2b9b658bfb03582e230e1a453a83d8d49dd72"
+    },
+    {
+      "path": "api/_lib/meet-intake.test.mjs",
+      "status": "??",
+      "sha256": "354444be556811d5c22d2c679d7da7ec007043f9e8f30deb5f06d39a7a67f25d"
+    },
+    {
+      "path": "assets/front-door/outcome-contract.js",
+      "status": "??",
+      "sha256": "d27a050dbe941e942378c2ecca3ccf38850f6bcf99ee486617d0309fa90620df"
+    },
+    {
+      "path": "assets/front-door/outcomes.js",
+      "status": "??",
+      "sha256": "797d3363f64ecd22a5fa14e50fc37e9f04d405416e9849ad035ca259361189b0"
+    },
+    {
+      "path": "assets/front-door/outcomes.test.mjs",
+      "status": "??",
+      "sha256": "ac67d0272209a904afc6cc0dbac66d6e48cfafb2558aa9489feaae6825da3f04"
+    },
+    {
+      "path": "classroom/img/header-lesson0.webp",
+      "status": "??",
+      "sha256": "95b9363fd537c2fe1cf2689071bbf95ca1ae778c040f3f79f66d17e93c82ffa9"
+    },
+    {
+      "path": "classroom/img/header-lesson1.webp",
+      "status": "??",
+      "sha256": "3c41504f656a299f42e2829982ee57384b57b5415f0100edbcb3ce0be951e3f2"
+    },
+    {
+      "path": "classroom/img/header-lesson2.webp",
+      "status": "??",
+      "sha256": "e003c8a39b94e6db3c6018dc0a310cdfa5097f3f36cf9cb2cb9338a0a8323923"
+    },
+    {
+      "path": "classroom/img/header-lesson3.webp",
+      "status": "??",
+      "sha256": "8284f6f1f5d74a813931e8bcd2b495b0866d733a5482f4d9cb5dee4f8b812054"
+    },
+    {
+      "path": "classroom/img/header-lesson4.webp",
+      "status": "??",
+      "sha256": "c060c67cdb8c348514c645668730e3322d32bcd5d616d347a03d2438ce0d2bce"
+    },
+    {
+      "path": "classroom/img/header-lesson5.webp",
+      "status": "??",
+      "sha256": "3659ee56ab11dc27f7a2d4fb3de04f4586d77ae43b0c5579e3b2a46b68c20163"
+    },
+    {
+      "path": "classroom/img/header-lesson6.webp",
+      "status": "??",
+      "sha256": "de5ec107338dc48b24107122196759dd3f9b494ef1182bb9bad152d99ca34eba"
+    },
+    {
+      "path": "classroom/img/hero-classroom.webp",
+      "status": "??",
+      "sha256": "27ffeee720c7d7161428174dd0718a46402b6fa2841b529d08a68d472344a558"
+    },
+    {
+      "path": "classroom/sauce-cup/header-prologue.webp",
+      "status": "??",
+      "sha256": "190fb3b393ca9a4a6115be4a90f0264c83e2eb28ded9183f1245428f71987d16"
+    },
+    {
+      "path": "core7/backend/frontdoor-outcomes.js",
+      "status": "??",
+      "sha256": "73ac39403bc5956d159978f1a8ffc9980923aac68d3b11b1ebeb68a88aa526b0"
+    },
+    {
+      "path": "core7/tests/frontdoor-outcome-edge.test.mjs",
+      "status": "??",
+      "sha256": "b111663a6da1cb74a04c0450239b7f621dd13647177f75ad9ee0cf619db6f4e5"
+    },
+    {
+      "path": "core7/tests/frontdoor-outcomes.test.mjs",
+      "status": "??",
+      "sha256": "c715eaa0e898dcb8f66cb815f00fd8c7b05c04ff16754eb1c419912441e05481"
+    },
+    {
+      "path": "core7/tests/frontdoor-release-boundary.test.mjs",
+      "status": "??",
+      "sha256": "a7d2ac907fefb3313e86caa1322a8be049ec1a449964f35cdc26f3f2a10c5b89"
+    },
+    {
+      "path": "core7/tests/helpers/meet-local.mjs",
+      "status": "??",
+      "sha256": "23915282a67522c62e175c5e36c76d16ffbf9f54f9193da90f876b0b7e6abbf4"
+    },
+    {
+      "path": "core7/tests/meet-local-ui.e2e.mjs",
+      "status": "??",
+      "sha256": "a607949981cacc064131fcc929bacbef18a63d096d1382955d4d2a37758f13c8"
+    },
+    {
+      "path": "core7/tests/meet-local.test.mjs",
+      "status": "??",
+      "sha256": "a9bab758744062608f0d99154147858bfb82ef154b02046cbb609eb4afdc8fa6"
+    },
+    {
+      "path": "core7/tests/xircle-aliases.test.mjs",
+      "status": "??",
+      "sha256": "0a878b04c0cb1203bccf8160397619f759cb44066433c67d6eb74ebd8293d946"
+    },
+    {
+      "path": "docs/REPO_LAYOUT.md",
+      "status": "??",
+      "sha256": "b5a38f704d6ce721bfe972225aa1c4229a5b7b201a4889bdfb804a2df48bc9c5"
+    },
+    {
+      "path": "docs/ako/KITCHEN-ART.json",
+      "status": "??",
+      "sha256": "a8dbffcf4842a1fa8a8cd75cb701045814133a679a4f0649e81158c95e4aa381"
+    },
+    {
+      "path": "docs/ako/README.md",
+      "status": "??",
+      "sha256": "9ced0b29744daf1a2959aa1660573128d8b6a36bda6b11733109277983f7c7ce"
+    },
+    {
+      "path": "docs/frontdoor/COMPASS-STORYBOARD.md",
+      "status": "??",
+      "sha256": "069990c66081851c6b9e0fff7709b86d550c66bef951c4d0bfbe14c8b238b345"
+    },
+    {
+      "path": "docs/frontdoor/FOOD-V2-PROMPTS.md",
+      "status": "??",
+      "sha256": "7566b1aae9f4f8da3601f84feb6623dc990bc8e192b5905828194717e57cb23c"
+    },
+    {
+      "path": "docs/frontdoor/MOBILE-EXPORTS.md",
+      "status": "??",
+      "sha256": "83b2c874536635399565989d38c94386877df21c3a354305172a66d383e8642d"
+    },
+    {
+      "path": "docs/frontdoor/README.md",
+      "status": "??",
+      "sha256": "4b25e9abe9ce33c368bc1d30e84f60572d1830ad4ff61583f6c170149e58d5b7"
+    },
+    {
+      "path": "docs/frontdoor/RELEASE.md",
+      "status": "??",
+      "sha256": "4d6767f20d6fee156682734deff3529036187a20c4604dc65ac646bcaeef0abd"
+    },
+    {
+      "path": "docs/frontdoor/SCENES-V2-PROMPTS.md",
+      "status": "??",
+      "sha256": "9f4844449cffcf22ded6a93b0a1732848c0a37671a1aa4a19379b441c525f0fb"
+    },
+    {
+      "path": "docs/frontdoor/paper-rim-prompt.txt",
+      "status": "??",
+      "sha256": "cd0da103c76ed1e5f34fc127baa941244b8b39bdbddbc5e95cbe0f79abd5b2cb"
+    },
+    {
+      "path": "docs/frontdoor/provenance.json",
+      "status": "??",
+      "sha256": "1f4cb8a2f9ffd999b59adda96b2a75dfe9d9e612d66b8599eda5ff83bbbd7da5"
+    },
+    {
+      "path": "docs/frontdoor/underpaper-provenance.json",
+      "status": "??",
+      "sha256": "5a876b232e9a1031746054bca0879842c725fc3d4b74f2d347c283e6df4052ec"
+    },
+    {
+      "path": "docs/repo-cleanup-report.md",
+      "status": "??",
+      "sha256": "62f5486f89c7ae8c6777b5935f04651335f0b3885d943bcf3932432120cc722a"
+    },
+    {
+      "path": "forge/reading-rail.css",
+      "status": "??",
+      "sha256": "c4072cdc1472bd0e6d231385697220a0a149fbed150e29a24eda7185b09ffc71"
+    },
+    {
+      "path": "forge/reading-rail.js",
+      "status": "??",
+      "sha256": "236802654f156f500dcc74e0ad32f0be670b00c666ec918c93035e6c56e6bd8a"
+    },
+    {
+      "path": "frontdoor/art/compass-body-mobile.webp",
+      "status": "??",
+      "sha256": "55294a3d8b1da2ab00f6d2b1da9c95b91c0cc06e6c9089df74214613c29be6cf"
+    },
+    {
+      "path": "frontdoor/art/compass-body.webp",
+      "status": "??",
+      "sha256": "d8b54dea8cf0c04c93dec291209d9926fcaf2dfe3df0c6cf0687a1310b18d009"
+    },
+    {
+      "path": "frontdoor/art/compass-needle.webp",
+      "status": "??",
+      "sha256": "6b77ad41b58c5fece7e88f807117cb3cfbf821abb96c9f7e413c8ad058f0e1f3"
+    },
+    {
+      "path": "frontdoor/art/compass-on-page.webp",
+      "status": "??",
+      "sha256": "d5999408a996297f2a4eeaca1167b4607f41547f449c7820d802e9df5a31a1a0"
+    },
+    {
+      "path": "frontdoor/art/paper-aperture.png",
+      "status": "??",
+      "sha256": "65900c2179d053ef877f5fa5d4cd4cf349325c3df3a34388ec2003228ca1494d"
+    },
+    {
+      "path": "frontdoor/art/paper-clean.webp",
+      "status": "??",
+      "sha256": "fc4deb82c8b5d4c3635ca564de6169f638693b800f19875491807385b0a9ef0d"
+    },
+    {
+      "path": "frontdoor/art/paper-rim.webp",
+      "status": "??",
+      "sha256": "d8a8749076576ff80097f395f0145ad876095a7306c9dc9af44e395558d0dbaf"
+    },
+    {
+      "path": "frontdoor/art/seed-blue-teem-v2-mobile.webp",
+      "status": "??",
+      "sha256": "c72ca63c715220719963e9b2ca1563831eadca9905a4383016c1871344581e40"
+    },
+    {
+      "path": "frontdoor/art/seed-blue-teem-v2.webp",
+      "status": "??",
+      "sha256": "d54aaacb5a429f88a758c7abc7380216bfbe035ff9bbc74c3de8717a9fdd2a6b"
+    },
+    {
+      "path": "frontdoor/art/seed-food-bright-v2-mobile.webp",
+      "status": "??",
+      "sha256": "d986b111493bd04426c58f72d7fdf2d3c4d308efd85f0a16cae352bb618ffd07"
+    },
+    {
+      "path": "frontdoor/art/seed-food-bright-v2.webp",
+      "status": "??",
+      "sha256": "f63b649f2df83ff92bd262d025609650b240619f6b1b885e648adf52a0d83c46"
+    },
+    {
+      "path": "frontdoor/art/seed-food-warm-v2-mobile.webp",
+      "status": "??",
+      "sha256": "17046b59fcaf51b6db635effa04a746965303cd3e3585971c7840634ce59c175"
+    },
+    {
+      "path": "frontdoor/art/seed-food-warm-v2.webp",
+      "status": "??",
+      "sha256": "cee9b4fcfbfb1f6c9655a90088fa47e94f3a8d4d6989ba93f518d87295d608b2"
+    },
+    {
+      "path": "frontdoor/art/seed-green-pause-v2-mobile.webp",
+      "status": "??",
+      "sha256": "11fbf29f7dd77b4f45bdad3c4e410a37a7d9fbb007a1c390dda1830e02c60a7f"
+    },
+    {
+      "path": "frontdoor/art/seed-green-pause-v2.webp",
+      "status": "??",
+      "sha256": "cbbb60559d5fd12f0349332cdcb32e44038b48b014cc47bdcd18662c509514ef"
+    },
+    {
+      "path": "frontdoor/art/seed-red-ako-v2-mobile.webp",
+      "status": "??",
+      "sha256": "53ed6e1dc5028044090281a7c160cde452702dfbe2f03840125b1979998b1771"
+    },
+    {
+      "path": "frontdoor/art/seed-red-ako-v2.webp",
+      "status": "??",
+      "sha256": "a5b59acdc5cc4a5ff54c982b6b86ec0e35428bc7aeabdac58432e239166bf930"
+    },
+    {
+      "path": "frontdoor/art/seed-silver-maker-v2-mobile.webp",
+      "status": "??",
+      "sha256": "2f8e1eb808ee8cf30f87e62d8860a8139bcbd50ac215b99ec70f1704db269de7"
+    },
+    {
+      "path": "frontdoor/art/seed-silver-maker-v2.webp",
+      "status": "??",
+      "sha256": "85f1748459bc820eb148a5705df20835cbf0bb39fb58e8a0e90dcbdd2e835dc6"
+    },
+    {
+      "path": "frontdoor/art/underpaper-valley-mobile.webp",
+      "status": "??",
+      "sha256": "2c658960de401ef0bb2e02c6b8baeddf8ff2c6a10b1f6a111a113d447a886f15"
+    },
+    {
+      "path": "frontdoor/art/underpaper-valley.webp",
+      "status": "??",
+      "sha256": "9bc1342d5921dc17eb9a140d267dfbce8c5606b53e17e2f3ae54ce5f401fdda3"
+    },
+    {
+      "path": "frontdoor/art/workshop.webp",
+      "status": "??",
+      "sha256": "003d9f4bc91627fcb2dd862cad3c8e2380405728149e92c9ce73514835e6e81b"
+    },
+    {
+      "path": "frontdoor/assembly.js",
+      "status": "??",
+      "sha256": "68e44ec9df586480bb286dee0eb056b14018df16026415ac3f98c82cb327c2d0"
+    },
+    {
+      "path": "frontdoor/compass-path.js",
+      "status": "??",
+      "sha256": "d9292088d8149aad20abd9b9e109fc7e0f081500cf93f0d63b2a127d424b0de9"
+    },
+    {
+      "path": "frontdoor/compass-path.test.mjs",
+      "status": "??",
+      "sha256": "dac12eced751230af37fa7ea7015cf5872540766740a00754dbbc04b833ce051"
+    },
+    {
+      "path": "frontdoor/craft-handoff.js",
+      "status": "??",
+      "sha256": "89741e6ab1f0dd2cc0390d454d86e38fd42e35dc8d605d092228e7e7abde582f"
+    },
+    {
+      "path": "frontdoor/craft-handoff.test.mjs",
+      "status": "??",
+      "sha256": "4539727bd18615bddf8a3ad2e1c20f1ea516e20af9fe84d7eaba2a95827f5736"
+    },
+    {
+      "path": "frontdoor/exhibit.css",
+      "status": "??",
+      "sha256": "485303ec6dd8f32d4138fb033e01c2b64d1720e7f991b1491399efb49c05ebc0"
+    },
+    {
+      "path": "frontdoor/exhibit.js",
+      "status": "??",
+      "sha256": "114c13c5ade58798c1837753a29482b1d8b97321df19c41eefc03405caf4584c"
+    },
+    {
+      "path": "frontdoor/keepsakes.css",
+      "status": "??",
+      "sha256": "b9f2e3a5f52cdfa3e6340dcf0bf55d5fd5f0f432da62f93e520696ea728984e5"
+    },
+    {
+      "path": "frontdoor/keepsakes.js",
+      "status": "??",
+      "sha256": "7116ec2111aac366d85b9838c6fe2e21d0f0991fafc626c8d82d92a2f5370245"
+    },
+    {
+      "path": "frontdoor/keepsakes.test.mjs",
+      "status": "??",
+      "sha256": "d08e6a4f17554ee6197e318683e11b20c30a447ed4f88cf03d9a01c60b83b1e5"
+    },
+    {
+      "path": "frontdoor/motion.js",
+      "status": "??",
+      "sha256": "c475b86c0db7db71d202eb522ba32e870d0182b4b0246148a9d7277686675a30"
+    },
+    {
+      "path": "frontdoor/motion.test.mjs",
+      "status": "??",
+      "sha256": "f6f10230726921fe07b62ff7cbfab72097785555a653e9835e3dc5394b9345fe"
+    },
+    {
+      "path": "frontdoor/paper-crossing.js",
+      "status": "??",
+      "sha256": "c3edb4b8c6c25198c22decb8fef09603b2c2fdd23665058eedb5a63e62166599"
+    },
+    {
+      "path": "frontdoor/path-runtime.js",
+      "status": "??",
+      "sha256": "62a281250be5cca5bd7870eb1e076f13c90046106bb094756f2c17514e5b7f0e"
+    },
+    {
+      "path": "frontdoor/path.css",
+      "status": "??",
+      "sha256": "19aab029b99d0fd754780414a7cbd792e67c40a1a2ef3684a3ab4a48a6f295db"
+    },
+    {
+      "path": "frontdoor/rewards.css",
+      "status": "??",
+      "sha256": "3ceead0887f1f1e38040dca171034608298b1d484d2b8338d4da58049c5a0b10"
+    },
+    {
+      "path": "frontdoor/rewards.js",
+      "status": "??",
+      "sha256": "b89befa5aeed6f66ddf6b202becacead2ca7fccc96ce646a1d18a7bff5c60ef1"
+    },
+    {
+      "path": "frontdoor/rewards.test.mjs",
+      "status": "??",
+      "sha256": "9803e8fad7f69ae091831e2653501d434faf85b65d3ec2a9f5810517496e4da9"
+    },
+    {
+      "path": "frontdoor/seed-path.js",
+      "status": "??",
+      "sha256": "eb16b35233b158512bed1f93cfd4bab3a1650ec4049c01ada1ad9603ad39de36"
+    },
+    {
+      "path": "frontdoor/seed-path.test.mjs",
+      "status": "??",
+      "sha256": "7ea317921ad3194b98e0abefcd5e77951dabce78e8569b3f020f4648c2309579"
+    },
+    {
+      "path": "frontdoor/underpaper.js",
+      "status": "??",
+      "sha256": "8420cdfd8331e452adffd3a85d3f85923e7fcf95a2fcc8b48b977b7675609508"
+    },
+    {
+      "path": "guild/assets/chest-light.webp",
+      "status": "??",
+      "sha256": "8ed03bb4c1909d396e934ac1b5973e0dd26835f436f9804711f6ca8f7359f76b"
+    },
+    {
+      "path": "guild/assets/coin-splash.webp",
+      "status": "??",
+      "sha256": "5c07d6de9980e09c0012122c716c1868bb3ea73d916d7c9c459e1f1e5652bb83"
+    },
+    {
+      "path": "guild/assets/dungeon-key.webp",
+      "status": "??",
+      "sha256": "b37f4c314d94ca6c44671b3f3505c2968741ca872066d26b3eb1f59919711f47"
+    },
+    {
+      "path": "guild/assets/extras/golden_emerald_magical_light_sweep.webp",
+      "status": "??",
+      "sha256": "8ed0d9aef2b8947b1b52772f20e7b83b7c0fafbb38fe2a898f506216b3d130e3"
+    },
+    {
+      "path": "guild/assets/extras/ornate_emerald_gold_fantasy_frame_glow.webp",
+      "status": "??",
+      "sha256": "4cdc75c29e646f383bf8bda2f68274f07ba1d16046ad47f4d7bf2f411c6effb6"
+    },
+    {
+      "path": "guild/assets/hero-card-aura.webp",
+      "status": "??",
+      "sha256": "cb4b28fbfba98752d2f7064ebb63565fd9ad6525c4f6811d359d8f8a2905848e"
+    },
+    {
+      "path": "guild/assets/hero-card.webp",
+      "status": "??",
+      "sha256": "b8d6f93c9387db08adb057ac32661ba23ceb51f2cc4da96acdce4d0cae710faa"
+    },
+    {
+      "path": "guild/assets/spark-x.webp",
+      "status": "??",
+      "sha256": "6046b67d6f794626ab711896a40efc219050feb269fc0652b246269cbc02913f"
+    },
+    {
+      "path": "guild/assets/treasure-chest.webp",
+      "status": "??",
+      "sha256": "09094de529f0bec838a99d67a673d220ba7b4efec30a99b82a01da004a1727db"
+    },
+    {
+      "path": "home/index.html",
+      "status": "??",
+      "sha256": "4255a4566f2b5d8834c8cd441276c6b9b14dd0502601f0f7b770bf9e476830e5"
+    },
+    {
+      "path": "img/achievement-hero-guild-x.webp",
+      "status": "??",
+      "sha256": "0dfbf553e1e1120e9eb87bd8371ed05e53185ac9c2b7463936f457e8e4d64085"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv1-source.webp",
+      "status": "??",
+      "sha256": "dba6100f3d241113c6d29aa61997ee4f88016bef20092626eeb2096868dd7642"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv2-taste.webp",
+      "status": "??",
+      "sha256": "ee153472ebc6ae201820fe8e62cfcfc0ab1268d328bb1e6e4eba4387c760794b"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv3-cook.webp",
+      "status": "??",
+      "sha256": "cc1eb03433886b0a13a336ba9d6f68705a783b2d3b98947b733484c8c5aee430"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv4-split.webp",
+      "status": "??",
+      "sha256": "fbb50900a2cb59a69836c7a2f4b546cb39820d2ab697c0608d6c76cfd64d15df"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv5-season.webp",
+      "status": "??",
+      "sha256": "4f336361b43938ae1d5bda69010471c1681abd8c97ceee3b2635dd669a5a7c28"
+    },
+    {
+      "path": "img/classroom-kitchen-20260812-1445/lv6-serve-steak.webp",
+      "status": "??",
+      "sha256": "de0868d8788e2e5901c4a0174aa6be50f3ebfa260936756638df0c87bca057e6"
+    },
+    {
+      "path": "img/core7-achievement-01-victory-wheel.webp",
+      "status": "??",
+      "sha256": "49c9845169f1381ac7025772d66871eebf3118eb4e60c14f879d94d582db12a4"
+    },
+    {
+      "path": "img/core7-achievement-02-first-match.webp",
+      "status": "??",
+      "sha256": "c0d451075d5a57b0c892ea1eebfe5eaba0b41ce7c250820ed674fcb1058a7430"
+    },
+    {
+      "path": "img/core7-achievement-03-first-victory.webp",
+      "status": "??",
+      "sha256": "26daf5ceab5ecc327ab3ad98f3c6421e7fb4ad0dd5ca18234648c2eff203d671"
+    },
+    {
+      "path": "img/core7-achievement-04-first-friend-match.webp",
+      "status": "??",
+      "sha256": "cac6d68c286cd5e5dfe52b338a8fd27ee59949012e1209770db7ec17f9dcc4ae"
+    },
+    {
+      "path": "img/core7-achievement-05-first-set.webp",
+      "status": "??",
+      "sha256": "056008bea8b8145fdcb94eb295c754362eb63f4ddc869b1c2c2a68f54d4853d6"
+    },
+    {
+      "path": "img/core7-achievement-06-first-hand.webp",
+      "status": "??",
+      "sha256": "de6794e86b459c935cb08b216deea8670440c3d818420a4feea1841e9803bbf3"
+    },
+    {
+      "path": "img/core7-achievement-07-full-collection.webp",
+      "status": "??",
+      "sha256": "350439f2553580770c6953b44756b4b6d1d3c6e27ce4ed1f664ca649b6f1b658"
+    },
+    {
+      "path": "img/hall-classroom.webp",
+      "status": "??",
+      "sha256": "36f3042d951967a0a47ad17855b40e2c660edeb902fe45f6175fb9d002002e50"
+    },
+    {
+      "path": "img/hall-why.webp",
+      "status": "??",
+      "sha256": "91ab92abcfa1f63728104355ddd9de04505baccd35147231ef0b87c72d823aee"
+    },
+    {
+      "path": "img/lv4/gemini-notebook-studio.webp",
+      "status": "??",
+      "sha256": "a849bb278e36c03a3ec6c74973ca14b1bdfb912bcda91b3601b84f209833ecee"
+    },
+    {
+      "path": "meet/meet-ai.e2e.mjs",
+      "status": "??",
+      "sha256": "9617c07bec9f66f9c89f183ef6761b5b75fa1f9754061bce1ba994f97a9ec312"
+    },
+    {
+      "path": "scripts/test-forge-generator.py",
+      "status": "??",
+      "sha256": "5dcf7a31f8a03142e2e55d90467e0c2dabe35039c986599a5ab98a54a845fa9a"
+    },
+    {
+      "path": "scripts/verify-public-links.mjs",
+      "status": "??",
+      "sha256": "cbc120264fdb3dd86f8b3e4a9944579f1a8f235d160d29955c193598ea17d8cf"
+    },
+    {
+      "path": "scripts/verify-repo-assets.py",
+      "status": "??",
+      "sha256": "a6e061a3ef57efab437d1427f2084ee512c239c231a3732d6678be93a0d02921"
+    },
+    {
+      "path": "tests/ako/handoff.e2e.mjs",
+      "status": "??",
+      "sha256": "bc813e70d7de0dc406b4a8dda18629ea5f35dda14e13358b77a06bbe13ec4cbf"
+    },
+    {
+      "path": "tests/ako/kitchen.e2e.mjs",
+      "status": "??",
+      "sha256": "eaeebab7a946b56e7a7258f7e90572d3e0e16241704441ede155572059efe6af"
+    },
+    {
+      "path": "tests/ako/kitchen.test.mjs",
+      "status": "??",
+      "sha256": "8edef72dad92f53df28ce003d4d1ba017d54c34d5d9b0ef1189f8a1446b8a31b"
+    },
+    {
+      "path": "tests/frontdoor/art.e2e.mjs",
+      "status": "??",
+      "sha256": "c47aa82c81ec3d8a19bf1e189ee54188d047e16007446a5033532de46f661bcb"
+    },
+    {
+      "path": "tests/frontdoor/completion.e2e.mjs",
+      "status": "??",
+      "sha256": "ced562128f2d8472daae09842d344402fc6d5f639bb33c6a630e6c735c472eeb"
+    },
+    {
+      "path": "tests/frontdoor/craft.e2e.mjs",
+      "status": "??",
+      "sha256": "aa079eee6802a62f609b4f594fb9878eedd53bc6679fc18af9488d07db6833fe"
+    },
+    {
+      "path": "tests/frontdoor/house.e2e.mjs",
+      "status": "??",
+      "sha256": "81a91846d85e20a62097d942e3938ebfb7309eef07118c4973fce407975c5460"
+    },
+    {
+      "path": "tests/frontdoor/learning-destinations.e2e.mjs",
+      "status": "??",
+      "sha256": "1c526be7cc457138a2955bc10627ffe8fa67e8f773105518db4c52d18733ab0c"
+    },
+    {
+      "path": "tests/frontdoor/learning.e2e.mjs",
+      "status": "??",
+      "sha256": "460fe478ef20aaa8d23b87fa3f675f680565fa5ee5d2352532520e64f9800b70"
+    },
+    {
+      "path": "tests/frontdoor/meeting-intake.e2e.mjs",
+      "status": "??",
+      "sha256": "6de437265952424c802875c811c595f05fd3d08569bcfb6ff92a4cbade48a1fb"
+    },
+    {
+      "path": "tests/frontdoor/motion.e2e.mjs",
+      "status": "??",
+      "sha256": "e0a4f1852c0b1c780aead5f9362855600535b1533b6649238550a4af03d33afd"
+    },
+    {
+      "path": "tests/frontdoor/opening.e2e.mjs",
+      "status": "??",
+      "sha256": "178a8f470f6469d28b8112d067e552dd1b03524fe327b9373f4dd85b636d7b5f"
+    },
+    {
+      "path": "tests/frontdoor/performance.e2e.mjs",
+      "status": "??",
+      "sha256": "926b147ceb12c0f6c4a6837cfcfff9d4bb781b95634c9877d788e0a7eafdc803"
+    },
+    {
+      "path": "tests/frontdoor/rgbs.e2e.mjs",
+      "status": "??",
+      "sha256": "c6481da93a0d39fe5aa817613d72754d4769f81a9555e87e13ec218c24d45321"
+    },
+    {
+      "path": "tests/frontdoor/root.e2e.mjs",
+      "status": "??",
+      "sha256": "26cb7738bbcf565212737bd605e824861b906aa307c1e1cfc91cd03774671cb0"
+    },
+    {
+      "path": "tests/frontdoor/root.test.mjs",
+      "status": "??",
+      "sha256": "8823d087797a2e1bd3ee19ede84ac13d37c5f8ac05e82f09b4aee7b2547b55d1"
+    },
+    {
+      "path": "tests/teambook/compass-entry.e2e.mjs",
+      "status": "??",
+      "sha256": "5e626cc6b853fc6298212a1951e1fb6aabd2de74e15992c98acfd28a88496635"
+    },
+    {
+      "path": "tools/sync-frontdoor-root.mjs",
+      "status": "??",
+      "sha256": "b161d19dc7550dabe2e833166ae856cb7b738927da5103cf7c866f151a60c478"
+    },
+    {
+      "path": "xircle/assets/v3/ASSETS.md",
+      "status": "??",
+      "sha256": "8e65f8a0f3e1232bc288dfd6131e9ca53367e97672ce4d54764f055c668e5440"
+    },
+    {
+      "path": "xircle/assets/v3/VISUAL_REFINEMENT.md",
+      "status": "??",
+      "sha256": "ae8e56fb0464acdd8ff7686bfa69bc34009ca7b10690f54856da606fc8c80f21"
+    },
+    {
+      "path": "xircle/assets/v3/food-1448.webp",
+      "status": "??",
+      "sha256": "bcc443b4b325f1508313a55a47abdb89bac4ee7f8c8bdb0b8c80097163192eeb"
+    },
+    {
+      "path": "xircle/assets/v3/food-800.webp",
+      "status": "??",
+      "sha256": "5e13f05dfabc57a2cb79653d0a640031cd5a67039e7900646da7aa1fbedd8c19"
+    },
+    {
+      "path": "xircle/assets/v3/hero-1448.webp",
+      "status": "??",
+      "sha256": "7957dba35feb70f45463c0edceccb844e1ddd5d9cd385d1eb8faf734952b0ffb"
+    },
+    {
+      "path": "xircle/assets/v3/hero-800.webp",
+      "status": "??",
+      "sha256": "3b61aeb126fb9b9a069c304633d6c9e63ec171f6e2f4459078cdfa89903949e1"
+    },
+    {
+      "path": "xircle/assets/v3/meal-detail-1448.webp",
+      "status": "??",
+      "sha256": "a20d0a936deb8549fe38dc4f13f0daaf3e34788f00f942b07aba03734a0c117a"
+    },
+    {
+      "path": "xircle/assets/v3/meal-detail-800.webp",
+      "status": "??",
+      "sha256": "1b958b5c843fa80251ef0c4529aa50deba1771d09c1c0388a089c5c8e73e363e"
+    },
+    {
+      "path": "xircle/assets/v3/move-1448.webp",
+      "status": "??",
+      "sha256": "cb63d01105769b0c7689d598d1a0e6f1c7c55e8a6e30aa5ce6b109ad4c1a841e"
+    },
+    {
+      "path": "xircle/assets/v3/move-800.webp",
+      "status": "??",
+      "sha256": "f1fb1453b77278dc4699cf93ef7b1baa3c9b6fbb8faba2c64a5d8936e5e920d1"
+    },
+    {
+      "path": "xircle/assets/v3/scale-600.webp",
+      "status": "??",
+      "sha256": "4ed6a38d7fb0925cb31bd8e5d7684445861e57f363c6545b7de7998a47f5bb7d"
+    },
+    {
+      "path": "xircle/assets/v3/sleep-clean-1448.webp",
+      "status": "??",
+      "sha256": "615491a2d25245ad3aa07f7feabd5c2a96ece9c0213904b1cd4bdde5c643e6ea"
+    },
+    {
+      "path": "xircle/assets/v3/sleep-clean-800.webp",
+      "status": "??",
+      "sha256": "11cda3805f3e2c3465863a400fe493735dba77553f7972d7d22f374b99d7780e"
+    },
+    {
+      "path": "xircle/compass-entry.e2e.mjs",
+      "status": "??",
+      "sha256": "6652669a37ab2a45c6df23098b9b11c9c94b43944f585bcc62557aaa1616af53"
+    },
+    {
+      "path": "xircle/entry.css",
+      "status": "??",
+      "sha256": "2e33bb2de8898e4c10bd251f6c9ac0e4ef3965ad9c60e9037c746049bd10ead5"
+    },
+    {
+      "path": "xircle/experience-v3.css",
+      "status": "??",
+      "sha256": "cde8d1e77020518d96521879238ab01f5f43325c3d1cb0cb4c1d10171c4352d2"
+    },
+    {
+      "path": "xircle/experience-v3.js",
+      "status": "??",
+      "sha256": "1bf03507cc6aad89c21f9000785bdad71f7e5e31766c6f8bc04b3fdda83824b1"
+    },
+    {
+      "path": "xircle/legacy-entry.js",
+      "status": "??",
+      "sha256": "478e80ab6d7f94db9e417b3d47fcb7d5c15c85708e9135d2b1bc1fe782b1c35e"
+    },
+    {
+      "path": "xircle/reference.css",
+      "status": "??",
+      "sha256": "cada4515778e7e6b4e1f63076b7bc0dc3bcae4bf232d684071a13490ed786fce"
+    },
+    {
+      "path": "xircle/reference.js",
+      "status": "??",
+      "sha256": "2ebad695978d1e3985d438e12d93da7d98dc1434e6e63f4a9924c8816313f0a9"
+    },
+    {
+      "path": "xircle/route-contract.js",
+      "status": "??",
+      "sha256": "85dd8f0a3f3bd3b70045a317f10afc873314409faeb7e6d4ecb9b86ddb62d548"
+    },
+    {
+      "path": "xircle/route-contract.test.mjs",
+      "status": "??",
+      "sha256": "92680931157db7d72e2925833d302143f25dda87949eb88fb43a17f9f819cc7f"
+    }
+  ],
+  "owner_hold": [
+    {
+      "path": ".github/workflows/xvisor-1.0-release.yml",
+      "status": " M"
+    },
+    {
+      "path": "api/xvisor-scores.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/index.html",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/XVISOR_QUEST_PATCH_1.0b.md",
+      "status": " D"
+    },
+    {
+      "path": "xvisor/quest/game-actions.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-art.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-audio.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-copy.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-data.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-engine.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-panels.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-presentation.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-release.test.mjs",
+      "status": " D"
+    },
+    {
+      "path": "xvisor/quest/game-ui.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game-ui.test.mjs",
+      "status": " D"
+    },
+    {
+      "path": "xvisor/quest/game-world.js",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/game.css",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/index.html",
+      "status": " M"
+    },
+    {
+      "path": "xvisor/quest/quality-preview.html",
+      "status": " M"
+    },
+    {
+      "path": "docs/xvisor/RELEASE_1.1.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/xvisor/XVISOR_1.1_REVIEW.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/xvisor/XVISOR_QUALITY2_REVIEW.md",
+      "status": "??"
+    },
+    {
+      "path": "docs/xvisor/XVISOR_QUEST_PATCH_1.0b.md",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/README.md",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-audio-lifecycle.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-events.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-experience.e2e.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-growth.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-income-layout.e2e.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-loading.e2e.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-player-entry.e2e.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-quick-choice.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-release.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-review-fixtures.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-routine.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-score-retention.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/game-ui.test.mjs",
+      "status": "??"
+    },
+    {
+      "path": "tests/xvisor/quality-preview.html",
+      "status": "??"
+    },
+    {
+      "path": "xvisor/quest/game-action-scenes.js",
+      "status": "??"
+    },
+    {
+      "path": "xvisor/quest/game-boot.js",
+      "status": "??"
+    },
+    {
+      "path": "xvisor/quest/game-portrait.js",
+      "status": "??"
+    },
+    {
+      "path": "xvisor/quest/game-story.js",
+      "status": "??"
+    }
+  ],
+  "self": "This inventory does not hash itself."
+}

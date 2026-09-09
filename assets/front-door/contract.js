@@ -8,7 +8,7 @@ export const ENVIRONMENTS = Object.freeze(['local', 'preview', 'prod']);
 export const VISITOR_CLASSES = Object.freeze(['new', 'legacy', 'returning-frontdoor', 'returning-room', 'veteran']);
 export const INTENTS = Object.freeze(['self', 'build', 'people', 'income', 'curious']);
 export const SECONDARY_INTENTS = Object.freeze(['see', 'repeat', 'human-help', 'proof', 'learn', 'improve', 'help', 'system', 'together', 'skill', 'business', 'structured-work', 'urgent', 'anomaly']);
-export const DOORS = Object.freeze(['dungeon', 'classroom', 'hall', 'xircle', 'routinex', 'meet', 'xvisor', 'teambook']);
+export const DOORS = Object.freeze(['dungeon', 'classroom', 'hall', 'xircle', 'routinex', 'meet', 'xvisor', 'teambook', 'ako', 'forge', 'home']);
 export const VIEWPORTS = Object.freeze(['mobile', 'tablet', 'desktop']);
 export const GRAPHICS_TIERS = Object.freeze(['essential', 'premium', 'cinematic']);
 export const MOTIONS = Object.freeze(['full', 'reduced']);
@@ -68,6 +68,7 @@ export function normalizeSource({ search = '', referrer = '' } = {}) {
 
 const enumFields = { source: SOURCES, visitorClass: VISITOR_CLASSES, intentPrimary: INTENTS, intentSecondary: SECONDARY_INTENTS, doorId: DOORS, graphicsTier: GRAPHICS_TIERS, viewport: VIEWPORTS, motion: MOTIONS, audio: AUDIO_STATES };
 const propertyEnums = {
+  seedColor: ['red','green','blue','silver'],
   fromNode: ['frontdoor', ...INTENTS, 'value', 'reward', 'door', 'anomaly', 'legacy', ...DOORS],
   toNode: ['frontdoor', ...INTENTS, 'value', 'reward', 'door', 'anomaly', 'legacy', ...DOORS],
   returnReason: ['later-visit'], choiceStage: ['primary', 'secondary'],

@@ -31,3 +31,11 @@
 /core7/result/*                          /core7/result/index.html  200
 /core7/cards/*                           /core7/cards/index.html  200
 /core7/profile/*                         /core7/profile/index.html  200
+
+# XIRCLE — ชื่อที่แชร์ต่างตัวพิมพ์ ใช้หน้าเดียว ไม่พึ่ง Worker
+# rewrite ไปไฟล์จริง ไม่ redirect ตัวพิมพ์ จึงไม่วนกลับที่ host แบบ case-insensitive
+/Xircle                                  /xircle/index.html  200
+/Xircle/                                 /xircle/index.html  200
+/XIRCLE                                  /xircle/index.html  200
+/XIRCLE/                                 /xircle/index.html  200
+/invite                                  /invite/  302

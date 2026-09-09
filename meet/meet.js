@@ -15,8 +15,37 @@
   const root = document.querySelector('#session-root');
   const $ = selector => document.querySelector(selector);
   const $$ = selector => Array.from(document.querySelectorAll(selector));
+  const entryParams = new URLSearchParams(window.location.search);
+  const entryValue = (key, value) => entryParams.getAll(key).length === 1 && entryParams.get(key) === value;
+  const compassEntry = entryValue('entry', 'compass');
+  const compassOpportunityEntry = compassEntry && entryValue('intent', 'opportunity');
+  const OPPORTUNITY_NEEDS = Object.freeze({ 'first-test': 'ลองก้าวแรกให้เห็นภาพ', partner: 'คุยเรื่องหาคนร่วมทำ', mentor: 'คุยกับคนที่ช่วยมองทางได้' });
+  const OPPORTUNITY_OFFERS = Object.freeze({ skill: 'ทักษะที่มี', time: 'เวลาที่พร้อมลอง', project: 'โครงการที่กำลังทำ' });
+  const boundedValue = (registry, value) => typeof value === 'string' && Object.hasOwn(registry, value) ? value : null;
+  const entryOpportunityNeed = compassOpportunityEntry && entryParams.getAll('need').length === 1 ? boundedValue(OPPORTUNITY_NEEDS, entryParams.get('need')) : null;
+  const entryOpportunityOffer = compassOpportunityEntry && entryParams.getAll('offer').length === 1 ? boundedValue(OPPORTUNITY_OFFERS, entryParams.get('offer')) : null;
+  const xircleEntry = entryValue('intent', 'health') && entryValue('from', 'xircle');
+  const openXircleBooking = xircleEntry && entryValue('open', 'booking');
+  const HEALTH_FOCUS = Object.freeze({ sleep: 'การพัก', move: 'การขยับ', food: 'การกิน' });
+  const validHealthFocus = value => typeof value === 'string' && Object.hasOwn(HEALTH_FOCUS, value);
+  const entryHealthFocus = xircleEntry && entryParams.getAll('focus').length === 1 && validHealthFocus(entryParams.get('focus'))
+    ? entryParams.get('focus') : null;
+  let pendingXircleDraft = null;
 
   const INTENTS = [
+    {
+      id: 'ai', label: 'เรียนและใช้ AI', short: 'จากสิ่งที่อยากทำ ไปถึงวิธีเรียนที่เหมาะกับคุณ',
+      kicker: 'AI WITH TEEM', head: 'เอางานที่อยากทำ มาคุยว่าจะใช้ AI ช่วยตรงไหน',
+      outcomes: [
+        'เริ่มจากงานและเป้าหมายของคุณ แล้วคุยขอบเขตที่อยากทำให้ได้',
+        'เลือกได้ทั้งเรียน 1–1 / Executive coaching หรือเวิร์กช็อปให้ทีมและองค์กร',
+        'คุยเรื่องคอร์สย่อยของทีม หรือให้ช่วยแนะนำคอร์ส Pi R Academy ที่ตรงกับคุณ',
+      ],
+      qualifier: 'นี่คือคำขอคุยเรื่องการเรียน เรายืนยันขอบเขต เวลา และค่าเรียนกับคุณก่อนตัดสินใจ',
+      cta: 'คุยกับทีมเรื่อง AI',
+      ack: ['เอาสิ่งที่อยากทำด้วย AI มาคุยกับทีมได้', 'เราจะคุยเป้าหมายและรูปแบบการเรียนก่อนยืนยันขอบเขต เวลา และค่าเรียน'],
+      color: '#4f8cff', icon: 'path',
+    },
     {
       id: 'health', label: 'สุขภาพและ Routine', short: 'อยากรู้จักร่างกายและสิ่งที่ทำได้จริง',
       kicker: 'XIRCLE SCALE → HEALTH PLAN', head: 'วัดให้เห็นก่อน แล้วเลือกจุดเริ่มที่ทำได้จริง',
@@ -58,13 +87,68 @@
     },
   ];
 
+  if (xircleEntry) {
+    root.dataset.entry = 'xircle';
+    Object.assign(INTENTS.find(intent => intent.id === 'health'), {
+      kicker: 'XIRCLE · TEAM + AKO',
+      head: 'ดูข้อมูล XIRCLE และกิจวัตรกับทีม + เอโกะ',
+      outcomes: [
+        'ดูแนวโน้มจากข้อมูลที่คุณสะดวกแชร์',
+        'ต่อข้อมูลกับสิ่งที่เกิดขึ้นจริงในชีวิตคุณ',
+        'เลือกหนึ่งก้าวที่พอลองทำได้ หรือคุยเรื่องเริ่มใช้ XIRCLE',
+      ],
+      qualifier: 'มีแอปแล้ว หรือยังไม่มี ก็นัดเริ่มต้นได้ · Session แรกไม่มีค่าใช้จ่าย',
+      cta: 'นัดดูข้อมูลกับทีม + เอโกะ',
+      ack: ['ดูข้อมูล XIRCLE และกิจวัตรกับทีม + เอโกะ', 'มีแอปแล้ว หรือยังไม่มี ก็นัดเริ่มต้นได้'],
+    });
+  }
+  const legacyOpportunity = { ...INTENTS.find(intent => intent.id === 'opportunity') };
+  function useCompassOpportunity(enabled = true) {
+    if (!enabled) {
+      delete root.dataset.opportunity;
+      Object.assign(INTENTS.find(intent => intent.id === 'opportunity'), legacyOpportunity);
+      return;
+    }
+    root.dataset.opportunity = 'compass';
+    Object.assign(INTENTS.find(intent => intent.id === 'opportunity'), {
+      label: 'คุยเรื่องโอกาสและคนร่วมทาง', short: 'เริ่มจากสิ่งที่คุณมี และสิ่งที่อยากลอง',
+      kicker: 'ONE POSSIBLE NEXT STEP', head: 'เอาสิ่งที่มี มาดูว่าต่อยอดทางไหนได้บ้าง',
+      outcomes: [
+        'คุยสิ่งที่อยากลอง คู่กับทักษะ เวลา หรือโครงการที่คุณมี',
+        'ช่วยกันเลือกก้าวเล็กๆ ที่พอทดสอบได้ก่อนลงทุนมากขึ้น',
+        'ถ้ามีคนหรือความรู้ในเครือข่ายที่เข้ากัน ค่อยคุยความเป็นไปได้ในการแนะนำ',
+      ],
+      qualifier: 'เริ่มจากการคุยให้เห็นความเหมาะสม ยังไม่ได้ยืนยันรายได้ งาน หรือการจับคู่กับใคร',
+      cta: 'นัดคุยเรื่องก้าวถัดไป',
+      ack: ['เอาสิ่งที่คุณมี กับสิ่งที่อยากลอง มาคุยกันได้', 'เราจะเริ่มจากความเหมาะสมและก้าวที่ลองได้จริง แล้วค่อยดูว่ามีอะไรหรือใครที่ช่วยต่อได้'],
+    });
+  }
+  if (compassOpportunityEntry) useCompassOpportunity();
+  function compassReturnLink(className = 'button button-quiet') {
+    const link = document.createElement('a'); link.href = '/frontdoor/'; link.className = className;
+    link.textContent = 'กลับไปที่เข็มทิศ'; return link;
+  }
+  if (compassEntry) {
+    const brand = $('.brand-lockup');
+    brand.href = '/frontdoor/'; brand.setAttribute('aria-label', 'myClover — กลับไปที่เข็มทิศ');
+    $('#ready').appendChild(compassReturnLink());
+  }
+
   const ICONS = {
     body: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M7 20c.5-5 2.2-7 5-7s4.5 2 5 7"/><path d="M4 12h3m10 0h3"/></svg>',
     path: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19c1-7 4-11 9-11h5"/><path d="m15 4 4 4-4 4"/><circle cx="5" cy="19" r="2"/></svg>',
     open: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 6v12M6 12h12"/></svg>',
   };
 
-  const page = { intent: null };
+  const AI_TOPICS = [
+    { id: 'private', label: 'เรียน 1–1 / Executive coaching', detail: 'ให้เข้ากับงานและเป้าหมายของคุณ' },
+    { id: 'team', label: 'เวิร์กช็อปทีม / องค์กร', detail: 'คุยโจทย์และการใช้ AI ร่วมกันในทีม' },
+    { id: 'course', label: 'คอร์สย่อยของทีม', detail: 'อยากเรียนเรื่องหนึ่งให้ทำได้จริง' },
+    { id: 'academy', label: 'แนะนำคอร์ส Pi R Academy', detail: 'ให้ช่วยเลือกคอร์สที่เหมาะกับพื้นฐานและเป้าหมาย' },
+    { id: 'explore', label: 'ช่วยเลือกวิธีเรียน AI', detail: 'ยังไม่ต้องรู้ว่าจะเรียนแบบไหน' },
+  ];
+  const aiTopicById = id => AI_TOPICS.find(topic => topic.id === id) || null;
+  const page = { intent: null, aiTopic: null };
   const intentById = id => INTENTS.find(intent => intent.id === id) || null;
   const track = (event, payload = {}) => {
     window.dataLayer = window.dataLayer || [];
@@ -120,7 +204,7 @@
   }
 
   function renderFolder() {
-    $('#closed-folder').hidden = page.intent !== 'opportunity';
+    $('#closed-folder').hidden = page.intent !== 'opportunity' || root.dataset.opportunity === 'compass';
   }
 
   function syncBookingLabels() {
@@ -192,12 +276,17 @@
   }
 
   const booking = {
-    open: false, step: 0, schedulePart: 'date', scheduleWeek: null, intent: null, mode: null, day: null, time: null,
+    open: false, step: 0, schedulePart: 'date', scheduleWeek: null, intent: null, aiTopic: null, healthFocus: null, mode: null, day: null, time: null,
+    opportunityContext: false, opportunityNeed: null, opportunityOffer: null,
     name: '', contact: '', note: '', consent: false, preparing: false, sending: false,
     done: false, error: '', reference: '', closeConfirm: false, opener: null,
   };
 
   const MODES = {
+    ai: [
+      { value: 'ออนไลน์', label: 'ออนไลน์', meta: 'ขอเวลาคุยผ่าน Video call' },
+      { value: 'เจอกันจริง', label: 'เจอกันจริง', meta: 'คุยสถานที่และเวลาร่วมกัน' },
+    ],
     health: [
       { value: 'เจอกัน + Body Check-in', label: 'เจอกัน + Body Check-in', meta: 'Bangkok · 45 นาที' },
       { value: 'ออนไลน์', label: 'ออนไลน์', meta: 'Video call · 25 นาที' },
@@ -324,7 +413,8 @@
   }
 
   function modeLabel(value) {
-    const found = Object.values(MODES).flat().find(mode => mode.value === value);
+    const found = (MODES[booking.intent] || Object.values(MODES).flat()).find(mode => mode.value === value);
+    if (found && booking.intent === 'opportunity' && booking.opportunityContext) return `${found.label} · คุยเวลาและรายละเอียดร่วมกัน`;
     return found ? `${found.label} · ${found.meta}` : value || '';
   }
 
@@ -335,6 +425,12 @@
     booking.schedulePart = 'date';
     booking.scheduleWeek = null;
     booking.intent = page.intent;
+    booking.aiTopic = page.intent === 'ai' ? page.aiTopic : null;
+    booking.healthFocus = source !== 'draft' && page.intent === 'health' ? entryHealthFocus : null;
+    booking.opportunityContext = source !== 'draft' && page.intent === 'opportunity' && compassOpportunityEntry;
+    booking.opportunityNeed = booking.opportunityContext ? entryOpportunityNeed : null;
+    booking.opportunityOffer = booking.opportunityContext ? entryOpportunityOffer : null;
+    if (booking.intent === 'opportunity' && source !== 'draft') useCompassOpportunity(booking.opportunityContext);
     booking.mode = null; booking.day = null; booking.time = null;
     booking.name = ''; booking.contact = ''; booking.note = ''; booking.consent = false;
     booking.preparing = false; booking.sending = false; booking.done = false; booking.error = '';
@@ -437,12 +533,22 @@
   }
 
   function appendHistory(thread) {
-    thread.appendChild(guideMessage(['ก่อนลงนัด ขอรู้จักคุณนิดหนึ่ง', 'วันนี้อะไรพาคุณมาหาเรา?'], true));
+    if (!(xircleEntry && booking.intent === 'health' && booking.step > 0)) {
+      thread.appendChild(guideMessage(['ก่อนลงนัด ขอรู้จักคุณนิดหนึ่ง', 'วันนี้อะไรพาคุณมาหาเรา?'], true));
+    }
     if (booking.step === 0) return;
     const intent = intentById(booking.intent);
     if (!intent) return;
     thread.appendChild(visitorMessage(intent.label));
-    if (booking.step > 0 || booking.preparing) thread.appendChild(guideMessage(intent.ack, true));
+    if (booking.intent === 'ai' && aiTopicById(booking.aiTopic)) thread.appendChild(visitorMessage(aiTopicById(booking.aiTopic).label));
+    if (booking.intent === 'opportunity' && booking.opportunityContext) {
+      const details = [OPPORTUNITY_NEEDS[booking.opportunityNeed], OPPORTUNITY_OFFERS[booking.opportunityOffer]].filter(Boolean);
+      if (details.length) thread.appendChild(visitorMessage(details.join(' · ')));
+    }
+    if (booking.step > 0 || booking.preparing) {
+      const focus = booking.intent === 'health' && validHealthFocus(booking.healthFocus) ? HEALTH_FOCUS[booking.healthFocus] : null;
+      thread.appendChild(guideMessage(focus ? [`จากที่คุณอยากเริ่มดูแลเรื่อง${focus} มาคุยต่อกับทีม + เอโกะได้`, intent.ack[1]] : intent.ack, true));
+    }
     if (!booking.mode) return;
     thread.appendChild(visitorMessage(modeLabel(booking.mode)));
     if (booking.day) thread.appendChild(visitorMessage(dateLabel(booking.day)));
@@ -470,6 +576,7 @@
 
     if (booking.closeConfirm) return renderCloseConfirm(thread, footer);
     if (booking.done) return renderSuccess(thread, footer);
+    if (pendingXircleDraft) return renderXircleDraftChoice(thread, footer);
 
     appendHistory(thread);
     if (booking.preparing) {
@@ -493,6 +600,12 @@
     const buttons = INTENTS.map(intent => choiceButton(intent.label, intent.short, () => {
       pacedAdvance(() => {
         booking.intent = intent.id;
+        booking.aiTopic = intent.id === 'ai' ? page.aiTopic : null;
+        if (intent.id !== 'health') booking.healthFocus = null;
+        if (intent.id !== 'opportunity') { booking.opportunityContext = false; booking.opportunityNeed = null; booking.opportunityOffer = null; }
+        else if (compassOpportunityEntry && !booking.opportunityContext) {
+          booking.opportunityContext = true; booking.opportunityNeed = entryOpportunityNeed; booking.opportunityOffer = entryOpportunityOffer;
+        }
         selectIntent(intent.id, 'booking');
         track('meet_booking_step_completed', { step: 'intent', intent: intent.id });
       }, () => { booking.step = 1; });
@@ -502,9 +615,26 @@
   }
 
   function renderModeStep(thread) {
+    if (booking.intent === 'ai') {
+      if (!aiTopicById(booking.aiTopic)) {
+        thread.appendChild(guideMessage(['อยากคุยเรื่องการเรียนแบบไหน?']));
+        thread.appendChild(choices(AI_TOPICS.map(topic => choiceButton(topic.label, topic.detail, () => {
+          booking.aiTopic = topic.id;
+          renderBooking();
+        }))));
+        return;
+      }
+      const change = document.createElement('button');
+      change.type = 'button'; change.className = 'edit-answer'; change.textContent = 'เปลี่ยนเรื่องที่อยากคุยเกี่ยวกับ AI';
+      change.addEventListener('click', () => { booking.aiTopic = null; renderBooking(); });
+      thread.appendChild(change);
+    }
     thread.appendChild(guideMessage(['อยากเริ่มเจอกันแบบไหน?']));
     const modes = MODES[booking.intent] || MODES.curious;
-    const buttons = modes.map(mode => choiceButton(mode.label, mode.meta, () => {
+    const buttons = modes.map(mode => choiceButton(mode.label,
+      xircleEntry && booking.intent === 'health' && mode.value === 'ออนไลน์'
+        ? '25 นาที · เปิดข้อมูลที่คุณสะดวกแชร์ แล้วคุยเรื่องกิจวัตรด้วยกัน'
+        : booking.intent === 'opportunity' && booking.opportunityContext ? 'คุยเวลาและรายละเอียดร่วมกัน' : mode.meta, () => {
       pacedAdvance(() => {
         booking.mode = mode.value;
         booking.scheduleWeek = null;
@@ -516,7 +646,7 @@
 
   function renderScheduleStep(thread) {
     if (booking.schedulePart === 'date') {
-      thread.appendChild(guideMessage(['อยากเจอกันเมื่อไหร่?', 'เราจะโชว์เฉพาะวันที่ยังมีช่วงเวลาที่เป็นไปได้จากเวลาในเครื่องนี้']));
+      thread.appendChild(guideMessage(['อยากเจอกันเมื่อไหร่?', booking.intent === 'ai' ? 'เลือกเวลาที่คุณสะดวกก่อน เรายังต้องติดต่อกลับเพื่อยืนยันเวลาคุย' : 'เราจะโชว์เฉพาะวันที่ยังมีช่วงเวลาที่เป็นไปได้จากเวลาในเครื่องนี้']));
       const groups = scheduleGroups();
       const buttons = groups.direct.map(item => choiceButton(item.label, thaiShortDate(item.date), () => {
         pacedAdvance(() => {
@@ -628,6 +758,33 @@
     const contact = field('LINE หรือเบอร์ที่ติดต่อได้', 'session-contact', booking.contact, '@line / 08x-xxx-xxxx');
     const note = field('มีอะไรที่อยากให้เราเตรียมก่อนไหม?', 'session-note', booking.note, 'ไม่จำเป็นต้องกรอก', true);
     card.append(name.wrap, contact.wrap, note.wrap); thread.appendChild(card);
+    if (booking.intent === 'health' && (xircleEntry || validHealthFocus(booking.healthFocus))) {
+      const focus = document.createElement('label'); focus.className = 'field-label';
+      const caption = document.createElement('span'); caption.textContent = 'จุดเริ่มที่อยากคุย';
+      const select = document.createElement('select'); select.id = 'session-health-focus'; select.className = 'field';
+      select.setAttribute('aria-label', 'จุดเริ่มที่อยากคุย');
+      for (const [value, label] of [['', 'ยังไม่ระบุ'], ...Object.entries(HEALTH_FOCUS)]) {
+        const option = document.createElement('option'); option.value = value; option.textContent = label; select.appendChild(option);
+      }
+      select.value = validHealthFocus(booking.healthFocus) ? booking.healthFocus : '';
+      select.addEventListener('change', () => { booking.healthFocus = validHealthFocus(select.value) ? select.value : null; });
+      focus.append(caption, select); card.appendChild(focus);
+    }
+    if (booking.intent === 'opportunity' && booking.opportunityContext) {
+      for (const [key, label, registry] of [
+        ['opportunityNeed', 'สิ่งที่อยากคุยต่อ', OPPORTUNITY_NEEDS],
+        ['opportunityOffer', 'สิ่งที่คุณพร้อมนำมาลอง', OPPORTUNITY_OFFERS],
+      ]) {
+        const wrap = document.createElement('label'); wrap.className = 'field-label'; wrap.textContent = label;
+        const select = document.createElement('select'); select.className = 'field'; select.id = `session-${key}`;
+        for (const [value, text] of [['', 'ยังไม่ระบุ'], ...Object.entries(registry)]) {
+          const option = document.createElement('option'); option.value = value; option.textContent = text; select.appendChild(option);
+        }
+        select.value = boundedValue(registry, booking[key]) || '';
+        select.addEventListener('change', () => { booking[key] = boundedValue(registry, select.value); });
+        wrap.appendChild(select); card.appendChild(wrap);
+      }
+    }
     if (CONFIG.lineUrl) {
       const shortcut = document.createElement('a');
       shortcut.className = 'button button-quiet line-shortcut';
@@ -653,8 +810,7 @@
   }
 
   function reviewRow(label, value, step) {
-    const row = document.createElement('div'); row.className = 'review-row';
-    row.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+    const row = plainReviewRow(label, value);
     const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'edit-answer'; edit.textContent = 'แก้ไข';
     edit.addEventListener('click', () => {
       booking.step = step; booking.error = '';
@@ -676,22 +832,32 @@
     const card = document.createElement('div'); card.className = 'review-card';
     const title = document.createElement('div'); title.className = 'review-title'; title.textContent = 'YOUR MYCLOVER SESSION';
     card.append(title,
-      reviewRow('เรื่อง', intent?.label || '', 0),
+      reviewRow('เรื่อง', bookingIntentLabel(), 0),
       reviewRow('รูปแบบ', modeLabel(booking.mode), 1),
       reviewRow('เวลาที่ขอ', slotLabel(), 2),
       reviewRow('ติดต่อ', `${booking.name.trim()} · ${booking.contact.trim()}`, 3));
+    if (booking.intent === 'health' && validHealthFocus(booking.healthFocus)) card.appendChild(reviewRow('จุดเริ่มที่อยากคุย', HEALTH_FOCUS[booking.healthFocus], 3));
+    if (booking.intent === 'opportunity' && booking.opportunityContext) {
+      card.append(reviewRow('สิ่งที่อยากคุยต่อ', OPPORTUNITY_NEEDS[booking.opportunityNeed] || 'ยังไม่ระบุ', 3), reviewRow('สิ่งที่พร้อมนำมาลอง', OPPORTUNITY_OFFERS[booking.opportunityOffer] || 'ยังไม่ระบุ', 3));
+    }
     thread.appendChild(card);
 
     const consent = document.createElement('label'); consent.className = 'consent';
     const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = booking.consent;
-    const copy = document.createElement('span'); copy.textContent = 'ฉันเข้าใจว่านี่เป็นการพูดคุยและข้อมูลเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์ และไม่ใช่การรับประกันผลสุขภาพ ผลสอบ หรือรายได้';
+    const copy = document.createElement('span'); copy.textContent = booking.intent === 'ai'
+      ? 'ฉันต้องการให้ติดต่อกลับเรื่องการเรียน AI และเข้าใจว่ายังต้องยืนยันขอบเขต เวลา และค่าเรียนก่อนตัดสินใจ'
+      : booking.intent === 'opportunity' && booking.opportunityContext
+        ? 'ฉันต้องการให้ติดต่อกลับเพื่อคุยความเป็นไปได้ และเข้าใจว่ายังไม่มีการยืนยันงาน รายได้ หรือคนร่วมทำ'
+        : 'ฉันเข้าใจว่านี่เป็นการพูดคุยและข้อมูลเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์ และไม่ใช่การรับประกันผลสุขภาพ ผลสอบ หรือรายได้';
     consent.append(checkbox, copy); thread.appendChild(consent);
     if (booking.error) {
       const error = document.createElement('p'); error.className = 'booking-error'; error.setAttribute('role','alert'); error.textContent = `${booking.error} · ข้อมูลที่กรอกยังอยู่`; thread.appendChild(error);
     }
 
     const risk = document.createElement('p'); risk.className = 'booking-risk';
-    risk.textContent = 'ไม่มีค่าใช้จ่าย · ไม่ต้องซื้ออะไร · เลื่อนหรือยกเลิกได้';
+    risk.textContent = booking.intent === 'ai' ? 'การส่งคำขอนี้ยังไม่ใช่การซื้อหรือยืนยันที่นั่งเรียน' : 'ไม่มีค่าใช้จ่าย · ไม่ต้องซื้ออะไร · เลื่อนหรือยกเลิกได้';
+    if (booking.intent === 'opportunity' && booking.opportunityContext) risk.textContent = 'ส่งเรื่องที่อยากคุยไว้ก่อน ทีมจะติดต่อกลับเพื่อยืนยันเวลาและขอบเขต';
+    if (document.querySelector('meta[name="meet-environment"]')?.content === 'local') risk.textContent = 'รุ่นทดลอง · คำขอนี้เก็บบนเครื่องนี้เท่านั้น ไม่มีการส่งนัดจริง';
     thread.appendChild(risk);
 
     const sync = () => { booking.consent = checkbox.checked; next.disabled = booking.sending || !booking.consent; };
@@ -705,6 +871,8 @@
   }
 
   function submitLabel(intent) {
+    if (xircleEntry && intent === 'health') return 'ส่งคำขอนัดดูข้อมูลกับทีม + เอโกะ';
+    if (intent === 'ai') return 'ส่งคำขอคุยเรื่อง AI';
     if (intent === 'health') return 'ส่งคำขอ Xircle Body Check-in';
     if (intent === 'opportunity') return 'ส่งคำขอคุยเรื่องการต่อยอด';
     return 'ส่งคำขอ Open Table Session';
@@ -717,15 +885,18 @@
     try {
       const response = await fetch(BOOKING_ENDPOINT, {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ intent: booking.intent, mode: booking.mode, day: booking.day, time: booking.time,
+        body: JSON.stringify({ intent: booking.intent, ...(booking.intent === 'ai' ? { topic: booking.aiTopic || 'explore' } : {}), ...(booking.intent === 'health' && validHealthFocus(booking.healthFocus) ? { focus: booking.healthFocus } : {}),
+          ...(booking.intent === 'opportunity' && booking.opportunityContext ? { entry: 'compass', need: booking.opportunityNeed || undefined, offer: booking.opportunityOffer || undefined } : {}), mode: booking.mode, day: booking.day, time: booking.time,
           name: booking.name.trim(), contact: booking.contact.trim(), note: booking.note.trim(), website: '' }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.message || 'ส่งคำขอนัดไม่สำเร็จ');
       booking.sending = false; booking.done = true; booking.reference = result.reference || '';
+      booking.localReceipt = result.receipt?.env === 'local';
       clearDraft();
       track('meet_request_completed', { intent: booking.intent, mode: booking.mode });
       renderBooking();
+      window.dispatchEvent(new Event('frontdoor:meet-requested'));
     } catch (error) {
       booking.sending = false; booking.error = error.message || 'ส่งคำขอนัดไม่สำเร็จ';
       track('meet_request_failed', { intent: booking.intent });
@@ -738,22 +909,29 @@
     const intent = intentById(booking.intent);
     const success = document.createElement('section'); success.className = 'success';
     success.innerHTML = '<div class="success-clover" aria-hidden="true"><span></span><span></span><span></span><span></span></div><h3 class="display">ได้รับคำขอนัดแล้ว 🍀</h3><p>เราจะติดต่อกลับเพื่อยืนยันเวลาอีกครั้ง</p>';
+    if (booking.localReceipt) {
+      success.querySelector('h3').textContent = 'บันทึกคำขอทดลองแล้ว 🍀';
+      success.querySelector('p').textContent = 'เก็บในฐานข้อมูลบนเครื่องนี้แล้ว · ยังไม่ได้ส่งนัดจริง';
+    }
     const card = document.createElement('div'); card.className = 'review-card';
     const title = document.createElement('div'); title.className = 'review-title'; title.textContent = booking.reference || 'MYCLOVER SESSION';
     card.append(title,
-      plainReviewRow('เรื่อง', intent?.label || ''), plainReviewRow('รูปแบบ', modeLabel(booking.mode)),
+      plainReviewRow('เรื่อง', bookingIntentLabel()), plainReviewRow('รูปแบบ', modeLabel(booking.mode)),
       plainReviewRow('เวลาที่ขอ', slotLabel()), plainReviewRow('ติดต่อกลับ', booking.contact.trim()));
+    if (booking.intent === 'health' && validHealthFocus(booking.healthFocus)) card.appendChild(plainReviewRow('จุดเริ่มที่อยากคุย', HEALTH_FOCUS[booking.healthFocus]));
+    if (booking.intent === 'opportunity' && booking.opportunityContext) card.append(plainReviewRow('สิ่งที่อยากคุยต่อ', OPPORTUNITY_NEEDS[booking.opportunityNeed] || 'ยังไม่ระบุ'), plainReviewRow('สิ่งที่พร้อมนำมาลอง', OPPORTUNITY_OFFERS[booking.opportunityOffer] || 'ยังไม่ระบุ'));
     const nextLine = document.createElement('p'); nextLine.className = 'success-next';
     nextLine.textContent = `เราจะติดต่อกลับตามช่องทางที่คุณให้ไว้ ${CONFIG.replyWindow} เพื่อยืนยันเวลา`;
+    if (booking.localReceipt) nextLine.textContent = 'รุ่นทดลองนี้ปิดการแจ้งเตือน ทีมและเอโกะจะไม่ได้รับคำขอนี้';
 
     const actions = document.createElement('div'); actions.className = 'success-actions';
-    if (booking.day && booking.day !== FLEXIBLE_DAY && booking.time && booking.time !== FLEXIBLE_TIME) {
+    if (!booking.localReceipt && booking.day && booking.day !== FLEXIBLE_DAY && booking.time && booking.time !== FLEXIBLE_TIME) {
       const ics = document.createElement('button'); ics.type = 'button'; ics.className = 'button button-quiet';
       ics.textContent = 'เพิ่มลงปฏิทิน';
       ics.addEventListener('click', downloadInvite);
       actions.appendChild(ics);
     }
-    if (CONFIG.lineUrl) {
+    if (!booking.localReceipt && CONFIG.lineUrl) {
       const line = document.createElement('a'); line.className = 'button button-quiet';
       line.href = CONFIG.lineUrl; line.target = '_blank'; line.rel = 'noopener noreferrer';
       line.textContent = 'ทักหาเราใน LINE';
@@ -762,17 +940,27 @@
     }
     const close = document.createElement('button'); close.type = 'button'; close.className = 'button button-primary'; close.textContent = 'ปิด'; close.addEventListener('click', () => closeBooking(true));
     actions.appendChild(close);
+    if (compassEntry || booking.opportunityContext) actions.appendChild(compassReturnLink());
     success.append(card, nextLine, actions); thread.appendChild(success);
   }
 
   function plainReviewRow(label, value) {
-    const row = document.createElement('div'); row.className = 'review-row'; row.innerHTML = `<span>${label}</span><strong>${value}</strong>`; return row;
+    const row = document.createElement('div'); row.className = 'review-row';
+    const key = document.createElement('span'); key.textContent = label;
+    const text = document.createElement('strong'); text.textContent = value;
+    row.append(key, text); return row;
+  }
+
+  function bookingIntentLabel() {
+    const label = intentById(booking.intent)?.label || '';
+    const topic = booking.intent === 'ai' && aiTopicById(booking.aiTopic);
+    return topic ? `${label} · ${topic.label}` : label;
   }
 
   function renderCloseConfirm(thread, footer) {
     footer.hidden = true;
     const box = document.createElement('div'); box.className = 'exit-confirm';
-    box.innerHTML = '<p>ออกจากการลงนัดตอนนี้ไหม? คำตอบที่กรอกไว้จะถูกล้าง</p><div class="exit-actions"></div>';
+    box.innerHTML = '<p>พักการลงนัดตรงนี้ก่อนหรือเปล่า? ยังไม่มีการส่งคำขอนัด</p><div class="exit-actions"></div>';
     const stay = document.createElement('button'); stay.type = 'button'; stay.className = 'button button-primary'; stay.textContent = 'กลับไปลงนัดต่อ';
     stay.addEventListener('click', () => { booking.closeConfirm = false; renderBooking(); });
     const leave = document.createElement('button'); leave.type = 'button'; leave.className = 'button button-quiet'; leave.textContent = 'ออกจากหน้านี้';
@@ -785,6 +973,7 @@
   }
 
   function bookingBack() {
+    if (pendingXircleDraft) return closeBooking(true);
     if (booking.done) return closeBooking(true);
     if (booking.step === 0) return closeBooking();
     booking.error = '';
@@ -838,17 +1027,25 @@
 
   function saveDraft() {
     try {
+      if (pendingXircleDraft) return;
+      if (xircleEntry && !booking.mode && !booking.day && !booking.name.trim() && !booking.contact.trim() && !booking.note.trim()) return;
       if (booking.done || !(booking.intent || booking.day || booking.name.trim() || booking.contact.trim())) return;
       window.localStorage.setItem(CONFIG.draftKey, JSON.stringify({
         savedAt: Date.now(), step: booking.step, schedulePart: booking.schedulePart, scheduleWeek: booking.scheduleWeek,
-        intent: booking.intent, mode: booking.mode, day: booking.day, time: booking.time,
+        intent: booking.intent, aiTopic: booking.intent === 'ai' ? booking.aiTopic : null, mode: booking.mode, day: booking.day, time: booking.time,
+        healthFocus: booking.intent === 'health' && validHealthFocus(booking.healthFocus) ? booking.healthFocus : null,
+        opportunityContext: booking.intent === 'opportunity' && booking.opportunityContext,
+        opportunityNeed: booking.intent === 'opportunity' ? boundedValue(OPPORTUNITY_NEEDS, booking.opportunityNeed) : null,
+        opportunityOffer: booking.intent === 'opportunity' ? boundedValue(OPPORTUNITY_OFFERS, booking.opportunityOffer) : null,
         name: booking.name, contact: booking.contact, note: booking.note,
       }));
     } catch (error) { /* storage unavailable */ }
   }
 
   function clearDraft() {
+    pendingXircleDraft = null;
     try { window.localStorage.removeItem(CONFIG.draftKey); } catch (error) { /* noop */ }
+    $$('.draft-resume').forEach(bar => bar.remove());
   }
 
   function readDraft() {
@@ -869,8 +1066,14 @@
     Object.assign(booking, {
       step: Math.min(4, Math.max(0, draft.step || 0)), schedulePart: draft.schedulePart || 'date', scheduleWeek: draft.scheduleWeek || null,
       intent: draft.intent || null, mode: draft.mode || null, day: draft.day || null, time: draft.time || null,
+      aiTopic: draft.intent === 'ai' && aiTopicById(draft.aiTopic) ? draft.aiTopic : null,
+      healthFocus: draft.intent === 'health' && validHealthFocus(draft.healthFocus) ? draft.healthFocus : null,
+      opportunityContext: draft.intent === 'opportunity' && draft.opportunityContext === true,
+      opportunityNeed: draft.intent === 'opportunity' && draft.opportunityContext === true ? boundedValue(OPPORTUNITY_NEEDS, draft.opportunityNeed) : null,
+      opportunityOffer: draft.intent === 'opportunity' && draft.opportunityContext === true ? boundedValue(OPPORTUNITY_OFFERS, draft.opportunityOffer) : null,
       name: draft.name || '', contact: draft.contact || '', note: draft.note || '',
     });
+    if (booking.intent === 'opportunity') useCompassOpportunity(booking.opportunityContext);
     if (booking.intent) selectIntent(booking.intent, 'draft');
     track('meet_draft_resumed', { intent: booking.intent || 'none' });
     renderBooking();
@@ -886,12 +1089,37 @@
     label.textContent = 'คุณเริ่มลงนัดไว้แล้ว คำตอบเดิมยังอยู่';
     const resume = document.createElement('button');
     resume.type = 'button'; resume.className = 'button button-quiet'; resume.textContent = 'กลับไปลงนัดต่อ';
-    resume.addEventListener('click', () => resumeBooking(draft));
+    resume.addEventListener('click', () => {
+      const latest = readDraft();
+      if (!latest) { bar.remove(); return; }
+      pendingXircleDraft = null;
+      resumeBooking(latest);
+    });
     const drop = document.createElement('button');
     drop.type = 'button'; drop.className = 'edit-answer'; drop.textContent = 'เริ่มใหม่';
     drop.addEventListener('click', () => { clearDraft(); bar.remove(); });
     bar.append(label, resume, drop);
     host.appendChild(bar);
+  }
+
+  function renderXircleDraftChoice(thread, footer) {
+    footer.hidden = true;
+    thread.appendChild(guideMessage(['คุณมีคำขอนัดที่เริ่มไว้', 'ลงนัดเดิมต่อ หรือเริ่มนัดใหม่จาก XIRCLE?']));
+    thread.appendChild(choices([
+      choiceButton('ลงนัดเดิมต่อ', 'เก็บหัวข้อและคำตอบที่กรอกไว้', () => {
+        const draft = pendingXircleDraft;
+        pendingXircleDraft = null;
+        resumeBooking(draft);
+      }),
+      choiceButton('เริ่มนัดใหม่จาก XIRCLE', 'แทนที่ร่างเดิม เริ่มจากเลือกรูปแบบการคุย', () => {
+        pendingXircleDraft = null;
+        clearDraft();
+        $$('.draft-resume').forEach(bar => bar.remove());
+        selectIntent('health', 'xircle');
+        openBooking('xircle');
+      }),
+    ]));
+    scrollConversation();
   }
 
   function initBooking() {
@@ -908,5 +1136,19 @@
   initPageInteractions();
   initBooking();
   initDraftResume();
+  if (xircleEntry) {
+    selectIntent('health', 'xircle');
+    if (openXircleBooking) {
+      pendingXircleDraft = readDraft();
+      openBooking('xircle');
+    }
+  }
+  const incoming = new URLSearchParams(location.search);
+  if (!xircleEntry && entryValue('entry', 'compass') && incoming.getAll('intent').length === 1 && intentById(incoming.get('intent'))) {
+    page.aiTopic = incoming.get('intent') === 'ai' && aiTopicById(incoming.get('topic')) ? incoming.get('topic') : null;
+    selectIntent(incoming.get('intent'), 'compass');
+    // The visitor explicitly opened the appointment Door. Keep any old draft.
+    if (!readDraft()) openBooking('compass');
+  }
   track('meet_view');
 })();

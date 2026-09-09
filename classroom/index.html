@@ -26,27 +26,41 @@
 .linebox{margin:18px 0 0;padding:21px 22px;border:1px solid var(--line);border-radius:18px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.linebox small{display:block;color:var(--green);font-weight:800;margin-bottom:3px}.linebox b{font-size:17px}.linebox p{margin:3px 0 0;color:var(--muted);font-size:14px}.linebtn{display:inline-flex;align-items:center;gap:8px;background:#20b25b;color:#fff;border-radius:11px;padding:10px 15px;font-weight:900}.linebtn img{width:24px;height:24px}footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 48px}footer a{font-weight:700;color:var(--green)}
 @media(prefers-reduced-motion:reduce){#pathBody,.pmore .ar{transition:none}.lesson{transition:none}}
 @media(max-width:700px){.wrap{width:min(100% - 22px,760px)}.topin{height:58px}.brand{font-size:18px}.brand img{height:24px;width:24px}.all{font-size:12.5px}.hero{margin:18px auto 14px;border-radius:18px}.herobody{padding:20px 19px 21px}.hero p{font-size:15px}.pathnote{padding:17px 16px}.grid{grid-template-columns:1fr;gap:14px}.body{padding:18px 18px 20px}.title{font-size:18px}.desc{font-size:15px}.finish{padding:18px;border-radius:20px}.finish h2{font-size:25px}.finish p{font-size:15px}.review-grid{grid-template-columns:1fr}.results-head h2{font-size:25px}.xty-proof-body{padding:18px}.linebox{padding:19px}.ph{gap:9px}.ph .e{font-size:18px}.pathnote h3{font-size:16px}}
+
+/* The first decision is visible before the course poster/content. */
+.course-gateway{display:grid;grid-template-columns:1.15fr 1fr;align-items:stretch;overflow:hidden;border-radius:9px;margin-top:28px;isolation:isolate}
+.course-gateway .herobody{padding:36px 30px;align-self:center}.course-gateway h1{font-size:clamp(28px,3.2vw,42px);line-height:1.35;margin:13px 0 15px;letter-spacing:-.025em}
+.course-gateway p{max-width:40ch;font-size:16px;line-height:1.85;color:#dce7da}.course-kicker{color:#dbc48b;font-size:12px;font-weight:800;letter-spacing:.06em}
+.course-start-row{display:grid;justify-items:start;gap:9px;margin-top:25px}.course-primary{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:12px 18px;border-radius:5px;background:#e3cb8d;color:#142d1e;font-weight:850;font-size:16px}.course-story{display:inline-flex;align-items:center;min-height:44px;border-bottom:1px solid #667961;color:#e6ead9;font-size:14px;font-weight:650}.course-primary:hover{background:#f5dda3}.course-story:hover{color:#fff}
+.course-host{position:relative;margin:0;min-width:0;min-height:350px;background:#153628}.course-host img{height:100%;width:100%;object-fit:cover;object-position:50% 36%}.course-host:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0d2c1c 0%,transparent 24%),linear-gradient(0deg,#0a2818bf,transparent 35%);pointer-events:none}.course-host figcaption{position:absolute;z-index:1;bottom:18px;left:24px;right:20px;color:#fff6dc;font-size:12px;line-height:1.6;text-shadow:0 1px 5px #062919}
+.course-outcomes{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:18px 5px;margin-bottom:8px;color:#637361;font-size:14px}.course-outcomes span{font-weight:750}.course-outcomes a{min-height:40px;display:inline-flex;align-items:center;border-bottom:1px solid #c9c6ab;font-weight:750;color:#214f34}.course-outcomes i{font-style:normal;color:#a39161}
+.course-with-teem{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:35px 0;padding:26px 0;border-block:1px solid #c7cbbb}.course-with-teem small{color:#6d7449;font-size:12px;font-weight:750}.course-with-teem h2{font-size:23px;line-height:1.4;margin:6px 0}.course-with-teem p{font-size:15px;color:#566750;margin:0;max-width:43ch}.course-with-teem a{display:inline-flex;align-items:center;min-height:50px;flex-shrink:0;border-bottom:1px solid #597247;color:#153a25;font-weight:800;font-size:15px}
+.course-gateway a:focus-visible,.course-outcomes a:focus-visible,.course-with-teem a:focus-visible{outline:3px solid #b5842c;outline-offset:5px}
+@media(min-width:900px){body>.top .wrap,main.wrap{width:min(100% - 48px,1100px)}.pathnote,.grid,.finish,.first-results,.linebox,main>footer,.course-with-teem{max-width:850px;margin-left:auto;margin-right:auto}}
+@media(max-width:700px){.course-gateway{display:flex;flex-direction:column;margin-top:14px}.course-gateway .herobody{padding:24px 23px 22px;width:100%}.course-gateway h1{font-size:30px;margin-top:10px}.course-gateway p{font-size:16px}.course-start-row{margin-top:18px;gap:5px}.course-primary{width:100%}.course-host{min-height:0;height:225px;overflow:hidden}.course-host img{object-position:center 37%}.course-host:after{background:linear-gradient(0deg,#0a2818aa,transparent 50%)}.course-host figcaption{bottom:14px;left:20px}.course-gateway .cprog{margin-top:17px}.course-outcomes{gap:9px;font-size:12px;padding:12px 5px}.course-outcomes>span{width:100%;text-align:center}.course-with-teem{flex-direction:column;align-items:start;gap:10px;padding:24px 9px}.course-with-teem h2{font-size:22px}}
+
 </style>
 </head>
 <body>
-<nav class="top"><div class="wrap topin"><a class="brand" href="/hall.html#quest" aria-label="myClover"><img src="/icons/icon-192.png" alt="" width="192" height="192"><span>my<em>Clover</em></span></a><a class="all" href="/classroom/">ห้องเรียนทั้งหมด →</a></div></nav>
+<nav class="top"><div class="wrap topin"><a class="brand" href="/hall.html#quest" aria-label="myClover"><img src="/icons/icon-192.png" alt="" width="192" height="192"><span>my<em>Clover</em></span></a><a class="all" href="/frontdoor/">กลับไปที่เข็มทิศ ↗</a></div></nav>
 <main class="wrap">
-<header class="hero" aria-label="AI ใส่ซอส ห้องเรียน 6 บท">
-  <div class="heroimg"><img src="/classroom/img/hero-classroom.jpg" width="1024" height="1536" alt="AI ใส่ซอส — SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE" decoding="async"></div>
+<header class="hero course-gateway" aria-labelledby="courseTitle">
   <div class="herobody">
-    <span class="eyebrow">AI ใส่ซอส · SOURCE-BASED AI WORKFLOW · ฟรีตลอดชีพ</span>
-    <h1>AI ใส่ซอส — ปรุงซอสให้ AI ทำงานต่อได้</h1>
-    <p>6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน</p>
-    <div class="meta"><span>🧴 จบด้วยซอสของตัวเอง</span><span>🔁 6 บทเป็น Workflow เดียว</span><span>🤖 ใช้กับ AI ตัวไหนก็ได้</span></div>
-    <div class="cprog"><div class="track"><i id="progressBar"></i></div><span class="progtx" id="progressText">ยังไม่ได้เริ่มบทแรก</span></div>
+    <span class="course-kicker">AI ใส่ซอส · เรียนฟรี 6 บท</span>
+    <h1 id="courseTitle">จากเรื่องที่คุณรู้ดี<br>เป็นงานที่ AI รับช่วงต่อได้</h1>
+    <p>เริ่มด้วยงานของคุณหนึ่งเรื่อง ทำต้นทางให้ชัด แล้วค่อยต่อเป็นภาพ วิดีโอ และเว็บที่เปิดใช้ได้จริง</p>
+    <div class="course-start-row"><a class="course-primary" id="courseStart" href="/classroom/free-ai.html">เริ่มทำซอสขวดแรก →</a><a class="course-story" href="/forge/">อ่านการ์ตูน 7 ตอนก่อนก็ได้ ↗</a></div>
+    <div class="cprog"><div class="track"><i id="progressBar"></i></div><span class="progtx" id="progressText">เลือกเรียนได้ทุกบท · ไม่ต้องสมัคร</span></div>
   </div>
+  <figure class="course-host"><img src="/frontdoor/art/seed-blue-teem-v2.webp" srcset="/frontdoor/art/seed-blue-teem-v2-mobile.webp 720w, /frontdoor/art/seed-blue-teem-v2.webp 1200w" sizes="(max-width:700px) 100vw, 520px" width="1200" height="1200" alt="ภาพสร้างด้วย AI อ้างอิงทีมในแจ็คเกตดำแดงกับเสื้อขาว กำลังช่วยต่อยอดงานที่โต๊ะทำงาน" fetchpriority="high" decoding="async"><figcaption>ทีม · คนพาปรุงซอสให้เป็นงานจริง</figcaption></figure>
 </header>
+<section class="course-outcomes" aria-label="ของที่คุณจะได้ลงมือทำ"><span>ต้นทางเดียว →</span><a href="/classroom/free-ai.html">ไฟล์ที่ AI เข้าใจ</a><i>→</i><a href="/classroom/image-ai.html">ภาพที่ตรงใจ</a><i>→</i><a href="/classroom/first-web.html">เว็บที่เปิดใช้ได้</a></section>
 
 <section class="pathnote" id="pathCard" data-open="0">
   <div class="ph"><span class="e" aria-hidden="true">🗺️</span><div>
-    <h3>เส้นทาง 6 บท: จากวัตถุดิบในหัว ถึงงานที่เสิร์ฟได้</h3>
+    <h3>6 บทต่อกันเป็นงานเดียว</h3>
     <p class="sub">ของจากบทก่อนจะกลายเป็นวัตถุดิบของบทถัดไป คุณจึงไม่ได้เรียนเครื่องมือ 6 ตัว แต่กำลังสร้าง <b>Workflow เดียวที่นำกลับไปใช้กับงานอะไรก็ได้</b></p>
-    <button type="button" class="pmore" id="pathBtn" aria-expanded="false" aria-controls="pathBody"><span id="pathBtnTx">กลัวเรียนเองไม่ไหว? ลองอ่านตรงนี้ก่อน</span><span class="ar" aria-hidden="true">↓</span></button>
+    <button type="button" class="pmore" id="pathBtn" aria-expanded="false" aria-controls="pathBody"><span id="pathBtnTx">เลือกจังหวะเรียนของคุณ</span><span class="ar" aria-hidden="true">↓</span></button>
     <span class="ptime" id="pathTime">ใช้เวลาอ่านประมาณ 1 นาที</span>
   </div></div>
   <div id="pathBody" style="height:0" role="region" aria-labelledby="pathBtn"><div class="pbin learning-guide">
@@ -68,15 +82,17 @@
   </div></div>
 </section>
 
-<section class="grid" id="lessonGrid" aria-label="6 บทเรียน">
-  <a class="lesson" href="free-ai.html" data-item="free-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv1-source.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.1 <em>SOURCE</em></span><b class="title">ซอส · เริ่มจากการปรุงซอส</b><p class="desc">เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง</p><span class="go">เข้าเรียน →</span></div></a>
-  <a class="lesson" href="image-ai.html" data-item="image-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv2-taste.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.2 <em>TASTE</em></span><b class="title">เทส · ชิมซอสก่อนเติม</b><p class="desc">ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสตรงกับคุณไหม แล้วแก้ที่ต้นทาง</p><span class="go">เข้าเรียน →</span></div></a>
-  <a class="lesson" href="clip-ai.html" data-item="clip-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv3-cook.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.3 <em>COOK</em></span><b class="title">ผัด · เอาซอสไปทำจานจริง</b><p class="desc">ใช้ซอส .md กับภาพจากบท 2 สั่งสั้น ๆ ให้ได้วิดีโอแนวตั้ง 10 วินาที โดยไม่ต้องถ่ายเอง</p><span class="go">เข้าเรียน →</span></div></a>
-  <a class="lesson star" href="notebooklm.html" data-item="notebooklm"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv4-split.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.4 <em>SPLIT</em></span><b class="title">แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู</b><p class="desc">แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ</p><span class="go">เข้าเรียน →</span></div></a>
-  <a class="lesson" href="prompts.html" data-item="prompts"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv5-season.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.5 <em>SEASON</em></span><b class="title">ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส</b><p class="desc">หยิบ Prompt, Style, Checklist และบทบาทที่เตรียมไว้มาเติมให้ถูกงาน ไม่เทหมดลิ้นชัก</p><span class="go">เข้าเรียน →</span></div></a>
-  <a class="lesson" href="first-web.html" data-item="first-web"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg?v=20260812" alt=""></div><div class="body"><span class="lv">LV.6 <em>SERVE</em></span><b class="title">เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต</b><p class="desc">รวมทุกอย่างเป็นเว็บหรือผลงานที่คนอื่นเปิดใช้ และส่งต่อได้จริง</p><span class="go">เข้าเรียน →</span></div></a>
+<section class="grid" id="lessons" id="lessonGrid" aria-label="6 บทเรียน">
+  <a class="lesson" href="free-ai.html" data-item="free-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv1-source.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.1 <em>SOURCE</em></span><b class="title">ซอส · เริ่มจากการปรุงซอส</b><p class="desc">เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง</p><span class="go">เข้าเรียน →</span></div></a>
+  <a class="lesson" href="image-ai.html" data-item="image-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv2-taste.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.2 <em>TASTE</em></span><b class="title">เทส · ชิมซอสก่อนเติม</b><p class="desc">ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสตรงกับคุณไหม แล้วแก้ที่ต้นทาง</p><span class="go">เข้าเรียน →</span></div></a>
+  <a class="lesson" href="clip-ai.html" data-item="clip-ai"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv3-cook.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.3 <em>COOK</em></span><b class="title">ผัด · เอาซอสไปทำจานจริง</b><p class="desc">ใช้ซอส .md กับภาพจากบท 2 สั่งสั้น ๆ ให้ได้วิดีโอแนวตั้ง 10 วินาที โดยไม่ต้องถ่ายเอง</p><span class="go">เข้าเรียน →</span></div></a>
+  <a class="lesson star" href="notebooklm.html" data-item="notebooklm"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv4-split.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.4 <em>SPLIT</em></span><b class="title">แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู</b><p class="desc">แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ</p><span class="go">เข้าเรียน →</span></div></a>
+  <a class="lesson" href="prompts.html" data-item="prompts"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv5-season.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.5 <em>SEASON</em></span><b class="title">ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส</b><p class="desc">หยิบ Prompt, Style, Checklist และบทบาทที่เตรียมไว้มาเติมให้ถูกงาน ไม่เทหมดลิ้นชัก</p><span class="go">เข้าเรียน →</span></div></a>
+  <a class="lesson" href="first-web.html" data-item="first-web"><div class="thumb"><img src="/img/classroom-kitchen-20260812-1445/lv6-serve-steak.webp?v=20260812" alt=""></div><div class="body"><span class="lv">LV.6 <em>SERVE</em></span><b class="title">เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต</b><p class="desc">รวมทุกอย่างเป็นเว็บหรือผลงานที่คนอื่นเปิดใช้ และส่งต่อได้จริง</p><span class="go">เข้าเรียน →</span></div></a>
 </section>
 <section class="finish" id="bossStage" hidden><div class="finishimg"><img src="/img/awaken-hero.jpg?v=20260812-1707" width="1600" height="900" alt="ประตูห้องโถงมืดที่มีแสงเส้นเดียวลอดเข้ามา ก่อนเข้าสู่ด่านสุดท้าย"></div><span class="fl" id="bossFlag">🎓 เรียนครบทั้ง 6 คลาสแล้ว</span><h2>BOSS STAGE UNLOCKED</h2><p>บทที่ไม่ได้อยู่ในแผนการสอน<br><br>ด่านนี้ไม่มีวิดีโอ ไม่มี Prompt ให้คัดลอก ไม่มีแบบฝึกหัด<br>มีเพียงการอ่านเงียบ ๆ ให้จบ</p><div class="meta"><span>⏱ 8–10 นาที</span><span>📖 อ่านอย่างเดียว</span><span>🏅 Reward: AWAKEN</span></div><p class="sm">อ่านจบแล้วจะได้ตรา <b>🌅 ผู้ตื่นรู้</b> ขึ้นบนการ์ดของคุณ</p><a class="bossgo" href="/classroom/dungeon/">เข้าสู่ด่านสุดท้าย →</a></section>
+
+<aside class="course-with-teem"><div><small>เอางานจริงมาทำด้วยกัน</small><h2>อยากให้ทีมช่วยกับงานของคุณ?</h2><p>คุยเรื่องเรียนส่วนตัว เวิร์กช็อปของทีม หรือคอร์สที่เหมาะกับสิ่งที่อยากทำ</p></div><a href="/meet/?entry=compass&amp;intent=ai&amp;topic=private">คุยเรื่องเรียนกับทีม ↗</a></aside>
 
 <section class="first-results" id="first-class-results" aria-labelledby="reviewTitle">
   <div class="results-head"><div><small>FIRST CLASS #1 · PUBLIC REVIEWS</small><h2 id="reviewTitle">คนเรียนพูดเอง</h2><p>แสดงเฉพาะคำตอบที่เจ้าของรีวิวอนุญาตให้เผยแพร่</p></div><span class="review-count" id="reviewCount">กำลังโหลดรีวิว…</span></div>
@@ -113,13 +129,14 @@
     var bflag=document.getElementById('bossFlag');
     if(bflag) bflag.textContent = n>=ITEMS.length ? '🎓 เรียนครบทั้ง ' + ITEMS.length + ' คลาสแล้ว' : '🎓 เรียนมาแล้ว ' + n + ' บท — ประตูเปิดให้แล้ว';
     var bar=document.getElementById('progressBar'); if(bar) bar.style.width=((n/ITEMS.length)*100)+'%';
-    var tx=document.getElementById('progressText'); if(tx){tx.textContent=n===0?'ยังไม่ได้เริ่มบทแรก':(n>=ITEMS.length?'เรียนครบทั้ง 6 บทแล้ว':'เรียนแล้ว '+n+'/'+ITEMS.length+' บท');tx.classList.toggle('done',n===ITEMS.length)}
+    var tx=document.getElementById('progressText'); if(tx){tx.textContent=n===0?'เลือกเรียนได้ทุกบท · ไม่ต้องสมัคร':(n>=ITEMS.length?'เรียนครบทั้ง 6 บทแล้ว':'เรียนแล้ว '+n+'/'+ITEMS.length+' บท');tx.classList.toggle('done',n===ITEMS.length)}
     if(n>=ITEMS.length){try{localStorage.setItem('mc_learn_done','1')}catch(e){}}
+    var start=document.getElementById('courseStart');if(start){var todo=ITEMS.find(function(x){return done.indexOf(x)<0});if(n>=ITEMS.length){start.href='/classroom/first-web.html';start.textContent='กลับไปต่อยอดเว็บของคุณ →'}else if(n>0){start.href='/classroom/'+todo+'.html';start.textContent='เรียนต่อ · '+LABELS[todo]+' →'}}
     var go=document.getElementById('pathGo'); if(go){var next=ITEMS.find(function(x){return done.indexOf(x)<0});if(!next){go.href='/classroom/dungeon/';go.textContent='เรียนครบแล้ว — เข้าสู่ด่านสุดท้าย →'}else if(n>0){go.href=next+'.html';go.textContent='เรียนต่อ '+LABELS[next]+' →'}}
   }
   var card=document.getElementById('pathCard'),btn=document.getElementById('pathBtn'),body=document.getElementById('pathBody'),tx=document.getElementById('pathBtnTx'),time=document.getElementById('pathTime'),open=false,tid;
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function setOpen(v){if(!card||!btn||!body)return;open=v;clearTimeout(tid);btn.setAttribute('aria-expanded',v?'true':'false');card.dataset.open=v?'1':'0';tx.textContent=v?'เข้าใจแล้ว ย่อกลับ':'กลัวเรียนเองไม่ไหว? ลองอ่านตรงนี้ก่อน';time.hidden=v;var inner=body.firstElementChild;var h=inner?inner.offsetHeight:0;if(v){body.style.height=reduce?'auto':h+'px';if(!reduce)tid=setTimeout(function(){if(open)body.style.height='auto'},340)}else{if(!reduce){body.style.height=h+'px';body.offsetHeight}body.style.height='0'}try{sessionStorage.setItem('mc_path',v?'1':'0')}catch(e){}}
+  function setOpen(v){if(!card||!btn||!body)return;open=v;clearTimeout(tid);btn.setAttribute('aria-expanded',v?'true':'false');card.dataset.open=v?'1':'0';tx.textContent=v?'เข้าใจแล้ว ย่อกลับ':'เลือกจังหวะเรียนของคุณ';time.hidden=v;var inner=body.firstElementChild;var h=inner?inner.offsetHeight:0;if(v){body.style.height=reduce?'auto':h+'px';if(!reduce)tid=setTimeout(function(){if(open)body.style.height='auto'},340)}else{if(!reduce){body.style.height=h+'px';body.offsetHeight}body.style.height='0'}try{sessionStorage.setItem('mc_path',v?'1':'0')}catch(e){}}
   if(btn)btn.addEventListener('click',function(){setOpen(!open);if(!open&&card.getBoundingClientRect().top<0)card.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'})});
   try{if(sessionStorage.getItem('mc_path')==='1')setOpen(true)}catch(e){}
   paint();window.addEventListener('pageshow',paint);window.addEventListener('storage',paint);
@@ -138,5 +155,6 @@
 })();
 </script>
 <script defer src="../assets/boss-invite.js"></script>
+<script type="module" src="/assets/front-door/outcomes.js"></script>
 </body>
 </html>

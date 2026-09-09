@@ -49,7 +49,7 @@ INTRO_TITLE = "myClover — Intro"
 # ตอนพิเศษ — ช่องที่ 8 ในหน้ารวม
 #
 # ไม่นับเป็นตอนของเส้นเรื่อง จำนวนตอนยังเป็น 7 เท่าเดิม และไม่บังคับอ่าน
-# แต่ช่องนี้จะปลดล็อกก็ต่อเมื่ออ่านครบ 7 ตอนแล้วเท่านั้น
+# เปิดให้อ่านได้เช่นเดียวกับทั้ง 7 ตอน โดยไม่นับรวมความคืบหน้า
 #
 # ต้นฉบับภาพปกเอามาจากหน้าแรกของฉบับร่าง ซึ่งอยู่ในรีโปอยู่แล้ว
 # ไม่ได้อยู่ใน .forge-src เหมือนตอนปกติ — ปกช่องนี้จึงสร้างได้เสมอ
@@ -242,7 +242,7 @@ footer a{color:rgb(var(--green));font-weight:600}
   font-size:10.5px;border-radius:6px;padding:2px 8px;letter-spacing:.04em;vertical-align:middle}
 '''
 
-def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act=''):
+def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act='', reader=''):
     """โครงหน้าเว็บของ /forge/ และ /paths/ ทั้งหมด
 
     act = ชื่อ Act ที่หน้านี้ยิงตอนเปิด (ทะเบียนอยู่ที่ assets/achievements.js)
@@ -250,6 +250,14 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act=
     ไม่งั้นรันไฟล์นี้อีกรอบเมื่อไหร่ ตัวเก็บสถิติของทุกหน้าก็หายไปเงียบ ๆ
     """
     act_meta = f'<meta name="mc-act-view" content="{act}">\n' if act else ''
+    # Keep the open-reader contract in its source, not only in generated HTML.
+    # Intro and /paths/ retain their existing behavior.
+    reader_css = '<link rel="stylesheet" href="/forge/reading-rail.css">\n' if reader else ''
+    body_attrs = (' class="forge-reader-home" data-forge-access="open"' if reader == 'home'
+                  else ' data-forge-access="open"' if reader == 'chapter' else '')
+    reader_js = '<script type="module" src="/forge/reading-rail.js"></script>\n' if reader == 'chapter' else ''
+    if reader:
+        reader_js += '<script type="module" src="/assets/front-door/outcomes.js"></script>\n'
     return f'''<!doctype html>
 <html lang="th">
 <head>
@@ -265,8 +273,8 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act=
 {canonical}<meta name="theme-color" content="#0A2818">
 <style>{CSS}{extra_css}</style>
 <link rel="stylesheet" href="/assets/readable.css">
-</head>
-<body>
+{reader_css}</head>
+<body{body_attrs}>
 {body}
 {extra_js}<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
 <script type="text/javascript">
@@ -286,7 +294,7 @@ gtag('config','G-8LVQBD44BK',{{anonymize_ip:true,allow_google_signals:false,allo
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "cd6b654477f3437ca6619742cf119aa6"}}'></script>
 <script type="module" src="/assets/track.js"></script>
-</body>
+{reader_js}</body>
 </html>
 '''
 
@@ -871,14 +879,28 @@ INDEX_CSS = '''
 .introbtn:hover{border-color:rgb(var(--gold));color:rgb(var(--gold));background:rgb(190 148 66/.1)}
 ''' + FINISH_CSS
 
+def reading_rail(current_slug):
+    chapters = []
+    for _key, num, title, slug, _special, _srcs in EPISODES:
+        current = ' aria-current="page"' if slug == current_slug else ''
+        chapters.append(f'<a href="/forge/{slug}/" data-forge-chapter="{slug}" '
+                        f'aria-label="ตอน {num} · {E(title)}"{current}>{num}</a>')
+    return ('<nav class="forge-reader-nav" aria-label="เลือกตอนการ์ตูน">'
+            '<div class="forge-reader-nav__top"><span>เรื่องเล่าจากโรงตีเหล็ก · 7 ตอนจบ</span>'
+            '<a href="/classroom/">ไปเรียน AI ใส่ซอส ↗</a></div>'
+            f'<div class="forge-reader-nav__chapters">{"".join(chapters)}</div></nav>')
+
+
+COURSE_END = '''<section class="forge-next-course" aria-labelledby="forgeCourseTitle"><small>จากเรื่องของเรา · ถึงงานของคุณ</small><h2 id="forgeCourseTitle">คราวนี้ ลองทำให้เป็นของคุณ</h2><p>เริ่มจากเรื่องที่คุณรู้ดีหนึ่งเรื่อง แล้วทำเป็นต้นทางให้ AI รับช่วงต่อ บทแรกของ AI ใส่ซอสพาลงมือได้เลย</p><a class="forge-course-start" href="/classroom/free-ai.html">ทำซอสขวดแรกของคุณ →</a><div class="forge-course-extras"><a href="/classroom/">ดูทั้ง 6 บท</a><a href="/core7/tutorial/?entry=forge" data-preserve-entry="forge">ลองเกมที่สร้างจากวิธีเดียวกัน ↗</a></div></section>'''
+
+
 # ── ตารางเลือกตอน ──
-# ข้ามไม่ได้ ต้องอ่านเรียง — ตอนที่ i เปิดก็ต่อเมื่ออ่านมาแล้วอย่างน้อย i ตอน
-# (ตอนแรก i=0 จึงเปิดเสมอ) ส่วนตอนพิเศษต้องครบทั้ง 7 ก่อน
+# เปิดทุกตอนทันที — data-mc-item ยังบันทึกการอ่านและตราเดิม แต่ไม่ใช้ data-mc-seq ล็อกทาง
 cards = []
 for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     m = meta[key]
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
-    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}" data-mc-seq="forge:{i}">
+    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/{key}-thumb.webp">
@@ -893,8 +915,7 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     </a>''')
 
 # ช่องที่ 8 — ตอนพิเศษ ไม่บังคับอ่าน จึงไม่มี data-mc-item ไม่นับรวมความคืบหน้า
-# แต่กดไม่ได้จนกว่าจะครบ 7 ตอน
-cards.append(f'''    <a class="ep bonus" href="{SPECIAL_SLUG}/" data-mc-seq="forge:{len(EPISODES)}">
+cards.append(f'''    <a class="ep bonus" href="{SPECIAL_SLUG}/">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/{SPECIAL_KEY}-thumb.webp">
@@ -920,6 +941,7 @@ index_body = f'''<header class="bar"><div class="wrap">
   <div class="startrow">
     <a class="start disp" data-mc-continue="forge:" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="start disp" data-mc-demote="forge:ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
+    <a class="forge-course-link" href="/classroom/">อยากลงมือเลย? เรียน AI ใส่ซอส →</a>
   </div>
   <div class="prog">
     <div class="track"><i data-mc-bar="forge"></i></div>
@@ -932,8 +954,8 @@ index_body = f'''<header class="bar"><div class="wrap">
   <div class="grid">
 {chr(10).join(cards)}
   </div>
-  <p class="moresoon" data-mc-undone="forge">🔒 ตอนถัดไปจะโผล่ขึ้นมาเองเมื่ออ่านตอนนี้จบ — เรื่องนี้เรียงกันมา ข้ามแล้วจะงง</p>
-  {walkthrough_card('../')}
+  <p class="moresoon">เปิดอ่านได้ครบทุกตอน เลือกตอนที่สนใจ หรือเริ่มตอนแรกแล้วค่อย ๆ เดินไปด้วยกัน</p>
+  {COURSE_END}
   {finish_block('../')}
   <p class="rstw" data-mc-any="forge" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
 </main>
@@ -955,7 +977,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 });
 </script>\n''',
-    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n', act='forge-open'))
+    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n', act='forge-open', reader='home'))
 
 # ── หน้าอ่านแต่ละตอน ──
 READ_CSS = '''
@@ -1032,10 +1054,10 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     if not next_ep:
         end = '''<div class="endnote" data-mc-undone="forge">
         <b class="disp">🍀 ถึงตอนสุดท้ายแล้วครับ ขอบคุณที่อ่านมาถึงตรงนี้</b>
-        ถ้ายังเก็บไม่ครบทุกตอน ย้อนกลับไปเก็บได้เลย — อ่านครบเมื่อไหร่มีของให้
+        อยากย้อนอ่านตอนไหน เปิดได้จากแถบเลือกตอน ส่วนความคืบหน้าและตราที่เคยได้ยังเก็บไว้เหมือนเดิม
         <div class="row" style="margin-top:16px">
           <a class="nb gold disp" href="../">กลับไปหน้ารวมทุกตอน</a>
-          <a class="nb disp" href="../../">แวะดูบ้าน myclover</a>
+          <a class="nb disp" href="/frontdoor/">กลับไปที่เข็มทิศ</a>
         </div>
       </div>'''
 
@@ -1086,6 +1108,8 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
   </div>
 </div></header>
 
+{reading_rail(slug)}
+
 <div class="wrap epttl">
   <span class="no">ตอนที่ {num}{badge}</span>
   <h1 class="disp">{E(title)}</h1>
@@ -1100,8 +1124,9 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
       {nav}
   </div>
   <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
+  {COURSE_END if not next_ep else ''}
   {end}
-  {walkthrough_card('../../')}
+  {walkthrough_card('../../') if next_ep else ''}
   {finish_block('../../')}
   <p class="kb">{tap_hint}</p>
 </nav>
@@ -1128,7 +1153,7 @@ document.addEventListener('keydown',function(e){
         f'{SERIES} ตอนที่ {num} — {title} · อ่านฟรี ไม่ต้องสมัคร',
         f'{SITE}/forge/img/{key}-og.jpg', body, READ_CSS, js,
         canonical=(f'<link rel="canonical" href="{SITE}/forge/{slug}/">\n'
-                   f'<meta name="mc-item" content="forge:{slug}">\n'), act='forge-ep-open'))
+                   f'<meta name="mc-item" content="forge:{slug}">\n'), act='forge-ep-open', reader='chapter'))
 
 # ── บทนำ /forge/intro/ ──
 #
@@ -1678,13 +1703,18 @@ print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
 # _redirects — ลิงก์ตอนเก่าที่คนแชร์ไว้ต้องยังเปิดได้
 # Cloudflare Pages อ่านไฟล์นี้เอง ไม่ต้องตั้งอะไรเพิ่ม
 # ─────────────────────────────────────────────────────────────
-lines = ['# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
-         '# รองรับลิงก์จากโครงตอนเก่า', '']
-lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
-lines += ['', '# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน']
-lines += [f'/forge/{slug}/*{" " * max(1, 38 - len(slug))}/forge/original/  301'
-          for slug in RETIRED_FORGE_SLUGS]
-lines += ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
+FORGE_REDIRECT_START = '# BEGIN tools/build.py Forge redirects'
+FORGE_REDIRECT_END = '# END tools/build.py Forge redirects'
+forge_lines = [FORGE_REDIRECT_START, '# รองรับลิงก์จากโครงตอนเก่า']
+forge_lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
+forge_lines += ['# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน']
+forge_lines += [f'/forge/{slug}/*{" " * max(1, 38 - len(slug))}/forge/original/  301'
+                for slug in RETIRED_FORGE_SLUGS]
+forge_lines += [FORGE_REDIRECT_END]
+
+# Bootstrap defaults only if there is no _redirects yet. An existing file belongs
+# to its route owners: rebuilding Forge must not reset their rewrites or ordering.
+default_lines = ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
           '/register/*                              /card/#register  301', '',
           '# CORE7 — เส้นทางที่มีพารามิเตอร์ (room code / match id / card id / handle)',
           '# rewrite 200 ไปที่หน้าเดียว แล้ว JS อ่านค่าจาก path เอง',
@@ -1692,6 +1722,47 @@ lines += ['', '# หน้าลงทะเบียนถูกรวมเข
           '/core7/match/*                           /core7/room/index.html  200',
           '/core7/result/*                          /core7/result/index.html  200',
           '/core7/cards/*                           /core7/cards/index.html  200',
-          '/core7/profile/*                         /core7/profile/index.html  200', '']
-open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8').write('\n'.join(lines))
-print('เขียน _redirects แล้ว')
+          '/core7/profile/*                         /core7/profile/index.html  200', '',
+          '# XIRCLE — ชื่อที่แชร์ต่างตัวพิมพ์ ใช้หน้าเดียว ไม่พึ่ง Worker',
+          '# rewrite ไปไฟล์จริง ไม่ redirect ตัวพิมพ์ จึงไม่วนกลับที่ host แบบ case-insensitive',
+          '/Xircle                                  /xircle/index.html  200',
+          '/Xircle/                                 /xircle/index.html  200',
+          '/XIRCLE                                  /xircle/index.html  200',
+          '/XIRCLE/                                 /xircle/index.html  200',
+          '/invite                                  /invite/  302', '']
+redirect_path = os.path.join(ROOT, '_redirects')
+if os.path.exists(redirect_path):
+    with open(redirect_path, encoding='utf-8', newline='') as current_redirects:
+        existing_redirects = current_redirects.read()
+else:
+    existing_redirects = '\n'.join(default_lines)
+
+# Replace only the known historical Forge aliases, including the first rebuild
+# of older unmarked files. Preserve unknown /forge/ aliases as well as all other
+# routes/comments verbatim. Inserting at the first owned line keeps precedence.
+owned_sources = {f'/forge/{old}/' for old, _new in OLD_TO_NEW}
+owned_sources.update(f'/forge/{slug}/*' for slug in RETIRED_FORGE_SLUGS)
+owned_comments = {
+    FORGE_REDIRECT_START, FORGE_REDIRECT_END,
+    '# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
+    '# รองรับลิงก์จากโครงตอนเก่า',
+    '# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน',
+}
+preserved = []
+insert_at = None
+for line in existing_redirects.splitlines(keepends=True):
+    stripped = line.strip()
+    source = stripped.split()[0] if stripped else ''
+    if source in owned_sources or stripped in owned_comments:
+        if insert_at is None:
+            insert_at = len(preserved)
+    else:
+        preserved.append(line)
+if insert_at is None:
+    insert_at = len(preserved)
+    if preserved and not preserved[-1].endswith(('\n', '\r')):
+        preserved[-1] += '\n'
+preserved.insert(insert_at, '\n'.join(forge_lines) + '\n')
+with open(redirect_path, 'w', encoding='utf-8', newline='') as redirects:
+    redirects.write(''.join(preserved))
+print('อัปเดตเฉพาะ Forge aliases ใน _redirects แล้ว')

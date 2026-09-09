@@ -911,7 +911,7 @@ details[open] summary span { transform: rotate(45deg); }
 
 .routine-orb-visual {
   animation: routine-orb-breathe 3.8s ease-in-out infinite alternate;
-  background-image: url("/ako/assets/xircle-routine-orbs-sprite.png");
+  background-image: url("/ako/assets/xircle-routine-orbs-sprite.webp");
   background-position-y: center;
   background-repeat: no-repeat;
   background-size: 300% auto;
