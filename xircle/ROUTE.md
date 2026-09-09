@@ -1,25 +1,28 @@
 # Route Guard — /xircle/
 
-> Reviewed: 2026-08-26  
-> Reviewed against main: `73f5115fd5ead8274f614eecfe2dd94d87b7d207`  
-> Runtime: `index.html`  
+> Reviewed: 2026-09-09
+> Reviewed against main: `85f5b2ac13dae3757786403f514e90e40a72434b`
+> Runtime: `index.html`
 > Global source: `/xircle/XIRCLE_ROUTE_SOURCE.md`
 
 ## Job
-ทำให้คนเข้าใจคุณค่าของ Xircle ผ่าน 1 วัน ก่อนพาไป Human Care
+ทำให้คนลองเห็นคุณค่าจากวันตัวอย่าง จนอยากนัด XIRCLE Experience กับข้อมูลและชีวิตจริงของตัวเอง
 
-## Flow
-- **Entry:** direct /xircle/ หรือกลับมาทบทวน
-- **Exit:** /xircle/care/ เป็นทางหลัก
+## Flow — V3 owner directive, 2026-09-08
+- Entry: `/xircle/` starts a fresh sample; `#appointment` and legacy `#start` return to the appointment invitation.
+- Six actions: sleep → food shutter → movement / day assembly → seven nights → context + Teem / Ako → sample becomes real.
+- Primary exit: `/meet/?intent=health&from=xircle&open=booking`; no account or app prerequisite.
+- Optional exit after the payoff: `/xircle/learn/`. All legacy ecosystem routes remain directly accessible.
 
-## สิ่งที่ผู้ใช้ต้องเข้าใจเมื่อออกจากหน้านี้
-ความจำไม่ครบ → Eat/Move/Sleep ทำให้เมื่อวานมองเห็น → Habit Score → เลือก 1 อย่าง
+## Locks
+- V3 supersedes the previous mandatory Human Care exit and V2 registration/download sequence.
+- Sample values are fictional; the same seven bedtimes remain unchanged across contexts. No invented health score or diagnosis.
+- Shutter visibly captures, holds, records and docks before the next question. Back and replay cancel pending motion.
+- State stays in memory. Never read, clear or write legacy journey keys. Five-digit `invite`, `xty`, or `mode=join&c=` links retain the existing TeamBook destination.
+- Preserve the original V5 assets and knowledge ecosystem. App truth remains: Habit Score = Eat + Move + Sleep; body composition is separate.
 
-## Locks — ห้ามทำหาย
-Habit Score = Eat + Move + Sleep เท่านั้น; Body Composition ไม่ใช่วงที่ 4; scene flow ต้องไป Human Care; Habit Score label อยู่นอกศูนย์วง
-
-## Dependencies / จุดเชื่อม
-state.js, story-v6.js, v5/story CSS, assets/v5
+## Dependencies
+`index.html`, `experience-v3.js`, `experience-v3.css`, shared typography, repaired `assets/v3`, selected `assets/v5`, and real `/meet/img/` portraits. No legacy runtime or telemetry import. V2 runtime files are retained but not loaded.
 
 ## กฎร่วม
 - อ่าน `/xircle/XIRCLE_ROUTE_SOURCE.md` และ `/xircle/ROUTE_INDEX.md` ก่อนเปลี่ยน flow ข้ามหน้า

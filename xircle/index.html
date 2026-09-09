@@ -1,148 +1,44 @@
 <!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102c28">
-  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-  <title>XIRCLE — หนึ่งวัน เห็นด้วยกัน</title>
-  <meta name="description" content="ลองต่อวันตัวอย่าง แล้วดูว่าข้อมูลจาก XIRCLE และมุมมองของทีม + เอโกะ ช่วยให้เห็นกิจวัตรชัดขึ้นยังไง">
-  <link rel="canonical" href="https://www.myclover.com/xircle/">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="th_TH">
-  <meta property="og:url" content="https://www.myclover.com/xircle/">
-  <meta property="og:title" content="XIRCLE · หนึ่งวัน เห็นด้วยกัน">
-  <meta property="og:description" content="ลองวันตัวอย่าง แล้วดูว่าทีม + เอโกะช่วยต่อกับชีวิตจริงยังไง">
-  <meta name="twitter:card" content="summary">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23102c28'/%3E%3Ccircle cx='20' cy='20' r='11' fill='none' stroke='%23c3e8ad' stroke-width='5' stroke-dasharray='52 18' transform='rotate(-40 20 20)'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/xircle/_shared/typography.css?v=3">
-  <link rel="stylesheet" href="/xircle/experience-v2.css?v=20260908-1">
-  <script src="/xircle/experience-v2.js?v=20260908-1" defer></script>
-</head>
-<body>
-  <a class="skip-link" href="#main">ข้ามไปเนื้อหา</a>
-  <div class="page-shell">
-    <header class="masthead">
-      <a class="brand" href="/xircle/" aria-label="XIRCLE เริ่มวันตัวอย่างใหม่"><span class="brand-mark" aria-hidden="true"></span>XIRCLE</a>
-      <span class="masthead-note">หนึ่งวัน เห็นด้วยกัน</span>
-      <span class="sample-badge"><span aria-hidden="true"></span>ข้อมูลตัวอย่าง ไม่ใช่ค่าของคุณ</span>
-    </header>
-
-    <main id="main" tabindex="-1">
-      <div class="demo-layout" id="demo" data-step="sleep" hidden>
-        <header class="story-intro">
-          <div class="chapter"><span id="step-number">01 / 06</span><span class="chapter-line"></span><span id="step-label">จากความจำ สู่บันทึก</span></div>
-          <h1 id="prompt-title" tabindex="-1">เมื่อวานคุณ<br>ดูแลตัวเองยังไง?</h1>
-          <p class="prompt-copy" id="prompt-copy">เรามักจำได้คร่าว ๆ<br>ลองดูว่าถ้ามีข้อมูลเพิ่ม ภาพจะต่างแค่ไหน</p>
-        </header>
-
-        <section class="day-record" id="day-record" aria-labelledby="record-title">
-          <header class="record-heading">
-            <div><span class="eyebrow">YOUR DAY, IN VIEW</span><h2 id="record-title">วันตัวอย่าง</h2></div>
-            <span class="record-count" id="record-count">0 / 3 บันทึก</span>
-          </header>
-          <div class="day-visual" id="day-visual">
-            <svg class="day-rings" viewBox="0 0 260 260" aria-hidden="true">
-              <circle class="ring-track" cx="130" cy="130" r="112"/>
-              <circle class="ring-track" cx="130" cy="130" r="93"/>
-              <circle class="ring-track" cx="130" cy="130" r="74"/>
-              <circle class="ring ring-sleep" id="ring-sleep" cx="130" cy="130" r="112" pathLength="100"/>
-              <circle class="ring ring-food" id="ring-food" cx="130" cy="130" r="93" pathLength="100"/>
-              <circle class="ring ring-move" id="ring-move" cx="130" cy="130" r="74" pathLength="100"/>
-            </svg>
-            <div class="day-center" id="day-center"><span id="center-eyebrow">เมื่อวาน</span><strong id="center-value">จำได้คร่าว ๆ</strong><span id="center-note">ลองเติมบันทึกแรก</span></div>
-            <div class="camera" id="camera" hidden>
-              <div class="camera-frame"><img data-meal-image alt="มื้ออาหารตัวอย่างบนโต๊ะ" width="640" height="360"><span class="camera-corner corner-tl"></span><span class="camera-corner corner-tr"></span><span class="camera-corner corner-bl"></span><span class="camera-corner corner-br"></span></div>
-              <span class="camera-caption">กล้องจำลอง · มื้อตัวอย่าง</span>
-            </div>
-          </div>
-          <div class="history" id="history" hidden>
-            <div class="history-heading"><span>เวลาเริ่มนอน · 7 คืน</span><strong>3 คืนหลัง</strong></div>
-            <svg class="sleep-chart" viewBox="0 0 380 196" role="img" aria-labelledby="chart-title chart-desc">
-              <title id="chart-title">สามคืนหลังเริ่มนอนช้ากว่าสี่คืนแรก</title>
-              <desc id="chart-desc">เวลาเริ่มนอนตัวอย่าง คืนที่ 1 ถึง 7: 22:45, 22:55, 23:05, 22:50, 00:10, 00:25, 00:30 ตามลำดับ เวลาหลังเที่ยงคืนอยู่ถัดจาก 23 นาฬิกา</desc>
-              <rect class="late-window" x="231" y="13" width="141" height="159" rx="12"/>
-              <g class="chart-grid"><path d="M61 29H366M61 89H366M61 149H366"/></g>
-              <g class="axis-label"><text x="0" y="34">22:30</text><text x="0" y="94">23:30</text><text x="0" y="154">00:30</text></g>
-              <path class="chart-line" d="M72 44L119 54L166 64L213 49L260 129L307 144L354 149"/>
-              <g class="chart-dots"><circle cx="72" cy="44" r="5"/><circle cx="119" cy="54" r="5"/><circle cx="166" cy="64" r="5"/><circle cx="213" cy="49" r="5"/><circle cx="260" cy="129" r="5"/><circle cx="307" cy="144" r="5"/><circle class="latest-night" cx="354" cy="149" r="7"/></g>
-              <g class="day-label"><text x="72" y="190">1</text><text x="119" y="190">2</text><text x="166" y="190">3</text><text x="213" y="190">4</text><text x="260" y="190">5</text><text x="307" y="190">6</text><text x="354" y="190">7</text></g>
-            </svg>
-            <p class="context-note" id="context-note">เติมบริบทให้ 3 คืนที่ต่างไป</p>
-          </div>
-          <p class="record-feedback" id="record-feedback">คำอธิบายคร่าว ๆ ยังมีช่องว่าง</p>
-          <div class="record-pieces">
-            <button class="record-piece piece-sleep" id="piece-sleep" type="button" disabled aria-label="แก้ไขคืนตัวอย่าง">
-              <span class="piece-label"><span class="piece-dot"></span>นอน</span><strong id="sleep-value">—</strong><small id="sleep-note">ยังไม่มีบันทึก</small>
-            </button>
-            <div class="record-piece piece-food" id="piece-food">
-              <span class="piece-label"><span class="piece-dot"></span>มื้ออาหาร</span><strong id="food-value">—</strong><small id="food-note">ยังไม่มีภาพ</small>
-              <span class="meal-thumb" id="meal-thumb" hidden><img data-meal-image alt="" width="640" height="360"></span>
-            </div>
-            <button class="record-piece piece-move" id="piece-move" type="button" disabled aria-label="แก้ไขการขยับตัวอย่าง">
-              <span class="piece-label"><span class="piece-dot"></span>ขยับ</span><strong id="move-value">—</strong><small id="move-note">ยังไม่มีบันทึก</small>
-            </button>
-          </div>
-          <div class="movement-strip" id="movement-strip" hidden><span>ช่วงที่ขยับ</span><div class="movement-bars" id="movement-bars" role="img" aria-label="การกระจายการขยับระหว่างวันตัวอย่าง"></div><span>เช้า → ค่ำ</span></div>
-          <p class="record-footnote" id="record-footnote">บันทึกจากอุปกรณ์ · จำลองเพื่อเล่าเรื่อง</p>
-        </section>
-
-        <section class="interaction" aria-label="ลองประกอบวันตัวอย่าง">
-          <div class="interaction-panel" data-panel="sleep">
-            <p class="control-label">เลือกคืนตัวอย่าง</p>
-            <div class="choices three-choices"><button type="button" data-sleep="short">นอนน้อย</button><button type="button" data-sleep="middle">พอใช้</button><button type="button" data-sleep="full">เต็มที่</button></div>
-            <p class="interaction-hint">ลองประมาณ 1 นาที · ไม่ต้องสมัคร</p>
-          </div>
-          <div class="interaction-panel" data-panel="food" hidden>
-            <button class="shutter-action" id="shutter" type="button"><span class="shutter-icon" aria-hidden="true"><span></span></span><span>ถ่ายมื้อตัวอย่าง<small>เก็บภาพนี้ไว้กลับมาดู</small></span></button>
-          </div>
-          <div class="interaction-panel" data-panel="move" hidden>
-            <p class="control-label">เลือกการขยับของวันตัวอย่าง</p>
-            <div class="choices three-choices"><button type="button" data-move="little">นั่งเยอะ</button><button type="button" data-move="some">มีเดินบ้าง</button><button type="button" data-move="active">ตั้งใจขยับ</button></div>
-          </div>
-          <div class="interaction-panel" data-panel="overview" hidden>
-            <p class="overview-note">วันเดียวเห็นเหตุการณ์<br>หลายวันเริ่มเห็นแนวโน้ม</p>
-            <button class="button button-lime" id="expand-history" type="button">ดูต่อหลายวัน <span aria-hidden="true">↗</span></button>
-          </div>
-          <div class="interaction-panel" data-panel="context" hidden>
-            <p class="conversation-label">ตัวอย่างวิธีคุยกับทีม + เอโกะ</p>
-            <div class="human-line"><img data-portrait="/meet/img/teem.jpg" alt="ทีม" width="900" height="1500" loading="lazy"><p><strong>ทีม <span>ดูแนวโน้ม</span></strong><span id="teem-line">3 คืนหลัง นอนช้ากว่าเดิม</span></p></div>
-            <div class="human-line"><img data-portrait="/meet/img/ako.jpg" alt="เอโกะ" width="900" height="1500" loading="lazy"><p><strong>เอโกะ <span>ต่อกับชีวิตจริง</span></strong><span id="ako-line">ช่วงนั้นชีวิตต่างจากเดิมตรงไหน?</span></p></div>
-            <p class="control-label context-label">ลองเติมบริบทให้วันตัวอย่าง</p>
-            <div class="choices context-choices"><button type="button" data-context="work" aria-pressed="false">งานเลิกช้า</button><button type="button" data-context="family" aria-pressed="false">ต้องดูแลคนที่บ้าน</button><button type="button" data-context="unknown" aria-pressed="false">ยังไม่รู้</button></div>
-            <div class="human-result" id="human-result" hidden><span class="eyebrow">วันนี้ ลองแค่ 1 อย่าง</span><h2 id="result-title"></h2><p id="result-review"></p><span class="compare-hint">ลองเปลี่ยนบริบท · ข้อมูลเดิม สิ่งที่ลองต่ออาจต่างกัน</span></div>
-          </div>
-          <nav class="demo-navigation" aria-label="ย้อนดูวันตัวอย่าง"><button type="button" id="back" hidden>← ย้อนกลับ</button><button type="button" id="restart" hidden>เริ่มใหม่</button></nav>
-        </section>
-      </div>
-
-      <section class="start-section" id="start" aria-labelledby="start-title">
-        <header class="start-heading"><span class="eyebrow">FROM A SAMPLE DAY TO YOUR EVERYDAY</span><h2 id="start-title" tabindex="-1">ลองใช้ข้อมูล<br class="mobile-break">ของคุณจริง ๆ</h2><p>XIRCLE ช่วยเก็บและสรุปข้อมูล<br>ทีม + เอโกะช่วยดูต่อกับชีวิตจริง</p></header>
-        <div class="start-doors">
-          <section class="app-door" aria-labelledby="app-door-title">
-            <span class="door-number">01 <span>เริ่มจากบันทึก</span></span><h3 id="app-door-title">เริ่มใช้ XIRCLE กับเรา</h3>
-            <p class="sequence">สมัคร <span aria-hidden="true">→</span> โหลด App</p>
-            <a class="button button-forest" id="register-link" href="/invite" target="_blank" rel="noopener" aria-describedby="register-help">สมัคร XIRCLE <span aria-hidden="true">↗</span></a>
-            <p class="door-help" id="register-help">เปิดหน้าสมัครใหม่ · กด “สมัครสมาชิก XIRCLE”<br>แล้วกลับมาโหลดแอปที่นี่</p>
-          </section>
-          <section class="human-door" aria-labelledby="human-door-title">
-            <span class="door-number">02 <span>เริ่มจากคุยกัน</span></span><h3 id="human-door-title">นัดดูข้อมูลด้วยกัน</h3><p class="human-door-copy">มีแอปแล้ว หรือยังไม่มี<br>ก็นัดเริ่มต้นได้</p>
-            <a class="button button-forest" id="book-link" href="/meet/?intent=health&amp;from=xircle&amp;open=booking">นัดกับทีม + เอโกะ <span aria-hidden="true">↗</span></a>
-            <p class="door-help">Session แรกไม่มีค่าใช้จ่าย<br>ยืนยันเวลาอีกครั้งก่อนนัด</p>
-            <p class="sharing-note">เลือกได้ว่าอยากแชร์ข้อมูลส่วนไหน<br>เราเริ่มจากเรื่องที่คุณอยากคุย</p>
-          </section>
-        </div>
-        <div class="setup-followthrough">
-            <div class="download-area" id="downloads"><p class="download-label" id="download-label">จากนั้น ดาวน์โหลดแอป</p><div class="store-links"><a id="ios-link" href="https://apps.apple.com/th/app/xircle/id6785562482?uo=4" target="_blank" rel="noopener">App Store <span aria-hidden="true">↗</span></a><a id="android-link" href="https://play.google.com/store/apps/details?hl=en&amp;id=health.xircle.app" target="_blank" rel="noopener">Google Play <span aria-hidden="true">↗</span></a></div><p class="door-help">เปิดแอป แล้วทำตามขั้นตอนเริ่มต้น</p></div>
-            <p class="device-note">ข้อมูลอัตโนมัติอย่างการนอนและการขยับ<br>มาจากอุปกรณ์ที่รองรับ</p>
-        </div>
-        <a class="official-link" href="https://www.cloverx.co.th/th/xircle" target="_blank" rel="noopener">ข้อมูลผลิตภัณฑ์จาก CloverX ↗</a>
-        <a class="resume-demo" href="#demo" id="try-demo" hidden>ลองวันตัวอย่างตั้งแต่ต้น ↑</a>
-      </section>
-      <noscript><p class="no-script">เปิด JavaScript เพื่อลองประกอบวันตัวอย่าง หรือเริ่มใช้ XIRCLE / นัดคุยจากลิงก์ด้านบนได้เลย</p></noscript>
-    </main>
-    <footer class="page-footer"><span>XIRCLE · ทีม + เอโกะ</span><p>ตัวอย่างเพื่ออธิบายกิจวัตร ไม่ใช่การวินิจฉัยโรค</p><a id="legacy-invite" hidden>เปิดคำเชิญสมุดของคุณ ↗</a></footer>
-    <p class="sr-only" id="demo-status" role="status" aria-live="polite" aria-atomic="true"></p>
-  </div>
-</body>
-</html>
+<html lang="th"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#091b17"><meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>XIRCLE Experience — แล้วของคุณล่ะ?</title><meta name="description" content="ลองเห็นหนึ่งวันในมุมใหม่ แล้วมาลอง XIRCLE Experience กับข้อมูลและชีวิตจริงของคุณ กับทีม + เอโกะ"><link rel="canonical" href="https://www.myclover.com/xircle/">
+<meta property="og:type" content="website"><meta property="og:locale" content="th_TH"><meta property="og:url" content="https://www.myclover.com/xircle/"><meta property="og:title" content="XIRCLE Experience — แล้วของคุณล่ะ?"><meta property="og:description" content="วันตัวอย่างทำให้เห็นภาพ คราวนี้มาลองกับข้อมูลของคุณจริง ๆ"><meta property="og:image" content="https://www.myclover.com/xircle/assets/v3/hero-1448.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23091b17'/%3E%3Ccircle cx='20' cy='20' r='11' fill='none' stroke='%23e7c790' stroke-width='4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=3"><link rel="stylesheet" href="/xircle/experience-v3.css?v=20260909-1"><script src="/xircle/experience-v3.js?v=20260909-1" defer></script>
+</head><body>
+<a class="skip-link" href="#fallback">ข้ามไปเนื้อหา</a>
+<header class="topbar"><a class="brand" href="/xircle/" aria-label="XIRCLE เริ่มประสบการณ์ใหม่"><i aria-hidden="true"></i>XIRCLE<span>EXPERIENCE</span></a><div class="top-actions"><span class="sample-label" id="sample-label">วันตัวอย่าง · ไม่ใช่ค่าของคุณ</span><button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8c3 2 3 6 0 8"/></svg><span>เสียงปิด</span></button></div></header>
+<main id="experience" tabindex="-1" hidden><section class="stage" id="stage" data-scene="sleep" data-phase="ready">
+<div class="world" id="world" role="group" aria-label="ฉากวันตัวอย่าง">
+<div class="scene-plates" aria-hidden="true">
+<img class="scene-plate is-active" id="art-hero" src="/xircle/assets/v3/hero-800.webp" srcset="/xircle/assets/v3/hero-800.webp 800w, /xircle/assets/v3/hero-1448.webp 1448w" sizes="(max-width:760px) 100vw,72vw" width="1448" height="1086" alt="" fetchpriority="high">
+<img class="scene-plate" id="art-sleep" data-src="/xircle/assets/v5/xircle-s02-sleep.webp" width="1448" height="1086" alt="">
+<img class="scene-plate" id="art-food" data-src="/xircle/assets/v3/food-800.webp" data-srcset="/xircle/assets/v3/food-800.webp 800w, /xircle/assets/v3/food-1448.webp 1448w" width="1448" height="1086" alt="">
+<img class="scene-plate" id="art-move" data-src="/xircle/assets/v3/move-800.webp" data-srcset="/xircle/assets/v3/move-800.webp 800w, /xircle/assets/v3/move-1448.webp 1448w" width="1448" height="1086" alt="">
+<img class="scene-plate" id="art-day" data-src="/xircle/assets/v5/xircle-s06-yesterday-visible.webp" width="1448" height="1086" alt="">
+<img class="scene-plate" id="art-context" data-src="/xircle/assets/v5/xircle-s08-seeing-not-doing.webp" width="1448" height="1086" alt="">
+</div><div class="scene-shade" aria-hidden="true"></div><div class="scene-light" aria-hidden="true"></div><span class="scene-time" id="scene-time">เมื่อวาน</span>
+<div class="sleep-record" id="sleep-record" hidden><svg class="sleep-moon" viewBox="0 0 32 32" aria-hidden="true"><path d="M26 21A13 13 0 0 1 11 5a12 12 0 1 0 15 16Z"/></svg><div><span>คืนหนึ่งที่เก็บไว้</span><strong id="sleep-reveal-value">6:40</strong><small>ชั่วโมง · ตัวอย่าง</small></div><svg class="sleep-trace" viewBox="0 0 340 54" aria-hidden="true"><path class="trace-track" d="M0 27H340"/><path id="sleep-trace" pathLength="100" d="M0 27H20V15H40V34H75V12H108V39H145V17H192V35H236V14H273V30H316V23H340"/></svg></div>
+<div class="camera-view" id="camera-view" hidden><div class="viewfinder"><i></i><i></i><i></i><i></i><span class="camera-dot"></span><span class="camera-mode">ภาพมื้ออาหาร · ตัวอย่าง</span></div><div class="capture-photo" id="capture-photo" hidden><img data-src="/xircle/assets/v3/food-800.webp" alt="มื้ออาหารตัวอย่างที่บันทึก" width="800" height="600"><span>12:30 <b>บันทึกแล้ว</b></span><i class="record-sweep" aria-hidden="true"></i></div><div class="shutter-flash" aria-hidden="true"></div><p class="capture-caption" id="capture-caption">เก็บภาพนี้ ไว้กลับมาดู</p></div>
+<div class="movement-visual" id="movement-visual" hidden><svg viewBox="0 0 480 160" aria-hidden="true"><path class="trace-track" d="M0 100H480"/><path id="move-trace" pathLength="100" d="M0 100Q35 100 60 90T110 60T160 100T215 55T255 90T305 35T350 70T395 45T480 90"/></svg><div class="move-measure"><span>จังหวะที่ได้ขยับ</span><strong id="move-reveal-value">—</strong><small>ก้าว · ตัวอย่าง</small></div></div>
+<div class="assembled-day" id="assembled-day" hidden aria-label="ภาพวันตัวอย่างที่ประกอบจากสามบันทึก"><div class="day-sun" aria-hidden="true"></div><div class="day-fragment fragment-sleep"><div class="fragment-image"><img data-src="/xircle/assets/v5/xircle-s02-sleep.webp" alt="ภาพคืนตัวอย่าง" width="1448" height="1086"></div><span>นอน <strong id="day-sleep">—</strong></span></div><div class="day-fragment fragment-food"><div class="fragment-image"><img data-src="/xircle/assets/v3/food-800.webp" alt="ภาพมื้อที่เพิ่งเก็บไว้" width="800" height="600"></div><span>มื้ออาหาร <strong>12:30</strong></span></div><div class="day-fragment fragment-move"><div class="fragment-image"><img data-src="/xircle/assets/v3/move-800.webp" alt="ภาพการขยับตัวอย่าง" width="800" height="600"></div><span>ขยับ <strong id="day-move">—</strong></span></div><p class="day-caption">สามช่วงเวลา <span>กลายเป็นวันเดียวกัน</span></p></div>
+<div class="pattern-world" id="pattern-world" hidden><header><span>เวลาเริ่มนอน · 7 คืนตัวอย่าง</span><b id="pattern-caption">คืนเดิม ในภาพหลายวัน</b></header><div class="night-film" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="late"></i><i class="late"></i><i class="latest"></i></div>
+<svg class="night-chart" viewBox="0 0 600 255" role="img" aria-labelledby="pattern-title pattern-desc"><title id="pattern-title">สามคืนหลังเริ่มนอนช้าขึ้น</title><desc id="pattern-desc">เวลาเริ่มนอนตัวอย่างคืนที่ 1 ถึง 7: 22:45, 22:55, 23:05, 22:50, 00:10, 00:25, 00:30 เวลาหลังเที่ยงคืนอยู่ถัดจาก 23 นาฬิกา</desc><rect class="late-highlight" x="365" y="18" width="225" height="200" rx="20"/><g class="night-grid"><path d="M80 42H578M80 118H578M80 194H578"/></g><g class="night-axis"><text x="0" y="49">22:30</text><text x="0" y="125">23:30</text><text x="0" y="201">00:30</text></g><path class="pattern-line" pathLength="100" d="M98 61L176 74L254 86L332 67L410 169L488 188L566 194"/><g class="night-points"><circle cx="98" cy="61" r="7"/><circle cx="176" cy="74" r="7"/><circle cx="254" cy="86" r="7"/><circle cx="332" cy="67" r="7"/><circle cx="410" cy="169" r="7"/><circle cx="488" cy="188" r="7"/><circle class="latest-point" cx="566" cy="194" r="10"/></g><g class="night-labels"><text x="98" y="244">1</text><text x="176" y="244">2</text><text x="254" y="244">3</text><text x="332" y="244">4</text><text x="410" y="244">5</text><text x="488" y="244">6</text><text x="566" y="244">7</text></g></svg>
+<div class="context-tag" id="context-tag" hidden><i aria-hidden="true"></i><span id="context-tag-text"></span></div><div class="people-reveal" id="people-reveal" hidden><figure><img data-src="/meet/img/teem.jpg" alt="ทีม" width="900" height="1500"><figcaption>ทีม <span>เห็นความเชื่อมโยง</span></figcaption></figure><span class="people-connector" aria-hidden="true">+</span><figure><img data-src="/meet/img/ako.jpg" alt="เอโกะ" width="900" height="1500"><figcaption>เอโกะ <span>ต่อกับชีวิตจริง</span></figcaption></figure></div></div>
+<div class="real-world" id="real-world" hidden><div class="real-light" aria-hidden="true"></div><figure class="real-people"><img data-src="/meet/img/hero.jpg" alt="ทีมและเอโกะ คนที่จะมาดูข้อมูลและกิจวัตรกับคุณ" width="900" height="1404"><figcaption>ทีม + เอโกะ <span>เจอกันในชีวิตจริง</span></figcaption></figure><div class="scale-setting"><div class="blank-measure"><span>รอข้อมูลของคุณ</span><strong aria-label="ยังไม่มีข้อมูลของคุณ">— —</strong></div><div class="scale-photo"><img data-src="/xircle/assets/v3/scale-600.webp" alt="XIRCLE Scale สำหรับวัดจริงตอนพบกัน" width="600" height="750"></div><span class="scale-ground" aria-hidden="true"></span><p>ของจริง จะเป็นเรื่องของคุณ</p></div></div>
+</div>
+<div class="story-column"><header class="scene-heading"><div class="chapter"><span id="chapter-number">01</span><i aria-hidden="true"></i><span id="chapter-name">ลองเห็นหนึ่งวัน</span></div><h1 id="scene-title" tabindex="-1">เมื่อวาน<br>เป็นแบบไหน?</h1><p id="scene-support">ลองคืนตัวอย่างหนึ่งคืน</p></header><section class="controls" id="controls" aria-label="ลองประสบการณ์ XIRCLE">
+<div class="control-panel" data-panel="sleep"><div class="choices"><button type="button" data-sleep="short" aria-pressed="false">นอนน้อย</button><button type="button" data-sleep="middle" aria-pressed="false">พอใช้</button><button type="button" data-sleep="full" aria-pressed="false">เต็มที่</button></div><p class="micro-hint">แตะแล้วลองดู · ประมาณ 1 นาที</p></div>
+<div class="control-panel" data-panel="food" hidden><button class="shutter" id="shutter" type="button"><span class="shutter-ring" aria-hidden="true"><i></i></span><span id="shutter-label">เก็บมื้อนี้ไว้<small>แตะชัตเตอร์</small></span></button></div>
+<div class="control-panel" data-panel="move" hidden><div class="choices"><button type="button" data-move="little" aria-pressed="false">นั่งเยอะ</button><button type="button" data-move="some" aria-pressed="false">มีเดินบ้าง</button><button type="button" data-move="active" aria-pressed="false">ตั้งใจขยับ</button></div></div>
+<div class="control-panel" data-panel="day" hidden><button type="button" class="main-action" id="expand-days">แล้วหลายวันล่ะ? <span aria-hidden="true">↗</span></button></div>
+<div class="control-panel" data-panel="context" hidden><p class="context-question" id="context-question">ช่วงนั้นต่างไปเพราะอะไร?</p><div class="choices context-choices"><button type="button" data-context="work" aria-pressed="false">งานเลิกช้า</button><button type="button" data-context="family" aria-pressed="false">ดูแลคนที่บ้าน</button><button type="button" data-context="unknown" aria-pressed="false">ยังไม่รู้</button></div></div>
+<div class="human-insight" id="human-insight" hidden><div class="interpretations"><p><b>ทีม</b><span id="teem-insight"></span></p><p><b>เอโกะ</b><span id="ako-insight"></span></p></div><div class="one-experiment"><span>หนึ่งอย่างที่อาจลอง</span><h2 id="experiment-title"></h2></div><button class="main-action" id="see-yours" type="button">แล้วของคุณล่ะ? <span aria-hidden="true">↗</span></button></div>
+<div class="control-panel booking-panel" data-panel="real" hidden><a class="main-action book-action" id="book-link" href="/meet/?intent=health&amp;from=xircle&amp;open=booking">นัดลอง XIRCLE Experience <span aria-hidden="true">↗</span></a><p class="appointment-note">ยังไม่มีแอปหรือบัญชีก็นัดได้<br><span>Session แรกไม่มีค่าใช้จ่าย · ยืนยันเวลาอีกครั้ง</span></p><a class="knowledge-link" id="knowledge-link" href="/xircle/learn/">อยากรู้ต่อก่อน <span aria-hidden="true">↗</span></a></div>
+</section></div>
+<div class="day-ribbon" id="day-ribbon" role="group" aria-label="บันทึกที่คุณประกอบไว้ในวันตัวอย่าง"><span class="ribbon-title">วันตัวอย่าง <i id="record-count">0 / 3</i></span><button class="ribbon-record sleep-stamp" id="edit-sleep" type="button" disabled aria-label="แก้ไขคืนตัวอย่าง"><i aria-hidden="true"></i><span>นอน <b id="record-sleep">—</b></span></button><span class="ribbon-record food-stamp" id="food-stamp"><img id="meal-stamp" data-src="/xircle/assets/v3/food-800.webp" alt="มื้อที่บันทึก" width="800" height="600" hidden><i aria-hidden="true"></i><span>มื้อ <b id="record-food">—</b></span></span><button class="ribbon-record move-stamp" id="edit-move" type="button" disabled aria-label="แก้ไขการขยับตัวอย่าง"><i aria-hidden="true"></i><span>ขยับ <b id="record-move">—</b></span></button></div>
+<nav class="experience-nav" aria-label="ย้อนดูประสบการณ์"><button id="back" type="button" hidden>← ย้อนกลับ</button><button id="replay" type="button" hidden>ลองใหม่</button><span id="nav-note">แค่ลอง ยังไม่ต้องรู้จัก XIRCLE</span></nav>
+</section></main>
+<section class="static-fallback" id="fallback" tabindex="-1" aria-labelledby="fallback-title"><span>XIRCLE EXPERIENCE · ทีม + เอโกะ</span><h1 id="fallback-title">คราวนี้<br>เป็นเรื่องของคุณ</h1><p>เราเอา Scale ไปวัดจริง<br>แล้วดูข้อมูลกับชีวิตจริงของคุณด้วยกัน</p><a class="main-action" href="/meet/?intent=health&amp;from=xircle&amp;open=booking">นัดลอง XIRCLE Experience ↗</a><p>ยังไม่มีแอปหรือบัญชีก็นัดได้</p><a class="knowledge-link" href="/xircle/learn/">อยากรู้ต่อก่อน ↗</a><noscript><p>เปิด JavaScript เพื่อลองวันตัวอย่าง หรือเลือกนัดจากที่นี่ได้เลย</p></noscript></section>
+<footer class="page-footer"><span>XIRCLE · ชีวิตจริง มีมากกว่าตัวเลข</span><span>ตัวอย่างเพื่อเล่าเรื่อง · ไม่ใช่การวินิจฉัย</span><a id="legacy-invite" hidden>เปิดคำเชิญสมุดของคุณ ↗</a></footer><p class="sr-only" id="experience-status" role="status" aria-live="polite" aria-atomic="true"></p>
+</body></html>

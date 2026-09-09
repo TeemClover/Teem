@@ -21,12 +21,18 @@ Route guards: **58 routes**
 - Xircle App: `Measure → Record → Score → Trend → Feedback`
 - myClover Xircle Route: `Experience → Understand → Interpret → Choose → Repeat → Care → Together`
 
-Main experience:
+Main root experience (V3 directive):
+
+**Sample day → seven nights → context + Teem / Ako → real Scale / own data → `/meet/?intent=health&from=xircle&open=booking`**
+
+`/xircle/learn/` is optional after the payoff. No registration or download prerequisite.
+
+Existing optional ecosystem:
 
 **Xircle → Human Care → X-VISOR → RoutineX → สมุดแมวขาว / White Cat Care → Review Xircle**
 
 ## Experience / activation
-- `/xircle/` — One Day with Xircle
+- `/xircle/` — XIRCLE Experience / appointment-first V3
 - `/xircle/start/` — Choose One Thing
 - `/xircle/care/` — Human Care
 - `/xircle/opportunity/` — X-VISOR Simulator
