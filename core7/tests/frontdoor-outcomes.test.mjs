@@ -78,5 +78,19 @@ test('kitchen, story and onward Xircle receipts count one Ako arrival, never thr
  assert.equal((await post(db,receipt({eventId:'o-kitchen-repeat',handoffId:'h-out-ako-chain',path:'/ako/kitchen/'}))).status,202);
  const stats=await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'local'});
  assert.deepEqual(stats.outcomes.rows,[{door:'ako',opened:1,arrived:1,requested:0}]);
+ assert.deepEqual(stats.outcomes.paths,['/ako/','/ako/kitchen/','/ako/story/','/xircle/'].map(path=>({door:'ako',path,installations:1,journeys:1,events:1})));
  assert.equal((await db.prepare('SELECT COUNT(*) n FROM fd_v2_outcomes').first()).n,4);
+});
+
+test('outcome path drilldown respects departure source, environment, chronological time and distinct people',async t=>{
+ const db=sqliteD1();t.after(()=>db.close());
+ await persistFrontdoorEvent(db,{...departure('one','ako'),source:'line'});
+ await persistFrontdoorEvent(db,{...departure('two','ako'),source:'line',installId:'install-one'});
+ await persistFrontdoorEvent(db,{...departure('other','ako'),source:'facebook'});
+ await persistFrontdoorEvent(db,{...departure('prod','ako','prod'),source:'line'});
+ for(const id of ['one','two','other'])assert.equal((await post(db,receipt({eventId:`o-path-${id}`,handoffId:`h-out-${id}`,path:'/ako/kitchen/'}))).status,202);
+ const stats=await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'local',source:'line'});
+ assert.deepEqual(stats.outcomes.paths,[{door:'ako',path:'/ako/kitchen/',installations:1,journeys:2,events:2}]);
+ assert.deepEqual((await readFrontdoorStats(db,{from:'2026-09-08',to:'2026-09-08',env:'local'})).outcomes.paths,[]);
+ assert.deepEqual((await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'prod'})).outcomes.paths,[]);
 });

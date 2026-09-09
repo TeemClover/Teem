@@ -1,0 +1,253 @@
+{
+  "date": "2026-09-10",
+  "tool": "built-in image_gen",
+  "generationCalls": 8,
+  "purpose": "Editorial food illustrations for the eight Japanese-inspired everyday recipes. Not photographs of dishes cooked or tested by Ako; no nutrition, medical or weight claims.",
+  "sourceRetention": "Original generated PNGs remain unchanged at the recorded Codex source paths.",
+  "processing": "Sharp resize and WebP encoding only; no painting, compositing or original replacement.",
+  "visualReview": "All eight outputs inspected. Visible ingredients match the recipe briefs; no faces, brands, extra garnishes or cropped food. Distinct dishes, consistent warm window light and ivory pottery.",
+  "pricing": "The built-in tool did not provide a quoted or measured cost.",
+  "assets": [
+    {
+      "id": "ginger-chicken-cabbage",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-2c4c1ab8-e19f-4945-aa54-578f3f4cfba2.png",
+      "desktop": "ako/kitchen/art/ginger-chicken-cabbage-v1.webp",
+      "mobile": "ako/kitchen/art/ginger-chicken-cabbage-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One everyday serving of tender sliced skinless chicken, broad soft cabbage pieces, onion slices and clearly visible fine ginger strips, pan-cooked in a light translucent glossy soy glaze. Arrange on a shallow ivory ceramic plate. No rice. The cabbage has slight toasted edges, chicken is fully cooked and moist, ginger is recognizably thin pale strips. No other ingredients or garnish.",
+      "sourceSha256": "6abef79abd704ed4992a26b49fe7357ad5180aba4126e6288b4d6be01e6406cd",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/ginger-chicken-cabbage-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 104718,
+          "sha256": "ec0218f6807355e0d2ef899683dd05be4a1769ece179700b9dea29346a4e25d3"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/ginger-chicken-cabbage-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 40582,
+          "sha256": "e068fd91a61aa2cdef7eb351d3344eb51d4af196c951e403fe837e7e86e5748d"
+        }
+      ]
+    },
+    {
+      "id": "chicken-egg-bowl",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-e780212b-83c9-4da1-a445-5f3b9eff0e4b.png",
+      "desktop": "ako/kitchen/art/chicken-egg-bowl-v1.webp",
+      "mobile": "ako/kitchen/art/chicken-egg-bowl-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One everyday Japanese-inspired rice bowl: cooked white rice topped with tender fully cooked chicken bites, soft onion slices and fully set golden-yellow cooked egg, a little finely sliced spring onion. Matte ivory ceramic Japanese donburi bowl, fully visible rim. The egg is completely cooked throughout, soft but NEVER liquid or runny. No raw egg, no seaweed, no sesame, no other ingredients or garnish.",
+      "sourceSha256": "65ace6caad7f8163b8334c89ab019948846d6598f58083749b6a55f4d7cf1efb",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/chicken-egg-bowl-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 75456,
+          "sha256": "d72964cba42d1a704acd4486276c955562be692c4d7d793552acdb7ea134387f"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/chicken-egg-bowl-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 31692,
+          "sha256": "d512b2720e47133ba542ec19e96ca4f05739969d0c503daa703e2f199a6877f0"
+        }
+      ]
+    },
+    {
+      "id": "tofu-mushroom-pan",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-c461e34f-571b-4fdf-988a-0e45779c9d99.png",
+      "desktop": "ako/kitchen/art/tofu-mushroom-pan-v1.webp",
+      "mobile": "ako/kitchen/art/tofu-mushroom-pan-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One everyday serving of three or four thick rectangular firm-tofu slabs, beautifully pan-seared golden on both sides, with tender oyster mushroom pieces in a light glossy brown soy glaze and a little finely sliced spring onion. Shallow warm ivory ceramic plate. Clearly recognizable oyster mushrooms with fan-shaped caps, not button mushrooms or shimeji. No rice, no broccoli, no sesame, no other ingredients or garnish.",
+      "sourceSha256": "cdd8e761f139b3bfc555a3114c10bc9e21a7de80233789f9abdea80d18c457f5",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/tofu-mushroom-pan-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 104790,
+          "sha256": "9fb661fd947018a3e5897fe903cd90a17b1b6c3df4340a72d72e27069c5779a9"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/tofu-mushroom-pan-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 41618,
+          "sha256": "d4b546c9076e3d90de769a1f7de41806db3eb81ebce7fbaf52a02cbafdfb64ef"
+        }
+      ]
+    },
+    {
+      "id": "cabbage-egg-pan",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-d7993782-3151-4438-944f-29c48e92c8f6.png",
+      "desktop": "ako/kitchen/art/cabbage-egg-pan-v1.webp",
+      "mobile": "ako/kitchen/art/cabbage-egg-pan-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One everyday thin cabbage-and-egg skillet pancake, made from fine pale-green cabbage shreds bound by fully cooked egg, crisp browned edges and golden surface, cut into four flat wedges revealing finely sliced cabbage inside. One flat round pancake, not a stack. On a shallow ivory ceramic plate. No mayonnaise, no bonito flakes, no katsuobushi, no sauce or drizzle, no spring onion, no other ingredients or garnish.",
+      "sourceSha256": "418cef8aff83d9f24aa05e8a16daa2790d1f214996ccfeba30d2329830703e41",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/cabbage-egg-pan-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 115902,
+          "sha256": "e4730a1711ce6e7230cecfa332300302e6a600449442fb93cd5a7298d9de91d1"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/cabbage-egg-pan-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 47690,
+          "sha256": "0ef1dc4eb45dd81ba35d83f1d706d515292c3d0340db25beb316a05ca07a2c5a"
+        }
+      ]
+    },
+    {
+      "id": "cucumber-sesame-vinegar",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-6cedd553-db06-44e3-9ca0-6422dbf0aec6.png",
+      "desktop": "ako/kitchen/art/cucumber-sesame-vinegar-v1.webp",
+      "mobile": "ako/kitchen/art/cucumber-sesame-vinegar-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: A small everyday side dish of fresh thin Thai cucumber rounds, pale centers and crisp green rims, sprinkled with toasted white sesame seeds and lightly coated in a clear rice-vinegar dressing. Small shallow ivory ceramic bowl. The cucumber is sliced evenly with naturally imperfect overlaps, a few tiny drops of clear dressing visible. No seaweed, no tomatoes, no red chili, no scallions, no other ingredients or garnish.",
+      "sourceSha256": "8221c9ba20c4c29f48dc5d2e31382518b6d135d4fed2703b2638e1ee201848c1",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/cucumber-sesame-vinegar-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 108210,
+          "sha256": "3c1b1b0ca22dc06f30a5675188506046a5dc9449032ac2d97a6c20917b42929f"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/cucumber-sesame-vinegar-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 44182,
+          "sha256": "2962be0f0b19d5de02a25ae5a89ffd2305ac3a57030b22e9b65e02faa1dd14e6"
+        }
+      ]
+    },
+    {
+      "id": "mushroom-egg-soup",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-7160a7b7-680c-4fc3-abe8-e033a49af370.png",
+      "desktop": "ako/kitchen/art/mushroom-egg-soup-v1.webp",
+      "mobile": "ako/kitchen/art/mushroom-egg-soup-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One bowl of clear light golden broth with delicate fully cooked yellow egg ribbons, clearly recognizable oyster mushroom pieces with fan-shaped caps, and a little finely sliced spring onion. Medium ivory ceramic soup bowl, entire rim visible, gentle real steam. The broth is clear and translucent, not cloudy or creamy. No miso, no cream, no meat, no noodles, no carrots, no other ingredients or garnish.",
+      "sourceSha256": "01e906e316bb44dfea35d6ac5cc4af76e25f19224f186c8ec28344d77be32f59",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/mushroom-egg-soup-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 78112,
+          "sha256": "25f92bb3bf01d810ae610e4e60391228ea8621b6d997951778cd24a9b2c682c3"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/mushroom-egg-soup-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 32362,
+          "sha256": "8305e2c74cffd68e225a42d926383a3edb25211eee47ea64be78064556533122"
+        }
+      ]
+    },
+    {
+      "id": "carrot-tuna-pan",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-ede8dc6f-d1ee-4a90-b431-b93d36a393e3.png",
+      "desktop": "ako/kitchen/art/carrot-tuna-pan-v1.webp",
+      "mobile": "ako/kitchen/art/carrot-tuna-pan-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One small everyday Japanese-inspired side plate of very fine bright orange carrot matchsticks, lightly pan-cooked so still crisp, mixed with small moist natural tuna flakes and a few toasted white sesame seeds. Shallow ivory ceramic side plate. The tuna is distinct small irregular fish flakes, not large cubes or steaks. No egg, no pasta, no corn, no scallions, no other ingredients or garnish.",
+      "sourceSha256": "276ca7fe4736cf5dfb4a6ed5bd66272e162286dc97a1a6206545fe795a2fd3c7",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/carrot-tuna-pan-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 82478,
+          "sha256": "e3d6066eafc616b4e0be75f1123c919d0dffc207f0e29208085f7ac4816882ca"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/carrot-tuna-pan-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 33948,
+          "sha256": "07d37819072b9f5596c59f688098a7163efe193c62b0f44dad7cfa85e6064050"
+        }
+      ]
+    },
+    {
+      "id": "tofu-tomato-cool",
+      "source": "/Users/Teem/.codex/generated_images/01a087e7-0fd9-72c1-8f28-04cee52b0764/exec-9a1a23f7-3ba1-4f12-90c3-cb188e50f43d.png",
+      "desktop": "ako/kitchen/art/tofu-tomato-cool-v1.webp",
+      "mobile": "ako/kitchen/art/tofu-tomato-cool-v1-mobile.webp",
+      "prompt": "Use case: photorealistic-natural. Asset type: a finished editorial recipe image for a Thai home-cooking website. Create a realistic beautiful food photograph, not a painting or 3D render. Affordable everyday ingredients, simple Japanese-inspired home cooking, one ordinary one-person serving. Scene: pale warm stone kitchen tabletop with a small edge of oat-colored linen, soft natural window sidelight, restrained shadows. Composition: 3:2 landscape at 1536x1024, three-quarter overhead culinary magazine angle, the ENTIRE plate or bowl must fit inside the central 76% of the frame with its rim visible and ample uncluttered breathing room, no cropped dish. Close enough to show juicy real textures and make the dish immediately recognizable and appetizing. Warm neutral ivory/stone pottery. No visible text, logos, brand, people, hands, packaging, fake food, floating ingredients or decorative food outside the dish. No additional food props. Primary subject: One small chilled side dish: a smooth plain white chilled soft tofu block, topped with juicy finely diced ripe red tomato and a little finely sliced scallion, a small shallow pool of translucent soy-lime dressing around the base. Small shallow ivory ceramic bowl. Tofu is clearly plain, white, cool and unseared with no browned surface, not cheese. No sesame, no herbs, no meat, no other ingredients or garnish.",
+      "sourceSha256": "312bb9a0bea3c892f5f6ba30ea5f7f7d3072b544dccd0438f86a23c8f70a8cf9",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/tofu-tomato-cool-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 65646,
+          "sha256": "260b894528dd06a46ce77b75477298d731a9dc5d955ce7290a62f97db2f1bb85"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/tofu-tomato-cool-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 27626,
+          "sha256": "f66d14504f4aa6dc9db236cc2943c94565df68d74061f94d640ef4b0efce08ee"
+        }
+      ]
+    }
+  ],
+  "totalExportBytes": 1035012
+}

@@ -74,6 +74,13 @@ try{
     assert.equal(await page.locator('[data-portions="1"]').getAttribute('aria-pressed'),'true');
     await shot(page,`kitchen-arrival-${width}`);
     const paths=['/ako/','/ako/kitchen/'];
+    await page.locator('#recipe-browse summary').click();
+    await page.locator('#recipe-list [data-recipe="ginger-chicken-cabbage"]').click();
+    await arrived(page,'/ako/kitchen/ginger-chicken-cabbage/',handoffId);
+    paths.push('/ako/kitchen/ginger-chicken-cabbage/');
+    await page.locator('#copy-recipe').click();
+    await page.waitForFunction(()=>document.querySelector('#share-status').textContent.length>0);
+    assert.equal(await page.locator('#share-link').inputValue(),'https://www.myclover.com/ako/kitchen/ginger-chicken-cabbage/');
     if(width===1440){
       await page.getByRole('link',{name:'รู้จักเอโกะ',exact:true}).click();await arrived(page,'/ako/story/',handoffId);
       paths.push('/ako/story/');
@@ -99,12 +106,21 @@ try{
     assert.deepEqual(persisted.results,paths.slice().sort().map(path=>({path,name:'DESTINATION_ARRIVAL'})));
     report.flows.push({width,handoffId,installId,paths,persisted:persisted.results});
     await context.close();
-    pass(`${width}px root red → Ako → kitchen${width===1440?' → story → kitchen':''} → complete XIRCLE experience → Meet retains one handoff`);
+    pass(`${width}px root red → Ako → kitchen → recipe${width===1440?' → story → kitchen':''} → complete XIRCLE experience → Meet retains one handoff`);
   }
   const auth='Basic '+Buffer.from('teem:local-fixture-only').toString('base64');
   const response=await fetch(server.base+'/api/core7/frontdoor-stats?env=local',{headers:{authorization:auth}});
   assert.equal(response.status,200);const stats=await response.json();
   report.outcomes=stats.outcomes;assert.deepEqual(stats.outcomes.rows,[{door:'ako',opened:2,arrived:2,requested:0}]);
+  assert.equal(stats.outcomes.paths.find(row=>row.path==='/ako/kitchen/ginger-chicken-cabbage/').installations,2);
+  const statContext=await browser.newContext({viewport:{width:390,height:844},httpCredentials:{username:'teem',password:'local-fixture-only'}});
+  await statContext.route('**/*',route=>new URL(route.request().url()).origin===server.base?route.continue():route.abort());
+  const statPage=await statContext.newPage();statPage.on('pageerror',error=>report.pageErrors.push({width:390,message:error.message}));
+  await statPage.goto(server.base+'/stat/frontdoor/');await statPage.locator('#dashboard').waitFor({state:'visible'});
+  assert.match(await statPage.locator('#ako-recipes').innerText(),/ไก่ขิงกะหล่ำปลี/);
+  assert.equal(await statPage.locator('#ako-recipes tr').first().locator('td').nth(1).innerText(),'2');
+  assert.equal(await statPage.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  await shot(statPage,'actual-journey-stat-390');await statContext.close();
   const roots=await db.prepare("SELECT COUNT(DISTINCT install_id) n FROM fd_v2_events WHERE event_name='FRONTDOOR_OPEN' AND path='/' AND env='local'").first();
   assert.equal(roots.n,2);
   report.productionEvents=(await db.prepare("SELECT COUNT(*) n FROM fd_v2_events WHERE env='prod'").first()).n;
@@ -112,7 +128,7 @@ try{
   report.meetingRequests=(await db.prepare("SELECT COUNT(*) n FROM fd_v2_outcomes WHERE name='MEET_REQUEST_ACCEPTED'").first()).n;
   assert.equal(report.productionEvents,0);assert.equal(report.productionOutcomes,0);assert.equal(report.meetingRequests,0);
   assert.deepEqual(report.formSubmissions,[]);assert.deepEqual(report.pageErrors,[]);
-  pass('Real D1 records nine destination receipts as two distinct Ako arrivals, zero accepted appointment requests and zero production rows');
+  pass('Actual browser journey →11 real D1 receipts →protected Stat recipe count2; two distinct Ako arrivals, zero accepted appointment requests and zero production rows');
 }catch(error){report.failure=error.stack;throw error;}
 finally{
   await writeFile(path.join(output,'proof.json'),JSON.stringify(report,null,2));

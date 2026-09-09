@@ -16,7 +16,7 @@ const output = process.env.FRONTDOOR_PROOF_DIR || await mkdtemp(path.join(tmpdir
 await mkdir(output, { recursive: true });
 const databaseDirectory = await mkdtemp(path.join(tmpdir(), 'frontdoor-d1-'));
 const statPassword = 'local-fixture-only';
-const assetFiles = new Set(['stat/frontdoor/index.html', 'stat/frontdoor/frontdoor.js', 'stat/frontdoor/styles.css', 'assets/front-door/contract.js', 'assets/front-door/state.js', 'assets/front-door/telemetry.js']);
+const assetFiles = new Set(['stat/frontdoor/index.html', 'stat/frontdoor/frontdoor.js', 'stat/frontdoor/data.js', 'stat/frontdoor/styles.css', 'ako/kitchen/catalog.js', 'assets/front-door/contract.js', 'assets/front-door/state.js', 'assets/front-door/telemetry.js']);
 const mf = new Miniflare({
   rootPath: databaseDirectory, cf: false, host: '127.0.0.1', port: 0, modules: true, modulesRoot: root,
   modulesRules: [{ type: 'ESModule', include: ['**/*.js'], fallthrough: true }],

@@ -1,7 +1,9 @@
 import {
-  ANALYTICS_VERSION, EVENTS, PRIMARY_EVENTS, ENVIRONMENTS, SOURCES,
+  EVENTS, PRIMARY_EVENTS, ENVIRONMENTS, SOURCES,
   VISITOR_CLASSES, VIEWPORTS, INTENTS, DOORS, environmentForHost,
 } from '/assets/front-door/contract.js';
+import { akoProgress, responseFailure, validResponse } from './data.js';
+import { RECIPE_LINKS } from '/ako/kitchen/catalog.js';
 
 // This page only reads aggregates. It must never emit analytics events.
 const $ = id => document.getElementById(id);
@@ -22,8 +24,13 @@ const values = {
   'returning-room': 'เคยเข้าห้อง', veteran: 'ประวัติลึก', mobile: 'Mobile',
   tablet: 'Tablet', desktop: 'Desktop', build: 'BUILD', curious: 'CURIOUS',
   self: 'SELF', people: 'PEOPLE', income: 'INCOME', dungeon: 'THE DUNGEON',
+  ako: 'Ako · สุขภาพ', xircle: 'Xircle', meet: 'Meet · นัดคุย', forge: 'FORGE · การ์ตูน',
+  classroom: 'Classroom · เรียนต่อ', home: 'บ้าน myClover', hall: 'Hall',
+  red: 'แดง · RED', green: 'เขียว · GREEN',
+  blue: 'น้ำเงิน · BLUE', silver: 'เงิน · SILVER',
 };
 const optionalFilters = ['source', 'visitorClass', 'viewport', 'intentPrimary', 'doorId'];
+const recipeNames = Object.fromEntries(RECIPE_LINKS.map(recipe => [recipe.path, recipe.name]));
 let controller;
 let requestSequence = 0;
 
@@ -38,6 +45,8 @@ function showState(state, title, message, retry = false, protectedLink = false) 
   $('state-message').textContent = message;
   $('retry').hidden = !retry;
   $('protected-link').hidden = !protectedLink;
+  $('pipeline-status').textContent = state === 'loading' ? 'กำลังอ่านข้อมูล' : state === 'no-data' ? 'API + D1 เชื่อมต่อแล้ว' : 'ยังไม่พร้อมแสดงข้อมูล';
+  $('pipeline-status').dataset.ready = String(state === 'no-data');
 }
 
 function metric(data, name) {
@@ -58,9 +67,35 @@ function duration(ms) {
   return `${number.format(Math.round(ms / 6000) / 10)} <small>นาที</small>`;
 }
 
+function percent(numerator, denominator) {
+  return denominator ? `${number.format(Math.round(numerator / denominator * 1000) / 10)}%` : '—';
+}
+
+function renderOutcomes(outcomes) {
+  const rows = outcomes?.rows;
+  const paths = outcomes?.paths;
+  $('outcome-cards').innerHTML = Array.isArray(rows) ? rows.map(row => `<article class="outcome-card" data-door="${escape(row.door)}">`
+    + `<h3>${escape(values[row.door] || row.door)}</h3><dl><div><dt>ออกเดินทาง</dt><dd>${format(row.opened)}</dd></div>`
+    + `<div><dt>ถึงปลายทางจริง</dt><dd>${format(row.arrived)}</dd></div><div><dt>ส่งคำขอนัดสำเร็จ</dt><dd>${format(row.requested)}</dd></div></dl>`
+    + `<p class="outcome-rate">เปิดทาง → ถึง <strong>${percent(row.arrived, row.opened)}</strong><span>เปิดทาง → ขอคุย <strong>${percent(row.requested, row.opened)}</strong></span></p></article>`).join('')
+    || '<p class="empty-row">NO DATA · ยังไม่มีการเปิดทางที่เชื่อมกับปลายทางในช่วงนี้</p>'
+    : '<p class="empty-row">PIPELINE UNWIRED · API รุ่นนี้ยังไม่ส่งข้อมูลผลลัพธ์ปลายทาง</p>';
+  $('outcome-rows').innerHTML = Array.isArray(rows) ? rows.map(row => `<tr><td>${escape(values[row.door] || row.door)}<small>${escape(row.door)}</small></td><td>${format(row.opened)}</td><td>${format(row.arrived)}</td><td>${format(row.requested)}</td><td>${percent(row.requested, row.opened)}</td></tr>`).join('')
+    || '<tr><td colspan="5" class="empty-row">ยังไม่มีผลลัพธ์ที่เชื่อมกับการเปิดทาง</td></tr>'
+    : '<tr><td colspan="5" class="empty-row">PIPELINE UNWIRED · ยังไม่มีข้อมูลผลลัพธ์จาก API รุ่นนี้</td></tr>';
+  const stops = akoProgress(outcomes);
+  $('ako-path').innerHTML = stops ? stops.map(stop => `<li data-outcome-path="${escape(stop.path)}"><strong>${format(stop.installations)}</strong><h3>${stop.title}</h3><p>${stop.note}</p><small>${format(stop.journeys)} journeys · ${format(stop.events)} receipts</small></li>`).join('')
+    : '<li class="empty-row">PIPELINE UNWIRED · API รุ่นนี้ยังไม่ส่งรายละเอียดแต่ละหน้า</li>';
+  $('ako-recipes').innerHTML = Array.isArray(paths) ? paths.filter(row => row.door === 'ako' && /^\/ako\/kitchen\/[^/]+\/$/.test(row.path)).map(row => `<tr><td>${escape(recipeNames[row.path] || row.path.replace('/ako/kitchen/', '').replace(/\/$/, '').replaceAll('-', ' '))}<small>${escape(row.path)}</small></td><td>${format(row.installations)}</td><td>${format(row.journeys)}</td><td>${format(row.events)}</td></tr>`).join('')
+    || '<tr><td colspan="4" class="empty-row">NO DATA · ยังไม่มีการเปิดหน้าเมนูที่เชื่อมจาก Front Door ในช่วงนี้</td></tr>'
+    : '<tr><td colspan="4" class="empty-row">PIPELINE UNWIRED · ยังไม่มีข้อมูลหน้าเมนู</td></tr>';
+  $('outcome-paths').innerHTML = Array.isArray(paths) ? paths.map(row => `<tr><td>${escape(values[row.door] || row.door)}</td><td>${escape(row.path)}</td><td>${format(row.installations)}</td><td>${format(row.journeys)}</td><td>${format(row.events)}</td></tr>`).join('')
+    || '<tr><td colspan="5" class="empty-row">ยังไม่มีใบรับการโหลดปลายทางในช่วงนี้</td></tr>'
+    : '<tr><td colspan="5" class="empty-row">PIPELINE UNWIRED · API รุ่นนี้ยังไม่ส่งรายละเอียดแต่ละหน้า</td></tr>';
+}
+
 function render(data) {
-  const outcomeRows=data.outcomes?.rows;
-  $('outcome-rows').innerHTML=Array.isArray(outcomeRows)?outcomeRows.map(row=>`<tr><td>${escape(values[row.door]||row.door)}</td><td>${format(row.opened)}</td><td>${format(row.arrived)}</td><td>${format(row.requested)}</td><td>${row.opened?`${number.format(Math.round(row.requested/row.opened*1000)/10)}%`:'—'}</td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีผลลัพธ์ที่เชื่อมกับการเปิดทาง</td></tr>':'<tr><td colspan="5">PIPELINE UNWIRED · ยังไม่มีข้อมูลผลลัพธ์จาก API รุ่นนี้</td></tr>';
+  renderOutcomes(data.outcomes);
   $('primary-kpis').innerHTML = PRIMARY_EVENTS.map(name => kpi(data, name)).join('');
   $('continuation-kpis').innerHTML = ['FRONTDOOR_FREE_ROAM', 'RESUME', 'REBUILD'].map(name => kpi(data, name)).join('');
   $('branch-kpis').innerHTML = ['ANOMALY_START', 'LEGACY_WARNING', 'DUNGEON_HANDOFF'].map(name => kpi(data, name)).join('');
@@ -86,20 +121,13 @@ function render(data) {
     const row = metric(data, name);
     return `<tr><td>${name}<small>${EVENTS[name].label}</small></td><td>${format(row.installations)}</td><td>${format(row.journeys)}</td><td>${format(row.events)}</td></tr>`;
   }).join('');
-  $('updated').textContent = `อ่านข้อมูล ${new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })} · V${data.analyticsVersion}`;
+  $('updated').textContent = `อัปเดต ${new Date(data.generatedAt || Date.now()).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Bangkok' })} น. · V${data.analyticsVersion}`;
+  $('pipeline-status').textContent = 'API + D1 เชื่อมต่อแล้ว';
+  $('pipeline-status').dataset.ready = 'true';
   $('dashboard').hidden = false;
   if (data.status === 'no-data') {
     showState('no-data', 'NO DATA · ยังไม่มีข้อมูล', 'ต่อสายสำเร็จ แต่ไม่พบเหตุการณ์ในช่วงเวลาและตัวกรองนี้');
   } else $('state').hidden = true;
-}
-
-function validResponse(data) {
-  return data?.ok === true && ['ready', 'no-data'].includes(data.status)
-    && data.analyticsVersion === ANALYTICS_VERSION && ENVIRONMENTS.includes(data.env)
-    && data.metrics && typeof data.metrics === 'object' && !Array.isArray(data.metrics)
-    && data.timings && typeof data.timings === 'object' && data.breakdowns && typeof data.breakdowns === 'object'
-    && Array.isArray(data.rates) && Array.isArray(data.transitions)
-    && Object.keys(dimensionLabels).every(key => Array.isArray(data.breakdowns[key]));
 }
 
 async function load() {
@@ -129,23 +157,16 @@ async function load() {
   try {
     const response = await fetch(`/api/core7/frontdoor-stats?${params}`, { credentials: 'same-origin', cache: 'no-store', signal: requestController.signal, headers: { Accept: 'application/json' } });
     if (sequence !== requestSequence) return;
-    if (response.status === 401 || response.status === 403) {
-      showState('failed', 'REQUEST FAILED · ต้องมีสิทธิ์เข้าถึง', 'เซิร์ฟเวอร์ปฏิเสธการเข้าถึงข้อมูล กรุณาเข้าสู่ Stat ผ่านช่องทางที่ป้องกันไว้', true, true);
-      return;
-    }
-    if (response.status === 404 || response.status === 503 || (response.ok && !response.headers.get('content-type')?.includes('application/json'))) {
-      showState('unwired', 'PIPELINE UNWIRED · ยังไม่ต่อสาย', 'ยังไม่พบ API หรือฐานข้อมูล Front Door V2 ที่พร้อมใช้งานบนโฮสต์นี้', true);
-      return;
-    }
-    if (response.status === 400) {
-      showState('failed', 'REQUEST FAILED · ตรวจสอบตัวกรอง', 'เซิร์ฟเวอร์ไม่รับตัวกรองนี้ กรุณาเลือกช่วงเวลาไม่เกิน 93 วัน และตรวจสอบตัวกรองอีกครั้ง', true);
-      $('filter-panel').open = true;
-      return;
-    }
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
+    const isJSON = response.headers.get('content-type')?.includes('application/json') === true;
+    const data = isJSON ? await response.json() : null;
     if (sequence !== requestSequence) return;
-    if (!validResponse(data) || data.env !== env) throw new Error('INVALID_RESPONSE');
+    const failure = responseFailure(response.status, data, isJSON);
+    if (failure) {
+      showState(failure.state, failure.title, failure.message, true, failure.protectedLink);
+      if (failure.filters) $('filter-panel').open = true;
+      return;
+    }
+    if (!validResponse(data, env)) throw new Error('INVALID_RESPONSE');
     render(data);
   } catch (error) {
     if (sequence !== requestSequence) return;
@@ -156,12 +177,22 @@ async function load() {
 options('env', ENVIRONMENTS, false);
 for (const [key, entries] of Object.entries({ source: SOURCES, visitorClass: VISITOR_CLASSES, viewport: VIEWPORTS, intentPrimary: INTENTS, doorId: DOORS })) options(key, entries);
 $('env').value = environmentForHost(location.hostname);
+// The collector enforces this boundary as well. Do not offer impossible reads locally.
+if ($('env').value !== 'prod') for (const option of $('env').options) {
+  if (option.value !== $('env').value) { option.disabled = true; option.textContent += ' · เปิดผ่านโฮสต์นั้น'; }
+}
 // Backend calendar ranges use Asia/Bangkok (UTC+7, without daylight saving).
 const today = new Date(Date.now() + 7 * 3600000);
 $('to').value = today.toISOString().slice(0, 10);
 $('from').value = new Date(today.getTime() - 29 * 86400000).toISOString().slice(0, 10);
 $('filters').addEventListener('submit', event => { event.preventDefault(); if ($('filters').reportValidity()) load(); });
 $('retry').addEventListener('click', load);
+document.querySelectorAll('[data-range-days]').forEach(button => button.addEventListener('click', () => {
+  const today = new Date(Date.now() + 7 * 3600000);
+  $('to').value = today.toISOString().slice(0, 10);
+  $('from').value = new Date(today.getTime() - (Number(button.dataset.rangeDays) - 1) * 86400000).toISOString().slice(0, 10);
+  load();
+}));
 // Hide results as soon as filters change; they no longer describe the selection.
 $('filters').addEventListener('change', () => { ++requestSequence; controller?.abort(); $('dashboard').hidden = true; showState('loading', 'FILTERS CHANGED · ตัวกรองเปลี่ยนแล้ว', 'กด “ดูข้อมูล” เพื่ออ่านผลตามตัวกรองใหม่'); });
 load();
