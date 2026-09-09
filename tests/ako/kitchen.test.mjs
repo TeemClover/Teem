@@ -7,13 +7,13 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = path => readFileSync(root + path, 'utf8');
 const storage = () => { const map = new Map([['c7:install_id', 'legacy-install'], ['mc_forge_progress', 'legacy-reading'], ['meet:intake:draft', 'private-draft']]); return {map, getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, value)}; };
 
-test('seven complete recipes include measured ingredients, short steps, substitutions and useful techniques', () => {
-  assert.equal(RECIPES.length, 7);
-  assert.equal(new Set(RECIPES.map(recipe => recipe.id)).size, 7);
+test('fifteen complete recipes include measured ingredients, short steps, substitutions and useful techniques', () => {
+  assert.equal(RECIPES.length, 15);
+  assert.equal(new Set(RECIPES.map(recipe => recipe.id)).size, 15);
   for (const recipe of RECIPES) {
     assert.match(recipe.id, /^[a-z]+(?:-[a-z]+)*$/);
     assert.ok(recipe.minutes >= 3 && recipe.minutes <= 20);
-    assert.equal(recipe.servings, 2);
+    assert.equal(recipe.servings, recipe.collection === 'japanese-everyday' ? 1 : 2);
     assert.ok(recipe.ingredients.length >= 5);
     assert.ok(recipe.steps.length >= 3 && recipe.steps.length <= 4);
     assert.ok(recipe.technique && recipe.swap && recipe.finish);
@@ -40,8 +40,8 @@ test('one/four portions scale ingredient amounts and preserve taste-adjusted not
 
 test('recipe illustrations are real files with distinct responsive variants', () => {
   const photos = RECIPES.filter(recipe => recipe.image);
-  assert.equal(photos.length, 5);
-  assert.equal(new Set(photos.map(recipe => recipe.image.path)).size, 5);
+  assert.ok(photos.length >= 5);
+  assert.equal(new Set(photos.map(recipe => recipe.image.path)).size, photos.length);
   for (const {image} of photos) {
     assert.ok(existsSync(root + image.path.slice(1)), image.path);
     assert.ok(existsSync(root + image.mobile.slice(1)), image.mobile);

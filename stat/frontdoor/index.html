@@ -15,12 +15,14 @@
     <header class="masthead">
       <div class="brand-row"><a class="back" href="/stat/">← Universe Stat</a><span class="version">TELEMETRY V2</span></div>
       <div class="title-row"><h1>Front Door</h1><span class="env-badge" id="environment">—</span></div>
-      <p class="lead">เข้ามา · ได้รับคุณค่า · อยากกลับมา</p>
+      <p class="lead">เข้ามา · ได้รับคุณค่า · ไปต่อถึงปลายทางจริง</p>
+      <div class="dashboard-meta"><span id="pipeline-status" data-ready="false">กำลังอ่านข้อมูล</span><nav aria-label="ส่วนสำคัญของ Front Door Stat"><a href="#outcome-title">ปลายทางจริง</a><a href="#ako-title">ครัว Ako</a></nav></div>
     </header>
 
     <details class="filter-panel" id="filter-panel">
       <summary><span>ช่วงเวลาและตัวกรอง</span><span id="filter-summary">กำลังเตรียม…</span></summary>
       <form id="filters">
+        <div class="range-presets" aria-label="ช่วงเวลาที่ใช้บ่อย"><button type="button" data-range-days="1">วันนี้</button><button type="button" data-range-days="7">7 วัน</button><button type="button" data-range-days="30">30 วัน</button></div>
         <div class="filter-grid">
           <label>Environment<select name="env" id="env" required></select></label>
           <label>ตั้งแต่วันที่ (เวลาไทย)<input type="date" name="from" id="from" required></label>
@@ -56,8 +58,18 @@
       <section class="section" aria-labelledby="outcome-title">
         <div class="section-heading"><h2 id="outcome-title">เดินถึงไหน แล้วอยากคุยต่อไหม</h2><span>DESTINATION OUTCOMES</span></div>
         <p class="section-note">แยกการกดออกเดินทางจากการโหลดปลายทางจริง · คำขอนัดนับหลังเบราว์เซอร์ได้รับคำตอบว่า API รับสำเร็จ ยังไม่ใช่นัดที่ยืนยันเวลาแล้ว</p>
-        <div class="table-scroll" tabindex="0" role="region" aria-label="ผลลัพธ์หลังเปิดทาง"><table><thead><tr><th>ทางที่เปิด</th><th>ออกเดินทาง</th><th>ถึงปลายทาง</th><th>ส่งคำขอนัดสำเร็จ</th><th>เปิดทาง → ขอคุย</th></tr></thead><tbody id="outcome-rows"></tbody></table></div>
+        <div class="outcome-grid" id="outcome-cards"></div>
+        <details class="detail-panel"><summary>ดูตารางผลลัพธ์ทุกทาง</summary><div class="table-scroll" tabindex="0" role="region" aria-label="ผลลัพธ์หลังเปิดทาง"><table><thead><tr><th scope="col">ทางที่เปิด</th><th scope="col">ออกเดินทาง</th><th scope="col">ถึงปลายทาง</th><th scope="col">ส่งคำขอนัดสำเร็จ</th><th scope="col">เปิดทาง → ขอคุย</th></tr></thead><tbody id="outcome-rows"></tbody></table></div></details>
         <p class="section-note">Installations ไม่ซ้ำต่อทาง · เริ่มเดินและผลลัพธ์อยู่ในช่วงที่เลือก · ไม่รวมผู้เปิดปลายทางโดยตรงหรือข้ามเครื่อง</p>
+        <details class="detail-panel"><summary>ปลายทางและหน้าที่ไปต่อทั้งหมด</summary><div class="table-scroll" tabindex="0" role="region" aria-label="ใบรับการโหลดแต่ละปลายทาง"><table><thead><tr><th scope="col">ทางเดิม</th><th scope="col">หน้าที่โหลด</th><th scope="col">Installations</th><th scope="col">Journeys</th><th scope="col">Receipts</th></tr></thead><tbody id="outcome-paths"></tbody></table></div></details>
+      </section>
+
+      <section class="section ako-section" aria-labelledby="ako-title">
+        <div class="section-heading"><h2 id="ako-title">จากประตูหน้า มาถึงครัว Ako</h2><span>AKO · CONNECTED VISITS</span></div>
+        <p class="section-note">นับการโหลดหน้าที่เชื่อมกับการเปิดทาง Ako เดิม · แต่ละช่องเป็นคนละจุดแวะ ไม่จำเป็นต้องเดินตามลำดับนี้</p>
+        <ol class="ako-stops" id="ako-path"></ol>
+        <p class="section-note">หนึ่ง installation แวะได้หลายหน้า ห้ามบวกตัวเลขแต่ละจุดเป็นยอดผู้มาเยือนรวม · การเปิดหน้าเมนูยังไม่ยืนยันว่าทำอาหารแล้ว</p>
+        <details class="detail-panel" open><summary>เมนูไหนมีคนเปิดอ่าน</summary><div class="table-scroll" tabindex="0" role="region" aria-label="หน้าเมนูในครัว Ako"><table><thead><tr><th scope="col">เมนู</th><th scope="col">Installations</th><th scope="col">Journeys</th><th scope="col">Receipts</th></tr></thead><tbody id="ako-recipes"></tbody></table></div></details>
       </section>
       <section class="section" aria-labelledby="timing-title">
         <div class="section-heading"><h2 id="timing-title">ใช้เวลาเท่าไรถึงได้รับสิ่งสำคัญ</h2><span>ACTIVE TIME · MEDIAN</span></div>

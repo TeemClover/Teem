@@ -4,6 +4,8 @@ import { setImmediate as nextTurn } from 'node:timers/promises';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import * as contract from '../../assets/front-door/contract.js';
+import * as statData from '../../stat/frontdoor/data.js';
+import * as recipeCatalog from '../../ako/kitchen/catalog.js';
 import { createTelemetry } from '../../assets/front-door/telemetry.js';
 import { prepareOutcomeLink, captureOutcomeDeparture, createOutcomeClient } from '../../assets/front-door/outcomes.js';
 import { validateOutcome } from '../../assets/front-door/outcome-contract.js';
@@ -142,18 +144,25 @@ test('missing arrival receipts cannot make the displayed opened-to-requested rat
   // Run the real Stat renderer with minimal DOM transport; the report above comes from real SQLite.
   const nodes = new Map();
   const node = id => {
-    if (!nodes.has(id)) nodes.set(id, { value: '', dataset: {}, innerHTML: '', textContent: '', hidden: false, replaceChildren() {}, addEventListener() {}, reportValidity: () => true });
+    if (!nodes.has(id)) nodes.set(id, { value: '', dataset: {}, innerHTML: '', textContent: '', hidden: false, options: [], replaceChildren(...children) { this.options = children; }, addEventListener() {}, reportValidity: () => true });
     return nodes.get(id);
   };
+  const imports = { '/assets/front-door/contract.js': contract, './data.js': statData, '/ako/kitchen/catalog.js': recipeCatalog };
   const source = (await readFile(new URL('../../stat/frontdoor/frontdoor.js', import.meta.url), 'utf8'))
-    .replace(/^import\s*\{([\s\S]*?)\}\s*from\s*'[^']+';/, 'const {$1} = contract;');
-  const context = vm.createContext({ contract, document: { getElementById: node }, location: new URL('http://localhost/stat/frontdoor/'),
+    .replace(/^import\s*\{([\s\S]*?)\}\s*from\s*'([^']+)';/gm, (_statement, names, specifier) => {
+      assert.ok(Object.hasOwn(imports, specifier), `load the actual Stat dependency: ${specifier}`);
+      return `const {${names}} = imports[${JSON.stringify(specifier)}];`;
+    });
+  const context = vm.createContext({ imports, document: { getElementById: node, querySelectorAll: () => [] }, location: new URL('http://localhost/stat/frontdoor/'),
     Intl, Date, URLSearchParams, AbortController, Option: function(text, value) { this.text = text; this.value = value; },
     setTimeout: timer, clearTimeout() {}, fetch: async () => Response.json(stats) });
   vm.runInContext(source, context, { filename: 'stat/frontdoor/frontdoor.js' });
   for (let attempt = 0; attempt < 20 && !node('outcome-rows').innerHTML; attempt += 1) await nextTurn();
   assert.match(node('outcome-rows').innerHTML, /<td>100%<\/td>/);
   assert.doesNotMatch(node('outcome-rows').innerHTML, /200%/);
+  assert.match(node('outcome-cards').innerHTML, /เปิดทาง → ถึง <strong>50%<\/strong>/);
+  assert.match(node('outcome-cards').innerHTML, /เปิดทาง → ขอคุย <strong>100%<\/strong>/);
+  assert.doesNotMatch(node('outcome-cards').innerHTML, /200%/);
   assert.match(await readFile(new URL('../../stat/frontdoor/index.html', import.meta.url), 'utf8'), /เปิดทาง → ขอคุย/);
 });
 

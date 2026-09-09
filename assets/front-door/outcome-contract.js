@@ -1,5 +1,6 @@
 /** Additive destination receipts. The canonical 15-event P0 registry stays unchanged. */
 import { ENVIRONMENTS, validId } from './contract.js';
+import { RECIPE_LINKS } from '../../ako/kitchen/catalog.js';
 export const OUTCOME_VERSION = '1.0.0';
 export const OUTCOMES = Object.freeze(['DESTINATION_ARRIVAL', 'MEET_REQUEST_ACCEPTED']);
 // Explicit routes only. Do not replace these with prefix matches: old bonus pages,
@@ -20,7 +21,7 @@ export const CLASSROOM_PATHS = Object.freeze([
   '/classroom/prompts.html', '/classroom/first-web.html',
 ]);
 export const DOOR_ARRIVAL_PATHS = Object.freeze({
-  ako: Object.freeze(['/ako/', '/ako/kitchen/', '/ako/story/']), xircle: Object.freeze(['/xircle/']),
+  ako: Object.freeze(['/ako/', '/ako/kitchen/', '/ako/story/', ...RECIPE_LINKS.map(recipe=>recipe.path)]), xircle: Object.freeze(['/xircle/']),
   meet: Object.freeze(['/meet/']), dungeon: Object.freeze(['/classroom/dungeon/']),
   forge: FORGE_PATHS, classroom: CLASSROOM_PATHS, home: Object.freeze(['/home/']), hall: Object.freeze(['/hall.html']),
 });

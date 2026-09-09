@@ -1,17 +1,21 @@
 import {RECIPES, getRecipe, normalizePortions, scaledIngredients, loadKitchenState, persistKitchenState} from './recipes.js';
+import {recipePath, recipeIdFromLocation, recipeShare, recipeSchema, shareRecipe, copyRecipeLink} from './share.js';
+import {createOutcomeClient} from '/assets/front-door/outcomes.js';
 
 const $ = id => document.getElementById(id);
 let storage;
 try { storage = window.localStorage; } catch { storage = null; }
 let state = loadKitchenState(storage);
-const initialId = location.hash.slice(1);
+const initialId = recipeIdFromLocation(location);
 if (RECIPES.some(recipe => recipe.id === initialId) && initialId !== state.recipeId) {
-  state = {...state, recipeId: initialId, checkedSteps: []};
+  state = {...state, recipeId: initialId, portions: getRecipe(initialId).servings, checkedSteps: []};
 }
 let filter = 'all';
+let query = '';
 let cooking = false;
 let storageWorks = true;
 const labels = {salad: 'สลัด', meal: 'จานอุ่น', dressing: 'น้ำสลัด'};
+history.replaceState({...history.state, akoRecipeId: state.recipeId}, '', location.href);
 
 function persist(announce = false) {
   const result = persistKitchenState(storage, state);
@@ -23,10 +27,11 @@ function persist(announce = false) {
 }
 
 function renderLibrary() {
-  const recipes = RECIPES.filter(recipe => filter === 'all' || (filter === 'saved' ? state.savedIds.includes(recipe.id) : recipe.category === filter));
+  const recipes = RECIPES.filter(recipe => (filter === 'all' || (filter === 'saved' ? state.savedIds.includes(recipe.id) : recipe.category === filter)) &&
+    (!query || [recipe.name, recipe.short, ...recipe.ingredients.map(item => item.name)].join(' ').toLowerCase().includes(query)));
   $('recipe-list').replaceChildren(...recipes.map(recipe => {
     const link = document.createElement('a');
-    link.href = '#' + recipe.id;
+    link.href = recipePath(recipe.id);
     link.dataset.recipe = recipe.id;
     link.setAttribute('aria-current', String(recipe.id === state.recipeId));
     link.append(document.createTextNode(recipe.name));
@@ -36,12 +41,15 @@ function renderLibrary() {
     return link;
   }));
   $('empty-library').hidden = recipes.length !== 0;
+  $('empty-library').textContent = query ? 'ยังไม่เจอสูตรจากคำนี้ ลองชื่อวัตถุดิบสั้น ๆ เช่น ไข่ เต้าหู้ หรือแตงกวา' : 'ยังไม่ได้เก็บสูตร ลองเปิดจานที่ชอบ แล้วกด “เก็บสูตรนี้” ได้เลย';
+  $('library-count').textContent = `${recipes.length} สูตร`;
   $('saved-count').textContent = String(state.savedIds.length);
   document.querySelectorAll('[data-filter]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === filter)));
 }
 
 function renderIngredients() {
   const recipe = getRecipe(state.recipeId);
+  $('portion-summary').textContent = `ปริมาณสำหรับ ${state.portions} คน`;
   $('ingredients').replaceChildren(...scaledIngredients(recipe, state.portions).map(ingredient => {
     const li = document.createElement('li'), name = document.createElement('span'), amount = document.createElement('b');
     name.textContent = ingredient.name;
@@ -100,28 +108,47 @@ function renderRecipe() {
     span.textContent = text; label.append(input, span); li.append(label); return li;
   }));
   const pair = getRecipe(recipe.pair);
-  const link = $('pair-link'); link.href = '#' + pair.id; link.dataset.recipe = pair.id;
+  const link = $('pair-link'); link.href = recipePath(pair.id); link.dataset.recipe = pair.id;
   const title = document.createElement('span'); title.textContent = pair.name;
   const arrow = document.createElement('b'); arrow.textContent = '↗'; arrow.setAttribute('aria-hidden', 'true'); title.append(arrow);
   const lead = document.createElement('small'); lead.textContent = recipe.category === 'dressing' ? 'ลองกับจานนี้' : 'ครั้งหน้า ลองเปลี่ยนรส';
   link.replaceChildren(lead, title);
   document.title = `${recipe.name} — ครัวสลัดเอโกะ`;
+  const shared = recipeShare(recipe);
+  $('recipe-schema').textContent = JSON.stringify(recipeSchema(recipe));
+  $('share-line').href = 'https://line.me/R/share?text=' + encodeURIComponent(shared.text + '\n' + shared.url);
+  $('share-link').value = shared.url;
+  $('share-fallback').hidden = true;
+  $('share-status').textContent = '';
+  document.querySelector('link[rel="canonical"]').href = shared.url;
+  for (const [key, value] of Object.entries({'og:title': shared.title, 'og:description': recipe.short, 'og:url': shared.url, 'og:image': 'https://www.myclover.com' + (recipe.image?.path || '/ako/assets/ako-logo.png')})) {
+    document.querySelector(`meta[property="${key}"]`)?.setAttribute('content', value);
+  }
+  const sources = $('recipe-sources');
+  sources.replaceChildren(...(recipe.sources || []).map(source => {
+    const a = document.createElement('a'); a.href = source.url; a.textContent = source.title; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a;
+  }));
+  $('source-note').hidden = !(recipe.sources?.length);
   renderIngredients(); renderProgress(); renderLibrary();
 }
 
 function selectRecipe(id, {scroll = true, updateHistory = true} = {}) {
   if (!RECIPES.some(recipe => recipe.id === id)) return;
   if (id !== state.recipeId) state = {...state, recipeId: id, checkedSteps: []};
-  if (updateHistory) history.pushState(null, '', '#' + id);
+  if (updateHistory) history.pushState({akoRecipeId:id}, '', recipePath(id) + location.search);
+  else history.replaceState({...history.state, akoRecipeId:id}, '', location.href);
   $('recipe-browse').open = false;
   if (storageWorks) $('save-status').textContent = '';
   persist(); renderRecipe();
+  // Only a valid existing Compass handoff may emit a receipt. Ordinary recipe
+  // readers acquire neither a new identity nor a Front Door event here.
+  createOutcomeClient({location: new URL(location.href)})?.arrival();
   if (scroll) { $('recipe').scrollIntoView({block: 'start'}); $('recipe').focus({preventScroll: true}); }
 }
 
 document.addEventListener('click', event => {
   const link = event.target.closest('a[data-recipe]');
-  if (link && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+  if (link && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
     event.preventDefault(); selectRecipe(link.dataset.recipe);
   }
   const category = event.target.closest('[data-filter]');
@@ -155,6 +182,18 @@ $('cook-mode').addEventListener('click', () => {
   $('cook-mode').textContent = cooking ? 'กลับไปดูภาพและสูตรอื่น ↙' : 'เปิดโหมดทำอาหาร ↗';
   $('recipe').scrollIntoView({block: 'start'});
 });
-window.addEventListener('hashchange', () => selectRecipe(location.hash.slice(1), {updateHistory: false}));
+async function handleShare(action) {
+  const recipe = getRecipe(state.recipeId);
+  const result = await action(recipe, navigator);
+  $('share-status').textContent = result.status === 'shared' ? 'เปิดตัวเลือกแชร์สูตรแล้ว' : result.status === 'copied' ? 'คัดลอกลิงก์สูตรนี้แล้ว ส่งให้คนที่อยากชวนทำได้เลย' : result.status === 'manual' ? 'คัดลอกลิงก์ด้านล่าง แล้วส่งให้เพื่อนได้เลย' : '';
+  $('share-fallback').hidden = result.status !== 'manual';
+  if (result.status === 'manual') { $('share-link').value = result.url; $('share-link').focus(); $('share-link').select(); }
+}
+$('share-recipe').addEventListener('click', () => { void handleShare(shareRecipe); });
+$('copy-recipe').addEventListener('click', () => { void handleShare(copyRecipeLink); });
+$('print-recipe').addEventListener('click', () => window.print());
+$('recipe-search').addEventListener('input', event => { query = event.target.value.trim().toLowerCase(); renderLibrary(); });
+window.addEventListener('hashchange', () => selectRecipe(recipeIdFromLocation(location), {updateHistory: false}));
+window.addEventListener('popstate', event => selectRecipe(recipeIdFromLocation(location) || event.state?.akoRecipeId || state.recipeId, {updateHistory: false}));
 renderRecipe();
 if (RECIPES.some(recipe => recipe.id === initialId)) requestAnimationFrame(() => $('recipe').scrollIntoView({block: 'start', behavior: 'instant'}));

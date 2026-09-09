@@ -11,6 +11,7 @@ tests/frontdoor/
 tests/teambook/compass-entry.e2e.mjs
 docs/frontdoor/
 tests/ako/
+tests/stat/
 docs/ako/
 core7/tests/
 frontdoor/*.test.mjs

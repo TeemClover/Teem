@@ -38,7 +38,7 @@ try {
     await page.waitForURL('**/ako/kitchen/');
     await page.locator('#steps input').first().waitFor();
     await photoLoaded(page);
-    assert.equal(await page.locator('#recipe-list a').count(), 7);
+    assert.equal(await page.locator('#recipe-list a').count(), RECIPES.length);
     await noOverflow(page);
     await shot(page, `kitchen-open-${width}`);
     for (const recipe of RECIPES) {
@@ -87,7 +87,7 @@ try {
     const stored = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), KITCHEN_KEY);
     assert.deepEqual(stored.savedIds, ['egg-crunch']);
     assert.deepEqual(stored.checkedSteps, []);
-    pass(`${width}px: home -> kitchen, all seven real recipes/images, scaled portions, saved recipe + completed-step restore, cook mode/completion/restart, legacy state unchanged and no overflow`);
+    pass(`${width}px: home -> kitchen, all recipes and matching images, scaled portions, saved recipe + completed-step restore, cook mode/completion/restart, legacy state unchanged and no overflow`);
     await context.close();
   }
   const blocked = await surface(390, true), p = blocked.page;

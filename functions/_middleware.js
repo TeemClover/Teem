@@ -34,7 +34,7 @@ export async function onRequest(context) {
   // Front Door fixtures/reports out of HTTP delivery as on the Vercel host.
   let pathname;
   try { pathname = decodeURIComponent(url.pathname); } catch { return new Response('Not found', { status: 404 }); }
-  if (/^\/(?:(?:tests|docs)\/(?:frontdoor|xvisor|ako)|core7\/tests)(?:\/|$)/.test(pathname)
+  if (/^\/(?:(?:tests|docs)\/(?:frontdoor|xvisor|ako|stat)|core7\/tests)(?:\/|$)/.test(pathname)
       || pathname === '/tests/teambook/compass-entry.e2e.mjs'
       || /^\/(?:frontdoor|assets\/front-door)\/[^/]+\.test\.mjs$/.test(pathname)) {
     return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });

@@ -33,5 +33,15 @@ export async function readOutcomes(db,where,bind,start,end){
   COUNT(DISTINCT CASE WHEN EXISTS(SELECT 1 FROM fd_v2_outcomes o WHERE o.env=e.env AND o.handoff_id=e.handoff_id AND o.name='MEET_REQUEST_ACCEPTED' AND o.occurred_at>=e.occurred_at AND o.occurred_at>=? AND o.occurred_at<?) THEN e.install_id END) requested
   FROM fd_v2_events e WHERE ${where} AND e.event_name='DOOR_OPEN' AND e.handoff_id IS NOT NULL GROUP BY e.door_id`)
   .bind(...arrivalBind,start,end,start,end,...bind).all();
- return {version:'1.0.0',unit:'distinct-installations-per-door',meaning:'client-confirmed-api-acceptance-not-confirmed-appointment',rows:result.results||[]};
+ // Route receipts include onward pages, grouped under the original departure.
+ // A visitor can appear on several paths; these rows must never be summed as people.
+ const paths=await db.prepare(`SELECT e.door_id door,o.path path,
+  COUNT(DISTINCT e.install_id) installations,
+  COUNT(DISTINCT e.install_id || char(0) || e.journey_id) journeys,
+  COUNT(DISTINCT o.event_id) events
+  FROM fd_v2_events e JOIN fd_v2_outcomes o ON o.env=e.env AND o.handoff_id=e.handoff_id
+  WHERE ${where} AND e.event_name='DOOR_OPEN' AND o.name='DESTINATION_ARRIVAL'
+  AND o.occurred_at>=e.occurred_at AND o.occurred_at>=? AND o.occurred_at<?
+  GROUP BY e.door_id,o.path ORDER BY e.door_id,o.path`).bind(...bind,start,end).all();
+ return {version:'1.1.0',unit:'distinct-installations-per-door',meaning:'client-confirmed-api-acceptance-not-confirmed-appointment',rows:result.results||[],paths:paths.results||[]};
 }

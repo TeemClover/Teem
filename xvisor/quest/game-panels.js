@@ -1,6 +1,34 @@
-import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSION, buildPersonAction, findPerson, getPersonContextAction, getTgvHistory } from "./game-data.js";
+import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSION, buildPersonAction, canDispatch, findPerson, getBestNextActions, getPersonContextAction } from "./game-data.js";
 import { getSkillSnapshot } from "./game-progression.js";
-import { getEconomyView } from "./game-presentation.js";
+import { getEconomyView, getMonthlyHistory, getMonthComparison } from "./game-presentation.js";
+import { isActionAvailable } from "./game-actions.js";
+
+const growthNumber = value => value === null || value === undefined ? "ไม่เคยบันทึก" : Math.round(value).toLocaleString("th-TH");
+const growthValue = (value, unit = "") => value === null || value === undefined ? "ไม่เคยบันทึก" : `${unit === "baht" ? "฿" : ""}${growthNumber(value)}${unit && unit !== "baht" ? ` ${unit}` : ""}`;
+function growthChange(metric, compareMonth) {
+  if (metric.scopeChanged) return "ขอบเขตเปลี่ยน · เทียบตรง ๆ ไม่ได้";
+  if (metric.delta === null) return compareMonth < 1 ? "เดือนแรกของเส้นทาง" : "ไม่มีข้อมูลให้เทียบ";
+  if (metric.delta === 0) return "เท่าเดิม";
+  const change = `${metric.delta > 0 ? "↑ +" : "↓ −"}${growthValue(Math.abs(metric.delta), metric.unit)}`;
+  return `${change}${metric.percent === null ? " · เริ่มจาก 0" : ` (${Math.abs(metric.percent).toLocaleString("th-TH", { maximumFractionDigits: 1 })}%)`}`;
+}
+function incomeContributionHtml(entry) {
+  const channels = [["channel1", "① ลูกค้า"], ["channel2", "② Direct G1"], ["channel3", "③ Organization"]];
+  return `<div class="income-contribution" aria-label="รายได้ 3 ช่องทางของเดือน ${entry.month}">${channels.map(([key, label]) => {
+    const value = entry[key];
+    const percent = value !== null && entry.total > 0 ? Math.max(0, Math.min(100, value / entry.total * 100)) : 0;
+    return `<div class="income-contribution__channel" data-channel="${key}" style="--channel-share:${percent.toFixed(2)}%"><span>${label}</span><strong>${growthValue(value, "baht")}</strong><i aria-hidden="true"></i><small>${value === null ? "ไม่มีรายละเอียดในบันทึกนี้" : entry.total === null ? "ไม่มีบันทึกยอดรวมให้เทียบสัดส่วน" : entry.total > 0 ? `${percent.toLocaleString("th-TH", { maximumFractionDigits: 1 })}% ของรายได้เดือนนี้` : "เดือนนี้ยังไม่มีรายได้ช่องทางนี้"}</small></div>`;
+  }).join("")}</div>`;
+}
+
+/** Shared by the close-month board and historical comparisons; never projects a closed month. */
+export function monthGrowthHtml(state, month, compareMonth = Number(month) - 1, { historyLink = true } = {}) {
+  const comparison = getMonthComparison(state, month, compareMonth);
+  if (!comparison.current) return "";
+  const entry = comparison.current;
+  const metricCards = comparison.metrics.slice(0, 5).map(metric => `<div class="growth-metric" data-metric="${metric.key}" data-trend="${metric.trend}"><span>${metric.label}</span><strong>${growthValue(metric.value, metric.unit)}</strong>${!historyLink && comparison.previous ? `<span class="growth-baseline">เดือน ${comparison.previous.month}: ${growthValue(metric.baseline, metric.unit)}</span>` : ""}<small>${growthChange(metric, comparison.compareMonth)}</small></div>`).join("");
+  return `<section class="growth-summary" aria-label="สรุปการเปลี่ยนแปลงเดือน ${entry.month}"><div class="growth-summary__heading"><div><span>MONTH ${entry.month} · ${entry.posted ? "ปิดยอดแล้ว" : "บันทึกเดิม"}</span><h3>${comparison.previous ? `เทียบเดือน ${comparison.previous.month}` : "สิ่งที่เกิดขึ้นในเดือนนี้"}</h3></div>${historyLink ? `<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${entry.month}">ดูประวัติและเทียบเดือน</button>` : ""}</div><div class="growth-grid">${metricCards}</div>${incomeContributionHtml(entry)}<p class="growth-summary__note">${entry.customerScope === "organization" ? "ปี 2 นับลูกค้าและทีมทั้งองค์กร" : entry.teamScope === "legacy-team" ? "ปีแรกแสดงขนาดทีมตามบันทึกเดิม" : "ปีแรกนับลูกค้าของคุณและทีมโดยตรง"} · ลูกค้าใช้ต่อหมายถึงคนที่ซื้อรอบใหม่ในเดือนนั้น ${entry.reorders !== null && entry.repeatCustomers === null ? `· บันทึกเดิมมี ${growthNumber(entry.reorders)} รายการซื้อซ้ำ แต่ไม่ระบุจำนวนคน` : ""} · ผลลัพธ์มีทั้งเพิ่ม ลด และคงเดิมตามสิ่งที่เกิดขึ้นในเกม</p></section>`;
+}
 
 export function focusDialogStart(dialog) {
   requestAnimationFrame(() => {
@@ -73,6 +101,9 @@ function showDialog2(html, kind = "wide", key = "v9") {
   dialogContent.innerHTML = html;
   dialog.dataset.kind = kind;
   dialog.dataset.v9Dialog = key;
+  delete dialog.dataset.v1OrganizationKey;
+  delete dialog.dataset.v1bCampaignGate;
+  delete dialog.dataset.v1bFinale;
   document.body.style.overflow = "hidden";
   if (!dialog.open) dialog.showModal();
   requestSync();
@@ -118,7 +149,7 @@ function categoryFor(row) {
 function actionButton(action, person) {
   if (!action) return "";
   const state2 = stateNow();
-  const disabled = Number(action.cost || 0) > Number(state2?.energy || 0) && !state2?.organizationMode;
+  const disabled = !canDispatch(state2, action.event) || !isActionAvailable(state2, { ...action, id: person.id });
   return `<button class="work-button" type="button" data-work-event="${escapeHtml2(action.event)}" data-id="${escapeHtml2(person.id)}"${disabled ? " disabled" : ""}><strong>${escapeHtml2(action.label)}</strong><span>${escapeHtml2(action.reason || person.status || "")}</span>${action.cost ? `<b>⚡ ${action.cost}</b>` : ""}</button>`;
 }
 function rowCard(row, state2) {
@@ -155,58 +186,90 @@ function renderPeople(focusId = peopleFocusId) {
     <div class="dialog-actions">${peopleFocusId ? "" : `<button class="dialog-button dialog-button--secondary" type="button" data-v9-page="prev" ${peoplePage <= 0 ? "disabled" : ""}>← ก่อนหน้า</button><span>${peoplePage + 1} / ${pages}</span><button class="dialog-button dialog-button--secondary" type="button" data-v9-page="next" ${peoplePage >= pages - 1 ? "disabled" : ""}>ถัดไป →</button>`}<button class="dialog-button" type="button" data-v9-close>กลับกระดาน</button></div>`, "wide", "people");
 }
 function renderOrganization() {
-  const state2 = stateNow();
-  if (!state2) return;
-  const economy = getEconomyView(state2);
-  const agg = state2.organization?.aggregate || {};
-  const leaders = (state2.team || []).filter((member) => member.parentId === "player" || member.rank === "xlead").slice(0, 12);
-  showDialog2(`<div class="dialog-kicker">🏙️ ORGANIZATION MODE · MONTH ${state2.month}</div><h2>${fmt(economy.tgv)} XV · ${baht(economy.projectedIncome)}</h2><p class="dialog-note">ภาพรวมลูกค้าและทีม พร้อมผู้นำที่กำลังสร้างผลลัพธ์</p>
-    <div class="income-sections"><section><div class="income-heading"><span>❤️ Active Customers</span><b>${fmt(agg.activeCustomers)}</b></div></section><section><div class="income-heading"><span>🌱 X-VISOR</span><b>${fmt(agg.xvisorCount)}</b></div></section><section><div class="income-heading"><span>👑 XLEAD</span><b>${fmt(agg.xleadCount)}</b></div></section><section><div class="income-heading"><span>ทีมทำงานเอง</span><b>${fmt(state2.monthStats?.teamActions)}</b></div><p>งานดูแลลูกค้าและพัฒนาคนที่ทีมทำเองในเดือนนี้</p></section></div>
-    <section class="work-section"><h3>ผู้นำของคุณ</h3><div class="people-grid">${leaders.map((member) => rowCard({ person: member, kind: "team" }, state2)).join("") || "<p>ยังไม่มีผู้นำในกลุ่มนี้</p>"}</div></section>
-    <button class="dialog-button" type="button" data-v9-close>กลับกระดาน</button>`, "wide", "organization");
+  const current = stateNow();
+  if (current) showDialog2(organizationDialogHtml(current), "wide", "organization");
 }
-function renderIncome() {
-  const state2 = stateNow();
-  if (!state2) return;
-  const economy = getEconomyView(state2);
-  const report = state2.organizationMode ? state2.lastOrganizationReport : null;
-  const shownIncome = report ? Number(report.income || 0) : Number(economy.projectedIncome || 0);
-  const shownLifetime = report ? Number(report.totalIncome || state2.economy?.totalIncome || 0) : Number(economy.lifetimeIncome || 0);
-  const shownChannel1 = report ? Number(report.incomeBreakdown?.channel1 || 0) : Number(economy.channel1 || 0);
-  const shownChannel2 = report ? Number(report.incomeBreakdown?.channel2 || 0) : Number(economy.channel2 || 0);
-  const shownChannel3 = report ? Number(report.incomeBreakdown?.channel3 || 0) : Number(economy.channel3 || 0);
-  const top = (economy.mentoringBreakdown || []).slice().sort((a, b) => b.mentorIncome - a.mentorIncome).slice(0, 5);
-  const history = [...economy.incomeHistory || []].reverse().slice(0, 12);
-  const historyCards = history.map((item) => `<details class="income-history-card"><summary><span>เดือน ${item.month}</span><span>${fmt(item.tgv)} XV</span><b>${baht(item.total)}</b></summary><div><span>① ลูกค้า <b>${baht(item.channel1)}</b></span><span>② พัฒนา G1 <b>${baht(item.channel2)}</b></span><span>③ Organization <b>${baht(item.channel3)}</b></span></div></details>`).join("");
-  showDialog2(`<div class="dialog-kicker">REVENUE STACK · 1.0b</div><h2>${report ? `เดือน ${report.month}` : "เดือนนี้"} ${baht(shownIncome)}</h2>
-    <div class="revenue-hero"><div><span>💰 ${report ? "รายได้เดือนล่าสุด" : "รายได้เดือนนี้"}</span><strong>${baht(shownIncome)}</strong></div><div><span>∑ รายได้สะสม</span><strong>${baht(shownLifetime)}</strong></div></div>
-    <div class="income-sections">
-      <section><div class="income-heading"><span>① ขายและดูแลลูกค้า</span><b>${baht(shownChannel1)}</b></div><p>${report ? `ยอดขายบาท ${baht(report.personalSalesBaht)} · XV ${fmt(report.personalXV)} แยกเป็น Volume` : `Personal XV ${fmt(economy.personalXV)} × ${Math.round(economy.retailRate * 100)}% · Tier ดูจากยอดขาย ${baht(economy.personalSalesBaht)}`}</p></section>
-      <section><div class="income-heading"><span>② พัฒนา Direct G1 ${economy.mentoringUnlocked ? "" : "· รอ Certified XLEAD"}</span><b>${economy.mentoringUnlocked ? baht(shownChannel2) : "🔒"}</b></div><p>20% ของ commission G1 แต่ละคน</p>${!report && economy.mentoringUnlocked ? `<ul class="income-breakdown">${top.map((item) => `<li><span>${escapeHtml2(item.name)} · ${fmt(item.personalXV)} XV · คอม ${baht(item.commission)}</span><b>${baht(item.mentorIncome)}</b></li>`).join("") || "<li><span>G1 ยังไม่มียอดเดือนนี้</span><b>฿0</b></li>"}</ul>` : ""}</section>
-      <section><div class="income-heading"><span>③ บริหาร Organization ${state2.career?.xgenCertified ? "" : "· รอ Certified XGEN"}</span><b>${state2.career?.xgenCertified ? baht(shownChannel3) : "🔒"}</b></div><p>5% ของ TGV <b>เดือนนั้นเท่านั้น</b> · ปิดเดือนแล้วไม่จ่ายยอดเดิมซ้ำ</p></section>
-    </div>
-    <section class="income-history"><h3>ย้อนหลังรายเดือน</h3>${history.length ? `<div class="income-history-cards">${historyCards}</div><div class="table-scroll income-history-table"><table><thead><tr><th>เดือน</th><th>TGV</th><th>①</th><th>②</th><th>③</th><th>รวม</th></tr></thead><tbody>${history.map((item) => `<tr><th>${item.month}</th><td>${fmt(item.tgv)} XV</td><td>${baht(item.channel1)}</td><td>${baht(item.channel2)}</td><td>${baht(item.channel3)}</td><td><b>${baht(item.total)}</b></td></tr>`).join("")}</tbody></table></div>` : "<p>ปิดเดือนแรกเพื่อเริ่มเก็บประวัติรายได้</p>"}</section>
-    <p class="dialog-note">ตัวเลขเป็นผลจากแบบจำลองในเกม ไม่ใช่การรับประกันรายได้จริง</p>
-    <button class="dialog-button" type="button" data-v9-close>กลับเกม</button>`, "wide", "income");
+
+var incomeMonth = null;
+var incomeCompareMonth = null;
+function renderIncome(selectedMonth = null, compareMonth = null, { live = false } = {}) {
+  const current = stateNow();
+  if (!current) return;
+  const history = getMonthlyHistory(current);
+  const entry = history.find(item => item.month === Number(selectedMonth)) || history.at(-1);
+  incomeMonth = entry?.month ?? null;
+  incomeCompareMonth = compareMonth === null ? (incomeMonth || 1) - 1 : Number(compareMonth);
+  const economy = getEconomyView(current);
+  const liveMonth = live && !current.settlements?.[String(current.month)] && !current.organizationMode;
+  const shown = liveMonth ? { month: current.month, total: economy.projectedIncome, channel1: economy.channel1, channel2: economy.channel2, channel3: economy.channel3 } : entry;
+  const comparison = entry && !liveMonth ? getMonthComparison(current, entry.month, incomeCompareMonth) : null;
+  const received = history.every(item => item.total !== null) ? history.reduce((sum, item) => sum + item.total, 0) : null;
+  const options = history.map(item => `<option value="${item.month}"${item.month === incomeMonth ? " selected" : ""}>เดือน ${item.month} · ปี ${item.year}</option>`).join("");
+  const compareOptions = history.map(item => `<option value="${item.month}"${item.month === incomeCompareMonth ? " selected" : ""}>เดือน ${item.month}</option>`).join("");
+  const missingComparison = !history.some(item => item.month === incomeCompareMonth);
+  const controls = entry ? `<div class="history-controls"><label>ดูเดือน<select data-history-select="month" aria-label="ดูประวัติเดือน">${options}</select></label><label>เทียบกับ<select data-history-select="compare" aria-label="เลือกเดือนเปรียบเทียบ">${missingComparison ? `<option value="${incomeCompareMonth}" selected>${incomeCompareMonth < 1 ? "ยังไม่มีเดือนก่อน" : `เดือน ${incomeCompareMonth} ไม่มีบันทึก`}</option>` : ""}${compareOptions}</select></label></div>` : "";
+  const channels = [
+    { key: "channel1", number: "①", title: "ขายและดูแลลูกค้า", rule: "20–25% × XV ส่วนตัว", detail: "ฐานรายได้จากการดูแลลูกค้า · อัตราขึ้นกับยอดขายในเดือนนั้น" },
+    { key: "channel2", number: "②", title: "พัฒนา Direct G1", rule: "20% ของค่าคอมมิชชัน Direct G1", detail: "เพิ่มรายได้จากทีม เมื่อปลดสิทธิ์ XLEAD/ดูแลทีม และทีมสร้างผลงาน" },
+    { key: "channel3", number: "③", title: "บริหาร Organization", rule: "5% × TGV ของเดือนนั้น", detail: "เพิ่มช่องทาง Organization หลังสอบผ่าน XGEN ตามเกณฑ์เกม" },
+  ];
+  const channelCards = shown ? `<section class="income-comparison" aria-label="รายได้ครบ 3 ช่องทาง"><div class="income-comparison__heading"><h3>รายได้ 3 ช่องทาง · เดือน ${shown.month}</h3><span>${liveMonth ? "ประมาณการ ยังไม่ปิดยอด" : "ยอดที่บันทึกจริง"}</span></div><div class="growth-grid">${channels.map(channel => {
+    const value = shown[channel.key];
+    const metric = comparison?.metrics.find(item => item.key === channel.key);
+    return `<article class="growth-metric income-channel-card" data-channel-summary="${channel.key}" data-trend="${metric?.trend || "unknown"}"><span class="income-channel-card__number">ช่องทาง ${channel.number}</span><h4>${channel.title}</h4><strong>${growthValue(value, "baht")}</strong><span class="income-channel-card__rule">${channel.rule}</span>${metric ? `<div class="income-channel-card__comparison"><span class="growth-baseline">${incomeCompareMonth < 1 ? "ยังไม่มีเดือนเปรียบเทียบ" : `เดือน ${incomeCompareMonth}: ${growthValue(metric.baseline, "baht")}`}</span><small>${growthChange(metric, incomeCompareMonth)}</small></div>` : ""}<p>${channel.detail}</p></article>`;
+  }).join("")}</div></section>` : "";
+  const extraIncome = shown && shown.channel2 !== null && shown.channel3 !== null ? shown.channel2 + shown.channel3 : null;
+  const firstTeam = history.find(item => item.channel2 > 0);
+  const firstOrganization = history.find(item => item.channel3 > 0);
+  const insight = shown ? `<div class="income-role-insight"><span>${liveMonth ? "ประมาณการ" : "รายได้"}จากทีมและ Organization · เดือน ${shown.month} <b>② + ③</b></span><strong>${growthValue(extraIncome, "baht")}</strong><p>เป็นรายได้ที่เพิ่มจากช่องทางดูแลลูกค้า ① · ผลต่างระหว่างเดือนขึ้นกับทั้งสิทธิ์ ยอดขาย และผลงานทีม</p></div>` : "";
+  const highestIncome = Math.max(1, ...history.map(item => item.total ?? 0));
+  const timeline = Array.from({ length: 24 }, (_, index) => {
+    const month = index + 1;
+    const item = history.find(row => row.month === month);
+    const label = item ? `เดือน ${month}: ${growthValue(item.total, "baht")}` : month <= current.month ? `เดือน ${month}: ไม่มีบันทึกปิดเดือน` : `เดือน ${month}: ยังไม่ถึง`;
+    return `<button class="history-month" type="button" data-history-month="${month}"${item ? "" : " disabled"} aria-label="${label}" aria-pressed="${month === incomeMonth && !liveMonth}" style="--income-height:${item?.total === null || !item ? 0 : Math.max(3, item.total / highestIncome * 100).toFixed(2)}%"><i aria-hidden="true"></i><span>${month}</span></button>`;
+  }).join("");
+  const historyCards = history.map(item => {
+    const earningChannels = channels.filter(channel => item[channel.key] > 0).map(channel => channel.number).join(" ");
+    return `<details class="income-history-card" data-month="${item.month}"${item.month === incomeMonth && !liveMonth ? ' data-selected="true"' : ""}><summary class="income-history-row"><span class="income-history-row__month">เดือน ${item.month} · ปี ${item.year}<small>${earningChannels ? `มีรายได้ ${earningChannels}` : "ยังไม่มีช่องทางที่บันทึกรายได้"}</small></span>${channels.map(channel => `<span class="income-history-row__channel" data-history-channel="${channel.key}"><small>${channel.number}</small><b>${growthValue(item[channel.key], "baht")}</b></span>`).join("")}<strong class="income-history-row__total"><small>รวม</small><b>${growthValue(item.total, "baht")}</b></strong></summary><div class="income-history-card__detail"><p>TGV ${growthValue(item.tgv, "XV")} · ลูกค้าใช้ต่อ ${growthValue(item.repeatCustomers, "คน")} · X-VISOR ${growthValue(item.teamCount, "คน")}</p>${incomeContributionHtml(item)}<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${item.month}">เทียบผลเดือน ${item.month}</button></div></details>`;
+  }).join("");
+  const closeLabel = current.campaignScore?.locked && !current.organizationMode ? "กลับสรุปปีแรก" : "กลับเกม";
+  showDialog2(`<nav class="history-dialog-nav" aria-label="เมนูประวัติรายได้"><span>เส้นทางการเติบโต</span><button class="history-close" type="button" data-v9-close>${closeLabel} ×</button></nav><div class="dialog-kicker">MONTHLY JOURNEY · 2.0</div><h2>${liveMonth ? `ประมาณการเดือน ${current.month}` : entry ? `รายได้และพัฒนาการ · เดือน ${entry.month}` : "ประวัติการเดินทาง 24 เดือน"}</h2>
+    <div class="revenue-hero"><div><span>${liveMonth ? "ยังไม่ปิดยอด" : "รายได้เดือนที่เลือก"}</span><strong>${growthValue(shown?.total ?? null, "baht")}</strong></div><div><span>สะสมจาก ${history.length} เดือนที่มีบันทึก</span><strong>${growthValue(received, "baht")}</strong></div></div>
+    ${!liveMonth ? controls : ""}${channelCards}${insight}
+    ${liveMonth ? '<p class="dialog-note">ประมาณการเปลี่ยนตามงานที่ทำ ปิดเดือนแล้วจึงบันทึกผลจริงไว้ในประวัติด้านล่าง</p>' : ""}
+    <section class="income-history"><h3>เทียบรายได้รายเดือน · ${history.length} เดือน</h3><p class="dialog-note">เห็นทั้ง ① ② ③ ก่อนขยาย · แตะแถวเพื่อดู TGV ลูกค้า และทีม</p>
+      ${firstTeam || firstOrganization ? `<p class="income-channel-milestones">${firstTeam ? `บันทึกแรกที่มีรายได้ ②: เดือน ${firstTeam.month}` : ""}${firstTeam && firstOrganization ? " · " : ""}${firstOrganization ? `บันทึกแรกที่มีรายได้ ③: เดือน ${firstOrganization.month}` : ""}</p>` : ""}
+      ${liveMonth ? controls : ""}
+      <div class="income-history-columns" aria-hidden="true"><span>เดือน / ช่องทางที่มีรายได้</span><span>① ลูกค้า</span><span>② Direct G1</span><span>③ Organization</span><span>รวม</span></div><div class="income-history-cards">${historyCards || '<p class="work-empty">ปิดเดือนแรกเพื่อเริ่มบันทึกรายได้และการเติบโต</p>'}</div>
+      <details class="income-trend"><summary>ดูกราฟเส้นทางเดือน 1–24</summary><p class="dialog-note">แตะเดือนที่ปิดแล้วเพื่อเทียบผล · ความสูงแสดงรายได้</p><div class="history-timeline" aria-label="ประวัติรายได้ 24 เดือน">${timeline}</div></details>
+      ${entry ? `<details class="income-growth-more"><summary>ดูการเติบโตของลูกค้าและทีม · เดือน ${entry.month}</summary>${monthGrowthHtml(current, entry.month, incomeCompareMonth, { historyLink: false })}</details>` : ""}
+    </section><p class="dialog-note">ตัวเลขมาจากบันทึกในเกมและไม่รับประกันรายได้จริง ข้อมูลเก่าที่ไม่เคยเก็บจะแสดง “ไม่เคยบันทึก”</p>`, "wide", "income");
 }
+
 function renderTgvHelp() {
   const state2 = stateNow();
   if (!state2) return;
-  const history = getTgvHistory(state2);
-  const last = history.at(-1);
+  const history = getMonthlyHistory(state2);
+  const last = history.find(entry => entry.month === Number(state2.month) - 1);
   const best = history.reduce((max, entry) => Math.max(max, Number(entry.tgv || 0)), 0);
-  showDialog2(`<div class="dialog-kicker">🏙️ TGV</div><h2>ยอด XV ของคุณและทีมในเดือนนี้</h2><p class="term-definition">TGV เริ่มใหม่ทุกเดือน เดือนที่ปิดไปแล้วจะเก็บไว้เป็นสถิติและจะไม่ถูกนำมาจ่ายซ้ำ</p><div class="summary-grid"><div><span>เดือนนี้</span><strong>${fmt(getEconomyView(state2).tgv)} XV</strong></div><div><span>เดือนที่แล้ว</span><strong>${fmt(last?.tgv)} XV</strong></div><div><span>Best TGV</span><strong>${fmt(best)} XV</strong></div>${state2.career?.xgenQualified ? `<div><span>ถึงเกณฑ์ XGEN</span><strong>เดือน ${fmt(state2.career.xgenQualifiedAtMonth)}</strong></div>` : ""}</div><button class="dialog-button" type="button" data-v9-close>เข้าใจแล้ว</button>`, "wide", "tgv");
+  showDialog2(`<div class="dialog-kicker">🏙️ TGV</div><h2>ยอด XV ของคุณและทีมในเดือนนี้</h2><p class="term-definition">TGV เริ่มใหม่ทุกเดือน เดือนที่ปิดไปแล้วจะเก็บไว้เป็นสถิติและจะไม่ถูกนำมาจ่ายซ้ำ</p><div class="summary-grid"><div><span>เดือนนี้</span><strong>${fmt(getEconomyView(state2).tgv)} XV</strong></div><div><span>เดือนที่แล้ว</span><strong>${growthValue(last?.tgv, "XV")}</strong></div><div><span>Best TGV</span><strong>${fmt(best)} XV</strong></div>${state2.career?.xgenQualified ? `<div><span>ถึงเกณฑ์ XGEN</span><strong>เดือน ${fmt(state2.career.xgenQualifiedAtMonth)}</strong></div>` : ""}</div><div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-open-income-history>ดูประวัติรายเดือน</button><button class="dialog-button" type="button" data-v9-close>เข้าใจแล้ว</button></div>`, "wide", "tgv");
 }
 function renderMonthConfirm() {
   const state2 = stateNow();
-  if (!state2) return;
+  if (!state2 || !canDispatch(state2, EVENTS.END_MONTH)) return;
   if (state2.organizationMode) {
     hardClose();
     dispatch(EVENTS.END_MONTH);
     return;
   }
   const economy = getEconomyView(state2);
-  showDialog2(`<div class="dialog-kicker">🌙 จบเดือน ${state2.month}</div><h2>จบเดือน ${state2.month} ตอนนี้ไหม?</h2><div class="summary-grid"><div><span>🏙️ TGV เดือนนี้</span><strong>${fmt(economy.tgv)} XV</strong></div><div><span>💰 คาดว่าจะได้รับ</span><strong>${baht(economy.projectedIncome)}</strong></div></div><p class="dialog-note">⚡ พลังงานที่เหลือ ${fmt(state2.energy)} จะไม่ทบไปเดือนหน้า</p><div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-v9-close>← กลับกระดาน</button><button class="dialog-button" type="button" data-v9-end-month>🌙 จบเดือน</button></div>`, "wide", "month");
+  const opportunities = getBestNextActions(state2, 3).filter(action => action.event !== EVENTS.END_MONTH && !action.disabled && canDispatch(state2, action.event));
+  const remaining = state2.stage === "management" && (Number(state2.energy || 0) > 0 || opportunities.length > 0);
+  showDialog2(`<div class="dialog-kicker">ทบทวนเดือน ${state2.month}</div><h2>${remaining ? `ยังเหลือพลังงาน ${fmt(state2.energy)} ⚡` : `พร้อมสรุปเดือน ${state2.month} แล้ว`}</h2><div class="summary-grid"><div><span>🏙️ TGV เดือนนี้</span><strong>${fmt(economy.tgv)} XV</strong></div><div><span>💰 คาดว่าจะได้รับ</span><strong>${baht(economy.projectedIncome)}</strong></div></div>
+    <p class="month-review-note">${remaining ? "ยังเลือกทำงานต่อได้ เมื่อจบเดือน พลังงานที่เหลือจะไม่ทบไปเดือนหน้า" : "มาดูผลงานเดือนนี้ แล้วเตรียมพลังงานสำหรับเดือนถัดไป"}</p>
+    ${opportunities.length ? `<section class="month-review-opportunities"><h3>โอกาสที่ยังทำได้เดือนนี้</h3><ul>${opportunities.map(action => `<li>${escapeHtml2(action.label)}${action.cost ? ` <span>⚡ ${fmt(action.cost)}</span>` : ""}</li>`).join("")}</ul></section>` : ""}
+    <div class="dialog-actions"><button class="dialog-button${remaining ? "" : " dialog-button--secondary"}" type="button" data-v9-close>${remaining ? "กลับไปเลือกงานต่อ" : "กลับกระดาน"}</button>${remaining ? '<button class="dialog-button dialog-button--secondary" type="button" data-dialog-action="work">ดูทางเลือกทั้งหมด</button>' : ""}<button class="dialog-button${remaining ? " dialog-button--secondary" : ""}" type="button" data-v9-end-month>ยืนยันจบเดือน ${fmt(state2.month)}</button></div>`, "wide", "month");
 }
 function patchPersonActions(state2) {
   const missions = state2?.missions || [];
@@ -306,7 +369,10 @@ document.addEventListener("click", (event) => {
   if (close) {
     event.preventDefault();
     event.stopImmediatePropagation();
+    const fromHistory = dialog?.dataset.v9Dialog === "income";
+    if (fromHistory && stateNow()?.runComplete) dismissedRun = stateNow().runId;
     hardClose();
+    if (fromHistory && stateNow()?.campaignScore?.locked && !stateNow()?.organizationMode) openCampaignGate(stateNow());
     return;
   }
   const finale = event.target.closest('[data-ui="v9-finale"]');
@@ -333,11 +399,18 @@ document.addEventListener("click", (event) => {
     renderPeople(personTrigger.dataset.personId);
     return;
   }
+  const historyTrigger = event.target.closest("#historyButton, [data-open-income-history], [data-history-month]");
+  if (historyTrigger && !historyTrigger.disabled) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    renderIncome(historyTrigger.dataset.historyMonth || null);
+    return;
+  }
   const incomeTrigger = event.target.closest("#incomeButton");
   if (incomeTrigger) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    renderIncome();
+    renderIncome(null, null, { live: true });
     return;
   }
   const tgvTrigger = event.target.closest("#hudXVButton");
@@ -456,10 +529,28 @@ document.addEventListener("input", (event) => {
     }
   });
 }, true);
+document.addEventListener("change", (event) => {
+  const select = event.target.closest("[data-history-select]");
+  if (!select) return;
+  event.stopImmediatePropagation();
+  const key = select.dataset.historySelect;
+  const scrollTop = dialog.scrollTop;
+  const expandedDetails = [".income-trend", ".income-growth-more"].filter(selector => $2(selector)?.open);
+  if (key === "month") renderIncome(Number(select.value), incomeCompareMonth);
+  else renderIncome(incomeMonth, Number(select.value));
+  for (const selector of expandedDetails) if ($2(selector)) $2(selector).open = true;
+  requestAnimationFrame(() => {
+    dialog.scrollTop = scrollTop;
+    $2(`[data-history-select="${key}"]`)?.focus({ preventScroll: true });
+  });
+}, true);
 dialog?.addEventListener("cancel", (event) => {
   event.preventDefault();
   const current = getState();
-  if (current.campaignScore?.locked && !current.organizationMode) return;
+  if (current.campaignScore?.locked && !current.organizationMode) {
+    if (dialog.dataset.v9Dialog === "income") openCampaignGate(current);
+    return;
+  }
   if (current.runComplete) dismissedRun = current.runId;
   hardClose();
 }, true);
@@ -480,16 +571,16 @@ function setHidden(node, hidden) {
 function organizationReportHtml(report) {
   if (!report) return "<p>กด <b>ผ่านไปอีก 1 เดือน</b> แล้วระบบจะรันงานประจำองค์กรให้ครบในครั้งเดียว</p>";
   const xircle = report.activities?.xircle ? '<span class="is-xircle">🏕️ The Xircle ×1</span>' : "";
-  const trend = report.tgvDeltaPct == null ? "เดือนแรกของ Year 2" : `${report.tgvDeltaPct > 0 ? "▲" : report.tgvDeltaPct < 0 ? "▼" : "•"} ${Math.abs(report.tgvDeltaPct)}% จากเดือนก่อน`;
   const xircleBonus = report.xircleBonus ? `<section class="v1-xircle-bonus"><div><span>THE XIRCLE</span><strong>RESET · RECONNECT · RISE</strong></div><ul><li>❤️ Retention ${escapeHtml2(report.xircleBonus.retention)}</li><li>👥 Referral ${escapeHtml2(report.xircleBonus.referral)}</li><li>🔄 Member comeback ${signed(report.xircleBonus.comeback)}</li><li>🎓 ${escapeHtml2(report.xircleBonus.certification)}</li></ul></section>` : "";
   const trip = report.trip ? `<section class="v1-travel-reward"><span>✈️ RECOGNITION TRIP ${fmt(report.trip.number)}</span><strong>${escapeHtml2(report.trip.destination)}</strong><small>${escapeHtml2(report.trip.landmark)}</small></section>` : "";
   return `<div class="v1-org-report">
+    ${monthGrowthHtml(stateNow(), report.month)}
     <section class="v1-auto-plan"><div><span>เดือนนี้ทีมเดินให้คุณ</span><strong>กิจกรรม → คน → ลูกค้า → XV → TGV → รายได้</strong></div><div class="v1-org-rhythm"><span>🎓 Xcademy ×4</span><span>🏠 Open House ×1</span>${xircle}</div></section>
-    <div class="v1-report-headline"><div><span>🏙️ TGV · MONTH ${report.month}</span><strong>${fmt(report.tgv)} XV</strong><small>${trend}</small></div><div><span>💰 รายได้เดือนนี้</span><strong>${baht(report.income)}</strong><small>สะสม ${baht(report.totalIncome)}</small></div></div>
+    <details class="organization-detail"><summary>ดูการเคลื่อนไหวของลูกค้าและทีม</summary>
     <section class="v1-flow-section"><h3>ลูกค้า</h3><div class="v1-flow-grid v1-flow-grid--customers"><div><span>คนใหม่</span><b>${fmt(report.newPeople)}</b></div><div><span>ลูกค้าใหม่</span><b>+${fmt(report.newCustomers)}</b></div><div><span>ใช้ต่อ</span><b>${fmt(report.repeatCustomers)}</b></div><div class="is-warning"><span>พัก</span><b>−${fmt(report.pausedCustomers)}</b></div><div class="is-loss"><span>หยุด</span><b>−${fmt(report.stoppedCustomers)}</b></div><div class="is-comeback"><span>กลับมา</span><b>+${fmt(report.comebackCustomers)}</b></div><div class="is-net"><span>สุทธิ</span><b>${signed(report.netCustomers)}</b></div></div></section>
     <section class="v1-flow-section"><h3>ทีมสร้างทีม</h3><div class="v1-flow-grid v1-flow-grid--team"><div><span>X-VISOR ใหม่</span><b>+${fmt(report.newXvisors)}</b></div><div class="is-warning"><span>ช้าลง</span><b>${fmt(report.slowedMembers)}</b></div><div class="is-warning"><span>พักงาน</span><b>−${fmt(report.pausedMembers)}</b></div><div class="is-loss"><span>หยุดทำ</span><b>−${fmt(report.quitMembers)}</b></div><div class="is-comeback"><span>กลับมา active</span><b>+${fmt(report.comebackMembers)}</b></div><div class="is-net"><span>ทีมสุทธิ</span><b>${signed(report.netXvisors)}</b></div><div><span>XLEAD ใหม่</span><b>+${fmt(report.newXleads)}</b></div></div></section>
-    ${xircleBonus}${trip}
-    <details class="v1-rhythm-details"><summary>ดูที่มาของรายได้เดือนนี้</summary><div class="v1-income-mini"><span>① ลูกค้า <b>${baht(report.incomeBreakdown?.channel1)}</b></span><span>② Direct G1 <b>${baht(report.incomeBreakdown?.channel2)}</b></span><span>③ Organization <b>${baht(report.incomeBreakdown?.channel3)}</b></span></div></details>
+    </details>${xircleBonus}${trip}
+
   </div>`;
 }
 function roleLabel(member) {
@@ -681,6 +772,7 @@ function show(html, kind, key) {
   if (!dialog2 || !content2) return;
   content2.innerHTML = html;
   dialog2.dataset.kind = kind;
+  delete dialog2.dataset.v9Dialog;
   if (key === "campaign") {
     dialog2.dataset.v1bCampaignGate = "1";
     delete dialog2.dataset.v1bFinale;
@@ -695,7 +787,7 @@ function show(html, kind, key) {
 function campaignScoreDetails(state2) {
   const score = state2.campaignScore || {};
   const path = state2.campaignOutcome?.xgenByMonth12 || score.xgenByMonth12 ? "XGEN" : "XLEAD";
-  return `<div class="dialog-kicker">🏆 MONTH 12 · CAMPAIGN COMPLETE · 1.0b</div>
+  return `<div class="dialog-kicker">🏆 MONTH 12 · CAMPAIGN COMPLETE · 2.0</div>
     <h2>12 เดือนแรกจบแล้ว — บันทึกชื่อคุณก่อน</h2>
     <p class="dialog-note">High Score ใช้ผล Month 1–12 เท่านั้น ปีที่ 2 จะไม่แก้คะแนนก้อนนี้</p>
     <div class="v1-finale-grid" aria-label="High Score 12 เดือน">
@@ -704,6 +796,7 @@ function campaignScoreDetails(state2) {
       <div><span>💎 สูงสุด / เดือน</span><strong>${baht(score.bestMonthlyIncome)}</strong></div>
       <div><span>🏙️ Organization</span><strong>${fmt(score.organizationSize)} คน</strong></div>
     </div>
+    <button class="dialog-button dialog-button--secondary" type="button" data-open-income-history>ดูประวัติและเทียบเดือน 1–12</button>
     <blockquote class="v1-ending-quote">${path === "XGEN" ? "⭐ คุณผ่าน XGEN ภายใน 12 เดือน — ปีที่ 2 จะเปิด XGEN Path และ Recognition Trip" : "👑 คุณจบปีแรกใน XLEAD Path — ปีที่ 2 จะทำให้เห็นความต่างของระบบที่สร้างไว้"}</blockquote>`;
 }
 function campaignGateHtml(state2, status = "") {
@@ -713,7 +806,7 @@ function campaignGateHtml(state2, status = "") {
       <div class="v1-score-lock-success"><strong>✅ High Score บันทึกแล้ว</strong><span>ชื่อบนตาราง: ${escapeHtml2(sent)}</span></div>
       <h3>ทีนี้ดูสิ่งที่คุณสร้างไว้เดินต่อเอง</h3>
       <p class="dialog-note">จาก Month 13 เป็นต้นไป คุณไม่ต้องขายหรือตามรายคนแล้ว กดเดือนละครั้งเพื่อดูระบบเดินต่อจน Month 24</p>
-      <div class="dialog-actions v1-finale-actions"><button class="dialog-button" type="button" data-v1b-enter-org>▶ ดูสิ่งที่คุณสร้างโตเอง 1 เดือน</button></div>`;
+      <div class="dialog-actions v1-finale-actions"><button class="dialog-button" type="button" data-v1b-enter-org>▶ ดูระบบทำงานต่อ 1 เดือน</button></div>`;
   }
   return `${campaignScoreDetails(state2)}
     <div class="v1-score-required">
@@ -732,7 +825,7 @@ function finaleDetails2(state2) {
   const summary = state2.twoYearSummary || {};
   const trips = Array.isArray(summary.trips) ? summary.trips : [];
   const path = summary.year2Path || state2.year2Path || "xlead";
-  return `<div class="dialog-kicker">🏁 MONTH 24 · TRUE ENDING · 1.0b</div>
+  return `<div class="dialog-kicker">🏁 MONTH 24 · TRUE ENDING · 2.0</div>
     <h2>2 ปีผ่านไปแล้ว — นี่คือสิ่งที่ระบบของคุณสร้าง</h2>
     <div class="v1-two-year-journey"><div><span>วันแรก</span><strong>โต๊ะ 1 ตัว · คุณ 1 คน</strong></div><i>→</i><div><span>2 ปีต่อมา</span><strong>${fmt(summary.activeCustomers)} ลูกค้า · ${fmt(summary.xvisorCount)} X-VISOR · ${fmt(summary.xleadCount)} XLEAD</strong></div></div>
     <div class="v1-finale-grid" aria-label="ผลลัพธ์เมื่อจบเดือน 24">
@@ -752,6 +845,7 @@ function finaleHtml2(state2) {
   const sent = scoreName(state2);
   return `${finaleDetails2(state2)}
     <div class="v1-score-lock-success"><strong>🏆 High Score ปีแรก</strong><span>${sent ? `บันทึกในชื่อ ${escapeHtml2(sent)}` : "คะแนน Month 12 ถูกล็อกไว้ในรอบนี้"}</span></div>
+    <button class="dialog-button dialog-button--secondary" type="button" data-open-income-history>ดูประวัติและเทียบเดือน 1–24</button>
     <div class="dialog-actions v1-finale-actions"><button class="dialog-button dialog-button--secondary" type="button" data-v1b-new-run>↺ เล่นใหม่</button><button class="dialog-button" type="button" data-v1b-new-game-plus>⚡ NEW GAME+</button></div>
     <button class="dialog-button dialog-button--ghost" type="button" data-v1b-close-finale>กลับไปดูฉากจบ</button>`;
 }
@@ -764,14 +858,15 @@ function patch() {
   
   const state2 = stateNow();
   if (!state2) return;
+  const browsingHistory = $2("#gameDialog")?.open && $2("#gameDialog")?.dataset.v9Dialog === "income";
   if (state2.campaignScore?.locked && !state2.organizationMode) {
     const dialog3 = $2("#gameDialog");
-    if (!dialog3?.open || !dialog3.dataset.v1bCampaignGate) openCampaignGate(state2);
+    if (!browsingHistory && (!dialog3?.open || !dialog3.dataset.v1bCampaignGate)) openCampaignGate(state2);
     const actionBar2 = $2("#actionBar");
-    if (actionBar2) actionBar2.innerHTML = scoreName(state2) ? '<button class="action-button action-button--primary" type="button" data-v1b-enter-org><span class="action-button__icon">▶</span><span class="action-button__copy"><strong>ดูสิ่งที่คุณสร้างโตเอง 1 เดือน</strong><small>Year 2 · กดเดือนละครั้งจน Month 24</small></span></button>' : '<button class="action-button action-button--primary" type="button" data-v1b-open-campaign-gate><span class="action-button__icon">🏆</span><span class="action-button__copy"><strong>ใส่ชื่อ High Score ก่อน</strong><small>บันทึกปีแรก แล้วค่อยเปิด Year 2</small></span></button>';
+    if (actionBar2) actionBar2.innerHTML = scoreName(state2) ? '<button class="action-button action-button--primary" type="button" data-v1b-enter-org><span class="action-button__icon">▶</span><span class="action-button__copy"><strong>ดูระบบทำงานต่อ 1 เดือน</strong><small>Year 2 · กดเดือนละครั้งจน Month 24</small></span></button>' : '<button class="action-button action-button--primary" type="button" data-v1b-open-campaign-gate><span class="action-button__icon">🏆</span><span class="action-button__copy"><strong>ใส่ชื่อ High Score ก่อน</strong><small>บันทึกปีแรก แล้วค่อยเปิด Year 2</small></span></button>';
     return;
   }
-  if (!state2.runComplete) return;
+  if (!state2.runComplete || browsingHistory) return;
   const actionBar = $2("#actionBar");
   if (actionBar && !actionBar.querySelector("[data-v1b-open-finale]")) {
     actionBar.innerHTML = '<button class="action-button action-button--primary" type="button" data-v1b-open-finale><span class="action-button__icon">🏁</span><span class="action-button__copy"><strong>ดูผลลัพธ์ 24 เดือน</strong><small>จบจริง · NEW GAME+</small></span></button>';
@@ -792,10 +887,15 @@ async function submitScore2() {
     input?.focus();
     return;
   }
-  if (status) status.textContent = "กำลังบันทึก High Score 1.0b…";
+  if (status) status.textContent = "กำลังบันทึก High Score 2.0…";
   submittingRuns.add(state2.runId);
   const button = $2("[data-v1b-submit-score]");
   if (button) button.disabled = true;
+  const isCurrentCampaignGate = () => {
+    const current = stateNow();
+    const currentDialog = $2("#gameDialog");
+    return current?.runId === state2.runId && current.campaignScore?.locked && !current.organizationMode && currentDialog?.open && currentDialog.dataset.v1bCampaignGate === "1" && currentDialog.dataset.v9Dialog !== "income";
+  };
   try {
     const response = await fetch("/api/xvisor-scores", {
       method: "POST",
@@ -820,12 +920,20 @@ async function submitScore2() {
       localStorage.setItem(`${SCORE_SENT_PREFIX3}${state2.runId}`, displayName);
     } catch {
     }
-    openCampaignGate(state2, `✅ บันทึก High Score แล้วในชื่อ ${displayName}`);
+    // The player can inspect history while the request is pending. Persist this
+    // run's result without replacing the panel they chose in the meantime.
+    if (isCurrentCampaignGate()) openCampaignGate(stateNow(), `✅ บันทึก High Score แล้วในชื่อ ${displayName}`);
   } catch {
-    if (status) status.textContent = "ส่ง High Score ไม่สำเร็จ · ต้องส่งสำเร็จก่อนจึงจะเปิด Year 2";
+    if (isCurrentCampaignGate()) {
+      const currentStatus = $2("[data-v1b-score-status], [data-v9-score-status]");
+      if (currentStatus) currentStatus.textContent = "ส่ง High Score ไม่สำเร็จ · ต้องส่งสำเร็จก่อนจึงจะเปิด Year 2";
+    }
   } finally {
     submittingRuns.delete(state2.runId);
-    if (button?.isConnected) button.disabled = false;
+    if (isCurrentCampaignGate()) {
+      const currentButton = $2("[data-v1b-submit-score]");
+      if (currentButton) currentButton.disabled = false;
+    }
   }
 }
 document.addEventListener("click", (event) => {
