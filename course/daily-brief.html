@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Clinic Daily Brief · เว็บตัวอย่างสำหรับเรียน</title>
+<style>
+:root{font-family:Tahoma,"Noto Sans Thai",system-ui,sans-serif;color:#252525;background:#f6f5f2;font-size:16px;line-height:1.7;--orange:#b94315;--line:#dfddd7;--muted:#66645f;--soft:#fff1e7}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button,.file-button{min-height:46px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:white;color:#252525;font-weight:700;cursor:pointer;transition:background .15s,transform .15s}button:hover,.file-button:hover{background:#f5f2ec;transform:translateY(-1px)}button:focus-visible,a:focus-visible,.file-button:focus-within{outline:3px solid #125fa8;outline-offset:3px}button[aria-pressed="true"]{background:var(--soft);border-color:#be4b1b;color:#93370f}.file-button{display:inline-flex;align-items:center;background:#292929;color:#fff;border-color:#292929;position:relative;overflow:hidden}.file-button:hover{background:#444;color:#fff}.file-button input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}.shell{max-width:1240px;margin:auto;padding:28px 32px 44px}.topbar{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:19px}.brand{font-size:13px;letter-spacing:.12em;font-weight:800}.brand b{color:var(--orange)}.tag{display:inline-block;font-size:12px;font-weight:700;border:1px solid #e6c1a9;border-radius:99px;background:#fff9f4;color:#953b17;padding:3px 11px;white-space:nowrap}header{padding:40px 0 24px}.eyebrow{font-size:13px;color:var(--orange);font-weight:800;letter-spacing:.09em;margin:0 0 8px}h1{font-size:clamp(32px,5vw,50px);line-height:1.2;letter-spacing:-.03em;margin:0 0 14px}h2{font-size:20px;margin:0 0 8px}h3{margin:0 0 5px;font-size:17px}p{margin:0 0 12px}.lead{color:#575650;max-width:780px;font-size:17px}.toolbar{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.toolbar-heading{font-size:14px;color:var(--muted);margin-right:auto}.toolbar-heading strong{display:block;color:#292929;font-size:16px}.privacy{font-size:13px;color:var(--muted);margin:11px 2px 0}.metadata{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:27px 0 15px}.metadata p{margin:0}.source{font-weight:700;overflow-wrap:anywhere}.small{font-size:13px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 23px;min-height:157px}.card-label{font-size:14px;color:#55534e}.number{font-size:34px;line-height:1.4;font-weight:800;letter-spacing:-.025em;margin:4px 0}.unit{font-size:14px;font-weight:400;color:var(--muted);margin-left:5px}.card-detail{font-size:12px;color:var(--muted)}.card.accent{background:#fff3e8;border-color:#ecc8aa}.card.missing .number{font-size:23px;color:#9b4b10;letter-spacing:0;margin:11px 0}.notice{margin:18px 0 0;background:#fff8e8;border:1px solid #dec58a;border-radius:16px;padding:19px 23px;color:#66480c}.notice.error{background:#fff0ed;border-color:#e5b7aa;color:#8b2e1c}.notice.ok{background:#eef5f0;border-color:#c5dacc;color:#255b3e}.notice h2{font-size:16px}.notice ul{margin:8px 0 0;padding-left:22px;font-size:14px}.notice p{margin:0;font-size:14px}.section{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.section-head{padding:20px 23px 14px;display:flex;justify-content:space-between;align-items:center;gap:14px}.section-head h2,.section-head p{margin:0}.table-wrap{overflow-x:auto;max-height:510px;overflow-y:auto}table{border-collapse:collapse;width:100%;font-size:14px;min-width:900px}th{background:#f8f7f4;position:sticky;top:0;text-align:right;font-size:12px;color:#66635d;padding:12px 15px;border-bottom:1px solid var(--line);z-index:1}th:first-child,th:last-child{text-align:left}td{border-bottom:1px solid #eeece7;padding:12px 15px;text-align:right;vertical-align:top;font-variant-numeric:tabular-nums}td:first-child{text-align:left;white-space:nowrap}td:last-child{text-align:left;max-width:360px;font-size:12px;color:#66635d;white-space:pre-wrap;overflow-wrap:anywhere}tbody tr:last-child td{border-bottom:0}.empty-value{display:inline-block;background:#fff1d5;border-radius:5px;padding:0 5px;color:#835512;font-size:12px}.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:26px}.rule{border-top:2px solid #c6c2b9;padding-top:14px}.rule h3{font-size:15px}.rule p{font-size:13px;color:var(--muted);margin:0}footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);margin-top:32px;padding-top:17px;display:flex;justify-content:space-between;gap:14px}.hidden{display:none!important}.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.task-hint{margin-top:22px;padding:20px 23px;background:#edede8;border-radius:16px}.task-hint p{font-size:14px;margin:0;color:#56544f}@media(max-width:760px){.shell{padding:20px 18px 30px}header{padding-top:28px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:17px;min-height:145px}.number{font-size:29px}.rules{grid-template-columns:1fr;gap:16px}.toolbar-heading{width:100%}.toolbar{padding:16px}.toolbar button,.file-button{flex:1;text-align:center;justify-content:center;font-size:14px}.section-head{padding:17px;align-items:flex-start;flex-direction:column}.topbar{align-items:flex-start}.brand{font-size:11px}footer{flex-direction:column}}@media(max-width:420px){.stats{grid-template-columns:1fr}.tag{font-size:10px}.toolbar{gap:8px}.toolbar button{flex-basis:40%}.file-button{flex-basis:100%}.card{min-height:130px}.number{font-size:33px}}@media print{.toolbar,.privacy,.task-hint{display:none}.shell{padding:0}.card,.section,.notice{break-inside:avoid}.table-wrap{overflow:visible;max-height:none}table{min-width:0}.stats{grid-template-columns:repeat(3,1fr)}body{background:white}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <nav class="topbar" aria-label="ข้อมูลต้นแบบ"><div class="brand">THE DENT <b> / </b> LEARNING LAB</div><a href="./index.html#learn/workshop2" class="tag">← กลับห้องเรียน</a></nav>
+  <header><p class="eyebrow">WORKSHOP 02 · จากไฟล์สู่ภาพรวม</p><h1>Clinic Daily Brief<span style="color:var(--orange)">.</span></h1><p class="lead">เลือกไฟล์ ดูภาพรวม แล้วตรวจกลับไปที่ต้นทาง<br>ทดลองให้เห็นว่าเว็บที่ดีควรทำอย่างไร เมื่อข้อมูลยังไม่ครบ</p></header>
+  <section class="toolbar" aria-label="เลือกข้อมูลฝึก"><div class="toolbar-heading"><strong>เริ่มจากข้อมูล 7 วัน</strong>ข้อมูลสมมติทั้งหมด</div><button id="normalButton" type="button" aria-pressed="true">① ข้อมูลปกติ</button><button id="missingButton" type="button" aria-pressed="false">② ลองข้อมูลขาด</button><label class="file-button">เลือกไฟล์ CSV<input id="fileInput" type="file" accept=".csv,text/csv" aria-label="เลือกไฟล์ CSV ของชุดฝึก"></label></section>
+  <p class="privacy">ไฟล์ประมวลผลในหน้านี้ ไม่มีการส่งออกเครือข่าย · รับไฟล์ UTF-8 ไม่เกิน 1 MB · ใช้ข้อมูลฝึกที่ไม่มีข้อมูลผู้ป่วยจริง</p>
+  <div id="liveStatus" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+  <section aria-label="แหล่งข้อมูล"><div class="metadata"><div><p class="source" id="sourceName"></p><p class="small" id="sourceDescription"></p></div><p class="small" id="dateRange"></p></div></section>
+  <section id="stats" class="stats" aria-label="ภาพรวมจากข้อมูลในไฟล์"></section>
+  <section id="notice" class="notice" aria-label="ผลตรวจข้อมูล"></section>
+  <section id="dataSection" class="section"><div class="section-head"><div><h2>ตรวจจากตารางต้นทาง</h2><p class="small">เรียงตามวันที่ · ช่องว่างแสดง “ไม่มีข้อมูล”</p></div><span id="rowCount" class="tag"></span></div><div class="table-wrap" tabindex="0" role="region" aria-label="ตารางข้อมูล เลื่อนแนวนอนเพื่อดูทุกคอลัมน์"><table><caption class="visually-hidden">ข้อมูลรายวันจากไฟล์ที่เลือก ข้อมูลสมมติสำหรับการฝึก</caption><thead><tr><th scope="col">วันที่</th><th scope="col">สอบถาม</th><th scope="col">นัดที่บันทึก</th><th scope="col">เงินรับ (บาท)</th><th scope="col">เงินจ่าย (บาท)</th><th scope="col">งานค้างสิ้นวัน</th><th scope="col">หมายเหตุ</th></tr></thead><tbody id="tableBody"></tbody></table></div></section>
+  <section class="rules" aria-label="หลักการอ่านรายงาน"><article class="rule"><h3>01 · ช่องว่าง ≠ ศูนย์</h3><p>ตัวเลขขาดต้องกลับไปตรวจต้นทาง ตัวชี้วัดที่ไม่ครบจะไม่แสดงยอดรวมที่ชวนให้เข้าใจผิด</p></article><article class="rule"><h3>02 · งานค้างดูวันล่าสุด</h3><p>งานค้างเป็นยอดคงเหลือ อาจมีงานเดิมข้ามวัน จึงไม่บวกยอดทุกวันเข้าด้วยกัน</p></article><article class="rule"><h3>03 · เงินสุทธิ ≠ กำไร</h3><p>เงินรับลบเงินจ่ายคือกระแสเงินสดสุทธิของข้อมูลในไฟล์ และยอดนัดกับยอดสอบถามยังไม่ใช่ข้อมูลวัด conversion</p></article></section>
+  <aside class="task-hint"><h3>ลองเป็นคนตรวจงาน AI</h3><p>กด “ลองข้อมูลขาด” แล้วอธิบายว่าการ์ดไหนยังสรุปได้ เพราะอะไร จากนั้นลองสลับแถวของ CSV — ยอดงานค้างล่าสุดควรเปลี่ยนไหม?</p></aside>
+  <footer><span>ข้อมูลตัวอย่างสมมติ · ไม่ใช่ผลประกอบการหรือข้อมูลบริการของ The Dent</span><span>ต้นแบบเว็บหนึ่งหน้า · ไม่มีการเชื่อม ERP</span></footer>
+</main>
+<script>
+(function (scope) {
+  'use strict';
+  const HEADERS = ['date', 'inquiries', 'appointments', 'cash_in', 'cash_out', 'pending', 'note'];
+  const NUMERIC = HEADERS.slice(1, 6);
+  const COUNTS = new Set(['inquiries', 'appointments', 'pending']);
+  const LABELS = { inquiries: 'ครั้งที่สอบถาม', appointments: 'นัดที่บันทึก', cash_in: 'เงินรับ', cash_out: 'เงินจ่าย', pending: 'งานค้าง' };
+  function parseCSV(input) {
+    if (typeof input !== 'string') throw new Error('ต้องเป็นข้อความ CSV');
+    const text = input.replace(/^\uFEFF/, '');
+    const rows = [];
+    let row = [], field = '', quoted = false, closed = false, atStart = true;
+    const saveField = () => { row.push(field); field = ''; closed = false; atStart = true; };
+    const saveRow = () => { saveField(); if (!(row.length === 1 && row[0].trim() === '')) rows.push(row); row = []; };
+    for (let index = 0; index < text.length; index++) {
+      const char = text[index];
+      if (quoted) {
+        if (char === '"') {
+          if (text[index + 1] === '"') { field += '"'; index++; }
+          else { quoted = false; closed = true; }
+        } else field += char;
+        continue;
+      }
+      if (char === ',') { saveField(); continue; }
+      if (char === '\n' || char === '\r') {
+        if (char === '\r' && text[index + 1] === '\n') index++;
+        saveRow(); continue;
+      }
+      if (closed) {
+        if (char === ' ' || char === '\t') continue;
+        throw new Error('รูปแบบ CSV ผิด: พบข้อความหลังเครื่องหมายคำพูดปิด');
+      }
+      if (char === '"') {
+        if (!atStart) throw new Error('รูปแบบ CSV ผิด: เครื่องหมายคำพูดต้องอยู่ต้นช่อง');
+        quoted = true; atStart = false; continue;
+      }
+      field += char; atStart = false;
+    }
+    if (quoted) throw new Error('รูปแบบ CSV ผิด: มีเครื่องหมายคำพูดที่ยังไม่ปิด');
+    if (field !== '' || row.length || closed) saveRow();
+    return rows;
+  }
+  function validDate(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    if (year < 1900 || year > 9999 || month < 1 || month > 12 || day < 1 || day > 31) return false;
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+  }
+  function validateRows(matrix) {
+    const errors = [], warnings = [], rows = [];
+    if (!matrix.length) return { rows, warnings, errors: ['ไฟล์ว่าง กรุณาเลือกไฟล์ที่มีหัวคอลัมน์และข้อมูล'] };
+    const headers = matrix[0].map(value => value.trim());
+    if (headers.length !== HEADERS.length || new Set(headers).size !== headers.length || HEADERS.some(name => !headers.includes(name))) {
+      return { rows, warnings, errors: ['หัวคอลัมน์ต้องมี date,inquiries,appointments,cash_in,cash_out,pending,note อย่างละหนึ่งครั้ง และไม่มีคอลัมน์อื่น'] };
+    }
+    if (matrix.length < 2) return { rows, warnings, errors: ['ยังไม่มีแถวข้อมูลในไฟล์'] };
+    if (matrix.length > 3661) return { rows, warnings, errors: ['ต้นแบบรับได้ไม่เกิน 3,660 แถวข้อมูล'] };
+    const seen = new Set();
+    matrix.slice(1).forEach((cells, index) => {
+      const line = index + 2;
+      if (cells.length !== headers.length) { errors.push(`รายการ ${line}: จำนวนช่องไม่ตรงกับหัวคอลัมน์`); return; }
+      const raw = Object.fromEntries(headers.map((header, column) => [header, cells[column]]));
+      const entry = { date: raw.date.trim(), note: raw.note };
+      if (!validDate(entry.date)) errors.push(`รายการ ${line}: date ต้องเป็นวันที่จริงรูปแบบ YYYY-MM-DD (ปี 1900–9999)`);
+      else if (seen.has(entry.date)) errors.push(`รายการ ${line}: วันที่ ${entry.date} ซ้ำ กรุณาตรวจข้อมูลต้นทาง`);
+      else seen.add(entry.date);
+      NUMERIC.forEach(key => {
+        const value = raw[key].trim();
+        if (!value) {
+          entry[key] = null;
+          warnings.push(`${entry.date || `รายการ ${line}`}: ขาด ${key} (${LABELS[key]}) ช่องว่างไม่ใช่ศูนย์`);
+          return;
+        }
+        const pattern = COUNTS.has(key) ? /^(0|[1-9]\d*)$/ : /^(0|[1-9]\d*)(\.\d{1,2})?$/;
+        const number = Number(value);
+        if (!pattern.test(value) || !Number.isFinite(number) || !Number.isSafeInteger(COUNTS.has(key) ? number : Math.round(number * 100))) {
+          const rule = COUNTS.has(key) ? 'จำนวนเต็มที่ไม่ติดลบ' : 'จำนวนที่ไม่ติดลบ ทศนิยมไม่เกิน 2 ตำแหน่ง ไม่ใส่ comma หรือสัญลักษณ์เงิน';
+          errors.push(`รายการ ${line} (${entry.date}): ${key} ต้องเป็น${rule} และอยู่ในช่วงที่คำนวณได้อย่างแม่นยำ`);
+          entry[key] = null;
+        } else entry[key] = number;
+      });
+      rows.push(entry);
+    });
+    rows.sort((left, right) => left.date.localeCompare(right.date));
+    if (!errors.length && rows.length > 1) {
+      const span = Math.round((Date.parse(rows.at(-1).date + 'T00:00:00Z') - Date.parse(rows[0].date + 'T00:00:00Z')) / 86400000) + 1;
+      if (span !== rows.length) warnings.push(`มี ${span - rows.length} วันที่ไม่มีแถวข้อมูลระหว่างวันแรกและวันล่าสุด สรุปเฉพาะ ${rows.length} วันที่อยู่ในไฟล์ ไม่เติมวันหายเป็นศูนย์`);
+    }
+    if (!errors.length) {
+      NUMERIC.filter(key => key !== 'pending').forEach(key => {
+        const factor = COUNTS.has(key) ? 1 : 100;
+        const total = rows.reduce((sum, row) => sum + (row[key] === null ? 0 : Math.round(row[key] * factor)), 0);
+        if (!Number.isSafeInteger(total)) errors.push(`ยอดรวม ${key} ใหญ่เกินช่วงที่ต้นแบบคำนวณได้อย่างแม่นยำ`);
+      });
+    }
+    return { rows, warnings, errors };
+  }
+  function summarize(rows) {
+    if (!rows.length) throw new Error('ไม่มีข้อมูลให้สรุป');
+    const sorted = [...rows].sort((left, right) => left.date.localeCompare(right.date));
+    const totals = {}, missing = {};
+    NUMERIC.filter(key => key !== 'pending').forEach(key => {
+      missing[key] = sorted.filter(row => row[key] === null).length;
+      const factor = COUNTS.has(key) ? 1 : 100;
+      totals[key] = missing[key] ? null : sorted.reduce((sum, row) => sum + Math.round(row[key] * factor), 0) / factor;
+    });
+    const latest = sorted.at(-1);
+    return {
+      count: sorted.length, firstDate: sorted[0].date, latestDate: latest.date, totals, missing,
+      netCash: totals.cash_in === null || totals.cash_out === null ? null : (Math.round(totals.cash_in * 100) - Math.round(totals.cash_out * 100)) / 100,
+      pending: latest.pending, missingCells: sorted.reduce((sum, row) => sum + NUMERIC.filter(key => row[key] === null).length, 0)
+    };
+  }
+  function analyzeCSV(text) {
+    if (new TextEncoder().encode(text).length > 1024 * 1024) return { rows: [], warnings: [], errors: ['ต้นแบบรับไฟล์ไม่เกิน 1 MB'], summary: null };
+    let result;
+    try { result = validateRows(parseCSV(text)); }
+    catch (error) { return { rows: [], warnings: [], errors: [error.message], summary: null }; }
+    return { ...result, summary: result.errors.length ? null : summarize(result.rows) };
+  }
+  const api = { HEADERS, LABELS, parseCSV, validDate, validateRows, summarize, analyzeCSV };
+  scope.DentDailyBrief = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof globalThis !== 'undefined' ? globalThis : window);
+
+</script>
+<script>
+'use strict';
+const DEMO_NORMAL = "date,inquiries,appointments,cash_in,cash_out,pending,note\n2026-09-01,12,5,12000,3500,4,ข้อมูลฝึกวันแรก\n2026-09-02,15,7,15000,4200,5,ข้อมูลฝึกจากแบบบันทึกด้วยมือ\n2026-09-03,9,4,9000,2800,3,\"ตรวจต้นทางก่อนสรุป, ข้อมูลสมมติ\"\n2026-09-04,18,8,18000,5000,6,ยอดนัดอาจมาจากคำถามวันก่อน\n2026-09-05,14,6,14000,3600,4,เงินรับไม่ใช่รายได้ทางบัญชีโดยอัตโนมัติ\n2026-09-06,20,9,20000,6100,7,งานค้างเป็นยอด ณ สิ้นวัน\n2026-09-07,10,5,10000,2900,2,ข้อมูลสมมติทั้งหมด\n";
+const DEMO_MISSING = "date,inquiries,appointments,cash_in,cash_out,pending,note\n2026-09-01,12,5,12000,3500,4,ข้อมูลฝึกวันแรก\n2026-09-02,15,7,15000,4200,5,ข้อมูลฝึกจากแบบบันทึกด้วยมือ\n2026-09-03,,4,9000,2800,3,\"ขาด inquiries, ช่องว่างไม่ใช่ศูนย์\"\n2026-09-04,18,8,18000,5000,6,ยอดนัดอาจมาจากคำถามวันก่อน\n2026-09-05,14,6,,3600,4,ขาด cash_in จึงยังสรุปกระแสเงินสดสุทธิไม่ได้\n2026-09-06,20,9,20000,6100,7,งานค้างเป็นยอด ณ สิ้นวัน\n2026-09-07,10,5,10000,2900,,ขาด pending ของวันล่าสุด ห้ามยกยอดวันก่อนมาแทน\n";
+const el = id => document.getElementById(id);
+const numberFormat = new Intl.NumberFormat('th-TH', { maximumFractionDigits: 2 });
+const dateFormat = new Intl.DateTimeFormat('th-TH', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const displayDate = date => dateFormat.format(new Date(date + 'T00:00:00Z'));
+let activeLoad = 0;
+function node(tag, text, className) { const item = document.createElement(tag); if (text !== undefined) item.textContent = text; if (className) item.className = className; return item; }
+function card(label, value, unit, detail, accent) {
+  const item = node('article', undefined, 'card' + (accent ? ' accent' : '') + (value === null ? ' missing' : ''));
+  item.append(node('div', label, 'card-label'));
+  const amount = node('div', value === null ? 'ข้อมูลไม่ครบ' : numberFormat.format(value), 'number');
+  if (value !== null) amount.append(node('span', unit, 'unit'));
+  item.append(amount, node('div', detail, 'card-detail'));
+  return item;
+}
+function showReport(text, name, mode) {
+  const result = DentDailyBrief.analyzeCSV(text);
+  el('sourceName').textContent = name;
+  el('sourceDescription').textContent = mode === 'upload' ? 'ไฟล์ที่ผู้เรียนเลือก · ใช้เฉพาะข้อมูลฝึกที่ไม่มีข้อมูลส่วนบุคคล' : 'ข้อมูลสมมติสำหรับการฝึก · ไม่ใช่ข้อมูลของ The Dent';
+  el('normalButton').setAttribute('aria-pressed', String(mode === 'normal'));
+  el('missingButton').setAttribute('aria-pressed', String(mode === 'missing'));
+  el('stats').replaceChildren(); el('tableBody').replaceChildren(); el('notice').replaceChildren();
+  el('notice').className = 'notice';
+  el('dataSection').classList.toggle('hidden', !!result.errors.length);
+  el('stats').classList.toggle('hidden', !!result.errors.length);
+  if (result.errors.length) {
+    el('dateRange').textContent = 'ยังไม่สรุปข้อมูล'; el('rowCount').textContent = '';
+    el('notice').classList.add('error');
+    el('notice').append(node('h2', 'ไฟล์ยังไม่ผ่านการตรวจ — กรุณาแก้ข้อมูลต้นทาง'));
+    const list = node('ul'); result.errors.slice(0, 20).forEach(error => list.append(node('li', error))); el('notice').append(list);
+    if (result.errors.length > 20) el('notice').append(node('p', `และอีก ${result.errors.length - 20} จุด กรุณาแก้โครงสร้างและข้อมูลก่อนลองใหม่`));
+    el('liveStatus').textContent = `ไฟล์ ${name} มีข้อผิดพลาด ${result.errors.length} จุด ยังไม่แสดงผลสรุป`;
+    return;
+  }
+  const summary = result.summary, totals = summary.totals;
+  el('dateRange').textContent = `${displayDate(summary.firstDate)} — ${displayDate(summary.latestDate)} · ${summary.count} วันที่มีข้อมูล`;
+  el('rowCount').textContent = `${summary.count} แถวข้อมูล`;
+  const totalDetail = field => summary.missing[field] ? `ขาดข้อมูล ${summary.missing[field]} จาก ${summary.count} วันในไฟล์` : `รวมเฉพาะ ${summary.count} วันที่อยู่ในไฟล์`;
+  el('stats').append(
+    card('ครั้งที่สอบถาม', totals.inquiries, 'ครั้ง', totalDetail('inquiries')),
+    card('นัดที่บันทึก', totals.appointments, 'นัด', totalDetail('appointments')),
+    card('งานค้างวันล่าสุด', summary.pending, 'งาน', `${displayDate(summary.latestDate)} · ใช้ยอดสิ้นวัน ไม่บวกรวม`, true),
+    card('เงินรับ', totals.cash_in, 'บาท', totalDetail('cash_in')),
+    card('เงินจ่าย', totals.cash_out, 'บาท', totalDetail('cash_out')),
+    card('กระแสเงินสดสุทธิ', summary.netCash, 'บาท', summary.netCash === null ? 'ต้องมีเงินรับและเงินจ่ายครบทุกแถวก่อน' : 'เงินรับ − เงินจ่าย · ไม่ใช่กำไร', true)
+  );
+  if (result.warnings.length) {
+    el('notice').append(node('h2', `พบเรื่องที่ต้องตรวจต่อ ${result.warnings.length} จุด`));
+    const list = node('ul'); result.warnings.slice(0, 20).forEach(warning => list.append(node('li', warning))); el('notice').append(list);
+    if (result.warnings.length > 20) el('notice').append(node('p', `และอีก ${result.warnings.length - 20} จุด ตรวจช่องที่ระบุว่าไม่มีข้อมูลในตาราง`));
+  } else {
+    el('notice').classList.add('ok');
+    el('notice').append(node('h2', 'ข้อมูลครบตามกติกาของต้นแบบ'), node('p', 'ยังต้องตรวจความถูกต้องกับต้นทาง การอ่านไฟล์ผ่านไม่ได้ยืนยันว่าตัวเลขจริงถูกต้อง'));
+  }
+  const fragment = document.createDocumentFragment();
+  result.rows.forEach(row => {
+    const tr = node('tr');
+    tr.append(node('td', row.date));
+    ['inquiries', 'appointments', 'cash_in', 'cash_out', 'pending'].forEach(field => {
+      const td = node('td');
+      td.append(row[field] === null ? node('span', 'ไม่มีข้อมูล', 'empty-value') : document.createTextNode(numberFormat.format(row[field])));
+      tr.append(td);
+    });
+    tr.append(node('td', row.note || '—')); fragment.append(tr);
+  });
+  el('tableBody').append(fragment);
+  el('liveStatus').textContent = `โหลด ${name} แล้ว ${summary.count} แถว พบ ${result.warnings.length} คำเตือน`;
+}
+function demo(mode) { activeLoad++; el('fileInput').value = ''; showReport(mode === 'normal' ? DEMO_NORMAL : DEMO_MISSING, mode === 'normal' ? 'daily-normal.csv · ชุดฝึกปกติ' : 'daily-missing.csv · ชุดฝึกข้อมูลขาด', mode); }
+el('normalButton').addEventListener('click', () => demo('normal'));
+el('missingButton').addEventListener('click', () => demo('missing'));
+el('fileInput').addEventListener('change', async event => {
+  const file = event.target.files[0]; if (!file) return;
+  const loadId = ++activeLoad;
+  if (file.size > 1024 * 1024) { showReport('', file.name, 'upload'); el('notice').replaceChildren(node('h2', 'ไฟล์ใหญ่เกิน 1 MB'), node('p', 'เลือกไฟล์ฝึกที่มีขนาดเล็กลงแล้วลองใหม่')); el('liveStatus').textContent = 'ไฟล์ใหญ่เกิน 1 MB'; return; }
+  try {
+    const bytes = await file.arrayBuffer();
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    if (loadId !== activeLoad) return;
+    showReport(text, file.name, 'upload');
+  } catch (error) {
+    if (loadId !== activeLoad) return;
+    showReport('', file.name, 'upload');
+    el('notice').replaceChildren(node('h2', 'อ่านไฟล์ไม่ได้'), node('p', 'กรุณาบันทึกเป็น CSV UTF-8 แล้วเลือกใหม่'));
+    el('liveStatus').textContent = 'อ่านไฟล์ไม่ได้ กรุณาใช้ CSV UTF-8';
+  }
+});
+demo('normal');
+</script>
+</body>
+</html>
