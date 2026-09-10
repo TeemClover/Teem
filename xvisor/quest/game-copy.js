@@ -30,7 +30,7 @@ function practiceContent(state, day) {
     eyebrow: `ช่วงฝึก · วันที่ ${day}`,
     title: isDay7 ? "ลองฟังให้เข้าใจ" : "ถ้าเขามาปรึกษาคุณ",
     reason: "เลือกคำตอบที่คุณอยากลอง แล้วดูผลด้วยกัน",
-    speaker: isDay7 ? "เอโกะ" : "ลูกค้าในเกม",
+    speaker: isDay7 ? "เอโกะ" : "ลูกค้า",
     dialogue: isDay7 ? "นอนน้อยลงมาหลายวันแล้ว คุณจะเริ่มคุยอย่างไร?" : "“ช่วงนี้เราเหนื่อยมาก แต่ข้อมูลก็ดูแปลก ๆ” คุณจะตอบอย่างไร?",
     quiz: {
       choices,
@@ -167,7 +167,7 @@ function eventSceneContent(state) {
     },
     [STAGES.ADS_RUNNING]: {
       scene: "ads_running",
-      eyebrow: "ประชาสัมพันธ์ในเกม",
+      eyebrow: "ชวนคนใหม่มารู้จักกัน",
       title: "คนใหม่เริ่มเข้ามา",
       reason: "ติดตามคนที่สนใจได้จากรายชื่อ",
       speaker: "ทีม",
@@ -221,7 +221,7 @@ function eventSceneContent(state) {
       dialogue: `TGV ${Number(report.tgv || state.organization.tgv).toLocaleString("th-TH")} · รายได้รวม ฿${Number(report.totalIncome || state.economy.totalIncome).toLocaleString("th-TH")}`,
       status: "xgen",
       milestone: "XGEN · ดูแลทั้งองค์กร",
-      actions: [action("เล่นต่อ ▶", EVENTS.START_NEXT_MONTH, { icon: "play" })]
+      actions: [action("เดินทางต่อ ▶", EVENTS.START_NEXT_MONTH, { icon: "play" })]
     }
   };
   scenes[STAGES.CENTER_RUNNING] = scenes[STAGES.XCADEMY_RUNNING];
@@ -246,20 +246,20 @@ function getStageContent(state) {
       progress: 0,
       eyebrow: "เรื่องของคุณกำลังเริ่ม",
       title: "เริ่มดูแลคนแรกไปด้วยกัน",
-      reason: "ลองเป็น X-VISOR ช่วยให้คนดูแลตัวเองได้ ตลอด 24 เดือนจำลอง",
+      reason: "เริ่มเส้นทาง X-VISOR ดูแลคนแรกและค่อย ๆ เติบโตไปตลอด 24 เดือน",
       speaker: "ทีม",
-      dialogue: "ผมทีม จะช่วยพาลองทีละอย่างนะ วันในเกมผ่านได้ทันที ไม่ต้องมีอุปกรณ์หรือซื้ออะไรก่อนเล่น",
+      dialogue: "ผมทีม จะช่วยพาลองทีละอย่างนะ เริ่มจากดูแลตัวเอง แล้วค่อยไปพบคนแรกด้วยกัน",
       actions: [action("ลองไปด้วยกัน", EVENTS.START_PATH, { icon: "play" })]
     },
     [STAGES.PRE_DAY0_BAND]: {
       scene: "pre_band",
       progress: 3,
       eyebrow: "ช่วงฝึก · วันเริ่มต้น",
-      title: "ลองสวมสายรัดในเกม",
+      title: "เริ่มจากสวมสายรัด",
       reason: "มาดูการขยับระหว่างวัน",
       speaker: "ทีม",
       dialogue: "Xircle Band ช่วยสะท้อนสิ่งที่ทำระหว่างวัน ไม่ได้วัดอาหารที่เรากิน",
-      actions: [action("สวมสายรัดในเกม", EVENTS.WEAR_BAND, { icon: "band" })],
+      actions: [action("สวมสายรัด", EVENTS.WEAR_BAND, { icon: "band" })],
       deepLinks: [links[0]]
     },
     [STAGES.PRE_DAY0_SCALE]: {
@@ -267,10 +267,10 @@ function getStageContent(state) {
       progress: 5,
       eyebrow: "ช่วงฝึก · วันเริ่มต้น",
       title: "เก็บข้อมูลครั้งแรก",
-      reason: "เก็บไว้เทียบเมื่อวันในเกมผ่านไป",
+      reason: "เก็บจุดเริ่มต้นไว้ กลับมาเทียบกันอีกครั้ง",
       speaker: "ทีม",
       dialogue: "Xircle Scale ช่วยดูแนวโน้มร่างกาย เราจะเก็บจุดเริ่มต้นไว้ก่อน",
-      actions: [action("ลองวัดในเกม", EVENTS.START_SELF_SCALE, { icon: "scale" })]
+      actions: [action("วัดข้อมูลเริ่มต้น", EVENTS.START_SELF_SCALE, { icon: "scale" })]
     },
     [STAGES.PRE_DAY0_SCANNING]: {
       scene: "pre_scanning",
@@ -298,9 +298,9 @@ function getStageContent(state) {
     [STAGES.PRE_MONTAGE]: {
       scene: "pre_montage",
       progress: Math.max(10, state.energy * 1.25),
-      eyebrow: "ช่วงฝึก · วันจำลอง",
+      eyebrow: "ดูแลตัวเองทีละวัน",
       title: "ทำสิ่งที่เลือกให้เกิดซ้ำ",
-      reason: "ดูวันในเกมผ่านไป โดยไม่ต้องรอวันจริง",
+      reason: "เก็บสิ่งเล็ก ๆ ที่ทำต่อเนื่อง แล้วกลับมาดูด้วยกัน",
       speaker: "ทีม",
       dialogue: "เริ่มทีละอย่าง แล้วลองทำต่อให้เข้ากับชีวิต",
       status: "montage",
@@ -343,7 +343,7 @@ function getStageContent(state) {
     [STAGES.PRE_DAY14_REVIEW]: {
       scene: "pre_day14_review",
       progress: 29,
-      eyebrow: "ผลจำลอง · วันที่ 14",
+      eyebrow: "ทบทวนวันที่ 14",
       title: "น้ำหนักเท่าเดิม ก็มีเรื่องให้ดู",
       reason: "อ่านหลายค่าประกอบกันเพื่อดูแนวโน้ม",
       speaker: "ทีม",
@@ -402,19 +402,19 @@ function getStageContent(state) {
       progress: 54,
       eyebrow: "ผลทดสอบ",
       title: passed === 5 ? "ผ่านครบ 5 / 5" : `ผ่านแล้ว ${passed} / 5`,
-      reason: passed === 5 ? "พร้อมนำสิ่งที่เรียนไปใช้ในเกม" : `ทบทวนอีก ${5 - passed} ข้อที่ยังไม่เข้าใจ`,
+      reason: passed === 5 ? "พร้อมนำสิ่งที่เรียนไปดูแลคนแรก" : `ทบทวนอีก ${5 - passed} ข้อที่ยังไม่เข้าใจ`,
       speaker: "ทีม",
       dialogue: passed === 5 ? "ไปพบคนแรกด้วยกันนะ" : "ยังไม่เข้าใจตรงไหน เราค่อยลองกันใหม่",
-      actions: passed === 5 ? [action("รับใบรับรองในเกม", EVENTS.COMPLETE_CERTIFICATION, { icon: "certificate" })] : [action("ทบทวนข้อที่ยังไม่ผ่าน", EVENTS.START_REPAIRS, { icon: "repair" })]
+      actions: passed === 5 ? [action("รับใบรับรอง", EVENTS.COMPLETE_CERTIFICATION, { icon: "certificate" })] : [action("ทบทวนข้อที่ยังไม่ผ่าน", EVENTS.START_REPAIRS, { icon: "repair" })]
     },
     [STAGES.CERTIFICATION_CEREMONY]: {
       scene: "ceremony",
       progress: 58,
       eyebrow: "ผ่านการฝึกแล้ว",
-      title: "เป็น X-VISOR ในเกมแล้ว",
+      title: "เริ่มเส้นทาง X-VISOR แล้ว",
       reason: "ลองใช้สิ่งที่เรียนกับคนแรก",
       speaker: "Xcademy",
-      dialogue: "รับใบรับรองในเกม แล้วไปเริ่มเรื่องของคุณกัน",
+      dialogue: "รับใบรับรอง แล้วไปเริ่มเรื่องของคุณกัน",
       status: "ceremony",
       actions: []
     },
@@ -509,7 +509,7 @@ function getStageContent(state) {
       title: `${name}เลือกเริ่ม RoutineX`,
       reason: "รายการขายจบแล้ว แต่งานดูแลเพิ่งเริ่ม",
       speaker: "ทีม",
-      dialogue: "นี่เป็นยอดจำลองในเกม เก็บไว้ดูว่าการดูแลต่อจะสร้างอะไรขึ้นอีก",
+      dialogue: "เขาเลือกเริ่มแล้ว เก็บยอดแรกไว้ แล้วดูแลกันต่อให้ดีนะ",
       receipt: transaction,
       milestone: "ลูกค้าคนแรก",
       actions: [action("ดูแลต่อ", EVENTS.CLOSE_RECEIPT, { icon: "care" })]
@@ -592,7 +592,7 @@ function getStageContent(state) {
       progress: 87,
       eyebrow: "เตรียมสมาชิกใหม่",
       title: `ช่วย${name}เตรียมเป็น X-VISOR`,
-      reason: "ช่วยเขาฝึกและผ่านการรับรองในเกม",
+      reason: "ช่วยเขาฝึกดูแลคน แล้วเตรียมรับการรับรอง",
       speaker: "ทีม",
       dialogue: "การพัฒนาคนคือทำให้เขาทำได้เอง ไม่ใช่แค่เพิ่มชื่อในทีม",
       actions: [action("ช่วยเขาเตรียมเป็น X-VISOR", EVENTS.PREPARE_G1, { icon: "team", cost: 3 })]
@@ -654,7 +654,7 @@ function getStageContent(state) {
   return { actions: [], progress: 0, eyebrow: "X-VISOR QUEST", ...copy[state.stage] };
 }
 var TERM_HELP = Object.freeze({
-  XV: "XV เป็นหน่วยผลงานในเกม ไม่ใช่เงินบาท ส่วน TGV คือ XV รวมของทั้งองค์กรในเดือนนั้น",
+  XV: "XV คือหน่วยผลงาน ส่วน TGV คือ XV รวมของทั้งองค์กรในเดือนนั้น",
   ENERGY: `พลังงานคือเวลาทำงานในเดือนนี้ มี ${MAX_ENERGY} แต้ม งานที่ทีมทำเองไม่หักพลังงานของคุณ`,
   XIRCLE: "สายรัดช่วยดูสิ่งที่ทำ เครื่องชั่งช่วยดูแนวโน้มร่างกาย ใช้ข้อมูลมาคุยและเลือกสิ่งที่จะทำต่อ",
   XOS: "รายการแนะนำว่าวันนี้ควรดูแลใครก่อน คุณเลือกทางอื่นได้เสมอ"
@@ -692,7 +692,7 @@ function getStageContent2(state) {
       reason: "พักมาพบกัน แล้วเติมแรงกลับไปดูแลคนต่อ",
       speaker: "ทีม",
       dialogue: `นัดปีนี้: ${XIRCLE_MONTHS.map((month) => `เดือน ${month}`).join(" · ")}`,
-      facts: [["ชวนใคร", "คนที่พร้อมมาพบและเรียนรู้กับทีม"], ["ผลในเกม", "เพิ่มแรงส่งในการทำงาน 2 เดือน"]],
+      facts: [["ชวนใคร", "คนที่พร้อมมาพบและเรียนรู้กับทีม"], ["สิ่งที่ได้กลับไป", "เติมแรงให้ทีมทำงานต่ออีก 2 เดือน"]],
       actions: getBestNextActions2(state, 3)
     };
   }
@@ -738,7 +738,7 @@ function getStageContent2(state) {
       scene: "season_review",
       eyebrow: "สรุปปีแรก · เดือน 12",
       title: "เก็บผลงานปีแรกไว้",
-      reason: "คะแนนช่วงนี้บันทึกแล้ว เล่นต่อปีที่สองได้",
+      reason: "บันทึกผลงานปีแรกแล้ว พร้อมก้าวสู่ปีที่สอง",
       speaker: "ทีม",
       dialogue: "ปีต่อไปลองดูว่าลูกค้าและทีมจะเดินต่ออย่างไร",
       facts: [
@@ -747,7 +747,7 @@ function getStageContent2(state) {
         ["💎 สูงสุด/เดือน", `฿${Number(score.bestMonthlyIncome || 0).toLocaleString("th-TH")}`],
         ["🏙️ คนในองค์กร", `${Number(score.organizationSize || 0).toLocaleString("th-TH")} คน`]
       ],
-      actions: [{ label: "▶ เล่นต่อปีที่ 2", event: EVENTS2.START_NEXT_MONTH, icon: "play" }]
+      actions: [{ label: "▶ ก้าวสู่ปีที่ 2", event: EVENTS2.START_NEXT_MONTH, icon: "play" }]
     };
   }
   return base;
@@ -868,7 +868,7 @@ function getStageContent3(state) {
       progress: 100,
       eyebrow: "สรุปปีแรก · เดือน 12",
       title: "12 เดือนแรกจบแล้ว",
-      reason: "ใส่ชื่อเก็บคะแนนปีแรก แล้วไปต่อถึงเดือน 24",
+      reason: "ใส่ชื่อเก็บผลงานปีแรก แล้วไปต่อถึงเดือน 24",
       speaker: "ทีม",
       dialogue: state.campaignOutcome?.xgenByMonth12 ? "ปีที่สองเดินต่อในเส้นทาง XGEN" : "ปีที่สองเดินต่อในเส้นทาง XLEAD ลองดูสิ่งที่ลูกค้าและทีมช่วยสร้าง",
       facts: [
@@ -879,7 +879,7 @@ function getStageContent3(state) {
       ],
       management: null,
       monthSummary: null,
-      actions: [{ label: "🏆 ใส่ชื่อเก็บคะแนน", ui: "v9-finale", icon: "certificate" }]
+      actions: [{ label: "🏆 ใส่ชื่อเก็บผลงาน", ui: "v9-finale", icon: "certificate" }]
     });
   }
   const economy = calculateEconomy3(state);

@@ -21,17 +21,17 @@ function tutorialRoutine() {
   return state;
 }
 
-test('opening states the player role, introduces Teem and removes any real-device prerequisite', () => {
+test('opening introduces Teem and the path to caring for the first customer', () => {
   const state = makeInitialState({ seed: 17 });
   const content = getStageContent(state);
   const story = getStoryBeat(state, content);
   assert.match(content.title, /ดูแลคนแรก/);
-  assert.match(content.reason, /X-VISOR.*24 เดือนจำลอง/);
+  assert.match(content.reason, /X-VISOR.*24 เดือน/);
   assert.equal(story.speaker, 'ทีม');
   assert.equal(story.portrait, 'teem');
   assert.match(story.line, /ผมทีม/);
-  assert.match(story.tip, /วันในเกมผ่านได้ทันที/);
-  assert.match(story.tip, /ไม่ต้องมีอุปกรณ์หรือซื้ออะไรก่อนเล่น/);
+  assert.match(story.tip, /เริ่มจากดูแลตัวเอง/);
+  assert.match(story.tip, /ไปพบคนแรกด้วยกัน/);
   assert.equal(content.actions.length, 1);
   assert.equal(content.actions[0].event, EVENTS.START_PATH);
   assert.notEqual(content.title, story.line);
@@ -82,7 +82,7 @@ test('actual practice and exam copy distinguishes Ako, customer and teacher with
   const initial = makeInitialState({ seed: 17 });
   for (const [stage, speaker, portrait] of [
     [STAGES.PRE_DAY7_PRACTICE, 'เอโกะ', 'ako'],
-    [STAGES.PRE_DAY21_CARE, 'ลูกค้าในเกม', 'customer'],
+    [STAGES.PRE_DAY21_CARE, 'ลูกค้า', 'customer'],
   ]) {
     const state = { ...initial, stage };
     const content = getStageContent(state);

@@ -331,7 +331,7 @@ function renderHud() {
   const exam = isExamStage(state.stage);
   const preseason = state.month === 0 && !exam && state.stage !== STAGES.CERTIFIED;
   const visibleEnergy = state.stage === STAGES.PRE_MONTAGE ? montageVisualDay : state.energy;
-  $("#hudPhaseLabel").textContent = preseason ? "ช่วงการเรียนรู้" : exam ? "สถานที่" : "เวลาในเกม";
+  $("#hudPhaseLabel").textContent = preseason ? "ช่วงการเรียนรู้" : exam ? "สถานที่" : "ช่วงเวลา";
   $("#hudMonth").textContent = preseason ? `DAY ${state.preseason.day} / 28` : exam ? "EXAM ROOM" : state.stage === STAGES.CERTIFIED ? "CERTIFIED" : `เดือน ${state.month}`;
   $("#hudEnergyLabel").innerHTML = `${preseason ? "ความพร้อม 28 วัน" : "พลังงานในเดือนนี้"} <b aria-hidden="true">?</b>`;
   $("#hudEnergy").textContent = `⚡ ${visibleEnergy} / ${MAX_ENERGY}`;
@@ -859,7 +859,7 @@ function closeDialog() {
 function showReceipt(transaction) {
   showDialog("receipt", `<div class="dialog-kicker">SALE RECEIPT · ${escapeHtml(commercialStatusLabel(transaction.status))}</div>
     <h2>XV และรายได้เป็นคนละตัวเลข</h2><div id="dialogReceipt"></div>
-    <p class="dialog-note">ตัวเลขนี้เป็นแบบจำลองในเกม ไม่ใช่ราคา ขั้นคุณสมบัติ หรือการรับประกันรายได้จริง</p>
+    <p class="dialog-note">ตัวเลขนี้ใช้ประกอบการเรียนรู้ ไม่ใช่ราคา ขั้นคุณสมบัติ หรือการรับประกันรายได้จริง</p>
     <button class="dialog-button" type="button" data-dialog-action="close">กลับไปดูแลงานต่อ</button>`, { kind: "celebrate" });
   renderReceipt($("#dialogReceipt"), transaction);
 }
@@ -887,10 +887,10 @@ function showSkills() {
       ${workButton(skill.definition.practice, EVENTS.TRAIN_SKILL, { skill: id, cost: 1, detail: "+2 XP · งานเดิมคุ้มขึ้น" })}</article>`;
   }).join("");
   const xlead = progress.criteria.map((item) => `<li class="${item.current >= item.target ? "is-done" : ""}"><span>${escapeHtml(item.label)}</span><b>${item.current} / ${item.target}</b></li>`).join("");
-  showDialog("skills", `<div class="dialog-kicker">⭐ ${state.rank === "xgen" ? "XGEN" : state.rank === "xlead" ? "XLEAD" : "X-VISOR"} Lv.${snapshot.playerLevel}</div><h2>ความเก่งของคุณ</h2><p class="dialog-note">ลงทุน 1 ⚡ เพื่อเปลี่ยนวิธีเล่น เมื่อถึง Lv.10 ลูกค้าและทีมจะทำงานปกติเอง คุณดูเฉพาะเรื่องสำคัญ</p>
+  showDialog("skills", `<div class="dialog-kicker">⭐ ${state.rank === "xgen" ? "XGEN" : state.rank === "xlead" ? "XLEAD" : "X-VISOR"} Lv.${snapshot.playerLevel}</div><h2>ความเก่งของคุณ</h2><p class="dialog-note">ลงทุน 1 ⚡ เพื่อพัฒนาวิธีทำงาน เมื่อถึง Lv.10 ลูกค้าและทีมจะทำงานปกติเอง คุณดูเฉพาะเรื่องสำคัญ</p>
     <div class="skill-grid">${cards}</div>
-    <section class="xlead-progress"><h3>เส้นทาง XLEAD ในเกม</h3><ul>${xlead}</ul><small>${escapeHtml(progress.note)}</small></section>
-    <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`, { kind: "wide" });
+    <section class="xlead-progress"><h3>เส้นทาง XLEAD</h3><ul>${xlead}</ul><small>${escapeHtml(progress.note)}</small></section>
+    <button class="dialog-button" type="button" data-dialog-action="close">กลับไปทำงาน</button>`, { kind: "wide" });
 }
 function showWorkMenu() {
   if (!content.management || state.organizationMode) return;
@@ -905,7 +905,7 @@ function showWorkMenu() {
       ${workButton("ทำความรู้จักคนใหม่", EVENTS.CREATE_LEAD, { source: "known", cost: 1, detail: "ได้ 1 คน · ต้องทักและคุยก่อน Sale" })}
       ${workButton("ทำคอนเทนต์", EVENTS.CREATE_LEAD, { source: "content", cost: 1, disabled: contentLocked, detail: contentLocked ? "เปิดที่ X-VISOR Lv.2" : "เล่าเรื่องให้คนสนใจ แล้วชวนมาคุย" })}
       ${workButton("เปิด Live · คุยพร้อมกัน", EVENTS.RUN_LIVE, { cost: live.cost, disabled: !live.available, detail: live.available ? `มีคนพร้อม ${live.eligibleCount} คน · คุยได้ครั้งละ ${live.capacity} คน` : live.reason })}
-      ${workButton("ยิง Ads จำลอง", EVENTS.CREATE_LEAD, { source: "ads", cost: 1, disabled: adsLocked, detail: adsLocked ? "เปิดที่ X-VISOR Lv.4" : `Budget จำลอง ${formatBaht(ADS_GAMEPLAY_CONFIG.budgetPerCampaign)} แยกจากรายได้` })}</div></section>
+      ${workButton("ทำโฆษณา", EVENTS.CREATE_LEAD, { source: "ads", cost: 1, disabled: adsLocked, detail: adsLocked ? "เปิดที่ X-VISOR Lv.4" : `งบแคมเปญ ${formatBaht(ADS_GAMEPLAY_CONFIG.budgetPerCampaign)} แยกจากรายได้` })}</div></section>
     <section class="work-section"><h3>ฝึกให้ 1 ⚡ คุ้มขึ้น</h3><div class="work-grid">${training}</div></section>
     <section class="work-section"><h3>🎓 Batch และทีม</h3><div class="work-grid">${mentors}
       ${workButton(`Xcademy · ครั้ง ${Number(state.monthStats.xcademySessions || 0) + 1}/4`, EVENTS.RUN_XCADEMY, { cost: 2, disabled: Number(state.monthStats.xcademySessions || 0) >= 4, detail: Number(state.monthStats.xcademySessions || 0) >= 4 ? "ครบ 4 ครั้งเดือนนี้" : "OPP + Training · เลือกคนที่เหมาะสมอัตโนมัติ" })}

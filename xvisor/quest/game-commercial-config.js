@@ -119,7 +119,7 @@ function canRenderOfficialCommercialValue(item) {
 }
 function commercialStatusLabel(status) {
   if (status === COMMERCIAL_STATUS.CONFIRMED) return "ยืนยันแล้ว";
-  if (status === COMMERCIAL_STATUS.SIMULATION) return "ตัวเลขจำลองในเกม";
+  if (status === COMMERCIAL_STATUS.SIMULATION) return "ตัวเลขตัวอย่าง";
   if (status === COMMERCIAL_STATUS.NOT_FOR_SALE) return "ไม่มีขาย";
   return "TO_CONFIRM · รอยืนยัน";
 }

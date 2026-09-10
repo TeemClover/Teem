@@ -188,12 +188,12 @@ try {
   const { chromium } = await import(path.isAbsolute(moduleName) ? pathToFileURL(moduleName).href : moduleName);
   browser = await chromium.launch({ headless: true, ...(process.env.XVISOR_CHROME ? { executablePath: process.env.XVISOR_CHROME } : {}) });
 
-  await check('Opening introduces Team and simulated time with a painted portrait and world', async () => {
+  await check('Opening introduces Team and the first step with a painted portrait and world', async () => {
     await load(makeInitialState({ seed: 17 }));
     assert.equal((await state()).stage, STAGES.OPENING);
     assert.equal(await page.locator('#storyCard').getAttribute('data-speaker'), 'teem');
     assert.match(await page.locator('#dialogueSpeaker').textContent(), /ทีม/);
-    assert.match(await page.locator('#storyTip').textContent(), /วันในเกมผ่านได้ทันที.*ไม่ต้องมีอุปกรณ์/);
+    assert.match(await page.locator('#storyTip').textContent(), /เริ่มจากดูแลตัวเอง.*พบคนแรก/);
     await canvasPainted('#worldCanvas');
     await canvasPainted('#storyPortrait');
     await capture('opening-teem');

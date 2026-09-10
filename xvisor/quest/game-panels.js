@@ -27,7 +27,7 @@ export function monthGrowthHtml(state, month, compareMonth = Number(month) - 1, 
   if (!comparison.current) return "";
   const entry = comparison.current;
   const metricCards = comparison.metrics.slice(0, 5).map(metric => `<div class="growth-metric" data-metric="${metric.key}" data-trend="${metric.trend}"><span>${metric.label}</span><strong>${growthValue(metric.value, metric.unit)}</strong>${!historyLink && comparison.previous ? `<span class="growth-baseline">เดือน ${comparison.previous.month}: ${growthValue(metric.baseline, metric.unit)}</span>` : ""}<small>${growthChange(metric, comparison.compareMonth)}</small></div>`).join("");
-  return `<section class="growth-summary" aria-label="สรุปการเปลี่ยนแปลงเดือน ${entry.month}"><div class="growth-summary__heading"><div><span>MONTH ${entry.month} · ${entry.posted ? "ปิดยอดแล้ว" : "บันทึกเดิม"}</span><h3>${comparison.previous ? `เทียบเดือน ${comparison.previous.month}` : "สิ่งที่เกิดขึ้นในเดือนนี้"}</h3></div>${historyLink ? `<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${entry.month}">ดูประวัติและเทียบเดือน</button>` : ""}</div><div class="growth-grid">${metricCards}</div>${incomeContributionHtml(entry)}<p class="growth-summary__note">${entry.customerScope === "organization" ? "ปี 2 นับลูกค้าและทีมทั้งองค์กร" : entry.teamScope === "legacy-team" ? "ปีแรกแสดงขนาดทีมตามบันทึกเดิม" : "ปีแรกนับลูกค้าของคุณและทีมโดยตรง"} · ลูกค้าใช้ต่อหมายถึงคนที่ซื้อรอบใหม่ในเดือนนั้น ${entry.reorders !== null && entry.repeatCustomers === null ? `· บันทึกเดิมมี ${growthNumber(entry.reorders)} รายการซื้อซ้ำ แต่ไม่ระบุจำนวนคน` : ""} · ผลลัพธ์มีทั้งเพิ่ม ลด และคงเดิมตามสิ่งที่เกิดขึ้นในเกม</p></section>`;
+  return `<section class="growth-summary" aria-label="สรุปการเปลี่ยนแปลงเดือน ${entry.month}"><div class="growth-summary__heading"><div><span>MONTH ${entry.month} · ${entry.posted ? "ปิดยอดแล้ว" : "บันทึกเดิม"}</span><h3>${comparison.previous ? `เทียบเดือน ${comparison.previous.month}` : "สิ่งที่เกิดขึ้นในเดือนนี้"}</h3></div>${historyLink ? `<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${entry.month}">ดูประวัติและเทียบเดือน</button>` : ""}</div><div class="growth-grid">${metricCards}</div>${incomeContributionHtml(entry)}<p class="growth-summary__note">${entry.customerScope === "organization" ? "ปี 2 นับลูกค้าและทีมทั้งองค์กร" : entry.teamScope === "legacy-team" ? "ปีแรกแสดงขนาดทีมตามบันทึกเดิม" : "ปีแรกนับลูกค้าของคุณและทีมโดยตรง"} · ลูกค้าใช้ต่อหมายถึงคนที่ซื้อรอบใหม่ในเดือนนั้น ${entry.reorders !== null && entry.repeatCustomers === null ? `· บันทึกเดิมมี ${growthNumber(entry.reorders)} รายการซื้อซ้ำ แต่ไม่ระบุจำนวนคน` : ""} · ผลลัพธ์มีทั้งเพิ่ม ลด และคงเดิมตามสิ่งที่เกิดขึ้นในแต่ละเดือน</p></section>`;
 }
 
 export function focusDialogStart(dialog) {
@@ -113,7 +113,7 @@ function originLabel(person) {
   const origin = person.origin || {};
   if (origin.sourceName) return origin.sourceName;
   const source = origin.sourceType || person.source;
-  return { known: "คนที่คุณรู้จัก", referral: "Referral", content: "Content", ads: "Ads", event: "Open House / Event", team: "ทีมพามา", tutorial: "Month 1" }[source] || "Journey ในเกม";
+  return { known: "คนที่คุณรู้จัก", referral: "Referral", content: "Content", ads: "Ads", event: "Open House / Event", team: "ทีมพามา", tutorial: "Month 1" }[source] || "เส้นทางของเรา";
 }
 function peopleRows(state2) {
   const rows = [
@@ -251,7 +251,7 @@ function renderIncome(selectedMonth = null, compareMonth = null, { live = false 
       <div class="income-history-columns" aria-hidden="true"><span>เดือน / ช่องทางที่มีรายได้</span><span>① ลูกค้า</span><span>② Direct G1</span><span>③ Organization</span><span>รวม</span></div><div class="income-history-cards">${historyCards || '<p class="work-empty">ปิดเดือนแรกเพื่อเริ่มบันทึกรายได้และการเติบโต</p>'}</div>
       <details class="income-trend"><summary>ดูกราฟเส้นทางเดือน 1–24</summary><p class="dialog-note">แตะเดือนที่ปิดแล้วเพื่อเทียบผล · ความสูงแสดงรายได้</p><div class="history-timeline" aria-label="ประวัติรายได้ 24 เดือน">${timeline}</div></details>
       ${entry ? `<details class="income-growth-more"><summary>ดูการเติบโตของลูกค้าและทีม · เดือน ${entry.month}</summary>${monthGrowthHtml(current, entry.month, incomeCompareMonth, { historyLink: false })}</details>` : ""}
-    </section><p class="dialog-note">ตัวเลขมาจากบันทึกในเกมและไม่รับประกันรายได้จริง ข้อมูลเก่าที่ไม่เคยเก็บจะแสดง “ไม่เคยบันทึก”</p>`, "wide", "income");
+    </section><p class="dialog-note">ตัวเลขมาจากบันทึกแต่ละเดือนและไม่รับประกันรายได้จริง ข้อมูลเก่าที่ไม่เคยเก็บจะแสดง “ไม่เคยบันทึก”</p>`, "wide", "income");
 }
 
 function renderTgvHelp() {
@@ -818,7 +818,7 @@ function campaignGateHtml(state2, status = "") {
   return `${campaignScoreDetails(state2)}
     <div class="v1-score-required">
       <strong>ขั้นสุดท้ายของปีแรก</strong>
-      <p>ใส่ชื่ออะไรก็ได้เพื่อขึ้น High Score ก่อน แล้วเกมจะเปิด Year 2 ให้ทันที</p>
+      <p>ใส่ชื่ออะไรก็ได้เพื่อขึ้น High Score ก่อน แล้วไปต่อปีที่ 2 ได้ทันที</p>
       <label class="v9-score-name">ชื่อบน High Score <input type="text" maxlength="28" autocomplete="nickname" data-v1b-score-name placeholder="เช่น Teem / Ako / แมวขาว"></label>
       <p class="dialog-note" data-v1b-score-status>${escapeHtml2(status || "ยังไปต่อไม่ได้จนกว่าจะบันทึกชื่อ High Score")}</p>
       <button class="dialog-button" type="button" data-v1b-submit-score>🏆 บันทึกชื่อขึ้น High Score</button>

@@ -383,7 +383,7 @@ function getXleadProgress(state) {
   return {
     criteria,
     complete: criteria.every((item) => item.current >= item.target),
-    note: "เกณฑ์จำลองเพื่อการเล่นเกม ไม่ใช่เกณฑ์คุณสมบัติ XLEAD อย่างเป็นทางการ"
+    note: "เกณฑ์ตัวอย่างสำหรับเส้นทางนี้ ไม่ใช่คุณสมบัติ XLEAD อย่างเป็นทางการ"
   };
 }
 function evaluateXlead(state) {
@@ -396,7 +396,7 @@ function evaluateXlead(state) {
     career: { ...state.career, xleadAtMonth: state.month },
     organization: { ...state.organization, mapUnlocked: true },
     milestones: { ...state.milestones, firstXlead: true },
-    lastMessage: "คุณก้าวสู่ XLEAD ในเกม เพราะทีมเริ่มสร้างผลลัพธ์และพัฒนาคนต่อได้"
+    lastMessage: "คุณก้าวสู่ XLEAD เพราะทีมเริ่มสร้างผลลัพธ์และพัฒนาคนต่อได้"
   };
 }
 function directMentoringAvailable() {

@@ -49,7 +49,7 @@ test selectors and test saves remain in `tests/xvisor/`, outside player routes.
 ## Data and release contracts
 
 Display version is `2.0`; the complete runtime import map and CSS use
-`2.0-retention1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
+`2.0-immersion1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
 when integrating. Browser module filenames remain canonical.
 
 Keep `SAVE_KEY = xvisorQuestContinueV4`, save schema 6, `SCORE_VERSION = 1.0b`
@@ -203,3 +203,14 @@ offer checks, and 6 loading checks. Browser checks use isolated saves and block
 API writes; new results fit 1440, 390 and 320px, including reduced motion.
 Proof: `/tmp/xvisor-retention-proof`, `/tmp/xvisor-retention-regression`,
 `/tmp/xvisor-retention-v2-scenes`, and `/tmp/xvisor-retention-loading`.
+
+## Immersive copy — 2.0-immersion1
+
+Dialogue, action labels and interface copy now address the player's journey
+directly, without repeated “ในเกม”, simulated-day or simulated-world reminders.
+Teem introduces the first step, customers speak as customers, and progression
+messages celebrate the work. Income caveats remain concise in the footer and
+financial details. This is a copy-only update with unchanged gameplay, saves,
+scores and economics. The landing page and complete runtime graph use the updated
+copy. Verification: 142 unit checks, 10 story-flow browser checks and 6 loading
+checks passed. Proof: `/tmp/xvisor-immersion-{story,loading}`.

@@ -611,7 +611,7 @@ function drawScene(time) {
     drawRoom(exam ? "exam" : ["xcademy_running", "center_running"].includes(scene) ? "academy" : ["open_house_running", "goodluck_running"].includes(scene) ? "forum" : management ? "management" : state.month === 0 ? "pre" : "office");
     if (!exam) drawOfficeGrowth(scene);
   }
-  const sceneDescription = moment ? `${moment.title}${moment.person?.name?`กับ ${moment.person.name}`:""} · ${moment.detail}` : scene==="live-studio" ? "ผู้เล่นกำลัง LIVE คุยแฟ้ม X กับคนที่พร้อมในสตูดิโอ" : organizationMode?.kind === "travel" ? `ทีมรับรางวัลท่องเที่ยวที่ ${organizationMode.report.trip.destination}` : scene === "the-xircle" || organizationMode?.kind === "xircle" ? "ทีมร่วมแคมป์ The Xircle ใต้แสงดาว" : exam ? "ห้องสอบ Xcademy" : "ฉากสำนักงานและทีม X-VISOR";
+  const sceneDescription = moment ? `${moment.title}${moment.person?.name?`กับ ${moment.person.name}`:""} · ${moment.detail}` : scene==="live-studio" ? "คุณกำลัง LIVE คุยแฟ้ม X กับคนที่พร้อมในสตูดิโอ" : organizationMode?.kind === "travel" ? `ทีมรับรางวัลท่องเที่ยวที่ ${organizationMode.report.trip.destination}` : scene === "the-xircle" || organizationMode?.kind === "xircle" ? "ทีมร่วมแคมป์ The Xircle ใต้แสงดาว" : exam ? "ห้องสอบ Xcademy" : "ฉากสำนักงานและทีม X-VISOR";
   if (canvas.getAttribute("aria-label") !== sceneDescription) canvas.setAttribute("aria-label", sceneDescription);
   if (moment) {
     drawActionScene(moment,reducedMotion.matches?1:Math.max(0,Math.min(1,(time-moment.startedAt)/moment.duration)));

@@ -1184,7 +1184,7 @@ function reduceGame(currentState, event, payload = {}) {
     case EVENTS.CREATE_LEAD: {
       const source = payload.source === "relationship" ? "known" : payload.source === "creator" ? "content" : payload.source || "known";
       if (source === "company") {
-        return { ...state, lastEvent: event, lastMessage: "เกมนี้ไม่มี Company Lead — โอกาสมาจากคนที่รู้จัก Referral Content หรือ Ads", updatedAt: Date.now() };
+        return { ...state, lastEvent: event, lastMessage: "โอกาสใหม่เริ่มจากคนที่รู้จัก การแนะนำ คอนเทนต์ หรือโฆษณา", updatedAt: Date.now() };
       }
       if (source === "referral") {
         return { ...state, lastEvent: event, lastMessage: "Referral ต้องมาจากลูกค้าที่มี trust/result พร้อม", updatedAt: Date.now() };
@@ -1223,7 +1223,7 @@ function reduceGame(currentState, event, payload = {}) {
           message: source === "content" ? `มีคนทักจากคอนเทนต์ ${count} คน` : source === "ads" ? `มีคนสนใจนัดวัด ${count} คน` : `รู้จัก ${created.people[0].name} จากคนที่คุณรู้จัก`
         },
         lastEvent: event,
-        lastMessage: source === "content" ? `โพสต์นี้ทำให้ ${createdPeople.map((person) => person.name).join(" และ ")} สนใจ` : source === "ads" ? `แคมเปญจำลองพาคนสนใจมา ${count} คน — ทุกคนยังต้องคุยก่อน` : `${created.people[0].name} · เพิ่งรู้จัก`,
+        lastMessage: source === "content" ? `โพสต์นี้ทำให้ ${createdPeople.map((person) => person.name).join(" และ ")} สนใจ` : source === "ads" ? `แคมเปญพาคนสนใจมา ${count} คน — ทุกคนยังต้องคุยก่อน` : `${created.people[0].name} · เพิ่งรู้จัก`,
         updatedAt: Date.now()
       };
       if (source === "content") next = addSkillXp(next, "knowledge", 1, "content");
@@ -3421,7 +3421,7 @@ function getRoutineChoices(state, personOrId = state?.selectedPersonId) {
       id: "fit", available: !blocked && (tutorial || fitReady), cost: ENERGY_COSTS.offer, products,
       chance: blocked || !fitReady && !tutorial ? 0 : tutorial ? 1 : humanDecisionChance(people, attempt),
       reason: blocked || (!fitReady && !tutorial ? "ความไว้ใจและความพร้อมยังไม่พอสำหรับเริ่มแผนสินค้า" : "ใช้ตัวช่วยเฉพาะที่ตรงกับสิ่งที่เขาอยากเปลี่ยน เลือกแล้วคุยแฟ้ม X ครั้งเดียว"),
-      nextStep: blocked || !fitReady && !tutorial ? "เลือกเริ่มจากพฤติกรรมและติดตามก่อน" : "เขาตัดสินใจเอง ถ้าขอคิด เกมจะบอกเดือนที่คุยต่อได้"
+      nextStep: blocked || !fitReady && !tutorial ? "เลือกเริ่มจากพฤติกรรมและติดตามก่อน" : "เขาตัดสินใจเอง ถ้าขอคิด เราค่อยนัดกลับมาคุยกัน"
     },
     {
       id: "all", available: !blocked && fullMissing.length === 0, cost: ENERGY_COSTS.offer, products,
