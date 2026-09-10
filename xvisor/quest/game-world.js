@@ -1,8 +1,69 @@
 import { STAGES } from "./game-data.js";
 import { createSceneArt } from "./game-art.js";
 import { getOrganizationScene } from "./game-presentation.js";
-import { getActionMoment } from "./game-action-scenes.js";
+import { ACTION_SCENE_MAP, getActionMoment } from "./game-action-scenes.js";
 import { getPersonAppearance } from "./game-people.js";
+
+const rosterPersonKey = person => String(person?.personId || person?.id || "");
+const rosterHash = value => {
+  let hash = 2166136261;
+  for (const char of String(value)) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619) >>> 0;
+  return hash;
+};
+/** Visual styling groups only: never infer a person's gender from their name. */
+export function getSceneRosterStyle(person) {
+  const appearance = getPersonAppearance(person);
+  return appearance.clothing === "dress" || ["long", "wavy", "half-up", "ponytail", "bob", "bun"].includes(appearance.hairStyle) ? "flowing" : "cropped";
+}
+/** Rotate existing people using saved gameplay progress, never render time.
+ * Returned records and their appearances remain untouched. A selected person
+ * stays in the cast; other places balance silhouettes and fresh faces. */
+export function selectSceneRoster(state, { pool = state.team || [], limit = 5, scene = "management", targetId = state.selectedPersonId, excludeIds = [] } = {}) {
+  const count = Math.max(0, Math.floor(Number(limit) || 0));
+  if (!count) return [];
+  const excluded = new Set(excludeIds.filter(Boolean).map(String));
+  const targetKeys = new Set(targetId == null ? [] : [String(targetId)]);
+  for (const person of [...state.customers || [], ...state.prospects || [], ...state.team || [], ...pool]) {
+    if (targetKeys.has(String(person.id))) targetKeys.add(rosterPersonKey(person));
+    if (excluded.has(String(person.id))) excluded.add(rosterPersonKey(person));
+  }
+  const unique = new Map();
+  for (const person of pool) {
+    const id = rosterPersonKey(person);
+    if (!id || person.active === false || ["teem", "ako"].includes(person.appearance?.characterId) || excluded.has(id) || excluded.has(String(person.id))) continue;
+    const previous = unique.get(id);
+    if (!previous || person.id === targetId) unique.set(id, person);
+  }
+  const salt = `${state.runId || state.rngSeed || 0}:${Number(state.month) || 0}:${scene}`;
+  const ordered = [...unique.values()].sort((a, b) => rosterHash(`${salt}:${rosterPersonKey(a)}`) - rosterHash(`${salt}:${rosterPersonKey(b)}`) || (rosterPersonKey(a) < rosterPersonKey(b) ? -1 : 1));
+  if (!ordered.length) return [];
+  const actions = Math.max(0, Number(state.monthStats?.playerActions?.total) || 0);
+  const logged = (state.eventLog || []).filter(entry => Number(entry.month) === Number(state.month) && ["vignette", "primary"].includes(ACTION_SCENE_MAP[entry.event]?.presentation)).length;
+  const target = ordered.find(person => targetKeys.has(String(person.id)) || targetKeys.has(rosterPersonKey(person)));
+  const rotating = ordered.filter(person => person !== target);
+  const offset = rotating.length ? (Math.max(actions, logged) + Math.max(0, Number(state.month) || 0)) % rotating.length : 0;
+  const remaining = [...rotating.slice(offset), ...rotating.slice(0, offset)];
+  const selected = target ? [target] : [];
+  // Reserve one rotating guest before balancing the rest. Otherwise a person
+  // who resembles the selected target could lose every diversity tie forever.
+  if (selected.length < count && remaining.length) selected.push(remaining.shift());
+  const appearance = new Map(ordered.map(person => [person, getPersonAppearance(person)]));
+  while (selected.length < count && remaining.length) {
+    const styles = selected.map(getSceneRosterStyle);
+    const heads = new Set(selected.map(person => appearance.get(person).hairStyle));
+    const clothes = new Set(selected.map(person => appearance.get(person).clothing));
+    const glasses = new Set(selected.map(person => appearance.get(person).glasses));
+    const score = person => {
+      const look = appearance.get(person);
+      return -styles.filter(style => style === getSceneRosterStyle(person)).length * 100
+        + Number(!heads.has(look.hairStyle)) * 20 + Number(!clothes.has(look.clothing)) * 5 + Number(!glasses.has(look.glasses)) * 2;
+    };
+    let best = 0;
+    for (let index = 1; index < remaining.length; index++) if (score(remaining[index]) > score(remaining[best])) best = index;
+    selected.push(...remaining.splice(best, 1));
+  }
+  return selected;
+}
 
 /** Purely visual: never writes saves, awards XP or changes the simulation. */
 export function createWorldRenderer(canvas, getSnapshot) {
@@ -41,7 +102,13 @@ export function createWorldRenderer(canvas, getSnapshot) {
   let visualTime = 0;
   let destroyed = false;
   let actionMoment = null;
+  let rosterIds = [];
   function selectedPerson() { return person; }
+  function sceneRoster(options) {
+    const cast = selectSceneRoster(state, options);
+    rosterIds.push(...cast.map(member => member.id || member.personId));
+    return cast;
+  }
   function personAppearance(subject) {
     // Vignettes carry a compact copy. Resolve the full record so a promoted
     // teammate retains the same personId and portrait as their customer days.
@@ -351,7 +418,7 @@ function drawXircleScene(time, npc) {
   context.beginPath();context.moveTo(182,179);context.bezierCurveTo(176,167,189,169,190,151-pulse);context.bezierCurveTo(205,162,211,173,201,181);context.closePath();context.fillStyle="#e4a36a";context.fill();
   context.beginPath();context.moveTo(188,179);context.quadraticCurveTo(185,169,195,163-pulse);context.quadraticCurveTo(204,176,198,181);context.closePath();context.fillStyle="#ffe2a1";context.fill();
   drawCharacterAtFeet(35, 198, playerPalette, { pose: "celebrate", band: true, direction: "right" });
-  const members = (state.team || []).filter((member) => member.active !== false).slice(0, 5);
+  const members = sceneRoster({ scene: "the-xircle", limit: 5 });
   const positions = [89, 228, 264, 300, 336];
   (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 198, { direction: index ? "left" : "right", pose: index < 2 ? "celebrate" : "idle" }));
 }
@@ -363,9 +430,10 @@ function drawOrganizationScene(time, npc, stageAge) {
   const total = Math.max(Number(aggregate.xvisorCount || 0), Number(state.team?.length || 0));
   const visibleTarget = phase >= 9 ? 7 : phase >= 8 ? 6 : 4;
   const visible = Math.max(2, Math.min(visibleTarget, total || 2));
+  const members = sceneRoster({ scene: "organization", limit: visible });
   const positions = [70, 112, 154, 210, 252, 294, 336];
   for (let index = 0; index < visible; index += 1) {
-    const member = state.team?.[index] || { id: `organization-visitor-${index}`, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
+    const member = members[index] || { id: `organization-visitor-${index}`, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
     drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", walk: !reducedMotion.matches && stageAge < 620 ? time / 110 + index : 0 });
   }
   const blocks = Math.min(12, Math.max(2, Math.ceil(Math.log2(Math.max(2, total))) + 2));
@@ -375,21 +443,21 @@ function drawTravelScene(destination, time, npc) {
   background(`travel:${destination}`, layer => layer.travel(destination));
   const wave = !reducedMotion.matches && Math.floor(time / 420) % 2 ? "celebrate" : "idle";
   drawCharacterAtFeet(35, 202, playerPalette, { pose: wave, band: true, direction: "right" });
-  const companions = (state.team || []).filter((member) => member.active !== false).slice(0, 3);
+  const companions = sceneRoster({ scene: `travel:${destination}`, limit: 3 });
   (companions.length ? companions : [{ appearance: npc }, { id: "travel-companion" }]).forEach((member, index) => drawCharacterAtFeet(264 + index * 36, 202, personAppearance(member), { pose: index === 0 ? wave : "idle", band: true, direction: "left" }));
 }
 function drawMonth12Scene(npc) {
   background("month12", layer => layer.organization(9));
   drawXircleMark(182, 68, 1.4);
   drawCharacterAtFeet(27, 196, playerPalette, { pose: "celebrate", band: true, direction: "right" });
-  const members = (state.team || []).slice(0, 7);
+  const members = sceneRoster({ scene: "month12", limit: 7 });
   const positions = [78, 120, 162, 210, 252, 294, 336];
   (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", pose: index % 3 === 0 ? "celebrate" : "idle" }));
 }
 function drawFinaleScene(npc) {
   background("finale", layer => layer.finale());
   drawCharacterAtFeet(176, 198, playerPalette, { pose: "celebrate", band: true });
-  const members = (state.team || []).filter((member) => member.active !== false).slice(0, 8);
+  const members = sceneRoster({ scene: "finale", limit: 8 });
   const positions = [18, 57, 96, 135, 220, 259, 298, 337];
   (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 198, { direction: index < 4 ? "right" : "left", pose: index % 4 === 0 ? "celebrate" : "idle" }));
 }
@@ -561,7 +629,7 @@ function drawActionScene(moment, progress) {
     drawSittingCharacter(257,172,npc,"left",{pose:paused?"listen":"write",band});
     drawPaper(164,155,{color:group==="review"?"#c7ad7e":"#80aa94"});
     drawLaptop(207,130,true);
-    if(variant==="leaders"||group==="organization")(state.team||[]).filter(member=>member.id!==moment.person?.id).slice(0,2).forEach((member,index)=>drawTeamCharacter(member,29+index*41,183,{pose:"listen",direction:"right"}));
+    if(variant==="leaders"||group==="organization")sceneRoster({scene:`action:${group}`,limit:2,excludeIds:[moment.person?.id,moment.companion?.id],targetId:null}).forEach((member,index)=>drawTeamCharacter(member,29+index*41,183,{pose:"listen",direction:"right"}));
     if(group==="mentoring"&&phase>.48)drawConversationBubble(232,103,paused);
   } else if(group==="certification") {
     drawTable(144,164,112);
@@ -599,6 +667,7 @@ function drawLiveScene(age) {
 }
 function drawScene(time) {
   snapshot();
+  rosterIds = [];
   visualTime = time;
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
@@ -730,7 +799,7 @@ function drawScene(time) {
     drawWhiteboard(139, 31);
     drawRoundTable(143, 137);
     drawCharacterAtFeet(49, 176, playerPalette, { direction: "right", pose: "talk", band: true });
-    const participants = state.team.filter((member) => member.active).slice(0, 3);
+    const participants = sceneRoster({ scene, limit: 3 });
     participants.forEach((member, index) => {
       const progress = reducedMotion.matches ? 1 : Math.min(1, stageAge / (520 + index * 120));
       drawTeamCharacter(member, 244 + index * 38 + (1 - progress) * 55, 176, { direction: "left", walk: progress < 1 ? time / 90 : 0 });
@@ -753,7 +822,7 @@ function drawScene(time) {
     art.polygon([[252,105],[286,105],[290,111],[254,111]],"#c6a576");
     art.rounded(255,131,34,4,1,"#735f44");
     art.line(279,105,279,97,"#4c5748",1);art.ellipse(278,96,2,1.6,"#4c5748");
-    const attendees=[...state.customers||[],...state.prospects||[],...state.team||[]].filter((person,index,all)=>all.findIndex(other=>other.id===person.id)===index).slice(0,4);
+    const attendees=sceneRoster({scene,pool:[...state.customers||[],...state.prospects||[],...state.team||[]],limit:4});
     const crowd=attendees.length?attendees.map(personAppearance):[npc,getPersonAppearance({id:"open-house-visitor"})];
     const seats=[38,104,248,314];
     crowd.forEach((palette,index)=>drawSittingCharacter(seats[index],177,palette,index<2?"right":"left",{pose:"listen",band:Boolean(attendees[index]?.day!==undefined||attendees[index]?.xvisorStage)}));
@@ -784,7 +853,7 @@ function drawScene(time) {
       drawRoundTable(142, 132);
       drawCharacterAtFeet(55, 176, playerPalette, { direction: "right", pose: "talk", band: true });
       const teamPositions = [190, 226, 262, 298, 334];
-      state.team.slice(0, phase >= 4 ? 5 : 3).forEach((member, index) => drawTeamCharacter(member, teamPositions[index], 176, { direction: "left" }));
+      sceneRoster({scene,limit:phase>=4?5:3}).forEach((member,index)=>drawTeamCharacter(member,teamPositions[index],176,{direction:"left"}));
       if (state.team.length === 0) drawCharacterAtFeet(281, 176, npc, { direction: "left", idle: true });
       if (state.customers.length >= 3) {
         drawChair(12, 119, "#73a9c3");
@@ -798,7 +867,7 @@ function drawScene(time) {
   } else if (["xlead", "xgen"].includes(scene)) {
     drawWhiteboard(138, 29);
     drawCharacterAtFeet(55, 176, playerPalette, { pose: "celebrate", band: true });
-    state.team.slice(0, 4).forEach((member, index) => drawTeamCharacter(member, 190 + index * 43, 176, { direction: "left" }));
+    sceneRoster({scene,limit:4}).forEach((member,index)=>drawTeamCharacter(member,190+index*43,176,{direction:"left"}));
     rect(50, 42, 65, 25, "#4f7565");
     rect(55, 47, 55, 15, "#f6ce5a");
   } else if (scene === "certified") {
@@ -806,6 +875,7 @@ function drawScene(time) {
     drawCharacterAtFeet(176, 176, playerPalette, { pose: "celebrate", jump, band: true });
     drawCertificate(174, 72);
   }
+  canvas.dataset.rosterIds = JSON.stringify([...new Set(rosterIds)]);
   renderWorldEventCard(scene, stageAge, organizationMode, moment);
   const dt = Math.min(3, (time - previousFrame) / (1000 / 60)) || 1;
   effects = effects.filter((particle) => particle.life > 0);

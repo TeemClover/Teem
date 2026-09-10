@@ -52,7 +52,7 @@ export const APPEARANCES = Object.freeze([
   { skin: "#b9795e", hair: "#202b34", shirt: "#c98a54", accent: "#d8f4ff" },
 ]);
 
-export const NPC_HAIR_STYLES = Object.freeze(["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz"]);
+export const NPC_HAIR_STYLES = Object.freeze(["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz", "wavy", "half-up", "sidepart", "pixie"]);
 export const NPC_CLOTHING = Object.freeze(["tee", "polo", "shirt", "cardigan", "hoodie", "dress"]);
 const RESERVED_NAMES = new Set(["ทีม", "เอโกะ", "teem", "ako"]);
 const normalizedName = name => String(name || "").trim().normalize("NFC").toLocaleLowerCase("en");
@@ -73,7 +73,7 @@ export function createPersonAppearance(identityKey) {
   const pickTrait = (key, choices) => choices[Math.floor(identityHash(`${identityKey}:${key}`) / 4294967296 * choices.length)];
   const clothing = pickTrait("clothing", NPC_CLOTHING);
   return {
-    version: 2, identityKey: String(identityKey),
+    version: 3, identityKey: String(identityKey),
     skin: pickTrait("skin", APPEARANCES.map(item => item.skin)),
     hair: pickTrait("hair", ["#242326", "#44332d", "#644937", "#825b40", "#403d48", "#71675e", "#ad8660", "#363e3a"]),
     shirt: pickTrait("shirt", APPEARANCES.map(item => item.shirt)),
@@ -91,7 +91,7 @@ export function createPersonAppearance(identityKey) {
 /** Shared NPC fallback for world and portraits; narrator palettes are separate. */
 export function getPersonAppearance(person = {}) {
   const appearance = person?.appearance || {};
-  if (appearance.version === 2 && appearance.identityKey && !appearance.characterId
+  if ([2, 3].includes(appearance.version) && appearance.identityKey && !appearance.characterId
     && NPC_HAIR_STYLES.includes(appearance.hairStyle) && NPC_CLOTHING.includes(appearance.clothing)
     && appearance.skin && appearance.hair && appearance.shirt && appearance.pants
     && typeof appearance.freckles === "boolean" && Object.hasOwn(appearance, "glasses")) return appearance;
@@ -101,7 +101,7 @@ export function getPersonAppearance(person = {}) {
   const { characterId, ...explicit } = legacyPalette ? {} : appearance;
   const generated = createPersonAppearance(identityKey);
   const clothing = explicit.clothing || (explicit.dress ? "dress" : generated.clothing);
-  return { ...generated, ...explicit, version: 2, identityKey, clothing, dress: clothing === "dress" };
+  return { ...generated, ...explicit, version: [2, 3].includes(explicit.version) ? explicit.version : 3, identityKey, clothing, dress: clothing === "dress" };
 }
 
 export function getSafeNpcName(name, identityKey, usedNames = []) {
@@ -236,6 +236,13 @@ function pick(seed, list) {
   return { value: list[nextSeed % list.length], nextSeed };
 }
 
+export function createPurchaseIntent({ seed, id, source = "known", fitProducts = [], tutorial = false }) {
+  const intentSeed = identityHash(`purchase:${seed || 1}:${id}:${source}`);
+  const ready = !tutorial && fitProducts.length > 0 && intentSeed / 4294967296 < 0.08;
+  const householdRoll = identityHash(`household:${intentSeed}`) / 4294967296;
+  return { kind: ready ? "ready" : "exploring", seed: intentSeed, requestedQuantity: ready ? householdRoll < 0.07 ? 3 : householdRoll < 0.32 ? 2 : 1 : 1 };
+}
+
 export function createPerson({ seed, usedNames = [], source = "known", index = 1, tutorial = false }) {
   const used = new Set((usedNames || []).map((name) => String(name || "").normalize("NFC")));
   const availableNames = NAME_POOL.filter((name) => !used.has(name.normalize("NFC")));
@@ -245,6 +252,9 @@ export function createPerson({ seed, usedNames = [], source = "known", index = 1
   const personaPool = tutorial ? PERSONAS.filter((persona) => persona.tutorial) : PERSONAS;
   const personaPick = pick(appearanceSeed, personaPool);
   const readinessSeed = advanceSeed(personaPick.nextSeed);
+  // Intent is independent of the gameplay RNG stream. Existing identity,
+  // persona and future-person draws retain their original sequence.
+  const purchaseIntent = createPurchaseIntent({ seed: Number(seed || 1), id: index, source, fitProducts: personaPick.value.fitProducts, tutorial });
 
   return {
     nextSeed: readinessSeed,
@@ -258,6 +268,7 @@ export function createPerson({ seed, usedNames = [], source = "known", index = 1
       need: personaPick.value.need,
       fitProducts: [...personaPick.value.fitProducts],
       source,
+      purchaseIntent,
       journey: "new",
       status: "เพิ่งรู้จัก",
       trust: tutorial ? 36 : 22,

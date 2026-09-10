@@ -4,7 +4,7 @@ export const MENTOR_PALETTES = Object.freeze({
   ako: Object.freeze({ characterId: "ako", skin: "#f0b88e", hair: "#272020", shirt: "#29272b", accent: "#f4d8a9", hairStyle: "ponytail", dress: true }),
 });
 
-const HAIR_STYLES = ["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz"];
+const HAIR_STYLES = ["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz", "wavy", "half-up", "sidepart", "pixie"];
 const CLOTHING_STYLES = ["tee", "polo", "shirt", "cardigan", "hoodie", "dress"];
 /** Explicit traits are shared by the world and portrait crop. Legacy palettes
  * get independent, stable defaults instead of one colour hash controlling all
@@ -405,7 +405,7 @@ export function createSceneArt(ctx) {
     const jump=options.jump||0, step=options.walk?Math.sin(options.walk)*2:0;
     const seated=Boolean(options.seated), top=footY-jump-72;
     const breath=options.breath||0;
-    const longHair=hairStyle==="long";
+    const longHair=["long","half-up"].includes(hairStyle);
     const center=x+16, shoulderY=top+29+breath;
     shadow(center,footY+1,18-Math.min(4,jump/3),4);
     // The chair shares the seated hip anchor. Its back, cushion and legs
@@ -495,6 +495,13 @@ export function createSceneArt(ctx) {
       ellipse(center-facing*6,top-2+breath,6.8,6.4,hair);
       line(center-facing*8,top-4+breath,center-facing*3,top-5+breath,"#dcc09638",1);
       rounded(center-facing*5-3,top+2+breath,6,2,1,palette.accent||"#e5ba79");
+    } else if(hairStyle==="half-up") {
+      ellipse(center-facing*8,top+5+breath,5.5,5.5,hair);
+      polygon([[center-facing*8,top+7],[center-facing*13,top+4],[center-facing*13,top+10]],palette.accent||"#e4b968");
+      polygon([[center-facing*8,top+7],[center-facing*4,top+4],[center-facing*4,top+10]],palette.accent||"#e4b968");
+    } else if(hairStyle==="wavy") {
+      for(const side of [-1,1])path([["moveTo",center+side*7,top+4],["quadraticCurveTo",center+side*17,top+7,center+side*12,top+17],["quadraticCurveTo",center+side*17,top+22,center+side*12,top+27],["quadraticCurveTo",center+side*17,top+33,center+side*9,top+35],["lineTo",center+side*6,top+30],["quadraticCurveTo",center+side*12,top+24,center+side*7,top+20],["quadraticCurveTo",center+side*11,top+11,center+side*7,top+4],["closePath"]],hair);
+      for(const side of [-1,1])path([["moveTo",center+side*11,top+15],["quadraticCurveTo",center+side*8,top+19,center+side*12,top+23],["quadraticCurveTo",center+side*9,top+27,center+side*11,top+31]],"transparent","#dfc09225",1);
     } else if(hairStyle==="bob") {
       for(const side of [-1,1])path([["moveTo",center+side*7,top+4],["quadraticCurveTo",center+side*15,top+9,center+side*12,top+25],["lineTo",center+side*6,top+24],["lineTo",center+side*7,top+4],["closePath"]],hair);
     }
@@ -559,6 +566,19 @@ export function createSceneArt(ctx) {
     } else if(hairStyle==="bob") {
       path([["moveTo",center-10,top+14+breath],["quadraticCurveTo",center-12,top+1+breath,center,top+1+breath],["quadraticCurveTo",center+12,top+1+breath,center+11,top+14+breath],["lineTo",center+7,top+9+breath],["lineTo",center+2,top+10+breath],["lineTo",center-2,top+7+breath],["lineTo",center-5,top+11+breath],["lineTo",center-10,top+14+breath],["closePath"]],hair);
       line(center-7,top+5+breath,center-8,top+10+breath,"#cfb88d35",1);
+    } else if(hairStyle==="sidepart") {
+      path([["moveTo",center-10,top+12+breath],["quadraticCurveTo",center-12,top+1+breath,center,top+1+breath],["quadraticCurveTo",center+11,top-1+breath,center+11,top+10+breath],["lineTo",center+7,top+7+breath],["lineTo",center+5,top+3+breath],["quadraticCurveTo",center-1,top+10+breath,center-10,top+12+breath],["closePath"]],hair);
+      path([["moveTo",center+4,top+3+breath],["quadraticCurveTo",center,top+5+breath,center-5,top+6+breath]],"transparent","#e9d3ac4d",1.1);
+      line(center+5,top+3+breath,center+7,top+6+breath,skin,.75);
+    } else if(hairStyle==="pixie") {
+      path([["moveTo",center-10,top+13+breath],["quadraticCurveTo",center-13,top+3+breath,center-5,top+1+breath],["quadraticCurveTo",center+5,top-4+breath,center+11,top+5+breath],["lineTo",center+8,top+11+breath],["lineTo",center+7,top+5+breath],["lineTo",center+3,top+12+breath],["lineTo",center+1,top+6+breath],["lineTo",center-5,top+10+breath],["lineTo",center-7,top+7+breath],["closePath"]],hair);
+      path([["moveTo",center-6,top+4+breath],["quadraticCurveTo",center-1,top,center+4,top+3+breath]],"transparent","#dcc5983b",1.5);
+    } else if(hairStyle==="half-up") {
+      path([["moveTo",center-10,top+10+breath],["quadraticCurveTo",center-10,top+1+breath,center,top+1+breath],["quadraticCurveTo",center+11,top+1+breath,center+10,top+11+breath],["quadraticCurveTo",center+4,top+9+breath,center,top+5+breath],["quadraticCurveTo",center-4,top+9+breath,center-10,top+10+breath],["closePath"]],hair);
+      line(center,top+2+breath,center,top+4+breath,"#e2c18d38",.8);
+    } else if(hairStyle==="wavy") {
+      path([["moveTo",center-10,top+13+breath],["quadraticCurveTo",center-12,top+2+breath,center-2,top+1+breath],["quadraticCurveTo",center+9,top-2+breath,center+11,top+10+breath],["quadraticCurveTo",center+7,top+14+breath,center+5,top+6+breath],["quadraticCurveTo",center+1,top+3+breath,center-3,top+8+breath],["quadraticCurveTo",center-4,top+13+breath,center-10,top+13+breath],["closePath"]],hair);
+      path([["moveTo",center-7,top+5+breath],["quadraticCurveTo",center-1,top,center+4,top+3+breath]],"transparent","#e2c18d35",1.3);
     } else if(hairStyle==="curly") {
       for(const [dx,dy,r] of [[-9,9,4],[-10,4,4.5],[-6,0,5],[0,-1,5.5],[6,1,5],[10,5,4],[8,9,3.5]])ellipse(center+dx,top+dy+breath,r,r,hair);
       for(const [dx,dy] of [[-7,1],[-1,-2],[6,3]])path([["moveTo",center+dx-1,top+dy+breath],["quadraticCurveTo",center+dx+2,top+dy-1+breath,center+dx+2,top+dy+1+breath]],hair,"#d7bd9233",.9);

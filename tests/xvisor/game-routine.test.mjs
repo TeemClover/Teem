@@ -87,8 +87,8 @@ test('routine readiness is read-only and exposes actionable full-set requirement
   assert.deepEqual(choices.map(item => item.cost), [0, 1, 1]);
   assert.equal(choices[0].available, true);
   assert.equal(choices[2].available, false);
-  assert.match(choices[2].reason, /Lv\..*\/6/);
-  assert.match(choices[2].reason, /เคส/);
+  assert.match(choices[2].reason, /Lv\..*\/3/);
+  assert.doesNotMatch(choices[2].reason, /เคส/);
   assert.match(choices[2].nextStep, /พฤติกรรม|แผนที่พอดี/);
   assert.equal(JSON.stringify(before), snapshot);
   const rejected = reduceGame(before, EVENTS.CHOOSE_ROUTINE, { planId: 'all' });
@@ -163,7 +163,7 @@ test('a prepared full-set customer can buy in one choice while still needing Day
 });
 
 test('full-set eligibility requires context, fit, trust and readiness even with experienced skills', () => {
-  for (const change of [{ journey: 'new', consent: false, measured: false }, { fitProducts: [] }, { trust: 57 }, { readiness: 61 }]) {
+  for (const change of [{ journey: 'new', consent: false, measured: false }, { fitProducts: [] }, { trust: 49 }, { readiness: 54 }]) {
     const before = routineState({}, change);
     assert.equal(getRoutineChoices(before).find(item => item.id === 'all').available, false);
     const after = reduceGame(before, EVENTS.CHOOSE_MANAGEMENT_ROUTINE, { planId: 'all' });
@@ -178,7 +178,7 @@ test('full-set eligibility requires context, fit, trust and readiness even with 
 });
 
 test('a full-set refusal remains a real decision with a cooldown instead of a paid retry loop', () => {
-  const before = routineState({ rngSeed: 1 });
+  const before = routineState({ rngSeed: 2 });
   const after = reduceGame(before, EVENTS.CHOOSE_MANAGEMENT_ROUTINE, { planId: 'all' });
   assert.equal(after.customers.length, 0);
   assert.equal(after.prospects[0].journey, 'waiting');

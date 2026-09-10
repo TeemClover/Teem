@@ -50,7 +50,7 @@ test('consecutive NPCs have independent visible traits without advancing simulat
 test('legacy low-entropy palettes gain explicit traits while custom appearances remain recognizable', () => {
   const old = { id: 'person-7', appearance: { ...APPEARANCES[0] } };
   const migrated = getPersonAppearance(old);
-  assert.equal(migrated.version, 2);
+  assert.equal(migrated.version, 3);
   assert.ok(NPC_HAIR_STYLES.includes(migrated.hairStyle));
   assert.ok(NPC_CLOTHING.includes(migrated.clothing));
   assert.deepEqual(getPersonAppearance(old), migrated);

@@ -9,7 +9,7 @@ import {
   XIRCLE_STARTER,
   getRetailTier
 } from "./game-commercial-config.js";
-import { createPerson, normalizeNpcIdentities } from "./game-people.js";
+import { createPerson, createPurchaseIntent, normalizeNpcIdentities } from "./game-people.js";
 import { buildExam, getQuestion } from "./game-exam.js";
 import { LEGACY_SAVE_VERSIONS, SAVE_KEY, SAVE_VERSION } from "./game-save.js";
 import {
@@ -485,12 +485,21 @@ function addPerson(state, source, tutorial = false) {
   });
   const peopleLevel = getSkillLevel(state.skills, "people");
   const warmBonus = normalizedSource === "referral" ? 16 : normalizedSource === "content" ? 7 : normalizedSource === "ads" ? 3 : 0;
-  const person = {
+  let person = {
     ...created.person,
     trust: created.person.trust + warmBonus + Math.floor(peopleLevel / 3) * 2,
     readiness: Math.min(92, created.person.readiness + warmBonus + Math.floor(peopleLevel / 2)),
     lastContactMonth: state.month
   };
+  if (person.purchaseIntent?.kind === "ready") {
+    const quantity = initialOrderQuantity(person);
+    person = {
+      ...person, journey: "baseline", consent: true, measured: true,
+      trust: Math.max(64, person.trust), readiness: Math.max(90, person.readiness),
+      status: "กำลังหาโปรแกรมอยู่พอดี · เล่าเป้าหมายและข้อมูลเริ่มต้นแล้ว",
+      quote: quantity > 1 ? `กำลังหาโปรแกรมอยู่พอดี อยากเริ่มให้ตัวเองกับคนที่บ้านรวม ${quantity} ชุด ช่วยดูให้หน่อยว่าเหมาะไหม` : "กำลังหาโปรแกรมอยู่พอดี เลยเตรียมเป้าหมายกับข้อมูลเริ่มต้นมาแล้ว ช่วยดูให้หน่อยว่าเหมาะไหม"
+    };
+  }
   return {
     state: {
       ...state,
@@ -570,20 +579,43 @@ function calculateEconomy(state) {
     status: INCOME_RULE.status
   };
 }
+function preparePurchaseIntents(state) {
+  if (!state?.prospects?.length) return state;
+  let changed = false;
+  const prospects = state.prospects.map((person) => {
+    // Old paid people and already chosen orders retain their exact agreement.
+    // Only unresolved sourced prospects acquire a stable intent trait; their
+    // existing need, trust and data checkpoints are never rewritten on load.
+    if (person.purchaseIntent || person.activePlan || person.careOnly || person.routinePlan || !person.source) return person;
+    const purchaseIntent = createPurchaseIntent({ seed: state.retentionSeed ?? state.encounters?.seed ?? state.runId ?? state.rngSeed ?? 1, id: person.personId || person.id, source: person.source, fitProducts: person.fitProducts || [], tutorial: Number(state.month) === 1 });
+    changed = true;
+    return { ...person, purchaseIntent };
+  });
+  return changed ? { ...state, prospects } : state;
+}
+function initialOrderQuantity(person) {
+  // An order for a household is still one relationship. Renewals remain the
+  // buyer's own one-set plan; no implicit household subscriptions are created.
+  const requested = Number(person?.initialOrderQuantity ?? person?.purchaseIntent?.requestedQuantity ?? 1);
+  return Number.isFinite(requested) ? Math.max(1, Math.min(3, Math.floor(requested))) : 1;
+}
 function recordSale(state, kind, customerId) {
   const before = calculateEconomy(state);
   const firstStart = kind !== "reorder";
-  const items = firstStart ? [
+  const buyer = (state.prospects || []).find((person) => person.id === customerId);
+  const quantity = firstStart ? initialOrderQuantity(buyer) : 1;
+  const unitItems = firstStart ? [
     { id: XIRCLE_STARTER.id, name: XIRCLE_STARTER.name, price: XIRCLE_STARTER.price, xv: XIRCLE_STARTER.xv, cycle: XIRCLE_STARTER.cycle, status: XIRCLE_STARTER.status },
     { id: TUTORIAL_OFFER.id, name: TUTORIAL_OFFER.name, price: TUTORIAL_OFFER.price, xv: TUTORIAL_OFFER.xv, cycle: TUTORIAL_OFFER.cycle, status: TUTORIAL_OFFER.status }
   ] : [{ id: TUTORIAL_OFFER.id, name: TUTORIAL_OFFER.name, price: TUTORIAL_OFFER.price, xv: TUTORIAL_OFFER.xv, cycle: TUTORIAL_OFFER.cycle, status: TUTORIAL_OFFER.status }];
-  const price = items.reduce((sum, item) => sum + item.price, 0);
-  const xv = items.reduce((sum, item) => sum + item.xv, 0);
+  const items = unitItems.map((item) => ({ ...item, quantity }));
+  const price = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const xv = items.reduce((sum, item) => sum + item.xv * item.quantity, 0);
   const economy = {
     ...state.economy,
-    sets: state.economy.sets + 1,
-    productSales: state.economy.productSales + price,
-    personalXV: state.economy.personalXV + xv
+    sets: Number(state.economy.sets || 0) + quantity,
+    productSales: Number(state.economy.productSales || 0) + price,
+    personalXV: Number(state.economy.personalXV || 0) + xv
   };
   const next = {
     ...state,
@@ -600,6 +632,8 @@ function recordSale(state, kind, customerId) {
     id: `${state.month}-${kind}-${state.economy.sets + 1}-${customerId}`,
     kind,
     customerId,
+    quantity,
+    renewalQuantity: 1,
     offerId: firstStart ? "full-start" : TUTORIAL_OFFER.id,
     items,
     price,
@@ -620,7 +654,8 @@ function completeProspectSale(state, person, event = EVENTS.OFFER_PROSPECT) {
     ...person, id: `customer-${person.id}`, personId: person.id,
     journey: "day0", status: "เริ่ม Routine", activePlan: true,
     customerState: CUSTOMER_STATES.NEEDS_HELP, day: 0,
-    trust: person.trust + 8, lastReorderMonth: state.month
+    trust: person.trust + 8, lastReorderMonth: state.month,
+    initialOrderQuantity: state.economy.lastTransaction.quantity, renewalQuantity: 1
   };
   return refreshMissions(addSkillXp({
     ...state, prospects: state.prospects.filter((item) => item.id !== person.id),
@@ -1136,7 +1171,7 @@ function reduceGame(currentState, event, payload = {}) {
       state = recordSale(state, "sale", person.id);
       return withStage(addSkillXp({
         ...state,
-        prospects: updatePerson(state.prospects, person.id, (item) => ({ ...item, journey: "onboarding", status: "พร้อมเริ่ม Routine", activePlan: true, trust: item.trust + 10 })),
+        prospects: updatePerson(state.prospects, person.id, (item) => ({ ...item, journey: "onboarding", status: "พร้อมเริ่ม Routine", activePlan: true, trust: item.trust + 10, initialOrderQuantity: state.economy.lastTransaction.quantity, renewalQuantity: 1 })),
         monthStats: { ...state.monthStats, sales: state.monthStats.sales + 1 },
         milestones: { ...state.milestones, firstSale: true }
       }, "knowledge", 1, "first-recommendation"), STAGES.M1_SALE_RECEIPT, event);
@@ -1257,7 +1292,7 @@ function reduceGame(currentState, event, payload = {}) {
       const count = source === "ads" ? 2 + Number(knowledge + peopleSkill >= 9) + (knowledge >= 10 ? 2 : 0) : source === "content" ? 1 + Number(knowledge + peopleSkill >= 7) + (knowledge >= 10 ? 3 : 0) : 1;
       const created = addPeople(state, source, count);
       const fastWarm = getSkillLevel(state.skills, "people") >= 10;
-      const createdPeople = created.people.map((person, index) => fastWarm && (source !== "ads" || index === 0) ? { ...person, journey: "discovery", status: "พร้อมดู Baseline", trust: person.trust + 12, readiness: Math.min(98, person.readiness + 12) } : person);
+      const createdPeople = created.people.map((person, index) => person.purchaseIntent?.kind !== "ready" && fastWarm && (source !== "ads" || index === 0) ? { ...person, journey: "discovery", status: "พร้อมดู Baseline", trust: person.trust + 12, readiness: Math.min(98, person.readiness + 12) } : person);
       let next = {
         ...created.state,
         prospects: [...state.prospects, ...createdPeople],
@@ -2352,6 +2387,22 @@ function humanDecisionChance(level, attempt = 0) {
   if (attempt === 1) return Math.min(0.99, base + 0.15);
   return base;
 }
+function purchaseDecisionRoll(state, person, event) {
+  if (person?.purchaseIntent?.kind !== "ready" || !Number.isFinite(Number(person.purchaseIntent.seed))) {
+    return event === EVENTS4.FAST_TRACK_FULL_START ? deterministicRoll2(state, person?.id, Number(person?.decisionAttempts || 0) + 71) : deterministicRoll(state, event, person?.id);
+  }
+  let hash = Number(person.purchaseIntent.seed) >>> 0;
+  for (const character of `${person.id}:${event}:${Number(person.decisionAttempts || 0)}`) hash = Math.imul(hash ^ character.charCodeAt(0), 16777619) >>> 0;
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x7feb352d) >>> 0;
+  hash ^= hash >>> 15;
+  return (hash >>> 0) / 4294967296;
+}
+function fittedPurchaseChance(state, person) {
+  const base = humanDecisionChance(getSkillLevel2(state.skills, "people"), Number(person?.decisionAttempts || 0));
+  if (person?.purchaseIntent?.kind !== "ready") return base;
+  return Math.min(0.97, base + 0.35 + Math.max(0, Number(person.trust || 0) - 50) * 0.006);
+}
 function humanDecisionFailure(state, event, payload) {
   const id = payload?.id;
   if (!id) return null;
@@ -2361,7 +2412,10 @@ function humanDecisionFailure(state, event, payload) {
   const target = prospect || customer;
   if (!target) return null;
   const attempt = Number(target.decisionAttempts || 0);
-  if (deterministicRoll(state, event, id) < humanDecisionChance(peopleLevel, attempt)) return null;
+  const purchase = prospect && [EVENTS2.OFFER_PROSPECT, EVENTS2.FOLLOW_UP_DECISION].includes(event);
+  const chance = purchase ? fittedPurchaseChance(state, target) : humanDecisionChance(peopleLevel, attempt);
+  const roll = purchase ? purchaseDecisionRoll(state, target, event) : deterministicRoll(state, event, id);
+  if (roll < chance) return null;
   const spent = spend(state, 1, event === EVENTS2.INVITE_XVISOR ? "team" : "attract");
   if (!spent) return state;
   if (prospect) {
@@ -3451,6 +3505,8 @@ function hasRoutineContext(person) {
   return Boolean(ready?.consent && ["baseline", "recommendation"].includes(ready.journey));
 }
 function getRoutineChoices(state, personOrId = state?.selectedPersonId) {
+  state = preparePurchaseIntents(state);
+  if (typeof personOrId === "object" && personOrId?.id) personOrId = (state.prospects || []).find((item) => item.id === personOrId.id) || personOrId;
   const person = recoverRoutineConsent(typeof personOrId === "object" && personOrId ? personOrId : (state?.prospects || []).find((item) => item.id === personOrId));
   const products = [...new Set(person?.fitProducts ?? person?.routinePlan?.products ?? [])];
   const people = getSkillLevel3(state?.skills, "people");
@@ -3459,44 +3515,47 @@ function getRoutineChoices(state, personOrId = state?.selectedPersonId) {
   const energy = Number(state?.energy || 0) >= ENERGY_COSTS.offer;
   const fitReady = Number(person?.trust || 0) + 10 + Number(person?.readiness || 0) >= 91 - (people + knowledge) * 2;
   const tutorial = [STAGES.M1_ROUTINE, STAGES.M1_RECOMMENDATION].includes(state?.stage);
-  const fullMissing = [];
-  if (people < 6) fullMissing.push(`ฝึกคุยกับคน Lv.${people}/6`);
-  if (knowledge < 6) fullMissing.push(`ฝึกความรู้ Lv.${knowledge}/6`);
-  if (successCaseCount(state || {}) < 2) fullMissing.push(`ดูแลจนเกิดผล ${successCaseCount(state || {})}/2 เคส`);
-  if (Number(person?.trust || 0) < 58) fullMissing.push(`ความไว้ใจ ${Number(person?.trust || 0)}/58`);
-  if (Number(person?.readiness || 0) < 62) fullMissing.push(`ความพร้อม ${Number(person?.readiness || 0)}/62`);
-  if (Number(state?.month || 0) < 4 && Number(state?.monthStats?.successCases || 0) + Number(state?.monthStats?.sales || 0) < 1) fullMissing.push("ต้องมีผลลัพธ์หรือการเริ่มแผนในเดือนนี้ หรือรอเดือน 4");
-  const blocked = !context ? "ฟังบริบทและขออนุญาตดู Baseline ให้ครบก่อน" : !products.length ? "บริบทนี้ยังไม่ต้องเพิ่มสินค้า" : !energy ? "พลังงานไม่พอสำหรับคุยและเริ่มแผน (ใช้ 1)" : null;
+  const fullMissing = fullRoutineRequirements(state, person);
+  const quantity = initialOrderQuantity(person);
+  const intentKind = person?.purchaseIntent?.kind || "exploring";
+  const blocked = !context ? "คุยความต้องการและดูข้อมูลเริ่มต้นก่อน" : !products.length ? "บริบทนี้ยังไม่ต้องเพิ่มสินค้า" : !energy ? "พลังงานไม่พอสำหรับคุยและเริ่มแผน (ใช้ 1)" : null;
   const candidate = person ? { ...person, journey: "recommendation", trust: Math.min(100, Number(person.trust || 0) + 15), routinePlan: { id: "all", fastLane: true } } : null;
   const attempt = Number(person?.decisionAttempts || 0);
   const fullChance = context && products.length && !fullMissing.length ? getFastTrackChance(state, candidate) : 0;
   return [
     {
-      id: "control", available: context, cost: 0, products: [], chance: null,
-      reason: context ? "เริ่มจากพฤติกรรมเดียว ไม่ซื้อสินค้าและไม่เกิดยอดขาย" : "ฟังบริบทและขออนุญาตดู Baseline ให้ครบก่อน",
+      id: "control", available: context, cost: 0, products: [], chance: null, quantity: 0, intentKind,
+      reason: context ? "เริ่มจากพฤติกรรมเดียว ไม่ซื้อสินค้าและไม่เกิดยอดขาย" : "คุยความต้องการและดูข้อมูลเริ่มต้นก่อน",
       nextStep: "วางสิ่งเล็กที่ทำได้ แล้วนัดติดตามผล"
     },
     {
-      id: "fit", available: !blocked && (tutorial || fitReady), cost: ENERGY_COSTS.offer, products,
-      chance: blocked || !fitReady && !tutorial ? 0 : tutorial ? 1 : humanDecisionChance(people, attempt),
+      id: "fit", available: !blocked && (tutorial || fitReady), cost: ENERGY_COSTS.offer, products, quantity, intentKind,
+      chance: blocked || !fitReady && !tutorial ? 0 : tutorial ? 1 : fittedPurchaseChance(state, { ...person, trust: Math.min(100, Number(person?.trust || 0) + 10) }),
       reason: blocked || (!fitReady && !tutorial ? "ความไว้ใจและความพร้อมยังไม่พอสำหรับเริ่มแผนสินค้า" : "ใช้ตัวช่วยเฉพาะที่ตรงกับสิ่งที่เขาอยากเปลี่ยน เลือกแล้วคุยแฟ้ม X ครั้งเดียว"),
       nextStep: blocked || !fitReady && !tutorial ? "เลือกเริ่มจากพฤติกรรมและติดตามก่อน" : "เขาตัดสินใจเอง ถ้าขอคิด เราค่อยนัดกลับมาคุยกัน"
     },
     {
-      id: "all", available: !blocked && fullMissing.length === 0, cost: ENERGY_COSTS.offer, products,
+      id: "all", available: !blocked && fullMissing.length === 0, cost: ENERGY_COSTS.offer, products, quantity, intentKind,
       chance: !fullChance ? 0 : attempt >= 2 ? 1 : attempt === 1 ? Math.min(0.97, fullChance + 0.15) : fullChance,
-      reason: blocked || (fullMissing.length ? `ยังไม่พร้อม: ${fullMissing.join(" · ")}` : "พร้อมคุย Full Start ทั้งอุปกรณ์และ RoutineX โดยใช้ตัวช่วยตามบริบทของคนนี้"),
-      nextStep: blocked || fullMissing.length ? "เริ่มจากพฤติกรรมหรือแผนที่พอดี ฝึกทักษะและดูแลให้เกิดผลก่อน" : "เมื่อเขาตกลง จะเริ่ม Day 0 และต้องติดตามผลจริงก่อนชวนเข้า Xcademy"
+      reason: blocked || (fullMissing.length ? `ยังไม่พร้อม: ${fullMissing.join(" · ")}` : intentKind === "ready" ? "เขากำลังหาโปรแกรมและเตรียมข้อมูลมาแล้ว จึงคุยแผนเต็มได้เลย" : "พร้อมคุยแผนเต็มทั้งอุปกรณ์และ RoutineX โดยใช้ตัวช่วยตามบริบทของคนนี้"),
+      nextStep: blocked || fullMissing.length ? "เริ่มจากพฤติกรรมหรือแผนที่พอดี ฝึกคุยกับคนและความรู้ แล้วกลับมาเมื่อเขาพร้อม" : "ถ้าเขาเลือกเริ่ม เรานัดดูแลต่อจากวันแรก"
     }
   ];
+}
+function fullRoutineRequirements(state, person) {
+  const missing = [];
+  const ready = person?.purchaseIntent?.kind === "ready";
+  const people = getSkillLevel3(state?.skills, "people"), knowledge = getSkillLevel3(state?.skills, "knowledge");
+  if (!ready && people < 3) missing.push(`ฝึกคุยกับคน Lv.${people}/3`);
+  if (!ready && knowledge < 3) missing.push(`ฝึกความรู้ Lv.${knowledge}/3`);
+  if (Number(person?.trust || 0) < 50) missing.push(`ความไว้ใจ ${Number(person?.trust || 0)}/50`);
+  if (Number(person?.readiness || 0) < 55) missing.push(`ความพร้อม ${Number(person?.readiness || 0)}/55`);
+  return missing;
 }
 function canOfferFullSetFastLane(state, person) {
   if (!person || state.organizationMode || state.runComplete) return false;
   if (!hasRoutineContext(person) || !(person.fitProducts ?? person.routinePlan?.products ?? []).length) return false;
-  const people = getSkillLevel3(state.skills, "people");
-  const knowledge = getSkillLevel3(state.skills, "knowledge");
-  const momentum = Number(state.monthStats?.successCases || 0) + Number(state.monthStats?.sales || 0);
-  return people >= 6 && knowledge >= 6 && successCaseCount(state) >= 2 && Number(person.trust || 0) >= 58 && Number(person.readiness || 0) >= 62 && (momentum >= 1 || Number(state.month || 0) >= 4);
+  return fullRoutineRequirements(state, person).length === 0;
 }
 function fastTrackEligible(state, person) {
   if (!person || state.organizationMode || state.runComplete) return false;
@@ -3508,11 +3567,12 @@ function getFastTrackChance(state, person) {
   if (!fastTrackEligible(state, person)) return 0;
   const people = getSkillLevel3(state.skills, "people");
   const knowledge = getSkillLevel3(state.skills, "knowledge");
-  const capability = (people - 6) * 0.055 + (knowledge - 6) * 0.045;
-  const trust = Math.max(0, Number(person.trust || 0) - 58) * 6e-3;
-  const readiness = Math.max(0, Number(person.readiness || 0) - 62) * 5e-3;
-  const proof = Math.min(0.14, successCaseCount(state) * 0.025);
-  return clamp(0.34 + capability + trust + readiness + proof, 0.28, 0.86);
+  const capability = Math.max(0, people - 3) * 0.045 + Math.max(0, knowledge - 3) * 0.035;
+  const trust = Math.max(0, Number(person.trust || 0) - 58) * 0.005;
+  const readiness = Math.max(0, Number(person.readiness || 0) - 62) * 0.004;
+  const proof = Math.min(0.08, successCaseCount(state) * 0.015);
+  const intent = person.purchaseIntent?.kind === "ready" ? 0.28 : 0;
+  return clamp(0.42 + capability + trust + readiness + proof + intent, 0.3, 0.97);
 }
 function runFullSetRoutineChoice(state, event, payload = {}) {
   if (payload.planId !== "all") return null;
@@ -3561,7 +3621,7 @@ function runFastTrack(state, payload = {}) {
   const chance = getFastTrackChance(state, person);
   const attempt = Number(person.decisionAttempts || 0);
   const protectedChance = attempt >= 2 ? 1 : attempt === 1 ? Math.min(0.97, chance + 0.15) : chance;
-  const success = deterministicRoll2(state, person.id, attempt + 71) < protectedChance;
+  const success = purchaseDecisionRoll(state, person, EVENTS4.FAST_TRACK_FULL_START) < protectedChance;
   const spent = { ...state, energy: Math.max(0, Number(state.energy || 0) - 1) };
   if (!success) {
     const prospects = spent.prospects.map((item) => item.id !== person.id ? item : {
@@ -3580,8 +3640,10 @@ function runFastTrack(state, payload = {}) {
       updatedAt: Date.now()
     }));
   }
+  const sold = recordSale(spent, "sale", person.id);
   const customer = {
     ...person,
+    initialOrderQuantity: sold.economy.lastTransaction.quantity, renewalQuantity: 1,
     id: `customer-${person.id}`,
     personId: person.personId || person.id,
     journey: "day28",
@@ -3609,13 +3671,8 @@ function runFastTrack(state, payload = {}) {
     prospects: spent.prospects.filter((item) => item.id !== person.id),
     customers: [...spent.customers || [], customer],
     selectedPersonId: customer.id,
-    economy: {
-      ...spent.economy || {},
-      personalXV: Number(spent.economy?.personalXV || 0) + FULL_START_XV,
-      productSales: Number(spent.economy?.productSales || 0) + FULL_START_BAHT,
-      sets: Number(spent.economy?.sets || 0) + 1,
-      lastTransaction: null
-    },
+    economy: sold.economy,
+    organization: sold.organization,
     monthStats: {
       ...monthStats,
       sales: Number(monthStats.sales || 0) + 1,
@@ -4581,7 +4638,7 @@ function correctFast(before, after, event) {
     return { ...c, journey: "day0", status: "⚡ Full Start · Day 0 · เริ่มดูแลผลลัพธ์จริง", activePlan: true, customerState: CUSTOMER_STATES.NEEDS_HELP, day: 0, followups: 0, adherence: 0, satisfaction: 50, result: null, successCase: false, referralReady: false, xvisorInterest: false, xvisorStage: null, candidateProgress: 0, selfDirected: false, measuredAgain: false };
   });
   if (!found) return after;
-  return { ...after, customers, monthStats: { ...after.monthStats || {}, successCases: Math.max(0, n(after.monthStats?.successCases) - 1) }, economy: { ...after.economy || {}, lastTransaction: { id: `tx-fast-${after.month}-${found.personId || found.id}-${Date.now()}`, kind: "sale", customerId: found.id, status: "SIMULATION", price: FULL_START_BAHT2, xv: FULL_START_XV2, items: [{ id: "xircle-starter", name: "Xircle Band + Scale", price: 4990, xv: 2495, cycle: "first" }, { id: "routinex", name: "RoutineX", price: ROUTINEX_BAHT2, xv: ROUTINEX_XV2, cycle: "monthly" }] } }, lastMessage: `✅ ${found.name} เริ่มครบชุดแล้ว · Day 0 · ต้องดูแลให้เกิดผลลัพธ์จริงก่อนเร่งเส้นทาง X-VISOR` };
+  return { ...after, customers, monthStats: { ...after.monthStats || {}, successCases: Math.max(0, n(after.monthStats?.successCases) - 1) }, lastMessage: `✅ ${found.name} เริ่มครบชุดแล้ว · Day 0 · ต้องดูแลให้เกิดผลลัพธ์จริงก่อนเร่งเส้นทาง X-VISOR` };
 }
 function receiptEconomy(state) {
   const value = calculateEconomy6(state);
@@ -4590,7 +4647,11 @@ function receiptEconomy(state) {
 function patchTx(before, after) {
   const tx = after?.economy?.lastTransaction;
   if (!tx || tx.id === before?.economy?.lastTransaction?.id) return after;
-  const b = receiptEconomy(before), a = receiptEconomy(after), saleXV = n(tx.xv), sale = Math.round(saleXV * a.retailRate), oldXV = n(b.personalXV), trueUp = Math.max(0, Math.round(oldXV * (a.retailRate - b.retailRate))), d3 = Math.max(0, a.channel3 - b.channel3), d2 = Math.max(0, a.channel2 - b.channel2), delta = a.projectedIncome - b.projectedIncome;
+  const b = receiptEconomy(before), a = receiptEconomy(after), oldXV = n(b.personalXV);
+  // Commission rounds once on the month's XV. Allocate that exact delta so
+  // a multi-set order crossing a tier cannot show a one-baht receipt mismatch.
+  const trueUp = Math.max(0, Math.round(oldXV * a.retailRate) - Math.round(oldXV * b.retailRate));
+  const sale = a.channel1 - b.channel1 - trueUp, d3 = Math.max(0, a.channel3 - b.channel3), d2 = Math.max(0, a.channel2 - b.channel2), delta = a.projectedIncome - b.projectedIncome;
   return { ...after, economy: { ...after.economy || {}, lastTransaction: { ...tx, incomeBefore: b.projectedIncome, incomeAfter: a.projectedIncome, incomeDelta: delta, salesBahtBefore: b.personalSalesBaht, salesBahtAfter: a.personalSalesBaht, tierBefore: b.tier, tierAfter: a.tier, incomeBreakdown: { saleChannel1: sale, tierTrueUp: trueUp, channel2Delta: d2, channel3Delta: d3, total: delta } } } };
 }
 function finalizeMonthOpeningReport(state) {
@@ -4948,7 +5009,7 @@ function captureMonthlyGrowth(before, after) {
   };
 }
 function serializeState6(state) {
-  return serializeState5(sanitizeXgen(normalizeNpcIdentities(state)));
+  return serializeState5(sanitizeXgen(normalizeNpcIdentities(preparePurchaseIntents(state))));
 }
 function parseSavedState6(raw) {
   return sanitizeXgen(parseSavedState5(raw));
@@ -5021,7 +5082,7 @@ function completeLive(state) {
     attemptedIds.push(id);
     const prepared = person.journey === "baseline" ? applyRoutine(person, "fit") : person;
     next = { ...next, prospects: updatePerson(next.prospects, id, () => prepared) };
-    const accepts = deterministicRoll(state, EVENTS.OFFER_PROSPECT, id) < humanDecisionChance(peopleLevel, Number(person.decisionAttempts || 0));
+    const accepts = purchaseDecisionRoll(state, prepared, EVENTS.OFFER_PROSPECT) < fittedPurchaseChance(state, prepared);
     if (!accepts) {
       declinedIds.push(id);
       next = { ...next, prospects: updatePerson(next.prospects, id, (item) => ({
@@ -5120,11 +5181,11 @@ function reduceGameWithRenewals(currentState, event, payload = {}) {
   if (Number(after.monthOpeningReport?.month) === Number(after.month) && !after.monthOpeningReport.accountingFinalized && (event === EVENTS.START_NEXT_MONTH || after.organizationMode && event === EVENTS.END_MONTH)) after = finalizeMonthOpeningReport(after);
   return advanceEncounters(state, after, event);
 }
-function reduceGame7(state, event, payload = {}) { return normalizeNpcIdentities(reduceGameWithRenewals(state, event, payload)); }
+function reduceGame7(state, event, payload = {}) { return normalizeNpcIdentities(reduceGameWithRenewals(preparePurchaseIntents(state), event, payload)); }
 function makeInitialState7(options = {}) { return normalizeNpcIdentities(initEncounters(makeInitialState6(options), options.seed)); }
 function makeNewGamePlusState6(options = {}) { return normalizeNpcIdentities(initEncounters(makeNewGamePlusState5(options), options.seed)); }
 function parseSavedState7(raw) {
-  const parsed = initEncounters(parseSavedState6(raw));
+  const parsed = preparePurchaseIntents(initEncounters(parseSavedState6(raw)));
   const state = normalizeNpcIdentities(parsed && !parsed.organizationMode && !parsed.settlements?.[String(parsed.month)] ? attributeTeamSelfUse(parsed) : parsed);
   if (!state) return state;
   const staleMessage = state.lastEvent === "ROUTINE_CONSENT_REQUIRED" || String(state.lastMessage || "").includes("ยังไม่ได้อนุญาตให้ดูข้อมูล · ขออนุญาตก่อน แล้วคุยแผนเดิมต่อได้");

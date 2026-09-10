@@ -2,6 +2,7 @@ import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSIO
 import { getSkillSnapshot } from "./game-progression.js";
 import { getEconomyView, getMonthlyHistory, getMonthComparison } from "./game-presentation.js";
 import { isActionAvailable } from "./game-actions.js";
+import { getPurchaseIntentCopy } from "./game-story.js";
 
 const growthNumber = value => value === null || value === undefined ? "ไม่เคยบันทึก" : Math.round(value).toLocaleString("th-TH");
 const growthValue = (value, unit = "") => value === null || value === undefined ? "ไม่เคยบันทึก" : `${unit === "baht" ? "฿" : ""}${growthNumber(value)}${unit && unit !== "baht" ? ` ${unit}` : ""}`;
@@ -168,7 +169,8 @@ function rowCard(row, state2) {
   if (kind === "customer") {
     return `<article class="people-card"${renewal ? ` data-renewal-status="${renewal.status}"` : ""}><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>ลูกค้า · ❤️ ${fmt(person.satisfaction)}%</span></div><b>${escapeHtml2(renewal?.label || person.status || "")}</b></div><dl><div><dt>ความพอใจ</dt><dd>${fmt(person.satisfaction)}%</dd></div><div><dt>Routine</dt><dd>${person.selfDirected ? "เดินเองได้" : "กำลังดูแล"}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${renewal ? `<p data-renewal-note>${escapeHtml2(renewal.detail)}</p>` : ""}${actionHtml || (renewal ? "" : "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>")}${careHtml}</article>`;
   }
-  return `<article class="people-card"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.journey || "Prospect")}</span></div><b>${escapeHtml2(person.status || "")}</b></div><dl><div><dt>เปิดใจ</dt><dd>${fmt(person.readiness)}%</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml}</article>`;
+  const intent = getPurchaseIntentCopy(person);
+  return `<article class="people-card"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.journey || "Prospect")}</span></div><b>${escapeHtml2(intent?.label || person.status || "")}</b></div><dl><div><dt>เปิดใจ</dt><dd>${fmt(person.readiness)}%</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${intent ? `<p data-purchase-intent>“${escapeHtml2(intent.line)}”</p>` : ""}${actionHtml}</article>`;
 }
 function renderPeople(focusId = peopleFocusId) {
   const state2 = stateNow();

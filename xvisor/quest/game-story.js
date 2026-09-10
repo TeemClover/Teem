@@ -6,6 +6,24 @@ const mentor = (key, line, tip = "", mood = "warm") => ({
   key, speaker: "ทีม", portrait: "teem", line, tip, mood
 });
 
+// Interest is a conversation cue, never a receipt or another customer.
+export function getPurchaseIntentCopy(person) {
+  const intent = person?.purchaseIntent;
+  if (intent?.kind !== "ready" || person.journey === "waiting" || person.activePlan || person.careOnly) return null;
+  const quantity = Number(intent.requestedQuantity);
+  const family = Number.isInteger(quantity) && quantity > 1 && quantity <= 3;
+  return {
+    label: family ? `กำลังหาโปรแกรมให้ที่บ้าน · สนใจ ${quantity} ชุด` : "กำลังหาโปรแกรมอยู่",
+    line: family ? `กำลังหาโปรแกรมอยู่พอดี อยากเริ่มให้ตัวเองกับคนที่บ้านรวม ${quantity} ชุด ลองเล่าให้ฟังหน่อย`
+      : "กำลังหาโปรแกรมอยู่พอดี อยากฟังว่าจะเริ่มยังไง"
+  };
+}
+
+export function getTransactionQuantityLabel(transaction) {
+  const quantity = Number(transaction?.quantity);
+  return Number.isInteger(quantity) && quantity > 1 ? `${quantity} ชุด` : "";
+}
+
 const BEATS = Object.freeze({
   opening: ["ผมทีม จะช่วยพาลองทีละอย่างนะ เริ่มจากคนหนึ่งคน แล้วมาดูว่าเราจะสร้างอะไรต่อได้", "เริ่มจากดูแลตัวเอง แล้วค่อยไปพบคนแรกด้วยกัน"],
   pre_day0_band: ["เริ่มจากดูแลตัวเองก่อนนะ ใส่สายรัด แล้วมาดูเรื่องราวระหว่างวันกัน", "Xircle Band ช่วยดูการขยับและสัญญาณระหว่างวัน"],
@@ -113,6 +131,16 @@ function selectStoryBeat(state = {}, content = {}, context = {}) {
   if (!state.organizationMode && !state.career?.xgenExamPassed && (state.career?.xgenQualifiedSingleMonth || state.career?.xgenQualificationRule === "single-month")) {
     return mentor("xgen-ready", "ผลงานเดือนหนึ่งถึงเกณฑ์ XGEN แล้ว เหลือทบทวนและสอบให้ผ่านก่อนเปิดช่อง ③", "เกณฑ์คือ 3,000,000 XV ในเดือนเดียว เปิดรายละเอียดเพื่อดูวิธีนับผลงานได้");
   }
+  const purchase = state.economy?.lastTransaction;
+  const quantityLabel = getTransactionQuantityLabel(purchase);
+  const freshPurchase = state.stage === "m1_sale_receipt" || state.stage === "management" && context.previousState
+    && Number(state.month) === Number(context.previousState.month)
+    && purchase?.id !== context.previousState.economy?.lastTransaction?.id
+    && ["CHOOSE_MANAGEMENT_ROUTINE", "OFFER_PROSPECT", "MAKE_OFFER"].includes(context.event);
+  if (quantityLabel && freshPurchase && (purchase.items || []).some(item => String(item.id).startsWith("routinex"))) {
+    const buyer = [...state.customers || [], ...state.prospects || []].find(person => person.id === purchase.customerId || person.personId === purchase.customerId);
+    return mentor(`purchase:${purchase.id}`, `${buyer?.name || "เขา"}เลือกเริ่มด้วยกัน ${quantityLabel}แล้ว ค่อย ๆ ดูแลสิ่งที่เขาอยากเปลี่ยนต่อจากนี้`, "รอบถัดไปติดตามแผนของเจ้าตัว 1 ชุด", "happy");
+  }
   if (CUSTOMER_STAGES.has(state.stage)) return customerBeat(state, content);
   if (["CHOOSE_MANAGEMENT_ROUTINE", "OFFER_PROSPECT", "MAKE_OFFER"].includes(context.event) && context.previousState && state.stage === "management") {
     const id = context.payload?.id || context.previousState.selectedPersonId;
@@ -150,7 +178,7 @@ function selectStoryBeat(state = {}, content = {}, context = {}) {
     }
   }
   const repeat = changedTransaction(state, context);
-  if (repeat) return mentor(`repeat:${repeat.id}`, "เขาเลือกกลับมาซื้ออีกแล้ว รายได้ช่อง ① จึงมีส่วนจากลูกค้าคนเดิมด้วย", "การดูแลช่วยเพิ่มโอกาสให้เขาอยู่ต่อ แต่เขายังเป็นคนตัดสินใจ", "happy");
+  if (repeat) return mentor(`repeat:${repeat.id}`, `เขาเลือกกลับมาซื้อ${getTransactionQuantityLabel(repeat) ? ` ${getTransactionQuantityLabel(repeat)}` : "อีก"}แล้ว รายได้ช่อง ① จึงมีส่วนจากลูกค้าคนเดิมด้วย`, "การดูแลช่วยเพิ่มโอกาสให้เขาอยู่ต่อ แต่เขายังเป็นคนตัดสินใจ", "happy");
   if (state.stage === "exam_summary") {
     const passed = Object.values(state.exam?.results || {}).filter(Boolean).length === 5;
     return mentor(passed ? "exam-passed" : "exam-summary", passed ? "ผ่านครบแล้วนะ ไปพบคนแรกด้วยกัน" : "ข้อไหนยังไม่ผ่าน เราค่อยทบทวนตรงนั้น ไม่ต้องเริ่มใหม่ทั้งหมด", "", passed ? "proud" : "warm");

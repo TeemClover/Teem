@@ -8,7 +8,7 @@ import {
   getCurrentExamQuestion
 } from "./game-data.js";
 import { getSkillSnapshot, getXleadProgress } from "./game-progression.js";
-import { getStoryBeat } from "./game-story.js";
+import { getStoryBeat, getPurchaseIntentCopy, getTransactionQuantityLabel } from "./game-story.js";
 var action = (label, event, options = {}) => ({ label, event, ...options });
 var links = [
   ["ดูข้อมูล Xircle", "/xircle/hardware/"],
@@ -64,11 +64,12 @@ function examContent(state) {
 }
 function routineContent(state, management = false) {
   const person = selectedPerson(state);
+  const intent = getPurchaseIntentCopy(person);
   const unavailable = ["ROUTINE_TOO_MUCH", "ROUTINE_UNAVAILABLE"].includes(state.lastEvent);
   const labels = {
     control: ["เริ่มจากสิ่งที่ทำเอง", "เลือกพฤติกรรมเดียว แล้วนัดติดตาม"],
-    fit: ["เริ่มแผนที่พอดี", "เลือกตัวช่วยที่เหมาะ แล้วคุยแฟ้ม X ครั้งเดียว"],
-    all: ["เริ่มแผนเต็มเมื่อพร้อม", "ต้องมีประสบการณ์และความพร้อมของทั้งสองฝ่าย"]
+    fit: ["คุยแฟ้ม X · แผนที่พอดี", "เลือกตัวช่วยที่ตรงกับสิ่งที่เขาอยากเปลี่ยน"],
+    all: ["คุยแฟ้ม X · แผนเต็ม", "คุยภาพรวมอุปกรณ์และ RoutineX แล้วนัดดูแลต่อ"]
   };
   return {
     scene: "routine_builder",
@@ -77,11 +78,12 @@ function routineContent(state, management = false) {
     title: `แบบไหนพอดีกับ${person?.name || "คนนี้"}`,
     reason: unavailable ? state.lastMessage || "ดูเงื่อนไขของแผน แล้วเลือกสิ่งที่พร้อมทำตอนนี้" : "ดูความพร้อมก่อนเลือก เขายังเป็นคนตัดสินใจว่าจะเริ่มหรือไม่",
     speaker: person?.name || "ลูกค้า",
-    dialogue: `“${person?.quote || "อยากเริ่มจากสิ่งที่ทำได้จริง"}”`,
+    dialogue: `“${intent?.line || person?.quote || "อยากเริ่มจากสิ่งที่ทำได้จริง"}”`,
     routineBuilder: {
       fitProducts: person?.fitProducts || [],
       choices: getRoutineChoices(state, person).map(choice => ({
-        ...choice, label: labels[choice.id][0], detail: labels[choice.id][1]
+        ...choice, label: labels[choice.id][0],
+        detail: Number(choice.quantity) > 1 ? `${labels[choice.id][1]} · เสนอ ${choice.quantity} ชุดตามที่เขาสนใจ` : labels[choice.id][1]
       }))
     },
     actions: [],
@@ -506,7 +508,7 @@ function getStageContent(state) {
       scene: "sale",
       progress: 73,
       eyebrow: "เขาเลือกเริ่มแล้ว",
-      title: `${name}เลือกเริ่ม RoutineX`,
+      title: `${name}เลือกเริ่ม RoutineX${getTransactionQuantityLabel(transaction) ? ` ${getTransactionQuantityLabel(transaction)}` : ""}`,
       reason: "รายการขายจบแล้ว แต่งานดูแลเพิ่งเริ่ม",
       speaker: "ทีม",
       dialogue: "เขาเลือกเริ่มแล้ว เก็บยอดแรกไว้ แล้วดูแลกันต่อให้ดีนะ",

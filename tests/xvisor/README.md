@@ -33,3 +33,8 @@ The old `/xvisor/quest/quality-preview.html` link now opens the actual game.
 This directory is excluded from Vercel deployment by `.vercelignore`. Other
 static publishers must also exclude `tests/xvisor/` and `docs/xvisor/` from
 their publish output. Tests stay in Git for CI and future maintenance.
+
+`node tests/xvisor/game-opportunity.e2e.mjs` verifies natural Month 2 full-plan
+unlocks, ready buyers, real one/two/three-kit orders, refusal, receipts and reload.
+`game-npc-visual.e2e.mjs` also verifies real action-driven cast rotation, mixed
+visual styles, stable old faces and all 12 hairstyle renderings.

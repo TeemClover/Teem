@@ -4,7 +4,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { makeInitialState, serializeState, STAGES, SAVE_KEY } from '../../xvisor/quest/game-data.js';
-import { createPerson, getPersonAppearance } from '../../xvisor/quest/game-people.js';
+import { createPerson, getPersonAppearance, NPC_HAIR_STYLES } from '../../xvisor/quest/game-people.js';
+import { getSceneRosterStyle } from '../../xvisor/quest/game-world.js';
 
 const moduleName = process.env.XVISOR_PLAYWRIGHT || 'playwright';
 const { chromium } = await import(path.isAbsolute(moduleName) ? pathToFileURL(moduleName).href : moduleName);
@@ -17,13 +18,13 @@ const check = message => { report.checks.push(message); console.log(`PASS ${mess
 
 let seed = 93;
 const people = [];
-for (let index = 1; index <= 64; index++) {
+for (let index = 1; index <= 160; index++) {
   const result = createPerson({ seed, index, usedNames: people.map(person => person.name) });
   people.push(result.person);
   seed = result.nextSeed;
 }
 const cohort = people.slice(0, 12);
-const styles = ['short', 'long', 'ponytail', 'bob', 'bun', 'curly', 'spiky', 'buzz'];
+const styles = NPC_HAIR_STYLES;
 const samples = styles.map(style => people.find(person => person.appearance.hairStyle === style));
 assert.ok(samples.every(Boolean));
 assert.ok(new Set(cohort.slice(0, 5).map(person => person.appearance.hairStyle)).size >= 3);
@@ -77,6 +78,32 @@ try {
       assert.ok((await page.locator('#gameDialog').textContent()).includes(cohort[0].name));
       await screenshot(page, `people-${width}`);
       await page.locator('[data-v9-close]').click();
+      const cast = () => page.locator('#worldCanvas').evaluate(canvas => JSON.parse(canvas.dataset.rosterIds || '[]'));
+      const beforeCast = await cast();
+      assert.ok(beforeCast.length >= 3);
+      const looks = ids => new Set(ids.map(id => cohort.find(person => `team-${person.id}` === id)).filter(Boolean).map(getSceneRosterStyle));
+      assert.equal(looks(beforeCast).size, 2, 'the visible team mixes flowing and cropped silhouettes');
+      const originalLooks = savedBefore.team.map(person => person.appearance);
+      let lastCast = beforeCast;
+      for (let action = 1; action <= 2; action++) {
+        await page.locator('#choiceToolbar [data-choice-work]').click();
+        await page.locator('#gameDialog [data-work-event="TRAIN_SKILL"][data-skill="knowledge"]').click();
+        await page.waitForFunction(({ key, energy }) => JSON.parse(localStorage.getItem(key))?.energy === energy, { key: SAVE_KEY, energy: 28 - action });
+        await page.waitForFunction(previous => {
+          const ids = JSON.parse(document.querySelector('#worldCanvas').dataset.rosterIds || '[]');
+          return ids.length >= 3 && JSON.stringify(ids) !== JSON.stringify(previous);
+        }, lastCast, { timeout: 8000 });
+        lastCast = await cast();
+        assert.equal(looks(lastCast).size, 2);
+        assert.deepEqual((await page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE_KEY)).team.map(person => person.appearance), originalLooks);
+        await screenshot(page, `rotated-team-${width}-${action}`, '#worldCanvas');
+      }
+      assert.ok(lastCast.some(id => !beforeCast.includes(id)), 'real actions bring other team members into the room');
+      await page.reload();
+      await page.locator('body[data-game-boot="ready"]').waitFor({ state: 'attached' });
+      await page.waitForFunction(() => JSON.parse(document.querySelector('#worldCanvas').dataset.rosterIds || '[]').length >= 3);
+      assert.deepEqual(await cast(), lastCast);
+      check(`${width}px two real training actions rotate a mixed team cast; each face and the saved cast stay stable on reload`);
 
       const customer = { ...samples[1], journey: 'discovery', consent: true, measured: true, fitProducts: ['gus'] };
       const initial = makeInitialState({ seed: 93 });
@@ -117,8 +144,8 @@ try {
           document.body.append(gallery); window.scrollTo(0, 0);
         }, samples);
         await screenshot(page, 'all-hair-standing-seated-portraits', '#npcGallery');
-        assert.equal(await page.locator('#npcGallery article').count(), 8);
-        check('all 8 generated hair styles have production portrait, standing and seated comparison proof');
+        assert.equal(await page.locator('#npcGallery article').count(), styles.length);
+        check(`all ${styles.length} generated hair styles have production portrait, standing and seated comparison proof`);
       }
     } finally { await context.close(); }
   }

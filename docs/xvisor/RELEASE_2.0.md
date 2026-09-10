@@ -49,7 +49,7 @@ test selectors and test saves remain in `tests/xvisor/`, outside player routes.
 ## Data and release contracts
 
 Display version is `2.0`; the complete runtime import map and CSS use
-`2.0-growth1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
+`2.0-opportunity1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
 when integrating. Browser module filenames remain canonical.
 
 Keep `SAVE_KEY = xvisorQuestContinueV4`, save schema 6, `SCORE_VERSION = 1.0b`
@@ -255,3 +255,37 @@ Focused member proof: `/tmp/xvisor-growth-team-followup/`. Its six initial
 purchases and two certifications use actual reducer events before the browser
 opens the month and clicks care, follow-up and reload on 1440/390px screens.
 All browser contexts are isolated, with API writes blocked.
+
+
+## Reachable full plans and a changing cast — 2.0-opportunity1
+
+Full plans now become available through an ordinary Month 2 discovery path with
+People and Knowledge at level 3. The old two-success-case and monthly-momentum
+requirements are removed. Context, product fit, trust and readiness still matter;
+a natural conversation reaches the revised minimums, while skill and trust
+improve the actual decision chance. Locked choices show both the reason and the
+next step. Behavior-only cases remain a valid path without an invented purchase.
+
+A small share of newly encountered, product-relevant people are already looking
+for a program. Their own dialogue explains the interest, and some want two or
+three initial kits for their household. Intent and quantity persist per person;
+reloading cannot reroll them. A successful purchase records actual quantity, baht,
+XV and commission in the receipt and short celebration. Multiple kits remain one
+customer identity, with one personal subscription considered at the next renewal
+cycle. Further household care is not silently converted into extra people or
+three automatic recurring charges. Receipt components reconcile exactly to the
+rounded commission change, including a family order crossing a retail tier.
+
+Scenes rotate actual members using saved actions and the month, instead of always
+taking the first five. The selected person stays recognizable, while other places
+balance flowing/cropped hairstyles and clothing when the roster has enough
+variety. The existing complete v2 appearances are preserved. New NPCs can use 12
+hairstyles, adding wavy, half-up, sidepart and pixie. Rendering, reloading, mute and
+scene-completion events do not arbitrarily change a person's face or the cast.
+
+Validation passed 185 unit checks and 102 browser checks: 11 natural full-plan /
+household-order checks, 7 cast/art checks, 10 story-flow checks, 31 full-experience
+checks, 6 loading checks, 19 action-scene/Live checks and 18 recurring-base checks.
+Proof: `/tmp/xvisor-opportunity-{offers,npc,story,experience,loading,scenes,retention}`.
+All browser saves are isolated and API traffic is blocked. Continue-save and
+high-score keys are unchanged.

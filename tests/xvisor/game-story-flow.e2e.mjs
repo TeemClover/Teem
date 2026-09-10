@@ -286,7 +286,7 @@ try {
   });
 
   await check('A prepared full plan can start in one choice and a refusal preserves the cooldown', async () => {
-    for (const seed of [5, 1]) {
+    for (const seed of [5, 2]) {
       const before = fullFixture(seed);
       const expected = reduceGame(before, EVENTS.CHOOSE_MANAGEMENT_ROUTINE, { planId: 'all' });
       assert.equal(getRoutineChoices(before).find(item => item.id === 'all').available, true);

@@ -34,7 +34,7 @@ import {
 } from "./game-progression.js";
 import { getStageContent, TERM_HELP } from "./game-copy.js";
 import { createAudio } from "./game-audio.js";
-import { getStoryBeat } from "./game-story.js";
+import { getStoryBeat, getTransactionQuantityLabel } from "./game-story.js";
 import { paintStoryPortrait } from "./game-portrait.js";
 import { createActionPeek } from "./game-action-peek.js";
 import { getEncounterCopy } from "./game-narrative-data.js";
@@ -419,7 +419,8 @@ function renderRoutineBuilder(container) {
     button.dataset.available = String(available);
     button.innerHTML = `<span class="routine-choice__top"><b aria-hidden="true">${{ control: "🌱", fit: "🧩", all: "✦" }[id] || "→"}</b><strong>${escapeHtml(label)}</strong><small>${choice.cost ? `⚡ ${choice.cost}` : "ไม่ใช้พลังงาน"}</small></span>
       <span>${escapeHtml(detail || "")}</span>
-      ${!available && choice.reason ? `<span class="routine-choice__reason">${escapeHtml(choice.reason)}</span>` : choice.nextStep ? `<small class="routine-choice__next">${escapeHtml(choice.nextStep)}</small>` : ""}`;
+      ${!available && choice.reason ? `<span class="routine-choice__reason">${escapeHtml(choice.reason)}</span>` : ""}
+      ${choice.nextStep ? `<small class="routine-choice__next">${escapeHtml(choice.nextStep)}</small>` : ""}`;
     choices.appendChild(button);
   });
   container.appendChild(choices);
@@ -440,13 +441,16 @@ function renderReceipt(container, transaction) {
   if (!transaction) return;
   const receipt = document.createElement("div");
   receipt.className = "receipt receipt--inline";
-  const itemRows = (transaction.items || []).map((item) => `<div><span>${escapeHtml(item.name)}${item.cycle === "monthly" ? " · รายเดือน" : " · ครั้งแรกครั้งเดียว"}</span><strong>${formatBaht(item.price)} · ${formatNumber(item.xv)} XV</strong></div>`).join("");
+  const quantityLabel = getTransactionQuantityLabel(transaction);
+  const itemRows = (transaction.items || []).map((item) => `<div><span>${escapeHtml(item.name)}${getTransactionQuantityLabel(item) ? ` · ${escapeHtml(getTransactionQuantityLabel(item))}` : ""}${item.cycle === "monthly" ? " · รายเดือน" : " · ครั้งแรกครั้งเดียว"}</span><strong>${formatBaht(item.price)} · ${formatNumber(item.xv)} XV${getTransactionQuantityLabel(item) ? " / ชุด" : ""}</strong></div>`).join("");
   receipt.innerHTML = `
+    ${quantityLabel ? `<div data-receipt-quantity><span>เริ่มด้วยกัน</span><strong>${escapeHtml(quantityLabel)}</strong></div>` : ""}
     ${itemRows}
     <div class="receipt__total"><span>ยอดรวม</span><strong>${formatBaht(transaction.price)} · ${formatNumber(transaction.xv)} XV</strong></div>
     <div><span>รายได้ก่อนรายการนี้</span><strong>${formatBaht(transaction.incomeBefore)}</strong></div>
     <div><span>รายได้เพิ่มจากรายการนี้</span><strong>${signedBaht(transaction.incomeDelta)}</strong></div>
     <div><span>① รายได้เดือนนี้หลังรายการ</span><strong>${formatBaht(transaction.incomeAfter)}</strong></div>
+    ${quantityLabel ? '<small>รอบถัดไปติดตามแผนของเจ้าตัว 1 ชุด</small>' : ""}
     <small>${escapeHtml(commercialStatusLabel(transaction.status))} · ไม่ใช่การรับประกันรายได้จริง</small>`;
   container.appendChild(receipt);
 }
@@ -465,7 +469,7 @@ function getRoutineSaleResult(current, previous = null) {
   const income = Number(transaction.incomeDelta);
   const incomeKnown = transaction.incomeDelta != null && Number.isFinite(income);
   return {
-    transaction, person, repeat: transaction.kind === "reorder",
+    transaction, person, repeat: transaction.kind === "reorder", quantityLabel: getTransactionQuantityLabel(transaction),
     incomeLabel: incomeKnown ? `รายได้เพิ่ม ${signedBaht(income)}` : "บันทึกรายการแล้ว",
     income: incomeKnown ? signedBaht(income) : "—"
   };
@@ -495,8 +499,9 @@ function renderBriefResults() {
     const result = document.createElement("section");
     result.className = "routine-sale-result";
     result.dataset.transactionId = sale.transaction.id;
+    if (sale.quantityLabel) result.dataset.quantity = String(sale.transaction.quantity);
     result.setAttribute("aria-label", "ผลขาย RoutineX");
-    result.innerHTML = `<canvas class="routine-sale-result__portrait" width="192" height="192" aria-hidden="true"></canvas><div class="routine-sale-result__copy"><span>${sale.repeat ? "กลับมาต่อด้วยกัน" : "เริ่มแผนด้วยกันแล้ว"} <b aria-hidden="true">✓</b></span><strong>${escapeHtml(sale.person?.name || "ลูกค้า")} ${sale.repeat ? "กลับมาต่อ" : "เริ่ม"} RoutineX</strong></div><div class="routine-sale-result__income"><small>รายได้เพิ่ม</small><strong>${escapeHtml(sale.income)}</strong></div><button type="button" data-open-receipt>ดูใบสรุป <span aria-hidden="true">→</span></button>`;
+    result.innerHTML = `<canvas class="routine-sale-result__portrait" width="192" height="192" aria-hidden="true"></canvas><div class="routine-sale-result__copy"><span>${sale.repeat ? "กลับมาต่อด้วยกัน" : "เริ่มแผนด้วยกันแล้ว"} <b aria-hidden="true">✓</b></span><strong>${escapeHtml(sale.person?.name || "ลูกค้า")} ${sale.repeat ? "กลับมาต่อ" : "เริ่ม"} RoutineX${sale.quantityLabel ? ` · ${escapeHtml(sale.quantityLabel)}` : ""}</strong></div><div class="routine-sale-result__income"><small>รายได้เพิ่ม</small><strong>${escapeHtml(sale.income)}</strong></div><button type="button" data-open-receipt>ดูใบสรุป <span aria-hidden="true">→</span></button>`;
     stack.appendChild(result);
     paintStoryPortrait(result.querySelector("canvas"), { portrait: "customer" }, sale.person);
   }
@@ -684,7 +689,8 @@ function renderDialogue() {
     liveSummary.innerHTML = `<div class="live-result__heading"><strong>Live ครั้งนี้</strong><span>คุย ${liveReport.attempted} คน · เริ่มแผน ${liveReport.sales} คน</span></div><p>รายได้เพิ่ม ${signedBaht(liveReport.transactions.reduce((sum, item) => sum + Number(item.incomeDelta || 0), 0))}</p><details><summary>ดูผลรายคน</summary>${liveReport.attemptedIds.map(id => {
       const sold = !liveReport.declinedIds.includes(id);
       const index = liveReport.attemptedIds.filter(item => !liveReport.declinedIds.includes(item)).indexOf(id);
-      return `<div class="live-result__person"><span>${escapeHtml(peopleName(id))}</span>${sold ? `<button type="button" data-live-receipt="${index}">เริ่มแผน · ดูใบสรุป →</button>` : "<small>ขอเวลา · คุยต่อเดือนหน้า</small>"}</div>`;
+      const quantityLabel = getTransactionQuantityLabel(liveReport.transactions[index]);
+      return `<div class="live-result__person"><span>${escapeHtml(peopleName(id))}</span>${sold ? `<button type="button" data-live-receipt="${index}">เริ่ม${quantityLabel ? ` ${escapeHtml(quantityLabel)}` : "แผน"} · ดูใบสรุป →</button>` : "<small>ขอเวลา · คุยต่อเดือนหน้า</small>"}</div>`;
     }).join("")}</details>`;
     details.appendChild(liveSummary);
   }

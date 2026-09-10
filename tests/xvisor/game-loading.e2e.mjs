@@ -10,7 +10,7 @@ const moduleName = process.env.XVISOR_PLAYWRIGHT || 'playwright';
 const { chromium } = await import(path.isAbsolute(moduleName) ? pathToFileURL(moduleName).href : moduleName);
 const base = process.env.XVISOR_BASE_URL || 'http://127.0.0.1:4186';
 const output = process.env.XVISOR_PROOF_DIR || '/tmp/xvisor-loading-proof';
-const release = process.env.XVISOR_EXPECTED_RELEASE || '2.0-growth1';
+const release = process.env.XVISOR_EXPECTED_RELEASE || '2.0-opportunity1';
 await mkdir(output, { recursive: true });
 const report = { checks: [], screenshots: [], errors: [], unversionedRequests: [], mismatchedRequests: [], moduleRequests: [] };
 const browser = await chromium.launch({ headless: true, ...(process.env.XVISOR_CHROME ? { executablePath: process.env.XVISOR_CHROME } : {}) });

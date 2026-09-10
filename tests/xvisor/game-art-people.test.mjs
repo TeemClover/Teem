@@ -26,8 +26,8 @@ function drawing(appearance, options = {}) {
   return brush.calls;
 }
 
-test('all eight explicit hair styles produce different drawn geometry, standing and seated', () => {
-  const styles = ['short', 'long', 'ponytail', 'bob', 'bun', 'curly', 'spiky', 'buzz'];
+test('all twelve explicit hair styles produce different drawn geometry, standing and seated', () => {
+  const styles = ['short', 'long', 'ponytail', 'bob', 'bun', 'curly', 'spiky', 'buzz', 'wavy', 'half-up', 'sidepart', 'pixie'];
   for (const seated of [false, true]) {
     const drawings = styles.map(hairStyle => JSON.stringify(drawing({ ...palette, hairStyle }, { seated })));
     assert.equal(new Set(drawings).size, styles.length, `seated=${seated}`);

@@ -182,7 +182,7 @@ test('routine copy passes actual availability and costs through, preserving acti
   const before = JSON.stringify(state);
   assert.equal(content.routineEvent, EVENTS.CHOOSE_ROUTINE);
   assert.deepEqual(content.actions, []);
-  assert.deepEqual(content.routineBuilder.choices.map(({ id, available, cost, reason, nextStep, products, chance }) => ({ id, available, cost, reason, nextStep, products, chance })), expected);
+  assert.deepEqual(content.routineBuilder.choices.map(({ label, detail, ...choice }) => choice), expected);
   for (const choice of content.routineBuilder.choices) assert.ok(choice.label && choice.detail);
   getStoryBeat(state, content);
   assert.equal(JSON.stringify(state), before);
