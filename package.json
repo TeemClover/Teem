@@ -36,11 +36,17 @@
     "test:ako:ui": "node tests/ako/kitchen.e2e.mjs",
     "test:ako:handoff": "node tests/ako/handoff.e2e.mjs",
     "test:frontdoor:backend": "node --test assets/front-door/*.test.mjs core7/tests/frontdoor-backend.test.mjs core7/tests/frontdoor-outcomes.test.mjs core7/tests/frontdoor-outcome-edge.test.mjs core7/tests/analytics.test.mjs",
-    "test:xvisor": "node --test xvisor/quest/game-release.test.mjs xvisor/quest/game-ui.test.mjs",
+    "test:xvisor": "node --test --experimental-test-module-mocks tests/xvisor/*.test.mjs",
     "build:ako": "node tools/build-ako-recipes.mjs",
     "test:ako:sharing": "node tests/ako/sharing.e2e.mjs",
     "test:stat": "node --test tests/stat/*.test.mjs",
-    "test:stat:ui": "node tests/frontdoor/stat.e2e.mjs"
+    "test:stat:ui": "node tests/frontdoor/stat.e2e.mjs",
+    "test:xvisor:ui": "node tests/xvisor/game-experience.e2e.mjs",
+    "test:xvisor:loading": "node tests/xvisor/game-loading.e2e.mjs",
+    "test:xvisor:income": "node tests/xvisor/game-income-layout.e2e.mjs",
+    "test:xvisor:entry": "node tests/xvisor/game-player-entry.e2e.mjs",
+    "test:xvisor:story": "node tests/xvisor/game-story-flow.e2e.mjs",
+    "test:xvisor:scenes": "node tests/xvisor/game-v2-scenes.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

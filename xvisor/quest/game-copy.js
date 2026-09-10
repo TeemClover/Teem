@@ -4,10 +4,11 @@ import {
   STAGES,
   calculateEconomy,
   getBestNextActions,
+  getRoutineChoices,
   getCurrentExamQuestion
 } from "./game-data.js";
-import { commercialStatusLabel, TUTORIAL_OFFER } from "./game-commercial-config.js";
 import { getSkillSnapshot, getXleadProgress } from "./game-progression.js";
+import { getStoryBeat } from "./game-story.js";
 var action = (label, event, options = {}) => ({ label, event, ...options });
 var links = [
   ["ดูข้อมูล Xircle", "/xircle/hardware/"],
@@ -22,20 +23,20 @@ function practiceContent(state, day) {
   const feedback = state.preseason.practiceFeedback;
   const selected = state.preseason.selectedPractice;
   const choices = isDay7 ? [["buy_more", "เพิ่มสินค้าอีกตัวทันที"], ["context", "ฟังบริบท แล้วเลือกสิ่งเล็กที่ทำได้จริง"], ["ignore", "รอดูต่อโดยไม่คุยอะไร"]] : [["numbers", "สรุปจากตัวเลขทันที"], ["ask_context", "ถามบริบทชีวิตก่อน"], ["blame_band", "บอกว่า Band น่าจะอ่านผิด"]];
-  const actions = feedback === "wrong" ? [action("ลองซ่อมอีกครั้ง", EVENTS.REPAIR_PRACTICE, { icon: "repair" })] : feedback === "correct" ? [action(isDay7 ? "ไปต่อถึง Day 14" : "ไปต่อถึง Day 28", EVENTS.CONTINUE_PRACTICE, { icon: "calendar" })] : [action("ส่งคำตอบ", EVENTS.SUBMIT_PRACTICE, { icon: "submit", disabled: !selected })];
+  const actions = feedback === "wrong" ? [action("ลองอีกครั้ง", EVENTS.REPAIR_PRACTICE, { icon: "repair" })] : feedback === "correct" ? [action(isDay7 ? "ไปวันที่ 14" : "ไปวันที่ 28", EVENTS.CONTINUE_PRACTICE, { icon: "calendar" })] : [action("ส่งคำตอบ", EVENTS.SUBMIT_PRACTICE, { icon: "submit", disabled: !selected })];
   return {
     scene: isDay7 ? "practice_data" : "practice_care",
     progress: isDay7 ? 20 : 34,
-    eyebrow: `PRE-SEASON · DAY ${day}`,
-    title: isDay7 ? "เห็นข้อมูล แล้วฟังคนก่อนเลือก" : "ฝึก CARE จากสถานการณ์จริง",
-    reason: isDay7 ? "Sleep ลดลงไม่ได้แปลว่าต้องซื้ออะไรเพิ่ม คำตอบเริ่มจากชีวิตจริง" : "ตัวเลขเป็นจุดเริ่มคุย ไม่ใช่คำตัดสิน",
-    speaker: isDay7 ? "Guided Data Practice" : "ลูกค้าจำลอง",
-    dialogue: isDay7 ? "ข้อมูลบอกว่า Sleep ลดลงหลายวัน คุณควรทำอะไรก่อน?" : "“ช่วงนี้เราเหนื่อยมาก แต่ข้อมูลก็ดูแปลก ๆ” คุณจะตอบอย่างไร?",
+    eyebrow: `ช่วงฝึก · วันที่ ${day}`,
+    title: isDay7 ? "ลองฟังให้เข้าใจ" : "ถ้าเขามาปรึกษาคุณ",
+    reason: "เลือกคำตอบที่คุณอยากลอง แล้วดูผลด้วยกัน",
+    speaker: isDay7 ? "เอโกะ" : "ลูกค้าในเกม",
+    dialogue: isDay7 ? "นอนน้อยลงมาหลายวันแล้ว คุณจะเริ่มคุยอย่างไร?" : "“ช่วงนี้เราเหนื่อยมาก แต่ข้อมูลก็ดูแปลก ๆ” คุณจะตอบอย่างไร?",
     quiz: {
       choices,
       selected,
       feedback,
-      repair: isDay7 ? "นี่คือ C · Control: เห็น → ฟัง → เลือก และไม่มีสินค้าใดทำแทนได้" : "CARE เริ่มจากถามบริบท ไม่สรุปจากเลขและไม่โทษอุปกรณ์"
+      repair: isDay7 ? "ลองฟังก่อนว่าเขาเจออะไร แล้วเลือกสิ่งเล็ก ๆ ที่ทำเองได้" : "เริ่มจากถามชีวิตช่วงนี้ก่อน ตัวเลขยังเล่าเรื่องของเขาไม่หมด"
     },
     actions
   };
@@ -52,10 +53,10 @@ function examContent(state) {
   return {
     scene: "exam_active",
     progress: 50,
-    eyebrow: repairing ? "CERTIFICATION · REPAIR" : "CERTIFICATION EXAM",
+    eyebrow: repairing ? "ทบทวนข้อที่ยังไม่ผ่าน" : "ทดสอบความพร้อม",
     title: repairing ? `ซ่อมข้อ ${index + 1} / ${state.exam.repairQueue.length}` : `ข้อ ${index + 1} / 5`,
-    reason: "เลือกให้ครบก่อน แล้วกดส่งคำตอบ ระบบจะยังไม่เฉลยล่วงหน้า",
-    speaker: "Xcademy Exam Room",
+    reason: "ค่อย ๆ คิด ข้อที่ยังไม่ผ่านกลับมาลองใหม่ได้",
+    speaker: "ห้องสอบ Xcademy",
     dialogue: question.question,
     quiz: { choices: question.choices, selected, feedback, repair: feedback ? question.repair : "", exam: true },
     actions
@@ -63,22 +64,25 @@ function examContent(state) {
 }
 function routineContent(state, management = false) {
   const person = selectedPerson(state);
-  const tooMuch = state.lastEvent === "ROUTINE_TOO_MUCH";
+  const unavailable = ["ROUTINE_TOO_MUCH", "ROUTINE_UNAVAILABLE"].includes(state.lastEvent);
+  const labels = {
+    control: ["เริ่มจากสิ่งที่ทำเอง", "เลือกพฤติกรรมเดียว แล้วนัดติดตาม"],
+    fit: ["เริ่มแผนที่พอดี", "เลือกตัวช่วยที่เหมาะ แล้วคุยแฟ้ม X ครั้งเดียว"],
+    all: ["เริ่มแผนเต็มเมื่อพร้อม", "ต้องมีประสบการณ์และความพร้อมของทั้งสองฝ่าย"]
+  };
   return {
     scene: "routine_builder",
     progress: management ? 76 : 68,
-    eyebrow: "ROUTINE BUILDER · ABCD",
-    title: `วาง Routine ให้${person?.name || "คนนี้"}`,
-    reason: "เริ่มจากบริบทและสิ่งที่ทำได้จริง ไม่ใช่เลือกสินค้าที่จะขาย",
-    speaker: tooMuch ? person?.name || "ลูกค้า" : "RoutineX",
-    dialogue: tooMuch ? "“ต้องใช้ทั้งหมดเลยเหรอ?” แผนที่เยอะเกินไปทำให้ความไว้ใจลดลง ลองวางใหม่" : `${person?.name || "ลูกค้า"}บอกว่า “${person?.quote || "อยากเริ่มจากสิ่งที่ทำได้จริง"}”`,
+    eyebrow: "เลือกแผนดูแล",
+    title: `แบบไหนพอดีกับ${person?.name || "คนนี้"}`,
+    reason: unavailable ? state.lastMessage || "ดูเงื่อนไขของแผน แล้วเลือกสิ่งที่พร้อมทำตอนนี้" : "ดูความพร้อมก่อนเลือก เขายังเป็นคนตัดสินใจว่าจะเริ่มหรือไม่",
+    speaker: person?.name || "ลูกค้า",
+    dialogue: `“${person?.quote || "อยากเริ่มจากสิ่งที่ทำได้จริง"}”`,
     routineBuilder: {
       fitProducts: person?.fitProducts || [],
-      choices: [
-        ["control", "เริ่มจาก C", "เริ่มจากพฤติกรรมเดียวที่ทำซ้ำได้ · ยังไม่ต้องซื้อสินค้า"],
-        ["fit", "ดู ABCD", "ใช้ A / B / D เท่าที่ตรงกับบริบทและสิ่งที่ฟังมา"],
-        ["all", "ครบชุด", "ทางเลือกแรงและเสี่ยงกว่า · คุ้มเมื่อ Skill ผลลัพธ์ Trust และความพร้อมถึงจริง"]
-      ]
+      choices: getRoutineChoices(state, person).map(choice => ({
+        ...choice, label: labels[choice.id][0], detail: labels[choice.id][1]
+      }))
     },
     actions: [],
     routineEvent: management ? EVENTS.CHOOSE_MANAGEMENT_ROUTINE : EVENTS.CHOOSE_ROUTINE,
@@ -93,16 +97,16 @@ var missionAction = (mission) => {
     care: [`ติดตาม ${name}`, EVENTS.CARE_CUSTOMER, "care", 1],
     remeasure: ["วัดซ้ำ", EVENTS.REMEASURE_CUSTOMER, "scale", 2],
     consult: [`คุยกับ ${name}`, EVENTS.CONSULT_PROSPECT, "talk", 1],
-    baseline: ["ขอ consent + Baseline", EVENTS.BASELINE_PROSPECT, "scale", 2],
-    routine: ["วาง Routine", EVENTS.OPEN_MANAGEMENT_ROUTINE, "plan", 0],
-    offer: ["คุยแผน", EVENTS.OFFER_PROSPECT, "offer", 1],
+    baseline: ["ขออนุญาตดูข้อมูลเริ่มต้น", EVENTS.BASELINE_PROSPECT, "scale", 2],
+    routine: ["เลือกแผนดูแล", EVENTS.OPEN_MANAGEMENT_ROUTINE, "plan", 0],
+    offer: [`คุยแฟ้ม X กับ ${name}`, EVENTS.OFFER_PROSPECT, "offer", 1],
     decision: [`ติดตาม ${name}`, EVENTS.FOLLOW_UP_DECISION, "care", 1],
-    reorder: [`📦 ต่อ RoutineX เดือนใหม่`, EVENTS.REORDER_CUSTOMER, "offer", 1],
+    reorder: [`📦 คุยเรื่องซื้อซ้ำ`, EVENTS.REORDER_CUSTOMER, "offer", 1],
     referral: [`ขอให้ ${name} แนะนำเพื่อน`, EVENTS.ASK_REFERRAL, "talk", 1],
     xvisor: [`ชวน ${name} รู้จัก X-VISOR`, EVENTS.INVITE_XVISOR, "academy", 1],
     "candidate-start": [`ชวน ${name} เรียน Xcademy`, EVENTS.START_CANDIDATE_XCADEMY, "academy", 1],
-    "candidate-review": [`Review Case กับ ${name}`, EVENTS.REVIEW_CANDIDATE, "academy", 1],
-    "candidate-certify": [`ติดตาม Certification ของ ${name}`, EVENTS.CERTIFY_CANDIDATE, "certificate", 1],
+    "candidate-review": [`ทบทวนเคสกับ ${name}`, EVENTS.REVIEW_CANDIDATE, "academy", 1],
+    "candidate-certify": [`ติดตามการสอบของ ${name}`, EVENTS.CERTIFY_CANDIDATE, "certificate", 1],
     mentor: [`ช่วย ${name} ทบทวนเคส`, EVENTS.MENTOR_TEAM_MEMBER, "team", 1]
   };
   const value = map[mission.type];
@@ -125,10 +129,10 @@ function managementContent(state) {
   return {
     scene: state.monthStats.weeklyDone ? "management_team" : "management",
     progress: Math.min(98, 76 + state.month),
-    eyebrow: `MONTH ${state.month} · MANAGEMENT`,
-    title: state.energy === 0 ? "พลังงานเดือนนี้หมดแล้ว" : actions[0]?.label || "เลือกลงทุนกับคน งาน หรือ Skill",
-    reason: state.energy === 0 ? "ดูว่าสิ่งที่คุณทำและสิ่งที่ทีมทำเองสร้างอะไร แล้วเริ่มเดือนใหม่ที่ ⚡ 28" : "Skill ทำให้งานเดิมคุ้มขึ้น ส่วนทีมที่ทำเองได้จะสร้างผลโดยไม่ใช้พลังงานของคุณ",
-    speaker: "XOS · วันนี้ควรดูใครก่อน",
+    eyebrow: `เดือน ${state.month} · ดูแลคนและทีม`,
+    title: state.energy === 0 ? "พร้อมสรุปเดือนนี้" : "วันนี้จะเริ่มตรงไหนดี",
+    reason: state.energy === 0 ? "ตรวจผลงาน แล้วเริ่มเดือนใหม่ด้วยพลังงาน 28 แต้ม" : "เลือกงานตามคนที่รอคุณอยู่",
+    speaker: "ทีม",
     dialogue: state.lastMessage || teamReport || "คน ลูกค้า และทีมมีจังหวะไม่เหมือนกัน ใช้พลังงานกับสิ่งสำคัญที่สุดก่อน",
     management: {
       missions: state.missions,
@@ -154,69 +158,69 @@ function eventSceneContent(state) {
   const scenes = {
     [STAGES.CONTENT_RUNNING]: {
       scene: "content_running",
-      eyebrow: "CONTENT · REACH → INTEREST",
-      title: report.message || "โพสต์นี้เริ่มมีคนสนใจ",
-      reason: "Content สร้างบทสนทนา ไม่ได้สร้าง Sale อัตโนมัติ",
-      speaker: "Notification",
+      eyebrow: "เรื่องที่คุณเล่าออกไป",
+      title: "มีคนเห็นโพสต์แล้ว",
+      reason: "ดูว่าใครสนใจ แล้วค่อยเริ่มคุย",
+      speaker: "ทีม",
       dialogue: state.lastMessage,
       status: "content"
     },
     [STAGES.ADS_RUNNING]: {
       scene: "ads_running",
-      eyebrow: "ADS · SIMULATION BUDGET",
-      title: report.message || "Campaign เริ่มพาคนสนใจเข้ามา",
-      reason: "ทุกคนยังต้องคุย นัด ดู Baseline และรับการดูแลเหมือนเดิม",
-      speaker: "Campaign report",
+      eyebrow: "ประชาสัมพันธ์ในเกม",
+      title: "คนใหม่เริ่มเข้ามา",
+      reason: "ติดตามคนที่สนใจได้จากรายชื่อ",
+      speaker: "ทีม",
       dialogue: state.lastMessage,
       status: "ads"
     },
     [STAGES.XCADEMY_RUNNING]: {
       scene: "xcademy_running",
-      eyebrow: "🎓 XCADEMY · BATCH TRAINING",
-      title: "หลายคนได้ Next Action ในเวลาเดียวกัน",
-      reason: "Xcademy ใช้ 2 ⚡ และเปิดได้ 4 ครั้งต่อเดือน เพื่อช่วย OPP, Candidate และทีมพร้อมกัน",
-      speaker: report.room || "Xcademy recap",
+      eyebrow: "ห้องเรียน Xcademy",
+      title: "ช่วยกันคิด ช่วยกันลอง",
+      reason: "ใช้ 2 พลังงาน · เปิดได้ 4 ครั้งต่อเดือน",
+      speaker: report.room || "ทีม",
       dialogue: report.messages?.join(" · ") || state.lastMessage,
       status: "xcademy"
     },
     [STAGES.OPEN_HOUSE_RUNNING]: {
       scene: "open_house_running",
-      eyebrow: "🏠 OPEN HOUSE · BATCH IMPACT",
+      eyebrow: "เปิดบ้านให้ได้รู้จักกัน",
       title: `ชวน ${report.invited || 0} · มา ${report.attended || 0}`,
-      reason: "2 ⚡ เปลี่ยนคนทั้งกลุ่มให้มี Next Action โดยยังไม่แจก Sale อัตโนมัติ",
-      speaker: "Open House recap",
+      reason: "พบหลายคนในครั้งเดียว ใช้ 2 พลังงาน",
+      speaker: "ทีม",
       dialogue: report.messages?.join(" · ") || state.lastMessage,
       status: "openhouse"
     },
     [STAGES.G1_CELEBRATION]: {
       scene: "first_g1",
-      eyebrow: report.first ? "FIRST G1" : `X-VISOR คนที่ ${state.team.length}`,
-      title: `${report.name || "สมาชิกใหม่"} เป็น Certified X-VISOR แล้ว`,
-      reason: "นี่ไม่ใช่ฉากจบ ขั้นต่อไปคือช่วยให้เขามีลูกค้าและสร้างผลได้เองทุกเดือน",
+      eyebrow: report.first ? "สมาชิกทีมคนแรก" : `X-VISOR คนที่ ${state.team.length}`,
+      title: `${report.name || "สมาชิกใหม่"} ผ่านการรับรองแล้ว`,
+      reason: "ต่อไปช่วยเขาลองดูแลลูกค้าของตัวเอง",
       speaker: report.name || "X-VISOR ใหม่",
-      dialogue: "“ต่อไปอยากลองดูแลเคสของตัวเอง และกลับมา Review กับทีม”",
+      dialogue: "“ต่อไปอยากลองดูแลคนของตัวเอง แล้วกลับมาคุยกับทีม”",
       status: "g1",
-      milestone: report.first ? "FIRST G1 · เกมยังไปต่อ" : "TEAM GROWTH"
+      milestone: report.first ? "สมาชิกทีมคนแรก" : "มีคนร่วมทีมเพิ่ม"
     },
     [STAGES.XLEAD_MILESTONE]: {
       scene: "xlead",
-      eyebrow: "🌱 XLEAD · MONEY MOMENT",
-      title: "ปลดล็อก ② รายได้จากการพัฒนา G1",
-      reason: "X-VISOR ใน G1 ได้คอมเท่าไร คุณได้ 20% ของคอมที่เขาได้ โดยคิดแยกคนตาม tier",
-      speaker: "Organization map unlocked",
+      eyebrow: "เติบโตเป็น XLEAD",
+      title: "เปิดรายได้จากการช่วยทีม",
+      reason: "ดูส่วนที่ทีมช่วยสร้างในช่อง ②",
+      speaker: "ทีม",
       dialogue: `ช่อง 2 เดือนนี้ ฿${Number(report.channel2 || calculateEconomy(state).channel2).toLocaleString("th-TH")} · ทีมทำไว้แล้วจึงเห็นผลทันที`,
       status: "xlead",
-      milestone: "XLEAD · CHANNEL ② OPEN"
+      milestone: "XLEAD · เปิดช่อง ②"
     },
     [STAGES.XGEN_MILESTONE]: {
       scene: "xgen",
-      eyebrow: "🏆 3,000,000 TGV · XGEN",
-      title: "คุณสร้างองค์กรถึง XGEN แล้ว",
-      reason: "Save และ High Score ไม่ถูกรีเซ็ต · เส้นทางองค์กรยังเดินต่อถึงบทสรุป Month 24",
-      speaker: "X-VISOR QUEST",
+      eyebrow: "เติบโตเป็น XGEN",
+      title: "เห็นผลงานของทั้งองค์กร",
+      reason: "ดูเส้นทางที่สร้างต่อไปถึงเดือน 24",
+      speaker: "ทีม",
       dialogue: `TGV ${Number(report.tgv || state.organization.tgv).toLocaleString("th-TH")} · รายได้รวม ฿${Number(report.totalIncome || state.economy.totalIncome).toLocaleString("th-TH")}`,
       status: "xgen",
-      milestone: "XGEN · ORGANIZATION LEADER",
+      milestone: "XGEN · ดูแลทั้งองค์กร",
       actions: [action("เล่นต่อ ▶", EVENTS.START_NEXT_MONTH, { icon: "play" })]
     }
   };
@@ -240,40 +244,40 @@ function getStageContent(state) {
     [STAGES.OPENING]: {
       scene: "opening",
       progress: 0,
-      eyebrow: "NEW GAME · PRE-SEASON",
-      title: "สร้างความพร้อม 28 วัน ก่อนดูแลคนจริง",
-      reason: "เริ่มจากใช้เอง เรียนรู้ข้อมูล และฝึกการดูแล ก่อนสอบเป็น X-VISOR",
-      speaker: "X-VISOR QUEST",
-      dialogue: "ตอนนี้คุณยังไม่มีลูกค้า ไม่มีทีม และยังไม่มีรายได้ — ก้าวแรกคือเรียนรู้จากตัวเอง",
-      actions: [action("เริ่ม PRE-SEASON", EVENTS.START_PATH, { icon: "play" })]
+      eyebrow: "เรื่องของคุณกำลังเริ่ม",
+      title: "เริ่มดูแลคนแรกไปด้วยกัน",
+      reason: "ลองเป็น X-VISOR ช่วยให้คนดูแลตัวเองได้ ตลอด 24 เดือนจำลอง",
+      speaker: "ทีม",
+      dialogue: "ผมทีม จะช่วยพาลองทีละอย่างนะ วันในเกมผ่านได้ทันที ไม่ต้องมีอุปกรณ์หรือซื้ออะไรก่อนเล่น",
+      actions: [action("ลองไปด้วยกัน", EVENTS.START_PATH, { icon: "play" })]
     },
     [STAGES.PRE_DAY0_BAND]: {
       scene: "pre_band",
       progress: 3,
-      eyebrow: "PRE-SEASON · DAY 0",
-      title: "ใส่ Xircle Band",
-      reason: "Band ช่วยเห็นสิ่งที่คุณทำต่อเนื่องระหว่างวัน",
-      speaker: "Xircle Band",
-      dialogue: "Band ทำงานเงียบ ๆ เพื่อสะท้อนการขยับและสัญญาณที่ระบบรองรับ — ไม่ได้วัดอาหารโดยตรง",
-      actions: [action("ใส่ Band", EVENTS.WEAR_BAND, { icon: "band" })],
+      eyebrow: "ช่วงฝึก · วันเริ่มต้น",
+      title: "ลองสวมสายรัดในเกม",
+      reason: "มาดูการขยับระหว่างวัน",
+      speaker: "ทีม",
+      dialogue: "Xircle Band ช่วยสะท้อนสิ่งที่ทำระหว่างวัน ไม่ได้วัดอาหารที่เรากิน",
+      actions: [action("สวมสายรัดในเกม", EVENTS.WEAR_BAND, { icon: "band" })],
       deepLinks: [links[0]]
     },
     [STAGES.PRE_DAY0_SCALE]: {
       scene: "pre_scale",
       progress: 5,
-      eyebrow: "PRE-SEASON · DAY 0",
-      title: "ขึ้น Xircle Scale",
-      reason: "Scale ช่วยเห็นสิ่งที่ร่างกายตอบ เพื่อใช้ดูแนวโน้ม ไม่ใช่วินิจฉัย",
-      speaker: "Xircle Scale",
-      dialogue: "ยืนให้นิ่ง เท้าวางบนตำแหน่งเดิม แล้วเก็บ Baseline ครั้งแรก",
-      actions: [action("เริ่มวัด Baseline", EVENTS.START_SELF_SCALE, { icon: "scale" })]
+      eyebrow: "ช่วงฝึก · วันเริ่มต้น",
+      title: "เก็บข้อมูลครั้งแรก",
+      reason: "เก็บไว้เทียบเมื่อวันในเกมผ่านไป",
+      speaker: "ทีม",
+      dialogue: "Xircle Scale ช่วยดูแนวโน้มร่างกาย เราจะเก็บจุดเริ่มต้นไว้ก่อน",
+      actions: [action("ลองวัดในเกม", EVENTS.START_SELF_SCALE, { icon: "scale" })]
     },
     [STAGES.PRE_DAY0_SCANNING]: {
       scene: "pre_scanning",
       progress: 6,
-      eyebrow: "PRE-SEASON · DAY 0",
-      title: "กำลังเก็บ Baseline",
-      reason: "Weight อย่างเดียวไม่พอ ต้องอ่าน Body Fat และ muscle-related trend ร่วมกัน",
+      eyebrow: "ช่วงฝึก · วันเริ่มต้น",
+      title: "กำลังเก็บจุดเริ่มต้น",
+      reason: "เดี๋ยวเราจะอ่านผลด้วยกัน",
       speaker: "Xircle",
       dialogue: "กำลังวัด…",
       status: "scan",
@@ -282,55 +286,55 @@ function getStageContent(state) {
     [STAGES.PRE_DAY0_SUMMARY]: {
       scene: "pre_summary",
       progress: 8,
-      eyebrow: "BASELINE พร้อมแล้ว",
-      title: "แยกให้ออกว่าอะไรบอกอะไร",
-      reason: "ข้อมูลสองชั้นช่วยให้คุณไม่รีบสรุปจากเลขเดียว",
-      speaker: "หลักแรกของ Xircle",
-      dialogue: "Band = สิ่งที่คุณทำ · Scale = สิ่งที่ร่างกายตอบ",
-      facts: [["BAND", "การขยับและสัญญาณระหว่างวัน"], ["SCALE", "Body Composition และ Trend"]],
-      actions: [action("เริ่ม Routine ถึง Day 3", EVENTS.START_MONTAGE, { icon: "calendar" })],
+      eyebrow: "ได้ข้อมูลแล้ว",
+      title: "สองมุมของเรื่องเดียวกัน",
+      reason: "ดูสิ่งที่ทำคู่กับแนวโน้มร่างกาย",
+      speaker: "ทีม",
+      dialogue: "สายรัดเล่าสิ่งที่เราทำ เครื่องชั่งช่วยดูว่าร่างกายเปลี่ยนอย่างไร",
+      facts: [["สายรัด", "การขยับและสัญญาณระหว่างวัน"], ["เครื่องชั่ง", "องค์ประกอบร่างกายและแนวโน้ม"]],
+      actions: [action("ลองทำต่อถึงวันที่ 3", EVENTS.START_MONTAGE, { icon: "calendar" })],
       deepLinks: [links[0]]
     },
     [STAGES.PRE_MONTAGE]: {
       scene: "pre_montage",
       progress: Math.max(10, state.energy * 1.25),
-      eyebrow: "ROUTINEX · 28 DAYS",
+      eyebrow: "ช่วงฝึก · วันจำลอง",
       title: "ทำสิ่งที่เลือกให้เกิดซ้ำ",
-      reason: "แต่ละวันกำลังสร้างทั้งประสบการณ์ ความรู้ และพลังงานของคุณ",
-      speaker: "RoutineX",
-      dialogue: "ใช้ชีวิต · Band sync · เลือก C · Control · เรียนรู้ตัวช่วยตามบริบท",
+      reason: "ดูวันในเกมผ่านไป โดยไม่ต้องรอวันจริง",
+      speaker: "ทีม",
+      dialogue: "เริ่มทีละอย่าง แล้วลองทำต่อให้เข้ากับชีวิต",
       status: "montage",
       actions: []
     },
     [STAGES.PRE_DAY3_ABCD]: {
       scene: "pre_abcd",
       progress: 14,
-      eyebrow: "CHECKPOINT · DAY 3",
-      title: "สิ่งที่ซื้อไม่ได้ สำคัญที่สุด",
-      reason: "ABCD ช่วยวาง Routine โดยเริ่มจากการกระทำ ไม่ใช่เริ่มจากสินค้า",
-      speaker: "RoutineX · ABCD",
-      dialogue: "A / B / D มีตัวช่วยตามบริบท ส่วน C · Control คือสิ่งที่คุณทำเองและไม่มีขาย",
+      eyebrow: "ช่วงฝึก · วันที่ 3",
+      title: "เริ่มจากสิ่งที่ทำเองได้",
+      reason: "แผนเล็ก ๆ ที่ทำต่อไหวเป็นจุดเริ่มต้น",
+      speaker: "ทีม",
+      dialogue: "เราเรียกพฤติกรรมที่ทำเองว่า C ส่วนตัวช่วยเลือกเพิ่มให้เหมาะกับแต่ละคน",
       abcd: true,
-      facts: [["A · ABSORB", "G.U.S.+ · gut / digestive routine"], ["B · BUILD", "Protein HMB+ · protein / muscle-maintenance support"], ["C · CONTROL", "พฤติกรรม · ไม่มีสินค้า"], ["D · DAILY BALANCE", "Vita Matrix + AstaMega+"]],
-      actions: [action("เรียนรู้ต่อถึง Day 7", EVENTS.START_MONTAGE, { icon: "calendar" })],
+      facts: [["A · การดูดซึม", "G.U.S.+"], ["B · การสร้าง", "Protein HMB+"], ["C · สิ่งที่ทำเอง", "พฤติกรรม · ไม่มีสินค้า"], ["D · สมดุลประจำวัน", "Vita Matrix + AstaMega+"]],
+      actions: [action("ไปวันที่ 7", EVENTS.START_MONTAGE, { icon: "calendar" })],
       deepLinks: [links[1], links[2]]
     },
     [STAGES.PRE_DAY14_SCALE]: {
       scene: "pre_day14_scale",
       progress: 26,
-      eyebrow: "CHECKPOINT · DAY 14",
-      title: "กลับมาดู Body Trend",
-      reason: "อย่าตัดสินจากครั้งเดียว — รอบนี้อาจดีขึ้นบางค่า คงเดิม หรือแกว่ง",
-      speaker: "Xircle Scale",
-      dialogue: "วางเท้าบน Scale แล้วเปรียบเทียบ Baseline → Day 14",
-      actions: [action("วัด Day 14", EVENTS.START_DAY14_SCALE, { icon: "scale" })]
+      eyebrow: "ช่วงฝึก · วันที่ 14",
+      title: "กลับมาดูสิ่งที่เปลี่ยน",
+      reason: "บางค่าอาจคงเดิม บางค่าอาจเปลี่ยน",
+      speaker: "ทีม",
+      dialogue: "ลองเทียบกับวันเริ่มต้น แล้วค่อยคุยกันว่ามันบอกอะไร",
+      actions: [action("วัดวันที่ 14", EVENTS.START_DAY14_SCALE, { icon: "scale" })]
     },
     [STAGES.PRE_DAY14_SCANNING]: {
       scene: "pre_day14_scanning",
       progress: 27,
-      eyebrow: "BASELINE → DAY 14",
+      eyebrow: "วันเริ่มต้น → วันที่ 14",
       title: "กำลังอ่านแนวโน้ม",
-      reason: "Scale ไม่ได้สร้าง Habit Score และไม่ได้วัด Sleep โดยตรง",
+      reason: "เครื่องชั่งไม่ได้วัดการนอนโดยตรง",
       speaker: "Xircle",
       dialogue: "กำลังวัด…",
       status: "scan",
@@ -339,32 +343,32 @@ function getStageContent(state) {
     [STAGES.PRE_DAY14_REVIEW]: {
       scene: "pre_day14_review",
       progress: 29,
-      eyebrow: "BODY REVIEW · DAY 14",
-      title: "ดู Trend มากกว่าเลขครั้งเดียว",
-      reason: "Body Fat ดีขึ้นเล็กน้อย ขณะที่ Weight คงเดิม — นี่ไม่ใช่คำวินิจฉัย",
-      speaker: "Xircle",
-      dialogue: "ข้อมูลยังไม่ดีทุกอย่าง และคำตอบไม่ใช่ซื้อของเพิ่มเสมอไป",
-      resultCards: [["Weight", "คงเดิม", "neutral"], ["Body Fat", "แนวโน้มดีขึ้น", "good"], ["Muscle-related", "ยังแกว่ง", "warn"]],
-      facts: [["VITA MATRIX", "D · Daily Balance · water-phase support"], ["ASTAMEGA+", "D · Daily Balance · oil-phase support"], ["สำคัญ", "ไม่จำเป็นว่าทุกคนต้องใช้ทุกตัว"]],
-      actions: [action("ไปต่อถึง Day 21", EVENTS.START_MONTAGE, { icon: "calendar" })],
+      eyebrow: "ผลจำลอง · วันที่ 14",
+      title: "น้ำหนักเท่าเดิม ก็มีเรื่องให้ดู",
+      reason: "อ่านหลายค่าประกอบกันเพื่อดูแนวโน้ม",
+      speaker: "ทีม",
+      dialogue: "ยังไม่ดีขึ้นทุกค่า เราค่อยดูว่าสิ่งที่ทำอยู่เหมาะแค่ไหน",
+      resultCards: [["น้ำหนัก", "คงเดิม", "neutral"], ["ไขมันร่างกาย", "แนวโน้มดีขึ้น", "good"], ["แนวโน้มกล้ามเนื้อ", "ยังแกว่ง", "warn"]],
+      facts: [["ตัวช่วยกลุ่ม D", "Vita Matrix · AstaMega+"], ["เลือกให้พอดี", "แต่ละคนไม่จำเป็นต้องใช้ทุกตัว"]],
+      actions: [action("ไปวันที่ 21", EVENTS.START_MONTAGE, { icon: "calendar" })],
       deepLinks: [links[0], links[2]]
     },
     [STAGES.PRE_DAY28_SCALE]: {
       scene: "pre_day28_scale",
       progress: 40,
-      eyebrow: "FINAL CHECKPOINT · DAY 28",
-      title: "วัดซ้ำหลังทำ Routine ครบ 28 วัน",
+      eyebrow: "ช่วงฝึก · วันที่ 28",
+      title: "ทบทวนก่อนออกไปช่วยคนอื่น",
       reason: "ดูสิ่งที่ทำคู่กับสิ่งที่ร่างกายตอบ แล้วเลือกสิ่งที่ควรทำต่อ",
-      speaker: "Xircle Scale",
-      dialogue: "นี่คือการทบทวน ไม่ใช่เส้นชัยอัตโนมัติ",
-      actions: [action("วัด Day 28", EVENTS.START_DAY28_SCALE, { icon: "scale" })]
+      speaker: "ทีม",
+      dialogue: "มาดูว่าสิ่งไหนควรเก็บไว้ทำต่อ",
+      actions: [action("วัดวันที่ 28", EVENTS.START_DAY28_SCALE, { icon: "scale" })]
     },
     [STAGES.PRE_DAY28_SCANNING]: {
       scene: "pre_day28_scanning",
       progress: 42,
-      eyebrow: "BASELINE → DAY 28",
-      title: "กำลังสรุป Trend",
-      reason: "ข้อมูลจะมีความหมายเมื่อเชื่อมกับบริบทและสิ่งที่คุณทำจริง",
+      eyebrow: "วันเริ่มต้น → วันที่ 28",
+      title: "กำลังสรุปแนวโน้ม",
+      reason: "ดูผลคู่กับสิ่งที่ทำมาตลอด",
       speaker: "Xircle",
       dialogue: "กำลังวัด…",
       status: "scan",
@@ -374,53 +378,53 @@ function getStageContent(state) {
       scene: "pre_day28_review",
       progress: 46,
       eyebrow: "28 วันผ่านไป",
-      title: "คุณสร้างความพร้อม ⚡ 28 / 28 แล้ว",
-      reason: "คุณไม่ได้แค่ใช้ RoutineX แต่เริ่มอ่านข้อมูล ฟังบริบท และรู้ว่าสินค้าอยู่ตรงไหน",
-      speaker: "PRE-SEASON COMPLETE",
-      dialogue: "Xircle: Data → Meaning → Next Action · RoutineX: ทำสิ่งที่เลือกให้เกิดซ้ำ",
-      recap: [["XIRCLE", "Band เห็นสิ่งที่ทำ · Scale เห็นสิ่งที่ร่างกายตอบ"], ["PRODUCT", "A / B / D มีตัวช่วย · C ไม่มีขาย"], ["X-VISOR", "ฟัง → เลือกสิ่งเดียว → ติดตาม → รู้ขอบเขต"]],
-      actions: [action("ไปสอบ Certification", EVENTS.GO_EXAM, { icon: "certificate" })],
+      title: "พร้อมลองดูแลคนแรก",
+      reason: "ทบทวนสิ่งที่เรียน แล้วไปลองตอบ 5 คำถาม",
+      speaker: "ทีม",
+      dialogue: "ฟังให้เข้าใจ เลือกแผนที่ทำไหว แล้วกลับมาดูด้วยกัน",
+      recap: [["ดูข้อมูล", "ดูสิ่งที่ทำคู่กับแนวโน้มร่างกาย"], ["เลือกแผน", "เริ่มจากพฤติกรรม ตัวช่วยเลือกเท่าที่เหมาะ"], ["ดูแลต่อ", "ฟัง → เลือก → ติดตาม"]],
+      actions: [action("ลองทดสอบความพร้อม", EVENTS.GO_EXAM, { icon: "certificate" })],
       deepLinks: links
     },
     [STAGES.EXAM_TRANSIT]: {
       scene: "exam_transit",
       progress: 48,
-      eyebrow: "XCademy",
-      title: "เดินเข้า Exam Room",
-      reason: "คุณจะนั่งสอบ 5 ข้อจาก 5 domain และซ่อมเฉพาะข้อที่ยังไม่ผ่านได้",
-      speaker: "Exam Proctor",
-      dialogue: "เข้าประตู เดินไปที่โต๊ะ แล้วนั่งให้พร้อม",
+      eyebrow: "ห้องเรียน Xcademy",
+      title: "มาลองตอบ 5 คำถาม",
+      reason: "กลับมาทบทวนเฉพาะข้อที่ยังไม่ผ่านได้",
+      speaker: "ทีม",
+      dialogue: "นั่งให้สบาย แล้วค่อย ๆ คิดไปทีละข้อ",
       status: "examTransit",
       actions: []
     },
     [STAGES.EXAM_SUMMARY]: {
       scene: "exam_summary",
       progress: 54,
-      eyebrow: "EXAM SUMMARY",
+      eyebrow: "ผลทดสอบ",
       title: passed === 5 ? "ผ่านครบ 5 / 5" : `ผ่านแล้ว ${passed} / 5`,
-      reason: passed === 5 ? "คุณผ่านทั้ง 5 domain แล้ว" : `เหลือ ${5 - passed} ข้อที่ต้องซ่อม — ไม่มีการเปิด answer key`,
-      speaker: "Exam Proctor",
-      dialogue: passed === 5 ? "พร้อมรับ Certification" : "ความผิดพลาดคือจุดเรียนรู้ ซ่อมเฉพาะหลักที่ยังไม่แม่น",
-      actions: passed === 5 ? [action("รับ Certification", EVENTS.COMPLETE_CERTIFICATION, { icon: "certificate" })] : [action("เริ่มซ่อมข้อผิด", EVENTS.START_REPAIRS, { icon: "repair" })]
+      reason: passed === 5 ? "พร้อมนำสิ่งที่เรียนไปใช้ในเกม" : `ทบทวนอีก ${5 - passed} ข้อที่ยังไม่เข้าใจ`,
+      speaker: "ทีม",
+      dialogue: passed === 5 ? "ไปพบคนแรกด้วยกันนะ" : "ยังไม่เข้าใจตรงไหน เราค่อยลองกันใหม่",
+      actions: passed === 5 ? [action("รับใบรับรองในเกม", EVENTS.COMPLETE_CERTIFICATION, { icon: "certificate" })] : [action("ทบทวนข้อที่ยังไม่ผ่าน", EVENTS.START_REPAIRS, { icon: "repair" })]
     },
     [STAGES.CERTIFICATION_CEREMONY]: {
       scene: "ceremony",
       progress: 58,
-      eyebrow: "CERTIFICATION",
-      title: "Certified X-VISOR",
-      reason: "ตอนนี้คุณพร้อมเริ่มดูแลคนจริงในเกมแล้ว",
+      eyebrow: "ผ่านการฝึกแล้ว",
+      title: "เป็น X-VISOR ในเกมแล้ว",
+      reason: "ลองใช้สิ่งที่เรียนกับคนแรก",
       speaker: "Xcademy",
-      dialogue: "ลุกจากโต๊ะ รับใบรับรอง และนำสิ่งที่เรียนรู้ไปใช้กับคนจริง",
+      dialogue: "รับใบรับรองในเกม แล้วไปเริ่มเรื่องของคุณกัน",
       status: "ceremony",
       actions: []
     },
     [STAGES.CERTIFIED]: {
       scene: "certified",
       progress: 60,
-      eyebrow: "CERTIFIED X-VISOR",
-      title: "เริ่มเดือน 1 ที่ลูกค้า 0",
-      reason: "⚡ 28 แต้มนี้มาจาก 28 วันที่คุณเรียนรู้และใช้เอง",
-      speaker: "X-VISOR QUEST",
+      eyebrow: "X-VISOR · พร้อมเริ่ม",
+      title: "เปิดโต๊ะรับคนแรก",
+      reason: "มีพลังงาน 28 แต้มสำหรับงานในเดือนนี้",
+      speaker: "ทีม",
       dialogue: "จากนี้พลังงานคือเวลาที่คุณใช้กับงานต่าง ๆ ในเดือนนี้",
       milestone: "CERTIFIED",
       actions: [action("เริ่มเดือน 1", EVENTS.START_MONTH_1, { icon: "flag" })]
@@ -428,49 +432,49 @@ function getStageContent(state) {
     [STAGES.M1_EMPTY]: {
       scene: "empty_office",
       progress: 62,
-      eyebrow: "MONTH 1 · ลูกค้า 0",
+      eyebrow: "เดือน 1 · ลูกค้า 0",
       title: "เริ่มจากรู้จักคน 1 คน",
-      reason: "งานแรกไม่ใช่ขาย แต่คือฟังว่าใครอยากเปลี่ยนอะไร",
-      speaker: "Clover Neighborhood",
+      reason: "ไปพบคนที่อยากเริ่มดูแลตัวเอง",
+      speaker: "ทีม",
       dialogue: "เก้าอี้ฝั่งลูกค้ายังว่าง เริ่มจากทักคนที่คุณรู้จักและนัดคุย",
       actions: [action("ทำความรู้จักคนใหม่", EVENTS.FIND_PERSON, { icon: "talk", cost: 1 })]
     },
     [STAGES.M1_PERSON_MET]: {
       scene: "person_arrives",
       progress: 64,
-      eyebrow: "ATTRACT → CONVERSATION",
+      eyebrow: "ได้รู้จักกันแล้ว",
       title: `ฟังว่า${name}อยากเปลี่ยนอะไร`,
       reason: "ยังไม่ต้องเสนออะไร ให้ความสนใจชีวิตจริงของเขาก่อน",
-      speaker: `รู้จัก “${name}” แล้ว`,
+      speaker: name,
       dialogue: person?.quote || "อยากเริ่มดูแลตัวเอง แต่ไม่รู้จะเริ่มตรงไหน",
       actions: [action(`คุยกับ ${name}`, EVENTS.TALK, { icon: "talk", cost: 1 })]
     },
     [STAGES.M1_DISCOVERY]: {
       scene: "consultation",
       progress: 66,
-      eyebrow: "DISCOVERY",
+      eyebrow: "คุยให้เข้าใจ",
       title: `ขออนุญาตก่อนดูข้อมูลของ${name}`,
-      reason: "Health summary เป็นข้อมูลอ่อนไหว ดูเฉพาะสิ่งที่จำเป็นต่อการติดตาม",
+      reason: "ให้เขาเลือกว่าจะเปิดข้อมูลส่วนไหนให้ดู",
       speaker: name,
       dialogue: `“เป้าหมายของเราคือ${person?.need || "เริ่มจากสิ่งที่ทำได้จริง"}”`,
-      actions: [action("ขอ consent", EVENTS.REQUEST_CONSENT, { icon: "consent" })]
+      actions: [action("ขออนุญาตดูข้อมูล", EVENTS.REQUEST_CONSENT, { icon: "consent" })]
     },
     [STAGES.M1_BASELINE_INTRO]: {
       scene: "customer_scale",
       progress: 67,
-      eyebrow: "BASELINE · CONSENTED",
-      title: `ดู Baseline ร่วมกับ${name}`,
+      eyebrow: "ได้รับอนุญาตแล้ว",
+      title: `ดูจุดเริ่มต้นกับ${name}`,
       reason: `${name}อนุญาตให้คุณดูข้อมูลสรุปเพื่อช่วยติดตามแล้ว`,
-      speaker: "Xircle Corner",
-      dialogue: "ไม่เปิด raw health dashboard — ดู summary, trend และ Next Action เท่าที่จำเป็น",
-      actions: [action("เริ่มวัด Baseline", EVENTS.START_CUSTOMER_BASELINE, { icon: "scale", cost: 2 })]
+      speaker: "ทีม",
+      dialogue: "ดูข้อมูลสรุปเท่าที่จำเป็น แล้วช่วยกันเลือกสิ่งที่จะทำต่อ",
+      actions: [action("เริ่มดูข้อมูล", EVENTS.START_CUSTOMER_BASELINE, { icon: "scale", cost: 2 })]
     },
     [STAGES.M1_BASELINE_SCANNING]: {
       scene: "customer_scanning",
       progress: 68,
-      eyebrow: "XIRCLE BASELINE",
+      eyebrow: "ข้อมูลเริ่มต้น",
       title: `กำลังวัดข้อมูลของ${name}`,
-      reason: "Band และ Scale มีหน้าที่ต่างกัน แต่ช่วยให้คุยจากสิ่งที่เห็นร่วมกัน",
+      reason: "เก็บไว้ดูความเปลี่ยนแปลงในครั้งต่อไป",
       speaker: "Xircle",
       dialogue: "กำลังวัด…",
       status: "scan",
@@ -479,33 +483,33 @@ function getStageContent(state) {
     [STAGES.M1_BASELINE]: {
       scene: "customer_result",
       progress: 69,
-      eyebrow: "DATA → MEANING",
-      title: "วาง Routine จากข้อมูลและบริบท",
+      eyebrow: "มองเห็นจุดเริ่มต้นแล้ว",
+      title: "เลือกแผนที่เขาทำไหว",
       reason: `บริบทของ${name}: ${person?.concern || "อยากเริ่มดูแลตัวเอง"}`,
-      speaker: "Baseline Summary",
-      dialogue: "เลือกแผนที่ทำได้จริงก่อน สินค้าเป็นเพียงตัวช่วยตามบริบท",
-      resultCards: [["การทำต่อเนื่อง", "ควรเริ่มทีละอย่าง", "warn"], ["Body Trend", "Baseline", "neutral"], ["Next Action", person?.need || "เริ่มจาก C", "good"]],
-      actions: [action("เปิด Routine Builder", EVENTS.OPEN_ROUTINE_BUILDER, { icon: "plan" })]
+      speaker: "ทีม",
+      dialogue: "ฟังสิ่งที่เขาต้องการ แล้วเลือกแผนที่พอดี",
+      resultCards: [["การทำต่อเนื่อง", "ควรเริ่มทีละอย่าง", "warn"], ["แนวโน้มร่างกาย", "ข้อมูลครั้งแรก", "neutral"], ["สิ่งที่จะลอง", person?.need || "เริ่มจากพฤติกรรมเดียว", "good"]],
+      actions: [action("เลือกแผนดูแล", EVENTS.OPEN_ROUTINE_BUILDER, { icon: "plan" })]
     },
     [STAGES.M1_RECOMMENDATION]: {
       scene: "recommendation",
       progress: 71,
-      eyebrow: "RECOMMENDATION",
-      title: `คุยแผนที่เหมาะกับ${name}`,
+      eyebrow: "แผนพร้อมแล้ว",
+      title: `คุยแฟ้ม X กับ ${name}`,
       reason: "อธิบายว่าอะไรคือพฤติกรรม อะไรคือตัวช่วย และติดตามอย่างไร",
-      speaker: "ความพร้อม: พร้อมเริ่ม",
-      dialogue: "การขายเกิดหลังความเข้าใจและความพร้อม ไม่ใช่ก่อน Discovery",
+      speaker: "ทีม",
+      dialogue: "คุยแฟ้ม X ให้ชัด แล้วให้เขาเลือกเองว่าจะเริ่มหรือยัง",
       selectedProducts: person?.routinePlan?.products || [],
-      actions: [action("ชวนเริ่ม RoutineX", EVENTS.MAKE_OFFER, { icon: "offer", cost: 1 })]
+      actions: [action("คุยแฟ้ม X", EVENTS.MAKE_OFFER, { icon: "offer", cost: 1 })]
     },
     [STAGES.M1_SALE_RECEIPT]: {
       scene: "sale",
       progress: 73,
-      eyebrow: "FIRST SALE",
+      eyebrow: "เขาเลือกเริ่มแล้ว",
       title: `${name}เลือกเริ่ม RoutineX`,
       reason: "รายการขายจบแล้ว แต่งานดูแลเพิ่งเริ่ม",
-      speaker: "Transaction complete",
-      dialogue: `ยอดนี้ใช้ ${commercialStatusLabel(TUTORIAL_OFFER.status)} ไม่ใช่ราคา/รายได้ทางการ`,
+      speaker: "ทีม",
+      dialogue: "นี่เป็นยอดจำลองในเกม เก็บไว้ดูว่าการดูแลต่อจะสร้างอะไรขึ้นอีก",
       receipt: transaction,
       milestone: "ลูกค้าคนแรก",
       actions: [action("ดูแลต่อ", EVENTS.CLOSE_RECEIPT, { icon: "care" })]
@@ -513,39 +517,39 @@ function getStageContent(state) {
     [STAGES.M1_ONBOARDING]: {
       scene: "onboarding",
       progress: 74,
-      eyebrow: "ONBOARDING",
+      eyebrow: "เริ่มดูแลด้วยกัน",
       title: `ช่วย${name}เริ่มให้ถูกจุด`,
-      reason: "ทวนวิธีใช้ วาง C · Control และนัดติดตามก่อนแยกกัน",
+      reason: person?.careOnly ? "เลือกพฤติกรรมเดียว แล้วนัดกลับมาคุยกัน" : "ทวนวิธีใช้และสิ่งที่จะลอง แล้วนัดติดตาม",
       speaker: name,
       dialogue: "“ถ้าวันไหนหลุด เรากลับมาเริ่มจากสิ่งเล็กที่สุดได้ใช่ไหม?”",
-      actions: [action("Onboarding + นัดติดตาม", EVENTS.START_ONBOARDING, { icon: "calendar", cost: 2 })]
+      actions: [action("ช่วยเริ่มและนัดติดตาม", EVENTS.START_ONBOARDING, { icon: "calendar", cost: 2 })]
     },
     [STAGES.M1_FOLLOWUP]: {
       scene: "followup",
       progress: 76,
-      eyebrow: "FOLLOW-UP",
-      title: `อย่าปล่อย${name}ไว้หลังซื้อ`,
-      reason: "การติดตามช่วยให้รู้ว่าอะไรทำได้ อะไรติดขัด และควรปรับ Next Action อย่างไร",
-      speaker: `Day 7 · ${name}`,
+      eyebrow: "นัดติดตาม",
+      title: `กลับมาฟัง${name}`,
+      reason: "ดูว่าทำอะไรได้ และติดขัดตรงไหน",
+      speaker: name,
       dialogue: "“ทำได้บ้าง หลุดบ้าง แต่รู้สึกว่าเริ่มกลับมาได้เร็วขึ้น”",
-      actions: [action("ติดตามจนถึง Day 28", EVENTS.FOLLOW_UP_CUSTOMER, { icon: "care", cost: 1 })]
+      actions: [action("ติดตามถึงวันที่ 28", EVENTS.FOLLOW_UP_CUSTOMER, { icon: "care", cost: 1 })]
     },
     [STAGES.M1_REVIEW_SCAN]: {
       scene: "review_scale",
       progress: 78,
-      eyebrow: "DAY 28 · REVIEW",
+      eyebrow: "วันที่ 28 · กลับมาดูผล",
       title: `ชวน${name}วัดซ้ำ`,
-      reason: "ครบ 28 วันไม่แปลว่า Success อัตโนมัติ ต้องดู adherence, trend และบริบท",
-      speaker: "Xircle Corner",
-      dialogue: "เปรียบเทียบ Baseline → Day 28 แล้วคุยว่าอะไรควรทำต่อ",
+      reason: "ดูสิ่งที่ทำต่อได้คู่กับข้อมูลรอบนี้",
+      speaker: "ทีม",
+      dialogue: "เทียบกับวันแรก แล้วฟังว่าเขารู้สึกอย่างไร",
       actions: [action("วัดซ้ำ", EVENTS.START_CUSTOMER_REVIEW, { icon: "scale", cost: 2 })]
     },
     [STAGES.M1_REVIEW_SCANNING]: {
       scene: "review_scanning",
       progress: 79,
-      eyebrow: "BASELINE → DAY 28",
-      title: `กำลังดู Trend ของ${name}`,
-      reason: "ผลลัพธ์ต้องมาจากการทำต่อเนื่องและการดูแล ไม่ใช่สุ่มแจก",
+      eyebrow: "วันเริ่มต้น → วันที่ 28",
+      title: `กำลังดูแนวโน้มของ${name}`,
+      reason: "เก็บผลไว้คุยกันต่อ",
       speaker: "Xircle",
       dialogue: "กำลังวัด…",
       status: "scan",
@@ -554,31 +558,31 @@ function getStageContent(state) {
     [STAGES.M1_REVIEW]: {
       scene: "review_result",
       progress: 81,
-      eyebrow: "RESULT REVIEW",
+      eyebrow: "ผลที่ได้จากการดูแล",
       title: `${name}เริ่มเห็นแนวโน้มดี`,
-      reason: "บันทึกสิ่งที่เปลี่ยนและ Next Action รอบต่อไป โดยไม่ใช้คำรับประกัน",
+      reason: "เก็บสิ่งที่ได้เรียนรู้ แล้วเลือกสิ่งที่จะทำต่อ",
       speaker: name,
       dialogue: "“ไม่ได้สมบูรณ์ทุกวัน แต่ตอนนี้รู้ว่าหลุดแล้วกลับมายังไง”",
-      resultCards: [["Routine", "ทำต่อเนื่องขึ้น", "good"], ["Body Trend", "เริ่มดีขึ้น", "good"], ["Next Action", "ทำต่อแบบไม่เพิ่มภาระ", "neutral"]],
-      actions: [action("บันทึก Success Case", EVENTS.SAVE_SUCCESS, { icon: "check" })]
+      resultCards: [["สิ่งที่ทำ", "ต่อเนื่องขึ้น", "good"], ["แนวโน้มร่างกาย", "เริ่มดีขึ้น", "good"], ["รอบต่อไป", "ทำต่อแบบไม่เพิ่มภาระ", "neutral"]],
+      actions: [action("บันทึกสิ่งที่ได้ผล", EVENTS.SAVE_SUCCESS, { icon: "check" })]
     },
     [STAGES.M1_SUCCESS]: {
       scene: "success",
       progress: 83,
-      eyebrow: "VALUE CREATED",
-      title: "การดูแลต่อทำให้ผลลัพธ์มีความหมาย",
-      reason: "ลูกค้าที่ได้รับการติดตาม มีโอกาสทำต่อ ซื้อซ้ำ หรือบอกต่อจากความไว้ใจ",
+      eyebrow: "ความไว้ใจเริ่มเกิดขึ้น",
+      title: "เขาอยากทำต่อแล้ว",
+      reason: person?.careOnly ? "ติดตามต่อได้ แม้แผนนี้ยังไม่มีสินค้า" : "ลองดูว่าเขาจะเลือกทำต่อแบบไหน",
       speaker: name,
       dialogue: "“อยากทำต่อ และถ้ามีเพื่อนอยากเริ่ม เราจะแนะนำให้”",
-      milestone: "SUCCESS CASE",
-      actions: [action("บันทึกเป็นลูกค้าและไปต่อ", EVENTS.CONTINUE_CARE, { icon: "care" })]
+      milestone: "ดูแลคนแรกสำเร็จ",
+      actions: [action("ดูแลต่อในเดือนหน้า", EVENTS.CONTINUE_CARE, { icon: "care" })]
     },
     [STAGES.M1_XVISOR_INTEREST]: {
       scene: "interest",
       progress: 85,
-      eyebrow: "ELEVATE",
+      eyebrow: "มีคนอยากร่วมทาง",
       title: `อธิบายบทบาท X-VISOR ให้${name}`,
-      reason: "X-VISOR ไม่ใช่แค่คนขาย แต่ฟัง วาง Next Action ติดตาม และรู้ขอบเขต",
+      reason: "เล่าว่าการดูแลคนต้องเรียนรู้และฝึกอย่างไร",
       speaker: name,
       dialogue: "“ถ้าเราอยากช่วยคนอื่นให้เริ่มแบบนี้บ้าง ต้องเรียนอะไร?”",
       actions: [action("เล่าเส้นทาง Xcademy", EVENTS.EXPLAIN_XVISOR, { icon: "academy" })]
@@ -586,31 +590,31 @@ function getStageContent(state) {
     [STAGES.M1_CANDIDATE]: {
       scene: "candidate",
       progress: 87,
-      eyebrow: "CANDIDATE → G1",
+      eyebrow: "เตรียมสมาชิกใหม่",
       title: `ช่วย${name}เตรียมเป็น X-VISOR`,
-      reason: "เขาต้องใช้เอง ฝึก และผ่าน Certification เช่นเดียวกับคุณ",
-      speaker: "Xcademy Path",
+      reason: "ช่วยเขาฝึกและผ่านการรับรองในเกม",
+      speaker: "ทีม",
       dialogue: "การพัฒนาคนคือทำให้เขาทำได้เอง ไม่ใช่แค่เพิ่มชื่อในทีม",
-      actions: [action("พัฒนาเป็น G1", EVENTS.PREPARE_G1, { icon: "team", cost: 3 })]
+      actions: [action("ช่วยเขาเตรียมเป็น X-VISOR", EVENTS.PREPARE_G1, { icon: "team", cost: 3 })]
     },
     [STAGES.M1_G1]: {
       scene: "first_g1",
       progress: 89,
-      eyebrow: "FIRST G1",
-      title: "ทีมของคุณเริ่มต้นแล้ว — เกมยังไม่จบ",
+      eyebrow: "สมาชิกทีมคนแรก",
+      title: "มีคนร่วมทางแล้ว",
       reason: `${name}เป็น X-VISOR ใหม่ แต่ยังมีลูกค้า 0 และยังต้องฝึกจากเคสจริง`,
       speaker: name,
       dialogue: "“เรายังไม่มั่นใจว่าจะเริ่มคุยกับใครก่อน”",
-      milestone: "FIRST G1 · เกมยังไปต่อ",
+      milestone: "สมาชิกทีมคนแรก",
       actions: [action("พาทีมเข้า Xcademy", EVENTS.START_WEEKLY, { icon: "weekly", cost: 2 })]
     },
     [STAGES.M1_WEEKLY_RUNNING]: {
       scene: "weekly",
       progress: 90,
-      eyebrow: "XCADEMY · TRAINING",
-      title: "ช่วยทุกคนเลือก Next Action",
-      reason: "Xcademy ช่วยหลายคนพร้อมกันและทำให้แต่ละคนเห็นเคสถัดไป",
-      speaker: "Xcademy Case Table",
+      eyebrow: "ห้องเรียน Xcademy",
+      title: "ล้อมวงคุยเคสกัน",
+      reason: "ช่วยกันเลือกสิ่งที่จะกลับไปลอง",
+      speaker: "ทีม",
       dialogue: "กำลังทบทวนคนที่ควรคุย เคสที่ควรติดตาม และสิ่งที่แต่ละคนจะทำต่อ…",
       status: "weekly",
       actions: []
@@ -618,42 +622,42 @@ function getStageContent(state) {
     [STAGES.M1_TEAM_STARTED]: {
       scene: "team_started",
       progress: 91,
-      eyebrow: "MONTH 1 COMPLETE",
-      title: "ลูกค้าคนแรกได้รับการดูแลครบวงจร",
-      reason: "เดือนถัดไปคุณจะเลือกเองว่าจะหาคน ดูแลลูกค้า ลงทุน Skill หรือเริ่มพัฒนา Candidate",
-      speaker: "Management game เริ่มแล้ว",
-      dialogue: "28 ⚡ เท่าเดิม แต่ Skill, Referral และทีมที่ทำเองได้จะทำให้ผลลัพธ์รวมโตขึ้น",
+      eyebrow: "เดินผ่านเดือนแรกแล้ว",
+      title: state.team.length ? "จากคนแรก สู่เพื่อนร่วมทีม" : "ดูแลคนแรกครบเดือนแล้ว",
+      reason: "เดือนหน้าคุณเลือกเองว่าจะดูแลใครต่อ",
+      speaker: "ทีม",
+      dialogue: "คนที่ดูแลไว้ยังอยู่ต่อ ลองดูว่าเดือนหน้าจะเกิดอะไรขึ้นบ้าง",
       actions: [action("จบเดือน 1", EVENTS.END_MONTH, { icon: "month" })]
     },
     [STAGES.MONTH_CLOSED]: {
       scene: "month_closed",
       progress: Math.min(98, 75 + state.month),
-      eyebrow: `ปิดรอบ · MONTH ${state.month}`,
-      title: "สรุปคุณค่าที่สร้างในเดือนนี้",
-      reason: "รายได้ประมาณถูกปิดรอบและเพิ่มเข้าเงินรับแล้วในแบบจำลองเกม",
-      speaker: "MONTH SUMMARY",
-      dialogue: "เดือนใหม่จะรีเซ็ตพลังงานเป็น ⚡ 28 / 28 แต่ฐานลูกค้า ทีม รายได้รวม และ Best TGV ยังอยู่",
+      eyebrow: `สรุปเดือน ${state.month}`,
+      title: "เดือนนี้สร้างอะไรไว้บ้าง",
+      reason: "บันทึกยอดเดือนนี้แล้ว เทียบกับเดือนก่อนได้",
+      speaker: "ทีม",
+      dialogue: "เริ่มเดือนใหม่ด้วยพลังงาน 28 แต้ม ลูกค้า ทีม และประวัติยังอยู่",
       monthSummary: state.monthSummaries.at(-1),
       actions: [action(`▶ เริ่มเดือน ${state.month + 1}`, EVENTS.START_NEXT_MONTH, { icon: "month" })]
     },
     [STAGES.SEASON_REVIEW]: {
       scene: "season_review",
       progress: 100,
-      eyebrow: "ENDLESS ORGANIZATION",
+      eyebrow: "เส้นทางที่คุณสร้าง",
       title: "องค์กรโตจากคนที่ทำได้เอง",
-      reason: "Reach · Sell · Care · Retain · Mentor · Build Systems — ไม่มีรายได้เพราะมีชื่ออยู่ใต้ทีมเฉย ๆ",
-      speaker: "X-VISOR QUEST",
-      dialogue: "ช่วงแรกคุณทำเอง ต่อมาคุณทำให้คนอื่นทำได้ และรายได้จึงโตตามคุณค่าที่ทีมสร้างจริง",
+      reason: "ย้อนดูว่าลูกค้าและทีมร่วมสร้างอะไรไว้",
+      speaker: "ทีม",
+      dialogue: "จากที่ลงมือเอง คุณเริ่มมีคนช่วยดูแลคนอื่น ลองดูผลงานของแต่ละเดือนกัน",
       actions: []
     }
   };
   return { actions: [], progress: 0, eyebrow: "X-VISOR QUEST", ...copy[state.stage] };
 }
 var TERM_HELP = Object.freeze({
-  XV: "หน่วย Volume ของเกม ไม่ใช่เงินบาท ช่อง 1 คิดจากยอดขายบาท ส่วน TGV รวม XV ของทั้งองค์กรในเดือนนี้",
-  ENERGY: `พลังงานคือเวลาที่คุณลงทุนกับคน งาน หรือ Skill ในเดือนนี้ สูงสุด ${MAX_ENERGY} ทีมที่ทำเองได้จะสร้างผลเพิ่มโดยไม่หักพลังงานของคุณ`,
-  XIRCLE: "Data → Meaning → Next Action: Band ช่วยเห็นสิ่งที่ทำ ส่วน Scale ช่วยเห็นสิ่งที่ร่างกายตอบ",
-  XOS: "รายการช่วยจัดลำดับว่าวันนี้ควรดูใครก่อน แต่ไม่ทำงานแทนผู้เล่น"
+  XV: "XV เป็นหน่วยผลงานในเกม ไม่ใช่เงินบาท ส่วน TGV คือ XV รวมของทั้งองค์กรในเดือนนั้น",
+  ENERGY: `พลังงานคือเวลาทำงานในเดือนนี้ มี ${MAX_ENERGY} แต้ม งานที่ทีมทำเองไม่หักพลังงานของคุณ`,
+  XIRCLE: "สายรัดช่วยดูสิ่งที่ทำ เครื่องชั่งช่วยดูแนวโน้มร่างกาย ใช้ข้อมูลมาคุยและเลือกสิ่งที่จะทำต่อ",
+  XOS: "รายการแนะนำว่าวันนี้ควรดูแลใครก่อน คุณเลือกทางอื่นได้เสมอ"
 });
 
 import { EVENTS as EVENTS2, XIRCLE_MONTHS, calculateEconomy as calculateEconomy2, getBestNextActions as getBestNextActions2 } from "./game-data.js";
@@ -666,11 +670,11 @@ function getStageContent2(state) {
       ...base,
       scene: "management_org",
       progress: 100,
-      eyebrow: `ORGANIZATION MODE · MONTH ${state.month}`,
+      eyebrow: `ดูแลภาพรวม · เดือน ${state.month}`,
       title: `องค์กรเดินต่อ · ${Number(economy.tgv || 0).toLocaleString("th-TH")} XV`,
-      reason: "หลัง 12 เดือน ไม่มี Energy และไม่มีงานรายคนให้ grind — ดูภาพใหญ่และผ่านเวลาได้เลย",
-      speaker: "XOS · Organization",
-      dialogue: `❤️ ลูกค้า active ${Number(agg.activeCustomers || 0).toLocaleString("th-TH")} · 🌱 X-VISOR ${Number(agg.xvisorCount || state.team?.length || 0).toLocaleString("th-TH")} · 👑 XLEAD ${Number(agg.xleadCount || 0).toLocaleString("th-TH")}`,
+      reason: "ปีนี้ดูผลของลูกค้าและทีมที่สร้างไว้ทีละเดือน",
+      speaker: "ทีม",
+      dialogue: `ลูกค้าที่อยู่ต่อ ${Number(agg.activeCustomers || 0).toLocaleString("th-TH")} คน · X-VISOR ${Number(agg.xvisorCount || state.team?.length || 0).toLocaleString("th-TH")} คน · XLEAD ${Number(agg.xleadCount || 0).toLocaleString("th-TH")} คน`,
       facts: [
         ["🏙️ TGV", `${Number(economy.tgv || 0).toLocaleString("th-TH")} XV`],
         ["💰 รายได้เดือนนี้", `฿${Number(economy.projectedIncome || 0).toLocaleString("th-TH")}`],
@@ -683,12 +687,12 @@ function getStageContent2(state) {
     return {
       ...base,
       scene: "open_house_running",
-      eyebrow: "🏕️ THE XIRCLE · QUARTERLY EVENT",
+      eyebrow: "นัดพบทีม · The Xircle",
       title: "The Xircle มาแล้ว · แคมป์ 2 วัน 1 คืน",
-      reason: "เตรียมคนให้พร้อม เพราะทุกคนที่เข้าร่วม—including คุณ—จะได้ Momentum แรงขึ้น",
-      speaker: "THE XIRCLE",
-      dialogue: `รอบปีนี้: ${XIRCLE_MONTHS.map((month) => `Month ${month}`).join(" · ")}`,
-      facts: [["เป้าหมาย", "ชวนคนที่เหมาะสมให้มากที่สุด"], ["ผล", "Buff ตามบทบาท + Momentum 2 เดือน"]],
+      reason: "พักมาพบกัน แล้วเติมแรงกลับไปดูแลคนต่อ",
+      speaker: "ทีม",
+      dialogue: `นัดปีนี้: ${XIRCLE_MONTHS.map((month) => `เดือน ${month}`).join(" · ")}`,
+      facts: [["ชวนใคร", "คนที่พร้อมมาพบและเรียนรู้กับทีม"], ["ผลในเกม", "เพิ่มแรงส่งในการทำงาน 2 เดือน"]],
       actions: getBestNextActions2(state, 3)
     };
   }
@@ -696,34 +700,34 @@ function getStageContent2(state) {
     return {
       ...base,
       scene: "open_house_running",
-      eyebrow: `🏕️ THE XIRCLE · MONTH ${state.month}`,
+      eyebrow: `The Xircle · เดือน ${state.month}`,
       title: `มา ${state.sceneReport.attended} จาก ${state.sceneReport.invited} คน`,
-      reason: "คนที่มาได้รับแรงส่งตามบทบาท โดยไม่ได้ถูกเปลี่ยนเป็น Sale หรือ X-VISOR แบบอัตโนมัติ",
-      speaker: "THE XIRCLE",
-      dialogue: "⭐ คุณเองก็ได้รับ Buff และ Skill XP จากแคมป์นี้",
-      facts: (state.sceneReport.messages || []).map((message, index) => [index === 0 ? "ATTENDANCE" : index === 1 ? "TEAM" : "YOU", message]),
+      reason: "นำสิ่งที่ได้เรียนรู้กลับไปลองกับงานของแต่ละคน",
+      speaker: "ทีม",
+      dialogue: "คุณเองก็ได้ฝึกและเติมแรงจากการพบกันครั้งนี้",
+      facts: (state.sceneReport.messages || []).map((message, index) => [index === 0 ? "คนที่มา" : index === 1 ? "ทีม" : "คุณ", message]),
       actions: getBestNextActions2(state, 3)
     };
   }
   if (state.sceneReport?.kind === "xlead-exam") {
     return {
       ...base,
-      eyebrow: "🎓 XLEAD EXAM · PASSED",
-      title: "Certified XLEAD",
-      reason: "Qualification อย่างเดียวไม่ปลดล็อกรายได้ — ต้องผ่าน Exam ก่อน",
-      speaker: "Xcademy",
-      dialogue: "② รายได้จากการพัฒนา Direct G1 ปลดล็อกแล้ว",
+      eyebrow: "ผ่านการรับรอง XLEAD",
+      title: "เปิดรายได้จากการช่วยทีม",
+      reason: "ดูส่วนที่ทีมช่วยสร้างในช่อง ②",
+      speaker: "ทีม",
+      dialogue: "คุณผ่านการสอบแล้ว ช่อง ② เริ่มนับจากผลงานของทีมที่คุณพัฒนามาโดยตรง",
       actions: getBestNextActions2(state, 3)
     };
   }
   if (state.sceneReport?.kind === "xgen-exam") {
     return {
       ...base,
-      eyebrow: "🎓 XGEN EXAM · PASSED",
-      title: "Certified XGEN",
-      reason: "3,000,000 TGV คือ Qualification; Certification คือสิ่งที่ปลดล็อกแผนรายได้",
-      speaker: "Xcademy",
-      dialogue: "③ รายได้จากการบริหาร Organization ปลดล็อกแล้ว",
+      eyebrow: "ผ่านการรับรอง XGEN",
+      title: "เห็นผลงานทั้งองค์กร",
+      reason: "ช่อง ③ เปิดหลังถึงเกณฑ์และผ่านการสอบ",
+      speaker: "ทีม",
+      dialogue: "ตอนนี้ผลงานของทั้งองค์กรมีส่วนในรายได้ช่อง ③ แล้ว",
       actions: getBestNextActions2(state, 3)
     };
   }
@@ -732,18 +736,18 @@ function getStageContent2(state) {
     return {
       ...base,
       scene: "season_review",
-      eyebrow: "🏆 MONTH 12 · REVELATION",
-      title: "12 เดือนแรกจบแล้ว · High Score ถูกล็อก",
-      reason: "จากคนเดียว → ลูกค้า → X-VISOR → XLEAD → Organization ที่ไม่ต้องรอคุณทำทุก transaction",
-      speaker: "X-VISOR QUEST",
-      dialogue: "คุณไม่ได้หยุดทำธุรกิจ แต่ธุรกิจไม่ต้องรอคุณทำทุกอย่างด้วยตัวเองอีกแล้ว",
+      eyebrow: "สรุปปีแรก · เดือน 12",
+      title: "เก็บผลงานปีแรกไว้",
+      reason: "คะแนนช่วงนี้บันทึกแล้ว เล่นต่อปีที่สองได้",
+      speaker: "ทีม",
+      dialogue: "ปีต่อไปลองดูว่าลูกค้าและทีมจะเดินต่ออย่างไร",
       facts: [
         ["🏆 Best TGV", `${Number(score.bestTgv || 0).toLocaleString("th-TH")} XV`],
         ["💰 รายได้รวม 12 เดือน", `฿${Number(score.totalIncome || 0).toLocaleString("th-TH")}`],
         ["💎 สูงสุด/เดือน", `฿${Number(score.bestMonthlyIncome || 0).toLocaleString("th-TH")}`],
-        ["🏙️ Organization", `${Number(score.organizationSize || 0).toLocaleString("th-TH")} คน`]
+        ["🏙️ คนในองค์กร", `${Number(score.organizationSize || 0).toLocaleString("th-TH")} คน`]
       ],
-      actions: [{ label: "▶ เล่นต่อ · Organization Mode", event: EVENTS2.START_NEXT_MONTH, icon: "play" }]
+      actions: [{ label: "▶ เล่นต่อปีที่ 2", event: EVENTS2.START_NEXT_MONTH, icon: "play" }]
     };
   }
   return base;
@@ -770,15 +774,15 @@ function nameTutorialActions(state, content) {
   const name = target.name;
   const labels = {
     [EVENTS3.TALK]: `💬 คุยกับ ${name}`,
-    [EVENTS3.REQUEST_CONSENT]: `🛡️ ขอ consent จาก ${name}`,
-    [EVENTS3.START_CUSTOMER_BASELINE]: `⚖️ ดู Baseline กับ ${name}`,
-    [EVENTS3.OPEN_ROUTINE_BUILDER]: `🧩 วาง Routine ให้ ${name}`,
+    [EVENTS3.REQUEST_CONSENT]: `🛡️ ขออนุญาต ${name} ดูข้อมูล`,
+    [EVENTS3.START_CUSTOMER_BASELINE]: `⚖️ ดูข้อมูลเริ่มต้นกับ ${name}`,
+    [EVENTS3.OPEN_ROUTINE_BUILDER]: `🧩 เลือกแผนดูแล ${name}`,
     [EVENTS3.MAKE_OFFER]: `📁 คุยแฟ้ม X กับ ${name}`,
     [EVENTS3.CLOSE_RECEIPT]: `❤️ ดูแล ${name} ต่อ`,
-    [EVENTS3.START_ONBOARDING]: `🧭 Onboarding ${name} และนัดติดตาม`,
-    [EVENTS3.FOLLOW_UP_CUSTOMER]: `❤️ ติดตาม ${name} ถึง Day 28`,
+    [EVENTS3.START_ONBOARDING]: `🧭 ช่วย ${name} เริ่มและนัดติดตาม`,
+    [EVENTS3.FOLLOW_UP_CUSTOMER]: `❤️ ติดตาม ${name} ถึงวันที่ 28`,
     [EVENTS3.START_CUSTOMER_REVIEW]: `📊 วัดซ้ำกับ ${name}`,
-    [EVENTS3.SAVE_SUCCESS]: `✅ บันทึก Success Case · ${name}`,
+    [EVENTS3.SAVE_SUCCESS]: `✅ บันทึกสิ่งที่ได้ผลกับ ${name}`,
     [EVENTS3.CONTINUE_CARE]: `❤️ ดูแล ${name} ต่อ`,
     [EVENTS3.EXPLAIN_XVISOR]: `✨ เล่าเส้นทาง X-VISOR ให้ ${name}`,
     [EVENTS3.PREPARE_G1]: `🌱 เตรียม ${name} เป็น X-VISOR`,
@@ -793,7 +797,16 @@ function quick3(state) {
   return getBestNextActions3(state, 3).map((item) => ({ ...item, ...item.payload, id: item.id ?? item.payload?.id ?? item.targetId }));
 }
 function finish(state, content) {
-  return nameTutorialActions(state, content);
+  // Keep fallback copy and its portrait aligned with the actual narrator.
+  // Questions and customer quotes remain intact when the story view is absent.
+  const beat = getStoryBeat(state, content);
+  const portrait = beat?.portrait || content.portrait || (content.speaker === "เอโกะ" ? "ako" : content.speaker === "ทีม" ? "teem" : content.quiz?.exam ? "teacher" : content.quiz ? "customer" : "teem");
+  return nameTutorialActions(state, {
+    ...content,
+    speaker: beat?.speaker || content.speaker,
+    portrait,
+    dialogue: beat && beat.portrait !== "customer" ? beat.line : content.dialogue
+  });
 }
 function realSingleMonthXgen(state, tgv) {
   return Boolean(
@@ -801,6 +814,28 @@ function realSingleMonthXgen(state, tgv) {
   );
 }
 function getStageContent3(state) {
+  if (state.stage === STAGES.LIVE_RUNNING) {
+    return finish(state, {
+      scene: "live-studio", progress: Math.min(98, 76 + Number(state.month || 0)),
+      eyebrow: `Live · เดือน ${state.month}`, title: "ไลฟ์คุยแฟ้ม X",
+      reason: "ให้แต่ละคนฟังและเลือกตามความพร้อม",
+      speaker: "ทีม", dialogue: "คุยแฟ้ม X กับคนที่พร้อมได้หลายคนในครั้งเดียว แล้วฟังว่าใครอยากเริ่มหรือขอเวลา",
+      status: "live", actions: []
+    });
+  }
+  if (state.stage === STAGES.XIRCLE_RUNNING) {
+    return finish(state, {
+      scene: "the-xircle",
+      progress: Math.min(98, 76 + Number(state.month || 0)),
+      eyebrow: `The Xircle · เดือน ${state.month}`,
+      title: "พักมาฟังเรื่องของกันและกัน",
+      reason: "ใช้เวลาพบทีม ก่อนกลับไปดูแลคนต่อ",
+      speaker: "ทีม",
+      dialogue: "เรื่องของเพื่อนอาจช่วยให้เราเห็นทางไปต่อ",
+      status: "xircle",
+      actions: []
+    });
+  }
   const base = getStageContent2(state);
   if (state.organizationMode) {
     const economy2 = calculateEconomy3(state);
@@ -810,15 +845,15 @@ function getStageContent3(state) {
       ...base,
       scene: base.scene,
       progress: 100,
-      eyebrow: `${xgenPath ? "⭐ XGEN" : "👑 XLEAD"} ORGANIZATION · MONTH ${state.month}`,
-      title: `องค์กรเดินต่อ · ${fmt(economy2.tgv)} XV`,
-      reason: "ปีที่ 2 คุณไม่ต้องกลับไปขายหรือตามรายคน — กดเดือนละครั้งแล้วดูระบบที่สร้างไว้ทำงานต่อ",
-      speaker: "XOS · Organization",
-      dialogue: `❤️ ลูกค้า active ${fmt(agg.activeCustomers)} · 🌱 X-VISOR ${fmt(agg.xvisorCount || state.team?.length)} · 👑 XLEAD ${fmt(agg.xleadCount)}`,
+      eyebrow: `${xgenPath ? "XGEN" : "XLEAD"} · เดือน ${state.month}`,
+      title: "ดูเส้นทางของลูกค้าและทีม",
+      reason: "ผ่านไปทีละเดือน แล้วเทียบกับสิ่งที่เคยสร้างไว้",
+      speaker: "ทีม",
+      dialogue: `ลูกค้าที่อยู่ต่อ ${fmt(agg.activeCustomers)} คน · X-VISOR ${fmt(agg.xvisorCount || state.team?.length)} คน · XLEAD ${fmt(agg.xleadCount)} คน`,
       facts: [
         ["🏙️ TGV เดือนนี้", `${fmt(economy2.tgv)} XV`],
         ["💰 รายได้เดือนนี้", `฿${fmt(economy2.projectedIncome)}`],
-        ["เส้นทางปีที่ 2", xgenPath ? "XGEN · มี ③ Organization 5% + Recognition Trip" : "XLEAD · ไม่มี ③ และไม่มี Recognition Trip"]
+        ["เส้นทางปีที่ 2", xgenPath ? "XGEN · เปิดช่อง ③ และทริปของทีม" : "XLEAD · ดูแลทีมต่อในช่อง ① และ ②"]
       ],
       management: null,
       monthSummary: null,
@@ -831,20 +866,20 @@ function getStageContent3(state) {
       ...base,
       scene: "season_review",
       progress: 100,
-      eyebrow: "🏆 MONTH 12 · REVELATION",
+      eyebrow: "สรุปปีแรก · เดือน 12",
       title: "12 เดือนแรกจบแล้ว",
-      reason: "High Score ถูกล็อกตรงนี้ — ใส่ชื่อก่อน แล้วค่อยดูสิ่งที่คุณสร้างเดินต่อเองใน Year 2",
-      speaker: "X-VISOR QUEST",
-      dialogue: state.campaignOutcome?.xgenByMonth12 ? "⭐ คุณแตะ 3,000,000 XV ในเดือนเดียวสำเร็จ · Year 2 เปิด XGEN Path" : "👑 รอบนี้ยังไม่แตะ 3,000,000 XV ในเดือนเดียว · Year 2 จะเป็น XLEAD Path",
+      reason: "ใส่ชื่อเก็บคะแนนปีแรก แล้วไปต่อถึงเดือน 24",
+      speaker: "ทีม",
+      dialogue: state.campaignOutcome?.xgenByMonth12 ? "ปีที่สองเดินต่อในเส้นทาง XGEN" : "ปีที่สองเดินต่อในเส้นทาง XLEAD ลองดูสิ่งที่ลูกค้าและทีมช่วยสร้าง",
       facts: [
         ["🏆 Best TGV", `${fmt(score.bestTgv)} XV`],
         ["💰 รายได้รวม 12 เดือน", `฿${fmt(score.totalIncome)}`],
         ["💎 สูงสุด / เดือน", `฿${fmt(score.bestMonthlyIncome)}`],
-        ["🏙️ Organization", `${fmt(score.organizationSize)} คน`]
+        ["🏙️ คนในองค์กร", `${fmt(score.organizationSize)} คน`]
       ],
       management: null,
       monthSummary: null,
-      actions: [{ label: "🏆 ใส่ชื่อ High Score ก่อน", ui: "v9-finale", icon: "certificate" }]
+      actions: [{ label: "🏆 ใส่ชื่อเก็บคะแนน", ui: "v9-finale", icon: "certificate" }]
     });
   }
   const economy = calculateEconomy3(state);
@@ -853,9 +888,9 @@ function getStageContent3(state) {
   if (singleMonthQualified && !state.career?.xgenExamPassed && !state.organizationMode) {
     return finish(state, {
       ...base,
-      eyebrow: "🎓 XGEN EXAM READY",
+      eyebrow: "พร้อมสอบ XGEN",
       title: "ถึงเกณฑ์แล้ว · สอบ XGEN ได้เลย",
-      reason: "แตะ 3,000,000 XV ในเดือนเดียวแล้ว กดสอบเพื่อรับรองและปลดล็อก ③ Organization ในเดือนนี้",
+      reason: "แตะ 3,000,000 XV ในเดือนเดียวแล้ว สอบผ่านเพื่อเปิดรายได้ช่อง ③",
       actions: quick3(state)
     });
   }
@@ -863,15 +898,15 @@ function getStageContent3(state) {
     return finish(state, {
       ...base,
       scene: "xgen",
-      eyebrow: "🏆 XGEN QUALIFIED",
-      title: "แตะ 3,000,000 XV ในเดือนเดียวแล้ว",
-      reason: "ผ่านครั้งเดียวและอยู่ถาวรในรอบนี้ — ③ Organization 5% เริ่มนับตั้งแต่เดือนที่ผ่านทันที",
-      speaker: "XOS · Organization",
+      eyebrow: "ผ่านการรับรอง XGEN",
+      title: "เปิดรายได้จากทั้งองค์กร",
+      reason: "ช่อง ③ เริ่มนับในเดือนที่ผ่านเกณฑ์และสอบผ่าน",
+      speaker: "ทีม",
       dialogue: `TGV เดือนนี้ ${fmt(tgv)} XV · เกณฑ์ ${fmt(XGEN_SINGLE_MONTH_TARGET)} XV`,
       facts: [
         ["ช่วงที่วัด", "เดือนปัจจุบันเดือนเดียว"],
-        ["Qualification", "ผ่านแล้วถาวรในรอบนี้"],
-        ["③ Organization", "5% ของ TGV เดือนนี้เริ่มทันที"]
+        ["การรับรอง", "ผ่านแล้วในรอบนี้"],
+        ["รายได้ช่อง ③", "5% ของ TGV เดือนนี้"]
       ],
       actions: quick3(state)
     });
@@ -881,14 +916,14 @@ function getStageContent3(state) {
     return finish(state, {
       ...base,
       scene: base.scene,
-      eyebrow: "🏙️ XGEN TARGET",
+      eyebrow: "ใกล้เกณฑ์ XGEN",
       title: `เหลืออีก ${fmt(remaining)} XV ในเดือนนี้`,
-      reason: "เกณฑ์เดียวคือ TGV 3,000,000 XV ภายในเดือนเดียว — ตอนนี้ยังไม่ Qualified",
-      speaker: "XOS · Organization",
+      reason: "เป้าหมายคือ 3,000,000 XV ภายในเดือนเดียว ตอนนี้ยังไม่ถึงเกณฑ์",
+      speaker: "ทีม",
       dialogue: `TGV เดือนนี้ ${fmt(tgv)} / ${fmt(XGEN_SINGLE_MONTH_TARGET)} XV`,
       facts: [
         ["ช่วงที่วัด", "เดือนปัจจุบันเดือนเดียว"],
-        ["Qualification", "ยังไม่ผ่าน"]
+        ["เกณฑ์เดือนเดียว", "ยังไม่ผ่าน"]
       ],
       actions: quick3(state)
     });
@@ -897,15 +932,15 @@ function getStageContent3(state) {
     return finish(state, {
       ...base,
       scene: "the-xircle",
-      eyebrow: state.sceneReport?.kind === "xircle-announcement" ? "🏕️ THE XIRCLE · SPECIAL EVENT" : "🏕️ THE XIRCLE",
-      title: state.sceneReport?.kind === "xircle-announcement" ? "ถึงรอบ The Xircle แล้ว" : "RESET · RECONNECT · RISE",
+      eyebrow: "นัดพบทีม · The Xircle",
+      title: state.sceneReport?.kind === "xircle-announcement" ? "ถึงรอบนัดพบทีมแล้ว" : "เติมแรงกลับไปดูแลกันต่อ",
       reason: "พักจากงานประจำ เชื่อมความสัมพันธ์ และเติมพลังให้ทีมพร้อมเริ่มอีกครั้ง",
       actions: quick3(state)
     });
   }
   if (state.stage === "management" || state.sceneReport?.kind === "xlead-exam") {
     const actions = quick3(state);
-    return finish(state, { ...base, title: actions[0]?.label || base.title, actions });
+    return finish(state, { ...base, actions });
   }
   if (Number(state.month || 0) > 0 && Number(state.month || 0) <= CAMPAIGN_MONTHS && base.management) {
     return finish(state, { ...base, actions: quick3(state) });

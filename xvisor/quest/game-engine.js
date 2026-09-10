@@ -72,8 +72,10 @@ var STAGES = Object.freeze({
   MANAGEMENT: "management",
   MANAGEMENT_ROUTINE: "management_routine",
   CONTENT_RUNNING: "content_running",
+  LIVE_RUNNING: "live_running",
   ADS_RUNNING: "ads_running",
   XCADEMY_RUNNING: "xcademy_running",
+  XIRCLE_RUNNING: "xircle_running",
   OPEN_HOUSE_RUNNING: "open_house_running",
   CENTER_RUNNING: "center_running",
   GOOD_LUCK_RUNNING: "good_luck_running",
@@ -146,6 +148,8 @@ var EVENTS = Object.freeze({
   REVIEW_CANDIDATE: "REVIEW_CANDIDATE",
   CERTIFY_CANDIDATE: "CERTIFY_CANDIDATE",
   RUN_XCADEMY: "RUN_XCADEMY",
+  RUN_LIVE: "RUN_LIVE",
+  RESOLVE_ENCOUNTER: "RESOLVE_ENCOUNTER",
   RUN_OPEN_HOUSE: "RUN_OPEN_HOUSE",
   RUN_CENTER: "RUN_CENTER",
   RUN_GOOD_LUCK: "RUN_GOOD_LUCK",
@@ -251,8 +255,10 @@ var ALLOWED = Object.freeze({
   ],
   [STAGES.MANAGEMENT_ROUTINE]: [EVENTS.CHOOSE_MANAGEMENT_ROUTINE],
   [STAGES.CONTENT_RUNNING]: [EVENTS.SCENE_COMPLETE],
+  [STAGES.LIVE_RUNNING]: [EVENTS.SCENE_COMPLETE],
   [STAGES.ADS_RUNNING]: [EVENTS.SCENE_COMPLETE],
   [STAGES.XCADEMY_RUNNING]: [EVENTS.SCENE_COMPLETE],
+  [STAGES.XIRCLE_RUNNING]: [EVENTS.SCENE_COMPLETE],
   [STAGES.OPEN_HOUSE_RUNNING]: [EVENTS.SCENE_COMPLETE],
   [STAGES.CENTER_RUNNING]: [EVENTS.SCENE_COMPLETE],
   [STAGES.GOOD_LUCK_RUNNING]: [EVENTS.SCENE_COMPLETE],
@@ -268,6 +274,7 @@ var ENERGY_COSTS = Object.freeze({
   followup: 1,
   referral: 1,
   content: 1,
+  live: 2,
   ads: 1,
   skill: 1,
   candidate: 1,
@@ -580,6 +587,11 @@ function recordSale(state, kind, customerId) {
   const next = {
     ...state,
     economy,
+    monthStats: firstStart ? state.monthStats : {
+      ...state.monthStats,
+      reorderedCustomerIds: [...new Set([...(state.monthStats?.reorderedCustomerIds || []), state.customers.find((customer) => customer.id === customerId)?.personId || customerId])],
+      reorderTrackingComplete: state.monthStats?.reorderTrackingComplete ?? Number(state.monthStats?.reorders || 0) === 0
+    },
     organization: { ...state.organization, tgv: Number(state.organization?.tgv || 0) + xv }
   };
   const after = calculateEconomy(next);
@@ -601,6 +613,21 @@ function recordSale(state, kind, customerId) {
 function makeMission(type, targetId, label) {
   return { id: `${type}-${targetId}`, type, targetId, label, completed: false };
 }
+function completeProspectSale(state, person, event = EVENTS.OFFER_PROSPECT) {
+  state = recordSale(state, "sale", person.id);
+  const customer = {
+    ...person, id: `customer-${person.id}`, personId: person.id,
+    journey: "day0", status: "เริ่ม Routine", activePlan: true,
+    customerState: CUSTOMER_STATES.NEEDS_HELP, day: 0,
+    trust: person.trust + 8, lastReorderMonth: state.month
+  };
+  return refreshMissions(addSkillXp({
+    ...state, prospects: state.prospects.filter((item) => item.id !== person.id),
+    customers: [...state.customers, customer], selectedPersonId: customer.id,
+    monthStats: { ...state.monthStats, sales: state.monthStats.sales + 1, newCustomers: state.monthStats.newCustomers + 1 },
+    lastEvent: event, lastMessage: `${person.name} พร้อมเริ่ม Routine`, updatedAt: Date.now()
+  }, "knowledge", 1, "sale"));
+}
 function completeMission(state, type, targetId) {
   return {
     ...state,
@@ -617,7 +644,7 @@ function refreshMissions(state) {
     else if (customer.xvisorInterest && !customer.xvisorStage) missions.push(makeMission("xvisor", customer.id, `${customer.name} · เริ่มสนใจ X-VISOR`));
     const customerState = customer.customerState || (customer.selfDirected ? CUSTOMER_STATES.SELF_DIRECTED : CUSTOMER_STATES.NEEDS_HELP);
     const automated = [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customerState);
-    if (!automated && customerState === CUSTOMER_STATES.READY_TO_BUY) missions.push(makeMission("reorder", customer.id, `${customer.name} · พร้อมต่อ RoutineX เดือนใหม่`));
+    if (!automated && !customer.careOnly && customerState === CUSTOMER_STATES.READY_TO_BUY) missions.push(makeMission("reorder", customer.id, `${customer.name} · พร้อมต่อ RoutineX เดือนใหม่`));
     else if (!automated && customer.day < 28) missions.push(makeMission("care", customer.id, `${customer.name} · ต้องการความช่วยเหลือ`));
     else if (!automated && customer.day >= 14 && !customer.measuredAgain) missions.push(makeMission("remeasure", customer.id, `${customer.name} · วัดซ้ำแล้วเปลี่ยน Next Action`));
     if (customer.referralReady && !customer.referralAsked) missions.push(makeMission("referral", customer.id, `${customer.name} · พร้อมแนะนำเพื่อน`));
@@ -627,8 +654,8 @@ function refreshMissions(state) {
     if (person.journey === "scheduled") missions.push(makeMission("meet", person.id, `${person.name} · นัดแล้ว ไปพบเพื่อฟังบริบท`));
     if (person.journey === "conversation") missions.push(makeMission("consult", person.id, `${person.name} · ฟังให้เจอสิ่งที่อยากเปลี่ยน`));
     if (person.journey === "discovery") missions.push(makeMission("baseline", person.id, `${person.name} · ขอ consent แล้วดู Baseline`));
-    if (person.journey === "baseline") missions.push(makeMission("routine", person.id, `${person.name} · วาง Routine จากข้อมูล`));
-    if (person.journey === "recommendation") missions.push(makeMission("offer", person.id, `${person.name} · พร้อมคุยแผน`));
+    if (person.journey === "baseline") missions.push(makeMission(person.routinePlan ? "offer" : "routine", person.id, `${person.name} · ${person.routinePlan ? "คุยแฟ้ม X จากแผนเดิม" : "วาง Routine จากข้อมูล"}`));
+    if (person.journey === "recommendation") missions.push(makeMission("offer", person.id, `${person.name} · พร้อมคุยแฟ้ม X`));
     if (person.journey === "waiting" && Number(person.nextOfferMonth || 0) <= state.month && Number(person.decisionAttempts || 0) < 2) {
       missions.push(makeMission("decision", person.id, `${person.name} · พร้อมคุยให้รู้ผล`));
     }
@@ -1037,7 +1064,7 @@ function reduceGame(currentState, event, payload = {}) {
         id: `customer-${person.id}`,
         personId: person.id,
         journey: "continue",
-        status: "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ",
+        status: person.careOnly ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ",
         selfDirected: true,
         customerState: CUSTOMER_STATES.SELF_DIRECTED,
         lastReorderMonth: 1
@@ -1277,31 +1304,7 @@ function reduceGame(currentState, event, payload = {}) {
           updatedAt: Date.now()
         });
       }
-      state = recordSale(state, "sale", person.id);
-      const customer = {
-        ...person,
-        id: `customer-${person.id}`,
-        personId: person.id,
-        journey: "day0",
-        status: "เริ่ม Routine",
-        activePlan: true,
-        customerState: CUSTOMER_STATES.NEEDS_HELP,
-        day: 0,
-        trust: person.trust + 8,
-        lastReorderMonth: state.month
-      };
-      let next = {
-        ...state,
-        prospects: state.prospects.filter((item) => item.id !== person.id),
-        customers: [...state.customers, customer],
-        selectedPersonId: customer.id,
-        monthStats: { ...state.monthStats, sales: state.monthStats.sales + 1, newCustomers: state.monthStats.newCustomers + 1 },
-        lastEvent: event,
-        lastMessage: `${person.name} พร้อมเริ่ม Routine`,
-        updatedAt: Date.now()
-      };
-      next = addSkillXp(next, "knowledge", 1, "sale");
-      return refreshMissions(next);
+      return completeProspectSale(state, person, event);
     }
     case EVENTS.CARE_CUSTOMER: {
       const customer = state.customers.find((item) => item.id === payload.id);
@@ -1343,7 +1346,7 @@ function reduceGame(currentState, event, payload = {}) {
       const success = customer.day >= 28 && result === "ดีขึ้น";
       const newlySuccessful = success && !customer.successCase;
       const interest = success && state.month >= 2 && (customer.trust >= 68 || getSkillLevel(state.skills, "care") >= 4);
-      const selfDirected = success && getSkillLevel(state.skills, "care") >= 8;
+      const selfDirected = success && (customer.careOnly || getSkillLevel(state.skills, "care") >= 8);
       let next = {
         ...state,
         customers: updatePerson(state.customers, customer.id, (item) => ({
@@ -1356,7 +1359,7 @@ function reduceGame(currentState, event, payload = {}) {
           xvisorInterest: item.xvisorInterest || interest,
           selfDirected,
           customerState: selfDirected ? CUSTOMER_STATES.SELF_DIRECTED : success ? CUSTOMER_STATES.READY_TO_BUY : CUSTOMER_STATES.NEEDS_HELP,
-          status: interest ? "เริ่มสนใจ X-VISOR" : selfDirected ? "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ" : success ? "พร้อมต่อ RoutineX เดือนใหม่" : `ผล ${result}`
+          status: interest ? "เริ่มสนใจ X-VISOR" : customer.careOnly && success ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : selfDirected ? "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ" : success ? "พร้อมต่อ RoutineX เดือนใหม่" : `ผล ${result}`
         })),
         monthStats: { ...state.monthStats, remeasures: state.monthStats.remeasures + 1, successCases: state.monthStats.successCases + (newlySuccessful ? 1 : 0) },
         career: { ...state.career, totalSuccessCases: state.career.totalSuccessCases + (newlySuccessful ? 1 : 0) },
@@ -1369,7 +1372,7 @@ function reduceGame(currentState, event, payload = {}) {
     }
     case EVENTS.REORDER_CUSTOMER: {
       const customer = state.customers.find((item) => item.id === payload.id);
-      if (!customer) return state;
+      if (!customer || customer.careOnly) return state;
       const careLevel = getSkillLevel(state.skills, "care");
       const ready = customer.followups >= (careLevel >= 4 ? 1 : 2) && customer.measuredAgain && customer.trust >= 58 && customer.result !== "หลุด";
       if (customer.day < 28 || customer.customerState !== CUSTOMER_STATES.READY_TO_BUY || !ready) return state;
@@ -1660,7 +1663,10 @@ function reduceGame(currentState, event, payload = {}) {
         const readiness = Math.min(99, Number(person.readiness || 0) + 18 + peopleLevel * 2);
         if (readiness >= 82) {
           readyRoutine += 1;
-          return { ...applyRoutine(person, "fit"), readiness, customerState: CUSTOMER_STATES.READY_TO_BUY, status: "พร้อมเริ่ม Routine หลัง Open House" };
+          // The event's ready-plan shortcut includes the same permission and
+          // starting-data conversation as the ordinary Baseline action.
+          const prepared = applyRoutine({ ...person, consent: true, measured: true }, "fit");
+          return { ...prepared, routinePlan: person.routinePlan ? savedRoutinePlan(person) : prepared.routinePlan, readiness, customerState: CUSTOMER_STATES.READY_TO_BUY, status: "คุยข้อมูลในงานแล้ว · พร้อมคุยแฟ้ม X" };
         }
         xircleAppointments += 1;
         return { ...person, readiness, journey: "discovery", customerState: null, nextOfferMonth: null, status: "พร้อมนัด Xircle" };
@@ -2415,7 +2421,7 @@ function simulateEndgameMonth(state) {
   const xleadCount2 = Math.max(aggregate.xleadCount, aggregate.xleadCount + xleadGrowth);
   const channel3 = state.career?.xgenCertified ? Math.round(tgv * ORGANIZATION_INCOME_RULE2.rate) : 0;
   const directMentoring = Math.max(0, Math.round(Number(state.campaignScore?.bestMonthlyIncome || 0) * 0.18));
-  const personalRecurring = Math.round((state.customers || []).filter((item) => satisfactionFor(item) >= 75).length * TUTORIAL_OFFER2.xv * 0.2);
+  const personalRecurring = Math.round((state.customers || []).filter((item) => !item.careOnly && satisfactionFor(item) >= 75).length * TUTORIAL_OFFER2.xv * 0.2);
   const monthlyIncome = personalRecurring + directMentoring + channel3;
   const totalIncome = Math.max(0, Number(state.economy?.totalIncome || 0)) + monthlyIncome;
   const entry = { month: nextMonth, channel1: personalRecurring, channel2: directMentoring, channel3, channel4: 0, total: monthlyIncome, tgv };
@@ -2734,7 +2740,7 @@ function personActionCost(event) {
   const map = {
     [EVENTS3.CONTACT_PROSPECT]: costs.remoteContact ?? 1,
     [EVENTS3.MEET_PROSPECT]: costs.inPerson ?? 2,
-    [EVENTS3.CONSULT_PROSPECT]: costs.consultation ?? 1,
+    [EVENTS3.CONSULT_PROSPECT]: costs.remoteContact ?? 1,
     [EVENTS3.BASELINE_PROSPECT]: costs.scale ?? 2,
     [EVENTS3.OPEN_MANAGEMENT_ROUTINE]: 0,
     [EVENTS3.OFFER_PROSPECT]: costs.offer ?? 1,
@@ -2760,7 +2766,7 @@ function buildPersonAction({ event, target, state, reason = "", expectedOutcome 
     [EVENTS3.CONSULT_PROSPECT]: `💬 คุยกับ ${name}`,
     [EVENTS3.BASELINE_PROSPECT]: `⚖️ ดู Baseline กับ ${name}`,
     [EVENTS3.OPEN_MANAGEMENT_ROUTINE]: `🧩 วาง Routine ให้ ${name}`,
-    [EVENTS3.OFFER_PROSPECT]: `📁 นัดคุยแฟ้ม X กับ ${name}`,
+    [EVENTS3.OFFER_PROSPECT]: `📁 คุยแฟ้ม X กับ ${name}`,
     [EVENTS3.FOLLOW_UP_DECISION]: `🔥 คุยให้รู้ผลกับ ${name}`,
     [EVENTS3.CARE_CUSTOMER]: `❤️ ดูแล ${name}`,
     [EVENTS3.REMEASURE_CUSTOMER]: `📊 วัดซ้ำกับ ${name}`,
@@ -2793,6 +2799,7 @@ function inferPersonKind(state, target) {
 }
 function getPersonContextAction(state, target, kind = null) {
   if (!target?.id || !target?.name) return null;
+  target = recoverRoutineConsent(target);
   const actualKind = kind || inferPersonKind(state, target);
   if (actualKind === "team") {
     if (target.active && Number(target.autonomy || 0) < 85) return buildPersonAction({ event: EVENTS3.MENTOR_TEAM_MEMBER, target, state });
@@ -2804,7 +2811,7 @@ function getPersonContextAction(state, target, kind = null) {
       scheduled: EVENTS3.MEET_PROSPECT,
       conversation: EVENTS3.CONSULT_PROSPECT,
       discovery: EVENTS3.BASELINE_PROSPECT,
-      baseline: EVENTS3.OPEN_MANAGEMENT_ROUTINE,
+      baseline: target.routinePlan ? EVENTS3.OFFER_PROSPECT : EVENTS3.OPEN_MANAGEMENT_ROUTINE,
       recommendation: EVENTS3.OFFER_PROSPECT
     };
     if (target.journey === "waiting" && Number(target.nextOfferMonth || 0) <= Number(state.month || 0) && Number(target.decisionAttempts || 0) < 2) {
@@ -2814,12 +2821,17 @@ function getPersonContextAction(state, target, kind = null) {
   }
   if (target.xvisorStage === "ready") return buildPersonAction({ event: EVENTS3.START_CANDIDATE_XCADEMY, target, state });
   if (target.xvisorStage === "xcademy") return buildPersonAction({ event: EVENTS3.REVIEW_CANDIDATE, target, state });
-  if (target.xvisorStage === "case") return buildPersonAction({ event: EVENTS3.CERTIFY_CANDIDATE, target, state });
+  const candidateReady = Number(target.candidateProgress || 0) >= 2 && (target.candidateStartedMonth !== state.month || getSkillLevel(state.skills, "leadership") >= 6 || Number(state.monthStats?.xcademySessions || 0) > 0);
+  if (target.xvisorStage === "case" && candidateReady) return buildPersonAction({ event: EVENTS3.CERTIFY_CANDIDATE, target, state });
   if (target.xvisorInterest && !target.xvisorStage) return buildPersonAction({ event: EVENTS3.INVITE_XVISOR, target, state });
   if (target.referralReady && !target.referralAsked) return buildPersonAction({ event: EVENTS3.ASK_REFERRAL, target, state });
   if (target.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(target.customerState)) return null;
-  if (target.customerState === CUSTOMER_STATES.READY_TO_BUY) return buildPersonAction({ event: EVENTS3.REORDER_CUSTOMER, target, state });
-  if (Number(target.satisfaction || 0) < 55 || Number(target.day || 0) < 28) return buildPersonAction({ event: EVENTS3.CARE_CUSTOMER, target, state });
+  const day = Number(target.day || 0);
+  const reorderReady = !target.careOnly && day >= 28 && target.measuredAgain && Number(target.trust || 0) >= 58 && target.result !== "หลุด" && Number(target.followups || 0) >= (getSkillLevel(state.skills, "care") >= 4 ? 1 : 2);
+  if (target.customerState === CUSTOMER_STATES.READY_TO_BUY && reorderReady) return buildPersonAction({ event: EVENTS3.REORDER_CUSTOMER, target, state });
+  // Day 28 completes the care checkpoints. Low satisfaction cannot make another
+  // CARE dispatch valid; review the result before deciding what comes next.
+  if (day < 28) return buildPersonAction({ event: EVENTS3.CARE_CUSTOMER, target, state });
   if (!target.measuredAgain) return buildPersonAction({ event: EVENTS3.REMEASURE_CUSTOMER, target, state });
   return null;
 }
@@ -3290,8 +3302,53 @@ function successCaseCount(state) {
   const customers = (state.customers || []).filter((customer) => customer.successCase || customer.result === "ดีขึ้น").length;
   return Math.max(customers, Number(state.career?.totalSuccessCases || 0));
 }
+function hasRoutineContext(person) {
+  const ready = recoverRoutineConsent(person);
+  return Boolean(ready?.consent && ["baseline", "recommendation"].includes(ready.journey));
+}
+function getRoutineChoices(state, personOrId = state?.selectedPersonId) {
+  const person = recoverRoutineConsent(typeof personOrId === "object" && personOrId ? personOrId : (state?.prospects || []).find((item) => item.id === personOrId));
+  const products = [...new Set(person?.fitProducts ?? person?.routinePlan?.products ?? [])];
+  const people = getSkillLevel3(state?.skills, "people");
+  const knowledge = getSkillLevel3(state?.skills, "knowledge");
+  const context = hasRoutineContext(person) && !state?.organizationMode && !state?.runComplete;
+  const energy = Number(state?.energy || 0) >= ENERGY_COSTS.offer;
+  const fitReady = Number(person?.trust || 0) + 10 + Number(person?.readiness || 0) >= 91 - (people + knowledge) * 2;
+  const tutorial = [STAGES.M1_ROUTINE, STAGES.M1_RECOMMENDATION].includes(state?.stage);
+  const fullMissing = [];
+  if (people < 6) fullMissing.push(`ฝึกคุยกับคน Lv.${people}/6`);
+  if (knowledge < 6) fullMissing.push(`ฝึกความรู้ Lv.${knowledge}/6`);
+  if (successCaseCount(state || {}) < 2) fullMissing.push(`ดูแลจนเกิดผล ${successCaseCount(state || {})}/2 เคส`);
+  if (Number(person?.trust || 0) < 58) fullMissing.push(`ความไว้ใจ ${Number(person?.trust || 0)}/58`);
+  if (Number(person?.readiness || 0) < 62) fullMissing.push(`ความพร้อม ${Number(person?.readiness || 0)}/62`);
+  if (Number(state?.month || 0) < 4 && Number(state?.monthStats?.successCases || 0) + Number(state?.monthStats?.sales || 0) < 1) fullMissing.push("ต้องมีผลลัพธ์หรือการเริ่มแผนในเดือนนี้ หรือรอเดือน 4");
+  const blocked = !context ? "ฟังบริบทและขออนุญาตดู Baseline ให้ครบก่อน" : !products.length ? "บริบทนี้ยังไม่ต้องเพิ่มสินค้า" : !energy ? "พลังงานไม่พอสำหรับคุยและเริ่มแผน (ใช้ 1)" : null;
+  const candidate = person ? { ...person, journey: "recommendation", trust: Math.min(100, Number(person.trust || 0) + 15), routinePlan: { id: "all", fastLane: true } } : null;
+  const attempt = Number(person?.decisionAttempts || 0);
+  const fullChance = context && products.length && !fullMissing.length ? getFastTrackChance(state, candidate) : 0;
+  return [
+    {
+      id: "control", available: context, cost: 0, products: [], chance: null,
+      reason: context ? "เริ่มจากพฤติกรรมเดียว ไม่ซื้อสินค้าและไม่เกิดยอดขาย" : "ฟังบริบทและขออนุญาตดู Baseline ให้ครบก่อน",
+      nextStep: "วางสิ่งเล็กที่ทำได้ แล้วนัดติดตามผล"
+    },
+    {
+      id: "fit", available: !blocked && (tutorial || fitReady), cost: ENERGY_COSTS.offer, products,
+      chance: blocked || !fitReady && !tutorial ? 0 : tutorial ? 1 : humanDecisionChance(people, attempt),
+      reason: blocked || (!fitReady && !tutorial ? "ความไว้ใจและความพร้อมยังไม่พอสำหรับเริ่มแผนสินค้า" : "ใช้ตัวช่วยเฉพาะที่ตรงกับสิ่งที่เขาอยากเปลี่ยน เลือกแล้วคุยแฟ้ม X ครั้งเดียว"),
+      nextStep: blocked || !fitReady && !tutorial ? "เลือกเริ่มจากพฤติกรรมและติดตามก่อน" : "เขาตัดสินใจเอง ถ้าขอคิด เกมจะบอกเดือนที่คุยต่อได้"
+    },
+    {
+      id: "all", available: !blocked && fullMissing.length === 0, cost: ENERGY_COSTS.offer, products,
+      chance: !fullChance ? 0 : attempt >= 2 ? 1 : attempt === 1 ? Math.min(0.97, fullChance + 0.15) : fullChance,
+      reason: blocked || (fullMissing.length ? `ยังไม่พร้อม: ${fullMissing.join(" · ")}` : "พร้อมคุย Full Start ทั้งอุปกรณ์และ RoutineX โดยใช้ตัวช่วยตามบริบทของคนนี้"),
+      nextStep: blocked || fullMissing.length ? "เริ่มจากพฤติกรรมหรือแผนที่พอดี ฝึกทักษะและดูแลให้เกิดผลก่อน" : "เมื่อเขาตกลง จะเริ่ม Day 0 และต้องติดตามผลจริงก่อนชวนเข้า Xcademy"
+    }
+  ];
+}
 function canOfferFullSetFastLane(state, person) {
   if (!person || state.organizationMode || state.runComplete) return false;
+  if (!hasRoutineContext(person) || !(person.fitProducts ?? person.routinePlan?.products ?? []).length) return false;
   const people = getSkillLevel3(state.skills, "people");
   const knowledge = getSkillLevel3(state.skills, "knowledge");
   const momentum = Number(state.monthStats?.successCases || 0) + Number(state.monthStats?.sales || 0);
@@ -3482,6 +3539,8 @@ function teamStatus(member) {
 function simulatePersonalCustomerCycle(state, month, eventEffect) {
   const metrics = { repeat: 0, paused: 0, stopped: 0, comeback: 0 };
   const customers = (state.customers || []).map((customer, index) => {
+    // A behavior-only plan never becomes a paid subscription through simulation.
+    if (customer.careOnly) return customer;
     const key = customer.personId || customer.id || `personal-${index}`;
     const status = customer.organizationCustomerState || (customer.activePlan === false ? "paused" : "active");
     const roll = deterministicRoll2(state, key, 300 + month + index);
@@ -4209,8 +4268,8 @@ function getBestNextActions4(state, limit = 3) {
       targetId: person.id,
       targetName: person.name,
       payload: { id: person.id },
-      label: `⚡ ครบชุด → Xcademy · ${person.name}`,
-      reason: `โอกาสประมาณ ${Math.round(chance * 100)}% · ทางลัดสู่การสอบ X-VISOR แต่ต้องดูจังหวะ`,
+      label: `⚡ เสนอเริ่มครบชุด · ${person.name}`,
+      reason: `โอกาสประมาณ ${Math.round(chance * 100)}% · เมื่อเริ่มแล้วต้องดูแลจาก Day 0 ให้เกิดผลลัพธ์จริง`,
       cost: 1,
       score: 112 + Math.round(chance * 40)
     });
@@ -4278,8 +4337,8 @@ function parseSavedState4(raw) {
   }
 }
 
-var GAME_VERSION3 = "X-VISOR QUEST 1.0b";
-var RELEASE_VERSION2 = "1.0b";
+var GAME_VERSION3 = "X-VISOR QUEST 2.0";
+var RELEASE_VERSION2 = "2.0";
 var V1_SAVE_VERSION2 = "1.0b";
 var V1_SCORE_VERSION2 = "1.0b";
 var XGEN_SINGLE_MONTH_TARGET = 3e6;
@@ -4312,7 +4371,7 @@ function xgenEffective(s) {
 }
 function calculateEconomy5(s) {
   const raw = calculateEconomy4(s), personalXV = n(s?.economy?.personalXV), personalSalesBaht = n(s?.economy?.productSales || s?.economy?.personalSalesBaht), teamXV = n(s?.economy?.teamXV), tgv = Math.round(personalXV + teamXV), t = tier(personalSalesBaht), channel1 = Math.round(personalXV * t.rate), rows = g1Rows(s), mentoringUnlocked = !!(s?.career?.xleadCertified || qualified(s) || ["xlead", "xgen"].includes(s?.rank)), channel2 = mentoringUnlocked ? rows.reduce((a, r) => a + r.mentoring, 0) : 0, channel3 = xgenEffective(s) ? Math.round(tgv * 0.05) : 0, projectedIncome = channel1 + channel2 + channel3, totalIncome = n(s?.economy?.totalIncome ?? s?.economy?.receivedIncome), closed = !!s?.settlements?.[String(s?.month)];
-  return { ...raw, personalXV, productSales: personalSalesBaht, personalSalesBaht, teamXV, tgv, currentTGV: tgv, tier, retailTier: t, retailRate: t.rate, channel1, channel2, channel3, channel4: 0, directG1: rows, mentoringBreakdown: rows.map((r) => ({ name: r.name, commission: r.commission, mentorIncome: r.mentoring })), organizationIncome: channel3, projectedIncome, monthlyIncome: projectedIncome, teamIncome: channel2 + channel3, totalIncome, receivedIncome: totalIncome, lifetimeIncome: totalIncome + (closed ? 0 : projectedIncome) };
+  return { ...raw, personalXV, productSales: personalSalesBaht, personalSalesBaht, teamXV, tgv, currentTGV: tgv, tier: t, retailTier: t, retailRate: t.rate, channel1, channel2, channel3, channel4: 0, directG1: rows, mentoringBreakdown: rows.map((r) => ({ name: r.name, commission: r.commission, mentorIncome: r.mentoring })), organizationIncome: channel3, projectedIncome, monthlyIncome: projectedIncome, teamIncome: channel2 + channel3, totalIncome, receivedIncome: totalIncome, lifetimeIncome: totalIncome + (closed ? 0 : projectedIncome) };
 }
 function normalizeTeam(s) {
   if (!s || !Array.isArray(s.team)) return s;
@@ -4404,7 +4463,11 @@ function correctFast(before, after, event) {
 function patchTx(before, after) {
   const tx = after?.economy?.lastTransaction;
   if (!tx) return after;
-  const b = calculateEconomy5(before), a = calculateEconomy5(after), saleXV = n(tx.xv), sale = Math.round(saleXV * a.retailRate), oldXV = n(b.personalXV), trueUp = Math.max(0, Math.round(oldXV * (a.retailRate - b.retailRate))), d3 = Math.max(0, a.channel3 - b.channel3), d2 = Math.max(0, a.channel2 - b.channel2), delta = a.projectedIncome - b.projectedIncome;
+  const receiptEconomy = (state) => {
+    const value = calculateEconomy5(state);
+    return state.career?.xgenExamPolicy && !state.career.xgenExamPassed ? { ...value, channel3: 0, projectedIncome: value.projectedIncome - value.channel3 } : value;
+  };
+  const b = receiptEconomy(before), a = receiptEconomy(after), saleXV = n(tx.xv), sale = Math.round(saleXV * a.retailRate), oldXV = n(b.personalXV), trueUp = Math.max(0, Math.round(oldXV * (a.retailRate - b.retailRate))), d3 = Math.max(0, a.channel3 - b.channel3), d2 = Math.max(0, a.channel2 - b.channel2), delta = a.projectedIncome - b.projectedIncome;
   return { ...after, economy: { ...after.economy || {}, lastTransaction: { ...tx, incomeBefore: b.projectedIncome, incomeAfter: a.projectedIncome, incomeDelta: delta, salesBahtBefore: b.personalSalesBaht, salesBahtAfter: a.personalSalesBaht, tierBefore: b.tier, tierAfter: a.tier, incomeBreakdown: { saleChannel1: sale, tierTrueUp: trueUp, channel2Delta: d2, channel3Delta: d3, total: delta } } } };
 }
 function release(s) {
@@ -4537,12 +4600,15 @@ function makeNewGamePlusState5(options = {}) {
 }
 function canDispatch6(state, event) {
   const clean = sanitizeXgen(state);
+  if (clean.stage === STAGES.XIRCLE_RUNNING) return event === EVENTS5.SCENE_COMPLETE && Number(clean.pendingXircle?.month) === Number(clean.month);
+  if (event === EVENTS5.RUN_XIRCLE) return clean.stage === STAGES.MANAGEMENT && !clean.organizationMode && !clean.runComplete && !clean.campaignComplete && XIRCLE_MONTHS.includes(Number(clean.month)) && !clean.monthStats?.xircleDone;
   if (event === EVENTS5.XGEN_EXAM) return false;
   if (event === EVENTS5.END_MONTH && canCloseCampaignMonth(clean)) return true;
   return canDispatch5(clean, event);
 }
 function getBestNextActions6(state, limit = 3) {
   const clean = sanitizeXgen(state);
+  if (clean.stage === STAGES.XIRCLE_RUNNING) return [];
   if (clean.stage === STAGES.MONTH_CLOSED && Number(clean.month || 0) < CAMPAIGN_MONTHS2) {
     return [{ type: "start-next-month", event: EVENTS5.START_NEXT_MONTH, label: `▶ เริ่มเดือน ${Number(clean.month || 0) + 1}`, cost: 0, score: 1e3 }];
   }
@@ -4557,8 +4623,123 @@ function getBestNextActions6(state, limit = 3) {
   }
   return actions.slice(0, Math.max(1, Number(limit || 3)));
 }
+function unavailableRoutine(state, choice) {
+  return { ...state, lastEvent: "ROUTINE_UNAVAILABLE", lastMessage: `${choice.reason} · ${choice.nextStep}`, updatedAt: Date.now() };
+}
+function startCareOnly(state, person, tutorial, event) {
+  const updated = {
+    ...person, careOnly: true, activePlan: false, journey: tutorial ? "onboarding" : "day0",
+    status: "เริ่มพฤติกรรมเดียว · ยังไม่มีรายการซื้อสินค้า", day: 0,
+    customerState: CUSTOMER_STATES.NEEDS_HELP, selfDirected: false,
+    routinePlan: { id: "control", quality: "fit", products: [], includesControl: true }
+  };
+  const next = tutorial ? {
+    ...state, prospects: updatePerson(state.prospects, person.id, () => updated), stage: STAGES.M1_ONBOARDING
+  } : {
+    ...state, stage: STAGES.MANAGEMENT,
+    prospects: state.prospects.filter((item) => item.id !== person.id),
+    customers: [...state.customers, { ...updated, id: `customer-${person.id}`, personId: person.id }],
+    selectedPersonId: `customer-${person.id}`,
+    monthStats: { ...state.monthStats, newCustomers: Number(state.monthStats?.newCustomers || 0) + 1 }
+  };
+  return refreshMissions({
+    ...next, economy: { ...next.economy, lastTransaction: null }, lastEvent: event, lastMessage: `${person.name} เลือกเริ่มจากพฤติกรรมเดียว · ไม่มีรายการซื้อสินค้า · นัดติดตามผลเป็นขั้นถัดไป`, updatedAt: Date.now()
+  });
+}
+function chooseAndOfferRoutine(state, event, payload) {
+  const tutorial = event === EVENTS5.CHOOSE_ROUTINE;
+  if (state.stage !== (tutorial ? STAGES.M1_ROUTINE : STAGES.MANAGEMENT_ROUTINE)) return state;
+  const person = recoverRoutineConsent((state.prospects || []).find((item) => item.id === state.selectedPersonId));
+  const choice = getRoutineChoices(state, person).find((item) => item.id === payload.planId);
+  if (!choice) return state;
+  if (!choice.available) return unavailableRoutine(state, choice);
+  const updated = {
+    ...person, journey: "recommendation", status: "พร้อมคุยแฟ้ม X จากแผนที่เลือก",
+    trust: Math.min(100, Number(person.trust || 0) + (choice.id === "control" ? 2 : choice.id === "all" ? 15 : 10)),
+    routinePlan: { id: choice.id, quality: "fit", products: choice.products, includesControl: true, ...(choice.id === "all" ? { fastLane: true } : {}) }
+  };
+  const prepared = {
+    ...state, prospects: updatePerson(state.prospects, person.id, () => updated),
+    stage: tutorial ? STAGES.M1_RECOMMENDATION : STAGES.MANAGEMENT
+  };
+  if (choice.id === "control") return addSkillXp(startCareOnly(prepared, updated, tutorial, event), "knowledge", 1, "routine-decision");
+  // Keep the existing prices, acceptance rules, receipt correction and Day 0
+  // care requirement. The choice itself now submits exactly one offer.
+  const offer = tutorial ? EVENTS5.MAKE_OFFER : choice.id === "all" ? EVENTS5.FAST_TRACK_FULL_START : EVENTS5.OFFER_PROSPECT;
+  return addSkillXp(reduceGame5(prepared, offer, { id: person.id }), "knowledge", 1, "routine-decision");
+}
+function recoverRoutineConsent(person) {
+  if (!person) return person;
+  const bounced = person.journey === "discovery" && person.routinePlan && person.status === "แผนเดิมยังอยู่ · ขออนุญาตดูข้อมูลก่อนคุยต่อ";
+  if (!bounced && !["baseline", "recommendation"].includes(person.journey)) return person;
+  // `false` was the unvisited default, not a modeled refusal. A completed
+  // checkpoint (including the old event shortcut) already includes this talk.
+  if (!bounced && person.consent && person.measured) return person;
+  return { ...person, consent: true, measured: true, ...(bounced ? { journey: "recommendation", status: "พร้อมคุยแฟ้ม X จากแผนเดิม" } : {}) };
+}
+function savedRoutinePlan(person) {
+  const saved = typeof person.routinePlan === "object" && person.routinePlan ? person.routinePlan : { id: person.routinePlan };
+  const products = [...new Set(person.fitProducts ?? saved.products ?? [])];
+  const id = saved.id === "control" || !products.length ? "control" : saved.id === "all" ? "all" : "fit";
+  // Old `all` plans were hardcoded poor, and early saves omitted quality. The
+  // existing context determines fit; repairing metadata gives no trust or XP.
+  return { ...saved, id, quality: "fit", products: id === "control" ? [] : products, includesControl: true };
+}
+function resumeRoutineOffer(state, event, payload) {
+  const tutorial = event === EVENTS5.MAKE_OFFER;
+  if (state.stage !== (tutorial ? STAGES.M1_RECOMMENDATION : STAGES.MANAGEMENT)) return state;
+  const original = recoverRoutineConsent((state.prospects || []).find((item) => item.id === (tutorial ? state.selectedPersonId : payload.id)));
+  if (!original || !["baseline", "recommendation"].includes(original.journey)) return state;
+  const person = { ...recoverRoutineConsent(original), journey: "recommendation", routinePlan: savedRoutinePlan(original) };
+  state = { ...state, prospects: updatePerson(state.prospects, person.id, () => person), selectedPersonId: person.id };
+  if (person.activePlan) {
+    if (tutorial) return withStage({ ...state, lastMessage: `${person.name} เริ่มแผนไว้แล้ว ไปดูแลต่อได้เลย` }, STAGES.M1_ONBOARDING, event);
+    const existing = state.customers.find((item) => (item.personId || item.id) === (person.personId || person.id));
+    const customer = existing || { ...person, id: `customer-${person.id}`, personId: person.personId || person.id, journey: "day0", day: 0, status: "เริ่มแผนไว้แล้ว · พร้อมดูแลต่อ", customerState: CUSTOMER_STATES.NEEDS_HELP };
+    return refreshMissions({
+      ...state, prospects: state.prospects.filter((item) => item.id !== person.id), customers: existing ? state.customers : [...state.customers, customer], selectedPersonId: customer.id,
+      monthStats: { ...state.monthStats, newCustomers: Number(state.monthStats.newCustomers || 0) + Number(!existing) },
+      lastEvent: event, lastMessage: `${person.name} เริ่มแผนไว้แล้ว ไปดูแลต่อได้เลย · ไม่มีรายการซื้อซ้ำ`, updatedAt: Date.now()
+    });
+  }
+  if (person.routinePlan.id === "control" && !person.activePlan) return startCareOnly(state, person, tutorial, event);
+  if (!tutorial && person.routinePlan.id === "all" && fastTrackEligible(state, person)) return reduceGame5(state, EVENTS5.FAST_TRACK_FULL_START, { id: person.id });
+  return reduceGame5(state, event, payload);
+}
 function reduceGame6(currentState, event, payload = {}) {
   const before = sanitizeXgen(currentState);
+  if (before.stage === STAGES.XIRCLE_RUNNING) {
+    if (!canDispatch6(before, event)) return currentState;
+    const resumed = { ...before, stage: STAGES.MANAGEMENT, pendingXircle: null };
+    if (before.monthStats?.xircleDone) return resumed;
+    return sanitizeXgen(reduceGame5(resumed, EVENTS5.RUN_XIRCLE, payload));
+  }
+  if ([EVENTS5.CHOOSE_ROUTINE, EVENTS5.CHOOSE_MANAGEMENT_ROUTINE].includes(event)) return sanitizeXgen(chooseAndOfferRoutine(before, event, payload));
+  if ([EVENTS5.MAKE_OFFER, EVENTS5.OFFER_PROSPECT].includes(event)) return sanitizeXgen(resumeRoutineOffer(before, event, payload));
+  if (event === EVENTS5.OPEN_ROUTINE_BUILDER && before.stage === STAGES.M1_BASELINE) {
+    const person = before.prospects.find((item) => item.id === before.selectedPersonId);
+    if (person?.routinePlan) return sanitizeXgen(resumeRoutineOffer({ ...before, stage: STAGES.M1_RECOMMENDATION }, EVENTS5.MAKE_OFFER, payload));
+  }
+  if (event === EVENTS5.OPEN_MANAGEMENT_ROUTINE) {
+    const person = (before.prospects || []).find((item) => item.id === payload.id);
+    if (!canDispatch6(before, event) || person?.journey !== "baseline") return currentState;
+    if (person.routinePlan) return sanitizeXgen(resumeRoutineOffer(before, EVENTS5.OFFER_PROSPECT, { id: person.id }));
+    // Even at Lv.10 the player chooses between no purchase, a fitted plan and
+    // Full Start. Auto-suggest must not silently choose the purchase for them.
+    return { ...before, stage: STAGES.MANAGEMENT_ROUTINE, selectedPersonId: person.id, lastEvent: event, lastMessage: null, updatedAt: Date.now() };
+  }
+  if (event === EVENTS5.RUN_XIRCLE) {
+    if (!canDispatch6(before, event)) return currentState;
+    return {
+      ...before,
+      stage: STAGES.XIRCLE_RUNNING,
+      pendingXircle: { month: Number(before.month), startedAt: Date.now() },
+      sceneReport: { kind: "the-xircle-running", month: Number(before.month) },
+      lastEvent: event,
+      lastMessage: "🏕️ THE XIRCLE · กำลังพบปะ แบ่งปัน และเติมแรงให้ทีม",
+      updatedAt: Date.now()
+    };
+  }
   if (event === EVENTS5.XGEN_EXAM) {
     return {
       ...before,
@@ -4576,13 +4757,233 @@ function reduceGame6(currentState, event, payload = {}) {
       lastMessage: `🏆 XGEN Qualified · TGV เดือนนี้ ${tgv.toLocaleString("th-TH")} XV · ③ Organization 5% เริ่มในเดือนนี้ทันที`
     };
   }
-  return after;
+  return event === EVENTS5.END_MONTH ? captureMonthlyGrowth(before, after) : after;
+}
+
+function captureMonthlyGrowth(before, after) {
+  const month = Number(before.month || 0);
+  const entry = after.settlements?.[String(month)];
+  if (month < 1 || month > 24 || !entry?.settled || before.settlements?.[String(month)]) return after;
+  let growth;
+  let organizationReports = after.organizationReports;
+  if (before.organizationMode) {
+    const report = after.lastOrganizationReport;
+    if (!report || Number(report.month) !== month) return after;
+    growth = {
+      activeCustomers: report.activeCustomers,
+      repeatCustomers: report.repeatCustomers,
+      repeatTransactions: null,
+      teamCount: report.xvisorCount,
+      xleadCount: report.xleadCount,
+      customerScope: "organization",
+      teamScope: "organization"
+    };
+    // A 1.0b save retains only its last report. Keep that real observation when
+    // the next month closes, without filling any older unrecorded months.
+    const reports = new Map();
+    for (const item of [...(organizationReports || []), before.lastOrganizationReport, report]) {
+      if (item && Number(item.month) >= 13 && Number(item.month) <= 24) reports.set(Number(item.month), { ...item });
+    }
+    organizationReports = [...reports.values()].sort((a, b) => Number(a.month) - Number(b.month));
+  } else {
+    const customers = (before.customers || []).filter((customer) => customer.activePlan !== false);
+    const team = (before.team || []).filter((member) => member.active !== false && (!member.parentId || member.parentId === "player"));
+    const repeatTransactions = Number(before.monthStats?.reorders || 0);
+    growth = {
+      activeCustomers: new Set(customers.map((customer) => customer.personId || customer.id)).size,
+      repeatCustomers: repeatTransactions === 0 ? 0 : before.monthStats?.reorderTrackingComplete ? new Set(before.monthStats.reorderedCustomerIds || []).size : null,
+      repeatTransactions,
+      teamCount: new Set(team.map((member) => member.personId || member.id)).size,
+      xleadCount: new Set(team.filter((member) => member.rank === "xlead").map((member) => member.personId || member.id)).size,
+      customerScope: "personal",
+      teamScope: "direct"
+    };
+  }
+  return {
+    ...after,
+    ...(organizationReports ? { organizationReports } : {}),
+    settlements: { ...after.settlements, [String(month)]: { ...entry, growth } }
+  };
 }
 function serializeState6(state) {
   return serializeState5(sanitizeXgen(state));
 }
 function parseSavedState6(raw) {
   return sanitizeXgen(parseSavedState5(raw));
+}
+
+const ENCOUNTER_KEYS = Object.freeze(["content-question", "followup-reset", "baseline-pattern", "team-rehearsal", "small-win", "quiet-week", "live-recap", "consent-check"]);
+const ENCOUNTER_CHOICES = Object.freeze({
+  "content-question": ["explain", "listen"], "followup-reset": ["simplify", "check-in"],
+  "baseline-pattern": ["compare", "ask"], "team-rehearsal": ["practice", "listen"],
+  "small-win": ["celebrate", "reflect"], "quiet-week": ["learn", "rest"],
+  "live-recap": ["review", "rehearse"], "consent-check": ["explain", "listen"]
+});
+function shuffled(values, seed) {
+  const list = [...values];
+  let next = Number(seed) >>> 0 || 1;
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    next = (Math.imul(next, 1664525) + 1013904223) >>> 0;
+    const target = next % (index + 1);
+    [list[index], list[target]] = [list[target], list[index]];
+  }
+  return list;
+}
+function initEncounters(state, seed = state?.rngSeed) {
+  if (!state || state.encounters?.seed) return state;
+  const stableSeed = Number(seed) >>> 0 || 1;
+  return {
+    ...state,
+    encounters: {
+      seed: stableSeed, bag: shuffled(ENCOUNTER_KEYS, stableSeed), seen: [], pending: null, resolved: [], lastOfferedMonth: null,
+      months: shuffled([2, 3, 4, 5, 6, 7, 8, 9, 10, 11], stableSeed ^ 0x9e3779b9).slice(0, 4).sort((a, b) => a - b)
+    },
+    liveProgress: { contentSessions: 0, totalLives: 0, lastMonth: null, ...state.liveProgress }
+  };
+}
+function liveEligible(state, person) {
+  if (!person?.consent || !hasRoutineContext(person) || person.careOnly || person.routinePlan?.id === "control" || person.routinePlan?.id === "all") return false;
+  if (!(person.fitProducts ?? person.routinePlan?.products ?? []).length || Number(person.trust || 0) < 50 || Number(person.readiness || 0) < 55) return false;
+  const trust = Number(person.trust || 0) + (person.journey === "baseline" ? 10 : 0);
+  return trust + Number(person.readiness || 0) >= 91 - (getSkillLevel3(state.skills, "knowledge") + getSkillLevel3(state.skills, "people")) * 2;
+}
+function getLiveReadiness(state) {
+  const requirements = [
+    { key: "content", current: Number(state?.liveProgress?.contentSessions || 0), target: 2 },
+    { key: "people", current: getSkillLevel3(state?.skills, "people"), target: 3 },
+    { key: "knowledge", current: getSkillLevel3(state?.skills, "knowledge"), target: 3 }
+  ].map((item) => ({ ...item, met: item.current >= item.target }));
+  const unlocked = requirements.every((item) => item.met);
+  const remaining = requirements.filter((item) => !item.met).map((item) => `${{ content: "คอนเทนต์ ", people: "คุยกับคน Lv.", knowledge: "ความรู้ Lv." }[item.key]}${item.current}/${item.target}`);
+  const targets = (state?.prospects || []).filter((person) => liveEligible(state, person)).sort((a, b) => Number(b.readiness || 0) - Number(a.readiness || 0) || String(a.id).localeCompare(String(b.id)));
+  const played = Number(state?.liveProgress?.lastMonth) === Number(state?.month);
+  const cost = ENERGY_COSTS.live;
+  const available = unlocked && state?.stage === STAGES.MANAGEMENT && !state.organizationMode && !state.runComplete && !state.campaignComplete && !played && targets.length > 0 && Number(state.energy || 0) >= cost;
+  return {
+    unlocked, available, cost, capacity: 3, eligibleCount: targets.length, requirements,
+    targetIds: targets.slice(0, 3).map((person) => person.id),
+    reason: !unlocked ? remaining.join(" · ") : played ? "เดือนนี้ไลฟ์แล้ว นัดดูแลคนที่เริ่มแผนต่อได้เลย" : !targets.length ? "คุยความต้องการ ขออนุญาต และเก็บข้อมูลเริ่มต้นก่อน" : Number(state.energy || 0) < cost ? "ไลฟ์ใช้พลังงาน 2 แต้ม" : `คุยกับคนที่พร้อมได้ ${Math.min(3, targets.length)} คนในครั้งเดียว แต่ละคนตัดสินใจเอง`
+  };
+}
+function completeLive(state) {
+  const pending = state.pendingLive;
+  if (!pending || Number(pending.month) !== Number(state.month)) return state;
+  if (Number(state.liveProgress?.lastMonth) === Number(state.month)) return { ...state, stage: STAGES.MANAGEMENT, pendingLive: null };
+  let next = spendEnergy({ ...state, stage: STAGES.MANAGEMENT, pendingLive: null }, ENERGY_COSTS.live, "attract");
+  if (!next) return state;
+  const transactions = [], declinedIds = [], attemptedIds = [];
+  const peopleLevel = getSkillLevel3(state.skills, "people");
+  for (const id of [...new Set(pending.targetIds || [])].slice(0, 3)) {
+    const person = next.prospects.find((item) => item.id === id);
+    if (!person || !liveEligible(state, person)) continue;
+    attemptedIds.push(id);
+    const prepared = person.journey === "baseline" ? applyRoutine(person, "fit") : person;
+    next = { ...next, prospects: updatePerson(next.prospects, id, () => prepared) };
+    const accepts = deterministicRoll(state, EVENTS.OFFER_PROSPECT, id) < humanDecisionChance(peopleLevel, Number(person.decisionAttempts || 0));
+    if (!accepts) {
+      declinedIds.push(id);
+      next = { ...next, prospects: updatePerson(next.prospects, id, (item) => ({
+        ...item, journey: "waiting", customerState: CUSTOMER_STATES.COOLDOWN,
+        decisionAttempts: Number(item.decisionAttempts || 0) + 1, nextOfferMonth: Number(state.month) + 1,
+        lastContactMonth: state.month, status: `ขอคิดก่อน · คุยต่อได้เดือน ${Number(state.month) + 1}`
+      })) };
+      continue;
+    }
+    next = patchTx(next, completeProspectSale(next, prepared, EVENTS.RUN_LIVE));
+    transactions.push({ ...next.economy.lastTransaction });
+  }
+  const report = { id: pending.id, month: Number(state.month), attempted: attemptedIds.length, sales: transactions.length, attemptedIds, declinedIds, transactions };
+  next = addSkillXp(next, "people", 1, "live-conversation");
+  return refreshMissions(release({
+    ...next, liveProgress: { ...next.liveProgress, totalLives: Number(next.liveProgress?.totalLives || 0) + 1, lastMonth: Number(state.month) },
+    liveReport: report, liveHistory: [...(next.liveHistory || []).filter((item) => item.id !== report.id), report],
+    monthStats: { ...next.monthStats, liveSessions: Number(next.monthStats.liveSessions || 0) + 1, liveSales: Number(next.monthStats.liveSales || 0) + transactions.length },
+    sceneReport: { kind: "live", ...report }, lastEvent: EVENTS.RUN_LIVE,
+    lastMessage: `LIVE จบแล้ว · คุย ${report.attempted} คน · เริ่มแผน ${report.sales} คน${declinedIds.length ? ` · อีก ${declinedIds.length} คนขอเวลา` : ""} · ผู้ที่เริ่มแผนยังต้องดูแลจาก Day 0`, updatedAt: Date.now()
+  }));
+}
+function encounterTarget(state, key) {
+  const prospect = (predicate) => { const person = (state.prospects || []).find(predicate); return person ? { targetId: person.id, targetKind: "prospect" } : null; };
+  const customer = (predicate) => { const person = (state.customers || []).find(predicate); return person ? { targetId: person.id, targetKind: "customer" } : null; };
+  switch (key) {
+    case "content-question": return prospect((person) => ["content", "creator"].includes(person.source) && !["dormant", "waiting", "cooldown"].includes(person.journey));
+    case "followup-reset": return customer((person) => person.day < 28 && !person.selfDirected);
+    case "baseline-pattern": return prospect((person) => hasRoutineContext(person));
+    case "team-rehearsal": { const person = (state.team || []).find((member) => member.active !== false); return person ? { targetId: person.id, targetKind: "team" } : null; }
+    case "small-win": return customer((person) => person.successCase);
+    case "live-recap": return Number(state.liveProgress?.totalLives || 0) > 0 ? { targetId: null, targetKind: "player" } : null;
+    case "consent-check": return prospect((person) => person.journey === "discovery" && !person.consent);
+    case "quiet-week": return { targetId: null, targetKind: "player" };
+    default: return null;
+  }
+}
+function getActiveEncounter(state) {
+  const pending = state?.encounters?.pending;
+  if (!pending || pending.month !== Number(state.month) || state.stage !== STAGES.MANAGEMENT || state.organizationMode || state.runComplete) return null;
+  if (pending.targetId && !encounterTarget({
+    ...state, prospects: (state.prospects || []).filter((person) => person.id === pending.targetId),
+    customers: (state.customers || []).filter((person) => person.id === pending.targetId),
+    team: (state.team || []).filter((person) => person.id === pending.targetId)
+  }, pending.key)) return null;
+  return { ...pending, choices: (ENCOUNTER_CHOICES[pending.key] || []).map((id) => ({ id, effectKey: `${pending.key}:${id}` })) };
+}
+function advanceEncounters(before, after, event) {
+  let next = initEncounters(after);
+  let encounters = next.encounters;
+  if (encounters.pending && encounters.pending.month !== Number(next.month)) encounters = { ...encounters, pending: null };
+  const changed = before.energy !== after.energy || before.stage !== after.stage || before.prospects?.length !== after.prospects?.length || before.customers?.length !== after.customers?.length;
+  if (!changed || next.stage !== STAGES.MANAGEMENT || next.organizationMode || next.runComplete || next.campaignComplete || event === EVENTS.RESOLVE_ENCOUNTER || encounters.pending || encounters.seen.length >= 4 || encounters.lastOfferedMonth === Number(next.month) || !encounters.months.includes(Number(next.month))) return { ...next, encounters };
+  const key = encounters.bag.find((item) => encounterTarget(next, item));
+  if (!key) return { ...next, encounters };
+  const target = encounterTarget(next, key);
+  const pending = { id: `${encounters.seed}:${next.month}:${key}`, key, month: Number(next.month), ...target };
+  return { ...next, encounters: { ...encounters, bag: encounters.bag.filter((item) => item !== key), seen: [...encounters.seen, key], pending, lastOfferedMonth: Number(next.month) } };
+}
+function resolveEncounter(state, payload) {
+  const active = getActiveEncounter(state);
+  if (!active || payload.encounterId !== active.id || ![...(ENCOUNTER_CHOICES[active.key] || []), "skip"].includes(payload.choiceId)) return state;
+  let next = state;
+  const key = `${active.key}:${payload.choiceId}`;
+  const skill = { "content-question:explain": "knowledge", "content-question:listen": "people", "baseline-pattern:compare": "knowledge", "baseline-pattern:ask": "people", "small-win:reflect": "care", "quiet-week:learn": "knowledge", "live-recap:review": "knowledge", "live-recap:rehearse": "people" }[key];
+  if (skill) next = addSkillXp(next, skill, 1, `encounter:${active.key}`);
+  const effect = { "content-question:explain": ["trust", 2], "content-question:listen": ["readiness", 2], "followup-reset:simplify": ["adherence", 4], "followup-reset:check-in": ["trust", 4], "baseline-pattern:compare": ["trust", 2], "baseline-pattern:ask": ["readiness", 2], "team-rehearsal:practice": ["confidence", 4], "team-rehearsal:listen": ["autonomy", 3], "small-win:celebrate": ["trust", 3], "consent-check:explain": ["trust", 3], "consent-check:listen": ["readiness", 3] }[key];
+  const list = { prospect: "prospects", customer: "customers", team: "team" }[active.targetKind];
+  if (effect && list) next = { ...next, [list]: updatePerson(next[list], active.targetId, (person) => ({ ...person, [effect[0]]: Math.min(100, Number(person[effect[0]] || 0) + effect[1]) })) };
+  if (key === "quiet-week:rest") next = { ...next, energy: Math.min(MAX_ENERGY, Number(next.energy || 0) + 1) };
+  return refreshMissions({
+    ...next, encounters: { ...next.encounters, pending: null, resolved: [...next.encounters.resolved, { id: active.id, key: active.key, month: active.month, choiceId: payload.choiceId }] },
+    lastEvent: EVENTS.RESOLVE_ENCOUNTER, lastMessage: payload.choiceId === "skip" ? "เก็บเรื่องนี้ไว้ก่อน แล้วเลือกงานต่อได้เลย" : "เลือกสิ่งเล็กที่ทำต่อได้แล้ว กลับไปดูแลคนและงานของเดือนนี้กัน", updatedAt: Date.now()
+  });
+}
+function canDispatch7(state, event) {
+  if (state?.stage === STAGES.LIVE_RUNNING) return event === EVENTS.SCENE_COMPLETE && Number(state.pendingLive?.month) === Number(state.month);
+  if (event === EVENTS.RUN_LIVE) return getLiveReadiness(state).available;
+  if (event === EVENTS.RESOLVE_ENCOUNTER) return Boolean(getActiveEncounter(state));
+  return canDispatch6(state, event);
+}
+function reduceGame7(currentState, event, payload = {}) {
+  const state = initEncounters(currentState);
+  if (state.stage === STAGES.LIVE_RUNNING) return canDispatch7(state, event) ? advanceEncounters(state, completeLive(state), event) : currentState;
+  if (event === EVENTS.RUN_LIVE) {
+    const readiness = getLiveReadiness(state);
+    if (!readiness.available) return currentState;
+    return { ...state, stage: STAGES.LIVE_RUNNING, pendingLive: { id: `live-${state.encounters.seed}-${state.month}`, month: Number(state.month), startedAt: Date.now(), targetIds: readiness.targetIds, cost: readiness.cost }, sceneReport: { kind: "live-running" }, lastEvent: event, lastMessage: "กำลัง LIVE คุยแฟ้ม X กับคนที่พร้อม แต่ละคนยังเลือกได้ว่าจะเริ่มหรือขอเวลา", updatedAt: Date.now() };
+  }
+  if (event === EVENTS.RESOLVE_ENCOUNTER) return resolveEncounter(state, payload);
+  let after = reduceGame6(state, event, payload);
+  if (event === EVENTS.NEW_GAME_PLUS) return initEncounters(after);
+  if (event === EVENTS.CREATE_LEAD && ["content", "creator"].includes(payload.source) && after.prospects.length > state.prospects.length) {
+    after = { ...after, liveProgress: { ...after.liveProgress, contentSessions: Number(state.liveProgress?.contentSessions || 0) + 1 } };
+  }
+  return advanceEncounters(state, after, event);
+}
+function makeInitialState7(options = {}) { return initEncounters(makeInitialState6(options), options.seed); }
+function makeNewGamePlusState6(options = {}) { return initEncounters(makeNewGamePlusState5(options), options.seed); }
+function parseSavedState7(raw) {
+  const state = initEncounters(parseSavedState6(raw));
+  if (!state) return state;
+  const staleMessage = state.lastEvent === "ROUTINE_CONSENT_REQUIRED" || String(state.lastMessage || "").includes("ยังไม่ได้อนุญาตให้ดูข้อมูล · ขออนุญาตก่อน แล้วคุยแผนเดิมต่อได้");
+  return { ...state, prospects: (state.prospects || []).map(recoverRoutineConsent), ...(staleMessage ? { lastEvent: "ROUTINE_RESUMED", lastMessage: "คุยแฟ้ม X จากแผนเดิมต่อได้เลย ไม่ต้องเก็บข้อมูลหรือเลือกแผนซ้ำ" } : {}) };
 }
 export {
   CAMPAIGN_MONTHS2 as CAMPAIGN_MONTHS,
@@ -4617,7 +5018,7 @@ export {
   applyAutomaticCustomerCycles,
   buildPersonAction,
   calculateEconomy6 as calculateEconomy,
-  canDispatch6 as canDispatch,
+  canDispatch7 as canDispatch,
   canOfferFullSetFastLane2 as canOfferFullSetFastLane,
   debugV9Snapshot,
   energyAtDay,
@@ -4629,6 +5030,9 @@ export {
   getFastTrackChance2 as getFastTrackChance,
   getPersonContextAction,
   getPlanQuality,
+  getRoutineChoices,
+  getLiveReadiness,
+  getActiveEncounter,
   getRetailTier,
   getRetailTierBySalesBaht,
   getRolling3TGV,
@@ -4636,12 +5040,12 @@ export {
   humanDecisionChance,
   isExamStage,
   isPreseasonStage,
-  makeInitialState6 as makeInitialState,
+  makeInitialState7 as makeInitialState,
   makeMonthStats,
-  makeNewGamePlusState5 as makeNewGamePlusState,
-  parseSavedState6 as parseSavedState,
+  makeNewGamePlusState6 as makeNewGamePlusState,
+  parseSavedState7 as parseSavedState,
   recordSale,
-  reduceGame6 as reduceGame,
+  reduceGame7 as reduceGame,
   refreshMissions,
   serializeState6 as serializeState,
   simulateCustomerOutcome

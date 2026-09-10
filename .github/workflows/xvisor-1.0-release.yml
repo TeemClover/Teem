@@ -1,10 +1,12 @@
-name: X-VISOR QUEST 1.0 Release
+name: X-VISOR QUEST 2.0 Release
 
 on:
   pull_request:
     branches: [main]
     paths:
       - 'xvisor/**'
+      - 'tests/xvisor/**'
+      - '.vercelignore'
       - 'api/xvisor-scores.js'
       - 'package.json'
       - '.github/workflows/xvisor-1.0-release.yml'
@@ -12,6 +14,8 @@ on:
     branches: [main]
     paths:
       - 'xvisor/**'
+      - 'tests/xvisor/**'
+      - '.vercelignore'
       - 'api/xvisor-scores.js'
       - 'package.json'
       - '.github/workflows/xvisor-1.0-release.yml'
@@ -31,8 +35,21 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Syntax check active 1.0b release modules
+      - name: Syntax check active 2.0 release modules
         run: |
+          node --check xvisor/quest/game-boot.js
+          node --check xvisor/quest/game-action-scenes.js
+          node --check xvisor/quest/game-action-peek.js
+          node --check xvisor/quest/game-mentor-art.js
+          node --check xvisor/quest/game-narrative-data.js
+          node --check xvisor/quest/game-portrait.js
+          node --check xvisor/quest/game-story.js
+          node --check xvisor/quest/game-actions.js
+          node --check xvisor/quest/game-art.js
+          node --check xvisor/quest/game-engine.js
+          node --check xvisor/quest/game-panels.js
+          node --check xvisor/quest/game-presentation.js
+          node --check xvisor/quest/game-world.js
           node --check xvisor/quest/game-audio.js
           node --check xvisor/quest/game-commercial-config.js
           node --check xvisor/quest/game-copy.js
@@ -43,5 +60,5 @@ jobs:
           node --check xvisor/quest/game-save.js
           node --check xvisor/quest/game-ui.js
           node --check api/xvisor-scores.js
-      - name: X-VISOR 1.0b tests
+      - name: X-VISOR 2.0 tests
         run: npm run test:xvisor

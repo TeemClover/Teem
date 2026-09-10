@@ -1,6 +1,7 @@
-// Public 1.0b rules: the single entry point for the game and tests.
+// Public 1.1 runtime: retain the 1.0b simulation, save and score contracts.
 import * as base from "./game-engine.js";
 import { isActionAvailable } from "./game-actions.js";
+import { SKILL_DEFINITIONS, SKILL_IDS, getPlayerLevelFromSkills, getSkillLevel } from "./game-progression.js";
 
 export * from "./game-engine.js";
 
@@ -245,15 +246,89 @@ export function calculateEconomy(state) {
 
 export function canDispatch(state, event) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
+  if ([base.STAGES.XIRCLE_RUNNING, base.STAGES.LIVE_RUNNING].includes(clean.stage)) return base.canDispatch(toBaseState(clean), event);
   if (event === base.EVENTS.XGEN_EXAM) return pendingExam(clean);
   if (event === base.EVENTS.END_MONTH && pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) return true;
   return base.canDispatch(toBaseState(clean), event);
 }
 
+const QUICK_ACTION_CONTEXT = new Map([
+  [base.EVENTS.CONTACT_PROSPECT, ["people", "ต่อบทสนทนา", "นัดหมายจากความสนใจ แล้วฟังสิ่งที่เขาอยากเปลี่ยน"]],
+  [base.EVENTS.MEET_PROSPECT, ["people", "ต่อบทสนทนา", "ทำความเข้าใจบริบทก่อนวางแผนให้คนนี้"]],
+  [base.EVENTS.CONSULT_PROSPECT, ["people", "ต่อบทสนทนา", "ฟังให้ชัดว่าเขาต้องการความช่วยเหลือเรื่องอะไร"]],
+  [base.EVENTS.BASELINE_PROSPECT, ["people", "ต่อบทสนทนา", "ขออนุญาตดูข้อมูลตั้งต้น เพื่อวางแผนให้เหมาะกับเขา"]],
+  [base.EVENTS.OPEN_MANAGEMENT_ROUTINE, ["people", "วางแผน", "เลือก Routine จากบริบทที่ฟังมา โดยยังไม่ใช้พลังงาน"]],
+  [base.EVENTS.OFFER_PROSPECT, ["people", "คุยแฟ้ม X", "ทบทวนแผนที่วางร่วมกัน แล้วให้เขาตัดสินใจเมื่อพร้อม"]],
+  [base.EVENTS.FOLLOW_UP_DECISION, ["people", "ต่อบทสนทนา", "ครบเวลาที่ขอคิดแล้ว กลับไปฟังข้อสงสัยและความพร้อม"]],
+  [base.EVENTS.FAST_TRACK_FULL_START, ["people", "คุยแฟ้ม X", "เมื่อเริ่มครบชุดแล้ว ยังต้องดูแลให้เกิดผลลัพธ์จริง"]],
+  [base.EVENTS.CARE_CUSTOMER, ["care", "ดูแลลูกค้า", "พาลูกค้าไปจุดติดตามถัดไป เพิ่มความต่อเนื่องและความไว้ใจ"]],
+  [base.EVENTS.REMEASURE_CUSTOMER, ["care", "ดูแลลูกค้า", "ทบทวนผลลัพธ์ก่อนตัดสินใจดูแลต่อหรือต่อ RoutineX"]],
+  [base.EVENTS.REORDER_CUSTOMER, ["care", "ดูแลลูกค้า", "ลูกค้าผ่านการติดตามและพร้อมต่อ RoutineX เดือนใหม่"]],
+  [base.EVENTS.ASK_REFERRAL, ["growth", "สร้างโอกาส", "ให้ลูกค้าที่พร้อมช่วยแนะนำเพื่อนจากความไว้ใจ"]],
+  [base.EVENTS.INVITE_XVISOR, ["team", "พัฒนาทีม", "เล่าเส้นทางให้ลูกค้าที่สนใจ ก่อนเริ่มเรียนและฝึกจริง"]],
+  [base.EVENTS.START_CANDIDATE_XCADEMY, ["team", "พัฒนาทีม", "เริ่มเรียน Xcademy เพื่อเตรียมฝึกดูแลเคสจริง"]],
+  [base.EVENTS.REVIEW_CANDIDATE, ["team", "พัฒนาทีม", "ทบทวนเคสจริง เพื่อเตรียมความพร้อมก่อน Certification"]],
+  [base.EVENTS.CERTIFY_CANDIDATE, ["team", "พัฒนาทีม", "เคสพร้อมแล้ว ช่วยให้เขาผ่าน Certification และเริ่มเป็น G1"]],
+  [base.EVENTS.MENTOR_TEAM_MEMBER, ["team", "พัฒนาทีม", "ช่วยทีมเรียนรู้จากเคส เพื่อค่อย ๆ ทำงานต่อได้ด้วยตัวเอง"]],
+  [base.EVENTS.RUN_XCADEMY, ["team", "พัฒนาทีม", "ช่วยคนใหม่ Candidate และทีมเรียนรู้พร้อมกัน · สูงสุด 4 ครั้งต่อเดือน"]],
+  [base.EVENTS.RUN_OPEN_HOUSE, ["growth", "สร้างโอกาส", "เปิดพื้นที่ฟังเคสจริง เพิ่มความพร้อมให้หลายคน · เดือนละครั้ง"]],
+  [base.EVENTS.RUN_XIRCLE, ["event", "กิจกรรมพิเศษ", "กิจกรรมประจำรอบ ช่วยเพิ่มความพร้อมและแรงส่งให้คนในทีม"]],
+  [base.EVENTS.RUN_LIVE, ["growth", "ไลฟ์คุยแฟ้ม X", "คุยกับคนที่พร้อมได้สูงสุด 3 คน แต่ละคนเลือกเองว่าจะเริ่มแผนหรือขอเวลา"]],
+  [base.EVENTS.XLEAD_EXAM, ["milestone", "เลื่อนขั้น", "ผ่านเกณฑ์แล้ว สอบเพื่อปลดล็อกรายได้จากการพัฒนา G1"]],
+  [base.EVENTS.XGEN_EXAM, ["milestone", "เลื่อนขั้น", "ถึงเกณฑ์ TGV แล้ว สอบเพื่อปลดล็อก ③ Organization ในเดือนนี้"]]
+]);
+
+function explainQuickAction(item) {
+  const context = QUICK_ACTION_CONTEXT.get(item.event);
+  return {
+    ...item,
+    category: item.category || context?.[0] || item.type || "work",
+    categoryLabel: item.categoryLabel || context?.[1] || "ลงมือทำ",
+    reason: item.reason || context?.[2] || "เลือกสิ่งที่เหมาะกับเป้าหมายเดือนนี้"
+  };
+}
+
+function quickActionKey(item) {
+  // Leads from different sources and practice for different skills are distinct choices.
+  return [item.event || item.type, item.targetId || item.payload?.id || item.id || "", item.payload?.source || item.source || "", item.payload?.skill || item.skill || ""].join(":");
+}
+
+function managementAlternatives(state) {
+  const actions = [{ type: "create-lead", event: base.EVENTS.CREATE_LEAD, payload: { source: "known" }, label: "💬 รู้จักคนใหม่", cost: 1, score: 56, category: "growth", categoryLabel: "สร้างโอกาส", reason: "เริ่มจากคนที่คุณรู้จัก แล้วค่อยฟังความต้องการของเขา" }];
+  if (getPlayerLevelFromSkills(state.skills) >= 2) {
+    actions.push({ type: "create-lead", event: base.EVENTS.CREATE_LEAD, payload: { source: "content" }, label: "📣 ทำคอนเทนต์ชวนคนมาคุย", cost: 1, score: 58, category: "growth", categoryLabel: "สร้างโอกาส", reason: "แบ่งปันความรู้เพื่อเริ่มบทสนทนาใหม่ คนที่ทักมายังต้องได้รับการดูแล" });
+  }
+  const live = base.getLiveReadiness(state);
+  if (live.available) actions.push({ type: "live", event: base.EVENTS.RUN_LIVE, label: `📹 ไลฟ์คุยแฟ้ม X · คุยได้ ${Math.min(live.capacity, live.eligibleCount)} คน`, cost: live.cost, score: 140 + Math.min(live.capacity, live.eligibleCount) * 5, category: "growth", categoryLabel: "ไลฟ์คุยแฟ้ม X", reason: live.reason });
+  for (const skill of SKILL_IDS) {
+    const definition = SKILL_DEFINITIONS[skill];
+    const level = getSkillLevel(state.skills, skill);
+    actions.push({ type: "skill", event: base.EVENTS.TRAIN_SKILL, payload: { skill }, label: `${definition.icon} ฝึก${definition.name}`, cost: 1, score: 45 - level, category: "learn", categoryLabel: "ลงทุนทักษะ", reason: `เพิ่ม 2 XP ให้${definition.name} · ${definition.benefits[0]}` });
+  }
+  return actions;
+}
+
 export function getBestNextActions(state, limit = 3) {
   const clean = manualizeXgen(state, { hasPolicy: true, examPassed: isExamPassed(state) });
-  const requested = Math.max(8, Number(limit || 3) + 5);
-  let actions = base.getBestNextActions(toBaseState(clean), requested).filter((item) => item?.event !== base.EVENTS.XGEN_EXAM && item?.type !== "xgen-exam" && isActionAvailable(clean, item));
+  if ([base.STAGES.XIRCLE_RUNNING, base.STAGES.LIVE_RUNNING].includes(clean.stage)) return [];
+  const count = Number.isFinite(Number(limit)) ? Math.max(1, Math.floor(Number(limit) || 3)) : 3;
+  const management = clean.stage === base.STAGES.MANAGEMENT && !clean.organizationMode && !clean.runComplete && !clean.campaignComplete;
+  // Read all current missions before filtering. A stale or unaffordable high-ranked
+  // mission must not hide a useful action farther down the list.
+  const current = management ? base.refreshMissions(toBaseState(clean)) : toBaseState(clean);
+  const requested = Math.max(8, count + 5, (current.missions?.length || 0) + (current.prospects?.length || 0) + 16);
+  let actions = base.getBestNextActions(current, requested).filter((item) => item?.event !== base.EVENTS.XGEN_EXAM && item?.type !== "xgen-exam");
+  const alternatives = management ? managementAlternatives(clean) : [];
+  if (management) {
+    actions.push(...alternatives);
+    // The older selector stops at zero energy, although opening a Routine is free.
+    for (const person of clean.prospects || []) {
+      if (person.journey !== "baseline") continue;
+      const action = base.getPersonContextAction(clean, person, "prospect");
+      if (action) actions.push({ ...action, type: "routine", score: 90 });
+    }
+  }
+  actions = actions.filter((item) => isActionAvailable(clean, item) && (!management || canDispatch(clean, item.event)));
 
   if (pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) {
     actions.unshift({
@@ -267,13 +342,43 @@ export function getBestNextActions(state, limit = 3) {
 
   const unique = new Map();
   for (const item of actions) {
-    const key = `${item?.event || item?.type}:${item?.targetId || item?.payload?.id || ""}`;
-    if (!unique.has(key)) unique.set(key, item);
+    const key = quickActionKey(item);
+    const existing = unique.get(key);
+    if (!existing || Number(item.score || 0) > Number(existing.score || 0)) unique.set(key, item);
   }
-  return [...unique.values()].slice(0, Math.max(1, Number(limit || 3)));
+  let ranked = [...unique.values()].sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+  if (!management) return ranked.slice(0, count).map(explainQuickAction);
+
+  const useful = ranked.filter((item) => item.event !== base.EVENTS.END_MONTH);
+  // Ending early remains available from the month menu. Quick choices should
+  // spend attention on playable work, including free actions and pending exams.
+  if (useful.length) ranked = useful;
+  const explained = ranked.map((item) => {
+    const alternative = alternatives.find((candidate) => quickActionKey(candidate) === quickActionKey(item));
+    const merged = { ...alternative, ...item };
+    if (item.event === base.EVENTS.TRAIN_SKILL && alternative) {
+      merged.label = Number(item.score || 0) >= 90 ? `${alternative.label} · อัประดับ` : alternative.label;
+    }
+    return explainQuickAction(merged);
+  });
+  const selected = [];
+  const categories = new Set();
+  for (const item of explained) {
+    if (categories.has(item.category)) continue;
+    selected.push(item);
+    categories.add(item.category);
+    if (selected.length === count) return selected;
+  }
+  for (const item of explained) {
+    if (selected.includes(item)) continue;
+    selected.push(item);
+    if (selected.length === count) break;
+  }
+  return selected;
 }
 
 export function reduceGame(currentState, event, payload = {}) {
+  if (([base.STAGES.XIRCLE_RUNNING, base.STAGES.LIVE_RUNNING].includes(currentState.stage) || [base.EVENTS.RUN_XIRCLE, base.EVENTS.RUN_LIVE].includes(event)) && !canDispatch(currentState, event)) return currentState;
   const before = manualizeXgen(currentState, { hasPolicy: true, examPassed: isExamPassed(currentState) });
 
   if (event === base.EVENTS.XGEN_EXAM) return certifyXgen(before);

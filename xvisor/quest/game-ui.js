@@ -1,6 +1,6 @@
 import { createWorldRenderer } from "./game-world.js";
-import { mountPanels, focusDialogStart } from "./game-panels.js";
-import { normalizeAction } from "./game-actions.js";
+import { mountPanels, focusDialogStart, monthGrowthHtml } from "./game-panels.js";
+import { normalizeAction, isActionAvailable } from "./game-actions.js";
 import { getEconomyView, signedBaht } from "./game-presentation.js";
 import {
   CUSTOMER_STATES,
@@ -12,6 +12,8 @@ import {
   STAGES,
   XGEN_TGV_TARGET,
   calculateEconomy,
+  getActiveEncounter,
+  getLiveReadiness,
   canDispatch,
   isExamStage,
   makeInitialState,
@@ -30,9 +32,14 @@ import {
 } from "./game-progression.js";
 import { getStageContent, TERM_HELP } from "./game-copy.js";
 import { createAudio } from "./game-audio.js";
+import { getStoryBeat } from "./game-story.js";
+import { paintStoryPortrait } from "./game-portrait.js";
+import { createActionPeek } from "./game-action-peek.js";
+import { getEncounterCopy } from "./game-narrative-data.js";
 var $ = (selector) => document.querySelector(selector);
 var canvas = $("#worldCanvas");
 var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+var actionPeek = createActionPeek(canvas, reducedMotion);
 function loadStoredState() {
   try {
     return parseSavedState(localStorage.getItem(SAVE_KEY));
@@ -48,6 +55,11 @@ var montageVisualDay = state.preseason.day;
 var activeDialogKey = null;
 var lastRenderedStage = null;
 var stageStartedAt = performance.now();
+var actionReadyAt = 0;
+var choiceGuideExpanded = false;
+var storyContext = {};
+var lastStoryKey = "";
+const CHOICE_GUIDE_KEY = "quickChoicesV2";
 var audio = createAudio(state.soundOn);
 state = { ...state, soundOn: audio.isEnabled() };
 var iconGlyphs = Object.freeze({
@@ -137,8 +149,19 @@ function playForEvent(event, payload = {}) {
     [EVENTS.REPAIR_PRACTICE]: "repair",
     [EVENTS.COMPLETE_CERTIFICATION]: "stamp",
     [EVENTS.CEREMONY_COMPLETE]: "certificate",
-    [EVENTS.MAKE_OFFER]: "sale",
-    [EVENTS.OFFER_PROSPECT]: "sale",
+    [EVENTS.MAKE_OFFER]: "plan",
+    [EVENTS.OFFER_PROSPECT]: "plan",
+    [EVENTS.CHOOSE_ROUTINE]: "plan",
+    [EVENTS.CHOOSE_MANAGEMENT_ROUTINE]: "plan",
+    [EVENTS.CONTACT_PROSPECT]: "talk",
+    [EVENTS.MEET_PROSPECT]: "talk",
+    [EVENTS.CONSULT_PROSPECT]: "talk",
+    [EVENTS.REQUEST_CONSENT]: "talk",
+    [EVENTS.CARE_CUSTOMER]: "care",
+    [EVENTS.FOLLOW_UP_CUSTOMER]: "care",
+    [EVENTS.CONTINUE_CARE]: "care",
+    [EVENTS.MENTOR_TEAM_MEMBER]: "team",
+    [EVENTS.ASK_REFERRAL]: "team",
     [EVENTS.REORDER_CUSTOMER]: "reorder",
     [EVENTS.START_WEEKLY]: "meeting",
     [EVENTS.RUN_WEEKLY]: "meeting",
@@ -157,6 +180,8 @@ function playForEvent(event, payload = {}) {
     [EVENTS.ENTER_ORGANIZATION]: "score",
     [EVENTS.NEW_GAME_PLUS]: "newGame",
     [EVENTS.CREATE_LEAD]: payload?.source === "content" || payload?.source === "ads" ? "notify" : "confirm",
+    [EVENTS.RUN_LIVE]: "notify",
+    [EVENTS.RESOLVE_ENCOUNTER]: "care",
     [EVENTS.CERTIFY_CANDIDATE]: "certificate",
     [EVENTS.SCENE_COMPLETE]: "meetingDone"
   };
@@ -179,10 +204,12 @@ function dispatch(event, payload = {}) {
   const previousTransaction = state.economy.lastTransaction?.id;
   const next = reduceGame(state, event, payload);
   if (next === previous) {
-    toast("พลังงานไม่พอสำหรับงานนี้", "hint");
+    toast("ตอนนี้ยังทำงานนี้ไม่ได้ ลองดูทางเลือกอื่นนะ", "hint");
     return;
   }
   state = next;
+  if (state.month >= 3 && state.month !== previous.month) choiceGuideExpanded = false;
+  storyContext = { previousState: previous, event, payload };
   const reportChanged = Number(previous.lastOrganizationReport?.month || 0) !== Number(state.lastOrganizationReport?.month || 0);
   const sceneReportChanged = previous.sceneReport?.kind !== state.sceneReport?.kind;
   if (previous.stage !== state.stage || reportChanged || sceneReportChanged) {
@@ -193,10 +220,12 @@ function dispatch(event, payload = {}) {
   // interrupt AudioContext (for example while screen recording); that must never
   // leave a reduced state in memory without saving or rendering it.
   save();
+  try { actionPeek.show(world?.playAction?.(previous, state, event, payload)); } catch { /* Optional scenery cannot interrupt a saved action. */ }
   render();
   scheduleAutomaticTransition();
   try {
-    playForEvent(event, payload);
+    if (event === EVENTS.SCENE_COMPLETE && previous.stage === STAGES.XIRCLE_RUNNING) audio.play("xircleDone");
+    else playForEvent(event, payload);
   } catch {
   }
   const correct = state.lastEvent?.endsWith("_CORRECT");
@@ -213,10 +242,9 @@ function dispatch(event, payload = {}) {
     }
   });
   if (nextSkills.playerLevel > previousSkills.playerLevel) toast(`⭐ X-VISOR Lv.${nextSkills.playerLevel} · ปลดล็อกวิธีสร้างผลที่คุ้มขึ้น`, "success");
-  if (state.month === previous.month && [EVENTS.MAKE_OFFER, EVENTS.OFFER_PROSPECT, EVENTS.REORDER_CUSTOMER].includes(event) && state.economy.lastTransaction?.id && state.economy.lastTransaction.id !== previousTransaction) {
+  if (state.month === previous.month && state.economy.lastTransaction?.id && state.economy.lastTransaction.id !== previousTransaction) {
     spawnEffect("coins");
     audio.play("income");
-    if (state.stage !== STAGES.M1_SALE_RECEIPT) queueMicrotask(() => showReceipt(state.economy.lastTransaction));
   }
   if (!previous.campaignScore?.locked && state.campaignScore?.locked) {
     audio.play("score");
@@ -243,7 +271,7 @@ function scheduleAutomaticTransition() {
     const target = state.preseason.montageTarget || start;
     montageVisualDay = start;
     const steps = Math.max(1, target - start);
-    const interval = reducedMotion.matches ? 24 : Math.max(65, Math.floor(1750 / steps));
+    const interval = reducedMotion.matches ? 18 : Math.max(35, Math.floor(950 / steps));
     montageTimer = window.setInterval(() => {
       montageVisualDay = Math.min(target, montageVisualDay + 1);
       updateMontageHud();
@@ -251,29 +279,31 @@ function scheduleAutomaticTransition() {
       if (montageVisualDay >= target) {
         window.clearInterval(montageTimer);
         montageTimer = null;
-        stageTimer = window.setTimeout(() => dispatch(EVENTS.MONTAGE_COMPLETE), reducedMotion.matches ? 40 : 230);
+        stageTimer = window.setTimeout(() => dispatch(EVENTS.MONTAGE_COMPLETE), reducedMotion.matches ? 40 : 120);
       }
     }, interval);
     return;
   }
-  const short = reducedMotion.matches ? 120 : 1450;
+  const short = reducedMotion.matches ? 180 : 850;
   const transitions = {
     [STAGES.PRE_DAY0_SCANNING]: [EVENTS.SELF_SCAN_COMPLETE, short],
     [STAGES.PRE_DAY14_SCANNING]: [EVENTS.DAY14_SCAN_COMPLETE, short],
     [STAGES.PRE_DAY28_SCANNING]: [EVENTS.DAY28_SCAN_COMPLETE, short],
-    [STAGES.EXAM_TRANSIT]: [EVENTS.EXAM_TRANSIT_COMPLETE, reducedMotion.matches ? 140 : 2050],
-    [STAGES.CERTIFICATION_CEREMONY]: [EVENTS.CEREMONY_COMPLETE, reducedMotion.matches ? 170 : 2300],
+    [STAGES.EXAM_TRANSIT]: [EVENTS.EXAM_TRANSIT_COMPLETE, reducedMotion.matches ? 200 : 900],
+    [STAGES.CERTIFICATION_CEREMONY]: [EVENTS.CEREMONY_COMPLETE, reducedMotion.matches ? 300 : 1200],
     [STAGES.M1_BASELINE_SCANNING]: [EVENTS.CUSTOMER_BASELINE_COMPLETE, short],
     [STAGES.M1_REVIEW_SCANNING]: [EVENTS.CUSTOMER_REVIEW_COMPLETE, short],
-    [STAGES.M1_WEEKLY_RUNNING]: [EVENTS.WEEKLY_COMPLETE, reducedMotion.matches ? 160 : 2100],
-    [STAGES.CONTENT_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 180 : 2100],
-    [STAGES.ADS_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 180 : 2300],
-    [STAGES.XCADEMY_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2600],
-    [STAGES.OPEN_HOUSE_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 220 : 2900],
-    [STAGES.CENTER_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2600],
-    [STAGES.GOOD_LUCK_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 220 : 2900],
-    [STAGES.G1_CELEBRATION]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 200 : 2350],
-    [STAGES.XLEAD_MILESTONE]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 220 : 2700]
+    [STAGES.M1_WEEKLY_RUNNING]: [EVENTS.WEEKLY_COMPLETE, reducedMotion.matches ? 300 : 950],
+    [STAGES.CONTENT_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 250 : 850],
+    [STAGES.LIVE_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 350 : 1200],
+    [STAGES.ADS_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 250 : 950],
+    [STAGES.XCADEMY_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1000],
+    [STAGES.OPEN_HOUSE_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1100],
+    [STAGES.CENTER_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1000],
+    [STAGES.GOOD_LUCK_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1100],
+    [STAGES.XIRCLE_RUNNING]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 350 : 1100],
+    [STAGES.G1_CELEBRATION]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1100],
+    [STAGES.XLEAD_MILESTONE]: [EVENTS.SCENE_COMPLETE, reducedMotion.matches ? 300 : 1200]
   };
   const transition = transitions[state.stage];
   if (transition) stageTimer = window.setTimeout(() => dispatch(transition[0]), transition[1]);
@@ -307,6 +337,7 @@ function renderHud() {
   $("#teamChip").hidden = !state.milestones.firstG1;
   $("#teamChip").textContent = `ทีม ${state.team.length} X-VISOR · ${state.organization.xleads?.length || 0} XLEAD`;
   $("#peopleButton").hidden = state.month < 1;
+  $("#historyButton").hidden = state.month < 1;
   $("#peopleButton").innerHTML = `คนของคุณ <b id="peopleCount">${uniquePeopleCount()}</b>`;
   $("#hudEnergyButton").hidden = Boolean(state.organizationMode);
   $("#monthButton").textContent = "จบเดือน";
@@ -360,22 +391,32 @@ function renderQuiz(container, quiz) {
   }
 }
 function renderRoutineBuilder(container) {
-  const abc = document.createElement("div");
-  abc.className = "abcd-mini";
-  [["A", "G.U.S.+"], ["B", "Protein HMB+"], ["C", "พฤติกรรม · ไม่มีขาย"], ["D", "Vita Matrix + AstaMega+"]].forEach(([letter, label]) => {
-    abc.insertAdjacentHTML("beforeend", `<div class="abcd-mini__item abcd-mini__item--${letter.toLowerCase()}"><b>${letter}</b><span>${escapeHtml(label)}</span></div>`);
-  });
-  container.appendChild(abc);
   const choices = document.createElement("div");
   choices.className = "routine-choices";
-  content.routineBuilder.choices.forEach(([id, label, detail]) => {
+  content.routineBuilder.choices.forEach((raw) => {
+    const choice = Array.isArray(raw) ? { id: raw[0], label: raw[1], detail: raw[2], ...raw[3] } : raw;
+    const { id, label, detail } = choice;
+    const available = choice.available !== false;
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.planId = id;
-    button.innerHTML = `<strong>${escapeHtml(label)}</strong><span>${escapeHtml(detail)}</span>`;
+    button.disabled = !available;
+    button.dataset.available = String(available);
+    button.innerHTML = `<span class="routine-choice__top"><b aria-hidden="true">${{ control: "🌱", fit: "🧩", all: "✦" }[id] || "→"}</b><strong>${escapeHtml(label)}</strong><small>${choice.cost ? `⚡ ${choice.cost}` : "ไม่ใช้พลังงาน"}</small></span>
+      <span>${escapeHtml(detail || "")}</span>
+      ${!available && choice.reason ? `<span class="routine-choice__reason">${escapeHtml(choice.reason)}</span>` : choice.nextStep ? `<small class="routine-choice__next">${escapeHtml(choice.nextStep)}</small>` : ""}`;
     choices.appendChild(button);
   });
   container.appendChild(choices);
+  const help = document.createElement("details");
+  help.className = "routine-product-help";
+  help.innerHTML = '<summary>ดูตัวช่วยในแผน</summary><p>พฤติกรรมเป็นจุดเริ่มต้น สินค้าเลือกตามสิ่งที่คนนี้ต้องการ</p>';
+  const person = selectedPerson();
+  const products = person?.fitProducts || content.routineBuilder.fitProducts || [];
+  const list = document.createElement("p");
+  list.textContent = products.length ? products.map(productName).join(" · ") : "คนนี้เริ่มจากสิ่งที่ทำเองได้ก่อน";
+  help.appendChild(list);
+  container.appendChild(help);
 }
 function productName(id) {
   return Object.values(PRODUCT_CONFIG).find((item) => item.id === id)?.name || id;
@@ -454,6 +495,7 @@ function renderManagement(container, data) {
   }
 }
 function renderMonthSummary(container, summary) {
+  container.insertAdjacentHTML("beforeend", monthGrowthHtml(state, state.month));
   const economy = getEconomyView(state);
   const previousSettlement = state.settlements?.[String(state.month - 1)];
   summary = { ...summary, projectedIncome: economy.projectedIncome, receivedIncomeTotal: economy.lifetimeIncome, tgv: economy.tgv, previousIncome: previousSettlement?.totalIncome ?? previousSettlement?.total ?? summary.previousIncome };
@@ -471,8 +513,9 @@ function renderMonthSummary(container, summary) {
     ["🌱 ทีม", [["X-VISOR", summary.team], ["XLEAD", summary.xleads || 0], ["ทีมทำเอง", `${summary.leverage?.team || 0} งาน`]]],
     ["⭐ ไฮไลต์", [["Candidate ใหม่", summary.candidates + summary.teamCandidates], ["ทีมสร้างรุ่นถัดไป", summary.downstreamXvisors || 0], ["Open House", summary.openHouseDone ? "เกิด batch impact" : "ไว้เดือนหน้า"]]]
   ];
-  const wrap = document.createElement("div");
-  wrap.className = "month-summary-sections";
+  const wrap = document.createElement("details");
+  wrap.className = "month-summary-sections month-summary-more";
+  wrap.innerHTML = '<summary>ดูรายละเอียดกิจกรรมและผลลัพธ์เดือนนี้</summary>';
   sections.forEach(([title, rows]) => {
     const section = document.createElement("section");
     section.innerHTML = `<h3>${title}</h3>`;
@@ -482,9 +525,44 @@ function renderMonthSummary(container, summary) {
   container.appendChild(wrap);
 }
 function renderDialogue() {
-  $("#dialogueSpeaker").textContent = content.speaker || "";
-  $("#dialogueText").textContent = content.dialogue || "";
+  const beat = getStoryBeat(state, content, storyContext);
+  const encounter = content.management ? getActiveEncounter(state) : null;
+  const encounterCopy = encounter ? getEncounterCopy(encounter, state) : null;
+  const actor = encounterCopy ? { ...encounterCopy, key: encounter.id } : beat || { speaker: content.speaker || "ทีม", line: content.dialogue || "", portrait: content.portrait || (content.speaker === "เอโกะ" ? "ako" : content.quiz && content.speaker !== "ทีม" ? "teacher" : "teem"), key: `${state.stage}:${content.dialogue || ""}` };
+  const card = $("#storyCard");
+  card.hidden = !actor.line;
+  card.dataset.speaker = actor.portrait;
+  card.dataset.mood = actor.mood || "warm";
+  card.dataset.storyKey = actor.key;
+  $("#dialogueSpeaker").textContent = actor.speaker;
+  $("#dialogueText").textContent = actor.line;
+  $("#storyTip").textContent = actor.tip || "";
+  $("#storyTip").hidden = !actor.tip;
+  paintStoryPortrait($("#storyPortrait"), actor, selectedPerson());
+  let choices = card.querySelector(".story-choices");
+  if (!choices) { choices = document.createElement("div"); choices.className = "story-choices"; card.querySelector(".story-card__body").appendChild(choices); }
+  choices.replaceChildren();
+  choices.hidden = !encounterCopy;
+  if (encounterCopy) {
+    card.dataset.encounterId = encounter.id;
+    for (const choice of encounterCopy.choices) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.encounterChoice = choice.id;
+      button.dataset.encounterId = encounter.id;
+      button.className = choice.id === "skip" ? "story-choice story-choice--skip" : "story-choice";
+      button.innerHTML = `<strong>${escapeHtml(choice.label)}</strong>${choice.id !== "skip" ? `<small>${escapeHtml(choice.detail)}</small>` : ""}`;
+      choices.appendChild(button);
+    }
+  } else delete card.dataset.encounterId;
+  if (actor.key !== lastStoryKey) {
+    lastStoryKey = actor.key;
+    card.classList.remove("is-speaking");
+    void card.offsetWidth;
+    card.classList.add("is-speaking");
+  }
   const details = $("#sceneDetails");
+  const managementOpen = Boolean(details.querySelector('[data-management-detail]')?.open);
   details.innerHTML = "";
   if (content.resultCards) renderResultCards(details, content.resultCards);
   if (content.facts) renderResultCards(details, content.facts, "fact-grid");
@@ -498,7 +576,37 @@ function renderDialogue() {
     details.appendChild(row);
   }
   if (content.receipt) renderReceipt(details, content.receipt);
-  if (content.management) renderManagement(details, content.management);
+  const transaction = state.economy.lastTransaction;
+  const liveReport = state.lastEvent === EVENTS.RUN_LIVE && Number(state.liveReport?.month) === state.month ? state.liveReport : null;
+  if (liveReport) {
+    const liveSummary = document.createElement("section");
+    liveSummary.className = "live-result";
+    const people = [...state.customers, ...state.prospects];
+    const peopleName = id => people.find(person => person.id === id)?.name || "คนที่ร่วม Live";
+    liveSummary.innerHTML = `<div class="live-result__heading"><strong>Live ครั้งนี้</strong><span>คุย ${liveReport.attempted} คน · เริ่มแผน ${liveReport.sales} คน</span></div><p>รายได้เพิ่ม ${signedBaht(liveReport.transactions.reduce((sum, item) => sum + Number(item.incomeDelta || 0), 0))}</p><details><summary>ดูผลรายคน</summary>${liveReport.attemptedIds.map(id => {
+      const sold = !liveReport.declinedIds.includes(id);
+      const index = liveReport.attemptedIds.filter(item => !liveReport.declinedIds.includes(item)).indexOf(id);
+      return `<div class="live-result__person"><span>${escapeHtml(peopleName(id))}</span>${sold ? `<button type="button" data-live-receipt="${index}">เริ่มแผน · ดูใบสรุป →</button>` : "<small>ขอเวลา · คุยต่อเดือนหน้า</small>"}</div>`;
+    }).join("")}</details>`;
+    details.appendChild(liveSummary);
+  }
+  if (!content.receipt && !liveReport && storyContext.previousState && transaction?.id && transaction.id !== storyContext.previousState.economy.lastTransaction?.id && state.month === storyContext.previousState.month) {
+    const receipt = document.createElement("div");
+    receipt.className = "action-result";
+    receipt.innerHTML = `<span>บันทึกรายการแล้ว</span><button type="button" data-open-receipt>ดูใบสรุป →</button>`;
+    details.appendChild(receipt);
+  }
+  if (content.management) {
+    const more = document.createElement("details");
+    more.dataset.managementDetail = "true";
+    more.className = "scene-more";
+    more.open = managementOpen;
+    more.innerHTML = '<summary>ดูลูกค้า ทีม และงานที่ค้าง</summary>';
+    const body = document.createElement("div");
+    renderManagement(body, content.management);
+    more.appendChild(body);
+    details.appendChild(more);
+  }
   if (content.monthSummary) {
     renderMonthSummary(details, content.monthSummary);
   }
@@ -512,6 +620,7 @@ function renderDialogue() {
   const milestone = $("#milestoneBadge");
   milestone.hidden = !content.milestone;
   milestone.textContent = content.milestone || "";
+  $("#scenePanel").hidden = !details.childElementCount;
 }
 function buildActionButton(item, index) {
   item = normalizeAction(item);
@@ -527,7 +636,7 @@ function buildActionButton(item, index) {
   if (item.ui) button.dataset.ui = item.ui;
   button.disabled = Boolean(item.disabled || item.cost && state.month >= 1 && item.cost > state.energy);
   button.innerHTML = `<span class="action-button__icon" aria-hidden="true">${iconGlyphs[item.icon] || "→"}</span>
-    <span class="action-button__copy"><strong>${escapeHtml(item.label)}</strong>${item.detail ? `<small>${escapeHtml(item.detail)}</small>` : ""}</span>
+    <span class="action-button__copy">${item.categoryLabel ? `<span class="action-button__category">${escapeHtml(item.categoryLabel)}</span>` : ""}<strong>${escapeHtml(item.label)}</strong>${item.detail || item.reason ? `<small>${escapeHtml(item.detail || item.reason)}</small>` : ""}</span>
     ${item.cost ? `<span class="action-button__cost">⚡ ${item.cost}</span>` : ""}`;
   return button;
 }
@@ -547,14 +656,57 @@ function renderActions() {
     ceremony: "กำลังรับใบรับรอง",
     weekly: "ทีมกำลังเลือก Next Action",
     content: "กำลังโพสต์และรอ notification",
+    live: "ตอบคำถามพร้อมกัน · แต่ละคนเลือกเมื่อพร้อม",
     ads: "Campaign กำลังสร้าง Interest",
     xcademy: "Xcademy กำลังช่วยหลายคนพร้อมกัน",
     openhouse: "Open House กำลังสรุป batch impact",
     g1: "ต้อนรับ X-VISOR คนใหม่",
     xlead: "กำลังเปิดช่อง ② และ Organization Map",
-    xgen: "พร้อมนำ Organization แล้ว"
+    xgen: "พร้อมนำ Organization แล้ว",
+    xircle: "ร่วม The Xircle · เติมพลังและเชื่อมทีมอีกครั้ง"
   };
   $("#waitingState").textContent = waiting[content.status] || "กำลังดำเนินการ…";
+  renderChoiceGuide();
+}
+function acknowledgeChoiceGuide() {
+  state = { ...state, tutorialSeen: { ...state.tutorialSeen, [CHOICE_GUIDE_KEY]: true } };
+  choiceGuideExpanded = false;
+  save();
+  renderChoiceGuide();
+}
+function renderChoiceGuide() {
+  const dock = $("#actionDock");
+  const management = Boolean(content.management && !state.organizationMode);
+  dock.dataset.management = String(management);
+  let guide = $("#choiceGuide");
+  let toolbar = $("#choiceToolbar");
+  let feedback = $("#choiceFeedback");
+  if (!guide) {
+    guide = document.createElement("section");
+    guide.id = "choiceGuide";
+    guide.className = "choice-guide";
+    guide.setAttribute("aria-labelledby", "choiceGuideTitle");
+    guide.innerHTML = `<strong id="choiceGuideTitle">จากนี้ คุณเลือกเส้นทางเองได้แล้ว</strong>
+      <div class="choice-guide__steps"><p><b>01 · เลือกงาน</b> 3 ใบด้านล่างเป็นงานแนะนำ และจะเปลี่ยนตามสถานการณ์</p><p><b>02 · ลองทางอื่น</b> เปิด “ทางเลือกทั้งหมด” เพื่อหาคน ฝึกทักษะ หรือพัฒนาทีมได้อีก</p><p><b>03 · วางแผนเดือนนี้</b> แต่ละงานใช้ ⚡ เมื่อพร้อมค่อยจบเดือน พลังงานที่เหลือไม่ทบเดือนหน้า</p></div>
+      <div class="choice-guide__actions"><button type="button" class="dialog-button" data-choice-work>ลองดูทางเลือกทั้งหมด →</button><button type="button" class="dialog-button dialog-button--secondary" data-choice-dismiss>ซ่อนคำแนะนำ · เรียกกลับมาได้</button></div>`;
+    dock.insertBefore(guide, $("#actionBar"));
+    feedback = document.createElement("p");
+    feedback.id = "choiceFeedback";
+    feedback.className = "choice-feedback";
+    feedback.setAttribute("role", "status");
+    dock.insertBefore(feedback, $("#actionBar"));
+    toolbar = document.createElement("div");
+    toolbar.id = "choiceToolbar";
+    toolbar.className = "choice-toolbar";
+    toolbar.innerHTML = `<button type="button" class="choice-toolbar__more" data-choice-work>🧭 ทางเลือกทั้งหมด <span aria-hidden="true">→</span></button><button type="button" data-choice-help aria-controls="choiceGuide" aria-expanded="false">วิธีเลือกงาน</button>`;
+    dock.appendChild(toolbar);
+  }
+  guide.hidden = !management || !choiceGuideExpanded && (Boolean(state.tutorialSeen?.[CHOICE_GUIDE_KEY]) || state.month >= 3);
+  const spoken = $("#dialogueText").textContent;
+  feedback.hidden = !management || !state.lastMessage || spoken === state.lastMessage;
+  feedback.textContent = state.lastMessage || "";
+  toolbar.hidden = !management;
+  toolbar.querySelector("[data-choice-help]").setAttribute("aria-expanded", String(!guide.hidden));
 }
 function renderAudioControls() {
   const prefs = audio.getPrefs();
@@ -580,9 +732,11 @@ function render() {
   $("#gameApp").dataset.management = String(management);
   const controls = $(".game-layout__controls");
   const dock = $("#actionDock");
-  $(".action-dock__heading span").textContent = "ทำอะไรต่อ";
-  $(".action-dock__heading small").textContent = "เลือกสิ่งที่คุ้มที่สุด";
-  if (management && controls.firstElementChild !== dock) controls.prepend(dock);
+  $(".action-dock__heading span").textContent = content.management ? "งานแนะนำตอนนี้" : "ทำอะไรต่อ";
+  $(".action-dock__heading small").textContent = content.management ? `เลือกได้มากกว่า 3 ทาง · ⚡ ${state.energy} เหลือ` : "เลือกสิ่งที่คุ้มที่สุด";
+  const storyCard = $("#storyCard");
+  if (controls.firstElementChild !== storyCard) controls.prepend(storyCard);
+  if (management && storyCard.nextElementSibling !== dock) storyCard.after(dock);
   if (!management && controls.lastElementChild !== dock) controls.append(dock);
   renderHud();
   renderGoal();
@@ -615,6 +769,7 @@ function showDialog(key, html, options = {}) {
 }
 function closeDialog() {
   if ($("#gameDialog").open) $("#gameDialog").close();
+  document.body.style.removeProperty("overflow");
   activeDialogKey = null;
 }
 function showReceipt(transaction) {
@@ -628,7 +783,7 @@ function showIncome() {
   return panels.showIncome();
 }
 function workButton(label, event, options = {}) {
-  const disabled = options.cost > state.energy || options.disabled;
+  const disabled = options.disabled || !canDispatch(state, event) || !isActionAvailable(state, { event, ...options });
   return `<button type="button" class="work-button" data-work-event="${event}"${options.source ? ` data-source="${options.source}"` : ""}${options.id ? ` data-id="${options.id}"` : ""}${options.skill ? ` data-skill="${options.skill}"` : ""}${disabled ? " disabled" : ""}>
     <strong>${escapeHtml(label)}</strong><span>${escapeHtml(options.detail || "")}</span>${options.cost ? `<b>⚡ ${options.cost}</b>` : ""}</button>`;
 }
@@ -654,20 +809,24 @@ function showSkills() {
     <button class="dialog-button" type="button" data-dialog-action="close">กลับเกม</button>`, { kind: "wide" });
 }
 function showWorkMenu() {
+  if (!content.management || state.organizationMode) return;
   const skills = getSkillSnapshot(state);
   const contentLocked = skills.playerLevel < PLAYER_UNLOCKS.content;
   const adsLocked = skills.playerLevel < PLAYER_UNLOCKS.ads;
+  const live = getLiveReadiness(state);
   const mentors = state.team.filter((member) => member.active && member.autonomy < 85).slice(0, 8).map((member) => workButton(`Review เคสกับ ${member.name}`, EVENTS.MENTOR_TEAM_MEMBER, { id: member.id, cost: 1, detail: `${member.customers} ลูกค้า · ${member.autonomy >= 70 ? "ใกล้ทำเองเต็มที่" : member.autonomy >= 45 ? "เริ่มทำเองได้" : "ยังต้องซ้อมด้วยกัน"}` })).join("");
   const training = SKILL_IDS.map((id) => workButton(`${SKILL_DEFINITIONS[id].icon} ${SKILL_DEFINITIONS[id].practice}`, EVENTS.TRAIN_SKILL, { skill: id, cost: 1, detail: `${SKILL_DEFINITIONS[id].name} Lv.${skills.skills[id].level} · ${getSkillBenefit(id, Math.min(10, skills.skills[id].level + 1))}` })).join("");
-  showDialog("work", `<div class="dialog-kicker">แผนเติบโต · เดือน ${state.month}</div><h2>ลงทุนเวลาให้ผลเดือนต่อไปทวีคูณ</h2>
+  showDialog("work", `<div class="dialog-kicker">ทางเลือกทั้งหมด · เดือน ${state.month} · ⚡ ${state.energy} เหลือ</div><h2>เดือนนี้อยากสร้างอะไรเพิ่ม?</h2><p class="dialog-note">งานแนะนำเป็นเพียงจุดเริ่มต้น เลือกทำงานเหล่านี้สลับกันได้ แล้วกลับมาดูผลบนกระดาน</p>
     <section class="work-section"><h3>สร้างโอกาสใหม่</h3><div class="work-grid">
       ${workButton("ทำความรู้จักคนใหม่", EVENTS.CREATE_LEAD, { source: "known", cost: 1, detail: "ได้ 1 คน · ต้องทักและคุยก่อน Sale" })}
-      ${workButton("ทำคอนเทนต์", EVENTS.CREATE_LEAD, { source: "content", cost: 1, disabled: contentLocked, detail: contentLocked ? "เปิดที่ X-VISOR Lv.2" : "Journey / ความรู้ / Routine · สร้าง Interest" })}
+      ${workButton("ทำคอนเทนต์", EVENTS.CREATE_LEAD, { source: "content", cost: 1, disabled: contentLocked, detail: contentLocked ? "เปิดที่ X-VISOR Lv.2" : "เล่าเรื่องให้คนสนใจ แล้วชวนมาคุย" })}
+      ${workButton("เปิด Live · คุยพร้อมกัน", EVENTS.RUN_LIVE, { cost: live.cost, disabled: !live.available, detail: live.available ? `มีคนพร้อม ${live.eligibleCount} คน · คุยได้ครั้งละ ${live.capacity} คน` : live.reason })}
       ${workButton("ยิง Ads จำลอง", EVENTS.CREATE_LEAD, { source: "ads", cost: 1, disabled: adsLocked, detail: adsLocked ? "เปิดที่ X-VISOR Lv.4" : `Budget จำลอง ${formatBaht(ADS_GAMEPLAY_CONFIG.budgetPerCampaign)} แยกจากรายได้` })}</div></section>
     <section class="work-section"><h3>ฝึกให้ 1 ⚡ คุ้มขึ้น</h3><div class="work-grid">${training}</div></section>
     <section class="work-section"><h3>🎓 Batch และทีม</h3><div class="work-grid">${mentors}
       ${workButton(`Xcademy · ครั้ง ${Number(state.monthStats.xcademySessions || 0) + 1}/4`, EVENTS.RUN_XCADEMY, { cost: 2, disabled: Number(state.monthStats.xcademySessions || 0) >= 4, detail: Number(state.monthStats.xcademySessions || 0) >= 4 ? "ครบ 4 ครั้งเดือนนี้" : "OPP + Training · เลือกคนที่เหมาะสมอัตโนมัติ" })}
       ${workButton("🏠 Open House", EVENTS.RUN_OPEN_HOUSE, { cost: 2, disabled: state.monthStats.openHouseDone, detail: state.monthStats.openHouseDone ? "ทำแล้วในเดือนนี้" : "ชวนทุกคนที่เหมาะสม · batch impact" })}
+      ${workButton("🌙 The Xircle · เติมพลังทีม", EVENTS.RUN_XIRCLE, { cost: 2, detail: state.monthStats.xircleDone ? "ร่วมแล้วในเดือนนี้" : canDispatch(state, EVENTS.RUN_XIRCLE) ? "เชื่อมทีม เติม Momentum และกลับมาดูแลคนต่อ" : "เปิดในเดือน 3, 6, 9 และ 12" })}
       ${["xlead", "xgen"].includes(state.rank) ? workButton("Review ผู้นำรุ่นถัดไป", EVENTS.REVIEW_TEAM_LEADERS, { cost: 1, detail: "เพิ่มความพร้อมให้ทีมทำเอง" }) : ""}</div></section>
     <div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-dialog-action="people">เปิดคนของคุณ</button><button class="dialog-button" type="button" data-dialog-action="close">กลับกระดาน</button></div>`, { kind: "wide" });
 }
@@ -688,6 +847,7 @@ function resetGame() {
   } catch {
   }
   state = { ...makeInitialState(), soundOn };
+  storyContext = {};
   montageVisualDay = 0;
   closeDialog();
   save();
@@ -704,6 +864,7 @@ $("#actionBar").addEventListener("click", (event) => {
   if (button.dataset.ui === "skills") return showSkills();
   const gameEvent = button.dataset.event;
   if (!gameEvent) return;
+  if (performance.now() < actionReadyAt) return;
   const payload = {};
   if (button.dataset.id) payload.id = button.dataset.id;
   if (button.dataset.value) payload.value = button.dataset.value;
@@ -713,14 +874,36 @@ $("#actionBar").addEventListener("click", (event) => {
   if (gameEvent === EVENTS.END_MONTH) {
     event.preventDefault();
     event.stopImmediatePropagation();
+    return showMonthConfirmation();
   }
+  actionReadyAt = performance.now() + 350;
   dispatch(gameEvent, payload);
 });
+$("#actionDock").addEventListener("click", (event) => {
+  if (event.target.closest("[data-choice-work]")) {
+    acknowledgeChoiceGuide();
+    return showWorkMenu();
+  }
+  if (event.target.closest("[data-choice-dismiss]")) {
+    acknowledgeChoiceGuide();
+    $("#actionBar button:not(:disabled)")?.focus();
+  }
+  if (event.target.closest("[data-choice-help]")) {
+    choiceGuideExpanded = $("#choiceGuide").hidden;
+    renderChoiceGuide();
+  }
+});
 $("#sceneDetails").addEventListener("click", (event) => {
+  const liveReceipt = event.target.closest("[data-live-receipt]");
+  if (liveReceipt) return showReceipt(state.liveReport.transactions[Number(liveReceipt.dataset.liveReceipt)]);
+  if (event.target.closest("[data-open-receipt]")) return showReceipt(state.economy.lastTransaction);
   const quizButton = event.target.closest("[data-quiz-answer]");
   if (quizButton && !quizButton.disabled) return dispatch(content.quiz.exam ? EVENTS.SELECT_EXAM : EVENTS.SELECT_PRACTICE, { answer: quizButton.dataset.quizAnswer });
   const planButton = event.target.closest("[data-plan-id]");
-  if (planButton) dispatch(content.routineEvent, { planId: planButton.dataset.planId });
+  if (planButton && !planButton.disabled && performance.now() >= actionReadyAt) {
+    actionReadyAt = performance.now() + 350;
+    dispatch(content.routineEvent, { planId: planButton.dataset.planId });
+  }
   const termButton = event.target.closest("[data-term]");
   if (termButton) showTerm(termButton.dataset.term);
   const personButton = event.target.closest("[data-person-id]");
@@ -728,6 +911,12 @@ $("#sceneDetails").addEventListener("click", (event) => {
   if (event.target.closest("[data-open-people]")) showPeople();
   if (event.target.closest("[data-open-work]")) showWorkMenu();
   if (event.target.closest("[data-open-skills]")) showSkills();
+});
+$("#storyCard").addEventListener("click", event => {
+  const choice = event.target.closest("[data-encounter-choice]");
+  if (!choice || choice.disabled || performance.now() < actionReadyAt) return;
+  actionReadyAt = performance.now() + 350;
+  dispatch(EVENTS.RESOLVE_ENCOUNTER, { choiceId: choice.dataset.encounterChoice, encounterId: choice.dataset.encounterId });
 });
 $("#incomeButton").addEventListener("click", () => {
   audio.unlock();
@@ -839,6 +1028,10 @@ $("#gameDialog").addEventListener("input", (event) => {
   });
 });
 $("#gameDialog").addEventListener("cancel", () => {
+  activeDialogKey = null;
+});
+$("#gameDialog").addEventListener("close", () => {
+  document.body.style.removeProperty("overflow");
   activeDialogKey = null;
 });
 

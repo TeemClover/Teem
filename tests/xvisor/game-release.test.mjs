@@ -12,7 +12,7 @@ import {
   makeInitialState,
   parseSavedState,
   reduceGame,
-} from './game-data.js';
+} from '../../xvisor/quest/game-data.js';
 
 function management(seed = 1, month = 1) {
   const state = makeInitialState({ seed });
@@ -50,8 +50,8 @@ function campaignReady({ seed = 20, xgen = false } = {}) {
   };
 }
 
-test('1.0b version is explicit and score namespace is reset', () => {
-  assert.equal(RELEASE_VERSION, '1.0b');
+test('2.0 release preserves the existing save and score namespaces', () => {
+  assert.equal(RELEASE_VERSION, '2.0');
   assert.equal(V1_SAVE_VERSION, '1.0b');
   assert.equal(V1_SCORE_VERSION, '1.0b');
 });

@@ -1,40 +1,91 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
-import { EVENTS, makeInitialState, reduceGame, getBestNextActions, serializeState, parseSavedState } from './game-data.js';
-import { getStageContent } from './game-copy.js';
-import { getEconomyView, getOrganizationScene, signedBaht } from './game-presentation.js';
-import { getSkillLevel } from './game-progression.js';
+import { EVENTS, makeInitialState, reduceGame, getBestNextActions, serializeState, parseSavedState } from '../../xvisor/quest/game-data.js';
+import { getStageContent } from '../../xvisor/quest/game-copy.js';
+import { getEconomyView, getOrganizationScene, signedBaht } from '../../xvisor/quest/game-presentation.js';
+import { getSkillLevel } from '../../xvisor/quest/game-progression.js';
 
-const root = new URL('./', import.meta.url);
+const root = new URL('../../xvisor/quest/', import.meta.url);
 const source = (name) => readFile(new URL(name, root), 'utf8');
 const canonicalModules = [
-  'game-actions.js',
-  'game-art.js',
-  'game-audio.js',
-  'game-engine.js',
-  'game-panels.js',
-  'game-presentation.js',
-  'game-world.js',
-  'game-commercial-config.js',
-  'game-copy.js',
-  'game-data.js',
-  'game-exam.js',
-  'game-people.js',
-  'game-progression.js',
-  'game-save.js',
-  'game-ui.js',
+  "game-action-peek.js",
+  "game-action-scenes.js",
+  "game-actions.js",
+  "game-art.js",
+  "game-audio.js",
+  "game-commercial-config.js",
+  "game-copy.js",
+  "game-data.js",
+  "game-engine.js",
+  "game-exam.js",
+  "game-mentor-art.js",
+  "game-narrative-data.js",
+  "game-panels.js",
+  "game-people.js",
+  "game-portrait.js",
+  "game-presentation.js",
+  "game-progression.js",
+  "game-save.js",
+  "game-story.js",
+  "game-ui.js",
+  "game-world.js"
 ];
 
-test('public shell boots 1.0b from one canonical stylesheet and one canonical module', async () => {
+test('2.0 maps the complete browser module graph to one release in game and preview', async () => {
   const html = await source('index.html');
-  assert.match(html, /data-game-version="1\.0b"/);
-  assert.match(html, /game\.css\?v=1\.0b-quality1/);
-  assert.match(html, /game-ui\.js\?v=1\.0b-quality1/);
-  assert.doesNotMatch(html, /type="importmap"/);
+  const preview = await readFile(new URL('./quality-preview.html', import.meta.url), 'utf8');
+  assert.match(html, /data-game-version="2\.0"/);
+  assert.match(html, /game\.css\?v=2\.0-offer1/);
+  assert.match(html, /game-boot\.js\?v=2\.0-offer1/);
   assert.doesNotMatch(html, /game-(?:1b|v8|v9|v1|v1a|v1b-core)/);
   assert.equal((html.match(/rel="stylesheet"/g) || []).length, 1);
-  assert.equal((html.match(/<script/g) || []).length, 1);
+  assert.equal((html.match(/<script/g) || []).length, 2);
+  const readMap = shell => {
+    const match = shell.match(/<script type="importmap"[^>]*>([\s\S]*?)<\/script>/);
+    assert.ok(match, 'import map must precede any module execution');
+    assert.ok(shell.indexOf(match[0]) < shell.indexOf('<script type="module"'));
+    return JSON.parse(match[1]).imports;
+  };
+  const map = readMap(html);
+  const previewMap = readMap(preview);
+  assert.equal(Object.keys(map).length, canonicalModules.length + 1);
+  for (const name of [...canonicalModules, 'game-boot.js']) {
+    const canonical = `/xvisor/quest/${name}`;
+    assert.equal(map[canonical], `${canonical}?v=2.0-offer1`, `${name} must bypass earlier release caches`);
+    assert.equal(previewMap[canonical], map[canonical], `preview must use the same ${name}`);
+  }
+  assert.equal(previewMap['/tests/xvisor/game-review-fixtures.mjs'], '/tests/xvisor/game-review-fixtures.mjs?v=2.0-offer1');
+  assert.equal(previewMap['/xvisor/quest/game-review-fixtures.mjs'], undefined);
+});
+
+test('production X-VISOR entry points never expose QA selectors or replace player storage', async () => {
+  const [game, landing, oldPreview] = await Promise.all([source('index.html'), source('../index.html'), source('quality-preview.html')]);
+  for (const html of [game, landing, oldPreview]) {
+    assert.doesNotMatch(html, /id=["'](?:scenario|preview|width)["']|makeReviewFixtures|game-review-fixtures|QA fixtures|in-memory save/);
+    assert.doesNotMatch(html, /Object\.defineProperty\(window,\s*["']localStorage|window\.fetch\s*=/);
+    assert.doesNotMatch(html, /\/tests\/xvisor\//);
+  }
+  assert.match(oldPreview, /\/xvisor\/quest\//, 'the retired public preview must lead back to the actual game');
+  assert.doesNotMatch(oldPreview, /<iframe|<select|type=["']module["']/);
+});
+
+test('production runtime imports no test fixtures and keeps QA modules outside the quest directory', async () => {
+  const publicFiles = await readdir(root);
+  assert.deepEqual(publicFiles.filter(name => /(?:\.test\.mjs|\.e2e\.mjs|game-review-fixtures\.mjs)$/.test(name)), []);
+  for (const name of [...canonicalModules, 'game-boot.js']) {
+    const code = await source(name);
+    assert.doesNotMatch(code, /makeReviewFixtures|game-review-fixtures|\/tests\/xvisor\//, `${name} must not load QA code`);
+  }
+});
+
+test('Teem and Ako remain portraits outside the illustrated game world', async () => {
+  const [world, portrait, mentorArt] = await Promise.all([source('game-world.js'), source('game-portrait.js'), source('game-mentor-art.js')]);
+  assert.doesNotMatch(world, /drawMentorSprite|MENTOR_PALETTES|createSceneAtlas|sceneAtlas|neighborhood-scenes-v2/);
+  assert.doesNotMatch(mentorArt, /drawMentorSprite/);
+  assert.match(portrait, /drawMentorPortrait/);
+  assert.match(mentorArt, /teem-ako-guides-v2\.png/);
+  assert.match(world, /layer\.room\(theme\)/);
 });
 
 test('runtime module graph contains canonical imports only', async () => {
@@ -71,11 +122,11 @@ test('mobile finale stays viewport-bounded after release CSS is merged', async (
 test('canonical copy keeps the 1.0b XGEN goal and The Xircle scene', async () => {
   const copy = await source('game-copy.js');
   assert.match(copy, /XGEN_GOAL_VISIBLE_AT = 15e5/);
-  assert.match(copy, /ตอนนี้ยังไม่ Qualified/);
+  assert.match(copy, /ตอนนี้ยังไม่ถึงเกณฑ์/);
   assert.doesNotMatch(copy, /Rolling 3 เดือน|ไม่นับเป็นเกณฑ์ XGEN/);
-  assert.match(copy, /แตะ 3,000,000 XV ในเดือนเดียวแล้ว/);
+  assert.match(copy, /ถึงเกณฑ์แล้ว · สอบ XGEN ได้เลย/);
   assert.match(copy, /scene: "the-xircle"/);
-  assert.match(copy, /XGEN EXAM READY/);
+  assert.match(copy, /พร้อมสอบ XGEN/);
 });
 
 test('campaign END_MONTH click is handled once by the canonical action bar', async () => {
@@ -102,9 +153,9 @@ test('canonical UI retains the Month 12 score gate and Month 24 NEW GAME+ finale
   assert.match(ui, /ยังไปต่อไม่ได้จนกว่าจะบันทึกชื่อ High Score/);
   assert.match(ui, /data-v1b-submit-score/);
   assert.match(ui, /data-v1b-enter-org/);
-  assert.match(ui, /ดูสิ่งที่คุณสร้างโตเอง 1 เดือน/);
+  assert.match(ui, /ดูระบบทำงานต่อ 1 เดือน/);
   assert.match(ui, /data-v1b-new-game-plus/);
-  assert.match(ui, /MONTH 24 · TRUE ENDING · 1\.0b/);
+  assert.match(ui, /MONTH 24 · TRUE ENDING · 2\.0/);
 });
 
 function managementFixture() {

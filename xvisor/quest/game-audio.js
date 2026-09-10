@@ -7,9 +7,13 @@ const DEFAULT_PREFS = Object.freeze({
 });
 
 const NOTES = Object.freeze({
-  tap: [[520, 0.04, "square", 0]],
+  tap: [[520, 0.065, "triangle", 0]],
+  talk: [[349, 0.045, "triangle", 0], [440, 0.06, "sine", 0.065]],
+  care: [[523, 0.08, "sine", 0], [659, 0.12, "sine", 0.10]],
+  plan: [[392, 0.045, "triangle", 0], [494, 0.05, "triangle", 0.055], [587, 0.07, "triangle", 0.115]],
+  team: [[440, 0.06, "triangle", 0], [554, 0.06, "triangle", 0.07], [659, 0.1, "sine", 0.14]],
   page: [[420, 0.035, "triangle", 0], [620, 0.045, "triangle", 0.04]],
-  confirm: [[620, 0.05, "square", 0], [820, 0.08, "square", 0.05]],
+  confirm: [[659, 0.065, "triangle", 0], [784, 0.12, "triangle", 0.065]],
   cancel: [[260, 0.06, "triangle", 0]],
   warning: [[294, 0.055, "triangle", 0], [247, 0.085, "triangle", 0.07]],
   calendar: [[420, 0.025, "square", 0], [510, 0.035, "square", 0.035]],
@@ -17,7 +21,7 @@ const NOTES = Object.freeze({
   band: [[560, 0.04, "sine", 0], [840, 0.05, "sine", 0.06]],
   scale: [[330, 0.06, "sine", 0], [520, 0.07, "sine", 0.09], [760, 0.1, "sine", 0.18]],
   knowledge: [[659, 0.05, "triangle", 0], [988, 0.1, "triangle", 0.07]],
-  select: [[610, 0.035, "square", 0]],
+  select: [[659, 0.07, "triangle", 0]],
   submit: [[440, 0.04, "triangle", 0], [660, 0.06, "triangle", 0.05]],
   correct: [[660, 0.05, "square", 0], [990, 0.11, "square", 0.06]],
   incorrect: [[330, 0.06, "triangle", 0], [270, 0.09, "triangle", 0.07]],
@@ -45,9 +49,10 @@ const NOTES = Object.freeze({
 });
 
 const MUSIC = Object.freeze({
-  pre: { tempo: 520, lead: [262, 330, 392, 330, 294, 349, 440, 349], bass: [131, 147] },
-  campaign: { tempo: 455, lead: [392, 494, 523, 494, 440, 523, 659, 523], bass: [196, 220] },
-  organization: { tempo: 400, lead: [330, 392, 494, 659, 392, 494, 587, 784], bass: [165, 196] },
+  // A full phrase includes rests, leaving space for dialogue and action sounds.
+  pre: { tempo: 520, lead: [262, 0, 330, 392, 0, 330, 294, 0, 262, 0, 349, 440, 392, 0, 330, 0], bass: [131, 147, 175, 131] },
+  campaign: { tempo: 455, lead: [392, 0, 494, 523, 0, 494, 440, 0, 392, 0, 523, 659, 587, 0, 523, 0], bass: [196, 220, 175, 196] },
+  organization: { tempo: 400, lead: [330, 392, 0, 494, 659, 0, 494, 0, 392, 494, 0, 587, 784, 0, 659, 0], bass: [165, 220, 196, 165] },
 });
 
 function loadPrefs(initiallyOn) {
@@ -72,53 +77,111 @@ export function createAudio(initiallyOn = true) {
   let musicTimer = null;
   let musicStep = 0;
   let musicMode = "pre";
+  let resumePending = false;
+  let resumeAttempt = 0;
+  let destroyed = false;
+  let musicQuietUntil = 0;
+  const voices = new Set();
 
   function persist() {
     try { localStorage.setItem(AUDIO_PREFS_KEY, JSON.stringify(prefs)); } catch { /* audio remains usable */ }
   }
 
   function ensureContext() {
-    if (prefs.muted || suspended) return null;
+    if (!interacted || destroyed || prefs.muted || suspended) return null;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return null;
-    if (!context) context = new AudioContext();
-    if (context.state === "suspended") context.resume().catch(() => {});
-    return context;
+    try {
+      if (!context || context.state === "closed") context = new AudioContext();
+      if (context.state === "suspended" && !resumePending) {
+        resumePending = true;
+        const attempt = ++resumeAttempt;
+        Promise.resolve(context.resume()).catch(() => {
+          if (attempt !== resumeAttempt) return;
+          stopMusic();
+          stopVoices();
+        }).finally(() => { if (attempt === resumeAttempt) resumePending = false; });
+      }
+      return context;
+    } catch {
+      // Sound is optional: unavailable audio must never interrupt a game action.
+      resumePending = false;
+      return null;
+    }
   }
 
-  function tone(frequency, duration, type, delay, volume = 0.042) {
+  function releaseVoice(voice) {
+    voices.delete(voice);
+    voice.oscillator.onended = null;
+    try { voice.oscillator.disconnect(); voice.gain.disconnect(); } catch { /* already released */ }
+  }
+
+  function stopVoices(channel) {
+    for (const voice of voices) {
+      if (channel && voice.channel !== channel) continue;
+      try { voice.oscillator.stop(); } catch { /* a finished voice is safe to release */ }
+      releaseVoice(voice);
+    }
+  }
+
+  function tone(frequency, duration, type, delay, volume = 0.035, channel = "sfx") {
     const ctx = ensureContext();
-    if (!ctx || !Number.isFinite(frequency)) return;
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const start = ctx.currentTime + delay;
-    oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, start);
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.start(start);
-    oscillator.stop(start + duration + 0.025);
+    if (!ctx || !Number.isFinite(frequency) || frequency <= 0) return;
+    let voice;
+    try {
+      // Bound rapid interactions and release completed nodes instead of keeping
+      // them connected for the lifetime of a long game.
+      if (voices.size >= 32) {
+        const oldest = voices.values().next().value;
+        try { oldest.oscillator.stop(); } catch { /* already stopped */ }
+        releaseVoice(oldest);
+      }
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      voice = { oscillator, gain, channel };
+      voices.add(voice);
+      const start = ctx.currentTime + delay;
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(volume, start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.onended = () => releaseVoice(voice);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.025);
+    } catch {
+      if (voice) releaseVoice(voice);
+    }
   }
 
   function stopMusic() {
-    window.clearInterval(musicTimer);
+    if (musicTimer !== null) window.clearInterval(musicTimer);
     musicTimer = null;
+    stopVoices("music");
+  }
+
+  function suspendContext() {
+    // A quick hide/show or mute/unmute may happen before resume settles. The
+    // next user action must be able to queue a fresh resume after this suspend.
+    resumeAttempt += 1;
+    resumePending = false;
+    try { Promise.resolve(context?.suspend?.()).catch(() => {}); } catch { /* optional audio */ }
   }
 
   function musicTick() {
-    if (!interacted || prefs.muted || !prefs.musicEnabled || suspended) return stopMusic();
+    if (destroyed || !interacted || prefs.muted || !prefs.musicEnabled || suspended) return stopMusic();
     const score = MUSIC[musicMode] || MUSIC.campaign;
     const index = musicStep % score.lead.length;
-    tone(score.lead[index], 0.12, "triangle", 0, 0.008);
-    if (index % 4 === 0) tone(score.bass[(musicStep / 4) % score.bass.length | 0], 0.24, "sine", 0, 0.005);
+    const volume = context?.currentTime < musicQuietUntil ? 0.003 : 0.007;
+    if (score.lead[index]) tone(score.lead[index], 0.23, "triangle", 0, volume, "music");
+    if (index % 4 === 0) tone(score.bass[Math.floor(musicStep / 4) % score.bass.length], 0.42, "sine", 0, volume * 0.75, "music");
     musicStep += 1;
   }
 
   function startMusic() {
-    if (!interacted || prefs.muted || !prefs.musicEnabled || suspended || musicTimer) return;
+    if (destroyed || !interacted || prefs.muted || !prefs.musicEnabled || suspended || musicTimer !== null) return;
     if (!ensureContext()) return;
     musicTick();
     musicTimer = window.setInterval(musicTick, (MUSIC[musicMode] || MUSIC.campaign).tempo);
@@ -131,7 +194,10 @@ export function createAudio(initiallyOn = true) {
   }
 
   function play(name) {
-    if (prefs.muted || !prefs.sfxEnabled || suspended) return;
+    if (destroyed || !interacted || prefs.muted || !prefs.sfxEnabled || suspended) return;
+    const ctx = ensureContext();
+    if (!ctx) return;
+    musicQuietUntil = ctx.currentTime + 0.45;
     (NOTES[name] || NOTES.tap).forEach(([frequency, duration, type, delay]) => {
       tone(frequency, duration, type, delay);
     });
@@ -149,7 +215,8 @@ export function createAudio(initiallyOn = true) {
     persist();
     if (prefs.muted) {
       stopMusic();
-      context?.suspend?.().catch(() => {});
+      stopVoices();
+      suspendContext();
     } else {
       unlock();
       play("confirm");
@@ -169,6 +236,7 @@ export function createAudio(initiallyOn = true) {
     prefs = { ...prefs, sfxEnabled: Boolean(value) };
     persist();
     if (prefs.sfxEnabled) play("confirm");
+    else stopVoices("sfx");
     return prefs.sfxEnabled;
   }
 
@@ -181,12 +249,28 @@ export function createAudio(initiallyOn = true) {
 
   function setSuspended(value) {
     suspended = Boolean(value);
-    if (suspended) stopMusic();
-    else startMusic();
+    if (suspended) {
+      stopMusic();
+      stopVoices();
+      suspendContext();
+    } else {
+      ensureContext();
+      startMusic();
+    }
+  }
+
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    stopMusic();
+    stopVoices();
+    try { Promise.resolve(context?.close?.()).catch(() => {}); } catch { /* optional audio */ }
+    context = null;
   }
 
   return {
     play,
+    destroy,
     unlock,
     setMode,
     setMuted,
