@@ -108,7 +108,7 @@ test('new campaign closures persist honest growth snapshots without changing fin
   const reordered = reduceGame(state, EVENTS.REORDER_CUSTOMER, { id: 'returning' });
   const closed = reduceGame(reordered, EVENTS.END_MONTH);
   const growth = closed.settlements['2'].growth;
-  assert.deepEqual(growth, { activeCustomers: 2, repeatCustomers: 1, repeatTransactions: 1, teamCount: 1, xleadCount: 0, customerScope: 'personal', teamScope: 'direct' });
+  assert.deepEqual(growth, { activeCustomers: 2, repeatCustomers: 1, repeatTransactions: 1, teamCount: 1, xleadCount: 0, customerScope: 'personal-direct', teamScope: 'direct', customerBase: 2, directMemberBase: 0, recurringBase: 2, loyalCustomers: 0 });
   assert.equal(closed.settlements['2'].totalIncome, closed.economy.totalIncome);
   assert.deepEqual(parseSavedState(serializeState(closed)).settlements['2'].growth, growth);
 });
@@ -137,7 +137,7 @@ test('Year 2 stores corrected monthly reports and organization growth for each c
     const entry = current.settlements[String(report.month)];
     assert.equal(report.income, entry.totalIncome);
     assert.equal(report.tgv, entry.currentTGV);
-    assert.deepEqual(entry.growth, { activeCustomers: report.activeCustomers, repeatCustomers: report.repeatCustomers, repeatTransactions: null, teamCount: report.xvisorCount, xleadCount: report.xleadCount, customerScope: 'organization', teamScope: 'organization' });
+    assert.deepEqual(entry.growth, { activeCustomers: report.activeCustomers, repeatCustomers: report.repeatCustomers, repeatTransactions: null, teamCount: report.xvisorCount, xleadCount: report.xleadCount, customerScope: 'organization', teamScope: 'organization', customerBase: 0, directMemberBase: 0, recurringBase: 0, loyalCustomers: 0 });
   }
   const oldReport = current.lastOrganizationReport;
   const legacy = { ...current, organizationReports: undefined };

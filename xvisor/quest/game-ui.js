@@ -15,6 +15,7 @@ import {
   getActiveEncounter,
   getLiveReadiness,
   getRenewalFollowupEligibility,
+  getRecurringBaseSummary,
   canDispatch,
   isExamStage,
   makeInitialState,
@@ -336,7 +337,9 @@ function renderHud() {
   $("#hudEnergyLabel").innerHTML = `${preseason ? "ความพร้อม 28 วัน" : "พลังงานในเดือนนี้"} <b aria-hidden="true">?</b>`;
   $("#hudEnergy").textContent = `⚡ ${visibleEnergy} / ${MAX_ENERGY}`;
   $("#energyMeter").style.setProperty("--energy", `${visibleEnergy / MAX_ENERGY * 100}%`);
-  const customerCount = state.customers.length + state.prospects.filter((person) => person.activePlan).length;
+  const showCustomerBase = state.month >= 2 && !state.organizationMode;
+  const customerCount = showCustomerBase ? getRecurringBaseSummary(state).total : state.customers.length + state.prospects.filter((person) => person.activePlan).length;
+  $(".status-item--customers span").textContent = showCustomerBase ? "ฐานสะสม" : "ลูกค้า";
   $("#hudCustomers").textContent = `${customerCount} คน`;
   const organizationVisible = state.organizationMode || state.milestones.firstG1 || state.team.length > 0;
   $("#hudVolumeLabel").innerHTML = `${organizationVisible ? "🏙️ TGV เดือนนี้" : "XV เดือนนี้"} <b aria-hidden="true">?</b>`;
@@ -456,7 +459,7 @@ function getRoutineSaleResult(current, previous = null) {
   if (previous) {
     if (current.month !== previous.month || transaction.id === previous.economy?.lastTransaction?.id) return null;
   } else if (current.stage !== STAGES.M1_SALE_RECEIPT && !ROUTINE_SALE_EVENTS.has(current.lastEvent)) return null;
-  const allPeople = [...current.customers, ...current.prospects];
+  const allPeople = [...current.customers, ...current.prospects, ...current.team];
   const targetId = transaction.customerId || current.selectedPersonId;
   const person = allPeople.find(item => item.id === targetId || item.personId === targetId);
   const income = Number(transaction.incomeDelta);
@@ -497,31 +500,37 @@ function renderBriefResults() {
     stack.appendChild(result);
     paintStoryPortrait(result.querySelector("canvas"), { portrait: "customer" }, sale.person);
   }
-  const report = state.monthOpeningReport;
-  if (content.management && report && Number(report.month) === state.month) {
-    const automaticIds = [...new Set(report.automaticCustomerIds || [])];
-    const pausedIds = [...new Set(report.pausedCustomerIds || [])];
-    const followUpIds = [...new Set(report.followUpCustomerIds || [])].filter(id => !automaticIds.includes(id) && !pausedIds.includes(id));
-    const teamIds = new Set(state.team.map(person => person.personId || person.id));
-    const customers = [...state.customers, ...state.prospects.filter(person => person.activePlan)]
-      .filter(person => !person.careOnly && !teamIds.has(person.personId || person.id));
-    const findCustomer = id => customers.find(person => person.id === id || person.personId === id);
+  const report = Number(state.monthOpeningReport?.month) === state.month ? state.monthOpeningReport : null;
+  const base = getRecurringBaseSummary(state);
+  if (content.management && (report || base.total > 0)) {
+    const automaticCustomerIds = [...new Set(report?.automaticCustomerIds || [])];
+    const automaticMemberIds = [...new Set(report?.automaticDirectMemberIds || [])];
+    const automaticIds = [...new Set([...automaticCustomerIds, ...automaticMemberIds])];
+    const pausedIds = [...new Set(report?.pausedCustomerIds || [])];
+    const followUpIds = [...new Set(report?.followUpCustomerIds || [])].filter(id => !automaticIds.includes(id) && !pausedIds.includes(id));
+    const people = [...state.customers, ...state.team, ...state.prospects];
+    const findCustomer = id => people.find(person => person.id === id || person.personId === id);
     const candidates = [...followUpIds, ...pausedIds].map(findCustomer).filter(Boolean);
     const followUp = candidates.find(person => getRenewalFollowupEligibility(state, person).available);
     const waitingForEnergy = !followUp && Number(state.energy) < 1 && candidates.some(person => Number(person.lastRenewalFollowUpMonth) !== state.month && Number(person.lastReorderMonth) !== state.month);
-    const nextStep = followUp ? `${followUp.name} ${pausedIds.some(id => id === followUp.id || id === followUp.personId) ? "ขอพัก ลองฟังสิ่งที่ติดขัดแล้วให้เขาเลือก" : "รอคุยเรื่องรอบใหม่ เริ่มจากดูความพร้อมของเขา"}`
+    const nextStep = followUp ? `XOS · ${followUp.name} ${pausedIds.some(id => id === followUp.id || id === followUp.personId) ? "ขอพัก ลองฟังสิ่งที่ติดขัด" : "ยังรอตัดสินใจ ลองคุยแฟ้ม X ต่อ"}`
       : waitingForEnergy ? "เก็บคนที่ยังรอไว้คุยเดือนหน้า เมื่อมีพลังงานรอบใหม่"
-      : candidates.length ? "คุยรอบนี้ครบแล้ว ดูแลคนที่ต่อแผน และให้เวลาคนที่ขอพักถึงเดือนหน้า"
-      : "ดูแลคนที่มี แล้วค่อยสร้างโอกาสใหม่";
-    const customerCount = new Set(customers.map(person => person.personId || person.id)).size;
+      : candidates.length ? "คุยรอบนี้ครบแล้ว ดูแลคนที่ต่อแผน และให้เวลาคนที่ขอพัก"
+      : "ความสัมพันธ์ที่ดูแลไว้ เป็นจุดเริ่มของรอบต่อไป";
     const card = document.createElement("details");
     card.className = "month-opening-card";
-    card.dataset.month = String(report.month);
+    card.dataset.month = String(state.month);
     card.dataset.renewed = String(automaticIds.length);
+    card.dataset.customerBase = String(base.total);
     card.open = monthOpeningExpanded;
-    const incomeDelta = Number(report.incomeDelta);
-    const incomeLabel = report.incomeDelta != null && Number.isFinite(incomeDelta) ? signedBaht(incomeDelta) : "—";
-    card.innerHTML = `<summary><span><strong>เริ่มเดือน ${formatNumber(report.month)}</strong><small>${automaticIds.length ? `กลับมาต่อเอง ${formatNumber(automaticIds.length)} คน` : "ซื้อซ้ำอัตโนมัติ 0 คน"} · รายได้เพิ่ม ${escapeHtml(incomeLabel)}</small></span><span class="month-opening-card__chevron" aria-hidden="true">⌄</span></summary><div class="month-opening-card__body"><p>${automaticIds.length ? "การดูแลที่ผ่านมา ทำให้มีคนกลับมาต่อเอง" : "รอบนี้ยังไม่มีรายการซื้อซ้ำอัตโนมัติ"}</p><div class="month-opening-card__counts"><span>กลับมาต่อ <b>${formatNumber(automaticIds.length)}</b></span><span>รอคุยต่อ <b>${formatNumber(followUpIds.length)}</b></span><span>ขอพัก <b>${formatNumber(pausedIds.length)}</b></span></div><p class="month-opening-card__context">ผลตอนเริ่มเดือน · ถึงรอบ ${formatNumber(report.eligibleCount)} คน · ลูกค้าที่เคยซื้อ ${formatNumber(customerCount)} คน</p><p class="month-opening-card__next">${escapeHtml(nextStep)}</p><div class="month-opening-card__actions">${followUp ? `<button type="button" data-month-follow-up="${escapeHtml(followUp.id)}">ดู ${escapeHtml(followUp.name)} <span aria-hidden="true">→</span></button>` : ""}<button type="button" data-month-people>ดูคนของคุณ</button></div></div>`;
+    const incomeDelta = Number(report?.incomeDelta);
+    const incomeLabel = report?.incomeDelta != null && Number.isFinite(incomeDelta) ? signedBaht(incomeDelta) : "—";
+    const openingLine = report
+      ? automaticIds.length ? `ต่อเอง ${formatNumber(automaticIds.length)} คน · รายได้เพิ่ม ${incomeLabel}` : base.total > 0 ? "ฐานเดิมยังอยู่ · ดูแลกันต่อได้" : "เริ่มสร้างฐานจากคนแรก"
+      : `ลูกค้า ${formatNumber(base.customerCount)} · X-VISOR สายตรง ${formatNumber(base.directMemberCount)}`;
+    const baseCopy = base.total > 0 ? "คนที่เคยซื้อยังอยู่ในฐานของคุณ แม้บางคนจะขอพัก" : "เริ่มจากคนแรก แล้วค่อยดูแลให้กลับมาต่อกัน";
+    const openingHtml = report ? `<div class="month-opening-card__opening"><p><strong>รายการเมื่อเริ่มเดือน ${formatNumber(report.month)}</strong> · ${automaticIds.length ? `รายได้เพิ่ม ${escapeHtml(incomeLabel)}` : "ยังไม่มีรายการต่อเอง"}</p><div class="month-opening-card__counts"><span>ลูกค้าต่อเอง <b>${formatNumber(automaticCustomerIds.length)}</b></span><span>X-VISOR ต่อเอง <b>${formatNumber(automaticMemberIds.length)}</b></span><span>รอคุย <b>${formatNumber(followUpIds.length)}</b></span><span>ขอพัก <b>${formatNumber(pausedIds.length)}</b></span></div></div>` : "";
+    card.innerHTML = `<summary><span><strong>ฐานที่สร้างมา ${formatNumber(base.total)} คน · เดือน ${formatNumber(state.month)}</strong><small>${escapeHtml(openingLine)}</small></span><span class="month-opening-card__chevron" aria-hidden="true">⌄</span></summary><div class="month-opening-card__body"><div class="customer-base-metrics" aria-label="ฐานสะสมของคุณ"><div><span>ลูกค้าสะสม</span><strong>${formatNumber(base.customerCount)}</strong></div><div><span>X-VISOR สายตรง</span><strong>${formatNumber(base.directMemberCount)}</strong></div><div><span>สัมพันธ์ดี</span><strong>${formatNumber(base.loyalCount)}</strong></div></div><p class="month-opening-card__context">${baseCopy}</p>${openingHtml}<p class="month-opening-card__sales">เดือนนี้ซื้อแล้ว <b>${formatNumber(base.purchasedThisMonth)} คน</b> · ยอดส่วนตัว <b>${formatBaht(base.personalSalesBaht)}</b><small>ลูกค้า + ยอดใช้เองของ X-VISOR สายตรง · ${formatNumber(base.personalXV)} XV × ${formatNumber(base.rate * 100)}%</small></p><p class="month-opening-card__next">${escapeHtml(nextStep)}</p><div class="month-opening-card__actions">${followUp ? `<button type="button" data-month-follow-up="${escapeHtml(followUp.id)}">คุยแฟ้ม X กับ ${escapeHtml(followUp.name)} <span aria-hidden="true">→</span></button>` : ""}<button type="button" data-month-people>ดูคนของคุณ</button></div></div>`;
     stack.appendChild(card);
   }
   stack.hidden = !stack.childElementCount;

@@ -5,6 +5,7 @@ import {
   getLiveReadiness, getActiveEncounter, parseSavedState, serializeState, calculateEconomy,
   V1_SAVE_VERSION, V1_SCORE_VERSION,
 } from '../../xvisor/quest/game-data.js';
+import { normalizeNpcIdentities } from '../../xvisor/quest/game-people.js';
 import { ENCOUNTER_COPY } from '../../xvisor/quest/game-narrative-data.js';
 
 const ids = ['people', 'knowledge', 'care', 'leadership'];
@@ -107,7 +108,7 @@ test('LIVE excludes unconsented, mismatched and waiting people and retains genui
   assert.ok(after.liveReport.sales < 3);
   assert.equal(after.liveReport.sales + after.liveReport.declinedIds.length, 3);
   for (const id of ['private', 'no-product', 'waiting', 'unready', 'no-trust', 'person-3', 'person-4']) {
-    assert.deepEqual(after.prospects.find(person => person.id === id), before.prospects.find(person => person.id === id));
+    assert.deepEqual(after.prospects.find(person => person.id === id), normalizeNpcIdentities(before).prospects.find(person => person.id === id));
   }
   for (const id of after.liveReport.declinedIds) {
     const person = after.prospects.find(item => item.id === id);

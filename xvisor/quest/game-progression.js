@@ -161,6 +161,11 @@ function makeTeamMember(customer, state, options = {}) {
     generation,
     name: customer.name,
     appearance: customer.appearance,
+    careOnly: Boolean(customer.careOnly),
+    activePlan: customer.activePlan,
+    recurringPaid: Boolean(customer.recurringPaid || customer.activePlan),
+    loyaltyScore: customer.loyaltyScore,
+    lastReorderMonth: customer.lastReorderMonth,
     active: true,
     certifiedMonth: state.month,
     rank: "xvisor",
@@ -240,7 +245,7 @@ function simulateTeamCycle(state) {
     const personalSalesBaht = selfUse * TUTORIAL_OFFER.price + reorders * TUTORIAL_OFFER.price + newStarts * (TUTORIAL_OFFER.price + XIRCLE_STARTER.price);
     const personalXV = selfUse * TUTORIAL_OFFER.xv + reorders * TUTORIAL_OFFER.xv + newStarts * (TUTORIAL_OFFER.xv + XIRCLE_STARTER.xv);
     const tier = getRetailTier(personalSalesBaht);
-    const commission = Math.round(personalSalesBaht * tier.rate);
+    const commission = Math.round(personalXV * tier.rate);
     const output = {
       actions,
       selfUse,
@@ -481,7 +486,7 @@ function simulateTeamCycle2(state) {
   let teamReferrals = 0;
   let teamCandidates = 0;
   let team = (state.team || []).map((original) => {
-    if (!original.active) return { ...original, monthlyOutput: makeOutput() };
+    if (!original.active) return { ...original, personalXV: 0, personalSalesBaht: 0, commission: 0, monthlyOutput: makeOutput() };
     const specialty = specialtyFor(original);
     const age = Math.max(0, Number(state.month || 0) - Number(original.certifiedMonth || state.month));
     const confidence = Math.min(100, Number(original.confidence || 45) + 2 + Math.floor(leadership / 3));
@@ -511,10 +516,11 @@ function simulateTeamCycle2(state) {
       candidatePipeline -= 3;
       birthPlans.push({ parentId: original.id, parentName: original.name, generation: Number(original.generation || 1) + 1 });
     }
-    const selfUse = 1;
+    const behaviorOnly = original.careOnly || (state.customers || []).some((customer) => customer.careOnly && (customer.personId || customer.id) === (original.personId || original.id));
+    const selfUse = behaviorOnly ? 0 : original.parentId === "player" && Number(original.renewalMonth) === Number(state.month) ? Number(original.renewalStatus === "automatic") : 1;
     const personalXV = selfUse * TUTORIAL_OFFER2.xv + reorders * TUTORIAL_OFFER2.xv + newStarts * (TUTORIAL_OFFER2.xv + XIRCLE_STARTER2.xv);
     const personalSalesBaht = selfUse * TUTORIAL_OFFER2.price + reorders * TUTORIAL_OFFER2.price + newStarts * (TUTORIAL_OFFER2.price + XIRCLE_STARTER2.price);
-    const tier = getRetailTier2(personalXV);
+    const tier = getRetailTier2(personalSalesBaht);
     const commission = Math.round(personalXV * tier.rate);
     const actions = Math.max(1, Math.round(newPeople + newStarts + Math.sqrt(Math.max(0, reorders))));
     const output = {
@@ -560,7 +566,7 @@ function simulateTeamCycle2(state) {
       personalXV,
       commission,
       totalIncome: Number(original.totalIncome || 0) + commission,
-      lastSelfUseMonth: state.month,
+      lastSelfUseMonth: selfUse ? state.month : original.lastSelfUseMonth,
       activity: Number(original.activity || 0) + actions,
       leaderReadiness: Math.min(100, Number(original.leaderReadiness || 0) + candidateGain * 6 + Math.floor(actions / 3)),
       growthMomentum: 0,
@@ -645,6 +651,52 @@ function simulateTeamCycle2(state) {
     }
   };
 }
+// Every member's own subscription is a sale by their recommender, never
+// commission on their own shopping. Move each actual self-use order once.
+function attributeTeamSelfUse(state) {
+  const month = Number(state.month);
+  const team = (state.team || []).map((member) => ({ ...member, monthlyOutput: { ...member.monthlyOutput } }));
+  const byId = new Map(team.map((member) => [member.id, member]));
+  let personalXV = Number(state.economy?.personalXV || 0), productSales = Number(state.economy?.productSales || 0);
+  let teamXV = Number(state.economy?.teamXV || 0), teamProductSales = Number(state.economy?.teamProductSales || 0);
+  let changed = false;
+  for (const member of team) {
+    const output = member.monthlyOutput;
+    if (Number(output.selfUseAttributedMonth) === month || Number(member.lastSelfUseMonth) !== month) continue;
+    const count = Math.min(1, Math.max(0, Number(output.selfUse || 0)));
+    if (!count) continue;
+    changed = true;
+    const xv = count * TUTORIAL_OFFER2.xv, baht = count * TUTORIAL_OFFER2.price;
+    member.personalXV = Math.max(0, Number(member.personalXV || 0) - xv);
+    member.personalSalesBaht = Math.max(0, Number(member.personalSalesBaht || 0) - baht);
+    teamXV -= xv; teamProductSales -= baht;
+    const parent = byId.get(member.parentId);
+    if (!member.careOnly && member.parentId === "player") {
+      const recorded = Number(member.lastReorderMonth) === month || (state.customers || []).some((customer) => !customer.careOnly && (customer.personId || customer.id) === (member.personId || member.id) && Number(customer.lastReorderMonth) === month);
+      if (!recorded) { personalXV += xv; productSales += baht; }
+      member.lastReorderMonth = month;
+      member.recurringPaid = true;
+    } else if (!member.careOnly && parent) {
+      parent.personalXV = Number(parent.personalXV || 0) + xv;
+      parent.personalSalesBaht = Number(parent.personalSalesBaht || 0) + baht;
+      teamXV += xv; teamProductSales += baht;
+    } else if (!member.careOnly) {
+      // Compressed old saves can omit the recommender; retain actual group
+      // volume without paying this member commission on their own purchase.
+      teamXV += xv; teamProductSales += baht;
+    }
+    output.selfUseAttributedMonth = month;
+  }
+  if (!changed) return state;
+  for (const member of team) {
+    const tier = getRetailTier2(member.personalSalesBaht);
+    const commission = Math.round(Number(member.personalXV || 0) * tier.rate);
+    member.totalIncome = Math.max(0, Number(member.totalIncome || 0) - Number(member.commission || 0) + commission);
+    member.commission = commission;
+    member.monthlyOutput = { ...member.monthlyOutput, personalXV: Number(member.personalXV || 0), personalSalesBaht: Number(member.personalSalesBaht || 0), commission };
+  }
+  return { ...state, team, economy: { ...state.economy, personalXV, productSales, teamXV: Math.max(0, teamXV), teamProductSales: Math.max(0, teamProductSales) }, organization: { ...state.organization, tgv: personalXV + Math.max(0, teamXV), currentTGV: personalXV + Math.max(0, teamXV) }, monthStats: { ...state.monthStats, teamOutput: (state.monthStats?.teamOutput || []).map((row) => ({ ...row, ...byId.get(row.memberId)?.monthlyOutput })) } };
+}
 function evaluateXlead2(state) {
   if (state.career?.xleadCertified || ["xlead", "xgen"].includes(state.rank)) return state;
   const progress = getXleadProgress(state);
@@ -673,5 +725,6 @@ export {
   makeTeamMember2 as makeTeamMember,
   makeTeamOutput,
   normalizeSkills,
+  attributeTeamSelfUse,
   simulateTeamCycle2 as simulateTeamCycle
 };

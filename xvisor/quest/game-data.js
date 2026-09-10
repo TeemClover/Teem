@@ -372,7 +372,7 @@ export function getBestNextActions(state, limit = 3) {
     }
   }
   actions = actions.filter((item) => isActionAvailable(clean, item) && (!management || canDispatch(clean, item.event)))
-    .map(item => explainRenewalAction(clean, item, clean.customers?.find(person => person.id === (item.targetId || item.payload?.id || item.id))));
+    .map(item => explainRenewalAction(clean, item, [...clean.customers || [], ...clean.team || []].find(person => person.id === (item.targetId || item.payload?.id || item.id))));
 
   if (pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) {
     actions.unshift({

@@ -36,8 +36,8 @@ test('2.0 maps the complete browser module graph to one release in game and prev
   const html = await source('index.html');
   const preview = await readFile(new URL('./quality-preview.html', import.meta.url), 'utf8');
   assert.match(html, /data-game-version="2\.0"/);
-  assert.match(html, /game\.css\?v=2\.0-immersion1/);
-  assert.match(html, /game-boot\.js\?v=2\.0-immersion1/);
+  assert.match(html, /game\.css\?v=2\.0-growth1/);
+  assert.match(html, /game-boot\.js\?v=2\.0-growth1/);
   assert.doesNotMatch(html, /game-(?:1b|v8|v9|v1|v1a|v1b-core)/);
   assert.equal((html.match(/rel="stylesheet"/g) || []).length, 1);
   assert.equal((html.match(/<script/g) || []).length, 2);
@@ -52,10 +52,10 @@ test('2.0 maps the complete browser module graph to one release in game and prev
   assert.equal(Object.keys(map).length, canonicalModules.length + 1);
   for (const name of [...canonicalModules, 'game-boot.js']) {
     const canonical = `/xvisor/quest/${name}`;
-    assert.equal(map[canonical], `${canonical}?v=2.0-immersion1`, `${name} must bypass earlier release caches`);
+    assert.equal(map[canonical], `${canonical}?v=2.0-growth1`, `${name} must bypass earlier release caches`);
     assert.equal(previewMap[canonical], map[canonical], `preview must use the same ${name}`);
   }
-  assert.equal(previewMap['/tests/xvisor/game-review-fixtures.mjs'], '/tests/xvisor/game-review-fixtures.mjs?v=2.0-immersion1');
+  assert.equal(previewMap['/tests/xvisor/game-review-fixtures.mjs'], '/tests/xvisor/game-review-fixtures.mjs?v=2.0-growth1');
   assert.equal(previewMap['/xvisor/quest/game-review-fixtures.mjs'], undefined);
 });
 

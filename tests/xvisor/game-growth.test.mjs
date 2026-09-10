@@ -116,3 +116,19 @@ test('historical organization reports survive a complete Year 2 and save reload 
   assert.match(html, /ปิดยอดแล้ว/);
   assert.doesNotMatch(html, /NaN|Infinity/);
 });
+
+test('accumulated personal base stays separate from monthly buyers and is never invented for old months', () => {
+  const state = { month: 3, customers: Array.from({ length: 20 }), settlements: {
+    1: settlement(1),
+    2: { ...settlement(2), growth: { recurringBase: 5, customerBase: 4, directMemberBase: 1, loyalCustomers: 3, repeatCustomers: 3 } },
+    3: { ...settlement(3), growth: { recurringBase: 5, customerBase: 3, directMemberBase: 2, loyalCustomers: 4, repeatCustomers: 1 } },
+  } };
+  const history = getMonthlyHistory(state);
+  assert.equal(history[0].recurringBase, null, 'an old month without a count must stay unknown');
+  assert.equal(history[2].recurringBase, 5, 'a promotion and fewer orders do not erase the accumulated base');
+  assert.equal(history[2].directMemberBase, 2);
+  assert.equal(history[2].loyalCustomers, 4);
+  const comparison = getMonthComparison(state, 3);
+  assert.equal(comparison.metrics.find(metric => metric.key === 'recurringBase').delta, 0);
+  assert.equal(comparison.metrics.find(metric => metric.key === 'repeatCustomers').delta, -2);
+});

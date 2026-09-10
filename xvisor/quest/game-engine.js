@@ -9,7 +9,7 @@ import {
   XIRCLE_STARTER,
   getRetailTier
 } from "./game-commercial-config.js";
-import { createPerson } from "./game-people.js";
+import { createPerson, normalizeNpcIdentities } from "./game-people.js";
 import { buildExam, getQuestion } from "./game-exam.js";
 import { LEGACY_SAVE_VERSIONS, SAVE_KEY, SAVE_VERSION } from "./game-save.js";
 import {
@@ -21,7 +21,8 @@ import {
   makeSkills,
   makeTeamMember,
   normalizeSkills,
-  simulateTeamCycle
+  simulateTeamCycle,
+  attributeTeamSelfUse
 } from "./game-progression.js";
 var MAX_ENERGY = 28;
 var ROUTINEX = TUTORIAL_OFFER;
@@ -514,12 +515,12 @@ function calculateEconomy(state) {
   const personalXV = Math.max(0, Number(state.economy?.personalXV || 0));
   const productSales = Math.max(0, Number(state.economy?.productSales || state.economy?.personalSalesBaht || 0));
   const tier2 = getRetailTier(productSales);
-  const activeRetail = Math.round(productSales * tier2.rate);
+  const activeRetail = Math.round(personalXV * tier2.rate);
   const directG1 = (state.team || []).filter((member) => member.active && member.parentId === "player");
   const mentoringBreakdown = directG1.map((member) => {
     const personalSalesBaht = Math.max(0, Number(member.personalSalesBaht || member.monthlyOutput?.personalSalesBaht || 0));
     const retailTier = getRetailTier(personalSalesBaht);
-    const commission = Math.round(personalSalesBaht * retailTier.rate);
+    const commission = Math.round(Number(member.personalXV || member.monthlyOutput?.personalXV || 0) * retailTier.rate);
     return {
       memberId: member.id,
       name: member.name,
@@ -589,7 +590,7 @@ function recordSale(state, kind, customerId) {
     economy,
     monthStats: firstStart ? state.monthStats : {
       ...state.monthStats,
-      reorderedCustomerIds: [...new Set([...(state.monthStats?.reorderedCustomerIds || []), state.customers.find((customer) => customer.id === customerId)?.personId || customerId])],
+      reorderedCustomerIds: [...new Set([...(state.monthStats?.reorderedCustomerIds || []), resolveRenewalPerson(state, customerId)?.personId || customerId])],
       reorderTrackingComplete: state.monthStats?.reorderTrackingComplete ?? Number(state.monthStats?.reorders || 0) === 0
     },
     organization: { ...state.organization, tgv: Number(state.organization?.tgv || 0) + xv }
@@ -663,6 +664,9 @@ function refreshMissions(state) {
     }
   });
   const leadershipTen = getSkillLevel(state.skills, "leadership") >= 10;
+  for (const member of state.team || []) {
+    if (!(state.customers || []).some((customer) => renewalPersonId(customer) === renewalPersonId(member)) && getRenewalFollowupEligibility(state, member).available) missions.push(makeMission("reorder", member.id, `${member.name} · ติดตามคุยแฟ้ม X รอบใหม่`));
+  }
   state.team.filter((member) => member.active && !leadershipTen && (member.autonomy < 68 || member.customers === 0)).forEach((member) => {
     missions.push(makeMission("mentor", member.id, `${member.name} · ${member.customers ? "ทบทวนเคสถัดไป" : "พร้อมฝึกลูกค้าคนแรก"}`));
   });
@@ -730,13 +734,64 @@ function evaluateCustomer(customer) {
   return "ยังไม่ชัด";
 }
 function renewalPersonId(customer) { return customer?.personId || customer?.id; }
+function recurringMember(state, person) {
+  return (state.team || []).find((member) => renewalPersonId(member) === renewalPersonId(person));
+}
 function isPersonalRenewalCustomer(state, customer) {
-  const key = renewalPersonId(customer);
-  return Boolean(key && !customer.careOnly && !(state.team || []).some((member) => renewalPersonId(member) === key));
+  if (!customer || customer.careOnly) return false;
+  const member = recurringMember(state, customer);
+  return Boolean(renewalPersonId(customer) && (!member || member.parentId === "player"));
+}
+function recurringPeople(state) {
+  const people = new Map();
+  const customerRows = [...state.customers || []].sort((a, b) => Number(b.lastReorderMonth || 0) - Number(a.lastReorderMonth || 0) || Number(b.renewalCount || 0) - Number(a.renewalCount || 0) || String(a.id).localeCompare(String(b.id)));
+  for (const customer of customerRows) {
+    if (isPersonalRenewalCustomer(state, customer) && !people.has(renewalPersonId(customer))) people.set(renewalPersonId(customer), customer);
+  }
+  const memberRows = [...state.team || []].sort((a, b) => Number(b.lastSelfUseMonth || 0) - Number(a.lastSelfUseMonth || 0) || String(a.id).localeCompare(String(b.id)));
+  const seenMembers = new Set();
+  for (const member of memberRows) {
+    const key = renewalPersonId(member);
+    if (seenMembers.has(key)) continue;
+    const customer = people.get(key);
+    const behaviorOnly = (state.customers || []).some((item) => renewalPersonId(item) === key && item.careOnly);
+    if (member.parentId !== "player" || member.careOnly || behaviorOnly && !customer) continue;
+    seenMembers.add(key);
+    // Keep a real customer's care history when they become a colleague. A
+    // member-only subscription uses the member's persisted renewal fields.
+    people.set(key, customer ? { ...member, ...customer, recurringMemberId: member.id, recurringPaid: hasPaidRoutine(customer) || hasPaidRoutine(member), lastReorderMonth: Math.max(Number(customer.lastReorderMonth || 0), Number(member.lastReorderMonth || 0)), lastSelfUseMonth: member.lastSelfUseMonth, renewalCount: Math.max(Number(customer.renewalCount || 0), Number(member.renewalCount || 0)) } : { ...member, recurringMemberId: member.id, trust: member.trust ?? member.confidence ?? 65, adherence: member.adherence ?? 75, satisfaction: member.satisfaction ?? 75 });
+  }
+  return [...people.values()].sort((a, b) => String(renewalPersonId(a)).localeCompare(String(renewalPersonId(b))));
+}
+function resolveRenewalPerson(state, target) {
+  const id = typeof target === "object" ? target?.id : target;
+  return recurringPeople(state).find((person) => person.id === id || person.recurringMemberId === id || renewalPersonId(person) === id) || (state.customers || []).find((person) => person.id === id);
+}
+function hasPaidRoutine(person) {
+  return Boolean(!person.careOnly && (person.recurringPaid || person.activePlan || Number(person.lastReorderMonth) > 0 || Number(person.lastSelfUseMonth) > 0));
+}
+function loyaltyFor(person) {
+  return clamp(Number(person.loyaltyScore ?? (satisfactionFor(person) * 0.4 + Number(person.trust ?? 60) * 0.3 + Number(person.adherence ?? 60) * 0.3 + Math.min(4, Number(person.followups || 0)) * 3 + Number(Boolean(person.successCase)) * 4)), 15, 98);
+}
+function updateRenewalPerson(state, person, changes, includeCareOnly = false) {
+  const update = (item) => {
+    if (item.careOnly && !includeCareOnly || renewalPersonId(item) !== renewalPersonId(person)) return item;
+    const patch = typeof changes === "function" ? changes(item) : changes;
+    return { ...item, ...patch };
+  };
+  return { ...state, customers: (state.customers || []).map(update), team: (state.team || []).map(update) };
 }
 function reorderedThisMonth(state, customer) {
   const key = renewalPersonId(customer);
-  return (state.customers || []).some((item) => renewalPersonId(item) === key && Number(item.lastReorderMonth) === Number(state.month)) || (state.monthStats?.reorderedCustomerIds || []).includes(key);
+  return [...state.customers || [], ...state.team || []].some((item) => renewalPersonId(item) === key && (Number(item.lastReorderMonth) === Number(state.month) || Number(item.lastSelfUseMonth) === Number(state.month))) || (state.monthStats?.reorderedCustomerIds || []).includes(key);
+}
+function getRecurringBaseSummary(state) {
+  const people = recurringPeople(state).filter(hasPaidRoutine);
+  const customers = people.filter((person) => !person.recurringMemberId);
+  const direct = people.filter((person) => person.recurringMemberId);
+  const purchased = (list) => list.filter((person) => reorderedThisMonth(state, person)).length;
+  const economy = calculateEconomy6(state);
+  return { total: people.length, customerCount: customers.length, directMemberCount: direct.length, loyalCount: people.filter((person) => loyaltyFor(person) >= 75).length, activeCount: people.filter((person) => person.activePlan !== false && person.renewalStatus !== "paused").length, pausedCount: people.filter((person) => person.activePlan === false || person.renewalStatus === "paused").length, purchasedThisMonth: purchased(people), customerPurchasedThisMonth: purchased(customers), directMemberPurchasedThisMonth: purchased(direct), repeatBuyerCount: people.filter((person) => Number(person.renewalCount || 0) > 0).length, personalSalesBaht: economy.personalSalesBaht, personalXV: economy.personalXV, rate: economy.retailRate };
 }
 function currentRenewal(state, customer) {
   return Number(customer?.renewalMonth) === Number(state?.month) && ["automatic", "pending", "paused"].includes(customer?.renewalStatus);
@@ -757,11 +812,12 @@ function renewalChance(state, customer, followup = false) {
   const satisfaction = satisfactionFor(customer) / 100;
   const care = getSkillLevel(state.skills, "care") / 10;
   const recentCare = Number(customer.lastContactMonth || 0) >= Number(state.month) - 1;
-  const base = 0.12 + trust * 0.25 + adherence * 0.2 + satisfaction * 0.2 + care * 0.08 + Math.min(4, Number(customer.followups || 0)) * 0.015 + Number(recentCare) * 0.05 + Number(Boolean(customer.successCase)) * 0.04;
+  const base = 0.16 + loyaltyFor(customer) / 100 * 0.14 + Math.min(4, Number(customer.renewalStreak || 0)) * 0.015 + trust * 0.25 + adherence * 0.2 + satisfaction * 0.2 + care * 0.08 + Math.min(4, Number(customer.followups || 0)) * 0.015 + Number(recentCare) * 0.05 + Number(Boolean(customer.successCase)) * 0.04;
   const paused = customer.activePlan === false || customer.renewalStatus === "paused";
-  return clamp(base + (followup ? 0.12 : 0) - (paused ? followup ? 0.08 : 0.28 : 0), 0.12, followup ? 0.94 : 0.92);
+  return clamp(base + (followup ? 0.12 : 0) - (paused ? followup ? 0.08 : 0.28 : 0), 0.18, followup ? 0.97 : 0.96);
 }
 function getRenewalFollowupEligibility(state, customer) {
+  customer = resolveRenewalPerson(state, customer);
   const cost = ENERGY_COSTS.reorder;
   const chance = customer ? renewalChance(state, customer, true) : 0;
   const pending = currentRenewal(state, customer) && ["pending", "paused"].includes(customer.renewalStatus);
@@ -769,44 +825,43 @@ function getRenewalFollowupEligibility(state, customer) {
   const reason = !isPersonalRenewalCustomer(state, customer) ? "คนนี้ไม่มีแผนซื้อซ้ำส่วนตัว" : reorderedThisMonth(state, customer) ? "เดือนนี้ต่อแผนแล้ว" : !pending ? "ยังไม่มีนัดติดตามรอบใหม่" : attempted ? "คุยรอบนี้แล้ว ให้เวลาเขาถึงเดือนหน้า" : Number(state.energy || 0) < cost ? "ติดตามใช้พลังงาน 1 แต้ม" : "คุยสิ่งที่ติดขัด แล้วให้เขาเลือกว่าจะต่อแผนหรือพักก่อน";
   return { available: Boolean(pending && !attempted && isPersonalRenewalCustomer(state, customer) && !reorderedThisMonth(state, customer) && state.stage === STAGES.MANAGEMENT && !state.organizationMode && !state.runComplete && !state.campaignComplete && Number(state.energy || 0) >= cost), reason, chance, cost };
 }
-function applyAutomaticCustomerCycles(state) {
-  if (state.organizationMode || Number(state.month) < 2 || Number(state.month) > 12 || Number(state.monthOpeningReport?.month) === Number(state.month)) return state;
+function applyAutomaticCustomerCycles(state, organizationCycle = false, renewalEffect = {}) {
+  if (state.organizationMode && !organizationCycle || Number(state.month) < 2 || Number(state.month) > (organizationCycle ? 24 : 12) || Number(state.monthOpeningReport?.month) === Number(state.month)) return state;
   let next = state;
   let autoReorders = 0;
   let autoReferrals = 0;
   const careLevel = getSkillLevel(state.skills, "care");
   next = { ...next, retentionSeed: state.retentionSeed ?? state.encounters?.seed ?? state.runId ?? state.rngSeed ?? 1 };
-  const seen = new Set();
-  const eligible = state.customers.filter((customer) => {
-    const key = renewalPersonId(customer);
-    const paidPlan = customer.activePlan || ["pending", "paused"].includes(customer.renewalStatus);
-    if (!isPersonalRenewalCustomer(state, customer) || !paidPlan || reorderedThisMonth(state, customer) || currentRenewal(state, customer) || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  }).sort((a, b) => String(renewalPersonId(a)).localeCompare(String(renewalPersonId(b))));
-  const automaticCustomerIds = [], followUpCustomerIds = [], pausedCustomerIds = [], transactions = [];
+  const eligible = recurringPeople(state).filter((customer) => {
+    const paidPlan = hasPaidRoutine(customer) || customer.recurringMemberId && customer.active !== false;
+    return paidPlan && !reorderedThisMonth(state, customer) && !currentRenewal(state, customer);
+  });
+  const automaticCustomerIds = [], automaticDirectMemberIds = [], followUpCustomerIds = [], pausedCustomerIds = [], transactions = [];
   eligible.forEach((customer) => {
-    const chance = renewalChance(next, customer);
+    const eventBonus = Number(renewalEffect.retention || 0) + (customer.activePlan === false ? Number(renewalEffect.comeback || 0) * 0.35 : 0);
+    const chance = clamp(renewalChance(next, customer) + eventBonus, 0.18, 0.98);
     const roll = renewalRoll(next, customer, "opening");
     const status = roll < chance ? "automatic" : roll < chance + (1 - chance) * 0.62 ? "pending" : "paused";
     if (status === "automatic") {
       next = recordSale(next, "reorder", customer.id);
-      transactions.push(next.economy.lastTransaction);
-      automaticCustomerIds.push(customer.id);
+      transactions.push({ ...next.economy.lastTransaction, ...(customer.recurringMemberId ? { memberId: customer.recurringMemberId } : {}) });
+      if (customer.recurringMemberId) automaticDirectMemberIds.push(customer.recurringMemberId);
+      else automaticCustomerIds.push(customer.id);
       autoReorders += 1;
-    } else if (status === "pending") followUpCustomerIds.push(customer.id);
-    else pausedCustomerIds.push(customer.id);
-    next = {
-      ...next,
-      customers: next.customers.map((item) => item.careOnly || renewalPersonId(item) !== renewalPersonId(customer) ? item : ({
-        ...item,
-        renewalMonth: Number(state.month), renewalStatus: status, renewalSource: "automatic",
-        activePlan: status !== "paused", selfDirected: status === "automatic",
-        customerState: status === "automatic" ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
-        ...(status === "automatic" ? { lastReorderMonth: Number(state.month) } : {}),
-        status: status === "automatic" ? "✅ ซื้อ RoutineX รอบใหม่เอง" : status === "pending" ? "ยังลังเลรอบใหม่ · นัดคุยสิ่งที่ติดขัด" : "พักแผนเดือนนี้ · ยังทักกลับไปดูแลได้"
-      }))
-    };
+    } else if (status === "pending") followUpCustomerIds.push(customer.recurringMemberId || customer.id);
+    else pausedCustomerIds.push(customer.recurringMemberId || customer.id);
+    next = updateRenewalPerson(next, customer, {
+      renewalMonth: Number(state.month), renewalStatus: status, renewalSource: "automatic",
+      recurringPaid: hasPaidRoutine(customer) || status === "automatic",
+      recurringSinceMonth: customer.recurringSinceMonth || Number(customer.lastReorderMonth || customer.lastSelfUseMonth || (status === "automatic" ? state.month : 0)) || null,
+      loyaltyScore: clamp(loyaltyFor(customer) + (status === "automatic" ? 3 : status === "pending" ? -1 : -4), 15, 98),
+      renewalStreak: status === "automatic" ? Number(customer.renewalStreak || 0) + 1 : 0,
+      renewalCount: Number(customer.renewalCount || 0) + Number(status === "automatic"),
+      activePlan: status !== "paused" && (hasPaidRoutine(customer) || status === "automatic"), selfDirected: status === "automatic",
+      customerState: status === "automatic" ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
+      ...(status === "automatic" ? { lastReorderMonth: Number(state.month), ...(customer.recurringMemberId ? { lastSelfUseMonth: Number(state.month) } : {}) } : {}),
+      status: status === "automatic" ? "✅ ซื้อ RoutineX รอบใหม่เอง" : status === "pending" ? "ยังลังเลรอบใหม่ · นัดคุยสิ่งที่ติดขัด" : "พักแผนเดือนนี้ · ยังทักกลับไปดูแลได้"
+    });
   });
   if (careLevel >= 10) {
     const advocates = next.customers.filter((customer) => customer.successCase && !customer.referralAsked).slice(0, 2);
@@ -826,7 +881,7 @@ function applyAutomaticCustomerCycles(state) {
   }
   return refreshMissions({
     ...next,
-    monthOpeningReport: { month: Number(state.month), eligibleCount: eligible.length, automaticCustomerIds, followUpCustomerIds, pausedCustomerIds, actionableCustomerIds: [...followUpCustomerIds, ...pausedCustomerIds], salesBaht: autoReorders * TUTORIAL_OFFER.price, personalXV: autoReorders * TUTORIAL_OFFER.xv, transactions, incomeDelta: 0, accountingFinalized: false },
+    monthOpeningReport: { month: Number(state.month), eligibleCount: eligible.length, automaticCustomerIds, automaticDirectMemberIds, automaticCount: autoReorders, directMemberSalesBaht: automaticDirectMemberIds.length * TUTORIAL_OFFER.price, directMemberXV: automaticDirectMemberIds.length * TUTORIAL_OFFER.xv, followUpCustomerIds, pausedCustomerIds, actionableCustomerIds: [...followUpCustomerIds, ...pausedCustomerIds], salesBaht: autoReorders * TUTORIAL_OFFER.price, personalXV: autoReorders * TUTORIAL_OFFER.xv, transactions, incomeDelta: 0, accountingFinalized: false },
     monthStats: {
       ...next.monthStats,
       reorders: Number(next.monthStats.reorders || 0) + autoReorders,
@@ -1368,7 +1423,7 @@ function reduceGame(currentState, event, payload = {}) {
       return completeProspectSale(state, person, event);
     }
     case EVENTS.CARE_CUSTOMER: {
-      const customer = state.customers.find((item) => item.id === payload.id);
+      const customer = resolveRenewalPerson(state, payload.id);
       const renewalCare = getRenewalFollowupEligibility(state, customer).available;
       if (!customer || !renewalCare && (currentRenewal(state, customer) || customer.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customer.customerState) || customer.day >= 28)) return state;
       state = spendEnergy(state, ENERGY_COSTS.followup, "care");
@@ -1379,18 +1434,17 @@ function reduceGame(currentState, event, payload = {}) {
       let nextDay = customer.day;
       for (let index = 0; index < steps; index += 1) nextDay = checkpoints.find((day) => day > nextDay) || 28;
       let next = {
-        ...state,
-        customers: updatePerson(state.customers, customer.id, (item) => ({
+        ...updateRenewalPerson(state, customer, (item) => ({
           ...item,
           day: nextDay,
           followups: Number(item.followups || 0) + (careLevel >= 10 ? 2 : 1),
-          adherence: Math.min(96, Number(item.adherence || 0) + (careLevel >= 10 ? 60 : 7 + careLevel * 2)),
-          trust: Math.min(100, Number(item.trust || 0) + 5 + Math.floor(careLevel / 2)),
+          adherence: Math.min(96, Number(item.adherence ?? customer.adherence ?? 0) + (careLevel >= 10 ? 60 : 7 + careLevel * 2)),
+          trust: Math.min(100, Number(item.trust ?? customer.trust ?? 0) + 5 + Math.floor(careLevel / 2)),
           selfDirected: false,
           customerState: nextDay >= 28 ? CUSTOMER_STATES.NEEDS_HELP : CUSTOMER_STATES.NEEDS_HELP,
           status: renewalCare ? "คุยสิ่งที่ติดขัดแล้ว · พร้อมนัดคุยแฟ้ม X รอบใหม่" : nextDay >= 28 ? "ถึงเวลาวัดซ้ำ" : careLevel >= 5 ? "ทำได้ดี · Next Action ชัด" : `Day ${nextDay} · ทำต่อ`,
           lastContactMonth: state.month
-        })),
+        }), true),
         monthStats: { ...state.monthStats, customersCared: state.monthStats.customersCared + 1 },
         lastEvent: event,
         lastMessage: careLevel >= 10 ? `ดูแล Lv.10 ทำให้ ${customer.name} ไปถึงจุด Review ในครั้งเดียว` : `ติดตาม ${customer.name} แล้ว และเลือก Next Action ใหม่ร่วมกัน`,
@@ -1433,7 +1487,7 @@ function reduceGame(currentState, event, payload = {}) {
       return completeMission(refreshMissions(next), "remeasure", customer.id);
     }
     case EVENTS.REORDER_CUSTOMER: {
-      const customer = state.customers.find((item) => item.id === payload.id);
+      const customer = resolveRenewalPerson(state, payload.id);
       if (!isPersonalRenewalCustomer(state, customer) || reorderedThisMonth(state, customer)) return state;
       if (currentRenewal(state, customer)) {
         const eligibility = getRenewalFollowupEligibility(state, customer);
@@ -1443,12 +1497,12 @@ function reduceGame(currentState, event, payload = {}) {
         const returned = renewalRoll(state, customer, "followup") < eligibility.chance;
         if (returned) next = recordSale(next, "reorder", customer.id);
         next = {
-          ...next,
-          customers: next.customers.map((item) => item.careOnly || renewalPersonId(item) !== renewalPersonId(customer) ? item : ({
+          ...updateRenewalPerson(next, customer, (item) => ({
             ...item, lastRenewalFollowUpMonth: Number(state.month), lastContactMonth: Number(state.month),
+            recurringPaid: hasPaidRoutine(customer) || returned, loyaltyScore: clamp(loyaltyFor(customer) + (returned ? 4 : 1), 15, 98), renewalCount: Number(customer.renewalCount || 0) + Number(returned),
             renewalStatus: returned ? "automatic" : "paused", renewalSource: "followup", activePlan: returned, selfDirected: returned,
             customerState: returned ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
-            ...(returned ? { lastReorderMonth: Number(state.month) } : {}),
+            ...(returned ? { lastReorderMonth: Number(state.month), ...(customer.recurringMemberId ? { lastSelfUseMonth: Number(state.month), monthlyOutput: { ...item.monthlyOutput, selfUse: 1, selfUseAttributedMonth: Number(state.month) } } : {}) } : {}),
             status: returned ? "กลับมาต่อ RoutineX แล้ว · ดูแลกันต่อ" : "คุยแล้วขอพักก่อน · นัดกลับมาเดือนหน้า"
           })),
           monthStats: { ...next.monthStats, reorders: Number(next.monthStats.reorders || 0) + Number(returned) },
@@ -1950,7 +2004,7 @@ function reduceGame(currentState, event, payload = {}) {
         lastMessage: `เดือน ${nextMonth} เริ่มแล้ว เลือกงานที่สร้างคุณค่ามากที่สุดก่อน`
       };
       next = applyAutomaticCustomerCycles(next);
-      next = simulateTeamCycle(next);
+      next = attributeTeamSelfUse(simulateTeamCycle(next));
       next = {
         ...next,
         milestones: {
@@ -2167,16 +2221,20 @@ function originFor(person, state, fallback = "unknown") {
   };
 }
 function satisfactionFor(customer) {
-  const current = Number(customer?.satisfaction);
-  if (Number.isFinite(current)) return Math.max(0, Math.min(100, Math.round(current)));
-  const trust = Math.max(0, Math.min(100, Number(customer?.trust || 50)));
-  const adherence = Math.max(0, Math.min(100, Number(customer?.adherence || (customer?.successCase ? 78 : 55))));
-  const care = Math.min(20, Number(customer?.followups || 0) * 6 + Number(customer?.measuredAgain) * 5 + Number(customer?.successCase) * 6);
+  const metric = (value, fallback) => value == null || value === "" || !Number.isFinite(Number(value)) ? fallback : Number(value);
+  // JSON turns NaN into null. Missing observations must derive the same value
+  // before saving and after loading; neither is evidence of zero satisfaction.
+  const current = metric(customer?.satisfaction, null);
+  if (current !== null) return Math.max(0, Math.min(100, Math.round(current)));
+  const trust = Math.max(0, Math.min(100, metric(customer?.trust, 50)));
+  const adherence = Math.max(0, Math.min(100, metric(customer?.adherence, customer?.successCase ? 78 : 55)));
+  const care = Math.min(20, Math.max(0, metric(customer?.followups, 0)) * 6 + Number(Boolean(customer?.measuredAgain)) * 5 + Number(Boolean(customer?.successCase)) * 6);
   return Math.max(20, Math.min(98, Math.round(trust * 0.45 + adherence * 0.45 + care)));
 }
+
 function normalizeTeamMember(member, state) {
   const personalXV = Math.max(0, Number(member?.personalXV || member?.monthlyOutput?.personalXV || 0));
-  const tier2 = getRetailTier2(personalXV);
+  const tier2 = getRetailTier2(Number(member?.personalSalesBaht || member?.monthlyOutput?.personalSalesBaht || 0));
   const commission = Math.round(personalXV * tier2.rate);
   return {
     ...member,
@@ -2206,12 +2264,12 @@ function uniqueOrganizationPeople(state) {
 function calculateEconomy2(state) {
   const personalXV = Math.max(0, Number(state.economy?.personalXV || 0));
   const productSales = Math.max(0, Number(state.economy?.productSales || 0));
-  const tier2 = getRetailTier2(personalXV);
+  const tier2 = getRetailTier2(productSales);
   const activeRetail = Math.round(personalXV * tier2.rate);
   const directG1 = (state.team || []).filter((member) => member.active && member.parentId === "player");
   const mentoringBreakdown = directG1.map((member) => {
     const memberXV = Math.max(0, Number(member.personalXV || member.monthlyOutput?.personalXV || 0));
-    const retailTier = getRetailTier2(memberXV);
+    const retailTier = getRetailTier2(Number(member.personalSalesBaht || member.monthlyOutput?.personalSalesBaht || 0));
     const commission = Math.round(memberXV * retailTier.rate);
     return {
       memberId: member.id,
@@ -2885,6 +2943,7 @@ function getPersonContextAction(state, target, kind = null) {
   target = recoverRoutineConsent(target);
   const actualKind = kind || inferPersonKind(state, target);
   if (actualKind === "team") {
+    if (getRenewalFollowupEligibility(state, target).available) return buildPersonAction({ event: EVENTS3.REORDER_CUSTOMER, target, state });
     if (target.active && Number(target.autonomy || 0) < 85) return buildPersonAction({ event: EVENTS3.MENTOR_TEAM_MEMBER, target, state });
     return null;
   }
@@ -3622,39 +3681,10 @@ function teamStatus(member) {
   return member.active === false ? "paused" : "active";
 }
 function simulatePersonalCustomerCycle(state, month, eventEffect) {
-  const metrics = { repeat: 0, paused: 0, stopped: 0, comeback: 0 };
-  const seen = new Set();
-  const customers = (state.customers || []).map((customer, index) => {
-    // A behavior-only plan never becomes a paid subscription through simulation.
-    if (!isPersonalRenewalCustomer(state, customer) || seen.has(renewalPersonId(customer))) return customer;
-    seen.add(renewalPersonId(customer));
-    const key = customer.personId || customer.id || `personal-${index}`;
-    const status = customer.organizationCustomerState || (customer.activePlan === false ? "paused" : "active");
-    const roll = deterministicRoll2(state, key, 300 + month + index);
-    if (status === "active") {
-      const care = clamp(Number(customer.satisfaction || customer.adherence || 70) / 100, 0.35, 1);
-      const stopChance = clamp(0.035 - care * 0.014 - eventEffect.retention * 0.35, 8e-3, 0.05);
-      const pauseChance = clamp(0.105 - care * 0.045 - eventEffect.retention, 0.025, 0.14);
-      if (roll < stopChance) {
-        metrics.stopped += 1;
-        return { ...customer, activePlan: false, organizationCustomerState: "stopped", status: "หยุด Routine ใน Year 2", stoppedMonth: month };
-      }
-      if (roll < stopChance + pauseChance) {
-        metrics.paused += 1;
-        return { ...customer, activePlan: false, organizationCustomerState: "paused", status: "พัก Routine ชั่วคราว", pausedMonth: month };
-      }
-      metrics.repeat += 1;
-      return { ...customer, activePlan: true, organizationCustomerState: "active", lastReorderMonth: month, status: "ใช้ Routine ต่อเนื่อง" };
-    }
-    const comebackChance = status === "paused" ? 0.14 + eventEffect.comeback : 0.025 + eventEffect.comeback * 0.35;
-    if (roll < comebackChance) {
-      metrics.comeback += 1;
-      metrics.repeat += 1;
-      return { ...customer, activePlan: true, organizationCustomerState: "active", lastReorderMonth: month, status: "กลับมาใช้ Routine อีกครั้ง", comebackMonth: month };
-    }
-    return { ...customer, activePlan: false, organizationCustomerState: status };
-  });
-  return { customers, metrics };
+  const prepared = applyAutomaticCustomerCycles({ ...state, month, monthStats: makeMonthStats(), economy: { ...state.economy, sets: 0, personalXV: 0, productSales: 0, teamXV: 0, teamProductSales: 0, lastTransaction: null } }, true, eventEffect);
+  const report = prepared.monthOpeningReport;
+  const repeat = Number(report?.month) === Number(month) ? Number(report.automaticCount || 0) : 0;
+  return { state: prepared, customers: prepared.customers, metrics: { repeat, paused: report?.pausedCustomerIds.length || 0, stopped: 0, comeback: recurringPeople(prepared).filter((person) => Number(person.lastReorderMonth) === month && recurringPeople(state).some((old) => renewalPersonId(old) === renewalPersonId(person) && old.activePlan === false)).length } };
 }
 function organizationEventEffect(state, month) {
   const xcircle = ORGANIZATION_XIRCLE_MONTHS.includes(Number(month));
@@ -3722,6 +3752,7 @@ function simulateOrganizationOperations(state, month) {
     401
   );
   const personal = simulatePersonalCustomerCycle(state, month, effect);
+  state = personal.state;
   const metrics = {
     newPeople: openHousePeople,
     newCustomers: 0,
@@ -3811,11 +3842,12 @@ function simulateOrganizationOperations(state, month) {
     const referrals = stochasticCount(state, `${key}-referral`, (repeat + newStarts) * (0.035 + careBonus * 0.35 + effect.referral), 700 + month);
     const candidateExpected = referrals * 0.45 + newStarts * 0.16 + builderBonus + openHouseShare * 0.07 + (effect.xcircle ? 0.18 : 0);
     const candidateGain = stochasticCount(state, `${key}-candidate`, candidateExpected, 720 + month);
-    const selfUse = status === "slow" ? Number(deterministicRoll2(state, key, 740 + month) > 0.18) : 1;
+    const behaviorOnly = original.careOnly || (state.customers || []).some((customer) => customer.careOnly && renewalPersonId(customer) === renewalPersonId(original));
+    const selfUse = behaviorOnly ? 0 : original.parentId === "player" ? Number(original.renewalMonth === month && original.renewalStatus === "automatic") : status === "slow" ? Number(deterministicRoll2(state, key, 740 + month) > 0.18) : 1;
     const personalXV2 = selfUse * ROUTINEX_XV + repeat * ROUTINEX_XV + newStarts * FULL_START_XV;
     const personalSalesBaht2 = selfUse * ROUTINEX_BAHT + repeat * ROUTINEX_BAHT + newStarts * FULL_START_BAHT;
     const tier2 = getRetailTier3(personalSalesBaht2);
-    const commission = Math.round(personalSalesBaht2 * Number(tier2.rate || 0));
+    const commission = Math.round(personalXV2 * Number(tier2.rate || 0));
     const actions = Math.max(1, Math.round((newStarts + referrals + Math.sqrt(Math.max(0, repeat))) * activityFactor));
     metrics.newCustomers += newStarts;
     metrics.repeatCustomers += repeat;
@@ -3880,7 +3912,7 @@ function simulateOrganizationOperations(state, month) {
   });
   team = team.map((member) => ({ ...member, downstreamXvisors: directChildren.get(member.id) || 0 }));
   const activeAfter = team.filter((member) => member.active !== false).length;
-  const activeCustomers = personal.customers.filter((customer) => customer.activePlan !== false).length + team.filter((member) => member.active !== false).reduce((sum, member) => sum + Math.max(0, Number(member.customers || 0)), 0);
+  const activeCustomers = recurringPeople({ ...state, customers: personal.customers, team }).filter((customer) => hasPaidRoutine(customer) && customer.activePlan !== false).length + team.filter((member) => member.active !== false).reduce((sum, member) => sum + Math.max(0, Number(member.customers || 0)), 0);
   const cultureScore = clamp(
     priorCulture + 1.5 + leadership * 0.15 + (effect.xcircle ? 8 : 0) - metrics.pausedMembers * 0.8 - metrics.quitMembers * 1.8,
     38,
@@ -4070,7 +4102,7 @@ function runOrganizationMonth(state) {
   }
   const result = simulateOrganizationOperations(state, month);
   let simulated = {
-    ...result.state,
+    ...attributeTeamSelfUse(result.state),
     organizationMode: true,
     runComplete: false,
     phase: "organization",
@@ -4438,7 +4470,7 @@ var FULL_START_XV2 = 9495, FULL_START_BAHT2 = 12480, ROUTINEX_XV2 = 7e3, ROUTINE
 var n = (v) => Math.max(0, Number(v || 0));
 function tier(sales) {
   sales = n(sales);
-  return sales >= 1e5 ? { id: "25", label: "25%", rate: 0.25 } : sales >= 4e4 ? { id: "23", label: "23%", rate: 0.23 } : { id: "20", label: "20%", rate: 0.2 };
+  return sales > 1e5 ? { id: "25", label: "25%", rate: 0.25 } : sales > 4e4 ? { id: "23", label: "23%", rate: 0.23 } : { id: "20", label: "20%", rate: 0.2 };
 }
 var getRetailTierBySalesBaht = tier;
 function getCurrentTGV2(s) {
@@ -4533,6 +4565,10 @@ function recalcYear2(before, after) {
     const all = Object.values(next.settlements || {}).filter((r) => Number(r.month) >= 1 && Number(r.month) <= 24);
     next = { ...next, twoYearSummary: { ...after.twoYearSummary, month24TGV: tgv, year2EndTGV: tgv, month24Income: total, total24Income: received, totalIncome: received, bestTGV: Math.max(0, ...all.map((r) => n(r.currentTGV || r.tgv))), bestMonthIncome: Math.max(0, ...all.map((r) => n(r.totalIncome || r.total))), year2Path: before.year2Path, trips: before.year2Path === "xgen" ? (next.organization?.trips || []).filter((t2) => TRAVEL_MONTHS.includes(Number(t2.month))) : [] } };
   }
+  if (Number(next.monthOpeningReport?.month) === m && !next.monthOpeningReport.accountingFinalized) {
+    const observed = finalizeMonthOpeningReport({ ...next, month: m, economy: { ...next.economy, personalXV, productSales: sales, teamXV }, organization: { ...next.organization, tgv, currentTGV: tgv } });
+    next = { ...next, monthOpeningReport: observed.monthOpeningReport };
+  }
   return year2(next);
 }
 function correctFast(before, after, event) {
@@ -4562,12 +4598,12 @@ function finalizeMonthOpeningReport(state) {
   if (!report || report.accountingFinalized || Number(report.month) !== Number(state.month)) return state;
   // Price/XV remain the commercial values. Attribute only the personal batch,
   // with the final team snapshot held constant, never the previous month's pay.
-  let cursor = { ...state, economy: { ...state.economy, sets: Math.max(0, n(state.economy.sets) - report.automaticCustomerIds.length), personalXV: Math.max(0, n(state.economy.personalXV) - n(report.personalXV)), productSales: Math.max(0, n(state.economy.productSales) - n(report.salesBaht)), lastTransaction: null } };
+  let cursor = { ...state, economy: { ...state.economy, sets: Math.max(0, n(state.economy.sets) - report.transactions.length), personalXV: Math.max(0, n(state.economy.personalXV) - n(report.personalXV)), productSales: Math.max(0, n(state.economy.productSales) - n(report.salesBaht)), lastTransaction: null } };
   const before = receiptEconomy(cursor);
   const transactions = report.transactions.map((transaction) => {
     const next = { ...cursor, economy: { ...cursor.economy, sets: cursor.economy.sets + 1, personalXV: cursor.economy.personalXV + transaction.xv, productSales: cursor.economy.productSales + transaction.price, lastTransaction: transaction } };
     cursor = patchTx(cursor, next);
-    return { ...cursor.economy.lastTransaction, customerName: state.customers.find((customer) => customer.id === transaction.customerId)?.name || "" };
+    return { ...cursor.economy.lastTransaction, customerName: resolveRenewalPerson(state, transaction.customerId)?.name || "" };
   });
   const after = receiptEconomy(state);
   const income = Object.fromEntries(["channel1", "channel2", "channel3", "channel4"].map((key) => [key, after[key] - before[key]]));
@@ -4869,6 +4905,7 @@ function captureMonthlyGrowth(before, after) {
   const entry = after.settlements?.[String(month)];
   if (month < 1 || month > 24 || !entry?.settled || before.settlements?.[String(month)]) return after;
   let growth;
+  const recurring = getRecurringBaseSummary(before.organizationMode ? after : before);
   let organizationReports = after.organizationReports;
   if (before.organizationMode) {
     const report = after.lastOrganizationReport;
@@ -4894,15 +4931,16 @@ function captureMonthlyGrowth(before, after) {
     const team = (before.team || []).filter((member) => member.active !== false && (!member.parentId || member.parentId === "player"));
     const repeatTransactions = Number(before.monthStats?.reorders || 0);
     growth = {
-      activeCustomers: new Set(customers.map((customer) => customer.personId || customer.id)).size,
+      activeCustomers: recurring.activeCount,
       repeatCustomers: repeatTransactions === 0 ? 0 : before.monthStats?.reorderTrackingComplete ? new Set(before.monthStats.reorderedCustomerIds || []).size : null,
       repeatTransactions,
       teamCount: new Set(team.map((member) => member.personId || member.id)).size,
       xleadCount: new Set(team.filter((member) => member.rank === "xlead").map((member) => member.personId || member.id)).size,
-      customerScope: "personal",
+      customerScope: "personal-direct",
       teamScope: "direct"
     };
   }
+  growth = { ...growth, customerBase: recurring.customerCount, directMemberBase: recurring.directMemberCount, recurringBase: recurring.total, loyalCustomers: recurring.loyalCount };
   return {
     ...after,
     ...(organizationReports ? { organizationReports } : {}),
@@ -4910,7 +4948,7 @@ function captureMonthlyGrowth(before, after) {
   };
 }
 function serializeState6(state) {
-  return serializeState5(sanitizeXgen(state));
+  return serializeState5(sanitizeXgen(normalizeNpcIdentities(state)));
 }
 function parseSavedState6(raw) {
   return sanitizeXgen(parseSavedState5(raw));
@@ -5065,7 +5103,7 @@ function canDispatch7(state, event) {
   if (event === EVENTS.RESOLVE_ENCOUNTER) return Boolean(getActiveEncounter(state));
   return canDispatch6(state, event);
 }
-function reduceGame7(currentState, event, payload = {}) {
+function reduceGameWithRenewals(currentState, event, payload = {}) {
   const state = initEncounters(currentState);
   if (state.stage === STAGES.LIVE_RUNNING) return canDispatch7(state, event) ? advanceEncounters(state, completeLive(state), event) : currentState;
   if (event === EVENTS.RUN_LIVE) {
@@ -5079,13 +5117,15 @@ function reduceGame7(currentState, event, payload = {}) {
   if (event === EVENTS.CREATE_LEAD && ["content", "creator"].includes(payload.source) && after.prospects.length > state.prospects.length) {
     after = { ...after, liveProgress: { ...after.liveProgress, contentSessions: Number(state.liveProgress?.contentSessions || 0) + 1 } };
   }
-  if (event === EVENTS.START_NEXT_MONTH && Number(after.month) === Number(state.month) + 1) after = finalizeMonthOpeningReport(after);
+  if (Number(after.monthOpeningReport?.month) === Number(after.month) && !after.monthOpeningReport.accountingFinalized && (event === EVENTS.START_NEXT_MONTH || after.organizationMode && event === EVENTS.END_MONTH)) after = finalizeMonthOpeningReport(after);
   return advanceEncounters(state, after, event);
 }
-function makeInitialState7(options = {}) { return initEncounters(makeInitialState6(options), options.seed); }
-function makeNewGamePlusState6(options = {}) { return initEncounters(makeNewGamePlusState5(options), options.seed); }
+function reduceGame7(state, event, payload = {}) { return normalizeNpcIdentities(reduceGameWithRenewals(state, event, payload)); }
+function makeInitialState7(options = {}) { return normalizeNpcIdentities(initEncounters(makeInitialState6(options), options.seed)); }
+function makeNewGamePlusState6(options = {}) { return normalizeNpcIdentities(initEncounters(makeNewGamePlusState5(options), options.seed)); }
 function parseSavedState7(raw) {
-  const state = initEncounters(parseSavedState6(raw));
+  const parsed = initEncounters(parseSavedState6(raw));
+  const state = normalizeNpcIdentities(parsed && !parsed.organizationMode && !parsed.settlements?.[String(parsed.month)] ? attributeTeamSelfUse(parsed) : parsed);
   if (!state) return state;
   const staleMessage = state.lastEvent === "ROUTINE_CONSENT_REQUIRED" || String(state.lastMessage || "").includes("ยังไม่ได้อนุญาตให้ดูข้อมูล · ขออนุญาตก่อน แล้วคุยแผนเดิมต่อได้");
   return { ...state, prospects: (state.prospects || []).map(recoverRoutineConsent), ...(staleMessage ? { lastEvent: "ROUTINE_RESUMED", lastMessage: "คุยแฟ้ม X จากแผนเดิมต่อได้เลย ไม่ต้องเก็บข้อมูลหรือเลือกแผนซ้ำ" } : {}) };
@@ -5137,6 +5177,8 @@ export {
   getPlanQuality,
   getRoutineChoices,
   getRenewalFollowupEligibility,
+  getRecurringBaseSummary,
+  resolveRenewalPerson,
   isPersonalRenewalCustomer,
   reorderedThisMonth,
   getLiveReadiness,

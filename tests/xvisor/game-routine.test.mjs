@@ -5,6 +5,7 @@ import {
   makeInitialState, reduceGame, getRoutineChoices, getPersonContextAction,
   parseSavedState, serializeState,
 } from '../../xvisor/quest/game-data.js';
+import { normalizeNpcIdentities } from '../../xvisor/quest/game-people.js';
 import { isActionAvailable } from '../../xvisor/quest/game-actions.js';
 import { XIRCLE_STARTER, TUTORIAL_OFFER } from '../../xvisor/quest/game-commercial-config.js';
 
@@ -167,7 +168,7 @@ test('full-set eligibility requires context, fit, trust and readiness even with 
     assert.equal(getRoutineChoices(before).find(item => item.id === 'all').available, false);
     const after = reduceGame(before, EVENTS.CHOOSE_MANAGEMENT_ROUTINE, { planId: 'all' });
     assert.equal(after.energy, before.energy);
-    assert.deepEqual(after.prospects, before.prospects);
+    assert.deepEqual(after.prospects, normalizeNpcIdentities(before).prospects);
     assert.deepEqual(after.skills, before.skills);
     assertNoSale(before, after);
   }

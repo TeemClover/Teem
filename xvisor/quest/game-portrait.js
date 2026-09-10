@@ -1,14 +1,14 @@
 import { createSceneArt, MENTOR_PALETTES } from "./game-art.js";
 import { drawMentorPortrait } from "./game-mentor-art.js";
+import { getPersonAppearance } from "./game-people.js";
 
 const mentorPalette = Object.freeze({ skin: "#dca57e", hair: "#493a3a", shirt: "#d5ac6c", accent: "#fff0b9", hairStyle: "long" });
-const customerPalette = Object.freeze({ skin: "#dfaa83", hair: "#263844", shirt: "#ef8078", accent: "#fff2d4" });
-const teacherPalette = Object.freeze({ skin: "#c98f6c", hair: "#203541", shirt: "#5f8fd3", accent: "#f6ce5a" });
+const teacherPalette = Object.freeze({ skin: "#c98f6c", hair: "#203541", shirt: "#5f8fd3", accent: "#f6ce5a", hairStyle: "short", clothing: "shirt", glasses: "round" });
 
 /** Guides stay in dialogue portraits; only customers/proctors inhabit the scene. */
 export function paintStoryPortrait(canvas, beat, person) {
   if (!canvas) return;
-  const palette = MENTOR_PALETTES[beat?.portrait] || (beat?.portrait === "customer" ? person?.appearance || customerPalette
+  const palette = MENTOR_PALETTES[beat?.portrait] || (beat?.portrait === "customer" ? getPersonAppearance(person)
     : beat?.portrait === "teacher" ? teacherPalette : mentorPalette);
   const key = JSON.stringify([beat?.portrait, palette]);
   if (canvas.dataset.portraitKey === key) return;

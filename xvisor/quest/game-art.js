@@ -4,6 +4,32 @@ export const MENTOR_PALETTES = Object.freeze({
   ako: Object.freeze({ characterId: "ako", skin: "#f0b88e", hair: "#272020", shirt: "#29272b", accent: "#f4d8a9", hairStyle: "ponytail", dress: true }),
 });
 
+const HAIR_STYLES = ["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz"];
+const CLOTHING_STYLES = ["tee", "polo", "shirt", "cardigan", "hoodie", "dress"];
+/** Explicit traits are shared by the world and portrait crop. Legacy palettes
+ * get independent, stable defaults instead of one colour hash controlling all
+ * their hair, clothing and glasses together. This never modifies a person. */
+export function getCharacterTraits(palette = {}, player = false) {
+  const key = palette.identityKey || [palette.skin, palette.hair, palette.shirt, palette.accent].join(":");
+  const pick = (channel, values) => {
+    let hash = 2166136261;
+    for (const char of `${key}:${channel}`) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619) >>> 0;
+    hash ^= hash >>> 16;
+    return values[(hash >>> 0) % values.length];
+  };
+  const glasses = palette.glasses === true ? "square" : ["round", "square"].includes(palette.glasses) ? palette.glasses
+    : palette.glasses === false || palette.glasses === "none" || player ? false : pick("glasses", [false, false, false, "round", "square"]);
+  return {
+    hairStyle: HAIR_STYLES.includes(palette.hairStyle) ? palette.hairStyle : player ? "short" : pick("hair", HAIR_STYLES),
+    clothing: palette.dress ? "dress" : CLOTHING_STYLES.includes(palette.clothing) ? palette.clothing : player ? "polo" : pick("clothing", CLOTHING_STYLES.slice(0, 5)),
+    glasses,
+    pants: palette.pants || "#344e4f",
+    accessory: palette.accessory || "none",
+    freckles: Boolean(palette.freckles),
+    faceShape: palette.faceShape === "round" ? "round" : "oval"
+  };
+}
+
 /** Shared scenery primitives. All coordinates use the 384 × 216 game world. */
 export function createSceneArt(ctx) {
   const rect = (x, y, w, h, color) => { ctx.fillStyle = color; ctx.fillRect(x, y, w, h); };
@@ -373,14 +399,13 @@ export function createSceneArt(ctx) {
   /** Human figures share the same limb geometry in every room and posture. */
   function character(x, footY, palette, options = {}) {
     const skin=palette.skin||"#dca57e", hair=palette.hair||"#293f3a", shirt=palette.shirt||"#679b86";
-    const teem=palette.characterId==="teem", ako=palette.characterId==="ako", dress=Boolean(palette.dress);
+    const traits=getCharacterTraits(palette, options.player), {hairStyle,clothing,pants,accessory}=traits;
+    const teem=palette.characterId==="teem", ako=palette.characterId==="ako", dress=clothing==="dress";
     const facing=options.direction==="left"?-1:1;
     const jump=options.jump||0, step=options.walk?Math.sin(options.walk)*2:0;
     const seated=Boolean(options.seated), top=footY-jump-72;
     const breath=options.breath||0;
-    const seed=[...shirt+hair].reduce((n,c)=>n+c.charCodeAt(0),0);
-    const style=options.player||teem||ako?0:seed%4;
-    const longHair=palette.hairStyle ? ["long","ponytail"].includes(palette.hairStyle) : style===1;
+    const longHair=hairStyle==="long";
     const center=x+16, shoulderY=top+29+breath;
     shadow(center,footY+1,18-Math.min(4,jump/3),4);
     // The chair shares the seated hip anchor. Its back, cushion and legs
@@ -395,7 +420,7 @@ export function createSceneArt(ctx) {
       rounded(back-9,top+29,18,16,4,"#ffffff1d");
       rounded(center-17,seat,34,6,3,cushion,"#657e68",.8);
       line(center-13,seat+1.5,center+13,seat+1.5,"#f6eed23b",.7);
-      rounded(center-10,top+43,20,9,3,dress?shirt:"#344e4f");
+      rounded(center-10,top+43,20,9,3,dress?shirt:pants);
       // Far and near thighs have separate knee, shin and foot positions.
       const leg=(hip,knee,ankle,kneeY,floor,color)=>{
         line(hip,top+48,knee,kneeY,color,7.3);
@@ -405,10 +430,11 @@ export function createSceneArt(ctx) {
         if(!dress) {line(toe-2.5,floor-4,toe+2.5,floor-4,"#baac93",.7);line(toe-1.5,floor-2.8,toe+3,floor-2.8,"#d4c8af",.6);}
         line(toe-5.5,floor-.6,toe+5.5,floor-.6,"#9bab97",.8);
       };
-      leg(center-facing*2,center+facing*10,center+facing*12,top+50,footY-2,dress?"#dda47e":"#526a63");
-      leg(center-facing*6,center+facing*21,center+facing*22,top+52,footY,dress?skin:"#344e4f");
+      leg(center-facing*2,center+facing*10,center+facing*12,top+50,footY-2,dress?skin:pants);
+      line(center+facing*10,top+51,center+facing*12,footY-7,"#fff5d41c",2);
+      leg(center-facing*6,center+facing*21,center+facing*22,top+52,footY,dress?skin:pants);
     } else {
-      path([["moveTo",center-10,top+46],["lineTo",center+10,top+46],["lineTo",center+9+step,footY-5],["lineTo",center+3+step,footY-5],["lineTo",center,top+54],["lineTo",center-3-step,footY-5],["lineTo",center-9-step,footY-5],["closePath"]],dress?skin:teem?"#29282a":"#344e4f",dress?"#ab7858":"#283e37",.6);
+      path([["moveTo",center-10,top+46],["lineTo",center+10,top+46],["lineTo",center+9+step,footY-5],["lineTo",center+3+step,footY-5],["lineTo",center,top+54],["lineTo",center-3-step,footY-5],["lineTo",center-9-step,footY-5],["closePath"]],dress?skin:teem?"#29282a":pants,dress?"#ab7858":"#283e37",.6);
       line(center+4,top+50,center+6+step,footY-8,"#a6b69d35",1.5);
       line(center-7,top+50,center-6-step,footY-9,"#172e2926",1.5);
       rounded(center-11-step,footY-7,12,6,2.7,dress?"#2c292b":"#fff7e5","#617971",.6);
@@ -460,9 +486,17 @@ export function createSceneArt(ctx) {
     }
     // Long hair is two side locks behind the neck and shirt. There is no
     // solid hair block beneath the chin, so it cannot read as a beard ring.
-    if(palette.hairStyle==="ponytail") {
-      path([["moveTo",center-5,top+3],["quadraticCurveTo",center-16,top-15,center+2,top-9],["quadraticCurveTo",center+18,top-7,center+13,top+16],["lineTo",center+14,top+43],["quadraticCurveTo",center+6,top+48,center+6,top+31],["lineTo",center-5,top+3],["closePath"]],hair);
-      line(center+10,top+12,center+11,top+39,"#78625238",1);
+    if(hairStyle==="ponytail") {
+      const back=center-facing*9;
+      path([["moveTo",back,top+5],["quadraticCurveTo",back-facing*14,top+3,back-facing*10,top+23],["quadraticCurveTo",back-facing*8,top+31,back-facing*13,top+37],["quadraticCurveTo",back-facing*1,top+35,back-facing*2,top+22],["lineTo",back+facing*3,top+9],["closePath"]],hair);
+      line(back-facing*5,top+13,back-facing*6,top+28,"#dcc09624",1);
+      rounded(back-facing*3-2,top+7,4,3,1,palette.accent||"#dbad79");
+    } else if(hairStyle==="bun") {
+      ellipse(center-facing*6,top-2+breath,6.8,6.4,hair);
+      line(center-facing*8,top-4+breath,center-facing*3,top-5+breath,"#dcc09638",1);
+      rounded(center-facing*5-3,top+2+breath,6,2,1,palette.accent||"#e5ba79");
+    } else if(hairStyle==="bob") {
+      for(const side of [-1,1])path([["moveTo",center+side*7,top+4],["quadraticCurveTo",center+side*15,top+9,center+side*12,top+25],["lineTo",center+side*6,top+24],["lineTo",center+side*7,top+4],["closePath"]],hair);
     }
     if(longHair) {
       for(const side of [-1,1]) {
@@ -471,6 +505,7 @@ export function createSceneArt(ctx) {
       }
     }
     arm(-facing,false);
+    if(clothing==="hoodie")ellipse(center,top+29+breath,13,6.5,shirt);
     path([["moveTo",center-6,top+26+breath],["quadraticCurveTo",center-12,top+27+breath,center-12,top+34],["lineTo",center-10,top+48],["quadraticCurveTo",center,top+51,center+10,top+48],["lineTo",center+12,top+34],["quadraticCurveTo",center+11,top+27+breath,center+6,top+26+breath],["closePath"]],shirt,"#38523e",.7);
     path([["moveTo",center-9,top+32],["quadraticCurveTo",center-8,top+44,center-7,top+47],["lineTo",center-3,top+48],["lineTo",center-5,top+31],["closePath"]],"#ffffff15");
     polygon([[center+7,top+32],[center+10,top+35],[center+8,top+46],[center+4,top+49],[center+2,top+47],[center+6,top+45]],"#173c2f22");
@@ -485,24 +520,53 @@ export function createSceneArt(ctx) {
       polygon([[center-7,top+29],[center,top+33],[center+7,top+28],[center+10,top+45],[center+13,top+55],[center-12,top+54],[center-9,top+44]],shirt);
       line(center-4,top+37,center+5,top+47,"#b1a18d20",1);
       line(center-3,top+30,center+5,top+32,"#dfc29a",.7);
-    } else if(style===2) {line(center,top+33,center,top+48,"#ebead45e",1);for(let i=0;i<3;i++)ellipse(center,top+35+i*5,.65,.65,"#f1e9ce");}
-    else {polygon([[center-5,top+28],[center,top+32],[center-3,top+35]],"#e5eed8");polygon([[center+5,top+28],[center,top+32],[center+3,top+35]],"#f7f3df");}
-    rounded(center+4,top+36,4,5,1,"#ffffff25");
-    ellipse(center+6,top+38,1.1,1.1,palette.accent||"#e7cc83");
+    } else if(clothing==="cardigan") {
+      polygon([[center-5,top+29],[center,top+33],[center+5,top+29],[center+5,top+48],[center-5,top+48]],palette.accent||"#f1e6cf");
+      line(center-6,top+29,center-5,top+48,"#28463750",1.1);line(center+6,top+29,center+5,top+48,"#28463750",1.1);
+      for(let i=0;i<3;i++)ellipse(center+6.5,top+35+i*4.5,.7,.7,"#f0e1bd");
+    } else if(clothing==="hoodie") {
+      path([["moveTo",center-5,top+29],["quadraticCurveTo",center,top+34,center+5,top+29]],shirt,"#395c485c",1);
+      line(center-3,top+33,center-4,top+38,"#f9efd1",.9);line(center+3,top+33,center+4,top+37,"#f9efd1",.9);
+      rounded(center-6,top+40,12,6,2,"#ffffff18","#28493855",.6);
+    } else if(clothing==="polo"||clothing==="shirt") {
+      polygon([[center-5,top+28],[center,top+32],[center-3,top+35]],"#e5eed8");polygon([[center+5,top+28],[center,top+32],[center+3,top+35]],"#f7f3df");
+      if(clothing==="shirt") {line(center,top+33,center,top+48,"#ebead45e",1);for(let i=0;i<3;i++)ellipse(center,top+35+i*5,.65,.65,"#f1e9ce");}
+      rounded(center+4,top+36,4,5,1,"#ffffff25");
+      ellipse(center+6,top+38,1.1,1.1,palette.accent||"#e7cc83");
+    } else {
+      path([["moveTo",center-5,top+29],["quadraticCurveTo",center,top+34,center+5,top+29]],shirt,"#f3eed078",1.4);
+      rounded(center-4,top+38,8,5,1.5,palette.accent||"#e7cc83");
+    }
+    if(accessory==="scarf") {
+      polygon([[center-7,top+30],[center,top+33],[center+6,top+30],[center+4,top+35],[center-2,top+36]],palette.accent||"#e1b373");
+      polygon([[center-2,top+34],[center+3,top+35],[center+1,top+45],[center-4,top+43]],palette.accent||"#e1b373");
+      line(center-1,top+37,center-2,top+42,"#fff0d766",.8);
+    }
     // Hair silhouette behind a softly shaded, three-quarter face.
-    ellipse(center,top+12+breath,10.5,12,hair);
-    ellipse(center+facing*.7,top+15+breath,9,10.7,skin);
+    const faceWidth=traits.faceShape==="round"?9.8:9,faceHeight=traits.faceShape==="round"?10.2:10.7;
+    ellipse(center,top+12+breath,Math.max(10.5,faceWidth+.8),12,hairStyle==="buzz"?skin:hair);
+    ellipse(center+facing*.7,top+15+breath,faceWidth,faceHeight,skin);
     ctx.strokeStyle="#9d7657";ctx.lineWidth=.55;ctx.stroke();
-    ctx.save();ctx.beginPath();ctx.ellipse(center+facing*.7,top+15+breath,8.8,10.5,0,0,Math.PI*2);ctx.clip();
+    ctx.save();ctx.beginPath();ctx.ellipse(center+facing*.7,top+15+breath,faceWidth-.2,faceHeight-.2,0,0,Math.PI*2);ctx.clip();
     polygon([[center+5,top+7+breath],[center+10,top+10+breath],[center+10,top+26+breath],[center+2,top+26+breath],[center+5,top+23+breath],[center+6,top+18+breath]],"#9766422a");
     polygon([[center-6,top+9+breath],[center-2,top+7+breath],[center,top+11+breath],[center-4,top+13+breath],[center-5,top+19+breath],[center-7,top+18+breath]],"#ffedc52e");
     ctx.restore();
     ellipse(center-facing*8.6,top+16+breath,2,3,skin);
     line(center-facing*9,top+15+breath,center-facing*9,top+17+breath,"#b47c5959",.7);
-    path([["moveTo",center-9,top+12+breath],["quadraticCurveTo",center-13,top+2+breath,center-1,top+1+breath],["quadraticCurveTo",center+12,top-1+breath,center+10,top+12+breath],["quadraticCurveTo",center+5,top+9+breath,center+4,top+6+breath],["quadraticCurveTo",center-2,top+11+breath,center-9,top+12+breath],["closePath"]],hair);
-    polygon([[center-8,top+6+breath],[center-4,top+2+breath],[center+1,top+2+breath],[center+5,top+4+breath],[center+1,top+4+breath],[center-2,top+6+breath],[center-5,top+7+breath]],"#d4ba8424");
-    line(center-6,top+8+breath,center-3,top+6+breath,"#cab89025",.9);
-    if(teem||palette.hairStyle==="spiky") {
+    if(hairStyle==="buzz") {
+      path([["moveTo",center-9.5,top+10+breath],["quadraticCurveTo",center-10,top+1+breath,center,top+1+breath],["quadraticCurveTo",center+10,top+1+breath,center+9.5,top+10+breath],["lineTo",center+7,top+6+breath],["quadraticCurveTo",center,top+4+breath,center-7,top+6+breath],["closePath"]],hair);
+      for(let i=0;i<5;i++)line(center-6+i*3,top+4+breath,center-5+i*3,top+3.5+breath,"#f3dfb732",.5);
+    } else if(hairStyle==="bob") {
+      path([["moveTo",center-10,top+14+breath],["quadraticCurveTo",center-12,top+1+breath,center,top+1+breath],["quadraticCurveTo",center+12,top+1+breath,center+11,top+14+breath],["lineTo",center+7,top+9+breath],["lineTo",center+2,top+10+breath],["lineTo",center-2,top+7+breath],["lineTo",center-5,top+11+breath],["lineTo",center-10,top+14+breath],["closePath"]],hair);
+      line(center-7,top+5+breath,center-8,top+10+breath,"#cfb88d35",1);
+    } else if(hairStyle==="curly") {
+      for(const [dx,dy,r] of [[-9,9,4],[-10,4,4.5],[-6,0,5],[0,-1,5.5],[6,1,5],[10,5,4],[8,9,3.5]])ellipse(center+dx,top+dy+breath,r,r,hair);
+      for(const [dx,dy] of [[-7,1],[-1,-2],[6,3]])path([["moveTo",center+dx-1,top+dy+breath],["quadraticCurveTo",center+dx+2,top+dy-1+breath,center+dx+2,top+dy+1+breath]],hair,"#d7bd9233",.9);
+    } else {
+      path([["moveTo",center-9,top+12+breath],["quadraticCurveTo",center-13,top+2+breath,center-1,top+1+breath],["quadraticCurveTo",center+12,top-1+breath,center+10,top+12+breath],["quadraticCurveTo",center+5,top+9+breath,center+4,top+6+breath],["quadraticCurveTo",center-2,top+11+breath,center-9,top+12+breath],["closePath"]],hair);
+      path([["moveTo",center-7,top+6+breath],["quadraticCurveTo",center-2,top+1+breath,center+4,top+4+breath]],hair,"#d4ba8438",1.7);
+    }
+    if(teem||hairStyle==="spiky") {
       polygon([[center-11,top+9],[center-13,top+3],[center-8,top+3],[center-10,top-2],[center-4,top],[center-2,top-5],[center+2,top-2],[center+7,top-5],[center+6,top],[center+12,top+2],[center+9,top+5],[center+12,top+10],[center+5,top+5],[center+1,top+4],[center-5,top+8]],hair);
       for(let i=0;i<3;i++)line(center-7+i*5,top+3,center-3+i*4,top+1,"#695a463e",1);
     }
@@ -512,22 +576,26 @@ export function createSceneArt(ctx) {
       line(center+6,top+8,center+8,top+5,"#e8dcc5",.8);
       line(center-facing*9,top+20,center-facing*9,top+25,"#eaddc1",.7);ellipse(center-facing*9,top+26,1,1.4,"#f6e9c9");
     }
-    if(style===3) {ellipse(center-8,top+4+breath,4,4,hair);ellipse(center+5,top+2+breath,5,4,hair);}
+    if(accessory==="headband")path([["moveTo",center-9,top+8+breath],["quadraticCurveTo",center,top-2+breath,center+9,top+7+breath]],"transparent",palette.accent||"#e7bf81",2.1);
+    if(accessory==="hairclip") {line(center+6,top+8+breath,center+10,top+5+breath,palette.accent||"#e4b968",1.8);line(center+7,top+10+breath,center+11,top+7+breath,palette.accent||"#e4b968",1.3);}
+    if(accessory==="earrings") {line(center-facing*9,top+19+breath,center-facing*9,top+22+breath,"#d4a952",.7);ellipse(center-facing*9,top+23+breath,1.5,2,palette.accent||"#e6bf69");}
     const ey=top+15+breath,offset=facing*1.6;
     for(const xx of [center-3+offset,center+3+offset]) {
       if(options.blink)line(xx-1,ey,xx+1,ey,"#2a403b",.9);
       else {ellipse(xx,ey,1.05,1.5,"#2a403b");ellipse(xx+.25,ey-.4,.28,.35,"#fffae5");}
       line(xx-1.4,ey-3.2,xx+1.3,ey-3.4,hair,.65);
     }
-    if(teem||palette.glasses) {
+    if(teem||traits.glasses==="square") {
       for(const xx of [center-3+offset,center+3+offset])rounded(xx-2.8,ey-2.4,5.5,4.9,1,"#ffffff12","#262421",.9);
       line(center-.3+offset,ey-1,center+.3+offset,ey-1,"#292521",.9);
       line(center-8,ey-1,center-6+offset,ey-1,"#292521",.9);
-    } else if(style===2) {
-      for(const xx of [center-3+offset,center+3+offset]) {ctx.beginPath();ctx.ellipse(xx,ey,2.4,2.2,0,0,Math.PI*2);ctx.strokeStyle="#526b596b";ctx.lineWidth=.6;ctx.stroke();}
-      line(center-1+offset,ey,center+1+offset,ey,"#526b596b",.6);
+    } else if(traits.glasses==="round") {
+      for(const xx of [center-3+offset,center+3+offset]) {ctx.beginPath();ctx.ellipse(xx,ey,2.8,2.8,0,0,Math.PI*2);ctx.strokeStyle="#594d3d";ctx.lineWidth=.8;ctx.stroke();}
+      line(center-.3+offset,ey-.5,center+.3+offset,ey-.5,"#594d3d",.8);
+      line(center-8.5,ey-.5,center-6+offset,ey-.5,"#594d3d",.8);
     }
     ellipse(center+facing*5,top+19+breath,2.3,1,"#c8736326");
+    if(traits.freckles)for(const side of [-1,1])for(const [dx,dy] of [[0,0],[2,.5],[1,2]])ellipse(center+side*(4+dx)+offset,ey+3+dy,.4,.4,"#a9704c9c");
     line(center+offset,ey+1.4,center+offset+facing*.7,ey+3,"#b474573b",.7);
     ctx.beginPath();ctx.moveTo(center-2+offset,top+21+breath);ctx.quadraticCurveTo(center+offset,top+23+(options.pose==="celebrate"?1:0)+breath,center+2.2+offset,top+20.8+breath);ctx.strokeStyle="#985e50";ctx.lineWidth=.85;ctx.stroke();
     // A pocket notebook rests against the torso; the foreground hand overlaps

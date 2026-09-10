@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { makeInitialState, reduceGame, serializeState, EVENTS, STAGES, SAVE_KEY } from '../../xvisor/quest/game-data.js';
+import { makeInitialState, reduceGame, serializeState, getRecurringBaseSummary, EVENTS, STAGES, SAVE_KEY } from '../../xvisor/quest/game-data.js';
 import { signedBaht } from '../../xvisor/quest/game-presentation.js';
 
 const moduleName = process.env.XVISOR_PLAYWRIGHT || 'playwright';
@@ -20,7 +20,8 @@ function management(seed = 5) {
     milestones: { ...initial.milestones, certified: true }, encounters: { ...initial.encounters, months: [] },
     skills: Object.fromEntries(['people','knowledge','care','leadership'].map(id => [id, { xp: 25 }])) };
 }
-function existingCustomers(seed = 1) {
+// Seed 2 covers automatic, pending, paused, recovered and declined outcomes.
+function existingCustomers(seed = 2) {
   const state = management(seed);
   state.customers = Array.from({ length: 24 }, (_, i) => ({
     id: `returning-${i}`, personId: `person-${i}`, name: `ลูกค้า ${i + 1}`, journey: 'day28',
@@ -106,6 +107,9 @@ try {
       const opened = await saved(page);
       assert.deepEqual(opened.monthOpeningReport, opening);
       assert.equal(opened.energy, 28);
+      assert.equal(await page.locator('.month-opening-card').getAttribute('data-customer-base'), '24');
+      assert.match(await page.locator('.customer-base-metrics').textContent(), /ลูกค้าสะสม24/);
+      assert.ok(getRecurringBaseSummary(opened).total === 24, 'waiting and paused people stay in the accumulated base');
       assert.equal(await page.locator('.month-opening-card').evaluate(el => el.open), true);
       assert.ok((await page.locator('.month-opening-card').textContent()).includes(signedBaht(opening.incomeDelta)));
       assert.equal(await page.locator('.routine-sale-result').count(), 0, 'opening report never masquerades as a single personal sale');
@@ -160,6 +164,44 @@ try {
       assert.equal((await saved(page)).energy, 26, 'helping a Day 28 customer still leaves their renewal conversation available');
       await fits(page);
       check(`${width}px: Day 28 customers have a real care action before their renewal decision`);
+
+      const mixed = management(1);
+      mixed.month = 5;
+      const paid = (id, name) => ({ id, personId: id, name, activePlan: true, day: 28, lastReorderMonth: 5,
+        trust: 88, adherence: 88, satisfaction: 88, followups: 3, successCase: true,
+        measuredAgain: true, lastContactMonth: 5, routinePlan: { id: 'fit', products: ['gus'] } });
+      mixed.customers = ['แพร', 'ปอนด์', 'ขิม', 'เจน'].map((name, i) => paid(`base-${i}`, name));
+      mixed.customers.push(paid('direct-person-1', 'ลิน'));
+      mixed.team = [1, 2].map(i => ({ ...paid(`direct-person-${i}`, i === 1 ? 'ลิน' : 'กาย'),
+        id: `direct-member-${i}`, parentId: 'player', generation: 1, active: true,
+        rank: 'xvisor', customers: 0, confidence: 85, autonomy: 85, teamSkill: 5, lastSelfUseMonth: 5 }));
+      mixed.team.push({ ...paid('deeper-person', 'ภีม'), id: 'deeper-member', parentId: 'direct-member-1', generation: 2, active: true, rank: 'xvisor', customers: 0 });
+      await load(page, mixed);
+      assert.equal(await page.locator('.month-opening-card').getAttribute('data-customer-base'), '6');
+      const mixedClosed = reduceGame(mixed, EVENTS.END_MONTH);
+      await load(page, mixedClosed);
+      await page.locator('#actionBar [data-event="START_NEXT_MONTH"]').click();
+      const mixedOpened = await saved(page);
+      const mixedReport = mixedOpened.monthOpeningReport;
+      const mixedBase = getRecurringBaseSummary(mixedOpened);
+      assert.equal(mixedBase.total, 6);
+      assert.equal(await page.locator('#hudCustomers').textContent(), '6 คน');
+      assert.equal(await page.locator('.status-item--customers span').textContent(), 'ฐานสะสม');
+      assert.equal(mixedBase.customerCount, 4);
+      assert.equal(mixedBase.directMemberCount, 2);
+      assert.ok(mixedReport.automaticDirectMemberIds.length > 0, 'direct self-use really contributes at opening');
+      assert.equal(mixedReport.personalXV, (mixedReport.automaticCustomerIds.length + mixedReport.automaticDirectMemberIds.length) * 7000);
+      assert.equal(mixedReport.transactions.filter(tx => tx.customerId === 'direct-person-1' || tx.customerId === 'direct-member-1').length <= 1, true, 'promoted paired identity is purchased once');
+      assert.equal(await page.locator('.month-opening-card').getAttribute('data-customer-base'), '6');
+      assert.match(await page.locator('.month-opening-card').textContent(), /X-VISOR ต่อเอง/);
+      assert.ok((await page.locator('.month-opening-card').textContent()).includes(signedBaht(mixedReport.incomeDelta)));
+      await fits(page);
+      await screenshot(page, `accumulated-base-${width}`);
+      await page.reload();
+      await page.locator('body[data-game-boot="ready"]').waitFor({ state: 'attached' });
+      assert.deepEqual((await saved(page)).monthOpeningReport, mixedReport);
+      assert.equal((await saved(page)).economy.personalXV, mixedOpened.economy.personalXV);
+      check(`${width}px: six accumulated buyers survive promotion and include direct self-use exactly once`);
     } finally { await context.close(); }
   }
   assert.deepEqual(report.errors, []);

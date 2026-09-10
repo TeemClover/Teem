@@ -59,8 +59,8 @@ test('2.0 release preserves the existing save and score namespaces', () => {
 test('channel 1 tier uses monthly sales baht while payout uses all personal XV', () => {
   const base = management(2);
   const at20 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 39_999 } });
-  const at23 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 40_000 } });
-  const at25 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 100_000 } });
+  const at23 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 40_001 } });
+  const at25 = calculateEconomy({ ...base, economy: { ...base.economy, personalXV: 50_000, productSales: 100_001 } });
   assert.equal(at20.retailRate, 0.20);
   assert.equal(at20.channel1, 10_000);
   assert.equal(at23.retailRate, 0.23);
@@ -159,7 +159,7 @@ test('XGEN qualifies from 3,000,000 XV in one month and requires the live releas
   let state = management(4, 6);
   state = {
     ...state,
-    economy: { ...state.economy, personalXV: 1_000_000, teamXV: 2_000_000, productSales: 100_000 },
+    economy: { ...state.economy, personalXV: 1_000_000, teamXV: 2_000_000, productSales: 100_001 },
   };
   const live = calculateEconomy(state);
   assert.equal(live.channel3, 0);

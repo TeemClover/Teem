@@ -2,6 +2,7 @@ import { STAGES } from "./game-data.js";
 import { createSceneArt } from "./game-art.js";
 import { getOrganizationScene } from "./game-presentation.js";
 import { getActionMoment } from "./game-action-scenes.js";
+import { getPersonAppearance } from "./game-people.js";
 
 /** Purely visual: never writes saves, awards XP or changes the simulation. */
 export function createWorldRenderer(canvas, getSnapshot) {
@@ -29,7 +30,7 @@ export function createWorldRenderer(canvas, getSnapshot) {
   }
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const playerPalette = { skin: "#e0aa80", hair: "#1f3541", shirt: "#4db783", accent: "#f6ce5a" };
-  const proctorPalette = { skin: "#c98f6c", hair: "#203541", shirt: "#5f8fd3", accent: "#f6ce5a" };
+  const proctorPalette = { skin: "#c98f6c", hair: "#203541", shirt: "#5f8fd3", accent: "#f6ce5a", hairStyle: "short", clothing: "shirt", glasses: "round" };
   const productVisuals = Object.freeze({gus:["#65bd86","#2f7359"],"protein-hmb":["#ee9a5c","#b85f43"],"vita-matrix":["#68aee1","#356f9a"],astamega:["#8e78c8","#5c4d91"]});
   const formatNumber = (value) => Math.round(Number(value || 0)).toLocaleString("th-TH");
   const formatBaht = (value) => `฿${formatNumber(value)}`;
@@ -41,6 +42,12 @@ export function createWorldRenderer(canvas, getSnapshot) {
   let destroyed = false;
   let actionMoment = null;
   function selectedPerson() { return person; }
+  function personAppearance(subject) {
+    // Vignettes carry a compact copy. Resolve the full record so a promoted
+    // teammate retains the same personId and portrait as their customer days.
+    const actual = subject?.id && [...state.customers || [], ...state.prospects || [], ...state.team || []].find(item => item.id === subject.id);
+    return getPersonAppearance(actual || subject);
+  }
   function snapshot() { ({state, content, montageVisualDay, stageStartedAt, person} = getSnapshot()); }
 function worldLabelForState(scene) {
   const month = Number(state.month || 0);
@@ -298,8 +305,9 @@ function drawOfficeGrowth(scene) {
     const count=Math.min(5,customers.length);
     for(let i=0;i<count;i++) {
       const xx=187+i*9;
-      art.ellipse(xx+3,57,3.3,3.7,customers[i]?.appearance?.skin||"#d5aa85");
-      art.rounded(xx,62,6,6,2,customers[i]?.appearance?.shirt||"#84ac8b");
+      const appearance=personAppearance(customers[i]);
+      art.ellipse(xx+3,57,3.3,3.7,appearance.skin);
+      art.rounded(xx,62,6,6,2,appearance.shirt);
       if(i<regular.length)art.ellipse(xx+5,69,1.5,1.5,"#d7b15e");
     }
     art.line(187,75,226,75,"#a1b68d",1);
@@ -324,7 +332,7 @@ function drawRoleMarker(x,footY,member={}) {
 }
 function drawTeamCharacter(member, x, footY = 176, options = {}) {
   drawRoleMarker(x, footY, member);
-  drawCharacterAtFeet(x, footY, member?.appearance || proctorPalette, { idle: true, band: true, ...options });
+  drawCharacterAtFeet(x, footY, personAppearance(member), { idle: true, band: true, ...options });
 }
 function drawXircleMark(x, y, scale = 1) {
   const unit = 6 * scale;
@@ -344,7 +352,7 @@ function drawXircleScene(time, npc) {
   context.beginPath();context.moveTo(188,179);context.quadraticCurveTo(185,169,195,163-pulse);context.quadraticCurveTo(204,176,198,181);context.closePath();context.fillStyle="#ffe2a1";context.fill();
   drawCharacterAtFeet(35, 198, playerPalette, { pose: "celebrate", band: true, direction: "right" });
   const members = (state.team || []).filter((member) => member.active !== false).slice(0, 5);
-  const positions = [89, 234, 272, 310, 348];
+  const positions = [89, 228, 264, 300, 336];
   (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 198, { direction: index ? "left" : "right", pose: index < 2 ? "celebrate" : "idle" }));
 }
 function drawOrganizationScene(time, npc, stageAge) {
@@ -357,7 +365,7 @@ function drawOrganizationScene(time, npc, stageAge) {
   const visible = Math.max(2, Math.min(visibleTarget, total || 2));
   const positions = [70, 112, 154, 210, 252, 294, 336];
   for (let index = 0; index < visible; index += 1) {
-    const member = state.team?.[index] || { appearance: index % 2 ? npc : proctorPalette, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
+    const member = state.team?.[index] || { id: `organization-visitor-${index}`, specialty: ["sales", "care", "builder", "balanced"][index % 4] };
     drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", walk: !reducedMotion.matches && stageAge < 620 ? time / 110 + index : 0 });
   }
   const blocks = Math.min(12, Math.max(2, Math.ceil(Math.log2(Math.max(2, total))) + 2));
@@ -368,14 +376,14 @@ function drawTravelScene(destination, time, npc) {
   const wave = !reducedMotion.matches && Math.floor(time / 420) % 2 ? "celebrate" : "idle";
   drawCharacterAtFeet(35, 202, playerPalette, { pose: wave, band: true, direction: "right" });
   const companions = (state.team || []).filter((member) => member.active !== false).slice(0, 3);
-  (companions.length ? companions : [{ appearance: npc }, { appearance: proctorPalette }]).forEach((member, index) => drawCharacterAtFeet(274 + index * 35, 202, member.appearance || npc, { pose: index === 0 ? wave : "idle", band: true, direction: "left" }));
+  (companions.length ? companions : [{ appearance: npc }, { id: "travel-companion" }]).forEach((member, index) => drawCharacterAtFeet(264 + index * 36, 202, personAppearance(member), { pose: index === 0 ? wave : "idle", band: true, direction: "left" }));
 }
 function drawMonth12Scene(npc) {
   background("month12", layer => layer.organization(9));
   drawXircleMark(182, 68, 1.4);
   drawCharacterAtFeet(27, 196, playerPalette, { pose: "celebrate", band: true, direction: "right" });
   const members = (state.team || []).slice(0, 7);
-  const positions = [82, 124, 166, 222, 264, 306, 344];
+  const positions = [78, 120, 162, 210, 252, 294, 336];
   (members.length ? members : [{ appearance: npc, specialty: "balanced" }]).forEach((member, index) => drawTeamCharacter(member, positions[index], 196, { direction: index < 3 ? "right" : "left", pose: index % 3 === 0 ? "celebrate" : "idle" }));
 }
 function drawFinaleScene(npc) {
@@ -441,7 +449,7 @@ function drawPackage(x, y) {
 function drawActionScene(moment, progress) {
   const { group, variant, outcome } = moment;
   const paused = outcome === "paused";
-  const npc = moment.person ? moment.person.appearance || proctorPalette : null;
+  const npc = moment.person ? personAppearance(moment.person) : null;
   const band = Boolean(moment.person?.band);
   const arrival = reducedMotion.matches ? 1 : Math.min(1, progress / .42);
   const gesture = reducedMotion.matches ? 0 : Math.sin(progress * Math.PI * 3) * 1.6;
@@ -524,7 +532,7 @@ function drawActionScene(moment, progress) {
   } else if(group==="referral") {
     drawRoundTable(139,147);
     drawCharacterAtFeet(63,192,playerPalette,{pose:"listen",direction:"right",band:true});
-    if(moment.companion)drawCharacterAtFeet(160,192,moment.companion.appearance,{pose:"present",direction:"right",band:Boolean(moment.companion.band),gesture});
+    if(moment.companion)drawCharacterAtFeet(160,192,personAppearance(moment.companion),{pose:"present",direction:"right",band:Boolean(moment.companion.band),gesture});
     drawCharacterAtFeet(261+(1-arrival)*55,192,npc,{direction:"left",pose:arrival===1?"welcome":"idle",walk:arrival<1?visualTime/75:0,band});
     drawConversationBubble(183,94);
   } else if(group==="invitation") {
@@ -599,7 +607,7 @@ function drawScene(time) {
   const management = scene.startsWith("management") || ["team_started", "month_closed", "season_review", "content_running", "ads_running", "xcademy_running", "open_house_running", "center_running", "goodluck_running", "the-xircle", "xlead", "xgen"].includes(scene);
 
   const person = selectedPerson();
-  const npc = person?.appearance || { skin: "#dfaa83", hair: "#263844", shirt: "#ef8078", accent: "#fff2d4" };
+  const npc = personAppearance(person);
   const idle = { idle: true, band: playerWearsBand(), bandActive: scene === "pre_montage" };
   const stageAge = time - stageStartedAt;
   const organizationMode = state.organizationMode ? organizationVisualMode(stageAge) : null;
@@ -746,7 +754,7 @@ function drawScene(time) {
     art.rounded(255,131,34,4,1,"#735f44");
     art.line(279,105,279,97,"#4c5748",1);art.ellipse(278,96,2,1.6,"#4c5748");
     const attendees=[...state.customers||[],...state.prospects||[],...state.team||[]].filter((person,index,all)=>all.findIndex(other=>other.id===person.id)===index).slice(0,4);
-    const crowd=attendees.length?attendees.map(person=>person.appearance||npc):[npc,proctorPalette];
+    const crowd=attendees.length?attendees.map(personAppearance):[npc,getPersonAppearance({id:"open-house-visitor"})];
     const seats=[38,104,248,314];
     crowd.forEach((palette,index)=>drawSittingCharacter(seats[index],177,palette,index<2?"right":"left",{pose:"listen",band:Boolean(attendees[index]?.day!==undefined||attendees[index]?.xvisorStage)}));
     if (!reducedMotion.matches && Math.floor(stageAge / 420) % 2) drawNotification(304, 46, "#ef8078");
@@ -775,7 +783,7 @@ function drawScene(time) {
       drawDataPanel(274, 40, state.monthStats.weeklyDone);
       drawRoundTable(142, 132);
       drawCharacterAtFeet(55, 176, playerPalette, { direction: "right", pose: "talk", band: true });
-      const teamPositions = [208, 244, 280, 316, 348];
+      const teamPositions = [190, 226, 262, 298, 334];
       state.team.slice(0, phase >= 4 ? 5 : 3).forEach((member, index) => drawTeamCharacter(member, teamPositions[index], 176, { direction: "left" }));
       if (state.team.length === 0) drawCharacterAtFeet(281, 176, npc, { direction: "left", idle: true });
       if (state.customers.length >= 3) {

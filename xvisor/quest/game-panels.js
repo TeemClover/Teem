@@ -13,7 +13,7 @@ function growthChange(metric, compareMonth) {
   return `${change}${metric.percent === null ? " · เริ่มจาก 0" : ` (${Math.abs(metric.percent).toLocaleString("th-TH", { maximumFractionDigits: 1 })}%)`}`;
 }
 function incomeContributionHtml(entry) {
-  const channels = [["channel1", "① ลูกค้า"], ["channel2", "② Direct G1"], ["channel3", "③ Organization"]];
+  const channels = [["channel1", "① ลูกค้า + ทีมใช้เอง"], ["channel2", "② Direct G1"], ["channel3", "③ Organization"]];
   return `<div class="income-contribution" aria-label="รายได้ 3 ช่องทางของเดือน ${entry.month}">${channels.map(([key, label]) => {
     const value = entry[key];
     const percent = value !== null && entry.total > 0 ? Math.max(0, Math.min(100, value / entry.total * 100)) : 0;
@@ -26,8 +26,8 @@ export function monthGrowthHtml(state, month, compareMonth = Number(month) - 1, 
   const comparison = getMonthComparison(state, month, compareMonth);
   if (!comparison.current) return "";
   const entry = comparison.current;
-  const metricCards = comparison.metrics.slice(0, 5).map(metric => `<div class="growth-metric" data-metric="${metric.key}" data-trend="${metric.trend}"><span>${metric.label}</span><strong>${growthValue(metric.value, metric.unit)}</strong>${!historyLink && comparison.previous ? `<span class="growth-baseline">เดือน ${comparison.previous.month}: ${growthValue(metric.baseline, metric.unit)}</span>` : ""}<small>${growthChange(metric, comparison.compareMonth)}</small></div>`).join("");
-  return `<section class="growth-summary" aria-label="สรุปการเปลี่ยนแปลงเดือน ${entry.month}"><div class="growth-summary__heading"><div><span>MONTH ${entry.month} · ${entry.posted ? "ปิดยอดแล้ว" : "บันทึกเดิม"}</span><h3>${comparison.previous ? `เทียบเดือน ${comparison.previous.month}` : "สิ่งที่เกิดขึ้นในเดือนนี้"}</h3></div>${historyLink ? `<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${entry.month}">ดูประวัติและเทียบเดือน</button>` : ""}</div><div class="growth-grid">${metricCards}</div>${incomeContributionHtml(entry)}<p class="growth-summary__note">${entry.customerScope === "organization" ? "ปี 2 นับลูกค้าและทีมทั้งองค์กร" : entry.teamScope === "legacy-team" ? "ปีแรกแสดงขนาดทีมตามบันทึกเดิม" : "ปีแรกนับลูกค้าของคุณและทีมโดยตรง"} · ลูกค้าใช้ต่อหมายถึงคนที่ซื้อรอบใหม่ในเดือนนั้น ${entry.reorders !== null && entry.repeatCustomers === null ? `· บันทึกเดิมมี ${growthNumber(entry.reorders)} รายการซื้อซ้ำ แต่ไม่ระบุจำนวนคน` : ""} · ผลลัพธ์มีทั้งเพิ่ม ลด และคงเดิมตามสิ่งที่เกิดขึ้นในแต่ละเดือน</p></section>`;
+  const metricCards = comparison.metrics.filter(metric => !metric.key.startsWith("channel")).map(metric => `<div class="growth-metric" data-metric="${metric.key}" data-trend="${metric.trend}"><span>${metric.label}</span><strong>${growthValue(metric.value, metric.unit)}</strong>${!historyLink && comparison.previous ? `<span class="growth-baseline">เดือน ${comparison.previous.month}: ${growthValue(metric.baseline, metric.unit)}</span>` : ""}<small>${growthChange(metric, comparison.compareMonth)}</small></div>`).join("");
+  return `<section class="growth-summary" aria-label="สรุปการเปลี่ยนแปลงเดือน ${entry.month}"><div class="growth-summary__heading"><div><span>MONTH ${entry.month} · ${entry.posted ? "ปิดยอดแล้ว" : "บันทึกเดิม"}</span><h3>${comparison.previous ? `เทียบเดือน ${comparison.previous.month}` : "สิ่งที่เกิดขึ้นในเดือนนี้"}</h3></div>${historyLink ? `<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${entry.month}">ดูประวัติและเทียบเดือน</button>` : ""}</div><div class="growth-grid">${metricCards}</div>${incomeContributionHtml(entry)}<p class="growth-summary__note">${entry.customerScope === "organization" ? "ปี 2 นับลูกค้าและทีมทั้งองค์กร" : entry.teamScope === "legacy-team" ? "ปีแรกแสดงขนาดทีมตามบันทึกเดิม" : "ปีแรกนับลูกค้าของคุณและทีมโดยตรง"} · ฐานที่ดูแลรวมลูกค้าและ X-VISOR ที่แนะนำตรง แม้บางคนขอพัก การซื้อซ้ำขึ้นกับความพร้อมแต่ละเดือน · ${entry.customerScope === "personal-direct" ? "นับผู้ซื้อรอบใหม่ทั้งลูกค้าและ X-VISOR สายตรง" : "นับคนที่ซื้อรอบใหม่ในเดือนนั้น"} ${entry.reorders !== null && entry.repeatCustomers === null ? `· บันทึกเดิมมี ${growthNumber(entry.reorders)} รายการซื้อซ้ำ แต่ไม่ระบุจำนวนคน` : ""} · ผลลัพธ์มีทั้งเพิ่ม ลด และคงเดิมตามสิ่งที่เกิดขึ้นในแต่ละเดือน</p></section>`;
 }
 
 export function focusDialogStart(dialog) {
@@ -131,14 +131,14 @@ function peopleRows(state2) {
 }
 function categoryFor(row, state2) {
   const { person, kind } = row;
+  const renewal = ["customer", "team"].includes(kind) ? getCustomerRenewalView(state2, person) : null;
+  if (renewal && ["pending", "paused"].includes(renewal.status) && !renewal.followedUp) return "priority";
   if (kind === "team") {
     if (person.rank === "xlead" || Number(person.leaderReadiness || 0) >= 65) return "grow";
     if (Number(person.autonomy || 0) < 55) return "priority";
     return "stable";
   }
   if (kind === "customer") {
-    const renewal = getCustomerRenewalView(state2, person);
-    if (renewal && ["pending", "paused"].includes(renewal.status) && !renewal.followedUp) return "priority";
     const sat = Number(person.satisfaction || 0);
     if (sat < 55 || person.customerState === CUSTOMER_STATES.NEEDS_HELP) return "priority";
     if (person.xvisorInterest || person.xvisorStage || person.referralReady) return "opportunity";
@@ -159,12 +159,13 @@ function rowCard(row, state2) {
   const { person, kind } = row;
   const action = getPersonContextAction(state2, person, kind);
   const actionHtml = actionButton(action, person);
+  const renewal = ["customer", "team"].includes(kind) ? getCustomerRenewalView(state2, person) : null;
+  const renewalNote = renewal ? `<p data-renewal-note>${escapeHtml2(renewal.detail)}</p>` : "";
+  const careHtml = renewal?.available ? actionButton(buildPersonAction({ event: EVENTS.CARE_CUSTOMER, target: person, state: state2 }), person, true) : "";
   if (kind === "team") {
-    return `<article class="people-card people-card--team"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.rank === "xlead" ? "XLEAD" : "Certified X-VISOR")} · ${escapeHtml2(person.specialtyLabel || "⚖️ สมดุล")}</span></div><b>${person.active ? "กำลังทำงาน" : "พักอยู่"}</b></div><dl><div><dt>Personal XV</dt><dd>${fmt(person.personalXV)}</dd></div><div><dt>ลูกค้า</dt><dd>${fmt(person.customers)}</dd></div><div><dt>ทีมย่อย</dt><dd>${fmt(person.downstreamXvisors)}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml || "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>"}</article>`;
+    return `<article class="people-card people-card--team"${renewal ? ` data-renewal-status="${renewal.status}"` : ""}><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.rank === "xlead" ? "XLEAD" : "Certified X-VISOR")} · ${escapeHtml2(person.specialtyLabel || "⚖️ สมดุล")}</span></div><b>${escapeHtml2(renewal?.label || (person.active ? "กำลังทำงาน" : "พักอยู่"))}</b></div><dl><div><dt>Personal XV</dt><dd>${fmt(person.personalXV)}</dd></div><div><dt>ลูกค้า</dt><dd>${fmt(person.customers)}</dd></div><div><dt>ทีมย่อย</dt><dd>${fmt(person.downstreamXvisors)}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${renewalNote}${actionHtml || (renewal ? "" : "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>")}${careHtml}</article>`;
   }
   if (kind === "customer") {
-    const renewal = getCustomerRenewalView(state2, person);
-    const careHtml = renewal?.available ? actionButton(buildPersonAction({ event: EVENTS.CARE_CUSTOMER, target: person, state: state2 }), person, true) : "";
     return `<article class="people-card"${renewal ? ` data-renewal-status="${renewal.status}"` : ""}><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>ลูกค้า · ❤️ ${fmt(person.satisfaction)}%</span></div><b>${escapeHtml2(renewal?.label || person.status || "")}</b></div><dl><div><dt>ความพอใจ</dt><dd>${fmt(person.satisfaction)}%</dd></div><div><dt>Routine</dt><dd>${person.selfDirected ? "เดินเองได้" : "กำลังดูแล"}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${renewal ? `<p data-renewal-note>${escapeHtml2(renewal.detail)}</p>` : ""}${actionHtml || (renewal ? "" : "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>")}${careHtml}</article>`;
   }
   return `<article class="people-card"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.journey || "Prospect")}</span></div><b>${escapeHtml2(person.status || "")}</b></div><dl><div><dt>เปิดใจ</dt><dd>${fmt(person.readiness)}%</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml}</article>`;
@@ -175,12 +176,15 @@ function renderPeople(focusId = peopleFocusId) {
   if (state2.organizationMode) return renderOrganization();
   peopleFocusId = focusId || null;
   const rows = peopleRows(state2);
+  const focusedPerson = peopleFocusId ? findPerson(state2, peopleFocusId) : null;
+  const focusedIdentity = focusedPerson?.personId || focusedPerson?.id;
   const query = peopleQuery.trim().toLocaleLowerCase("th");
   const filtered = rows.filter((row) => {
-    if (peopleFocusId && row.person.id !== peopleFocusId && row.person.personId !== peopleFocusId) return false;
+    if (peopleFocusId && row.person.id !== peopleFocusId && row.person.personId !== peopleFocusId
+      && (row.person.personId || row.person.id) !== focusedIdentity) return false;
     if (query && !String(row.person.name || "").toLocaleLowerCase("th").includes(query)) return false;
     if (peopleFocusId || peopleTab === "all") return true;
-    if (peopleTab === "renewal") return row.kind === "customer" && ["pending", "paused"].includes(getCustomerRenewalView(state2, row.person)?.status);
+    if (peopleTab === "renewal") return ["customer", "team"].includes(row.kind) && ["pending", "paused"].includes(getCustomerRenewalView(state2, row.person)?.status);
     return categoryFor(row, state2) === peopleTab;
   });
   const pages = Math.max(1, Math.ceil(filtered.length / PEOPLE_RENDER_LIMIT));
@@ -216,19 +220,20 @@ function renderIncome(selectedMonth = null, compareMonth = null, { live = false 
   const missingComparison = !history.some(item => item.month === incomeCompareMonth);
   const controls = entry ? `<div class="history-controls"><label>ดูเดือน<select data-history-select="month" aria-label="ดูประวัติเดือน">${options}</select></label><label>เทียบกับ<select data-history-select="compare" aria-label="เลือกเดือนเปรียบเทียบ">${missingComparison ? `<option value="${incomeCompareMonth}" selected>${incomeCompareMonth < 1 ? "ยังไม่มีเดือนก่อน" : `เดือน ${incomeCompareMonth} ไม่มีบันทึก`}</option>` : ""}${compareOptions}</select></label></div>` : "";
   const channels = [
-    { key: "channel1", number: "①", title: "ขายและดูแลลูกค้า", rule: "20–25% × XV ส่วนตัว", detail: "ฐานรายได้จากการดูแลลูกค้า · อัตราขึ้นกับยอดขายในเดือนนั้น" },
+    { key: "channel1", number: "①", title: "ลูกค้าและทีมใช้เอง", rule: "20–25% × XV ส่วนตัว", detail: "รวมยอดลูกค้าและยอดใช้เองของ X-VISOR ที่คุณแนะนำตรง อัตราขึ้นกับยอดซื้อรวมเป็นบาทในเดือนนั้น" },
     { key: "channel2", number: "②", title: "พัฒนา Direct G1", rule: "20% ของค่าคอมมิชชัน Direct G1", detail: "เพิ่มรายได้จากทีม เมื่อปลดสิทธิ์ XLEAD/ดูแลทีม และทีมสร้างผลงาน" },
-    { key: "channel3", number: "③", title: "บริหาร Organization", rule: "5% × TGV ของเดือนนั้น", detail: "เพิ่มช่องทาง Organization หลังสอบผ่าน XGEN ตามเกณฑ์เกม" },
+    { key: "channel3", number: "③", title: "บริหาร Organization", rule: "5% × TGV ของเดือนนั้น", detail: "เพิ่มช่องทาง Organization หลังสอบผ่าน XGEN ตามเกณฑ์การรับรอง" },
   ];
   const channelCards = shown ? `<section class="income-comparison" aria-label="รายได้ครบ 3 ช่องทาง"><div class="income-comparison__heading"><h3>รายได้ 3 ช่องทาง · เดือน ${shown.month}</h3><span>${liveMonth ? "ประมาณการ ยังไม่ปิดยอด" : "ยอดที่บันทึกจริง"}</span></div><div class="growth-grid">${channels.map(channel => {
     const value = shown[channel.key];
     const metric = comparison?.metrics.find(item => item.key === channel.key);
     return `<article class="growth-metric income-channel-card" data-channel-summary="${channel.key}" data-trend="${metric?.trend || "unknown"}"><span class="income-channel-card__number">ช่องทาง ${channel.number}</span><h4>${channel.title}</h4><strong>${growthValue(value, "baht")}</strong><span class="income-channel-card__rule">${channel.rule}</span>${metric ? `<div class="income-channel-card__comparison"><span class="growth-baseline">${incomeCompareMonth < 1 ? "ยังไม่มีเดือนเปรียบเทียบ" : `เดือน ${incomeCompareMonth}: ${growthValue(metric.baseline, "baht")}`}</span><small>${growthChange(metric, incomeCompareMonth)}</small></div>` : ""}<p>${channel.detail}</p></article>`;
   }).join("")}</div></section>` : "";
+  const tierSteps = `<section class="income-tier-steps" aria-label="ขั้นรายได้ช่อง 1"><div class="income-tier-step"><strong>20%</strong><span>ยอดไม่เกิน 40,000 บาท</span></div><div class="income-tier-step"><strong>23%</strong><span>ยอดเกิน 40,000 ถึง 100,000 บาท</span></div><div class="income-tier-step"><strong>25%</strong><span>ยอดเกิน 100,000 บาท</span></div><p class="income-tier-note">ขั้นปัจจุบันดูจากยอดซื้อเป็นบาท แล้วนำอัตราไปคูณ XV ส่วนตัว · RoutineX 1 รอบ = 7,000 XV · ประวัติคงยอดที่บันทึกไว้ในแต่ละเดือน</p></section>`;
   const extraIncome = shown && shown.channel2 !== null && shown.channel3 !== null ? shown.channel2 + shown.channel3 : null;
   const firstTeam = history.find(item => item.channel2 > 0);
   const firstOrganization = history.find(item => item.channel3 > 0);
-  const insight = shown ? `<div class="income-role-insight"><span>${liveMonth ? "ประมาณการ" : "รายได้"}จากทีมและ Organization · เดือน ${shown.month} <b>② + ③</b></span><strong>${growthValue(extraIncome, "baht")}</strong><p>เป็นรายได้ที่เพิ่มจากช่องทางดูแลลูกค้า ① · ผลต่างระหว่างเดือนขึ้นกับทั้งสิทธิ์ ยอดขาย และผลงานทีม</p></div>` : "";
+  const insight = shown ? `<div class="income-role-insight"><span>${liveMonth ? "ประมาณการ" : "รายได้"}จากทีมและ Organization · เดือน ${shown.month} <b>② + ③</b></span><strong>${growthValue(extraIncome, "baht")}</strong><p>เป็นรายได้ที่เพิ่มจากยอดส่วนตัวช่อง ① · ผลต่างระหว่างเดือนขึ้นกับทั้งสิทธิ์ ยอดซื้อ และผลงานทีม</p></div>` : "";
   const highestIncome = Math.max(1, ...history.map(item => item.total ?? 0));
   const timeline = Array.from({ length: 24 }, (_, index) => {
     const month = index + 1;
@@ -238,17 +243,17 @@ function renderIncome(selectedMonth = null, compareMonth = null, { live = false 
   }).join("");
   const historyCards = history.map(item => {
     const earningChannels = channels.filter(channel => item[channel.key] > 0).map(channel => channel.number).join(" ");
-    return `<details class="income-history-card" data-month="${item.month}"${item.month === incomeMonth && !liveMonth ? ' data-selected="true"' : ""}><summary class="income-history-row"><span class="income-history-row__month">เดือน ${item.month} · ปี ${item.year}<small>${earningChannels ? `มีรายได้ ${earningChannels}` : "ยังไม่มีช่องทางที่บันทึกรายได้"}</small></span>${channels.map(channel => `<span class="income-history-row__channel" data-history-channel="${channel.key}"><small>${channel.number}</small><b>${growthValue(item[channel.key], "baht")}</b></span>`).join("")}<strong class="income-history-row__total"><small>รวม</small><b>${growthValue(item.total, "baht")}</b></strong></summary><div class="income-history-card__detail"><p>TGV ${growthValue(item.tgv, "XV")} · ลูกค้าใช้ต่อ ${growthValue(item.repeatCustomers, "คน")} · X-VISOR ${growthValue(item.teamCount, "คน")}</p>${incomeContributionHtml(item)}<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${item.month}">เทียบผลเดือน ${item.month}</button></div></details>`;
+    return `<details class="income-history-card" data-month="${item.month}"${item.month === incomeMonth && !liveMonth ? ' data-selected="true"' : ""}><summary class="income-history-row"><span class="income-history-row__month">เดือน ${item.month} · ปี ${item.year}<small>${earningChannels ? `มีรายได้ ${earningChannels}` : "ยังไม่มีช่องทางที่บันทึกรายได้"}</small></span>${channels.map(channel => `<span class="income-history-row__channel" data-history-channel="${channel.key}"><small>${channel.number}</small><b>${growthValue(item[channel.key], "baht")}</b></span>`).join("")}<strong class="income-history-row__total"><small>รวม</small><b>${growthValue(item.total, "baht")}</b></strong></summary><div class="income-history-card__detail"><p>TGV ${growthValue(item.tgv, "XV")} · ซื้อรอบใหม่ ${growthValue(item.repeatCustomers, "คน")} · X-VISOR ${growthValue(item.teamCount, "คน")}</p>${incomeContributionHtml(item)}<button class="dialog-button dialog-button--secondary" type="button" data-history-month="${item.month}">เทียบผลเดือน ${item.month}</button></div></details>`;
   }).join("");
-  const closeLabel = current.campaignScore?.locked && !current.organizationMode ? "กลับสรุปปีแรก" : "กลับเกม";
+  const closeLabel = current.campaignScore?.locked && !current.organizationMode ? "กลับสรุปปีแรก" : "กลับกระดาน";
   showDialog2(`<nav class="history-dialog-nav" aria-label="เมนูประวัติรายได้"><span>เส้นทางการเติบโต</span><button class="history-close" type="button" data-v9-close>${closeLabel} ×</button></nav><div class="dialog-kicker">MONTHLY JOURNEY · 2.0</div><h2>${liveMonth ? `ประมาณการเดือน ${current.month}` : entry ? `รายได้และพัฒนาการ · เดือน ${entry.month}` : "ประวัติการเดินทาง 24 เดือน"}</h2>
     <div class="revenue-hero"><div><span>${liveMonth ? "ยังไม่ปิดยอด" : "รายได้เดือนที่เลือก"}</span><strong>${growthValue(shown?.total ?? null, "baht")}</strong></div><div><span>สะสมจาก ${history.length} เดือนที่มีบันทึก</span><strong>${growthValue(received, "baht")}</strong></div></div>
-    ${!liveMonth ? controls : ""}${channelCards}${insight}
+    ${!liveMonth ? controls : ""}${channelCards}${tierSteps}${insight}
     ${liveMonth ? '<p class="dialog-note">ประมาณการเปลี่ยนตามงานที่ทำ ปิดเดือนแล้วจึงบันทึกผลจริงไว้ในประวัติด้านล่าง</p>' : ""}
     <section class="income-history"><h3>เทียบรายได้รายเดือน · ${history.length} เดือน</h3><p class="dialog-note">เห็นทั้ง ① ② ③ ก่อนขยาย · แตะแถวเพื่อดู TGV ลูกค้า และทีม</p>
       ${firstTeam || firstOrganization ? `<p class="income-channel-milestones">${firstTeam ? `บันทึกแรกที่มีรายได้ ②: เดือน ${firstTeam.month}` : ""}${firstTeam && firstOrganization ? " · " : ""}${firstOrganization ? `บันทึกแรกที่มีรายได้ ③: เดือน ${firstOrganization.month}` : ""}</p>` : ""}
       ${liveMonth ? controls : ""}
-      <div class="income-history-columns" aria-hidden="true"><span>เดือน / ช่องทางที่มีรายได้</span><span>① ลูกค้า</span><span>② Direct G1</span><span>③ Organization</span><span>รวม</span></div><div class="income-history-cards">${historyCards || '<p class="work-empty">ปิดเดือนแรกเพื่อเริ่มบันทึกรายได้และการเติบโต</p>'}</div>
+      <div class="income-history-columns" aria-hidden="true"><span>เดือน / ช่องทางที่มีรายได้</span><span>① ยอดส่วนตัว</span><span>② Direct G1</span><span>③ Organization</span><span>รวม</span></div><div class="income-history-cards">${historyCards || '<p class="work-empty">ปิดเดือนแรกเพื่อเริ่มบันทึกรายได้และการเติบโต</p>'}</div>
       <details class="income-trend"><summary>ดูกราฟเส้นทางเดือน 1–24</summary><p class="dialog-note">แตะเดือนที่ปิดแล้วเพื่อเทียบผล · ความสูงแสดงรายได้</p><div class="history-timeline" aria-label="ประวัติรายได้ 24 เดือน">${timeline}</div></details>
       ${entry ? `<details class="income-growth-more"><summary>ดูการเติบโตของลูกค้าและทีม · เดือน ${entry.month}</summary>${monthGrowthHtml(current, entry.month, incomeCompareMonth, { historyLink: false })}</details>` : ""}
     </section><p class="dialog-note">ตัวเลขมาจากบันทึกแต่ละเดือนและไม่รับประกันรายได้จริง ข้อมูลเก่าที่ไม่เคยเก็บจะแสดง “ไม่เคยบันทึก”</p>`, "wide", "income");
@@ -260,7 +265,7 @@ function renderTgvHelp() {
   const history = getMonthlyHistory(state2);
   const last = history.find(entry => entry.month === Number(state2.month) - 1);
   const best = history.reduce((max, entry) => Math.max(max, Number(entry.tgv || 0)), 0);
-  showDialog2(`<div class="dialog-kicker">🏙️ TGV</div><h2>ยอด XV ของคุณและทีมในเดือนนี้</h2><p class="term-definition">TGV เริ่มใหม่ทุกเดือน เดือนที่ปิดไปแล้วจะเก็บไว้เป็นสถิติและจะไม่ถูกนำมาจ่ายซ้ำ</p><div class="summary-grid"><div><span>เดือนนี้</span><strong>${fmt(getEconomyView(state2).tgv)} XV</strong></div><div><span>เดือนที่แล้ว</span><strong>${growthValue(last?.tgv, "XV")}</strong></div><div><span>Best TGV</span><strong>${fmt(best)} XV</strong></div>${state2.career?.xgenQualified ? `<div><span>ถึงเกณฑ์ XGEN</span><strong>เดือน ${fmt(state2.career.xgenQualifiedAtMonth)}</strong></div>` : ""}</div><div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-open-income-history>ดูประวัติรายเดือน</button><button class="dialog-button" type="button" data-v9-close>เข้าใจแล้ว</button></div>`, "wide", "tgv");
+  showDialog2(`<div class="dialog-kicker">🏙️ TGV</div><h2>ยอด XV ของคุณและทีมในเดือนนี้</h2><p class="term-definition">TGV นับผลงานใหม่ในแต่ละเดือน ฐานลูกค้าและทีมที่ดูแลไว้ยังอยู่ต่อ ยอดที่ปิดแล้วเก็บเป็นประวัติ ส่วนยอดซื้อรอบใหม่จึงนับในเดือนใหม่</p><div class="summary-grid"><div><span>เดือนนี้</span><strong>${fmt(getEconomyView(state2).tgv)} XV</strong></div><div><span>เดือนที่แล้ว</span><strong>${growthValue(last?.tgv, "XV")}</strong></div><div><span>Best TGV</span><strong>${fmt(best)} XV</strong></div>${state2.career?.xgenQualified ? `<div><span>ถึงเกณฑ์ XGEN</span><strong>เดือน ${fmt(state2.career.xgenQualifiedAtMonth)}</strong></div>` : ""}</div><div class="dialog-actions"><button class="dialog-button dialog-button--secondary" type="button" data-open-income-history>ดูประวัติรายเดือน</button><button class="dialog-button" type="button" data-v9-close>เข้าใจแล้ว</button></div>`, "wide", "tgv");
 }
 function renderMonthConfirm() {
   const state2 = stateNow();

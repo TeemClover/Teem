@@ -10,7 +10,7 @@ export const NAME_POOL = Object.freeze([
   "ชา", "ชาช่า", "ชมพู่", "ชิน", "ชิชา", "ซัน", "ซิน", "ซีน", "ซู", "เซฟ",
   "เซน", "เซีย", "ดรีม", "ดิว", "ดีน", "ดีดี", "เดียร์", "เดย์", "โดนัท", "ต้า",
   "ต่าย", "ตอง", "ตั้ม", "ตูน", "เตย", "เติ้ล", "เต้", "เต้ย", "แตง", "แต้ม",
-  "โต้ง", "ทราย", "ท็อป", "ทิว", "ทิม", "ทีม", "เท็น", "เทพ", "ธาม", "ธีร์",
+  "โต้ง", "ทราย", "ท็อป", "ทิว", "ทิม", "ธันว์", "เท็น", "เทพ", "ธาม", "ธีร์",
   "นัน", "นา", "นานา", "นาว", "น้ำตาล", "นิก", "นิด", "นิว", "นุ่น", "เนย",
   "เนส", "โน้ต", "บาส", "บี", "บิว", "เบน", "เบส", "เบล", "ใบเตย", "ใบเฟิร์น",
   "ปาล์ม", "ป่าน", "ปิ่น", "ปุ๊ก", "ปุ๋ย", "เป้", "เป๊ก", "เปียโน", "แป๊ะ", "ผิง",
@@ -52,6 +52,171 @@ export const APPEARANCES = Object.freeze([
   { skin: "#b9795e", hair: "#202b34", shirt: "#c98a54", accent: "#d8f4ff" },
 ]);
 
+export const NPC_HAIR_STYLES = Object.freeze(["short", "long", "ponytail", "bob", "bun", "curly", "spiky", "buzz"]);
+export const NPC_CLOTHING = Object.freeze(["tee", "polo", "shirt", "cardigan", "hoodie", "dress"]);
+const RESERVED_NAMES = new Set(["ทีม", "เอโกะ", "teem", "ako"]);
+const normalizedName = name => String(name || "").trim().normalize("NFC").toLocaleLowerCase("en");
+export const isReservedNpcName = name => RESERVED_NAMES.has(normalizedName(name));
+
+function identityHash(value) {
+  let hash = 2166136261;
+  for (const character of String(value)) hash = Math.imul(hash ^ character.codePointAt(0), 16777619) >>> 0;
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x7feb352d) >>> 0;
+  hash ^= hash >>> 15;
+  hash = Math.imul(hash, 0x846ca68b) >>> 0;
+  return (hash ^ hash >>> 16) >>> 0;
+}
+
+/** Each visible trait has its own stable hash, independent of simulation RNG. */
+export function createPersonAppearance(identityKey) {
+  const pickTrait = (key, choices) => choices[Math.floor(identityHash(`${identityKey}:${key}`) / 4294967296 * choices.length)];
+  const clothing = pickTrait("clothing", NPC_CLOTHING);
+  return {
+    version: 2, identityKey: String(identityKey),
+    skin: pickTrait("skin", APPEARANCES.map(item => item.skin)),
+    hair: pickTrait("hair", ["#242326", "#44332d", "#644937", "#825b40", "#403d48", "#71675e", "#ad8660", "#363e3a"]),
+    shirt: pickTrait("shirt", APPEARANCES.map(item => item.shirt)),
+    accent: pickTrait("accent", ["#f6ce5a", "#fff2d4", "#d7f2ff", "#f4d8b5", "#d8f09b", "#f1c9d9"]),
+    pants: pickTrait("pants", ["#344e4f", "#3f4e6c", "#655447", "#6b6759", "#424047", "#607364"]),
+    hairStyle: pickTrait("hair-style", NPC_HAIR_STYLES),
+    glasses: pickTrait("glasses", [false, false, false, "round", "square"]),
+    clothing, dress: clothing === "dress",
+    accessory: pickTrait("accessory", ["none", "none", "earrings", "hairclip", "headband", "scarf"]),
+    freckles: pickTrait("freckles", [false, false, false, true]),
+    faceShape: pickTrait("face-shape", ["round", "oval"])
+  };
+}
+
+/** Shared NPC fallback for world and portraits; narrator palettes are separate. */
+export function getPersonAppearance(person = {}) {
+  const appearance = person?.appearance || {};
+  if (appearance.version === 2 && appearance.identityKey && !appearance.characterId
+    && NPC_HAIR_STYLES.includes(appearance.hairStyle) && NPC_CLOTHING.includes(appearance.clothing)
+    && appearance.skin && appearance.hair && appearance.shirt && appearance.pants
+    && typeof appearance.freckles === "boolean" && Object.hasOwn(appearance, "glasses")) return appearance;
+  const identityKey = appearance.identityKey || `npc:${person?.personId || person?.id || person?.name || "visitor"}`;
+  const legacyPalette = Object.keys(appearance).every(key => ["skin", "hair", "shirt", "accent"].includes(key))
+    && APPEARANCES.some(item => ["skin", "hair", "shirt", "accent"].every(key => item[key] === appearance[key]));
+  const { characterId, ...explicit } = legacyPalette ? {} : appearance;
+  const generated = createPersonAppearance(identityKey);
+  const clothing = explicit.clothing || (explicit.dress ? "dress" : generated.clothing);
+  return { ...generated, ...explicit, version: 2, identityKey, clothing, dress: clothing === "dress" };
+}
+
+export function getSafeNpcName(name, identityKey, usedNames = []) {
+  if (!isReservedNpcName(name)) return name;
+  const used = new Set(usedNames.map(normalizedName));
+  const start = identityHash(`npc-name:${identityKey}`) % NAME_POOL.length;
+  for (let offset = 0; offset < NAME_POOL.length; offset += 1) {
+    const candidate = NAME_POOL[(start + offset) % NAME_POOL.length];
+    if (!isReservedNpcName(candidate) && !used.has(normalizedName(candidate))) return candidate;
+  }
+  const base = NAME_POOL[start];
+  let suffix = 2;
+  while (used.has(normalizedName(`${base} ${suffix}`))) suffix += 1;
+  return `${base} ${suffix}`;
+}
+
+/** Rename only NPC records and linked person rows, never narrator copy or IDs. */
+export function normalizeNpcIdentities(state) {
+  if (!state || typeof state !== "object") return state;
+  const lists = ["prospects", "customers", "team"];
+  const people = lists.flatMap(key => Array.isArray(state[key]) ? state[key] : []).filter(person => person && (person.id || person.personId));
+  if (!people.length) return state;
+  const parents = new Map();
+  const root = id => {
+    if (!parents.has(id)) parents.set(id, id);
+    const parent = parents.get(id);
+    if (parent !== id) parents.set(id, root(parent));
+    return parents.get(id);
+  };
+  for (const person of people) {
+    const id = String(person.personId || person.id), alias = String(person.id || person.personId);
+    const a = root(id), b = root(alias);
+    if (a !== b) parents.set(a < b ? b : a, a < b ? a : b);
+  }
+  const groups = new Map();
+  for (const person of people) {
+    const key = root(String(person.personId || person.id));
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(person);
+  }
+  const usedNames = people.filter(person => !isReservedNpcName(person.name)).map(person => person.name);
+  const identities = new Map(), renamedByName = new Map();
+  for (const key of [...groups.keys()].sort()) {
+    const members = groups.get(key);
+    const reserved = members.filter(person => isReservedNpcName(person.name));
+    const existingNames = members.map(person => person.name).filter(name => name && !isReservedNpcName(name)).sort();
+    const name = reserved.length ? existingNames[0] || getSafeNpcName(reserved[0].name, key, usedNames) : null;
+    if (name) usedNames.push(name);
+    const representative = [...members].sort((a, b) => Number(b.appearance?.version || 0) - Number(a.appearance?.version || 0) || String(a.id).localeCompare(String(b.id)))[0];
+    const appearance = getPersonAppearance({ ...representative, personId: key });
+    const identity = { name, appearance, oldNames: new Set(reserved.map(person => normalizedName(person.name))) };
+    for (const person of members) for (const id of [person.id, person.personId].filter(Boolean)) identities.set(String(id), identity);
+    for (const person of reserved) {
+      const old = normalizedName(person.name);
+      if (!renamedByName.has(old)) renamedByName.set(old, new Set());
+      renamedByName.get(old).add(name);
+    }
+  }
+  const result = { ...state };
+  let changed = false;
+  for (const key of lists) if (Array.isArray(state[key])) {
+    const people = state[key].map(person => {
+      if (!person) return person;
+      const identity = identities.get(String(person.personId || person.id));
+      if (!identity) return person;
+      const name = identity.name && isReservedNpcName(person.name) ? identity.name : person.name;
+      const appearance = identity.appearance;
+      const sameAppearance = person.appearance === appearance || person.appearance
+        && Object.keys(person.appearance).length === Object.keys(appearance).length
+        && Object.entries(appearance).every(([key, value]) => person.appearance[key] === value);
+      if (name === person.name && sameAppearance) return person;
+      changed = true;
+      return { ...person, name, appearance: { ...appearance } };
+    });
+    result[key] = people.every((person, index) => person === state[key][index]) ? state[key] : people;
+  }
+  // Appearance updates never need to copy ledgers. Once migrated, normalization
+  // returns the original state, including all 24 months of financial history.
+  if (!renamedByName.size) return changed ? result : state;
+
+  const nameFields = new Set(["name", "customerName", "personName", "targetName", "memberName", "leaderName", "sourceName"]);
+  const namedPersonLists = new Set(["directG1", "mentoringBreakdown", "teamBreakdown", "leaderBreakdown", "leaders", "topLeaders", "teamReports"]);
+  const uniqueReplacement = name => {
+    const names = renamedByName.get(normalizedName(name));
+    return names?.size === 1 ? [...names][0] : null;
+  };
+  const walk = (value, context = "") => {
+    if (Array.isArray(value)) return value.map(item => walk(item, context));
+    if (!value || typeof value !== "object") return value;
+    const identity = ["customerId", "personId", "targetId", "memberId", "leaderId", "sourcePersonId", "sourceId", "id"]
+      .map(key => identities.get(String(value[key] || ""))).find(Boolean);
+    const item = {};
+    for (const [key, field] of Object.entries(value)) {
+      if (nameFields.has(key) && typeof field === "string" && isReservedNpcName(field)) {
+        const fallback = namedPersonLists.has(context) || context === "sceneReport" && ["g1", "candidate", "first-g1"].includes(value.kind);
+        item[key] = identity?.name || (fallback ? uniqueReplacement(field) || "สมาชิกเดิม" : null) || field;
+      } else if (key === "label" && typeof field === "string" && identity?.name && value.targetId) {
+        // Mission labels identify a person explicitly. Do not replace ordinary
+        // occurrences of the Thai word for team inside arbitrary story text.
+        let label = field;
+        for (const old of identity.oldNames) {
+          if (label.endsWith(` ${old}`)) label = `${label.slice(0, -old.length)}${identity.name}`;
+          else if (label.startsWith(`${old} · `)) label = `${identity.name}${label.slice(old.length)}`;
+        }
+        item[key] = label;
+      } else item[key] = walk(field, key);
+    }
+    return item;
+  };
+  for (const key of ["economy", "settlements", "monthSummaries", "organizationReports", "lastOrganizationReport", "sceneReport", "liveReport", "monthOpeningReport", "missions", "eventLog", "xircleHistory", "pendingLive", "pendingXircle", "organization"]) {
+    if (state[key] && typeof state[key] === "object") result[key] = walk(state[key], key);
+  }
+  return result;
+}
+
 export const PERSONAS = Object.freeze([
   { id: "afternoon", concern: "ช่วงบ่ายไม่มีแรง", quote: "ช่วงบ่ายเรามักหมดแรง แล้วกลับบ้านก็ไม่อยากทำอะไร", need: "จัดมื้อและจังหวะช่วงเช้า", fitProducts: ["gus"], tutorial: true },
   { id: "late-sleep", concern: "นอนดึกและตื่นไม่สดชื่น", quote: "ช่วงนี้นอนดึกติดกันหลายวัน ตื่นมาไม่ค่อยพร้อม", need: "เริ่มจากเวลานอนที่สม่ำเสมอ", fitProducts: [], tutorial: false },
@@ -76,9 +241,9 @@ export function createPerson({ seed, usedNames = [], source = "known", index = 1
   const availableNames = NAME_POOL.filter((name) => !used.has(name.normalize("NFC")));
   const names = availableNames.length ? availableNames : NAME_POOL;
   const namePick = pick(seed, names);
-  const appearancePick = pick(namePick.nextSeed, APPEARANCES);
+  const appearanceSeed = advanceSeed(namePick.nextSeed);
   const personaPool = tutorial ? PERSONAS.filter((persona) => persona.tutorial) : PERSONAS;
-  const personaPick = pick(appearancePick.nextSeed, personaPool);
+  const personaPick = pick(appearanceSeed, personaPool);
   const readinessSeed = advanceSeed(personaPick.nextSeed);
 
   return {
@@ -86,7 +251,7 @@ export function createPerson({ seed, usedNames = [], source = "known", index = 1
     person: {
       id: `person-${index}`,
       name: namePick.value,
-      appearance: appearancePick.value,
+      appearance: createPersonAppearance(`npc:person-${index}:${Number(seed || 1)}`),
       persona: personaPick.value.id,
       concern: personaPick.value.concern,
       quote: personaPick.value.quote,

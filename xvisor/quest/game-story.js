@@ -128,10 +128,11 @@ function selectStoryBeat(state = {}, content = {}, context = {}) {
     && Number(context.previousState.monthOpeningReport?.month) !== Number(opening.month);
   if (freshOpening) {
     const automatic = opening.automaticCustomerIds?.length || 0;
+    const direct = opening.automaticDirectMemberIds?.length || 0;
     const followUp = opening.followUpCustomerIds?.length || 0;
     const paused = opening.pausedCustomerIds?.length || 0;
     const line = Number(opening.eligibleCount) > 0
-      ? `เริ่มเดือน ${state.month} แล้ว ลูกค้าเดิมซื้อซ้ำเอง ${automatic} คน${followUp ? ` ยังรอคุย ${followUp} คน` : ""}${paused ? ` และขอพัก ${paused} คน` : ""}`
+      ? `เริ่มเดือน ${state.month} แล้ว ลูกค้าเดิมซื้อซ้ำเอง ${automatic} คน${direct ? ` ทีมสายตรงใช้ต่อ ${direct} คน` : ""}${followUp ? ` ยังรอคุย ${followUp} คน` : ""}${paused ? ` และขอพัก ${paused} คน` : ""}`
       : `เริ่มเดือน ${state.month} แล้ว เดือนนี้ยังไม่มีลูกค้าเดิมที่ถึงรอบซื้อซ้ำ`;
     const tip = followUp + paused > 0
       ? "ดูคนที่ยังไม่ซื้อหรือขอพักใน XOS และ “ผู้คน” แล้วฟังว่าเขาพร้อมแค่ไหน"
@@ -140,8 +141,8 @@ function selectStoryBeat(state = {}, content = {}, context = {}) {
   }
   if (context.event === "REORDER_CUSTOMER" && context.previousState && state.stage === "management") {
     const id = context.payload?.id;
-    const customer = state.customers?.find(person => person.id === id);
-    const previous = context.previousState.customers?.find(person => person.id === id);
+    const customer = [...state.customers || [], ...state.team || []].find(person => person.id === id);
+    const previous = [...context.previousState.customers || [], ...context.previousState.team || []].find(person => person.id === id);
     if (customer?.renewalStatus === "paused" && Number(customer.renewalMonth) === Number(state.month)
       && Number(customer.lastRenewalFollowUpMonth) === Number(state.month)
       && Number(previous?.lastRenewalFollowUpMonth) !== Number(state.month)) {

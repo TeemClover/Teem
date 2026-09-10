@@ -1,7 +1,7 @@
 # X-VISOR QUEST 2.0 — Story Edition
 
-Prepared locally on 10 September 2026. This supersedes the earlier 1.1 integration
-notes. No independent game commit or push is performed by the X-VISOR task.
+Released from main on 10 September 2026. This supersedes the earlier 1.1 integration
+notes. Follow-up releases preserve player progress and the existing leaderboard.
 
 ## Player experience
 
@@ -49,7 +49,7 @@ test selectors and test saves remain in `tests/xvisor/`, outside player routes.
 ## Data and release contracts
 
 Display version is `2.0`; the complete runtime import map and CSS use
-`2.0-immersion1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
+`2.0-growth1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
 when integrating. Browser module filenames remain canonical.
 
 Keep `SAVE_KEY = xvisorQuestContinueV4`, save schema 6, `SCORE_VERSION = 1.0b`
@@ -214,3 +214,44 @@ financial details. This is a copy-only update with unchanged gameplay, saves,
 scores and economics. The landing page and complete runtime graph use the updated
 copy. Verification: 142 unit checks, 10 story-flow browser checks and 6 loading
 checks passed. Proof: `/tmp/xvisor-immersion-{story,loading}`.
+
+
+## Accumulated customers and direct-member purchases — 2.0-growth1
+
+The player-reported Month 6 case exposed two problems: promoted customers were
+excluded from personal renewals, and the opening card emphasized only the current
+month's purchases instead of the persistent relationships built so far.
+
+- Track the accumulated paid base separately from this month's buyers. Moving a
+  customer into a directly recommended X-VISOR role changes their group, not their
+  identity or the combined base count. Paused buyers remain available for care
+  and a later return. Behavior-only plans never produce purchases.
+- Apply the requested compensation model: customers' orders plus directly
+  recommended X-VISORs' own-use orders form personal sales. Each recurring RoutineX
+  purchase carries 7,000 XV. Personal baht sales select 20%, 23% strictly above
+  ฿40,000, or 25% strictly above ฿100,000; the rate is applied to XV. These are the
+  user's specified simulation rules, not newly verified external commercial terms.
+- Preserve repeat-purchase history and relationship benefits across months, with
+  real pauses and follow-up decisions. Opening results remain stable on reload.
+  Direct own use is counted once in personal income and organization volume.
+  Missing satisfaction observations now derive the same finite value before
+  saving and after reload, including six real sales and two certifications.
+- Show the paid base, direct members, strong relationships, monthly purchases,
+  personal sales and applicable rate in one collapsible card. The base stays
+  visible while the card is folded. Historical growth records keep their original
+  scope and do not fill missing old customer counts with current values.
+- Reserve ทีม and เอโกะ for the guides. Existing NPC identities are repaired by
+  stable person ID. NPC hair, clothing and accessories vary independently while
+  keeping the same appearance in portraits and the illustrated scenes.
+
+Integrated validation passed 166 unit/release tests, 18 purchase/retention checks,
+31 full-experience checks, 6 loading checks, 7 income-layout checks, 10 story-flow
+checks, 19 Live/action-scene checks, 5 NPC visual checks and 9 direct-member
+People/follow-up checks. NPC proof includes
+all eight hair styles, standing/seated pairs and matching portraits. Reduced-
+motion comparisons wait for the first painted frame before comparing images.
+Proof is under `/tmp/xvisor-growth-{retention,experience,loading,income,story,scenes,npc}/`.
+Focused member proof: `/tmp/xvisor-growth-team-followup/`. Its six initial
+purchases and two certifications use actual reducer events before the browser
+opens the month and clicks care, follow-up and reload on 1440/390px screens.
+All browser contexts are isolated, with API writes blocked.

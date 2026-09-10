@@ -14,6 +14,12 @@ server at `http://127.0.0.1:4186`, run these browser checks:
 - `npm run test:xvisor:story`: play the full tutorial through Month 2, mentor identity, Routine choices, and optional encounters.
 - `npm run test:xvisor:scenes`: desktop/mobile Live sales, individual receipts, visible action scenes, and old saved-plan recovery.
 
+Focused follow-up checks (set `XVISOR_BASE_URL` to the isolated test server):
+
+- `node tests/xvisor/game-retention.e2e.mjs`: real sale feedback, recurring paid base, direct-member own use, pauses and returns at 1440/390/320px.
+- `node tests/xvisor/game-recurring-people.e2e.mjs`: paired and member-only renewal actions, care, receipts and reload protection.
+- `node tests/xvisor/game-npc-visual.e2e.mjs`: varied NPCs, matching portraits, standing/seated artwork and stable reloads. The art gallery is injected only into the isolated QA browser.
+
 Browser checks require Playwright and Chromium. `XVISOR_PLAYWRIGHT` may point to
 the installed Playwright module, `XVISOR_CHROME` to Chrome, and `XVISOR_BASE_URL`
 to the local server. Every harness uses isolated browser storage and blocks

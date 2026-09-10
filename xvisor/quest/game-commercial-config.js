@@ -79,9 +79,9 @@ var INCOME_RULE = Object.freeze({
   effectiveDate: null,
   status: COMMERCIAL_STATUS.TO_CONFIRM,
   tiers: Object.freeze([
-    Object.freeze({ min: 0, max: 39999, rate: 0.2, label: "20%" }),
-    Object.freeze({ min: 4e4, max: 99999, rate: 0.23, label: "23%" }),
-    Object.freeze({ min: 1e5, max: null, rate: 0.25, label: "25%" })
+    Object.freeze({ min: 0, max: 40000, rate: 0.2, label: "20%" }),
+    Object.freeze({ min: 40000.01, max: 100000, rate: 0.23, label: "23%" }),
+    Object.freeze({ min: 100000.01, max: null, rate: 0.25, label: "25%" })
   ])
 });
 var DIRECT_MENTORING_RULE = Object.freeze({
@@ -130,8 +130,8 @@ var BREAKAWAY_INCOME_RULE2 = Object.freeze({
   rate: 0,
   status: COMMERCIAL_STATUS?.NOT_FOR_SALE || "NOT_FOR_SALE"
 });
-function getRetailTier2(personalXV) {
-  const amount = Math.max(0, Number(personalXV || 0));
+function getRetailTier2(personalSalesBaht) {
+  const amount = Math.max(0, Number(personalSalesBaht || 0));
   return INCOME_RULE.tiers.find((tier) => tier.max == null || amount <= tier.max) || INCOME_RULE.tiers[0];
 }
 export {

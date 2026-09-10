@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EVENTS, STAGES, makeInitialState, reduceGame, getRoutineChoices, getActiveEncounter } from '../../xvisor/quest/game-data.js';
+import { normalizeNpcIdentities } from '../../xvisor/quest/game-people.js';
 import { getStageContent } from '../../xvisor/quest/game-copy.js';
 import { getStoryBeat } from '../../xvisor/quest/game-story.js';
 import { ENCOUNTER_COPY, getEncounterCopy } from '../../xvisor/quest/game-narrative-data.js';
@@ -250,7 +251,7 @@ test('an engine encounter always offers a skip action and explains whose story i
   const after = reduceGame(state, EVENTS.RESOLVE_ENCOUNTER, { encounterId: active.id, choiceId: 'skip' });
   assert.equal(after.encounters.pending, null);
   assert.equal(after.energy, state.energy);
-  assert.deepEqual(after.customers, state.customers);
+  assert.deepEqual(after.customers, normalizeNpcIdentities(state).customers);
 });
 
 test('resolved encounters show the chosen result with its original narrator only after application', () => {
