@@ -1,6 +1,51 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {RECIPES,getRecipe,scaledIngredients,validateKitchenState} from '../../ako/kitchen/recipes.js';
+import {KITCHEN_ORIGIN,recipePath} from '../../ako/kitchen/share.js';
+import {renderRecipePage} from '../../tools/build-ako-recipes.mjs';
+
+const root=new URL('../../',import.meta.url);
+const readPublic=pathname=>readFileSync(new URL(pathname.replace(/^\//,''),root),'utf8');
+
+test('every public recipe has its own responsive photo in static HTML and sharing previews',async t=>{
+  const template=readPublic('/ako/kitchen/index.html');
+  const usedPhotos=new Set();
+  // Do not filter by recipe.image: that previously let two published dressings
+  // silently pass without photos while the image-equipped dishes were checked.
+  for(const recipe of RECIPES)await t.test(recipe.id,()=>{
+    const {image}=recipe;
+    assert.ok(image,`${recipe.id}: public recipes must include a dish photo`);
+    assert.match(image.alt,/ภาพประกอบ/,`${recipe.id}: describe the illustration honestly`);
+    assert.notEqual(image.path,image.mobile,`${recipe.id}: responsive variants must be distinct`);
+    for(const pathname of [image.path,image.mobile]){
+      assert.match(pathname,/^\/(?:ako\/kitchen\/art|frontdoor\/art)\/[a-z0-9-]+\.webp$/);
+      assert.ok(!usedPhotos.has(pathname),`${recipe.id}: do not substitute another recipe's photo`);
+      usedPhotos.add(pathname);
+      const bytes=readFileSync(new URL(pathname.slice(1),root));
+      assert.equal(bytes.toString('ascii',0,4),'RIFF',`${recipe.id}: ${pathname} must be an actual WebP file`);
+      assert.equal(bytes.toString('ascii',8,12),'WEBP',`${recipe.id}: ${pathname} must be an actual WebP file`);
+    }
+    const expectedImage=KITCHEN_ORIGIN+image.path;
+    for(const [surface,html] of [
+      ['generator',renderRecipePage(template,recipe)],
+      ['published page',readPublic(recipePath(recipe.id)+'index.html')],
+    ]){
+      const label=`${recipe.id} ${surface}`;
+      const figure=html.match(/<figure\b[^>]*\bid="recipe-photo"[^>]*>/)?.[0];
+      assert.ok(figure,`${label}: dish figure is present`);
+      assert.doesNotMatch(figure,/\bhidden\b/,`${label}: dish photo must be visible without JavaScript`);
+      const img=html.match(/<img\b[^>]*\bid="dish-image"[^>]*>/)?.[0];
+      assert.ok(img,`${label}: dish image is present`);
+      assert.equal(img.match(/\bsrc="([^"]*)"/)?.[1],image.path,`${label}: correct desktop photo`);
+      assert.equal(img.match(/\bsrcset="([^"]*)"/)?.[1],`${image.mobile} 600w, ${image.path} 1000w`,`${label}: correct mobile and desktop photos`);
+      assert.equal(html.match(/<meta\b[^>]*property="og:image"[^>]*content="([^"]*)"/)?.[1],expectedImage,`${label}: sharing uses this dish, not a fallback logo`);
+      const json=html.match(/<script\b[^>]*id="recipe-schema"[^>]*>([\s\S]*?)<\/script>/)?.[1];
+      assert.ok(json,`${label}: Recipe JSON-LD is present`);
+      assert.deepEqual(JSON.parse(json).image,[expectedImage],`${label}: search previews use the same dish photo`);
+    }
+  });
+});
 
 const additions=RECIPES.filter(recipe=>recipe.collection==='japanese-everyday');
 const expected=['ginger-chicken-cabbage','chicken-egg-bowl','tofu-mushroom-pan','cabbage-egg-pan','cucumber-sesame-vinegar','mushroom-egg-soup','carrot-tuna-pan','tofu-tomato-cool'];

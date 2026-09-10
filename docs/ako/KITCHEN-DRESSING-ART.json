@@ -1,0 +1,67 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-09-10T00:22:56.901Z",
+  "method": "Built-in image_gen; separate recipe-specific prompts",
+  "purpose": "Fill the two original public dressing recipes that were previously text-only.",
+  "sourceRetention": "Generated originals retained unchanged at recorded Codex paths.",
+  "processing": "Sharp responsive resize and WebP encoding only.",
+  "visualReview": "Peanut-lime is smooth thick tan dressing; soy-lime is thin translucent amber dressing. Matching lime props, no additional garnish, people or branding. Generated food illustrations, not evidence of cooking/taste testing.",
+  "assets": [
+    {
+      "id": "peanut-lime",
+      "prompt": "Use case: photorealistic-natural. Asset type: finished editorial food photograph for a Thai home-cooking recipe website, 3:2 landscape 1536x1024. Primary subject: a small shallow ivory ceramic bowl filled with smooth peanut-and-lime dressing/dip, pale warm tan beige, beautifully silky yet thick enough to leave a soft swirl from stirring. The surface has a natural glossy sheen, not oily. A small spoon rests alongside with a visible little ribbon of the same thick peanut sauce, showing its appetizing consistency. One freshly cut Thai green lime half and a very small few roasted peanut halves sit neatly beside the bowl to explain the two ingredients. The recipe uses smooth unsweetened peanut butter, lime juice, light soy sauce, warm water and a little sugar; the sauce should look smooth, not chunky. Style: restrained high-end Japanese home-cooking magazine, realistic appetizing food, no restaurant excess. Setting: warm pale stone tabletop with a subtle oat-colored linen corner, soft natural window sidelight, ivory pottery, warm neutral colors and gentle real shadows. Composition three-quarter overhead, the entire bowl inside central76% with visible rim and uncluttered breathing room; sharp close food detail, lovely smooth dressing is main focus. No people, hands, faces, brand, text, logos, packaging, garnish, chili, sesame, herbs, honey, vegetable heap, raw ingredients floating, or dip resembling ice cream. This is the peanut-lime dressing itself, not a full salad. No border or collage.",
+      "source": "/Users/Teem/.codex/generated_images/01a07b30-0992-7eb3-97dc-9d541a4e7820/exec-2a8d6e1d-1ae3-4602-868c-767be221b432.png",
+      "sourceSha256": "e64e622bd440689cd529e78267d57fec39df09e3cb59f235819eecce2c2087f2",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/peanut-lime-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 82132,
+          "sha256": "fa21e7b83ed029dc663f21b99d7a515e1f6962ecb91f78b63f1b1ee84400b66a"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/peanut-lime-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 34896,
+          "sha256": "d74982969c9411268543ecaba5a366028ffc155956ff60541b1e88e652480341"
+        }
+      ]
+    },
+    {
+      "id": "soy-lime",
+      "prompt": "Use case: photorealistic-natural. Asset type: finished editorial food photograph for a Thai home-cooking recipe website, 3:2 landscape1536x1024. Primary subject: a small shallow ivory ceramic dipping bowl filled with light soy-and-lime salad dressing. It is a genuinely thin translucent amber brown liquid, luminous light brown at the shallow edges and a slightly deeper soy brown at the center. A few tiny clear oil droplets and subtle natural reflections show it is a vinaigrette, not opaque cream. A modest small spoon rests next to the bowl, carrying a shallow amount of the translucent dressing. One freshly cut juicy Thai green lime half sits near it. The recipe contains light soy sauce, lime juice, water, neutral oil and a little dissolved sugar; only these ingredients. Style: restrained high-end Japanese home-cooking magazine, realistic appetizing detail. Setting warm pale stone kitchen tabletop, small oat linen corner, soft natural window sidelight, ivory pottery, warm neutrals, gentle real shadows. Three-quarter overhead angle. Entire bowl fits within central76% of frame with its rim visible and uncluttered breathing room, close enough to show the clarity and delicate oil droplets. Make the sauce look light, fresh and easy to drizzle; NOT black thick soy, gravy or caramel, no opaque cream. No people, hands, faces, brands, text, logos, packaging, sesame, herbs, chili, garlic, fancy garnish, salad heap, floating food, borders or collage.",
+      "source": "/Users/Teem/.codex/generated_images/01a07b30-0992-7eb3-97dc-9d541a4e7820/exec-ec57e35b-0165-4325-8bff-e14481d6e603.png",
+      "sourceSha256": "5018c8ea67c772d03dd49d67f06d19611667e68c8deb83c9792e441aadb9c6c1",
+      "sourceDimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "exports": [
+        {
+          "kind": "desktop",
+          "path": "ako/kitchen/art/soy-lime-v1.webp",
+          "width": 1000,
+          "height": 667,
+          "bytes": 77444,
+          "sha256": "2e5ce3c5c42ae5409d8b74b87438823c8ac8c051bc30aeeeac9078019728998f"
+        },
+        {
+          "kind": "mobile",
+          "path": "ako/kitchen/art/soy-lime-v1-mobile.webp",
+          "width": 600,
+          "height": 400,
+          "bytes": 35600,
+          "sha256": "373ade127cdc6a24bcb385c67494ffe6fa92267ae6c8ea32f68744b30c1f1a37"
+        }
+      ]
+    }
+  ]
+}
