@@ -11,29 +11,29 @@
 <div id="status" role="status">กำลังเตรียม</div><iframe id="preview" title="เกมฉบับทดสอบ" width="1280" height="1000"></iframe>
 <script type="importmap" id="gameModuleMap">{
   "imports": {
-    "/xvisor/quest/game-action-peek.js": "/xvisor/quest/game-action-peek.js?v=2.0-offer1",
-    "/xvisor/quest/game-action-scenes.js": "/xvisor/quest/game-action-scenes.js?v=2.0-offer1",
-    "/xvisor/quest/game-actions.js": "/xvisor/quest/game-actions.js?v=2.0-offer1",
-    "/xvisor/quest/game-art.js": "/xvisor/quest/game-art.js?v=2.0-offer1",
-    "/xvisor/quest/game-audio.js": "/xvisor/quest/game-audio.js?v=2.0-offer1",
-    "/xvisor/quest/game-boot.js": "/xvisor/quest/game-boot.js?v=2.0-offer1",
-    "/xvisor/quest/game-commercial-config.js": "/xvisor/quest/game-commercial-config.js?v=2.0-offer1",
-    "/xvisor/quest/game-copy.js": "/xvisor/quest/game-copy.js?v=2.0-offer1",
-    "/xvisor/quest/game-data.js": "/xvisor/quest/game-data.js?v=2.0-offer1",
-    "/xvisor/quest/game-engine.js": "/xvisor/quest/game-engine.js?v=2.0-offer1",
-    "/xvisor/quest/game-exam.js": "/xvisor/quest/game-exam.js?v=2.0-offer1",
-    "/xvisor/quest/game-mentor-art.js": "/xvisor/quest/game-mentor-art.js?v=2.0-offer1",
-    "/xvisor/quest/game-narrative-data.js": "/xvisor/quest/game-narrative-data.js?v=2.0-offer1",
-    "/xvisor/quest/game-panels.js": "/xvisor/quest/game-panels.js?v=2.0-offer1",
-    "/xvisor/quest/game-people.js": "/xvisor/quest/game-people.js?v=2.0-offer1",
-    "/xvisor/quest/game-portrait.js": "/xvisor/quest/game-portrait.js?v=2.0-offer1",
-    "/xvisor/quest/game-presentation.js": "/xvisor/quest/game-presentation.js?v=2.0-offer1",
-    "/xvisor/quest/game-progression.js": "/xvisor/quest/game-progression.js?v=2.0-offer1",
-    "/xvisor/quest/game-save.js": "/xvisor/quest/game-save.js?v=2.0-offer1",
-    "/xvisor/quest/game-story.js": "/xvisor/quest/game-story.js?v=2.0-offer1",
-    "/xvisor/quest/game-ui.js": "/xvisor/quest/game-ui.js?v=2.0-offer1",
-    "/xvisor/quest/game-world.js": "/xvisor/quest/game-world.js?v=2.0-offer1",
-    "/tests/xvisor/game-review-fixtures.mjs": "/tests/xvisor/game-review-fixtures.mjs?v=2.0-offer1"
+    "/xvisor/quest/game-action-peek.js": "/xvisor/quest/game-action-peek.js?v=2.0-retention1",
+    "/xvisor/quest/game-action-scenes.js": "/xvisor/quest/game-action-scenes.js?v=2.0-retention1",
+    "/xvisor/quest/game-actions.js": "/xvisor/quest/game-actions.js?v=2.0-retention1",
+    "/xvisor/quest/game-art.js": "/xvisor/quest/game-art.js?v=2.0-retention1",
+    "/xvisor/quest/game-audio.js": "/xvisor/quest/game-audio.js?v=2.0-retention1",
+    "/xvisor/quest/game-boot.js": "/xvisor/quest/game-boot.js?v=2.0-retention1",
+    "/xvisor/quest/game-commercial-config.js": "/xvisor/quest/game-commercial-config.js?v=2.0-retention1",
+    "/xvisor/quest/game-copy.js": "/xvisor/quest/game-copy.js?v=2.0-retention1",
+    "/xvisor/quest/game-data.js": "/xvisor/quest/game-data.js?v=2.0-retention1",
+    "/xvisor/quest/game-engine.js": "/xvisor/quest/game-engine.js?v=2.0-retention1",
+    "/xvisor/quest/game-exam.js": "/xvisor/quest/game-exam.js?v=2.0-retention1",
+    "/xvisor/quest/game-mentor-art.js": "/xvisor/quest/game-mentor-art.js?v=2.0-retention1",
+    "/xvisor/quest/game-narrative-data.js": "/xvisor/quest/game-narrative-data.js?v=2.0-retention1",
+    "/xvisor/quest/game-panels.js": "/xvisor/quest/game-panels.js?v=2.0-retention1",
+    "/xvisor/quest/game-people.js": "/xvisor/quest/game-people.js?v=2.0-retention1",
+    "/xvisor/quest/game-portrait.js": "/xvisor/quest/game-portrait.js?v=2.0-retention1",
+    "/xvisor/quest/game-presentation.js": "/xvisor/quest/game-presentation.js?v=2.0-retention1",
+    "/xvisor/quest/game-progression.js": "/xvisor/quest/game-progression.js?v=2.0-retention1",
+    "/xvisor/quest/game-save.js": "/xvisor/quest/game-save.js?v=2.0-retention1",
+    "/xvisor/quest/game-story.js": "/xvisor/quest/game-story.js?v=2.0-retention1",
+    "/xvisor/quest/game-ui.js": "/xvisor/quest/game-ui.js?v=2.0-retention1",
+    "/xvisor/quest/game-world.js": "/xvisor/quest/game-world.js?v=2.0-retention1",
+    "/tests/xvisor/game-review-fixtures.mjs": "/tests/xvisor/game-review-fixtures.mjs?v=2.0-retention1"
   }
 }</script>
 <script type="module">
@@ -49,7 +49,7 @@ const shell=await (await fetch('/xvisor/quest/index.html', {cache:'no-store'})).
 async function load(){
  const scenario=document.querySelector('#scenario').value,width=Number(document.querySelector('#width').value),state=fixtures[scenario];
  const store=JSON.stringify([[SAVE_KEY,serializeState(state)],['mc_xvisor_audio_1',JSON.stringify({muted:true,musicEnabled:false,sfxEnabled:false})],...(scenario==='score'?[]:[[`mc_xvisor_1b_score_sent:${state.runId}`,'QA fixture']])]);
- const bootstrap=`try { const records=new Map(${store});Object.defineProperty(window,'localStorage',{value:{getItem:k=>records.get(k)??null,setItem:(k,v)=>records.set(k,String(v)),removeItem:k=>records.delete(k)}});window.fetch=async()=>new Response(JSON.stringify({ok:false,error:'QA: NETWORK WRITES DISABLED',progress:{}}),{status:503,headers:{'content-type':'application/json'}});await import('/xvisor/quest/game-boot.js?v=2.0-offer1');parent.postMessage({type:'xvisor-preview-boot',ready:document.body.dataset.gameBoot==='ready'}, new URL(document.baseURI).origin);} catch(error) {console.error('[X-VISOR Preview] Startup failed',error);parent.postMessage({type:'xvisor-preview-boot',ready:false}, new URL(document.baseURI).origin);}`;
+ const bootstrap=`try { const records=new Map(${store});Object.defineProperty(window,'localStorage',{value:{getItem:k=>records.get(k)??null,setItem:(k,v)=>records.set(k,String(v)),removeItem:k=>records.delete(k)}});window.fetch=async()=>new Response(JSON.stringify({ok:false,error:'QA: NETWORK WRITES DISABLED',progress:{}}),{status:503,headers:{'content-type':'application/json'}});await import('/xvisor/quest/game-boot.js?v=2.0-retention1');parent.postMessage({type:'xvisor-preview-boot',ready:document.body.dataset.gameBoot==='ready'}, new URL(document.baseURI).origin);} catch(error) {console.error('[X-VISOR Preview] Startup failed',error);parent.postMessage({type:'xvisor-preview-boot',ready:false}, new URL(document.baseURI).origin);}`;
  const html=shell.replace(/<script type="module" src="[^"]+"><\/script>/,`<script type="module">${bootstrap}<\/script>`);
  const frame=document.querySelector('#preview');frame.width=width;frame.height=width<500?844:1000;frame.srcdoc=html;
  document.querySelector('#status').textContent=`กำลังโหลด ${scenario} · ${width}px…`;

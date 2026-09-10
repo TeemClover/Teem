@@ -1,4 +1,4 @@
-import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSION, buildPersonAction, canDispatch, findPerson, getBestNextActions, getPersonContextAction } from "./game-data.js";
+import { CUSTOMER_STATES, EVENTS, PEOPLE_RENDER_LIMIT, SAVE_KEY, V1_SCORE_VERSION, buildPersonAction, canDispatch, findPerson, getBestNextActions, getPersonContextAction, getCustomerRenewalView } from "./game-data.js";
 import { getSkillSnapshot } from "./game-progression.js";
 import { getEconomyView, getMonthlyHistory, getMonthComparison } from "./game-presentation.js";
 import { isActionAvailable } from "./game-actions.js";
@@ -129,7 +129,7 @@ function peopleRows(state2) {
   }
   return [...unique.values()];
 }
-function categoryFor(row) {
+function categoryFor(row, state2) {
   const { person, kind } = row;
   if (kind === "team") {
     if (person.rank === "xlead" || Number(person.leaderReadiness || 0) >= 65) return "grow";
@@ -137,6 +137,8 @@ function categoryFor(row) {
     return "stable";
   }
   if (kind === "customer") {
+    const renewal = getCustomerRenewalView(state2, person);
+    if (renewal && ["pending", "paused"].includes(renewal.status) && !renewal.followedUp) return "priority";
     const sat = Number(person.satisfaction || 0);
     if (sat < 55 || person.customerState === CUSTOMER_STATES.NEEDS_HELP) return "priority";
     if (person.xvisorInterest || person.xvisorStage || person.referralReady) return "opportunity";
@@ -146,10 +148,11 @@ function categoryFor(row) {
   if (["recommendation", "waiting", "discovery", "baseline"].includes(person.journey)) return "opportunity";
   return ["new", "scheduled", "conversation"].includes(person.journey) ? "grow" : "stable";
 }
-function actionButton(action, person) {
+function actionButton(action, person, compact = false) {
   if (!action) return "";
   const state2 = stateNow();
   const disabled = !canDispatch(state2, action.event) || !isActionAvailable(state2, { ...action, id: person.id });
+  if (compact) return `<button class="dialog-button dialog-button--secondary" type="button" data-work-event="${escapeHtml2(action.event)}" data-id="${escapeHtml2(person.id)}" data-renewal-care title="${escapeHtml2(action.reason || "")}"${disabled ? " disabled" : ""}><strong>${escapeHtml2(action.label)}</strong>${action.cost ? ` · ⚡ ${action.cost}` : ""}</button>`;
   return `<button class="work-button" type="button" data-work-event="${escapeHtml2(action.event)}" data-id="${escapeHtml2(person.id)}"${disabled ? " disabled" : ""}><strong>${escapeHtml2(action.label)}</strong><span>${escapeHtml2(action.reason || person.status || "")}</span>${action.cost ? `<b>⚡ ${action.cost}</b>` : ""}</button>`;
 }
 function rowCard(row, state2) {
@@ -160,7 +163,9 @@ function rowCard(row, state2) {
     return `<article class="people-card people-card--team"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.rank === "xlead" ? "XLEAD" : "Certified X-VISOR")} · ${escapeHtml2(person.specialtyLabel || "⚖️ สมดุล")}</span></div><b>${person.active ? "กำลังทำงาน" : "พักอยู่"}</b></div><dl><div><dt>Personal XV</dt><dd>${fmt(person.personalXV)}</dd></div><div><dt>ลูกค้า</dt><dd>${fmt(person.customers)}</dd></div><div><dt>ทีมย่อย</dt><dd>${fmt(person.downstreamXvisors)}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml || "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>"}</article>`;
   }
   if (kind === "customer") {
-    return `<article class="people-card"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>ลูกค้า · ❤️ ${fmt(person.satisfaction)}%</span></div><b>${escapeHtml2(person.status || "")}</b></div><dl><div><dt>ความพอใจ</dt><dd>${fmt(person.satisfaction)}%</dd></div><div><dt>Routine</dt><dd>${person.selfDirected ? "เดินเองได้" : "กำลังดูแล"}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml || "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>"}</article>`;
+    const renewal = getCustomerRenewalView(state2, person);
+    const careHtml = renewal?.available ? actionButton(buildPersonAction({ event: EVENTS.CARE_CUSTOMER, target: person, state: state2 }), person, true) : "";
+    return `<article class="people-card"${renewal ? ` data-renewal-status="${renewal.status}"` : ""}><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>ลูกค้า · ❤️ ${fmt(person.satisfaction)}%</span></div><b>${escapeHtml2(renewal?.label || person.status || "")}</b></div><dl><div><dt>ความพอใจ</dt><dd>${fmt(person.satisfaction)}%</dd></div><div><dt>Routine</dt><dd>${person.selfDirected ? "เดินเองได้" : "กำลังดูแล"}</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${renewal ? `<p data-renewal-note>${escapeHtml2(renewal.detail)}</p>` : ""}${actionHtml || (renewal ? "" : "<p><b>✅ เดินเองได้</b> · ไม่ต้องสร้างงานเพิ่ม</p>")}${careHtml}</article>`;
   }
   return `<article class="people-card"><div class="people-card__top"><div><h3>${escapeHtml2(person.name)}</h3><span>${escapeHtml2(person.journey || "Prospect")}</span></div><b>${escapeHtml2(person.status || "")}</b></div><dl><div><dt>เปิดใจ</dt><dd>${fmt(person.readiness)}%</dd></div><div><dt>ที่มา</dt><dd>${escapeHtml2(originLabel(person))}</dd></div></dl>${actionHtml}</article>`;
 }
@@ -174,14 +179,16 @@ function renderPeople(focusId = peopleFocusId) {
   const filtered = rows.filter((row) => {
     if (peopleFocusId && row.person.id !== peopleFocusId && row.person.personId !== peopleFocusId) return false;
     if (query && !String(row.person.name || "").toLocaleLowerCase("th").includes(query)) return false;
-    return peopleFocusId || peopleTab === "all" || categoryFor(row) === peopleTab;
+    if (peopleFocusId || peopleTab === "all") return true;
+    if (peopleTab === "renewal") return row.kind === "customer" && ["pending", "paused"].includes(getCustomerRenewalView(state2, row.person)?.status);
+    return categoryFor(row, state2) === peopleTab;
   });
   const pages = Math.max(1, Math.ceil(filtered.length / PEOPLE_RENDER_LIMIT));
   peoplePage = Math.max(0, Math.min(peoplePage, pages - 1));
   const visible = filtered.slice(peoplePage * PEOPLE_RENDER_LIMIT, (peoplePage + 1) * PEOPLE_RENDER_LIMIT);
   const aggregate = state2.organization?.aggregate;
   showDialog2(`<div class="dialog-kicker">👥 คนของคุณ · ${fmt(rows.length)}${aggregate?.overflowPeople ? ` + ${fmt(aggregate.overflowPeople)} ใน Organization` : ""}</div><h2>${peopleFocusId ? "รายละเอียดและ Next Action" : "ดูเฉพาะคนที่มีเหตุผลให้ดูตอนนี้"}</h2><p class="dialog-note">เลือกกลุ่มหรือค้นหาชื่อ เพื่อดูสิ่งที่แต่ละคนต้องการตอนนี้</p>
-    ${peopleFocusId ? `<button class="people-back" type="button" data-v9-clear-focus>← กลับไปรายชื่อ</button>` : `<div class="people-tabs" role="tablist">${[["priority", "🔴 ต้องช่วย"], ["opportunity", "💰 โอกาสดี"], ["grow", "✨ มีแววโต"], ["stable", "✅ เดินเองได้"], ["all", "ทั้งหมด"]].map(([id, label]) => `<button type="button" data-v9-people-tab="${id}" aria-selected="${peopleTab === id}">${label}</button>`).join("")}</div><label class="people-search">ค้นหาชื่อ <input type="search" data-v9-people-search value="${escapeHtml2(peopleQuery)}" placeholder="เช่น เมย์"></label>`}
+    ${peopleFocusId ? `<button class="people-back" type="button" data-v9-clear-focus>← กลับไปรายชื่อ</button>` : `<div class="people-tabs" role="tablist">${[["priority", "🔴 ต้องช่วย"], ["renewal", "📁 ซื้อซ้ำ / พัก"], ["opportunity", "💰 โอกาสดี"], ["grow", "✨ มีแววโต"], ["stable", "✅ เดินเองได้"], ["all", "ทั้งหมด"]].map(([id, label]) => `<button type="button" data-v9-people-tab="${id}" aria-selected="${peopleTab === id}">${label}</button>`).join("")}</div><label class="people-search">ค้นหาชื่อ <input type="search" data-v9-people-search value="${escapeHtml2(peopleQuery)}" placeholder="เช่น เมย์"></label>`}
     <div class="people-grid">${visible.map((row) => rowCard(row, state2)).join("") || '<p class="work-empty">ไม่มีคนในกลุ่มนี้</p>'}</div>
     <div class="dialog-actions">${peopleFocusId ? "" : `<button class="dialog-button dialog-button--secondary" type="button" data-v9-page="prev" ${peoplePage <= 0 ? "disabled" : ""}>← ก่อนหน้า</button><span>${peoplePage + 1} / ${pages}</span><button class="dialog-button dialog-button--secondary" type="button" data-v9-page="next" ${peoplePage >= pages - 1 ? "disabled" : ""}>ถัดไป →</button>`}<button class="dialog-button" type="button" data-v9-close>กลับกระดาน</button></div>`, "wide", "people");
 }

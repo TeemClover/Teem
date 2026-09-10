@@ -90,7 +90,7 @@ function routineContent(state, management = false) {
   };
 }
 var missionAction = (mission) => {
-  const name = mission.label.split(" · ")[0];
+  const name = mission.targetName || mission.label.split(" · ")[0];
   const map = {
     contact: [`ทัก ${name}`, EVENTS.CONTACT_PROSPECT, "talk", 1],
     meet: [`ไปพบ ${name}`, EVENTS.MEET_PROSPECT, "walk", 2],
@@ -101,7 +101,7 @@ var missionAction = (mission) => {
     routine: ["เลือกแผนดูแล", EVENTS.OPEN_MANAGEMENT_ROUTINE, "plan", 0],
     offer: [`คุยแฟ้ม X กับ ${name}`, EVENTS.OFFER_PROSPECT, "offer", 1],
     decision: [`ติดตาม ${name}`, EVENTS.FOLLOW_UP_DECISION, "care", 1],
-    reorder: [`📦 คุยเรื่องซื้อซ้ำ`, EVENTS.REORDER_CUSTOMER, "offer", 1],
+    reorder: [`📁 คุยแฟ้ม X กับ ${name}`, EVENTS.REORDER_CUSTOMER, "offer", 1],
     referral: [`ขอให้ ${name} แนะนำเพื่อน`, EVENTS.ASK_REFERRAL, "talk", 1],
     xvisor: [`ชวน ${name} รู้จัก X-VISOR`, EVENTS.INVITE_XVISOR, "academy", 1],
     "candidate-start": [`ชวน ${name} เรียน Xcademy`, EVENTS.START_CANDIDATE_XCADEMY, "academy", 1],

@@ -176,8 +176,11 @@ export function getActionMoment(previous, next, event, payload = {}) {
   const beforePerson = people(previous).find(item => personMatches(item, payload.id || previous.selectedPersonId));
   const newFeedback = next.exam?.feedback || next.preseason?.practiceFeedback;
   const oldFeedback = previous.exam?.feedback || previous.preseason?.practiceFeedback;
+  const renewalConversation = event === 'REORDER_CUSTOMER' &&
+    (!next.economy?.lastTransaction?.id || next.economy.lastTransaction.id === previous.economy?.lastTransaction?.id);
+  if (renewalConversation) definition = scene('followup', 'ฟังจังหวะของลูกค้า', 'decision');
   const paused = /(_NO|_WRONG|TOO_MUCH|UNAVAILABLE)$/.test(next.lastEvent || '') || newFeedback === 'wrong' ||
-    /ยังไม่พร้อม|ขอคิด|ขอเวลา|ยังไม่ใช่จังหวะ|ต้องใช้ทั้งหมด|กำลังเตรียมสอบ|ยังไม่ผ่าน|ต้องแตะ|ก่อนจบเดือน/.test(changedMessage);
+    renewalConversation || /ยังไม่พร้อม|ขอคิด|ขอเวลา|ยังไม่ใช่จังหวะ|ต้องใช้ทั้งหมด|กำลังเตรียมสอบ|ยังไม่ผ่าน|ต้องแตะ|ก่อนจบเดือน/.test(changedMessage);
   const labels = { prospects: 'คนใหม่', customers: 'ลูกค้า', team: 'ทีม', energy: 'พลังงาน', skillXp: 'XP' };
   const measured = Object.entries(deltas).filter(([key]) => key !== 'month').map(([key, delta]) => `${labels[key]} ${delta > 0 ? '+' : '−'}${Math.abs(delta)}`);
   let detail = changedMessage || (selected?.status !== beforePerson?.status ? selected?.status : '') || measured.join(' · ');
@@ -219,7 +222,7 @@ export function getActionMoment(previous, next, event, payload = {}) {
     title: definition.title, detail: shortText(detail), fullDetail: cleanText(detail),
     duration: ['month', 'measurement', 'mentoring'].includes(definition.group) ? 1150 : 1000,
     outcome: paused ? 'paused' : 'progress', deltas,
-    products: products.filter(id => typeof id === 'string' && id !== 'control').slice(0, 4),
+    products: renewalConversation ? [] : products.filter(id => typeof id === 'string' && id !== 'control').slice(0, 4),
     month: next.month,
     location: encounter?.key === 'live-recap' ? 'studio' : variant === 'rest' ? 'garden' : options[variation % options.length], variation,
   };

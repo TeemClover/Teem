@@ -49,7 +49,7 @@ test selectors and test saves remain in `tests/xvisor/`, outside player routes.
 ## Data and release contracts
 
 Display version is `2.0`; the complete runtime import map and CSS use
-`2.0-offer1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
+`2.0-retention1`. Include every `xvisor/quest/game-*.js` file and the portrait asset
 when integrating. Browser module filenames remain canonical.
 
 Keep `SAVE_KEY = xvisorQuestContinueV4`, save schema 6, `SCORE_VERSION = 1.0b`
@@ -164,4 +164,42 @@ legacy-save browser checks, 31 experience checks, 10 story-flow checks and 6
 loading checks. The browser regressions cover a real high-skill Open House route,
 stale false flags, already-bounced saves and one-click decisions at 1440, 390 and
 320px. API writes were intercepted in isolated contexts. Proof is under
-`/tmp/xvisor-offer-{scenes,experience,story,loading}`. No commit or push was made.
+`/tmp/xvisor-offer-{scenes,experience,story,loading}`. This checkpoint was
+subsequently published in `8792cae7` and verified on the public game.
+
+## Personal sales and returning customers — 2.0-retention1
+
+Personal RoutineX purchases now show the customer's portrait, their choice to
+start or return, and the actual marginal income from that transaction. The short
+result sits by the next actions; a three-second toast also makes it visible on
+small screens. Detailed receipts remain available on demand. A deferred purchase
+shows a conversation rather than a delivery or a sale reward. Live retains its
+existing group result.
+
+Months 2–12 evaluate the existing paid personal customer base when the month
+opens. Trust, adherence, satisfaction, care experience and recent follow-up
+increase the chance of an independent repeat purchase. Outcomes are stable for
+the same run, customer and month. Some customers hesitate or pause; one direct
+follow-up can bring them back, while a refusal leaves room to reconnect in a
+later month. Care-only plans do not become purchases, and people who are already
+team members are excluded from the personal renewal batch.
+
+The opening card records the actual initial counts and income. It folds after
+the next action and remains available for review. Its next-person link advances
+past customers already contacted. XOS and the People “ซื้อซ้ำ / พัก” filter expose
+the same actionable customers as the engine. Month-opening snapshots stay fixed
+as the player works; later personal purchases appear in their own result and in
+the month's actual totals.
+
+The existing prices, income tiers, monthly settlements, Year 2 organization
+simulation, save key/schema and 1.0b high-score namespace are retained. Existing
+saves acquire renewal decisions at their next month opening; loading a save
+does not reroll a decision or bill a customer. The entire module import map and
+stylesheet use the same `2.0-retention1` cache key.
+
+Verification: **213 checks passed** — 142 unit/release checks, 15 new browser
+purchase/renewal/care checks, 31 experience checks, 19 Live/Open House/legacy
+offer checks, and 6 loading checks. Browser checks use isolated saves and block
+API writes; new results fit 1440, 390 and 320px, including reduced motion.
+Proof: `/tmp/xvisor-retention-proof`, `/tmp/xvisor-retention-regression`,
+`/tmp/xvisor-retention-v2-scenes`, and `/tmp/xvisor-retention-loading`.

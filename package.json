@@ -46,7 +46,8 @@
     "test:xvisor:income": "node tests/xvisor/game-income-layout.e2e.mjs",
     "test:xvisor:entry": "node tests/xvisor/game-player-entry.e2e.mjs",
     "test:xvisor:story": "node tests/xvisor/game-story-flow.e2e.mjs",
-    "test:xvisor:scenes": "node tests/xvisor/game-v2-scenes.e2e.mjs"
+    "test:xvisor:scenes": "node tests/xvisor/game-v2-scenes.e2e.mjs",
+    "test:xvisor:retention": "node tests/xvisor/game-retention.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

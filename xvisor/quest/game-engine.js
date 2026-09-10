@@ -644,7 +644,9 @@ function refreshMissions(state) {
     else if (customer.xvisorInterest && !customer.xvisorStage) missions.push(makeMission("xvisor", customer.id, `${customer.name} · เริ่มสนใจ X-VISOR`));
     const customerState = customer.customerState || (customer.selfDirected ? CUSTOMER_STATES.SELF_DIRECTED : CUSTOMER_STATES.NEEDS_HELP);
     const automated = [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customerState);
-    if (!automated && !customer.careOnly && customerState === CUSTOMER_STATES.READY_TO_BUY) missions.push(makeMission("reorder", customer.id, `${customer.name} · พร้อมต่อ RoutineX เดือนใหม่`));
+    if (currentRenewal(state, customer)) {
+      if (["pending", "paused"].includes(customer.renewalStatus) && Number(customer.lastRenewalFollowUpMonth) !== Number(state.month) && isPersonalRenewalCustomer(state, customer) && !reorderedThisMonth(state, customer)) missions.push(makeMission("reorder", customer.id, `${customer.name} · ติดตามคุยแฟ้ม X รอบใหม่`));
+    } else if (!automated && !customer.careOnly && !reorderedThisMonth(state, customer) && customerState === CUSTOMER_STATES.READY_TO_BUY) missions.push(makeMission("reorder", customer.id, `${customer.name} · พร้อมต่อ RoutineX เดือนใหม่`));
     else if (!automated && customer.day < 28) missions.push(makeMission("care", customer.id, `${customer.name} · ต้องการความช่วยเหลือ`));
     else if (!automated && customer.day >= 14 && !customer.measuredAgain) missions.push(makeMission("remeasure", customer.id, `${customer.name} · วัดซ้ำแล้วเปลี่ยน Next Action`));
     if (customer.referralReady && !customer.referralAsked) missions.push(makeMission("referral", customer.id, `${customer.name} · พร้อมแนะนำเพื่อน`));
@@ -727,24 +729,82 @@ function evaluateCustomer(customer) {
   if (customer.followups === 0) return "หลุด";
   return "ยังไม่ชัด";
 }
+function renewalPersonId(customer) { return customer?.personId || customer?.id; }
+function isPersonalRenewalCustomer(state, customer) {
+  const key = renewalPersonId(customer);
+  return Boolean(key && !customer.careOnly && !(state.team || []).some((member) => renewalPersonId(member) === key));
+}
+function reorderedThisMonth(state, customer) {
+  const key = renewalPersonId(customer);
+  return (state.customers || []).some((item) => renewalPersonId(item) === key && Number(item.lastReorderMonth) === Number(state.month)) || (state.monthStats?.reorderedCustomerIds || []).includes(key);
+}
+function currentRenewal(state, customer) {
+  return Number(customer?.renewalMonth) === Number(state?.month) && ["automatic", "pending", "paused"].includes(customer?.renewalStatus);
+}
+function renewalRoll(state, customer, phase) {
+  // Stable across reloads, unrelated actions and customer list ordering.
+  const key = `${state.retentionSeed ?? state.encounters?.seed ?? state.runId ?? state.rngSeed ?? 1}:${renewalPersonId(customer)}:${state.month}:${phase}`;
+  let hash = 2166136261;
+  for (const character of key) hash = Math.imul(hash ^ character.charCodeAt(0), 16777619) >>> 0;
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x7feb352d) >>> 0;
+  hash ^= hash >>> 15;
+  return (hash >>> 0) / 4294967296;
+}
+function renewalChance(state, customer, followup = false) {
+  const trust = clamp(Number(customer.trust ?? 50), 0, 100) / 100;
+  const adherence = clamp(Number(customer.adherence ?? 50), 0, 100) / 100;
+  const satisfaction = satisfactionFor(customer) / 100;
+  const care = getSkillLevel(state.skills, "care") / 10;
+  const recentCare = Number(customer.lastContactMonth || 0) >= Number(state.month) - 1;
+  const base = 0.12 + trust * 0.25 + adherence * 0.2 + satisfaction * 0.2 + care * 0.08 + Math.min(4, Number(customer.followups || 0)) * 0.015 + Number(recentCare) * 0.05 + Number(Boolean(customer.successCase)) * 0.04;
+  const paused = customer.activePlan === false || customer.renewalStatus === "paused";
+  return clamp(base + (followup ? 0.12 : 0) - (paused ? followup ? 0.08 : 0.28 : 0), 0.12, followup ? 0.94 : 0.92);
+}
+function getRenewalFollowupEligibility(state, customer) {
+  const cost = ENERGY_COSTS.reorder;
+  const chance = customer ? renewalChance(state, customer, true) : 0;
+  const pending = currentRenewal(state, customer) && ["pending", "paused"].includes(customer.renewalStatus);
+  const attempted = Number(customer?.lastRenewalFollowUpMonth) === Number(state?.month);
+  const reason = !isPersonalRenewalCustomer(state, customer) ? "คนนี้ไม่มีแผนซื้อซ้ำส่วนตัว" : reorderedThisMonth(state, customer) ? "เดือนนี้ต่อแผนแล้ว" : !pending ? "ยังไม่มีนัดติดตามรอบใหม่" : attempted ? "คุยรอบนี้แล้ว ให้เวลาเขาถึงเดือนหน้า" : Number(state.energy || 0) < cost ? "ติดตามใช้พลังงาน 1 แต้ม" : "คุยสิ่งที่ติดขัด แล้วให้เขาเลือกว่าจะต่อแผนหรือพักก่อน";
+  return { available: Boolean(pending && !attempted && isPersonalRenewalCustomer(state, customer) && !reorderedThisMonth(state, customer) && state.stage === STAGES.MANAGEMENT && !state.organizationMode && !state.runComplete && !state.campaignComplete && Number(state.energy || 0) >= cost), reason, chance, cost };
+}
 function applyAutomaticCustomerCycles(state) {
+  if (state.organizationMode || Number(state.month) < 2 || Number(state.month) > 12 || Number(state.monthOpeningReport?.month) === Number(state.month)) return state;
   let next = state;
   let autoReorders = 0;
   let autoReferrals = 0;
   const careLevel = getSkillLevel(state.skills, "care");
-  const teamPersonIds = new Set((state.team || []).map((member) => member.personId || member.id));
-  const eligible = state.customers.filter((customer) => customer.activePlan && !teamPersonIds.has(customer.personId || customer.id) && customer.lastReorderMonth !== state.month && (customer.selfDirected || customer.successCase || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customer.customerState)));
+  next = { ...next, retentionSeed: state.retentionSeed ?? state.encounters?.seed ?? state.runId ?? state.rngSeed ?? 1 };
+  const seen = new Set();
+  const eligible = state.customers.filter((customer) => {
+    const key = renewalPersonId(customer);
+    const paidPlan = customer.activePlan || ["pending", "paused"].includes(customer.renewalStatus);
+    if (!isPersonalRenewalCustomer(state, customer) || !paidPlan || reorderedThisMonth(state, customer) || currentRenewal(state, customer) || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).sort((a, b) => String(renewalPersonId(a)).localeCompare(String(renewalPersonId(b))));
+  const automaticCustomerIds = [], followUpCustomerIds = [], pausedCustomerIds = [], transactions = [];
   eligible.forEach((customer) => {
-    next = recordSale(next, "reorder", customer.id);
-    autoReorders += 1;
+    const chance = renewalChance(next, customer);
+    const roll = renewalRoll(next, customer, "opening");
+    const status = roll < chance ? "automatic" : roll < chance + (1 - chance) * 0.62 ? "pending" : "paused";
+    if (status === "automatic") {
+      next = recordSale(next, "reorder", customer.id);
+      transactions.push(next.economy.lastTransaction);
+      automaticCustomerIds.push(customer.id);
+      autoReorders += 1;
+    } else if (status === "pending") followUpCustomerIds.push(customer.id);
+    else pausedCustomerIds.push(customer.id);
     next = {
       ...next,
-      customers: updatePerson(next.customers, customer.id, (item) => ({
+      customers: next.customers.map((item) => item.careOnly || renewalPersonId(item) !== renewalPersonId(customer) ? item : ({
         ...item,
-        selfDirected: true,
-        customerState: CUSTOMER_STATES.AUTO_REORDER,
-        lastReorderMonth: state.month,
-        status: "✅ ซื้อ RoutineX รอบใหม่เอง"
+        renewalMonth: Number(state.month), renewalStatus: status, renewalSource: "automatic",
+        activePlan: status !== "paused", selfDirected: status === "automatic",
+        customerState: status === "automatic" ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
+        ...(status === "automatic" ? { lastReorderMonth: Number(state.month) } : {}),
+        status: status === "automatic" ? "✅ ซื้อ RoutineX รอบใหม่เอง" : status === "pending" ? "ยังลังเลรอบใหม่ · นัดคุยสิ่งที่ติดขัด" : "พักแผนเดือนนี้ · ยังทักกลับไปดูแลได้"
       }))
     };
   });
@@ -766,6 +826,7 @@ function applyAutomaticCustomerCycles(state) {
   }
   return refreshMissions({
     ...next,
+    monthOpeningReport: { month: Number(state.month), eligibleCount: eligible.length, automaticCustomerIds, followUpCustomerIds, pausedCustomerIds, actionableCustomerIds: [...followUpCustomerIds, ...pausedCustomerIds], salesBaht: autoReorders * TUTORIAL_OFFER.price, personalXV: autoReorders * TUTORIAL_OFFER.xv, transactions, incomeDelta: 0, accountingFinalized: false },
     monthStats: {
       ...next.monthStats,
       reorders: Number(next.monthStats.reorders || 0) + autoReorders,
@@ -1064,7 +1125,7 @@ function reduceGame(currentState, event, payload = {}) {
         id: `customer-${person.id}`,
         personId: person.id,
         journey: "continue",
-        status: person.careOnly ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ",
+        status: person.careOnly ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : "ดูแลตัวเองได้ · รอดูความพร้อมรอบหน้า",
         selfDirected: true,
         customerState: CUSTOMER_STATES.SELF_DIRECTED,
         lastReorderMonth: 1
@@ -1093,7 +1154,7 @@ function reduceGame(currentState, event, payload = {}) {
         ...person,
         id: `customer-${person.id}`,
         personId: person.id,
-        status: "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ",
+        status: "ดูแลตัวเองได้ · รอดูความพร้อมรอบหน้า",
         journey: "continue",
         selfDirected: true,
         xvisorStage: "certified",
@@ -1308,7 +1369,8 @@ function reduceGame(currentState, event, payload = {}) {
     }
     case EVENTS.CARE_CUSTOMER: {
       const customer = state.customers.find((item) => item.id === payload.id);
-      if (!customer || customer.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customer.customerState) || customer.day >= 28) return state;
+      const renewalCare = getRenewalFollowupEligibility(state, customer).available;
+      if (!customer || !renewalCare && (currentRenewal(state, customer) || customer.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(customer.customerState) || customer.day >= 28)) return state;
       state = spendEnergy(state, ENERGY_COSTS.followup, "care");
       if (!state) return currentState;
       const checkpoints = [3, 7, 14, 21, 28];
@@ -1321,12 +1383,12 @@ function reduceGame(currentState, event, payload = {}) {
         customers: updatePerson(state.customers, customer.id, (item) => ({
           ...item,
           day: nextDay,
-          followups: item.followups + (careLevel >= 10 ? 2 : 1),
-          adherence: Math.min(96, item.adherence + (careLevel >= 10 ? 60 : 7 + careLevel * 2)),
-          trust: item.trust + 5 + Math.floor(careLevel / 2),
+          followups: Number(item.followups || 0) + (careLevel >= 10 ? 2 : 1),
+          adherence: Math.min(96, Number(item.adherence || 0) + (careLevel >= 10 ? 60 : 7 + careLevel * 2)),
+          trust: Math.min(100, Number(item.trust || 0) + 5 + Math.floor(careLevel / 2)),
           selfDirected: false,
           customerState: nextDay >= 28 ? CUSTOMER_STATES.NEEDS_HELP : CUSTOMER_STATES.NEEDS_HELP,
-          status: nextDay >= 28 ? "ถึงเวลาวัดซ้ำ" : careLevel >= 5 ? "ทำได้ดี · Next Action ชัด" : `Day ${nextDay} · ทำต่อ`,
+          status: renewalCare ? "คุยสิ่งที่ติดขัดแล้ว · พร้อมนัดคุยแฟ้ม X รอบใหม่" : nextDay >= 28 ? "ถึงเวลาวัดซ้ำ" : careLevel >= 5 ? "ทำได้ดี · Next Action ชัด" : `Day ${nextDay} · ทำต่อ`,
           lastContactMonth: state.month
         })),
         monthStats: { ...state.monthStats, customersCared: state.monthStats.customersCared + 1 },
@@ -1359,7 +1421,7 @@ function reduceGame(currentState, event, payload = {}) {
           xvisorInterest: item.xvisorInterest || interest,
           selfDirected,
           customerState: selfDirected ? CUSTOMER_STATES.SELF_DIRECTED : success ? CUSTOMER_STATES.READY_TO_BUY : CUSTOMER_STATES.NEEDS_HELP,
-          status: interest ? "เริ่มสนใจ X-VISOR" : customer.careOnly && success ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : selfDirected ? "ดูแลตัวเองได้ · รอบใหม่ซื้ออัตโนมัติ" : success ? "พร้อมต่อ RoutineX เดือนใหม่" : `ผล ${result}`
+          status: interest ? "เริ่มสนใจ X-VISOR" : customer.careOnly && success ? "ทำพฤติกรรมต่อได้ · ยังไม่มีรายการซื้อสินค้า" : selfDirected ? "ดูแลตัวเองได้ · รอดูความพร้อมรอบหน้า" : success ? "พร้อมต่อ RoutineX เดือนใหม่" : `ผล ${result}`
         })),
         monthStats: { ...state.monthStats, remeasures: state.monthStats.remeasures + 1, successCases: state.monthStats.successCases + (newlySuccessful ? 1 : 0) },
         career: { ...state.career, totalSuccessCases: state.career.totalSuccessCases + (newlySuccessful ? 1 : 0) },
@@ -1372,7 +1434,28 @@ function reduceGame(currentState, event, payload = {}) {
     }
     case EVENTS.REORDER_CUSTOMER: {
       const customer = state.customers.find((item) => item.id === payload.id);
-      if (!customer || customer.careOnly) return state;
+      if (!isPersonalRenewalCustomer(state, customer) || reorderedThisMonth(state, customer)) return state;
+      if (currentRenewal(state, customer)) {
+        const eligibility = getRenewalFollowupEligibility(state, customer);
+        if (!eligibility.available) return state;
+        let next = spendEnergy(state, eligibility.cost, "care");
+        if (!next) return currentState;
+        const returned = renewalRoll(state, customer, "followup") < eligibility.chance;
+        if (returned) next = recordSale(next, "reorder", customer.id);
+        next = {
+          ...next,
+          customers: next.customers.map((item) => item.careOnly || renewalPersonId(item) !== renewalPersonId(customer) ? item : ({
+            ...item, lastRenewalFollowUpMonth: Number(state.month), lastContactMonth: Number(state.month),
+            renewalStatus: returned ? "automatic" : "paused", renewalSource: "followup", activePlan: returned, selfDirected: returned,
+            customerState: returned ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
+            ...(returned ? { lastReorderMonth: Number(state.month) } : {}),
+            status: returned ? "กลับมาต่อ RoutineX แล้ว · ดูแลกันต่อ" : "คุยแล้วขอพักก่อน · นัดกลับมาเดือนหน้า"
+          })),
+          monthStats: { ...next.monthStats, reorders: Number(next.monthStats.reorders || 0) + Number(returned) },
+          lastEvent: event, lastMessage: returned ? `${customer.name} เลือกกลับมาต่อ RoutineX หลังคุยสิ่งที่ติดขัด` : `${customer.name} ขอพักแผนเดือนนี้ ความสัมพันธ์ยังอยู่ ลองทักใหม่เดือนหน้าได้`, updatedAt: Date.now()
+        };
+        return refreshMissions(addSkillXp(next, "care", 1, "renewal-followup"));
+      }
       const careLevel = getSkillLevel(state.skills, "care");
       const ready = customer.followups >= (careLevel >= 4 ? 1 : 2) && customer.measuredAgain && customer.trust >= 58 && customer.result !== "หลุด";
       if (customer.day < 28 || customer.customerState !== CUSTOMER_STATES.READY_TO_BUY || !ready) return state;
@@ -1389,7 +1472,7 @@ function reduceGame(currentState, event, payload = {}) {
           customerState: careLevel >= 8 ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP,
           selfDirected: careLevel >= 8,
           lastReorderMonth: state.month,
-          status: careLevel >= 8 ? "✅ ซื้อรอบใหม่เองได้ตั้งแต่เดือนหน้า" : "เริ่ม Routine รอบต่อไป"
+          status: careLevel >= 8 ? "เริ่มรอบใหม่แล้ว · ติดตามตามความพร้อม" : "เริ่ม Routine รอบต่อไป"
         })),
         monthStats: { ...state.monthStats, reorders: state.monthStats.reorders + 1 },
         lastEvent: event,
@@ -2105,6 +2188,7 @@ function normalizeTeamMember(member, state) {
 }
 function normalizeCustomer(customer, state) {
   const satisfaction = satisfactionFor(customer);
+  if (currentRenewal(state, customer)) return { ...customer, origin: originFor(customer, state, customer.source || "customer"), satisfaction, selfDirected: customer.renewalStatus === "automatic", customerState: customer.renewalStatus === "automatic" ? CUSTOMER_STATES.AUTO_REORDER : CUSTOMER_STATES.NEEDS_HELP };
   const stable = satisfaction >= 75 && customer.activePlan !== false;
   return {
     ...customer,
@@ -2532,8 +2616,7 @@ function prepareLegacyState(state, event) {
     ...state,
     customers: (state.customers || []).map((customer) => {
       const satisfaction = satisfactionFor(customer);
-      const stable = satisfaction >= 75 && customer.activePlan !== false;
-      return { ...customer, satisfaction, selfDirected: stable, customerState: stable ? CUSTOMER_STATES.SELF_DIRECTED : customer.customerState };
+      return { ...customer, satisfaction };
     })
   };
 }
@@ -2819,15 +2902,17 @@ function getPersonContextAction(state, target, kind = null) {
     }
     return buildPersonAction({ event: eventByJourney[target.journey], target, state });
   }
+  if (getRenewalFollowupEligibility(state, target).available) return buildPersonAction({ event: EVENTS3.REORDER_CUSTOMER, target, state, reason: "ติดตามสิ่งที่ติดขัด แล้วให้เขาเลือกว่าจะต่อแผนหรือพักก่อน" });
   if (target.xvisorStage === "ready") return buildPersonAction({ event: EVENTS3.START_CANDIDATE_XCADEMY, target, state });
   if (target.xvisorStage === "xcademy") return buildPersonAction({ event: EVENTS3.REVIEW_CANDIDATE, target, state });
   const candidateReady = Number(target.candidateProgress || 0) >= 2 && (target.candidateStartedMonth !== state.month || getSkillLevel(state.skills, "leadership") >= 6 || Number(state.monthStats?.xcademySessions || 0) > 0);
   if (target.xvisorStage === "case" && candidateReady) return buildPersonAction({ event: EVENTS3.CERTIFY_CANDIDATE, target, state });
   if (target.xvisorInterest && !target.xvisorStage) return buildPersonAction({ event: EVENTS3.INVITE_XVISOR, target, state });
   if (target.referralReady && !target.referralAsked) return buildPersonAction({ event: EVENTS3.ASK_REFERRAL, target, state });
+  if (currentRenewal(state, target)) return null;
   if (target.selfDirected || [CUSTOMER_STATES.SELF_DIRECTED, CUSTOMER_STATES.AUTO_REORDER].includes(target.customerState)) return null;
   const day = Number(target.day || 0);
-  const reorderReady = !target.careOnly && day >= 28 && target.measuredAgain && Number(target.trust || 0) >= 58 && target.result !== "หลุด" && Number(target.followups || 0) >= (getSkillLevel(state.skills, "care") >= 4 ? 1 : 2);
+  const reorderReady = isPersonalRenewalCustomer(state, target) && !reorderedThisMonth(state, target) && day >= 28 && target.measuredAgain && Number(target.trust || 0) >= 58 && target.result !== "หลุด" && Number(target.followups || 0) >= (getSkillLevel(state.skills, "care") >= 4 ? 1 : 2);
   if (target.customerState === CUSTOMER_STATES.READY_TO_BUY && reorderReady) return buildPersonAction({ event: EVENTS3.REORDER_CUSTOMER, target, state });
   // Day 28 completes the care checkpoints. Low satisfaction cannot make another
   // CARE dispatch valid; review the result before deciding what comes next.
@@ -3538,9 +3623,11 @@ function teamStatus(member) {
 }
 function simulatePersonalCustomerCycle(state, month, eventEffect) {
   const metrics = { repeat: 0, paused: 0, stopped: 0, comeback: 0 };
+  const seen = new Set();
   const customers = (state.customers || []).map((customer, index) => {
     // A behavior-only plan never becomes a paid subscription through simulation.
-    if (customer.careOnly) return customer;
+    if (!isPersonalRenewalCustomer(state, customer) || seen.has(renewalPersonId(customer))) return customer;
+    seen.add(renewalPersonId(customer));
     const key = customer.personId || customer.id || `personal-${index}`;
     const status = customer.organizationCustomerState || (customer.activePlan === false ? "paused" : "active");
     const roll = deterministicRoll2(state, key, 300 + month + index);
@@ -4458,17 +4545,34 @@ function correctFast(before, after, event) {
     return { ...c, journey: "day0", status: "⚡ Full Start · Day 0 · เริ่มดูแลผลลัพธ์จริง", activePlan: true, customerState: CUSTOMER_STATES.NEEDS_HELP, day: 0, followups: 0, adherence: 0, satisfaction: 50, result: null, successCase: false, referralReady: false, xvisorInterest: false, xvisorStage: null, candidateProgress: 0, selfDirected: false, measuredAgain: false };
   });
   if (!found) return after;
-  return { ...after, customers, monthStats: { ...after.monthStats || {}, successCases: Math.max(0, n(after.monthStats?.successCases) - 1) }, economy: { ...after.economy || {}, lastTransaction: { id: `tx-fast-${after.month}-${found.personId || found.id}-${Date.now()}`, status: "SIMULATION", price: FULL_START_BAHT2, xv: FULL_START_XV2, items: [{ id: "xircle-starter", name: "Xircle Band + Scale", price: 4990, xv: 2495, cycle: "first" }, { id: "routinex", name: "RoutineX", price: ROUTINEX_BAHT2, xv: ROUTINEX_XV2, cycle: "monthly" }] } }, lastMessage: `✅ ${found.name} เริ่มครบชุดแล้ว · Day 0 · ต้องดูแลให้เกิดผลลัพธ์จริงก่อนเร่งเส้นทาง X-VISOR` };
+  return { ...after, customers, monthStats: { ...after.monthStats || {}, successCases: Math.max(0, n(after.monthStats?.successCases) - 1) }, economy: { ...after.economy || {}, lastTransaction: { id: `tx-fast-${after.month}-${found.personId || found.id}-${Date.now()}`, kind: "sale", customerId: found.id, status: "SIMULATION", price: FULL_START_BAHT2, xv: FULL_START_XV2, items: [{ id: "xircle-starter", name: "Xircle Band + Scale", price: 4990, xv: 2495, cycle: "first" }, { id: "routinex", name: "RoutineX", price: ROUTINEX_BAHT2, xv: ROUTINEX_XV2, cycle: "monthly" }] } }, lastMessage: `✅ ${found.name} เริ่มครบชุดแล้ว · Day 0 · ต้องดูแลให้เกิดผลลัพธ์จริงก่อนเร่งเส้นทาง X-VISOR` };
+}
+function receiptEconomy(state) {
+  const value = calculateEconomy6(state);
+  return state.career?.xgenExamPolicy && !state.career.xgenExamPassed ? { ...value, channel3: 0, projectedIncome: value.projectedIncome - value.channel3 } : value;
 }
 function patchTx(before, after) {
   const tx = after?.economy?.lastTransaction;
-  if (!tx) return after;
-  const receiptEconomy = (state) => {
-    const value = calculateEconomy5(state);
-    return state.career?.xgenExamPolicy && !state.career.xgenExamPassed ? { ...value, channel3: 0, projectedIncome: value.projectedIncome - value.channel3 } : value;
-  };
+  if (!tx || tx.id === before?.economy?.lastTransaction?.id) return after;
   const b = receiptEconomy(before), a = receiptEconomy(after), saleXV = n(tx.xv), sale = Math.round(saleXV * a.retailRate), oldXV = n(b.personalXV), trueUp = Math.max(0, Math.round(oldXV * (a.retailRate - b.retailRate))), d3 = Math.max(0, a.channel3 - b.channel3), d2 = Math.max(0, a.channel2 - b.channel2), delta = a.projectedIncome - b.projectedIncome;
   return { ...after, economy: { ...after.economy || {}, lastTransaction: { ...tx, incomeBefore: b.projectedIncome, incomeAfter: a.projectedIncome, incomeDelta: delta, salesBahtBefore: b.personalSalesBaht, salesBahtAfter: a.personalSalesBaht, tierBefore: b.tier, tierAfter: a.tier, incomeBreakdown: { saleChannel1: sale, tierTrueUp: trueUp, channel2Delta: d2, channel3Delta: d3, total: delta } } } };
+}
+function finalizeMonthOpeningReport(state) {
+  const report = state.monthOpeningReport;
+  if (!report || report.accountingFinalized || Number(report.month) !== Number(state.month)) return state;
+  // Price/XV remain the commercial values. Attribute only the personal batch,
+  // with the final team snapshot held constant, never the previous month's pay.
+  let cursor = { ...state, economy: { ...state.economy, sets: Math.max(0, n(state.economy.sets) - report.automaticCustomerIds.length), personalXV: Math.max(0, n(state.economy.personalXV) - n(report.personalXV)), productSales: Math.max(0, n(state.economy.productSales) - n(report.salesBaht)), lastTransaction: null } };
+  const before = receiptEconomy(cursor);
+  const transactions = report.transactions.map((transaction) => {
+    const next = { ...cursor, economy: { ...cursor.economy, sets: cursor.economy.sets + 1, personalXV: cursor.economy.personalXV + transaction.xv, productSales: cursor.economy.productSales + transaction.price, lastTransaction: transaction } };
+    cursor = patchTx(cursor, next);
+    return { ...cursor.economy.lastTransaction, customerName: state.customers.find((customer) => customer.id === transaction.customerId)?.name || "" };
+  });
+  const after = receiptEconomy(state);
+  const income = Object.fromEntries(["channel1", "channel2", "channel3", "channel4"].map((key) => [key, after[key] - before[key]]));
+  income.total = after.projectedIncome - before.projectedIncome;
+  return { ...state, monthOpeningReport: { ...report, transactions, income, incomeDelta: income.total, accountingFinalized: true }, ...(transactions.length ? { economy: { ...state.economy, lastTransaction: transactions.at(-1) } } : {}) };
 }
 function release(s) {
   return s ? { ...s, gameVersion: GAME_VERSION3, releaseVersion: RELEASE_VERSION2, v1SaveVersion: V1_SAVE_VERSION2, scoreVersion: V1_SCORE_VERSION2, campaignScore: s.campaignScore ? { ...s.campaignScore, scoreVersion: V1_SCORE_VERSION2 } : s.campaignScore } : s;
@@ -4975,6 +5079,7 @@ function reduceGame7(currentState, event, payload = {}) {
   if (event === EVENTS.CREATE_LEAD && ["content", "creator"].includes(payload.source) && after.prospects.length > state.prospects.length) {
     after = { ...after, liveProgress: { ...after.liveProgress, contentSessions: Number(state.liveProgress?.contentSessions || 0) + 1 } };
   }
+  if (event === EVENTS.START_NEXT_MONTH && Number(after.month) === Number(state.month) + 1) after = finalizeMonthOpeningReport(after);
   return advanceEncounters(state, after, event);
 }
 function makeInitialState7(options = {}) { return initEncounters(makeInitialState6(options), options.seed); }
@@ -5031,6 +5136,9 @@ export {
   getPersonContextAction,
   getPlanQuality,
   getRoutineChoices,
+  getRenewalFollowupEligibility,
+  isPersonalRenewalCustomer,
+  reorderedThisMonth,
   getLiveReadiness,
   getActiveEncounter,
   getRetailTier,

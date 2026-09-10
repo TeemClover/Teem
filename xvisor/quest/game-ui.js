@@ -14,6 +14,7 @@ import {
   calculateEconomy,
   getActiveEncounter,
   getLiveReadiness,
+  getRenewalFollowupEligibility,
   canDispatch,
   isExamStage,
   makeInitialState,
@@ -59,7 +60,10 @@ var actionReadyAt = 0;
 var choiceGuideExpanded = false;
 var storyContext = {};
 var lastStoryKey = "";
+var monthOpeningExpanded = state.lastEvent === EVENTS.START_NEXT_MONTH;
+var displayedRoutineSale = null;
 const CHOICE_GUIDE_KEY = "quickChoicesV2";
+const ROUTINE_SALE_EVENTS = new Set([EVENTS.MAKE_OFFER, EVENTS.OFFER_PROSPECT, EVENTS.CHOOSE_ROUTINE, EVENTS.CHOOSE_MANAGEMENT_ROUTINE, EVENTS.FAST_TRACK_FULL_START, EVENTS.REORDER_CUSTOMER]);
 var audio = createAudio(state.soundOn);
 state = { ...state, soundOn: audio.isEnabled() };
 var iconGlyphs = Object.freeze({
@@ -111,7 +115,7 @@ function announce(message) {
     live.textContent = message;
   });
 }
-function toast(message, tone = "normal") {
+function toast(message, tone = "normal", duration = null) {
   const item = document.createElement("div");
   item.className = `toast toast--${tone}`;
   item.textContent = message;
@@ -120,7 +124,7 @@ function toast(message, tone = "normal") {
   window.setTimeout(() => {
     item.classList.remove("is-visible");
     window.setTimeout(() => item.remove(), 220);
-  }, reducedMotion.matches ? 700 : 1900);
+  }, duration ?? (reducedMotion.matches ? 700 : 1900));
   announce(message);
 }
 function selectedPerson() {
@@ -208,6 +212,8 @@ function dispatch(event, payload = {}) {
     return;
   }
   state = next;
+  if (state.month !== previous.month) monthOpeningExpanded = true;
+  else if (![EVENTS.SELECT_EXAM, EVENTS.SELECT_PRACTICE].includes(event)) monthOpeningExpanded = false;
   if (state.month >= 3 && state.month !== previous.month) choiceGuideExpanded = false;
   storyContext = { previousState: previous, event, payload };
   const reportChanged = Number(previous.lastOrganizationReport?.month || 0) !== Number(state.lastOrganizationReport?.month || 0);
@@ -220,7 +226,11 @@ function dispatch(event, payload = {}) {
   // interrupt AudioContext (for example while screen recording); that must never
   // leave a reduced state in memory without saving or rendering it.
   save();
-  try { actionPeek.show(world?.playAction?.(previous, state, event, payload)); } catch { /* Optional scenery cannot interrupt a saved action. */ }
+  try {
+    const moment = world?.playAction?.(previous, state, event, payload);
+    if (event === EVENTS.START_NEXT_MONTH && state.monthOpeningReport) actionPeek.stop();
+    else actionPeek.show(moment);
+  } catch { /* Optional scenery cannot interrupt a saved action. */ }
   render();
   scheduleAutomaticTransition();
   try {
@@ -245,6 +255,8 @@ function dispatch(event, payload = {}) {
   if (state.month === previous.month && state.economy.lastTransaction?.id && state.economy.lastTransaction.id !== previousTransaction) {
     spawnEffect("coins");
     audio.play("income");
+    const sale = getRoutineSaleResult(state, previous);
+    if (sale) toast(`${sale.person?.name || "ลูกค้า"} ${sale.repeat ? "กลับมาต่อ" : "เริ่ม"} RoutineX แล้ว · ${sale.incomeLabel}`, "success", 3000);
   }
   if (!previous.campaignScore?.locked && state.campaignScore?.locked) {
     audio.play("score");
@@ -435,6 +447,85 @@ function renderReceipt(container, transaction) {
     <small>${escapeHtml(commercialStatusLabel(transaction.status))} · ไม่ใช่การรับประกันรายได้จริง</small>`;
   container.appendChild(receipt);
 }
+function getRoutineSaleResult(current, previous = null) {
+  const transaction = current.economy?.lastTransaction;
+  if (!transaction?.id || !(transaction.items || []).some(item => String(item.id).startsWith("routinex"))) return null;
+  // Live has its own group result; a retained Live receipt must never become a
+  // second personal-sale celebration, including after a reload.
+  if ((current.liveReport?.transactions || []).some(item => item.id === transaction.id)) return null;
+  if (previous) {
+    if (current.month !== previous.month || transaction.id === previous.economy?.lastTransaction?.id) return null;
+  } else if (current.stage !== STAGES.M1_SALE_RECEIPT && !ROUTINE_SALE_EVENTS.has(current.lastEvent)) return null;
+  const allPeople = [...current.customers, ...current.prospects];
+  const targetId = transaction.customerId || current.selectedPersonId;
+  const person = allPeople.find(item => item.id === targetId || item.personId === targetId);
+  const income = Number(transaction.incomeDelta);
+  const incomeKnown = transaction.incomeDelta != null && Number.isFinite(income);
+  return {
+    transaction, person, repeat: transaction.kind === "reorder",
+    incomeLabel: incomeKnown ? `รายได้เพิ่ม ${signedBaht(income)}` : "บันทึกรายการแล้ว",
+    income: incomeKnown ? signedBaht(income) : "—"
+  };
+}
+function renderBriefResults() {
+  let stack = $("#briefResults");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "briefResults";
+    stack.className = "brief-results";
+    stack.addEventListener("click", event => {
+      if (event.target.closest("[data-open-receipt]") && displayedRoutineSale) return showReceipt(displayedRoutineSale.transaction);
+      const customer = event.target.closest("[data-month-follow-up]");
+      if (customer) return showPeople("all", "", customer.dataset.monthFollowUp);
+      if (event.target.closest("[data-month-people]")) return showPeople("all");
+    });
+    stack.addEventListener("toggle", event => {
+      if (event.target.matches(".month-opening-card")) monthOpeningExpanded = event.target.open;
+    }, true);
+  }
+  // Keep the result next to the available actions at every viewport width.
+  $("#actionDock").before(stack);
+  stack.replaceChildren();
+  displayedRoutineSale = getRoutineSaleResult(state, storyContext.previousState);
+  if (displayedRoutineSale) {
+    const sale = displayedRoutineSale;
+    const result = document.createElement("section");
+    result.className = "routine-sale-result";
+    result.dataset.transactionId = sale.transaction.id;
+    result.setAttribute("aria-label", "ผลขาย RoutineX");
+    result.innerHTML = `<canvas class="routine-sale-result__portrait" width="192" height="192" aria-hidden="true"></canvas><div class="routine-sale-result__copy"><span>${sale.repeat ? "กลับมาต่อด้วยกัน" : "เริ่มแผนด้วยกันแล้ว"} <b aria-hidden="true">✓</b></span><strong>${escapeHtml(sale.person?.name || "ลูกค้า")} ${sale.repeat ? "กลับมาต่อ" : "เริ่ม"} RoutineX</strong></div><div class="routine-sale-result__income"><small>รายได้เพิ่ม</small><strong>${escapeHtml(sale.income)}</strong></div><button type="button" data-open-receipt>ดูใบสรุป <span aria-hidden="true">→</span></button>`;
+    stack.appendChild(result);
+    paintStoryPortrait(result.querySelector("canvas"), { portrait: "customer" }, sale.person);
+  }
+  const report = state.monthOpeningReport;
+  if (content.management && report && Number(report.month) === state.month) {
+    const automaticIds = [...new Set(report.automaticCustomerIds || [])];
+    const pausedIds = [...new Set(report.pausedCustomerIds || [])];
+    const followUpIds = [...new Set(report.followUpCustomerIds || [])].filter(id => !automaticIds.includes(id) && !pausedIds.includes(id));
+    const teamIds = new Set(state.team.map(person => person.personId || person.id));
+    const customers = [...state.customers, ...state.prospects.filter(person => person.activePlan)]
+      .filter(person => !person.careOnly && !teamIds.has(person.personId || person.id));
+    const findCustomer = id => customers.find(person => person.id === id || person.personId === id);
+    const candidates = [...followUpIds, ...pausedIds].map(findCustomer).filter(Boolean);
+    const followUp = candidates.find(person => getRenewalFollowupEligibility(state, person).available);
+    const waitingForEnergy = !followUp && Number(state.energy) < 1 && candidates.some(person => Number(person.lastRenewalFollowUpMonth) !== state.month && Number(person.lastReorderMonth) !== state.month);
+    const nextStep = followUp ? `${followUp.name} ${pausedIds.some(id => id === followUp.id || id === followUp.personId) ? "ขอพัก ลองฟังสิ่งที่ติดขัดแล้วให้เขาเลือก" : "รอคุยเรื่องรอบใหม่ เริ่มจากดูความพร้อมของเขา"}`
+      : waitingForEnergy ? "เก็บคนที่ยังรอไว้คุยเดือนหน้า เมื่อมีพลังงานรอบใหม่"
+      : candidates.length ? "คุยรอบนี้ครบแล้ว ดูแลคนที่ต่อแผน และให้เวลาคนที่ขอพักถึงเดือนหน้า"
+      : "ดูแลคนที่มี แล้วค่อยสร้างโอกาสใหม่";
+    const customerCount = new Set(customers.map(person => person.personId || person.id)).size;
+    const card = document.createElement("details");
+    card.className = "month-opening-card";
+    card.dataset.month = String(report.month);
+    card.dataset.renewed = String(automaticIds.length);
+    card.open = monthOpeningExpanded;
+    const incomeDelta = Number(report.incomeDelta);
+    const incomeLabel = report.incomeDelta != null && Number.isFinite(incomeDelta) ? signedBaht(incomeDelta) : "—";
+    card.innerHTML = `<summary><span><strong>เริ่มเดือน ${formatNumber(report.month)}</strong><small>${automaticIds.length ? `กลับมาต่อเอง ${formatNumber(automaticIds.length)} คน` : "ซื้อซ้ำอัตโนมัติ 0 คน"} · รายได้เพิ่ม ${escapeHtml(incomeLabel)}</small></span><span class="month-opening-card__chevron" aria-hidden="true">⌄</span></summary><div class="month-opening-card__body"><p>${automaticIds.length ? "การดูแลที่ผ่านมา ทำให้มีคนกลับมาต่อเอง" : "รอบนี้ยังไม่มีรายการซื้อซ้ำอัตโนมัติ"}</p><div class="month-opening-card__counts"><span>กลับมาต่อ <b>${formatNumber(automaticIds.length)}</b></span><span>รอคุยต่อ <b>${formatNumber(followUpIds.length)}</b></span><span>ขอพัก <b>${formatNumber(pausedIds.length)}</b></span></div><p class="month-opening-card__context">ผลตอนเริ่มเดือน · ถึงรอบ ${formatNumber(report.eligibleCount)} คน · ลูกค้าที่เคยซื้อ ${formatNumber(customerCount)} คน</p><p class="month-opening-card__next">${escapeHtml(nextStep)}</p><div class="month-opening-card__actions">${followUp ? `<button type="button" data-month-follow-up="${escapeHtml(followUp.id)}">ดู ${escapeHtml(followUp.name)} <span aria-hidden="true">→</span></button>` : ""}<button type="button" data-month-people>ดูคนของคุณ</button></div></div>`;
+    stack.appendChild(card);
+  }
+  stack.hidden = !stack.childElementCount;
+}
 function renderManagement(container, data) {
   const missions = document.createElement("section");
   missions.className = "xos-panel";
@@ -575,8 +666,6 @@ function renderDialogue() {
     row.innerHTML = `<span>บนโต๊ะตามแผนนี้</span><strong>${content.selectedProducts.length ? content.selectedProducts.map(productName).join(" · ") : "C · Control ก่อน · ไม่มีสินค้า"}</strong>`;
     details.appendChild(row);
   }
-  if (content.receipt) renderReceipt(details, content.receipt);
-  const transaction = state.economy.lastTransaction;
   const liveReport = state.lastEvent === EVENTS.RUN_LIVE && Number(state.liveReport?.month) === state.month ? state.liveReport : null;
   if (liveReport) {
     const liveSummary = document.createElement("section");
@@ -589,12 +678,6 @@ function renderDialogue() {
       return `<div class="live-result__person"><span>${escapeHtml(peopleName(id))}</span>${sold ? `<button type="button" data-live-receipt="${index}">เริ่มแผน · ดูใบสรุป →</button>` : "<small>ขอเวลา · คุยต่อเดือนหน้า</small>"}</div>`;
     }).join("")}</details>`;
     details.appendChild(liveSummary);
-  }
-  if (!content.receipt && !liveReport && storyContext.previousState && transaction?.id && transaction.id !== storyContext.previousState.economy.lastTransaction?.id && state.month === storyContext.previousState.month) {
-    const receipt = document.createElement("div");
-    receipt.className = "action-result";
-    receipt.innerHTML = `<span>บันทึกรายการแล้ว</span><button type="button" data-open-receipt>ดูใบสรุป →</button>`;
-    details.appendChild(receipt);
   }
   if (content.management) {
     const more = document.createElement("details");
@@ -703,7 +786,7 @@ function renderChoiceGuide() {
   }
   guide.hidden = !management || !choiceGuideExpanded && (Boolean(state.tutorialSeen?.[CHOICE_GUIDE_KEY]) || state.month >= 3);
   const spoken = $("#dialogueText").textContent;
-  feedback.hidden = !management || !state.lastMessage || spoken === state.lastMessage;
+  feedback.hidden = !management || !state.lastMessage || spoken === state.lastMessage || Boolean(displayedRoutineSale);
   feedback.textContent = state.lastMessage || "";
   toolbar.hidden = !management;
   toolbar.querySelector("[data-choice-help]").setAttribute("aria-expanded", String(!guide.hidden));
@@ -741,6 +824,7 @@ function render() {
   renderHud();
   renderGoal();
   renderDialogue();
+  renderBriefResults();
   renderActions();
   renderAudioControls();
   audio.setMode(state.organizationMode ? "organization" : state.month === 0 ? "pre" : "campaign");

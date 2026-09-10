@@ -120,6 +120,34 @@ function selectStoryBeat(state = {}, content = {}, context = {}) {
     if (person?.careOnly && context.payload?.planId === "control") return mentor(`care-start:${id}:${state.month}`, `${person.name || "เขา"}เลือกเริ่มจากพฤติกรรมเดียวแล้ว นัดติดตามกันต่อได้`, "แผนนี้ยังไม่มีสินค้า จึงยังไม่มียอดขาย");
     if (person?.journey === "waiting" && Number(person.nextOfferMonth) > Number(state.month)) return mentor(`offer-waiting:${id}:${person.nextOfferMonth}`, `${person.name || "เขา"}ขอเวลาคิดก่อน ความสัมพันธ์ยังอยู่`, `กลับไปคุยแฟ้ม X ได้ในเดือน ${person.nextOfferMonth}`);
   }
+  const opening = state.monthOpeningReport;
+  const freshOpening = context.event === "START_NEXT_MONTH" && context.previousState
+    && state.stage === "management" && !state.organizationMode
+    && Number(context.previousState.month) < Number(state.month)
+    && Number(opening?.month) === Number(state.month)
+    && Number(context.previousState.monthOpeningReport?.month) !== Number(opening.month);
+  if (freshOpening) {
+    const automatic = opening.automaticCustomerIds?.length || 0;
+    const followUp = opening.followUpCustomerIds?.length || 0;
+    const paused = opening.pausedCustomerIds?.length || 0;
+    const line = Number(opening.eligibleCount) > 0
+      ? `เริ่มเดือน ${state.month} แล้ว ลูกค้าเดิมซื้อซ้ำเอง ${automatic} คน${followUp ? ` ยังรอคุย ${followUp} คน` : ""}${paused ? ` และขอพัก ${paused} คน` : ""}`
+      : `เริ่มเดือน ${state.month} แล้ว เดือนนี้ยังไม่มีลูกค้าเดิมที่ถึงรอบซื้อซ้ำ`;
+    const tip = followUp + paused > 0
+      ? "ดูคนที่ยังไม่ซื้อหรือขอพักใน XOS และ “ผู้คน” แล้วฟังว่าเขาพร้อมแค่ไหน"
+      : "คนที่ซื้อแล้วไม่ต้องตามซื้อซ้ำ ใช้เวลากับคนที่ยังต้องการความช่วยเหลือได้";
+    return mentor(`month-opening:${state.month}`, line, tip);
+  }
+  if (context.event === "REORDER_CUSTOMER" && context.previousState && state.stage === "management") {
+    const id = context.payload?.id;
+    const customer = state.customers?.find(person => person.id === id);
+    const previous = context.previousState.customers?.find(person => person.id === id);
+    if (customer?.renewalStatus === "paused" && Number(customer.renewalMonth) === Number(state.month)
+      && Number(customer.lastRenewalFollowUpMonth) === Number(state.month)
+      && Number(previous?.lastRenewalFollowUpMonth) !== Number(state.month)) {
+      return mentor(`renewal-paused:${id}:${state.month}`, `${customer.name || "เขา"}ขอพักต่อ รอบนี้ยังไม่ซื้อซ้ำ`, `เดือนนี้คุยกันแล้ว ให้เวลาเขา แล้วค่อยกลับมาคุยใหม่เดือน ${Number(state.month) + 1}`);
+    }
+  }
   const repeat = changedTransaction(state, context);
   if (repeat) return mentor(`repeat:${repeat.id}`, "เขาเลือกกลับมาซื้ออีกแล้ว รายได้ช่อง ① จึงมีส่วนจากลูกค้าคนเดิมด้วย", "การดูแลช่วยเพิ่มโอกาสให้เขาอยู่ต่อ แต่เขายังเป็นคนตัดสินใจ", "happy");
   if (state.stage === "exam_summary") {

@@ -252,6 +252,49 @@ export function canDispatch(state, event) {
   return base.canDispatch(toBaseState(clean), event);
 }
 
+/** Current-month renewal decisions only; older saves keep their original care view. */
+export function getCustomerRenewalView(state, customer) {
+  const month = Number(state?.month || 0);
+  if (!customer || customer.careOnly || month < 1 || Number(customer.renewalMonth) !== month
+    || !["automatic", "pending", "paused"].includes(customer.renewalStatus)) return null;
+  const status = customer.renewalStatus;
+  const followedUp = Number(customer.lastRenewalFollowUpMonth) === month;
+  const eligibility = base.getRenewalFollowupEligibility(state, customer);
+  if (status === "automatic") return {
+    status, month, available: false, followedUp,
+    label: "ซื้อซ้ำแล้วเดือนนี้", detail: "ไม่ต้องตามซื้อซ้ำในเดือนนี้"
+  };
+  return {
+    status, month, available: eligibility.available, followedUp,
+    label: followedUp ? "ติดตามแล้ว · ขอพักต่อ" : status === "paused" ? "ขอพักรอบนี้" : "ยังไม่ซื้อซ้ำ",
+    detail: followedUp
+      ? `เดือนนี้คุยแล้ว เขายังขอพัก ค่อยกลับมาคุยใหม่เดือน ${month + 1}`
+      : eligibility.reason || (status === "paused" ? "ฟังเหตุผลที่ขอพัก แล้วให้เขาเลือกว่าจะเริ่มอีกครั้งไหม" : "ฟังสิ่งที่ยังติดอยู่ ก่อนคุยเรื่องซื้อซ้ำ")
+  };
+}
+
+function explainRenewalAction(state, action, customer) {
+  if (!action || ![base.EVENTS.CARE_CUSTOMER, base.EVENTS.REORDER_CUSTOMER].includes(action.event)) return action;
+  const renewal = getCustomerRenewalView(state, customer);
+  if (action.event === base.EVENTS.CARE_CUSTOMER) return renewal?.available ? {
+    ...action, label: `❤️ ช่วย ${customer.name} ดูสิ่งที่ติดขัด`,
+    reason: "ฟังอุปสรรคและช่วยดูแล ก่อนคุยแฟ้ม X เรื่องซื้อซ้ำ"
+  } : action;
+  return {
+    ...action, label: `📁 คุยแฟ้ม X กับ ${customer?.name || action.targetName || "ลูกค้า"}`,
+    reason: renewal?.detail || action.reason || "ทบทวนสิ่งที่ทำต่อได้ แล้วให้เขาเลือกว่าจะซื้อซ้ำไหม",
+    expectedOutcome: "เขาอาจเลือกซื้อซ้ำหรือขอพักต่อ"
+  };
+}
+
+export function buildPersonAction(options = {}) {
+  return explainRenewalAction(options.state, base.buildPersonAction(options), options.target);
+}
+
+export function getPersonContextAction(state, target, kind = null) {
+  return explainRenewalAction(state, base.getPersonContextAction(state, target, kind), target);
+}
+
 const QUICK_ACTION_CONTEXT = new Map([
   [base.EVENTS.CONTACT_PROSPECT, ["people", "ต่อบทสนทนา", "นัดหมายจากความสนใจ แล้วฟังสิ่งที่เขาอยากเปลี่ยน"]],
   [base.EVENTS.MEET_PROSPECT, ["people", "ต่อบทสนทนา", "ทำความเข้าใจบริบทก่อนวางแผนให้คนนี้"]],
@@ -263,7 +306,7 @@ const QUICK_ACTION_CONTEXT = new Map([
   [base.EVENTS.FAST_TRACK_FULL_START, ["people", "คุยแฟ้ม X", "เมื่อเริ่มครบชุดแล้ว ยังต้องดูแลให้เกิดผลลัพธ์จริง"]],
   [base.EVENTS.CARE_CUSTOMER, ["care", "ดูแลลูกค้า", "พาลูกค้าไปจุดติดตามถัดไป เพิ่มความต่อเนื่องและความไว้ใจ"]],
   [base.EVENTS.REMEASURE_CUSTOMER, ["care", "ดูแลลูกค้า", "ทบทวนผลลัพธ์ก่อนตัดสินใจดูแลต่อหรือต่อ RoutineX"]],
-  [base.EVENTS.REORDER_CUSTOMER, ["care", "ดูแลลูกค้า", "ลูกค้าผ่านการติดตามและพร้อมต่อ RoutineX เดือนใหม่"]],
+  [base.EVENTS.REORDER_CUSTOMER, ["care", "ติดตามลูกค้าเดิม", "ฟังความพร้อม แล้วคุยแฟ้ม X เรื่องซื้อซ้ำ เขายังเลือกขอพักได้"]],
   [base.EVENTS.ASK_REFERRAL, ["growth", "สร้างโอกาส", "ให้ลูกค้าที่พร้อมช่วยแนะนำเพื่อนจากความไว้ใจ"]],
   [base.EVENTS.INVITE_XVISOR, ["team", "พัฒนาทีม", "เล่าเส้นทางให้ลูกค้าที่สนใจ ก่อนเริ่มเรียนและฝึกจริง"]],
   [base.EVENTS.START_CANDIDATE_XCADEMY, ["team", "พัฒนาทีม", "เริ่มเรียน Xcademy เพื่อเตรียมฝึกดูแลเคสจริง"]],
@@ -328,7 +371,8 @@ export function getBestNextActions(state, limit = 3) {
       if (action) actions.push({ ...action, type: "routine", score: 90 });
     }
   }
-  actions = actions.filter((item) => isActionAvailable(clean, item) && (!management || canDispatch(clean, item.event)));
+  actions = actions.filter((item) => isActionAvailable(clean, item) && (!management || canDispatch(clean, item.event)))
+    .map(item => explainRenewalAction(clean, item, clean.customers?.find(person => person.id === (item.targetId || item.payload?.id || item.id))));
 
   if (pendingExam(clean) && clean.stage === base.STAGES.MANAGEMENT) {
     actions.unshift({

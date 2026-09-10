@@ -117,6 +117,19 @@ test('existing scenes retain their own timing, while month review remains an imm
   assert.equal(getActionMoment(previous, { ...closed, organizationMode: true }, EVENTS.END_MONTH).presentation, 'primary');
 });
 
+test('renewal follow-up paints a conversation until a new purchase actually happens', () => {
+  const before = { ...management(), customers: [{ id: 'returning', name: 'เมย์', activePlan: false, routinePlan: { products: ['gus'] } }] };
+  const after = { ...before, energy: 27, lastEvent: EVENTS.REORDER_CUSTOMER, lastMessage: 'เมย์ยังพักอยู่ · คุยกันแล้ว เดือนหน้าค่อยดูอีกที' };
+  const deferred = getActionMoment(before, after, EVENTS.REORDER_CUSTOMER, { id: 'returning' });
+  assert.equal(deferred.group, 'followup');
+  assert.equal(deferred.outcome, 'paused');
+  assert.deepEqual(deferred.products, []);
+  const purchased = { ...after, economy: { ...after.economy, lastTransaction: { id: 'new-renewal', kind: 'reorder', incomeDelta: 700 } }, lastMessage: 'เมย์กลับมาต่อ RoutineX แล้ว' };
+  const sale = getActionMoment(before, purchased, EVENTS.REORDER_CUSTOMER, { id: 'returning' });
+  assert.equal(sale.group, 'delivery');
+  assert.equal(sale.outcome, 'progress');
+});
+
 test('action locations vary deterministically without changing action results', () => {
   const previous = management();
   const locations = new Set();
