@@ -4,7 +4,7 @@ import {sqliteD1} from './helpers/sqlite-d1.mjs';
 import {persistFrontdoorEvent,readFrontdoorStats} from '../backend/frontdoor-v2.js';
 import {onRequest} from '../../functions/api/core7/[[path]].js';
 import {validateEvent} from '../../assets/front-door/contract.js';
-import {CLASSROOM_PATHS,FORGE_PATHS} from '../../assets/front-door/outcome-contract.js';
+import {CLASSROOM_PATHS,FORGE_PATHS,KNOWLEDGE_CARRY_PATHS} from '../../assets/front-door/outcome-contract.js';
 import {prepareOutcomeLink,createOutcomeClient} from '../../assets/front-door/outcomes.js';
 const NOW=Date.parse('2026-09-07T10:00:00+07:00');
 const departure=(suffix='1',door='meet',env='local')=>validateEvent({eventName:'DOOR_OPEN',eventId:`e-out-${suffix}`,installId:`install-${suffix}`,journeyId:`j-out-${suffix}`,visitId:`v-out-${suffix}`,handoffId:`h-out-${suffix}`,occurredAt:NOW,path:'/frontdoor/',source:'direct',visitorClass:'new',doorId:door,analyticsVersion:'2.0.0',experienceVersion:'frontdoor-seed-6.0',env,properties:{}}).event;
@@ -93,4 +93,51 @@ test('outcome path drilldown respects departure source, environment, chronologic
  assert.deepEqual(stats.outcomes.paths,[{door:'ako',path:'/ako/kitchen/',installations:1,journeys:2,events:2}]);
  assert.deepEqual((await readFrontdoorStats(db,{from:'2026-09-08',to:'2026-09-08',env:'local'})).outcomes.paths,[]);
  assert.deepEqual((await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'prod'})).outcomes.paths,[]);
+});
+
+test('real receiver keeps Ako → Xircle → X-VISOR on one handoff without crediting skipped original arrivals',async t=>{
+ const db=sqliteD1();t.after(()=>db.close());const origin='http://localhost',calls=[];
+ for(const door of ['ako','xircle']){
+  const data=new Map(),sessionData=new Map();
+  const store={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)},session={getItem:k=>sessionData.get(k)??null,setItem:(k,v)=>sessionData.set(k,v)};
+  const handoffId=`h-path-${door}`,snapshot={installation:{installId:`install-path-${door}`,durable:true},journey:{journeyId:`j-path-${door}`,experienceVersion:'frontdoor-seed-6.0',source:'direct',intentPrimary:'people'},visit:{visitId:`v-path-${door}`},visitorClass:'new'};
+  const paths=door==='ako'?['/ako/','/xircle/','/xvisor/']:['/xircle/','/xvisor/'];
+  let href=prepareOutcomeLink(paths[0]+'?entry=compass',{store,origin,handoffId,env:'local',enabled:true,now:NOW,snapshot}).href;
+  const fetcher=async(path,init)=>{const url=new URL(path,origin);calls.push(JSON.parse(init.body));return onRequest({request:new Request(url,init),env:{DB:db},params:{path:url.pathname.split('/').slice(3)}});};
+  for(const [index,path] of paths.entries()){
+   assert.equal(new URL(href,origin).pathname,path);
+   const client=createOutcomeClient({location:new URL(href,origin),store,session,now:()=>NOW+1000+index*100,delay:()=>1,fetcher});
+   assert.equal(client.arrival().ok,true);
+   for(let retry=0;retry<30&&client.pending().length;retry++)await new Promise(resolve=>setImmediate(resolve));
+   if(client.pending().length)await client.flush();
+   assert.equal(client.pending().length,0);
+   const onward={href:origin+(paths[index+1]||'/xvisor/')+'?entry=xircle'};client.carry(onward);href=onward.href;
+   assert.equal(new URL(href,origin).searchParams.get('fdh'),handoffId);
+  }
+  const repeated=await post(db,receipt({eventId:`o-repeat-xvisor-${door}`,handoffId,path:'/xvisor/'}));
+  assert.equal((await repeated.json()).duplicate,true);
+  // Receipts that arrive only at X-VISOR must not fill the original door's
+  // missing arrival. This is a different installation and journey.
+  const skipped=departure(`${door}-skipped`,door);await persistFrontdoorEvent(db,skipped);
+  assert.equal((await post(db,receipt({eventId:`o-skipped-${door}`,handoffId:skipped.handoffId,path:'/xvisor/'}))).status,202);
+  for(const [index,path] of KNOWLEDGE_CARRY_PATHS.entries())assert.equal((await post(db,receipt({eventId:`o-reading-${door}-${index}`,handoffId,path}))).status,400);
+ }
+ const direct=departure('direct-xvisor','xvisor');await persistFrontdoorEvent(db,direct);
+ assert.equal((await post(db,receipt({eventId:'o-direct-xvisor',handoffId:direct.handoffId,path:'/xvisor/'}))).status,202);
+ assert.equal((await post(db,receipt({eventId:'o-game-not-receiver',handoffId:direct.handoffId,path:'/xvisor/quest/'}))).status,400);
+ const stats=await readFrontdoorStats(db,{from:'2026-09-07',to:'2026-09-07',env:'local'});
+ assert.deepEqual(stats.outcomes.rows,[{door:'ako',opened:2,arrived:1,requested:0},{door:'xircle',opened:2,arrived:1,requested:0},{door:'xvisor',opened:1,arrived:1,requested:0}]);
+ assert.deepEqual(stats.outcomes.paths,[
+  {door:'ako',path:'/ako/',installations:1,journeys:1,events:1},
+  {door:'ako',path:'/xircle/',installations:1,journeys:1,events:1},
+  {door:'ako',path:'/xvisor/',installations:2,journeys:2,events:2},
+  {door:'xircle',path:'/xircle/',installations:1,journeys:1,events:1},
+  {door:'xircle',path:'/xvisor/',installations:2,journeys:2,events:2},
+  {door:'xvisor',path:'/xvisor/',installations:1,journeys:1,events:1},
+ ]);
+ assert.equal(stats.metrics.DOOR_OPEN.installations,5);assert.equal(Object.keys(stats.metrics).length,15);
+ assert.equal((await db.prepare('SELECT COUNT(*) n FROM fd_v2_events').first()).n,5);
+ assert.equal((await db.prepare('SELECT COUNT(*) n FROM fd_v2_outcomes').first()).n,8);
+ for(const table of ['fd_v2_events','fd_v2_outcomes'])assert.equal((await db.prepare(`SELECT COUNT(*) n FROM ${table} WHERE env='prod'`).first()).n,0);
+ for(const door of ['ako','xircle'])assert.equal(new Set(calls.filter(event=>event.eventName==='DOOR_OPEN'&&event.handoffId===`h-path-${door}`).map(event=>event.eventId)).size,1);
 });

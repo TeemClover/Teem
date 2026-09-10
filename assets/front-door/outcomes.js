@@ -1,5 +1,5 @@
 import { environmentForHost, randomId, validId, validateEvent } from './contract.js';
-import { OUTCOME_VERSION, OUTCOME_PATHS, outcomeDoor, validateOutcome } from './outcome-contract.js';
+import { OUTCOME_VERSION, OUTCOME_PATHS, KNOWLEDGE_CARRY_PATHS, outcomeDoor, validateOutcome } from './outcome-contract.js';
 const PREFIX='mc:frontdoor:handoff:v1:', QUEUE='mc:frontdoor:outcomes:v1', AGE=86400000;
 function storage(name){try{return globalThis[name];}catch{return null;}}
 function read(store,key){try{return JSON.parse(store?.getItem(key)||'null');}catch{return null;}}
@@ -89,7 +89,7 @@ export function createOutcomeClient({location=globalThis.location,store=storage(
   function carry(anchor){
     if(!anchor?.href)return;
     const url=new URL(anchor.href,location.origin);
-    if(url.origin===location.origin&&OUTCOME_PATHS.includes(url.pathname)){url.searchParams.set('fdh',handoffId);anchor.href=url.pathname+url.search+url.hash;}
+    if(url.origin===location.origin&&(OUTCOME_PATHS.includes(url.pathname)||KNOWLEDGE_CARRY_PATHS.includes(url.pathname))){url.searchParams.set('fdh',handoffId);anchor.href=url.pathname+url.search+url.hash;}
   }
   return {arrival:()=>enqueue('DESTINATION_ARRIVAL'),requested:()=>enqueue('MEET_REQUEST_ACCEPTED'),carry,flush,pending:()=>queue.map(e=>({...e}))};
 }

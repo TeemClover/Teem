@@ -22,10 +22,16 @@ export const CLASSROOM_PATHS = Object.freeze([
 ]);
 export const DOOR_ARRIVAL_PATHS = Object.freeze({
   ako: Object.freeze(['/ako/', '/ako/kitchen/', '/ako/story/', ...RECIPE_LINKS.map(recipe=>recipe.path)]), xircle: Object.freeze(['/xircle/']),
+  xvisor: Object.freeze(['/xvisor/']),
   meet: Object.freeze(['/meet/']), dungeon: Object.freeze(['/classroom/dungeon/']),
   forge: FORGE_PATHS, classroom: CLASSROOM_PATHS, home: Object.freeze(['/home/']), hall: Object.freeze(['/hall.html']),
 });
 export const OUTCOME_PATHS = Object.freeze(Object.values(DOOR_ARRIVAL_PATHS).flat());
+// Read-only knowledge stops can carry a reference onward, never claim an arrival
+// or prepare a new Front Door departure. Keep this separate from receipt routes.
+export const KNOWLEDGE_CARRY_PATHS = Object.freeze([
+  '/xircle/learn/', '/xircle/learn/topic/', '/xircle/doc/xvisor/',
+]);
 export function outcomeDoor(path) {
   return Object.keys(DOOR_ARRIVAL_PATHS).find(door => DOOR_ARRIVAL_PATHS[door].includes(path));
 }
@@ -34,6 +40,7 @@ export function outcomeDoor(path) {
 export function acceptsOutcomePath(door, path) {
   return path === '/meet/' || DOOR_ARRIVAL_PATHS[door]?.includes(path) === true
     || (door === 'ako' && path === '/xircle/')
+    || ((door === 'ako' || door === 'xircle') && path === '/xvisor/')
     || (door === 'forge' && CLASSROOM_PATHS.includes(path))
     || (door === 'home' && (path === '/hall.html' || FORGE_PATHS.includes(path) || CLASSROOM_PATHS.includes(path) || path === '/classroom/dungeon/'));
 }

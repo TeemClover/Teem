@@ -6,7 +6,7 @@ Read the local `ROUTE.md` before changing a route and [XIRCLE_ROUTE_SOURCE.md](X
 
 ## One experience
 
-`/xircle/`: six actions build a cinematic fictional day, reveal a seven-night pattern, add context with Teem + Ako, and invite the visitor to try it in real life. Runtime: `experience-v3.js` / `experience-v3.css`. Main exit: `/meet/?intent=health&from=xircle&open=booking`; optional knowledge after the payoff. No registration/download sequence, V1/V2 runtime or separate worker.
+`/xircle/`: six actions build a cinematic fictional day, reveal a seven-night pattern, add context with Teem + Ako, and invite the visitor to try it in real life. Runtime: `experience-v3.js` / `experience-v3.css`. Main exit: `/meet/?intent=health&from=xircle&open=booking`; optional knowledge or X-VISOR practice after the payoff. No registration/download sequence, V1/V2 runtime or separate worker.
 
 `/Xircle` and `/Xircle/` are case aliases. They must resolve to the same lowercase source, never another copy.
 
@@ -38,6 +38,14 @@ These retain their existing content, artwork and article interactions; `referenc
 - `/xircle/doc/`: deep-reference index.
 
 References are optional. Reading or buying anything is not required to reach Meet.
+
+## Optional X-VISOR practice
+
+- Xircle payoff → `/xvisor/?from=xircle`; appointment remains primary.
+- `/xircle/learn/` → game or the short `xvisor-context` article.
+- Short care articles (`xvisor-context`, `care-framework`, `certification`, `privacy-boundary`) → optional game after the explanation.
+- `/xircle/doc/xvisor/` → optional game; role/claims/privacy source links remain available.
+- Game landing → existing `/xvisor/quest/`, or return to `/xircle/#appointment` / knowledge. Game entry is optional and does not grant certification or prove an appointment.
 
 ## Deep-reference groups retained
 

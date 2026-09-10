@@ -1,0 +1,33 @@
+/* Optional route invitations. Existing knowledge and the XIRCLE booking remain independent. */
+.xv-path{--xv-ink:#173b31;--xv-paper:#fff4dc;--xv-line:#214c3f;position:relative;isolation:isolate;margin:30px 0;color:var(--xv-ink);font-family:"Noto Sans Thai",Tahoma,system-ui,sans-serif;line-height:1.7;text-align:left}
+.xv-path[hidden]{display:none!important}
+.xv-path--feature{background:var(--xv-paper);border:1px solid #c3a66c;overflow:hidden}
+.xv-path__art{margin:0!important;width:100%;line-height:0}
+.xv-path__art img{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:1672/941;object-fit:contain}
+.xv-path__copy{position:absolute;inset:0 auto 0 0;width:49%;padding:clamp(24px,3.3vw,46px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:15px;background:linear-gradient(90deg,#fff4dcf2 0%,#fff4dce8 73%,#fff4dc00 100%)}
+.xv-path .xv-path__eyebrow{margin:0;color:#526b46;font-size:12px;font-weight:700;letter-spacing:.03em;line-height:1.6}
+.xv-path h2{margin:0;color:var(--xv-ink);font-size:clamp(27px,3.1vw,40px);font-weight:700;line-height:1.4;letter-spacing:-.035em;text-wrap:balance}
+.xv-path .xv-path__description{margin:0;max-width:39ch;color:#324d36;font-size:15px;line-height:1.8}
+.xv-path__actions{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:2px}
+.xv-path a.xv-path__play{display:inline-flex;justify-content:center;align-items:center;gap:15px;min-height:48px;padding:11px 18px;background:var(--xv-ink);border:1px solid var(--xv-ink);color:#fff7e5;font-size:15px;font-weight:700;line-height:1.6;text-decoration:none;transition:background .15s ease,transform .15s ease}
+.xv-path a.xv-path__play:hover{background:#285344;transform:translateY(-2px)}
+.xv-path__play span[aria-hidden]{font-size:21px;font-weight:400}
+.xv-path a.xv-path__read{display:inline-flex;align-items:center;min-height:44px;padding:7px 0;color:#254c3d;font-size:13px;line-height:1.6;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+.xv-path a:focus-visible,.xv-path-return a:focus-visible{outline:3px solid #d77a34;outline-offset:5px}
+.xv-path .xv-path__note{margin:0;max-width:60ch;font-size:11px;line-height:1.7;color:#536149;text-wrap:pretty}
+.xv-path--topic{padding:27px 0 28px;border-block:1px solid #597762;background:transparent;color:#f8e9c8}
+.xv-path--topic h2{color:#f8e9c8;font-size:clamp(25px,3vw,32px);margin:9px 0 13px}
+.xv-path--topic .xv-path__eyebrow{color:#cbb477}
+.xv-path--topic .xv-path__description{max-width:57ch;color:#d0d9cc}
+.xv-path--topic .xv-path__actions{margin-top:18px}
+.xv-path--topic a.xv-path__play{background:#f0dfb6;border-color:#f0dfb6;color:#173b31}
+.xv-path--topic a.xv-path__play:hover{background:#fff0cf}
+.xv-path--topic a.xv-path__read{color:#f0dfb6}
+.xv-path--topic .xv-path__note{margin-top:12px;color:#aebfac;max-width:60ch}
+.xv-path--document{width:min(1180px,calc(100% - 48px));margin:18px auto 54px}
+.xv-path-return{margin:28px 0 0;padding:22px 0 0;border-top:1px solid #6b8072}
+.xv-path-return a{display:inline-flex;align-items:center;gap:14px;min-height:48px;color:#f2dfac;font-size:16px;font-weight:700;text-decoration:underline;text-underline-offset:6px;line-height:1.6}
+.xv-path-return p{font-size:13px;line-height:1.8;color:#c4d2cb;margin:8px 0 0}
+@media(min-width:901px) and (max-width:1100px){.xv-path__copy{width:51%;padding:24px;gap:10px}.xv-path h2{font-size:29px}.xv-path .xv-path__description{font-size:14px}.xv-path a.xv-path__play{font-size:14px;padding:10px 13px}.xv-path .xv-path__note{font-size:10px}}
+@media(max-width:900px){.xv-path--feature{display:flex;flex-direction:column;margin:25px 0}.xv-path__copy{position:relative;inset:auto;order:0;width:100%;padding:27px 24px 20px;gap:14px}.xv-path__art{order:1}.xv-path h2{font-size:29px}.xv-path .xv-path__description{font-size:15px;max-width:100%}.xv-path__actions{align-items:flex-start;flex-direction:column;gap:4px;width:100%}.xv-path a.xv-path__play{min-height:50px;font-size:15px}.xv-path a.xv-path__read{font-size:13px}.xv-path--topic{padding:25px 0}.xv-path--topic h2{font-size:26px}.xv-path--document{width:calc(100% - 32px);margin:16px auto 35px}.xv-path-return a{font-size:15px}}
+@media(prefers-reduced-motion:reduce){.xv-path a.xv-path__play{transition:none}.xv-path a.xv-path__play:hover{transform:none}}

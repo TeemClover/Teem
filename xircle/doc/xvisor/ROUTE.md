@@ -38,3 +38,9 @@ deep story CSS
 - ตรวจภาพไม่บิด/ไม่แหว่งสาระ และไม่มีพื้นที่ตายผิดปกติ
 - ถ้าแก้ Job, Entry, Exit, State, Asset หรือ Naming โดยตั้งใจ ให้ update `ROUTE.md` ใน PR เดียวกัน
 - ถ้ามี route ใหม่ที่มี `index.html` ต้องมี `ROUTE.md` ก่อน merge
+
+## Optional game continuation — 2026-09-10
+
+This page now offers `/xvisor/?from=xircle` as optional practice, without requiring registration, prior completion or a meeting. On the short-article route, it appears only for `xvisor-context`, `care-framework`, `certification`, and `privacy-boundary`, after the brief answer and boundary. Reading and meeting remain independently available. Game outcomes are fictional and do not grant certification.
+
+Shared `xvisor-path.css` presents the invitation; `xvisor-path.js` is read-only and carries only an existing valid opaque handoff reference across explicitly allowed same-site links. It adds no tracking or legacy state writes. Original knowledge/product/health claims are unchanged. Verify mobile/desktop, direct/unknown topic entry, blocked storage, game entry and return.

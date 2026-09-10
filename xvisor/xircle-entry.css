@@ -1,0 +1,9 @@
+/* A return path only; the game landing, saved runs and gameplay stay independent. */
+.xircle-return{display:flex;align-items:center;gap:16px 28px;padding:18px 4px 24px;color:#f7e8c7;line-height:1.6;flex-wrap:wrap}
+.xircle-return[hidden]{display:none}
+.xircle-return>div{margin-right:auto}
+.xircle-return span{font-size:12px;color:#9dccb5}
+.xircle-return p{margin:3px 0 0;font-size:20px;font-weight:700}
+.xircle-return a{display:inline-flex;align-items:center;min-height:44px;color:#f7e8c7;font-size:14px;text-underline-offset:5px}
+.xircle-return a:focus-visible{outline:2px solid #9dccb5;outline-offset:5px}
+@media(max-width:580px){.xircle-return{gap:4px 20px;padding:10px 0 20px}.xircle-return>div{flex-basis:100%}.xircle-return p{font-size:19px}}

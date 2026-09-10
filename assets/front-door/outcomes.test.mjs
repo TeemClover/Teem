@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {prepareOutcomeLink,createOutcomeClient} from './outcomes.js';
-import {CLASSROOM_PATHS, FORGE_PATHS, OUTCOME_PATHS, acceptsOutcomePath, outcomeDoor, validateOutcome} from './outcome-contract.js';
+import {CLASSROOM_PATHS, FORGE_PATHS, OUTCOME_PATHS, KNOWLEDGE_CARRY_PATHS, acceptsOutcomePath, outcomeDoor, validateOutcome} from './outcome-contract.js';
 import {ANALYTICS_VERSION, EVENTS, validateEvent} from './contract.js';
 const memory=()=>{const data=new Map();return {getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};};
 const location={origin:'http://localhost',hostname:'localhost',pathname:'/meet/',search:'?fdh=h-outcome-test'};
@@ -15,6 +15,58 @@ test('Ako kitchen and story carry the same journey through exact public routes o
  assert.equal(acceptsOutcomePath('ako','/xircle/'),true);
  assert.equal(acceptsOutcomePath('ako','/meet/'),true);
  assert.equal(acceptsOutcomePath('dungeon','/ako/kitchen/'),false);
+});
+test('X-VISOR landing is a receipt destination; knowledge stops are carry-only exact paths',()=>{
+ assert.equal(outcomeDoor('/xvisor/'),'xvisor');
+ assert.equal(validateOutcome({...payload,path:'/xvisor/'}).ok,true);
+ for(const door of ['xvisor','xircle','ako'])assert.equal(acceptsOutcomePath(door,'/xvisor/'),true);
+ for(const door of ['dungeon','forge','classroom','home','meet'])assert.equal(acceptsOutcomePath(door,'/xvisor/'),false);
+ assert.deepEqual(KNOWLEDGE_CARRY_PATHS,['/xircle/learn/','/xircle/learn/topic/','/xircle/doc/xvisor/']);
+ assert.equal(Object.isFrozen(KNOWLEDGE_CARRY_PATHS),true);
+ for(const path of [...KNOWLEDGE_CARRY_PATHS,'/xvisor/quest/','/xvisor/private/','/xvisor/?entry=compass']){
+  assert.equal(OUTCOME_PATHS.includes(path),false,path);
+  assert.equal(outcomeDoor(path),undefined,path);
+  assert.equal(validateOutcome({...payload,path}).ok,false,path);
+  for(const door of ['xvisor','xircle','ako'])assert.equal(acceptsOutcomePath(door,path),false,path);
+ }
+ assert.equal(validateOutcome({...payload,name:'MEET_REQUEST_ACCEPTED',path:'/xvisor/'}).ok,false);
+});
+test('knowledge links carry only the existing reference without a departure or fake arrival',async()=>{
+ const store=memory(),session=memory(),calls=[];
+ const handoffId='h-knowledge-carry';
+ prepareOutcomeLink('/xircle/',{store,origin:location.origin,handoffId,env:'local',enabled:true,now:1000});
+ const clientAt=pathname=>createOutcomeClient({location:{...location,pathname,search:`?fdh=${handoffId}`},store,session,now:()=>1100,fetcher:async(url,options)=>{calls.push({url,options});return new Response('{"ok":true}');}});
+ const xircle=clientAt('/xircle/');
+ for(const [index,path] of KNOWLEDGE_CARRY_PATHS.entries()){
+  const href=`${path}?entry=compass&topic=income&fdh=h-stale-reference#read`;
+  const anchor={href:location.origin+href};xircle.carry(anchor);
+  const carried=new URL(anchor.href,location.origin);
+  assert.equal(carried.pathname,path);assert.deepEqual(carried.searchParams.getAll('fdh'),[handoffId]);
+  assert.equal(carried.searchParams.get('topic'),'income');assert.equal(carried.searchParams.get('entry'),'compass');assert.equal(carried.hash,'#read');
+  const preparedId=`h-knowledge-draft-${index}`;
+  const prepared=prepareOutcomeLink(path+'?entry=compass',{store,origin:location.origin,handoffId:preparedId,env:'local',enabled:true,now:1000});
+  assert.equal(prepared.href,path+'?entry=compass');
+  assert.equal(store.getItem('mc:frontdoor:handoff:v1:'+preparedId),null);
+  // Defensive check: even accidental client construction on a knowledge page
+  // cannot turn reading it into a destination or meeting receipt.
+  const knowledge=clientAt(path);
+  assert.equal(knowledge.arrival().ok,false);assert.equal(knowledge.requested().ok,false);
+  assert.deepEqual(knowledge.pending(),[]);
+  const onward={href:'/xvisor/?entry=xircle#start'};knowledge.carry(onward);
+  assert.equal(new URL(onward.href,location.origin).searchParams.get('fdh'),handoffId);
+ }
+ for(const href of ['/xircle/learn/private/','/xircle/doc/xvisor/private/','/xvisor/quest/','https://example.com/xircle/learn/']){
+  const unsupported={href};xircle.carry(unsupported);assert.equal(unsupported.href,href);
+ }
+ await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(calls,[]);
+});
+test('a direct X-VISOR link prepares its own door without altering the source journey',()=>{
+ const store=memory(),snapshot={installation:{installId:'installation-xvisor-direct',durable:true},journey:{journeyId:'j-xvisor-direct',experienceVersion:'frontdoor-seed-6.0',source:'direct'},visit:{visitId:'v-xvisor-direct'},visitorClass:'new'};
+ const original=JSON.stringify(snapshot);
+ prepareOutcomeLink('/xvisor/?entry=compass',{store,origin:location.origin,handoffId:'h-xvisor-direct',env:'local',enabled:true,now:1000,snapshot});
+ const saved=JSON.parse(store.getItem('mc:frontdoor:handoff:v1:h-xvisor-direct'));
+ assert.equal(saved.departure.doorId,'xvisor');assert.equal(saved.departure.eventName,'DOOR_OPEN');
+ assert.equal(validateEvent(saved.departure).ok,true);assert.equal(JSON.stringify(snapshot),original);
 });
 test('prepared departures retain the actual root or alias without persisting query strings',()=>{
  const snapshot={installation:{installId:'installation-root-fixture',durable:true},journey:{journeyId:'j-root-fixture',experienceVersion:'frontdoor-seed-6.0',source:'direct'},visit:{visitId:'v-root-fixture'},visitorClass:'new'};

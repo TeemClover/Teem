@@ -3,4 +3,12 @@
 .compass-continuation[hidden]{display:none}
 .compass-continuation a{color:#eee6d3;min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-underline-offset:5px;flex-shrink:0}
 .compass-continuation a:focus-visible{outline:2px solid #e7c790;outline-offset:4px}
+.knowledge-shortcut{display:inline-flex;align-items:center;min-height:44px;color:#efe5cd;font-size:13px;text-decoration:underline;text-underline-offset:5px;white-space:nowrap}
+.knowledge-shortcut:focus-visible,.care-invitation a:focus-visible{outline:2px solid #e7c790;outline-offset:5px}
+.care-invitation{margin-top:24px;padding-top:20px;border-top:1px solid #59725f66;max-width:440px}
+.care-invitation p{font-size:15px;line-height:1.7;color:#506352;margin:0 0 3px}
+.care-invitation a{display:inline-flex;align-items:center;gap:20px;min-height:48px;color:#254c3d;font-size:20px;line-height:1.6;text-decoration:underline;text-underline-offset:6px}
+.care-invitation a:hover{color:#102e23}
+.care-invitation small{display:block;margin-top:5px;color:#52634e;font-size:12px;line-height:1.8}
+@media(max-width:760px){.topbar .top-actions{display:grid;grid-template-columns:auto auto;align-items:center;gap:0 14px}.knowledge-shortcut{grid-column:1;grid-row:1;font-size:12px}.topbar .sound-toggle{position:static;grid-column:2;grid-row:1}.topbar .sample-label{grid-column:1/-1;grid-row:2;text-align:right}.care-invitation{margin-top:21px;padding-top:17px}.care-invitation a{font-size:19px}}
 @media(max-width:760px){.compass-continuation{padding:0 18px 8px;align-items:flex-start;font-size:12px;gap:8px}.compass-continuation span{padding-top:11px}.compass-continuation a{font-size:12px}}

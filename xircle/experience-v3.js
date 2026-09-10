@@ -217,7 +217,7 @@ import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-con
     link.textContent = entry.invitation && !entry.createNotebook ? 'เปิดคำเชิญสมุดของคุณ ↗' : 'เปิดสมุดของคุณ ↗';
     link.hidden = false;
   }
-  $('knowledge-link').addEventListener('click', () => {
+  for (const id of ['knowledge-link', 'xvisor-link']) $(id).addEventListener('click', () => {
     try { window.history.replaceState(null, '', window.location.pathname + window.location.search + '#appointment'); } catch { /* Knowledge links work without history. */ }
   });
   if (['#appointment', '#start'].includes(window.location.hash)) state.step = 6;

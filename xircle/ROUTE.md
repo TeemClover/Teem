@@ -12,7 +12,7 @@ Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/x
 
 - Entry: `/xircle/`, Compass entry, or a compatibility URL in [ROUTE_INDEX.md](ROUTE_INDEX.md).
 - Main exit: `/meet/?intent=health&from=xircle&open=booking`; only a bounded subject deliberately selected before entry may accompany it.
-- Optional exit after the payoff: `/xircle/learn/`. No registration or app-download CTA in this experience.
+- Optional exits after the payoff: `/xircle/learn/` or `/xvisor/?from=xircle` (ลองเป็นคนดูแลบ้าง). The quiet header knowledge shortcut is available immediately. Meet stays the primary action; no registration or app-download CTA.
 - `#appointment` and compatibility `#start` open the appointment invitation without synthesizing a completed example.
 - `/Xircle` is a case alias of `/xircle/`, not a separate source tree or experience.
 
@@ -21,6 +21,7 @@ Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/x
 - `index.html`, `experience-v3.js`, `experience-v3.css`, `_shared/typography.css`, V3 scene plates and selected existing V5 / Meet imagery.
 - V1/V2 experience engines, including the mistaken neutral `experience.js` / `experience.css`, are removed from the active source.
 - `route-contract.js` handles bounded route parameters and read-only legacy invitation compatibility; `entry.css` styles the small Compass continuation.
+- `xvisor-path.js` carries only an already-present valid handoff reference to optional onward links, even when storage is unavailable. It creates no installation, checkpoint or telemetry event.
 - No retired `_shared/state.js`, `story-v6.js`, `v5.js`, Compass overlay, or old worker is needed.
 - Original myClover logo and `/favicon.ico` remain exact assets.
 
@@ -29,7 +30,7 @@ Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/x
 - The day, chart, sleep, food, movement and context choices are clearly marked prepared examples. They are not personal measurements or a health score.
 - Do not send fictional choices into Meet as the visitor's health data.
 - Existing progress, invitations and Front Door checkpoints remain intact. No completion flags are required or rewritten.
-- V3 choices stay in memory; `#appointment` preserves the invitation when returning from Meet. No new storage key is added. Retired V1/V2 progress/session keys, including `xircle.demo.v2.resume`, stay untouched and are not used to restore V3.
+- V3 choices stay in memory; `#appointment` preserves the invitation when returning from Meet, knowledge or the game invitation. No new storage key is added. Retired V1/V2 progress/session keys, including `xircle.demo.v2.resume`, stay untouched and are not used to restore V3.
 - Valid invitation links remain optional explicit actions. No automatic external navigation or health sharing.
 
 ## Verification

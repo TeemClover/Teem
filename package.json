@@ -20,7 +20,7 @@
     "test:meet:local:ui": "node core7/tests/meet-local-ui.e2e.mjs",
     "test:meet:ui": "node meet/meet-ai.e2e.mjs",
     "test:xircle:compass": "node xircle/compass-entry.e2e.mjs",
-    "test:xircle": "node --test xircle/route-contract.test.mjs core7/tests/xircle-aliases.test.mjs xircle/knowledge-access.test.mjs",
+    "test:xircle": "node --test xircle/route-contract.test.mjs xircle/xvisor-path.test.mjs core7/tests/xircle-aliases.test.mjs xircle/knowledge-access.test.mjs",
     "test:frontdoor:learning": "node tests/frontdoor/learning.e2e.mjs",
     "test:frontdoor:art": "node tests/frontdoor/art.e2e.mjs",
     "test:frontdoor:motion": "node tests/frontdoor/motion.e2e.mjs",
@@ -47,7 +47,8 @@
     "test:xvisor:entry": "node tests/xvisor/game-player-entry.e2e.mjs",
     "test:xvisor:story": "node tests/xvisor/game-story-flow.e2e.mjs",
     "test:xvisor:scenes": "node tests/xvisor/game-v2-scenes.e2e.mjs",
-    "test:xvisor:retention": "node tests/xvisor/game-retention.e2e.mjs"
+    "test:xvisor:retention": "node tests/xvisor/game-retention.e2e.mjs",
+    "test:xircle:xvisor": "node xircle/xvisor-path.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

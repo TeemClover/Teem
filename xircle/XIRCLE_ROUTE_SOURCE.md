@@ -12,12 +12,20 @@ The persistent day record visibly accumulates the visitor's example choices. The
 
 - Main entry: `/xircle/`; case variants such as `/Xircle/` are aliases of this same route.
 - Main next step: `/meet/?intent=health&from=xircle&open=booking`.
-- The experience has no registration/app-download CTA. Its quiet optional continuation is `/xircle/learn/` after the payoff.
+- The experience has no registration/app-download CTA. Optional continuations after the payoff are `/xircle/learn/` and `/xvisor/?from=xircle`; the header also offers immediate knowledge access. Meet remains the primary action.
 - Compass may carry an explicitly selected bounded subject such as sleep, move or food. Fictional demo values never become personal measurements in a booking.
 - `#appointment` and compatibility `#start` open the appointment invitation. Neither proves that a sample or external action was completed.
 - Useful articles and source documents remain independently reachable.
 
 The former mandatory sequence through Human Care, X-VISOR, RoutineX and White Cat is retired. Do not restore it from an August blueprint or old route guard.
+
+## Optional knowledge → practice route (2026-09-10)
+
+A visitor can try the care role after the sample-day payoff, directly from the knowledge library, from one of four short care articles, or from `/xircle/doc/xvisor/`. All lead to the existing `/xvisor/?from=xircle` game landing; playing or reading is never required before Meet. The game invitation describes decisions and their effects, not qualification or guaranteed income. Its landing offers a return to `/xircle/#appointment` or the knowledge library. Gameplay, saves, scores and current game assets are unchanged.
+
+`xvisor-path.js` only reveals the relevant article invitation and carries an existing valid opaque `fdh` across an explicit set of same-site links. It reads no storage and emits no events. Search results retain their topic parameters; no sample health values, raw query strings or free text accompany the link. The Xircle and game landing use the existing destination-receipt client. Knowledge pages do not emit arrivals. An onward game arrival keeps the original Compass handoff, and does not count as an arrival at the original Xircle/Ako door.
+
+Relevant articles: `xvisor-context`, `care-framework`, `certification`, `privacy-boundary`. Other, unknown or duplicate topic inputs do not show a game invitation. Direct visitors need no Compass identity. No legacy completion gate is restored.
 
 ## Canonical implementation
 
@@ -27,6 +35,7 @@ The former mandatory sequence through Human Care, X-VISOR, RoutineX and White Ca
 | Bounded routing and read-only invitation compatibility | `route-contract.js` |
 | Old URL compatibility shells | `legacy-entry.js` plus the eight entries in `ROUTE_INDEX.md` |
 | Reference navigation, artwork loading and responsive links | `reference.js`, `reference.css` |
+| Optional knowledge/game invitations | `xvisor-path.js`, `xvisor-path.css`; game landing return styling in `/xvisor/xircle-entry.css` |
 | Existing article data and rendering | `data/library-founder-v1.js`, `data/library-simple-v1.js`, inline article/search code |
 | Typeface and retained article styling | `_shared/typography.css`, existing reference CSS |
 

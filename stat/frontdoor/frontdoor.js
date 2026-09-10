@@ -24,7 +24,7 @@ const values = {
   'returning-room': 'เคยเข้าห้อง', veteran: 'ประวัติลึก', mobile: 'Mobile',
   tablet: 'Tablet', desktop: 'Desktop', build: 'BUILD', curious: 'CURIOUS',
   self: 'SELF', people: 'PEOPLE', income: 'INCOME', dungeon: 'THE DUNGEON',
-  ako: 'Ako · สุขภาพ', xircle: 'Xircle', meet: 'Meet · นัดคุย', forge: 'FORGE · การ์ตูน',
+  ako: 'Ako · สุขภาพ', xircle: 'Xircle', xvisor: 'X-VISOR · ลองเส้นทางผู้แนะนำ', meet: 'Meet · นัดคุย', forge: 'FORGE · การ์ตูน',
   classroom: 'Classroom · เรียนต่อ', home: 'บ้าน myClover', hall: 'Hall',
   red: 'แดง · RED', green: 'เขียว · GREEN',
   blue: 'น้ำเงิน · BLUE', silver: 'เงิน · SILVER',
