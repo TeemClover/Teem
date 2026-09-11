@@ -304,10 +304,17 @@ function boot() {
   const observer = new MutationObserver(() => {
     if (!takeover.hidden) showSignal();
   });
-  observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
-
-  // กรณีโมดูลโหลดช้ากว่าจังหวะที่ takeover ถูกเปิดไปแล้ว
-  if (!takeover.hidden) showSignal();
+  let watchingTakeover = false;
+  function watchTakeover() {
+    if (watchingTakeover || document.documentElement.dataset.classroomRender === 'loading') return;
+    watchingTakeover = true;
+    observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
+    // Catch a restored position, or a signal raised earlier in the same ready event.
+    if (!takeover.hidden) showSignal();
+  }
+  if (document.documentElement.dataset.classroomRender === 'loading') {
+    document.addEventListener('classroom:ready', watchTakeover, { once: true });
+  } else watchTakeover();
 
   window.addEventListener('pagehide', () => {
     if (!signal.hidden) {

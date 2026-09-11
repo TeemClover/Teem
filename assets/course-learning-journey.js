@@ -222,9 +222,20 @@ function boot(){
  finishLink.addEventListener('click',event=>follow(event,'#cl-completion',2));
  launch.querySelector('.cl-progress-line').after(finishLink);
  condenseExplanations();
- // Some retained lesson modules finish placing optional explanations after DOM ready.
- setTimeout(condenseExplanations,120);
  save();paint();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);
+function start(){
+ try{
+  // All preceding inline lesson modules have mounted. Reconcile their final copy
+  // before folding sections and binding step targets; optional network scripts follow us.
+  document.dispatchEvent(new Event('classroom:prepare'));
+  boot();
+  document.dispatchEvent(new Event('classroom:decorate'));
+  window.MC_CLASSROOM_RENDER?.finish();
+ }catch(error){
+  window.MC_CLASSROOM_RENDER?.fail();
+  throw error;
+ }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

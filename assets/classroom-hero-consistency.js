@@ -41,8 +41,12 @@ function applyConsistentHero() {
 
 function startHeroConsistency() {
   applyConsistentHero();
-  setTimeout(applyConsistentHero, 250);
-  setTimeout(applyConsistentHero, 1000);
+  if(window.MC_CLASSROOM_RENDER){
+    document.addEventListener('classroom:prepare',applyConsistentHero,{once:true});
+  }else{
+    setTimeout(applyConsistentHero, 250);
+    setTimeout(applyConsistentHero, 1000);
+  }
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeroConsistency, { once:true });

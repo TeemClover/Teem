@@ -2,6 +2,48 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<script data-self-contained="classroom-render.js">
+/* Keep the original lesson from painting while its inline learning UI is prepared.
+   Opacity preserves layout for diagrams, tooltips and native scroll restoration. */
+(function(){
+'use strict';
+const root=document.documentElement;
+root.dataset.classroomRender='loading';
+const style=document.createElement('style');
+style.id='classroom-render-style';
+style.textContent='html[data-classroom-render="loading"] body{opacity:0!important;pointer-events:none!important}';
+document.head.appendChild(style);
+const blockFocus=event=>{if(event.key==='Tab')event.preventDefault();};
+document.addEventListener('keydown',blockFocus,true);
+let finished=false;
+let safety=0;
+function reveal(state){
+ if(finished)return;
+ finished=true;
+ clearTimeout(safety);
+ document.removeEventListener('readystatechange',armSafety);
+ root.dataset.classroomRender=state;
+ document.removeEventListener('keydown',blockFocus,true);
+ document.dispatchEvent(new Event('classroom:ready'));
+}
+// Only an initialization failure escape hatch. Do not reveal a partly downloaded
+// document on a slow connection; successful loading never waits for this timer.
+function armSafety(){
+ if(document.readyState==='loading'||finished)return;
+ document.removeEventListener('readystatechange',armSafety);
+ safety=setTimeout(()=>reveal('fallback'),5000);
+}
+document.addEventListener('readystatechange',armSafety);
+armSafety();
+window.MC_CLASSROOM_RENDER={
+ finish(){
+  // Flush queued DOM observers and their frame work before the first visible frame.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>reveal('ready')));
+ },
+ fail(){reveal('fallback');}
+};
+})();
+</script>
 <meta name="mc-act-view" content="lesson-open">
 <meta name="mc-item" content="learn:first-web">
 <meta name="self-contained" content="classroom-lesson">
@@ -145,7 +187,7 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 <main class="wrap">
 <header class="hero lesson6-hero">
   <figure class="classroom-lesson-header-image">
-    <img src="/classroom/img/header-lesson6.webp" alt="ภาพหัวบท 6 · AI ใส่ซอส" loading="eager" decoding="async" fetchpriority="high">
+    <img src="/classroom/img/header-lesson6.webp" width="1024" height="1024" alt="ภาพหัวบท 6 · AI ใส่ซอส" loading="eager" decoding="async" fetchpriority="high">
   </figure>
 
   <div class="lesson6-hero-copy">
@@ -631,13 +673,29 @@ function glitch(){
     if(target&&!document.body.classList.contains('lesson6-boss-transition'))target.scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'});
   },reduced?450:1650);
 }
-if(sentinel){
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)glitch()})},{threshold:.5}).observe(sentinel);
-  }else{
-    addEventListener('scroll',function(){if(sentinel.getBoundingClientRect().top<innerHeight)glitch()},{passive:true});
-  }
+var entranceArmed=false;
+function renderPending(){return document.documentElement.dataset.classroomRender==='loading'}
+function checkEntrancePosition(){
+  if(fired||!sentinel||renderPending())return;
+  var rect=sentinel.getBoundingClientRect();
+  // A restored scroll position or hash can already be beyond the sentinel.
+  if(rect.top<=innerHeight-rect.height*.5)glitch();
 }
+function scheduleEntranceCheck(){requestAnimationFrame(checkEntrancePosition)}
+function armBossEntrance(){
+  if(entranceArmed||!sentinel||renderPending())return;
+  entranceArmed=true;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting&&!renderPending())glitch()})},{threshold:.5}).observe(sentinel);
+  }else{
+    addEventListener('scroll',scheduleEntranceCheck,{passive:true});
+  }
+  addEventListener('pageshow',scheduleEntranceCheck);
+  addEventListener('hashchange',scheduleEntranceCheck);
+  scheduleEntranceCheck();
+}
+if(renderPending())document.addEventListener('classroom:ready',armBossEntrance,{once:true});
+else armBossEntrance();
 })();
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
@@ -952,10 +1010,17 @@ function boot() {
   const observer = new MutationObserver(() => {
     if (!takeover.hidden) showSignal();
   });
-  observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
-
-  // กรณีโมดูลโหลดช้ากว่าจังหวะที่ takeover ถูกเปิดไปแล้ว
-  if (!takeover.hidden) showSignal();
+  let watchingTakeover = false;
+  function watchTakeover() {
+    if (watchingTakeover || document.documentElement.dataset.classroomRender === 'loading') return;
+    watchingTakeover = true;
+    observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
+    // Catch a restored position, or a signal raised earlier in the same ready event.
+    if (!takeover.hidden) showSignal();
+  }
+  if (document.documentElement.dataset.classroomRender === 'loading') {
+    document.addEventListener('classroom:ready', watchTakeover, { once: true });
+  } else watchTakeover();
 
   window.addEventListener('pagehide', () => {
     if (!signal.hidden) {
@@ -1012,13 +1077,16 @@ function applyConsistentHero() {
 
 function startHeroConsistency() {
   applyConsistentHero();
-  setTimeout(applyConsistentHero, 250);
-  setTimeout(applyConsistentHero, 1000);
+  if(window.MC_CLASSROOM_RENDER){
+    document.addEventListener('classroom:prepare',applyConsistentHero,{once:true});
+  }else{
+    setTimeout(applyConsistentHero, 250);
+    setTimeout(applyConsistentHero, 1000);
+  }
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeroConsistency, { once:true });
 else startHeroConsistency();
-
 </script>
 <script type="module" data-self-contained="course-svg-motion.js">
 /* AI ใส่ซอส · gentle motion for lesson visuals 1–4 and 6 */
@@ -1530,7 +1598,14 @@ function apply() {
   const root = contentRoot();
   if (!root) return;
   let refreshTimer = 0;
+  let queued = false;
   const refresh = () => {
+    if(window.MC_CLASSROOM_RENDER){
+      if(queued)return;
+      queued=true;
+      queueMicrotask(()=>{queued=false;wrapHeroTerms();});
+      return;
+    }
     clearTimeout(refreshTimer);
     refreshTimer = setTimeout(wrapHeroTerms, 40);
   };
@@ -1539,8 +1614,12 @@ function apply() {
     refresh();
   });
   observer.observe(root, { childList:true, subtree:true });
-  setTimeout(wrapHeroTerms, 250);
-  setTimeout(wrapHeroTerms, 1000);
+  if(window.MC_CLASSROOM_RENDER){
+    document.addEventListener('classroom:decorate',wrapHeroTerms,{once:true});
+  }else{
+    setTimeout(wrapHeroTerms, 250);
+    setTimeout(wrapHeroTerms, 1000);
+  }
 }
 
 document.addEventListener('click', event => {
@@ -1556,7 +1635,6 @@ addEventListener('hashchange', () => {
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply, { once:true });
 else apply();
-
 </script>
 <script type="module" data-self-contained="course-prompt-language.js">
 /* AI ใส่ซอส · กติกาภาษาสำหรับ Prompt และคำพูดของเชฟ
@@ -1639,9 +1717,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 </script>
-<script defer src="../assets/quest.js"></script>
-<script defer src="../assets/boss-invite.js"></script>
-<script type="module" src="/assets/front-door/outcomes.js"></script>
 <script type="module" data-self-contained="course-learning-journey.js">
 /* AI ใส่ซอส · One clear start, a saved place, and an actual finished artifact.
    Reading/boss progress remains in quest.js. This layer records learner-confirmed work. */
@@ -1867,12 +1942,26 @@ function boot(){
  finishLink.addEventListener('click',event=>follow(event,'#cl-completion',2));
  launch.querySelector('.cl-progress-line').after(finishLink);
  condenseExplanations();
- // Some retained lesson modules finish placing optional explanations after DOM ready.
- setTimeout(condenseExplanations,120);
  save();paint();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);
+function start(){
+ try{
+  // All preceding inline lesson modules have mounted. Reconcile their final copy
+  // before folding sections and binding step targets; optional network scripts follow us.
+  document.dispatchEvent(new Event('classroom:prepare'));
+  boot();
+  document.dispatchEvent(new Event('classroom:decorate'));
+  window.MC_CLASSROOM_RENDER?.finish();
+ }catch(error){
+  window.MC_CLASSROOM_RENDER?.fail();
+  throw error;
+ }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
+<script defer src="../assets/quest.js"></script>
+<script defer src="../assets/boss-invite.js"></script>
+<script type="module" src="/assets/front-door/outcomes.js"></script>
 </body>
 </html>

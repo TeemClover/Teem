@@ -363,9 +363,11 @@ function apply(){
 
 function boot(){
   apply();
-  requestAnimationFrame(apply);
-  setTimeout(apply,250);
-  setTimeout(apply,1000);
+  if(!window.MC_CLASSROOM_RENDER){
+    requestAnimationFrame(apply);
+    setTimeout(apply,250);
+    setTimeout(apply,1000);
+  }
 }
 
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});

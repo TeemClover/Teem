@@ -339,6 +339,9 @@ function patchQuest(){
 }
 
 function apply(){injectStyle();patchTop();buildFastTrack();patchQuest()}
-function boot(){apply();requestAnimationFrame(apply);setTimeout(apply,250);setTimeout(apply,1000)}
+function boot(){
+ apply();
+ if(!window.MC_CLASSROOM_RENDER){requestAnimationFrame(apply);setTimeout(apply,250);setTimeout(apply,1000);}
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
