@@ -101,7 +101,7 @@ export function createCourseContentHandler({ env = process.env, root = process.c
       res.setHeader('Content-Type', types[path.extname(actual)] || 'application/octet-stream');
       res.setHeader('Content-Length', String(details.size));
       if (file?.endsWith('.zip')) res.setHeader('Content-Disposition', 'attachment; filename="the-dent-course-kit.zip"');
-      if (file?.endsWith('.xlsx')) res.setHeader('Content-Disposition', `attachment; filename="${path.basename(file)}"`);
+      if (file?.endsWith('.xlsx') || file?.endsWith('.md')) res.setHeader('Content-Disposition', `attachment; filename="${path.basename(file)}"`);
       res.end(head ? undefined : await readFile(actual));
     } catch (error) {
       return errorResponse(res, ['ENOENT', 'ENOTDIR'].includes(error.code) ? 404 : 500, 'File unavailable', head);

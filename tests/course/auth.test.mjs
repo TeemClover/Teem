@@ -256,6 +256,12 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal(script.statusCode, 200);
     assert.match(script.headers['content-type'], /^application\/javascript/);
     assert.equal(script.headers['set-cookie'], undefined);
+    for (const method of ['GET', 'HEAD']) {
+      const source = await invoke(handler, get('resources/clinic-public-source.md', { method }));
+      assert.equal(source.statusCode, 200);
+      assert.equal(source.headers['content-disposition'], 'attachment; filename="clinic-public-source.md"');
+      assert.match(source.headers['content-type'], /^text\/markdown/);
+    }
     const head = await invoke(handler, get('index.html', { method: 'HEAD' }));
     assert.equal(head.statusCode, 200);
     assert.equal(head.body, undefined);
