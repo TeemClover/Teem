@@ -28,6 +28,14 @@ function setText(el,value){
   if(el&&el.textContent!==value)el.textContent=value;
 }
 
+function setAttribute(el,name,value){
+  if(el.getAttribute(name)!==value)el.setAttribute(name,value);
+}
+
+function setClass(el,name,present){
+  if(el.classList.contains(name)!==present)el.classList.toggle(name,present);
+}
+
 function stripCourseWrapper(value){
   var text=String(value||'').trim();
   text=text.replace(
@@ -110,28 +118,40 @@ function cardButtons(card){
   var filled=card.querySelector('[data-act="copyFilled"]');
 
   if(customize){
-    customize.classList.add('main','mc-customize-button');
-    customize.textContent=card.classList.contains('open')
+    setClass(customize,'main',true);
+    setClass(customize,'mc-customize-button',true);
+    setText(customize,card.classList.contains('open')
       ? '⚙️ กำลังปรับแต่ง'
-      : '⚙️ ปรับแต่งก่อนใช้';
-    customize.setAttribute('aria-label','ปรับแต่ง Prompt ก่อนใช้');
-    customize.title='แนะนำ: เติมข้อมูลให้ตรงงานก่อนคัดลอก';
+      : '⚙️ ปรับแต่งก่อนใช้');
+    setAttribute(customize,'aria-label','ปรับแต่ง Prompt ก่อนใช้');
+    setAttribute(customize,'title','แนะนำ: เติมข้อมูลให้ตรงงานก่อนคัดลอก');
   }
   if(direct){
-    direct.classList.add('mc-use-sauce-button');
-    direct.textContent=direct.dataset.copyState==='done'
+    setClass(direct,'main',false);
+    setClass(direct,'mc-use-sauce-button',true);
+    setText(direct,direct.dataset.copyState==='done'
       ? '✓ คัดลอกแล้ว'
-      : '🥫 นำไปใช้กับซอส';
-    direct.setAttribute('aria-label','นำ Prompt ไปใช้กับซอส');
-    direct.title='คัดลอก Prompt ต้นฉบับเพื่อนำไปใช้กับซอสของคุณ';
+      : '🥫 นำไปใช้กับซอส');
+    setAttribute(direct,'aria-label','นำ Prompt ไปใช้กับซอส');
+    setAttribute(direct,'title','คัดลอก Prompt ต้นฉบับเพื่อนำไปใช้กับซอสของคุณ');
   }
   if(filled){
-    filled.textContent=filled.dataset.copyState==='done'
+    setText(filled,filled.dataset.copyState==='done'
       ? '✓ คัดลอกแล้ว'
-      : '📋 คัดลอก Prompt ที่ปรับแล้ว';
-    filled.setAttribute('aria-label','คัดลอก Prompt ที่ปรับแล้ว');
-    filled.title='คัดลอกข้อความที่ตรวจและปรับแล้ว';
+      : '📋 คัดลอก Prompt ที่ปรับแล้ว');
+    setAttribute(filled,'aria-label','คัดลอก Prompt ที่ปรับแล้ว');
+    setAttribute(filled,'title','คัดลอกข้อความที่ตรวจและปรับแล้ว');
   }
+}
+
+function markCopied(button){
+  clearTimeout(button.__genericCopyTimer);
+  button.dataset.copyState='done';
+  cardButtons(button.closest('.pc'));
+  button.__genericCopyTimer=window.setTimeout(function(){
+    delete button.dataset.copyState;
+    cardButtons(button.closest('.pc'));
+  },1550);
 }
 
 function patchButtonAttributes(root){
@@ -151,22 +171,21 @@ function bindButtonState(){
   if(!results||results.__genericPromptButtons)return;
   results.__genericPromptButtons=true;
 
-  results.addEventListener('click',function(event){
-    var button=event.target.closest('[data-act="raw"],[data-act="copyFilled"]');
-    if(!button)return;
-    window.setTimeout(function(){
-      button.dataset.copyState='done';
-      var card=button.closest('.pc');
-      if(card)cardButtons(card);
-      window.setTimeout(function(){
-        delete button.dataset.copyState;
-        if(card)cardButtons(card);
-      },1550);
-    },0);
-  },true);
-
   var queued=false;
-  var observer=new MutationObserver(function(){
+  var observer=new MutationObserver(function(records){
+    // Rendering labels also creates mutations. Only new controls and actual
+    // drawer state changes need another render; ignore our own button writes.
+    var relevant=records.some(function(record){
+      if(record.type==='attributes'){
+        return record.target.matches('.pc')
+          && /(^|\s)open(\s|$)/.test(record.oldValue||'')!==record.target.classList.contains('open');
+      }
+      return Array.prototype.some.call(record.addedNodes,function(node){
+        return node.nodeType===1 && (node.matches('.pc,[data-act="use"],[data-act="raw"],[data-act="copyFilled"]')
+          || node.querySelector('.pc,[data-act="use"],[data-act="raw"],[data-act="copyFilled"]'));
+      });
+    });
+    if(!relevant)return;
     if(queued)return;
     queued=true;
     window.requestAnimationFrame(function(){
@@ -174,7 +193,7 @@ function bindButtonState(){
       patchButtonAttributes(results);
     });
   });
-  observer.observe(results,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  observer.observe(results,{childList:true,subtree:true,attributes:true,attributeFilter:['class'],attributeOldValue:true});
 }
 
 function patchPage(){
@@ -221,7 +240,7 @@ function audit(){
   };
 }
 
-window.MC_PROMPT_LANGUAGE={version:VERSION,audit:audit};
+window.MC_PROMPT_LANGUAGE={version:VERSION,audit:audit,cardButtons:cardButtons,markCopied:markCopied};
 
 function boot(){
   V.prompts.forEach(restorePrompt);
