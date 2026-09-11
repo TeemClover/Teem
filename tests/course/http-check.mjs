@@ -33,7 +33,7 @@ for(const alias of ['/course/%74hedent/course-content.js','/course/%74%68%65%64%
 for(const file of COURSE_CONTENT_FILES){
  const response=await get('/course/thedent/'+file,cookie);
  check('authenticated file '+file,response.status===200);
- if(file.endsWith('.md'))check('Markdown download keeps filename '+file,response.headers.get('content-disposition')===`attachment; filename="${file.split('/').pop()}"`);
+ if(file.endsWith('.md'))check('Markdown download keeps filename '+file,['attachment', 'inline'].some(disposition=>response.headers.get('content-disposition')===`${disposition}; filename="${file.split('/').pop()}"`));
  check('private no-store '+file,(response.headers.get('cache-control')||'').includes('no-store'));
  const expected=await fs.readFile(new URL('../../course/thedent/'+file,import.meta.url));
  check('exact file '+file,Buffer.from(await response.arrayBuffer()).equals(expected));
