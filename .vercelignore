@@ -16,3 +16,6 @@ docs/ako/
 core7/tests/
 frontdoor/*.test.mjs
 assets/front-door/*.test.mjs
+
+# Course authentication tests and local adapters are development-only.
+tests/course/

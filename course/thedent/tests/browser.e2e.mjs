@@ -7,7 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE_PATH||'playwright');
 const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
-const base=(process.env.COURSE_URL||'http://127.0.0.1:8765/course/').replace(/\/?$/,'/');
+const base=(process.env.COURSE_URL||'http://127.0.0.1:8765/course/thedent/').replace(/\/?$/,'/');
 const out=fs.mkdtempSync(path.join(os.tmpdir(),'dent-qa-'));
 let checks=0;const check=(label,condition)=>{assert.ok(condition,label);checks++;console.log('PASS',label);};
 const context=await browser.newContext({viewport:{width:1366,height:768},permissions:['clipboard-read','clipboard-write'],acceptDownloads:true});

@@ -1,0 +1,212 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, mkdir, readFile, writeFile, rm, symlink } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import { Readable } from 'node:stream';
+import {
+  COURSE_COOKIE_NAME, COURSE_SESSION_TTL_SECONDS, courseSessionCookie,
+  issueCourseSession, verifyCoursePassword, verifyCourseSession,
+} from '../../api/_lib/course-access.js';
+import { createCourseAccessHandler } from '../../api/course-access.js';
+import { createCourseContentHandler, resolveCourseContentPath } from '../../api/course-content.js';
+import { createCourseRateLimiter } from '../../api/_lib/course-rate-limit.js';
+
+const env = { COURSE_DENT_PASSWORD: 'course-test-fixture-482-access', COURSE_SESSION_SECRET: 'fixture-session-secret-only-82619357041289376052' };
+const now = Date.UTC(2026, 8, 12, 7);
+const request = (body, extra = {}) => ({ method: 'POST', headers: { host: 'classroom.example', origin: 'https://classroom.example', 'content-type': 'application/json' }, body, ...extra });
+function response() {
+  return { statusCode: 0, headers: {}, body: undefined, setHeader(key, value) { this.headers[key.toLowerCase()] = value; }, end(body) { this.body = body; } };
+}
+async function invoke(handler, req) { const res = response(); await handler(req, res); return res; }
+async function validCookie(settings = env, time = now) { return `${COURSE_COOKIE_NAME}=${await issueCourseSession(settings, time)}`; }
+
+test('sessions require a genuine signature, a valid clock, and unique cookie', async () => {
+  const cookie = await validCookie();
+  assert.equal(await verifyCourseSession(cookie, env, now), true);
+  assert.equal(await verifyCourseSession(cookie, env, now + COURSE_SESSION_TTL_SECONDS * 1000), false);
+  assert.equal(await verifyCourseSession(await validCookie(env, now + 120000), env, now), false);
+  assert.equal(await verifyCourseSession(`${cookie}; ${cookie}`, env, now), false);
+  assert.equal(await verifyCourseSession(`${COURSE_COOKIE_NAME}=true`, env, now), false);
+  assert.equal(await verifyCourseSession(`${cookie.slice(0, -1)}!`, env, now), false);
+  const [payload, signature] = cookie.split('=')[1].split('.');
+  assert.equal(await verifyCourseSession(`${COURSE_COOKIE_NAME}=${payload.slice(0, -2)}AA.${signature}`, env, now), false);
+  assert.equal(await verifyCourseSession(`${COURSE_COOKIE_NAME}=${'x'.repeat(9000)}`, env, now), false);
+});
+
+test('rotating password or signing secret revokes existing sessions; missing configuration fails closed', async () => {
+  const cookie = await validCookie();
+  assert.equal(await verifyCourseSession(cookie, { ...env, COURSE_DENT_PASSWORD: 'a-different-test-password' }, now), false);
+  assert.equal(await verifyCourseSession(cookie, { ...env, COURSE_SESSION_SECRET: 'a-different-fixture-secret-that-is-long-enough' }, now), false);
+  for (const settings of [{}, { ...env, COURSE_SESSION_SECRET: 'short' }, { ...env, COURSE_DENT_PASSWORD: '' }]) {
+    assert.equal(await verifyCourseSession(cookie, settings, now), false);
+    assert.equal(await verifyCoursePassword(env.COURSE_DENT_PASSWORD, settings), false);
+    await assert.rejects(issueCourseSession(settings, now));
+  }
+  assert.equal(await verifyCoursePassword(env.COURSE_DENT_PASSWORD, env), true);
+  assert.equal(await verifyCoursePassword('wrong-test-password', env), false);
+  assert.equal(await verifyCoursePassword('x'.repeat(1025), env), false);
+  assert.equal(await verifyCoursePassword({ password: env.COURSE_DENT_PASSWORD }, env), false);
+  const serialized = courseSessionCookie(cookie.slice(cookie.indexOf('=') + 1));
+  for (const attribute of ['Path=/', 'HttpOnly', 'Secure', 'SameSite=Lax', `Max-Age=${COURSE_SESSION_TTL_SECONDS}`]) assert.ok(serialized.includes(attribute));
+  assert.ok(!serialized.includes('Domain='));
+  assert.ok(!serialized.includes(env.COURSE_DENT_PASSWORD));
+});
+
+test('login allows only the dent project and logout clears the same secure cookie', async () => {
+  const handler = createCourseAccessHandler({ env, now: () => now });
+  const success = await invoke(handler, request({ project: 'thedent', password: env.COURSE_DENT_PASSWORD }));
+  assert.equal(success.statusCode, 200);
+  assert.deepEqual(JSON.parse(success.body), { ok: true, redirect: '/course/thedent/' });
+  assert.equal(await verifyCourseSession(success.headers['set-cookie'], env, now), true);
+  assert.match(success.headers['cache-control'], /no-store/);
+  for (const project of ['another-course', '', null, 'THEDENT']) {
+    const denied = await invoke(handler, request({ project, password: env.COURSE_DENT_PASSWORD }));
+    assert.equal(denied.statusCode, 401);
+    assert.equal(denied.headers['set-cookie'], undefined);
+  }
+  const wrong = await invoke(handler, request({ project: 'thedent', password: 'wrong-fixture' }));
+  assert.equal(wrong.statusCode, 401);
+  assert.equal(wrong.headers['set-cookie'], undefined);
+  const logout = await invoke(handler, request({ action: 'logout' }));
+  assert.equal(logout.statusCode, 200);
+  assert.match(logout.headers['set-cookie'], new RegExp(`^${COURSE_COOKIE_NAME}=`));
+  assert.match(logout.headers['set-cookie'], /Max-Age=0/);
+  assert.match(logout.headers['set-cookie'], /Path=\//);
+  const unavailable = await invoke(createCourseAccessHandler({ env: {} }), request({ project: 'thedent', password: env.COURSE_DENT_PASSWORD }));
+  assert.equal(unavailable.statusCode, 503);
+});
+
+test('login enforces method, same-origin, JSON and body limits including unparsed streams', async () => {
+  const handler = createCourseAccessHandler({ env, now: () => now });
+  for (const method of ['GET', 'PUT']) assert.equal((await invoke(handler, request({}, { method }))).statusCode, 405);
+  const body = { project: 'thedent', password: env.COURSE_DENT_PASSWORD };
+  for (const origin of [undefined, 'null', 'https://attacker.example', 'https://classroom.example.attacker.example', 'http://classroom.example']) {
+    const req = request(body); req.headers.origin = origin;
+    assert.equal((await invoke(handler, req)).statusCode, 403);
+  }
+  const wrongType = request(body); wrongType.headers['content-type'] = 'text/plain';
+  assert.equal((await invoke(handler, wrongType)).statusCode, 415);
+  assert.equal((await invoke(handler, request('{bad JSON'))).statusCode, 400);
+  assert.equal((await invoke(handler, request([]))).statusCode, 400);
+  assert.equal((await invoke(handler, request({ padding: 'x'.repeat(5000) }))).statusCode, 413);
+  const declaredLarge = request(body); declaredLarge.headers['content-length'] = '5000';
+  assert.equal((await invoke(handler, declaredLarge)).statusCode, 413);
+  const streamed = Readable.from([JSON.stringify(body)]);
+  Object.assign(streamed, request(undefined));
+  assert.equal((await invoke(handler, streamed)).statusCode, 200);
+  const streamedLarge = Readable.from(['x'.repeat(5000)]);
+  Object.assign(streamedLarge, request(undefined));
+  assert.equal((await invoke(handler, streamedLarge)).statusCode, 413);
+});
+
+test('login obeys shared throttling and fails closed on rate-store errors', async () => {
+  const body = { project: 'thedent', password: env.COURSE_DENT_PASSWORD };
+  const blocked = createCourseAccessHandler({ env, limiter: { consume: async () => ({ allowed: false, retryAfter: 91 }) } });
+  const limited = await invoke(blocked, request(body));
+  assert.equal(limited.statusCode, 429);
+  assert.equal(limited.headers['retry-after'], '91');
+  assert.equal(limited.headers['set-cookie'], undefined);
+  const failed = createCourseAccessHandler({ env, limiter: { consume: async () => { throw new Error('fixture database failure'); } } });
+  assert.equal((await invoke(failed, request(body))).statusCode, 503);
+  const noDatabase = createCourseAccessHandler({ env: { ...env, VERCEL: '1' } });
+  assert.equal((await invoke(noDatabase, request(body))).statusCode, 503);
+  let clears = 0;
+  const allowed = createCourseAccessHandler({ env, now: () => now, limiter: { consume: async () => ({ allowed: true, key: 'fixture-key' }), clear: async (key) => { assert.equal(key, 'fixture-key'); clears += 1; } } });
+  assert.equal((await invoke(allowed, request(body))).statusCode, 200);
+  assert.equal(clears, 1);
+  assert.equal((await invoke(allowed, request({ ...body, password: 'incorrect-test' }))).statusCode, 401);
+  assert.equal(clears, 1);
+});
+
+test('rate-store operations use one isolated table, atomic parameterized increment and hashed addresses', async () => {
+  const calls = [];
+  const query = async (text, values) => {
+    calls.push({ text, values });
+    if (text.startsWith('INSERT')) return [{ attempts: 31, retry_after: 123 }];
+    return [];
+  };
+  const limiter = createCourseRateLimiter({ env: { ...env, VERCEL: '1' }, query });
+  const rawIP = '192.0.2.51';
+  const result = await limiter.consume({ headers: { 'x-forwarded-for': rawIP } }, 'thedent');
+  assert.equal(result.allowed, false);
+  assert.equal(result.retryAfter, 123);
+  assert.match(result.key, /^[a-f0-9]{64}$/);
+  const insert = calls.find((call) => call.text.startsWith('INSERT'));
+  assert.match(insert.text, /ON CONFLICT \(bucket_key\) DO UPDATE/);
+  assert.deepEqual(insert.values, [result.key, 30]);
+  assert.ok(calls.every((call) => call.text.includes('public.course_dent_login_rate_limit')));
+  assert.ok(!JSON.stringify(calls).includes(rawIP));
+  assert.ok(calls.some((call) => /LIMIT 100/.test(call.text)));
+  await limiter.clear(result.key);
+  assert.match(calls.at(-1).text, /WHERE bucket_key = \$1/);
+  assert.deepEqual(calls.at(-1).values, [result.key]);
+  await assert.rejects(limiter.consume({ headers: {} }, 'other-project'));
+});
+
+test('development fallback is bounded, resets successful clients and advances windows', async () => {
+  let clock = now;
+  const limiter = createCourseRateLimiter({ env, now: () => clock });
+  const req = { headers: { 'x-forwarded-for': '192.0.2.99' } };
+  let result;
+  for (let attempt = 0; attempt < 30; attempt += 1) assert.equal((await limiter.consume(req)).allowed, true);
+  result = await limiter.consume(req);
+  assert.equal(result.allowed, false);
+  await limiter.clear(result.key);
+  assert.equal((await limiter.consume(req)).allowed, true);
+  for (let attempt = 0; attempt < 30; attempt += 1) await limiter.consume(req);
+  clock += 300000;
+  assert.equal((await limiter.consume(req)).allowed, true);
+});
+
+test('content validates an explicit allowlist, authenticates direct access, and handles HEAD', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'course-auth-fixture-'));
+  const base = path.join(root, 'course', 'thedent');
+  await mkdir(path.join(base, 'resources'), { recursive: true });
+  await writeFile(path.join(base, 'index.html'), '<h1>Fixture classroom</h1>');
+  await writeFile(path.join(base, 'course.js'), 'window.fixture = true;');
+  await writeFile(path.join(base, 'resources', 'daily-normal.csv'), 'date,inquiries\n2026-09-01,1\n');
+  const handler = createCourseContentHandler({ env, root, now: () => now });
+  const cookie = await validCookie();
+  const get = (file, extra = {}) => ({ method: 'GET', url: `/api/course-content?file=${encodeURIComponent(file)}`, headers: { cookie }, ...extra });
+  try {
+    assert.equal((await invoke(handler, get('index.html', { headers: {} }))).statusCode, 401);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', headers: {} })).statusCode, 401);
+    assert.equal((await invoke(handler, get('resources/daily-normal.csv', { headers: { cookie: `${COURSE_COOKIE_NAME}=true` } }))).statusCode, 401);
+    const deployment = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8'));
+    const rootRewrite = deployment.rewrites.find((route) => route.source === '/course/thedent');
+    assert.ok(rootRewrite, 'The protected classroom root must have a configured rewrite');
+    const rewrittenRoot = await invoke(handler, { method: 'GET', url: rootRewrite.destination, headers: { cookie } });
+    assert.equal(rewrittenRoot.statusCode, 200);
+    assert.match(String(rewrittenRoot.body), /Fixture classroom/);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/', query: { file: '' }, headers: { cookie } })).statusCode, 200);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content?unexpected=1', headers: { cookie } })).statusCode, 400);
+    const page = await invoke(handler, get('index.html'));
+    assert.equal(page.statusCode, 200);
+    assert.match(String(page.body), /Fixture classroom/);
+    assert.equal(page.headers.vary, 'Cookie');
+    assert.match(page.headers['cache-control'], /private.*no-store/);
+    assert.equal(page.headers['vercel-cdn-cache-control'], 'no-store');
+    const script = await invoke(handler, get('course.js'));
+    assert.equal(script.statusCode, 200);
+    assert.match(script.headers['content-type'], /^application\/javascript/);
+    const head = await invoke(handler, get('index.html', { method: 'HEAD' }));
+    assert.equal(head.statusCode, 200);
+    assert.equal(head.body, undefined);
+    assert.equal(Number(head.headers['content-length']), new TextEncoder().encode('<h1>Fixture classroom</h1>').length);
+    for (const file of ['../index.html', '/index.html', '%2e%2e/index.html', 'resources/../../package.json', 'resources\\daily-normal.csv', 'build.mjs', 'index.html?x=1']) {
+      assert.equal(resolveCourseContentPath(file, root), null);
+      assert.equal((await invoke(handler, get(file))).statusCode, 400);
+    }
+    assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content?file=index.html&file=course.js', headers: { cookie } })).statusCode, 400);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', query: { file: ['index.html', 'course.js'] }, headers: { cookie } })).statusCode, 400);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/course.js', query: { file: 'course.js' }, headers: { cookie } })).statusCode, 200);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/course.js?file=index.html', headers: { cookie } })).statusCode, 400);
+    assert.equal((await invoke(handler, get('index.html', { method: 'POST' }))).statusCode, 405);
+    await writeFile(path.join(root, 'outside.csv'), 'private-fixture');
+    await symlink(path.join(root, 'outside.csv'), path.join(base, 'resources', 'daily-missing.csv'));
+    assert.equal((await invoke(handler, get('resources/daily-missing.csv'))).statusCode, 404);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

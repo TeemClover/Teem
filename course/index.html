@@ -1,30 +1,98 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#ffffff">
-<meta name="description" content="ห้องเรียน Claude Cowork และ ChatGPT สำหรับทีม The Dent หลักการ สกัดซอส เตรียม PRD สองเวิร์กช็อป พร้อมสไลด์ พรอมป์ และไฟล์ฝึก">
-<meta property="og:title" content="The Dent · AI Workshop — ห้องเรียนพร้อมลงมือ"><meta property="og:description" content="จากข้อมูลของทีม สู่ชิ้นงานและเครื่องมือที่ทำซ้ำได้"><meta property="og:type" content="website"><meta property="og:image" content="https://www.myclover.com/img/og-classroom.jpg">
-<link rel="canonical" href="https://www.myclover.com/course/"><title>The Dent · AI Workshop | myClover</title>
-<link rel="stylesheet" href="./course.css?v=20260911-1">
-<script defer src="./course-content.js?v=20260911-1"></script><script defer src="./course-resources.js?v=20260911-1"></script><script defer src="./course.js?v=20260911-1"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbfaf7">
+  <meta name="description" content="พื้นที่เรียนรู้และโปรเจกต์สำหรับทีม โดย myClover เลือกโปรเจกต์เพื่อเข้าสู่บทเรียนของคุณ">
+  <link rel="canonical" href="https://www.myclover.com/course/">
+  <title>โปรเจกต์ของคุณ · myClover</title>
+  <link rel="stylesheet" href="./portal.css?v=20260911-2">
+  <script defer src="./portal.js?v=20260911-2"></script>
 </head>
 <body>
-<a class="skip-link" href="#main">ข้ามไปยังบทเรียน</a>
-<header class="topbar">
-<a class="brand" href="#learn/start" aria-label="The Dent AI Workshop เริ่มเรียน"><span class="brand-mark" aria-hidden="true">D<span>·</span></span><span class="brand-type">THE DENT<small>AI WORKSHOP <span>by myClover</span></small></span></a>
-<div class="topbar-center"><span class="live-dot" aria-hidden="true"></span>12 กันยายน 2026 <span>· 14:00–17:00 น.</span></div>
-<nav class="mode-switch" aria-label="โหมดการเรียน"><button type="button" id="learn-mode" aria-pressed="true">ลงมือเรียน</button><button type="button" id="present-mode" aria-pressed="false">เปิดสไลด์ <span aria-hidden="true">↗</span></button></nav>
-</header>
-<div class="course-layout">
-<aside class="sidebar" aria-label="สารบัญบทเรียน">
-<div class="sidebar-heading"><span>เส้นทางวันนี้</span><span id="progress-count">0 / 7</span></div>
-<div class="course-progress" role="progressbar" aria-label="บทที่ทำเครื่องหมายแล้ว" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0"><span id="progress-bar"></span></div>
-<nav id="lesson-nav" aria-label="บทเรียน"></nav>
-<div class="sidebar-bottom"><button type="button" class="sidebar-link" data-action="resources"><span aria-hidden="true">↓</span> ไฟล์และพรอมป์ทั้งหมด</button><button type="button" class="sidebar-link" data-action="guide"><span aria-hidden="true">☷</span> คู่มือผู้สอน</button><button type="button" class="sidebar-link" data-action="agenda"><span aria-hidden="true">◷</span> ตารางเรียน 3 ชั่วโมง</button><p>ความคืบหน้าเก็บบนเครื่องนี้<br>กลับมาเรียนต่อได้เสมอ</p></div>
-</aside>
-<main id="main" tabindex="-1"><div id="learning-surface"><div class="initial-content"><p class="eyebrow">THE DENT · TEAM WORKSHOP</p><h1>ให้ AI เข้าใจงาน<br>แล้วพาทีมลงมือทำ</h1><p>หลักการ · สกัดซอส · เตรียม PRD · สองเวิร์กช็อป</p></div></div><section id="presentation-surface" aria-label="สไลด์นำเสนอ" hidden></section></main>
-</div>
-<dialog id="course-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><h2 id="dialog-title">เอกสารประกอบ</h2><button type="button" class="icon-button" id="dialog-close" aria-label="ปิดหน้าต่าง">×</button></div><div id="dialog-body"></div></dialog>
-<div id="toast" class="toast" role="status" aria-live="polite"></div><div id="print-surface" aria-hidden="true"></div>
-<noscript><div class="no-script">เปิด JavaScript เพื่อใช้สไลด์และปุ่มคัดลอก หรือ <a href="./resources/instructor-guide.md">ดาวน์โหลดคู่มือผู้สอน</a> และ <a href="./downloads/the-dent-course-kit.zip">ชุดเรียนทั้งหมด</a></div></noscript>
-</body></html>
+  <a class="skip-link" href="#projects">ข้ามไปเลือกโปรเจกต์</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="/course/" aria-label="myClover หน้าเลือกโปรเจกต์">
+        <span class="brand-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>myClover</span>
+      </a>
+      <span class="header-label">LEARNING &amp; PROJECTS</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <div class="eyebrow"><span aria-hidden="true"></span>พื้นที่เรียนรู้สำหรับทีม</div>
+        <h1 id="page-title">เริ่มจากเรื่องของทีม<br><span>แล้วลงมือไปด้วยกัน</span></h1>
+        <div class="intro-bottom">
+          <p>เลือกโปรเจกต์ของคุณ เพื่อเข้าสู่พื้นที่เรียนรู้<br class="desktop-break">และสื่อที่เตรียมไว้สำหรับทีม</p>
+          <span class="intro-caption">A SPACE TO LEARN. A PLACE TO BUILD.</span>
+        </div>
+      </section>
+
+      <section id="projects" class="projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <h2 id="projects-title">เลือกโปรเจกต์</h2>
+          <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg>ใช้รหัสของโปรเจกต์เพื่อเข้าใช้งาน</p>
+        </div>
+        <div class="project-grid">
+          <button class="project-card featured" type="button" data-project="thedent" aria-haspopup="dialog">
+            <div class="card-topline"><span class="card-number">01 / THE DENT</span><span class="card-access"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg>เข้าสู่โปรเจกต์</span></div>
+            <div class="featured-content">
+              <div class="featured-copy"><span class="project-category">TEAM WORKSHOP</span><h3>TheDent</h3><p class="featured-subtitle">Claude Cowork + ChatGPT</p><p class="project-description">บทเรียนและเวิร์กช็อปสำหรับทีม</p><span class="card-cta">เปิดพื้นที่เรียนรู้ <span aria-hidden="true">↗</span></span></div>
+              <div class="featured-art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-tile tile-back"></div><div class="art-tile tile-main"><span class="tile-mark">D<span>·</span></span><div class="tile-rule"></div><span class="tile-label">LEARN<br>TOGETHER.</span></div><div class="art-tag">คิด → ทำ → ใช้ต่อ</div></div>
+            </div>
+          </button>
+
+          <button class="project-card" type="button" data-project="pir-academy" aria-haspopup="dialog">
+            <div class="card-topline"><span class="card-number">02 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="project-monogram academy" aria-hidden="true">Pi<span>R</span></div>
+            <div class="card-copy"><h3>Pi R Academy</h3><p class="project-description">พื้นที่โปรเจกต์</p></div>
+            <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
+          </button>
+
+          <button class="project-card" type="button" data-project="cloverx" aria-haspopup="dialog">
+            <div class="card-topline"><span class="card-number">03 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="project-monogram cloverx" aria-hidden="true">C<span>×</span></div>
+            <div class="card-copy"><h3>CloverX</h3><p class="project-description">พื้นที่โปรเจกต์</p></div>
+            <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
+          </button>
+
+          <button class="project-card" type="button" data-project="crescohealth" aria-haspopup="dialog">
+            <div class="card-topline"><span class="card-number">04 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="project-monogram cresco" aria-hidden="true">c<span>h</span></div>
+            <div class="card-copy"><h3>CrescoHealth</h3><p class="project-description">Sydney, Australia</p></div>
+            <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
+          </button>
+
+          <button class="project-card" type="button" data-project="gems" aria-haspopup="dialog">
+            <div class="card-topline"><span class="card-number">05 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="project-monogram gems" aria-hidden="true">G<span>◇</span></div>
+            <div class="card-copy"><h3>GEMS <span class="name-secondary">Scientific Beauty</span></h3><p class="project-description">คลินิกความงาม</p></div>
+            <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>Designed for your team.<br><strong>Made with myClover.</strong></span><span class="footer-wordmark">LEARN. BUILD. GROW.</span></footer>
+  </div>
+
+  <dialog id="access-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
+    <button class="dialog-close" type="button" id="close-dialog" aria-label="ปิดหน้าต่าง"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    <div class="dialog-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></div>
+    <p class="dialog-eyebrow">MYCLOVER · PROJECT ACCESS</p>
+    <h2 id="dialog-title">เข้าสู่โปรเจกต์</h2>
+    <p id="dialog-description">ใส่รหัสที่ได้รับจากผู้ดูแลโปรเจกต์<br>เพื่อเข้าสู่พื้นที่ของทีม</p>
+    <form id="access-form" novalidate>
+      <label for="project-password">รหัสเข้าโปรเจกต์</label>
+      <div class="password-field"><input id="project-password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required aria-describedby="access-error"><button type="button" id="toggle-password" aria-label="แสดงรหัส" aria-pressed="false">แสดง</button></div>
+      <p class="access-error" id="access-error" role="alert" aria-live="assertive" hidden></p>
+      <button class="submit-button" id="submit-access" type="submit"><span id="submit-label">เข้าสู่โปรเจกต์</span><span class="submit-arrow" aria-hidden="true">→</span><span class="spinner" aria-hidden="true" hidden></span></button>
+      <p class="form-note">หากยังไม่มีรหัส ติดต่อผู้ดูแลโปรเจกต์ของคุณ</p>
+    </form>
+  </dialog>
+  <noscript><div class="no-script">เปิด JavaScript เพื่อเลือกโปรเจกต์และเข้าสู่พื้นที่เรียนรู้</div></noscript>
+</body>
+</html>

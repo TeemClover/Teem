@@ -377,6 +377,41 @@
       "source": "/invite",
       "destination": "/invite/",
       "permanent": false
+    },
+    {
+      "source": "/course/course-content.js",
+      "destination": "/course/thedent/course-content.js",
+      "permanent": false
+    },
+    {
+      "source": "/course/course-resources.js",
+      "destination": "/course/thedent/course-resources.js",
+      "permanent": false
+    },
+    {
+      "source": "/course/course.js",
+      "destination": "/course/thedent/course.js",
+      "permanent": false
+    },
+    {
+      "source": "/course/course.css",
+      "destination": "/course/thedent/course.css",
+      "permanent": false
+    },
+    {
+      "source": "/course/daily-brief.html",
+      "destination": "/course/thedent/daily-brief.html",
+      "permanent": false
+    },
+    {
+      "source": "/course/resources/:path*",
+      "destination": "/course/thedent/resources/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/course/downloads/:path*",
+      "destination": "/course/thedent/downloads/:path*",
+      "permanent": false
     }
   ],
   "headers": [
@@ -482,9 +517,34 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/course/thedent/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/course/thedent",
+      "destination": "/api/course-content"
+    },
+    {
+      "source": "/course/thedent/:path*",
+      "destination": "/api/course-content?file=:path*"
+    },
     {
       "source": "/Xircle",
       "destination": "/xircle/index.html"
@@ -555,5 +615,10 @@
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
     }
-  ]
+  ],
+  "functions": {
+    "api/course-content.js": {
+      "includeFiles": "course/thedent/**"
+    }
+  }
 }

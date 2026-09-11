@@ -1,21 +1,25 @@
-# The Dent teaching room
+# myClover project portal
 
-Static teaching site at `/course/`: 7 lessons, 20 slides, 8 prompts, 15 resources and two workshops. Fictional data only. The previous course information page is retained at `/course/about/`.
+`/course/` is the project selector. Every project opens a password dialog. Only TheDent is enabled; other project IDs always receive the same unsuccessful-login response and have no classroom content.
 
-## Editing
+TheDent is at `/course/thedent/`. Login is checked by `/api/course-access`; a signed, scoped, host-only HttpOnly cookie permits returning to the course for 30 days. The password and signing secret exist only in server environment settings:
 
-- Lesson, slide and prompt copy: `course-content.js`.
-- Teaching files: `resources/`.
-- Presenter/learner experience: `course.js` and `course.css`.
-- Self-contained CSV prototype: `daily-brief.html`.
-- After any change, run `node course/build.mjs` to regenerate the prompt library, slide notes, embedded resource text and deterministic offline ZIP. Do not hand-edit the generated files.
+- `COURSE_DENT_PASSWORD`
+- `COURSE_SESSION_SECRET` (cryptographically random, at least 32 characters)
 
-The course kit runs by opening `index.html` after extracting the ZIP. It includes local fonts and embedded resources. AI services still need an internet connection. Only lesson progress is saved in localStorage; edited prompt drafts stay in memory until the page is refreshed.
+Set both as Secrets for the `teem` Vercel project in Production and Preview before deployment. Missing configuration fails closed. Do not put values into frontend code, build files, repository history, logs, query parameters or localStorage. Changing either value invalidates existing sessions after deployment.
 
-## Verification
+Middleware redirects unauthenticated classroom-page requests to the portal and rejects asset requests. The `/api/course-content` handler independently verifies access before serving an explicit allowlist of HTML, scripts, styles, fonts, training files and the offline ZIP. Responses are private/no-store. Existing unrelated middleware behavior remains intact.
 
-- `node course/tests/daily-brief.test.cjs` checks CSV calculations and validation against the actual HTML logic.
-- Start a local static server at the repository root, then run `node course/tests/browser.e2e.mjs` with Playwright available. Optional environment variables: `COURSE_URL`, `PLAYWRIGHT_MODULE_PATH`, `CHROME_PATH`.
-- The browser checks routes, prompts, downloads, offline use, presentation navigation, timer, laptop/mobile layout and CSV upload behavior.
+Production and Preview login throttling uses the existing `DATABASE_URL` and an isolated `public.course_dent_login_rate_limit` table (created at runtime). It permits 30 attempts per address/project per five-minute window, stores only keyed address hashes, and clears the counter after a successful login. Database errors fail closed; the in-memory fallback is for local development without a database only.
 
-Publishing uses the existing GitHub → Vercel pipeline. `/course` redirects to `/course/` through the existing middleware. No new service or API is required.
+The gate applies to current website delivery. Public GitHub history, earlier deployments and copies already downloaded are separate copies; this change does not revoke those copies or make the repository private.
+
+## Maintenance
+
+- Portal: `index.html`, `portal.css`, `portal.js`.
+- Classroom: `thedent/`; see its README for content editing.
+- Rebuild classroom downloads after edits: `node course/thedent/build.mjs`.
+- CSV checks: `node course/thedent/tests/daily-brief.test.cjs`.
+- Authentication checks: `node --test tests/course/auth.test.mjs`.
+- Old direct resource URLs redirect to the new protected locations. Old lesson/presentation hashes on `/course/` open the TheDent login and preserve the intended lesson.

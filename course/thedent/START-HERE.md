@@ -7,4 +7,4 @@ THE DENT · AI WORKSHOP
 5. อ่านคู่มือผู้สอนใน resources/instructor-guide.md
 
 สื่อและต้นแบบทำงานในเครื่องได้ การใช้งาน Claude/ChatGPT ยังต้องใช้อินเทอร์เน็ต
-ออนไลน์: https://www.myclover.com/course/
+ออนไลน์: https://www.myclover.com/course/thedent/
