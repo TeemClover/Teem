@@ -1,37 +1,48 @@
-/* Local illustration with fictional business data. No AI or remote repository is connected. */
+/* Illustrative Cloud workflow and editable time-value estimate. No remote services are connected. */
 (() => {
   'use strict';
-  const update = document.getElementById('demo-update');
-  const refresh = document.getElementById('demo-refresh');
-  const reset = document.getElementById('demo-reset');
-  if (!update || !refresh || !reset) return;
-  const versions = { 1: { label: 'v1', days: 2 }, 2: { label: 'v2', days: 3 } };
-  let sourceVersion = 1;
-  let teamVersion = 1;
-  function put(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
+  const byId = id => document.getElementById(id);
+  const put = (id, value) => { const el = byId(id); if (el) el.textContent = value; };
+  const publish = byId('demo-publish'), run = byId('demo-run'), reset = byId('demo-reset');
+  let sourceVersion = 1, outputVersion = 1;
+  function renderDemo() {
+    const days = sourceVersion === 1 ? 2 : 3, outputDays = outputVersion === 1 ? 2 : 3;
+    put('demo-version', `SOURCE v${sourceVersion}`);
+    put('demo-current-fact', `${days} วันทำการ`);
+    put('demo-phone-note', `ส่วนกลางกำลังใช้ v${sourceVersion}`);
+    put('demo-ai-version', `ใช้ SOURCE v${outputVersion}`);
+    put('demo-reply', `หลังยืนยันคำสั่งซื้อ ทีมใช้เวลาเตรียมสินค้า ${outputDays} วันทำการ ก่อนส่งต่อให้ผู้ขนส่งค่ะ`);
+    put('demo-status', sourceVersion === 1
+      ? 'เริ่มจากทุกคนใช้ Source v1 เดียวกัน ลองอนุมัติข้อมูลใหม่จากมือถือ'
+      : outputVersion === 1
+        ? 'เผยแพร่ v2 แล้ว ทีมเปิดข้อมูลใหม่เป็น 3 วันทำการ ส่วนร่างเดิมของ AI ยังใช้ v1 จนกว่าจะสร้างงานใหม่'
+        : 'ทีมและผลงาน AI รอบใหม่ใช้ v2 ตรงกัน: 3 วันทำการ จากส่วนกลางเดียวกัน');
+    publish.disabled = sourceVersion === 2;
+    run.disabled = sourceVersion === outputVersion;
   }
-  function render() {
-    const source = versions[sourceVersion];
-    const team = versions[teamVersion];
-    put('example-source-version', `${source.label} · เวลาจัดเตรียมสินค้า`);
-    put('example-fact', `${source.days} วันทำการ`);
-    put('example-team-a', `เครื่อง A · ทีมบริการ · SOURCE ${team.label}`);
-    put('example-team-b', `เครื่อง B · ทีมคอนเทนต์ · SOURCE ${team.label}`);
-    put('example-reply', `หลังยืนยันคำสั่งซื้อ เราใช้เวลาจัดเตรียมสินค้า ${team.days} วันทำการ ก่อนส่งต่อให้ผู้ขนส่งค่ะ`);
-    put('example-brief', `ระบุเวลาจัดเตรียมสินค้า ${team.days} วันทำการหลังยืนยันคำสั่งซื้อ โดยแยกจากระยะเวลาขนส่ง`);
-    const current = sourceVersion === teamVersion;
-    put('demo-status', !current
-      ? 'Source เปลี่ยนเป็น v2 แล้ว แต่สองเครื่องยังใช้ v1 จนกว่าจะรับและอ่านฉบับใหม่'
-      : sourceVersion === 1
-        ? 'ทั้งสองเครื่องใช้ Source v1 อยู่'
-        : 'ทั้งสองเครื่องรับและอ่าน v2 แล้ว ข้อเท็จจริงในผลงานจึงเปลี่ยนเป็น 3 วันทำการ');
-    update.disabled = sourceVersion === 2;
-    refresh.disabled = current;
+  if (publish && run && reset) {
+    publish.addEventListener('click', () => { sourceVersion = 2; renderDemo(); });
+    run.addEventListener('click', () => { outputVersion = sourceVersion; renderDemo(); });
+    reset.addEventListener('click', () => { sourceVersion = 1; outputVersion = 1; renderDemo(); });
+    renderDemo();
   }
-  update.addEventListener('click', () => { sourceVersion = 2; render(); });
-  refresh.addEventListener('click', () => { teamVersion = sourceVersion; render(); });
-  reset.addEventListener('click', () => { sourceVersion = 1; teamVersion = 1; render(); });
-  render();
+  const ids = ['value-people', 'value-minutes', 'value-days', 'value-rate'];
+  const defaults = [6, 20, 22, 300];
+  const fields = ids.map(byId);
+  const format = value => new Intl.NumberFormat('en-US', {maximumFractionDigits: 1}).format(value);
+  function renderValue() {
+    const valid = fields.every(field => field.value.trim() !== '' && field.checkValidity() && Number.isFinite(Number(field.value)));
+    byId('value-error').hidden = valid;
+    const [people, minutes, days, rate] = fields.map(field => Number(field.value));
+    const hours = people * minutes / 60 * days, monthly = hours * rate;
+    put('value-hours', valid ? format(hours) : '—');
+    put('value-monthly', valid ? format(monthly) : '—');
+    byId('value-annual').replaceChildren(document.createTextNode(valid ? `${format(monthly * 12)} ` : '— '));
+    const unit = document.createElement('small'); unit.textContent = 'บาท / ปี'; byId('value-annual').append(unit);
+  }
+  if (fields.every(Boolean)) {
+    fields.forEach(field => field.addEventListener('input', renderValue));
+    byId('value-reset').addEventListener('click', () => { fields.forEach((field, i) => {field.value = String(defaults[i]);}); renderValue(); });
+    renderValue();
+  }
 })();
