@@ -13,9 +13,9 @@
     current=slideId(location.hash);const slide=data.slides[current-1],last=current===data.slides.length;
     select.value=String(current);$('#opening-count').textContent=String(current).padStart(2,'0');
     $('#opening-prev').disabled=current===1;$('#opening-next').hidden=last;$('#opening-start').hidden=!last;
-    $('#opening-cue').textContent=last?'จบพื้นฐานแล้ว · เริ่มลงมือเวลา 14:30':'ฟังและคุยกันก่อน · เริ่มใช้คอม 14:30';
+    $('#opening-cue').textContent=last?'จบพื้นฐานแล้ว · เริ่มลงมือเวลา 14:35':'ฟังและคุยกันก่อน · เริ่มใช้คอม 14:35';
     $('#opening-title').textContent=slide.title;$('#opening-note').textContent=slide.note;
-    $('#opening-time').textContent=`หน้านี้ประมาณ ${Math.floor(slide.seconds/60)}:${String(slide.seconds%60).padStart(2,'0')} นาที · ทั้งชุด 30 นาที`;
+    $('#opening-time').textContent=`หน้านี้ประมาณ ${Math.floor(slide.seconds/60)}:${String(slide.seconds%60).padStart(2,'0')} นาที · ทั้งชุด 25 นาที`;
     img.alt=`หน้า ${slide.id}: ${slide.title}`;stage.setAttribute('aria-busy','true');$('#opening-error').hidden=true;img.src=`./${slide.image}`;
     if(img.complete){if(img.naturalWidth)showLoaded();else showError();}
     document.title=`${String(current).padStart(2,'0')} · ${slide.title} | TheDent × myClover`;

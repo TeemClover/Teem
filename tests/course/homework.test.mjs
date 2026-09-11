@@ -18,7 +18,7 @@ function actualCode(from, to) {
 const runtime = [
   actualCode('  const STORE =', '  const dialog ='),
   actualCode('  function persist()', '  function notify('),
-  actualCode('  function setHomework(', '  function advanceLesson('),
+  actualCode('  function setHomework(', '  function followupNote('),
   'this.api = { state, drafts, restoreHomework, persist, setHomework };'
 ].join('\n');
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -82,6 +82,15 @@ test('saved progress from before homework keeps its module, completed lessons an
   assert.equal(h.state.homework.size, 0);
   h.persist();
   assert.deepEqual(JSON.parse(h.stored()), { ...saved, homework: [] });
+});
+
+test('the retired PRD lesson resumes at file work without claiming the new lesson is completed', () => {
+  const h = harness({ saved: { module: 'prd', done: ['start', 'prd'], homework: ['teach-peer'] } });
+  assert.equal(h.state.module, 'files');
+  assert.deepEqual([...h.state.done], ['start']);
+  assert.deepEqual([...h.state.homework], ['teach-peer']);
+  h.persist();
+  assert.equal(JSON.parse(h.stored()).module, 'files');
 });
 
 test('restoreHomework rejects malformed values, unknown IDs and non-string entries, and deduplicates valid IDs', () => {
