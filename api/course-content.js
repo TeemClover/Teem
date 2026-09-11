@@ -11,6 +11,7 @@ export const COURSE_CONTENT_FILES = Object.freeze([
   'resources/review-checklist.md', 'resources/clinic-public-source.md', 'resources/source-example.md',
   'resources/excel-csv-guide.md', 'resources/excel-prd.md', 'resources/thedent-branches.csv', 'resources/thedent-branches.xlsx',
   'resources/tool-quickstart.md', 'resources/content-handoff-example.md',
+  'resources/ai-leader-homework.md', 'resources/advanced-course.md',
   'downloads/the-dent-course-kit.zip',
   'fonts/ibm-plex-sans-thai-latin-400.woff2', 'fonts/ibm-plex-sans-thai-latin-600.woff2',
   'fonts/ibm-plex-sans-thai-latin-700.woff2', 'fonts/ibm-plex-sans-thai-thai-400.woff2',
