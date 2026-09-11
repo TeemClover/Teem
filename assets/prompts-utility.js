@@ -311,7 +311,9 @@ function boot(){
     new MutationObserver(function(){rewriteResults()}).observe(results,{childList:true});
   }
 
-  setTimeout(function(){rewriteTop();ensureExhibition()},0);
+  const finishLayout=function(){rewriteTop();ensureExhibition()};
+  if(window.MC_CLASSROOM_RENDER)document.addEventListener('classroom:prepare',finishLayout,{once:true});
+  else setTimeout(finishLayout,0);
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});

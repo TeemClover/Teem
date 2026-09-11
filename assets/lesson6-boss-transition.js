@@ -1,13 +1,13 @@
 /* AI ใส่ซอส · บท 6 — ทางเดินก่อนพบบอส
    - ข้อความ takeover อยู่จนผู้เล่นกดรับทราบเอง
-   - ใช้ SVG ประตูที่ฝังในหน้า เพื่อให้บทเรียนเป็นไฟล์เดียว
-   - คงสัญญาณ glitch เบา ๆ หลังประตูปรากฏ
+   - ใช้ภาพประตูจริงชุดเดียวกับหน้ารวมบทเรียน
+   - สัญญาณแทรกและประตูเคลื่อนไหวเป็นช่วงสั้น ๆ แล้วหยุด
    - ก่อนเข้าด่านบอสใช้สรรพนาม คุณ / มัน เท่านั้น
-   - ห้องบอสหลัก /classroom/awaken กำลังสร้างใหม่: ใช้ /boss/ เป็นห้องสำรองชั่วคราว
+   - ทางเข้าด่านบอสหลักคือ /classroom/dungeon/
 */
 
 function isLessonSix() {
-  return /\/classroom\/first-web\.html$/.test(location.pathname);
+  return /\/classroom\/first-web(?:\.html)?$/.test(location.pathname);
 }
 
 function addStyles() {
@@ -19,7 +19,7 @@ function addStyles() {
 
     .lesson6-signal{
       position:fixed;inset:0;z-index:260;display:grid;place-items:center;padding:22px;
-      background:rgba(3,8,5,.94);color:#fff;overflow:hidden;
+      background:#030805;color:#fff;overflow:auto;
       -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)
     }
     .lesson6-signal[hidden]{display:none!important}
@@ -32,13 +32,19 @@ function addStyles() {
     }
     .lesson6-signal::after{
       background:linear-gradient(90deg,transparent 0 17%,rgba(255,0,70,.14) 18%,transparent 19% 73%,rgba(0,210,255,.12) 74%,transparent 75%);
-      animation:lesson6SignalSweep .55s steps(2) infinite
+      animation:lesson6SignalSweep .55s steps(2) 3
     }
+    .lesson6-signal__portal{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .lesson6-signal__portal img{width:100%;height:100%;object-fit:cover;opacity:.27;transform:scale(1.03)}
+    .lesson6-signal__portal::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,8,5,.8),rgba(3,8,5,.25) 45%,rgba(3,8,5,.94))}
+    .lesson6-signal[data-phase="intercept"] .lesson6-signal__portal{opacity:0}
+    .lesson6-signal[data-phase="portal"] .lesson6-signal__portal{animation:lesson6PortalReveal .7s ease-out both}
+    .lesson6-signal[data-phase="ready"]::after{opacity:.22}
     .lesson6-signal__in{position:relative;z-index:2;width:min(620px,100%);text-align:center}
     .lesson6-signal__tag{display:block;color:#ff6673;font:850 11px/1.5 "Bai Jamjuree",system-ui,sans-serif;letter-spacing:.22em}
     .lesson6-signal h2{
       margin-top:12px;color:#fff;font:900 clamp(36px,9vw,70px)/1.05 "Bai Jamjuree",system-ui,sans-serif;
-      text-shadow:5px 0 #ff005b,-5px 0 #00c6e7;animation:lesson6TextGlitch .32s steps(2) infinite
+      text-shadow:3px 0 rgba(255,0,91,.72),-3px 0 rgba(0,198,231,.6);animation:lesson6TextGlitch .32s steps(2) 3
     }
     .lesson6-signal p{max-width:40ch;margin:18px auto 0;color:rgba(255,255,255,.78);font-size:clamp(16px,3.4vw,19px);line-height:1.85}
     .lesson6-signal button{
@@ -47,7 +53,10 @@ function addStyles() {
       box-shadow:0 20px 44px rgba(190,148,66,.2)
     }
     .lesson6-signal button:hover{transform:translateY(-2px)}
-    body.lesson6-signal-open{overflow:hidden}
+    .lesson6-signal button:focus-visible{outline:3px solid #f4e4b4;outline-offset:5px}
+    .lesson6-signal .lesson6-signal__back{display:block;margin:15px auto 0;padding:8px 15px;min-height:44px;background:rgba(3,8,5,.35);border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.82);box-shadow:none;font-weight:600}
+    .lesson6-signal__status{display:block;min-height:1.6em;margin-top:17px;font:500 12px/1.6 system-ui,sans-serif;color:rgba(237,216,164,.8)}
+    body.lesson6-signal-open{overflow-y:auto!important}
 
     body.lesson6-afterglitch .lesson6-noise{display:block}
     .lesson6-noise{
@@ -55,7 +64,7 @@ function addStyles() {
       background:
         repeating-linear-gradient(0deg,transparent 0 7px,rgba(255,255,255,.018) 7px 8px),
         linear-gradient(90deg,transparent 0 37%,rgba(255,0,72,.022) 38%,transparent 39% 76%,rgba(0,198,231,.02) 77%,transparent 78%);
-      mix-blend-mode:screen;opacity:.7;animation:lesson6AfterSignal 7s steps(2) infinite
+      mix-blend-mode:screen;opacity:0;animation:lesson6AfterSignal 2s steps(2) 1
     }
 
     body.lesson6-boss-transition .boss-door{
@@ -65,8 +74,8 @@ function addStyles() {
     }
     body.lesson6-boss-transition .boss-door::before,
     body.lesson6-boss-transition .boss-door::after{display:none!important}
-    .lesson6-boss-art{position:absolute;z-index:-2;inset:0;width:100%;height:100%}
-    .lesson6-boss-art svg{display:block;width:100%;height:100%}
+    .lesson6-boss-art{position:absolute;z-index:-2;inset:0;width:100%;height:100%;margin:0}
+    .lesson6-boss-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
     .lesson6-boss-shade{
       position:absolute;z-index:-1;inset:0;
       background:linear-gradient(180deg,rgba(0,0,0,.02) 22%,rgba(2,8,5,.26) 54%,rgba(2,8,5,.93) 100%),
@@ -78,8 +87,9 @@ function addStyles() {
     body.lesson6-boss-transition .door-copy .tag{color:rgb(222 190 111)}
     body.lesson6-boss-transition .door-copy h2{text-shadow:0 5px 24px rgba(0,0,0,.75)}
     body.lesson6-boss-transition .door-copy p{max-width:52ch;margin:10px auto 0;color:rgba(255,255,255,.82);line-height:1.8}
-    body.lesson6-afterglitch .boss-door{animation:lesson6DoorSignal 6.5s steps(2) infinite}
+    body.lesson6-afterglitch .boss-door{animation:lesson6DoorSignal 2s steps(2) 1}
 
+    @keyframes lesson6PortalReveal{from{opacity:0;transform:scale(1.025)}to{opacity:1;transform:none}}
     @keyframes lesson6SignalSweep{50%{transform:translateX(9px)}}
     @keyframes lesson6TextGlitch{0%,72%,100%{transform:none}78%{transform:translate(3px,-1px)}86%{transform:translate(-2px,1px)}}
     @keyframes lesson6AfterSignal{
@@ -98,10 +108,12 @@ function addStyles() {
       body.lesson6-boss-transition .door-copy{padding:260px 18px 24px}
     }
     @media(prefers-reduced-motion:reduce){
-      .lesson6-signal::after,.lesson6-signal h2,.lesson6-noise,
+      .lesson6-signal::after,.lesson6-signal h2,.lesson6-noise,.lesson6-signal__portal,
       body.lesson6-afterglitch .boss-door{animation:none!important}
       .lesson6-signal button:hover{transform:none}
-      .lesson6-noise{opacity:.25}
+      .lesson6-noise{display:none!important}
+      .lesson6-signal h2{text-shadow:none}
+      body.lesson6-boss-transition.glitching nav,body.lesson6-boss-transition.glitching main{animation:none!important}
     }
   `;
   document.head.append(style);
@@ -109,28 +121,12 @@ function addStyles() {
 
 function installDoorArt(bossDoor) {
   if (!bossDoor || bossDoor.querySelector('.lesson6-boss-art')) return;
-  const art = document.createElement('div');
+  const art = document.createElement('picture');
   art.className = 'lesson6-boss-art';
   art.innerHTML = `
-    <svg viewBox="0 0 1200 700" role="img" aria-labelledby="lesson6DoorTitle lesson6DoorDesc" xmlns="http://www.w3.org/2000/svg">
-      <title id="lesson6DoorTitle">ประตูด่านบอส</title>
-      <desc id="lesson6DoorDesc">ประตูในห้องโถงมืด มีแสงสีทองลอดผ่านตรงกลาง</desc>
-      <defs>
-        <radialGradient id="lesson6Hall" cx="50%" cy="42%" r="75%"><stop stop-color="#173224"/><stop offset="1" stop-color="#010503"/></radialGradient>
-        <linearGradient id="lesson6Door" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10271b"/><stop offset="1" stop-color="#020704"/></linearGradient>
-        <linearGradient id="lesson6Light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0a5" stop-opacity=".95"/><stop offset="1" stop-color="#be9442" stop-opacity=".05"/></linearGradient>
-        <filter id="lesson6Glow"><feGaussianBlur stdDeviation="14"/></filter>
-      </defs>
-      <rect width="1200" height="700" fill="url(#lesson6Hall)"/>
-      <path d="M0 590L325 420h550l325 170v110H0Z" fill="#06100a"/>
-      <path d="M350 600V125Q350 55 420 55h360q70 0 70 70v475Z" fill="#1d3528" stroke="#4d6b57" stroke-width="10"/>
-      <path d="M390 600V145q0-50 50-50h160v505Z" fill="url(#lesson6Door)"/>
-      <path d="M810 600V145q0-50-50-50H600v505Z" fill="url(#lesson6Door)"/>
-      <path d="M586 120h28v480h-28Z" fill="#f1cd6d" opacity=".72" filter="url(#lesson6Glow)"/>
-      <path d="M594 120h12v480h-12Z" fill="#fff3bd"/>
-      <path d="M440 590h320l170 110H270Z" fill="url(#lesson6Light)" opacity=".58"/>
-      <circle cx="560" cy="350" r="8" fill="#d8b65c"/><circle cx="640" cy="350" r="8" fill="#d8b65c"/>
-    </svg>`;
+    <source type="image/webp" media="(max-width:640px)" srcset="../img/awaken-hero-640.webp">
+    <source type="image/webp" srcset="../img/awaken-hero-1024.webp">
+    <img src="../img/awaken-hero.jpg" width="1600" height="900" loading="lazy" decoding="async" alt="ประตูห้องโถงมืดที่มีแสงเส้นเดียวลอดเข้ามา ก่อนเข้าสู่ด่านบอส">`;
   bossDoor.prepend(art);
   const shade = document.createElement('span');
   shade.className = 'lesson6-boss-shade';
@@ -149,13 +145,13 @@ function rewriteCopy(takeover, bossDoor, bossLock) {
 
   const bossLink = bossDoor?.querySelector('.boss-go');
   if (bossLink) {
-    bossLink.href = '/boss/';
+    bossLink.href = '/classroom/dungeon/';
     bossLink.textContent = 'เข้าสู่ด่านบอส →';
-    bossLink.dataset.bossRoom = 'backup';
+    bossLink.dataset.bossRoom = 'dungeon';
   }
 
   const lockCopy = bossLock?.querySelector('p');
-  if (lockCopy) lockCopy.textContent = 'กลับไปเก็บบทที่ขาดให้ครบ 6 บท แล้วประตูนี้จะจำว่าคุณเคยมาถึงตรงนี้';
+  if (lockCopy) lockCopy.textContent = 'เก็บบทเรียนให้ครบ 3 จาก 6 บท แล้วกลับมาเปิดประตูนี้ได้ ไม่ต้องรอครบทั้งคอร์ส';
 }
 
 function createSignal() {
@@ -166,15 +162,39 @@ function createSignal() {
   signal.setAttribute('role', 'dialog');
   signal.setAttribute('aria-modal', 'true');
   signal.setAttribute('aria-labelledby', 'lesson6SignalTitle');
+  signal.setAttribute('aria-describedby', 'lesson6SignalCopy');
   signal.innerHTML = `
+    <div class="lesson6-signal__portal" aria-hidden="true"><img src="../img/awaken-hero-640.webp" alt="" decoding="async"></div>
     <div class="lesson6-signal__in">
       <span class="lesson6-signal__tag">SIGNAL INTERRUPTED · SYSTEM OVERRIDE</span>
       <h2 id="lesson6SignalTitle">AI ยึดหน้าแล้ว</h2>
-      <p>คุณคิดว่าหลักสูตรจบตรงเมนคอร์สแล้วหรือ?</p>
-      <button type="button">รับทราบ · แสดงประตูข้างหน้า</button>
+      <p id="lesson6SignalCopy">คุณคิดว่าหลักสูตรจบตรงเมนคอร์สแล้วหรือ?<br>มีบางสิ่งเปิดทางเข้ามาจากอีกฝั่ง</p>
+      <span class="lesson6-signal__status" role="status" aria-live="polite">ตรวจพบทางผ่านที่ซ่อนอยู่</span>
+      <button type="button" class="lesson6-signal__continue">เปิดประตูข้างหน้า →</button>
+      <button type="button" class="lesson6-signal__back">กลับไปดูผลงานก่อน</button>
     </div>`;
   document.body.append(signal);
   return signal;
+}
+
+function playPortalSound() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  try {
+    const context = new AudioContext();
+    const tone = context.createOscillator();
+    const volume = context.createGain();
+    tone.type = 'sine';
+    tone.frequency.setValueAtTime(220, context.currentTime);
+    tone.frequency.exponentialRampToValueAtTime(440, context.currentTime + .28);
+    volume.gain.setValueAtTime(.001, context.currentTime);
+    volume.gain.exponentialRampToValueAtTime(.035, context.currentTime + .04);
+    volume.gain.exponentialRampToValueAtTime(.001, context.currentTime + .32);
+    tone.connect(volume); volume.connect(context.destination);
+    tone.start(); tone.stop(context.currentTime + .34);
+    tone.onended = () => { context.close().catch(() => {}); };
+  } catch { /* Sound is optional; the door always remains usable. */ }
 }
 
 function addNoiseLayer() {
@@ -189,6 +209,7 @@ function boot() {
   if (!isLessonSix() || document.documentElement.dataset.lesson6BossTransition === '1') return;
   document.documentElement.dataset.lesson6BossTransition = '1';
   document.body.classList.add('lesson6-boss-transition');
+  document.body.classList.remove('lesson6-signal-open'); // lesson6-scroll-guard
   addStyles();
   addNoiseLayer();
 
@@ -201,56 +222,105 @@ function boot() {
   installDoorArt(bossDoor);
 
   const signal = createSignal();
-  const continueButton = signal.querySelector('button');
+  const continueButton = signal.querySelector('.lesson6-signal__continue');
+  const backButton = signal.querySelector('.lesson6-signal__back');
+  const status = signal.querySelector('.lesson6-signal__status');
   let shown = false;
   let lastFocus = null;
+  let phaseTimer = null;
+  let readyTimer = null;
+  let mutedRegions = [];
+
+  function restorePage() {
+    clearTimeout(phaseTimer); clearTimeout(readyTimer);
+    signal.hidden = true;
+    mutedRegions.forEach(item => { item.element.inert = item.inert; });
+    mutedRegions = [];
+    document.body.classList.remove('lesson6-signal-open');
+  }
 
   function showSignal() {
     if (shown) return;
     shown = true;
     lastFocus = document.activeElement;
     signal.hidden = false;
-    document.body.classList.add('lesson6-signal-open');
-    window.setTimeout(() => continueButton.focus(), 80);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const readyCopy = bossDoor.hidden
+      ? 'พบประตูที่ซ่อนอยู่ · เก็บบทเรียนครบ 3 จาก 6 เพื่อเปิดทาง'
+      : 'ทางผ่านเปิดแล้ว · คุณเป็นคนเลือกว่าจะเดินต่อเมื่อไร';
+    continueButton.textContent = bossDoor.hidden ? 'ไปที่ประตูข้างหน้า →' : 'เปิดประตูข้างหน้า →';
+    signal.dataset.phase = reduced ? 'ready' : 'intercept';
+    mutedRegions = [...document.querySelectorAll('body > nav, body > main')].map(element => ({ element, inert: element.inert }));
+    mutedRegions.forEach(item => { item.element.inert = true; });
+    document.body.classList.remove('lesson6-signal-open');
+    continueButton.focus({ preventScroll: true });
+    if (reduced) status.textContent = readyCopy;
+    else {
+      phaseTimer = window.setTimeout(() => { signal.dataset.phase = 'portal'; }, 360);
+      readyTimer = window.setTimeout(() => {
+        signal.dataset.phase = 'ready';
+        status.textContent = readyCopy;
+      }, 1120);
+    }
   }
 
   function revealTarget() {
-    signal.hidden = true;
-    document.body.classList.remove('lesson6-signal-open');
+    if (signal.hidden) return;
+    playPortalSound();
+    restorePage();
     document.body.classList.add('lesson6-afterglitch');
-
-    const scrollToTarget = () => {
-      const target = !bossDoor.hidden ? bossDoor : (!bossLock.hidden ? bossLock : null);
-      if (!target) {
-        window.setTimeout(scrollToTarget, 120);
-        return;
-      }
+    const target = !bossDoor.hidden ? bossDoor : (!bossLock.hidden ? bossLock : null);
+    if (target) {
       target.scrollIntoView({
         behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         block: 'center',
       });
+      target.querySelector('a')?.focus({ preventScroll: true });
       try { window.MC_ACT?.('lesson6-boss-sign-read'); } catch { /* analytics optional */ }
-    };
-    scrollToTarget();
+    }
+  }
+
+  function returnToWork() {
+    restorePage();
+    const completion = document.getElementById('cl-completion');
+    if (completion && !completion.hasAttribute('tabindex')) completion.tabIndex = -1;
+    const target = completion || document.getElementById('finishBtn') || lastFocus;
+    target?.focus({ preventScroll: true });
+    (completion || document.getElementById('courseEnd'))?.scrollIntoView({ behavior: 'auto', block: 'center' });
   }
 
   continueButton.addEventListener('click', revealTarget);
+  backButton.addEventListener('click', returnToWork);
   signal.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { event.preventDefault(); returnToWork(); return; }
     if (event.key !== 'Tab') return;
-    event.preventDefault();
-    continueButton.focus();
+    if (event.shiftKey && document.activeElement === continueButton) {
+      event.preventDefault(); backButton.focus();
+    } else if (!event.shiftKey && document.activeElement === backButton) {
+      event.preventDefault(); continueButton.focus();
+    }
   });
 
   const observer = new MutationObserver(() => {
     if (!takeover.hidden) showSignal();
   });
-  observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
-
-  // กรณีโมดูลโหลดช้ากว่าจังหวะที่ takeover ถูกเปิดไปแล้ว
-  if (!takeover.hidden) showSignal();
+  let watchingTakeover = false;
+  function watchTakeover() {
+    if (watchingTakeover || document.documentElement.dataset.classroomRender === 'loading') return;
+    watchingTakeover = true;
+    observer.observe(takeover, { attributes: true, attributeFilter: ['hidden'] });
+    // Catch a restored position, or a signal raised earlier in the same ready event.
+    if (!takeover.hidden) showSignal();
+  }
+  if (document.documentElement.dataset.classroomRender === 'loading') {
+    document.addEventListener('classroom:ready', watchTakeover, { once: true });
+  } else watchTakeover();
 
   window.addEventListener('pagehide', () => {
-    if (!signal.hidden && lastFocus?.focus) lastFocus.focus();
+    if (!signal.hidden) {
+      restorePage();
+      if (lastFocus?.focus) lastFocus.focus({ preventScroll: true });
+    }
   }, { once: true });
 }
 

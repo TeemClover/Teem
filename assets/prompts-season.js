@@ -46,14 +46,91 @@ function text(el,v){if(el&&el.textContent!==v)el.textContent=v}
 function setPage(){document.title='บทที่ 5 · เปิดลิ้นชักผงปรุงรส — AI ใส่ซอส';var d=document.querySelector('meta[name="description"]');if(d)d.content='ใช้ซอสเป็นฐาน แล้วเลือกผงปรุงรสจากคลัง 44 สูตร กดตักไปใช้ทันที หรือเปิดลิ้นชักเพื่อปรับสูตร';var h=document.querySelector('.head');if(!h)return;var hi=h.querySelector('.heroimg');if(hi)hi.innerHTML=hero();text(h.querySelector('.lv'),'บทที่ 5 · SEASON');text(h.querySelector('h1'),'เปิดลิ้นชักผงปรุงรส — ซอสพร้อม ก็หยิบไปใช้ได้เลย');text(h.querySelector(':scope > p'),'สูตรทั้ง 44 ชิ้นไม่ใช่คาถาแทนซอส แต่เป็นผงปรุงรสสำหรับบอก AI ว่าจะเอาซอสขวดนั้นไปทำอะไร มีซอสแล้วกดตักได้ทันที อยากเปลี่ยนรสค่อยเปิดลิ้นชักปรับสูตร');var m=h.querySelector('.meta');if(m)m.innerHTML='<span>🫙 ซอสเป็นฐาน</span><span>🧂 '+V.prompts.length+' สูตร</span><span>🥄 ตักแล้วใช้ได้เลย</span><span>⚙️ ปรับสูตรได้</span>';text(document.querySelector('.finder .qlab'),'อยากปรุงซอสให้กลายเป็นอะไร?');var q=document.getElementById('q');if(q)q.placeholder='เช่น อีเมล, สไลด์, รายงาน, คลิป, แผนงาน, คำตอบลูกค้า...';text(document.getElementById('rand'),'🎲 สุ่มผงปรุงรส');text(document.getElementById('showAll'),'เปิดทั้งคลัง '+V.prompts.length+' สูตร')}
 function primer(){if(document.querySelector('.source-primer'))return;var f=document.querySelector('.finder');if(!f)return;var b=document.createElement('section');b.className='source-primer';b.innerHTML='<div class="jar">🫙</div><div><b>ซอสคือข้อมูลต้นทางที่คัดและจัดแล้ว · Prompt คือผงปรุงรส</b><p>แต่ละลิ้นชักบอกซอสที่แนะนำที่สุด 1 แบบ เช่น <code>.md</code>, ภาพ, เสียง, PDF หรือ Sheet มีซอสแล้วกด <b>“ตักผงปรุงรส”</b> ได้เลย สูตรจะยึดซอสและรักษา <span class="canon-inline"><button type="button" aria-expanded="false">Canon</button><span class="ctip">Canon คือสิ่งที่ต้องเหมือนเดิมในทุก Output เช่น ชื่อ สี ยุค บุคลิก ข้อความหลัก และสิ่งที่ห้ามเปลี่ยน</span></span> อยากเปลี่ยนรสค่อยกด <b>“ปรับสูตร”</b></p><div class="mini"><span>🫙 .md</span><span>🖼️ ภาพ</span><span>🎙️ เสียง</span><span>📄 PDF</span><span>📊 Sheet</span></div></div>';f.insertAdjacentElement('afterend',b);var c=b.querySelector('.canon-inline'),bt=c.querySelector('button');bt.onclick=function(e){e.stopPropagation();var on=c.dataset.open==='1';c.dataset.open=on?'0':'1';bt.setAttribute('aria-expanded',on?'false':'true')};document.addEventListener('click',function(){c.dataset.open='0';bt.setAttribute('aria-expanded','false')})}
 function byId(id){return V.prompts.find(function(p){return p.id===id})}
-function decorate(card){if(!card)return;var p=byId(card.dataset.id);if(!p)return;var s=src(p),tags=card.querySelector('.tags');if(tags&&!tags.querySelector('.source-tag')){var t=document.createElement('span');t.className='source-tag';t.innerHTML='<strong>'+s.icon+'</strong> ซอส: '+s.label;tags.insertBefore(t,tags.firstChild)}var row=card.querySelector('.pcb'),raw=card.querySelector('[data-act="raw"]'),use=card.querySelector('[data-act="use"]');if(raw){raw.classList.add('main');text(raw,'🥄 ตักผงปรุงรส')}if(use){use.classList.remove('main');text(use,card.classList.contains('open')?'⚙️ กำลังปรับสูตร':'⚙️ ปรับสูตร')}if(row&&raw&&row.firstElementChild!==raw)row.insertBefore(raw,row.firstElementChild);var dr=card.querySelector('.drawer');if(dr){if(!dr.querySelector('.drawer-source')){var ds=document.createElement('div');ds.className='drawer-source';ds.innerHTML='<span class="si">'+s.icon+'</span><div><b>ซอสที่แนะนำที่สุด: '+s.label+'</b><small>แนบหรือวางซอสก่อน แล้วปรับเฉพาะช่องที่อยากเปลี่ยน</small></div>';dr.insertBefore(ds,dr.firstChild)}var dh=dr.querySelectorAll('.dh');text(dh[0],'ปรับเฉพาะสิ่งที่อยากเปลี่ยน — ช่องว่างที่เหลือให้ AI อ่านจากซอส');text(dh[1],'ผงปรุงรสที่ปรับแล้ว');text(dr.querySelector('[data-act="copyFilled"]'),'🥄 ตักสูตรที่ปรับแล้ว');var an=dr.querySelector('[data-act="anatomy"]');if(an&&!/ปิด/.test(an.textContent))text(an,'🔬 ดูส่วนผสม')}}
+function decorate(card){
+ if(!card)return;
+ var p=byId(card.dataset.id);if(!p)return;
+ var s=src(p),tags=card.querySelector('.tags');
+ if(tags&&!tags.querySelector('.source-tag')){
+  var t=document.createElement('span');t.className='source-tag';
+  t.innerHTML='<strong>'+s.icon+'</strong> ซอส: '+s.label;
+  tags.insertBefore(t,tags.firstChild);
+ }
+ // Generic prompt UI owns every button label and primary-action class.
+ // Keep the legacy renderer only for pages without that module.
+ var ui=window.MC_PROMPT_LANGUAGE;
+ var generic=ui&&typeof ui.cardButtons==='function';
+ var row=card.querySelector('.pcb'),raw=card.querySelector('[data-act="raw"]'),use=card.querySelector('[data-act="use"]');
+ if(generic)ui.cardButtons(card);
+ else{
+  if(raw){if(!raw.classList.contains('main'))raw.classList.add('main');text(raw,'🥄 ตักผงปรุงรส')}
+  if(use){if(use.classList.contains('main'))use.classList.remove('main');text(use,card.classList.contains('open')?'⚙️ กำลังปรับสูตร':'⚙️ ปรับสูตร')}
+  if(row&&raw&&row.firstElementChild!==raw)row.insertBefore(raw,row.firstElementChild);
+ }
+ var dr=card.querySelector('.drawer');
+ if(dr){
+  if(!dr.querySelector('.drawer-source')){
+   var ds=document.createElement('div');ds.className='drawer-source';
+   ds.innerHTML='<span class="si">'+s.icon+'</span><div><b>ซอสที่แนะนำที่สุด: '+s.label+'</b><small>แนบหรือวางซอสก่อน แล้วปรับเฉพาะช่องที่อยากเปลี่ยน</small></div>';
+   dr.insertBefore(ds,dr.firstChild);
+  }
+  var dh=dr.querySelectorAll('.dh');
+  text(dh[0],'ปรับเฉพาะสิ่งที่อยากเปลี่ยน — ช่องว่างที่เหลือให้ AI อ่านจากซอส');
+  text(dh[1],'ผงปรุงรสที่ปรับแล้ว');
+  if(!generic)text(dr.querySelector('[data-act="copyFilled"]'),'🥄 ตักสูตรที่ปรับแล้ว');
+  var an=dr.querySelector('[data-act="anatomy"]');if(an&&!/ปิด/.test(an.textContent))text(an,'🔬 ดูส่วนผสม');
+ }
+}
 function decorateAll(){document.querySelectorAll('.pc').forEach(decorate);var r=document.getElementById('resTitle');if(r&&r.textContent==='ไอเท็มที่คนหยิบบ่อย')text(r,'ผงปรุงรสที่หยิบบ่อย');var c=document.getElementById('resCount');if(c&&/ใบ/.test(c.textContent))text(c,c.textContent.replace(/ใบ/g,'สูตร'))}
 function toast(msg){var t=document.getElementById('toast');if(!t)return;text(t,msg);t.classList.add('on');clearTimeout(t.__st);t.__st=setTimeout(function(){t.classList.remove('on')},2400)}
-function copy(v,msg){v=promptSafe(v);function fb(){var a=document.createElement('textarea');a.value=v;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();toast(ok?msg:'ก๊อปอัตโนมัติไม่ได้ — เลือกข้อความในกล่องแล้วก๊อปเอง')}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(function(){toast(msg)},fb);else fb()}
-function copyEvents(){var r=document.getElementById('results');if(!r)return;r.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=b.dataset.act;if(a!=='raw'&&a!=='copyFilled')return;var card=b.closest('.pc'),p=card&&byId(card.dataset.id);if(!p)return;e.preventDefault();e.stopImmediatePropagation();var box=card.querySelector('[data-prev]'),v=a==='raw'?p.tpl:(box&&box.dataset.text)||p.tpl;copy(v,'✓ ตักผงปรุงรสแล้ว — แนบซอสแล้ววางสูตรต่อได้เลย');text(b,'✓ ตักแล้ว');setTimeout(function(){text(b,a==='raw'?'🥄 ตักผงปรุงรส':'🥄 ตักสูตรที่ปรับแล้ว')},1500)},true)}
+function copy(v,msg,onCopied){
+ v=promptSafe(v);
+ function success(){toast(msg);if(onCopied)onCopied()}
+ function fb(){
+  var a=document.createElement('textarea');a.value=v;a.style.cssText='position:fixed;left:-9999px';
+  document.body.appendChild(a);a.select();
+  var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();
+  if(ok)success();else toast('ก๊อปอัตโนมัติไม่ได้ — เลือกข้อความในกล่องแล้วก๊อปเอง');
+ }
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(success,fb);else fb();
+}
+function copyEvents(){
+ var r=document.getElementById('results');if(!r)return;
+ r.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var a=b.dataset.act;if(a!=='raw'&&a!=='copyFilled')return;
+  var card=b.closest('.pc'),p=card&&byId(card.dataset.id);if(!p)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  var box=card.querySelector('[data-prev]'),v=a==='raw'?p.tpl:(box&&box.dataset.text)||p.tpl;
+  copy(v,'✓ ตักผงปรุงรสแล้ว — แนบซอสแล้ววางสูตรต่อได้เลย',function(){
+   var ui=window.MC_PROMPT_LANGUAGE;
+   if(ui&&typeof ui.markCopied==='function')ui.markCopied(b);
+   else{
+    text(b,'✓ ตักแล้ว');
+    setTimeout(function(){text(b,a==='raw'?'🥄 ตักผงปรุงรส':'🥄 ตักสูตรที่ปรับแล้ว')},1500);
+   }
+  });
+ },true);
+}
 function genesisText(){function v(id,h){var e=document.getElementById(id),x=e&&e.value.trim();return x||'['+h+']'}var f=document.getElementById('gFact'),L=['ซอสก่อน — ใน Session นี้ให้ใช้ซอสหลักต่อไปนี้','',v('gSource','แนบหรือวางซอสหลักของ Session นี้'),'','บทบาทของคุณ:',v('gRole','บทบาทของ AI'),'','บริบทของฉัน:',v('gCtx','ฉันคือใครและกำลังทำอะไร'),'','เป้าหมายหลัก:',v('gMission','เป้าหมายของ Session'),'','กติกาซอส:','- ใช้ซอสเป็นฐานข้อเท็จจริงหลัก','- รักษา Key Messages, Tone และ Canon','- ถ้าข้อมูลไม่อยู่ในซอสให้ถามก่อน ห้ามแต่งเพิ่ม','- ถ้าซอสขัดกัน ให้ถามว่าอะไรเป็นซอสหลักที่ยึดเป็นความจริง','','หลักที่ต้องให้ความสำคัญ:',v('gPrin','หลักที่ต้องรักษา'),'','วิธีร่วมงาน:','- ถ้าข้อมูลสำคัญไม่พอ ให้ถามก่อนเดา (ไม่เกิน '+v('gAsk','จำนวนคำถาม')+' ข้อต่อครั้ง)'];if(f&&f.checked)L.push('- แยกข้อเท็จจริง สมมติฐาน และข้อเสนอแนะ');var alt=document.getElementById('gAlt'),no=document.getElementById('gNo'),ex=document.getElementById('gExtra');if(alt&&alt.value.trim())L.push('- เสนอทางเลือก '+alt.value.trim());L.push('- ชี้ความเสี่ยงและข้อขัดแย้งตรงไปตรงมา');if(no&&no.value.trim())L.push('- ห้ามทำ: '+no.value.trim());L.push('','รูปแบบคำตอบ:',v('gStyle','ภาษา ความยาว และรูปแบบ'));if(ex&&ex.value.trim())L.push('- '+ex.value.trim());L.push('','ก่อนเริ่มงานแรก:','1. สรุปความเข้าใจซอสและเป้าหมาย','2. ระบุสิ่งที่ยังขาดหรือขัดกัน','3. ถามเฉพาะคำถามจำเป็น');return promptSafe(L.join('\n'))}
 function genesis(){var leg=document.querySelector('.legend');if(leg){text(leg.querySelector('h3'),'GENESIS SEASONING — ตั้งวิธีร่วมงาน ไม่ใช่สร้างข้อเท็จจริงแทนซอส');var p=leg.querySelectorAll(':scope > p');if(p[0])p[0].innerHTML='ซอสบอกว่า <b>งานนี้คืออะไรและอะไรต้องจริง</b> — Genesis บอกว่า <b>AI ควรร่วมงานกับเราอย่างไร</b>';if(p[1])p[1].innerHTML='ใช้คู่กันดีที่สุด: ซอสเก็บข้อมูล Key Messages และ Canon ส่วน Genesis กำหนดให้ระบุช่องว่างแล้วลงมือจากข้อมูลที่มี แยก Fact/Assumption และรักษาเสียงเจ้าของงาน';var vs=leg.querySelector('.vs');if(vs&&!vs.closest('details')){var d=document.createElement('details');d.className='season-fold';d.innerHTML='<summary>เปิดดูตัวอย่าง ก่อนมีซอสกับหลังมีซอส + Genesis</summary><div class="inside"></div>';vs.parentNode.insertBefore(d,vs);d.querySelector('.inside').appendChild(vs);var w=leg.querySelector('p[style]');if(w)d.querySelector('.inside').appendChild(w)}}var b=document.querySelector('.builder');if(b&&!document.getElementById('gSource')){var x=document.createElement('div');x.className='f source-genesis-field';x.innerHTML='<label for="gSource">ซอสหลักของ Session นี้คืออะไร</label><textarea id="gSource" placeholder="เช่น แนบไฟล์ brand-source.md หรือวางบันทึกไว้ด้านบน"></textarea><small>แนะนำซอสจากบทที่ 1 — Genesis ไม่ได้แทนไฟล์นี้</small>';var st=b.querySelector('#presets')&&b.querySelector('#presets').nextElementSibling;if(st)st.insertAdjacentElement('afterend',x);else b.appendChild(x)}var prev=document.getElementById('gPrev'),cp=document.getElementById('gCopy');if(prev&&cp){function paint(){setTimeout(function(){text(prev,genesisText())},0)}['gSource','gCtx','gRole','gMission','gPrin','gStyle','gAsk','gAlt','gNo','gExtra','gFact'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('input',paint);e.addEventListener('change',paint)}});var pr=document.getElementById('presets');if(pr)pr.addEventListener('click',paint);var rs=document.getElementById('gReset');if(rs)rs.addEventListener('click',paint);cp.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();copy(genesisText(),'✓ ตัก Genesis Seasoning แล้ว — วางหลังซอสในแชตใหม่');text(cp,'✓ ตักแล้ว');setTimeout(function(){text(cp,'🥄 ตัก Genesis Seasoning')},1600)},true);text(cp,'🥄 ตัก Genesis Seasoning');paint()}var lv=document.querySelector('.lvls');if(lv){var h=lv.previousElementSibling;if(h&&h.tagName==='H2')h.innerHTML='<span class="n">3</span>ผงปรุงรสมี 3 ระดับ';var a=lv.querySelectorAll('.lvl');if(a[0])a[0].innerHTML='<span class="n">LEVEL 1 · ไม่มีซอส</span><q>ช่วยเขียนโพสต์ให้หน่อย</q><small>AI ต้องเดาทั้งเรื่อง คนอ่าน น้ำเสียง และข้อเท็จจริง</small>';if(a[1])a[1].innerHTML='<span class="n">LEVEL 2 · ยัดข้อมูลไว้ใน Prompt</span><q>เล่าเรื่องทั้งหมดใหม่ทุกครั้ง แล้วค่อยสั่งงาน</q><small>ใช้ได้ แต่เสียเวลาและแก้ซ้ำทุก Output</small>';if(a[2])a[2].innerHTML='<span class="n">LEVEL 3 · ซอส + ผงปรุงรส</span><q>แนบซอส → ตักผงปรุงรส → วางสูตร</q><small>เร็วและคุมรสได้ เพราะซอสเก็บความจริง ส่วนสูตรเลือกวิธีทำจาน</small>'}}
 function finish(){var p=document.querySelector('.source-primer');if(p&&!document.querySelector('.season-chef'))p.insertAdjacentHTML('afterend','<div class="season-chef"><b>เชฟชิมแล้ว</b><p>มีซอสดีแล้วกดตักได้เลยค่ะ ไม่ต้องกรอกทุกช่อง ถ้ายังไม่มีซอสแล้วหวังว่าผง 44 ซองจะเสกข้อเท็จจริง เชฟเรียกว่าสร้างบุฟเฟต์จากอากาศค่ะ</p></div>');var q=document.querySelector('.quest');if(!q)return;q.innerHTML='<b>🎯 QUEST: เลือกซอส 1 ขวด แล้วปรุง 1 งานจริง</b><ol><li>ใช้ซอสจากบทที่ 1 หรือซอสที่มีอยู่แล้ว</li><li>ค้นหาผงที่ตรงกับงานวันนี้</li><li>ดูไอคอนซอสที่แนะนำ</li><li>กด “ตักผงปรุงรส” แล้ววางหลังซอส</li><li>ถ้ายังไม่ตรง ค่อยกด “ปรับสูตร”</li><li>ตรวจชื่อ ตัวเลข Key Messages และ Canon</li></ol><button type="button" class="season-finish">ฉันใช้ซอส + ผงปรุงรสทำงานจริงแล้ว</button><span class="unlock">🧂 SEASONER UNLOCKED</span><span class="qshare">ซอสเก็บความจริง · ผงปรุงรสเลือกวิธีเสิร์ฟ</span>';var bt=q.querySelector('.season-finish');function done(){bt.classList.add('done');text(bt,'✓ ผ่านบทที่ 5 แล้ว');try{localStorage.setItem('mc-prompts-complete','1')}catch(e){}}bt.onclick=done;try{if(localStorage.getItem('mc-prompts-complete')==='1')done()}catch(e){}var bk=document.querySelector('.nextrow .ghost'),nx=document.querySelector('.nextrow .nx:not(.ghost)');text(bk,'← บท 4 · ซอสขวดเดียว แตกได้หลายเมนู');text(nx,'บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต →')}
-function boot(){css();setPage();primer();genesis();finish();copyEvents();var r=document.getElementById('results');if(r)new MutationObserver(decorateAll).observe(r,{childList:true,subtree:true});decorateAll()}
+function boot(){
+ css();setPage();primer();genesis();finish();copyEvents();
+ var r=document.getElementById('results');
+ if(r)new MutationObserver(function(records){
+  var changedContent=records.some(function(record){
+   if(record.type==='attributes'){
+    if(record.attributeName==='class')return record.target.matches('.pc')
+      && /(^|\s)open(\s|$)/.test(record.oldValue||'')!==record.target.classList.contains('open');
+    return record.target.matches('[data-prev]')&&record.oldValue!==record.target.getAttribute('data-anat');
+   }
+   return Array.prototype.some.call(record.addedNodes,function(node){
+    return node.nodeType===1&&(node.matches('.pc,.drawer')||node.querySelector('.pc,.drawer'));
+   });
+  });
+  if(changedContent)decorateAll();
+ }).observe(r,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-anat'],attributeOldValue:true});
+ decorateAll();
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

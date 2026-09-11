@@ -225,7 +225,14 @@ function apply() {
   const root = contentRoot();
   if (!root) return;
   let refreshTimer = 0;
+  let queued = false;
   const refresh = () => {
+    if(window.MC_CLASSROOM_RENDER){
+      if(queued)return;
+      queued=true;
+      queueMicrotask(()=>{queued=false;wrapHeroTerms();});
+      return;
+    }
     clearTimeout(refreshTimer);
     refreshTimer = setTimeout(wrapHeroTerms, 40);
   };
@@ -234,8 +241,12 @@ function apply() {
     refresh();
   });
   observer.observe(root, { childList:true, subtree:true });
-  setTimeout(wrapHeroTerms, 250);
-  setTimeout(wrapHeroTerms, 1000);
+  if(window.MC_CLASSROOM_RENDER){
+    document.addEventListener('classroom:decorate',wrapHeroTerms,{once:true});
+  }else{
+    setTimeout(wrapHeroTerms, 250);
+    setTimeout(wrapHeroTerms, 1000);
+  }
 }
 
 document.addEventListener('click', event => {

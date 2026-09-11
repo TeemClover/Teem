@@ -286,7 +286,9 @@ function boot(){
   addKitchenWhy();
   rewriteReviewAndNext();
   initTooltips();
-  setTimeout(function(){wrapChefTool();addKitchenWhy();rewriteReviewAndNext()},40);
+  const finishLayout=function(){wrapChefTool();addKitchenWhy();rewriteReviewAndNext()};
+  if(window.MC_CLASSROOM_RENDER)document.addEventListener('classroom:prepare',finishLayout,{once:true});
+  else setTimeout(finishLayout,40);
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});

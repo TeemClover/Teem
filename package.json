@@ -48,7 +48,8 @@
     "test:xvisor:story": "node tests/xvisor/game-story-flow.e2e.mjs",
     "test:xvisor:scenes": "node tests/xvisor/game-v2-scenes.e2e.mjs",
     "test:xvisor:retention": "node tests/xvisor/game-retention.e2e.mjs",
-    "test:xircle:xvisor": "node xircle/xvisor-path.e2e.mjs"
+    "test:xircle:xvisor": "node xircle/xvisor-path.e2e.mjs",
+    "test:classroom": "node tests/classroom/first-paint.e2e.mjs && node tests/classroom/scroll.e2e.mjs && node tests/classroom/learning.e2e.mjs && node tests/classroom/lesson12.e2e.mjs && node tests/classroom/lesson34.e2e.mjs && node tests/classroom/lesson56.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",
