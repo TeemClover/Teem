@@ -2,21 +2,38 @@ import { next, rewrite } from '@vercel/functions';
 import { verifyCourseSession } from './api/_lib/course-access.js';
 
 export const config = {
-  // Run for extensionless page routes, but leave APIs, Vercel internals,
-  // and real asset files alone, except the protected classroom subtree.
-  // This keeps relative assets resolving from
-  // the intended directory (e.g. /xvisor -> /xvisor/).
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)', '/course/thedent/:path*'],
+  // Inspect every path before Vercel can decode it into a static file route.
+  // Legacy API/asset exemptions are applied after the classroom guard below.
+  matcher: '/:path*',
 };
+
+function canonicalPath(pathname) {
+  let decoded = pathname;
+  try {
+    for (let round = 0; round < 8 && /%[0-9a-f]{2}/i.test(decoded); round++) {
+      decoded = decodeURIComponent(decoded);
+    }
+    if (/%[0-9a-f]{2}/i.test(decoded) || /[\u0000-\u001f\u007f?#]/.test(decoded)) return null;
+    const slashes = decoded.replace(/\\/g, '/').replace(/\/{2,}/g, '/');
+    return new URL(`https://course.invalid${slashes}`).pathname;
+  } catch { return null; }
+}
 
 export default async function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
+  const normalized = canonicalPath(pathname);
+  const privateHeaders = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vercel-CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
+  if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
   // Classroom content is also checked by /api/course-content before serving.
-  if (pathname === '/course/thedent' || pathname.startsWith('/course/thedent/')) {
+  const classroomPath = normalized.toLowerCase();
+  if (classroomPath === '/course/thedent' || classroomPath.startsWith('/course/thedent/')) {
+    // Encoded aliases must never fall through to Vercel's public static cache,
+    // even for signed-in users. Only the canonical API-backed route is served.
+    if (pathname !== normalized || normalized !== classroomPath) return new Response('Not found', { status: 404, headers: privateHeaders });
     const admitted = await verifyCourseSession(request.headers.get('cookie') || '');
     if (!admitted) {
-      const headers = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
+      const headers = { ...privateHeaders };
       if (/\.(?!html?$)[a-z0-9]+$/i.test(pathname)) {
         return new Response('Authentication required', { status: 401, headers });
       }
@@ -27,6 +44,9 @@ export default async function middleware(request) {
       return new Response(null, { status: 307, headers });
     }
   }
+
+  // Preserve the original matcher exemptions for unrelated routes.
+  if (/^\/(?:api|_next|_vercel)/.test(pathname) || pathname.includes('.')) return next();
 
   const isAkoDomain = url.hostname === 'ako.myclover.com';
   const isPreviewCheck =

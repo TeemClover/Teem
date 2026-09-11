@@ -19,6 +19,12 @@ const login=await post({project:'thedent',password});check('valid password accep
 const setCookie=login.headers.get('set-cookie')||'';check('cookie protections',['HttpOnly','Secure','SameSite=Lax','Path=/'].every(value=>setCookie.includes(value)));
 const cookie=setCookie.split(';')[0];
 check('login targets relocated room',(await login.json()).redirect==='/course/thedent/');
+for(const alias of ['/course/%74hedent/course-content.js','/course/%74%68%65%64%65%6e%74/course-content.js','/course/thedent%2fcourse-content.js','/course%2fthedent/course-content.js','/course/%2574hedent/course-content.js','/course/thedent/%63ourse-content.js']){
+ for(const session of ['',cookie]){
+  const response=await get(alias,session);
+  check('encoded alias never reaches static delivery '+alias+' '+Boolean(session),[400,404].includes(response.status));
+ }
+}
 for(const file of COURSE_CONTENT_FILES){
  const response=await get('/course/thedent/'+file,cookie);
  check('authenticated file '+file,response.status===200);
