@@ -4,6 +4,8 @@ import { courseSessionCookie, issueCourseSession, verifyCourseSession } from './
 
 export const COURSE_CONTENT_FILES = Object.freeze([
   'advance.html', 'advance.css', 'advance.js',
+  'opening.html', 'opening.css', 'opening.js', 'opening-data.js', 'resources/opening-notes.md',
+  ...Array.from({length:20}, (_,i) => `opening/slide-${String(i+1).padStart(2,'0')}.jpg`),
   'index.html', 'course.css', 'course.js', 'course-content.js', 'course-resources.js', 'daily-brief.html',
   'resources/workflow-template.md', 'resources/mini-prd-example.md', 'resources/instructor-guide.md',
   'resources/website-source-notes.md', 'resources/clinic-training-brief.md', 'resources/slide-notes.md',
@@ -20,6 +22,7 @@ export const COURSE_CONTENT_FILES = Object.freeze([
 ]);
 const allowed = new Set(COURSE_CONTENT_FILES);
 const types = {
+  '.jpg': 'image/jpeg',
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.md': 'text/markdown; charset=utf-8',
   '.csv': 'text/csv; charset=utf-8', '.zip': 'application/zip', '.woff2': 'font/woff2',

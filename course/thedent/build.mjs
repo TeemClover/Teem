@@ -13,17 +13,20 @@ vm.runInNewContext(fs.readFileSync(path.join(root,'course-content.js'),'utf8'),c
 const d=context.window.DENT_COURSE;
 const write=(name,text)=>fs.writeFileSync(path.join(root,'resources',name),text+'\n');
 write('prompt-library.md',`# The Dent · พรอมป์พร้อมใช้ ${d.prompts.length} ใบ\n\nแนบไฟล์ที่ระบุ แล้วคัดลอกคำสั่งไปวางใน Claude Cowork หรือ ChatGPT ได้เลย\n\n`+d.prompts.map((p,i)=>`## ${i+1}. ${p.title}\n\n**ใช้เมื่อ:** ${p.when}\n\n**แนบไฟล์:** ${p.input}\n\n**จะได้:** ${p.output}\n\n\`\`\`text\n${p.text}\n\`\`\``).join('\n\n'));
-write('slide-notes.md','# The Dent · สไลด์และโน้ตผู้สอน\n\n12 กันยายน 2026 · 14:00–17:00 · โหมดสไลด์อยู่ที่ /course/thedent/#present/1\n\n'+d.slides.map(s=>`## ${s.id}. ${s.title.replaceAll('\n',' ')}\n\n${s.kicker} · ${s.chapter}\n\n${s.lead}\n\n${s.points.map(p=>'- '+p).join('\n')}\n\n**โน้ตผู้สอน**\n\n${s.note}\n\n**เปิดบทลงมือ:** /course/thedent/#learn/${s.activityId}`).join('\n\n---\n\n'));
+write('slide-notes.md','# The Dent · สไลด์และโน้ตผู้สอน\n\n12 กันยายน 2026 · 14:00–17:00\n\nเปิดคลาส 14:00–14:30 ด้วย AI ใส่ซอส: /course/thedent/opening.html#slide/1\nอ่านโน้ตประกอบชุดเปิดคลาสใน opening-notes.md\n\nเริ่มสไลด์ Workshop ตอน 14:30: /course/thedent/#present/5\nสไลด์ HTML หน้า 1–4 ด้านล่างเป็นเนื้อหาอ้างอิง ไม่ต้องบรรยายซ้ำหลังชุดเปิดคลาส\n\n'+d.slides.map(s=>`## ${s.id}. ${s.title.replaceAll('\n',' ')}\n\n${s.kicker} · ${s.chapter}\n\n${s.lead}\n\n${s.points.map(p=>'- '+p).join('\n')}\n\n**โน้ตผู้สอน**\n\n${s.note}\n\n**เปิดบทลงมือ:** /course/thedent/#learn/${s.activityId}`).join('\n\n---\n\n'));
 const resources=Object.fromEntries(fs.readdirSync(path.join(root,'resources')).filter(f=>/\.(md|csv)$/.test(f)).sort().map(f=>[f,fs.readFileSync(path.join(root,'resources',f),'utf8')]));
 fs.writeFileSync(path.join(root,'course-resources.js'),'/* Embedded public training files for offline reading. */\nwindow.DENT_RESOURCES = '+JSON.stringify(resources,null,2)+';\n');
 fs.mkdirSync(path.join(root,'downloads'),{recursive:true});
 execFileSync('python3',['-c',`import pathlib,sys,zipfile
 root=pathlib.Path(sys.argv[1])
-files=['index.html','course.css','course.js','course-content.js','course-resources.js','daily-brief.html','advance.html','advance.css','advance.js','START-HERE.md']
-files += [str(p.relative_to(root)) for folder in ['fonts','resources'] for p in sorted((root/folder).rglob('*')) if p.is_file()]
+files=['index.html','course.css','course.js','course-content.js','course-resources.js','daily-brief.html','advance.html','advance.css','advance.js','opening.html','opening.css','opening.js','opening-data.js','START-HERE.md']
+files += [str(p.relative_to(root)) for folder in ['fonts','resources','opening'] for p in sorted((root/folder).rglob('*')) if p.is_file()]
 with zipfile.ZipFile(root/'downloads/the-dent-course-kit.zip','w',zipfile.ZIP_DEFLATED) as archive:
  for file in files:
   info=zipfile.ZipInfo('the-dent-course/'+file,date_time=(2026,9,11,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.external_attr=0o644<<16
   archive.writestr(info,(root/file).read_bytes())
 print('Packaged',len(files),'files')`,root],{stdio:'inherit'});
+const kitBytes=fs.statSync(path.join(root,'downloads/the-dent-course-kit.zip')).size;
+if(kitBytes>3_200_000)throw new Error('Course kit exceeds the safe download size: '+kitBytes);
+console.log('Offline kit bytes:',kitBytes);
 console.log(`${d.slides.length} slides; ${d.prompts.length} prompts; ${Object.keys(resources).length} resources; ${d.agenda.reduce((n,a)=>n+a.minutes,0)} minutes`);
