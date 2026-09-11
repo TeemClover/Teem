@@ -3,6 +3,7 @@ import path from 'node:path';
 import { courseSessionCookie, issueCourseSession, verifyCourseSession } from './_lib/course-access.js';
 
 export const COURSE_CONTENT_FILES = Object.freeze([
+  'advance.html', 'advance.css', 'advance.js',
   'index.html', 'course.css', 'course.js', 'course-content.js', 'course-resources.js', 'daily-brief.html',
   'resources/workflow-template.md', 'resources/mini-prd-example.md', 'resources/instructor-guide.md',
   'resources/website-source-notes.md', 'resources/clinic-training-brief.md', 'resources/slide-notes.md',

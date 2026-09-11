@@ -19,7 +19,7 @@ fs.writeFileSync(path.join(root,'course-resources.js'),'/* Embedded public train
 fs.mkdirSync(path.join(root,'downloads'),{recursive:true});
 execFileSync('python3',['-c',`import pathlib,sys,zipfile
 root=pathlib.Path(sys.argv[1])
-files=['index.html','course.css','course.js','course-content.js','course-resources.js','daily-brief.html','START-HERE.md']
+files=['index.html','course.css','course.js','course-content.js','course-resources.js','daily-brief.html','advance.html','advance.css','advance.js','START-HERE.md']
 files += [str(p.relative_to(root)) for folder in ['fonts','resources'] for p in sorted((root/folder).rglob('*')) if p.is_file()]
 with zipfile.ZipFile(root/'downloads/the-dent-course-kit.zip','w',zipfile.ZIP_DEFLATED) as archive:
  for file in files:
