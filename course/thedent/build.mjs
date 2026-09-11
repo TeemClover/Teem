@@ -12,7 +12,7 @@ const context={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(root,'course-content.js'),'utf8'),context);
 const d=context.window.DENT_COURSE;
 const write=(name,text)=>fs.writeFileSync(path.join(root,'resources',name),text+'\n');
-write('prompt-library.md','# The Dent · พรอมป์พร้อมใช้ทั้ง 8 ใบ\n\nแก้ข้อความใน [วงเล็บ] แล้วแนบเฉพาะไฟล์ฝึกที่เกี่ยวข้อง ใช้กับ Claude Cowork หรือ ChatGPT โดยให้คนอ่านและตรวจผลก่อนใช้ต่อ\n\n'+d.prompts.map((p,i)=>`## ${i+1}. ${p.title}\n\n**ใช้เมื่อ:** ${p.when}\n\n**ข้อมูลเข้า:** ${p.input}\n\n**ผลลัพธ์:** ${p.output}\n\n\`\`\`text\n${p.text}\n\`\`\``).join('\n\n'));
+write('prompt-library.md',`# The Dent · พรอมป์พร้อมใช้ ${d.prompts.length} ใบ\n\nแนบไฟล์ที่ระบุ แล้วคัดลอกคำสั่งไปวางใน Claude Cowork หรือ ChatGPT ได้เลย\n\n`+d.prompts.map((p,i)=>`## ${i+1}. ${p.title}\n\n**ใช้เมื่อ:** ${p.when}\n\n**แนบไฟล์:** ${p.input}\n\n**จะได้:** ${p.output}\n\n\`\`\`text\n${p.text}\n\`\`\``).join('\n\n'));
 write('slide-notes.md','# The Dent · สไลด์และโน้ตผู้สอน\n\n12 กันยายน 2026 · 14:00–17:00 · โหมดสไลด์อยู่ที่ /course/thedent/#present/1\n\n'+d.slides.map(s=>`## ${s.id}. ${s.title.replaceAll('\n',' ')}\n\n${s.kicker} · ${s.chapter}\n\n${s.lead}\n\n${s.points.map(p=>'- '+p).join('\n')}\n\n**โน้ตผู้สอน**\n\n${s.note}\n\n**เปิดบทลงมือ:** /course/thedent/#learn/${s.activityId}`).join('\n\n---\n\n'));
 const resources=Object.fromEntries(fs.readdirSync(path.join(root,'resources')).filter(f=>/\.(md|csv)$/.test(f)).sort().map(f=>[f,fs.readFileSync(path.join(root,'resources',f),'utf8')]));
 fs.writeFileSync(path.join(root,'course-resources.js'),'/* Embedded public training files for offline reading. */\nwindow.DENT_RESOURCES = '+JSON.stringify(resources,null,2)+';\n');

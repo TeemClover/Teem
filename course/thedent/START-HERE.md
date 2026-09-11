@@ -1,13 +1,15 @@
-# The Dent × myClover — เริ่มเรียนจากข้อมูลจริง
+# The Dent × myClover — เปิดแล้วลงมือได้เลย
 
-1. แตก ZIP แล้วเปิด index.html เพื่อดูบทเรียนและสไลด์
-2. เปิด resources/clinic-public-source.md เพื่อดูซอสตัวอย่าง
-3. อ่าน resources/website-source-notes.md และเปิด URL ต้นทางเพื่อสกัดซอสเอง
-4. ทำไฟล์ .md ตาม resources/create-markdown-guide.md
-5. ทำ Workshop 1: content-pack.md และ Workshop 2: mini-prd.md + branch-desk.html
-6. เปิด daily-brief.html เพื่อทดลองหน้าข้อมูลสาขาตัวอย่างที่ใช้ข้อมูลสาธารณะจริง
+1. แตก ZIP แล้วเปิด `index.html` เพื่อเรียนหรือเปิดสไลด์
+2. ใช้ซอสที่เตรียมเสร็จแล้วใน `resources/clinic-public-source.md`
+3. Workshop 1: แนบซอส + คัดลอกพรอมป์ → โพสต์และคำตอบแอดมิน
+4. Workshop 2: แนบ Excel / CSV ที่ export จากระบบ → จัดข้อมูลและทำสรุป
 
-เว็บไซต์และบริการ AI ต้องใช้อินเทอร์เน็ต ส่วนสไลด์ ซอส และเครื่องมือตัวอย่างในชุดนี้เปิดในเครื่องได้
-ข้อมูลและวันที่ตรวจอยู่ใน Source รายการสาขาที่พบไม่ใช่การยืนยันจำนวนสาขาล่าสุดของคลินิก
-หน้าเรียนออนไลน์: https://www.myclover.com/course/thedent/
-ติดตามผลกลุ่ม 30 นาที หลังเรียนประมาณ 1–2 สัปดาห์
+ยังไม่มีไฟล์ export ใช้ `resources/thedent-branches.xlsx` หรือ `.csv` ฝึกก่อนได้ ทั้งคู่เป็นข้อมูลสาขาจริงจากเว็บไซต์
+
+บทเสริม: เปิด `daily-brief.html` เพื่อดู Branch Desk แล้วใช้ Mini PRD และพรอมป์ในบทเรียนสร้างหน้าเว็บต่อเอง
+
+สไลด์ ซอส และตัวอย่างเปิดในเครื่องได้ การใช้ AI และเว็บไซต์ต้องต่ออินเทอร์เน็ต
+
+หน้าเรียน: https://www.myclover.com/course/thedent/
+ติดตามผลกลุ่ม 30 นาที ในอีก 1–2 สัปดาห์

@@ -9,6 +9,7 @@ export const COURSE_CONTENT_FILES = Object.freeze([
   'resources/mini-prd-template.md', 'resources/followup-worksheet.md', 'resources/answer-key.md',
   'resources/workshop-1-example.md', 'resources/prompt-library.md', 'resources/create-markdown-guide.md',
   'resources/review-checklist.md', 'resources/clinic-public-source.md', 'resources/source-example.md',
+  'resources/excel-csv-guide.md', 'resources/excel-prd.md', 'resources/thedent-branches.csv', 'resources/thedent-branches.xlsx',
   'downloads/the-dent-course-kit.zip',
   'fonts/ibm-plex-sans-thai-latin-400.woff2', 'fonts/ibm-plex-sans-thai-latin-600.woff2',
   'fonts/ibm-plex-sans-thai-latin-700.woff2', 'fonts/ibm-plex-sans-thai-thai-400.woff2',
@@ -19,6 +20,7 @@ const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.md': 'text/markdown; charset=utf-8',
   '.csv': 'text/csv; charset=utf-8', '.zip': 'application/zip', '.woff2': 'font/woff2',
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 };
 
 export function resolveCourseContentPath(file, root = process.cwd()) {
@@ -93,6 +95,7 @@ export function createCourseContentHandler({ env = process.env, root = process.c
       res.setHeader('Content-Type', types[path.extname(actual)] || 'application/octet-stream');
       res.setHeader('Content-Length', String(details.size));
       if (file?.endsWith('.zip')) res.setHeader('Content-Disposition', 'attachment; filename="the-dent-course-kit.zip"');
+      if (file?.endsWith('.xlsx')) res.setHeader('Content-Disposition', `attachment; filename="${path.basename(file)}"`);
       res.end(head ? undefined : await readFile(actual));
     } catch (error) {
       return errorResponse(res, ['ENOENT', 'ENOTDIR'].includes(error.code) ? 404 : 500, 'File unavailable', head);
