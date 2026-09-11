@@ -90,6 +90,29 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 }
 </style>
 
+<style data-lesson4-practice>
+.source-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lesson4-practice{margin:18px 0;padding:20px;border:1px solid rgb(var(--green)/.25);border-radius:17px;background:#fff}
+.lesson4-practice h3{margin:5px 0 8px;font:800 19px/1.45 "Bai Jamjuree",sans-serif;color:rgb(var(--deep))}
+.lesson4-practice p{font-size:14px;line-height:1.75;color:rgb(var(--muted))}
+.lesson4-choices{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.lesson4-choices button{min-height:44px;flex:1 1 155px;padding:11px 13px;border:1px solid rgb(var(--green)/.32);border-radius:11px;background:#fff;color:rgb(var(--green));font:700 14px/1.5 "Bai Jamjuree",sans-serif;cursor:pointer}
+.lesson4-choices button[aria-pressed="true"]{background:rgb(var(--green));color:#fff}
+.lesson4-plan{padding:16px;border-radius:13px;background:rgb(var(--green)/.055)}
+.lesson4-plan[hidden]{display:none!important}
+.lesson4-plan h4{font:800 17px/1.5 "Bai Jamjuree",sans-serif;color:rgb(var(--deep))}
+.lesson4-plan ol{padding-left:22px;margin:12px 0;font-size:14px;line-height:1.75}
+.lesson4-plan li+li{margin-top:8px}
+.lesson4-first-check{margin-top:15px;background:#fff}
+.lesson4-first-check input{flex:none}
+.lesson4-compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}
+.lesson4-compare>div{padding:14px;border:1px solid rgb(var(--ink)/.13);border-radius:12px;background:rgb(var(--paper)/.55)}
+.lesson4-compare b{font-size:14px;color:rgb(var(--green))}
+.lesson4-compare p{margin-top:5px}
+.lesson4-feedback:not(:empty){padding:13px;border-left:4px solid rgb(var(--gold));background:rgb(var(--gold)/.08);border-radius:9px}
+#lesson4FirstStatus:not(:empty){margin-top:10px;color:rgb(var(--green))}
+@media(max-width:720px){.source-options,.lesson4-compare{grid-template-columns:1fr}.lesson4-practice{padding:16px}.lesson4-plan{padding:13px}}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
@@ -121,18 +144,26 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 <div class="flow"><article><strong>🧴</strong><b>ใส่ซอส</b><small>ขวดจากบท 1</small></article><article><strong>👥</strong><b>เลือกคนรับ</b><small>ใครจะใช้</small></article><article><strong>🍽️</strong><b>เลือกเมนู</b><small>ภาพ เสียง สไลด์</small></article><article><strong>🧂</strong><b>เติมผง</b><small>ก๊อป ไม่ต้องแต่ง</small></article><article><strong>🥄</strong><b>ชิมกับซอส</b><small>ผิดร่วม แก้ที่ขวด</small></article></div>
 
 <h2 class="section" id="source"><span class="n">3</span>เลือกซอสที่จะเอาเข้าครัว</h2>
-<div class="note g source-choice-note">ใช้ซอสตัวเองจากบทที่ 1 หรือจะใช้ซอสตัวอย่างที่มีให้ในบทแทนก็ได้</div>
-<div class="grid3"><article class="card"><span class="tag">ทาง A · ดีที่สุด</span><h3>ใช้ซอสของตัวเอง</h3><p>หยิบซอสจากบท 1 ที่ผ่านการชิมในบท 2 แล้ว งานที่แตกออกมาจะมีตัวตนของคุณจริงที่สุด</p></article><article class="card"><span class="tag">ทาง B · เร็วที่สุด</span><h3>วางเป็น Copied text</h3><p>ใช้เมื่อแอปหรืออุปกรณ์ไม่รับ <code>.md</code> ก๊อปข้อความทั้งก้อนแล้ววางแทนได้</p></article><article class="card hi source-sample-card"><span class="tag">ทาง C · ลองก่อน</span><h3>ซอสตัวอย่างของบทนี้ (.md)</h3><p>ไฟล์ myclover / GLHF / GrowthOS ที่ใช้สร้างหลักสูตรนี้ขึ้นมา</p><div class="getsrc"><a class="btn" href="lv4/myclover_GLHF_7C_GrowthOS_Source.md" download>⬇️ ดาวน์โหลดซอส (.md)</a><button class="btn alt" type="button" id="copySrc">📋 คัดลอกทั้งไฟล์</button><a class="btn alt" href="lv4/myclover_GLHF_7C_GrowthOS_Source.md" target="_blank" rel="noopener">👀 เปิดอ่าน</a></div><p class="msg" id="srcMsg" role="status" aria-live="polite"></p><p class="hint">ดาวน์โหลดไม่ได้หรือแอปไม่รับ <code>.md</code> ไม่เป็นไร กดคัดลอกแล้วเลือก <b>Copied text</b> ได้เลย</p></article></div>
+<div class="note g source-choice-note">บทก่อนคุณทำคลิป 1 ชิ้น บทนี้ใช้ซอสแม่จากบท 1 ที่ชิมแล้วในบท 2 เปลี่ยนวิธีเล่าให้เหมาะกับคนรับ โดยข้อเท็จจริงยังตรงกัน</div>
+<div class="grid3 source-options"><article class="card"><span class="tag">มีซอสของฉันแล้ว</span><h3>ใช้เรื่องที่อยากทำต่อ</h3><p>หยิบซอสแม่จากบท 1 ที่ผ่านการชิมในบท 2 แล้ว เริ่มจากเรื่องเดิมที่คุณใช้ทำภาพและคลิป จะได้เห็นว่าซอสขวดเดียวเล่าต่อได้หลายแบบ</p><div class="getsrc"><a class="btn alt" href="free-ai.html">กลับไปหยิบซอสบท 1</a></div></article><article class="card hi source-sample-card"><span class="tag">อยากลองตามตัวอย่าง</span><h3>ใช้ซอส myclover ที่เตรียมให้</h3><p>ไฟล์ myclover / GLHF / GrowthOS ที่ใช้สร้างภาพและสไลด์ตัวอย่างด้านล่าง เลือกทางนี้ได้ทันทีแม้ยังไม่มีไฟล์ของตัวเอง</p><div class="getsrc"><a class="btn" href="lv4/myclover_GLHF_7C_GrowthOS_Source.md" download>⬇️ ดาวน์โหลดซอส (.md)</a><button class="btn alt" type="button" id="copySrc">📋 คัดลอกทั้งไฟล์</button><a class="btn alt" href="lv4/myclover_GLHF_7C_GrowthOS_Source.md" target="_blank" rel="noopener">👀 เปิดอ่าน</a></div><p class="msg" id="srcMsg" role="status" aria-live="polite"></p></article></div>
+<div class="note g"><b>เลือกวิธีนำเข้า หลังเลือกซอสแล้ว</b><br>มีไฟล์ในเครื่อง: เลือกอัปโหลดไฟล์ที่เครื่องมือรองรับ<br>มือถือไม่รับ .md: คัดลอกข้อความทั้งไฟล์ แล้วเพิ่มเป็น <b>Copied text</b> ใช้ได้ทั้งซอสของคุณและซอสตัวอย่าง</div>
 
 <details class="fold"><summary><span>📱 Browser กับ App ใส่ซอสไม่เหมือนกัน<span class="sub">ทางออกสำหรับคนที่หาเมนูอัปโหลด `.md` ไม่เจอ</span></span></summary><div class="fin"><p><b>Browser:</b> สร้าง Notebook → เพิ่มซอส → อัปโหลดไฟล์หรือเลือกซอสที่รองรับ</p><p><b>App:</b> ถ้าไม่เห็นไฟล์ <code>.md</code> ให้กดคัดลอกด้านบน แล้วเพิ่มเป็น Copied text</p><p>อย่ายึดติดกับชื่อปุ่ม เป้าหมายคือให้ข้อความซอสชุดเดียวกันเข้า Notebook ครบ</p></div></details>
-<details class="fold"><summary><span>🔎 ผ่าไฟล์ `.md` ดูว่าทำไมแตกงานได้<span class="sub">Key Messages, Tone และ Canon ที่คุมรสทุกเมนู</span></span></summary><div class="fin"><p><b>หัวข้อ:</b> บอกลำดับและความสัมพันธ์</p><p><b>Key Messages:</b> ประโยคที่ห้ามเพี้ยน</p><p><b>Tone:</b> น้ำเสียงที่ทุก Output ใช้ร่วมกัน</p><p><b>Canon / ข้อห้าม:</b> สิ่งที่ต้องคงเดิมและห้ามเติมเอง</p><div class="prompt">ช่วยตรวจซอสที่แนบ แล้วสรุปก่อนเริ่มสร้างว่า:
+<details class="fold"><summary><span>🔎 ผ่าไฟล์ `.md` ดูว่าทำไมแตกงานได้<span class="sub">Key Messages, Tone และ Canon ที่คุมรสทุกเมนู</span></span></summary><div class="fin"><p><b>หัวข้อ:</b> บอกลำดับและความสัมพันธ์</p><p><b>Key Messages:</b> ประโยคที่ห้ามเพี้ยน</p><p><b>Tone:</b> น้ำเสียงที่ทุก Output ใช้ร่วมกัน</p><p><b>Canon / ข้อห้าม:</b> สิ่งที่ต้องคงเดิมและห้ามเติมเอง</p><div class="prompt" data-prompt-guard="off">ตรวจ Source ที่แนบ แล้วส่งรายงานความพร้อมสั้น ๆ ก่อนนำไปสร้างงาน:
 1. ข้อเท็จจริงหลักมีอะไร
 2. Key Messages ที่ห้ามเพี้ยนคืออะไร
 3. Tone และ Canon ที่ต้องคงเดิมคืออะไร
 4. จุดไหนยังขาดหรือขัดกัน
-5. ยังไม่ต้องสร้าง Output จนกว่าฉันจะยืนยัน</div></div></details>
+5. สรุปข้อเท็จจริง 3 ข้อให้ฉันใช้เทียบกับงานทุกชิ้น
+ตอบเป็นรายงานตรวจ Source เท่านั้น ถ้าข้อมูลขาด ให้ระบุว่า “ยังไม่มีข้อมูล” โดยไม่แต่งเพิ่ม</div></div></details>
 
-<h2 class="section" id="powders"><span class="n">4</span>ฉีกซองผงปรุงรส แล้วเทลงช่อง Prompt</h2>
+<h2 class="section" id="powders"><span class="n">4</span>เลือกเมนูแรก แล้วค่อยแตกต่อ</h2>
+<section class="lesson4-practice" id="lesson4FirstOutput" aria-labelledby="lesson4FirstTitle">
+  <h3 id="lesson4FirstTitle">วันนี้อยากใช้เรื่องนี้แบบไหน?</h3>
+  <p>เลือกทำ 1 ชิ้นให้เสร็จก่อน แล้วค่อยเพิ่มอีก 2 รูปแบบให้ครบเควส บทนี้พาคุณเลือกงาน ส่วนการสร้างทำต่อในเครื่องมือที่ใช้</p>
+  <div class="lesson4-choices" role="group" aria-label="เลือกเมนูแรก"><button type="button" data-first-output="image" aria-pressed="false">🖼️ อ่านภาพรวมเร็ว ๆ</button><button type="button" data-first-output="audio" aria-pressed="false">🎧 ฟังทบทวน</button><button type="button" data-first-output="slides" aria-pressed="false">📊 เล่าให้ทีมฟัง</button></div>
+  <div class="lesson4-plan" id="lesson4Plan" hidden><h4 id="lesson4PlanTitle"></h4><p id="lesson4PlanHint" role="status" aria-live="polite"></p><ol><li id="lesson4PlanStart"></li><li>เทียบกับซอส 3 จุด: ชื่อหรือตัวเลขถูกไหม ใจความสำคัญตรงไหม มีอะไรที่ AI เติมเองไหม</li><li id="lesson4PlanNext"></li></ol><a class="btn" href="https://notebooklm.google.com/" target="_blank" rel="noopener">เปิดเครื่องมือแล้วสร้างเมนูแรก ↗</a><label class="check lesson4-first-check"><input type="checkbox" id="lesson4FirstDone"><span>ฉันสร้างเมนูแรกและตรวจ 3 จุดแล้ว</span></label><p id="lesson4FirstStatus" role="status" aria-live="polite"></p></div>
+</section>
 <details class="magic-skip" open><summary>✨ ปุ่มมหัศจรรย์ — กดแล้วข้าม Prompt ด้านล่างได้</summary><div><p>อยากได้สไลด์ก็กด Slide Deck อยากฟังก็กด Audio Overview แค่นี้เลย Gemini Notebook เตรียมงานให้ ไม่ต้องเขียน Prompt</p><small>ปุ่มนี้เป็นของ Gemini Notebook เท่านั้น ถ้าใช้ AI ตัวอื่น ใช้ Prompt ด้านล่างได้เหมือนเดิม</small><figure class="magic-shot"><button class="thumb" type="button" data-full="../img/lv4/gemini-notebook-studio.webp" data-cap="หน้า Studio รวมปุ่มสร้างงานหลายรูปแบบจากซอสขวดเดียว · แคปหน้าจอจาก Gemini Notebook"><img src="../img/lv4/gemini-notebook-studio.webp" width="1284" height="2778" loading="lazy" alt="หน้า Studio ของ Gemini Notebook แสดงปุ่ม Audio Overview, Video Overview, Slide Deck, Flashcards, Quiz, Infographic และ Reports"></button><figcaption><b>ปุ่มที่กดข้าม Prompt ได้</b><span>เลือกสร้างเสียง วิดีโอ สไลด์ Flashcards, Quiz, Infographic หรือ Report ได้จากหน้า Studio แล้วกดภาพเพื่อขยายดูชื่อปุ่มให้ชัด</span><small>แคปหน้าจอจาก Gemini Notebook</small></figcaption></figure></div></details>
 <details class="prompt-library"><summary>🧂 ใช้ AI ตัวอื่นอยู่?</summary><div class="prompt-library__body">
 <div class="source-warning"><b>⚠️ อย่าลืมแนบซอส</b><br>ใช้ Prompt ด้านล่างกับ AI ตัวอื่น ให้แนบซอสจากบทที่ 1 หรือซอสตัวอย่างของบทนี้ไปพร้อมกันด้วย</div>
@@ -179,7 +210,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 </div></details>
 <div class="chef"><b>เชฟชิมแล้ว</b><p>ใช้ผงคนละซองไม่เป็นไรค่ะ แต่ถ้า Infographic บอกอย่างหนึ่ง Slide บอกอีกอย่าง และเสียงสรุปคิดพล็อตเพิ่มเอง เชฟขอเรียกว่าโต๊ะบุฟเฟต์ข่าวลือค่ะ ไม่ใช่การแตกเมนู</p></div>
 
-<h2 class="section"><span class="n">5</span>ของจริงจากซอสต้นฉบับขวดเดียว</h2>
+<h2 class="section" id="lesson4Examples"><span class="n">5</span>ของจริงจากซอสต้นฉบับขวดเดียว</h2>
 <p class="hint" style="margin-bottom:14px">ตัวอย่างเดิมทั้งหมดสร้างจากไฟล์ myclover / GLHF / GrowthOS ชุดเดียว สิ่งที่เปลี่ยนคือคนรับและวิธีเล่า ไม่ใช่ข้อเท็จจริงต้นทาง</p>
 <div class="gal">
 <figure><button class="thumb" type="button" data-full="../img/lv4/info-growthos.jpg" data-cap="GrowthOS 7C — อินโฟกราฟิกสำหรับผู้เริ่มต้น"><img src="../img/lv4/info-growthos.jpg" width="1100" height="1971" loading="lazy" alt="อินโฟกราฟิก GrowthOS 7C"></button><figcaption>เมนู 1 · ภาพรวมที่อ่านเร็ว</figcaption></figure>
@@ -188,6 +219,12 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 </div>
 <div class="deck"><img src="../img/lv4/deck-cover.jpg" width="1200" height="675" loading="lazy" alt="ปกสไลด์ myclover Growth Blueprint"><div><b>📚 Slide Deck จากซอสขวดเดียวกัน</b><p>เก็บ Version แรกไว้ตามจริง รวมถึงจุดที่ AI เรียงเลขในวงจรผิด เพื่อสอนว่า Output สวยไม่ได้แปลว่าผ่านการชิม</p><div class="buttons"><a class="btn" href="lv4/myclover-growth-blueprint.pdf" target="_blank" rel="noopener">เปิด PDF</a><a class="btn alt" href="lv4/myclover-growth-blueprint.pdf" download>ดาวน์โหลด PDF</a></div></div></div>
 
+<section class="lesson4-practice" id="lesson4Practice" aria-labelledby="lesson4TasteTitle">
+  <span class="tag">ลองชิม 30 วินาที · ตัวอย่างสมมติ</span><h3 id="lesson4TasteTitle">สองชิ้นนี้ใช้ซอสเดียวกัน จุดไหนต้องแก้?</h3>
+  <div class="lesson4-compare"><div><b>ซอสต้นทาง</b><p>เวิร์กช็อปทำโปสเตอร์ วันเสาร์ เวลา 10:00–11:00 รับ 12 คน นำมือถือมาเอง</p></div><div><b>ภาพประชาสัมพันธ์</b><p>ทำโปสเตอร์ด้วยมือถือ วันเสาร์ 10:00–11:00 รับ 12 คน</p></div><div><b>เสียงแนะนำงาน</b><p>เสาร์นี้มาทำโปสเตอร์กัน เริ่ม 10 โมง ใช้เวลา 2 ชั่วโมง รับ 12 คน นำมือถือมาเอง</p></div></div>
+  <p>เลือกสิ่งที่ควรแก้ก่อนส่งงาน</p><div class="lesson4-choices" role="group" aria-label="เลือกจุดที่ไม่ตรงกับซอส"><button type="button" data-taste-answer="count" aria-pressed="false">จำนวนผู้เข้าร่วม</button><button type="button" data-taste-answer="duration" aria-pressed="false">ระยะเวลาในเสียง</button><button type="button" data-taste-answer="none" aria-pressed="false">ทุกอย่างตรงกันแล้ว</button></div><p class="lesson4-feedback" id="lesson4TasteFeedback" role="status" aria-live="polite"></p>
+  <p class="hint">ด้านล่างมีกรณีจริงจากสไลด์ myclover ให้ลองตรวจต่อ</p>
+</section>
 <details class="fold"><summary><span>⚠️ เปิดดูจานที่สวย แต่ข้อมูลพลาด<span class="sub">กรณีจริงจากสไลด์ และวิธีแก้โดยไม่กระจายปัญหา</span></span></summary><div class="fin"><p>ในหน้าวงจร GrowthOS 7C ลำดับเลขถูกจัดไม่ตรง แม้หลายส่วนดูถูกต้อง จึงต้องชิมกับซอสไม่ใช่ตัดสินจากความสวย</p><ul><li><b>ผิดเฉพาะชิ้น:</b> แก้ Output นั้นและล็อกส่วนที่ผ่าน</li><li><b>ผิดเหมือนกันหลายชิ้น:</b> กลับไปแก้ซอส</li><li><b>ข้อมูลถูกแต่ทำให้เข้าใจผิด:</b> เปลี่ยนเมนูหรือผงให้เหมาะกับคนรับ</li></ul><div class="note r">เช็กชื่อ ตัวเลข ลำดับ คำแปล และข้อสรุปทุกครั้ง งานสวยแต่ผิดมักถูกส่งต่อเร็วมากค่ะ</div></div></details>
 <details class="fold"><summary><span>📱 มือถือเครื่องเดียวมี Studio ได้จริงไหม<span class="sub">ภาพเดิมและสิ่งที่ควรรู้ก่อนตามตำแหน่งปุ่มแบบเป๊ะ ๆ</span></span></summary><div class="fin"><p>ตัวอย่างเดิมสร้างจากมือถือได้ แต่เมนูอาจต่างตามบัญชี ภาษา อุปกรณ์ และการอัปเดต ให้หาแนวคิดเดียวกัน: ซอสอยู่ไหน เลือก Output ตรงไหน เติมคำสั่งตรงไหน และดาวน์โหลดตรงไหน</p><img src="../img/lv4/studio-mobile.jpg" width="760" height="1644" loading="lazy" alt="หน้าจอ Studio ของ Gemini Notebook บนมือถือ" style="display:block;max-width:360px;margin:14px auto;border-radius:16px"></div></details>
 <details class="fold"><summary><span>💼 ซอสแบบไหนแตกเป็นงานอะไรได้บ้าง<span class="sub">ประชุม ธุรกิจ เรียน คอนเทนต์ และประสบการณ์ส่วนตัว</span></span></summary><div class="fin"><ul><li><b>ประชุม:</b> บันทึก → สรุป, Action items, Slide, FAQ</li><li><b>ธุรกิจ:</b> แบรนด์ + ลูกค้า → Presentation, Onboarding, Script</li><li><b>การเรียน:</b> เอกสาร → Mind Map, Flashcards, Quiz, Audio</li><li><b>คอนเทนต์:</b> Research + Brand voice → คลิป, Caption, Visual</li><li><b>ประสบการณ์:</b> โน้ต + เสียง → คู่มือ, Checklist, Template</li></ul></div></details>
@@ -197,7 +234,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 <div class="chef"><b>เชฟชิมรอบสุดท้าย</b><p>ทำ 12 เมนูจากซอสผิดขวดเดียวกัน ไม่ได้เรียกว่าขยายผลนะคะ เรียกว่ากระจายปัญหาได้มีประสิทธิภาพมากค่ะ กรุณาชิมก่อนเปิดสายพานค่ะ</p></div>
 <div class="note">🔒 <b>ก่อนอัปโหลดซอส</b> — อย่าใส่ข้อมูลลูกค้า ข้อมูลสุขภาพ เอกสารลับ สัญญา หรือข้อมูลส่วนบุคคลหากยังไม่มีสิทธิใช้ เริ่มจากข้อมูลสาธารณะ ข้อมูลสมมติ หรือของตัวเอง</div>
 
-<section class="quest"><h2>🎯 เควสท้ายบท · เปิดโต๊ะจากซอส 1 ขวด</h2><p>จบบทนี้ต้องเห็นว่าซอสเดียวเปลี่ยนภาชนะได้ โดยไม่ต้องอธิบายตัวตนใหม่ทุกครั้ง</p><ol><li>ใช้ซอสของตัวเองหรือซอสตัวอย่าง</li><li>เพิ่มเข้า Gemini Notebook หรือเครื่องมือที่อ่านซอสได้</li><li>เลือกคนรับ 3 กลุ่มหรือ 3 สถานการณ์</li><li>สร้าง Output อย่างน้อย 3 รูปแบบด้วยผงด้านบน</li><li>เทียบ Key Messages, Tone และ Canon กับซอส</li><li>เขียน แผนที่ซอสสั้น ๆ ว่าแต่ละ Output เหมาะกับใคร</li></ol><button class="finish" id="finish" type="button">ฉันแตกซอสเป็น 3 เมนูแล้ว</button><div class="achievement" id="achievement">🌳 ปลดล็อกการแตกซอส · ขวดเดียวแตกงานได้ โดยรสยังอยู่ครบ</div></section>
+<section class="quest" id="lesson4Complete"><h2>🎯 เควสท้ายบท · เปิดโต๊ะจากซอส 1 ขวด</h2><p>จบบทนี้ต้องเห็นว่าซอสเดียวเปลี่ยนภาชนะได้ โดยไม่ต้องอธิบายตัวตนใหม่ทุกครั้ง</p><ol><li>ใช้ซอสของตัวเองหรือซอสตัวอย่าง</li><li>เพิ่มเข้า Gemini Notebook หรือเครื่องมือที่อ่านซอสได้</li><li>เริ่มจากคนรับ 1 กลุ่มและเมนูแรกที่ตรวจแล้ว จากนั้นเลือกอีก 2 รูปแบบให้เหมาะกับการใช้งาน</li><li>สร้าง Output อย่างน้อย 3 รูปแบบด้วยผงด้านบน</li><li>เทียบ Key Messages, Tone และ Canon กับซอส</li><li>เขียนแผนที่ซอสสั้น ๆ เช่น “ภาพสรุป → คนอ่านเร็ว / เสียง → ฉันฟังทบทวน / สไลด์ → ใช้เล่าให้ทีม”</li></ol><button class="finish" id="finish" type="button">ฉันแตกซอสเป็น 3 เมนูแล้ว</button><div class="achievement" id="achievement">🌳 ปลดล็อกการแตกซอส · ขวดเดียวแตกงานได้ โดยรสยังอยู่ครบ</div></section>
 <div class="next"><a class="nx ghost" href="clip-ai.html">← กลับบทที่ 3</a><a class="nx" href="prompts.html">ไปบทที่ 5 · เลือกงาน แล้วตักผงไปใช้กับซอส →</a></div>
 <footer>AI ใส่ซอส · AI Workflow แบบใส่ซอส · myclover.com<br>ซอสเดียวเปลี่ยนภาชนะได้ แต่ห้ามเปลี่ยนความจริง 🍀</footer>
 </main>
@@ -1138,7 +1175,223 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script>
 
+<script type="module" data-self-contained="lesson4-learning-practice.js">
+/* Lesson 4 · choose one useful output, then compare it with the same Source. */
+(() => {
+  'use strict';
+  const root = document.getElementById('lesson4FirstOutput');
+  if (!root || root.dataset.practiceReady === 'true') return;
+  root.dataset.practiceReady = 'true';
+  const storageKey = 'mc-lesson4-first-output-v1';
+  const plans = {
+    image: {
+      title: 'เมนูแรก: ภาพสรุปให้คนอ่านเร็ว',
+      hint: 'เลือกใจความที่คนควรรู้ 3 ข้อ แล้วเริ่มจาก Infographic หรือเครื่องมือสร้างภาพที่คุณใช้',
+      start: 'นำเข้าซอสขวดที่เลือก แล้วสร้างภาพสรุปสำหรับคนที่ยังไม่รู้เรื่องนี้',
+      next: 'เมื่อภาพตรงแล้ว ลองทำเสียงไว้ฟังทบทวนและสไลด์ไว้เล่าต่อ โดยยึดข้อเท็จจริงเดิม'
+    },
+    audio: {
+      title: 'เมนูแรก: เสียงไว้ฟังทบทวน',
+      hint: 'เริ่มจาก Audio Overview แล้วฟังว่าเรื่องสำคัญและตัวเลขยังตรงกับซอสหรือไม่',
+      start: 'นำเข้าซอสขวดที่เลือก แล้วสร้างเสียงเล่าให้ตัวคุณเองฟังทบทวน',
+      next: 'เมื่อเสียงตรงแล้ว ลองทำภาพสรุปให้คนอ่านเร็วและสไลด์ไว้เล่าต่อ โดยยึดข้อเท็จจริงเดิม'
+    },
+    slides: {
+      title: 'เมนูแรก: สไลด์ไว้เล่าให้ทีม',
+      hint: 'เริ่มจาก Slide Deck ให้ทีมรู้เรื่องสำคัญและสิ่งที่ต้องทำต่อหลังฟังจบ',
+      start: 'นำเข้าซอสขวดที่เลือก แล้วสร้างสไลด์สำหรับทีมของคุณ ตั้งให้ 1 หน้าเล่า 1 ประเด็น',
+      next: 'เมื่อสไลด์ตรงแล้ว ลองทำภาพสรุปให้คนอ่านเร็วและเสียงไว้ฟังทบทวน โดยยึดข้อเท็จจริงเดิม'
+    }
+  };
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch {}
+  let selected = Object.hasOwn(plans, saved.choice) ? saved.choice : '';
+  let completed = Array.isArray(saved.completed) ? saved.completed.filter(key => Object.hasOwn(plans, key)) : [];
+  const check = document.getElementById('lesson4FirstDone');
+  const writeText = (id, text) => {
+    const element = document.getElementById(id);
+    if (element && element.textContent !== text) element.textContent = text;
+  };
+  function save() {
+    try { localStorage.setItem(storageKey, JSON.stringify({ choice: selected, completed })); } catch {}
+  }
+  function render() {
+    if (!selected) return;
+    const plan = plans[selected];
+    document.getElementById('lesson4Plan').hidden = false;
+    root.querySelectorAll('[data-first-output]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.firstOutput === selected)));
+    writeText('lesson4PlanTitle', plan.title);
+    writeText('lesson4PlanHint', plan.hint);
+    writeText('lesson4PlanStart', plan.start);
+    writeText('lesson4PlanNext', plan.next);
+    check.checked = completed.includes(selected);
+    writeText('lesson4FirstStatus', check.checked ? 'มีเมนูแรกที่ชิมแล้ว เก็บไว้เทียบกับอีก 2 รูปแบบ แล้วตรวจเช็กลิสต์ท้ายบท' : 'ถ้าบัญชียังไม่มีเมนูนี้ เลือกรูปแบบอื่นที่ใช้ได้ก่อน');
+  }
+  root.querySelectorAll('[data-first-output]').forEach(button => button.addEventListener('click', () => {
+    if (!Object.hasOwn(plans, button.dataset.firstOutput)) return;
+    selected = button.dataset.firstOutput;
+    render();
+    save();
+  }));
+  check.addEventListener('change', () => {
+    if (!selected) return;
+    completed = completed.filter(key => key !== selected);
+    if (check.checked) completed.push(selected);
+    render();
+    save();
+  });
+  render();
+
+  const taste = document.getElementById('lesson4Practice');
+  const feedback = {
+    count: 'จำนวนตรงกันแล้ว: ซอส ภาพ และเสียงระบุ 12 คนเหมือนกัน ลองเทียบเวลา 10:00–11:00 กับคำว่า “2 ชั่วโมง” อีกครั้ง',
+    duration: 'ใช่ — ซอสระบุ 10:00–11:00 เท่ากับ 1 ชั่วโมง แต่เสียงบอก 2 ชั่วโมง แก้เฉพาะเสียงเป็น “1 ชั่วโมง” แล้วตรวจซ้ำ ซอสกับภาพยังถูกอยู่',
+    none: 'ยังมี 1 จุดไม่ตรง: ซอสกำหนด 10:00–11:00 แต่เสียงบอกว่าใช้เวลา 2 ชั่วโมง ลองเลือกส่วนที่ต้องแก้อีกครั้ง'
+  };
+  taste.querySelectorAll('[data-taste-answer]').forEach(button => button.addEventListener('click', () => {
+    const answer = button.dataset.tasteAnswer;
+    if (!Object.hasOwn(feedback, answer)) return;
+    taste.querySelectorAll('[data-taste-answer]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    writeText('lesson4TasteFeedback', feedback[answer]);
+  }));
+})();
+</script>
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script type="module" data-self-contained="course-learning-journey.js">
+/* AI ใส่ซอส · One clear start, a saved place, and an actual finished artifact.
+   Reading/boss progress remains in quest.js. This layer records learner-confirmed work. */
+(function(){
+'use strict';
+const KEY='mc_course_journey_v1';
+const LESSONS=[
+ {id:'free-ai',name:'SOURCE',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',title:'เลือกสูตร ให้งานวันนี้เสร็จ',outcome:'ได้งานที่ใช้จริง 1 ชิ้น พร้อมสูตรที่ปรับเป็นของคุณ',need:'ซอสของคุณ + งานที่อยากทำวันนี้',start:'เลือกงานที่จะทำ',work:'#promptPractice',example:'#promptExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้สูตรกับซอสจนได้งานจริงแล้ว',review:'ตรวจข้อมูล น้ำเสียง และคนที่จะใช้ผลงานแล้ว'},
+ {id:'first-web',name:'SERVE',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+];
+const slug=location.pathname.split('/').pop()?.replace(/\.html$/,'');
+const index=LESSONS.findIndex(item=>item.id===slug);
+if(index<0)return;
+const lesson=LESSONS[index];
+let state={version:1,lessons:{}};
+function read(){
+ try{const value=JSON.parse(localStorage.getItem(KEY)||'null');if(value?.version===1&&value.lessons&&typeof value.lessons==='object'&&!Array.isArray(value.lessons))state=value;}catch{}
+ for(const item of LESSONS){
+  if(!state.lessons[item.id]||typeof state.lessons[item.id]!=='object')state.lessons[item.id]={};
+  try{if(item.legacy&&localStorage.getItem(item.legacy)==='1')state.lessons[item.id].done=true;}catch{}
+ }
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}}
+function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
+function current(){return state.lessons[slug];}
+function styles(){
+ if(document.getElementById('course-learning-style'))return;
+ const s=document.createElement('style');s.id='course-learning-style';
+ s.textContent=`
+ body.course-learning{--cl-green:#176242;--cl-ink:#163325;--cl-muted:#576b5e;--cl-paper:#faf9f5;--cl-gold:#c1a15d}
+ .course-learning .cl-launch,.course-learning .cl-completion,.course-learning .cl-rail,.course-learning .cl-steps,.course-learning .cl-introduction{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif;line-height:1.6}
+ .cl-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:14px 0 12px;margin:0}
+ .cl-rail a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;border-radius:10px;background:#eeeee7;color:#59675e;font-size:11px;font-weight:750;text-decoration:none}
+ .cl-rail a b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;font-size:12px;flex:none}
+ .cl-rail a[aria-current="page"]{background:#173f2c;color:#fff}.cl-rail a[aria-current="page"] b{background:#d6ba73;color:#143623}
+ .cl-rail a[data-done="true"] b{background:#d8e8d9;color:#18532b}
+ .cl-launch{position:relative;isolation:isolate;overflow:hidden;margin:0 0 12px!important;padding:25px!important;border:1px solid #355540!important;border-radius:23px!important;background:radial-gradient(ellipse at top right,#285a3a 0,transparent 55%),#102b1d!important;color:#fff!important;box-shadow:0 18px 45px -30px #173d2b}
+ .cl-launch::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.075;pointer-events:none;background-image:linear-gradient(#e6f0d9 1px,transparent 1px),linear-gradient(90deg,#e6f0d9 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(110deg,transparent,black)}
+ .cl-launch .cl-launch-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:22px;align-items:center}
+ .cl-launch .cl-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.13em;color:#e3c98b;margin:0 0 10px}
+ .cl-launch h1.cl-title{font:800 clamp(26px,4.3vw,38px)/1.23 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif!important;color:#fff!important;letter-spacing:-.035em;margin:0 0 11px!important;overflow-wrap:anywhere}
+ .cl-launch .cl-outcome{font-size:15px!important;color:#e1ebdf!important;line-height:1.7!important;margin:0!important;max-width:560px}
+ .cl-launch .cl-need{font-size:12px!important;color:#c0d0c2!important;margin:12px 0 0!important;line-height:1.6!important}
+ .cl-launch .cl-art{display:block;width:100%;padding:0;border:1px solid #89a578;border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;color:#254831;box-shadow:0 8px 22px #061c1355;transform:rotate(2deg);transition:transform .18s}
+ .cl-launch .cl-art:hover{transform:rotate(0)}.cl-launch .cl-art img{display:block;width:100%;height:auto;max-width:100%}.cl-launch .cl-art span{display:block;font-family:inherit;font-size:10px;font-weight:700;line-height:1.5;padding:5px 4px;text-align:center;background:#eff2e6}
+ .cl-launch .cl-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}.cl-launch .cl-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:11px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;text-decoration:none;cursor:pointer}
+ .cl-launch .cl-start{background:#e5c981;color:#173321;border:1px solid #efd79d;flex:1 1 230px}.cl-launch .cl-example{background:#ffffff0a;color:#f3f6ee;border:1px solid #8da28d;flex:0 1 180px}
+ .cl-launch .cl-progress-line{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#c4d7c6;margin-top:17px}.cl-launch .cl-track{height:3px;border:0;background:#ffffff20;border-radius:3px;overflow:hidden;margin-top:7px}.cl-launch .cl-track i{display:block;height:100%;width:0;background:#d8bd79;transition:width .3s}
+ .cl-steps{position:sticky;top:58px;z-index:21;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#faf9f5f5;padding:8px 0;margin:0 0 12px;border-bottom:1px solid #d9dfd5;backdrop-filter:blur(8px)}
+ .cl-steps a{display:flex;gap:7px;align-items:center;justify-content:center;min-height:43px;padding:8px 5px;font-size:12px;font-weight:750;color:#4a6251;border-radius:9px;text-decoration:none;background:#eef1e9}.cl-steps a[aria-current="step"]{color:#fff;background:#226445}.cl-steps a b{font-size:11px;opacity:.8}
+ .cl-introduction{margin:10px 0 20px;padding:0;border:1px solid #d4ddcf;border-radius:14px;background:#f0f2e9;color:#31553e;overflow:hidden}.cl-introduction>summary{padding:12px 17px;cursor:pointer;font-size:13px;font-weight:750;list-style:revert}.cl-introduction[open]>summary{border-bottom:1px solid #d4ddcf}
+ .course-learning .cl-introduction>.head,.course-learning .cl-introduction>.hero{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+ .course-learning [data-cl-target]{scroll-margin-top:130px}.course-learning #cl-completion{scroll-margin-top:130px}
+ .course-learning .cl-completion{color:var(--cl-ink);margin:24px 0 6px;padding:22px;border-radius:17px;border:1px solid #b4ccb4;background:linear-gradient(140deg,#eff5e8,#fff)}
+ .cl-completion .cl-finish-kicker{font-size:11px;letter-spacing:.1em;font-weight:800;color:#356c43}.cl-completion h3{font-size:23px!important;line-height:1.35!important;margin:7px 0 8px!important;color:#173b27!important}.cl-completion p{font-size:13px!important;color:#536654!important;line-height:1.65!important;margin:0 0 14px!important}
+ .cl-completion label{display:flex;gap:10px;align-items:flex-start;padding:11px 0;color:#294b35;font-size:14px!important;font-weight:600;cursor:pointer}.cl-completion input{flex:none;margin:3px 0 0;width:18px;height:18px;accent-color:#236742}
+ .cl-completion .cl-save{display:block;min-height:47px;width:100%;padding:12px 16px;margin-top:14px;border:1px solid #236742;border-radius:11px;background:#236742;color:#fff;font-family:inherit;font-size:14px;font-weight:750;line-height:1.5;cursor:pointer}.cl-completion .cl-save:disabled{background:#e0e8db;border-color:#c9d7c3;color:#607259;cursor:default}
+ .cl-completion .cl-finish-state{display:block;margin-top:12px;color:#31563c;font-size:13px}.cl-completion .cl-next{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:10px 15px;border-radius:10px;background:#183d2a;color:#fff;font-size:13px;font-weight:750;text-decoration:none}
+ .course-learning .cl-native-completion{display:none!important}
+ .cl-completion .cl-next[hidden]{display:none!important}
+ .cl-launch a:focus-visible,.cl-launch button:focus-visible,.cl-steps a:focus-visible,.cl-rail a:focus-visible{outline:3px solid #bb9738;outline-offset:4px}
+ @media(max-width:700px){.cl-rail{gap:5px}.cl-rail a{min-height:38px}.cl-rail a span{display:none}.cl-launch{padding:22px 19px!important;border-radius:18px!important}.cl-launch .cl-launch-grid{grid-template-columns:minmax(0,1fr) 90px;gap:12px;align-items:start}.cl-launch .cl-title{font-size:27px!important}.cl-launch .cl-eyebrow{font-size:10px;letter-spacing:.1em}.cl-launch .cl-outcome{font-size:14px!important}.cl-launch .cl-need{grid-column:1/-1}.cl-launch .cl-actions{margin-top:20px;gap:8px}.cl-launch .cl-actions a{font-size:13px;padding:11px 14px}.cl-launch .cl-example{flex:1 1 140px}.cl-launch .cl-start{flex:1 1 180px}.cl-steps a{font-size:11px;gap:4px}.cl-completion{padding:18px!important}.cl-completion h3{font-size:21px!important}}
+ @media(prefers-reduced-motion:reduce){.cl-launch .cl-art,.cl-launch .cl-track i{transition:none}.cl-launch .cl-art{transform:none}}
+ `;document.head.appendChild(s);
+}
+function boot(){
+ const main=document.querySelector('main')||document.querySelector('body > .wrap');
+ const hero=main?.querySelector(':scope > .head,:scope > .hero');
+ if(!main||!hero||document.getElementById('cl-launch'))return;
+ read();styles();document.body.classList.add('course-learning');
+ const native=lesson.native&&document.querySelector(lesson.native);
+ const quest=document.querySelector(lesson.finish)||document.querySelector('.quest');
+ const intro=document.createElement('details');intro.className='cl-introduction';intro.id='cl-introduction';
+ const summary=document.createElement('summary');summary.textContent='ดูแผนภาพและแนวคิดของบทนี้';intro.appendChild(summary);hero.before(intro);intro.appendChild(hero);
+ const art=hero.querySelector('.classroom-lesson-header-image img');
+ const launch=document.createElement('section');launch.className='cl-launch';launch.id='cl-launch';launch.setAttribute('aria-labelledby','cl-title');
+ launch.innerHTML='<div class="cl-launch-grid"><div><span class="cl-eyebrow">บท '+(index+1)+' / 6 · '+lesson.name+'</span><h1 class="cl-title" id="cl-title">'+lesson.title+'</h1><p class="cl-outcome">'+lesson.outcome+'</p><p class="cl-need">'+lesson.need+'</p></div></div><div class="cl-actions"><a class="cl-start" id="cl-start" href="'+lesson.work+'">'+lesson.start+' →</a><a class="cl-example" href="'+lesson.example+'">ดูตัวอย่างก่อน</a></div><div class="cl-progress-line"><span id="cl-course-progress"></span><span id="cl-current-state"></span></div><div class="cl-track" aria-hidden="true"><i></i></div>';
+ if(art){const button=document.createElement('button');button.type='button';button.className='cl-art';button.setAttribute('aria-controls',intro.id);button.setAttribute('aria-expanded','false');const img=document.createElement('img');img.src=art.getAttribute('src');img.alt='แผนภาพบทที่ '+(index+1);img.width=150;img.height=150;img.decoding='async';button.appendChild(img);const label=document.createElement('span');label.textContent='ดูแผนภาพ ↗';button.appendChild(label);launch.querySelector('.cl-launch-grid').appendChild(button);button.addEventListener('click',()=>{intro.open=!intro.open;button.setAttribute('aria-expanded',String(intro.open));if(intro.open)goTo(intro);});intro.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(intro.open)));}
+ const rail=document.createElement('nav');rail.className='cl-rail';rail.setAttribute('aria-label','เส้นทางบทเรียนทั้ง 6 บท');
+ for(const [i,item] of LESSONS.entries()){const a=document.createElement('a');a.href='/classroom/'+item.id+'.html';a.dataset.lesson=item.id;a.innerHTML='<b>'+(i+1)+'</b><span>'+item.name+'</span>';a.setAttribute('aria-label','บท '+(i+1)+' '+item.name);if(i===index)a.setAttribute('aria-current','page');rail.appendChild(a);}
+ const steps=document.createElement('nav');steps.className='cl-steps';steps.setAttribute('aria-label','ขั้นตอนในบทนี้');
+ const targets=[lesson.work,lesson.check,'#cl-completion'];
+ ['เริ่มลงมือ','ชิมผลงาน','เก็บงานไปต่อ'].forEach((text,i)=>{const a=document.createElement('a');a.href=targets[i];a.dataset.step=String(i);a.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b> '+text;steps.appendChild(a);});
+ intro.before(rail,launch,steps);
+ function goTo(target){
+  if(!target)return;
+  let parent=target.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}
+  target.setAttribute('data-cl-target','');
+  if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+  target.focus({preventScroll:true});
+  target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ }
+ function selectStep(step){current().started=true;current().step=step;state.last=slug;save();paint();}
+ function follow(event,selector,step){const target=document.querySelector(selector);if(!target)return;event.preventDefault();if(step!==undefined)selectStep(step);goTo(target);}
+ launch.querySelector('.cl-start').addEventListener('click',event=>{const step=current().done?0:Math.min(2,Math.max(0,Number(current().step)||0));follow(event,targets[step],step);});
+ launch.querySelector('.cl-example').addEventListener('click',event=>follow(event,lesson.example));
+ steps.querySelectorAll('a').forEach(a=>a.addEventListener('click',event=>follow(event,targets[Number(a.dataset.step)],Number(a.dataset.step))));
+ const complete=document.createElement('section');complete.className='cl-completion';complete.id='cl-completion';complete.setAttribute('aria-labelledby','cl-finish-title');
+ complete.innerHTML='<span class="cl-finish-kicker">ของที่ได้กลับไป · '+lesson.name+'</span><h3 id="cl-finish-title">เก็บผลงานบทนี้ไว้กับคุณ</h3><p>เช็กจากงานที่คุณทำจริง แล้วบันทึกไว้เพื่อกลับมาต่อได้</p><label><input type="checkbox" data-cl-check="artifact"><span>'+lesson.artifact+'</span></label><label><input type="checkbox" data-cl-check="review"><span>'+lesson.review+'</span></label><button type="button" class="cl-save" disabled>บันทึกว่าฉันทำบทนี้แล้ว</button><span class="cl-finish-state" role="status" aria-live="polite"></span>';
+ if(quest)quest.after(complete);else{const footer=main.querySelector('footer');footer?footer.before(complete):main.appendChild(complete);}
+ if(native)native.classList.add('cl-native-completion');
+ for(const cb of complete.querySelectorAll('input')){cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;cb.addEventListener('change',()=>{current()[cb.dataset.clCheck]=cb.checked;save();paint();});}
+ complete.querySelector('.cl-save').addEventListener('click',()=>{
+  if(![...complete.querySelectorAll('input')].every(cb=>cb.checked))return;
+  if(native&&!native.disabled)native.click();
+  current().done=true;current().started=true;current().step=2;current().finishedAt=Date.now();save();
+  try{window.MC_QUEST?.track('learn')?.mark(slug);}catch{}
+  paint();
+ });
+ if(index<LESSONS.length-1){const next=document.createElement('a');next.className='cl-next';next.href='/classroom/'+LESSONS[index+1].id+'.html';next.textContent='ใช้ของเดิมต่อบท '+(index+2)+' · '+LESSONS[index+1].name+' →';next.hidden=true;complete.appendChild(next);}
+ function paint(){
+  const done=LESSONS.filter(item=>state.lessons[item.id]?.done).length;
+  setText(launch.querySelector('#cl-course-progress'),'เก็บผลงานแล้ว '+done+' / 6 บท');
+  setText(launch.querySelector('#cl-current-state'),current().done?'บทนี้มีผลงานแล้ว ✓':current().started?'กลับมาทำต่อได้ทุกเมื่อ':'เริ่มทีละชิ้น ใช้เรื่องเดิมต่อได้');
+  setText(launch.querySelector('.cl-start'),current().done?'กลับไปต่อยอดงาน →':current().started?'กลับไปขั้นที่ทำค้าง →':lesson.start+' →');
+  launch.querySelector('.cl-track i').style.width=(done/6*100)+'%';
+  rail.querySelectorAll('a').forEach(a=>{a.dataset.done=String(state.lessons[a.dataset.lesson]?.done===true);});
+  steps.querySelectorAll('a').forEach(a=>{const active=Number(a.dataset.step)===(Number(current().step)||0);if(active)a.setAttribute('aria-current','step');else a.removeAttribute('aria-current');});
+  complete.querySelectorAll('input').forEach(cb=>{cb.disabled=current().done===true;});
+  const ready=[...complete.querySelectorAll('input')].every(cb=>cb.checked);
+  complete.querySelector('.cl-save').disabled=!ready||current().done===true;
+  setText(complete.querySelector('.cl-save'),current().done?'✓ เก็บผลงานบทนี้แล้ว':'บันทึกว่าฉันทำบทนี้แล้ว');
+  setText(complete.querySelector('.cl-finish-state'),current().done?(index===5?'คุณทำของที่เปิดใช้ได้จริงสำเร็จแล้ว เก็บไฟล์นี้ไว้ให้ดี':'งานชิ้นนี้เป็นวัตถุดิบให้บทถัดไปได้เลย'):ready?'พร้อมเก็บบทนี้แล้ว':'ยืนยัน 2 ข้อจากงานที่คุณทำจริง');
+  const next=complete.querySelector('.cl-next');if(next)next.hidden=current().done!==true;
+ }
+ window.addEventListener('storage',event=>{if(event.key!==KEY)return;read();complete.querySelectorAll('input').forEach(cb=>{cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;});paint();});
+ save();paint();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);
+})();
+</script>
 </body></html>

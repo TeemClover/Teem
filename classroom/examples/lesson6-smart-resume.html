@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ตัวอย่าง Smart Resume ฉบับเล็กสำหรับบทเรียน AI ใส่ซอส ใช้ข้อมูลสมมติทั้งหมด">
+<title>เมย์ · Smart Resume ตัวอย่าง</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;color:#17372b;background:#f4f2e9}*{box-sizing:border-box}body{margin:0;padding:clamp(18px,5vw,56px);line-height:1.8}main{max-width:740px;margin:0 auto}.label{display:inline-block;color:#52665b;font-size:.85rem}.intro{padding:clamp(24px,6vw,48px);border:1px solid #cbd5c9;border-radius:24px;background:#fffdf7}.intro h1{font-size:clamp(38px,9vw,66px);line-height:1.2;margin:16px 0}.intro p{max-width:42ch;margin:16px 0 0}.tabs{display:flex;gap:9px;margin:28px 0 16px}.tabs button{flex:1;min-height:52px;border:1px solid #39674c;border-radius:12px;background:transparent;color:#17372b;font:700 1rem system-ui;cursor:pointer}.tabs button[aria-selected="true"]{background:#173f2c;color:#fff}.tabs button:focus-visible,a:focus-visible{outline:3px solid #a17c24;outline-offset:4px}.panel{padding:26px;border:1px solid #cbd5c9;border-radius:18px;background:#fffdf7}.panel h2{font-size:1.35rem;margin:0 0 10px}.panel p{margin:0}.panel[hidden]{display:none}.practice{margin-top:25px;font-size:.9rem;color:#52665b}.practice b{color:#17372b}a{color:#205c3c}footer{margin-top:30px;font-size:.8rem;color:#52665b}@media(prefers-reduced-motion:no-preference){.panel{animation:appear .24s ease-out}@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<main>
+  <header class="intro">
+    <span class="label">ตัวอย่างเพื่อการเรียน · ข้อมูลสมมติทั้งหมด</span>
+    <h1>สวัสดี ฉันเมย์</h1>
+    <p>ชอบทำเรื่องซับซ้อนให้อ่านง่าย และเรียนรู้ผ่านการลองทำทีละชิ้น</p>
+  </header>
+  <div class="tabs" role="tablist" aria-label="เลือกเรื่องที่อยากรู้จัก">
+    <button type="button" id="workTab" role="tab" aria-controls="work" aria-selected="true">WORK · เรื่องงาน</button>
+    <button type="button" id="lifeTab" role="tab" aria-controls="life" aria-selected="false" tabindex="-1">LIFE · เรื่องชีวิต</button>
+  </div>
+  <section class="panel" id="work" role="tabpanel" aria-labelledby="workTab" tabindex="0">
+    <h2>เปลี่ยนบันทึกเป็นคู่มือ</h2>
+    <p>โปรเจกต์ฝึกของเมย์คือคู่มือเริ่มงานหนึ่งหน้า เรียงขั้นตอนจากบันทึกที่มี เพื่อให้คนอ่านเห็นสิ่งที่ต้องทำต่อ</p>
+  </section>
+  <section class="panel" id="life" role="tabpanel" aria-labelledby="lifeTab" tabindex="0" hidden>
+    <h2>ปลูกต้นไม้ทีละกระถาง</h2>
+    <p>เวลาว่างเมย์ชอบปลูกต้นไม้ จดว่าแต่ละกระถางชอบแสงและน้ำเท่าไร แล้วค่อยปรับจากสิ่งที่สังเกตเห็น</p>
+  </section>
+  <aside class="practice">
+    <b>ลองแล้วดูอะไร?</b> กด WORK / LIFE แล้วเนื้อหาต้องเปลี่ยน ลองย่อหน้าต่างให้แคบและใช้ปุ่ม Tab / ลูกศรบนคีย์บอร์ด ข้อความและปุ่มยังต้องอ่านและใช้งานได้
+  </aside>
+  <footer>ไฟล์ฝึกบทที่ 6 · HTML, หน้าตา และปุ่มอยู่ในไฟล์เดียว ไม่มีการส่งข้อมูลออกจากเครื่อง</footer>
+</main>
+<script>
+(function(){
+  var tabs=Array.from(document.querySelectorAll('[role="tab"]'));
+  function select(tab){
+    tabs.forEach(function(item){
+      var selected=item===tab;
+      item.setAttribute('aria-selected',String(selected));
+      item.tabIndex=selected?0:-1;
+      document.getElementById(item.getAttribute('aria-controls')).hidden=!selected;
+    });
+  }
+  tabs.forEach(function(tab,index){
+    tab.addEventListener('click',function(){select(tab)});
+    tab.addEventListener('keydown',function(event){
+      var next;
+      if(event.key==='ArrowRight'||event.key==='ArrowLeft')next=tabs[(index+1)%tabs.length];
+      if(event.key==='Home')next=tabs[0];
+      if(event.key==='End')next=tabs[tabs.length-1];
+      if(next){event.preventDefault();select(next);next.focus()}
+    });
+  });
+})();
+</script>
+</body>
+</html>

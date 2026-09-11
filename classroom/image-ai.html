@@ -497,7 +497,8 @@ document.querySelectorAll('.prompt').forEach(function(el){
 'use strict';
 if(!/\/classroom\/image-ai\.html$/.test(location.pathname)) return;
 
-const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรับโปสเตอร์หนังชีวิตของฉัน เป็นไฟล์ Markdown (.md) ที่พร้อมใช้สร้างภาพได้ทันที โดยไม่ต้องอธิบายเพิ่มใน Prompt รอบถัดไป
+const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรับโปสเตอร์เรื่องของฉัน เป็นไฟล์ Markdown (.md) ที่พร้อมใช้สร้างภาพได้ทันที โดยไม่ต้องอธิบายเพิ่มใน Prompt รอบถัดไป
+ถ้าซอสแม่เล่าเรื่องงาน ร้าน หรือสินค้า ให้ทำโปสเตอร์เรื่องนั้นโดยใช้ข้อมูลเดิม ไม่ต้องเปลี่ยนเป็นประวัติชีวิตของฉัน ถ้าเป็นข้อมูลตัวตนจึงทำโปสเตอร์หนังชีวิต
 
 แหล่งข้อมูลที่ให้ใช้ เรียงตามลำดับ:
 1. ซอสแม่ (.md) ที่ฉันแนบมา ถ้ามี — ใช้เป็นฐานหลักเสมอ
@@ -508,7 +509,7 @@ const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรั
 - สิ่งที่ยังไม่รู้ให้เขียนว่า “ยังไม่มีข้อมูล” ห้ามเดา
 
 สิ่งที่ต้องเก็บให้ครบ:
-- ฉันเป็นใคร ทำอะไร และสนใจอะไร
+- เจ้าของเรื่องหรือโปรเจกต์คือใคร ทำอะไร และต้องการสื่อเรื่องใด
 - บุคลิก วิธีพูด จุดเด่น และสิ่งที่ให้ความสำคัญ
 - เรื่องราวหรือจุดเปลี่ยนสำคัญ
 - ฉาก สี วัตถุ และบรรยากาศที่เหมาะกับการเล่าเรื่องชีวิต
@@ -518,7 +519,7 @@ const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรั
 ถ้าระบบไม่รู้เวลาจริง ให้คงตัวอักษร YYYY-MM-DD-HHmm ไว้ตามนั้น เพื่อให้ฉันเติมเอง
 
 จัด Source ให้ครบตามหัวข้อนี้:
-# ซอสลูก (Source) สำหรับโปสเตอร์หนังชีวิต
+# ซอสลูก (Source) สำหรับโปสเตอร์จากซอสแม่
 > เอกสารนี้คือ “ซอส” (Source) ของงานนี้ เก็บบริบท กติกา และข้อห้ามไว้ครบแล้ว
 > เมื่อฉันแนบไฟล์นี้แล้วสั่งสั้น ๆ ว่า “สร้างภาพตามซอสนี้” ให้ถือว่า “ซอส” หมายถึงไฟล์นี้ และให้ทำงานจากไฟล์นี้ทันทีโดยไม่ต้องถามบริบทเพิ่ม
 ## ข้อมูลไฟล์
@@ -526,13 +527,13 @@ const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรั
 - สร้างเมื่อ: (วัน เดือน ปี และเวลาที่สร้างไฟล์นี้)
 - ซอสแม่ที่ใช้: (ชื่อไฟล์ซอสแม่ที่แนบมา หรือระบุว่าไม่ได้แนบ)
 - แหล่งข้อมูลที่ใช้: (ระบุว่าส่วนไหนมาจากซอสแม่ ส่วนไหนมาจากบทสนทนา และส่วนไหนมาจากบริบทอื่น)
-## ตัวตนและบริบทของเจ้าของเรื่อง
+## ตัวตนหรือโปรเจกต์และบริบทของเจ้าของเรื่อง
 ## เส้นเรื่อง — มาจากไหน กำลังทำอะไร และกำลังไปทางไหน
 ## สิ่งสำคัญที่ภาพต้องสื่อ
 ## ฉาก วัตถุ สี แสง และอารมณ์
 ## รายละเอียดบุคคลและการแต่งตัวที่มีหลักฐาน
 ## สิ่งที่ห้ามแต่งเพิ่ม
-## Image Recipe — โปสเตอร์หนังชีวิต
+## Image Recipe — โปสเตอร์จากเรื่องใน Source
 - ภาพแนวตั้งอัตราส่วน 9:16
 - เล่าเรื่องด้วยภาพ ไม่มีตัวหนังสือบนภาพ
 - ถ้าแนบเฉพาะ Source ให้สร้างเป็น Illustration โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง
@@ -569,14 +570,16 @@ function setPrompt(el,text){
       el.insertBefore(document.createTextNode(text),button||null);
     }
   }
-  if(button) return;
+  if(button){button.dataset.copyText=text;return;}
   if(!button){
     const copyLabel='คัดลอก';
     button=document.createElement('button');
     button.type='button';button.className='cpx';button.textContent=copyLabel;
     button.setAttribute('data-copy-full','true');
+    button.dataset.copyText=text;
     button.setAttribute('aria-label','คัดลอกคำสั่ง');
     button.addEventListener('click',async()=>{
+      const text=button.dataset.copyText||'';
       let ok=false;
       try{await navigator.clipboard.writeText(text);ok=true}catch(e){}
       if(!ok){
@@ -684,6 +687,17 @@ function injectStyle(){
     .life-done{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .life-done label{display:flex;gap:9px;align-items:flex-start;padding:11px 12px;border:1px solid rgb(var(--ink)/.1);border-radius:12px;background:rgb(var(--paper)/.5);font-size:13px;line-height:1.55;cursor:pointer}
     .life-done input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--green));flex:none}
+
+    .life-taste-tool{margin-top:14px;padding:20px;border:1px solid #aac8b3;border-radius:17px;background:#eff6ec;color:#173d29}
+    .life-taste-tool h2{font-size:22px;line-height:1.45}.life-taste-tool>p{margin:7px 0 13px;font-size:15px}
+    .life-taste-tool fieldset{padding:0;margin:14px 0;border:0;min-width:0}.life-taste-tool legend{font-weight:750;margin-bottom:9px}
+    .life-taste-options{display:grid;grid-template-columns:1fr 1fr;gap:9px}.life-taste-choice{display:flex;align-items:flex-start;gap:9px;padding:12px;border:1px solid #c6d7c6;border-radius:11px;background:#fff;cursor:pointer;font-size:14px}
+    .life-taste-choice:has(input:checked){border-color:#1b6a42;background:#e3efdc}.life-taste-choice input{margin-top:5px;accent-color:#1b6a42;flex:none}.life-taste-choice b,.life-taste-choice small{display:block}.life-taste-choice small{color:#586b55;font-size:13px!important}
+    .life-taste-field{display:block;margin-top:12px;font-size:14px;font-weight:700}.life-taste-field textarea{display:block;width:100%;min-height:82px;margin-top:6px;padding:10px 12px;border:1px solid #b1c8b5;border-radius:10px;background:#fff;color:#183a29;resize:vertical;font:inherit;font-weight:400;line-height:1.6}
+    .life-taste-field textarea:focus{outline:2px solid #1b6a42;outline-offset:2px}.life-taste-field[hidden],.life-taste-tool [hidden]{display:none!important}
+    .life-taste-hint,.life-check-status{color:#526d4b;font-size:14px;margin-top:12px}.life-taste-tool .prompt{margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+    .life-taste-return{margin-top:12px;padding:12px;border-radius:10px;background:#fff;font-size:14px;line-height:1.65}
+    @media(max-width:600px){.life-taste-tool{padding:17px}.life-taste-options{grid-template-columns:1fr}}
     @media(max-width:720px){.life-why__grid,.life-done{grid-template-columns:1fr}.life-paths,.life-examples__grid{grid-template-columns:1fr}.life-fast__step{grid-template-columns:32px 1fr;padding:16px 14px}}
   `;
   document.head.append(style);
@@ -701,7 +715,7 @@ function patchTop(){
   }
   const tldr=document.querySelector('.tldr');
   if(tldr){
-    setText(tldr.querySelector('.tldr-main h2'),'สกัดซอส แล้วสร้างโปสเตอร์หนังชีวิตให้ได้วันนี้');
+    setText(tldr.querySelector('.tldr-main h2'),'ใช้ซอสเดิม สร้างโปสเตอร์ แล้วแก้ให้ตรง 1 รอบ');
     setText(tldr.querySelector('.tldr-main p'),'ซอส .md มาจากแชทเดิมที่สร้างภาพไม่ได้ก็ใช้ได้ แค่ย้ายไฟล์ไปเปิดในแชทใหม่ที่สร้างภาพได้ แล้วเลือกว่าจะทำ Illustration หรือแนบรูปจริงเพื่อรักษาความเหมือน');
     const take=[...tldr.querySelectorAll('.takehome span')];
     ['🧴 ซอสชีวิต .md','🎨 Illustration เมื่อมีแค่ .md','📷 ภาพเหมือนเมื่อแนบรูปจริง','✅ ได้ภาพ 9:16'].forEach((txt,i)=>setText(take[i],txt));
@@ -718,14 +732,14 @@ function buildFastTrack(){
     fast.id='lesson2FastTrack';
     fast.innerHTML=`
       <div class="life-fast__intro"><b>แชทเดิมสร้างภาพไม่ได้ก็ไม่เป็นไร</b><p>สกัดซอสลูกในแชทที่รู้จักคุณ แล้วนำไฟล์ไปเปิดในแชทใหม่ที่สร้างภาพได้ ผู้เรียนไม่ต้องเริ่มเล่าเรื่องตัวเองใหม่</p></div>
-      <section class="life-why"><h2>ทำไมบทนี้ต้อง “ชิม” ด้วยภาพ</h2><div class="life-why__quote">ภาพ 1 ภาพ สื่อความหมายได้มากกว่าคำ 1,000 คำ</div><p>ซอสที่อ่านแล้วดูครบ อาจยังมีช่องว่างซ่อนอยู่ พอให้ระบบแปลงเป็นภาพ เราจะเห็นทันทีว่ามันเข้าใจตัวตน เรื่องราว อารมณ์ และสิ่งสำคัญของเราตรงหรือไม่ ก่อนเอาซอสไปทำงานจริงหลายชิ้น</p><div class="life-why__grid"><div><b>👀 เห็นความเข้าใจผิด</b><p>สิ่งที่คลุมเครือจะโผล่ออกมาเป็นคน ฉาก สี และวัตถุที่ผิด</p></div><div><b>⚡ ตรวจได้เร็ว</b><p>มองภาพครั้งเดียว เห็นทั้งสิ่งที่ตรง สิ่งที่ขาด และสิ่งที่ระบบแต่งเพิ่ม</p></div><div><b>🧴 พิสูจน์ว่าซอสใช้ได้</b><p>ถ้าซอสสร้างภาพที่เล่าเรื่องเราได้ ก็พร้อมนำไปต่อยอดกับงานอื่น</p></div></div></section>
+      <section class="life-why"><h2>ทำไมบทนี้ต้อง “ชิม” ด้วยภาพ</h2><div class="life-why__quote">ภาพ 1 ภาพ สื่อความหมายได้มากกว่าคำ 1,000 คำ</div><p>ซอสที่อ่านแล้วดูครบ อาจยังมีช่องว่างซ่อนอยู่ พอให้ระบบแปลงเป็นภาพ เราจะเห็นทันทีว่ามันเข้าใจตัวตน เรื่องราว อารมณ์ และสิ่งสำคัญของเราตรงหรือไม่ ก่อนเอาซอสไปทำงานจริงหลายชิ้น</p><div class="life-why__grid"><div><b>👀 เห็นความเข้าใจผิด</b><p>สิ่งที่คลุมเครือจะโผล่ออกมาเป็นคน ฉาก สี และวัตถุที่ผิด</p></div><div><b>⚡ ตรวจได้เร็ว</b><p>มองภาพครั้งเดียว เห็นทั้งสิ่งที่ตรง สิ่งที่ขาด และสิ่งที่ระบบแต่งเพิ่ม</p></div><div><b>🧴 พิสูจน์ว่าซอสใช้ได้</b><p>รายละเอียดที่ภาพยังไม่ตรงช่วยบอกว่า ควรเติมกติกาข้อไหนก่อนนำซอสไปใช้ต่อ</p></div></div></section>
       <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
       <div class="life-fast__steps">
-        <article class="life-fast__step"><span class="life-fast__num">1</span><div><h3>ใช้ซอสแม่ สกัดซอสลูกสำหรับโปสเตอร์</h3><p>แนบ<b>ซอสแม่</b>จากบทที่ 1 แล้ววาง Prompt นี้ ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ ผลลัพธ์คือ <code>poster-source-YYYY-MM-DD-HHmm.md</code> ที่มีวันเวลากำกับไว้ในชื่อ</p><div class="life-md-alert"><strong>ยังไม่มีซอสแม่ก็ทำได้</strong><span>ถ้ายังไม่ได้ทำบทที่ 1 ให้วาง Prompt นี้ในแชทเดิมที่รู้จักคุณอยู่แล้ว Prompt จะไปดึงจากบทสนทนาและ Memory ให้แทน แต่อย่าเริ่มจากแชทว่างเปล่า</span></div><div class="prompt" data-life-prompt="extract" data-prompt-guard="off" data-prompt-collapse></div></div></article>
+        <article class="life-fast__step" id="lesson2Work"><span class="life-fast__num">1</span><div><h3>ใช้ซอสแม่ สกัดซอสลูกสำหรับโปสเตอร์</h3><p>แนบ<b>ซอสแม่</b>จากบทที่ 1 แล้ววาง Prompt นี้ ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ ผลลัพธ์คือ <code>poster-source-YYYY-MM-DD-HHmm.md</code> ที่มีวันเวลากำกับไว้ในชื่อ</p><p>ซอสแม่เป็นเรื่องร้าน งาน หรือสินค้า ใช้เรื่องนั้นต่อได้เลย ไม่ต้องเริ่มเล่าชีวิตใหม่</p><div class="life-md-alert"><strong>ยังไม่มีซอสแม่ก็ทำได้</strong><span>ถ้ายังไม่ได้ทำบทที่ 1 ให้วาง Prompt นี้ในแชทเดิมที่รู้จักคุณอยู่แล้ว Prompt จะไปดึงจากบทสนทนาและ Memory ให้แทน หากยังไม่มีทั้งสองอย่าง <a href="free-ai.html#lesson1Example">ดาวน์โหลด Source เรื่องสมมติจากบท 1</a> แล้วแนบในแชทใหม่ได้เลย</span></div><div class="prompt" data-life-prompt="extract" data-prompt-guard="off" data-prompt-collapse></div></div></article>
         <article class="life-fast__step"><span class="life-fast__num">2</span><div><h3>แนบซอส แล้วสร้างภาพ</h3><p>เปิดแชทใหม่ที่สร้างภาพได้ <b>แนบซอส .md ทุกครั้ง</b> แล้วเลือกเส้นทางที่ตรงกับไฟล์ในมือ จากนั้นวางคำสั่งสั้นด้านล่างเพื่อสร้างภาพ</p><div class="life-paths"><div class="life-path"><b>🎨 มีซอส .md อย่างเดียว</b><p>ได้ Illustration หรือตัวละครวาดที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</p></div><div class="life-path"><b>📷 มีซอส .md + รูปจริง</b><p>ได้ภาพที่รักษาใบหน้า ทรงผม และลักษณะสำคัญของคนในรูปให้ใกล้เคียงต้นฉบับ</p></div></div><div class="prompt" data-life-prompt="poster" data-prompt-guard="off"></div></div></article>
-        <article class="life-fast__step"><span class="life-fast__num">3</span><div><h3>เช็กว่าภาพใช้ได้จริง</h3><p>จบบทเมื่อได้ภาพแนวตั้ง 9:16 ที่เล่าเรื่องจากซอสได้ และบอกได้ว่าอะไรตรง ขาด หรือถูกแต่งเกิน</p><div class="life-done"><label><input type="checkbox"><span>ได้ภาพแนวตั้ง 9:16 จริง 1 ภาพ</span></label><label><input type="checkbox"><span>เรื่องหลักและอารมณ์ในภาพตรงกับซอส</span></label><label><input type="checkbox"><span>ไม่มีประวัติหรือความสำเร็จที่ซอสไม่เคยบอก</span></label><label><input type="checkbox"><span>มีแค่ซอสจึงได้ Illustration หรือแนบรูปจริงแล้วใบหน้ายังตรง</span></label><label><input type="checkbox"><span>บอกได้ว่าอะไรตรง ขาด และเกินอย่างละ 1 ข้อ</span></label></div></div></article>
+        <article class="life-fast__step"><span class="life-fast__num">3</span><div><h3>เช็กว่าภาพใช้ได้จริง</h3><p>เทียบภาพกับซอส แล้วเลือก 1 จุดที่ควรแก้ด้านล่าง ถ้าตรวจแล้วตรงทั้งหมด ยืนยันสิ่งที่ตรงได้โดยไม่ต้องหาข้อผิดพลาดเพิ่ม</p><div class="life-done"><label><input type="checkbox"><span>ได้ภาพแนวตั้ง 9:16 จริง 1 ภาพ</span></label><label><input type="checkbox"><span>เรื่องหลักและอารมณ์ในภาพตรงกับซอส</span></label><label><input type="checkbox"><span>ไม่มีประวัติหรือความสำเร็จที่ซอสไม่เคยบอก</span></label><label><input type="checkbox"><span>มีแค่ซอสจึงได้ Illustration หรือแนบรูปจริงแล้วใบหน้ายังตรง</span></label><label><input type="checkbox"><span>ตรวจเทียบกับซอสแล้ว ระบุจุดแก้ได้ หรือยืนยันว่าไม่พบจุดผิด</span></label></div><p class="life-check-status" id="lifeCheckStatus" role="status" aria-live="polite"></p></div></article>
       </div>
-      <section class="life-examples"><h2>ตัวอย่างผลลัพธ์จาก Prompt เดียวกัน</h2><p>ทั้งสองภาพใช้ Prompt สร้างภาพด้านบนกับแชทใหม่ที่สร้างภาพได้ ต่างกันเพียงไฟล์ที่แนบ</p><div class="life-examples__grid"><figure class="life-example"><img data-poster-example="illustration" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบ Illustration เมื่อแนบเฉพาะซอส .md"><figcaption><b>🎨 แนบเฉพาะซอส .md</b><span>ได้ Illustration ที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</span></figcaption></figure><figure class="life-example"><img data-poster-example="portrait" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบภาพเหมือน เมื่อแนบซอส .md พร้อมรูปจริง"><figcaption><b>📷 แนบซอส .md + รูปจริง</b><span>ได้โปสเตอร์ที่เล่าเรื่องเดียวกัน พร้อมรักษาความเหมือนของบุคคลในรูป</span></figcaption></figure></div></section>
+      <section class="life-examples" id="lesson2Examples"><h2>ตัวอย่างผลลัพธ์จาก Prompt เดียวกัน</h2><p>ทั้งสองภาพใช้ Prompt สร้างภาพด้านบนกับแชทใหม่ที่สร้างภาพได้ ต่างกันเพียงไฟล์ที่แนบ</p><div class="life-examples__grid"><figure class="life-example"><img data-poster-example="illustration" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบ Illustration เมื่อแนบเฉพาะซอส .md"><figcaption><b>🎨 แนบเฉพาะซอส .md</b><span>ได้ Illustration ที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</span></figcaption></figure><figure class="life-example"><img data-poster-example="portrait" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบภาพเหมือน เมื่อแนบซอส .md พร้อมรูปจริง"><figcaption><b>📷 แนบซอส .md + รูปจริง</b><span>ได้โปสเตอร์ที่เล่าเรื่องเดียวกัน พร้อมรักษาความเหมือนของบุคคลในรูป</span></figcaption></figure></div></section>
       <div class="chef-note"><b>เชฟชิมแล้ว</b><p>ถ้ามีแค่ซอส เชฟเสิร์ฟเป็น Illustration ให้ค่ะ ถ้าอยากได้ภาพเหมือน ให้แนบรูปจริงเพิ่มพร้อมซอสตั้งแต่รอบแรกค่ะ</p></div>`;
     tldr.insertAdjacentElement('afterend',fast);
   }
@@ -735,6 +749,7 @@ function buildFastTrack(){
   setupPromptCollapse(extractPrompt);
   const posterPrompt=fast.querySelector('[data-life-prompt="poster"]');
   setPrompt(posterPrompt,POSTER_PROMPT);
+  setupTaste(fast);
   const examples=window.__LESSON2_POSTER_EXAMPLES__||{};
   const illustration=fast.querySelector('[data-poster-example="illustration"]');
   const portrait=fast.querySelector('[data-poster-example="portrait"]');
@@ -748,14 +763,86 @@ function buildFastTrack(){
   }
 }
 
+
+const TASTE_KEY='mc-lesson2-taste-v2';
+function setupTaste(fast){
+  if(fast.dataset.tasteReady==='1') return;
+  fast.dataset.tasteReady='1';
+  const tool=document.createElement('section');
+  tool.id='lesson2Taste';
+  tool.className='life-taste-tool';
+  tool.setAttribute('aria-labelledby','lesson2TasteTitle');
+  tool.innerHTML=`
+    <h2 id="lesson2TasteTitle">ชิมแล้ว แก้เพียง 1 จุด</h2>
+    <p>ดูภาพคู่กับซอส เลือกสาเหตุ แล้วคัดลอกคำสั่งไปใช้ในแชทที่สร้างภาพ พร้อมแนบภาพปัจจุบัน ซอสลูก และรูปอ้างอิงเดิมถ้ามี</p>
+    <fieldset><legend>ผลที่ตรวจได้</legend><div class="life-taste-options">
+      <label class="life-taste-choice"><input type="radio" name="lesson2TasteCause" value="missing"><span><b>ซอสยังไม่ได้บอก</b><small>เช่น ยังไม่กำหนดสีผ้ากันเปื้อน → เพิ่มกติกาลงซอส</small></span></label>
+      <label class="life-taste-choice"><input type="radio" name="lesson2TasteCause" value="ignored"><span><b>ซอสบอกแล้ว แต่ภาพไม่ตรง</b><small>เช่น ระบุสีเขียว แต่ได้สีแดง → ย้ำกติกาและแก้ภาพ</small></span></label>
+      <label class="life-taste-choice"><input type="radio" name="lesson2TasteCause" value="decision"><span><b>ฉันเพิ่งตัดสินใจเปลี่ยน</b><small>เช่น อยากเปลี่ยนแสงเป็นช่วงเช้า → บันทึกการตัดสินใจใหม่</small></span></label>
+      <label class="life-taste-choice"><input type="radio" name="lesson2TasteCause" value="correct"><span><b>ตรวจแล้วตรง</b><small>ไม่พบจุดที่ต้องแก้ → เก็บกติกาที่ผ่านไว้ใช้ต่อ</small></span></label>
+    </div></fieldset>
+    <label class="life-taste-field" id="lifeTasteChangeField" for="lifeTasteChange">จุดเดียวที่ต้องการแก้ พร้อมบอกว่าควรเป็นอย่างไร<textarea id="lifeTasteChange" maxlength="600" placeholder="เช่น เปลี่ยนผ้ากันเปื้อนสีแดงเป็นเขียวเข้มตาม Source"></textarea></label>
+    <label class="life-taste-field" for="lifeTasteKeep">สิ่งที่ตรวจแล้วตรง และต้องรักษาไว้<textarea id="lifeTasteKeep" maxlength="600" placeholder="เช่น โต๊ะไม้ ต้นไม้ 1 ต้น และแสงอุ่นตรงกับ Source แล้ว"></textarea></label>
+    <p class="life-taste-hint" id="lifeTasteHint" role="status" aria-live="polite">เลือกผลที่ตรวจได้ แล้วระบุรายละเอียดเพื่อสร้างคำสั่งของคุณ</p>
+    <div class="prompt" id="lifeRepairPrompt" data-prompt-guard="off" data-prompt-collapse hidden></div>
+    <div class="life-taste-return"><b>หลังใช้คำสั่ง:</b> ตรวจภาพอีกครั้ง แล้วเก็บซอสลูกฉบับที่อัปเดตไว้พร้อมภาพ หากได้กติกาที่ใช้กับงานอื่นด้วย ให้เพิ่มกลับเข้าซอสแม่ ข้อมูลที่ติ๊กและพิมพ์ในหน้านี้บันทึกไว้เฉพาะเบราว์เซอร์นี้</div>
+  `;
+  fast.querySelector('.life-fast__steps').insertAdjacentElement('afterend',tool);
+  const checks=[...fast.querySelectorAll('.life-done input')];
+  const radios=[...tool.querySelectorAll('input[name="lesson2TasteCause"]')];
+  const change=tool.querySelector('#lifeTasteChange');
+  const keep=tool.querySelector('#lifeTasteKeep');
+  const prompt=tool.querySelector('#lifeRepairPrompt');
+  const hint=tool.querySelector('#lifeTasteHint');
+  let saved={};
+  try{saved=JSON.parse(localStorage.getItem(TASTE_KEY)||'{}')||{};}catch(e){}
+  checks.forEach((check,i)=>check.checked=Array.isArray(saved.checks)&&saved.checks[i]===true);
+  radios.forEach(radio=>radio.checked=radio.value===saved.cause);
+  change.value=typeof saved.change==='string'?saved.change.slice(0,600):'';
+  keep.value=typeof saved.keep==='string'?saved.keep.slice(0,600):'';
+  function render(save){
+    const cause=radios.find(radio=>radio.checked)?.value||'';
+    const correct=cause==='correct';
+    tool.querySelector('#lifeTasteChangeField').hidden=correct;
+    const ready=Boolean(cause && keep.value.trim() && (correct || change.value.trim()));
+    const done=checks.filter(check=>check.checked).length;
+    const status=fast.querySelector('#lifeCheckStatus');
+    if(status) setText(status,'ตรวจแล้ว '+done+' / '+checks.length+' ข้อ · กลับมาทำต่อในเบราว์เซอร์นี้ได้');
+    prompt.hidden=!ready;
+    if(ready){
+      const action={
+        missing:'ข้อมูลนี้ยังไม่ได้ระบุใน Source ให้เพิ่มเป็นกติกาที่ฉันยืนยันในรอบนี้ แล้วแก้ภาพเพียงจุดนี้',
+        ignored:'Source ระบุข้อมูลนี้แล้ว ให้คงข้อเท็จจริงใน Source ย้ำกติกาที่ภาพทำผิด และแก้ภาพเพียงจุดนี้',
+        decision:'นี่เป็นการตัดสินใจใหม่ของฉัน ไม่ใช่ข้อผิดพลาดของภาพเดิม ให้บันทึกว่ากติกาใหม่แทนที่ข้อใดใน Source แล้วแก้ภาพเพียงจุดนี้'
+      }[cause];
+      const text=correct
+        ? 'ฉันตรวจภาพปัจจุบันเทียบกับ Source แล้ว และยืนยันว่ารายละเอียดต่อไปนี้ตรง:\n'+keep.value.trim()+'\n\nยังไม่ต้องสร้างภาพใหม่ ให้บันทึกรายการที่ยืนยันนี้ในหัวข้อ “กติกาที่ผ่านการตรวจภาพ” ของ Task Source โดยรักษาข้อมูลเดิมและแยกสิ่งที่ยังไม่มีข้อมูล ห้ามเพิ่มข้อเท็จจริงอื่น ระบุชื่อรูปอ้างอิงที่ยังต้องแนบทุกครั้ง แล้วส่ง Source .md ฉบับอัปเดตให้ดาวน์โหลด ถ้าสร้างไฟล์ไม่ได้ ให้ส่ง Markdown ฉบับเต็มใน code block เดียว'
+        : 'ใช้ภาพปัจจุบัน Task Source และรูปอ้างอิงที่แนบ แก้เฉพาะจุดต่อไปนี้:\n'+change.value.trim()+'\n\nสาเหตุและวิธีแก้: '+action+'\n\nสิ่งที่ตรวจแล้วตรงและห้ามเปลี่ยน:\n'+keep.value.trim()+'\n\nคงรายละเอียดอื่นจากภาพเดิม ห้ามจัดองค์ประกอบใหม่หรือเพิ่มข้อมูลที่ Source ไม่รองรับ สร้างภาพแก้ไข 1 ภาพ แล้วส่ง Task Source .md ฉบับอัปเดตที่บันทึกกติกาและสิ่งที่เปลี่ยน พร้อมชื่อรูปอ้างอิงที่ต้องแนบต่อไป ถ้าสร้างไฟล์ไม่ได้ ให้ส่ง Markdown ฉบับเต็มใน code block เดียว';
+      setPrompt(prompt,text);
+      setupPromptCollapse(prompt);
+      setText(hint,correct?'คำสั่งพร้อมแล้ว คัดลอกเพื่อเก็บสิ่งที่ตรวจผ่านกลับเข้า Source':'คำสั่งพร้อมแล้ว คัดลอกไปแก้ภาพ 1 รอบ แล้วตรวจจุดเดิมอีกครั้ง');
+      const copy=prompt.querySelector('.cpx');
+      if(copy)copy.setAttribute('aria-label',correct?'คัดลอกคำสั่งบันทึกกติกาที่ผ่าน':'คัดลอกคำสั่งแก้ภาพและอัปเดต Source');
+    }else{
+      setText(hint,!cause?'เลือกผลที่ตรวจได้ก่อน':!keep.value.trim()?'บอกสิ่งที่ตรวจแล้วตรงอย่างน้อย 1 ข้อ เพื่อรักษาไว้': 'ระบุจุดที่ต้องการแก้และผลที่ต้องการ แล้วคำสั่งจะพร้อมคัดลอก');
+    }
+    if(save){try{localStorage.setItem(TASTE_KEY,JSON.stringify({checks:checks.map(check=>check.checked),cause,change:change.value,keep:keep.value}));}catch(e){}}
+  }
+  checks.forEach(check=>check.addEventListener('change',()=>render(true)));
+  radios.forEach(radio=>radio.addEventListener('change',()=>render(true)));
+  [change,keep].forEach(field=>field.addEventListener('input',()=>render(true)));
+  render(false);
+}
+
 function patchFaqAndQuest(){
   const quest=document.querySelector('.quest');
   if(!quest) return;
-  setText(quest.querySelector('h2'),'🎯 เควสท้ายบท · ได้ภาพจากซอสจริง 1 ภาพ');
-  setText(quest.querySelector(':scope > p'),'จบบทเมื่อสร้างโปสเตอร์แนวตั้ง 9:16 ได้จริง และชิมได้ว่าซอสตรง ขาด หรือเกินตรงไหน');
+  quest.id='lesson2Complete';
+  setText(quest.querySelector('h2'),'🎯 เควสท้ายบท · ภาพตรงเรื่อง และซอสพร้อมใช้ต่อ');
+  setText(quest.querySelector(':scope > p'),'จบบทเมื่อได้ภาพ 9:16 ตรวจเทียบกับซอส และเก็บกติกาที่ใช้ได้กลับเข้าไฟล์แล้ว');
   const list=quest.querySelector('ol');
-  if(list) list.innerHTML='<li>สกัดซอสจากแชทเดิมเป็นไฟล์ .md</li><li>เปิดแชทใหม่ แนบซอส และแนบรูปจริงเพิ่มเฉพาะเมื่อต้องการความเหมือน จากนั้นสร้างภาพ 9:16</li><li>ติ๊ก checklist ให้ครบ และบอกว่าอะไรตรง ขาด หรือถูกแต่งเกินจากซอส</li>';
-  setText(quest.querySelector('.finish'),'ฉันได้ภาพจากซอสและชิมแล้ว');
+  if(list) list.innerHTML='<li>ใช้ซอสแม่สร้างซอสลูกสำหรับภาพ 1 ไฟล์</li><li>สร้างภาพ 9:16 แล้วตรวจเทียบกับซอส</li><li>แก้จุดที่เลือก 1 รอบ หรือบันทึกสิ่งที่ตรวจแล้วตรง จากนั้นเก็บกติกากลับเข้าซอสลูก</li>';
+  if(!quest.querySelector('.finish')?.classList.contains('done')) setText(quest.querySelector('.finish'),'ฉันตรวจภาพและเก็บกติกาแล้ว');
   setText(quest.querySelector('.achievement'),'🥄 TASTE CHECK PASSED · ซอสใช้สร้างภาพได้จริง');
 }
 
@@ -776,7 +863,6 @@ function boot(){
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
 else boot();
 })();
-
 </script>
 <script type="module" data-self-contained="lesson2-svg-redesign.js">
 /* Lesson 2 · full SVG redesign — Taste before adding more */
@@ -1713,5 +1799,140 @@ window.__LESSON2_POSTER_EXAMPLES__={
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script type="module" data-self-contained="course-learning-journey.js">
+/* AI ใส่ซอส · One clear start, a saved place, and an actual finished artifact.
+   Reading/boss progress remains in quest.js. This layer records learner-confirmed work. */
+(function(){
+'use strict';
+const KEY='mc_course_journey_v1';
+const LESSONS=[
+ {id:'free-ai',name:'SOURCE',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',title:'เลือกสูตร ให้งานวันนี้เสร็จ',outcome:'ได้งานที่ใช้จริง 1 ชิ้น พร้อมสูตรที่ปรับเป็นของคุณ',need:'ซอสของคุณ + งานที่อยากทำวันนี้',start:'เลือกงานที่จะทำ',work:'#promptPractice',example:'#promptExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้สูตรกับซอสจนได้งานจริงแล้ว',review:'ตรวจข้อมูล น้ำเสียง และคนที่จะใช้ผลงานแล้ว'},
+ {id:'first-web',name:'SERVE',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+];
+const slug=location.pathname.split('/').pop()?.replace(/\.html$/,'');
+const index=LESSONS.findIndex(item=>item.id===slug);
+if(index<0)return;
+const lesson=LESSONS[index];
+let state={version:1,lessons:{}};
+function read(){
+ try{const value=JSON.parse(localStorage.getItem(KEY)||'null');if(value?.version===1&&value.lessons&&typeof value.lessons==='object'&&!Array.isArray(value.lessons))state=value;}catch{}
+ for(const item of LESSONS){
+  if(!state.lessons[item.id]||typeof state.lessons[item.id]!=='object')state.lessons[item.id]={};
+  try{if(item.legacy&&localStorage.getItem(item.legacy)==='1')state.lessons[item.id].done=true;}catch{}
+ }
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}}
+function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
+function current(){return state.lessons[slug];}
+function styles(){
+ if(document.getElementById('course-learning-style'))return;
+ const s=document.createElement('style');s.id='course-learning-style';
+ s.textContent=`
+ body.course-learning{--cl-green:#176242;--cl-ink:#163325;--cl-muted:#576b5e;--cl-paper:#faf9f5;--cl-gold:#c1a15d}
+ .course-learning .cl-launch,.course-learning .cl-completion,.course-learning .cl-rail,.course-learning .cl-steps,.course-learning .cl-introduction{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif;line-height:1.6}
+ .cl-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:14px 0 12px;margin:0}
+ .cl-rail a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;border-radius:10px;background:#eeeee7;color:#59675e;font-size:11px;font-weight:750;text-decoration:none}
+ .cl-rail a b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;font-size:12px;flex:none}
+ .cl-rail a[aria-current="page"]{background:#173f2c;color:#fff}.cl-rail a[aria-current="page"] b{background:#d6ba73;color:#143623}
+ .cl-rail a[data-done="true"] b{background:#d8e8d9;color:#18532b}
+ .cl-launch{position:relative;isolation:isolate;overflow:hidden;margin:0 0 12px!important;padding:25px!important;border:1px solid #355540!important;border-radius:23px!important;background:radial-gradient(ellipse at top right,#285a3a 0,transparent 55%),#102b1d!important;color:#fff!important;box-shadow:0 18px 45px -30px #173d2b}
+ .cl-launch::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.075;pointer-events:none;background-image:linear-gradient(#e6f0d9 1px,transparent 1px),linear-gradient(90deg,#e6f0d9 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(110deg,transparent,black)}
+ .cl-launch .cl-launch-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:22px;align-items:center}
+ .cl-launch .cl-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.13em;color:#e3c98b;margin:0 0 10px}
+ .cl-launch h1.cl-title{font:800 clamp(26px,4.3vw,38px)/1.23 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif!important;color:#fff!important;letter-spacing:-.035em;margin:0 0 11px!important;overflow-wrap:anywhere}
+ .cl-launch .cl-outcome{font-size:15px!important;color:#e1ebdf!important;line-height:1.7!important;margin:0!important;max-width:560px}
+ .cl-launch .cl-need{font-size:12px!important;color:#c0d0c2!important;margin:12px 0 0!important;line-height:1.6!important}
+ .cl-launch .cl-art{display:block;width:100%;padding:0;border:1px solid #89a578;border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;color:#254831;box-shadow:0 8px 22px #061c1355;transform:rotate(2deg);transition:transform .18s}
+ .cl-launch .cl-art:hover{transform:rotate(0)}.cl-launch .cl-art img{display:block;width:100%;height:auto;max-width:100%}.cl-launch .cl-art span{display:block;font-family:inherit;font-size:10px;font-weight:700;line-height:1.5;padding:5px 4px;text-align:center;background:#eff2e6}
+ .cl-launch .cl-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}.cl-launch .cl-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:11px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;text-decoration:none;cursor:pointer}
+ .cl-launch .cl-start{background:#e5c981;color:#173321;border:1px solid #efd79d;flex:1 1 230px}.cl-launch .cl-example{background:#ffffff0a;color:#f3f6ee;border:1px solid #8da28d;flex:0 1 180px}
+ .cl-launch .cl-progress-line{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#c4d7c6;margin-top:17px}.cl-launch .cl-track{height:3px;border:0;background:#ffffff20;border-radius:3px;overflow:hidden;margin-top:7px}.cl-launch .cl-track i{display:block;height:100%;width:0;background:#d8bd79;transition:width .3s}
+ .cl-steps{position:sticky;top:58px;z-index:21;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#faf9f5f5;padding:8px 0;margin:0 0 12px;border-bottom:1px solid #d9dfd5;backdrop-filter:blur(8px)}
+ .cl-steps a{display:flex;gap:7px;align-items:center;justify-content:center;min-height:43px;padding:8px 5px;font-size:12px;font-weight:750;color:#4a6251;border-radius:9px;text-decoration:none;background:#eef1e9}.cl-steps a[aria-current="step"]{color:#fff;background:#226445}.cl-steps a b{font-size:11px;opacity:.8}
+ .cl-introduction{margin:10px 0 20px;padding:0;border:1px solid #d4ddcf;border-radius:14px;background:#f0f2e9;color:#31553e;overflow:hidden}.cl-introduction>summary{padding:12px 17px;cursor:pointer;font-size:13px;font-weight:750;list-style:revert}.cl-introduction[open]>summary{border-bottom:1px solid #d4ddcf}
+ .course-learning .cl-introduction>.head,.course-learning .cl-introduction>.hero{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+ .course-learning [data-cl-target]{scroll-margin-top:130px}.course-learning #cl-completion{scroll-margin-top:130px}
+ .course-learning .cl-completion{color:var(--cl-ink);margin:24px 0 6px;padding:22px;border-radius:17px;border:1px solid #b4ccb4;background:linear-gradient(140deg,#eff5e8,#fff)}
+ .cl-completion .cl-finish-kicker{font-size:11px;letter-spacing:.1em;font-weight:800;color:#356c43}.cl-completion h3{font-size:23px!important;line-height:1.35!important;margin:7px 0 8px!important;color:#173b27!important}.cl-completion p{font-size:13px!important;color:#536654!important;line-height:1.65!important;margin:0 0 14px!important}
+ .cl-completion label{display:flex;gap:10px;align-items:flex-start;padding:11px 0;color:#294b35;font-size:14px!important;font-weight:600;cursor:pointer}.cl-completion input{flex:none;margin:3px 0 0;width:18px;height:18px;accent-color:#236742}
+ .cl-completion .cl-save{display:block;min-height:47px;width:100%;padding:12px 16px;margin-top:14px;border:1px solid #236742;border-radius:11px;background:#236742;color:#fff;font-family:inherit;font-size:14px;font-weight:750;line-height:1.5;cursor:pointer}.cl-completion .cl-save:disabled{background:#e0e8db;border-color:#c9d7c3;color:#607259;cursor:default}
+ .cl-completion .cl-finish-state{display:block;margin-top:12px;color:#31563c;font-size:13px}.cl-completion .cl-next{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:10px 15px;border-radius:10px;background:#183d2a;color:#fff;font-size:13px;font-weight:750;text-decoration:none}
+ .course-learning .cl-native-completion{display:none!important}
+ .cl-completion .cl-next[hidden]{display:none!important}
+ .cl-launch a:focus-visible,.cl-launch button:focus-visible,.cl-steps a:focus-visible,.cl-rail a:focus-visible{outline:3px solid #bb9738;outline-offset:4px}
+ @media(max-width:700px){.cl-rail{gap:5px}.cl-rail a{min-height:38px}.cl-rail a span{display:none}.cl-launch{padding:22px 19px!important;border-radius:18px!important}.cl-launch .cl-launch-grid{grid-template-columns:minmax(0,1fr) 90px;gap:12px;align-items:start}.cl-launch .cl-title{font-size:27px!important}.cl-launch .cl-eyebrow{font-size:10px;letter-spacing:.1em}.cl-launch .cl-outcome{font-size:14px!important}.cl-launch .cl-need{grid-column:1/-1}.cl-launch .cl-actions{margin-top:20px;gap:8px}.cl-launch .cl-actions a{font-size:13px;padding:11px 14px}.cl-launch .cl-example{flex:1 1 140px}.cl-launch .cl-start{flex:1 1 180px}.cl-steps a{font-size:11px;gap:4px}.cl-completion{padding:18px!important}.cl-completion h3{font-size:21px!important}}
+ @media(prefers-reduced-motion:reduce){.cl-launch .cl-art,.cl-launch .cl-track i{transition:none}.cl-launch .cl-art{transform:none}}
+ `;document.head.appendChild(s);
+}
+function boot(){
+ const main=document.querySelector('main')||document.querySelector('body > .wrap');
+ const hero=main?.querySelector(':scope > .head,:scope > .hero');
+ if(!main||!hero||document.getElementById('cl-launch'))return;
+ read();styles();document.body.classList.add('course-learning');
+ const native=lesson.native&&document.querySelector(lesson.native);
+ const quest=document.querySelector(lesson.finish)||document.querySelector('.quest');
+ const intro=document.createElement('details');intro.className='cl-introduction';intro.id='cl-introduction';
+ const summary=document.createElement('summary');summary.textContent='ดูแผนภาพและแนวคิดของบทนี้';intro.appendChild(summary);hero.before(intro);intro.appendChild(hero);
+ const art=hero.querySelector('.classroom-lesson-header-image img');
+ const launch=document.createElement('section');launch.className='cl-launch';launch.id='cl-launch';launch.setAttribute('aria-labelledby','cl-title');
+ launch.innerHTML='<div class="cl-launch-grid"><div><span class="cl-eyebrow">บท '+(index+1)+' / 6 · '+lesson.name+'</span><h1 class="cl-title" id="cl-title">'+lesson.title+'</h1><p class="cl-outcome">'+lesson.outcome+'</p><p class="cl-need">'+lesson.need+'</p></div></div><div class="cl-actions"><a class="cl-start" id="cl-start" href="'+lesson.work+'">'+lesson.start+' →</a><a class="cl-example" href="'+lesson.example+'">ดูตัวอย่างก่อน</a></div><div class="cl-progress-line"><span id="cl-course-progress"></span><span id="cl-current-state"></span></div><div class="cl-track" aria-hidden="true"><i></i></div>';
+ if(art){const button=document.createElement('button');button.type='button';button.className='cl-art';button.setAttribute('aria-controls',intro.id);button.setAttribute('aria-expanded','false');const img=document.createElement('img');img.src=art.getAttribute('src');img.alt='แผนภาพบทที่ '+(index+1);img.width=150;img.height=150;img.decoding='async';button.appendChild(img);const label=document.createElement('span');label.textContent='ดูแผนภาพ ↗';button.appendChild(label);launch.querySelector('.cl-launch-grid').appendChild(button);button.addEventListener('click',()=>{intro.open=!intro.open;button.setAttribute('aria-expanded',String(intro.open));if(intro.open)goTo(intro);});intro.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(intro.open)));}
+ const rail=document.createElement('nav');rail.className='cl-rail';rail.setAttribute('aria-label','เส้นทางบทเรียนทั้ง 6 บท');
+ for(const [i,item] of LESSONS.entries()){const a=document.createElement('a');a.href='/classroom/'+item.id+'.html';a.dataset.lesson=item.id;a.innerHTML='<b>'+(i+1)+'</b><span>'+item.name+'</span>';a.setAttribute('aria-label','บท '+(i+1)+' '+item.name);if(i===index)a.setAttribute('aria-current','page');rail.appendChild(a);}
+ const steps=document.createElement('nav');steps.className='cl-steps';steps.setAttribute('aria-label','ขั้นตอนในบทนี้');
+ const targets=[lesson.work,lesson.check,'#cl-completion'];
+ ['เริ่มลงมือ','ชิมผลงาน','เก็บงานไปต่อ'].forEach((text,i)=>{const a=document.createElement('a');a.href=targets[i];a.dataset.step=String(i);a.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b> '+text;steps.appendChild(a);});
+ intro.before(rail,launch,steps);
+ function goTo(target){
+  if(!target)return;
+  let parent=target.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}
+  target.setAttribute('data-cl-target','');
+  if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+  target.focus({preventScroll:true});
+  target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ }
+ function selectStep(step){current().started=true;current().step=step;state.last=slug;save();paint();}
+ function follow(event,selector,step){const target=document.querySelector(selector);if(!target)return;event.preventDefault();if(step!==undefined)selectStep(step);goTo(target);}
+ launch.querySelector('.cl-start').addEventListener('click',event=>{const step=current().done?0:Math.min(2,Math.max(0,Number(current().step)||0));follow(event,targets[step],step);});
+ launch.querySelector('.cl-example').addEventListener('click',event=>follow(event,lesson.example));
+ steps.querySelectorAll('a').forEach(a=>a.addEventListener('click',event=>follow(event,targets[Number(a.dataset.step)],Number(a.dataset.step))));
+ const complete=document.createElement('section');complete.className='cl-completion';complete.id='cl-completion';complete.setAttribute('aria-labelledby','cl-finish-title');
+ complete.innerHTML='<span class="cl-finish-kicker">ของที่ได้กลับไป · '+lesson.name+'</span><h3 id="cl-finish-title">เก็บผลงานบทนี้ไว้กับคุณ</h3><p>เช็กจากงานที่คุณทำจริง แล้วบันทึกไว้เพื่อกลับมาต่อได้</p><label><input type="checkbox" data-cl-check="artifact"><span>'+lesson.artifact+'</span></label><label><input type="checkbox" data-cl-check="review"><span>'+lesson.review+'</span></label><button type="button" class="cl-save" disabled>บันทึกว่าฉันทำบทนี้แล้ว</button><span class="cl-finish-state" role="status" aria-live="polite"></span>';
+ if(quest)quest.after(complete);else{const footer=main.querySelector('footer');footer?footer.before(complete):main.appendChild(complete);}
+ if(native)native.classList.add('cl-native-completion');
+ for(const cb of complete.querySelectorAll('input')){cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;cb.addEventListener('change',()=>{current()[cb.dataset.clCheck]=cb.checked;save();paint();});}
+ complete.querySelector('.cl-save').addEventListener('click',()=>{
+  if(![...complete.querySelectorAll('input')].every(cb=>cb.checked))return;
+  if(native&&!native.disabled)native.click();
+  current().done=true;current().started=true;current().step=2;current().finishedAt=Date.now();save();
+  try{window.MC_QUEST?.track('learn')?.mark(slug);}catch{}
+  paint();
+ });
+ if(index<LESSONS.length-1){const next=document.createElement('a');next.className='cl-next';next.href='/classroom/'+LESSONS[index+1].id+'.html';next.textContent='ใช้ของเดิมต่อบท '+(index+2)+' · '+LESSONS[index+1].name+' →';next.hidden=true;complete.appendChild(next);}
+ function paint(){
+  const done=LESSONS.filter(item=>state.lessons[item.id]?.done).length;
+  setText(launch.querySelector('#cl-course-progress'),'เก็บผลงานแล้ว '+done+' / 6 บท');
+  setText(launch.querySelector('#cl-current-state'),current().done?'บทนี้มีผลงานแล้ว ✓':current().started?'กลับมาทำต่อได้ทุกเมื่อ':'เริ่มทีละชิ้น ใช้เรื่องเดิมต่อได้');
+  setText(launch.querySelector('.cl-start'),current().done?'กลับไปต่อยอดงาน →':current().started?'กลับไปขั้นที่ทำค้าง →':lesson.start+' →');
+  launch.querySelector('.cl-track i').style.width=(done/6*100)+'%';
+  rail.querySelectorAll('a').forEach(a=>{a.dataset.done=String(state.lessons[a.dataset.lesson]?.done===true);});
+  steps.querySelectorAll('a').forEach(a=>{const active=Number(a.dataset.step)===(Number(current().step)||0);if(active)a.setAttribute('aria-current','step');else a.removeAttribute('aria-current');});
+  complete.querySelectorAll('input').forEach(cb=>{cb.disabled=current().done===true;});
+  const ready=[...complete.querySelectorAll('input')].every(cb=>cb.checked);
+  complete.querySelector('.cl-save').disabled=!ready||current().done===true;
+  setText(complete.querySelector('.cl-save'),current().done?'✓ เก็บผลงานบทนี้แล้ว':'บันทึกว่าฉันทำบทนี้แล้ว');
+  setText(complete.querySelector('.cl-finish-state'),current().done?(index===5?'คุณทำของที่เปิดใช้ได้จริงสำเร็จแล้ว เก็บไฟล์นี้ไว้ให้ดี':'งานชิ้นนี้เป็นวัตถุดิบให้บทถัดไปได้เลย'):ready?'พร้อมเก็บบทนี้แล้ว':'ยืนยัน 2 ข้อจากงานที่คุณทำจริง');
+  const next=complete.querySelector('.cl-next');if(next)next.hidden=current().done!==true;
+ }
+ window.addEventListener('storage',event=>{if(event.key!==KEY)return;read();complete.querySelectorAll('input').forEach(cb=>{cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;});paint();});
+ save();paint();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);
+})();
+</script>
 </body>
 </html>

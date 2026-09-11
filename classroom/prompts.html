@@ -292,6 +292,44 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   </div>
 </section>
 
+<section class="lesson5-practice" id="promptPractice" aria-labelledby="promptPracticeTitle">
+  <span class="practice-kicker">เริ่มจากงานที่ใช้ได้วันนี้</span>
+  <h2 id="promptPracticeTitle">เลือก 1 งาน แล้วลองให้ได้ผลงาน 1 ชิ้น</h2>
+  <p>เริ่มจากสูตรด้านล่าง เติมเรื่องจริงของคุณ แล้วคัดลอกไปใช้กับ AI จะลองสูตรอื่นก่อนก็ได้ ข้อมูลที่กรอกจะยังอยู่เมื่อกลับมาในแท็บนี้</p>
+  <div class="practice-picks" id="promptPicks" aria-label="สูตรแนะนำสำหรับเริ่มลงมือ">
+    <button type="button" data-prompt-pick="reply">ตอบข้อความลูกค้า <span>ได้คำตอบ 3 โทน</span></button>
+    <button type="button" data-prompt-pick="meeting">สรุปประชุม <span>ได้ตารางงานที่ต้องทำ</span></button>
+    <button type="button" data-prompt-pick="content-plan">วางแผนคอนเทนต์ <span>ได้แผนโพสต์ที่ทำไหว</span></button>
+  </div>
+  <details class="practice-example" id="promptExample">
+    <summary>ดูตัวอย่างสั้น ๆ: ตอบลูกค้าโดยไม่รับปากเกินจริง</summary>
+    <div class="practice-example-body">
+      <p><b>ข้อมูลที่มี:</b> ลูกค้าถามว่า “ของถึงพรุ่งนี้ไหม?” ร้านส่งออกได้เร็วที่สุดวันศุกร์ แต่ยังไม่ทราบวันรับ</p>
+      <p><b>สิ่งที่สั่ง:</b> ร่างคำตอบสั้น สุภาพ บอกวันส่งให้ชัด และห้ามเดาวันรับ</p>
+      <blockquote>ร้านจัดส่งได้เร็วที่สุดวันศุกร์ ยังยืนยันวันรับไม่ได้ หากต้องการใช้พรุ่งนี้ กำหนดนี้อาจไม่ทัน</blockquote>
+      <p><b>ชิมก่อนใช้:</b> แยก “วันส่ง” ออกจาก “วันรับ” และไม่มีคำรับปากที่ข้อมูลไม่รองรับ จากนั้นปรับน้ำเสียงให้เป็นของคุณ</p>
+    </div>
+  </details>
+</section>
+
+<style id="lesson5-practice-style">
+.lesson5-practice{margin:20px 0;padding:22px;border:1px solid rgb(27 106 66/.22);border-radius:18px;background:linear-gradient(135deg,#fff,rgb(27 106 66/.045))}
+.practice-kicker{color:rgb(var(--green));font:750 12px "Bai Jamjuree",system-ui,sans-serif}
+.lesson5-practice h2{margin:7px 0 9px;font-size:clamp(21px,4vw,27px)}
+.lesson5-practice>p{color:rgb(var(--muted));font-size:14px;line-height:1.75}
+.practice-picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:15px}
+.practice-picks button{min-height:72px;padding:13px;border:1px solid rgb(27 106 66/.23);border-radius:12px;background:#fff;color:rgb(var(--ink));font:750 14px "Bai Jamjuree",system-ui,sans-serif;text-align:left;cursor:pointer}
+.practice-picks button span{display:block;margin-top:5px;font-size:12px;font-weight:400;color:rgb(var(--muted))}
+.practice-picks button:hover{border-color:rgb(var(--green));background:rgb(27 106 66/.05)}
+.practice-picks button:focus-visible,.practice-example summary:focus-visible{outline:3px solid rgb(27 106 66/.45);outline-offset:3px}
+.practice-example{margin-top:14px;border-top:1px solid rgb(27 106 66/.13)}
+.practice-example summary{padding:14px 0 0;cursor:pointer;font-weight:700;font-size:14px}
+.practice-example-body{padding-top:9px;font-size:14px;line-height:1.75}
+.practice-example-body p{margin:10px 0}.practice-example blockquote{margin:12px 0;padding:14px 17px;border-left:3px solid rgb(var(--green));background:rgb(27 106 66/.06);border-radius:0 10px 10px 0}
+.practice-checks{padding-left:21px;margin:12px 0}.practice-checks li{padding:6px 0;font-size:14px;line-height:1.8}
+@media(max-width:560px){.lesson5-practice{padding:18px}.practice-picks{grid-template-columns:1fr}.practice-picks button{min-height:60px}.practice-picks button span{display:inline;margin-left:8px}}
+</style>
+
 <noscript><div class="nojs"><b>🍀 หน้านี้ต้องเปิดจาวาสคริปต์ก่อน</b><br>
 ตัวค้นหาและช่องเติมข้อมูลของคลังนี้ทำงานในเบราว์เซอร์ของคุณเอง เลยต้องใช้จาวาสคริปต์ —
 เปิดแล้วโหลดหน้านี้ใหม่อีกครั้ง หรือถ้าเปิดจากในแอป (เช่น LINE) ลองกดเมนูมุมขวาบนแล้วเลือก "เปิดในเบราว์เซอร์"</div></noscript>
@@ -392,6 +430,18 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
     <li>Genesis Prompt ทำงานในบริบทของ Session ไม่ใช่ความจำถาวรข้ามทุกแชต</li>
   </ul>
 </div>
+
+<section class="lesson5-practice" id="promptCheck" aria-labelledby="promptCheckTitle">
+  <span class="practice-kicker">ได้คำตอบแล้ว กลับมาชิมตรงนี้</span>
+  <h2 id="promptCheckTitle">ผลงานนี้พร้อมใช้กับงานของคุณหรือยัง?</h2>
+  <p>เปิดคำตอบจาก AI เทียบกับข้อมูลจริง แล้วตรวจ 3 ข้อนี้ก่อนคัดลอกไปใช้</p>
+  <ul class="practice-checks">
+    <li><b>เรื่องจริงตรงกัน:</b> ชื่อ วัน ตัวเลข และเงื่อนไขตรงกับข้อมูลต้นทาง ไม่มีคำรับปากหรือข้อสรุปที่ AI เติมเอง</li>
+    <li><b>คนรับใช้ต่อได้:</b> อ่านแล้วรู้ว่าประเด็นสำคัญคืออะไร และต้องทำอะไรต่อ ถ้าเป็นแผน ให้ทำได้ด้วยเวลาหรือของที่คุณมี</li>
+    <li><b>น้ำเสียงเป็นของคุณ:</b> ตัดคำที่คุณไม่ใช้จริง ลดส่วนที่เยิ่นเย้อ และตรวจว่าเหมาะกับผู้รับ</li>
+  </ul>
+  <p><b>ถ้ายังไม่ตรง:</b> บอก AI ให้แก้ทีละจุด เช่น “เปลี่ยนคำว่าได้รับวันศุกร์เป็นจัดส่งวันศุกร์ เพราะยังไม่ทราบวันรับ ส่วนอื่นคงเดิม” แล้วตรวจอีกครั้ง</p>
+</section>
 
 <div class="quest">🎯 <b>QUEST: สร้างคู่หู AI ประจำงานของคุณ</b>
   <ol>
@@ -703,6 +753,20 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
                     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // Keep each recipe's unfinished work while learners compare recipes.
+  // Session storage stays in this browser tab; no draft is sent to a server.
+  var draftKey = 'mc_prompt_drafts_v1', drafts = {};
+  try{
+    var savedDrafts = JSON.parse(sessionStorage.getItem(draftKey) || '{}');
+    if(savedDrafts && typeof savedDrafts === 'object' && !Array.isArray(savedDrafts)) drafts = savedDrafts;
+  }catch(e){}
+  function saveDraft(id, vals){
+    var hasValue = Object.keys(vals).some(function(k){ return vals[k].trim(); });
+    if(hasValue) drafts[id] = vals;
+    else delete drafts[id];
+    try{ sessionStorage.setItem(draftKey, JSON.stringify(drafts)); }catch(e){}
+  }
+
   function cardHTML(p, isTop){
     var c = catOf[p.cat] || { th: '', emo: '' };
     return '<article class="pc' + (isTop ? ' top' : '') + '" data-id="' + esc(p.id) + '">' +
@@ -765,6 +829,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     Array.prototype.forEach.call(card.querySelectorAll('[data-k]'), function(el){
       vals[el.getAttribute('data-k')] = el.value;
     });
+    saveDraft(p.id, vals);
     var text = fill(p, vals);
     var box = card.querySelector('[data-prev]');
     box.dataset.text = text;
@@ -793,6 +858,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     card.insertAdjacentHTML('beforeend', drawerHTML(p));
     card.querySelector('[data-act="use"]').textContent = '🧩 กำลังใช้อยู่';
     openId = p.id;
+    var draft = drafts[p.id] || {};
+    Array.prototype.forEach.call(card.querySelectorAll('[data-k]'), function(el){
+      var value = draft[el.getAttribute('data-k')];
+      if(typeof value === 'string') el.value = value;
+    });
     renderPrev(card, p);
     Array.prototype.forEach.call(card.querySelectorAll('[data-k]'), function(el){
       el.addEventListener('input', function(){ renderPrev(card, p); });
@@ -900,6 +970,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     var card = results.querySelector('.pc');
     if(card) openDrawer(card, p);
     toast('🎲 สุ่มได้: ' + p.title);
+  });
+
+  $('promptPicks').addEventListener('click', function(e){
+    var button = e.target.closest('[data-prompt-pick]');
+    if(!button) return;
+    var p = V.prompts.find(function(item){ return item.id === button.dataset.promptPick; });
+    if(!p) return;
+    qEl.value = p.title;
+    clearChips();
+    run();
+    var card = results.querySelector('[data-id="' + p.id + '"]');
+    if(card) openDrawer(card, p);
   });
 
   results.addEventListener('click', function(e){
@@ -2856,5 +2938,140 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script type="module" data-self-contained="course-learning-journey.js">
+/* AI ใส่ซอส · One clear start, a saved place, and an actual finished artifact.
+   Reading/boss progress remains in quest.js. This layer records learner-confirmed work. */
+(function(){
+'use strict';
+const KEY='mc_course_journey_v1';
+const LESSONS=[
+ {id:'free-ai',name:'SOURCE',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',title:'เลือกสูตร ให้งานวันนี้เสร็จ',outcome:'ได้งานที่ใช้จริง 1 ชิ้น พร้อมสูตรที่ปรับเป็นของคุณ',need:'ซอสของคุณ + งานที่อยากทำวันนี้',start:'เลือกงานที่จะทำ',work:'#promptPractice',example:'#promptExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้สูตรกับซอสจนได้งานจริงแล้ว',review:'ตรวจข้อมูล น้ำเสียง และคนที่จะใช้ผลงานแล้ว'},
+ {id:'first-web',name:'SERVE',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+];
+const slug=location.pathname.split('/').pop()?.replace(/\.html$/,'');
+const index=LESSONS.findIndex(item=>item.id===slug);
+if(index<0)return;
+const lesson=LESSONS[index];
+let state={version:1,lessons:{}};
+function read(){
+ try{const value=JSON.parse(localStorage.getItem(KEY)||'null');if(value?.version===1&&value.lessons&&typeof value.lessons==='object'&&!Array.isArray(value.lessons))state=value;}catch{}
+ for(const item of LESSONS){
+  if(!state.lessons[item.id]||typeof state.lessons[item.id]!=='object')state.lessons[item.id]={};
+  try{if(item.legacy&&localStorage.getItem(item.legacy)==='1')state.lessons[item.id].done=true;}catch{}
+ }
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}}
+function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
+function current(){return state.lessons[slug];}
+function styles(){
+ if(document.getElementById('course-learning-style'))return;
+ const s=document.createElement('style');s.id='course-learning-style';
+ s.textContent=`
+ body.course-learning{--cl-green:#176242;--cl-ink:#163325;--cl-muted:#576b5e;--cl-paper:#faf9f5;--cl-gold:#c1a15d}
+ .course-learning .cl-launch,.course-learning .cl-completion,.course-learning .cl-rail,.course-learning .cl-steps,.course-learning .cl-introduction{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif;line-height:1.6}
+ .cl-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:14px 0 12px;margin:0}
+ .cl-rail a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;border-radius:10px;background:#eeeee7;color:#59675e;font-size:11px;font-weight:750;text-decoration:none}
+ .cl-rail a b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;font-size:12px;flex:none}
+ .cl-rail a[aria-current="page"]{background:#173f2c;color:#fff}.cl-rail a[aria-current="page"] b{background:#d6ba73;color:#143623}
+ .cl-rail a[data-done="true"] b{background:#d8e8d9;color:#18532b}
+ .cl-launch{position:relative;isolation:isolate;overflow:hidden;margin:0 0 12px!important;padding:25px!important;border:1px solid #355540!important;border-radius:23px!important;background:radial-gradient(ellipse at top right,#285a3a 0,transparent 55%),#102b1d!important;color:#fff!important;box-shadow:0 18px 45px -30px #173d2b}
+ .cl-launch::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.075;pointer-events:none;background-image:linear-gradient(#e6f0d9 1px,transparent 1px),linear-gradient(90deg,#e6f0d9 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(110deg,transparent,black)}
+ .cl-launch .cl-launch-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:22px;align-items:center}
+ .cl-launch .cl-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.13em;color:#e3c98b;margin:0 0 10px}
+ .cl-launch h1.cl-title{font:800 clamp(26px,4.3vw,38px)/1.23 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif!important;color:#fff!important;letter-spacing:-.035em;margin:0 0 11px!important;overflow-wrap:anywhere}
+ .cl-launch .cl-outcome{font-size:15px!important;color:#e1ebdf!important;line-height:1.7!important;margin:0!important;max-width:560px}
+ .cl-launch .cl-need{font-size:12px!important;color:#c0d0c2!important;margin:12px 0 0!important;line-height:1.6!important}
+ .cl-launch .cl-art{display:block;width:100%;padding:0;border:1px solid #89a578;border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;color:#254831;box-shadow:0 8px 22px #061c1355;transform:rotate(2deg);transition:transform .18s}
+ .cl-launch .cl-art:hover{transform:rotate(0)}.cl-launch .cl-art img{display:block;width:100%;height:auto;max-width:100%}.cl-launch .cl-art span{display:block;font-family:inherit;font-size:10px;font-weight:700;line-height:1.5;padding:5px 4px;text-align:center;background:#eff2e6}
+ .cl-launch .cl-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}.cl-launch .cl-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:11px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;text-decoration:none;cursor:pointer}
+ .cl-launch .cl-start{background:#e5c981;color:#173321;border:1px solid #efd79d;flex:1 1 230px}.cl-launch .cl-example{background:#ffffff0a;color:#f3f6ee;border:1px solid #8da28d;flex:0 1 180px}
+ .cl-launch .cl-progress-line{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#c4d7c6;margin-top:17px}.cl-launch .cl-track{height:3px;border:0;background:#ffffff20;border-radius:3px;overflow:hidden;margin-top:7px}.cl-launch .cl-track i{display:block;height:100%;width:0;background:#d8bd79;transition:width .3s}
+ .cl-steps{position:sticky;top:58px;z-index:21;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#faf9f5f5;padding:8px 0;margin:0 0 12px;border-bottom:1px solid #d9dfd5;backdrop-filter:blur(8px)}
+ .cl-steps a{display:flex;gap:7px;align-items:center;justify-content:center;min-height:43px;padding:8px 5px;font-size:12px;font-weight:750;color:#4a6251;border-radius:9px;text-decoration:none;background:#eef1e9}.cl-steps a[aria-current="step"]{color:#fff;background:#226445}.cl-steps a b{font-size:11px;opacity:.8}
+ .cl-introduction{margin:10px 0 20px;padding:0;border:1px solid #d4ddcf;border-radius:14px;background:#f0f2e9;color:#31553e;overflow:hidden}.cl-introduction>summary{padding:12px 17px;cursor:pointer;font-size:13px;font-weight:750;list-style:revert}.cl-introduction[open]>summary{border-bottom:1px solid #d4ddcf}
+ .course-learning .cl-introduction>.head,.course-learning .cl-introduction>.hero{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+ .course-learning [data-cl-target]{scroll-margin-top:130px}.course-learning #cl-completion{scroll-margin-top:130px}
+ .course-learning .cl-completion{color:var(--cl-ink);margin:24px 0 6px;padding:22px;border-radius:17px;border:1px solid #b4ccb4;background:linear-gradient(140deg,#eff5e8,#fff)}
+ .cl-completion .cl-finish-kicker{font-size:11px;letter-spacing:.1em;font-weight:800;color:#356c43}.cl-completion h3{font-size:23px!important;line-height:1.35!important;margin:7px 0 8px!important;color:#173b27!important}.cl-completion p{font-size:13px!important;color:#536654!important;line-height:1.65!important;margin:0 0 14px!important}
+ .cl-completion label{display:flex;gap:10px;align-items:flex-start;padding:11px 0;color:#294b35;font-size:14px!important;font-weight:600;cursor:pointer}.cl-completion input{flex:none;margin:3px 0 0;width:18px;height:18px;accent-color:#236742}
+ .cl-completion .cl-save{display:block;min-height:47px;width:100%;padding:12px 16px;margin-top:14px;border:1px solid #236742;border-radius:11px;background:#236742;color:#fff;font-family:inherit;font-size:14px;font-weight:750;line-height:1.5;cursor:pointer}.cl-completion .cl-save:disabled{background:#e0e8db;border-color:#c9d7c3;color:#607259;cursor:default}
+ .cl-completion .cl-finish-state{display:block;margin-top:12px;color:#31563c;font-size:13px}.cl-completion .cl-next{display:inline-flex;align-items:center;min-height:44px;margin-top:12px;padding:10px 15px;border-radius:10px;background:#183d2a;color:#fff;font-size:13px;font-weight:750;text-decoration:none}
+ .course-learning .cl-native-completion{display:none!important}
+ .cl-completion .cl-next[hidden]{display:none!important}
+ .cl-launch a:focus-visible,.cl-launch button:focus-visible,.cl-steps a:focus-visible,.cl-rail a:focus-visible{outline:3px solid #bb9738;outline-offset:4px}
+ @media(max-width:700px){.cl-rail{gap:5px}.cl-rail a{min-height:38px}.cl-rail a span{display:none}.cl-launch{padding:22px 19px!important;border-radius:18px!important}.cl-launch .cl-launch-grid{grid-template-columns:minmax(0,1fr) 90px;gap:12px;align-items:start}.cl-launch .cl-title{font-size:27px!important}.cl-launch .cl-eyebrow{font-size:10px;letter-spacing:.1em}.cl-launch .cl-outcome{font-size:14px!important}.cl-launch .cl-need{grid-column:1/-1}.cl-launch .cl-actions{margin-top:20px;gap:8px}.cl-launch .cl-actions a{font-size:13px;padding:11px 14px}.cl-launch .cl-example{flex:1 1 140px}.cl-launch .cl-start{flex:1 1 180px}.cl-steps a{font-size:11px;gap:4px}.cl-completion{padding:18px!important}.cl-completion h3{font-size:21px!important}}
+ @media(prefers-reduced-motion:reduce){.cl-launch .cl-art,.cl-launch .cl-track i{transition:none}.cl-launch .cl-art{transform:none}}
+ `;document.head.appendChild(s);
+}
+function boot(){
+ const main=document.querySelector('main')||document.querySelector('body > .wrap');
+ const hero=main?.querySelector(':scope > .head,:scope > .hero');
+ if(!main||!hero||document.getElementById('cl-launch'))return;
+ read();styles();document.body.classList.add('course-learning');
+ const native=lesson.native&&document.querySelector(lesson.native);
+ const quest=document.querySelector(lesson.finish)||document.querySelector('.quest');
+ const intro=document.createElement('details');intro.className='cl-introduction';intro.id='cl-introduction';
+ const summary=document.createElement('summary');summary.textContent='ดูแผนภาพและแนวคิดของบทนี้';intro.appendChild(summary);hero.before(intro);intro.appendChild(hero);
+ const art=hero.querySelector('.classroom-lesson-header-image img');
+ const launch=document.createElement('section');launch.className='cl-launch';launch.id='cl-launch';launch.setAttribute('aria-labelledby','cl-title');
+ launch.innerHTML='<div class="cl-launch-grid"><div><span class="cl-eyebrow">บท '+(index+1)+' / 6 · '+lesson.name+'</span><h1 class="cl-title" id="cl-title">'+lesson.title+'</h1><p class="cl-outcome">'+lesson.outcome+'</p><p class="cl-need">'+lesson.need+'</p></div></div><div class="cl-actions"><a class="cl-start" id="cl-start" href="'+lesson.work+'">'+lesson.start+' →</a><a class="cl-example" href="'+lesson.example+'">ดูตัวอย่างก่อน</a></div><div class="cl-progress-line"><span id="cl-course-progress"></span><span id="cl-current-state"></span></div><div class="cl-track" aria-hidden="true"><i></i></div>';
+ if(art){const button=document.createElement('button');button.type='button';button.className='cl-art';button.setAttribute('aria-controls',intro.id);button.setAttribute('aria-expanded','false');const img=document.createElement('img');img.src=art.getAttribute('src');img.alt='แผนภาพบทที่ '+(index+1);img.width=150;img.height=150;img.decoding='async';button.appendChild(img);const label=document.createElement('span');label.textContent='ดูแผนภาพ ↗';button.appendChild(label);launch.querySelector('.cl-launch-grid').appendChild(button);button.addEventListener('click',()=>{intro.open=!intro.open;button.setAttribute('aria-expanded',String(intro.open));if(intro.open)goTo(intro);});intro.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(intro.open)));}
+ const rail=document.createElement('nav');rail.className='cl-rail';rail.setAttribute('aria-label','เส้นทางบทเรียนทั้ง 6 บท');
+ for(const [i,item] of LESSONS.entries()){const a=document.createElement('a');a.href='/classroom/'+item.id+'.html';a.dataset.lesson=item.id;a.innerHTML='<b>'+(i+1)+'</b><span>'+item.name+'</span>';a.setAttribute('aria-label','บท '+(i+1)+' '+item.name);if(i===index)a.setAttribute('aria-current','page');rail.appendChild(a);}
+ const steps=document.createElement('nav');steps.className='cl-steps';steps.setAttribute('aria-label','ขั้นตอนในบทนี้');
+ const targets=[lesson.work,lesson.check,'#cl-completion'];
+ ['เริ่มลงมือ','ชิมผลงาน','เก็บงานไปต่อ'].forEach((text,i)=>{const a=document.createElement('a');a.href=targets[i];a.dataset.step=String(i);a.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b> '+text;steps.appendChild(a);});
+ intro.before(rail,launch,steps);
+ function goTo(target){
+  if(!target)return;
+  let parent=target.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}
+  target.setAttribute('data-cl-target','');
+  if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
+  target.focus({preventScroll:true});
+  target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ }
+ function selectStep(step){current().started=true;current().step=step;state.last=slug;save();paint();}
+ function follow(event,selector,step){const target=document.querySelector(selector);if(!target)return;event.preventDefault();if(step!==undefined)selectStep(step);goTo(target);}
+ launch.querySelector('.cl-start').addEventListener('click',event=>{const step=current().done?0:Math.min(2,Math.max(0,Number(current().step)||0));follow(event,targets[step],step);});
+ launch.querySelector('.cl-example').addEventListener('click',event=>follow(event,lesson.example));
+ steps.querySelectorAll('a').forEach(a=>a.addEventListener('click',event=>follow(event,targets[Number(a.dataset.step)],Number(a.dataset.step))));
+ const complete=document.createElement('section');complete.className='cl-completion';complete.id='cl-completion';complete.setAttribute('aria-labelledby','cl-finish-title');
+ complete.innerHTML='<span class="cl-finish-kicker">ของที่ได้กลับไป · '+lesson.name+'</span><h3 id="cl-finish-title">เก็บผลงานบทนี้ไว้กับคุณ</h3><p>เช็กจากงานที่คุณทำจริง แล้วบันทึกไว้เพื่อกลับมาต่อได้</p><label><input type="checkbox" data-cl-check="artifact"><span>'+lesson.artifact+'</span></label><label><input type="checkbox" data-cl-check="review"><span>'+lesson.review+'</span></label><button type="button" class="cl-save" disabled>บันทึกว่าฉันทำบทนี้แล้ว</button><span class="cl-finish-state" role="status" aria-live="polite"></span>';
+ if(quest)quest.after(complete);else{const footer=main.querySelector('footer');footer?footer.before(complete):main.appendChild(complete);}
+ if(native)native.classList.add('cl-native-completion');
+ for(const cb of complete.querySelectorAll('input')){cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;cb.addEventListener('change',()=>{current()[cb.dataset.clCheck]=cb.checked;save();paint();});}
+ complete.querySelector('.cl-save').addEventListener('click',()=>{
+  if(![...complete.querySelectorAll('input')].every(cb=>cb.checked))return;
+  if(native&&!native.disabled)native.click();
+  current().done=true;current().started=true;current().step=2;current().finishedAt=Date.now();save();
+  try{window.MC_QUEST?.track('learn')?.mark(slug);}catch{}
+  paint();
+ });
+ if(index<LESSONS.length-1){const next=document.createElement('a');next.className='cl-next';next.href='/classroom/'+LESSONS[index+1].id+'.html';next.textContent='ใช้ของเดิมต่อบท '+(index+2)+' · '+LESSONS[index+1].name+' →';next.hidden=true;complete.appendChild(next);}
+ function paint(){
+  const done=LESSONS.filter(item=>state.lessons[item.id]?.done).length;
+  setText(launch.querySelector('#cl-course-progress'),'เก็บผลงานแล้ว '+done+' / 6 บท');
+  setText(launch.querySelector('#cl-current-state'),current().done?'บทนี้มีผลงานแล้ว ✓':current().started?'กลับมาทำต่อได้ทุกเมื่อ':'เริ่มทีละชิ้น ใช้เรื่องเดิมต่อได้');
+  setText(launch.querySelector('.cl-start'),current().done?'กลับไปต่อยอดงาน →':current().started?'กลับไปขั้นที่ทำค้าง →':lesson.start+' →');
+  launch.querySelector('.cl-track i').style.width=(done/6*100)+'%';
+  rail.querySelectorAll('a').forEach(a=>{a.dataset.done=String(state.lessons[a.dataset.lesson]?.done===true);});
+  steps.querySelectorAll('a').forEach(a=>{const active=Number(a.dataset.step)===(Number(current().step)||0);if(active)a.setAttribute('aria-current','step');else a.removeAttribute('aria-current');});
+  complete.querySelectorAll('input').forEach(cb=>{cb.disabled=current().done===true;});
+  const ready=[...complete.querySelectorAll('input')].every(cb=>cb.checked);
+  complete.querySelector('.cl-save').disabled=!ready||current().done===true;
+  setText(complete.querySelector('.cl-save'),current().done?'✓ เก็บผลงานบทนี้แล้ว':'บันทึกว่าฉันทำบทนี้แล้ว');
+  setText(complete.querySelector('.cl-finish-state'),current().done?(index===5?'คุณทำของที่เปิดใช้ได้จริงสำเร็จแล้ว เก็บไฟล์นี้ไว้ให้ดี':'งานชิ้นนี้เป็นวัตถุดิบให้บทถัดไปได้เลย'):ready?'พร้อมเก็บบทนี้แล้ว':'ยืนยัน 2 ข้อจากงานที่คุณทำจริง');
+  const next=complete.querySelector('.cl-next');if(next)next.hidden=current().done!==true;
+ }
+ window.addEventListener('storage',event=>{if(event.key!==KEY)return;read();complete.querySelectorAll('input').forEach(cb=>{cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;});paint();});
+ save();paint();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);
+})();
+</script>
 </body>
 </html>
