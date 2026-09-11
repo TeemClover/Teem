@@ -2240,6 +2240,32 @@ const LESSONS=[
  {id:'prompts',name:'SEASON',title:'เลือกสูตร ให้งานวันนี้เสร็จ',outcome:'ได้งานที่ใช้จริง 1 ชิ้น พร้อมสูตรที่ปรับเป็นของคุณ',need:'ซอสของคุณ + งานที่อยากทำวันนี้',start:'เลือกงานที่จะทำ',work:'#promptPractice',example:'#promptExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้สูตรกับซอสจนได้งานจริงแล้ว',review:'ตรวจข้อมูล น้ำเสียง และคนที่จะใช้ผลงานแล้ว'},
  {id:'first-web',name:'SERVE',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
 ];
+const WORKFLOWS={
+ 'free-ai':[
+  {target:'.map',id:'lesson1Ingredients',label:'เลือกวัตถุดิบ'},
+  {target:'#lesson1Work',label:'สร้างซอส'},
+  {target:'#lesson1Check',label:'ตรวจไฟล์',after:'.recipe'}],
+ 'image-ai':[
+  {target:'#lesson2Work',label:'สกัดซอสลูก'},
+  {target:'.life-fast__step:nth-child(2)',id:'lesson2Create',label:'สร้างภาพ'},
+  {target:'.life-fast__step:nth-child(3)',id:'lesson2Check',label:'ตรวจภาพ',after:'#lesson2Taste'}],
+ 'clip-ai':[
+  {target:'#lesson3SourceStep',label:'สกัดซอสลูก'},
+  {target:'.video-step:nth-child(2)',id:'lesson3Create',label:'สร้างวิดีโอ'},
+  {target:'#lesson3VideoCheck',label:'ลองเล่นและตรวจ',after:'#lesson3Repair'}],
+ 'notebooklm':[
+  {target:'#source',label:'เลือกซอส',after:'.source-options + .note'},
+  {target:'#lesson4FirstOutput',label:'สร้างผลงาน'},
+  {target:'#multiplyBoard',label:'เทียบข้อเท็จจริง'}],
+ 'prompts':[
+  {target:'#promptPractice',label:'เลือกงาน'},
+  {target:'#results',label:'เติมแล้วคัดลอก'},
+  {target:'#promptCheck',label:'ตรวจคำตอบ'}],
+ 'first-web':[
+  {target:'#resumeStarter',label:'แนบซอสแล้วสั่ง',after:'#resumeStarter .prompt-card'},
+  {target:'#resumeDeviceGuide',label:'บันทึกและเปิด'},
+  {target:'#cl-completion',label:'ตรวจหน้าเว็บ'}]
+};
 const slug=location.pathname.split('/').pop()?.replace(/\.html$/,'');
 const index=LESSONS.findIndex(item=>item.id===slug);
 if(index<0)return;
@@ -2260,7 +2286,7 @@ function styles(){
  const s=document.createElement('style');s.id='course-learning-style';
  s.textContent=`
  body.course-learning{--cl-green:#176242;--cl-ink:#163325;--cl-muted:#576b5e;--cl-paper:#faf9f5;--cl-gold:#c1a15d}
- .course-learning .cl-launch,.course-learning .cl-completion,.course-learning .cl-rail,.course-learning .cl-steps,.course-learning .cl-introduction{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif;line-height:1.6}
+ .course-learning .cl-launch,.course-learning .cl-completion,.course-learning .cl-rail,.course-learning .cl-steps,.course-learning .cl-fold{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif;line-height:1.6}
  .cl-rail{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:14px 0 12px;margin:0}
  .cl-rail a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;border-radius:10px;background:#eeeee7;color:#59675e;font-size:11px;font-weight:750;text-decoration:none}
  .cl-rail a b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;font-size:12px;flex:none}
@@ -2268,20 +2294,16 @@ function styles(){
  .cl-rail a[data-done="true"] b{background:#d8e8d9;color:#18532b}
  .cl-launch{position:relative;isolation:isolate;overflow:hidden;margin:0 0 12px!important;padding:25px!important;border:1px solid #355540!important;border-radius:23px!important;background:radial-gradient(ellipse at top right,#285a3a 0,transparent 55%),#102b1d!important;color:#fff!important;box-shadow:0 18px 45px -30px #173d2b}
  .cl-launch::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.075;pointer-events:none;background-image:linear-gradient(#e6f0d9 1px,transparent 1px),linear-gradient(90deg,#e6f0d9 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(110deg,transparent,black)}
- .cl-launch .cl-launch-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:22px;align-items:center}
+ .cl-launch .cl-launch-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:center}
  .cl-launch .cl-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.13em;color:#e3c98b;margin:0 0 10px}
  .cl-launch h1.cl-title{font:800 clamp(26px,4.3vw,38px)/1.23 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",sans-serif!important;color:#fff!important;letter-spacing:-.035em;margin:0 0 11px!important;overflow-wrap:anywhere}
  .cl-launch .cl-outcome{font-size:15px!important;color:#e1ebdf!important;line-height:1.7!important;margin:0!important;max-width:560px}
  .cl-launch .cl-need{font-size:12px!important;color:#c0d0c2!important;margin:12px 0 0!important;line-height:1.6!important}
- .cl-launch .cl-art{display:block;width:100%;padding:0;border:1px solid #89a578;border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;color:#254831;box-shadow:0 8px 22px #061c1355;transform:rotate(2deg);transition:transform .18s}
- .cl-launch .cl-art:hover{transform:rotate(0)}.cl-launch .cl-art img{display:block;width:100%;height:auto;max-width:100%}.cl-launch .cl-art span{display:block;font-family:inherit;font-size:10px;font-weight:700;line-height:1.5;padding:5px 4px;text-align:center;background:#eff2e6}
  .cl-launch .cl-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}.cl-launch .cl-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:11px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:750;line-height:1.4;text-decoration:none;cursor:pointer}
  .cl-launch .cl-start{background:#e5c981;color:#173321;border:1px solid #efd79d;flex:1 1 230px}.cl-launch .cl-example{background:#ffffff0a;color:#f3f6ee;border:1px solid #8da28d;flex:0 1 180px}
  .cl-launch .cl-progress-line{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#c4d7c6;margin-top:17px}.cl-launch .cl-track{height:3px;border:0;background:#ffffff20;border-radius:3px;overflow:hidden;margin-top:7px}.cl-launch .cl-track i{display:block;height:100%;width:0;background:#d8bd79;transition:width .3s}
  .cl-steps{position:sticky;top:58px;z-index:21;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;background:#faf9f5f5;padding:8px 0;margin:0 0 12px;border-bottom:1px solid #d9dfd5;backdrop-filter:blur(8px)}
  .cl-steps a{display:flex;gap:7px;align-items:center;justify-content:center;min-height:43px;padding:8px 5px;font-size:12px;font-weight:750;color:#4a6251;border-radius:9px;text-decoration:none;background:#eef1e9}.cl-steps a[aria-current="step"]{color:#fff;background:#226445}.cl-steps a b{font-size:11px;opacity:.8}
- .cl-introduction{margin:10px 0 20px;padding:0;border:1px solid #d4ddcf;border-radius:14px;background:#f0f2e9;color:#31553e;overflow:hidden}.cl-introduction>summary{padding:12px 17px;cursor:pointer;font-size:13px;font-weight:750;list-style:revert}.cl-introduction[open]>summary{border-bottom:1px solid #d4ddcf}
- .course-learning .cl-introduction>.head,.course-learning .cl-introduction>.hero{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
  .course-learning [data-cl-target]{scroll-margin-top:130px}.course-learning #cl-completion{scroll-margin-top:130px}
  .course-learning .cl-completion{color:var(--cl-ink);margin:24px 0 6px;padding:22px;border-radius:17px;border:1px solid #b4ccb4;background:linear-gradient(140deg,#eff5e8,#fff)}
  .cl-completion .cl-finish-kicker{font-size:11px;letter-spacing:.1em;font-weight:800;color:#356c43}.cl-completion h3{font-size:23px!important;line-height:1.35!important;margin:7px 0 8px!important;color:#173b27!important}.cl-completion p{font-size:13px!important;color:#536654!important;line-height:1.65!important;margin:0 0 14px!important}
@@ -2291,9 +2313,63 @@ function styles(){
  .course-learning .cl-native-completion{display:none!important}
  .cl-completion .cl-next[hidden]{display:none!important}
  .cl-launch a:focus-visible,.cl-launch button:focus-visible,.cl-steps a:focus-visible,.cl-rail a:focus-visible{outline:3px solid #bb9738;outline-offset:4px}
- @media(max-width:700px){.cl-rail{gap:5px}.cl-rail a{min-height:38px}.cl-rail a span{display:none}.cl-launch{padding:22px 19px!important;border-radius:18px!important}.cl-launch .cl-launch-grid{grid-template-columns:minmax(0,1fr) 90px;gap:12px;align-items:start}.cl-launch .cl-title{font-size:27px!important}.cl-launch .cl-eyebrow{font-size:10px;letter-spacing:.1em}.cl-launch .cl-outcome{font-size:14px!important}.cl-launch .cl-need{grid-column:1/-1}.cl-launch .cl-actions{margin-top:20px;gap:8px}.cl-launch .cl-actions a{font-size:13px;padding:11px 14px}.cl-launch .cl-example{flex:1 1 140px}.cl-launch .cl-start{flex:1 1 180px}.cl-steps a{font-size:11px;gap:4px}.cl-completion{padding:18px!important}.cl-completion h3{font-size:21px!important}}
- @media(prefers-reduced-motion:reduce){.cl-launch .cl-art,.cl-launch .cl-track i{transition:none}.cl-launch .cl-art{transform:none}}
+ @media(max-width:700px){.cl-rail{gap:5px}.cl-rail a{min-height:38px}.cl-rail a span{display:none}.cl-launch{padding:22px 19px!important;border-radius:18px!important}.cl-launch .cl-launch-grid{grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}.cl-launch .cl-title{font-size:27px!important}.cl-launch .cl-eyebrow{font-size:10px;letter-spacing:.1em}.cl-launch .cl-outcome{font-size:14px!important}.cl-launch .cl-need{grid-column:1/-1}.cl-launch .cl-actions{margin-top:20px;gap:8px}.cl-launch .cl-actions a{font-size:13px;padding:11px 14px}.cl-launch .cl-example{flex:1 1 140px}.cl-launch .cl-start{flex:1 1 180px}.cl-steps a{font-size:11px;gap:4px}.cl-completion{padding:18px!important}.cl-completion h3{font-size:21px!important}}
+
+ .cl-visible-hero{margin-top:18px!important}
+ .cl-step-next{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:44px;margin:8px 0 20px;padding:10px 15px;border:1px solid #bfd0bf;border-radius:11px;background:#edf3e8;color:#245537;font-size:13px;font-weight:750;text-decoration:none}
+ .cl-launch .cl-finish-jump{display:inline-block;padding:9px 0 0;font-size:11px;color:#e1cf9c;text-underline-offset:3px}
+ .cl-fold{display:block;margin:14px 0;border:1px solid #d6dfd0;border-radius:14px;background:#f2f4ed;overflow:hidden}
+ .cl-fold>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;cursor:pointer;list-style:none;color:#31553c;font-size:14px;font-weight:750}
+ .cl-fold>summary::-webkit-details-marker{display:none}.cl-fold>summary::after{content:'+';font:400 24px/1 system-ui;flex:none;color:#63815c}.cl-fold[open]>summary::after{content:'−'}.cl-fold[open]>summary{border-bottom:1px solid #d6dfd0}
+ .cl-fold .cl-fold-body{padding:1px 17px 17px}.cl-fold .cl-fold-body>:first-child{margin-top:16px!important}.cl-fold .cl-fold-body>:last-child{margin-bottom:0!important}
+ .cl-fold>summary:focus-visible,.cl-step-next:focus-visible,.cl-finish-jump:focus-visible{outline:3px solid #bb9738;outline-offset:-3px}
+ @media(prefers-reduced-motion:reduce){.cl-launch .cl-track i{transition:none}}
  `;document.head.appendChild(s);
+}
+function condenseExplanations(){
+ const main=document.querySelector('main')||document.querySelector('body > .wrap');
+ if(!main)return;
+ function fold(nodes,title,id){
+  nodes=nodes.filter(Boolean);
+  if(!nodes.length||document.getElementById(id)||nodes.some(el=>el.closest('.cl-fold')))return;
+  // Header images and SVG diagrams always stay on the page, even within a theory section.
+  if(nodes.some(el=>el.matches('svg,.classroom-lesson-header-image')||el.querySelector('svg,.classroom-lesson-header-image')))return;
+  if(nodes.some(el=>el.parentElement!==nodes[0].parentElement))return;
+  const detail=document.createElement('details');detail.className='cl-fold';detail.id=id;
+  const summary=document.createElement('summary');summary.textContent=title;detail.appendChild(summary);
+  const body=document.createElement('div');body.className='cl-fold-body';detail.appendChild(body);
+  nodes[0].before(detail);nodes.forEach(el=>body.appendChild(el));
+ }
+ function group(start,end,title,id){
+  const first=typeof start==='string'?main.querySelector(start):start;
+  const last=typeof end==='string'?main.querySelector(end):end;
+  if(!first||!last||first.parentElement!==last.parentElement)return;
+  const nodes=[];for(let node=first;node;node=node.nextElementSibling){nodes.push(node);if(node===last){fold(nodes,title,id);return;}}
+ }
+ const q=selector=>main.querySelector(selector);
+ if(slug==='free-ai'){
+  fold([q('.tldr')],'อ่านสรุปแนวคิดก่อนเริ่ม','cl-theory-summary');
+  group('.quote','.mapnote','อ่านเพิ่ม: Source คืออะไร','cl-source-theory');
+  const fast=q('.fastgrid');fold([fast?.previousElementSibling,fast],'อ่านเพิ่ม: ทำไมซอสกลางถึงช่วยได้','cl-source-benefit');
+ }else if(slug==='image-ai'){
+  fold([q('.tldr')],'อ่านสรุปแนวคิดก่อนเริ่ม','cl-theory-summary');
+  fold([q('#lesson2FastTrack > .life-why')],'อ่านเพิ่ม: ทำไมต้องทดสอบด้วยภาพ','cl-image-theory');
+ }else if(slug==='clip-ai'){
+  fold([q('.tldr')],'อ่านสรุปแนวคิดก่อนเริ่ม','cl-theory-summary');
+  fold([q('.video-fast__why')],'อ่านเพิ่ม: ทำไมใช้ซอสเดิมทำคลิปได้','cl-video-theory');
+  fold([q('.video-short')],'อ่านเพิ่ม: ทำไมคำสั่งสร้างคลิปสั้นได้','cl-video-prompt-theory');
+ }else if(slug==='notebooklm'){
+  group('.tldr','.core','อ่านสรุปแนวคิดก่อนเริ่ม','cl-theory-summary');
+  const magic=q('.magic');group(magic?.previousElementSibling,magic?.nextElementSibling,'อ่านเพิ่ม: เครื่องมือแตกผลงาน','cl-notebook-tools');
+  const flow=q('.flow');fold([flow?.previousElementSibling,flow],'อ่านเพิ่ม: วงจรการทำงาน','cl-notebook-flow');
+ }else if(slug==='prompts'){
+  const levels=q('.lvls');group(levels?.previousElementSibling,levels?.nextElementSibling?.nextElementSibling,'อ่านเพิ่ม: ระดับของ Prompt และวิธีใช้','cl-prompt-theory');
+  fold([q('.main-course-tease')],'อ่านก่อนต่อบท 6','cl-prompt-next');
+ }else if(slug==='first-web'){
+  group('#serveTldr','main > .block:has(.house)','อ่านเพิ่ม: HTML ทำอะไรได้บ้าง','cl-html-theory');
+  fold([q('#smart-resume > .smart-steps')],'สูตรเต็ม: ทำซอสลูกสำหรับเว็บ WORK / LIFE','cl-resume-full');
+  group('main > .block:has(.share-grid)','.chef-break','อ่านเพิ่ม: วิธีส่งต่อและต่อยอด','cl-html-share');
+ }
 }
 function boot(){
  const main=document.querySelector('main')||document.querySelector('body > .wrap');
@@ -2302,18 +2378,22 @@ function boot(){
  read();styles();document.body.classList.add('course-learning');
  const native=lesson.native&&document.querySelector(lesson.native);
  const quest=document.querySelector(lesson.finish)||document.querySelector('.quest');
- const intro=document.createElement('details');intro.className='cl-introduction';intro.id='cl-introduction';
- const summary=document.createElement('summary');summary.textContent='ดูแผนภาพและแนวคิดของบทนี้';intro.appendChild(summary);hero.before(intro);intro.appendChild(hero);
- const art=hero.querySelector('.classroom-lesson-header-image img');
+ // Keep the original header, full illustration and SVG on the visible page.
+ hero.classList.add('cl-visible-hero');
  const launch=document.createElement('section');launch.className='cl-launch';launch.id='cl-launch';launch.setAttribute('aria-labelledby','cl-title');
  launch.innerHTML='<div class="cl-launch-grid"><div><span class="cl-eyebrow">บท '+(index+1)+' / 6 · '+lesson.name+'</span><h1 class="cl-title" id="cl-title">'+lesson.title+'</h1><p class="cl-outcome">'+lesson.outcome+'</p><p class="cl-need">'+lesson.need+'</p></div></div><div class="cl-actions"><a class="cl-start" id="cl-start" href="'+lesson.work+'">'+lesson.start+' →</a><a class="cl-example" href="'+lesson.example+'">ดูตัวอย่างก่อน</a></div><div class="cl-progress-line"><span id="cl-course-progress"></span><span id="cl-current-state"></span></div><div class="cl-track" aria-hidden="true"><i></i></div>';
- if(art){const button=document.createElement('button');button.type='button';button.className='cl-art';button.setAttribute('aria-controls',intro.id);button.setAttribute('aria-expanded','false');const img=document.createElement('img');img.src=art.getAttribute('src');img.alt='แผนภาพบทที่ '+(index+1);img.width=150;img.height=150;img.decoding='async';button.appendChild(img);const label=document.createElement('span');label.textContent='ดูแผนภาพ ↗';button.appendChild(label);launch.querySelector('.cl-launch-grid').appendChild(button);button.addEventListener('click',()=>{intro.open=!intro.open;button.setAttribute('aria-expanded',String(intro.open));if(intro.open)goTo(intro);});intro.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(intro.open)));}
  const rail=document.createElement('nav');rail.className='cl-rail';rail.setAttribute('aria-label','เส้นทางบทเรียนทั้ง 6 บท');
  for(const [i,item] of LESSONS.entries()){const a=document.createElement('a');a.href='/classroom/'+item.id+'.html';a.dataset.lesson=item.id;a.innerHTML='<b>'+(i+1)+'</b><span>'+item.name+'</span>';a.setAttribute('aria-label','บท '+(i+1)+' '+item.name);if(i===index)a.setAttribute('aria-current','page');rail.appendChild(a);}
  const steps=document.createElement('nav');steps.className='cl-steps';steps.setAttribute('aria-label','ขั้นตอนในบทนี้');
- const targets=[lesson.work,lesson.check,'#cl-completion'];
- ['เริ่มลงมือ','ชิมผลงาน','เก็บงานไปต่อ'].forEach((text,i)=>{const a=document.createElement('a');a.href=targets[i];a.dataset.step=String(i);a.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b> '+text;steps.appendChild(a);});
- intro.before(rail,launch,steps);
+ const workflow=WORKFLOWS[slug];
+ const targets=workflow.map((step,i)=>{
+  const target=document.querySelector(step.target);
+  if(target&&!target.id)target.id=step.id||'cl-work-'+i;
+  return target?'#'+target.id:step.target;
+ });
+ workflow.forEach((step,i)=>{const a=document.createElement('a');a.href=targets[i];a.dataset.step=String(i);a.innerHTML='<b>'+String(i+1)+'</b> '+step.label;steps.appendChild(a);});
+ launch.querySelector('.cl-start').href=targets[0];
+ hero.before(rail,launch,steps);
  function goTo(target){
   if(!target)return;
   let parent=target.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}
@@ -2356,6 +2436,23 @@ function boot(){
   const next=complete.querySelector('.cl-next');if(next)next.hidden=current().done!==true;
  }
  window.addEventListener('storage',event=>{if(event.key!==KEY)return;read();complete.querySelectorAll('input').forEach(cb=>{cb.checked=current().done===true||current()[cb.dataset.clCheck]===true;});paint();});
+ // Put the next action beside the work, without moving controls or replacing their listeners.
+ workflow.forEach((step,i)=>{
+  const target=document.querySelector(step.after||targets[i]);
+  if(!target||target===complete)return;
+  const link=document.createElement('a');link.className='cl-step-next';
+  const next=i<2?targets[i+1]:'#cl-completion';
+  link.href=next;link.dataset.fromStep=String(i);
+  link.textContent=i<2?'ต่อขั้น '+(i+2)+' · '+workflow[i+1].label+' →':'ตรวจแล้ว เก็บผลงานบทนี้ →';
+  link.addEventListener('click',event=>follow(event,next,Math.min(i+1,2)));
+  target.after(link);
+ });
+ const finishLink=document.createElement('a');finishLink.className='cl-finish-jump';finishLink.href='#cl-completion';finishLink.textContent='มีผลงานแล้ว → ตรวจและเก็บบทนี้';
+ finishLink.addEventListener('click',event=>follow(event,'#cl-completion',2));
+ launch.querySelector('.cl-progress-line').after(finishLink);
+ condenseExplanations();
+ // Some retained lesson modules finish placing optional explanations after DOM ready.
+ setTimeout(condenseExplanations,120);
  save();paint();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(boot),{once:true});else requestAnimationFrame(boot);

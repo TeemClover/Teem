@@ -50,7 +50,20 @@ try{
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,slug+' horizontal overflow');
    assert.equal(await page.locator('#cl-completion').count(),1,slug+' completion must survive delayed page scripts');
    assert.equal(await page.locator('.cl-rail a').count(),6);
-   assert.equal(await page.locator('#cl-introduction').getAttribute('open'),null);
+   assert.equal(await page.locator('#cl-introduction').count(),0,'The hero must not be inside a disclosure');
+   const hero=page.locator('.cl-visible-hero');
+   assert.equal(await hero.locator('.classroom-lesson-header-image').isVisible(),true);
+   const illustration=await hero.locator('.classroom-lesson-header-image').boundingBox();
+   assert.ok(illustration.width>=Math.min(300,width-60),'Full header image must not be reduced to a thumbnail');
+   const diagrams=page.locator('.cl-visible-hero .hero-stage svg, .cl-visible-hero .hero-art svg, .multiply-ill svg, .heroimg svg, .exhibit-stage svg');
+   for(const diagram of await diagrams.all())assert.equal(await diagram.isVisible(),true,'Lesson SVG stays visible');
+   assert.ok(await page.locator('.cl-fold').count()>0,slug+' has collapsible explanations');
+   assert.equal(await page.locator('.cl-fold svg, .cl-fold .classroom-lesson-header-image').count(),0,'Artwork must not be folded with prose');
+   const fold=page.locator('.cl-fold').first();
+   await fold.locator(':scope > summary').focus();await page.keyboard.press('Enter');
+   assert.equal(await fold.getAttribute('open'),'');
+   await page.keyboard.press('Enter');assert.equal(await fold.getAttribute('open'),null);
+   await page.evaluate(()=>scrollTo(0,0));
    if(index<5)assert.equal(await page.locator('.cl-next').isVisible(),false,'next artifact link stays hidden until confirmation');
    const before=await page.evaluate(id=>JSON.parse(localStorage.getItem('mc_course_journey_v1')).lessons[id],slug);
    assert.notEqual(before.done,true,'reading a lesson must not claim a finished artifact');
@@ -60,13 +73,17 @@ try{
    const work=await page.locator('.cl-steps a').nth(0).getAttribute('href');
    assert.ok(await topOf(page,work)<400,slug+' start reaches hands-on work');
    assert.equal(await page.evaluate(selector=>document.activeElement===document.querySelector(selector),work),true,slug+' keyboard focus follows start');
-   await page.locator('.cl-steps a').nth(1).click();await page.waitForTimeout(250);
+   await page.locator('.cl-step-next[data-from-step="0"]').click();await page.waitForTimeout(250);
    const check=await page.locator('.cl-steps a').nth(1).getAttribute('href');
-   assert.ok(await topOf(page,check)<400,slug+' second step reaches work review');
+   assert.ok(await topOf(page,check)<400,slug+' next action reaches step two');
    await page.reload({waitUntil:'domcontentloaded'});await page.locator('#cl-start').waitFor();await page.waitForTimeout(1400);
    await page.evaluate(()=>scrollTo(0,0));await page.locator('#cl-start').click();await page.waitForTimeout(300);
    assert.ok(await topOf(page,check)<400,slug+' resume restores saved step');
-   await page.locator('.cl-steps a').nth(2).click();await page.waitForTimeout(300);
+   await page.locator('.cl-step-next[data-from-step="1"]').click();await page.waitForTimeout(300);
+   const third=await page.locator('.cl-steps a').nth(2).getAttribute('href');
+   assert.ok(await topOf(page,third)<400,slug+' next action reaches step three');
+   if(third!=='#cl-completion')await page.locator('.cl-step-next[data-from-step="2"]').click();
+   await page.waitForTimeout(300);
    // The automatic encounter can open near the end; returning must keep the work usable.
    const signal=page.locator('#lesson6Signal');
    if(await signal.count()&&await signal.isVisible()){await page.keyboard.press('Escape');await page.waitForTimeout(200);}
@@ -81,7 +98,7 @@ try{
    assert.equal(await page.locator('.cl-save').isDisabled(),true);
    assert.equal(await page.locator('[data-cl-check="artifact"]').isChecked(),true);
    assert.equal(await page.locator('.cl-rail a[data-done="true"]').count(),index+1);
-   pass(`${width}px ${slug}: visible start, three working steps, reload/resume, explicit artifact confirmation and cross-lesson progress`);
+   pass(`${width}px ${slug}: visible artwork, expandable theory, sequential 1–2–3 actions, reload/resume and artifact progress`);
    await page.close();
   }
   await c.close();
@@ -92,9 +109,9 @@ try{
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  assert.match(await page.locator('#cl-course-progress').innerText(),/0 \/ 6/);
  if(await page.locator('.mc-bi__later').isVisible())await page.locator('.mc-bi__later').click();
- await page.locator('.cl-art').click();assert.equal(await page.locator('#cl-introduction').getAttribute('open'),'');
- assert.equal(await page.locator('#cl-introduction .classroom-lesson-header-image').isVisible(),true);
- pass('320px readable layout; original artwork remains accessible; reading progress does not count as an artifact');
+ assert.equal(await page.locator('.cl-visible-hero .classroom-lesson-header-image').isVisible(),true);
+ await page.locator('#cl-start').click();assert.ok(await topOf(page,'#lesson1Ingredients')<400);
+ pass('320px readable layout; original artwork stays visible; reading progress does not count as an artifact');
  await c.close();
  assert.deepEqual(report.errors,[]);
 }catch(error){report.failure=error.stack;throw error;}

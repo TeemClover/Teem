@@ -1,4 +1,4 @@
-/** Lesson 3–4: real controls, saved work, Source checks, and click-to-load video. */
+/** Lesson 3–4: real controls, saved work, Source checks, and a lazy native video preview. */
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
@@ -71,6 +71,36 @@ async function idle(page, selector) {
   }));
   assert.equal(count, 0, `${selector} must stop changing after the interaction settles`);
 }
+async function nativePreviewSettled(video) {
+  // readyState can be 4 while Chrome is still fading its native seeking spinner.
+  // Compare the centre of the visible player with the video's decoded pixels;
+  // do not hide native controls, replace the video, or wait a fixed screenshot delay.
+  let clean = 0, sample;
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const png = (await video.screenshot()).toString('base64');
+    sample = await video.evaluate(async (element, png) => {
+      const image = await createImageBitmap(await (await fetch('data:image/png;base64,' + png)).blob());
+      const shown = document.createElement('canvas'); shown.width = image.width; shown.height = image.height;
+      const actual = shown.getContext('2d'); actual.drawImage(image, 0, 0);
+      const decoded = document.createElement('canvas'); decoded.width = shown.width; decoded.height = shown.height;
+      const expected = decoded.getContext('2d'); expected.drawImage(element, 0, 0, decoded.width, decoded.height);
+      const x = Math.round(shown.width * .32), y = Math.round(shown.height * .35);
+      const width = Math.round(shown.width * .36), height = Math.round(shown.height * .3);
+      const a = actual.getImageData(x, y, width, height).data;
+      const b = expected.getImageData(x, y, width, height).data;
+      let darkOverlayPixels = 0;
+      for (let i = 0; i < a.length; i += 4) {
+        if (a[i] + 25 < b[i] && a[i + 1] + 25 < b[i + 1] && a[i + 2] + 25 < b[i + 2]) darkOverlayPixels++;
+      }
+      return { darkOverlayRatio:darkOverlayPixels / (a.length / 4), paused:element.paused, seeking:element.seeking, readyState:element.readyState };
+    }, png);
+    // Allow minor video/screenshot scaling differences, but reject the central loading ring.
+    clean = sample.darkOverlayRatio < .01 && sample.paused && !sample.seeking && sample.readyState >= 3 ? clean + 1 : 0;
+    if (clean >= 2) return sample;
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+  assert.fail('Native video preview did not settle cleanly: ' + JSON.stringify(sample));
+}
 
 try {
   for (const [page, names] of [
@@ -104,13 +134,17 @@ try {
     });
     await context.addInitScript(() => {
       window.__copied = [];
+      window.__lesson3MediaEvents = [];
+      for (const name of ['seeked', 'canplay']) document.addEventListener(name, event => {
+        if (event.target.matches?.('[data-video-example]')) window.__lesson3MediaEvents.push(name);
+      }, true);
       Object.defineProperty(navigator, 'clipboard', { value:{writeText:async text => window.__copied.push(text)}, configurable:true });
     });
     const page = await context.newPage();
     page.setDefaultTimeout(10000);
     page.on('pageerror', error => report.errors.push({width,message:error.message}));
     const requests = [];
-    page.on('request', request => { if (/\.mp4(?:$|\?)/.test(request.url())) requests.push(request.url()); });
+    page.on('request', request => { if (/\.mp4(?:$|[?#])/.test(request.url())) requests.push(request.url()); });
     await page.goto(base + '/classroom/clip-ai.html', { waitUntil:'domcontentloaded' });
     await page.locator('#lesson3VideoCheck').waitFor();
     await page.waitForTimeout(1400); // Includes the retained lesson's one-second startup reconciliation.
@@ -118,12 +152,41 @@ try {
     assert.match(await page.locator('#lesson3Ready').innerText(), /โควตา/);
     assert.equal(await page.locator('#lesson3Ready a[href="lesson-0.html"]').count(), 1);
     const video = page.locator('[data-video-example]');
-    assert.equal(await video.getAttribute('preload'), 'none');
-    assert.match(await video.getAttribute('poster'), /header-lesson3\.webp$/);
-    assert.equal(requests.length, 0, 'No MP4 request should occur before the user plays the example');
+    assert.equal(await video.getAttribute('poster'), null, 'The actual video frame is the preview, not a separate image');
+    assert.equal(await video.evaluate(element => element.controls), true);
+    assert.equal(await page.locator('[data-video-play]').count(), 0, 'The native controls play the example');
+    const nearViewport = await video.evaluate(element => {
+      const box = element.getBoundingClientRect();
+      return box.bottom >= -250 && box.top <= innerHeight + 250;
+    });
+    if (!nearViewport) assert.equal(requests.length, 0, 'The MP4 should stay unloaded while its preview is far below the viewport');
+    await video.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => {
+      const element = document.querySelector('[data-video-example]');
+      return element.readyState >= 3 && element.videoWidth > 0 && element.currentTime >= 0.001 && !element.seeking;
+    });
+    assert.equal(await video.getAttribute('preload'), 'metadata');
+    assert.match(await video.getAttribute('src'), /lesson3-source-example\.mp4#t=0\.001$/);
+    const settled = await nativePreviewSettled(video);
+    const events = await page.evaluate(() => window.__lesson3MediaEvents);
+    assert.ok(events.includes('seeked') && events.includes('canplay'));
+    const firstFrame = await video.evaluate(element => {
+      const canvas = document.createElement('canvas'); canvas.width = 36; canvas.height = 64;
+      const drawing = canvas.getContext('2d'); drawing.drawImage(element, 0, 0, 36, 64);
+      const pixels = drawing.getImageData(0, 0, 36, 64).data;
+      const colors = new Set(); let brightness = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        colors.add(`${pixels[i]},${pixels[i + 1]},${pixels[i + 2]}`);
+        brightness += (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+      }
+      return { paused:element.paused, time:element.currentTime, readyState:element.readyState, colors:colors.size, brightness:brightness / (pixels.length / 4), width:element.videoWidth, height:element.videoHeight };
+    });
+    assert.equal(firstFrame.paused, true, 'Showing the first frame must not autoplay video or audio');
+    assert.ok(firstFrame.time < 0.05);
+    assert.ok(firstFrame.colors > 8 && firstFrame.brightness > 1, 'The video must have decoded a visible frame, not a blank player');
+    report.media.push({ viewport:width, phase:'first-frame', requests:requests.length, events, settled, ...firstFrame });
     await screenshot(page, '#lesson3VideoExample', `lesson3-example-${width}.png`);
-    assert.equal(requests.length, 0, 'Scrolling to the video must not fetch it');
-    pass(`${width}px: clear video readiness and zero MP4 requests on entry or scroll`);
+    pass(`${width}px: nearby native video shows a decoded first frame with controls, no image poster, and no autoplay`);
 
     const checks = page.locator('.video-done input');
     await checks.nth(0).check();
@@ -134,7 +197,6 @@ try {
     assert.equal(await checks.nth(1).isChecked(), false);
     assert.equal(await checks.nth(3).isChecked(), true);
     assert.match(await page.locator('#lesson3CheckStatus').innerText(), /2 \/ 4/);
-    assert.equal(requests.length, 0, 'Reloading saved work must not fetch the video');
 
     for (const [choice, expected] of [['story', /เหตุการณ์/], ['visual', /วัตถุหรือช่วงเวลาที่เพี้ยน/], ['format', /ปรับเฉพาะรูปแบบ/], ['story', /เหตุการณ์/]]) {
       await page.locator(`[data-video-repair="${choice}"]`).click();
@@ -148,7 +210,7 @@ try {
     pass(`${width}px: lesson 3 checks survive reload; every repair copies its current command without an idle update loop`);
 
     await video.scrollIntoViewIfNeeded();
-    await page.locator('[data-video-play]').click();
+    await video.evaluate(element => element.play());
     await page.waitForFunction(() => {
       const element = document.querySelector('[data-video-example]');
       return element.currentTime > 0.1 && element.videoWidth > 0 && element.videoHeight > 0;
@@ -157,9 +219,9 @@ try {
     assert.ok(requests.length > 0);
     assert.equal(metadata.error, null);
     assert.ok(Number.isFinite(metadata.duration) && metadata.duration > 0);
-    report.media.push({viewport:width, requests:requests.length, ...metadata});
+    report.media.push({viewport:width, phase:'playback', requests:requests.length, ...metadata});
     await video.evaluate(element => element.pause());
-    pass(`${width}px: original MP4 downloads on play and decodes with advancing playback`);
+    pass(`${width}px: original MP4 plays from its native preview with advancing playback`);
 
     await page.goto(base + '/classroom/notebooklm.html', { waitUntil:'domcontentloaded' });
     await page.locator('#lesson4FirstOutput').waitFor();

@@ -183,10 +183,6 @@ function injectStyle(){
     .video-example__grid{display:grid;grid-template-columns:minmax(220px,320px) 1fr;gap:18px;align-items:center;margin-top:14px}
     .video-example__media{overflow:hidden;margin:0;border:1px solid rgb(var(--ink)/.12);border-radius:15px;background:#fff}
     .video-example video{display:block;width:100%;aspect-ratio:9/16;max-height:570px;background:#07180f;object-fit:contain}
-    .video-example video:not([src]){aspect-ratio:1;background:#fff}
-    .video-example__play{display:block;min-height:46px;width:calc(100% - 24px);margin:12px;padding:10px 14px;border:0;border-radius:11px;background:rgb(var(--green));color:#fff;font:750 14px/1.5 "Bai Jamjuree",sans-serif;cursor:pointer}
-    .video-example__play[hidden]{display:none!important}
-    .video-example__play:disabled{opacity:.65;cursor:wait}
     .video-example__status:empty{display:none}
     .video-example__status{margin:0 14px 12px;font-size:13px!important;color:rgb(var(--muted))}
     .video-example figcaption{padding:13px 14px}.video-example figcaption b{display:block;font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--deep));font-size:15px}.video-example figcaption span{display:block;margin-top:3px;color:rgb(var(--muted));font-size:13px;line-height:1.65}
@@ -252,7 +248,7 @@ function buildFastTrack(){
       <section class="video-example" id="lesson3VideoExample" aria-labelledby="lesson3VideoExampleTitle">
         <h2 id="lesson3VideoExampleTitle">ตัวอย่างผลลัพธ์จากซอส</h2><p>รูปแบบเดียวกับตัวอย่างภาพในบท 2: ดูผลงานจริงแนวตั้ง 9:16 ก่อน แล้วค่อยชิมว่าซอสเล่าเรื่องได้ตรงแค่ไหน</p>
         <div class="video-example__grid">
-          <figure class="video-example__media"><video playsinline preload="none" poster="/classroom/img/header-lesson3.webp" data-video-example aria-label="วิดีโอตัวอย่างบทที่ 3"></video><button class="video-example__play" type="button" data-video-play>▶ เล่นคลิปตัวอย่าง</button><p class="video-example__status" data-video-status role="status" aria-live="polite"></p><figcaption><b>🎬 วิดีโอที่สร้างจากซอส</b><span>กดเล่นเพื่อดูแนวทางการเล่าเรื่องและคุณภาพผลลัพธ์ก่อนทำของตัวเอง</span></figcaption></figure>
+          <figure class="video-example__media"><video controls playsinline preload="none" data-video-example aria-label="วิดีโอตัวอย่างบทที่ 3"></video><p class="video-example__status" data-video-status role="status" aria-live="polite"></p><figcaption><b>🎬 วิดีโอที่สร้างจากซอส</b><span>กดเล่นเพื่อดูแนวทางการเล่าเรื่องและคุณภาพผลลัพธ์ก่อนทำของตัวเอง</span></figcaption></figure>
           <div class="video-example__note"><h3>ดูให้เห็น 1 จุดที่อยากเก็บไว้</h3><p>คลิปนี้ช่วยให้เห็นลำดับภาพและจังหวะ 10 วินาที ก่อนทำของคุณ ลองเลือกว่าชอบสี แสง หรือการเคลื่อนไหวตรงไหน</p><p>AI อาจทำคน วัตถุ หรือภาพเคลื่อนไหวผิดได้ เมื่อคลิปของคุณออกมา ให้ดูรอบหนึ่งแล้วเลือกแก้ทีละจุดด้านล่าง</p><p class="video-example__luck">เวลารอสร้างและโควตาต่างกันตามเครื่องมือ เก็บรอบแรกไว้เปรียบเทียบก่อนสร้างรอบถัดไป</p></div>
         </div>
       </section>
@@ -283,21 +279,27 @@ function setupPractice(fast){
   if(fast.dataset.practiceReady==='true')return;
   fast.dataset.practiceReady='true';
   const video=fast.querySelector('[data-video-example]');
-  const play=fast.querySelector('[data-video-play]');
-  play.addEventListener('click',async()=>{
-    if(!window.__LESSON3_VIDEO_EXAMPLE__)return;
-    play.disabled=true;
+  function loadPreview(){
+    if(video.hasAttribute('src')||!window.__LESSON3_VIDEO_EXAMPLE__)return;
     setText(fast.querySelector('[data-video-status]'),'กำลังเปิดคลิปตัวอย่าง…');
-    if(!video.hasAttribute('src'))video.src=window.__LESSON3_VIDEO_EXAMPLE__;
-    video.controls=true;
-    try{
-      await video.play();
-      play.hidden=true;
-      setText(fast.querySelector('[data-video-status]'),'');
-    }catch(error){
-      setText(fast.querySelector('[data-video-status]'),'ยังเล่นไม่ได้ ลองกดเล่นอีกครั้งเมื่อเชื่อมต่อพร้อม');
-    }finally{play.disabled=false}
-  });
+    video.preload='metadata';
+    // A tiny seek shows the video's own first frame on mobile without playing audio.
+    video.addEventListener('loadedmetadata',()=>{
+      if(video.currentTime<0.001)video.currentTime=0.001;
+    },{once:true});
+    video.addEventListener('loadeddata',()=>setText(fast.querySelector('[data-video-status]'),''),{once:true});
+    video.addEventListener('error',()=>setText(fast.querySelector('[data-video-status]'),'ยังโหลดคลิปไม่ได้ ลองเปิดบทเรียนใหม่เมื่อเชื่อมต่อพร้อม'),{once:true});
+    video.src=window.__LESSON3_VIDEO_EXAMPLE__+'#t=0.001';
+    video.load();
+  }
+  if('IntersectionObserver' in window){
+    const previewObserver=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting)){previewObserver.disconnect();loadPreview()}
+    },{rootMargin:'250px 0px'});
+    previewObserver.observe(video);
+  }else{loadPreview()}
+  video.addEventListener('pointerdown',loadPreview,{once:true});
+  video.addEventListener('focus',loadPreview,{once:true});
   const checks=[...fast.querySelectorAll('.video-done input')];
   const key='mc-lesson3-video-check-v1';
   try{const saved=localStorage.getItem(key)||'';checks.forEach((check,i)=>{check.checked=saved[i]==='1'})}catch(error){}
