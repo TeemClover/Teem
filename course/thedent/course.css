@@ -16,3 +16,6 @@ body.is-presenting .sidebar{display:none}body.is-presenting .course-layout{displ
 @media screen and (min-width:821px) and (max-height:850px){body.is-presenting main{padding-block:14px}.slide-toolbar{margin-bottom:9px}.slide{padding:24px 36px;min-height:calc(100dvh - 224px)}.slide-kicker{margin-bottom:15px}.slide h1,.slide.kind-cover h1{font-size:42px;line-height:1.25}.slide-lead{font-size:20px;line-height:1.55;margin:13px 0 12px}.slide-points{gap:6px 28px;padding-top:9px}.slide-point{font-size:18px;line-height:1.5;padding:10px 0}.slide.kind-compare .slide-point{padding:14px}.slide-footmark{margin-top:17px;font-size:10px}.slide-navigation{margin-top:10px}.slide-track{margin-top:10px}.speaker-notes{margin-top:10px;padding-top:7px}}
 
 .account-links{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;font-size:13px;color:var(--muted)}.account-links a{text-decoration:none}.account-links button{font-size:12px;padding:5px 0;text-decoration:underline;text-underline-offset:3px}@media(max-width:520px){.account-links{font-size:12px;margin-bottom:17px}.account-links button{font-size:11px}}
+
+/* Public-source learning entry points. */
+.source-links{margin:20px 0;gap:10px}.outcome-tag{font-size:11px;font-weight:700;letter-spacing:.12em;margin-bottom:14px;color:var(--muted,#777)}

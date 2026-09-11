@@ -6,6 +6,8 @@ import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 const root=path.dirname(fileURLToPath(import.meta.url));
+// Keep the course download identical to its canonical source shelf revision.
+fs.copyFileSync(path.join(root,'../../shelf/source/thedent/public-company.md'),path.join(root,'resources/clinic-public-source.md'));
 const context={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(root,'course-content.js'),'utf8'),context);
 const d=context.window.DENT_COURSE;

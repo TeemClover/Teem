@@ -4,7 +4,7 @@
   const projects = {
     thedent: 'TheDent',
     'pir-academy': 'Pi R Academy',
-    cloverx: 'CloverX',
+    cloverx: 'Clover X',
     crescohealth: 'CrescoHealth',
     gems: 'GEMS Scientific Beauty'
   };
@@ -24,6 +24,7 @@
   let controller = null;
   let attempt = 0;
   let busy = false;
+  let checkingCard = null;
 
   function safeNext(value) {
     if (typeof value !== 'string' || !value.startsWith('/course/thedent/')) return null;
@@ -69,7 +70,20 @@
     attempt += 1;
     if (controller) controller.abort();
     controller = null;
+    if (checkingCard) {
+      checkingCard.removeAttribute('aria-busy');
+      checkingCard.disabled = false;
+      checkingCard = null;
+    }
     setBusy(false);
+  }
+
+  function enterClassroom(serverDestination) {
+    const requested = initialProject === 'thedent' ? safeNext(initialNext) : null;
+    const destination = requested || serverDestination;
+    if (initialProject === 'thedent' && initialHash && !destination.hash) destination.hash = initialHash;
+    field.value = '';
+    location.assign(destination.pathname + destination.search + destination.hash);
   }
 
   function openProject(id, trigger) {
@@ -95,8 +109,44 @@
     if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
   }
 
+  async function chooseProject(id, trigger) {
+    if (!Object.hasOwn(projects, id)) return;
+    if (id !== 'thedent') { openProject(id, trigger); return; }
+    cancelAttempt();
+    const currentAttempt = ++attempt;
+    const requestController = new AbortController();
+    controller = requestController;
+    checkingCard = trigger || document.querySelector('[data-project="thedent"]');
+    if (checkingCard) {
+      checkingCard.setAttribute('aria-busy', 'true');
+      checkingCard.disabled = true;
+    }
+    const timeout = setTimeout(() => requestController.abort(), 10000);
+    try {
+      const response = await fetch('/api/course-access', {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ action: 'status', project: id }),
+        signal: requestController.signal
+      });
+      const result = await response.json().catch(() => null);
+      if (currentAttempt !== attempt) return;
+      const destination = safeNext(result?.redirect);
+      if (response.ok && result?.ok === true && destination) {
+        enterClassroom(destination);
+        return;
+      }
+    } catch {
+      if (currentAttempt !== attempt) return;
+    } finally {
+      clearTimeout(timeout);
+      if (currentAttempt === attempt) cancelAttempt();
+    }
+    openProject(id, trigger);
+  }
+
   document.querySelectorAll('[data-project]').forEach(card => {
-    card.addEventListener('click', () => openProject(card.dataset.project, card));
+    card.addEventListener('click', () => chooseProject(card.dataset.project, card));
   });
   document.getElementById('close-dialog').addEventListener('click', closeProject);
   dialog.addEventListener('cancel', event => { event.preventDefault(); closeProject(); });
@@ -143,11 +193,7 @@
         showError(genericError);
         return;
       }
-      const requested = initialProject === 'thedent' ? safeNext(initialNext) : null;
-      const destination = requested || serverDestination;
-      if (initialProject === 'thedent' && initialHash && !destination.hash) destination.hash = initialHash;
-      field.value = '';
-      location.assign(destination.pathname + destination.search + destination.hash);
+      enterClassroom(serverDestination);
     } catch (failure) {
       if (currentAttempt !== attempt) return;
       setBusy(false);
@@ -164,5 +210,5 @@
     resetVisibility();
   });
 
-  if (initialProject && Object.hasOwn(projects, initialProject)) openProject(initialProject);
+  if (initialProject && Object.hasOwn(projects, initialProject)) chooseProject(initialProject);
 })();

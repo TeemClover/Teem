@@ -1,6 +1,8 @@
 // Shared by Vercel Routing Middleware and Node API handlers. No client secrets.
 export const COURSE_COOKIE_NAME = '__Host-myclover_course';
-export const COURSE_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+export const COURSE_SESSION_TTL_SECONDS = 400 * 24 * 60 * 60;
+// Preserve already-issued sessions when upgrading remembered-device support.
+const LEGACY_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8', { fatal: true });
 const MAX_PASSWORD_BYTES = 1024;
@@ -77,7 +79,7 @@ export async function verifyCourseSession(cookieHeader, env = process.env, now =
     if (!payload || payload.v !== 1 || payload.scope !== 'thedent') return false;
     if (!Number.isSafeInteger(payload.iat) || !Number.isSafeInteger(payload.exp)) return false;
     if (payload.iat < 0 || payload.iat > seconds + 60 || payload.exp <= seconds) return false;
-    if (payload.exp - payload.iat !== COURSE_SESSION_TTL_SECONDS) return false;
+    if (![COURSE_SESSION_TTL_SECONDS, LEGACY_SESSION_TTL_SECONDS].includes(payload.exp - payload.iat)) return false;
     if (typeof payload.nonce !== 'string' || !/^[A-Za-z0-9_-]{32}$/.test(payload.nonce)) return false;
     return true;
   } catch {

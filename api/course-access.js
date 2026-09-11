@@ -4,6 +4,7 @@ import {
   isCourseConfigured,
   issueCourseSession,
   verifyCoursePassword,
+  verifyCourseSession,
 } from './_lib/course-access.js';
 import { createCourseRateLimiter } from './_lib/course-rate-limit.js';
 
@@ -85,9 +86,18 @@ export function createCourseAccessHandler({ env = process.env, now = () => Date.
       res.setHeader('Set-Cookie', clearCourseSessionCookie());
       return reply(res, 200, { ok: true, redirect: '/course/' });
     }
-    if (body.action !== undefined) return reply(res, 400, { ok: false, error: 'Invalid request' });
+    if (body.action !== undefined && body.action !== 'status') return reply(res, 400, { ok: false, error: 'Invalid request' });
     if (body.project !== 'thedent') return reply(res, 401, { ok: false, error: 'Invalid access details' });
     if (!isCourseConfigured(env)) return reply(res, 503, { ok: false, error: 'Course access unavailable' });
+    if (body.action === 'status') {
+      if (!await verifyCourseSession(req.headers?.cookie, env, now())) return reply(res, 401, { ok: false, error: 'Invalid access details' });
+      try {
+        res.setHeader('Set-Cookie', courseSessionCookie(await issueCourseSession(env, now())));
+        return reply(res, 200, { ok: true, redirect: '/course/thedent/' });
+      } catch {
+        return reply(res, 503, { ok: false, error: 'Course access unavailable' });
+      }
+    }
     let attempt;
     try {
       attempt = await rateLimiter.consume(req, 'thedent');

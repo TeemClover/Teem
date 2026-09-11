@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "title": "Shelf — ขวดซอสของเรา",
-  "updated_at": "2026-09-10",
+  "updated_at": "2026-09-11",
   "timezone": "Asia/Bangkok",
   "source_root": "/shelf/source/",
   "categories": [
@@ -24,6 +24,10 @@
     {
       "id": "method",
       "label": "วิธีทำงาน"
+    },
+    {
+      "id": "organization",
+      "label": "องค์กร"
     }
   ],
   "sources": [
@@ -146,6 +150,55 @@
       "aliases": [],
       "notes": "บันทึกหลักการจากบทสนทนา; ชุดภาพอ้างอิงและคู่มือเจนภาพฉบับเต็มยังไม่ได้รวม",
       "sections": []
+    },
+    {
+      "id": "thedent-public-company",
+      "title": "The Dent — ข้อมูลสาธารณะสำหรับงานสื่อสารและติดต่อสาขา",
+      "description": "ข้อมูลเว็บไซต์และช่องทางติดต่อของ The Dent พร้อมสามรายการสาขาที่พบ หลักฐานรายข้อ และประเด็นที่ยังต้องยืนยัน",
+      "path": "source/thedent/public-company.md",
+      "version": "0.1.0",
+      "created_at": "2026-09-11",
+      "updated_at": "2026-09-11",
+      "added_to_shelf_at": "2026-09-11",
+      "status": "needs-confirmation",
+      "status_label": "ข้อมูลสาธารณะ มีประเด็นรอยืนยัน",
+      "categories": [
+        "organization",
+        "questions"
+      ],
+      "tags": [
+        "The Dent",
+        "TheDent",
+        "เดอะเด้นท์",
+        "คลินิก",
+        "รัชโยธิน",
+        "รังสิต",
+        "ราชพฤกษ์",
+        "สาขา",
+        "ติดต่อ",
+        "ข้อมูลสาธารณะ",
+        "Source",
+        "Branch Desk"
+      ],
+      "aliases": [
+        "clinic-public-source.md",
+        "course/thedent/resources/clinic-public-source.md"
+      ],
+      "notes": "ตรวจแหล่งออนไลน์ 2026-09-11; ไม่ทราบวันที่ข้อมูลบนหน้าเว็บเริ่มมีผล ไม่ใช่ข้อมูลที่คลินิกอนุมัติ ต้องตรวจข้อความจำนวนสาขา 2/3 ที่ต่างกัน สำเนาคอร์สสร้างจากต้นฉบับนี้",
+      "sections": [
+        {
+          "label": "ข้อมูลสาธารณะและสาขา",
+          "heading": "## เนื้อหาหลัก"
+        },
+        {
+          "label": "เกณฑ์ตรวจงาน",
+          "heading": "## เกณฑ์ตรวจและวิธีแก้เมื่อผิด"
+        },
+        {
+          "label": "ข้อมูลรอยืนยัน",
+          "heading": "## ข้อมูลรอยืนยัน"
+        }
+      ]
     }
   ]
 }

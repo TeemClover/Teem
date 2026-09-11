@@ -1,14 +1,14 @@
 import { readFile, realpath, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { verifyCourseSession } from './_lib/course-access.js';
+import { courseSessionCookie, issueCourseSession, verifyCourseSession } from './_lib/course-access.js';
 
 export const COURSE_CONTENT_FILES = Object.freeze([
   'index.html', 'course.css', 'course.js', 'course-content.js', 'course-resources.js', 'daily-brief.html',
   'resources/workflow-template.md', 'resources/mini-prd-example.md', 'resources/instructor-guide.md',
-  'resources/daily-missing.csv', 'resources/clinic-training-brief.md', 'resources/slide-notes.md',
+  'resources/website-source-notes.md', 'resources/clinic-training-brief.md', 'resources/slide-notes.md',
   'resources/mini-prd-template.md', 'resources/followup-worksheet.md', 'resources/answer-key.md',
-  'resources/workshop-1-example.md', 'resources/prompt-library.md', 'resources/data-dictionary.md',
-  'resources/review-checklist.md', 'resources/daily-normal.csv', 'resources/source-example.md',
+  'resources/workshop-1-example.md', 'resources/prompt-library.md', 'resources/create-markdown-guide.md',
+  'resources/review-checklist.md', 'resources/clinic-public-source.md', 'resources/source-example.md',
   'downloads/the-dent-course-kit.zip',
   'fonts/ibm-plex-sans-thai-latin-400.woff2', 'fonts/ibm-plex-sans-thai-latin-600.woff2',
   'fonts/ibm-plex-sans-thai-latin-700.woff2', 'fonts/ibm-plex-sans-thai-thai-400.woff2',
@@ -84,6 +84,11 @@ export function createCourseContentHandler({ env = process.env, root = process.c
       if (!relative || relative.startsWith(`..${path.sep}`) || relative === '..' || path.isAbsolute(relative)) return errorResponse(res, 404, 'File not found', head);
       const details = await stat(actual);
       if (!details.isFile()) return errorResponse(res, 404, 'File not found', head);
+      // A direct bookmarked return renews the remembered device as well.
+      // Assets and HEAD checks do not issue competing session cookies.
+      if (!head && path.extname(actual) === '.html') {
+        res.setHeader('Set-Cookie', courseSessionCookie(await issueCourseSession(env, now())));
+      }
       res.statusCode = 200;
       res.setHeader('Content-Type', types[path.extname(actual)] || 'application/octet-stream');
       res.setHeader('Content-Length', String(details.size));

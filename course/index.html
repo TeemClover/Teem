@@ -7,8 +7,8 @@
   <meta name="description" content="พื้นที่เรียนรู้และโปรเจกต์สำหรับทีม โดย myClover เลือกโปรเจกต์เพื่อเข้าสู่บทเรียนของคุณ">
   <link rel="canonical" href="https://www.myclover.com/course/">
   <title>โปรเจกต์ของคุณ · myClover</title>
-  <link rel="stylesheet" href="./portal.css?v=20260911-2">
-  <script defer src="./portal.js?v=20260911-2"></script>
+  <link rel="stylesheet" href="./portal.css?v=20260911-3">
+  <script defer src="./portal.js?v=20260911-3"></script>
 </head>
 <body>
   <a class="skip-link" href="#projects">ข้ามไปเลือกโปรเจกต์</a>
@@ -23,7 +23,7 @@
 
     <main>
       <section class="intro" aria-labelledby="page-title">
-        <div class="eyebrow"><span aria-hidden="true"></span>พื้นที่เรียนรู้สำหรับทีม</div>
+        <div class="eyebrow"><span aria-hidden="true"></span>หลักสูตรและโปรเจกต์ของ myClover</div>
         <h1 id="page-title">เริ่มจากเรื่องของทีม<br><span>แล้วลงมือไปด้วยกัน</span></h1>
         <div class="intro-bottom">
           <p>เลือกโปรเจกต์ของคุณ เพื่อเข้าสู่พื้นที่เรียนรู้<br class="desktop-break">และสื่อที่เตรียมไว้สำหรับทีม</p>
@@ -37,41 +37,47 @@
           <p><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg>ใช้รหัสของโปรเจกต์เพื่อเข้าใช้งาน</p>
         </div>
         <div class="project-grid">
-          <button class="project-card featured" type="button" data-project="thedent" aria-haspopup="dialog">
-            <div class="card-topline"><span class="card-number">01 / THE DENT</span><span class="card-access"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg>เข้าสู่โปรเจกต์</span></div>
-            <div class="featured-content">
-              <div class="featured-copy"><span class="project-category">TEAM WORKSHOP</span><h3>TheDent</h3><p class="featured-subtitle">Claude Cowork + ChatGPT</p><p class="project-description">บทเรียนและเวิร์กช็อปสำหรับทีม</p><span class="card-cta">เปิดพื้นที่เรียนรู้ <span aria-hidden="true">↗</span></span></div>
-              <div class="featured-art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-tile tile-back"></div><div class="art-tile tile-main"><span class="tile-mark">D<span>·</span></span><div class="tile-rule"></div><span class="tile-label">LEARN<br>TOGETHER.</span></div><div class="art-tag">คิด → ทำ → ใช้ต่อ</div></div>
-            </div>
-          </button>
 
-          <button class="project-card" type="button" data-project="pir-academy" aria-haspopup="dialog">
-            <div class="card-topline"><span class="card-number">02 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
-            <div class="project-monogram academy" aria-hidden="true">Pi<span>R</span></div>
-            <div class="card-copy"><h3>Pi R Academy</h3><p class="project-description">พื้นที่โปรเจกต์</p></div>
+          <button class="project-card" type="button" data-project="thedent" aria-haspopup="dialog" aria-describedby="thedent-description thedent-summary" aria-label="เข้าสู่โปรเจกต์ TheDent">
+            <span class="card-topline"><span class="card-number">PROJECT 01</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+            <span class="project-identity"><span class="project-monogram" aria-hidden="true">D<span>·</span></span><span class="project-name">TheDent</span></span>
+            <span class="project-description" id="thedent-description">ทีมคลินิก</span>
+            <span class="course-brief" id="thedent-summary"><span class="course-label">หลักสูตรและโปรเจกต์</span><span class="course-title">Claude Cowork + ChatGPT</span><span class="course-audience">บทเรียนและเวิร์กช็อปสำหรับทีมคลินิก</span></span>
             <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
           </button>
 
-          <button class="project-card" type="button" data-project="cloverx" aria-haspopup="dialog">
-            <div class="card-topline"><span class="card-number">03 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
-            <div class="project-monogram cloverx" aria-hidden="true">C<span>×</span></div>
-            <div class="card-copy"><h3>CloverX</h3><p class="project-description">พื้นที่โปรเจกต์</p></div>
+          <button class="project-card" type="button" data-project="pir-academy" aria-haspopup="dialog" aria-describedby="pir-academy-description pir-academy-summary" aria-label="เข้าสู่โปรเจกต์ Pi R Academy">
+            <span class="card-topline"><span class="card-number">PROJECT 02</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+            <span class="project-identity"><span class="project-monogram" aria-hidden="true">Pi<span>R</span></span><span class="project-name">Pi R Academy</span></span>
+            <span class="project-description" id="pir-academy-description">สถาบันสอน AI</span>
+            <span class="course-brief" id="pir-academy-summary"><span class="course-label">หลักสูตรและโปรเจกต์</span><span class="course-title">Advance Claude Code / GPT Astra</span><span class="course-audience">สำหรับเจ้าของกิจการ</span></span>
             <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
           </button>
 
-          <button class="project-card" type="button" data-project="crescohealth" aria-haspopup="dialog">
-            <div class="card-topline"><span class="card-number">04 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
-            <div class="project-monogram cresco" aria-hidden="true">c<span>h</span></div>
-            <div class="card-copy"><h3>CrescoHealth</h3><p class="project-description">Sydney, Australia</p></div>
+          <button class="project-card" type="button" data-project="cloverx" aria-haspopup="dialog" aria-describedby="cloverx-description cloverx-summary" aria-label="เข้าสู่โปรเจกต์ Clover X">
+            <span class="card-topline"><span class="card-number">PROJECT 03</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+            <span class="project-identity"><span class="project-monogram" aria-hidden="true">C<span>×</span></span><span class="project-name">Clover X</span></span>
+            <span class="project-description" id="cloverx-description">Health Tech</span>
+            <span class="course-brief" id="cloverx-summary"><span class="course-label">หลักสูตรและโปรเจกต์</span><span class="course-title">Source and Media</span><span class="course-audience">สร้างสื่อการตลาดสำหรับสมาชิก</span></span>
             <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
           </button>
 
-          <button class="project-card" type="button" data-project="gems" aria-haspopup="dialog">
-            <div class="card-topline"><span class="card-number">05 / PROJECT</span><span class="card-arrow" aria-hidden="true">↗</span></div>
-            <div class="project-monogram gems" aria-hidden="true">G<span>◇</span></div>
-            <div class="card-copy"><h3>GEMS <span class="name-secondary">Scientific Beauty</span></h3><p class="project-description">คลินิกความงาม</p></div>
+          <button class="project-card" type="button" data-project="crescohealth" aria-haspopup="dialog" aria-describedby="crescohealth-description crescohealth-summary" aria-label="เข้าสู่โปรเจกต์ CrescoHealth">
+            <span class="card-topline"><span class="card-number">PROJECT 04</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+            <span class="project-identity"><span class="project-monogram" aria-hidden="true">C<span>H</span></span><span class="project-name">CrescoHealth</span></span>
+            <span class="project-description" id="crescohealth-description">สถาบันฝึกปฏิบัติธรรมและดูแลสุขภาพด้วยวิทยาศาสตร์ในประเทศไทย</span>
+            <span class="course-brief" id="crescohealth-summary"><span class="course-label">หลักสูตรและโปรเจกต์</span><span class="course-title">ออกแบบ Platform</span><span class="course-audience">สำหรับการฝึกปฏิบัติธรรมและดูแลสุขภาพ</span></span>
             <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
           </button>
+
+          <button class="project-card" type="button" data-project="gems" aria-haspopup="dialog" aria-describedby="gems-description gems-summary" aria-label="เข้าสู่โปรเจกต์ GEMS Scientific Beauty">
+            <span class="card-topline"><span class="card-number">PROJECT 05</span><span class="card-arrow" aria-hidden="true">↗</span></span>
+            <span class="project-identity"><span class="project-monogram" aria-hidden="true">G<span>◇</span></span><span class="project-name">GEMS Scientific Beauty</span></span>
+            <span class="project-description" id="gems-description">คลินิกความงาม</span>
+            <span class="course-brief" id="gems-summary"><span class="course-label">หลักสูตรและโปรเจกต์</span><span class="course-title">Clinic ERP System / AI Data Management</span><span class="course-audience">เรียนรู้การสร้างระบบและจัดการข้อมูลคลินิก</span></span>
+            <span class="card-footer">เข้าสู่โปรเจกต์ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M6 10h12v10H6z"/></svg></span>
+          </button>
+
         </div>
       </section>
     </main>

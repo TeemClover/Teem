@@ -23,7 +23,9 @@ async function validCookie(settings = env, time = now) { return `${COURSE_COOKIE
 
 test('sessions require a genuine signature, a valid clock, and unique cookie', async () => {
   const cookie = await validCookie();
+  assert.equal(COURSE_SESSION_TTL_SECONDS, 400 * 24 * 60 * 60);
   assert.equal(await verifyCourseSession(cookie, env, now), true);
+  assert.equal(await verifyCourseSession(cookie, env, now + 180 * 24 * 60 * 60 * 1000), true);
   assert.equal(await verifyCourseSession(cookie, env, now + COURSE_SESSION_TTL_SECONDS * 1000), false);
   assert.equal(await verifyCourseSession(await validCookie(env, now + 120000), env, now), false);
   assert.equal(await verifyCourseSession(`${cookie}; ${cookie}`, env, now), false);
@@ -75,6 +77,66 @@ test('login allows only the dent project and logout clears the same secure cooki
   assert.match(logout.headers['set-cookie'], /Path=\//);
   const unavailable = await invoke(createCourseAccessHandler({ env: {} }), request({ project: 'thedent', password: env.COURSE_DENT_PASSWORD }));
   assert.equal(unavailable.statusCode, 503);
+});
+
+test('remembered-device status verifies and renews a session without a password or login-rate charge', async () => {
+  const day = 24 * 60 * 60 * 1000;
+  const returnTime = now + 399 * day;
+  const handler = createCourseAccessHandler({ env, now: () => returnTime, limiter: {
+    consume: async () => { assert.fail('An authenticated status check must not charge a login attempt'); },
+  } });
+  const cookie = await validCookie();
+  const statusRequest = (project = 'thedent', session = cookie) => {
+    const req = request({ action: 'status', project });
+    req.headers.cookie = session;
+    return req;
+  };
+  const remembered = await invoke(handler, statusRequest());
+  assert.equal(remembered.statusCode, 200);
+  assert.deepEqual(JSON.parse(remembered.body), { ok: true, redirect: '/course/thedent/' });
+  assert.match(remembered.headers['set-cookie'], /Max-Age=34560000/);
+  assert.match(remembered.headers['set-cookie'], /HttpOnly; Secure; SameSite=Lax/);
+  assert.equal(await verifyCourseSession(remembered.headers['set-cookie'], env, returnTime + 399 * day), true);
+  assert.equal(await verifyCourseSession(cookie, env, returnTime + 2 * day), false);
+  assert.ok(!remembered.headers['set-cookie'].includes(env.COURSE_DENT_PASSWORD));
+  for (const project of ['cloverx', 'pir-academy', 'THEDENT', undefined]) {
+    const req = statusRequest(project); req.body.project = project;
+    const denied = await invoke(handler, req);
+    assert.equal(denied.statusCode, 401);
+    assert.equal(denied.headers['set-cookie'], undefined);
+  }
+  for (const session of ['', `${COURSE_COOKIE_NAME}=true`, `${cookie.slice(0, -1)}!`, await validCookie(env, now - 2 * day)]) {
+    const denied = await invoke(handler, statusRequest('thedent', session));
+    assert.equal(denied.statusCode, 401);
+    assert.equal(denied.headers['set-cookie'], undefined);
+  }
+  const crossOrigin = statusRequest(); crossOrigin.headers.origin = 'https://attacker.example';
+  assert.equal((await invoke(handler, crossOrigin)).statusCode, 403);
+  const rotated = createCourseAccessHandler({ env: { ...env, COURSE_DENT_PASSWORD: 'different-fixture-password' }, now: () => returnTime });
+  assert.equal((await invoke(rotated, statusRequest())).statusCode, 401);
+  const logout = await invoke(handler, request({ action: 'logout' }));
+  assert.match(logout.headers['set-cookie'], /Max-Age=0/);
+  assert.equal((await invoke(handler, statusRequest('thedent', logout.headers['set-cookie']))).statusCode, 401);
+});
+
+test('previously issued 30-day signed cookies are upgraded on return without asking again', async () => {
+  // Reproduce the payload issued by the previous release using test credentials.
+  const original = await issueCourseSession(env, now);
+  const payload = JSON.parse(Buffer.from(original.split('.')[0], 'base64url').toString());
+  payload.exp = payload.iat + 30 * 24 * 60 * 60;
+  const encoded = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const material = new TextEncoder().encode(JSON.stringify(['myclover-course-v1', env.COURSE_SESSION_SECRET, env.COURSE_DENT_PASSWORD]));
+  const key = await crypto.subtle.importKey('raw', material, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const signature = Buffer.from(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(encoded))).toString('base64url');
+  const legacy = `${COURSE_COOKIE_NAME}=${encoded}.${signature}`;
+  const day = 24 * 60 * 60 * 1000;
+  assert.equal(await verifyCourseSession(legacy, env, now + 29 * day), true);
+  assert.equal(await verifyCourseSession(legacy, env, now + 30 * day), false);
+  const handler = createCourseAccessHandler({ env, now: () => now + 29 * day });
+  const req = request({ action: 'status', project: 'thedent' }); req.headers.cookie = legacy;
+  const upgraded = await invoke(handler, req);
+  assert.equal(upgraded.statusCode, 200);
+  assert.equal(await verifyCourseSession(upgraded.headers['set-cookie'], env, now + 428 * day), true);
 });
 
 test('login enforces method, same-origin, JSON and body limits including unparsed streams', async () => {
@@ -165,20 +227,21 @@ test('content validates an explicit allowlist, authenticates direct access, and 
   await mkdir(path.join(base, 'resources'), { recursive: true });
   await writeFile(path.join(base, 'index.html'), '<h1>Fixture classroom</h1>');
   await writeFile(path.join(base, 'course.js'), 'window.fixture = true;');
-  await writeFile(path.join(base, 'resources', 'daily-normal.csv'), 'date,inquiries\n2026-09-01,1\n');
+  await writeFile(path.join(base, 'resources', 'clinic-public-source.md'), '# Fixture source\n\nPublic reference.\n');
   const handler = createCourseContentHandler({ env, root, now: () => now });
   const cookie = await validCookie();
   const get = (file, extra = {}) => ({ method: 'GET', url: `/api/course-content?file=${encodeURIComponent(file)}`, headers: { cookie }, ...extra });
   try {
     assert.equal((await invoke(handler, get('index.html', { headers: {} }))).statusCode, 401);
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', headers: {} })).statusCode, 401);
-    assert.equal((await invoke(handler, get('resources/daily-normal.csv', { headers: { cookie: `${COURSE_COOKIE_NAME}=true` } }))).statusCode, 401);
+    assert.equal((await invoke(handler, get('resources/clinic-public-source.md', { headers: { cookie: `${COURSE_COOKIE_NAME}=true` } }))).statusCode, 401);
     const deployment = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8'));
     const rootRewrite = deployment.rewrites.find((route) => route.source === '/course/thedent');
     assert.ok(rootRewrite, 'The protected classroom root must have a configured rewrite');
     const rewrittenRoot = await invoke(handler, { method: 'GET', url: rootRewrite.destination, headers: { cookie } });
     assert.equal(rewrittenRoot.statusCode, 200);
     assert.match(String(rewrittenRoot.body), /Fixture classroom/);
+    assert.equal(await verifyCourseSession(rewrittenRoot.headers['set-cookie'], env, now), true);
     assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/', query: { file: '' }, headers: { cookie } })).statusCode, 200);
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content?unexpected=1', headers: { cookie } })).statusCode, 400);
     const page = await invoke(handler, get('index.html'));
@@ -187,14 +250,18 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal(page.headers.vary, 'Cookie');
     assert.match(page.headers['cache-control'], /private.*no-store/);
     assert.equal(page.headers['vercel-cdn-cache-control'], 'no-store');
+    assert.equal(await verifyCourseSession(page.headers['set-cookie'], env, now), true);
+    assert.match(page.headers['set-cookie'], /Max-Age=34560000/);
     const script = await invoke(handler, get('course.js'));
     assert.equal(script.statusCode, 200);
     assert.match(script.headers['content-type'], /^application\/javascript/);
+    assert.equal(script.headers['set-cookie'], undefined);
     const head = await invoke(handler, get('index.html', { method: 'HEAD' }));
     assert.equal(head.statusCode, 200);
     assert.equal(head.body, undefined);
+    assert.equal(head.headers['set-cookie'], undefined);
     assert.equal(Number(head.headers['content-length']), new TextEncoder().encode('<h1>Fixture classroom</h1>').length);
-    for (const file of ['../index.html', '/index.html', '%2e%2e/index.html', 'resources/../../package.json', 'resources\\daily-normal.csv', 'build.mjs', 'index.html?x=1']) {
+    for (const file of ['../index.html', '/index.html', '%2e%2e/index.html', 'resources/../../package.json', 'resources\\clinic-public-source.md', 'build.mjs', 'index.html?x=1']) {
       assert.equal(resolveCourseContentPath(file, root), null);
       assert.equal((await invoke(handler, get(file))).statusCode, 400);
     }
@@ -204,8 +271,8 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/course.js?file=index.html', headers: { cookie } })).statusCode, 400);
     assert.equal((await invoke(handler, get('index.html', { method: 'POST' }))).statusCode, 405);
     await writeFile(path.join(root, 'outside.csv'), 'private-fixture');
-    await symlink(path.join(root, 'outside.csv'), path.join(base, 'resources', 'daily-missing.csv'));
-    assert.equal((await invoke(handler, get('resources/daily-missing.csv'))).statusCode, 404);
+    await symlink(path.join(root, 'outside.csv'), path.join(base, 'resources', 'website-source-notes.md'));
+    assert.equal((await invoke(handler, get('resources/website-source-notes.md'))).statusCode, 404);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

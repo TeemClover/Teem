@@ -1,8 +1,8 @@
 # myClover project portal
 
-`/course/` is the project selector. Every project opens a password dialog. Only TheDent is enabled; other project IDs always receive the same unsuccessful-login response and have no classroom content.
+`/course/` is the project selector and always shows the five project cards on an ordinary visit. Choosing TheDent first checks the existing device session with the server: a valid session opens the classroom directly; otherwise the password dialog appears. Other project cards open their password dialog; only TheDent is enabled and other IDs always receive the same unsuccessful-login response.
 
-TheDent is at `/course/thedent/`. Login is checked by `/api/course-access`; a signed, scoped, host-only HttpOnly cookie permits returning to the course for 30 days. The password and signing secret exist only in server environment settings:
+TheDent is at `/course/thedent/`. Login is checked by `/api/course-access`; a signed, scoped, host-only HttpOnly cookie remembers this browser for up to 400 days. A same-origin `POST` with `{action: 'status', project: 'thedent'}` verifies the existing cookie and renews it without a password. Authenticated classroom HTML visits also renew it, including direct bookmarks. Already-issued 30-day cookies remain valid until their original expiry and are upgraded on the next return. The browser can remove cookies earlier; clearing browser data, private browsing, logout or changing devices requires entering the password again. The password and signing secret exist only in server environment settings:
 
 - `COURSE_DENT_PASSWORD`
 - `COURSE_SESSION_SECRET` (cryptographically random, at least 32 characters)
@@ -20,6 +20,6 @@ The gate applies to current website delivery. Public GitHub history, earlier dep
 - Portal: `index.html`, `portal.css`, `portal.js`.
 - Classroom: `thedent/`; see its README for content editing.
 - Rebuild classroom downloads after edits: `node course/thedent/build.mjs`.
-- CSV checks: `node course/thedent/tests/daily-brief.test.cjs`.
+- Branch Desk checks: `node --test tests/course/branch-desk.test.mjs`.
 - Authentication checks: `node --test tests/course/auth.test.mjs`.
-- Old direct resource URLs redirect to the new protected locations. Old lesson/presentation hashes on `/course/` open the TheDent login and preserve the intended lesson.
+- Old direct resource URLs redirect to the new protected locations. Old lesson/presentation hashes on `/course/` verify the remembered device first and preserve the intended lesson; only unrecognized devices see the password dialog.
