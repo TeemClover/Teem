@@ -42,6 +42,15 @@ const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://127.0.0.1:8766');
   const routed=await middleware(new Request(url,{method:req.method,headers:req.headers}));
+  const rewriteTarget=routed.headers.get('x-middleware-rewrite');
+  if(rewriteTarget){
+   const destination=new URL(rewriteTarget,url);
+   if(destination.origin!==url.origin||destination.pathname!=='/api/course-content'){res.writeHead(404);return res.end('Unsupported preview rewrite');}
+   // Follow the middleware's actual destination. A classroom next() must not
+   // silently receive a special local route that is absent on the platform.
+   req.query=Object.fromEntries(destination.searchParams);
+   return content(req,res);
+  }
   if(routed.headers.get('x-middleware-next')!=='1'){
    res.writeHead(routed.status,Object.fromEntries(routed.headers));
    return res.end(req.method==='HEAD'?undefined:Buffer.from(await routed.arrayBuffer()));
@@ -52,9 +61,6 @@ const server=http.createServer(async(req,res)=>{
    req.headers['x-forwarded-proto']='http';
    res.setHeader('X-Course-Preview','fixture-memory-only');
    return review(req,res);
-  }
-  if(url.pathname==='/course/thedent912'||url.pathname.startsWith('/course/thedent912/')){
-   req.query={file:url.pathname.slice('/course/thedent912/'.length)};return content(req,res);
   }
   const file=path.resolve(root,'.'+decodeURIComponent(url.pathname)+(url.pathname.endsWith('/')?'index.html':''));
   const classroom=path.join(root,'course','thedent');

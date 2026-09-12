@@ -57,6 +57,11 @@ export default async function middleware(request) {
       canonical.pathname += '/';
       return new Response(null, { status: 307, headers: { ...privateHeaders, Location: canonical.toString() } });
     }
+    // Resolve the dated classroom through its authenticated content handler,
+    // including the directory root, which has no physical static directory.
+    const target = new URL('/api/course-content', request.url);
+    target.searchParams.set('file', pathname.slice('/course/thedent912/'.length));
+    return rewrite(target);
   }
 
   // Preserve the original matcher exemptions for unrelated routes.

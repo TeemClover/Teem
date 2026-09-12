@@ -37,6 +37,15 @@ const assertNext = (response, label) => {
   assert.equal(response.headers.get('location'), null, label);
   assert.equal(response.headers.get('x-middleware-rewrite'), null, label);
 };
+const assertContentRewrite = (response, pathname) => {
+  assert.equal(response.headers.get('x-middleware-next'), null, pathname);
+  assert.equal(response.headers.get('location'), null, pathname);
+  const destination = new URL(response.headers.get('x-middleware-rewrite'));
+  assert.equal(destination.origin, 'https://www.myclover.com', pathname);
+  assert.equal(destination.pathname, '/api/course-content', pathname);
+  const original = new URL(pathname, destination.origin);
+  assert.deepEqual([...destination.searchParams], [['file', original.pathname.slice('/course/thedent912/'.length)]], pathname);
+};
 const assertPrivate = (response, label) => {
   assert.match(response.headers.get('cache-control'), /private.*no-store/, label);
   assert.equal(response.headers.get('cdn-cache-control'), 'no-store', label);
@@ -72,7 +81,7 @@ test('legacy links redirect to the canonical classroom before login with their p
       const target = `https://www.myclover.com/course/thedent912${suffix || '/'}`;
       assert.equal(result.headers.get('location'), target, legacy);
       assertPrivate(result, legacy);
-      if (session === cookie) assertNext(await invoke(new URL(target).pathname + new URL(target).search, session), target);
+      if (session === cookie) assertContentRewrite(await invoke(new URL(target).pathname + new URL(target).search, session), target);
       else assert.ok([307, 401].includes((await invoke(new URL(target).pathname + new URL(target).search, session)).status), target);
     }
   }
@@ -135,14 +144,20 @@ test('malformed, control-character and excessively encoded paths fail closed', a
   }
 });
 
-test('valid sessions pass canonical content; extensionless root retains slash canonicalization', async () => {
-  for (const pathname of ['/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/course-content.js', '/course/thedent912/resources/instructor-guide.md']) {
-    assertNext(await invoke(pathname, cookie), pathname);
+test('valid sessions explicitly rewrite every canonical resource to the authenticated content handler', async () => {
+  for (const pathname of ['/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/course-content.js', '/course/thedent912/resources/instructor-guide.md', '/course/thedent912/evaluation.html', '/course/thedent912/followup-qr.svg', '/course/thedent912/downloads/the-dent-course-kit.zip']) {
+    assertContentRewrite(await invoke(pathname, cookie), pathname);
   }
   const root = await invoke('/course/thedent912?demo=1', cookie);
   assert.equal(root.status, 307);
   assert.equal(root.headers.get('location'), 'https://www.myclover.com/course/thedent912/?demo=1');
   assertPrivate(root);
+});
+
+test('content rewrites derive the file from the authenticated pathname, never from user query parameters', async () => {
+  for (const pathname of ['/course/thedent912/?lesson=files', '/course/thedent912/?file=course.js', '/course/thedent912/evaluation.html?file=index.html&file=course.js', '/course/thedent912/resources/clinic-public-source.md?download=1']) {
+    assertContentRewrite(await invoke(pathname, cookie), pathname);
+  }
 });
 
 test('public portal, API, platform internals and preexisting dotted paths remain untouched', async () => {
