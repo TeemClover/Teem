@@ -28,4 +28,4 @@ Claude Chat อ่านสิ่งที่แนบหรือวางใ�
 
 เมื่อใช้ ZIP ให้แตกไฟล์ก่อน เปิด index.html และสื่อที่ดาวน์โหลดไว้จากเครื่องได้ การใช้ AI ประมวลผลผ่านผู้ให้บริการตามเครื่องมือที่ใช้
 
-หน้าเรียน: https://www.myclover.com/course/thedent/
+หน้าเรียน: https://www.myclover.com/course/thedent912/

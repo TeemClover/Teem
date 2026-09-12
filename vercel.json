@@ -380,37 +380,37 @@
     },
     {
       "source": "/course/course-content.js",
-      "destination": "/course/thedent/course-content.js",
+      "destination": "/course/thedent912/course-content.js",
       "permanent": false
     },
     {
       "source": "/course/course-resources.js",
-      "destination": "/course/thedent/course-resources.js",
+      "destination": "/course/thedent912/course-resources.js",
       "permanent": false
     },
     {
       "source": "/course/course.js",
-      "destination": "/course/thedent/course.js",
+      "destination": "/course/thedent912/course.js",
       "permanent": false
     },
     {
       "source": "/course/course.css",
-      "destination": "/course/thedent/course.css",
+      "destination": "/course/thedent912/course.css",
       "permanent": false
     },
     {
       "source": "/course/daily-brief.html",
-      "destination": "/course/thedent/daily-brief.html",
+      "destination": "/course/thedent912/daily-brief.html",
       "permanent": false
     },
     {
       "source": "/course/resources/:path*",
-      "destination": "/course/thedent/resources/:path*",
+      "destination": "/course/thedent912/resources/:path*",
       "permanent": false
     },
     {
       "source": "/course/downloads/:path*",
-      "destination": "/course/thedent/downloads/:path*",
+      "destination": "/course/thedent912/downloads/:path*",
       "permanent": false
     }
   ],
@@ -534,9 +534,34 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/course/thedent912/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/course/thedent912",
+      "destination": "/api/course-content"
+    },
+    {
+      "source": "/course/thedent912/:path*",
+      "destination": "/api/course-content?file=:path*"
+    },
     {
       "source": "/course/thedent",
       "destination": "/api/course-content"

@@ -27,10 +27,14 @@
   let checkingCard = null;
 
   function safeNext(value) {
-    if (typeof value !== 'string' || !value.startsWith('/course/thedent/')) return null;
+    if (typeof value !== 'string' || /[\\\u0000-\u0020\u007f]/.test(value)) return null;
     try {
+      const rawPath = value.split(/[?#]/, 1)[0];
+      if (!/^\/course\/(?:thedent912|thedent)(?:\/|$)/.test(rawPath) || rawPath.includes('%') || rawPath.includes('//')) return null;
       const url = new URL(value, location.origin);
-      if (url.origin !== location.origin || !url.pathname.startsWith('/course/thedent/')) return null;
+      if (url.origin !== location.origin || url.pathname !== rawPath) return null;
+      url.pathname = rawPath.replace(/^\/course\/thedent(?=\/|$)/, '/course/thedent912');
+      if (url.pathname === '/course/thedent912') url.pathname += '/';
       return url;
     } catch { return null; }
   }

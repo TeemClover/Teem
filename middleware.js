@@ -27,10 +27,19 @@ export default async function middleware(request) {
   if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
   // Classroom content is also checked by /api/course-content before serving.
   const classroomPath = normalized.toLowerCase();
-  if (classroomPath === '/course/thedent' || classroomPath.startsWith('/course/thedent/')) {
+  const legacyRoom = classroomPath === '/course/thedent' || classroomPath.startsWith('/course/thedent/');
+  const currentRoom = classroomPath === '/course/thedent912' || classroomPath.startsWith('/course/thedent912/');
+  if (legacyRoom || currentRoom) {
     // Encoded aliases must never fall through to Vercel's public static cache,
     // even for signed-in users. Only the canonical API-backed route is served.
     if (pathname !== normalized || normalized !== classroomPath) return new Response('Not found', { status: 404, headers: privateHeaders });
+    if (legacyRoom) {
+      const canonical = new URL(request.url);
+      canonical.pathname = '/course/thedent912' + pathname.slice('/course/thedent'.length);
+      if (canonical.pathname === '/course/thedent912') canonical.pathname += '/';
+      // A redirect without a fragment lets browsers retain the original hash.
+      return new Response(null, { status: 307, headers: { ...privateHeaders, Location: canonical.toString() } });
+    }
     const admitted = await verifyCourseSession(request.headers.get('cookie') || '');
     if (!admitted) {
       const headers = { ...privateHeaders };
@@ -39,9 +48,14 @@ export default async function middleware(request) {
       }
       const login = new URL('/course/', request.url);
       login.searchParams.set('project', 'thedent');
-      login.searchParams.set('next', (pathname === '/course/thedent' ? '/course/thedent/' : pathname) + url.search);
+      login.searchParams.set('next', (pathname === '/course/thedent912' ? '/course/thedent912/' : pathname) + url.search);
       headers.Location = login.toString();
       return new Response(null, { status: 307, headers });
+    }
+    if (pathname === '/course/thedent912') {
+      const canonical = new URL(request.url);
+      canonical.pathname += '/';
+      return new Response(null, { status: 307, headers: { ...privateHeaders, Location: canonical.toString() } });
     }
   }
 

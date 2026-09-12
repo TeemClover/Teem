@@ -51,23 +51,39 @@ test('matcher intercepts every path, including encoded names and dotted assets',
 });
 
 test('canonical classroom documents require login and preserve destination/query', async () => {
-  for (const pathname of ['/course/thedent', '/course/thedent/', '/course/thedent/index.html', '/course/thedent/daily-brief.html?demo=1']) {
+  for (const pathname of ['/course/thedent912', '/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/evaluation.html?demo=1']) {
     const result = await invoke(pathname);
     assert.equal(result.status, 307, pathname);
     const destination = new URL(result.headers.get('location'));
     assert.equal(destination.origin, 'https://www.myclover.com');
     assert.equal(destination.pathname, '/course/');
     assert.equal(destination.searchParams.get('project'), 'thedent');
-    assert.equal(destination.searchParams.get('next'), pathname === '/course/thedent' ? '/course/thedent/' : pathname);
+    assert.equal(destination.searchParams.get('next'), pathname === '/course/thedent912' ? '/course/thedent912/' : pathname);
     assertPrivate(result, pathname);
+  }
+});
+
+test('legacy links redirect to the canonical classroom before login with their path and query intact', async () => {
+  for (const suffix of ['', '/', '/index.html', '/evaluation.html?from=slides', '/resources/clinic-public-source.md?download=1', '/opening.html?lesson=source%20files']) {
+    for (const session of [undefined, cookie, expired]) {
+      const legacy = `/course/thedent${suffix}`;
+      const result = await invoke(legacy, session);
+      assert.equal(result.status, 307, legacy);
+      const target = `https://www.myclover.com/course/thedent912${suffix || '/'}`;
+      assert.equal(result.headers.get('location'), target, legacy);
+      assertPrivate(result, legacy);
+      if (session === cookie) assertNext(await invoke(new URL(target).pathname + new URL(target).search, session), target);
+      else assert.ok([307, 401].includes((await invoke(new URL(target).pathname + new URL(target).search, session)).status), target);
+    }
   }
 });
 
 test('every classroom asset type denies unsigned, forged, tampered and expired sessions', async () => {
   for (const pathname of [
-    '/course/thedent/course-content.js', '/course/thedent/course.css',
-    '/course/thedent/resources/instructor-guide.md', '/course/thedent/resources/demo.csv',
-    '/course/thedent/downloads/the-dent-course-kit.zip', '/course/thedent/fonts/font.woff2',
+    '/course/thedent912/course-content.js', '/course/thedent912/course.css',
+    '/course/thedent912/resources/instructor-guide.md', '/course/thedent912/resources/demo.csv',
+    '/course/thedent912/downloads/the-dent-course-kit.zip', '/course/thedent912/fonts/font.woff2',
+    '/course/thedent912/evaluation.js', '/course/thedent912/evaluation.css', '/course/thedent912/followup-qr.svg',
   ]) {
     for (const session of [undefined, `${COURSE_COOKIE_NAME}=true`, `${cookie.slice(0, -1)}!`, expired]) {
       const result = await invoke(pathname, session);
@@ -79,26 +95,26 @@ test('every classroom asset type denies unsigned, forged, tampered and expired s
 
 test('encoded and normalized classroom aliases never reach public static serving, even when signed in', async () => {
   const aliases = [
-    '/course/%74hedent/course-content.js',
-    '/course/thedent%2fcourse-content.js',
-    '/course/thedent%2Fcourse-content.js',
-    '/%63ourse/thedent/course-content.js',
-    '/course/%2574hedent/course-content.js',
-    '/course/thedent%252fcourse-content.js',
-    '/course/%74hedent/index.html',
-    '/course/%74hedent/resources/instructor-guide.md',
-    '/course/%74hedent/resources/demo.csv',
-    '/course/%74hedent/downloads/the-dent-course-kit.zip',
-    '/course/%74hedent/fonts/font.woff2',
-    '/course/%74hedent',
-    '/course//thedent/course-content.js',
-    '/course%5cthedent%5ccourse-content.js',
-    '/course/THEdent/course-content.js',
-    '/COURSE/thedent/course-content.js',
-    '/course/thedent/%63ourse-content.js',
-    '/course/thedent/extra%2f..%2fcourse-content.js',
+    '/course/%74hedent912/course-content.js',
+    '/course/thedent912%2fcourse-content.js',
+    '/course/thedent912%2Fcourse-content.js',
+    '/%63ourse/thedent912/course-content.js',
+    '/course/%2574hedent912/course-content.js',
+    '/course/thedent912%252fcourse-content.js',
+    '/course/%74hedent912/index.html',
+    '/course/%74hedent912/resources/instructor-guide.md',
+    '/course/%74hedent912/resources/demo.csv',
+    '/course/%74hedent912/downloads/the-dent-course-kit.zip',
+    '/course/%74hedent912/fonts/font.woff2',
+    '/course/%74hedent912',
+    '/course//thedent912/course-content.js',
+    '/course%5cthedent912%5ccourse-content.js',
+    '/course/THEdent912/course-content.js',
+    '/COURSE/thedent912/course-content.js',
+    '/course/thedent912/%63ourse-content.js',
+    '/course/thedent912/extra%2f..%2fcourse-content.js',
   ];
-  for (const pathname of aliases) {
+  for (const pathname of [...aliases, ...aliases.map(alias => alias.replaceAll('hedent912', 'hedent').replaceAll('THEdent912', 'THEdent'))]) {
     for (const session of [undefined, cookie]) {
       const result = await invoke(pathname, session);
       assert.equal(result.status, 404, pathname);
@@ -109,9 +125,9 @@ test('encoded and normalized classroom aliases never reach public static serving
 
 test('malformed, control-character and excessively encoded paths fail closed', async () => {
   for (const pathname of [
-    '/course/thedent/%FF', '/course/%74hedent%00/course-content.js',
-    '/course/thedent%3fcourse-content.js', '/course/thedent%23/course-content.js',
-    '/course/%252525252525252574hedent/course-content.js',
+    '/course/thedent912/%FF', '/course/%74hedent912%00/course-content.js',
+    '/course/thedent912%3fcourse-content.js', '/course/thedent912%23/course-content.js',
+    '/course/%252525252525252574hedent912/course-content.js',
   ]) {
     const result = await invoke(pathname, cookie);
     assert.equal(result.status, 400, pathname);
@@ -120,18 +136,20 @@ test('malformed, control-character and excessively encoded paths fail closed', a
 });
 
 test('valid sessions pass canonical content; extensionless root retains slash canonicalization', async () => {
-  for (const pathname of ['/course/thedent/', '/course/thedent/index.html', '/course/thedent/course-content.js', '/course/thedent/resources/instructor-guide.md']) {
+  for (const pathname of ['/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/course-content.js', '/course/thedent912/resources/instructor-guide.md']) {
     assertNext(await invoke(pathname, cookie), pathname);
   }
-  const root = await invoke('/course/thedent?demo=1', cookie);
+  const root = await invoke('/course/thedent912?demo=1', cookie);
   assert.equal(root.status, 307);
-  assert.equal(root.headers.get('location'), 'https://www.myclover.com/course/thedent/?demo=1');
+  assert.equal(root.headers.get('location'), 'https://www.myclover.com/course/thedent912/?demo=1');
+  assertPrivate(root);
 });
 
 test('public portal, API, platform internals and preexisting dotted paths remain untouched', async () => {
   for (const pathname of [
     '/', '/course/', '/course/index.html', '/course/another-project/',
     '/api/course-access', '/api/course-content?file=course-content.js', '/api/auth',
+    '/api/course-review', '/course/advance/',
     '/_next/static/chunk.js', '/_vercel/insights/script.js',
     '/assets/app.js', '/robots.txt', '/folder.with.dot/page', '/ako/index.html',
   ]) assertNext(await invoke(pathname), pathname);

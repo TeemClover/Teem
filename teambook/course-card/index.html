@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<script id="course-card-entry">
+(() => {
+  function captureReceipt() {
+  const key = 'teambook_course_card_receipt_v1';
+  const fresh = location.hash.length > 1;
+  let token = fresh ? location.hash.slice(1) : '';
+  let invalid = false;
+  // Remove the receipt before deferred analytics or external navigation runs.
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  if (fresh) {
+    if (!/^[A-Za-z0-9_-]{32,256}$/.test(token)) { token = ''; invalid = true; }
+    try { if (token) sessionStorage.setItem(key, token); else sessionStorage.removeItem(key); } catch {}
+  } else {
+    try { token = sessionStorage.getItem(key) || ''; } catch {}
+    if (!/^[A-Za-z0-9_-]{32,256}$/.test(token)) token = '';
+  }
+  window.__COURSE_CARD_ENTRY__ = { token, invalid, fresh };
+  }
+  captureReceipt();
+  window.addEventListener('hashchange', () => {
+    if (!location.hash) return;
+    captureReceipt();
+    // Reopening a receipt in this same tab must run the claim screen again.
+    location.reload();
+  });
+})();
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<title>รับการ์ดหลังเรียน · myClover × TeamBook</title>
+<link rel="icon" href="/assets/brand/favicon.ico">
+<link rel="stylesheet" href="./course-card.css?v=1">
+</head>
+<body>
+<header class="top"><a href="/">TeamBook<span> × myClover</span></a><a class="quiet" href="/join/?c=52113">สมุด 7 วัน ↗</a></header>
+<main>
+  <section class="card" aria-labelledby="title">
+    <div class="card-art" aria-hidden="true">🎴</div>
+    <p class="eyebrow">AFTER CLASS · THE DENT</p>
+    <h1 id="title">ขอบคุณที่เล่า<br>สิ่งที่ได้จากวันนี้</h1>
+    <p class="lead">รับการ์ดหนึ่งใบ แล้วพางานที่ได้ลอง<br class="wide-only">ไปใช้ต่อในสมุดของทีม</p>
+    <div id="status" class="status" role="status" aria-live="polite">กำลังเตรียมหน้ารับการ์ด…</div>
+    <form id="claim-form" hidden>
+      <div id="new-profile" hidden>
+        <label for="alias">ชื่อที่อยากให้เพื่อนเรียก</label>
+        <input id="alias" name="alias" maxlength="24" autocomplete="nickname" placeholder="ชื่อเล่นของคุณ">
+        <label for="avatar">เพื่อนประจำตัว</label>
+        <select id="avatar" name="avatar" aria-label="เลือกเพื่อนประจำตัว"></select>
+        <p class="hint">เริ่มด้วยชื่อเล่นได้เลย ยังไม่ต้องสมัครบัญชี</p>
+      </div>
+      <p id="existing-profile" class="identity" hidden></p>
+      <button id="claim-button" class="button primary" type="submit">รับการ์ดของฉัน →</button>
+    </form>
+    <div id="success" hidden>
+      <a id="open-card" class="button primary" href="/collection/">เปิดการ์ดของฉัน →</a>
+      <p id="save-state" class="hint" aria-live="polite">เก็บการ์ดในเครื่องนี้แล้ว</p>
+    </div>
+    <p id="error" class="error" role="alert" hidden></p>
+    <button id="reload" class="button secondary" type="button" hidden>ลองเปิดหน้าอีกครั้ง</button>
+    <div class="next">
+      <span>ทำต่อด้วยกัน</span>
+      <h2>สมุด AI Leader · 7 วัน</h2>
+      <p>ทำงานซ้ำ → พาเพื่อนทำ → ดูแล Source<br>ทำแล้วค่อยกลับมาลงชื่อ ไม่ต้องแนบข้อมูลลูกค้า</p>
+      <a class="button secondary" href="/join/?c=52113">เข้าร่วมสมุด 7 วัน →</a>
+    </div>
+    <p class="fine">การ์ดขอบคุณสำหรับทุกความคิดเห็น<br>ไม่ขึ้นกับคะแนนหรือการอนุญาตเผยแพร่รีวิว</p>
+  </section>
+</main>
+<noscript><p class="noscript">เปิด JavaScript เพื่อรับการ์ด หรือ <a href="/join/?c=52113">เข้าสมุด 7 วัน</a></p></noscript>
+<script type="module" src="./course-card.js?v=1"></script>
+</body>
+</html>

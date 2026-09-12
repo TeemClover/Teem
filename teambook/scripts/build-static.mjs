@@ -4,7 +4,7 @@ import { join, relative, resolve } from 'node:path';
 const ROOT = resolve('.');
 const OUTPUT = join(ROOT, 'dist');
 const PUBLIC_ENTRIES = Object.freeze([
-  'index.html', '_shared', 'assets', 'cards', 'collection', 'command', 'ideas', 'join',
+  'index.html', '_shared', 'assets', 'cards', 'collection', 'command', 'course-card', 'ideas', 'join',
   'new', 'p', 'pets', 'privacy', 'profile', 'public', 'read', 'reveal',
   'start', 'stat', 'u',
 ]);

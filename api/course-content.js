@@ -3,6 +3,7 @@ import path from 'node:path';
 import { courseSessionCookie, issueCourseSession, verifyCourseSession } from './_lib/course-access.js';
 
 export const COURSE_CONTENT_FILES = Object.freeze([
+  'evaluation.html', 'evaluation.css', 'evaluation.js', 'followup-qr.svg',
   'advance.html', 'tools.html', 'tools.css', 'tools.js',
   'opening.html', 'opening.css', 'opening.js', 'opening-data.js', 'resources/opening-notes.md',
   ...Array.from({length:20}, (_,i) => `opening/slide-${String(i+1).padStart(2,'0')}.jpg`),
@@ -22,6 +23,7 @@ export const COURSE_CONTENT_FILES = Object.freeze([
 ]);
 const allowed = new Set(COURSE_CONTENT_FILES);
 const types = {
+  '.svg': 'image/svg+xml',
   '.jpg': 'image/jpeg',
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8', '.md': 'text/markdown; charset=utf-8',
@@ -45,15 +47,18 @@ function requestedFile(req) {
   if (supplied !== undefined && typeof supplied !== 'string') return null;
   if (queryFiles.length === 1 && supplied !== undefined && queryFiles[0] !== supplied) return null;
   // A platform rewrite may preserve the original URL. Prefer its actual path.
-  if (url.pathname === '/course/thedent' || url.pathname === '/course/thedent/') {
+  if (url.pathname === '/course/thedent912' || url.pathname === '/course/thedent912/') {
     if ((supplied !== undefined && supplied !== '') || (queryFiles.length && queryFiles[0] !== '')) return null;
     return '';
   }
-  if (url.pathname.startsWith('/course/thedent/')) {
-    const fromPath = url.pathname.slice('/course/thedent/'.length);
+  if (url.pathname.startsWith('/course/thedent912/')) {
+    const fromPath = url.pathname.slice('/course/thedent912/'.length);
     if ((supplied !== undefined && supplied !== fromPath) || (queryFiles.length && queryFiles[0] !== fromPath)) return null;
     return fromPath;
   }
+  // Only the actual API endpoint can use the rewrite's file query parameter.
+  // Do not turn an encoded, unrelated or legacy pathname into an asset alias.
+  if (url.pathname !== '/api/course-content') return null;
   if (supplied !== undefined) return supplied;
   if (queryFiles.length === 1) return queryFiles[0];
   // The exact classroom-root rewrite has no `file` parameter. It is still

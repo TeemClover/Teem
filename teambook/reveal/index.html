@@ -102,6 +102,7 @@
       </div>
     </div>
   </section>
+  <p id="courseJoinFallback" hidden style="text-align:center;margin:24px 0"><a class="btn ghost" href="/join/?c=52113">เข้าร่วมสมุด 7 วัน →</a></p>
 </main>
 
 <script type="module">
@@ -116,9 +117,11 @@ import { cardMarkup } from '/_shared/card-ui.js';
    which is what makes the tap itself audible instead of the tap after it. */
 import { playCardFlip, playSfx } from '/_shared/audio.js?v=20260824-audio-isolated2';
 import { getSession, syncXtyProfile } from '/_shared/account.js';
+import { courseContinuation } from '/course-card/bridge.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
+$('courseJoinFallback').hidden = params.get('course') !== 'thedent';
 const rewardId = params.get('r') || '';
 let reward = pendingCardReward(rewardId);
 $('shell').hidden = false;
@@ -168,10 +171,14 @@ function afterVisibleFlipStarts() {
 function showReward(item) {
   const card = cardById(item.cardId);
   if (!card) { $('missing').hidden = false; return; }
+  const courseJoin = courseContinuation(item, params);
   const starDrop = /^party-stars:/.test(String(item.questId || ''));
   const firstSeenDrop = /^first-seen:/.test(String(item.questId || ''));
   $('reveal').hidden = false;
-  if (firstSeenDrop) {
+  if (courseJoin) {
+    $('rewardKicker').textContent = 'ขอบคุณสำหรับความคิดเห็นหลังเรียน';
+    $('instruction').textContent = 'การ์ดของคุณพร้อมแล้ว · กดการ์ดเพื่อเปิด';
+  } else if (firstSeenDrop) {
     const party = allParties().find(partyItem => partyItem.code === item.partyCode);
     const identity = partyIdentity(item.partyCode);
     const alias = party?.members?.find(member => member.userId === identity?.userId)?.alias || 'คุณ';
@@ -221,7 +228,7 @@ function showReward(item) {
     opened = true;
     saving = false;
     markCardRewardRevealed(item.rewardId);
-    $('instruction').textContent = firstSeenDrop
+    $('instruction').textContent = courseJoin ? 'เปิดแล้ว · พางานที่ได้ลองไปใช้ต่อด้วยกันในสมุด 7 วัน' : firstSeenDrop
       ? 'เปิดแล้ว · การ์ดใบนี้จะจำว่าวันหนึ่งคุณเลือกมองเห็นคนอื่น'
       : (starDrop
         ? 'เปิดแล้ว · การ์ดใบนี้จะจำช่วงที่ความพยายามของคุณถูกมองเห็น'
@@ -234,7 +241,13 @@ function showReward(item) {
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     $('copy').hidden = false; $('actions').hidden = false;
-    if (/^\d{5}$/.test(String(item.partyCode || ''))) {
+    if (courseJoin) {
+      $('backToBook').href = courseJoin;
+      $('backToBook').textContent = 'เข้าร่วมสมุด 7 วัน →';
+      $('backToBook').hidden = false;
+      $('courseJoinFallback').hidden = true;
+      $('viewCollection').className = 'btn ghost';
+    } else if (/^\d{5}$/.test(String(item.partyCode || ''))) {
       $('backToBook').href = `/p/?c=${encodeURIComponent(item.partyCode)}`;
       $('backToBook').hidden = false;
       $('viewCollection').className = 'btn ghost';

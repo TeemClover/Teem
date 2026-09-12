@@ -4,6 +4,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm, symlink } from 'node:fs/promis
 import os from 'node:os';
 import path from 'node:path';
 import { Readable } from 'node:stream';
+import vm from 'node:vm';
 import {
   COURSE_COOKIE_NAME, COURSE_SESSION_TTL_SECONDS, courseSessionCookie,
   issueCourseSession, verifyCoursePassword, verifyCourseSession,
@@ -23,6 +24,7 @@ async function validCookie(settings = env, time = now) { return `${COURSE_COOKIE
 
 test('sessions require a genuine signature, a valid clock, and unique cookie', async () => {
   const cookie = await validCookie();
+  assert.equal(JSON.parse(Buffer.from(cookie.split('=')[1].split('.')[0], 'base64url')).scope, 'thedent', 'URL migration preserves the signed session scope');
   assert.equal(COURSE_SESSION_TTL_SECONDS, 400 * 24 * 60 * 60);
   assert.equal(await verifyCourseSession(cookie, env, now), true);
   assert.equal(await verifyCourseSession(cookie, env, now + 180 * 24 * 60 * 60 * 1000), true);
@@ -59,10 +61,10 @@ test('login allows only the dent project and logout clears the same secure cooki
   const handler = createCourseAccessHandler({ env, now: () => now });
   const success = await invoke(handler, request({ project: 'thedent', password: env.COURSE_DENT_PASSWORD }));
   assert.equal(success.statusCode, 200);
-  assert.deepEqual(JSON.parse(success.body), { ok: true, redirect: '/course/thedent/' });
+  assert.deepEqual(JSON.parse(success.body), { ok: true, redirect: '/course/thedent912/' });
   assert.equal(await verifyCourseSession(success.headers['set-cookie'], env, now), true);
   assert.match(success.headers['cache-control'], /no-store/);
-  for (const project of ['another-course', '', null, 'THEDENT']) {
+  for (const project of ['another-course', 'thedent912', '', null, 'THEDENT']) {
     const denied = await invoke(handler, request({ project, password: env.COURSE_DENT_PASSWORD }));
     assert.equal(denied.statusCode, 401);
     assert.equal(denied.headers['set-cookie'], undefined);
@@ -93,7 +95,7 @@ test('remembered-device status verifies and renews a session without a password 
   };
   const remembered = await invoke(handler, statusRequest());
   assert.equal(remembered.statusCode, 200);
-  assert.deepEqual(JSON.parse(remembered.body), { ok: true, redirect: '/course/thedent/' });
+  assert.deepEqual(JSON.parse(remembered.body), { ok: true, redirect: '/course/thedent912/' });
   assert.match(remembered.headers['set-cookie'], /Max-Age=34560000/);
   assert.match(remembered.headers['set-cookie'], /HttpOnly; Secure; SameSite=Lax/);
   assert.equal(await verifyCourseSession(remembered.headers['set-cookie'], env, returnTime + 399 * day), true);
@@ -227,6 +229,8 @@ test('content validates an explicit allowlist, authenticates direct access, and 
   await mkdir(path.join(base, 'resources'), { recursive: true });
   await writeFile(path.join(base, 'index.html'), '<h1>Fixture classroom</h1>');
   await writeFile(path.join(base, 'course.js'), 'window.fixture = true;');
+  await writeFile(path.join(base, 'evaluation.html'), '<h1>Fixture evaluation</h1>');
+  await writeFile(path.join(base, 'followup-qr.svg'), '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
   await writeFile(path.join(base, 'resources', 'clinic-public-source.md'), '# Fixture source\n\nPublic reference.\n');
   const handler = createCourseContentHandler({ env, root, now: () => now });
   const cookie = await validCookie();
@@ -236,13 +240,18 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', headers: {} })).statusCode, 401);
     assert.equal((await invoke(handler, get('resources/clinic-public-source.md', { headers: { cookie: `${COURSE_COOKIE_NAME}=true` } }))).statusCode, 401);
     const deployment = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8'));
-    const rootRewrite = deployment.rewrites.find((route) => route.source === '/course/thedent');
+    const rootRewrite = deployment.rewrites.find((route) => route.source === '/course/thedent912');
     assert.ok(rootRewrite, 'The protected classroom root must have a configured rewrite');
+    for (const room of ['thedent', 'thedent912']) {
+      assert.equal(deployment.rewrites.find(route => route.source === `/course/${room}/:path*`)?.destination, '/api/course-content?file=:path*', `${room} must never fall through to static files`);
+      assert.ok(deployment.headers.find(route => route.source === `/course/${room}/:path*`)?.headers.some(header => header.key === 'Cache-Control' && header.value.includes('no-store')));
+    }
+    assert.equal(deployment.functions['api/course-content.js'].includeFiles, 'course/thedent/**', 'Physical course directory remains unchanged');
     const rewrittenRoot = await invoke(handler, { method: 'GET', url: rootRewrite.destination, headers: { cookie } });
     assert.equal(rewrittenRoot.statusCode, 200);
     assert.match(String(rewrittenRoot.body), /Fixture classroom/);
     assert.equal(await verifyCourseSession(rewrittenRoot.headers['set-cookie'], env, now), true);
-    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/', query: { file: '' }, headers: { cookie } })).statusCode, 200);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent912/', query: { file: '' }, headers: { cookie } })).statusCode, 200);
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content?unexpected=1', headers: { cookie } })).statusCode, 400);
     const page = await invoke(handler, get('index.html'));
     assert.equal(page.statusCode, 200);
@@ -252,6 +261,14 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal(page.headers['vercel-cdn-cache-control'], 'no-store');
     assert.equal(await verifyCourseSession(page.headers['set-cookie'], env, now), true);
     assert.match(page.headers['set-cookie'], /Max-Age=34560000/);
+    for (const file of ['evaluation.html', 'followup-qr.svg']) {
+      const request = { method: 'GET', url: `/course/thedent912/${file}`, headers: { cookie } };
+      const allowed = await invoke(handler, request);
+      assert.equal(allowed.statusCode, 200, file);
+      assert.match(allowed.headers['cache-control'], /private.*no-store/);
+      assert.equal((await invoke(handler, { ...request, headers: {} })).statusCode, 401, file);
+      if (file.endsWith('.svg')) assert.equal(allowed.headers['content-type'], 'image/svg+xml');
+    }
     const script = await invoke(handler, get('course.js'));
     assert.equal(script.statusCode, 200);
     assert.match(script.headers['content-type'], /^application\/javascript/);
@@ -273,8 +290,13 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     }
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content?file=index.html&file=course.js', headers: { cookie } })).statusCode, 400);
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', query: { file: ['index.html', 'course.js'] }, headers: { cookie } })).statusCode, 400);
-    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/course.js', query: { file: 'course.js' }, headers: { cookie } })).statusCode, 200);
-    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent/course.js?file=index.html', headers: { cookie } })).statusCode, 400);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent912/course.js', query: { file: 'course.js' }, headers: { cookie } })).statusCode, 200);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent912/course.js?file=index.html', headers: { cookie } })).statusCode, 400);
+    assert.equal((await invoke(handler, { method: 'GET', url: '/course/thedent912/course.js?lesson=files', query: { file: 'course.js' }, headers: { cookie } })).statusCode, 200);
+    for (const url of ['/course/%74hedent912/course.js', '/course/thedent912/%63ourse.js', '/course/thedent/course.js', '/unrelated/course.js']) {
+      assert.equal((await invoke(handler, { method: 'GET', url, query: { file: 'course.js' }, headers: { cookie } })).statusCode, 400, url);
+      assert.equal((await invoke(handler, { method: 'GET', url, query: { file: 'course.js' }, headers: {} })).statusCode, 401, url);
+    }
     assert.equal((await invoke(handler, get('index.html', { method: 'POST' }))).statusCode, 405);
     await writeFile(path.join(root, 'outside.csv'), 'private-fixture');
     await symlink(path.join(root, 'outside.csv'), path.join(base, 'resources', 'website-source-notes.md'));
@@ -282,4 +304,40 @@ test('content validates an explicit allowlist, authenticates direct access, and 
   } finally {
     await rm(root, { recursive: true, force: true });
   }
+});
+
+test('portal returns old and new saved links to the canonical room without losing query or slide hash', async () => {
+  const portal = await readFile(new URL('../../course/portal.js', import.meta.url), 'utf8');
+  const safeNext = portal.slice(portal.indexOf('  function safeNext('), portal.indexOf('  function setBusy('));
+  const enterClassroom = portal.slice(portal.indexOf('  function enterClassroom('), portal.indexOf('  function openProject('));
+  assert.ok(safeNext.includes('function safeNext('));
+  assert.ok(enterClassroom.includes('function enterClassroom('));
+  const loadPortalNavigation = (initialNext, initialHash = '', initialProject = 'thedent') => {
+    let assigned;
+    const field = { value: 'transient-test-input' };
+    const context = vm.createContext({ URL, location: { origin: 'https://classroom.example', assign(value) { assigned = value; } }, field, initialProject, initialNext, initialHash });
+    vm.runInContext(safeNext + enterClassroom, context);
+    return { context, field, assigned: () => assigned };
+  };
+  const plain = loadPortalNavigation(null);
+  for (const value of ['/course/thedent', '/course/thedent/', '/course/thedent912', '/course/thedent912/']) {
+    assert.equal(plain.context.safeNext(value)?.href, 'https://classroom.example/course/thedent912/', value);
+  }
+  for (const room of ['thedent', 'thedent912']) {
+    const input = `/course/${room}/opening.html?lesson=source%20files#7`;
+    assert.equal(plain.context.safeNext(input)?.href, 'https://classroom.example/course/thedent912/opening.html?lesson=source%20files#7');
+  }
+  for (const unsafe of [null, '', '//outside.example/course/thedent912/', 'https://outside.example/course/thedent912/', '/course/thedent912-other/', '/course/THEdent912/', '/course/thedent912/../advance/', '/course/thedent912/%2e%2e/advance/', '/course/thedent%39%31%32/', '/course/thedent912//index.html', '/course/thedent912\\index.html', '/course/thedent912/\nindex.html']) {
+    assert.equal(plain.context.safeNext(unsafe), null, String(unsafe));
+  }
+  const inherited = loadPortalNavigation('/course/thedent/?lesson=files', '#learn/files');
+  inherited.context.enterClassroom(inherited.context.safeNext('/course/thedent912/'));
+  assert.equal(inherited.assigned(), '/course/thedent912/?lesson=files#learn/files');
+  assert.equal(inherited.field.value, '');
+  const explicit = loadPortalNavigation('/course/thedent/opening.html?lesson=source#7', '#learn/files');
+  explicit.context.enterClassroom(explicit.context.safeNext('/course/thedent912/'));
+  assert.equal(explicit.assigned(), '/course/thedent912/opening.html?lesson=source#7');
+  const rejected = loadPortalNavigation('//outside.example/', '#learn/files');
+  rejected.context.enterClassroom(rejected.context.safeNext('/course/thedent912/'));
+  assert.equal(rejected.assigned(), '/course/thedent912/#learn/files');
 });
