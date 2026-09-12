@@ -2,7 +2,7 @@
 
    The server is the only place allowed to apply the historical fallback:
    old books without memberLimit are 5-person books. Client renderers must
-   never guess 5, because doing so caused a correct 1..11 value to flash and
+   never guess 5, because doing so caused a correct per-book value to flash and
    then be overwritten by a legacy N/5 fallback.
 */
 

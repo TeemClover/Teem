@@ -1,7 +1,7 @@
 /* TeamBook 1.5 — create-page people capacity control.
 
    Canon:
-   - every book has a fixed member limit 1..11, owner included;
+   - every book has a fixed member limit 1..30, owner included;
    - old books with no stored memberLimit are resolved by the server as 5;
    - PET never consumes a people slot;
    - Home/Public/book displays render server-resolved capacity directly.
@@ -54,7 +54,7 @@ function installCreateStepper() {
   row.className = 'tb-capacity-step';
   row.id = 'tbMemberCapacity';
   row.innerHTML = `
-    <div class="tb-capacity-copy"><b>รับได้กี่คน?</b><small>นับเจ้าของสมุดด้วย · สูงสุด 11 คน</small></div>
+    <div class="tb-capacity-copy"><b>รับได้กี่คน?</b><small>นับเจ้าของสมุดด้วย · สูงสุด ${MAX} คน</small></div>
     <div class="tb-capacity-control" role="group" aria-label="จำนวนคนในสมุด">
       <button type="button" data-delta="-1" aria-label="ลดจำนวนคน">−</button>
       <span class="tb-capacity-value">5 คน</span>

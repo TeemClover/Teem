@@ -7,20 +7,23 @@ import { memberLimitSql } from '../api/_lib/member-limit.js';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 
-test('member limits normalize to the shared 1–11 contract', () => {
+test('member limits normalize to the shared 1–30 contract', () => {
   assert.equal(normalizeMemberLimit(1), 1);
   assert.equal(normalizeMemberLimit(11), 11);
+  assert.equal(normalizeMemberLimit(15), 15);
+  assert.equal(normalizeMemberLimit(30), 30);
   assert.equal(normalizeMemberLimit(0), 1);
-  assert.equal(normalizeMemberLimit(12), 11);
+  assert.equal(normalizeMemberLimit(31), 30);
   assert.equal(normalizeMemberLimit('7'), 7);
   assert.equal(normalizeMemberLimit('bad'), 5);
+  assert.equal(normalizeMemberLimit(undefined), 5);
 });
 
 test('capacity SQL is shared, bounded, and rejects request-authored fragments', () => {
   const expression = memberLimitSql('p.id');
   assert.match(expression, /PARTY_CREATED/);
   assert.match(expression, /memberLimit/);
-  assert.match(expression, /LEAST\(11,GREATEST\(1/);
+  assert.match(expression, /LEAST\(30,GREATEST\(1/);
   assert.throws(() => memberLimitSql('p.id); DROP TABLE books;--'), /INVALID_BOOK_ID_SQL/);
 });
 

@@ -3,7 +3,7 @@
    Public preview paints the page shell from the same immutable memberLimit.
    This module adds live status metadata from the detail API. It never guesses
    capacity: the detail API has already resolved legacy books to 5 and newer
-   books to their stored 1..11 limit.
+   books to their stored 1..30 limit.
 
    The preview metadata stays hidden until this canonical detail payload is
    ready, so a capacity number is painted exactly once — never as an interim

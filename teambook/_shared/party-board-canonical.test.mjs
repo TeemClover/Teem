@@ -50,8 +50,8 @@ test('valid npcCardId keeps the real full-art collectible path', () => {
   assert.equal(companion.card, realCard);
 });
 
-test('memberLimit 1–11 never turns a human position into Companion identity', () => {
-  for (let memberLimit = 1; memberLimit <= 11; memberLimit += 1) {
+test('memberLimit 1–30 never turns a human position into Companion identity', () => {
+  for (let memberLimit = 1; memberLimit <= 30; memberLimit += 1) {
     const plan = partyBoardPlan({
       memberLimit,
       members:members(memberLimit),
@@ -59,6 +59,7 @@ test('memberLimit 1–11 never turns a human position into Companion identity', 
       npcCardId:null,
     });
     assert.equal(plan.members.length, memberLimit);
+    assert.equal(plan.memberLimit, memberLimit);
     assert.equal(plan.remaining, 0);
     assert.equal(plan.companion.kind, 'starter-companion');
     assert.equal(plan.companion.petId, 'buffalo');

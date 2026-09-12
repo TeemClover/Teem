@@ -274,7 +274,10 @@ function initJoin(initialCode) {
       return;
     }
     if (res.error === 'FULL') {
-      err.textContent = `สมุดนี้เต็มแล้ว (รับได้ไม่เกิน ${Number(res.memberLimit) || 11} คน)`;
+      const memberLimit = Number(res.memberLimit);
+      err.textContent = Number.isFinite(memberLimit) && memberLimit > 0
+        ? `สมุดนี้เต็มแล้ว (รับได้ไม่เกิน ${memberLimit} คน)`
+        : 'สมุดนี้เต็มแล้ว';
       err.hidden = false;
       go.disabled = false;
       go.classList.remove('is-loading');

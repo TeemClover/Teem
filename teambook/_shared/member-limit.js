@@ -1,9 +1,9 @@
 /* One capacity contract for every TeamBook surface.
    The owner is included. Books created before memberLimit existed keep the
-   historical default of five; every new value is clamped to 1..11. */
+   historical default of five; every new value is clamped to 1..30. */
 
 export const MIN_MEMBER_LIMIT = 1;
-export const MAX_MEMBER_LIMIT = 11;
+export const MAX_MEMBER_LIMIT = 30;
 export const DEFAULT_MEMBER_LIMIT = 5;
 
 export function normalizeMemberLimit(value, fallback = DEFAULT_MEMBER_LIMIT) {

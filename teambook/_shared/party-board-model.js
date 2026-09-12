@@ -5,7 +5,7 @@
    never decide which artwork renderer is used.
 
    Companion is a semantic party role, not a seat number. The renderer may
-   show 1–11 humans and an optional vacancy before appending this model. */
+   show 1–30 humans and an optional vacancy before appending this model. */
 
 import { cardById } from './cards.js';
 import { speciesById } from './avatars.js';

@@ -21,6 +21,18 @@ test('client capacity uses the exact server-resolved per-book limit', () => {
     remaining: 0,
     full: true,
   });
+  assert.deepEqual(bookCapacity({ memberCount: 14, maxMembers: 15 }), {
+    memberCount: 14,
+    memberLimit: 15,
+    remaining: 1,
+    full: false,
+  });
+  assert.deepEqual(bookCapacity({ memberCount: 29, maxMembers: 30 }), {
+    memberCount: 29,
+    memberLimit: 30,
+    remaining: 1,
+    full: false,
+  });
 });
 
 test('owner is part of the people count and full means count reaches this book limit', () => {
@@ -28,12 +40,15 @@ test('owner is part of the people count and full means count reaches this book l
   assert.equal(bookCapacity({ memberCount: 1, memberLimit: 5 }).remaining, 4);
   assert.equal(bookCapacity({ memberCount: 10, memberLimit: 11 }).full, false);
   assert.equal(bookCapacity({ memberCount: 11, memberLimit: 11 }).full, true);
+  assert.equal(bookCapacity({ memberCount: 15, memberLimit: 15 }).full, true);
+  assert.equal(bookCapacity({ memberCount: 30, memberLimit: 30 }).full, true);
+  assert.equal(bookCapacity({ memberCount: 31, memberLimit: 30 }).remaining, 0);
 });
 
 test('client never invents the historical five-person fallback', () => {
   assert.equal(bookCapacity({ memberCount: 3 }), null);
   assert.equal(bookCapacity({ memberCount: 3, maxMembers: 0 }), null);
-  assert.equal(bookCapacity({ memberCount: 3, maxMembers: 12 }), null);
+  assert.equal(bookCapacity({ memberCount: 3, maxMembers: 31 }), null);
 });
 
 test('active Public surfaces contain no fixed-five capacity renderer', async () => {
