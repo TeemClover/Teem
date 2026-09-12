@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <script src="./consent.js?v=1"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f7f5ed">
+  <title>เลือกสิทธิ์เผยแพร่รีวิวของคุณ · myClover</title>
+  <link rel="stylesheet" href="./consent.css?v=1">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/course/">myClover</a><span>ความคิดเห็นของคุณ · คุณเลือกได้</span></header>
+  <main>
+    <section class="consent-card" aria-labelledby="title">
+      <p class="eyebrow">YOUR WORDS. YOUR CHOICE.</p>
+      <h1 id="title">เลือกได้ว่ารีวิวนี้<br>จะเผยแพร่แบบไหน</h1>
+      <p class="intro">สิทธิ์นี้ใช้เฉพาะข้อความด้านล่าง บนหน้าขายและสื่อแนะนำคอร์สของ myClover</p>
+      <p class="loading" id="loading" role="status">กำลังเปิดข้อความรีวิวของคุณ…</p>
+      <div id="review-content" hidden>
+        <div class="original"><span>ข้อความที่ขออนุญาตใช้</span><blockquote id="testimonial"></blockquote></div>
+        <form id="consent-form">
+          <fieldset id="choices">
+            <legend>การเลือกของคุณ</legend>
+            <label class="choice" for="private"><input id="private" type="radio" name="consent" value="private" required><span><b>เก็บเป็นความคิดเห็นส่วนตัว</b><small>ไม่อนุญาตให้นำข้อความนี้ไปเผยแพร่</small></span></label>
+            <label class="choice" for="anonymous"><input id="anonymous" type="radio" name="consent" value="anonymous"><span><b>เผยแพร่โดยไม่ระบุชื่อ</b><small>ใช้เฉพาะข้อความ ไม่แสดงชื่อและบทบาทของฉัน</small></span></label>
+            <label class="choice" for="named"><input id="named" type="radio" name="consent" value="named"><span><b>เผยแพร่พร้อมชื่อ</b><small>ใช้ข้อความ พร้อมชื่อและบทบาทตามตัวอย่างด้านล่าง</small></span></label>
+          </fieldset>
+          <section class="preview" aria-labelledby="preview-title"><h2 id="preview-title">ตัวอย่างตามการเลือกนี้</h2><div id="preview-content"></div></section>
+          <p class="choice-state" id="choice-state" aria-live="polite"></p>
+          <button class="button primary" id="save" type="submit">บันทึกการเลือกของฉัน</button>
+          <p class="saved" id="saved" role="status" hidden></p>
+        </form>
+        <p class="note">การอนุญาตไม่ได้ทำให้รีวิวเผยแพร่ทันที myClover จะคัดข้อความที่ได้รับอนุญาตไปใช้ คุณกลับมาเปลี่ยนการเลือกผ่านลิงก์นี้ได้</p>
+      </div>
+      <p class="error" id="error" role="alert" hidden></p>
+      <button class="button secondary" id="retry" type="button" hidden>โหลดสิทธิ์ล่าสุดอีกครั้ง</button>
+      <div class="assurance"><p>ไม่มีผลต่อการ์ดที่คุณได้รับ</p><span>ไม่จำเป็นต้องให้คะแนนสูงหรือเขียนคำชมเพื่ออนุญาตหรือปฏิเสธการเผยแพร่</span></div>
+    </section>
+  </main>
+  <noscript><p class="no-script">เปิด JavaScript เพื่อดูข้อความและเลือกสิทธิ์ของคุณ</p></noscript>
+  <footer><a href="/course/workshop/">ดูรายละเอียด AI ใส่ซอส Workshop →</a></footer>
+</body>
+</html>

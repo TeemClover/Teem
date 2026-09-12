@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#fbfaf7">
+  <title>รีวิวเวิร์กช็อป · myClover Admin</title>
+  <link rel="stylesheet" href="./reviews.css?v=20260912-1">
+  <script defer src="./reviews.js?v=20260912-1"></script>
+</head>
+<body>
+  <a class="skip" href="#main">ข้ามไปเนื้อหา</a>
+  <header class="site-header">
+    <a class="brand" href="/course/" aria-label="myClover กลับโปรเจกต์"><span class="brand-mark" aria-hidden="true">✳</span>myClover <small>ADMIN</small></a>
+    <nav aria-label="เมนูผู้สอน"><a href="/course/workshop/">หน้าคอร์ส ↗</a><a href="/first-class/admin/reviews/">รีวิว First Class ↗</a><button id="logout" class="button quiet" type="button" hidden>ออกจากระบบ</button></nav>
+  </header>
+  <main id="main" tabindex="-1">
+    <section id="login-panel" class="login-panel" aria-labelledby="login-title">
+      <p class="eyebrow">FOR THE INSTRUCTOR</p>
+      <h1 id="login-title">ฟังเสียงผู้เรียน<br>แล้วพาคลาสไปต่อ</h1>
+      <p>อ่านคำตอบต้นฉบับทุกคน คัดข้อความที่อยากเก็บไว้ และจัดการสิทธิ์เผยแพร่ในที่เดียว</p>
+      <form id="login-form">
+        <label for="admin-key">รหัสผู้ดูแล myClover / TeamBook</label>
+        <div class="password-field"><input id="admin-key" type="password" autocomplete="current-password" required><button id="toggle-key" type="button" aria-label="แสดงรหัส" aria-pressed="false">แสดง</button></div>
+        <button class="button primary" id="login-submit" type="submit">เปิดหน้ารีวิว →</button>
+        <p id="login-error" class="error" role="alert" hidden></p>
+      </form>
+      <p class="small muted">ใช้รหัสผู้ดูแล ไม่ใช่รหัสเข้าห้องเรียน<br>จำสิทธิ์ไว้เฉพาะเซสชันของเบราว์เซอร์นี้</p>
+    </section>
+    <section id="dashboard" class="dashboard" hidden aria-labelledby="dashboard-title">
+      <div class="dashboard-intro"><div><p class="eyebrow">WORKSHOP REVIEWS · PRIVATE ADMIN</p><h1 id="dashboard-title">เสียงจากห้องเรียน</h1><p id="course-title">AI ใส่ซอส · Workshop 3 ชั่วโมง</p></div><button id="refresh" class="button" type="button">↻ โหลดใหม่</button></div>
+      <div id="load-error" class="error error-banner" role="alert" hidden></div>
+      <section id="summary" class="summary" aria-label="สรุปคำตอบ"></section>
+      <p class="summary-note" id="summary-note"></p>
+      <section class="toolbar" aria-label="เลือกรีวิว">
+        <div class="select-row"><label for="cohort">รุ่น / ทีม<select id="cohort"><option value="">ทุกรุ่น</option></select></label><label class="search-label" for="search">ค้นคำตอบ<input id="search" type="search" placeholder="ชื่อ หน้าที่ หรือข้อความในรีวิว"></label></div>
+        <div class="filters" role="group" aria-label="กรองสถานะ"><button type="button" data-filter="all" aria-pressed="true">ทั้งหมด</button><button type="button" data-filter="shortlisted" aria-pressed="false">คัดไว้</button><button type="button" data-filter="eligible" aria-pressed="false">มีสิทธิ์เผยแพร่</button><button type="button" data-filter="published" aria-pressed="false">เผยแพร่แล้ว</button><button type="button" data-filter="private" aria-pressed="false">ใช้ภายใน</button></div>
+      </section>
+      <div class="list-heading"><h2>คำตอบต้นฉบับ</h2><p id="result-count" aria-live="polite"></p></div>
+      <div id="review-list" class="review-list"></div>
+      <div id="empty" class="empty" hidden><h2>ยังไม่มีรีวิวในมุมมองนี้</h2><p>ลองเปลี่ยนรุ่น ตัวกรอง หรือคำค้น</p></div>
+      <p class="privacy-note">“คัดไว้” เป็นรายการภายใน การเผยแพร่ใช้เฉพาะข้อความเล่าถึงคลาสที่เจ้าของอนุญาตแล้ว โดยคงคำตอบต้นฉบับไว้</p>
+    </section>
+  </main>
+  <footer class="site-footer"><span>myClover · AI ใส่ซอส Workshop</span><span>พื้นที่ทำงานส่วนตัวของผู้สอน</span></footer>
+  <dialog id="review-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head"><h2 id="dialog-title"></h2><button id="close-dialog" class="icon-button" type="button" aria-label="ปิดหน้าต่าง">×</button></div>
+    <div id="dialog-content"></div>
+    <p id="copy-status" class="small muted" role="status"></p>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="error-banner">กรุณาเปิด JavaScript เพื่อเข้าสู่ระบบและอ่านรีวิว</p></noscript>
+</body>
+</html>

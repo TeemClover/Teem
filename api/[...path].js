@@ -3,6 +3,7 @@ import { handleXtyStars } from './_lib/xty-stars.js';
 import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
 import { handleFirstClassReview } from './_lib/first-class-review.js';
 import { handleCourseReview } from './_lib/course-review.js';
+import { handleCourseReviews } from './_lib/course-reviews-admin.js';
 
 function routeOf(req) {
   const raw = req.query?.path;
@@ -31,6 +32,7 @@ export default function handler(req, res) {
 
   if (rawRoute === 'first-class/review' || rawRoute === 'first-class-review') return handleFirstClassReview(req, res);
   if (rawRoute === 'course-review') return handleCourseReview(req, res);
+  if (rawRoute === 'course-reviews') return handleCourseReviews(req, res);
   if (route === 'xty-mine') return handleXtyMine(req, res);
   if (route === 'xty-stars') return handleXtyStars(req, res);
   if (route === 'xty-party-finish' || finishRequest(req, rawRoute)) {
