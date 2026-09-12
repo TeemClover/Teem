@@ -113,7 +113,8 @@ async function boot() {
       './reward-history-v13.js',
       './party-enhancements.js',
       './party-profile-covers.js',
-      './party-log-viewport.js',
+      './party-log-viewport.js?v=20260912-log-navigation',
+      './party-log-controls.js?v=20260912-log-navigation',
       './party-event-copy-v2.js',
       './party-invite-copy.js',
       './party-log-export.js',
@@ -138,6 +139,8 @@ async function boot() {
 
   if (/^\/public\/p\/?$/.test(PATH)) {
     await importMany([
+      './party-log-viewport.js?v=20260912-log-navigation',
+      './party-log-controls.js?v=20260912-log-navigation',
       './public-seen-v15.js',
       './trust-seen.js',
       './public-member-identity-v13.js',

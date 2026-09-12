@@ -19,6 +19,7 @@ function injectStyle() {
     #log{
       min-height:0!important;
       height:auto!important;
+      max-height:none!important;
       overflow:visible!important;
       overscroll-behavior:initial!important;
       touch-action:auto!important;
@@ -44,7 +45,7 @@ function injectStyle() {
     #log>.party-event .event-time{font-size:8.5px!important;opacity:.7!important}
 
     @media(min-width:900px){
-      #log.long-log{
+      #log{
         max-height:620px!important;
         overflow-y:auto!important;
         overflow-x:hidden!important;
@@ -55,12 +56,6 @@ function injectStyle() {
   `;
   document.head.appendChild(style);
 
-  /* Add the desktop viewport only when the history is actually long. No
-     MutationObserver is needed: rendering code may call this module again on a
-     new document, and a short log never gets a fake blank canvas. */
-  requestAnimationFrame(() => {
-    if (matchMedia('(min-width:900px)').matches && box.scrollHeight > 760) {
-      box.classList.add('long-log');
-    }
-  });
+  /* max-height bounds long desktop histories after async loads or filter
+     changes, while height:auto lets short/empty results shrink naturally. */
 }

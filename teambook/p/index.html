@@ -29,6 +29,7 @@
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<link rel="stylesheet" href="/_shared/party-log-controls.css?v=20260912-log-navigation">
 <style>
   .more-tools{margin-top:12px}
   .more-tools>.more-tools-body{padding-top:2px}
@@ -719,6 +720,7 @@ function renderLog(p) {
     const pendingFirstSeen = isReward && post.rewardSource === 'first_seen_pending' && post.rewardId;
     const rewardCard = isReward && !pendingFirstSeen ? cardById(post.body) : null;
     const el = document.createElement('div');
+    el.dataset.logKind = post.kind || 'message';
     el.className = 'post'
       + (post.kind === 'commit' ? ' commit' : '')
       + (isReward ? ' reward' : '')

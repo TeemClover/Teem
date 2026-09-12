@@ -1,0 +1,17 @@
+.log-controls{margin-top:16px;display:grid;gap:10px}
+.log-filters{display:flex;gap:4px;padding:4px;border:1px solid var(--xty-border);border-radius:14px;background:var(--xty-paper)}
+.log-filters button{flex:1;min-width:0;min-height:44px;padding:8px 10px;border:0;border-radius:10px;background:transparent;color:var(--xty-muted);font:800 14px/1.4 var(--sans);cursor:pointer}
+.log-filters button[aria-pressed="true"]{background:var(--xty-primary);color:#fff;box-shadow:0 2px 6px rgba(41,136,87,.14)}
+.log-filters button:focus-visible,.log-navigation button:focus-visible{outline:3px solid var(--xty-blue);outline-offset:3px}
+.log-navigation{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.log-navigation .whisper{margin:0;font-size:12px}
+.log-navigation #logLatest{min-height:44px;padding:8px 14px;gap:6px;white-space:nowrap;margin-left:auto}
+.log-navigation #logLatest:disabled{opacity:.45;cursor:default}
+.log-filter-empty{margin:16px 0;padding:24px 12px;border:1px dashed var(--xty-border);border-radius:14px;color:var(--xty-muted);text-align:center;font-size:14px}
+#logFilterEmpty[hidden],#rewardStatuses[hidden]{display:none!important}
+/* Beat the reward module's display:flex!important, even for later inserts. */
+#log:is(.log,.public-log)[data-log-filter="commit"]>:not([data-log-kind="commit"]),
+#log:is(.log,.public-log)[data-log-filter="message"]>:not([data-log-kind="message"]){display:none!important}
+#log>[tabindex="-1"]{scroll-margin-block:100px 20px;outline:none}
+#log>[tabindex="-1"]:focus-visible{outline:2px solid var(--xty-blue);outline-offset:3px}
+#log.public-log>[tabindex="-1"]{scroll-margin-bottom:100px}

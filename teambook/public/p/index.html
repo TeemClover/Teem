@@ -28,6 +28,7 @@
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<link rel="stylesheet" href="/_shared/party-log-controls.css?v=20260912-log-navigation">
 <style>
   .preview-hero{display:grid;grid-template-columns:112px minmax(0,1fr);gap:16px;align-items:center}
   .preview-cover{width:112px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:14px}
@@ -165,6 +166,7 @@ function linkify(root) {
 
 function postNode(post) {
   const row = document.createElement('div'); row.className = `public-entry ${esc(post.kind)}`;
+  row.dataset.logKind = post.kind || 'message';
   let art = '';
   if (post.kind === 'pet' && post.petId && PET_BY_ID[post.petId]?.art) art = PET_BY_ID[post.petId].art;
   else if (post.avatar) art = avatarById(post.avatar).art;
