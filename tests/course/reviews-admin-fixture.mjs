@@ -15,7 +15,8 @@ export const SYNTHETIC_COURSE_REVIEWS = Object.freeze([
 export function createReviewFixtureDatabase({ reviews = SYNTHETIC_COURSE_REVIEWS } = {}) {
   const records = new Map(reviews.map(row => [row.review_reference, structuredClone(row)]));
   const curation = new Map(), queries = [];
-  const joined = row => ({ ...structuredClone(row), shortlisted: false, published: false, consent_override: null, ...structuredClone(curation.get(row.review_reference) || {}) });
+  const joined = row => ({ ...structuredClone(row), shortlisted: false, published: false, consent_override: null,
+    ...structuredClone(curation.get(row.review_reference) || {}), created_at: structuredClone(row.created_at) });
   const effective = row => row.consent_override ?? row.consent_mode;
   const shareable = row => ['named', 'anonymous'].includes(effective(row)) && Boolean(row.testimonial?.trim());
   function ensure(id, time) {

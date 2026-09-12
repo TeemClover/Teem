@@ -1,5 +1,6 @@
 import { database, sendJson } from './core.js';
 import { randomUUID, timingSafeEqual } from 'node:crypto';
+import { sharedCourseAdminDecision } from './course-admin-auth.js';
 
 const COURSE_ID = 'ai-sauce-pilot-2026-08-18';
 const TAKEAWAYS = new Set([
@@ -30,6 +31,9 @@ function equal(a, b) {
 }
 function authorized(req) {
   const supplied = req.headers['x-admin-key'];
+  const shared = sharedCourseAdminDecision(supplied, process.env);
+  if (shared !== null) return shared;
+  // Preserve existing access only until a shared course admin key is configured.
   const configured = process.env.FIRST_CLASS_ADMIN_KEY || '';
   return equal(supplied, 'calling') || Boolean(configured && equal(supplied, configured));
 }

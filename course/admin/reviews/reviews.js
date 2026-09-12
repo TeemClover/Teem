@@ -117,7 +117,7 @@
       if(version!==loadVersion||session!==sessionVersion)return;
       if(!Array.isArray(result.reviews)||!Array.isArray(result.cohorts))throw new Error('ข้อมูลยังไม่พร้อม ลองโหลดใหม่ครับ');
       state.rows=result.reviews.filter(row=>row&&typeof row.id==='string'); state.cohorts=result.cohorts; state.loaded=true; state.loadedCohort=requestedCohort;
-      try {sessionStorage.setItem('courseReviewAdminKey',state.key);} catch {}
+      try {sessionStorage.setItem('courseReviewAdminKey',state.key);sessionStorage.setItem('firstClassAdminKey',state.key);} catch {}
       $('admin-key').value=''; $('login-panel').hidden=true; $('dashboard').hidden=false; $('logout').hidden=false;
       $('course-title').textContent=result.course?.title||'AI ใส่ซอส · Workshop 3 ชั่วโมง';
       $('cohort').innerHTML='<option value="">ทุกรุ่น</option>'+state.cohorts.map(item=>'<option value="'+esc(item.id)+'">'+esc(item.title)+'</option>').join('');

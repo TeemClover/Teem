@@ -89,6 +89,7 @@ test('private reviews may be shortlisted but cannot publish; low scores are not 
   const shortlisted = await invoke(handler, post({ action: 'shortlist', id: 'CR-fixture-private', value: true }));
   assert.equal(shortlisted.statusCode, 200);
   assert.equal(shortlisted.data.review.shortlisted, true);
+  assert.equal(shortlisted.data.review.createdAt, SYNTHETIC_COURSE_REVIEWS[0].created_at.toISOString());
   for (const id of ['CR-fixture-private', 'CR-fixture-anonymous']) {
     const denied = await invoke(handler, post({ action: 'publish', id, value: true }));
     assert.equal(denied.statusCode, 409);

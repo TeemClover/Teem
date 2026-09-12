@@ -1,4 +1,5 @@
-import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
+import { configuredAdminKeyMatches, sharedCourseAdminDecision } from './course-admin-auth.js';
 
 export const COURSE_REVIEW_SALES_COURSE = Object.freeze({
   id: 'ai-sauce-workshop-3h', title: 'AI ใส่ซอส Workshop 3 ชม.',
@@ -33,10 +34,9 @@ class HttpError extends Error {
 function fail(status, code, message) { throw new HttpError(status, code, message); }
 function hash(value) { return createHash('sha256').update(value).digest('hex'); }
 function authorized(req, env) {
-  const configured = env.COURSE_REVIEW_ADMIN_KEY || env.FIRST_CLASS_ADMIN_KEY || env.XTY_ADMIN_PASSWORD;
   const supplied = req.headers?.['x-admin-key'];
-  if (typeof configured !== 'string' || !configured || configured.length > 4096 || typeof supplied !== 'string' || !supplied || supplied.length > 4096) return false;
-  return timingSafeEqual(Buffer.from(hash(configured), 'hex'), Buffer.from(hash(supplied), 'hex'));
+  const shared = sharedCourseAdminDecision(supplied, env);
+  return shared === null ? configuredAdminKeyMatches(supplied, env.XTY_ADMIN_PASSWORD) : shared;
 }
 function sameOrigin(req) {
   const { origin, host } = req.headers || {};

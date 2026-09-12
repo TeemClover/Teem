@@ -1,5 +1,6 @@
 import { database, sendJson } from './_lib/core.js';
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
+import { sharedCourseAdminDecision } from './_lib/course-admin-auth.js';
 
 const AI_OPTIONS = new Set(['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'อื่น ๆ', 'ยังไม่ค่อยได้ใช้ AI']);
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
@@ -33,6 +34,9 @@ function equal(a, b) {
   return aa.length === bb.length && timingSafeEqual(aa, bb);
 }
 function authorized(req) {
+  const shared = sharedCourseAdminDecision(req.headers['x-admin-key'], process.env);
+  if (shared !== null) return shared;
+  // Preserve existing access only until a shared course admin key is configured.
   const wanted = process.env.FIRST_CLASS_ADMIN_KEY || 'calling';
   return Boolean(wanted && equal(req.headers['x-admin-key'], wanted));
 }
