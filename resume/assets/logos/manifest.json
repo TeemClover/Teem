@@ -1,0 +1,37 @@
+{
+  "retrieved_at": "2026-09-13",
+  "assets": [
+    {
+      "file": "pir-academy.png",
+      "source": "https://www.piracademy.com/images/logos/logo-piracademy.png",
+      "found_on": "https://www.piracademy.com",
+      "method": "Downloaded unchanged from official website logo image",
+      "local_path": "resume/assets/logos/pir-academy.png",
+      "usage": "Portfolio reference; organization role and logo use supplied in the user-provided brief dated 2026-09-13. Not an endorsement."
+    },
+    {
+      "file": "clover-x.svg",
+      "source": "https://www.cloverx.co.th/th",
+      "method": "Extracted unchanged first inline svg.cx-nav__logo from official HTML. currentColor paths render black by default; final X path uses #4389FD.",
+      "local_path": "resume/assets/logos/clover-x.svg",
+      "usage": "Portfolio reference; organization role and logo use supplied in the user-provided brief dated 2026-09-13. Not an endorsement."
+    },
+    {
+      "file": "gem-scientific-beauty.png",
+      "source": "https://gemscientificbeauty.com/_nuxt/img/gem-black.223bc9f.png",
+      "found_on": "https://gemscientificbeauty.com/_nuxt/2fee95f.js",
+      "method": "Downloaded unchanged logo referenced by official application bundle",
+      "local_path": "resume/assets/logos/gem-scientific-beauty.png",
+      "usage": "Portfolio reference; organization role and logo use supplied in the user-provided brief dated 2026-09-13. Not an endorsement."
+    },
+    {
+      "file": "kooboon.png",
+      "source": "https://kooboondating.com/wp-content/uploads/2023/02/logopng-02.png",
+      "found_on": "https://kooboondating.com",
+      "method": "Downloaded unchanged official header dark logo",
+      "local_path": "resume/assets/logos/kooboon.png",
+      "usage": "Portfolio reference; organization role and logo use supplied in the user-provided brief dated 2026-09-13. Not an endorsement."
+    }
+  ],
+  "note": "Organization identity assets only; role claims remain owner-provided in the requested source, not verified by organization website."
+}

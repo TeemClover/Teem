@@ -12,7 +12,8 @@ assert.match(source, /from '@vercel\/functions'/);
 assert.match(source, /from '\.\/api\/_lib\/course-access\.js'/);
 const adapted = source
   .replace("'@vercel/functions'", JSON.stringify(`data:text/javascript,${encodeURIComponent(platform)}`))
-  .replace("'./api/_lib/course-access.js'", JSON.stringify(new URL('../../api/_lib/course-access.js', import.meta.url).href));
+  .replace("'./api/_lib/course-access.js'", JSON.stringify(new URL('../../api/_lib/course-access.js', import.meta.url).href))
+  .replace("'./shelf/route-policy.js'", JSON.stringify(new URL('../../shelf/route-policy.js', import.meta.url).href));
 const { default: middleware, config } = await import(`data:text/javascript,${encodeURIComponent(adapted)}`);
 
 const fixture = {
@@ -57,6 +58,36 @@ const assertPrivate = (response, label) => {
 
 test('matcher intercepts every path, including encoded names and dotted assets', () => {
   assert.equal(config.matcher, '/:path*');
+});
+
+test('shelf source files stay private before dotted-asset exemptions, regardless of classroom login', async () => {
+  for (const pathname of [
+    '/shelf/catalog.json', '/shelf/source/organization/handoff.md', '/shelf/README.md',
+    '/shelf/%73ource/organization/core-source.md', '/%73helf/source/file.md',
+    '/shelf%2fsource/file.md', '/shelf//source/file.md', '/SHELF/source/file.md',
+    '/%25252573helf/source/file.md', '/shelf%5csource/file.md',
+  ]) {
+    for (const session of [undefined, cookie]) {
+      const result = await invoke(pathname, session);
+      assert.equal(result.status, 403, pathname);
+      assertPrivate(result, pathname);
+      assert.equal(result.headers.get('x-content-type-options'), 'nosniff');
+    }
+  }
+  for (const pathname of ['/shelf/%FF', '/shelf/source%00/file.md', '/%252525252525252573helf/source/file.md']) {
+    const result = await invoke(pathname);
+    assert.equal(result.status, 400, pathname);
+    assertPrivate(result, pathname);
+  }
+});
+
+test('shelf public pages and API retain their routes alongside classroom authentication', async () => {
+  for (const pathname of ['/shelf/', '/shelf/index.html', '/shelf/shelf.css', '/shelf/shelf.js', '/shelf/admin/', '/shelf/admin/admin.js', '/api/shelf?action=catalog']) {
+    assertNext(await invoke(pathname), pathname);
+  }
+  const result = await invoke('/shelf?from=resume');
+  assert.equal(result.status, 307);
+  assert.equal(result.headers.get('location'), 'https://www.myclover.com/shelf/?from=resume');
 });
 
 test('canonical classroom documents require login and preserve destination/query', async () => {

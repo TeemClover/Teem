@@ -1,132 +1,260 @@
-(function(){
+(function () {
   'use strict';
 
-  function addUpgradeStyles(){
-    if(document.querySelector('link[data-resume-upgrade]')) return;
-    var link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='./resume-upgrade.css?v=20260802-sanchuan-mobile-dock';
-    link.dataset.resumeUpgrade='true';
-    document.head.appendChild(link);
-  }
+  var page = document.querySelector('.resume-page');
+  if (!page || page.classList.contains('enhanced')) return;
 
-  function refreshResumeImages(){
-    document.querySelectorAll('img[src*="resume-career-"],img[src*="resume-life-"]').forEach(function(img){
-      var clean=img.getAttribute('src').split('?')[0];
-      img.src=clean+'?v=20260802-hd';
-      img.decoding='async';
-    });
-  }
+  var modes = ['career', 'lifestyle'];
+  var filters = ['all', 'learn', 'build', 'play'];
+  var steps = ['source', 'check', 'output'];
+  var worlds = Array.from(document.querySelectorAll('[data-world]'));
+  var modeButtons = Array.from(document.querySelectorAll('button[data-mode]'));
+  var languageButtons = Array.from(document.querySelectorAll('button[data-lang]'));
+  var filterButtons = Array.from(document.querySelectorAll('button[data-filter]'));
+  var projects = Array.from(document.querySelectorAll('[data-category]'));
+  var demoButtons = Array.from(document.querySelectorAll('button[data-demo-step]'));
+  var demoPanels = Array.from(document.querySelectorAll('[data-demo-panel]'));
+  var count = document.getElementById('shelf-count');
+  var copyStatus = document.getElementById('copy-status');
+  var state = { mode: 'career', language: 'th', filter: 'all', step: 'source', copy: '' };
 
-  function addLegalProof(){
-    var career=document.getElementById('careerWorld');
-    if(!career||career.querySelector('.legal-proof-section')) return;
-    var currentNote=career.querySelector('.current-note');
-    var careerSection=currentNote&&currentNote.closest('section');
-    if(!careerSection) return;
-
-    var section=document.createElement('section');
-    section.className='section legal-proof-section';
-    section.innerHTML='\
-      <div class="wrap legal-proof-grid">\
-        <a class="legal-document reveal show" href="../img/resume-career-legal.webp?v=20260802-hd" target="_blank" rel="noopener noreferrer" aria-label="Open the first page of the bilingual agreement">\
-          <img src="../img/resume-career-legal.webp?v=20260802-hd" alt="หน้าแรกของสัญญาภาษาไทยและภาษาจีนสำหรับสิทธิจัดจำหน่ายสื่อในต่างประเทศ">\
-          <span class="legal-zoom"><span class="lang-th">กดดูภาพเต็ม ↗</span><span class="lang-en">Open full image ↗</span></span>\
-        </a>\
-        <div class="legal-story reveal show">\
-          <span class="eyebrow">三川 · CROSS-BORDER LEGAL WORK</span>\
-          <h2 class="title"><span class="lang-th">ทำให้ข้อตกลงเดินทางข้ามภาษา<br>และใช้งานได้จริง</span><span class="lang-en">Make an agreement travel across languages<br>and remain usable in practice</span></h2>\
-          <p class="legal-lead lang-th"><b>三川 Sanchuan Holdings</b> ก่อตั้งและดำเนินงานในฐานะบริษัท 3 สัญชาติ ไทย–จีน–ญี่ปุ่น เพื่อรองรับสัญญาและโครงการข้ามประเทศ พร้อมวางแผนขยายสู่งานด้านกฎหมายและงานสัญญาระหว่างประเทศ งานชิ้นนี้คือสัญญามอบสิทธิจัดจำหน่ายภาพยนตร์ ซีรีส์ และสื่อบันเทิง ภาษาไทย–จีน ซึ่งถูกนำไปใช้จริงระหว่างคู่สัญญาข้ามประเทศ</p>\
-          <p class="legal-lead lang-en"><b>三川 Sanchuan Holdings</b> was established and operated as a Thai–Chinese–Japanese company for cross-border agreements and projects, with plans to expand into international legal and contract work. This example is a Thai–Chinese agreement granting overseas distribution rights for films, series, and entertainment content, used in practice by parties across countries.</p>\
-          <div class="legal-facts">\
-            <div><b>THAI × CHINESE × JAPANESE</b><span class="lang-th">บริษัทก่อตั้งและดำเนินงานจริงด้วยโครงสร้าง 3 สัญชาติ</span><span class="lang-en">A company genuinely established and operated with three nationalities.</span></div>\
-            <div><b>BILINGUAL CONTRACT</b><span class="lang-th">ร่างภาษาไทย–จีนให้คู่สัญญาตรวจสอบความหมายชุดเดียวกัน</span><span class="lang-en">A Thai–Chinese draft that lets both parties verify the same meaning.</span></div>\
-            <div><b>CROSS-BORDER</b><span class="lang-th">เชื่อมโจทย์ธุรกิจ สิทธิ และพื้นที่จัดจำหน่ายระหว่างประเทศ</span><span class="lang-en">Connecting business terms, rights, and international territories.</span></div>\
-            <div><b>USED IN PRACTICE</b><span class="lang-th">ไม่ใช่แบบฝึกหัด แต่เป็นเอกสารที่ลงนามและใช้งานจริง</span><span class="lang-en">Not a classroom exercise, but a document signed and used in practice.</span></div>\
-          </div>\
-          <p class="legal-note"><span class="lang-th">เผยแพร่เฉพาะหน้าแรกโดยได้รับอนุญาต รายละเอียดส่วนอื่นของสัญญายังคงเป็นความลับ</span><span class="lang-en">Only the first page is shown with permission. The remaining contractual details remain confidential.</span></p>\
-        </div>\
-      </div>';
-    careerSection.insertAdjacentElement('afterend',section);
-
-    var stats=career.querySelectorAll('.stats .stat');
-    if(stats[2]) stats[2].querySelector('strong').textContent='6';
-  }
-
-  function syncCompanyCopy(){
-    var en=document.documentElement.lang==='en';
-    var jobTitle=[].slice.call(document.querySelectorAll('#careerWorld .job h3')).find(function(el){
-      return el.textContent.indexOf('Sanchuan Holdings')!==-1;
-    });
-    if(jobTitle) jobTitle.textContent='CEO — 三川 Sanchuan Holdings';
-
-    var jobCopy=document.querySelector('[data-i18n="job2"]');
-    if(jobCopy){
-      jobCopy.textContent=en
-        ?'Founded and operated a Thai–Chinese–Japanese company built for cross-border agreements and projects, with plans to expand into legal and contract work connecting international business.'
-        :'ก่อตั้งและดำเนินงานบริษัท 3 สัญชาติ ไทย–จีน–ญี่ปุ่น เพื่อรองรับสัญญาและโครงการข้ามประเทศ พร้อมวางแผนขยายสู่งานด้านกฎหมายและงานสัญญาระหว่างประเทศ';
-    }
-
-    var currentCopy=document.querySelector('[data-i18n="currentCopy"]');
-    if(currentCopy){
-      currentCopy.textContent=en
-        ?'I am not employed full-time by another organization. My main work is building myClover and leading 三川 Sanchuan Holdings, while taking on selected work in learning systems, games, communication, cross-border contracts, and idea amplification.'
-        :'ผมไม่ได้ทำงานประจำกับองค์กรอื่นแล้ว งานหลักคือการสร้าง myClover และดู 三川 Sanchuan Holdings พร้อมรับโจทย์ที่ตรงกับสิ่งที่ทำได้ดีที่สุด: ระบบการเรียนรู้ เกม การสื่อสาร สัญญาข้ามประเทศ และการขยายผลความคิด';
-    }
-  }
-
-  function addMobileModeDock(){
-    if(document.querySelector('.mobile-mode-dock')) return;
-    var dock=document.createElement('div');
-    dock.className='mobile-mode-dock';
-    dock.setAttribute('role','group');
-    dock.setAttribute('aria-label','Career or Lifestyle');
-    dock.innerHTML='\
-      <span class="mobile-mode-indicator" aria-hidden="true"></span>\
-      <button type="button" data-mobile-mode="career">CAREER</button>\
-      <button type="button" data-mobile-mode="lifestyle">LIFESTYLE</button>';
-    document.body.appendChild(dock);
-
-    function syncDock(){
-      var life=document.body.classList.contains('lifestyle-mode');
-      dock.classList.toggle('is-lifestyle',life);
-      dock.querySelectorAll('[data-mobile-mode]').forEach(function(btn){
-        btn.setAttribute('aria-pressed',btn.dataset.mobileMode===(life?'lifestyle':'career')?'true':'false');
-      });
-    }
-
-    dock.querySelectorAll('[data-mobile-mode]').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var original=document.querySelector('.mode-switch .switch-btn[data-mode="'+btn.dataset.mobileMode+'"]');
-        if(original) original.click();
+  // Thai lives in the HTML; English is trusted, static copy on the same leaf.
+  var translations = Array.from(document.querySelectorAll('[data-en]')).map(function (element) {
+    return { element: element, th: element.innerHTML, en: element.getAttribute('data-en') };
+  });
+  var translatedAttributes = [];
+  ['alt', 'aria-label'].forEach(function (attribute) {
+    document.querySelectorAll('[data-en-' + attribute + ']').forEach(function (element) {
+      translatedAttributes.push({
+        element: element,
+        name: attribute,
+        th: element.getAttribute(attribute),
+        en: element.getAttribute('data-en-' + attribute)
       });
     });
-    new MutationObserver(syncDock).observe(document.body,{attributes:true,attributeFilter:['class']});
-    syncDock();
+  });
+
+  function stored(key, allowed, fallback) {
+    try {
+      var value = localStorage.getItem(key);
+      return allowed.indexOf(value) !== -1 ? value : fallback;
+    } catch (error) {
+      return fallback;
+    }
   }
 
-  function bindLanguageRefresh(){
-    document.querySelectorAll('[data-lang]').forEach(function(btn){
-      btn.addEventListener('click',function(){setTimeout(syncCompanyCopy,0)});
+  function remember(key, value) {
+    try { localStorage.setItem(key, value); } catch (error) { /* Storage is optional. */ }
+  }
+
+  function hashId() {
+    try { return decodeURIComponent(window.location.hash.slice(1)); }
+    catch (error) { return ''; }
+  }
+
+  function modeForHash(id) {
+    if (['career', 'career-proof', 'work'].indexOf(id) !== -1) return 'career';
+    if (['lifestyle', 'life-gallery', 'life'].indexOf(id) !== -1) return 'lifestyle';
+    var target = document.getElementById(id);
+    var world = target && target.closest('[data-world]');
+    return world && modes.indexOf(world.dataset.world) !== -1 ? world.dataset.world : null;
+  }
+
+  function historyMode() {
+    var entry = window.history.state;
+    return entry && modes.indexOf(entry.mcResumeMode) !== -1 ? entry.mcResumeMode : null;
+  }
+
+  function historyEntry(mode) {
+    return Object.assign({}, window.history.state || {}, { mcResumeMode: mode });
+  }
+
+  function rememberHistoryMode() {
+    try {
+      window.history.replaceState(historyEntry(state.mode), '', window.location.href);
+    } catch (error) { /* Reading the profile does not require writable history. */ }
+  }
+
+  function applyMode(mode, save) {
+    state.mode = modes.indexOf(mode) !== -1 ? mode : 'career';
+    document.body.dataset.mode = state.mode;
+    worlds.forEach(function (world) { world.hidden = world.dataset.world !== state.mode; });
+    modeButtons.forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode));
+    });
+    if (save) remember('mc_resume_mode', state.mode);
+  }
+
+  function scrollToAnchor(id, moveFocus) {
+    var targetId = id === 'lifestyle' ? 'life' : id === 'career' ? 'work' : id;
+    var target = document.getElementById(targetId);
+    if (!target || target.closest('[hidden]')) return;
+    window.requestAnimationFrame(function () {
+      if (target.closest('[hidden]')) return;
+      if (moveFocus) {
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+      }
+      target.scrollIntoView({ block: 'start', behavior: 'instant' });
     });
   }
 
-  function runUpgrade(){
-    addUpgradeStyles();
-    refreshResumeImages();
-    addLegalProof();
-    addMobileModeDock();
-    bindLanguageRefresh();
-    syncCompanyCopy();
+  function followHash() {
+    var id = hashId();
+    var focusedWorld = document.activeElement && document.activeElement.closest('[data-world]');
+    var nextMode = modeForHash(id) || historyMode() || state.mode;
+    var moveFocus = focusedWorld && focusedWorld.dataset.world !== nextMode;
+    applyMode(nextMode, true);
+    rememberHistoryMode();
+    if (id) scrollToAnchor(id, moveFocus);
   }
 
-  var base=document.createElement('script');
-  base.src='./resume-base.js?v=20260802-switch-i18n';
-  base.async=false;
-  base.onload=runUpgrade;
-  base.onerror=function(){
-    console.error('Unable to load Resume base script.');
-    runUpgrade();
-  };
-  document.head.appendChild(base);
+  function chooseMode(mode) {
+    if (modes.indexOf(mode) === -1) return;
+    applyMode(mode, true);
+    if (window.location.hash !== '#' + mode) {
+      var url = new URL(window.location.href);
+      url.hash = mode;
+      try {
+        window.history.pushState(historyEntry(mode), '', url);
+      } catch (error) {
+        window.location.hash = mode;
+      }
+    } else {
+      rememberHistoryMode();
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }
+
+  function applyFilter(filter) {
+    state.filter = filters.indexOf(filter) !== -1 ? filter : 'all';
+    var visible = 0;
+    projects.forEach(function (project) {
+      var categories = project.dataset.category.trim().split(/\s+/);
+      var shown = state.filter === 'all' || categories.indexOf(state.filter) !== -1;
+      project.hidden = !shown;
+      if (shown) visible += 1;
+    });
+    filterButtons.forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.filter === state.filter));
+    });
+    if (count) {
+      count.textContent = state.language === 'en'
+        ? 'Showing ' + visible + ' of ' + projects.length + ' projects'
+        : 'แสดง ' + visible + ' จาก ' + projects.length + ' ผลงาน';
+    }
+  }
+
+  function applyDemo(step) {
+    state.step = steps.indexOf(step) !== -1 ? step : 'source';
+    demoPanels.forEach(function (panel) { panel.hidden = panel.dataset.demoPanel !== state.step; });
+    demoButtons.forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.demoStep === state.step));
+    });
+  }
+
+  function updateCopyStatus() {
+    if (!copyStatus) return;
+    var messages = state.language === 'en' ? {
+      copied: 'Bio copied. Ready to share.',
+      selected: 'Text selected. Press Ctrl+C or ⌘C, or use your device’s Copy action.',
+      failed: 'Automatic copying is unavailable. Please select and copy the bio below.'
+    } : {
+      copied: 'คัดลอกคำแนะนำตัวแล้ว พร้อมนำไปใช้ได้เลย',
+      selected: 'เลือกข้อความให้แล้ว กด Ctrl+C หรือ ⌘C หรือใช้คำสั่งคัดลอกบนอุปกรณ์ของคุณ',
+      failed: 'คัดลอกอัตโนมัติไม่ได้ กรุณาเลือกและคัดลอกคำแนะนำตัวด้านล่าง'
+    };
+    copyStatus.textContent = messages[state.copy] || '';
+  }
+
+  function applyLanguage(language, save) {
+    state.language = language === 'en' ? 'en' : 'th';
+    document.documentElement.lang = state.language;
+    translations.forEach(function (entry) { entry.element.innerHTML = entry[state.language]; });
+    translatedAttributes.forEach(function (entry) {
+      var value = entry[state.language];
+      if (value === null) entry.element.removeAttribute(entry.name);
+      else entry.element.setAttribute(entry.name, value);
+    });
+    languageButtons.forEach(function (button) {
+      var active = button.dataset.lang === state.language;
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('active', active);
+    });
+    document.title = state.language === 'en'
+      ? 'Narin “Teem” Leelaporn — System Builder & AI Instructor | Teem Clover'
+      : 'ทีม นรินทร์ ลีลาภรณ์ — นักพัฒนาระบบและผู้สอน AI | Teem Clover';
+    applyFilter(state.filter);
+    applyDemo(state.step);
+    updateCopyStatus();
+    if (save) remember('mc_lang', state.language);
+  }
+
+  function selectBio(bio) {
+    var ancestor = bio.parentElement;
+    while (ancestor) {
+      if (ancestor.tagName === 'DETAILS') ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
+    try {
+      var selection = window.getSelection();
+      if (!selection) throw new Error('Selection unavailable');
+      var range = document.createRange();
+      range.selectNodeContents(bio);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      bio.scrollIntoView({ block: 'nearest' });
+      state.copy = 'selected';
+    } catch (error) {
+      state.copy = 'failed';
+    }
+    updateCopyStatus();
+  }
+
+  async function copyBio() {
+    var bio = document.getElementById('bio-copy');
+    if (!bio) return;
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(bio.textContent.trim());
+      state.copy = 'copied';
+      updateCopyStatus();
+    } catch (error) {
+      selectBio(bio);
+    }
+  }
+
+  try {
+    var initialId = hashId();
+    applyMode(modeForHash(initialId) || historyMode() || stored('mc_resume_mode', modes, 'career'), false);
+    applyLanguage(stored('mc_lang', ['th', 'en'], 'th'), false);
+    rememberHistoryMode();
+
+    modeButtons.forEach(function (button) {
+      button.addEventListener('click', function () { chooseMode(button.dataset.mode); });
+    });
+    languageButtons.forEach(function (button) {
+      button.addEventListener('click', function () { applyLanguage(button.dataset.lang, true); });
+    });
+    filterButtons.forEach(function (button) {
+      button.addEventListener('click', function () { applyFilter(button.dataset.filter); });
+    });
+    demoButtons.forEach(function (button) {
+      button.addEventListener('click', function () { applyDemo(button.dataset.demoStep); });
+    });
+    var copyButton = document.getElementById('copy-bio');
+    if (copyButton) copyButton.addEventListener('click', copyBio);
+    var printButton = document.getElementById('print-profile');
+    if (printButton) printButton.addEventListener('click', function () { window.print(); });
+
+    window.addEventListener('hashchange', followHash);
+    window.addEventListener('popstate', followHash);
+    page.classList.add('enhanced');
+    if (initialId) scrollToAnchor(initialId);
+  } catch (error) {
+    // A readable complete profile is the fallback if enhancement cannot start.
+    worlds.concat(projects, demoPanels).forEach(function (element) { element.hidden = false; });
+    page.classList.remove('enhanced');
+    console.warn('Profile enhancements could not start; the full profile remains readable.', error);
+  }
 })();

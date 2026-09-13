@@ -1,5 +1,6 @@
 import { next, rewrite } from '@vercel/functions';
 import { verifyCourseSession } from './api/_lib/course-access.js';
+import { isPrivateShelfPath } from './shelf/route-policy.js';
 
 export const config = {
   // Inspect every path before Vercel can decode it into a static file route.
@@ -25,6 +26,14 @@ export default async function middleware(request) {
   const normalized = canonicalPath(pathname);
   const privateHeaders = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vercel-CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
   if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
+  // Guard source files before the general API and dotted-asset exemptions.
+  // The all-path matcher also catches encoded shelf aliases before static routing.
+  if (isPrivateShelfPath(normalized)) {
+    return new Response('เปิดชั้นวางซอสและใส่กุญแจที่ /shelf/', {
+      status: 403,
+      headers: { ...privateHeaders, 'Content-Type': 'text/plain; charset=utf-8', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex, nofollow' },
+    });
+  }
   // Classroom content is also checked by /api/course-content before serving.
   const classroomPath = normalized.toLowerCase();
   const legacyRoom = classroomPath === '/course/thedent' || classroomPath.startsWith('/course/thedent/');

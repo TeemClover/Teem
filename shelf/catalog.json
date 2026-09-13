@@ -1,10 +1,14 @@
 {
   "schema_version": 1,
   "title": "Shelf — ขวดซอสของเรา",
-  "updated_at": "2026-09-11",
+  "updated_at": "2026-09-14",
   "timezone": "Asia/Bangkok",
   "source_root": "/shelf/source/",
   "categories": [
+    {
+      "id": "organization",
+      "label": "องค์กร"
+    },
     {
       "id": "products",
       "label": "สินค้า"
@@ -24,13 +28,446 @@
     {
       "id": "method",
       "label": "วิธีทำงาน"
-    },
-    {
-      "id": "organization",
-      "label": "องค์กร"
     }
   ],
   "sources": [
+    {
+      "id": "org-source-map",
+      "title": "จัดชั้นวัตถุดิบ",
+      "description": "เริ่มจากไฟล์ที่องค์กรมี เลือกเรื่องที่จะทำ และแยกไฟล์หลักออกจากฉบับเก่า",
+      "path": "source/organization/source-map.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "SOURCE",
+        "ตั้งชั้นวัตถุดิบ",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 1,
+        "stage": "SOURCE",
+        "short_title": "ตั้งชั้นวัตถุดิบ",
+        "use_with": "การเริ่มโครงการ การรับงานต่อ หรือการเปิดคลาสองค์กร",
+        "inputs": [
+          "สารบัญไฟล์เดิมและไฟล์ที่อนุญาตให้ใช้",
+          "งานจริง 1 เรื่องกับเจ้าของงาน"
+        ],
+        "outputs": [
+          "01-source-index.md — สารบัญ แหล่งอ้างอิง และช่องว่าง"
+        ],
+        "prerequisites": [],
+        "lessons": [
+          {
+            "label": "บท 1 · สร้างซอสขวดแรก",
+            "href": "/classroom/free-ai.html"
+          },
+          {
+            "label": "Workshop · จากวัตถุดิบสู่จานจริง",
+            "href": "/course/"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-core-source",
+      "title": "หัวซอสองค์กร",
+      "description": "บอกว่าองค์กรทำอะไร ทำเพื่อใคร และอะไรที่ตัดสินใจแล้ว โดยมีที่มาตรวจกลับได้",
+      "path": "source/organization/core-source.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "SOURCE",
+        "หัวซอสองค์กร",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 2,
+        "stage": "SOURCE",
+        "short_title": "หัวซอสองค์กร",
+        "use_with": "แชตเริ่มงาน บรีฟทีม และการเตรียมข้อมูลให้คนใหม่",
+        "inputs": [
+          "01-source-index.md และต้นทางที่อ่านแล้ว",
+          "ผู้ยืนยันข้อมูล เป้าหมาย และข้อจำกัด"
+        ],
+        "outputs": [
+          "02-organization-source.md — ฐานข้อมูลกลางของงาน"
+        ],
+        "prerequisites": [
+          "org-source-map"
+        ],
+        "lessons": [
+          {
+            "label": "บท 1 · คัดและบรรจุซอส",
+            "href": "/classroom/free-ai.html"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-taste-check",
+      "title": "ชิมให้ตรงกัน",
+      "description": "ทดสอบเสียง ภาพ และคุณภาพจากชิ้นเล็ก เก็บสิ่งที่ผ่านและแก้เฉพาะจุดที่ผิด",
+      "path": "source/organization/taste-check.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "TASTE",
+        "ชิมให้ตรงกัน",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 3,
+        "stage": "TASTE",
+        "short_title": "ชิมให้ตรงกัน",
+        "use_with": "ข้อความ ภาพ หรือคำตอบที่ต้องตรวจ ก่อนทำชิ้นงานเต็ม",
+        "inputs": [
+          "02-organization-source.md",
+          "ตัวอย่างที่ชอบและสิ่งที่ห้ามเปลี่ยน"
+        ],
+        "outputs": [
+          "03-style-and-quality.md — แนวทางสื่อสารและบันทึกการชิม"
+        ],
+        "prerequisites": [
+          "org-core-source"
+        ],
+        "lessons": [
+          {
+            "label": "บท 2 · ชิมผ่านภาพ",
+            "href": "/classroom/image-ai.html"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-work-brief",
+      "title": "งานจริงจานแรก",
+      "description": "เลือกผลลัพธ์ 1 ชิ้น กำหนดคนใช้ ขอบเขต และเกณฑ์ว่าแบบไหนพร้อมให้ตรวจ",
+      "path": "source/organization/work-brief.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "COOK",
+        "งานจริงจานแรก",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 4,
+        "stage": "COOK",
+        "short_title": "งานจริงจานแรก",
+        "use_with": "งานประชุม คู่มือ สื่อแนะนำ หรือบริการที่ทีมกำลังทำ",
+        "inputs": [
+          "หัวซอสองค์กรและเกณฑ์คุณภาพ",
+          "โจทย์ ผู้รับงาน และข้อจำกัดจริง"
+        ],
+        "outputs": [
+          "04-work-brief.md — บรีฟงาน 1 ชิ้นและเกณฑ์รับงาน"
+        ],
+        "prerequisites": [
+          "org-core-source",
+          "org-taste-check"
+        ],
+        "lessons": [
+          {
+            "label": "บท 3 · ทำจานจริง",
+            "href": "/classroom/clip-ai.html"
+          },
+          {
+            "label": "เครื่องปรุง · SOP",
+            "href": "/classroom/prompts.html?q=SOP"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-output-pack",
+      "title": "หนึ่งซอส หลายงาน",
+      "description": "ปรับข้อมูลชุดเดียวให้เหมาะกับผู้รับหลายกลุ่ม พร้อมแผนที่กลับไปหาต้นทาง",
+      "path": "source/organization/output-pack.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "SPLIT",
+        "หนึ่งซอส หลายงาน",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 5,
+        "stage": "SPLIT",
+        "short_title": "หนึ่งซอส หลายงาน",
+        "use_with": "FAQ สไลด์ คู่มือ และชุดต้อนรับคนใหม่",
+        "inputs": [
+          "หัวซอสและบรีฟที่ตรวจแล้ว",
+          "ผู้รับ 3 กลุ่มหรือรูปแบบงาน 3 แบบ"
+        ],
+        "outputs": [
+          "05-output-map.md — แผนที่ซอสสู่ชิ้นงานหลายรูปแบบ"
+        ],
+        "prerequisites": [
+          "org-core-source",
+          "org-taste-check",
+          "org-work-brief"
+        ],
+        "lessons": [
+          {
+            "label": "บท 4 · ซอสเดียวแตกได้หลายเมนู",
+            "href": "/classroom/notebooklm.html"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-team-workflow",
+      "title": "สูตรประจำทีม",
+      "description": "จัดลำดับคน เครื่องมือ และจุดตรวจ ให้ทำงานรอบถัดไปจากสูตรเดียวกัน",
+      "path": "source/organization/team-workflow.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "SEASON",
+        "สูตรประจำทีม",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 6,
+        "stage": "SEASON",
+        "short_title": "สูตรประจำทีม",
+        "use_with": "งานที่เกิดซ้ำ การส่งงานระหว่างทีม หรือการเปลี่ยน AI กลางทาง",
+        "inputs": [
+          "บรีฟ ผลงานทดลอง และปัญหาที่พบ",
+          "ผู้ทำ ผู้ตรวจ และขอบเขตที่แต่ละคนตัดสินใจได้"
+        ],
+        "outputs": [
+          "06-team-workflow.md — วิธีร่วมงานและสูตรทำซ้ำ"
+        ],
+        "prerequisites": [
+          "org-work-brief",
+          "org-taste-check"
+        ],
+        "lessons": [
+          {
+            "label": "บท 5 · เลือกเครื่องปรุงให้ถูกงาน",
+            "href": "/classroom/prompts.html"
+          },
+          {
+            "label": "เครื่องปรุง · Workflow / SOP",
+            "href": "/classroom/prompts.html?q=SOP"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-handoff",
+      "title": "ห่อให้คนใช้ต่อ",
+      "description": "ส่งงานพร้อมที่มา รุ่นไฟล์ วิธีเปิด และเรื่องค้าง ให้ผู้รับเริ่มต่อได้จริง",
+      "path": "source/organization/handoff.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "SERVE",
+        "ห่อให้คนใช้ต่อ",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 7,
+        "stage": "SERVE",
+        "short_title": "ห่อให้คนใช้ต่อ",
+        "use_with": "การส่งงานให้คนใหม่ ลูกค้า ทีมอื่น หรือ AI ในแชตใหม่",
+        "inputs": [
+          "ชิ้นงานที่ตรวจแล้วและไฟล์ซอสที่ใช้",
+          "ผู้รับ ผู้ดูแลไฟล์ และเงื่อนไขการแบ่งปัน"
+        ],
+        "outputs": [
+          "07-handoff.md — รายการส่งมอบและทางกลับมาแก้"
+        ],
+        "prerequisites": [
+          "org-source-map",
+          "org-team-workflow"
+        ],
+        "lessons": [
+          {
+            "label": "บท 6 · ส่งของให้คนเปิดใช้ได้",
+            "href": "/classroom/first-web.html"
+          },
+          {
+            "label": "เครื่องปรุง · README",
+            "href": "/classroom/prompts.html?q=README"
+          }
+        ]
+      }
+    },
+    {
+      "id": "org-cohort-playbook",
+      "title": "สูตรสำหรับรุ่นถัดไป",
+      "description": "วางโจทย์ รอบฝึก และหลักฐานการเรียน แยกข้อมูลแต่ละรุ่นออกจากสูตรกลาง",
+      "path": "source/organization/cohort-playbook.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-14",
+      "updated_at": "2026-09-14",
+      "added_to_shelf_at": "2026-09-14",
+      "status": "reusable-template",
+      "status_label": "แม่แบบ · เติมข้อมูลของคุณ",
+      "categories": [
+        "organization",
+        "method"
+      ],
+      "tags": [
+        "องค์กร",
+        "ทีม",
+        "AI ใส่ซอส",
+        "NEXT CLASS",
+        "สูตรสำหรับรุ่นถัดไป",
+        "แม่แบบ",
+        "บทเรียน"
+      ],
+      "aliases": [],
+      "notes": "DERIVED — แม่แบบทั่วไปที่เรียบเรียงจากบทเรียนใน repo ไม่ใช่ข้อมูลหรือเอกสารอนุมัติขององค์กรใด",
+      "sections": [],
+      "recipe": {
+        "collection_id": "organization-starter",
+        "order": 8,
+        "stage": "NEXT CLASS",
+        "short_title": "สูตรสำหรับรุ่นถัดไป",
+        "use_with": "การเตรียมผู้สอน คลาสองค์กร และการเรียนร่วมกันในทีม",
+        "inputs": [
+          "สูตรกลางทั้ง 7 ขวดและโจทย์ของรุ่น",
+          "ผู้เรียน ผู้ตรวจ และเวลาที่มีจริง"
+        ],
+        "outputs": [
+          "08-cohort-playbook.md — แผนเรียนและบันทึกปรับสูตร"
+        ],
+        "prerequisites": [
+          "org-source-map",
+          "org-core-source",
+          "org-taste-check",
+          "org-work-brief",
+          "org-output-pack",
+          "org-team-workflow",
+          "org-handoff"
+        ],
+        "lessons": [
+          {
+            "label": "ห้องเรียน · วงจร 6 บท",
+            "href": "/classroom/"
+          },
+          {
+            "label": "Workshop · ลงมือกับโจทย์จริง",
+            "href": "/course/"
+          }
+        ]
+      }
+    },
     {
       "id": "clover-x-products-offers",
       "title": "Clover X — สินค้าและ Offer",
@@ -198,6 +635,13 @@
           "heading": "## ที่มา"
         }
       ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "organization-starter",
+      "title": "เริ่มครัว AI ในองค์กร",
+      "description": "สูตรกลางสำหรับบริษัท หน่วยงาน โรงเรียน หรือทีมเล็ก ๆ ปรับข้อมูลแล้วใช้คู่กับบทเรียนได้ทุกครั้ง"
     }
   ]
 }

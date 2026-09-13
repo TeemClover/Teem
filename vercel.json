@@ -8,6 +8,26 @@
   ],
   "redirects": [
     {
+      "source": "/shelf/source/:path*",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/catalog.json",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/README.md",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/CHANGELOG.md",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
       "source": "/xvisor",
       "destination": "/xvisor/",
       "permanent": true
@@ -418,21 +438,51 @@
     {
       "source": "/course/admin/:path*",
       "headers": [
-        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
-        { "key": "Referrer-Policy", "value": "no-referrer" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'" }
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+        }
       ]
     },
     {
       "source": "/course/review-consent/:path*",
       "headers": [
-        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
-        { "key": "Referrer-Policy", "value": "no-referrer" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'" }
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+        }
       ]
     },
     {
@@ -571,6 +621,31 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/shelf/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -664,6 +739,9 @@
   "functions": {
     "api/course-content.js": {
       "includeFiles": "course/thedent/**"
+    },
+    "api/shelf.js": {
+      "includeFiles": "shelf/{catalog.json,source/**}"
     }
   }
 }

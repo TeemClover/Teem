@@ -1,0 +1,78 @@
+{
+  "description": "Real CUA browser screenshots of local repository pages. Per-capture dates, origins and raster sizes below are authoritative. No generated mock UI or creative image edits.",
+  "preview_origin": "http://127.0.0.1:4186",
+  "capture_date": "2026-09-13",
+  "requested_viewport": {
+    "width": 1200,
+    "height": 800
+  },
+  "returned_raster": {
+    "width": 1185,
+    "height": 790
+  },
+  "production_verified": false,
+  "captures": [
+    {
+      "route": "/classroom/",
+      "observed": "Six-lesson AI learning overview, start lesson CTA and illustrated workspace hero. Hero identifies its portrait as AI-generated in image alt text.",
+      "file": "classroom.jpg",
+      "mime_type": "image/jpeg",
+      "bytes": 87603,
+      "width": 1185,
+      "height": 790,
+      "capture_date": "2026-09-13",
+      "source_file": "classroom/index.html",
+      "source_last_commit_at": "2026-09-10T05:50:13+07:00"
+    },
+    {
+      "route": "/xvisor/",
+      "observed": "X-VISOR Quest 2.0 Story Edition overview, character artwork, existing saved-game continue CTA and High Score button.",
+      "requested_route": "/xvisor/quest/",
+      "substitution_reason": "Quest restored existing saved gameplay and displayed a mandatory completed-campaign High Score name modal. Preserved existing state; did not enter or submit a name.",
+      "file": "xvisor.jpg",
+      "mime_type": "image/jpeg",
+      "bytes": 120582,
+      "width": 1185,
+      "height": 790,
+      "capture_date": "2026-09-13",
+      "source_file": "xvisor/index.html",
+      "source_last_commit_at": "2026-09-10T19:19:13+07:00"
+    },
+    {
+      "route": "/core7/",
+      "observed": "CORE7 v0.5 landing page with card artwork and bot, friend, collection and tutorial links. Browser retained English language choice.",
+      "file": "core7.jpg",
+      "mime_type": "image/jpeg",
+      "bytes": 87847,
+      "width": 1185,
+      "height": 790,
+      "capture_date": "2026-09-13",
+      "source_file": "core7/index.html",
+      "source_last_commit_at": "2026-08-09T01:42:15+07:00"
+    },
+    {
+      "route": "/forge/",
+      "observed": "Seven-episode illustrated story overview, start reading CTA and first four episode cards.",
+      "file": "forge.jpg",
+      "mime_type": "image/jpeg",
+      "bytes": 77430,
+      "width": 1185,
+      "height": 790,
+      "capture_date": "2026-09-13",
+      "source_file": "forge/index.html",
+      "source_last_commit_at": "2026-09-10T05:50:13+07:00"
+    },
+    {
+      "route": "/shelf/#shelf",
+      "observed": "Current locked sauce cabinet with three catalog-preview bottles, glass doors, padlock and invitation message. No private source body or key is visible. Local memory fixture provides catalog metadata only in this locked state.",
+      "file": "shelf.jpg",
+      "mime_type": "image/jpeg",
+      "bytes": 47864,
+      "width": 1265,
+      "height": 712,
+      "capture_date": "2026-09-14",
+      "source_file": "shelf/index.html",
+      "preview_origin": "http://127.0.0.1:4188"
+    }
+  ]
+}
