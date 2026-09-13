@@ -16,3 +16,8 @@ docs/ako/
 core7/tests/
 frontdoor/*.test.mjs
 assets/front-door/*.test.mjs
+
+# Shelf fixtures contain local-only admin helpers and are never public assets.
+tests/shelf/
+api/_lib/shelf-memory.js
+api/_lib/shelf-*.test.mjs

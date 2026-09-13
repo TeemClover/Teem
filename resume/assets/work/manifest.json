@@ -1,5 +1,5 @@
 {
-  "description": "Real CUA browser screenshots of local repository pages for profile portfolio cards. Browser returned JPEG bytes; files use matching JPEG extension. No generated mock UI or creative image edits.",
+  "description": "Real CUA browser screenshots of local repository pages. Per-capture dates, origins and raster sizes below are authoritative. No generated mock UI or creative image edits.",
   "preview_origin": "http://127.0.0.1:4186",
   "capture_date": "2026-09-13",
   "requested_viewport": {
@@ -63,16 +63,16 @@
       "source_last_commit_at": "2026-09-10T05:50:13+07:00"
     },
     {
-      "route": "/shelf/",
-      "observed": "Source Library hero, source search, category filters and count of 3 sources. Catalog UI displays 2026-09-10 update date.",
+      "route": "/shelf/#shelf",
+      "observed": "Current locked sauce cabinet with three catalog-preview bottles, glass doors, padlock and invitation message. No private source body or key is visible. Local memory fixture provides catalog metadata only in this locked state.",
       "file": "shelf.jpg",
       "mime_type": "image/jpeg",
-      "bytes": 48281,
-      "width": 1185,
-      "height": 790,
-      "capture_date": "2026-09-13",
+      "bytes": 47864,
+      "width": 1265,
+      "height": 712,
+      "capture_date": "2026-09-14",
       "source_file": "shelf/index.html",
-      "source_last_commit_at": "2026-09-10T00:33:47+07:00"
+      "preview_origin": "http://127.0.0.1:4188"
     }
   ]
 }

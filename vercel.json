@@ -8,6 +8,26 @@
   ],
   "redirects": [
     {
+      "source": "/shelf/source/:path*",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/catalog.json",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/README.md",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
+      "source": "/shelf/CHANGELOG.md",
+      "destination": "/shelf/",
+      "permanent": false
+    },
+    {
       "source": "/xvisor",
       "destination": "/xvisor/",
       "permanent": true
@@ -482,6 +502,31 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/shelf/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -555,5 +600,10 @@
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
     }
-  ]
+  ],
+  "functions": {
+    "api/shelf.js": {
+      "includeFiles": "shelf/{catalog.json,source/**}"
+    }
+  }
 }

@@ -1,15 +1,26 @@
 import { next, rewrite } from '@vercel/functions';
+import { isPrivateShelfPath } from './shelf/route-policy.js';
 
 export const config = {
   // Run for extensionless page routes, but leave APIs, Vercel internals,
   // and real asset files alone. This keeps relative assets resolving from
   // the intended directory (e.g. /xvisor -> /xvisor/).
-  matcher: '/((?!api|_next|_vercel|.*\\..*).*)',
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)', '/shelf/:path*'],
 };
 
 export default function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
+  // Static markdown and catalog paths must never bypass the key-checked API.
+  // Include dotted shelf paths in the matcher: a client-side lock is insufficient.
+  if (isPrivateShelfPath(pathname)) {
+    return new Response('เปิดชั้นวางซอสและใส่กุญแจที่ /shelf/', {
+      status: 403,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex, nofollow' },
+    });
+  }
+  // Shelf shell assets match explicitly; leave their filenames intact.
+  if (pathname.startsWith('/shelf/') && pathname.includes('.')) return next();
   const isAkoDomain = url.hostname === 'ako.myclover.com';
   const isPreviewCheck =
     process.env.VERCEL_ENV !== 'production' &&
