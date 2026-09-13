@@ -22,6 +22,8 @@ yyy/คู่มือ*.docx
 # เอกสารส่งต่อ/บริบทภายใน — ห้ามขึ้น repo เด็ดขาด
 HANDOFF.md
 **/HANDOFF.md
+# Shareable recipe requested for the source shelf, not internal session context.
+!/shelf/source/organization/handoff.md
 START-HERE.txt
 reference/
 **/reference/
