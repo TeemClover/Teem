@@ -257,6 +257,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 }
 </style>
 
+<link rel="stylesheet" href="/assets/organization-shelf.css?v=20260914-1">
 </head>
 <body>
 <nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
@@ -414,6 +415,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   <a class="nx" href="first-web.html">คลาสถัดไป: สร้างเว็บแรก →</a>
 </div>
 
+<aside class="org-shelf-door" aria-label="สูตรซอสสำหรับองค์กร"><div><span class="org-shelf-kicker">FOR YOUR TEAM · ORGANIZATION STARTER</span><h2>เก็บเป็นสูตรที่ทีมใช้ซ้ำได้</h2><p>จัดเครื่องปรุง คนทำ และจุดตรวจ ให้รอบหน้าเริ่มจากสิ่งที่เรียนรู้แล้ว<br>ดูฉลากก่อนได้ · ทักหาทีมเพื่อขอกุญแจเปิดซอส</p></div><a href="/shelf/#source-org-team-workflow">ไปเลือกสูตรบนชั้น ↗</a></aside>
 <footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
 </div>
 
@@ -1047,7 +1049,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }catch(e){}
 
   var fromUrl = (location.search.match(/[?&]q=([^&]*)/) || [])[1];
-  if(fromUrl){ try{ qEl.value = decodeURIComponent(fromUrl.replace(/\+/g, ' ')); }catch(e){} }
+  if(fromUrl !== undefined){
+    try{
+      qEl.value = decodeURIComponent(fromUrl.replace(/\+/g, ' '));
+      active = [];
+      Array.prototype.forEach.call($('chips').querySelectorAll('.chip'), function(c){
+        c.setAttribute('aria-pressed', 'false');
+      });
+    }catch(e){}
+  }
 
   run();
   paintG();

@@ -28,9 +28,21 @@ export function shelfCatalogPreview(catalog) {
   return {
     schema_version: 1, title: String(catalog.title || 'Shelf'), updated_at: catalog.updated_at,
     categories: catalog.categories.map(category => ({ id: category.id, label: category.label })),
+    collections: (catalog.collections || []).map(collection => ({
+      id: collection.id, title: collection.title, description: collection.description,
+    })),
     sources: catalog.sources.map(source => ({
       id: source.id, title: source.title, description: source.description, version: source.version,
       status_label: source.status_label, categories: source.categories, tags: source.tags,
+      ...(source.recipe ? { recipe: {
+        collection_id: source.recipe.collection_id, order: source.recipe.order,
+        stage: source.recipe.stage, short_title: source.recipe.short_title,
+        use_with: source.recipe.use_with, inputs: source.recipe.inputs, outputs: source.recipe.outputs,
+        prerequisites: source.recipe.prerequisites,
+        lessons: (source.recipe.lessons || []).filter(lesson =>
+          typeof lesson.href === 'string' && /^\/(?:classroom|course)\/(?:[a-z0-9-]+\.html)?(?:[?#][^\s\\]*)?$/.test(lesson.href)
+        ).map(lesson => ({ label: lesson.label, href: lesson.href })),
+      } } : {}),
     })),
   };
 }

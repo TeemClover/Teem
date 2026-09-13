@@ -1,0 +1,9 @@
+/* A quiet doorway from the lessons to the shared recipe catalog. */
+.org-shelf-door{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:36px auto;padding:24px 28px;max-width:1080px;border:1px solid #d4dfd3;border-radius:16px;background:#f0f5ed;color:#234437;text-align:left;box-sizing:border-box}
+.org-shelf-door div{min-width:0}
+.org-shelf-door .org-shelf-kicker{display:block;font-size:10px;font-weight:700;letter-spacing:.12em;color:#697b60;margin:0 0 6px}
+.org-shelf-door h2{font:inherit;font-size:19px;font-weight:700;line-height:1.6;margin:0 0 6px;color:#234437}
+.org-shelf-door p{font-size:13px;line-height:1.85;margin:0;color:#576b57}
+.org-shelf-door a{display:inline-block;flex-shrink:0;font-size:13px;font-weight:600;color:#315c43;text-decoration:none;border-bottom:1px solid #8ca484;padding:9px 0;white-space:nowrap}
+.org-shelf-door a:focus-visible{outline:2px solid #315c43;outline-offset:6px}
+@media(max-width:640px){.org-shelf-door{align-items:flex-start;flex-direction:column;padding:21px;gap:12px;margin:28px auto;width:calc(100% - 16px)}.org-shelf-door h2{font-size:17px}.org-shelf-door p{font-size:12px}}

@@ -64,6 +64,33 @@ test('public preview is allowlisted and still works without storage', async () =
   assert.deepEqual(unavailable.body, { ok: false, error: 'STORAGE_UNAVAILABLE' });
 });
 
+test('recipe labels expose only the catalog contract and safe lesson links', async () => {
+  const recipe = {
+    collection_id: 'organization-starter', order: 1, stage: 'SOURCE', short_title: 'Start',
+    use_with: 'Start a team project', inputs: ['Existing file index'], outputs: ['01-source-index.md'], prerequisites: [],
+    lessons: [
+      { label: 'Lesson', href: '/classroom/free-ai.html', notes: 'DO NOT PREVIEW' },
+      { label: 'Search', href: '/classroom/prompts.html?q=SOP' },
+      { label: 'Workshop', href: '/course/' },
+      ...['//other.test', 'https://other.test', 'javascript:alert(1)', '/shelf/source/secret.md', '/classroom/../shelf/source/file.md', '/classroom/\\evil.test'].map(href => ({ label: 'Invalid', href })),
+    ],
+    path: 'private', body: 'DO NOT PREVIEW', prompt: 'DO NOT PREVIEW', notes: 'private',
+  };
+  const app = setup({ readCatalog: async () => ({ ...catalog,
+    collections: [{ id: 'organization-starter', title: 'Starter', description: 'Recipe sequence', notes: 'private' }],
+    sources: [{ ...catalog.sources[0], recipe }],
+  }) });
+  const response = await app.call('catalog');
+  assert.equal(response.statusCode, 200);
+  const preview = response.body.catalog;
+  assert.deepEqual(preview.collections, [{ id: 'organization-starter', title: 'Starter', description: 'Recipe sequence' }]);
+  assert.deepEqual(Object.keys(preview.sources[0].recipe).sort(), ['collection_id','order','stage','short_title','use_with','inputs','outputs','prerequisites','lessons'].sort());
+  assert.deepEqual(preview.sources[0].recipe.lessons, recipe.lessons.slice(0, 3).map(({label,href})=>({label,href})));
+  assert.doesNotMatch(JSON.stringify(response.body), /private|DO NOT PREVIEW|source_root/);
+  assert.equal((await app.call('take', { body: { id: 'first-source', kind: 'open' } })).statusCode, 401);
+  assert.equal(app.reads.length, 0);
+});
+
 test('anonymous or forged sessions cannot read content or admin data', async () => {
   const app = setup();
   for (const cookie of ['', `${SHELF_COOKIE}=forged`, `${SHELF_COOKIE}=%GG`, `${SHELF_COOKIE}=${'a'.repeat(43)}`]) {
@@ -261,7 +288,8 @@ test('SQL serving rechecks active key, session and scope in same database write'
 
 test('canonical catalog and complete source bodies load without letting supplied paths escape', async () => {
   const actual = await readShelfCatalog();
-  assert.equal(actual.sources.length, 3);
+  assert.equal(actual.sources.filter(source => source.recipe?.collection_id === 'organization-starter').length, 8);
+  for (const id of ['clover-x-products-offers','clover-x-confirmation-questions','sauce-working-principle']) assert(actual.sources.some(source => source.id === id));
   for (const source of actual.sources) {
     const content = await readShelfSource(source);
     assert.ok(content.length > 100, source.id);
@@ -271,4 +299,20 @@ test('canonical catalog and complete source bodies load without letting supplied
   await assert.rejects(readShelfSource({ path: '/etc/passwd' }));
   await assert.rejects(readShelfSource({ path: 'source/../../package.json' }));
   assert.equal(shelfCatalogPreview(actual).sources.length, actual.sources.length);
+});
+
+test('an organization recipe opens with its scoped key and logs the actual source version', async () => {
+  const app = setup({ readCatalog: readShelfCatalog, readSource: readShelfSource });
+  const issued = await app.issue({ name: 'Recipe QA', sourceIds: ['org-source-map'] });
+  const { cookie } = await app.unlock(issued.rawKey);
+  const opened = await app.call('take', { cookie, body: { id: 'org-source-map', kind: 'open' } });
+  assert.equal(opened.statusCode, 200);
+  assert.equal(opened.body.source.id, 'org-source-map');
+  assert.equal(opened.body.source.version, '1.0.0');
+  assert.match(opened.body.source.content, /01-source-index\.md/);
+  assert.equal((await app.call('take', { cookie, body: { id: 'org-core-source', kind: 'open' } })).statusCode, 403);
+  const snapshot = (await app.call('admin', { admin: true })).body;
+  assert.equal(snapshot.events.length, 1);
+  assert.equal(snapshot.events[0].sourceId, 'org-source-map');
+  assert.equal(snapshot.events[0].sourceVersion, '1.0.0');
 });
