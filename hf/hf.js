@@ -22,14 +22,14 @@ async function copyText(text) {
   }
 }
 
-document.querySelector('#copy-prompt').addEventListener('click', async event => {
+document.querySelectorAll('[data-copy-target]').forEach(copyButton => copyButton.addEventListener('click', async event => {
   const button = event.currentTarget;
-  const text = document.querySelector('#prompt-text');
+  const text = document.getElementById(button.dataset.copyTarget);
   const copied = await copyText(text.textContent.trim());
-  const status = document.querySelector('#copy-status');
+  const status = document.getElementById(button.dataset.copyStatus);
   if (copied) {
     button.textContent = 'คัดลอกแล้ว ✓';
-    status.textContent = 'นำไปวาง แล้วเลือก @ Element ของคุณอีกครั้ง';
+    status.textContent = button.dataset.copyHint;
   } else {
     const range = document.createRange();
     range.selectNodeContents(text);
@@ -39,7 +39,7 @@ document.querySelector('#copy-prompt').addEventListener('click', async event => 
     status.textContent = 'เลือกข้อความให้แล้ว กดคัดลอกข้อความบนอุปกรณ์ของคุณ';
   }
   button.focus({ preventScroll: true });
-});
+}));
 
 document.querySelector('#share-page').addEventListener('click', async event => {
   const button = event.currentTarget;
