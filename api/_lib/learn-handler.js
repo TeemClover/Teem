@@ -104,15 +104,19 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
       }
       if (action==='lesson') {
         const result=await authorizeLearnLesson(sql,req,{courseId:requestedCourse(req),lessonId:learnId(parameter(req,'lessonId'),'LESSON_ID')},options);
-        return reply(res,200,{ok:true,courseId:result.course.id,lesson:lessonView(result.course,result.lesson,result.access,assets),access:result.access,preview:result.preview});
+        // Reading bodies live privately and use the same authorization as this
+        // specific lesson. Course metadata and the public catalog never carry them.
+        const reading=await store.reading?.(result.course.id,result.lesson.id) || '';
+        const lesson={...lessonView(result.course,result.lesson,result.access,assets),reading,readingAvailable:Boolean(reading.trim())};
+        return reply(res,200,{ok:true,courseId:result.course.id,lesson,access:result.access,preview:result.preview});
       }
       const user=await verifiedLearnUser(sql,req,{store,lookupUser});await store.ensure();
       if (action==='courses') {
-        const [enrollments,grants,registrations]=await Promise.all([store.enrollments(user.id),store.grants(user.id),store.registrations(user.id)]);
+        const [enrollments,grants,registrations,instructors]=await Promise.all([store.enrollments(user.id),store.grants(user.id),store.registrations(user.id),store.instructors(user.id)]);
         const result=[];
         for (const enrollment of enrollments) {
           const course=courses.find(c=>c.id===enrollment.course_id);if(!course)continue;
-          const access=courseAccess(enrollment,grants.filter(g=>g.course_id===course.id),registrations.filter(r=>r.course_id===course.id),time);
+          const access=courseAccess(enrollment,grants.filter(g=>g.course_id===course.id),registrations.filter(r=>r.course_id===course.id),time,instructors);
           const progress=progressSummary(await store.progress(user.id,course.id),course);
           result.push({id:course.id,title:course.title,summary:course.description || course.summary || '',status:access.status,expiresAt:access.expiresAt,
             access,progress:{completedLessons:progress.completedLessons,totalLessons:progress.totalLessons,percent:progress.percent}});

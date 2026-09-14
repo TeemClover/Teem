@@ -197,7 +197,12 @@ export const LEARN_COURSES = [
           "m_56759fc8a0565fa59af8c9c7423f0dc1"
         ],
         "additionalResourceIds": [
-          "m_038c6592d9fc51b2b9b00d19f35c4614"
+          "m_038c6592d9fc51b2b9b00d19f35c4614",
+          "m_99ede3d3957454ac94f1739fcdfa5d44",
+          "m_df566f944ab558d69391e9e12fa413b5",
+          "m_a3c56ed2968754a7a0c58177129c281d",
+          "m_cca4e1bba07252549a4f30a122d1c9d4",
+          "m_db181e10acbf58d88569bf080f9f4d33"
         ],
         "summary": "แยกข้อมูลที่ยืนยันแล้วออกจากคำขอและข้อสันนิษฐานในเสียง ไฟล์ และแชต",
         "outcome": "แยกข้อมูลที่ยืนยันแล้วออกจากคำขอและข้อสันนิษฐานในเสียง ไฟล์ และแชต",
@@ -222,7 +227,13 @@ export const LEARN_COURSES = [
           "m_9bcf01110a295b2ba81410129027aaaf"
         ],
         "additionalResourceIds": [
-          "m_650b8f56985451168f754de667e3f6a3"
+          "m_650b8f56985451168f754de667e3f6a3",
+          "m_d6c2a2dcb29f58319c10d7203242a2c0",
+          "m_5e9b4446fced5968be361ef105481b3e",
+          "m_5ffc0acee1725f30a61003198c63a979",
+          "m_c1b9c7a27d61543e8e8a080650ad0a0f",
+          "m_41aeb9ff11705c7a9c107f724cd2f292",
+          "m_56ef6c058ff0526cab71042b281bb9a3"
         ],
         "summary": "ทำ Source ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
         "outcome": "ทำ Source ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
@@ -274,7 +285,12 @@ export const LEARN_COURSES = [
           "m_e7589d388d845de49b01a49b67edbc94"
         ],
         "additionalResourceIds": [
-          "m_7a96149c11b25372b9868bbbab94103a"
+          "m_7a96149c11b25372b9868bbbab94103a",
+          "m_f583a23cc41f5c6482a68c173dc23605",
+          "m_8b77fee94d8351ed816d342d0711c1c6",
+          "m_ace6c04b2ad0595cb8b8d5dee581609e",
+          "m_2201dd92e0ad59be81189891fb16c05b",
+          "m_d2c73c3f52ce5af3a21e3ca03b680847"
         ],
         "summary": "ตรวจร่างก่อนใช้ โดยมองหาข้อมูลที่ขาดและคำรับปากเกินข้อเท็จจริง",
         "outcome": "ตรวจร่างก่อนใช้ โดยมองหาข้อมูลที่ขาดและคำรับปากเกินข้อเท็จจริง",
@@ -298,7 +314,12 @@ export const LEARN_COURSES = [
           "m_8bbab8af4dc65b1eac612976a6699e48"
         ],
         "additionalResourceIds": [
-          "m_8c498dd8f0935b5fb59f0eeb6f195ad6"
+          "m_8c498dd8f0935b5fb59f0eeb6f195ad6",
+          "m_f11cb03a201b5330950be805e4a6a7ee",
+          "m_f1b4676b224851309fc808f6e42015f6",
+          "m_feb3847470ea5350af13e3363a405cce",
+          "m_45cac7ddb01a5e2aa45a5d3bfd367843",
+          "m_d50cc6f133bf5f6ab53a811b7af537ec"
         ],
         "summary": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน Source",
         "outcome": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน Source",
@@ -352,7 +373,13 @@ export const LEARN_COURSES = [
           "m_e583232ab0965130bb1f9a2d5118e459"
         ],
         "additionalResourceIds": [
-          "m_9b871f12a06a5733bb8e348f4fc98f7b"
+          "m_9b871f12a06a5733bb8e348f4fc98f7b",
+          "m_37da4cd8c50b5051b744fc3878dadeb4",
+          "m_4c3742331e5f5f9aa47213decb418491",
+          "m_9cf54b984b4c5e988df65373891c225d",
+          "m_012f5b935ad4541a9d834ba7f0d7ed5f",
+          "m_01816c17cdf15c16bd5e14df03d84d1f",
+          "m_50a3d51dcf045ad098c0aa14b0fb7e3a"
         ],
         "summary": "แยกข้อมูลประจำงานออกจากบรีฟของงานรอบนี้",
         "outcome": "แยกข้อมูลประจำงานออกจากบรีฟของงานรอบนี้",
@@ -376,7 +403,22 @@ export const LEARN_COURSES = [
           "m_28bb4486c07251d2b78921a776f21fae"
         ],
         "additionalResourceIds": [
-          "m_4b17779432ff5d9097edef064fe264ef"
+          "m_4b17779432ff5d9097edef064fe264ef",
+          "m_1d564ae801d152b1bc31d051ec1aaa24",
+          "m_76d9ee85a7a1579f97dca21d06bf1acd",
+          "m_996a8b90a56a5c22b6f8a66ceebeedd0",
+          "m_71116ced10ae596c90680c1460c39b17",
+          "m_5168df68c2455dada9bb2a47bf8939f9",
+          "m_3496a8bc13155e76bc366bdd53dd2581",
+          "m_e7b1afcaf686580bb169f1328f1022ae",
+          "m_e1fb6409bce35c468cf5e2920629ff5c",
+          "m_b4e10c3bee435752b9dae3c8a18d64dc",
+          "m_925f12ef69a1542c91497da88104a61a",
+          "m_3415a41c82c35222b3c0af4412f9971c",
+          "m_d575aa38e75e53eb83cef1b3305ed0d7",
+          "m_87c77283cace53ce995a707c13b865b1",
+          "m_dece1d571d7d59dd9f388cd532061d27",
+          "m_dcf77f6a72e75aa0bf5695c58e0a43a3"
         ],
         "summary": "ฝึกแนบข้อมูล ตรวจร่าง และสั่งแก้จากตัวอย่างงานสำนักงานที่เตรียมไว้",
         "outcome": "ฝึกแนบข้อมูล ตรวจร่าง และสั่งแก้จากตัวอย่างงานสำนักงานที่เตรียมไว้",
@@ -428,7 +470,13 @@ export const LEARN_COURSES = [
           "m_c12c857583715841a37382b9668cffbd"
         ],
         "additionalResourceIds": [
-          "m_6ce81fbb321a5d78ae0cd2a2c364c6c2"
+          "m_6ce81fbb321a5d78ae0cd2a2c364c6c2",
+          "m_5b65fc69df5c5cad836fc4021f210dbc",
+          "m_c0351c59638b5c9cac4b83f667933105",
+          "m_98dd66e75d5d50079da2f595b9c5c23f",
+          "m_6615af06201252c09b8bcd45ed97d2ad",
+          "m_eaf477b05e5552e4960e9aafbb02113b",
+          "m_d966c41b80fd5a9bb08daf86bfa11dba"
         ],
         "summary": "ใช้ต้นทางเดียวกันทำงานหลายรูปแบบให้เหมาะกับผู้รับ",
         "outcome": "ใช้ต้นทางเดียวกันทำงานหลายรูปแบบให้เหมาะกับผู้รับ",
@@ -452,7 +500,14 @@ export const LEARN_COURSES = [
           "m_2f2cd6b177b75041b3dff9d811978486"
         ],
         "additionalResourceIds": [
-          "m_dca2c6745b13559791740646ce139014"
+          "m_dca2c6745b13559791740646ce139014",
+          "m_503140cd11605111bb7ccad76c820d99",
+          "m_4ba84bf4376356fa9e357dd5ab914fc2",
+          "m_5f95692cc8bc5df9bea120fbe18a4f9c",
+          "m_2dcd1b45430155cc9209830644253086",
+          "m_10e0c7ec844f5d1fa6f96a468f8a00f5",
+          "m_bf68e45970005538a70eb0d1261e2ddc",
+          "m_eb0ecaa93c0957e7b71bcdddbcf5e81e"
         ],
         "summary": "ตรวจว่าข้อเท็จจริงและสถานะยังตรงกันเมื่อเปลี่ยนรูปแบบงาน",
         "outcome": "ตรวจว่าข้อเท็จจริงและสถานะยังตรงกันเมื่อเปลี่ยนรูปแบบงาน",
@@ -504,7 +559,13 @@ export const LEARN_COURSES = [
           "m_33d4b28d8f1457aeb91a621b04051721"
         ],
         "additionalResourceIds": [
-          "m_e48ddd852e525377b0a1de2b37bfc68a"
+          "m_e48ddd852e525377b0a1de2b37bfc68a",
+          "m_370252db3b6059c3ba6162129018bc7c",
+          "m_c81c2f4f0d505adca3e6dafc220651b5",
+          "m_b2528d24fee55ef291d75de36b6d8ff9",
+          "m_b1a55e3cb60b55b693861eca6e4c1865",
+          "m_d7ffd48ad228595a96539fc5032b4c1e",
+          "m_95b83851c003567c81c3ea2e31242228"
         ],
         "summary": "เก็บวิธีทำที่ใช้ซ้ำเป็นสูตรประจำงาน",
         "outcome": "เก็บวิธีทำที่ใช้ซ้ำเป็นสูตรประจำงาน",
@@ -528,7 +589,14 @@ export const LEARN_COURSES = [
           "m_17db456c9f1d589fbc659bac5c12ce30"
         ],
         "additionalResourceIds": [
-          "m_fdd75fb6d8ca50749a897cf7939a3650"
+          "m_fdd75fb6d8ca50749a897cf7939a3650",
+          "m_f97878145c545ce5a8798a13342720ed",
+          "m_abaa85aad6a05fb9af934d0a6d2d77f6",
+          "m_6c0ab6c6059d5bf2a7eb42dd85c00a18",
+          "m_9c6c1807560d545db7217b6fc6acd747",
+          "m_58a47a97291250ea96a9606fb45904e6",
+          "m_6daaf07cdd395d579928cc7d8606b615",
+          "m_da2156d5346d53b0b335944c90858cd1"
         ],
         "summary": "อัปเดต Source และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
         "outcome": "อัปเดต Source และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
@@ -577,7 +645,14 @@ export const LEARN_COURSES = [
           "m_c940fdc13c4a50199be669a725287622"
         ],
         "additionalResourceIds": [
-          "m_1798c59f96f55872bd21f17a6cd73328"
+          "m_1798c59f96f55872bd21f17a6cd73328",
+          "m_dd371a24e2d159bc87d22572b787cd98",
+          "m_d85aa55156ca53b189c36dff038fc625",
+          "m_8c58b9f2e4e05460981941f6d3db252b",
+          "m_45b157b810fe56f9a3340e6b26bb3587",
+          "m_a8013a78afd35441aecf190b5d00913c",
+          "m_617b455cbdb55811b038f135aea3e9d3",
+          "m_853bfcfe6abb5601ae6fd7d054b65f64"
         ],
         "summary": "ฝึกเปิดและส่งชุด HTML พร้อมไฟล์ประกอบให้ผู้รับใช้งานต่อ",
         "outcome": "ฝึกเปิดและส่งชุด HTML พร้อมไฟล์ประกอบให้ผู้รับใช้งานต่อ",
@@ -601,7 +676,27 @@ export const LEARN_COURSES = [
           "m_5f7f6e01b3845e4686628e73d15357a1"
         ],
         "additionalResourceIds": [
-          "m_cc85e967c4355ba5810e83b1196e3bb7"
+          "m_cc85e967c4355ba5810e83b1196e3bb7",
+          "m_1b8d6f7d0386514a86d99312efd7f858",
+          "m_6a51064583d15ec19381c2e2d8c45119",
+          "m_95e7212c6520585c960efbe993f274fa",
+          "m_1f0a7a9bdb6a5c03830f4308ad6df9bd",
+          "m_2f039e0cfa2a599c94ba375225595fc3",
+          "m_e81bfe1f11ed5952bbf305086e25141f",
+          "m_f93017030c955a2ebd1cf6ee8380ca7f",
+          "m_c7830802fe9d57a2b74996c954372273",
+          "m_61d04c77e2a6514c9e16eea5171e2eb4",
+          "m_efc598b5181259f7a6bafd8fd8aaeb3a",
+          "m_bc52409ca9265df689a74c87dbeb8764",
+          "m_19d7ad2db9615908a8f0ce8a8aaf1026",
+          "m_3ff09c90969a54ab875fe46c7aca71bd",
+          "m_59f3dfa29c475aca82eb823b628bf907",
+          "m_65ea1c33fc5a5c36a6d63871fd318e37",
+          "m_b4c827c71a6353a2aff307e08faa17f1",
+          "m_403026204c5a52c692486ea893322305",
+          "m_1252e7e0554e50b091436244fb2f8640",
+          "m_cb21bc16beab5a6c88e6fbbf25f2c3a1",
+          "m_af1a0f06bc4550ba9800e0cb5b0ce1d1"
         ],
         "summary": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
         "outcome": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
@@ -626,7 +721,24 @@ export const LEARN_COURSES = [
           "m_80102a02bbe35ebd9f9641c01ef42599"
         ],
         "additionalResourceIds": [
-          "m_6b717836c3bf50bd852ea03d5c2d24bb"
+          "m_6b717836c3bf50bd852ea03d5c2d24bb",
+          "m_43d25d65ac7e5d2abbae047945c4f7bb",
+          "m_f319fd8fe0dd51b5b02a8222db8a5d6b",
+          "m_9e18a83cb79757bd92e3e9b811e2d590",
+          "m_027f308571635ace8116ea3dd5a30008",
+          "m_b68eab597f325382af724d4b8173f388",
+          "m_86f59ec57c41506bb2ac96a7a0641189",
+          "m_f8ae4a0ca419551a94ad803ff011b0f4",
+          "m_b67f840a111a54bcaf633aef1875dd28",
+          "m_0af7db4b63c05222a33205218f4d06fb",
+          "m_97633a9093dd5df986a3edbe0186654a",
+          "m_b465b68f73575a78b4e122b88e5ea2f4",
+          "m_9ec0efc9b1dd5bf7b9a20c24ebb3b47b",
+          "m_661b7d68392d5723b9ef3d79b11cc448",
+          "m_a8c5639c7312567ca6eeeee258e84762",
+          "m_284b3e1fe5555e618cf492b2beadd820",
+          "m_12e6a4ac38ad515f84a5e8c900882203",
+          "m_4cbc093b7202585d8e9c6d3758520a6d"
         ],
         "summary": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",
         "outcome": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",

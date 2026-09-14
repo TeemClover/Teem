@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { createApi, createLearner, normalizeCourses, parseRoute, courseRoute, safeAssetUrl, progressSummary } from '../assets/learn-core.js';
 import { safeReturn, authRequest, showVerification, googleStartUrl } from '../assets/account-step.js';
 import { renderFrontDoorRoot } from '../../tools/sync-frontdoor-root.mjs';
+import { renderLessonReading, readingHref } from '../assets/lesson-reading.js';
 
 const active = { id:'ai-sauce',title:'AI ใส่ซอส',status:'active',summary:'หลักคิดและงานจริง' };
 const foundation = {id:'FOUNDATION',title:'เริ่มที่นี่',type:'foundation',order:0,locked:false,nextLessonId:'ADV01'};
@@ -96,6 +97,31 @@ async function dom(fetcher,search='') {
   return{ids,doc,window,location,history,mount,fire,settle,load:async()=>{await import(`../assets/learn.js?test=${++run}`);await settle();}};
 }
 function mockedFetch(status='active') {return async url=>{if(url==='/api/auth/providers')return response({ok:true,providers:{email:true,google:false,otp:true}});const u=new URL(url,'https://www.myclover.com');const action=u.searchParams.get('action');if(action==='courses')return response({ok:true,user:{displayName:'ผู้เรียนทดสอบ'},courses:status==='empty'?[]:[{...active,status}]});if(action==='course')return response(courseData);if(action==='lesson')return response(lessonData(u.searchParams.get('lessonId')));return response({ok:false},404);};}
+test('private reading renders headings, steps, prompt blocks and bold text without executing HTML',async()=>{
+  const d=await dom(mockedFetch());const target=d.ids.get('lesson-reading');
+  renderLessonReading(target,'# สรุปบท\n\nข้อมูล **สำคัญ** และ <script>alert(1)</script>\n\n1. เลือกงาน\n2. เก็บ Source\n\n```text\n<img src=x onerror=alert(2)>\n```\n\n> ลองทำกับงานของคุณ',{origin:d.location.origin});
+  assert.equal(target.hidden,false);assert.equal(target.querySelector('h3').textContent,'สรุปบท');assert.equal(target.querySelector('strong').textContent,'สำคัญ');assert.equal(target.querySelector('ol').children.length,2);assert.equal(target.querySelector('script'),null);assert.equal(target.querySelector('img'),null);assert.match(target.querySelector('pre').textContent,/<img/);assert.match(target.textContent,/<script>/);
+});
+test('reading links keep course navigation and private resources but reject unsafe protocols',async()=>{
+  const d=await dom(mockedFetch()),target=d.ids.get('lesson-reading');let route;
+  renderLessonReading(target,'[ต่อบท 1](/learn/?course=ai-sauce&lesson=ADV01) [ไฟล์]('+media+') [ไม่เปิด](javascript:alert) [ไฟล์ในเครื่อง](file:///private/a)',{origin:d.location.origin,onLesson:value=>route=value,onResource:()=>false});
+  const links=target.all().filter(n=>n.tagName==='A');assert.equal(links.length,2);await links[0].fire('click');assert.deepEqual(route,{courseId:'ai-sauce',lessonId:'ADV01'});let prevented=false;for(const fn of links[1].listeners.click)fn({preventDefault(){prevented=true;}});assert.equal(prevented,true);
+  for(const href of ['javascript:alert(1)','data:text/html,hi','file:///a','//evil.example','/lessons/paid.mp4','https://name:secret@example.com/a'])assert.equal(readingHref(href,d.location.origin),null);
+});
+test('authorized lesson reading becomes visible below video and clears on account reset',async()=>{
+  let pending;const base=mockedFetch();const d=await dom(async url=>pending?pending.promise:url.includes('action=lesson')?response({...lessonData(),lesson:{...lessonData().lesson,reading:'## ลองทำต่อ\n\nเลือกงานหนึ่งเรื่อง แล้วเก็บข้อมูลต้นทาง',readingAvailable:true}}):base(url),'?course=ai-sauce');await d.load();
+  assert.equal(d.ids.get('lesson-reading').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/เลือกงานหนึ่งเรื่อง/);
+  pending=defer();await d.fire('mc:account-changed');assert.equal(d.ids.get('lesson-reading').textContent,'');pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();
+});
+test('instructor is labelled distinctly and can switch main lessons without a payment prompt',async()=>{
+  const base=mockedFetch();const d=await dom(async url=>url.includes('action=course&')?response({...courseData,access:{status:'active',active:true,role:'instructor'}}):base(url),'?course=ai-sauce');await d.load();
+  assert.match(d.ids.get('course-access').textContent,/ผู้สอน/);assert.equal(d.ids.get('access-notice').hidden,true);
+  const link=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV01');await link.fire('click');await d.settle();assert.equal(d.ids.get('lesson-title').textContent,'ทำ Source');assert.match(d.location.search,/lesson=ADV01/);
+});
+test('locked chapter gives a visible explanation rather than an inert sidebar row',async()=>{
+  const base=mockedFetch();const d=await dom(async url=>url.includes('action=course&')?response({...courseData,access:{status:'registered',active:false},course:{...courseData.course,lessons:[{...foundation,locked:true},preview,{...main,locked:true}]}}):base(url),'?course=ai-sauce&lesson=EP01');await d.load();
+  const link=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV01');assert.match(link.textContent,/คอร์สเต็ม/);await link.fire('click');assert.match(d.ids.get('page-status').textContent,/ยังเปิดสิทธิ์ไม่ครบ/);assert.ok(d.ids.get('page-status').scrollRequest);assert.equal(d.ids.get('lesson-title').textContent,'บทตัวอย่าง');
+});
 test('mocked DOM: active route paints authenticated landscape player and next main, with no autoplay',async()=>{
   const d=await dom(mockedFetch(),'?course=ai-sauce&lesson=FOUNDATION');await d.load();assert.equal(d.ids.get('classroom').hidden,false);assert.equal(d.ids.get('lesson-video').src,media);assert.equal(d.ids.get('lesson-video').autoplay,undefined);assert.match(d.ids.get('next-lesson').href,/lesson=ADV01/);assert.equal(d.ids.get('lesson-title').textContent,'เริ่มที่นี่');assert.equal(d.ids.get('account-label').textContent,'ผู้เรียนทดสอบ');
 });

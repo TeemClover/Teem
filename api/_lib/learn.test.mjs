@@ -4,7 +4,7 @@ import { createLearnHandler } from './learn-handler.js';
 import { authorizeLearnAsset, enrollLearnCourse } from './learn-authorization.js';
 import { courseAccess, oneYearAfter } from './learn-domain.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
-import { createLearnStore, ensureLearnSchema, grantForVerifiedRegistration, recordLearnRegistration, revokeLearnAccess } from './learn-store.js';
+import { createLearnStore, ensureLearnSchema, grantForVerifiedRegistration, recordLearnRegistration, revokeLearnAccess, LEARN_SCHEMA } from './learn-store.js';
 
 const NOW=Date.parse('2026-09-14T10:00:00Z');
 const courses=[{id:'ai-sauce',title:'AI ใส่ซอส',description:'เรียนจาก Source',startLessonId:'FOUNDATION',previewLessonId:'EP01',lessons:[
@@ -23,7 +23,7 @@ const assets=[
 const user={id:'alice',displayName:'Alice',email:'alice@example.test',emailVerified:true};
 const grant=(extra={})=>({reference:'SAUCE-verified',user_id:'alice',course_id:'ai-sauce',starts_at:'2026-09-01T00:00:00Z',expires_at:'2027-09-01T00:00:00Z',revoked_at:null,...extra});
 function harness() {
-  const enrolled=new Map(),grants=[],registrations=[],progress=new Map(),events=[];
+  const enrolled=new Map(),grants=[],registrations=[],instructors=[],readings=new Map(),progress=new Map(),events=[];
   const key=(u,c)=>`${u}/${c}`;
   const accounts=new Map([['alice',{id:'alice',email_verified_at:'2026-09-01'}],['bob',{id:'bob',email_verified_at:'2026-09-01'}]]);
   const store={
@@ -33,6 +33,8 @@ function harness() {
     async enrollment(id,c){events.push(['enrollment',id,c]);return enrolled.get(key(id,c))||null;},
     async enrollments(id){return [...enrolled.values()].filter(e=>e.user_id===id);},
     async grants(id,c){return grants.filter(g=>g.user_id===id&&(!c||g.course_id===c));},
+    async instructors(id,c){return instructors.filter(g=>g.user_id===id&&(!c||g.course_id===c));},
+    async reading(c,l){events.push(['reading',c,l]);return readings.get(`${c}/${l}`) || '';},
     async registrations(id,c){return registrations.filter(r=>r.user_id===id&&(!c||r.course_id===c));},
     async progress(id,c){return [...progress.values()].filter(p=>p.user_id===id&&p.course_id===c);},
     async saveProgress(id,c,l,p,now){const k=`${key(id,c)}/${l}`,old=progress.get(k);const row={user_id:id,course_id:c,lesson_id:l,position_seconds:p.positionSeconds,max_position_seconds:Math.max(p.positionSeconds,old?.max_position_seconds||0),completed:p.completed||old?.completed||false,version:(old?.version||0)+1,updated_at:now};progress.set(k,row);return row;},
@@ -47,7 +49,7 @@ function harness() {
     await handler(req,res);return res;
   }
   function seed(id='alice',c='ai-sauce'){enrolled.set(key(id,c),{user_id:id,course_id:c,registered_at:'2026-09-10T00:00:00Z'});}
-  return {call,store,options,accounts,enrolled,grants,registrations,progress,events,seed};
+  return {call,store,options,accounts,enrolled,grants,registrations,instructors,readings,progress,events,seed};
 }
 
 test('guest cannot see a catalog or enroll',async()=>{
@@ -115,6 +117,90 @@ test('active entitlement opens paid media and exercises, scoped to that course o
   const r=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}});
   assert.equal(r.statusCode,200);assert.equal(r.body.preview,false);assert.equal(r.body.lesson.resources[0].id,'r_zip');assert.equal(r.body.lesson.resources[0].optional,true);
   h.seed('alice','another-course');assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'another-course',lessonId:'EP01'}})).statusCode,403);
+});
+const instructor=(extra={})=>({user_id:'alice',course_id:'ai-sauce',granted_at:'2026-09-01T00:00:00Z',revoked_at:null,...extra});
+test('a trusted instructor can read course lessons, media and resources without a purchased grant',async()=>{
+  const h=harness();h.seed();h.instructors.push(instructor());
+  const r=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}});
+  assert.equal(r.statusCode,200);assert.equal(r.body.access.role,'instructor');assert.equal(r.body.access.active,true);
+  assert.equal(r.body.access.expiresAt,null);assert.equal(r.body.access.paymentStatus,null);assert.equal(r.body.preview,false);
+  assert.equal(r.body.lesson.resources[0].id,'r_zip');
+  for(const assetId of ['v_paid','c_paid','r_zip']) {
+    const media=await authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'FOUNDATION',assetId},h.options);
+    assert.equal(media.access.role,'instructor');assert.equal(media.preview,false);
+  }
+  assert.equal(h.grants.length,0);assert.equal(h.registrations.length,0);
+  assert.equal((await h.call()).body.courses[0].access.role,'instructor');
+});
+test('instructor access remains scoped to its own enrolled account and course',async()=>{
+  const h=harness();h.seed();h.seed('bob');h.seed('alice','another-course');h.instructors.push(instructor());
+  const otherAccount=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'},testUser:{...user,id:'bob'}});
+  const otherCourse=await h.call('GET','lesson',undefined,{query:{courseId:'another-course',lessonId:'EP01'}});
+  assert.equal(otherAccount.statusCode,403);assert.equal(otherCourse.statusCode,403);
+  h.enrolled.delete('alice/ai-sauce');
+  assert.equal((await h.call()).body.courses.length,1);
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).body.code,'COURSE_ENROLLMENT_REQUIRED');
+  const own={user_id:'alice',course_id:'ai-sauce',registered_at:new Date(NOW)};
+  assert.equal(courseAccess(own,[],[],NOW,[instructor({user_id:'bob'})]).active,false);
+  assert.equal(courseAccess(own,[],[],NOW,[instructor({course_id:'another-course'})]).active,false);
+});
+test('instructor role never bypasses verified session and account checks',async()=>{
+  const h=harness();h.seed();h.instructors.push(instructor());
+  assert.equal((await h.call('GET','course',undefined,{query:{courseId:'ai-sauce'},testUser:{...user,emailVerified:false}})).body.code,'EMAIL_VERIFICATION_REQUIRED');
+  h.accounts.set('alice',{id:'alice',email_verified_at:null});
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).body.code,'EMAIL_VERIFICATION_REQUIRED');
+});
+test('future or revoked instructor role cannot open paid content, and revocation applies on the next media request',async()=>{
+  const h=harness();h.seed();const row=instructor();h.instructors.push(row);
+  await authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'FOUNDATION',assetId:'v_paid'},h.options);
+  row.revoked_at=new Date(NOW);
+  await assert.rejects(authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'FOUNDATION',assetId:'v_paid'},h.options),e=>e.code==='COURSE_ACCESS_REQUIRED');
+  row.revoked_at=null;row.granted_at=new Date(NOW+1);
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).statusCode,403);
+  row.granted_at='invalid';assert.equal((await h.call()).body.courses[0].status,'registered');
+});
+test('a learner cannot assign instructor access in request bodies or queries',async()=>{
+  const h=harness();h.seed();
+  for(const fields of [{role:'instructor'},{instructor:true}]) {
+    assert.equal((await h.call('POST','enroll',{courseId:'ai-sauce',...fields})).statusCode,400);
+    assert.equal((await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'EP01',positionSeconds:1,...fields})).statusCode,400);
+  }
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION',role:'instructor'}})).statusCode,403);
+  assert.equal((await h.call('POST','instructor',{courseId:'ai-sauce'})).statusCode,400);assert.equal(h.instructors.length,0);
+});
+test('paid lesson reading is looked up only after access succeeds and never appears in course metadata',async()=>{
+  const h=harness();h.seed();h.readings.set('ai-sauce/FOUNDATION','# PRIVATE_READING\nPractice this task.');
+  const denied=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}});
+  assert.equal(denied.statusCode,403);assert.equal(h.events.some(e=>e[0]==='reading'),false);
+  h.instructors.push(instructor());
+  const allowed=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}});
+  assert.equal(allowed.body.lesson.reading,h.readings.get('ai-sauce/FOUNDATION'));assert.equal(allowed.body.lesson.readingAvailable,true);
+  for(const action of ['course','courses']) {
+    const result=await h.call('GET',action,undefined,{query:{courseId:'ai-sauce'}});
+    assert.doesNotMatch(JSON.stringify(result.body),/PRIVATE_READING|Practice this task/);
+  }
+  h.instructors[0].revoked_at=new Date(NOW);h.grants.push(grant());
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).body.lesson.readingAvailable,true);
+});
+test('preview reading follows preview access, with an explicit empty state for missing private content',async()=>{
+  const h=harness();h.seed();
+  let result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
+  assert.equal(result.body.lesson.reading,'');assert.equal(result.body.lesson.readingAvailable,false);
+  h.readings.set('ai-sauce/EP01','## INTRO_ONLY');
+  result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
+  assert.equal(result.body.lesson.reading,'## INTRO_ONLY');assert.equal(result.body.lesson.readingAvailable,true);
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'},testUser:null})).statusCode,401);
+});
+test('private instructor and reading schema preserve enrollment scope and bounded server-only content',async()=>{
+  const roleDDL=LEARN_SCHEMA.find(s=>s.includes('CREATE TABLE IF NOT EXISTS mc_learn_instructors'));
+  assert.match(roleDDL,/FOREIGN KEY\(user_id,course_id\) REFERENCES mc_learn_enrollments/);
+  assert.match(roleDDL,/PRIMARY KEY\(user_id,course_id\)/);assert.doesNotMatch(roleDDL,/INSERT INTO|mc_learn_grants/);
+  const readingDDL=LEARN_SCHEMA.find(s=>s.includes('CREATE TABLE IF NOT EXISTS mc_learn_readings'));
+  assert.match(readingDDL,/octet_length\(body_markdown\)<=200000/);
+  const calls=[];const sql={query:async(text,args)=>{calls.push({text,args});return text.includes('body_markdown')?[{body_markdown:'# Text'}]:[];}};
+  const store=createLearnStore(sql);await store.instructors('alice','ai-sauce');assert.equal(await store.reading('ai-sauce','FOUNDATION'),'# Text');
+  assert.deepEqual(calls[0].args,['alice','ai-sauce']);assert.match(calls[0].text,/WHERE user_id=\$1/);
+  assert.deepEqual(calls[1].args,['ai-sauce','FOUNDATION']);assert.match(calls[1].text,/WHERE course_id=\$1 AND lesson_id=\$2/);
 });
 for(const [label,change] of [['expired',{expires_at:new Date(NOW)}],['revoked',{revoked_at:new Date(NOW-1)}],['future',{starts_at:new Date(NOW+1)}]]) {
   test(`${label} grant cannot open paid lessons or write their progress`,async()=>{

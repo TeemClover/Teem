@@ -21,13 +21,17 @@ export function oneYearAfter(value) {
   return date.toISOString();
 }
 
-export function courseAccess(enrollment, grants = [], registrations = [], now = Date.now()) {
+export function courseAccess(enrollment, grants = [], registrations = [], now = Date.now(), instructors = []) {
   if (!enrollment) return { status: 'not_enrolled', active: false, canPreview: false, startsAt: null, expiresAt: null, paymentStatus: null };
   const time = new Date(now).getTime();
   const active = grants.filter(g => !g.revoked_at && iso(g.starts_at) && iso(g.expires_at)
     && new Date(g.starts_at).getTime() <= time && new Date(g.expires_at).getTime() > time)
     .sort((a,b) => new Date(b.expires_at) - new Date(a.expires_at));
   const latest = [...registrations].sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0];
+  const instructor = instructors.find(row => row.user_id===enrollment.user_id && row.course_id===enrollment.course_id
+    && !row.revoked_at && iso(row.granted_at) && new Date(row.granted_at).getTime()<=time);
+  if (instructor) return {status:'active',role:'instructor',active:true,canPreview:true,
+    registeredAt:iso(enrollment.registered_at),startsAt:iso(instructor.granted_at),expiresAt:null,paymentStatus:latest?.status || null};
   let status = 'registered';
   if (active.length) status = 'active';
   else if (registrations.some(r => ['pending_verification','payment_verified','admitted'].includes(r.status)
@@ -44,7 +48,7 @@ export function validateProgress(body, lesson) {
   if (typeof body.positionSeconds !== 'number' || !Number.isFinite(body.positionSeconds)
     || body.positionSeconds < 0 || body.positionSeconds > 86400) throw new LearnError('INVALID_POSITION');
   if (body.completed !== undefined && typeof body.completed !== 'boolean') throw new LearnError('INVALID_COMPLETED');
-  if (['userId','accountId','entitlement','status','expiresAt'].some(key => Object.hasOwn(body,key))) throw new LearnError('INVALID_PROGRESS_FIELDS');
+  if (['userId','accountId','entitlement','status','expiresAt','role','instructor'].some(key => Object.hasOwn(body,key))) throw new LearnError('INVALID_PROGRESS_FIELDS');
   const duration = Number(lesson.durationSeconds);
   return { positionSeconds: Math.round(Math.min(body.positionSeconds, duration > 0 ? duration : 86400) * 1000) / 1000,
     completed: body.completed === true };

@@ -20,8 +20,8 @@ export async function verifiedLearnUser(sql,req,{store=createLearnStore(sql),loo
 export async function loadCourseAccess(store,userId,courseId,now=Date.now()) {
   const enrollment = await store.enrollment(userId,courseId);
   if (!enrollment) return courseAccess(null);
-  const [grants,registrations] = await Promise.all([store.grants(userId,courseId),store.registrations(userId,courseId)]);
-  return courseAccess(enrollment,grants,registrations,now);
+  const [grants,registrations,instructors] = await Promise.all([store.grants(userId,courseId),store.registrations(userId,courseId),store.instructors(userId,courseId)]);
+  return courseAccess(enrollment,grants,registrations,now,instructors);
 }
 
 export function catalogLesson(courses,courseId,lessonId) {

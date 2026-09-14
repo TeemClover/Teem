@@ -6,6 +6,15 @@ export const LEARN_SCHEMA = [
     user_id TEXT NOT NULL REFERENCES mc_accounts(id), course_id TEXT NOT NULL,
     registered_at TIMESTAMPTZ NOT NULL, PRIMARY KEY(user_id,course_id)
   )`,
+  `CREATE TABLE IF NOT EXISTS mc_learn_instructors (
+    user_id TEXT NOT NULL REFERENCES mc_accounts(id), course_id TEXT NOT NULL,
+    granted_at TIMESTAMPTZ NOT NULL, granted_by TEXT NOT NULL CHECK(length(trim(granted_by)) BETWEEN 1 AND 200),
+    grant_reason TEXT NOT NULL DEFAULT '' CHECK(length(grant_reason)<=1000),
+    revoked_at TIMESTAMPTZ, revoked_by TEXT, revocation_reason TEXT,
+    PRIMARY KEY(user_id,course_id),
+    FOREIGN KEY(user_id,course_id) REFERENCES mc_learn_enrollments(user_id,course_id),
+    CHECK(revoked_at IS NULL OR revoked_at>=granted_at)
+  )`,
   `CREATE TABLE IF NOT EXISTS mc_learn_registration_links (
     reference TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES mc_accounts(id), course_id TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
@@ -27,6 +36,11 @@ export const LEARN_SCHEMA = [
     completed BOOLEAN NOT NULL DEFAULT FALSE, version INTEGER NOT NULL DEFAULT 1,
     updated_at TIMESTAMPTZ NOT NULL, PRIMARY KEY(user_id,course_id,lesson_id),
     FOREIGN KEY(user_id,course_id) REFERENCES mc_learn_enrollments(user_id,course_id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS mc_learn_readings (
+    course_id TEXT NOT NULL, lesson_id TEXT NOT NULL,
+    body_markdown TEXT NOT NULL CHECK(octet_length(body_markdown)<=200000),
+    updated_at TIMESTAMPTZ NOT NULL, PRIMARY KEY(course_id,lesson_id)
   )`,
 ];
 
@@ -55,6 +69,12 @@ export function createLearnStore(sql) {
     async enrollment(userId,courseId) { return (await sql.query('SELECT user_id,course_id,registered_at FROM mc_learn_enrollments WHERE user_id=$1 AND course_id=$2',[userId,courseId]))[0] || null; },
     async grants(userId,courseId) { return sql.query(`SELECT reference,course_id,starts_at,expires_at,revoked_at FROM mc_learn_grants
       WHERE user_id=$1 AND ($2::text IS NULL OR course_id=$2)`,[userId,courseId || null]); },
+    // Provisioned only by trusted administration, never enrollment or checkout.
+    // A course instructor has no payment receipt or purchased access grant.
+    async instructors(userId,courseId) { return sql.query(`SELECT user_id,course_id,granted_at,revoked_at FROM mc_learn_instructors
+      WHERE user_id=$1 AND ($2::text IS NULL OR course_id=$2)`,[userId,courseId || null]); },
+    async reading(courseId,lessonId) { return (await sql.query(`SELECT body_markdown FROM mc_learn_readings
+      WHERE course_id=$1 AND lesson_id=$2`,[courseId,lessonId]))[0]?.body_markdown || ''; },
     async registrations(userId,courseId) {
       const links = await sql.query(`SELECT reference,course_id FROM mc_learn_registration_links
         WHERE user_id=$1 AND ($2::text IS NULL OR course_id=$2)`,[userId,courseId || null]);
