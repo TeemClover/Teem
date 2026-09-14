@@ -24,6 +24,7 @@ function mediaHarness(options={}) {
   const row={pathname:'learn/000.'+asset.filename.split('.').pop().toLowerCase(),content_type:asset.contentType,bytes:asset.bytes,sha256:'1'.repeat(64),...options.row};
   const sql={async query(text,args){calls.push(['sql',text,args]);return text.startsWith('SELECT')?[row]:[];}};
   const handler=createLearnMediaHandler({getSql:()=>sql,ensureCoreSchema:async()=>{},registryAssets:[asset],
+    timingLog:data=>calls.push(['timing',data]),
     authorize:async(...args)=>{calls.push(['authorize',args[2]]);if(options.denied)throw new LearnError(options.denied,403);return {asset};},
     config:options.config||{LEARN_BLOB_STORE_ID:'store_private123',BLOB_READ_WRITE_TOKEN:'unrelated-public-token'},
     getOidcToken:options.getOidcToken || (async () => 'test-oidc'),
@@ -76,7 +77,7 @@ test('GET and HEAD authorize before any media registry lookup or blob access',as
 });
 test('queries with missing/duplicate identifiers never reach authorization',async()=>{
   for(const url of ['/api/learn-media','/api/learn-media?courseId=a&courseId=b&lessonId=x&assetId=x','/api/learn-media?courseId=&lessonId=x&assetId=x']){
-    const h=mediaHarness(),r=await h.call({url});assert.equal(r.statusCode,400);assert.equal(h.calls.length,0);
+    const h=mediaHarness(),r=await h.call({url});assert.equal(r.statusCode,400);assert.equal(h.calls.filter(c=>c[0]!=='timing').length,0);
   }
 });
 test('invalid registry paths, wrong asset, size, MIME and digest fail closed',async()=>{
@@ -101,6 +102,24 @@ test('HEAD has identical auth, no body or Blob fetch, and ignores Range',async()
 test('partial response reports the exact byte range and streamed content',async()=>{
   const h=mediaHarness(),r=await h.call({range:'bytes=2-5'});assert.equal(r.statusCode,206);assert.equal(r.body,'llo ');
   assert.equal(r.headers['content-range'],'bytes 2-5/12');assert.equal(r.headers['content-length'],'4');
+});
+test('performance headers and logs contain only timing metrics and HTTP status',async()=>{
+  const h=mediaHarness(),r=await h.call({range:'bytes=2-5'});
+  assert.match(r.headers['server-timing'],/authorization;dur=\d/);assert.match(r.headers['server-timing'],/storage_auth;dur=\d/);assert.match(r.headers['server-timing'],/blob_headers;dur=\d/);
+  const data=h.calls.find(c=>c[0]==='timing')[1];assert.equal(data.status,206);
+  assert.ok(Object.values(data).every(value=>typeof value==='number'&&Number.isFinite(value)&&value>=0));
+  assert.doesNotMatch(JSON.stringify(data),/store_private|oidc|m_[a-f0-9]|learn\/|cookie/);
+});
+test('stream forwards the first chunk before the remaining video arrives',async()=>{
+  let upstream,firstByte;const firstWritten=new Promise(resolve=>{firstByte=resolve;});
+  const stream=new ReadableStream({start(controller){upstream=controller;controller.enqueue(Buffer.from('Hello'));}});
+  const row={pathname:'learn/000.mp4',content_type:ASSET.contentType,bytes:ASSET.bytes,sha256:'1'.repeat(64)};
+  const handler=createLearnMediaHandler({getSql:()=>({}),authorize:async()=>({asset:ASSET,mediaRow:row}),registryAssets:[ASSET],
+    config:{LEARN_BLOB_READ_WRITE_TOKEN:'test-private'},timingLog:()=>{},getBlob:async()=>({headers:new Headers({'content-length':'12'}),stream})});
+  const response=new Reply();response._write=(chunk,encoding,done)=>{response.chunks.push(Buffer.from(chunk));firstByte();done();};
+  let finished=false;const pending=handler({method:'GET',url:'/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+ASSET.id,headers:{}},response).then(()=>{finished=true;});
+  await firstWritten;assert.equal(response.body,'Hello');assert.equal(finished,false);
+  upstream.enqueue(Buffer.from(' World!'));upstream.close();await pending;assert.equal(response.body,'Hello World!');assert.equal(response.statusCode,200);
 });
 test('invalid ranges return 416 and size without fetching data',async()=>{
   const h=mediaHarness(),r=await h.call({range:'bytes=12-'});assert.equal(r.statusCode,416);

@@ -36,7 +36,14 @@
           <div id="lesson-placeholder" class="lesson-placeholder">เลือกบทเรียนจากสารบัญ</div>
           <div id="lesson-body" hidden>
             <div class="lesson-heading"><p class="eyebrow" id="lesson-kicker"></p><h2 id="lesson-title" tabindex="-1"></h2><p id="lesson-summary"></p></div>
-            <div id="player-wrap" class="player-wrap" hidden><video id="lesson-video" controls playsinline preload="metadata" aria-label="วิดีโอบทเรียน"></video></div>
+            <div id="player-wrap" class="player-wrap" hidden>
+              <video id="lesson-video" controls playsinline preload="auto" aria-label="วิดีโอบทเรียน"></video>
+              <div id="player-overlay" class="player-overlay" hidden>
+                <span class="player-spinner" aria-hidden="true"></span>
+                <p id="player-status" role="status" aria-live="polite"></p>
+                <button id="player-action" type="button" class="button" hidden>เล่นวิดีโอ</button>
+              </div>
+            </div>
             <p class="video-note" id="video-note" hidden>วิดีโอแนวนอนสำหรับเรียนบนคอมพิวเตอร์ · หยุด ย้อน หรือขยายเต็มจอเพื่อทำตามได้</p>
             <div id="media-message" class="inline-message" role="status" hidden></div>
             <div id="lesson-reading" class="lesson-reading" hidden></div>

@@ -5,6 +5,7 @@ import { createApi, createLearner, normalizeCourses, parseRoute, courseRoute, sa
 import { safeReturn, authRequest, showVerification, googleStartUrl } from '../assets/account-step.js';
 import { renderFrontDoorRoot } from '../../tools/sync-frontdoor-root.mjs';
 import { renderLessonReading, readingHref, parseReadingDiagram } from '../assets/lesson-reading.js';
+import { createLessonPlayer } from '../assets/lesson-player.js';
 
 const active = { id:'ai-sauce',title:'AI ใส่ซอส',status:'active',summary:'หลักคิดและงานจริง' };
 const foundation = {id:'FOUNDATION',title:'เริ่มที่นี่',type:'foundation',order:0,locked:false,nextLessonId:'ADV01'};
@@ -81,6 +82,7 @@ class Element {
   get childElementCount(){return this.children.length;}addEventListener(k,fn){(this.listeners[k]??=[]).push(fn);}async fire(k){for(const fn of this.listeners[k]||[])await fn({preventDefault(){},target:this,currentTarget:this});}
   all(){return this.children.flatMap(n=>n instanceof Element?[n,...n.all()]:[]);}querySelector(s){return this.all().find(n=>s.startsWith('.')?n.className.split(' ').includes(s.slice(1)):n.tagName.toLowerCase()===s)||null;}
   closest(s){let n=this;while(n){if(n.tagName.toLowerCase()===s)return n;n=n.parentElement;}return null;}focus(){this.focused=true;}select(){this.selected=true;}scrollIntoView(options){this.scrollRequest=options;}pause(){this.paused=true;}load(){this.loads=(this.loads||0)+1;}
+  async play(){this.plays=(this.plays||0)+1;this.paused=false;await this.fire('playing');}
   reportValidity(){return this.all().filter(n=>n.required).every(n=>n.type==='checkbox'?n.checked:!!n.value);}
 }
 let run=0;
@@ -122,8 +124,8 @@ test('locked chapter gives a visible explanation rather than an inert sidebar ro
   const base=mockedFetch();const d=await dom(async url=>url.includes('action=course&')?response({...courseData,access:{status:'registered',active:false},course:{...courseData.course,lessons:[{...foundation,locked:true},preview,{...main,locked:true}]}}):base(url),'?course=ai-sauce&lesson=EP01');await d.load();
   const link=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV01');assert.match(link.textContent,/คอร์สเต็ม/);await link.fire('click');assert.match(d.ids.get('page-status').textContent,/ยังเปิดสิทธิ์ไม่ครบ/);assert.ok(d.ids.get('page-status').scrollRequest);assert.equal(d.ids.get('lesson-title').textContent,'บทตัวอย่าง');
 });
-test('mocked DOM: active route paints authenticated landscape player and next main, with no autoplay',async()=>{
-  const d=await dom(mockedFetch(),'?course=ai-sauce&lesson=FOUNDATION');await d.load();assert.equal(d.ids.get('classroom').hidden,false);assert.equal(d.ids.get('lesson-video').src,media);assert.equal(d.ids.get('lesson-video').autoplay,undefined);assert.match(d.ids.get('next-lesson').href,/lesson=ADV01/);assert.equal(d.ids.get('lesson-title').textContent,'เริ่มที่นี่');assert.equal(d.ids.get('account-label').textContent,'ผู้เรียนทดสอบ');
+test('mocked DOM: active route starts authenticated landscape playback and preloads video',async()=>{
+  const d=await dom(mockedFetch(),'?course=ai-sauce&lesson=FOUNDATION');await d.load();assert.equal(d.ids.get('classroom').hidden,false);assert.equal(d.ids.get('lesson-video').src,media);assert.equal(d.ids.get('lesson-video').plays,1);assert.equal(d.ids.get('lesson-video').preload,'auto');assert.equal(d.ids.get('player-overlay').hidden,true);assert.match(d.ids.get('next-lesson').href,/lesson=ADV01/);assert.equal(d.ids.get('lesson-title').textContent,'เริ่มที่นี่');assert.equal(d.ids.get('account-label').textContent,'ผู้เรียนทดสอบ');
 });
 test('mocked DOM: logout clears actual video src/resources immediately before server resolves',async()=>{
   let pending;const base=mockedFetch();const d=await dom(async url=>pending?pending.promise:base(url),'?course=ai-sauce');await d.load();pending=defer();await d.fire('mc:account-changed');assert.equal(d.ids.get('lesson-video').src,'');assert.equal(d.ids.get('resource-list').childElementCount,0);pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();assert.equal(d.ids.get('state-panel').hidden,false);
@@ -182,7 +184,7 @@ test('static shell protects paid assets and maintains home source sync and acces
   const [html,js,css,root,frontdoor,home]=await Promise.all(['learn/index.html','learn/assets/learn.js','learn/assets/learn.css','index.html','frontdoor/index.html','home/index.html'].map(p=>readFile(new URL('../../'+p,import.meta.url),'utf8')));
   assert.equal(renderFrontDoorRoot(frontdoor),root);
   for(const page of [root,frontdoor,home])assert.equal((page.match(/src="\/assets\/my-learning-entry.js"/g)||[]).length,1);
-  assert.match(html,/<html lang="th">/);assert.doesNotMatch(html,/href="\/learn\/classroom\/"/);assert.match(html,/href="\/classroom\/dungeon\/"/);assert.match(html,/controls playsinline preload="metadata"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
+  assert.match(html,/<html lang="th">/);assert.doesNotMatch(html,/href="\/learn\/classroom\/"/);assert.match(html,/href="\/classroom\/dungeon\/"/);assert.match(html,/controls playsinline preload="auto"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
   assert.match(css,/aspect-ratio:16\/9/);assert.match(css,/\[hidden\]\{display:none!important\}/);assert.match(css,/@media\(max-width:375px\)/);assert.match(css,/prefers-reduced-motion/);
 });
 
@@ -262,4 +264,42 @@ test('Boss is a main stage with reading and Dungeon entry, without a broken vide
   assert.match(d.ids.get('lesson-navigation').textContent,/เส้นทางหลัก · 3 ช่วง/);assert.equal(d.ids.get('player-wrap').hidden,true);assert.equal(d.ids.get('media-message').hidden,true);assert.equal(d.ids.get('boss-invitation').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/ต่อซอสของคุณ/);
   d.ids.get('lesson-video').currentTime=500;await d.ids.get('lesson-video').fire('error');assert.equal(d.ids.get('media-message').hidden,true);
   await d.ids.get('complete-lesson').fire('click');assert.equal(saved.positionSeconds,0);assert.equal(saved.completed,true);
+});
+
+function playerFixture(play) {
+  const video=new Element('video'),overlay=new Element(),message=new Element(),button=new Element('button'),timers=new Map();let clock=0;
+  if(play)video.play=play.bind(video);
+  const player=createLessonPlayer({video,overlay,message,button,schedule:fn=>{timers.set(++clock,fn);return clock;},cancel:id=>timers.delete(id)});
+  return {video,overlay,message,button,player,timers,settle:()=>new Promise(setImmediate)};
+}
+test('player shows loading until delayed playback starts, with a useful slow-connection retry',async()=>{
+  const pending=defer(),p=playerFixture(function(){return pending.promise;});p.player.start();
+  assert.equal(p.video.preload,'auto');assert.equal(p.overlay.dataset.state,'loading');assert.equal(p.overlay.hidden,false);
+  [...p.timers.values()][0]();assert.equal(p.overlay.dataset.state,'slow');assert.equal(p.button.textContent,'โหลดใหม่');
+  p.video.paused=false;pending.resolve();await p.settle();assert.equal(p.overlay.hidden,true);assert.equal(p.timers.size,0);
+});
+test('browser autoplay denial exposes a click-to-play action without muting or reloading',async()=>{
+  let calls=0;const p=playerFixture(function(){calls++;if(calls===1)return Promise.reject(Object.assign(Error(),{name:'NotAllowedError'}));this.paused=false;return Promise.resolve();});
+  p.player.start();await p.settle();assert.equal(p.overlay.dataset.state,'blocked');assert.equal(p.button.textContent,'เล่นวิดีโอ');assert.equal(p.video.muted,undefined);
+  const loads=p.video.loads;await p.button.fire('click');await p.settle();assert.equal(calls,2);assert.equal(p.video.loads,loads);assert.equal(p.overlay.hidden,true);
+});
+test('switching lesson or resetting access ignores the old pending play rejection',async()=>{
+  const old=defer();let calls=0;const p=playerFixture(function(){calls++;if(calls===1)return old.promise;this.paused=false;return Promise.resolve();});
+  p.player.start();p.player.reset();p.player.start();await p.settle();old.reject(Object.assign(Error(),{name:'NotAllowedError'}));await p.settle();assert.equal(p.overlay.hidden,true);
+  const next=defer();p.video.play=()=>next.promise;p.player.start();p.player.reset();next.reject(Error('offline'));await p.settle();assert.equal(p.overlay.hidden,true);assert.equal(p.timers.size,0);
+});
+test('player restores saved position only once and preserves it through a retry',async()=>{
+  const p=playerFixture();p.player.start(35);await p.video.fire('loadedmetadata');assert.equal(p.video.currentTime,35);
+  p.video.currentTime=42;await p.video.fire('loadedmetadata');assert.equal(p.video.currentTime,42);
+  await p.video.fire('error');assert.equal(p.overlay.dataset.state,'error');await p.button.fire('click');p.video.currentTime=0;await p.video.fire('loadedmetadata');assert.equal(p.video.currentTime,42);await p.settle();
+  p.player.reset();p.player.start(1000);p.video.currentTime=0;await p.video.fire('loadedmetadata');assert.equal(p.video.currentTime,0);await p.settle();
+});
+test('buffering clears when playing resumes and never restarts a manually paused lesson',async()=>{
+  const p=playerFixture();p.player.start();await p.settle();await p.video.fire('waiting');assert.equal(p.overlay.dataset.state,'buffering');
+  const plays=p.video.plays;p.video.pause();await p.video.fire('pause');assert.equal(p.overlay.hidden,true);await p.video.fire('canplay');assert.equal(p.video.plays,plays);assert.equal(p.video.paused,true);assert.equal(p.timers.size,0);
+});
+test('pausing while the initial play is waiting dismisses its loading timer',async()=>{
+  const pending=defer(),p=playerFixture(function(){this.paused=false;return pending.promise;});p.player.start();
+  p.video.pause();await p.video.fire('pause');assert.equal(p.overlay.hidden,true);assert.equal(p.timers.size,0);
+  pending.reject(Object.assign(Error(),{name:'AbortError'}));await p.settle();assert.equal(p.overlay.hidden,true);
 });

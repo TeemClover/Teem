@@ -1,11 +1,13 @@
 import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js';
 import { authRequest, safeReturn, showVerification } from './account-step.js';
 import { renderLessonReading } from './lesson-reading.js';
+import { createLessonPlayer } from './lesson-player.js';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text = '', className = '') => { const n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; };
 const api = createApi(window.fetch.bind(window));
 const video = $('lesson-video');
+const player = createLessonPlayer({ video, overlay: $('player-overlay'), message: $('player-status'), button: $('player-action') });
 let learner, activeCourse = null, selectedId = null, lastSaved = 0, progressBusy = false, enrollmentBusy = false, booting = false, verificationVersion = 0;
 const lessonLinks = new Map();
 function isBossLesson() { return activeCourse?.course?.lessons.find(item => item.id === selectedId)?.type === 'boss'; }
@@ -17,6 +19,7 @@ function badge(state, role) { return el('span', role === 'instructor' ? 'ผู�
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
+  player.reset();
   selectedId = null; progressBusy = false; lastSaved = 0;
   video.pause(); video.removeAttribute('src'); video.replaceChildren(); video.load();
   $('player-wrap').hidden = true; $('video-note').hidden = true; $('lesson-body').hidden = true;
@@ -116,7 +119,8 @@ const view = {
       video.src = mediaUrl;
       // Current course subtitles are burned in; do not request SRT as an HTML video track.
       for (const caption of item.media.captionsEmbedded ? [] : item.media.captions || []) { const url = safeAssetUrl(caption.url, location.origin); if (!url || caption.mimeType !== 'text/vtt') continue; const track = el('track'); track.kind = 'subtitles'; track.srclang = caption.language || 'th'; track.label = caption.label || 'ไทย'; track.src = url; video.append(track); }
-      $('player-wrap').hidden = false; $('video-note').hidden = false; video.load();
+      $('player-wrap').hidden = false; $('video-note').hidden = false;
+      player.start(activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds || 0);
     } else if (item.type !== 'boss') { $('media-message').hidden = false; $('media-message').textContent = 'วิดีโอยังเปิดไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่อีกครั้ง หรือติดต่อผู้สอน'; }
     $('boss-invitation').hidden = item.type !== 'boss';
     const reading = typeof item.reading === 'string' ? item.reading : typeof item.body === 'string' ? item.body : '';
@@ -199,17 +203,11 @@ $('complete-lesson').addEventListener('click', async () => {
   const saved = await learner.saveProgress(!isBossLesson() && Number.isFinite(video.currentTime) ? video.currentTime : 0, true);
   if (selectedId === id) { if (saved) $('save-status').textContent = 'บันทึกแล้ว กลับมาเรียนต่อด้วยบัญชีนี้ได้ทุกครั้ง'; else $('complete-lesson').disabled = false; } progressBusy = false;
 });
-video.addEventListener('loadedmetadata', () => {
-  if (isBossLesson()) return;
-  const pos = activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds;
-  if (Number.isFinite(pos) && pos > 2 && Number.isFinite(video.duration) && pos < video.duration - 2) video.currentTime = pos;
-});
 async function savePosition() {
   if (!selectedId || isBossLesson() || progressBusy || !Number.isFinite(video.currentTime) || video.currentTime <= 0) return;
   if (Date.now() - lastSaved < 10000) return; lastSaved = Date.now(); await learner.saveProgress(video.currentTime);
 }
 video.addEventListener('timeupdate', savePosition); video.addEventListener('pause', savePosition);
-video.addEventListener('error', () => { if (!selectedId || isBossLesson()) return; $('media-message').hidden = false; $('media-message').textContent = 'เปิดวิดีโอไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่เพื่อตรวจสิทธิ์และเชื่อมต่ออีกครั้ง'; });
 window.addEventListener('popstate', () => learner.load());
 window.addEventListener('mc:account-changed', () => { learner.reset(); booting = false; boot(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden) savePosition(); });
