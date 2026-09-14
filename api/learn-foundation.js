@@ -68,8 +68,12 @@ export function createLearnFoundationHandler({
       if (extension === '.html') {
         const destination = file.startsWith('dungeon/') ? '/learn/' : '/ai-source/';
         const label = file.startsWith('dungeon/') ? 'ห้องเรียนของฉัน ↗' : 'ดูคอร์สเต็ม AI ใส่ซอส ↗';
-        body = Buffer.from(body.toString('utf8').replaceAll('/learn/classroom/', '/classroom/')
-          .replace('</body>', `<a href="${destination}" style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#163f32;color:white;padding:12px 18px;border-radius:24px;font:600 14px sans-serif">${label}</a></body>`));
+        const html = body.toString('utf8').replaceAll('/learn/classroom/', '/classroom/');
+        const overlay = `<a href="${destination}" style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#163f32;color:white;padding:12px 18px;border-radius:24px;font:600 14px sans-serif">${label}</a>`;
+        // HTML lessons can contain complete document examples inside script
+        // strings. Append at the final document close, never inside an example.
+        const bodyEnd = html.toLowerCase().lastIndexOf('</body>');
+        body = Buffer.from(bodyEnd < 0 ? html + overlay : html.slice(0, bodyEnd) + overlay + html.slice(bodyEnd));
       }
       res.statusCode = 200; res.setHeader('Content-Length', body.length);
       res.end(req.method === 'HEAD' ? undefined : body);

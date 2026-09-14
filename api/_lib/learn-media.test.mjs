@@ -128,9 +128,10 @@ test('foundation rejects traversal, hidden files, encoded escapes and duplicate 
   for(const value of ['../secret.md','/etc/passwd','a/./x.md','.git/config','a//x.md','a\\x.md','a%2fx.md','a\u0000.md','a\u007f.md','https:x.md'])assert.throws(()=>foundationFile('/api/learn-foundation?file='+encodeURIComponent(value)),e=>e.status===400);
   assert.throws(()=>foundationFile('/api/learn-foundation?file=a&file=b'));
 });
-async function foundationHarness(t,{denied,enrolled=true}={}) {
+async function foundationHarness(t,{denied,enrolled=true,html='<body><a href="/classroom/lesson1.html">Start</a></body>'}={}) {
   const base=await mkdtemp(path.join(tmpdir(),'learn-foundation-'));t.after(()=>rm(base,{recursive:true,force:true}));
-  const root=path.join(base,'classroom');await mkdir(root);await writeFile(path.join(root,'index.html'),'<body><a href="/classroom/lesson1.html">Start</a></body>');
+  const root=path.join(base,'classroom');await mkdir(root);await writeFile(path.join(root,'index.html'),html);
+  await mkdir(path.join(root,'dungeon'));await writeFile(path.join(root,'dungeon','index.html'),html);
   await writeFile(path.join(root,'DATA.md'),'foundation-data');await writeFile(path.join(base,'outside.md'),'must-not-leak');await symlink(path.join(base,'outside.md'),path.join(root,'escape.md'));
   await writeFile(path.join(root,'sample.mp4'),'sample-video-data');
   const events=[];
@@ -153,6 +154,18 @@ test('free classroom keeps canonical links and blocks symlink escapes',async t=>
   const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/classroom\/lesson1\.html/);assert.match(r.body,/\/ai-source\//);
   assert.equal(r.headers['cache-control'],'private, no-store');assert.equal((await h.call('DATA.md')).body,'foundation-data');
   assert.equal((await h.call('escape.md')).statusCode,404);assert.equal((await h.call('missing.html')).statusCode,404);
+});
+test('Dungeon overlay is outside embedded HTML demos and immediately before the final document body close',async t=>{
+  const demo='const demo = `<html><body><h1>Example only</h1></body></html>`;';
+  const html=`<!doctype html><html><body><pre id="codePane"></pre><script>${demo}</script><main>Actual Dungeon</main></BODY></html>`;
+  const h=await foundationHarness(t,{html});const r=await h.call('dungeon/index.html');
+  assert.equal(r.statusCode,200);assert.ok(r.body.includes(demo));
+  const overlayStart=r.body.indexOf('<a href="/learn/"');
+  assert.ok(overlayStart>r.body.indexOf('</script>'));
+  assert.equal((r.body.match(/ห้องเรียนของฉัน ↗/g)||[]).length,1);
+  assert.match(r.body,/<main>Actual Dungeon<\/main><a href="\/learn\/"[^>]*>ห้องเรียนของฉัน ↗<\/a><\/BODY><\/html>$/);
+  assert.doesNotMatch(r.body.slice(r.body.indexOf('<script>'),r.body.indexOf('</script>')),/position:fixed/);
+  const free=await h.call('index.html');assert.match(free.body,/<a href="\/ai-source\/"[^>]*>ดูคอร์สเต็ม AI ใส่ซอส ↗<\/a><\/BODY><\/html>$/);
 });
 test('foundation HEAD returns bytes without reading binary/text assets',async t=>{
   const h=await foundationHarness(t),r=await h.call('DATA.md','HEAD');assert.equal(r.statusCode,200);assert.equal(r.body,'');assert.equal(r.headers['content-length'],'15');assert.equal(h.events.includes('read'),false);

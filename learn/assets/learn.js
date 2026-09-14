@@ -134,7 +134,7 @@ const view = {
     for (const resource of item.resources || []) {
       const href = safeAssetUrl(resource.url, location.origin); if (!href) continue;
       const a = el('a', '', 'resource-link'); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      const label = el('span', resource.title || 'เปิดไฟล์บทเรียน'); const meta = [resource.mimeType?.split('/').pop()?.toUpperCase(), resource.sizeBytes ? `${Math.ceil(resource.sizeBytes / 1024)} KB` : ''].filter(Boolean).join(' · '); if (meta) label.append(el('small', meta));
+      const label = el('span', resource.title || 'เปิดไฟล์บทเรียน'); const meta = [resource.mimeType?.split(';')[0]?.split('/').pop()?.toUpperCase(), resource.sizeBytes ? `${Math.ceil(resource.sizeBytes / 1024)} KB` : ''].filter(Boolean).join(' · '); if (meta) label.append(el('small', meta));
       const arrow = el('span', '↗', 'resource-arrow'); arrow.setAttribute('aria-hidden', 'true'); a.append(label, arrow);
       if (resource.optional === true) { optional.append(a); optionalCount += 1; } else resources.append(a);
     }
