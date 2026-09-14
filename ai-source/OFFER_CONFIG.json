@@ -33,7 +33,7 @@
   "payment_method": "manual_bank_transfer",
   "bank": {
     "name": "ธนาคารกสิกรไทย (KBank)",
-    "account_number": "9502011038",
+    "account_number": "0493864300",
     "account_name": "นรินทร์ ลีลาภรณ์"
   },
   "receipt_submission_url": "https://lin.ee/rlSlhzT",

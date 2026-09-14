@@ -31,7 +31,7 @@
     if(offer.showCountdown){var p=SauceOffer.countdownParts(offer.remainingMs);get('time-left').textContent=get('sticky-time-left').textContent=(p.days?p.days+' วัน ':'')+[p.hours,p.minutes,p.seconds].map(function(n){return String(n).padStart(2,'0');}).join(':');}
     get('purchase-button').disabled=!offer.canPurchase; get('purchase-button').textContent='ลงทะเบียนเรียน · '+price;
     get('bank-details').hidden=!offer.canPurchase;
-    var b=config.bank||{}; get('bank-name').textContent=b.name||'';get('bank-account').textContent=b.account_number||'';get('bank-owner').textContent=b.account_name||'';
+    var b=config.bank||{}; get('bank-name').textContent=b.name||'';get('bank-account').textContent=String(b.account_number||'').replace(/^(\d{3})(\d)(\d{5})(\d)$/,'$1-$2-$3-$4');get('bank-owner').textContent=b.account_name||'';
     get('copy-account').disabled=get('copy-payment').disabled=get('receipt-button').disabled=!offer.canPurchase;
     get('receipt-button').textContent='ส่งสลิปทาง LINE';
     // The actual transferred amount is entered from the slip, never derived from the current quote.
