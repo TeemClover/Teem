@@ -29,22 +29,26 @@
   if(typeof document==='undefined')return;
   const $=id=>document.getElementById(id), API='/api/ai-source', KEY='meetAdminKey';
   let saved='';try{saved=sessionStorage.getItem(KEY)||'';}catch{}
-  const state={key:saved,rows:[],selected:'',next:null,channels:{},busy:false,epoch:0,needsRefresh:false,controllers:new Set(),urls:new Set()};
+  const state={key:saved,rows:[],selected:'',next:null,channels:{},busy:false,epoch:0,needsRefresh:false,controllers:new Set(),urls:new Set(),stats:null,statsNext:null,statsBusy:false};
   function node(tag,cls,text) { const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=String(text);return n; }
   function notice(text,tone='info') { $('notice').textContent=text;$('notice').dataset.tone=tone; }
   function controls() {$('refresh').disabled=state.busy;$('load-more').disabled=state.busy;$('login-button').disabled=state.busy;$('search').disabled=state.busy;$('filter').disabled=state.busy;$('test-notification').disabled=state.busy;for(const set of $('detail').querySelectorAll('fieldset'))set.disabled=state.busy||state.needsRefresh;}
   function logout(message='ออกจากระบบแล้ว') {
     state.epoch++;for(const c of state.controllers)c.abort();state.controllers.clear();for(const u of state.urls)URL.revokeObjectURL(u);state.urls.clear();
     state.key='';state.rows=[];state.selected='';state.next=null;state.channels={};state.busy=false;state.needsRefresh=false;
+    state.stats=null;state.statsNext=null;state.statsBusy=false;
+    for(const id of ['stats-counts','stats-learners','stats-campaigns'])$(id).replaceChildren();
+    for(const id of ['stats-notice','stats-progress-note','stats-campaign-note'])$(id).textContent='';
+    $('stats-more').hidden=true;$('stats-refresh').disabled=false;
     try{sessionStorage.removeItem(KEY);}catch{}$('admin-key').value='';$('search').value='';$('filter').value='all';
     for(const id of ['queue','detail','summary'])$(id).replaceChildren();$('dashboard').hidden=true;$('logout').hidden=true;$('login-panel').hidden=false;controls();notice(message);$('admin-key').focus();
   }
-  async function request(query='',options={},binary=false) {
+  async function request(query='',options={},binary=false,endpoint=API) {
     if(!state.key)throw new Error('เข้าสู่ระบบก่อนดำเนินการ');
     const epoch=state.epoch,controller=new AbortController();state.controllers.add(controller);let timedOut=false;
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},30000);
     try {
-      const response=await fetch(API+query,{...options,headers:{...options.headers,'x-admin-key':state.key},credentials:'same-origin',cache:'no-store',redirect:'error',signal:controller.signal});
+      const response=await fetch(endpoint+query,{...options,headers:{...options.headers,'x-admin-key':state.key},credentials:'same-origin',cache:'no-store',redirect:'error',signal:controller.signal});
       if(epoch!==state.epoch)throw Object.assign(new Error('STALE_SESSION'),{stale:true});
       if(response.status===401){logout('รหัสผู้ดูแลไม่ถูกต้อง กรุณาเข้าสู่ระบบอีกครั้ง');throw Object.assign(new Error('UNAUTHORIZED'),{stale:true});}
       if(!response.ok){let data={};try{data=await response.json();}catch{}const err=new Error(typeof data.message==='string'?data.message:'ติดต่อระบบไม่สำเร็จ กรุณาลองใหม่');err.status=response.status;err.code=data.code;if(data.test===true)err.testResult={databaseWriteReadDelete:data.databaseWriteReadDelete===true,notification:data.notification?.status};throw err;}
@@ -63,6 +67,30 @@
     $('summary').replaceChildren(...counts.map(([label,count])=>node('span','',`${label} ${count}`)));
   }
   function definition(pairs) {const dl=node('dl');for(const [label,value]of pairs)dl.append(node('dt','',label),node('dd','',value==null||value===''?'—':value));return dl;}
+  function drawStats() {
+    const data=state.stats;if(!data)return;
+    const labels={enrolled:'ลงทะเบียนทั้งหมด',pending:'รอตรวจเงิน',verifiedAwaitingGrant:'ตรวจเงินแล้ว รอเปิดสิทธิ์',active:'สิทธิ์ใช้งานอยู่',expired:'สิทธิ์หมดอายุ',revoked:'ยุติสิทธิ์',scheduled:'สิทธิ์ยังไม่เริ่ม'};
+    $('stats-counts').replaceChildren(...Object.entries(labels).map(([key,label])=>node('span','',`${label} ${Number(data.counts?.[key])||0}`)));
+    $('stats-progress-note').textContent=data.progressNote||'';$('stats-campaign-note').textContent=(data.campaignNote||'')+' · แสดงไม่เกิน 200 แหล่ง';
+    const fragment=document.createDocumentFragment();
+    const position=x=>{const seconds=Math.max(0,Math.floor(Number(x)||0));return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');};
+    for(const row of data.learners){const detail=node('details','stats-person');detail.append(node('summary','',(row.name||'Clover')+' · '+(row.email||'ไม่ระบุอีเมล')));
+      detail.append(definition([['สิทธิ์',labels[row.accessStatus]||'ตรวจสถานะในรายการชำระ'],['สิ้นสุดสิทธิ์',date(row.expiresAt)],['เครื่องหมายเรียนจบ',`${row.completedLessons} / ${row.totalLessons} วิดีโอ`],['บันทึกความคืบหน้าล่าสุด',date(row.lastActivityAt)]]));
+      const list=node('ol','stats-lessons');for(const lesson of row.lessons||[])list.append(node('li','',lesson.title+' · ล่าสุด '+position(lesson.positionSeconds)+' / ไกลสุด '+position(lesson.maxPositionSeconds)+(lesson.completed?' · มีเครื่องหมายเรียนจบ':'')));detail.append(list);fragment.append(detail);
+    }
+    if(!data.learners.length)fragment.append(node('p','empty','ยังไม่มีบัญชีผู้ชำระเงินที่ผูกกับคอร์สนี้'));
+    $('stats-learners').replaceChildren(fragment);$('stats-more').hidden=!state.statsNext;
+    const table=node('table','stats-table'),head=node('thead'),tr=node('tr');for(const label of ['Source / Medium / Campaign','ลงทะเบียน','รอตรวจเงิน','สิทธิ์ใช้งาน'])tr.append(node('th','',label));head.append(tr);table.append(head);
+    const body=node('tbody');for(const row of data.campaigns||[]){const tr=node('tr');for(const value of [[row.source,row.medium,row.campaign].filter(Boolean).join(' / '),row.enrolled,row.pending,row.active])tr.append(node('td','',value));body.append(tr);}table.append(body);$('stats-campaigns').replaceChildren(table);
+  }
+  async function loadStats(more=false) {
+    if(!state.key||state.statsBusy)return;const epoch=state.epoch;state.statsBusy=true;$('stats-refresh').disabled=true;$('stats-more').disabled=true;$('stats-notice').textContent='กำลังโหลดสถิติ…';
+    try{const query=new URLSearchParams({courseId:'ai-sauce',limit:'50'});if(more&&state.statsNext)query.set('before',state.statsNext);
+      const data=await request('?'+query,{},false,'/api/learn-admin');if(!Array.isArray(data.learners)||!Array.isArray(data.campaigns)||!data.counts)throw new Error('ข้อมูลสถิติไม่ครบ');
+      if(more)data.learners=[...new Map([...(state.stats?.learners||[]),...data.learners].map(row=>[row.userId,row])).values()];state.stats=data;state.statsNext=data.nextCursor||null;drawStats();$('stats-notice').textContent='อัปเดต '+date(data.generatedAt)+' · โหลดผู้ชำระเงิน '+data.learners.length+' บัญชี';
+    }catch(error){if(!error.stale)$('stats-notice').textContent=error.message;}
+    finally{if(epoch===state.epoch){state.statsBusy=false;$('stats-refresh').disabled=false;$('stats-more').disabled=false;}}
+  }
   function field(labelText,type,name) {const label=node('label','',labelText),input=node('input');input.type=type;input.name=name;input.required=true;label.append(input);return {label,input};}
   function check(text) {const label=node('label','check'),input=node('input');input.type='checkbox';input.required=true;label.append(input,node('span','',text));return {label,input};}
   function noteField(value='') {const label=node('label','','หมายเหตุ (ถ้ามี)'),input=node('textarea');input.name='note';input.rows=3;input.maxLength=1000;input.value=value;label.append(input);return {label,input};}
@@ -77,9 +105,9 @@
       if(result.registration){if(result.registration.reference!==payload.reference)throw new Error('ผลตอบกลับไม่ตรงรายการ กรุณารีเฟรช');state.rows=state.rows.map(r=>r.reference===payload.reference?result.registration:r);}
       else if(payload.action==='retry_notification'&&result.notification){state.rows=state.rows.map(r=>r.reference===payload.reference?{...r,notification:result.notification}:r);}
       else throw new Error('ยังยืนยันผลไม่ได้ กรุณารีเฟรชรายการ');
-      notice(payload.action==='verify_payment'?'บันทึกการตรวจเงินแล้ว ขั้นต่อไปคือเปิดสิทธิ์ใน Skool และส่งคำเชิญ':payload.action==='mark_admitted'?'บันทึกว่ารับเข้าเรียนแล้ว':payload.action==='reject'?'ยุติรายการและเก็บเหตุผลแล้ว':result.notification?.status==='sent'?'แจ้งผู้จัดแล้ว':'การแจ้งผู้จัดยังไม่สำเร็จ ตรวจช่องทางแจ้งเตือนก่อนลองอีกครั้ง',payload.action==='retry_notification'&&result.notification?.status!=='sent'?'error':'info');
+      notice(payload.action==='verify_payment'?'บันทึกการตรวจเงินแล้ว ขั้นต่อไปคือเปิดสิทธิ์ให้บัญชี myClover':payload.action==='mark_admitted'?'บันทึกว่ารับเข้าเรียนแล้ว':payload.action==='reject'?'ยุติรายการและเก็บเหตุผลแล้ว':result.notification?.status==='sent'?'แจ้งผู้จัดแล้ว':'การแจ้งผู้จัดยังไม่สำเร็จ ตรวจช่องทางแจ้งเตือนก่อนลองอีกครั้ง',payload.action==='retry_notification'&&result.notification?.status!=='sent'?'error':'info');
     }catch(error){if(!error.stale){state.needsRefresh=!error.status||error.status>=500||error.status===409;notice(error.message+(state.needsRefresh?' · รีเฟรชสถานะก่อนดำเนินการซ้ำ':''),'error');}}
-    finally{if(epoch===state.epoch){state.busy=false;controls();drawQueue();drawDetail();}}
+    finally{if(epoch===state.epoch){state.busy=false;controls();drawQueue();drawDetail();loadStats();}}
   }
   async function testNotification() {
     if(state.busy)return;const epoch=state.epoch;state.busy=true;controls();notice('กำลังทดสอบการบันทึกข้อมูลและส่งข้อความ TEST ไป Telegram…');
@@ -93,17 +121,24 @@
     const panel=$('detail'),row=state.rows.find(r=>r.reference===state.selected);panel.replaceChildren();if(!row){panel.append(node('p','empty','เลือกรายการเพื่อดูสลิปและตรวจข้อมูล'));return;}
     const top=node('div','detail-title');top.append(node('h2','',row.name||'ไม่ระบุชื่อ'),badge(row.status));panel.append(top,node('p','reference',row.reference),definition([['อีเมล',row.email],['ช่องทางติดต่อ',row.contact],['ส่งข้อมูลเมื่อ',date(row.createdAt)],['ราคาที่ระบบแจ้ง',money(row.quotedAmountTHB)],['ยอดที่ผู้ซื้อแจ้ง',money(row.submittedAmountTHB)],['เวลาโอนที่ผู้ซื้อแจ้ง',date(row.submittedTransferredAt)]]));
     const receipt=node('button','','ดาวน์โหลดสลิปส่วนตัว');receipt.type='button';receipt.addEventListener('click',()=>downloadReceipt(row,receipt));panel.append(receipt,node('p','small',row.receipt?.name||'สลิปของรายการนี้'));
+    if(row.legacyBindingEligible===true){
+      const form=node('form','section'),set=node('fieldset'),email=field('อีเมลบัญชีผู้เรียนที่ยืนยันแล้ว','email','accountEmail'),note=noteField(),submit=node('button','','ผูกรายการเดิมกับบัญชีนี้');
+      email.input.value=row.email||'';email.input.maxLength=120;note.input.required=true;submit.type='submit';set.disabled=state.busy||state.needsRefresh;
+      set.append(node('h3','','เชื่อมรายการชำระเดิม'),node('p','detail-hint','ตรวจว่าอีเมลนี้ตรงกับอีเมลในรายการ และเจ้าของบัญชียืนยันอีเมลแล้ว พร้อมบันทึกเหตุผล การผูกบัญชีอย่างเดียวไม่ยืนยันยอดเงินและไม่เปิดสิทธิ์เรียน'),email.label,note.label,submit);form.append(set);
+      form.addEventListener('submit',event=>{event.preventDefault();const reason=note.input.value.trim();if(!reason){notice('บันทึกเหตุผลที่ผูกบัญชีก่อน','error');return;}mutate({action:'bind_account',reference:row.reference,accountEmail:email.input.value.trim(),note:reason},set);});panel.append(form);
+    }
     const deadline=node('section','section');deadline.append(node('h3','','กำหนดเวลา'),definition([['รับเข้าเรียนภายใน',date(row.admissionDueAt)],['กรอบคืนเงินสิ้นสุด',date(row.guaranteeUntil)],['อ้างจาก',row.datesVerified?'วันเวลาโอนที่ผู้จัดตรวจแล้ว':'วันเวลาโอนที่ผู้ซื้อแจ้ง — ยังไม่ตรวจยืนยัน']]));if(dueLate(row))deadline.append(node('p','urgent','เลยกำหนดรับเข้าเรียนตามเวลานี้แล้ว'));deadline.append(node('p','small','รับเข้าภายใน 1 วัน และกรอบคืนเงิน 30 วันนับจากเวลาโอน เงื่อนไขคืนเงินยังต้องพิจารณาจากการเรียนและการลองใช้จริง'));panel.append(deadline);
     if(state.needsRefresh)panel.append(node('p','detail-hint','รีเฟรชข้อมูลก่อนทำรายการต่อ เพื่อเช็กว่าคำขอล่าสุดถูกบันทึกแล้วหรือยัง'));
     if(row.status==='pending_verification'){
       const form=node('form','section'),set=node('fieldset'),fields=node('div','fields'),amount=field('ยอดเงินเข้าที่ตรวจจริง (บาท)','number','verifiedAmountTHB'),when=field('เวลาโอนที่ตรวจแล้ว (เวลาไทย)','datetime-local','verifiedTransferredAt'),checked=check('ฉันตรวจสลิปและยอดเงินเข้าบัญชีจริงของรายการนี้แล้ว'),note=noteField(row.ownerNote),submit=node('button','primary','ยืนยันยอดเงินที่ตรวจแล้ว');
       amount.input.min='0.01';amount.input.max='1000000';amount.input.step='0.01';when.input.step='1';when.input.min='2020-01-01T00:00';submit.type='submit';submit.disabled=true;set.disabled=state.busy||state.needsRefresh;checked.input.addEventListener('change',()=>submit.disabled=!checked.input.checked||state.busy||state.needsRefresh);
-      fields.append(amount.label,when.label);set.append(node('h3','','ตรวจการชำระเงิน'),node('p','detail-hint','เปิดสลิปและเทียบรายการเงินเข้าในบัญชีจริง แล้วกรอกยอดกับเวลาโอนที่ตรวจพบ ข้อมูลที่ผู้ซื้อแจ้งยังไม่ใช่การยืนยันเงินเข้า'),fields,note.label,checked.label,submit);form.append(set);form.addEventListener('submit',event=>{event.preventDefault();if(!checked.input.checked)return;try{mutate({reference:row.reference,action:'verify_payment',verifiedAmountTHB:parseAmount(amount.input.value),verifiedTransferredAt:transferISO(when.input.value),confirmedReceived:true,note:note.input.value},set);}catch(error){notice(error.message,'error');}});panel.append(form);
-      const rejectDetails=node('details','section'),rejectForm=node('form'),rejectSet=node('fieldset'),reason=noteField(),rejectButton=node('button','','ยุติรายการนี้');reason.label.firstChild.textContent='เหตุผลที่ยุติรายการ';reason.input.required=true;reason.input.name='rejectionNote';rejectButton.type='submit';rejectSet.disabled=state.busy||state.needsRefresh;rejectSet.append(node('p','small','ใช้กับข้อมูลไม่ถูกต้องหรือรายการทดสอบ เหตุผลจะถูกเก็บในประวัติ ไม่ใช่การคืนเงินหรือยกเลิกสิทธิ์ Skool'),reason.label,rejectButton);rejectForm.append(rejectSet);rejectForm.addEventListener('submit',event=>{event.preventDefault();const note=reason.input.value.trim();if(!note){notice('ใส่เหตุผลก่อนยุติรายการ','error');return;}mutate({reference:row.reference,action:'reject',note},rejectSet);});rejectDetails.append(node('summary','','ยุติรายการที่ไม่ถูกต้อง'),rejectForm);panel.append(rejectDetails);
+      const bankRef=field('รหัสรายการโอนที่ตรวจจากธนาคาร','text','bankTransactionId');bankRef.input.required=Boolean(row.accountId);bankRef.input.maxLength=120;fields.append(amount.label,when.label,bankRef.label);set.append(node('h3','','ตรวจการชำระเงิน'),node('p','detail-hint','เปิดสลิปและเทียบรายการเงินเข้าในบัญชีจริง แล้วกรอกยอดกับเวลาโอนที่ตรวจพบ ข้อมูลที่ผู้ซื้อแจ้งยังไม่ใช่การยืนยันเงินเข้า'),fields,note.label,checked.label,submit);form.append(set);form.addEventListener('submit',event=>{event.preventDefault();if(!checked.input.checked)return;try{mutate({reference:row.reference,action:'verify_payment',verifiedAmountTHB:parseAmount(amount.input.value),verifiedTransferredAt:transferISO(when.input.value),confirmedReceived:true,bankTransactionId:bankRef.input.value,note:note.input.value},set);}catch(error){notice(error.message,'error');}});panel.append(form);
+      const rejectDetails=node('details','section'),rejectForm=node('form'),rejectSet=node('fieldset'),reason=noteField(),rejectButton=node('button','','ยุติรายการนี้');reason.label.firstChild.textContent='เหตุผลที่ยุติรายการ';reason.input.required=true;reason.input.name='rejectionNote';rejectButton.type='submit';rejectSet.disabled=state.busy||state.needsRefresh;rejectSet.append(node('p','small','ใช้กับข้อมูลไม่ถูกต้องหรือรายการทดสอบ เหตุผลจะถูกเก็บในประวัติ ไม่ใช่การคืนเงินหรือยกเลิกสิทธิ์ myClover'),reason.label,rejectButton);rejectForm.append(rejectSet);rejectForm.addEventListener('submit',event=>{event.preventDefault();const note=reason.input.value.trim();if(!note){notice('ใส่เหตุผลก่อนยุติรายการ','error');return;}mutate({reference:row.reference,action:'reject',note},rejectSet);});rejectDetails.append(node('summary','','ยุติรายการที่ไม่ถูกต้อง'),rejectForm);panel.append(rejectDetails);
     }else if(['payment_verified','admitted'].includes(row.status)){
       const verified=node('section','section');verified.append(node('h3','','การชำระเงินที่ตรวจแล้ว'),definition([['ยอดเงินเข้า',money(row.verifiedAmountTHB)],['เวลาโอนที่ตรวจแล้ว',date(row.verifiedTransferredAt)],['บันทึกการตรวจเมื่อ',date(row.verifiedAt)]]));panel.append(verified);
-      if(row.status==='payment_verified'){
-        const form=node('form','section'),set=node('fieldset'),checked=check('ฉันเปิดสิทธิ์และส่งคำเชิญเข้า Skool ให้ผู้เรียนจริงแล้ว'),note=noteField(row.ownerNote),submit=node('button','primary','บันทึกว่าเปิดสิทธิ์แล้ว');submit.type='submit';submit.disabled=true;set.disabled=state.busy||state.needsRefresh;checked.input.addEventListener('change',()=>submit.disabled=!checked.input.checked||state.busy||state.needsRefresh);set.append(node('h3','','รับเข้าเรียน'),node('p','small','เปิดสิทธิ์ใน Skool และส่งคำเชิญด้วยช่องทางติดต่อข้างต้นให้เรียบร้อยก่อนบันทึก'),note.label,checked.label,submit);form.append(set);form.addEventListener('submit',event=>{event.preventDefault();if(checked.input.checked)mutate({reference:row.reference,action:'mark_admitted',accessSent:true,note:note.input.value},set);});panel.append(form);
+      if(row.status==='payment_verified'&&!row.accountId)panel.append(node('p','detail-hint','ผูกรายการกับบัญชีผู้เรียนที่ยืนยันอีเมลแล้วก่อนเปิดสิทธิ์เรียน'));
+      else if(row.status==='payment_verified'){
+        const form=node('form','section'),set=node('fieldset'),checked=check('ฉันตรวจบัญชีผู้เรียนแล้วและต้องการเปิดสิทธิ์ 1 ปี'),note=noteField(row.ownerNote),submit=node('button','primary','เปิดสิทธิ์เรียน 1 ปี');submit.type='submit';submit.disabled=true;set.disabled=state.busy||state.needsRefresh;checked.input.addEventListener('change',()=>submit.disabled=!checked.input.checked||state.busy||state.needsRefresh);set.append(node('h3','','รับเข้าเรียน'),node('p','small','ปุ่มนี้จะเปิดสิทธิ์ให้บัญชีที่ผูกกับรายการชำระ ผู้เรียนเปิดคอร์สได้ที่ /learn'),note.label,checked.label,submit);form.append(set);form.addEventListener('submit',event=>{event.preventDefault();if(checked.input.checked)mutate({reference:row.reference,action:'mark_admitted',accessSent:true,note:note.input.value},set);});panel.append(form);
       }else panel.append(node('p','notice','บันทึกรับเข้าเรียนเมื่อ '+date(row.admittedAt)));
     }
     if(row.ownerNote)panel.append(node('h3','section','หมายเหตุที่บันทึกไว้'),node('p','',row.ownerNote));
@@ -114,13 +149,14 @@
     if(state.busy)return;const epoch=state.epoch;state.busy=true;controls();notice(more?'กำลังโหลดรายการก่อนหน้า…':'กำลังโหลดรายการ…');
     try{const query=new URLSearchParams({action:'list',limit:'100'});if(more&&state.next)query.set('before',state.next);const data=await request('?'+query);if(!Array.isArray(data.registrations))throw new Error('รูปแบบรายการไม่ถูกต้อง');if(data.registrations.some(r=>!r||!REFERENCE.test(r.reference)))throw new Error('ข้อมูลรายการไม่ครบ');
       const combined=more?[...state.rows,...data.registrations]:data.registrations;state.rows=[...new Map(combined.map(r=>[r.reference,r])).values()];state.next=typeof data.nextCursor==='string'&&/^[1-9]\d*$/.test(data.nextCursor)?data.nextCursor:null;state.channels=data.channels||{};state.needsRefresh=false;if(!state.rows.some(r=>r.reference===state.selected))state.selected='';
-      try{sessionStorage.setItem(KEY,state.key);}catch{}$('admin-key').value='';$('login-panel').hidden=true;$('dashboard').hidden=false;$('logout').hidden=false;drawQueue();drawDetail();notice('อัปเดตรายการแล้ว · '+state.rows.length+' รายการที่โหลด');
+      try{sessionStorage.setItem(KEY,state.key);}catch{}$('admin-key').value='';$('login-panel').hidden=true;$('dashboard').hidden=false;$('logout').hidden=false;drawQueue();drawDetail();notice('อัปเดตรายการแล้ว · '+state.rows.length+' รายการที่โหลด');if(!more)loadStats();
     }catch(error){if(!error.stale)notice(error.message,'error');}
     finally{if(epoch===state.epoch){state.busy=false;controls();}}
   }
   $('login-form').addEventListener('submit',event=>{event.preventDefault();if(state.busy)return;state.key=$('admin-key').value.trim();if(state.key)load();});
   $('logout').addEventListener('click',()=>logout());$('refresh').addEventListener('click',()=>load());$('load-more').addEventListener('click',()=>load(true));
   $('test-notification').addEventListener('click',testNotification);
+  $('stats-refresh').addEventListener('click',()=>loadStats());$('stats-more').addEventListener('click',()=>loadStats(true));
   for(const id of ['search','filter'])$(id).addEventListener('input',()=>{state.selected='';drawQueue();drawDetail();});
   if(state.key)load();
 })();

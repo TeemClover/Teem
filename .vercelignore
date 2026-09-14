@@ -28,3 +28,9 @@ api/_lib/shelf-*.test.mjs
 # AI Sauce receipt/offer QA runs locally; no test fixtures are public assets.
 api/_lib/ai-source.test.mjs
 tests/ai-source/
+
+# School QA and local tools never ship as static files.
+learn/tests/
+api/_lib/learn*.test.mjs
+api/_lib/auth-email.test.mjs
+scripts/learn-*.mjs

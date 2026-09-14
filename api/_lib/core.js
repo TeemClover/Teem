@@ -6,16 +6,22 @@ const SESSION_DAYS = 30;
 const PASSWORD_ITERATIONS = 210000;
 const encoder = new TextEncoder();
 const crypto = webcrypto;
-let schemaPromise;
+const schemaPromises = new WeakMap();
 
-export function database() {
-  if (!process.env.DATABASE_URL) {
-    const error = new Error('DATABASE_URL_NOT_CONFIGURED');
-    error.code = 'DATABASE_URL_NOT_CONFIGURED';
-    throw error;
-  }
-  return neon(process.env.DATABASE_URL);
+export function createDatabaseProvider(getUrl = () => process.env.DATABASE_URL, createClient = neon) {
+  const clients = new Map();
+  return () => {
+    const url = getUrl();
+    if (!url) {
+      const error = new Error('DATABASE_URL_NOT_CONFIGURED');
+      error.code = 'DATABASE_URL_NOT_CONFIGURED';
+      throw error;
+    }
+    if (!clients.has(url)) clients.set(url, createClient(url));
+    return clients.get(url);
+  };
 }
+export const database = createDatabaseProvider();
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS members (
@@ -29,6 +35,7 @@ const SCHEMA = [
     password_salt TEXT, password_iterations INTEGER, member_no TEXT, consent_at TIMESTAMPTZ NOT NULL,
     created_at TIMESTAMPTZ NOT NULL, updated_at TIMESTAMPTZ NOT NULL
   )`,
+  `ALTER TABLE mc_accounts ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ`,
   `CREATE TABLE IF NOT EXISTS mc_auth_identities (
     provider TEXT NOT NULL, provider_user_id TEXT NOT NULL, user_id TEXT NOT NULL,
     email TEXT, created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (provider, provider_user_id)
@@ -39,6 +46,7 @@ const SCHEMA = [
     token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL,
     expires_at TIMESTAMPTZ NOT NULL
   )`,
+  `ALTER TABLE mc_sessions ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ`,
   `CREATE INDEX IF NOT EXISTS idx_mc_sessions_user ON mc_sessions(user_id)`,
   `CREATE TABLE IF NOT EXISTS mc_progress (
     user_id TEXT PRIMARY KEY, version INTEGER NOT NULL DEFAULT 1,
@@ -168,10 +176,13 @@ const SCHEMA = [
 ];
 
 export async function ensureSchema(sql) {
-  if (!schemaPromise) schemaPromise = (async () => {
-    for (const statement of SCHEMA) await sql.query(statement);
-  })().catch(error => { schemaPromise = undefined; throw error; });
-  return schemaPromise;
+  if (!schemaPromises.has(sql)) {
+    const promise = (async () => {
+      for (const statement of SCHEMA) await sql.query(statement);
+    })().catch(error => { schemaPromises.delete(sql); throw error; });
+    schemaPromises.set(sql, promise);
+  }
+  return schemaPromises.get(sql);
 }
 
 export function sendJson(res, body, status = 200, headers = {}) {
@@ -237,10 +248,10 @@ export function sessionCookie(token) {
 }
 export function clearSessionCookie() { return `${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`; }
 
-export async function createSession(sql, userId) {
+export async function createSession(sql, userId, { emailVerified = false } = {}) {
   const token = randomToken();
   const now = new Date(); const expires = new Date(now.getTime() + SESSION_DAYS * 86400000);
-  await sql.query('INSERT INTO mc_sessions (token_hash,user_id,created_at,expires_at) VALUES ($1,$2,$3,$4)', [await sha256(token), userId, now, expires]);
+  await sql.query('INSERT INTO mc_sessions (token_hash,user_id,created_at,expires_at,email_verified_at) VALUES ($1,$2,$3,$4,$5)', [await sha256(token), userId, now, expires, emailVerified ? now : null]);
   return token;
 }
 
@@ -288,7 +299,7 @@ export async function ensureMemberNo(sql, email, name, now = new Date()) {
 
 export async function currentUser(req, sql) {
   const token = cookieValue(req, SESSION_COOKIE); if (!token) return null;
-  const rows = await sql.query(`SELECT a.id,a.email,a.display_name,a.member_no,s.expires_at
+  const rows = await sql.query(`SELECT a.id,a.email,a.display_name,a.member_no,s.email_verified_at,s.expires_at
     FROM mc_sessions s JOIN mc_accounts a ON a.id=s.user_id WHERE s.token_hash=$1`, [await sha256(token)]);
   const row = rows[0]; if (!row) return null;
   if (new Date(row.expires_at).getTime() <= Date.now()) {
@@ -362,7 +373,7 @@ export async function accountForIdentity(sql, identity) {
 }
 
 export function publicUser(row) {
-  return row ? { id: row.id, email: row.email || '', displayName: row.display_name || row.displayName || 'Clover', memberNo: row.member_no || row.memberNo || '' } : null;
+  return row ? { id: row.id, email: row.email || '', displayName: row.display_name || row.displayName || 'Clover', memberNo: row.member_no || row.memberNo || '', emailVerified: Boolean(row.email_verified_at), emailVerifiedAt: row.email_verified_at || null } : null;
 }
 export async function prune(sql) {
   const now = new Date();

@@ -747,6 +747,12 @@
     },
     "api/shelf.js": {
       "includeFiles": "shelf/{catalog.json,source/**}"
+    },
+    "api/learn-foundation.js": {
+      "includeFiles": "classroom/**"
+    },
+    "api/learn-media.js": {
+      "maxDuration": 60
     }
   }
 }

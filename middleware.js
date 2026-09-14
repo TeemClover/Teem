@@ -26,6 +26,32 @@ export default async function middleware(request) {
   const normalized = canonicalPath(pathname);
   const privateHeaders = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vercel-CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
   if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
+  const lessonPath=normalized.toLowerCase();
+  if (lessonPath === '/classroom' || lessonPath.startsWith('/classroom/')) {
+    const destination=new URL('/learn/classroom'+normalized.slice('/classroom'.length),request.url);
+    if(destination.pathname==='/learn/classroom')destination.pathname+='/';
+    destination.search=url.search;
+    return new Response(null,{status:307,headers:{...privateHeaders,Location:destination.toString()}});
+  }
+  if (lessonPath === '/learn/classroom' || lessonPath.startsWith('/learn/classroom/')) {
+    // The route prefix is canonical; file names may legitimately contain capitals.
+    if(pathname!==normalized||!(normalized==='/learn/classroom'||normalized.startsWith('/learn/classroom/')))return new Response('Not found',{status:404,headers:privateHeaders});
+    if(!normalized.endsWith('/')&&!normalized.split('/').pop().includes('.')) {
+      const directory=new URL(request.url);directory.pathname=normalized+'/';
+      return new Response(null,{status:307,headers:{...privateHeaders,Location:directory.toString()}});
+    }
+    const target=new URL('/api/learn-foundation',request.url);
+    target.searchParams.set('file',normalized.slice('/learn/classroom/'.length)||'index.html');
+    for (const key of ['entry','work']) {
+      const value=url.searchParams.get(key);
+      if(value && /^[a-zA-Z0-9_-]{1,160}$/.test(value))target.searchParams.set(key,value);
+    }
+    return rewrite(target,{headers:privateHeaders});
+  }
+  const legacySamplePath = lessonPath.replace(/\/+$/, '');
+  if (legacySamplePath === '/ai-source/assets/ep01_sample.mp4' || legacySamplePath === '/ai-source/assets/ep01_captions.srt') {
+    return new Response(null,{status:307,headers:{...privateHeaders,Location:new URL('/learn/?enroll=ai-sauce&lesson=EP01',request.url).toString()}});
+  }
   // Guard source files before the general API and dotted-asset exemptions.
   // The all-path matcher also catches encoded shelf aliases before static routing.
   if (isPrivateShelfPath(normalized)) {

@@ -2,4 +2,5 @@
 // core.js remains the existing, unchanged Neon connection and JSON response helper.
 import { database, sendJson } from './_lib/core.js';
 import { createAiSourceHandler } from './_lib/ai-source-handler.js';
-export default createAiSourceHandler({ database, sendJson });
+import { createLearnCommerce } from './_lib/learn-commerce.js';
+export default createAiSourceHandler({ database, sendJson, school: createLearnCommerce() });

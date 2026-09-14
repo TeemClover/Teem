@@ -3,6 +3,7 @@ import { ADMIN_URL, JSON_MAX_BYTES, RECEIPT_MAX_BYTES, REFERENCE, InputError, ad
   hasOfferCookie, issueOffer, makeReference, offerCookie, parseAmount, parseTransferTime, publicOffer, readOffer, sameOrigin, validateIntake } from './ai-source-domain.js';
 import { createAiSourceStore } from './ai-source-store.js';
 import { createTelegramNotifier, registrationText, testText } from './ai-source-notify.js';
+import { LearnError } from './learn-domain.js';
 
 async function readJson(req) {
   if (!/^application\/json(?:\s*;|$)/i.test(String(req.headers?.['content-type'] || ''))) throw new InputError('ส่งข้อมูลแบบ JSON',undefined,415,'UNSUPPORTED_CONTENT_TYPE');
@@ -43,6 +44,8 @@ function adminRegistration(row) {
     ...datesFromTransfer(row.verified_transferred_at || row.submitted_transferred_at),datesVerified:Boolean(row.verified_at),
     offer:{firstSeenAt:iso(row.offer_first_seen_at),expiresAt:iso(row.offer_expires_at)},
     receipt:{mime:row.receipt_mime,name:row.receipt_name,size:Number(row.receipt_size),sha256:row.receipt_sha256},
+    accountId:row.account_id || null,checkoutId:row.checkout_id || null,bankTransactionId:row.bank_transaction_id || null,
+    legacyBindingEligible:Boolean(row.legacy_quote_eligible && !row.account_id && !row.checkout_id && ['pending_verification','payment_verified'].includes(row.status)),
     notification:notification(row),ownerNote:row.owner_note || '',history:row.admin_history || [],createdAt:iso(row.created_at),updatedAt:iso(row.updated_at)};
 }
 async function deliver(store, row, notify, now) {
@@ -60,7 +63,7 @@ async function deliver(store, row, notify, now) {
   catch { return {...result,persistenceWarning:true}; } // The intake itself already committed; do not return a false registration failure.
   return result;
 }
-export function createAiSourceHandler({database,sendJson,config = process.env,notify,now = () => new Date(),
+export function createAiSourceHandler({database,sendJson,config = process.env,notify,school,now = () => new Date(),
   referenceFactory = makeReference,storeFactory = createAiSourceStore,log = code => console.error(code)} = {}) {
   const notifier = notify || createTelegramNotifier({config});
   return async function handler(req,res) {
@@ -79,37 +82,54 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
         if (availability.databaseConfigured) {
           try { const rows = await database().query('SELECT 1 AS ai_source_ready'); availability.databaseConnected = Number(rows[0]?.ai_source_ready) === 1; } catch { /* No connection details in public output. */ }
         }
+        let memberOffer = null;
+        if (school && availability.databaseConnected) { const sql=database(); await storeFactory(sql).ensure(); memberOffer=await school.offer(req,sql,time); }
         res.setHeader('Set-Cookie',offerCookie(signed.token));
         return sendJson(res,{ok:availability.databaseConnected,ready:availability.databaseConnected,availability,offer:publicOffer(signed.offer,time),receiptMaxBytes:RECEIPT_MAX_BYTES,
-          code:availability.databaseConnected ? undefined : 'PERSISTENCE_UNAVAILABLE',message:availability.databaseConnected ? undefined : 'ระบบรับลงทะเบียนยังไม่พร้อม'},availability.databaseConnected?200:503);
+          ...memberOffer,code:availability.databaseConnected ? undefined : 'PERSISTENCE_UNAVAILABLE',message:availability.databaseConnected ? undefined : 'ระบบรับลงทะเบียนยังไม่พร้อม'},availability.databaseConnected?200:503);
+      }
+      if (req.method === 'GET' && action === 'checkout' && school) {
+        const sql=database();await storeFactory(sql).ensure();
+        return sendJson(res,await school.restore(req,sql,query(req,'checkoutId'),time));
       }
       if (req.method !== 'POST' && !adminAccess(req,config)) return sendJson(res,{ok:false,code:config.MEET_ADMIN_KEY?'UNAUTHORIZED':'SERVICE_UNCONFIGURED',message:'ไม่มีสิทธิ์เข้าถึง'},config.MEET_ADMIN_KEY?401:503);
       if ((req.method === 'POST' || req.method === 'PATCH') && !sameOrigin(req)) return sendJson(res,{ok:false,code:'ORIGIN_REJECTED',message:'คำขอไม่ถูกต้อง'},403);
       if (req.method === 'POST') {
         if (!config.MEET_ADMIN_KEY) throw new InputError('ระบบลงทะเบียนยังไม่พร้อม',undefined,503,'SERVICE_UNCONFIGURED');
+        if (school && ['checkout','recovery'].includes(action)) {const data=await readJson(req),sql=database();await storeFactory(sql).ensure();return sendJson(res,await school.act(req,sql,action,data,time));}
         const signed = readOffer(req,config.MEET_ADMIN_KEY,time);
-        if (!signed) throw new InputError('กรุณาโหลดข้อเสนอจากหน้าเว็บอีกครั้งก่อนส่ง',undefined,428,'OFFER_REQUIRED');
+        // Account-bound carts remain recoverable on another device after cookie
+        // loss or expiry. The server cart supplies their price and time window.
+        if (!signed && !school) throw new InputError('กรุณาโหลดข้อเสนอจากหน้าเว็บอีกครั้งก่อนส่ง',undefined,428,'OFFER_REQUIRED');
         const data = await readJson(req);
         if (clean(data.website,200)) throw new InputError('คำขอไม่ถูกต้อง');
-        const intake = validateIntake(data,time);
-        const store = storeFactory(database()); await store.ensure();
+        let intake = validateIntake(data,time);
+        const sql=database(),store = storeFactory(sql); await store.ensure();
+        if(school)intake=await school.bind(req,sql,data,intake,time);
+        const finish=async(row,replayed)=>{
+          if(school)await school.recorded(sql,row);
+          // The notification claim prevents a second send, while retrying a
+          // partially saved school registration also repairs its enrollment.
+          const delivery=(!replayed || school)?await deliver(store,row,notifier,time):notification(row);
+          return sendJson(res,publicRegistration(row,replayed,delivery),replayed?200:201);
+        };
         const prior = await store.findIdempotency(intake.idempotencyKey);
         if (prior) {
           if (prior.payload_hash !== intake.payloadHash) throw new InputError('รหัสส่งรายการเดิมมีข้อมูลต่างกัน กรุณาใช้รายการเดิมหรือตั้งรายการใหม่',undefined,409,'IDEMPOTENCY_CONFLICT');
-          return sendJson(res,publicRegistration(prior,true),200);
+          return await finish(prior,true);
         }
         const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim().slice(0,100);
         const bucket = createHmac('sha256',config.MEET_ADMIN_KEY).update(`ai-source-ip:${ip}`).digest('hex');
         if (!await store.rateLimit(bucket,time)) throw new InputError('ส่งรายการถี่เกินไป กรุณาลองภายหลัง',undefined,429,'RATE_LIMITED');
         let row;
-        try { row = await store.insert({...intake,offer:signed.offer,quotedAmountTHB:amountDueAt(signed.offer,time),reference:referenceFactory(),now:time}); }
+        try { row = await store.insert({...intake,offer:intake.boundOffer || signed?.offer,quotedAmountTHB:intake.quotedAmountTHB ?? amountDueAt(signed.offer,time),reference:referenceFactory(),now:time}); }
         catch (error) {
           if (error?.code === '23505') {
             // A concurrent identical request may win either unique-index check first.
             const winner = await store.findIdempotency(intake.idempotencyKey);
             if (winner) {
               if (winner.payload_hash !== intake.payloadHash) throw new InputError('รหัสส่งรายการเดิมมีข้อมูลต่างกัน',undefined,409,'IDEMPOTENCY_CONFLICT');
-              return sendJson(res,publicRegistration(winner,true),200);
+              return await finish(winner,true);
             }
             throw new InputError('สลิปนี้มีรายการบันทึกแล้ว กรุณาใช้เลขอ้างอิงเดิมหรือติดต่อผู้ดูแล','receipt',409,'DUPLICATE_RECEIPT');
           }
@@ -118,10 +138,9 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
         if (!row) { // Concurrent request won the unique idempotency insert.
           const saved = await store.findIdempotency(intake.idempotencyKey);
           if (!saved || saved.payload_hash !== intake.payloadHash) throw new InputError('รหัสส่งรายการซ้ำกับข้อมูลต่างกัน',undefined,409,'IDEMPOTENCY_CONFLICT');
-          return sendJson(res,publicRegistration(saved,true),200);
+          return await finish(saved,true);
         }
-        const delivery = await deliver(store,row,notifier,time);
-        return sendJson(res,publicRegistration(row,false,delivery),201);
+        return await finish(row,false);
       }
       // No DB work, list or receipt bytes were exposed before the header-key check.
       const store = storeFactory(database()); await store.ensure();
@@ -155,27 +174,51 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
       if (!REFERENCE.test(reference)) throw new InputError('เลขอ้างอิงไม่ถูกต้อง','reference');
       const row = await store.get(reference); if (!row) throw new InputError('ไม่พบรายการ',undefined,404,'NOT_FOUND');
       const note = clean(data.note,1000);
+      if(data.action==='bind_account'){
+        if(!school)throw new InputError('ระบบผูกบัญชียังไม่พร้อม',undefined,503,'SERVICE_UNCONFIGURED');
+        const email=typeof data.accountEmail==='string'?data.accountEmail.trim().toLowerCase():'';
+        if(!note || !email || email.length>254)throw new InputError('กรอกอีเมลบัญชีและบันทึกการตรวจให้ครบ',undefined,400,'LEGACY_BINDING_FIELDS_REQUIRED');
+        if(row.account_id && row.legacy_bound_at && row.legacy_bound_by==='ai-source-admin' && email===String(row.email || '').trim().toLowerCase()){
+          await school.recorded(database(),row);return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
+        }
+        const bound=await store.bindLegacyAccount(reference,email,note,time);
+        if(!bound)throw new InputError('ผูกได้เฉพาะรายการเดิมที่ยังไม่มีบัญชี อีเมลต้องตรงสลิปและเป็นบัญชีที่ยืนยันอีเมลแล้ว',undefined,409,'LEGACY_BINDING_NOT_ELIGIBLE');
+        await school.recorded(database(),bound);
+        return sendJson(res,{ok:true,registration:adminRegistration(bound)});
+      }
       if (data.action === 'retry_notification') return sendJson(res,{ok:true,reference,notification:await deliver(store,row,notifier,time)});
       let updated;
       if (data.action === 'verify_payment') {
         if (data.confirmedReceived !== true) throw new InputError('ผู้ดูแลต้องยืนยันว่าได้ตรวจยอดเงินเข้าจริงแล้ว','confirmedReceived');
         const amount = parseAmount(data.verifiedAmountTHB,'verifiedAmountTHB'); const transferred = parseTransferTime(data.verifiedTransferredAt,time,'verifiedTransferredAt');
-        const required = amountDueAt({expires:new Date(row.offer_expires_at).getTime()},transferred);
-        if (amount < required*100) throw new InputError(`ยอดที่ตรวจพบต่ำกว่าราคาที่ใช้ ณ เวลาโอน (${required} บาท)`,'verifiedAmountTHB',409,'PAYMENT_SHORT');
-        if (row.status === 'payment_verified' && Number(row.verified_amount_satang) === amount && iso(row.verified_transferred_at) === transferred) return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
-        updated = await store.verify(reference,amount,transferred,note,time);
+        let bankTransactionId = null;
+        if(school && row.account_id)bankTransactionId=await school.verify(database(),row,amount,transferred,data);
+        else {const required = amountDueAt({expires:new Date(row.offer_expires_at).getTime()},transferred);
+          if (amount < required*100) throw new InputError(`ยอดที่ตรวจพบต่ำกว่าราคาที่ใช้ ณ เวลาโอน (${required} บาท)`,'verifiedAmountTHB',409,'PAYMENT_SHORT');}
+        if (row.status === 'payment_verified' && Number(row.verified_amount_satang) === amount && iso(row.verified_transferred_at) === transferred) {
+          if(bankTransactionId && String(row.bank_transaction_id || '').trim().toUpperCase()!==bankTransactionId)throw new InputError('รหัสโอนไม่ตรงกับรายการที่ตรวจไว้ กรุณาโหลดรายการเดิม',undefined,409,'BANK_TRANSACTION_CONFLICT');
+          if(school && row.account_id)await school.recorded(database(),row);
+          return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
+        }
+        try {updated = await store.verify(reference,amount,transferred,note,time,bankTransactionId);} catch(error){if(error?.code==='23505')throw new InputError('รายการโอนนี้ถูกใช้แล้ว กรุณาตรวจรายการเดิม',undefined,409,'DUPLICATE_BANK_TRANSACTION');throw error;}
       } else if (data.action === 'mark_admitted') {
-        if (data.accessSent !== true) throw new InputError('ยืนยันว่าได้ส่งสิทธิ์เข้า Skool ให้ผู้เรียนด้วยตนเองแล้ว','accessSent');
-        if (row.status === 'admitted') return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
-        updated = await store.admit(reference,note,time);
+        if (data.accessSent !== true) throw new InputError('ยืนยันเปิดสิทธิ์เรียนให้บัญชีนี้','accessSent');
+        if (row.status === 'admitted') {
+          if(school && row.account_id)await school.recorded(database(),row);
+          return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
+        }
+        if(school && row.account_id){await school.grant(database(),{reference,actorId:'ai-source-admin',note,now:time});updated=await store.get(reference);}
+        else if(school)throw new InputError('รายการเดิมยังไม่ผูกบัญชี กรุณายืนยันบัญชีผู้ซื้อก่อนเปิดสิทธิ์',undefined,409,'ACCOUNT_BINDING_REQUIRED');
+        else updated = await store.admit(reference,note,time);
       } else if (data.action === 'reject') {
         if (!note) throw new InputError('ระบุเหตุผลที่ต้องติดต่อผู้ซื้อหรือปฏิเสธรายการ','note');
         updated = await store.reject(reference,note,time);
       } else throw new InputError('คำสั่งไม่ถูกต้อง','action');
       if (!updated) throw new InputError('สถานะรายการเปลี่ยนแล้วหรือยังไม่พร้อมสำหรับคำสั่งนี้ กรุณาโหลดรายการใหม่',undefined,409,'STATUS_CONFLICT');
+      if(school && updated.account_id)await school.recorded(database(),updated);
       return sendJson(res,{ok:true,registration:adminRegistration(updated)});
     } catch (error) {
-      if (error instanceof InputError) return sendJson(res,{ok:false,code:error.code,field:error.field,message:error.message},error.status);
+      if (error instanceof InputError || error instanceof LearnError) return sendJson(res,{ok:false,code:error.code,field:error.field,message:error.message},error.status);
       log(error?.code === 'DATABASE_URL_NOT_CONFIGURED' ? 'AI_SOURCE_DATABASE_UNCONFIGURED' : 'AI_SOURCE_API_FAILED');
       return sendJson(res,{ok:false,code:'PERSISTENCE_UNAVAILABLE',message:'ระบบบันทึกข้อมูลสะดุด กรุณาส่งซ้ำด้วยรายการเดิม'},error?.code === 'DATABASE_URL_NOT_CONFIGURED'?503:500);
     }

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#143c2c">
+  <title>ห้องเรียนของฉัน · myClover</title>
+  <meta name="description" content="กลับมาเรียนต่อในคอร์สของคุณบน myClover">
+  <link rel="stylesheet" href="/learn/assets/learn.css">
+  <script type="module" src="/assets/account.js"></script>
+  <script type="module" src="/learn/assets/learn.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">ข้ามไปเนื้อหา</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="myClover หน้าหลัก"><span class="brand-mark" aria-hidden="true">✦</span> myClover<span class="brand-divider"></span><span class="brand-section">ห้องเรียน</span></a>
+    <button class="account-button" type="button" data-account-open="login"><span class="account-dot" aria-hidden="true"></span><span id="account-label">เข้าสู่ระบบ</span></button>
+  </header>
+  <main id="main" tabindex="-1">
+    <div id="page-status" class="page-status" role="status" aria-live="polite">กำลังเปิดห้องเรียนของคุณ…</div>
+    <section id="state-panel" class="state-panel" hidden></section>
+    <section id="library" hidden aria-labelledby="library-title">
+      <div class="library-heading"><p class="eyebrow">MY LEARNING</p><h1 id="library-title">ค่อย ๆ เรียน<br><em>แล้วเอาไปใช้จริง</em></h1><p class="lead">คอร์สที่คุณลงทะเบียนไว้ อยู่ตรงนี้<br>เลือกบทที่อยากเรียน แล้วกลับมาต่อเมื่อพร้อม</p></div>
+      <div class="section-heading"><h2>คอร์สของฉัน</h2><span id="course-count" class="small-label"></span></div>
+      <div id="course-grid" class="course-grid"></div>
+      <p class="library-footnote">สถานะการเรียนผูกกับบัญชี myClover ของคุณ</p>
+    </section>
+    <section id="classroom" hidden aria-labelledby="course-title">
+      <a href="/learn/" class="back-link" data-home>← คอร์สของฉัน</a>
+      <div class="course-heading"><div><p class="eyebrow">YOUR CLASSROOM</p><h1 id="course-title"></h1><p id="course-summary"></p></div><div id="course-access" class="access-box"></div></div>
+      <div id="access-notice" class="access-notice" hidden></div>
+      <p class="foundation-link"><a href="/learn/classroom/">ทบทวนพื้นฐาน AI จากคอร์สฟรี →</a></p>
+      <div class="classroom-layout">
+        <aside class="lesson-sidebar" aria-label="บทเรียนในคอร์ส"><div class="sidebar-heading"><h2>เลือกบทเรียน</h2><span id="course-progress-label"></span></div><progress id="course-progress" max="100" value="0" aria-label="ความคืบหน้าของคอร์ส"></progress><nav id="lesson-navigation" aria-label="สารบัญบทเรียน"></nav></aside>
+        <article class="lesson-content" id="lesson-content" aria-busy="false">
+          <div id="lesson-placeholder" class="lesson-placeholder">เลือกบทเรียนจากสารบัญ</div>
+          <div id="lesson-body" hidden>
+            <div class="lesson-heading"><p class="eyebrow" id="lesson-kicker"></p><h2 id="lesson-title" tabindex="-1"></h2><p id="lesson-summary"></p></div>
+            <div id="player-wrap" class="player-wrap" hidden><video id="lesson-video" controls playsinline preload="metadata" aria-label="วิดีโอบทเรียน"></video></div>
+            <p class="video-note" id="video-note" hidden>วิดีโอแนวนอนสำหรับเรียนบนคอมพิวเตอร์ · หยุด ย้อน หรือขยายเต็มจอเพื่อทำตามได้</p>
+            <div id="media-message" class="inline-message" role="status" hidden></div>
+            <div id="lesson-reading" class="lesson-reading" hidden></div>
+            <section id="resources-section" class="resources-section" hidden aria-labelledby="resources-title"><div><p class="eyebrow">TAKE IT TO WORK</p><h3 id="resources-title">ไฟล์สำหรับบทนี้</h3><p>เปิดไฟล์แล้วแก้ให้ตรงกับงานของคุณ</p></div><div id="resource-list" class="resource-list"></div></section>
+            <section id="application-section" class="application-section" hidden aria-labelledby="application-title"><h3 id="application-title">เลือกเคสที่ตรงกับงานคุณ</h3><p>เลือกดูเพิ่มเติมได้ตามงานที่อยากนำไปใช้</p><div id="application-links" class="application-links"></div></section>
+            <div class="lesson-actions"><button id="complete-lesson" class="button button-primary" type="button">ทำบทนี้เสร็จแล้ว</button><a id="next-lesson" class="button button-secondary" hidden>บทถัดไป →</a></div>
+            <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <noscript><div class="state-panel">กรุณาเปิด JavaScript เพื่อเข้าสู่ระบบและโหลดบทเรียนของคุณ</div></noscript>
+  </main>
+  <footer class="site-footer"><a href="/">myClover</a><span>เรียนรู้ทีละเรื่อง นำไปใช้ทีละงาน</span><a href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">ติดต่อผู้สอน ↗</a></footer>
+</body>
+</html>
