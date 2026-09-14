@@ -1,8 +1,8 @@
-/* Forge — ไปตอนถัดไปด้วยการเลื่อนต่อจากท้ายหน้า
+/* Forge — ปัดต่อจากท้ายหน้าเพื่อไปตอนถัดไปบนอุปกรณ์สัมผัส
 
    ทำงานเฉพาะหน้าตอนที่มี [data-next] จึงครอบคลุม EP1–EP6 และไม่พาออกจาก
-   EP7 เอง ผู้ใช้ต้องมาถึงก้นหน้าจริงก่อน gesture ถัดไปจึงทำงาน — wheel ที่
-   พามาถึงก้นหน้าในครั้งแรกไม่ทำให้ข้ามตอนทันที
+   EP7 เอง ผู้ใช้ต้องมาถึงก้นหน้าจริงก่อนเริ่มปัดครั้งถัดไป
+   Desktop ใช้ปุ่ม/ลิงก์ไปตอนต่อไปเท่านั้น — ไม่เปลี่ยนตอนจาก wheel/trackpad
 
    ACT สองชื่อใช้ path ของ event แยกตอนให้อยู่แล้ว:
      forge-next-button = กดปุ่มตอนต่อไป
@@ -14,7 +14,7 @@ const nextLink = document.querySelector('[data-next]');
 
 if (episode && nextLink) {
   let leaving = false;
-  let wasAtBottom = false;
+  const touchNavigation = window.matchMedia?.('(hover: none) and (pointer: coarse)');
   let touchStartY = null;
   let touchStartedAtBottom = false;
 
@@ -28,7 +28,7 @@ if (episode && nextLink) {
   };
 
   const goByScroll = () => {
-    if (leaving) return;
+    if (leaving || !touchNavigation?.matches) return;
     leaving = true;
     report('scroll');
     location.assign(nextLink.href);
@@ -45,19 +45,10 @@ if (episode && nextLink) {
     } catch { /* href แปลกไม่ต้องนับ */ }
   }, true);
 
-  addEventListener('scroll', () => { wasAtBottom = atBottom(); }, { passive: true });
-  wasAtBottom = atBottom();
-
-  addEventListener('wheel', event => {
-    const bottomBeforeWheel = wasAtBottom && atBottom();
-    wasAtBottom = atBottom();
-    if (bottomBeforeWheel && event.deltaY > 18) goByScroll();
-  }, { passive: true });
-
   addEventListener('touchstart', event => {
     const touch = event.touches[0];
     touchStartY = touch ? touch.clientY : null;
-    touchStartedAtBottom = atBottom();
+    touchStartedAtBottom = !!touchNavigation?.matches && atBottom();
   }, { passive: true });
 
   addEventListener('touchmove', event => {
