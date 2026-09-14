@@ -1,6 +1,6 @@
 # Teem Clover profile · 2026-09-13
 
-The public `/resume/` introduces Teem through current organizational roles, six selected projects, the AI ใส่ซอส method, experience and life beyond work. Existing `/meet/` and `/classroom/` are the next steps.
+The public `/resume/` introduces Teem through current organizational roles, seven selected projects, the AI ใส่ซอส method, experience and life beyond work. Existing `/meet/` and `/classroom/` are the next steps.
 
 ## Content and implementation
 
@@ -58,3 +58,9 @@ The owner explicitly requested six additional roles: former Lazada seller traine
 - The new bilingual `#teaching-proof` section appears before selected work. The existing TV photo and communication story move here instead of duplicating the photograph. Six compact logo cards expose the role at a glance and use native disclosures for context. The Thai–Chinese case remains below the career timeline.
 - A hero anchor gives a direct route to this section. The next step links to the actual AI ใส่ซอส course at `/ai-source/` and its free first lesson at `/ai-source/#sample`; no signup or payment is submitted during profile verification.
 - All seven new original logo files and their provenance are recorded in `assets/logos/manifest.json`. `resume-restored-work.css` now also styles the teaching section. No new script or dependency is introduced; WORK/LIFE, TH/EN, myClover flagship, the locked shelf and /meet remain.
+## TeamBook selected work · 2026-09-15
+
+- Added TeamBook after AI ใส่ซอส as a Build project, linking directly to `https://teambook.me/` from the cover and text link. Seven projects now appear; counts remain derived by the unchanged filter script.
+- The owner identified TeamBook as their work. Bilingual copy follows the existing TeamBook homepage and `/read/`: a shared notebook where friends choose their own activities and return to record small traces of their day. No adoption figures or outcomes are claimed.
+- Reuses the exact existing `/teambook/assets/brand/teambook-og-1200x630.jpg` brand asset (1200 × 630), framed with CSS contain so the logo remains intact. This is original brand artwork, not a screenshot of the application.
+- Keeps the existing optional details, TH/EN switch, WORK/LIFE modes and other project links. No TeamBook product behavior changes.
