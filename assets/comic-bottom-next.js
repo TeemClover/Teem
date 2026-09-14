@@ -1,11 +1,11 @@
-/* เรื่องเล่าจากโรงตีเหล็ก · เลื่อนต่อจากท้ายหน้าเพื่อไปตอนถัดไป */
+/* เรื่องเล่าจากโรงตีเหล็ก · ปัดต่อจากท้ายหน้าเฉพาะอุปกรณ์สัมผัส
+   Desktop: wheel/trackpad และปุ่มเลื่อนหน้าไม่เปลี่ยนตอน ใช้ลิงก์ตอนต่อไปแทน */
 const nextLink = document.querySelector('a[rel="next"][data-next], a[data-next]');
 const isComic = /^\/forge\/(?:intro|ep\d+-)/.test(location.pathname);
 
 if (isComic && nextLink?.href) {
   let atBottom = false;
-  let wheelDistance = 0;
-  let wheelTimer = 0;
+  const touchNavigation = window.matchMedia?.('(hover: none) and (pointer: coarse)');
   let touchStartY = 0;
   let touchStartedAtBottom = false;
   let navigating = false;
@@ -13,6 +13,7 @@ if (isComic && nextLink?.href) {
   const style = document.createElement('style');
   style.textContent = `
     .mc-scroll-next{position:fixed;z-index:11000;left:50%;bottom:max(14px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;max-width:calc(100vw - 28px);padding:11px 15px 11px 16px;border:1px solid rgb(210 173 91/.58);border-radius:999px;background:rgb(5 25 15/.94);color:#fff;box-shadow:0 12px 34px rgb(0 0 0/.3);font:700 13px/1.35 "Anuphan",system-ui,sans-serif;pointer-events:none;opacity:0;transform:translate(-50%,12px);transition:opacity .2s,transform .2s;backdrop-filter:blur(10px)}
+    .mc-scroll-next[hidden]{display:none}
     .mc-scroll-next[data-show="1"]{opacity:1;transform:translate(-50%,0)}
     .mc-scroll-next__hint{color:#e2bf71;white-space:nowrap}.mc-scroll-next__arrow{display:inline-block;font-size:18px;animation:mc-scroll-next-bob 1.1s ease-in-out infinite}
     @keyframes mc-scroll-next-bob{50%{transform:translateY(3px)}}
@@ -23,6 +24,7 @@ if (isComic && nextLink?.href) {
 
   const notice = document.createElement('div');
   notice.className = 'mc-scroll-next';
+  notice.hidden = !touchNavigation?.matches;
   notice.setAttribute('role', 'status');
   notice.setAttribute('aria-live', 'polite');
   const nextText = (nextLink.textContent || 'ตอนถัดไป').replace(/\s+/g, ' ').trim();
@@ -35,14 +37,13 @@ if (isComic && nextLink?.href) {
   };
 
   const updateBottom = () => {
-    const wasAtBottom = atBottom;
     atBottom = bottomNow();
-    notice.dataset.show = atBottom ? '1' : '0';
-    if (!atBottom || !wasAtBottom) wheelDistance = 0;
+    notice.hidden = !touchNavigation?.matches;
+    notice.dataset.show = atBottom && !notice.hidden ? '1' : '0';
   };
 
   const goNext = input => {
-    if (navigating) return;
+    if (navigating || !touchNavigation?.matches) return;
     navigating = true;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -59,22 +60,11 @@ if (isComic && nextLink?.href) {
   addEventListener('scroll', updateBottom, { passive:true });
   addEventListener('resize', updateBottom, { passive:true });
 
-  addEventListener('wheel', event => {
-    const startedAtBottom = atBottom && bottomNow();
-    updateBottom();
-    if (!startedAtBottom || event.deltaY <= 0) {
-      wheelDistance = 0;
-      return;
-    }
-    clearTimeout(wheelTimer);
-    wheelDistance += Math.min(event.deltaY, 80);
-    wheelTimer = setTimeout(() => { wheelDistance = 0; }, 700);
-    if (wheelDistance >= 100) goNext('wheel');
-  }, { passive:true });
+  touchNavigation?.addEventListener?.('change', updateBottom);
 
   addEventListener('touchstart', event => {
     touchStartY = event.touches[0]?.clientY || 0;
-    touchStartedAtBottom = atBottom && bottomNow();
+    touchStartedAtBottom = !!touchNavigation?.matches && atBottom && bottomNow();
   }, { passive:true });
 
   addEventListener('touchend', event => {
@@ -83,14 +73,6 @@ if (isComic && nextLink?.href) {
     if (touchStartY - endY >= 64 && bottomNow()) goNext('touch');
     touchStartedAtBottom = false;
   }, { passive:true });
-
-  addEventListener('keydown', event => {
-    if (!atBottom || !bottomNow()) return;
-    const forward = event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === 'End' || (event.key === ' ' && !event.shiftKey);
-    if (!forward || event.target.closest?.('input,textarea,select,button,[contenteditable="true"]')) return;
-    event.preventDefault();
-    goNext('keyboard');
-  });
 
   updateBottom();
 }
