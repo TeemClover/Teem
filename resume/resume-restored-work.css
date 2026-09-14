@@ -72,3 +72,39 @@
 @media print{.work-proof-pair{gap:8mm;margin-top:8mm;padding-top:6mm}.work-proof{break-inside:avoid}.work-proof h3{font-size:16pt}.work-proof>p,.work-proof-facts dd,.work-proof-details>p,.work-experience-context p{font-size:11pt}.work-proof-structure{gap:3mm;padding:5mm}.work-proof-languages{font-size:26pt}.work-proof-parts{padding-block:2mm}.work-proof-structure>p,.work-proof-parts>span{font-size:9pt}}
 .cover-teambook{background:#fff9e9}
 .cover-teambook>img{object-fit:contain;object-position:center}
+.profile-background{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:52px;padding:30px 0 34px}
+.background-heading{margin-bottom:21px}
+.background-heading .eyebrow{display:block;font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:7px}
+.background-heading h3{font-size:22px;line-height:1.5;letter-spacing:-.025em}
+.work-fields,.education-list,.language-cards{list-style:none;padding:0;margin:0}
+.work-fields{display:grid;gap:10px}
+.work-fields>li{display:flex;align-items:flex-start;gap:16px;padding:18px;background:var(--white);border:1px solid var(--line);border-radius:5px;break-inside:avoid}
+.work-field-mark{flex:none;width:28px;padding-top:3px;color:var(--gold);font:600 11px/1.7 var(--display);letter-spacing:.05em}
+.work-fields h4{font:600 17px/1.55 var(--display);color:var(--ink);margin:0}
+.work-fields p{font-size:14px;line-height:1.8;color:var(--muted);margin-top:5px}
+.work-field-focus{display:block;margin-top:3px;font-size:12px;line-height:1.7;color:var(--green)}
+.education-list>li{padding:17px 0;border-bottom:1px solid var(--line);break-inside:avoid}
+.education-list h4{font-size:17px;line-height:1.6;margin:0;font-weight:600}
+.education-list p{font-size:14px;line-height:1.8;color:var(--muted);margin-top:3px}
+.education-list .education-current{padding:20px 22px;background:#e9eee4;border:1px solid #ccd7c4;border-radius:5px;margin-bottom:4px}
+.study-status{display:inline-flex;align-items:center;gap:7px;color:var(--green);font-size:11px;font-weight:600;letter-spacing:.05em;line-height:1.7;margin-bottom:10px}
+.study-status:before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green)}
+.education-current h4{font-size:23px;color:var(--green)}
+.program-heading{margin-top:24px}
+.program-heading .eyebrow{font-size:9px;letter-spacing:.1em;color:var(--muted)}
+.program-heading h4{font-size:16px;margin-top:5px}
+.education-programs{margin:11px 0 0}
+.education-programs>div{display:grid;grid-template-columns:115px minmax(0,1fr);gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
+.education-programs dt{font:600 14px/1.7 var(--display)}
+.education-programs dd{font-size:13px;line-height:1.8;color:var(--muted);margin:0}
+.background-languages{padding:28px 0 32px;border-top:1px solid var(--line)}
+.language-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.language-cards>li{display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:17px;border:1px solid var(--line);border-radius:5px;background:var(--white);break-inside:avoid}
+.language-symbol{font:500 27px/1.2 var(--display);color:var(--green);min-height:33px}
+.language-cards h4{font-size:15px;font-weight:600;line-height:1.6}
+.language-cards p{font-size:12px;line-height:1.8;color:var(--muted);margin-top:3px}
+.language-cards .language-math{background:#eee9db;border-color:#dfd5bd}
+.language-math .language-symbol{color:#876c36}
+@media(max-width:900px){.profile-background{gap:30px}.work-fields>li{padding:15px;gap:10px}.work-fields h4{font-size:15px}.education-programs>div{grid-template-columns:102px minmax(0,1fr);gap:9px}.language-cards>li{padding:13px}.language-cards h4{font-size:14px}}
+@media(max-width:650px){.profile-background{grid-template-columns:1fr;gap:32px;padding-block:24px}.background-heading h3{font-size:22px}.work-fields>li{padding:18px;gap:15px}.work-fields h4{font-size:17px}.work-fields p{font-size:15px}.background-education{border-top:1px solid var(--line);padding-top:28px}.education-programs>div{grid-template-columns:115px minmax(0,1fr)}.language-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.language-cards>li{padding:17px;gap:12px}.language-cards .language-math{grid-column:1/-1;flex-direction:row;align-items:center;gap:22px}.language-cards h4{font-size:15px}}
+@media print{.profile-background{gap:8mm;padding-block:5mm}.work-fields>li{padding:3mm}.work-fields h4{font-size:11pt}.work-fields p,.education-list p{font-size:10pt}.background-languages{padding-block:5mm}.language-cards>li{padding:3mm}.background-heading h3{font-size:14pt}}

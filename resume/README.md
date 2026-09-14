@@ -64,3 +64,9 @@ The owner explicitly requested six additional roles: former Lazada seller traine
 - The owner identified TeamBook as their work. Bilingual copy follows the existing TeamBook homepage and `/read/`: a shared notebook where friends choose their own activities and return to record small traces of their day. No adoption figures or outcomes are claimed.
 - Reuses the exact existing `/teambook/assets/brand/teambook-og-1200x630.jpg` brand asset (1200 × 630), framed with CSS contain so the logo remains intact. This is original brand artwork, not a screenshot of the application.
 - Keeps the existing optional details, TH/EN switch, WORK/LIFE modes and other project links. No TeamBook product behavior changes.
+## Education, work fields and languages · 2026-09-15
+
+- Owner-confirmed additions: currently studying law at Sripatum University; DEF4 and Story 4 at Sripatum University; The Connext 1 at the University of the Thai Chamber of Commerce. The current study label is explicit in Thai and English; no completed law degree, graduation date or professional qualification is inferred.
+- Replaced the dense work paragraph with five organization/role cards. Education has its own column, an emphasized current-study card and a separate program list. Existing roles and the context paragraph remain.
+- Languages now have a separate section: Thai and English for communication, foundational Japanese and Chinese, plus the requested Math as a language of logic and patterns. No proficiency score or new spoken-language fluency claim is introduced.
+- The enclosing native disclosure and TH/EN runtime are unchanged. Local browser review covered desktop, 390px English and 320px Thai; no horizontal overflow, all five language cards and all three program/university pairs were present, and translation returned to the exact original Thai content while keeping the disclosure open.
