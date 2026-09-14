@@ -1,18 +1,16 @@
 {
   "schema_version": 2,
   "release_version": "v05",
-  "scope": "email_verified_sample_only_not_production_inventory",
+  "scope": "email_verified_legacy_classroom_trial_not_paid_course_inventory",
   "course_name": "AI ใส่ซอส — ข้อมูลหนึ่งชุด งานหลายแบบ",
   "format": "microcourse_original_voice_guided_visuals_editable_files",
   "episodes": [
     {
-      "id": "EP01",
-      "title": "บทแรกฟรี AI ใส่ซอส",
-      "included_as_public_sample": false,
-      "poster_path": "assets/EP01_COVER.png",
-      "video_sha256": "79c188bf2b700c3aa4df9440d72545d1e0271c70666e29be16c542acb432380b",
+      "id": "CLASSROOM",
+      "title": "ทดลองเรียน AI ใส่ซอส",
       "requires_verified_email": true,
-      "lesson_url": "/learn/?enroll=ai-sauce&lesson=EP01"
+      "lesson_url": "/classroom/",
+      "poster_path": "assets/EP01_COVER.png"
     }
   ]
 }

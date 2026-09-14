@@ -1,13 +1,13 @@
 // Server metadata only. This public repository contains no paid video, captions, or document body.
 // Media IDs identify assets; they grant no access. Every delivery requires server-side entitlement.
-// Only the existing EP01 sample is marked preview; paid Foundation remains gated.
+// All /learn lessons require purchased or instructor access. The email-gated trial lives at /classroom/.
 export const LEARN_COURSES = [
   {
     "id": "ai-sauce",
     "title": "AI ใส่ซอส",
     "description": "ดูครูทำจากคลาสจริง แล้วเลือกคลิปเสริมและไฟล์ฝึกที่ตรงกับงานของคุณ เริ่มจาก Source ต่อเป็นภาพ วิดีโอ งานหลายรูปแบบ สูตรคำสั่ง และเว็บ",
     "startLessonId": "FOUNDATION",
-    "previewLessonId": "EP01",
+    "previewLessonId": null,
     "mainLessonIds": [
       "FOUNDATION",
       "ADV01",
@@ -15,7 +15,8 @@ export const LEARN_COURSES = [
       "ADV03",
       "ADV04",
       "ADV05",
-      "CH06"
+      "CH06",
+      "BOSS"
     ],
     "applicationLessonIds": [
       "EP13",
@@ -91,6 +92,13 @@ export const LEARN_COURSES = [
         ]
       },
       {
+        "id": "boss",
+        "title": "BOSS · ลงมือทำงานจริง",
+        "summary": "รวม Source และชิ้นงานที่ทำไว้ แล้วตรวจความพร้อมก่อนนำไปใช้งานจริง",
+        "mainLessonId": "BOSS",
+        "supportingLessonIds": []
+      },
+      {
         "id": "applications",
         "title": "เลือกเคสไปใช้กับงาน",
         "summary": "เลือกงานสำนักงานหรืองานธุรกิจที่ตรงกับคุณ แล้วนำวิธีไปใช้กับข้อมูลของตัวเอง",
@@ -135,7 +143,7 @@ export const LEARN_COURSES = [
         "section": "เริ่มที่นี่",
         "order": 1,
         "durationSeconds": 75.166667,
-        "preview": true,
+        "preview": false,
         "mediaId": "m_6f23358d22f45d64b324689cdb9ceb16",
         "captionId": "m_5feebf399798571ea5798521fd8e649e",
         "captionsEmbedded": true,
@@ -627,7 +635,7 @@ export const LEARN_COURSES = [
         "supportingLessonIds": [
           "EP12"
         ],
-        "nextLessonId": null
+        "nextLessonId": "BOSS"
       },
       {
         "id": "EP12",
@@ -658,6 +666,23 @@ export const LEARN_COURSES = [
         "outcome": "ฝึกเปิดและส่งชุด HTML พร้อมไฟล์ประกอบให้ผู้รับใช้งานต่อ",
         "parentLessonId": "CH06",
         "returnLessonId": "CH06",
+        "nextLessonId": "BOSS"
+      },
+      {
+        "id": "BOSS",
+        "title": "BOSS · รวมงานของคุณให้พร้อมใช้จริง",
+        "type": "boss",
+        "sectionId": "boss",
+        "section": "BOSS · ลงมือทำงานจริง",
+        "order": 70,
+        "preview": false,
+        "completionMode": "manual",
+        "activityUrl": "/classroom/dungeon/",
+        "resourceIds": [],
+        "additionalResourceIds": [],
+        "summary": "รวม Source และชิ้นงานจากหกขั้น แล้วเลือกงานจริงหนึ่งชิ้นมาทำให้จบ",
+        "outcome": "มีผลงานที่ตรวจแล้ว พร้อม Source ให้คุณหรือทีมกลับมาทำต่อได้",
+        "supportingLessonIds": [],
         "nextLessonId": null
       },
       {
@@ -666,7 +691,7 @@ export const LEARN_COURSES = [
         "type": "case",
         "sectionId": "applications",
         "section": "เลือกเคสไปใช้กับงาน",
-        "order": 70,
+        "order": 80,
         "durationSeconds": 52.233333,
         "preview": false,
         "mediaId": "m_75e19bb5e91457a29dd717cf774b7ac8",
@@ -700,8 +725,8 @@ export const LEARN_COURSES = [
         ],
         "summary": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
         "outcome": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
-        "parentLessonId": null,
-        "returnLessonId": null,
+        "parentLessonId": "BOSS",
+        "returnLessonId": "BOSS",
         "nextLessonId": null
       },
       {
@@ -710,7 +735,7 @@ export const LEARN_COURSES = [
         "type": "case",
         "sectionId": "applications",
         "section": "เลือกเคสไปใช้กับงาน",
-        "order": 71,
+        "order": 81,
         "durationSeconds": 100.866667,
         "preview": false,
         "mediaId": "m_cbe43d55fcc85c9183381f916656b253",
@@ -742,8 +767,8 @@ export const LEARN_COURSES = [
         ],
         "summary": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",
         "outcome": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",
-        "parentLessonId": null,
-        "returnLessonId": null,
+        "parentLessonId": "BOSS",
+        "returnLessonId": "BOSS",
         "nextLessonId": null
       }
     ],
@@ -2790,7 +2815,8 @@ export const LEARN_COURSES = [
         "disposition": "attachment",
         "previewAllowed": false
       }
-    ]
+    ],
+    "trialUrl": "/classroom/"
   }
 ];
 
@@ -3003,7 +3029,7 @@ export const LEARN_ASSETS = [
     "contentType": "video/mp4",
     "bytes": 6676836,
     "disposition": "inline",
-    "previewAllowed": true
+    "previewAllowed": false
   },
   {
     "id": "m_5feebf399798571ea5798521fd8e649e",
@@ -3017,7 +3043,7 @@ export const LEARN_ASSETS = [
     "contentType": "application/x-subrip",
     "bytes": 3644,
     "disposition": "attachment",
-    "previewAllowed": true
+    "previewAllowed": false
   },
   {
     "id": "m_bd8f96e3ed5d5831a9a993fb5c598000",

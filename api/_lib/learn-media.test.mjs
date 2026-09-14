@@ -142,44 +142,48 @@ async function foundationHarness(t,{denied,enrolled=true}={}) {
   const call=async(file='index.html',method='GET',headers={})=>{const res=new Reply();await handler({method,headers,url:'/api/learn-foundation?file='+encodeURIComponent(file)},res);return res;};
   return {call,events};
 }
-test('foundation authenticates each direct API HTML/asset/HEAD request before filesystem access',async t=>{
+test('free classroom authenticates each direct API HTML/asset/HEAD request before filesystem access',async t=>{
   for(const denied of ['AUTH_REQUIRED','EMAIL_VERIFICATION_REQUIRED']){
-    const h=await foundationHarness(t,{denied});for(const method of ['GET','HEAD']){const r=await h.call('DATA.md',method);assert.equal(r.statusCode,303);assert.equal(r.headers.location,'/learn/?enroll=ai-sauce&return=%2Flearn%2Fclassroom%2FDATA.md');}
+    const h=await foundationHarness(t,{denied});for(const method of ['GET','HEAD']){const r=await h.call('DATA.md',method);assert.equal(r.statusCode,303);assert.equal(r.headers.location,'/learn/?trial=classroom&return=%2Fclassroom%2FDATA.md');}
     assert.equal(h.events.includes('path'),false);
   }
-  const h=await foundationHarness(t,{enrolled:false});assert.equal((await h.call()).statusCode,303);assert.equal(h.events.includes('read'),false);
+  const h=await foundationHarness(t,{enrolled:false});assert.equal((await h.call()).statusCode,200);assert.equal(h.events.includes('enroll'),false);
 });
-test('foundation serves registered content, rewrites links, and blocks symlink escapes',async t=>{
-  const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/learn\/classroom\/lesson1\.html/);assert.match(r.body,/course=ai-sauce/);
+test('free classroom keeps canonical links and blocks symlink escapes',async t=>{
+  const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/classroom\/lesson1\.html/);assert.match(r.body,/\/ai-source\//);
   assert.equal(r.headers['cache-control'],'private, no-store');assert.equal((await h.call('DATA.md')).body,'foundation-data');
   assert.equal((await h.call('escape.md')).statusCode,404);assert.equal((await h.call('missing.html')).statusCode,404);
 });
 test('foundation HEAD returns bytes without reading binary/text assets',async t=>{
   const h=await foundationHarness(t),r=await h.call('DATA.md','HEAD');assert.equal(r.statusCode,200);assert.equal(r.body,'');assert.equal(r.headers['content-length'],'15');assert.equal(h.events.includes('read'),false);
 });
-test('old classroom and sample aliases redirect before static asset exemptions',async()=>{
-  for(const route of ['/classroom/lesson1.html','/CLASSROOM/lesson1.html','/%63lassroom/lesson1.html','//classroom/lesson1.html']){
-    const r=await middleware(new Request('https://www.myclover.com'+route));assert.equal(r.status,307,route);assert.match(r.headers.get('location'),/\/learn\/classroom\/lesson1\.html$/);assert.match(r.headers.get('cache-control'),/no-store/);
-  }
+test('old sample aliases go to the free classroom before static asset exemptions',async()=>{
   for(const route of ['/ai-source/assets/EP01_SAMPLE.mp4','/ai-source/assets/EP01_CAPTIONS.srt','/AI-SOURCE/assets/ep01_sample.MP4','/ai-source/assets/%2545P01_SAMPLE.mp4','/ai-source/assets/EP01_SAMPLE.mp4/','/ai-source/assets/EP01_SAMPLE.mp4%2f']){
-    const r=await middleware(new Request('https://www.myclover.com'+route));assert.equal(r.status,307,route);assert.match(r.headers.get('location'),/\/learn\/\?enroll=ai-sauce&lesson=EP01$/);
+    const r=await middleware(new Request('https://www.myclover.com'+route));assert.equal(r.status,307,route);assert.match(r.headers.get('location'),/\/classroom\/$/);
   }
 });
-test('new classroom routes always rewrite to the guarded API, including JS and uppercase filenames',async()=>{
+test('canonical classroom routes always rewrite to the guarded API, including JS and uppercase filenames',async()=>{
   for(const file of ['index.html','lv5/vault-data.js','MY_SOURCE.md']){
-    const r=await middleware(new Request('https://www.myclover.com/learn/classroom/'+file));
+    const r=await middleware(new Request('https://www.myclover.com/classroom/'+file));
     const url=new URL(r.headers.get('x-middleware-rewrite'));assert.equal(url.pathname,'/api/learn-foundation');assert.equal(url.searchParams.get('file'),file);assert.match(r.headers.get('cache-control'),/no-store/);
   }
-  const root=await middleware(new Request('https://www.myclover.com/learn/classroom'));assert.equal(root.status,307);assert.match(root.headers.get('location'),/\/learn\/classroom\/$/);
+  const root=await middleware(new Request('https://www.myclover.com/classroom'));assert.equal(root.status,307);assert.match(root.headers.get('location'),/\/classroom\/$/);
 });
-test('encoded new classroom aliases fail closed instead of falling into public files',async()=>{
-  for(const route of ['/learn/%63lassroom/index.html','/LEARN/classroom/index.html','/learn/classroom/%2544ATA.md','/learn//classroom/index.html']){
+test('encoded classroom and compatibility aliases fail closed instead of exposing public static files',async()=>{
+  for(const route of ['/CLASSROOM/lesson1.html','/%63lassroom/lesson1.html','//classroom/lesson1.html','/classroom/%2544ATA.md','/learn/%63lassroom/index.html','/LEARN/classroom/index.html','/learn/classroom/%2544ATA.md','/learn//classroom/index.html']){
     const r=await middleware(new Request('https://www.myclover.com'+route));assert.equal(r.status,404,route);assert.equal(r.headers.get('x-middleware-next'),null);
   }
 });
+test('compatibility classroom alias redirects to canonical free course preserving activity query',async()=>{
+  for(const suffix of ['/','/dungeon/','/lv5/vault-data.js']) {
+    const r=await middleware(new Request('https://www.myclover.com/learn/classroom'+suffix+'?entry=learn&work=my-source'));
+    assert.equal(r.status,307);const target=new URL(r.headers.get('location'));
+    assert.equal(target.pathname,'/classroom'+suffix);assert.equal(target.searchParams.get('entry'),'learn');assert.equal(target.searchParams.get('work'),'my-source');
+  }
+});
 
 
-test('foundation screen recordings stream and seek only after enrollment checks',async t=>{
+test('free classroom screen recordings stream and seek only after verified-email checks',async t=>{
   const h=await foundationHarness(t),r=await h.call('sample.mp4','GET',{range:'bytes=7-11'});
   assert.equal(r.statusCode,206);assert.equal(r.body,'video');assert.equal(r.headers['content-range'],'bytes 7-11/17');assert.equal(h.events.includes('read'),false);
   const full=await h.call('sample.mp4');assert.equal(full.statusCode,200);assert.equal(full.body,'sample-video-data');

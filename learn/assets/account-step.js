@@ -2,7 +2,7 @@ export function safeReturn(value, origin) {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.includes('\\')) return null;
   try {
     const url = new URL(value, origin);
-    const foundation = url.pathname.startsWith('/learn/classroom/') && !/%|\/\./.test(url.pathname);
+    const foundation = (url.pathname.startsWith('/classroom/') || url.pathname.startsWith('/learn/classroom/')) && !/%|\/\./.test(url.pathname);
     return url.origin === origin && (['/ai-source/', '/learn/'].includes(url.pathname) || foundation) && !url.searchParams.has('enroll') ? url.pathname + url.search + url.hash : null;
   } catch { return null; }
 }

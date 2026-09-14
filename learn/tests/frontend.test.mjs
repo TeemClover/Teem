@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { createApi, createLearner, normalizeCourses, parseRoute, courseRoute, safeAssetUrl, progressSummary } from '../assets/learn-core.js';
 import { safeReturn, authRequest, showVerification, googleStartUrl } from '../assets/account-step.js';
 import { renderFrontDoorRoot } from '../../tools/sync-frontdoor-root.mjs';
-import { renderLessonReading, readingHref } from '../assets/lesson-reading.js';
+import { renderLessonReading, readingHref, parseReadingDiagram } from '../assets/lesson-reading.js';
 
 const active = { id:'ai-sauce',title:'AI ใส่ซอส',status:'active',summary:'หลักคิดและงานจริง' };
 const foundation = {id:'FOUNDATION',title:'เริ่มที่นี่',type:'foundation',order:0,locked:false,nextLessonId:'ADV01'};
@@ -80,7 +80,7 @@ class Element {
   setAttribute(k,v){this.attributes[k]=String(v);}getAttribute(k){return this.attributes[k]??null;}removeAttribute(k){delete this.attributes[k];if(k==='src')this.src='';}
   get childElementCount(){return this.children.length;}addEventListener(k,fn){(this.listeners[k]??=[]).push(fn);}async fire(k){for(const fn of this.listeners[k]||[])await fn({preventDefault(){},target:this,currentTarget:this});}
   all(){return this.children.flatMap(n=>n instanceof Element?[n,...n.all()]:[]);}querySelector(s){return this.all().find(n=>s.startsWith('.')?n.className.split(' ').includes(s.slice(1)):n.tagName.toLowerCase()===s)||null;}
-  closest(s){let n=this;while(n){if(n.tagName.toLowerCase()===s)return n;n=n.parentElement;}return null;}focus(){this.focused=true;}scrollIntoView(options){this.scrollRequest=options;}pause(){this.paused=true;}load(){this.loads=(this.loads||0)+1;}
+  closest(s){let n=this;while(n){if(n.tagName.toLowerCase()===s)return n;n=n.parentElement;}return null;}focus(){this.focused=true;}select(){this.selected=true;}scrollIntoView(options){this.scrollRequest=options;}pause(){this.paused=true;}load(){this.loads=(this.loads||0)+1;}
   reportValidity(){return this.all().filter(n=>n.required).every(n=>n.type==='checkbox'?n.checked:!!n.value);}
 }
 let run=0;
@@ -182,7 +182,7 @@ test('static shell protects paid assets and maintains home source sync and acces
   const [html,js,css,root,frontdoor,home]=await Promise.all(['learn/index.html','learn/assets/learn.js','learn/assets/learn.css','index.html','frontdoor/index.html','home/index.html'].map(p=>readFile(new URL('../../'+p,import.meta.url),'utf8')));
   assert.equal(renderFrontDoorRoot(frontdoor),root);
   for(const page of [root,frontdoor,home])assert.equal((page.match(/src="\/assets\/my-learning-entry.js"/g)||[]).length,1);
-  assert.match(html,/<html lang="th">/);assert.match(html,/href="\/learn\/classroom\/"/);assert.match(html,/controls playsinline preload="metadata"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
+  assert.match(html,/<html lang="th">/);assert.doesNotMatch(html,/href="\/learn\/classroom\/"/);assert.match(html,/href="\/classroom\/dungeon\/"/);assert.match(html,/controls playsinline preload="metadata"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
   assert.match(css,/aspect-ratio:16\/9/);assert.match(css,/\[hidden\]\{display:none!important\}/);assert.match(css,/@media\(max-width:375px\)/);assert.match(css,/prefers-reduced-motion/);
 });
 
@@ -223,4 +223,43 @@ test('Google and configured OTP coexist with OTP as a collapsed alternative',asy
 test('late provider response cannot overwrite a newer account or classroom view',async()=>{
   const d=await dom(mockedFetch()),pending=defer();let current=true;
   const work=showVerification({panel:d.ids.get('state-panel'),fetcher:()=>pending.promise,isCurrent:()=>current,onVerified:()=>{}});current=false;d.ids.get('state-panel').textContent='new account state';pending.resolve(response({ok:true,providers:{google:true,otp:true}}));await work;assert.equal(d.ids.get('state-panel').textContent,'new account state');
+});
+
+
+test('guided reading diagrams render as accessible steps and never execute supplied markup',async()=>{
+  const d=await dom(mockedFetch()), target=d.ids.get('lesson-reading');
+  const payload={title:'จาก Source ไปสู่งานจริง',steps:[{label:'ซอสแม่',detail:'เก็บข้อมูลที่ยืนยันแล้ว'},{label:'<img onerror=evil()>',detail:'แยกตามงาน'}],caption:'มนุษย์ตรวจทุกครั้ง'};
+  renderLessonReading(target,'```diagram\n'+JSON.stringify(payload)+'\n```',{origin:d.location.origin});
+  assert.equal(target.querySelector('figure').querySelector('figcaption').textContent,payload.title);
+  assert.equal(target.querySelector('ol').children.length,2);assert.equal(target.querySelector('img'),null);assert.match(target.textContent,/มนุษย์ตรวจทุกครั้ง/);
+  for(const source of ['null','{}','{"steps":[]}','{"title":"x","steps":[{"label":"x"}]}','not-json'])assert.equal(parseReadingDiagram(source),null);
+});
+test('prompt copy preserves exact text and offers selected text when clipboard fails',async()=>{
+  const d=await dom(mockedFetch()), target=d.ids.get('lesson-reading'), prompt='งานของฉัน: [ใส่ข้อมูล]\nห้ามเติมข้อมูลที่ไม่มี';let copied;
+  renderLessonReading(target,'```text\n'+prompt+'\n```',{origin:d.location.origin,copyText:async text=>{copied=text;}});
+  await target.querySelector('button').fire('click');assert.equal(copied,prompt);assert.match(target.textContent,/คัดลอกแล้ว/);
+  renderLessonReading(target,'```text\n'+prompt+'\n```',{origin:d.location.origin,copyText:async()=>{throw new Error('denied');}});
+  await target.querySelector('button').fire('click');assert.equal(target.querySelector('textarea').value,prompt);assert.equal(target.querySelector('textarea').selected,true);assert.equal(target.querySelector('button').disabled,false);
+});
+test('full reading sends learners outward only to the real Dungeon',()=>{
+  const origin='https://www.myclover.com';assert.equal(readingHref('/classroom/dungeon/',origin),'/classroom/dungeon/');
+  for(const path of ['/classroom/','/learn/classroom/','/ai-source/','https://www.myclover.com/classroom/','https://other.example/'])assert.equal(readingHref(path,origin),null);
+});
+test('free classroom trial verifies account without enrolling in the paid course',async()=>{
+  const requests=[];const d=await dom(async url=>{requests.push(url);return response({ok:true,user:{emailVerified:true}});},'?trial=classroom&return='+encodeURIComponent('/classroom/dungeon/?work=craft-123&entry=compass'));await d.load();
+  assert.equal(d.location.replaced,'/classroom/dungeon/?work=craft-123&entry=compass');assert.deepEqual(requests,['/api/auth/session']);
+  assert.equal(safeReturn('/classroom/','https://www.myclover.com'),'/classroom/');
+});
+test('Boss is a main stage with reading and Dungeon entry, without a broken video notice',async()=>{
+  const boss={id:'BOSS',title:'ด่านบอส',type:'boss',order:7,locked:false};
+  const fixture={...courseData,course:{...courseData.course,lessons:[foundation,main,boss],startLessonId:'BOSS'}};let saved;
+  const d=await dom(async (url,options)=>{const p=new URL(url,'https://www.myclover.com').searchParams;
+    if(p.get('action')==='progress'){saved=JSON.parse(options.body);return response({ok:true,progress:{completedLessons:1,totalLessons:22,lessons:{BOSS:{completed:true}}}});}
+    if(p.get('action')==='course')return response(fixture);
+    if(p.get('action')==='lesson')return response({ok:true,courseId:'ai-sauce',lesson:{...boss,reading:'# พร้อมต่อยอด\n\nต่อซอสของคุณให้เป็นระบบ',media:null,resources:[]}});
+    return response({ok:true,courses:[active]});
+  },'?course=ai-sauce&lesson=BOSS');await d.load();
+  assert.match(d.ids.get('lesson-navigation').textContent,/เส้นทางหลัก · 3 ช่วง/);assert.equal(d.ids.get('player-wrap').hidden,true);assert.equal(d.ids.get('media-message').hidden,true);assert.equal(d.ids.get('boss-invitation').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/ต่อซอสของคุณ/);
+  d.ids.get('lesson-video').currentTime=500;await d.ids.get('lesson-video').fire('error');assert.equal(d.ids.get('media-message').hidden,true);
+  await d.ids.get('complete-lesson').fire('click');assert.equal(saved.positionSeconds,0);assert.equal(saved.completed,true);
 });

@@ -7,9 +7,10 @@ import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { createLearnStore, ensureLearnSchema, grantForVerifiedRegistration, recordLearnRegistration, revokeLearnAccess, LEARN_SCHEMA } from './learn-store.js';
 
 const NOW=Date.parse('2026-09-14T10:00:00Z');
-const courses=[{id:'ai-sauce',title:'AI ใส่ซอส',description:'เรียนจาก Source',startLessonId:'FOUNDATION',previewLessonId:'EP01',lessons:[
-  {id:'EP01',title:'Preview',preview:true,durationSeconds:75,mediaId:'v_intro',captionId:'c_intro',resourceIds:['r_paid']},
+const courses=[{id:'ai-sauce',title:'AI ใส่ซอส',description:'เรียนจาก Source',startLessonId:'FOUNDATION',previewLessonId:null,trialUrl:'/classroom/',lessons:[
+  {id:'EP01',title:'Supporting lesson',preview:false,durationSeconds:75,mediaId:'v_intro',captionId:'c_intro',resourceIds:['r_paid']},
   {id:'FOUNDATION',title:'Paid',preview:false,durationSeconds:234,mediaId:'v_paid',captionId:'c_paid',additionalResourceIds:['r_zip']},
+  {id:'BOSS',title:'Finish your work',type:'boss',preview:false,completionMode:'manual',activityUrl:'/classroom/dungeon/'},
 ]},{id:'another-course',title:'Another',lessons:[{id:'EP01',title:'Other paid',preview:false,durationSeconds:60,mediaId:'v_other'}]}];
 const assets=[
   {id:'v_intro',courseId:'ai-sauce',lessonIds:['EP01'],kind:'video',contentType:'video/mp4',previewAllowed:true},
@@ -70,10 +71,11 @@ test('empty enrollment has no catalog browsing or other users courses',async()=>
   assert.deepEqual((await h.call()).body.courses,[]);
   assert.equal((await h.call('GET','course',undefined,{query:{courseId:'ai-sauce'}})).statusCode,403);
 });
-test('enrolling is idempotent and grants only the configured introductory video',async()=>{
+test('enrolling is idempotent and shows status without unlocking full-course lessons',async()=>{
   const h=harness();const a=await h.call('POST','enroll',{courseId:'ai-sauce'}),b=await h.call('POST','enroll',{courseId:'ai-sauce'});
   assert.equal(a.statusCode,200);assert.equal(a.body.access.status,'registered');assert.equal(h.enrolled.size,1);
   assert.equal(a.body.access.registeredAt,b.body.access.registeredAt);assert.equal(h.grants.length,0);
+  assert.equal(a.body.access.canPreview,false);assert.equal(a.body.course.lessons.every(l=>l.locked),true);
   const items=(await h.call()).body.courses;assert.equal(items.length,1);assert.equal(items[0].status,'registered');
 });
 test('enrollment rejects unknown courses and forged account or paid fields',async()=>{
@@ -82,22 +84,27 @@ test('enrollment rejects unknown courses and forged account or paid fields',asyn
 });
 test('course metadata exposes locked states without paid media or resource identifiers',async()=>{
   const h=harness();h.seed();const r=await h.call('GET','course',undefined,{query:{course:'ai-sauce'}});
-  assert.equal(r.statusCode,200);assert.equal(r.body.course.startLessonId,'EP01');
-  assert.equal(r.body.course.lessons[0].locked,false);assert.equal(r.body.course.lessons[1].locked,true);
+  assert.equal(r.statusCode,200);assert.equal(r.body.course.startLessonId,'FOUNDATION');
+  assert.equal(r.body.course.previewLessonId,null);assert.equal(r.body.course.trialUrl,'/classroom/');
+  assert.equal(r.body.course.lessons.every(l=>l.locked),true);
   assert.doesNotMatch(JSON.stringify(r.body),/v_paid|r_paid|c_paid|r_zip|privatePath|blob/);
 });
-test('registered preview returns guarded media/caption routes but no worksheet',async()=>{
+test('registered learner cannot request EP01 media or reading from the full course',async()=>{
   const h=harness();h.seed();const r=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
-  assert.equal(r.statusCode,200);assert.equal(r.body.preview,true);assert.equal(r.body.lesson.resourcesLocked,true);
-  assert.deepEqual(r.body.lesson.resources,[]);assert.match(r.body.lesson.media.url,/^\/api\/learn-media\?/);
-  assert.equal(r.body.lesson.media.captions.length,1);assert.doesNotMatch(JSON.stringify(r.body),/r_paid|https:\/\//);
+  assert.equal(r.statusCode,403);assert.equal(r.body.lesson,undefined);
+  assert.equal(h.events.some(e=>e[0]==='reading'),false);assert.doesNotMatch(JSON.stringify(r.body),/r_paid|v_intro|c_intro/);
 });
-test('real catalog caption kind authorizes only the configured preview caption',async()=>{
+test('real catalog keeps every video and caption paid, with exact lesson association',async()=>{
   const h=harness();h.seed();
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),lesson=course.lessons.find(l=>l.id==='EP01');
   const options={...h.options,courses:LEARN_COURSES,assets:LEARN_ASSETS};
+  for(const entry of course.lessons.filter(l=>l.mediaId)) {
+    await assert.rejects(authorizeLearnAsset({}, {}, {courseId:course.id,lessonId:entry.id,assetId:entry.mediaId},options),e=>e.code==='COURSE_ACCESS_REQUIRED');
+    await assert.rejects(authorizeLearnAsset({}, {testUser:null}, {courseId:course.id,lessonId:entry.id,assetId:entry.captionId},options),e=>e.code==='AUTH_REQUIRED');
+  }
+  h.grants.push(grant());
   const result=await authorizeLearnAsset({}, {}, {courseId:course.id,lessonId:lesson.id,assetId:lesson.captionId},options);
-  assert.equal(result.asset.kind,'captions');assert.equal(result.preview,true);
+  assert.equal(result.asset.kind,'captions');assert.equal(result.preview,false);
   const other=course.lessons.find(l=>l.id!=='EP01' && l.captionId);
   await assert.rejects(authorizeLearnAsset({}, {}, {courseId:course.id,lessonId:lesson.id,assetId:other.captionId},options),e=>e.code==='ASSET_NOT_FOUND');
 });
@@ -163,7 +170,7 @@ test('a learner cannot assign instructor access in request bodies or queries',as
   const h=harness();h.seed();
   for(const fields of [{role:'instructor'},{instructor:true}]) {
     assert.equal((await h.call('POST','enroll',{courseId:'ai-sauce',...fields})).statusCode,400);
-    assert.equal((await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'EP01',positionSeconds:1,...fields})).statusCode,400);
+    assert.equal((await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'EP01',positionSeconds:1,...fields})).statusCode,403);
   }
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION',role:'instructor'}})).statusCode,403);
   assert.equal((await h.call('POST','instructor',{courseId:'ai-sauce'})).statusCode,400);assert.equal(h.instructors.length,0);
@@ -182,14 +189,41 @@ test('paid lesson reading is looked up only after access succeeds and never appe
   h.instructors[0].revoked_at=new Date(NOW);h.grants.push(grant());
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).body.lesson.readingAvailable,true);
 });
-test('preview reading follows preview access, with an explicit empty state for missing private content',async()=>{
-  const h=harness();h.seed();
+test('missing private reading has an explicit empty state for authorized full-course learners',async()=>{
+  const h=harness();h.seed();h.grants.push(grant());
   let result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
   assert.equal(result.body.lesson.reading,'');assert.equal(result.body.lesson.readingAvailable,false);
   h.readings.set('ai-sauce/EP01','## INTRO_ONLY');
   result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
   assert.equal(result.body.lesson.reading,'## INTRO_ONLY');assert.equal(result.body.lesson.readingAvailable,true);
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'},testUser:null})).statusCode,401);
+});
+test('BOSS is an authorized reading/activity stage completed explicitly without video progress',async()=>{
+  const h=harness();h.seed();h.readings.set('ai-sauce/BOSS','# FINAL_ACTIVITY');
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}})).statusCode,403);
+  assert.equal((await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'BOSS',positionSeconds:0,completed:true})).statusCode,403);
+  assert.equal(h.events.some(e=>e[0]==='reading'),false);
+  h.grants.push(grant());
+  const result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}});
+  assert.equal(result.statusCode,200);assert.equal(result.body.lesson.media,null);assert.equal(result.body.lesson.reading,'# FINAL_ACTIVITY');
+  assert.equal(result.body.lesson.completionMode,'manual');assert.equal(result.body.lesson.activityUrl,'/classroom/dungeon/');
+  assert.equal(result.body.lesson.durationSeconds,undefined);assert.equal(h.progress.size,0);
+  assert.equal((await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'BOSS',positionSeconds:1,completed:true})).statusCode,400);
+  const completed=await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'BOSS',positionSeconds:0,completed:true});
+  assert.equal(completed.statusCode,200);assert.equal(completed.body.progress.lessons.BOSS.completed,true);assert.equal(completed.body.progress.lessons.BOSS.maxPositionSeconds,0);
+  h.grants[0].revoked_at=new Date(NOW);h.instructors.push(instructor());
+  assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}})).body.access.role,'instructor');
+});
+test('actual catalog retains all21 video lessons, appends BOSS as stage8 and never marks paid files free',()=>{
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+  assert.equal(course.lessons.length,22);assert.equal(course.lessons.filter(l=>l.mediaId).length,21);
+  assert.deepEqual(course.mainLessonIds,['FOUNDATION','ADV01','ADV02','ADV03','ADV04','ADV05','CH06','BOSS']);
+  for(let i=1;i<=14;i++)assert.ok(course.lessons.find(l=>l.id==='EP'+String(i).padStart(2,'0'))?.mediaId);
+  assert.equal(course.lessons.find(l=>l.id==='CH06').nextLessonId,'BOSS');
+  assert.equal(course.lessons.find(l=>l.id==='BOSS').mediaId,undefined);
+  assert.equal(course.lessons.find(l=>l.id==='BOSS').nextLessonId,null);
+  assert.equal(course.lessons.every(l=>l.preview===false),true);assert.equal(LEARN_ASSETS.every(a=>a.previewAllowed===false),true);
+  assert.equal(course.previewLessonId,null);assert.equal(course.trialUrl,'/classroom/');
 });
 test('private instructor and reading schema preserve enrollment scope and bounded server-only content',async()=>{
   const roleDDL=LEARN_SCHEMA.find(s=>s.includes('CREATE TABLE IF NOT EXISTS mc_learn_instructors'));
@@ -218,12 +252,11 @@ test('asset authorization checks catalog course and lesson association on every 
   const got=await authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'FOUNDATION',assetId:'v_paid'},h.options);assert.equal(got.assetId,'v_paid');
   for(const assetId of ['v_other','v_intro','r_paid','missing'])await assert.rejects(authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'FOUNDATION',assetId},h.options),e=>e.status===404);
 });
-test('preview media and captions work, paid preview-associated worksheets and ZIP do not',async()=>{
+test('legacy preview flags on assets cannot unlock full-course video, captions or worksheets',async()=>{
   const h=harness();h.seed();
-  for(const assetId of ['v_intro','c_intro'])assert.equal((await authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'EP01',assetId},h.options)).preview,true);
-  await assert.rejects(authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'EP01',assetId:'r_paid'},h.options),e=>e.code==='COURSE_ACCESS_REQUIRED');
-  const blockedAssets=assets.map(a=>a.id==='c_intro'?{...a,previewAllowed:false}:a);
-  await assert.rejects(authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'EP01',assetId:'c_intro'},{...h.options,assets:blockedAssets}),e=>e.status===403);
+  for(const assetId of ['v_intro','c_intro','r_paid'])await assert.rejects(authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'EP01',assetId},h.options),e=>e.code==='COURSE_ACCESS_REQUIRED');
+  h.grants.push(grant());
+  for(const assetId of ['v_intro','c_intro','r_paid'])assert.equal((await authorizeLearnAsset({}, {}, {courseId:'ai-sauce',lessonId:'EP01',assetId},h.options)).preview,false);
 });
 test('revocation takes effect on the next media request without a cached entitlement',async()=>{
   const h=harness();h.seed();const g=grant();h.grants.push(g);
@@ -237,13 +270,14 @@ test('progress is scoped by the session account and course, including duplicate 
   assert.deepEqual((await h.call('GET','progress',undefined,{query:{courseId:'another-course'}})).body.progress.lessons,{});
 });
 test('invalid progress cannot write entitlement fields or another account',async()=>{
-  const h=harness();h.seed();const base={courseId:'ai-sauce',lessonId:'EP01',positionSeconds:1};
+  const h=harness();h.seed();h.grants.push(grant());const base={courseId:'ai-sauce',lessonId:'EP01',positionSeconds:1};
   for(const change of [{userId:'bob'},{accountId:'bob'},{status:'active'},{positionSeconds:-1},{positionSeconds:'1'},{positionSeconds:Infinity},{positionSeconds:90000},{completed:'true'}])assert.equal((await h.call('PUT','progress',{...base,...change})).statusCode,400);
   assert.equal(h.progress.size,0);
 });
-test('positions clamp to known duration, and completing a preview does not grant access',async()=>{
-  const h=harness();h.seed();const r=await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'EP01',positionSeconds:100,completed:true});
+test('positions clamp to known duration, and instructor progress never creates purchased access',async()=>{
+  const h=harness();h.seed();h.instructors.push(instructor());const r=await h.call('PUT','progress',{courseId:'ai-sauce',lessonId:'EP01',positionSeconds:100,completed:true});
   assert.equal(r.body.progress.lessons.EP01.positionSeconds,75);assert.equal(h.grants.length,0);
+  h.instructors[0].revoked_at=new Date(NOW);
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).statusCode,403);
 });
 test('all writes require same-origin JSON; no public grant action exists',async()=>{

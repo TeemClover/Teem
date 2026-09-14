@@ -28,9 +28,8 @@
     </section>
     <section id="classroom" hidden aria-labelledby="course-title">
       <a href="/learn/" class="back-link" data-home>← คอร์สของฉัน</a>
-      <div class="course-heading"><div><p class="eyebrow">YOUR CLASSROOM</p><h1 id="course-title"></h1><p id="course-summary"></p></div><div id="course-access" class="access-box"></div></div>
+      <div class="course-heading"><div><p class="eyebrow">YOUR CLASSROOM</p><h1 id="course-title"></h1><p id="course-summary"></p><p id="course-format" class="course-format"></p></div><div id="course-access" class="access-box"></div></div>
       <div id="access-notice" class="access-notice" hidden></div>
-      <p class="foundation-link"><a href="/learn/classroom/">เปิดห้องฝึกพื้นฐาน AI →</a></p>
       <div class="classroom-layout">
         <aside class="lesson-sidebar" aria-label="บทเรียนในคอร์ส"><div class="sidebar-heading"><h2>เลือกบทเรียน</h2><span id="course-progress-label"></span></div><progress id="course-progress" max="100" value="0" aria-label="ความคืบหน้าของคอร์ส"></progress><nav id="lesson-navigation" aria-label="สารบัญบทเรียน"></nav></aside>
         <article class="lesson-content" id="lesson-content" aria-busy="false">
@@ -41,7 +40,9 @@
             <p class="video-note" id="video-note" hidden>วิดีโอแนวนอนสำหรับเรียนบนคอมพิวเตอร์ · หยุด ย้อน หรือขยายเต็มจอเพื่อทำตามได้</p>
             <div id="media-message" class="inline-message" role="status" hidden></div>
             <div id="lesson-reading" class="lesson-reading" hidden></div>
+            <section id="boss-invitation" class="boss-invitation" hidden aria-labelledby="boss-invitation-title"><div class="boss-symbol" aria-hidden="true">✦</div><p class="eyebrow">THE NEXT CHAPTER IS YOURS</p><h3 id="boss-invitation-title">จบคอร์สแล้ว<br>ลองเปิดประตูบานต่อไป</h3><p>Dungeon คือประสบการณ์และข้อความที่ AI ซึ่งช่วยสร้างคอร์สนี้ร่วมเรียบเรียงไว้ให้ผู้เรียนที่เดินมาถึงตอนจบ ลองเข้าไปเล่น แล้วมองหาว่า “ซอส” ของคุณจะต่อยอดไปได้ไกลแค่ไหน</p><a class="button" href="/classroom/dungeon/" target="_blank" rel="noopener noreferrer">เข้าสู่ Dungeon <span aria-hidden="true">↗</span></a><span class="boss-caption">เปิดในแท็บใหม่ · บทเรียนของคุณยังอยู่ตรงนี้</span></section>
             <section id="resources-section" class="resources-section" hidden aria-labelledby="resources-title"><div><p class="eyebrow">TAKE IT TO WORK</p><h3 id="resources-title">ไฟล์สำหรับบทนี้</h3><p>เปิดไฟล์แล้วแก้ให้ตรงกับงานของคุณ</p></div><div id="resource-list" class="resource-list"></div></section>
+            <details id="supporting-section" class="supporting-reading" hidden><summary>ทบทวนจุดนี้เพิ่มเติม</summary><p>คลิปสั้นจากชุดเดิม ช่วยทบทวนเฉพาะจุดที่อยากลงรายละเอียด</p><div id="supporting-links" class="application-links"></div></details>
             <section id="application-section" class="application-section" hidden aria-labelledby="application-title"><h3 id="application-title">เลือกเคสที่ตรงกับงานคุณ</h3><p>เลือกดูเพิ่มเติมได้ตามงานที่อยากนำไปใช้</p><div id="application-links" class="application-links"></div></section>
             <div class="lesson-actions"><button id="complete-lesson" class="button button-primary" type="button">ทำบทนี้เสร็จแล้ว</button><a id="next-lesson" class="button button-secondary" hidden>บทถัดไป →</a></div>
             <p id="save-status" class="save-status" role="status" aria-live="polite"></p>

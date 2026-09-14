@@ -41,8 +41,8 @@ export async function authorizeLearnLesson(sql,req,{courseId,lessonId},options={
   await store.ensure();
   const access = await loadCourseAccess(store,user.id,course.id,options.now ?? Date.now());
   if (access.status==='not_enrolled') throw new LearnError('COURSE_ENROLLMENT_REQUIRED',403,'ลงทะเบียนคอร์สนี้ก่อนเข้าเรียน');
-  if (!access.active && lesson.preview !== true) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'บทนี้ต้องมีสิทธิ์เรียนที่ยังใช้งานได้');
-  return {user,course,lesson,access,preview:!access.active};
+  if (!access.active) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'บทนี้อยู่ในคอร์สเต็ม กรุณาตรวจสอบสิทธิ์เรียนของบัญชีนี้');
+  return {user,course,lesson,access,preview:false};
 }
 
 export async function authorizeLearnAsset(sql,req,{courseId,lessonId,assetId},options={}) {
@@ -57,8 +57,8 @@ export async function authorizeLearnAsset(sql,req,{courseId,lessonId,assetId},op
   if (!asset || asset.courseId!==course.id || !asset.lessonIds?.includes(lesson.id) || (!video && !caption && !resource)) {
     throw new LearnError('ASSET_NOT_FOUND',404);
   }
-  // An introductory video never unlocks its paid worksheets or chapter ZIP.
-  if (!access.active && (resource || asset.previewAllowed!==true)) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'ไฟล์นี้อยู่ในสิทธิ์คอร์สเต็ม');
+  // Every /learn asset belongs to the full course; the free course is /classroom.
+  if (!access.active) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'ไฟล์นี้อยู่ในสิทธิ์คอร์สเต็ม');
   return {...authorized,asset,assetId};
 }
 

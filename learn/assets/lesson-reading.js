@@ -8,13 +8,21 @@ export function readingHref(value, origin) {
   try {
     const url = new URL(value, origin);
     if (url.origin === origin && url.pathname === '/learn/' && parseRoute(url.search).courseId) return url.pathname + url.search;
-    if (url.origin === origin && ['/ai-source/', '/learn/classroom/'].includes(url.pathname)) return url.pathname + url.search + url.hash;
-    if (/^https:\/\//i.test(value) && url.protocol === 'https:' && !url.username && !url.password) return url.href;
+    if (url.origin === origin && url.pathname === '/classroom/dungeon/' && !url.username && !url.password) return url.pathname + url.search + url.hash;
   } catch { /* leave unsupported links as readable text */ }
   return null;
 }
 
-export function renderLessonReading(container, markdown, { origin = window.location.origin, onLesson, onResource, resourcesLocked = false } = {}) {
+export function parseReadingDiagram(source) {
+  try {
+    const value = JSON.parse(source);
+    if (!value || typeof value.title !== 'string' || !Array.isArray(value.steps) || !value.steps.length || value.steps.length > 12) return null;
+    if (!value.steps.every(step => step && typeof step.label === 'string' && typeof step.detail === 'string')) return null;
+    return { title: value.title.slice(0, 200), steps: value.steps.map(step => ({ label: step.label.slice(0, 200), detail: step.detail.slice(0, 1200) })), caption: typeof value.caption === 'string' ? value.caption.slice(0, 1200) : '' };
+  } catch { return null; }
+}
+
+export function renderLessonReading(container, markdown, { origin = window.location.origin, onLesson, onResource, resourcesLocked = false, copyText = text => globalThis.navigator.clipboard.writeText(text) } = {}) {
   container.replaceChildren();
   if (typeof markdown !== 'string' || !markdown.trim()) { container.hidden = true; return; }
   container.hidden = false;
@@ -49,10 +57,40 @@ export function renderLessonReading(container, markdown, { origin = window.locat
     const line = lines[i];
     if (!line.trim()) { i++; continue; }
     if (/^```/.test(line)) {
+      const language = line.slice(3).trim().toLowerCase();
       const code = []; i++;
       while (i < lines.length && !/^```/.test(lines[i])) code.push(lines[i++]);
       if (i < lines.length) i++;
-      const pre = node('pre'); pre.append(node('code', code.join('\n'))); container.append(pre); continue;
+      const text = code.join('\n'), diagram = language === 'diagram' ? parseReadingDiagram(text) : null;
+      if (diagram) {
+        const figure = node('figure'); figure.className = 'reading-diagram';
+        figure.append(node('figcaption', diagram.title));
+        const steps = node('ol'); steps.className = 'diagram-steps';
+        diagram.steps.forEach((step, index) => {
+          const item = node('li'), number = node('span', String(index + 1).padStart(2, '0'));
+          number.className = 'diagram-number'; number.setAttribute('aria-hidden', 'true');
+          item.append(number, node('strong', step.label), node('p', step.detail)); steps.append(item);
+        });
+        figure.append(steps); if (diagram.caption) figure.append(node('p', diagram.caption)); container.append(figure);
+      } else {
+        const block = node('div'); block.className = 'copy-block';
+        const bar = node('div'); bar.className = 'copy-bar'; bar.append(node('span', 'เก็บไปใช้กับงานของคุณ'));
+        const copy = node('button', 'คัดลอก'); copy.type = 'button'; copy.className = 'copy-button';
+        const feedback = node('span'); feedback.className = 'copy-feedback'; feedback.setAttribute('role', 'status');
+        copy.addEventListener('click', async () => {
+          copy.disabled = true;
+          try { await copyText(text); feedback.textContent = 'คัดลอกแล้ว'; }
+          catch {
+            feedback.textContent = 'เลือกข้อความด้านล่าง แล้วกดคัดลอก';
+            let field = block.querySelector('textarea');
+            if (!field) { field = node('textarea'); field.value = text; field.readOnly = true; field.setAttribute('aria-label', 'ข้อความพร้อมคัดลอก'); field.rows = Math.min(12, Math.max(4, code.length)); block.append(field); }
+            field.focus(); field.select();
+          } finally { copy.disabled = false; }
+        });
+        bar.append(copy, feedback); block.append(bar);
+        const pre = node('pre'); pre.append(node('code', text)); block.append(pre); container.append(block);
+      }
+      continue;
     }
     const heading = /^(#{1,6})\s+(.+)$/.exec(line);
     if (heading) { const h = node('h' + Math.min(6, heading[1].length + 2)); inline(h, heading[2]); container.append(h); i++; continue; }

@@ -30,7 +30,7 @@ export function courseAccess(enrollment, grants = [], registrations = [], now = 
   const latest = [...registrations].sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0];
   const instructor = instructors.find(row => row.user_id===enrollment.user_id && row.course_id===enrollment.course_id
     && !row.revoked_at && iso(row.granted_at) && new Date(row.granted_at).getTime()<=time);
-  if (instructor) return {status:'active',role:'instructor',active:true,canPreview:true,
+  if (instructor) return {status:'active',role:'instructor',active:true,canPreview:false,
     registeredAt:iso(enrollment.registered_at),startsAt:iso(instructor.granted_at),expiresAt:null,paymentStatus:latest?.status || null};
   let status = 'registered';
   if (active.length) status = 'active';
@@ -40,7 +40,7 @@ export function courseAccess(enrollment, grants = [], registrations = [], now = 
   else if (grants.some(g => !g.revoked_at && iso(g.expires_at) && new Date(g.expires_at).getTime() <= time)) status = 'expired';
   else if (latest?.status === 'rejected') status = 'rejected';
   const relevant = active[0] || [...grants].sort((a,b) => new Date(b.expires_at) - new Date(a.expires_at))[0];
-  return { status, active: status === 'active', canPreview: true, registeredAt: iso(enrollment.registered_at),
+  return { status, active: status === 'active', canPreview: false, registeredAt: iso(enrollment.registered_at),
     startsAt: iso(relevant?.starts_at), expiresAt: iso(relevant?.expires_at), paymentStatus: latest?.status || null };
 }
 
@@ -49,6 +49,7 @@ export function validateProgress(body, lesson) {
     || body.positionSeconds < 0 || body.positionSeconds > 86400) throw new LearnError('INVALID_POSITION');
   if (body.completed !== undefined && typeof body.completed !== 'boolean') throw new LearnError('INVALID_COMPLETED');
   if (['userId','accountId','entitlement','status','expiresAt','role','instructor'].some(key => Object.hasOwn(body,key))) throw new LearnError('INVALID_PROGRESS_FIELDS');
+  if (lesson.type==='boss' && body.positionSeconds!==0) throw new LearnError('INVALID_POSITION');
   const duration = Number(lesson.durationSeconds);
   return { positionSeconds: Math.round(Math.min(body.positionSeconds, duration > 0 ? duration : 86400) * 1000) / 1000,
     completed: body.completed === true };
