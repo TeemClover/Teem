@@ -8,6 +8,11 @@
   ],
   "redirects": [
     {
+      "source": "/hf",
+      "destination": "/hf/",
+      "permanent": false
+    },
+    {
       "source": "/shelf/source/:path*",
       "destination": "/shelf/",
       "permanent": false
