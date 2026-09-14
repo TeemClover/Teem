@@ -31,7 +31,121 @@
       "method": "Downloaded unchanged official header dark logo",
       "local_path": "resume/assets/logos/kooboon.png",
       "usage": "Portfolio reference; organization role and logo use supplied in the user-provided brief dated 2026-09-13. Not an endorsement."
+    },
+    {
+      "file": "assumption-college.jpg",
+      "source": "https://www.assumption.ac.th/assets/img/aclogo.jpg",
+      "found_on": "https://www.assumption.ac.th/aboutAC.html",
+      "organization": "Assumption College / โรงเรียนอัสสัมชัญ",
+      "method": "HTTPS GET from official asset URL, via Python urllib; original response bytes copied unchanged",
+      "local_path": "resume/assets/logos/assumption-college.jpg",
+      "dimensions": {
+        "width": 416,
+        "height": 90
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "8db5e57c4c972d3beaadcc1a4a44b7a1c216326eb595b8e9f30b61ffe12e5b9c",
+      "identity_scope": "School at Bang Rak, Bangkok; not Assumption University",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "kasetsart.svg",
+      "source": "https://www.ku.ac.th/assets/images/header/KU_logo_62x62_th.svg",
+      "found_on": "https://www.ku.ac.th/en/the-identity-of-ku",
+      "organization": "Kasetsart University / มหาวิทยาลัยเกษตรศาสตร์",
+      "method": "HTTPS GET from official asset URL, via Python urllib; original response bytes copied unchanged",
+      "local_path": "resume/assets/logos/kasetsart.svg",
+      "dimensions": {
+        "width": 62,
+        "height": 62
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "4f27128a2c20e08751672323713b1b9edc5c310cab07d550c8b4c28669d31d55",
+      "identity_scope": "University-level seal, not a faculty or campus logo",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "csii.jpg",
+      "source": "https://csii.chula.ac.th/wp-content/uploads/2023/07/CSII_Mark_GoldWhite-1.jpg",
+      "found_on": "https://csii.chula.ac.th/csii-embraces-a-new-identity-and-a-future-ready-curriculum/",
+      "organization": "Chulalongkorn School of Integrated Innovation (CSII)",
+      "method": "HTTPS GET from official asset URL, via Python urllib; original response bytes copied unchanged",
+      "local_path": "resume/assets/logos/csii.jpg",
+      "dimensions": {
+        "width": 1769,
+        "height": 1189
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "db5e89a0b3e2d7ea3cd01b7a58156ebfa77a86ed197b850cd324a727ca459b8e",
+      "identity_scope": "CSII identity announced effective July 1, 2023; Golden Brown version",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "lazada.png",
+      "source": "https://img.lazcdn.com/g/tps/images/ims-web/TB1KB2laMFY.1VjSZFnXXcFHXXa.png",
+      "found_on": "https://www.lazada.co.th/",
+      "organization": "Lazada",
+      "method": "Downloaded original PNG bytes unchanged from the header image of the official Lazada Thailand homepage.",
+      "local_path": "resume/assets/logos/lazada.png",
+      "dimensions": {
+        "width": 344,
+        "height": 108
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "7d8a8a9bd96658b0dc7198c9fd44907f7b7707473ea86f002e9acf4dfd5238bd",
+      "identity_scope": "Lazada brand. Seller trainer role is owner-confirmed, not evidenced by this asset.",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "nusasiri.jpg",
+      "source": "https://stella.listedcompany.com/misc/ShareholderMTG/agm-2022/20220412-nusa-agm2022-invitation-full-th.pdf",
+      "found_on": "https://stella.listedcompany.com/misc/ShareholderMTG/agm-2022/20220412-nusa-agm2022-invitation-full-th.pdf",
+      "organization": "Nusasiri Public Company Limited",
+      "method": "Extracted the original standalone JPEG image stream on PDF page 1. Read pypdf page.images[0].indirect_reference.get_object()._data after verifying /Filter is /DCTDecode and raw stream equals get_data(). Saved raw bytes directly. No crop, redraw, recoloring, resizing, or re-encoding.",
+      "local_path": "resume/assets/logos/nusasiri.jpg",
+      "dimensions": {
+        "width": 508,
+        "height": 326
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "ce297e19d0f658de2d7356d709ef1f2901ba300f66ce789eb0f349751f1c6d43",
+      "identity_scope": "Historical Nusasiri identity for the explicitly former role. Not the current company brand.",
+      "pdf_page": 1,
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "parliament.png",
+      "source": "https://www.parliament.go.th/assets/images/logo-icon.png",
+      "found_on": "https://www.parliament.go.th/view/7/nationalassembly/TH-TH",
+      "organization": "National Assembly of Thailand",
+      "method": "Downloaded original PNG bytes unchanged from the official nationalassembly page icon asset. The page header independently identifies รัฐสภาไทย / National Assembly of Thailand.",
+      "local_path": "resume/assets/logos/parliament.png",
+      "dimensions": {
+        "width": 260,
+        "height": 260
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "c3c5f6b3cf24be30249a693a2bf52f2e818511435024a0d0264740fcde124c94",
+      "identity_scope": "Common Parliament identity only; does not establish the owner’s exact house, committee, appointment title, or dates.",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
+    },
+    {
+      "file": "tv5.png",
+      "source": "https://thaitv5hd.com/assets/images/logo_tv5hd.png",
+      "found_on": "https://thaitv5hd.com/",
+      "organization": "Royal Thai Army Radio and Television Station, Channel 5 (TV5HD)",
+      "method": "Downloaded original PNG bytes unchanged from the header and footer brand image used on the official TV5HD homepage.",
+      "local_path": "resume/assets/logos/tv5.png",
+      "dimensions": {
+        "width": 1098,
+        "height": 522
+      },
+      "retrieved_at": "2026-09-14",
+      "sha256": "0dde77d8beef6f9e115b92a3df085765b405a2fcc5b191c5bb56988df8a48d99",
+      "identity_scope": "Channel identity. Social Commerce appearance and nationwide live broadcast are owner-confirmed, not evidenced by the logo asset.",
+      "usage": "Public profile reference requested by the owner on 2026-09-14. Role and broadcast claims are owner-confirmed; logo source verifies institutional identity only. Not an institutional endorsement."
     }
   ],
-  "note": "Organization identity assets only; role claims remain owner-provided in the requested source, not verified by organization website."
+  "note": "Organization identity assets only; role claims remain owner-provided in the requested source, not verified by organization website.",
+  "updated_at": "2026-09-14"
 }
