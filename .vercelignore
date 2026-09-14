@@ -24,3 +24,7 @@ tests/course/
 tests/shelf/
 api/_lib/shelf-memory.js
 api/_lib/shelf-*.test.mjs
+
+# AI Sauce receipt/offer QA runs locally; no test fixtures are public assets.
+api/_lib/ai-source.test.mjs
+tests/ai-source/

@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "release_version": "v05",
+  "scope": "public_sample_only_not_production_inventory",
+  "course_name": "AI ใส่ซอส — ข้อมูลหนึ่งชุด งานหลายแบบ",
+  "format": "microcourse_original_voice_guided_visuals_editable_files",
+  "episodes": [
+    {
+      "id": "EP01",
+      "title": "บทแรกฟรี AI ใส่ซอส",
+      "included_as_public_sample": true,
+      "video_path": "assets/EP01_SAMPLE.mp4",
+      "poster_path": "assets/EP01_COVER.png",
+      "captions_path": "assets/EP01_CAPTIONS.srt",
+      "video_sha256": "79c188bf2b700c3aa4df9440d72545d1e0271c70666e29be16c542acb432380b"
+    }
+  ]
+}
