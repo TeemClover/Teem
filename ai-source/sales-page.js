@@ -9,22 +9,69 @@
   var money=new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0});
   var day=new Intl.DateTimeFormat('th-TH',{dateStyle:'long',timeZone:'Asia/Bangkok'});
   var fullDate=new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
-  var previousPrice=null, amountEdited=false, uploading=false, selectedFile=null, previewUrl=null, requestKey=null, requestFingerprint=null, copiedVersion=0, received=false;
+  var previousPrice=null, amountEdited=false, uploading=false, selectedFile=null, previewUrl=null, requestKey=null, requestFingerprint=null, copiedVersion=0, received=false,purchaseNotice='';
   function monotonic(){return window.performance ? window.performance.now() : Date.now();}
   function clock(){return live&&serverVisit ? Math.floor(serverAnchor+Math.max(0,monotonic()-monotonicAnchor)) : Date.now();}
+  var introDialog=get('cohort-dialog'),introStart=monotonic(),introDone=false,introDue=false,introTimer=null,introSuppressed=false;
+  var introKey='ai_sauce_cohort_intro_v1:'+(live?'live':'preview');
+  function closeIntro(){if(introDialog&&introDialog.open)introDialog.close();}
+  function introIdentity(offer){return String(offer.firstSeen)+':'+String(offer.endsAt);}
+  function introSeen(offer){try{return storage&&storage.getItem(introKey)===introIdentity(offer);}catch(_){return false;}}
+  function introPresentation(offer){
+    // Presentation alone is delayed. Eligibility and expiry remain server-authoritative.
+    if(!offer.showLaunchOffer||(live&&!serverReady)){
+      if(introTimer!==null){window.clearTimeout(introTimer);introTimer=null;}
+      closeIntro();return offer;
+    }
+    if(introDone||!introDialog||typeof introDialog.showModal!=='function')return offer;
+    var active=document.activeElement,form=get('receipt-form');
+    var busy=introSuppressed||uploading||received||get('sample-video').paused===false||(active&&form.contains&&form.contains(active));
+    if(introSeen(offer)||busy){introDone=true;return offer;}
+    if(introDue&&!document.hidden){
+      introDone=true;
+      try{introDialog.showModal();if(document.body&&document.body.classList)document.body.classList.add('cohort-modal-open');
+        try{if(storage)storage.setItem(introKey,introIdentity(offer));}catch(_){}
+      }catch(_){} // Unsupported/blocked dialogs never block the existing checkout.
+      return offer;
+    }
+    if(!introDue&&introTimer===null)introTimer=window.setTimeout(function(){introTimer=null;introDue=true;render();},Math.max(0,1800-(monotonic()-introStart)));
+    return Object.assign({},offer,{state:'intro',currentPrice:config.regular_price,showLaunchOffer:false,showCountdown:false,canPurchase:false,introPending:true});
+  }
+  function renderIntro(offer){
+    if(!introDialog||!introDialog.open)return;
+    if(!offer.showLaunchOffer||(live&&!serverReady)){closeIntro();return;}
+    get('cohort-regular-price').textContent=money.format(config.regular_price);
+    get('cohort-price').textContent=money.format(offer.currentPrice);
+    get('cohort-saving').textContent='ประหยัด '+money.format(config.regular_price-offer.currentPrice);
+    get('cohort-deadline').textContent=deadline(offer.endsAt);
+    var p=SauceOffer.countdownParts(offer.remainingMs);
+    get('cohort-time-left').textContent=(p.days?p.days+' วัน ':'')+[p.hours,p.minutes,p.seconds].map(function(n){return String(n).padStart(2,'0');}).join(':');
+  }
+  if(introDialog){
+    get('cohort-close').addEventListener('click',closeIntro);
+    get('cohort-later').addEventListener('click',closeIntro);
+    introDialog.addEventListener('click',function(event){if(event.target===introDialog)closeIntro();});
+    introDialog.addEventListener('close',function(){if(document.body&&document.body.classList)document.body.classList.remove('cohort-modal-open');});
+    get('cohort-apply').addEventListener('click',async function(){
+      closeIntro();var offer=await refreshOffer();
+      if(offer.canPurchase&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price)get('bank-details').scrollIntoView({behavior:'auto',block:'start'});
+      else{if(offer.state==='expired'){purchaseNotice='สิทธิ์รุ่นแรกสิ้นสุดแล้ว ราคาปัจจุบัน '+money.format(offer.currentPrice)+' โปรดตรวจราคาก่อนชำระ';render();}get('offer').scrollIntoView({behavior:'auto',block:'start'});}
+    });
+  }
   function deadline(end){return (end+7*3600000)%86400000===0?'ราคาพิเศษถึง '+day.format(new Date(end-1))+' เวลา 23:59 น.':'ราคาพิเศษถึง '+fullDate.format(new Date(end))+' น.';}
   function render(){
     var now=clock(), effective=Object.assign({},config,{sales_enabled:live&&serverReady});
-    var offer=SauceOffer.evaluateOffer(effective,now,live?serverVisit:tracker.read(now));
+    var actualOffer=SauceOffer.evaluateOffer(effective,now,live?serverVisit:tracker.read(now));
+    var offer=introPresentation(actualOffer);renderIntro(actualOffer);
     var price=offer.currentPrice===null?'กำลังตรวจราคา':money.format(offer.currentPrice);
     document.documentElement.dataset.offerState=offer.state;
     get('launch-offer').hidden=!offer.showLaunchOffer; get('hero-offer').hidden=offer.currentPrice===null;
     get('countdown').hidden=get('sticky-countdown').hidden=!offer.showCountdown;
     get('sticky-offer-status').hidden=offer.showCountdown;
-    get('sticky-offer-status').textContent=live&&!serverReady?'กำลังตรวจสิทธิ์':offer.state==='expired'?'โปรสิ้นสุดแล้ว':'ราคาปกติ';
+    get('sticky-offer-status').textContent=offer.introPending?'กำลังเตรียมสิทธิ์รุ่นแรก':live&&!serverReady?'กำลังตรวจสิทธิ์':offer.state==='expired'?'โปรสิ้นสุดแล้ว':'ราคาปกติ';
     ['current-price','hero-launch-price','bank-amount'].forEach(function(id){get(id).textContent=price;});
-    get('hero-price-label').textContent=offer.showLaunchOffer?'ราคาพิเศษ · ปกติ '+money.format(config.regular_price):'ราคาปกติ';
-    get('price-label').textContent=offer.showLaunchOffer?'ราคาพิเศษสำหรับคุณ':'ราคาปกติ';
+    get('hero-price-label').textContent=offer.showLaunchOffer?'รุ่นแรก · ปกติ '+money.format(config.regular_price):'ราคาปกติ';
+    get('price-label').textContent=offer.showLaunchOffer?'สิทธิ์ Skool รุ่นแรก':'ราคาปกติ';
     get('regular-price').hidden=!offer.showLaunchOffer; get('regular-price').textContent=offer.showLaunchOffer?'ปกติ '+money.format(config.regular_price):'';
     get('hero-offer-end').textContent=get('offer-end').textContent=offer.showLaunchOffer?deadline(offer.endsAt):offer.state==='expired'?'สิ้นสุดราคาพิเศษแล้ว':'';
     get('time-left').textContent=get('sticky-time-left').textContent='';
@@ -38,9 +85,9 @@
     get('upload-button').disabled=uploading||received||!live||!serverReady||!SauceOffer.canUpload(config,offer,window.location.protocol);
     get('upload-button').textContent=uploading?'กำลังส่ง…':received?'รับลงทะเบียนแล้ว':'ส่งสลิปและลงทะเบียน';
     ['customer-name','customer-email','customer-contact','paid-amount','transferred-at','receipt-file','registration-consent'].forEach(function(id){get(id).disabled=uploading||received;});
-    get('purchase-status').textContent=live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง';
+    get('purchase-status').textContent=purchaseNotice||(live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง');
     get('payment-notice').textContent='โอนตามยอด แล้วแนบสลิปด้านล่าง เปิดสิทธิ์เข้า Skool ภายใน 1 วันหลังชำระเงิน';
-    if(previousPrice!==null&&previousPrice!==offer.currentPrice){copiedVersion++;get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
+    if(previousPrice===config.launch_price&&offer.currentPrice===config.regular_price){copiedVersion++;get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
     var hasTerms=false;['access_terms','delivery_terms','support_terms','refund_terms','tool_cost_terms','payment_deadline_policy'].forEach(function(key){var item=get('term-'+key);item.textContent=typeof config[key]==='string'?config[key]:'';item.parentElement.hidden=!item.textContent;hasTerms=hasTerms||!!item.textContent;});get('offer-terms').hidden=!hasTerms;
     return offer;
   }
@@ -108,7 +155,7 @@
     }catch(error){get('upload-status').textContent=error.name==='AbortError'||error instanceof TypeError?'ยังยืนยันการรับข้อมูลไม่ได้ ส่งซ้ำได้โดยไม่โอนซ้ำ หรือติดต่อ LINE myclover พร้อมสลิป':error.message;}
     finally{if(timeout)window.clearTimeout(timeout);uploading=false;render();}
   });
-  document.querySelectorAll('[data-play-sample]').forEach(function(link){link.addEventListener('click',function(){var p=get('sample-video').play();if(p&&p.catch)p.catch(function(){});});});
+  document.querySelectorAll('[data-play-sample]').forEach(function(link){link.addEventListener('click',function(){introSuppressed=true;var p=get('sample-video').play();if(p&&p.catch)p.catch(function(){});render();});});
   render();refreshOffer();window.setInterval(render,1000);window.setInterval(function(){if(!document.hidden)refreshOffer();},60000);
   window.addEventListener('focus',refreshOffer);window.addEventListener('storage',function(){if(!live)render();});document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshOffer();});
 })();
