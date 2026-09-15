@@ -37,26 +37,327 @@ for (const dialog of [videoDialog, templateDialog]) {
   dialog.addEventListener('close', () => document.body.classList.remove('dialog-open'));
 }
 
+const wall = document.querySelector('#video-wall');
+const wallPause = document.querySelector('#wall-pause');
+const wallSoundStatus = document.querySelector('#wall-sound-status');
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const wallClips = [...document.querySelectorAll('#video-wall .wall-card')].map(card => ({
+  card,
+  video: card.querySelector('.wall-video'),
+  sound: card.querySelector('.wall-sound'),
+  retry: card.querySelector('.wall-retry'),
+  visible: false,
+  loaded: false,
+  blocked: false,
+  failed: false,
+  attempt: 0,
+  pending: false
+})).filter(clip => clip.video);
+let wallPaused = motionPreference.matches;
+let audibleClip = null;
+let dialogAttempt = 0;
+
+function announceWall(message) {
+  if (wallSoundStatus) wallSoundStatus.textContent = message;
+}
+
+function updatePauseControl() {
+  if (!wallPause) return;
+  wallPause.setAttribute('aria-pressed', String(wallPaused));
+  wallPause.setAttribute('aria-label', wallPaused ? 'เล่นวิดีโอทั้งหมด' : 'หยุดวิดีโอทั้งหมดชั่วคราว');
+  const label = wallPause.querySelector('[data-pause-label]');
+  if (label) label.textContent = wallPaused ? 'เล่นวิดีโอทั้งหมด' : 'หยุดชั่วคราว';
+  if (wall) wall.dataset.paused = String(wallPaused);
+}
+
+function updateClipSound(clip) {
+  const audible = !clip.video.muted && clip.video.volume > 0;
+  clip.card.dataset.audible = String(audible);
+  if (!clip.sound) return;
+  const label = audible ? 'ปิดเสียง' : 'เปิดเสียง';
+  clip.sound.setAttribute('aria-pressed', String(audible));
+  clip.sound.setAttribute('aria-label', `${label} ${clip.card.dataset.title || 'คลิปนี้'}`);
+  const text = clip.sound.querySelector('.sound-label');
+  if (text) text.textContent = label;
+  const offIcon = clip.sound.querySelector('.sound-off');
+  const onIcon = clip.sound.querySelector('.sound-on');
+  if (offIcon) offIcon.toggleAttribute('hidden', audible);
+  if (onIcon) onIcon.toggleAttribute('hidden', !audible);
+}
+
+function muteClip(clip) {
+  clip.video.muted = true;
+  if (audibleClip === clip) audibleClip = null;
+  updateClipSound(clip);
+}
+
+function muteWall() {
+  wallClips.forEach(muteClip);
+}
+
+function stopClip(clip) {
+  clip.attempt += 1;
+  clip.pending = false;
+  clip.video.pause();
+  clip.card.dataset.playing = 'false';
+  const wasAudible = audibleClip === clip;
+  muteClip(clip);
+  if (wasAudible) announceWall('แตะลำโพงบนคลิปเพื่อเปิดเสียง');
+}
+
+function canPlayClip(clip) {
+  return clip.visible && !wallPaused && !document.hidden && !videoDialog.open && !templateDialog.open;
+}
+
+function ensureClipSource(clip) {
+  if (clip.loaded) return;
+  const source = clip.video.dataset.src;
+  if (!source) return;
+  clip.loaded = true;
+  clip.video.preload = 'metadata';
+  clip.video.src = source;
+}
+
+function updateClipRetry(clip) {
+  clip.card.dataset.error = String(clip.failed);
+  clip.card.dataset.blocked = String(clip.blocked);
+  if (!clip.retry) return;
+  clip.retry.hidden = !(clip.failed || clip.blocked);
+  clip.retry.textContent = clip.failed ? 'โหลดคลิปอีกครั้ง' : 'แตะเพื่อเล่น';
+  clip.retry.setAttribute('aria-label', `${clip.failed ? 'โหลดและเล่น' : 'เล่น'} ${clip.card.dataset.title || 'คลิปนี้'}`);
+}
+
+function failClip(clip, failed) {
+  clip.pending = false;
+  clip.blocked = !failed;
+  clip.failed = failed;
+  clip.card.dataset.playing = 'false';
+  muteClip(clip);
+  updateClipRetry(clip);
+}
+
+function playClip(clip, userGesture = false) {
+  if (!canPlayClip(clip)) return;
+  if (!userGesture && (clip.pending || clip.blocked || clip.failed || !clip.video.paused)) return;
+  ensureClipSource(clip);
+  if (!clip.loaded) return;
+  if (userGesture) {
+    clip.blocked = false;
+    if (clip.failed || clip.video.error) {
+      clip.failed = false;
+      clip.video.load();
+    }
+    updateClipRetry(clip);
+  }
+  const attempt = ++clip.attempt;
+  clip.pending = true;
+  // Keep play() in the click handler's call stack for browsers that require a gesture.
+  const playResult = clip.video.play();
+  if (!playResult || typeof playResult.then !== 'function') {
+    clip.pending = false;
+    return;
+  }
+  playResult.then(() => {
+    if (attempt !== clip.attempt) return;
+    clip.pending = false;
+    if (!canPlayClip(clip)) stopClip(clip);
+  }).catch(error => {
+    if (attempt !== clip.attempt) return;
+    clip.pending = false;
+    if (error.name === 'AbortError' || !canPlayClip(clip)) return;
+    failClip(clip, error.name !== 'NotAllowedError');
+    if (userGesture) announceWall('ยังเล่นคลิปนี้ไม่ได้ แตะปุ่มบนคลิปเพื่อลองอีกครั้ง');
+  });
+}
+
+function syncWallPlayback() {
+  wallClips.forEach(clip => {
+    if (canPlayClip(clip)) playClip(clip);
+    else stopClip(clip);
+  });
+}
+
+function resumeFromGesture(clip) {
+  // A direct play/sound choice also enables playback after the reduced-motion default.
+  wallPaused = false;
+  updatePauseControl();
+  clip.visible = true;
+  playClip(clip, true);
+  syncWallPlayback();
+}
+
+wallClips.forEach(clip => {
+  clip.video.muted = true;
+  clip.video.defaultMuted = true;
+  clip.video.playsInline = true;
+  clip.video.loop = true;
+  clip.card.dataset.playing = 'false';
+  updateClipSound(clip);
+  updateClipRetry(clip);
+
+  clip.sound?.addEventListener('click', () => {
+    const enableSound = clip.video.muted || clip.video.volume === 0;
+    muteWall();
+    if (enableSound) {
+      audibleClip = clip;
+      clip.video.volume = 1;
+      clip.video.muted = false;
+      updateClipSound(clip);
+      announceWall(`กำลังเปิดเสียง: ${clip.card.dataset.title || 'คลิปที่เลือก'} เปิดได้ครั้งละ 1 คลิป`);
+    } else {
+      announceWall('ปิดเสียงแล้ว แตะลำโพงบนคลิปเพื่อเปิดเสียง');
+    }
+    resumeFromGesture(clip);
+  });
+
+  clip.retry?.addEventListener('click', () => {
+    muteClip(clip);
+    resumeFromGesture(clip);
+  });
+
+  clip.video.addEventListener('playing', () => {
+    if (!canPlayClip(clip)) {
+      stopClip(clip);
+      return;
+    }
+    clip.pending = false;
+    clip.blocked = false;
+    clip.failed = false;
+    clip.card.dataset.playing = 'true';
+    updateClipRetry(clip);
+  });
+  clip.video.addEventListener('pause', () => {
+    clip.card.dataset.playing = 'false';
+  });
+  clip.video.addEventListener('waiting', () => {
+    clip.card.dataset.playing = 'false';
+  });
+  clip.video.addEventListener('error', () => {
+    if (clip.loaded) failClip(clip, true);
+  });
+  clip.video.addEventListener('volumechange', () => {
+    // Also keep audio exclusive if the browser's own media controls change volume.
+    if (!clip.video.muted && clip.video.volume > 0) {
+      if (!canPlayClip(clip)) {
+        muteClip(clip);
+        return;
+      }
+      wallClips.forEach(other => { if (other !== clip) muteClip(other); });
+      audibleClip = clip;
+    } else if (audibleClip === clip) {
+      audibleClip = null;
+    }
+    updateClipSound(clip);
+  });
+});
+
+if ('IntersectionObserver' in window) {
+  const clipsByCard = new Map(wallClips.map(clip => [clip.card, clip]));
+  const loadObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      ensureClipSource(clipsByCard.get(entry.target));
+      loadObserver.unobserve(entry.target);
+    });
+  }, { rootMargin: '480px 0px' });
+  const playbackObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const clip = clipsByCard.get(entry.target);
+      clip.visible = entry.isIntersecting;
+      if (canPlayClip(clip)) playClip(clip);
+      else stopClip(clip);
+    });
+  }, { threshold: 0.01 });
+  wallClips.forEach(clip => {
+    loadObserver.observe(clip.card);
+    playbackObserver.observe(clip.card);
+  });
+} else {
+  let visibilityFrame = 0;
+  const checkVisibility = () => {
+    visibilityFrame = 0;
+    wallClips.forEach(clip => {
+      const box = clip.card.getBoundingClientRect();
+      if (box.bottom > -480 && box.top < window.innerHeight + 480) ensureClipSource(clip);
+      clip.visible = box.bottom > 0 && box.top < window.innerHeight && box.right > 0 && box.left < window.innerWidth;
+    });
+    syncWallPlayback();
+  };
+  const queueVisibilityCheck = () => {
+    if (!visibilityFrame) visibilityFrame = requestAnimationFrame(checkVisibility);
+  };
+  window.addEventListener('scroll', queueVisibilityCheck, { passive: true });
+  window.addEventListener('resize', queueVisibilityCheck, { passive: true });
+  checkVisibility();
+}
+
+wallPause?.addEventListener('click', () => {
+  wallPaused = !wallPaused;
+  updatePauseControl();
+  if (!wallPaused) {
+    // The explicit play-all gesture can recover videos denied automatic playback.
+    wallClips.forEach(clip => { if (canPlayClip(clip)) playClip(clip, true); });
+  }
+  syncWallPlayback();
+  if (wallPaused) announceWall('หยุดวิดีโอทั้งหมดชั่วคราวแล้ว');
+  else announceWall('กำลังเล่นวิดีโอแบบปิดเสียง แตะลำโพงบนคลิปเพื่อเปิดเสียง');
+});
+updatePauseControl();
+if (wallPaused) announceWall('หยุดวิดีโอตามการตั้งค่าลดการเคลื่อนไหว แตะเล่นวิดีโอทั้งหมดเพื่อเริ่ม');
+
+function handleMotionPreference(event) {
+  if (!event.matches) return;
+  wallPaused = true;
+  updatePauseControl();
+  syncWallPlayback();
+  announceWall('หยุดวิดีโอตามการตั้งค่าลดการเคลื่อนไหว แตะเล่นวิดีโอทั้งหมดเพื่อเริ่ม');
+}
+if (motionPreference.addEventListener) motionPreference.addEventListener('change', handleMotionPreference);
+else motionPreference.addListener(handleMotionPreference);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && videoDialog.open) {
+    player.pause();
+    player.muted = true;
+  }
+  syncWallPlayback();
+});
+window.addEventListener('pagehide', () => {
+  wallClips.forEach(stopClip);
+  player.pause();
+  player.muted = true;
+});
+window.addEventListener('pageshow', syncWallPlayback);
+
 for (const card of document.querySelectorAll('[data-video]')) {
   card.addEventListener('click', () => {
+    const attempt = ++dialogAttempt;
+    wallClips.forEach(stopClip);
     document.querySelector('#video-title').textContent = card.dataset.title;
     videoError.hidden = true;
     player.poster = card.dataset.poster;
     player.src = card.dataset.video;
+    player.muted = false;
+    player.volume = 1;
     videoDialog.showModal();
     document.body.classList.add('dialog-open');
     player.play().catch(() => {
-      // Native controls remain usable if autoplay is disallowed.
-      if (player.error) videoError.hidden = false;
+      // Native controls remain usable if the browser requires another gesture.
+      if (attempt === dialogAttempt && videoDialog.open && player.error) videoError.hidden = false;
     });
   });
 }
 player.addEventListener('error', () => { if (player.hasAttribute('src')) videoError.hidden = false; });
 videoDialog.addEventListener('close', () => {
+  dialogAttempt += 1;
   player.pause();
+  player.muted = true;
   player.removeAttribute('src');
   player.removeAttribute('poster');
   player.load();
+  // Preserve an explicit pause or reduced-motion pause across the expanded view.
+  muteWall();
+  syncWallPlayback();
 });
 
 const templates = {
@@ -84,9 +385,12 @@ for (const button of document.querySelectorAll('[data-template]')) {
     copyButton.disabled = false;
     document.querySelector('#download-template').href = `/airova/templates/${key}.txt`;
     templateDialog.showModal();
+    syncWallPlayback();
     document.body.classList.add('dialog-open');
   });
 }
+templateDialog.addEventListener('close', syncWallPlayback);
+
 copyButton.addEventListener('click', async () => {
   copyButton.disabled = true;
   try {

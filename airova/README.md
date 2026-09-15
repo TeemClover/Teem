@@ -14,7 +14,10 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 
 ## Interaction
 
-- Showcase uses four locally stored MP4 files sourced from Airova's public marketing site, reused at the user's request. Video is loaded only when a viewer opens it. Native playback controls; Escape, close button and backdrop close the dialog and stop playback.
+- Showcase is a 16-clip autoplay wall sourced from Airova's public marketing templates, reused at the user's request. Each clip has verified non-silent native audio; source URLs and audio measurements are in `wall-clips.json`.
+- Videos preload near the viewport and autoplay muted/loop inline while visible. Offscreen videos and hidden tabs pause. Only one clip can be audible; opening another clip's sound mutes the previous one.
+- The wall has pause/resume and per-clip sound, expand, and retry controls. Reduced-motion preferences start the wall paused. The expanded video uses native controls; Escape/backdrop/close stops it and restores visible muted wall playback. Both video and template dialogs suspend the wall, preserving the global pause setting.
+- Wall media contains 16 H.264/AAC MP4 clips (480 × 854, 8 seconds, 10.24 MB combined) and WebP posters. Every file has faststart enabled. Native audio is retained without adding a soundtrack. Silent hero samples are not used in the new wall.
 - Three original myClover prompt templates can be copied or downloaded without signup. They are suggestions for getting started, not Airova marketplace recipes and not guaranteed to reproduce the sample imagery. Source of the on-page prompts is `airova.js`; matching downloadable versions are in `templates/`.
 - The platform charges generation credits separately from the free prompt download.
 - Links work as ordinary HTML anchors. No analytics, form submissions or account handling are added to this page.

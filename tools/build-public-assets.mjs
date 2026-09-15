@@ -66,6 +66,25 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'hf/assets/example-ako.mp4', 'hf/assets/example-teem.mp4',
   'airova/assets/showcase-car.mp4', 'airova/assets/showcase-character.mp4',
   'airova/assets/showcase-fashion.mp4', 'airova/assets/showcase-ugc.mp4',
+  // Reviewed, sound-capable clips and their posters for the public video wall.
+  ...[
+    "catwalk-couture",
+    "skincare-dream",
+    "talking-apple",
+    "matcha-moment",
+    "fashion-try-on",
+    "podcast-studio",
+    "workshop-demo",
+    "animated-avatar",
+    "cafe-selfie",
+    "shoe-detail",
+    "fashion-showroom",
+    "studio-presenter",
+    "mirror-outfit",
+    "story-conversation",
+    "event-product",
+    "expert-talk"
+  ].flatMap(name => ['mp4', 'webp'].map(type => `airova/assets/wall/${name}.${type}`)),
 ]);
 
 const allowedType = /\.(?:avif|gif|ico|jpe?g|png|svg|webp|css|js|woff2?|ttf|otf)$/i;
