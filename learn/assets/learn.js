@@ -65,7 +65,7 @@ function partName(item) { return item.partTitle || item.title || 'บทเร�
 function renderCourseBonus(bonus) {
   const section=$('course-bonus'); section.replaceChildren(); section.hidden=!bonus;
   if (!bonus) return;
-  const cover=el('img','','bonus-cover'); cover.src='/ai-source/assets/ai-sauce-companion-cover-v1.webp'; cover.width=540;cover.height=960;cover.loading='lazy';cover.alt='คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น';section.append(cover);
+  const cover=el('img','','bonus-cover'); cover.src='/ai-source/assets/ai-sauce-companion-cover-v2.webp'; cover.width=540;cover.height=960;cover.loading='lazy';cover.alt='คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น';section.append(cover);
   const heading=el('h2',bonus.title || 'คู่มือ AI ใส่ซอส + AI คู่คิดพาทำงาน'); heading.id='course-bonus-title';
   section.append(el('p','อ่านทบทวน · เปิด AI แล้วเริ่มงาน','eyebrow'),heading);
   if (bonus.description) section.append(el('p',bonus.description));

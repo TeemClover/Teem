@@ -2660,7 +2660,7 @@ export const LEARN_COURSES = [
       "valueTHB": 1290,
       "lessonId": "FOUNDATION",
       "resourceIds": [
-        "m_fbcb3c7aad0816213a8eeb8430eba847",
+        "m_7442bf578d1f80ebe7e8836fed65a8ac",
         "m_4175a4b0038580f97018e45d277e9d5a"
       ]
     }
@@ -6180,6 +6180,21 @@ export const LEARN_ASSETS = [
     "contentType": "application/x-subrip",
     "bytes": 23368,
     "disposition": "attachment",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_7442bf578d1f80ebe7e8836fed65a8ac",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "FOUNDATION"
+    ],
+    "kind": "resource",
+    "entitlement": "ai-sauce-companion-v1",
+    "title": "คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น",
+    "filename": "AI_SAUCE_FIELD_GUIDE.pdf",
+    "contentType": "application/pdf",
+    "disposition": "attachment",
+    "bytes": 3142352,
     "previewAllowed": false
   }
 ];

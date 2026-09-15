@@ -107,7 +107,7 @@ test('real catalog publishes exactly two restricted companion attachments at fro
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),bonus=course.bonus;
   assert.equal(bonus.id,COMPANION_BONUS_ID);assert.equal(bonus.valueTHB,1290);assert.equal(bonus.lessonId,'FOUNDATION');
   assert.equal(new Set(bonus.resourceIds).size,2);assert.equal(bonus.resourceIds.length,2);
-  const expected=[['AI_SAUCE_FIELD_GUIDE.pdf','application/pdf','learn/228.pdf'],['AI_SAUCE_WORK_COACH.md','text/markdown; charset=utf-8','learn/229.md']];
+  const expected=[['AI_SAUCE_FIELD_GUIDE.pdf','application/pdf','learn/249.pdf'],['AI_SAUCE_WORK_COACH.md','text/markdown; charset=utf-8','learn/229.md']];
   for(const [index,id] of bonus.resourceIds.entries()){
     const entries=LEARN_ASSETS.filter(a=>a.id===id);assert.equal(entries.length,1);const asset=entries[0];
     assert.equal(asset.filename,expected[index][0]);assert.equal(asset.contentType,expected[index][1]);assert.equal(learnMediaPathname(asset),expected[index][2]);
@@ -116,7 +116,20 @@ test('real catalog publishes exactly two restricted companion attachments at fro
     assert.ok(Number.isSafeInteger(asset.bytes)&&asset.bytes>0);
     for(const lesson of course.lessons)assert.ok(![...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(id),'Bonus must not enter all-package lesson file lists');
   }
-  assert.deepEqual(LEARN_ASSETS.filter(a=>a.entitlement===COMPANION_BONUS_ID).map(a=>a.id),bonus.resourceIds);
+  const retiredId='m_fbcb3c7aad0816213a8eeb8430eba847';
+  assert.equal(LEARN_ASSETS[228].id,retiredId);assert.equal(learnMediaPathname(LEARN_ASSETS[228]),'learn/228.pdf');
+  assert.ok(!bonus.resourceIds.includes(retiredId),'The ebook with incorrect Thai marks must no longer be offered');
+  assert.deepEqual(new Set(LEARN_ASSETS.filter(a=>a.entitlement===COMPANION_BONUS_ID).map(a=>a.id)),new Set([...bonus.resourceIds,retiredId]));
+});
+test('the retired ebook cannot be downloaded even by an instructor or a valid 990/full member',async()=>{
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+  const assetId='m_fbcb3c7aad0816213a8eeb8430eba847';
+  for(const tier of ['instructor',990,1690]){
+    const sql={query:async q=>q.includes('FROM mc_sessions')?[{...mediaAccess,active_instructor:tier==='instructor'}]
+      :[{...payment,checkout_price:tier,verified_amount_satang:Number(tier)*100}]};
+    await assert.rejects(authorizeLearnMedia(sql,req,{courseId:course.id,lessonId:course.bonus.lessonId,assetId},{now}),
+      e=>e.code==='ASSET_NOT_FOUND',`Retired PDF denied for ${tier}`);
+  }
 });
 test('actual catalog download routes deliver both exact attachments for instructor/990/1690 and deny both for790',async()=>{
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),bonus=course.bonus;
