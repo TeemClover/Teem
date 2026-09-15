@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>myClover × Airova — หนึ่งซอส หลายวิดีโอ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700;1,800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}html,body{margin:0;background:#050816;color:#eee;font-family:Kanit,sans-serif}main{max-width:1200px;margin:0 auto}canvas{display:block;width:100%;height:auto}footer{padding:18px 24px;display:flex;gap:24px;align-items:center;font-size:14px}a{color:#c8ff12}p{margin:0;color:#a3a7b7}</style></head>
+<body><main><canvas id="artwork" width="2400" height="1260" role="img" aria-label="myClover × Airova สร้างวิดีโอพูดไทยด้วย AI ฟรี 30 เครดิต หนึ่งซอสแตกเป็นหลายวิดีโอและออโต้โพสต์หลายแพลตฟอร์ม"></canvas><footer><a id="download-preview" download="airova-share-source-v8.png">ดาวน์โหลดภาพ PNG</a><p id="render-status" role="status">กำลังจัดภาพ…</p></footer></main>
+<script type="module">
+const canvas=document.querySelector('#artwork');const ctx=canvas.getContext('2d');ctx.scale(2,2);
+const load=src=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src});
+const [bg,portrait,clover,airova,gpt,claude,fb,ig,tiktok]=await Promise.all(['share-v8-scene.png','share-v8-user-original.png','../../assets/myclover-icon.png','../assets/aistudio-white.svg','chatgpt-icon-official.png','claude-symbol-official.svg','platform-facebook-official.png','platform-instagram-official.png','platform-tiktok-official.png'].map(load));
+await Promise.all(['800 80px Kanit','700 30px Kanit','600 21px Kanit','500 22px Kanit','italic 800 100px Kanit'].map(f=>document.fonts.load(f,'สร้างวิดีโอ พูดไทยด้วย AI ฟรี 30 เครดิต สมัครแล้วเริ่มสร้างได้เลย ออโต้โพสต์')));
+await Promise.all(['500 34px "Space Grotesk"','700 34px "Space Grotesk"','600 17px "Space Grotesk"'].map(f=>document.fonts.load(f)));
+const text=(s,x,y,font,color='#fff',maxWidth)=>{ctx.font=font;ctx.fillStyle=color;maxWidth?ctx.fillText(s,x,y,maxWidth):ctx.fillText(s,x,y)};
+function contain(i,x,y,w,h){const k=Math.min(w/i.naturalWidth,h/i.naturalHeight);const iw=i.naturalWidth*k,ih=i.naturalHeight*k;ctx.drawImage(i,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
+function round(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}}
+ctx.drawImage(bg,0,0,1200,630);
+// The original person is a native image layer. Only the outside silhouette is clipped;
+// the face, glasses, clothing and original color remain unchanged.
+const outline=new Path2D('M400 279 L404 268 L412 258 L416 251 L426 245 L432 238 L442 231 L454 226 L463 220 L470 223 L478 226 L494 226 L507 231 L518 237 L525 245 L534 251 L541 260 L545 273 L548 285 L546 307 L542 326 C545 340 539 353 536 365 C534 388 527 408 522 418 L530 427 C550 430 577 441 595 449 C615 463 627 486 633 509 L642 545 C651 565 658 581 660 596 C659 629 653 665 646 687 C640 704 628 713 616 721 L611 735 C612 756 620 778 627 800 L628 815 C626 834 615 847 602 854 C611 888 608 933 603 970 L349 970 L360 913 L366 878 L358 856 C337 846 321 831 319 811 L324 789 L333 761 L338 738 L342 714 L351 690 C337 676 325 655 320 636 C313 618 312 604 308 590 C303 574 302 559 303 546 L306 516 L306 492 C309 476 326 463 345 455 C364 447 386 438 405 432 L425 420 L432 408 C419 401 410 389 407 377 L402 363 C395 354 395 338 399 326 L399 308 Z');
+ctx.save();ctx.translate(413.5,-70.5);ctx.scale(.85,.85);ctx.clip(outline);ctx.drawImage(portrait,0,0);ctx.restore();
+// Canonical brand assets are never regenerated or recolored.
+contain(clover,40,30,51,51);text('my',100,69,'500 34px "Space Grotesk"');ctx.font='500 34px "Space Grotesk"';const mw=ctx.measureText('my').width;text('Clover',100+mw,69,'700 34px "Space Grotesk"');text('×',274,66,'500 26px "Space Grotesk"','#c6cede');contain(airova,310,26,193,58);
+ctx.letterSpacing='5px';text('OFFICIAL PARTNER',140,105,'600 11px "Space Grotesk"','#e3e6f0');ctx.letterSpacing='0px';
+// Native, large type: retain the original reference's visual hierarchy.
+ctx.shadowColor='#02061b';ctx.shadowBlur=10;ctx.shadowOffsetY=3;
+text('สร้างวิดีโอ',38,216,'800 80px Kanit','#fff',500);
+text('พูดไทยด้วย AI',38,295,'800 72px Kanit','#fff',510);
+ctx.shadowOffsetY=0;ctx.shadowColor='#b8ff1544';ctx.shadowBlur=20;
+const lime=ctx.createLinearGradient(0,323,0,413);lime.addColorStop(0,'#e5ff65');lime.addColorStop(.5,'#c8ff0b');lime.addColorStop(1,'#9dea00');
+text('ฟรี',38,413,'italic 800 73px Kanit',lime);
+text('30',143,413,'italic 800 109px Kanit',lime);
+text('เครดิต',282,413,'italic 800 64px Kanit',lime,228);
+ctx.shadowBlur=0;text('Omni · Seedance 2.5',44,462,'500 27px "Space Grotesk"','#f2f3fb');
+ctx.shadowColor='#b5ff2988';ctx.shadowBlur=25;round(40,503,435,64,32,'#c7ff09','#f1ffb0');ctx.shadowBlur=0;
+text('สมัครแล้วเริ่มสร้างได้เลย',65,546,'700 29px Kanit','#101c08',355);text('↗',422,548,'600 38px "Space Grotesk"','#101c08');
+// Short stage labels anchor the visual source-to-video-to-publishing story.
+round(497,520,118,30,15,'#081832ed','#72dbfb66');text('1 ต้นฉบับ',520,541,'500 17px Kanit','#dcf7ff');
+text('หลายวิดีโอ',1035,34,'600 18px Kanit','#effbff');
+text('ออโต้โพสต์',1014,554,'600 21px Kanit','#d8ff4a');
+// Original social marks sit on their video outputs, making each destination visible.
+for(const [icon,x,y] of [[ig,654,181],[fb,1136,182],[tiktok,1148,338],[ig,1136,494]]){
+  round(x-4,y-4,37,37,10,'#080b20ee','#dbe8ff77');contain(icon,x,y,29,29);
+}
+// Bottom-right original client marks.
+round(984,568,195,49,8,'#070d20f2','#cdc6ff55');ctx.beginPath();ctx.arc(997,583,2.3,0,Math.PI*2);ctx.fillStyle='#c9ff23';ctx.fill();text('MCP Ready',1007,588,'600 15px "Space Grotesk"');
+contain(gpt,997,596,15,15);text('ChatGPT',1017,607,'500 10px "Space Grotesk"','#eff0fa');contain(claude,1080,596,15,15);text('Claude',1101,607,'500 10px "Space Grotesk"','#eff0fa');
+document.querySelector('#download-preview').href=canvas.toDataURL('image/png');document.querySelector('#render-status').textContent='ภาพพร้อมแล้ว · PNG 2400 × 1260';document.documentElement.dataset.rendered='true';
+</script></body></html>
