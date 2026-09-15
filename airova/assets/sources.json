@@ -240,6 +240,21 @@
       2400,
       1260
     ],
+    "encoding": "Direct native canvas export as lossless PNG.",
+    "status": "Superseded by V12: generated CTA vowel resembled long สระอี; replaced with literal Thai font rendering."
+  },
+  "airova-share-50-privilege-v12.png": {
+    "type": "Approved campaign with a native Thai CTA spelling correction. 50-credit myClover partner privilege; no sole-provider claim.",
+    "sourceFile": "airova-share-50-privilege-v11.png",
+    "compositionFile": "../_source/share-preview-v12.html",
+    "provenanceFile": "../_source/share-v12-typography.md",
+    "text": "สิทธิพิเศษจาก myClover",
+    "typography": "Kanit 700. Literal Thai Unicode; พิเศษ uses short vowel U+0E34. Thai font subset explicitly loaded before drawing/export. No generative text used for this correction.",
+    "treatment": "Only the CTA pill interior and lettering are rendered natively. All other areas preserve V11, including the 50-credit offer, original portrait, canonical logos, lighting and MCP badge.",
+    "dimensions": [
+      2400,
+      1260
+    ],
     "encoding": "Direct native canvas export as lossless PNG."
   }
 }

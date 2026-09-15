@@ -1,8 +1,9 @@
 # Airova social share preview — 2026-09-15
 
-- Current output: `assets/airova-share-50-privilege-v11.png`, 2400 × 1260 lossless PNG.
+- Current output: `assets/airova-share-50-privilege-v12.png`, 2400 × 1260 lossless PNG.
+- V12 uses native Kanit typography for the exact label “สิทธิพิเศษจาก myClover”. The word พิเศษ uses short สระอิ (U+0E34). This fixes the ambiguous generated long-vowel form in V11. No image generation is used for the text correction. Renderer: `_source/share-preview-v12.html`; provenance: `_source/share-v12-typography.md`.
 - **Latest clarification, 2026-09-16:** “สิทธิพิเศษจาก myClover”. The offer remains 50 free introductory credits for signup through the myClover referral. Other partners may also provide benefits; do not claim sole-provider exclusivity. Normal signup without the referral does not receive this partner benefit.
-- V11 changes only the CTA wording to “สิทธิพิเศษจาก myClover”, preserving the 50-credit number, portrait, logos, lighting and MCP module. Built-in edit prompt: `_source/share-v11-prompt.md`; native composition: `_source/share-preview-v11.html`.
+- Earlier V11 changes only the CTA wording to “สิทธิพิเศษจาก myClover”, preserving the 50-credit number, portrait, logos, lighting and MCP module. Built-in edit prompt: `_source/share-v11-prompt.md`; native composition: `_source/share-preview-v11.html`.
 - Earlier V10 offer wording, superseded by the clarification above: **50 free credits exclusively for users who sign up through myClover**, using `https://studio.airova.ai/auth/join?via=MYCLOVER`. This is the total introductory offer, not an additional bonus. Public/direct signup does not receive this offer.
 - Earlier V10 updates only the lime number “30” to “50” and the CTA to “สมัครผ่าน myClover เท่านั้น”. All other pixels remain from the approved V9, including portrait, original partner/client logos, MCP badge and neon lighting. Built-in imagegen edit prompt: `_source/share-v10-prompt.md`; native patch composition: `_source/share-preview-v10.html`.
 - The version notes and original prompts below preserve historical creative provenance; their old 30-credit wording is superseded.
