@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>myClover × Airova — Correct Thai typography</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}html,body{margin:0;background:#040815;color:#eee;font-family:system-ui,sans-serif}main{max-width:1200px;margin:auto}canvas{display:block;width:100%;height:auto}footer{padding:18px 24px;display:flex;gap:24px;align-items:center;font-size:14px}a{color:#d1ff28}p{margin:0;color:#9ca9bd}</style></head>
+<body><main><canvas id="artwork" width="2400" height="1260" role="img" aria-label="myClover × Airova ฟรี 50 เครดิต สิทธิพิเศษจาก myClover พร้อม MCP Ready"></canvas><footer><a id="download-preview" download="airova-share-50-privilege-v12.png">ดาวน์โหลดภาพ PNG</a><p id="render-status" role="status">กำลังจัดภาพ…</p></footer></main>
+<script type="module">
+const canvas=document.querySelector('#artwork'),ctx=canvas.getContext('2d');ctx.scale(2,2);
+const original=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src='../assets/airova-share-50-privilege-v11.png'});
+// Correct literal Unicode: พิเศษ contains short สระอิ U+0E34, never สระอี U+0E35.
+const label='สิทธิพิเศษจาก myClover';
+await document.fonts.load('700 29px Kanit',label);
+ctx.drawImage(original,0,0,1200,630);
+// Rebuild only the pill interior. Preserve its original exterior glow and all artwork.
+const fill=ctx.createLinearGradient(0,507,0,570);fill.addColorStop(0,'#d5ff2b');fill.addColorStop(.5,'#cbff10');fill.addColorStop(1,'#c1ff00');
+ctx.beginPath();ctx.roundRect(41,507,441,63,31.5);ctx.fillStyle=fill;ctx.fill();
+ctx.fillStyle='#101800';ctx.font='700 29px Kanit';ctx.textAlign='left';ctx.fillText(label,77,548,337);
+ctx.beginPath();ctx.moveTo(429,550);ctx.lineTo(450,528);ctx.moveTo(433,528);ctx.lineTo(450,528);ctx.lineTo(450,544);ctx.strokeStyle='#101800';ctx.lineWidth=4;ctx.lineJoin='miter';ctx.lineCap='butt';ctx.stroke();
+document.querySelector('#download-preview').href=canvas.toDataURL('image/png');document.querySelector('#render-status').textContent='ภาพพร้อมแล้ว · PNG 2400 × 1260';document.documentElement.dataset.rendered='true';
+</script></body></html>
