@@ -313,6 +313,17 @@ function playerFixture(play) {
   const player=createLessonPlayer({video,overlay,message,button,schedule:fn=>{timers.set(++clock,fn);return clock;},cancel:id=>timers.delete(id)});
   return {video,overlay,message,button,player,timers,settle:()=>new Promise(setImmediate)};
 }
+test('inspiration opening prepares the video but waits for the learner to start it',async()=>{
+  let plays=0;const p=playerFixture(function(){plays++;this.paused=false;return Promise.resolve();});
+  p.player.start(35,{autoplay:false});await p.settle();
+  assert.equal(plays,0);assert.equal(p.overlay.dataset.state,'blocked');assert.equal(p.button.hidden,false);
+  await p.video.fire('loadedmetadata');assert.equal(p.video.currentTime,35);
+  await p.button.fire('click');await p.settle();assert.equal(plays,1);assert.equal(p.overlay.hidden,true);
+});
+test('old final-page bookmarks lead to the combined finale only for this course',()=>{
+  assert.equal(parseRoute('?course=ai-sauce&lesson=BOSS').lessonId,'DUNGEON');
+  assert.equal(parseRoute('?course=another&lesson=BOSS').lessonId,'BOSS');
+});
 test('player shows loading until delayed playback starts, with a useful slow-connection retry',async()=>{
   const pending=defer(),p=playerFixture(function(){return pending.promise;});p.player.start();
   assert.equal(p.video.preload,'auto');assert.equal(p.overlay.dataset.state,'loading');assert.equal(p.overlay.hidden,false);

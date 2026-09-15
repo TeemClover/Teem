@@ -49,9 +49,11 @@ export function createLessonPlayer({ video, overlay, message, button, schedule =
     generation += 1; restored = false; video.load(); void play();
   });
   return {
-    start(position = 0) {
+    start(position = 0, { autoplay = true } = {}) {
       generation += 1; active = true; resume = position; restored = false;
-      video.preload = 'auto'; video.load(); void play();
+      video.preload = 'auto'; video.load();
+      if (autoplay) void play();
+      else show('blocked', 'กดเล่นเมื่อพร้อมเริ่มบทเรียน', 'เล่นวิดีโอ');
     },
     reset() { active = false; generation += 1; restored = false; show('idle'); },
   };

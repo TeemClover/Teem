@@ -190,6 +190,18 @@ test('paid lesson reading is looked up only after access succeeds and never appe
   h.instructors[0].revoked_at=new Date(NOW);h.grants.push(grant());
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}})).body.lesson.readingAvailable,true);
 });
+test('private prompt libraries require lesson access and never leak into course metadata',async()=>{
+  const h=harness();h.seed();
+  const tools=[{kind:'prompt-cards',title:'Teacher tools',prompts:[{id:'bottle',title:'Bottle',body:'PRIVATE_TOOL_TEXT'}]}];
+  h.readings.set('ai-sauce/FOUNDATION','# Work\n\n```learn-tools\n'+JSON.stringify(tools)+'\n```');
+  const query={courseId:'ai-sauce',lessonId:'FOUNDATION'};
+  const denied=await h.call('GET','lesson',undefined,{query});
+  assert.equal(denied.statusCode,403);assert.doesNotMatch(JSON.stringify(denied.body),/PRIVATE_TOOL_TEXT/);
+  h.instructors.push(instructor());
+  const allowed=await h.call('GET','lesson',undefined,{query});
+  assert.deepEqual(allowed.body.lesson.tools,tools);assert.equal(allowed.body.lesson.reading,'# Work');
+  for(const action of ['courses','course'])assert.doesNotMatch(JSON.stringify((await h.call('GET',action,undefined,{query})).body),/PRIVATE_TOOL_TEXT|Teacher tools/);
+});
 test('missing private reading has an explicit empty state for authorized full-course learners',async()=>{
   const h=harness();h.seed();h.grants.push(grant());
   let result=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'EP01'}});
@@ -215,16 +227,16 @@ test('BOSS is an authorized reading/activity stage completed explicitly without 
   h.grants[0].revoked_at=new Date(NOW);h.instructors.push(instructor());
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}})).body.access.role,'instructor');
 });
-test('actual catalog teaches all23 parts through chapter theory, practice, cases and a separate Dungeon ending',()=>{
+test('actual catalog teaches22 continuous parts with one integrated final lesson',()=>{
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
   const chapters=[['FOUNDATION','EP01'],['EP02','ADV01','EP03'],['EP04','ADV02','EP05'],['EP06','EP07','ADV03'],
-    ['EP08','ADV04','EP09'],['ADV05','EP10','EP11'],['CH06','EP12'],['EP13','EP14'],['DUNGEON','BOSS']];
+    ['EP08','ADV04','EP09'],['ADV05','EP10','EP11'],['CH06','EP12'],['EP13','EP14'],['DUNGEON']];
   const sequence=chapters.flat();
-  assert.equal(course.lessons.length,23);assert.equal(course.lessons.filter(l=>l.mediaId).length,22);
+  assert.equal(course.lessons.length,22);assert.equal(course.lessons.filter(l=>l.mediaId).length,22);
   assert.deepEqual(course.mainLessonIds,['FOUNDATION','ADV01','ADV02','ADV03','ADV04','ADV05','CH06']);
   assert.equal(course.sections.length,9);assert.deepEqual(course.sections.map(section=>section.lessonIds),chapters);
   assert.deepEqual(course.sections.map(section=>section.label),['บทนำ','บท 1','บท 2','บท 3','บท 4','บท 5','บท 6','ฝึกกับงานจริง','บทส่งท้าย']);
-  assert.deepEqual(course.lessons.map(lesson=>lesson.id),sequence);assert.equal(new Set(sequence).size,23);
+  assert.deepEqual(course.lessons.map(lesson=>lesson.id),sequence);assert.equal(new Set(sequence).size,22);
   for(const [index,id] of sequence.entries()) {
     const lesson=course.lessons.find(item=>item.id===id),section=course.sections.find(group=>group.lessonIds.includes(id));
     assert.equal(lesson.nextLessonId,sequence[index+1]||null,id);assert.equal(lesson.sectionId,section.id,id);
@@ -232,21 +244,23 @@ test('actual catalog teaches all23 parts through chapter theory, practice, cases
     assert.equal(lesson.returnLessonId,undefined,id);assert.equal(lesson.supportingLessonIds,undefined,id);
   }
   for(let i=1;i<=14;i++)assert.ok(course.lessons.find(l=>l.id==='EP'+String(i).padStart(2,'0'))?.mediaId);
-  assert.equal(course.lessons.find(l=>l.id==='BOSS').mediaId,undefined);
-  assert.equal(course.lessons.find(l=>l.id==='BOSS').nextLessonId,null);
+  assert.equal(course.lessons.some(l=>l.id==='BOSS'),false);
+  assert.equal(course.lessons.find(l=>l.id==='DUNGEON').nextLessonId,null);
+  assert.equal(course.lessons.find(l=>l.id==='DUNGEON').finale,true);
+  assert.equal(course.lessons.some(l=>/Dungeon|BOSS/i.test(l.title)),false);
   assert.equal(course.lessons.every(l=>l.preview===false),true);assert.equal(LEARN_ASSETS.every(a=>a.previewAllowed===false),true);
   assert.equal(course.previewLessonId,null);assert.equal(course.trialUrl,'/classroom/');
 });
 test('split chapter6 and Dungeon append assets without changing the existing186 registry rows or their order',()=>{
-  assert.equal(LEARN_ASSETS.length,190);
+  assert.ok(LEARN_ASSETS.length>=190);
   // Frozen public registry metadata from the pre-split release. Indexes are part
   // of the private storage mapping, so both row values and order must stay stable.
   assert.equal(createHash('sha256').update(JSON.stringify(LEARN_ASSETS.slice(0,186))).digest('hex'),
     '555cbfbc31e27d20fd5315dd646cf5c836c8d6f91c3b73652067b445efce0a58');
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),web=course.lessons.find(l=>l.id==='CH06'),dungeon=course.lessons.find(l=>l.id==='DUNGEON');
-  assert.deepEqual(LEARN_ASSETS.slice(186).map(asset=>[asset.id,asset.kind,asset.lessonIds]),[
+  assert.deepEqual(LEARN_ASSETS.slice(186,190).map(asset=>[asset.id,asset.kind,asset.lessonIds]),[
     [web.mediaId,'video',['CH06']],[web.captionId,'captions',['CH06']],
-    [dungeon.mediaId,'video',['DUNGEON']],[dungeon.captionId,'captions',['DUNGEON']],
+    ['m_2da75aad343557619aa612c66d0de710','video',['DUNGEON']],[dungeon.captionId,'captions',['DUNGEON']],
   ]);
   assert.notEqual(web.mediaId,dungeon.mediaId);assert.notEqual(web.captionId,dungeon.captionId);
   assert.ok(Math.abs(web.durationSeconds-227.767)<0.1);assert.ok(Math.abs(dungeon.durationSeconds-407.967)<0.1);
@@ -410,4 +424,11 @@ test('home entry exposes only own enrollment boolean even before email step-up',
   assert.equal(r.statusCode,200);assert.deepEqual(r.body,{ok:true,hasEnrollment:true});
   assert.equal((await h.call('GET','courses',undefined,{testUser:{...user,emailVerified:false}})).statusCode,403);
   assert.equal((await h.call('GET','entry',undefined,{testUser:null})).statusCode,401);
+});
+
+test('all22 learner parts expose their current downloadable bundle with scoped private assets',()=>{
+ const c=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+ for(const l of c.lessons){
+ assert.equal(l.resourceIds.length,1,l.id);const asset=LEARN_ASSETS.find(a=>a.id===l.resourceIds[0]);
+ assert.equal(asset.filename,'AI_SAUCE_'+l.id+'_LEARNER_FILES_V4.zip');assert.equal(asset.kind,'resource');assert.equal(asset.contentType,'application/zip');assert.ok(asset.bytes>0);assert.ok(asset.lessonIds.includes(l.id));assert.equal(asset.previewAllowed,false);}
 });

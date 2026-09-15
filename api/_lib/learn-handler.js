@@ -4,6 +4,7 @@ import { createLearnStore } from './learn-store.js';
 import { authorizeLearnLesson, catalogLesson, enrollLearnCourse, loadCourseAccess, verifiedLearnUser } from './learn-authorization.js';
 import { courseAccess, LearnError, learnId, progressSummary, validateProgress } from './learn-domain.js';
 import { loadLearnSnapshot } from './learn-snapshot.js';
+import { lessonContent } from './learn-content.js';
 
 const MAX_BODY_BYTES = 8192;
 function reply(res,status,body) { res.statusCode=status; res.setHeader('Content-Type','application/json; charset=utf-8'); res.end(JSON.stringify(body)); }
@@ -42,7 +43,7 @@ async function readBody(req) {
 function publicUser(user) { return {id:user.id,displayName:user.displayName,email:user.email || '',emailVerified:user.emailVerified===true,memberNo:user.memberNo || ''}; }
 function lessonMetadata(lesson,access) {
   const result={};
-  for (const key of ['id','title','type','sectionId','section','partLabel','partTitle','order','durationSeconds','summary','outcome','nextLessonId','returnLessonId','parentLessonId','supportingLessonIds','completionMode','activityUrl']) {
+  for (const key of ['id','title','type','sectionId','section','partLabel','partTitle','order','durationSeconds','summary','outcome','nextLessonId','returnLessonId','parentLessonId','supportingLessonIds','completionMode','activityUrl','finale']) {
     if (lesson[key]!==undefined) result[key]=lesson[key];
   }
   return {...result,preview:false,locked:!access.active};
@@ -59,7 +60,12 @@ function lessonView(course,lesson,access,assets) {
   view.media=video ? {...assetView(video,course.id,lesson.id),captions:caption ? [{...assetView(caption,course.id,lesson.id),language:'th',label:'ไทย'}] : [],captionsEmbedded:lesson.captionsEmbedded===true} : null;
   view.resources=access.active ? [...(lesson.resourceIds || []),...(lesson.additionalResourceIds || [])]
     .map(id=>assets.find(a=>a.id===id && a.kind==='resource' && a.courseId===course.id && a.lessonIds?.includes(lesson.id)))
-    .filter(Boolean).map(a=>({...assetView(a,course.id,lesson.id),optional:!(lesson.resourceIds || []).includes(a.id)})) : [];
+    .filter(a=>a && !(lesson.showcase || []).some(s=>s.assetId===a.id)).map(a=>({...assetView(a,course.id,lesson.id),optional:!(lesson.resourceIds || []).includes(a.id)})) : [];
+  view.showcase=access.active ? (lesson.showcase || []).map(card=>{
+    const asset=assets.find(a=>a.id===card.assetId && a.courseId===course.id && a.lessonIds?.includes(lesson.id)
+      && a.kind==='resource' && /^image\//.test(a.contentType) && [...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(a.id));
+    return asset ? {...assetView(asset,course.id,lesson.id),title:card.title,description:card.description} : null;
+  }).filter(Boolean) : [];
   view.resourcesLocked=!access.active && Boolean(lesson.resourceIds?.length || lesson.additionalResourceIds?.length);
   return view;
 }
@@ -121,7 +127,7 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
             return respond(200,{ok:true,courseId,progress:progressSummary(await writes.progress(result.user.id,courseId),course)});
           }
           const reading=result.reading;
-          return respond(200,{ok:true,courseId,lesson:{...lessonView(course,lesson,result.access,assets),reading,readingAvailable:Boolean(reading.trim())},access:result.access,preview:false});
+          return respond(200,{ok:true,courseId,lesson:{...lessonView(course,lesson,result.access,assets),...lessonContent(reading)},access:result.access,preview:false});
         }
         // Progress reads retain their original identity-first error precedence.
         let courseId,queryError;
@@ -144,7 +150,7 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
         // Reading bodies live privately and use the same authorization as this
         // specific lesson. Course metadata and the public catalog never carry them.
         const reading=await store.reading?.(result.course.id,result.lesson.id) || '';
-        const lesson={...lessonView(result.course,result.lesson,result.access,assets),reading,readingAvailable:Boolean(reading.trim())};
+        const lesson={...lessonView(result.course,result.lesson,result.access,assets),...lessonContent(reading)};
         return respond(200,{ok:true,courseId:result.course.id,lesson,access:result.access,preview:result.preview});
       }
       const user=await verifiedLearnUser(sql,req,{store,lookupUser});await store.ensure();
