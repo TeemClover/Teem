@@ -84,6 +84,11 @@
       "permanent": false
     },
     {
+      "source": "/airova",
+      "destination": "/airova/",
+      "permanent": false
+    },
+    {
       "source": "/guild",
       "destination": "/guild/",
       "permanent": false

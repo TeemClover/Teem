@@ -33,6 +33,16 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'course/review-consent/consent.css', 'course/review-consent/consent.js',
   'shelf/shelf.css', 'shelf/shelf.js', 'shelf/admin/admin.css', 'shelf/admin/admin.js',
   'ai-source/offer-engine.js', 'ai-source/sales-page.js',
+  // Airova's partner page publishes these presentation assets and three free
+  // prompt downloads. Keep exact entries so future source files stay excluded.
+  'airova/airova.css', 'airova/airova.js',
+  ...[
+    'aistudio-white.svg', 'aistudio.svg', 'bytedance-seed.svg', 'gemini-omni.svg',
+    'creative-portal.webp', 'course-seedance.webp', 'pir-academy.png',
+    'hero-car.webp', 'hero-character.webp', 'hero-fashion.webp',
+    'tpl-adproduct-02.webp', 'tpl-ugc-01.webp',
+  ].map(name => `airova/assets/${name}`),
+  ...['product', 'character', 'cinematic'].map(name => `airova/templates/${name}.txt`),
   'ako/ako.css', 'ako/ako-convert.css', 'ako/story.css',
   'collection/collection.css', 'collection/collection.js',
   'compendium/compendium.css', 'compendium/compendium.js',
@@ -54,6 +64,8 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'ako/assets/ako-food-choice.mp4', 'ako/assets/ako-soft-change.mp4',
   'ako/assets/ako-morning-stretch.mp4',
   'hf/assets/example-ako.mp4', 'hf/assets/example-teem.mp4',
+  'airova/assets/showcase-car.mp4', 'airova/assets/showcase-character.mp4',
+  'airova/assets/showcase-fashion.mp4', 'airova/assets/showcase-ugc.mp4',
 ]);
 
 const allowedType = /\.(?:avif|gif|ico|jpe?g|png|svg|webp|css|js|woff2?|ttf|otf)$/i;
