@@ -6,6 +6,7 @@ import { database, ensureSchema } from './_lib/core.js';
 import { verifiedLearnUser } from './_lib/learn-authorization.js';
 import { LearnError } from './_lib/learn-domain.js';
 import { mediaRange } from './_lib/learn-media-handler.js';
+import { safeRelativeReturn } from '../assets/auth-return.js';
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -69,7 +70,7 @@ export function createLearnFoundationHandler({
         const destination = file.startsWith('dungeon/') ? '/learn/' : '/ai-source/';
         const label = file.startsWith('dungeon/') ? 'ห้องเรียนของฉัน ↗' : 'ดูคอร์สเต็ม AI ใส่ซอส ↗';
         const html = body.toString('utf8').replaceAll('/learn/classroom/', '/classroom/');
-        const overlay = `<a href="${destination}" style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#163f32;color:white;padding:12px 18px;border-radius:24px;font:600 14px sans-serif">${label}</a>`;
+        const overlay = `<script src="/assets/private-page-lifecycle.js" defer></script><a href="${destination}" style="position:fixed;bottom:16px;right:16px;z-index:9999;background:#163f32;color:white;padding:12px 18px;border-radius:24px;font:600 14px sans-serif">${label}</a>`;
         // HTML lessons can contain complete document examples inside script
         // strings. Append at the final document close, never inside an example.
         const bodyEnd = html.toLowerCase().lastIndexOf('</body>');
@@ -83,11 +84,12 @@ export function createLearnFoundationHandler({
         const target=new URL('/classroom/'+foundationFile(req.url),'https://learn.invalid');
         if(target.pathname.endsWith('/index.html'))target.pathname=target.pathname.slice(0,-'index.html'.length);
         const incoming=new URL(req.url,'https://learn.invalid');
-        for(const key of ['entry','work']) {
+        for(const key of ['entry','work','from']) {
           const value=incoming.searchParams.get(key);
           if(value && /^[a-zA-Z0-9_-]{1,160}$/.test(value))target.searchParams.set(key,value);
         }
-        const next=new URLSearchParams({trial:'classroom',return:target.pathname+target.search});
+        const intended = safeRelativeReturn(incoming.searchParams.get('return'), target.pathname + target.search);
+        const next=new URLSearchParams({trial:'classroom',return:intended});
         res.statusCode = 303; res.setHeader('Location', '/learn/?'+next); return res.end();
       }
       res.statusCode = error instanceof LearnError ? error.status : ['ENOENT', 'ENOTDIR'].includes(error.code) ? 404 : 503;

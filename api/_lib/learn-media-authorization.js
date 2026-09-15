@@ -1,14 +1,9 @@
-import { sha256 } from './core.js';
+import { sha256, cookieValue } from './core.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { LearnError, learnId, iso } from './learn-domain.js';
 
 function sessionToken(req) {
-  // Match the existing account session parser; never accept tokens in URLs.
-  for(const part of String(req.headers?.cookie || '').split(';')) {
-    const index=part.indexOf('=');
-    if(index>0&&part.slice(0,index).trim()==='mc_session')return decodeURIComponent(part.slice(index+1).trim());
-  }
-  return '';
+  return cookieValue(req, 'mc_session');
 }
 
 // Media requests are frequent and may hit a cold function while seeking. Read

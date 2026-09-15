@@ -495,7 +495,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=300, must-revalidate"
         }
       ]
     },
@@ -504,7 +504,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=300, must-revalidate"
         }
       ]
     },
@@ -517,7 +517,7 @@
         },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=300, must-revalidate"
         }
       ]
     },
@@ -597,14 +597,6 @@
       "source": "/course/thedent/:path*",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
-        {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
         }
@@ -613,14 +605,6 @@
     {
       "source": "/course/thedent912/:path*",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
         {
           "key": "X-Robots-Tag",
           "value": "noindex, nofollow"
@@ -635,10 +619,6 @@
           "value": "noindex, nofollow, noarchive"
         },
         {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
         },
@@ -651,25 +631,45 @@
           "value": "DENY"
         }
       ]
+    },
+    {
+      "source": "/shelf/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/shelf/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/shelf/admin/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/shelf/admin/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
     }
   ],
   "rewrites": [
-    {
-      "source": "/course/thedent912",
-      "destination": "/api/course-content"
-    },
-    {
-      "source": "/course/thedent912/:path*",
-      "destination": "/api/course-content?file=:path*"
-    },
-    {
-      "source": "/course/thedent",
-      "destination": "/api/course-content"
-    },
-    {
-      "source": "/course/thedent/:path*",
-      "destination": "/api/course-content?file=:path*"
-    },
     {
       "source": "/Xircle",
       "destination": "/xircle/index.html"

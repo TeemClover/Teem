@@ -1,6 +1,7 @@
 import { next, rewrite } from '@vercel/functions';
 import { verifyCourseSession } from './api/_lib/course-access.js';
 import { isPrivateShelfPath } from './shelf/route-policy.js';
+import { publicAssetPath, PUBLIC_ASSET_CACHE_HEADERS } from './routing/public-assets.js';
 
 export const config = {
   // Inspect every path before Vercel can decode it into a static file route.
@@ -26,6 +27,14 @@ export default async function middleware(request) {
   const normalized = canonicalPath(pathname);
   const privateHeaders = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vercel-CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
   if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
+  // Only reviewed publication paths bypass content authentication. Private
+  // uploads, documents and APIs cannot opt in by using an image extension.
+  const asset = pathname === normalized && publicAssetPath(pathname);
+  if (asset && ['GET', 'HEAD'].includes(request.method)) {
+    if (asset === pathname) return next({ headers: PUBLIC_ASSET_CACHE_HEADERS });
+    const target = new URL(request.url); target.pathname = asset;
+    return rewrite(target, { headers: PUBLIC_ASSET_CACHE_HEADERS });
+  }
   const lessonPath=normalized.toLowerCase();
   if (lessonPath === '/learn/classroom' || lessonPath.startsWith('/learn/classroom/')) {
     if(pathname!==normalized||!(normalized==='/learn/classroom'||normalized.startsWith('/learn/classroom/')))return new Response('Not found',{status:404,headers:privateHeaders});
@@ -43,10 +52,9 @@ export default async function middleware(request) {
     }
     const target=new URL('/api/learn-foundation',request.url);
     target.searchParams.set('file',normalized.slice('/classroom/'.length)||'index.html');
-    for (const key of ['entry','work']) {
-      const value=url.searchParams.get(key);
-      if(value && /^[a-zA-Z0-9_-]{1,160}$/.test(value))target.searchParams.set(key,value);
-    }
+    // Keep the original intent (including from=dungeon) separate from the
+    // server-controlled file key. A supplied query must never select a file.
+    target.searchParams.set('return', normalized + url.search);
     return rewrite(target,{headers:privateHeaders});
   }
   const legacySamplePath = lessonPath.replace(/\/+$/, '');

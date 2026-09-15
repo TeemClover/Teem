@@ -94,7 +94,7 @@ async function dom(fetcher,search='') {
   const history={pushState(_,__,url){location.search=new URL(url,location.origin).search;this.last=url;},replaceState(_,__,url){this.pushState(_,__,url);}};
   const window={fetch:fetcher,location,history,MC_ACCOUNT:{user:null,open(mode){window.accountOpened=mode;}},addEventListener:(type,fn)=>{(events[type]??=[]).push(fn);}};
   Object.assign(globalThis,{window,document:doc,location,history});
-  const fire=async(type)=>{for(const fn of events[type]||[])await fn();};
+  const fire=async(type,event={})=>{for(const fn of events[type]||[])await fn(event);};
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(setImmediate);};
   return{ids,doc,window,location,history,mount,fire,settle,load:async()=>{await import(`../assets/learn.js?test=${++run}`);await settle();}};
 }
@@ -114,6 +114,14 @@ test('authorized lesson reading becomes visible below video and clears on accoun
   let pending;const base=mockedFetch();const d=await dom(async url=>pending?pending.promise:url.includes('action=lesson')?response({...lessonData(),lesson:{...lessonData().lesson,reading:'## ลองทำต่อ\n\nเลือกงานหนึ่งเรื่อง แล้วเก็บข้อมูลต้นทาง',readingAvailable:true}}):base(url),'?course=ai-sauce');await d.load();
   assert.equal(d.ids.get('lesson-reading').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/เลือกงานหนึ่งเรื่อง/);
   pending=defer();await d.fire('mc:account-changed');assert.equal(d.ids.get('lesson-reading').textContent,'');pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();
+});
+test('private reading is removed before history snapshots and restored only after authorization',async()=>{
+  let denied=false;const base=mockedFetch();
+  const d=await dom(async url=>url==='/api/auth/providers'?base(url):denied?response({ok:false,error:'AUTH_REQUIRED'},401):url.includes('action=lesson')?response({...lessonData(),lesson:{...lessonData().lesson,reading:'PRIVATE HISTORY FIXTURE'}}):base(url),'?course=ai-sauce');
+  await d.load();assert.match(d.ids.get('lesson-reading').textContent,/PRIVATE HISTORY FIXTURE/);
+  await d.fire('pagehide');assert.equal(d.ids.get('lesson-reading').textContent,'');assert.equal(d.ids.get('lesson-video').src,'');assert.equal(d.ids.get('account-label').textContent,'เข้าสู่ระบบ');
+  denied=true;await d.fire('pageshow',{persisted:true});await d.settle();
+  assert.equal(d.ids.get('lesson-reading').textContent,'');assert.equal(d.ids.get('classroom').hidden,true);assert.equal(d.ids.get('state-panel').hidden,false);
 });
 test('instructor is labelled distinctly and can switch main lessons without a payment prompt',async()=>{
   const base=mockedFetch();const d=await dom(async url=>url.includes('action=course&')?response({...courseData,access:{status:'active',active:true,role:'instructor'}}):base(url),'?course=ai-sauce');await d.load();

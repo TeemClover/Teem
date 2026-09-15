@@ -1,7 +1,10 @@
+import { safeRelativeReturn } from '../../assets/auth-return.js';
+
 export function safeReturn(value, origin) {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.includes('\\')) return null;
+  const target = safeRelativeReturn(value, null);
+  if (!target) return null;
   try {
-    const url = new URL(value, origin);
+    const url = new URL(target, origin);
     const foundation = (url.pathname.startsWith('/classroom/') || url.pathname.startsWith('/learn/classroom/')) && !/%|\/\./.test(url.pathname);
     return url.origin === origin && (['/ai-source/', '/learn/'].includes(url.pathname) || foundation) && !url.searchParams.has('enroll') ? url.pathname + url.search + url.hash : null;
   } catch { return null; }
@@ -14,8 +17,9 @@ export async function authRequest(fetcher, action, body) {
 }
 export function googleStartUrl(returnTo, origin) {
   let target = '/learn/';
-  if (typeof returnTo === 'string' && returnTo.startsWith('/') && !returnTo.startsWith('//') && !returnTo.includes('\\')) {
-    try { const url = new URL(returnTo, origin); if (url.origin === origin && safeReturn(url.pathname, origin)) target = url.pathname + url.search + url.hash; } catch { /* keep the local classroom fallback */ }
+  const relative = safeRelativeReturn(returnTo, null);
+  if (relative) {
+    try { const url = new URL(relative, origin); if (url.origin === origin && safeReturn(url.pathname, origin)) target = url.pathname + url.search + url.hash; } catch { /* keep the local classroom fallback */ }
   }
   return '/api/auth/oauth/google/start?return=' + encodeURIComponent(target);
 }

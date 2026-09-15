@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import { randomUUID, webcrypto } from 'node:crypto';
+import { safeRelativeReturn } from '../../assets/auth-return.js';
 
 const SESSION_COOKIE = 'mc_session';
 const SESSION_DAYS = 30;
@@ -188,9 +189,16 @@ export async function ensureSchema(sql) {
 export function sendJson(res, body, status = 200, headers = {}) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store');
+  privateResponseHeaders(res);
   for (const [name, value] of Object.entries(headers)) res.setHeader(name, value);
   res.end(JSON.stringify(body));
+}
+
+export function privateResponseHeaders(res) {
+  for (const name of ['Cache-Control', 'CDN-Cache-Control', 'Vercel-CDN-Cache-Control']) {
+    res.setHeader(name, 'private, no-store, max-age=0');
+  }
+  res.setHeader('Vary', 'Cookie, Origin');
 }
 
 export function clean(value, max = 200) {
@@ -235,12 +243,17 @@ export async function passwordMatches(password, row) {
   return diff === 0;
 }
 
-function cookieValue(req, name) {
-  for (const part of String(req.headers.cookie || '').split(';')) {
+export function cookieValue(req, name) {
+  let value = '', found = false;
+  for (const part of String(req.headers?.cookie || '').split(';')) {
     const index = part.indexOf('=');
-    if (index > 0 && part.slice(0, index).trim() === name) return decodeURIComponent(part.slice(index + 1).trim());
+    if (index > 0 && part.slice(0, index).trim() === name) {
+      if (found) return ''; // Do not choose between conflicting cookie scopes.
+      found = true;
+      try { value = decodeURIComponent(part.slice(index + 1).trim()); } catch { return ''; }
+    }
   }
-  return '';
+  return value;
 }
 
 export function sessionCookie(token) {
@@ -302,7 +315,8 @@ export async function currentUser(req, sql) {
   const rows = await sql.query(`SELECT a.id,a.email,a.display_name,a.member_no,s.email_verified_at,s.expires_at
     FROM mc_sessions s JOIN mc_accounts a ON a.id=s.user_id WHERE s.token_hash=$1`, [await sha256(token)]);
   const row = rows[0]; if (!row) return null;
-  if (new Date(row.expires_at).getTime() <= Date.now()) {
+  const expiresAt = new Date(row.expires_at).getTime();
+  if (!Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
     await sql.query('DELETE FROM mc_sessions WHERE token_hash=$1', [await sha256(token)]); return null;
   }
   return publicUser(row);
@@ -319,7 +333,7 @@ export function sameOrigin(req) {
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   return origin === `${proto}://${host}`;
 }
-export function safeReturn(value) { const path = clean(value, 300); return path.startsWith('/') && !path.startsWith('//') ? path : '/card/'; }
+export const safeReturn = safeRelativeReturn;
 export function providerConfig(provider) {
   if (provider === 'google' && process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) return { id: process.env.GOOGLE_CLIENT_ID, secret: process.env.GOOGLE_CLIENT_SECRET };
   if (provider === 'line' && process.env.LINE_CHANNEL_ID && process.env.LINE_CHANNEL_SECRET) return { id: process.env.LINE_CHANNEL_ID, secret: process.env.LINE_CHANNEL_SECRET };

@@ -1,6 +1,7 @@
 import {
   createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual,
 } from 'node:crypto';
+import { safeRelativeReturn } from '../../assets/auth-return.js';
 
 const DISCORD_API = 'https://discord.com/api/v10';
 const DISCORD_AUTHORIZE = 'https://discord.com/oauth2/authorize';
@@ -30,8 +31,7 @@ function requestUrl(req) {
 }
 
 function safeReturn(value) {
-  const path = typeof value === 'string' ? value.trim().slice(0, 300) : '';
-  return path.startsWith('/') && !path.startsWith('//') ? path : '/card/';
+  return safeRelativeReturn(value);
 }
 
 function cookieValue(req, name) {

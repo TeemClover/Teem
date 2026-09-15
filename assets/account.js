@@ -4,6 +4,7 @@ const API = '/api/auth';
 const PROMPT_KEY = 'mc_account_prompt_first_hand_14_reward_v2';
 const LAST_SYNC_KEY = 'mc_account_last_sync';
 const OWNER_KEY = 'mc_account_progress_owner';
+const SESSION_EVENT_KEY = 'mc_account_session_event';
 const EXCLUDED = [
   /^c7:match_/, /^c7roomtoken:/, /^mc_account_/, /^mc_collection_seen$/,
   /^c7:current_match$/, /^c7:install_id$/, /^c7tab_pid$/, /^mc_(email|name|nick|line|registered)$/,
@@ -17,6 +18,8 @@ let providers = { email: true, google: false, line: false };
 let syncTimer = 0;
 let dialog;
 let previousFocus = null;
+let sessionRefresh = null;
+let identityRevision = 0;
 
 function addStyles() {
   if (document.querySelector('link[data-mc-account-css]')) return;
@@ -31,6 +34,29 @@ function storageSet(key, value) { try { localStorage.setItem(key, value); } catc
 function publishUser() {
   if (user && user.memberNo) storageSet('mc_member', user.memberNo);
   window.dispatchEvent(new CustomEvent('mc:account-changed', { detail: { user } }));
+}
+
+function notifyOtherTabs() {
+  // This is only a wake-up signal. Every receiving tab checks the HttpOnly
+  // session with the server; storage never proves identity or course access.
+  storageSet(SESSION_EVENT_KEY, `${Date.now()}:${Math.random()}`);
+}
+
+export async function refreshSession() {
+  if (sessionRefresh) return sessionRefresh;
+  const revision = identityRevision;
+  sessionRefresh = (async () => {
+    try {
+      const session = await api(`${API}/session`);
+      if (revision !== identityRevision) return;
+      const next = session.user || null;
+      if (JSON.stringify(next) !== JSON.stringify(user)) {
+        user = next; publishUser(); paintChip();
+        if (dialog && !dialog.hidden) open(user ? 'signup' : 'login');
+      }
+    } catch { /* A network failure is not proof that the session expired. */ }
+  })().finally(() => { sessionRefresh = null; });
+  return sessionRefresh;
 }
 
 function allowedKey(key) {
@@ -130,7 +156,7 @@ export function mergeIntoDevice(cloud) {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, { credentials: 'same-origin', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
+  const response = await fetch(path, { credentials: 'same-origin', cache: 'no-store', headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }, ...options });
   const body = await response.json().catch(() => ({}));
   if (!response.ok || body.ok === false) {
     const error = new Error(body.message || body.error || 'เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้งครับ');
@@ -283,14 +309,24 @@ async function submitAuth(form) {
     const result = await api(`${API}/${form.dataset.accountForm}`, { method: 'POST', body: JSON.stringify({
       name: data.name || '', email: data.email || '', password: data.password || '', consent: data.consent === 'on',
     }) });
-    user = result.user; storageSet(PROMPT_KEY, '1'); publishUser(); await syncProgress({ quiet: true }); paintChip(); open();
+    identityRevision += 1; user = result.user; storageSet(PROMPT_KEY, '1'); publishUser(); notifyOtherTabs(); await syncProgress({ quiet: true }); paintChip(); open();
     toast('เรียบร้อย — Progress ในเครื่องถูกผูกกับบัญชีแล้ว ✓');
   } catch (error) { message.textContent = error.message; button.disabled = false; }
 }
 
-async function logout() {
-  try { await api(`${API}/logout`, { method: 'POST', body: '{}' }); } catch { /* clear UI anyway */ }
-  user = null; publishUser(); close(); paintChip(); toast('ออกจากระบบแล้ว — Progress ในเครื่องนี้ยังอยู่ครบ');
+export async function logout() {
+  const button = dialog?.querySelector('[data-account-logout]');
+  if (button) button.disabled = true;
+  try {
+    await api(`${API}/logout`, { method: 'POST', body: '{}' });
+    clearTimeout(syncTimer);
+    identityRevision += 1; user = null; publishUser(); notifyOtherTabs(); close(); paintChip();
+    toast('ออกจากระบบแล้ว — Progress ในเครื่องนี้ยังอยู่ครบ');
+    return true;
+  } catch {
+    toast('ยังออกจากระบบไม่สำเร็จ กรุณาเชื่อมต่อแล้วลองอีกครั้ง');
+    return false;
+  } finally { if (button) button.disabled = false; }
 }
 
 function bindEvents() {
@@ -305,10 +341,15 @@ function bindEvents() {
     const form = event.target.closest('[data-account-form]');
     if (form) { event.preventDefault(); submitAuth(form); }
   });
-  window.addEventListener('focus', scheduleSync);
-  window.addEventListener('online', scheduleSync);
+  const resumeAccount = async () => { await refreshSession(); scheduleSync(); };
+  window.addEventListener('focus', resumeAccount);
+  window.addEventListener('online', resumeAccount);
+  window.addEventListener('pageshow', event => { if (event.persisted) resumeAccount(); });
   window.addEventListener('pagehide', pushOnLeave);
-  window.addEventListener('storage', event => { if (event.key && allowedKey(event.key)) scheduleSync(); });
+  window.addEventListener('storage', event => {
+    if (event.key === SESSION_EVENT_KEY) { refreshSession(); return; }
+    if (event.key && allowedKey(event.key)) scheduleSync();
+  });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') scheduleSync(); });
   window.addEventListener('core7:first-hand-reward-closed', maybePromptFirstHand14);
 }
@@ -345,10 +386,9 @@ function maybePromptFirstHand14(event) {
 
 async function boot() {
   addStyles(); bindEvents();
-  try {
-    const [session, available] = await Promise.all([api(`${API}/session`), api(`${API}/providers`)]);
-    user = session.user || null; providers = available.providers || providers;
-  } catch { user = null; }
+  const [session, available] = await Promise.allSettled([api(`${API}/session`), api(`${API}/providers`)]);
+  if (session.status === 'fulfilled') user = session.value.user || null;
+  if (available.status === 'fulfilled') providers = available.value.providers || providers;
   publishUser();
   paintChip();
   if (user) {

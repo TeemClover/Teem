@@ -2,7 +2,7 @@ import {
   accountForIdentity, authRateLimited, clean, clearSessionCookie, consumeOAuthState,
   createOAuthState, createSession, currentUser, database, destroySession, ensureMemberNo,
   ensureSchema, newPasswordRecord, passwordMatches, pkceChallenge, providerConfig,
-  publicUser, prune, safeReturn, sameOrigin, sendJson, sessionCookie, validEmail,
+  publicUser, prune, safeReturn, sameOrigin, sendJson, sessionCookie, validEmail, privateResponseHeaders,
 } from '../_lib/core.js';
 import { randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 
@@ -60,7 +60,7 @@ function routeParts(req) {
 }
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
 function redirect(res, url, cookie) {
-  res.statusCode = 302; res.setHeader('Location', url); res.setHeader('Cache-Control', 'no-store');
+  res.statusCode = 302; res.setHeader('Location', url);
   if (cookie) res.setHeader('Set-Cookie', cookie); res.end();
 }
 function requestOrigin(req) {
@@ -106,6 +106,7 @@ async function lineIdentity(code, verifier, redirectUri, config) {
 
 export function createAuthHandler({ getSql = database, ensureCoreSchema = ensureSchema, deliverOtp = sendOtpEmail } = {}) {
 return async function handler(req, res) {
+  privateResponseHeaders(res);
   try {
     const sql = getSql(); await ensureCoreSchema(sql);
     const route = routeParts(req); const method = req.method.toUpperCase();

@@ -104,10 +104,17 @@ export function createCourseContentHandler({ env = process.env, root = process.c
       }
       res.statusCode = 200;
       res.setHeader('Content-Type', types[path.extname(actual)] || 'application/octet-stream');
-      res.setHeader('Content-Length', String(details.size));
       if (file?.endsWith('.zip')) res.setHeader('Content-Disposition', 'attachment; filename="the-dent-course-kit.zip"');
       if (file?.endsWith('.xlsx') || file?.endsWith('.md')) res.setHeader('Content-Disposition', `attachment; filename="${path.basename(file)}"`);
-      res.end(head ? undefined : await readFile(actual));
+      let body;
+      if (path.extname(actual) === '.html') {
+        const html = await readFile(actual, 'utf8');
+        const guard = '<script src="/assets/private-page-lifecycle.js" defer></script>';
+        const end = html.toLowerCase().lastIndexOf('</body>');
+        body = Buffer.from(end < 0 ? html + guard : html.slice(0, end) + guard + html.slice(end));
+      } else if (!head) body = await readFile(actual);
+      res.setHeader('Content-Length', String(body?.length ?? details.size));
+      res.end(head ? undefined : body);
     } catch (error) {
       return errorResponse(res, ['ENOENT', 'ENOTDIR'].includes(error.code) ? 404 : 500, 'File unavailable', head);
     }

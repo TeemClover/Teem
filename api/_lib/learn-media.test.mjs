@@ -182,7 +182,7 @@ test('Dungeon overlay is outside embedded HTML demos and immediately before the 
   const overlayStart=r.body.indexOf('<a href="/learn/"');
   assert.ok(overlayStart>r.body.indexOf('</script>'));
   assert.equal((r.body.match(/ห้องเรียนของฉัน ↗/g)||[]).length,1);
-  assert.match(r.body,/<main>Actual Dungeon<\/main><a href="\/learn\/"[^>]*>ห้องเรียนของฉัน ↗<\/a><\/BODY><\/html>$/);
+  assert.match(r.body,/<main>Actual Dungeon<\/main><script src="\/assets\/private-page-lifecycle\.js" defer><\/script><a href="\/learn\/"[^>]*>ห้องเรียนของฉัน ↗<\/a><\/BODY><\/html>$/);
   assert.doesNotMatch(r.body.slice(r.body.indexOf('<script>'),r.body.indexOf('</script>')),/position:fixed/);
   const free=await h.call('index.html');assert.match(free.body,/<a href="\/ai-source\/"[^>]*>ดูคอร์สเต็ม AI ใส่ซอส ↗<\/a><\/BODY><\/html>$/);
 });

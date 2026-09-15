@@ -3,18 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { COURSE_COOKIE_NAME, COURSE_SESSION_TTL_SECONDS, issueCourseSession } from '../../api/_lib/course-access.js';
 
-// Exercise the actual middleware without installing the Vercel runtime locally.
-// Only the framework response helpers are adapted; all routing/auth code is real.
-const platform = `export const next = () => new Response(null, { headers: { 'x-middleware-next': '1' } });
-export const rewrite = url => new Response(null, { headers: { 'x-middleware-rewrite': String(url) } });`;
-const source = await readFile(new URL('../../middleware.js', import.meta.url), 'utf8');
-assert.match(source, /from '@vercel\/functions'/);
-assert.match(source, /from '\.\/api\/_lib\/course-access\.js'/);
-const adapted = source
-  .replace("'@vercel/functions'", JSON.stringify(`data:text/javascript,${encodeURIComponent(platform)}`))
-  .replace("'./api/_lib/course-access.js'", JSON.stringify(new URL('../../api/_lib/course-access.js', import.meta.url).href))
-  .replace("'./shelf/route-policy.js'", JSON.stringify(new URL('../../shelf/route-policy.js', import.meta.url).href));
-const { default: middleware, config } = await import(`data:text/javascript,${encodeURIComponent(adapted)}`);
+// Exercise production middleware and framework response helpers.
+import middleware, { config } from '../../middleware.js';
 
 const fixture = {
   COURSE_DENT_PASSWORD: 'middleware-fixture-password-6721',
@@ -118,12 +108,12 @@ test('legacy links redirect to the canonical classroom before login with their p
   }
 });
 
-test('every classroom asset type denies unsigned, forged, tampered and expired sessions', async () => {
+test('private classroom content denies unsigned, forged, tampered and expired sessions', async () => {
   for (const pathname of [
-    '/course/thedent912/course-content.js', '/course/thedent912/course.css',
+    '/course/thedent912/course-content.js', '/course/thedent912/tools.js',
     '/course/thedent912/resources/instructor-guide.md', '/course/thedent912/resources/demo.csv',
     '/course/thedent912/downloads/the-dent-course-kit.zip', '/course/thedent912/fonts/font.woff2',
-    '/course/thedent912/evaluation.js', '/course/thedent912/evaluation.css', '/course/thedent912/followup-qr.svg',
+    '/course/thedent912/opening-data.js', '/course/thedent912/course-resources.js',
   ]) {
     for (const session of [undefined, `${COURSE_COOKIE_NAME}=true`, `${cookie.slice(0, -1)}!`, expired]) {
       const result = await invoke(pathname, session);
@@ -176,7 +166,7 @@ test('malformed, control-character and excessively encoded paths fail closed', a
 });
 
 test('valid sessions explicitly rewrite every canonical resource to the authenticated content handler', async () => {
-  for (const pathname of ['/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/course-content.js', '/course/thedent912/resources/instructor-guide.md', '/course/thedent912/evaluation.html', '/course/thedent912/followup-qr.svg', '/course/thedent912/downloads/the-dent-course-kit.zip']) {
+  for (const pathname of ['/course/thedent912/', '/course/thedent912/index.html', '/course/thedent912/course-content.js', '/course/thedent912/resources/instructor-guide.md', '/course/thedent912/evaluation.html', '/course/thedent912/downloads/the-dent-course-kit.zip']) {
     assertContentRewrite(await invoke(pathname, cookie), pathname);
   }
   const root = await invoke('/course/thedent912?demo=1', cookie);

@@ -34,3 +34,9 @@ learn/tests/
 api/_lib/learn*.test.mjs
 api/_lib/auth-email.test.mjs
 scripts/learn-*.mjs
+
+# Local auth/cache fixtures and policy generation are not website assets.
+tests/access-cache/
+tools/build-public-assets.mjs
+
+tests/classroom/

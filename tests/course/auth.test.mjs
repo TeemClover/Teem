@@ -240,14 +240,13 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal((await invoke(handler, { method: 'GET', url: '/api/course-content', headers: {} })).statusCode, 401);
     assert.equal((await invoke(handler, get('resources/clinic-public-source.md', { headers: { cookie: `${COURSE_COOKIE_NAME}=true` } }))).statusCode, 401);
     const deployment = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8'));
-    const rootRewrite = deployment.rewrites.find((route) => route.source === '/course/thedent912');
-    assert.ok(rootRewrite, 'The protected classroom root must have a configured rewrite');
+    // Prefix rewrites/headers must not override middleware's public static path.
     for (const room of ['thedent', 'thedent912']) {
-      assert.equal(deployment.rewrites.find(route => route.source === `/course/${room}/:path*`)?.destination, '/api/course-content?file=:path*', `${room} must never fall through to static files`);
-      assert.ok(deployment.headers.find(route => route.source === `/course/${room}/:path*`)?.headers.some(header => header.key === 'Cache-Control' && header.value.includes('no-store')));
+      assert.equal(deployment.rewrites.find(route => route.source === `/course/${room}/:path*`), undefined);
+      assert.ok(!deployment.headers.find(route => route.source === `/course/${room}/:path*`)?.headers.some(header => ['Cache-Control', 'CDN-Cache-Control', 'Vercel-CDN-Cache-Control'].includes(header.key)));
     }
     assert.equal(deployment.functions['api/course-content.js'].includeFiles, 'course/thedent/**', 'Physical course directory remains unchanged');
-    const rewrittenRoot = await invoke(handler, { method: 'GET', url: rootRewrite.destination, headers: { cookie } });
+    const rewrittenRoot = await invoke(handler, { method: 'GET', url: '/api/course-content', headers: { cookie } });
     assert.equal(rewrittenRoot.statusCode, 200);
     assert.match(String(rewrittenRoot.body), /Fixture classroom/);
     assert.equal(await verifyCourseSession(rewrittenRoot.headers['set-cookie'], env, now), true);
@@ -283,7 +282,8 @@ test('content validates an explicit allowlist, authenticates direct access, and 
     assert.equal(head.statusCode, 200);
     assert.equal(head.body, undefined);
     assert.equal(head.headers['set-cookie'], undefined);
-    assert.equal(Number(head.headers['content-length']), new TextEncoder().encode('<h1>Fixture classroom</h1>').length);
+    assert.equal(Number(head.headers['content-length']), page.body.length);
+    assert.match(String(page.body), /private-page-lifecycle\.js/);
     for (const file of ['../index.html', '/index.html', '%2e%2e/index.html', 'resources/../../package.json', 'resources\\clinic-public-source.md', 'build.mjs', 'index.html?x=1']) {
       assert.equal(resolveCourseContentPath(file, root), null);
       assert.equal((await invoke(handler, get(file))).statusCode, 400);

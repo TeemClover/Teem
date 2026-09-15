@@ -71,7 +71,7 @@ function courseNav(data) {
   updateProgress(data.progress);
 }
 const view = {
-  clear() { verificationVersion += 1; clearPlayer(); activeCourse = null; $('course-grid').replaceChildren(); $('lesson-navigation').replaceChildren(); lessonLinks.clear(); showOnly(null); },
+  clear() { verificationVersion += 1; clearPlayer(); activeCourse = null; $('account-label').textContent = 'เข้าสู่ระบบ'; $('course-grid').replaceChildren(); $('lesson-navigation').replaceChildren(); lessonLinks.clear(); showOnly(null); },
   clearLesson: clearPlayer,
   loading() { status('กำลังเปิดห้องเรียนของคุณ…'); },
   account(user) { $('account-label').textContent = user?.displayName || user?.email || 'บัญชีของฉัน'; },
@@ -210,5 +210,9 @@ async function savePosition() {
 video.addEventListener('timeupdate', savePosition); video.addEventListener('pause', savePosition);
 window.addEventListener('popstate', () => learner.load());
 window.addEventListener('mc:account-changed', () => { learner.reset(); booting = false; boot(); });
+// HTTP no-store is not a back/forward DOM snapshot policy. Remove private
+// reading/media before a page is suspended and reauthorize when it returns.
+window.addEventListener('pagehide', () => { savePosition(); learner.reset(); });
+window.addEventListener('pageshow', event => { if (event.persisted) { booting = false; boot(); } });
 document.addEventListener('visibilitychange', () => { if (document.hidden) savePosition(); });
 boot();
