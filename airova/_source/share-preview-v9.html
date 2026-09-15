@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>myClover × Airova — Original neon campaign</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}html,body{margin:0;background:#040815;color:#eee;font-family:'Space Grotesk',sans-serif}main{max-width:1200px;margin:auto}canvas{display:block;width:100%;height:auto}footer{padding:18px 24px;display:flex;gap:24px;align-items:center;font-size:14px}a{color:#d1ff28}p{margin:0;color:#9ca9bd}</style></head>
+<body><main><canvas id="artwork" width="2400" height="1260" role="img" aria-label="myClover × Airova สร้างวิดีโอพูดไทยด้วย AI ฟรี 30 เครดิต พร้อม MCP Ready"></canvas><footer><a id="download-preview" download="airova-share-original-v9.png">ดาวน์โหลดภาพ PNG</a><p id="render-status" role="status">กำลังจัดภาพ…</p></footer></main>
+<script type="module">
+const canvas=document.querySelector('#artwork'),ctx=canvas.getContext('2d');ctx.scale(2,2);
+const load=src=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src});
+const [original,clean,clover,airova,gpt,claude]=await Promise.all(['share-v9-original-ad.png','share-v9-brand-clean.png','../../assets/myclover-icon.png','../assets/aistudio-white.svg','chatgpt-icon-official.png','claude-symbol-official.svg'].map(load));
+await Promise.all(['500 34px "Space Grotesk"','700 34px "Space Grotesk"','600 13px "Space Grotesk"','700 24px "Space Grotesk"'].map(f=>document.fonts.load(f)));
+function text(s,x,y,font,color='#fff'){ctx.font=font;ctx.fillStyle=color;ctx.fillText(s,x,y)}
+function contain(i,x,y,w,h){const k=Math.min(w/i.naturalWidth,h/i.naturalHeight);ctx.drawImage(i,x+(w-i.naturalWidth*k)/2,y+(h-i.naturalHeight*k)/2,i.naturalWidth*k,i.naturalHeight*k)}
+// Keep the user's preferred first ad as one continuous image: no portrait cutout,
+// face regeneration, relighting, color filtering, or replacement typography.
+ctx.drawImage(original,0,0,1200,630);
+// Only the old incorrect brand band comes from the surgical erase result.
+// Every pixel below y128 and right of x510 comes from the original ad.
+ctx.save();ctx.beginPath();ctx.rect(0,0,510,128);ctx.clip();ctx.drawImage(clean,0,0,1200,630);ctx.restore();
+contain(clover,42,33,52,52);text('my',101,73,'500 35px "Space Grotesk"');ctx.font='500 35px "Space Grotesk"';const mw=ctx.measureText('my').width;text('Clover',101+mw,73,'700 35px "Space Grotesk"');text('×',281,70,'500 25px "Space Grotesk"','#d6dcec');contain(airova,321,29,182,58);
+ctx.letterSpacing='4.5px';text('OFFICIAL PARTNER',145,110,'600 12px "Space Grotesk"','#f0f3ff');ctx.letterSpacing='0px';
+// A compact glass MCP module, connected visually to the existing light ribbons.
+const shape=new Path2D('M978 518 L1150 518 L1177 540 L1177 595 L1167 605 L976 605 L961 590 L961 535 Z');
+const rim=ctx.createLinearGradient(960,518,1177,605);rim.addColorStop(0,'#a6f7ff');rim.addColorStop(.36,'#38caff');rim.addColorStop(.62,'#856dff');rim.addColorStop(1,'#f17cff');
+ctx.save();ctx.shadowColor='#1edcff88';ctx.shadowBlur=12;ctx.strokeStyle=rim;ctx.lineWidth=1.5;ctx.stroke(shape);ctx.shadowBlur=0;
+const glass=ctx.createLinearGradient(0,518,0,605);glass.addColorStop(0,'#122342ef');glass.addColorStop(.5,'#09102ded');glass.addColorStop(1,'#080d20f5');ctx.fillStyle=glass;ctx.fill(shape);
+ctx.strokeStyle=rim;ctx.lineWidth=1.5;ctx.stroke(shape);
+ctx.beginPath();ctx.moveTo(979,523);ctx.lineTo(1138,523);ctx.strokeStyle='#b6e9ff60';ctx.lineWidth=.6;ctx.stroke();
+// Short connector traces and a small active status light; preserve the main ad's lime hierarchy.
+ctx.shadowColor='#43d9ff';ctx.shadowBlur=6;ctx.beginPath();ctx.moveTo(933,550);ctx.lineTo(950,550);ctx.lineTo(961,539);ctx.strokeStyle='#7ae5ff';ctx.lineWidth=1.1;ctx.stroke();
+ctx.beginPath();ctx.moveTo(1177,579);ctx.lineTo(1185,579);ctx.lineTo(1190,574);ctx.stroke();ctx.shadowBlur=0;
+ctx.beginPath();ctx.arc(979,545,3,0,Math.PI*2);ctx.fillStyle='#cfff3c';ctx.shadowColor='#b5ff25';ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;
+text('MCP Ready',991,553,'700 24px "Space Grotesk"');
+ctx.beginPath();ctx.moveTo(978,564);ctx.lineTo(1160,564);ctx.strokeStyle='#76cfff35';ctx.lineWidth=.6;ctx.stroke();
+contain(gpt,979,575,20,20);text('ChatGPT',1005,589,'500 12px "Space Grotesk"','#f3f5ff');contain(claude,1080,575,20,20);text('Claude',1107,589,'500 12px "Space Grotesk"','#f3f5ff');
+ctx.restore();
+document.querySelector('#download-preview').href=canvas.toDataURL('image/png');document.querySelector('#render-status').textContent='ภาพพร้อมแล้ว · PNG 2400 × 1260';document.documentElement.dataset.rendered='true';
+</script></body></html>

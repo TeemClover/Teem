@@ -181,5 +181,21 @@
     "encoding": "Lossless PNG exported directly from a native 2x canvas. Thai Kanit font subsets explicitly loaded. Fresh scene 1730 × 909; source portrait 941 × 1672; no previous compressed preview reused.",
     "logoProvenance": "Unchanged canonical myClover icon, official Airova SVG, ChatGPT and Claude symbols recorded in v3/v4. Facebook, Instagram and TikTok original brand-pack assets as native image layers.",
     "scope": "Platform endpoints illustrate the requested workflow. Public Airova marketing is inconsistent about Auto Post release status; see platform provenance. No new guarantee of integration availability is added."
+  },
+  "airova-share-original-v9.png": {
+    "type": "Original preferred early campaign restored as one continuous image, with corrected native partner logos and a native neon glass MCP badge. Editorial concept, not an Airova result or platform screenshot.",
+    "sourceFile": "../_source/share-v9-original-ad.png",
+    "sourceProvenance": "Exact user-supplied early campaign PNG, 1734 × 907, used as the complete base including portrait, Thai typography and light trails.",
+    "editPatchFile": "../_source/share-v9-brand-clean.png",
+    "patchTreatment": "Built-in imagegen surgically erased incorrect generated logos. Only the top-left 510 × 128 region on the 1200 × 630 composition uses this erase result; the entire remaining base comes directly from the supplied early campaign.",
+    "portraitTreatment": "No portrait cutout, face regeneration, relighting or recoloring. Original preferred early-ad portrait preserved as part of the continuous base image.",
+    "compositionFile": "../_source/share-preview-v9.html",
+    "promptFile": "../_source/share-v9-prompt.md",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Lossless PNG directly exported from native 2x canvas, without screenshot capture or repeated JPEG compression.",
+    "logoProvenance": "Unchanged canonical myClover icon, official Airova SVG, and original ChatGPT/Claude marks recorded in v3/v4. No generated replacement logos."
   }
 }
