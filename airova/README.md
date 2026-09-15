@@ -12,6 +12,15 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 - Course title and subjects verified from https://www.piracademy.com/course/seedance-advanced-video-production.
 - Airova's connected `list_models` catalog verified Omni and Seedance 2.5 available on 2026-09-15. Public homepage copy is older; do not downgrade this to a coming-soon claim based only on that copy.
 
+## Business problems and solutions
+
+- Six business scenarios map to Brand Kits, content planning/captions, product-photo/link inputs, Templates/Freestyle, Creative Agent/video/Thai voice, Auto Post, and Thai partner support.
+- Four connected workflow steps and a compact roster cover the ten tools announced by Airova. No savings percentages, revenue promises, or unlimited free-use claims are made.
+- Thai-team credibility uses concrete public founder and workshop evidence, not rankings or invented awards. Corporate consulting services are not represented as included Studio features.
+- Feature source: https://studio.airova.ai/blog/update-creative-agent-toolkits (2 July 2026; ten live tools and Auto Post). Brand Kits/content planning also verified from the current connected Airova tool catalog.
+- Team source: https://airova.ai/blog/ai-future-ready-2026-recap (21 May 2026 event; founder and executive-led AI workshops).
+- Hero and social description start with business pain points; signup and all offers remain as supplied by the user.
+
 ## Social sharing
 
 - Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v3.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
