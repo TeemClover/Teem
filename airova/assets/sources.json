@@ -75,6 +75,18 @@
     "dimensions": [
       1200,
       630
+    ],
+    "status": "Retired: generated logos were incorrect. Removed from public asset allowlist; use v3."
+  },
+  "airova-share-thai-video-v3.jpg": {
+    "type": "Original campaign illustration with verified original brand assets composited in HTML. Logos are not generated.",
+    "myCloverLogo": "../../assets/myclover-icon.png",
+    "airovaLogo": "aistudio-white.svg",
+    "compositionFile": "../_source/share-preview-v3.html",
+    "promptFile": "../share-preview-prompt.md",
+    "dimensions": [
+      1200,
+      630
     ]
   }
 }

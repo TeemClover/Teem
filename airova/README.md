@@ -14,8 +14,9 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 
 ## Social sharing
 
-- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v2.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
+- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v3.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
 - Metadata leads with the introductory offer and Thai video creation. The complete built-in generation prompt and provenance are in `share-preview-prompt.md`.
+- The preview uses the original canonical myClover icon and Airova SVG as separate image layers, preserved in `_source/share-preview-v3.html`. Generated v2 logos were incorrect and that image is retired from the public allowlist.
 - The image has a new filename; previously cached Facebook cards may need a re-scrape in the Sharing Debugger.
 
 ## Interaction

@@ -1,12 +1,18 @@
 # Airova social share preview — 2026-09-15
 
-- Output: `assets/airova-share-thai-video-v2.jpg`, 1200 × 630 JPEG.
+- Current output: `assets/airova-share-thai-video-v3.jpg`, 1200 × 630 JPEG.
+- V2 was retired because its generated brand logos were incorrect. The original prompt below is retained as history, not a branding workflow to repeat.
+- V3 erases the generated brand row, then renders the canonical `/assets/myclover-icon.png` and exact official `assets/aistudio-white.svg` as image layers in `_source/share-preview-v3.html`. The myClover wordmark uses the same typography as the partner-page header. Original logo colors and proportions are preserved.
 - Generated with the built-in `image_gen` tool, using the user's supplied portrait as identity and visual style reference.
 - Generated editorial advertising artwork for myClover; not an Airova generation result or a platform screenshot.
 - The 30-credit introductory offer is user supplied. Omni and Seedance 2.5 availability was checked in Airova's connected model catalog on this date. Credit requirements vary by model and settings.
 - New image filename avoids reusing the old hero image cache. Facebook may still retain its cached page metadata until a re-scrape.
 
-## Final generation prompt
+## Logo removal prompt for v3 (built-in image_gen)
+
+Edit this exact supplied 1200x630 advertisement. SURGICAL REMOVAL ONLY: erase the incorrect generated brand logos and wordmarks in the upper-left rectangle x=28 to 500, y=14 to 122, including the green clover, 'myClover × Airova', and 'OFFICIAL PARTNER'. Fill that area with the same clean dark navy/black background, smoothly matched to surroundings. LEAVE THAT AREA EMPTY — DO NOT generate, redraw or replace any logos, branding, words or symbols. The official brand artwork will be placed there separately. Preserve absolutely everything else: identical portrait/face/clothing, all other Thai headline/offer/CTA text, model names, neon background, video frames, composition and exact aspect ratio. Do not move or restyle any element outside the top-left brand area. Output the same 1200x630 wide composition.
+
+## Original v2 generation prompt (retired)
 
 Use case: ads-marketing. Create a FINISHED professional Thai social-share advertising image for myClover's Airova Official Partner landing page, wide 1.9048:1 landscape composition, ideally 1536x806 or 1200x630. This is a Facebook link preview and must remain striking and legible when displayed at 570x299 pixels.
 Input image: attached portrait is a reference for the man's identity, glasses, red/black jacket, and futuristic neon cinematic atmosphere. Preserve his recognizable face. Use ONE main waist-up portrait on the right 42% of the composition, confident warm expression and cinematic lighting, with a breathtaking luminous cyan/magenta AI cinema portal, futuristic reflective architecture and a few elegantly floating video frames containing imaginative fashion/character/product scenes. No repeated portraits or crowd of faces. Fine light trails and real photographic depth, premium cinematic photography, spectacular but controlled. Dark inky navy background on left 58%, vivid electric purple and cyan on right, acid-lime highlights linking to myClover. Do not obscure the person.
