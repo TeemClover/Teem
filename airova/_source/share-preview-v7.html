@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>myClover × Airova — สร้างวิดีโอ ออโต้โพสต์</title>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}html,body{margin:0;background:#08080d;color:#eee;font-family:Anuphan,sans-serif}main{max-width:1200px;margin:0 auto}canvas{display:block;width:100%;height:auto}footer{padding:18px 24px;display:flex;gap:24px;align-items:center;font-size:14px}a{color:#d1ff55}p{margin:0;color:#9d99aa}</style></head>
+<body><main><canvas id="artwork" width="2400" height="1260" role="img" aria-label="myClover × Airova: สร้างวิดีโอ AI ออโต้โพสต์ ลองฟรี 30 เครดิต พร้อม MCP Ready"></canvas><footer><a id="download-preview" download="airova-share-workflow-v7.png">ดาวน์โหลดภาพ PNG</a><p id="render-status" role="status">กำลังจัดภาพ…</p></footer></main>
+<script type="module">
+const canvas=document.querySelector('#artwork');const ctx=canvas.getContext('2d');ctx.scale(2,2);
+const load=src=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src});
+const [bg,clover,airova,gpt,claude]=await Promise.all(['share-v7-workflow.png','../../assets/myclover-icon.png','../assets/aistudio-white.svg','chatgpt-icon-official.png','claude-symbol-official.svg'].map(load));
+await Promise.all([document.fonts.load('700 49px Anuphan'),document.fonts.load('600 24px Anuphan'),document.fonts.load('500 16px "Space Grotesk"'),document.fonts.load('600 17px "Space Grotesk"'),document.fonts.load('700 44px "Space Grotesk"'),document.fonts.load('500 28px "Space Grotesk"'),document.fonts.load('700 28px "Space Grotesk"')]);
+const text=(s,x,y,font,color='#f8f7ff')=>{ctx.font=font;ctx.fillStyle=color;ctx.fillText(s,x,y)};
+function contain(i,x,y,w,h){const k=Math.min(w/i.naturalWidth,h/i.naturalHeight);const iw=i.naturalWidth*k,ih=i.naturalHeight*k;ctx.drawImage(i,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
+function round(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}}
+ctx.drawImage(bg,0,0,1200,630);
+contain(clover,48,35,43,43);text('my',99,67,'500 28px "Space Grotesk"');ctx.font='500 28px "Space Grotesk"';const mw=ctx.measureText('my').width;text('Clover',99+mw,67,'700 28px "Space Grotesk"');text('×',244,65,'500 21px "Space Grotesk"','#858592');contain(airova,275,33,164,48);
+ctx.fillStyle='#d1ff55';ctx.fillRect(50,112,22,1);ctx.letterSpacing='3px';text('OFFICIAL PARTNER',84,116,'600 10px "Space Grotesk"','#c4bdcf');ctx.letterSpacing='0px';
+text('สร้างวิดีโอ AI',46,214,'700 49px Anuphan');text('ออโต้โพสต์',46,275,'700 55px Anuphan');
+text('Omni · Seedance 2.5',50,332,'500 16px "Space Grotesk"','#c5bdd9');
+round(48,524,324,68,34,'#d1ff55');text('ลองฟรี',72,568,'600 24px Anuphan','#171b11');text('30',153,571,'700 44px "Space Grotesk"','#171b11');text('เครดิต',214,568,'600 24px Anuphan','#171b11');text('↗',318,567,'500 34px "Space Grotesk"','#171b11');
+round(976,535,200,68,9,'#090910ed','#e1d9ff38');ctx.beginPath();ctx.arc(993,556,2.5,0,Math.PI*2);ctx.fillStyle='#d1ff55';ctx.fill();text('MCP Ready',1003,561,'600 17px "Space Grotesk"');
+contain(gpt,991,575,19,19);text('ChatGPT',1016,589,'500 11px "Space Grotesk"','#eceaf4');contain(claude,1080,575,19,19);text('Claude',1105,589,'500 11px "Space Grotesk"','#eceaf4');
+document.querySelector('#download-preview').href=canvas.toDataURL('image/png');document.querySelector('#render-status').textContent='ภาพพร้อมแล้ว · PNG 2400 × 1260';document.documentElement.dataset.rendered='true';
+</script></body></html>
