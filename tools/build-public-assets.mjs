@@ -35,10 +35,10 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'ai-source/offer-engine.js', 'ai-source/sales-page.js',
   // Airova's partner page publishes these presentation assets and three free
   // prompt downloads. Keep exact entries so future source files stay excluded.
-  'airova/airova.css', 'airova/airova.js',
+  'airova/airova.css', 'airova/airova.js', 'airova/demo-controller.js',
   ...[
     'aistudio-white.svg', 'aistudio.svg', 'bytedance-seed.svg', 'gemini-omni.svg',
-    'creative-portal.webp', 'airova-share-thai-video-v3.jpg', 'airova-share-thai-video-v4.jpg', 'course-seedance.webp', 'pir-academy.png',
+    'creative-portal.webp', 'airova-share-thai-video-v3.jpg', 'airova-share-thai-video-v4.jpg', 'airova-share-thai-video-v5.png', 'course-seedance.webp', 'pir-academy.png',
     'hero-car.webp', 'hero-character.webp', 'hero-fashion.webp',
     'tpl-adproduct-02.webp', 'tpl-ugc-01.webp',
     'story-learn.webp', 'story-create.webp', 'story-grow.webp',

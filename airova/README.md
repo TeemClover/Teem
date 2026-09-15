@@ -18,17 +18,23 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 - The compact myClover × Airova strip focuses on organization-level partner advantages: special offers, Thai support, learning, and ongoing community activities. Personal names and biographies are omitted.
 - The visual marketing flow connects brand → content → Thai video → scheduled posting. The complete official tool list remains linked: https://studio.airova.ai/blog/update-creative-agent-toolkits.
 - New story illustrations are generated editorial concepts, not photographs of a real company workshop, platform screenshots, or Airova model outputs. Prompts and provenance are recorded in `_source/story-image-prompts.md` and `assets/sources.json`.
-- Existing video wall, free templates, official academy course, signup offer and v4 MCP Ready share image are retained. Course and FAQ text are shortened.
+- Existing video wall, free templates, official academy course, signup offer and MCP Ready branding are retained. Course and FAQ text are shortened.
 
 ## Social sharing
 
-- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v4.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
+- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v5.png`, a dedicated 2400 × 1260 lossless PNG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
 - Metadata complements the image with world-class AI for Thai users and the complete marketing workflow: brand building, content planning, image/video production, and scheduled multi-platform posting. The complete built-in generation prompt and provenance are in `share-preview-prompt.md`.
 - The preview uses the original canonical myClover icon and Airova SVG as separate image layers, preserved in `_source/share-preview-v3.html`. Generated v2 logos were incorrect and that image is retired from the public allowlist.
 - V4 preserves that approved image and adds a compact bottom-right MCP Ready badge with original ChatGPT and Claude symbols. The editable badge lives in `_source/share-preview-v4.html` and logo provenance in `assets/sources.json`.
+- V5 starts with fresh artwork from the original portrait, preserving vivid cobalt, violet and lime colors. All Thai copy and original logo layers are newly rendered from `_source/share-preview-v5.html`; it does not reuse a flattened JPEG. Background generation is native 1730 × 909; text and vectors are rendered at 2×. Prompt: `_source/share-v5-prompt.md`.
 - The image has a new filename; previously cached Facebook cards may need a re-scrape in the Sharing Debugger.
 
 ## Interaction
+
+- The clearly labelled demo reveals the existing examples in four batches of four, one every 620 ms. It makes no generation API calls and spends no credits. The readonly prompt describes each sample batch.
+- Hidden cards remain inert and have no video source. Revealed clips retain the existing wall controls. Backgrounding the page suspends the sequence; reset cancels pending timers. Without JavaScript, the original 16-clip gallery remains available.
+- “ลองสร้างของคุณเอง” is always available and links to the MYCLOVER referral; it becomes the primary action after 16 clips. No automatic navigation.
+- Controller verification: `node --test airova/demo-controller.test.mjs`.
 
 - Showcase is a 16-clip autoplay wall sourced from Airova's public marketing templates, reused at the user's request. Each clip has verified non-silent native audio; source URLs and audio measurements are in `wall-clips.json`.
 - Videos preload near the viewport and autoplay muted/loop inline while visible. Offscreen videos and hidden tabs pause. Only one clip can be audible; opening another clip's sound mutes the previous one.
