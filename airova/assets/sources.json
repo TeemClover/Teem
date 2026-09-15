@@ -107,5 +107,38 @@
       1200,
       630
     ]
+  },
+  "story-learn.webp": {
+    "type": "Original editorial illustration generated with built-in image_gen. Not an Airova output, actual workshop photograph, or platform screenshot.",
+    "subject": "Creative learning desk",
+    "sourceFile": "../_source/story-learn-original.png",
+    "promptFile": "../_source/story-image-prompts.md",
+    "dimensions": [
+      800,
+      1000
+    ],
+    "transform": "Resized and encoded as WebP from the generated source."
+  },
+  "story-create.webp": {
+    "type": "Original editorial illustration generated with built-in image_gen. Not an Airova output, actual workshop photograph, or platform screenshot.",
+    "subject": "Cinematic product production",
+    "sourceFile": "../_source/story-create-original.png",
+    "promptFile": "../_source/story-image-prompts.md",
+    "dimensions": [
+      800,
+      1000
+    ],
+    "transform": "Resized and encoded as WebP from the generated source."
+  },
+  "story-grow.webp": {
+    "type": "Original editorial illustration generated with built-in image_gen. Not an Airova output, actual workshop photograph, or platform screenshot.",
+    "subject": "Collaborative content development",
+    "sourceFile": "../_source/story-grow-original.png",
+    "promptFile": "../_source/story-image-prompts.md",
+    "dimensions": [
+      800,
+      1000
+    ],
+    "transform": "Resized and encoded as WebP from the generated source."
   }
 }

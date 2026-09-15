@@ -2423,282 +2423,482 @@ dialog::backdrop {
   }
 }
 
-/* Short business problems, a connected workflow, and Thai expertise. */
-.business-section {
+/* Three image-led chapters: learn, create, and grow with myClover. */
+.visual-story {
   border-top:1px solid var(--line)
 }
-.business-heading {
-  align-items:center;
-  gap:48px;
-  margin-bottom:48px
+.story-heading {
+  gap:32px;
+  margin-bottom:42px
 }
-.business-heading h2 {
-  font-size:clamp(36px,4vw,54px);
-  line-height:1.3;
-  letter-spacing:-1.2px
+.story-heading h2 {
+  font-size:clamp(36px,4.1vw,58px);
+  line-height:1.28;
+  letter-spacing:-1.5px
 }
-.business-lead {
-  color:#bbc3b3;
-  font-size:19px;
-  line-height:1.75;
-  padding-top:20px
+.story-heading>.text-link {
+  flex-shrink:0;
+  min-height:44px;
+  margin-bottom:5px;
+  color:#bcc5b2
 }
-.business-grid {
+.story-grid {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px 36px
+  gap:26px
 }
-.business-card {
+.story-card {
   min-width:0;
-  padding:25px 0 27px;
-  border-top:1px solid #ffffff32
+  scroll-margin-top:100px
 }
-.business-number {
-  display:block;
-  color:#829374;
-  font-size:11px;
-  letter-spacing:1px;
-  margin-bottom:15px
-}
-.business-card h3 {
-  color:#f4f6ec;
-  font-size:25px;
-  font-weight:550;
-  line-height:1.45;
-  letter-spacing:-.5px;
-  margin-bottom:10px
-}
-.business-solution {
-  color:#acb5a2;
-  font-size:15px;
-  line-height:1.8;
-  max-width:320px
-}
-.marketing-flow {
-  margin-top:33px;
-  padding:30px 34px;
-  background:#1b2016;
-  border-radius:8px
-}
-.flow-header {
-  display:flex;
-  align-items:center;
-  gap:22px
-}
-.flow-header .eyebrow {
-  flex-shrink:0;
-  color:#afc790;
-  margin:0
-}
-.flow-header h3 {
-  font-size:19px;
-  font-weight:500;
-  line-height:1.6
-}
-.flow-steps {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:30px;
-  list-style:none;
-  margin:27px 0 0;
-  padding:0
-}
-.flow-step {
+.story-picture {
   position:relative;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-width:0;
-  padding-top:20px;
-  border-top:1px solid #d2ff5a4d
+  display:block;
+  overflow:hidden;
+  isolation:isolate;
+  aspect-ratio:4/5;
+  border-radius:9px;
+  background:#20261d
 }
-.flow-step:not(:last-child):after {
-  content:'\2192';
+.story-picture::after {
+  content:'';
   position:absolute;
-  top:-15px;
-  right:-22px;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(180deg,#08101740,transparent 27%,transparent 46%,#07100a24 65%,#070d09cc 100%);
+  box-shadow:inset 0 0 0 1px #ffffff16;
+  border-radius:inherit
+}
+.story-picture img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  transition:transform .65s cubic-bezier(.2,.7,.2,1)
+}
+.story-picture:hover img {
+  transform:scale(1.035)
+}
+.story-index {
+  position:absolute;
+  z-index:2;
+  top:22px;
+  left:23px;
+  color:#f2f7ed;
   font-family:var(--display);
-  font-size:19px;
-  color:#9ab479
-}
-.flow-step>.mono {
-  color:var(--lime);
-  font-size:11px
-}
-.flow-step h4 {
-  font-size:17px;
-  font-weight:550;
-  line-height:1.6;
-  margin:0
-}
-.business-cta {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:24px;
-  margin-top:28px
-}
-.business-cta .text-link {
-  min-height:44px;
-  color:#b7c3a8;
-  font-size:14px
-}
-.business-cta .button {
-  flex-shrink:0
-}
-.mission-layout {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:72px;
-  align-items:center;
-  padding-block:78px
-}
-.mission-copy h2 {
-  font-size:clamp(34px,3.5vw,48px);
+  font-size:12px;
+  letter-spacing:1px;
   line-height:1.4;
-  letter-spacing:-1px
+  text-shadow:0 1px 12px #0009
 }
-.mission-proof>p {
-  color:#35442c;
-  font-size:23px;
-  font-weight:500;
-  line-height:1.6
+.story-word {
+  position:absolute;
+  z-index:2;
+  left:23px;
+  right:18px;
+  bottom:19px;
+  color:#f8f9f1;
+  font-size:clamp(48px,5.3vw,76px);
+  font-weight:600;
+  line-height:1.3;
+  letter-spacing:-2px;
+  text-shadow:0 2px 28px #0004
 }
-.mission-signals {
+.story-caption {
+  padding:23px 2px 0
+}
+.story-pain {
+  color:#98a68b;
+  font-size:13px;
+  line-height:1.7;
+  margin-bottom:5px
+}
+.story-caption h3 {
+  font-size:clamp(20px,2.05vw,27px);
+  font-weight:550;
+  line-height:1.5;
+  letter-spacing:-.5px;
+  color:#f3f6ed;
+  text-wrap:balance
+}
+.story-tags {
   display:flex;
   flex-wrap:wrap;
-  gap:10px 22px;
-  margin:22px 0 12px;
-  padding:20px 0 0;
-  border-top:1px solid #26351a33;
-  list-style:none;
-  color:#57684a;
+  gap:5px 0;
+  margin-top:9px;
+  color:#aab49f;
+  font-size:13px;
+  line-height:1.7
+}
+.story-tags span+span::before {
+  content:'·';
+  display:inline-block;
+  padding-inline:10px;
+  color:#677b55
+}
+.story-caption>.text-link,
+.story-links .text-link {
+  min-height:44px;
+  margin-top:10px;
   font-size:14px;
+  color:var(--lime)
+}
+.story-caption>.text-link:hover,
+.story-links .text-link:hover {
+  color:#e4ff9e
+}
+.story-links {
+  display:flex;
+  flex-wrap:wrap;
+  gap:0 20px
+}
+.story-links .text-link+.text-link {
+  color:#aebda0
+}
+.story-flow {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px 23px;
+  margin-top:40px;
+  padding:28px 12px 0;
+  border-top:1px solid var(--line);
+  color:#b3bfaa;
+  font-size:15px;
+  font-weight:400;
+  line-height:1.8;
+  text-align:center
+}
+.story-flow>i,
+.story-flow>.flow-arrow,
+.story-flow>[aria-hidden='true'] {
+  color:#687b57;
+  font-family:var(--display);
+  font-style:normal
+}
+.story-start {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin-top:26px;
+  text-align:center
+}
+.story-start .button {
+  min-width:260px
+}
+.story-start>p {
+  color:#aab49f;
+  font-size:13px
+}
+.partner-strip {
+  position:relative
+}
+.partner-strip-inner {
+  display:grid;
+  grid-template-columns:1.05fr 1fr;
+  gap:72px;
+  align-items:center;
+  padding-block:64px
+}
+.partner-identity {
+  min-width:0
+}
+.partner-brands {
+  display:flex;
+  align-items:center;
+  gap:14px
+}
+.partner-brands>img {
+  flex-shrink:0;
+  width:57px;
+  height:57px;
+  object-fit:contain
+}
+.partner-brands>span {
+  color:#27311e;
+  font-family:var(--display);
+  font-size:26px;
+  font-weight:600;
+  line-height:1;
+  letter-spacing:-1px;
+  white-space:nowrap
+}
+.partner-brands>i {
+  margin-inline:2px;
+  font-family:var(--display);
+  font-size:23px;
+  font-style:normal;
+  font-weight:400;
+  color:#859476
+}
+.partner-brands>img.airova-partner {
+  width:190px;
+  height:65px;
+  object-fit:contain
+}
+.partner-identity>small {
+  display:block;
+  margin-top:21px;
+  padding-left:2px;
+  color:#6f7b63;
+  font-family:var(--display);
+  font-size:10px;
+  line-height:1.5;
+  letter-spacing:3px
+}
+.partner-offer {
+  min-width:0;
+  padding-left:45px;
+  border-left:1px solid #26351a2b
+}
+.partner-offer h2 {
+  color:#27351d;
+  font-size:clamp(27px,2.8vw,38px);
+  font-weight:550;
+  line-height:1.35;
+  letter-spacing:-1px
+}
+.partner-perks {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 18px;
+  margin:18px 0 8px;
+  padding:0;
+  list-style:none;
+  color:#617052;
+  font-size:13px;
   line-height:1.8
 }
-.mission-signals li::before {
+.partner-perks li::before {
   content:'+';
-  color:#738b54;
-  padding-right:8px
+  padding-right:6px;
+  color:#7c944e
 }
-.mission-link {
-  color:#364a23;
+.partner-offer>.text-link {
+  color:#405924;
   min-height:44px;
   font-size:14px
 }
-.mission-link:hover {
-  color:#536d31
+.partner-offer>.text-link:hover {
+  color:#708d32
+}
+@media(max-width:1199px) {
+  .story-grid {
+    gap:20px
+  }
+  .story-word {
+    left:20px;
+    bottom:17px
+  }
+  .partner-strip-inner {
+    gap:34px
+  }
+  .partner-brands {
+    gap:10px
+  }
+  .partner-brands>span {
+    font-size:24px
+  }
+  .partner-brands>img.airova-partner {
+    width:168px;
+    height:58px
+  }
+  .partner-offer {
+    padding-left:32px
+  }
 }
 @media(max-width:960px) {
-  .business-grid {
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:16px 30px
+  .story-heading {
+    align-items:flex-end
   }
-  .flow-steps {
-    gap:22px
+  .story-grid {
+    gap:18px
   }
-  .flow-step {
-    gap:8px
+  .story-index {
+    top:17px;
+    left:16px;
+    font-size:10px
   }
-  .flow-step h4 {
-    font-size:15px
+  .story-word {
+    left:16px;
+    right:12px;
+    bottom:13px;
+    font-size:48px
   }
-  .flow-step:not(:last-child):after {
-    right:-18px
+  .story-caption {
+    padding-top:19px
   }
-  .mission-layout {
-    gap:40px
+  .story-caption h3 {
+    font-size:21px
   }
-  .mission-proof>p {
-    font-size:20px
+  .story-tags {
+    font-size:12px
+  }
+  .story-tags span+span::before {
+    padding-inline:6px
+  }
+  .story-flow {
+    gap:8px 18px;
+    font-size:14px
+  }
+  .partner-strip-inner {
+    grid-template-columns:1fr;
+    gap:31px;
+    padding-block:52px;
+    justify-items:center;
+    text-align:center
+  }
+  .partner-identity>small {
+    padding-left:0;
+    margin-top:16px
+  }
+  .partner-offer {
+    padding:29px 0 0;
+    border-left:0;
+    border-top:1px solid #26351a2b;
+    width:100%
+  }
+  .partner-offer h2 {
+    font-size:32px
+  }
+  .partner-perks {
+    justify-content:center
   }
 }
 @media(max-width:700px) {
-  .business-heading {
-    align-items:flex-start;
-    gap:22px;
-    margin-bottom:32px
+  .story-heading {
+    margin-bottom:28px
   }
-  .business-heading h2,.mission-copy h2 {
-    font-size:clamp(32px,8.8vw,40px);
-    line-height:1.35;
-    letter-spacing:-.8px
+  .story-heading h2 {
+    font-size:clamp(34px,8.9vw,44px);
+    line-height:1.32;
+    letter-spacing:-1px
   }
-  .business-section .eyebrow,.thai-mission .eyebrow {
-    font-size:10px;
-    letter-spacing:1.1px
+  .story-heading .eyebrow {
+    font-size:9px;
+    margin-bottom:17px
   }
-  .business-lead {
-    font-size:16px;
-    padding-top:0;
-    margin-top:18px
+  .story-heading>.text-link {
+    margin:13px 0 0;
+    font-size:12px
   }
-  .business-grid {
-    gap:6px 20px
+  .story-grid {
+    grid-template-columns:1fr;
+    gap:35px
   }
-  .business-card {
-    padding:19px 0 22px
+  .story-picture {
+    aspect-ratio:4/3;
+    border-radius:7px
   }
-  .business-number {
-    margin-bottom:12px
+  .story-picture img {
+    object-position:center 43%
   }
-  .business-card h3 {
-    font-size:20px;
-    letter-spacing:-.4px;
-    margin-bottom:8px
+  .story-index {
+    top:19px;
+    left:20px;
+    font-size:11px
   }
-  .business-solution {
-    font-size:14px;
-    line-height:1.7
+  .story-word {
+    left:20px;
+    bottom:13px;
+    font-size:clamp(54px,14.4vw,78px);
+    letter-spacing:-1.5px
   }
-  .marketing-flow {
-    margin-top:22px;
-    padding:24px 22px
+  .story-caption {
+    padding:17px 2px 0
   }
-  .flow-header {
-    display:block
+  .story-pain {
+    font-size:12px;
+    margin-bottom:3px
   }
-  .flow-header .eyebrow {
-    margin-bottom:7px
+  .story-caption h3 {
+    font-size:24px;
+    line-height:1.4
   }
-  .flow-header h3 {
-    font-size:18px
+  .story-tags {
+    font-size:13px;
+    margin-top:7px
   }
-  .flow-steps {
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:22px 20px;
-    margin-top:24px
+  .story-tags span+span::before {
+    padding-inline:9px
   }
-  .flow-step {
-    padding-top:12px;
-    gap:8px
+  .story-caption>.text-link,
+  .story-links .text-link {
+    margin-top:5px;
+    font-size:13px
   }
-  .flow-step h4 {
-    font-size:14px
+  .story-flow {
+    gap:6px 9px;
+    margin-top:31px;
+    padding:23px 0 0;
+    font-size:12px
   }
-  .flow-step:not(:last-child):after {
-    content:none
+  .story-start {
+    flex-direction:column;
+    gap:12px;
+    margin-top:21px
   }
-  .business-cta {
-    flex-direction:column-reverse;
-    gap:14px;
-    margin-top:25px
-  }
-  .business-cta .button {
+  .story-start .button {
     width:100%;
+    min-width:0;
     justify-content:center
   }
-  .mission-layout {
-    grid-template-columns:1fr;
-    gap:28px;
-    padding-block:56px
+  .partner-strip-inner {
+    gap:25px;
+    padding-block:44px
   }
-  .mission-proof>p {
+  .partner-brands {
+    gap:8px;
+    justify-content:center
+  }
+  .partner-brands>img {
+    width:43px;
+    height:43px
+  }
+  .partner-brands>span {
+    font-size:21px;
+    letter-spacing:-.8px
+  }
+  .partner-brands>i {
+    margin-inline:1px;
     font-size:18px
   }
-  .mission-signals {
-    gap:8px 15px;
-    margin-top:17px;
+  .partner-brands>img.airova-partner {
+    width:135px;
+    height:48px
+  }
+  .partner-identity>small {
+    margin-top:15px;
+    font-size:9px;
+    letter-spacing:2.3px
+  }
+  .partner-offer {
+    padding-top:25px
+  }
+  .partner-offer h2 {
+    font-size:30px;
+    line-height:1.35
+  }
+  .partner-perks {
+    gap:5px 13px;
+    font-size:12px;
+    margin-top:15px
+  }
+  .partner-perks li::before {
+    padding-right:4px
+  }
+  .partner-offer>.text-link {
     font-size:13px
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .story-picture img {
+    transition:none
+  }
+  .story-picture:hover img {
+    transform:none
   }
 }
