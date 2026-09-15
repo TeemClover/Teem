@@ -312,24 +312,51 @@ button[hidden],[hidden] {
   position:absolute;
   right:0;
   top:58px;
+  z-index:1;
   display:flex;
   gap:13px;
   align-items:center;
   width:36%;
-  color:#c7d5b4
+  padding:14px 18px;
+  border:1px solid #d2ff5a33;
+  border-radius:8px;
+  background:#111310db;
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  color:#fff;
+  box-shadow:0 8px 28px #00000024;
+  text-shadow:0 1px 4px #00000080
+}
+.hero-caption>div {
+  min-width:0
+}
+.hero-caption>div>.mono {
+  display:block
+}
+.hero-caption .crosshair {
+  flex-shrink:0
 }
 .crosshair {
   font:300 32px var(--display);
   color:var(--lime)
 }
 .hero-caption .mono {
-  font-size:10px;
-  letter-spacing:1.2px
+  font-size:12px;
+  font-weight:600;
+  line-height:1.5;
+  letter-spacing:1px
 }
 .hero-caption small {
   display:block;
-  font-size:11px;
-  opacity:.6
+  margin-top:4px;
+  font-size:15px;
+  font-weight:500;
+  line-height:1.6;
+  opacity:1
+}
+.hero-caption .frame-index {
+  flex-shrink:0;
+  white-space:nowrap
 }
 .frame-index {
   margin-left:auto;
@@ -1196,10 +1223,10 @@ dialog::backdrop {
     font-size:15px
   }
   .hero-caption {
-    width:36%
+    width:40%
   }
   .hero-caption .mono {
-    font-size:8px
+    font-size:12px
   }
   .credit-ticket {
     right:0;
