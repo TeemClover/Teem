@@ -197,5 +197,27 @@
     ],
     "encoding": "Lossless PNG directly exported from native 2x canvas, without screenshot capture or repeated JPEG compression.",
     "logoProvenance": "Unchanged canonical myClover icon, official Airova SVG, and original ChatGPT/Claude marks recorded in v3/v4. No generated replacement logos."
+  },
+  "airova-share-exclusive-50-v10.png": {
+    "type": "Preferred original campaign with the exclusive myClover 50-credit signup offer. Editorial artwork, not an Airova result.",
+    "sourceFile": "airova-share-original-v9.png",
+    "editPatchFile": "../_source/share-v10-offer-patch.png",
+    "compositionFile": "../_source/share-preview-v10.html",
+    "promptFile": "../_source/share-v10-prompt.md",
+    "offer": {
+      "credits": 50,
+      "eligibility": "New signups through myClover referral only",
+      "signupUrl": "https://studio.airova.ai/auth/join?via=MYCLOVER",
+      "confirmedBy": "User relaying direct platform confirmation",
+      "confirmedDate": "2026-09-16",
+      "interpretation": "50 credits total; not 50 additional credits and not a public/direct-signup offer"
+    },
+    "treatment": "Only the offer-number and CTA regions use the built-in imagegen edit. Original V9 portrait, headline, official partner/client logos, lighting and MCP badge remain intact.",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Direct native canvas export as lossless PNG. No screenshot capture or JPEG re-encoding.",
+    "logoProvenance": "Inherited unchanged from V9; canonical myClover icon, official Airova SVG and original ChatGPT/Claude marks."
   }
 }
