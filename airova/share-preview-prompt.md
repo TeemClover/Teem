@@ -1,7 +1,10 @@
 # Airova social share preview — 2026-09-15
 
-- Current output: `assets/airova-share-original-v9.png`, 2400 × 1260 lossless PNG.
-- V9 restores the exact first campaign supplied by the user as the continuous base, preserving its portrait, Thai copy and neon lighting. Only a small wrong-brand patch is erased with built-in imagegen; real logos and a compact glass MCP module with cyan/violet edges are added natively. No portrait cutout or relighting. Prompt/provenance: `_source/share-v9-prompt.md`; editable composition: `_source/share-preview-v9.html`.
+- Current output: `assets/airova-share-exclusive-50-v10.png`, 2400 × 1260 lossless PNG.
+- Current offer confirmed by the user on 2026-09-16: **50 free credits exclusively for users who sign up through myClover**, using `https://studio.airova.ai/auth/join?via=MYCLOVER`. This is the total introductory offer, not an additional bonus. Public/direct signup does not receive this offer.
+- V10 updates only the lime number “30” to “50” and the CTA to “สมัครผ่าน myClover เท่านั้น”. All other pixels remain from the approved V9, including portrait, original partner/client logos, MCP badge and neon lighting. Built-in imagegen edit prompt: `_source/share-v10-prompt.md`; native patch composition: `_source/share-preview-v10.html`.
+- The version notes and original prompts below preserve historical creative provenance; their old 30-credit wording is superseded.
+- Earlier V9 restores the exact first campaign supplied by the user as the continuous base, preserving its portrait, Thai copy and neon lighting. Only a small wrong-brand patch is erased with built-in imagegen; real logos and a compact glass MCP module with cyan/violet edges are added natively. No portrait cutout or relighting. Prompt/provenance: `_source/share-v9-prompt.md`; editable composition: `_source/share-preview-v9.html`.
 - Earlier V8 restores the user’s original portrait and the reference’s massive bold white Thai headline, italic neon-lime offer, and bright CTA. A fresh scene shows one source branching into four video styles with original Facebook/Instagram/TikTok destinations. Built-in imagegen scene prompt: `_source/share-v8-scene-prompt.md`; editable native composition: `_source/share-preview-v8.html`; original platform assets and release-status evidence: `_source/share-v8-platform-sources.md`. The face is never regenerated.
 - Copy layers: “สร้างวิดีโอ / พูดไทยด้วย AI”, “ฟรี 30 เครดิต”, “Omni · Seedance 2.5”, “สมัครแล้วเริ่มสร้างได้เลย”, “1 ต้นฉบับ”, “หลายวิดีโอ”, “ออโต้โพสต์”, “MCP Ready”. All brand/client logos remain native original image layers.
 - Earlier V7 replaces the portrait-led layout with an image-led complete marketing workflow: product and brand inputs → cinematic AI video → social posts and scheduled publishing. New prompt/provenance: `_source/share-v7-workflow-prompt.md`; native canvas composition: `_source/share-preview-v7.html`. Original logos and short Thai copy are separate layers.
@@ -11,7 +14,7 @@
 - V3 erases the generated brand row, then renders the canonical `/assets/myclover-icon.png` and exact official `assets/aistudio-white.svg` as image layers in `_source/share-preview-v3.html`. The myClover wordmark uses the same typography as the partner-page header. Original logo colors and proportions are preserved.
 - Generated with the built-in `image_gen` tool, using the user's supplied portrait as identity and visual style reference.
 - Generated editorial advertising artwork for myClover; not an Airova generation result or a platform screenshot.
-- The 30-credit introductory offer is user supplied. Omni and Seedance 2.5 availability was checked in Airova's connected model catalog on this date. Credit requirements vary by model and settings.
+- The historical 30-credit offer was superseded by the exclusive 50-credit myClover offer on 2026-09-16. Omni and Seedance 2.5 availability was checked in Airova's connected model catalog on this date. Credit requirements vary by model and settings.
 - New image filename avoids reusing the old hero image cache. Facebook may still retain its cached page metadata until a re-scrape.
 
 ## Logo removal prompt for v3 (built-in image_gen)
