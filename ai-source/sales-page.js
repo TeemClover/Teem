@@ -74,6 +74,11 @@
     var offer=introPresentation(actualOffer);renderIntro(actualOffer);
     if(serverReady&&schoolState&&!schoolState.blocked&&schoolState.recovery&&schoolState.recovery.active&&now<Date.parse(schoolState.recovery.expiresAt)){offer=Object.assign({},actualOffer,{currentPrice:790,canPurchase:true,showLaunchOffer:true,showCountdown:true,endsAt:Date.parse(schoolState.recovery.expiresAt),remainingMs:Date.parse(schoolState.recovery.expiresAt)-now});}
     var recoveryNode=get('recovery-offer');if(recoveryNode)recoveryNode.hidden=!(serverReady&&schoolState&&schoolState.recoveryAvailable&&!schoolState.blocked);if(recoveryNode&&!recoveryNode.hidden)get('claim-recovery').textContent='รับสิทธิ์เรียน '+money.format(790)+' · ตัดสินใจใน 2 ชั่วโมง';
+    var bonusIncluded=offer.currentPrice!==790;
+    var bonusSummary=get('bonus-package-summary'),offerBonus=get('offer-bonus-summary'),checkoutBonus=get('checkout-bonus-summary');
+    if(bonusSummary)bonusSummary.textContent=bonusIncluded?'รับทั้ง 2 ไฟล์พร้อมคอร์ส ฿990 และราคาปกติ ฿1,690':'ชุดคู่มือ PDF + AI คู่คิด .md ไม่รวมในสิทธิ์ ฿790 ที่คุณเลือก';
+    if(offerBonus)offerBonus.textContent=bonusIncluded?'รวมคู่มือ PDF + AI คู่คิด .md มูลค่าชุด ฿1,290':'แพ็กนี้มีบทเรียนและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI คู่คิด .md';
+    if(checkoutBonus)checkoutBonus.textContent=currentCheckout?(currentCheckout.priceTHB===790?'รายการนี้: คอร์สและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI คู่คิด .md':'รายการนี้: รวมคู่มือ PDF + AI คู่คิด .md มูลค่าชุด ฿1,290'):'';
     var enrolledLink=get('my-course-link');if(enrolledLink)enrolledLink.hidden=!(schoolState&&schoolState.user);
     var price=offer.currentPrice===null?'กำลังตรวจราคา':money.format(offer.currentPrice);
     document.documentElement.dataset.offerState=offer.state;
@@ -103,7 +108,7 @@
     get('purchase-status').textContent=purchaseNotice||(live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง');
     get('payment-notice').textContent=currentCheckout&&clock()>=Date.parse(currentCheckout.expiresAt)?'รายการนี้หมดเวลาแล้ว หากโอนทันกำหนดไว้แล้ว แนบสลิปเดิมได้ เจ้าหน้าที่จะตรวจจากเวลาโอนจริง โปรดอย่าโอนซ้ำ':currentCheckout&&currentCheckout.status!=='open'?'รับสลิปแล้ว เปิดดูสถานะได้ในห้องเรียนของคุณ':'โอนตามยอด แล้วแนบสลิปด้านล่าง เปิดสิทธิ์เข้า myClover ภายใน 1 วันหลังชำระเงิน';
     if(previousPrice!==null&&previousPrice!==offer.currentPrice){copiedVersion++;if(offer.currentPrice>previousPrice)get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
-    var hasTerms=false;['access_terms','delivery_terms','support_terms','refund_terms','tool_cost_terms','payment_deadline_policy'].forEach(function(key){var item=get('term-'+key);item.textContent=typeof config[key]==='string'?config[key]:'';if(key==='payment_deadline_policy'&&schoolState&&schoolState.recovery&&schoolState.recovery.active)item.textContent='ใช้สิทธิ์ตามยอดและเวลาสิ้นสุดที่แสดง โดยยึดเวลาโอนที่ตรวจสอบจริง';item.parentElement.hidden=!item.textContent;hasTerms=hasTerms||!!item.textContent;});get('offer-terms').hidden=!hasTerms;
+    var hasTerms=false;['access_terms','delivery_terms','bonus_terms','support_terms','refund_terms','tool_cost_terms','payment_deadline_policy'].forEach(function(key){var item=get('term-'+key);item.textContent=typeof config[key]==='string'?config[key]:'';if(key==='payment_deadline_policy'&&schoolState&&schoolState.recovery&&schoolState.recovery.active)item.textContent='ใช้สิทธิ์ตามยอดและเวลาสิ้นสุดที่แสดง โดยยึดเวลาโอนที่ตรวจสอบจริง';if(key==='bonus_terms'&&currentCheckout&&currentCheckout.priceTHB===790)item.textContent='แพ็ก 790 บาทมีบทเรียนและไฟล์ฝึกครบ แต่ไม่รวมคู่มือ PDF และ AI คู่คิด .md';item.parentElement.hidden=!item.textContent;hasTerms=hasTerms||!!item.textContent;});get('offer-terms').hidden=!hasTerms;
     return offer;
   }
   async function refreshOffer(){

@@ -2,7 +2,7 @@ import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl
 import { authRequest, safeReturn, showVerification } from './account-step.js';
 import { renderLessonReading } from './lesson-reading.js?v=learner-ready-4';
 import { createLessonPlayer } from './lesson-player.js?v=learner-ready-4';
-import { renderLessonTools } from './lesson-tools.js?v=learner-ready-4';
+import { renderLessonTools } from './lesson-tools.js?v=companion-6';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text = '', className = '') => { const n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; };
@@ -62,6 +62,29 @@ function partContext(course, id) {
   return { chapters, chapter, index: chapter?.parts.findIndex(part => part.id === id) ?? -1 };
 }
 function partName(item) { return item.partTitle || item.title || 'บทเรียน'; }
+function renderCourseBonus(bonus) {
+  const section=$('course-bonus'); section.replaceChildren(); section.hidden=!bonus;
+  if (!bonus) return;
+  const cover=el('img','','bonus-cover'); cover.src='/ai-source/assets/ai-sauce-companion-cover-v1.webp'; cover.width=540;cover.height=960;cover.loading='lazy';cover.alt='คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น';section.append(cover);
+  const heading=el('h2',bonus.title || 'คู่มือ AI ใส่ซอส + AI คู่คิดพาทำงาน'); heading.id='course-bonus-title';
+  section.append(el('p','อ่านทบทวน · เปิด AI แล้วเริ่มงาน','eyebrow'),heading);
+  if (bonus.description) section.append(el('p',bonus.description));
+  const messages={included:'ชุดนี้อยู่ในสิทธิ์ของคุณ ดาวน์โหลดเก็บไว้ แล้วเริ่มจากคู่มือ PDF ได้เลย',not_included:'แพ็กที่คุณสมัครมีบทเรียนและไฟล์ฝึกครบ ส่วนชุดคู่มือ PDF + AI คู่คิดนี้ไม่ได้รวมอยู่ในแพ็ก',unverified:'บทเรียนของคุณเปิดได้ตามเดิม กำลังตรวจข้อมูลสิทธิ์ชุดคู่มือ หากซื้อแพ็กที่รวมชุดนี้ ให้ติดต่อผู้สอนเพื่อตรวจสอบ',access_required:'เมื่อยืนยันชำระและเปิดสิทธิ์แล้ว ชุดนี้จะปรากฏตามแพ็กที่คุณสมัคร'};
+  section.append(el('p',messages[bonus.status] || messages.unverified,'bonus-status'));
+  if (bonus.status==='included') {
+    const files=el('div','','bonus-files');
+    for (const resource of bonus.resources || []) {
+      const href=safeAssetUrl(resource.url,location.origin); if (!href) continue;
+      const a=el('a','','resource-link');a.href=href;a.target='_blank';a.rel='noopener noreferrer';
+      const label=el('span',resource.title || resource.filename || 'ดาวน์โหลด');
+      label.append(el('small',/pdf/i.test(resource.mimeType) ? 'PDF · อ่านในมือถือได้' : '.MD · แนบหรือคัดลอกให้ AI ที่คุณใช้อยู่'));
+      a.append(label,el('span','↓','resource-arrow'));files.append(a);
+    }
+    section.append(files,el('p','เริ่มจากอ่านหลักคิดใน PDF → แนบไฟล์ .md ในแชต AI → ตอบคำถามทีละข้อ แล้วตรวจงานด้วยกัน','bonus-howto'));
+  } else if (bonus.status==='unverified') {
+    const a=el('a','ให้ผู้สอนตรวจสิทธิ์ ↗');a.href='https://lin.ee/rlSlhzT';a.target='_blank';a.rel='noopener noreferrer';section.append(a);
+  }
+}
 function partStep(item, index, count) { return [`ตอน ${index + 1}${count ? ` จาก ${count}` : ''}`, item.partLabel].filter(Boolean).join(' · '); }
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
@@ -121,7 +144,7 @@ function courseNav(data) {
   updateProgress(data.progress);
 }
 const view = {
-  clear() { verificationVersion += 1; clearPlayer(); activeCourse = null; $('account-label').textContent = 'เข้าสู่ระบบ'; $('course-grid').replaceChildren(); $('lesson-navigation').replaceChildren(); lessonLinks.clear(); showOnly(null); },
+  clear() { verificationVersion += 1; clearPlayer(); renderCourseBonus(); activeCourse = null; $('account-label').textContent = 'เข้าสู่ระบบ'; $('course-grid').replaceChildren(); $('lesson-navigation').replaceChildren(); lessonLinks.clear(); showOnly(null); },
   clearLesson: clearPlayer,
   loading() { status('กำลังเปิดห้องเรียนของคุณ…'); },
   account(user) { $('account-label').textContent = user?.displayName || user?.email || 'บัญชีของฉัน'; },
@@ -143,6 +166,7 @@ const view = {
   courseLoading() { status('กำลังเปิดคอร์ส…'); },
   course(data) {
     activeCourse = data; status(); showOnly('classroom');
+    renderCourseBonus(data.bonus);
     $('course-title').textContent = data.course.title; $('course-summary').textContent = data.course.summary || '';
     $('course-format').textContent = `เรียนตามลำดับ ${data.course.lessons.length} ตอน · เข้าใจหลักคิด ลองทำตาม แล้วใช้กับงานจริง`;
     const state = data.access?.status || 'registered'; $('course-access').replaceChildren(badge(state, data.access?.role));

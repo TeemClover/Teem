@@ -27,7 +27,10 @@ export function normalizeLessonTools(value) {
   });
 }
 
-const normalizeSearch = value => String(value).normalize('NFKC').toLocaleLowerCase('th').trim();
+// Search-only aliases: retain the original titles, categories and prompt bodies
+// for display/copy, while everyday Thai wording finds existing Caption recipes.
+const normalizeSearch = value => String(value).normalize('NFKC').toLocaleLowerCase('th').trim()
+  .replace(/ข้อความ\s*ประกอบ\s*โพสต์|แคปชั่น|แคปชัน/g, 'caption');
 export function filterToolPrompts(prompts, query = '', category = '') {
   const words = normalizeSearch(query).split(/\s+/).filter(Boolean);
   return prompts.filter(prompt => (!category || prompt.category === category) && words.every(word =>

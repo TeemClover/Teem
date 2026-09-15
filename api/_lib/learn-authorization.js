@@ -2,6 +2,7 @@ import { currentUser } from './core.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { courseAccess, LearnError, learnId } from './learn-domain.js';
 import { createLearnStore } from './learn-store.js';
+import { courseBonusStatus, isCourseBonusAsset } from './learn-bonus.js';
 
 export async function verifiedLearnUser(sql,req,{store=createLearnStore(sql),lookupUser=currentUser}={}) {
   let user;
@@ -54,11 +55,15 @@ export async function authorizeLearnAsset(sql,req,{courseId,lessonId,assetId},op
   const caption = assetId===lesson.captionId && asset?.kind==='captions';
   const resource = [...(lesson.resourceIds || []),...(lesson.additionalResourceIds || [])].includes(assetId)
     && asset?.kind==='resource';
-  if (!asset || asset.courseId!==course.id || !asset.lessonIds?.includes(lesson.id) || (!video && !caption && !resource)) {
+  const bonus=isCourseBonusAsset(course,lesson,asset);
+  if (!asset || asset.courseId!==course.id || !asset.lessonIds?.includes(lesson.id) || (!video && !caption && !resource && !bonus)) {
     throw new LearnError('ASSET_NOT_FOUND',404);
   }
   // Every /learn asset belongs to the full course; the free course is /classroom.
   if (!access.active) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'ไฟล์นี้อยู่ในสิทธิ์คอร์สเต็ม');
+  if (asset.entitlement && (!bonus || await courseBonusStatus(options.store || createLearnStore(sql),authorized.user.id,course,access,options.now ?? Date.now())!=='included')) {
+    throw new LearnError('BONUS_ACCESS_REQUIRED',403,'บัญชีนี้ยังไม่มีสิทธิ์ดาวน์โหลดชุดคู่มือและ AI คู่คิด กรุณาติดต่อผู้สอนหากได้รับชุดนี้พร้อมคอร์ส');
+  }
   return {...authorized,asset,assetId};
 }
 

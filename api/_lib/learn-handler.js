@@ -5,6 +5,7 @@ import { authorizeLearnLesson, catalogLesson, enrollLearnCourse, loadCourseAcces
 import { courseAccess, LearnError, learnId, progressSummary, validateProgress } from './learn-domain.js';
 import { loadLearnSnapshot } from './learn-snapshot.js';
 import { lessonContent } from './learn-content.js';
+import { courseBonusStatus, isCourseBonusAsset } from './learn-bonus.js';
 
 const MAX_BODY_BYTES = 8192;
 function reply(res,status,body) { res.statusCode=status; res.setHeader('Content-Type','application/json; charset=utf-8'); res.end(JSON.stringify(body)); }
@@ -60,10 +61,10 @@ function lessonView(course,lesson,access,assets) {
   view.media=video ? {...assetView(video,course.id,lesson.id),captions:caption ? [{...assetView(caption,course.id,lesson.id),language:'th',label:'ไทย'}] : [],captionsEmbedded:lesson.captionsEmbedded===true} : null;
   view.resources=access.active ? [...(lesson.resourceIds || []),...(lesson.additionalResourceIds || [])]
     .map(id=>assets.find(a=>a.id===id && a.kind==='resource' && a.courseId===course.id && a.lessonIds?.includes(lesson.id)))
-    .filter(a=>a && !(lesson.showcase || []).some(s=>s.assetId===a.id)).map(a=>({...assetView(a,course.id,lesson.id),optional:!(lesson.resourceIds || []).includes(a.id)})) : [];
+    .filter(a=>a && !a.entitlement && !(lesson.showcase || []).some(s=>s.assetId===a.id)).map(a=>({...assetView(a,course.id,lesson.id),optional:!(lesson.resourceIds || []).includes(a.id)})) : [];
   view.showcase=access.active ? (lesson.showcase || []).map(card=>{
     const asset=assets.find(a=>a.id===card.assetId && a.courseId===course.id && a.lessonIds?.includes(lesson.id)
-      && a.kind==='resource' && /^image\//.test(a.contentType) && [...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(a.id));
+      && a.kind==='resource' && !a.entitlement && /^image\//.test(a.contentType) && [...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(a.id));
     return asset ? {...assetView(asset,course.id,lesson.id),title:card.title,description:card.description} : null;
   }).filter(Boolean) : [];
   view.resourcesLocked=!access.active && Boolean(lesson.resourceIds?.length || lesson.additionalResourceIds?.length);
@@ -76,6 +77,16 @@ function courseView(course,access) {
     previewLessonId:null,trialUrl:course.trialUrl || null,mainLessonIds:course.mainLessonIds || [],applicationLessonIds:course.applicationLessonIds || [],
     videoLessonCount:course.lessons.filter(l=>l.mediaId).length,
     lessons:course.lessons.map(l=>lessonMetadata(l,access))};
+}
+
+async function bonusView(store,user,course,access,assets,now) {
+  if (!course.bonus) return null;
+  const status=await courseBonusStatus(store,user.id,course,access,now);
+  const lesson=course.lessons.find(item=>item.id===course.bonus.lessonId);
+  const resources=status==='included' && lesson ? course.bonus.resourceIds.map(id=>assets.find(a=>a.id===id
+    && a.courseId===course.id && a.lessonIds?.includes(lesson.id) && isCourseBonusAsset(course,lesson,a)))
+    .filter(Boolean).map(a=>assetView(a,course.id,lesson.id)) : [];
+  return {title:course.bonus.title,description:course.bonus.description,valueTHB:course.bonus.valueTHB,status,resources};
 }
 
 export function createLearnHandler({getSql=database,lookupUser=currentUser,storeFactory=createLearnStore,courses=LEARN_COURSES,assets=LEARN_ASSETS,now=()=>Date.now()}={}) {
@@ -174,7 +185,8 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
       if(access.status==='not_enrolled')throw new LearnError('COURSE_ENROLLMENT_REQUIRED',403);
       const progress=progressSummary(await store.progress(user.id,course.id),course);
       if(action==='progress')return respond(200,{ok:true,courseId,progress});
-      return respond(200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress});
+      return respond(200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress,
+        bonus:await bonusView(store,user,course,access,assets,time)});
     } catch(error) {
       if (!(error instanceof LearnError)) console.error('LEARN_UNAVAILABLE',String(error?.code || error?.name || 'UnknownError').replace(/[^A-Za-z0-9_-]/g,'').slice(0,60));
       const status=error instanceof LearnError ? error.status : 503;

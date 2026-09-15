@@ -39,6 +39,27 @@ test('category and Thai/English keyword searches combine without searching hidde
   assert.equal(filterToolPrompts(prompts,'ยังไม่ทราบ').length,0);
   assert.equal(filterToolPrompts(prompts,'','สร้างสรรค์')[0].id,'second');
 });
+test('Thai caption synonyms find existing recipes while preserving categories, other query words and every prompt body',()=>{
+  const prompts=normalizeLessonTools([{...tools[0],prompts:[
+    {...one,id:'caption-cafe',title:'Caption ร้านกาแฟ',category:'คอนเทนต์',description:'โพสต์สำหรับร้าน',keywords:['social'],body:'ต้นฉบับ [ซอส] ห้ามแก้เพราะคำค้น'},
+    {...one,id:'caption-hotel',title:'Caption โรงแรม',category:'คอนเทนต์'},
+    {...one,id:'unrelated',title:'วางแผนสไลด์',category:'งาน',description:'สรุปงาน',keywords:[],body:'caption ข้อความประกอบโพสต์ อยู่เฉพาะในเนื้อหา'}
+  ]}])[0].prompts;
+  const before=structuredClone(prompts);
+  for(const query of ['ข้อความประกอบโพสต์','ข้อความ ประกอบ โพสต์','แคปชัน','แคปชั่น','CAPTION'])
+    assert.deepEqual(filterToolPrompts(prompts,query).map(p=>p.id),['caption-cafe','caption-hotel']);
+  assert.deepEqual(filterToolPrompts(prompts,'ข้อความประกอบโพสต์ ร้านกาแฟ','คอนเทนต์').map(p=>p.id),['caption-cafe']);
+  assert.deepEqual(filterToolPrompts(prompts,'แคปชั่น','งาน'),[]);
+  assert.deepEqual(prompts,before);
+});
+test('a learner can search Thai wording, choose Caption and copy the unchanged original recipe',async()=>{
+  const prompt={...one,id:'caption',title:'Caption',category:'คอนเทนต์',description:'เขียนโพสต์จากซอส',keywords:['social'],body:'ใช้ [ซอส] เพื่อร่าง Caption ตามกติกาเดิม'};
+  let copied;const d=setup([{...tools[0],prompts:[prompt,tools[0].prompts[1]]}],{copyText:async value=>{copied=value;}});
+  const search=d.find('aria-label','ค้นหาสูตร');search.value='ข้อความประกอบโพสต์';await search.fire('input');
+  assert.equal(d.find('class','lt-count').textContent,'พบ 1 จาก 2 สูตร');assert.ok(d.choice('caption'));assert.equal(d.choice('second'),undefined);
+  await d.choice('caption').fire('click');await d.find('text','คัดลอก Prompt ที่ปรับแล้ว').fire('click');await settle();
+  assert.equal(copied,prompt.body);assert.equal(d.find('aria-label','ปรับข้อความ Prompt: Caption').value,prompt.body);
+});
 test('field filling preserves exact values, missing placeholders and nonrecursive literal input',()=>{
   assert.equal(fillToolPrompt('[a] / [b] / [a]',new Map([['a','$& [b]'],['b','  ']])),'$& [b] / [b] / $& [b]');
   assert.equal(fillToolPrompt('[toString] [__proto__] [x]',{x:'ครบ'}),'[toString] [__proto__] ครบ');

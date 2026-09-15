@@ -6,6 +6,8 @@ import { authorizeLearnAsset, enrollLearnCourse } from './learn-authorization.js
 import { courseAccess, oneYearAfter } from './learn-domain.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { createLearnStore, ensureLearnSchema, grantForVerifiedRegistration, recordLearnRegistration, revokeLearnAccess, LEARN_SCHEMA } from './learn-store.js';
+import {companionEntitlement} from './learn-bonus.js';
+import {learnMediaPathname} from './learn-media-handler.js';
 
 const NOW=Date.parse('2026-09-14T10:00:00Z');
 const courses=[{id:'ai-sauce',title:'AI ใส่ซอส',description:'เรียนจาก Source',startLessonId:'FOUNDATION',previewLessonId:null,trialUrl:'/classroom/',lessons:[
@@ -130,6 +132,50 @@ test('chapter five delivers only the current privacy repair, never archived vide
   assert.ok(archived.length>=2);
   for(const asset of archived) {
     await assert.rejects(authorizeLearnAsset({}, {}, {...request,assetId:asset.id},h.options),e=>e.code==='ASSET_NOT_FOUND');
+  }
+});
+
+test('companion metadata and direct asset access use package entitlement without removing course lessons',async()=>{
+  const bonus={id:'ai-sauce-companion-v1',lessonId:'FOUNDATION',title:'คู่มือ + AI คู่คิด',valueTHB:1290,resourceIds:['bonus_pdf','bonus_md']};
+  const bonusAssets=bonus.resourceIds.map((id,index)=>({id,courseId:'ai-sauce',lessonIds:['FOUNDATION'],kind:'resource',
+    entitlement:bonus.id,title:index?'AI คู่คิด':'คู่มือ',filename:index?'coach.md':'guide.pdf',contentType:index?'text/markdown':'application/pdf',bytes:123}));
+  const h=harness({catalog:[{...courses[0],bonus}],media:[...assets,...bonusAssets]});h.seed();h.grants.push(grant());
+  let entitlement='not_included';h.store.bonusEntitlement=async()=>entitlement;
+  const ids={courseId:'ai-sauce',lessonId:'FOUNDATION',assetId:'bonus_pdf'};
+  const detail=()=>h.call('GET','course',undefined,{query:{courseId:'ai-sauce'}});
+  let result=await detail();assert.equal(result.statusCode,200);assert.equal(result.body.access.active,true);
+  assert.equal(result.body.bonus.status,'not_included');assert.deepEqual(result.body.bonus.resources,[]);
+  assert.doesNotMatch(JSON.stringify(result.body),/bonus_pdf|bonus_md|guide.pdf|coach.md/);
+  await assert.rejects(authorizeLearnAsset({}, {}, ids,h.options),e=>e.code==='BONUS_ACCESS_REQUIRED');
+  entitlement='included';result=await detail();assert.equal(result.body.bonus.resources.length,2);
+  assert.match(result.body.bonus.resources[0].url,/assetId=bonus_pdf/);
+  assert.equal((await authorizeLearnAsset({}, {}, ids,h.options)).asset.id,'bonus_pdf');
+  const lesson=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION'}});
+  assert.equal(lesson.statusCode,200);assert.doesNotMatch(JSON.stringify(lesson.body.lesson.resources),/bonus_pdf|bonus_md/);
+  entitlement='unverified';result=await detail();assert.equal(result.body.access.active,true);assert.equal(result.body.bonus.status,'unverified');
+  h.grants[0].revoked_at='2026-09-13';result=await detail();assert.equal(result.body.bonus.status,'access_required');
+  h.instructors.push({user_id:'alice',course_id:'ai-sauce',granted_at:'2026-09-01'});
+  result=await detail();assert.equal(result.body.bonus.status,'included');assert.equal(result.body.bonus.resources.length,2);
+});
+test('real learner course API lists exactly two bonus downloads for instructor/990/1690 while790 keeps the whole course',async()=>{
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+  for(const tier of ['instructor',990,1690,790]){
+    const h=harness({catalog:LEARN_COURSES,media:LEARN_ASSETS});h.seed();
+    if(tier==='instructor')h.instructors.push({user_id:'alice',course_id:'ai-sauce',granted_at:'2026-09-01'});else h.grants.push(grant());
+    h.store.bonusEntitlement=(id,courseId,time)=>companionEntitlement({query:async(q,args)=>{
+      assert.deepEqual(args,[user.id,course.id,new Date(NOW)]);
+      return [{...grant(),status:'admitted',verified_at:'2026-09-02',verified_amount_satang:Number(tier)*100,
+        verified_transferred_at:'2026-09-01T03:00:00Z',checkout_id:'owned-checkout',checkout_bound:true,
+        checkout_price:tier,checkout_issued_at:'2026-09-01',checkout_expires_at:'2026-09-02'}];
+    }},id,courseId,time);
+    const result=await h.call('GET','course',undefined,{query:{courseId:course.id}});
+    assert.equal(result.statusCode,200);assert.equal(result.body.access.active,true);assert.equal(result.body.course.lessons.length,course.lessons.length);
+    assert.ok(result.body.course.lessons.every(l=>l.locked===false));
+    assert.equal(result.body.bonus.status,tier===790?'not_included':'included');
+    assert.deepEqual(result.body.bonus.resources.map(a=>a.id),tier===790?[]:course.bonus.resourceIds);
+    if(tier!==790){assert.deepEqual(result.body.bonus.resources.map(a=>a.filename),['AI_SAUCE_FIELD_GUIDE.pdf','AI_SAUCE_WORK_COACH.md']);
+      for(const a of result.body.bonus.resources){const query=new URL(a.url,'https://www.myclover.com').searchParams;
+        assert.equal(query.get('courseId'),course.id);assert.equal(query.get('lessonId'),course.bonus.lessonId);assert.equal(query.get('assetId'),a.id);}}
   }
 });
 test('preview flag in a request cannot open a paid lesson',async()=>{
@@ -283,14 +329,36 @@ test('split chapter6 and Dungeon append assets without changing the existing186 
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),web=course.lessons.find(l=>l.id==='CH06'),dungeon=course.lessons.find(l=>l.id==='DUNGEON');
   assert.deepEqual(LEARN_ASSETS.slice(186,190).map(asset=>[asset.id,asset.kind,asset.lessonIds]),[
     [web.mediaId,'video',['CH06']],[web.captionId,'captions',['CH06']],
-    ['m_2da75aad343557619aa612c66d0de710','video',['DUNGEON']],[dungeon.captionId,'captions',['DUNGEON']],
+    ['m_2da75aad343557619aa612c66d0de710','video',['DUNGEON']],['m_e3aa689ce60e5a8888c2dc29d1fa58b0','captions',['DUNGEON']],
   ]);
   assert.notEqual(web.mediaId,dungeon.mediaId);assert.notEqual(web.captionId,dungeon.captionId);
-  assert.ok(Math.abs(web.durationSeconds-227.767)<0.1);assert.ok(Math.abs(dungeon.durationSeconds-407.967)<0.1);
-  assert.ok(Math.abs(web.durationSeconds+dungeon.durationSeconds-635.734)<0.2);
+  assert.ok(Math.abs(web.durationSeconds-227.767)<0.1);assert.ok(Math.abs(dungeon.durationSeconds-428.1)<0.001);
+  assert.ok(Math.abs(web.durationSeconds+dungeon.durationSeconds-655.867)<0.1);
   assert.equal(LEARN_ASSETS[12].id,'m_4d1d2565e8da5c0d8dcfb0bb37f286e2');
   assert.equal(LEARN_ASSETS[13].id,'m_c5bc7c9bdc365fb2b1ab0b0673a5a8f4');
   assert.notEqual(web.mediaId,LEARN_ASSETS[12].id);
+});
+test('finale v08 uses the four appended manifest assets and durations without changing chapter5 privacy media',()=>{
+  // Checked against the approved finale delivery manifest. These are storage
+  // positions and media metadata only; paid video and subtitles stay private.
+  const expected=[
+    ['m_f4c66e8beddbcc8b181ca1644921b9b9','EP14','video','EP14_BUSINESS_CODEX_v08.mp4',4695392,'video/mp4','learn/245.mp4'],
+    ['m_324c2d1ee348b75bfe5bf2b0cd017452','EP14','captions','EP14_BUSINESS_CODEX_v08.srt',3711,'application/x-subrip','learn/246.srt'],
+    ['m_4ae404912e3ed1f49df2a4ddad1832a5','DUNGEON','video','DUNGEON_AI_SAUCE_v08.mp4',30492951,'video/mp4','learn/247.mp4'],
+    ['m_2824b84b7bb015cda9a0efa062b90f86','DUNGEON','captions','DUNGEON_AI_SAUCE_v08.srt',23368,'application/x-subrip','learn/248.srt'],
+  ];
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+  assert.deepEqual(LEARN_ASSETS.slice(245,249).map(a=>[a.id,a.lessonIds[0],a.kind,a.filename,a.bytes,a.contentType,learnMediaPathname(a)]),expected);
+  for(const [assetId,lessonId,kind] of expected){
+    const lesson=course.lessons.find(l=>l.id===lessonId),asset=LEARN_ASSETS.find(a=>a.id===assetId);
+    assert.equal(lesson[kind==='video'?'mediaId':'captionId'],assetId);assert.equal(asset.courseId,course.id);
+    assert.equal(asset.previewAllowed,false);assert.deepEqual(asset.lessonIds,[lessonId]);
+  }
+  // Unchanged CH06 kept its earlier single-decimal catalog rounding.
+  for(const [id,duration,tolerance] of [['CH06',227.767,0.1],['EP14',80.767,0.001],['DUNGEON',428.1,0.001]])
+    assert.ok(Math.abs(course.lessons.find(l=>l.id===id).durationSeconds-duration)<tolerance,id);
+  const privacy=course.lessons.find(l=>l.id==='ADV05');assert.equal(privacy.mediaId,'m_08098d73bcb450aab59f8e509d85470e');
+  assert.equal(learnMediaPathname(LEARN_ASSETS.find(a=>a.id===privacy.mediaId)),'learn/227.mp4');
 });
 test('chapter labels and part labels serialize to learners while split media remains exact and paid',async()=>{
   const h=harness({catalog:LEARN_COURSES,media:LEARN_ASSETS});h.seed();h.instructors.push(instructor());
@@ -453,5 +521,8 @@ test('all22 learner parts expose their current downloadable bundle with scoped p
  const c=LEARN_COURSES.find(c=>c.id==='ai-sauce');
  for(const l of c.lessons){
  assert.equal(l.resourceIds.length,1,l.id);const asset=LEARN_ASSETS.find(a=>a.id===l.resourceIds[0]);
- assert.equal(asset.filename,'AI_SAUCE_'+l.id+'_LEARNER_FILES_V4.zip');assert.equal(asset.kind,'resource');assert.equal(asset.contentType,'application/zip');assert.ok(asset.bytes>0);assert.ok(asset.lessonIds.includes(l.id));assert.equal(asset.previewAllowed,false);}
+ const bundleName=new RegExp('^AI_SAUCE_'+l.id+'_LEARNER_FILES_V[0-9]+\\.zip$');
+ const latest=LEARN_ASSETS.filter(a=>bundleName.test(a.filename)).at(-1);
+ assert.ok(latest,l.id);assert.equal(asset.id,latest.id,'Use the current appended bundle for '+l.id);
+ assert.match(asset.filename,bundleName);assert.equal(asset.kind,'resource');assert.equal(asset.contentType,'application/zip');assert.ok(asset.bytes>0);assert.ok(asset.lessonIds.includes(l.id));assert.equal(asset.previewAllowed,false);}
 });

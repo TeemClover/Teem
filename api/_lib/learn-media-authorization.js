@@ -1,6 +1,7 @@
 import { sha256, cookieValue } from './core.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { LearnError, learnId, iso } from './learn-domain.js';
+import { companionEntitlement, isCourseBonusAsset } from './learn-bonus.js';
 
 function sessionToken(req) {
   return cookieValue(req, 'mc_session');
@@ -39,6 +40,9 @@ export async function authorizeLearnMedia(sql, req, {courseId,lessonId,assetId},
   const asset=assets.find(a=>a.id===assetId);
   const video=assetId===lesson.mediaId&&asset?.kind==='video',caption=assetId===lesson.captionId&&asset?.kind==='captions';
   const resource=[...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(assetId)&&asset?.kind==='resource';
-  if(!asset||asset.courseId!==course.id||!asset.lessonIds?.includes(lesson.id)||(!video&&!caption&&!resource))throw new LearnError('ASSET_NOT_FOUND',404);
+  const bonus=isCourseBonusAsset(course,lesson,asset);
+  if(!asset||asset.courseId!==course.id||!asset.lessonIds?.includes(lesson.id)||(!video&&!caption&&!resource&&!bonus))throw new LearnError('ASSET_NOT_FOUND',404);
+  if(asset.entitlement && (!bonus || (row.active_instructor!==true && await companionEntitlement(sql,row.account_id,course.id,time)!=='included')))
+    throw new LearnError('BONUS_ACCESS_REQUIRED',403,'บัญชีนี้ยังไม่มีสิทธิ์ดาวน์โหลดชุดคู่มือและ AI คู่คิด กรุณาติดต่อผู้สอนหากได้รับชุดนี้พร้อมคอร์ส');
   return {asset,mediaRow:row.pathname?{pathname:row.pathname,content_type:row.content_type,bytes:row.bytes,sha256:row.sha256}:null};
 }

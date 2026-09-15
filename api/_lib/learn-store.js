@@ -1,4 +1,5 @@
 import { LearnError, oneYearAfter } from './learn-domain.js';
+import { companionEntitlement } from './learn-bonus.js';
 
 const schemaPromises = new WeakMap();
 export const LEARN_SCHEMA = [
@@ -55,6 +56,7 @@ export async function ensureLearnSchema(sql) {
 
 export function createLearnStore(sql) {
   return {
+    bonusEntitlement: (userId,courseId,now) => companionEntitlement(sql,userId,courseId,now),
     ensure: () => ensureLearnSchema(sql),
     async account(userId) { return (await sql.query('SELECT id,email_verified_at FROM mc_accounts WHERE id=$1',[userId]))[0] || null; },
     async enroll(userId,courseId,now) {

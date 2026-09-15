@@ -98,6 +98,27 @@ async function dom(fetcher,search='') {
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(setImmediate);};
   return{ids,doc,window,location,history,mount,fire,settle,load:async()=>{await import(`../assets/learn.js?test=${++run}`);await settle();}};
 }
+
+test('bonus area exposes only authorized same-origin files and clears on account change',async()=>{
+  const base=mockedFetch(),bonus={title:'คู่มือ + AI คู่คิด',description:'อ่านแล้วลงมือ',status:'included',resources:[
+    {title:'คู่มือ PDF',mimeType:'application/pdf',url:media},{title:'AI คู่คิด .md',mimeType:'text/markdown',url:media},
+    {title:'unsafe',url:'https://foreign.example/private.pdf'}]};
+  let pending;const d=await dom(async url=>pending?pending.promise:url.includes('action=course&')?response({...courseData,bonus}):base(url),'?course=ai-sauce');
+  await d.load();const area=d.ids.get('course-bonus');assert.equal(area.hidden,false);
+  assert.match(area.textContent,/คู่มือ PDF/);assert.equal(area.all().filter(n=>n.tagName==='A').length,2);
+  assert.doesNotMatch(area.textContent,/unsafe/);
+  pending=defer();await d.fire('mc:account-changed');assert.equal(area.childElementCount,0);assert.equal(area.hidden,true);
+  pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();
+});
+test('bonus excluded and unresolved states keep learning available without bonus download links',async()=>{
+  for(const state of ['not_included','unverified']){
+    const base=mockedFetch(),d=await dom(async url=>url.includes('action=course&')?response({...courseData,bonus:{title:'คู่มือ',status:state,resources:[{url:media,title:'must not appear'}]}}):base(url),'?course=ai-sauce');
+    await d.load();assert.equal(d.ids.get('player-wrap').hidden,false);
+    const area=d.ids.get('course-bonus');assert.doesNotMatch(area.textContent,/must not appear/);
+    assert.ok(area.all().filter(n=>n.tagName==='A').every(n=>!n.href.includes('/api/learn-media')));
+    if(state==='unverified')assert.match(area.textContent,/ตรวจสิทธิ์/);
+  }
+});
 function mockedFetch(status='active') {return async url=>{if(url==='/api/auth/providers')return response({ok:true,providers:{email:true,google:false,otp:true}});const u=new URL(url,'https://www.myclover.com');const action=u.searchParams.get('action');if(action==='courses')return response({ok:true,user:{displayName:'ผู้เรียนทดสอบ'},courses:status==='empty'?[]:[{...active,status}]});if(action==='course')return response(courseData);if(action==='lesson')return response(lessonData(u.searchParams.get('lessonId')));return response({ok:false},404);};}
 test('course library accepts only exact local WebP covers, preserves full dimensions and falls back on image errors',async()=>{
   const cover='/learn/assets/course-covers/ai-sauce-v5.webp';

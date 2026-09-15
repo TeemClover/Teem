@@ -66,3 +66,13 @@
 
 /* Course covers keep the complete artwork at its intrinsic aspect ratio. */
 .course-art.course-art-cover{height:auto;padding:0;background:transparent}.course-art-cover::after{content:none}.course-cover{display:block;width:100%;height:auto;aspect-ratio:1672/941;object-fit:contain}
+:root{--bonus-paper:#f1ebdf}
+.course-bonus{margin:24px 0 32px;padding:clamp(22px,4vw,36px);background:var(--bonus-paper);border:1px solid #d6c8aa;border-radius:22px}
+.course-bonus h2{font-size:clamp(23px,3vw,32px);line-height:1.5;margin:8px 0 14px;overflow-wrap:anywhere}
+.course-bonus p{max-width:70ch;font-size:clamp(17px,2vw,19px);line-height:1.85}
+.bonus-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0}
+.bonus-files .resource-link{background:#fffdf8;min-width:0;padding:20px;overflow-wrap:anywhere}
+.bonus-howto{color:#466151}.bonus-status{font-weight:600}
+@media(max-width:720px){.bonus-files{grid-template-columns:1fr}.course-bonus{margin-top:18px;padding:22px}}
+
+.course-bonus{display:flow-root}.course-bonus .bonus-cover{float:right;width:130px;height:auto;margin:0 0 20px 28px;border-radius:7px;box-shadow:0 12px 30px #173e3030}.bonus-files{clear:both}@media(max-width:540px){.course-bonus .bonus-cover{float:none;display:block;width:150px;margin:0 auto 24px}}
