@@ -218,6 +218,28 @@
       1260
     ],
     "encoding": "Direct native canvas export as lossless PNG. No screenshot capture or JPEG re-encoding.",
-    "logoProvenance": "Inherited unchanged from V9; canonical myClover icon, official Airova SVG and original ChatGPT/Claude marks."
+    "logoProvenance": "Inherited unchanged from V9; canonical myClover icon, official Airova SVG and original ChatGPT/Claude marks.",
+    "status": "Superseded by V11: user clarified partner privilege rather than sole-provider exclusivity."
+  },
+  "airova-share-50-privilege-v11.png": {
+    "type": "Preferred original campaign with a 50-credit partner privilege from myClover; no sole-provider claim. Editorial artwork, not an Airova result.",
+    "sourceFile": "airova-share-exclusive-50-v10.png",
+    "editPatchFile": "../_source/share-v11-cta-patch.png",
+    "compositionFile": "../_source/share-preview-v11.html",
+    "promptFile": "../_source/share-v11-prompt.md",
+    "offer": {
+      "credits": 50,
+      "eligibility": "Sign up through the myClover referral to receive this partner benefit",
+      "signupUrl": "https://studio.airova.ai/auth/join?via=MYCLOVER",
+      "confirmedDate": "2026-09-16",
+      "confirmedBy": "User relaying platform confirmation and clarifying that other partners can also offer benefits",
+      "interpretation": "50 credits total. The referral is required for this benefit; myClover is not claimed to be the sole provider."
+    },
+    "treatment": "Only the CTA region changes to สิทธิพิเศษจาก myClover; the 50-credit offer, portrait, official logos, lighting and MCP badge remain from the approved base.",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Direct native canvas export as lossless PNG."
   }
 }

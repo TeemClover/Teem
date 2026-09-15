@@ -38,7 +38,7 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'airova/airova.css', 'airova/airova.js', 'airova/demo-controller.js',
   ...[
     'aistudio-white.svg', 'aistudio.svg', 'bytedance-seed.svg', 'gemini-omni.svg',
-    'creative-portal.webp', 'airova-share-thai-video-v3.jpg', 'airova-share-thai-video-v4.jpg', 'airova-share-thai-video-v5.png', 'airova-share-workflow-v7.png', 'airova-share-source-v8.png', 'airova-share-original-v9.png', 'airova-share-exclusive-50-v10.png', 'course-seedance.webp', 'pir-academy.png',
+    'creative-portal.webp', 'airova-share-thai-video-v3.jpg', 'airova-share-thai-video-v4.jpg', 'airova-share-thai-video-v5.png', 'airova-share-workflow-v7.png', 'airova-share-source-v8.png', 'airova-share-original-v9.png', 'airova-share-exclusive-50-v10.png', 'airova-share-50-privilege-v11.png', 'course-seedance.webp', 'pir-academy.png',
     'hero-car.webp', 'hero-character.webp', 'hero-fashion.webp',
     'tpl-adproduct-02.webp', 'tpl-ugc-01.webp',
     'story-learn.webp', 'story-create.webp', 'story-grow.webp',
