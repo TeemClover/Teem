@@ -1,8 +1,4 @@
 {
-  "course-seedance.png": {
-    "url": "https://www.piracademy.com/images/courses/seedance-advanced-video-production.png",
-    "type": "course cover"
-  },
   "pir-academy.png": {
     "url": "https://www.piracademy.com/images/logos/logo-piracademy.png",
     "type": "academy logo"
@@ -15,5 +11,62 @@
   "bytedance-seed.svg": {
     "sourcePage": "https://seed.bytedance.com/en/seedance2_5",
     "type": "provider lockup extracted from official inline SVG; label as ByteDance Seed, alongside Seedance 2.5"
+  },
+  "course-seedance.webp": {
+    "url": "https://www.piracademy.com/images/courses/seedance-advanced-video-production.png",
+    "type": "course cover",
+    "transform": "Resized and encoded as WebP for the web page."
+  },
+  "aistudio.svg": {
+    "url": "https://studio.airova.ai/marketing/logo/aistudio.svg",
+    "type": "official Airova logo"
+  },
+  "aistudio-white.svg": {
+    "url": "https://studio.airova.ai/marketing/logo/aistudio-white.svg",
+    "type": "official Airova logo"
+  },
+  "hero-car.webp": {
+    "url": "https://cdn.airova.ai/landing/hero/posters/hero-car.jpg",
+    "type": "official marketing poster, converted to WebP"
+  },
+  "hero-character.webp": {
+    "url": "https://cdn.airova.ai/landing/hero/posters/hero-character.jpg",
+    "type": "official marketing poster, converted to WebP"
+  },
+  "hero-fashion.webp": {
+    "url": "https://cdn.airova.ai/landing/hero/posters/hero-fashion.jpg",
+    "type": "official marketing poster, converted to WebP"
+  },
+  "tpl-ugc-01.webp": {
+    "url": "https://cdn.airova.ai/landing/posters/tpl-ugc-01.jpg",
+    "type": "official marketing poster, converted to WebP"
+  },
+  "tpl-adproduct-02.webp": {
+    "url": "https://cdn.airova.ai/landing/posters/tpl-adproduct-02.jpg",
+    "type": "official marketing poster, converted to WebP"
+  },
+  "showcase-car.mp4": {
+    "url": "https://cdn.airova.ai/landing/hero/hero-car.mp4",
+    "type": "official marketing clip; user authorized reuse"
+  },
+  "showcase-character.mp4": {
+    "url": "https://cdn.airova.ai/landing/hero/hero-character.mp4",
+    "type": "official marketing clip; user authorized reuse"
+  },
+  "showcase-fashion.mp4": {
+    "url": "https://cdn.airova.ai/landing/hero/hero-fashion.mp4",
+    "type": "official marketing clip; user authorized reuse"
+  },
+  "showcase-ugc.mp4": {
+    "url": "https://cdn.airova.ai/landing/tpl/ugc/01.mp4",
+    "type": "official marketing clip; user authorized reuse"
+  },
+  "creative-portal.png": {
+    "type": "Original illustration generated with built-in image_gen for myClover. Not an Airova output.",
+    "promptFile": "../README.md"
+  },
+  "creative-portal.webp": {
+    "sourceFile": "creative-portal.png",
+    "type": "optimized hero image"
   }
 }
