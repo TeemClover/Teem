@@ -38,7 +38,7 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'airova/airova.css', 'airova/airova.js',
   ...[
     'aistudio-white.svg', 'aistudio.svg', 'bytedance-seed.svg', 'gemini-omni.svg',
-    'creative-portal.webp', 'course-seedance.webp', 'pir-academy.png',
+    'creative-portal.webp', 'airova-share-thai-video-v2.jpg', 'course-seedance.webp', 'pir-academy.png',
     'hero-car.webp', 'hero-character.webp', 'hero-fashion.webp',
     'tpl-adproduct-02.webp', 'tpl-ugc-01.webp',
   ].map(name => `airova/assets/${name}`),

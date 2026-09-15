@@ -12,6 +12,12 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 - Course title and subjects verified from https://www.piracademy.com/course/seedance-advanced-video-production.
 - Airova's connected `list_models` catalog verified Omni and Seedance 2.5 available on 2026-09-15. Public homepage copy is older; do not downgrade this to a coming-soon claim based only on that copy.
 
+## Social sharing
+
+- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v2.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
+- Metadata leads with the introductory offer and Thai video creation. The complete built-in generation prompt and provenance are in `share-preview-prompt.md`.
+- The image has a new filename; previously cached Facebook cards may need a re-scrape in the Sharing Debugger.
+
 ## Interaction
 
 - Showcase is a 16-clip autoplay wall sourced from Airova's public marketing templates, reused at the user's request. Each clip has verified non-silent native audio; source URLs and audio measurements are in `wall-clips.json`.

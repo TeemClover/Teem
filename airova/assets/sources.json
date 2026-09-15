@@ -68,5 +68,13 @@
   "creative-portal.webp": {
     "sourceFile": "creative-portal.png",
     "type": "optimized hero image"
+  },
+  "airova-share-thai-video-v2.jpg": {
+    "type": "Original social share advertising artwork generated with built-in image_gen from the user-supplied portrait reference. Not an Airova output.",
+    "promptFile": "../share-preview-prompt.md",
+    "dimensions": [
+      1200,
+      630
+    ]
   }
 }
