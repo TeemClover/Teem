@@ -66,10 +66,10 @@ function renderCourseBonus(bonus) {
   const section=$('course-bonus'); section.replaceChildren(); section.hidden=!bonus;
   if (!bonus) return;
   const cover=el('img','','bonus-cover'); cover.src='/ai-source/assets/ai-sauce-companion-cover-v2.webp'; cover.width=540;cover.height=960;cover.loading='lazy';cover.alt='คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น';section.append(cover);
-  const heading=el('h2',bonus.title || 'คู่มือ AI ใส่ซอส + AI คู่คิดพาทำงาน'); heading.id='course-bonus-title';
-  section.append(el('p','อ่านทบทวน · เปิด AI แล้วเริ่มงาน','eyebrow'),heading);
+  const heading=el('h2',bonus.title || 'คู่มือ AI ใส่ซอส + AI ผู้ช่วยงาน'); heading.id='course-bonus-title';
+  section.append(el('p','อ่านทบทวน · เปิดผู้ช่วย แล้วลงมือ','eyebrow'),heading);
   if (bonus.description) section.append(el('p',bonus.description));
-  const messages={included:'ชุดนี้อยู่ในสิทธิ์ของคุณ ดาวน์โหลดเก็บไว้ แล้วเริ่มจากคู่มือ PDF ได้เลย',not_included:'แพ็กที่คุณสมัครมีบทเรียนและไฟล์ฝึกครบ ส่วนชุดคู่มือ PDF + AI คู่คิดนี้ไม่ได้รวมอยู่ในแพ็ก',unverified:'บทเรียนของคุณเปิดได้ตามเดิม กำลังตรวจข้อมูลสิทธิ์ชุดคู่มือ หากซื้อแพ็กที่รวมชุดนี้ ให้ติดต่อผู้สอนเพื่อตรวจสอบ',access_required:'เมื่อยืนยันชำระและเปิดสิทธิ์แล้ว ชุดนี้จะปรากฏตามแพ็กที่คุณสมัคร'};
+  const messages={included:'ชุดนี้อยู่ในสิทธิ์ของคุณ ดาวน์โหลดเก็บไว้ แล้วเริ่มจากคู่มือ PDF ได้เลย',not_included:'แพ็กที่คุณสมัครมีบทเรียนและไฟล์ฝึกครบ ส่วนชุดคู่มือ PDF + AI ผู้ช่วยงานนี้ไม่ได้รวมอยู่ในแพ็ก',unverified:'บทเรียนของคุณเปิดได้ตามเดิม กำลังตรวจข้อมูลสิทธิ์ชุดคู่มือ หากซื้อแพ็กที่รวมชุดนี้ ให้ติดต่อผู้สอนเพื่อตรวจสอบ',access_required:'เมื่อยืนยันชำระและเปิดสิทธิ์แล้ว ชุดนี้จะปรากฏตามแพ็กที่คุณสมัคร'};
   section.append(el('p',messages[bonus.status] || messages.unverified,'bonus-status'));
   if (bonus.status==='included') {
     const files=el('div','','bonus-files');
@@ -80,7 +80,7 @@ function renderCourseBonus(bonus) {
       label.append(el('small',/pdf/i.test(resource.mimeType) ? 'PDF · อ่านในมือถือได้' : '.MD · แนบหรือคัดลอกให้ AI ที่คุณใช้อยู่'));
       a.append(label,el('span','↓','resource-arrow'));files.append(a);
     }
-    section.append(files,el('p','เริ่มจากอ่านหลักคิดใน PDF → แนบไฟล์ .md ในแชต AI → ตอบคำถามทีละข้อ แล้วตรวจงานด้วยกัน','bonus-howto'));
+    section.append(files,el('p','อ่านหลักคิดใน PDF → แนบไฟล์ผู้ช่วยงาน .md ให้ AI → ช่วยกันเก็บซอส ทำร่าง ชิมและปรับ → บันทึกซอสกับสูตรไว้ใช้ต่อ','bonus-howto'));
   } else if (bonus.status==='unverified') {
     const a=el('a','ให้ผู้สอนตรวจสิทธิ์ ↗');a.href='https://lin.ee/rlSlhzT';a.target='_blank';a.rel='noopener noreferrer';section.append(a);
   }

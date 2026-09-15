@@ -62,7 +62,7 @@ export async function authorizeLearnAsset(sql,req,{courseId,lessonId,assetId},op
   // Every /learn asset belongs to the full course; the free course is /classroom.
   if (!access.active) throw new LearnError('COURSE_ACCESS_REQUIRED',403,'ไฟล์นี้อยู่ในสิทธิ์คอร์สเต็ม');
   if (asset.entitlement && (!bonus || await courseBonusStatus(options.store || createLearnStore(sql),authorized.user.id,course,access,options.now ?? Date.now())!=='included')) {
-    throw new LearnError('BONUS_ACCESS_REQUIRED',403,'บัญชีนี้ยังไม่มีสิทธิ์ดาวน์โหลดชุดคู่มือและ AI คู่คิด กรุณาติดต่อผู้สอนหากได้รับชุดนี้พร้อมคอร์ส');
+    throw new LearnError('BONUS_ACCESS_REQUIRED',403,'บัญชีนี้ยังไม่มีสิทธิ์ดาวน์โหลดชุดคู่มือและ AI ผู้ช่วยงาน กรุณาติดต่อผู้สอนหากได้รับชุดนี้พร้อมคอร์ส');
   }
   return {...authorized,asset,assetId};
 }

@@ -2655,13 +2655,13 @@ export const LEARN_COURSES = [
     "trialUrl": "/classroom/",
     "bonus": {
       "id": "ai-sauce-companion-v1",
-      "title": "คู่มือ AI ใส่ซอส + AI คู่คิดพาทำงาน",
-      "description": "อ่านทบทวนหลักคิด 36 หน้า แล้วแนบไฟล์คู่คิดให้ AI ถามทีละเรื่อง ใช้ซอสของคุณทำชิ้นงาน และเก็บวิธีไว้ใช้ต่อ",
+      "title": "คู่มือ AI ใส่ซอส + AI ผู้ช่วยงาน",
+      "description": "คู่มือพร้อมภาพประกอบ 36 หน้า + ผู้ช่วยงานที่ให้ AI ถาม เก็บซอส และทำร่างกับคุณ ทำไป ชิมไป ปรับไป แล้วเก็บซอส ชิ้นงาน และสูตรไว้ใช้ต่อ",
       "valueTHB": 1290,
       "lessonId": "FOUNDATION",
       "resourceIds": [
-        "m_7442bf578d1f80ebe7e8836fed65a8ac",
-        "m_4175a4b0038580f97018e45d277e9d5a"
+        "m_239d031ddb6bd86394fe85595fd6c78c",
+        "m_1d54eb10f819fecc15b9bb13c68f3299"
       ]
     }
   }
@@ -6195,6 +6195,36 @@ export const LEARN_ASSETS = [
     "contentType": "application/pdf",
     "disposition": "attachment",
     "bytes": 3142352,
+    "previewAllowed": false
+  },
+  {
+    "id": "m_239d031ddb6bd86394fe85595fd6c78c",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "FOUNDATION"
+    ],
+    "kind": "resource",
+    "entitlement": "ai-sauce-companion-v1",
+    "title": "คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น",
+    "filename": "AI_SAUCE_FIELD_GUIDE.pdf",
+    "contentType": "application/pdf",
+    "disposition": "attachment",
+    "bytes": 4256931,
+    "previewAllowed": false
+  },
+  {
+    "id": "m_1d54eb10f819fecc15b9bb13c68f3299",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "FOUNDATION"
+    ],
+    "kind": "resource",
+    "entitlement": "ai-sauce-companion-v1",
+    "title": "AI ใส่ซอส · ผู้ช่วยงานของคุณ",
+    "filename": "AI_SAUCE_WORK_COACH.md",
+    "contentType": "text/markdown; charset=utf-8",
+    "disposition": "attachment",
+    "bytes": 38416,
     "previewAllowed": false
   }
 ];
