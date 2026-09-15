@@ -23,3 +23,23 @@ test('real HTTP: public pages outside notebook remain available',async t=>{
   const h=await startSitePreview();t.after(()=>h.server.close());
   for(const file of ['/','/ako/','/xircle/','/course/','/learn/']){const r=await fetch(h.base+file,{redirect:'manual'});assert.equal(r.status,200,file);assert.match(r.headers.get('content-type'),/text\/html/);await r.arrayBuffer();}
 });
+
+test('real HTTP: reviewed marketing videos and review UI files cache without account data',async t=>{
+  const h=await startSitePreview();t.after(()=>h.server.close());
+  for(const [file,type] of [
+    ['/ako/assets/ako-food-choice.mp4','video/mp4'],
+    ['/ako/assets/ako-real-eating-onion-hero.m4v','video/mp4'],
+    ['/course/admin/reviews/reviews.css','text/css'],
+    ['/course/admin/reviews/reviews.js','text/javascript'],
+    ['/course/review-consent/consent.css','text/css'],
+    ['/course/review-consent/consent.js','text/javascript'],
+  ]){
+    const response=await fetch(h.base+file,{redirect:'manual'});
+    assert.equal(response.status,200,file);assert.ok(response.headers.get('content-type').startsWith(type),file);
+    assert.match(response.headers.get('cache-control'),/public.*max-age=300.*must-revalidate/,file);
+    assert.equal(response.headers.get('set-cookie'),null,file);assert.ok((await response.arrayBuffer()).byteLength>0,file);
+    const repeat=await fetch(h.base+file,{headers:{'If-None-Match':response.headers.get('etag')},redirect:'manual'});
+    assert.equal(repeat.status,304,file);assert.equal((await repeat.arrayBuffer()).byteLength,0,file);
+  }
+  assert.deepEqual(h.fixture.queries,[],'public videos and UI code never query session/account data');
+});

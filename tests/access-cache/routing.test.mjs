@@ -63,6 +63,10 @@ test('images and public CSS/fonts/runtime stay static for missing, fake, valid a
     '/course/thedent912/course.css', '/course/thedent912/fonts/ibm-plex-sans-thai-thai-400.woff2',
     '/course/thedent912/opening.js', '/course/thedent912/evaluation.js',
     '/assets/account.js', '/learn/assets/learn.css', '/shelf/shelf.js',
+    '/course/admin/reviews/reviews.css', '/course/admin/reviews/reviews.js',
+    '/course/review-consent/consent.css', '/course/review-consent/consent.js',
+    '/media/home-opening-bg.mp4', '/ako/assets/ako-real-eating-onion-hero.m4v',
+    '/hf/assets/example-ako.mp4',
     '/shelf/admin/admin.css', '/forge/original/01.jpeg',
     '/xircle/assets/product/astamega-320.webp', '/xvisor/quest/assets/teem-ako-guides-v2.png',
   ];
@@ -101,7 +105,7 @@ test('new or private image-looking paths inside protected storage never get a pu
     if (cookie===sessions[2]) assert.equal(destination(response)?.pathname,'/api/course-content',pathname);
     else assert.equal(response.status,401,pathname);
   }
-  for (const pathname of ['/shelf/source/private.jpg','/shelf/internal.png']) for (const cookie of sessions) {
+  for (const pathname of ['/shelf/internal.png']) for (const cookie of sessions) {
     const response=await request(pathname,cookie);
     assert.equal(response.status,403,pathname);
     assert.equal(destination(response),null,pathname);
@@ -110,11 +114,32 @@ test('new or private image-looking paths inside protected storage never get a pu
   }
 });
 
+test('legacy shelf redirects carry private cache policy for every session state',async()=>{
+  for(const pathname of ['/shelf/source','/shelf/source/','/shelf/source/private.jpg',
+    '/shelf/source/method/source.md?from=old-link','/shelf/catalog.json','/shelf/README.md','/shelf/CHANGELOG.md']){
+    for(const cookie of sessions)for(const method of ['GET','HEAD']){
+      const response=await request(pathname,cookie,method);
+      assert.equal(response.status,307,pathname);
+      assert.equal(destination(response),null,pathname);
+      assert.equal(response.headers.get('x-middleware-next'),null,pathname);
+      const target=new URL(response.headers.get('location'));
+      assert.equal(target.pathname,'/shelf/',pathname);
+      assert.equal(target.search,new URL(pathname,'https://www.myclover.com').search,pathname);
+      assert.match(response.headers.get('cache-control'),/private.*no-store/,pathname);
+      assert.equal(response.headers.get('cdn-cache-control'),'no-store',pathname);
+      assert.equal(response.headers.get('vercel-cdn-cache-control'),'no-store',pathname);
+      assertNoPublicCache(response,pathname);
+    }
+  }
+});
+
 test('private HTML and lesson payloads keep authentication routing and never receive public cache headers',async()=>{
   for (const pathname of [
     '/classroom/awaken/notebook/?from=dungeon', '/classroom/lv5/vault-data.js',
     '/classroom/lv4/myclover-growth-blueprint.pdf',
     '/course/thedent912/', '/course/thedent912/course-content.js',
+    '/course/thedent912/course.js', '/course/thedent/course.js',
+    '/classroom/media/lesson3-source-example.mp4',
     '/course/thedent912/opening-data.js', '/course/thedent912/tools.js',
     '/course/thedent912/resources/answer-key.md', '/course/thedent912/downloads/the-dent-course-kit.zip',
   ]) for (const cookie of sessions) {

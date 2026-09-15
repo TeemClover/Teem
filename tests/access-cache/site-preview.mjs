@@ -13,7 +13,7 @@ import { publicAssetPath } from '../../routing/public-assets.js';
 import { createAuthFixture } from './auth-fixture.mjs';
 
 const root = fileURLToPath(new URL('../..', import.meta.url));
-const types = { '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.png':'image/png', '.webp':'image/webp', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.gif':'image/gif', '.woff2':'font/woff2', '.woff':'font/woff', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.html':'text/html; charset=utf-8' };
+const types = { '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.png':'image/png', '.webp':'image/webp', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.gif':'image/gif', '.woff2':'font/woff2', '.woff':'font/woff', '.js':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.html':'text/html; charset=utf-8', '.mp4':'video/mp4', '.m4v':'video/mp4' };
 const shells = new Set(['/index.html','/learn/index.html','/course/index.html','/ako/index.html','/xircle/index.html','/shelf/index.html','/shelf/admin/index.html','/course/admin/index.html']);
 
 export async function startSitePreview(port = 0) {

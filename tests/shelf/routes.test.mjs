@@ -12,9 +12,12 @@ test('direct catalog, markdown, templates, docs and encoded variants never expos
 test('unrelated routes are outside shelf policy', () => {
   for (const route of ['/', '/resume/', '/shelfish/', '/api/shelf', '/meet/', '/ako/']) assert.equal(isPrivateShelfPath(route), false, route);
 });
-test('deployment bundles sources into API and redirects direct source paths to the shelf', async () => {
+test('deployment bundles sources into API and leaves private redirects to middleware', async () => {
   const config = JSON.parse(await readFile(new URL('../../vercel.json', import.meta.url), 'utf8'));
   assert.equal(config.functions['api/shelf.js'].includeFiles, 'shelf/{catalog.json,source/**}');
-  assert(config.redirects.some(rule => rule.source === '/shelf/source/:path*' && rule.destination === '/shelf/'));
-  assert(config.redirects.some(rule => rule.source === '/shelf/catalog.json' && rule.destination === '/shelf/'));
+  // A vercel.json redirect can run before the private middleware response and
+  // return public cache headers even when the source bytes remain protected.
+  for(const source of ['/shelf/source/:path*','/shelf/catalog.json','/shelf/README.md','/shelf/CHANGELOG.md']){
+    assert(!config.redirects.some(rule => rule.source === source),source);
+  }
 });

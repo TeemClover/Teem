@@ -13,26 +13,6 @@
       "permanent": false
     },
     {
-      "source": "/shelf/source/:path*",
-      "destination": "/shelf/",
-      "permanent": false
-    },
-    {
-      "source": "/shelf/catalog.json",
-      "destination": "/shelf/",
-      "permanent": false
-    },
-    {
-      "source": "/shelf/README.md",
-      "destination": "/shelf/",
-      "permanent": false
-    },
-    {
-      "source": "/shelf/CHANGELOG.md",
-      "destination": "/shelf/",
-      "permanent": false
-    },
-    {
       "source": "/xvisor",
       "destination": "/xvisor/",
       "permanent": true
@@ -589,7 +569,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "public, max-age=300, must-revalidate"
         }
       ]
     },
@@ -733,6 +713,74 @@
         {
           "key": "Vercel-CDN-Cache-Control",
           "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/course/admin/reviews/reviews.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/course/admin/reviews/reviews.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/course/review-consent/consent.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/course/review-consent/consent.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        },
+        {
+          "key": "Vercel-CDN-Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
         }
       ]
     }

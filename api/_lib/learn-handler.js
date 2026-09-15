@@ -1,8 +1,9 @@
 import { currentUser, database, sameOrigin } from './core.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { createLearnStore } from './learn-store.js';
-import { authorizeLearnLesson, enrollLearnCourse, loadCourseAccess, verifiedLearnUser } from './learn-authorization.js';
+import { authorizeLearnLesson, catalogLesson, enrollLearnCourse, loadCourseAccess, verifiedLearnUser } from './learn-authorization.js';
 import { courseAccess, LearnError, learnId, progressSummary, validateProgress } from './learn-domain.js';
+import { loadLearnSnapshot } from './learn-snapshot.js';
 
 const MAX_BODY_BYTES = 8192;
 function reply(res,status,body) { res.statusCode=status; res.setHeader('Content-Type','application/json; charset=utf-8'); res.end(JSON.stringify(body)); }
@@ -71,7 +72,13 @@ function courseView(course,access) {
 }
 
 export function createLearnHandler({getSql=database,lookupUser=currentUser,storeFactory=createLearnStore,courses=LEARN_COURSES,assets=LEARN_ASSETS,now=()=>Date.now()}={}) {
+  const useSnapshot=lookupUser===currentUser && storeFactory===createLearnStore;
   return async function handler(req,res) {
+    let metrics=null;
+    const respond=(status,body)=>{
+      if(metrics)res.setHeader('Server-Timing',`learn-db;dur=${metrics.dbMs.toFixed(1)}, learn-queries;desc="${metrics.queries}"`);
+      return reply(res,status,body);
+    };
     for (const key of ['Cache-Control','CDN-Cache-Control','Vercel-CDN-Cache-Control']) res.setHeader(key,'private, no-store, max-age=0');
     res.setHeader('Vary','Cookie, Origin');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
     try {
@@ -89,19 +96,48 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
         if (!user?.id) throw new LearnError('AUTH_REQUIRED',401);
         await store.ensure();
         const enrollments=await store.enrollments(user.id);
-        return reply(res,200,{ok:true,hasEnrollment:enrollments.some(e=>courses.some(c=>c.id===e.course_id))});
+        return respond(200,{ok:true,hasEnrollment:enrollments.some(e=>courses.some(c=>c.id===e.course_id))});
       }
       if (req.method==='POST') {
         const body=await readBody(req);
         if (Object.keys(body).some(k=>k!=='courseId')) throw new LearnError('INVALID_ENROLLMENT_FIELDS');
         const result=await enrollLearnCourse(sql,req,{courseId:body.courseId},options);
-        return reply(res,200,{ok:true,user:publicUser(result.user),course:courseView(result.course,result.access),access:result.access});
+        return respond(200,{ok:true,user:publicUser(result.user),course:courseView(result.course,result.access),access:result.access});
+      }
+      if (useSnapshot && (action==='lesson' || action==='progress')) {
+        metrics={queries:0,dbMs:0};
+        const measuredSql={query:async(...args)=>{const start=performance.now();metrics.queries++;try{return await sql.query(...args);}finally{metrics.dbMs+=performance.now()-start;}}};
+        if (req.method==='PUT' || action==='lesson') {
+          const body=req.method==='PUT' ? await readBody(req) : null;
+          const courseId=body ? learnId(body.courseId,'COURSE_ID') : requestedCourse(req);
+          const lessonId=learnId(body ? body.lessonId : parameter(req,'lessonId'),'LESSON_ID');
+          const result=await loadLearnSnapshot(measuredSql,req,{courseId,lessonId,includeReading:!body,now:time});
+          const {course,lesson}=catalogLesson(courses,courseId,lessonId);
+          if(result.access.status==='not_enrolled')throw new LearnError('COURSE_ENROLLMENT_REQUIRED',403,'ลงทะเบียนคอร์สนี้ก่อนเข้าเรียน');
+          if(!result.access.active)throw new LearnError('COURSE_ACCESS_REQUIRED',403,'บทนี้อยู่ในคอร์สเต็ม กรุณาตรวจสอบสิทธิ์เรียนของบัญชีนี้');
+          if(body) {
+            const writes=createLearnStore(measuredSql);
+            await writes.saveProgress(result.user.id,courseId,lessonId,validateProgress(body,lesson),new Date(time));
+            return respond(200,{ok:true,courseId,progress:progressSummary(await writes.progress(result.user.id,courseId),course)});
+          }
+          const reading=result.reading;
+          return respond(200,{ok:true,courseId,lesson:{...lessonView(course,lesson,result.access,assets),reading,readingAvailable:Boolean(reading.trim())},access:result.access,preview:false});
+        }
+        // Progress reads retain their original identity-first error precedence.
+        let courseId,queryError;
+        try { courseId=requestedCourse(req); } catch(error) { queryError=error; }
+        const result=await loadLearnSnapshot(measuredSql,req,{courseId,includeProgress:true,now:time});
+        if(queryError)throw queryError;
+        const course=courses.find(c=>c.id===courseId);
+        if(!course)throw new LearnError('COURSE_NOT_FOUND',404);
+        if(result.access.status==='not_enrolled')throw new LearnError('COURSE_ENROLLMENT_REQUIRED',403);
+        return respond(200,{ok:true,courseId,progress:progressSummary(result.progress,course)});
       }
       if (req.method==='PUT') {
         const body=await readBody(req);const courseId=learnId(body.courseId,'COURSE_ID'),lessonId=learnId(body.lessonId,'LESSON_ID');
         const allowed=await authorizeLearnLesson(sql,req,{courseId,lessonId},options);
         await store.saveProgress(allowed.user.id,courseId,lessonId,validateProgress(body,allowed.lesson),new Date(time));
-        return reply(res,200,{ok:true,courseId,progress:progressSummary(await store.progress(allowed.user.id,courseId),allowed.course)});
+        return respond(200,{ok:true,courseId,progress:progressSummary(await store.progress(allowed.user.id,courseId),allowed.course)});
       }
       if (action==='lesson') {
         const result=await authorizeLearnLesson(sql,req,{courseId:requestedCourse(req),lessonId:learnId(parameter(req,'lessonId'),'LESSON_ID')},options);
@@ -109,7 +145,7 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
         // specific lesson. Course metadata and the public catalog never carry them.
         const reading=await store.reading?.(result.course.id,result.lesson.id) || '';
         const lesson={...lessonView(result.course,result.lesson,result.access,assets),reading,readingAvailable:Boolean(reading.trim())};
-        return reply(res,200,{ok:true,courseId:result.course.id,lesson,access:result.access,preview:result.preview});
+        return respond(200,{ok:true,courseId:result.course.id,lesson,access:result.access,preview:result.preview});
       }
       const user=await verifiedLearnUser(sql,req,{store,lookupUser});await store.ensure();
       if (action==='courses') {
@@ -123,20 +159,20 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
             videoLessonCount:course.lessons.filter(l=>l.mediaId).length,
             access,progress:{completedLessons:progress.completedLessons,totalLessons:progress.totalLessons,percent:progress.percent}});
         }
-        return reply(res,200,{ok:true,user:publicUser(user),courses:result});
+        return respond(200,{ok:true,user:publicUser(user),courses:result});
       }
       const courseId=requestedCourse(req);const course=courses.find(c=>c.id===courseId);
       if(!course)throw new LearnError('COURSE_NOT_FOUND',404);
       const access=await loadCourseAccess(store,user.id,course.id,time);
       if(access.status==='not_enrolled')throw new LearnError('COURSE_ENROLLMENT_REQUIRED',403);
       const progress=progressSummary(await store.progress(user.id,course.id),course);
-      if(action==='progress')return reply(res,200,{ok:true,courseId,progress});
-      return reply(res,200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress});
+      if(action==='progress')return respond(200,{ok:true,courseId,progress});
+      return respond(200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress});
     } catch(error) {
       if (!(error instanceof LearnError)) console.error('LEARN_UNAVAILABLE',String(error?.code || error?.name || 'UnknownError').replace(/[^A-Za-z0-9_-]/g,'').slice(0,60));
       const status=error instanceof LearnError ? error.status : 503;
       const code=error instanceof LearnError ? error.code : 'LEARN_UNAVAILABLE';
-      return reply(res,status,{ok:false,error:code,code,message:error instanceof LearnError ? error.message : 'ห้องเรียนยังไม่พร้อม กรุณาลองใหม่อีกครั้ง'});
+      return respond(status,{ok:false,error:code,code,message:error instanceof LearnError ? error.message : 'ห้องเรียนยังไม่พร้อม กรุณาลองใหม่อีกครั้ง'});
     }
   };
 }

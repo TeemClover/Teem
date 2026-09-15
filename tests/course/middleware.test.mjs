@@ -59,7 +59,9 @@ test('shelf source files stay private before dotted-asset exemptions, regardless
   ]) {
     for (const session of [undefined, cookie]) {
       const result = await invoke(pathname, session);
-      assert.equal(result.status, 403, pathname);
+      const legacyRedirect = ['/shelf/catalog.json', '/shelf/source/organization/handoff.md', '/shelf/README.md'].includes(pathname);
+      assert.equal(result.status, legacyRedirect ? 307 : 403, pathname);
+      assert.equal(result.headers.get('location'), legacyRedirect ? 'https://www.myclover.com/shelf/' : null, pathname);
       assertPrivate(result, pathname);
       assert.equal(result.headers.get('x-content-type-options'), 'nosniff');
     }

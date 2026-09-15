@@ -5,6 +5,7 @@ import { mkdtemp, mkdir, writeFile, readFile, realpath, stat, symlink, rm } from
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createLearnMediaHandler, learnMediaPathname, mediaRange, privateBlobCredentials } from './learn-media-handler.js';
+import { PRIVATE_VIDEO_CACHE } from './learn-media-cache.js';
 import { createLearnFoundationHandler, foundationFile } from '../learn-foundation.js';
 import { LEARN_ASSETS } from './learn-catalog.js';
 import { LearnError } from './learn-domain.js';
@@ -36,8 +37,8 @@ function mediaHarness(options={}) {
       return {statusCode:200,headers,stream:new ReadableStream({start(c){c.enqueue(payload);c.close();},cancel(){calls.push(['cancel']);}})};
     },
   });
-  async function call({method='GET',range,url}={}){
-    const req={method,url:url||'/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+asset.id,headers:range===undefined?{}:{range}};
+  async function call({method='GET',range,url,headers={}}={}){
+    const req={method,url:url||'/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+asset.id,headers:{...headers,...(range===undefined?{}:{range})}};
     const res=new Reply();await handler(req,res);return res;
   }
   return {call,calls,asset};
@@ -102,6 +103,91 @@ test('HEAD has identical auth, no body or Blob fetch, and ignores Range',async()
 test('partial response reports the exact byte range and streamed content',async()=>{
   const h=mediaHarness(),r=await h.call({range:'bytes=2-5'});assert.equal(r.statusCode,206);assert.equal(r.body,'llo ');
   assert.equal(r.headers['content-range'],'bytes 2-5/12');assert.equal(r.headers['content-length'],'4');
+});
+const VIDEO_ETAG='"sha256-'+ '1'.repeat(64)+'"';
+test('only successful videos permit private browser storage, with a strong validator and mandatory revalidation',async()=>{
+  for(const request of [{},{method:'HEAD'},{range:'bytes=2-5'}]){
+    const r=await mediaHarness().call(request);
+    assert.equal(r.headers.etag,VIDEO_ETAG);assert.equal(r.headers['cache-control'],PRIVATE_VIDEO_CACHE);
+    assert.equal(r.headers.vary,'Cookie');assert.equal(r.headers['cdn-cache-control'],'private, no-store');
+    assert.equal(r.headers['vercel-cdn-cache-control'],'private, no-store');
+  }
+});
+test('conditional GET, HEAD and Range revalidate current access and registry before bodyless 304 without storage access',async()=>{
+  for(const request of [{},{method:'HEAD'},{range:'bytes=2-5'}]){
+    const h=mediaHarness({getOidcToken:async()=>{throw new Error('304 must not need storage');}});
+    const r=await h.call({...request,headers:{'if-none-match':VIDEO_ETAG}});
+    assert.equal(r.statusCode,304);assert.equal(r.body,'');assert.equal(r.headers.etag,VIDEO_ETAG);
+    assert.equal(r.headers['cache-control'],PRIVATE_VIDEO_CACHE);assert.equal(r.headers.vary,'Cookie');
+    assert.equal(r.headers['content-length'],undefined);assert.equal(r.headers['content-range'],undefined);
+    assert.deepEqual(h.calls.filter(c=>c[0]!=='timing').map(c=>c[0]),['authorize','sql']);
+    assert.equal(h.calls.find(c=>c[0]==='timing')[1].status,304);
+  }
+});
+test('If-None-Match supports weak tags, complete lists and wildcard without partial or malformed matches',async()=>{
+  for(const header of [VIDEO_ETAG,'W/'+VIDEO_ETAG,'*','"old", W/'+VIDEO_ETAG,'"opaque,comma", '+VIDEO_ETAG,', '+VIDEO_ETAG+' ,']){
+    assert.equal((await mediaHarness().call({headers:{'if-none-match':header}})).statusCode,304,header);
+  }
+  for(const header of ['"old"',VIDEO_ETAG+'junk','*,'+VIDEO_ETAG,VIDEO_ETAG+' "other"','broken,'+VIDEO_ETAG,'w/'+VIDEO_ETAG,[VIDEO_ETAG]]){
+    assert.equal((await mediaHarness().call({headers:{'if-none-match':header}})).statusCode,200,String(header));
+  }
+});
+test('If-Match is a strong precondition and is evaluated before matching If-None-Match',async()=>{
+  for(const header of ['*',VIDEO_ETAG,'"old", '+VIDEO_ETAG]){
+    assert.equal((await mediaHarness().call({headers:{'if-match':header}})).statusCode,200);
+  }
+  for(const header of ['"old"','W/'+VIDEO_ETAG,VIDEO_ETAG+'junk']){
+    const h=mediaHarness(),r=await h.call({headers:{'if-match':header,'if-none-match':VIDEO_ETAG}});
+    assert.equal(r.statusCode,412);assert.equal(r.headers['cache-control'],'private, no-store');assert.equal(r.headers.etag,undefined);
+    assert.equal(h.calls.some(c=>c[0]==='get'),false);
+  }
+});
+test('If-Range matches only the current strong ETag and otherwise sends full current bytes',async()=>{
+  for(const header of [VIDEO_ETAG,' '+VIDEO_ETAG+' ']){
+    const r=await mediaHarness().call({range:'bytes=2-5',headers:{'if-range':header}});
+    assert.equal(r.statusCode,206);assert.equal(r.body,'llo ');assert.equal(r.headers['content-range'],'bytes 2-5/12');
+  }
+  for(const header of ['"old"','W/'+VIDEO_ETAG,'Tue, 15 Sep 2026 10:00:00 GMT','*','',[VIDEO_ETAG]]){
+    const h=mediaHarness(),r=await h.call({range:'bytes=2-5',headers:{'if-range':header}});
+    assert.equal(r.statusCode,200);assert.equal(r.body,'Hello World!');assert.equal(r.headers['content-range'],undefined);
+    assert.equal(h.calls.find(c=>c[0]==='get')[2].headers.Range,undefined);
+  }
+});
+test('conditional evaluation precedes Range parsing and HEAD always ignores Range',async()=>{
+  assert.equal((await mediaHarness().call({range:'bad',headers:{'if-none-match':VIDEO_ETAG}})).statusCode,304);
+  assert.equal((await mediaHarness().call({range:'bad',headers:{'if-range':'"old"'}})).statusCode,200);
+  const invalid=await mediaHarness().call({range:'bad',headers:{'if-range':VIDEO_ETAG}});
+  assert.equal(invalid.statusCode,416);assert.equal(invalid.headers.etag,undefined);assert.equal(invalid.headers['cache-control'],'private, no-store');
+  assert.equal((await mediaHarness().call({method:'HEAD',range:'bad',headers:{'if-range':VIDEO_ETAG}})).statusCode,200);
+});
+test('a changed registered digest cannot validate or resume an older cached video',async()=>{
+  for(const headers of [{'if-none-match':VIDEO_ETAG},{'if-range':VIDEO_ETAG}]){
+    const r=await mediaHarness({row:{sha256:'2'.repeat(64)}}).call({headers,...(headers['if-range']?{range:'bytes=2-5'}:{})});
+    assert.equal(r.statusCode,200);assert.equal(r.body,'Hello World!');assert.equal(r.headers.etag,'"sha256-'+ '2'.repeat(64)+'"');
+  }
+});
+test('matching validators cannot hide an access denial or broken registry',async()=>{
+  for(const options of [{denied:'COURSE_ACCESS_REQUIRED'},{denied:'AUTH_REQUIRED'},{row:{pathname:'learn/001.mp4'}},{row:{sha256:'invalid'}},{row:{bytes:13}}]){
+    for(const method of ['GET','HEAD']){
+      const h=mediaHarness(options),r=await h.call({method,headers:{'if-none-match':VIDEO_ETAG}});
+      assert.ok(r.statusCode===403||r.statusCode===503);assert.equal(r.headers.etag,undefined);
+      assert.equal(r.headers['cache-control'],'private, no-store');assert.equal(h.calls.some(c=>c[0]==='get'),false);
+    }
+  }
+});
+test('documents and captions keep no-store and do not issue video cache validators',async()=>{
+  for(const asset of [{kind:'resource',filename:'example.html',contentType:'text/html; charset=utf-8'},{kind:'captions',filename:'captions.srt',contentType:'application/x-subrip'}]){
+    const r=await mediaHarness({asset}).call({headers:{'if-none-match':'*'}});
+    assert.equal(r.statusCode,200);assert.equal(r.headers['cache-control'],'private, no-store');assert.equal(r.headers.etag,undefined);
+    assert.match(r.headers['content-disposition'],/^attachment;/);assert.equal(r.body,'Hello World!');
+  }
+});
+test('upstream failures and invalid media responses never permit cached error reuse',async()=>{
+  for(const options of [{throwBlob:true},{badLength:true},{ignoreRange:true},{getOidcToken:async()=>{throw Error('unavailable');}}]){
+    const r=await mediaHarness(options).call({range:'bytes=2-5'});
+    assert.ok(r.statusCode===502||r.statusCode===503);assert.equal(r.headers['cache-control'],'private, no-store');assert.equal(r.headers.etag,undefined);
+    assert.equal(r.headers['cdn-cache-control'],'private, no-store');assert.equal(r.headers['vercel-cdn-cache-control'],'private, no-store');
+  }
 });
 test('performance headers and logs contain only timing metrics and HTTP status',async()=>{
   const h=mediaHarness(),r=await h.call({range:'bytes=2-5'});

@@ -6,6 +6,7 @@ import { database } from './core.js';
 import { authorizeLearnMedia } from './learn-media-authorization.js';
 import { LearnError } from './learn-domain.js';
 import { LEARN_ASSETS } from './learn-catalog.js';
+import { PRIVATE_VIDEO_CACHE, videoETag, videoPreconditionStatus, ifRangeMatches } from './learn-media-cache.js';
 
 const mediaSchemaPromises = new WeakMap();
 export async function ensureLearnMediaSchema(sql) {
@@ -93,15 +94,30 @@ export function createLearnMediaHandler({
         || size !== asset.bytes || row.content_type !== asset.contentType || !/^[a-f0-9]{64}$/.test(row.sha256)) {
         throw new LearnError('MEDIA_NOT_READY', 503, 'ไฟล์บทเรียนนี้กำลังเตรียม กรุณาติดต่อผู้สอน');
       }
-      const credentials = await measure('storage_auth',()=>privateBlobCredentials(config,getOidcToken));
+      const etag = videoETag(asset, row);
+      const videoCacheHeaders = () => {
+        if (etag) { res.setHeader('ETag', etag); res.setHeader('Cache-Control', PRIVATE_VIDEO_CACHE); }
+      };
+      // Never validate a browser's cached bytes before checking current account
+      // access and the complete private registry above. No Blob request is
+      // needed for unchanged bytes; shared/CDN caches remain disabled.
+      const precondition = videoPreconditionStatus(req.headers, etag);
+      if (precondition === 412) throw new LearnError('MEDIA_PRECONDITION_FAILED', 412);
+      if (precondition === 304) {
+        res.statusCode = 304; videoCacheHeaders(); timingHeaders(); return res.end();
+      }
       // Range applies to GET, while HEAD uses the same authorization without a blob read.
-      const range = req.method === 'GET' ? mediaRange(req.headers?.range, size) : null;
+      // A failed If-Range must ignore Range entirely (even an invalid range),
+      // so a browser cannot combine old cached bytes with a new representation.
+      const range = req.method === 'GET' && ifRangeMatches(req.headers?.['if-range'], etag)
+        ? mediaRange(req.headers?.range, size) : null;
+      const credentials = await measure('storage_auth',()=>privateBlobCredentials(config,getOidcToken));
       res.setHeader('Content-Type', asset.contentType); res.setHeader('Accept-Ranges', 'bytes');
       if (asset.kind !== 'video') {
         res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodeURIComponent(asset.filename || 'course-file')}`);
         res.setHeader('Content-Security-Policy', "default-src 'none'; sandbox");
       }
-      if (req.method === 'HEAD') { res.statusCode = 200; res.setHeader('Content-Length', size);timingHeaders();return res.end(); }
+      if (req.method === 'HEAD') { res.statusCode = 200; res.setHeader('Content-Length', size);videoCacheHeaders();timingHeaders();return res.end(); }
       const controller = new AbortController();
       res.once('close', () => { if (!res.writableFinished) controller.abort(); });
       const result = await measure('blob_headers',()=>getBlob(pathname, {
@@ -117,6 +133,7 @@ export function createLearnMediaHandler({
       res.statusCode = range ? 206 : 200;
       if (range) res.setHeader('Content-Range', contentRange);
       res.setHeader('Content-Length', expectedLength);
+      videoCacheHeaders();
       timingHeaders();
       await pipeline(Readable.fromWeb(result.stream), res);
     } catch (error) {
@@ -124,6 +141,7 @@ export function createLearnMediaHandler({
       const known = error instanceof LearnError; res.statusCode = known ? error.status : 503;
       if (!known) console.error('LEARN_MEDIA_UNAVAILABLE',String(error?.code || error?.name || 'UnknownError').replace(/[^A-Za-z0-9_-]/g,'').slice(0,60));
       res.removeHeader('Content-Length'); res.removeHeader('Content-Disposition'); res.removeHeader('Content-Range');
+      res.removeHeader('ETag'); res.setHeader('Cache-Control', 'private, no-store');
       if (res.statusCode === 416 && Number.isSafeInteger(size) && size > 0) res.setHeader('Content-Range', `bytes */${size}`);
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       timingHeaders();

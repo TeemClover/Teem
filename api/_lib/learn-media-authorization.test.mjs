@@ -72,6 +72,29 @@ test('stream handler uses the combined authorization without any migration or ex
   response.setHeader=(k,v)=>{response.headers[k.toLowerCase()]=v;};response.removeHeader=k=>{delete response.headers[k.toLowerCase()];};
   await handler({...request,method:'GET',url:'/api/learn-media?'+new URLSearchParams(ids)},response);
   assert.equal(response.statusCode,200);assert.equal(blobCalls,1);assert.equal(f.calls.length,1);assert.equal(Buffer.concat(response.parts).toString(),'Hello World!');
-  assert.equal(response.headers['cache-control'],'private, no-store');assert.match(response.headers['server-timing'],/authorization;dur=/);
+  assert.equal(response.headers['cache-control'],'private, max-age=0, must-revalidate');assert.match(response.headers['server-timing'],/authorization;dur=/);
   assert.doesNotMatch(JSON.stringify(timings),/alice|fixture-session|test-private|pathname|m_aaaa/);
+});
+test('known cached video ETag never bypasses fresh logout, revocation, verification, enrollment or asset checks',async()=>{
+  const f=fixture();let storageCalls=0;
+  const handler=createLearnMediaHandler({getSql:()=>f.sql,authorize:(sql,req,values)=>authorizeLearnMedia(sql,req,values,options),registryAssets:assets,
+    timingLog:()=>{},getOidcToken:async()=>{storageCalls++;throw Error('conditional requests must not reach storage');}});
+  const call=async({row={...allowed},cookie=request.headers.cookie,values=ids,method='GET'}={})=>{
+    f.state.row=row;
+    const response=new Writable({write(chunk,encoding,done){this.parts.push(Buffer.from(chunk));done();}});response.parts=[];response.headers={};
+    response.setHeader=(k,v)=>{response.headers[k.toLowerCase()]=v;};response.removeHeader=k=>{delete response.headers[k.toLowerCase()];};
+    await handler({method,url:'/api/learn-media?'+new URLSearchParams(values),headers:{cookie,'if-none-match':'"sha256-'+ '1'.repeat(64)+'"'}},response);
+    return response;
+  };
+  assert.equal((await call()).statusCode,304);assert.equal(f.calls.length,1);
+  for(const method of ['GET','HEAD']){
+    for(const [change,status] of [[{active_grant:false},403],[{account_verified_at:null},403],[{session_verified_at:null},403],
+      [{enrolled_user_id:'bob'},403],[{session_expires_at:new Date(NOW)},401],[{pathname:'learn/001.mp4'},503]]){
+      const r=await call({method,row:{...allowed,...change}});assert.equal(r.statusCode,status);assert.equal(r.headers.etag,undefined);assert.equal(r.headers['cache-control'],'private, no-store');
+    }
+    assert.equal((await call({method,row:null})).statusCode,401);
+    for(const cookie of ['', 'mc_session=%XX','mc_session=one; mc_session=two'])assert.equal((await call({method,cookie})).statusCode,401);
+    assert.equal((await call({method,values:{...ids,assetId:assets[1].id}})).statusCode,404);
+  }
+  assert.equal(storageCalls,0);
 });

@@ -61,6 +61,16 @@ export default async function middleware(request) {
   if (legacySamplePath === '/ai-source/assets/ep01_sample.mp4' || legacySamplePath === '/ai-source/assets/ep01_captions.srt') {
     return new Response(null,{status:307,headers:{...privateHeaders,Location:new URL('/classroom/',request.url).toString()}});
   }
+  // Static configuration redirects run before middleware and can lose the
+  // private cache policy. Keep legacy shelf redirects here with their headers.
+  if (pathname === normalized && (pathname === '/shelf/source' || pathname.startsWith('/shelf/source/')
+      || ['/shelf/catalog.json', '/shelf/README.md', '/shelf/CHANGELOG.md'].includes(pathname))) {
+    const destination = new URL('/shelf/', request.url); destination.search = url.search;
+    return new Response(null, { status: 307, headers: {
+      ...privateHeaders, Location: destination.toString(),
+      'X-Robots-Tag': 'noindex, nofollow, noarchive', 'X-Content-Type-Options': 'nosniff',
+    } });
+  }
   // Guard source files before the general API and dotted-asset exemptions.
   // The all-path matcher also catches encoded shelf aliases before static routing.
   if (isPrivateShelfPath(normalized)) {

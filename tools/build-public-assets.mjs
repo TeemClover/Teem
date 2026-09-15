@@ -29,6 +29,8 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'course/thedent/opening.js', 'course/thedent/evaluation.js',
   ...['latin','thai'].flatMap(alphabet => [400,600,700].map(weight => `course/thedent/fonts/ibm-plex-sans-thai-${alphabet}-${weight}.woff2`)),
   'course/portal.css', 'course/portal.js',
+  'course/admin/reviews/reviews.css', 'course/admin/reviews/reviews.js',
+  'course/review-consent/consent.css', 'course/review-consent/consent.js',
   'shelf/shelf.css', 'shelf/shelf.js', 'shelf/admin/admin.css', 'shelf/admin/admin.js',
   'ai-source/offer-engine.js', 'ai-source/sales-page.js',
   'ako/ako.css', 'ako/ako-convert.css', 'ako/story.css',
@@ -42,6 +44,16 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'xircle/entry.css', 'xircle/experience-v3.css', 'xircle/reference.css', 'xircle/xvisor-path.css',
   ...['keepsakes','exhibit','rewards','styles','path'].map(name => `frontdoor/${name}.css`),
   'kickstarter/kickstarter-static-story.css', 'kickstarter/kickstarter-story-images.css',
+  // Existing videos referenced by public marketing pages. Keep these exact:
+  // a video in classroom/private storage must not inherit this publication.
+  'media/home-opening-bg.mp4',
+  'ako/assets/ako-real-eating-onion-hero.m4v',
+  'ako/assets/ako-xvisor-ep04-otaku-weight-loss-web.m4v',
+  'ako/assets/ako-xvisor-ep06-no-starving-web.m4v',
+  'ako/assets/ako-xvisor-ep07-snacking-hunger-web.m4v',
+  'ako/assets/ako-food-choice.mp4', 'ako/assets/ako-soft-change.mp4',
+  'ako/assets/ako-morning-stretch.mp4',
+  'hf/assets/example-ako.mp4', 'hf/assets/example-teem.mp4',
 ]);
 
 const allowedType = /\.(?:avif|gif|ico|jpe?g|png|svg|webp|css|js|woff2?|ttf|otf)$/i;
