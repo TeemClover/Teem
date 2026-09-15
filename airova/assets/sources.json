@@ -1,0 +1,19 @@
+{
+  "course-seedance.png": {
+    "url": "https://www.piracademy.com/images/courses/seedance-advanced-video-production.png",
+    "type": "course cover"
+  },
+  "pir-academy.png": {
+    "url": "https://www.piracademy.com/images/logos/logo-piracademy.png",
+    "type": "academy logo"
+  },
+  "gemini-omni.svg": {
+    "url": "https://storage.googleapis.com/gdm-deepmind-com-prod-public/media/original_images/KmpjWlhFA-6wtqBm/nav__dm__gemini-omni__large.svg",
+    "sourcePage": "https://deepmind.google/models/gemini-omni/",
+    "type": "official model navigation mark"
+  },
+  "bytedance-seed.svg": {
+    "sourcePage": "https://seed.bytedance.com/en/seedance2_5",
+    "type": "provider lockup extracted from official inline SVG; label as ByteDance Seed, alongside Seedance 2.5"
+  }
+}
