@@ -14,7 +14,7 @@
   campaignAttribution();
   var live = config.sales_enabled === true && window.location.protocol === 'https:';
   var tracker = SauceOffer.createVisitTracker(Object.assign({}, config, {storage_key:config.storage_key+':preview', offer_id:config.offer_id+':preview'}), storage);
-  var serverVisit=null, serverReady=false, refreshing=null, serverAnchor=0, monotonicAnchor=0, schoolState=null, currentCheckout=null, checkoutOwnerEmail=null, checkoutRestoring=false,checkoutRestoreFailed=false,checkoutStarting=false,checkoutRequest=0;
+  var serverVisit=null, serverReady=false, offerFailed=false, refreshing=null, serverAnchor=0, monotonicAnchor=0, schoolState=null, currentCheckout=null, checkoutOwnerEmail=null, checkoutRestoring=false,checkoutRestoreFailed=false,checkoutStarting=false,checkoutRequest=0;
   var money=new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0});
   var day=new Intl.DateTimeFormat('th-TH',{dateStyle:'long',timeZone:'Asia/Bangkok'});
   var fullDate=new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
@@ -93,7 +93,9 @@
     get('hero-offer-end').textContent=get('offer-end').textContent=offer.showLaunchOffer?deadline(offer.endsAt):offer.state==='expired'?'สิ้นสุดราคาพิเศษแล้ว':'';
     get('time-left').textContent=get('sticky-time-left').textContent='';
     if(offer.showCountdown){var p=SauceOffer.countdownParts(offer.remainingMs);get('time-left').textContent=get('sticky-time-left').textContent=(p.days?p.days+' วัน ':'')+[p.hours,p.minutes,p.seconds].map(function(n){return String(n).padStart(2,'0');}).join(':');}
-    get('purchase-button').disabled=uploading||checkoutRestoring||checkoutStarting||!serverReady||(!offer.canPurchase&&!(schoolState&&schoolState.blocked)); get('purchase-button').textContent=checkoutRestoring?'กำลังเปิดรายการเดิม…':checkoutStarting?'กำลังเปิดรายการชำระ…':schoolState&&schoolState.blocked?'ดูสถานะและเข้าเรียน':checkoutRestoreFailed?'ลองเปิดรายการเดิมอีกครั้ง':'ลงทะเบียนเรียน · '+price;
+    get('purchase-button').disabled=uploading||checkoutRestoring||checkoutStarting||!serverReady||(!offer.canPurchase&&!(schoolState&&schoolState.blocked)); get('purchase-button').textContent=checkoutRestoring?'กำลังเปิดรายการเดิม…':checkoutStarting?'กำลังเปิดรายการชำระ…':schoolState&&schoolState.blocked?'ดูสถานะและเข้าเรียน':checkoutRestoreFailed?'ลองเปิดรายการเดิมอีกครั้ง':'ลงทะเบียนเรียนและดู QR · '+price;
+    var checkoutLoading=get('checkout-loading');if(checkoutLoading){checkoutLoading.hidden=!(checkoutRestoring||checkoutStarting);checkoutLoading.textContent=checkoutRestoring?'กำลังเปิดรายการชำระเดิมและ QR ของคุณ…':'กำลังเตรียมรายการชำระและ QR ของคุณ กรุณารอสักครู่…';}
+    var retryOffer=get('retry-offer');if(retryOffer){retryOffer.hidden=!live||!offerFailed;retryOffer.disabled=!!refreshing||checkoutRestoring||checkoutStarting||uploading;}
     get('bank-details').hidden=!currentCheckout||!serverReady||!schoolState||!schoolState.user;
     if(currentCheckout){var activeCart=clock()<Date.parse(currentCheckout.expiresAt);get('bank-amount').textContent=activeCart?money.format(currentCheckout.priceTHB):'รายการนี้หมดเวลาแล้ว';}
     get('customer-email').readOnly=true;if(schoolState&&schoolState.user){get('customer-email').value=schoolState.user.email;if(!get('customer-name').value)get('customer-name').value=schoolState.user.displayName||'';}
@@ -114,17 +116,27 @@
   async function refreshOffer(){
     if(!live)return render();if(refreshing)return refreshing;
     refreshing=(async function(){
-      var abort=new window.AbortController(),timeout=window.setTimeout(function(){abort.abort();},12000);
       try{
-        var response=await window.fetch('/api/ai-source?action=offer',{credentials:'same-origin',cache:'no-store',signal:abort.signal});
-        var data=await response.json(),raw=data&&data.offer;
+        var result=await checkoutJSON('/api/ai-source?action=offer',null,12000),response=result.response,data=result.data,raw=data&&data.offer;
         if(!response.ok||data.ok!==true||!raw||typeof raw.promoActive!=='boolean'||raw.timeZone!=='Asia/Bangkok'||raw.priceTHB!==(raw.promoActive?config.launch_price:config.regular_price))throw new Error('offer unavailable');
         var normalized=SauceOffer.normalizeServerVisit(config,{status:raw.promoActive?'valid':'expired',firstSeen:Date.parse(raw.firstSeenAt),endsAt:Date.parse(raw.expiresAt),serverNow:Date.parse(raw.serverNow)});
         if(normalized.status==='unavailable'||raw.promoPriceTHB!==config.launch_price||raw.regularPriceTHB!==config.regular_price)throw new Error('invalid offer');
-        serverVisit=normalized;serverAnchor=Date.parse(raw.serverNow);monotonicAnchor=monotonic();serverReady=data.ready===true;schoolState=data.school||null;if(currentCheckout&&(!schoolState||!schoolState.user||schoolState.user.email!==checkoutOwnerEmail)){currentCheckout=null;checkoutOwnerEmail=null;}
-      }catch(_){serverVisit=null;serverReady=false;schoolState=null;}finally{window.clearTimeout(timeout);refreshing=null;}
+        var priorOwner=schoolState&&schoolState.user&&schoolState.user.email;serverVisit=normalized;serverAnchor=Date.parse(raw.serverNow);monotonicAnchor=monotonic();serverReady=data.ready===true;offerFailed=!serverReady;schoolState=data.school||null;var nextOwner=schoolState&&schoolState.user&&schoolState.user.email;if((priorOwner&&priorOwner!==nextOwner)||(checkoutOwnerEmail&&checkoutOwnerEmail!==nextOwner))clearCheckout();
+      }catch(_){serverVisit=null;serverReady=false;offerFailed=true;schoolState=null;checkoutRequest++;checkoutRestoring=false;checkoutStarting=false;}finally{refreshing=null;}
       return render();
     })();return refreshing;
+  }
+  var CHECKOUT_TIMEOUT_MS=20000;
+  function clearCheckout(){
+    checkoutRequest++;currentCheckout=null;checkoutOwnerEmail=null;checkoutRestoring=false;checkoutStarting=false;checkoutRestoreFailed=false;received=false;
+    get('upload-status').textContent='กรอกข้อมูลตามสลิป แล้วกดส่งเพื่อลงทะเบียน';
+  }
+  function checkoutIsCurrent(request,email){return request===checkoutRequest&&serverReady&&schoolState&&schoolState.user&&schoolState.user.email===email;}
+  async function checkoutJSON(url,options,timeoutMs){
+    var abort=new window.AbortController(),timer;
+    var timeout=new Promise(function(_,reject){timer=window.setTimeout(function(){abort.abort();var error=new Error('ระบบเปิดรายการชำระตอบช้า');error.name='CheckoutTimeoutError';reject(error);},timeoutMs||CHECKOUT_TIMEOUT_MS);});
+    try{return await Promise.race([(async function(){var response=await fetch(url,Object.assign({},options,{credentials:'same-origin',cache:'no-store',signal:abort.signal}));return {response:response,data:await response.json()};})(),timeout]);}
+    finally{window.clearTimeout(timer);}
   }
   function acceptCheckout(cart){
     if(!cart||!/^[-a-f0-9]{36}$/i.test(cart.id)||![790,990,1690].includes(cart.priceTHB)||!Number.isFinite(Date.parse(cart.expiresAt))||!['open','submitted','paid'].includes(cart.status))throw new Error('ข้อมูลรายการชำระไม่ครบ กรุณาลองใหม่');
@@ -136,30 +148,39 @@
     if(!serverReady||!schoolState||!schoolState.user)return false;
     var id=schoolState.checkoutId;try{if(!id)id=sessionStorage.getItem('ai_sauce_checkout_v2');}catch(_){}if(!id)return false;
     var ownerEmail=schoolState.user.email,request=++checkoutRequest;checkoutRestoring=true;checkoutRestoreFailed=false;render();
-    try{var response=await fetch('/api/ai-source?action=checkout&checkoutId='+encodeURIComponent(id),{credentials:'same-origin',cache:'no-store'}),data=await response.json();
-      if(request!==checkoutRequest||!serverReady||!schoolState||!schoolState.user||schoolState.user.email!==ownerEmail)return null;
+    try{var result=await checkoutJSON('/api/ai-source?action=checkout&checkoutId='+encodeURIComponent(id)),response=result.response,data=result.data;
+      if(!checkoutIsCurrent(request,ownerEmail))return null;
       if(!response.ok){if(response.status===404){try{sessionStorage.removeItem('ai_sauce_checkout_v2');}catch(_){}return false;}throw new Error('checkout restore unavailable');}
       acceptCheckout(data.checkout);render();return true;
-    }catch(_){checkoutRestoreFailed=true;purchaseNotice='ยังเปิดรายการชำระเดิมไม่ได้ ลองเปิดรายการเดิมอีกครั้งก่อนชำระหรือส่งสลิป';return null;}finally{checkoutRestoring=false;render();}
+    }catch(_){if(checkoutIsCurrent(request,ownerEmail)){checkoutRestoreFailed=true;purchaseNotice='ยังเปิดรายการชำระเดิมไม่ได้ กดลองอีกครั้งเพื่อตรวจรายการเดิมก่อนชำระ หากโอนแล้วอย่าโอนซ้ำ';}return null;}finally{if(request===checkoutRequest){checkoutRestoring=false;render();}}
   }
   async function beginCheckout(){
     if(uploading||checkoutRestoring||checkoutStarting)return;
-    checkoutStarting=true;render();
+    introSuppressed=true;closeIntro();var request=++checkoutRequest;checkoutStarting=true;render();
     try{
     await refreshOffer();
+    if(request!==checkoutRequest)return;
     if(!serverReady){purchaseNotice='ยังตรวจสิทธิ์ไม่ได้ กรุณาลองใหม่ก่อนชำระเงิน';render();return;}
     if(!schoolState||!schoolState.user){var attribution=campaignAttribution(),returnQuery=new URLSearchParams();campaignKeys.forEach(function(key){if(attribution[key])returnQuery.set(key,attribution[key]);});window.location.assign('/learn/?enroll=ai-sauce&return='+encodeURIComponent('/ai-source/'+(returnQuery.size?'?'+returnQuery:'')+'#bank-details'));return;}
     if(schoolState.blocked){window.location.assign('/learn/?course=ai-sauce');return;}
-    if(checkoutRestoreFailed){await restoreCheckout();return;}
-    try{var ownerEmail=schoolState.user.email,request=++checkoutRequest,body=campaignAttribution();
-      var response=await fetch('/api/ai-source?action=checkout',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),data=await response.json();
-      if(request!==checkoutRequest||!serverReady||!schoolState||!schoolState.user||schoolState.user.email!==ownerEmail)return;
-      if(!response.ok||!data.checkout)throw new Error(data.message||'ยังเปิดรายการชำระไม่ได้');acceptCheckout(data.checkout);
+    if(checkoutRestoreFailed){checkoutStarting=false;var restored=await restoreCheckout();if(restored!==false){if(restored===true)get('bank-details').scrollIntoView({block:'start'});return;}checkoutRestoreFailed=false;request=++checkoutRequest;checkoutStarting=true;render();}
+    try{var ownerEmail=schoolState.user.email,body=campaignAttribution();
+      var result=await checkoutJSON('/api/ai-source?action=checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),response=result.response,data=result.data;
+      if(!checkoutIsCurrent(request,ownerEmail))return;
+      if(!response.ok||!data.checkout){var checkoutError=new Error(data.message||'ยังเปิดรายการชำระไม่ได้');checkoutError.status=response.status;throw checkoutError;}acceptCheckout(data.checkout);
       try{sessionStorage.setItem('ai_sauce_checkout_v2',currentCheckout.id);}catch(_){}render();get('bank-details').scrollIntoView({block:'start'});
-    }catch(error){purchaseNotice=error.message;render();}
-    }finally{checkoutStarting=false;render();}
+    }catch(error){if(checkoutIsCurrent(request,ownerEmail)){checkoutRestoreFailed=!error.status||error.status>=500;purchaseNotice=checkoutRestoreFailed?'ยังยืนยันการเปิดรายการไม่ได้ กดลองอีกครั้งเพื่อตรวจรายการเดิม หากโอนแล้วอย่าโอนซ้ำ':error.message;render();}}
+    }finally{if(request===checkoutRequest){checkoutStarting=false;render();}}
   }
   get('purchase-button').addEventListener('click',beginCheckout);
+  var retryOfferButton=get('retry-offer');if(retryOfferButton)retryOfferButton.addEventListener('click',async function(){
+    if(refreshing||uploading||checkoutRestoring||checkoutStarting)return;
+    retryOfferButton.disabled=true;await refreshOffer();
+    if(!serverReady)return;
+    var restored=await restoreCheckout();
+    if(restored===true)get('bank-details').scrollIntoView({block:'start'});
+    else if(restored===false&&location.hash==='#bank-details'&&schoolState&&schoolState.user&&!schoolState.blocked)await beginCheckout();
+  });
   var recoveryButton=get('claim-recovery');if(recoveryButton)recoveryButton.addEventListener('click',async function(){
     if(uploading||received||checkoutRestoring||checkoutStarting)return;recoveryButton.disabled=true;try{var r=await fetch('/api/ai-source?action=recovery',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'}),d=await r.json();if(!r.ok)throw new Error(d.message||'ยังเปิดสิทธิ์ไม่ได้');await refreshOffer();await beginCheckout();}catch(error){purchaseNotice=error.message;render();}finally{recoveryButton.disabled=false;}
   });

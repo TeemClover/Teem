@@ -1,7 +1,16 @@
 // Reuses the existing core.database() Neon connection. Never creates public blob URLs.
 // A single row commits the registration and its private bytea receipt atomically.
 import { learnAccountWrite } from './learn-commerce-lock.js';
+const schemaPromises = new WeakMap();
 export async function ensureAiSourceSchema(sql) {
+  if (!schemaPromises.has(sql)) {
+    const promise = initializeAiSourceSchema(sql)
+      .catch(error => { schemaPromises.delete(sql); throw error; });
+    schemaPromises.set(sql, promise);
+  }
+  return schemaPromises.get(sql);
+}
+async function initializeAiSourceSchema(sql) {
   await sql.query(`CREATE TABLE IF NOT EXISTS mc_ai_source_registrations (
     id BIGSERIAL PRIMARY KEY, reference TEXT UNIQUE NOT NULL,
     idempotency_key UUID UNIQUE NOT NULL, payload_hash TEXT NOT NULL,

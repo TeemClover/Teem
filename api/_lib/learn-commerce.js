@@ -7,7 +7,16 @@ import { learnAccountWrite } from './learn-commerce-lock.js';
 
 export const COURSE_ID = 'ai-sauce';
 export const RECOVERY_MS = 2 * 60 * 60 * 1000;
+const schemaPromises = new WeakMap();
 export async function ensureCommerceSchema(sql) {
+  if (!schemaPromises.has(sql)) {
+    const promise = initializeCommerceSchema(sql)
+      .catch(error => { schemaPromises.delete(sql); throw error; });
+    schemaPromises.set(sql, promise);
+  }
+  return schemaPromises.get(sql);
+}
+async function initializeCommerceSchema(sql) {
   await ensureLearnSchema(sql);
   await sql.query(`CREATE TABLE IF NOT EXISTS mc_learn_offers (
     id UUID PRIMARY KEY,user_id TEXT NOT NULL REFERENCES mc_accounts(id),course_id TEXT NOT NULL,
