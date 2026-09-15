@@ -1,3 +1,5 @@
+import { createDemoController } from './demo-controller.js';
+
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileNav = document.querySelector('#mobile-nav');
 function closeMenu() {
@@ -40,12 +42,16 @@ for (const dialog of [videoDialog, templateDialog]) {
 const wall = document.querySelector('#video-wall');
 const wallPause = document.querySelector('#wall-pause');
 const wallSoundStatus = document.querySelector('#wall-sound-status');
+const demoComposer = document.querySelector('#demo-composer');
+const demoGenerate = document.querySelector('#demo-generate');
+const demoEnabled = Boolean(wall && demoComposer && demoGenerate);
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const wallClips = [...document.querySelectorAll('#video-wall .wall-card')].map(card => ({
   card,
   video: card.querySelector('.wall-video'),
   sound: card.querySelector('.wall-sound'),
   retry: card.querySelector('.wall-retry'),
+  revealed: !demoEnabled,
   visible: false,
   loaded: false,
   blocked: false,
@@ -106,11 +112,11 @@ function stopClip(clip) {
 }
 
 function canPlayClip(clip) {
-  return clip.visible && !wallPaused && !document.hidden && !videoDialog.open && !templateDialog.open;
+  return clip.revealed && clip.visible && !wallPaused && !document.hidden && !videoDialog.open && !templateDialog.open;
 }
 
 function ensureClipSource(clip) {
-  if (clip.loaded) return;
+  if (!clip?.revealed || clip.loaded) return;
   const source = clip.video.dataset.src;
   if (!source) return;
   clip.loaded = true;
@@ -178,6 +184,7 @@ function syncWallPlayback() {
 }
 
 function resumeFromGesture(clip) {
+  if (!clip.revealed) return;
   // A direct play/sound choice also enables playback after the reduced-motion default.
   wallPaused = false;
   updatePauseControl();
@@ -196,6 +203,7 @@ wallClips.forEach(clip => {
   updateClipRetry(clip);
 
   clip.sound?.addEventListener('click', () => {
+    if (!clip.revealed) return;
     const enableSound = clip.video.muted || clip.video.volume === 0;
     muteWall();
     if (enableSound) {
@@ -211,6 +219,7 @@ wallClips.forEach(clip => {
   });
 
   clip.retry?.addEventListener('click', () => {
+    if (!clip.revealed) return;
     muteClip(clip);
     resumeFromGesture(clip);
   });
@@ -251,19 +260,168 @@ wallClips.forEach(clip => {
   });
 });
 
+function refreshClipVisibility(clip) {
+  const box = clip.card.getBoundingClientRect();
+  clip.visible = clip.revealed && !clip.card.hidden && box.width > 0 && box.height > 0 &&
+    box.bottom > 0 && box.top < window.innerHeight && box.right > 0 && box.left < window.innerWidth;
+  if (clip.revealed && !clip.card.hidden && box.bottom > -480 && box.top < window.innerHeight + 480) {
+    ensureClipSource(clip);
+  }
+  if (canPlayClip(clip)) playClip(clip);
+  else stopClip(clip);
+}
+
+let demoController = null;
+if (demoEnabled) {
+  const demoPrompt = document.querySelector('#demo-prompt');
+  const demoLabel = document.querySelector('#demo-generate-label');
+  const demoRound = document.querySelector('#demo-round');
+  const demoCounter = document.querySelector('#demo-counter');
+  const demoProgress = document.querySelector('#demo-progress');
+  const demoStatus = document.querySelector('#demo-status');
+  const demoReset = document.querySelector('#demo-reset');
+  const demoOwn = document.querySelector('#demo-own');
+  const demoDock = document.querySelector('#demo-dock');
+  const demoDockGenerate = document.querySelector('#demo-dock-generate');
+  const demoDockLabel = document.querySelector('#demo-dock-label');
+  const demoDockCount = document.querySelector('#demo-dock-count');
+  const demoDockOwn = document.querySelector('#demo-dock-own');
+  const demoActions = demoComposer.querySelector('.demo-actions');
+  const demoSection = document.querySelector('#showcase');
+  const wallToolbar = document.querySelector('#wall-toolbar');
+  const demoPrompts = [
+    'แฟชั่นล้ำ ๆ · สินค้าในโลกฝัน · คาแรกเตอร์พูดได้ · มัทฉะช็อตสวย',
+    'ลองลุคใหม่ · พอดแคสต์ · สาธิตสินค้า · อวาตาร์ทักทาย',
+    'คาเฟ่ไลฟ์สไตล์ · ดีเทลสินค้า · โชว์รูม · พรีเซนเตอร์แบรนด์',
+    'ครีเอเตอร์ · เรื่องเล่าสั้น · งานอีเวนต์ · รีวิวแบบ UGC'
+  ];
+  wall.dataset.demo = 'true';
+  demoComposer.hidden = false;
+  wallClips.forEach(clip => {
+    const slot = document.createElement('div');
+    slot.className = 'wall-slot';
+    slot.setAttribute('aria-hidden', 'true');
+    const symbol = document.createElement('span');
+    symbol.className = 'slot-symbol';
+    symbol.textContent = '✦';
+    const spinner = document.createElement('span');
+    spinner.className = 'slot-spinner';
+    const label = document.createElement('span');
+    label.className = 'slot-label';
+    slot.append(symbol, spinner, label);
+    clip.card.append(slot);
+    clip.slotLabel = label;
+  });
+
+  let dockVisibilityFrame = 0;
+  const updateDockVisibility = () => {
+    dockVisibilityFrame = 0;
+    if (!demoDock || !demoSection || !demoActions) return;
+    const sectionBox = demoSection.getBoundingClientRect();
+    const actionsBox = demoActions.getBoundingClientRect();
+    const sectionVisible = sectionBox.bottom > 200 && sectionBox.top < window.innerHeight - 100;
+    const actionsVisible = actionsBox.bottom > 0 && actionsBox.top < window.innerHeight;
+    demoDock.hidden = !sectionVisible || actionsVisible;
+  };
+  const queueDockVisibility = () => {
+    if (!dockVisibilityFrame) dockVisibilityFrame = requestAnimationFrame(updateDockVisibility);
+  };
+  window.addEventListener('scroll', queueDockVisibility, { passive: true });
+  window.addEventListener('resize', queueDockVisibility, { passive: true });
+
+  const renderDemo = (state, reason) => {
+    wallClips.forEach((clip, index) => {
+      const wasRevealed = clip.revealed;
+      clip.revealed = index < state.revealed;
+      clip.card.hidden = index >= state.visible;
+      clip.card.inert = !clip.revealed;
+      clip.card.dataset.demoState = clip.revealed ? 'ready' : state.busy && index < state.batchEnd ? 'queued' : 'empty';
+      clip.card.querySelectorAll('button').forEach(button => { button.disabled = !clip.revealed; });
+      clip.slotLabel.textContent = state.busy ? `กำลังเตรียมคลิป ${index + 1}` : `คลิป ${index + 1}`;
+      if (reason === 'reset') {
+        stopClip(clip);
+        clip.video.removeAttribute('src');
+        clip.video.load();
+        clip.loaded = false;
+        clip.visible = false;
+        clip.failed = false;
+        clip.blocked = false;
+        updateClipRetry(clip);
+      }
+      if (!wasRevealed && clip.revealed) {
+        muteClip(clip);
+        refreshClipVisibility(clip);
+      }
+    });
+    const round = state.busy ? Math.ceil(state.batchEnd / state.batchSize) : state.round;
+    if (demoRound) demoRound.textContent = `${round} / ${Math.ceil(state.total / state.batchSize)}`;
+    if (demoPrompt) demoPrompt.textContent = demoPrompts[round - 1] || demoPrompts.at(-1);
+    if (demoCounter) demoCounter.textContent = `${state.revealed} / ${state.total}`;
+    if (demoProgress) {
+      demoProgress.max = state.total;
+      demoProgress.value = state.revealed;
+    }
+    demoComposer.dataset.complete = String(state.complete);
+    demoComposer.dataset.busy = String(state.busy);
+    demoGenerate.disabled = state.busy || state.complete;
+    const generateLabel = state.complete ? 'ครบ 16 คลิปแล้ว' : state.busy ? 'กำลังเตรียมคลิป…' : state.revealed ? 'สร้างอีก 4 คลิป' : 'ลองสร้าง 4 คลิป';
+    if (demoLabel) demoLabel.textContent = generateLabel;
+    if (demoDockLabel) demoDockLabel.textContent = generateLabel;
+    if (demoDockCount) demoDockCount.textContent = `${state.revealed} / ${state.total}`;
+    if (demoDock) {
+      demoDock.dataset.complete = String(state.complete);
+      demoDock.dataset.busy = String(state.busy);
+    }
+    if (demoDockGenerate) {
+      demoDockGenerate.disabled = state.busy || state.complete;
+      if (state.complete && document.activeElement === demoDockGenerate) demoDockOwn?.focus({ preventScroll: true });
+      demoDockGenerate.hidden = state.complete;
+    }
+    if (demoStatus) {
+      demoStatus.textContent = state.complete ? 'ครบ 16 คลิปแล้ว — ถึงตาของคุณ' :
+        state.busy ? `กำลังเปิดคลิปตัวอย่าง ${state.revealed + 1} / ${state.batchEnd}` :
+        state.revealed ? `พร้อมแล้ว ${state.revealed} คลิป · ลองอีกชุดได้เลย` : 'กดแล้วดูคลิปขึ้นทีละชิ้น';
+    }
+    if (wallToolbar) wallToolbar.hidden = state.revealed === 0;
+    if (demoReset) demoReset.hidden = state.revealed === 0 && !state.busy;
+    if (state.complete && document.activeElement === demoGenerate) demoOwn?.focus({ preventScroll: true });
+    demoGenerate.hidden = state.complete;
+    if (reason === 'reset') announceWall('แตะลำโพงบนคลิปเพื่อเปิดเสียง');
+    updateDockVisibility();
+  };
+  demoController = createDemoController({ total: wallClips.length, onChange: renderDemo });
+  renderDemo(demoController.snapshot(), 'initial');
+  const startDemoBatch = () => {
+    const firstNewClip = wallClips[demoController.snapshot().revealed];
+    if (!demoController.start()) return;
+    firstNewClip?.card.scrollIntoView({
+      block: 'center',
+      behavior: motionPreference.matches ? 'instant' : 'smooth'
+    });
+  };
+  demoGenerate.addEventListener('click', startDemoBatch);
+  demoDockGenerate?.addEventListener('click', startDemoBatch);
+  demoReset?.addEventListener('click', () => {
+    demoController.reset();
+    demoGenerate.focus({ preventScroll: true });
+  });
+  if (document.hidden) demoController.suspend();
+}
+
 if ('IntersectionObserver' in window) {
   const clipsByCard = new Map(wallClips.map(clip => [clip.card, clip]));
   const loadObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      ensureClipSource(clipsByCard.get(entry.target));
-      loadObserver.unobserve(entry.target);
+      const clip = clipsByCard.get(entry.target);
+      ensureClipSource(clip);
+      if (clip.loaded) loadObserver.unobserve(entry.target);
     });
   }, { rootMargin: '480px 0px' });
   const playbackObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       const clip = clipsByCard.get(entry.target);
-      clip.visible = entry.isIntersecting;
+      clip.visible = clip.revealed && entry.isIntersecting;
       if (canPlayClip(clip)) playClip(clip);
       else stopClip(clip);
     });
@@ -276,12 +434,7 @@ if ('IntersectionObserver' in window) {
   let visibilityFrame = 0;
   const checkVisibility = () => {
     visibilityFrame = 0;
-    wallClips.forEach(clip => {
-      const box = clip.card.getBoundingClientRect();
-      if (box.bottom > -480 && box.top < window.innerHeight + 480) ensureClipSource(clip);
-      clip.visible = box.bottom > 0 && box.top < window.innerHeight && box.right > 0 && box.left < window.innerWidth;
-    });
-    syncWallPlayback();
+    wallClips.forEach(refreshClipVisibility);
   };
   const queueVisibilityCheck = () => {
     if (!visibilityFrame) visibilityFrame = requestAnimationFrame(checkVisibility);
@@ -316,6 +469,8 @@ if (motionPreference.addEventListener) motionPreference.addEventListener('change
 else motionPreference.addListener(handleMotionPreference);
 
 document.addEventListener('visibilitychange', () => {
+  if (document.hidden) demoController?.suspend();
+  else demoController?.resume();
   if (document.hidden && videoDialog.open) {
     player.pause();
     player.muted = true;
@@ -323,14 +478,20 @@ document.addEventListener('visibilitychange', () => {
   syncWallPlayback();
 });
 window.addEventListener('pagehide', () => {
+  demoController?.suspend();
   wallClips.forEach(stopClip);
   player.pause();
   player.muted = true;
 });
-window.addEventListener('pageshow', syncWallPlayback);
+window.addEventListener('pageshow', () => {
+  if (!document.hidden) demoController?.resume();
+  syncWallPlayback();
+});
 
 for (const card of document.querySelectorAll('[data-video]')) {
   card.addEventListener('click', () => {
+    const demoCard = card.closest('.wall-card');
+    if (demoEnabled && demoCard && demoCard.dataset.demoState !== 'ready') return;
     const attempt = ++dialogAttempt;
     wallClips.forEach(stopClip);
     document.querySelector('#video-title').textContent = card.dataset.title;

@@ -140,5 +140,17 @@
       1000
     ],
     "transform": "Resized and encoded as WebP from the generated source."
+  },
+  "airova-share-thai-video-v5.png": {
+    "type": "Fresh original editorial artwork generated from the user portrait with built-in image_gen; native Thai text and unmodified original brand/client logo layers rendered in HTML. Not an Airova generation result.",
+    "sourceFile": "../_source/share-v5-art.png",
+    "compositionFile": "../_source/share-preview-v5.html",
+    "promptFile": "../_source/share-v5-prompt.md",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Lossless PNG; native background 1730 × 909, text and SVG logos rasterized at 2×. No old JPEG reused.",
+    "logoProvenance": "Original canonical myClover icon, official Airova SVG, and original ChatGPT/Claude assets recorded under v3 and v4 entries."
   }
 }
