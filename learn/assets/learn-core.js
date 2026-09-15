@@ -16,7 +16,11 @@ export function courseRoute(courseId, lessonId) {
 }
 export function parseRoute(search = '') {
   const p = new URLSearchParams(search);
-  return { courseId: validId(p.get('course')) ? p.get('course') : null, lessonId: validId(p.get('lesson')) ? p.get('lesson') : null };
+  const courseId = validId(p.get('course')) ? p.get('course') : null;
+  let lessonId = validId(p.get('lesson')) ? p.get('lesson') : null;
+  // Old saved links still reach the combined final lesson.
+  if (courseId === 'ai-sauce' && lessonId === 'BOSS') lessonId = 'DUNGEON';
+  return { courseId, lessonId };
 }
 export function normalizeCourses(data) {
   if (!data || data.ok !== true || !Array.isArray(data.courses)) throw new Error('รูปแบบข้อมูลห้องเรียนไม่ถูกต้อง');

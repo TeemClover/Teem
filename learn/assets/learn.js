@@ -1,7 +1,8 @@
-import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js';
+import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js?v=learner-ready-4';
 import { authRequest, safeReturn, showVerification } from './account-step.js';
-import { renderLessonReading } from './lesson-reading.js?v=guided-path-3';
-import { createLessonPlayer } from './lesson-player.js';
+import { renderLessonReading } from './lesson-reading.js?v=learner-ready-4';
+import { createLessonPlayer } from './lesson-player.js?v=learner-ready-4';
+import { renderLessonTools } from './lesson-tools.js?v=learner-ready-4';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text = '', className = '') => { const n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; };
@@ -10,6 +11,19 @@ const video = $('lesson-video');
 const player = createLessonPlayer({ video, overlay: $('player-overlay'), message: $('player-status'), button: $('player-action') });
 let learner, activeCourse = null, selectedId = null, lastSaved = 0, progressBusy = false, enrollmentBusy = false, booting = false, verificationVersion = 0;
 const lessonLinks = new Map();
+let lessonTools = null;
+function renderShowcase(cards = []) {
+  const container = $('showcase-cards'); container.replaceChildren();
+  for (const card of cards) {
+    const url = safeAssetUrl(card.url, location.origin); if (!url) continue;
+    const figure = el('figure', '', 'showcase-card'), img = el('img');
+    img.src = url; img.alt = card.title || 'ตัวอย่างผลงานจากคลาสจริง'; img.loading = 'lazy'; img.decoding = 'async'; img.width = 960; img.height = 540;
+    const caption = el('figcaption'); caption.append(el('h4', card.title), el('p', card.description));
+    figure.append(img, caption); container.append(figure);
+  }
+  $('lesson-showcase').hidden = !container.childElementCount;
+}
+$('showcase-start').addEventListener('click', () => { $('player-action').click(); $('player-wrap').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
 function isBossLesson() { return activeCourse?.course?.lessons.find(item => item.id === selectedId)?.type === 'boss'; }
 function status(text = '') { $('page-status').textContent = text; }
 function showOnly(id) { ['state-panel', 'library', 'classroom'].forEach(key => { $(key).hidden = key !== id; }); }
@@ -38,6 +52,7 @@ function partStep(item, index, count) { return [`ตอน ${index + 1}${count ?
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
+  lessonTools?.destroy(); lessonTools = null; $('lesson-tools').replaceChildren(); $('lesson-tools').hidden = true; renderShowcase();
   player.reset();
   selectedId = null; progressBusy = false; lastSaved = 0;
   video.pause(); video.removeAttribute('src'); video.replaceChildren(); video.load();
@@ -138,14 +153,16 @@ const view = {
     $('lesson-kicker').textContent = [chapter?.label, chapter?.title].filter(Boolean).join(' · ') || 'บทเรียน';
     $('lesson-part').textContent = partStep(item, context.index, chapter?.parts.length);
     const mediaUrl = safeAssetUrl(item.media?.url, location.origin);
+    renderShowcase(item.showcase || []);
     if (mediaUrl) {
       video.src = mediaUrl;
       // Current course subtitles are burned in; do not request SRT as an HTML video track.
       for (const caption of item.media.captionsEmbedded ? [] : item.media.captions || []) { const url = safeAssetUrl(caption.url, location.origin); if (!url || caption.mimeType !== 'text/vtt') continue; const track = el('track'); track.kind = 'subtitles'; track.srclang = caption.language || 'th'; track.label = caption.label || 'ไทย'; track.src = url; video.append(track); }
       $('player-wrap').hidden = false; $('video-note').hidden = false;
-      player.start(activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds || 0);
+      player.start(activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds || 0, { autoplay: !item.showcase?.length });
     } else if (item.type !== 'boss') { $('media-message').hidden = false; $('media-message').textContent = 'วิดีโอยังเปิดไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่อีกครั้ง หรือติดต่อผู้สอน'; }
-    $('boss-invitation').hidden = item.type !== 'boss';
+    $('boss-invitation').hidden = !item.finale && item.type !== 'boss';
+    lessonTools?.destroy(); lessonTools = renderLessonTools($('lesson-tools'), item.tools || []);
     const reading = typeof item.reading === 'string' ? item.reading : typeof item.body === 'string' ? item.body : '';
     renderLessonReading($('lesson-reading'), reading, { origin: location.origin, resourcesLocked: course.access?.status !== 'active',
       onLesson: route => {
