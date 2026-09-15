@@ -1,6 +1,7 @@
 # Airova social share preview — 2026-09-15
 
-- Current output: `assets/airova-share-thai-video-v3.jpg`, 1200 × 630 JPEG.
+- Current output: `assets/airova-share-thai-video-v4.jpg`, 1200 × 630 JPEG.
+- V4 preserves the approved v3 image as its background and adds a compact bottom-right “MCP Ready” badge with original ChatGPT and Claude symbols. Editable composition: `_source/share-preview-v4.html`; logo provenance: `assets/sources.json`. No generative logo edits are used.
 - V2 was retired because its generated brand logos were incorrect. The original prompt below is retained as history, not a branding workflow to repeat.
 - V3 erases the generated brand row, then renders the canonical `/assets/myclover-icon.png` and exact official `assets/aistudio-white.svg` as image layers in `_source/share-preview-v3.html`. The myClover wordmark uses the same typography as the partner-page header. Original logo colors and proportions are preserved.
 - Generated with the built-in `image_gen` tool, using the user's supplied portrait as identity and visual style reference.

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Airova share preview — MCP Ready</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #030b1c; }
+    .art { position: absolute; inset: 0; width: 1200px; height: 630px; }
+    .mcp-badge { position: absolute; right: 24px; bottom: 24px; width: 254px; padding: 14px 16px 15px; border: 1px solid #d9eeaa; border-radius: 13px; background: rgba(9, 14, 25, .96); color: #fff; box-shadow: 0 6px 25px #03081780; }
+    .mcp-title { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font: 700 27px/1.15 'Space Grotesk', sans-serif; letter-spacing: -.5px; }
+    .ready-dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #d5ff65; }
+    .clients { display: flex; align-items: center; justify-content: space-between; }
+    .client { display: flex; align-items: center; gap: 7px; font: 500 17px/1 'Space Grotesk', sans-serif; }
+    .client img { border-radius: 5px; width: 29px; height: 29px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <img class="art" src="../assets/airova-share-thai-video-v3.jpg" alt="ภาพแคมเปญ Airova ที่ยืนยันแล้ว พร้อมโลโก้ต้นฉบับ myClover และ Airova">
+  <aside class="mcp-badge" aria-label="MCP Ready: ChatGPT and Claude">
+    <p class="mcp-title"><span class="ready-dot"></span>MCP Ready</p>
+    <div class="clients">
+      <span class="client"><img src="chatgpt-icon-official.png" alt="">ChatGPT</span>
+      <span class="client"><img src="claude-symbol-official.svg" alt="">Claude</span>
+    </div>
+  </aside>
+</body>
+</html>
