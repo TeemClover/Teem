@@ -1,7 +1,9 @@
 # Airova social share preview — 2026-09-15
 
-- Current output: `assets/airova-share-workflow-v7.png`, 2400 × 1260 lossless PNG.
-- V7 replaces the portrait-led layout with an image-led complete marketing workflow: product and brand inputs → cinematic AI video → social posts and scheduled publishing. New prompt/provenance: `_source/share-v7-workflow-prompt.md`; native canvas composition: `_source/share-preview-v7.html`. Original logos and short Thai copy are separate layers.
+- Current output: `assets/airova-share-source-v8.png`, 2400 × 1260 lossless PNG.
+- V8 restores the user’s original portrait and the reference’s massive bold white Thai headline, italic neon-lime offer, and bright CTA. A fresh scene shows one source branching into four video styles with original Facebook/Instagram/TikTok destinations. Built-in imagegen scene prompt: `_source/share-v8-scene-prompt.md`; editable native composition: `_source/share-preview-v8.html`; original platform assets and release-status evidence: `_source/share-v8-platform-sources.md`. The face is never regenerated.
+- Copy layers: “สร้างวิดีโอ / พูดไทยด้วย AI”, “ฟรี 30 เครดิต”, “Omni · Seedance 2.5”, “สมัครแล้วเริ่มสร้างได้เลย”, “1 ต้นฉบับ”, “หลายวิดีโอ”, “ออโต้โพสต์”, “MCP Ready”. All brand/client logos remain native original image layers.
+- Earlier V7 replaces the portrait-led layout with an image-led complete marketing workflow: product and brand inputs → cinematic AI video → social posts and scheduled publishing. New prompt/provenance: `_source/share-v7-workflow-prompt.md`; native canvas composition: `_source/share-preview-v7.html`. Original logos and short Thai copy are separate layers.
 - V5 uses fresh built-in imagegen artwork from the original portrait; no v3/v4 JPEG is reused. New full prompt/provenance: `_source/share-v5-prompt.md`. Native Thai typography and original logo layers: `_source/share-preview-v5.html`.
 - V4 preserves the approved v3 image as its background and adds a compact bottom-right “MCP Ready” badge with original ChatGPT and Claude symbols. Editable composition: `_source/share-preview-v4.html`; logo provenance: `assets/sources.json`. No generative logo edits are used.
 - V2 was retired because its generated brand logos were incorrect. The original prompt below is retained as history, not a branding workflow to repeat.

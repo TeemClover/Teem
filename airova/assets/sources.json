@@ -165,5 +165,21 @@
     "encoding": "Lossless PNG exported directly from a 2400 × 1260 native canvas. Original artwork is 1729 × 910; text and unmodified original logo assets are rendered separately.",
     "logos": "Original canonical myClover icon and official Airova SVG; original ChatGPT/Claude symbols documented under v3/v4.",
     "direction": "Image-led complete marketing workflow with short Thai headline and free introductory 30-credit CTA. No personal names or owner portrait."
+  },
+  "airova-share-source-v8.png": {
+    "type": "Editorial marketing concept: original user portrait with one source branching into distinct UGC, product, cinematic and animated video outputs and social destinations. Not an Airova result or platform screenshot.",
+    "sourceFile": "../_source/share-v8-scene.png",
+    "portraitFile": "../_source/share-v8-user-original.png",
+    "portraitTreatment": "Unmodified original face, glasses and clothing pixels, composed with a native silhouette clip. No face regeneration, retouching or recoloring.",
+    "compositionFile": "../_source/share-preview-v8.html",
+    "promptFile": "../_source/share-v8-scene-prompt.md",
+    "socialLogoProvenance": "../_source/share-v8-platform-sources.md",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Lossless PNG exported directly from a native 2x canvas. Thai Kanit font subsets explicitly loaded. Fresh scene 1730 × 909; source portrait 941 × 1672; no previous compressed preview reused.",
+    "logoProvenance": "Unchanged canonical myClover icon, official Airova SVG, ChatGPT and Claude symbols recorded in v3/v4. Facebook, Instagram and TikTok original brand-pack assets as native image layers.",
+    "scope": "Platform endpoints illustrate the requested workflow. Public Airova marketing is inconsistent about Auto Post release status; see platform provenance. No new guarantee of integration availability is added."
   }
 }
