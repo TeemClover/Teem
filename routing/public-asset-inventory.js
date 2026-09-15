@@ -9,6 +9,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/airova/airova.css",
   "/airova/airova.js",
   "/airova/assets/airova-share-thai-video-v3.jpg",
+  "/airova/assets/airova-share-thai-video-v4.jpg",
   "/airova/assets/aistudio-white.svg",
   "/airova/assets/aistudio.svg",
   "/airova/assets/bytedance-seed.svg",

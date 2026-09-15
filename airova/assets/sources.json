@@ -88,5 +88,24 @@
       1200,
       630
     ]
+  },
+  "airova-share-thai-video-v4.jpg": {
+    "type": "Approved v3 campaign image with a small MCP Ready badge rendered from original client logo assets in HTML; no generated or redrawn logos.",
+    "sourceFile": "airova-share-thai-video-v3.jpg",
+    "compositionFile": "../_source/share-preview-v4.html",
+    "chatgptLogo": {
+      "file": "../_source/chatgpt-icon-official.png",
+      "sourcePage": "https://help.openai.com/en/articles/7905742-what-does-the-official-chatgpt-ios-app-icon-look-like",
+      "url": "https://images.ctfassets.net/j22is2dtoxu1/intercom-img-d177d076c9a5453052925143/49d5d812b0a6fcc20a14faa8c629d9fb/icon-ios-1024_401x.png"
+    },
+    "claudeLogo": {
+      "file": "../_source/claude-symbol-official.svg",
+      "sourcePage": "https://claude.com/",
+      "transform": "Original orange symbol path extracted from official inline header SVG, preserving its geometry and #D97757 color."
+    },
+    "dimensions": [
+      1200,
+      630
+    ]
   }
 }

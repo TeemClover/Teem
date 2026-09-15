@@ -14,18 +14,19 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 
 ## Business problems and solutions
 
-- Six business scenarios map to Brand Kits, content planning/captions, product-photo/link inputs, Templates/Freestyle, Creative Agent/video/Thai voice, Auto Post, and Thai partner support.
-- Four connected workflow steps and a compact roster cover the ten tools announced by Airova. No savings percentages, revenue promises, or unlimited free-use claims are made.
-- Thai-team credibility uses concrete public founder and workshop evidence, not rankings or invented awards. Corporate consulting services are not represented as included Studio features.
+- Six short business questions each pair with one compact solution: Brand Kits, content planning/captions, Templates, Creative Agent/Thai voice, Auto Post, and Thai partner support.
+- Four concise workflow labels connect brand → planning → content → publishing. The long tool roster and repeated explanations were removed at the user’s request; the full official tool list is linked.
+- Thai expertise is a compact banner with three signals. Personal names and biographies were removed at the user’s request. No rankings, invented awards, savings percentages or revenue promises are used.
 - Feature source: https://studio.airova.ai/blog/update-creative-agent-toolkits (2 July 2026; ten live tools and Auto Post). Brand Kits/content planning also verified from the current connected Airova tool catalog.
 - Team source: https://airova.ai/blog/ai-future-ready-2026-recap (21 May 2026 event; founder and executive-led AI workshops).
 - Hero and social description start with business pain points; signup and all offers remain as supplied by the user.
 
 ## Social sharing
 
-- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v3.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
+- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v4.jpg`, a dedicated 1200 × 630 JPEG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
 - Metadata complements the image with world-class AI for Thai users and the complete marketing workflow: brand building, content planning, image/video production, and scheduled multi-platform posting. The complete built-in generation prompt and provenance are in `share-preview-prompt.md`.
 - The preview uses the original canonical myClover icon and Airova SVG as separate image layers, preserved in `_source/share-preview-v3.html`. Generated v2 logos were incorrect and that image is retired from the public allowlist.
+- V4 preserves that approved image and adds a compact bottom-right MCP Ready badge with original ChatGPT and Claude symbols. The editable badge lives in `_source/share-preview-v4.html` and logo provenance in `assets/sources.json`.
 - The image has a new filename; previously cached Facebook cards may need a re-scrape in the Sharing Debugger.
 
 ## Interaction
