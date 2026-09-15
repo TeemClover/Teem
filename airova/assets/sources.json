@@ -152,5 +152,18 @@
     ],
     "encoding": "Lossless PNG; native background 1730 × 909, text and SVG logos rasterized at 2×. No old JPEG reused.",
     "logoProvenance": "Original canonical myClover icon, official Airova SVG, and original ChatGPT/Claude assets recorded under v3 and v4 entries."
+  },
+  "airova-share-workflow-v7.png": {
+    "type": "Original editorial campaign illustration of product/brand inputs → AI video → scheduled social publishing. Concept imagery, not a screenshot of Airova or an actual generation result.",
+    "sourceFile": "../_source/share-v7-workflow.png",
+    "compositionFile": "../_source/share-preview-v7.html",
+    "promptFile": "../_source/share-v7-workflow-prompt.md",
+    "dimensions": [
+      2400,
+      1260
+    ],
+    "encoding": "Lossless PNG exported directly from a 2400 × 1260 native canvas. Original artwork is 1729 × 910; text and unmodified original logo assets are rendered separately.",
+    "logos": "Original canonical myClover icon and official Airova SVG; original ChatGPT/Claude symbols documented under v3/v4.",
+    "direction": "Image-led complete marketing workflow with short Thai headline and free introductory 30-credit CTA. No personal names or owner portrait."
   }
 }

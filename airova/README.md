@@ -22,11 +22,12 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 
 ## Social sharing
 
-- Facebook/Open Graph and Twitter use `assets/airova-share-thai-video-v5.png`, a dedicated 2400 × 1260 lossless PNG preview with the user's portrait, Thai AI video headline, and 30-credit introductory offer.
+- Facebook/Open Graph and Twitter use `assets/airova-share-workflow-v7.png`, a dedicated 2400 × 1260 lossless PNG showing product/brand inputs → AI video → social publishing and scheduling, with a short headline and 30-credit introductory offer.
 - Metadata complements the image with world-class AI for Thai users and the complete marketing workflow: brand building, content planning, image/video production, and scheduled multi-platform posting. The complete built-in generation prompt and provenance are in `share-preview-prompt.md`.
 - The preview uses the original canonical myClover icon and Airova SVG as separate image layers, preserved in `_source/share-preview-v3.html`. Generated v2 logos were incorrect and that image is retired from the public allowlist.
 - V4 preserves that approved image and adds a compact bottom-right MCP Ready badge with original ChatGPT and Claude symbols. The editable badge lives in `_source/share-preview-v4.html` and logo provenance in `assets/sources.json`.
-- V5 starts with fresh artwork from the original portrait, preserving vivid cobalt, violet and lime colors. All Thai copy and original logo layers are newly rendered from `_source/share-preview-v5.html`; it does not reuse a flattened JPEG. Background generation is native 1730 × 909; text and vectors are rendered at 2×. Prompt: `_source/share-v5-prompt.md`.
+- V7 emphasizes the complete workflow through repeated product imagery, large video frames, social posts, and a calendar/clock. It uses no owner portrait or personal names. Native composition: `_source/share-preview-v7.html`; built-in imagegen prompt: `_source/share-v7-workflow-prompt.md`. The final PNG is exported directly from a native canvas to avoid screenshot scaling and JPEG degradation.
+- Earlier V5 starts with fresh artwork from the original portrait, preserving vivid cobalt, violet and lime colors. All Thai copy and original logo layers are newly rendered from `_source/share-preview-v5.html`; it does not reuse a flattened JPEG. Background generation is native 1730 × 909; text and vectors are rendered at 2×. Prompt: `_source/share-v5-prompt.md`.
 - The image has a new filename; previously cached Facebook cards may need a re-scrape in the Sharing Debugger.
 
 ## Interaction
