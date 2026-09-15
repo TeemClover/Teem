@@ -71,6 +71,7 @@ function lessonView(course,lesson,access,assets) {
 }
 function courseView(course,access) {
   return {id:course.id,title:course.title,summary:course.description || course.summary || '',
+    coverImage:course.coverImage || null,
     sections:course.sections || [],startLessonId:course.startLessonId,
     previewLessonId:null,trialUrl:course.trialUrl || null,mainLessonIds:course.mainLessonIds || [],applicationLessonIds:course.applicationLessonIds || [],
     videoLessonCount:course.lessons.filter(l=>l.mediaId).length,
@@ -161,7 +162,7 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
           const course=courses.find(c=>c.id===enrollment.course_id);if(!course)continue;
           const access=courseAccess(enrollment,grants.filter(g=>g.course_id===course.id),registrations.filter(r=>r.course_id===course.id),time,instructors);
           const progress=progressSummary(await store.progress(user.id,course.id),course);
-          result.push({id:course.id,title:course.title,summary:course.description || course.summary || '',status:access.status,expiresAt:access.expiresAt,
+          result.push({id:course.id,title:course.title,summary:course.description || course.summary || '',coverImage:course.coverImage || null,status:access.status,expiresAt:access.expiresAt,
             videoLessonCount:course.lessons.filter(l=>l.mediaId).length,
             access,progress:{completedLessons:progress.completedLessons,totalLessons:progress.totalLessons,percent:progress.percent}});
         }

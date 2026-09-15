@@ -99,6 +99,22 @@ async function dom(fetcher,search='') {
   return{ids,doc,window,location,history,mount,fire,settle,load:async()=>{await import(`../assets/learn.js?test=${++run}`);await settle();}};
 }
 function mockedFetch(status='active') {return async url=>{if(url==='/api/auth/providers')return response({ok:true,providers:{email:true,google:false,otp:true}});const u=new URL(url,'https://www.myclover.com');const action=u.searchParams.get('action');if(action==='courses')return response({ok:true,user:{displayName:'ผู้เรียนทดสอบ'},courses:status==='empty'?[]:[{...active,status}]});if(action==='course')return response(courseData);if(action==='lesson')return response(lessonData(u.searchParams.get('lessonId')));return response({ok:false},404);};}
+test('course library accepts only exact local WebP covers, preserves full dimensions and falls back on image errors',async()=>{
+  const cover='/learn/assets/course-covers/ai-sauce-v5.webp';
+  const rejected=['https://www.myclover.com'+cover,'//evil.example/cover.webp','javascript:alert(1)','/learn/assets/course-covers/../private.webp','/learn/assets/course-covers/%2e%2e.webp',cover+'?redirect=1',cover+'#part',cover+'\n','/learn/assets/course-covers/COVER.webp','/learn/assets/course-covers/cover.svg',null];
+  const items=[{...active,coverImage:cover},{...active,id:'another-cover',coverImage:'/learn/assets/course-covers/another-v5.webp'},...rejected.map((coverImage,i)=>({...active,id:'fallback-'+i,title:'คอร์สสำรอง '+i,coverImage}))];
+  const base=mockedFetch();const d=await dom(async url=>url.includes('action=courses')?response({ok:true,user:{displayName:'Learner'},courses:items}):base(url));await d.load();
+  const cards=d.ids.get('course-grid').children;assert.equal(cards.length,items.length);
+  const first=cards[0].querySelector('img'),second=cards[1].querySelector('img');
+  assert.equal(first.src,cover);assert.equal(first.loading,'eager');assert.equal(second.loading,'lazy');
+  assert.equal(first.width,1672);assert.equal(first.height,941);assert.match(first.alt,/AI ใส่ซอส/);
+  assert.equal(cards[0].querySelector('.course-art').querySelector('p'),null);
+  for(let i=2;i<cards.length;i++){assert.equal(cards[i].querySelector('img'),null);assert.match(cards[i].querySelector('.course-art-title').textContent,/คอร์สสำรอง/);}
+  await first.fire('error');assert.equal(cards[0].querySelector('img'),null);assert.equal(cards[0].querySelector('.course-art-title').textContent,active.title);
+  const css=await readFile(new URL('../assets/learn.css',import.meta.url),'utf8');
+  assert.match(css,/\.course-cover\{[^}]*width:100%;height:auto;[^}]*object-fit:contain/);
+  assert.match(css,/\.course-art-cover::after\{content:none\}/);assert.doesNotMatch(css,/\.course-card p\{/);
+});
 test('private reading renders headings, steps, prompt blocks and bold text without executing HTML',async()=>{
   const d=await dom(mockedFetch());const target=d.ids.get('lesson-reading');
   renderLessonReading(target,'# สรุปบท\n\nข้อมูล **สำคัญ** และ <script>alert(1)</script>\n\n1. เลือกงาน\n2. เก็บ Source\n\n```text\n<img src=x onerror=alert(2)>\n```\n\n> ลองทำกับงานของคุณ',{origin:d.location.origin});
