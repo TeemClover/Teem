@@ -27,11 +27,11 @@ async function boot({checkoutId=null,post,restore,receipt,offerStatus=200}={}) {
   const ids=new Map([...html.matchAll(/<([a-z]+)\b([^>]*\bid="([^"]+)"[^>]*)>/g)].map(m=>[m[3],new Element(m[1],m[2])]));
   ids.get('offer-config').textContent=JSON.stringify(config);
   const calls=[],events={},timers=new Map();let nextTimer=0;
-  const state={email:'learner@example.test',checkoutId,blocked:false,offerStatus};
-  const cart=()=>({id:CART,priceTHB:990,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'});
+  const state={email:'learner@example.test',checkoutId,blocked:false,offerStatus,elapsed:0,recovery:null,cartPrice:990};
+  const cart=()=>({id:CART,priceTHB:state.cartPrice,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'});
   const fetch=async(url,options={})=>{
     calls.push({url,options});
-    if(url==='/api/ai-source?action=offer')return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName:'ผู้เรียน'}:null,checkoutId:state.checkoutId,blocked:state.blocked},offer:{promoActive:true,timeZone:'Asia/Bangkok',priceTHB:990,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW).toISOString()}},state.offerStatus);
+    if(url==='/api/ai-source?action=offer')return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName:'ผู้เรียน'}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);
     if(url.startsWith('/api/ai-source?action=checkout&'))return restore?restore(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source?action=checkout'&&options.method==='POST')return post?post(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source'&&options.method==='POST'&&receipt)return receipt(options);
@@ -40,7 +40,7 @@ async function boot({checkoutId=null,post,restore,receipt,offerStatus=200}={}) {
   const location={protocol:'https:',origin:'https://www.myclover.com',search:'',hash:'',assign(url){this.assigned=url;}};
   const document={hidden:false,activeElement:null,documentElement:{dataset:{}},body:{classList:{add(){},remove(){}}},getElementById:id=>ids.get(id),addEventListener:(t,fn)=>{(events['document:'+t]??=[]).push(fn);}};
   const sessionStorage=store();
-  const window={document,fetch,location,localStorage:store(),sessionStorage,performance:{now:()=>0},AbortController,crypto:webcrypto,TextEncoder,
+  const window={document,fetch,location,localStorage:store(),sessionStorage,performance:{now:()=>state.elapsed},AbortController,crypto:webcrypto,TextEncoder,
     URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},FileReader:class{readAsDataURL(){this.result='data:image/png;base64,dGVzdA==';this.onload();}},
     setTimeout:(fn,delay)=>{const id=++nextTimer;timers.set(id,{fn,delay});return id;},clearTimeout:id=>timers.delete(id),setInterval:()=>1,
     addEventListener:(t,fn)=>{(events[t]??=[]).push(fn);}};
@@ -82,7 +82,7 @@ test('an expired or submitted restored cart never shows a payable QR',async()=>{
 });
 
 test('offer connectivity failure exposes a working reconnect action and never silently starts payment',async()=>{
-  const ui=await boot({offerStatus:503});assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('retry-offer').hidden,false);assert.equal(ui.ids.get('retry-offer').disabled,false);
+  const ui=await boot({offerStatus:503});assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('retry-offer').hidden,false);assert.equal(ui.ids.get('retry-offer').disabled,false);assert.match(ui.ids.get('purchase-status').textContent,/เชื่อมต่อระบบไม่สำเร็จ/);
   ui.state.offerStatus=200;await ui.ids.get('retry-offer').fire('click');assert.equal(ui.ids.get('retry-offer').hidden,true);assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);assert.equal(ui.ids.get('payment-qr').hidden,true);
 });
 test('a guest purchase goes to account enrollment without creating an unowned checkout',async()=>{
@@ -91,8 +91,25 @@ test('a guest purchase goes to account enrollment without creating an unowned ch
 
 test('a transient offer failure during receipt upload preserves the submitted cart and accepts its confirmed result',async()=>{
   const waiting=deferred(),started=deferred(),ui=await boot({checkoutId:CART,receipt:()=>{started.resolve();return waiting.promise;}});await ui.fill();const submission=ui.submit();await Promise.race([started.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('receipt did not start: '+ui.ids.get('upload-status').textContent)),1000))]);
-  assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1,ui.ids.get('upload-status').textContent);ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,true);
+  assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1,ui.ids.get('upload-status').textContent);ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,true);assert.doesNotMatch(ui.ids.get('copy-status').textContent,/ราคาเปลี่ยนแล้ว/);
   waiting.resolve(response({ok:true,status:'pending_verification',reference:'SAUCE-'+'A'.repeat(32),admissionDueAt:new Date(NOW+3600000).toISOString()},201));await submission;
   assert.match(ui.ids.get('upload-status').textContent,/รับลงทะเบียนแล้ว/);assert.doesNotMatch(ui.ids.get('upload-status').textContent,/ยังยืนยันการรับข้อมูลไม่ได้/);assert.equal(ui.ids.get('upload-button').disabled,true);
   ui.state.offerStatus=200;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,false);assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1);
+});
+
+test('repeated clicks reveal the current valid QR immediately without another offer or checkout request',async()=>{
+  const ui=await boot({checkoutId:CART});const count=ui.calls.length;assert.equal(ui.ids.get('payment-qr').hidden,false);
+  ui.state.offerStatus=503;await ui.click();await ui.click();assert.equal(ui.calls.length,count);assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('bank-details').scrolls,2);assert.equal(ui.ids.get('checkout-loading').hidden,true);assert.equal(ui.ids.get('purchase-button').disabled,false);
+});
+test('an expired cart still checks the authoritative offer before opening another payment',async()=>{
+  const ui=await boot({checkoutId:CART});const count=ui.calls.length;ui.state.elapsed=172800001;ui.state.cartPrice=1690;await ui.click();
+  assert.equal(ui.calls[count].url,'/api/ai-source?action=offer');assert.equal(ui.calls.slice(count).filter(c=>c.options.method==='POST').length,1);assert.equal(ui.ids.get('payment-qr').hidden,true,'expired returned cart is never shown as payable');
+});
+test('a submitted cart uses the registered-account path rather than reopening QR',async()=>{
+  const ui=await boot({checkoutId:CART,restore:()=>response({ok:true,checkout:{id:CART,priceTHB:990,expiresAt:new Date(NOW+172800000).toISOString(),status:'submitted',reference:'SAUCE-'+'A'.repeat(32)}})});ui.state.blocked=true;await ui.focus();const count=ui.calls.length;await ui.click();
+  assert.equal(ui.calls[count].url,'/api/ai-source?action=offer');assert.equal(ui.location.assigned,'/learn/?course=ai-sauce');assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.calls.slice(count).filter(c=>c.options.method==='POST').length,0);
+});
+test('a newly active recovery price cannot reveal an existing cart for a different price',async()=>{
+  const ui=await boot({checkoutId:CART});ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+3600000).toISOString()};ui.state.cartPrice=790;await ui.focus();const count=ui.calls.length;await ui.click();
+  assert.equal(ui.calls[count].url,'/api/ai-source?action=offer');assert.equal(ui.calls.slice(count).filter(c=>c.options.method==='POST').length,1);assert.match(ui.ids.get('bank-amount').textContent,/790/);assert.equal(ui.ids.get('payment-qr').hidden,false);
 });

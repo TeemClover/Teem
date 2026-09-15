@@ -107,9 +107,9 @@
     get('upload-button').disabled=uploading||received||!live||!serverReady||!currentCheckout||currentCheckout.status!=='open';
     get('upload-button').textContent=uploading?'กำลังส่ง…':received?'รับลงทะเบียนแล้ว':'ส่งสลิปและลงทะเบียน';
     ['customer-name','customer-email','customer-contact','paid-amount','transferred-at','receipt-file','registration-consent'].forEach(function(id){get(id).disabled=uploading||received;});
-    get('purchase-status').textContent=purchaseNotice||(live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง');
+    get('purchase-status').textContent=purchaseNotice||(live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':offerFailed?'เชื่อมต่อระบบไม่สำเร็จ กดเชื่อมต่อใหม่เพื่อเปิด QR':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง');
     get('payment-notice').textContent=currentCheckout&&clock()>=Date.parse(currentCheckout.expiresAt)?'รายการนี้หมดเวลาแล้ว หากโอนทันกำหนดไว้แล้ว แนบสลิปเดิมได้ เจ้าหน้าที่จะตรวจจากเวลาโอนจริง โปรดอย่าโอนซ้ำ':currentCheckout&&currentCheckout.status!=='open'?'รับสลิปแล้ว เปิดดูสถานะได้ในห้องเรียนของคุณ':'โอนตามยอด แล้วแนบสลิปด้านล่าง เปิดสิทธิ์เข้า myClover ภายใน 1 วันหลังชำระเงิน';
-    if(previousPrice!==null&&previousPrice!==offer.currentPrice){copiedVersion++;if(offer.currentPrice>previousPrice)get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
+    if(previousPrice!==null&&previousPrice!==offer.currentPrice){copiedVersion++;if(serverReady&&offer.currentPrice>previousPrice)get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
     var hasTerms=false;['access_terms','delivery_terms','bonus_terms','support_terms','refund_terms','tool_cost_terms','payment_deadline_policy'].forEach(function(key){var item=get('term-'+key);item.textContent=typeof config[key]==='string'?config[key]:'';if(key==='payment_deadline_policy'&&schoolState&&schoolState.recovery&&schoolState.recovery.active)item.textContent='ใช้สิทธิ์ตามยอดและเวลาสิ้นสุดที่แสดง โดยยึดเวลาโอนที่ตรวจสอบจริง';if(key==='bonus_terms'&&currentCheckout&&currentCheckout.priceTHB===790)item.textContent='แพ็ก 790 บาทมีบทเรียนและไฟล์ฝึกครบ แต่ไม่รวมคู่มือ PDF และ AI ผู้ช่วยงาน .md';item.parentElement.hidden=!item.textContent;hasTerms=hasTerms||!!item.textContent;});get('offer-terms').hidden=!hasTerms;
     return offer;
   }
@@ -156,7 +156,12 @@
   }
   async function beginCheckout(){
     if(uploading||checkoutRestoring||checkoutStarting)return;
-    introSuppressed=true;closeIntro();var request=++checkoutRequest;checkoutStarting=true;render();
+    introSuppressed=true;closeIntro();
+    // Revealing an already-authorized open cart does not create a payment or need
+    // another offer lookup. Expiry still uses the server-anchored clock.
+    var visibleOffer=render();
+    if(live&&serverReady&&schoolState&&schoolState.user&&!schoolState.blocked&&!received&&!checkoutRestoreFailed&&currentCheckout&&checkoutOwnerEmail===schoolState.user.email&&currentCheckout.status==='open'&&clock()<Date.parse(currentCheckout.expiresAt)&&currentCheckout.priceTHB===visibleOffer.currentPrice){purchaseNotice='';render();get('bank-details').scrollIntoView({block:'start'});return;}
+    var request=++checkoutRequest;checkoutStarting=true;render();
     try{
     await refreshOffer();
     if(request!==checkoutRequest)return;
