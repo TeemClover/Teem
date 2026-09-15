@@ -764,6 +764,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/kickstarter/kickstarter-static-story.css",
   "/kickstarter/kickstarter-story-images.css",
   "/learn/assets/account-step.js",
+  "/learn/assets/course-covers/ai-sauce-v5.webp",
   "/learn/assets/learn-core.js",
   "/learn/assets/learn.css",
   "/learn/assets/learn.js",

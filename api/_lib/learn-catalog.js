@@ -5,6 +5,7 @@ export const LEARN_COURSES = [
   {
     "id": "ai-sauce",
     "title": "AI ใส่ซอส",
+    "coverImage": "/learn/assets/course-covers/ai-sauce-v5.webp",
     "description": "เรียนต่อเนื่องจากวิธีคิด สู่การดูครูทำและลงมือฝึก นำซอสของคุณไปสร้างภาพ วิดีโอ งานหลายรูปแบบ สูตรคำสั่ง และเว็บ ก่อนลองเคสสำนักงาน ธุรกิจ และการต่อยอดเป็นระบบ",
     "startLessonId": "FOUNDATION",
     "previewLessonId": null,
@@ -445,7 +446,7 @@ export const LEARN_COURSES = [
         "order": 14,
         "durationSeconds": 195.46666666666667,
         "preview": false,
-        "mediaId": "m_9c578b5a18f454cdaa63379d081a9ef2",
+        "mediaId": "m_08098d73bcb450aab59f8e509d85470e",
         "captionId": "m_3bc9702adba2515388ffb96e583d3fe9",
         "captionsEmbedded": true,
         "resourceIds": [
@@ -5858,6 +5859,20 @@ export const LEARN_ASSETS = [
     "contentType": "text/markdown; charset=utf-8",
     "bytes": 25182,
     "disposition": "attachment",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_08098d73bcb450aab59f8e509d85470e",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "ADV05"
+    ],
+    "kind": "video",
+    "title": "วิดีโอบทเรียน",
+    "filename": "AI_SAUCE_ADV05_PRIVATE_v08.mp4",
+    "contentType": "video/mp4",
+    "bytes": 12795926,
+    "disposition": "inline",
     "previewAllowed": false
   }
 ];

@@ -72,6 +72,16 @@ test('empty enrollment has no catalog browsing or other users courses',async()=>
   assert.deepEqual((await h.call()).body.courses,[]);
   assert.equal((await h.call('GET','course',undefined,{query:{courseId:'ai-sauce'}})).statusCode,403);
 });
+test('enrolled course list and detail serialize the course cover without granting lesson access',async()=>{
+  const coverImage='/learn/assets/course-covers/ai-sauce-v5.webp';
+  assert.equal(LEARN_COURSES.find(c=>c.id==='ai-sauce').coverImage,coverImage);
+  const h=harness({catalog:[{...courses[0],coverImage},courses[1]]});h.seed();h.seed('alice','another-course');
+  const list=await h.call();assert.equal(list.statusCode,200);assert.equal(list.body.courses[0].coverImage,coverImage);
+  assert.equal(list.body.courses[1].coverImage,null);
+  const detail=await h.call('GET','course',undefined,{query:{courseId:'ai-sauce'}});
+  assert.equal(detail.body.course.coverImage,coverImage);assert.equal(detail.body.course.lessons.every(l=>l.locked),true);
+  const guest=await h.call('GET','courses',undefined,{testUser:null});assert.equal(guest.statusCode,401);assert.doesNotMatch(JSON.stringify(guest.body),/coverImage|ai-sauce-v5/);
+});
 test('enrolling is idempotent and shows status without unlocking full-course lessons',async()=>{
   const h=harness();const a=await h.call('POST','enroll',{courseId:'ai-sauce'}),b=await h.call('POST','enroll',{courseId:'ai-sauce'});
   assert.equal(a.statusCode,200);assert.equal(a.body.access.status,'registered');assert.equal(h.enrolled.size,1);
@@ -108,6 +118,19 @@ test('real catalog keeps every video and caption paid, with exact lesson associa
   assert.equal(result.asset.kind,'captions');assert.equal(result.preview,false);
   const other=course.lessons.find(l=>l.id!=='EP01' && l.captionId);
   await assert.rejects(authorizeLearnAsset({}, {}, {courseId:course.id,lessonId:lesson.id,assetId:other.captionId},options),e=>e.code==='ASSET_NOT_FOUND');
+});
+test('chapter five delivers only the current privacy repair, never archived video versions',async()=>{
+  const h=harness({catalog:LEARN_COURSES,media:LEARN_ASSETS});h.seed();h.grants.push(grant());
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),lesson=course.lessons.find(l=>l.id==='ADV05');
+  assert.equal(lesson.mediaId,'m_08098d73bcb450aab59f8e509d85470e');
+  const request={courseId:course.id,lessonId:lesson.id};
+  const current=await authorizeLearnAsset({}, {}, {...request,assetId:lesson.mediaId},h.options);
+  assert.equal(current.asset.bytes,12795926);
+  const archived=LEARN_ASSETS.filter(a=>a.kind==='video' && a.lessonIds.includes('ADV05') && a.id!==lesson.mediaId);
+  assert.ok(archived.length>=2);
+  for(const asset of archived) {
+    await assert.rejects(authorizeLearnAsset({}, {}, {...request,assetId:asset.id},h.options),e=>e.code==='ASSET_NOT_FOUND');
+  }
 });
 test('preview flag in a request cannot open a paid lesson',async()=>{
   const h=harness();h.seed();const r=await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'FOUNDATION',preview:'true'}});

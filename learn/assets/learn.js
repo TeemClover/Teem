@@ -29,6 +29,20 @@ function status(text = '') { $('page-status').textContent = text; }
 function showOnly(id) { ['state-panel', 'library', 'classroom'].forEach(key => { $(key).hidden = key !== id; }); }
 function action(text, callback, secondary = false) { const b = el('button', text, `button button-${secondary ? 'secondary' : 'primary'}`); b.type = 'button'; b.addEventListener('click', callback); return b; }
 function link(text, href, secondary = false) { const a = el('a', text, `button button-${secondary ? 'secondary' : 'primary'}`); a.href = href; return a; }
+function courseArt(course, index) {
+  const art = el('div', '', 'course-art');
+  const fallback = () => {
+    art.className = 'course-art'; art.setAttribute('aria-hidden', 'true');
+    art.replaceChildren(el('p', 'MYCLOVER / LEARNING', 'course-art-label'), el('p', course.title || 'เรียนรู้แล้วนำไปใช้', 'course-art-title'));
+  };
+  // Public cover metadata can name only a local, reviewed WebP cover file.
+  if (typeof course.coverImage !== 'string' || course.coverImage.trim() !== course.coverImage || !/^\/learn\/assets\/course-covers\/[a-z0-9-]+\.webp$/.test(course.coverImage)) { fallback(); return art; }
+  art.className = 'course-art course-art-cover';
+  const img = el('img', '', 'course-cover'); img.alt = `ปกคอร์ส ${course.title}`;
+  img.width = 1672; img.height = 941; img.loading = index === 0 ? 'eager' : 'lazy'; img.decoding = 'async';
+  img.addEventListener('error', fallback, { once: true }); img.src = course.coverImage;
+  art.append(img); return art;
+}
 function badge(state, role) { return el('span', role === 'instructor' ? 'ผู้สอน · เปิดตรวจได้ทุกบท' : STATUS[state]?.label || 'กำลังตรวจสอบ', `badge ${state || ''}`); }
 function courseChapters(course) {
   const lessons = [...course.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -117,8 +131,8 @@ const view = {
     if (!courses.length) { statePanel('ห้องเรียนยังว่างอยู่', 'คอร์สที่คุณลงทะเบียนจะปรากฏที่นี่ หากสมัครไว้แล้ว ให้ตรวจว่าใช้อีเมลเดียวกับตอนสมัคร', [action('ตรวจสอบบัญชี', () => window.MC_ACCOUNT?.open('login')), link('กลับหน้าหลัก', '/', true)]); return; }
     showOnly('library'); $('course-count').textContent = `${courses.length} คอร์ส`;
     const grid = $('course-grid'); grid.replaceChildren();
-    for (const course of courses) {
-      const card = el('article', '', 'course-card'), art = el('div', '', 'course-art'); art.setAttribute('aria-hidden', 'true'); art.append(el('p', 'MYCLOVER / LEARNING', 'course-art-label'), el('p', 'จากความรู้ → งานที่ใช้ได้', 'course-art-title'));
+    for (const [index, course] of courses.entries()) {
+      const card = el('article', '', 'course-card'), art = courseArt(course, index);
       const body = el('div', '', 'course-card-body'); body.append(badge(course.status, course.access?.role), el('h3', course.title), el('p', course.summary || STATUS[course.status].message));
       const expiry = dateLabel(course.expiresAt); if (expiry && course.status === 'active') body.append(el('div', `เรียนได้ถึง ${expiry}`, 'course-card-meta'));
       const p = progressSummary(course.progress); if (course.status === 'active' && p.total) body.append(el('div', `เรียนจบแล้ว ${p.completed} จาก ${p.total} ตอน`, 'course-card-meta'));
