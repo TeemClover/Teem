@@ -7,6 +7,26 @@ export function videoETag(asset, row) {
     ? `"sha256-${row.sha256}"` : null;
 }
 
+function requestHeader(headers, name) {
+  if (typeof headers?.get === 'function') return headers.get(name) ?? undefined;
+  const values = Object.entries(headers || {}).filter(([key]) => key.toLowerCase() === name).map(([, value]) => value);
+  // Ambiguous casing in a non-Node adapter must not silently choose a validator.
+  return values.length > 1 ? null : values[0];
+}
+
+export function mediaConditionalRequest(input, { allowForwarded = true } = {}) {
+  const headers = { range: requestHeader(input, 'range') };
+  let validatorSource = 'missing';
+  for (const name of ['if-none-match', 'if-match', 'if-range']) {
+    const native = requestHeader(input, name), forwarded = allowForwarded ? requestHeader(input, 'x-myclover-media-' + name) : undefined;
+    headers[name] = native !== undefined ? native : forwarded;
+    if (name === 'if-none-match') validatorSource = native !== undefined ? 'native' : forwarded !== undefined ? 'forwarded' : 'missing';
+  }
+  // Forwarded values are conditional request hints, never identity or access.
+  // Middleware overwrites aliases from the real headers on the exact media API.
+  return { headers, validatorSource };
+}
+
 function entityTags(header) {
   if (typeof header !== 'string' || header.length > 16384) return null;
   const input = header.trim();

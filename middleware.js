@@ -27,6 +27,19 @@ export default async function middleware(request) {
   const normalized = canonicalPath(pathname);
   const privateHeaders = { 'Cache-Control': 'private, no-store', 'CDN-Cache-Control': 'no-store', 'Vercel-CDN-Cache-Control': 'no-store', 'Vary': 'Cookie' };
   if (normalized === null) return new Response('Invalid path', { status: 400, headers: privateHeaders });
+  if (pathname === '/api/learn-media' && pathname === normalized) {
+    // Preserve validators across the routing layer as origin-request headers.
+    // A caller cannot supply the aliases: replace them from real HTTP fields on
+    // every request. The media handler still authenticates before evaluating them.
+    const headers = new Headers(request.headers);
+    for (const name of ['if-none-match', 'if-match', 'if-range']) {
+      const alias = `x-myclover-media-${name}`;
+      headers.delete(alias);
+      const value = request.headers.get(name);
+      if (value !== null && value.length <= 16384) headers.set(alias, value);
+    }
+    return next({ request: { headers } });
+  }
   // Only reviewed publication paths bypass content authentication. Private
   // uploads, documents and APIs cannot opt in by using an image extension.
   const asset = pathname === normalized && publicAssetPath(pathname);

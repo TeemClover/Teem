@@ -38,7 +38,9 @@ function mediaHarness(options={}) {
     },
   });
   async function call({method='GET',range,url,headers={}}={}){
-    const req={method,url:url||'/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+asset.id,headers:{...headers,...(range===undefined?{}:{range})}};
+    const requestHeaders=typeof headers.get==='function'?new Headers(headers):{...headers};
+    if(range!==undefined){if(requestHeaders instanceof Headers)requestHeaders.set('range',range);else requestHeaders.range=range;}
+    const req={method,url:url||'/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+asset.id,headers:requestHeaders};
     const res=new Reply();await handler(req,res);return res;
   }
   return {call,calls,asset};
@@ -122,6 +124,54 @@ test('conditional GET, HEAD and Range revalidate current access and registry bef
     assert.equal(r.headers['content-length'],undefined);assert.equal(r.headers['content-range'],undefined);
     assert.deepEqual(h.calls.filter(c=>c[0]!=='timing').map(c=>c[0]),['authorize','sql']);
     assert.equal(h.calls.find(c=>c[0]==='timing')[1].status,304);
+  }
+});
+test('validator lookup supports Node casing, Web Headers and middleware forwarding when a gateway removes the native header',async()=>{
+  for(const [headers,marker] of [
+    [{'If-None-Match':VIDEO_ETAG},'validator_native'],
+    [new Headers({'IF-NONE-MATCH':VIDEO_ETAG,Range:'bytes=2-5'}),'validator_native'],
+    [{'x-myclover-media-if-none-match':VIDEO_ETAG},'validator_forwarded'],
+    [new Headers({'X-MyClover-Media-If-None-Match':VIDEO_ETAG}),'validator_forwarded'],
+  ]){
+    const h=mediaHarness(),r=await h.call({headers});assert.equal(r.statusCode,304);assert.equal(r.body,'');
+    assert.match(r.headers['server-timing'],new RegExp(marker));assert.match(r.headers['server-timing'],/validator_match(?:,|$)/);
+    assert.equal(h.calls.some(c=>c[0]==='get'),false);assert.doesNotMatch(r.headers['server-timing'],/sha256|1{64}|m_aaaa/);
+  }
+});
+test('native validators take precedence over aliases and ambiguous native casing never validates cached bytes',async()=>{
+  for(const headers of [
+    {'If-None-Match':'"old"','x-myclover-media-if-none-match':VIDEO_ETAG},
+    {'If-None-Match':VIDEO_ETAG,'if-none-match':'"old"','x-myclover-media-if-none-match':VIDEO_ETAG},
+  ]){
+    const r=await mediaHarness().call({headers});assert.equal(r.statusCode,200);
+    assert.match(r.headers['server-timing'],/validator_native/);assert.match(r.headers['server-timing'],/validator_mismatch/);
+  }
+  const r=await mediaHarness().call({url:'/api/learn-media/?courseId=ai-sauce&lessonId=FOUNDATION&assetId='+ASSET.id,headers:{'x-myclover-media-if-none-match':VIDEO_ETAG}});
+  assert.equal(r.statusCode,200);assert.match(r.headers['server-timing'],/validator_missing/);
+});
+test('case-insensitive and forwarded If-Match and If-Range preserve full-response fallback and precondition order',async()=>{
+  for(const headers of [
+    {Range:'bytes=2-5','If-Range':VIDEO_ETAG},
+    new Headers({Range:'bytes=2-5','If-Range':VIDEO_ETAG}),
+    {Range:'bytes=2-5','X-MyClover-Media-If-Range':VIDEO_ETAG},
+  ])assert.equal((await mediaHarness().call({headers})).statusCode,206);
+  assert.equal((await mediaHarness().call({headers:{Range:'bytes=2-5','X-MyClover-Media-If-Range':'"old"'}})).statusCode,200);
+  for(const headers of [
+    {'If-Match':'"old"','If-None-Match':VIDEO_ETAG},
+    new Headers({'If-Match':'"old"','If-None-Match':VIDEO_ETAG}),
+    {'X-MyClover-Media-If-Match':'"old"','X-MyClover-Media-If-None-Match':VIDEO_ETAG},
+  ])assert.equal((await mediaHarness().call({headers})).statusCode,412);
+});
+test('validator diagnostics expose only constant state markers and numeric presence flags',async()=>{
+  for(const [headers,expected] of [
+    [{},[0,0,1,0,0]],
+    [{'if-none-match':VIDEO_ETAG},[1,0,0,1,0]],
+    [{'x-myclover-media-if-none-match':VIDEO_ETAG},[0,1,0,1,0]],
+    [{'if-none-match':'"old"'},[1,0,0,0,1]],
+  ]){
+    const h=mediaHarness(),r=await h.call({headers}),log=h.calls.find(c=>c[0]==='timing')[1];
+    assert.deepEqual(['validatorNative','validatorForwarded','validatorMissing','validatorMatch','validatorMismatch'].map(key=>log[key]),expected);
+    assert.ok(Object.values(log).every(value=>typeof value==='number'));assert.doesNotMatch(JSON.stringify(log)+r.headers['server-timing'],/sha256|1{64}|"old"|cookie|m_aaaa/);
   }
 });
 test('If-None-Match supports weak tags, complete lists and wildcard without partial or malformed matches',async()=>{

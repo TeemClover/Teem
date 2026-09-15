@@ -165,6 +165,63 @@ test('API routes remain owned by their handlers and receive no public asset cach
   }
 });
 
+test('private media validators reach only the origin request while Cookie and Range are preserved',async()=>{
+  for(const method of ['GET','HEAD']) {
+    const headers={cookie:'mc_session=fixture-session',range:'bytes=0-1105356',
+      'If-None-Match':'W/"current", "older"','If-Match':'"current"','If-Range':'"current"',
+      'x-myclover-media-if-none-match':'"forged"','x-myclover-media-if-match':'*','x-myclover-media-if-range':'"forged"'};
+    const response=await middleware(new Request('https://www.myclover.com/api/learn-media?courseId=ai-sauce&lessonId=EP09&assetId=fixture',{method,headers}));
+    assert.equal(response.headers.get('x-middleware-next'),'1');
+    assert.equal(destination(response),null);
+    assertNoPublicCache(response,'/api/learn-media');
+    const overrides=new Set(response.headers.get('x-middleware-override-headers').split(','));
+    for(const name of ['if-none-match','if-match','if-range']) {
+      const alias=`x-myclover-media-${name}`;
+      assert.ok(overrides.has(alias));
+      assert.equal(response.headers.get(`x-middleware-request-${alias}`),new Headers(headers).get(name));
+      assert.equal(response.headers.get(alias),null,'aliases must not be ordinary response headers');
+      assert.equal(response.headers.get(name),null,'validators must not be ordinary response headers');
+    }
+    for(const name of ['cookie','range'])assert.equal(response.headers.get(`x-middleware-request-${name}`),headers[name]);
+    assert.equal(response.headers.get('cookie'),null);
+    assert.equal(response.headers.get('set-cookie'),null);
+  }
+});
+
+test('media middleware drops forged aliases without real validators and bounds copied header size',async()=>{
+  for(const realValue of [null,'x'.repeat(16385)]) {
+    const headers={};
+    for(const name of ['if-none-match','if-match','if-range']) {
+      headers[`x-myclover-media-${name}`]='"forged"';
+      if(realValue!==null)headers[name]=realValue;
+    }
+    const response=await middleware(new Request('https://www.myclover.com/api/learn-media',{headers}));
+    const overrides=new Set(response.headers.get('x-middleware-override-headers').split(','));
+    for(const name of ['if-none-match','if-match','if-range']) {
+      const alias=`x-myclover-media-${name}`;
+      assert.ok(!overrides.has(alias));
+      assert.equal(response.headers.get(`x-middleware-request-${alias}`),null);
+      assert.equal(response.headers.get(alias),null);
+    }
+    assertNoPublicCache(response,'/api/learn-media');
+  }
+  const value='x'.repeat(16384);
+  const response=await middleware(new Request('https://www.myclover.com/api/learn-media',{headers:{'if-none-match':value}}));
+  assert.equal(response.headers.get('x-middleware-request-x-myclover-media-if-none-match'),value);
+});
+
+test('validator preservation is restricted to the exact canonical media API route',async()=>{
+  for(const pathname of ['/api/learn-media/','/api/learn-media-extra','/api/learn','/api/%6cearn-media','/api//learn-media',
+    '/assets/account.js','/classroom/img/header-lesson1.webp','/shelf/source/private.jpg']) {
+    const response=await middleware(new Request(`https://www.myclover.com${pathname}`,{headers:{
+      'if-none-match':'"current"','x-myclover-media-if-none-match':'"forged"',
+    }}));
+    assert.equal(response.headers.get('x-middleware-override-headers'),null,pathname);
+    assert.equal(response.headers.get('x-middleware-request-x-myclover-media-if-none-match'),null,pathname);
+    assert.equal(response.headers.get('x-myclover-media-if-none-match'),null,pathname);
+  }
+});
+
 test('encoded asset aliases cannot obtain the public policy or bypass protected route validation',async()=>{
   for (const pathname of [
     '/%63lassroom/img/header-lesson1.webp', '/classroom//img/header-lesson1.webp',

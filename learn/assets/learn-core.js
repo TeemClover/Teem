@@ -60,20 +60,31 @@ export function createApi(fetcher) {
 export function createLearner({ api, view, route = () => ({}), navigate = () => {} }) {
   let epoch = 0, selection = 0, courses = [], currentCourse = null, currentLesson = null;
   const fail = error => view.error(error);
+  async function loadLibrary(accountEpoch, run = selection) {
+    const data = await api('courses');
+    if (accountEpoch !== epoch || run !== selection) return false;
+    courses = normalizeCourses(data); view.account(data.user); view.courses(courses);
+    return true;
+  }
   async function load() {
     const run = ++epoch; ++selection; courses = []; currentCourse = null; currentLesson = null;
     view.clear(); view.loading();
     try {
-      const data = await api('courses');
-      if (run !== epoch) return;
-      courses = normalizeCourses(data); view.account(data.user); view.courses(courses);
       const target = route();
-      if (target.courseId && courses.some(c => c.id === target.courseId)) await openCourse(target.courseId, target.lessonId, false);
-      else if (target.courseId) { navigate('/learn/', true); view.notice('บัญชีนี้ยังไม่มีคอร์สที่ระบุ'); }
+      // The course endpoint itself verifies session, account and enrollment.
+      // A deep link does not need to wait for the entire course library first.
+      if (validId(target.courseId) && /^[a-zA-Z0-9]/.test(target.courseId)) {
+        await loadCourse(target.courseId, target.lessonId, false, true);
+      } else if (await loadLibrary(run)) {
+        if (target.courseId) { navigate('/learn/', true); view.notice('บัญชีนี้ยังไม่มีคอร์สที่ระบุ'); }
+      }
     } catch (error) { if (run === epoch) fail(error); }
   }
   async function openCourse(courseId, lessonId = null, updateRoute = true) {
-    if (!courses.some(c => c.id === courseId)) return false;
+    if (!validId(courseId) || (!courses.some(c => c.id === courseId) && currentCourse?.course.id !== courseId)) return false;
+    return loadCourse(courseId, lessonId, updateRoute);
+  }
+  async function loadCourse(courseId, lessonId = null, updateRoute = true, direct = false) {
     const run = ++selection, accountEpoch = epoch;
     currentCourse = null; currentLesson = null; view.clearLesson(); view.courseLoading();
     if (updateRoute) navigate(courseRoute(courseId));
@@ -81,7 +92,7 @@ export function createLearner({ api, view, route = () => ({}), navigate = () => 
       const data = await api('course', { courseId });
       if (accountEpoch !== epoch || run !== selection) return false;
       if (!data.course || data.course.id !== courseId || !Array.isArray(data.course.lessons)) throw new Error('ข้อมูลคอร์สไม่ตรงกับรายการที่เลือก');
-      currentCourse = data; view.course(data);
+      currentCourse = data; view.account(data.user); view.course(data);
       const lessons = data.course.lessons;
       const selected = lessons.find(l => l.id === lessonId && !l.locked) || lessons.find(l => l.id === data.course.startLessonId && !l.locked) || lessons.find(l => !l.locked);
       if (selected) {
@@ -89,7 +100,15 @@ export function createLearner({ api, view, route = () => ({}), navigate = () => 
         await openLesson(selected.id, updateRoute);
       }
       return true;
-    } catch (error) { if (accountEpoch === epoch && run === selection) fail(error); return false; }
+    } catch (error) {
+      if (accountEpoch !== epoch || run !== selection) return false;
+      if (direct && ['COURSE_NOT_FOUND', 'COURSE_ENROLLMENT_REQUIRED'].includes(error.code)) {
+        try {
+          if (await loadLibrary(accountEpoch, run)) { navigate('/learn/', true); view.notice('บัญชีนี้ยังไม่มีคอร์สที่ระบุ'); }
+        } catch (libraryError) { if (accountEpoch === epoch && run === selection) fail(libraryError); }
+      } else fail(error);
+      return false;
+    }
   }
   async function openLesson(lessonId, updateRoute = true) {
     const course = currentCourse, entry = course?.course.lessons.find(l => l.id === lessonId);

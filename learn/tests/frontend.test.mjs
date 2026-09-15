@@ -11,7 +11,7 @@ const active = { id:'ai-sauce',title:'AI ใส่ซอส',status:'active',sum
 const foundation = {id:'FOUNDATION',title:'เริ่มที่นี่',type:'foundation',order:0,locked:false,nextLessonId:'ADV01'};
 const preview = {id:'EP01',title:'บทตัวอย่าง',type:'support',order:1,preview:true,locked:false};
 const main = {id:'ADV01',title:'ทำ Source',type:'main',order:2,locked:false};
-const courseData = {ok:true,course:{id:'ai-sauce',title:active.title,summary:active.summary,startLessonId:'FOUNDATION',lessons:[foundation,preview,main]},access:{status:'active'},progress:{lessons:{},completedLessons:0,totalLessons:3,percent:0}};
+const courseData = {ok:true,user:{displayName:'ผู้เรียนทดสอบ',emailVerified:true},course:{id:'ai-sauce',title:active.title,summary:active.summary,startLessonId:'FOUNDATION',lessons:[foundation,preview,main]},access:{status:'active'},progress:{lessons:{},completedLessons:0,totalLessons:3,percent:0}};
 const media = '/api/learn-media?courseId=ai-sauce&lessonId=FOUNDATION&assetId=m_safe';
 const lessonData = (id = 'FOUNDATION') => ({ok:true,courseId:'ai-sauce',lesson:{...courseData.course.lessons.find(l=>l.id===id),media:{url:media,captions:[]},resources:[]},access:{status:'active'}});
 const response = (body,status=200) => ({ok:status>=200&&status<300,status,json:async()=>body});
@@ -42,9 +42,9 @@ test('API sends same-origin credentials and no-store and surfaces auth errors',a
   await assert.rejects(createApi(async()=>response({ok:false,error:'AUTH_REQUIRED'},401))('courses'),e=>e.status===401&&e.code==='AUTH_REQUIRED');
   await assert.rejects(createApi(async()=>({ok:true,json:async()=>{throw Error();}}))('courses'));
 });
-test('guest and no-enrollment never request catalog or lesson',async()=>{
-  let requests=[];const c=controller(async action=>{requests.push(action);return{ok:true,courses:[]};},()=>({courseId:'ai-sauce',lessonId:'FOUNDATION'}));await c.app.load();
-  assert.deepEqual(requests,['courses']);assert.deepEqual(c.paths,[['/learn/',true]]);
+test('unregistered deep links return to the empty library and never request a lesson',async()=>{
+  let requests=[];const c=controller(async action=>{requests.push(action);if(action==='course')throw Object.assign(Error('not enrolled'),{code:'COURSE_ENROLLMENT_REQUIRED',status:403});return{ok:true,courses:[]};},()=>({courseId:'ai-sauce',lessonId:'FOUNDATION'}));await c.app.load();
+  assert.deepEqual(requests,['course','courses']);assert.deepEqual(c.paths,[['/learn/',true]]);assert.equal(c.calls.at(-1)[0],'notice');
   const guest=controller(async()=>{throw Object.assign(Error('login'),{status:401,code:'AUTH_REQUIRED'});});await guest.app.load();assert.equal(guest.calls.at(-1)[0],'error');
 });
 test('pending course loads preview only and cannot request locked main lesson',async()=>{
@@ -53,7 +53,7 @@ test('pending course loads preview only and cannot request locked main lesson',a
     if(action==='course')return{...courseData,access:{status:'pending'},course:{...courseData.course,startLessonId:'EP01',lessons:[{...foundation,locked:true},preview,{...main,locked:true}]}};
     return lessonData('EP01');
   },()=>({courseId:'ai-sauce',lessonId:'FOUNDATION'}));
-  await c.app.load();assert.equal(requests.at(-1)[1].lessonId,'EP01');assert.equal(await c.app.openLesson('ADV01'),false);assert.equal(requests.length,3);assert.equal(c.paths[0][0],'/learn/?course=ai-sauce&lesson=EP01');
+  await c.app.load();assert.equal(requests.at(-1)[1].lessonId,'EP01');assert.equal(await c.app.openLesson('ADV01'),false);assert.equal(requests.length,2);assert.equal(c.paths[0][0],'/learn/?course=ai-sauce&lesson=EP01');
 });
 test('account reset invalidates an in-flight paid lesson response',async()=>{
   const pending=defer();const c=controller(async action=>action==='courses'?{ok:true,courses:[active]}:action==='course'?courseData:pending.promise,()=>({courseId:'ai-sauce'}));
@@ -310,4 +310,55 @@ test('pausing while the initial play is waiting dismisses its loading timer',asy
   const pending=defer(),p=playerFixture(function(){this.paused=false;return pending.promise;});p.player.start();
   p.video.pause();await p.video.fire('pause');assert.equal(p.overlay.hidden,true);assert.equal(p.timers.size,0);
   pending.reject(Object.assign(Error(),{name:'AbortError'}));await p.settle();assert.equal(p.overlay.hidden,true);
+});
+
+test('deep link opens the authorized course and requested lesson without fetching the library',async()=>{
+  const requests=[],c=controller(async(action,args)=>{requests.push([action,args]);if(action==='course')return courseData;if(action==='lesson')return lessonData(args.lessonId);throw Error('library should not be requested');},()=>({courseId:'ai-sauce',lessonId:'EP01'}));
+  await c.app.load();assert.deepEqual(requests.map(r=>r[0]),['course','lesson']);assert.equal(requests[1][1].lessonId,'EP01');
+  assert.deepEqual(c.calls.find(([name])=>name==='account')[1],courseData.user);assert.equal(c.calls.some(([name])=>name==='courses'),false);
+  assert.equal(c.calls.filter(([name])=>name==='lesson').at(-1)[1].lesson.id,'EP01');
+  assert.equal(await c.app.openCourse('not-owned'),false);assert.equal(requests.length,2);
+});
+test('normal library load remains scoped and listed course selection still works',async()=>{
+  const requests=[],c=controller(async(action,args)=>{requests.push(action);if(action==='courses')return {ok:true,user:courseData.user,courses:[active]};if(action==='course')return courseData;return lessonData(args.lessonId);});
+  await c.app.load();assert.deepEqual(requests,['courses']);assert.equal(c.calls.filter(([name])=>name==='courses').length,1);
+  assert.equal(await c.app.openCourse('ai-sauce','EP01'),true);assert.deepEqual(requests,['courses','course','lesson']);
+});
+test('direct course authentication or email denial never falls back to library or requests a lesson',async()=>{
+  for(const [code,status] of [['AUTH_REQUIRED',401],['EMAIL_VERIFICATION_REQUIRED',403]]) {
+    const requests=[],c=controller(async action=>{requests.push(action);throw Object.assign(Error('denied'),{code,status});},()=>({courseId:'ai-sauce',lessonId:'EP01'}));
+    await c.app.load();assert.deepEqual(requests,['course']);assert.equal(c.calls.at(-1)[0],'error');assert.equal(c.calls.at(-1)[1].code,code);
+    assert.equal(c.calls.some(([name])=>['courses','course','lesson','account'].includes(name)),false);assert.deepEqual(c.paths,[]);
+  }
+});
+test('unknown deep links restore only the actual library and preserve the missing-course notice',async()=>{
+  for(const code of ['COURSE_NOT_FOUND','COURSE_ENROLLMENT_REQUIRED']) {
+    const requests=[],c=controller(async action=>{requests.push(action);if(action==='course')throw Object.assign(Error('not available'),{code,status:code==='COURSE_NOT_FOUND'?404:403});return {ok:true,user:courseData.user,courses:[{...active,id:'owned-course'}]};},()=>({courseId:'missing',lessonId:'EP01'}));
+    await c.app.load();assert.deepEqual(requests,['course','courses']);assert.deepEqual(c.paths,[['/learn/',true]]);
+    assert.equal(c.calls.find(([name])=>name==='courses')[1][0].id,'owned-course');assert.equal(c.calls.at(-1)[0],'notice');
+  }
+});
+test('account reset discards a pending direct course response before displaying identity, course or media',async()=>{
+  const pending=defer(),requests=[],c=controller(async action=>{requests.push(action);return pending.promise;},()=>({courseId:'ai-sauce',lessonId:'EP01'}));
+  const loading=c.app.load();await new Promise(setImmediate);c.app.reset();pending.resolve(courseData);await loading;
+  assert.deepEqual(requests,['course']);assert.equal(c.calls.some(([name])=>['account','course','lesson'].includes(name)),false);assert.equal(await c.app.saveProgress(10),false);
+});
+test('account reset cancels a pending missing-course fallback without restoring library or redirecting',async()=>{
+  const pending=defer(),c=controller(async action=>{if(action==='course')throw Object.assign(Error('missing'),{code:'COURSE_NOT_FOUND'});return pending.promise;},()=>({courseId:'missing'}));
+  const loading=c.app.load();await new Promise(setImmediate);c.app.reset();pending.resolve({ok:true,user:courseData.user,courses:[active]});await loading;
+  assert.equal(c.calls.some(([name])=>['account','courses','notice'].includes(name)),false);assert.deepEqual(c.paths,[]);
+});
+test('newer direct route load wins over an older pending course response',async()=>{
+  const pending=defer();let route={courseId:'ai-sauce',lessonId:'EP01'},first=true;
+  const c=controller(async(action,args)=>{if(action==='course'){if(first){first=false;return pending.promise;}return courseData;}return lessonData(args.lessonId);},()=>route);
+  const older=c.app.load();await new Promise(setImmediate);route={courseId:'ai-sauce',lessonId:'ADV01'};await c.app.load();pending.resolve(courseData);await older;
+  assert.deepEqual(c.calls.filter(([name])=>name==='lesson').map(([,data])=>data.lesson.id),['ADV01']);
+});
+test('popstate and restored history reauthorize the direct course, while library navigation fetches courses',async()=>{
+  const requests=[],base=mockedFetch(),d=await dom(async(url,options)=>{requests.push(url);return base(url,options);},'?course=ai-sauce&lesson=FOUNDATION');await d.load();
+  d.location.search='?course=ai-sauce&lesson=EP01';await d.fire('popstate');await d.settle();assert.equal(d.ids.get('lesson-title').textContent,'บทตัวอย่าง');
+  await d.fire('pagehide');assert.equal(d.ids.get('lesson-video').src,'');await d.fire('pageshow',{persisted:true});await d.settle();
+  const actions=requests.filter(url=>url.startsWith('/api/learn?')).map(url=>new URL(url,d.location.origin).searchParams.get('action'));
+  assert.deepEqual(actions,['course','lesson','course','lesson','course','lesson']);
+  d.location.search='';await d.fire('popstate');await d.settle();assert.equal(new URL(requests.at(-1),d.location.origin).searchParams.get('action'),'courses');assert.equal(d.ids.get('library').hidden,false);
 });

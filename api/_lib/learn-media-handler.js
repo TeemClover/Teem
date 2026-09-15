@@ -6,7 +6,7 @@ import { database } from './core.js';
 import { authorizeLearnMedia } from './learn-media-authorization.js';
 import { LearnError } from './learn-domain.js';
 import { LEARN_ASSETS } from './learn-catalog.js';
-import { PRIVATE_VIDEO_CACHE, videoETag, videoPreconditionStatus, ifRangeMatches } from './learn-media-cache.js';
+import { PRIVATE_VIDEO_CACHE, videoETag, videoPreconditionStatus, ifRangeMatches, mediaConditionalRequest } from './learn-media-cache.js';
 
 const mediaSchemaPromises = new WeakMap();
 export async function ensureLearnMediaSchema(sql) {
@@ -69,9 +69,9 @@ export function createLearnMediaHandler({
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
     res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-    let size;const started=performance.now(),timings={};
+    let size;const started=performance.now(),timings={},validatorMetrics={};let validatorMarkers=[];
     const measure=async(name,fn)=>{const begin=performance.now();try{return await fn();}finally{timings[name]=Math.max(0,Math.round((performance.now()-begin)*10)/10);}};
-    const timingHeaders=()=>{res.setHeader('Server-Timing',Object.entries({...timings,headers:Math.max(0,Math.round((performance.now()-started)*10)/10)}).map(([name,ms])=>`${name};dur=${ms}`).join(', '));};
+    const timingHeaders=()=>{res.setHeader('Server-Timing',[...Object.entries({...timings,headers:Math.max(0,Math.round((performance.now()-started)*10)/10)}).map(([name,ms])=>`${name};dur=${ms}`),...validatorMarkers].join(', '));};
     try {
       if (!['GET', 'HEAD'].includes(req.method)) {
         res.setHeader('Allow', 'GET, HEAD'); throw new LearnError('METHOD_NOT_ALLOWED', 405);
@@ -101,7 +101,14 @@ export function createLearnMediaHandler({
       // Never validate a browser's cached bytes before checking current account
       // access and the complete private registry above. No Blob request is
       // needed for unchanged bytes; shared/CDN caches remain disabled.
-      const precondition = videoPreconditionStatus(req.headers, etag);
+      const conditional = mediaConditionalRequest(req.headers, { allowForwarded: url.pathname === '/api/learn-media' });
+      const precondition = videoPreconditionStatus(conditional.headers, etag);
+      if (etag) {
+        const source=conditional.validatorSource,matched=precondition===304;
+        Object.assign(validatorMetrics,{validatorNative:Number(source==='native'),validatorForwarded:Number(source==='forwarded'),
+          validatorMissing:Number(source==='missing'),validatorMatch:Number(matched),validatorMismatch:Number(source!=='missing'&&!matched)});
+        validatorMarkers=['validator_'+source,...(source==='missing'?[]:[matched?'validator_match':'validator_mismatch'])];
+      }
       if (precondition === 412) throw new LearnError('MEDIA_PRECONDITION_FAILED', 412);
       if (precondition === 304) {
         res.statusCode = 304; videoCacheHeaders(); timingHeaders(); return res.end();
@@ -109,8 +116,8 @@ export function createLearnMediaHandler({
       // Range applies to GET, while HEAD uses the same authorization without a blob read.
       // A failed If-Range must ignore Range entirely (even an invalid range),
       // so a browser cannot combine old cached bytes with a new representation.
-      const range = req.method === 'GET' && ifRangeMatches(req.headers?.['if-range'], etag)
-        ? mediaRange(req.headers?.range, size) : null;
+      const range = req.method === 'GET' && ifRangeMatches(conditional.headers['if-range'], etag)
+        ? mediaRange(conditional.headers.range, size) : null;
       const credentials = await measure('storage_auth',()=>privateBlobCredentials(config,getOidcToken));
       res.setHeader('Content-Type', asset.contentType); res.setHeader('Accept-Ranges', 'bytes');
       if (asset.kind !== 'video') {
@@ -148,9 +155,9 @@ export function createLearnMediaHandler({
       const body = JSON.stringify({ ok: false, code: known ? error.code : 'MEDIA_UNAVAILABLE', message: known ? error.message : 'ยังเปิดไฟล์ไม่ได้ กรุณาลองใหม่' });
       res.end(req.method === 'HEAD' ? undefined : body);
     } finally {
-      // Numeric durations and HTTP status only: no cookie, account, path, asset
+      // Numeric durations, validator presence flags and HTTP status only: no cookie, account, path, asset
       // identifier or upstream URL is emitted to the performance log.
-      timingLog({status:Number(res.statusCode)||0,...timings,totalMs:Math.max(0,Math.round((performance.now()-started)*10)/10)});
+      timingLog({status:Number(res.statusCode)||0,...timings,...validatorMetrics,totalMs:Math.max(0,Math.round((performance.now()-started)*10)/10)});
     }
   };
 }
