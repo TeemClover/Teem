@@ -104,6 +104,14 @@ test('private reading renders headings, steps, prompt blocks and bold text witho
   renderLessonReading(target,'# สรุปบท\n\nข้อมูล **สำคัญ** และ <script>alert(1)</script>\n\n1. เลือกงาน\n2. เก็บ Source\n\n```text\n<img src=x onerror=alert(2)>\n```\n\n> ลองทำกับงานของคุณ',{origin:d.location.origin});
   assert.equal(target.hidden,false);assert.equal(target.querySelector('h3').textContent,'สรุปบท');assert.equal(target.querySelector('strong').textContent,'สำคัญ');assert.equal(target.querySelector('ol').children.length,2);assert.equal(target.querySelector('script'),null);assert.equal(target.querySelector('img'),null);assert.match(target.querySelector('pre').textContent,/<img/);assert.match(target.textContent,/<script>/);
 });
+test('article key takeaways emphasize only standalone bold paragraphs and preserve complete copy text',async()=>{
+  const d=await dom(mockedFetch()),target=d.ids.get('lesson-reading'),prompt=Array.from({length:90},(_,i)=>`ข้อ ${i+1}: ข้อมูลที่ต้องเก็บครบ`).join('\n');let copied;
+  renderLessonReading(target,'**เริ่มจากข้อเท็จจริง แล้วค่อยปรุงซอส**\n\nส่วนนี้มี **คำสำคัญ** อยู่กลางประโยค\n\n```text\n'+prompt+'\n```',{origin:d.location.origin,copyText:async text=>{copied=text;}});
+  const paragraphs=target.all().filter(n=>n.tagName==='P');assert.equal(paragraphs[0].className,'reading-keypoint');assert.equal(paragraphs[1].className,'');
+  assert.equal(paragraphs[1].textContent,'ส่วนนี้มี คำสำคัญ อยู่กลางประโยค');
+  const pre=target.querySelector('pre');assert.equal(pre.tabIndex,0);assert.match(pre.getAttribute('aria-label'),/เลื่อน/);assert.equal(pre.textContent,prompt);
+  await target.querySelector('button').fire('click');assert.equal(copied,prompt);
+});
 test('reading links keep course navigation and private resources but reject unsafe protocols',async()=>{
   const d=await dom(mockedFetch()),target=d.ids.get('lesson-reading');let route;
   renderLessonReading(target,'[ต่อบท 1](/learn/?course=ai-sauce&lesson=ADV01) [ไฟล์]('+media+') [ไม่เปิด](javascript:alert) [ไฟล์ในเครื่อง](file:///private/a)',{origin:d.location.origin,onLesson:value=>route=value,onResource:()=>false});
@@ -133,7 +141,7 @@ test('locked chapter gives a visible explanation rather than an inert sidebar ro
   const link=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV01');assert.match(link.textContent,/คอร์สเต็ม/);await link.fire('click');assert.match(d.ids.get('page-status').textContent,/ยังเปิดสิทธิ์ไม่ครบ/);assert.ok(d.ids.get('page-status').scrollRequest);assert.equal(d.ids.get('lesson-title').textContent,'บทตัวอย่าง');
 });
 test('mocked DOM: active route starts authenticated landscape playback and preloads video',async()=>{
-  const d=await dom(mockedFetch(),'?course=ai-sauce&lesson=FOUNDATION');await d.load();assert.equal(d.ids.get('classroom').hidden,false);assert.equal(d.ids.get('lesson-video').src,media);assert.equal(d.ids.get('lesson-video').plays,1);assert.equal(d.ids.get('lesson-video').preload,'auto');assert.equal(d.ids.get('player-overlay').hidden,true);assert.match(d.ids.get('next-lesson').href,/lesson=ADV01/);assert.equal(d.ids.get('lesson-title').textContent,'เริ่มที่นี่');assert.equal(d.ids.get('account-label').textContent,'ผู้เรียนทดสอบ');
+  const d=await dom(mockedFetch(),'?course=ai-sauce&lesson=FOUNDATION');await d.load();assert.equal(d.ids.get('classroom').hidden,false);assert.equal(d.ids.get('lesson-video').src,media);assert.equal(d.ids.get('lesson-video').plays,1);assert.equal(d.ids.get('lesson-video').preload,'auto');assert.equal(d.ids.get('player-overlay').hidden,true);assert.match(d.ids.get('next-lesson').href,/lesson=EP01/);assert.equal(d.ids.get('lesson-title').textContent,'เริ่มที่นี่');assert.equal(d.ids.get('account-label').textContent,'ผู้เรียนทดสอบ');
 });
 test('mocked DOM: logout clears actual video src/resources immediately before server resolves',async()=>{
   let pending;const base=mockedFetch();const d=await dom(async url=>pending?pending.promise:base(url),'?course=ai-sauce');await d.load();pending=defer();await d.fire('mc:account-changed');assert.equal(d.ids.get('lesson-video').src,'');assert.equal(d.ids.get('resource-list').childElementCount,0);pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();assert.equal(d.ids.get('state-panel').hidden,false);
@@ -180,13 +188,36 @@ test('mocked OTP: failed delivery/verification cannot enroll; resend cooldown an
 test('mocked DOM: embedded subtitles do not create duplicate SRT track, optional resources remain collapsed',async()=>{
   const base=mockedFetch();const d=await dom(async url=>url.includes('action=lesson')?response({...lessonData(),lesson:{...lessonData().lesson,media:{url:media,captionsEmbedded:true,captions:[{url:media,mimeType:'application/x-subrip'}]},resources:[{title:'ไฟล์หลัก',url:media},{title:'ชุดทบทวน',url:media,optional:true}]}}):base(url),'?course=ai-sauce');await d.load();assert.equal(d.ids.get('lesson-video').childElementCount,0);const details=d.ids.get('resource-list').querySelector('details');assert.ok(details);assert.notEqual(details.open,true);assert.match(details.textContent,/ชุดทบทวน/);
 });
-test('mocked DOM: final main chapter offers optional cases; support return is labelled honestly',async()=>{
-  const last={id:'CH06',title:'ส่งต่องาน',type:'main',order:60,locked:false},support={id:'EP12',title:'ส่งไฟล์',type:'support',order:61,locked:false,returnLessonId:'CH06'},cases=[{id:'EP13',title:'งานสำนักงาน',type:'case',order:70,locked:false},{id:'EP14',title:'งานธุรกิจ',type:'case',order:71,locked:false}];
-  const fixture={...courseData,course:{...courseData.course,lessons:[last,support,...cases],applicationLessonIds:['EP13','EP14'],startLessonId:'CH06'}};
-  const fetcher=async url=>{const p=new URL(url,'https://www.myclover.com').searchParams;if(p.get('action')==='course')return response(fixture);if(p.get('action')==='lesson')return response({ok:true,courseId:'ai-sauce',lesson:{...fixture.course.lessons.find(l=>l.id===p.get('lessonId')),media:{url:media}}});return response({ok:true,courses:[active]});};
-  const d=await dom(fetcher,'?course=ai-sauce&lesson=CH06');await d.load();assert.equal(d.ids.get('application-section').hidden,false);assert.equal(d.ids.get('application-links').childElementCount,2);assert.equal(d.ids.get('next-lesson').hidden,true);
-  await d.ids.get('application-links').children[0].fire('click');await d.settle();assert.equal(d.ids.get('lesson-title').textContent,'งานสำนักงาน');assert.equal(d.ids.get('lesson-title').scrollRequest.block,'start');
-  const d2=await dom(fetcher,'?course=ai-sauce&lesson=EP12');await d2.load();assert.equal(d2.ids.get('next-lesson').textContent,'กลับบทหลัก →');assert.match(d2.ids.get('next-lesson').href,/CH06/);
+test('chapter metadata makes theory, practice, cases and Dungeon one visible uninterrupted path',async()=>{
+  const lessons=[{id:'ADV01',title:'ครูพาทำ Source',type:'main',partLabel:'ลองทำตาม',order:1,nextLessonId:'CH06'},
+    {id:'EP02',title:'เอาความรู้ออกจากงาน',type:'support',partLabel:'เข้าใจหลักคิด',order:2},
+    {id:'EP03',title:'ตรวจ Source ขวดแรก',type:'support',partLabel:'ลงมือทำ',order:3,returnLessonId:'ADV01'},
+    {id:'CH06',title:'สร้างเว็บของคุณ',type:'main',partLabel:'ลองทำตาม',order:4},
+    {id:'EP12',title:'ส่งงานพร้อมซอส',type:'support',partLabel:'นำไปใช้',order:5},
+    {id:'EP13',title:'งานสำนักงาน',type:'case',partLabel:'กรณีศึกษา',order:6},
+    {id:'EP14',title:'งานธุรกิจ',type:'case',partLabel:'กรณีศึกษา',order:7},
+    {id:'DUNGEON',title:'ดูซอสต่อยอดเป็น Dungeon',type:'main',partLabel:'ดูงานจริง',order:8},
+    {id:'BOSS',title:'รวมงานพร้อมใช้',type:'boss',partLabel:'ลงมือทำ',order:9}].map(item=>({...item,locked:false}));
+  const sections=[{id:'ch01',label:'บท 1',title:'สกัดซอส',summary:'ทำ Source ที่นำไปใช้ต่อได้',lessonIds:['EP02','ADV01','EP03']},
+    {id:'ch06',label:'บท 6',title:'สร้างเว็บ',lessonIds:['CH06','EP12']},
+    {id:'applications',label:'ฝึกกับงานจริง',title:'ซอสกับงานของคุณ',lessonIds:['EP13','EP14']},
+    {id:'finale',label:'บทส่งท้าย',title:'ต่อยอดและรวมงาน',lessonIds:['DUNGEON','BOSS']}];
+  const fixture={...courseData,course:{...courseData.course,lessons,sections,startLessonId:'EP02'}};
+  const fetcher=async url=>{const p=new URL(url,'https://www.myclover.com').searchParams;if(p.get('action')==='course')return response(fixture);if(p.get('action')==='lesson'){const item=lessons.find(l=>l.id===p.get('lessonId'));return response({ok:true,courseId:'ai-sauce',lesson:{...item,media:item.type==='boss'?null:{url:media}}});}return response({ok:true,courses:[active]});};
+  const d=await dom(fetcher,'?course=ai-sauce&lesson=EP02');await d.load();
+  const nav=d.ids.get('lesson-navigation'),expected=sections.flatMap(section=>section.lessonIds);
+  assert.deepEqual(nav.all().filter(n=>n.dataset.lessonId).map(n=>n.dataset.lessonId),expected);
+  assert.equal(nav.querySelector('details'),null);assert.doesNotMatch(nav.textContent,/บทเสริม|เลือกทบทวน|เส้นทางหลัก/);
+  assert.match(nav.textContent,/บท 1สกัดซอส/);assert.match(d.ids.get('lesson-kicker').textContent,/บท 1 · สกัดซอส/);
+  assert.equal(d.ids.get('lesson-part').textContent,'ตอน 1 จาก 3 · เข้าใจหลักคิด');
+  assert.equal(d.ids.get('chapter-parts-links').childElementCount,3);assert.equal(d.ids.get('chapter-parts-section').hidden,false);
+  for(const [index,id] of expected.entries()) {
+    assert.match(d.location.search,new RegExp('lesson='+id+'(?:&|$)'));
+    const current=nav.all().find(n=>n.dataset.lessonId===id);assert.equal(current.getAttribute('aria-current'),'page');
+    if(index<expected.length-1) {assert.match(d.ids.get('next-lesson').href,new RegExp('lesson='+expected[index+1]+'(?:&|$)'));await d.ids.get('next-lesson').fire('click');await d.settle();}
+  }
+  assert.equal(d.ids.get('next-lesson').hidden,true);assert.equal(d.ids.get('player-wrap').hidden,true);assert.equal(d.ids.get('boss-invitation').hidden,false);
+  assert.doesNotMatch(d.ids.get('course-format').textContent,/เสริม|เลือกดู/);
 });
 test('static shell protects paid assets and maintains home source sync and accessibility basics',async()=>{
   const [html,js,css,root,frontdoor,home]=await Promise.all(['learn/index.html','learn/assets/learn.js','learn/assets/learn.css','index.html','frontdoor/index.html','home/index.html'].map(p=>readFile(new URL('../../'+p,import.meta.url),'utf8')));
@@ -194,6 +225,8 @@ test('static shell protects paid assets and maintains home source sync and acces
   for(const page of [root,frontdoor,home])assert.equal((page.match(/src="\/assets\/my-learning-entry.js"/g)||[]).length,1);
   assert.match(html,/<html lang="th">/);assert.doesNotMatch(html,/href="\/learn\/classroom\/"/);assert.match(html,/href="\/classroom\/dungeon\/"/);assert.match(html,/controls playsinline preload="auto"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
   assert.match(css,/aspect-ratio:16\/9/);assert.match(css,/\[hidden\]\{display:none!important\}/);assert.match(css,/@media\(max-width:375px\)/);assert.match(css,/prefers-reduced-motion/);
+  assert.doesNotMatch(html,/id="supporting-section"|id="application-section"|เลือกดูเพิ่มเติม/);
+  assert.match(css,/\.lesson-reading\{max-width:780px/);assert.match(css,/\.lesson-reading\{font-size:18px;padding:25px/);
 });
 
 
@@ -269,7 +302,7 @@ test('Boss is a main stage with reading and Dungeon entry, without a broken vide
     if(p.get('action')==='lesson')return response({ok:true,courseId:'ai-sauce',lesson:{...boss,reading:'# พร้อมต่อยอด\n\nต่อซอสของคุณให้เป็นระบบ',media:null,resources:[]}});
     return response({ok:true,courses:[active]});
   },'?course=ai-sauce&lesson=BOSS');await d.load();
-  assert.match(d.ids.get('lesson-navigation').textContent,/เส้นทางหลัก · 3 ช่วง/);assert.equal(d.ids.get('player-wrap').hidden,true);assert.equal(d.ids.get('media-message').hidden,true);assert.equal(d.ids.get('boss-invitation').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/ต่อซอสของคุณ/);
+  assert.equal(d.ids.get('lesson-navigation').all().filter(n=>n.dataset.lessonId).length,3);assert.equal(d.ids.get('player-wrap').hidden,true);assert.equal(d.ids.get('media-message').hidden,true);assert.equal(d.ids.get('boss-invitation').hidden,false);assert.match(d.ids.get('lesson-reading').textContent,/ต่อซอสของคุณ/);
   d.ids.get('lesson-video').currentTime=500;await d.ids.get('lesson-video').fire('error');assert.equal(d.ids.get('media-message').hidden,true);
   await d.ids.get('complete-lesson').fire('click');assert.equal(saved.positionSeconds,0);assert.equal(saved.completed,true);
 });

@@ -1,6 +1,6 @@
 import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js';
 import { authRequest, safeReturn, showVerification } from './account-step.js';
-import { renderLessonReading } from './lesson-reading.js';
+import { renderLessonReading } from './lesson-reading.js?v=guided-path-3';
 import { createLessonPlayer } from './lesson-player.js';
 
 const $ = id => document.getElementById(id);
@@ -16,6 +16,25 @@ function showOnly(id) { ['state-panel', 'library', 'classroom'].forEach(key => {
 function action(text, callback, secondary = false) { const b = el('button', text, `button button-${secondary ? 'secondary' : 'primary'}`); b.type = 'button'; b.addEventListener('click', callback); return b; }
 function link(text, href, secondary = false) { const a = el('a', text, `button button-${secondary ? 'secondary' : 'primary'}`); a.href = href; return a; }
 function badge(state, role) { return el('span', role === 'instructor' ? 'ผู้สอน · เปิดตรวจได้ทุกบท' : STATUS[state]?.label || 'กำลังตรวจสอบ', `badge ${state || ''}`); }
+function courseChapters(course) {
+  const lessons = [...course.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const seen = new Set(), chapters = [];
+  for (const section of course.sections || []) {
+    const candidates = Array.isArray(section.lessonIds) ? section.lessonIds.map(id => lessons.find(item => item.id === id)).filter(Boolean)
+      : lessons.filter(item => item.sectionId === section.id);
+    const parts = candidates.filter(item => !seen.has(item.id) && seen.add(item.id));
+    if (parts.length) chapters.push({ ...section, parts });
+  }
+  const remaining = lessons.filter(item => !seen.has(item.id));
+  if (remaining.length) chapters.push({ id: 'course-parts', label: 'ลำดับการเรียน', title: 'เรียนทีละตอน แล้วนำไปใช้', parts: remaining });
+  return chapters;
+}
+function partContext(course, id) {
+  const chapters = courseChapters(course), chapter = chapters.find(item => item.parts.some(part => part.id === id));
+  return { chapters, chapter, index: chapter?.parts.findIndex(part => part.id === id) ?? -1 };
+}
+function partName(item) { return item.partTitle || item.title || 'บทเรียน'; }
+function partStep(item, index, count) { return [`ตอน ${index + 1}${count ? ` จาก ${count}` : ''}`, item.partLabel].filter(Boolean).join(' · '); }
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
@@ -25,6 +44,7 @@ function clearPlayer() {
   $('player-wrap').hidden = true; $('video-note').hidden = true; $('lesson-body').hidden = true;
   $('lesson-placeholder').hidden = false; $('lesson-placeholder').textContent = 'เลือกบทเรียนจากสารบัญ';
   $('resource-list').replaceChildren(); $('lesson-reading').replaceChildren(); $('save-status').textContent = '';
+  $('reading-intro').hidden = true; $('chapter-parts-section').hidden = true; $('chapter-parts-links').replaceChildren();
   $('media-message').hidden = true; $('boss-invitation').hidden = true;
 }
 function statePanel(title, text, controls = []) {
@@ -34,39 +54,40 @@ function statePanel(title, text, controls = []) {
 }
 function updateProgress(progress = {}, lessonId) {
   const p = progressSummary(progress); $('course-progress').value = p.percent;
-  $('course-progress-label').textContent = p.total ? `${p.completed} / ${p.total} บท` : '';
+  $('course-progress-label').textContent = p.total ? `${p.completed} / ${p.total} ตอน` : '';
   for (const [id, node] of lessonLinks) {
     if (node.dataset.locked === 'true') continue;
     node.querySelector('.lesson-icon').textContent = progress.lessons?.[id]?.completed ? '✓' : '○';
   }
   if (lessonId && selectedId === lessonId) {
     const completed = progress.lessons?.[lessonId]?.completed === true;
-    $('complete-lesson').textContent = completed ? 'บันทึกว่าเรียนจบแล้ว ✓' : 'ทำบทนี้เสร็จแล้ว';
+    $('complete-lesson').textContent = completed ? 'เรียนตอนนี้จบแล้ว ✓' : 'เรียนและลองทำตอนนี้แล้ว';
     $('complete-lesson').disabled = completed;
   }
 }
 function courseNav(data) {
   const course = data.course, nav = $('lesson-navigation'); nav.replaceChildren(); lessonLinks.clear();
-  const lessons = [...course.lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
-  const sections = Array.isArray(course.sections) ? course.sections : [];
-  const titleFor = id => sections.find(s => s.id === id)?.title || '';
-  const makeLesson = item => {
+  const chapters = courseChapters(course);
+  const makeLesson = (item, index) => {
     const a = el('a', '', 'lesson-link'); a.dataset.lessonId = item.id; a.dataset.locked = String(!!item.locked);
     const icon = el('span', item.locked ? '—' : '○', 'lesson-icon'); icon.setAttribute('aria-hidden', 'true');
-    const label = el('span', item.title || 'บทเรียน', 'lesson-link-label');
+    const label = el('span', '', 'lesson-link-label');
+    label.append(el('small', partStep(item, index), 'lesson-part-label'), el('span', partName(item), 'lesson-name'));
     const sub = [item.locked ? '🔒 คอร์สเต็ม' : item.preview ? 'บทตัวอย่าง' : '', durationLabel(item.durationSeconds)].filter(Boolean).join(' · ');
-    if (sub) label.append(el('small', sub)); a.append(icon, label);
+    if (sub) label.append(el('small', sub, 'lesson-meta')); a.append(icon, label);
     if (item.locked) { a.href = '/ai-source/#offer'; a.setAttribute('aria-label', `${item.title} — ดูสิทธิ์คอร์สเต็ม`); a.addEventListener('click', event => { event.preventDefault(); explainLockedLesson(item.title); }); }
     else { a.href = courseRoute(course.id, item.id); a.addEventListener('click', event => { event.preventDefault(); selectLesson(item.id); }); }
     lessonLinks.set(item.id, a); return a;
   };
-  const mains = lessons.filter(l => ['foundation', 'main', 'boss'].includes(l.type));
-  if (mains.length) { nav.append(el('p', `เส้นทางหลัก · ${mains.length} ช่วง`, 'nav-heading')); mains.forEach(l => nav.append(makeLesson(l))); }
-  const supplemental = lessons.filter(l => !['foundation', 'main', 'boss'].includes(l.type));
-  if (supplemental.length) {
-    const details = el('details', '', 'supporting'); details.append(el('summary', 'บทเสริมและเคสตัวอย่าง'));
-    let previousSection;
-    supplemental.forEach(l => { const section = l.sectionId || l.section; if (section !== previousSection) { const title = titleFor(section); if (title) details.append(el('p', title, 'nav-heading')); previousSection = section; } details.append(makeLesson(l)); }); nav.append(details);
+  for (const chapter of chapters) {
+    const group = el('section', '', 'chapter-group'); group.dataset.sectionId = chapter.id;
+    const heading = el('div', '', 'chapter-heading'), title = el('h3', chapter.title || 'บทเรียน');
+    title.id = `chapter-${chapter.id}`; group.setAttribute('aria-labelledby', title.id);
+    heading.append(el('p', chapter.label || 'บทเรียน', 'chapter-label'), title);
+    if (chapter.summary) heading.append(el('p', chapter.summary, 'chapter-summary'));
+    const parts = el('ol', '', 'chapter-parts');
+    chapter.parts.forEach((item, index) => { const row = el('li'); row.append(makeLesson(item, index)); parts.append(row); });
+    group.append(heading, parts); nav.append(group);
   }
   updateProgress(data.progress);
 }
@@ -85,7 +106,7 @@ const view = {
       const card = el('article', '', 'course-card'), art = el('div', '', 'course-art'); art.setAttribute('aria-hidden', 'true'); art.append(el('p', 'MYCLOVER / LEARNING', 'course-art-label'), el('p', 'จากความรู้ → งานที่ใช้ได้', 'course-art-title'));
       const body = el('div', '', 'course-card-body'); body.append(badge(course.status, course.access?.role), el('h3', course.title), el('p', course.summary || STATUS[course.status].message));
       const expiry = dateLabel(course.expiresAt); if (expiry && course.status === 'active') body.append(el('div', `เรียนได้ถึง ${expiry}`, 'course-card-meta'));
-      const p = progressSummary(course.progress); if (course.status === 'active' && p.total) body.append(el('div', `เรียนจบแล้ว ${p.completed} จาก ${p.total} บท`, 'course-card-meta'));
+      const p = progressSummary(course.progress); if (course.status === 'active' && p.total) body.append(el('div', `เรียนจบแล้ว ${p.completed} จาก ${p.total} ตอน`, 'course-card-meta'));
       const label = course.status === 'active' ? 'เปิดห้องเรียน →' : ['registered', 'pending'].includes(course.status) ? 'ดูสถานะการสมัคร →' : 'ดูสถานะคอร์ส →';
       const open = link(label, courseRoute(course.id)); open.addEventListener('click', event => { event.preventDefault(); learner.openCourse(course.id); }); body.append(open); card.append(art, body); grid.append(card);
     }
@@ -94,9 +115,7 @@ const view = {
   course(data) {
     activeCourse = data; status(); showOnly('classroom');
     $('course-title').textContent = data.course.title; $('course-summary').textContent = data.course.summary || '';
-    const mainCount = data.course.mainLessonIds?.length || 0;
-    const supportCount = data.course.lessons.filter(item => ['support', 'case'].includes(item.type)).length;
-    $('course-format').textContent = [mainCount ? `${mainCount} ช่วงหลัก` : '', data.course.videoLessonCount ? `วิดีโอรวม ${data.course.videoLessonCount} คลิป${supportCount ? ` · รวมคลิปเสริม ${supportCount} คลิป` : ''}` : ''].filter(Boolean).join(' · ');
+    $('course-format').textContent = `เรียนตามลำดับ ${data.course.lessons.length} ตอน · เข้าใจหลักคิด ลองทำตาม แล้วใช้กับงานจริง`;
     const state = data.access?.status || 'registered'; $('course-access').replaceChildren(badge(state, data.access?.role));
     const expiry = dateLabel(data.access?.expiresAt); if (expiry && state === 'active') $('course-access').append(el('p', `เรียนได้ถึง ${expiry}`));
     const notice = $('access-notice'); notice.hidden = state === 'active'; notice.replaceChildren();
@@ -107,13 +126,17 @@ const view = {
     }
     courseNav(data);
   },
-  lessonLoading(id) { $('lesson-content').setAttribute('aria-busy', 'true'); $('lesson-placeholder').textContent = 'กำลังเปิดบทเรียน…'; for (const [key, a] of lessonLinks) { if (key === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); } },
+  lessonLoading(id) {
+    $('lesson-content').setAttribute('aria-busy', 'true'); $('lesson-placeholder').textContent = 'กำลังเปิดบทเรียน…';
+    for (const [key, a] of lessonLinks) { if (key === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
+  },
   lesson(data, course) {
     const item = data.lesson; selectedId = item.id; $('lesson-content').setAttribute('aria-busy', 'false');
     $('lesson-placeholder').hidden = true; $('lesson-body').hidden = false;
-    $('lesson-title').textContent = item.title; $('lesson-summary').textContent = item.summary || '';
-    $('lesson-kicker').textContent = data.preview ? 'บทตัวอย่าง' : item.type === 'boss' ? 'BOSS STAGE · ปิดคอร์ส เปิดทางต่อ' : item.type === 'case' ? 'เคสตัวอย่าง' : item.type === 'support' ? 'บทเสริม · เลือกทบทวนได้' : 'บทเรียนหลัก';
-    const navItem = lessonLinks.get(item.id); const details = navItem?.closest('details'); if (details) details.open = true;
+    const context = partContext(course.course, item.id), chapter = context.chapter;
+    $('lesson-title').textContent = partName(item); $('lesson-summary').textContent = item.summary || '';
+    $('lesson-kicker').textContent = [chapter?.label, chapter?.title].filter(Boolean).join(' · ') || 'บทเรียน';
+    $('lesson-part').textContent = partStep(item, context.index, chapter?.parts.length);
     const mediaUrl = safeAssetUrl(item.media?.url, location.origin);
     if (mediaUrl) {
       video.src = mediaUrl;
@@ -132,6 +155,7 @@ const view = {
       },
       onResource: () => { if (!course.access?.active && course.access?.status !== 'active') { explainLockedLesson('ไฟล์ฝึกของบทนี้'); return false; } return true; },
     });
+    $('reading-intro').hidden = $('lesson-reading').hidden;
     const resources = $('resource-list'); resources.replaceChildren();
     const optional = el('details', '', 'optional-resources'); optional.append(el('summary', 'ไฟล์เพิ่มเติมสำหรับทบทวน'));
     let optionalCount = 0;
@@ -144,15 +168,24 @@ const view = {
     }
     if (optionalCount) resources.append(optional);
     $('resources-section').hidden = !resources.childElementCount;
-    const unlocked = course.course.lessons.filter(l => !l.locked);
-    const next = unlocked.find(l => l.id === item.nextLessonId) || unlocked.find(l => l.id === item.returnLessonId);
-    $('next-lesson').hidden = !next; if (next) { $('next-lesson').href = courseRoute(course.course.id, next.id); $('next-lesson').dataset.lessonId = next.id; $('next-lesson').textContent = item.nextLessonId ? 'บทถัดไป →' : 'กลับบทหลัก →'; }
-    const supplements = unlocked.filter(l => item.supportingLessonIds?.includes(l.id));
-    $('supporting-links').replaceChildren(); $('supporting-section').hidden = !supplements.length; $('supporting-section').open = false;
-    for (const supplement of supplements) { const a = link(supplement.title + ' →', courseRoute(course.course.id, supplement.id), true); a.addEventListener('click', event => { event.preventDefault(); selectLesson(supplement.id); }); $('supporting-links').append(a); }
-    const cases = (item.type === 'main' && !item.nextLessonId) || item.type === 'boss' || item.type === 'case' ? unlocked.filter(l => course.course.applicationLessonIds?.includes(l.id) && l.id !== item.id) : [];
-    $('application-links').replaceChildren(); $('application-section').hidden = !cases.length;
-    for (const example of cases) { const a = link(example.title + ' →', courseRoute(course.course.id, example.id), true); a.addEventListener('click', event => { event.preventDefault(); selectLesson(example.id); }); $('application-links').append(a); }
+    const sequence = context.chapters.flatMap(group => group.parts), position = sequence.findIndex(part => part.id === item.id);
+    const following = position >= 0 ? sequence[position + 1] : course.course.lessons.find(part => part.id === item.nextLessonId);
+    const next = following && !following.locked ? following : null;
+    $('next-lesson').hidden = !next;
+    if (next) {
+      const nextChapter = context.chapters.find(group => group.parts.some(part => part.id === next.id));
+      const heading = nextChapter === chapter ? 'ตอนถัดไป' : nextChapter?.label || 'เรียนต่อ';
+      $('next-lesson').href = courseRoute(course.course.id, next.id); $('next-lesson').dataset.lessonId = next.id;
+      $('next-lesson').textContent = `${heading} · ${partName(next)} →`;
+    }
+    $('chapter-parts-links').replaceChildren(); $('chapter-parts-section').hidden = !chapter || chapter.parts.length < 2;
+    if (chapter) for (const [index, part] of chapter.parts.entries()) {
+      const a = el('a', '', 'chapter-part-link'); a.href = courseRoute(course.course.id, part.id);
+      a.append(el('small', partStep(part, index), 'chapter-part-step'), el('span', partName(part)));
+      if (part.id === item.id) a.setAttribute('aria-current', 'page');
+      a.addEventListener('click', event => { event.preventDefault(); if (part.locked) explainLockedLesson(part.title); else selectLesson(part.id); });
+      $('chapter-parts-links').append(a);
+    }
     $('complete-lesson').disabled = false; updateProgress(course.progress, item.id);
     $('lesson-title').focus({ preventScroll: true });
   },
