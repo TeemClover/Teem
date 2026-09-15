@@ -159,7 +159,7 @@ async function foundationHarness(t,{denied,enrolled=true,html='<body><a href="/c
     storeFactory:()=>({ensure:async()=>{},enrollment:async()=>{events.push('enroll');return enrolled?{}:null;}}),
     fs:{realpath:async p=>{events.push('path');return realpath(p);},stat,readFile:async p=>{events.push('read');return readFile(p);}},
   });
-  const call=async(file='index.html',method='GET',headers={})=>{const res=new Reply();await handler({method,headers,url:'/api/learn-foundation?file='+encodeURIComponent(file)},res);return res;};
+  const call=async(file='index.html',method='GET',headers={})=>{const res=new Reply();await handler({method,headers:{cookie:'mc_session=fixture-session',...headers},url:'/api/learn-foundation?file='+encodeURIComponent(file)},res);return res;};
   return {call,events};
 }
 test('free classroom authenticates each direct API HTML/asset/HEAD request before filesystem access',async t=>{
@@ -168,6 +168,18 @@ test('free classroom authenticates each direct API HTML/asset/HEAD request befor
     assert.equal(h.events.includes('path'),false);
   }
   const h=await foundationHarness(t,{enrolled:false});assert.equal((await h.call()).statusCode,200);assert.equal(h.events.includes('enroll'),false);
+});
+test('anonymous foundation navigation preserves the full intent without opening a database connection',async()=>{
+  let databaseCalls=0;
+  const handler=createLearnFoundationHandler({getSql:()=>{databaseCalls++;throw Error('must not connect');}});
+  const intended='/classroom/awaken/notebook/?from=dungeon&work=one%20two';
+  for(const cookie of ['', 'mc_session=%ZZ', 'mc_session=a; mc_session=b']){
+    const res=new Reply();
+    await handler({method:'GET',headers:{cookie},url:'/api/learn-foundation?'+new URLSearchParams({file:'awaken/notebook/',return:intended})},res);
+    assert.equal(res.statusCode,303);assert.equal(new URL(res.headers.location,'https://test.invalid').searchParams.get('return'),intended);
+    assert.match(res.headers['cache-control'],/private.*no-store/);
+  }
+  assert.equal(databaseCalls,0);
 });
 test('free classroom keeps canonical links and blocks symlink escapes',async t=>{
   const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/classroom\/lesson1\.html/);assert.match(r.body,/\/ai-source\//);

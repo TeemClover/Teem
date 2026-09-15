@@ -2,7 +2,7 @@ import { readFile, realpath, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import path from 'node:path';
-import { database, ensureSchema } from './_lib/core.js';
+import { database, ensureSchema, cookieValue } from './_lib/core.js';
 import { verifiedLearnUser } from './_lib/learn-authorization.js';
 import { LearnError } from './_lib/learn-domain.js';
 import { mediaRange } from './_lib/learn-media-handler.js';
@@ -43,6 +43,9 @@ export function createLearnFoundationHandler({
         res.setHeader('Allow', 'GET, HEAD'); throw new LearnError('METHOD_NOT_ALLOWED', 405);
       }
       const file = foundationFile(req.url);
+      // An anonymous page visit needs only the login redirect. Avoid a cold
+      // database/schema round trip before learning there is no session token.
+      if (!cookieValue(req, 'mc_session')) throw new LearnError('AUTH_REQUIRED', 401);
       const sql = getSql(); await ensureCoreSchema(sql);
       // The original free course needs verified email, not paid-course enrollment.
       await verifyUser(sql, req);

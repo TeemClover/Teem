@@ -28,7 +28,9 @@ for(const [kind,paths] of [['public',publicFiles],['private',privateFiles],['pag
     // Only response cache/routing metadata is recorded; no cookie values.
     const record={kind,path:file,status:r.status,type:headers['content-type'],cache:headers['cache-control'],cdn:headers['cdn-cache-control'],vercelCache:headers['x-vercel-cache'],age:headers.age,location:headers.location,etag:headers.etag,setCookie:r.headers.has('set-cookie'),bytes:body.length,ms:Math.round(performance.now()-started)};
     if(kind==='public'&&r.status===200&&headers.etag){const revalidated=await fetch(base+file,{headers:{'If-None-Match':headers.etag},redirect:'manual'});record.revalidationStatus=revalidated.status;record.revalidationBytes=(await revalidated.arrayBuffer()).byteLength;}
-    record.pass=kind==='public'?r.status===200&&!record.setCookie&&/^public, max-age=300, must-revalidate$/.test(record.cache)&&record.revalidationStatus===304:kind==='private'?[303,307,401,403].includes(r.status)&&/no-store/.test(record.cache):r.status===200;
+    const invalidMediaRequest=file==='/api/teambook-media?code=TEST&seq=1';
+    if(invalidMediaRequest)record.scope='Invalid code rejection only; real private upload membership requires a test account.';
+    record.pass=kind==='public'?r.status===200&&!record.setCookie&&/^public, max-age=300, must-revalidate$/.test(record.cache)&&record.revalidationStatus===304:kind==='private'?(invalidMediaRequest?r.status===400&&body.toString().includes('INVALID_CODE'):[303,307,401,403].includes(r.status))&&/no-store/.test(record.cache):r.status===200;
     results.push(record);console.log(JSON.stringify(record));
   }
 }
