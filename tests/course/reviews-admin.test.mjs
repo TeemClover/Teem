@@ -107,19 +107,32 @@ test('private reviews may be shortlisted but cannot publish; low scores are not 
   assert.deepEqual((await invoke(handler, publicGet())).data, { ok: true, reviews: [] });
 });
 
-test('public projection contains exactly four fields and redacts an anonymous name and role', async () => {
+test('public projection redacts an anonymous name and role and exposes no unknown cohort ID', async () => {
   const rows = SYNTHETIC_COURSE_REVIEWS.map(row => ({ ...row, testimonial: row.testimonial || 'คำรีวิวสมมติ C เพื่อทดสอบการไม่ระบุชื่อ' }));
   const { handler } = setup({ reviews: rows });
   await invoke(handler, post({ action: 'publish', id: 'CR-fixture-anonymous', value: true }));
   const res = await invoke(handler, publicGet());
   assert.deepEqual(Object.keys(res.data).sort(), ['ok', 'reviews']);
-  assert.deepEqual(Object.keys(res.data.reviews[0]).sort(), ['testimonial', 'displayName', 'role', 'consent'].sort());
+  assert.deepEqual(Object.keys(res.data.reviews[0]).sort(), ['testimonial', 'displayName', 'role', 'consent', 'source'].sort());
   assert.equal(res.data.reviews[0].displayName, 'ผู้เรียน AI ใส่ซอส Workshop 3 ชม.');
   assert.equal(res.data.reviews[0].role, null);
   assert.equal(res.data.reviews[0].consent, 'anonymous');
+  assert.equal(res.data.reviews[0].source, null);
+  assert.ok(!res.raw.includes(rows[2].cohort_id));
   for (const privateText of [rows[2].display_name, rows[2].role, rows[2].first_task, rows[2].feedback, rows[2].review_reference]) assert.ok(!res.raw.includes(privateText));
   assert.match(res.headers['cache-control'], /no-store/);
   assert.equal(res.headers['access-control-allow-origin'], undefined);
+});
+
+test('known public reviews retain The Dent attribution without publishing consent-only or shortlist-only rows', async () => {
+  const { handler, sql } = setup();
+  await invoke(handler, post({ action: 'shortlist', id: 'CR-fixture-named', value: true }));
+  assert.deepEqual((await invoke(handler, publicGet())).data.reviews, []);
+  await invoke(handler, post({ action: 'publish', id: 'CR-fixture-named', value: true }));
+  const res = await invoke(handler, publicGet());
+  assert.deepEqual(res.data.reviews[0].source, { id: 'the-dent', label: 'The Dent · คลาสสด' });
+  assert.equal(res.data.reviews[0].role, SYNTHETIC_COURSE_REVIEWS[1].role);
+  assert.equal(sql.records.get('CR-fixture-private').consent_mode, 'private');
 });
 
 test('consent links store only SHA256, expire at 30 days and rotate previous links', async () => {

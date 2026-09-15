@@ -5,6 +5,8 @@ export const COURSE_REVIEW_SALES_COURSE = Object.freeze({
   id: 'ai-sauce-workshop-3h', title: 'AI ใส่ซอส Workshop 3 ชม.',
 });
 const COHORT_TITLES = { 'thedent-2026-09-12': 'TheDent · 12 กันยายน 2026' };
+// Only known cohorts receive a public source label; never expose internal cohort IDs.
+const PUBLIC_SOURCES = { 'thedent-2026-09-12': { id: 'the-dent', label: 'The Dent · คลาสสด' } };
 const CONSENTS = new Set(['private', 'anonymous', 'named']);
 const TOKEN_TTL = 30 * 24 * 60 * 60 * 1000;
 const BODY_LIMIT = 8192;
@@ -85,6 +87,7 @@ function publicReview(row) {
     testimonial: row.testimonial.trim(),
     displayName: named ? row.display_name : 'ผู้เรียน AI ใส่ซอส Workshop 3 ชม.',
     role: named ? row.role || null : null, consent,
+    source: PUBLIC_SOURCES[row.cohort_id] || null,
   };
 }
 function summary(reviews) {
@@ -174,7 +177,7 @@ export function createCourseReviewsAdminHandler({ database = defaultDatabase, en
         }
         if (queryValue(req, 'public') === '1') {
           const sql = await ready();
-          const rows = await sql.query(`SELECT r.testimonial,r.display_name,r.role,r.consent_mode,c.consent_override,c.published
+          const rows = await sql.query(`SELECT r.testimonial,r.display_name,r.role,r.consent_mode,r.cohort_id,c.consent_override,c.published
             FROM course_reviews r JOIN course_review_curation c ON c.review_reference=r.review_reference
             WHERE c.published=TRUE AND COALESCE(c.consent_override,r.consent_mode) IN ('named','anonymous')
               AND COALESCE(r.testimonial,'') ~ '[^[:space:]]' ORDER BY r.created_at DESC`);
