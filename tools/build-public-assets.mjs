@@ -41,6 +41,7 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
     'creative-portal.webp', 'airova-share-thai-video-v3.jpg', 'airova-share-thai-video-v4.jpg', 'course-seedance.webp', 'pir-academy.png',
     'hero-car.webp', 'hero-character.webp', 'hero-fashion.webp',
     'tpl-adproduct-02.webp', 'tpl-ugc-01.webp',
+    'story-learn.webp', 'story-create.webp', 'story-grow.webp',
   ].map(name => `airova/assets/${name}`),
   ...['product', 'character', 'cinematic'].map(name => `airova/templates/${name}.txt`),
   'ako/ako.css', 'ako/ako-convert.css', 'ako/story.css',

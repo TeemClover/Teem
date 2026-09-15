@@ -12,14 +12,13 @@ Static landing page: `/airova/` (with `/airova` redirect). Thai partner page for
 - Course title and subjects verified from https://www.piracademy.com/course/seedance-advanced-video-production.
 - Airova's connected `list_models` catalog verified Omni and Seedance 2.5 available on 2026-09-15. Public homepage copy is older; do not downgrade this to a coming-soon claim based only on that copy.
 
-## Business problems and solutions
+## Visual partner story
 
-- Six short business questions each pair with one compact solution: Brand Kits, content planning/captions, Templates, Creative Agent/Thai voice, Auto Post, and Thai partner support.
-- Four concise workflow labels connect brand → planning → content → publishing. The long tool roster and repeated explanations were removed at the user’s request; the full official tool list is linked.
-- Thai expertise is a compact banner with three signals. Personal names and biographies were removed at the user’s request. No rankings, invented awards, savings percentages or revenue promises are used.
-- Feature source: https://studio.airova.ai/blog/update-creative-agent-toolkits (2 July 2026; ten live tools and Auto Post). Brand Kits/content planning also verified from the current connected Airova tool catalog.
-- Team source: https://airova.ai/blog/ai-future-ready-2026-recap (21 May 2026 event; founder and executive-led AI workshops).
-- Hero and social description start with business pain points; signup and all offers remain as supplied by the user.
+- The main story uses three original illustrations for Learn → Create → Grow, with short pain prompts and actions that lead to the course, Airova signup, and community.
+- The compact myClover × Airova strip focuses on organization-level partner advantages: special offers, Thai support, learning, and ongoing community activities. Personal names and biographies are omitted.
+- The visual marketing flow connects brand → content → Thai video → scheduled posting. The complete official tool list remains linked: https://studio.airova.ai/blog/update-creative-agent-toolkits.
+- New story illustrations are generated editorial concepts, not photographs of a real company workshop, platform screenshots, or Airova model outputs. Prompts and provenance are recorded in `_source/story-image-prompts.md` and `assets/sources.json`.
+- Existing video wall, free templates, official academy course, signup offer and v4 MCP Ready share image are retained. Course and FAQ text are shortened.
 
 ## Social sharing
 
