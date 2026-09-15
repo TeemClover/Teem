@@ -88,7 +88,8 @@ export function renderLessonReading(container, markdown, { origin = window.locat
           } finally { copy.disabled = false; }
         });
         bar.append(copy, feedback); block.append(bar);
-        const pre = node('pre'); pre.append(node('code', text)); block.append(pre); container.append(block);
+        const pre = node('pre'); pre.tabIndex = 0; pre.setAttribute('aria-label', 'ข้อความสำหรับคัดลอก เลื่อนเพื่ออ่านทั้งหมด');
+        pre.append(node('code', text)); block.append(pre); container.append(block);
       }
       continue;
     }
@@ -112,6 +113,8 @@ export function renderLessonReading(container, markdown, { origin = window.locat
     }
     const paragraph = [line]; i++;
     while (i < lines.length && lines[i].trim() && !special(lines[i])) paragraph.push(lines[i++]);
-    const p = node('p'); inline(p, paragraph.join('\n')); container.append(p);
+    const text = paragraph.join('\n'), p = node('p');
+    if (/^\*\*[^*]+\*\*$/.test(text.trim())) p.className = 'reading-keypoint';
+    inline(p, text); container.append(p);
   }
 }

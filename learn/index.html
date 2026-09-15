@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#143c2c">
   <title>ห้องเรียนของฉัน · myClover</title>
   <meta name="description" content="กลับมาเรียนต่อในคอร์สของคุณบน myClover">
-  <link rel="stylesheet" href="/learn/assets/learn.css">
+  <link rel="stylesheet" href="/learn/assets/learn.css?v=guided-path-3">
   <script type="module" src="/assets/account.js"></script>
-  <script type="module" src="/learn/assets/learn.js"></script>
+  <script type="module" src="/learn/assets/learn.js?v=guided-path-3"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">ข้ามไปเนื้อหา</a>
@@ -31,11 +31,11 @@
       <div class="course-heading"><div><p class="eyebrow">YOUR CLASSROOM</p><h1 id="course-title"></h1><p id="course-summary"></p><p id="course-format" class="course-format"></p></div><div id="course-access" class="access-box"></div></div>
       <div id="access-notice" class="access-notice" hidden></div>
       <div class="classroom-layout">
-        <aside class="lesson-sidebar" aria-label="บทเรียนในคอร์ส"><div class="sidebar-heading"><h2>เลือกบทเรียน</h2><span id="course-progress-label"></span></div><progress id="course-progress" max="100" value="0" aria-label="ความคืบหน้าของคอร์ส"></progress><nav id="lesson-navigation" aria-label="สารบัญบทเรียน"></nav></aside>
+        <aside class="lesson-sidebar" aria-label="บทเรียนในคอร์ส"><div class="sidebar-heading"><h2>ลำดับการเรียน</h2><span id="course-progress-label"></span></div><p class="sidebar-intro">เรียนจากบนลงล่าง แล้วใช้ซอสของคุณทำงานต่อในแต่ละบท</p><progress id="course-progress" max="100" value="0" aria-label="ความคืบหน้าของคอร์ส"></progress><nav id="lesson-navigation" aria-label="สารบัญบทเรียนและตอนทั้งหมด"></nav></aside>
         <article class="lesson-content" id="lesson-content" aria-busy="false">
           <div id="lesson-placeholder" class="lesson-placeholder">เลือกบทเรียนจากสารบัญ</div>
           <div id="lesson-body" hidden>
-            <div class="lesson-heading"><p class="eyebrow" id="lesson-kicker"></p><h2 id="lesson-title" tabindex="-1"></h2><p id="lesson-summary"></p></div>
+            <div class="lesson-heading"><p class="eyebrow" id="lesson-kicker"></p><p class="lesson-part" id="lesson-part"></p><h2 id="lesson-title" tabindex="-1"></h2><p id="lesson-summary"></p></div>
             <div id="player-wrap" class="player-wrap" hidden>
               <video id="lesson-video" controls playsinline preload="auto" aria-label="วิดีโอบทเรียน"></video>
               <div id="player-overlay" class="player-overlay" hidden>
@@ -44,14 +44,14 @@
                 <button id="player-action" type="button" class="button" hidden>เล่นวิดีโอ</button>
               </div>
             </div>
-            <p class="video-note" id="video-note" hidden>วิดีโอแนวนอนสำหรับเรียนบนคอมพิวเตอร์ · หยุด ย้อน หรือขยายเต็มจอเพื่อทำตามได้</p>
+            <p class="video-note" id="video-note" hidden>หยุดวิดีโอเพื่อลองทำตาม ย้อนดูจุดสำคัญ หรือขยายเต็มจอได้</p>
             <div id="media-message" class="inline-message" role="status" hidden></div>
+            <div id="reading-intro" class="reading-intro" hidden><p class="eyebrow">อ่านต่อ · ลงมือทำ</p><h3>เปลี่ยนสิ่งที่ดู ให้เป็นงานของคุณ</h3><p>อ่านทีละช่วง แล้วหยิบตัวอย่างหรือข้อความที่คัดลอกได้ไปลองกับงานเดียวกันตลอดคอร์ส</p></div>
             <div id="lesson-reading" class="lesson-reading" hidden></div>
             <section id="boss-invitation" class="boss-invitation" hidden aria-labelledby="boss-invitation-title"><div class="boss-symbol" aria-hidden="true">✦</div><p class="eyebrow">THE NEXT CHAPTER IS YOURS</p><h3 id="boss-invitation-title">จบคอร์สแล้ว<br>ลองเปิดประตูบานต่อไป</h3><p>Dungeon คือประสบการณ์และข้อความที่ AI ซึ่งช่วยสร้างคอร์สนี้ร่วมเรียบเรียงไว้ให้ผู้เรียนที่เดินมาถึงตอนจบ ลองเข้าไปเล่น แล้วมองหาว่า “ซอส” ของคุณจะต่อยอดไปได้ไกลแค่ไหน</p><a class="button" href="/classroom/dungeon/" target="_blank" rel="noopener noreferrer">เข้าสู่ Dungeon <span aria-hidden="true">↗</span></a><span class="boss-caption">เปิดในแท็บใหม่ · บทเรียนของคุณยังอยู่ตรงนี้</span></section>
             <section id="resources-section" class="resources-section" hidden aria-labelledby="resources-title"><div><p class="eyebrow">TAKE IT TO WORK</p><h3 id="resources-title">ไฟล์สำหรับบทนี้</h3><p>เปิดไฟล์แล้วแก้ให้ตรงกับงานของคุณ</p></div><div id="resource-list" class="resource-list"></div></section>
-            <details id="supporting-section" class="supporting-reading" hidden><summary>ทบทวนจุดนี้เพิ่มเติม</summary><p>คลิปสั้นจากชุดเดิม ช่วยทบทวนเฉพาะจุดที่อยากลงรายละเอียด</p><div id="supporting-links" class="application-links"></div></details>
-            <section id="application-section" class="application-section" hidden aria-labelledby="application-title"><h3 id="application-title">เลือกเคสที่ตรงกับงานคุณ</h3><p>เลือกดูเพิ่มเติมได้ตามงานที่อยากนำไปใช้</p><div id="application-links" class="application-links"></div></section>
-            <div class="lesson-actions"><button id="complete-lesson" class="button button-primary" type="button">ทำบทนี้เสร็จแล้ว</button><a id="next-lesson" class="button button-secondary" hidden>บทถัดไป →</a></div>
+            <section id="chapter-parts-section" class="chapter-parts-section" hidden aria-labelledby="chapter-parts-title"><h3 id="chapter-parts-title">ตอนในบทนี้</h3><p>แต่ละตอนต่อกันเป็นบทเรียนเดียว ย้อนดูหรือเรียนต่อตามลำดับได้ตรงนี้</p><nav id="chapter-parts-links" class="chapter-parts-links" aria-label="ตอนในบทที่กำลังเรียน"></nav></section>
+            <div class="lesson-actions"><button id="complete-lesson" class="button button-primary" type="button">เรียนและลองทำตอนนี้แล้ว</button><a id="next-lesson" class="button button-secondary" hidden>เรียนตอนถัดไป →</a></div>
             <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
           </div>
         </article>

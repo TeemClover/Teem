@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { createLearnHandler } from './learn-handler.js';
 import { authorizeLearnAsset, enrollLearnCourse } from './learn-authorization.js';
 import { courseAccess, oneYearAfter } from './learn-domain.js';
@@ -23,7 +24,7 @@ const assets=[
 ];
 const user={id:'alice',displayName:'Alice',email:'alice@example.test',emailVerified:true};
 const grant=(extra={})=>({reference:'SAUCE-verified',user_id:'alice',course_id:'ai-sauce',starts_at:'2026-09-01T00:00:00Z',expires_at:'2027-09-01T00:00:00Z',revoked_at:null,...extra});
-function harness() {
+function harness({catalog=courses,media=assets}={}) {
   const enrolled=new Map(),grants=[],registrations=[],instructors=[],readings=new Map(),progress=new Map(),events=[];
   const key=(u,c)=>`${u}/${c}`;
   const accounts=new Map([['alice',{id:'alice',email_verified_at:'2026-09-01'}],['bob',{id:'bob',email_verified_at:'2026-09-01'}]]);
@@ -41,8 +42,8 @@ function harness() {
     async saveProgress(id,c,l,p,now){const k=`${key(id,c)}/${l}`,old=progress.get(k);const row={user_id:id,course_id:c,lesson_id:l,position_seconds:p.positionSeconds,max_position_seconds:Math.max(p.positionSeconds,old?.max_position_seconds||0),completed:p.completed||old?.completed||false,version:(old?.version||0)+1,updated_at:now};progress.set(k,row);return row;},
   };
   const lookupUser=async req=>req.testUser===undefined?user:req.testUser;
-  const options={store,lookupUser,courses,assets,now:NOW};
-  const handler=createLearnHandler({getSql:()=>({}),storeFactory:()=>store,lookupUser,courses,assets,now:()=>NOW});
+  const options={store,lookupUser,courses:catalog,assets:media,now:NOW};
+  const handler=createLearnHandler({getSql:()=>({}),storeFactory:()=>store,lookupUser,courses:catalog,assets:media,now:()=>NOW});
   async function call(method='GET',action='courses',body,extra={}) {
     const query={action,...extra.query};const req={method,url:'/api/learn?'+new URLSearchParams(query),query,body,
       headers:{host:'www.myclover.com',origin:'https://www.myclover.com','content-type':'application/json',...extra.headers},testUser:extra.testUser};
@@ -214,16 +215,62 @@ test('BOSS is an authorized reading/activity stage completed explicitly without 
   h.grants[0].revoked_at=new Date(NOW);h.instructors.push(instructor());
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}})).body.access.role,'instructor');
 });
-test('actual catalog retains all21 video lessons, appends BOSS as stage8 and never marks paid files free',()=>{
+test('actual catalog teaches all23 parts through chapter theory, practice, cases and a separate Dungeon ending',()=>{
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
-  assert.equal(course.lessons.length,22);assert.equal(course.lessons.filter(l=>l.mediaId).length,21);
-  assert.deepEqual(course.mainLessonIds,['FOUNDATION','ADV01','ADV02','ADV03','ADV04','ADV05','CH06','BOSS']);
+  const chapters=[['FOUNDATION','EP01'],['EP02','ADV01','EP03'],['EP04','ADV02','EP05'],['EP06','EP07','ADV03'],
+    ['EP08','ADV04','EP09'],['ADV05','EP10','EP11'],['CH06','EP12'],['EP13','EP14'],['DUNGEON','BOSS']];
+  const sequence=chapters.flat();
+  assert.equal(course.lessons.length,23);assert.equal(course.lessons.filter(l=>l.mediaId).length,22);
+  assert.deepEqual(course.mainLessonIds,['FOUNDATION','ADV01','ADV02','ADV03','ADV04','ADV05','CH06']);
+  assert.equal(course.sections.length,9);assert.deepEqual(course.sections.map(section=>section.lessonIds),chapters);
+  assert.deepEqual(course.sections.map(section=>section.label),['บทนำ','บท 1','บท 2','บท 3','บท 4','บท 5','บท 6','ฝึกกับงานจริง','บทส่งท้าย']);
+  assert.deepEqual(course.lessons.map(lesson=>lesson.id),sequence);assert.equal(new Set(sequence).size,23);
+  for(const [index,id] of sequence.entries()) {
+    const lesson=course.lessons.find(item=>item.id===id),section=course.sections.find(group=>group.lessonIds.includes(id));
+    assert.equal(lesson.nextLessonId,sequence[index+1]||null,id);assert.equal(lesson.sectionId,section.id,id);
+    assert.ok(typeof lesson.partLabel==='string'&&lesson.partLabel.trim(),id);
+    assert.equal(lesson.returnLessonId,undefined,id);assert.equal(lesson.supportingLessonIds,undefined,id);
+  }
   for(let i=1;i<=14;i++)assert.ok(course.lessons.find(l=>l.id==='EP'+String(i).padStart(2,'0'))?.mediaId);
-  assert.equal(course.lessons.find(l=>l.id==='CH06').nextLessonId,'BOSS');
   assert.equal(course.lessons.find(l=>l.id==='BOSS').mediaId,undefined);
   assert.equal(course.lessons.find(l=>l.id==='BOSS').nextLessonId,null);
   assert.equal(course.lessons.every(l=>l.preview===false),true);assert.equal(LEARN_ASSETS.every(a=>a.previewAllowed===false),true);
   assert.equal(course.previewLessonId,null);assert.equal(course.trialUrl,'/classroom/');
+});
+test('split chapter6 and Dungeon append assets without changing the existing186 registry rows or their order',()=>{
+  assert.equal(LEARN_ASSETS.length,190);
+  // Frozen public registry metadata from the pre-split release. Indexes are part
+  // of the private storage mapping, so both row values and order must stay stable.
+  assert.equal(createHash('sha256').update(JSON.stringify(LEARN_ASSETS.slice(0,186))).digest('hex'),
+    '555cbfbc31e27d20fd5315dd646cf5c836c8d6f91c3b73652067b445efce0a58');
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),web=course.lessons.find(l=>l.id==='CH06'),dungeon=course.lessons.find(l=>l.id==='DUNGEON');
+  assert.deepEqual(LEARN_ASSETS.slice(186).map(asset=>[asset.id,asset.kind,asset.lessonIds]),[
+    [web.mediaId,'video',['CH06']],[web.captionId,'captions',['CH06']],
+    [dungeon.mediaId,'video',['DUNGEON']],[dungeon.captionId,'captions',['DUNGEON']],
+  ]);
+  assert.notEqual(web.mediaId,dungeon.mediaId);assert.notEqual(web.captionId,dungeon.captionId);
+  assert.ok(Math.abs(web.durationSeconds-227.767)<0.1);assert.ok(Math.abs(dungeon.durationSeconds-407.967)<0.1);
+  assert.ok(Math.abs(web.durationSeconds+dungeon.durationSeconds-635.734)<0.2);
+  assert.equal(LEARN_ASSETS[12].id,'m_4d1d2565e8da5c0d8dcfb0bb37f286e2');
+  assert.equal(LEARN_ASSETS[13].id,'m_c5bc7c9bdc365fb2b1ab0b0673a5a8f4');
+  assert.notEqual(web.mediaId,LEARN_ASSETS[12].id);
+});
+test('chapter labels and part labels serialize to learners while split media remains exact and paid',async()=>{
+  const h=harness({catalog:LEARN_COURSES,media:LEARN_ASSETS});h.seed();h.instructors.push(instructor());
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),result=await h.call('GET','course',undefined,{query:{courseId:course.id}});
+  assert.equal(result.statusCode,200);assert.equal(result.body.course.videoLessonCount,22);
+  assert.deepEqual(result.body.course.sections,course.sections);
+  for(const lesson of course.lessons) {
+    const metadata=result.body.course.lessons.find(item=>item.id===lesson.id);
+    assert.equal(metadata.partLabel,lesson.partLabel);assert.equal(metadata.nextLessonId,lesson.nextLessonId);
+    assert.equal(metadata.sectionId,lesson.sectionId);assert.equal(metadata.locked,false);
+  }
+  for(const lessonId of ['CH06','DUNGEON']) {
+    const actual=course.lessons.find(item=>item.id===lessonId),other=course.lessons.find(item=>item.id===(lessonId==='CH06'?'DUNGEON':'CH06'));
+    const part=await h.call('GET','lesson',undefined,{query:{courseId:course.id,lessonId}});
+    assert.equal(part.statusCode,200);assert.equal(part.body.lesson.partLabel,actual.partLabel);assert.equal(part.body.lesson.media.id,actual.mediaId);
+    await assert.rejects(authorizeLearnAsset({}, {}, {courseId:course.id,lessonId,assetId:other.mediaId},h.options),e=>e.code==='ASSET_NOT_FOUND');
+  }
 });
 test('private instructor and reading schema preserve enrollment scope and bounded server-only content',async()=>{
   const roleDDL=LEARN_SCHEMA.find(s=>s.includes('CREATE TABLE IF NOT EXISTS mc_learn_instructors'));

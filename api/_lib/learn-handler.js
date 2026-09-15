@@ -42,7 +42,7 @@ async function readBody(req) {
 function publicUser(user) { return {id:user.id,displayName:user.displayName,email:user.email || '',emailVerified:user.emailVerified===true,memberNo:user.memberNo || ''}; }
 function lessonMetadata(lesson,access) {
   const result={};
-  for (const key of ['id','title','type','sectionId','section','order','durationSeconds','summary','outcome','nextLessonId','returnLessonId','parentLessonId','supportingLessonIds','completionMode','activityUrl']) {
+  for (const key of ['id','title','type','sectionId','section','partLabel','partTitle','order','durationSeconds','summary','outcome','nextLessonId','returnLessonId','parentLessonId','supportingLessonIds','completionMode','activityUrl']) {
     if (lesson[key]!==undefined) result[key]=lesson[key];
   }
   return {...result,preview:false,locked:!access.active};

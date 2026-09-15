@@ -5,7 +5,7 @@ export const LEARN_COURSES = [
   {
     "id": "ai-sauce",
     "title": "AI ใส่ซอส",
-    "description": "ดูครูทำจากคลาสจริง แล้วเลือกคลิปเสริมและไฟล์ฝึกที่ตรงกับงานของคุณ เริ่มจาก Source ต่อเป็นภาพ วิดีโอ งานหลายรูปแบบ สูตรคำสั่ง และเว็บ",
+    "description": "เรียนต่อเนื่องจากวิธีคิด สู่การดูครูทำและลงมือฝึก นำซอสของคุณไปสร้างภาพ วิดีโอ งานหลายรูปแบบ สูตรคำสั่ง และเว็บ ก่อนลองเคสสำนักงาน ธุรกิจ และการต่อยอดเป็นระบบ",
     "startLessonId": "FOUNDATION",
     "previewLessonId": null,
     "mainLessonIds": [
@@ -15,8 +15,7 @@ export const LEARN_COURSES = [
       "ADV03",
       "ADV04",
       "ADV05",
-      "CH06",
-      "BOSS"
+      "CH06"
     ],
     "applicationLessonIds": [
       "EP13",
@@ -25,86 +24,97 @@ export const LEARN_COURSES = [
     "sections": [
       {
         "id": "foundation",
-        "title": "เริ่มที่นี่",
-        "summary": "เข้าใจซอส ก่อนเริ่มทำ Source ของคุณ",
-        "mainLessonId": "FOUNDATION",
-        "supportingLessonIds": [
+        "label": "บทนำ",
+        "title": "เลือกเครื่องครัว แล้วเปิดเตา",
+        "summary": "เข้าใจวิธีคิด แล้วเลือกงานที่จะพา AI มาช่วย",
+        "lessonIds": [
+          "FOUNDATION",
           "EP01"
         ]
       },
       {
         "id": "ch01",
-        "title": "1 · สกัดซอส",
-        "summary": "เก็บ Source .md ที่ตรวจแล้ว",
-        "mainLessonId": "ADV01",
-        "supportingLessonIds": [
+        "label": "บท 1",
+        "title": "เริ่มจากการปรุงซอส",
+        "summary": "รวบรวมข้อมูล ดูครูสกัดซอส แล้วเก็บซอสขวดแรกของคุณ",
+        "lessonIds": [
           "EP02",
+          "ADV01",
           "EP03"
         ]
       },
       {
         "id": "ch02",
-        "title": "2 · ทำภาพ",
-        "summary": "เก็บซอสภาพ + ภาพที่เลือก",
-        "mainLessonId": "ADV02",
-        "supportingLessonIds": [
+        "label": "บท 2",
+        "title": "ชิมซอสก่อนเติม",
+        "summary": "ตรวจงานร่าง ทดลองทำภาพ แล้วเติมสิ่งที่เรียนรู้กลับลงซอส",
+        "lessonIds": [
           "EP04",
+          "ADV02",
           "EP05"
         ]
       },
       {
         "id": "ch03",
-        "title": "3 · ทำวิดีโอ",
-        "summary": "เก็บซอสวิดีโอ + คลิปที่ตรวจแล้ว",
-        "mainLessonId": "ADV03",
-        "supportingLessonIds": [
+        "label": "บท 3",
+        "title": "เอาซอสไปทำจานจริง",
+        "summary": "ตั้งโจทย์ ฝึกทำงานหนึ่งชิ้น แล้วดูการต่อยอดเป็นวิดีโอ",
+        "lessonIds": [
           "EP06",
-          "EP07"
+          "EP07",
+          "ADV03"
         ]
       },
       {
         "id": "ch04",
-        "title": "4 · แตกงาน",
-        "summary": "เก็บชิ้นงานคู่กับ Source ต้นทาง",
-        "mainLessonId": "ADV04",
-        "supportingLessonIds": [
+        "label": "บท 4",
+        "title": "ซอสขวดเดียว แตกได้หลายเมนู",
+        "summary": "นำข้อมูลเดียวกันไปทำงานหลายรูปแบบ โดยรักษาข้อเท็จจริง",
+        "lessonIds": [
           "EP08",
+          "ADV04",
           "EP09"
         ]
       },
       {
         "id": "ch05",
-        "title": "5 · ผสม Prompt",
-        "summary": "ชิ้นงาน: สูตรที่ปรับแล้ว + Source",
-        "mainLessonId": "ADV05",
-        "supportingLessonIds": [
+        "label": "บท 5",
+        "title": "เลือกงาน แล้วตักผงไปใช้กับซอส",
+        "summary": "เลือกคำสั่งให้ตรงงาน เก็บสูตร และอัปเดตซอสเมื่อข้อมูลเปลี่ยน",
+        "lessonIds": [
+          "ADV05",
           "EP10",
           "EP11"
         ]
       },
       {
         "id": "ch06",
-        "title": "6 · เว็บและ Dungeon",
-        "summary": "สร้างและปรับ HTML Preview แล้วดู Dungeon เพื่อเข้าใจการต่อยอดเป็นเกมและระบบไฟล์",
-        "mainLessonId": "CH06",
-        "supportingLessonIds": [
+        "label": "บท 6",
+        "title": "เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต",
+        "summary": "ดูครูสร้างหน้าเว็บ แล้วฝึกเปิดและส่งชุดงานให้คนอื่นใช้ต่อ",
+        "lessonIds": [
+          "CH06",
           "EP12"
         ]
       },
       {
-        "id": "boss",
-        "title": "BOSS · ลงมือทำงานจริง",
-        "summary": "รวม Source และชิ้นงานที่ทำไว้ แล้วตรวจความพร้อมก่อนนำไปใช้งานจริง",
-        "mainLessonId": "BOSS",
-        "supportingLessonIds": []
-      },
-      {
         "id": "applications",
-        "title": "เลือกเคสไปใช้กับงาน",
-        "summary": "เลือกงานสำนักงานหรืองานธุรกิจที่ตรงกับคุณ แล้วนำวิธีไปใช้กับข้อมูลของตัวเอง",
+        "label": "ฝึกกับงานจริง",
+        "title": "ใช้ครบหกขั้นกับงานสำนักงานและธุรกิจ",
+        "summary": "ลองสองเคสตัวอย่าง แล้วนำวิธีไปใช้กับข้อมูลของคุณ",
         "lessonIds": [
           "EP13",
           "EP14"
+        ]
+      },
+      {
+        "id": "finale",
+        "label": "บทส่งท้าย",
+        "title": "จากซอสหนึ่งขวด สู่ระบบที่คุณสร้างได้",
+        "summary": "ดู Dungeon เพื่อเห็นการต่อยอด แล้วรวมงานของคุณให้พร้อมใช้จริง",
+        "lessonIds": [
+          "DUNGEON",
+          "BOSS"
         ]
       }
     ],
@@ -112,10 +122,10 @@ export const LEARN_COURSES = [
     "lessons": [
       {
         "id": "FOUNDATION",
-        "title": "เริ่มที่นี่: พื้นฐานจากคลาสจริง",
+        "title": "เริ่มจากคลาสจริง: เลือกเครื่องมือและเข้าใจซอส",
         "type": "foundation",
         "sectionId": "foundation",
-        "section": "เริ่มที่นี่",
+        "section": "บทนำ · เลือกเครื่องครัว แล้วเปิดเตา",
         "order": 0,
         "durationSeconds": 234.067,
         "preview": false,
@@ -128,19 +138,17 @@ export const LEARN_COURSES = [
         "additionalResourceIds": [
           "m_556f437dd27c5560bc613e9d18903d5a"
         ],
-        "summary": "เข้าใจซอส ก่อนเริ่มทำ Source ของคุณ",
-        "outcome": "เข้าใจซอส ก่อนเริ่มทำ Source ของคุณ",
-        "supportingLessonIds": [
-          "EP01"
-        ],
-        "nextLessonId": "ADV01"
+        "summary": "เข้าใจซอส ก่อนเริ่มทำ ซอส ของคุณ",
+        "outcome": "เข้าใจซอส ก่อนเริ่มทำ ซอส ของคุณ",
+        "nextLessonId": "EP01",
+        "partLabel": "เข้าใจหลัก"
       },
       {
         "id": "EP01",
         "title": "เริ่มจากซอส: ให้ AI รู้จักงานของคุณ",
         "type": "support",
         "sectionId": "foundation",
-        "section": "เริ่มที่นี่",
+        "section": "บทนำ · เลือกเครื่องครัว แล้วเปิดเตา",
         "order": 1,
         "durationSeconds": 75.166667,
         "preview": false,
@@ -155,47 +163,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "เลือกงานหนึ่งเรื่อง แล้วเตรียมข้อมูลต้นทางให้ AI ใช้กับงานนั้น",
         "outcome": "เลือกงานหนึ่งเรื่อง แล้วเตรียมข้อมูลต้นทางให้ AI ใช้กับงานนั้น",
-        "parentLessonId": "FOUNDATION",
-        "returnLessonId": "FOUNDATION",
-        "nextLessonId": "ADV01"
-      },
-      {
-        "id": "ADV01",
-        "title": "สกัดซอส เก็บเป็นไฟล์ แล้วตรวจให้ตรงตัวเรา",
-        "type": "main",
-        "sectionId": "ch01",
-        "section": "1 · สกัดซอส",
-        "order": 10,
-        "durationSeconds": 171.9,
-        "preview": false,
-        "mediaId": "m_1a0c67647bfe55478316a77cd0266b6f",
-        "captionId": "m_b4109cb188f5593da04023f53fe9cc68",
-        "captionsEmbedded": true,
-        "resourceIds": [
-          "m_56759fc8a0565fa59af8c9c7423f0dc1",
-          "m_22693386832f5820937a49a4df9385a5",
-          "m_9bcf01110a295b2ba81410129027aaaf"
-        ],
-        "additionalResourceIds": [
-          "m_038c6592d9fc51b2b9b00d19f35c4614",
-          "m_650b8f56985451168f754de667e3f6a3",
-          "m_ef3ab2740be95924882cd2faadbd7cf7"
-        ],
-        "summary": "เก็บ Source .md ที่ตรวจแล้ว",
-        "outcome": "เก็บ Source .md ที่ตรวจแล้ว",
-        "supportingLessonIds": [
-          "EP02",
-          "EP03"
-        ],
-        "nextLessonId": "ADV02"
+        "nextLessonId": "EP02",
+        "partLabel": "เตรียมลงมือ"
       },
       {
         "id": "EP02",
         "title": "เอาความรู้ออกจากเสียง ไฟล์ และแชต",
         "type": "support",
         "sectionId": "ch01",
-        "section": "1 · สกัดซอส",
-        "order": 11,
+        "section": "บท 1 · เริ่มจากการปรุงซอส",
+        "order": 2,
         "durationSeconds": 80.033333,
         "preview": false,
         "mediaId": "m_45a9e0e2e7b15de5bbc9faf1202814d6",
@@ -214,17 +191,43 @@ export const LEARN_COURSES = [
         ],
         "summary": "แยกข้อมูลที่ยืนยันแล้วออกจากคำขอและข้อสันนิษฐานในเสียง ไฟล์ และแชต",
         "outcome": "แยกข้อมูลที่ยืนยันแล้วออกจากคำขอและข้อสันนิษฐานในเสียง ไฟล์ และแชต",
-        "parentLessonId": "ADV01",
-        "returnLessonId": "ADV01",
-        "nextLessonId": "ADV02"
+        "nextLessonId": "ADV01",
+        "partLabel": "เตรียมข้อมูล"
+      },
+      {
+        "id": "ADV01",
+        "title": "สกัดซอส เก็บเป็นไฟล์ แล้วตรวจให้ตรงตัวเรา",
+        "type": "main",
+        "sectionId": "ch01",
+        "section": "บท 1 · เริ่มจากการปรุงซอส",
+        "order": 3,
+        "durationSeconds": 171.9,
+        "preview": false,
+        "mediaId": "m_1a0c67647bfe55478316a77cd0266b6f",
+        "captionId": "m_b4109cb188f5593da04023f53fe9cc68",
+        "captionsEmbedded": true,
+        "resourceIds": [
+          "m_56759fc8a0565fa59af8c9c7423f0dc1",
+          "m_22693386832f5820937a49a4df9385a5",
+          "m_9bcf01110a295b2ba81410129027aaaf"
+        ],
+        "additionalResourceIds": [
+          "m_038c6592d9fc51b2b9b00d19f35c4614",
+          "m_650b8f56985451168f754de667e3f6a3",
+          "m_ef3ab2740be95924882cd2faadbd7cf7"
+        ],
+        "summary": "เก็บ ซอส .md ที่ตรวจแล้ว",
+        "outcome": "เก็บ ซอส .md ที่ตรวจแล้ว",
+        "nextLessonId": "EP03",
+        "partLabel": "ดูครูทำ"
       },
       {
         "id": "EP03",
-        "title": "ทำ Source ขวดแรกที่เปิดใช้ต่อได้",
+        "title": "ทำซอสขวดแรกที่เปิดใช้ต่อได้",
         "type": "support",
         "sectionId": "ch01",
-        "section": "1 · สกัดซอส",
-        "order": 12,
+        "section": "บท 1 · เริ่มจากการปรุงซอส",
+        "order": 4,
         "durationSeconds": 76.6,
         "preview": false,
         "mediaId": "m_aae7b49b41185959b62af20910581624",
@@ -243,47 +246,18 @@ export const LEARN_COURSES = [
           "m_41aeb9ff11705c7a9c107f724cd2f292",
           "m_56ef6c058ff0526cab71042b281bb9a3"
         ],
-        "summary": "ทำ Source ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
-        "outcome": "ทำ Source ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
-        "parentLessonId": "ADV01",
-        "returnLessonId": "ADV01",
-        "nextLessonId": "ADV02"
-      },
-      {
-        "id": "ADV02",
-        "title": "ชิมซอสด้วยภาพ แล้วเลือกภาพไปทำต่อ",
-        "type": "main",
-        "sectionId": "ch02",
-        "section": "2 · ทำภาพ",
-        "order": 20,
-        "durationSeconds": 228.1,
-        "preview": false,
-        "mediaId": "m_5298f649c5d259c796386eacdcbfcd5d",
-        "captionId": "m_741abadfc9df56958f04ac58ab30b509",
-        "captionsEmbedded": true,
-        "resourceIds": [
-          "m_e7589d388d845de49b01a49b67edbc94",
-          "m_8bbab8af4dc65b1eac612976a6699e48"
-        ],
-        "additionalResourceIds": [
-          "m_7a96149c11b25372b9868bbbab94103a",
-          "m_8c498dd8f0935b5fb59f0eeb6f195ad6"
-        ],
-        "summary": "เก็บซอสภาพ + ภาพที่เลือก",
-        "outcome": "เก็บซอสภาพ + ภาพที่เลือก",
-        "supportingLessonIds": [
-          "EP04",
-          "EP05"
-        ],
-        "nextLessonId": "ADV03"
+        "summary": "ทำ ซอส ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
+        "outcome": "ทำ ซอส ฉบับแรกที่บันทึกและเปิดใช้ต่อได้ พร้อมที่มาและสิ่งที่ยังไม่รู้",
+        "nextLessonId": "EP04",
+        "partLabel": "ลงมือทำ"
       },
       {
         "id": "EP04",
         "title": "ชิมงานแรก: ดูให้ออกว่าขาดอะไร",
         "type": "support",
         "sectionId": "ch02",
-        "section": "2 · ทำภาพ",
-        "order": 21,
+        "section": "บท 2 · ชิมซอสก่อนเติม",
+        "order": 5,
         "durationSeconds": 48.733333,
         "preview": false,
         "mediaId": "m_1df832c402ba5a668eb3cadeffc7372a",
@@ -302,17 +276,41 @@ export const LEARN_COURSES = [
         ],
         "summary": "ตรวจร่างก่อนใช้ โดยมองหาข้อมูลที่ขาดและคำรับปากเกินข้อเท็จจริง",
         "outcome": "ตรวจร่างก่อนใช้ โดยมองหาข้อมูลที่ขาดและคำรับปากเกินข้อเท็จจริง",
-        "parentLessonId": "ADV02",
-        "returnLessonId": "ADV02",
-        "nextLessonId": "ADV03"
+        "nextLessonId": "ADV02",
+        "partLabel": "เข้าใจหลัก"
+      },
+      {
+        "id": "ADV02",
+        "title": "ชิมซอสด้วยภาพ แล้วเลือกภาพไปทำต่อ",
+        "type": "main",
+        "sectionId": "ch02",
+        "section": "บท 2 · ชิมซอสก่อนเติม",
+        "order": 6,
+        "durationSeconds": 228.1,
+        "preview": false,
+        "mediaId": "m_5298f649c5d259c796386eacdcbfcd5d",
+        "captionId": "m_741abadfc9df56958f04ac58ab30b509",
+        "captionsEmbedded": true,
+        "resourceIds": [
+          "m_e7589d388d845de49b01a49b67edbc94",
+          "m_8bbab8af4dc65b1eac612976a6699e48"
+        ],
+        "additionalResourceIds": [
+          "m_7a96149c11b25372b9868bbbab94103a",
+          "m_8c498dd8f0935b5fb59f0eeb6f195ad6"
+        ],
+        "summary": "เก็บซอสภาพ + ภาพที่เลือก",
+        "outcome": "เก็บซอสภาพ + ภาพที่เลือก",
+        "nextLessonId": "EP05",
+        "partLabel": "ดูครูทำภาพ"
       },
       {
         "id": "EP05",
         "title": "แก้ให้ตรงจุด แล้วเติมกลับลงซอส",
         "type": "support",
         "sectionId": "ch02",
-        "section": "2 · ทำภาพ",
-        "order": 22,
+        "section": "บท 2 · ชิมซอสก่อนเติม",
+        "order": 7,
         "durationSeconds": 52.3,
         "preview": false,
         "mediaId": "m_d430024f912854ceb082b6d86e01966e",
@@ -329,48 +327,18 @@ export const LEARN_COURSES = [
           "m_45cac7ddb01a5e2aa45a5d3bfd367843",
           "m_d50cc6f133bf5f6ab53a811b7af537ec"
         ],
-        "summary": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน Source",
-        "outcome": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน Source",
-        "parentLessonId": "ADV02",
-        "returnLessonId": "ADV02",
-        "nextLessonId": "ADV03"
-      },
-      {
-        "id": "ADV03",
-        "title": "ผสมซอสกับภาพ แล้วสร้างวิดีโอ",
-        "type": "main",
-        "sectionId": "ch03",
-        "section": "3 · ทำวิดีโอ",
-        "order": 30,
-        "durationSeconds": 204.533,
-        "preview": false,
-        "mediaId": "m_18cf233240e3509bb836f9354c1bf87f",
-        "captionId": "m_fcbe6af0d5a45bf98144caed8fbc66f5",
-        "captionsEmbedded": true,
-        "resourceIds": [
-          "m_7bb34f5568ef595283bbc1b441d63791",
-          "m_e583232ab0965130bb1f9a2d5118e459",
-          "m_28bb4486c07251d2b78921a776f21fae"
-        ],
-        "additionalResourceIds": [
-          "m_9b871f12a06a5733bb8e348f4fc98f7b",
-          "m_4b17779432ff5d9097edef064fe264ef"
-        ],
-        "summary": "เก็บซอสวิดีโอ + คลิปที่ตรวจแล้ว",
-        "outcome": "เก็บซอสวิดีโอ + คลิปที่ตรวจแล้ว",
-        "supportingLessonIds": [
-          "EP06",
-          "EP07"
-        ],
-        "nextLessonId": "ADV04"
+        "summary": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน ซอส",
+        "outcome": "ชี้จุดแก้ให้ชัด แล้วแยกข้อมูลใช้ซ้ำกลับไปเก็บใน ซอส",
+        "nextLessonId": "EP06",
+        "partLabel": "ทดลองแก้"
       },
       {
         "id": "EP06",
         "title": "บอกโจทย์รอบนี้ให้ชัด",
         "type": "support",
         "sectionId": "ch03",
-        "section": "3 · ทำวิดีโอ",
-        "order": 31,
+        "section": "บท 3 · เอาซอสไปทำจานจริง",
+        "order": 8,
         "durationSeconds": 67.366667,
         "preview": false,
         "mediaId": "m_1c2903b92031593cb98ffe5db2a1d538",
@@ -391,17 +359,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "แยกข้อมูลประจำงานออกจากบรีฟของงานรอบนี้",
         "outcome": "แยกข้อมูลประจำงานออกจากบรีฟของงานรอบนี้",
-        "parentLessonId": "ADV03",
-        "returnLessonId": "ADV03",
-        "nextLessonId": "ADV04"
+        "nextLessonId": "EP07",
+        "partLabel": "ตั้งโจทย์"
       },
       {
         "id": "EP07",
-        "title": "ทำงานชิ้นแรกจาก Source ของคุณ",
+        "title": "ทดลองทำงานชิ้นแรกจากซอสของคุณ",
         "type": "support",
         "sectionId": "ch03",
-        "section": "3 · ทำวิดีโอ",
-        "order": 32,
+        "section": "บท 3 · เอาซอสไปทำจานจริง",
+        "order": 9,
         "durationSeconds": 108.633333,
         "preview": false,
         "mediaId": "m_40e6d08596565db085403b903be838b0",
@@ -430,45 +397,42 @@ export const LEARN_COURSES = [
         ],
         "summary": "ฝึกแนบข้อมูล ตรวจร่าง และสั่งแก้จากตัวอย่างงานสำนักงานที่เตรียมไว้",
         "outcome": "ฝึกแนบข้อมูล ตรวจร่าง และสั่งแก้จากตัวอย่างงานสำนักงานที่เตรียมไว้",
-        "parentLessonId": "ADV03",
-        "returnLessonId": "ADV03",
-        "nextLessonId": "ADV04"
+        "nextLessonId": "ADV03",
+        "partLabel": "ทดลองทำงาน"
       },
       {
-        "id": "ADV04",
-        "title": "ใช้ซอสเดียวแตกงาน แล้วชิมผลก่อนส่งต่อ",
+        "id": "ADV03",
+        "title": "ผสมซอสกับภาพ แล้วสร้างวิดีโอ",
         "type": "main",
-        "sectionId": "ch04",
-        "section": "4 · แตกงาน",
-        "order": 40,
-        "durationSeconds": 181.267,
+        "sectionId": "ch03",
+        "section": "บท 3 · เอาซอสไปทำจานจริง",
+        "order": 10,
+        "durationSeconds": 204.533,
         "preview": false,
-        "mediaId": "m_f2676fb75a0b5537a07abc56aff888d1",
-        "captionId": "m_f6bd8f20ea575905b5da1c882f1b44cf",
+        "mediaId": "m_18cf233240e3509bb836f9354c1bf87f",
+        "captionId": "m_fcbe6af0d5a45bf98144caed8fbc66f5",
         "captionsEmbedded": true,
         "resourceIds": [
-          "m_c12c857583715841a37382b9668cffbd",
-          "m_2f2cd6b177b75041b3dff9d811978486"
+          "m_7bb34f5568ef595283bbc1b441d63791",
+          "m_e583232ab0965130bb1f9a2d5118e459",
+          "m_28bb4486c07251d2b78921a776f21fae"
         ],
         "additionalResourceIds": [
-          "m_6ce81fbb321a5d78ae0cd2a2c364c6c2",
-          "m_dca2c6745b13559791740646ce139014"
+          "m_9b871f12a06a5733bb8e348f4fc98f7b",
+          "m_4b17779432ff5d9097edef064fe264ef"
         ],
-        "summary": "เก็บชิ้นงานคู่กับ Source ต้นทาง",
-        "outcome": "เก็บชิ้นงานคู่กับ Source ต้นทาง",
-        "supportingLessonIds": [
-          "EP08",
-          "EP09"
-        ],
-        "nextLessonId": "ADV05"
+        "summary": "เก็บซอสวิดีโอ + คลิปที่ตรวจแล้ว",
+        "outcome": "เก็บซอสวิดีโอ + คลิปที่ตรวจแล้ว",
+        "nextLessonId": "EP08",
+        "partLabel": "ดูครูทำวิดีโอ"
       },
       {
         "id": "EP08",
         "title": "ซอสขวดเดียว ทำงานได้หลายแบบ",
         "type": "support",
         "sectionId": "ch04",
-        "section": "4 · แตกงาน",
-        "order": 41,
+        "section": "บท 4 · ซอสขวดเดียว แตกได้หลายเมนู",
+        "order": 11,
         "durationSeconds": 38.633333,
         "preview": false,
         "mediaId": "m_d94ca9bc345a5f79a8acbd8983b3fe60",
@@ -488,17 +452,41 @@ export const LEARN_COURSES = [
         ],
         "summary": "ใช้ต้นทางเดียวกันทำงานหลายรูปแบบให้เหมาะกับผู้รับ",
         "outcome": "ใช้ต้นทางเดียวกันทำงานหลายรูปแบบให้เหมาะกับผู้รับ",
-        "parentLessonId": "ADV04",
-        "returnLessonId": "ADV04",
-        "nextLessonId": "ADV05"
+        "nextLessonId": "ADV04",
+        "partLabel": "เข้าใจหลัก"
+      },
+      {
+        "id": "ADV04",
+        "title": "ใช้ซอสเดียวแตกงาน แล้วชิมผลก่อนส่งต่อ",
+        "type": "main",
+        "sectionId": "ch04",
+        "section": "บท 4 · ซอสขวดเดียว แตกได้หลายเมนู",
+        "order": 12,
+        "durationSeconds": 181.267,
+        "preview": false,
+        "mediaId": "m_f2676fb75a0b5537a07abc56aff888d1",
+        "captionId": "m_f6bd8f20ea575905b5da1c882f1b44cf",
+        "captionsEmbedded": true,
+        "resourceIds": [
+          "m_c12c857583715841a37382b9668cffbd",
+          "m_2f2cd6b177b75041b3dff9d811978486"
+        ],
+        "additionalResourceIds": [
+          "m_6ce81fbb321a5d78ae0cd2a2c364c6c2",
+          "m_dca2c6745b13559791740646ce139014"
+        ],
+        "summary": "เก็บชิ้นงานคู่กับ ซอส ต้นทาง",
+        "outcome": "เก็บชิ้นงานคู่กับ ซอส ต้นทาง",
+        "nextLessonId": "EP09",
+        "partLabel": "ดูครูแตกงาน"
       },
       {
         "id": "EP09",
         "title": "เปลี่ยนรูปแบบ โดยไม่เปลี่ยนข้อเท็จจริง",
         "type": "support",
         "sectionId": "ch04",
-        "section": "4 · แตกงาน",
-        "order": 42,
+        "section": "บท 4 · ซอสขวดเดียว แตกได้หลายเมนู",
+        "order": 13,
         "durationSeconds": 26.133333,
         "preview": false,
         "mediaId": "m_a47d672601445e54b13e1525a073f9ba",
@@ -519,17 +507,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "ตรวจว่าข้อเท็จจริงและสถานะยังตรงกันเมื่อเปลี่ยนรูปแบบงาน",
         "outcome": "ตรวจว่าข้อเท็จจริงและสถานะยังตรงกันเมื่อเปลี่ยนรูปแบบงาน",
-        "parentLessonId": "ADV04",
-        "returnLessonId": "ADV04",
-        "nextLessonId": "ADV05"
+        "nextLessonId": "ADV05",
+        "partLabel": "ลงมือตรวจ"
       },
       {
         "id": "ADV05",
-        "title": "เลือกและผสม Prompt ให้ Source ตรงงาน",
+        "title": "เลือกและผสมคำสั่งให้ซอสตรงงาน",
         "type": "main",
         "sectionId": "ch05",
-        "section": "5 · ผสม Prompt",
-        "order": 50,
+        "section": "บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส",
+        "order": 14,
         "durationSeconds": 195.5,
         "preview": false,
         "mediaId": "m_b4f23044812557249a063561c7d5e3b0",
@@ -543,21 +530,18 @@ export const LEARN_COURSES = [
           "m_e48ddd852e525377b0a1de2b37bfc68a",
           "m_fdd75fb6d8ca50749a897cf7939a3650"
         ],
-        "summary": "ชิ้นงาน: สูตรที่ปรับแล้ว + Source",
-        "outcome": "ชิ้นงาน: สูตรที่ปรับแล้ว + Source",
-        "supportingLessonIds": [
-          "EP10",
-          "EP11"
-        ],
-        "nextLessonId": "CH06"
+        "summary": "ชิ้นงาน: สูตรที่ปรับแล้ว + ซอส",
+        "outcome": "ชิ้นงาน: สูตรที่ปรับแล้ว + ซอส",
+        "nextLessonId": "EP10",
+        "partLabel": "ดูครูเลือกคำสั่ง"
       },
       {
         "id": "EP10",
         "title": "เก็บสูตรประจำงานให้หยิบใช้ได้",
         "type": "support",
         "sectionId": "ch05",
-        "section": "5 · ผสม Prompt",
-        "order": 51,
+        "section": "บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส",
+        "order": 15,
         "durationSeconds": 43.1,
         "preview": false,
         "mediaId": "m_140f96deed005487a6a0a8f17b903e2f",
@@ -577,17 +561,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "เก็บวิธีทำที่ใช้ซ้ำเป็นสูตรประจำงาน",
         "outcome": "เก็บวิธีทำที่ใช้ซ้ำเป็นสูตรประจำงาน",
-        "parentLessonId": "ADV05",
-        "returnLessonId": "ADV05",
-        "nextLessonId": "CH06"
+        "nextLessonId": "EP11",
+        "partLabel": "เก็บสูตรของคุณ"
       },
       {
         "id": "EP11",
         "title": "ข้อมูลเปลี่ยน ก็ปรับซอสให้ทัน",
         "type": "support",
         "sectionId": "ch05",
-        "section": "5 · ผสม Prompt",
-        "order": 52,
+        "section": "บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส",
+        "order": 16,
         "durationSeconds": 65.733333,
         "preview": false,
         "mediaId": "m_614f4629d6df5d01961067b872d219e0",
@@ -606,23 +589,22 @@ export const LEARN_COURSES = [
           "m_6daaf07cdd395d579928cc7d8606b615",
           "m_da2156d5346d53b0b335944c90858cd1"
         ],
-        "summary": "อัปเดต Source และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
-        "outcome": "อัปเดต Source และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
-        "parentLessonId": "ADV05",
-        "returnLessonId": "ADV05",
-        "nextLessonId": "CH06"
+        "summary": "อัปเดต ซอส และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
+        "outcome": "อัปเดต ซอส และงานที่เกี่ยวข้องเมื่อได้รับข้อมูลใหม่",
+        "nextLessonId": "CH06",
+        "partLabel": "ฝึกอัปเดต"
       },
       {
         "id": "CH06",
-        "title": "บท 6 · สร้างเว็บ ต่อด้วย Dungeon",
+        "title": "สร้างหน้าเว็บจากซอส แล้วปรับใน HTML Preview",
         "type": "main",
         "sectionId": "ch06",
-        "section": "6 · เว็บและ Dungeon",
-        "order": 60,
-        "durationSeconds": 635.734,
+        "section": "บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต",
+        "order": 17,
+        "durationSeconds": 227.8,
         "preview": false,
-        "mediaId": "m_4d1d2565e8da5c0d8dcfb0bb37f286e2",
-        "captionId": "m_c5bc7c9bdc365fb2b1ab0b0673a5a8f4",
+        "mediaId": "m_131fb4ef6b45519284bb0d00d5f676b6",
+        "captionId": "m_3ee03baa3b14555db2fa2347c93ae6f2",
         "captionsEmbedded": true,
         "resourceIds": [
           "m_c940fdc13c4a50199be669a725287622"
@@ -630,20 +612,18 @@ export const LEARN_COURSES = [
         "additionalResourceIds": [
           "m_1798c59f96f55872bd21f17a6cd73328"
         ],
-        "summary": "สร้างและปรับ HTML Preview แล้วดู Dungeon เพื่อเข้าใจการต่อยอดเป็นเกมและระบบไฟล์",
-        "outcome": "สร้างและปรับ HTML Preview แล้วดู Dungeon เพื่อเข้าใจการต่อยอดเป็นเกมและระบบไฟล์",
-        "supportingLessonIds": [
-          "EP12"
-        ],
-        "nextLessonId": "BOSS"
+        "summary": "ดูการสร้างและปรับหน้าเว็บจากข้อมูลที่เตรียมไว้ แล้วเก็บไฟล์ไปเปิดใช้ต่อ",
+        "outcome": "ได้แนวทางเปลี่ยนซอสเป็นหน้าเว็บและปรับงานจากสิ่งที่เห็น",
+        "nextLessonId": "EP12",
+        "partLabel": "ดูครูทำเว็บ"
       },
       {
         "id": "EP12",
         "title": "ส่งทั้งงานและซอส ให้คนอื่นทำต่อ",
         "type": "support",
         "sectionId": "ch06",
-        "section": "6 · เว็บและ Dungeon",
-        "order": 61,
+        "section": "บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต",
+        "order": 18,
         "durationSeconds": 88.733333,
         "preview": false,
         "mediaId": "m_574dee5df795586e9c0019aa509eacc6",
@@ -664,34 +644,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "ฝึกเปิดและส่งชุด HTML พร้อมไฟล์ประกอบให้ผู้รับใช้งานต่อ",
         "outcome": "ฝึกเปิดและส่งชุด HTML พร้อมไฟล์ประกอบให้ผู้รับใช้งานต่อ",
-        "parentLessonId": "CH06",
-        "returnLessonId": "CH06",
-        "nextLessonId": "BOSS"
-      },
-      {
-        "id": "BOSS",
-        "title": "BOSS · รวมงานของคุณให้พร้อมใช้จริง",
-        "type": "boss",
-        "sectionId": "boss",
-        "section": "BOSS · ลงมือทำงานจริง",
-        "order": 70,
-        "preview": false,
-        "completionMode": "manual",
-        "activityUrl": "/classroom/dungeon/",
-        "resourceIds": [],
-        "additionalResourceIds": [],
-        "summary": "รวม Source และชิ้นงานจากหกขั้น แล้วเลือกงานจริงหนึ่งชิ้นมาทำให้จบ",
-        "outcome": "มีผลงานที่ตรวจแล้ว พร้อม Source ให้คุณหรือทีมกลับมาทำต่อได้",
-        "supportingLessonIds": [],
-        "nextLessonId": null
+        "nextLessonId": "EP13",
+        "partLabel": "ฝึกส่งงาน"
       },
       {
         "id": "EP13",
         "title": "พาทำงานสำนักงาน: อัปเดตทีม อีเมล และรายการงาน",
         "type": "case",
         "sectionId": "applications",
-        "section": "เลือกเคสไปใช้กับงาน",
-        "order": 80,
+        "section": "ฝึกกับงานจริง · ใช้ครบหกขั้นกับงานสำนักงานและธุรกิจ",
+        "order": 19,
         "durationSeconds": 52.233333,
         "preview": false,
         "mediaId": "m_75e19bb5e91457a29dd717cf774b7ac8",
@@ -725,17 +687,16 @@ export const LEARN_COURSES = [
         ],
         "summary": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
         "outcome": "ประยุกต์หกขั้นกับอัปเดตทีม อีเมล และรายการงานในเคสสำนักงานสมมติ",
-        "parentLessonId": "BOSS",
-        "returnLessonId": "BOSS",
-        "nextLessonId": null
+        "nextLessonId": "EP14",
+        "partLabel": "เคสสำนักงาน"
       },
       {
         "id": "EP14",
         "title": "พาทำงานธุรกิจ: โพสต์ ตอบลูกค้า และข้อเสนอ",
         "type": "case",
         "sectionId": "applications",
-        "section": "เลือกเคสไปใช้กับงาน",
-        "order": 81,
+        "section": "ฝึกกับงานจริง · ใช้ครบหกขั้นกับงานสำนักงานและธุรกิจ",
+        "order": 20,
         "durationSeconds": 100.866667,
         "preview": false,
         "mediaId": "m_cbe43d55fcc85c9183381f916656b253",
@@ -767,9 +728,44 @@ export const LEARN_COURSES = [
         ],
         "summary": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",
         "outcome": "ประยุกต์หกขั้นกับโพสต์ คำตอบลูกค้า และข้อเสนอในเคสธุรกิจสมมติ",
-        "parentLessonId": "BOSS",
-        "returnLessonId": "BOSS",
-        "nextLessonId": null
+        "nextLessonId": "DUNGEON",
+        "partLabel": "เคสธุรกิจ"
+      },
+      {
+        "id": "DUNGEON",
+        "title": "Dungeon: เมื่อซอสต่อกันเป็นเกมและระบบ",
+        "type": "main",
+        "preview": false,
+        "durationSeconds": 408,
+        "mediaId": "m_2da75aad343557619aa612c66d0de710",
+        "captionId": "m_e3aa689ce60e5a8888c2dc29d1fa58b0",
+        "captionsEmbedded": true,
+        "resourceIds": [],
+        "additionalResourceIds": [],
+        "summary": "ดู Dungeon จากคลาสจริง เพื่อเข้าใจการเชื่อมข้อมูล ไฟล์ และคำสั่งให้ทำงานเป็นระบบ",
+        "outcome": "มองเห็นทางต่อยอดจากพื้นฐานซอส ไปสู่เว็บ แอป เกม และระบบงาน",
+        "sectionId": "finale",
+        "section": "บทส่งท้าย · จากซอสหนึ่งขวด สู่ระบบที่คุณสร้างได้",
+        "partLabel": "ดูระบบที่ต่อยอดได้",
+        "order": 21,
+        "nextLessonId": "BOSS"
+      },
+      {
+        "id": "BOSS",
+        "title": "BOSS · รวมงานของคุณให้พร้อมใช้จริง",
+        "type": "boss",
+        "sectionId": "finale",
+        "section": "บทส่งท้าย · จากซอสหนึ่งขวด สู่ระบบที่คุณสร้างได้",
+        "order": 22,
+        "preview": false,
+        "completionMode": "manual",
+        "activityUrl": "/classroom/dungeon/",
+        "resourceIds": [],
+        "additionalResourceIds": [],
+        "summary": "รวม ซอส และชิ้นงานจากหกขั้น แล้วเลือกงานจริงหนึ่งชิ้นมาทำให้จบ",
+        "outcome": "มีผลงานที่ตรวจแล้ว พร้อม ซอส ให้คุณหรือทีมกลับมาทำต่อได้",
+        "nextLessonId": null,
+        "partLabel": "รวมงานและไปต่อ"
       }
     ],
     "resources": [
@@ -5448,6 +5444,62 @@ export const LEARN_ASSETS = [
     "filename": "SOURCE_WORKBENCH.zip",
     "contentType": "application/zip",
     "bytes": 5688,
+    "disposition": "attachment",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_131fb4ef6b45519284bb0d00d5f676b6",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "CH06"
+    ],
+    "kind": "video",
+    "title": "ADV06_AI_SAUCE_v06.mp4",
+    "filename": "ADV06_AI_SAUCE_v06.mp4",
+    "contentType": "video/mp4",
+    "bytes": 18624463,
+    "disposition": "inline",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_3ee03baa3b14555db2fa2347c93ae6f2",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "CH06"
+    ],
+    "kind": "captions",
+    "title": "ADV06_AI_SAUCE_v06.srt",
+    "filename": "ADV06_AI_SAUCE_v06.srt",
+    "contentType": "application/x-subrip",
+    "bytes": 10871,
+    "disposition": "attachment",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_2da75aad343557619aa612c66d0de710",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "DUNGEON"
+    ],
+    "kind": "video",
+    "title": "DUNGEON_AI_SAUCE_v06.mp4",
+    "filename": "DUNGEON_AI_SAUCE_v06.mp4",
+    "contentType": "video/mp4",
+    "bytes": 27696418,
+    "disposition": "inline",
+    "previewAllowed": false
+  },
+  {
+    "id": "m_e3aa689ce60e5a8888c2dc29d1fa58b0",
+    "courseId": "ai-sauce",
+    "lessonIds": [
+      "DUNGEON"
+    ],
+    "kind": "captions",
+    "title": "DUNGEON_AI_SAUCE_v06.srt",
+    "filename": "DUNGEON_AI_SAUCE_v06.srt",
+    "contentType": "application/x-subrip",
+    "bytes": 22402,
     "disposition": "attachment",
     "previewAllowed": false
   }
