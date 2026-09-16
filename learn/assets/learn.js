@@ -63,6 +63,29 @@ function partContext(course, id) {
   return { chapters, chapter, index: chapter?.parts.findIndex(part => part.id === id) ?? -1 };
 }
 function partName(item) { return item.partTitle || item.title || 'บทเรียน'; }
+function renderCourseToolkit(toolkit) {
+  const section=$('course-toolkit');section.replaceChildren();section.hidden=!toolkit;
+  if(!toolkit)return;
+  const heading=el('h2','เริ่มตรงนี้ · สมุดงาน ซอส และไฟล์ฝึก');heading.id='toolkit-title';
+  section.append(el('p','เตรียมครัวของคุณ','eyebrow'),heading,el('p','เปิดสมุดงานคู่กับบทเรียน ใช้งานเดียวฝึกต่อไปทั้งคอร์ส แล้วกลับมาหยิบไฟล์ที่นี่ได้เสมอ'));
+  for(const group of ['เริ่มลงมือ','ซอสและแม่แบบ','ตัวอย่างและสูตร']) {
+    const block=el('div','','toolkit-group');block.append(el('h3',group));const links=el('div','','bonus-files');
+    for(const file of toolkit.files.filter(f=>f.group===group)) {
+      if(!/^\/api\/learn-toolkit\?file=[a-z-]+$/.test(file.url))continue;
+      const a=el('a','','resource-link');a.href=file.url;a.target='_blank';a.rel='noopener noreferrer';
+      const label=el('span',file.title);label.append(el('small',file.id==='workbook'?'เปิดใช้งานในแท็บใหม่ · START_HERE.html':file.id==='all'?'ZIP · เก็บทั้งชุดไว้ใช้ในเครื่อง':'.MD · ดาวน์โหลดแล้วแก้ให้เป็นงานของคุณ'));
+      a.append(label,el('span',file.id==='workbook'?'↗':'↓','resource-arrow'));links.append(a);
+    }
+    block.append(links);section.append(block);
+  }
+  section.append(el('p','สมุดงานช่วยจัดข้อมูลและคำสั่งให้คุณนำไปใช้กับ AI ที่ใช้อยู่ ก่อนปิดให้กด “เก็บความคืบหน้า” เพื่อดาวน์โหลด JSON แล้วนำกลับมาเปิดทำต่อได้ ข้อมูลที่กรอกยังไม่ซิงก์เข้าบัญชี','toolkit-note'));
+  const chapters=el('details','','toolkit-chapters');chapters.append(el('summary','ไฟล์ฝึกแยกตามบท · เปิดดูเมื่อเรียนถึง'));
+  for(const chapter of toolkit.chapters || []) {
+    const group=el('details');group.append(el('summary',chapter.title));
+    for(const file of chapter.resources) {const url=safeAssetUrl(file.url,location.origin);if(!url)continue;const a=el('a',file.title+' ↓','resource-link');a.href=url;a.target='_blank';a.rel='noopener noreferrer';group.append(a);}chapters.append(group);
+  }
+  section.append(chapters);
+}
 function renderCourseBonus(bonus) {
   const section=$('course-bonus'); section.replaceChildren(); section.hidden=!bonus;
   if (!bonus) return;
@@ -90,6 +113,7 @@ function partStep(item, index, count) { return [`ตอน ${index + 1}${count ?
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
+  renderCourseToolkit();
   renderCourseBonus();
   lessonTools?.destroy(); lessonTools = null; $('lesson-tools').replaceChildren(); $('lesson-tools').hidden = true; renderShowcase();
   renderStudentVideoCredits($('student-video-credits'));
@@ -190,6 +214,7 @@ const view = {
     const item = data.lesson;
     const openingLessonId = course.course.startLessonId || course.course.lessons[0]?.id;
     renderCourseBonus(item.id === openingLessonId ? course.bonus : null);
+    renderCourseToolkit(item.id === openingLessonId ? course.toolkit : null);
     selectedId = item.id; $('lesson-content').setAttribute('aria-busy', 'false');
     $('lesson-placeholder').hidden = true; $('lesson-body').hidden = false;
     const context = partContext(course.course, item.id), chapter = context.chapter;

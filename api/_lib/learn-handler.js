@@ -1,3 +1,4 @@
+import { TOOLKIT_FILES } from './learn-toolkit-catalog.js';
 import { currentUser, database, sameOrigin } from './core.js';
 import { LEARN_COURSES, LEARN_ASSETS } from './learn-catalog.js';
 import { createLearnStore } from './learn-store.js';
@@ -186,7 +187,14 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
       const progress=progressSummary(await store.progress(user.id,course.id),course);
       if(action==='progress')return respond(200,{ok:true,courseId,progress});
       return respond(200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress,
-        bonus:await bonusView(store,user,course,access,assets,time)});
+        bonus:await bonusView(store,user,course,access,assets,time),
+        toolkit:access.active && course.id==='ai-sauce' ? {
+          files:TOOLKIT_FILES.map(f=>({id:f.id,title:f.title,group:f.group,url:'/api/learn-toolkit?file='+encodeURIComponent(f.id)})),
+          chapters:(course.sections || []).map(section=>({title:[section.label,section.title].join(' · '),resources:section.lessonIds.flatMap(id=>{
+            const lesson=course.lessons.find(l=>l.id===id);
+            return lesson ? lessonView(course,lesson,access,assets).resources.filter(r=>!r.optional && /zip/i.test(r.mimeType)).map(r=>({...r,title:lesson.title})) : [];
+          })})).filter(section=>section.resources.length)
+        } : null});
     } catch(error) {
       if (!(error instanceof LearnError)) console.error('LEARN_UNAVAILABLE',String(error?.code || error?.name || 'UnknownError').replace(/[^A-Za-z0-9_-]/g,'').slice(0,60));
       const status=error instanceof LearnError ? error.status : 503;
