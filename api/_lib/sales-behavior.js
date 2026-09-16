@@ -17,6 +17,7 @@ export function validateBehavior(data){
   return {visitor:data.visitor,session:data.session,events,campaign,device:['mobile','tablet','desktop'].includes(data.device)?data.device:''};
 }
 export async function recordSalesCheckout(sql,req,checkout){
+  if(req.headers?.dnt==='1'||req.headers?.['sec-gpc']==='1')return;
   const visitor=String(req.headers?.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('mc_sauce_visitor='))?.split('=')[1];
   if(!UUID.test(visitor||''))return;
   await ensureSalesBehavior(sql);
@@ -36,6 +37,7 @@ export function createSalesBehaviorHandler({getSql=database,config=process.env}=
       return reply({ok:true,days:30,events,campaigns,note:'ผู้เข้าชมประมาณจากเบราว์เซอร์ ไม่ใช่จำนวนคนแน่นอน · แหล่งที่มาครั้งแรกใน 30 วัน · ยอดชำระนับเฉพาะที่ผู้ดูแลตรวจแล้ว · ไม่รวมผู้ปิดการติดตาม'});
     }
     if(req.method!=='POST')return reply({ok:false},405);
+    if(req.headers?.dnt==='1'||req.headers?.['sec-gpc']==='1')return reply({ok:true});
     if(!req.headers?.origin||!sameOrigin(req))return reply({ok:false},403);
     if(!/^application\/json/i.test(req.headers['content-type']||''))return reply({ok:false},415);
     let raw=req.body;

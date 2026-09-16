@@ -1,9 +1,10 @@
 (function(){
   'use strict';
-  if(location.protocol!=='https:'||navigator.doNotTrack==='1'||navigator.globalPrivacyControl===true)return;
+  if(location.protocol!=='https:')return;
+  if(navigator.doNotTrack==='1'||navigator.globalPrivacyControl===true){document.cookie='mc_sauce_visitor=; Path=/; Max-Age=0; Secure; SameSite=Lax';return;}
   var stopped=false,queue=[],timer,busy=false,seen={},visitor,session;
   try{
-    if(localStorage.getItem('myclover_analytics_optout')==='1')return;
+    if(localStorage.getItem('myclover_analytics_optout')==='1'){document.cookie='mc_sauce_visitor=; Path=/; Max-Age=0; Secure; SameSite=Lax';return;}
     visitor=localStorage.getItem('mc_sauce_visitor')||crypto.randomUUID();localStorage.setItem('mc_sauce_visitor',visitor);
     session=sessionStorage.getItem('mc_sauce_session')||crypto.randomUUID();sessionStorage.setItem('mc_sauce_session',session);
   }catch(_){return;}
