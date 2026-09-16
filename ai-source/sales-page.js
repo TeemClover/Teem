@@ -31,7 +31,7 @@
   function introSeen(offer){try{return storage&&storage.getItem(introKey)===introIdentity(offer);}catch(_){return false;}}
   function introPresentation(offer){
     // Presentation alone is delayed. Eligibility and expiry remain server-authoritative.
-    if(!offer.showLaunchOffer||(live&&!serverReady)||(schoolState&&schoolState.blocked)||(schoolState&&schoolState.recovery&&schoolState.recovery.active)){
+    if(!offer.showLaunchOffer||(live&&!(serverReady||paymentReady))||(schoolState&&schoolState.blocked)||(schoolState&&schoolState.recovery&&schoolState.recovery.active)){
       if(introTimer!==null){window.clearTimeout(introTimer);introTimer=null;}
       closeIntro();return offer;
     }
@@ -51,7 +51,7 @@
   }
   function renderIntro(offer){
     if(!introDialog||!introDialog.open)return;
-    if(!offer.showLaunchOffer||(live&&!serverReady)||(schoolState&&schoolState.blocked)||(schoolState&&schoolState.recovery&&schoolState.recovery.active)){closeIntro();return;}
+    if(!offer.showLaunchOffer||(live&&!(serverReady||paymentReady))||(schoolState&&schoolState.blocked)||(schoolState&&schoolState.recovery&&schoolState.recovery.active)){closeIntro();return;}
     get('cohort-regular-price').textContent=money.format(config.regular_price);
     get('cohort-price').textContent=money.format(offer.currentPrice);
     get('cohort-saving').textContent='ประหยัด '+money.format(config.regular_price-offer.currentPrice);
