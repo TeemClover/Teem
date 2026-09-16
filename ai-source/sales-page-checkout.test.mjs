@@ -23,7 +23,7 @@ class Element {
   contains(){return false;}
   close(){this.open=false;}
 }
-async function boot({checkoutId=null,post,restore,receipt,offerStatus=200}={}) {
+async function boot({checkoutId=null,post,restore,receipt,offerStatus=200,displayName='ผู้เรียน'}={}) {
   const ids=new Map([...html.matchAll(/<([a-z]+)\b([^>]*\bid="([^"]+)"[^>]*)>/g)].map(m=>[m[3],new Element(m[1],m[2])]));
   ids.get('offer-config').textContent=JSON.stringify(config);
   const calls=[],events={},timers=new Map();let nextTimer=0;
@@ -31,7 +31,7 @@ async function boot({checkoutId=null,post,restore,receipt,offerStatus=200}={}) {
   const cart=()=>({id:CART,priceTHB:state.cartPrice,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'});
   const fetch=async(url,options={})=>{
     calls.push({url,options});
-    if(url==='/api/ai-source?action=offer')return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName:'ผู้เรียน'}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);
+    if(url==='/api/ai-source?action=offer')return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);
     if(url.startsWith('/api/ai-source?action=checkout&'))return restore?restore(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source?action=checkout'&&options.method==='POST')return post?post(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source'&&options.method==='POST'&&receipt)return receipt(options);
@@ -53,6 +53,43 @@ test('checkout becomes usable without a page reload and exposes the QR only for 
   const ui=await boot();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,true);
   await ui.click();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('bank-details').hidden,false);assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('upload-button').disabled,false);
   assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1);
+});
+test('payer name starts empty even when the account display name contains an email or a real name',async()=>{
+  for(const displayName of ['learner@example.test','ชื่อเจ้าของบัญชี']){
+    const ui=await boot({displayName});await ui.click();
+    assert.equal(ui.ids.get('customer-name').value,'');
+    assert.equal(ui.ids.get('customer-email').value,'learner@example.test');
+    assert.equal(ui.ids.get('customer-email').readOnly,true);
+  }
+});
+test('a name entered by the payer survives offer refresh, a transient failure and a checkout timeout',async()=>{
+  const waiting=deferred(),ui=await boot({post:()=>waiting.promise});
+  ui.ids.get('customer-name').value='ชื่อผู้โอนที่กรอกเอง';await ui.focus();
+  assert.equal(ui.ids.get('customer-name').value,'ชื่อผู้โอนที่กรอกเอง');
+  ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('customer-name').value,'ชื่อผู้โอนที่กรอกเอง');
+  ui.state.offerStatus=200;await ui.focus();const click=ui.click();await settle();await ui.timeout();await click;
+  assert.equal(ui.ids.get('customer-name').value,'ชื่อผู้โอนที่กรอกเอง');
+});
+test('a confirmed account change or logout clears the payer name even after an offer failure',async()=>{
+  for(const nextEmail of ['other@example.test',null]){
+    const ui=await boot();ui.ids.get('customer-name').value='ชื่อผู้โอนบัญชีก่อน';
+    ui.state.offerStatus=503;await ui.focus();ui.state.email=nextEmail;ui.state.offerStatus=200;await ui.focus();
+    assert.equal(ui.ids.get('customer-name').value,'');assert.equal(ui.ids.get('customer-email').value,nextEmail||'');
+    ui.state.email='learner@example.test';await ui.focus();assert.equal(ui.ids.get('customer-name').value,'','switching back never restores the old payer name');
+  }
+});
+test('receipt registration requires the name the payer enters and never substitutes the account name',async()=>{
+  const ui=await boot({checkoutId:CART});await ui.fill();ui.ids.get('customer-name').value='';await ui.submit();
+  assert.equal(ui.ids.get('upload-status').textContent,'กรอกชื่อผู้ชำระ');assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,0);
+});
+test('full-price and launch packages show the two declared bonus values while recovery excludes them',async()=>{
+  const ui=await boot({checkoutId:CART});
+  const offerBonus=ui.ids.get('offer-bonus-summary').textContent;
+  assert.match(offerBonus,/500/);assert.match(offerBonus,/1,190/);assert.match(offerBonus,/1,690/);assert.doesNotMatch(offerBonus,/1,290/);
+  assert.equal(ui.ids.get('checkout-bonus-summary').textContent,'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md');
+  assert.equal(ui.ids.get('upload-button').textContent,'ส่งหลักฐานการชำระเงิน');
+  ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+3600000).toISOString()};ui.state.cartPrice=790;await ui.focus();await ui.click();
+  assert.match(ui.ids.get('offer-bonus-summary').textContent,/ไม่รวม/);assert.match(ui.ids.get('checkout-bonus-summary').textContent,/ไม่รวม/);
 });
 test('a hanging checkout request stops waiting, remains retryable and does not automatically send another POST',async()=>{
   const waiting=deferred(),ui=await boot({post:()=>waiting.promise});const click=ui.click();await settle();assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('checkout-loading').hidden,false);
@@ -93,7 +130,7 @@ test('a transient offer failure during receipt upload preserves the submitted ca
   const waiting=deferred(),started=deferred(),ui=await boot({checkoutId:CART,receipt:()=>{started.resolve();return waiting.promise;}});await ui.fill();const submission=ui.submit();await Promise.race([started.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('receipt did not start: '+ui.ids.get('upload-status').textContent)),1000))]);
   assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1,ui.ids.get('upload-status').textContent);ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,true);assert.doesNotMatch(ui.ids.get('copy-status').textContent,/ราคาเปลี่ยนแล้ว/);
   waiting.resolve(response({ok:true,status:'pending_verification',reference:'SAUCE-'+'A'.repeat(32),admissionDueAt:new Date(NOW+3600000).toISOString()},201));await submission;
-  assert.match(ui.ids.get('upload-status').textContent,/รับลงทะเบียนแล้ว/);assert.doesNotMatch(ui.ids.get('upload-status').textContent,/ยังยืนยันการรับข้อมูลไม่ได้/);assert.equal(ui.ids.get('upload-button').disabled,true);
+  assert.match(ui.ids.get('upload-status').textContent,/รับลงทะเบียนแล้ว/);assert.doesNotMatch(ui.ids.get('upload-status').textContent,/ยังยืนยันการรับข้อมูลไม่ได้/);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.ids.get('upload-button').textContent,'ส่งหลักฐานแล้ว');
   ui.state.offerStatus=200;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,false);assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1);
 });
 

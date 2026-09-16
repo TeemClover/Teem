@@ -75,8 +75,8 @@ test('marketing uses assigned bundle value, never an invented historical selling
   const html=await readFile(new URL('../../ai-source/index.html',import.meta.url),'utf8');
   const config=JSON.parse(await readFile(new URL('../../ai-source/OFFER_CONFIG.json',import.meta.url),'utf8'));
   const inline=JSON.parse(/<script type="application\/json" id="offer-config">\s*([\s\S]*?)<\/script>/.exec(html)[1]);
-  assert.deepEqual(inline,config);assert.match(html,/มูลค่าชุด ฿1,290/);
-  assert.doesNotMatch(html,/(?:เคยขาย|เคยจำหน่าย|ราคาขายเดิม|ขายแยก)[^<\n]{0,60}1,290/);
+  assert.deepEqual(inline,config);assert.match(html,/มูลค่ารวม ฿1,690/);
+  assert.doesNotMatch(html,/(?:เคยขาย|เคยจำหน่าย|ราคาขายเดิม|ขายแยก)[^<\n]{0,60}1,690/);
   assert.match(html,/<section id="recovery-offer"[^>]* hidden/);
   const visibleWithoutRecovery=html.replace(/<section id="recovery-offer"[\s\S]*?<\/section>/,'');
   assert.doesNotMatch(visibleWithoutRecovery,/(?:฿|ราคา|แพ็ก)\s*790/);
@@ -105,7 +105,7 @@ test('placing a restricted asset in ordinary resourceIds cannot bypass bonus aut
 
 test('real catalog publishes exactly two restricted companion attachments at frozen append-only upload positions',()=>{
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce'),bonus=course.bonus;
-  assert.equal(bonus.id,COMPANION_BONUS_ID);assert.equal(bonus.valueTHB,1290);assert.equal(bonus.lessonId,'FOUNDATION');
+  assert.equal(bonus.id,COMPANION_BONUS_ID);assert.equal(bonus.valueTHB,1690);assert.equal(bonus.lessonId,'FOUNDATION');
   assert.equal(new Set(bonus.resourceIds).size,2);assert.equal(bonus.resourceIds.length,2);
   const expected=[['AI_SAUCE_FIELD_GUIDE.pdf','application/pdf','learn/250.pdf'],['AI_SAUCE_WORK_COACH.md','text/markdown; charset=utf-8','learn/251.md']];
   for(const [index,id] of bonus.resourceIds.entries()){

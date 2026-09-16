@@ -120,6 +120,27 @@ test('bonus excluded and unresolved states keep learning available without bonus
   }
 });
 function mockedFetch(status='active') {return async url=>{if(url==='/api/auth/providers')return response({ok:true,providers:{email:true,google:false,otp:true}});const u=new URL(url,'https://www.myclover.com');const action=u.searchParams.get('action');if(action==='courses')return response({ok:true,user:{displayName:'ผู้เรียนทดสอบ'},courses:status==='empty'?[]:[{...active,status}]});if(action==='course')return response(courseData);if(action==='lesson')return response(lessonData(u.searchParams.get('lessonId')));return response({ok:false},404);};}
+test('video credit card follows the authorized video lesson and clears before account revalidation',async()=>{
+  const videoLesson={id:'ADV03',title:'ทำวิดีโอ',type:'main',order:3,locked:false};
+  const course={...courseData,course:{...courseData.course,lessons:[...courseData.course.lessons,videoLesson]}};
+  let pending;const base=mockedFetch();
+  const d=await dom(async url=>{
+    if(pending)return pending.promise;
+    const u=new URL(url,'https://www.myclover.com');
+    if(u.searchParams.get('action')==='course')return response(course);
+    if(u.searchParams.get('action')==='lesson'&&u.searchParams.get('lessonId')==='ADV03')return response({...lessonData(),lesson:{...videoLesson,media:{url:media},resources:[]}});
+    return base(url);
+  },'?course=ai-sauce&lesson=ADV03');
+  await d.load();const area=d.ids.get('student-video-credits');
+  assert.equal(area.hidden,false);assert.match(area.textContent,/เครดิตฟรีเริ่มต้นรวม 50 เครดิต/);
+  assert.equal(area.querySelector('a').href,'/airova/');
+  const other=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV01');
+  await other.fire('click');await d.settle();assert.equal(area.hidden,true);assert.equal(area.textContent,'');
+  const back=d.ids.get('lesson-navigation').all().find(n=>n.dataset.lessonId==='ADV03');
+  await back.fire('click');await d.settle();assert.equal(area.hidden,false);
+  pending=defer();await d.fire('mc:account-changed');assert.equal(area.hidden,true);assert.equal(area.childElementCount,0);
+  pending.resolve(response({ok:false,error:'AUTH_REQUIRED'},401));await d.settle();
+});
 test('course library accepts only exact local WebP covers, preserves full dimensions and falls back on image errors',async()=>{
   const cover='/learn/assets/course-covers/ai-sauce-v5.webp';
   const rejected=['https://www.myclover.com'+cover,'//evil.example/cover.webp','javascript:alert(1)','/learn/assets/course-covers/../private.webp','/learn/assets/course-covers/%2e%2e.webp',cover+'?redirect=1',cover+'#part',cover+'\n','/learn/assets/course-covers/COVER.webp','/learn/assets/course-covers/cover.svg',null];

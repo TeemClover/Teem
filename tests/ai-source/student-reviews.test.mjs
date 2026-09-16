@@ -143,11 +143,11 @@ test('stars preserve actual fractional scores with an accessible scale and works
   assert.equal(nodes['student-review-summary'].children.length, 0);
 });
 
-test('the real sales page loads the section before the instructor and keeps the trial CTA', async () => {
+test('the real sales page loads the section before the instructor and keeps visitors on the purchase path', async () => {
   const html = await readFile(new URL('../../ai-source/index.html', import.meta.url), 'utf8');
   assert.match(html, /id="student-reviews"[^>]*hidden/);
   assert.match(html, /type="module" src="student-reviews\.js\?v=2"/);
   assert.match(html, /id="student-review-summary"[^>]*hidden/);
   assert.ok(html.indexOf('id="student-reviews"') < html.indexOf('id="instructor"'));
-  assert.match(html, /student-review-actions[\s\S]*?href="\/classroom\/"/);
+  assert.match(html, /student-review-actions[\s\S]*?href="#offer"/);
 });

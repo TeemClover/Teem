@@ -3,6 +3,7 @@ import { authRequest, safeReturn, showVerification } from './account-step.js';
 import { renderLessonReading } from './lesson-reading.js?v=learner-ready-4';
 import { createLessonPlayer } from './lesson-player.js?v=learner-ready-4';
 import { renderLessonTools } from './lesson-tools.js?v=companion-6';
+import { renderStudentVideoCredits } from './student-video-credits.js?v=student-video-1';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text = '', className = '') => { const n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; };
@@ -90,6 +91,7 @@ function explainLockedLesson(title) { status(`“${title}” อยู่ใน�
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
   lessonTools?.destroy(); lessonTools = null; $('lesson-tools').replaceChildren(); $('lesson-tools').hidden = true; renderShowcase();
+  renderStudentVideoCredits($('student-video-credits'));
   player.reset();
   selectedId = null; progressBusy = false; lastSaved = 0;
   video.pause(); video.removeAttribute('src'); video.replaceChildren(); video.load();
@@ -201,6 +203,7 @@ const view = {
     } else if (item.type !== 'boss') { $('media-message').hidden = false; $('media-message').textContent = 'วิดีโอยังเปิดไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่อีกครั้ง หรือติดต่อผู้สอน'; }
     $('boss-invitation').hidden = !item.finale && item.type !== 'boss';
     lessonTools?.destroy(); lessonTools = renderLessonTools($('lesson-tools'), item.tools || []);
+    renderStudentVideoCredits($('student-video-credits'), { courseId: course.course.id, lessonId: item.id, access: course.access });
     const reading = typeof item.reading === 'string' ? item.reading : typeof item.body === 'string' ? item.body : '';
     renderLessonReading($('lesson-reading'), reading, { origin: location.origin, resourcesLocked: course.access?.status !== 'active',
       onLesson: route => {

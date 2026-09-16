@@ -76,3 +76,20 @@
 @media(max-width:720px){.bonus-files{grid-template-columns:1fr}.course-bonus{margin-top:18px;padding:22px}}
 
 .course-bonus{display:flow-root}.course-bonus .bonus-cover{float:right;width:130px;height:auto;margin:0 0 20px 28px;border-radius:7px;box-shadow:0 12px 30px #173e3030}.bonus-files{clear:both}@media(max-width:540px){.course-bonus .bonus-cover{float:none;display:block;width:150px;margin:0 auto 24px}}
+
+/* The partner trial supports the paid video lesson without replacing the lesson. */
+.student-video-credits{max-width:780px;margin:32px auto;padding:clamp(22px,3vw,34px);border:1px solid #c8d6c6;border-radius:22px;background:#f1f5ed;overflow-wrap:anywhere}
+.student-video-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.student-video-title{min-width:0}.student-video-title h3{font-size:clamp(25px,2.5vw,31px);line-height:1.5}
+.student-video-title>p:not(.eyebrow){margin-top:12px;color:#48614c;font-size:17px;line-height:1.8}
+.student-video-ticket{flex:0 0 128px;min-height:120px;border-radius:17px;background:#173f30;color:#f7edd3;padding:16px 12px;text-align:center}
+.student-video-ticket strong{display:block;font-family:'Bai Jamjuree',sans-serif;font-size:50px;line-height:1.2}
+.student-video-ticket span{display:block;margin-top:8px;font-size:13px}
+.student-video-intro{margin-top:24px;font-size:18px;line-height:1.95}
+.student-video-steps{display:grid;gap:18px;padding-left:26px;margin:24px 0 28px}
+.student-video-steps li{padding-left:8px}.student-video-steps li::marker{color:#986d28;font-weight:700}
+.student-video-steps strong{font-size:19px;line-height:1.8}.student-video-steps p{margin-top:4px;font-size:17px;line-height:1.9;color:#48614c}
+.student-video-actions .button{font-size:16px;min-height:50px}.student-video-actions>p{font-size:14px;line-height:1.85;margin-top:10px;color:#48614c}
+.student-video-terms{margin-top:22px;border-top:1px solid #cbd6c7;padding-top:18px;display:grid;gap:9px}
+.student-video-terms p{font-size:14px;line-height:1.85;color:#48614c}
+@media(max-width:540px){.student-video-heading{flex-direction:column;gap:18px}.student-video-ticket{flex:auto;width:100%;min-height:0;display:flex;align-items:center;justify-content:center;gap:14px;padding:13px}.student-video-ticket strong{font-size:40px}.student-video-ticket span{margin:0;font-size:15px}.student-video-actions .button{width:100%;text-align:center}.student-video-steps{padding-left:22px}}

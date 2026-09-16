@@ -45,5 +45,11 @@
   "refund_clock": "transfer_timestamp_on_receipt",
   "admission_within_hours": 24,
   "offer_api_url": "/api/ai-source?action=offer",
-  "bonus_terms": "คู่มือ PDF และ AI ผู้ช่วยงาน .md รวม 2 ไฟล์ มูลค่าชุด 1,290 บาท แถมในแพ็ก 990 บาทและราคาปกติ 1,690 บาท ดาวน์โหลดในห้องเรียนหลังตรวจชำระและเปิดสิทธิ์ตามแพ็ก"
+  "bonus_terms": "E-book PDF มูลค่า 500 บาท และ AI ผู้ช่วยงาน .md มูลค่า 1,190 บาท รวม 2 ไฟล์มูลค่า 1,690 บาท แถมในแพ็ก 990 บาทและราคาปกติ 1,690 บาท ดาวน์โหลดในห้องเรียนหลังตรวจชำระและเปิดสิทธิ์ตามแพ็ก",
+  "learning_tools_value_thb": 690,
+  "bonus_values_thb": {
+    "ebook_pdf": 500,
+    "work_coach_md": 1190,
+    "total": 1690
+  }
 }

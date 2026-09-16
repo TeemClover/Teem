@@ -779,6 +779,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/learn/assets/lesson-reading.js",
   "/learn/assets/lesson-tools.css",
   "/learn/assets/lesson-tools.js",
+  "/learn/assets/student-video-credits.js",
   "/mask-icon.svg",
   "/media/home-opening-bg.mp4",
   "/meet/img/ako.jpg",
