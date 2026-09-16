@@ -66,8 +66,8 @@ function partName(item) { return item.partTitle || item.title || 'บทเร�
 function renderCourseToolkit(toolkit) {
   const section=$('course-toolkit');section.replaceChildren();section.hidden=!toolkit;
   if(!toolkit)return;
-  const heading=el('h2','เริ่มตรงนี้ · สมุดงาน ซอส และไฟล์ฝึก');heading.id='toolkit-title';
-  section.append(el('p','เตรียมครัวของคุณ','eyebrow'),heading,el('p','เปิดสมุดงานคู่กับบทเรียน ใช้งานเดียวฝึกต่อไปทั้งคอร์ส แล้วกลับมาหยิบไฟล์ที่นี่ได้เสมอ'));
+  const heading=el('h2','สมุดงาน ซอส และไฟล์ฝึก');heading.id='toolkit-title';
+  section.append(el('p','เตรียมครัวของคุณ','eyebrow'),heading,el('p','เปิดสมุดงานคู่กับบทเรียน ใช้งานเดียวฝึกต่อไปทั้งคอร์ส แล้วกลับมาหยิบไฟล์ในตอนนี้ได้เสมอ'));
   for(const group of ['เริ่มลงมือ','ซอสและแม่แบบ','ตัวอย่างและสูตร']) {
     const block=el('div','','toolkit-group');block.append(el('h3',group));const links=el('div','','bonus-files');
     for(const file of toolkit.files.filter(f=>f.group===group)) {
@@ -140,7 +140,8 @@ function updateProgress(progress = {}, lessonId) {
   }
   if (lessonId && selectedId === lessonId) {
     const completed = progress.lessons?.[lessonId]?.completed === true;
-    $('complete-lesson').textContent = completed ? 'เรียนตอนนี้จบแล้ว ✓' : 'เรียนและลองทำตอนนี้แล้ว';
+    const toolkit = activeCourse?.course?.lessons?.find(l => l.id === lessonId)?.type === 'toolkit';
+    $('complete-lesson').textContent = completed ? 'เรียนตอนนี้จบแล้ว ✓' : toolkit ? 'เตรียมเครื่องมือแล้ว พร้อมเข้าบท 1' : 'เรียนและลองทำตอนนี้แล้ว';
     $('complete-lesson').disabled = completed;
   }
 }
@@ -212,9 +213,8 @@ const view = {
   },
   lesson(data, course) {
     const item = data.lesson;
-    const openingLessonId = course.course.startLessonId || course.course.lessons[0]?.id;
-    renderCourseBonus(item.id === openingLessonId ? course.bonus : null);
-    renderCourseToolkit(item.id === openingLessonId ? course.toolkit : null);
+    renderCourseBonus(item.type === 'toolkit' ? course.bonus : null);
+    renderCourseToolkit(item.type === 'toolkit' ? course.toolkit : null);
     selectedId = item.id; $('lesson-content').setAttribute('aria-busy', 'false');
     $('lesson-placeholder').hidden = true; $('lesson-body').hidden = false;
     const context = partContext(course.course, item.id), chapter = context.chapter;
@@ -228,8 +228,8 @@ const view = {
       // Current course subtitles are burned in; do not request SRT as an HTML video track.
       for (const caption of item.media.captionsEmbedded ? [] : item.media.captions || []) { const url = safeAssetUrl(caption.url, location.origin); if (!url || caption.mimeType !== 'text/vtt') continue; const track = el('track'); track.kind = 'subtitles'; track.srclang = caption.language || 'th'; track.label = caption.label || 'ไทย'; track.src = url; video.append(track); }
       $('player-wrap').hidden = false; $('video-note').hidden = false;
-      player.start(activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds || 0, { autoplay: !item.showcase?.length });
-    } else if (item.type !== 'boss') { $('media-message').hidden = false; $('media-message').textContent = 'วิดีโอยังเปิดไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่อีกครั้ง หรือติดต่อผู้สอน'; }
+      player.start(activeCourse?.progress?.lessons?.[selectedId]?.positionSeconds || 0, { autoplay: true });
+    } else if (item.type !== 'boss' && item.type !== 'toolkit') { $('media-message').hidden = false; $('media-message').textContent = 'วิดีโอยังเปิดไม่ได้ในขณะนี้ ลองเปิดบทนี้ใหม่อีกครั้ง หรือติดต่อผู้สอน'; }
     $('boss-invitation').hidden = !item.finale && item.type !== 'boss';
     lessonTools?.destroy(); lessonTools = renderLessonTools($('lesson-tools'), item.tools || []);
     renderStudentVideoCredits($('student-video-credits'), { courseId: course.course.id, lessonId: item.id, access: course.access });

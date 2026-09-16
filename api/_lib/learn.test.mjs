@@ -296,16 +296,16 @@ test('BOSS is an authorized reading/activity stage completed explicitly without 
   h.grants[0].revoked_at=new Date(NOW);h.instructors.push(instructor());
   assert.equal((await h.call('GET','lesson',undefined,{query:{courseId:'ai-sauce',lessonId:'BOSS'}})).body.access.role,'instructor');
 });
-test('actual catalog teaches22 continuous parts with one integrated final lesson',()=>{
+test('actual catalog keeps22 videos and inserts the toolkit before chapter1',()=>{
   const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
-  const chapters=[['FOUNDATION','EP01'],['EP02','ADV01','EP03'],['EP04','ADV02','EP05'],['EP06','EP07','ADV03'],
+  const chapters=[['FOUNDATION','EP01','TOOLKIT'],['EP02','ADV01','EP03'],['EP04','ADV02','EP05'],['EP06','EP07','ADV03'],
     ['EP08','ADV04','EP09'],['ADV05','EP10','EP11'],['CH06','EP12'],['EP13','EP14'],['DUNGEON']];
   const sequence=chapters.flat();
-  assert.equal(course.lessons.length,22);assert.equal(course.lessons.filter(l=>l.mediaId).length,22);
+  assert.equal(course.lessons.length,23);assert.equal(course.lessons.filter(l=>l.mediaId).length,22);
   assert.deepEqual(course.mainLessonIds,['FOUNDATION','ADV01','ADV02','ADV03','ADV04','ADV05','CH06']);
   assert.equal(course.sections.length,9);assert.deepEqual(course.sections.map(section=>section.lessonIds),chapters);
   assert.deepEqual(course.sections.map(section=>section.label),['บทนำ','บท 1','บท 2','บท 3','บท 4','บท 5','บท 6','ฝึกกับงานจริง','บทส่งท้าย']);
-  assert.deepEqual(course.lessons.map(lesson=>lesson.id),sequence);assert.equal(new Set(sequence).size,22);
+  assert.deepEqual(course.lessons.map(lesson=>lesson.id),sequence);assert.equal(new Set(sequence).size,23);
   for(const [index,id] of sequence.entries()) {
     const lesson=course.lessons.find(item=>item.id===id),section=course.sections.find(group=>group.lessonIds.includes(id));
     assert.equal(lesson.nextLessonId,sequence[index+1]||null,id);assert.equal(lesson.sectionId,section.id,id);
@@ -519,7 +519,7 @@ test('home entry exposes only own enrollment boolean even before email step-up',
 
 test('all22 learner parts expose their current downloadable bundle with scoped private assets',()=>{
  const c=LEARN_COURSES.find(c=>c.id==='ai-sauce');
- for(const l of c.lessons){
+ for(const l of c.lessons.filter(l=>l.mediaId)){
  assert.equal(l.resourceIds.length,1,l.id);const asset=LEARN_ASSETS.find(a=>a.id===l.resourceIds[0]);
  const bundleName=new RegExp('^AI_SAUCE_'+l.id+'_LEARNER_FILES_V[0-9]+\\.zip$');
  const latest=LEARN_ASSETS.filter(a=>bundleName.test(a.filename)).at(-1);

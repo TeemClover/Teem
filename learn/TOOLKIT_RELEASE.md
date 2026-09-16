@@ -1,8 +1,8 @@
 # Opening lesson toolkit — 2026-09-16
 
-The opening lesson (FOUNDATION) now groups the interactive workbook, source templates, work recipes, examples and the existing per-lesson ZIP files. The PDF and work-coach bonus remain separate and retain their original package entitlement checks. Other lessons keep video-first layout.
+A dedicated toolkit lesson (TOOLKIT), after EP01 and before EP02, groups the interactive workbook, source templates, work recipes, examples and the existing per-lesson ZIP files. The PDF and work-coach bonus remain separate and retain their original package entitlement checks. All video lessons keep video-first layout. The opening showcase follows its video. The bonus panel comes before the workbook panel in TOOLKIT.
 
-The toolkit is an immutable private snapshot, version `2026-09-16-v2`. Nine small files (about 402 KiB total) are stored in `mc_learn_toolkit_files`; no document bodies are in this public repository. `/api/learn-toolkit?file=workbook` checks current paid-course access before serving the workbook. All other toolkit files download as attachments. Metadata pins byte counts and SHA-256 hashes. The inline workbook has a restrictive CSP with hashed scripts and an opaque sandbox; network requests and access to account cookies are unavailable. It does not upload student input. Learners explicitly export/import their progress JSON.
+The toolkit is an immutable private snapshot, version `2026-09-16-v3`. Nine small files (about 402 KiB total) are stored in `mc_learn_toolkit_files`; no document bodies are in this public repository. `/api/learn-toolkit?file=workbook` checks current paid-course access before serving the workbook. All other toolkit files download as attachments. Metadata pins byte counts and SHA-256 hashes. The inline workbook has a restrictive CSP with hashed scripts and an opaque sandbox; network requests and access to account cookies are unavailable. It does not upload student input. Learners explicitly export/import their progress JSON.
 
 Schema (created during this release):
 ```sql

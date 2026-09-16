@@ -99,11 +99,14 @@ async function dom(fetcher,search='') {
   return{ids,doc,window,location,history,mount,fire,settle,load:async()=>{await import(`../assets/learn.js?test=${++run}`);await settle();}};
 }
 
+const toolkitFixture={id:'TOOLKIT',title:'เตรียมชุดเครื่องมือก่อนลงมือ',type:'toolkit',locked:false};
+const toolkitCourse={...courseData,course:{...courseData.course,lessons:[...courseData.course.lessons,toolkitFixture]}};
+const toolkitLesson={ok:true,courseId:'ai-sauce',lesson:{...toolkitFixture,media:null,resources:[]},access:{status:'active'}};
 test('bonus area exposes only authorized same-origin files and clears on account change',async()=>{
   const base=mockedFetch(),bonus={title:'คู่มือ + AI คู่คิด',description:'อ่านแล้วลงมือ',status:'included',resources:[
     {title:'คู่มือ PDF',mimeType:'application/pdf',url:media},{title:'AI คู่คิด .md',mimeType:'text/markdown',url:media},
     {title:'unsafe',url:'https://foreign.example/private.pdf'}]};
-  let pending;const d=await dom(async url=>pending?pending.promise:url.includes('action=course&')?response({...courseData,bonus}):base(url),'?course=ai-sauce');
+  let pending;const d=await dom(async url=>pending?pending.promise:url.includes('action=course&')?response({...toolkitCourse,bonus}):url.includes('action=lesson&')?response(toolkitLesson):base(url),'?course=ai-sauce&lesson=TOOLKIT');
   await d.load();const area=d.ids.get('course-bonus');assert.equal(area.hidden,false);
   assert.match(area.textContent,/คู่มือ PDF/);assert.equal(area.all().filter(n=>n.tagName==='A').length,2);
   assert.doesNotMatch(area.textContent,/unsafe/);
@@ -112,8 +115,8 @@ test('bonus area exposes only authorized same-origin files and clears on account
 });
 test('bonus excluded and unresolved states keep learning available without bonus download links',async()=>{
   for(const state of ['not_included','unverified']){
-    const base=mockedFetch(),d=await dom(async url=>url.includes('action=course&')?response({...courseData,bonus:{title:'คู่มือ',status:state,resources:[{url:media,title:'must not appear'}]}}):base(url),'?course=ai-sauce');
-    await d.load();assert.equal(d.ids.get('player-wrap').hidden,false);
+    const base=mockedFetch(),d=await dom(async url=>url.includes('action=course&')?response({...toolkitCourse,bonus:{title:'คู่มือ',status:state,resources:[{url:media,title:'must not appear'}]}}):url.includes('action=lesson&')?response(toolkitLesson):base(url),'?course=ai-sauce&lesson=TOOLKIT');
+    await d.load();assert.equal(d.ids.get('media-message').hidden,true);
     const area=d.ids.get('course-bonus');assert.doesNotMatch(area.textContent,/must not appear/);
     assert.ok(area.all().filter(n=>n.tagName==='A').every(n=>!n.href.includes('/api/learn-media')));
     if(state==='unverified')assert.match(area.textContent,/ตรวจสิทธิ์/);
@@ -463,4 +466,10 @@ test('popstate and restored history reauthorize the direct course, while library
   const actions=requests.filter(url=>url.startsWith('/api/learn?')).map(url=>new URL(url,d.location.origin).searchParams.get('action'));
   assert.deepEqual(actions,['course','lesson','course','lesson','course','lesson']);
   d.location.search='';await d.fire('popstate');await d.settle();assert.equal(new URL(requests.at(-1),d.location.origin).searchParams.get('action'),'courses');assert.equal(d.ids.get('library').hidden,false);
+});
+
+test('opening video has no toolkit or bonus panels; materials are after the player in markup',async()=>{
+ const base=mockedFetch(),d=await dom(async url=>url.includes('action=course&')?response({...courseData,bonus:{status:'included',resources:[{url:media,title:'BONUS'}]},toolkit:{files:[],chapters:[]}}):base(url),'?course=ai-sauce&lesson=FOUNDATION');
+ await d.load();assert.equal(d.ids.get('course-bonus').hidden,true);assert.equal(d.ids.get('course-toolkit').hidden,true);assert.equal(d.ids.get('player-wrap').hidden,false);
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.indexOf('id="player-wrap"')<html.indexOf('id="lesson-showcase"'));assert.ok(html.indexOf('id="course-bonus"')<html.indexOf('id="course-toolkit"'));
 });
