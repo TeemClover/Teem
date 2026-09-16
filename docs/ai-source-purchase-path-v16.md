@@ -61,3 +61,24 @@ implemented by this change.
 
 Production verification must follow deployment; local checks alone are not a
 claim that the release is live.
+
+## Production check and startup follow-up
+
+Release 997b34d5 reached production READY. An authenticated browser verified an
+empty manual payer field, a loaded bank QR, in-page receipt navigation, and the
+50-credit card in ADV03. No receipt or payment was submitted.
+
+The initial offer request timed out before a successful retry. Startup was still
+executing each schema statement as a separate database HTTP request. The follow-up
+groups the unchanged core, registration, learning and commerce schema statements
+into ordered native Neon transactions. Warm-instance deduplication and retry after
+failure remain intact; transaction failure is not replayed as individual writes.
+Query-only test adapters retain sequential execution. Dependencies between schema
+groups still finish in order. Each group now commits or rolls back together and
+holds DDL locks until its batch ends. No price, deadline, authorization rule or
+client timeout changes.
+
+Auth, checkout, registration and all learning tests passed: 307, plus 9 new native
+batch, failure and concurrency tests (316 total). An isolated check
+with the installed Neon 1.1.0 driver also confirmed one HTTP batch with ordered
+statements, using a synthetic transport without connecting to a real database.

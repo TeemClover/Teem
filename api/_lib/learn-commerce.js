@@ -4,6 +4,7 @@ import { InputError, issueOffer, readOffer, hasOfferCookie, publicOffer, amountD
 import { recordLearnRegistration, grantForVerifiedRegistration, ensureLearnSchema } from './learn-store.js';
 import { enrollLearnCourse } from './learn-authorization.js';
 import { learnAccountWrite } from './learn-commerce-lock.js';
+import { runSchemaBatch } from './schema-batch.js';
 
 export const COURSE_ID = 'ai-sauce';
 export const RECOVERY_MS = 2 * 60 * 60 * 1000;
@@ -18,25 +19,27 @@ export async function ensureCommerceSchema(sql) {
 }
 async function initializeCommerceSchema(sql) {
   await ensureLearnSchema(sql);
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_learn_offers (
+  return runSchemaBatch(sql, [
+    `CREATE TABLE IF NOT EXISTS mc_learn_offers (
     id UUID PRIMARY KEY,user_id TEXT NOT NULL REFERENCES mc_accounts(id),course_id TEXT NOT NULL,
     kind TEXT NOT NULL CHECK(kind IN ('launch','recovery')),first_seen_at TIMESTAMPTZ NOT NULL,expires_at TIMESTAMPTZ NOT NULL,
-    checkout_started_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL,UNIQUE(user_id,course_id,kind))`);
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_learn_checkouts (
+    checkout_started_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL,UNIQUE(user_id,course_id,kind))`,
+    `CREATE TABLE IF NOT EXISTS mc_learn_checkouts (
     id UUID PRIMARY KEY,user_id TEXT NOT NULL REFERENCES mc_accounts(id),course_id TEXT NOT NULL,
     offer_id UUID NOT NULL REFERENCES mc_learn_offers(id),quoted_amount_thb INTEGER NOT NULL CHECK(quoted_amount_thb IN(790,990,1690)),
     issued_at TIMESTAMPTZ NOT NULL,expires_at TIMESTAMPTZ NOT NULL,
     status TEXT NOT NULL DEFAULT 'open' CHECK(status IN('open','submitted','paid')),
-    reference TEXT UNIQUE,UNIQUE(user_id,course_id,offer_id,quoted_amount_thb))`);
-  await sql.query('ALTER TABLE mc_learn_checkouts ADD COLUMN IF NOT EXISTS generation INTEGER NOT NULL DEFAULT 0 CHECK(generation>=0)');
-  await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_mc_learn_checkouts_generation ON mc_learn_checkouts(user_id,course_id,offer_id,quoted_amount_thb,generation)');
-  await sql.query(`DO $$ DECLARE old_constraint RECORD; BEGIN FOR old_constraint IN
+    reference TEXT UNIQUE,UNIQUE(user_id,course_id,offer_id,quoted_amount_thb))`,
+    'ALTER TABLE mc_learn_checkouts ADD COLUMN IF NOT EXISTS generation INTEGER NOT NULL DEFAULT 0 CHECK(generation>=0)',
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_mc_learn_checkouts_generation ON mc_learn_checkouts(user_id,course_id,offer_id,quoted_amount_thb,generation)',
+    `DO $$ DECLARE old_constraint RECORD; BEGIN FOR old_constraint IN
     SELECT conname FROM pg_constraint WHERE conrelid='mc_learn_checkouts'::regclass AND contype='u'
       AND pg_get_constraintdef(oid)='UNIQUE (user_id, course_id, offer_id, quoted_amount_thb)'
-    LOOP EXECUTE format('ALTER TABLE mc_learn_checkouts DROP CONSTRAINT %I',old_constraint.conname); END LOOP; END $$`);
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_learn_funnel_events (
+    LOOP EXECUTE format('ALTER TABLE mc_learn_checkouts DROP CONSTRAINT %I',old_constraint.conname); END LOOP; END $$`,
+    `CREATE TABLE IF NOT EXISTS mc_learn_funnel_events (
     id BIGSERIAL PRIMARY KEY,user_id TEXT NOT NULL REFERENCES mc_accounts(id),course_id TEXT NOT NULL,event TEXT NOT NULL,
-    occurred_at TIMESTAMPTZ NOT NULL,utm_source TEXT,utm_medium TEXT,utm_campaign TEXT)`);
+    occurred_at TIMESTAMPTZ NOT NULL,utm_source TEXT,utm_medium TEXT,utm_campaign TEXT)`,
+  ]);
 }
 export function requiredCheckoutAmount(checkout, when) {
   const time = new Date(when).getTime(), issued = new Date(checkout.issued_at).getTime(), expires = new Date(checkout.expires_at).getTime();

@@ -1,6 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { safeRelativeReturn } from '../../assets/auth-return.js';
+import { runSchemaBatch } from './schema-batch.js';
 
 const SESSION_COOKIE = 'mc_session';
 const SESSION_DAYS = 30;
@@ -178,9 +179,8 @@ const SCHEMA = [
 
 export async function ensureSchema(sql) {
   if (!schemaPromises.has(sql)) {
-    const promise = (async () => {
-      for (const statement of SCHEMA) await sql.query(statement);
-    })().catch(error => { schemaPromises.delete(sql); throw error; });
+    const promise = runSchemaBatch(sql, SCHEMA)
+      .catch(error => { schemaPromises.delete(sql); throw error; });
     schemaPromises.set(sql, promise);
   }
   return schemaPromises.get(sql);

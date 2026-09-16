@@ -1,6 +1,7 @@
 // Reuses the existing core.database() Neon connection. Never creates public blob URLs.
 // A single row commits the registration and its private bytea receipt atomically.
 import { learnAccountWrite } from './learn-commerce-lock.js';
+import { runSchemaBatch } from './schema-batch.js';
 const schemaPromises = new WeakMap();
 export async function ensureAiSourceSchema(sql) {
   if (!schemaPromises.has(sql)) {
@@ -11,7 +12,8 @@ export async function ensureAiSourceSchema(sql) {
   return schemaPromises.get(sql);
 }
 async function initializeAiSourceSchema(sql) {
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_ai_source_registrations (
+  return runSchemaBatch(sql, [
+    `CREATE TABLE IF NOT EXISTS mc_ai_source_registrations (
     id BIGSERIAL PRIMARY KEY, reference TEXT UNIQUE NOT NULL,
     idempotency_key UUID UNIQUE NOT NULL, payload_hash TEXT NOT NULL,
     offer_id UUID NOT NULL, offer_first_seen_at TIMESTAMPTZ NOT NULL, offer_expires_at TIMESTAMPTZ NOT NULL,
@@ -26,28 +28,29 @@ async function initializeAiSourceSchema(sql) {
     notify_status TEXT NOT NULL DEFAULT 'pending', notify_detail JSONB NOT NULL DEFAULT '{}'::jsonb,
     notify_attempt_id UUID, notify_claimed_at TIMESTAMPTZ, notified_at TIMESTAMPTZ,
     consent_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ NOT NULL, updated_at TIMESTAMPTZ NOT NULL
-  )`);
-  await sql.query('ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS account_id TEXT');
-  await sql.query('ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS checkout_id UUID');
-  await sql.query('ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS bank_transaction_id TEXT');
+  )`,
+    'ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS account_id TEXT',
+    'ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS checkout_id UUID',
+    'ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS bank_transaction_id TEXT',
   // One-time provenance: only rows already present before this column existed
   // may use the old offer rules after an explicit administrator account bind.
   // Future ensure() calls never bless a new row with a missing checkout.
-  await sql.query(`DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='mc_ai_source_registrations' AND column_name='legacy_quote_eligible') THEN
+    `DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='mc_ai_source_registrations' AND column_name='legacy_quote_eligible') THEN
     ALTER TABLE mc_ai_source_registrations ADD COLUMN legacy_quote_eligible BOOLEAN NOT NULL DEFAULT FALSE;
     UPDATE mc_ai_source_registrations SET legacy_quote_eligible=TRUE WHERE account_id IS NULL AND checkout_id IS NULL;
-    END IF; END $$`);
-  await sql.query('ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS legacy_bound_at TIMESTAMPTZ');
-  await sql.query('ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS legacy_bound_by TEXT');
-  await sql.query(`DO $$ BEGIN IF EXISTS(SELECT 1 FROM pg_constraint WHERE conrelid='mc_ai_source_registrations'::regclass AND conname='mc_ai_source_registrations_quoted_amount_thb_check' AND pg_get_constraintdef(oid) NOT LIKE '%790%') THEN
+    END IF; END $$`,
+    'ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS legacy_bound_at TIMESTAMPTZ',
+    'ALTER TABLE mc_ai_source_registrations ADD COLUMN IF NOT EXISTS legacy_bound_by TEXT',
+    `DO $$ BEGIN IF EXISTS(SELECT 1 FROM pg_constraint WHERE conrelid='mc_ai_source_registrations'::regclass AND conname='mc_ai_source_registrations_quoted_amount_thb_check' AND pg_get_constraintdef(oid) NOT LIKE '%790%') THEN
     ALTER TABLE mc_ai_source_registrations DROP CONSTRAINT mc_ai_source_registrations_quoted_amount_thb_check;
-    ALTER TABLE mc_ai_source_registrations ADD CONSTRAINT mc_ai_source_registrations_quoted_amount_thb_check CHECK(quoted_amount_thb IN(790,990,1690)); END IF; END $$`);
-  await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_bank_transaction ON mc_ai_source_registrations(bank_transaction_id) WHERE bank_transaction_id IS NOT NULL');
-  await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_bank_transaction_canonical ON mc_ai_source_registrations(UPPER(BTRIM(bank_transaction_id))) WHERE bank_transaction_id IS NOT NULL');
-  await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_checkout ON mc_ai_source_registrations(checkout_id) WHERE checkout_id IS NOT NULL');
-  await sql.query('CREATE INDEX IF NOT EXISTS idx_mc_ai_source_queue ON mc_ai_source_registrations(status, id DESC)');
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_ai_source_rate_limits (bucket TEXT PRIMARY KEY,hits INTEGER NOT NULL,expires_at TIMESTAMPTZ NOT NULL)`);
-  await sql.query(`CREATE TABLE IF NOT EXISTS mc_ai_source_api_checks (id UUID PRIMARY KEY,created_at TIMESTAMPTZ NOT NULL)`);
+    ALTER TABLE mc_ai_source_registrations ADD CONSTRAINT mc_ai_source_registrations_quoted_amount_thb_check CHECK(quoted_amount_thb IN(790,990,1690)); END IF; END $$`,
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_bank_transaction ON mc_ai_source_registrations(bank_transaction_id) WHERE bank_transaction_id IS NOT NULL',
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_bank_transaction_canonical ON mc_ai_source_registrations(UPPER(BTRIM(bank_transaction_id))) WHERE bank_transaction_id IS NOT NULL',
+    'CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_source_checkout ON mc_ai_source_registrations(checkout_id) WHERE checkout_id IS NOT NULL',
+    'CREATE INDEX IF NOT EXISTS idx_mc_ai_source_queue ON mc_ai_source_registrations(status, id DESC)',
+    `CREATE TABLE IF NOT EXISTS mc_ai_source_rate_limits (bucket TEXT PRIMARY KEY,hits INTEGER NOT NULL,expires_at TIMESTAMPTZ NOT NULL)`,
+    `CREATE TABLE IF NOT EXISTS mc_ai_source_api_checks (id UUID PRIMARY KEY,created_at TIMESTAMPTZ NOT NULL)`,
+  ]);
 }
 // Explicit field list: receipts and idempotency hashes never ride in an admin queue JSON.
 const FIELDS = `id,reference,offer_id,offer_first_seen_at,offer_expires_at,quoted_amount_thb,name,email,contact,account_id,checkout_id,bank_transaction_id,legacy_quote_eligible,legacy_bound_at,legacy_bound_by,

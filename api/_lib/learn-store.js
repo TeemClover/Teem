@@ -1,5 +1,6 @@
 import { LearnError, oneYearAfter } from './learn-domain.js';
 import { companionEntitlement } from './learn-bonus.js';
+import { runSchemaBatch } from './schema-batch.js';
 
 const schemaPromises = new WeakMap();
 export const LEARN_SCHEMA = [
@@ -47,7 +48,7 @@ export const LEARN_SCHEMA = [
 
 export async function ensureLearnSchema(sql) {
   if (!schemaPromises.has(sql)) {
-    const promise = (async () => { for (const statement of LEARN_SCHEMA) await sql.query(statement); })()
+    const promise = runSchemaBatch(sql, LEARN_SCHEMA)
       .catch(error => { schemaPromises.delete(sql); throw error; });
     schemaPromises.set(sql,promise);
   }
