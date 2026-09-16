@@ -13,16 +13,16 @@ export function renderFrontDoorRoot(source){
 <meta property="og:title" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี">
 <meta property="og:description" content="ค้นพบสิ่งที่ใช่ เรียนรู้สิ่งใหม่ และเริ่มต้นโอกาสดี ๆ ในแบบของคุณ">
 <meta property="og:url" content="https://www.myclover.com/">
-<meta property="og:image" content="https://www.myclover.com/img/og-home-lucky-20260916.jpg">
+<meta property="og:image" content="https://www.myclover.com/img/og-home-lucky-20260916-v2.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี พร้อมโคลเวอร์แก้วสีเขียวสี่ใบบนพื้นสีครีม">
+<meta property="og:image:alt" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี พร้อมโคลเวอร์แก้วสีเขียวทรงสี่แฉกบนพื้นสีครีม">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี">
 <meta name="twitter:description" content="ค้นพบสิ่งที่ใช่ เรียนรู้สิ่งใหม่ และเริ่มต้นโอกาสดี ๆ ในแบบของคุณ">
-<meta name="twitter:image" content="https://www.myclover.com/img/og-home-lucky-20260916.jpg">
-<meta name="twitter:image:alt" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี พร้อมโคลเวอร์แก้วสีเขียวสี่ใบบนพื้นสีครีม">`;
+<meta name="twitter:image" content="https://www.myclover.com/img/og-home-lucky-20260916-v2.jpg">
+<meta name="twitter:image:alt" content="myClover — หน้าเว็บที่ออกแบบมาเพื่อให้คุณโชคดี พร้อมโคลเวอร์แก้วสีเขียวทรงสี่แฉกบนพื้นสีครีม">`;
   return source.replace(/<meta name="robots"[^>]+>/,metadata)
     .replace('<title>myClover — ลองหยิบเข็มทิศดู</title>','<title>myClover — โชคดีในแบบของคุณ</title>')
     .replace('content="บางอย่างในบ้านนี้ กำลังรอมือคุณ"','content="ลองหยิบเข็มทิศ สำรวจสิ่งที่ตรงกับคุณ ทั้ง AI ครัวเอโกะ กิจวัตร และโอกาสใหม่ แล้วเริ่มทำอะไรดี ๆ ไปด้วยกัน"');
