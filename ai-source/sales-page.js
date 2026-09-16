@@ -74,11 +74,21 @@
     var offer=introPresentation(actualOffer);renderIntro(actualOffer);
     if(serverReady&&schoolState&&!schoolState.blocked&&schoolState.recovery&&schoolState.recovery.active&&now<Date.parse(schoolState.recovery.expiresAt)){offer=Object.assign({},actualOffer,{currentPrice:790,canPurchase:true,showLaunchOffer:true,showCountdown:true,endsAt:Date.parse(schoolState.recovery.expiresAt),remainingMs:Date.parse(schoolState.recovery.expiresAt)-now});}
     var recoveryNode=get('recovery-offer');if(recoveryNode)recoveryNode.hidden=!(serverReady&&schoolState&&schoolState.recoveryAvailable&&!schoolState.blocked);if(recoveryNode&&!recoveryNode.hidden)get('claim-recovery').textContent='รับสิทธิ์เรียน '+money.format(790)+' · ตัดสินใจใน 2 ชั่วโมง';
-    var bonusIncluded=offer.currentPrice!==790;
+    var recoverySelected=offer.currentPrice===790,bonusIncluded=!recoverySelected;
     var bonusSummary=get('bonus-package-summary'),offerBonus=get('offer-bonus-summary'),checkoutBonus=get('checkout-bonus-summary');
     if(bonusSummary)bonusSummary.textContent=bonusIncluded?'รับทั้ง 2 ไฟล์พร้อมคอร์ส ฿990 และราคาปกติ ฿1,690':'ชุดคู่มือ PDF + AI ผู้ช่วยงาน .md ไม่รวมในสิทธิ์ ฿790 ที่คุณเลือก';
-    if(offerBonus)offerBonus.textContent=bonusIncluded?'รวมคู่มือ PDF มูลค่า ฿500 + AI ผู้ช่วยงาน .md มูลค่า ฿1,190 รวม ฿1,690':'แพ็กนี้มีบทเรียนและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI ผู้ช่วยงาน .md';
+    if(offerBonus)offerBonus.textContent=bonusIncluded?'รวมวิดีโอ แบบฝึกบนเว็บ ไฟล์ฝึก E-book และผู้ช่วย .md':'รวมวิดีโอ แบบฝึกบนเว็บและไฟล์ฝึก ไม่รวม E-book และผู้ช่วย .md';
     if(checkoutBonus)checkoutBonus.textContent=currentCheckout?(currentCheckout.priceTHB===790?'รายการนี้: คอร์สและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI ผู้ช่วยงาน .md':'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md'):'';
+    var bonusValues=config.bonus_values_thb||{},addedValue=Number(config.learning_tools_value_thb)||0;
+    if(bonusIncluded)addedValue+=(Number(bonusValues.ebook_pdf)||0)+(Number(bonusValues.work_coach_md)||0);
+    var addedValueNode=get('offer-added-value'),addedNote=get('offer-added-note');
+    if(addedValueNode)addedValueNode.textContent=money.format(addedValue);
+    if(addedNote)addedNote.textContent=bonusIncluded?'รวมให้ในแพ็ก ไม่มีค่าใช้จ่ายส่วนนี้เพิ่ม':'สิทธิ์นี้รวมเครื่องมือฝึกบนเว็บ ไม่รวม E-book และผู้ช่วย .md';
+    ['stack-bonus-ebook','stack-bonus-assistant'].forEach(function(id){var row=get(id);if(row)row.hidden=!bonusIncluded;});
+    var launchActive=serverReady&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price;
+    var cohortNote=get('offer-cohort-note'),urgencyCopy=get('offer-urgency-copy');
+    if(cohortNote){cohortNote.hidden=!launchActive;cohortNote.textContent='สิทธิ์ราคาเปิดเรียนเฉพาะรุ่นนี้';}
+    if(urgencyCopy){urgencyCopy.hidden=!launchActive;urgencyCopy.textContent='ใช้สิทธิ์ก่อนเวลาที่แสดง แล้วราคาแพ็กจะกลับเป็น '+money.format(config.regular_price);}
     var enrolledLink=get('my-course-link');if(enrolledLink)enrolledLink.hidden=!(schoolState&&schoolState.user);
     var price=offer.currentPrice===null?'กำลังตรวจราคา':money.format(offer.currentPrice);
     document.documentElement.dataset.offerState=offer.state;
@@ -87,8 +97,8 @@
     get('sticky-offer-status').hidden=offer.showCountdown;
     get('sticky-offer-status').textContent=offer.introPending?'กำลังเตรียมสิทธิ์รุ่นแรก':live&&!serverReady?'กำลังตรวจสิทธิ์':offer.state==='expired'?'โปรสิ้นสุดแล้ว':'ราคาปกติ';
     ['current-price','hero-launch-price','bank-amount'].forEach(function(id){get(id).textContent=price;});
-    get('hero-price-label').textContent=offer.showLaunchOffer?'รุ่นแรก · ปกติ '+money.format(config.regular_price):'ราคาปกติ';
-    get('price-label').textContent=offer.showLaunchOffer?'สิทธิ์ myClover รุ่นแรก':'ราคาปกติ';
+    get('hero-price-label').textContent=recoverySelected?'สิทธิ์เฉพาะบัญชีของคุณ':offer.showLaunchOffer?'รุ่นแรก · ปกติ '+money.format(config.regular_price):'ราคาปกติ';
+    get('price-label').textContent=recoverySelected?'สิทธิ์เฉพาะบัญชีของคุณ':offer.showLaunchOffer?'สิทธิ์ myClover รุ่นแรก':'ราคาปกติ';
     get('regular-price').hidden=!offer.showLaunchOffer; get('regular-price').textContent=offer.showLaunchOffer?'ปกติ '+money.format(config.regular_price):'';
     get('hero-offer-end').textContent=get('offer-end').textContent=offer.showLaunchOffer?deadline(offer.endsAt):offer.state==='expired'?'สิ้นสุดราคาพิเศษแล้ว':'';
     get('time-left').textContent=get('sticky-time-left').textContent='';

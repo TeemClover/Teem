@@ -23,15 +23,16 @@ class Element {
   contains(){return false;}
   close(){this.open=false;}
 }
-async function boot({checkoutId=null,post,restore,receipt,offerStatus=200,displayName='ผู้เรียน'}={}) {
+async function boot({checkoutId=null,post,restore,receipt,offerStatus=200,offerGate,offerConfig={},omitIds=[],displayName='ผู้เรียน'}={}) {
   const ids=new Map([...html.matchAll(/<([a-z]+)\b([^>]*\bid="([^"]+)"[^>]*)>/g)].map(m=>[m[3],new Element(m[1],m[2])]));
-  ids.get('offer-config').textContent=JSON.stringify(config);
+  for(const id of omitIds)ids.delete(id);
+  ids.get('offer-config').textContent=JSON.stringify({...config,...offerConfig});
   const calls=[],events={},timers=new Map();let nextTimer=0;
   const state={email:'learner@example.test',checkoutId,blocked:false,offerStatus,elapsed:0,recovery:null,cartPrice:990};
   const cart=()=>({id:CART,priceTHB:state.cartPrice,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'});
   const fetch=async(url,options={})=>{
     calls.push({url,options});
-    if(url==='/api/ai-source?action=offer')return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);
+    if(url==='/api/ai-source?action=offer'){if(offerGate)await offerGate;return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);}
     if(url.startsWith('/api/ai-source?action=checkout&'))return restore?restore(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source?action=checkout'&&options.method==='POST')return post?post(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source'&&options.method==='POST'&&receipt)return receipt(options);
@@ -82,14 +83,56 @@ test('receipt registration requires the name the payer enters and never substitu
   const ui=await boot({checkoutId:CART});await ui.fill();ui.ids.get('customer-name').value='';await ui.submit();
   assert.equal(ui.ids.get('upload-status').textContent,'กรอกชื่อผู้ชำระ');assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,0);
 });
-test('full-price and launch packages show the two declared bonus values while recovery excludes them',async()=>{
+test('launch and full packages include both bonus files while recovery excludes them in the offer and checkout',async()=>{
   const ui=await boot({checkoutId:CART});
   const offerBonus=ui.ids.get('offer-bonus-summary').textContent;
-  assert.match(offerBonus,/500/);assert.match(offerBonus,/1,190/);assert.match(offerBonus,/1,690/);assert.doesNotMatch(offerBonus,/1,290/);
+  assert.match(offerBonus,/วิดีโอ/);assert.match(offerBonus,/แบบฝึกบนเว็บ/);assert.match(offerBonus,/E-book/);assert.match(offerBonus,/\.md/);assert.doesNotMatch(offerBonus,/฿|ไม่รวม/);
   assert.equal(ui.ids.get('checkout-bonus-summary').textContent,'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md');
   assert.equal(ui.ids.get('upload-button').textContent,'ส่งหลักฐานการชำระเงิน');
-  ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+3600000).toISOString()};ui.state.cartPrice=790;await ui.focus();await ui.click();
+  ui.state.elapsed=172800001;ui.state.cartPrice=1690;await ui.focus();await ui.click();
+  assert.equal(ui.ids.get('offer-bonus-summary').textContent,offerBonus);
+  assert.equal(ui.ids.get('checkout-bonus-summary').textContent,'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md');
+  ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+ui.state.elapsed+3600000).toISOString()};ui.state.cartPrice=790;await ui.focus();await ui.click();
   assert.match(ui.ids.get('offer-bonus-summary').textContent,/ไม่รวม/);assert.match(ui.ids.get('checkout-bonus-summary').textContent,/ไม่รวม/);
+});
+test('added value and opening-offer urgency follow launch, expiry and recovery without counting the course price',async()=>{
+  const ui=await boot();
+  const value=()=>ui.ids.get('offer-added-value').textContent;
+  const bonusesHidden=()=>['stack-bonus-ebook','stack-bonus-assistant'].map(id=>ui.ids.get(id).hidden);
+  const urgencyHidden=()=>['offer-cohort-note','offer-urgency-copy'].map(id=>ui.ids.get(id).hidden);
+  assert.match(ui.ids.get('current-price').textContent,/990/);assert.match(value(),/2,380/);assert.deepEqual(bonusesHidden(),[false,false]);assert.deepEqual(urgencyHidden(),[false,false]);
+  assert.equal(ui.ids.get('offer-added-note').textContent,'รวมให้ในแพ็ก ไม่มีค่าใช้จ่ายส่วนนี้เพิ่ม');
+  assert.equal(ui.ids.get('offer-cohort-note').textContent,'สิทธิ์ราคาเปิดเรียนเฉพาะรุ่นนี้');
+  assert.match(ui.ids.get('offer-urgency-copy').textContent,/ก่อนเวลาที่แสดง.*1,690/);
+  ui.state.elapsed=172800001;await ui.focus();
+  assert.match(ui.ids.get('current-price').textContent,/1,690/);assert.match(value(),/2,380/);assert.deepEqual(bonusesHidden(),[false,false]);assert.deepEqual(urgencyHidden(),[true,true]);
+  ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+ui.state.elapsed+3600000).toISOString()};await ui.focus();
+  assert.match(ui.ids.get('current-price').textContent,/790/);assert.match(value(),/690/);assert.doesNotMatch(value(),/2,380/);assert.deepEqual(bonusesHidden(),[true,true]);assert.deepEqual(urgencyHidden(),[true,true]);
+  assert.equal(ui.ids.get('offer-added-note').textContent,'สิทธิ์นี้รวมเครื่องมือฝึกบนเว็บ ไม่รวม E-book และผู้ช่วย .md');
+  for(const id of ['price-label','hero-price-label'])assert.equal(ui.ids.get(id).textContent,'สิทธิ์เฉพาะบัญชีของคุณ');
+  assert.equal(ui.ids.get('countdown').hidden,false,'recovery keeps its own server-backed countdown');
+  ui.state.elapsed+=3600001;await ui.focus();
+  assert.match(ui.ids.get('current-price').textContent,/1,690/);assert.match(value(),/2,380/);assert.deepEqual(bonusesHidden(),[false,false]);assert.deepEqual(urgencyHidden(),[true,true]);
+});
+test('opening-offer urgency waits for server confirmation and hides again when the offer becomes unavailable',async()=>{
+  const waiting=deferred(),ui=await boot({offerGate:waiting.promise});
+  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,true);
+  assert.equal(ui.ids.get('purchase-button').disabled,true);
+  waiting.resolve();await settle();
+  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,false);
+  ui.state.offerStatus=503;await ui.focus();
+  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,true);
+  assert.equal(ui.ids.get('purchase-button').disabled,true);
+});
+test('added value uses configured component values instead of the package price or a stale bonus subtotal',async()=>{
+  const ui=await boot({offerConfig:{learning_tools_value_thb:710,bonus_values_thb:{ebook_pdf:600,work_coach_md:1280,total:1}}});
+  assert.match(ui.ids.get('offer-added-value').textContent,/2,590/);
+  ui.state.recovery={active:true,priceTHB:790,expiresAt:new Date(NOW+3600000).toISOString()};await ui.focus();
+  assert.match(ui.ids.get('offer-added-value').textContent,/710/);
+});
+test('checkout remains usable with cached HTML that has no value-stack or urgency elements',async()=>{
+  const ui=await boot({omitIds:['offer-added-value','offer-added-note','stack-bonus-ebook','stack-bonus-assistant','offer-cohort-note','offer-urgency-copy']});
+  await ui.click();assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('purchase-button').disabled,false);
 });
 test('a hanging checkout request stops waiting, remains retryable and does not automatically send another POST',async()=>{
   const waiting=deferred(),ui=await boot({post:()=>waiting.promise});const click=ui.click();await settle();assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('checkout-loading').hidden,false);
