@@ -90,6 +90,7 @@ function partStep(item, index, count) { return [`ตอน ${index + 1}${count ?
 function explainLockedLesson(title) { status(`“${title}” อยู่ในคอร์สเต็ม บัญชีนี้ยังเปิดสิทธิ์ไม่ครบ ดูสถานะการสมัครหรือให้ผู้สอนตรวจสิทธิ์ได้`); $('page-status').scrollIntoView({ block: 'nearest', behavior: 'auto' }); }
 async function selectLesson(id) { if (await learner.openLesson(id)) $('lesson-title').scrollIntoView({ block: 'start', behavior: 'auto' }); }
 function clearPlayer() {
+  renderCourseBonus();
   lessonTools?.destroy(); lessonTools = null; $('lesson-tools').replaceChildren(); $('lesson-tools').hidden = true; renderShowcase();
   renderStudentVideoCredits($('student-video-credits'));
   player.reset();
@@ -168,7 +169,7 @@ const view = {
   courseLoading() { status('กำลังเปิดคอร์ส…'); },
   course(data) {
     activeCourse = data; status(); showOnly('classroom');
-    renderCourseBonus(data.bonus);
+    renderCourseBonus();
     $('course-title').textContent = data.course.title; $('course-summary').textContent = data.course.summary || '';
     $('course-format').textContent = `เรียนตามลำดับ ${data.course.lessons.length} ตอน · เข้าใจหลักคิด ลองทำตาม แล้วใช้กับงานจริง`;
     const state = data.access?.status || 'registered'; $('course-access').replaceChildren(badge(state, data.access?.role));
@@ -186,7 +187,10 @@ const view = {
     for (const [key, a] of lessonLinks) { if (key === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
   },
   lesson(data, course) {
-    const item = data.lesson; selectedId = item.id; $('lesson-content').setAttribute('aria-busy', 'false');
+    const item = data.lesson;
+    const openingLessonId = course.course.startLessonId || course.course.lessons[0]?.id;
+    renderCourseBonus(item.id === openingLessonId ? course.bonus : null);
+    selectedId = item.id; $('lesson-content').setAttribute('aria-busy', 'false');
     $('lesson-placeholder').hidden = true; $('lesson-body').hidden = false;
     const context = partContext(course.course, item.id), chapter = context.chapter;
     $('lesson-title').textContent = partName(item); $('lesson-summary').textContent = item.summary || '';
