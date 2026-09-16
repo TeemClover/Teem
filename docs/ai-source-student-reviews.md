@@ -32,6 +32,22 @@ nonblank testimonial is missing. That requires an authorized read at
 `https://www.myclover.com/course/admin/reviews/`. This change does not approve
 or publish reviews on the instructor’s behalf.
 
+## Ratings enhancement — 2026-09-16
+
+- First Class cards now show their original integer score out of 10 and a
+  proportional five-star visualization. A 9/10 score fills 4.5 stars; scores are
+  never rounded up to five full stars. Screen readers receive both scales.
+- The summary uses every eligible public First Class score before selecting up
+  to six displayed cards. It is not an average of a favorable card selection.
+  The class name, public review count and conversion from the original scale
+  are visible beside the summary.
+- The Dent permission covers testimonial text. Its private ratings are not
+  exposed, assigned stars or combined with the First Class average.
+- No student-total claim is derived from review counts. No review consent,
+  publication setting or original response is modified by this enhancement.
+- Review requests and response bodies have an eight-second deadline. A stalled
+  source cannot indefinitely prevent the healthy source from appearing.
+
 ## Validation
 
 - `node --test tests/ai-source/student-reviews.test.mjs tests/course/reviews-admin.test.mjs ai-source/sales-page-checkout.test.mjs`: 33 passed after rebasing onto the verified live commit.
@@ -46,6 +62,19 @@ or publish reviews on the instructor’s behalf.
   because that former sales page is now a classroom redirect. The same failures
   were confirmed in the unchanged base checkout; no First Class files changed.
 
+Ratings enhancement validation:
+
+- `node --test --experimental-test-module-mocks tests/ai-source/student-reviews.test.mjs tests/course/reviews-admin.test.mjs ai-source/sales-page-checkout.test.mjs`: **37 passed**.
+- Added coverage for fractional stars, accessible scale labels, strict score
+  validation, full-set aggregation before card limits, and response-body stalls.
+- Browser preview used synthetic, explicitly labelled reviews only. Eight
+  eligible scores produced 9.5/10 while only six cards appeared. Desktop 1280px
+  and mobile 390px were visually checked; 320px also had no horizontal overflow
+  in the document or review cards. No console errors or warnings were recorded.
+- Review assets use version 2; the checkout script remains
+  `sales-page.js?v=live-checkout-15`. No payment or account action was submitted
+  during this review-only browser check.
+
 ## Release check
 
 Before deployment, preserve the latest live checkout fixes. On 2026-09-16 the
@@ -54,8 +83,8 @@ production `/ai-source/` HTML matched `origin/main` commit
 `c462911d8cd2c533c09577e9e71eb611f1647584dbde5f74d39ee50a90cbf802`).
 The current production sales script is `sales-page.js?v=live-checkout-15`.
 
-The reviews branch was rebased onto that exact production commit and retains its
-checkout script. Deploy from the isolated reviews worktree after reconciling with any
-any newer production commit. Verify both new static assets and the public API,
+The original reviews change shipped as `8911c5ad`. The ratings enhancement builds
+on that commit and retains its checkout script. Deploy from the isolated worktree
+after reconciling with any newer production commit. Verify both new static assets and the public API,
 then confirm the live section renders only permitted reviews. No new environment
 variables or database schema migration are required.
