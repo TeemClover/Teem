@@ -1,5 +1,5 @@
 // Metadata only; document bodies live in the private database.
-export const TOOLKIT_VERSION = "2026-09-16-v1";
+export const TOOLKIT_VERSION = "2026-09-16-v2";
 export const TOOLKIT_FILES = [
   {
     "id": "workbook",
@@ -7,8 +7,8 @@ export const TOOLKIT_FILES = [
     "group": "เริ่มลงมือ",
     "filename": "START_HERE.html",
     "contentType": "text/html; charset=utf-8",
-    "sha256": "b63257b1240476f2b4f8e2dcd2c918d4076cf86232e08dd1f2f554ce4c26501e",
-    "bytes": 252452
+    "sha256": "9e739de05faa7395316b60e30729f72ec8b1118df483e15dd5c769e59c670d8e",
+    "bytes": 252481
   },
   {
     "id": "guide",
@@ -79,7 +79,7 @@ export const TOOLKIT_FILES = [
     "group": "เริ่มลงมือ",
     "filename": "AI_SAUCE_WORKBOOK_KIT.zip",
     "contentType": "application/zip",
-    "sha256": "0741ccdc79e12c037adb2f52fb82517326da77e149aa808ae02db92b30ffc855",
-    "bytes": 70691
+    "sha256": "fd8e6b4393e8f2f104bd7ba553fd9d2f6fca1d69439c482bc40c0f3b59149185",
+    "bytes": 70684
   }
 ];
