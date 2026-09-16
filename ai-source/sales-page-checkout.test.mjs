@@ -32,6 +32,8 @@ async function boot({checkoutId=null,post,restore,receipt,offerStatus=200,offerG
   const cart=()=>({id:CART,priceTHB:state.cartPrice,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'});
   const fetch=async(url,options={})=>{
     calls.push({url,options});
+    if(url==='/api/ai-source?action=payment')return response({ok:true,payment:{token:'signed-test-quote',quote:{price:990,issuedAt:NOW,expiresAt:NOW+172800000}},offer:{promoActive:true,timeZone:'Asia/Bangkok',priceTHB:990,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}});
+
     if(url==='/api/ai-source?action=offer'){if(offerGate)await offerGate;return response({ok:true,ready:true,school:{user:state.email?{email:state.email,displayName}:null,checkoutId:state.checkoutId,blocked:state.blocked,recovery:state.recovery},offer:{promoActive:state.elapsed<172800000,timeZone:'Asia/Bangkok',priceTHB:state.elapsed<172800000?990:1690,promoPriceTHB:990,regularPriceTHB:1690,firstSeenAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+172800000).toISOString(),serverNow:new Date(NOW+state.elapsed).toISOString()}},state.offerStatus);}
     if(url.startsWith('/api/ai-source?action=checkout&'))return restore?restore(options):response({ok:true,checkout:cart()});
     if(url==='/api/ai-source?action=checkout'&&options.method==='POST')return post?post(options):response({ok:true,checkout:cart()});
@@ -47,11 +49,11 @@ async function boot({checkoutId=null,post,restore,receipt,offerStatus=200,offerG
     addEventListener:(t,fn)=>{(events[t]??=[]).push(fn);}};
   const context=vm.createContext({window,document,location,fetch,sessionStorage,URL,URLSearchParams,Intl,Date,AbortController});
   vm.runInContext(engine,context);vm.runInContext(source,context);await settle();
-  return{ids,state,calls,cart,location,fill:async()=>{ids.get('customer-name').value='ผู้เรียน';ids.get('customer-contact').value='line-learner';ids.get('paid-amount').value='990';ids.get('transferred-at').value='2026-09-16T10:00';ids.get('registration-consent').checked=true;ids.get('receipt-file').files=[{name:'receipt.png',type:'image/png',size:100}];await ids.get('receipt-file').fire('change');},submit:()=>ids.get('receipt-form').fire('submit'),click:()=>ids.get('purchase-button').fire('click'),focus:async()=>{for(const fn of events.focus||[])await fn();await settle();},timeout:async()=>{const selected=[...timers].filter(([,t])=>t.delay===20000);assert.ok(selected.length,'checkout timeout is scheduled');for(const[id,t]of selected){timers.delete(id);t.fn();}await settle();}};
+  return{ids,state,calls,cart,location,fill:async()=>{ids.get('customer-name').value='ผู้เรียน';ids.get('customer-contact').value='line-learner';ids.get('paid-amount').value='990';ids.get('transferred-at').value='2026-09-16T10:00';ids.get('registration-consent').checked=true;ids.get('receipt-file').files=[{name:'receipt.png',type:'image/png',size:100}];await ids.get('receipt-file').fire('change');},submit:()=>ids.get('receipt-form').fire('submit'),qrClick:()=>ids.get('purchase-button').fire('click'),click:()=>ids.get('finish-payment').fire('click'),focus:async()=>{for(const fn of events.focus||[])await fn();await settle();},timeout:async()=>{const selected=[...timers].filter(([,t])=>t.delay===20000);assert.ok(selected.length,'checkout timeout is scheduled');for(const[id,t]of selected){timers.delete(id);t.fn();}await settle();}};
 }
 
-test('checkout becomes usable without a page reload and exposes the QR only for its own open cart',async()=>{
-  const ui=await boot();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,true);
+test('QR is available before an account checkout; the receipt form still requires an owned cart',async()=>{
+  const ui=await boot();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('receipt-form').hidden,true);
   await ui.click();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('bank-details').hidden,false);assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('upload-button').disabled,false);
   assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1);
 });
@@ -114,15 +116,13 @@ test('added value and opening-offer urgency follow launch, expiry and recovery w
   ui.state.elapsed+=3600001;await ui.focus();
   assert.match(ui.ids.get('current-price').textContent,/1,690/);assert.match(value(),/2,380/);assert.deepEqual(bonusesHidden(),[false,false]);assert.deepEqual(urgencyHidden(),[true,true]);
 });
-test('opening-offer urgency waits for server confirmation and hides again when the offer becomes unavailable',async()=>{
+test('quick server quote keeps QR usable while the membership database is slow or unavailable',async()=>{
   const waiting=deferred(),ui=await boot({offerGate:waiting.promise});
-  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,true);
-  assert.equal(ui.ids.get('purchase-button').disabled,true);
-  waiting.resolve();await settle();
-  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,false);
-  ui.state.offerStatus=503;await ui.focus();
-  for(const id of ['offer-cohort-note','offer-urgency-copy'])assert.equal(ui.ids.get(id).hidden,true);
-  assert.equal(ui.ids.get('purchase-button').disabled,true);
+  assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,false);
+  const before=ui.calls.length;await ui.qrClick();assert.equal(ui.ids.get('payment-qr').scrolls,1);assert.equal(ui.calls.length,before);
+  assert.equal(ui.ids.get('receipt-form').hidden,true);
+  waiting.resolve();await settle();ui.state.offerStatus=503;await ui.focus();
+  assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('receipt-form').hidden,true);
 });
 test('added value uses configured component values instead of the package price or a stale bonus subtotal',async()=>{
   const ui=await boot({offerConfig:{learning_tools_value_thb:710,bonus_values_thb:{ebook_pdf:600,work_coach_md:1280,total:1}}});
@@ -135,24 +135,24 @@ test('checkout remains usable with cached HTML that has no value-stack or urgenc
   await ui.click();assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.ids.get('purchase-button').disabled,false);
 });
 test('a hanging checkout request stops waiting, remains retryable and does not automatically send another POST',async()=>{
-  const waiting=deferred(),ui=await boot({post:()=>waiting.promise});const click=ui.click();await settle();assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('checkout-loading').hidden,false);
-  await ui.timeout();await click;assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('checkout-loading').hidden,true);assert.match(ui.ids.get('purchase-status').textContent,/กดลองอีกครั้ง/);assert.match(ui.ids.get('purchase-status').textContent,/อย่าโอนซ้ำ/);assert.equal(ui.ids.get('payment-qr').hidden,true);
+  const waiting=deferred(),ui=await boot({post:()=>waiting.promise});const click=ui.click();await settle();assert.equal(ui.ids.get('finish-payment').disabled,true);assert.equal(ui.ids.get('checkout-loading').hidden,false);
+  await ui.timeout();await click;assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('checkout-loading').hidden,true);assert.match(ui.ids.get('purchase-status').textContent,/กดลองอีกครั้ง/);assert.match(ui.ids.get('purchase-status').textContent,/อย่าโอนซ้ำ/);assert.equal(ui.ids.get('receipt-form').hidden,true);
   assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1);assert.equal(ui.calls.find(c=>c.options.method==='POST').options.signal.aborted,true);
   ui.state.checkoutId=CART;await ui.click();assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1,'explicit retry restores the server cart before considering a new POST');
   waiting.resolve(response({ok:true,checkout:{...ui.cart(),priceTHB:1690}}));await settle();assert.match(ui.ids.get('bank-amount').textContent,/990/,'late original reply cannot replace the restored cart');
 });
 test('timeout also covers a response body that never resolves',async()=>{
   const waiting=deferred(),ui=await boot({post:()=>({ok:true,status:200,json:()=>waiting.promise})});const click=ui.click();await settle();await ui.timeout();await click;
-  assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1);
+  assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('receipt-form').hidden,true);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,1);
 });
 test('hanging initial restoration unblocks the retry button without opening a new checkout',async()=>{
   let fail=true;const ui=await boot({checkoutId:CART,restore:()=>fail?new Promise(()=>{}):response({ok:true,checkout:{id:CART,priceTHB:990,expiresAt:new Date(NOW+172800000).toISOString(),status:'open'}})});
-  assert.equal(ui.ids.get('purchase-button').disabled,true);await ui.timeout();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.match(ui.ids.get('purchase-status').textContent,/รายการชำระเดิม/);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);
+  assert.equal(ui.ids.get('finish-payment').disabled,true);await ui.timeout();assert.equal(ui.ids.get('purchase-button').disabled,false);assert.match(ui.ids.get('purchase-status').textContent,/รายการชำระเดิม/);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);
   fail=false;await ui.click();assert.equal(ui.ids.get('payment-qr').hidden,false);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);
 });
 test('account changes invalidate a pending checkout and never reveal the former account payment details',async()=>{
   const waiting=deferred(),ui=await boot({post:()=>waiting.promise});const click=ui.click();await settle();ui.state.email='other@example.test';await ui.focus();
-  waiting.resolve(response({ok:true,checkout:ui.cart()}));await click;assert.equal(ui.ids.get('bank-details').hidden,true);assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('customer-email').value,'other@example.test');
+  waiting.resolve(response({ok:true,checkout:ui.cart()}));await click;assert.equal(ui.ids.get('receipt-form').hidden,true);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('customer-email').value,'other@example.test');
 });
 test('an expired or submitted restored cart never shows a payable QR',async()=>{
   for(const patch of [{expiresAt:new Date(NOW-1000).toISOString()},{status:'submitted',reference:'SAUCE-'+'A'.repeat(32)}]){
@@ -162,16 +162,16 @@ test('an expired or submitted restored cart never shows a payable QR',async()=>{
 });
 
 test('offer connectivity failure exposes a working reconnect action and never silently starts payment',async()=>{
-  const ui=await boot({offerStatus:503});assert.equal(ui.ids.get('purchase-button').disabled,true);assert.equal(ui.ids.get('retry-offer').hidden,false);assert.equal(ui.ids.get('retry-offer').disabled,false);assert.match(ui.ids.get('purchase-status').textContent,/เชื่อมต่อระบบไม่สำเร็จ/);
-  ui.state.offerStatus=200;await ui.ids.get('retry-offer').fire('click');assert.equal(ui.ids.get('retry-offer').hidden,true);assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);assert.equal(ui.ids.get('payment-qr').hidden,true);
+  const ui=await boot({offerStatus:503});assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.ids.get('retry-offer').hidden,false);assert.equal(ui.ids.get('retry-offer').disabled,false);assert.equal(ui.ids.get('payment-qr').hidden,false);
+  ui.state.offerStatus=200;await ui.ids.get('retry-offer').fire('click');assert.equal(ui.ids.get('retry-offer').hidden,true);assert.equal(ui.ids.get('purchase-button').disabled,false);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);assert.equal(ui.ids.get('receipt-form').hidden,true);
 });
 test('a guest purchase goes to account enrollment without creating an unowned checkout',async()=>{
-  const ui=await boot();ui.state.email=null;await ui.focus();await ui.click();assert.match(ui.location.assigned,/^\/learn\/\?enroll=ai-sauce&return=/);assert.match(decodeURIComponent(ui.location.assigned),/\/ai-source\/#bank-details/);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);
+  const ui=await boot();ui.state.email=null;await ui.focus();await ui.click();assert.match(ui.location.assigned,/^\/learn\/\?enroll=ai-sauce&return=/);assert.match(decodeURIComponent(ui.location.assigned),/\/ai-source\/#submit-receipt/);assert.equal(ui.calls.filter(c=>c.options.method==='POST').length,0);
 });
 
 test('a transient offer failure during receipt upload preserves the submitted cart and accepts its confirmed result',async()=>{
   const waiting=deferred(),started=deferred(),ui=await boot({checkoutId:CART,receipt:()=>{started.resolve();return waiting.promise;}});await ui.fill();const submission=ui.submit();await Promise.race([started.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('receipt did not start: '+ui.ids.get('upload-status').textContent)),1000))]);
-  assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1,ui.ids.get('upload-status').textContent);ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,true);assert.doesNotMatch(ui.ids.get('copy-status').textContent,/ราคาเปลี่ยนแล้ว/);
+  assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1,ui.ids.get('upload-status').textContent);ui.state.offerStatus=503;await ui.focus();assert.equal(ui.ids.get('payment-qr').hidden,true);assert.doesNotMatch(ui.ids.get('copy-status').textContent,/ราคาเปลี่ยนแล้ว/);
   waiting.resolve(response({ok:true,status:'pending_verification',reference:'SAUCE-'+'A'.repeat(32),admissionDueAt:new Date(NOW+3600000).toISOString()},201));await submission;
   assert.match(ui.ids.get('upload-status').textContent,/รับลงทะเบียนแล้ว/);assert.doesNotMatch(ui.ids.get('upload-status').textContent,/ยังยืนยันการรับข้อมูลไม่ได้/);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.ids.get('upload-button').textContent,'ส่งหลักฐานแล้ว');
   ui.state.offerStatus=200;await ui.focus();assert.equal(ui.ids.get('bank-details').hidden,false);assert.equal(ui.ids.get('payment-qr').hidden,true);assert.equal(ui.ids.get('upload-button').disabled,true);assert.equal(ui.calls.filter(c=>c.url==='/api/ai-source').length,1);

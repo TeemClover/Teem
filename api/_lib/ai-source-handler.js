@@ -1,6 +1,6 @@
 import { createHmac, randomUUID } from 'node:crypto';
 import { ADMIN_URL, JSON_MAX_BYTES, RECEIPT_MAX_BYTES, REFERENCE, InputError, adminAccess, amountDueAt, clean, datesFromTransfer,
-  hasOfferCookie, issueOffer, makeReference, offerCookie, parseAmount, parseTransferTime, publicOffer, readOffer, sameOrigin, validateIntake } from './ai-source-domain.js';
+  paymentQuote, readPaymentQuote, hasOfferCookie, issueOffer, makeReference, offerCookie, parseAmount, parseTransferTime, publicOffer, readOffer, sameOrigin, validateIntake } from './ai-source-domain.js';
 import { createAiSourceStore } from './ai-source-store.js';
 import { createTelegramNotifier, registrationText, testText } from './ai-source-notify.js';
 import { LearnError } from './learn-domain.js';
@@ -72,6 +72,19 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
     try {
       const time = new Date(now()); const action = query(req,'action');
       if (!['GET','POST','PATCH'].includes(req.method)) {res.setHeader('Allow','GET, POST, PATCH');return sendJson(res,{ok:false,message:'Method not allowed'},405);}
+      if ((req.method==='GET'||req.method==='POST') && action==='payment') {
+        if(!sameOrigin(req))throw new InputError('คำขอไม่ถูกต้อง',undefined,403,'ORIGIN_REJECTED');
+        if(!config.MEET_ADMIN_KEY||!config.DATABASE_URL)throw new InputError('ระบบชำระยังไม่พร้อม',undefined,503,'SERVICE_UNCONFIGURED');
+        const old=readOffer(req,config.MEET_ADMIN_KEY,time);
+        if(!old&&hasOfferCookie(req))throw new InputError('ข้อมูลสิทธิ์ไม่ถูกต้อง กรุณาติดต่อผู้ดูแล',undefined,409,'OFFER_INVALID');
+        const signed=old||issueOffer(time,config.MEET_ADMIN_KEY);
+        const data=req.method==='POST'?await readJson(req):{};
+        let payment;
+        if(data.quote){const quote=readPaymentQuote(data.quote,signed.offer,time,config.MEET_ADMIN_KEY);if(!quote)throw new InputError('ข้อมูลยอดชำระไม่ถูกต้อง กรุณาติดต่อผู้ดูแล',undefined,409,'QUOTE_INVALID');payment={quote,token:data.quote};}
+        else payment=paymentQuote(signed.offer,time,config.MEET_ADMIN_KEY);
+        res.setHeader('Set-Cookie',offerCookie(signed.token));
+        return sendJson(res,{ok:true,ready:true,offer:publicOffer(signed.offer,time),payment});
+      }
       if (req.method === 'GET' && action === 'offer') {
         const availability = {databaseConfigured:Boolean(config.DATABASE_URL),telegramConfigured:Boolean(config.TELEGRAM_BOT_TOKEN && config.TELEGRAM_CHAT_ID),adminConfigured:Boolean(config.MEET_ADMIN_KEY)};
         if (!availability.adminConfigured) return sendJson(res,{ok:false,ready:false,availability,code:'SERVICE_UNCONFIGURED',message:'ระบบลงทะเบียนยังไม่พร้อม'},503);

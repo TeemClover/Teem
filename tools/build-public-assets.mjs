@@ -32,7 +32,7 @@ export const PUBLIC_ASSET_FILES = Object.freeze([
   'course/admin/reviews/reviews.css', 'course/admin/reviews/reviews.js',
   'course/review-consent/consent.css', 'course/review-consent/consent.js',
   'shelf/shelf.css', 'shelf/shelf.js', 'shelf/admin/admin.css', 'shelf/admin/admin.js',
-  'ai-source/offer-engine.js', 'ai-source/sales-page.js',
+  'ai-source/offer-engine.js', 'ai-source/sales-page.js', 'ai-source/behavior.js',
   // Airova's partner page publishes these presentation assets and three free
   // prompt downloads. Keep exact entries so future source files stay excluded.
   'airova/airova.css', 'airova/airova.js', 'airova/demo-controller.js',

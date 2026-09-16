@@ -127,3 +127,22 @@ export function validateIntake(data, now) {
 }
 export const datesFromTransfer = timestamp => ({ admissionDueAt: new Date(new Date(timestamp).getTime() + DAY_MS).toISOString(), guaranteeUntil: new Date(new Date(timestamp).getTime() + 30 * DAY_MS).toISOString() });
 export const makeReference = () => `SAUCE-${randomUUID().replaceAll('-', '').toUpperCase()}`;
+
+// A signed quote lets a visitor pay before creating an account. It is not an
+// access grant: staff must still verify the bank transaction and transfer time.
+export function paymentQuote(offer, now, secret) {
+  const issuedAt = new Date(now).getTime(), price = amountDueAt(offer, now);
+  const quote = {v:1, offerId:offer.id, issuedAt, expiresAt:price===990?offer.expires:issuedAt+DAY_MS, price};
+  const payload=Buffer.from(JSON.stringify(quote)).toString('base64url');
+  return {quote,token:payload+'.'+signature('payment:'+payload,secret)};
+}
+export function readPaymentQuote(token, offer, now, secret) {
+  if(typeof token!=='string'||token.length>1200||!secret)return null;
+  const [payload,sig,extra]=token.split('.');
+  if(!payload||!sig||extra||!equal(sig,signature('payment:'+payload,secret)))return null;
+  try {const q=JSON.parse(Buffer.from(payload,'base64url').toString('utf8'));
+    if(q.v!==1||q.offerId!==offer?.id||![990,1690].includes(q.price)||!Number.isSafeInteger(q.issuedAt)||!Number.isSafeInteger(q.expiresAt)||q.issuedAt<offer.firstSeen||q.issuedAt>new Date(now).getTime()+1000||q.expiresAt<=q.issuedAt)return null;
+    if(q.price!==amountDueAt(offer,q.issuedAt)||q.expiresAt!==(q.price===990?offer.expires:q.issuedAt+DAY_MS))return null;
+    return q;
+  }catch{return null;}
+}

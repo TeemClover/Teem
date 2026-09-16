@@ -53,7 +53,7 @@ function commerceHarness(options={}) {
       if(blocked(p[1]))return [];
       const launch=offers.find(o=>o.id===p[7]);if(!launch)return [];
       const same=carts.filter(c=>c.user_id===p[1] && c.offer_id===p[3] && c.quoted_amount_thb===p[4]);
-      const generation=p[4]===1690?(same.find(c=>+new Date(c.expires_at)>+p[5])?.generation ?? Math.max(-1,...same.map(c=>c.generation))+1):0;
+      const generation=p[8]??(p[4]===1690?(same.find(c=>+new Date(c.expires_at)>+p[5])?.generation ?? Math.max(-1,...same.map(c=>c.generation))+1):0);
       let row=same.find(c=>c.generation===generation);
       if(!row){row={id:p[0],user_id:p[1],course_id:p[2],offer_id:p[3],quoted_amount_thb:p[4],issued_at:p[5],expires_at:p[6],generation,status:'open'};carts.push(row);}
       launch.checkout_started_at ||= p[5];return [clone(row)];
@@ -325,4 +325,16 @@ test('legacy schema stamps existing rows only once and binding SQL requires the 
   const bind=queries.find(x=>x.text.startsWith('UPDATE mc_ai_source_registrations r SET account_id=')).text;
   assert.match(bind,/r.legacy_quote_eligible=TRUE/);assert.match(bind,/LOWER\(BTRIM\(r.email\)\)=\$2/);assert.match(bind,/LOWER\(a.email\)=\$2 AND a.email_verified_at IS NOT NULL/);
   assert.doesNotMatch(bind,/status='admitted'|status='payment_verified'|INSERT INTO mc_learn_grants/);
+});
+
+test('pay-first signed quote binds after login and preserves pre-login transfer time, including late uploads',async()=>{
+  const {paymentQuote}=await import('./ai-source-domain.js');
+  const payment=paymentQuote(signed.offer,NOW,config.MEET_ADMIN_KEY),h=commerceHarness();
+  const time=afterExpiry();
+  const result=await h.school.act(req(),h.sql,'checkout',{guestQuote:payment.token},time);
+  assert.equal(result.checkout.priceTHB,990);assert.equal(result.checkout.issuedAt,NOW.toISOString());
+  assert.equal(requiredCheckoutAmount(h.carts[0],new Date(+NOW+60000)),990);
+  assert.throws(()=>requiredCheckoutAmount(h.carts[0],new Date(signed.offer.expires+1)),/หมดสิทธิ์/);
+  assert.throws(()=>requiredCheckoutAmount(h.carts[0],new Date(+NOW-1)),/ก่อนเปิดรายการ/);
+  await assert.rejects(h.school.act(req(),h.sql,'checkout',{guestQuote:payment.token+'tampered'},time),/ไม่ถูกต้อง/);
 });

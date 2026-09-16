@@ -1,6 +1,7 @@
+import { recordSalesCheckout } from './sales-behavior.js';
 import { randomUUID, createHash } from 'node:crypto';
 import { currentUser, ensureSchema } from './core.js';
-import { InputError, issueOffer, readOffer, hasOfferCookie, publicOffer, amountDueAt, UUID } from './ai-source-domain.js';
+import { readPaymentQuote, InputError, issueOffer, readOffer, hasOfferCookie, publicOffer, amountDueAt, UUID } from './ai-source-domain.js';
 import { recordLearnRegistration, grantForVerifiedRegistration, ensureLearnSchema } from './learn-store.js';
 import { enrollLearnCourse } from './learn-authorization.js';
 import { learnAccountWrite } from './learn-commerce-lock.js';
@@ -126,11 +127,15 @@ export function createLearnCommerce({config=process.env,lookupUser=currentUser,e
     }
     if(action!=='checkout')throw new InputError('คำสั่งไม่ถูกต้อง');
     const recovery=(await sql.query(`SELECT * FROM mc_learn_offers WHERE user_id=$1 AND course_id=$2 AND kind='recovery' AND expires_at>$3`,[user.id,COURSE_ID,time]))[0];
-    const selected=recovery||launch,price=recovery?790:time<new Date(launch.expires_at)?990:1690;
-    const expires=price===1690?new Date(time.getTime()+86400000):new Date(selected.expires_at);
+    const signed=readOffer(req,config.MEET_ADMIN_KEY,time);
+    const guest=data.guestQuote?readPaymentQuote(data.guestQuote,signed?.offer,time,config.MEET_ADMIN_KEY):null;
+    if(data.guestQuote&&!guest)throw new InputError('ข้อมูลยอดชำระไม่ถูกต้อง กรุณาติดต่อผู้ดูแล',undefined,409,'QUOTE_INVALID');
+    const selected=guest?launch:recovery||launch,price=guest?guest.price:recovery?790:time<new Date(launch.expires_at)?990:1690;
+    const issued=guest?new Date(guest.issuedAt):time;
+    const expires=guest?new Date(guest.expiresAt):price===1690?new Date(time.getTime()+86400000):new Date(selected.expires_at);
     const rows=await learnAccountWrite(sql,user.id,`WITH cart AS (
       INSERT INTO mc_learn_checkouts(id,user_id,course_id,offer_id,quoted_amount_thb,issued_at,expires_at,generation)
-      SELECT $1,$2,$3,$4,$5,$6,$7,CASE WHEN $5::integer=1690 THEN COALESCE(
+      SELECT $1,$2,$3,$4,$5,$6,$7,CASE WHEN $9::integer IS NOT NULL THEN $9::integer WHEN $5::integer=1690 THEN COALESCE(
         (SELECT generation FROM mc_learn_checkouts WHERE user_id=$2 AND course_id=$3 AND offer_id=$4
           AND quoted_amount_thb=1690 AND expires_at>$6 ORDER BY generation DESC LIMIT 1),
         (SELECT COALESCE(MAX(generation),-1)+1 FROM mc_learn_checkouts WHERE user_id=$2 AND course_id=$3 AND offer_id=$4 AND quoted_amount_thb=1690))
@@ -141,11 +146,12 @@ export function createLearnCommerce({config=process.env,lookupUser=currentUser,e
     ), started AS (
       UPDATE mc_learn_offers SET checkout_started_at=COALESCE(checkout_started_at,$6)
       WHERE id=$8 AND EXISTS(SELECT 1 FROM cart) RETURNING id
-    ) SELECT cart.* FROM cart JOIN started ON TRUE`,[randomUUID(),user.id,COURSE_ID,selected.id,price,time,expires,launch.id]);
+    ) SELECT cart.* FROM cart JOIN started ON TRUE`,[randomUUID(),user.id,COURSE_ID,selected.id,price,issued,expires,launch.id,guest?Math.floor((guest.issuedAt-1577836800000)/1000)+1:null]);
     if(!rows[0])throw new InputError('มีรายการสมัครหรือสิทธิ์เรียนแล้ว กรุณาดูสถานะในห้องเรียน',undefined,409,'ALREADY_REGISTERED');
-    const row=rows[0];if(new Date(row.expires_at)<=time)throw new InputError('รายการเดิมหมดเวลา กรุณาติดต่อผู้ดูแลก่อนโอน',undefined,409,'CHECKOUT_EXPIRED');
+    const row=rows[0];if(!guest&&new Date(row.expires_at)<=time)throw new InputError('รายการเดิมหมดเวลา กรุณาติดต่อผู้ดูแลก่อนโอน',undefined,409,'CHECKOUT_EXPIRED');
     const trim=v=>typeof v==='string'?v.replace(/[\u0000-\u001f]/g,'').slice(0,160):null;
     await sql.query(`INSERT INTO mc_learn_funnel_events(user_id,course_id,event,occurred_at,utm_source,utm_medium,utm_campaign) VALUES($1,$2,'checkout_started',$3,$4,$5,$6)`,[user.id,COURSE_ID,time,trim(data.utm_source),trim(data.utm_medium),trim(data.utm_campaign)]);
+    try{await recordSalesCheckout(sql,req,row.id);}catch{/* Statistics never block a customer's checkout. */}
     return {ok:true,checkout:cartShape(row,time),user:{email:user.email,displayName:user.displayName}};
   }
   async function bind(req,sql,data,intake,time) {

@@ -37,11 +37,11 @@
     state.epoch++;for(const c of state.controllers)c.abort();state.controllers.clear();for(const u of state.urls)URL.revokeObjectURL(u);state.urls.clear();
     state.key='';state.rows=[];state.selected='';state.next=null;state.channels={};state.busy=false;state.needsRefresh=false;
     state.stats=null;state.statsNext=null;state.statsBusy=false;
-    for(const id of ['stats-counts','stats-learners','stats-campaigns'])$(id).replaceChildren();
-    for(const id of ['stats-notice','stats-progress-note','stats-campaign-note'])$(id).textContent='';
+    for(const id of ['stats-counts','stats-learners','stats-campaigns','behavior-events','behavior-campaigns'])if($(id))$(id).replaceChildren();
+    for(const id of ['stats-notice','stats-progress-note','stats-campaign-note','behavior-note'])if($(id))$(id).textContent='';
     $('stats-more').hidden=true;$('stats-refresh').disabled=false;
     try{sessionStorage.removeItem(KEY);}catch{}$('admin-key').value='';$('search').value='';$('filter').value='all';
-    for(const id of ['queue','detail','summary'])$(id).replaceChildren();$('dashboard').hidden=true;$('logout').hidden=true;$('login-panel').hidden=false;controls();notice(message);$('admin-key').focus();
+    for(const id of ['queue','detail','summary'])if($(id))$(id).replaceChildren();$('dashboard').hidden=true;$('logout').hidden=true;$('login-panel').hidden=false;controls();notice(message);$('admin-key').focus();
   }
   async function request(query='',options={},binary=false,endpoint=API) {
     if(!state.key)throw new Error('เข้าสู่ระบบก่อนดำเนินการ');
@@ -83,9 +83,20 @@
     const table=node('table','stats-table'),head=node('thead'),tr=node('tr');for(const label of ['Source / Medium / Campaign','ลงทะเบียน','รอตรวจเงิน','สิทธิ์ใช้งาน'])tr.append(node('th','',label));head.append(tr);table.append(head);
     const body=node('tbody');for(const row of data.campaigns||[]){const tr=node('tr');for(const value of [[row.source,row.medium,row.campaign].filter(Boolean).join(' / '),row.enrolled,row.pending,row.active])tr.append(node('td','',value));body.append(tr);}table.append(body);$('stats-campaigns').replaceChildren(table);
   }
+  async function loadBehavior(){
+    if(!$('behavior-events'))return;
+    try{const data=await request('',{},false,'/api/sales-behavior');
+      $('behavior-note').textContent=data.note;
+      const labels={page_view:'เข้าหน้า',section_offer:'เห็นข้อเสนอ',section_bonus:'เห็นโบนัส',purchase_click:'กดดู QR',qr_view:'เห็น QR',identity_start:'เริ่มยืนยันอีเมล',receipt_start:'เริ่มกรอกสลิป',engaged_30:'อยู่ในหน้า 30 วินาที',engaged_60:'อยู่ในหน้า 1 นาที',receipt_error:'ส่งสลิปติดขัด',payment_error:'โหลด QR ติดขัด'};
+      $('behavior-events').replaceChildren(...data.events.filter(e=>labels[e.event]).map(e=>node('span','',labels[e.event]+' · '+e.visitors+' เบราว์เซอร์')));
+      const table=node('table','stats-table'),head=node('tr');for(const label of ['Source / Medium / Campaign / คลิป','เข้าหน้า','กด QR','เห็น QR','ส่งสลิป','ตรวจชำระแล้ว','อัตราซื้อ'])head.append(node('th','',label));table.append(head);
+      for(const row of data.campaigns){const tr=node('tr'),c=row.campaign||{};for(const v of [[c.utm_source,c.utm_medium,c.utm_campaign,c.utm_content,c.utm_term].filter(Boolean).join(' / ')||c.referrer_host||'ไม่ระบุ',row.visitors,row.clicked,row.qr,row.submitted,row.paid,row.visitors?(100*row.paid/row.visitors).toFixed(1)+'%':'—'])tr.append(node('td','',v));table.append(tr);}
+      $('behavior-campaigns').replaceChildren(table);
+    }catch(e){if(!e.stale)$('behavior-note').textContent='ยังโหลดพฤติกรรมไม่ได้ กดรีเฟรชสถิติอีกครั้ง';}
+  }
   async function loadStats(more=false) {
     if(!state.key||state.statsBusy)return;const epoch=state.epoch;state.statsBusy=true;$('stats-refresh').disabled=true;$('stats-more').disabled=true;$('stats-notice').textContent='กำลังโหลดสถิติ…';
-    try{const query=new URLSearchParams({courseId:'ai-sauce',limit:'50'});if(more&&state.statsNext)query.set('before',state.statsNext);
+    try{if(!more)loadBehavior();const query=new URLSearchParams({courseId:'ai-sauce',limit:'50'});if(more&&state.statsNext)query.set('before',state.statsNext);
       const data=await request('?'+query,{},false,'/api/learn-admin');if(!Array.isArray(data.learners)||!Array.isArray(data.campaigns)||!data.counts)throw new Error('ข้อมูลสถิติไม่ครบ');
       if(more)data.learners=[...new Map([...(state.stats?.learners||[]),...data.learners].map(row=>[row.userId,row])).values()];state.stats=data;state.statsNext=data.nextCursor||null;drawStats();$('stats-notice').textContent='อัปเดต '+date(data.generatedAt)+' · โหลดผู้ชำระเงิน '+data.learners.length+' บัญชี';
     }catch(error){if(!error.stale)$('stats-notice').textContent=error.message;}

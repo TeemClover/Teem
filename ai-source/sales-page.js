@@ -3,7 +3,7 @@
   var get = function (id) { return document.getElementById(id); }, config;
   try { config = JSON.parse(get('offer-config').textContent); } catch (_) { return; }
   var storage; try { storage = window.localStorage; } catch (_) { storage = null; }
-  var campaignKeys=['utm_source','utm_medium','utm_campaign'],campaignStorageKey='ai_sauce_campaign_v1';
+  var campaignKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'],campaignStorageKey='ai_sauce_campaign_v1';
   function campaignAttribution(){
     var query=new URLSearchParams(location.search),values={},saved={},fromUrl=campaignKeys.some(function(key){return query.has(key);});
     if(!fromUrl){try{saved=JSON.parse(sessionStorage.getItem(campaignStorageKey))||{};}catch(_){}}
@@ -12,6 +12,9 @@
     return values;
   }
   campaignAttribution();
+  var analyticsChoice=get('analytics-choice');if(analyticsChoice){try{if(localStorage.getItem('myclover_analytics_optout')==='1')analyticsChoice.textContent='ปิดการเก็บสถิติแล้ว';}catch(_){}
+    analyticsChoice.addEventListener('click',function(){try{localStorage.setItem('myclover_analytics_optout','1');localStorage.removeItem('mc_sauce_visitor');}catch(_){}document.cookie='mc_sauce_visitor=; Path=/; Max-Age=0; Secure; SameSite=Lax';if(window.SauceStats)window.SauceStats.disable();analyticsChoice.textContent='ปิดการเก็บสถิติแล้ว';});}
+
   var live = config.sales_enabled === true && window.location.protocol === 'https:';
   var tracker = SauceOffer.createVisitTracker(Object.assign({}, config, {storage_key:config.storage_key+':preview', offer_id:config.offer_id+':preview'}), storage);
   var serverVisit=null, serverReady=false, offerFailed=false, refreshing=null, serverAnchor=0, monotonicAnchor=0, schoolState=null, currentCheckout=null, checkoutOwnerEmail=null, checkoutRestoring=false,checkoutRestoreFailed=false,checkoutStarting=false,checkoutRequest=0;
@@ -20,7 +23,7 @@
   var fullDate=new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
   var previousPrice=null, amountEdited=false, uploading=false, selectedFile=null, previewUrl=null, requestKey=null, requestFingerprint=null, copiedVersion=0, received=false,purchaseNotice='',payerNameOwnerEmail=null;
   function monotonic(){return window.performance ? window.performance.now() : Date.now();}
-  function clock(){return live&&serverVisit ? Math.floor(serverAnchor+Math.max(0,monotonic()-monotonicAnchor)) : Date.now();}
+  function clock(){return live&&(serverVisit||guestVisit) ? Math.floor(serverAnchor+Math.max(0,monotonic()-monotonicAnchor)) : Date.now();}
   var introDialog=get('cohort-dialog'),introStart=monotonic(),introDone=false,introDue=false,introTimer=null,introSuppressed=false;
   var introKey='ai_sauce_cohort_intro_v1:'+(live?'live':'preview');
   function closeIntro(){if(introDialog&&introDialog.open)introDialog.close();}
@@ -63,14 +66,15 @@
     introDialog.addEventListener('close',function(){if(document.body&&document.body.classList)document.body.classList.remove('cohort-modal-open');});
     get('cohort-apply').addEventListener('click',async function(){
       closeIntro();var offer=await refreshOffer();
-      if(offer.canPurchase&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price)await beginCheckout();
+      if(offer.canPurchase&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price)revealPayment();
       else{if(offer.state==='expired'){purchaseNotice='สิทธิ์รุ่นแรกสิ้นสุดแล้ว ราคาปัจจุบัน '+money.format(offer.currentPrice)+' โปรดตรวจราคาก่อนชำระ';render();}get('offer').scrollIntoView({behavior:'auto',block:'start'});}
     });
   }
   function deadline(end){return (end+7*3600000)%86400000===0?'ราคาพิเศษถึง '+day.format(new Date(end-1))+' เวลา 23:59 น.':'ราคาพิเศษถึง '+fullDate.format(new Date(end))+' น.';}
   function render(){
-    var now=clock(), effective=Object.assign({},config,{sales_enabled:live&&serverReady});
-    var actualOffer=SauceOffer.evaluateOffer(effective,now,live?serverVisit:tracker.read(now));
+    var now=clock(), effective=Object.assign({},config,{sales_enabled:live&&(serverReady||paymentReady)});
+    var displayVisit=paymentReady&&!currentCheckout&&!(schoolState&&schoolState.recovery&&schoolState.recovery.active)?guestVisit:serverVisit||guestVisit;
+    var actualOffer=SauceOffer.evaluateOffer(effective,now,live?displayVisit:tracker.read(now));
     var offer=introPresentation(actualOffer);renderIntro(actualOffer);
     if(serverReady&&schoolState&&!schoolState.blocked&&schoolState.recovery&&schoolState.recovery.active&&now<Date.parse(schoolState.recovery.expiresAt)){offer=Object.assign({},actualOffer,{currentPrice:790,canPurchase:true,showLaunchOffer:true,showCountdown:true,endsAt:Date.parse(schoolState.recovery.expiresAt),remainingMs:Date.parse(schoolState.recovery.expiresAt)-now});}
     var recoveryNode=get('recovery-offer');if(recoveryNode)recoveryNode.hidden=!(serverReady&&schoolState&&schoolState.recoveryAvailable&&!schoolState.blocked);if(recoveryNode&&!recoveryNode.hidden)get('claim-recovery').textContent='รับสิทธิ์เรียน '+money.format(790)+' · ตัดสินใจใน 2 ชั่วโมง';
@@ -78,14 +82,14 @@
     var bonusSummary=get('bonus-package-summary'),offerBonus=get('offer-bonus-summary'),checkoutBonus=get('checkout-bonus-summary');
     if(bonusSummary)bonusSummary.textContent=bonusIncluded?'รับทั้ง 2 ไฟล์พร้อมคอร์ส ฿990 และราคาปกติ ฿1,690':'ชุดคู่มือ PDF + AI ผู้ช่วยงาน .md ไม่รวมในสิทธิ์ ฿790 ที่คุณเลือก';
     if(offerBonus)offerBonus.textContent=bonusIncluded?'รวมวิดีโอ แบบฝึกบนเว็บ ไฟล์ฝึก E-book และผู้ช่วย .md':'รวมวิดีโอ แบบฝึกบนเว็บและไฟล์ฝึก ไม่รวม E-book และผู้ช่วย .md';
-    if(checkoutBonus)checkoutBonus.textContent=currentCheckout?(currentCheckout.priceTHB===790?'รายการนี้: คอร์สและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI ผู้ช่วยงาน .md':'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md'):'';
+    if(checkoutBonus)checkoutBonus.textContent=currentCheckout?(currentCheckout.priceTHB===790?'รายการนี้: คอร์สและไฟล์ฝึกครบ ไม่รวมคู่มือ PDF + AI ผู้ช่วยงาน .md':'รายการนี้รวมคู่มือ PDF และผู้ช่วยงาน .md'):'แพ็กนี้รวมคอร์ส บทพาทำ เครื่องมือฝึก E-book และผู้ช่วย .md';
     var bonusValues=config.bonus_values_thb||{},addedValue=Number(config.learning_tools_value_thb)||0;
     if(bonusIncluded)addedValue+=(Number(bonusValues.ebook_pdf)||0)+(Number(bonusValues.work_coach_md)||0);
     var addedValueNode=get('offer-added-value'),addedNote=get('offer-added-note');
     if(addedValueNode)addedValueNode.textContent=money.format(addedValue);
     if(addedNote)addedNote.textContent=bonusIncluded?'รวมให้ในแพ็ก ไม่มีค่าใช้จ่ายส่วนนี้เพิ่ม':'สิทธิ์นี้รวมเครื่องมือฝึกบนเว็บ ไม่รวม E-book และผู้ช่วย .md';
     ['stack-bonus-ebook','stack-bonus-assistant'].forEach(function(id){var row=get(id);if(row)row.hidden=!bonusIncluded;});
-    var launchActive=serverReady&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price;
+    var launchActive=(serverReady||paymentReady)&&offer.showLaunchOffer&&offer.currentPrice===config.launch_price;
     var cohortNote=get('offer-cohort-note'),urgencyCopy=get('offer-urgency-copy');
     if(cohortNote){cohortNote.hidden=!launchActive;cohortNote.textContent='สิทธิ์ราคาเปิดเรียนเฉพาะรุ่นนี้';}
     if(urgencyCopy){urgencyCopy.hidden=!launchActive;urgencyCopy.textContent='ใช้สิทธิ์ก่อนเวลาที่แสดง แล้วราคาแพ็กจะกลับเป็น '+money.format(config.regular_price);}
@@ -103,27 +107,36 @@
     get('hero-offer-end').textContent=get('offer-end').textContent=offer.showLaunchOffer?deadline(offer.endsAt):offer.state==='expired'?'สิ้นสุดราคาพิเศษแล้ว':'';
     get('time-left').textContent=get('sticky-time-left').textContent='';
     if(offer.showCountdown){var p=SauceOffer.countdownParts(offer.remainingMs);get('time-left').textContent=get('sticky-time-left').textContent=(p.days?p.days+' วัน ':'')+[p.hours,p.minutes,p.seconds].map(function(n){return String(n).padStart(2,'0');}).join(':');}
-    get('purchase-button').disabled=uploading||checkoutRestoring||checkoutStarting||!serverReady||(!offer.canPurchase&&!(schoolState&&schoolState.blocked)); get('purchase-button').textContent=checkoutRestoring?'กำลังเปิดรายการเดิม…':checkoutStarting?'กำลังเปิดรายการชำระ…':schoolState&&schoolState.blocked?'ดูสถานะและเข้าเรียน':checkoutRestoreFailed?'ลองเปิดรายการเดิมอีกครั้ง':'ลงทะเบียนเรียนและดู QR · '+price;
+    get('purchase-button').disabled=!live; get('purchase-button').textContent='ดู QR และชำระเงิน';
     var checkoutLoading=get('checkout-loading');if(checkoutLoading){checkoutLoading.hidden=!(checkoutRestoring||checkoutStarting);checkoutLoading.textContent=checkoutRestoring?'กำลังเปิดรายการชำระเดิมและ QR ของคุณ…':'กำลังเตรียมรายการชำระและ QR ของคุณ กรุณารอสักครู่…';}
     var retryOffer=get('retry-offer');if(retryOffer){retryOffer.hidden=!live||!offerFailed;retryOffer.disabled=!!refreshing||checkoutRestoring||checkoutStarting||uploading;}
-    get('bank-details').hidden=!currentCheckout||!serverReady||!schoolState||!schoolState.user;
+    get('bank-details').hidden=false;
     if(currentCheckout){var activeCart=clock()<Date.parse(currentCheckout.expiresAt);get('bank-amount').textContent=activeCart?money.format(currentCheckout.priceTHB):'รายการนี้หมดเวลาแล้ว';}
     get('customer-email').readOnly=true;get('customer-email').value=schoolState&&schoolState.user?schoolState.user.email:'';
     var b=config.bank||{}; get('bank-name').textContent=b.name||'';get('bank-account').textContent=String(b.account_number||'').replace(/^(\d{3})(\d)(\d{5})(\d)$/,'$1-$2-$3-$4');get('bank-owner').textContent=b.account_name||'';
-    get('copy-account').disabled=get('copy-payment').disabled=!serverReady||!currentCheckout||currentCheckout.status!=='open'||clock()>=Date.parse(currentCheckout.expiresAt);
-    get('payment-qr').hidden=!serverReady||!currentCheckout||currentCheckout.status!=='open'||received||clock()>=Date.parse(currentCheckout.expiresAt);
+    var payingCart=currentCheckout?(schoolState&&schoolState.user&&checkoutOwnerEmail===schoolState.user.email?{price:currentCheckout.priceTHB,expires:Date.parse(currentCheckout.expiresAt),open:currentCheckout.status==='open'}:null):paymentReady&&guestPayment?{price:guestPayment.quote.price,expires:guestPayment.quote.expiresAt,open:true}:null;
+    var canPay=!!(!uploading&&payingCart&&!(schoolState&&schoolState.recovery&&schoolState.recovery.active&&payingCart.price!==790)&&payingCart.open&&clock()<payingCart.expires&&!received&&!(schoolState&&schoolState.blocked));
+    get('bank-amount').textContent=payingCart?(canPay?money.format(payingCart.price):'รายการนี้หมดเวลาหรือมีการชำระแล้ว'):'กำลังยืนยันยอดโอน…';
+    get('copy-account').disabled=get('copy-payment').disabled=!canPay;
+    get('payment-qr').hidden=!canPay;var qrAmount=get('qr-amount');if(qrAmount)qrAmount.textContent=canPay?money.format(payingCart.price):'';
+    var authGate=get('payment-auth');if(authGate)authGate.hidden=!!currentCheckout;
+    get('receipt-form').hidden=!currentCheckout;
+    var finish=get('finish-payment');if(finish){finish.disabled=checkoutStarting||checkoutRestoring;finish.textContent=checkoutStarting||checkoutRestoring?'กำลังเปิดแบบส่งสลิป…':'โอนแล้ว · ยืนยันอีเมลและแนบสลิป';}
+    var quoteRetry=get('retry-payment');if(quoteRetry){quoteRetry.hidden=paymentReady;quoteRetry.disabled=!!paymentLoading;}
+    var quoteRenew=get('renew-payment');if(quoteRenew)quoteRenew.hidden=!(paymentReady&&guestPayment&&clock()>=guestPayment.quote.expiresAt&&!currentCheckout);
+    if(!currentCheckout)get('payment-notice').textContent=payingCart&&!canPay?'หากโอนแล้ว ยืนยันอีเมลและส่งสลิปเดิมได้ อย่าโอนซ้ำ หากยังไม่โอน ให้เปิดยอดใหม่ก่อนชำระ':'โอนตามยอดนี้ก่อน แล้วค่อยยืนยันอีเมลและแนบสลิปด้านล่าง';
     // The actual transferred amount is entered from the slip, never derived from the current quote.
     get('upload-button').disabled=uploading||received||!live||!serverReady||!currentCheckout||currentCheckout.status!=='open';
     get('upload-button').textContent=uploading?'กำลังส่ง…':received?'ส่งหลักฐานแล้ว':'ส่งหลักฐานการชำระเงิน';
     ['customer-name','customer-email','customer-contact','paid-amount','transferred-at','receipt-file','registration-consent'].forEach(function(id){get(id).disabled=uploading||received;});
-    get('purchase-status').textContent=purchaseNotice||(live?serverReady?'เปิดสิทธิ์เข้าเรียนภายใน 1 วันหลังชำระเงิน':offerFailed?'เชื่อมต่อระบบไม่สำเร็จ กดเชื่อมต่อใหม่เพื่อเปิด QR':'กำลังเชื่อมระบบลงทะเบียน หากรอนาน ติดต่อ LINE myclover ได้':'ตัวอย่างหน้าเว็บ · ลงทะเบียนได้บนเว็บจริง');
-    get('payment-notice').textContent=currentCheckout&&clock()>=Date.parse(currentCheckout.expiresAt)?'รายการนี้หมดเวลาแล้ว หากโอนทันกำหนดไว้แล้ว แนบสลิปเดิมได้ เจ้าหน้าที่จะตรวจจากเวลาโอนจริง โปรดอย่าโอนซ้ำ':currentCheckout&&currentCheckout.status!=='open'?'รับสลิปแล้ว เปิดดูสถานะได้ในห้องเรียนของคุณ':'โอนตามยอด แล้วแนบสลิปด้านล่าง เปิดสิทธิ์เข้า myClover ภายใน 1 วันหลังชำระเงิน';
-    if(previousPrice!==null&&previousPrice!==offer.currentPrice){copiedVersion++;if(serverReady&&offer.currentPrice>previousPrice)get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=offer.currentPrice;
+    get('purchase-status').textContent=purchaseNotice||(live?'ดู QR โอนได้ก่อน แล้วค่อยยืนยันอีเมลเพื่อรับสิทธิ์เรียน':'ตัวอย่างหน้าเว็บ · ชำระบนเว็บจริงเท่านั้น');
+    if(currentCheckout)get('payment-notice').textContent=currentCheckout&&clock()>=Date.parse(currentCheckout.expiresAt)?'รายการนี้หมดเวลาแล้ว หากโอนทันกำหนดไว้แล้ว แนบสลิปเดิมได้ เจ้าหน้าที่จะตรวจจากเวลาโอนจริง โปรดอย่าโอนซ้ำ':currentCheckout&&currentCheckout.status!=='open'?'รับสลิปแล้ว เปิดดูสถานะได้ในห้องเรียนของคุณ':'โอนตามยอด แล้วแนบสลิปด้านล่าง เปิดสิทธิ์เข้า myClover ภายใน 1 วันหลังชำระเงิน';
+    if(previousPrice!==null&&payingCart&&previousPrice!==payingCart.price){copiedVersion++;if(payingCart.price>previousPrice)get('copy-status').textContent='ราคาเปลี่ยนแล้ว โปรดตรวจยอดก่อนโอน';}previousPrice=payingCart?payingCart.price:null;
     var hasTerms=false;['access_terms','delivery_terms','bonus_terms','support_terms','refund_terms','tool_cost_terms','payment_deadline_policy'].forEach(function(key){var item=get('term-'+key);item.textContent=typeof config[key]==='string'?config[key]:'';if(key==='payment_deadline_policy'&&schoolState&&schoolState.recovery&&schoolState.recovery.active)item.textContent='ใช้สิทธิ์ตามยอดและเวลาสิ้นสุดที่แสดง โดยยึดเวลาโอนที่ตรวจสอบจริง';if(key==='bonus_terms'&&currentCheckout&&currentCheckout.priceTHB===790)item.textContent='แพ็ก 790 บาทมีบทเรียนและไฟล์ฝึกครบ แต่ไม่รวมคู่มือ PDF และ AI ผู้ช่วยงาน .md';item.parentElement.hidden=!item.textContent;hasTerms=hasTerms||!!item.textContent;});get('offer-terms').hidden=!hasTerms;
     return offer;
   }
   async function refreshOffer(){
-    if(!live)return render();if(refreshing)return refreshing;
+    if(!live)return render();if(!paymentReady)await preparePayment();if(refreshing)return refreshing;
     refreshing=(async function(){
       try{
         var result=await checkoutJSON('/api/ai-source?action=offer',null,12000),response=result.response,data=result.data,raw=data&&data.offer;
@@ -138,6 +151,23 @@
       return render();
     })();return refreshing;
   }
+  var paymentReady=false,guestPayment=null,guestVisit=null,paymentLoading=null,paymentIntent=false;try{paymentIntent=sessionStorage.getItem('ai_sauce_payment_intent')==='1';}catch(_){}
+  function metric(name,detail){if(window.SauceStats)window.SauceStats.track(name,detail);}
+  async function preparePayment(){
+    if(!live||paymentLoading)return paymentLoading;
+    paymentLoading=(async function(){try{
+      var saved;try{saved=sessionStorage.getItem('ai_sauce_payment_quote_v1');}catch(_){}
+      var result=await checkoutJSON('/api/ai-source?action=payment',saved?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quote:saved})}:null,10000),d=result.data;
+      if(!result.response.ok||!d.ok||!d.payment||![990,1690].includes(d.payment.quote.price))throw new Error('quote unavailable');
+      guestPayment=d.payment;var raw=d.offer;
+      guestVisit=SauceOffer.normalizeServerVisit(config,{status:raw.promoActive?'valid':'expired',firstSeen:Date.parse(raw.firstSeenAt),endsAt:Date.parse(raw.expiresAt),serverNow:Date.parse(raw.serverNow)});
+      if(guestVisit.status==='unavailable')throw new Error('invalid quote');
+      serverAnchor=Date.parse(raw.serverNow);monotonicAnchor=monotonic();paymentReady=true;
+      try{sessionStorage.setItem('ai_sauce_payment_quote_v1',d.payment.token);}catch(_){}
+      metric('payment_ready');
+    }catch(_){paymentReady=false;metric('payment_error');}finally{paymentLoading=null;render();}})();return paymentLoading;
+  }
+  function revealPayment(){introSuppressed=true;introDone=true;closeIntro();metric('purchase_click');render();get(get('payment-qr').hidden?'bank-details':'payment-qr').scrollIntoView({behavior:'instant',block:'start'});if(!paymentReady)preparePayment();}
   var CHECKOUT_TIMEOUT_MS=20000;
   function clearCheckout(){
     checkoutRequest++;currentCheckout=null;checkoutOwnerEmail=null;checkoutRestoring=false;checkoutStarting=false;checkoutRestoreFailed=false;received=false;
@@ -152,7 +182,7 @@
   }
   function acceptCheckout(cart){
     if(!cart||!/^[-a-f0-9]{36}$/i.test(cart.id)||![790,990,1690].includes(cart.priceTHB)||!Number.isFinite(Date.parse(cart.expiresAt))||!['open','submitted','paid'].includes(cart.status))throw new Error('ข้อมูลรายการชำระไม่ครบ กรุณาลองใหม่');
-    currentCheckout=cart;checkoutOwnerEmail=schoolState.user.email;received=cart.status!=='open';checkoutRestoreFailed=false;purchaseNotice='';
+    currentCheckout=cart;paymentIntent=false;try{sessionStorage.removeItem('ai_sauce_payment_intent');}catch(_){}checkoutOwnerEmail=schoolState.user.email;received=cart.status!=='open';checkoutRestoreFailed=false;purchaseNotice='';
     try{sessionStorage.setItem('ai_sauce_checkout_v2',cart.id);}catch(_){}
     if(received)get('upload-status').textContent='รับสลิปแล้ว'+(cart.reference?' · '+cart.reference:'')+' เปิดดูสถานะและสิทธิ์ได้ที่ห้องเรียนของคุณ';
   }
@@ -172,38 +202,41 @@
     // Revealing an already-authorized open cart does not create a payment or need
     // another offer lookup. Expiry still uses the server-anchored clock.
     var visibleOffer=render();
-    if(live&&serverReady&&schoolState&&schoolState.user&&!schoolState.blocked&&!received&&!checkoutRestoreFailed&&currentCheckout&&checkoutOwnerEmail===schoolState.user.email&&currentCheckout.status==='open'&&clock()<Date.parse(currentCheckout.expiresAt)&&currentCheckout.priceTHB===visibleOffer.currentPrice){purchaseNotice='';render();get('bank-details').scrollIntoView({block:'start'});return;}
+    if(live&&serverReady&&schoolState&&schoolState.user&&!schoolState.blocked&&!received&&!checkoutRestoreFailed&&currentCheckout&&checkoutOwnerEmail===schoolState.user.email&&currentCheckout.status==='open'&&clock()<Date.parse(currentCheckout.expiresAt)&&currentCheckout.priceTHB===visibleOffer.currentPrice){purchaseNotice='';render();get('bank-details').scrollIntoView({behavior:'instant',block:'start'});return;}
     var request=++checkoutRequest;checkoutStarting=true;render();
     try{
     await refreshOffer();
     if(request!==checkoutRequest)return;
     if(!serverReady){purchaseNotice='ยังตรวจสิทธิ์ไม่ได้ กรุณาลองใหม่ก่อนชำระเงิน';render();return;}
-    if(!schoolState||!schoolState.user){var attribution=campaignAttribution(),returnQuery=new URLSearchParams();campaignKeys.forEach(function(key){if(attribution[key])returnQuery.set(key,attribution[key]);});window.location.assign('/learn/?enroll=ai-sauce&return='+encodeURIComponent('/ai-source/'+(returnQuery.size?'?'+returnQuery:'')+'#bank-details'));return;}
+    if(!schoolState||!schoolState.user){var attribution=campaignAttribution(),returnQuery=new URLSearchParams();campaignKeys.forEach(function(key){if(attribution[key])returnQuery.set(key,attribution[key]);});window.location.assign('/learn/?enroll=ai-sauce&return='+encodeURIComponent('/ai-source/'+(returnQuery.size?'?'+returnQuery:'')+'#submit-receipt'));return;}
     if(schoolState.blocked){window.location.assign('/learn/?course=ai-sauce');return;}
-    if(checkoutRestoreFailed){checkoutStarting=false;var restored=await restoreCheckout();if(restored!==false){if(restored===true)get('bank-details').scrollIntoView({block:'start'});return;}checkoutRestoreFailed=false;request=++checkoutRequest;checkoutStarting=true;render();}
-    try{var ownerEmail=schoolState.user.email,body=campaignAttribution();
+    if(checkoutRestoreFailed){checkoutStarting=false;var restored=await restoreCheckout();if(restored!==false){if(restored===true)get('bank-details').scrollIntoView({behavior:'instant',block:'start'});return;}checkoutRestoreFailed=false;request=++checkoutRequest;checkoutStarting=true;render();}
+    try{var ownerEmail=schoolState.user.email,body=campaignAttribution();if(guestPayment&&!(schoolState&&schoolState.recovery&&schoolState.recovery.active))body.guestQuote=guestPayment.token;
       var result=await checkoutJSON('/api/ai-source?action=checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),response=result.response,data=result.data;
       if(!checkoutIsCurrent(request,ownerEmail))return;
       if(!response.ok||!data.checkout){var checkoutError=new Error(data.message||'ยังเปิดรายการชำระไม่ได้');checkoutError.status=response.status;throw checkoutError;}acceptCheckout(data.checkout);
-      try{sessionStorage.setItem('ai_sauce_checkout_v2',currentCheckout.id);}catch(_){}render();get('bank-details').scrollIntoView({block:'start'});
+      try{sessionStorage.setItem('ai_sauce_checkout_v2',currentCheckout.id);}catch(_){}render();get('bank-details').scrollIntoView({behavior:'instant',block:'start'});
     }catch(error){if(checkoutIsCurrent(request,ownerEmail)){checkoutRestoreFailed=!error.status||error.status>=500;purchaseNotice=checkoutRestoreFailed?'ยังยืนยันการเปิดรายการไม่ได้ กดลองอีกครั้งเพื่อตรวจรายการเดิม หากโอนแล้วอย่าโอนซ้ำ':error.message;render();}}
     }finally{if(request===checkoutRequest){checkoutStarting=false;render();}}
   }
-  get('purchase-button').addEventListener('click',beginCheckout);
+  get('purchase-button').addEventListener('click',revealPayment);
+  if(get('finish-payment'))get('finish-payment').addEventListener('click',function(){metric('identity_start');if(guestPayment&&!currentCheckout){paymentIntent=true;try{sessionStorage.setItem('ai_sauce_payment_intent','1');}catch(_){}}return beginCheckout();});
+  if(get('retry-payment'))get('retry-payment').addEventListener('click',preparePayment);
+  if(get('renew-payment'))get('renew-payment').addEventListener('click',function(){try{sessionStorage.removeItem('ai_sauce_payment_quote_v1');}catch(_){}guestPayment=null;paymentReady=false;preparePayment();});
   var retryOfferButton=get('retry-offer');if(retryOfferButton)retryOfferButton.addEventListener('click',async function(){
     if(refreshing||uploading||checkoutRestoring||checkoutStarting)return;
     retryOfferButton.disabled=true;await refreshOffer();
     if(!serverReady)return;
     var restored=await restoreCheckout();
-    if(restored===true)get('bank-details').scrollIntoView({block:'start'});
+    if(restored===true)get('bank-details').scrollIntoView({behavior:'instant',block:'start'});
     else if(restored===false&&location.hash==='#bank-details'&&schoolState&&schoolState.user&&!schoolState.blocked)await beginCheckout();
   });
   var recoveryButton=get('claim-recovery');if(recoveryButton)recoveryButton.addEventListener('click',async function(){
     if(uploading||received||checkoutRestoring||checkoutStarting)return;recoveryButton.disabled=true;try{var r=await fetch('/api/ai-source?action=recovery',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:'{}'}),d=await r.json();if(!r.ok)throw new Error(d.message||'ยังเปิดสิทธิ์ไม่ได้');await refreshOffer();await beginCheckout();}catch(error){purchaseNotice=error.message;render();}finally{recoveryButton.disabled=false;}
   });
   function copyPayment(accountOnly){
-    var offer=render();if(!serverReady||!currentCheckout||currentCheckout.status!=='open'||!schoolState||!schoolState.user||schoolState.user.email!==checkoutOwnerEmail||clock()>=Date.parse(currentCheckout.expiresAt))return;var b=config.bank,version=++copiedVersion,price=currentCheckout.priceTHB;
-    var text=accountOnly?b.account_number:[b.name,b.account_number,b.account_name,money.format(price),offer.showLaunchOffer?deadline(offer.endsAt):'ราคาปกติ','ลงทะเบียนและแนบสลิป: https://www.myclover.com/ai-source/'].join('\n');
+    var offer=render();if(get('copy-account').disabled)return;var b=config.bank,version=++copiedVersion,price=currentCheckout?currentCheckout.priceTHB:guestPayment.quote.price;
+    var text=accountOnly?b.account_number:[b.name,b.account_number,b.account_name,money.format(price),'ส่งสลิป: https://www.myclover.com/ai-source/#submit-receipt'].join('\n');metric('copy_bank');
     try{window.navigator.clipboard.writeText(text).then(function(){if(version===copiedVersion&&render().currentPrice===price)get('copy-status').textContent='คัดลอกแล้ว';}).catch(function(){get('copy-status').textContent='เลือกคัดลอกข้อมูลบัญชีด้านบนได้';});}catch(_){get('copy-status').textContent='เลือกคัดลอกข้อมูลบัญชีด้านบนได้';}
   }
   get('copy-account').addEventListener('click',function(){copyPayment(true);});get('copy-payment').addEventListener('click',function(){copyPayment(false);});
@@ -245,11 +278,11 @@
       var admissionTime=Date.parse(data.admissionDueAt);
       if(!accepted||data.ok!==true||!/^SAUCE-[0-9A-F]{32}$/.test(data.reference||'')||!Number.isFinite(admissionTime)||admissionTime<Date.UTC(2020,0,1)||admissionTime>clock()+86400000+360000)throw new Error(data.message||'ยังยืนยันการรับข้อมูลไม่ได้ ติดต่อ LINE พร้อมสลิป และอย่าโอนซ้ำ');
       var dueText=fullDate.format(new Date(data.admissionDueAt));
-      received=true;currentCheckout.status=['payment_verified','admitted'].includes(data.status)?'paid':'submitted';currentCheckout.reference=data.reference;if(schoolState)schoolState.blocked=true;get('upload-status').textContent='รับลงทะเบียนแล้ว · '+data.reference+(data.status==='admitted'?' · เปิดสิทธิ์เข้าเรียนให้แล้ว เปิดห้องเรียนที่ /learn ได้เลย':' รอตรวจยอดและเปิดสิทธิ์ในบัญชีภายใน '+dueText+' น. หากเลยเวลา ติดต่อ LINE myclover พร้อมเลขอ้างอิงนี้');
-    }catch(error){get('upload-status').textContent=error.name==='AbortError'||error instanceof TypeError?'ยังยืนยันการรับข้อมูลไม่ได้ ส่งซ้ำได้โดยไม่โอนซ้ำ หรือติดต่อ LINE myclover พร้อมสลิป':error.message;}
+      metric('receipt_submitted');received=true;currentCheckout.status=['payment_verified','admitted'].includes(data.status)?'paid':'submitted';currentCheckout.reference=data.reference;if(schoolState)schoolState.blocked=true;get('upload-status').textContent='รับลงทะเบียนแล้ว · '+data.reference+(data.status==='admitted'?' · เปิดสิทธิ์เข้าเรียนให้แล้ว เปิดห้องเรียนที่ /learn ได้เลย':' รอตรวจยอดและเปิดสิทธิ์ในบัญชีภายใน '+dueText+' น. หากเลยเวลา ติดต่อ LINE myclover พร้อมเลขอ้างอิงนี้');
+    }catch(error){metric('receipt_error');get('upload-status').textContent=error.name==='AbortError'||error instanceof TypeError?'ยังยืนยันการรับข้อมูลไม่ได้ ส่งซ้ำได้โดยไม่โอนซ้ำ หรือติดต่อ LINE myclover พร้อมสลิป':error.message;}
     finally{if(timeout)window.clearTimeout(timeout);uploading=false;render();}
   });
   // Introductory lesson opens only after email verification in /learn.
-  render();refreshOffer().then(async function(){var restored=await restoreCheckout();if(restored===false&&location.hash==='#bank-details'&&serverReady&&schoolState&&schoolState.user&&!schoolState.blocked)beginCheckout();});window.setInterval(render,1000);window.setInterval(function(){if(!document.hidden)refreshOffer();},60000);
+  render();preparePayment().then(function(){if(location.hash==='#bank-details')revealPayment();});refreshOffer().then(async function(){if(paymentIntent&&schoolState&&schoolState.user&&!schoolState.blocked){await beginCheckout();return;}var restored=await restoreCheckout();if(restored===false&&location.hash==='#submit-receipt'&&serverReady&&schoolState&&schoolState.user&&!schoolState.blocked){await preparePayment();beginCheckout();}});window.setInterval(render,1000);window.setInterval(function(){if(!document.hidden)refreshOffer();},60000);
   window.addEventListener('focus',refreshOffer);window.addEventListener('storage',function(){if(!live)render();});document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshOffer();});
 })();
