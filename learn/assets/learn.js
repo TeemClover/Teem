@@ -3,7 +3,7 @@ import { authRequest, safeReturn, showVerification } from './account-step.js';
 import { renderLessonReading } from './lesson-reading.js?v=learner-ready-4';
 import { createLessonPlayer } from './lesson-player.js?v=learner-ready-4';
 import { renderLessonTools } from './lesson-tools.js?v=companion-6';
-import { renderStudentVideoCredits } from './student-video-credits.js?v=student-video-1';
+import { renderStudentVideoCredits } from './student-video-credits.js?v=student-video-2';
 
 const $ = id => document.getElementById(id);
 const el = (tag, text = '', className = '') => { const n = document.createElement(tag); n.textContent = text; if (className) n.className = className; return n; };
