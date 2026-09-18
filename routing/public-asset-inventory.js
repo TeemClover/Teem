@@ -5,6 +5,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/ai-source/assets/KBANK_QR_0493864300.jpg",
   "/ai-source/assets/ai-sauce-companion-cover-v1.webp",
   "/ai-source/assets/ai-sauce-companion-cover-v2.webp",
+  "/ai-source/assets/ai-sauce-share-v2-20260918.png",
   "/ai-source/assets/instructor.webp",
   "/ai-source/behavior.js",
   "/ai-source/offer-engine.js",
