@@ -1,8 +1,8 @@
-import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js?v=learner-ready-4';
+import { STATUS, createApi, createLearner, parseRoute, courseRoute, safeAssetUrl, durationLabel, dateLabel, progressSummary, validId } from './learn-core.js?v=guided-0921';
 import { authRequest, safeReturn, showVerification } from './account-step.js';
-import { renderLessonReading } from './lesson-reading.js?v=learner-ready-4';
+import { renderLessonReading } from './lesson-reading.js?v=guided-0921';
 import { createLessonPlayer } from './lesson-player.js?v=learner-ready-4';
-import { renderLessonTools } from './lesson-tools.js?v=companion-6';
+import { renderLessonTools } from './lesson-tools.js?v=guided-0921';
 import { renderStudentVideoCredits } from './student-video-credits.js?v=student-video-2';
 
 const $ = id => document.getElementById(id);
@@ -66,19 +66,22 @@ function partName(item) { return item.partTitle || item.title || 'บทเร�
 function renderCourseToolkit(toolkit) {
   const section=$('course-toolkit');section.replaceChildren();section.hidden=!toolkit;
   if(!toolkit)return;
-  const heading=el('h2','สมุดงาน ซอส และไฟล์ฝึก');heading.id='toolkit-title';
-  section.append(el('p','เตรียมครัวของคุณ','eyebrow'),heading,el('p','เปิดสมุดงานคู่กับบทเรียน ใช้งานเดียวฝึกต่อไปทั้งคอร์ส แล้วกลับมาหยิบไฟล์ในตอนนี้ได้เสมอ'));
-  for(const group of ['เริ่มลงมือ','ซอสและแม่แบบ','ตัวอย่างและสูตร']) {
-    const block=el('div','','toolkit-group');block.append(el('h3',group));const links=el('div','','bonus-files');
+  const heading=el('h2','หยิบไฟล์เมื่อพร้อมใช้');heading.id='toolkit-title';
+  section.append(el('p','ของติดครัว','eyebrow'),heading,el('p','เริ่มจากปุ่ม “ให้ AI พาทำ” ด้านบนได้เลย ไม่ต้องดาวน์โหลดครบทุกไฟล์ก่อนเรียน ถ้ายังไม่มี AI แบบแชต เลือกหนึ่งตัวแล้วใช้ต่อทั้งคอร์สได้'));
+  const apps=el('div','','toolkit-apps');
+  for(const [name,url] of [['ChatGPT','https://chatgpt.com/'],['Claude','https://claude.ai/'],['Gemini','https://gemini.google.com/']]) {const a=link(name+' ↗',url,true);a.target='_blank';a.rel='noopener noreferrer';apps.append(a);}
+  section.append(apps,el('p','ใช้ผ่านแชตได้ก่อน หากแอปแนบไฟล์ไม่ได้ ให้คัดลอกข้อความไปวางแทน งานสร้างภาพ วิดีโอ หรือเผยแพร่เว็บใช้ความสามารถและเงื่อนไขของแต่ละเครื่องมือ','toolkit-note'));
+  const labels={start:'แนบไฟล์ให้ AI เริ่มถาม · หรือใช้ปุ่มคัดลอกด้านบน',source:'คำสั่งให้ AI ถามและสร้างซอส · ไม่ใช่แม่แบบให้กรอก',guide:'อ่านวิธีเริ่มและวิธีนำซอสไปใช้ต่อ',brief:'ส่งให้ AI ช่วยถาม แล้วเรียบเรียงใบสั่งงานให้',review:'ส่งพร้อมงาน ให้ AI ช่วยตรวจทีละจุด',recipes:'เลือกงาน แล้วให้ AI ถามข้อมูลที่ยังขาด',workbook:'เปิดสมุดงานในแท็บใหม่ · มีปุ่มเริ่มกับ AI',all:'ZIP · เก็บชุดเริ่มต้นไว้ใช้ภายหลัง'};
+  for(const group of [...new Set(toolkit.files.map(f=>f.group))]) {
+    const block=el('details','','toolkit-group');block.append(el('summary',group));const links=el('div','','bonus-files');
     for(const file of toolkit.files.filter(f=>f.group===group)) {
-      if(!/^\/api\/learn-toolkit\?file=[a-z-]+$/.test(file.url))continue;
-      const a=el('a','','resource-link');a.href=file.url;a.target='_blank';a.rel='noopener noreferrer';
-      const label=el('span',file.title);label.append(el('small',file.id==='workbook'?'เปิดใช้งานในแท็บใหม่ · START_HERE.html':file.id==='all'?'ZIP · เก็บทั้งชุดไว้ใช้ในเครื่อง':'.MD · ดาวน์โหลดแล้วแก้ให้เป็นงานของคุณ'));
+      const url=safeAssetUrl(file.url,location.origin);if(!url)continue;
+      const a=el('a','','resource-link');a.href=url;a.target='_blank';a.rel='noopener noreferrer';
+      const label=el('span',file.title);label.append(el('small',labels[file.id]||'ตัวอย่างสำหรับอ่านประกอบ · แยกจากข้อมูลจริงของคุณ'));
       a.append(label,el('span',file.id==='workbook'?'↗':'↓','resource-arrow'));links.append(a);
     }
     block.append(links);section.append(block);
   }
-  section.append(el('p','สมุดงานช่วยจัดข้อมูลและคำสั่งให้คุณนำไปใช้กับ AI ที่ใช้อยู่ ก่อนปิดให้กด “เก็บความคืบหน้า” เพื่อดาวน์โหลด JSON แล้วนำกลับมาเปิดทำต่อได้ ข้อมูลที่กรอกยังไม่ซิงก์เข้าบัญชี','toolkit-note'));
   const chapters=el('details','','toolkit-chapters');chapters.append(el('summary','ไฟล์ฝึกแยกตามบท · เปิดดูเมื่อเรียนถึง'));
   for(const chapter of toolkit.chapters || []) {
     const group=el('details');group.append(el('summary',chapter.title));
@@ -93,7 +96,7 @@ function renderCourseBonus(bonus) {
   const heading=el('h2',bonus.title || 'คู่มือ AI ใส่ซอส + AI ผู้ช่วยงาน'); heading.id='course-bonus-title';
   section.append(el('p','อ่านทบทวน · เปิดผู้ช่วย แล้วลงมือ','eyebrow'),heading);
   if (bonus.description) section.append(el('p',bonus.description));
-  const messages={included:'ชุดนี้อยู่ในสิทธิ์ของคุณ ดาวน์โหลดเก็บไว้ แล้วเริ่มจากคู่มือ PDF ได้เลย',not_included:'แพ็กที่คุณสมัครมีบทเรียนและไฟล์ฝึกครบ ส่วนชุดคู่มือ PDF + AI ผู้ช่วยงานนี้ไม่ได้รวมอยู่ในแพ็ก',unverified:'บทเรียนของคุณเปิดได้ตามเดิม กำลังตรวจข้อมูลสิทธิ์ชุดคู่มือ หากซื้อแพ็กที่รวมชุดนี้ ให้ติดต่อผู้สอนเพื่อตรวจสอบ',access_required:'เมื่อยืนยันชำระและเปิดสิทธิ์แล้ว ชุดนี้จะปรากฏตามแพ็กที่คุณสมัคร'};
+  const messages={included:'ชุดนี้อยู่ในสิทธิ์ของคุณ เก็บไว้อ่านทบทวนหรือใช้ผู้ช่วยงานพาต่อทั้งกระบวนการ เริ่มเรียนได้ก่อนโดยไม่ต้องอ่านจบ',not_included:'แพ็กที่คุณสมัครมีบทเรียนและไฟล์ฝึกครบ ส่วนชุดคู่มือ PDF + AI ผู้ช่วยงานนี้ไม่ได้รวมอยู่ในแพ็ก',unverified:'บทเรียนของคุณเปิดได้ตามเดิม กำลังตรวจข้อมูลสิทธิ์ชุดคู่มือ หากซื้อแพ็กที่รวมชุดนี้ ให้ติดต่อผู้สอนเพื่อตรวจสอบ',access_required:'เมื่อยืนยันชำระและเปิดสิทธิ์แล้ว ชุดนี้จะปรากฏตามแพ็กที่คุณสมัคร'};
   section.append(el('p',messages[bonus.status] || messages.unverified,'bonus-status'));
   if (bonus.status==='included') {
     const files=el('div','','bonus-files');

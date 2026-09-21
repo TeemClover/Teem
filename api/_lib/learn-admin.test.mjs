@@ -55,7 +55,7 @@ test('learning and file request timestamps stay separate, with parallel per-acco
   h.store.downloads=async()=>{downloadStarted=true;finishProgress([]);return [{user_id:'z',file_id:'toolkit:guide',filename:'GUIDE_TH.md',requests:1,last_requested_at:'2026-09-21T01:00:00Z'}];};
   const r=await h.call();assert.equal(downloadStarted,true);assert.equal(r.statusCode,200);
   assert.equal(r.body.learners[0].lastActivityAt,null);assert.equal(r.body.learners[0].lastDownloadAt,'2026-09-21T01:00:00.000Z');
-  assert.equal(r.body.learners[0].downloads[0].title,'วิธีใช้สมุดงานทีละขั้น');
+  assert.equal(r.body.learners[0].downloads[0].title,'วิธีเริ่มทีละขั้น');
 });
 test('progress uses only catalog lessons and clamps positions, without treating the end position as completion',()=>{
   const p=progressForLearner(COURSE,[{lesson_id:'one',position_seconds:900,max_position_seconds:900,completed:false,updated_at:DATE},{lesson_id:'two',position_seconds:-1,completed:'true',updated_at:'bad-date'},{lesson_id:'removed',completed:true}]);

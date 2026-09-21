@@ -526,3 +526,22 @@ test('all22 learner parts expose their current downloadable bundle with scoped p
  assert.ok(latest,l.id);assert.equal(asset.id,latest.id,'Use the current appended bundle for '+l.id);
  assert.match(asset.filename,bundleName);assert.equal(asset.kind,'resource');assert.equal(asset.contentType,'application/zip');assert.ok(asset.bytes>0);assert.ok(asset.lessonIds.includes(l.id));assert.equal(asset.previewAllowed,false);}
 });
+
+test('all paid lessons deliver guided bundles and base starter without granting premium bonus',async()=>{
+  const course=LEARN_COURSES.find(c=>c.id==='ai-sauce');
+  const h=harness({catalog:LEARN_COURSES,media:LEARN_ASSETS});h.seed();h.grants.push(grant());
+  const detail=await h.call('GET','course',undefined,{query:{courseId:course.id}});
+  assert.ok(detail.body.toolkit.files.some(f=>f.id==='start'));
+  assert.ok(detail.body.toolkit.files.every(f=>!f.id.startsWith('lesson-')));
+  assert.equal(detail.body.toolkit.chapters.flatMap(c=>c.resources).length,23);
+  for(const lesson of course.lessons){
+    const result=await h.call('GET','lesson',undefined,{query:{courseId:course.id,lessonId:lesson.id}});
+    const primary=result.body.lesson.resources.filter(r=>!r.optional);
+    assert.equal(primary.length,1,lesson.id);
+    assert.equal(primary[0].url,'/api/learn-toolkit?file=lesson-'+lesson.id.toLowerCase());
+    assert.match(primary[0].mimeType,/zip/);
+  }
+  h.grants.length=0;
+  const denied=await h.call('GET','lesson',undefined,{query:{courseId:course.id,lessonId:'TOOLKIT'}});
+  assert.equal(denied.statusCode,403);assert.equal(denied.body.lesson,undefined);
+});

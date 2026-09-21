@@ -28,8 +28,14 @@ export function normalizeCourses(data) {
   return data.courses.filter(c => c && validId(c.id) && typeof c.title === 'string' && STATUS[c.status] && !seen.has(c.id) && seen.add(c.id));
 }
 export function safeAssetUrl(value, origin) {
-  if (typeof value !== 'string' || !value.startsWith('/api/learn-media?')) return null;
-  try { const u = new URL(value, origin); return u.origin === origin && u.pathname === '/api/learn-media' && u.searchParams.has('assetId') ? u.pathname + u.search : null; } catch { return null; }
+  if (typeof value !== 'string' || !value.startsWith('/api/') || /[\\\u0000-\u0020]/.test(value)) return null;
+  try {
+    const u = new URL(value, origin);
+    if (u.origin !== origin || u.hash) return null;
+    if (u.pathname === '/api/learn-media' && u.searchParams.has('assetId')) return u.pathname + u.search;
+    if (u.pathname === '/api/learn-toolkit' && [...u.searchParams.keys()].length === 1 && /^[a-z0-9-]+$/.test(u.searchParams.get('file') || '')) return u.pathname + u.search;
+  } catch { /* unsupported resource */ }
+  return null;
 }
 export function durationLabel(seconds) {
   const n = Math.round(Number(seconds));

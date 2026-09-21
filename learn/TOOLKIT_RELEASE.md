@@ -1,3 +1,5 @@
+> Current release: [Guided learning · 2026-09-21](GUIDED_LEARNING_RELEASE.md). The notes below describe the retained historical v3 snapshot.
+
 # Opening lesson toolkit — 2026-09-16
 
 A dedicated toolkit lesson (TOOLKIT), after EP01 and before EP02, groups the interactive workbook, source templates, work recipes, examples and the existing per-lesson ZIP files. The PDF and work-coach bonus remain separate and retain their original package entitlement checks. All video lessons keep video-first layout. The opening showcase follows its video. The bonus panel comes before the workbook panel in TOOLKIT.

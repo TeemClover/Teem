@@ -1,12 +1,13 @@
 // Render the private lesson Markdown as DOM nodes; raw HTML is always text.
 // Bodies arrive only from the authenticated lesson endpoint, never a static bundle.
-import { safeAssetUrl, parseRoute } from './learn-core.js';
+import { safeAssetUrl, parseRoute } from './learn-core.js?v=guided-0921';
 
 export function readingHref(value, origin) {
   if (typeof value !== 'string' || /[\u0000-\u0020\\]/.test(value)) return null;
   if (safeAssetUrl(value, origin)) return value;
   try {
     const url = new URL(value, origin);
+    if (['https://chatgpt.com/', 'https://claude.ai/', 'https://gemini.google.com/'].includes(url.href)) return url.href;
     if (url.origin === origin && url.pathname === '/learn/' && parseRoute(url.search).courseId) return url.pathname + url.search;
     if (url.origin === origin && url.pathname === '/classroom/dungeon/' && !url.username && !url.password) return url.pathname + url.search + url.hash;
   } catch { /* leave unsupported links as readable text */ }
@@ -39,9 +40,9 @@ export function renderLessonReading(container, markdown, { origin = window.locat
         const a = node(href ? 'a' : 'span', match[3]);
         if (href) {
           a.href = href;
-          if (resourcesLocked && href.startsWith('/api/learn-media?')) a.append(document.createTextNode(' · ไฟล์ในคอร์สเต็ม'));
+          if (resourcesLocked && safeAssetUrl(href, origin)) a.append(document.createTextNode(' · ไฟล์ในคอร์สเต็ม'));
           if (href.startsWith('/learn/?') && onLesson) a.addEventListener('click', event => { event.preventDefault(); onLesson(parseRoute(new URL(href, origin).search)); });
-          else if (href.startsWith('/api/learn-media?') && onResource) a.addEventListener('click', event => { if (onResource(href) === false) event.preventDefault(); });
+          else if (safeAssetUrl(href, origin) && onResource) a.addEventListener('click', event => { if (onResource(href) === false) event.preventDefault(); });
           if (!href.startsWith('/learn/?')) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
         }
         parent.append(a);
@@ -73,9 +74,12 @@ export function renderLessonReading(container, markdown, { origin = window.locat
         });
         figure.append(steps); if (diagram.caption) figure.append(node('p', diagram.caption)); container.append(figure);
       } else {
-        const block = node('div'); block.className = 'copy-block';
-        const bar = node('div'); bar.className = 'copy-bar'; bar.append(node('span', 'เก็บไปใช้กับงานของคุณ'));
-        const copy = node('button', 'คัดลอก'); copy.type = 'button'; copy.className = 'copy-button';
+        const reference = ['template', 'reference'].includes(language);
+        const block = node(reference ? 'details' : 'div'); block.className = 'copy-block' + (reference ? ' reading-reference' : '');
+        if (reference) { block.append(node('summary', 'ดูโครงสร้างประกอบ · ไม่ต้องกรอกเอง')); block.append(node('p', 'ใช้ปุ่มให้ AI พาทำด้านบนก่อน ส่วนนี้เก็บไว้ดูรูปแบบและทำความเข้าใจผลลัพธ์')); }
+        const label = reference ? 'โครงสร้างอ้างอิง' : language === 'example' ? 'ตัวอย่างประกอบ · ไม่ใช่ข้อมูลจริงของคุณ' : language === 'prompt' ? 'คำสั่งสำหรับส่งในแชต AI' : 'ข้อความประกอบบทเรียน';
+        const bar = node('div'); bar.className = 'copy-bar'; bar.append(node('span', label));
+        const copy = node('button', reference ? 'คัดลอกโครงสร้าง' : 'คัดลอก'); copy.type = 'button'; copy.className = 'copy-button';
         const feedback = node('span'); feedback.className = 'copy-feedback'; feedback.setAttribute('role', 'status');
         copy.addEventListener('click', async () => {
           copy.disabled = true;

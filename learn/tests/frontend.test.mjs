@@ -473,3 +473,23 @@ test('opening video has no toolkit or bonus panels; materials are after the play
  await d.load();assert.equal(d.ids.get('course-bonus').hidden,true);assert.equal(d.ids.get('course-toolkit').hidden,true);assert.equal(d.ids.get('player-wrap').hidden,false);
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.indexOf('id="player-wrap"')<html.indexOf('id="lesson-showcase"'));assert.ok(html.indexOf('id="course-bonus"')<html.indexOf('id="course-toolkit"'));
 });
+
+
+test('guided bundle links are authenticated toolkit IDs, not arbitrary URLs',()=>{
+  const origin='https://www.myclover.com';
+  assert.equal(safeAssetUrl('/api/learn-toolkit?file=lesson-ep01',origin),'/api/learn-toolkit?file=lesson-ep01');
+  for(const url of ['/api/learn-toolkit?file=../secret','/api/learn-toolkit?file=source&file=brief','/api/learn-toolkit?file=source&url=https://evil.example','/api/learn-toolkit?file=source#extra'])assert.equal(safeAssetUrl(url,origin),null);
+});
+test('blank reference structures are collapsed and never labeled ready to use',async()=>{
+  const d=await dom(mockedFetch()),target=d.ids.get('lesson-reading');let copied;
+  renderLessonReading(target,'```template\n[ใส่ชื่องาน]\n```\n\n```example\nร้านตัวอย่าง\n```\n\n```prompt\nถามฉันทีละเรื่อง\n```',{origin:d.location.origin,copyText:async text=>copied=text});
+  const reference=target.all().find(n=>n.tagName==='DETAILS');assert.ok(reference);assert.ok(!reference.open);
+  assert.match(reference.textContent,/ไม่ต้องกรอกเอง/);assert.doesNotMatch(target.textContent,/เก็บไปใช้กับงานของคุณ/);
+  assert.match(target.textContent,/ตัวอย่างประกอบ/);assert.match(target.textContent,/คำสั่งสำหรับส่งในแชต AI/);
+  const buttons=target.all().filter(n=>n.tagName==='BUTTON');await buttons.at(-1).fire('click');assert.equal(copied,'ถามฉันทีละเรื่อง');
+});
+
+test('beginner AI links accept only the three exact chat homepages',()=>{
+  for(const url of ['https://chatgpt.com/','https://claude.ai/','https://gemini.google.com/'])assert.equal(readingHref(url,'https://www.myclover.com'),url);
+  for(const url of ['https://chatgpt.com/redirect?url=evil','https://claude.ai.evil.example/','https://user:password@claude.ai/'])assert.equal(readingHref(url,'https://www.myclover.com'),null);
+});

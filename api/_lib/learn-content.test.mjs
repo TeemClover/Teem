@@ -18,3 +18,15 @@ test('malformed and unsupported tool configurations never render as raw learner 
     assert.deepEqual(result,{reading:'',readingAvailable:false,tools:[]});
   }
 });
+
+test('private guided-start instructions are extracted with steps, output and readiness metadata',()=>{
+  const guided={kind:'guided-start',id:'starter',title:'Start',steps:['Open AI','Send this request','Answer one question'],expectedOutput:'A usable Source',readyWhen:['Facts confirmed'],
+    prompts:[{id:'start',title:'Start',body:'Private question-led starter. Ask one question and wait.',fields:[]}]};
+  const result=lessonContent('# Lesson\n\n```learn-tools\n'+JSON.stringify([guided])+'\n```\n\nNext step.');
+  assert.deepEqual(result.tools,[guided]);assert.match(result.reading,/Next step/);assert.doesNotMatch(result.reading,/Private question|guided-start|learn-tools/);
+  for(const change of [{steps:[]},{steps:[null]},{steps:['x'.repeat(1201)]},{expectedOutput:''},{readyWhen:[]},{readyWhen:[{}]},
+    {prompts:[{...guided.prompts[0],fields:[{key:'job',label:'Job'}]}]},{prompts:[null]}]){
+    const invalid=lessonContent('```learn-tools\n'+JSON.stringify([{...guided,...change}])+'\n```');
+    assert.deepEqual(invalid,{reading:'',readingAvailable:false,tools:[]});
+  }
+});

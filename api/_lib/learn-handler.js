@@ -63,6 +63,14 @@ function lessonView(course,lesson,access,assets) {
   view.resources=access.active ? [...(lesson.resourceIds || []),...(lesson.additionalResourceIds || [])]
     .map(id=>assets.find(a=>a.id===id && a.kind==='resource' && a.courseId===course.id && a.lessonIds?.includes(lesson.id)))
     .filter(a=>a && !a.entitlement && !(lesson.showcase || []).some(s=>s.assetId===a.id)).map(a=>({...assetView(a,course.id,lesson.id),optional:!(lesson.resourceIds || []).includes(a.id)})) : [];
+  // The guided bundle supersedes the older primary ZIP while retaining case assets.
+  // It uses the same authenticated, hash-verified delivery as the course toolkit.
+  const bundle=course.id==='ai-sauce' && TOOLKIT_FILES.find(file=>file.lessonId===lesson.id);
+  if(access.active && bundle && (lesson.type==='toolkit' || view.resources.some(file=>!file.optional && /zip/i.test(file.mimeType)))) {
+    view.resources=[{id:'toolkit:'+bundle.id,title:bundle.title,filename:bundle.filename,mimeType:bundle.contentType,
+      sizeBytes:bundle.bytes,url:'/api/learn-toolkit?file='+encodeURIComponent(bundle.id),optional:false},
+      ...view.resources.filter(file=>file.optional || !/zip/i.test(file.mimeType))];
+  }
   view.showcase=access.active ? (lesson.showcase || []).map(card=>{
     const asset=assets.find(a=>a.id===card.assetId && a.courseId===course.id && a.lessonIds?.includes(lesson.id)
       && a.kind==='resource' && !a.entitlement && /^image\//.test(a.contentType) && [...(lesson.resourceIds||[]),...(lesson.additionalResourceIds||[])].includes(a.id));
@@ -189,7 +197,7 @@ export function createLearnHandler({getSql=database,lookupUser=currentUser,store
       return respond(200,{ok:true,user:publicUser(user),course:courseView(course,access),access,progress,
         bonus:await bonusView(store,user,course,access,assets,time),
         toolkit:access.active && course.id==='ai-sauce' ? {
-          files:TOOLKIT_FILES.map(f=>({id:f.id,title:f.title,group:f.group,url:'/api/learn-toolkit?file='+encodeURIComponent(f.id)})),
+          files:TOOLKIT_FILES.filter(f=>!f.lessonId).map(f=>({id:f.id,title:f.title,group:f.group,url:'/api/learn-toolkit?file='+encodeURIComponent(f.id)})),
           chapters:(course.sections || []).map(section=>({title:[section.label,section.title].join(' · '),resources:section.lessonIds.flatMap(id=>{
             const lesson=course.lessons.find(l=>l.id===id);
             return lesson ? lessonView(course,lesson,access,assets).resources.filter(r=>!r.optional && /zip/i.test(r.mimeType)).map(r=>({...r,title:lesson.title})) : [];
