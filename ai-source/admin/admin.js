@@ -74,9 +74,11 @@
     $('stats-progress-note').textContent=data.progressNote||'';$('stats-campaign-note').textContent=(data.campaignNote||'')+' · แสดงไม่เกิน 200 แหล่ง';
     const fragment=document.createDocumentFragment();
     const position=x=>{const seconds=Math.max(0,Math.floor(Number(x)||0));return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');};
-    for(const row of data.learners){const detail=node('details','stats-person');detail.append(node('summary','',(row.name||'Clover')+' · '+(row.email||'ไม่ระบุอีเมล')));
+    for(const row of data.learners){const detail=node('details','stats-person');detail.append(node('summary','',(row.name||'Clover')+' · จบ '+row.completedLessons+'/'+row.totalLessons+' บท · โหลด '+(row.downloads||[]).length+' ไฟล์'));
+      detail.append(node('p','small',row.email||''));const meter=node('progress');meter.max=Math.max(1,row.totalLessons);meter.value=row.completedLessons;meter.setAttribute('aria-label','จำนวนบทที่ทำเครื่องหมายเรียนจบ');meter.style.width='100%';detail.append(meter);
       detail.append(definition([['สิทธิ์',labels[row.accessStatus]||'ตรวจสถานะในรายการชำระ'],['สิ้นสุดสิทธิ์',date(row.expiresAt)],['เครื่องหมายเรียนจบ',`${row.completedLessons} / ${row.totalLessons} วิดีโอ`],['บันทึกความคืบหน้าล่าสุด',date(row.lastActivityAt)]]));
-      const list=node('ol','stats-lessons');for(const lesson of row.lessons||[])list.append(node('li','',lesson.title+' · ล่าสุด '+position(lesson.positionSeconds)+' / ไกลสุด '+position(lesson.maxPositionSeconds)+(lesson.completed?' · มีเครื่องหมายเรียนจบ':'')));detail.append(list);fragment.append(detail);
+      const files=node('section');files.append(node('h3','','ไฟล์ที่กดดาวน์โหลด'));const fileList=node('ul');for(const f of row.downloads||[])fileList.append(node('li','',f.filename+' · '+f.requests+' ครั้ง · ล่าสุด '+date(f.lastRequestedAt)));files.append(fileList);if(!(row.downloads||[]).length)files.append(node('p','small','ยังไม่มีประวัติดาวน์โหลดที่บันทึกไว้'));files.append(node('p','small','เริ่มเก็บประวัติตั้งแต่ 21 ก.ย. 2026 เป็นการขอไฟล์ที่ผ่านสิทธิ์แล้ว ไม่ยืนยันว่าบันทึกลงเครื่องสำเร็จ และไม่รวมไฟล์ที่สร้างหรือเซฟภายในสมุดงาน'));detail.append(files);
+      const list=node('ol','stats-lessons');for(const lesson of row.lessons||[])list.append(node('li','',(lesson.completed?'✓ จบแล้ว · ':lesson.updatedAt?'▶ เริ่มแล้ว · ':'○ ยังไม่เริ่ม · ')+lesson.title+' · ล่าสุด '+position(lesson.positionSeconds)+' / ไกลสุด '+position(lesson.maxPositionSeconds)+(lesson.completed?' · มีเครื่องหมายเรียนจบ':'')));detail.append(list);fragment.append(detail);
     }
     if(!data.learners.length)fragment.append(node('p','empty','ยังไม่มีบัญชีผู้ชำระเงินที่ผูกกับคอร์สนี้'));
     $('stats-learners').replaceChildren(fragment);$('stats-more').hidden=!state.statsNext;

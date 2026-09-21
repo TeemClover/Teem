@@ -12,6 +12,7 @@ function harness({key='owner-test',fail=false}={}){
     counts:async(...args)=>{calls.push(['counts',...args]);return {enrolled:'7',pending:'1',active:'2',expired:'1',revoked:'1',verified_awaiting_grant:'1'};},
     learners:async(...args)=>{calls.push(['learners',...args]);return [{user_id:'z',display_name:'Student <script>',email:'z@example.com',access_status:'active',expires_at:'2027-09-15T00:00:00Z'},{user_id:'y',email:'y@example.com',access_status:'expired'}];},
     progress:async(...args)=>{calls.push(['progress',...args]);return [{user_id:'z',lesson_id:'one',position_seconds:12,max_position_seconds:30,completed:false,updated_at:DATE},{user_id:'other',lesson_id:'one',completed:true},{user_id:'z',lesson_id:'unknown',completed:true}];},
+    downloads:async()=>[{user_id:'z',file_id:'guide',filename:'GUIDE.md',requests:2,last_requested_at:DATE},{user_id:'other',file_id:'secret',filename:'other.md'}],
     campaigns:async()=>[{source:'facebook',medium:'paid',campaign:'<script>',enrolled:'3',pending:'1',active:'1'}]};
   const handler=createLearnAdminHandler({getSql:()=>{calls.push('database');return {};},config:key?{MEET_ADMIN_KEY:key}:{},storeFactory:()=>store,courseLookup:id=>id==='ai-sauce'?COURSE:null,now:()=>new Date(DATE)});
   async function call({url='/api/learn-admin?courseId=ai-sauce',method='GET',headers={'x-admin-key':'owner-test'}}={}){const r={headers:{},setHeader(k,v){this.headers[k.toLowerCase()]=v;},end(v){this.body=JSON.parse(v);}};await handler({url,method,headers},r);return r;}
@@ -26,7 +27,7 @@ test('the stats endpoint has no mutations and validates course, duplicate keys a
 });
 test('paid learner pagination never uses a cursor to page the course totals or leak another learner progress',async()=>{
   const h=harness(),r=await h.call({url:'/api/learn-admin?courseId=ai-sauce&limit=1&before=zz'});assert.equal(r.statusCode,200);assert.equal(r.body.counts.enrolled,7);assert.equal(r.body.learners.length,1);assert.equal(r.body.nextCursor,'z');
-  assert.deepEqual(h.calls.find(x=>x[0]==='progress').slice(1),['ai-sauce',['z']]);assert.equal(r.body.learners[0].completedLessons,0);assert.equal(r.body.learners[0].lessons.length,2);assert.equal(r.body.learners[0].positionSeconds,12);assert.match(r.body.progressNote,/ไม่ยืนยัน/);assert.match(r.body.campaignNote,/ครั้งแรก/);
+  assert.deepEqual(h.calls.find(x=>x[0]==='progress').slice(1),['ai-sauce',['z']]);assert.equal(r.body.learners[0].downloads.length,1);assert.equal(r.body.learners[0].downloads[0].filename,'GUIDE.md');assert.equal(r.body.learners[0].downloads[0].requests,2);assert.equal(r.body.learners[0].completedLessons,0);assert.equal(r.body.learners[0].lessons.length,2);assert.equal(r.body.learners[0].positionSeconds,12);assert.match(r.body.progressNote,/ไม่ยืนยัน/);assert.match(r.body.campaignNote,/ครั้งแรก/);
   assert.equal(r.body.campaigns[0].enrolled,3);assert.doesNotMatch(JSON.stringify(r.body),/receipt_bytes|password|token_hash/);assert.match(r.headers['vercel-cdn-cache-control'],/no-store/);
 });
 test('progress uses only catalog lessons and clamps positions, without treating the end position as completion',()=>{

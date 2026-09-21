@@ -1,3 +1,4 @@
+import { safeRecordDownload } from './_lib/learn-downloads.js';
 import { createHash } from 'node:crypto';
 import { database, ensureSchema } from './_lib/core.js';
 import { authorizeLearnLesson } from './_lib/learn-authorization.js';
@@ -15,7 +16,7 @@ export function createToolkitHandler({getSql=database,ensure=ensureSchema,author
       const ids=url.searchParams.getAll('file');
       if(ids.length!==1)throw new LearnError('INVALID_QUERY',400);
       const sql=getSql();await ensure(sql);
-      await authorize(sql,req,{courseId:'ai-sauce',lessonId:'FOUNDATION'});
+      const permitted=await authorize(sql,req,{courseId:'ai-sauce',lessonId:'FOUNDATION'});
       const file=TOOLKIT_FILES.find(f=>f.id===ids[0]);
       if(!file)throw new LearnError('NOT_FOUND',404);
       const rows=await sql.query("SELECT encode(body,'base64') AS body FROM mc_learn_toolkit_files WHERE course_id=$1 AND version=$2 AND file_id=$3",['ai-sauce',TOOLKIT_VERSION,file.id]);
@@ -28,6 +29,7 @@ export function createToolkitHandler({getSql=database,ensure=ensureSchema,author
       // sandbox: it cannot read account cookies or contact any service.
       const hashes=inline?[...body.toString().matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>`'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`).join(' '):'';
       res.setHeader('Content-Security-Policy',inline?`default-src 'none'; script-src ${hashes}; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'; sandbox allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox` : "default-src 'none'; sandbox");
+      if(req.method==='GET'&&!inline)await safeRecordDownload(sql,{userId:permitted?.user?.id,courseId:'ai-sauce',fileId:'toolkit:'+file.id,filename:file.filename});
       res.statusCode=200;res.setHeader('Content-Length',body.length);res.end(req.method==='HEAD'?undefined:body);
     }catch(error){
       res.statusCode=error instanceof LearnError?error.status:503;

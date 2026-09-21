@@ -1,3 +1,4 @@
+import { safeRecordDownload } from './learn-downloads.js';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import { get } from '@vercel/blob';
@@ -137,6 +138,7 @@ export function createLearnMediaHandler({
         || (!range && contentRange) || (contentLength !== null && Number(contentLength) !== expectedLength)) {
         await result.stream.cancel(); throw new LearnError('MEDIA_RANGE_UNAVAILABLE', 502);
       }
+      if(asset.kind==='resource' && !range)await safeRecordDownload(sql,{userId:permitted.userId,courseId:values.courseId,fileId:asset.id,filename:asset.filename||asset.id});
       res.statusCode = range ? 206 : 200;
       if (range) res.setHeader('Content-Range', contentRange);
       res.setHeader('Content-Length', expectedLength);

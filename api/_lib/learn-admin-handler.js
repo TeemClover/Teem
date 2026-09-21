@@ -1,3 +1,4 @@
+import { ensureDownloadSchema } from './learn-downloads.js';
 import { database, ensureSchema } from './core.js';
 import { adminAccess } from './ai-source-domain.js';
 import { ensureAiSourceSchema } from './ai-source-store.js';
@@ -58,7 +59,7 @@ export function progressForLearner(course,rows) {
 
 export function createLearnAdminStore(sql) {
   return {
-    async ensure(){await ensureSchema(sql);await ensureAiSourceSchema(sql);await ensureCommerceSchema(sql);},
+    async ensure(){await ensureSchema(sql);await ensureAiSourceSchema(sql);await ensureCommerceSchema(sql);await ensureDownloadSchema(sql);},
     async counts(courseId,now){return (await sql.query(`${STATE_CTE}
       SELECT COUNT(*) AS enrolled,COUNT(*) FILTER(WHERE access_status='pending') AS pending,
       COUNT(*) FILTER(WHERE access_status='active') AS active,COUNT(*) FILTER(WHERE access_status='expired') AS expired,
@@ -70,6 +71,7 @@ export function createLearnAdminStore(sql) {
       ORDER BY user_id DESC LIMIT $4`,[courseId,now,before,limit]);},
     async progress(courseId,userIds){if(!userIds.length)return [];return sql.query(`SELECT user_id,lesson_id,position_seconds,max_position_seconds,completed,updated_at
       FROM mc_learn_progress WHERE course_id=$1 AND user_id=ANY($2::text[])`,[courseId,userIds]);},
+    async downloads(courseId,userIds){if(!userIds.length)return [];return sql.query(`SELECT user_id,file_id,filename,first_requested_at,last_requested_at,requests FROM mc_learn_downloads WHERE course_id=$1 AND user_id=ANY($2::text[]) ORDER BY last_requested_at DESC`,[courseId,userIds]);},
     async campaigns(courseId,now){return sql.query(`${STATE_CTE}, attributed AS (
       SELECT s.user_id,s.access_status,f.utm_source,f.utm_medium,f.utm_campaign FROM states s
       LEFT JOIN LATERAL (SELECT utm_source,utm_medium,utm_campaign FROM mc_learn_funnel_events
@@ -97,7 +99,9 @@ export function createLearnAdminHandler({getSql=database,config=process.env,stor
       const limit=Number(rawLimit),time=new Date(now()),store=storeFactory(getSql());await store.ensure();
       const [rawCounts,rawLearners,rawCampaigns]=await Promise.all([store.counts(course.id,time),store.learners(course.id,time,limit+1,before),store.campaigns(course.id,time)]);
       const page=rawLearners.slice(0,limit),progress=await store.progress(course.id,page.map(r=>r.user_id));
+      const downloads=store.downloads?await store.downloads(course.id,page.map(r=>r.user_id)):[];
       const learners=page.map(row=>({userId:row.user_id,name:row.display_name||'Clover',email:row.email||'',accessStatus:row.access_status,expiresAt:iso(row.expires_at),
+        downloads:downloads.filter(d=>d.user_id===row.user_id).map(d=>({fileId:d.file_id,filename:d.filename,firstRequestedAt:iso(d.first_requested_at),lastRequestedAt:iso(d.last_requested_at),requests:count(d.requests)})),
         ...progressForLearner(course,progress.filter(p=>p.user_id===row.user_id))}));
       return reply({ok:true,course:{id:course.id,title:course.title,totalLessons:course.lessons.length},generatedAt:time.toISOString(),
         counts:{enrolled:count(rawCounts.enrolled),pending:count(rawCounts.pending),active:count(rawCounts.active),expired:count(rawCounts.expired),revoked:count(rawCounts.revoked),scheduled:count(rawCounts.scheduled),verifiedAwaitingGrant:count(rawCounts.verified_awaiting_grant)},
