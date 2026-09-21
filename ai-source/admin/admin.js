@@ -98,7 +98,7 @@
     if(!state.key||state.statsBusy)return;const epoch=state.epoch;state.statsBusy=true;$('stats-refresh').disabled=true;$('stats-more').disabled=true;$('stats-notice').textContent='กำลังโหลดสถิติ…';
     try{if(!more)loadBehavior();const query=new URLSearchParams({courseId:'ai-sauce',limit:'50'});if(more&&state.statsNext)query.set('before',state.statsNext);
       const data=await request('?'+query,{},false,'/api/learn-admin');if(!Array.isArray(data.learners)||!Array.isArray(data.campaigns)||!data.counts)throw new Error('ข้อมูลสถิติไม่ครบ');
-      if(more)data.learners=[...new Map([...(state.stats?.learners||[]),...data.learners].map(row=>[row.userId,row])).values()];state.stats=data;state.statsNext=data.nextCursor||null;drawStats();drawDetail();$('stats-notice').textContent='อัปเดต '+date(data.generatedAt)+' · โหลดผู้ชำระเงิน '+data.learners.length+' บัญชี';
+      if(more)data.learners=[...new Map([...(state.stats?.learners||[]),...data.learners].map(row=>[row.userId,row])).values()];state.stats=data;state.statsNext=data.nextCursor||null;drawStats();if(state.rows.find(r=>r.reference===state.selected)?.status==='admitted')drawDetail();$('stats-notice').textContent='อัปเดต '+date(data.generatedAt)+' · โหลดผู้ชำระเงิน '+data.learners.length+' บัญชี';
     }catch(error){if(!error.stale)$('stats-notice').textContent=error.message;}
     finally{if(epoch===state.epoch){state.statsBusy=false;$('stats-refresh').disabled=false;$('stats-more').disabled=false;}}
   }
