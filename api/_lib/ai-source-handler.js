@@ -208,10 +208,13 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
         if(school && row.account_id)bankTransactionId=await school.verify(database(),row,amount,transferred,data);
         else {const required = amountDueAt({expires:new Date(row.offer_expires_at).getTime()},transferred);
           if (amount < required*100) throw new InputError(`ยอดที่ตรวจพบต่ำกว่าราคาที่ใช้ ณ เวลาโอน (${required} บาท)`,'verifiedAmountTHB',409,'PAYMENT_SHORT');}
-        if (row.status === 'payment_verified' && Number(row.verified_amount_satang) === amount && iso(row.verified_transferred_at) === transferred) {
+        if (['payment_verified','admitted'].includes(row.status) && Number(row.verified_amount_satang) === amount && iso(row.verified_transferred_at) === transferred) {
           if(bankTransactionId && String(row.bank_transaction_id || '').trim().toUpperCase()!==bankTransactionId)throw new InputError('รหัสโอนไม่ตรงกับรายการที่ตรวจไว้ กรุณาโหลดรายการเดิม',undefined,409,'BANK_TRANSACTION_CONFLICT');
-          if(school && row.account_id)await school.recorded(database(),row);
-          return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(row)});
+          if(school && row.account_id){
+            await school.recorded(database(),row);
+            await school.grant(database(),{reference,actorId:'ai-source-admin',note,now:time});
+          }
+          return sendJson(res,{ok:true,replayed:true,registration:adminRegistration(await store.get(reference))});
         }
         try {updated = await store.verify(reference,amount,transferred,note,time,bankTransactionId);} catch(error){if(error?.code==='23505')throw new InputError('รายการโอนนี้ถูกใช้แล้ว กรุณาตรวจรายการเดิม',undefined,409,'DUPLICATE_BANK_TRANSACTION');throw error;}
       } else if (data.action === 'mark_admitted') {
@@ -228,7 +231,14 @@ export function createAiSourceHandler({database,sendJson,config = process.env,no
         updated = await store.reject(reference,note,time);
       } else throw new InputError('คำสั่งไม่ถูกต้อง','action');
       if (!updated) throw new InputError('สถานะรายการเปลี่ยนแล้วหรือยังไม่พร้อมสำหรับคำสั่งนี้ กรุณาโหลดรายการใหม่',undefined,409,'STATUS_CONFLICT');
-      if(school && updated.account_id)await school.recorded(database(),updated);
+      if(school && updated.account_id){
+        await school.recorded(database(),updated);
+        if(data.action==='verify_payment'){
+          await school.grant(database(),{reference,actorId:'ai-source-admin',note,now:time});
+          updated=await store.get(reference);
+          if(updated?.status!=='admitted')throw new InputError('ยืนยันเงินแล้ว แต่ยังเปิดสิทธิ์ไม่สำเร็จ กรุณารีเฟรชแล้วกดเปิดสิทธิ์อีกครั้ง',undefined,503,'ACCESS_GRANT_INCOMPLETE');
+        }
+      }
       return sendJson(res,{ok:true,registration:adminRegistration(updated)});
     } catch (error) {
       if (error instanceof InputError || error instanceof LearnError) return sendJson(res,{ok:false,code:error.code,field:error.field,message:error.message},error.status);

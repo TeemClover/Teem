@@ -190,8 +190,8 @@ export function createLearnCommerce({config=process.env,lookupUser=currentUser,e
     }
     if(amount<required*100)throw new InputError(`ยอดที่ตรวจพบต่ำกว่าสิทธิ์ ${required} บาท`,'verifiedAmountTHB',409,'PAYMENT_SHORT');
     const bankRef=typeof data.bankTransactionId==='string'?data.bankTransactionId.trim().toUpperCase():'';
-    if(!/^[A-Za-z0-9._:/-]{6,120}$/.test(bankRef))throw new InputError('กรอกรหัสรายการโอนจากธนาคารเพื่อกันสลิปซ้ำ','bankTransactionId');
-    return bankRef;
+    if(bankRef && !/^[A-Za-z0-9._:/-]{6,120}$/.test(bankRef))throw new InputError('กรอกรหัสรายการโอนจากธนาคารเพื่อกันสลิปซ้ำ','bankTransactionId');
+    return bankRef || row.bank_transaction_id || null;
   }
   return {offer,act,restore,bind,recorded,verify,grant};
 }

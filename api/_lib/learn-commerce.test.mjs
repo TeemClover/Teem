@@ -204,7 +204,7 @@ test('verified bank reference is normalized and low amount or absent reference c
   const h=commerceHarness(),cart=await h.school.act(req(),h.sql,'checkout',{},NOW),row={checkout_id:cart.checkout.id,account_id:user.id};
   assert.equal(await h.school.verify(h.sql,row,99000,new Date(+NOW+1000),{bankTransactionId:' abc-123 '}),'ABC-123');
   await assert.rejects(h.school.verify(h.sql,row,98999,NOW,{bankTransactionId:'ABC-123'}),e=>e.code==='PAYMENT_SHORT');
-  await assert.rejects(h.school.verify(h.sql,row,99000,NOW,{}),e=>e.field==='bankTransactionId');
+  assert.equal(await h.school.verify(h.sql,row,99000,NOW,{}),null);
 });
 test('receipt replay never downgrades a paid cart and rejects a conflicting reference',async()=>{
   const h=commerceHarness(),cart=await h.school.act(req(),h.sql,'checkout',{},NOW);
@@ -227,7 +227,7 @@ test('receipt store locks account before saving private bytes and declares canon
   assert.ok(statements.some(x=>/UNIQUE INDEX.*UPPER\(BTRIM\(bank_transaction_id\)\)/.test(x.text)));
 });
 
-function intakeHarness({collision,recordFailsOnce=false}={}) {
+function intakeHarness({collision,recordFailsOnce=false,grantFailsOnce=false}={}) {
   const h=commerceHarness(),rows=new Map(),events=[],sql=h.sql;let seq=0,fail=recordFailsOnce,finds=0;
   const mem={async ensure(){},async rateLimit(){return true;},async findIdempotency(key){finds++;if(collision && finds===1)return null;return [...rows.values()].find(r=>r.key===key);},
     async insert(x){events.push('save');const row={id:String(++seq),key:x.idempotencyKey,payload_hash:x.payloadHash,reference:x.reference,account_id:x.accountId,checkout_id:x.checkoutId,
@@ -244,7 +244,7 @@ function intakeHarness({collision,recordFailsOnce=false}={}) {
       if(row.status!=='pending_verification')return null;Object.assign(row,{status:'payment_verified',verified_amount_satang:amount,verified_transferred_at:transferred,verified_at:time,bank_transaction_id:bankRef});return row;},
   };
   const school={...h.school,recorded:async(s,row)=>{events.push('record');if(fail){fail=false;throw Error('injected link failure');}return h.school.recorded(s,row);},
-    grant:async(s,data)=>{events.push({grant:data});const r=rows.get(data.reference);if(r.status!=='payment_verified')return null;r.status='admitted';r.admitted_at=data.now;return {reference:r.reference};}};
+    grant:async(s,data)=>{events.push({grant:data});if(grantFailsOnce){grantFailsOnce=false;throw Error('injected grant failure');}const r=rows.get(data.reference);if(r.status!=='payment_verified')return null;r.status='admitted';r.admitted_at=data.now;return {reference:r.reference};}};
   const handler=createAiSourceHandler({database:()=>sql,sendJson:(res,body,status=200)=>Object.assign(res,{body,statusCode:status}),config,school,storeFactory:()=>mem,now:afterExpiry,log:()=>{},notify:async()=>{events.push('notify');return {status:'sent',code:'TEST_ACCEPTED'};}});
   async function call(method,data={},query={},extra={}) {
     const r={...req(),method,url:'/api/ai-source',query,body:data,headers:{host:'www.myclover.com',origin:'https://www.myclover.com','content-type':'application/json',...extra.headers},testUser:extra.testUser===undefined?user:extra.testUser};
@@ -337,4 +337,15 @@ test('pay-first signed quote binds after login and preserves pre-login transfer 
   assert.throws(()=>requiredCheckoutAmount(h.carts[0],new Date(signed.offer.expires+1)),/หมดสิทธิ์/);
   assert.throws(()=>requiredCheckoutAmount(h.carts[0],new Date(+NOW-1)),/ก่อนเปิดรายการ/);
   await assert.rejects(h.school.act(req(),h.sql,'checkout',{guestQuote:payment.token+'tampered'},time),/ไม่ถูกต้อง/);
+});
+
+for(const interrupted of [false,true])test('one-step verification without a bank code grants access and safely retries: '+interrupted,async()=>{
+  const h=intakeHarness({grantFailsOnce:interrupted}),cart=await h.school.act(req(),h.sql,'checkout',{},NOW),created=await h.call('POST',{...input(),checkoutId:cart.checkout.id});
+  const data={action:'verify_payment',reference:created.body.reference,confirmedReceived:true,verifiedAmountTHB:990,verifiedTransferredAt:'2026-09-14T10:00:01+07:00'},auth={headers:{'x-admin-key':config.MEET_ADMIN_KEY}};
+  const first=await h.call('PATCH',data,{},auth);
+  assert.equal(first.statusCode,interrupted?500:200);
+  if(!interrupted)assert.equal(first.body.registration.status,'admitted');
+  const replay=await h.call('PATCH',data,{},auth);assert.equal(replay.statusCode,200);assert.equal(replay.body.registration.status,'admitted');
+  assert.equal(replay.body.registration.bankTransactionId,null);
+  assert.equal(h.rows.size,1);assert.equal(h.carts[0].status,'paid');
 });
