@@ -63,6 +63,11 @@ function inspectZip(buffer, name) {
     }
   } else if (count !== 11) errors.push(`${name}: expected 11 educational files, found ${count}`);
 }
+const allowedDownloads = new Set(['downloads/house-plan-f1.svg', 'downloads/house-plan-f2.svg']);
+for (const file of files) if (file.startsWith('downloads/') && !allowedDownloads.has(file)) errors.push(`${file}: student material must not be published`);
+for (const file of ['LEARN.md', 'tools/make-learning-kit.mjs', 'tools/make-source-kit.mjs']) {
+  try { await stat(path.join(root,file)); errors.push(`${file}: student material must remain outside the public repository`); } catch {}
+}
 const sizes = new Map();
 for (const filename of files) {
   const buffer = await readFile(path.join(root, filename));
@@ -80,7 +85,7 @@ const outputs = new Set(Object.keys(build.outputs));
 const stale = files.filter((file) => /^assets\/.*\.js$/.test(file) && !outputs.has(file));
 if (stale.length) warnings.push(`Unreferenced JavaScript bundles remain in assets: ${stale.join(', ')}`);
 for (const file of outputs) if (!sizes.has(file)) errors.push(`Missing bundled output: ${file}`);
-const initial = ['index.html', 'assets/home.css', 'assets/home.js', 'assets/mark.svg',
+const initial = ['index.html', 'assets/home.css', 'assets/home.js', 'assets/myclover-logo.png',
   ...files.filter((file) => file.startsWith('assets/fonts/') && file.endsWith('.woff2')),
   ...['photos-exterior', 'photos-living'].map((id) => photoSets.find((s) => s.id === id)?.photos[0]?.thumb).filter(Boolean)];
 const firstModel = [...new Set([...initial, ...outputs])];
@@ -99,7 +104,7 @@ for (const name of ['three', 'esbuild']) {
 }
 const report = {
   checkedAt: new Date().toISOString(), valid: errors.length === 0, environment: { node, ...dependencies },
-  scope: 'Built public HTML, assets, image derivatives and downloadable learning kit; not source files or private input directories.',
+  scope: 'Built public HTML, assets, image derivatives and free SVG plans; student kits must be absent.',
   fileCount: files.length, errors, warnings,
   sizes: { shellWithAllFontFacesAndPreviewImages: sum(initial), firstModelWithAllFontFacesAndPreviewImages: sum(firstModel),
     imageDerivatives: sum(files.filter((f) => f.startsWith('media/'))), allPublicFiles: sum(files) },

@@ -1,37 +1,37 @@
 {
-  "checkedAt": "2026-09-23T20:00:58.455Z",
+  "checkedAt": "2026-09-23T20:12:53.504Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
     "three": "0.180.0",
     "esbuild": "0.25.10"
   },
-  "scope": "Built public HTML, assets, image derivatives and downloadable learning kit; not source files or private input directories.",
-  "fileCount": 58,
+  "scope": "Built public HTML, assets, image derivatives and free SVG plans; student kits must be absent.",
+  "fileCount": 54,
   "errors": [],
   "warnings": [],
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 226174,
-      "gzipBytes": 115014
+      "bytes": 278936,
+      "gzipBytes": 168839
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 811888,
-      "gzipBytes": 269131
+      "bytes": 864650,
+      "gzipBytes": 322956
     },
     "imageDerivatives": {
       "bytes": 3161424,
       "gzipBytes": 3163240
     },
     "allPublicFiles": {
-      "bytes": 4210891,
-      "gzipBytes": 3596486
+      "bytes": 4034063,
+      "gzipBytes": 3464693
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 7113,
-      "gzipBytes": 2323
+      "bytes": 7156,
+      "gzipBytes": 2356
     },
     "assets/fonts/OFL.txt": {
       "bytes": 4364,
@@ -54,16 +54,16 @@
       "gzipBytes": 11827
     },
     "assets/home.css": {
-      "bytes": 27431,
-      "gzipBytes": 6436
+      "bytes": 28037,
+      "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 102080,
-      "gzipBytes": 16598
+      "bytes": 100550,
+      "gzipBytes": 16562
     },
-    "assets/mark.svg": {
-      "bytes": 246,
-      "gzipBytes": 205
+    "assets/myclover-logo.png": {
+      "bytes": 53889,
+      "gzipBytes": 53903
     },
     "assets/scene-WQHJRUZ3.js": {
       "bytes": 585714,
@@ -236,22 +236,6 @@
     "media/photos/study-01.webp": {
       "bytes": 131514,
       "gzipBytes": 131577
-    },
-    "downloads/README.txt": {
-      "bytes": 17423,
-      "gzipBytes": 4460
-    },
-    "downloads/home-explorer-3d-source.zip": {
-      "bytes": 157854,
-      "gzipBytes": 156014
-    },
-    "downloads/home-explorer-starter.zip": {
-      "bytes": 22917,
-      "gzipBytes": 22391
-    },
-    "downloads/house-data.json": {
-      "bytes": 31396,
-      "gzipBytes": 2753
     },
     "downloads/house-plan-f1.svg": {
       "bytes": 18881,

@@ -1,3 +1,9 @@
+# Release revision — 2026-09-24
+
+Release checks: build, syntax, 23 tests and public audit pass. Browser verified official logo and disabled student-material button; direct local URL checks return 200 for both free SVG plans/logo and 404 for the old guide, source/starter ZIPs, data JSON, download README and source-kit generator.
+
+Official myClover homepage logo replaces the placeholder. Public downloads now contain only two free SVG plans. Student kits, guide, data export and kit generators are removed; the prior ZIP validation below is historical and does not mean those downloads are still public.
+
 # Home Explorer — บันทึกการตรวจงาน
 
 วันที่ตรวจ: 2026-09-24 (Asia/Bangkok)

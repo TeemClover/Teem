@@ -128,7 +128,7 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 38471,
+      "bytes": 37683,
       "imports": [
         {
           "path": "app/data/house.js",
@@ -175,10 +175,10 @@
           "bytesInOutput": 2409
         },
         "app/main.js": {
-          "bytesInOutput": 48186
+          "bytesInOutput": 46656
         }
       },
-      "bytes": 102080
+      "bytes": 100550
     },
     "assets/scene-WQHJRUZ3.js": {
       "imports": [],

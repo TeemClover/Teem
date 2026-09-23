@@ -8,3 +8,5 @@
 6. House geometry is stylized and provisional. Height, roof, solar panel count, furniture, steps, landscape and ceiling appearance are assumptions. Living ceiling is an underside grid material approximation, not a second-floor void or a real-time mirror.
 7. Downloadable SVG plans are redraws from canonical polygons. Starter includes data and interactive2D code; source kit includes3D code without photographs. Raw scan/title block is not in downloads. No blanket rights grant to third-party photography or architecture.
 8. Prepared as an isolated draft review branch. No merge, billing/security changes or production deploy is performed. Local browser tests are desktop/viewport emulation; mobile hardware and first-user study remain untested.
+
+9. Release revision: official homepage logo; free SVG plans only. Student lesson guide, source ZIPs, data export and kit generators removed from current public tree and retained privately. Student access remains closed, with no fake client-side password gate. User authorized main release. Git history is not erased.
