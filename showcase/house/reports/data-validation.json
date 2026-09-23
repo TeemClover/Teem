@@ -1,9 +1,9 @@
 {
-  "checkedAt": "2026-09-23T20:00:57.808Z",
+  "checkedAt": "2026-09-23T22:03:37.606Z",
   "valid": true,
   "counts": {
     "floors": 2,
-    "rooms": 31,
+    "rooms": 30,
     "walls": 37,
     "photoSets": 8,
     "photographCount": 21
@@ -25,8 +25,8 @@
     }
   ],
   "mapping": {
-    "confirmed": 0,
-    "candidate": 6,
+    "confirmed": 2,
+    "candidate": 4,
     "context": 2
   },
   "errors": [],

@@ -9,4 +9,5 @@ await writeFile('reports/build.json',JSON.stringify(result.metafile,null,2));
 for(const name of await readdir('assets'))if(/^(scene|chunk)-[\w-]+\.js$/.test(name)&&!result.metafile.outputs[`assets/${name}`])await unlink(`assets/${name}`);
 await copyFile('app/index.html','index.html');
 await copyFile('app/styles.css','assets/home.css');
+await copyFile('app/studio.css','assets/studio.css');
 console.log('Built static route /showcase/house/');

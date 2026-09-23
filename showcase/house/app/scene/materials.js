@@ -17,7 +17,7 @@ export function createMaterials() {
     c.fillStyle = '#ad8862'; c.fillRect(0, 0, w, h);
     for (let row = 0; row < 8; row++) {
       const y = row * h / 8;
-      c.fillStyle = ['#ae8b66', '#b89a77', '#ab8763', '#bea07a'][row % 4];
+      c.fillStyle = ['#aa967f', '#ad9982', '#af9b85', '#ab9680'][row % 4];
       c.fillRect(0, y, w, h / 8 - 1);
       c.strokeStyle = 'rgba(82,57,34,.13)'; c.lineWidth = 1;
       for (let i = 0; i < 4; i++) {
@@ -27,10 +27,10 @@ export function createMaterials() {
       c.fillStyle = 'rgba(75,49,29,.24)'; c.fillRect((row % 3) * w / 3, y, 1, h / 8);
     }
   });
-  wood.repeat.set(.6, .6);
+  wood.repeat.set(1, 1);
   const tile = canvasTexture((c,w,h) => {
-    c.fillStyle = '#efede5'; c.fillRect(0,0,w,h);
-    c.strokeStyle = '#d9d7ce'; c.lineWidth = 1.4;
+    c.fillStyle = '#f1f0ed'; c.fillRect(0,0,w,h);
+    c.strokeStyle = '#cccac6'; c.lineWidth = .8;
     c.strokeRect(0,0,w,h);
     c.strokeStyle = 'rgba(192,187,174,.16)'; c.lineWidth = .8;
     c.beginPath(); c.moveTo(12, 90); c.bezierCurveTo(90,120,100,150,170,170); c.stroke();
@@ -62,23 +62,29 @@ export function createMaterials() {
     }
   });
   grass.repeat.set(8,8);
+  const textile=canvasTexture((c,w,h)=>{c.fillStyle='#eae7e2';c.fillRect(0,0,w,h);for(let y=0;y<h;y+=3)for(let x=0;x<w;x+=3){c.fillStyle=(x+y)%2?'#dad7d3':'#f1efec';c.fillRect(x,y,1,2);}});textile.repeat.set(3,3);
+  const pillowPattern=canvasTexture((c,w,h)=>{c.fillStyle='#eeece8';c.fillRect(0,0,w,h);c.strokeStyle='#4d5056';c.lineWidth=3;for(let y=-h;y<h*2;y+=50)for(let x=-w;x<w*2;x+=50){c.beginPath();c.moveTo(x,y+25);c.lineTo(x+25,y);c.lineTo(x+50,y+25);c.lineTo(x+25,y+50);c.closePath();c.stroke();}});
   const standard = (color, roughness=.75, extras={}) => new THREE.MeshStandardMaterial({color,roughness,...extras});
   return {
-    wall: standard('#f4f1e9'), trim: standard('#fcfaf4', .62), taupe: standard('#bcb6a7'),
-    slab: standard('#d8d4c9'), stage: standard('#d0c7b5'), ground: standard('#e8e4d8'),
+    wall: standard('#eeeded'), trim: standard('#faf9f7', .42), taupe: standard('#9d9a95'),
+    slab: standard('#b8babc'), stage: standard('#444c55'), ground: standard('#cbd0d7'),
     tile: standard('#ffffff',.36,{map:tile}), wood: standard('#ffffff',.65,{map:wood}),
     outdoor: standard('#c2c3b5'), grass: standard('#ffffff',1,{map:grass}),
-    roof: standard('#ffffff',.82,{map:roofTile,side:THREE.DoubleSide}),
+    roof: standard('#d6a082',.82,{map:roofTile,side:THREE.DoubleSide}),
     solar: standard('#ffffff',.3,{map:solar,metalness:.35,side:THREE.DoubleSide}),
     frame: standard('#4a504d',.42,{metalness:.25}), metal: standard('#737c75',.45,{metalness:.5}),
     glass: standard('#b9d3d1',.12,{transparent:true,opacity:.38,depthWrite:false,side:THREE.DoubleSide}),
-    sofa: standard('#e1dccf',.95), fabric: standard('#6c7472',.95), cushion: standard('#f6f2e7',.95),
-    rug: standard('#9ca39a',1), timber: standard('#8b6e50'), darkWood: standard('#5f5549'),
+    sofa: standard('#e4e1dc',.91,{map:textile}), fabric: standard('#535358',.88), cushion: standard('#faf8f4',.96),
+    accentCushion: standard('#ffffff',.92,{map:pillowPattern}),
+    rug: standard('#54575f',1), timber: standard('#927b64'), darkWood: standard('#423730'),
+    cabinet: standard('#a9a8a2',.32), leather: standard('#504439',.48), mirror: standard('#99a1aa',.08,{metalness:.85}),
+    marble: standard('#e8e7e4',.19), curtain: standard('#c5bfb3',1), led: standard('#fff0d1',.5,{emissive:'#fff0d1',emissiveIntensity:.55}),
+    screen: standard('#182936',.22,{emissive:'#223b50',emissiveIntensity:.15}),
     white: standard('#f8f5eb',.54), black: standard('#2e3432',.4), water: standard('#94b5b7',.2),
     leaves: standard('#517154',1), leavesLight: standard('#75946a',1), trunk: standard('#826e53',1),
     brass: standard('#a18a58',.4,{metalness:.5}),
-    selected: new THREE.MeshBasicMaterial({color:'#377b62',transparent:true,opacity:.18,depthWrite:false,side:THREE.DoubleSide}),
-    hover: new THREE.MeshBasicMaterial({color:'#377b62',transparent:true,opacity:.075,depthWrite:false,side:THREE.DoubleSide}),
+    selected: new THREE.MeshBasicMaterial({color:'#5395e7',transparent:true,opacity:.065,depthWrite:false,side:THREE.DoubleSide}),
+    hover: new THREE.MeshBasicMaterial({color:'#5395e7',transparent:true,opacity:.035,depthWrite:false,side:THREE.DoubleSide}),
     invisible: new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}),
   };
 }

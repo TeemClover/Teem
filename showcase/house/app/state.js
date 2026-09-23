@@ -6,6 +6,9 @@ export const initialState = Object.freeze({
   lens: 'model',
   wallMode: 'auto',
   furniture: true,
+  builtins: true,
+  grid: true,
+  isolate: true,
   labels: true,
   ceiling: false,
   tourIndex: null,
@@ -24,7 +27,7 @@ export function normalizeState(value = initialState, house) {
   if (state.view === 'f1' || state.view === 'f2') state.activeFloor = state.view;
   if (!lenses.has(state.lens)) state.lens = 'model';
   if (!walls.has(state.wallMode)) state.wallMode = 'auto';
-  for (const key of ['furniture', 'labels', 'ceiling']) {
+  for (const key of ['furniture', 'builtins', 'grid', 'isolate', 'labels', 'ceiling']) {
     if (typeof state[key] !== 'boolean') state[key] = initialState[key];
   }
   if (!Number.isInteger(state.tourIndex) || state.tourIndex < 0) state.tourIndex = null;
@@ -77,6 +80,15 @@ export function reduce(value, event, house) {
       break;
     case 'WALL':
       if (walls.has(event.mode)) next = { ...state, wallMode: event.mode };
+      break;
+    case 'BUILTINS':
+      next = { ...state, builtins: !state.builtins };
+      break;
+    case 'ISOLATE':
+      next = { ...state, isolate: !state.isolate };
+      break;
+    case 'GRID':
+      next = { ...state, grid: !state.grid };
       break;
     case 'FURNITURE':
       next = { ...state, furniture: !state.furniture };

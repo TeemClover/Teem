@@ -80,9 +80,13 @@ export const photoSets = [
     "name": "พักผ่อนและทำงาน",
     "description": "โซฟาสีเทา โต๊ะทำงาน และหน้าต่างบานใหญ่",
     "binding": {
-      "status": "candidate",
-      "candidates": [
-        "f2-204-1-lounge"
+      "status": "confirmed",
+      "roomId": "f2-204-1-lounge",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "method": "owner-confirmed",
+      "evidence": [
+        "Owner identified the upstairs lounge, sofa against bedroom 201 and computer against bedroom 202."
       ]
     },
     "photos": [
@@ -176,13 +180,16 @@ export const photoSets = [
   },
   {
     "id": "photos-bedroom",
-    "name": "ห้องนอน",
+    "name": "ห้องนอน 201",
     "description": "เตียงบุรอบฐาน ผนังบิลต์อิน และช่องเปิดออกระเบียง",
     "binding": {
-      "status": "candidate",
-      "candidates": [
-        "f2-201-bedroom",
-        "f2-202-bedroom"
+      "status": "confirmed",
+      "roomId": "f2-201-bedroom",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "method": "owner-confirmed",
+      "evidence": [
+        "Owner identified bedroom 201 and its headboard direction; bedrooms 202/203 have no photographs."
       ]
     },
     "photos": [

@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f2eb">
-  <title>myClover Home — บ้านจริง เปิดให้สำรวจ</title>
-  <meta name="description" content="หมุนดูบ้าน 3D เปิดแต่ละชั้น เชื่อมแปลนกับภาพบ้านจริง ดาวน์โหลดแปลนฟรี พร้อมบทเรียนสำหรับนักเรียน AI ใส่ซอส">
+  <title>myClover Studio — บ้านจริง เปิดให้สำรวจ</title>
+  <meta name="description" content="หมุนดูบ้าน 3D เปิดแต่ละชั้น เชื่อมแปลนกับภาพบ้านจริง สำรวจบิลต์อินและเฟอร์นิเจอร์จากบ้านจริง">
   <link rel="icon" href="./assets/myclover-logo.png" type="image/png">
   <link rel="preload" href="./assets/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./assets/home.css">
+  <link rel="stylesheet" href="./assets/home.css"><link rel="stylesheet" href="./assets/studio.css">
 </head>
 <body>
   <a class="skip-link" href="#explorer-controls">ข้ามไปเครื่องมือสำรวจ</a>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="myClover Home หน้าแรก"><img class="brand-mark" src="./assets/myclover-logo.png" alt="" width="40" height="40"><span>myClover <b>Home</b><small>บ้านจริง เปิดให้สำรวจ</small></span></a>
-    <span class="header-edition">SHOWCASE <span>01</span></span>
-    <nav aria-label="เมนูหลัก"><button class="text-button" data-action="learn"><span class="desktop-text">ดาวน์โหลด</span>แปลนฟรี <span aria-hidden="true">↗</span></button><button class="text-button" data-action="help">วิธีเล่น</button><button class="tour-start" data-action="tour"><span aria-hidden="true">▷</span> พาชมบ้าน</button></nav>
+    <a class="brand" href="./" aria-label="myClover Studio หน้าแรก"><img class="brand-mark" src="./assets/myclover-logo.png" alt="" width="40" height="40"><span>myClover <b>Studio</b><small>บ้านจริง เปิดให้สำรวจ</small></span></a>
+    <span class="header-edition">HOUSE / 01 <span>DESIGN EXPLORER</span></span>
+    <nav aria-label="เมนูหลัก"><button class="text-button" data-action="learn">AI ใส่ซอส <span aria-hidden="true">↗</span></button><button class="text-button" data-action="help">วิธีเล่น</button><button class="tour-start" data-action="tour"><span aria-hidden="true">▷</span> พาชมบ้าน</button></nav>
   </header>
   <main id="app" data-view="whole" data-lens="model">
     <section class="workspace" aria-label="สำรวจบ้าน">
-      <div class="stage">
+      <div class="stage"><div class="editor-toolbar" role="toolbar" aria-label="เครื่องมือมุมมอง"><span class="tool-section">VIEW</span><button data-action="camera-iso" aria-label="มุมสามมิติ" title="มุมสามมิติ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/></svg></button><button data-action="camera-top" aria-label="มองจากด้านบน" title="มองจากด้านบน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M4 13h9V4M13 13h7M10 20v-7"/></svg></button><button data-action="camera-front" aria-label="มองด้านหน้า" title="มองด้านหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 9 9-6 9 6M5 8v12h14V8M10 20v-6h4v6"/></svg></button><span class="tool-divider"></span><span class="tool-section">LAYERS</span><button data-action="layer-builtins" data-layer="builtins" aria-pressed="true" aria-label="แสดงบิลต์อิน" title="บิลต์อิน"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="3" width="16" height="18"/><path d="M12 3v18M9 11v3M15 11v3"/></svg></button><button data-action="layer-furniture" data-layer="furniture" aria-pressed="true" aria-label="แสดงเฟอร์นิเจอร์" title="เฟอร์นิเจอร์ลอยตัว"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M5 17h14M5 20v-3M19 20v-3M3 10h3v4h12v-4h3v7H3z"/></svg></button><button data-action="layer-grid" data-layer="grid" aria-pressed="true" aria-label="แสดงกริด" title="กริด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4h16v16H4zM4 10h16M4 15h16M10 4v16M15 4v16"/></svg></button></div><section id="room-catalog" aria-label="พื้นที่และห้อง"></section>
         <div class="scene-title"><span class="eyebrow" id="scene-kicker">บ้านตัวอย่าง / 01</span><h1 id="scene-title">บ้านจริง เปิดให้สำรวจ</h1><p id="scene-subtitle">มองบ้านในมุมใหม่ แล้วเปิดดูข้างใน</p></div>
         <div class="lens-switch" role="group" aria-label="วิธีดูบ้าน"><button data-lens="model" data-testid="lens-model" aria-pressed="true">โมเดล</button><button data-lens="plan" data-testid="lens-plan" aria-pressed="false">แปลน</button><button data-lens="photo" data-testid="lens-photo" aria-pressed="false">รูปจริง</button></div>
         <div id="scene" aria-label="โมเดลบ้านสามมิติ" tabindex="0"><div id="scene-loading" role="status"><span class="loading-ring"></span>กำลังเตรียมบ้านให้สำรวจ<button data-action="fallback">ดูแปลนและรูปแทน</button></div></div>
@@ -37,6 +37,6 @@
   </main>
   <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
   <dialog id="dialog"><div class="dialog-top"><span class="eyebrow">MYCLOVER HOME</span><button data-action="close-dialog" aria-label="ปิดหน้าต่าง">×</button></div><div id="dialog-content"></div></dialog>
-  <noscript><p>โปรดเปิด JavaScript เพื่อหมุนบ้าน หรือ <a href="./downloads/house-plan-f1.svg">ดูแปลนชั้น 1</a> และ <a href="./downloads/house-plan-f2.svg">ดูแปลนชั้น 2</a></p></noscript>
+  <noscript><p>โปรดเปิด JavaScript เพื่อสำรวจโมเดล แปลน และภาพบ้าน</p></noscript>
   <script type="module" src="./assets/home.js"></script>
 </body></html>

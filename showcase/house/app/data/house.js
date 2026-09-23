@@ -20,12 +20,12 @@ export const house = {
     }
   ],
   "gridX": {
-    "6": 0,
-    "5": 3.3,
-    "4": 5.5,
-    "3": 8.5,
+    "1": 14.1,
     "2": 9.8,
-    "1": 14.1
+    "3": 8.5,
+    "4": 5.5,
+    "5": 3.3,
+    "6": 0
   },
   "gridZ": {
     "A": 0,
@@ -167,7 +167,7 @@ export const house = {
       ],
       "levelOffset": 0,
       "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "description": "ทางเข้าหลักจากที่จอดรถตามคำยืนยันเจ้าของ เปิดต่อเนื่องไปห้องรับประทานอาหาร",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
@@ -263,11 +263,11 @@ export const house = {
         ],
         [
           10.7,
-          -8.0
+          -8
         ],
         [
           8.5,
-          -8.0
+          -8
         ]
       ],
       "levelOffset": -0.04,
@@ -564,7 +564,7 @@ export const house = {
     {
       "id": "f1-entry-terrace",
       "floor": "f1",
-      "name": "ทางเข้าบ้าน",
+      "name": "ชานหน้าบ้าน",
       "planLabel": null,
       "kind": "balcony",
       "polygon": [
@@ -691,8 +691,8 @@ export const house = {
         ]
       ],
       "levelOffset": 0,
-      "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "photoSetId": "photos-bedroom",
+      "description": "ห้องนอนตามภาพที่เจ้าของยืนยันเป็นห้อง 201 หัวเตียงชิดผนังด้านห้องพักผ่อน และเข้าห้องน้ำผ่านห้องแต่งตัว",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
@@ -756,11 +756,11 @@ export const house = {
           0
         ],
         [
-          0,
+          -0.6,
           0
         ],
         [
-          0,
+          -0.6,
           -3.5
         ],
         [
@@ -770,14 +770,15 @@ export const house = {
       ],
       "levelOffset": 0,
       "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "description": "อ้างอิงรูปห้อง ช่องประตู และการจัดเตียงจากแปลนเดิม เจ้าของยืนยันว่าไม่มีภาพถ่ายประกอบห้องนี้",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
         "sourceId": "SRC-PLAN",
         "page": 2
       },
-      "calibrationId": "cal-f2-v1"
+      "calibrationId": "cal-f2-v1",
+      "reviewNote": "Owner correction: west upper-storey face is flush with ground floor; absorb the former narrow service-roof ledge into the upper footprint for screen presentation."
     },
     {
       "id": "f2-203-bedroom",
@@ -787,7 +788,7 @@ export const house = {
       "kind": "bedroom",
       "polygon": [
         [
-          0,
+          -0.6,
           -10.3
         ],
         [
@@ -799,20 +800,21 @@ export const house = {
           -6.9
         ],
         [
-          0,
+          -0.6,
           -6.9
         ]
       ],
       "levelOffset": 0,
       "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "description": "อ้างอิงรูปห้อง ช่องประตู และการจัดเตียงจากแปลนเดิม เจ้าของยืนยันว่าไม่มีภาพถ่ายประกอบห้องนี้",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
         "sourceId": "SRC-PLAN",
         "page": 2
       },
-      "calibrationId": "cal-f2-v1"
+      "calibrationId": "cal-f2-v1",
+      "reviewNote": "Owner correction: west upper-storey face is flush with ground floor; absorb the former narrow service-roof ledge into the upper footprint for screen presentation."
     },
     {
       "id": "f2-204-hall",
@@ -898,8 +900,8 @@ export const house = {
         ]
       ],
       "levelOffset": 0,
-      "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "photoSetId": "photos-study",
+      "description": "พื้นที่พักผ่อนเปิดจากโถงบันไดเต็มแนวด้านหลัง โซฟาฝั่งห้องนอน 201 และโต๊ะคอมฝั่งห้องนอน 202 ตามคำยืนยันเจ้าของ",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
@@ -951,7 +953,7 @@ export const house = {
       "kind": "bath",
       "polygon": [
         [
-          0,
+          -0.6,
           -5.2
         ],
         [
@@ -963,7 +965,7 @@ export const house = {
           -3.5
         ],
         [
-          0,
+          -0.6,
           -3.5
         ]
       ],
@@ -976,7 +978,8 @@ export const house = {
         "sourceId": "SRC-PLAN",
         "page": 2
       },
-      "calibrationId": "cal-f2-v1"
+      "calibrationId": "cal-f2-v1",
+      "reviewNote": "Owner correction: west upper-storey face is flush with ground floor; absorb the former narrow service-roof ledge into the upper footprint for screen presentation."
     },
     {
       "id": "f2-207-bath",
@@ -986,7 +989,7 @@ export const house = {
       "kind": "bath",
       "polygon": [
         [
-          0,
+          -0.6,
           -6.9
         ],
         [
@@ -998,7 +1001,7 @@ export const house = {
           -5.2
         ],
         [
-          0,
+          -0.6,
           -5.2
         ]
       ],
@@ -1011,7 +1014,8 @@ export const house = {
         "sourceId": "SRC-PLAN",
         "page": 2
       },
-      "calibrationId": "cal-f2-v1"
+      "calibrationId": "cal-f2-v1",
+      "reviewNote": "Owner correction: west upper-storey face is flush with ground floor; absorb the former narrow service-roof ledge into the upper footprint for screen presentation."
     },
     {
       "id": "f2-208-vent-space",
@@ -1107,7 +1111,7 @@ export const house = {
       "kind": "balcony",
       "polygon": [
         [
-          0,
+          -0.6,
           0
         ],
         [
@@ -1135,7 +1139,7 @@ export const house = {
           0.6
         ],
         [
-          0,
+          -0.6,
           0.6
         ]
       ],
@@ -1148,42 +1152,8 @@ export const house = {
         "sourceId": "SRC-PLAN",
         "page": 2
       },
-      "calibrationId": "cal-f2-v1"
-    },
-    {
-      "id": "f2-211-service-roof",
-      "floor": "f2",
-      "name": "หลังคาพื้นที่บริการ",
-      "planLabel": "211",
-      "kind": "service",
-      "polygon": [
-        [
-          -0.6,
-          -10.3
-        ],
-        [
-          0,
-          -10.3
-        ],
-        [
-          0,
-          -3.5
-        ],
-        [
-          -0.6,
-          -3.5
-        ]
-      ],
-      "levelOffset": -0.04,
-      "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
-      "evidenceStatus": "derived",
-      "geometryStatus": "draft",
-      "sourceRef": {
-        "sourceId": "SRC-PLAN",
-        "page": 2
-      },
-      "calibrationId": "cal-f2-v1"
+      "calibrationId": "cal-f2-v1",
+      "reviewNote": "Owner correction: west upper-storey face is flush with ground floor; absorb the former narrow service-roof ledge into the upper footprint for screen presentation."
     }
   ],
   "walls": [
@@ -1360,11 +1330,12 @@ export const house = {
           "width": 0.85,
           "height": 2.05,
           "sill": 0,
-          "kind": "door"
+          "kind": "window"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Owner clarification 2026-09-24: the carport enters the main house only through food preparation, which is open to dining."
     },
     {
       "id": "f1-prep-front",
@@ -1386,11 +1357,15 @@ export const house = {
           "width": 1.2,
           "height": 2.1,
           "sill": 0,
-          "kind": "door"
+          "kind": "door",
+          "hingeSide": "start",
+          "swingInto": "f1-g04-prep",
+          "placementStatus": "owner-confirmed"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Owner clarification 2026-09-24: the carport enters the main house only through food preparation, which is open to dining."
     },
     {
       "id": "f1-dining-west",
@@ -1412,11 +1387,12 @@ export const house = {
           "width": 0.85,
           "height": 2.1,
           "sill": 0,
-          "kind": "door"
+          "kind": "window"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Owner clarification 2026-09-24: the carport enters the main house only through food preparation, which is open to dining."
     },
     {
       "id": "f1-kitchen-west",
@@ -1592,7 +1568,7 @@ export const house = {
         {
           "offset": 0.2,
           "width": 0.7,
-          "height": 2.0,
+          "height": 2,
           "sill": 0,
           "kind": "door"
         }
@@ -1635,7 +1611,7 @@ export const house = {
       ],
       "b": [
         8.5,
-        -8.0
+        -8
       ],
       "exterior": false,
       "height": 2.7,
@@ -1653,7 +1629,7 @@ export const house = {
       ],
       "b": [
         10.7,
-        -8.0
+        -8
       ],
       "exterior": false,
       "height": 2.7,
@@ -1678,15 +1654,18 @@ export const house = {
       "thickness": 0.1,
       "openings": [
         {
-          "offset": 0.4,
+          "offset": 1.25,
           "width": 0.8,
           "height": 2.05,
           "sill": 0,
-          "kind": "door"
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f1-g06-bath"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 1: bathroom G06 door is at the southeast/front corner, beside the washbasin wall; the west wall is continuous."
     },
     {
       "id": "f1-rear-sitting-partition",
@@ -1718,7 +1697,7 @@ export const house = {
       "id": "f2-back",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         -10.3
       ],
       "b": [
@@ -1730,21 +1709,21 @@ export const house = {
       "thickness": 0.15,
       "openings": [
         {
-          "offset": 0.55,
+          "offset": 1.15,
           "width": 2.3,
           "height": 1.8,
           "sill": 0.5,
           "kind": "window"
         },
         {
-          "offset": 5.75,
+          "offset": 6.35,
           "width": 1,
           "height": 1.15,
           "sill": 1.05,
           "kind": "window"
         },
         {
-          "offset": 9.95,
+          "offset": 10.549999999999999,
           "width": 0.9,
           "height": 0.65,
           "sill": 1.6,
@@ -1758,11 +1737,11 @@ export const house = {
       "id": "f2-west",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         -10.3
       ],
       "b": [
-        0,
+        -0.6,
         0
       ],
       "exterior": true,
@@ -1838,7 +1817,7 @@ export const house = {
       "id": "f2-front-left",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         0
       ],
       "b": [
@@ -1850,7 +1829,7 @@ export const house = {
       "thickness": 0.15,
       "openings": [
         {
-          "offset": 1.15,
+          "offset": 1.75,
           "width": 3.15,
           "height": 2.3,
           "sill": 0,
@@ -1970,7 +1949,7 @@ export const house = {
       "id": "f2-203-front",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         -6.9
       ],
       "b": [
@@ -1982,15 +1961,27 @@ export const house = {
       "thickness": 0.1,
       "openings": [
         {
-          "offset": 3.75,
+          "offset": 3.0500000000000003,
+          "width": 0.75,
+          "height": 2.05,
+          "sill": 0,
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f2-207-bath"
+        },
+        {
+          "offset": 4.35,
           "width": 0.85,
           "height": 2.1,
           "sill": 0,
-          "kind": "door"
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f2-203-bedroom"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2: separate doors connect bedroom 203 to its bathroom 207 at the northeast bathroom corner, and to hall 204 farther east."
     },
     {
       "id": "f2-baths-east",
@@ -2006,34 +1997,20 @@ export const house = {
       "exterior": false,
       "height": 2.7,
       "thickness": 0.1,
-      "openings": [
-        {
-          "offset": 0.35,
-          "width": 0.75,
-          "height": 2.05,
-          "sill": 0,
-          "kind": "door"
-        },
-        {
-          "offset": 2.2,
-          "width": 0.75,
-          "height": 2.05,
-          "sill": 0,
-          "kind": "door"
-        }
-      ],
+      "openings": [],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2 detailed review: east-wall circles are washbasins, not doors; bathroom 207 opens north to bedroom 203 and bathroom 206 opens south to bedroom 202."
     },
     {
       "id": "f2-middle-partition",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         -5.2
       ],
       "b": [
-        9.8,
+        5.5,
         -5.2
       ],
       "exterior": false,
@@ -2041,28 +2018,24 @@ export const house = {
       "thickness": 0.1,
       "openings": [
         {
-          "offset": 3.55,
+          "offset": 4.35,
           "width": 0.85,
           "height": 2.1,
           "sill": 0,
-          "kind": "door"
-        },
-        {
-          "offset": 6.15,
-          "width": 2.75,
-          "height": 2.3,
-          "sill": 0,
-          "kind": "open-passage"
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f2-202-bedroom"
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2: the hall/living-room boundary from x=5.5 to x=9.8 is an open beam line, not a partition wall."
     },
     {
       "id": "f2-206-front",
       "floor": "f2",
       "a": [
-        0,
+        -0.6,
         -3.5
       ],
       "b": [
@@ -2072,9 +2045,20 @@ export const house = {
       "exterior": false,
       "height": 2.7,
       "thickness": 0.1,
-      "openings": [],
+      "openings": [
+        {
+          "offset": 3.0,
+          "width": 0.75,
+          "height": 2.05,
+          "sill": 0,
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f2-206-bath"
+        }
+      ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2: bathroom 206 opens south into bedroom 202 beside the east-wall washbasin."
     },
     {
       "id": "f2-202-east",
@@ -2114,7 +2098,9 @@ export const house = {
           "width": 0.95,
           "height": 2.15,
           "sill": 0,
-          "kind": "door"
+          "kind": "door",
+          "hingeSide": "start",
+          "swingInto": "f2-201-bedroom"
         }
       ],
       "evidenceStatus": "derived",
@@ -2136,14 +2122,7 @@ export const house = {
       "thickness": 0.1,
       "openings": [
         {
-          "offset": 0.35,
-          "width": 0.75,
-          "height": 2.05,
-          "sill": 0,
-          "kind": "door"
-        },
-        {
-          "offset": 2.4,
+          "offset": 1.8,
           "width": 1.2,
           "height": 2.2,
           "sill": 0,
@@ -2151,7 +2130,8 @@ export const house = {
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2: 1.20 m opening at the west edge of dressing-room frontage; bedroom 201 has no direct door to bathroom 205."
     },
     {
       "id": "f2-dressing-west",
@@ -2167,9 +2147,20 @@ export const house = {
       "exterior": false,
       "height": 2.7,
       "thickness": 0.1,
-      "openings": [],
+      "openings": [
+        {
+          "offset": 1.95,
+          "width": 0.8,
+          "height": 2.05,
+          "sill": 0,
+          "kind": "door",
+          "hingeSide": "end",
+          "swingInto": "f2-205-bath"
+        }
+      ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Plan page 2: bathroom 205 is accessed from dressing room 201/1 through its east wall."
     },
     {
       "id": "f2-bath-west",
@@ -2423,7 +2414,7 @@ export const house = {
         {
           "id": "f1-cp15",
           "pixelXY": [
-            734.0,
+            734,
             1341.31
           ],
           "worldXZ": [
@@ -2687,5 +2678,35 @@ export const house = {
   "sourceCounts": {
     "planPages": 2,
     "photographs": 23
-  }
+  },
+  "photoBindings": [
+    {
+      "photoSetId": "photos-bedroom",
+      "spaceId": "f2-201-bedroom",
+      "status": "confirmed",
+      "method": "owner-confirmed",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "evidence": [
+        {
+          "sourceId": "OWNER-REVIEW",
+          "note": "Owner identified bedroom 201 and its headboard direction; bedrooms 202 and 203 have no photographs."
+        }
+      ]
+    },
+    {
+      "photoSetId": "photos-study",
+      "spaceId": "f2-204-1-lounge",
+      "status": "confirmed",
+      "method": "owner-confirmed",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "evidence": [
+        {
+          "sourceId": "OWNER-REVIEW",
+          "note": "Owner identified the upstairs lounge, with the sofa beside bedroom 201 and computers beside bedroom 202."
+        }
+      ]
+    }
+  ]
 };

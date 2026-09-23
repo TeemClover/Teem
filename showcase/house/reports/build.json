@@ -1,17 +1,17 @@
 {
   "inputs": {
     "app/data/house.js": {
-      "bytes": 55524,
+      "bytes": 58849,
       "imports": [],
       "format": "esm"
     },
     "app/data/photos.js": {
-      "bytes": 13543,
+      "bytes": 13944,
       "imports": [],
       "format": "esm"
     },
     "app/state.js": {
-      "bytes": 4466,
+      "bytes": 4795,
       "imports": [],
       "format": "esm"
     },
@@ -32,6 +32,17 @@
           "path": "node_modules/three/build/three.core.js",
           "kind": "import-statement",
           "original": "./three.core.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/environments/RoomEnvironment.js": {
+      "bytes": 4899,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
         }
       ],
       "format": "esm"
@@ -58,8 +69,13 @@
       ],
       "format": "esm"
     },
+    "app/scene/assembly.js": {
+      "bytes": 734,
+      "imports": [],
+      "format": "esm"
+    },
     "app/scene/materials.js": {
-      "bytes": 4251,
+      "bytes": 5178,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -81,7 +97,7 @@
       "format": "esm"
     },
     "app/scene/furniture.js": {
-      "bytes": 9993,
+      "bytes": 21769,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -97,12 +113,17 @@
       "format": "esm"
     },
     "app/scene.js": {
-      "bytes": 40254,
+      "bytes": 44777,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
           "kind": "import-statement",
           "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+          "kind": "import-statement",
+          "original": "three/addons/environments/RoomEnvironment.js"
         },
         {
           "path": "node_modules/three/examples/jsm/controls/OrbitControls.js",
@@ -113,6 +134,11 @@
           "path": "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js",
           "kind": "import-statement",
           "original": "three/addons/utils/BufferGeometryUtils.js"
+        },
+        {
+          "path": "app/scene/assembly.js",
+          "kind": "import-statement",
+          "original": "./scene/assembly.js"
         },
         {
           "path": "app/scene/materials.js",
@@ -128,7 +154,7 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 37683,
+      "bytes": 41000,
       "imports": [
         {
           "path": "app/data/house.js",
@@ -158,7 +184,7 @@
     "assets/home.js": {
       "imports": [
         {
-          "path": "assets/scene-WQHJRUZ3.js",
+          "path": "assets/scene-HKGZ4XOA.js",
           "kind": "dynamic-import"
         }
       ],
@@ -166,21 +192,21 @@
       "entryPoint": "app/main.js",
       "inputs": {
         "app/data/house.js": {
-          "bytesInOutput": 35027
+          "bytesInOutput": 38288
         },
         "app/data/photos.js": {
-          "bytesInOutput": 16457
+          "bytesInOutput": 16787
         },
         "app/state.js": {
-          "bytesInOutput": 2409
+          "bytesInOutput": 2612
         },
         "app/main.js": {
-          "bytesInOutput": 46656
+          "bytesInOutput": 50472
         }
       },
-      "bytes": 100550
+      "bytes": 108160
     },
-    "assets/scene-WQHJRUZ3.js": {
+    "assets/scene-HKGZ4XOA.js": {
       "imports": [],
       "exports": [
         "createHouseScene"
@@ -188,10 +214,13 @@
       "entryPoint": "app/scene.js",
       "inputs": {
         "node_modules/three/build/three.core.js": {
-          "bytesInOutput": 205669
+          "bytesInOutput": 213157
         },
         "node_modules/three/build/three.module.js": {
-          "bytesInOutput": 321338
+          "bytesInOutput": 321463
+        },
+        "node_modules/three/examples/jsm/environments/RoomEnvironment.js": {
+          "bytesInOutput": 1900
         },
         "node_modules/three/examples/jsm/controls/OrbitControls.js": {
           "bytesInOutput": 19075
@@ -199,20 +228,23 @@
         "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js": {
           "bytesInOutput": 3724
         },
+        "app/scene/assembly.js": {
+          "bytesInOutput": 379
+        },
         "app/scene/materials.js": {
-          "bytesInOutput": 2739
+          "bytesInOutput": 3494
         },
         "node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js": {
           "bytesInOutput": 1667
         },
         "app/scene/furniture.js": {
-          "bytesInOutput": 6861
+          "bytesInOutput": 14598
         },
         "app/scene.js": {
-          "bytesInOutput": 24414
+          "bytesInOutput": 26739
         }
       },
-      "bytes": 585714
+      "bytes": 606423
     }
   }
 }

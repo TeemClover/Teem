@@ -1,3 +1,35 @@
+# Flush west elevation release — 2026-09-24
+
+User authorized main publication after one final fix: the upper west face beside bedrooms202/203 now aligns with the lower wall atx=-0.6. Extend adjoining upper slabs/edgewalls/roofeave together and remove the obsolete narrow211ledge. Remaining layout and controls are unchanged from the approved Studio preview.
+
+37 tests pass, including a regression for matching west faces and removedledge; build, data validation and public audit pass. Browser reviewed the same west/front angle as the supplied screenshot: no remaining setback.30 selectable spaces;21photos; no downloadable files. Earlier local-only notes below are historical and superseded by the latest publish instruction. Production deployment is not established by these local checks.
+
+---
+
+# Owner corrections / screen presentation — 2026-09-24
+
+Latest work remains local and uncommitted on `codex/home-explorer`; no push, merge or deployment. Owner explicitly prefers an attractive on-screen model over exact real-world proportions, while keeping the specified doors, circulation and furniture sides.
+
+Build, JavaScript syntax, 36 tests, house validation and public audit pass. New regression checks cover shell closure below floor 2, sole direct carport entry into prep, prep→dining clearance, lounge→hall opening, bathroom routes (201→dressing→205,202→206,203→207), chair facing, distinct bedroom furniture, sofa/desk sides and fixture doorway clearance. No download files are shipped.
+
+Actual desktop browser inspection at958×952: whole/front and rear shell join, isolated lounge, bedroom201/202, bathroom205, diningchairs, and updatedplan door symbols. No browser console errors observed. Removed the spanning curtain pelmets that obscured cutaway rooms; selected camera angles favor visible furniture. Screenshots are local ignored files. No new physical-mobile or performance benchmark claim.
+
+Photo binding now has2owner-confirmed sets(201 bedroom, upstairs lounge),4candidate sets,2context sets. Bedrooms202/203 have no photos. These corrections do not establish surveyed or construction accuracy.
+
+---
+
+# Local Home Studio revision — 2026-09-24
+
+This latest revision is local only: no new commit, push, merge or deployment. Previous main release cf331f57 is unchanged. No plan/guide/ZIP downloads remain in the current local app tree or UI; older release notes below are historical.
+
+Build, JavaScript syntax, 25 tests, geometry validation and public-output audit pass. Added regression checks for independent fixed/movable layers and absence of downloadable artifacts. Browser inspection at measured desktop sizes 958x952 and 1265x720 found no console errors. Verified room collection, isolated living/kitchen/bedroom, separate built-in/furniture toggles and overhead camera. Further current screenshots/checks are stored locally.
+
+Photo-led updates: pale L sofa and patterned cushions, four metal/glass coffee tables, fluted TV cabinetry, mirrored shelving, dining setting, upper kitchen cabinets/backsplash/island, leather platform bed, wall panels/curtains and work desk. Solar modules now occupy adjacent roof faces, with rectangular geometry. Materials and lighting refined. Placement, dimensions and mapping remain provisional; this is a stylized interactive reconstruction, not a photogrammetry scan or surveyed as-built model.
+
+Graphite/blue spatial workbench replaces the earlier cream/green presentation. Grid, camera presets and layer controls support exploration; furniture cannot yet be dragged/repositioned. Current revision prioritizes desktop; no new physical-mobile or full performance benchmark claim.
+
+---
+
 # Release revision — 2026-09-24
 
 Release checks: build, syntax, 23 tests and public audit pass. Browser verified official logo and disabled student-material button; direct local URL checks return 200 for both free SVG plans/logo and 404 for the old guide, source/starter ZIPs, data JSON, download README and source-kit generator.

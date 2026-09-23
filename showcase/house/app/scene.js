@@ -1,10 +1,12 @@
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { assemblyBands } from './scene/assembly.js';
 import { createMaterials } from './scene/materials.js';
-import { box, cylinder, createFurniture, createTree, roomBounds } from './scene/furniture.js';
+import { box, cylinder, createFurniture, createBuiltins, createTree, roomBounds } from './scene/furniture.js';
 
-const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced'};
+const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,builtins:true,grid:true,isolate:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced'};
 const EXPLODED_GAP = 6.2; // Presentation distance only; source floor elevations remain unchanged.
 const UP = new THREE.Vector3(0,1,0);
 
@@ -34,6 +36,7 @@ function polygonCentroid(polygon) {
 }
 
 function roomFloorId(room) { return room.floor || room.floorId; }
+function roomCameraYaw(room) { return room?.floor==='f2'&&room.kind!=='lounge'?.65:-.65; }
 function floorHeight(house,id) { return house.floors?.find(f=>f.id===id)?.elevation ?? (id==='f2'?3.29:0); }
 function point(p) { return Array.isArray(p)?p:[p.x,p.z]; }
 function ease(t) { return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2; }
@@ -58,7 +61,7 @@ function consolidate(group) {
   }
 }
 
-function makeWall(wall,materials,defaults) {
+function makeWall(wall,materials,defaults,rooms=[]) {
   const a=point(wall.a),b=point(wall.b),dx=b[0]-a[0],dz=b[1]-a[1],length=Math.hypot(dx,dz);
   if(length<.02)return null;
   const group=new THREE.Group();group.position.set(a[0],0,a[1]);group.rotation.y=-Math.atan2(dz,dx);
@@ -93,9 +96,13 @@ function makeWall(wall,materials,defaults) {
     box(full,[frame,h,thickness+.035],[x+w/2,y,0],frameMat);
     if(o.kind==='door'&&w<1.3) {
       // Open leaves keep actual wall openings legible from the interior.
-      const leaf=new THREE.Group();leaf.position.set(x-w/2,o.sill,0);leaf.rotation.y=.5;full.add(leaf);
-      box(leaf,[w-.08,h-.07,.045],[(w-.08)/2,h/2,0],materials.taupe);
-      box(leaf,[.07,.04,.1],[w-.2,h*.48,.04],materials.brass);
+      const hingeEnd=o.hingeSide==='end',leafSign=hingeEnd?-1:1;
+      const target=rooms.find(r=>r.id===o.swingInto);
+      const targetCenter=target?polygonCentroid(target.polygon):null;
+      const localSide=targetCenter?Math.sign((-dz*(targetCenter[0]-a[0])+dx*(targetCenter[1]-a[1]))/length):1;
+      const leaf=new THREE.Group();leaf.position.set(x+(hingeEnd?1:-1)*w/2,o.sill,0);leaf.rotation.y=-leafSign*(localSide||1)*1.12;full.add(leaf);
+      box(leaf,[w-.08,h-.07,.045],[leafSign*(w-.08)/2,h/2,0],materials.taupe);
+      box(leaf,[.07,.04,.1],[leafSign*(w-.2),h*.48,.04],materials.brass);
       box(low,[w,.025,thickness*1.7],[x,.015,0],materials.timber);
     } else {
       const glass=box(full,[w-.08,h-.075,.025],[x,y,0],materials.glass);glass.castShadow=false;
@@ -150,16 +157,21 @@ function addHipRoof(parent,{x0,x1,z0,z1,y,rise},materials,solar=false) {
   box(parent,[.12,.17,depth],[x0,y-.055,(z0+z1)/2],materials.trim);
   box(parent,[.12,.17,depth],[x1,y-.055,(z0+z1)/2],materials.trim);
   if(solar) {
-    // Count and exact placement are illustrative; aerial evidence establishes two dark arrays.
-    const face=surfaces[1];
-    const blend=(u,v)=>{
-      const lower=new THREE.Vector3(...face[0]).lerp(new THREE.Vector3(...face[1]),u);
-      const upper=new THREE.Vector3(...face[3]).lerp(new THREE.Vector3(...face[2]),u);
-      const result=lower.lerp(upper,v);result.y+=.047;return result.toArray();
-    };
-    for(let row=0;row<3;row++)for(let col=0;col<4;col++) {
-      const u0=.12+col*.19,u1=u0+.176,v0=.15+row*.23,v1=v0+.213;
-      addQuad(parent,[blend(u0,v0),blend(u1,v0),blend(u1,v1),blend(u0,v1)],materials.solar);
+    // Two adjacent roof faces, following the aerial image. Module count is still provisional.
+    for(const face of [surfaces[1],surfaces[3]]) {
+      const a=new THREE.Vector3(...face[0]),b=new THREE.Vector3(...face[1]),c=new THREE.Vector3(...face[2]),d=new THREE.Vector3(...face[3]);
+      const base=a.clone().add(b).multiplyScalar(.5),top=c.clone().add(d).multiplyScalar(.5);
+      const across=b.clone().sub(a).normalize(),slope=top.clone().sub(base),length=slope.length(),up=slope.clone().normalize();
+      const bottomWidth=a.distanceTo(b),topWidth=c.distanceTo(d),panelW=1.02,panelH=1.28;
+      for(let row=0;row<2;row++) {
+        const h0=.32+row*1.35,h1=h0+panelH;if(h1>length-.2)continue;
+        const available=bottomWidth+(topWidth-bottomWidth)*h1/length-.55,cols=Math.max(0,Math.floor(available/1.09));
+        for(let col=0;col<cols;col++) {
+          const x=(col-(cols-1)/2)*1.09;
+          const point=(xx,hh)=>base.clone().addScaledVector(across,xx).addScaledVector(up,hh).add(new THREE.Vector3(0,.065,0)).toArray();
+          addQuad(parent,[point(x-panelW/2,h0),point(x+panelW/2,h0),point(x+panelW/2,h1),point(x-panelW/2,h1)],materials.solar);
+        }
+      }
     }
   }
 }
@@ -216,30 +228,46 @@ function buildStage(scene,materials) {
   group.add(base);consolidate(base);consolidate(trees);return {group,trees};
 }
 
-function buildFacade(floorGroups,roof,materials) {
+function buildFacade(floorGroups,house,materials,defaults) {
   const f1=floorGroups.get('f1'),f2=floorGroups.get('f2');
   if(!f1||!f2)return;
   const wholeDetails=new THREE.Group();wholeDetails.name='whole-facade-details';f1.group.add(wholeDetails);
-  // Paired carport columns and deep pale fascia observed in the street photographs.
+  const details2=new THREE.Group();details2.name='balcony-rails';f2.group.add(details2);
+  const structure=new THREE.Group();structure.name='assembled-floor-and-eave-bands';wholeDetails.add(structure);
+  for(const {wall,bottom,top,depth} of assemblyBands(house,defaults)) {
+    const dx=wall.b[0]-wall.a[0],dz=wall.b[1]-wall.a[1],length=Math.hypot(dx,dz);
+    const band=box(structure,[length+.015,top-bottom,depth+.035],[(wall.a[0]+wall.b[0])/2,floorHeight(house,wall.floor)+(top+bottom)/2,(wall.a[1]+wall.b[1])/2],materials.wall);
+    band.rotation.y=-Math.atan2(dz,dx);
+  }
+  const floor2=floorHeight(house,'f2');
+  // Carport columns reach the same underside datum as the upper floor.
+  const carportBottom=house.rooms.find(r=>r.id==='f1-carport').levelOffset;
+  const supportTop=floor2-defaults.slabThickness;
   for(const x of [.05,5.4]) {
-    box(wholeDetails,[.27,3.3,.34],[x,1.29,.25],materials.taupe);
-    box(wholeDetails,[.36,.1,.43],[x,-.31,.25],materials.trim);
+    box(wholeDetails,[.27,supportTop-carportBottom,.34],[x,(supportTop+carportBottom)/2,.25],materials.taupe);
+    box(wholeDetails,[.36,.1,.43],[x,carportBottom+.05,.25],materials.trim);
   }
-  box(wholeDetails,[5.8,.24,.52],[2.7,2.88,.18],materials.trim);
-  box(wholeDetails,[5.8,.13,3.9],[2.7,2.94,-1.52],materials.trim);
-  const details2=new THREE.Group();details2.name='balcony-and-facade';f2.group.add(details2);
-  const balcony=(x0,x1,z)=>{
-    box(details2,[x1-x0,.17,.98],[(x0+x1)/2,-.14,z-.2],materials.trim);
-    box(details2,[x1-x0,.88,.035],[(x0+x1)/2,.48,z+.24],materials.glass).castShadow=false;
-    box(details2,[x1-x0,.035,.045],[(x0+x1)/2,.94,z+.24],materials.frame);
-    for(let x=x0;x<=x1+.01;x+=Math.max(1,(x1-x0)/3))box(details2,[.04,.94,.04],[x,.47,z+.24],materials.frame);
-  };
-  balcony(.18,5.25,.3);balcony(10.15,13.9,-1.35);
-  for(const [x,z] of [[-.14,.08],[5.5,.08],[9.72,-1.6],[14.16,-1.6]]) {
-    box(details2,[.22,2.85,.26],[x,1.35,z],materials.taupe);
-    for(const dx of [-.065,.065])box(details2,[.025,2.55,.038],[x+dx,1.36,z+.153],materials.trim);
+  // The plan has shallow front projections: fill beneath them, do not shift floor 2.
+  box(wholeDetails,[5.7,floor2-2.7,.54],[2.7,(floor2+2.7)/2,.15],materials.trim);
+  box(wholeDetails,[4.3,floor2-2.7,.66],[7.65,(floor2+2.7)/2,-1.88],materials.wall);
+  box(wholeDetails,[4.45,floor2-2.7,.4],[11.975,(floor2+2.7)/2,-1.95],materials.wall);
+  // Balcony floors already come from the plan; only add rails on exposed edges.
+  for(const id of ['f2-209-balcony','f2-210-balcony']) {
+    const room=house.rooms.find(r=>r.id===id),zBack=Math.min(...room.polygon.map(p=>p[1]));
+    for(let i=0;i<room.polygon.length;i++) {
+      const a=room.polygon[i],b=room.polygon[(i+1)%room.polygon.length];
+      if(a[1]===zBack&&b[1]===zBack)continue;
+      const dx=b[0]-a[0],dz=b[1]-a[1],length=Math.hypot(dx,dz);if(length<.3)continue;
+      const rail=new THREE.Group();rail.position.set(a[0],room.levelOffset||0,a[1]);rail.rotation.y=-Math.atan2(dz,dx);details2.add(rail);
+      box(rail,[length,.82,.026],[length/2,.5,0],materials.glass).castShadow=false;
+      box(rail,[length,.045,.055],[length/2,.94,0],materials.frame);
+      const n=Math.ceil(length/1.35);
+      for(let j=0;j<=n;j++)box(rail,[.04,.94,.04],[j*length/n,.47,0],materials.frame);
+    }
   }
-  box(details2,[4.22,.12,.42],[11.93,2.64,-1.65],materials.trim);
+  for(const [x,z] of [[-.64,.025],[5.45,.025],[9.75,-1.82],[14.12,-1.82]]) {
+    box(wholeDetails,[.16,2.7,.2],[x,floor2+1.35,z],materials.taupe);
+  }
   consolidate(wholeDetails);consolidate(details2);return {wholeDetails,details2};
 }
 
@@ -251,12 +279,14 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   } catch(error) {onError(error);return {setState(){},zoom(){},rotate(){},reset(){},resize(){},dispose(){},getStats(){return {webgl:false};}};}
   renderer.setClearColor(0x000000,0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.16;
+  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;
   renderer.domElement.setAttribute('aria-label','โมเดลบ้าน 3 มิติ หมุนด้วยการลาก ซูมด้วยลูกกลิ้งหรือปุ่มควบคุม');
   renderer.domElement.style.cssText='width:100%;height:100%;display:block;touch-action:none;outline:none;';
   container.appendChild(renderer.domElement);
   const scene=new THREE.Scene();
+  const environmentGenerator=new THREE.PMREMGenerator(renderer),environmentRoom=new RoomEnvironment();
+  const environmentTarget=environmentGenerator.fromScene(environmentRoom,.04);scene.environment=environmentTarget.texture;scene.environmentIntensity=.45;environmentRoom.dispose();environmentGenerator.dispose();
   const camera=new THREE.OrthographicCamera(-13,13,13,-13,.1,180);
   camera.position.set(25,22,27);camera.lookAt(6.8,1.8,-4.4);
   const controls=new OrbitControls(camera,renderer.domElement);
@@ -269,17 +299,18 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   // Only numeric presentation assumptions enter geometry; provenance lives in the data ledger.
   for(const key of Object.keys(defaults))if(typeof defaults[key]==='object')defaults[key]=defaults[key]?.value;
   for(const [key,value] of Object.entries({wallHeight:2.7,slabThickness:.18,exteriorWallThickness:.15,interiorWallThickness:.1,cutawayHeight:.9}))if(!Number.isFinite(defaults[key]))defaults[key]=value;
-  scene.add(new THREE.HemisphereLight('#f9fbf7','#b5b09e',2.25));
-  const sun=new THREE.DirectionalLight('#fff5dd',3.1);sun.position.set(-10,22,13);sun.target.position.set(6,0,-4);scene.add(sun,sun.target);
+  scene.add(new THREE.HemisphereLight('#e6edf7','#818b96',1.22));
+  const sun=new THREE.DirectionalLight('#fff5e5',2.7);sun.position.set(-10,22,13);sun.target.position.set(6,0,-4);scene.add(sun,sun.target);
   sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-21;sun.shadow.camera.right=21;sun.shadow.camera.top=21;sun.shadow.camera.bottom=-21;
   sun.shadow.camera.near=.5;sun.shadow.camera.far=70;sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;sun.shadow.radius=4;
-  const fill=new THREE.DirectionalLight('#dce8ed',1.1);fill.position.set(16,12,-12);scene.add(fill);
-  const ground=new THREE.Mesh(new THREE.PlaneGeometry(180,180),new THREE.ShadowMaterial({color:'#6d6855',opacity:.17}));ground.rotation.x=-Math.PI/2;ground.position.y=-1.01;ground.receiveShadow=true;scene.add(ground);
+  const fill=new THREE.DirectionalLight('#dce8ed',.6);fill.position.set(16,12,-12);scene.add(fill);
+  const ground=new THREE.Mesh(new THREE.PlaneGeometry(180,180),new THREE.ShadowMaterial({color:'#243142',opacity:.16}));ground.rotation.x=-Math.PI/2;ground.position.y=-1.01;ground.receiveShadow=true;scene.add(ground);
+  const grid=new THREE.GridHelper(42,42,'#8094aa','#b1bdca');grid.position.set(6.8,-1,-4.35);grid.material.transparent=true;grid.material.opacity=.35;scene.add(grid);
   const stage=buildStage(scene,materials),floorGroups=new Map(),wallRecords=[],roomRecords=new Map(),picks=[];
   for(const id of ['f1','f2']) {
     const group=new THREE.Group();group.name=`floor:${id}`;group.position.y=floorHeight(house,id);scene.add(group);
-    const furniture=new THREE.Group(),furnitureBatch=new THREE.Group(),ceilings=new THREE.Group(),surfaces=new THREE.Group(),wallBatch=new THREE.Group();group.add(furniture,furnitureBatch,ceilings,surfaces,wallBatch);
-    floorGroups.set(id,{group,furniture,furnitureBatch,ceilings,surfaces,wallBatch,wallMask:'',baseY:group.position.y});
+    const builtins=new THREE.Group(),builtinsBatch=new THREE.Group(),furniture=new THREE.Group(),furnitureBatch=new THREE.Group(),ceilings=new THREE.Group(),surfaces=new THREE.Group(),wallBatch=new THREE.Group();group.add(furniture,furnitureBatch,builtins,builtinsBatch,ceilings,surfaces,wallBatch);
+    floorGroups.set(id,{group,furniture,furnitureBatch,builtins,builtinsBatch,ceilings,surfaces,wallBatch,wallMask:'',baseY:group.position.y});
   }
   for(const room of house.rooms||[]) {
     if(!Array.isArray(room.polygon)||room.polygon.length<3)continue;
@@ -299,8 +330,9 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const pick=polygonMesh(room.polygon,materials.invisible);pick.position.y=.035;pick.visible=false;pick.userData.roomId=room.id;roomGroup.add(pick);picks.push(pick);
     const highlight=polygonMesh(room.polygon,materials.selected);highlight.position.y=.048;highlight.visible=false;highlight.renderOrder=3;roomGroup.add(highlight);
     const positions=room.polygon.concat([room.polygon[0]]).map(([x,z])=>new THREE.Vector3(x,.055,z));
-    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(positions),new THREE.LineBasicMaterial({color:'#28694f',transparent:true,opacity:.9}));line.visible=false;line.renderOrder=4;roomGroup.add(line);
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(positions),new THREE.LineBasicMaterial({color:'#367dde',transparent:true,opacity:.9}));line.visible=false;line.renderOrder=4;roomGroup.add(line);
     const furniture=createFurniture(room,materials);consolidate(furniture);furniture.position.y=offset;floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
+    const fixed=createBuiltins(room,materials);consolidate(fixed);fixed.position.y=offset;floor.builtins.add(fixed);floor.builtinsBatch.add(fixed.clone(true));
     const ceilingGroup=new THREE.Group();floor.ceilings.add(ceilingGroup);
     if(!isVoid&&!['carport','balcony','terrace','laundry','roof'].some(k=>kind.includes(k))) {
       const ceiling=polygonMesh(room.polygon,materials.trim,.075);ceiling.position.y=defaults.wallHeight-.06+offset;ceilingGroup.add(ceiling);
@@ -317,10 +349,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const [cx,cz]=polygonCentroid(room.polygon);
     roomRecords.set(room.id,{room,group:roomGroup,floor,pick,highlight,line,ceilingGroup,individualSurfaces,center:new THREE.Vector3(cx,.12+offset,cz)});
   }
-  for(const floor of floorGroups.values()){consolidate(floor.surfaces);consolidate(floor.furnitureBatch);}
+  for(const floor of floorGroups.values()){consolidate(floor.surfaces);consolidate(floor.furnitureBatch);consolidate(floor.builtinsBatch);}
   for(const wall of house.walls||[]) {
     const floor=floorGroups.get(wall.floor||wall.floorId);if(!floor)continue;
-    const record=makeWall(wall,materials,defaults);if(!record)continue;
+    const record=makeWall(wall,materials,defaults,house.rooms);if(!record)continue;
     floor.group.add(record.group);record.floor=floor;wallRecords.push(record);
   }
   const stairs=buildStairs(floorGroups.get('f1').group,materials,floorHeight(house,'f2'),house.stair);
@@ -328,10 +360,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   landing.name='stair-arrival-landing';
   const roof=new THREE.Group();roof.name='assumed-hip-roof';scene.add(roof);
   const roofY=floorHeight(house,'f2')+defaults.wallHeight+.2,rise=house.roof?.height||1.2,overhang=house.roof?.overhang||.35;
-  addHipRoof(roof,{x0:-overhang,x1:5.5+overhang,z0:-10.3-overhang,z1:overhang,y:roofY+.12,rise},materials,true);
+  addHipRoof(roof,{x0:-.6-overhang,x1:5.5+overhang,z0:-10.3-overhang,z1:overhang,y:roofY+.12,rise},materials,false);
   addHipRoof(roof,{x0:5.25,x1:14.1+overhang,z0:-10.3-overhang,z1:-1.6+overhang,y:roofY,rise},materials,true);
   consolidate(roof);
-  const facade=buildFacade(floorGroups,roof,materials);
+  const facade=buildFacade(floorGroups,house,materials,defaults);
   const explodedGuides=new THREE.Group();scene.add(explodedGuides);
   for(const [x,z] of [[0,0],[14.1,-1.6],[-.6,-10.3],[14.1,-10.3]]) {
     const geometry=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,.05,z),new THREE.Vector3(x,floorHeight(house,'f2')+EXPLODED_GAP,z)]);
@@ -350,20 +382,21 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   function cancelTween() {tween=null;invalidate();}
   function fitToState(animate=true,forceHero=false) {
     const selected=roomRecords.get(state.selectedRoomId),view=state.view;
-    let center=new THREE.Vector3(6.8,2.7,-4.9),boxSize=new THREE.Vector3(19.4,9.1,16.2),polar=.97;
+    let center=new THREE.Vector3(6.8,2.7,-4.9),boxSize=new THREE.Vector3(18.5,8.4,15.2),polar=1.03;
     if(view==='f1'||view==='f2') {
       const fy=floorHeight(house,view);center.set(6.8,fy+.6,-4.9);boxSize.set(16.8,3.5,12.5);polar=.72;
     }
     if(view==='exploded') {center.set(6.8,6,-4.9);boxSize.set(17.5,14,13.1);polar=.93;}
-    if(selected&&view!=='whole') {
+    if(selected&&state.isolate&&view!=='whole') {
       const b=roomBounds(selected.room);center.copy(selected.center);center.y+=selected.floor.group.position.y+.6;
-      boxSize.set(Math.max(4.2,b.w+1.5),3.7,Math.max(4.2,b.d+1.4));polar=.72;
+      boxSize.set(Math.max(3.4,b.w+.5),3.1,Math.max(3.4,b.d+.5));polar=.72;
     }
     const ceilingDetail=Boolean(selected&&state.ceiling&&view!=='whole');
     if(ceilingDetail) {center.y=selected.floor.group.position.y+defaults.wallHeight-.12;polar=1.73;boxSize.y=1.8;}
     const offset=camera.position.clone().sub(controls.target);
     const spherical=new THREE.Spherical().setFromVector3(offset);
-    const yaw=forceHero||!ready?Math.PI*.18:spherical.theta;
+    const roomYaw=roomCameraYaw(selected?.room);
+    const yaw=selected&&state.isolate?roomYaw:forceHero||!ready?Math.PI*.18:spherical.theta;
     const distance=ceilingDetail?8:42,toPosition=center.clone().add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(distance,polar,yaw)));
     // Fit all bbox corners in the final camera basis, using the actual unobscured container.
     const direction=toPosition.clone().sub(center).normalize(),right=new THREE.Vector3().crossVectors(UP,direction).normalize(),vertical=new THREE.Vector3().crossVectors(direction,right).normalize();
@@ -372,8 +405,8 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       const v=new THREE.Vector3(x*boxSize.x/2,y*boxSize.y/2,z*boxSize.z/2);
       spanX=Math.max(spanX,Math.abs(v.dot(right)));spanY=Math.max(spanY,Math.abs(v.dot(vertical)));
     }
-    const base=13,aspect=width/height,pad=selected?1.12:1.055;
-    const toZoom=Math.max(.38,Math.min(3.3,Math.min(base*aspect/(spanX*pad),base/(spanY*pad))));
+    const base=13,aspect=width/height,pad=selected?1.06:1.055;
+    const toZoom=Math.max(.38,Math.min(selected?4:3.3,Math.min(base*aspect/(spanX*pad),base/(spanY*pad))));
     if(!animate||state.reducedMotion||!ready) {
       camera.position.copy(toPosition);controls.target.copy(center);camera.zoom=toZoom;camera.updateProjectionMatrix();controls.update();tween=null;
     } else tween={start:performance.now(),duration:700,fromPosition:camera.position.clone(),toPosition,fromTarget:controls.target.clone(),toTarget:center,fromZoom:camera.zoom,toZoom};
@@ -423,7 +456,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   }
 
   function updateLabels() {
-    if(!state.labels||state.view==='whole'||state.ceiling) {if(lastLabels!=='[]'){onLabels([]);lastLabels='[]';}return;}
+    if(!state.labels||state.view==='whole'||state.ceiling||(state.isolate&&state.selectedRoomId)) {if(lastLabels!=='[]'){onLabels([]);lastLabels='[]';}return;}
     const rects=[],results=[],entries=[...roomRecords.values()].sort((a,b)=>{
       if(a.room.id===state.selectedRoomId)return -1;if(b.room.id===state.selectedRoomId)return 1;
       const ab=roomBounds(a.room),bb=roomBounds(b.room);return bb.w*bb.d-ab.w*ab.d;
@@ -454,10 +487,13 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
 
   function applyVisibility() {
     const whole=state.view==='whole',exploded=state.view==='exploded';
-    const ceilingDetail=Boolean(state.ceiling&&state.selectedRoomId&&!whole&&!exploded),selected=roomRecords.get(state.selectedRoomId);
+    const ceilingDetail=Boolean((state.ceiling||state.isolate)&&state.selectedRoomId&&!whole&&!exploded),selected=roomRecords.get(state.selectedRoomId);
+    if(ceilingDetail&&selected){const b=roomBounds(selected.room);renderer.clippingPlanes=[new THREE.Plane(new THREE.Vector3(1,0,0),-b.x0+.13),new THREE.Plane(new THREE.Vector3(-1,0,0),b.x1+.13),new THREE.Plane(new THREE.Vector3(0,0,1),-b.z0+.13),new THREE.Plane(new THREE.Vector3(0,0,-1),b.z1+.13)];}else renderer.clippingPlanes=[];
     for(const [id,floor] of floorGroups) {
       floor.group.visible=whole||exploded||state.view===id;
       floor.group.position.y=floor.baseY+(exploded&&id==='f2'?EXPLODED_GAP:0);
+      floor.builtins.visible=state.builtins&&ceilingDetail;floor.builtinsBatch.visible=state.builtins&&!ceilingDetail;
+      for(const fixed of floor.builtins.children)fixed.visible=!ceilingDetail||fixed.name===`builtins:${state.selectedRoomId}`;
       floor.furniture.visible=state.furniture&&ceilingDetail;
       floor.furnitureBatch.visible=state.furniture&&!ceilingDetail;
       floor.ceilings.visible=state.ceiling&&!exploded&&!whole;
@@ -476,9 +512,9 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }
     stairs.visible=!ceilingDetail;landing.visible=!ceilingDetail;
     controls.maxPolarAngle=state.ceiling&&state.selectedRoomId?2.15:Math.PI*.465;
-    roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole;
+    ground.visible=!ceilingDetail;roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole;
     if(facade){facade.wholeDetails.visible=whole;facade.details2.visible=!ceilingDetail&&(whole||state.view==='f2'||exploded);}
-    explodedGuides.visible=exploded;
+    explodedGuides.visible=exploded;grid.visible=state.grid&&!ceilingDetail;grid.material.opacity=whole?.17:.3;
     renderer.setPixelRatio(state.quality==='low'?1:Math.min(window.devicePixelRatio||1,1.75));
     renderer.shadowMap.enabled=state.quality!=='low'&&!exploded;
     updateWalls();updateHighlights();invalidate();
@@ -553,7 +589,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       if(state.selectedRoomId&&!roomRecords.has(state.selectedRoomId))state.selectedRoomId=null;
       const viewChanged=previous.view!==state.view,roomChanged=previous.selectedRoomId!==state.selectedRoomId;
       applyVisibility();
-      if(viewChanged||roomChanged||previous.ceiling!==state.ceiling)fitToState(true,state.view==='whole');
+      if(viewChanged||roomChanged||previous.ceiling!==state.ceiling||previous.isolate!==state.isolate)fitToState(true,state.view==='whole');
       if(state.reducedMotion&&tween) {
         camera.position.copy(tween.toPosition);controls.target.copy(tween.toTarget);camera.zoom=tween.toZoom;camera.updateProjectionMatrix();tween=null;controls.update();
       }
@@ -564,6 +600,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
         floorTween={start:performance.now(),duration:750,from:previousFloorY,to};invalidate();
       }
     },
+    cameraPreset(preset) {cancelTween();const polar=preset==='top'?.04:preset==='front'?1.46:1.03,yaw=preset==='front'?0:state.selectedRoomId&&state.isolate?roomCameraYaw(roomRecords.get(state.selectedRoomId)?.room):.58;camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(42,polar,yaw)));controls.update();invalidate();},
     pan(dx,dy) {cancelTween();camera.updateMatrix();const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0).multiplyScalar(dx*(camera.right-camera.left)/(width*camera.zoom));const up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1).multiplyScalar(dy*(camera.top-camera.bottom)/(height*camera.zoom));right.add(up);camera.position.add(right);controls.target.add(right);controls.update();invalidate();},
     zoom(factor) {cancelTween();camera.zoom=THREE.MathUtils.clamp(camera.zoom*factor,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();invalidate();},
     rotate(radians) {cancelTween();const offset=camera.position.clone().sub(controls.target);offset.applyAxisAngle(UP,radians);camera.position.copy(controls.target).add(offset);controls.update();invalidate();},
@@ -578,7 +615,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       const geometries=new Set(),mats=new Set(),textures=new Set();
       scene.traverse(obj=>{if(obj.geometry)geometries.add(obj.geometry);for(const mat of obj.material?(Array.isArray(obj.material)?obj.material:[obj.material]):[]){mats.add(mat);if(mat.map)textures.add(mat.map);}});
       for(const record of wallRecords)for(const pieces of Object.values(record.prepared))for(const piece of pieces)geometries.add(piece.geometry);
-      geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();container.dataset.renderer='disposed';
+      geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());environmentTarget.dispose();renderer.dispose();renderer.domElement.remove();container.dataset.renderer='disposed';
     },
     getStats() {return {webgl:true,renderCount,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,view:state.view,visibleWalls:wallRecords.filter(r=>r.floor.group.visible&&r.full.visible).length,idleForMs:Math.max(0,performance.now()-lastRenderTime),uptimeMs:performance.now()-clockStart,camera:{position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom}};},
   };
