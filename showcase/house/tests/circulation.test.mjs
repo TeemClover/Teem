@@ -52,6 +52,18 @@ function sharedPassages(a, b) {
 
 const passageWidth = (from, to) => Math.max(0, ...sharedPassages(room(from), room(to)).map(p => p.width));
 
+test('front dining glazing matches the broad living glazing without inventing another entry', () => {
+  const facade = wall('f1-front');
+  const [dining, living] = facade.openings;
+  assert.equal(dining.width, living.width);
+  assert.equal(dining.height, living.height);
+  assert.equal(dining.sill, 0);
+  assert.equal(dining.kind, 'window');
+  assert.ok(dining.width > 3);
+  assert.ok(dining.offset + dining.width < living.offset);
+  assert.ok(facade.a[0] + dining.offset + dining.width < 9.8);
+});
+
 test('carport has one direct indoor entry, followed by open preparation-to-dining circulation', () => {
   const carport = room('f1-carport');
   const indoor = house.rooms.filter(r => r.floor === 'f1' && !['carport', 'balcony', 'void'].includes(r.kind));

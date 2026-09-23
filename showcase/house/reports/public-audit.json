@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-23T22:03:38.195Z",
+  "checkedAt": "2026-09-23T23:34:51.802Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -7,31 +7,70 @@
     "esbuild": "0.25.10"
   },
   "scope": "Built public HTML, assets, image derivatives and no downloadable plans or student kits.",
-  "fileCount": 53,
+  "fileCount": 59,
   "errors": [],
   "warnings": [],
+  "bundleGraphs": {
+    "shell": [
+      "assets/home.js"
+    ],
+    "defaultSD": [
+      "assets/chunk-47DC4FHM.js",
+      "assets/chunk-FAIXEBW7.js",
+      "assets/home.js",
+      "assets/scene-NHEHZAUJ.js"
+    ],
+    "optInHDEntryPoints": [
+      "assets/hd-exterior-FQABLQSO.js",
+      "assets/hd-furniture-LRBWA5LZ.js",
+      "assets/hd-materials-ZDYCLHKZ.js",
+      "assets/hd-rendering-SI33SVGB.js"
+    ],
+    "optInHDAdditional": [
+      "assets/hd-exterior-FQABLQSO.js",
+      "assets/hd-furniture-LRBWA5LZ.js",
+      "assets/hd-materials-ZDYCLHKZ.js",
+      "assets/hd-rendering-SI33SVGB.js"
+    ]
+  },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 301940,
-      "gzipBytes": 175300
+      "bytes": 305996,
+      "gzipBytes": 176249
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 908363,
-      "gzipBytes": 335547
+      "bytes": 922983,
+      "gzipBytes": 340426
+    },
+    "optInHDAdditional": {
+      "bytes": 61680,
+      "gzipBytes": 19721
+    },
+    "hdModelWithAllFontFacesAndPreviewImages": {
+      "bytes": 984663,
+      "gzipBytes": 360147
     },
     "imageDerivatives": {
       "bytes": 3161424,
       "gzipBytes": 3163240
     },
     "allPublicFiles": {
-      "bytes": 4045183,
-      "gzipBytes": 3471732
+      "bytes": 4121483,
+      "gzipBytes": 3496332
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 9278,
-      "gzipBytes": 2851
+      "bytes": 9739,
+      "gzipBytes": 2955
+    },
+    "assets/chunk-47DC4FHM.js": {
+      "bytes": 541098,
+      "gzipBytes": 138165
+    },
+    "assets/chunk-FAIXEBW7.js": {
+      "bytes": 16276,
+      "gzipBytes": 6166
     },
     "assets/fonts/OFL.txt": {
       "bytes": 4364,
@@ -53,25 +92,41 @@
       "bytes": 11804,
       "gzipBytes": 11827
     },
+    "assets/hd-exterior-FQABLQSO.js": {
+      "bytes": 5060,
+      "gzipBytes": 2501
+    },
+    "assets/hd-furniture-LRBWA5LZ.js": {
+      "bytes": 9207,
+      "gzipBytes": 3893
+    },
+    "assets/hd-materials-ZDYCLHKZ.js": {
+      "bytes": 6551,
+      "gzipBytes": 2819
+    },
+    "assets/hd-rendering-SI33SVGB.js": {
+      "bytes": 40862,
+      "gzipBytes": 10508
+    },
     "assets/home.css": {
       "bytes": 28037,
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 108160,
-      "gzipBytes": 18555
+      "bytes": 110113,
+      "gzipBytes": 19019
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
       "gzipBytes": 53903
     },
-    "assets/scene-HKGZ4XOA.js": {
-      "bytes": 606423,
-      "gzipBytes": 160247
+    "assets/scene-NHEHZAUJ.js": {
+      "bytes": 59613,
+      "gzipBytes": 19846
     },
     "assets/studio.css": {
-      "bytes": 13272,
-      "gzipBytes": 3973
+      "bytes": 14914,
+      "gzipBytes": 4354
     },
     "media/photos/aerial-roof-thumb.webp": {
       "bytes": 44000,
@@ -242,6 +297,6 @@
       "gzipBytes": 131577
     }
   },
-  "measurement": "On-disk byte counts and gzip level-9 compression estimates. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.",
+  "measurement": "On-disk byte counts and gzip level-9 compression estimates. Default SD follows static dependencies of the shell and lazy scene entry, excluding optional HD dynamic imports. HD additional counts only dependencies absent from SD. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.",
   "publication": "Local artifact audit only. Source rights, layout consent scope, photo privacy review, and deployment authorization are separate from these checks."
 }

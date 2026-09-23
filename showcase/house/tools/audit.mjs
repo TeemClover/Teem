@@ -1,9 +1,26 @@
 import { readFile, writeFile, readdir, stat, mkdir } from 'node:fs/promises';
 import { gzipSync, inflateRawSync } from 'node:zlib';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { photoSets } from '../app/data/photos.js';
 
-const root = path.resolve(import.meta.dirname, '..');
+/** Follow emitted dependencies, keeping optional dynamic imports out of the default graph. */
+export function collectOutputGraph(build, seeds, { includeDynamic = false } = {}) {
+  const outputs = build.outputs || {}, found = new Set(), queue = [...seeds];
+  while (queue.length) {
+    const file = queue.pop();
+    if (found.has(file) || !outputs[file]) continue;
+    found.add(file);
+    for (const dependency of outputs[file].imports || []) {
+      if (dependency.external || (!includeDynamic && dependency.kind === 'dynamic-import')) continue;
+      const target = outputs[dependency.path] ? dependency.path : path.posix.normalize(path.posix.join(path.posix.dirname(file), dependency.path));
+      if (outputs[target]) queue.push(target);
+    }
+  }
+  return [...found].sort();
+}
+
+export async function auditPublic(root = path.resolve(import.meta.dirname, '..')) {
 const errors = [], warnings = [];
 const files = [];
 async function collect(relative) {
@@ -86,10 +103,24 @@ const outputs = new Set(Object.keys(build.outputs));
 const stale = files.filter((file) => /^assets\/.*\.js$/.test(file) && !outputs.has(file));
 if (stale.length) warnings.push(`Unreferenced JavaScript bundles remain in assets: ${stale.join(', ')}`);
 for (const file of outputs) if (!sizes.has(file)) errors.push(`Missing bundled output: ${file}`);
-const initial = ['index.html', 'assets/home.css', 'assets/studio.css', 'assets/home.js', 'assets/myclover-logo.png',
+const entryOutput = (source) => Object.entries(build.outputs).find(([, metadata]) => metadata.entryPoint === source)?.[0];
+const mainOutput = entryOutput('app/main.js'), sceneOutput = entryOutput('app/scene.js');
+if (!mainOutput || !sceneOutput) errors.push('Build metadata must include the application and lazy SD scene entry points');
+const shellGraph = collectOutputGraph(build, [mainOutput]);
+const sdGraph = collectOutputGraph(build, [mainOutput, sceneOutput]);
+const hdEntries = Object.entries(build.outputs).filter(([, metadata]) => /^app\/scene\/hd-[\w-]+\.js$/.test(metadata.entryPoint || '')).map(([file]) => file);
+const hdGraph = collectOutputGraph(build, hdEntries, { includeDynamic: true });
+const hdAdditional = hdGraph.filter((file) => !sdGraph.includes(file));
+for (const file of sdGraph) {
+  if (Object.keys(build.outputs[file].inputs || {}).some((source) => /^app\/scene\/hd-[\w-]+\.js$/.test(source))) {
+    errors.push(`${file}: optional HD implementation is bundled into the default SD loading graph`);
+  }
+}
+const initial = ['index.html', 'assets/home.css', 'assets/studio.css', ...shellGraph, 'assets/myclover-logo.png',
   ...files.filter((file) => file.startsWith('assets/fonts/') && file.endsWith('.woff2')),
   ...['photos-exterior', 'photos-living'].map((id) => photoSets.find((s) => s.id === id)?.photos[0]?.thumb).filter(Boolean)];
-const firstModel = [...new Set([...initial, ...outputs])];
+const firstModel = [...new Set([...initial, ...sdGraph])];
+const upgradedModel = [...new Set([...firstModel, ...hdGraph])];
 function sum(selected) {
   return selected.reduce((result, file) => {
     const size = sizes.get(file);
@@ -107,13 +138,19 @@ const report = {
   checkedAt: new Date().toISOString(), valid: errors.length === 0, environment: { node, ...dependencies },
   scope: 'Built public HTML, assets, image derivatives and no downloadable plans or student kits.',
   fileCount: files.length, errors, warnings,
+  bundleGraphs: { shell: shellGraph, defaultSD: sdGraph, optInHDEntryPoints: hdEntries.sort(), optInHDAdditional: hdAdditional },
   sizes: { shellWithAllFontFacesAndPreviewImages: sum(initial), firstModelWithAllFontFacesAndPreviewImages: sum(firstModel),
+    optInHDAdditional: sum(hdAdditional), hdModelWithAllFontFacesAndPreviewImages: sum(upgradedModel),
     imageDerivatives: sum(files.filter((f) => f.startsWith('media/'))), allPublicFiles: sum(files) },
   perFile: Object.fromEntries(sizes),
-  measurement: 'On-disk byte counts and gzip level-9 compression estimates. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.',
+  measurement: 'On-disk byte counts and gzip level-9 compression estimates. Default SD follows static dependencies of the shell and lazy scene entry, excluding optional HD dynamic imports. HD additional counts only dependencies absent from SD. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.',
   publication: 'Local artifact audit only. Source rights, layout consent scope, photo privacy review, and deployment authorization are separate from these checks.',
 };
 await mkdir(path.join(root, 'reports'), { recursive: true });
 await writeFile(path.join(root, 'reports/public-audit.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ valid: report.valid, environment: report.environment, fileCount: files.length, errors, warnings, sizes: report.sizes, measurement: report.measurement }, null, 2));
 if (!report.valid) process.exitCode = 1;
+return report;
+}
+
+if (path.resolve(process.argv[1] || '') === fileURLToPath(import.meta.url)) await auditPublic();

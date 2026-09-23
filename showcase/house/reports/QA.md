@@ -1,3 +1,21 @@
+# Optional SD / HD graphics — 2026-09-24
+
+User authorized the current graphics revision for main on 2026-09-24. These are local verification results, not proof of production deployment. Original SD materials/furniture are retained. Front dining glazing is widened in shared geometry for both modes. All 53 tests, syntax checks, build, house validation and public audit pass.
+
+Browser checks used the local Chromium preview at desktop 958 × 937 and mobile viewport 390 × 844, including emulated DPR 2. These are desktop/viewport checks, not physical iPhone/Safari or Android measurements. Verified whole exterior, both floors, exploded view, isolated lounge, master bedroom and dining; plan/model navigation; furniture visibility; HD with the low-power setting. No unexpected rendering warnings/errors appeared; two logged import warnings were deliberately induced by blocking HD chunks for fallback testing.
+
+- Fresh SD loads requested zero HD modules. HD activates on demand and leaves camera pose byte-for-byte unchanged.
+- Four repeated HD→SD cycles retained the same camera. After cache warm-up, observed geometries stayed at 232; textures remained 30 in HD / 24 in SD at the same whole-house view. Draw calls returned to 105 in SD versus 431 for the HD multi-pass pipeline. These are counts, not a sustained FPS/memory benchmark.
+- Captured SD before and after those cycles: scene pixels match exactly in the inspected scene region. The only full-page pixel difference was a small asynchronously loaded sidebar thumbnail region.
+- Returning to SD during an artificially delayed HD import remains SD after all four HD chunks load; no late switch overrides the user's choice.
+- Blocking HD module fetches returns to the existing SD scene with a visible refresh hint. Unblocking then refreshing restores normal HD loading.
+- Mobile controls fit without horizontal overflow, have 44px touch targets, and remain above the floor dock. Temporary viewport, density and network overrides were removed after verification.
+- Private plans and student kits remain unavailable; the built public audit found no prohibited artifacts or stale generated bundles.
+
+Screenshots are local ignored artifacts in reports/screenshots/: graphics-sd-before.png, graphics-sd-after.png, graphics-hd-mobile.png, graphics-hd-whole.png and graphics-hd-dining.png. Earlier release notes below refer to earlier builds.
+
+---
+
 # Flush west elevation release — 2026-09-24
 
 User authorized main publication after one final fix: the upper west face beside bedrooms202/203 now aligns with the lower wall atx=-0.6. Extend adjoining upper slabs/edgewalls/roofeave together and remove the obsolete narrow211ledge. Remaining layout and controls are unchanged from the approved Studio preview.

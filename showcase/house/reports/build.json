@@ -11,7 +11,7 @@
       "format": "esm"
     },
     "app/state.js": {
-      "bytes": 4795,
+      "bytes": 5076,
       "imports": [],
       "format": "esm"
     },
@@ -112,8 +112,256 @@
       ],
       "format": "esm"
     },
+    "app/scene/hd-materials.js": {
+      "bytes": 11636,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "app/scene/hd-furniture.js": {
+      "bytes": 16158,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+          "kind": "import-statement",
+          "original": "three/addons/geometries/RoundedBoxGeometry.js"
+        },
+        {
+          "path": "app/scene/furniture.js",
+          "kind": "import-statement",
+          "original": "./furniture.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/shaders/CopyShader.js": {
+      "bytes": 729,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/Pass.js": {
+      "bytes": 4218,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/ShaderPass.js": {
+      "bytes": 3228,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/Pass.js",
+          "kind": "import-statement",
+          "original": "./Pass.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/MaskPass.js": {
+      "bytes": 4694,
+      "imports": [
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/Pass.js",
+          "kind": "import-statement",
+          "original": "./Pass.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/EffectComposer.js": {
+      "bytes": 8477,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/shaders/CopyShader.js",
+          "kind": "import-statement",
+          "original": "../shaders/CopyShader.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/ShaderPass.js",
+          "kind": "import-statement",
+          "original": "./ShaderPass.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/MaskPass.js",
+          "kind": "import-statement",
+          "original": "./MaskPass.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/RenderPass.js": {
+      "bytes": 4112,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/Pass.js",
+          "kind": "import-statement",
+          "original": "./Pass.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/shaders/GTAOShader.js": {
+      "bytes": 11910,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/shaders/PoissonDenoiseShader.js": {
+      "bytes": 6945,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/math/SimplexNoise.js": {
+      "bytes": 15154,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/GTAOPass.js": {
+      "bytes": 19890,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/Pass.js",
+          "kind": "import-statement",
+          "original": "./Pass.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/shaders/GTAOShader.js",
+          "kind": "import-statement",
+          "original": "../shaders/GTAOShader.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/shaders/PoissonDenoiseShader.js",
+          "kind": "import-statement",
+          "original": "../shaders/PoissonDenoiseShader.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/shaders/CopyShader.js",
+          "kind": "import-statement",
+          "original": "../shaders/CopyShader.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/math/SimplexNoise.js",
+          "kind": "import-statement",
+          "original": "../math/SimplexNoise.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/shaders/OutputShader.js": {
+      "bytes": 1876,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/three/examples/jsm/postprocessing/OutputPass.js": {
+      "bytes": 4029,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/Pass.js",
+          "kind": "import-statement",
+          "original": "./Pass.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/shaders/OutputShader.js",
+          "kind": "import-statement",
+          "original": "../shaders/OutputShader.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "app/scene/hd-rendering.js": {
+      "bytes": 3593,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/EffectComposer.js",
+          "kind": "import-statement",
+          "original": "three/addons/postprocessing/EffectComposer.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/RenderPass.js",
+          "kind": "import-statement",
+          "original": "three/addons/postprocessing/RenderPass.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/GTAOPass.js",
+          "kind": "import-statement",
+          "original": "three/addons/postprocessing/GTAOPass.js"
+        },
+        {
+          "path": "node_modules/three/examples/jsm/postprocessing/OutputPass.js",
+          "kind": "import-statement",
+          "original": "three/addons/postprocessing/OutputPass.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "app/scene/hd-exterior.js": {
+      "bytes": 10509,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
     "app/scene.js": {
-      "bytes": 44777,
+      "bytes": 51618,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -149,12 +397,32 @@
           "path": "app/scene/furniture.js",
           "kind": "import-statement",
           "original": "./scene/furniture.js"
+        },
+        {
+          "path": "app/scene/hd-materials.js",
+          "kind": "dynamic-import",
+          "original": "./scene/hd-materials.js"
+        },
+        {
+          "path": "app/scene/hd-furniture.js",
+          "kind": "dynamic-import",
+          "original": "./scene/hd-furniture.js"
+        },
+        {
+          "path": "app/scene/hd-rendering.js",
+          "kind": "dynamic-import",
+          "original": "./scene/hd-rendering.js"
+        },
+        {
+          "path": "app/scene/hd-exterior.js",
+          "kind": "dynamic-import",
+          "original": "./scene/hd-exterior.js"
         }
       ],
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 41000,
+      "bytes": 42896,
       "imports": [
         {
           "path": "app/data/house.js",
@@ -184,7 +452,7 @@
     "assets/home.js": {
       "imports": [
         {
-          "path": "assets/scene-HKGZ4XOA.js",
+          "path": "assets/scene-NHEHZAUJ.js",
           "kind": "dynamic-import"
         }
       ],
@@ -198,32 +466,165 @@
           "bytesInOutput": 16787
         },
         "app/state.js": {
-          "bytesInOutput": 2612
+          "bytesInOutput": 2787
         },
         "app/main.js": {
-          "bytesInOutput": 50472
+          "bytesInOutput": 52250
         }
       },
-      "bytes": 108160
+      "bytes": 110113
     },
-    "assets/scene-HKGZ4XOA.js": {
-      "imports": [],
+    "assets/hd-materials-ZDYCLHKZ.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "createHDMaterials"
+      ],
+      "entryPoint": "app/scene/hd-materials.js",
+      "inputs": {
+        "app/scene/hd-materials.js": {
+          "bytesInOutput": 6400
+        }
+      },
+      "bytes": 6551
+    },
+    "assets/hd-furniture-LRBWA5LZ.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-FAIXEBW7.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "createHDBuiltins",
+        "createHDFurniture",
+        "disposeHDFurnitureGeometries"
+      ],
+      "entryPoint": "app/scene/hd-furniture.js",
+      "inputs": {
+        "app/scene/hd-furniture.js": {
+          "bytesInOutput": 8946
+        }
+      },
+      "bytes": 9207
+    },
+    "assets/hd-rendering-SI33SVGB.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "createHDRendering"
+      ],
+      "entryPoint": "app/scene/hd-rendering.js",
+      "inputs": {
+        "node_modules/three/examples/jsm/shaders/CopyShader.js": {
+          "bytesInOutput": 426
+        },
+        "node_modules/three/examples/jsm/postprocessing/Pass.js": {
+          "bytesInOutput": 615
+        },
+        "node_modules/three/examples/jsm/postprocessing/ShaderPass.js": {
+          "bytesInOutput": 806
+        },
+        "node_modules/three/examples/jsm/postprocessing/MaskPass.js": {
+          "bytesInOutput": 1094
+        },
+        "node_modules/three/examples/jsm/postprocessing/EffectComposer.js": {
+          "bytesInOutput": 2564
+        },
+        "node_modules/three/examples/jsm/postprocessing/RenderPass.js": {
+          "bytesInOutput": 969
+        },
+        "node_modules/three/examples/jsm/shaders/GTAOShader.js": {
+          "bytesInOutput": 9484
+        },
+        "node_modules/three/examples/jsm/shaders/PoissonDenoiseShader.js": {
+          "bytesInOutput": 5541
+        },
+        "node_modules/three/examples/jsm/math/SimplexNoise.js": {
+          "bytesInOutput": 4386
+        },
+        "node_modules/three/examples/jsm/postprocessing/GTAOPass.js": {
+          "bytesInOutput": 10144
+        },
+        "node_modules/three/examples/jsm/shaders/OutputShader.js": {
+          "bytesInOutput": 1492
+        },
+        "node_modules/three/examples/jsm/postprocessing/OutputPass.js": {
+          "bytesInOutput": 1437
+        },
+        "app/scene/hd-rendering.js": {
+          "bytesInOutput": 1544
+        }
+      },
+      "bytes": 40862
+    },
+    "assets/hd-exterior-FQABLQSO.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "createHDExterior"
+      ],
+      "entryPoint": "app/scene/hd-exterior.js",
+      "inputs": {
+        "app/scene/hd-exterior.js": {
+          "bytesInOutput": 4943
+        }
+      },
+      "bytes": 5060
+    },
+    "assets/scene-NHEHZAUJ.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-FAIXEBW7.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "assets/hd-materials-ZDYCLHKZ.js",
+          "kind": "dynamic-import"
+        },
+        {
+          "path": "assets/hd-furniture-LRBWA5LZ.js",
+          "kind": "dynamic-import"
+        },
+        {
+          "path": "assets/hd-rendering-SI33SVGB.js",
+          "kind": "dynamic-import"
+        },
+        {
+          "path": "assets/hd-exterior-FQABLQSO.js",
+          "kind": "dynamic-import"
+        }
+      ],
       "exports": [
         "createHouseScene"
       ],
       "entryPoint": "app/scene.js",
       "inputs": {
-        "node_modules/three/build/three.core.js": {
-          "bytesInOutput": 213157
-        },
-        "node_modules/three/build/three.module.js": {
-          "bytesInOutput": 321463
-        },
         "node_modules/three/examples/jsm/environments/RoomEnvironment.js": {
-          "bytesInOutput": 1900
+          "bytesInOutput": 1893
         },
         "node_modules/three/examples/jsm/controls/OrbitControls.js": {
-          "bytesInOutput": 19075
+          "bytesInOutput": 19026
         },
         "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js": {
           "bytesInOutput": 3724
@@ -234,17 +635,137 @@
         "app/scene/materials.js": {
           "bytesInOutput": 3494
         },
-        "node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js": {
-          "bytesInOutput": 1667
-        },
-        "app/scene/furniture.js": {
-          "bytesInOutput": 14598
-        },
         "app/scene.js": {
-          "bytesInOutput": 26739
+          "bytesInOutput": 30558
         }
       },
-      "bytes": 606423
+      "bytes": 59613
+    },
+    "assets/chunk-FAIXEBW7.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-47DC4FHM.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g"
+      ],
+      "inputs": {
+        "node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js": {
+          "bytesInOutput": 1646
+        },
+        "app/scene/furniture.js": {
+          "bytesInOutput": 14468
+        }
+      },
+      "bytes": 16276
+    },
+    "assets/chunk-47DC4FHM.js": {
+      "imports": [],
+      "exports": [
+        "$",
+        "A",
+        "Aa",
+        "B",
+        "Ba",
+        "C",
+        "Ca",
+        "D",
+        "Da",
+        "E",
+        "Ea",
+        "F",
+        "Fa",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "_",
+        "a",
+        "aa",
+        "b",
+        "ba",
+        "c",
+        "ca",
+        "d",
+        "da",
+        "e",
+        "ea",
+        "f",
+        "fa",
+        "g",
+        "ga",
+        "h",
+        "ha",
+        "i",
+        "ia",
+        "j",
+        "ja",
+        "k",
+        "ka",
+        "l",
+        "la",
+        "m",
+        "ma",
+        "n",
+        "na",
+        "o",
+        "oa",
+        "p",
+        "pa",
+        "q",
+        "qa",
+        "r",
+        "ra",
+        "s",
+        "sa",
+        "t",
+        "ta",
+        "u",
+        "ua",
+        "v",
+        "va",
+        "w",
+        "wa",
+        "x",
+        "xa",
+        "y",
+        "ya",
+        "z",
+        "za"
+      ],
+      "inputs": {
+        "node_modules/three/build/three.core.js": {
+          "bytesInOutput": 218779
+        },
+        "node_modules/three/build/three.module.js": {
+          "bytesInOutput": 321396
+        }
+      },
+      "bytes": 541098
     }
   }
 }

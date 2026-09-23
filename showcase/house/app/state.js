@@ -4,6 +4,7 @@ export const initialState = Object.freeze({
   activeFloor: 'f1',
   selectedRoomId: null,
   lens: 'model',
+  renderMode: 'sd',
   wallMode: 'auto',
   furniture: true,
   builtins: true,
@@ -17,6 +18,7 @@ export const initialState = Object.freeze({
 const views = new Set(['whole', 'f1', 'f2', 'exploded']);
 const lenses = new Set(['model', 'plan', 'photo']);
 const walls = new Set(['full', 'auto', 'low']);
+const renderModes = new Set(['sd', 'hd']);
 const findRoom = (house, id) => house?.rooms?.find((room) => room.id === id);
 
 /** Invalid URL/input values fall back without allowing a cross-floor selection. */
@@ -27,6 +29,7 @@ export function normalizeState(value = initialState, house) {
   if (state.view === 'f1' || state.view === 'f2') state.activeFloor = state.view;
   if (!lenses.has(state.lens)) state.lens = 'model';
   if (!walls.has(state.wallMode)) state.wallMode = 'auto';
+  if (!renderModes.has(state.renderMode)) state.renderMode = 'sd';
   for (const key of ['furniture', 'builtins', 'grid', 'isolate', 'labels', 'ceiling']) {
     if (typeof state[key] !== 'boolean') state[key] = initialState[key];
   }
@@ -47,7 +50,10 @@ export function reduce(value, event, house) {
   let next = state;
   switch (event.type) {
     case 'RESET':
-      return { ...initialState };
+      return { ...initialState, renderMode: state.renderMode };
+    case 'RENDER_MODE':
+      if (renderModes.has(event.mode)) next = { ...state, renderMode: event.mode };
+      break;
     case 'VIEW': {
       if (!views.has(event.view)) return state;
       const floor = event.view === 'f1' || event.view === 'f2' ? event.view : state.activeFloor;

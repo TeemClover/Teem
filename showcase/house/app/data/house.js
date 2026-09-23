@@ -1253,9 +1253,9 @@ export const house = {
       "thickness": 0.15,
       "openings": [
         {
-          "offset": 0.8,
-          "width": 1.4,
-          "height": 2.2,
+          "offset": 0.6,
+          "width": 3.1,
+          "height": 2.3,
           "sill": 0,
           "kind": "window"
         },

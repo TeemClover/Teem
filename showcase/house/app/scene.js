@@ -6,7 +6,7 @@ import { assemblyBands } from './scene/assembly.js';
 import { createMaterials } from './scene/materials.js';
 import { box, cylinder, createFurniture, createBuiltins, createTree, roomBounds } from './scene/furniture.js';
 
-const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,builtins:true,grid:true,isolate:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced'};
+const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,builtins:true,grid:true,isolate:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced',renderMode:'sd'};
 const EXPLODED_GAP = 6.2; // Presentation distance only; source floor elevations remain unchanged.
 const UP = new THREE.Vector3(0,1,0);
 
@@ -271,7 +271,7 @@ function buildFacade(floorGroups,house,materials,defaults) {
   consolidate(wholeDetails);consolidate(details2);return {wholeDetails,details2};
 }
 
-export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{},onError=()=>{},onLabels=()=>{}}) {
+export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{},onError=()=>{},onLabels=()=>{},onRenderMode=()=>{}}) {
   const initializationStart=performance.now();
   let renderer;
   try {
@@ -299,7 +299,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   // Only numeric presentation assumptions enter geometry; provenance lives in the data ledger.
   for(const key of Object.keys(defaults))if(typeof defaults[key]==='object')defaults[key]=defaults[key]?.value;
   for(const [key,value] of Object.entries({wallHeight:2.7,slabThickness:.18,exteriorWallThickness:.15,interiorWallThickness:.1,cutawayHeight:.9}))if(!Number.isFinite(defaults[key]))defaults[key]=value;
-  scene.add(new THREE.HemisphereLight('#e6edf7','#818b96',1.22));
+  const hemisphere=new THREE.HemisphereLight('#e6edf7','#818b96',1.22);scene.add(hemisphere);
   const sun=new THREE.DirectionalLight('#fff5e5',2.7);sun.position.set(-10,22,13);sun.target.position.set(6,0,-4);scene.add(sun,sun.target);
   sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-21;sun.shadow.camera.right=21;sun.shadow.camera.top=21;sun.shadow.camera.bottom=-21;
   sun.shadow.camera.near=.5;sun.shadow.camera.far=70;sun.shadow.bias=-.00025;sun.shadow.normalBias=.045;sun.shadow.radius=4;
@@ -371,6 +371,8 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   }
 
   let state={...DEFAULT_STATE},disposed=false,contextUnavailable=false,frame=0,tween=null,floorTween=null,renderCount=0,hoverId=null,lastLabels='',pointerStart=null,ready=false;
+  let hd=null,hdLoading=null,activeRenderMode='sd';
+  const materialKeys=new Map(Object.entries(materials).map(([key,material])=>[material,key]));
   const activePointers=new Set();let multiPointerGesture=false;
   let width=1,height=1,lastRenderTime=0,idleSince=performance.now(),interactionRenders=0,frameIntervals=[];
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(),projection=new THREE.Vector3();
@@ -379,6 +381,97 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   function invalidate() {
     if(!disposed&&!contextUnavailable&&!frame&&!document.hidden)frame=requestAnimationFrame(render);
   }
+  function graphicsSize() {
+    const ratio=state.quality==='low'?1:Math.min(window.devicePixelRatio||1,activeRenderMode==='hd'?2:1.75);
+    renderer.setPixelRatio(ratio);
+    if(hd)hd.rendering.resize(width,height,ratio,state.quality==='low');
+  }
+
+  function activateRenderMode(mode) {
+    activeRenderMode=mode;
+    const upgraded=mode==='hd',palette=upgraded?hd.materials:materials;
+    scene.traverse(object=>{
+      if(!object.material)return;
+      const replace=material=>palette[materialKeys.get(material)]||material;
+      object.material=Array.isArray(object.material)?object.material.map(replace):replace(object.material);
+    });
+    for(const floor of floorGroups.values())floor.wallMask='';
+    hemisphere.intensity=upgraded?.7:1.22;
+    hemisphere.color.set(upgraded?'#e3edff':'#e6edf7');
+    hemisphere.groundColor.set(upgraded?'#ad9e87':'#818b96');
+    sun.intensity=upgraded?2.65:2.7;sun.color.set(upgraded?'#fff0da':'#fff5e5');
+    sun.position.set(...(upgraded?[-8,18,9]:[-10,22,13]));
+    fill.intensity=upgraded?.55:.6;
+    scene.environmentIntensity=upgraded?.55:.45;
+    renderer.toneMappingExposure=upgraded?.92:.93;
+    ground.material.opacity=upgraded?.22:.16;
+    // Recreate only the differently sized shadow target; dispose its previous GPU allocation.
+    if(hd) {
+      const size=upgraded?3072:2048;
+      if(sun.shadow.mapSize.x!==size){sun.shadow.map?.dispose();sun.shadow.map=null;sun.shadow.mapSize.set(size,size);}
+    }
+    sun.shadow.normalBias=upgraded?.025:.045;
+    sun.shadow.needsUpdate=true;
+    container.dataset.renderMode=mode;
+    applyVisibility();
+  }
+
+  function requestRenderMode() {
+    if(state.renderMode!=='hd') {
+      if(activeRenderMode!=='sd')activateRenderMode('sd');
+      onRenderMode({mode:'sd',loading:false});return;
+    }
+    if(hd) {if(activeRenderMode!=='hd')activateRenderMode('hd');onRenderMode({mode:'hd',loading:false});return;}
+    onRenderMode({mode:'hd',loading:true});
+    if(hdLoading)return;
+    hdLoading=Promise.all([
+      import('./scene/hd-materials.js'),import('./scene/hd-furniture.js'),
+      import('./scene/hd-rendering.js'),import('./scene/hd-exterior.js'),
+    ]).then(([palette,interiors,pipeline,exterior])=>{
+      if(disposed)return;
+      const hdMaterials=palette.createHDMaterials(),staged=[];
+      const floors=new Map();
+      let rendering;
+      try {
+      for(const [id,floor] of floorGroups) {
+        const furniture=new THREE.Group(),furnitureBatch=new THREE.Group(),builtins=new THREE.Group(),builtinsBatch=new THREE.Group();
+        staged.push(furniture,furnitureBatch,builtins,builtinsBatch);
+        floors.set(id,{furniture,furnitureBatch,builtins,builtinsBatch});
+      }
+      for(const {room} of roomRecords.values()) {
+        const floor=floors.get(roomFloorId(room));
+        const furniture=interiors.createHDFurniture(room,hdMaterials);consolidate(furniture);furniture.position.y=room.levelOffset??0;
+        floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
+        const builtins=interiors.createHDBuiltins(room,hdMaterials);consolidate(builtins);builtins.position.y=room.levelOffset??0;
+        floor.builtins.add(builtins);floor.builtinsBatch.add(builtins.clone(true));
+      }
+      for(const floor of floors.values()){consolidate(floor.furnitureBatch);consolidate(floor.builtinsBatch);}
+      interiors.disposeHDFurnitureGeometries();
+      const outside=exterior.createHDExterior({house,materials:hdMaterials,roofY,rise,overhang});
+      for(const group of Object.values(outside)){staged.push(group);consolidate(group);}
+      rendering=pipeline.createHDRendering({renderer,scene,camera});
+      hd={materials:hdMaterials,floors,outside,rendering};
+      for(const [key,material] of Object.entries(hdMaterials))materialKeys.set(material,key);
+      for(const [id,detail] of floors)floorGroups.get(id).group.add(...Object.values(detail));
+      scene.add(...Object.values(outside));
+      } catch(error) {
+        const geometries=new Set(),textures=new Set();
+        for(const group of staged){group.removeFromParent();group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);});}
+        for(const material of Object.values(hdMaterials)){for(const value of Object.values(material))if(value?.isTexture)textures.add(value);material.dispose();}
+        geometries.forEach(geometry=>geometry.dispose());textures.forEach(texture=>texture.dispose());
+        interiors.disposeHDFurnitureGeometries();rendering?.dispose();throw error;
+      }
+      // A second click can return to SD while imports are still loading.
+      activateRenderMode(state.renderMode==='hd'?'hd':'sd');
+      onRenderMode({mode:activeRenderMode,loading:false});
+    }).catch(error=>{
+      if(disposed)return;
+      console.warn('HD preview unavailable',error);
+      state.renderMode='sd';activateRenderMode('sd');
+      onRenderMode({mode:'sd',loading:false,error:'HD ไม่พร้อม ลองรีเฟรชหน้า'});
+    }).finally(()=>{hdLoading=null;});
+  }
+
   function cancelTween() {tween=null;invalidate();}
   function fitToState(animate=true,forceHero=false) {
     const selected=roomRecords.get(state.selectedRoomId),view=state.view;
@@ -444,8 +537,9 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       for(const r of records) {
         if(!r.group.visible)continue;
         for(const piece of r.prepared[r.full.visible?'full':'low']) {
-          if(!byMaterial.has(piece.material.uuid))byMaterial.set(piece.material.uuid,{material:piece.material,geometries:[]});
-          byMaterial.get(piece.material.uuid).geometries.push(piece.geometry);
+          const material=activeRenderMode==='hd'?(hd.materials[materialKeys.get(piece.material)]||piece.material):piece.material;
+          if(!byMaterial.has(material.uuid))byMaterial.set(material.uuid,{material,geometries:[]});
+          byMaterial.get(material.uuid).geometries.push(piece.geometry);
         }
       }
       for(const {material,geometries} of byMaterial.values()) {
@@ -492,13 +586,18 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     for(const [id,floor] of floorGroups) {
       floor.group.visible=whole||exploded||state.view===id;
       floor.group.position.y=floor.baseY+(exploded&&id==='f2'?EXPLODED_GAP:0);
-      floor.builtins.visible=state.builtins&&ceilingDetail;floor.builtinsBatch.visible=state.builtins&&!ceilingDetail;
-      for(const fixed of floor.builtins.children)fixed.visible=!ceilingDetail||fixed.name===`builtins:${state.selectedRoomId}`;
-      floor.furniture.visible=state.furniture&&ceilingDetail;
-      floor.furnitureBatch.visible=state.furniture&&!ceilingDetail;
+      for(const [mode,detail] of [['sd',floor],['hd',hd?.floors.get(id)]]) {
+        if(!detail)continue;
+        const active=mode===activeRenderMode;
+        detail.builtins.visible=active&&state.builtins&&ceilingDetail;
+        detail.builtinsBatch.visible=active&&state.builtins&&!ceilingDetail;
+        detail.furniture.visible=active&&state.furniture&&ceilingDetail;
+        detail.furnitureBatch.visible=active&&state.furniture&&!ceilingDetail;
+        for(const fixed of detail.builtins.children)fixed.visible=!ceilingDetail||fixed.name===`builtins:${state.selectedRoomId}`;
+        for(const furniture of detail.furniture.children)furniture.visible=!ceilingDetail||furniture.name===`furniture:${state.selectedRoomId}`;
+      }
       floor.ceilings.visible=state.ceiling&&!exploded&&!whole;
       floor.surfaces.visible=!ceilingDetail;
-      for(const furniture of floor.furniture.children)furniture.visible=!ceilingDetail||furniture.name===`furniture:${state.selectedRoomId}`;
     }
     for(const rec of roomRecords.values()) {
       rec.ceilingGroup.visible=rec.room.id===state.selectedRoomId;
@@ -512,10 +611,15 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }
     stairs.visible=!ceilingDetail;landing.visible=!ceilingDetail;
     controls.maxPolarAngle=state.ceiling&&state.selectedRoomId?2.15:Math.PI*.465;
-    ground.visible=!ceilingDetail;roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole;
+    ground.visible=!ceilingDetail;roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole&&activeRenderMode==='sd';
+    if(hd){
+      hd.outside.architecture.visible=whole&&activeRenderMode==='hd';
+      hd.outside.landscape.visible=stage.group.visible&&activeRenderMode==='hd';
+      hd.outside.trees.visible=whole&&activeRenderMode==='hd';
+    }
     if(facade){facade.wholeDetails.visible=whole;facade.details2.visible=!ceilingDetail&&(whole||state.view==='f2'||exploded);}
     explodedGuides.visible=exploded;grid.visible=state.grid&&!ceilingDetail;grid.material.opacity=whole?.17:.3;
-    renderer.setPixelRatio(state.quality==='low'?1:Math.min(window.devicePixelRatio||1,1.75));
+    graphicsSize();
     renderer.shadowMap.enabled=state.quality!=='low'&&!exploded;
     updateWalls();updateHighlights();invalidate();
   }
@@ -538,10 +642,19 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     // Bound pan without snapping the zoom or orientation on a simple resize.
     const target=controls.target,clamped=new THREE.Vector3(THREE.MathUtils.clamp(target.x,-5,20),THREE.MathUtils.clamp(target.y,-1,12),THREE.MathUtils.clamp(target.z,-16,8));
     if(target.distanceToSquared(clamped)>.00001){camera.position.add(clamped.clone().sub(target));target.copy(clamped);}
-    updateWalls();renderer.render(scene,camera);renderCount++;interactionRenders++;
+    updateWalls();
+    if(activeRenderMode==='hd') {
+      try {hd.rendering.render();}
+      catch(error) {
+        console.warn('HD render fell back to SD',error);state.renderMode='sd';activateRenderMode('sd');
+        onRenderMode({mode:'sd',loading:false,error:'เครื่องนี้HD ไม่พร้อม ลองรีเฟรชหน้า'});
+        renderer.setRenderTarget(null);scene.overrideMaterial=null;renderer.render(scene,camera);
+      }
+    } else renderer.render(scene,camera);
+    renderCount++;interactionRenders++;
     if(renderCount>3&&lastRenderTime&&now-lastRenderTime<250){frameIntervals.push(now-lastRenderTime);if(frameIntervals.length>120)frameIntervals.shift();}
     const averageInterval=frameIntervals.length?frameIntervals.reduce((a,b)=>a+b,0)/frameIntervals.length:0;
-    Object.assign(container.dataset,{renderer:'webgl2',renderFrames:String(renderCount),drawCalls:String(renderer.info.render.calls),triangles:String(renderer.info.render.triangles),geometries:String(renderer.info.memory.geometries),textures:String(renderer.info.memory.textures),sceneView:state.view,sceneAnimating:String(Boolean(tween||floorTween||moved)),frameSamples:String(frameIntervals.length),meanFrameMs:averageInterval.toFixed(2)});
+    Object.assign(container.dataset,{renderer:'webgl2',renderMode:activeRenderMode,cameraPose:JSON.stringify({position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom}),renderFrames:String(renderCount),drawCalls:String(renderer.info.render.calls),triangles:String(renderer.info.render.triangles),geometries:String(renderer.info.memory.geometries),textures:String(renderer.info.memory.textures),sceneView:state.view,sceneAnimating:String(Boolean(tween||floorTween||moved)),frameSamples:String(frameIntervals.length),meanFrameMs:averageInterval.toFixed(2)});
     lastRenderTime=now;updateLabels();
     if(tween||floorTween||moved||isTween)invalidate();else idleSince=now;
     if(!ready){ready=true;container.dataset.sceneReadyMs=(performance.now()-initializationStart).toFixed(1);onReady();}
@@ -575,7 +688,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   function resize() {
     const rect=container.getBoundingClientRect();if(rect.width<1||rect.height<1)return;
     const oldAspect=width/height;width=rect.width;height=rect.height;
-    renderer.setSize(width,height,false);const aspect=width/height;
+    renderer.setSize(width,height,false);graphicsSize();const aspect=width/height;
     camera.left=-13*aspect;camera.right=13*aspect;camera.top=13;camera.bottom=-13;camera.updateProjectionMatrix();
     if(!ready||Math.abs(oldAspect-aspect)>.07)fitToState(false);
     invalidate();
@@ -585,6 +698,8 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   return {
     setState(next) {
       const previous=state,previousFloorY=floorGroups.get('f2').group.position.y;state={...state,...next};
+      if(!['sd','hd'].includes(state.renderMode))state.renderMode='sd';
+      if(previous.renderMode!==state.renderMode)requestRenderMode();
       if(!['whole','f1','f2','exploded'].includes(state.view))state.view='whole';
       if(state.selectedRoomId&&!roomRecords.has(state.selectedRoomId))state.selectedRoomId=null;
       const viewChanged=previous.view!==state.view,roomChanged=previous.selectedRoomId!==state.selectedRoomId;
@@ -604,7 +719,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     pan(dx,dy) {cancelTween();camera.updateMatrix();const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0).multiplyScalar(dx*(camera.right-camera.left)/(width*camera.zoom));const up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1).multiplyScalar(dy*(camera.top-camera.bottom)/(height*camera.zoom));right.add(up);camera.position.add(right);controls.target.add(right);controls.update();invalidate();},
     zoom(factor) {cancelTween();camera.zoom=THREE.MathUtils.clamp(camera.zoom*factor,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();invalidate();},
     rotate(radians) {cancelTween();const offset=camera.position.clone().sub(controls.target);offset.applyAxisAngle(UP,radians);camera.position.copy(controls.target).add(offset);controls.update();invalidate();},
-    reset() {floorTween=null;state={...state,...DEFAULT_STATE,reducedMotion:state.reducedMotion,quality:state.quality};applyVisibility();fitToState(true,true);},
+    reset() {floorTween=null;state={...state,...DEFAULT_STATE,reducedMotion:state.reducedMotion,quality:state.quality,renderMode:state.renderMode};applyVisibility();fitToState(true,true);},
     resize,
     dispose() {
       disposed=true;if(frame)cancelAnimationFrame(frame);observer.disconnect();controls.dispose();
@@ -613,10 +728,13 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       renderer.domElement.removeEventListener('pointerup',pointerUp);renderer.domElement.removeEventListener('pointercancel',pointerCancel);renderer.domElement.removeEventListener('pointerleave',pointerLeave);renderer.domElement.removeEventListener('wheel',cancelTween);
       renderer.domElement.removeEventListener('webglcontextlost',contextLost);
       const geometries=new Set(),mats=new Set(),textures=new Set();
-      scene.traverse(obj=>{if(obj.geometry)geometries.add(obj.geometry);for(const mat of obj.material?(Array.isArray(obj.material)?obj.material:[obj.material]):[]){mats.add(mat);if(mat.map)textures.add(mat.map);}});
+      scene.traverse(obj=>{if(obj.geometry)geometries.add(obj.geometry);for(const mat of obj.material?(Array.isArray(obj.material)?obj.material:[obj.material]):[]){mats.add(mat);}});
       for(const record of wallRecords)for(const pieces of Object.values(record.prepared))for(const piece of pieces)geometries.add(piece.geometry);
+      for(const material of [...Object.values(materials),...Object.values(hd?.materials||{})])mats.add(material);
+      for(const material of mats)for(const value of Object.values(material))if(value?.isTexture)textures.add(value);
+      hd?.rendering.dispose();sun.shadow.map?.dispose();
       geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());environmentTarget.dispose();renderer.dispose();renderer.domElement.remove();container.dataset.renderer='disposed';
     },
-    getStats() {return {webgl:true,renderCount,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,view:state.view,visibleWalls:wallRecords.filter(r=>r.floor.group.visible&&r.full.visible).length,idleForMs:Math.max(0,performance.now()-lastRenderTime),uptimeMs:performance.now()-clockStart,camera:{position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom}};},
+    getStats() {return {webgl:true,renderMode:activeRenderMode,hdReady:Boolean(hd),renderCount,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,view:state.view,visibleWalls:wallRecords.filter(r=>r.floor.group.visible&&r.full.visible).length,idleForMs:Math.max(0,performance.now()-lastRenderTime),uptimeMs:performance.now()-clockStart,camera:{position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom}};},
   };
 }

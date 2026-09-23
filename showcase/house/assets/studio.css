@@ -37,3 +37,16 @@ dialog{background:#f8fafc;color:#344256;border-color:#c6d2e1;border-radius:8px}.
 .mini-plan{background:#edf2f8;border-color:#dce4ee}.room-list button[aria-pressed=true]{color:#2864b3}
 
 .plan-opening{stroke:#779cc7;stroke-width:.045;fill:none;pointer-events:none}.plan-door{stroke:#7b8ea5;stroke-width:.025;fill:none;pointer-events:none}
+
+.render-mode-control{position:relative;flex-shrink:0}
+.render-mode-switch{display:flex;gap:3px;padding:3px;border:1px solid #c2cfe0;border-radius:6px;background:#f8fafcf0;box-shadow:0 3px 12px #304b6e0a}
+.render-mode-switch button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:5px 10px;border-radius:3px;color:#738399;white-space:nowrap}
+.render-mode-switch strong{display:flex;align-items:center;gap:5px;font:600 11px system-ui;letter-spacing:.4px}
+.render-mode-switch button>span{font-size:9px}
+.render-mode-switch button[aria-pressed=true]{background:#354c69;color:#fff;box-shadow:0 1px 3px #233c5d16}
+.render-mode-switch button[data-render-mode=hd][aria-pressed=true]{background:#2864b3}
+.render-mode-switch button:focus-visible{outline-color:#2864b3;outline-offset:3px}
+.render-mode-switch[aria-busy=true] [data-render-mode=hd] strong::before{content:'';width:9px;height:9px;border:1.5px solid #ffffff50;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.render-mode-status:not(.sr-only){position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);width:max-content;max-width:245px;padding:5px 9px;border:1px solid #cbd7e6;border-radius:4px;background:#f8fafc;color:#516b8c;font-size:10px;pointer-events:none}
+@media(max-width:767px){.render-mode-switch button{min-height:44px;padding:4px 9px;gap:5px}.render-mode-switch strong{font-size:11px}.render-mode-switch button>span{font-size:8px}.camera-tools{bottom:111px}}
+@media(max-width:359px){.scene-bottom .orientation{display:none}.scene-bottom{gap:10px}.render-mode-switch button{padding:4px 10px}}

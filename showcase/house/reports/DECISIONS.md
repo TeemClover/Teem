@@ -21,3 +21,12 @@ The owner prioritizes a beautiful, impressive interactive model over exact real-
 Close the visual assembly gap with fascia/infill without moving the source floor datums. Balcony floors use the existing polygons rather than a second invented slab. The shallow upper projection is retained. Make carport entry into prep the only direct carport-to-interior door and keep the route to dining open. Preserve other exterior source openings, since the correction concerns entry from the carport. Open the upstairs lounge to the hall, correct bathroom access through dressing, and draw the documented door swing sides.
 
 Owner identifies the photo bedroom as 201 and the study as the upstairs lounge. Bedrooms 202/203 have no photo bindings and use normal plan-led beds; 201 alone uses the upholstered platform with its head against the lounge. Lounge sofa sits on the 201 side, desk on the 202 side. Dining chairs face the table. Bathroom layouts follow the fixture types and relative positions in the plan, with presentation sizes chosen for clarity.
+
+
+## 12. Optional HD graphics / preserve original SD — 2026-09-24
+
+The owner requests a whole-house upgrade but explicitly retains the original appearance as SD, the default on every fresh page load. HD is an in-session opt-in, independent of the existing low-power toggle; view/room/lens navigation and camera reset preserve the chosen graphics mode. Both modes share one renderer, camera, spatial data and opening layout. Original SD material and furniture implementations remain unchanged.
+
+HD implementation modules load on demand, generate deterministic local surface maps, and cache their furniture/exterior groups for comparison. Material switches rebuild wall batches without changing room coordinates. Contact occlusion excludes transparent glass and preserves the transparent canvas. A failed HD load returns to usable SD; a network failure may require a page refresh because browsers cache failed ES module requests. No new external image assets, downloads, public source scans or student material were added.
+
+The circled ground-floor dining window is corrected to a 3.1-wide, 2.3-high opening, matching adjacent front living glazing. It remains a window, preserving the sole direct carport entry through preparation. User priorities remain attractive presentation and plausible circulation rather than surveyed accuracy. After reviewing the completed local graphics preview, the user explicitly authorized pushing this SD / HD revision to main on 2026-09-24.
