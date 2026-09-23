@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-09-23T20:00:57.808Z",
+  "valid": true,
+  "counts": {
+    "floors": 2,
+    "rooms": 31,
+    "walls": 37,
+    "photoSets": 8,
+    "photographCount": 21
+  },
+  "calibrations": [
+    {
+      "id": "cal-f1-v1",
+      "page": 1,
+      "status": "draft",
+      "maxResidualMetres": 0.08159,
+      "rmsResidualMetres": 0.04285
+    },
+    {
+      "id": "cal-f2-v1",
+      "page": 2,
+      "status": "draft",
+      "maxResidualMetres": 0.04249,
+      "rmsResidualMetres": 0.02063
+    }
+  ],
+  "mapping": {
+    "confirmed": 0,
+    "candidate": 6,
+    "context": 2
+  },
+  "errors": [],
+  "warnings": [],
+  "limitations": [
+    "Numerical validation checks consistency, not as-built accuracy.",
+    "Draft plan calibration and candidate photo mappings remain draft/candidate after this check.",
+    "Source/photo rights and visual privacy review are not established by automated validation."
+  ]
+}
