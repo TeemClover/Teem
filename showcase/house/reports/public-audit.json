@@ -1,0 +1,267 @@
+{
+  "checkedAt": "2026-09-23T20:00:58.455Z",
+  "valid": true,
+  "environment": {
+    "node": "v26.8.2",
+    "three": "0.180.0",
+    "esbuild": "0.25.10"
+  },
+  "scope": "Built public HTML, assets, image derivatives and downloadable learning kit; not source files or private input directories.",
+  "fileCount": 58,
+  "errors": [],
+  "warnings": [],
+  "sizes": {
+    "shellWithAllFontFacesAndPreviewImages": {
+      "bytes": 226174,
+      "gzipBytes": 115014
+    },
+    "firstModelWithAllFontFacesAndPreviewImages": {
+      "bytes": 811888,
+      "gzipBytes": 269131
+    },
+    "imageDerivatives": {
+      "bytes": 3161424,
+      "gzipBytes": 3163240
+    },
+    "allPublicFiles": {
+      "bytes": 4210891,
+      "gzipBytes": 3596486
+    }
+  },
+  "perFile": {
+    "index.html": {
+      "bytes": 7113,
+      "gzipBytes": 2323
+    },
+    "assets/fonts/OFL.txt": {
+      "bytes": 4364,
+      "gzipBytes": 1959
+    },
+    "assets/fonts/ibm-plex-sans-thai-latin-400.woff2": {
+      "bytes": 17736,
+      "gzipBytes": 17764
+    },
+    "assets/fonts/ibm-plex-sans-thai-latin-600.woff2": {
+      "bytes": 18992,
+      "gzipBytes": 19020
+    },
+    "assets/fonts/ibm-plex-sans-thai-thai-400.woff2": {
+      "bytes": 11804,
+      "gzipBytes": 11827
+    },
+    "assets/fonts/ibm-plex-sans-thai-thai-600.woff2": {
+      "bytes": 11804,
+      "gzipBytes": 11827
+    },
+    "assets/home.css": {
+      "bytes": 27431,
+      "gzipBytes": 6436
+    },
+    "assets/home.js": {
+      "bytes": 102080,
+      "gzipBytes": 16598
+    },
+    "assets/mark.svg": {
+      "bytes": 246,
+      "gzipBytes": 205
+    },
+    "assets/scene-WQHJRUZ3.js": {
+      "bytes": 585714,
+      "gzipBytes": 154117
+    },
+    "media/photos/aerial-roof-thumb.webp": {
+      "bytes": 44000,
+      "gzipBytes": 44033
+    },
+    "media/photos/aerial-roof.webp": {
+      "bytes": 102448,
+      "gzipBytes": 102501
+    },
+    "media/photos/bedroom-01-thumb.webp": {
+      "bytes": 10768,
+      "gzipBytes": 10791
+    },
+    "media/photos/bedroom-01.webp": {
+      "bytes": 94392,
+      "gzipBytes": 94440
+    },
+    "media/photos/bedroom-02-thumb.webp": {
+      "bytes": 13834,
+      "gzipBytes": 13857
+    },
+    "media/photos/bedroom-02.webp": {
+      "bytes": 128790,
+      "gzipBytes": 128848
+    },
+    "media/photos/bedroom-03-thumb.webp": {
+      "bytes": 6308,
+      "gzipBytes": 6331
+    },
+    "media/photos/bedroom-03.webp": {
+      "bytes": 50514,
+      "gzipBytes": 50552
+    },
+    "media/photos/bedroom-04-thumb.webp": {
+      "bytes": 10280,
+      "gzipBytes": 10303
+    },
+    "media/photos/bedroom-04.webp": {
+      "bytes": 92160,
+      "gzipBytes": 92208
+    },
+    "media/photos/bedroom-05-thumb.webp": {
+      "bytes": 6728,
+      "gzipBytes": 6751
+    },
+    "media/photos/bedroom-05.webp": {
+      "bytes": 73358,
+      "gzipBytes": 73401
+    },
+    "media/photos/bedroom-06-thumb.webp": {
+      "bytes": 6874,
+      "gzipBytes": 6897
+    },
+    "media/photos/bedroom-06.webp": {
+      "bytes": 53458,
+      "gzipBytes": 53496
+    },
+    "media/photos/dining-01-thumb.webp": {
+      "bytes": 15570,
+      "gzipBytes": 15593
+    },
+    "media/photos/dining-01.webp": {
+      "bytes": 175878,
+      "gzipBytes": 175951
+    },
+    "media/photos/dining-02-thumb.webp": {
+      "bytes": 18916,
+      "gzipBytes": 18944
+    },
+    "media/photos/dining-02.webp": {
+      "bytes": 155954,
+      "gzipBytes": 156022
+    },
+    "media/photos/exterior-01-thumb.webp": {
+      "bytes": 14990,
+      "gzipBytes": 15013
+    },
+    "media/photos/exterior-01.webp": {
+      "bytes": 219304,
+      "gzipBytes": 219392
+    },
+    "media/photos/exterior-02-thumb.webp": {
+      "bytes": 24028,
+      "gzipBytes": 24056
+    },
+    "media/photos/exterior-02.webp": {
+      "bytes": 282420,
+      "gzipBytes": 282528
+    },
+    "media/photos/garden-01-thumb.webp": {
+      "bytes": 31264,
+      "gzipBytes": 31292
+    },
+    "media/photos/garden-01.webp": {
+      "bytes": 384476,
+      "gzipBytes": 384614
+    },
+    "media/photos/kitchen-01-thumb.webp": {
+      "bytes": 7038,
+      "gzipBytes": 7061
+    },
+    "media/photos/kitchen-01.webp": {
+      "bytes": 55404,
+      "gzipBytes": 55442
+    },
+    "media/photos/kitchen-02-thumb.webp": {
+      "bytes": 11600,
+      "gzipBytes": 11623
+    },
+    "media/photos/kitchen-02.webp": {
+      "bytes": 89998,
+      "gzipBytes": 90046
+    },
+    "media/photos/kitchen-03-thumb.webp": {
+      "bytes": 8708,
+      "gzipBytes": 8731
+    },
+    "media/photos/kitchen-03.webp": {
+      "bytes": 63350,
+      "gzipBytes": 63388
+    },
+    "media/photos/kitchen-04-thumb.webp": {
+      "bytes": 10082,
+      "gzipBytes": 10105
+    },
+    "media/photos/kitchen-04.webp": {
+      "bytes": 77924,
+      "gzipBytes": 77967
+    },
+    "media/photos/living-01-thumb.webp": {
+      "bytes": 13978,
+      "gzipBytes": 14001
+    },
+    "media/photos/living-01.webp": {
+      "bytes": 140962,
+      "gzipBytes": 141025
+    },
+    "media/photos/living-02-thumb.webp": {
+      "bytes": 18440,
+      "gzipBytes": 18468
+    },
+    "media/photos/living-02.webp": {
+      "bytes": 163154,
+      "gzipBytes": 163222
+    },
+    "media/photos/living-03-thumb.webp": {
+      "bytes": 19666,
+      "gzipBytes": 19694
+    },
+    "media/photos/living-03.webp": {
+      "bytes": 197910,
+      "gzipBytes": 197993
+    },
+    "media/photos/lounge-01-thumb.webp": {
+      "bytes": 10014,
+      "gzipBytes": 10037
+    },
+    "media/photos/lounge-01.webp": {
+      "bytes": 112390,
+      "gzipBytes": 112443
+    },
+    "media/photos/study-01-thumb.webp": {
+      "bytes": 12580,
+      "gzipBytes": 12603
+    },
+    "media/photos/study-01.webp": {
+      "bytes": 131514,
+      "gzipBytes": 131577
+    },
+    "downloads/README.txt": {
+      "bytes": 17423,
+      "gzipBytes": 4460
+    },
+    "downloads/home-explorer-3d-source.zip": {
+      "bytes": 157854,
+      "gzipBytes": 156014
+    },
+    "downloads/home-explorer-starter.zip": {
+      "bytes": 22917,
+      "gzipBytes": 22391
+    },
+    "downloads/house-data.json": {
+      "bytes": 31396,
+      "gzipBytes": 2753
+    },
+    "downloads/house-plan-f1.svg": {
+      "bytes": 18881,
+      "gzipBytes": 3051
+    },
+    "downloads/house-plan-f2.svg": {
+      "bytes": 13712,
+      "gzipBytes": 2501
+    }
+  },
+  "measurement": "On-disk byte counts and gzip level-9 compression estimates. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.",
+  "publication": "Local artifact audit only. Source rights, layout consent scope, photo privacy review, and deployment authorization are separate from these checks."
+}

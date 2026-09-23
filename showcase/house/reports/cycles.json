@@ -1,0 +1,42 @@
+{
+  "test": "20 cycles: f1 → f2 → exploded → whole",
+  "before": {
+    "drawCalls": "71",
+    "frameSamples": "120",
+    "geometries": "74",
+    "meanFrameMs": "16.82",
+    "renderFrames": "135",
+    "renderer": "webgl2",
+    "sceneAnimating": "false",
+    "sceneReadyMs": "268.1",
+    "sceneView": "exploded",
+    "textures": "6",
+    "triangles": "44382"
+  },
+  "after10": {
+    "drawCalls": "73",
+    "frameSamples": "120",
+    "geometries": "72",
+    "meanFrameMs": "17.92",
+    "renderFrames": "1240",
+    "renderer": "webgl2",
+    "sceneAnimating": "false",
+    "sceneReadyMs": "268.1",
+    "sceneView": "whole",
+    "textures": "6",
+    "triangles": "49774"
+  },
+  "after20": {
+    "drawCalls": "73",
+    "frameSamples": "120",
+    "geometries": "72",
+    "meanFrameMs": "19.04",
+    "renderFrames": "2348",
+    "renderer": "webgl2",
+    "sceneAnimating": "true",
+    "sceneReadyMs": "268.1",
+    "sceneView": "whole",
+    "textures": "6",
+    "triangles": "49774"
+  }
+}

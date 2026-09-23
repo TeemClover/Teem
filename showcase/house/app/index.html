@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>myClover Home — บ้านจริง เปิดให้สำรวจ</title>
+  <meta name="description" content="หมุนดูบ้าน 3D เปิดแต่ละชั้น เชื่อมแปลนกับภาพบ้านจริง พร้อมชุดเรียนรู้สำหรับสร้างเว็บอสังหาริมทรัพย์">
+  <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="./assets/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./assets/home.css">
+</head>
+<body>
+  <a class="skip-link" href="#explorer-controls">ข้ามไปเครื่องมือสำรวจ</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="myClover Home หน้าแรก"><span class="brand-mark" aria-hidden="true">⌂</span><span>myClover <b>Home</b><small>บ้านจริง เปิดให้สำรวจ</small></span></a>
+    <span class="header-edition">SHOWCASE <span>01</span></span>
+    <nav aria-label="เมนูหลัก"><button class="text-button" data-action="learn"><span class="desktop-text">แปลนสำหรับ</span>เรียนรู้ <span aria-hidden="true">↗</span></button><button class="text-button" data-action="help">วิธีเล่น</button><button class="tour-start" data-action="tour"><span aria-hidden="true">▷</span> พาชมบ้าน</button></nav>
+  </header>
+  <main id="app" data-view="whole" data-lens="model">
+    <section class="workspace" aria-label="สำรวจบ้าน">
+      <div class="stage">
+        <div class="scene-title"><span class="eyebrow" id="scene-kicker">บ้านตัวอย่าง / 01</span><h1 id="scene-title">บ้านจริง เปิดให้สำรวจ</h1><p id="scene-subtitle">มองบ้านในมุมใหม่ แล้วเปิดดูข้างใน</p></div>
+        <div class="lens-switch" role="group" aria-label="วิธีดูบ้าน"><button data-lens="model" data-testid="lens-model" aria-pressed="true">โมเดล</button><button data-lens="plan" data-testid="lens-plan" aria-pressed="false">แปลน</button><button data-lens="photo" data-testid="lens-photo" aria-pressed="false">รูปจริง</button></div>
+        <div id="scene" aria-label="โมเดลบ้านสามมิติ" tabindex="0"><div id="scene-loading" role="status"><span class="loading-ring"></span>กำลังเตรียมบ้านให้สำรวจ<button data-action="fallback">ดูแปลนและรูปแทน</button></div></div>
+        <div id="room-labels" aria-hidden="true"></div>
+        <div id="plan-view" hidden></div><div id="photo-view" hidden></div>
+        <div class="view-note" id="view-note" hidden>แยกชั้นเพื่อการแสดงผล</div>
+        <div class="camera-tools" aria-label="เครื่องมือกล้อง"><button data-action="zoom-in" aria-label="ซูมเข้า" title="ซูมเข้า">+</button><button data-action="zoom-out" aria-label="ซูมออก" title="ซูมออก">−</button><button data-action="rotate" aria-label="หมุนบ้าน" title="หมุนบ้าน">↻</button><span></span><button data-action="reset" data-testid="reset-view" aria-label="คืนมุมเดิม" title="คืนมุมเดิม">⌂</button></div>
+        <div class="scene-bottom"><div class="orientation"><span aria-hidden="true">↑</span> ด้านหน้า</div><p class="gesture-hint"><span class="desktop-hint">ลากเพื่อหมุน · เลื่อนเพื่อซูม</span><span class="mobile-hint">ลากเพื่อหมุน · จีบเพื่อซูม</span></p><button class="settings-button" data-action="settings" aria-expanded="false">⚙ <span>การแสดงผล</span></button></div>
+        <div id="settings" class="settings-panel" hidden><div><strong>การแสดงผล</strong><button data-action="settings" aria-label="ปิดการแสดงผล">×</button></div><label>ผนัง <select id="wall-mode"><option value="auto">หลบสายตาอัตโนมัติ</option><option value="low">ผนังเตี้ย</option><option value="full">เต็มความสูง</option></select></label><label><input id="furniture-toggle" type="checkbox" checked> เฟอร์นิเจอร์</label><label><input id="labels-toggle" type="checkbox" checked> ชื่อห้อง</label><label><input id="quality-toggle" type="checkbox"> ลดรายละเอียดเพื่อความลื่นไหล</label></div>
+        <div id="tour-bar" hidden></div>
+        <div class="floor-dock" id="explorer-controls"><span class="dock-label">สำรวจบ้าน</span><div role="group" aria-label="เลือกชั้น"><button data-view="whole" data-testid="view-whole" aria-pressed="true"><span class="floor-icon">⌂</span>ทั้งหลัง</button><button data-view="f1" data-testid="floor-f1" aria-pressed="false"><span class="floor-number">01</span>ชั้น 1</button><button data-view="f2" data-testid="floor-f2" aria-pressed="false"><span class="floor-number">02</span>ชั้น 2</button><button data-view="exploded" data-testid="view-exploded" aria-pressed="false"><span class="floor-icon">▱</span>แยกชั้น</button></div></div>
+      </div>
+      <aside class="inspector" id="inspector" aria-label="ข้อมูลบ้านและห้อง"></aside>
+    </section>
+    <footer class="site-footer"><span><i></i> โมเดลจำลองจากแปลนและภาพอ้างอิง</span><button data-action="about">ที่มาและข้อจำกัด <span aria-hidden="true">↗</span></button><span class="footer-credit">เว็บและประสบการณ์โดย Teem / myClover</span></footer>
+  </main>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+  <dialog id="dialog"><div class="dialog-top"><span class="eyebrow">MYCLOVER HOME</span><button data-action="close-dialog" aria-label="ปิดหน้าต่าง">×</button></div><div id="dialog-content"></div></dialog>
+  <noscript><p>โปรดเปิด JavaScript เพื่อหมุนบ้าน หรือ <a href="./downloads/house-plan-f1.svg">ดูแปลนชั้น 1</a> และ <a href="./downloads/house-plan-f2.svg">ดูแปลนชั้น 2</a></p></noscript>
+  <script type="module" src="./assets/home.js"></script>
+</body></html>
