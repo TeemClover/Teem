@@ -1,12 +1,12 @@
 {
   "inputs": {
     "app/data/house.js": {
-      "bytes": 58849,
+      "bytes": 60114,
       "imports": [],
       "format": "esm"
     },
     "app/data/photos.js": {
-      "bytes": 13944,
+      "bytes": 16864,
       "imports": [],
       "format": "esm"
     },
@@ -70,12 +70,34 @@
       "format": "esm"
     },
     "app/scene/assembly.js": {
-      "bytes": 734,
+      "bytes": 1413,
       "imports": [],
+      "format": "esm"
+    },
+    "app/scene/solar-layout.js": {
+      "bytes": 2056,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
       "format": "esm"
     },
     "app/scene/materials.js": {
       "bytes": 5178,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "app/scene/stair-hall.js": {
+      "bytes": 9487,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -113,7 +135,7 @@
       "format": "esm"
     },
     "app/scene/hd-materials.js": {
-      "bytes": 11636,
+      "bytes": 12544,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -124,7 +146,7 @@
       "format": "esm"
     },
     "app/scene/hd-furniture.js": {
-      "bytes": 16158,
+      "bytes": 18146,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -350,18 +372,23 @@
       "format": "esm"
     },
     "app/scene/hd-exterior.js": {
-      "bytes": 10509,
+      "bytes": 11936,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
           "kind": "import-statement",
           "original": "three"
+        },
+        {
+          "path": "app/scene/solar-layout.js",
+          "kind": "import-statement",
+          "original": "./solar-layout.js"
         }
       ],
       "format": "esm"
     },
     "app/scene.js": {
-      "bytes": 51618,
+      "bytes": 52141,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -389,9 +416,19 @@
           "original": "./scene/assembly.js"
         },
         {
+          "path": "app/scene/solar-layout.js",
+          "kind": "import-statement",
+          "original": "./scene/solar-layout.js"
+        },
+        {
           "path": "app/scene/materials.js",
           "kind": "import-statement",
           "original": "./scene/materials.js"
+        },
+        {
+          "path": "app/scene/stair-hall.js",
+          "kind": "import-statement",
+          "original": "./scene/stair-hall.js"
         },
         {
           "path": "app/scene/furniture.js",
@@ -422,7 +459,7 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 42896,
+      "bytes": 47795,
       "imports": [
         {
           "path": "app/data/house.js",
@@ -452,7 +489,7 @@
     "assets/home.js": {
       "imports": [
         {
-          "path": "assets/scene-NHEHZAUJ.js",
+          "path": "assets/scene-BD5EXLGS.js",
           "kind": "dynamic-import"
         }
       ],
@@ -460,24 +497,24 @@
       "entryPoint": "app/main.js",
       "inputs": {
         "app/data/house.js": {
-          "bytesInOutput": 38288
+          "bytesInOutput": 39424
         },
         "app/data/photos.js": {
-          "bytesInOutput": 16787
+          "bytesInOutput": 20394
         },
         "app/state.js": {
-          "bytesInOutput": 2787
+          "bytesInOutput": 2792
         },
         "app/main.js": {
-          "bytesInOutput": 52250
+          "bytesInOutput": 57030
         }
       },
-      "bytes": 110113
+      "bytes": 119641
     },
-    "assets/hd-materials-ZDYCLHKZ.js": {
+    "assets/hd-materials-BL57NSQL.js": {
       "imports": [
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-KQTPFPAN.js",
           "kind": "import-statement"
         }
       ],
@@ -487,19 +524,19 @@
       "entryPoint": "app/scene/hd-materials.js",
       "inputs": {
         "app/scene/hd-materials.js": {
-          "bytesInOutput": 6400
+          "bytesInOutput": 6807
         }
       },
-      "bytes": 6551
+      "bytes": 6959
     },
-    "assets/hd-furniture-LRBWA5LZ.js": {
+    "assets/hd-furniture-P5RPM3NY.js": {
       "imports": [
         {
-          "path": "assets/chunk-FAIXEBW7.js",
+          "path": "assets/chunk-BBR2P3JY.js",
           "kind": "import-statement"
         },
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-KQTPFPAN.js",
           "kind": "import-statement"
         }
       ],
@@ -511,15 +548,15 @@
       "entryPoint": "app/scene/hd-furniture.js",
       "inputs": {
         "app/scene/hd-furniture.js": {
-          "bytesInOutput": 8946
+          "bytesInOutput": 10063
         }
       },
-      "bytes": 9207
+      "bytes": 10353
     },
-    "assets/hd-rendering-SI33SVGB.js": {
+    "assets/hd-rendering-QTSPN27J.js": {
       "imports": [
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-KQTPFPAN.js",
           "kind": "import-statement"
         }
       ],
@@ -570,10 +607,14 @@
       },
       "bytes": 40862
     },
-    "assets/hd-exterior-FQABLQSO.js": {
+    "assets/hd-exterior-J3Q7EZHJ.js": {
       "imports": [
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-JDYYZU63.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "assets/chunk-KQTPFPAN.js",
           "kind": "import-statement"
         }
       ],
@@ -583,35 +624,39 @@
       "entryPoint": "app/scene/hd-exterior.js",
       "inputs": {
         "app/scene/hd-exterior.js": {
-          "bytesInOutput": 4943
+          "bytesInOutput": 5687
         }
       },
-      "bytes": 5060
+      "bytes": 5856
     },
-    "assets/scene-NHEHZAUJ.js": {
+    "assets/scene-BD5EXLGS.js": {
       "imports": [
         {
-          "path": "assets/chunk-FAIXEBW7.js",
+          "path": "assets/chunk-BBR2P3JY.js",
           "kind": "import-statement"
         },
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-JDYYZU63.js",
           "kind": "import-statement"
         },
         {
-          "path": "assets/hd-materials-ZDYCLHKZ.js",
+          "path": "assets/chunk-KQTPFPAN.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "assets/hd-materials-BL57NSQL.js",
           "kind": "dynamic-import"
         },
         {
-          "path": "assets/hd-furniture-LRBWA5LZ.js",
+          "path": "assets/hd-furniture-P5RPM3NY.js",
           "kind": "dynamic-import"
         },
         {
-          "path": "assets/hd-rendering-SI33SVGB.js",
+          "path": "assets/hd-rendering-QTSPN27J.js",
           "kind": "dynamic-import"
         },
         {
-          "path": "assets/hd-exterior-FQABLQSO.js",
+          "path": "assets/hd-exterior-J3Q7EZHJ.js",
           "kind": "dynamic-import"
         }
       ],
@@ -621,30 +666,33 @@
       "entryPoint": "app/scene.js",
       "inputs": {
         "node_modules/three/examples/jsm/environments/RoomEnvironment.js": {
-          "bytesInOutput": 1893
+          "bytesInOutput": 1900
         },
         "node_modules/three/examples/jsm/controls/OrbitControls.js": {
-          "bytesInOutput": 19026
+          "bytesInOutput": 19046
         },
         "node_modules/three/examples/jsm/utils/BufferGeometryUtils.js": {
           "bytesInOutput": 3724
         },
         "app/scene/assembly.js": {
-          "bytesInOutput": 379
+          "bytesInOutput": 714
         },
         "app/scene/materials.js": {
           "bytesInOutput": 3494
         },
+        "app/scene/stair-hall.js": {
+          "bytesInOutput": 5461
+        },
         "app/scene.js": {
-          "bytesInOutput": 30558
+          "bytesInOutput": 30732
         }
       },
-      "bytes": 59613
+      "bytes": 65688
     },
-    "assets/chunk-FAIXEBW7.js": {
+    "assets/chunk-BBR2P3JY.js": {
       "imports": [
         {
-          "path": "assets/chunk-47DC4FHM.js",
+          "path": "assets/chunk-KQTPFPAN.js",
           "kind": "import-statement"
         }
       ],
@@ -667,7 +715,24 @@
       },
       "bytes": 16276
     },
-    "assets/chunk-47DC4FHM.js": {
+    "assets/chunk-JDYYZU63.js": {
+      "imports": [
+        {
+          "path": "assets/chunk-KQTPFPAN.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [
+        "a"
+      ],
+      "inputs": {
+        "app/scene/solar-layout.js": {
+          "bytesInOutput": 1126
+        }
+      },
+      "bytes": 1182
+    },
+    "assets/chunk-KQTPFPAN.js": {
       "imports": [],
       "exports": [
         "$",
@@ -684,7 +749,9 @@
         "F",
         "Fa",
         "G",
+        "Ga",
         "H",
+        "Ha",
         "I",
         "J",
         "K",
@@ -759,13 +826,13 @@
       ],
       "inputs": {
         "node_modules/three/build/three.core.js": {
-          "bytesInOutput": 218779
+          "bytesInOutput": 222668
         },
         "node_modules/three/build/three.module.js": {
           "bytesInOutput": 321396
         }
       },
-      "bytes": 541098
+      "bytes": 545005
     }
   }
 }

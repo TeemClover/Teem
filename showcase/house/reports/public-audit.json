@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-23T23:34:51.802Z",
+  "checkedAt": "2026-09-24T00:34:03.893Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -7,7 +7,7 @@
     "esbuild": "0.25.10"
   },
   "scope": "Built public HTML, assets, image derivatives and no downloadable plans or student kits.",
-  "fileCount": 59,
+  "fileCount": 66,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -15,62 +15,67 @@
       "assets/home.js"
     ],
     "defaultSD": [
-      "assets/chunk-47DC4FHM.js",
-      "assets/chunk-FAIXEBW7.js",
+      "assets/chunk-BBR2P3JY.js",
+      "assets/chunk-JDYYZU63.js",
+      "assets/chunk-KQTPFPAN.js",
       "assets/home.js",
-      "assets/scene-NHEHZAUJ.js"
+      "assets/scene-BD5EXLGS.js"
     ],
     "optInHDEntryPoints": [
-      "assets/hd-exterior-FQABLQSO.js",
-      "assets/hd-furniture-LRBWA5LZ.js",
-      "assets/hd-materials-ZDYCLHKZ.js",
-      "assets/hd-rendering-SI33SVGB.js"
+      "assets/hd-exterior-J3Q7EZHJ.js",
+      "assets/hd-furniture-P5RPM3NY.js",
+      "assets/hd-materials-BL57NSQL.js",
+      "assets/hd-rendering-QTSPN27J.js"
     ],
     "optInHDAdditional": [
-      "assets/hd-exterior-FQABLQSO.js",
-      "assets/hd-furniture-LRBWA5LZ.js",
-      "assets/hd-materials-ZDYCLHKZ.js",
-      "assets/hd-rendering-SI33SVGB.js"
+      "assets/hd-exterior-J3Q7EZHJ.js",
+      "assets/hd-furniture-P5RPM3NY.js",
+      "assets/hd-materials-BL57NSQL.js",
+      "assets/hd-rendering-QTSPN27J.js"
     ]
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 305996,
-      "gzipBytes": 176249
+      "bytes": 353123,
+      "gzipBytes": 199802
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 922983,
-      "gzipBytes": 340426
+      "bytes": 981274,
+      "gzipBytes": 368432
     },
     "optInHDAdditional": {
-      "bytes": 61680,
-      "gzipBytes": 19721
+      "bytes": 64030,
+      "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 984663,
-      "gzipBytes": 360147
+      "bytes": 1045304,
+      "gzipBytes": 389069
     },
     "imageDerivatives": {
-      "bytes": 3161424,
-      "gzipBytes": 3163240
+      "bytes": 3565476,
+      "gzipBytes": 3567540
     },
     "allPublicFiles": {
-      "bytes": 4121483,
-      "gzipBytes": 3496332
+      "bytes": 4567794,
+      "gzipBytes": 3911144
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 9739,
-      "gzipBytes": 2955
+      "bytes": 12060,
+      "gzipBytes": 3410
     },
-    "assets/chunk-47DC4FHM.js": {
-      "bytes": 541098,
-      "gzipBytes": 138165
-    },
-    "assets/chunk-FAIXEBW7.js": {
+    "assets/chunk-BBR2P3JY.js": {
       "bytes": 16276,
-      "gzipBytes": 6166
+      "gzipBytes": 6167
+    },
+    "assets/chunk-JDYYZU63.js": {
+      "bytes": 1182,
+      "gzipBytes": 701
+    },
+    "assets/chunk-KQTPFPAN.js": {
+      "bytes": 545005,
+      "gzipBytes": 139458
     },
     "assets/fonts/OFL.txt": {
       "bytes": 4364,
@@ -92,19 +97,19 @@
       "bytes": 11804,
       "gzipBytes": 11827
     },
-    "assets/hd-exterior-FQABLQSO.js": {
-      "bytes": 5060,
-      "gzipBytes": 2501
+    "assets/hd-exterior-J3Q7EZHJ.js": {
+      "bytes": 5856,
+      "gzipBytes": 2833
     },
-    "assets/hd-furniture-LRBWA5LZ.js": {
-      "bytes": 9207,
-      "gzipBytes": 3893
+    "assets/hd-furniture-P5RPM3NY.js": {
+      "bytes": 10353,
+      "gzipBytes": 4369
     },
-    "assets/hd-materials-ZDYCLHKZ.js": {
-      "bytes": 6551,
-      "gzipBytes": 2819
+    "assets/hd-materials-BL57NSQL.js": {
+      "bytes": 6959,
+      "gzipBytes": 2927
     },
-    "assets/hd-rendering-SI33SVGB.js": {
+    "assets/hd-rendering-QTSPN27J.js": {
       "bytes": 40862,
       "gzipBytes": 10508
     },
@@ -113,20 +118,20 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 110113,
-      "gzipBytes": 19019
+      "bytes": 119641,
+      "gzipBytes": 20611
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
       "gzipBytes": 53903
     },
-    "assets/scene-NHEHZAUJ.js": {
-      "bytes": 59613,
-      "gzipBytes": 19846
+    "assets/scene-BD5EXLGS.js": {
+      "bytes": 65688,
+      "gzipBytes": 22304
     },
     "assets/studio.css": {
-      "bytes": 14914,
-      "gzipBytes": 4354
+      "bytes": 31810,
+      "gzipBytes": 7450
     },
     "media/photos/aerial-roof-thumb.webp": {
       "bytes": 44000,
@@ -280,6 +285,14 @@
       "bytes": 197910,
       "gzipBytes": 197993
     },
+    "media/photos/living-family-thumb.webp": {
+      "bytes": 21352,
+      "gzipBytes": 21380
+    },
+    "media/photos/living-family.webp": {
+      "bytes": 106714,
+      "gzipBytes": 106767
+    },
     "media/photos/lounge-01-thumb.webp": {
       "bytes": 10014,
       "gzipBytes": 10037
@@ -287,6 +300,22 @@
     "media/photos/lounge-01.webp": {
       "bytes": 112390,
       "gzipBytes": 112443
+    },
+    "media/photos/stair-chandelier-thumb.webp": {
+      "bytes": 18382,
+      "gzipBytes": 18410
+    },
+    "media/photos/stair-chandelier.webp": {
+      "bytes": 178502,
+      "gzipBytes": 178575
+    },
+    "media/photos/stair-life-thumb.webp": {
+      "bytes": 11228,
+      "gzipBytes": 11251
+    },
+    "media/photos/stair-life.webp": {
+      "bytes": 67874,
+      "gzipBytes": 67917
     },
     "media/photos/study-01-thumb.webp": {
       "bytes": 12580,

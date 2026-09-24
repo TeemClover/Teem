@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { solarModuleLayout } from './solar-layout.js';
 
 const TAU = Math.PI * 2;
 const random = (i, seed = 0) => {
@@ -82,6 +83,25 @@ function downpipe(parent, at, eave, roofPoint, geometry, m) {
   for (const height of [.5, 2.5, 4.6]) {
     if (height > eave - .4) continue;
     addMesh(parent, geometry.box, m.taupe, [at[0], height, at[1]], [.079, .045, .079], 'pipe-bracket');
+  }
+}
+
+function solarFrames(parent, roof, geometry, m) {
+  // Use the SD plane descriptors directly so every frame follows its cell face.
+  for(const panel of solarModuleLayout(roof)) {
+    const {width:panelW,depth:panelH,across,normal,up}=panel;
+    const module=new THREE.Group();module.name='hd:solar-module-frame';
+    module.position.copy(panel.center);
+    module.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(across,normal,up.clone().negate()));
+    module.userData.panelSize=[panelW,panelH];module.userData.panelId=panel.id;module.userData.roofSide=panel.side;
+    parent.add(module);
+    for(const sign of [-1,1]) {
+      // Narrow anodized frame has true depth and a clear air gap to the tiles.
+      addMesh(module,geometry.box,m.frame,[sign*(panelW/2+.004),-.002,0],[.018,.028,panelH+.026],'hd:solar-frame-side');
+      addMesh(module,geometry.box,m.frame,[0,-.002,sign*(panelH/2+.004)],[panelW+.026,.028,.018],'hd:solar-frame-end');
+      addMesh(module,geometry.box,m.metal,[0,-.027,sign*panelH*.3],[panelW+.035,.023,.028],'hd:solar-mount-rail');
+      for(const edge of [-1,1])addMesh(module,geometry.box,m.metal,[edge*(panelW/2+.004),.014,sign*panelH*.3],[.025,.008,.042],'hd:solar-edge-clamp');
+    }
   }
 }
 
@@ -171,6 +191,7 @@ export function createHDExterior({ house, materials: m, roofY, rise, overhang })
   };
   roofDetails(architecture, { x0: -.6 - overhang, x1: 5.5 + overhang, z0: -10.3 - overhang, z1: overhang, y: roofY + .12, rise }, geometry, m);
   roofDetails(architecture, { x0: 5.25, x1: 14.1 + overhang, z0: -10.3 - overhang, z1: -1.6 + overhang, y: roofY, rise }, geometry, m);
+  solarFrames(architecture, { x0: 5.25, x1: 14.1 + overhang, z0: -10.3 - overhang, z1: -1.6 + overhang, y: roofY, rise }, geometry, m);
   downpipe(architecture, [-.68, -10.26], roofY + .12, [-.6 - overhang, -10.3 - overhang], geometry, m);
   downpipe(architecture, [14.19, -10.26], roofY, [14.1 + overhang, -10.3 - overhang], geometry, m);
   downpipe(architecture, [14.19, -1.81], roofY, [14.1 + overhang, -1.6 + overhang], geometry, m);

@@ -1,3 +1,24 @@
+# Mobile controls, close-up HD and column repair — 2026-09-24
+
+User authorized push to main after these refinements. All 65 tests, syntax checks, build, data validation and public-output audit pass after the added stair-hall scope. Final CSS-only adjustments were rebuilt and the public audit rerun. Existing room circulation and SD furniture materials remain intact; no downloads were added.
+
+The final scope includes the owner's newly supplied chandelier photos. Added eight descending rings in both modes, bright faceted crystals in HD, slimmer supported stair flights, landing guards and a double-height isolated presentation. The stair remains visible when viewing floor 2. Ring/tread tests verify at least 2 metres of clearance above occupied treads and an open upper exit; geometry stays within 10k SD / 30k HD triangles for this addition. Rear stair windows were aligned on both floors from the photo reference. Browser-inspected the overall second floor and isolated HD hall on desktop and a narrow mobile viewport, then switched to both real stair photos. Family living-room photo also loads successfully. There are now 24 photos in 9 sets, with 3 confirmed / 4 candidate / 2 context bindings. New web derivatives contain no EXIF metadata; the owner explicitly approved showing people.
+
+Solar layout now places 6 modules on the rear slope and retains the other 8 on the east slope. One shared descriptor generates SD cell planes and HD frames. Tests verify the rear reflection, unchanged east coordinates, panel count and frame/cell alignment. Browser inspection confirms the corrected rear/east banks.
+
+Local Chromium checks covered portrait 360 × 740 and 390 × 844, landscape 844 × 390, and desktop. A later browser zoom state also exercised actual CSS viewports 354 × 767 and 767 × 354. Mobile document height matched viewport height with scrollY = 0; room details scrolled internally. Verified expandable tools, room details, focus mode and Escape, model/plan/photo navigation, and accessible landscape details. The short landscape plan now keeps a visible SVG instead of collapsing to zero height.
+
+- UI uses exactly SD มาตรฐาน / HD ความละเอียดสูง; a refreshed page starts in SD.
+- Close-up zoom reaches 12 (previous limit 4). Switching SD/HD at zoom 12 retained the identical camera pose. Focus/orientation changes preserve manual framing.
+- Viewport limits and touch-action rules are present. Synthetic cancelable gesturestart/gesturechange, multi-touch move and Ctrl-wheel events were prevented; a one-touch move was not canceled. The wheel still reached house controls and changed house zoom while visualViewport.scale stayed 1. This is event-handler verification, not a physical Safari pinch test; the in-app browser does not support native touch injection.
+- Both front column tops meet the fascia underside at y = 2.7. A geometry regression proves zero area of overlapping coplanar visible faces. Front and oblique HD views show clean joins.
+- Inspected HD dining/tableware, bathroom 205 basin and roof solar frames in close views. Solar hardware aligns to all 14 existing panels; focused geometry tests cover alignment, recess shape, finite geometry and budgets.
+- No console warnings or errors in the inspected final browser session. Temporary viewport and device-emulation overrides were cleared. No new sustained performance benchmark or production deployment claim.
+
+Local ignored screenshots include mobile-hd-dining-closeup.png, mobile-polish-hd-facade.png, mobile-polish-hd-basin.png, mobile-polish-final.png and solar-rear-final.png under reports/screenshots/. Earlier sections describe previous builds.
+
+---
+
 # Optional SD / HD graphics — 2026-09-24
 
 User authorized the current graphics revision for main on 2026-09-24. These are local verification results, not proof of production deployment. Original SD materials/furniture are retained. Front dining glazing is widened in shared geometry for both modes. All 53 tests, syntax checks, build, house validation and public audit pass.

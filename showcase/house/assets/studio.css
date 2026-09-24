@@ -50,3 +50,120 @@ dialog{background:#f8fafc;color:#344256;border-color:#c6d2e1;border-radius:8px}.
 .render-mode-status:not(.sr-only){position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);width:max-content;max-width:245px;padding:5px 9px;border:1px solid #cbd7e6;border-radius:4px;background:#f8fafc;color:#516b8c;font-size:10px;pointer-events:none}
 @media(max-width:767px){.render-mode-switch button{min-height:44px;padding:4px 9px;gap:5px}.render-mode-switch strong{font-size:11px}.render-mode-switch button>span{font-size:8px}.camera-tools{bottom:111px}}
 @media(max-width:359px){.scene-bottom .orientation{display:none}.scene-bottom{gap:10px}.render-mode-switch button{padding:4px 10px}}
+
+/* A quiet canvas: controls live at its edges, details open on demand. */
+.tool-name,.mobile-tools-trigger,.touch-hint,.focus-collapse-icon{display:none}
+.viewer-actions{position:absolute;top:86px;right:23px;z-index:12;display:flex;gap:6px}
+.viewer-actions button{width:44px;height:44px;align-items:center;justify-content:center;border:1px solid #c7d2e0;border-radius:10px;background:#f8fafcf5;color:#546b88;box-shadow:0 3px 12px #304b6e08}
+.focus-view-button{display:flex}.viewer-actions svg,.settings-button svg{width:20px;height:20px}
+.viewer-actions button:hover,.settings-button:hover{background:#e8eff8}
+.focus-view-button[aria-pressed=true]{color:#2864b3;background:#e9f1fd}
+.focus-view-button[aria-pressed=true] .focus-expand-icon{display:none}
+.focus-view-button[aria-pressed=true] .focus-collapse-icon{display:block}
+.settings-help{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;border-top:1px solid #e0e7ef;margin-top:12px;color:#3c6ba7;font-size:12px}
+.settings-panel label{min-height:44px}.settings-panel>div button{min-width:44px;min-height:44px}
+.render-mode-switch{border-radius:10px;gap:4px;padding:4px}
+.render-mode-switch button{border-radius:7px;min-height:38px;padding:6px 12px}
+.render-mode-switch button>span{font-size:10px}
+.render-mode-switch strong{font-size:12px}
+.settings-button svg{flex-shrink:0}
+.view-focused{overflow:hidden}
+.view-focused .workspace{position:fixed;inset:0;z-index:40;display:block;width:100%;height:100dvh;min-height:0;background:#e8edf4}
+.view-focused .stage{width:100%;height:100%;border:0}
+.view-focused .inspector,.view-focused #room-catalog{display:none}
+.view-focused #scene,.view-focused #room-labels{bottom:95px}
+.view-focused .scene-bottom{bottom:25px}
+.view-focused .camera-tools{bottom:100px}
+.view-focused #tour-bar{bottom:93px}
+@media(min-width:768px) and (max-width:1199px){.viewer-actions{top:132px;right:20px}}
+@media(min-width:768px) and (min-height:601px){#app[data-lens=photo] .viewer-actions,#app[data-lens=plan] .viewer-actions{top:86px}}
+@media(max-width:767px){
+ body{--mobile-top:env(safe-area-inset-top,0px);--mobile-bottom:env(safe-area-inset-bottom,0px)}
+ .site-header{height:calc(60px + var(--mobile-top));padding:var(--mobile-top) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));gap:10px}
+ .site-header nav{gap:14px}.site-header .text-button span[aria-hidden]{display:none}.brand{font-size:16px;gap:8px;white-space:nowrap}.brand-mark{width:29px;height:29px}.tour-start{min-height:44px}
+ .workspace{height:calc(100dvh - 104px - var(--mobile-top) - var(--mobile-bottom));min-height:0;overflow:hidden}
+ .stage{min-height:285px;background:radial-gradient(ellipse at 48% 32%,#f3f6fa,#e1e7ef)}
+ .scene-title{left:16px;right:16px;top:13px}.scene-title .eyebrow{font-size:8px;letter-spacing:1.5px}.scene-title h1{font-size:19px;margin:4px 0 0;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .lens-switch{top:70px;left:12px;right:116px;gap:2px;padding:3px;border-radius:10px;background:#f8fafcf0}
+ .lens-switch button{min-width:0;min-height:44px;padding:6px 5px;flex:1;border-radius:7px;font-size:11px}
+ .viewer-actions{top:73px;right:12px;gap:6px}.mobile-tools-trigger{display:flex}
+ .touch-hint{display:block;position:absolute;top:126px;left:16px;z-index:3;margin:0;pointer-events:none;font-size:9px;color:#8493a6;letter-spacing:.1px}
+ .editor-toolbar{display:none;top:126px;left:auto;right:12px;width:254px;padding:10px;gap:6px;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;background:#f9fbfffa;border-radius:12px;box-shadow:0 10px 35px #233b5a24;z-index:18}
+ .editor-toolbar.is-open{display:grid}.editor-toolbar .tool-section{grid-column:1/-1;font-size:8px;padding:4px 3px;text-align:left;letter-spacing:1px}.editor-toolbar .tool-divider{width:100%;grid-column:1/-1;margin:3px 0}
+ .editor-toolbar button{width:auto;height:64px;min-height:44px;display:flex;flex-direction:column;gap:7px;border-radius:8px;font-size:10px;justify-content:center}.editor-toolbar svg{width:21px;height:21px}.tool-name{display:block}.editor-toolbar button[aria-pressed=true]{background:#e5edf9}
+ #scene,#room-labels{inset:130px 0 141px}
+ .camera-tools{right:12px;bottom:153px;gap:0;padding:3px;background:#f8fafcf5;border:1px solid #c7d2e0;border-radius:12px;box-shadow:0 4px 15px #304b6e0c}
+ .camera-tools button{width:44px;height:44px;border:0;background:transparent;border-radius:8px;font-size:23px}.camera-tools button:active{background:#e5edf9}.camera-tools button[data-action=rotate],.camera-tools>span{display:none}.camera-tools button[data-action=reset]{border-top:1px solid #e0e6ee;border-radius:0 0 8px 8px}
+ .scene-bottom{left:12px;right:12px;bottom:76px;gap:8px}.scene-bottom .orientation{display:none}
+ .render-mode-control{flex:1;min-width:0}.render-mode-switch{width:100%;gap:4px;padding:4px;box-shadow:none;border-radius:11px;background:#f8fafcf5}
+ .render-mode-switch button{min-height:44px;min-width:0;padding:4px 8px;gap:6px;flex:1;border-radius:7px}.render-mode-switch strong{font-size:12px;letter-spacing:.25px}.render-mode-switch button>span{font-size:10px}.render-mode-switch [data-render-mode=hd]{flex:1.4}
+ .settings-button{width:44px;height:54px;min-height:44px;flex-shrink:0;justify-content:center;border:1px solid #c7d2e0;border-radius:11px;background:#f8fafcf5}.settings-button span{display:none}
+ .floor-dock{left:12px;right:12px;top:auto;bottom:12px;padding:4px;background:#f8fafcf5;border-radius:11px;box-shadow:none}.floor-dock>div{gap:4px}.floor-dock button{min-height:44px;padding:5px 3px;font-size:12px;border-radius:7px;gap:5px}.floor-icon{font-size:17px}.floor-number{display:none}
+ .settings-panel{right:12px;bottom:138px;width:min(300px,calc(100% - 24px));max-height:calc(100% - 150px);overflow:auto;overscroll-behavior:contain;border-radius:12px;padding:12px 16px;font-size:13px;box-shadow:0 10px 35px #233b5a24}.settings-panel>div{margin-bottom:3px}.settings-panel label{margin-top:7px}.settings-panel select{font-size:16px;min-height:44px}.settings-panel input{width:20px;height:20px}
+ .inspector{padding:0 16px 14px;max-height:min(31%,245px);min-height:0;border-radius:14px 14px 0 0;background:#fafcfe;border-top:1px solid #cbd6e4;box-shadow:0 -3px 15px #263e4f05;overscroll-behavior:contain}
+ .inspector.arrival{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;height:76px;max-height:76px;padding:12px 16px}
+ .inspector.arrival .overview-head{display:block;min-width:0}.inspector.arrival .overview-title{font-size:13px;line-height:1.6;letter-spacing:-.25px;margin:0;max-width:190px}.inspector.arrival .primary-button{font-size:12px;gap:14px;width:auto;min-height:44px;height:44px;padding:8px 12px;border-radius:8px}
+ .inspector .sheet-handle{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;background:#fafcfe!important;min-height:44px;height:44px;padding:0;color:#6c819c;font-size:10px;border-bottom:1px solid #e6ecf3;border-radius:0;margin-bottom:9px!important}
+ .sheet-handle::after{display:none}.sheet-chevron{font:17px system-ui;color:#7287a2;transform:rotate(180deg)}.sheet-handle[aria-expanded=true] .sheet-chevron{transform:none}
+ .inspector .room-header{align-items:center;min-height:43px}.inspector .room-header .eyebrow{font-size:9px}.inspector .room-header h2{font-size:17px;margin:1px 0 0;line-height:1.4;letter-spacing:-.25px}.inspector .close-button{width:44px;height:44px;border-radius:10px;font-size:22px}
+ .inspector.sheet-collapsed{height:109px;max-height:109px;padding-bottom:8px}.inspector.sheet-collapsed>*:not(.sheet-handle):not(.room-header){display:none}
+ .inspector .room-context-toggle{flex-wrap:wrap;gap:8px;margin-top:12px}.inspector .room-context-toggle button{min-height:44px;padding:8px 12px;font-size:12px;border-radius:8px}.inspector .room-context-toggle>span{font-size:10px}
+ .inspector .room-list{grid-template-columns:1fr 1fr;gap:6px}.inspector .room-list button{min-height:48px;font-size:12px;padding:8px 10px;background:#eef3f9;border-radius:8px}.inspector .room-list button span{font-size:9px}
+ .inspector .source-details summary{min-height:44px;padding-top:8px}.inspector .photo-set-select button{min-height:44px;font-size:12px;border-radius:8px}.inspector .secondary-button{min-height:44px;border-radius:8px}
+ #app[data-lens=plan] .editor-toolbar,#app[data-lens=plan] .touch-hint{display:none}
+ #app[data-lens=plan] .inspector{max-height:109px}#app[data-lens=plan] .inspector.sheet-expanded{height:auto;max-height:min(35%,270px)}
+ #plan-view{inset:182px 12px 79px}.plan-tools,.plan-floor-choice{top:-52px}.plan-tools button{min-width:44px;min-height:44px;border-radius:8px}.plan-tools button:nth-child(2){min-width:46px}.plan-floor-choice button{min-height:44px;font-size:11px;padding:8px 11px;border-radius:8px}.plan-note{font-size:9px;line-height:1.5;margin:6px 0 0}
+ #photo-view,#app[data-lens=photo] #photo-view{inset:132px 12px 14px}.gallery-close,.gallery-expand{width:44px;height:44px;border-radius:9px}.gallery-expand{right:58px}.gallery-button{width:44px;height:48px;border-radius:9px}.gallery-meta{font-size:10px;line-height:1.5}
+ .workspace.photo-full .stage{min-height:285px}.workspace.photo-full .inspector{max-height:109px}.workspace.photo-full .inspector .sheet-handle{display:flex}
+ .view-note{top:126px;left:16px;right:auto;padding:3px 7px;font-size:9px;border-radius:5px}.view-note:not([hidden])~.touch-hint{display:none}
+ #tour-bar{bottom:145px;left:12px;transform:none;width:calc(100% - 76px);max-width:none;border-radius:10px;padding:10px 12px}.tour-caption{font-size:11px}.tour-actions{gap:5px}.tour-actions button{min-height:44px;font-size:10px}.tour-actions button:last-child{padding:6px 9px;border-radius:6px}
+ .site-footer{height:calc(44px + var(--mobile-bottom));padding:0 max(14px,env(safe-area-inset-right)) var(--mobile-bottom) max(14px,env(safe-area-inset-left));font-size:8px}.site-footer button{min-height:44px;font-size:9px}
+ .fallback-note{top:125px;left:12px;right:12px;border-radius:8px}.fallback-note button{min-height:44px}#scene-loading{inset:20% 16%;font-size:13px;gap:12px}
+ .view-focused .stage{--focus-top:env(safe-area-inset-top,0px);--focus-bottom:env(safe-area-inset-bottom,0px)}
+ .view-focused .scene-title{top:calc(13px + var(--focus-top))}.view-focused .lens-switch{top:calc(70px + var(--focus-top))}.view-focused .viewer-actions{top:calc(73px + var(--focus-top))}
+ .view-focused #scene,.view-focused #room-labels{top:calc(130px + var(--focus-top));bottom:calc(141px + var(--focus-bottom))}.view-focused .touch-hint{top:calc(126px + var(--focus-top))}
+ .view-focused .scene-bottom{bottom:calc(76px + var(--focus-bottom))}.view-focused .floor-dock{bottom:calc(12px + var(--focus-bottom))}.view-focused .camera-tools{bottom:calc(153px + var(--focus-bottom))}.view-focused .settings-panel{bottom:calc(138px + var(--focus-bottom))}.view-focused #tour-bar{bottom:calc(145px + var(--focus-bottom))}
+ .view-focused #photo-view{bottom:calc(14px + var(--focus-bottom))}
+}
+@media(max-width:359px){.site-header nav{gap:9px}.site-header .text-button{font-size:10px}.brand{font-size:14px}.brand-mark{width:26px;height:26px}.scene-title h1{font-size:18px}.render-mode-switch button{gap:4px;padding:4px 5px}.render-mode-switch button>span{font-size:9px}.render-mode-switch strong{font-size:11px}.floor-dock button{font-size:11px}.floor-icon{display:none}.inspector.arrival{padding:10px 12px;gap:8px}.inspector.arrival .overview-title{font-size:12px}.inspector.arrival .primary-button{font-size:11px;padding:8px 10px;gap:9px}}
+@media(max-width:767px) and (max-height:650px){.scene-title{top:7px}.scene-title .eyebrow{display:none}.scene-title h1{font-size:17px}.lens-switch{top:44px}.viewer-actions{top:47px}.touch-hint{top:102px}#scene,#room-labels{top:103px}.editor-toolbar{top:101px}#plan-view{top:156px}#photo-view,#app[data-lens=photo] #photo-view{top:106px}.inspector.arrival{height:66px;max-height:66px}.inspector.sheet-collapsed{height:100px;max-height:100px}.inspector .sheet-handle{margin-bottom:4px!important}.view-note{top:100px}}
+@media(max-width:1000px) and (orientation:landscape) and (max-height:600px){
+ .workspace{display:block;height:calc(100dvh - 88px);min-height:330px}.stage{height:100%}.inspector{display:none}
+ .scene-title{top:12px;left:18px}.scene-title .eyebrow{display:none}.scene-title h1{font-size:17px}
+ .lens-switch{top:48px;left:16px;right:auto}.lens-switch button{min-height:44px;min-width:60px}
+ .viewer-actions{top:48px;right:16px}.mobile-tools-trigger{display:flex}.editor-toolbar{display:none}.editor-toolbar.is-open{display:grid;top:99px;right:16px;left:auto;width:254px;max-height:calc(100% - 113px);overflow-y:auto;overscroll-behavior:contain;padding:10px;gap:6px;grid-template-columns:repeat(3,1fr)}.editor-toolbar .tool-section,.editor-toolbar .tool-divider{grid-column:1/-1}.editor-toolbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:auto;height:52px;min-height:44px}.tool-name{display:block;font-size:9px}
+ #scene,#room-labels{inset:66px 70px 79px 75px}.touch-hint{display:none}
+ .floor-dock{top:auto;bottom:14px;left:16px;right:auto;width:calc(50% - 24px);border-radius:10px}.floor-dock button{min-height:44px;font-size:11px}.floor-icon,.floor-number{display:none}
+ .scene-bottom{left:50%;right:16px;bottom:14px;gap:7px}.orientation{display:none}.render-mode-control{flex:1}.render-mode-switch button{min-height:44px;flex:1;padding:4px 6px}.render-mode-switch button>span{font-size:9px}.settings-button{width:44px;min-width:44px}.settings-button span{display:none}
+ .camera-tools{right:16px;bottom:86px}.camera-tools button{width:44px;height:44px}.camera-tools button[data-action=rotate],.camera-tools>span{display:none}
+ #room-catalog{display:none}#plan-view{inset:152px 16px 85px}#photo-view,#app[data-lens=photo] #photo-view{inset:104px 16px 14px}
+ .view-focused #scene,.view-focused #room-labels{inset:66px 70px 79px 75px}.view-focused .scene-title{top:12px}.view-focused .lens-switch,.view-focused .viewer-actions{top:48px}.view-focused .scene-bottom,.view-focused .floor-dock{bottom:14px}.view-focused .camera-tools{bottom:86px}.view-focused .workspace{height:100dvh;min-height:0}
+}
+html{touch-action:pan-x pan-y}#scene,#scene canvas{touch-action:none}button,a,input,select{touch-action:manipulation}
+.landscape-details-button{display:none}
+@media(max-width:767px){html,body{height:100%;overflow:hidden;overscroll-behavior:none}#app{height:calc(100dvh - 60px - var(--mobile-top));overflow:hidden}}
+@media(max-width:1000px) and (orientation:landscape) and (max-height:600px){
+ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+ .site-header{height:48px;padding-top:0}.site-footer{height:44px;padding-bottom:0}.site-footer button{min-height:44px}
+ #app{height:calc(100dvh - 48px);overflow:hidden}.workspace{position:relative;height:calc(100dvh - 92px);min-height:0;overflow:hidden}
+ .landscape-details-button{display:flex}
+ .inspector.sheet-expanded{position:absolute;display:flex;left:16px;right:auto;top:101px;bottom:14px;width:300px;max-width:calc(100% - 32px);height:auto;max-height:none;z-index:17;padding:0 14px 14px;background:#fafcfe;border:1px solid #cbd6e4;border-radius:12px;box-shadow:0 10px 35px #233b5a24}
+ .inspector.arrival.sheet-expanded{padding-top:14px}.inspector.arrival.sheet-expanded>*{display:block}.inspector.arrival.sheet-expanded .primary-button{display:flex;margin-top:10px}.inspector.arrival.sheet-expanded .overview-title{font-size:14px}.inspector.arrival.sheet-expanded .overview-photo,.inspector.arrival.sheet-expanded .overview-copy,.inspector.arrival.sheet-expanded .summary-stats,.inspector.arrival.sheet-expanded .sidebar-foot{display:none}
+ .view-focused .inspector,.view-focused .landscape-details-button{display:none}
+ #app[data-lens=plan] .inspector.sheet-expanded{max-height:none}
+ .view-focused .workspace{height:100dvh;min-height:0}
+}
+@media(max-width:1000px) and (orientation:landscape) and (max-height:600px){
+ /* Keep the plan tall: its controls occupy the left edge, never a stack above the paper. */
+ #app[data-lens=plan] .scene-title{right:130px}
+ #app[data-lens=plan] .lens-switch{left:16px;right:auto;top:48px;width:200px}
+ #app[data-lens=plan] .viewer-actions{top:0;right:16px}
+ #app[data-lens=plan] #plan-view{inset:46px 16px 12px 228px;min-height:0}
+ #app[data-lens=plan] .plan-viewport{flex:1;width:100%;height:100%;min-height:0}
+ #app[data-lens=plan] .plan-paper{padding:6px}
+ #app[data-lens=plan] .plan-tools{left:-212px;top:58px;gap:6px}
+ #app[data-lens=plan] .plan-tools button{min-width:52px;min-height:44px}
+ #app[data-lens=plan] .plan-floor-choice,#app[data-lens=plan] .plan-note{display:none}
+ #app[data-lens=plan] .floor-dock{left:16px;right:auto;bottom:14px;width:200px}
+ #app[data-lens=plan] .floor-dock button{font-size:10px;padding:5px 2px}
+}

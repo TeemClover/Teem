@@ -94,6 +94,28 @@ test('HD detail leaves bedroom, bathroom, pantry and dining access clear',()=>{
   assertClear(interiors('f1-g03-dining'),[5.49,-6.65,6.25,-3.55],'pantry to dining');
 });
 
+test('HD ceramic basins have a visible recess without the former flat top',()=>{
+  let checked=0;
+  for(const r of house.rooms) {
+    const furniture=createHDFurniture(r,m);
+    furniture.traverse(fixture=>{
+      if(fixture.name!=='fixture:basin')return;
+      checked++;
+      const shell=fixture.getObjectByName('hd:recessed-basin');
+      assert.ok(shell,`${r.id} ceramic shell`);
+      const probe=new THREE.Mesh(shell.geometry,new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));
+      const ray=new THREE.Raycaster(new THREE.Vector3(.04,1.2,0),new THREE.Vector3(0,-1,0));
+      const levels=ray.intersectObject(probe,false).map(hit=>hit.point.y);
+      assert.ok(levels.length>=2,`${r.id} retains underside and bowl`);
+      assert.ok(Math.max(...levels)<.79,`${r.id} bowl is recessed below the .865 rim`);
+      assert.ok(!fixture.children.some(c=>c.isMesh&&Math.abs(c.position.y-.878)<.001),'old floating insert removed');
+      assert.ok(fixture.getObjectByName('hd:basin-drain').position.y<.78);
+      probe.material.dispose();
+    });
+  }
+  assert.ok(checked>=4,'bathrooms throughout the house are refined');
+});
+
 test('HD can be merged by existing material batches and remains finite within a geometry budget',()=>{
   let triangles=0,meshes=0;
   for(const r of house.rooms)for(const group of [createHDFurniture(r,m),createHDBuiltins(r,m)])group.traverse(object=>{

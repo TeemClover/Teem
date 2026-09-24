@@ -118,7 +118,7 @@ for (const file of sdGraph) {
 }
 const initial = ['index.html', 'assets/home.css', 'assets/studio.css', ...shellGraph, 'assets/myclover-logo.png',
   ...files.filter((file) => file.startsWith('assets/fonts/') && file.endsWith('.woff2')),
-  ...['photos-exterior', 'photos-living'].map((id) => photoSets.find((s) => s.id === id)?.photos[0]?.thumb).filter(Boolean)];
+  ...['photos-exterior', 'photos-living', 'photos-stair-chandelier'].map((id) => photoSets.find((s) => s.id === id)?.photos[0]?.thumb).filter(Boolean)];
 const firstModel = [...new Set([...initial, ...sdGraph])];
 const upgradedModel = [...new Set([...firstModel, ...hdGraph])];
 function sum(selected) {

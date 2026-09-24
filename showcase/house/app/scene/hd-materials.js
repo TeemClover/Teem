@@ -74,6 +74,20 @@ export function createHDMaterials() {
     return [joint ? 87 : relief * 255, joint ? 215 : 162 + (relief - .5) * 70, 0];
   }, { color: false, repeat: [.75, .75] });
 
+  // Cabinetry and table legs use continuous veneer, not the floor's plank seams.
+  // A shared 256 px pair resolves the fine grain without per-object textures.
+  const veneerGrain = (u, v, x, y) => Math.sin(TAU * (v * 42 + Math.sin(u * TAU) * .37)) * 2.2
+    + Math.sin(TAU * (v * 89 + Math.sin(u * TAU * 2) * .21)) * .65
+    + (noise(u, v, 8, 9) - .5) * 3 + (hash(x, y, 72) - .5) * 1.3;
+  const veneer = texture('oak-veneer-albedo', 256, (u, v, x, y) => {
+    const tone = veneerGrain(u, v, x, y);
+    return [184 + tone, 160 + tone, 130 + tone];
+  });
+  const veneerSurface = texture('oak-veneer-surface', 256, (u, v, x, y) => {
+    const grain = veneerGrain(u, v, x, y);
+    return [132 + grain * 1.4, 169 + grain * 2, 0];
+  }, { color: false });
+
   const marble = texture('limestone-albedo', 512, (u, v, x, y) => {
     const { tone } = stonePixel(u, v, x, y);
     return [232 + tone, 231 + tone, 226 + tone];
@@ -103,7 +117,7 @@ export function createHDMaterials() {
     const fine = hash(x, y, 67), mottling = noise(u, v, 32, 8);
     return [114 + fine * 19 + mottling * 13, 227 + mottling * 17, 0];
   }, { color: false, repeat: [3, 3] });
-  const pillow = texture('jacquard-albedo', 512, (u, v) => {
+  const pillow = texture('jacquard-albedo', 256, (u, v) => {
     const diagonal = Math.min(Math.abs(fract((u + v) * 5) - .5), Math.abs(fract((u - v) * 5) - .5));
     const pattern = smooth(clamp((diagonal - .022) / .012));
     return [mix(91, 237, pattern), mix(95, 233, pattern), mix(96, 225, pattern)];
@@ -140,6 +154,7 @@ export function createHDMaterials() {
   const stoneFinish = { map: marble, bumpMap: stoneSurface, bumpScale: .008, roughnessMap: stoneSurface, clearcoat: .18, clearcoatRoughness: .28 };
   const textileFinish = { bumpMap: textileSurface, bumpScale: .016, roughnessMap: textileSurface, sheen: .6, sheenRoughness: .82, sheenColor: new THREE.Color('#e9e4da') };
   const oakFinish = { map: oak, bumpMap: oakSurface, bumpScale: .021, roughnessMap: oakSurface, clearcoat: .12, clearcoatRoughness: .45 };
+  const veneerFinish = { map: veneer, bumpMap: veneerSurface, bumpScale: .009, roughnessMap: veneerSurface, clearcoat: .2, clearcoatRoughness: .36 };
   const materials = {
     wall: standard('#e9e7e2', .91, { bumpMap: plasterSurface, bumpScale: .009 }),
     trim: physical('#f7f4ef', .48, { clearcoat: .12, clearcoatRoughness: .36 }),
@@ -161,8 +176,8 @@ export function createHDMaterials() {
     cushion: physical('#f0ece3', .98, textileFinish),
     accentCushion: physical('#ffffff', .98, { ...textileFinish, map: pillow }),
     rug: physical('#535961', 1, { ...textileFinish, bumpScale: .033, sheen: .32, sheenColor: new THREE.Color('#929aa3') }),
-    timber: physical('#f0dfc7', .94, oakFinish),
-    darkWood: physical('#6b5b4c', .92, oakFinish),
+    timber: physical('#f0dfc7', .94, veneerFinish),
+    darkWood: physical('#6b5b4c', .92, veneerFinish),
     cabinet: physical('#aaa9a4', .27, { clearcoat: .55, clearcoatRoughness: .2 }),
     leather: physical('#655246', .7, { bumpMap: leatherSurface, bumpScale: .018, roughnessMap: leatherSurface, clearcoat: .26, clearcoatRoughness: .42 }),
     mirror: physical('#abb5bf', .065, { metalness: 1, clearcoat: .85, clearcoatRoughness: .04 }),

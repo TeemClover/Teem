@@ -39,6 +39,21 @@ export const photoSets = [
         "width": 1066,
         "height": 1600,
         "privacyReview": "processed-for-local-review"
+      },
+      {
+        "id": "P26",
+        "src": "media/photos/living-family.webp",
+        "thumb": "media/photos/living-family-thumb.webp",
+        "alt": "ภาพครอบครัวบนโซฟาสีอ่อนในห้องรับแขก เห็นฝ้ากระจกเงาและพื้นที่รับประทานอาหารด้านหลัง",
+        "caption": "มุมใช้ชีวิตบนโซฟา เชื่อมถึงโต๊ะรับประทานอาหารและบันได",
+        "width": 1280,
+        "height": 853,
+        "privacyReview": "owner-approved-people-web-derivative",
+        "publicationApproval": {
+          "by": "owner",
+          "date": "2026-09-24",
+          "scope": "people-visible"
+        }
       }
     ]
   },
@@ -72,6 +87,48 @@ export const photoSets = [
         "width": 1600,
         "height": 1067,
         "privacyReview": "processed-for-local-review"
+      }
+    ]
+  },
+  {
+    "id": "photos-stair-chandelier",
+    "name": "โถงบันไดและแชนเดอเลียร์",
+    "description": "แชนเดอเลียร์คริสตัล 8 วงในโถงสูงข้างบันได มองเชื่อมถึงห้องพักผ่อนชั้นบน",
+    "binding": {
+      "status": "confirmed",
+      "roomId": "f2-204-hall",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "method": "owner-confirmed",
+      "evidence": [
+        "Owner identified the eight-ring crystal chandelier in the stair hall; the supplied second photo shows its relationship to the upstairs lounge."
+      ]
+    },
+    "photos": [
+      {
+        "id": "P24",
+        "src": "media/photos/stair-chandelier.webp",
+        "thumb": "media/photos/stair-chandelier-thumb.webp",
+        "alt": "แชนเดอเลียร์คริสตัล 8 วงเรียงลดหลั่นในโถงสูงข้างบันได",
+        "caption": "คริสตัล 8 วง ลอยลดหลั่นเหนือโถงบันได",
+        "width": 1200,
+        "height": 1600,
+        "privacyReview": "owner-approved-web-derivative"
+      },
+      {
+        "id": "P25",
+        "src": "media/photos/stair-life.webp",
+        "thumb": "media/photos/stair-life-thumb.webp",
+        "alt": "มองจากห้องพักผ่อนชั้นบนผ่านบุคคลข้างราวกันตกไปยังแชนเดอเลียร์ในโถงบันได",
+        "caption": "จากห้องพักผ่อน มองต่อไปยังโถงบันไดและแชนเดอเลียร์",
+        "width": 853,
+        "height": 1280,
+        "privacyReview": "owner-approved-people-web-derivative",
+        "publicationApproval": {
+          "by": "owner",
+          "date": "2026-09-24",
+          "scope": "people-visible"
+        }
       }
     ]
   },

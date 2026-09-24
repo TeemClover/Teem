@@ -8,7 +8,11 @@ const roundedCache = new Map();
 const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, 28);
 const sphereGeometry = new THREE.SphereGeometry(1, 24, 16);
 const discGeometry = new THREE.CylinderGeometry(1, 1, 1, 40);
-const partGeometries = new Set([cylinderGeometry, sphereGeometry, discGeometry]);
+const plateGeometry = new THREE.LatheGeometry([
+  [0,-.006],[.068,-.006],[.107,-.003],[.123,.003],[.126,.008],
+  [.125,.012],[.122,.013],[.103,.005],[.074,.001],[0,.001],
+].map(([r,y])=>new THREE.Vector2(r,y)),40);
+const partGeometries = new Set([cylinderGeometry, sphereGeometry, discGeometry, plateGeometry]);
 
 function mesh(parent, geometry, material, position = [0, 0, 0], name = '') {
   const object = new THREE.Mesh(geometry, material);
@@ -193,16 +197,47 @@ function bedDetail(group,m) {
 function plate(parent,x,z,m) {
   const g=new THREE.Group();g.name='hd:place-setting';g.position.set(x,0,z);parent.add(g);
   block(g,[.3,.005,.31],[0,.824,0],m.curtain,.004);
-  const lower=mesh(g,discGeometry,m.white,[0,.838,0]);lower.scale.set(.125,.014,.125);
-  const well=mesh(g,discGeometry,m.white,[0,.847,0]);well.scale.set(.088,.005,.088);
-  tube(g,Array.from({length:20},(_,i)=>[Math.cos(i/20*Math.PI*2)*.113,.848,Math.sin(i/20*Math.PI*2)*.113]),.003,m.white,{closed:true,segments:24,name:'hd:plate-rim'});
-  block(g,[.065,.007,.14],[0,.855,0],m.curtain,.004);
-  for(const x of [-.15,.15])block(g,[.012,.005,.185],[x,.834,0],m.metal,.002);
+  mesh(g,plateGeometry,m.white,[0,.839,0],'hd:ceramic-plate');
+  block(g,[.065,.007,.14],[0,.845,0],m.curtain,.004);
+  // A shaped fork and knife remain on the placemat at normal dining scale.
+  block(g,[.013,.005,.104],[-.148,.834,.039],m.metal,.002,'hd:fork-handle');
+  block(g,[.025,.004,.022],[-.148,.835,-.023],m.metal,.001);
+  for(let i=0;i<4;i++)block(g,[.0034,.004,.031],[-.159+i*.0073,.835,-.046],m.metal,.001,'hd:fork-tine');
+  block(g,[.014,.006,.096],[.148,.834,.043],m.metal,.002,'hd:knife-handle');
+  block(g,[.019,.003,.077],[.15,.835,-.034],m.metal,.002,'hd:knife-blade');
   // Low clear tumbler, with an open rim rather than a solid glass cylinder.
   const glassGeometry=new THREE.CylinderGeometry(.034,.028,.085,20,1,true);
   partGeometries.add(glassGeometry);
   mesh(g,glassGeometry,m.glass,[.127,.87,-.13]);
   return g;
+}
+
+function basinGeometry(width) {
+  // One continuous ceramic shell: the bowl replaces the old solid insert.
+  // The square outer rim and curved inner basin share vertices, so close views
+  // expose a real recess without coplanar surfaces or a hidden flat top.
+  const rings=[
+    [0,0,.675,1],[width*.47,.2,.675,.5],[width*.5,.22,.688,.5],
+    [width*.5,.22,.85,.5],[width*.485,.213,.865,.5],
+    [width*.355,.157,.865,1],[width*.34,.15,.857,1],
+    [width*.255,.106,.778,1],[.035,.03,.766,1],[0,0,.765,1],
+  ];
+  const positions=[],uvs=[],indices=[],segments=48;
+  for(const [rx,rz,y,power] of rings)for(let i=0;i<=segments;i++) {
+    const angle=i/segments*Math.PI*2,c=Math.cos(angle),s=Math.sin(angle);
+    const x=Math.sign(c)*Math.abs(c)**power*rx,z=Math.sign(s)*Math.abs(s)**power*rz;
+    positions.push(x,y,z);uvs.push(x/width+.5,z/.44+.5);
+  }
+  for(let row=0;row<rings.length-1;row++)for(let i=0;i<segments;i++) {
+    const a=row*(segments+1)+i,b=a+1,c=a+segments+1,d=c+1;
+    indices.push(a,c,b,b,c,d);
+  }
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  geometry.setIndex(indices);geometry.computeVertexNormals();
+  geometry.userData.recessedBasin={width,rimY:.865,bowlY:.765};
+  partGeometries.add(geometry);return geometry;
 }
 
 function diningDetail(group,room,m) {
@@ -228,7 +263,12 @@ function bathroomDetail(group,m) {
     if(type==='fixture:basin') {
       const base=fixture.children.find(c=>c.isMesh&&Math.abs(c.position.y-.77)<.001);
       const width=base?dimensions(base)[0]:.6;
-      const drain=mesh(fixture,discGeometry,m.metal,[0,.897,.025],'hd:basin-drain');drain.scale.set(.019,.004,.019);
+      if(base) {
+        base.geometry=basinGeometry(width);base.position.set(0,0,0);base.name='hd:recessed-basin';
+        const insert=fixture.children.find(c=>c.isMesh&&Math.abs(c.position.y-.878)<.001);
+        insert?.removeFromParent();
+      }
+      const drain=mesh(fixture,discGeometry,m.metal,[0,.769,0],'hd:basin-drain');drain.scale.set(.019,.004,.019);
       cylinder(fixture,.022,.085,[-width*.35,.911,-.09],m.cabinet,'hd:soap-dispenser');
       block(fixture,[.038,.012,.018],[-width*.35,.959,-.088],m.metal,.003);
       tube(fixture,[[-width*.27,.58,.226],[width*.27,.58,.226]],.011,m.metal,{smooth:false,segments:1,name:'hd:towel-rail'});

@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { assemblyBands } from './scene/assembly.js';
+import { assemblyBands, carportFrame } from './scene/assembly.js';
+import { solarModuleLayout } from './scene/solar-layout.js';
 import { createMaterials } from './scene/materials.js';
+import { createStairHall } from './scene/stair-hall.js';
 import { box, cylinder, createFurniture, createBuiltins, createTree, roomBounds } from './scene/furniture.js';
 
 const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,builtins:true,grid:true,isolate:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced',renderMode:'sd'};
@@ -157,53 +159,8 @@ function addHipRoof(parent,{x0,x1,z0,z1,y,rise},materials,solar=false) {
   box(parent,[.12,.17,depth],[x0,y-.055,(z0+z1)/2],materials.trim);
   box(parent,[.12,.17,depth],[x1,y-.055,(z0+z1)/2],materials.trim);
   if(solar) {
-    // Two adjacent roof faces, following the aerial image. Module count is still provisional.
-    for(const face of [surfaces[1],surfaces[3]]) {
-      const a=new THREE.Vector3(...face[0]),b=new THREE.Vector3(...face[1]),c=new THREE.Vector3(...face[2]),d=new THREE.Vector3(...face[3]);
-      const base=a.clone().add(b).multiplyScalar(.5),top=c.clone().add(d).multiplyScalar(.5);
-      const across=b.clone().sub(a).normalize(),slope=top.clone().sub(base),length=slope.length(),up=slope.clone().normalize();
-      const bottomWidth=a.distanceTo(b),topWidth=c.distanceTo(d),panelW=1.02,panelH=1.28;
-      for(let row=0;row<2;row++) {
-        const h0=.32+row*1.35,h1=h0+panelH;if(h1>length-.2)continue;
-        const available=bottomWidth+(topWidth-bottomWidth)*h1/length-.55,cols=Math.max(0,Math.floor(available/1.09));
-        for(let col=0;col<cols;col++) {
-          const x=(col-(cols-1)/2)*1.09;
-          const point=(xx,hh)=>base.clone().addScaledVector(across,xx).addScaledVector(up,hh).add(new THREE.Vector3(0,.065,0)).toArray();
-          addQuad(parent,[point(x-panelW/2,h0),point(x+panelW/2,h0),point(x+panelW/2,h1),point(x-panelW/2,h1)],materials.solar);
-        }
-      }
-    }
+    for(const module of solarModuleLayout({x0,x1,z0,z1,y,rise}))addQuad(parent,module.corners,materials.solar);
   }
-}
-
-function buildStairs(parent,materials,height,definition={}) {
-  const group=new THREE.Group();group.name='return-stair';parent.add(group);
-  const hole=definition.holePolygon||[[5.5,-10.3],[8.5,-10.3],[8.5,-7.4],[5.5,-7.4]];
-  const xs=hole.map(p=>p[0]),zs=hole.map(p=>p[1]),x0=Math.min(...xs),x1=Math.max(...xs),z0=Math.min(...zs),z1=Math.max(...zs);
-  const flights=Math.max(6,Math.round((definition.stepCount||20)/2)),rise=height/(flights*2),tread=(z1-z0-.65)/flights,flightWidth=(x1-x0)*.38;
-  const left=x0+(x1-x0)*.21,right=x1-(x1-x0)*.21,start=z1-tread/2,end=start-(flights-1)*tread;
-  for(let i=0;i<flights;i++) {
-    const y=(i+1)*rise,z=start-i*tread;
-    box(group,[flightWidth,y,tread+.01],[left,y/2,z],materials.slab);
-    box(group,[flightWidth+.02,.035,tread+.015],[left,y+.018,z],materials.timber);
-    const yy=(i+flights+1)*rise,zz=end+i*tread;
-    box(group,[flightWidth,yy-height/2,tread+.01],[right,(yy+height/2)/2,zz],materials.slab);
-    box(group,[flightWidth+.02,.035,tread+.015],[right,yy+.018,zz],materials.timber);
-  }
-  box(group,[x1-x0-.2,.16,.65],[(x0+x1)/2,height/2-.08,z0+.325],materials.timber);
-  for(let i=0;i<6;i++) {
-    const z=start+(end-start)*i/5,y=rise+(height/2-rise)*i/5;
-    box(group,[.025,.82,.025],[left+flightWidth/2,y+.42,z],materials.frame);
-    box(group,[.025,.82,.025],[right-flightWidth/2,height-y+.42,z],materials.frame);
-  }
-  const line=(a,b)=>{
-    const from=new THREE.Vector3(...a),to=new THREE.Vector3(...b),mid=from.clone().add(to).multiplyScalar(.5);
-    const rail=box(group,[.045,from.distanceTo(to),.045],mid.toArray(),materials.timber);
-    rail.quaternion.setFromUnitVectors(UP,to.sub(from).normalize());
-  };
-  line([left+flightWidth/2,rise+.82,start],[left+flightWidth/2,height/2+.82,end]);
-  line([right-flightWidth/2,height+.82,start],[right-flightWidth/2,height/2+.82,end]);
-  consolidate(group);return group;
 }
 
 function buildStage(scene,materials) {
@@ -228,6 +185,27 @@ function buildStage(scene,materials) {
   group.add(base);consolidate(base);consolidate(trees);return {group,trees};
 }
 
+// A continuous double-height cutaway keeps the isolated stair hall legible.
+// Its rear glazing follows the owner's new photos; adjacent rooms stay outside it.
+function buildStairBackdrop(scene,materials,house) {
+  const group=new THREE.Group();group.name='stair-hall-cutaway-backdrop';
+  const top=floorHeight(house,'f2')+2.7,x0=5.5,x1=8.5,z=-10.3;
+  for(const x of [5.725,8.275])box(group,[.45,top,.15],[x,top/2,z],materials.wall);
+  for(const [y,h] of [[.075,.15],[top-.15,.30]])box(group,[2.1,h,.15],[7,y,z],materials.wall);
+  const glassBottom=.15,glassTop=top-.3;
+  box(group,[2.1,glassTop-glassBottom,.026],[7,(glassBottom+glassTop)/2,z],materials.glass);
+  for(const x of [5.95,7,8.05])box(group,[.038,glassTop-glassBottom,.07],[x,(glassBottom+glassTop)/2,z+.035],materials.frame);
+  for(const y of [glassBottom,1.65,3.2,4.7,glassTop])box(group,[2.14,.038,.07],[7,y,z+.035],materials.frame);
+  // The far side remains full height; the viewer-facing side is cut open.
+  box(group,[.1,top,2.9],[x0,top/2,-8.85],materials.wall);
+  for(const center of [5.70,8.3])for(let i=0;i<5;i++){
+    const pleat=cylinder(group,.045,top-.34,[center+(i-2)*.049,(top-.34)/2+.10,z+.15],materials.curtain);
+    pleat.castShadow=false;
+  }
+  box(group,[3.15,.055,.10],[(x0+x1)/2,top-.15,z+.15],materials.trim);
+  consolidate(group);scene.add(group);return group;
+}
+
 function buildFacade(floorGroups,house,materials,defaults) {
   const f1=floorGroups.get('f1'),f2=floorGroups.get('f2');
   if(!f1||!f2)return;
@@ -240,15 +218,11 @@ function buildFacade(floorGroups,house,materials,defaults) {
     band.rotation.y=-Math.atan2(dz,dx);
   }
   const floor2=floorHeight(house,'f2');
-  // Carport columns reach the same underside datum as the upper floor.
-  const carportBottom=house.rooms.find(r=>r.id==='f1-carport').levelOffset;
-  const supportTop=floor2-defaults.slabThickness;
-  for(const x of [.05,5.4]) {
-    box(wholeDetails,[.27,supportTop-carportBottom,.34],[x,(supportTop+carportBottom)/2,.25],materials.taupe);
-    box(wholeDetails,[.36,.1,.43],[x,carportBottom+.05,.25],materials.trim);
-  }
+  const carport=carportFrame(house,defaults);
+  for(const part of carport.columns)box(wholeDetails,part.size,part.position,materials.taupe);
+  for(const part of carport.plinths)box(wholeDetails,part.size,part.position,materials.trim);
   // The plan has shallow front projections: fill beneath them, do not shift floor 2.
-  box(wholeDetails,[5.7,floor2-2.7,.54],[2.7,(floor2+2.7)/2,.15],materials.trim);
+  box(wholeDetails,carport.beam.size,carport.beam.position,materials.trim);
   box(wholeDetails,[4.3,floor2-2.7,.66],[7.65,(floor2+2.7)/2,-1.88],materials.wall);
   box(wholeDetails,[4.45,floor2-2.7,.4],[11.975,(floor2+2.7)/2,-1.95],materials.wall);
   // Balcony floors already come from the plan; only add rails on exposed edges.
@@ -292,7 +266,8 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   const controls=new OrbitControls(camera,renderer.domElement);
   controls.target.set(6.8,1.8,-4.4);controls.enableDamping=true;controls.dampingFactor=.11;
   controls.minPolarAngle=.12;controls.maxPolarAngle=Math.PI*.465;
-  controls.minZoom=.38;controls.maxZoom=4;controls.zoomSpeed=.8;controls.rotateSpeed=.65;
+  controls.minZoom=.38;controls.maxZoom=12;controls.zoomSpeed=.95;controls.rotateSpeed=.65;
+  controls.zoomToCursor=true;
   controls.screenSpacePanning=true;controls.panSpeed=.75;
   const materials=createMaterials();
   const defaults={wallHeight:2.7,slabThickness:.18,exteriorWallThickness:.15,interiorWallThickness:.1,cutawayHeight:.9,...house.assumptions};
@@ -334,7 +309,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const furniture=createFurniture(room,materials);consolidate(furniture);furniture.position.y=offset;floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
     const fixed=createBuiltins(room,materials);consolidate(fixed);fixed.position.y=offset;floor.builtins.add(fixed);floor.builtinsBatch.add(fixed.clone(true));
     const ceilingGroup=new THREE.Group();floor.ceilings.add(ceilingGroup);
-    if(!isVoid&&!['carport','balcony','terrace','laundry','roof'].some(k=>kind.includes(k))) {
+    if(!isVoid&&!['carport','balcony','terrace','laundry','roof','stair'].some(k=>kind.includes(k))) {
       const ceiling=polygonMesh(room.polygon,materials.trim,.075);ceiling.position.y=defaults.wallHeight-.06+offset;ceilingGroup.add(ceiling);
       const b=roomBounds(room);
       if(b.w>3&&b.d>3) {
@@ -355,9 +330,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const record=makeWall(wall,materials,defaults,house.rooms);if(!record)continue;
     floor.group.add(record.group);record.floor=floor;wallRecords.push(record);
   }
-  const stairs=buildStairs(floorGroups.get('f1').group,materials,floorHeight(house,'f2'),house.stair);
-  const landing=box(floorGroups.get('f2').group,[1.2,.13,.35],[7.8,-.12,-7.23],materials.timber);
-  landing.name='stair-arrival-landing';
+  const stairHall=createStairHall({house,materials,quality:'sd'});
+  for(const key of ['stairs','landing','chandelier','canopy']){consolidate(stairHall[key]);scene.add(stairHall[key]);}
+  stairHall.disposeGeometries();
+  const stairBackdrop=buildStairBackdrop(scene,materials,house);
   const roof=new THREE.Group();roof.name='assumed-hip-roof';scene.add(roof);
   const roofY=floorHeight(house,'f2')+defaults.wallHeight+.2,rise=house.roof?.height||1.2,overhang=house.roof?.overhang||.35;
   addHipRoof(roof,{x0:-.6-overhang,x1:5.5+overhang,z0:-10.3-overhang,z1:overhang,y:roofY+.12,rise},materials,false);
@@ -370,7 +346,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const line=new THREE.Line(geometry,new THREE.LineDashedMaterial({color:'#7e9381',dashSize:.1,gapSize:.15,transparent:true,opacity:.4}));line.computeLineDistances();explodedGuides.add(line);
   }
 
-  let state={...DEFAULT_STATE},disposed=false,contextUnavailable=false,frame=0,tween=null,floorTween=null,renderCount=0,hoverId=null,lastLabels='',pointerStart=null,ready=false;
+  let state={...DEFAULT_STATE},disposed=false,contextUnavailable=false,frame=0,tween=null,floorTween=null,renderCount=0,hoverId=null,lastLabels='',pointerStart=null,ready=false,userFramed=false;
   let hd=null,hdLoading=null,activeRenderMode='sd';
   const materialKeys=new Map(Object.entries(materials).map(([key,material])=>[material,key]));
   const activePointers=new Set();let multiPointerGesture=false;
@@ -429,7 +405,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       import('./scene/hd-rendering.js'),import('./scene/hd-exterior.js'),
     ]).then(([palette,interiors,pipeline,exterior])=>{
       if(disposed)return;
-      const hdMaterials=palette.createHDMaterials(),staged=[];
+      const hdMaterials=palette.createHDMaterials(),staged=[],extraMaterials=[];
       const floors=new Map();
       let rendering;
       try {
@@ -449,15 +425,20 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       interiors.disposeHDFurnitureGeometries();
       const outside=exterior.createHDExterior({house,materials:hdMaterials,roofY,rise,overhang});
       for(const group of Object.values(outside)){staged.push(group);consolidate(group);}
+      const hdStairHall=createStairHall({house,materials:hdMaterials,quality:'hd'});
+      extraMaterials.push(...hdStairHall.materials);
+      for(const key of ['stairs','landing','chandelier','canopy']){staged.push(hdStairHall[key]);consolidate(hdStairHall[key]);}
+      hdStairHall.disposeGeometries();
       rendering=pipeline.createHDRendering({renderer,scene,camera});
-      hd={materials:hdMaterials,floors,outside,rendering};
+      hd={materials:hdMaterials,floors,outside,rendering,stairHall:hdStairHall};
       for(const [key,material] of Object.entries(hdMaterials))materialKeys.set(material,key);
       for(const [id,detail] of floors)floorGroups.get(id).group.add(...Object.values(detail));
       scene.add(...Object.values(outside));
+      scene.add(hdStairHall.stairs,hdStairHall.landing,hdStairHall.chandelier,hdStairHall.canopy);
       } catch(error) {
         const geometries=new Set(),textures=new Set();
         for(const group of staged){group.removeFromParent();group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);});}
-        for(const material of Object.values(hdMaterials)){for(const value of Object.values(material))if(value?.isTexture)textures.add(value);material.dispose();}
+        for(const material of [...Object.values(hdMaterials),...extraMaterials]){for(const value of Object.values(material))if(value?.isTexture)textures.add(value);material.dispose();}
         geometries.forEach(geometry=>geometry.dispose());textures.forEach(texture=>texture.dispose());
         interiors.disposeHDFurnitureGeometries();rendering?.dispose();throw error;
       }
@@ -472,8 +453,14 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }).finally(()=>{hdLoading=null;});
   }
 
-  function cancelTween() {tween=null;invalidate();}
+  function cancelTween() {tween=null;userFramed=true;invalidate();}
+  function stairFocus(){return state.view!=='whole'&&state.view!=='exploded'&&(state.isolate||state.ceiling)&&['f1-stair','f2-204-hall'].includes(state.selectedRoomId);}
+  function focusBounds(selected){
+    if(stairFocus()){const {min,max}=stairHall.focusBounds;return {x0:min[0],x1:max[0],z0:min[2],z1:max[2]};}
+    return roomBounds(selected.room);
+  }
   function fitToState(animate=true,forceHero=false) {
+    userFramed=false;
     const selected=roomRecords.get(state.selectedRoomId),view=state.view;
     let center=new THREE.Vector3(6.8,2.7,-4.9),boxSize=new THREE.Vector3(18.5,8.4,15.2),polar=1.03;
     if(view==='f1'||view==='f2') {
@@ -484,11 +471,16 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       const b=roomBounds(selected.room);center.copy(selected.center);center.y+=selected.floor.group.position.y+.6;
       boxSize.set(Math.max(3.4,b.w+.5),3.1,Math.max(3.4,b.d+.5));polar=.72;
     }
+    if(stairFocus()){
+      const {min,max}=stairHall.focusBounds;
+      center.set((min[0]+max[0])/2,(min[1]+max[1])/2,(min[2]+max[2])/2);
+      boxSize.set(max[0]-min[0]+.4,max[1]-min[1]+.4,max[2]-min[2]+.4);polar=1.02;
+    }
     const ceilingDetail=Boolean(selected&&state.ceiling&&view!=='whole');
     if(ceilingDetail) {center.y=selected.floor.group.position.y+defaults.wallHeight-.12;polar=1.73;boxSize.y=1.8;}
     const offset=camera.position.clone().sub(controls.target);
     const spherical=new THREE.Spherical().setFromVector3(offset);
-    const roomYaw=roomCameraYaw(selected?.room);
+    const roomYaw=stairFocus() ? .5 : roomCameraYaw(selected?.room);
     const yaw=selected&&state.isolate?roomYaw:forceHero||!ready?Math.PI*.18:spherical.theta;
     const distance=ceilingDetail?8:42,toPosition=center.clone().add(new THREE.Vector3().setFromSpherical(new THREE.Spherical(distance,polar,yaw)));
     // Fit all bbox corners in the final camera basis, using the actual unobscured container.
@@ -582,9 +574,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   function applyVisibility() {
     const whole=state.view==='whole',exploded=state.view==='exploded';
     const ceilingDetail=Boolean((state.ceiling||state.isolate)&&state.selectedRoomId&&!whole&&!exploded),selected=roomRecords.get(state.selectedRoomId);
-    if(ceilingDetail&&selected){const b=roomBounds(selected.room);renderer.clippingPlanes=[new THREE.Plane(new THREE.Vector3(1,0,0),-b.x0+.13),new THREE.Plane(new THREE.Vector3(-1,0,0),b.x1+.13),new THREE.Plane(new THREE.Vector3(0,0,1),-b.z0+.13),new THREE.Plane(new THREE.Vector3(0,0,-1),b.z1+.13)];}else renderer.clippingPlanes=[];
+    const focusStairs=stairFocus();
+    if(ceilingDetail&&selected){const b=focusBounds(selected);renderer.clippingPlanes=[new THREE.Plane(new THREE.Vector3(1,0,0),-b.x0+.13),new THREE.Plane(new THREE.Vector3(-1,0,0),b.x1+.13),new THREE.Plane(new THREE.Vector3(0,0,1),-b.z0+.13),new THREE.Plane(new THREE.Vector3(0,0,-1),b.z1+.13)];}else renderer.clippingPlanes=[];
     for(const [id,floor] of floorGroups) {
-      floor.group.visible=whole||exploded||state.view===id;
+      floor.group.visible=whole||exploded||state.view===id||focusStairs;
       floor.group.position.y=floor.baseY+(exploded&&id==='f2'?EXPLODED_GAP:0);
       for(const [mode,detail] of [['sd',floor],['hd',hd?.floors.get(id)]]) {
         if(!detail)continue;
@@ -601,15 +594,25 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }
     for(const rec of roomRecords.values()) {
       rec.ceilingGroup.visible=rec.room.id===state.selectedRoomId;
-      rec.group.visible=!ceilingDetail||rec.room.id===state.selectedRoomId;
-      for(const mesh of rec.individualSurfaces)mesh.visible=ceilingDetail&&rec.room.id===state.selectedRoomId;
+      const focusRoom=rec.room.id===state.selectedRoomId||(focusStairs&&['f1-stair','f2-204-hall'].includes(rec.room.id));
+      rec.group.visible=!ceilingDetail||focusRoom;
+      for(const mesh of rec.individualSurfaces)mesh.visible=ceilingDetail&&focusRoom;
     }
     for(const wall of wallRecords) {
+      if(focusStairs){wall.group.visible=false;continue;}
       if(!ceilingDetail||!selected){wall.group.visible=true;continue;}
-      const b=roomBounds(selected.room),a=point(wall.wall.a),c=point(wall.wall.b);
+      const b=focusBounds(selected),a=point(wall.wall.a),c=point(wall.wall.b);
       wall.group.visible=Math.max(a[0],c[0])>=b.x0-.05&&Math.min(a[0],c[0])<=b.x1+.05&&Math.max(a[1],c[1])>=b.z0-.05&&Math.min(a[1],c[1])<=b.z1+.05;
     }
-    stairs.visible=!ceilingDetail;landing.visible=!ceilingDetail;
+    for(const [mode,detail] of [['sd',stairHall],['hd',hd?.stairHall]]){
+      if(!detail)continue;
+      const active=mode===activeRenderMode,context=!ceilingDetail||focusStairs;
+      detail.stairs.visible=active&&context;
+      detail.landing.visible=active&&context;
+      detail.chandelier.visible=active&&context&&state.builtins&&(whole||exploded||state.view==='f2'||focusStairs);
+      detail.canopy.visible=detail.chandelier.visible&&(whole||(state.ceiling&&focusStairs));
+    }
+    stairBackdrop.visible=focusStairs;
     controls.maxPolarAngle=state.ceiling&&state.selectedRoomId?2.15:Math.PI*.465;
     ground.visible=!ceilingDetail;roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole&&activeRenderMode==='sd';
     if(hd){
@@ -639,6 +642,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       if(t>=1)tween=null;
     }
     const moved=controls.update();
+    for(const detail of [stairHall,hd?.stairHall])if(detail){
+      detail.stairs.position.y=floorGroups.get('f1').group.position.y;
+      for(const key of ['landing','chandelier','canopy'])detail[key].position.y=floorGroups.get('f2').group.position.y;
+    }
     // Bound pan without snapping the zoom or orientation on a simple resize.
     const target=controls.target,clamped=new THREE.Vector3(THREE.MathUtils.clamp(target.x,-5,20),THREE.MathUtils.clamp(target.y,-1,12),THREE.MathUtils.clamp(target.z,-16,8));
     if(target.distanceToSquared(clamped)>.00001){camera.position.add(clamped.clone().sub(target));target.copy(clamped);}
@@ -690,7 +697,8 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const oldAspect=width/height;width=rect.width;height=rect.height;
     renderer.setSize(width,height,false);graphicsSize();const aspect=width/height;
     camera.left=-13*aspect;camera.right=13*aspect;camera.top=13;camera.bottom=-13;camera.updateProjectionMatrix();
-    if(!ready||Math.abs(oldAspect-aspect)>.07)fitToState(false);
+    // A full-screen or orientation change should not discard a chosen close-up.
+    if(!ready||(!userFramed&&Math.abs(oldAspect-aspect)>.07))fitToState(false);
     invalidate();
   }
   const observer=new ResizeObserver(resize);observer.observe(container);

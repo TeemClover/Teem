@@ -9,3 +9,16 @@ export function assemblyBands(house, defaults) {
     return {wall,bottom,top,depth:wall.thickness||defaults.exteriorWallThickness};
   }).filter(band=>band.top>band.bottom);
 }
+
+// Meet the beam underside exactly. Extending the columns into the beam leaves
+// coplanar front faces with different finishes, which flicker as the camera moves.
+export function carportFrame(house, defaults) {
+  const floor2=house.floors.find(floor=>floor.id==='f2').elevation;
+  const base=house.rooms.find(room=>room.id==='f1-carport').levelOffset;
+  const beamBottom=defaults.wallHeight;
+  return {
+    beam:{size:[5.7,floor2-beamBottom,.54],position:[2.7,(floor2+beamBottom)/2,.15]},
+    columns:[.05,5.4].map(x=>({size:[.27,beamBottom-base,.34],position:[x,(beamBottom+base)/2,.25]})),
+    plinths:[.05,5.4].map(x=>({size:[.36,.1,.43],position:[x,base+.05,.25]})),
+  };
+}

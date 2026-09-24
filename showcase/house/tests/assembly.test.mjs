@@ -2,7 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {house} from '../app/data/house.js';
 import {photoSets} from '../app/data/photos.js';
-import {assemblyBands} from '../app/scene/assembly.js';
+import {assemblyBands,carportFrame} from '../app/scene/assembly.js';
+
+test('front columns meet the beam without overlapping coplanar visible faces',()=>{
+  const frame=carportFrame(house,house.assumptions);
+  const bounds=part=>({min:part.position.map((v,i)=>v-part.size[i]/2),max:part.position.map((v,i)=>v+part.size[i]/2)});
+  const beam=bounds(frame.beam);
+  assert.equal(beam.max[1],3.29);
+  assert.deepEqual(frame.columns.map(part=>part.position[0]),[.05,5.4]);
+  for(const column of frame.columns) {
+    const b=bounds(column);
+    assert.ok(Math.abs(b.min[1]+.35)<1e-8,'keep the carport floor datum');
+    assert.ok(Math.abs(b.max[1]-beam.min[1])<1e-8,'no gap at the beam underside');
+    const overlapX=Math.min(b.max[0],beam.max[0])-Math.max(b.min[0],beam.min[0]);
+    const overlapY=Math.max(0,Math.min(b.max[1],beam.max[1])-Math.max(b.min[1],beam.min[1]));
+    assert.ok(overlapX>0,'columns remain under the beam');
+    assert.ok(overlapX*overlapY<1e-10,'different finishes must not share a visible face');
+  }
+});
 
 test('assembled shell closes the gap below floor 2 without moving its source elevation',()=>{
   const bands=assemblyBands(house,house.assumptions);

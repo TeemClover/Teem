@@ -819,7 +819,7 @@ export const house = {
     {
       "id": "f2-204-hall",
       "floor": "f2",
-      "name": "โถงชั้นบน",
+      "name": "โถงบันได",
       "planLabel": "204",
       "kind": "hall",
       "polygon": [
@@ -865,8 +865,8 @@ export const house = {
         ]
       ],
       "levelOffset": 0,
-      "photoSetId": null,
-      "description": "ถอดแนวราบจากแปลนต้นทาง ตำแหน่งภาพอ้างอิงยังแยกจากการยืนยันห้อง",
+      "photoSetId": "photos-stair-chandelier",
+      "description": "โถงชั้นบนเชื่อมห้องพักผ่อนและบันได มีแชนเดอเลียร์คริสตัล 8 วงลดหลั่นในโถงสูง ตามภาพและคำยืนยันเจ้าของบ้าน",
       "evidenceStatus": "derived",
       "geometryStatus": "draft",
       "sourceRef": {
@@ -1187,6 +1187,13 @@ export const house = {
           "kind": "window"
         },
         {
+          "offset": 6.55,
+          "width": 2.1,
+          "height": 2.55,
+          "sill": 0.15,
+          "kind": "window"
+        },
+        {
           "offset": 9.2,
           "width": 0.55,
           "height": 0.6,
@@ -1202,7 +1209,8 @@ export const house = {
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Owner-provided chandelier photograph shows a tall rear window across the double-height stair hall. Aligned 2.1 m glazed openings centered at x=7.0 reproduce that relationship across both storeys; presentation dimensions remain approximate."
     },
     {
       "id": "f1-east",
@@ -1716,10 +1724,10 @@ export const house = {
           "kind": "window"
         },
         {
-          "offset": 6.35,
-          "width": 1,
-          "height": 1.15,
-          "sill": 1.05,
+          "offset": 6.55,
+          "width": 2.1,
+          "height": 2.55,
+          "sill": 0.1,
           "kind": "window"
         },
         {
@@ -1731,7 +1739,8 @@ export const house = {
         }
       ],
       "evidenceStatus": "derived",
-      "verticalStatus": "assumed"
+      "verticalStatus": "assumed",
+      "reviewNote": "Owner-provided chandelier photograph shows a tall rear window across the double-height stair hall. Aligned 2.1 m glazed openings centered at x=7.0 reproduce that relationship across both storeys; presentation dimensions remain approximate."
     },
     {
       "id": "f2-west",
@@ -2677,7 +2686,7 @@ export const house = {
   "description": "โมเดลจำลองจากแปลนและภาพอ้างอิง ความสูงผนัง หลังคา และรายละเอียดบางส่วนเป็นค่าประมาณ",
   "sourceCounts": {
     "planPages": 2,
-    "photographs": 23
+    "photographs": 26
   },
   "photoBindings": [
     {
@@ -2705,6 +2714,20 @@ export const house = {
         {
           "sourceId": "OWNER-REVIEW",
           "note": "Owner identified the upstairs lounge, with the sofa beside bedroom 201 and computers beside bedroom 202."
+        }
+      ]
+    },
+    {
+      "photoSetId": "photos-stair-chandelier",
+      "spaceId": "f2-204-hall",
+      "status": "confirmed",
+      "method": "owner-confirmed",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-09-24",
+      "evidence": [
+        {
+          "sourceId": "OWNER-REVIEW",
+          "note": "Owner identified the eight-ring crystal chandelier in the stair hall and supplied a contextual view from the upstairs lounge."
         }
       ]
     }

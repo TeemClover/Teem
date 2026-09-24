@@ -30,3 +30,19 @@ The owner requests a whole-house upgrade but explicitly retains the original app
 HD implementation modules load on demand, generate deterministic local surface maps, and cache their furniture/exterior groups for comparison. Material switches rebuild wall batches without changing room coordinates. Contact occlusion excludes transparent glass and preserves the transparent canvas. A failed HD load returns to usable SD; a network failure may require a page refresh because browsers cache failed ES module requests. No new external image assets, downloads, public source scans or student material were added.
 
 The circled ground-floor dining window is corrected to a 3.1-wide, 2.3-high opening, matching adjacent front living glazing. It remains a window, preserving the sole direct carport entry through preparation. User priorities remain attractive presentation and plausible circulation rather than surveyed accuracy. After reviewing the completed local graphics preview, the user explicitly authorized pushing this SD / HD revision to main on 2026-09-24.
+
+## 13. Mobile exploration and HD close-ups — 2026-09-24
+
+The owner authorizes mobile polish, closer zoom, column flicker repair, further HD detail and push to main. Use the exact quality captions SD มาตรฐาน / HD ความละเอียดสูง. Keep SD the initial mode. Mobile controls have larger touch targets, optional tools/details and a CSS focus view with an explicit return control; avoid browser fullscreen requirements. Landscape plan controls use a side column to preserve useful plan height.
+
+The owner explicitly requests suppressing page zoom so gestures control the house. Apply viewport limits, touch-action and cancelable browser gesture/multi-touch/Ctrl-wheel guards without stopping event propagation or canceling single-finger panel scrolling. Raise the house camera limit from 4 to 12 and retain manual framing across resize. Physical Safari verification remains a separate device check.
+
+Fix the carport flicker in geometry: column tops stop at the fascia underside instead of overlapping its front surface. Preserve all existing openings and room data. HD adds shared veneer maps, shaped tableware, recessed basin shells and solar mounting hardware; no external assets, download artifacts or changes to original SD furniture/materials.
+
+## 14. Owner's stair-hall centerpiece and rear solar correction — 2026-09-24
+
+While this revision was being finished, the owner supplied five more references and requested the large stair chandelier, a better-looking second-floor stair zone, rear-facing solar placement and real photos with people. Continue under the existing push authorization. This supersedes the earlier blanket omission of people: include the supplied hall/person image and family living image without changing their content, along with the chandelier close-up. Convert to web-sized metadata-free derivatives; leave supplied originals outside the repository. Public gallery now contains 24 photos in 9 collections. The exterior family photo with house/vehicle identifiers is not needed for these new interior collections and was not added.
+
+Reconstruct eight alternating, descending crystal rings inside the existing stair opening. Use shared materials and bounded static meshes, with brighter faceted crystals only in HD. Keep original floor datums and openings for circulation, slim the return-stair flights for a clear central well, and leave the upper exit open. Show stairs on the second floor and provide a dedicated double-height cutaway with tall rear glazing matching the new photos. Update the rear stair windows in both storeys; other openings and doors remain unchanged. Add a stair-hall catalog/tour entry and owner-confirmed photo binding to hall204.
+
+Move only the circled front bank of six solar modules onto the opposite rear slope. Retain the east bank of eight. SD planes and HD mounting hardware share a single layout helper to avoid future mismatches.
