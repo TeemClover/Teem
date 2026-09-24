@@ -11,7 +11,22 @@
       "format": "esm"
     },
     "app/state.js": {
-      "bytes": 5076,
+      "bytes": 5102,
+      "imports": [],
+      "format": "esm"
+    },
+    "app/onboarding.js": {
+      "bytes": 11987,
+      "imports": [],
+      "format": "esm"
+    },
+    "app/wall-controls.js": {
+      "bytes": 2477,
+      "imports": [],
+      "format": "esm"
+    },
+    "app/story.js": {
+      "bytes": 3814,
       "imports": [],
       "format": "esm"
     },
@@ -105,6 +120,11 @@
           "original": "three"
         }
       ],
+      "format": "esm"
+    },
+    "app/scene/wall-visibility.js": {
+      "bytes": 819,
+      "imports": [],
       "format": "esm"
     },
     "app/scene/model-house.js": {
@@ -404,7 +424,7 @@
       "format": "esm"
     },
     "app/scene.js": {
-      "bytes": 53583,
+      "bytes": 53494,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -447,6 +467,11 @@
           "original": "./scene/stair-hall.js"
         },
         {
+          "path": "app/scene/wall-visibility.js",
+          "kind": "import-statement",
+          "original": "./scene/wall-visibility.js"
+        },
+        {
           "path": "app/scene/model-house.js",
           "kind": "import-statement",
           "original": "./scene/model-house.js"
@@ -485,7 +510,7 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 47795,
+      "bytes": 43224,
       "imports": [
         {
           "path": "app/data/house.js",
@@ -503,6 +528,21 @@
           "original": "./state.js"
         },
         {
+          "path": "app/onboarding.js",
+          "kind": "import-statement",
+          "original": "./onboarding.js"
+        },
+        {
+          "path": "app/wall-controls.js",
+          "kind": "import-statement",
+          "original": "./wall-controls.js"
+        },
+        {
+          "path": "app/story.js",
+          "kind": "import-statement",
+          "original": "./story.js"
+        },
+        {
           "path": "app/scene.js",
           "kind": "dynamic-import",
           "original": "./scene.js"
@@ -515,7 +555,7 @@
     "assets/home.js": {
       "imports": [
         {
-          "path": "assets/scene-CK2XXDZW.js",
+          "path": "assets/scene-K74BF24Z.js",
           "kind": "dynamic-import"
         }
       ],
@@ -529,13 +569,22 @@
           "bytesInOutput": 19707
         },
         "app/state.js": {
-          "bytesInOutput": 2792
+          "bytesInOutput": 2817
+        },
+        "app/onboarding.js": {
+          "bytesInOutput": 10779
+        },
+        "app/wall-controls.js": {
+          "bytesInOutput": 2039
+        },
+        "app/story.js": {
+          "bytesInOutput": 5880
         },
         "app/main.js": {
-          "bytesInOutput": 57030
+          "bytesInOutput": 48107
         }
       },
-      "bytes": 118954
+      "bytes": 128754
     },
     "assets/hd-materials-BL57NSQL.js": {
       "imports": [
@@ -655,7 +704,7 @@
       },
       "bytes": 5856
     },
-    "assets/scene-CK2XXDZW.js": {
+    "assets/scene-K74BF24Z.js": {
       "imports": [
         {
           "path": "assets/chunk-BBR2P3JY.js",
@@ -687,6 +736,7 @@
         }
       ],
       "exports": [
+        "buildStairBackdrop",
         "createHouseScene"
       ],
       "entryPoint": "app/scene.js",
@@ -707,7 +757,10 @@
           "bytesInOutput": 3494
         },
         "app/scene/stair-hall.js": {
-          "bytesInOutput": 7440
+          "bytesInOutput": 7442
+        },
+        "app/scene/wall-visibility.js": {
+          "bytesInOutput": 422
         },
         "app/scene/model-house.js": {
           "bytesInOutput": 1222
@@ -716,10 +769,10 @@
           "bytesInOutput": 3186
         },
         "app/scene.js": {
-          "bytesInOutput": 31477
+          "bytesInOutput": 31486
         }
       },
-      "bytes": 72838
+      "bytes": 73296
     },
     "assets/chunk-BBR2P3JY.js": {
       "imports": [

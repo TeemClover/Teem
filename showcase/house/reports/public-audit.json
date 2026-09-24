@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-24T00:56:29.862Z",
+  "checkedAt": "2026-09-24T01:50:17.414Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -7,7 +7,7 @@
     "esbuild": "0.25.10"
   },
   "scope": "Built public HTML, assets, image derivatives and no downloadable plans or student kits.",
-  "fileCount": 64,
+  "fileCount": 68,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -19,7 +19,7 @@
       "assets/chunk-JDYYZU63.js",
       "assets/chunk-KQTPFPAN.js",
       "assets/home.js",
-      "assets/scene-CK2XXDZW.js"
+      "assets/scene-K74BF24Z.js"
     ],
     "optInHDEntryPoints": [
       "assets/hd-exterior-J3Q7EZHJ.js",
@@ -36,34 +36,34 @@
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 345282,
-      "gzipBytes": 192592
+      "bytes": 357476,
+      "gzipBytes": 196019
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 980583,
-      "gzipBytes": 363791
+      "bytes": 993235,
+      "gzipBytes": 367445
     },
     "optInHDAdditional": {
       "bytes": 64030,
       "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1044613,
-      "gzipBytes": 384428
+      "bytes": 1057265,
+      "gzipBytes": 388082
     },
     "imageDerivatives": {
       "bytes": 3368592,
       "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4377373,
-      "gzipBytes": 3716677
+      "bytes": 4611976,
+      "gzipBytes": 3929009
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 12060,
-      "gzipBytes": 3410
+      "bytes": 14454,
+      "gzipBytes": 3668
     },
     "assets/chunk-BBR2P3JY.js": {
       "bytes": 16276,
@@ -118,20 +118,36 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 118954,
-      "gzipBytes": 20560
+      "bytes": 128754,
+      "gzipBytes": 23729
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
       "gzipBytes": 53903
     },
-    "assets/scene-CK2XXDZW.js": {
-      "bytes": 72838,
-      "gzipBytes": 24873
+    "assets/og-home-built-with-love-20260924.jpg": {
+      "bytes": 206962,
+      "gzipBytes": 204513
+    },
+    "assets/onboarding.css": {
+      "bytes": 8062,
+      "gzipBytes": 2069
+    },
+    "assets/scene-K74BF24Z.js": {
+      "bytes": 73296,
+      "gzipBytes": 25100
+    },
+    "assets/story.css": {
+      "bytes": 2859,
+      "gzipBytes": 1001
     },
     "assets/studio.css": {
       "bytes": 31810,
       "gzipBytes": 7450
+    },
+    "assets/wall-controls.css": {
+      "bytes": 4068,
+      "gzipBytes": 1095
     },
     "media/photos/aerial-roof-thumb.webp": {
       "bytes": 44000,

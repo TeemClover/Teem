@@ -1,0 +1,18 @@
+/* The house story stays secondary to exploring, and help remains one tap away. */
+.site-footer [data-action=about]{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.house-story{padding:10px 0 8px;max-width:590px}.story-eyebrow{display:block;font-size:11px;color:#74879d;letter-spacing:.8px;margin-bottom:17px}
+.house-story h2{max-width:540px;font-size:31px;font-weight:600;letter-spacing:-.5px;line-height:1.6;margin:0 0 21px;color:#283d55}
+.house-story p{font-size:16px;line-height:2;color:#5f7288;margin:16px 0}.house-story .story-context{font-size:13px;color:#8491a2;border-left:2px solid #c5d5e5;padding:2px 0 2px 14px;margin:22px 0}.house-story .story-signature{color:#334f71;font-size:14px;margin-top:25px}
+.story-sources{border-top:1px solid #dce4ed;margin-top:14px;padding-top:7px}.story-sources summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:18px;font-size:12px;color:#798ba2;list-style:none}.story-sources summary::-webkit-details-marker{display:none}.story-sources summary::after{content:'+';font:20px system-ui;color:#748ba6}.story-sources[open] summary::after{content:'−'}.story-sources p{font-size:12px;line-height:1.9;margin:12px 0;color:#7b8b9e}.story-sources summary:focus-visible{outline:2px solid #4692ef;outline-offset:2px;border-radius:5px}
+@media(max-width:767px){
+ .site-header nav .text-button[data-action=help]{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;font-size:11px;padding:7px 2px;color:#d2dbe6}
+ .site-header nav .text-button[data-action=learn]{display:none}
+ .site-header nav{gap:12px}.site-header .brand{font-size:16px}
+ .site-footer{gap:10px}.site-footer>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.site-footer [data-action=about]{flex-shrink:0;font-size:10px}
+ .house-story{padding-top:4px}.house-story h2{font-size:25px;line-height:1.6;margin-bottom:17px}.house-story p{font-size:14px;line-height:1.95}.house-story .story-context{font-size:12px}.house-story .story-signature{font-size:13px}.story-eyebrow{font-size:10px;margin-bottom:12px}
+}
+@media(max-width:359px){.site-header nav{gap:7px}.site-header .brand{font-size:14px}.site-header nav .text-button[data-action=help]{font-size:10px}.site-footer{gap:7px}}
+
+.story-link{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:8px 0;margin-top:5px;color:#55779f;font-size:12px;text-decoration:underline;text-underline-offset:4px}.story-link:hover{color:#2864b3}
+@media(max-width:767px){.inspector.arrival .story-link{display:none}}
+.story-learner-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 0;color:#7b8b9e;font-size:11px;text-decoration:underline;text-underline-offset:4px}.story-learner-link:hover{color:#55779f}

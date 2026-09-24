@@ -50,7 +50,7 @@ export function reduce(value, event, house) {
   let next = state;
   switch (event.type) {
     case 'RESET':
-      return { ...initialState, renderMode: state.renderMode };
+      return { ...initialState, renderMode: state.renderMode, wallMode: state.wallMode };
     case 'RENDER_MODE':
       if (renderModes.has(event.mode)) next = { ...state, renderMode: event.mode };
       break;

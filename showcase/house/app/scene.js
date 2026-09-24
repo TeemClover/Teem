@@ -6,6 +6,7 @@ import { assemblyBands, carportFrame } from './scene/assembly.js';
 import { solarModuleLayout } from './scene/solar-layout.js';
 import { createMaterials } from './scene/materials.js';
 import { createStairHall, stairHallPresentation, sliceStairGroup } from './scene/stair-hall.js';
+import { wallIsLowered } from './scene/wall-visibility.js';
 import { createModelHouse, furnishingRoom } from './scene/model-house.js';
 import { createShowerDetail } from './scene/shower-detail.js';
 import { box, cylinder, createFurniture, createBuiltins, createTree, roomBounds } from './scene/furniture.js';
@@ -189,28 +190,36 @@ function buildStage(scene,materials) {
 }
 
 // Each storey owns its part of the rear glazing in an isolated stair view.
-function buildStairBackdrop(scene,materials,house) {
-  const group=new THREE.Group();group.name='stair-hall-cutaway-backdrop';
+export function buildStairBackdrop(scene,materials,house,cutawayHeight) {
+  const rear=new THREE.Group(),side=new THREE.Group();
   const top=floorHeight(house,'f2')+2.7,x0=5.5,x1=8.5,z=-10.3;
-  for(const x of [5.725,8.275])box(group,[.45,top,.15],[x,top/2,z],materials.wall);
-  for(const [y,h] of [[.075,.15],[top-.15,.30]])box(group,[2.1,h,.15],[7,y,z],materials.wall);
+  for(const x of [5.725,8.275])box(rear,[.45,top,.15],[x,top/2,z],materials.wall);
+  for(const [y,h] of [[.075,.15],[top-.15,.30]])box(rear,[2.1,h,.15],[7,y,z],materials.wall);
   const glassBottom=.15,glassTop=top-.3;
-  box(group,[2.1,glassTop-glassBottom,.026],[7,(glassBottom+glassTop)/2,z],materials.glass);
-  for(const x of [5.95,7,8.05])box(group,[.038,glassTop-glassBottom,.07],[x,(glassBottom+glassTop)/2,z+.035],materials.frame);
-  for(const y of [glassBottom,1.65,3.2,4.7,glassTop])box(group,[2.14,.038,.07],[7,y,z+.035],materials.frame);
-  // The far side remains full height; the viewer-facing side is cut open.
-  box(group,[.1,top,2.9],[x0,top/2,-8.85],materials.wall);
+  box(rear,[2.1,glassTop-glassBottom,.026],[7,(glassBottom+glassTop)/2,z],materials.glass);
+  for(const x of [5.95,7,8.05])box(rear,[.038,glassTop-glassBottom,.07],[x,(glassBottom+glassTop)/2,z+.035],materials.frame);
+  for(const y of [glassBottom,1.65,3.2,4.7,glassTop])box(rear,[2.14,.038,.07],[7,y,z+.035],materials.frame);
+  box(side,[.1,top,2.9],[x0,top/2,-8.85],materials.wall);
   for(const center of [5.70,8.3])for(let i=0;i<5;i++){
-    const pleat=cylinder(group,.045,top-.34,[center+(i-2)*.049,(top-.34)/2+.10,z+.15],materials.curtain);
+    const pleat=cylinder(rear,.045,top-.34,[center+(i-2)*.049,(top-.34)/2+.10,z+.15],materials.curtain);
     pleat.castShadow=false;
   }
-  box(group,[3.15,.055,.10],[(x0+x1)/2,top-.15,z+.15],materials.trim);
-  consolidate(group);
-  const floor2=floorHeight(house,'f2'),lower=sliceStairGroup(group,0,floor2),upper=sliceStairGroup(group,floor2,top);
-  lower.name='stair-backdrop-f1';upper.name='stair-backdrop-f2';
-  upper.traverse(object=>{if(object.geometry)object.geometry.translate(0,-floor2,0);});
-  group.traverse(object=>{if(object.geometry)object.geometry.dispose();});
-  scene.add(lower,upper);return {f1:lower,f2:upper};
+  box(rear,[3.15,.055,.10],[(x0+x1)/2,top-.15,z+.15],materials.trim);
+  const floor2=floorHeight(house,'f2'),floors={},walls=[];
+  const faces=[{source:rear,a:[x0,z],b:[x1,z]},{source:side,a:[x0,z],b:[x0,-7.4]}];
+  for(const {source} of faces){const originals=new Set();source.traverse(object=>{if(object.geometry)originals.add(object.geometry);});consolidate(source);originals.forEach(geometry=>geometry.dispose());}
+  for(const [floor,min,max] of [['f1',0,floor2],['f2',floor2,top]]){
+    const group=new THREE.Group();group.name=`stair-backdrop-${floor}`;floors[floor]=group;
+    for(const {source,a,b} of faces){
+      const full=sliceStairGroup(source,min,max);
+      full.traverse(object=>{if(object.geometry)object.geometry.translate(0,-min,0);});
+      const low=sliceStairGroup(full,0,cutawayHeight);low.visible=false;
+      group.add(full,low);walls.push({full,low,wall:{a,b}});
+    }
+    scene.add(group);
+  }
+  for(const {source} of faces)source.traverse(object=>{if(object.geometry)object.geometry.dispose();});
+  return {floors,walls};
 }
 
 function buildFacade(floorGroups,house,materials,defaults) {
@@ -345,7 +354,7 @@ export function createHouseScene({container,house:sourceHouse,onSelect=()=>{},on
   const stairHall=createStairHall({house,materials,quality:'sd'});
   for(const key of STAIR_PARTS){consolidate(stairHall[key]);scene.add(stairHall[key]);}
   stairHall.disposeGeometries();
-  const stairBackdrop=buildStairBackdrop(scene,materials,house);
+  const {floors:stairBackdrop,walls:stairBackdropWalls}=buildStairBackdrop(scene,materials,house,defaults.cutawayHeight);
   const roof=new THREE.Group();roof.name='assumed-hip-roof';scene.add(roof);
   const roofY=floorHeight(house,'f2')+defaults.wallHeight+.2,rise=house.roof?.height||1.2,overhang=house.roof?.overhang||.35;
   addHipRoof(roof,{x0:-.6-overhang,x1:5.5+overhang,z0:-10.3-overhang,z1:overhang,y:roofY+.12,rise},materials,false);
@@ -515,25 +524,10 @@ export function createHouseScene({container,house:sourceHouse,onSelect=()=>{},on
   }
 
   function updateWalls() {
-    const isWhole=state.view==='whole',cameraDirection=camera.position.clone().sub(controls.target);cameraDirection.y=0;cameraDirection.normalize();
+    const cameraDirection=camera.position.clone().sub(controls.target);cameraDirection.y=0;cameraDirection.normalize();
     const focus=roomRecords.get(state.selectedRoomId)?.center || new THREE.Vector3(6.8,0,-5.1);
-    for(const r of wallRecords) {
-      let cut=false;
-      if(!isWhole&&(state.wallMode!=='full'||state.ceiling)) {
-        if(state.wallMode==='low'||state.ceiling)cut=true;
-        else {
-          let nearest=r.mid;
-          if(state.selectedRoomId) {
-            const a=point(r.wall.a),b=point(r.wall.b),dx=b[0]-a[0],dz=b[1]-a[1];
-            const t=THREE.MathUtils.clamp(((focus.x-a[0])*dx+(focus.z-a[1])*dz)/(dx*dx+dz*dz),0,1);
-            nearest=new THREE.Vector3(a[0]+t*dx,0,a[1]+t*dz);
-          }
-          const relative=nearest.clone().sub(focus),facing=Math.abs(r.normal.dot(cameraDirection));
-          // Lower near-facing walls; retained far walls still explain room volume.
-          cut=relative.dot(cameraDirection)>-.25 && facing>.34;
-          if(state.selectedRoomId&&relative.length()<2.1)cut=cut||facing>.6;
-        }
-      }
+    for(const r of [...wallRecords,...stairBackdropWalls]) {
+      const cut=wallIsLowered(state,{a:point(r.wall.a),b:point(r.wall.b)},[focus.x,focus.z,focus.y],[cameraDirection.x,cameraDirection.z]);
       r.full.visible=!cut;r.low.visible=cut;
     }
     for(const floor of floorGroups.values()) {

@@ -1,6 +1,8 @@
-# myClover Studio
+# บ้านที่เราสร้างด้วยรัก — myClover Studio
 
-บ้านตัวอย่างสำหรับสำรวจบนจอ โทนกราไฟต์/น้ำเงิน พร้อมมุมกล้อง รายการห้อง กริด และเลเยอร์บิลต์อิน/เฟอร์นิเจอร์ ไม่มีแปลน คู่มือ หรือ ZIP ให้ดาวน์โหลด แปลนดูและเลือกห้องในเว็บได้ ส่วนเบื้องหลังสงวนสำหรับนักเรียน AI ใส่ซอส
+บ้านจริงที่ครอบครัวเราอยู่ด้วยกันมา 10 ปี สร้างขึ้นอีกครั้งเป็นบ้าน 3D ให้ลองหมุน เปิดแต่ละชั้น และแวะสำรวจห้องต่าง ๆ ผ่านโมเดล แปลน และภาพจริง พร้อมเรื่องราวจากวันแรกที่ย้ายเข้า ขอบคุณที่แวะมาเยี่ยมบ้านของเราครับ
+
+มีคำแนะนำสำหรับการเข้าชมครั้งแรก เปิดวิธีใช้อีกครั้งได้เสมอ และเลือก Full / Auto / Low เพื่อดูผนังในมุมที่ต้องการ SD มาตรฐานเป็นค่าเริ่มต้น ส่วน HD ความละเอียดสูงเปิดเพื่อเปรียบเทียบในมุมกล้องเดิมได้ ไม่มีแปลน คู่มือ หรือ ZIP ให้ดาวน์โหลด แปลนดูและเลือกห้องในเว็บได้ ส่วนเบื้องหลังสงวนสำหรับนักเรียน AI ใส่ซอส
 
 Previous release authorization: 2026-09-24. User approved the accumulated local Studio revision for main after making the upper west face flush with the lower storey. That narrow service-roof ledge is absorbed into the upper footprint; the model now has30 selectable spaces. No unrelated site changes.
 
@@ -14,6 +16,6 @@ The latest correction adds the shower annex beside bathroom205 only to the 3D pr
 
 The owner prioritizes attractive screen presentation over exact proportions. Circulation and furniture follow the plan and owner corrections. Bedroom201 and upstairs lounge photos are owner-confirmed; bedrooms202/203 have no photos and use standard plan-led beds. Other candidate bindings remain provisional. Not a construction or surveyed as-built model.
 
-Runtime: Node.js. Install with npm ci, build with npm run build, preview with npm run dev at http://127.0.0.1:4317/showcase/house/. Verification: npm test (74 tests), npm run typecheck, npm run validate:house, npm run audit:public.
+Runtime: Node.js. Install with npm ci, build with npm run build, preview with npm run dev at http://127.0.0.1:4317/showcase/house/. Verification: npm test (91 tests), npm run typecheck, npm run validate:house, npm run audit:public.
 
 Runtime code and displayed images remain frontend assets; no-download means no separately distributed plan, guide or kit. Publishing to main does not itself prove production deployment; use the actual deployment check before claiming the live site is updated.

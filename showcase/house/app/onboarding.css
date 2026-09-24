@@ -1,0 +1,57 @@
+#house-guide{position:fixed;z-index:60;width:var(--guide-width,350px);padding:24px;border:1px solid #cdd7e3;border-radius:18px;background:#fbfcfdfc;color:#26364a;box-shadow:0 16px 55px #24375128;overflow:auto;overscroll-behavior:contain;font-size:14px;line-height:1.6;backdrop-filter:blur(12px)}
+#house-guide[hidden]{display:none}#house-guide h2{font-size:21px;line-height:1.45;letter-spacing:-.35px;margin:8px 28px 10px 0}#house-guide p{margin:8px 0 14px;color:#53657a;font-size:14px}#house-guide button{min-height:44px;font:inherit;border-radius:9px;padding:8px 12px}#house-guide .guide-close{position:absolute;right:10px;top:10px;width:44px;font-size:24px;padding:0;color:#617084}.guide-mark{font-size:22px}.guide-progress{color:#637991;font-size:12px;letter-spacing:2px}.guide-tips{padding-left:22px;margin:14px 0 20px;color:#43566d}.guide-tips li{padding-left:3px;margin:8px 0}.guide-tips li::marker{color:#77958a;font-size:12px}.guide-tips span{display:block;color:#748399;font-size:12px}.guide-actions{display:flex;gap:8px;align-items:center;justify-content:space-between}.guide-actions>button{flex:1;white-space:nowrap;font-size:13px!important}.guide-actions .guide-primary{background:#344e6b;color:white}.guide-actions button:not(.guide-primary):hover{background:#eaf0f7}.guide-target{outline:3px solid #819d91!important;outline-offset:4px;border-radius:10px;transition:none!important}
+@media(max-width:767px){#house-guide{border-radius:17px;padding:16px 18px;font-size:13px}#house-guide h2{font-size:18px;margin:0 28px 6px 0}#house-guide p{font-size:13px;line-height:1.55;margin:6px 0 10px}.guide-mark{display:none}.guide-tips{font-size:12px;line-height:1.5;margin:9px 0 12px;padding-left:19px}.guide-tips li{margin:6px 0}.guide-tips span{font-size:11px}.guide-actions{gap:8px}#house-guide[data-mode=walk]{padding-top:16px}}
+@media(max-height:500px) and (orientation:landscape){#house-guide{padding:15px 18px}#house-guide h2{font-size:18px;margin:0 26px 6px 0}#house-guide p{font-size:12px;margin:6px 0}.guide-mark{display:none}.guide-tips{font-size:12px;margin:8px 0}.guide-tips li{margin:4px 0}.guide-tips span{display:inline;margin-left:4px}.guide-actions{margin-top:10px}}
+/* Desktop shares the existing sidebar without covering the model or room details. */
+.guide-sidebar .workspace{grid-template-rows:auto minmax(0,1fr)}
+.guide-sidebar .stage{grid-column:1;grid-row:1 / 3;min-height:0}
+.guide-sidebar .inspector{grid-column:2;grid-row:2;min-height:0;height:auto;max-height:none;overflow-y:auto;overscroll-behavior:contain}
+.guide-sidebar #house-guide,.guide-floating #house-guide{display:grid;grid-template-rows:minmax(0,1fr) 44px;gap:12px;min-height:0;box-sizing:border-box;padding:18px 16px;overflow:hidden}
+.guide-sidebar #house-guide{position:relative;grid-column:2;grid-row:1;width:100%;border-width:0 0 1px;border-radius:0;box-shadow:none;background:#fbfcfd;backdrop-filter:none}
+.guide-sidebar #house-guide .guide-body,.guide-floating #house-guide .guide-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:2px}
+.guide-sidebar #house-guide h2,.guide-floating #house-guide h2{font-size:19px;margin:7px 34px 9px 0}
+.guide-sidebar #house-guide p,.guide-floating #house-guide p{font-size:13px}
+.guide-sidebar #house-guide .guide-close,.guide-floating #house-guide .guide-close{right:4px;top:4px;z-index:1;background:#fbfcfd}
+.guide-sidebar .guide-tips,.guide-floating .guide-tips{font-size:13px;margin:12px 0 0}
+.guide-sidebar .guide-actions,.guide-floating .guide-actions{margin:0;min-width:0}
+.guide-sidebar #house-guide .guide-actions button,.guide-floating #house-guide .guide-actions button{min-width:0;padding:7px 6px;font-size:12px!important}
+/* On phones the guide occupies its own row, never the canvas or its controls. */
+.guide-docked .workspace{display:flex;flex-direction:column;gap:0}
+.guide-docked .stage{order:0;flex:1;min-height:0;height:auto}
+.guide-docked .inspector{display:none}
+.guide-docked.guide-inside-target:not(.view-focused) .inspector.arrival{display:grid;position:relative;inset:auto;order:2;width:100%;height:76px;max-height:76px;flex:0 0 76px;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px 16px;overflow:visible;border-radius:0;box-shadow:none}
+.guide-docked.guide-inside-target .inspector.arrival .overview-head{display:block;min-width:0}
+.guide-docked.guide-inside-target .inspector.arrival .overview-title{font-size:12px;margin:0;line-height:1.6}
+.guide-docked.guide-inside-target .inspector.arrival .primary-button{display:flex;width:auto;height:44px;min-height:44px;font-size:12px;margin:0;padding:8px 12px;gap:10px}
+.guide-docked.guide-inside-target .inspector.arrival .overview-head>.eyebrow,.guide-docked.guide-inside-target .inspector.arrival .story-link,.guide-docked.guide-inside-target .inspector.arrival .overview-photo,.guide-docked.guide-inside-target .inspector.arrival .overview-copy,.guide-docked.guide-inside-target .inspector.arrival .sheet-handle{display:none}
+.guide-docked #house-guide{position:relative;order:1;flex:0 0 auto;display:grid;grid-template-rows:minmax(0,1fr) 44px;gap:8px;width:100%;max-width:none;min-height:0;box-sizing:border-box;padding:12px 16px;border-width:1px 0 0;border-radius:16px 16px 0 0;box-shadow:0 -5px 24px #304b6e09;overflow:hidden;background:#fbfcfd;backdrop-filter:none}
+.guide-docked #house-guide .guide-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:2px}
+.guide-docked #house-guide .guide-close{right:6px;top:3px;z-index:1;background:#fbfcfd}
+.guide-docked #house-guide h2{font-size:17px;line-height:1.45;margin:0 38px 5px 0}
+.guide-docked #house-guide p{font-size:12px;line-height:1.55;margin:5px 0 8px}
+.guide-docked .guide-mark{display:none}.guide-docked .guide-progress{display:block;font-size:10px;line-height:1.4;margin-bottom:3px}
+.guide-docked .guide-tips{font-size:12px;line-height:1.5;padding-left:18px;margin:7px 0 2px}.guide-docked .guide-tips li{margin:4px 0}.guide-docked .guide-tips span{display:inline;font-size:11px;margin-left:4px}
+.guide-docked .guide-actions{margin:0;min-width:0}.guide-docked #house-guide .guide-actions button{font-size:12px!important;min-width:0;padding:7px 10px}
+@media(max-width:767px){
+ .guide-docked .scene-title{display:none}
+ .guide-docked .lens-switch{top:calc(12px + var(--focus-top,0px))}
+ .guide-docked .viewer-actions{top:calc(15px + var(--focus-top,0px))}
+ .guide-docked #scene,.guide-docked #room-labels{top:calc(72px + var(--focus-top,0px))}
+ .guide-docked .touch-hint{top:calc(67px + var(--focus-top,0px))}
+ .guide-docked .editor-toolbar.is-open{top:calc(68px + var(--focus-top,0px));max-height:calc(100% - 209px)}
+}
+@media(max-width:1000px) and (orientation:landscape) and (max-height:600px){
+ .guide-docked .workspace{display:grid;grid-template-columns:minmax(0,1fr) 230px;grid-template-rows:minmax(0,1fr);align-items:stretch}
+ .guide-docked .stage{grid-column:1;grid-row:1 / 3;width:100%;height:100%;min-height:0}
+ .guide-docked #house-guide{grid-column:2;grid-row:1;width:100%;height:100%;border-width:0 0 0 1px;border-radius:0;padding:12px;box-shadow:none}
+ .guide-docked.guide-inside-target:not(.view-focused) .workspace{grid-template-rows:minmax(0,1fr) 76px}
+ .guide-docked.guide-inside-target:not(.view-focused) .inspector.arrival{grid-column:2;grid-row:2;display:flex;align-items:center;justify-content:center;padding:10px;border-left:1px solid #cdd7e3}
+ .guide-docked.guide-inside-target .inspector.arrival .overview-head{display:none}
+ .guide-docked .scene-title{display:block}
+ .guide-docked .lens-switch,.guide-docked .viewer-actions{top:48px}
+ .guide-docked #scene,.guide-docked #room-labels{top:66px}
+ .guide-docked .editor-toolbar.is-open{top:99px;max-height:calc(100% - 113px)}
+ .guide-docked #house-guide .guide-actions button{padding:7px 4px;font-size:11px!important}
+ .guide-docked .guide-tips span{display:block;margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){#house-guide,.guide-target{animation:none!important;transition:none!important}}

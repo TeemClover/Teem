@@ -1,3 +1,21 @@
+# Final release: house story, first-visit guide and wall controls — 2026-09-24
+
+All 91 tests, build, JavaScript syntax checks, house-data validation and public-output audit pass for this final local release. The owner has authorized publication; this entry records local verification and does not claim that the new release is deployed in production. Earlier entries below describe historical builds.
+
+The public title and introductory copy now present “บ้านที่เราสร้างด้วยรัก,” the family's 10-year home story and its first-day photographs. The About dialog keeps source limitations available in a secondary disclosure. Open Graph and Twitter metadata use the canonical public URL and a 1200 × 630 JPEG share image; automated checks verify dimensions, metadata consistency and absence of original-image EXIF/XMP. No download links or student files were added. The canonical 2D plan remains unchanged.
+
+Browser checks covered first-time and returning visitors. With onboarding storage empty, the guide appeared only after the model was ready; refreshing after it was seen did not repeat it. A deep link to the F2 bathroom plan retained its floor, room and plan view, and deferred the automatic guide until the model tab was opened. Storage prototype access was deliberately denied and then restored; eight unit cases separately verify persistent dismissal, denied reads/writes, malformed values and memory fallback. The forced 2D fallback did not open the automatic guide.
+
+Manual help, all three walkthrough steps, skipping, Escape and focus restoration were checked. Help from the photo view did not point to hidden model controls; opening a photo modal closed the guide. Toggling the focused viewer during step 2 refreshed the guide target and instructions. Portrait onboarding uses its own row and landscape uses a side panel, with internally scrolling text and accessible action buttons. A help → start → help → close cycle retained the same 18 resource entries, with no additional loads.
+
+Navigation checks covered Model / Plan / Photo cycles for an F1 room and the F2 stair hall, browser Back / Forward, and the inside CTA retaining the active floor. Full / Auto / Low worked across floor, exploded and isolated stair views while retaining the rails and chandelier. HD / SD switching preserved the exact camera pose. Tour start / next / exit and the sources dialog were exercised. Reduced-motion emulation reported the media preference as true and the inspected transition duration as 0s.
+
+Actual inspected CSS viewports were 360 × 740, 390 × 843, 844 × 390, approximately 958 × 937, and 1280 × 1000 on desktop. No horizontal document overflow was found. The desktop guide reserves a sidebar row above the independently scrolling inspector, leaving all camera and model controls exposed. Its walkthrough reveals the inside CTA below the guide. The short-landscape camera controls use a horizontal row with no overlap; the landscape canvas bottom inset was reduced to 79px to restore 60px of viewing space. These are desktop browser viewport checks, not physical iPhone / Android or Safari tests. Temporary device metrics and reduced-motion overrides were cleared.
+
+Browser logs contained only the expected warning from the deliberately forced fallback, with no errors. Local ignored screenshots are stored as reports/screenshots/final-*.png. No new sustained performance benchmark or production deployment result is claimed in this entry.
+
+---
+
 # Shower annex and floor-separated stair hall — 2026-09-24
 
 All 74 tests, syntax checks, build, source-data validation and public-output audit pass. The 3D presentation clone also passes geometry validation in its new regression tests. The canonical house.js and interactive 2D plan are unchanged. Main bath fixtures retain their original placement and the shower is entered from bathroom205, with a solid boundary to the hall and stair void.

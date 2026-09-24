@@ -1,0 +1,39 @@
+/* One 54px control row next to the floor dock; hidden views retain their canvas. */
+.wall-controls{position:absolute;top:81px;right:78px;z-index:11;display:flex;width:228px;gap:4px;padding:4px;border:1px solid #c7d2e0;border-radius:10px;background:#f8fafcf5;box-shadow:0 3px 12px #304b6e08}
+.wall-controls button{display:flex;align-items:center;justify-content:center;gap:6px;flex:1;min-width:44px;min-height:44px;padding:5px 8px;border-radius:7px;color:#667c98;font:500 11px system-ui;white-space:nowrap;touch-action:manipulation}
+.wall-controls button svg{width:19px;height:19px;flex-shrink:0}
+.wall-controls button[aria-pressed=true]{background:#354c69;color:#fff;box-shadow:0 1px 3px #233c5d16}
+.wall-controls button:not([aria-pressed=true]):hover{background:#e5edf7;color:#354c69}
+.wall-controls button:focus-visible{outline:3px solid #2864b3;outline-offset:2px}
+.stage[data-wall-controls=visible] .view-note{top:143px}
+@media(min-width:1600px){.wall-controls{right:82px}}
+@media(min-width:768px) and (max-width:1199px){.wall-controls{top:134px;right:76px;width:218px}.stage[data-wall-controls=visible] .view-note{top:196px}}
+@media(max-width:767px){
+ .wall-controls{top:auto;bottom:76px;left:12px;right:12px;width:auto;border-radius:11px;box-shadow:none}
+ .wall-controls button{font-size:12px}
+ .stage[data-wall-controls=visible] .scene-bottom{bottom:136px}
+ .stage[data-wall-controls=visible] #scene,.stage[data-wall-controls=visible] #room-labels{bottom:201px}
+ .stage[data-wall-controls=visible] .camera-tools{bottom:213px}
+ .stage[data-wall-controls=visible] .settings-panel{bottom:198px}
+ .stage[data-wall-controls=visible] #tour-bar{bottom:205px}
+ .stage[data-wall-controls=visible] .view-note{top:126px}
+ .view-focused .wall-controls{bottom:calc(76px + var(--focus-bottom,0px))}
+ .view-focused .stage[data-wall-controls=visible] .scene-bottom{bottom:calc(136px + var(--focus-bottom,0px))}
+ .view-focused .stage[data-wall-controls=visible] #scene,.view-focused .stage[data-wall-controls=visible] #room-labels{bottom:calc(201px + var(--focus-bottom,0px))}
+ .view-focused .stage[data-wall-controls=visible] .camera-tools{bottom:calc(213px + var(--focus-bottom,0px))}
+ .view-focused .stage[data-wall-controls=visible] .settings-panel{bottom:calc(198px + var(--focus-bottom,0px))}
+ .view-focused .stage[data-wall-controls=visible] #tour-bar{bottom:calc(205px + var(--focus-bottom,0px))}
+}
+@media(max-width:767px) and (max-height:650px){.stage[data-wall-controls=visible] .view-note{top:100px}}
+@media(max-width:1000px) and (orientation:landscape) and (max-height:600px){
+ .wall-controls,.view-focused .wall-controls{left:16px;right:auto;top:auto;bottom:76px;width:calc(50% - 24px);max-width:300px}
+ .wall-controls button{font-size:11px;padding:5px 7px}
+ .stage[data-wall-controls=visible] .scene-bottom,.view-focused .stage[data-wall-controls=visible] .scene-bottom{bottom:14px}
+ .stage[data-wall-controls=visible] #scene,.stage[data-wall-controls=visible] #room-labels,.view-focused .stage[data-wall-controls=visible] #scene,.view-focused .stage[data-wall-controls=visible] #room-labels{bottom:79px}
+ .camera-tools,.view-focused .camera-tools,.stage[data-wall-controls=visible] .camera-tools,.view-focused .stage[data-wall-controls=visible] .camera-tools{display:grid;grid-auto-flow:column;grid-template-columns:repeat(3,44px);gap:4px;top:auto;right:16px;bottom:76px;width:max-content;height:54px;padding:4px;border:1px solid #c7d2e0;border-radius:11px;background:#f8fafcf5;box-shadow:0 3px 12px #304b6e08}
+ .camera-tools button{width:44px;min-width:44px;height:44px;border:0;border-radius:7px;background:transparent}
+ .camera-tools button[data-action=reset]{border-top:0;border-left:1px solid #e0e6ee;border-radius:0 7px 7px 0}
+ .stage[data-wall-controls=visible] .settings-panel,.view-focused .stage[data-wall-controls=visible] .settings-panel{bottom:76px}
+ .stage[data-wall-controls=visible] #tour-bar,.view-focused .stage[data-wall-controls=visible] #tour-bar{bottom:145px}
+ .stage[data-wall-controls=visible] .view-note{top:99px;right:16px;left:auto}
+}

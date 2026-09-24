@@ -47,7 +47,7 @@ test('graphics controls use the existing scene lifecycle and never persist the c
  assert.match(html,/data-render-mode="sd"[^>]*aria-pressed="true"/);
  assert.match(html,/data-render-mode="hd"[^>]*aria-pressed="false"/);
  assert.match(main,/onRenderMode:updateRenderMode/);
- assert.match(main,/state=\{\.\.\.parseState\(location.search,house\),renderMode:state.renderMode\}/);
+ assert.match(main,/state=\{\.\.\.parseState\(location.search,house\),renderMode:state.renderMode,wallMode:state.wallMode\}/);
  assert.doesNotMatch(main,/localStorage|sessionStorage/);
  const graphicsClick=main.slice(main.indexOf('if(b.dataset.renderMode)'),main.indexOf('if(b.dataset.room)'));
  assert.match(graphicsClick,/dispatch\(\{type:'RENDER_MODE'/);
