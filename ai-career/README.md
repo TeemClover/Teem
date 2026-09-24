@@ -1,13 +1,13 @@
-# AI Career public landing page
+# AI Career — follow the upcoming course
 
 Canonical URL: https://www.myclover.com/ai-career/
 
-This is an interest-only landing page for the first THB 990 workshop. It uses the existing official myClover logo. The primary external action opens the existing myClover LINE contact; visitors still need to send their own message. Opening LINE does not create an enrollment or confirm a seat.
+The page preserves the original sales-page narrative and orange/graphite visual direction: missed opportunities, accumulated first-mover advantages, changing competition, and the unpaid AI helpdesk problem. It adds the developing career path: real work, evidence, internal role/pay discussions, and external job applications. Uses the official myClover logo.
 
-The offer is two hours of live instruction, a seven-day practice guide, a one-hour group clinic, and ninety-day replay/material access. The October 2026 schedule is pending confirmation. There is no checkout, payment QR, countdown, seat counter, auto-renewal, or new learner grant on this page. Announce the exact schedule, delivery, and refund terms before enabling payment in a separately verified course flow.
+Pricing, dates, duration, seat count, delivery, and support are **not finalized**. Do not restore the previous workshop price or package. The curriculum and artifacts are a direction under development, not enrollment entitlements. The only conversion is following the existing myClover LINE account and voluntarily sending “ติดตาม AI Career”. Opening the link is not a recorded lead, payment, reservation, or enrollment.
 
-The report example is explicitly illustrative and contains no invented outcome numbers. `proof-starter.txt` is an original, intentionally public starter worksheet, not a paid course file or a source-book extract. Internal business plans and private learner information do not belong here.
+The proof example and generated staircase are illustrations, not participant outcomes. The original free Thai worksheet remains available. No private documents, book extracts, case data, or invented salary figures are included. No urgency timer or income/job guarantee is used.
 
-The page is static and its navigation, LINE link, FAQ, and worksheet work without JavaScript. `page.js` only progressively enables a clipboard helper on supported secure contexts; it sends no messages and stores no visitor data.
+Static HTML/CSS. Native anchors, FAQ, LINE link, and worksheet download work without JavaScript. `page.js` only enables an optional clipboard helper; it sends no messages and records no visitor data. `share-v2.png` is the current social card; `share.png` is a compatible copy so old image URLs no longer display an unconfirmed price.
 
-Verify desktop and 320/390px mobile rendering, keyboard focus, internal anchors, native FAQ expansion, worksheet download, clipboard success/failure, and the LINE destination. The site-wide middleware already canonicalizes `/ai-career` to `/ai-career/`; no routing change is required. Verify the live custom-domain page after merge, not only the deployment status.
+Check desktop and 320/390px mobile layout, contrast, anchors, native disclosure, download, clipboard success/failure, and LINE destination. Verify production assets and page after merge. Existing site middleware handles `/ai-career` → `/ai-career/`; no checkout or enrollment code is changed.
