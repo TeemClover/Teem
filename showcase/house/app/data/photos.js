@@ -106,16 +106,6 @@ export const photoSets = [
     },
     "photos": [
       {
-        "id": "P24",
-        "src": "media/photos/stair-chandelier.webp",
-        "thumb": "media/photos/stair-chandelier-thumb.webp",
-        "alt": "แชนเดอเลียร์คริสตัล 8 วงเรียงลดหลั่นในโถงสูงข้างบันได",
-        "caption": "คริสตัล 8 วง ลอยลดหลั่นเหนือโถงบันได",
-        "width": 1200,
-        "height": 1600,
-        "privacyReview": "owner-approved-web-derivative"
-      },
-      {
         "id": "P25",
         "src": "media/photos/stair-life.webp",
         "thumb": "media/photos/stair-life-thumb.webp",

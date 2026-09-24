@@ -5,12 +5,15 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { assemblyBands, carportFrame } from './scene/assembly.js';
 import { solarModuleLayout } from './scene/solar-layout.js';
 import { createMaterials } from './scene/materials.js';
-import { createStairHall } from './scene/stair-hall.js';
+import { createStairHall, stairHallPresentation, sliceStairGroup } from './scene/stair-hall.js';
+import { createModelHouse, furnishingRoom } from './scene/model-house.js';
+import { createShowerDetail } from './scene/shower-detail.js';
 import { box, cylinder, createFurniture, createBuiltins, createTree, roomBounds } from './scene/furniture.js';
 
 const DEFAULT_STATE = {view:'whole',selectedRoomId:null,wallMode:'auto',furniture:true,builtins:true,grid:true,isolate:true,labels:true,ceiling:false,reducedMotion:false,quality:'balanced',renderMode:'sd'};
 const EXPLODED_GAP = 6.2; // Presentation distance only; source floor elevations remain unchanged.
 const UP = new THREE.Vector3(0,1,0);
+const STAIR_PARTS = ['stairs','stairsLower','landing','chandelier','chandelierUpper','canopy'];
 
 function shapeFromPolygon(polygon) {
   const shape=new THREE.Shape();
@@ -185,8 +188,7 @@ function buildStage(scene,materials) {
   group.add(base);consolidate(base);consolidate(trees);return {group,trees};
 }
 
-// A continuous double-height cutaway keeps the isolated stair hall legible.
-// Its rear glazing follows the owner's new photos; adjacent rooms stay outside it.
+// Each storey owns its part of the rear glazing in an isolated stair view.
 function buildStairBackdrop(scene,materials,house) {
   const group=new THREE.Group();group.name='stair-hall-cutaway-backdrop';
   const top=floorHeight(house,'f2')+2.7,x0=5.5,x1=8.5,z=-10.3;
@@ -203,7 +205,12 @@ function buildStairBackdrop(scene,materials,house) {
     pleat.castShadow=false;
   }
   box(group,[3.15,.055,.10],[(x0+x1)/2,top-.15,z+.15],materials.trim);
-  consolidate(group);scene.add(group);return group;
+  consolidate(group);
+  const floor2=floorHeight(house,'f2'),lower=sliceStairGroup(group,0,floor2),upper=sliceStairGroup(group,floor2,top);
+  lower.name='stair-backdrop-f1';upper.name='stair-backdrop-f2';
+  upper.traverse(object=>{if(object.geometry)object.geometry.translate(0,-floor2,0);});
+  group.traverse(object=>{if(object.geometry)object.geometry.dispose();});
+  scene.add(lower,upper);return {f1:lower,f2:upper};
 }
 
 function buildFacade(floorGroups,house,materials,defaults) {
@@ -245,7 +252,8 @@ function buildFacade(floorGroups,house,materials,defaults) {
   consolidate(wholeDetails);consolidate(details2);return {wholeDetails,details2};
 }
 
-export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{},onError=()=>{},onLabels=()=>{},onRenderMode=()=>{}}) {
+export function createHouseScene({container,house:sourceHouse,onSelect=()=>{},onReady=()=>{},onError=()=>{},onLabels=()=>{},onRenderMode=()=>{}}) {
+  const house=createModelHouse(sourceHouse);
   const initializationStart=performance.now();
   let renderer;
   try {
@@ -306,8 +314,12 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     const highlight=polygonMesh(room.polygon,materials.selected);highlight.position.y=.048;highlight.visible=false;highlight.renderOrder=3;roomGroup.add(highlight);
     const positions=room.polygon.concat([room.polygon[0]]).map(([x,z])=>new THREE.Vector3(x,.055,z));
     const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(positions),new THREE.LineBasicMaterial({color:'#367dde',transparent:true,opacity:.9}));line.visible=false;line.renderOrder=4;roomGroup.add(line);
-    const furniture=createFurniture(room,materials);consolidate(furniture);furniture.position.y=offset;floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
-    const fixed=createBuiltins(room,materials);consolidate(fixed);fixed.position.y=offset;floor.builtins.add(fixed);floor.builtinsBatch.add(fixed.clone(true));
+    const furnishing=furnishingRoom(room);
+    const furniture=createFurniture(furnishing,materials);consolidate(furniture);furniture.position.y=offset;floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
+    const fixed=createBuiltins(furnishing,materials);
+    const shower=room.id==='f2-205-bath'?createShowerDetail({materials,quality:'sd'}):null;
+    if(shower)fixed.add(shower);
+    consolidate(fixed);shower?.disposeSourceGeometries();fixed.position.y=offset;floor.builtins.add(fixed);floor.builtinsBatch.add(fixed.clone(true));
     const ceilingGroup=new THREE.Group();floor.ceilings.add(ceilingGroup);
     if(!isVoid&&!['carport','balcony','terrace','laundry','roof','stair'].some(k=>kind.includes(k))) {
       const ceiling=polygonMesh(room.polygon,materials.trim,.075);ceiling.position.y=defaults.wallHeight-.06+offset;ceilingGroup.add(ceiling);
@@ -331,7 +343,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     floor.group.add(record.group);record.floor=floor;wallRecords.push(record);
   }
   const stairHall=createStairHall({house,materials,quality:'sd'});
-  for(const key of ['stairs','landing','chandelier','canopy']){consolidate(stairHall[key]);scene.add(stairHall[key]);}
+  for(const key of STAIR_PARTS){consolidate(stairHall[key]);scene.add(stairHall[key]);}
   stairHall.disposeGeometries();
   const stairBackdrop=buildStairBackdrop(scene,materials,house);
   const roof=new THREE.Group();roof.name='assumed-hip-roof';scene.add(roof);
@@ -416,9 +428,13 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       }
       for(const {room} of roomRecords.values()) {
         const floor=floors.get(roomFloorId(room));
-        const furniture=interiors.createHDFurniture(room,hdMaterials);consolidate(furniture);furniture.position.y=room.levelOffset??0;
+        const furnishing=furnishingRoom(room);
+        const furniture=interiors.createHDFurniture(furnishing,hdMaterials);consolidate(furniture);furniture.position.y=room.levelOffset??0;
         floor.furniture.add(furniture);floor.furnitureBatch.add(furniture.clone(true));
-        const builtins=interiors.createHDBuiltins(room,hdMaterials);consolidate(builtins);builtins.position.y=room.levelOffset??0;
+        const builtins=interiors.createHDBuiltins(furnishing,hdMaterials);
+        const shower=room.id==='f2-205-bath'?createShowerDetail({materials:hdMaterials,quality:'hd'}):null;
+        if(shower)builtins.add(shower);
+        consolidate(builtins);shower?.disposeSourceGeometries();builtins.position.y=room.levelOffset??0;
         floor.builtins.add(builtins);floor.builtinsBatch.add(builtins.clone(true));
       }
       for(const floor of floors.values()){consolidate(floor.furnitureBatch);consolidate(floor.builtinsBatch);}
@@ -427,14 +443,14 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       for(const group of Object.values(outside)){staged.push(group);consolidate(group);}
       const hdStairHall=createStairHall({house,materials:hdMaterials,quality:'hd'});
       extraMaterials.push(...hdStairHall.materials);
-      for(const key of ['stairs','landing','chandelier','canopy']){staged.push(hdStairHall[key]);consolidate(hdStairHall[key]);}
+      for(const key of STAIR_PARTS){staged.push(hdStairHall[key]);consolidate(hdStairHall[key]);}
       hdStairHall.disposeGeometries();
       rendering=pipeline.createHDRendering({renderer,scene,camera});
       hd={materials:hdMaterials,floors,outside,rendering,stairHall:hdStairHall};
       for(const [key,material] of Object.entries(hdMaterials))materialKeys.set(material,key);
       for(const [id,detail] of floors)floorGroups.get(id).group.add(...Object.values(detail));
       scene.add(...Object.values(outside));
-      scene.add(hdStairHall.stairs,hdStairHall.landing,hdStairHall.chandelier,hdStairHall.canopy);
+      scene.add(...STAIR_PARTS.map(key=>hdStairHall[key]));
       } catch(error) {
         const geometries=new Set(),textures=new Set();
         for(const group of staged){group.removeFromParent();group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);});}
@@ -454,9 +470,9 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   }
 
   function cancelTween() {tween=null;userFramed=true;invalidate();}
-  function stairFocus(){return state.view!=='whole'&&state.view!=='exploded'&&(state.isolate||state.ceiling)&&['f1-stair','f2-204-hall'].includes(state.selectedRoomId);}
+  function stairFocus(){return stairHallPresentation(state,house).focused;}
   function focusBounds(selected){
-    if(stairFocus()){const {min,max}=stairHall.focusBounds;return {x0:min[0],x1:max[0],z0:min[2],z1:max[2]};}
+    if(stairFocus()){const {min,max}=stairHallPresentation(state,house).focusBounds;return {x0:min[0],x1:max[0],z0:min[2],z1:max[2]};}
     return roomBounds(selected.room);
   }
   function fitToState(animate=true,forceHero=false) {
@@ -472,7 +488,7 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
       boxSize.set(Math.max(3.4,b.w+.5),3.1,Math.max(3.4,b.d+.5));polar=.72;
     }
     if(stairFocus()){
-      const {min,max}=stairHall.focusBounds;
+      const {min,max}=stairHallPresentation(state,house).focusBounds;
       center.set((min[0]+max[0])/2,(min[1]+max[1])/2,(min[2]+max[2])/2);
       boxSize.set(max[0]-min[0]+.4,max[1]-min[1]+.4,max[2]-min[2]+.4);polar=1.02;
     }
@@ -574,10 +590,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
   function applyVisibility() {
     const whole=state.view==='whole',exploded=state.view==='exploded';
     const ceilingDetail=Boolean((state.ceiling||state.isolate)&&state.selectedRoomId&&!whole&&!exploded),selected=roomRecords.get(state.selectedRoomId);
-    const focusStairs=stairFocus();
+    const stairPolicy=stairHallPresentation(state,house),focusStairs=stairPolicy.focused;
     if(ceilingDetail&&selected){const b=focusBounds(selected);renderer.clippingPlanes=[new THREE.Plane(new THREE.Vector3(1,0,0),-b.x0+.13),new THREE.Plane(new THREE.Vector3(-1,0,0),b.x1+.13),new THREE.Plane(new THREE.Vector3(0,0,1),-b.z0+.13),new THREE.Plane(new THREE.Vector3(0,0,-1),b.z1+.13)];}else renderer.clippingPlanes=[];
     for(const [id,floor] of floorGroups) {
-      floor.group.visible=whole||exploded||state.view===id||focusStairs;
+      floor.group.visible=stairPolicy.floors[id];
       floor.group.position.y=floor.baseY+(exploded&&id==='f2'?EXPLODED_GAP:0);
       for(const [mode,detail] of [['sd',floor],['hd',hd?.floors.get(id)]]) {
         if(!detail)continue;
@@ -594,25 +610,28 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }
     for(const rec of roomRecords.values()) {
       rec.ceilingGroup.visible=rec.room.id===state.selectedRoomId;
-      const focusRoom=rec.room.id===state.selectedRoomId||(focusStairs&&['f1-stair','f2-204-hall'].includes(rec.room.id));
+      const focusRoom=rec.room.id===state.selectedRoomId;
       rec.group.visible=!ceilingDetail||focusRoom;
       for(const mesh of rec.individualSurfaces)mesh.visible=ceilingDetail&&focusRoom;
     }
     for(const wall of wallRecords) {
       if(focusStairs){wall.group.visible=false;continue;}
       if(!ceilingDetail||!selected){wall.group.visible=true;continue;}
+      if(wall.wall.hiddenWhenIsolating?.includes(state.selectedRoomId)){wall.group.visible=false;continue;}
       const b=focusBounds(selected),a=point(wall.wall.a),c=point(wall.wall.b);
       wall.group.visible=Math.max(a[0],c[0])>=b.x0-.05&&Math.min(a[0],c[0])<=b.x1+.05&&Math.max(a[1],c[1])>=b.z0-.05&&Math.min(a[1],c[1])<=b.z1+.05;
     }
     for(const [mode,detail] of [['sd',stairHall],['hd',hd?.stairHall]]){
       if(!detail)continue;
-      const active=mode===activeRenderMode,context=!ceilingDetail||focusStairs;
-      detail.stairs.visible=active&&context;
-      detail.landing.visible=active&&context;
-      detail.chandelier.visible=active&&context&&state.builtins&&(whole||exploded||state.view==='f2'||focusStairs);
-      detail.canopy.visible=detail.chandelier.visible&&(whole||(state.ceiling&&focusStairs));
+      const active=mode===activeRenderMode;
+      detail.stairs.visible=active&&stairPolicy.stairs&&stairPolicy.stairsVariant==='full';
+      detail.stairsLower.visible=active&&stairPolicy.stairs&&stairPolicy.stairsVariant==='lower';
+      detail.landing.visible=active&&stairPolicy.landing;
+      detail.chandelier.visible=active&&stairPolicy.chandelier&&stairPolicy.chandelierVariant==='full';
+      detail.chandelierUpper.visible=active&&stairPolicy.chandelier&&stairPolicy.chandelierVariant==='upper';
+      detail.canopy.visible=active&&stairPolicy.canopy;
     }
-    stairBackdrop.visible=focusStairs;
+    for(const [floor,group] of Object.entries(stairBackdrop))group.visible=stairPolicy.backdropFloor===floor;
     controls.maxPolarAngle=state.ceiling&&state.selectedRoomId?2.15:Math.PI*.465;
     ground.visible=!ceilingDetail;roof.visible=whole;stage.group.visible=state.view!=='f2'&&!ceilingDetail;stage.trees.visible=whole&&activeRenderMode==='sd';
     if(hd){
@@ -643,9 +662,10 @@ export function createHouseScene({container,house,onSelect=()=>{},onReady=()=>{}
     }
     const moved=controls.update();
     for(const detail of [stairHall,hd?.stairHall])if(detail){
-      detail.stairs.position.y=floorGroups.get('f1').group.position.y;
-      for(const key of ['landing','chandelier','canopy'])detail[key].position.y=floorGroups.get('f2').group.position.y;
+      for(const key of ['stairs','stairsLower'])detail[key].position.y=floorGroups.get('f1').group.position.y;
+      for(const key of ['landing','chandelier','chandelierUpper','canopy'])detail[key].position.y=floorGroups.get('f2').group.position.y;
     }
+    for(const [floor,group] of Object.entries(stairBackdrop))group.position.y=floorGroups.get(floor).group.position.y;
     // Bound pan without snapping the zoom or orientation on a simple resize.
     const target=controls.target,clamped=new THREE.Vector3(THREE.MathUtils.clamp(target.x,-5,20),THREE.MathUtils.clamp(target.y,-1,12),THREE.MathUtils.clamp(target.z,-16,8));
     if(target.distanceToSquared(clamped)>.00001){camera.position.add(clamped.clone().sub(target));target.copy(clamped);}

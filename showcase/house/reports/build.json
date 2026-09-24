@@ -6,7 +6,7 @@
       "format": "esm"
     },
     "app/data/photos.js": {
-      "bytes": 16864,
+      "bytes": 16313,
       "imports": [],
       "format": "esm"
     },
@@ -97,7 +97,23 @@
       "format": "esm"
     },
     "app/scene/stair-hall.js": {
-      "bytes": 9487,
+      "bytes": 13087,
+      "imports": [
+        {
+          "path": "node_modules/three/build/three.module.js",
+          "kind": "import-statement",
+          "original": "three"
+        }
+      ],
+      "format": "esm"
+    },
+    "app/scene/model-house.js": {
+      "bytes": 2067,
+      "imports": [],
+      "format": "esm"
+    },
+    "app/scene/shower-detail.js": {
+      "bytes": 5211,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -388,7 +404,7 @@
       "format": "esm"
     },
     "app/scene.js": {
-      "bytes": 52141,
+      "bytes": 53583,
       "imports": [
         {
           "path": "node_modules/three/build/three.module.js",
@@ -429,6 +445,16 @@
           "path": "app/scene/stair-hall.js",
           "kind": "import-statement",
           "original": "./scene/stair-hall.js"
+        },
+        {
+          "path": "app/scene/model-house.js",
+          "kind": "import-statement",
+          "original": "./scene/model-house.js"
+        },
+        {
+          "path": "app/scene/shower-detail.js",
+          "kind": "import-statement",
+          "original": "./scene/shower-detail.js"
         },
         {
           "path": "app/scene/furniture.js",
@@ -489,7 +515,7 @@
     "assets/home.js": {
       "imports": [
         {
-          "path": "assets/scene-BD5EXLGS.js",
+          "path": "assets/scene-CK2XXDZW.js",
           "kind": "dynamic-import"
         }
       ],
@@ -500,7 +526,7 @@
           "bytesInOutput": 39424
         },
         "app/data/photos.js": {
-          "bytesInOutput": 20394
+          "bytesInOutput": 19707
         },
         "app/state.js": {
           "bytesInOutput": 2792
@@ -509,7 +535,7 @@
           "bytesInOutput": 57030
         }
       },
-      "bytes": 119641
+      "bytes": 118954
     },
     "assets/hd-materials-BL57NSQL.js": {
       "imports": [
@@ -629,7 +655,7 @@
       },
       "bytes": 5856
     },
-    "assets/scene-BD5EXLGS.js": {
+    "assets/scene-CK2XXDZW.js": {
       "imports": [
         {
           "path": "assets/chunk-BBR2P3JY.js",
@@ -681,13 +707,19 @@
           "bytesInOutput": 3494
         },
         "app/scene/stair-hall.js": {
-          "bytesInOutput": 5461
+          "bytesInOutput": 7440
+        },
+        "app/scene/model-house.js": {
+          "bytesInOutput": 1222
+        },
+        "app/scene/shower-detail.js": {
+          "bytesInOutput": 3186
         },
         "app/scene.js": {
-          "bytesInOutput": 30732
+          "bytesInOutput": 31477
         }
       },
-      "bytes": 65688
+      "bytes": 72838
     },
     "assets/chunk-BBR2P3JY.js": {
       "imports": [

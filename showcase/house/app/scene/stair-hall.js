@@ -3,12 +3,63 @@ import * as THREE from 'three';
 const TAU=Math.PI*2;
 const DEFAULT_HOLE=[[5.5,-10.3],[8.5,-10.3],[8.5,-7.4],[5.5,-7.4]];
 
-export function stairHallBounds(house) {
-  const hall=house.rooms?.find(room=>room.id==='f2-204-hall');
+export function stairHallBounds(house,floor=null) {
+  const hall=house.rooms?.find(room=>room.id===(floor==='f1'?'f1-stair':'f2-204-hall'));
   const points=[...(house.stair?.holePolygon||DEFAULT_HOLE),...(hall?.polygon||[])];
   const elevation=house.floors?.find(floor=>floor.id==='f2')?.elevation??3.29;
-  return {min:[Math.min(...points.map(p=>p[0])),0,Math.min(...points.map(p=>p[1]))],
-    max:[Math.max(...points.map(p=>p[0])),elevation+2.7,Math.max(...points.map(p=>p[1]))]};
+  return {min:[Math.min(...points.map(p=>p[0])),floor==='f2'?elevation:0,Math.min(...points.map(p=>p[1]))],
+    max:[Math.max(...points.map(p=>p[0])),floor==='f1'?elevation:elevation+2.7,Math.max(...points.map(p=>p[1]))]};
+}
+
+/** Floor ownership is shared by SD/HD; a focused hall never reveals another storey. */
+export function stairHallPresentation(state,house) {
+  const together=state.view==='whole'||state.view==='exploded';
+  const isolated=!together&&Boolean(state.selectedRoomId&&(state.isolate||state.ceiling));
+  const focused=isolated&&((state.view==='f1'&&state.selectedRoomId==='f1-stair')||(state.view==='f2'&&state.selectedRoomId==='f2-204-hall'));
+  const floors={f1:together||state.view==='f1',f2:together||state.view==='f2'};
+  const context=!isolated||focused;
+  const chandelier=context&&floors.f2&&state.builtins!==false;
+  return {focused,floors,focusBounds:focused?stairHallBounds(house,state.view):null,backdropFloor:focused?state.view:null,
+    stairs:context&&floors.f1,landing:context&&floors.f2,chandelier,
+    canopy:chandelier&&(state.view==='whole'||Boolean(state.ceiling&&focused)),
+    stairsVariant:state.view==='f1'?'lower':'full',chandelierVariant:state.view==='f2'?'upper':'full'};
+}
+
+/** Bake a floor slice so beauty, shadows and AO all see the same cut geometry. */
+export function sliceStairGroup(source,minY=-Infinity,maxY=Infinity) {
+  const result=new THREE.Group();result.name=`${source.name}:floor-slice`;
+  source.updateMatrixWorld(true);
+  const inverse=source.matrixWorld.clone().invert();
+  source.traverse(object=>{
+    if(!object.isMesh)return;
+    const geometry=object.geometry.index?object.geometry.toNonIndexed():object.geometry.clone();
+    geometry.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inverse,object.matrixWorld));
+    const attributes=Object.entries(geometry.attributes),values=Object.fromEntries(attributes.map(([name])=>[name,[]]));
+    const vertex=index=>Object.fromEntries(attributes.map(([name,attribute])=>[name,Array.from({length:attribute.itemSize},(_,i)=>attribute.array[index*attribute.itemSize+i])]));
+    const clip=(polygon,limit,above)=>{
+      if(!Number.isFinite(limit))return polygon;
+      const output=[];
+      for(let i=0;i<polygon.length;i++) {
+        const a=polygon[i],b=polygon[(i+1)%polygon.length],insideA=above?a.position[1]>=limit:a.position[1]<=limit,insideB=above?b.position[1]>=limit:b.position[1]<=limit;
+        if(insideA)output.push(a);
+        if(insideA!==insideB) {
+          const t=(limit-a.position[1])/(b.position[1]-a.position[1]);
+          output.push(Object.fromEntries(attributes.map(([name])=>[name,a[name].map((value,k)=>value+(b[name][k]-value)*t)])));
+        }
+      }
+      return output;
+    };
+    for(let i=0;i<geometry.attributes.position.count;i+=3) {
+      const polygon=clip(clip([vertex(i),vertex(i+1),vertex(i+2)],minY,true),maxY,false);
+      for(let j=1;j<polygon.length-1;j++)for(const point of [polygon[0],polygon[j],polygon[j+1]])for(const [name] of attributes)values[name].push(...point[name]);
+    }
+    geometry.dispose();
+    if(!values.position.length)return;
+    const sliced=new THREE.BufferGeometry();
+    for(const [name,attribute] of attributes)sliced.setAttribute(name,new THREE.Float32BufferAttribute(values[name],attribute.itemSize));
+    const mesh=new THREE.Mesh(sliced,object.material);mesh.name=object.name;mesh.castShadow=object.castShadow;mesh.receiveShadow=object.receiveShadow;result.add(mesh);
+  });
+  return result;
 }
 
 /**
@@ -138,7 +189,9 @@ export function createStairHall({house,materials:m,quality='sd'}) {
   add(canopy,cylinder,m.trim,[centerX,ceilingY-height+.032,centerZ],[1.035,.023,1.035],'ceiling-canopy-trim');
   chandelier.userData={quality,ringCount:8,ownerReference:'eight descending inclined crystal rings',center:[centerX,centerZ]};
   stairs.userData={quality,holeBounds:[x0,z0,x1,z1],flightWidth,centralClearWidth:railX[1]-railX[0]};
+  const stairsLower=sliceStairGroup(stairs,0,height),chandelierUpper=sliceStairGroup(chandelier,0);
+  for(const group of [stairsLower,chandelierUpper])group.traverse(object=>{if(object.geometry)geometries.add(object.geometry);});
   const disposeGeometries=()=>{for(const g of geometries)g.dispose();geometries.clear();};
-  return {stairs,landing,chandelier,canopy,materials:ownedMaterials,focusBounds:stairHallBounds(house),disposeGeometries,
+  return {stairs,stairsLower,landing,chandelier,chandelierUpper,canopy,materials:ownedMaterials,focusBounds:stairHallBounds(house),disposeGeometries,
     dispose(){disposeGeometries();for(const material of ownedMaterials)material.dispose();}};
 }

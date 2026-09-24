@@ -46,3 +46,12 @@ While this revision was being finished, the owner supplied five more references 
 Reconstruct eight alternating, descending crystal rings inside the existing stair opening. Use shared materials and bounded static meshes, with brighter faceted crystals only in HD. Keep original floor datums and openings for circulation, slim the return-stair flights for a clear central well, and leave the upper exit open. Show stairs on the second floor and provide a dedicated double-height cutaway with tall rear glazing matching the new photos. Update the rear stair windows in both storeys; other openings and doors remain unchanged. Add a stair-hall catalog/tour entry and owner-confirmed photo binding to hall204.
 
 Move only the circled front bank of six solar modules onto the opposite rear slope. Retain the east bank of eight. SD planes and HD mounting hardware share a single layout helper to avoid future mismatches.
+
+
+## 15. Shower correction and storey-specific stair views — 2026-09-24
+
+Owner identifies the narrow strip beside bathroom205 as a shower area and explicitly limits this correction to 3D. A cloned model-house presentation transfers that strip out of hall204, adds the enclosing partitions and internal bathroom passage, and preserves the rear ventilation square. Main bathroom furniture keeps its original anchors; the original source rooms/walls and 2D plan are unchanged. The new shower uses chrome handheld fittings, a greige tiled tray, drain and a half-width glass screen with clear access in SD and HD. None of the new phone references is added to the gallery.
+
+Floor-specific stair views no longer force both storeys visible. Bake geometry slices at the floor datum for the isolated lower stairs and upper chandelier, and split the isolated backdrop per storey. Whole/exploded views retain their complete components with the stairs owned by floor1 and landing/chandelier by floor2.
+
+Remove the mobile chandelier close-up P24 and both public derivatives. Keep the approved professional hall/person P25 and living-family P26. Public gallery now contains 23 images in 9 collections; the private source inventory remains unchanged. Continue under the existing authorization to push completed refinements to main.

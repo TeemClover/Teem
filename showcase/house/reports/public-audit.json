@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-24T00:34:03.893Z",
+  "checkedAt": "2026-09-24T00:56:29.862Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -7,7 +7,7 @@
     "esbuild": "0.25.10"
   },
   "scope": "Built public HTML, assets, image derivatives and no downloadable plans or student kits.",
-  "fileCount": 66,
+  "fileCount": 64,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -19,7 +19,7 @@
       "assets/chunk-JDYYZU63.js",
       "assets/chunk-KQTPFPAN.js",
       "assets/home.js",
-      "assets/scene-BD5EXLGS.js"
+      "assets/scene-CK2XXDZW.js"
     ],
     "optInHDEntryPoints": [
       "assets/hd-exterior-J3Q7EZHJ.js",
@@ -36,28 +36,28 @@
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 353123,
-      "gzipBytes": 199802
+      "bytes": 345282,
+      "gzipBytes": 192592
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 981274,
-      "gzipBytes": 368432
+      "bytes": 980583,
+      "gzipBytes": 363791
     },
     "optInHDAdditional": {
       "bytes": 64030,
       "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1045304,
-      "gzipBytes": 389069
+      "bytes": 1044613,
+      "gzipBytes": 384428
     },
     "imageDerivatives": {
-      "bytes": 3565476,
-      "gzipBytes": 3567540
+      "bytes": 3368592,
+      "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4567794,
-      "gzipBytes": 3911144
+      "bytes": 4377373,
+      "gzipBytes": 3716677
     }
   },
   "perFile": {
@@ -118,16 +118,16 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 119641,
-      "gzipBytes": 20611
+      "bytes": 118954,
+      "gzipBytes": 20560
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
       "gzipBytes": 53903
     },
-    "assets/scene-BD5EXLGS.js": {
-      "bytes": 65688,
-      "gzipBytes": 22304
+    "assets/scene-CK2XXDZW.js": {
+      "bytes": 72838,
+      "gzipBytes": 24873
     },
     "assets/studio.css": {
       "bytes": 31810,
@@ -300,14 +300,6 @@
     "media/photos/lounge-01.webp": {
       "bytes": 112390,
       "gzipBytes": 112443
-    },
-    "media/photos/stair-chandelier-thumb.webp": {
-      "bytes": 18382,
-      "gzipBytes": 18410
-    },
-    "media/photos/stair-chandelier.webp": {
-      "bytes": 178502,
-      "gzipBytes": 178575
     },
     "media/photos/stair-life-thumb.webp": {
       "bytes": 11228,

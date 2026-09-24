@@ -1,3 +1,15 @@
+# Shower annex and floor-separated stair hall — 2026-09-24
+
+All 74 tests, syntax checks, build, source-data validation and public-output audit pass. The 3D presentation clone also passes geometry validation in its new regression tests. The canonical house.js and interactive 2D plan are unchanged. Main bath fixtures retain their original placement and the shower is entered from bathroom205, with a solid boundary to the hall and stair void.
+
+Browser-inspected the updated HD second floor from above, isolated bathroom205, isolated stair hall on each floor, and exploded view. The new shower has visible fittings, screen and tiled wet area; isolated bathroom geometry no longer shows the unrelated rear wall over the ventilation void. F2 has no lower staircase/backdrop. Exploded stairs remain attached to F1; the landing/chandelier remain attached to F2.
+
+A 390 × 844 viewport override, with the existing browser zoom yielding 354 × 767 CSS pixels, was used for SD/HD shower checks and closer zoom. Document width equaled the viewport width and visualViewport.scale remained1. Fresh navigation starts in SD. This is desktop browser emulation, not physical mobile/Safari testing.
+
+The stair gallery visibly shows1 /1: the approved professional hall/person photo. Public gallery totals23 images in9 collections. Removed P24 and both web derivatives; the new bathroom phone references were not copied into the repository. P25/P26 and the 3D chandelier remain. Local ignored screenshots include shower-hd-mobile.png and shower-stair-exploded.png. Earlier sections describe previous builds.
+
+---
+
 # Mobile controls, close-up HD and column repair — 2026-09-24
 
 User authorized push to main after these refinements. All 65 tests, syntax checks, build, data validation and public-output audit pass after the added stair-hall scope. Final CSS-only adjustments were rebuilt and the public audit rerun. Existing room circulation and SD furniture materials remain intact; no downloads were added.

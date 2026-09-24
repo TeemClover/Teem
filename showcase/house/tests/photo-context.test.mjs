@@ -4,13 +4,14 @@ import {house} from '../app/data/house.js';
 import {photoSets} from '../app/data/photos.js';
 import {validateHouse} from '../app/validate.js';
 
-test('owner-confirmed chandelier photos select the stair hall and preserve the adjacent lounge binding',()=>{
+test('owner-confirmed stair context photo selects the hall and preserves the adjacent lounge binding',()=>{
  const hall=house.rooms.find(room=>room.id==='f2-204-hall');
  const photos=photoSets.find(set=>set.id===hall.photoSetId);
  assert.equal(photos.binding.status,'confirmed');
  assert.equal(photos.binding.roomId,hall.id);
  assert.equal(photos.binding.reviewedBy,'owner');
- assert.deepEqual(photos.photos.map(photo=>photo.id),['P24','P25']);
+ assert.deepEqual(photos.photos.map(photo=>photo.id),['P25']);
+ assert.ok(!photoSets.flatMap(set=>set.photos).some(photo=>photo.id==='P24'),'the private close-up remains outside the public gallery');
  assert.equal(house.photoBindings.find(binding=>binding.photoSetId===photos.id).spaceId,hall.id);
  assert.equal(photoSets.find(set=>set.id==='photos-study').binding.roomId,'f2-204-1-lounge');
  assert.deepEqual(validateHouse(house).errors,[]);

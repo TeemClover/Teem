@@ -1,12 +1,12 @@
 {
-  "checkedAt": "2026-09-24T00:33:18.956Z",
+  "checkedAt": "2026-09-24T00:56:29.263Z",
   "valid": true,
   "counts": {
     "floors": 2,
     "rooms": 30,
     "walls": 37,
     "photoSets": 9,
-    "photographCount": 24
+    "photographCount": 23
   },
   "calibrations": [
     {
