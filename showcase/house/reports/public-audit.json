@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-24T01:50:17.414Z",
+  "checkedAt": "2026-09-24T05:09:16.516Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -36,28 +36,28 @@
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 357476,
-      "gzipBytes": 196019
+      "bytes": 366499,
+      "gzipBytes": 199617
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 993235,
-      "gzipBytes": 367445
+      "bytes": 1002258,
+      "gzipBytes": 371043
     },
     "optInHDAdditional": {
       "bytes": 64030,
       "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1057265,
-      "gzipBytes": 388082
+      "bytes": 1066288,
+      "gzipBytes": 391680
     },
     "imageDerivatives": {
       "bytes": 3368592,
       "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4611976,
-      "gzipBytes": 3929009
+      "bytes": 4620999,
+      "gzipBytes": 3932607
     }
   },
   "perFile": {
@@ -118,8 +118,8 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 128754,
-      "gzipBytes": 23729
+      "bytes": 137777,
+      "gzipBytes": 27327
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,

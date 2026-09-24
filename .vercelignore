@@ -40,3 +40,6 @@ tests/access-cache/
 tools/build-public-assets.mjs
 
 tests/classroom/
+
+# House analytics fixtures and tests are local-only.
+tests/house-stats/

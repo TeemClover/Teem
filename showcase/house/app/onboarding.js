@@ -17,7 +17,7 @@ export function createSeenStore({local=()=>globalThis.localStorage,session=()=>g
 }
 
 /** A small, non-modal guide: it never dispatches model/navigation events. */
-export function createOnboarding({getState,isReady,store=createSeenStore()}) {
+export function createOnboarding({getState,isReady,store=createSeenStore(),onOutcome=()=>{}}) {
   const panel=document.createElement('aside');panel.id='house-guide';panel.hidden=true;
   panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','false');panel.setAttribute('aria-labelledby','guide-title');
   document.body.append(panel);
@@ -34,7 +34,7 @@ export function createOnboarding({getState,isReady,store=createSeenStore()}) {
   function close(outcome='closed') {
     if(panel.hidden)return;
     const hadFocus=panel.contains(document.activeElement);
-    store.mark(outcome);mode=null;panel.hidden=true;clearHighlight();undock();document.body.classList.remove('guide-open');
+    store.mark(outcome);onOutcome(outcome);mode=null;panel.hidden=true;clearHighlight();undock();document.body.classList.remove('guide-open');
     const target=visible(returnFocus)&&!returnFocus.closest('[inert]')?returnFocus:document.querySelector('.lens-switch [aria-pressed="true"]');
     if(hadFocus)target?.focus({preventScroll:true});
   }
@@ -118,7 +118,7 @@ export function createOnboarding({getState,isReady,store=createSeenStore()}) {
     // Mark only after layout actually presents the card. No loading timeout guess.
     requestAnimationFrame(()=>{
       if(panel.hidden||!panel.getBoundingClientRect().width)return;
-      store.mark('seen');
+      store.mark('seen');onOutcome('seen');
       if(manual)panel.querySelector('[data-guide="start"]')?.focus({preventScroll:true});
     });
   }

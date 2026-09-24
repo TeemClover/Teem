@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="same-origin">
+<title>สถิติบ้านของเรา | myClover</title>
+<link rel="icon" href="../assets/myclover-logo.png"><link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="header"><a class="brand" href="../"><img src="../assets/myclover-logo.png" alt="" width="32" height="32">myClover <span>บ้านของเรา</span></a><a href="../">กลับไปดูบ้าน ↗</a></header>
+<main>
+<section id="login" class="login" hidden><span class="eyebrow">สำหรับเจ้าของบ้าน</span><h1>ดูว่าคนแวะมา<br>แล้วเล่นอะไรบ้าง</h1><p>ใช้รหัสผ่านเดียวกับหลังบ้าน myClover</p><form id="login-form"><label for="password">รหัสผ่านหลังบ้าน</label><input id="password" name="password" type="password" autocomplete="current-password" required><button class="primary" type="submit">เข้าสู่ระบบ</button></form></section>
+<p id="status" role="status" aria-live="polite">กำลังตรวจสอบการเข้าสู่ระบบ…</p>
+<section id="dashboard" hidden>
+<div class="heading"><div><span class="eyebrow">บ้านที่เราสร้างด้วยรัก</span><h1>คนมาเยี่ยมบ้านของเรา</h1><p id="updated"></p></div><div class="controls"><label for="range">ช่วงเวลา</label><select id="range"><option value="1">วันนี้</option><option value="7">7 วัน</option><option value="30" selected>30 วัน</option><option value="90">90 วัน</option></select><button id="refresh">รีเฟรช</button><button id="logout" class="quiet">ออกจากระบบ</button></div></div>
+<div id="empty" class="empty" hidden><h2>รอคนแรกแวะมาเยี่ยม</h2><p>ระบบเริ่มเก็บหลังเผยแพร่รอบนี้ ไม่มีข้อมูลย้อนหลังหรือข้อมูลตัวอย่างปนอยู่</p></div>
+<p id="coverage"></p><div id="cards" class="cards"></div>
+<section class="panel"><div class="panel-heading"><div><h2>แต่ละวัน คนมาแล้วเล่นต่อไหม</h2><p>เวลาไทย · นับวันที่เปิดหน้า</p></div><span class="legend"><i></i>เปิดหน้า <i class="green"></i>เปิดแล้วเล่นต่อ</span></div><div id="trend" class="trend"></div><details><summary>ดูตัวเลขรายวัน</summary><div class="table-wrap" id="daily"></div></details></section>
+<div class="columns"><section class="panel"><h2>คนทำอะไรต่อ</h2><p>สัดส่วนต่อการเปิดหน้า ไม่จำเป็นต้องทำตามลำดับ</p><div id="journey" class="journey"></div></section><section class="panel"><h2>สิ่งที่น่าลองปรับต่อ</h2><div id="insights" class="insights"></div><div id="health" class="health"></div></section></div>
+<section class="panel"><h2>ฟังก์ชันไหนหาเจอ และอยากใช้</h2><p>“เห็น” = ปุ่มปรากฏในจอจริง · “ใช้” = กดหรือโต้ตอบ · นับต่อการเปิดหน้า ไม่ใช่จำนวนคน</p><div id="features" class="table-wrap"></div></section>
+<section class="panel"><h2>คนมาจากไหน</h2><p>แหล่งที่มาและแคมเปญ 100 อันดับแรก · ลิงก์ที่ไม่มี referrer หรือ UTM จะแสดงเป็น direct</p><div id="sources" class="table-wrap"></div><details><summary>แยกลิงก์ที่แชร์แต่ละช่องทาง</summary><p>เติม <code>?utm_source=facebook&amp;utm_medium=social&amp;utm_campaign=house10</code> ท้ายลิงก์บ้าน ใช้ชื่อสั้นภาษาอังกฤษ ตัวเลข ขีดกลางหรือขีดล่าง ระบบไม่เก็บ query อื่นหรือ URL เต็ม</p></details></section>
+<div class="columns"><section class="panel"><h2>ห้องที่คนเลือกสำรวจ</h2><div id="rooms" class="table-wrap"></div></section><section class="panel"><h2>มือถือกับคอมพิวเตอร์</h2><div id="devices" class="table-wrap"></div><h3>คำแนะนำและการพาชม</h3><div id="guides" class="table-wrap"></div></section></div>
+<details class="panel definitions"><summary>วิธีนับและข้อจำกัด</summary><p>ผู้เยี่ยมชมเป็นจำนวนเบราว์เซอร์จากรหัสสุ่ม ไม่ใช่จำนวนคนที่ยืนยันตัวตน การเปลี่ยนเครื่อง ล้างข้อมูล ใช้โหมดส่วนตัว หรือปิด storage อาจนับซ้ำได้ จำนวนรายวันรวมกันอาจมากกว่าจำนวนผู้เยี่ยมชมในช่วงเวลา</p><p>การเปิดหน้า = เปิดหรือรีเฟรชหนึ่งครั้ง “เล่นต่อ” = มีการใช้ฟังก์ชันและมีเวลาใช้งานอย่างน้อย 10 วินาที เวลาใช้งานนับเฉพาะแท็บที่มองเห็น และหยุดหลังไม่มีการโต้ตอบ 30 วินาที จึงเป็นค่าประมาณ ไม่ใช่เวลาที่สายตามองจอ</p><p>การใช้ฟังก์ชันยืนยันว่าเข้าถึงได้ จึงนับว่าเห็นด้วย การเปิดห้องผ่านลิงก์ตรงหรือพาชมอัตโนมัติไม่ถือว่าเลือกห้องเอง จำนวนผู้กดไปคอร์สหมายถึงกดลิงก์ออก ไม่ยืนยันว่าหน้าคอร์สโหลดสำเร็จหรือสมัครเรียน</p><p>ไม่เก็บชื่อ อีเมล ข้อความที่พิมพ์ ภาพหน้าจอ หรือ IP ในข้อมูลการเล่น เคารพ Do Not Track / Global Privacy Control กรองบอตพื้นฐาน และงดเก็บเมื่อมีเซสชันหลังบ้านที่ยังใช้งานได้ ข้อมูลอาจขาดจาก ad blocker การปิดเบราว์เซอร์ทันที หรือเครือข่ายขัดข้อง</p><p>เก็บข้อมูลการเปิดหน้า 180 วัน แสดงย้อนหลังได้ 90 วัน เวลาโหลดโมเดลวัดจากเริ่มเปิดหน้าไปจนเฟรมแรกพร้อม ไม่ใช่คะแนนความเร็วอินเทอร์เน็ต</p><label class="exclude"><input id="exclude" type="checkbox"> งดเก็บจากเบราว์เซอร์นี้ แม้ออกจากหลังบ้านแล้ว</label><p id="exclusion-status"></p></details>
+</section>
+</main><footer>myClover · ข้อมูลเพื่อทำบ้านหลังนี้ให้น่าแวะมาอีก</footer>
+<script type="module" src="./dashboard.js"></script>
+</body></html>

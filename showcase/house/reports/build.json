@@ -1,5 +1,21 @@
 {
   "inputs": {
+    "app/analytics-contract.js": {
+      "bytes": 2426,
+      "imports": [],
+      "format": "esm"
+    },
+    "app/analytics.js": {
+      "bytes": 7541,
+      "imports": [
+        {
+          "path": "app/analytics-contract.js",
+          "kind": "import-statement",
+          "original": "./analytics-contract.js"
+        }
+      ],
+      "format": "esm"
+    },
     "app/data/house.js": {
       "bytes": 60114,
       "imports": [],
@@ -16,7 +32,7 @@
       "format": "esm"
     },
     "app/onboarding.js": {
-      "bytes": 11987,
+      "bytes": 12041,
       "imports": [],
       "format": "esm"
     },
@@ -26,7 +42,7 @@
       "format": "esm"
     },
     "app/story.js": {
-      "bytes": 3814,
+      "bytes": 4230,
       "imports": [],
       "format": "esm"
     },
@@ -510,8 +526,13 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 43224,
+      "bytes": 43677,
       "imports": [
+        {
+          "path": "app/analytics.js",
+          "kind": "import-statement",
+          "original": "./analytics.js"
+        },
         {
           "path": "app/data/house.js",
           "kind": "import-statement",
@@ -562,6 +583,12 @@
       "exports": [],
       "entryPoint": "app/main.js",
       "inputs": {
+        "app/analytics-contract.js": {
+          "bytesInOutput": 2409
+        },
+        "app/analytics.js": {
+          "bytesInOutput": 5501
+        },
         "app/data/house.js": {
           "bytesInOutput": 39424
         },
@@ -569,22 +596,22 @@
           "bytesInOutput": 19707
         },
         "app/state.js": {
-          "bytesInOutput": 2817
+          "bytesInOutput": 2823
         },
         "app/onboarding.js": {
-          "bytesInOutput": 10779
+          "bytesInOutput": 10793
         },
         "app/wall-controls.js": {
           "bytesInOutput": 2039
         },
         "app/story.js": {
-          "bytesInOutput": 5880
+          "bytesInOutput": 6683
         },
         "app/main.js": {
-          "bytesInOutput": 48107
+          "bytesInOutput": 48397
         }
       },
-      "bytes": 128754
+      "bytes": 137777
     },
     "assets/hd-materials-BL57NSQL.js": {
       "imports": [
