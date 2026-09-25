@@ -16,9 +16,9 @@ CONTENT = ROOT / "tools/asksydscience"
 DATA = json.loads((CONTENT / "site.th.json").read_text())
 HOUSE = json.loads((CONTENT / "house-copy.json").read_text())
 PAGE_FILES = ("index.html", "kitchen/index.html", "mindfulness/index.html", "stories/index.html", "workshop/index.html", "about/index.html")
-STYLE_FILES = ("style.css", "house.css", "house-experiences.css", "pages.css", "film-motion.css", "studio/studio.css")
+STYLE_FILES = ("style.css", "house.css", "house-experiences.css", "pages.css", "film-motion.css", "home-editorial.css", "studio/studio.css")
 SCRIPT_FILES = ("app.js", "house-experiences.js", "film-motion.js", "studio/studio.js")
-FRAGMENT_FILES = ("house-experiences.html", "film-player.html")
+FRAGMENT_FILES = ("house-experiences.html", "film-player.html", "home-editorial.html")
 PROFILE_URL = "https://www.tiktok.com/@asksydscience"
 PRIMARY_SOURCE_URLS = {
     "https://www.nhs.uk/live-well/eat-well/how-to-eat-a-balanced-diet/the-vegetarian-diet/",
@@ -276,7 +276,7 @@ for name, css in STYLES.items():
     for ref in css_references(css):
         local_reference(ref, name, base=(PUBLIC / name).parent, allow_texture=True)
 allowed_files = set(PAGE_FILES) | set(STYLE_FILES) | set(SCRIPT_FILES) | {"favicon.svg", "README.md", "studio/index.html"}
-allowed_asset_ext = {".webp", ".png", ".jpg", ".jpeg", ".avif", ".svg", ".woff2"}
+allowed_asset_ext = {".webp", ".png", ".jpg", ".jpeg", ".avif", ".svg", ".woff2", ".ttf"}
 for path in PUBLIC.rglob("*"):
     if path.is_file():
         rel = path.relative_to(PUBLIC)
