@@ -4,7 +4,7 @@ Responsive, cream-and-sage house demo based on the supplied AskSydScience brief 
 
 ## Entry points
 
-- `/asksydscience/` is the short entrance: hero and four room doors.
+- `/asksydscience/` retains the existing hero, followed by three visible reading notes with room photos and a compact workshop invitation. The four room destinations remain available without adding more top-level sections.
 - `https://asksydscience.myclover.com/` via the host-specific Vercel rewrite.
 - Dedicated rooms: `/asksydscience/kitchen/`, `/asksydscience/mindfulness/`, `/asksydscience/stories/`, `/asksydscience/workshop/`; `/asksydscience/about/` contains Sydney's letter, selected-items area and trust notes.
 - `/asksydscience/studio/index.html` for the clearly labelled simulated studio.
@@ -27,7 +27,11 @@ Static checks do not replace browser, accessibility, content-rights or medical-e
 
 ## Experience
 
-The kitchen lets visitors choose ingredients on an illustrative plate. The quiet room offers 1-, 3- or 5-minute timers and optional synthesized ambient sound. Stories have text, source links and topic filters; the workshop page holds the proposed four-week journey and FAQs. Full room content is not repeated on the entrance page.
+The entrance now offers a short piece of writing from the kitchen, quiet room and reading room before visitors choose where to go. Each note has a full-frame 3:2 room image, visible text and an ordinary link; the workshop has a smaller invitation underneath. Notes sit in three columns on desktop and one column on mobile, and remain readable without JavaScript. Dedicated rooms still hold the full experiences.
+
+The kitchen lets visitors choose ingredients on an illustrative plate. The quiet room offers 1-, 3- or 5-minute timers and optional synthesized ambient sound. Stories have text, source links and topic filters; the workshop page holds the proposed four-week journey and FAQs.
+
+New `sydney-kitchen-lived`, `sydney-mindfulness-lived` and `sydney-reading-lived` AI images show Sydney participating in the rooms while retaining the surroundings. Each has a 1536-pixel primary asset and an 800-pixel responsive version. The new images are used on the entrance and the relevant kitchen, mindfulness and about pages; the existing hero is unchanged. The workshop book mockup retains the original empty studio background, and the stories room retains its existing media-cover images. The homepage identifies the new scenes as AI images and the notes as samples. Full prompts and composition notes are in the three `docs/asksydscience/*-OCCUPIED-PROMPT.md` records.
 
 Three 28-second editorial animations use a shared, self-contained player with local JavaScript timelines, play/pause, replay, seeking and volume. Optional synthesized sound starts off. These are not filmed episodes or recordings of Sydney's voice. Verified TikTok originals are separate outbound links in the stories room; no third-party player is embedded.
 
