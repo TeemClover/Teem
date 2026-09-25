@@ -13,7 +13,7 @@ Eight scroll sections. Each room has a primary link plus objects people can pick
 | Section | Room | Objects → destination |
 |---|---|---|
 | hero / door | Front garden; door with a welcome sign opens | — |
-| books | มุมหนังสือ | AI ใส่ซอส book → `/ai-source/` · Forge → `/forge/` · Walkthrough → `/walkthrough/` |
+| books | มุมหนังสือ | AI ใส่ซอส book → `/book/ai-sauce/` (10-page preview, then a lock page to the course) · Forge → `/forge/` · Walkthrough → `/walkthrough/` |
 | living | ห้องนั่งเล่น | compass on the map → `/frontdoor/` (old homepage) · CORE7 cards → `/core7/` · Main Quest box → `/hall.html` · mini dollhouse → `/showcase/house/` · Teem's photo → `/resume/` |
 | kitchen | ห้องครัว | salad bowl → `/ako/kitchen/` · three framed dishes → their recipes · recipe book → `/ako/` |
 | classroom | ห้องเรียน | course poster → `/courses/` · whiteboard → `/classroom/` · four laptops → LV.1–LV.4 · sauce cup → `/classroom/sauce-cup/` |
@@ -67,3 +67,15 @@ it means pointing `/` at this page and deciding what happens to the Compass tele
   room, checks all 25 objects match page links, picks up a screen in 3D, clicks a hidden
   clover in 3D, completes the quest via buttons, checks persistence and
   the SD→HD rebuild and the no-WebGL fallback. Screenshots go to `TOUR_PROOF_DIR` (or a temp dir).
+
+## Book preview (`/book/ai-sauce/`)
+
+Free preview of *คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น*. The full PDF stays a locked
+course file inside `/learn`; only the first 10 pages are published, as images.
+
+- Publish/refresh: `pip install pymupdf && python3 tools/build-ebook-preview.py <local PDF>`.
+  It writes `book/ai-sauce/pages/p01..p10(.jpg|-m.jpg)` and `manifest.json` (hard cap: 10 pages).
+  The PDF is never copied into the repo.
+- The reader always ends on a lock page: `/ai-source/` for new readers, `/learn/` for students.
+  Without a manifest it shows only that lock page.
+- `npm run test:tour:book` — reader test with a fake 36-page manifest (desktop + phone).

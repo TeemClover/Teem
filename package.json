@@ -55,7 +55,8 @@
     "test:shelf": "node --test api/_lib/shelf-handler.test.mjs api/_lib/shelf-store.test.mjs tests/shelf/*.test.mjs",
     "test:house-stats": "node --test tests/house-stats/*.test.mjs",
     "test:tour": "node --test tests/tour/*.test.mjs",
-    "test:tour:ui": "node tests/tour/tour.e2e.mjs"
+    "test:tour:ui": "node tests/tour/tour.e2e.mjs",
+    "test:tour:book": "node tests/tour/book.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

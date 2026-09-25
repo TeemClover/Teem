@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d6b3d">
+<meta name="robots" content="noindex,follow">
+<title>ทดลองอ่าน คู่มือ AI ใส่ซอส · myClover</title>
+<meta name="description" content="ทดลองอ่าน 10 หน้าแรกของคู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น ฉบับเต็มอยู่ในคอร์ส AI ใส่ซอส">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/book/ai-sauce/reader.css">
+<script type="module" src="/book/ai-sauce/reader.js"></script>
+</head>
+<body>
+<header class="bar">
+  <a class="back" href="/tour/#books"><span aria-hidden="true">←</span> กลับมุมหนังสือ</a>
+  <p class="count" id="count" aria-live="polite">ทดลองอ่าน</p>
+</header>
+
+<main class="reader" aria-labelledby="book-title">
+  <h1 id="book-title" class="sr-only">คู่มือ AI ใส่ซอส · อ่านให้เข้าใจ ใช้ให้เป็น (ทดลองอ่าน)</h1>
+  <div class="stage" id="stage">
+    <button class="nav prev" id="prev" type="button" aria-label="หน้าก่อน">‹</button>
+    <div class="book" id="book" tabindex="0" aria-roledescription="หนังสือ" aria-label="หน้าหนังสือ ใช้ปุ่มลูกศรเพื่อพลิก">
+      <!-- pages are inserted from pages/manifest.json; the lock page is always last -->
+      <section class="page lock" id="lock" aria-labelledby="lock-title">
+        <div class="lock-inner">
+          <svg class="lock-icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="21" width="30" height="21" rx="5"/><path d="M16 21v-6a8 8 0 0 1 16 0v6" fill="none" stroke-width="4"/></svg>
+          <p class="eyebrow" id="lock-kicker">อ่านมาถึงตรงนี้แล้ว</p>
+          <h2 id="lock-title">อ่านต่อในคอร์ส AI ใส่ซอส</h2>
+          <p id="lock-desc">คู่มือฉบับเต็มพร้อมภาพประกอบ อยู่ในห้องเรียนออนไลน์ของคอร์ส AI ใส่ซอส สำหรับนักเรียนแพ็กที่มีคู่มือ</p>
+          <div class="actions">
+            <a class="btn primary" href="/ai-source/">ดูคอร์ส AI ใส่ซอส <span aria-hidden="true">→</span></a>
+            <a class="btn ghost" href="/learn/">เป็นนักเรียนแล้ว เปิดในห้องเรียน</a>
+          </div>
+          <p class="fine">ทดลองเรียนฟรีก่อนได้ที่ <a href="/classroom/">ห้องเรียนฟรี</a></p>
+        </div>
+      </section>
+    </div>
+    <button class="nav next" id="next" type="button" aria-label="หน้าถัดไป">›</button>
+  </div>
+  <ol class="thumbs" id="thumbs" aria-label="เลือกหน้า"></ol>
+  <p class="empty" id="empty" hidden>หน้าทดลองอ่านกำลังจัดพิมพ์ ระหว่างนี้ดูรายละเอียดคอร์สได้ก่อน</p>
+</main>
+</body>
+</html>
