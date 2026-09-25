@@ -37,8 +37,8 @@ try {
   { // WebGL tour, reduced motion so camera and cards settle immediately
     const {ctx, page, errors} = await open({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
-    assert.deepEqual(await page.evaluate(() => window.__tour.order), ['hero', 'door', 'books', 'living', 'kitchen', 'classroom', 'office', 'finale']);
-    for (const [i, id] of ['books', 'living', 'kitchen', 'classroom', 'office', 'finale'].entries()) {
+    assert.deepEqual(await page.evaluate(() => window.__tour.order), ['hero', 'door', 'living', 'kitchen', 'classroom', 'office', 'finale']);
+    for (const [i, id] of ['living', 'kitchen', 'classroom', 'office', 'finale'].entries()) {
       await page.evaluate(id => { const s = document.getElementById(id); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); }, id);
       await page.waitForFunction(n => Math.abs(window.__tour.progress() - n) < 0.05 && document.querySelector('.rail a.active')?.dataset.rail === document.querySelectorAll('[data-scene]')[n].dataset.scene, i + 2, {timeout: 20000});
       assert.equal(await page.$eval(`#${id} .card`, c => getComputedStyle(c).opacity), '1');
@@ -76,7 +76,7 @@ try {
     assert.match(await page.textContent('#inspect-title'), /TeamBook/);
     await page.screenshot({path: `${out}/desktop-inspect.png`});
     await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
-    pass('tapping a screen in the computer room picks it up and offers its project');
+    pass('tapping the TeamBook notebook in the computer room picks it up and offers its page');
 
     const spot = await settled('office');
     assert.ok(spot && spot.x > 0 && spot.x < 1280 && spot.y > 0 && spot.y < 800, JSON.stringify(spot));
@@ -116,7 +116,7 @@ try {
     const {ctx, page, errors} = await open({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true},
       () => { HTMLCanvasElement.prototype.getContext = () => null; });
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), true);
-    assert.equal(await page.locator('[data-primary]').count(), 6);
+    assert.equal(await page.locator('[data-primary]').count(), 5);
     await page.locator('#kitchen').scrollIntoViewIfNeeded(); await page.waitForTimeout(900);
     await page.screenshot({path: `${out}/phone-no-webgl.png`});
     assert.deepEqual(errors, []);

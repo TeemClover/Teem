@@ -163,11 +163,27 @@ export function makeTextures(renderer, hd) {
   return tex;
 }
 
-/** Image textures load lazily; the mesh shows a tint until the picture arrives. */
+/**
+ * Image textures load lazily; the mesh shows a tint until the picture arrives. With `aspect`
+ * (the frame's width/height) the picture is cropped to fill the frame, like CSS
+ * object-fit: cover, so a borrowed image is never stretched. Crops share one GPU upload.
+ */
 const loader = new THREE.TextureLoader();
 const imageCache = new Map();
-export function imageTex(url, material, renderer) {
-  const apply = t => { material.map = t; material.color.set('#ffffff'); if (material.emissiveMap !== undefined && material.userData.glow) material.emissiveMap = t; material.needsUpdate = true; };
+export function imageTex(url, material, renderer, aspect = 0) {
+  const apply = base => {
+    let t = base;
+    if (aspect && base.image?.width) {
+      const ia = base.image.width / base.image.height;
+      t = base.clone(); t.repeat.set(1, 1); t.offset.set(0, 0);
+      if (ia > aspect) { t.repeat.x = aspect / ia; t.offset.x = (1 - t.repeat.x) / 2; }
+      else { t.repeat.y = ia / aspect; t.offset.y = (1 - t.repeat.y) / 2; }
+      t.needsUpdate = true;
+    }
+    material.map = t; material.color.set('#ffffff');
+    if (material.userData.glow) material.emissiveMap = t;
+    material.needsUpdate = true;
+  };
   if (imageCache.has(url)) { const t = imageCache.get(url); if (t.image) apply(t); else t.userData.waiting.push(apply); return; }
   const t = loader.load(url, tt => { tt.userData.waiting.forEach(fn => fn(tt)); tt.userData.waiting = []; });
   t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());

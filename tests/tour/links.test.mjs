@@ -24,10 +24,10 @@ test('internal hrefs and assets resolve', async () => {
 });
 
 test('each room has one primary destination; clover rooms have a hint', () => {
-  for (const room of ['books', 'living', 'kitchen', 'classroom', 'office']) {
+  for (const room of ['living', 'kitchen', 'classroom', 'office']) {
     const section = html.split(`data-scene="${room}"`)[1].split('</section>')[0];
     assert.equal(section.match(/data-primary/g)?.length, 1, room);
-    if (room !== 'books') assert.match(section, new RegExp(`data-find="${room}" data-hint="[^"]+"`), room);
+    assert.match(section, new RegExp(`data-find="${room}" data-hint="[^"]+"`), room);
   }
   assert.match(html.split('data-scene="finale"')[1], /data-primary data-item="meet" href="\/meet\/"/);
 });

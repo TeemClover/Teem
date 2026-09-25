@@ -8,7 +8,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import {makeTextures} from './textures.js';
-import {buildHouse, H, CLOVER_ROOMS} from './house.js';
+import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
 import {EffectComposer} from './vendor/addons/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/addons/postprocessing/RenderPass.js';
 import {GTAOPass} from './vendor/addons/postprocessing/GTAOPass.js';
@@ -142,9 +142,9 @@ let renderer;
 try { renderer = new THREE.WebGLRenderer({canvas, antialias: true, powerPreference: 'high-performance'}); } catch { document.body.classList.add('no-webgl'); }
 const finishLoading = () => document.body.classList.remove('is-loading');
 if (!renderer) finishLoading();
-else try { boot(); } catch (err) { console.error(err); document.body.classList.add('no-webgl'); finishLoading(); }
+else boot().catch(err => { console.error(err); document.body.classList.add('no-webgl'); finishLoading(); }); // the story still works without the house
 
-function boot() {
+async function boot() {
   const touch = matchMedia('(pointer: coarse)').matches;
   const mobile = touch && Math.min(screen.width, screen.height) < 820;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -207,7 +207,7 @@ function boot() {
     sun.shadow.mapSize.set(hd ? 2048 : 1024, hd ? 2048 : 1024);
     sun.shadow.map?.dispose(); sun.shadow.map = null;
     tex = makeTextures(renderer, hd);
-    house = buildHouse({renderer, hd, tex, found, mobile});
+    house = buildHouse({renderer, hd, tex, found, mobile, art});
     scene.add(house.root);
     composer?.dispose(); composer = null;
     if (hd) { // HD: ambient occlusion in corners and under furniture, soft glow on lamps and screens
@@ -236,15 +236,15 @@ function boot() {
   /* ----- camera shots ----- */
   const SHOTS = {
     // phone: [distance scale, look-height shift] for portrait screens where the card sits below
-    // phoneShot: absolute framing for portrait exteriors (the whole 38 m house cannot fit a phone)
-    hero: {pos: [-3, 9.6, 34], look: [-3, 6.4, 0], phoneShot: {pos: [-16.6, 2.4, 17.5], look: [-15.6, 6.6, 0]}},
-    door: {pos: [-18.1, 2.3, 11.5], look: [-19, 1.6, 3.4], phone: [1.3, -0.8]},
-    books: {pos: [-17.6, 2.9, 6.3], look: [-19.3, 1.1, -1.3]},
-    living: {pos: [-10.8, 3.1, 6.9], look: [-12.3, 0.9, -1]},
-    kitchen: {pos: [-2.6, 3.1, 6.9], look: [-4.1, 1.1, -1]},
-    classroom: {pos: [5.4, 3.1, 6.9], look: [3.9, 1.2, -1]},
-    office: {pos: [13.4, 3.1, 6.9], look: [11.9, 1.3, -1]},
-    finale: {pos: [9, 4.2, 30], look: [-2, 5.2, 0], phoneShot: {pos: [-12.5, 4.4, 21], look: [-14, 3.3, 0]}},
+    // phoneShot: absolute framing for portrait exteriors
+    hero: {pos: [-0.5, 7.6, 30], look: [-0.5, 8.3, 0], phoneShot: {pos: [-1.8, 3.0, 25.5], look: [-1.8, 6.9, 0]}},
+    door: {pos: [-4.7, 2.2, 11.5], look: [-5.5, 1.6, 3.6], phone: [1.3, -0.8]},
+    // rooms: eye level just under the ceiling, so the floor above stays out of frame
+    living: {pos: [-2.6, 2.65, 7.4], look: [-4.1, 0.85, -1]},
+    kitchen: {pos: [5.4, 2.65, 7.4], look: [3.9, 0.95, -1]},
+    classroom: {pos: [5.4, F2 + 2.65, 7.4], look: [3.9, F2 + 1.05, -1]},
+    office: {pos: [-2.6, F2 + 2.65, 7.4], look: [-4.1, F2 + 1.05, -1]},
+    finale: {pos: [6.5, 5.4, 26], look: [-0.5, 3.4, 0], phoneShot: {pos: [2, 4.2, 34], look: [-1.5, 3.4, 0]}},
   };
   const order = sections.map(s => s.dataset.scene).filter(id => SHOTS[id]);
   const idx = id => order.indexOf(id);
@@ -360,7 +360,7 @@ function boot() {
   });
 
   /* ----- render loop ----- */
-  const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3();
+  const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
   let first = true, running = true, currentScene = '';
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
@@ -385,8 +385,9 @@ function boot() {
     const inside = smooth(clamp((p - 1.1) / 0.7)) * (1 - smooth(clamp((p - (fin - 0.75)) / 0.6)));
     const dusk = smooth(clamp((p - (fin - 0.9)) / 0.8));
     house.door.rotation.y = -doorOpen * 1.7 * (1 - dusk);
+    // floor-1 front sinks into the ground; floor-2 front and both roofs lift away together
     house.facade.position.y = -inside * (H + 0.6); house.facade.visible = inside < 0.995;
-    house.roof.position.y = H + inside * 9; house.roof.visible = inside < 0.995;
+    house.upper.position.y = house.roof.position.y = inside * 10; house.upper.visible = house.roof.visible = inside < 0.995;
     house.flowers.visible = inside < 0.5;
     const shift = camera.aspect > 1.15 ? -0.17 * inside : 0; // desktop: room sits beside the card
     if (Number.isNaN(viewShift) || Math.abs(shift - viewShift) > 0.0005) { viewShift = shift; if (shift) camera.setViewOffset(lastW, lastH, shift * lastW, 0, lastW, lastH); else camera.clearViewOffset(); }
@@ -408,7 +409,7 @@ function boot() {
     const span = Math.round(lerp(24, 10, inside));
     if (span !== shadowSpan) { shadowSpan = span; Object.assign(sun.shadow.camera, {left: -span, right: span, top: span * 0.65, bottom: -span * 0.5, near: 1, far: 80}); sun.shadow.camera.updateProjectionMatrix(); }
     // follow the view in whole shadow-map texels (in light space), so shadow edges never shimmer
-    snapCenter.set(camLook.x, 0, 0);
+    snapCenter.set(camLook.x, camLook.y - 1, 0);
     const tx = 2 * span / sun.shadow.mapSize.x, ty = span * 1.15 / sun.shadow.mapSize.y;
     const r = Math.round(snapCenter.dot(lightRight) / tx) * tx, u = Math.round(snapCenter.dot(lightUp) / ty) * ty, f = snapCenter.dot(lightDir);
     snapCenter.copy(lightRight).multiplyScalar(r).addScaledVector(lightUp, u).addScaledVector(lightDir, f);
@@ -416,8 +417,9 @@ function boot() {
 
     // hero clover
     const hc = house.heroClover;
-    hc.rotation.y = still ? 0.3 : t * 0.45; hc.position.y = 8.4 + (still ? 0 : Math.sin(t * 1.2) * 0.25);
-    hc.position.x = house.halo.position.x = house.cloverLight.position.x = portrait ? -12 : 6.5; // keep it in a phone's narrow frame
+    const cloverAt = portrait ? HERO_CLOVER.tall : HERO_CLOVER.wide; // keep it inside a phone's narrow frame
+    hc.rotation.y = still ? 0.3 : t * 0.45; hc.position.y = cloverAt[1] + (still ? 0 : Math.sin(t * 1.2) * 0.25);
+    hc.position.x = house.halo.position.x = house.cloverLight.position.x = cloverAt[0];
     house.halo.position.y = hc.position.y; house.halo.lookAt(camera.position); house.halo.material.opacity = 0.45 * (1 - inside);
 
     // hotspots: hover lift, picked-up objects float toward you, beacons near the current view
@@ -426,12 +428,12 @@ function boot() {
       if (h.root === hc) continue; // the big clover animates itself above
       const hov = (hovered?.type === 'item' && hovered.id === h.id) || glowing.has(h.id);
       tmp.copy(h.base);
-      if (h.picked) { tmp.y += 0.22 + (still ? 0 : Math.sin(t * 2) * 0.03); tmp.addScaledVector(camDir, -0.25); }
+      if (h.picked) { tmp.y += 0.22 + (still ? 0 : Math.sin(t * 2) * 0.03); tmp.addScaledVector(towardCam.copy(camDir).applyQuaternion(h.invParent), -0.25); }
       else if (hov) tmp.y += 0.06;
       h.root.position.lerp(tmp, still ? 1 : 1 - Math.exp(-dt * 10));
       h.root.rotation.y = h.rot.y + (h.picked && !still ? Math.sin(t * 1.5) * 0.18 : 0);
       if (h.beacon) {
-        const near = clamp(1 - Math.abs(h.beacon.position.x - camLook.x) / 5.5) * inside;
+        const near = clamp(1 - Math.hypot(h.beacon.position.x - camLook.x, (h.beacon.position.y - camLook.y) * 1.6) / 5.5) * inside; // this room, this floor
         const want = h.picked ? 0 : near * (hov ? 1 : 0.85);
         h.beacon.material.opacity = lerp(h.beacon.material.opacity, want, 1 - Math.exp(-dt * 6));
         h.beacon.scale.setScalar((hov ? 0.36 : 0.26) * (1 + (still ? 0 : Math.sin(t * 3 + h.beacon.position.x) * 0.15)));
@@ -474,13 +476,19 @@ function boot() {
     requestAnimationFrame(frame);
   }
 
+  // optional purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images
+  const art = new Map();
+  try {
+    const r = await fetch('/tour/art/manifest.json', {cache: 'no-cache'});
+    if (r.ok) for (const [slot, file] of Object.entries((await r.json()).slots || {})) if (/^[\w.-]+\.(webp|jpe?g|png)$/.test(file)) art.set(slot, file);
+  } catch {}
   build();
   targetFor(progress(), camera.aspect < 1); camPos.copy(wantPos); camLook.copy(wantLook);
   requestAnimationFrame(frame);
 
   // read-only test hook: progress, scene order, quality, and where things sit on screen
   window.__tour = {
-    progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting,
+    progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
     screenOf(id) {
       const obj = house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;
       const v = (house.collectibles.has(id) ? obj.getWorldPosition(new THREE.Vector3()) : new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3())).project(camera);
