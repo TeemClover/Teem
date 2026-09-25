@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14281d">
+<!-- Candidate homepage under review. Stays noindex until it is promoted to "/". -->
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://www.myclover.com/">
+<title>บ้าน myClover — ใครเจอเรา คนนั้นโชคดี</title>
+<meta name="description" content="เดินชมบ้าน myClover แบบ 3D ห้องนั่งเล่น ห้องครัว ห้องเรียน ห้องทำงาน แล้วหาโคลเวอร์สี่ใบที่ซ่อนอยู่ในบ้าน">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="th_TH">
+<meta property="og:site_name" content="myClover">
+<meta property="og:title" content="บ้าน myClover — ใครเจอเรา คนนั้นโชคดี">
+<meta property="og:description" content="เลื่อนลงเพื่อเข้าบ้าน แวะทุกห้อง แล้วหาโคลเวอร์สี่ใบที่ซ่อนอยู่">
+<meta property="og:image" content="https://www.myclover.com/img/og-home-lucky-20260916-v2.jpg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="modulepreload" href="/tour/vendor/three.core.min.js">
+<link rel="modulepreload" href="/tour/vendor/three.module.min.js">
+<link rel="stylesheet" href="/tour/tour.css">
+<script type="module" src="/tour/tour.js"></script>
+</head>
+<body class="is-loading">
+<canvas id="stage" class="stage" aria-hidden="true"></canvas>
+<div class="stage-fallback" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="/" aria-label="myClover หน้าแรก"><img src="/icons/icon-192.png" alt="" width="36" height="36"><span>my<em>Clover</em></span></a>
+  <button id="clover-count" class="clover-count" type="button" aria-live="polite" aria-label="โคลเวอร์ที่เก็บได้ 0 จาก 4 ใบ">
+    <svg class="leaves" viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(0 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(90 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(180 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(270 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g></svg><span class="count-text">0/4</span>
+  </button>
+</header>
+
+<nav class="rail" aria-label="ห้องในบ้าน">
+  <a href="#hero" data-rail="hero"><span>หน้าบ้าน</span></a>
+  <a href="#living" data-rail="living"><span>ห้องนั่งเล่น</span></a>
+  <a href="#kitchen" data-rail="kitchen"><span>ห้องครัว</span></a>
+  <a href="#classroom" data-rail="classroom"><span>ห้องเรียน</span></a>
+  <a href="#office" data-rail="office"><span>ห้องทำงาน</span></a>
+  <a href="#finale" data-rail="finale"><span>คุยกับเรา</span></a>
+</nav>
+
+<div id="loader" class="loader" aria-hidden="true"><span class="loader-clover"></span><span>กำลังเปิดไฟในบ้าน…</span></div>
+<p id="tip" class="tip" role="status" hidden></p>
+
+<main>
+  <section id="hero" class="scene scene-hero" data-scene="hero">
+    <div class="card hero-card">
+      <p class="eyebrow">ยินดีต้อนรับสู่บ้าน myClover</p>
+      <h1>ใครเจอเรา<br><span>คนนั้นโชคดี</span></h1>
+      <p class="lede">บ้านหลังนี้ไม่มีอะไรขาย มีแต่ของดี ๆ วางไว้ให้ลองหยิบ<br>เลื่อนลงช้า ๆ แล้วเดินชมไปด้วยกัน</p>
+      <p class="quest"><span aria-hidden="true">🍀</span> มีโคลเวอร์สี่ใบซ่อนอยู่ในบ้าน ห้องละใบ ลองหาดู</p>
+    </div>
+    <a class="scroll-cue" href="#door"><span>เลื่อนเพื่อเข้าบ้าน</span><i aria-hidden="true"></i></a>
+  </section>
+
+  <section id="door" class="scene scene-door" data-scene="door">
+    <div class="card card-small">
+      <p class="eyebrow">ประตูเปิดอยู่แล้ว</p>
+      <h2>ถอดรองเท้า แล้วเข้ามาเลย</h2>
+      <p>บ้านนี้มีสี่ห้อง แต่ละห้องพาไปยังส่วนหนึ่งของ myClover<br>แตะของในห้องได้ ของบางชิ้นพาคุณไปต่อ</p>
+    </div>
+  </section>
+
+  <section id="living" class="scene" data-scene="living" data-clover="living">
+    <article class="card">
+      <p class="eyebrow"><b>01</b> ห้องนั่งเล่น</p>
+      <h2>Hall ของบ้าน ที่ทุกเรื่องเริ่มต้น</h2>
+      <p>โต๊ะบอร์ดเกมกลางห้องคือหัวใจของบ้าน ที่นี่เราเล่า Main Quest, CORE7 และ XTY ไว้ครบ อยากรู้ว่าบ้านนี้มีอะไรบ้าง เริ่มที่นี่</p>
+      <div class="actions">
+        <a class="btn primary" data-primary href="/hall.html" data-label="กระดานเกมกลางห้อง → Hall">เข้า Hall <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="/home/">หน้าบ้านเดิม</a>
+      </div>
+      <button class="find" type="button" data-find="living" data-hint="ลองมองบนชั้นหนังสือด้านซ้าย">🍀 ใบแรกซ่อนอยู่ตรงไหนนะ?</button>
+    </article>
+  </section>
+
+  <section id="kitchen" class="scene" data-scene="kitchen" data-clover="kitchen">
+    <article class="card">
+      <p class="eyebrow"><b>02</b> ห้องครัว</p>
+      <h2>ครัวของเอโกะ ทำจานธรรมดาให้อร่อย</h2>
+      <p>สลัด โบวล์ และน้ำสลัดที่ทำตามได้จริงในครัวบ้าน ๆ หยิบวัตถุดิบที่มี แล้วลองไปด้วยกัน</p>
+      <div class="actions">
+        <a class="btn primary" data-primary href="/ako/kitchen/" data-label="ชามสลัด → ครัวเอโกะ">เข้าครัวเอโกะ <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="/ako/">รู้จักเอโกะ</a>
+      </div>
+      <button class="find" type="button" data-find="kitchen" data-hint="ข้าง ๆ กระถางสมุนไพรบนเคาน์เตอร์">🍀 ใบที่สองอยู่ในครัวนี่แหละ</button>
+    </article>
+  </section>
+
+  <section id="classroom" class="scene" data-scene="classroom" data-clover="classroom">
+    <article class="card">
+      <p class="eyebrow"><b>03</b> ห้องเรียน</p>
+      <h2>AI ใส่ซอส เรียนฟรี ใช้ได้กับ AI ตัวไหนก็ได้</h2>
+      <p>บทเรียนสั้น ๆ ที่พาคุณจากคำถามแรก ไปจนถึงสร้างงานของตัวเองกับ AI ไม่ต้องสมัคร ไม่ต้องเก่งมาก่อน</p>
+      <div class="actions">
+        <a class="btn primary" data-primary href="/classroom/" data-label="กระดานไวท์บอร์ด → ห้องเรียน">เข้าห้องเรียน <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="/walkthrough/">ดูตัวอย่างงาน</a>
+      </div>
+      <button class="find" type="button" data-find="classroom" data-hint="ที่มุมขวาบนของไวท์บอร์ด">🍀 ครูแอบวางไว้ใบหนึ่ง</button>
+    </article>
+  </section>
+
+  <section id="office" class="scene" data-scene="office" data-clover="office">
+    <article class="card">
+      <p class="eyebrow"><b>04</b> ห้องทำงาน</p>
+      <h2>โต๊ะที่เราสร้างของใหม่ด้วยกัน</h2>
+      <p>TeamBook สมุดกลุ่มที่มีชีวิต และเรื่องเล่าจากโรงตีเหล็ก งานที่เราลองทำจริง แล้วเปิดให้คุณหยิบไปใช้</p>
+      <div class="actions">
+        <a class="btn primary" data-primary href="/teambook/" data-label="จอคอมพิวเตอร์ → TeamBook">เปิด TeamBook <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="/forge/">อ่านเรื่องจากโรงตีเหล็ก</a>
+      </div>
+      <button class="find" type="button" data-find="office" data-hint="บนชั้นวางถ้วยรางวัล ข้างหน้าต่าง">🍀 ใบสุดท้ายอยู่ใกล้หน้าต่าง</button>
+    </article>
+  </section>
+
+  <section id="finale" class="scene scene-finale" data-scene="finale">
+    <article class="card finale-card">
+      <p class="eyebrow">ก่อนกลับบ้าน</p>
+      <h2>ไฟในบ้านเปิดไว้รอคุณ</h2>
+      <p class="lede">ใครเจอเรา คนนั้นโชคดี และเราก็โชคดีที่ได้เจอคุณ<br>ถ้ามีเรื่องอยากเล่า อยากเรียน หรือแค่อยากทักทาย มานั่งคุยกันได้เลย</p>
+      <div class="actions">
+        <a class="btn primary big" data-primary href="/meet/" data-label="โคลเวอร์บนหลังคา → คุยกับเทมและเอโกะ">มานั่งคุยกันไหม <span aria-hidden="true">→</span></a>
+        <button id="open-lucky" class="btn gold" type="button">เปิดการ์ดโชคดี 🍀</button>
+      </div>
+      <p class="more"><a href="/showcase/house/">ดูบ้านจริงของเรา 3D</a> · <a href="/frontdoor/">เดินตามเข็มทิศ</a> · <a href="/home/">หน้าบ้านเดิม</a></p>
+    </article>
+  </section>
+</main>
+
+<footer class="foot"><p>myClover · บ้านของความเป็นไปได้เล็ก ๆ · <a href="/privacy/">ความเป็นส่วนตัว</a></p></footer>
+
+<dialog id="lucky" class="lucky" aria-labelledby="lucky-title">
+  <form method="dialog">
+    <svg class="lucky-clover" viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(0 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(90 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(180 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g><g transform="rotate(270 50 50)"><path d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></g></svg>
+    <p class="eyebrow" id="lucky-kicker">การ์ดโชคดีของคุณ</p>
+    <h2 id="lucky-title">วันนี้คุณโชคดี</h2>
+    <p id="lucky-message" class="lucky-message"></p>
+    <div class="actions">
+      <a class="btn primary" href="/meet/">เล่าให้เราฟัง <span aria-hidden="true">→</span></a>
+      <button class="btn ghost" type="button" id="lucky-again">สุ่มอีกใบ</button>
+      <button class="btn ghost" value="close">เก็บไว้ในใจ</button>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>
