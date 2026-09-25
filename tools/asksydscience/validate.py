@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline demo integrity checks; this is not a browser/accessibility audit."""
+"""Offline integrity checks for the six-room demo and the simulated studio."""
 import json
 import re
 import subprocess
@@ -8,20 +8,18 @@ import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC = ROOT / "asksydscience"
-DATA = json.loads((Path(__file__).parent / "site.th.json").read_text())
-HOUSE = json.loads((Path(__file__).parent / "house-copy.json").read_text())
-HTML = (PUBLIC / "index.html").read_text()
-STYLES = {name: (PUBLIC / name).read_text() for name in ("style.css", "house.css", "house-experiences.css")}
-SCRIPTS = {name: (PUBLIC / name).read_text() for name in ("app.js", "house-experiences.js", "studio/studio.js")}
-CSS = "\n".join(STYLES.values())
-JS = "\n".join(SCRIPTS[name] for name in ("app.js", "house-experiences.js"))
-STUDIO_HTML = (PUBLIC / "studio/index.html").read_text()
-STUDIO_CSS = (PUBLIC / "studio/studio.css").read_text()
+CONTENT = ROOT / "tools/asksydscience"
+DATA = json.loads((CONTENT / "site.th.json").read_text())
+HOUSE = json.loads((CONTENT / "house-copy.json").read_text())
+PAGE_FILES = ("index.html", "kitchen/index.html", "mindfulness/index.html", "stories/index.html", "workshop/index.html", "about/index.html")
+STYLE_FILES = ("style.css", "house.css", "house-experiences.css", "pages.css", "film-motion.css", "studio/studio.css")
+SCRIPT_FILES = ("app.js", "house-experiences.js", "film-motion.js", "studio/studio.js")
+FRAGMENT_FILES = ("house-experiences.html", "film-player.html")
 PROFILE_URL = "https://www.tiktok.com/@asksydscience"
-# Exact reviewed pages, never domain-wide permission for arbitrary destinations.
 PRIMARY_SOURCE_URLS = {
     "https://www.nhs.uk/live-well/eat-well/how-to-eat-a-balanced-diet/the-vegetarian-diet/",
     "https://www.bda.uk.com/resource/vegetarian-vegan-plant-based-diet.html",
@@ -39,12 +37,27 @@ source_urls = {item.get("url") for item in source_by_id.values()}
 video_urls = {item.get("url") for item in HOUSE.get("videos", {}).get("verifiedOriginalLinks", []) if isinstance(item, dict)}
 ALLOWED_EXTERNAL = {PROFILE_URL} | (source_urls & PRIMARY_SOURCE_URLS) | (video_urls & VERIFIED_VIDEO_URLS)
 TRANSPORT_OR_STORAGE = r"\b(?:fetch\s*\(|XMLHttpRequest|WebSocket|EventSource|sendBeacon|localStorage|sessionStorage|indexedDB|document\.cookie|serviceWorker\.register)"
+checks, failures, warnings = [], [], []
+
+
+def check(name, condition, detail=""):
+    checks.append(name)
+    if not condition:
+        failures.append(f"{name}: {detail}" if detail else name)
+
+
+def required_text(path):
+    check(f"Required file exists: {path.relative_to(ROOT)}", path.is_file())
+    return path.read_text() if path.is_file() else ""
 
 
 class Document(HTMLParser):
-    def __init__(self):
+    def __init__(self, source=""):
         super().__init__(convert_charrefs=True)
         self.nodes, self.stack = [], []
+        self.feed(source)
+        self.ids = [n["attrs"]["id"] for n in self.nodes if n["attrs"].get("id")]
+        self.by_id = {n["attrs"]["id"]: n for n in self.nodes if n["attrs"].get("id")}
 
     def handle_starttag(self, tag, attrs):
         node = {"tag": tag, "attrs": dict(attrs), "text": [], "parents": self.stack.copy()}
@@ -63,19 +76,16 @@ class Document(HTMLParser):
             node["text"].append(text)
 
 
-doc = Document()
-doc.feed(HTML)
-studio_doc = Document()
-studio_doc.feed(STUDIO_HTML)
-ids = [n["attrs"]["id"] for n in doc.nodes if n["attrs"].get("id")]
-by_id = {n["attrs"]["id"]: n for n in doc.nodes if n["attrs"].get("id")}
-checks, failures, warnings = [], [], []
-
-
-def check(name, condition, detail=""):
-    checks.append(name)
-    if not condition:
-        failures.append(f"{name}: {detail}" if detail else name)
+PAGES = {name: required_text(PUBLIC / name) for name in PAGE_FILES}
+DOCUMENTS = {name: Document(source) for name, source in PAGES.items()}
+STYLES = {name: required_text(PUBLIC / name) for name in STYLE_FILES}
+SCRIPTS = {name: required_text(PUBLIC / name) for name in SCRIPT_FILES}
+STUDIO_HTML = required_text(PUBLIC / "studio/index.html")
+STUDIO_CSS = STYLES["studio/studio.css"]
+studio_doc = Document(STUDIO_HTML)
+CSS = "\n".join(value for name, value in STYLES.items() if not name.startswith("studio/"))
+JS = "\n".join(value for name, value in SCRIPTS.items() if not name.startswith("studio/"))
+by_id = DOCUMENTS["index.html"].by_id
 
 
 def compact(value):
@@ -83,30 +93,71 @@ def compact(value):
 
 
 def readable(node, value):
-    return compact(value) in compact(" ".join(node["text"]))
+    return node is not None and compact(value) in compact(" ".join(node["text"]))
 
 
-def local_reference(value, context, allow_external=False, document_ids=None, base=PUBLIC):
+def safe_svg_texture(value):
+    """Allow the self-contained noise texture, not active SVG or linked resources."""
+    if not value.startswith("data:image/svg+xml,"):
+        return False
+    markup = unquote(value.split(",", 1)[1])
+    if len(markup) > 65536 or re.search(r"<!DOCTYPE|<!ENTITY", markup, re.I):
+        return False
+    try:
+        tree = ElementTree.fromstring(markup)
+    except ElementTree.ParseError:
+        return False
+    ids = {element.attrib.get("id") for element in tree.iter()}
+    for element in tree.iter():
+        if element.tag.rsplit("}", 1)[-1] not in {"svg", "filter", "feTurbulence", "rect"}:
+            return False
+        for key, attribute in element.attrib.items():
+            if key.lower().startswith("on") or key.rsplit("}", 1)[-1].lower() in {"href", "style"}:
+                return False
+            if "url(" in attribute and not (re.fullmatch(r"url\(#[\w-]+\)", attribute) and attribute[5:-1] in ids):
+                return False
+    return True
+
+
+def css_references(css):
+    # A quoted data URI can contain single quotes, whitespace and its own url().
+    for match in re.finditer(r'''url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]*))\s*\)''', css):
+        yield next(value for value in match.groups() if value is not None)
+
+
+def local_reference(value, context, allow_external=False, document_ids=None, base=PUBLIC, allow_texture=False):
+    """Resolve root/relative URLs and fragments against the actual target page."""
     document_ids = by_id if document_ids is None else document_ids
     parsed = urlsplit(value)
+    if parsed.scheme == "data" and allow_texture:
+        check(f"Self-contained inline SVG texture ({context})", safe_svg_texture(value))
+        return
     if parsed.scheme or parsed.netloc:
         check(f"Approved external destination ({context})", allow_external and value in ALLOWED_EXTERNAL, value)
         return
     if not parsed.path:
         check(f"Real fragment target ({context})", bool(parsed.fragment) and unquote(parsed.fragment) in document_ids, value)
         return
-    resolved = (ROOT / unquote(parsed.path).lstrip("/")) if parsed.path.startswith("/") else (base / unquote(parsed.path))
+    resolved = ((ROOT / unquote(parsed.path).lstrip("/")) if parsed.path.startswith("/") else (base / unquote(parsed.path))).resolve()
     if resolved.is_dir():
         resolved /= "index.html"
-    check(f"Existing local asset ({context})", resolved.is_file() and resolved.resolve().is_relative_to(PUBLIC.resolve()), value)
+    safe = resolved.is_file() and resolved.is_relative_to(PUBLIC.resolve())
+    check(f"Existing local asset ({context})", safe, value)
     if parsed.fragment:
-        if resolved.is_file() and resolved.suffix == ".html":
-            target_doc = Document()
-            target_doc.feed(resolved.read_text())
-            target_ids = {n["attrs"].get("id") for n in target_doc.nodes}
-        else:
-            target_ids = document_ids
-        check(f"Known document fragment ({context})", unquote(parsed.fragment) in target_ids, value)
+        target_ids = Document(resolved.read_text()).by_id if safe and resolved.suffix in {".html", ".svg"} else {}
+        check(f"Known target-page fragment ({context})", unquote(parsed.fragment) in target_ids, value)
+
+
+def json_node(document, ident):
+    node = document.by_id.get(ident)
+    try:
+        return json.loads("".join(node["text"])) if node else None
+    except json.JSONDecodeError:
+        return None
+
+
+def descendant_links(document, container):
+    return {node["attrs"].get("href") for node in document.nodes if node["tag"] == "a" and any(parent is container for parent in node["parents"])}
 
 
 check("Demo metadata remains honest", DATA["mode"] == "demo" and DATA["contentApproval"] == "proposed" and DATA["publicReleaseApproved"] is False)
@@ -121,82 +172,118 @@ for story in DATA["stories"]:
     references = story.get("sources")
     check(f"Story {story['id']} uses shared primary-source records", isinstance(references, list) and all(isinstance(ref, dict) and ref.get("id") in source_by_id and ref.get("url") in ALLOWED_EXTERNAL and all(ref.get(key) == source_by_id[ref["id"]].get(key) for key in ("title", "url")) for ref in references))
 check("Workshop preserves the proposed 4-week structure", DATA["workshop"]["status"] == "planning" and [w["mode"] for w in DATA["workshop"]["weeks"]] == ["ออนไลน์"] * 3 + ["พบกัน"])
-check("One h1 and Thai document language", sum(n["tag"] == "h1" for n in doc.nodes) == 1 and any(n["tag"] == "html" and n["attrs"].get("lang") == "th" for n in doc.nodes))
-check("Unique document ids", len(ids) == len(set(ids)))
-check("Demo is noindex", any(n["tag"] == "meta" and n["attrs"].get("name") == "robots" and "noindex" in n["attrs"].get("content", "") for n in doc.nodes))
-check("Main page has no forms, free-text collection or embedded media", not any(n["tag"] in {"form", "textarea", "select", "iframe", "embed", "object", "video", "audio"} for n in doc.nodes))
-room_groups = {"hx-vegetables", "hx-grains", "hx-protein", "hx-duration"}
-room_inputs = [n for n in doc.nodes if n["tag"] == "input"]
-for node in room_inputs:
-    attrs = node["attrs"]
-    radio = attrs.get("type") == "radio" and attrs.get("name") in room_groups and bool(attrs.get("value"))
-    seek = attrs.get("type") == "range" and attrs.get("id") == "hx-film-seek" and attrs.get("min") == "0" and attrs.get("max") == "20" and attrs.get("step") == "0.1"
-    check("Room controls are only local radio choices or the film timeline", (radio or seek) and not any(key in attrs for key in ("form", "formaction", "formmethod", "autocomplete")), str(attrs))
-for group in room_groups:
-    options = [n for n in room_inputs if n["attrs"].get("name") == group]
-    check(f"Room choice group has labels and one default: {group}", len(options) == 3 and sum("checked" in n["attrs"] for n in options) == 1 and all(any(parent["tag"] == "label" for parent in n["parents"]) for n in options))
-check("Practice durations stay bounded", {n["attrs"].get("value") for n in room_inputs if n["attrs"].get("name") == "hx-duration"} == {"60", "180", "300"})
-check("One local film scrubber", sum(n["attrs"].get("id") == "hx-film-seek" for n in room_inputs) == 1)
-check("Arabic numerals only", re.search(r"[๐-๙]", HTML) is None)
+
 for name, script in SCRIPTS.items():
     check(f"No browser persistence or data transport: {name}", re.search(TRANSPORT_OR_STORAGE, script) is None)
-check("Reduced-motion fallback is present", "prefers-reduced-motion" in CSS and "prefers-reduced-motion" in JS)
+check("Shared interactive copy remains in content markup", re.search(r"[\u0e00-\u0e7f]", JS) is None and "#site-ui" in SCRIPTS["app.js"])
 check("Focus treatment and native detail fallback are present", ":focus-visible" in CSS and ".js .story-inline" in CSS and ".js-only{display:none}" in CSS.replace(" ", ""))
-ui_node = by_id.get("site-ui")
-try:
-    rendered_ui = json.loads("".join(ui_node["text"])) if ui_node else None
-except json.JSONDecodeError:
-    rendered_ui = None
-check("Generated interactive labels match content source", rendered_ui == DATA["ui"])
-check("Thai interactive copy comes from shared content", re.search(r"[\u0e00-\u0e7f]", JS) is None and "#site-ui" in JS)
-check("Room effects respect reduced motion and page visibility", "prefers-reduced-motion" in STYLES["house-experiences.css"] and "prefers-reduced-motion" in SCRIPTS["house-experiences.js"] and "visibilitychange" in SCRIPTS["house-experiences.js"] and "pagehide" in SCRIPTS["house-experiences.js"])
-film_ids = {n["attrs"]["data-film-id"] for n in doc.nodes if "data-film-id" in n["attrs"]}
-check("Three local editorial films exist", film_ids == {"welcome", "kitchen", "mindfulness"})
+for name in ("house-experiences", "film-motion"):
+    check(f"{name} respects motion and hidden pages", "prefers-reduced-motion" in STYLES[name + ".css"] and "prefers-reduced-motion" in SCRIPTS[name + ".js"] and "visibilitychange" in SCRIPTS[name + ".js"] and "pagehide" in SCRIPTS[name + ".js"])
 
-for node in doc.nodes:
-    attrs = node["attrs"]
-    context = attrs.get("id", node["tag"])
-    for attr in ("href", "src", "poster"):
-        if attr in attrs:
-            local_reference(attrs[attr], f"{context}.{attr}", node["tag"] == "a" and attr == "href")
-    for ref in attrs.get("srcset", "").split(","):
-        if ref.strip():
-            local_reference(ref.strip().split()[0], f"{context}.srcset")
-    for attr in ("aria-controls", "aria-labelledby", "aria-describedby", "for"):
-        for target in attrs.get(attr, "").split():
-            check(f"Accessible reference {context}.{attr}", target in by_id, target)
-    if node["tag"] == "img":
-        check("Every image has alternative text and dimensions", "alt" in attrs and bool(attrs.get("width")) and bool(attrs.get("height")))
-    if "data-story" in attrs:
-        check("Story action has a real template", "story-" + attrs["data-story"] in by_id)
-    if "data-dialog" in attrs:
-        check("Dialog action has a real template", "template-" + attrs["data-dialog"] in by_id)
-    if "data-house-film" in attrs:
-        check("Film action has a real local story", attrs["data-house-film"] in film_ids)
-    check(f"No inline event handlers or transport attributes ({context})", not any(key.lower().startswith("on") or key.lower() in {"ping", "formaction"} for key in attrs))
-    if node["tag"] == "script" and "src" not in attrs:
-        check(f"Inline script is data only ({context})", attrs.get("type") == "application/json")
+room_group_pages = {"hx-vegetables": "kitchen/index.html", "hx-grains": "kitchen/index.html", "hx-protein": "kitchen/index.html", "hx-duration": "mindfulness/index.html"}
+film_keys = {"welcome", "kitchen", "mindfulness"}
+for page, document in DOCUMENTS.items():
+    content, page_ids = PAGES[page], document.by_id
+    check(f"One h1 and Thai language: {page}", sum(n["tag"] == "h1" for n in document.nodes) == 1 and any(n["tag"] == "html" and n["attrs"].get("lang") == "th" for n in document.nodes))
+    check(f"Unique ids: {page}", len(document.ids) == len(set(document.ids)))
+    check(f"Noindex: {page}", any(n["tag"] == "meta" and n["attrs"].get("name") == "robots" and "noindex" in n["attrs"].get("content", "") for n in document.nodes))
+    check(f"No forms, free text or embedded media: {page}", not any(n["tag"] in {"form", "textarea", "select", "iframe", "embed", "object", "video", "audio"} for n in document.nodes))
+    check(f"Arabic numerals only: {page}", re.search(r"[๐-๙]", content) is None)
+    check(f"Shared labels match source: {page}", json_node(document, "site-ui") == DATA["ui"])
+    check(f"Shared room/film copy exists: {page}", isinstance(json_node(document, "house-experiences-copy"), dict))
+    films = [n for n in document.nodes if "data-film-id" in n["attrs"]]
+    check(f"Three complete local films: {page}", {n["attrs"]["data-film-id"] for n in films} == film_keys and len(films) == 3)
+    check(f"Film durations match the 28-second timeline: {page}", all(n["attrs"].get("data-duration") == "28" for n in films))
+    sound = page_ids.get("hx-film-sound")
+    check(f"Film sound starts off: {page}", sound is not None and sound["attrs"].get("aria-pressed") == "false")
+    inputs = [n for n in document.nodes if n["tag"] == "input"]
+    for node in inputs:
+        attrs = node["attrs"]
+        radio = attrs.get("type") == "radio" and room_group_pages.get(attrs.get("name")) == page and bool(attrs.get("value"))
+        seek = attrs.get("type") == "range" and attrs.get("id") == "hx-film-seek" and attrs.get("min") == "0" and attrs.get("max") == "28" and attrs.get("step") == "0.1"
+        volume = attrs.get("type") == "range" and attrs.get("id") == "hx-film-volume" and attrs.get("min") == "0" and attrs.get("max") == "100" and attrs.get("value", "").isdigit() and 0 <= int(attrs.get("value", "-1")) <= 100 and bool(attrs.get("aria-label"))
+        check(f"Only appropriate room choices or bounded film controls: {page}", (radio or seek or volume) and not any(key in attrs for key in ("form", "formaction", "formmethod", "autocomplete")), str(attrs))
+    check(f"One local film scrubber: {page}", sum(n["attrs"].get("id") == "hx-film-seek" for n in inputs) == 1)
+    check(f"One labelled local volume control: {page}", sum(n["attrs"].get("id") == "hx-film-volume" for n in inputs) == 1)
+    for group, group_page in room_group_pages.items():
+        options = [n for n in inputs if n["attrs"].get("name") == group]
+        if page == group_page:
+            check(f"Labelled choices and one default: {page}:{group}", len(options) == 3 and sum("checked" in n["attrs"] for n in options) == 1 and all(any(parent["tag"] == "label" for parent in n["parents"]) for n in options))
+        else:
+            check(f"No unrelated room controls: {page}:{group}", not options)
+    for node in document.nodes:
+        attrs = node["attrs"]
+        context = page + ":" + attrs.get("id", node["tag"])
+        for attr in ("href", "src", "poster", "xlink:href"):
+            if attr in attrs:
+                local_reference(attrs[attr], f"{context}.{attr}", node["tag"] == "a" and attr == "href", document_ids=page_ids, base=(PUBLIC / page).parent)
+        for ref in attrs.get("srcset", "").split(","):
+            if ref.strip():
+                local_reference(ref.strip().split()[0], f"{context}.srcset", document_ids=page_ids, base=(PUBLIC / page).parent)
+        for attr in ("aria-controls", "aria-labelledby", "aria-describedby", "for"):
+            for target in attrs.get(attr, "").split():
+                check(f"Accessible reference {context}.{attr}", target in page_ids, target)
+        for value in attrs.values():
+            for target in re.findall(r"url\(\s*#([^)\s]+)\s*\)", value or ""):
+                check(f"Self-contained SVG definition ({context})", target in page_ids, target)
+        if node["tag"] == "img":
+            check(f"Image text and dimensions ({context})", "alt" in attrs and bool(attrs.get("width")) and bool(attrs.get("height")))
+        if "data-story" in attrs:
+            check(f"Story action template ({context})", "story-" + attrs["data-story"] in page_ids)
+        if "data-dialog" in attrs:
+            check(f"Dialog action template ({context})", "template-" + attrs["data-dialog"] in page_ids)
+        if "data-house-film" in attrs:
+            check(f"Film action has a local story ({context})", attrs["data-house-film"] in film_keys)
+        check(f"No inline handlers or transport attributes ({context})", not any(key.lower().startswith("on") or key.lower() in {"ping", "formaction"} for key in attrs))
+        if node["tag"] == "script" and "src" not in attrs:
+            check(f"Inline script is data only ({context})", attrs.get("type") == "application/json")
 
-for ref in re.findall(r"url\(\s*['\"]?([^)'\"]+)", CSS):
-    local_reference(ref, "CSS")
+home_doc = DOCUMENTS["index.html"]
+room_routes = {"/asksydscience/" + slug + "/" for slug in ("kitchen", "mindfulness", "stories", "workshop")}
+doors = [n for n in home_doc.nodes if "house-door" in n["attrs"].get("class", "").split()]
+check("Home is an entrance with four real room doors", len(doors) == 4 and {n["attrs"].get("href") for n in doors} == room_routes)
+check("Home does not duplicate the full room sections", not ({"kitchen", "mindfulness", "stories", "workshop", "about", "picks"} & set(home_doc.by_id)) and not any(n["attrs"].get("id", "").startswith(("week-", "story-note-")) for n in home_doc.nodes))
+for slug in ("kitchen", "mindfulness", "stories", "workshop", "about"):
+    check(f"Room content is present on its own page: {slug}", slug in DOCUMENTS[slug + "/index.html"].by_id)
+for page, document in DOCUMENTS.items():
+    links = {urlsplit(n["attrs"].get("href", "")).path for n in document.nodes if n["tag"] == "a"}
+    check(f"Home and all rooms are reachable: {page}", room_routes | {"/asksydscience/", "/asksydscience/about/"} <= links)
+
+practice_doc = DOCUMENTS["mindfulness/index.html"]
+check("Practice durations stay bounded", {n["attrs"].get("value") for n in practice_doc.nodes if n["attrs"].get("name") == "hx-duration"} == {"60", "180", "300"})
+check("Mindfulness has a readable no-JS practice", any(n["tag"] == "noscript" and "hx-nojs-note" in " ".join(child["attrs"].get("class", "") for child in practice_doc.nodes if any(parent is n for parent in child["parents"])) for n in practice_doc.nodes))
+
+story_doc = DOCUMENTS["stories/index.html"]
 for story in DATA["stories"]:
-    fallback = by_id.get("story-note-" + story["id"])
-    check(f"Story {story['id']} readable without JS", fallback is not None and fallback["tag"] == "details" and readable(fallback, story["detail"]) and "hidden" not in fallback["attrs"])
+    fallback = story_doc.by_id.get("story-note-" + story["id"])
+    template = story_doc.by_id.get("story-" + story["id"])
+    check(f"Story {story['id']} readable without JS in stories room", fallback is not None and fallback["tag"] == "details" and readable(fallback, story["detail"]) and "hidden" not in fallback["attrs"])
+    for source in story.get("sources", []):
+        if isinstance(source, dict):
+            for label, container in (("fallback", fallback), ("dialog", template)):
+                check(f"Story {story['id']} cites {source.get('id')} in {label}", source.get("url") in descendant_links(story_doc, container))
+check("Reviewed clips link from the stories room", VERIFIED_VIDEO_URLS <= {n["attrs"].get("href") for n in story_doc.nodes if n["tag"] == "a"})
+workshop_doc = DOCUMENTS["workshop/index.html"]
 for week in DATA["workshop"]["weeks"]:
-    fallback = by_id.get(f"week-{week['n']}")
-    check(f"Week {week['n']} readable without JS", fallback is not None and readable(fallback, week["text"]) and "hidden" not in fallback["attrs"])
-for key in ("registrationBody", "picksBody"):
-    check(f"No-JS explanation for {key}", any(n["tag"] == "noscript" and readable(n, DATA["dialogs"][key]) for n in doc.nodes))
+    fallback = workshop_doc.by_id.get(f"week-{week['n']}")
+    check(f"Week {week['n']} readable without JS in workshop room", fallback is not None and readable(fallback, week["text"]) and "hidden" not in fallback["attrs"])
+for page, key in (("workshop/index.html", "registrationBody"), ("about/index.html", "picksBody")):
+    check(f"No-JS explanation in {page}: {key}", any(n["tag"] == "noscript" and readable(n, DATA["dialogs"][key]) for n in DOCUMENTS[page].nodes))
 
-allowed_files = {"index.html", "style.css", "app.js", "house.css", "house-experiences.css", "house-experiences.js", "favicon.svg", "README.md", "studio/index.html", "studio/studio.css", "studio/studio.js"}
+for name, css in STYLES.items():
+    if name.startswith("studio/"):
+        continue
+    for ref in css_references(css):
+        local_reference(ref, name, base=(PUBLIC / name).parent, allow_texture=True)
+allowed_files = set(PAGE_FILES) | set(STYLE_FILES) | set(SCRIPT_FILES) | {"favicon.svg", "README.md", "studio/index.html"}
 allowed_asset_ext = {".webp", ".png", ".jpg", ".jpeg", ".avif", ".svg", ".woff2"}
 for path in PUBLIC.rglob("*"):
-    if not path.is_file():
-        continue
-    rel = path.relative_to(PUBLIC)
-    valid = str(rel) in allowed_files or (rel.parts[0] == "assets" and (path.suffix.lower() in allowed_asset_ext or path.name == "OFL.txt"))
-    check(f"Only public deliverables ship: {rel}", valid and path.resolve().is_relative_to(PUBLIC.resolve()))
-check("No private brief/transcript markers in rendered copy", not any(marker in HTML + STUDIO_HTML for marker in ("Sydney Project brief", "MASTER_BUILD_BRIEF", "file_000000", "turn1file0", "commission", "oidcJwt", "AGENTS.md")))
+    if path.is_file():
+        rel = path.relative_to(PUBLIC)
+        valid = str(rel) in allowed_files or (rel.parts[0] == "assets" and (path.suffix.lower() in allowed_asset_ext or path.name == "OFL.txt"))
+        check(f"Only public deliverables ship: {rel}", valid and path.resolve().is_relative_to(PUBLIC.resolve()))
+public_copy = "\n".join(PAGES.values()) + STUDIO_HTML
+check("No private brief/transcript markers in public copy", not any(marker in public_copy for marker in ("Sydney Project brief", "MASTER_BUILD_BRIEF", "file_000000", "turn1file0", "commission", "oidcJwt", "AGENTS.md")))
 
 # Studio is a separate, explicitly simulated interface. Its only editable text is
 # content/brief copy; it has no contact, health, registration or payment fields.
@@ -227,23 +314,10 @@ for node in studio_doc.nodes:
         check(f"Studio form never submits ({context})", attrs.get("id") in {"ss-content-form", "ss-brief-form"} and not any(key in attrs for key in ("action", "method", "target")) and f"find('#{attrs.get('id')}').addEventListener('submit', (event) => event.preventDefault())" in SCRIPTS["studio/studio.js"])
     if node["tag"] == "button":
         check(f"Studio buttons cannot submit ({context})", attrs.get("type") == "button")
-for ref in re.findall(r"url\(\s*['\"]?([^) '\"]+)", STUDIO_CSS):
+for ref in css_references(STUDIO_CSS):
     local_reference(ref, "studio.CSS", document_ids=studio_by_id, base=PUBLIC / "studio")
 
-rendered_links = {n["attrs"].get("href") for n in doc.nodes if n["tag"] == "a"}
-check("Reviewed original clips link to their source pages", VERIFIED_VIDEO_URLS <= rendered_links)
-for story in DATA["stories"]:
-    fallback = by_id.get("story-note-" + story["id"])
-    template = by_id.get("story-" + story["id"])
-    for source in story.get("sources", []):
-        if not isinstance(source, dict):
-            continue
-        for label, container in (("fallback", fallback), ("dialog", template)):
-            links = {node["attrs"].get("href") for node in doc.nodes if node["tag"] == "a" and any(parent is container for parent in node["parents"])}
-            check(f"Story {story['id']} cites {source.get('id')} in {label}", source.get("url") in links)
-
-# Read top-level rules throughout the file, including globals after @media.
-# This deliberately verifies simple fallback selectors, not a browser cascade.
+# Simple fallback selectors only; this is not a browser cascade audit.
 def top_level_rules(css):
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     start = 0
@@ -257,9 +331,10 @@ def top_level_rules(css):
         start = end
 
 
+ready_classes = "js|hx-ready|hx-film-ready"
 hidden_selectors = [s.strip() for selector, body in top_level_rules(CSS)
                     if re.search(r"\bdisplay\s*:\s*none\b", body)
-                    for s in selector.split(",") if s.strip().startswith(("html:not(.js) ", "html:not(.hx-ready) "))]
+                    for s in selector.split(",") if re.match(r"html:not\(\.(?:" + ready_classes + r")\)\s", s.strip())]
 
 
 def hidden_without_js(node):
@@ -268,7 +343,7 @@ def hidden_without_js(node):
         if "js-only" in attrs.get("class", "").split():
             return True
         for selector in hidden_selectors:
-            target = re.sub(r"^html:not\(\.(?:js|hx-ready)\)\s+", "", selector).strip()
+            target = re.sub(r"^html:not\(\.(?:" + ready_classes + r")\)\s+", "", selector).strip()
             if target.startswith(".") and target[1:] in attrs.get("class", "").split():
                 return True
             if re.fullmatch(r"\[[\w-]+\]", target) and target[1:-1] in attrs:
@@ -276,29 +351,33 @@ def hidden_without_js(node):
     return False
 
 
-for attr in ("data-dialog", "data-intention", "data-filter", "data-week", "data-house-film"):
-    controls = [n for n in doc.nodes if n["tag"] == "button" and attr in n["attrs"]]
-    check(f"No inert no-JS controls: {attr}", all(hidden_without_js(n) for n in controls))
+for page, document in DOCUMENTS.items():
+    for attr in ("data-dialog", "data-intention", "data-filter", "data-week", "data-house-film"):
+        controls = [n for n in document.nodes if n["tag"] == "button" and attr in n["attrs"]]
+        check(f"No inert no-JS controls: {page}:{attr}", all(hidden_without_js(n) for n in controls))
 
-story_grid_index = next((i for i, n in enumerate(doc.nodes) if "story-grid" in n["attrs"].get("class", "").split()), -1)
-draft_note_index = next((i for i, n in enumerate(doc.nodes) if n["tag"] == "p" and readable(n, DATA["storiesIntro"]["draftNote"])), -1)
+story_grid_index = next((i for i, n in enumerate(story_doc.nodes) if "story-grid" in n["attrs"].get("class", "").split()), -1)
+draft_note_index = next((i for i, n in enumerate(story_doc.nodes) if n["tag"] == "p" and readable(n, DATA["storiesIntro"]["draftNote"])), -1)
 if "ด้านล่าง" in DATA["storiesIntro"]["draftNote"] and draft_note_index > story_grid_index >= 0:
-    warnings.append("Story draft note says 'หัวข้อด้านล่าง' but appears after the cards; use location-neutral wording such as 'หัวข้อในแกลเลอรีนี้'.")
+    warnings.append("The story draft note refers to cards below but is placed after them; use location-neutral wording.")
 
-# Rebuild a disposable copy, never overwrite a concurrently edited public page.
+# Rebuild every generated page in isolation, never modify the public working copy.
 with tempfile.TemporaryDirectory(prefix="asksydscience-validate-") as directory:
     scratch = Path(directory)
     (scratch / "tools/asksydscience").mkdir(parents=True)
     (scratch / "asksydscience").mkdir()
     builder = scratch / "tools/build-asksydscience.py"
     builder.write_text((ROOT / "tools/build-asksydscience.py").read_text())
-    (scratch / "tools/asksydscience/site.th.json").write_text(json.dumps(DATA, ensure_ascii=False))
-    (scratch / "tools/asksydscience/house-copy.json").write_text(json.dumps(HOUSE, ensure_ascii=False))
-    (scratch / "tools/asksydscience/house-experiences.html").write_text((ROOT / "tools/asksydscience/house-experiences.html").read_text())
-    result = subprocess.run([sys.executable, str(builder)], capture_output=True, text=True)
-    output = scratch / "asksydscience/index.html"
-    check("Generated output matches a clean rebuild", result.returncode == 0 and output.is_file() and output.read_text() == HTML,
-          result.stderr.strip() or "Rerun tools/build-asksydscience.py after editing source copy or builder.")
+    for name in ("site.th.json", "house-copy.json") + FRAGMENT_FILES:
+        source = CONTENT / name
+        check(f"Rebuild dependency exists: {name}", source.is_file())
+        if source.is_file():
+            (scratch / "tools/asksydscience" / name).write_text(source.read_text())
+    rebuilt = subprocess.run([sys.executable, str(builder)], capture_output=True, text=True)
+    check("Disposable build succeeds", rebuilt.returncode == 0, rebuilt.stderr.strip())
+    for page in PAGE_FILES:
+        output = scratch / "asksydscience" / page
+        check(f"Generated page matches clean rebuild: {page}", rebuilt.returncode == 0 and output.is_file() and output.read_text() == PAGES[page], "Rerun tools/build-asksydscience.py after source changes.")
 
 result = {"status": "fail" if failures else "pass_with_warnings" if warnings else "pass", "checks": len(checks), "failures": failures, "warnings": warnings, "scope": "Static offline integrity only; no browser, live URLs, content-rights or medical-evidence verification."}
 print(json.dumps(result, ensure_ascii=False, indent=2))
