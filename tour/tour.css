@@ -11,7 +11,7 @@ body{margin:0;background:#cfe6dc;color:var(--ink);font-family:var(--font);font-s
 a{color:inherit}
 
 /* The 3D stage sits behind everything; the DOM story remains the real content. */
-.stage{position:fixed;inset:0;width:100vw;height:100vh;height:100lvh;display:block;z-index:0;touch-action:pan-y}
+.stage{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;display:block;z-index:0;touch-action:pan-y}
 .stage-fallback{position:fixed;inset:0;z-index:0;display:none;background:
   radial-gradient(60% 50% at 50% 30%,#fff7df 0,transparent 70%),linear-gradient(180deg,#cfe6dc,#f1e4cc 55%,#2a3552)}
 .no-webgl .stage{display:none}.no-webgl .stage-fallback{display:block}
@@ -104,6 +104,29 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
 .lucky.golden{background:linear-gradient(160deg,#fff8dc,#f3d27a)}
 @media (prefers-reduced-motion:reduce){.lucky-clover,.loader-clover,.scroll-cue i::after{animation:none}}
 
+/* tools: SD/HD + clover counter */
+.tools{display:flex;gap:8px;align-items:center}
+.quality{display:flex;padding:3px;border-radius:999px;background:var(--paper);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(15,35,24,.12)}
+.quality button{border:0;background:transparent;font:800 13px var(--font);letter-spacing:.04em;color:var(--ink-soft);padding:7px 11px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
+.quality button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.quality button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* things you can pick up in each room */
+.items{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px;padding:0}
+.items a{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:600;text-decoration:none;color:var(--ink);transition:transform .2s,border-color .2s,box-shadow .2s}
+.items a:hover,.items a:focus-visible{transform:translateY(-2px);border-color:var(--clover);box-shadow:0 6px 16px rgba(46,158,91,.18);outline:none}
+
+/* inspect panel: an object you picked up */
+.inspect{position:fixed;z-index:22;right:24px;bottom:24px;width:min(360px,calc(100vw - 32px));padding:20px 20px 18px;border-radius:22px;
+  background:linear-gradient(160deg,#fffdf6,#f6eedb);box-shadow:0 24px 60px rgba(15,35,24,.3);border:1px solid rgba(255,255,255,.8);
+  opacity:0;transform:translateY(16px) scale(.98);transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
+.inspect.open{opacity:1;transform:none}
+.inspect h3{font:800 22px/1.3 var(--display);margin:2px 0 6px}
+.inspect p{margin:0 0 14px;color:var(--ink-soft);font-size:15px}
+.inspect .btn{width:100%;justify-content:center}
+.inspect-close{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(20,40,29,.07);font-size:22px;line-height:1;cursor:pointer;color:var(--ink)}
+.inspect-close:focus-visible{outline:3px solid var(--gold)}
+
 @media (max-width:760px){
   body{font-size:16px}
   .rail{right:8px;gap:12px}.rail a{width:10px;height:10px}.rail a span{display:none}
@@ -112,5 +135,8 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
   .scene-finale{align-items:flex-end}
   .card{padding:20px 18px 16px;width:100%}
   .card p{font-size:15px}
-  .brand{font-size:17px}
+  .brand{font-size:17px}.brand span{display:none}.brand{padding:6px}
+  .inspect{left:16px;right:16px;bottom:16px;width:auto}
+  .items a{font-size:13px;min-height:34px;padding:5px 10px}
+  .card h2{font-size:22px}
 }

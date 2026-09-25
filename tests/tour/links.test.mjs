@@ -23,13 +23,24 @@ test('internal hrefs and assets resolve', async () => {
   assert.deepEqual(missing, []);
 });
 
-test('each room has one primary destination and a clover hint', () => {
-  for (const room of ['living', 'kitchen', 'classroom', 'office']) {
+test('each room has one primary destination; clover rooms have a hint', () => {
+  for (const room of ['books', 'living', 'kitchen', 'classroom', 'office']) {
     const section = html.split(`data-scene="${room}"`)[1].split('</section>')[0];
     assert.equal(section.match(/data-primary/g)?.length, 1, room);
-    assert.match(section, new RegExp(`data-find="${room}" data-hint="[^"]+"`), room);
+    if (room !== 'books') assert.match(section, new RegExp(`data-find="${room}" data-hint="[^"]+"`), room);
   }
-  assert.match(html.split('data-scene="finale"')[1], /data-primary href="\/meet\/"/);
+  assert.match(html.split('data-scene="finale"')[1], /data-primary data-item="meet" href="\/meet\/"/);
+});
+
+test('every pickable object has a unique id, a real link and a description', () => {
+  const items = [...html.matchAll(/<a [^>]*data-item="([\w-]+)"[^>]*>/g)];
+  assert.ok(items.length >= 20, `only ${items.length} items`);
+  const ids = items.map(m => m[1]);
+  assert.equal(new Set(ids).size, ids.length, 'duplicate data-item');
+  for (const [tag, id] of items) {
+    assert.match(tag, /href="\/[^"]*"/, id);
+    assert.match(tag, /data-desc="[^"]{10,}"/, id);
+  }
 });
 
 test('three.js is self-hosted, no third-party script origins', () => {
