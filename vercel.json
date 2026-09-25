@@ -426,6 +426,38 @@
   ],
   "headers": [
     {
+      "source": "/asksydscience/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "asksydscience.myclover.com"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
       "source": "/course/admin/:path*",
       "headers": [
         {
@@ -833,6 +865,20 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "asksydscience.myclover.com"
+        }
+      ],
+      "destination": "/asksydscience/index.html"
+    },
+    {
+      "source": "/asksydscience/",
+      "destination": "/asksydscience/index.html"
+    },
     {
       "source": "/Xircle",
       "destination": "/xircle/index.html"
