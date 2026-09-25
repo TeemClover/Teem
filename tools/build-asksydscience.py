@@ -18,15 +18,6 @@ def img(name, alt, cls='', eager=False, responsive=False):
     srcset = f' srcset="/asksydscience/assets/{name}-800.webp 800w, /asksydscience/assets/{name}.webp {width}w" sizes="(max-width: 700px) 100vw, 65vw"' if responsive else ''
     return f'<img class="{cls}" src="/asksydscience/assets/{name}.webp"{srcset} alt="{e(alt)}" width="{width}" height="{height}" {attrs} decoding="async">'
 
-rooms = ''.join(f'''<article class="home-corner">
-  <a class="house-door" href="/asksydscience/{r['id']}/" data-room="{r['id']}">
-    <div class="door-image">{img(r['image'],r['alt'],responsive=True)}<span class="door-number">{r['n']}</span><span class="door-enter" aria-hidden="true">↗</span></div>
-    <div class="door-copy"><small>{e(r['english'])}</small><strong>{e(r['title'])}</strong></div>
-  </a>
-  <div class="corner-note"><h3>{e(r['noteTitle'])}</h3><p>{e(r['note'])}</p><a class="corner-link" href="/asksydscience/{r['id']}/">{e(r['linkLabel'])}<span aria-hidden="true">→</span></a></div>
-</article>''' for r in d['rooms'] if r.get('note'))
-workshop_room = next(r for r in d['rooms'] if r['id'] == 'workshop')
-workshop_invitation = f'''<a class="house-door room-invitation" href="/asksydscience/workshop/" data-room="workshop"><span class="invitation-number" aria-hidden="true">04</span><span><small>{e(workshop_room['english'])}</small><strong>{e(workshop_room['title'])}</strong><span class="invitation-copy">{e(workshop_room['text'])}</span></span><span class="invitation-action">รู้จักเวิร์กช็อป <span aria-hidden="true">↗</span></span></a>'''
 filters = ''.join(f'<button type="button" data-filter="{f["value"]}" aria-pressed="{str(f["value"]=="all").lower()}">{e(f["label"])}</button>' for f in d['storiesIntro']['filters'])
 story_cards, story_templates = [], []
 for i,s in enumerate(d['stories']):
@@ -54,14 +45,7 @@ register_steps=''.join(f'<li><span>0{i+1}</span>{e(x)}</li>' for i,x in enumerat
 
 ui_json = json.dumps(d['ui'], ensure_ascii=False).replace('<', '\\u003c')
 
-hero_section=f'''<section class="hero" id="home" aria-labelledby="hero-title"><div class="hero-art">{img('hero-home',d['editorial']['heroAlt'],eager=True,responsive=True)}</div><div class="hero-wash"></div><div class="hero-inner wrap"><div class="hero-copy"><div class="eyebrow-pill">{e(d['hero']['eyebrow'])}{leaf()}</div><h1 id="hero-title">{e(d['hero']['headlineLines'][0])}<br>{e(d['hero']['headlineLines'][1])}</h1><p class="hero-sub">{e(d['hero']['subheadline'])}</p><p class="hero-body">{e(d['hero']['body'])}</p><div class="hero-actions"><a class="button" href="#rooms">{e(d['hero']['primary'])}<span aria-hidden="true">→</span></a><button class="hero-film js-only" type="button" data-house-film="welcome"><span class="hero-play" aria-hidden="true">▶</span>{e(d['hero']['secondary'])}</button></div><div class="handnote">{lines(d['hero']['handnote'])}<span>— Syd ♡</span></div></div></div><div class="hero-caption">{e(d['editorial']['imageNotice'])}</div></section>'''
-
-directory_section=f'''<section class="home-directory section wrap" id="rooms" aria-labelledby="rooms-title">
-<div class="directory-heading"><div><span class="kicker">LITTLE NOTES FROM A LIVING HOME</span><h2 id="rooms-title">{e(d['editorial']['welcomeTitle'])}</h2></div><p>{e(d['editorial']['welcomeBody'])}</p></div>
-<div class="house-doors">{rooms}</div>
-<div class="home-image-note">ภาพ AI จำลองซิดในมุมต่าง ๆ ของบ้าน · บันทึกตัวอย่างสำหรับอ่านด้วยกัน</div>
-{workshop_invitation}
-</section>'''
+home_editorial = (ROOT / 'tools/asksydscience/home-editorial.html').read_text().replace('{{leaf}}', leaf())
 
 stories_section=f'''<section class="stories section" id="stories" aria-labelledby="stories-title"><div class="wrap"><div class="section-heading reveal"><div><div class="section-marker"><span>03</span><i></i><small>THE LIVING ROOM</small></div><h1 id="stories-title">{e(d['storiesIntro']['title'])}</h1><p>{e(d['storiesIntro']['body'])}</p></div><div class="margin-note">{lines(d['editorial']['storiesNote'])}{leaf()}</div></div><div class="filter-row"><div class="filters" role="group" aria-label="{e(d['ui']['topicFilter'])}">{filters}</div><span id="story-count" aria-live="polite">{e(d['ui']['resultPrefix'])}3{e(d['ui']['resultSuffix'])}</span></div><div class="story-grid">{''.join(story_cards)}</div><div class="editorial-note"><span aria-hidden="true">◌</span><p>{e(d['storiesIntro']['draftNote'])}<br><span>{e(d['editorial']['storyImageNotice'])}</span></p></div><div class="original-shelf"><div><span class="kicker">MEET SYD, IN HER OWN WORDS</span><h3>จากช่องของซิด</h3><p>แวะดูวิธีเล่าเรื่องของซิด ผ่านคลิปต้นฉบับบน TikTok</p></div><div class="original-clips">{original_clips}</div></div></div></section>'''
 
@@ -102,16 +86,18 @@ def page_document(page, body, page_templates=''):
     if page in PAGE_ORDER:
         next_page = PAGE_ORDER[(PAGE_ORDER.index(page)+1) % len(PAGE_ORDER)]
         onward=f'<aside class="room-onward wrap"><span class="kicker">TAKE ANOTHER LITTLE STEP</span><a href="/asksydscience/{next_page}/">แวะต่อที่{e(ROOM_LABELS[next_page])}<span aria-hidden="true">→</span></a><a class="onward-home" href="/asksydscience/">กลับไปเลือกห้อง</a></aside>'
+    home_styles = '<link rel="stylesheet" href="/asksydscience/home-editorial.css">' if page == 'home' else ''
+    home_footer = f'<div class="ed-footer-note"><p>{lines(d["editorial"]["footerMessage"])}</p>{leaf()}</div>' if page == 'home' else ''
     return f'''<!doctype html>
 <html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f6f4eb"><meta name="description" content="{e(d['meta']['description'])}"><title>{e(title)}</title>
 <link rel="icon" href="/asksydscience/favicon.svg" type="image/svg+xml"><link rel="preload" href="/asksydscience/assets/fonts/ibm-plex-sans-thai-thai-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/asksydscience/style.css"><link rel="stylesheet" href="/asksydscience/house.css"><link rel="stylesheet" href="/asksydscience/house-experiences.css"><link rel="stylesheet" href="/asksydscience/pages.css"><link rel="stylesheet" href="/asksydscience/film-motion.css">
+<link rel="stylesheet" href="/asksydscience/style.css"><link rel="stylesheet" href="/asksydscience/house.css"><link rel="stylesheet" href="/asksydscience/house-experiences.css"><link rel="stylesheet" href="/asksydscience/pages.css"><link rel="stylesheet" href="/asksydscience/film-motion.css">{home_styles}
 <script id="site-ui" type="application/json">{ui_json}</script><script src="/asksydscience/app.js" defer></script><script src="/asksydscience/house-experiences.js" defer></script><script src="/asksydscience/film-motion.js" defer></script></head>
 <body data-page="{page}"><a class="skip-link" href="#main">{e(d['ui']['skip'])}</a>
 <div class="demo-strip"><span>A MINDFUL HOME, BY SYD</span><span>{e(d['editorial']['demoLabel'])}<i aria-hidden="true"></i></span></div>
 <header id="site-header"><div class="nav-wrap"><a class="wordmark" href="/asksydscience/" aria-label="{e(d['ui']['home'])}">AskSydScience{leaf()}</a><nav class="desktop-nav" aria-label="{e(d['ui']['mainNav'])}">{menu}</nav><a class="header-hello" href="/asksydscience/about/">รู้จักซิด<span aria-hidden="true">↗</span></a><button class="menu-toggle js-only" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="{e(d['ui']['menu'])}"><span></span><span></span></button></div><nav id="mobile-menu" aria-label="{e(d['ui']['mobileNav'])}" hidden>{menu}<a href="/asksydscience/about/">รู้จักซิด</a><a href="/asksydscience/#rooms">{e(d['editorial']['start'])}</a></nav><div id="reading-progress" aria-hidden="true"></div></header>
 <main id="main">{breadcrumb}{body}{onward}</main>
-<footer class="house-footer"><div class="wrap"><div class="house-footer-brand"><a class="wordmark" href="/asksydscience/">AskSydScience</a><p>A healthier you. A kinder world.</p></div><nav aria-label="ท้ายบ้าน"><a href="/asksydscience/about/">รู้จักซิด</a><a href="{e(d['links']['tiktok'])}" target="_blank" rel="noopener noreferrer">TikTok ↗<span class="sr-only">{e(d['ui']['newTab'])}</span></a><a class="studio-link" href="/asksydscience/studio/">ลองดูหลังบ้าน ↗</a></nav><small>{e(d['notice'])}</small></div></footer>
+<footer class="house-footer">{home_footer}<div class="wrap"><div class="house-footer-brand"><a class="wordmark" href="/asksydscience/">AskSydScience</a><p>A healthier you. A kinder world.</p></div><nav aria-label="ท้ายบ้าน"><a href="/asksydscience/about/">รู้จักซิด</a><a href="{e(d['links']['tiktok'])}" target="_blank" rel="noopener noreferrer">TikTok ↗<span class="sr-only">{e(d['ui']['newTab'])}</span></a><a class="studio-link" href="/asksydscience/studio/">ลองดูหลังบ้าน ↗</a></nav><small>{e(d['notice'])}</small></div></footer>
 <dialog id="detail-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button class="dialog-close" data-close-dialog aria-label="{e(d['dialogs']['close'])}">×</button><span class="kicker">ASK SYD SCIENCE · A LIVING HOME</span><h2 id="dialog-title"></h2><div id="dialog-content"></div></div></dialog>
 {page_templates}
 
@@ -119,7 +105,7 @@ def page_document(page, body, page_templates=''):
 </body></html>'''
 
 pages = {
-    'home': (hero_section + directory_section, ''),
+    'home': (home_editorial, ''),
     'kitchen': (kitchen_body, ''),
     'mindfulness': (mindfulness_body, ''),
     'stories': (stories_section, ''.join(story_templates)),

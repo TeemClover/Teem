@@ -12,4 +12,4 @@ Each scene used one reference-based edit through built-in GPT Imagegen (`image_g
 
 The individual records retain complete prompts, input roles, generator output paths, encoding details, and composition QA, including differences from the requested figure scale. The final room-dominant compositions were visually accepted for this demo.
 
-The homepage shows all three full-room images alongside visible reading notes. The dedicated kitchen and mindfulness pages preserve their full 3:2 frames; About uses the reading scene with its letter on the left on desktop and below the full image at widths up to 1000 px. The workshop keeps its original empty studio backdrop so the book mockup does not cover Sydney.
+The homepage now shows all three full-room images in the friendship gallery’s wooden frames, linking to their dedicated rooms. The dedicated kitchen and mindfulness pages preserve their full 3:2 frames; About uses the reading scene with its letter on the left on desktop and below the full image at widths up to 1000 px. The workshop keeps its original empty studio backdrop so the book mockup does not cover Sydney.
