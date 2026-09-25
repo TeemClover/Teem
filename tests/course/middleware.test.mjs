@@ -208,3 +208,22 @@ test('Ako root rewrite and preview-only behavior remain scoped to the original r
     assertNext(await invoke('/course/?__ako_preview=1'));
   } finally { process.env.VERCEL_ENV = fixture.VERCEL_ENV; }
 });
+
+test('AskSydScience root serves the demo on its exact host and preserves query parameters', async () => {
+  const host = 'asksydscience.myclover.com';
+  for (const pathname of ['/', '/?from=demo&room=stories']) {
+    const response = await invoke(pathname, undefined, host);
+    const expected = new URL(pathname, `https://${host}`);
+    expected.pathname = '/asksydscience/index.html';
+    assert.equal(response.headers.get('x-middleware-rewrite'), expected.toString());
+    assert.equal(response.headers.get('location'), null);
+    assert.match(response.headers.get('cache-control'), /no-store/);
+    assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow');
+  }
+  for (const pathname of ['/asksydscience/', '/asksydscience/app.js', '/api/auth']) {
+    assertNext(await invoke(pathname, undefined, host), pathname);
+  }
+  for (const otherHost of ['www.myclover.com', 'myclover.com', 'asksydscience.myclover.com.example.com']) {
+    assertNext(await invoke('/', undefined, otherHost), otherHost);
+  }
+});
