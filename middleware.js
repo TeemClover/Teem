@@ -134,6 +134,16 @@ export default async function middleware(request) {
   // Preserve the original matcher exemptions for unrelated routes.
   if (/^\/(?:api|_next|_vercel)/.test(pathname) || pathname.includes('.')) return next();
 
+  // Resolve this host before the shared static home page is selected.
+  if (url.hostname === 'asksydscience.myclover.com' && pathname === '/') {
+    const destination = new URL(request.url);
+    destination.pathname = '/asksydscience/index.html';
+    return rewrite(destination, { headers: {
+      'Cache-Control': 'no-store, max-age=0',
+      'X-Robots-Tag': 'noindex, nofollow',
+    } });
+  }
+
   const isAkoDomain = url.hostname === 'ako.myclover.com';
   const isPreviewCheck =
     process.env.VERCEL_ENV !== 'production' &&
