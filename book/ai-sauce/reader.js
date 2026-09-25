@@ -14,6 +14,8 @@ async function load() {
     if (!res.ok) throw new Error(String(res.status));
     const m = await res.json();
     total = Number(m.totalPages) || 0;
+    const first = (m.pages || [])[0];
+    if (first?.width && first?.height) book.style.aspectRatio = `${first.width} / ${first.height}`; // the guide is a 9:16 phone book
     (m.pages || []).slice(0, 10).forEach((p, i) => {
       const s = document.createElement('section');
       s.className = 'page'; s.setAttribute('aria-label', `หน้า ${i + 1}`);

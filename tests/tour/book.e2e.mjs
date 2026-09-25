@@ -56,7 +56,11 @@ try {
   }
   { // no preview published yet: the lock page still works
     const ctx = await browser.newContext();
-    await ctx.route('**/*', r => r.request().url().startsWith(base) ? r.continue() : r.abort());
+    await ctx.route('**/*', r => {
+      const url = r.request().url();
+      if (url.endsWith('/book/ai-sauce/pages/manifest.json')) return r.fulfill({status: 404, body: ''});
+      return url.startsWith(base) ? r.continue() : r.abort();
+    });
     const page = await ctx.newPage(); await page.goto(base + '/book/ai-sauce/');
     await page.waitForSelector('#empty:not([hidden])');
     assert.equal(await page.$$eval('#book .page', p => p.length), 1);
