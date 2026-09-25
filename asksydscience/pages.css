@@ -112,3 +112,79 @@
  .house-footer small{display:block;font-size:8px;margin-top:5px;padding-top:10px;line-height:1.6}
 }
 @media(max-width:370px){[data-page="home"] .hero h1{font-size:41px}[data-page="home"] .hero-sub{font-size:19px}[data-page="home"] .hero-actions{gap:10px}[data-page="home"] .hero-actions .button{padding-inline:13px;font-size:12px}[data-page="home"] .hero-film{font-size:11px}}
+
+/* Read a little of the house before choosing where to stay. */
+[data-page="home"] .home-directory{padding-bottom:38px}
+[data-page="home"] .directory-heading>p{max-width:365px}
+[data-page="home"] .house-doors{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.home-corner{min-width:0;display:flex;flex-direction:column}
+[data-page="home"] .home-corner .door-image{aspect-ratio:3/2;border-radius:5px;box-shadow:0 5px 18px #3747310c}
+[data-page="home"] .home-corner .door-image img{object-fit:contain;object-position:center}
+[data-page="home"] .home-corner .door-number{font-size:28px;text-shadow:0 1px 8px #293c25}
+[data-page="home"] .home-corner .door-copy{padding-top:15px}
+[data-page="home"] .home-corner .door-copy>small{font-size:9px;letter-spacing:.13em}
+[data-page="home"] .home-corner .door-copy>strong{font-size:15px;font-weight:400;color:#78836b;margin-top:5px}
+.corner-note{padding-top:12px;display:flex;flex:1;flex-direction:column}
+.corner-note h3{font-size:21px;font-weight:600;line-height:1.5;letter-spacing:-.02em;color:#304834}
+.corner-note p{font-size:14px;line-height:1.95;color:#66705e;margin-top:11px;margin-bottom:13px}
+.corner-link{display:flex;align-items:center;gap:16px;min-height:42px;margin-top:auto;font-size:12px;font-weight:600;color:#3c5a3f;width:fit-content}
+.corner-link>span{font-size:20px;font-weight:400;transition:transform .2s}
+.corner-link:hover>span{transform:translateX(4px)}
+.home-image-note{font-size:10px;color:#849077;margin:18px 0 20px;line-height:1.7}
+[data-page="home"] .room-invitation{display:flex;align-items:center;gap:22px;border-block:1px solid #d8ddce;padding:21px 0}
+.invitation-number{font:italic 30px/1 var(--serif);color:#94a282}
+.room-invitation>span:nth-child(2){display:grid;grid-template-columns:auto 1fr;gap:2px 25px;align-items:baseline}
+.room-invitation small{grid-column:1/-1;font-size:8px;letter-spacing:.16em;color:#839277}
+.room-invitation strong{font-size:19px;line-height:1.6;font-weight:600}
+.invitation-copy{font-size:13px;color:#77816c}
+.invitation-action{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:12px;white-space:nowrap;color:#435b3c}
+.invitation-action>span{font-size:23px}
+.room-invitation:hover .invitation-action{text-decoration:underline;text-underline-offset:5px}
+@media(min-width:601px) and (max-width:1000px){
+ [data-page="home"] .house-doors{gap:18px}
+ .corner-note h3{font-size:18px}
+ .corner-note p{font-size:13px;line-height:1.85}
+ [data-page="home"] .home-corner .door-copy>small{font-size:7px;letter-spacing:.09em}
+ .room-invitation>span:nth-child(2){display:block}
+ .room-invitation small,.room-invitation strong,.invitation-copy{display:block}
+}
+@media(max-width:600px){
+ [data-page="home"] .house-doors{grid-template-columns:1fr;gap:31px}
+ [data-page="home"] .home-directory{padding-bottom:25px}
+ [data-page="home"] .home-corner .door-copy{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:13px}
+ [data-page="home"] .home-corner .door-copy>small{font-size:8px;letter-spacing:.1em}
+ [data-page="home"] .home-corner .door-copy>strong{font-size:12px;margin:0}
+ [data-page="home"] .home-corner .door-number{font-size:25px}
+ .corner-note{padding-top:9px}
+ .corner-note h3{font-size:22px}
+ .corner-note p{font-size:14px;line-height:1.85;margin:8px 0 5px}
+ .corner-link{font-size:12px;min-height:40px}
+ .home-image-note{font-size:9px;margin:13px 0 20px}
+ [data-page="home"] .room-invitation{flex-wrap:wrap;column-gap:16px;row-gap:7px;padding-block:19px}
+ .invitation-number{font-size:27px;align-self:flex-start;margin-top:11px}
+ .room-invitation>span:nth-child(2){display:block;flex:1}
+ .room-invitation small,.room-invitation strong,.invitation-copy{display:block}
+ .room-invitation strong{font-size:18px}
+ .invitation-copy{font-size:12px;line-height:1.8}
+ .invitation-action{font-size:11px;gap:12px;margin-left:43px;min-height:35px}
+}
+@media(prefers-reduced-motion:reduce){.corner-link>span{transition:none}.corner-link:hover>span{transform:none}}
+
+/* Keep the room and its reader visible beside Sydney's letter. */
+[data-page="kitchen"] .hx-kitchen>.hx-room-picture{width:min(1240px,calc(100% - 80px));height:auto;aspect-ratio:3/2;margin-inline:auto;border-radius:5px}
+[data-page="kitchen"] .hx-kitchen>.hx-room-picture>img{display:block;object-fit:contain;object-position:center}
+[data-page="mindfulness"] .hx-sanctuary{max-width:1536px;margin-inline:auto}
+[data-page="mindfulness"] .hx-sanctuary>.hx-room-picture{height:auto;aspect-ratio:3/2}
+[data-page="mindfulness"] .hx-sanctuary>.hx-room-picture>img{display:block;object-fit:contain;object-position:center}
+[data-page="about"] .about-content{justify-content:flex-start}
+[data-page="about"] .about-image img{object-position:right center}
+[data-page="about"] .letter{width:45%;max-width:515px;transform:rotate(-1deg)}
+@media(max-width:1000px){
+ [data-page="about"] .about{padding:0;background:#e8e8d8}
+ [data-page="about"] .about-image{position:relative;inset:auto;width:100%;aspect-ratio:3/2;z-index:0}
+ [data-page="about"] .about-image img{display:block;width:100%;height:100%;object-fit:contain}
+ [data-page="about"] .about-content{justify-content:center;padding-block:25px 36px}
+ [data-page="about"] .letter{width:100%;max-width:640px;transform:none}
+ [data-page="about"] .about>.art-label{top:calc(100vw * 2 / 3 - 25px);bottom:auto}
+}
+@media(max-width:600px){[data-page="kitchen"] .hx-kitchen>.hx-room-picture{width:calc(100% - 40px)}[data-page="kitchen"] .hx-picture-note{font-size:21px;top:20px;left:20px}}
