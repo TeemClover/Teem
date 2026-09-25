@@ -1,7 +1,7 @@
 {
   "inputs": {
     "app/lucky-source.js": {
-      "bytes": 966,
+      "bytes": 1164,
       "imports": [],
       "format": "esm"
     },
@@ -47,7 +47,7 @@
       "format": "esm"
     },
     "app/story.js": {
-      "bytes": 4230,
+      "bytes": 4212,
       "imports": [],
       "format": "esm"
     },
@@ -531,7 +531,7 @@
       "format": "esm"
     },
     "app/main.js": {
-      "bytes": 43903,
+      "bytes": 43867,
       "imports": [
         {
           "path": "app/lucky-source.js",
@@ -594,7 +594,7 @@
       "entryPoint": "app/main.js",
       "inputs": {
         "app/lucky-source.js": {
-          "bytesInOutput": 1495
+          "bytesInOutput": 1801
         },
         "app/analytics-contract.js": {
           "bytesInOutput": 2727
@@ -618,13 +618,13 @@
           "bytesInOutput": 2039
         },
         "app/story.js": {
-          "bytesInOutput": 6683
+          "bytesInOutput": 6487
         },
         "app/main.js": {
-          "bytesInOutput": 48623
+          "bytesInOutput": 48539
         }
       },
-      "bytes": 139873
+      "bytes": 139899
     },
     "assets/hd-materials-BL57NSQL.js": {
       "imports": [

@@ -11,7 +11,7 @@ import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 const require=createRequire(import.meta.url);
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const output=path.join(root,'assets/og-home-built-with-love-20260924.jpg');
+const output=path.join(root,'assets/og-our-house-lucky-source-20260926.jpg');
 const fontfile=process.env.HOUSE_OG_FONT_FILE;
 const font=process.env.HOUSE_OG_FONT_NAME||'Thonburi';
 if(!fontfile)throw new Error('Set HOUSE_OG_FONT_FILE to a licensed Thai font file.');
@@ -31,8 +31,8 @@ const text=async(value,size,color,weight='normal')=>sharp({text:{
 const photograph=await sharp(path.join(root,'media/photos/exterior-01.webp'))
  .resize({width:1200}).extract({left:0,top:26,width:1200,height:630}).toBuffer();
 const shade=Buffer.from(`<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#152331" stop-opacity="0"/><stop offset=".28" stop-color="#152331" stop-opacity=".12"/><stop offset="1" stop-color="#152331" stop-opacity=".94"/></linearGradient></defs><rect x="0" y="340" width="1200" height="290" fill="url(#fade)"/><rect x="970" y="25" width="198" height="58" rx="29" fill="#f9fbfc" fill-opacity=".92"/></svg>`);
-const title=await text('บ้านที่เราสร้างด้วยรัก',58,'#ffffff','bold');
-const subtitle=await text('10 ปีของครอบครัวเรา · เปิดให้สำรวจใน 3D',25,'#edf3f7');
+const title=await text('ชมบ้านของเรา',58,'#ffffff','bold');
+const subtitle=await text('ใช้บ้านคุณเป็นแบบ เริ่มจากซอสสำเร็จรูปของเรา',25,'#edf3f7');
 const mark=await sharp(path.join(root,'assets/myclover-logo.png')).resize(40,44,{fit:'inside'}).png().toBuffer();
 const brand=await text('myClover',22,'#263342');
 await sharp(photograph).composite([
@@ -46,4 +46,4 @@ const metadata=await sharp(output).metadata();
 if(metadata.width!==1200||metadata.height!==630)throw new Error('Unexpected OG dimensions');
 if(metadata.exif||metadata.xmp||metadata.iptc)throw new Error('Private metadata in OG output');
 await rm(fontRuntime,{recursive:true,force:true});
-console.log('Created assets/og-home-built-with-love-20260924.jpg (1200 × 630)');
+console.log('Created assets/og-our-house-lucky-source-20260926.jpg (1200 × 630)');

@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {WORK_TITLE,PAGE_TITLE,PAGE_DESCRIPTION,HERO_SUBTITLE,ABOUT_HTML} from '../app/story.js';
+import {WORK_TITLE,SHARE_TITLE,PAGE_TITLE,PAGE_DESCRIPTION,HERO_SUBTITLE,ABOUT_HTML} from '../app/story.js';
 const canonical='https://www.myclover.com/showcase/house/';
-const imageName='assets/og-home-built-with-love-20260924.jpg';
+const imageName='assets/og-our-house-lucky-source-20260926.jpg';
 
 test('share metadata uses the owner copy and one absolute canonical URL',async()=>{
  const html=await readFile(new URL('../app/index.html',import.meta.url),'utf8');
  const metadata=new Map([...html.matchAll(/<meta (?:name|property)="([^"]+)" content="([^"]*)"/g)].map(match=>[match[1],match[2]]));
  assert.equal(html.match(/<title>(.*?)<\/title>/s)?.[1],PAGE_TITLE);
  assert.equal(metadata.get('description'),PAGE_DESCRIPTION);
- assert.equal(metadata.get('og:title'),WORK_TITLE);
+ assert.equal(metadata.get('og:title'),SHARE_TITLE);
  assert.equal(metadata.get('og:description'),PAGE_DESCRIPTION);
  assert.equal(metadata.get('og:url'),canonical);
  assert.equal(metadata.get('og:type'),'website');
@@ -20,11 +20,11 @@ test('share metadata uses the owner copy and one absolute canonical URL',async()
  assert.equal(metadata.get('og:image:width'),'1200');
  assert.equal(metadata.get('og:image:height'),'630');
  assert.equal(metadata.get('twitter:card'),'summary_large_image');
- assert.equal(metadata.get('twitter:title'),WORK_TITLE);
+ assert.equal(metadata.get('twitter:title'),SHARE_TITLE);
  assert.equal(metadata.get('twitter:description'),PAGE_DESCRIPTION);
  assert.equal(metadata.get('twitter:image'),canonical+imageName);
  assert.equal(metadata.get('twitter:image:alt'),metadata.get('og:image:alt'));
- assert.ok(metadata.get('og:image:alt')?.includes(WORK_TITLE));
+ assert.ok(metadata.get('og:image:alt')?.includes(SHARE_TITLE));
  assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`));
  assert.ok(html.includes(HERO_SUBTITLE));
  assert.doesNotMatch(html,/บ้านตัวอย่าง|id="wall-mode"|\/Users\/|file:\/\//);
@@ -49,7 +49,10 @@ test('share card is a real 1200 by 630 JPEG without original-image metadata',asy
 });
 
 test('story keeps first-day context, honest limitations and a low-priority learner route',()=>{
- assert.match(ABOUT_HTML,/สำหรับผม ภาษารักอย่างหนึ่งคือการสร้าง/);
+ assert.match(ABOUT_HTML,/บ้านของคุณก็ทำแบบนี้ได้/);
+ assert.match(ABOUT_HTML,/ซอสสำเร็จรูป/);
+ assert.match(ABOUT_HTML,/data-action="lucky-source"/);
+ assert.equal(WORK_TITLE,'บ้านของเรา');
  assert.match(ABOUT_HTML,/ภาพจากวันแรกที่เราเข้าอยู่/);
  assert.match(ABOUT_HTML,/ขอบคุณที่แวะมาเยี่ยมบ้านของเรานะครับ/);
  assert.match(ABOUT_HTML,/<details class="story-sources">/);

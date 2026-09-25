@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-25T18:00:07.216Z",
+  "checkedAt": "2026-09-25T18:15:39.807Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
@@ -7,7 +7,7 @@
     "esbuild": "0.25.10"
   },
   "scope": "Built public HTML, assets, image derivatives and the allowlisted generic ZIP on the unlisted inbox handoff page only. No download from the main house page or private house files.",
-  "fileCount": 72,
+  "fileCount": 73,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -36,34 +36,34 @@
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 369719,
-      "gzipBytes": 200435
+      "bytes": 369736,
+      "gzipBytes": 200374
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1005478,
-      "gzipBytes": 371861
+      "bytes": 1005495,
+      "gzipBytes": 371800
     },
     "optInHDAdditional": {
       "bytes": 64030,
       "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1069508,
-      "gzipBytes": 392498
+      "bytes": 1069525,
+      "gzipBytes": 392437
     },
     "imageDerivatives": {
       "bytes": 3368592,
       "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4826224,
-      "gzipBytes": 4122842
+      "bytes": 5031380,
+      "gzipBytes": 4325612
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 14586,
-      "gzipBytes": 3686
+      "bytes": 14577,
+      "gzipBytes": 3648
     },
     "assets/chunk-BBR2P3JY.js": {
       "bytes": 16276,
@@ -118,8 +118,8 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 139873,
-      "gzipBytes": 27899
+      "bytes": 139899,
+      "gzipBytes": 27876
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
@@ -128,6 +128,10 @@
     "assets/og-home-built-with-love-20260924.jpg": {
       "bytes": 206962,
       "gzipBytes": 204513
+    },
+    "assets/og-our-house-lucky-source-20260926.jpg": {
+      "bytes": 205139,
+      "gzipBytes": 202831
     },
     "assets/onboarding.css": {
       "bytes": 8062,

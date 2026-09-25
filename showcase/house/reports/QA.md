@@ -1,3 +1,13 @@
+# 2026-09-26 — Our house / Lucky Source copy refresh
+
+Renamed the experience to “บ้านของเรา” and sharing to “ชมบ้านของเรา.” The overview and contact dialog invite visitors to start with their own plans/photos and myClover’s ready-made sauce. The footer opens the existing inbox contact path; it does not link to the ZIP handoff page. The 10-year context remains in the About dialog.
+
+Current local checks: build, 98 house tests, syntax check, house-data validation and public audit pass. Browser checks at simulated 360 × 800, 390 × 844 and 1440 × 1000 verify the runtime title, compact overview, contact and About dialogs, Escape, correct LINE URL and no horizontal overflow. No browser errors were reported. These are browser viewport simulations, not physical-phone tests.
+
+The new 1200 × 630 JPEG `og-our-house-lucky-source-20260926.jpg` uses the approved public photograph and real Thai typography. Full-size and thumbnail inspected. Metadata is server-rendered HTML; platform-specific Facebook/LINE preview cache refresh has not been verified. Deployment verification is reported with the actual published commit after pushing.
+
+---
+
 # Final release: house story, first-visit guide and wall controls — 2026-09-24
 
 All 91 tests, build, JavaScript syntax checks, house-data validation and public-output audit pass for this final local release. The owner has authorized publication; this entry records local verification and does not claim that the new release is deployed in production. Earlier entries below describe historical builds.
