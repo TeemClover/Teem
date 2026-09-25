@@ -1,5 +1,4 @@
 import http from 'node:http';
-import {ZIP_NAME} from './lucky-source-archive.mjs';
 import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..');
@@ -11,7 +10,7 @@ http.createServer(async(req,res)=>{
     if(!url.startsWith('/showcase/house/')) {res.writeHead(404).end();return;}
     url=url.slice('/showcase/house/'.length)||'index.html';
     const file=path.resolve(root,url);
-    if(!file.startsWith(root+path.sep)||(/node_modules|reports|\.git|source[s-]|Source/.test(url)&&url!==`downloads/${ZIP_NAME}`)) {res.writeHead(404).end();return;}
+    if(!file.startsWith(root+path.sep)||/node_modules|reports|\.git|source[s-]|Source|^downloads\//.test(url)) {res.writeHead(404).end();return;}
     const s=await stat(file); if(!s.isFile())throw Error('not file');
     const data=await readFile(file);
     res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache','X-Content-Type-Options':'nosniff'}).end(data);

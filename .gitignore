@@ -35,3 +35,6 @@ PLAN-V*.md
 /test-results/
 /playwright-report/
 /coverage/
+
+# Inbox-only Lucky Source exports belong outside this public repository.
+/showcase/house/downloads/

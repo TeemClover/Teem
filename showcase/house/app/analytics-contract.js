@@ -3,7 +3,7 @@ export const FEATURES = Object.freeze({
  camera:'หมุน / ซูมบ้าน', inside:'เปิดดูข้างใน', floor:'เลือกชั้น', exploded:'แยกชั้น',
  rooms:'เลือกห้อง', model:'โมเดล', plan:'แปลน', photo:'รูปจริง', hd:'HD', sd:'SD',
  walls:'ปรับผนัง', layers:'บิลต์อิน / เฟอร์นิเจอร์', isolate:'แยกดูห้อง', focus:'ขยายพื้นที่ดูบ้าน',
- reset:'คืนมุมเดิม', ceiling:'ดูฝ้าห้อง', settings:'ตั้งค่าการแสดงผล', tour:'พาชมบ้าน', help:'วิธีเล่น', story:'เรื่องของบ้าน', learn:'เปิดข้อมูลห้องเรียน', course:'กดไปหน้าคอร์ส', source:'เปิด Lucky Source', source_download:'กดดาวน์โหลดซอสฟรี'
+ reset:'คืนมุมเดิม', ceiling:'ดูฝ้าห้อง', settings:'ตั้งค่าการแสดงผล', tour:'พาชมบ้าน', help:'วิธีเล่น', story:'เรื่องของบ้าน', learn:'เปิดข้อมูลห้องเรียน', course:'กดไปหน้าคอร์ส', source:'เปิด Lucky Source', source_download:'กดดาวน์โหลดซอส (รุ่นเดิม)', source_contact:'ทักขอซอส / พัฒนาต่อ'
 });
 export const SIGNALS = ['model_ready','model_error','hd_ready','hd_error','tour_complete','guide_seen','guide_started','guide_skipped','guide_closed','guide_completed'];
 export const ANALYTICS_KEY='myclover.house.stats.v1';

@@ -1,10 +1,11 @@
-import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {readFile,writeFile,mkdir,realpath} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {makeZip,FILES,ZIP_NAME,sha,validateLuckyArchive} from './lucky-source-archive.mjs';
+import {makeZip,FILES,VERSION,ZIP_NAME,sha,validateLuckyArchive} from './lucky-source-archive.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url)),repo=path.resolve(here,'../../..'),source=path.join(repo,'tools/lucky-house/starter');
 const require=createRequire(path.join(repo,'showcase/house/package.json')),{build}=require('esbuild');
+export async function buildLuckyArchive(){
 const master=await readFile(path.join(repo,'shelf/source/method/lucky-house-studio.md'),'utf8');
 const entries=new Map();const put=(name,body)=>{if(!FILES.includes(name)||entries.has(name))throw Error('Unexpected package file '+name);entries.set(name,Buffer.from(body));};
 for(const match of master.matchAll(/<!-- PACK:([^>]+) -->\n([\s\S]*?)(?=<!-- PACK:|<!-- PACK-END -->)/g))put(match[1],match[2].trim()+'\n');
@@ -18,6 +19,20 @@ for(const file of ['index.html','style.css','house-data.js','src/main.js','serve
 const bundled=await build({entryPoints:[path.join(source,'src/main.js')],bundle:true,format:'esm',write:false,minify:true,target:'es2022',external:['./house-data.js'],nodePaths:[path.join(repo,'showcase/house/node_modules')],legalComments:'eof'});
 put('starter/app.js',bundled.outputFiles[0].contents);
 const license=await readFile(path.join(repo,'showcase/house/node_modules/three/LICENSE'),'utf8');put('starter/THIRD-PARTY-LICENSES.txt','Three.js 0.180.0 (including OrbitControls)\nBundled for offline preview.\n\n'+license);
-put('USE-AND-CREDITS.txt','Lucky Source by myClover · 1.0.0 · 2026-09-26\n\nอาจารย์ทีมให้ชุดนี้ฟรี เพื่อเริ่มเรียนรู้และปรับสร้างงานของคุณเอง บอกต่อแพ็กเดิมพร้อมเครดิตได้\nซอสนี้ไม่รวมภาพ แปลน โลโก้ เรื่องครอบครัว หรือสิทธิในบ้านต้นแบบ และไม่ใช่แบบก่อสร้าง\nต้นแบบประสบการณ์: https://www.myclover.com/showcase/house/\nหลักการต้นทาง: shelf/source/method/sauce-working-principle.md v1.0.0\nสูตรประยุกต์: shelf/source/method/lucky-house-studio.md v1.0.0\nThree.js/OrbitControls ใช้ตาม MIT license ใน starter/THIRD-PARTY-LICENSES.txt\n');
-put('MANIFEST.json',JSON.stringify({name:'Lucky Source by myClover — House',version:'1.0.0',compiledAt:'2026-09-26',canonicalSource:'/shelf/source/method/lucky-house-studio.md',containsPrivateHouseData:false,files:[...entries].map(([name,body])=>({path:name,bytes:body.length,sha256:sha(body)}))},null,2)+'\n');
-const zip=makeZip(entries),report=validateLuckyArchive(zip);await mkdir(path.join(repo,'showcase/house/downloads'),{recursive:true});await writeFile(path.join(repo,'showcase/house/downloads',ZIP_NAME),zip);console.log(JSON.stringify(report,null,2));
+put('USE-AND-CREDITS.txt','Lucky Source by myClover · 1.1.0 · 2026-09-26\n\nอาจารย์ทีมส่งชุดนี้ให้ทาง inbox เพื่อเริ่มเควส AI กับสถาบัน myClover และปรับสร้างงานของคุณเอง\nเครดิตท้ายงาน: Lucky Source by myClover · ซอสจากเรา รสชาติของคุณ 🍀\nชวนคนที่อยากเริ่มหรือพัฒนาต่อทักมาคุยที่ https://line.me/ti/p/~teemclover ไม่วางแพ็ก ZIP ให้โหลดตรงบนเว็บ\nอ่านวิธีแก้ด้วยภาพและพัฒนาต่อใน 02-WHEN-SOMETHING-IS-WRONG.md, 03-NEXT-QUEST.md และ 04-PASS-THE-LUCK.md\nซอสนี้ไม่รวมภาพ แปลน โลโก้ เรื่องครอบครัว หรือสิทธิในบ้านต้นแบบ และไม่ใช่แบบก่อสร้าง\nต้นแบบประสบการณ์: https://www.myclover.com/showcase/house/\nหลักการต้นทาง: shelf/source/method/sauce-working-principle.md v1.0.0\nสูตรประยุกต์: shelf/source/method/lucky-house-studio.md v1.1.0\nThree.js/OrbitControls ใช้ตาม MIT license ใน starter/THIRD-PARTY-LICENSES.txt\n');
+put('MANIFEST.json',JSON.stringify({name:'Lucky Source by myClover — House',version:VERSION,distribution:'inbox',compiledAt:'2026-09-26',canonicalSource:'/shelf/source/method/lucky-house-studio.md',containsPrivateHouseData:false,files:[...entries].map(([name,body])=>({path:name,bytes:body.length,sha256:sha(body)}))},null,2)+'\n');
+const zip=makeZip(entries);validateLuckyArchive(zip);return zip;
+}
+export async function writeLuckyArchive(output){
+ if(!output)throw Error('Use --output /path/outside-repo/'+ZIP_NAME+' (inbox delivery only)');
+ const target=path.resolve(output);
+ const outside=p=>{const relative=path.relative(repo,p);return relative.startsWith('..'+path.sep);};
+ if(!outside(target)||path.extname(target)!=='.zip')throw Error('ZIP output must be outside the public repository');
+ await mkdir(path.dirname(target),{recursive:true});
+ if(!outside(await realpath(path.dirname(target))))throw Error('ZIP output must be outside the public repository');
+ try{if(!outside(await realpath(target)))throw Error('ZIP output must be outside the public repository');}catch(e){if(e.code!=='ENOENT')throw e;}
+ const zip=await buildLuckyArchive();await writeFile(target,zip);return {...validateLuckyArchive(zip),output:target};
+}
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ const at=process.argv.indexOf('--output');console.log(JSON.stringify(await writeLuckyArchive(at>=0?process.argv[at+1]:null),null,2));
+}

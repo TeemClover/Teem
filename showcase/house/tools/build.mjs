@@ -1,4 +1,3 @@
-import './build-lucky-source.mjs';
 import {build} from 'esbuild';
 import {copyFile,mkdir,writeFile,readdir,unlink} from 'node:fs/promises';
 import path from 'node:path';

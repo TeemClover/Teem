@@ -1,13 +1,13 @@
 {
-  "checkedAt": "2026-09-25T17:24:49.470Z",
+  "checkedAt": "2026-09-25T17:45:24.826Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
     "three": "0.180.0",
     "esbuild": "0.25.10"
   },
-  "scope": "Built public HTML, assets, image derivatives and the explicitly approved generic Lucky Source ZIP. No private plans or full student kits.",
-  "fileCount": 69,
+  "scope": "Built public HTML, assets and image derivatives. Lucky Source is delivered via inbox only; no downloadable ZIP, private plans or student kits.",
+  "fileCount": 68,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -36,34 +36,34 @@
   },
   "sizes": {
     "shellWithAllFontFacesAndPreviewImages": {
-      "bytes": 369981,
-      "gzipBytes": 200508
+      "bytes": 369719,
+      "gzipBytes": 200435
     },
     "firstModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1005740,
-      "gzipBytes": 371934
+      "bytes": 1005478,
+      "gzipBytes": 371861
     },
     "optInHDAdditional": {
       "bytes": 64030,
       "gzipBytes": 20637
     },
     "hdModelWithAllFontFacesAndPreviewImages": {
-      "bytes": 1069770,
-      "gzipBytes": 392571
+      "bytes": 1069508,
+      "gzipBytes": 392498
     },
     "imageDerivatives": {
       "bytes": 3368592,
       "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4804000,
-      "gzipBytes": 4110037
+      "bytes": 4624219,
+      "gzipBytes": 3933425
     }
   },
   "perFile": {
     "index.html": {
-      "bytes": 14589,
-      "gzipBytes": 3689
+      "bytes": 14586,
+      "gzipBytes": 3686
     },
     "assets/chunk-BBR2P3JY.js": {
       "bytes": 16276,
@@ -118,8 +118,8 @@
       "gzipBytes": 6566
     },
     "assets/home.js": {
-      "bytes": 140131,
-      "gzipBytes": 27968
+      "bytes": 139873,
+      "gzipBytes": 27899
     },
     "assets/myclover-logo.png": {
       "bytes": 53889,
@@ -142,8 +142,8 @@
       "gzipBytes": 1001
     },
     "assets/studio.css": {
-      "bytes": 32803,
-      "gzipBytes": 7679
+      "bytes": 32802,
+      "gzipBytes": 7678
     },
     "assets/wall-controls.css": {
       "bytes": 4068,
@@ -332,10 +332,6 @@
     "media/photos/study-01.webp": {
       "bytes": 131514,
       "gzipBytes": 131577
-    },
-    "downloads/lucky-source-house-v1.0.0.zip": {
-      "bytes": 179519,
-      "gzipBytes": 176539
     }
   },
   "measurement": "On-disk byte counts and gzip level-9 compression estimates. Default SD follows static dependencies of the shell and lazy scene entry, excluding optional HD dynamic imports. HD additional counts only dependencies absent from SD. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.",

@@ -1,5 +1,4 @@
 import test from 'node:test';
-import {ZIP_NAME,validateLuckyArchive} from '../tools/lucky-source-archive.mjs';
 import assert from 'node:assert/strict';
 import {readFile, readdir} from 'node:fs/promises';
 import {initialState, reduce} from '../app/state.js';
@@ -18,13 +17,13 @@ test('fixed fittings and movable furniture stay independent through room navigat
   assert.equal(reset.builtins,true);assert.equal(reset.furniture,true);assert.equal(reset.isolate,true);
 });
 
-test('public preview offers only the explicitly approved generic Lucky Source pack',async()=>{
+test('public preview invites contact without publishing any downloadable packs',async()=>{
   const root=new URL('../',import.meta.url);
   const downloads=await readdir(new URL('downloads/',root)).catch(e=>{if(e.code==='ENOENT')return [];throw e;});
-  assert.deepEqual(downloads,[ZIP_NAME]);
-  validateLuckyArchive(await readFile(new URL(`downloads/${ZIP_NAME}`,root)));
-  for(const file of ['app/index.html','app/main.js','index.html','assets/home.js']){
+  assert.deepEqual(downloads,[]);
+  for(const file of ['app/index.html','app/main.js','app/lucky-source.js','index.html','assets/home.js']){
     const content=await readFile(new URL(file,root),'utf8');
+    assert.doesNotMatch(content,/(?:href|src)=["'][^"']*downloads\/|\bdownload(?:\s|>)/i,file);
     assert.doesNotMatch(content,/home-explorer-(?:starter|3d-source)\.zip|href=["'][^"']*LEARN\.md/i,file);
   }
 });
