@@ -25,13 +25,21 @@ up the same object. Photos (food, screens, portrait, cards, compass) reuse image
 site and load lazily.
 
 **SD / HD:** SD is the default and is remembered per viewer (`mc:tour:quality`). HD rebuilds
-the house with 2× textures, rounded-furniture detail, soft 2048 px shadows (also on phones),
-more meadow/hedge detail and up to 2× pixel ratio.
+the house with 2× procedural textures plus normal maps (wood grain, plank seams, fabric weave,
+plaster, tiles, cork, grass), 16× anisotropy, soft 2048 px shadows (also on phones), ambient
+occlusion (GTAO) and a light bloom on lamps and screens, up to 2× pixel ratio (1.75 on phones),
+and HD-only props: clocks, wall shelves and vases, a globe and bookends, utensil rail and
+kettle, desk lamp and keyboard keys, pencil cups, garden lanterns, a bench and a mailbox.
+Post-processing add-ons are vendored from three.js r180 under `vendor/addons/` with their
+`three` import pointed at the vendored module. The AO pass skips sprites, particles, the sky
+and see-through meshes (otherwise they render as dark blocks).
 
 **No flicker by design:** the facade sinks into the ground and the roof lifts away (both
-opaque; no transparency sorting), the canvas follows its `100lvh` box and ignores phone toolbar
-resizes, the camera eases with real-time damping and long holds per room, and the sky is a
-gradient dome rather than a switching background colour.
+opaque; no transparency sorting); the canvas follows its `100lvh` box and ignores phone toolbar
+resizes; the camera eases with real-time damping and long holds per room; the sky is a
+gradient dome. The plinth sits 3 cm below the floors (coplanar faces z-fought on phones), the
+camera near plane is 0.3 m for depth precision, and the shadow camera follows the view in whole
+shadow-map texels in light space, so shadow edges do not shimmer while scrolling.
 
 **Lucky quest:** one four-leaf clover hides in the living room, kitchen, classroom and office.
 Tap it in 3D, or use the room card's hint button (press once for the hint, again to collect;

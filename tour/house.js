@@ -19,14 +19,18 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
 
   /* ---------- helpers ---------- */
   const M = (color, o = {}) => {
-    const key = color + JSON.stringify(o);
+    // key by texture uuid: JSON.stringify on a texture would serialise its whole canvas
+    const key = color + Object.entries(o).map(([k, v]) => `${k}:${v?.isTexture ? v.uuid : v}`).join(',');
     if (!matCache.has(key)) matCache.set(key, new THREE.MeshStandardMaterial({color, roughness: 0.72, ...o}));
     return matCache.get(key);
   };
+  const nm = (t, s = 1) => t ? {normalMap: t, normalScale: new THREE.Vector2(s, s)} : {}; // HD-only relief
   const fabric = color => hd
-    ? new THREE.MeshPhysicalMaterial({color, map: tex.fabric, roughness: 0.9, sheen: 0.6, sheenRoughness: 0.6, sheenColor: new THREE.Color(color).lerp(new THREE.Color('#ffffff'), 0.4)})
+    ? new THREE.MeshPhysicalMaterial({color, map: tex.fabric, ...nm(tex.fabricN, 0.8), roughness: 0.9, sheen: 0.6, sheenRoughness: 0.6, sheenColor: new THREE.Color(color).lerp(new THREE.Color('#ffffff'), 0.4)})
     : new THREE.MeshStandardMaterial({color, map: tex.fabric, roughness: 0.92});
-  const wood = (color = '#b07a4c') => M(color, {map: tex.grain, roughness: 0.5});
+  const wood = (color = '#b07a4c') => hd
+    ? M(color, {map: tex.grain, normalMap: tex.grainN, roughness: 0.42})
+    : M(color, {map: tex.grain, roughness: 0.5});
   function geo(kind, args) {
     const key = kind + args.join(',');
     if (!geoCache.has(key)) {
@@ -79,9 +83,9 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
   }
 
   /* ---------- ground & garden ---------- */
-  const ground = new THREE.Mesh(new THREE.CircleGeometry(160, 64), new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.grass, roughness: 1}));
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(160, 64), new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.grass, ...nm(tex.grassN), roughness: 1}));
   ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true; root.add(ground);
-  bx(root, [38.8, 0.4, D + 0.9], [-3, -0.4, 0], M('#d8cdb8', {roughness: 0.9}));
+  bx(root, [38.8, 0.4, D + 0.9], [-3, -0.43, 0], M('#d8cdb8', {roughness: 0.9})); // top sits 3 cm under the floors: coplanar faces flicker on phones
   const garden = group(root);
   for (let i = 0; i < 10; i++) { const s = new THREE.Mesh(geo('cyl', [0.42, 0.46, 0.08]), M('#dcd5c6', {roughness: 0.95})); place(s, garden, -19 + Math.sin(i * 0.8) * 0.3, 0.02, 4.6 + i * 1.05); }
   const TREES = [[-29, -6, 1.3], [-26, 7, 1], [-32, 2, 1.5], [23, -5, 1.3], [26, 4, 1.05], [21, 10, 0.85], [-8, -14, 1.6], [4, -15, 1.4], [15, -12, 1.2], [-20, -12, 1.3]];
@@ -115,23 +119,23 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
 
   /* ---------- shell: floors, back walls, partitions ---------- */
   const floorMat = {
-    wood: new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.wood, roughness: 0.5, metalness: 0.02}),
-    tile: new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.tile, roughness: 0.35}),
+    wood: new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.wood, ...nm(tex.woodN, 0.9), roughness: hd ? 0.38 : 0.5, metalness: 0.02}),
+    tile: new THREE.MeshStandardMaterial({color: '#ffffff', map: tex.tile, ...nm(tex.tileN, 0.8), roughness: hd ? 0.32 : 0.35}),
   };
   for (const [id, [x0, x1]] of Object.entries(ZONES)) {
     const f = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, 0.12, D), id === 'kitchen' ? floorMat.tile : floorMat.wood);
     f.position.set((x0 + x1) / 2, -0.06, 0); f.receiveShadow = true; root.add(f);
   }
   const wallMats = {
-    books: M('#ffffff', {map: tex.stripes}), living: M('#ffffff', {map: tex.stripes}),
-    kitchen: M('#f5e6bd', {map: tex.plaster}), classroom: M('#d6e6f2', {map: tex.plaster}), office: M('#ecd9cc', {map: tex.plaster}),
+    books: M('#ffffff', {map: tex.stripes, ...nm(tex.stripesN)}), living: M('#ffffff', {map: tex.stripes, ...nm(tex.stripesN)}),
+    kitchen: M('#f5e6bd', {map: tex.plaster, ...nm(tex.plasterN)}), classroom: M('#d6e6f2', {map: tex.plaster, ...nm(tex.plasterN)}), office: M('#ecd9cc', {map: tex.plaster, ...nm(tex.plasterN)}),
   };
   for (const [id, [x0, x1]] of Object.entries(ZONES)) {
     const w = bx(root, [x1 - x0, H, 0.24], [(x0 + x1) / 2, 0, -D / 2 - 0.12], wallMats[id]); w.castShadow = false;
     bx(root, [x1 - x0, 0.14, 0.05], [(x0 + x1) / 2, 0, -D / 2 + 0.02], '#fbf8f1');
     if (id !== 'kitchen') bx(root, [x1 - x0, 0.9, 0.04], [(x0 + x1) / 2, 0, -D / 2 + 0.01], M('#ffffff', {map: tex.plaster, color: id === 'living' || id === 'books' ? '#f3f0e6' : '#fbf8f1'})); // wainscot
   }
-  const partMat = M('#f3efe6', {map: tex.plaster});
+  const partMat = M('#f3efe6', {map: tex.plaster, ...nm(tex.plasterN)});
   for (const x of [-22, -8, 0, 8, 16]) {
     if (x === -22 || x === 16) { bx(root, [0.24, H, D + 0.24], [x, 0, 0], partMat); continue; }
     bx(root, [0.2, H, 3.3], [x, 0, -D / 2 + 1.65], partMat); bx(root, [0.2, H, 1.9], [x, 0, D / 2 - 0.95], partMat); bx(root, [0.2, 0.7, 1.8], [x, H - 0.7, 0.75], partMat);
@@ -188,7 +192,7 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
     bx(g, [4.4, 2.7, 0.05], [-19.5, 0, -3.4], wood('#6b4a30'));
     for (const sx of [-21.68, -17.32]) rb(g, [0.06, 2.72, 0.55], [sx, 0, -3.15], shelfWood, null, 0.01);
     rb(g, [4.42, 0.06, 0.56], [-19.5, 2.66, -3.15], shelfWood, null, 0.01);
-    const bookGeo = new THREE.BoxGeometry(1, 1, 1), N = hd ? 150 : 90;
+    const bookGeo = new THREE.BoxGeometry(1, 1, 1), N = hd ? 180 : 140;
     const books = new THREE.InstancedMesh(bookGeo, M('#ffffff', {roughness: 0.6}), N);
     const cols = ['#e37c5b', '#2e9e5b', '#4a8fd1', '#f2c14e', '#7d5ba6', '#f3efe6', '#1d6b3d', '#b8573c'];
     const m4 = new THREE.Matrix4(), c = new THREE.Color(); let i = 0;
@@ -204,23 +208,16 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
     books.count = i; books.castShadow = true; g.add(books);
     // featured books on a display table: AI ใส่ซอส / Forge / Walkthrough
     rb(g, [1.9, 0.72, 0.7], [-18.9, 0, -0.9], wood('#a8744a'), null, 0.05);
-    const cover = (title, sub, bg, fg) => tex.canvasTex(360, 512, (c2, w, h) => {
-      c2.fillStyle = bg; c2.fillRect(0, 0, w, h);
-      c2.fillStyle = 'rgba(255,255,255,.12)'; c2.fillRect(0, 0, 26, h);
-      c2.fillStyle = fg; c2.font = `800 64px ${FONT}`; c2.textAlign = 'center'; c2.fillText(title, w / 2 + 10, 190);
-      c2.font = `600 30px ${FONT}`; c2.fillText(sub, w / 2 + 10, 250);
-      c2.beginPath(); c2.arc(w / 2 + 10, 370, 56, 0, 7); c2.fillStyle = 'rgba(255,255,255,.18)'; c2.fill();
-      c2.font = `700 58px ${FONT}`; c2.fillStyle = fg; c2.fillText('🍀', w / 2 + 10, 392);
-    });
     const featured = [
-      {id: 'aisauce-book', mat: new THREE.MeshStandardMaterial({map: cover('AI ใส่ซอส', 'หนังสือเล่มแรกของบ้าน', '#1d6b3d', '#fbf6ec'), roughness: 0.5}), x: -19.45, ry: 0.35},
+      {id: 'aisauce-book', mat: photo('/book/ai-sauce/pages/p01-m.jpg', false, '#1d6b3d'), x: -19.45, ry: 0.35, tall: true}, // real cover of the field guide (9:16)
       {id: 'forge-book', mat: photo('/img/card-forge.jpg'), x: -18.9, ry: 0},
       {id: 'walkthrough-book', mat: photo('/img/col-walkthrough.webp'), x: -18.35, ry: -0.35},
     ];
     for (const b of featured) {
       const bk = group(g, b.x, 0.72, -0.95); bk.rotation.set(-0.18, b.ry, 0);
-      rb(bk, [0.46, 0.64, 0.07], [0, 0, 0], M('#f3efe6'), null, 0.01);
-      plane(bk, [0.44, 0.62], [0, 0.32, 0.036], b.mat);
+      const [bw, bh] = b.tall ? [0.38, 0.66] : [0.46, 0.64];
+      rb(bk, [bw, bh, 0.07], [0, 0, 0], M('#f3efe6'), null, 0.01);
+      plane(bk, [bw - 0.02, bh - 0.02], [0, bh / 2, 0.036], b.mat);
       hot(bk, b.id);
     }
     // reading nook: armchair, side table, lamp, throw
@@ -325,7 +322,7 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
     rb(g, [5.6, 0.88, 0.7], [cx - 0.8, 0, -3.1], counterMat, null, 0.02);
     rb(g, [5.7, 0.06, 0.78], [cx - 0.8, 0.88, -3.08], marble, null, 0.01);
     for (let k = 0; k < 5; k++) { rb(g, [1.04, 0.62, 0.02], [cx - 3.05 + k * 1.12, 0.14, -2.74], M('#7fae95', {roughness: 0.5}), null, 0.01); cy(g, [0.012, 0.012, 0.2], [cx - 3.05 + k * 1.12, 0.62, -2.72], M('#e9b949', {metalness: 0.8, roughness: 0.3})).rotation.z = Math.PI / 2; }
-    bx(g, [5.6, 0.7, 0.02], [cx - 0.8, 0.94, -3.46], M('#ffffff', {map: tex.subway, roughness: 0.2}));
+    bx(g, [5.6, 0.7, 0.02], [cx - 0.8, 0.94, -3.46], M('#ffffff', {map: tex.subway, ...nm(tex.subwayN), roughness: 0.2}));
     rb(g, [2.6, 0.7, 0.4], [cx - 2.3, 1.9, -3.26], M('#7fae95', {roughness: 0.5}), null, 0.02);
     rb(g, [2.4, 0.04, 0.3], [cx + 0.6, 2.35, -3.3], wood('#8c6242'), null, 0.01); // open shelf with jars
     for (let k = 0; k < 6; k++) { cy(g, [0.08, 0.08, 0.2], [cx - 0.35 + k * 0.38, 2.39, -3.3], M(['#f2c14e', '#e37c5b', '#9ccf7a'][k % 3], {transparent: true, opacity: 0.85, roughness: 0.15})); cy(g, [0.085, 0.085, 0.04], [cx - 0.35 + k * 0.38, 2.59, -3.3], wood('#8c6242')); }
@@ -486,7 +483,7 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
     cy(chair, [0.035, 0.035, 0.44], [0, 0, 0], M('#555555', {metalness: 0.7}));
     for (let k = 0; k < 5; k++) { const leg = rb(chair, [0.34, 0.04, 0.05], [Math.cos(k * 1.256) * 0.17, 0.04, Math.sin(k * 1.256) * 0.17], M('#333333'), [0, -k * 1.256, 0], 0.01); }
     // cork board with quest notes, server rack with blinking lights
-    rb(g, [1.5, 0.9, 0.04], [cx + 0.9, 1.98, -D / 2 + 0.03], M('#ffffff', {map: tex.cork}), null, 0.01);
+    rb(g, [1.5, 0.9, 0.04], [cx + 0.9, 1.98, -D / 2 + 0.03], M('#ffffff', {map: tex.cork, ...nm(tex.corkN)}), null, 0.01);
     const noteCols = ['#fff27a', '#ffc2d1', '#bdf0c9', '#b9dcff', '#ffd9a0', '#e3c9ff'];
     for (let k = 0; k < 6; k++) plane(g, [0.3, 0.26], [cx + 0.45 + (k % 3) * 0.45, 2.65 - Math.floor(k / 3) * 0.38, -D / 2 + 0.06], M(noteCols[k]), [0, 0, (k % 2 ? 1 : -1) * 0.06]);
     rb(g, [0.6, 1.5, 0.6], [cx - 3.6, 0, -1.2], M('#23282a', {roughness: 0.4, metalness: 0.4}), null, 0.02);
@@ -511,6 +508,57 @@ export function buildHouse({renderer, hd, tex, found, mobile}) {
         c.beginPath(); c.roundRect(22 + col * 160, 70 + r * 56, 146, 44, 8); c.fill();
       }
     };
+  }
+
+  /* ---------- HD: the small things that make a room feel lived in ---------- */
+  if (hd) {
+    const g = group(root), ceramic = M('#f3efe6', {roughness: 0.25}), brass = M('#c9a24a', {metalness: 0.9, roughness: 0.25});
+    const vase = (x, y, z, col, h = 0.28) => { const v = cy(g, [0.06, 0.09, h], [x, y, z], M(col, {roughness: 0.2})); blob(g, 0.12, [x, y + h + 0.1, z], '#62b06c', 1); return v; };
+    const stack = (x, y, z, n, rot = 0) => { for (let k = 0; k < n; k++) rb(g, [0.34 - k * 0.02, 0.05, 0.24], [x, y + k * 0.05, z], ['#e37c5b', '#2e9e5b', '#f3efe6', '#4a8fd1'][k % 4], [0, rot + k * 0.12, 0], 0.01); };
+    const clock = (x, y, z) => { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.04, 40), ceramic); c.rotation.x = Math.PI / 2; place(c, g, x, y, z); const hand = bx(g, [0.02, 0.15, 0.01], [x, y - 0.02, z + 0.03], '#14281d'); out.tickers.push(t => { hand.rotation.z = -t * 0.2; }); cy(g, [0.235, 0.235, 0.02], [x, y - 0.01, z - 0.005], brass).rotation.x = Math.PI / 2; };
+    // book corner: globe, bookends, floor stack, framed quote
+    const globe = sp(g, 0.16, [-18.2, 2.95, -3.1], M('#4a8fd1', {roughness: 0.4})); cy(g, [0.05, 0.08, 0.1], [-18.2, 2.72, -3.1], brass);
+    out.tickers.push(t => { globe.rotation.y = t * 0.3; });
+    stack(-20.6, 0, 1.6, 5, 0.3); vase(-20.6, 2.72, -3.1, '#e37c5b');
+    const quote = group(g, -21.86, 1.6, -0.6); quote.rotation.y = Math.PI / 2;
+    rb(quote, [0.7, 0.9, 0.03], [0, 0, 0], wood('#6d4a30'), null, 0.01);
+    plane(quote, [0.62, 0.82], [0, 0.45, 0.02], new THREE.MeshStandardMaterial({map: tex.canvasTex(256, 340, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 256, 340); c.fillStyle = '#1d6b3d'; c.font = `700 30px ${FONT}`; c.textAlign = 'center'; ['อ่านให้เข้าใจ', 'ใช้ให้เป็น'].forEach((l, i) => c.fillText(l, 128, 150 + i * 44)); c.fillText('🍀', 128, 260); })}));
+    // living: wall shelf with vases, clock, magazines, side lamp
+    rb(g, [1.6, 0.05, 0.26], [-12.3 + 3.0, 1.75, -3.33], wood('#8c6242'), null, 0.01);
+    vase(-9.8, 1.8, -3.33, '#2f5d44'); vase(-8.9, 1.8, -3.33, '#f2c14e', 0.2); stack(-9.35, 1.8, -3.33, 3);
+    clock(-14.7, 2.35, -3.46); stack(-11.5, 0.52, 0.65, 3, 0.6);
+    cy(g, [0.24, 0.24, 0.04], [-14.35, 0.5, -2.2], wood('#8c6242')); cy(g, [0.03, 0.03, 0.5], [-14.35, 0, -2.2], '#5a3d28');
+    const sl = cy(g, [0.1, 0.16, 0.2], [-14.35, 0.78, -2.2], M('#fff1cf', {emissive: '#ffd58a', emissiveIntensity: 1.1})); sl.castShadow = false; cy(g, [0.02, 0.02, 0.26], [-14.35, 0.54, -2.2], brass);
+    // kitchen: utensil rail, kettle, sliced veg, tea towel, hanging herbs
+    cy(g, [0.012, 0.012, 1.6], [-5.6, 1.45, -3.4], brass).rotation.z = Math.PI / 2;
+    for (let k = 0; k < 5; k++) { const x = -6.2 + k * 0.3; cy(g, [0.008, 0.008, 0.32], [x, 1.13, -3.38], M('#bbbbbb', {metalness: 0.9, roughness: 0.2})); sp(g, 0.05, [x, 1.1, -3.36], M('#bbbbbb', {metalness: 0.9, roughness: 0.2})).scale.set(1, 0.4, 1); }
+    const kettle = sp(g, 0.15, [-6.2, 1.06, -3.05], M('#e37c5b', {roughness: 0.3, metalness: 0.2})); kettle.scale.set(1, 0.85, 1); cy(g, [0.02, 0.03, 0.14], [-6.03, 1.08, -3.05], M('#e37c5b')).rotation.z = -1;
+    for (let k = 0; k < 6; k++) { const c = cy(g, [0.05, 0.05, 0.015], [-4.35 + k * 0.07, 0.96, 0.92], M(k % 2 ? '#e2412f' : '#9ccf7a', {roughness: 0.4})); c.rotation.z = Math.PI / 2.3; }
+    rb(g, [0.3, 0.45, 0.02], [-3.3, 0.35, -2.72], fabric('#e37c5b'), null, 0.01);
+    // classroom: clock, world poster, pencil cups, book cubby
+    clock(0.75, 2.3, -3.46);
+    plane(g, [1.1, 0.7], [5.5, 1.6, -D / 2 + 0.02], new THREE.MeshStandardMaterial({map: tex.canvasTex(320, 200, c => { c.fillStyle = '#d6ecf5'; c.fillRect(0, 0, 320, 200); c.fillStyle = '#7fbf8e'; [[60, 70, 50, 35], [150, 60, 40, 50], [230, 80, 55, 40], [120, 140, 35, 25]].forEach(([x, y, a, b]) => { c.beginPath(); c.ellipse(x, y, a, b, 0.3, 0, 7); c.fill(); }); c.fillStyle = '#1d6b3d'; c.font = `700 22px ${FONT}`; c.fillText('โลกใบนี้ของเรา', 14, 190); })}));
+    for (const [dx, dz] of [[-2.3, -0.8], [0.2, -0.8], [-2.3, 1.3], [0.2, 1.3]]) { cy(g, [0.04, 0.035, 0.1], [4 + dx + 0.5, 0.77, dz - 0.2], M('#f2c14e')); for (let k = 0; k < 3; k++) cy(g, [0.006, 0.006, 0.16], [4 + dx + 0.5 + (k - 1) * 0.015, 0.8, dz - 0.2], ['#e37c5b', '#4a8fd1', '#2e9e5b'][k]); }
+    rb(g, [0.9, 0.9, 0.4], [7.5, 0, 2.7], wood('#b98352'), null, 0.02);
+    for (let k = 0; k < 6; k++) rb(g, [0.07, 0.3, 0.26], [7.18 + k * 0.1, 0.5, 2.7], ['#e37c5b', '#2e9e5b', '#4a8fd1', '#f2c14e'][k % 4], null, 0.01);
+    // office: desk lamp, keyboard keys, headphones, cable, framed certificate, second plant
+    const armX = 14.35; cy(g, [0.1, 0.12, 0.03], [armX, 0.82, -2.6], M('#1b1f1d'));
+    cy(g, [0.015, 0.015, 0.5], [armX, 0.84, -2.6], M('#1b1f1d')).rotation.z = 0.3;
+    const dl = cy(g, [0.05, 0.12, 0.14], [armX - 0.18, 1.22, -2.6], M('#f2c14e', {emissive: '#ffcf7a', emissiveIntensity: 0.9})); dl.castShadow = false;
+    lampLight(armX - 0.18, 1.1, -2.4, 2.5, 3);
+    for (let r = 0; r < 4; r++) for (let k = 0; k < 12; k++) bx(g, [0.055, 0.015, 0.05], [12 - 0.7 - 0.36 + k * 0.066, 0.855, -2.54 + r * 0.06], M('#fbfbfb', {roughness: 0.5}));
+    const hp = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.018, 10, 32, Math.PI), M('#1b1f1d', {roughness: 0.4})); place(hp, g, 12 + 1.1, 0.95, -2.55); cy(g, [0.05, 0.05, 0.04], [12 + 0.98, 0.84, -2.55], M('#1b1f1d')).rotation.z = Math.PI / 2; cy(g, [0.05, 0.05, 0.04], [12 + 1.22, 0.84, -2.55], M('#1b1f1d')).rotation.z = Math.PI / 2;
+    const cert = group(g, 12 - 2.6, 1.95, -D / 2 + 0.03); rb(cert, [0.7, 0.5, 0.03], [0, 0, 0], wood('#6d4a30'), null, 0.01);
+    plane(cert, [0.62, 0.42], [0, 0.25, 0.02], new THREE.MeshStandardMaterial({map: tex.canvasTex(300, 200, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 300, 200); c.strokeStyle = '#c9a24a'; c.lineWidth = 8; c.strokeRect(10, 10, 280, 180); c.fillStyle = '#1d6b3d'; c.font = `700 26px ${FONT}`; c.textAlign = 'center'; c.fillText('Guild Master', 150, 95); c.font = `500 18px ${FONT}`; c.fillText('myClover', 150, 130); })}));
+    plant(g, 9.0, 2.6, 0.8, '#2f5d44');
+    // garden: path lanterns, a bench, a mailbox
+    for (let k = 0; k < 3; k++) for (const side of [-0.85, 0.85]) { // stops short of the door-shot camera
+      const x = -19 + side, z = 5.3 + k * 2.1; cy(g, [0.04, 0.05, 0.5], [x, 0, z], M('#2f3a35'));
+      const lamp = cy(g, [0.08, 0.08, 0.14], [x, 0.5, z], M('#fff1cf', {emissive: '#ffcf7a', emissiveIntensity: 1.4})); lamp.castShadow = false;
+    }
+    rb(g, [1.6, 0.08, 0.45], [-24.5, 0.45, 4.5], wood('#8c6242'), [0, 0.4, 0], 0.02); rb(g, [1.6, 0.4, 0.06], [-24.6, 0.5, 4.3], wood('#8c6242'), [0, 0.4, 0], 0.02);
+    for (const dx of [-0.65, 0.65]) cy(g, [0.04, 0.04, 0.45], [-24.5 + dx * 0.92, 0, 4.5 + dx * 0.39], M('#2f3a35'));
+    cy(g, [0.04, 0.04, 1.0], [-21.2, 0, 5.2], M('#2f3a35')); rb(g, [0.28, 0.24, 0.42], [-21.2, 1.0, 5.2], M('#2f5d44'), null, 0.08);
   }
 
   /* ---------- hero clover (→ /meet/) ---------- */

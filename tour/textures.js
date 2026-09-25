@@ -11,7 +11,7 @@ function rng(seed) { let s = seed >>> 0 || 1; return () => ((s = Math.imul(s ^ (
 
 export function makeTextures(renderer, hd) {
   const S = hd ? 1024 : 512;
-  const aniso = Math.min(hd ? 8 : 4, renderer.capabilities.getMaxAnisotropy());
+  const aniso = Math.min(hd ? 16 : 4, renderer.capabilities.getMaxAnisotropy());
   const made = [];
 
   function canvasTex(w, h, draw, {repeat, srgb = true} = {}) {
@@ -132,6 +132,31 @@ export function makeTextures(renderer, hd) {
   }, {repeat: [60, 60]});
 
   tex.cork = canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#c99c6b'; c.fillRect(0, 0, w, h); grain(c, w, h, 50, 8); });
+
+  // HD: tangent-space normal maps derived from the same canvases (brightness = height),
+  // so grain, weave, seams and plaster catch the light instead of looking painted on
+  function normalFrom(src, strength) {
+    const img = src.image, w = img.width, h = img.height;
+    const d = img.getContext('2d').getImageData(0, 0, w, h).data;
+    const hgt = new Float32Array(w * h);
+    for (let i = 0; i < w * h; i++) hgt[i] = (d[i * 4] * 0.3 + d[i * 4 + 1] * 0.59 + d[i * 4 + 2] * 0.11) / 255;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const ctx = c.getContext('2d'), out = ctx.createImageData(w, h), o = out.data;
+    const at = (x, y) => hgt[((y + h) % h) * w + ((x + w) % w)];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const dx = (at(x + 1, y) - at(x - 1, y)) * strength, dy = (at(x, y + 1) - at(x, y - 1)) * strength;
+      const len = Math.hypot(dx, dy, 1), i = (y * w + x) * 4;
+      o[i] = (-dx / len * 0.5 + 0.5) * 255; o[i + 1] = (dy / len * 0.5 + 0.5) * 255; o[i + 2] = (1 / len * 0.5 + 0.5) * 255; o[i + 3] = 255;
+    }
+    ctx.putImageData(out, 0, 0);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.NoColorSpace; t.anisotropy = aniso;
+    t.wrapS = src.wrapS; t.wrapT = src.wrapT; t.repeat.copy(src.repeat); made.push(t); return t;
+  }
+  if (hd) {
+    tex.woodN = normalFrom(tex.wood, 6); tex.grainN = normalFrom(tex.grain, 4); tex.tileN = normalFrom(tex.tile, 5);
+    tex.fabricN = normalFrom(tex.fabric, 5); tex.plasterN = normalFrom(tex.plaster, 3); tex.stripesN = normalFrom(tex.stripes, 2);
+    tex.subwayN = normalFrom(tex.subway, 8); tex.corkN = normalFrom(tex.cork, 4); tex.grassN = normalFrom(tex.grass, 3);
+  }
 
   tex.dispose = () => made.forEach(t => t.dispose());
   tex.canvasTex = canvasTex;

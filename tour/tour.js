@@ -9,6 +9,11 @@ import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import {makeTextures} from './textures.js';
 import {buildHouse, H, CLOVER_ROOMS} from './house.js';
+import {EffectComposer} from './vendor/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from './vendor/addons/postprocessing/RenderPass.js';
+import {GTAOPass} from './vendor/addons/postprocessing/GTAOPass.js';
+import {UnrealBloomPass} from './vendor/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from './vendor/addons/postprocessing/OutputPass.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -148,7 +153,7 @@ function boot() {
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.3, 500); // near 0.3 m: more depth precision on phones (less z-flicker)
 
   /* sky dome: smooth gradient, no flat colour flips */
   const skyU = {top: {value: new THREE.Color()}, mid: {value: new THREE.Color()}, bottom: {value: new THREE.Color()}};
@@ -181,9 +186,13 @@ function boot() {
   const hemi = new THREE.HemisphereLight('#e8f6ff', '#6b8f5e', 1.35); scene.add(hemi);
   const sun = new THREE.DirectionalLight('#fff1d6', 2.4); sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.02; scene.add(sun, sun.target);
   const sunDay = new THREE.Color('#fff1d6'), sunNight = new THREE.Color('#9fb4ff');
+  const sunOffset = new THREE.Vector3(14, 22, 16), lightDist = sunOffset.length();
+  const lightDir = sunOffset.clone().normalize().negate(); // direction the light travels
+  const lightRight = new THREE.Vector3().crossVectors(lightDir, new THREE.Vector3(0, 1, 0)).normalize();
+  const lightUp = new THREE.Vector3().crossVectors(lightRight, lightDir).normalize(), snapCenter = new THREE.Vector3();
 
   /* ----- house (rebuilt when quality changes) ----- */
-  let house = null, tex = null;
+  let house = null, tex = null, composer = null;
   const bursts = [];
   function build() {
     const hd = quality === 'hd';
@@ -192,7 +201,7 @@ function boot() {
       house.root.traverse(o => { o.geometry?.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m?.dispose()); });
       tex.dispose();
     }
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, hd ? 2 : mobile ? 1.25 : 1.5));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, hd ? (mobile ? 1.75 : 2) : mobile ? 1.25 : 1.5));
     renderer.shadowMap.enabled = hd || !mobile;
     sun.castShadow = renderer.shadowMap.enabled;
     sun.shadow.mapSize.set(hd ? 2048 : 1024, hd ? 2048 : 1024);
@@ -200,6 +209,27 @@ function boot() {
     tex = makeTextures(renderer, hd);
     house = buildHouse({renderer, hd, tex, found, mobile});
     scene.add(house.root);
+    composer?.dispose(); composer = null;
+    if (hd) { // HD: ambient occlusion in corners and under furniture, soft glow on lamps and screens
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const ao = new GTAOPass(scene, camera, 1, 1);
+      ao.updateGtaoMaterial({radius: 0.45, distanceExponent: 1.4, thickness: 1.2, scale: 1.1, samples: mobile ? 12 : 16});
+      ao.updatePdMaterial({lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16});
+      ao.blendIntensity = 0.95;
+      // AO renders depth/normals with an override material: keep glow sprites, particles, the sky
+      // and see-through meshes (smoke, halo, invisible tap areas) out of it, or they turn into dark blocks
+      ao._overrideVisibility = function () {
+        const cache = this._visibilityCache;
+        this.scene.traverse(o => {
+          if (!o.visible) return;
+          if (o.isPoints || o.isLine || o.isSprite || o === sky || (o.isMesh && [].concat(o.material).some(m => m?.transparent))) { o.visible = false; cache.push(o); }
+        });
+      };
+      composer.addPass(ao);
+      composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.35, 0.4, 2.4)); // threshold above lit walls: only lamps and screens glow
+      composer.addPass(new OutputPass());
+    }
     shadowSpan = 0; sizeCanvas(true);
   }
 
@@ -252,6 +282,7 @@ function boot() {
     if (!force && w === lastW && (Math.abs(h - lastH) < 1 || (touch && Math.abs(h - lastH) < 160))) { measure(); return; }
     lastW = w; lastH = h;
     renderer.setSize(w, h, false);
+    if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
     const aspect = w / h;
     camera.aspect = aspect;
     camera.fov = aspect >= 1 ? 45 : Math.min(80, 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(30)) / aspect) * 180 / Math.PI);
@@ -374,9 +405,14 @@ function boot() {
     house.heroMat.emissiveIntensity = 0.35 + dusk * 0.9;
     renderer.toneMappingExposure = lerp(1.05, 1.2, dusk);
     document.body.classList.toggle('night', dusk > 0.5);
-    sun.target.position.set(camLook.x, 0, 0); sun.position.set(camLook.x + 14, 22, 16);
     const span = Math.round(lerp(24, 10, inside));
     if (span !== shadowSpan) { shadowSpan = span; Object.assign(sun.shadow.camera, {left: -span, right: span, top: span * 0.65, bottom: -span * 0.5, near: 1, far: 80}); sun.shadow.camera.updateProjectionMatrix(); }
+    // follow the view in whole shadow-map texels (in light space), so shadow edges never shimmer
+    snapCenter.set(camLook.x, 0, 0);
+    const tx = 2 * span / sun.shadow.mapSize.x, ty = span * 1.15 / sun.shadow.mapSize.y;
+    const r = Math.round(snapCenter.dot(lightRight) / tx) * tx, u = Math.round(snapCenter.dot(lightUp) / ty) * ty, f = snapCenter.dot(lightDir);
+    snapCenter.copy(lightRight).multiplyScalar(r).addScaledVector(lightUp, u).addScaledVector(lightDir, f);
+    sun.target.position.copy(snapCenter); sun.position.copy(snapCenter).addScaledVector(lightDir, -lightDist);
 
     // hero clover
     const hc = house.heroClover;
@@ -433,7 +469,7 @@ function boot() {
       if (b.life > 1.4) { scene.remove(b.pts); b.pts.geometry.dispose(); b.pts.material.dispose(); bursts.splice(i, 1); }
     }
 
-    renderer.render(scene, camera);
+    if (composer) composer.render(); else renderer.render(scene, camera);
     if (first) { first = false; finishLoading(); }
     requestAnimationFrame(frame);
   }
