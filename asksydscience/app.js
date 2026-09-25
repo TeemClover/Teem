@@ -22,6 +22,19 @@
 
   document.documentElement.classList.add('js');
 
+  // Preserve bookmarked rooms from the original one-page house.
+  if (document.body.dataset.page === 'home') {
+    const roomPaths = { kitchen: 'kitchen', mindfulness: 'mindfulness', stories: 'stories', workshop: 'workshop', about: 'about', picks: 'about' };
+    function openBookmarkedRoom() {
+      const oldRoom = window.location.hash.slice(1);
+      if (!Object.prototype.hasOwnProperty.call(roomPaths, oldRoom)) return false;
+      window.location.replace(`/asksydscience/${roomPaths[oldRoom]}/${window.location.search}${oldRoom === 'picks' ? '#picks' : ''}`);
+      return true;
+    }
+    window.addEventListener('hashchange', openBookmarkedRoom);
+    if (openBookmarkedRoom()) return;
+  }
+
   // A disclosure on small screens; the desktop navigation remains independent.
   const menuToggle = $('#menu-toggle');
   const menu = $('#mobile-menu');

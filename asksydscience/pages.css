@@ -1,0 +1,114 @@
+/* A short entrance, with space to explore one room at a time. */
+[data-page="home"] .hero{min-height:570px}
+[data-page="home"] .hero-inner{padding-block:45px 40px}
+[data-page="home"] .hero-copy{max-width:485px}
+[data-page="home"] .hero h1{font-size:clamp(45px,4.3vw,64px);line-height:1.22}
+[data-page="home"] .hero-sub{font-size:24px;margin-top:12px;max-width:460px}
+[data-page="home"] .hero-body{font-size:16px;line-height:1.8;max-width:360px;margin-top:15px}
+[data-page="home"] .hero-actions{margin-top:23px}
+[data-page="home"] .hero .handnote{font-size:15px;margin-top:22px}
+[data-page="home"] .hero .handnote span{font-size:23px}
+[data-page="home"] .home-directory{padding-block:43px 45px}
+[data-page="home"] .directory-heading{margin-bottom:26px;gap:40px}
+[data-page="home"] .directory-heading h2{font-size:32px}
+[data-page="home"] .directory-heading>p{font-size:15px;max-width:330px}
+[data-page="home"] .door-image{aspect-ratio:1.52}
+[data-page="home"] .door-copy{padding-top:14px}
+[data-page="home"] .door-copy>strong{font-size:20px}
+[data-page="home"] .door-copy>p{font-size:14px}
+[data-page="home"] .door-copy>small{font-size:8px}
+.desktop-nav [aria-current="page"]:after{transform:scaleX(1)}
+#mobile-menu [aria-current="page"]{color:var(--green);font-weight:600}
+.room-breadcrumb{display:flex;align-items:center;gap:15px;padding-block:22px 0;font-size:12px;color:#7b846f}
+.room-breadcrumb a{display:inline-flex;min-height:40px;align-items:center;color:#435d3b}
+.room-breadcrumb a:hover{text-decoration:underline;text-underline-offset:5px}
+[data-page]:not([data-page="home"]) .hx-room{padding-top:32px}
+.hx-intro-grid h1{font-size:clamp(33px,3.35vw,47px);line-height:1.5;letter-spacing:-.025em}
+.hx-intro-grid h1 em{font-style:normal;font-weight:400;font-size:.68em;letter-spacing:0}
+.section-heading h1{font-size:clamp(33px,3.4vw,48px);line-height:1.35;letter-spacing:-.025em;margin-bottom:15px}
+[data-page="stories"] .stories,[data-page="workshop"] .workshop{padding-top:34px;padding-bottom:62px}
+[data-page="workshop"] .faq{padding-bottom:55px}
+[data-page="about"] .about{margin-top:20px}
+.letter h1{font-size:37px;line-height:1.45;margin-top:20px;letter-spacing:-.02em}
+.letter h1 span{font-size:.73em;font-weight:400}
+[data-page="about"] .picks{padding-block:48px 65px}
+.room-onward{display:flex;align-items:center;gap:22px;padding-block:31px 34px;border-top:1px solid var(--line)}
+.room-onward>.kicker{margin-right:auto;font-size:9px}
+.room-onward>a{display:inline-flex;align-items:center;gap:22px;min-height:44px;font-size:18px;font-weight:600}
+.room-onward>a>span{font-size:24px;font-weight:400}
+.room-onward .onward-home{font-size:12px;font-weight:400;color:#77836c;margin-left:20px}
+.house-footer{background:#e9ecdf;padding:25px 0 17px;border-top:1px solid #d5dcc8}
+.house-footer>.wrap{display:grid;grid-template-columns:1fr auto;gap:15px 30px;align-items:center}
+.house-footer-brand .wordmark{font-size:25px;letter-spacing:-1.1px}
+.house-footer-brand p{font:italic 14px/1.7 var(--serif);margin-top:3px;color:#6b795f}
+.house-footer nav{display:flex;gap:24px;align-items:center}
+.house-footer nav a{font-size:12px;min-height:44px;display:inline-flex;align-items:center}
+.house-footer nav a:hover{text-decoration:underline;text-underline-offset:5px}
+.house-footer small{grid-column:1/-1;font-size:9px;color:#7b846f;border-top:1px solid #d7ddcd;padding-top:12px}
+@media(min-width:601px) and (max-width:1000px){
+ [data-page="home"] .hero{min-height:540px}
+ [data-page="home"] .hero-copy{max-width:430px}
+ [data-page="home"] .hero-sub{font-size:23px;max-width:360px}
+ [data-page="home"] .hero-body{max-width:320px}
+ [data-page="home"] .hero-art{left:25%}
+ [data-page="home"] .hero h1{font-size:51px}
+ [data-page="home"] .hero .handnote{font-size:13px}
+ [data-page="home"] .house-doors{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+ [data-page="home"] .door-image{aspect-ratio:.95}
+ [data-page="home"] .door-copy>strong{font-size:16px}
+ [data-page="home"] .door-copy>p{font-size:12px}
+ [data-page="home"] .door-copy>small{font-size:7px;letter-spacing:.07em}
+ [data-page="home"] .directory-heading{display:flex}
+ .room-onward{gap:12px}.room-onward>.kicker{display:none}
+ .room-onward .onward-home{margin-left:auto}
+ .letter h1{font-size:29px}
+}
+@media(max-width:600px){
+ [data-page="home"] .hero{min-height:0}
+ [data-page="home"] .hero-inner{padding-block:22px 23px}
+ [data-page="home"] .hero h1{font-size:43px;line-height:1.18}
+ [data-page="home"] .hero-sub{font-size:20px;line-height:1.45;margin-top:10px}
+ [data-page="home"] .hero-body{font-size:14px;line-height:1.75;margin-top:12px;max-width:350px}
+ [data-page="home"] .hero-actions{margin-top:18px;gap:13px}
+ [data-page="home"] .hero-actions .button{font-size:13px;min-height:46px;padding:10px 16px;gap:15px}
+ [data-page="home"] .hero-film{font-size:12px;gap:7px}
+ [data-page="home"] .hero-art{height:245px;aspect-ratio:auto}
+ [data-page="home"] .hero-art img{object-position:67% 43%;transform:scale(1.08)}
+ [data-page="home"] .hero .handnote{font-size:11px;bottom:41px;max-width:120px;margin:0}
+ [data-page="home"] .hero .handnote span{font-size:18px}
+ [data-page="home"] .eyebrow-pill{margin-bottom:13px;font-size:11px}
+ [data-page="home"] .home-directory{padding-block:30px 33px}
+ [data-page="home"] .directory-heading{margin-bottom:20px}
+ [data-page="home"] .directory-heading .kicker{font-size:8px}
+ [data-page="home"] .directory-heading h2{font-size:27px}
+ [data-page="home"] .directory-heading>p{font-size:13px;line-height:1.7;margin-top:8px}
+ [data-page="home"] .house-doors{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}
+ [data-page="home"] .door-image{aspect-ratio:1.47}
+ [data-page="home"] .door-copy{padding-top:10px}
+ [data-page="home"] .door-copy>strong{font-size:17px;line-height:1.5}
+ [data-page="home"] .door-copy>p{font-size:12px;line-height:1.6;margin-top:3px}
+ [data-page="home"] .door-copy>small{font-size:7px;letter-spacing:.08em}
+ [data-page="home"] .door-number{font-size:21px;bottom:8px}
+ .room-breadcrumb{padding-top:13px;font-size:11px;gap:12px}
+ [data-page]:not([data-page="home"]) .hx-room{padding-top:21px}
+ .hx-intro-grid h1{font-size:30px}
+ .hx-intro-grid h1 em{font-size:.68em}
+ .section-heading h1{font-size:32px;margin-bottom:11px}
+ [data-page="stories"] .stories,[data-page="workshop"] .workshop{padding-top:23px;padding-bottom:39px}
+ [data-page="about"] .about{margin-top:16px;padding-top:160px}
+ .letter h1{font-size:29px;line-height:1.4}
+ .letter h1 span{font-size:21px;line-height:1.5}
+ .room-onward{flex-wrap:wrap;gap:6px 15px;padding-block:22px 25px}
+ .room-onward>.kicker{width:100%;font-size:8px}
+ .room-onward>a{font-size:17px;gap:16px}
+ .room-onward .onward-home{margin-left:auto;font-size:10px}
+ .house-footer{padding-block:22px 15px}
+ .house-footer>.wrap{display:block}
+ .house-footer-brand{display:flex;justify-content:space-between;align-items:center;gap:15px}
+ .house-footer-brand .wordmark{font-size:23px}
+ .house-footer-brand p{font-size:10px;max-width:115px;text-align:right;line-height:1.5}
+ .house-footer nav{gap:22px;margin-top:10px}
+ .house-footer nav a{font-size:11px;min-height:37px}
+ .house-footer small{display:block;font-size:8px;margin-top:5px;padding-top:10px;line-height:1.6}
+}
+@media(max-width:370px){[data-page="home"] .hero h1{font-size:41px}[data-page="home"] .hero-sub{font-size:19px}[data-page="home"] .hero-actions{gap:10px}[data-page="home"] .hero-actions .button{padding-inline:13px;font-size:12px}[data-page="home"] .hero-film{font-size:11px}}
