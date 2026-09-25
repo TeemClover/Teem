@@ -49,3 +49,6 @@ tools/build-asksydscience.py
 tools/asksydscience/
 docs/asksydscience/
 asksydscience/README.md
+
+# Lucky Source authoring files are distributed only through the audited ZIP.
+tools/lucky-house/

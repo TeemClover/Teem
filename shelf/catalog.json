@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "title": "Shelf — ขวดซอสของเรา",
-  "updated_at": "2026-09-14",
+  "updated_at": "2026-09-26",
   "timezone": "Asia/Bangkok",
   "source_root": "/shelf/source/",
   "categories": [
@@ -635,6 +635,36 @@
           "heading": "## ที่มา"
         }
       ]
+    },
+    {
+      "id": "lucky-house-studio",
+      "title": "Lucky Source — จากแปลนและภาพจริง สู่บ้านที่เปิดให้สำรวจ",
+      "description": "แพ็กฟรีสำหรับเพื่อน: หลักการอาจารย์ทีม หกขวดซอส คำสั่งเริ่ม และ starter บ้านสมมติที่เปิดเล่นได้",
+      "path": "source/method/lucky-house-studio.md",
+      "version": "1.0.0",
+      "created_at": "2026-09-26",
+      "updated_at": "2026-09-26",
+      "added_to_shelf_at": "2026-09-26",
+      "status": "reusable-template",
+      "status_label": "ชุดเริ่มต้นฟรี · ใส่ข้อมูลบ้านของคุณ",
+      "categories": [
+        "method"
+      ],
+      "tags": [
+        "Lucky Source",
+        "myClover",
+        "บ้าน",
+        "3D",
+        "แปลน",
+        "AI ใส่ซอส",
+        "ส่งต่อ",
+        "starter"
+      ],
+      "aliases": [
+        "lucky-source-house-v1.0.0.zip"
+      ],
+      "notes": "DERIVED — สูตรประยุกต์และบ้านสมมติ แพ็กฟรีเผยแพร่เฉพาะที่หน้า house ตามคำอนุญาตเจ้าของ ไม่ปลดล็อกซอสหรือบทเรียนอื่น",
+      "sections": []
     }
   ],
   "collections": [

@@ -1,6 +1,7 @@
 import { readFile, writeFile, readdir, stat, mkdir } from 'node:fs/promises';
 import { gzipSync, inflateRawSync } from 'node:zlib';
 import path from 'node:path';
+import {ZIP_NAME,validateLuckyArchive,readZip} from './lucky-source-archive.mjs';
 import { fileURLToPath } from 'node:url';
 import { photoSets } from '../app/data/photos.js';
 
@@ -55,6 +56,8 @@ function inspectWebp(buffer, name) {
   }
 }
 function inspectZip(buffer, name) {
+  if(name===`downloads/${ZIP_NAME}`){try{validateLuckyArchive(buffer);for(const[file,data]of readZip(buffer))scanText(data.toString('utf8'),`${name}/${file}`);}catch(error){errors.push(`${name}: ${error.message}`);}return;}
+
   let offset = 0, count = 0;
   const entries = new Set();
   while (offset + 30 <= buffer.length && buffer.readUInt32LE(offset) === 0x04034b50) {
@@ -81,7 +84,7 @@ function inspectZip(buffer, name) {
   } else if (count !== 11) errors.push(`${name}: expected 11 educational files, found ${count}`);
 }
 try { await collect('downloads'); } catch {}
-const allowedDownloads = new Set();
+const allowedDownloads = new Set([`downloads/${ZIP_NAME}`]);
 for (const file of files) if (file.startsWith('downloads/') && !allowedDownloads.has(file)) errors.push(`${file}: student material must not be published`);
 for (const file of ['LEARN.md', 'tools/make-learning-kit.mjs', 'tools/make-source-kit.mjs']) {
   try { await stat(path.join(root,file)); errors.push(`${file}: student material must remain outside the public repository`); } catch {}
@@ -136,7 +139,7 @@ for (const name of ['three', 'esbuild']) {
 }
 const report = {
   checkedAt: new Date().toISOString(), valid: errors.length === 0, environment: { node, ...dependencies },
-  scope: 'Built public HTML, assets, image derivatives and no downloadable plans or student kits.',
+  scope: 'Built public HTML, assets, image derivatives and the explicitly approved generic Lucky Source ZIP. No private plans or full student kits.',
   fileCount: files.length, errors, warnings,
   bundleGraphs: { shell: shellGraph, defaultSD: sdGraph, optInHDEntryPoints: hdEntries.sort(), optInHDAdditional: hdAdditional },
   sizes: { shellWithAllFontFacesAndPreviewImages: sum(initial), firstModelWithAllFontFacesAndPreviewImages: sum(firstModel),

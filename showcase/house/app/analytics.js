@@ -44,7 +44,7 @@ function initialize({enabled=/^(www\.)?myclover\.com$/.test(location.hostname)||
    WALL:()=>{if(before.wallMode!==after.wallMode)use('walls');},BUILTINS:()=>use('layers'),FURNITURE:()=>use('layers'),GRID:()=>use('layers'),ISOLATE:()=>use('isolate')};
   map[event.type]?.();
  }
- const actions={'reset':'reset','ceiling':'ceiling','settings':'settings','photo-prev':'photo','photo-next':'photo','photo-fullscreen':'photo','plan-plus':'plan','plan-minus':'plan','plan-reset':'plan','inside':'inside','tour':'tour','help':'help','about':'story','learn':'learn','focus-view':'focus','camera-iso':'camera','camera-top':'camera','camera-front':'camera','zoom-in':'camera','zoom-out':'camera','rotate':'camera'};
+ const actions={'lucky-source':'source','lucky-download':'source_download','reset':'reset','ceiling':'ceiling','settings':'settings','photo-prev':'photo','photo-next':'photo','photo-fullscreen':'photo','plan-plus':'plan','plan-minus':'plan','plan-reset':'plan','inside':'inside','tour':'tour','help':'help','about':'story','learn':'learn','focus-view':'focus','camera-iso':'camera','camera-top':'camera','camera-front':'camera','zoom-in':'camera','zoom-out':'camera','rotate':'camera'};
  const feature=el=>{
   if(el.matches('a[href]')){try{const u=new URL(el.href);if(/^(www\.)?myclover\.com$/.test(u.hostname)&&u.pathname==='/ai-source/')return 'course';}catch{}}
   if(el.dataset.renderMode)return el.dataset.renderMode;
