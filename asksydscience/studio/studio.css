@@ -1,0 +1,128 @@
+@font-face{font-family:"IBM Plex Sans Thai";src:url("/asksydscience/assets/fonts/ibm-plex-sans-thai-thai-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0E00-0E7F;}
+@font-face{font-family:"IBM Plex Sans Thai";src:url("/asksydscience/assets/fonts/ibm-plex-sans-thai-latin-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:"IBM Plex Sans Thai";src:url("/asksydscience/assets/fonts/ibm-plex-sans-thai-thai-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;unicode-range:U+0E00-0E7F;}
+@font-face{font-family:"IBM Plex Sans Thai";src:url("/asksydscience/assets/fonts/ibm-plex-sans-thai-latin-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}
+:root{color-scheme:light dark;}
+body{margin:0;padding:28px;background:light-dark(#eceee7,#171c18);color:light-dark(#243a2e,#e4eadf);font-family:"IBM Plex Sans Thai",Tahoma,sans-serif;}
+#sydney-studio-concept{max-width:1120px!important;margin:0 auto;}
+#sydney-studio-concept .ss-session-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;border-bottom:1px solid var(--ss-line);background:var(--ss-surface);}
+#sydney-studio-concept .ss-home-link{color:var(--ss-ink);text-decoration:none;padding:10px 0;}
+#sydney-studio-concept .ss-home-link:hover{text-decoration:underline;}
+#sydney-studio-concept button{cursor:pointer;}
+#sydney-studio-concept :focus-visible{outline:2px solid var(--ss-accent);outline-offset:3px;}
+#sydney-studio-concept .ss-brandmark{font-family:Georgia,serif;font-size:22px;}
+#sydney-studio-concept .ss-poster .ss-icon{font-family:Georgia,serif;font-size:36px;}
+.ss-noscript{max-width:1120px;margin:0 auto 16px;}
+@media(max-width:540px){body{padding:12px;}#sydney-studio-concept .ss-session-controls{padding:10px 16px;}#sydney-studio-concept .ss-session-controls .ss-button{padding:8px 10px;font-size:12px;}}
+
+    #sydney-studio-concept{--ss-bg:light-dark(#f6f4ed,#1f2420);--ss-surface:light-dark(#fffdf8,#282e28);--ss-ink:light-dark(#243a2e,#e4eadf);--ss-muted:light-dark(#667267,#acb7aa);--ss-line:light-dark(#dde2d5,#414a3e);--ss-accent:light-dark(#365541,#b7cfad);--ss-on-accent:light-dark(#fffef6,#233222);--ss-soft:light-dark(#e9eee2,#354334);--ss-warm:light-dark(#f0e9db,#3e392e);--ss-danger:light-dark(#934432,#e9ad99);font-family:"IBM Plex Sans Thai",Tahoma,system-ui,sans-serif;font-size:14px;line-height:1.55;font-weight:400;color:var(--ss-ink);background:var(--ss-bg);border:1px solid var(--ss-line);border-radius:20px;overflow:hidden;max-width:100%;box-sizing:border-box}
+    #sydney-studio-concept[data-palette="clay"]{--ss-accent:light-dark(#745642,#dfbca2);--ss-on-accent:light-dark(#fffdf8,#37291f);--ss-soft:light-dark(#f0e4d7,#493a2f)}
+    #sydney-studio-concept *{box-sizing:border-box}
+#sydney-studio-concept [hidden]{display:none!important}
+#sydney-studio-concept button,#sydney-studio-concept input,#sydney-studio-concept select,#sydney-studio-concept textarea{font:inherit}
+#sydney-studio-concept h1,#sydney-studio-concept h2,#sydney-studio-concept h3,#sydney-studio-concept p{margin:0}
+#sydney-studio-concept h1{font-size:25px;font-weight:600;letter-spacing:-.04em;line-height:1.25}
+#sydney-studio-concept h2{font-size:18px;font-weight:600;line-height:1.35}
+#sydney-studio-concept h3{font-size:15px;font-weight:600}
+#sydney-studio-concept strong{font-weight:600}
+#sydney-studio-concept .ss-muted{color:var(--ss-muted)}
+#sydney-studio-concept .ss-small{font-size:12px}
+#sydney-studio-concept .ss-kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ss-muted);font-weight:600}
+#sydney-studio-concept .ss-num{font-variant-numeric:tabular-nums}
+#sydney-studio-concept .ss-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+#sydney-studio-concept .ss-icon svg{width:18px;height:18px}
+#sydney-studio-concept .ss-top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:19px 24px;border-bottom:1px solid var(--ss-line);background:var(--ss-surface)}
+#sydney-studio-concept .ss-brand{display:flex;align-items:center;gap:10px}
+#sydney-studio-concept .ss-brandmark{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:var(--ss-on-accent);background:var(--ss-accent)}
+#sydney-studio-concept .ss-brandname{font-family:Georgia,"Times New Roman",serif;font-size:21px;letter-spacing:-.04em}
+#sydney-studio-concept .ss-demo{font-size:11px;color:var(--ss-ink);background:var(--ss-warm);border-radius:30px;padding:6px 10px;max-width:100%}
+#sydney-studio-concept .ss-shell{display:grid;grid-template-columns:184px minmax(0,1fr)}
+#sydney-studio-concept .ss-sidebar{padding:25px 14px;border-right:1px solid var(--ss-line);display:flex;flex-direction:column;gap:23px}
+#sydney-studio-concept .ss-sidebar-label{padding:0 10px}
+#sydney-studio-concept .ss-nav{display:grid;gap:5px}
+#sydney-studio-concept .ss-nav button{display:flex;align-items:center;gap:10px;text-align:left;padding:11px 12px;min-height:44px;background:transparent;border:0;color:var(--ss-muted);border-radius:10px;font-weight:400}
+#sydney-studio-concept .ss-nav button[aria-selected="true"]{background:var(--ss-accent);color:var(--ss-on-accent);font-weight:600}
+#sydney-studio-concept .ss-side-note{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--ss-line);display:grid;gap:7px}
+#sydney-studio-concept .ss-main{min-width:0;padding:28px}
+#sydney-studio-concept .ss-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:23px}
+#sydney-studio-concept .ss-page-title{display:grid;gap:7px}
+#sydney-studio-concept .ss-tag{display:inline-flex;align-items:center;gap:5px;width:max-content;max-width:100%;padding:4px 8px;border-radius:6px;background:var(--ss-soft);color:var(--ss-ink);font-size:11px;white-space:normal}
+#sydney-studio-concept .ss-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#sydney-studio-concept .ss-metric{display:flex;flex-direction:column;gap:9px;min-width:0;padding:18px;background:var(--ss-surface);border:1px solid var(--ss-line);border-radius:13px}
+#sydney-studio-concept .ss-metric-value{font-family:Georgia,"Times New Roman",serif;font-size:34px;line-height:1.1;letter-spacing:-.04em}
+#sydney-studio-concept .ss-metric-label{font-size:12px;color:var(--ss-muted);min-height:38px}
+#sydney-studio-concept .ss-origin{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:15px;padding:18px 20px;border-radius:13px;background:var(--ss-warm)}
+#sydney-studio-concept .ss-origin-main{display:flex;gap:14px;align-items:center}
+#sydney-studio-concept .ss-origin-number{font-family:Georgia,serif;font-size:30px}
+#sydney-studio-concept .ss-source-text{display:grid;gap:4px}
+#sydney-studio-concept .ss-section-head{display:flex;gap:12px;justify-content:space-between;align-items:center;margin:25px 0 12px}
+#sydney-studio-concept .ss-list{border-top:1px solid var(--ss-line)}
+#sydney-studio-concept .ss-list-row{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--ss-line)}
+#sydney-studio-concept .ss-list-copy{display:grid;gap:4px;min-width:0}
+#sydney-studio-concept .ss-button{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:1px solid var(--ss-line);background:var(--ss-surface);color:var(--ss-ink);padding:9px 13px;min-height:40px;border-radius:8px;white-space:normal;flex-shrink:0}
+#sydney-studio-concept .ss-button-primary{background:var(--ss-accent);border-color:var(--ss-accent);color:var(--ss-on-accent)}
+#sydney-studio-concept .ss-button:disabled{opacity:.55;cursor:default}
+#sydney-studio-concept .ss-fields{display:grid;gap:18px}
+#sydney-studio-concept .ss-field{display:grid;gap:7px}
+#sydney-studio-concept label{font-weight:600}
+#sydney-studio-concept input,#sydney-studio-concept textarea,#sydney-studio-concept select{background:var(--ss-surface);color:var(--ss-ink);border:1px solid var(--ss-line);border-radius:8px;padding:10px 11px;min-width:0;width:100%;font-weight:400}
+#sydney-studio-concept input,#sydney-studio-concept textarea{font-size:16px}
+#sydney-studio-concept textarea{resize:vertical;min-height:126px}
+#sydney-studio-concept .ss-two{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}
+#sydney-studio-concept .ss-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#sydney-studio-concept .ss-preview{border:1px solid var(--ss-line);border-radius:13px;overflow:hidden;background:var(--ss-surface)}
+#sydney-studio-concept .ss-poster{height:152px;background:var(--ss-soft);display:grid;place-content:center;gap:10px;text-align:center;color:var(--ss-accent)}
+#sydney-studio-concept .ss-poster .ss-icon svg{width:37px;height:37px}
+#sydney-studio-concept .ss-preview-copy{padding:18px;display:grid;gap:10px}
+#sydney-studio-concept .ss-preview-copy h3{font-size:18px;overflow-wrap:anywhere}
+#sydney-studio-concept .ss-note{margin-top:20px;color:var(--ss-muted);font-size:12px}
+#sydney-studio-concept .ss-roster{display:grid;border-top:1px solid var(--ss-line)}
+#sydney-studio-concept .ss-person{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,210px);align-items:center;gap:16px;padding:13px 0;border-bottom:1px solid var(--ss-line)}
+#sydney-studio-concept .ss-person-code{display:flex;align-items:center;gap:10px}
+#sydney-studio-concept .ss-monogram{display:grid;place-items:center;background:var(--ss-soft);width:34px;height:34px;border-radius:50%;font-size:11px;color:var(--ss-accent)}
+#sydney-studio-concept .ss-brief-block{padding:20px;border:1px solid var(--ss-line);border-radius:13px;background:var(--ss-surface)}
+#sydney-studio-concept .ss-brief-block .ss-fields{gap:13px}
+#sydney-studio-concept .ss-approval{display:grid;gap:14px;margin-top:18px;padding-top:17px;border-top:1px solid var(--ss-line)}
+#sydney-studio-concept .ss-task-list{display:grid;gap:11px;margin-top:13px}
+#sydney-studio-concept .ss-task{display:grid;gap:7px;border-bottom:1px solid var(--ss-line);padding-bottom:12px}
+#sydney-studio-concept .ss-task p{overflow-wrap:anywhere}
+#sydney-studio-concept .ss-task-top{display:flex;gap:8px;justify-content:space-between;align-items:center}
+#sydney-studio-concept .ss-error{color:var(--ss-danger);font-size:12px;min-height:18px}
+#sydney-studio-concept .ss-bottom{border-top:1px solid var(--ss-line);background:var(--ss-surface);padding:12px 24px;display:flex;align-items:center;gap:8px;color:var(--ss-muted);font-size:12px;min-height:43px}
+#sydney-studio-concept[data-density="compact"] .ss-main{padding:20px}
+#sydney-studio-concept[data-density="compact"] .ss-metric{padding:13px}
+#sydney-studio-concept[data-density="compact"] .ss-list-row,#sydney-studio-concept[data-density="compact"] .ss-person{padding:9px 0}
+#sydney-studio-concept[data-density="compact"] .ss-page-head{margin-bottom:16px}
+    @media(max-width:760px){#sydney-studio-concept .ss-shell{grid-template-columns:1fr}
+#sydney-studio-concept .ss-sidebar{padding:13px 16px;border-right:0;border-bottom:1px solid var(--ss-line);gap:0}
+#sydney-studio-concept .ss-sidebar-label,#sydney-studio-concept .ss-side-note{display:none}
+#sydney-studio-concept .ss-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+#sydney-studio-concept .ss-nav button{justify-content:center;padding:10px 6px;font-size:12px;gap:6px}
+#sydney-studio-concept .ss-main{padding:23px}
+#sydney-studio-concept .ss-top{padding:16px 20px}
+#sydney-studio-concept .ss-two{gap:18px}}
+    @media(max-width:540px){#sydney-studio-concept{border-radius:14px}
+#sydney-studio-concept .ss-top{align-items:flex-start;flex-wrap:wrap;gap:10px;padding:17px}
+#sydney-studio-concept .ss-demo{font-size:11px}
+#sydney-studio-concept .ss-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+#sydney-studio-concept .ss-nav button{justify-content:flex-start;padding:10px 12px}
+#sydney-studio-concept .ss-main,#sydney-studio-concept[data-density="compact"] .ss-main{padding:20px 16px}
+#sydney-studio-concept h1{font-size:23px}
+#sydney-studio-concept .ss-page-head{flex-wrap:wrap;gap:10px}
+#sydney-studio-concept .ss-metrics{grid-template-columns:1fr;gap:9px}
+#sydney-studio-concept .ss-metric{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:14px 16px;gap:6px 12px}
+#sydney-studio-concept .ss-metric-label{min-height:0;font-size:13px}
+#sydney-studio-concept .ss-metric-value{grid-column:2;grid-row:1 / 3;font-size:30px}
+#sydney-studio-concept .ss-origin{align-items:flex-start;flex-direction:column;padding:16px;gap:10px}
+#sydney-studio-concept .ss-two{grid-template-columns:1fr}
+#sydney-studio-concept .ss-preview{max-width:100%}
+#sydney-studio-concept .ss-list-row{align-items:flex-start;gap:10px;flex-wrap:wrap}
+#sydney-studio-concept .ss-person{grid-template-columns:minmax(0,1fr) minmax(140px,1fr);gap:10px}
+#sydney-studio-concept .ss-person-code{gap:7px}
+#sydney-studio-concept .ss-monogram{display:none}
+#sydney-studio-concept .ss-brief-block{padding:16px}
+#sydney-studio-concept .ss-bottom{padding:12px 16px}
+#sydney-studio-concept .ss-section-head{align-items:flex-start;gap:8px;flex-wrap:wrap}
+#sydney-studio-concept .ss-button{min-height:44px}
+#sydney-studio-concept select{min-height:44px}}
+  
