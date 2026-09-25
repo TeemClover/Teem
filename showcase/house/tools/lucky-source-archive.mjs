@@ -1,6 +1,6 @@
 import {deflateRawSync,inflateRawSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
-export const VERSION='1.1.0';
+export const VERSION='1.1.1';
 export const ZIP_NAME=`lucky-source-house-v${VERSION}.zip`;
 export const ROOT='Lucky-Source-House-v1/';
 export const FILES=[

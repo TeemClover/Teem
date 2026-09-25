@@ -641,7 +641,7 @@
       "title": "Lucky Source — จากแปลนและภาพจริง สู่บ้านที่เปิดให้สำรวจ",
       "description": "เริ่มเควส AI จากบ้านของคุณ รับซอสทาง inbox แก้งานด้วยภาพ และพัฒนาต่อกับ myClover",
       "path": "source/method/lucky-house-studio.md",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "created_at": "2026-09-26",
       "updated_at": "2026-09-26",
       "added_to_shelf_at": "2026-09-26",
@@ -662,9 +662,10 @@
       ],
       "aliases": [
         "lucky-source-house-v1.0.0.zip",
-        "lucky-source-house-v1.1.0.zip"
+        "lucky-source-house-v1.1.0.zip",
+        "lucky-source-house-v1.1.1.zip"
       ],
-      "notes": "DERIVED — สูตรประยุกต์และบ้านสมมติ ส่งแพ็กทาง inbox เท่านั้น เครดิตสั้นท้ายงานผู้รับ ไม่ปลดล็อกบทเรียนอื่น",
+      "notes": "DERIVED — สูตรประยุกต์และบ้านสมมติ ส่งลิงก์หน้ารับซอสทาง inbox มี ZIP และ prompt พร้อมใช้ เครดิตท้ายงานผู้รับ ไม่ปลดล็อกบทเรียนอื่น",
       "sections": []
     }
   ],

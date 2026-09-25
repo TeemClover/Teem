@@ -53,5 +53,5 @@ asksydscience/README.md
 # Lucky Source authoring files are distributed only through the audited ZIP.
 tools/lucky-house/
 
-# Lucky Source packages are handed over in inbox, never deployed as downloads.
+# Legacy main-page downloads remain blocked; the inbox handoff is served only under house/receive/.
 showcase/house/downloads/

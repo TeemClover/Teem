@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>ซอสพร้อมแล้ว เริ่มเควสบ้านของคุณ | myClover</title>
+<meta name="description" content="รับ Lucky Source แนบ ZIP ใน Work แล้วคัดลอกคำสั่งเพื่อเริ่มสร้างบ้านของคุณกับ myClover">
+<meta name="theme-color" content="#213443"><link rel="icon" href="../assets/myclover-logo.png">
+<link rel="stylesheet" href="./receive.css"><script type="module" src="./receive.js"></script>
+</head>
+<body>
+<header><a class="brand" href="../"><img src="../assets/myclover-logo.png" width="38" height="38" alt=""><span>myClover <small>Lucky Source</small></span></a><a class="back" href="../">ดูบ้านต้นแบบ <span aria-hidden="true">↗</span></a></header>
+<main>
+<section class="welcome"><span class="eyebrow">เควสบ้านของคุณ · 01</span><h1>ซอสพร้อมแล้ว<br><span>เติมรสชาติของคุณได้เลย</span></h1><p>เริ่มจากบ้านที่อยากทำ<br>แล้วค่อย ๆ สร้างไปด้วยกันนะครับ</p></section>
+<section class="start" aria-label="เริ่มสร้างบ้านในสองขั้นตอน">
+<article class="step"><div class="step-top"><span class="number">01</span><span>วัตถุดิบตั้งต้น</span></div><h2>รับขวดซอส</h2><p>โหลด ZIP นี้ แล้วแนบใน Work<br>ให้ AI อ่านไฟล์และพาเริ่มทำ</p><a class="primary" id="download" href="./lucky-source-house-v1.1.1.zip" download="lucky-source-house-v1.1.1.zip">ดาวน์โหลด ZIP <span aria-hidden="true">↓</span></a><p class="meta">v1.1.1 · 183 KB · ซอส 6 ขวด + บ้านทดลอง 3D</p><p class="hint">เลือก Astra ตามชื่อที่มีในบัญชี<br>ถ้าแอปขอสิทธิ์อ่านไฟล์ ให้เลือกไฟล์งานนี้ได้เลย</p></article>
+<article class="step prompt-step"><div class="step-top"><span class="number">02</span><span>คำสั่งเปิดงาน</span></div><h2>คัดลอก แล้ววางใน Work</h2><p>แนบ ZIP ให้เรียบร้อย<br>วางคำสั่งนี้ แล้วให้ AI ลงมือพาทำ</p><button class="primary" id="copy" type="button">คัดลอก prompt <span aria-hidden="true">⧉</span></button><p class="meta" id="copy-status" role="status" aria-live="polite">คัดลอกคำสั่งครบชุดในคลิกเดียว</p><details id="prompt-details"><summary>ดูข้อความที่จะส่ง</summary><label class="sr-only" for="start-prompt">Prompt เปิดงาน</label><textarea id="start-prompt" readonly spellcheck="false">ฉันอยากสร้างเว็บสำรวจบ้านของฉัน โดยใช้ชุด Lucky Source by myClover ที่แนบ/เลือกโฟลเดอร์ให้แล้ว
+
+อ่าน README.md, 00-START-HERE.md, SAUCE.md, 02-WHEN-SOMETHING-IS-WRONG.md, 03-NEXT-QUEST.md, 04-PASS-THE-LUCK.md และขวดใน bottles/ ให้ครบก่อนลงมือ ตรวจว่าเข้าถึง MY-HOUSE/ และมีเครื่องมืออะไรจริง อย่าอ้างว่ารู้จากแชตของอาจารย์ทีม เพราะคุณไม่มีความทรงจำนั้น
+
+ใช้หลักอาจารย์ทีม: ใช้ข้อมูลอะไร / ถูกคืออะไร / ผิดแล้วแก้ตรงไหน ทำงานให้ฉันดูจริง ไม่จบแค่แผนหรือโยนโค้ดยาวให้ฉันไปประกอบเอง
+
+เริ่มเปิด starter บ้านสมมติให้ฉันเห็นและลองเล่นก่อน ใช้ node starter/serve.mjs ถ้ารันได้ จากนั้นทำสารบัญหลักฐานจากแปลนและภาพที่ฉันให้ ถามเฉพาะข้อมูลที่ขวางงานจริงไม่เกิน 3 ข้อ แล้วทำทรงบ้าน+ชั้น+ทางเข้ารอบแรกเป็น preview ให้ฉันตรวจ
+
+เป้าหมายคือประสบการณ์สำรวจบ้านแบบ https://www.myclover.com/showcase/house/ ด้วยข้อมูลและบุคลิกของบ้านฉัน: ทั้งหลัง/เลือกชั้น/แยกชั้น, โมเดล/แปลน/รูปจริง, เลือกห้อง, Full/Auto/Low, บิลต์อินกับเฟอร์นิเจอร์แยกกัน, SD เริ่มต้น/HD เลือกเปิด, กล้องไม่กระโดด และมือถือใช้ง่าย ไม่คัดลอกเรื่องครอบครัว สี ภาพ โลโก้ แปลน หรือกุญแจหลังบ้านของตัวอย่าง
+
+ฉันอนุญาตให้อ่านไฟล์ที่ฉันเลือกและสร้าง/แก้ไฟล์งานภายใน OUTPUT/ และสำเนา starter สำหรับงานนี้ ผ่านเครื่องมือที่แอปให้สิทธิ์จริง ให้คงต้นฉบับ MY-HOUSE/ ไว้ ยังไม่อนุญาตเผยแพร่ ส่งไฟล์ให้บุคคลอื่น ซื้อบริการ หรือต่อ analytics เอง
+
+ทำหน้าที่เป็นผู้ช่วยสอนตามซอสของอาจารย์ทีม พูดสั้น ๆ ทีละขั้น ไม่สวมรอยว่าเป็นอาจารย์หรือทีม myClover จริง สอนฉันส่ง screenshot ที่วง/เขียน/ชี้จุด หรือภาพของจริงเพื่อแก้งาน และให้ฉันได้ลองเองหนึ่งอย่างหลังจบแต่ละรอบ
+
+เก็บ end credit เล็ก ๆ ตาม 04-PASS-THE-LUCK.md ในงานของฉัน ให้ซอสจาก myClover อยู่ร่วมกับรสชาติของฉัน เมื่อมีเป้าหมายใหม่ เสนอเควสถัดไปที่เหมาะ และช่องทางคุยกับ myClover โดยไม่แทรกขายซ้ำทุกข้อความ ไม่อ้างว่าติดตั้งซอสใหม่แล้วหากยังไม่ได้รับไฟล์จริง
+
+บันทึกหลักฐาน ล็อกสิ่งที่ฉันยืนยัน และประวัติแก้ใน OUTPUT/ ทุกครั้ง ถ้าคุณรันหรือมองภาพไม่ได้ ให้บอกตรง ๆ และทำส่วนอื่นที่ทำได้ก่อน จนได้งานที่เปิดตรวจได้ รายงานสั้น ๆ ว่าเสร็จอะไร เปิดที่ไหน รอฉันยืนยันจุดใด</textarea></details></article>
+</section>
+<section class="next" aria-label="ค่อย ๆ พัฒนาต่อ"><div><span class="eyebrow">ลองดู แล้วค่อยปรุง</span><h2>อยากแก้ตรงไหน<br>แคป · วง · ชี้ แล้วส่งมา</h2></div><div><p>ส่งภาพหน้าจอหรือถ่ายของจริงประกอบให้ AI<br>แก้ทีละจุด แล้วลองดูด้วยกันอีกครั้ง</p><a href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">อยากพัฒนาต่อ คุยกับ myClover <span aria-hidden="true">↗</span></a></div></section>
+<p class="small-note">หาก Work อ่าน ZIP ไม่ได้ ให้แตกไฟล์แล้วเลือกโฟลเดอร์ให้ AI อ่านแทน<br>ใช้แปลนและภาพของคุณเอง · ในแพ็กไม่มีแปลนหรือภาพส่วนตัวของบ้านต้นแบบ</p>
+</main>
+<footer>Lucky Source by myClover <span>ซอสจากเรา รสชาติของคุณ 🍀</span></footer>
+</body></html>

@@ -1,13 +1,13 @@
 {
-  "checkedAt": "2026-09-25T17:45:24.826Z",
+  "checkedAt": "2026-09-25T18:00:07.216Z",
   "valid": true,
   "environment": {
     "node": "v26.8.2",
     "three": "0.180.0",
     "esbuild": "0.25.10"
   },
-  "scope": "Built public HTML, assets and image derivatives. Lucky Source is delivered via inbox only; no downloadable ZIP, private plans or student kits.",
-  "fileCount": 68,
+  "scope": "Built public HTML, assets, image derivatives and the allowlisted generic ZIP on the unlisted inbox handoff page only. No download from the main house page or private house files.",
+  "fileCount": 72,
   "errors": [],
   "warnings": [],
   "bundleGraphs": {
@@ -56,8 +56,8 @@
       "gzipBytes": 3370555
     },
     "allPublicFiles": {
-      "bytes": 4624219,
-      "gzipBytes": 3933425
+      "bytes": 4826224,
+      "gzipBytes": 4122842
     }
   },
   "perFile": {
@@ -332,6 +332,22 @@
     "media/photos/study-01.webp": {
       "bytes": 131514,
       "gzipBytes": 131577
+    },
+    "receive/index.html": {
+      "bytes": 9513,
+      "gzipBytes": 3170
+    },
+    "receive/lucky-source-house-v1.1.1.zip": {
+      "bytes": 187501,
+      "gzipBytes": 184292
+    },
+    "receive/receive.css": {
+      "bytes": 4075,
+      "gzipBytes": 1468
+    },
+    "receive/receive.js": {
+      "bytes": 916,
+      "gzipBytes": 487
     }
   },
   "measurement": "On-disk byte counts and gzip level-9 compression estimates. Default SD follows static dependencies of the shell and lazy scene entry, excluding optional HD dynamic imports. HD additional counts only dependencies absent from SD. All font faces and preview thumbnails included conservatively. Not observed network transfer, startup latency, memory, or FPS.",

@@ -1,6 +1,7 @@
 import { readFile, writeFile, readdir, stat, mkdir } from 'node:fs/promises';
 import { gzipSync, inflateRawSync } from 'node:zlib';
 import path from 'node:path';
+import {ZIP_NAME,validateLuckyArchive,readZip} from './lucky-source-archive.mjs';
 import { fileURLToPath } from 'node:url';
 import { photoSets } from '../app/data/photos.js';
 
@@ -29,7 +30,7 @@ async function collect(relative) {
   if (info.isDirectory()) for (const entry of await readdir(target)) await collect(path.posix.join(relative, entry));
   else files.push(relative);
 }
-for (const target of ['index.html', 'assets', 'media']) {
+for (const target of ['index.html', 'assets', 'media', 'receive']) {
   try { await collect(target); } catch { errors.push(`Missing public build output: ${target}`); }
 }
 const forbidden = [
@@ -55,6 +56,8 @@ function inspectWebp(buffer, name) {
   }
 }
 function inspectZip(buffer, name) {
+  if(name===`receive/${ZIP_NAME}`){try{validateLuckyArchive(buffer);for(const[file,data]of readZip(buffer))scanText(data.toString('utf8'),`${name}/${file}`);}catch(error){errors.push(`${name}: ${error.message}`);}return;}
+
 
   let offset = 0, count = 0;
   const entries = new Set();
@@ -82,8 +85,8 @@ function inspectZip(buffer, name) {
   } else if (count !== 11) errors.push(`${name}: expected 11 educational files, found ${count}`);
 }
 try { await collect('downloads'); } catch {}
-const allowedDownloads = new Set();
-for (const file of files) if (file.startsWith('downloads/') && !allowedDownloads.has(file)) errors.push(`${file}: student material must not be published`);
+const allowedDownloads = new Set([`receive/${ZIP_NAME}`]);
+for (const file of files) if ((file.startsWith('downloads/')||file.endsWith('.zip')) && !allowedDownloads.has(file)) errors.push(`${file}: student material must not be published`);
 for (const file of ['LEARN.md', 'tools/make-learning-kit.mjs', 'tools/make-source-kit.mjs']) {
   try { await stat(path.join(root,file)); errors.push(`${file}: student material must remain outside the public repository`); } catch {}
 }
@@ -137,7 +140,7 @@ for (const name of ['three', 'esbuild']) {
 }
 const report = {
   checkedAt: new Date().toISOString(), valid: errors.length === 0, environment: { node, ...dependencies },
-  scope: 'Built public HTML, assets and image derivatives. Lucky Source is delivered via inbox only; no downloadable ZIP, private plans or student kits.',
+  scope: 'Built public HTML, assets, image derivatives and the allowlisted generic ZIP on the unlisted inbox handoff page only. No download from the main house page or private house files.',
   fileCount: files.length, errors, warnings,
   bundleGraphs: { shell: shellGraph, defaultSD: sdGraph, optInHDEntryPoints: hdEntries.sort(), optInHDAdditional: hdAdditional },
   sizes: { shellWithAllFontFacesAndPreviewImages: sum(initial), firstModelWithAllFontFacesAndPreviewImages: sum(firstModel),

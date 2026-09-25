@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>ซอสพร้อมแล้ว เริ่มเควสบ้านของคุณ | myClover</title>
+<meta name="description" content="รับ Lucky Source แนบ ZIP ใน Work แล้วคัดลอกคำสั่งเพื่อเริ่มสร้างบ้านของคุณกับ myClover">
+<meta name="theme-color" content="#213443"><link rel="icon" href="../assets/myclover-logo.png">
+<link rel="stylesheet" href="./receive.css"><script type="module" src="./receive.js"></script>
+</head>
+<body>
+<header><a class="brand" href="../"><img src="../assets/myclover-logo.png" width="38" height="38" alt=""><span>myClover <small>Lucky Source</small></span></a><a class="back" href="../">ดูบ้านต้นแบบ <span aria-hidden="true">↗</span></a></header>
+<main>
+<section class="welcome"><span class="eyebrow">เควสบ้านของคุณ · 01</span><h1>ซอสพร้อมแล้ว<br><span>เติมรสชาติของคุณได้เลย</span></h1><p>เริ่มจากบ้านที่อยากทำ<br>แล้วค่อย ๆ สร้างไปด้วยกันนะครับ</p></section>
+<section class="start" aria-label="เริ่มสร้างบ้านในสองขั้นตอน">
+<article class="step"><div class="step-top"><span class="number">01</span><span>วัตถุดิบตั้งต้น</span></div><h2>รับขวดซอส</h2><p>โหลด ZIP นี้ แล้วแนบใน Work<br>ให้ AI อ่านไฟล์และพาเริ่มทำ</p><a class="primary" id="download" href="./{{ZIP_NAME}}" download="{{ZIP_NAME}}">ดาวน์โหลด ZIP <span aria-hidden="true">↓</span></a><p class="meta">v{{VERSION}} · {{SIZE}} KB · ซอส 6 ขวด + บ้านทดลอง 3D</p><p class="hint">เลือก Astra ตามชื่อที่มีในบัญชี<br>ถ้าแอปขอสิทธิ์อ่านไฟล์ ให้เลือกไฟล์งานนี้ได้เลย</p></article>
+<article class="step prompt-step"><div class="step-top"><span class="number">02</span><span>คำสั่งเปิดงาน</span></div><h2>คัดลอก แล้ววางใน Work</h2><p>แนบ ZIP ให้เรียบร้อย<br>วางคำสั่งนี้ แล้วให้ AI ลงมือพาทำ</p><button class="primary" id="copy" type="button">คัดลอก prompt <span aria-hidden="true">⧉</span></button><p class="meta" id="copy-status" role="status" aria-live="polite">คัดลอกคำสั่งครบชุดในคลิกเดียว</p><details id="prompt-details"><summary>ดูข้อความที่จะส่ง</summary><label class="sr-only" for="start-prompt">Prompt เปิดงาน</label><textarea id="start-prompt" readonly spellcheck="false">{{PROMPT}}</textarea></details></article>
+</section>
+<section class="next" aria-label="ค่อย ๆ พัฒนาต่อ"><div><span class="eyebrow">ลองดู แล้วค่อยปรุง</span><h2>อยากแก้ตรงไหน<br>แคป · วง · ชี้ แล้วส่งมา</h2></div><div><p>ส่งภาพหน้าจอหรือถ่ายของจริงประกอบให้ AI<br>แก้ทีละจุด แล้วลองดูด้วยกันอีกครั้ง</p><a href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">อยากพัฒนาต่อ คุยกับ myClover <span aria-hidden="true">↗</span></a></div></section>
+<p class="small-note">หาก Work อ่าน ZIP ไม่ได้ ให้แตกไฟล์แล้วเลือกโฟลเดอร์ให้ AI อ่านแทน<br>ใช้แปลนและภาพของคุณเอง · ในแพ็กไม่มีแปลนหรือภาพส่วนตัวของบ้านต้นแบบ</p>
+</main>
+<footer>Lucky Source by myClover <span>ซอสจากเรา รสชาติของคุณ 🍀</span></footer>
+</body></html>

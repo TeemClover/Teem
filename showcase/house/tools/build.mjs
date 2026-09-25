@@ -1,3 +1,4 @@
+import {buildLuckyReceive} from './build-lucky-receive.mjs';
 import {build} from 'esbuild';
 import {copyFile,mkdir,writeFile,readdir,unlink} from 'node:fs/promises';
 import path from 'node:path';
@@ -13,3 +14,5 @@ await copyFile('app/styles.css','assets/home.css');
 await copyFile('app/studio.css','assets/studio.css');
 for(const name of ['story','wall-controls','onboarding'])await copyFile(`app/${name}.css`,`assets/${name}.css`);
 console.log('Built static route /showcase/house/');
+
+await buildLuckyReceive();
