@@ -1,22 +1,21 @@
-# Ask Syd Science demo foundation
+# AskSydScience demo
 
-Status: awaiting product brief. Foundation prepared on a dedicated GitHub branch; verify deployment and domain activation separately.
+Responsive editorial demo based on the supplied AskSydScience v0.1 kit and concept image. This README and build/QA inputs are excluded from Vercel output.
 
 ## Entry points
 
-- Main site: `/asksydscience/` (`/asksydscience` normalizes through existing middleware).
-- Intended custom domain: `https://asksydscience.myclover.com/`.
-- Vercel host-specific root rewrite serves the same `asksydscience/index.html`, keeping the subdomain in the address bar.
-- Use `/asksydscience/`-prefixed asset and internal page URLs so both entry points work. Do not add a domain-wide catch-all rewrite: unknown routes should remain 404.
-- Demo pages are marked noindex; this is not authentication.
+- `/asksydscience/` on the main site.
+- `https://asksydscience.myclover.com/` via the host-specific Vercel rewrite.
+- All assets use `/asksydscience/` URLs, so both entry points share one output.
 
-## Before activation
+## Build and verify
 
-1. Build the demo from the forthcoming brief.
-2. Deploy the prepared changes to the myClover Vercel project.
-3. Add `asksydscience.myclover.com` to that project and apply the exact DNS record provided by Vercel at the DNS provider.
-4. Verify HTTPS, both entry points, assets, query parameters, and unknown-route behavior on the deployed host.
+Edit `tools/asksydscience/site.th.json` for Thai copy. Run `python3 tools/build-asksydscience.py`, `python3 tools/asksydscience/validate.py`, and `node --check asksydscience/app.js`.
 
-## Backend scope pending brief
+## Experience
 
-No database, AI service, login system, write API, or data collection has been provisioned. Define data fields, user roles, integrations, and persistence requirements from the brief before implementing them. Keep future API handlers under the existing `api/` serverless boundary; never place credentials in this public folder.
+Mobile disclosure navigation; three-topic story filter; starting-point choices; native detail dialogs with Escape/focus return; keyboard-accessible four-week workshop tabs; FAQs; and an explicit local review drawer. Its counts are memory-only and reset on refresh. There is no analytics transport, form, account, checkout, or health-data collection.
+
+Without JavaScript, stories and all four weeks remain readable. Motion respects reduced-motion preferences. Story and workshop content remains proposed demo material; missing destinations remain null. AI portrait and room assets have visible demo attribution. The editorial illustrations are also AI demo images based on the supplied art direction. Fonts are self-hosted IBM Plex Sans Thai under OFL.
+
+User requested publication of the demo; that does not approve opening registrations, selling products, or treating proposed content as verified episodes. See `docs/asksydscience/` for QA and image provenance.

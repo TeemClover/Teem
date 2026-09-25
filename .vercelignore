@@ -43,3 +43,9 @@ tests/classroom/
 
 # House analytics fixtures and tests are local-only.
 tests/house-stats/
+
+# AskSydScience build input and QA are not public website assets.
+tools/build-asksydscience.py
+tools/asksydscience/
+docs/asksydscience/
+asksydscience/README.md
