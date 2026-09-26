@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://www.myclover.com/">
 <title>บ้าน myClover — ใครเจอเรา คนนั้นโชคดี</title>
-<meta name="description" content="เดินเข้าบ้าน myClover แบบ 3D ห้องนั่งเล่น ครัวเอโกะ ห้องเรียน AI และห้องคอม หยิบของในบ้านเพื่อไปต่อ แล้วหาโคลเวอร์สี่ใบที่ซ่อนอยู่">
+<meta name="description" content="เดินเข้าบ้าน myClover แบบ 3D ห้องนั่งเล่น ครัวเอโกะ ขึ้นบันไดไปห้องเรียน AI และห้องโปรเจกต์ หยิบของในบ้านเพื่อไปต่อ แล้วหาโคลเวอร์สี่ใบที่ซ่อนอยู่">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="th_TH">
 <meta property="og:site_name" content="myClover">
@@ -20,14 +20,22 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Kanit:wght@300;500;600;700&display=swap" rel="stylesheet">
 <link rel="modulepreload" href="/tour/vendor/three.core.min.js">
 <link rel="modulepreload" href="/tour/vendor/three.module.min.js">
 <link rel="stylesheet" href="/tour/tour.css">
+<script>document.documentElement.classList.add('js')</script>
+<noscript><style>.loader{display:none}.card{opacity:1!important;transform:none!important}.stage{display:none}.stage-fallback{display:block}</style></noscript>
 <script type="module" src="/tour/tour.js"></script>
 <script type="module" src="/assets/my-learning-entry.js"></script>
 </head>
-<body class="is-loading">
+<body>
+<script>
+  // the page is readable and every link works before any 3D: the loader only shows while the house is
+  // being built, and if the house module can't load (blocked, offline, old browser) the story comes back
+  document.body.classList.add('is-loading');
+  setTimeout(function () { var h = document.documentElement; if (!h.classList.contains('js-ready')) { h.classList.add('static'); document.body.classList.add('no-webgl'); document.body.classList.remove('is-loading'); } }, 6000);
+</script>
 <canvas id="stage" class="stage" aria-hidden="true"></canvas>
 <div class="stage-fallback" aria-hidden="true"></div>
 
@@ -44,13 +52,19 @@
 </header>
 
 <nav class="rail" aria-label="ห้องในบ้าน">
-  <a href="#hero" data-rail="hero"><span>หน้าบ้าน</span></a>
-  <a href="#living" data-rail="living"><span>ห้องนั่งเล่น</span></a>
-  <a href="#kitchen" data-rail="kitchen"><span>ห้องครัว</span></a>
-  <a href="#classroom" data-rail="classroom"><span>ห้องเรียน · ชั้น 2</span></a>
-  <a href="#office" data-rail="office"><span>ห้องคอม · ชั้น 2</span></a>
-  <a href="#finale" data-rail="finale"><span>คุยกับเรา</span></a>
+  <a href="#hero" data-rail="hero" aria-label="หน้าบ้าน"><span>หน้าบ้าน</span></a>
+  <a href="#living" data-rail="living" aria-label="ห้องนั่งเล่น"><span>ห้องนั่งเล่น</span></a>
+  <a href="#kitchen" data-rail="kitchen" aria-label="ห้องครัว"><span>ห้องครัว</span></a>
+  <a href="#classroom" data-rail="classroom" aria-label="ห้องเรียน ชั้น 2"><span>ห้องเรียน · ชั้น 2</span></a>
+  <a href="#office" data-rail="office" aria-label="ห้องโปรเจกต์ ชั้น 2"><span>ห้องโปรเจกต์ · ชั้น 2</span></a>
+  <a href="#finale" data-rail="finale" aria-label="คุยกับเรา"><span>คุยกับเรา</span></a>
 </nav>
+
+<audio id="song" src="/assets/audio/clover-song.mp3" loop preload="none"></audio>
+<button type="button" class="music" id="music" aria-pressed="false" aria-label="เพลงประจำบ้าน myClover Instrument">
+  <span class="music-ico" aria-hidden="true"><i class="note">♪</i><span class="eq"><i></i><i></i><i></i><i></i></span></span>
+  <span class="music-lbl"><span class="music-state">เปิดเพลงประจำบ้าน</span><small>myClover Instrument · Clover Song ฉบับบรรเลง</small></span>
+</button>
 
 <div id="loader" class="loader" aria-hidden="true"><span class="loader-clover"></span><span id="loader-text">กำลังเปิดไฟในบ้าน…</span></div>
 <p id="tip" class="tip" role="status" hidden></p>
@@ -67,8 +81,8 @@
   <section id="hero" class="scene scene-hero" data-scene="hero">
     <div class="card hero-card">
       <p class="eyebrow">ยินดีต้อนรับสู่บ้าน myClover</p>
-      <h1>ใครเจอเรา<br><span>คนนั้นโชคดี</span></h1>
-      <p class="lede">บ้านหลังนี้ไม่มีอะไรขาย มีแต่ของดี ๆ วางไว้ให้ลองหยิบ<br>เลื่อนลงช้า ๆ แล้วเดินชมไปด้วยกัน</p>
+      <h1><span class="line">ใครเจอเรา</span><span class="line accent">คนนั้นโชคดี</span></h1>
+      <p class="lede">เข้ามาสำรวจบ้านของเรา ลองของดี ๆ ที่หยิบได้ฟรี รู้จักคนในบ้าน<br>แล้วเลือกทางที่อยากไปต่อ ทั้งคอร์สเรียน และงานที่เราทำ</p>
       <p class="quest"><span aria-hidden="true">✨</span> ของที่มีแสงวิบวับ แตะหยิบได้ · <span aria-hidden="true">🍀</span> มีโคลเวอร์ซ่อนอยู่ 4 ใบ</p>
     </div>
     <a class="scroll-cue" href="#door"><span>เลื่อนเพื่อเข้าบ้าน</span><i aria-hidden="true"></i></a>
@@ -78,7 +92,7 @@
     <div class="card card-small">
       <p class="eyebrow">ประตูเปิดรออยู่แล้ว</p>
       <h2>ถอดรองเท้า แล้วเข้ามาเลย</h2>
-      <p>ชาอุ่น ๆ วางรอบนโต๊ะแล้ว บ้านนี้มีสี่ห้อง ชั้นละสองห้อง ของแต่ละชิ้นพาคุณไปยังส่วนหนึ่งของ myClover</p>
+      <p>ชาอุ่น ๆ วางรอบนโต๊ะแล้ว ชั้นล่างคือห้องนั่งเล่นกับครัว เดินขึ้นบันไดไปห้องเรียนกับห้องโปรเจกต์ ของทุกชิ้นพาคุณไปยังส่วนหนึ่งของ myClover</p>
     </div>
   </section>
 
@@ -86,18 +100,22 @@
     <article class="card">
       <p class="eyebrow"><b>01</b> ห้องนั่งเล่น · ชั้น 1</p>
       <h2>ห้องนั่งเล่นของบ้านเรา</h2>
-      <p>เข็มทิศวางบนแผนที่ การ์ด CORE7 กางรอบนโต๊ะเกม มุมหนังสือมีสามเล่มที่อยากให้อ่านก่อน และบนตู้มีบ้านจำลองของบ้านหลังนี้</p>
+      <p>เข็มทิศวางบนแผนที่ การ์ด CORE7 กางรอบนโต๊ะเกม มุมหนังสือมีสามเล่มที่อยากให้อ่านก่อน บนตู้มีเครื่องเล่นแผ่นเสียง แตะเพื่อเปิดเพลงประจำบ้าน</p>
       <div class="actions"><a class="btn primary" data-primary data-item="compass" href="/compass/" data-desc="หน้าแรกเดิมของเรา หยิบเข็มทิศขึ้นจากแผนที่ แล้วดูว่าใต้กระดาษมีอะไรรออยู่">หยิบเข็มทิศ <span aria-hidden="true">→</span></a></div>
       <ul class="items">
         <li><a data-item="aisauce-book" href="/book/ai-sauce/" data-desc="คู่มือ AI ใส่ซอส อ่านให้เข้าใจ ใช้ให้เป็น ทดลองอ่าน 10 หน้าแรกฟรี ฉบับเต็มอยู่ในคอร์ส">📗 ทดลองอ่าน AI ใส่ซอส</a></li>
         <li><a data-item="core7" href="/core7/" data-desc="เกมการ์ด 7 ใบ ไม่มีเด็ค ไม่พึ่งดวง เปิดพร้อมกัน อ่านเกมและอ่านคน">🃏 CORE7 เกมการ์ด</a></li>
-        <li><a data-item="house3d" href="/showcase/house/" data-desc="บ้านจริงที่ครอบครัวเราอยู่มา 10 ปี ลองหมุน เปิดทีละชั้นแบบ 3D">🏠 บ้านจำลอง 3D</a></li>
-        <li><a data-item="hall" href="/hall.html" data-desc="Hall ของบ้าน รวม Main Quest, CORE7 และ XTY ไว้ในที่เดียว">🎲 Main Quest · Hall</a></li>
-        <li><a data-item="forge-book" href="/forge/" data-desc="19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำงานจริง อ่านฟรี">📕 เรื่องเล่าจากโรงตีเหล็ก</a></li>
-        <li><a data-item="walkthrough-book" href="/walkthrough/" data-desc="จากวัตถุดิบในหัว ถึงเกมที่เล่นได้ เดินดูทีละขั้น">📘 Walkthrough</a></li>
-        <li><a data-item="teem-photo" href="/resume/" data-desc="รู้จักทีม ผู้สร้าง myClover และ AI ใส่ซอส">🖼️ รู้จักทีม</a></li>
       </ul>
-      <button class="find" type="button" data-find="living" data-hint="ลอยอยู่เหนือตู้ ข้างบ้านจำลอง">🍀 ใบแรกซ่อนอยู่ตรงไหนนะ?</button>
+      <details class="more-items">
+        <summary>ของอีก 4 ชิ้นในห้องนี้</summary>
+        <ul class="items">
+          <li><a data-item="hall" href="/hall.html" data-desc="Hall ของบ้าน รวม Main Quest, CORE7 และ XTY ไว้ในที่เดียว">🎲 Main Quest · Hall</a></li>
+          <li><a data-item="forge-book" href="/forge/" data-desc="19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำงานจริง อ่านฟรี">📕 เรื่องเล่าจากโรงตีเหล็ก</a></li>
+          <li><a data-item="walkthrough-book" href="/walkthrough/" data-desc="จากวัตถุดิบในหัว ถึงเกมที่เล่นได้ เดินดูทีละขั้น">📘 Walkthrough</a></li>
+          <li><a data-item="teem-photo" href="/resume/" data-desc="รู้จักทีม ผู้สร้าง myClover และ AI ใส่ซอส">🖼️ รู้จักทีม</a></li>
+        </ul>
+      </details>
+      <button class="find" type="button" data-find="living" data-hint="ลอยอยู่เหนือตู้ ข้างเครื่องเล่นแผ่นเสียง">🍀 ใบแรกซ่อนอยู่ตรงไหนนะ?</button>
     </article>
   </section>
 
@@ -105,27 +123,45 @@
     <article class="card">
       <p class="eyebrow"><b>02</b> ห้องครัว · ชั้น 1</p>
       <h2>ครัวเอโกะ อาหารจานโปรดรออยู่</h2>
-      <p>รูปบนผนังคือจานจริงที่ทำตามได้ แตะรูปเพื่อเปิดสูตร หยิบชามสลัดเพื่อเข้าครัวเต็ม ๆ ข้างตู้เย็นมีตาชั่ง XIRCLE Scale วางอยู่</p>
+      <p>บนเตามีซอสเคี่ยวอยู่หม้อหนึ่ง รูปบนผนังคือจานจริงที่ทำตามได้ หยิบชามสลัดเพื่อเข้าครัวเต็ม ๆ ข้างตู้เย็นมีตาชั่ง XIRCLE Scale วางอยู่</p>
       <div class="actions"><a class="btn primary" data-primary data-item="ako-kitchen" href="/ako/kitchen/" data-desc="สลัด โบวล์ และน้ำสลัดที่ทำตามได้จริงในครัวบ้าน ๆ">เข้าครัวเอโกะ <span aria-hidden="true">→</span></a></div>
       <ul class="items">
-        <li><a data-item="dish-chicken" href="/ako/kitchen/chicken-egg-bowl/" data-desc="ข้าวไก่ไข่ ชามอุ่นแบบญี่ปุ่น ไข่หุ้มไก่กับหอมใหญ่ ราดข้าวแล้วกินได้เลย">🍳 ข้าวไก่ไข่</a></li>
-        <li><a data-item="dish-soup" href="/ako/kitchen/mushroom-egg-soup/" data-desc="ซุปเห็ดไข่ริ้ว น้ำซุปใส เห็ดนุ่ม ไข่เป็นสาย">🍲 ซุปเห็ดไข่ริ้ว</a></li>
-        <li><a data-item="dish-tofu" href="/ako/kitchen/tofu-tomato-cool/" data-desc="เต้าหู้เย็นมะเขือเทศ ซีอิ๊วมะนาว นุ่ม เย็น ฉ่ำ เปิดตู้เย็นแล้วทำได้">🍅 เต้าหู้เย็นมะเขือเทศ</a></li>
-        <li><a data-item="ako" href="/ako/" data-desc="รู้จักเอโกะ และครัวสลัดของเธอ">📖 สมุดสูตรเอโกะ</a></li>
+        <li><a data-item="homechew" href="/homechew/" data-desc="Homechew โฮมชูว ซอสที่ปรุงจากครัวบ้านเรา น้ำจิ้ม 3 รส หาดใหญ่ มหาชัย เชียงคาน เคี่ยวให้แล้ว คุณแค่เท">🍲 Homechew ซอสจากครัวบ้านเรา</a></li>
         <li><a data-item="xircle" href="/xircle/" data-desc="XIRCLE Scale ตาชั่งที่บอกสิ่งที่ร่างกายตอบ ลองเห็นหนึ่งวันของคุณในมุมใหม่">⚖️ XIRCLE Scale</a></li>
       </ul>
+      <details class="more-items">
+        <summary>ของอีก 4 ชิ้นในครัว</summary>
+        <ul class="items">
+          <li><a data-item="dish-chicken" href="/ako/kitchen/chicken-egg-bowl/" data-desc="ข้าวไก่ไข่ ชามอุ่นแบบญี่ปุ่น ไข่หุ้มไก่กับหอมใหญ่ ราดข้าวแล้วกินได้เลย">🍳 ข้าวไก่ไข่</a></li>
+          <li><a data-item="dish-soup" href="/ako/kitchen/mushroom-egg-soup/" data-desc="ซุปเห็ดไข่ริ้ว น้ำซุปใส เห็ดนุ่ม ไข่เป็นสาย">🍲 ซุปเห็ดไข่ริ้ว</a></li>
+          <li><a data-item="dish-tofu" href="/ako/kitchen/tofu-tomato-cool/" data-desc="เต้าหู้เย็นมะเขือเทศ ซีอิ๊วมะนาว นุ่ม เย็น ฉ่ำ เปิดตู้เย็นแล้วทำได้">🍅 เต้าหู้เย็นมะเขือเทศ</a></li>
+          <li><a data-item="ako" href="/ako/" data-desc="รู้จักเอโกะ และครัวสลัดของเธอ">📖 สมุดสูตรเอโกะ</a></li>
+        </ul>
+      </details>
       <button class="find" type="button" data-find="kitchen" data-hint="ข้าง ๆ กระถางสมุนไพรบนเคาน์เตอร์">🍀 ใบที่สองอยู่ในครัวนี่แหละ</button>
     </article>
+  </section>
+
+  <section id="stairs" class="scene scene-stairs" data-scene="stairs">
+    <div class="card card-small">
+      <p class="eyebrow">ประตูข้างครัว · บันได</p>
+      <h2>ขึ้นบันไดไปชั้นสอง</h2>
+      <p>ไฟดวงเล็กตามราวบันไดพาขึ้นไปห้องเรียน รูปบนผนังคือวันธรรมดาในบ้านนี้ วงเกมเล็ก ๆ จานอุ่น ๆ และเพื่อนที่แวะมา</p>
+    </div>
   </section>
 
   <section id="classroom" class="scene" data-scene="classroom" data-clover="classroom">
     <article class="card">
       <p class="eyebrow"><b>03</b> ห้องเรียน · ชั้น 2</p>
       <h2>ประกาศ! คอร์สเรียนกับครูทีม</h2>
-      <p>ป้ายหน้าห้องคือคอร์สที่เปิดรับอยู่ ส่วนไวท์บอร์ดพาไปบทเรียน AI ใส่ซอสฟรี ไม่ต้องสมัคร</p>
+      <p>ป้ายหน้าห้องคือคอร์สที่เปิดรับอยู่ คอมสี่เครื่องเปิดบทเรียนไว้ให้ลอง บท 1 บท 4 บท 5 และอีกเครื่องมีคนเล่น Dungeon ค้างไว้</p>
       <div class="actions"><a class="btn primary" data-primary data-item="courses" href="/courses/" data-desc="คอร์สเรียนกับครูทีมบน myClover เริ่มจาก AI ใส่ซอส">ดูคอร์สที่เปิด <span aria-hidden="true">→</span></a></div>
       <ul class="items">
-        <li><a data-item="classroom" href="/classroom/" data-desc="บทเรียน AI ใส่ซอสฟรี ไม่ต้องสมัคร ใช้ได้กับ AI ตัวไหนก็ได้">🧑‍🏫 เข้าห้องเรียนฟรี</a></li>
+        <li><a data-item="lesson-1" href="/classroom/free-ai.html" data-desc="บทที่ 1 · Source เริ่มจากการปรุงซอส เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง">💻 บท 1 · Source</a></li>
+        <li><a data-item="lesson-4" href="/classroom/notebooklm.html" data-desc="บทที่ 4 · Split ซอสขวดเดียว แตกได้หลายเมนู ทั้งภาพ สไลด์ เสียง FAQ และคู่มือ">💻 บท 4 · Split</a></li>
+        <li><a data-item="lesson-5" href="/classroom/prompts.html" data-desc="บทที่ 5 · Season เลือกงาน แล้วตักผงปรุงไปใช้กับซอส Prompt, Style, Checklist และบทบาทที่เตรียมไว้">💻 บท 5 · Season</a></li>
+        <li><a data-item="dungeon" href="/classroom/dungeon/" data-desc="THE DUNGEON ไฟล์เดียวที่ค่อย ๆ มีชีวิต เริ่มจากตัวอักษร จบที่โลกที่เล่นได้">🎮 THE DUNGEON</a></li>
+        <li><a data-item="classroom" href="/classroom/" data-desc="ห้องเรียน AI ใส่ซอส ครบทั้ง 6 บท ใช้ได้กับ AI ตัวไหนก็ได้">🧑‍🏫 ห้องเรียนครบทุกบท</a></li>
       </ul>
       <button class="find" type="button" data-find="classroom" data-hint="ที่มุมขวาบนของไวท์บอร์ด">🍀 ครูแอบวางไว้ใบหนึ่ง</button>
     </article>
@@ -133,14 +169,14 @@
 
   <section id="office" class="scene" data-scene="office" data-clover="office">
     <article class="card">
-      <p class="eyebrow"><b>04</b> ห้องคอม · ชั้น 2</p>
-      <h2>โปรเจกต์ที่เรากำลังสร้าง</h2>
-      <p>แต่ละจอคือหนึ่งโปรเจกต์ ลองเกมจำลองธุรกิจ เลือกสายของคุณ หรือทำการ์ดประจำตัว ส่วนสมุดสีเขียวบนโต๊ะคือ TeamBook</p>
+      <p class="eyebrow"><b>04</b> ห้องโปรเจกต์ · ชั้น 2</p>
+      <h2>ผลงานที่เราสร้าง</h2>
+      <p>จอซ้ายคือเกมจำลองธุรกิจ จอขวาคือเรซูเม่ของทีม สมุดสีเขียวตรงกลางคือ TeamBook และบนโต๊ะกลางห้องคือบ้านจริงของเราแบบ 3D</p>
       <div class="actions"><a class="btn primary" data-primary data-item="xvisor" href="/xvisor/" data-desc="เกมจำลองธุรกิจ สร้างลูกค้า ทีม และรายได้ ลองบริหารในโลกจำลอง">เล่น X-VISOR QUEST <span aria-hidden="true">→</span></a></div>
       <ul class="items">
-        <li><a data-item="paths" href="/paths/" data-desc="สี่สายของบ้าน myClover ลองดูว่าคุณเป็นสายไหน">🧭 เลือกสายของคุณ</a></li>
-        <li><a data-item="card" href="/card/" data-desc="สร้างการ์ดประจำตัวของคุณเองใน 1 นาที ฟรี ไม่ต้องสมัคร">🪪 การ์ดประจำตัว</a></li>
         <li><a data-item="teambook" href="/teambook/" data-desc="สมุดกลุ่มมีชีวิต เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำ">📒 TeamBook</a></li>
+        <li><a data-item="resume" href="/resume/" data-desc="เรซูเม่ของทีม งานที่ผ่านมา และสิ่งที่ทำได้ ถ้าอยากชวนทำงานด้วย เริ่มจากตรงนี้">📄 Resume</a></li>
+        <li><a data-item="house3d" href="/showcase/house/" data-desc="บ้านจริงที่ครอบครัวเราอยู่มา 10 ปี ลองหมุน เปิดทีละชั้นแบบ 3D">🏠 บ้านจริงของเรา 3D</a></li>
       </ul>
       <button class="find" type="button" data-find="office" data-hint="บนชั้นถ้วยรางวัล ใต้หน้าต่าง">🍀 ใบสุดท้ายอยู่ใกล้หน้าต่าง</button>
     </article>
@@ -150,12 +186,12 @@
     <article class="card finale-card">
       <p class="eyebrow">ก่อนกลับบ้าน</p>
       <h2>ไฟในบ้านเปิดไว้รอคุณ</h2>
-      <p class="lede">ใครเจอเรา คนนั้นโชคดี และเราก็โชคดีที่ได้เจอคุณ<br>ถ้ามีเรื่องอยากเล่า อยากเรียน หรือแค่อยากทักทาย มานั่งคุยกันได้เลย</p>
+      <p class="lede">ใครเจอเรา คนนั้นโชคดี และเราก็โชคดีที่ได้เจอคุณ<br>อยากเรียน อยากให้เราช่วยงาน หรือแค่อยากทักทาย มานั่งคุยกันได้เลย</p>
       <div class="actions">
         <a class="btn primary big" data-primary data-item="meet" href="/meet/" data-desc="หนึ่งเรื่องของคุณ สองมุมมองจากทีมและเอโกะ">มานั่งคุยกันไหม <span aria-hidden="true">→</span></a>
         <button id="open-lucky" class="btn gold" type="button">เปิดการ์ดโชคดี 🍀</button>
       </div>
-      <p class="more"><a href="/showcase/house/">ดูบ้านจริงของเรา 3D</a> · <a href="/compass/">เดินตามเข็มทิศ</a> · <a href="/home/">หน้าบ้านเดิม</a></p>
+      <p class="more"><a href="/courses/">คอร์สเรียน</a> · <a href="/paths/">เลือกสายของคุณ</a> · <a href="/card/">การ์ดประจำตัว</a> · <a href="/compass/">เดินตามเข็มทิศ</a> · <a href="/home/">หน้าบ้านเดิม</a></p>
     </article>
   </section>
 </main>

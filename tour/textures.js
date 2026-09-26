@@ -181,7 +181,7 @@ export function imageTex(url, material, renderer, aspect = 0) {
       t.needsUpdate = true;
     }
     material.map = t; material.color.set('#ffffff');
-    if (material.userData.glow) material.emissiveMap = t;
+    if (material.userData.glow) { material.emissiveMap = t; material.emissiveIntensity = material.userData.glow; } // screens light up once their picture arrives
     material.needsUpdate = true;
   };
   if (imageCache.has(url)) { const t = imageCache.get(url); if (t.image) apply(t); else t.userData.waiting.push(apply); return; }
