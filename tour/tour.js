@@ -633,7 +633,7 @@ async function boot() {
   }
 
   // canvas labels in the house use the page font: wait for it (briefly) before drawing them
-  try { await Promise.race([document.fonts.load(`700 48px ${FONT.split(',')[0]}`), new Promise(r => setTimeout(r, 1500))]); } catch {}
+  try { await Promise.race([Promise.all([500, 600, 700, 800].map(weight => document.fonts.load(`${weight} 48px ${FONT.split(',')[0]}`, 'ยินดีต้อนรับ ครัวเอโกะ Resume'))), new Promise(r => setTimeout(r, 1500))]); } catch {}
   // purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images
   const art = new Map();
   try {

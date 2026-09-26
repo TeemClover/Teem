@@ -14,6 +14,7 @@ import * as THREE from './vendor/three.module.min.js';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
 import {FONT, imageTex} from './textures.js';
 import {batchStaticSiblings} from './batching.js';
+import {centeredText} from './labels.js';
 
 export const H = 3.2, SLAB = 0.2, F2 = H + SLAB, D = 7, W = 8; // wall height, floor-2 level, room depth/width
 export const CLOVER_ROOMS = ['living', 'kitchen', 'classroom', 'office'];
@@ -101,9 +102,9 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
   function lampLight(p, x, y, z, intensity = 6, dist = 7) { const l = new THREE.PointLight('#ffd9a0', 0, dist, 1.7); l.position.set(x, y, z); l.userData.max = intensity; p.add(l); out.lights.push(l); return l; }
   function label(text, w = 512, h = 128, bg = '#14281d', fg = '#fbf6ec', size = 56) {
     return tex.canvasTex(w, h, (c) => {
-      c.fillStyle = bg; c.fillRect(0, 0, w, h); c.fillStyle = fg; c.font = `700 ${size}px ${FONT}`; c.textAlign = 'center';
+      c.fillStyle = bg; c.fillRect(0, 0, w, h); c.fillStyle = fg; c.font = `700 ${size}px ${FONT}`;
       const m = c.measureText(text); // centre the inked glyphs (Thai marks sit above and below the line)
-      c.fillText(text, w / 2, h / 2 + ((m.actualBoundingBoxAscent || size * 0.7) - (m.actualBoundingBoxDescent || 0)) / 2);
+      centeredText(c, text, w / 2, h / 2 + ((m.actualBoundingBoxAscent || size * 0.7) - (m.actualBoundingBoxDescent || 0)) / 2, w - 32);
     });
   }
   const canvasMat = (w, h, draw, glow = 0) => { const t = tex.canvasTex(w, h, draw); return new THREE.MeshStandardMaterial({map: t, roughness: 0.45, ...(glow ? {emissive: '#ffffff', emissiveMap: t, emissiveIntensity: glow} : {})}); };
@@ -356,7 +357,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     const hall = group(g, 2.45, 0.62, BW + 0.32);
     rb(hall, [0.7, 0.09, 0.44], [0, 0, 0], M('#e37c5b'), [0, 0.1, 0], 0.01); rb(hall, [0.68, 0.09, 0.42], [0, 0.095, 0], M('#4a8fd1'), [0, -0.08, 0], 0.01);
     rb(hall, [0.7, 0.09, 0.44], [0, 0.19, 0], M('#1d6b3d'), [0, 0.04, 0], 0.01);
-    plane(hall, [0.66, 0.4], [0, 0.285, 0], canvasMat(512, 320, (c, w) => { c.fillStyle = '#1d6b3d'; c.fillRect(0, 0, w, 320); c.fillStyle = '#f2c14e'; c.font = `800 70px ${FONT}`; c.textAlign = 'center'; c.fillText('MAIN QUEST', w / 2, 140); c.fillStyle = '#fbf6ec'; c.font = `600 42px ${FONT}`; c.fillText('CORE7 · XTY · Hall', w / 2, 220); }), [-Math.PI / 2, 0, -0.04]);
+    plane(hall, [0.66, 0.4], [0, 0.285, 0], canvasMat(512, 320, (c, w) => { c.fillStyle = '#1d6b3d'; c.fillRect(0, 0, w, 320); c.fillStyle = '#f2c14e'; c.font = `800 70px ${FONT}`; centeredText(c, 'MAIN QUEST', w / 2, 140, w - 40); c.fillStyle = '#fbf6ec'; c.font = `600 42px ${FONT}`; centeredText(c, 'CORE7 · XTY · Hall', w / 2, 220, w - 40); }), [-Math.PI / 2, 0, -0.04]);
     hot(hall, 'hall');
     const player = out.music = group(g, 3.45, 0.62, BW + 0.3);
     rb(player, [0.62, 0.12, 0.46], [0, 0, 0], wood('#5a3d28'), null, 0.02);
@@ -495,7 +496,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     const scale = group(g, 2.35, 0, 1.75); scale.rotation.y = -0.35;
     rb(scale, [0.42, 0.05, 0.42], [0, 0, 0], M('#1b2226', {roughness: 0.2, metalness: 0.3}), null, 0.04);
     rb(scale, [0.4, 0.012, 0.4], [0, 0.05, 0], M('#e9eff1', {roughness: 0.05, metalness: 0.1}), null, 0.02);
-    plane(scale, [0.26, 0.1], [0, 0.064, 0.1], canvasMat(256, 100, c => { c.fillStyle = '#0d1418'; c.fillRect(0, 0, 256, 100); c.fillStyle = '#7fe0a8'; c.font = `700 44px ${FONT}`; c.textAlign = 'center'; c.fillText('XIRCLE', 128, 62); c.fillStyle = 'rgba(127,224,168,.6)'; c.fillRect(40, 78, 176, 4); }, 0.9), [-Math.PI / 2, 0, 0]);
+    plane(scale, [0.26, 0.1], [0, 0.064, 0.1], canvasMat(256, 100, c => { c.fillStyle = '#0d1418'; c.fillRect(0, 0, 256, 100); c.fillStyle = '#7fe0a8'; c.font = `700 44px ${FONT}`; centeredText(c, 'XIRCLE', 128, 62, 224); c.fillStyle = 'rgba(127,224,168,.6)'; c.fillRect(40, 78, 176, 4); }, 0.9), [-Math.PI / 2, 0, 0]);
     hot(scale, 'xircle');
     lampLight(g, 0, 1.9, 0.4, 7, 7);
     if (hd) {
@@ -605,12 +606,12 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     plane(board, [1.0, 1.4], [0, 0.75, 0.03], canvasMat(600, 840, c => {
       c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 600, 840);
       c.fillStyle = '#e37c5b'; c.fillRect(0, 0, 600, 110);
-      c.fillStyle = '#ffffff'; c.font = `800 62px ${FONT}`; c.textAlign = 'center'; c.fillText('ประกาศ!', 300, 78);
-      c.fillStyle = '#14281d'; c.font = `800 60px ${FONT}`; c.fillText('คอร์สเรียน', 300, 560); c.fillText('กับครูทีม', 300, 630);
-      c.fillStyle = '#1d6b3d'; c.font = `600 34px ${FONT}`; c.fillText('เริ่มจาก AI ใส่ซอส', 300, 690);
-      c.fillStyle = '#2e9e5b'; c.beginPath(); c.roundRect(150, 730, 300, 70, 35); c.fill(); c.fillStyle = '#fff'; c.font = `700 34px ${FONT}`; c.fillText('ดูรอบเรียน →', 300, 776);
+      c.fillStyle = '#ffffff'; c.font = `800 62px ${FONT}`; centeredText(c, 'ประกาศ!', 300, 78, 540);
+      c.fillStyle = '#14281d'; c.font = `800 60px ${FONT}`; centeredText(c, 'คอร์สเรียน', 300, 560, 540); centeredText(c, 'กับครูทีม', 300, 630, 540);
+      c.fillStyle = '#1d6b3d'; c.font = `600 34px ${FONT}`; centeredText(c, 'เริ่มจาก AI ใส่ซอส', 300, 690, 540);
+      c.fillStyle = '#2e9e5b'; c.beginPath(); c.roundRect(150, 730, 300, 70, 35); c.fill(); c.fillStyle = '#fff'; c.font = `700 34px ${FONT}`; centeredText(c, 'ดูรอบเรียน →', 300, 776, 264);
     }));
-    plane(board, [0.86, 0.574], [0, 1.08, 0.036], artMat('course-poster'));
+    plane(board, [0.86, 0.574], [0, 0.96, 0.036], artMat('course-poster'));
     hot(ad, 'courses');
     rb(g, [1.4, 0.78, 0.62], [2.7, 0, 0.9], wood('#b98352'), null, 0.03);
     cy(g, [0.13, 0.08, 0.07], [2.4, 0.78, 0.85], M('#ffffff', {roughness: 0.2}));
