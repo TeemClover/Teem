@@ -652,7 +652,8 @@ body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opa
   background:linear-gradient(90deg,var(--green),var(--sky) 48%,var(--gold));box-shadow:0 0 12px rgba(110,231,168,.55)}
 .layer small{transition:color .4s}
 .layer b{transition:color .4s,text-shadow .4s;text-shadow:0 0 14px rgba(110,231,168,.35)}
-body[data-gen="4"] .layer b,body[data-gen="5"] .layer b{color:var(--gold);text-shadow:0 0 14px rgba(240,201,108,.4)}
+body[data-gen="4"] .layer b,body[data-gen="6"] .layer b{color:var(--gold);text-shadow:0 0 14px rgba(240,201,108,.4)}
+body[data-gen="5"] .layer b{color:var(--sky);text-shadow:0 0 14px rgba(142,201,255,.45)}
 
 /* rail ซ้ายจอใหญ่ · 6 ขั้นของไฟล์เดียว */
 .evorail{display:none}
@@ -669,8 +670,10 @@ body[data-gen="4"] .layer b,body[data-gen="5"] .layer b{color:var(--gold);text-s
   .evorail a.on{color:var(--green)}
   .evorail a.on span{opacity:1}
   .evorail a.on i{background:var(--green);border-color:var(--green);box-shadow:0 0 0 4px rgba(110,231,168,.14),0 0 16px var(--green)}
-  body[data-gen="4"] .evorail a.on,body[data-gen="5"] .evorail a.on{color:var(--gold)}
-  body[data-gen="4"] .evorail a.on i,body[data-gen="5"] .evorail a.on i{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(240,201,108,.14),0 0 16px var(--gold)}
+  body[data-gen="5"] .evorail a.on{color:var(--sky)}
+  body[data-gen="5"] .evorail a.on i{background:var(--sky);border-color:var(--sky);box-shadow:0 0 0 4px rgba(142,201,255,.14),0 0 16px var(--sky)}
+  body[data-gen="4"] .evorail a.on,body[data-gen="6"] .evorail a.on{color:var(--gold)}
+  body[data-gen="4"] .evorail a.on i,body[data-gen="6"] .evorail a.on i{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(240,201,108,.14),0 0 16px var(--gold)}
 }
 
 /* GEN 0 · Terminal ที่บูตตัวเองต่อหน้ามึง */
@@ -700,7 +703,7 @@ body[data-gen="4"] .layer b,body[data-gen="5"] .layer b{color:var(--gold);text-s
 .accept:not([disabled]):hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(110,231,168,.5),0 14px 44px rgba(110,231,168,.36)}
 
 /* roadmap ใต้ Terminal · บอกล่วงหน้าว่าไฟล์นี้จะโตไปถึงไหน */
-.roadmap{list-style:none;margin:16px auto 0;padding:0;max-width:640px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;position:relative}
+.roadmap{list-style:none;margin:16px auto 0;padding:0;max-width:680px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;position:relative}
 .roadmap::before{content:"";position:absolute;left:8%;right:8%;top:13px;height:1px;background:linear-gradient(90deg,rgba(110,231,168,.45),rgba(142,201,255,.3),rgba(240,201,108,.45))}
 .roadmap a{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;color:#5f7c6d;text-decoration:none;font:600 9.5px/1 var(--mono);letter-spacing:.12em;transition:color .25s}
 .roadmap b{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1px solid rgba(110,231,168,.28);background:#020a06;color:#8fb8a2;font-size:9.5px;letter-spacing:0;transition:.25s}
@@ -723,14 +726,13 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
 .ghead{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;color:#5f7c6d;font:600 10.5px/1.6 var(--mono);letter-spacing:.14em}
 .ghead b{color:var(--green);font-size:12.5px;letter-spacing:.16em}
 .gstat{margin-left:auto;color:#6f8c7c;letter-spacing:.08em}
-.gcells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:11px}
+.gcells{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:11px}
 .gcells span{position:relative;padding:8px 2px;border:1px solid rgba(255,255,255,.06);border-radius:9px;background:rgba(255,255,255,.012);color:#33463c;text-align:center;font:600 9px/1.2 var(--mono);letter-spacing:.08em;transition:.4s}
 .gcells span.on{color:#bfe9d2;border-color:rgba(110,231,168,.26);background:rgba(110,231,168,.07)}
 .gcells span.new{color:#fff;border-color:rgba(110,231,168,.75);background:rgba(110,231,168,.16);box-shadow:0 0 22px rgba(110,231,168,.22)}
 .gcells span.new::after{content:"+";position:absolute;right:-5px;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--green);color:#03130c;font:800 10px/14px var(--mono);letter-spacing:0;box-shadow:0 0 10px rgba(110,231,168,.6)}
 .glearn{margin-top:11px;color:#9fb6a9;font-size:14.5px;line-height:1.75}
 .glearn small{display:inline-block;margin-right:9px;color:var(--green);font:700 9.5px var(--mono);letter-spacing:.15em}
-@media(min-width:760px){.gcells{grid-template-columns:repeat(12,1fr)}}
 /* GEN 1 · ตัวอักษรล้วน — ไม่มีกล่อง มีแค่ [x] */
 .genome.g1 .gcells{display:flex;flex-wrap:wrap;gap:3px 16px}
 .genome.g1 .gcells span{padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left;font-size:11px;color:#3d5046}
@@ -744,22 +746,84 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
 .genome.g3 .gcells span.new{border-color:#ffe071;background:rgba(255,224,113,.14);color:#fff3c4;box-shadow:3px 3px 0 rgba(0,0,0,.45),0 0 18px rgba(255,224,113,.2)}
 .genome.g3 .gcells span.new::after{border-radius:0;background:#ffe071;box-shadow:2px 2px 0 rgba(0,0,0,.5)}
 /* GEN 4–5 · ทอง */
-.genome.g4 .ghead b,.genome.g5 .ghead b{color:var(--gold)}
-.genome.g4 .gcells span.on,.genome.g5 .gcells span.on{color:#f3dfae;border-color:rgba(240,201,108,.28);background:rgba(240,201,108,.07)}
-.genome.g4 .gcells span.new,.genome.g5 .gcells span.new{color:#fff;border-color:var(--gold);background:rgba(240,201,108,.2);box-shadow:0 0 24px rgba(240,201,108,.3)}
-.genome.g4 .gcells span.new::after,.genome.g5 .gcells span.new::after{background:var(--gold);box-shadow:0 0 10px rgba(240,201,108,.6)}
-.genome.g4 .glearn small,.genome.g5 .glearn small{color:var(--gold)}
+.genome.g4 .ghead b,.genome.g6 .ghead b{color:var(--gold)}
+.genome.g4 .gcells span.on,.genome.g6 .gcells span.on{color:#f3dfae;border-color:rgba(240,201,108,.28);background:rgba(240,201,108,.07)}
+.genome.g4 .gcells span.new,.genome.g6 .gcells span.new{color:#fff;border-color:var(--gold);background:rgba(240,201,108,.2);box-shadow:0 0 24px rgba(240,201,108,.3)}
+.genome.g4 .gcells span.new::after,.genome.g6 .gcells span.new::after{background:var(--gold);box-shadow:0 0 10px rgba(240,201,108,.6)}
+.genome.g4 .glearn small,.genome.g6 .glearn small{color:var(--gold)}
 .genome.g4 .glearn{color:#bfae88}
-.genome.g5{margin-bottom:30px}
-.genome.g5 .gcells span.on{animation:genePulse 3.2s ease-in-out infinite}
-.genome.g5 .gcells span:nth-child(2n){animation-delay:.4s}
-.genome.g5 .gcells span:nth-child(3n){animation-delay:.9s}
+.genome.g6{margin-bottom:30px}
+.genome.g6 .gcells span.on{animation:genePulse 3.2s ease-in-out infinite}
+.genome.g6 .gcells span:nth-child(2n){animation-delay:.4s}
+.genome.g6 .gcells span:nth-child(3n){animation-delay:.9s}
 @keyframes genePulse{50%{box-shadow:0 0 16px rgba(240,201,108,.22)}}
+
+/* GEN 5 · โฮโลแกรม — เซลล์มุมตัด เส้นสแกน สีฟ้า */
+.genome.g5 .ghead b{color:var(--sky);text-shadow:0 0 14px rgba(142,201,255,.5)}
+.genome.g5 .gcells span{border-radius:0;clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.genome.g5 .gcells span.on{color:#cfe6ff;border-color:rgba(142,201,255,.3);background:linear-gradient(180deg,rgba(142,201,255,.12),rgba(142,201,255,.03))}
+.genome.g5 .gcells span.new{color:#fff;border-color:var(--sky);background:repeating-linear-gradient(180deg,rgba(142,201,255,.28) 0 1px,rgba(142,201,255,.12) 1px 3px);box-shadow:none;animation:holo 2.6s ease-in-out infinite}
+.genome.g5 .gcells span.new::after{right:4px;top:2px;width:auto;height:auto;background:none;box-shadow:none;color:var(--sky);font-size:10px;line-height:1}
+.genome.g5 .glearn small{color:var(--sky)}
+@keyframes holo{50%{filter:brightness(1.35) drop-shadow(0 0 6px rgba(142,201,255,.8))}}
+
+/* PHASE 5 · DEPTH — เวทีที่ติดจอระหว่างเลื่อน */
+#p5{padding:76px 0 92px;background:linear-gradient(#120e06,#03050b 9%,#02040a 91%,#120e06)}
+#p5::before{background:linear-gradient(90deg,transparent,rgba(142,201,255,.45),transparent)!important}
+#p5 .title{margin:14px 0 20px;font-size:clamp(25px,4.8vw,42px);color:#eaf4ff;text-shadow:0 0 30px rgba(142,201,255,.25)}
+#p5 .eyebrow{color:var(--sky);border-color:rgba(142,201,255,.3);background:rgba(142,201,255,.07)}
+#p5 .lead strong{color:#fff}
+#p5 .fold.open{border-color:rgba(142,201,255,.3);background:linear-gradient(180deg,rgba(142,201,255,.06),rgba(255,255,255,.01) 60%)}
+#p5 .loopstep{border-color:rgba(142,201,255,.2);border-left-color:rgba(142,201,255,.6);background:rgba(142,201,255,.04)}
+#p5 .loopstep b{color:var(--sky)}
+.deep{position:relative;margin:40px 0 34px}
+.deep.live{height:520vh;height:520svh}
+.deepstage{position:relative;overflow:hidden;background:radial-gradient(80% 70% at 50% 50%,#0a1830,#02040a 70%)}
+.deep.live .deepstage{position:sticky;top:0;height:100vh;height:100svh;min-height:460px}
+#deepCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.deep:not(.live) #deepCanvas,.deep:not(.live) .dhud{display:none}
+.dhud{position:absolute;inset:calc(var(--hud) + 14px) clamp(12px,3vw,28px) clamp(12px,3vw,24px);pointer-events:none;color:rgba(190,222,255,.72);font:600 10px/1.5 var(--mono);letter-spacing:.14em}
+.dc{position:absolute;width:22px;height:22px;border:1px solid rgba(142,201,255,.55)}
+.dc.tl{left:0;top:0;border-right:0;border-bottom:0}
+.dc.tr{right:0;top:0;border-left:0;border-bottom:0}
+.dc.bl{left:0;bottom:0;border-right:0;border-top:0}
+.dc.br{right:0;bottom:0;border-left:0;border-top:0}
+.dtl,.dtr,.dbl,.dbr{position:absolute;display:grid;gap:2px}
+.dtl{left:32px;top:2px}.dtr{right:32px;top:2px;text-align:right}
+.dbl{left:32px;bottom:2px}.dbr{right:32px;bottom:2px;text-align:right}
+.dtl b{color:var(--sky);font-weight:700;letter-spacing:.2em;text-shadow:0 0 12px rgba(142,201,255,.6)}
+.dtl span,.dtr span,.dbl span,.dbr span{color:rgba(190,222,255,.55)}
+.dbr span{color:#dcefff}
+.dret{position:absolute;left:50%;top:50%;width:64px;height:64px;translate:-50% -50%;border:1px solid rgba(142,201,255,.18);border-radius:50%;
+  background:linear-gradient(rgba(142,201,255,.35),rgba(142,201,255,.35)) 50% 0/1px 9px no-repeat,linear-gradient(rgba(142,201,255,.35),rgba(142,201,255,.35)) 50% 100%/1px 9px no-repeat,
+  linear-gradient(90deg,rgba(142,201,255,.35),rgba(142,201,255,.35)) 0 50%/9px 1px no-repeat,linear-gradient(90deg,rgba(142,201,255,.35),rgba(142,201,255,.35)) 100% 50%/9px 1px no-repeat;
+  animation:retSpin 14s linear infinite}
+@keyframes retSpin{to{rotate:360deg}}
+.dprog{position:absolute;right:-2px;top:40px;bottom:40px;width:2px;background:rgba(142,201,255,.12)}
+.dprog i{display:block;width:100%;height:0;background:linear-gradient(var(--sky),var(--gold));box-shadow:0 0 10px var(--sky)}
+.dcaps{position:absolute;left:50%;bottom:clamp(44px,9vh,86px);translate:-50% 0;width:min(620px,calc(100% - 40px));min-height:120px}
+.dcap{position:absolute;left:0;right:0;bottom:0;margin:0;padding:15px 18px 16px;border:1px solid rgba(142,201,255,.26);border-radius:4px;
+  background:linear-gradient(180deg,rgba(6,14,28,.72),rgba(3,7,16,.6));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:#d7e7f7;font-size:clamp(15.5px,2vw,17.5px);line-height:1.8;opacity:0;transform:translateY(14px);filter:blur(4px);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1),filter .55s;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.dcap.on{opacity:1;transform:none;filter:none}
+.dcap small{display:block;margin-bottom:4px;color:var(--sky);font:700 10px var(--mono);letter-spacing:.2em}
+.dcap b{color:#fff}
+.deep:not(.live) .deepstage{padding:28px 16px}
+.deep:not(.live) .dcaps{position:static;translate:none;margin:auto;display:grid;gap:10px}
+.deep:not(.live) .dcap{position:static;opacity:1;transform:none;filter:none}
+.dfallback{position:absolute;left:50%;top:44%;translate:-50% -50%;width:min(460px,calc(100% - 40px));text-align:center;color:#9fb8d2;font:500 12.5px/1.8 var(--mono)}
+@media(max-width:560px){
+  .dhud{font-size:8.5px;letter-spacing:.1em}
+  .dtr,.dbl{display:none}
+  .dret{width:48px;height:48px}
+}
+@media(prefers-reduced-motion:reduce){.dret,.genome.g5 .gcells span.new{animation:none!important}}
 
 /* AUTOPSY · ไฟล์เดียว ผ่าดูข้างใน */
 .autopsy{width:min(780px,100%);margin:28px auto 6px;text-align:left}
 .atag{display:block;text-align:center;color:var(--gold);font:700 10.5px var(--mono);letter-spacing:.18em}
-.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.agrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .agrid div{border:1px solid rgba(240,201,108,.2);border-radius:16px;padding:14px 14px 13px;background:linear-gradient(160deg,rgba(240,201,108,.09),rgba(255,255,255,.012))}
 .agrid div:last-child{border-color:rgba(110,231,168,.35);background:linear-gradient(160deg,rgba(110,231,168,.12),rgba(255,255,255,.012))}
 .agrid small{display:block;color:#a8946a;font:700 9.5px var(--mono);letter-spacing:.14em}
@@ -783,6 +847,7 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
   .agrid{grid-template-columns:1fr 1fr}
   .gstat{margin-left:0;width:100%}
   section:not(#p1) .eyebrow{font-size:10.5px;letter-spacing:.1em}
+  .gcells span{font-size:8px;letter-spacing:.04em}
   .roadmap a{font-size:8.5px;letter-spacing:.06em}
   .roadmap b{width:25px;height:25px}
   .roadmap::before{top:12px}
@@ -805,7 +870,7 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
     <a class="back" href="/classroom/">← ห้องเรียน AI ใส่ซอส</a>
     <div class="hudmid">
       <div class="hudstars" id="hudStars" aria-label="ดาวที่เก็บได้"></div>
-      <div class="layer"><small id="layerGen">GEN 0 / 5 · LAYER</small><b id="layerName">TERMINAL</b></div>
+      <div class="layer"><small id="layerGen">GEN 0 / 6 · LAYER</small><b id="layerName">TERMINAL</b></div>
     </div>
   </div>
   <div class="evobar" aria-hidden="true"><i id="evoFill"></i></div>
@@ -1189,13 +1254,73 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
   </div>
 </section>
 
+<!-- ═══════════ PHASE 5 · DEPTH ═══════════ -->
+<section id="p5" data-layer="PHASE 5 · DEPTH">
+  <div class="wrap">
+    <div class="genome" data-genome="p5"></div>
+    <div class="narrow" style="width:min(780px,100%)">
+      <span class="eyebrow">PHASE 5 · มิติที่สาม</span>
+      <h2 class="title">แล้วถ้ากระดาษแผ่นนี้<br>มีความลึกขึ้นมาล่ะ</h2>
+      <p class="lead">สี่เฟสที่ผ่านมามึงเห็นไฟล์นี้โตในแนวราบ จากตัวอักษร เป็นกล่อง เป็นโลกพิกเซล แล้วก็เป็นเครือข่าย ตรงนี้กูจะพามันเข้าไปอีกแกนหนึ่ง — <strong>ความลึก</strong></p>
+      <p class="lead">เว็บที่ทำให้คนร้องว้าวตอนเลื่อนจอส่วนใหญ่แบกไลบรารีหลายเมกะไบต์กับไฟล์โมเดล 3D มาด้วย ห้องนี้ไม่เอาสักอย่าง <strong>ไม่มี three.js ไม่มีไฟล์โมเดล ไม่มีวิดีโอ ไม่มีรูป</strong> — มีแค่คณิตศาสตร์ที่ส่งตรงให้การ์ดจอผ่านภาษาชื่อ GLSL ซึ่งซ่อนอยู่ในไฟล์นี้ไฟล์เดียวกัน</p>
+      <p class="lead">มึงไม่ต้องกดอะไร แค่เลื่อน <strong>ความเร็วที่มึงเลื่อนคือความเร็วของกล้อง</strong></p>
+    </div>
+  </div>
+
+  <div class="deep" id="deep">
+    <div class="deepstage" id="deepStage">
+      <canvas id="deepCanvas" role="img" aria-label="ภาพ 3 มิติที่เปลี่ยนรูปตามการเลื่อน: เคอร์เซอร์ แตกเป็นอุโมงค์ตัวอักษร กลายเป็นภูมิประเทศ ใบโคลเวอร์ และดาวเคราะห์"></canvas>
+      <div class="dhud" aria-hidden="true">
+        <i class="dc tl"></i><i class="dc tr"></i><i class="dc bl"></i><i class="dc br"></i>
+        <div class="dtl"><b>DEPTH ENGINE</b><span id="dApi">WEBGL · 0 LIBRARY · 0 ASSET</span></div>
+        <div class="dtr"><span id="dPart">PARTICLES —</span><span id="dFps">FPS —</span></div>
+        <div class="dbl"><span id="dCam">CAM 0.00 · 0.00 · 0.00</span></div>
+        <div class="dbr"><span id="dScene">SCENE 01 / 05 · SEED</span></div>
+        <div class="dret"></div>
+        <div class="dprog"><i id="dProg"></i></div>
+      </div>
+      <div class="dcaps" id="deepCaps">
+        <p class="dcap" data-scene="0"><small>01 · SEED</small>จำเคอร์เซอร์สีเขียวตอนต้นด่านได้ไหม · <b>ทุกอย่างในไฟล์นี้เริ่มจากบล็อกเล็ก ๆ อันนั้น</b></p>
+        <p class="dcap" data-scene="1"><small>02 · WARP</small>กูแตกมันออกเป็น <b class="dN">หลายพัน</b> อนุภาค · ตัวอักษรที่พุ่งผ่านมึงคือ<b>ตัวอักษรจากโค้ดของไฟล์นี้เอง</b> ไม่ได้สุ่มมาจากไหน</p>
+        <p class="dcap" data-scene="2"><small>03 · GRID</small>ภูมิประเทศนี้คือคลื่น <b>sin()</b> สองบรรทัด · การ์ดจอคำนวณความสูงของทุกจุดใหม่ทุกเฟรม</p>
+        <p class="dcap" data-scene="3"><small>04 · CLOVER</small>ใบโคลเวอร์สี่แฉกมาจากสมการ <b>r = |cos 2θ|</b> · ไม่มีไฟล์โมเดล มีแค่สมการบรรทัดเดียว</p>
+        <p class="dcap" data-scene="4"><small>05 · WORLD</small>และทั้งหมดนี้ยังเป็น <b>HTML ไฟล์เดียว</b> · 0 library · 0 ไฟล์ 3D · โลกที่ถูกคำนวณใหม่ทุกเฟรม</p>
+      </div>
+      <p class="dfallback" id="deepFallback" hidden>Browser นี้ปิด WebGL ไว้ ภาพ 3 มิติเลยไม่ขึ้น · แต่คำอธิบายแต่ละฉากยังเลื่อนตามได้ครบ</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="narrow" style="width:min(780px,100%)">
+      <p class="lead">นี่คือเหตุผลที่กูบอกว่า HTML ไม่ใช่หน้ากระดาษ — <strong>มันคือประตูไปถึงทุกชิ้นส่วนของเครื่องที่มึงถืออยู่</strong> ตัวอักษร การ์ดจอ ลำโพง หน่วยความจำ และนิ้วของมึง</p>
+
+      <div class="fold" data-fold="f5a" style="margin-top:22px">
+        <button type="button"><i>▸</i>อ่านเพิ่ม · ของที่ดูเหมือนหลุดมาจากหนัง มันทำงานยังไง</button>
+        <div class="body">
+          <div class="loop">
+            <div class="loopstep"><b>01 · SHAPE</b><p>ตอนโหลดหน้า JavaScript คำนวณตำแหน่ง 5 ชุดให้ทุกอนุภาค — เคอร์เซอร์ อุโมงค์ ภูมิประเทศ ใบโคลเวอร์ ดาวเคราะห์ — จากสมการล้วน</p></div>
+            <div class="loopstep"><b>02 · UPLOAD</b><p>ส่งตัวเลขทั้งก้อนให้การ์ดจอครั้งเดียว หลังจากนั้นหน้าเว็บแทบไม่ต้องทำงานอะไรเลย</p></div>
+            <div class="loopstep"><b>03 · SCROLL</b><p>ทุกเฟรม JavaScript ส่งแค่ตัวเลขไม่กี่ตัว: มึงเลื่อนไปถึงไหน เวลาผ่านไปเท่าไหร่ กล้องอยู่ตรงไหน</p></div>
+            <div class="loopstep"><b>04 · SHADER</b><p>โปรแกรมเล็ก ๆ บนการ์ดจอผสมรูปทรงตามตัวเลขนั้น ให้อนุภาคหลักหมื่นชิ้นวิ่งไปหาที่ใหม่พร้อมกัน — ตรงนี้แหละที่เครื่องมึงทำงานหนักแทนมึง</p></div>
+          </div>
+          <p style="margin-top:16px">ประโยคที่ไอ้ทีมพิมพ์สั่งห้องนี้ ก็เป็นภาษาของมันเองแบบเดียวกับ Phase 1:</p>
+          <p class="said">“อัพเกรด section 5 ให้เห็นโลกของการทำ scrolling 3D experience ศิลปะของโค้ดที่ไม่ลิงก์ไฟล์ภายนอก โชว์ศักยภาพเต็มที่ ทำอีก part ที่โคตรล้ำเหมือนออกมาจากหนัง sci-fi”</p>
+          <p><strong>มันไม่ได้เขียน GLSL เป็นสักบรรทัด มันแค่บอกให้ครบว่าอยากให้คนรู้สึกอะไรตอนเลื่อน แล้วกูเขียนอีกฝั่งให้</strong></p>
+        </div>
+      </div>
+
+      <div class="sysline">&gt; webgl = <b>on</b> · libraries = <b>0</b> · external.files = <b>4</b> — ห้องนี้ไม่ได้เพิ่มไฟล์นอกสักไฟล์</div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ FINAL · VAULT ═══════════ -->
 <section id="vault" data-layer="FINAL · THE CHEST">
   <div class="wrap vaultin">
     <div class="genome" data-genome="vault"></div>
     <span class="eyebrow">DUNGEON CLEAR · ONE LIVING HTML FILE</span>
     <h2 class="title">มึงไม่ได้อ่านคำอธิบาย<br>มึงเดินอยู่ในสิ่งที่มันอธิบาย</h2>
-    <p class="lead narrow">หน้านี้เริ่มจากตัวอักษรล้วน แล้วค่อย ๆ มี Layout, Browser, รูป, เกม, Party, เครือข่ายซอส, Quest และความจำ — ทั้งหมดในไฟล์เดียว มันไม่ได้ทำให้ AI ดูฉลาดขึ้น มันทำให้ความคิดของคนคนหนึ่ง <strong>กลายเป็นที่ที่คนอื่นเดินเข้าไปอยู่ได้</strong></p>
+    <p class="lead narrow">หน้านี้เริ่มจากตัวอักษรล้วน แล้วค่อย ๆ มี Layout, Browser, รูป, เกม, Party, เครือข่ายซอส, โลก 3 มิติ, Quest และความจำ — ทั้งหมดในไฟล์เดียว มันไม่ได้ทำให้ AI ดูฉลาดขึ้น มันทำให้ความคิดของคนคนหนึ่ง <strong>กลายเป็นที่ที่คนอื่นเดินเข้าไปอยู่ได้</strong></p>
 
     <div class="autopsy" id="autopsy" aria-live="off"></div>
 
@@ -1492,7 +1617,7 @@ function paintStars(){
    config ชุดเดียวขับ HUD · rail · roadmap · genome · autopsy
    ตัวเลขทุกตัววัดจาก DOM จริงตอนนั้น ไม่ได้พิมพ์ลงไปเอง
    ══════════════════════════════════════════════════════════ */
-const GENES = ['TEXT','TYPE','LAYOUT','RENDER','EDIT','CANVAS','CONTROL','AUDIO','ASSETS','MEMORY','GRAPH','CINEMA'];
+const GENES = ['TEXT','TYPE','LAYOUT','RENDER','EDIT','CANVAS','CONTROL','AUDIO','ASSETS','MEMORY','GRAPH','3D','SHADER','CINEMA'];
 const PHASES = [
   { id:'terminal', short:'TERM',  name:'TERMINAL',    add:['TEXT'],
     learn:'ตัวอักษรกับเคอร์เซอร์ · ยังไม่มีอะไรนอกจากนั้น' },
@@ -1504,10 +1629,13 @@ const PHASES = [
     learn:'วาดโลกพิกเซลบน canvas · รับปุ่มกับนิ้ว · เสียง 8-bit จาก Web Audio · รูปจากข้างนอก · จำว่ามึงเดินไปถึงไหน' },
   { id:'p4',       short:'NET',   name:'NETWORK',     add:['GRAPH'],
     learn:'กราฟซอสที่โตเองทีละรุ่น · trace ให้ดูว่าคำสั่งเดียวแตะไฟล์ไหนบ้าง' },
+  { id:'p5',       short:'3D',    name:'DEPTH',       add:['3D','SHADER'],
+    learn:'สามมิติด้วย WebGL ดิบ ๆ · shader ที่รันบนการ์ดจอ · อนุภาคหลักหมื่นชิ้นที่เปลี่ยนรูปตามการเลื่อนของมึง' },
   { id:'vault',    short:'CHEST', name:'LIVING FILE', add:['CINEMA'],
     learn:'ฉากเต็มจอ หีบ ดาว และความจำข้ามรอบ — ทั้งหมดยังเป็น HTML ไฟล์เดียวเหมือนบรรทัดแรก' }
 ];
 const LAST = PHASES.length - 1;
+const DEEP = { count:0, glsl:0 };   /* Phase 5 เติมค่าจริงตอนสร้างฉาก · autopsy อ่านจากตรงนี้ */
 const genesUpTo = i => new Set(PHASES.slice(0, i + 1).flatMap(p => p.add));
 const nf = n => Number(n).toLocaleString('en-US');
 const fileBytes = () => {
@@ -1547,6 +1675,8 @@ function paintAutopsy(){
     ['ELEMENTS', nf(document.getElementsByTagName('*').length), 'กล่องทั้งหมดที่มีชีวิตอยู่ตอนนี้'],
     ['CSS RULES', nf(rules), 'กฎหน้าตา อยู่ในไฟล์นี้ทั้งหมด'],
     ['JS LINES', nf(js), 'เกม เควส เสียง และกราฟ'],
+    ['GLSL LINES', DEEP.glsl ? nf(DEEP.glsl) : '—', 'โปรแกรมที่รันบนการ์ดจอ'],
+    ['PARTICLES', DEEP.count ? nf(DEEP.count) : '—', 'จุดแสงในห้อง 3 มิติ'],
     ['SAVE DATA', nf((rd(KEY) || '').length) + ' B', rd(KEY) ? 'สิ่งที่ไฟล์จำเกี่ยวกับมึง' : 'มึงยังไม่ได้เล่นอะไร เลยยังไม่มีอะไรให้จำ'],
     ['HTML FILE', '1', 'ไม่มี framework · ไม่มี build step']
   ];
@@ -2992,6 +3122,308 @@ $('lvNext').addEventListener('click', () => {
   $('scrollBtn').textContent = '📜 อ่านคัมภีร์ AWAKEN อีกรอบ';
   document.body.style.overflow = $('lootScreen').hidden ? '' : 'hidden';
 });
+
+/* ══════════════════════════════════════════════════════════
+   PHASE 5 · DEPTH — scroll-driven 3D ด้วย WebGL ดิบ ๆ
+   ไม่มีไลบรารี ไม่มีไฟล์โมเดล ไม่มี texture จากข้างนอก
+   อนุภาคทุกชิ้นมีตำแหน่ง 5 ชุด (1 ชุดต่อฉาก) · scroll แค่บอก shader ว่าจะผสมชุดไหน
+   ══════════════════════════════════════════════════════════ */
+(function deep(){
+  const box = $('deep'), stage = $('deepStage'), cv = $('deepCanvas');
+  const caps = $$('#deepCaps .dcap');
+  const SCENES = ['SEED','WARP','GRID','CLOVER','WORLD'];
+  const EYE = [[0,0,4.2],[0,0,6],[0,2.6,7.6],[0,.2,7.4],[0,1.5,9.6]];
+  const AIM = [[0,0,0],[0,0,-12],[0,-.7,-3],[0,-.35,0],[0,0,0]];
+  const TINT = [[.43,.91,.66],[.56,.79,1],[.43,.91,.66],[.55,.85,.5],[.94,.79,.42]];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  box.classList.add('live');   /* ไม่มี JS = ไม่มี sticky 520vh · คำบรรยายเรียงกันอ่านได้ปกติ */
+
+  /* ── scroll → ฉาก · ทำงานแม้ไม่มี WebGL เพื่อให้คำบรรยายยังเดินตาม ── */
+  let target = 0, cur = 0, raw = 0, px = 0, py = 0, tpx = 0, tpy = 0;
+  function readScroll(){
+    const r = box.getBoundingClientRect(), span = box.offsetHeight - innerHeight;
+    raw = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+    const s = raw * 4, k = Math.min(4, Math.floor(s)), f = s - k;
+    const e = Math.min(1, Math.max(0, (f - .28) / .5));
+    target = k >= 4 ? 4 : k + e * e * (3 - 2 * e);   /* ค้างแต่ละฉากไว้ก่อน แล้วค่อยแปลงร่าง */
+  }
+  let capOn = -1;
+  function paintCaps(){
+    const i = Math.round(cur), on = Math.abs(cur - i) < .3 ? i : -1;
+    if (on === capOn) return;
+    capOn = on;
+    caps.forEach(c => c.classList.toggle('on', +c.dataset.scene === on));
+    if (on >= 0) $('dScene').textContent = 'SCENE 0' + (on + 1) + ' / 05 · ' + SCENES[on];
+  }
+  const weights = p => [0,1,2,3,4].map(k => Math.max(0, 1 - Math.abs(p - k)));
+
+  let gl = null;
+  try { gl = cv.getContext('webgl', { antialias:false, alpha:false, depth:false, powerPreference:'high-performance' }); } catch {}
+
+  /* ── ไม่มี WebGL: เหลือคำบรรยาย + พื้นหลังจาก CSS ── */
+  if (!gl){
+    $('deepFallback').hidden = false;
+    $('dApi').textContent = 'WEBGL UNAVAILABLE · CAPTIONS ONLY';
+    const tick = () => { readScroll(); cur = target; paintCaps(); $('dProg').style.height = (raw * 100).toFixed(1) + '%'; };
+    addEventListener('scroll', tick, { passive:true }); tick();
+    return;
+  }
+
+  /* ── shader · ทั้งหมดคือข้อความในไฟล์นี้ ── */
+  const VS = `
+attribute vec3 aS0,aS1,aS2,aS3,aS4;
+attribute vec4 aR;
+uniform mat4 uPV;
+uniform float uP,uT,uScale;
+varying vec3 vCol;
+varying float vGlyph,vMix,vA;
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+float hat(float k){return clamp(1.-abs(uP-k),0.,1.);}
+void main(){
+  float w0=hat(0.),w1=hat(1.),w2=hat(2.),w3=hat(3.),w4=hat(4.);
+  vec3 n=aR.xyz-.5;
+  vec3 s0=aS0+n*.03*sin(uT*3.+aR.w);
+  vec3 s1=aS1; s1.z=mod(s1.z+uT*9.+40.,46.)-40.;
+  vec3 s2=aS2; s2.y+=sin(s2.x*.55+uT*1.2)*.42+cos(s2.z*.45+uT*.9)*.42;
+  vec3 s3=aS3; s3.xz=rot(uT*.4)*s3.xz; s3.yz=rot(-.22)*s3.yz;
+  vec3 s4=aS4; s4.xz=rot(uT*.16)*s4.xz; s4.yz=rot(.42)*s4.yz;
+  vec3 p=s0*w0+s1*w1+s2*w2+s3*w3+s4*w4;
+  float mid=1.-max(max(max(w0,w1),max(w2,w3)),w4);
+  p+=n*mid*8.;
+  p.xy=rot(mid*(aR.x-.5)*4.)*p.xy;
+  vec4 v=uPV*vec4(p,1.);
+  gl_Position=v;
+  float glyph=w1+w2*.3;
+  gl_PointSize=clamp((.012+aR.y*.02+glyph*.15)*uScale/max(v.w,.2),1.,72.);
+  vec3 green=vec3(.43,.91,.66),sky=vec3(.56,.79,1.),gold=vec3(.94,.79,.42);
+  float blink=.45+.55*step(.5,fract(uT*.95));   /* กะพริบจังหวะเดียวกับเคอร์เซอร์ใน Terminal */
+  vec3 c=green*w0*.9*blink
+    +mix(sky,vec3(1.),aR.z*aR.z)*w1
+    +mix(green,sky,clamp(s2.y+.9,0.,1.))*w2
+    +mix(green,gold,step(.86,aR.x))*w3*1.6
+    +mix(gold,vec3(1.,.95,.8),step(.72,aR.z))*w4*1.8
+    +vec3(.75,.9,1.)*mid;
+  vCol=c;
+  vGlyph=aR.w;
+  vMix=glyph;
+  vA=(.62+.38*sin(uT*2.3+aR.x*60.))*smoothstep(.25,1.6,v.w);
+}`;
+  const FS = `
+precision mediump float;
+uniform sampler2D uGlyphs;
+varying vec3 vCol;
+varying float vGlyph,vMix,vA;
+void main(){
+  vec2 q=gl_PointCoord-.5;
+  float d=smoothstep(.5,0.,length(q));
+  d*=d;
+  vec2 cell=vec2(mod(vGlyph,8.),floor(vGlyph/8.));
+  float g=texture2D(uGlyphs,(cell+gl_PointCoord)/8.).a;
+  float a=mix(d,g,clamp(vMix,0.,1.));
+  gl_FragColor=vec4(vCol*a*vA*.62,1.);
+}`;
+  const BVS = `
+attribute vec2 aQ;
+void main(){gl_Position=vec4(aQ,0.,1.);}`;
+  const BFS = `
+precision mediump float;
+uniform vec2 uRes;
+uniform vec3 uTint;
+uniform float uT,uGrid;
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/uRes.y;
+  float r=length(uv);
+  vec3 c=vec3(.004,.008,.02)+uTint*.13*exp(-r*r*3.2);
+  c+=uTint*.08*uGrid*exp(-abs(uv.y+.04)*14.);
+  float n=fract(sin(dot(gl_FragCoord.xy+fract(uT)*91.,vec2(12.9898,78.233)))*43758.5453);
+  c+=(n-.5)*.014;
+  c*=1.-.35*smoothstep(.45,1.1,r);
+  gl_FragColor=vec4(c,1.);
+}`;
+  DEEP.glsl = [VS,FS,BVS,BFS].reduce((n,s) => n + s.trim().split('\n').length, 0);
+
+  function prog(vs, fs){
+    const mk = (t, src) => { const s = gl.createShader(t); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const p = gl.createProgram();
+    gl.attachShader(p, mk(gl.VERTEX_SHADER, vs)); gl.attachShader(p, mk(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || 'link');
+    return p;
+  }
+  let P, B;
+  try { P = prog(VS, FS); B = prog(BVS, BFS); }
+  catch { $('deepFallback').hidden = false; return; }
+
+  /* ── รูปทรง 5 ชุด · seed คงที่ ทุกคนเห็นโลกเดียวกัน ── */
+  const N = innerWidth < 700 ? 9000 : 16000;
+  DEEP.count = N;
+  $('dPart').textContent = 'PARTICLES ' + nf(N);
+  $$('.dN').forEach(el => { el.textContent = nf(N); });
+  let seed = 0x5a1ce;
+  const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const STRIDE = 19, data = new Float32Array(N * STRIDE), TAU = Math.PI * 2;
+  const cols = Math.ceil(Math.sqrt(N * 1.4)), rows = Math.ceil(N / cols), GA = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++){
+    const a = rnd(), b = rnd(), c = rnd(), o = i * STRIDE;
+    /* 0 · SEED · บล็อกเคอร์เซอร์ */
+    data[o] = (a - .5) * .5; data[o+1] = (b - .5) * .95; data[o+2] = (c - .5) * .1;
+    /* 1 · WARP · อุโมงค์ยาวตามแกน z */
+    const t1 = a * TAU, r1 = 2 + b * 2.8;
+    data[o+3] = Math.cos(t1) * r1; data[o+4] = Math.sin(t1) * r1; data[o+5] = -40 + c * 46;
+    /* 2 · GRID · ตารางบนพื้น คลื่นไปคำนวณใน shader */
+    data[o+6] = ((i % cols) / cols - .5) * 20 + (a - .5) * .06;
+    data[o+7] = -1.5;
+    data[o+8] = (Math.floor(i / cols) / rows) * -18 + 4;
+    /* 3 · CLOVER · r = |cos 2θ| หมุน 45° + ก้าน */
+    if (c > .93){
+      const t = a;
+      data[o+9] = Math.sin(t * 2.4) * .32; data[o+10] = -t * 2.5; data[o+11] = (b - .5) * .05;
+    } else {
+      const th = a * TAU, R = 2.3 * Math.pow(Math.abs(Math.cos(2 * th)), .55), rr = R * Math.sqrt(b);
+      data[o+9] = Math.cos(th + Math.PI / 4) * rr;
+      data[o+10] = Math.sin(th + Math.PI / 4) * rr;
+      data[o+11] = (c - .5) * .1 + rr * rr * .06;
+    }
+    /* 4 · WORLD · ทรงกลม Fibonacci + วงแหวน */
+    if (a < .7){
+      const k = i + .5, y = 1 - 2 * ((k * 1.618034) % N) / N, rad = Math.sqrt(Math.max(0, 1 - y * y)), th = k * GA;
+      data[o+12] = Math.cos(th) * rad * 2.1; data[o+13] = y * 2.1; data[o+14] = Math.sin(th) * rad * 2.1;
+    } else {
+      const th = b * TAU, rr = 2.9 + c * c * 1.1;
+      data[o+12] = Math.cos(th) * rr; data[o+13] = (rnd() - .5) * .04; data[o+14] = Math.sin(th) * rr;
+    }
+    data[o+15] = rnd(); data[o+16] = rnd(); data[o+17] = rnd(); data[o+18] = Math.floor(rnd() * 64);
+  }
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+  const quad = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+
+  /* ── ตัวอักษร 64 ตัว ดึงจากโค้ดของไฟล์นี้เอง แล้ววาดเป็น texture ด้วย canvas ── */
+  const src = $$('script:not([src])').map(s => s.textContent).join('');
+  const pool = [...new Set(src.replace(/[\s'"`\\]/g, ''))].filter(ch => ch.charCodeAt(0) > 32 && ch.charCodeAt(0) < 0x0E80);
+  for (let i = pool.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  const glyphs = pool.slice(0, 64);
+  const atlas = document.createElement('canvas'); atlas.width = atlas.height = 512;
+  const g2 = atlas.getContext('2d');
+  g2.fillStyle = '#fff'; g2.textAlign = 'center'; g2.textBaseline = 'middle';
+  g2.font = '600 42px ui-monospace,Menlo,Consolas,"Noto Sans Thai",monospace';
+  glyphs.forEach((ch,i) => g2.fillText(ch, (i % 8) * 64 + 32, Math.floor(i / 8) * 64 + 34));
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlas);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  const A = ['aS0','aS1','aS2','aS3','aS4','aR'].map(n => gl.getAttribLocation(P, n));
+  const U = {}; ['uPV','uP','uT','uScale','uGlyphs'].forEach(n => { U[n] = gl.getUniformLocation(P, n); });
+  const BA = gl.getAttribLocation(B, 'aQ');
+  const BU = {}; ['uRes','uTint','uT','uGrid'].forEach(n => { BU[n] = gl.getUniformLocation(B, n); });
+
+  /* ── กล้อง · matrix เขียนเอง 3 ฟังก์ชัน ── */
+  const FOV = 55 * Math.PI / 180;
+  function persp(asp){
+    const f = 1 / Math.tan(FOV / 2), nr = .1, fr = 120;
+    return [f/asp,0,0,0, 0,f,0,0, 0,0,(fr+nr)/(nr-fr),-1, 0,0,2*fr*nr/(nr-fr),0];
+  }
+  function look(e, t){
+    let z = [e[0]-t[0], e[1]-t[1], e[2]-t[2]]; const zl = Math.hypot(...z); z = z.map(v => v / zl);
+    let x = [z[2], 0, -z[0]]; const xl = Math.hypot(...x) || 1; x = x.map(v => v / xl);   /* up = (0,1,0) */
+    const y = [z[1]*x[2]-z[2]*x[1], z[2]*x[0]-z[0]*x[2], z[0]*x[1]-z[1]*x[0]];
+    const d = (a) => -(a[0]*e[0] + a[1]*e[1] + a[2]*e[2]);
+    return [x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0, d(x),d(y),d(z),1];
+  }
+  function mul(a, b){
+    const o = new Array(16);
+    for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++)
+      o[c*4+r] = a[r]*b[c*4] + a[4+r]*b[c*4+1] + a[8+r]*b[c*4+2] + a[12+r]*b[c*4+3];
+    return o;
+  }
+
+  let W = 0, H = 0;
+  function size(){
+    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 1.75);
+    W = Math.max(1, Math.round(stage.clientWidth * dpr)); H = Math.max(1, Math.round(stage.clientHeight * dpr));
+    if (cv.width !== W || cv.height !== H){ cv.width = W; cv.height = H; }
+    gl.viewport(0, 0, W, H);
+  }
+
+  let running = false, raf = 0, last = 0, clock = 0, frames = 0, fpsAt = 0, hudAt = 0;
+  function frame(now){
+    raf = 0;
+    const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now;
+    if (!reduce) clock += dt;
+    readScroll();
+    cur = reduce ? target : cur + (target - cur) * Math.min(1, dt * 5);
+    px += (tpx - px) * Math.min(1, dt * 3); py += (tpy - py) * Math.min(1, dt * 3);
+    const w = weights(cur);
+    const mix3 = arr => [0,1,2].map(j => arr.reduce((s,v,k) => s + v[j] * w[k], 0));
+    const eye = mix3(EYE), aim = mix3(AIM), tint = mix3(TINT);
+    /* จอแนวตั้งแคบ: ถอยกล้องให้ใบโคลเวอร์กับวงแหวนดาวอยู่ในเฟรมครบ */
+    const back = 1 + (Math.min(1.8, Math.max(1, 1 / (W / H) * .95)) - 1) * (w[3] + w[4]);
+    for (let j = 0; j < 3; j++) eye[j] = aim[j] + (eye[j] - aim[j]) * back;
+    eye[0] += px * .9; eye[1] += py * .5;
+    const pv = mul(persp(W / H), look(eye, aim));
+
+    gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.BLEND);
+    gl.useProgram(B);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    for (let k = 0; k < 6; k++) if (A[k] >= 0) gl.disableVertexAttribArray(A[k]);
+    gl.enableVertexAttribArray(BA);
+    gl.vertexAttribPointer(BA, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(BU.uRes, W, H); gl.uniform3fv(BU.uTint, tint); gl.uniform1f(BU.uT, clock); gl.uniform1f(BU.uGrid, w[2]);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.disableVertexAttribArray(BA);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    gl.useProgram(P);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    A.forEach((loc,k) => {
+      if (loc < 0) return;
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, k < 5 ? 3 : 4, gl.FLOAT, false, STRIDE * 4, k * 12);
+    });
+    gl.uniformMatrix4fv(U.uPV, false, new Float32Array(pv));
+    gl.uniform1f(U.uP, cur); gl.uniform1f(U.uT, clock);
+    gl.uniform1f(U.uScale, H / (2 * Math.tan(FOV / 2)));
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex); gl.uniform1i(U.uGlyphs, 0);
+    gl.drawArrays(gl.POINTS, 0, N);
+
+    paintCaps();
+    frames++;
+    if (now - fpsAt > 1000){ $('dFps').textContent = 'FPS ' + Math.round(frames * 1000 / (now - fpsAt || 1)); frames = 0; fpsAt = now; }
+    if (now - hudAt > 120){
+      hudAt = now;
+      $('dCam').textContent = 'CAM ' + eye.map(v => v.toFixed(2)).join(' · ');
+      $('dProg').style.height = (raw * 100).toFixed(1) + '%';
+    }
+    if (running) raf = requestAnimationFrame(frame);
+  }
+  const start = () => { if (!running){ running = true; last = 0; fpsAt = performance.now(); if (!raf) raf = requestAnimationFrame(frame); } };
+  const stop = () => { running = false; };
+
+  new IntersectionObserver(es => es.forEach(e => (e.isIntersecting && !document.hidden ? start() : stop())), { rootMargin:'120px 0px' }).observe(stage);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else { const r = stage.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) start(); }
+  });
+  cv.addEventListener('webglcontextlost', e => { e.preventDefault(); stop(); $('deepFallback').hidden = false; });
+  stage.addEventListener('pointermove', e => {
+    const r = stage.getBoundingClientRect();
+    tpx = ((e.clientX - r.left) / r.width - .5) * 2; tpy = -((e.clientY - r.top) / r.height - .5) * 2;
+  }, { passive:true });
+  stage.addEventListener('pointerleave', () => { tpx = tpy = 0; });
+  addEventListener('resize', size, { passive:true });
+  size();
+  readScroll(); cur = target;
+  requestAnimationFrame(frame);   /* วาดเฟรมแรกไว้เสมอ ต่อให้ยังไม่เลื่อนมาถึง */
+})();
 
 /* ══════════════════════════════════════════════════════════
    BOOT
