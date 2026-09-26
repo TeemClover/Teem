@@ -7,16 +7,11 @@ import {
   Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, SRGBColorSpace,
   SphereGeometry, Vector2,
 } from 'three';
-import {BOWL} from './timeline.js';
+import {BOWL, bowlInnerRadius} from './timeline.js';
+export {bowlInnerRadius} from './timeline.js';
 import {bowlTexture, rippleTexture} from './textures.js';
 
 const R = BOWL.radius, D = BOWL.depth, B = BOWL.innerBottom;
-
-// inner wall radius as a function of height above the slab
-export function bowlInnerRadius(y) {
-  const t = Math.min(1, Math.max(0, (y - B) / (D - B)));
-  return 0.32 + (R - 0.1 - 0.32) * Math.sin(t * Math.PI / 2) ** 0.9;
-}
 
 function bowlProfile() {
   const pts = [[0, 0.004], [0.5, 0.004], [0.56, 0.02], [0.6, 0.06]];
@@ -154,8 +149,8 @@ export function createPour(product, anisotropy = 4, sauceMap = null) {
   const poolMap = sauceMap ? sauceMap.clone() : null;
   if (poolMap) { poolMap.repeat.set(1.6, 1.6); poolMap.needsUpdate = true; }
   const sauceMat = new MeshPhysicalMaterial({
-    color: 0xd9cdc2, map: poolMap, roughness: 0.3, clearcoat: 0.45, clearcoatRoughness: 0.2,
-    emissive: product.sauce.glow, emissiveIntensity: 0.22, envMapIntensity: 0.18,
+    color: 0xe88d3c, map: poolMap, roughness: 0.4, clearcoat: 0.045, clearcoatRoughness: 0.34,
+    emissive: product.sauce.glow, emissiveIntensity: 0.16, envMapIntensity: 0.035, specularIntensity: 0.12,
   });
   const pool = new Mesh(new CircleGeometry(1, 64), sauceMat);
   pool.rotation.x = -Math.PI / 2;
@@ -195,7 +190,7 @@ export function createPour(product, anisotropy = 4, sauceMap = null) {
       const [bx, by, bz] = p.bowl.pos;
       group.position.set(bx, by, bz);
       group.visible = p.bowl.visible;
-      const level = B + 0.012 + (D - B - 0.14) * p.pool.level;
+      const level = p.pool.height;
       pool.visible = p.pool.level > 0.002;
       const rr = bowlInnerRadius(level) - 0.01;
       pool.scale.set(rr, rr, 1);

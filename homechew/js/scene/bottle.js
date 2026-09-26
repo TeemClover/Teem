@@ -6,25 +6,14 @@
  */
 import {
   BufferAttribute, BufferGeometry, CanvasTexture, CylinderGeometry, DoubleSide, Group,
-  LatheGeometry, Mesh, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial,
-  Plane, RepeatWrapping, SRGBColorSpace, Vector2, Vector3, BackSide, FrontSide,
+  LatheGeometry, Mesh, MeshPhysicalMaterial, MeshStandardMaterial,
+  Plane, RepeatWrapping, SRGBColorSpace, Vector2, Vector3, FrontSide,
 } from 'three';
-import {BOTTLE} from './timeline.js';
+import {BOTTLE, BOTTLE_CAVITY, bodyRadius, bottleLevelForVolume} from './timeline.js';
+export {bodyRadius} from './timeline.js';
 import {LABEL_SPEC, frontLabel, backLabel, sealStrip, sauceTexture} from './textures.js';
 
 /* ---------- profiles ---------- */
-export function bodyRadius(y) {
-  const {radius: R, neckRadius: n} = BOTTLE;
-  if (y <= 0.2) return 0.9 + 0.1 * Math.sin((y / 0.2) * Math.PI / 2);
-  if (y <= 4.1) return R;
-  if (y <= 5.2) {
-    const t = (y - 4.1) / 1.1;
-    // round shoulder: eases in slowly from the body, then settles into the neck
-    return n + (R - n) * (1 + Math.cos(Math.PI * Math.pow(t, 0.85))) / 2;
-  }
-  return n;
-}
-
 function outerProfile() {
   const pts = [[0, 0.02], [0.6, 0.02], [0.8, 0.035]];
   for (let i = 0; i <= 8; i++) {
@@ -41,15 +30,7 @@ function outerProfile() {
 }
 
 function sauceProfile() {
-  const inset = 0.055;
-  const pts = [[0, 0.15], [0.84, 0.15], [0.93, 0.24]];
-  for (let y = 0.4; y <= 4.1; y += 0.5) pts.push([1 - inset, y]);
-  for (let i = 0; i <= 24; i++) {
-    const y = 4.1 + (1.1 * i) / 24;
-    pts.push([bodyRadius(y) - inset, y]);
-  }
-  pts.push([BOTTLE.neckRadius - inset, 5.9], [0, 5.9]);
-  return pts.map(([x, y]) => new Vector2(x, y));
+  return [new Vector2(0, BOTTLE_CAVITY[0][0]), ...BOTTLE_CAVITY.map(([y, r]) => new Vector2(r, y)), new Vector2(0, 5.9)];
 }
 
 function capProfile() {
@@ -61,6 +42,71 @@ function capProfile() {
   }
   pts.push([r, 0.06], [r - 0.015, 0.0], [r - 0.07, 0.0]);
   return pts.map(([x, y]) => new Vector2(x, y));
+}
+
+/** A real closed, horizontal liquid surface, cut from the same cavity as its shell. */
+class LiquidSurface {
+  constructor(shell, material) {
+    this.shell = shell.attributes.position.array;
+    const index = shell.index.array, edges = new Map();
+    for (let i = 0; i < index.length; i += 3) for (let j = 0; j < 3; j++) {
+      const a = index[i + j], b = index[i + (j + 1) % 3];
+      edges.set(Math.min(a, b) + ':' + Math.max(a, b), [a, b]);
+    }
+    this.edges = [...edges.values()];
+    this.distances = new Float32Array(this.shell.length / 3);
+    const max = 512, geo = new BufferGeometry();
+    this.pos = new Float32Array((max + 2) * 3);
+    this.normals = new Float32Array((max + 2) * 3);
+    this.uv = new Float32Array((max + 2) * 2);
+    geo.setAttribute('position', new BufferAttribute(this.pos, 3));
+    geo.setAttribute('normal', new BufferAttribute(this.normals, 3));
+    geo.setAttribute('uv', new BufferAttribute(this.uv, 2));
+    geo.setIndex(Array.from({length: max}, (_, i) => [0, i + 1, i + 2]).flat());
+    geo.setDrawRange(0, 0);
+    this.mesh = new Mesh(geo, material);
+    this.mesh.name = 'SauceFreeSurface';
+    this.mesh.frustumCulled = false;
+    this.mesh.receiveShadow = true;
+    this.vertices = 0;
+  }
+
+  update(normal, height) {
+    const key = [...normal, height].map(v => v.toFixed(6)).join(':');
+    if (this.last === key) return;
+    this.last = key;
+    const [nx, ny, nz] = normal, source = this.shell, distances = this.distances;
+    for (let i = 0; i < distances.length; i++) distances[i] = nx * source[i * 3] + ny * source[i * 3 + 1] + nz * source[i * 3 + 2] - height;
+    const points = new Map();
+    for (const [a, b] of this.edges) {
+      const da = distances[a], db = distances[b];
+      if (da * db > 0 || Math.abs(da - db) < 1e-8) continue;
+      const t = da / (da - db);
+      const p = [0, 1, 2].map(k => source[a * 3 + k] + (source[b * 3 + k] - source[a * 3 + k]) * t);
+      points.set(p.map(v => Math.round(v * 100000)).join(':'), p);
+    }
+    const contour = [...points.values()];
+    this.vertices = contour.length;
+    this.mesh.visible = contour.length >= 3;
+    if (!this.mesh.visible) return;
+    const center = contour.reduce((a, p) => a.map((v, i) => v + p[i] / contour.length), [0, 0, 0]);
+    // The basis follows gravity even while the whole hero trio responds to the pointer.
+    const tangent = Math.hypot(nx, ny) > 1e-6 ? new Vector3(ny, -nx, 0).normalize() : new Vector3(1, 0, 0);
+    const bitangent = new Vector3(...normal).cross(tangent).normalize();
+    const angle = p => Math.atan2((p[0] - center[0]) * bitangent.x + (p[1] - center[1]) * bitangent.y + (p[2] - center[2]) * bitangent.z, (p[0] - center[0]) * tangent.x + (p[1] - center[1]) * tangent.y + (p[2] - center[2]) * tangent.z);
+    contour.sort((a, b) => angle(a) - angle(b));
+    const vertex = (p, i) => {
+      this.pos.set(p, i * 3);
+      this.normals.set(normal, i * 3);
+      this.uv[i * 2] = 0.5 + (p[0] * tangent.x + p[1] * tangent.y + p[2] * tangent.z) * 0.5;
+      this.uv[i * 2 + 1] = 0.5 + (p[0] * bitangent.x + p[1] * bitangent.y + p[2] * bitangent.z) * 0.5;
+    };
+    vertex(center, 0);
+    contour.forEach((p, i) => vertex(p, i + 1));
+    vertex(contour[0], contour.length + 1);
+    this.mesh.geometry.setDrawRange(0, contour.length * 3);
+    for (const attr of Object.values(this.mesh.geometry.attributes)) attr.needsUpdate = true;
+  }
 }
 
 /* ---------- seal strip path (x = 0 plane: [z, y]) ---------- */
@@ -251,12 +297,15 @@ export function createBottle(product, art, {glass, anisotropy = 4, withSeal = tr
     color: 0xffffff, map: sauceMap, roughness: 0.3, clearcoat: 0.6, clearcoatRoughness: 0.25,
     emissive: product.sauce.glow, emissiveIntensity: 0.34, envMapIntensity: 0.6, clippingPlanes: [clip], side: FrontSide,
   });
-  const sauceBack = new MeshBasicMaterial({color: product.sauce.surface, clippingPlanes: [clip], side: BackSide});
   const sauceGeo = new LatheGeometry(sauceProfile(), 64);
   const sauce = new Mesh(sauceGeo, sauceMat);
   sauce.name = 'SauceFill';
-  const sauceSurface = new Mesh(sauceGeo, sauceBack); // back faces fake the level surface
-  body.add(sauce, sauceSurface);
+  const surfaceMat = new MeshPhysicalMaterial({
+    color: 0xeab375, map: sauceMap, roughness: 0.38, clearcoat: 0.06, clearcoatRoughness: 0.3,
+    emissive: product.sauce.glow, emissiveIntensity: 0.16, envMapIntensity: 0.07, specularIntensity: 0.2,
+  });
+  const surface = new LiquidSurface(sauceGeo, surfaceMat);
+  body.add(sauce, surface.mesh);
 
   const labelH = LABEL_SPEC.top - LABEL_SPEC.bottom;
   const labelMat = new MeshStandardMaterial({map: tex(frontLabel(art, product), anisotropy), roughness: 0.82, metalness: 0});
@@ -294,5 +343,16 @@ export function createBottle(product, art, {glass, anisotropy = 4, withSeal = tr
     body.add(seal.mesh);
   }
 
-  return {root, pivot, body, cap, seal, clip, glassMesh, sauceMap, sauceMats: [sauceMat, sauceBack], labelMat};
+  const liquid = {volume: 0, worldLevel: BOTTLE.fillUpright, surface};
+  function setLiquid(volume) {
+    body.updateWorldMatrix(true, false);
+    const m = body.matrixWorld.elements;
+    const normal = [m[1], m[5], m[9]];
+    const localLevel = bottleLevelForVolume(Math.acos(Math.max(-1, Math.min(1, normal[1]))), volume);
+    clip.constant = m[13] + localLevel;
+    surface.update(normal, localLevel);
+    liquid.volume = volume;
+    liquid.worldLevel = clip.constant;
+  }
+  return {root, pivot, body, cap, seal, clip, glassMesh, sauceMap, sauceMats: [sauceMat, surfaceMat], labelMat, liquid, setLiquid};
 }

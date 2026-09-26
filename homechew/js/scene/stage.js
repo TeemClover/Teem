@@ -10,7 +10,7 @@ import {
   RepeatWrapping, SRGBColorSpace, Scene, SphereGeometry, Vector3, WebGLRenderer, MathUtils,
 } from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
-import {pose as poseAt, LAYOUT, BOTTLE} from './timeline.js';
+import {pose as poseAt, LAYOUT, BOTTLE, SAUCE} from './timeline.js';
 import {createBottle, createGlassMaterial} from './bottle.js';
 import {createPour} from './pour.js';
 import {loadArt, shadowBlob, stoneTexture, backdropTexture} from './textures.js';
@@ -166,7 +166,7 @@ export async function createStage({canvas, base, products, onFail}) {
   const tmp = new Vector3();
 
   function applyPose() {
-    const p = poseAt(u, layout);
+    const p = poseAt(u, layout, camera.aspect);
     // camera with off-axis shift
     camera.fov = p.camera.fov;
     camera.position.set(...p.camera.pos);
@@ -213,9 +213,10 @@ export async function createStage({canvas, base, products, onFail}) {
     capBlob.visible = c.aside > 0.4;
     capBlob.material.opacity = 0.5 * Math.max(0, (c.aside - 0.4) / 0.6);
 
-    // sauce level stays horizontal in world space
-    hero.clip.constant = p.fill.level;
-    for (const b of Object.values(bottles)) if (b !== hero) b.clip.constant = BOTTLE.fillUpright + b.root.position.y;
+    // One volume budget for bottle + falling ribbon + bowl, with a real horizontal
+    // surface closing the clipped sauce shell (including during pointer inspection).
+    hero.setLiquid(p.fill.volume);
+    for (const b of Object.values(bottles)) if (b !== hero && b.root.visible) b.setLiquid(SAUCE.initialVolume);
 
     pour.update(p);
     return p;
@@ -237,12 +238,21 @@ export async function createStage({canvas, base, products, onFail}) {
     applyPose();
     renderer.render(scene, camera);
     if (lastFrame) {
-      frameTimes.push(now - lastFrame);
-      if (frameTimes.length > 90) frameTimes.shift();
-      adapt();
+      const elapsed = now - lastFrame;
+      // Scroll schedules demand frames independently of pointer settling. Preserve
+      // their timestamps so slow touch scrolling can actually lower quality, but
+      // do not count a pause between gestures as a slow rendering frame.
+      if (elapsed <= 100) {
+        frameTimes.push(elapsed);
+        if (frameTimes.length > 90) frameTimes.shift();
+        adapt();
+      } else {
+        frameTimes.length = 0;
+        adaptCooldown = 0;
+      }
     }
     lastFrame = now;
-    if (settling) invalidate(); else lastFrame = 0;
+    if (settling) invalidate();
     api.frames++;
   }
 
@@ -302,22 +312,26 @@ export async function createStage({canvas, base, products, onFail}) {
     setRunning(value) { running = value; if (value) invalidate(); },
     /** Render a specific story position to an image URL (static/reduced-motion end states). */
     snapshot(atU, w = 900, h = 700) {
+      if (lost || renderer.getContext().isContextLost()) throw new Error('Cannot capture a lost WebGL context');
       const prev = {u, width, height, layout};
-      u = atU;
-      renderer.setPixelRatio(1);
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      layout = w / h < 0.9 ? 'tall' : 'wide';
-      applyPose();
-      renderer.render(scene, camera);
-      const url = canvas.toDataURL('image/webp', 0.86);
-      u = prev.u; layout = prev.layout;
-      resize(prev.width, prev.height);
-      return url;
+      try {
+        u = atU;
+        renderer.setPixelRatio(1);
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        layout = w / h < 0.9 ? 'tall' : 'wide';
+        applyPose();
+        renderer.render(scene, camera);
+        return canvas.toDataURL('image/webp', 0.86);
+      } finally {
+        u = prev.u; layout = prev.layout;
+        resize(prev.width, prev.height);
+      }
     },
     debug() {
       const sm = hero.seal?.mesh;
-      return {seal: sm && {visible: sm.visible, opacity: sm.material.opacity, sphere: sm.geometry.boundingSphere && [...sm.geometry.boundingSphere.center.toArray(), sm.geometry.boundingSphere.radius].map(v => +v.toFixed(2)), nan: [...sm.geometry.attributes.position.array].some(Number.isNaN), world: sm.getWorldPosition(new Vector3()).toArray().map(v => +v.toFixed(2))}, tier: tierName, dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries, frames: api.frames, medianFrameMs: api.medianFrameMs};
+      const p = poseAt(u, layout, camera.aspect);
+      return {liquid: {bottle: p.fill.volume, airborne: p.stream.volume, bowl: p.pool.volume, retained: p.fill.volume / SAUCE.initialVolume, surfaceVertices: hero.liquid.surface.vertices, level: hero.liquid.worldLevel}, seal: sm && {visible: sm.visible, opacity: sm.material.opacity, sphere: sm.geometry.boundingSphere && [...sm.geometry.boundingSphere.center.toArray(), sm.geometry.boundingSphere.radius].map(v => +v.toFixed(2)), nan: [...sm.geometry.attributes.position.array].some(Number.isNaN), world: sm.getWorldPosition(new Vector3()).toArray().map(v => +v.toFixed(2))}, tier: tierName, dpr: renderer.getPixelRatio(), calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries, frames: api.frames, medianFrameMs: api.medianFrameMs};
     },
     dispose() {
       running = false;

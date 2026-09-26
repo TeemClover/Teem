@@ -31,8 +31,8 @@ export const T = {
   raise: [0.32, 0.40],
   tilt: [0.34, 0.47],
   streamHead: [0.465, 0.505],
-  pool: [0.48, 0.735],
-  streamTail: [0.705, 0.75],
+  pool: [0.505, 0.715], // the bowl starts filling only after the leading drop lands
+  streamTail: [0.715, 0.75],
   untilt: [0.715, 0.83],
   payoff: [0.83, 0.9], // food card waits until the bottle is back upright
 };
@@ -59,9 +59,119 @@ export const BOTTLE = {
   capRadius: 0.64,
   pivotY: 3.0,
   fillUpright: 5.42, // filled into the neck like the concept bottles (model units)
-  fillAfter: 4.75, // level after one bowl has been poured
 };
-export const BOWL = {radius: 1.28, depth: 0.78, innerBottom: 0.16};
+export const BOWL = {radius: 1.28, depth: 0.78, innerBottom: 0.16, servingLevel: 0.652};
+
+/* ---------- Shared vessel geometry and volume (model units, not product mL) ---------- */
+export function bodyRadius(y) {
+  if (y <= 0.2) return 0.9 + 0.1 * Math.sin((y / 0.2) * Math.PI / 2);
+  if (y <= 4.1) return BOTTLE.radius;
+  if (y <= 5.2) {
+    const t = (y - 4.1) / 1.1;
+    return BOTTLE.neckRadius + (BOTTLE.radius - BOTTLE.neckRadius) * (1 + Math.cos(Math.PI * Math.pow(t, 0.85))) / 2;
+  }
+  return BOTTLE.neckRadius;
+}
+
+// [height, radius]. Both the visible mesh and the volume solver use this same cavity.
+export const BOTTLE_CAVITY = [[0.15, 0.84], [0.24, 0.93], [0.4, 0.945], [4.1, 0.945]];
+for (let i = 1; i <= 24; i++) {
+  const y = 4.1 + 1.1 * i / 24;
+  BOTTLE_CAVITY.push([y, bodyRadius(y) - 0.055]);
+}
+BOTTLE_CAVITY.push([5.9, BOTTLE.neckRadius - 0.055]);
+
+export function bowlInnerRadius(y) {
+  const t = clamp((y - BOWL.innerBottom) / (BOWL.depth - BOWL.innerBottom));
+  return 0.32 + (BOWL.radius - 0.42) * Math.sin(t * Math.PI / 2) ** 0.9;
+}
+
+// Eight-point Gauss integration. Split at vessel/plane intersections first, avoiding
+// the height quantization of a point-cloud percentile, especially near upright.
+const GL = [
+  [-0.9602898565, 0.1012285363], [-0.7966664774, 0.2223810345],
+  [-0.5255324099, 0.3137066459], [-0.1834346425, 0.3626837834],
+  [0.1834346425, 0.3626837834], [0.5255324099, 0.3137066459],
+  [0.7966664774, 0.2223810345], [0.9602898565, 0.1012285363],
+];
+const integrate = (f, lo, hi) => {
+  const half = (hi - lo) / 2, mid = (lo + hi) / 2;
+  return half * GL.reduce((sum, [x, w]) => sum + w * f(mid + half * x), 0);
+};
+const frustumVolume = (a, b, h) => Math.PI * h * (a * a + a * b + b * b) / 3;
+
+export function bowlVolumeAt(level) {
+  return integrate(y => Math.PI * bowlInnerRadius(y) ** 2, BOWL.innerBottom, clamp(level, BOWL.innerBottom, BOWL.depth));
+}
+
+export function bowlLevelForVolume(volume) {
+  let lo = BOWL.innerBottom, hi = BOWL.depth;
+  for (let i = 0; i < 23; i++) {
+    const mid = (lo + hi) / 2;
+    if (bowlVolumeAt(mid) < volume) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/** Volume below a horizontal plane, measured from the rotated bottle's local origin. */
+export function bottleVolumeBelow(level, angle = 0) {
+  const s = Math.abs(Math.sin(angle)), c = Math.cos(angle);
+  let volume = 0;
+  for (let i = 0; i < BOTTLE_CAVITY.length - 1; i++) {
+    const [y0, r0] = BOTTLE_CAVITY[i], [y1, r1] = BOTTLE_CAVITY[i + 1];
+    const slope = (r1 - r0) / (y1 - y0);
+    const radius = y => r0 + (y - y0) * slope;
+    if (s < 1e-7) {
+      const cut = clamp(level / c, y0, y1);
+      volume += c > 0 ? frustumVolume(r0, radius(cut), cut - y0) : frustumVolume(radius(cut), r1, y1 - cut);
+      continue;
+    }
+    const cuts = [y0, y1];
+    for (const sign of [-1, 1]) {
+      const den = c + sign * s * slope;
+      const y = (level - sign * s * (r0 - slope * y0)) / den;
+      if (y > y0 && y < y1) cuts.push(y);
+    }
+    cuts.sort((a, b) => a - b);
+    for (let j = 0; j < cuts.length - 1; j++) {
+      const lo = cuts[j], hi = cuts[j + 1], mid = (lo + hi) / 2;
+      const radiusMid = radius(mid), xMid = (level - c * mid) / s;
+      if (xMid >= radiusMid) { volume += frustumVolume(radius(lo), radius(hi), hi - lo); continue; }
+      if (xMid <= -radiusMid) continue;
+      volume += integrate(y => {
+        const r = radius(y), x = clamp((level - c * y) / s, -r, r);
+        return r * r * Math.acos(-x / r) + x * Math.sqrt(Math.max(0, r * r - x * x));
+      }, lo, hi);
+    }
+  }
+  return volume;
+}
+
+export function bottleLevelForVolume(angle, volume) {
+  const s = Math.abs(Math.sin(angle)), c = Math.cos(angle);
+  let lo = Infinity, hi = -Infinity;
+  for (const [y, r] of BOTTLE_CAVITY) { lo = Math.min(lo, c * y - s * r); hi = Math.max(hi, c * y + s * r); }
+  for (let i = 0; i < 24; i++) {
+    const mid = (lo + hi) / 2;
+    if (bottleVolumeBelow(mid, angle) < volume) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+export const SAUCE = {
+  initialVolume: bottleVolumeBelow(BOTTLE.fillUpright),
+  servingVolume: bowlVolumeAt(BOWL.servingLevel),
+  airborneVolume: 0.062, // narrow cohesive ribbon between the lip and bowl
+};
+BOTTLE.fillAfter = bottleLevelForVolume(0, SAUCE.initialVolume - SAUCE.servingVolume);
+
+function sauceState(u, head, tail) {
+  // Once the tail leaves the lip, the bottle stops losing sauce. That final ribbon
+  // still reaches the bowl; it is not deleted or added back into the bottle.
+  const inFlight = SAUCE.airborneVolume * head * head * (1 - tail * tail);
+  const volume = (SAUCE.servingVolume - SAUCE.airborneVolume) * smooth(range(u, T.pool)) + SAUCE.airborneVolume * tail * tail;
+  return {bowl: volume, inFlight, remaining: SAUCE.initialVolume - volume - inFlight};
+}
 
 export const LAYOUT = {
   bottles: {
@@ -93,8 +203,8 @@ const CAM = {
     {at: 0.45, target: [0.1, 2.8, 1.05], az: 8, el: 13, dist: 21.45, fov: 26, shift: [0.385, -0.05]},
     {at: 0.62, target: [-0.58, 2.46, 1.05], az: 10, el: 14, dist: 17.35, fov: 26, shift: [0.385, -0.05]},
     {at: 0.76, target: [-1.18, 3.15, 0.97], az: 6, el: 22, dist: 18.35, fov: 26, shift: [0.385, -0.05]},
-    {at: 0.88, target: [-2.52, 0.37, 1.08], az: 12, el: 32, dist: 13.2, fov: 26, shift: [0.14, -0.08]},
-    {at: 1, target: [-1.62, 0.89, 1.15], az: 10, el: 29, dist: 22, fov: 26, shift: [0.14, -0.08]},
+    {at: 0.88, target: [-0.6, 3.04, 1.03], az: 6, el: 20, dist: 20.85, fov: 26, shift: [0.38, -0.06]},
+    {at: 1, target: [-0.59, 3.03, 1.03], az: 4, el: 17, dist: 19.1, fov: 26, shift: [0.38, -0.04]},
   ],
   tall: [
     {at: -1, target: [0, 3.08, 0.32], az: 0, el: 5, dist: 31.6, fov: 30, shift: [0, -0.4]},
@@ -121,25 +231,40 @@ function eyeFrom(k) {
   ];
 }
 
-function cameraAt(u, layout) {
+// Monotone cubic (Fritsch–Carlson) through the keys: the camera keeps moving through each key
+// instead of easing to a stop there, and never overshoots (which the overlap guard relies on).
+const FIELDS = k => [...k.target, k.az, k.el, k.dist, k.fov, ...k.shift];
+const SPLINES = {};
+function spline(layout) {
+  if (SPLINES[layout]) return SPLINES[layout];
   const keys = CAM[layout] || CAM.wide;
-  let k = keys[keys.length - 1];
-  if (u <= keys[0].at) k = keys[0];
-  else {
-    for (let i = 0; i < keys.length - 1; i++) {
-      const a = keys[i], b = keys[i + 1];
-      if (u <= b.at) {
-        // orbit in spherical space so moves arc around the subject instead of cutting through it
-        const t = smoother((u - a.at) / (b.at - a.at));
-        k = {
-          target: lerp3(a.target, b.target, t),
-          az: lerp(a.az, b.az, t), el: lerp(a.el, b.el, t), dist: lerp(a.dist, b.dist, t),
-          fov: lerp(a.fov, b.fov, t), shift: [lerp(a.shift[0], b.shift[0], t), lerp(a.shift[1], b.shift[1], t)],
-        };
-        break;
-      }
+  const xs = keys.map(k => k.at), ys = keys.map(FIELDS), n = keys.length, m = ys[0].length;
+  const tangents = [];
+  for (let c = 0; c < m; c++) {
+    const d = [], t = new Array(n).fill(0);
+    for (let i = 0; i < n - 1; i++) d.push((ys[i + 1][c] - ys[i][c]) / (xs[i + 1] - xs[i]));
+    t[0] = d[0]; t[n - 1] = d[n - 2];
+    for (let i = 1; i < n - 1; i++) t[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for (let i = 0; i < n - 1; i++) {
+      if (d[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
+      const al = t[i] / d[i], be = t[i + 1] / d[i], h = Math.hypot(al, be);
+      if (h > 3) { t[i] = (3 * al / h) * d[i]; t[i + 1] = (3 * be / h) * d[i]; }
     }
+    tangents.push(t);
   }
+  return (SPLINES[layout] = {xs, ys, tangents, n, m});
+}
+
+function cameraAt(u, layout) {
+  const {xs, ys, tangents, n, m} = spline(layout);
+  const x = clamp(u, xs[0], xs[n - 1]);
+  let i = 0;
+  while (i < n - 2 && x > xs[i + 1]) i++;
+  const h = xs[i + 1] - xs[i], t = (x - xs[i]) / h, t2 = t * t, t3 = t2 * t;
+  const h00 = 2 * t3 - 3 * t2 + 1, h10 = t3 - 2 * t2 + t, h01 = -2 * t3 + 3 * t2, h11 = t3 - t2;
+  const v = [];
+  for (let c = 0; c < m; c++) v.push(h00 * ys[i][c] + h10 * h * tangents[c][i] + h01 * ys[i + 1][c] + h11 * h * tangents[c][i + 1]);
+  const k = {target: [v[0], v[1], v[2]], az: v[3], el: v[4], dist: v[5], fov: v[6], shift: [v[7], v[8]]};
   return {pos: eyeFrom(k), target: k.target, fov: k.fov, shift: k.shift};
 }
 
@@ -205,6 +330,57 @@ function activeBottle(u) {
   return {pivot, angle, amount};
 }
 
+/** Keep the complete serving gesture inside its copy-free viewport region. The bounds
+ * include the bottle heel, bowl and resting cap; checking text overlap alone missed
+ * the bottle leaving the right edge on portrait phones and small desktops. */
+function framePourCamera(camera, bottle, bowl, u, layout, aspect) {
+  const weight = smoother(range(u, [0.37, 0.455]));
+  if (weight <= 0) return camera;
+  const points = [];
+  for (const y of [0.02, 0.2, 1.5, 3, 4.1, 4.5, 5.2, 5.955]) {
+    const radius = y > 5.64 ? 0.555 : bodyRadius(y);
+    for (let j = 0; j < 16; j++) {
+      const a = j / 16 * Math.PI * 2;
+      points.push(add3(bottle.pivot, rotZ([radius * Math.cos(a), y - BOTTLE.pivotY, radius * Math.sin(a)], bottle.angle)));
+    }
+  }
+  for (const center of [bowl, LAYOUT.capRest]) {
+    const radius = center === bowl ? BOWL.radius : BOTTLE.capRadius;
+    const height = center === bowl ? BOWL.depth : BOTTLE.capTop - BOTTLE.capBottom;
+    for (let j = 0; j < 16; j++) for (const y of [0, height]) {
+      const a = j / 16 * Math.PI * 2;
+      points.push([center[0] + radius * Math.cos(a), center[1] + y, center[2] + radius * Math.sin(a)]);
+    }
+  }
+  const unit = v => { const length = Math.hypot(...v); return v.map(n => n / length); };
+  const dot = (a, b) => a.reduce((sum, v, i) => sum + v * b[i], 0);
+  const f = unit(camera.target.map((v, i) => v - camera.pos[i]));
+  const right = unit([-f[2], 0, f[0]]);
+  const up = [right[1] * f[2] - right[2] * f[1], right[2] * f[0] - right[0] * f[2], right[0] * f[1] - right[1] * f[0]];
+  const rect = layout === 'tall' ? [0.045, 0.955, 0.34, 0.885] : [0.415, 0.965, 0.16, 0.89];
+  const center = [(rect[0] + rect[1]) / 2, (rect[2] + rect[3]) / 2];
+  const target = camera.target.slice();
+  let distance = Math.hypot(...camera.pos.map((v, i) => v - target[i]));
+  const tangent = Math.tan(camera.fov * DEG / 2);
+  for (let iteration = 0; iteration < 6; iteration++) {
+    const pos = target.map((v, i) => v - f[i] * distance);
+    const bound = [Infinity, -Infinity, Infinity, -Infinity];
+    for (const p of points) {
+      const delta = p.map((v, i) => v - pos[i]), depth = dot(delta, f);
+      const x = (1 + dot(delta, right) / (depth * tangent * aspect) + camera.shift[0]) / 2;
+      const y = (1 - dot(delta, up) / (depth * tangent) - camera.shift[1]) / 2;
+      bound[0] = Math.min(bound[0], x); bound[1] = Math.max(bound[1], x);
+      bound[2] = Math.min(bound[2], y); bound[3] = Math.max(bound[3], y);
+    }
+    const dx = ((bound[0] + bound[1]) / 2 - center[0]) * 2 * distance * tangent * aspect;
+    const dy = (center[1] - (bound[2] + bound[3]) / 2) * 2 * distance * tangent;
+    for (let i = 0; i < 3; i++) target[i] += right[i] * dx + up[i] * dy;
+    const scale = Math.max(1, (bound[1] - bound[0]) / (rect[1] - rect[0]), (bound[3] - bound[2]) / (rect[3] - rect[2]));
+    distance *= scale; // continuous at the fit boundary; no threshold-based zoom step
+  }
+  return {...camera, target: lerp3(camera.target, target, weight), pos: lerp3(camera.pos, target.map((v, i) => v - f[i] * distance), weight)};
+}
+
 function capState(u) {
   const twist = easeSauce(range(u, T.twist));
   const lift = easeSauce(range(u, T.capLift));
@@ -216,22 +392,12 @@ function capState(u) {
   };
 }
 
-/** Horizontal sauce level inside the active bottle, in world units. */
-function fillLevel(u, bottle) {
-  const uprightLevel = lerp(BOTTLE.fillUpright, BOTTLE.fillAfter, smooth(range(u, T.pool)));
-  // World height of that level while the bottle stands upright at its current pivot.
-  const upright = bottle.pivot[1] - BOTTLE.pivotY + uprightLevel;
-  // Tipped past horizontal, the sauce collects in the neck: level sits just above the mouth.
-  const mouth = add3(bottle.pivot, rotZ([0, BOTTLE.mouthY - BOTTLE.pivotY, 0], bottle.angle));
-  const pouring = smooth(clamp((Math.abs(bottle.angle) - 1.2) / 0.55));
-  return lerp(upright, mouth[1] + 0.18, pouring);
-}
 const add3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 
 /** DOM food-card opacity for a scroll position. */
 export const payoffAt = sRaw => smooth(range(storyClock(sRaw), T.payoff));
 
-export function pose(sRaw, layout = 'wide') {
+export function pose(sRaw, layout = 'wide', aspect = layout === 'tall' ? 0.45 : 1.33) {
   const u = storyClock(clamp(sRaw, -1, 1));
   const camera = cameraAt(u, layout);
   const exit = smoother(range(u, T.othersExit));
@@ -239,9 +405,10 @@ export function pose(sRaw, layout = 'wide') {
   const cap = capState(u);
   const peel = smoother(range(u, T.peel));
   const bowlIn = easeOut(range(u, T.bowlIn));
+  const bowlPosition = lerp3(LAYOUT.bowlFrom, LAYOUT.bowl, bowlIn);
   const head = easeIn(range(u, T.streamHead));
   const tail = easeIn(range(u, T.streamTail));
-  const pool = smooth(range(u, T.pool));
+  const sauce = sauceState(u, head, tail);
   const payoff = smooth(range(u, T.payoff));
   const mouth = add3(bottle.pivot, rotZ([0, BOTTLE.mouthY - BOTTLE.pivotY, 0], bottle.angle));
   const axis = rotZ([0, 1, 0], bottle.angle);
@@ -250,7 +417,7 @@ export function pose(sRaw, layout = 'wide') {
   return {
     u,
     beat: beatAt(sRaw),
-    camera,
+    camera: framePourCamera(camera, bottle, bowlPosition, u, layout, aspect),
     others: {
       // Both supporting bottles leave to the right and back, away from the HTML copy (review V01):
       // Mahachai passes behind Hat Yai instead of sweeping across the headline.
@@ -260,16 +427,20 @@ export function pose(sRaw, layout = 'wide') {
     active: {id: 'HC-HY', pivot: bottle.pivot, angle: bottle.angle, tilt: bottle.amount},
     seal: {peel, drop: smooth(range(u, T.sealDrop))},
     cap,
-    fill: {level: fillLevel(u, bottle)},
-    bowl: {pos: lerp3(LAYOUT.bowlFrom, LAYOUT.bowl, bowlIn), visible: bowlIn > 0.001},
+    fill: {
+      level: bottle.pivot[1] - BOTTLE.pivotY * Math.cos(bottle.angle) + bottleLevelForVolume(bottle.angle, sauce.remaining),
+      volume: sauce.remaining,
+    },
+    bowl: {pos: bowlPosition, visible: bowlIn > 0.001},
     stream: {
       on: head > 0 && tail < 1 && bottle.amount > 0.6,
       head,
       tail,
       mouth,
       axis,
+      volume: sauce.inFlight,
     },
-    pool: {level: pool},
+    pool: {level: sauce.bowl / SAUCE.servingVolume, volume: sauce.bowl, height: bowlLevelForVolume(sauce.bowl)},
     payoff,
     // Ambient pointer tilt fades out as the story takes over the bottle.
     pointerWeight: 1 - smooth(clamp((u + 1) / 0.7)),
@@ -281,6 +452,7 @@ export function invariants(p) {
   const problems = [];
   if (p.cap.twist > 1e-6 && p.seal.peel < 1 - 1e-6) problems.push('cap turns through intact seal');
   if (p.stream.on && p.active.tilt < 0.6) problems.push('stream without tilt');
-  if (p.pool.level > 0 && p.u < T.streamHead[0]) problems.push('pool fills before pour');
+  if (p.pool.level > 1e-9 && p.stream.head < 1) problems.push('pool fills before stream arrives');
+  if (Math.abs(p.fill.volume + p.stream.volume + p.pool.volume - SAUCE.initialVolume) > 1e-8) problems.push('sauce volume changes');
   return problems;
 }

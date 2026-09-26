@@ -35,13 +35,13 @@ export async function loadArt(base) {
   const label = {}, seal = {};
   await Promise.all(['hy', 'mc', 'ck'].map(async k => {
     [label[k], seal[k]] = await Promise.all([
-      loadImage(base + `assets/img/label/label-${k}-v12.webp`).catch(() => null),
+      loadImage(base + `assets/img/label/label-${k}-${k === 'ck' ? 'v12' : 'v16'}.webp`).catch(() => null),
       loadImage(base + `assets/img/label/seal-${k}-v12.webp`).catch(() => null),
     ]);
   }));
   if (document.fonts?.load) {
     await Promise.allSettled([
-      document.fonts.load(`700 120px ${FONT_THAI_SERIF}`, 'น้ำจิ้มไก่หาดใหญ่ซีฟู้ดมหาชัยซอสแจ่วเชียงคาน'),
+      document.fonts.load(`700 120px ${FONT_THAI_SERIF}`, 'ซอสไก่ทอดหาดใหญ่ซอสซีฟู้ดมหาชัยซอสแจ่วเชียงคาน'),
       document.fonts.load(`600 60px ${FONT_LATIN}`, 'HAT YAI CHICKEN SAUCE'),
       document.fonts.load(`500 40px ${FONT_THAI_SANS}`, 'รอยืนยันข้อมูลฉลากหลัง'),
     ]);

@@ -3,7 +3,7 @@
  * One scroll clock owns the story: native scroll → u → (DOM beat + CSS vars) and (3D pose).
  * The page is complete without this file; it only upgrades the stage.
  */
-import {beatAt, payoffAt, clamp} from './scene/timeline.js';
+import {beatAt, clamp} from './scene/timeline.js';
 
 const root = document.documentElement;
 const $ = sel => document.querySelector(sel);
@@ -12,7 +12,6 @@ const hero = $('#top');
 const pour = $('#pour');
 const stageEl = $('#stage');
 const canvas = $('#scene');
-const payoff = $('.hc-payoff');
 const base = new URL('../', import.meta.url).href;
 
 // Scene-side product look (visual direction only; facts stay null in data/products.json).
@@ -26,7 +25,7 @@ const LOOK = {
 const state = {
   target: -1, shown: -1, last: 0, raf: 0,
   m: {pourTop: 0, pourH: 1, heroTop: 0, heroH: 1, vh: 1},
-  static: false, no3d: false, reduced: false,
+  static: true, no3d: false, reduced: false,
   stage: null, beat: 'hero',
 };
 window.__homechew = state; // QA hook (read-only use in tests)
@@ -58,7 +57,7 @@ function tick(now) {
   state.last = now;
   const diff = state.target - state.shown;
   // Exponential approach: visual smoothing only; always converges to the scroll position.
-  const k = 1 - Math.exp(-dt / 0.14); // ~0.3s glide: wheel notches blend into one motion
+  const k = 1 - Math.exp(-dt / 0.16); // ~0.35s glide: wheel notches blend into one motion
   state.shown = Math.abs(diff) < 0.0006 ? state.target : state.shown + diff * (dt ? k : 1);
   apply(state.shown);
   if (state.shown !== state.target) request(); else state.last = 0;
@@ -72,7 +71,6 @@ function apply(u) {
     story.dataset.beat = beat;
   }
   story.style.setProperty('--pour', Math.max(0, u).toFixed(4));
-  payoff.style.setProperty('--p', payoffAt(u).toFixed(4));
   state.stage?.setProgress(u);
   if (inspect.on && u > -0.75) setInspect(false);
 }
@@ -95,7 +93,7 @@ function setStatic(on) {
 
 let stillsDone = false;
 function fillStills() {
-  if (stillsDone || !state.stage) return;
+  if (stillsDone || !state.stage || state.no3d) return;
   stillsDone = true;
   const shots = {open: 0.3, pour: 0.68, enjoy: 0.96}; // scroll positions (see storyClock)
   for (const [step, u] of Object.entries(shots)) {
@@ -160,6 +158,7 @@ function fail(reason) {
   state.no3d = true;
   root.classList.remove('is-3d');
   root.classList.add('no-3d');
+  if (inspect.on) setInspect(false);
   inspectBox.hidden = true;
   state.stage?.setRunning(false);
   setStatic(true);
@@ -175,6 +174,9 @@ async function upgrade() {
     const stage = await createStage({canvas, base, products: list, onFail: fail});
     if (!stage) return;
     state.stage = stage;
+    // Upgrade layout only after a usable frame exists. With blocked scripts or a failed
+    // GPU the HTML remains a complete, unpinned product page.
+    setStatic(state.reduced);
     const rect = stageEl.getBoundingClientRect();
     stage.resize(rect.width, rect.height);
     stage.setReduced(state.reduced);
@@ -187,6 +189,7 @@ async function upgrade() {
     new IntersectionObserver(([e]) => stage.setVisible(e.isIntersecting)).observe(stageEl);
     document.addEventListener('visibilitychange', () => stage.setRunning(!document.hidden));
     requestAnimationFrame(() => {
+      root.classList.remove('no-3d');
       root.classList.add('is-3d');
       inspectBox.hidden = false;
       if (state.static) fillStills();
@@ -196,11 +199,23 @@ async function upgrade() {
   }
 }
 
-/* ---------- mobile CTA hides while the set itself is on screen ---------- */
+/* ---------- keep a LINE action visible without doubling up on a visible button ---------- */
 const mobileCta = $('.hc-mobile-cta');
-new IntersectionObserver(entries => {
-  for (const e of entries) mobileCta.classList.toggle('is-hidden', e.isIntersecting);
-}, {threshold: 0.15}).observe($('#set'));
+mobileCta.hidden = false;
+const visibleOrderLinks = new Set();
+const orderLinks = [...document.querySelectorAll('main a[data-cta="line"]')];
+// Each actual order button, rather than the much taller offer section, controls the bar.
+const orderObserver = new IntersectionObserver(entries => {
+  for (const e of entries) {
+    if (e.isIntersecting && e.intersectionRatio >= 0.5) visibleOrderLinks.add(e.target);
+    else visibleOrderLinks.delete(e.target);
+  }
+  const hidden = visibleOrderLinks.size > 0;
+  mobileCta.classList.toggle('is-hidden', hidden);
+  mobileCta.toggleAttribute('inert', hidden);
+  mobileCta.setAttribute('aria-hidden', String(hidden));
+}, {threshold: [0, 0.5, 1], rootMargin: '-64px 0px -8px 0px'});
+orderLinks.forEach(link => orderObserver.observe(link));
 
 /* ---------- flavour image parallax (2.5D) ---------- */
 const media = [...document.querySelectorAll('.hc-flavor__media, [data-progress]')];
@@ -228,16 +243,13 @@ reducedQuery.addEventListener('change', e => {
   state.reduced = e.matches;
   setStatic(state.reduced || state.no3d);
 });
-setStatic(state.reduced);
+setStatic(true);
 window.addEventListener('scroll', () => {
   onScroll();
   if (!parRaf) parRaf = requestAnimationFrame(parallax);
 }, {passive: true});
 window.addEventListener('resize', () => { measure(); onScroll(); });
 document.fonts?.ready.then(() => { measure(); onScroll(); });
-window.addEventListener('load', () => {
-  measure();
-  onScroll();
-  const go = () => upgrade();
-  if ('requestIdleCallback' in window) requestIdleCallback(go, {timeout: 900}); else setTimeout(go, 200);
-});
+// Start after first paint; no-WebGL and save-data avoid fetching the 3D vendor entirely.
+requestAnimationFrame(() => setTimeout(() => upgrade(), 0));
+window.addEventListener('load', () => { measure(); onScroll(); });

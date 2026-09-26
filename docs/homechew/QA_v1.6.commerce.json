@@ -1,0 +1,18 @@
+[
+  {
+    "width": 390,
+    "errors": [],
+    "waitlist": true,
+    "adminLogin": true,
+    "botPreview": true,
+    "addressLabel": true
+  },
+  {
+    "width": 1440,
+    "errors": [],
+    "waitlist": true,
+    "adminLogin": true,
+    "botPreview": true,
+    "addressLabel": true
+  }
+]

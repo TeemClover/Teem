@@ -1,6 +1,6 @@
 {
-  "schema_version": "1.0",
-  "site_mode": "private_prototype",
+  "schema_version": "1.1",
+  "site_mode": "waitlist",
   "commerce_enabled": false,
   "brand": {
     "latin": "Homechew",
@@ -17,7 +17,7 @@
     {
       "id": "HC-HY",
       "slug": "hat-yai-chicken-sauce",
-      "name_th": "น้ำจิ้มไก่หาดใหญ่",
+      "name_th": "ซอสไก่ทอดหาดใหญ่",
       "name_en": "HAT YAI CHICKEN SAUCE",
       "origin_type": "family_learned_recipe",
       "accent": "#aa411e",
@@ -26,7 +26,7 @@
       "recipe_status": "not_verified_in_this_pack",
       "net_quantity": null,
       "quantity_unit": null,
-      "price_thb": null,
+      "price_thb": 159,
       "ingredients": null,
       "allergens": null,
       "storage": null,
@@ -34,12 +34,14 @@
       "shelf_life_opened": null,
       "batch_capacity": null,
       "shipping_regions": null,
-      "available_for_purchase": false
+      "available_for_purchase": false,
+      "price_status": "planned_launch",
+      "serving_tip": "เติมผักชีสดเองในถ้วยก่อนเสิร์ฟได้ตามชอบ"
     },
     {
       "id": "HC-MC",
       "slug": "mahachai-seafood-sauce",
-      "name_th": "น้ำจิ้มซีฟู้ดมหาชัย",
+      "name_th": "ซอสซีฟู้ดมหาชัย",
       "name_en": "MAHACHAI SEAFOOD SAUCE",
       "origin_type": "family_inherited_recipe",
       "accent": "#315537",
@@ -48,7 +50,7 @@
       "recipe_status": "not_verified_in_this_pack",
       "net_quantity": null,
       "quantity_unit": null,
-      "price_thb": null,
+      "price_thb": 159,
       "ingredients": null,
       "allergens": null,
       "storage": null,
@@ -56,7 +58,9 @@
       "shelf_life_opened": null,
       "batch_capacity": null,
       "shipping_regions": null,
-      "available_for_purchase": false
+      "available_for_purchase": false,
+      "price_status": "planned_launch",
+      "serving_tip": "เติมผักชีสดเองในถ้วยก่อนเสิร์ฟได้ตามชอบ"
     },
     {
       "id": "HC-CK",
@@ -70,7 +74,7 @@
       "recipe_status": "not_verified_in_this_pack",
       "net_quantity": null,
       "quantity_unit": null,
-      "price_thb": null,
+      "price_thb": 159,
       "ingredients": null,
       "allergens": null,
       "storage": null,
@@ -78,12 +82,14 @@
       "shelf_life_opened": null,
       "batch_capacity": null,
       "shipping_regions": null,
-      "available_for_purchase": false
+      "available_for_purchase": false,
+      "price_status": "planned_launch",
+      "serving_tip": null
     }
   ],
   "bundle": {
     "id": "HC-TRIO",
-    "status": "proposed_offer",
+    "status": "planned_launch",
     "name_th": "ชุดซอสคู่บ้าน 3 รส",
     "components": [
       {
@@ -99,6 +105,13 @@
         "quantity": 1
       }
     ],
-    "price_thb": null
+    "price_thb": 399
+  },
+  "launch": {
+    "mode": "waitlist",
+    "shipping_fee_thb": null,
+    "starts_at": null,
+    "line_url": "https://lin.ee/owu0J0g",
+    "message": "ยังไม่รับออเดอร์หรือชำระเงิน"
   }
 }

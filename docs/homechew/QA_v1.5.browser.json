@@ -1,0 +1,633 @@
+{
+  "base": "http://127.0.0.1:4181/homechew/",
+  "date": "2026-09-26T08:41:16.143Z",
+  "viewports": [
+    {
+      "tag": "360x800",
+      "mode": "3d",
+      "lcp_ms": 1192,
+      "cls": 0,
+      "transferred_bytes_after_load": 672884,
+      "total_bytes": 2570493,
+      "frames": {
+        "median": 16.7,
+        "p90": 17.4,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832674,
+            "airborne": 0.06198524089320511,
+            "bowl": 1.0444685349571348,
+            "retained": 0.9141908965493895,
+            "surfaceVertices": 105,
+            "level": 4.714830281000536
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "medium",
+          "dpr": 1.5,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 105,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    },
+    {
+      "tag": "390x844",
+      "mode": "3d",
+      "lcp_ms": 1140,
+      "cls": 0,
+      "transferred_bytes_after_load": 1628139,
+      "total_bytes": 2559711,
+      "frames": {
+        "median": 16.7,
+        "p90": 17.4,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.06198678701257253,
+            "bowl": 1.0444669888377673,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.7147960374244064
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "medium",
+          "dpr": 1.5,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 105,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    },
+    {
+      "tag": "430x932",
+      "mode": "3d",
+      "lcp_ms": 2144,
+      "cls": 0,
+      "transferred_bytes_after_load": 1628139,
+      "total_bytes": 3236593,
+      "frames": {
+        "median": 16.7,
+        "p90": 17.4,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.061986823959522326,
+            "bowl": 1.0444669518908174,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.714929211892442
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "medium",
+          "dpr": 1.5,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 104,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    },
+    {
+      "tag": "768x1024",
+      "mode": "3d",
+      "lcp_ms": 472,
+      "cls": 0.002,
+      "transferred_bytes_after_load": 1808749,
+      "total_bytes": 2665985,
+      "frames": {
+        "median": 16.7,
+        "p90": 17.4,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832674,
+            "airborne": 0.06198645093579112,
+            "bowl": 1.0444673249145486,
+            "retained": 0.9141908965493895,
+            "surfaceVertices": 105,
+            "level": 4.714874005087319
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "high",
+          "dpr": 1,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 104,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    },
+    {
+      "tag": "1440x900",
+      "mode": "3d",
+      "lcp_ms": 444,
+      "cls": 0.002,
+      "transferred_bytes_after_load": 1450066,
+      "total_bytes": 2695303,
+      "frames": {
+        "median": 16.6,
+        "p90": 17.4,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.06198711252444421,
+            "bowl": 1.0444666633258957,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.714880080353827
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "high",
+          "dpr": 1,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 105,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    },
+    {
+      "tag": "1920x1080",
+      "mode": "3d",
+      "lcp_ms": 456,
+      "cls": 0.002,
+      "transferred_bytes_after_load": 1798621,
+      "total_bytes": 3372185,
+      "frames": {
+        "median": 16.7,
+        "p90": 17.2,
+        "stage": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.0619862065635482,
+            "bowl": 1.0444675692867915,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.714836703932063
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "high",
+          "dpr": 1,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 105,
+          "medianFrameMs": null
+        }
+      },
+      "lineCtasVisible": 4,
+      "errors": []
+    }
+  ],
+  "modes": [
+    {
+      "label": "reduced-motion",
+      "size": "390x844",
+      "cls": "hc-static is-3d",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 2093,
+      "contentHeight": 2093,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    },
+    {
+      "label": "reduced-motion",
+      "size": "1440x900",
+      "cls": "hc-static is-3d",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 1500,
+      "contentHeight": 1500,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    },
+    {
+      "label": "no-webgl",
+      "size": "390x844",
+      "cls": "hc-static no-3d",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 2093,
+      "contentHeight": 2093,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    },
+    {
+      "label": "no-webgl",
+      "size": "1440x900",
+      "cls": "hc-static no-3d",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 1500,
+      "contentHeight": 1500,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    },
+    {
+      "label": "no-javascript",
+      "size": "390x844",
+      "cls": "hc-static",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 2093,
+      "contentHeight": 2093,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    },
+    {
+      "label": "no-javascript",
+      "size": "1440x900",
+      "cls": "hc-static",
+      "pinPosition": "relative",
+      "stagePosition": "relative",
+      "pourHeight": 1500,
+      "contentHeight": 1500,
+      "ctaVisible": true,
+      "heroOrder": true,
+      "fallbackImages": 4,
+      "overflow": 0,
+      "errors": []
+    }
+  ],
+  "orderPath": [
+    {
+      "tag": "360x800",
+      "position": "entry",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 734,
+        "bottom": 788,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 1367,
+          "bottom": 1425,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "360x800",
+      "position": "middle",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 734,
+        "bottom": 788,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 902,
+          "bottom": 960,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "360x800",
+      "position": "order",
+      "fixed": {
+        "usable": false,
+        "tabbable": false,
+        "top": 810,
+        "bottom": 864,
+        "opacity": 0
+      },
+      "inFlow": [
+        {
+          "usable": true,
+          "tabbable": true,
+          "top": 480,
+          "bottom": 538,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "390x844",
+      "position": "entry",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 778,
+        "bottom": 832,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 1409,
+          "bottom": 1467,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "390x844",
+      "position": "middle",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 778,
+        "bottom": 832,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 940,
+          "bottom": 998,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "390x844",
+      "position": "order",
+      "fixed": {
+        "usable": false,
+        "tabbable": false,
+        "top": 854,
+        "bottom": 908,
+        "opacity": 0
+      },
+      "inFlow": [
+        {
+          "usable": true,
+          "tabbable": true,
+          "top": 507,
+          "bottom": 565,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "430x932",
+      "position": "entry",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 866,
+        "bottom": 920,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 1369,
+          "bottom": 1427,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "430x932",
+      "position": "middle",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 866,
+        "bottom": 920,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 955,
+          "bottom": 1013,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "430x932",
+      "position": "order",
+      "fixed": {
+        "usable": false,
+        "tabbable": false,
+        "top": 942,
+        "bottom": 996,
+        "opacity": 0
+      },
+      "inFlow": [
+        {
+          "usable": true,
+          "tabbable": true,
+          "top": 559,
+          "bottom": 617,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "768x1024",
+      "position": "entry",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 958,
+        "bottom": 1012,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 1398,
+          "bottom": 1456,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "768x1024",
+      "position": "middle",
+      "fixed": {
+        "usable": true,
+        "tabbable": true,
+        "top": 958,
+        "bottom": 1012,
+        "opacity": 1
+      },
+      "inFlow": [
+        {
+          "usable": false,
+          "tabbable": true,
+          "top": 1004,
+          "bottom": 1062,
+          "opacity": 1
+        }
+      ]
+    },
+    {
+      "tag": "768x1024",
+      "position": "order",
+      "fixed": {
+        "usable": false,
+        "tabbable": false,
+        "top": 1034,
+        "bottom": 1088,
+        "opacity": 0
+      },
+      "inFlow": [
+        {
+          "usable": true,
+          "tabbable": true,
+          "top": 614,
+          "bottom": 672,
+          "opacity": 1
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "keyboard": [
+    "ข้ามไปเนื้อหา",
+    "",
+    "3 รส",
+    "ความพิถีพิถัน",
+    "น่ากินแค่ไหน",
+    "ชุดซอส",
+    "line",
+    "line"
+  ]
+}

@@ -1,7 +1,7 @@
 /** Homechew scroll story: pure-function checks (no browser). node --test tests/homechew/ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pose, invariants, BOTTLE, LAYOUT, BOWL} from '../../homechew/js/scene/timeline.js';
+import {pose, invariants, BOTTLE, LAYOUT, BOWL, bodyRadius} from '../../homechew/js/scene/timeline.js';
 import {readFileSync} from 'node:fs';
 
 const steps = (a, b, n) => Array.from({length: n + 1}, (_, i) => a + ((b - a) * i) / n);
@@ -91,15 +91,22 @@ for (const [layout, zone] of Object.entries(ZONES)) {
   });
 }
 
-test('HTML: unknown product facts are shown as pending, never as numbers or free', () => {
+test('HTML: planned prices are visible while unconfirmed product facts stay unknown and ordering stays closed', () => {
   const html = readFileSync(new URL('../../homechew/index.html', import.meta.url), 'utf8');
   const data = JSON.parse(readFileSync(new URL('../../homechew/data/products.json', import.meta.url), 'utf8'));
   assert.equal(data.commerce_enabled, false);
-  for (const p of data.products) assert.equal(p.price_thb, null);
-  for (const field of ['net_quantity', 'price_thb', 'storage', 'shipping_regions']) {
-    assert.match(html, new RegExp(`data-field="${field}">รอยืนยัน<`), field);
+  assert.equal(data.site_mode, 'waitlist');
+  for (const p of data.products) {
+    for (const field of ['net_quantity', 'storage', 'shipping_regions']) assert.equal(p[field], null, field);
+    assert.equal(p.price_thb, 159);
+    assert.equal(p.available_for_purchase, false);
+    assert.ok(html.includes(p.name_th));
   }
-  assert.doesNotMatch(html, /฿|บาท|ฟรี|JAPANESE STANDARDS|240 ?mL/i);
+  assert.equal(data.bundle.price_thb, 399);
+  assert.match(html, /ยังไม่รับออเดอร์หรือชำระเงิน/);
+  assert.match(html, /399/);
+  assert.doesNotMatch(html, /ส่งฟรี|JAPANESE STANDARDS|240 ?mL/i);
+  assert.doesNotMatch(html, /ภาพประกอบจำลอง · แนวทางฉลาก Homechew/);
 });
 
 test('HTML: LINE order CTA points to the owner-provided link only', () => {
@@ -108,4 +115,46 @@ test('HTML: LINE order CTA points to the owner-provided link only', () => {
   assert.ok(lines.length >= 4, 'LINE CTA in header, hero, set, close (+ mobile bar)');
   assert.ok(lines.every(h => h === 'https://lin.ee/owu0J0g'));
   for (const m of html.matchAll(/<a [^>]*href="https:\/\/lin\.ee[^>]*>/g)) assert.match(m[0], /rel="noopener"/);
+});
+
+test('camera moves continuously: no jumps, and no stop-and-go at keyframes', () => {
+  for (const layout of ['wide', 'tall']) {
+    const du = 0.001, speeds = [];
+    let prev = pose(-1, layout).camera.pos;
+    for (let u = -1 + du; u <= 1; u += du) {
+      const pos = pose(u, layout).camera.pos;
+      speeds.push(Math.hypot(pos[0] - prev[0], pos[1] - prev[1], pos[2] - prev[2]) / du);
+      prev = pos;
+    }
+    // no frame-to-frame jump bigger than 3× its neighbours (a discontinuity would spike)
+    for (let i = 2; i < speeds.length - 2; i++) {
+      const around = Math.max(speeds[i - 2], speeds[i + 2], 1);
+      assert.ok(speeds[i] < around * 3, `${layout}: speed spike at step ${i}`);
+    }
+  }
+});
+
+test('the complete bottle, bowl and cap stay on screen throughout the serving gesture', () => {
+  for (const [width, height] of [[360, 800], [390, 844], [430, 932], [768, 1024], [1440, 900], [1920, 1080]]) {
+    const aspect = width / height, layout = aspect < 0.9 ? 'tall' : 'wide';
+    for (const scroll of steps(0.55, 1, 180)) {
+      const p = pose(scroll, layout, aspect);
+      const points = [];
+      for (const y of steps(0.02, BOTTLE.mouthY, 30)) for (let i = 0; i < 32; i++) {
+        const theta = i / 32 * Math.PI * 2, radius = y > 5.64 ? 0.555 : bodyRadius(y);
+        const local = rotZ([radius * Math.cos(theta), y - BOTTLE.pivotY, radius * Math.sin(theta)], p.active.angle);
+        points.push(local.map((v, k) => v + p.active.pivot[k]));
+      }
+      for (let i = 0; i < 32; i++) for (const y of [0, 1]) {
+        const theta = i / 32 * Math.PI * 2;
+        points.push([p.bowl.pos[0] + BOWL.radius * Math.cos(theta), y * BOWL.depth, p.bowl.pos[2] + BOWL.radius * Math.sin(theta)]);
+        points.push([LAYOUT.capRest[0] + BOTTLE.capRadius * Math.cos(theta), y * 0.43, LAYOUT.capRest[2] + BOTTLE.capRadius * Math.sin(theta)]);
+      }
+      for (const point of points) {
+        const [x, y] = project(point, p.camera, aspect);
+        assert.ok(x >= 0.03 && x <= 0.97, `${width}x${height} scroll=${scroll.toFixed(3)} cropped x=${x.toFixed(4)}`);
+        assert.ok(y >= 0.12 && y <= 0.91, `${width}x${height} scroll=${scroll.toFixed(3)} cropped y=${y.toFixed(4)}`);
+      }
+    }
+  }
 });
