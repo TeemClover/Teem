@@ -2,23 +2,20 @@
  * บ้าน myClover — scroll-driven 3D house tour (runtime).
  * The DOM sections are the real content: every interactive object in the house is a
  * `[data-item]` link in index.html, which owns its label, description and URL. This module
- * moves the camera per section, opens the dollhouse, lets people pick objects up, and runs
- * the four-clover quest. No telemetry, no network calls beyond the page's own images.
+ * moves the camera per section, opens the dollhouse, lets people pick objects up, plays the
+ * house music, and runs the four-clover quest. No telemetry, no network calls beyond the page's
+ * own files.
  */
 import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
-import {makeTextures} from './textures.js';
+import Lenis from './vendor/lenis.mjs';
+import {makeTextures, FONT} from './textures.js';
 import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
-import {EffectComposer} from './vendor/addons/postprocessing/EffectComposer.js';
-import {RenderPass} from './vendor/addons/postprocessing/RenderPass.js';
-import {GTAOPass} from './vendor/addons/postprocessing/GTAOPass.js';
-import {UnrealBloomPass} from './vendor/addons/postprocessing/UnrealBloomPass.js';
-import {OutputPass} from './vendor/addons/postprocessing/OutputPass.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const smooth = t => t * t * (3 - 2 * t);
+const ease = t => t < 0.5 ? 16 * t ** 5 : 1 - (-2 * t + 2) ** 5 / 2; // quint in-out: long rest, confident glide
 const lerp = (a, b, t) => a + (b - a) * t;
 const store = {
   get(k, d) { try { return localStorage.getItem(k) ?? d; } catch { return d; } },
@@ -28,6 +25,13 @@ const reduceQuery = matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = reduceQuery.matches;
 reduceQuery.addEventListener?.('change', e => { reduced = e.matches; document.body.classList.toggle('reduced', reduced); });
 document.body.classList.toggle('reduced', reduced);
+document.documentElement.classList.add('js-ready'); // the inline boot guard in index.html stops waiting
+
+/* ---------- smooth scrolling (mouse and trackpad; touch keeps the phone's own scroll) ---------- */
+let lenis = null;
+if (!reduced && matchMedia('(pointer: fine)').matches) {
+  try { lenis = new Lenis({lerp: 0.075, wheelMultiplier: 0.85, anchors: {duration: 1.8}, autoRaf: true}); } catch { lenis = null; }
+}
 
 /* ---------- clover quest (per-viewer convenience only) ---------- */
 const STORE_KEY = 'mc:tour:clovers:v1';
@@ -54,7 +58,7 @@ function openLucky() {
 }
 $('#open-lucky')?.addEventListener('click', openLucky);
 $('#lucky-again')?.addEventListener('click', () => { $('#lucky-message').textContent = drawLucky(); });
-const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องคอม'})[id] || 'บ้าน';
+const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องโปรเจกต์'})[id] || 'บ้าน';
 
 function renderCount(pop) {
   const btn = $('#clover-count'); if (!btn) return;
@@ -96,8 +100,25 @@ for (const b of $$('[data-find]')) b.addEventListener('click', () => { // access
 });
 renderCount(false);
 
+/* ---------- house music: the myClover instrumental, only when someone asks for it ---------- */
+const song = $('#song'), musicBtn = $('#music');
+let musicOn = false;
+function paintMusic(on) {
+  musicOn = on; if (!musicBtn) return;
+  musicBtn.classList.toggle('playing', on); musicBtn.setAttribute('aria-pressed', String(on));
+  $('.music-state', musicBtn).textContent = on ? 'กำลังเล่น · แตะเพื่อหยุด' : 'เปิดเพลงประจำบ้าน';
+}
+function toggleMusic() {
+  if (!song) return;
+  if (song.paused) song.play().catch(() => paintMusic(false)); else song.pause();
+}
+musicBtn?.addEventListener('click', toggleMusic);
+song?.addEventListener('play', () => paintMusic(true));
+song?.addEventListener('pause', () => paintMusic(false));
+
 /* ---------- inspect panel: "picking up" an object ---------- */
 const itemLink = id => $(`[data-item="${id}"]`);
+const sceneOfItem = id => itemLink(id)?.closest('[data-scene]')?.dataset.scene;
 let inspecting = null;
 function openInspect(id) {
   const a = itemLink(id); if (!a) return;
@@ -125,11 +146,16 @@ for (const a of $$('[data-item]')) {
   a.addEventListener('blur', () => scene3d.glow?.(a.dataset.item, false));
 }
 
-/* ---------- card reveal + rail ---------- */
+/* ---------- cards: masked headline reveal, staggered chips; hero drifts away on scroll ---------- */
+for (const h of $$('.card h2, .hero-card h1 .line')) h.innerHTML = `<span class="rise">${h.innerHTML}</span>`;
+for (const list of $$('.items')) $$('li', list).forEach((li, i) => li.style.setProperty('--i', i));
 const sections = $$('[data-scene]');
 const io = new IntersectionObserver(entries => { for (const e of entries) if (e.isIntersecting) e.target.querySelector('.card')?.classList.add('in'); }, {threshold: 0.2});
 sections.forEach(s => io.observe(s));
-function setRail(id) { for (const a of $$('[data-rail]')) a.classList.toggle('active', a.dataset.rail === id || (id === 'door' && a.dataset.rail === 'hero')); }
+function setRail(id) { for (const a of $$('[data-rail]')) { const on = a.dataset.rail === id || (id === 'door' && a.dataset.rail === 'hero') || (id === 'stairs' && a.dataset.rail === 'classroom'); a.classList.toggle('active', on); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); } }
+const heroCard = $('.hero-card');
+function heroDrift() { if (!heroCard || reduced) return; const k = clamp(scrollY / (innerHeight * 0.7)); heroCard.style.setProperty('--drift', k.toFixed(3)); }
+addEventListener('scroll', heroDrift, {passive: true}); heroDrift();
 
 /* ---------- quality toggle ---------- */
 let quality = store.get('mc:tour:quality', 'sd') === 'hd' ? 'hd' : 'sd';
@@ -178,7 +204,7 @@ async function boot() {
   scene.add(new THREE.Points(starGeo, starMat));
 
   const MOTES = mobile ? 160 : 320, moteGeo = new THREE.BufferGeometry(), motePos = new Float32Array(MOTES * 3), moteSeed = new Float32Array(MOTES);
-  for (let i = 0; i < MOTES; i++) { motePos.set([(Math.random() - 0.5) * 46 - 3, Math.random() * 6, (Math.random() - 0.5) * 22 + 2], i * 3); moteSeed[i] = Math.random() * 100; }
+  for (let i = 0; i < MOTES; i++) { motePos.set([(Math.random() - 0.5) * 46 - 1, Math.random() * 6, (Math.random() - 0.5) * 22 + 2], i * 3); moteSeed[i] = Math.random() * 100; }
   moteGeo.setAttribute('position', new THREE.BufferAttribute(motePos, 3));
   const moteMat = new THREE.PointsMaterial({size: 0.1, map: dotTex, color: '#fff2c4', transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending});
   scene.add(new THREE.Points(moteGeo, moteMat));
@@ -191,31 +217,49 @@ async function boot() {
   const lightRight = new THREE.Vector3().crossVectors(lightDir, new THREE.Vector3(0, 1, 0)).normalize();
   const lightUp = new THREE.Vector3().crossVectors(lightRight, lightDir).normalize(), snapCenter = new THREE.Vector3();
 
+  /* ----- HD post-processing: loaded only when someone picks HD ----- */
+  let post = null;
+  const loadPost = () => post || (post = Promise.all([
+    import('./vendor/addons/postprocessing/EffectComposer.js'), import('./vendor/addons/postprocessing/RenderPass.js'),
+    import('./vendor/addons/postprocessing/GTAOPass.js'), import('./vendor/addons/postprocessing/UnrealBloomPass.js'),
+    import('./vendor/addons/postprocessing/OutputPass.js'),
+  ]).then(([a, b, c, d, e]) => ({...a, ...b, ...c, ...d, ...e})));
+
+  /* ----- adaptive quality: HD keeps its look while the frame rate holds, and steps down (never
+   * below SD's look) when a device can't keep up. Level 0 = full HD; each step is cheaper. ----- */
+  const gov = {level: 0, ema: 1 / 60, since: 0, calm: 0};
+  const maxRatio = () => quality === 'hd' ? [1.6, 1.3, 1.1, 1][gov.level] : (mobile ? 1.25 : 1.5);
+
   /* ----- house (rebuilt when quality changes) ----- */
-  let house = null, tex = null, composer = null;
-  const bursts = [];
-  function build() {
+  let house = null, tex = null, composer = null, aoPass = null, bloomPass = null;
+  const bursts = [], loadedRooms = new Set();
+  async function build() {
     const hd = quality === 'hd';
+    const pp = hd ? await loadPost() : null;
     if (house) {
       scene.remove(house.root);
       house.root.traverse(o => { o.geometry?.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m?.dispose()); });
       tex.dispose();
     }
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, hd ? (mobile ? 1.75 : 2) : mobile ? 1.25 : 1.5));
+    gov.level = 0; gov.ema = 1 / 60; gov.since = 0; gov.calm = 0;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, maxRatio()));
     renderer.shadowMap.enabled = hd || !mobile;
     sun.castShadow = renderer.shadowMap.enabled;
-    sun.shadow.mapSize.set(hd ? 2048 : 1024, hd ? 2048 : 1024);
+    sun.shadow.mapSize.set(hd && !mobile ? 2048 : 1024, hd && !mobile ? 2048 : 1024);
     sun.shadow.map?.dispose(); sun.shadow.map = null;
     tex = makeTextures(renderer, hd);
     house = buildHouse({renderer, hd, tex, found, mobile, art});
     scene.add(house.root);
-    composer?.dispose(); composer = null;
-    if (hd) { // HD: ambient occlusion in corners and under furniture, soft glow on lamps and screens
-      composer = new EffectComposer(renderer);
-      composer.addPass(new RenderPass(scene, camera));
-      const ao = new GTAOPass(scene, camera, 1, 1);
-      ao.updateGtaoMaterial({radius: 0.45, distanceExponent: 1.4, thickness: 1.2, scale: 1.1, samples: mobile ? 12 : 16});
-      ao.updatePdMaterial({lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16});
+    loadedRooms.clear(); loadRoomsNear(progress());
+    composer?.dispose(); composer = aoPass = bloomPass = null;
+    if (pp) { // HD: ambient occlusion in corners and under furniture, soft glow on lamps and screens
+      composer = new pp.EffectComposer(renderer);
+      composer.addPass(new pp.RenderPass(scene, camera));
+      const ao = aoPass = new pp.GTAOPass(scene, camera, 1, 1);
+      // AO at half resolution with fewer samples: it is soft by nature, and this is most of HD's cost
+      ao.setSize = (w, h) => pp.GTAOPass.prototype.setSize.call(ao, Math.max(1, w >> 1), Math.max(1, h >> 1));
+      ao.updateGtaoMaterial({radius: 0.45, distanceExponent: 1.4, thickness: 1.2, scale: 1.1, samples: 8});
+      ao.updatePdMaterial({lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 5, rings: 2, samples: 6});
       ao.blendIntensity = 0.95;
       // AO renders depth/normals with an override material: keep glow sprites, particles, the sky
       // and see-through meshes (smoke, halo, invisible tap areas) out of it, or they turn into dark blocks
@@ -227,24 +271,40 @@ async function boot() {
         });
       };
       composer.addPass(ao);
-      composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), 0.35, 0.4, 2.4)); // threshold above lit walls: only lamps and screens glow
-      composer.addPass(new OutputPass());
+      composer.addPass(bloomPass = new pp.UnrealBloomPass(new THREE.Vector2(256, 256), 0.35, 0.4, 2.4)); // threshold above lit walls: only lamps and screens glow
+      composer.addPass(new pp.OutputPass());
     }
     shadowSpan = 0; sizeCanvas(true);
+    // compile every material now, while the loader is up, instead of as each room first comes into view
+    try { await renderer.compileAsync(scene, camera); } catch {}
+  }
+  function applyGovernor() {
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, maxRatio()));
+    if (aoPass) aoPass.enabled = gov.level < 2;
+    if (bloomPass) bloomPass.enabled = gov.level < 3;
+    sizeCanvas(true);
+  }
+  function governor(rawDt) {
+    if (quality !== 'hd' || rawDt > 0.25) return; // ignore tab switches and one-off stalls
+    gov.ema = lerp(gov.ema, rawDt, 0.05); gov.since += rawDt;
+    if (gov.since < 1.5) return;
+    if (gov.ema > 1 / 42 && gov.level < 3) { gov.level++; gov.since = 0; gov.calm = 0; applyGovernor(); }
+    else if (gov.ema < 1 / 58 && gov.level > 0) { gov.calm += rawDt; if (gov.calm > 6) { gov.level--; gov.since = 0; gov.calm = -30; applyGovernor(); } } // step back up slowly, once
   }
 
-  /* ----- camera shots ----- */
+  /* ----- camera: one continuous spline through every shot ----- */
   const SHOTS = {
     // phone: [distance scale, look-height shift] for portrait screens where the card sits below
     // phoneShot: absolute framing for portrait exteriors
-    hero: {pos: [-0.5, 7.6, 30], look: [-0.5, 8.3, 0], phoneShot: {pos: [-1.8, 3.0, 25.5], look: [-1.8, 6.9, 0]}},
+    hero: {pos: [1.0, 7.8, 31.5], look: [1.0, 8.3, 0], phoneShot: {pos: [-0.4, 5.6, 33], look: [-0.4, 10.6, 0]}},
     door: {pos: [-4.7, 2.2, 11.5], look: [-5.5, 1.6, 3.6], phone: [1.3, -0.8]},
     // rooms: eye level just under the ceiling, so the floor above stays out of frame
     living: {pos: [-2.6, 2.65, 7.4], look: [-4.1, 0.85, -1]},
     kitchen: {pos: [5.4, 2.65, 7.4], look: [3.9, 0.95, -1]},
+    stairs: {pos: [7.6, 3.6, 9.2], look: [10.1, 2.3, -0.8], phone: [1.2, -0.6]},
     classroom: {pos: [5.4, F2 + 2.65, 7.4], look: [3.9, F2 + 1.05, -1]},
     office: {pos: [-2.6, F2 + 2.65, 7.4], look: [-4.1, F2 + 1.05, -1]},
-    finale: {pos: [6.5, 5.4, 26], look: [-0.5, 3.4, 0], phoneShot: {pos: [2, 4.2, 34], look: [-1.5, 3.4, 0]}},
+    finale: {pos: [8, 5.6, 28], look: [1.0, 3.4, 0], phoneShot: {pos: [3.2, 4.4, 37], look: [0.4, 3.4, 0]}},
   };
   const order = sections.map(s => s.dataset.scene).filter(id => SHOTS[id]);
   const idx = id => order.indexOf(id);
@@ -255,24 +315,39 @@ async function boot() {
   }
   function progress() {
     const y = scrollY;
-    if (y <= anchors[0]) return 0;
+    if (!anchors.length || y <= anchors[0]) return 0;
     for (let i = 0; i < anchors.length - 1; i++) if (y < anchors[i + 1]) return i + (y - anchors[i]) / Math.max(1, anchors[i + 1] - anchors[i]);
     return anchors.length - 1;
   }
-  const pA = new THREE.Vector3(), lA = new THREE.Vector3(), pB = new THREE.Vector3(), lB = new THREE.Vector3();
-  function shotAt(i, portrait, outPos, outLook) {
-    const s = SHOTS[order[i]];
-    outLook.set(...s.look); outPos.set(...s.pos);
-    if (portrait && s.phoneShot) { outPos.set(...s.phoneShot.pos); outLook.set(...s.phoneShot.look); }
-    else if (portrait) { const [k, dy] = s.phone || [1.18, -0.95]; outPos.sub(outLook).multiplyScalar(k).add(outLook); outLook.y += dy; }
+  let pathPos = null, pathLook = null, pathPortrait = null;
+  function buildPath(portrait) {
+    const P = [], L = [];
+    for (const id of order) {
+      const s = SHOTS[id], p = new THREE.Vector3(...s.pos), l = new THREE.Vector3(...s.look);
+      if (portrait && s.phoneShot) { p.set(...s.phoneShot.pos); l.set(...s.phoneShot.look); }
+      else if (portrait) { const [k, dy] = s.phone || [1.18, -0.95]; p.sub(l).multiplyScalar(k).add(l); l.y += dy; }
+      P.push(p); L.push(l);
+    }
+    pathPos = new THREE.CatmullRomCurve3(P, false, 'centripetal'); pathLook = new THREE.CatmullRomCurve3(L, false, 'centripetal'); pathPortrait = portrait;
   }
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3(), wantPos = new THREE.Vector3(), wantLook = new THREE.Vector3();
+  const velPos = new THREE.Vector3(), velLook = new THREE.Vector3();
   function targetFor(p, portrait) {
-    const i = Math.min(Math.floor(p), order.length - 1), j = Math.min(i + 1, order.length - 1);
-    const f = smooth(clamp(((p - i) - 0.15) / 0.7)); // long holds at each room, glide in between
-    shotAt(i, portrait, pA, lA); shotAt(j, portrait, pB, lB);
-    wantPos.lerpVectors(pA, pB, f); wantLook.lerpVectors(lA, lB, f);
-    if (i !== j && order[i] !== 'hero' && order[j] !== 'finale') wantPos.z += Math.sin(f * Math.PI) * 0.8; // gentle dolly-out between rooms
+    if (pathPortrait !== portrait) buildPath(portrait);
+    const n = order.length - 1, i = Math.min(Math.floor(p), n), u = p - i;
+    const f = ease(clamp((u - 0.12) / 0.76)); // hold at each room, glide in between
+    const s = n ? Math.min(i + f, n) / n : 0;
+    pathPos.getPoint(s, wantPos); pathLook.getPoint(s, wantLook);
+    const j = Math.min(i + 1, n);
+    if (i !== j && order[i] !== 'hero' && order[j] !== 'finale') wantPos.z += Math.sin(f * Math.PI) * 0.9; // gentle dolly-out between rooms
+  }
+  // critically damped spring (no overshoot, no lag spikes when a frame is slow)
+  function smoothDamp(cur, target, vel, time, dt) {
+    const w = 2 / time, x = w * dt, e = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    for (const k of ['x', 'y', 'z']) {
+      const ch = cur[k] - target[k], tmp = (vel[k] + w * ch) * dt;
+      vel[k] = (vel[k] - w * tmp) * e; cur[k] = target[k] + (ch + tmp) * e;
+    }
   }
 
   /* ----- sizing: follow the canvas' CSS box (100lvh), ignore mobile toolbar jitter ----- */
@@ -290,38 +365,60 @@ async function boot() {
     measure();
   }
   addEventListener('resize', () => sizeCanvas(false));
-  document.fonts?.ready.then(() => { measure(); for (const s of house?.screens || []) s.tex.userData.redraw(s.draw(0)); });
+  new ResizeObserver(() => measure()).observe(document.body); // late fonts or images change section heights
 
-  /* ----- picking ----- */
-  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), mouse = {x: 0, y: 0, tx: 0, ty: 0};
-  let hovered = null, downAt = null;
-  const glowing = new Set();
-  function pickables() {
-    const list = [];
-    for (const h of house.hotspots) { list.push(h.root); if (h.beacon && h.beacon.material.opacity > 0.05) list.push(h.beacon); }
-    for (const c of house.collectibles.values()) if (c.visible && !c.userData.gone) list.push(c);
-    return list;
+  /* ----- pictures load room by room: the next room's images arrive while you look at this one ----- */
+  function loadRoomsNear(p) {
+    if (!house) return;
+    const i = Math.round(p), want = new Set(['outside']);
+    for (let k = i - 1; k <= i + 2; k++) { const id = order[k]; if (id === 'door' || id === 'hero') want.add('living'); if (id) want.add(id); }
+    for (const id of want) if (!loadedRooms.has(id)) { loadedRooms.add(id); for (const load of house.lazy.get(id) || []) load(); }
   }
+
+  /* ----- picking: the first thing the ray meets wins, so walls and furniture block what is behind them ----- */
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), mouse = {x: 0, y: 0, tx: 0, ty: 0};
+  let hovered = null, downAt = null, currentScene = '';
+  const glowing = new Set();
+  const shown = o => { for (let n = o; n; n = n.parent) if (!n.visible) return false; return true; };
+  const seeThrough = o => [].concat(o.material).every(m => m?.transparent && m.opacity < 0.5);
   function pick(x, y) {
+    if (!house) return null;
     ndc.set(x / innerWidth * 2 - 1, -(y / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
-    for (const hit of ray.intersectObjects(pickables(), true)) {
-      const u = hit.object.userData;
-      if (u.collect) return {type: 'clover', id: u.collect};
-      if (u.item) return {type: 'item', id: u.item};
+    // glowing beacons float above everything (drawn without depth), so they are checked first
+    for (const h of house.hotspots) if (h.beacon?.visible && h.beacon.material.opacity > 0.05 && ray.intersectObject(h.beacon).length && inReach(h.id)) return {type: 'item', id: h.id};
+    if (!house.pickList) { // every solid mesh, minus the big instanced crowds (meadow, books) that only cost time
+      house.pickList = []; house.root.traverse(o => { if (o.isMesh && !(o.isInstancedMesh && o.count > 60)) house.pickList.push(o); });
+    }
+    for (const hit of ray.intersectObjects(house.pickList, false)) {
+      const o = hit.object, u = o.userData;
+      if (!shown(o) || o.isSprite || o.isPoints) continue;
+      if (u.collect) { if (house.collectibles.get(u.collect)?.userData.gone) continue; return currentScene === u.collect ? {type: 'clover', id: u.collect} : null; }
+      if (u.item) return inReach(u.item) ? {type: 'item', id: u.item} : null;
+      if (u.music) return {type: 'music'};
+      if (seeThrough(o)) continue; // glass rails, steam, glow: look through them
+      return null; // a wall, a table, a floor: nothing to pick behind it
     }
     return null;
   }
+  // only what belongs to the room you are standing in (the big clover belongs to the outside views)
+  const inReach = id => id === 'meet' ? ['hero', 'door', 'finale'].includes(currentScene) : sceneOfItem(id) === currentScene;
   const overUI = e => e.target !== canvas && e.target.closest?.('a,button,.card,dialog,nav,header,aside');
   const labelOf = id => (itemLink(id)?.textContent || '').replace('→', '').trim();
+  let moveQueued = null;
   addEventListener('pointermove', e => {
     mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1;
     if (e.pointerType !== 'mouse' || !house) return;
-    const hit = overUI(e) ? null : pick(e.clientX, e.clientY);
-    hovered = hit; document.body.style.cursor = hit ? 'pointer' : '';
-    if (hit?.type === 'item') showTip(`${labelOf(hit.id)} · คลิกเพื่อหยิบ`, e.clientX, e.clientY);
-    else if (hit?.type === 'clover') showTip('เจอแล้ว! คลิกเพื่อเก็บ 🍀', e.clientX, e.clientY);
-    else if (performance.now() > tipHoldUntil) hideTip();
+    moveQueued = overUI(e) ? {ui: true} : {x: e.clientX, y: e.clientY}; // resolved once per frame
   }, {passive: true});
+  function hoverFrame() {
+    if (!moveQueued) return; const m = moveQueued; moveQueued = null;
+    const hit = m.ui ? null : pick(m.x, m.y);
+    hovered = hit; document.body.style.cursor = hit ? 'pointer' : '';
+    if (hit?.type === 'item') showTip(`${labelOf(hit.id)} · คลิกเพื่อหยิบ`, m.x, m.y);
+    else if (hit?.type === 'clover') showTip('เจอแล้ว! คลิกเพื่อเก็บ 🍀', m.x, m.y);
+    else if (hit?.type === 'music') showTip(musicOn ? 'แตะเพื่อหยุดเพลง' : 'แตะเพื่อเปิดเพลงประจำบ้าน 🎵', m.x, m.y);
+    else if (performance.now() > tipHoldUntil) hideTip();
+  }
   addEventListener('pointerdown', e => { downAt = overUI(e) ? null : {x: e.clientX, y: e.clientY, t: e.timeStamp}; }, {passive: true});
   addEventListener('pointerup', e => {
     if (!downAt || !house) return;
@@ -330,6 +427,7 @@ async function boot() {
     const hit = pick(e.clientX, e.clientY);
     if (!hit) return closeInspect();
     if (hit.type === 'clover') { collectFromScene(hit.id); showTip(`เก็บได้แล้ว ${found.size}/4 🍀`, e.clientX, e.clientY, 1600); }
+    else if (hit.type === 'music') toggleMusic();
     else openInspect(hit.id);
   });
   function collectFromScene(id) { collect(id, true); flyAway(id); }
@@ -356,12 +454,12 @@ async function boot() {
     quality = b.dataset.quality; store.set('mc:tour:quality', quality); renderQuality();
     $('#loader-text').textContent = quality === 'hd' ? 'กำลังจัดบ้านแบบ HD…' : 'กำลังจัดบ้านแบบ SD…';
     document.body.classList.add('is-loading');
-    setTimeout(() => { const keep = inspecting; closeInspect(); build(); first = true; if (keep) openInspect(keep); }, 60);
+    setTimeout(async () => { const keep = inspecting; closeInspect(); try { await build(); } catch (err) { console.error(err); } first = true; if (keep) openInspect(keep); }, 60);
   });
 
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
-  let first = true, running = true, currentScene = '';
+  let first = true, running = true;
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
   function frame() {
@@ -370,22 +468,24 @@ async function boot() {
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
 
     const sceneId = order[Math.round(p)];
-    if (sceneId !== currentScene) { currentScene = sceneId; setRail(sceneId); if (inspecting && !itemLink(inspecting)?.closest(`[data-scene="${sceneId}"]`)) closeInspect(); }
+    if (sceneId !== currentScene) { currentScene = sceneId; setRail(sceneId); loadRoomsNear(p); if (inspecting && sceneOfItem(inspecting) !== sceneId) closeInspect(); }
+    hoverFrame();
 
-    // camera: time-based damping so slow devices keep up; slower = calmer
+    // camera: spline target, critically damped follow; a slow breath while resting in a room
     targetFor(p, portrait);
-    const k = first || still ? 1 : 1 - Math.exp(-Math.min(rawDt, 0.5) * 2.6);
-    camPos.lerp(wantPos, k); camLook.lerp(wantLook, k);
+    if (first || still) { camPos.copy(wantPos); camLook.copy(wantLook); velPos.set(0, 0, 0); velLook.set(0, 0, 0); }
+    else { const k = lenis ? 0.32 : 0.45; smoothDamp(camPos, wantPos, velPos, k, dt); smoothDamp(camLook, wantLook, velLook, k * 0.9, dt); }
     mouse.x = lerp(mouse.x, still ? 0 : mouse.tx, 1 - Math.exp(-dt * 2)); mouse.y = lerp(mouse.y, still ? 0 : mouse.ty, 1 - Math.exp(-dt * 2));
     camera.position.copy(camPos); camera.position.x += mouse.x * 0.3; camera.position.y -= mouse.y * 0.15;
+    if (!still) { camera.position.x += Math.sin(t * 0.21) * 0.12; camera.position.y += Math.sin(t * 0.29) * 0.05; }
     camera.lookAt(camLook);
 
     // dollhouse: door swings, facade sinks, roof lifts; everything stays opaque
-    const doorOpen = smooth(clamp((p - 0.5) / 0.6));
-    const inside = smooth(clamp((p - 1.1) / 0.7)) * (1 - smooth(clamp((p - (fin - 0.75)) / 0.6)));
-    const dusk = smooth(clamp((p - (fin - 0.9)) / 0.8));
+    const doorOpen = ease(clamp((p - 0.45) / 0.65));
+    const inside = ease(clamp((p - 1.1) / 0.7)) * (1 - ease(clamp((p - (fin - 0.75)) / 0.6)));
+    const dusk = ease(clamp((p - (fin - 0.9)) / 0.8));
     house.door.rotation.y = -doorOpen * 1.7 * (1 - dusk);
-    // floor-1 front sinks into the ground; floor-2 front and both roofs lift away together
+    // floor-1 front sinks into the ground; floor-2 front and the roofs lift away together
     house.facade.position.y = -inside * (H + 0.6); house.facade.visible = inside < 0.995;
     house.upper.position.y = house.roof.position.y = inside * 10; house.upper.visible = house.roof.visible = inside < 0.995;
     house.flowers.visible = inside < 0.5;
@@ -406,7 +506,7 @@ async function boot() {
     house.heroMat.emissiveIntensity = 0.35 + dusk * 0.9;
     renderer.toneMappingExposure = lerp(1.05, 1.2, dusk);
     document.body.classList.toggle('night', dusk > 0.5);
-    const span = Math.round(lerp(24, 10, inside));
+    const span = Math.round(lerp(26, 10, inside));
     if (span !== shadowSpan) { shadowSpan = span; Object.assign(sun.shadow.camera, {left: -span, right: span, top: span * 0.65, bottom: -span * 0.5, near: 1, far: 80}); sun.shadow.camera.updateProjectionMatrix(); }
     // follow the view in whole shadow-map texels (in light space), so shadow edges never shimmer
     snapCenter.set(camLook.x, camLook.y - 1, 0);
@@ -420,6 +520,7 @@ async function boot() {
     const cloverAt = portrait ? HERO_CLOVER.tall : HERO_CLOVER.wide; // keep it inside a phone's narrow frame
     hc.rotation.y = still ? 0.3 : t * 0.45; hc.position.y = cloverAt[1] + (still ? 0 : Math.sin(t * 1.2) * 0.25);
     hc.position.x = house.halo.position.x = house.cloverLight.position.x = cloverAt[0];
+    hc.visible = house.halo.visible = inside < 0.9; // outside views only: it would float into the upstairs rooms
     house.halo.position.y = hc.position.y; house.halo.lookAt(camera.position); house.halo.material.opacity = 0.45 * (1 - inside);
 
     // hotspots: hover lift, picked-up objects float toward you, beacons near the current view
@@ -433,13 +534,15 @@ async function boot() {
       h.root.position.lerp(tmp, still ? 1 : 1 - Math.exp(-dt * 10));
       h.root.rotation.y = h.rot.y + (h.picked && !still ? Math.sin(t * 1.5) * 0.18 : 0);
       if (h.beacon) {
-        const near = clamp(1 - Math.hypot(h.beacon.position.x - camLook.x, (h.beacon.position.y - camLook.y) * 1.6) / 5.5) * inside; // this room, this floor
+        const here = inReach(h.id) ? 1 : 0;
+        const near = clamp(1 - Math.hypot(h.beacon.position.x - camLook.x, (h.beacon.position.y - camLook.y) * 1.6) / 5.5) * inside * here; // this room, this floor
         const want = h.picked ? 0 : near * (hov ? 1 : 0.85);
         h.beacon.material.opacity = lerp(h.beacon.material.opacity, want, 1 - Math.exp(-dt * 6));
         h.beacon.scale.setScalar((hov ? 0.36 : 0.26) * (1 + (still ? 0 : Math.sin(t * 3 + h.beacon.position.x) * 0.15)));
         h.beacon.visible = h.beacon.material.opacity > 0.01;
       }
     }
+    if (house.music) house.music.userData.playing = lerp(house.music.userData.playing, musicOn ? 1 : 0, 1 - Math.exp(-dt * 3));
 
     // hidden clovers
     for (const c of house.collectibles.values()) {
@@ -454,13 +557,11 @@ async function boot() {
     }
 
     if (!still) {
-      for (const s of house.smoke) { const ph = (t * 0.18 + s.userData.phase) % 1; s.position.set(-6 + ph * 0.8, 1.9 + ph * 3.5, -1.2 - ph * 0.6); s.scale.setScalar(0.4 + ph * 1.4); s.material.opacity = 0.5 * (1 - ph); }
       for (const s of house.steam) { const ph = (t * 0.35 + s.userData.phase) % 1; s.position.copy(s.userData.base); s.position.y += ph * 1.1; s.position.x += Math.sin(ph * 6 + t) * 0.08; s.scale.setScalar(0.6 + ph * 1.6); s.material.opacity = 0.4 * (1 - ph); }
       const arr = moteGeo.attributes.position.array;
       for (let i = 0; i < MOTES; i++) { const sd = moteSeed[i]; arr[i * 3 + 1] += dt * (0.06 + (sd % 1) * 0.08); arr[i * 3] += Math.sin(t * 0.3 + sd) * dt * 0.04; if (arr[i * 3 + 1] > 6.5) arr[i * 3 + 1] = 0; }
       moteGeo.attributes.position.needsUpdate = true;
       for (const fn of house.tickers) fn(t, dt);
-      if (currentScene === 'office') for (const s of house.screens) { const step = Math.floor(t * 1.5); if (step !== s.step) { s.step = step; s.tex.userData.redraw(s.draw(step)); } }
     }
     moteMat.color.set(dusk > 0.5 ? '#c8ff8a' : '#fff2c4'); moteMat.size = lerp(0.1, 0.2, dusk); moteMat.opacity = 0.3 + dusk * 0.6;
 
@@ -472,25 +573,29 @@ async function boot() {
     }
 
     if (composer) composer.render(); else renderer.render(scene, camera);
-    if (first) { first = false; finishLoading(); }
+    if (first) { first = false; finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
 
-  // optional purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images
+  // canvas labels in the house use the page font: wait for it (briefly) before drawing them
+  try { await Promise.race([document.fonts.load(`700 48px ${FONT.split(',')[0]}`), new Promise(r => setTimeout(r, 1500))]); } catch {}
+  // purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images
   const art = new Map();
   try {
     const r = await fetch('/tour/art/manifest.json', {cache: 'no-cache'});
     if (r.ok) for (const [slot, file] of Object.entries((await r.json()).slots || {})) if (/^[\w.-]+\.(webp|jpe?g|png)$/.test(file)) art.set(slot, file);
   } catch {}
-  build();
+  measure();
+  await build();
   targetFor(progress(), camera.aspect < 1); camPos.copy(wantPos); camLook.copy(wantLook);
   requestAnimationFrame(frame);
 
   // read-only test hook: progress, scene order, quality, and where things sit on screen
   window.__tour = {
     progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
+    level: () => gov.level, music: () => musicOn,
     screenOf(id) {
-      const obj = house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;
+      const obj = id === 'music' ? house?.music : house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;
       const v = (house.collectibles.has(id) ? obj.getWorldPosition(new THREE.Vector3()) : new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3())).project(camera);
       return {x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight};
     },

@@ -13,7 +13,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 const {chromium} = await import(process.env.TOUR_PLAYWRIGHT ? pathToFileURL(process.env.TOUR_PLAYWRIGHT + '/index.mjs').href : 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const out = process.env.TOUR_PROOF_DIR || await mkdtemp(tmpdir() + '/tour-'); await mkdir(out, {recursive: true});
-const types = {'.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.ico': 'image/x-icon', '.webmanifest': 'application/json'};
+const types = {'.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.ico': 'image/x-icon', '.webmanifest': 'application/json', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.json': 'application/json', '.mp3': 'audio/mpeg'};
 const server = http.createServer(async (q, r) => {
   let p = decodeURIComponent(q.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html';
   try { const b = await readFile(join(root, p)); r.writeHead(200, {'content-type': types[extname(p)] || 'application/octet-stream'}); r.end(b); } catch { r.writeHead(404); r.end(); }
@@ -22,12 +22,13 @@ const base = `http://127.0.0.1:${server.address().port}`;
 const browser = await chromium.launch({executablePath: process.env.TOUR_CHROME || undefined, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']});
 const pass = m => console.log('PASS ' + m);
 
-async function open(opts, init) {
+async function open(opts, init, block) {
   const ctx = await browser.newContext(opts);
-  await ctx.route('**/*', r => r.request().url().startsWith(base) ? r.continue() : r.abort());
+  await ctx.route('**/*', r => r.request().url().startsWith(base) && !(block && block.test(r.request().url())) ? r.continue() : r.abort());
   if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage(), errors = [];
   page.on('pageerror', e => errors.push(e.message));
+  if (block) { await page.goto(base + '/tour/', {waitUntil: 'domcontentloaded'}); return {ctx, page, errors}; }
   await page.goto(base + '/tour/', {waitUntil: 'domcontentloaded'});
   await page.waitForFunction(() => !document.body.classList.contains('is-loading'), null, {timeout: 60000});
   return {ctx, page, errors};
@@ -37,10 +38,14 @@ try {
   { // WebGL tour, reduced motion so camera and cards settle immediately
     const {ctx, page, errors} = await open({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
-    assert.deepEqual(await page.evaluate(() => window.__tour.order), ['hero', 'door', 'living', 'kitchen', 'classroom', 'office', 'finale']);
-    for (const [i, id] of ['living', 'kitchen', 'classroom', 'office', 'finale'].entries()) {
+    assert.deepEqual(await page.evaluate(() => window.__tour.order), ['hero', 'door', 'living', 'kitchen', 'stairs', 'classroom', 'office', 'finale']);
+    // outside the house nothing inside can be picked: the walls are in the way
+    const outside = await page.evaluate(() => { const got = new Set(); for (let x = 20; x < innerWidth; x += 40) for (let y = 60; y < innerHeight; y += 40) { const h = window.__tour.pickAt(x, y); if (h) got.add(h.id || h.type); } return [...got]; });
+    assert.ok(outside.every(id => id === 'meet'), 'picked through the wall: ' + outside);
+    pass('from the garden, clicks never reach objects inside the house');
+    for (const [i, id] of ['living', 'kitchen', 'stairs', 'classroom', 'office', 'finale'].entries()) {
       await page.evaluate(id => { const s = document.getElementById(id); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); }, id);
-      await page.waitForFunction(n => Math.abs(window.__tour.progress() - n) < 0.05 && document.querySelector('.rail a.active')?.dataset.rail === document.querySelectorAll('[data-scene]')[n].dataset.scene, i + 2, {timeout: 20000});
+      await page.waitForFunction(n => { const want = document.querySelectorAll('[data-scene]')[n].dataset.scene; return Math.abs(window.__tour.progress() - n) < 0.05 && document.querySelector('.rail a.active')?.dataset.rail === (want === 'stairs' ? 'classroom' : want); }, i + 2, {timeout: 20000});
       assert.equal(await page.$eval(`#${id} .card`, c => getComputedStyle(c).opacity), '1');
       await page.screenshot({path: `${out}/desktop-${id}.png`});
     }
@@ -76,13 +81,27 @@ try {
     assert.match(await page.textContent('#inspect-title'), /TeamBook/);
     await page.screenshot({path: `${out}/desktop-inspect.png`});
     await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
-    pass('tapping the TeamBook notebook in the computer room picks it up and offers its page');
+    pass('tapping the TeamBook notebook in the project room picks it up and offers its page');
+
+    // the classroom computers open lessons 1, 4, 5 and the Dungeon; objects of other rooms stay out of reach
+    const lessonHref = await page.$$eval('#classroom [data-item]', as => Object.fromEntries(as.map(a => [a.dataset.item, a.getAttribute('href')])));
+    assert.deepEqual([lessonHref['lesson-1'], lessonHref['lesson-4'], lessonHref['lesson-5'], lessonHref.dungeon], ['/classroom/free-ai.html', '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/dungeon/']);
+    const far = await page.evaluate(() => window.__tour.screenOf('dungeon'));
+    if (far) { const h = await page.evaluate(({x, y}) => window.__tour.pickAt(x, y), far); assert.notEqual(h?.id, 'dungeon'); }
+    pass('lesson computers link to บท 1, บท 4, บท 5 and the Dungeon; other rooms are out of reach');
 
     const spot = await settled('office');
     assert.ok(spot && spot.x > 0 && spot.x < 1280 && spot.y > 0 && spot.y < 800, JSON.stringify(spot));
     await tap('office', () => document.querySelector('#clover-count .count-text').textContent === '1/4');
     assert.match(await page.textContent('[data-find="office"]'), /เก็บใบนี้แล้ว/);
     pass('clicking the hidden clover in the 3D room collects it');
+
+    // the record player in the living room plays the house music
+    await page.evaluate(() => { const s = document.getElementById('living'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
+    await page.waitForFunction(() => Math.abs(window.__tour.progress() - window.__tour.order.indexOf('living')) < 0.05);
+    await tap('music', () => document.querySelector('#music').getAttribute('aria-pressed') === 'true');
+    await page.click('#music'); await page.waitForFunction(() => document.querySelector('#music').getAttribute('aria-pressed') === 'false');
+    pass('the record player (and the music button) play and stop the house music');
 
     await page.evaluate(() => scrollTo(0, 0));
     for (const room of ['living', 'kitchen', 'classroom']) {
@@ -117,10 +136,23 @@ try {
       () => { HTMLCanvasElement.prototype.getContext = () => null; });
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), true);
     assert.equal(await page.locator('[data-primary]').count(), 5);
+    const rail = await page.$$eval('.rail a', as => as.map(a => { const r = a.getBoundingClientRect(); return {name: a.getAttribute('aria-label'), w: r.width, h: r.height}; }));
+    assert.ok(rail.length === 6 && rail.every(r => r.name && r.w >= 32 && r.h >= 44), JSON.stringify(rail));
+    pass('room menu on a phone: every dot has a name and a finger-sized target');
     await page.locator('#kitchen').scrollIntoViewIfNeeded(); await page.waitForTimeout(900);
     await page.screenshot({path: `${out}/phone-no-webgl.png`});
     assert.deepEqual(errors, []);
     pass('falls back to a readable page without WebGL');
+    await ctx.close();
+  }
+  { // the house module can't load (blocked, offline): the story and every link come back on their own
+    const {ctx, page} = await open({viewport: {width: 393, height: 852}}, null, /\/tour\/tour\.js/);
+    await page.waitForFunction(() => !document.body.classList.contains('is-loading'), null, {timeout: 10000});
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('static')), true);
+    await page.locator('#living').scrollIntoViewIfNeeded(); await page.waitForTimeout(300);
+    assert.equal(await page.$eval('#living .card', c => getComputedStyle(c).opacity), '1');
+    await page.screenshot({path: `${out}/phone-module-blocked.png`});
+    pass('if the 3D module fails to load, the loader lifts and the content is readable');
     await ctx.close();
   }
   console.log('Screenshots: ' + out);
