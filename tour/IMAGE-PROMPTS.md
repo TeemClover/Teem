@@ -65,9 +65,9 @@ paper edges, subtle fold lines. Seen perfectly from above, no perspective, no ha
 no compass (a 3D compass will sit on top), no text, no watermark.
 ```
 
-## 4 · `teem-portrait` — ภาพเทมในกรอบ
+## 4 · `teem-portrait` — ภาพทีมในกรอบ
 
-**ต้องแนบรูปจริงของเทมเป็น reference** ห้ามให้ GPT เดาหน้าตา
+**ต้องแนบรูปจริงของทีมเป็น reference** ห้ามให้ GPT เดาหน้าตา
 
 ```
 Warm editorial portrait for a framed photo on a living-room wall, 4:5 vertical, 1024x1280.
