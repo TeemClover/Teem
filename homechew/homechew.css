@@ -729,3 +729,55 @@ dd.hc-pending::before, .hc-spec dd::before { content: '○ '; color: var(--hc-co
 .hc-offer small { color: var(--hc-muted); }
 .hc-footer__links { margin: .8rem 0; }
 .hc-footer small { display: block; max-width: 48rem; font-size: .8rem; }
+
+/* ---------- v1.7: films + dip loops (Higgsfield Kling 3.0 clips, edited; see docs/homechew/MEDIA_v1.7.md) ---------- */
+.hc-loop { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; background: #2a1d14; }
+.hc-taste__img video.hc-loop {
+  transform: scale(calc(1.02 + (1 - var(--t, .5)) * .1));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 55%, transparent), 0 40px 80px -30px rgba(0, 0, 0, .9);
+}
+.hc-film {
+  position: relative; z-index: 3;
+  background: linear-gradient(180deg, var(--hc-espresso), #16110d 70%);
+  color: #f7ecdc;
+  padding: calc(var(--hc-section) * .6) var(--hc-gutter) var(--hc-section);
+  display: grid; justify-items: center; gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+.hc-film .hc-section-head { text-align: center; justify-items: center; margin: 0 auto; }
+.hc-film .hc-section-head h2 { color: #fbf3e6; }
+.hc-film .hc-section-head > p:last-child { color: #e6d8c6; }
+.hc-film .hc-eyebrow { color: #e0b27e; }
+.hc-film__stage {
+  position: relative; width: min(100%, 72rem); aspect-ratio: 16 / 9;
+  border-radius: 24px; overflow: hidden; background: #0f0b08;
+  box-shadow: 0 60px 120px -50px rgba(0, 0, 0, .95), 0 0 0 1px rgba(255, 240, 220, .08);
+}
+.hc-film.is-tall .hc-film__stage { aspect-ratio: 9 / 16; width: min(100%, 26rem); }
+.hc-film__video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hc-film__ui { position: absolute; right: 1rem; bottom: 1rem; display: flex; gap: .5rem; }
+.hc-film__btn {
+  display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: 0 1rem;
+  border-radius: 999px; border: 1px solid rgba(255, 245, 230, .35);
+  background: rgba(20, 14, 10, .55); color: #fff; font: 600 .92rem/1 var(--hc-body); cursor: pointer;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.hc-film__btn svg { width: 20px; height: 20px; fill: currentColor; }
+.hc-film__btn[aria-pressed='false'] .hc-film__wave { opacity: .25; }
+.hc-film__play .hc-film__i-pause, .hc-film__play[aria-pressed='true'] .hc-film__i-play { display: none; }
+.hc-film__play[aria-pressed='true'] .hc-film__i-pause { display: inline; }
+.hc-film__sound[aria-pressed='true'] { background: #f7ecdc; color: #231d18; }
+.hc-film__tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
+.hc-film__tabs button {
+  display: inline-flex; align-items: center; gap: .55rem; min-height: 46px; padding: 0 1.1rem;
+  border-radius: 999px; border: 1px solid rgba(255, 245, 230, .22); background: transparent;
+  color: #f7ecdc; font: 600 .98rem/1 var(--hc-body); cursor: pointer; transition: background .25s, border-color .25s;
+}
+.hc-film__tabs button[aria-pressed='true'] { background: rgba(255, 245, 230, .1); border-color: var(--accent); }
+.hc-film__dot { width: .7rem; height: .7rem; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--accent); }
+.hc-film__note { max-width: 44rem; text-align: center; font-size: .82rem; color: #bfb09d; line-height: 1.6; }
+.hc-film.is-error .hc-film__ui { display: none; }
+@media (max-width: 700px) {
+  .hc-film__tabs button { min-height: 42px; padding: 0 .85rem; font-size: .9rem; }
+  .hc-film__ui { right: .6rem; bottom: .6rem; }
+}
+@media (prefers-reduced-motion: reduce) { .hc-taste__img video.hc-loop { transform: none; } }
