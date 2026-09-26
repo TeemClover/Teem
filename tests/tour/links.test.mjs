@@ -7,11 +7,7 @@ import {fileURLToPath} from 'node:url';
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const html = await readFile(root + 'tour/index.html', 'utf8');
 
-// routes built on another branch that is not on main yet: linked on purpose, resolved when it merges
-const PENDING = {'/homechew/': 'origin/homechew/v1.3'};
-
 async function exists(path) {
-  if (PENDING[path]) return true;
   const clean = path.split(/[?#]/)[0];
   for (const candidate of [clean, clean.endsWith('/') ? clean + 'index.html' : clean + '/index.html']) {
     try { if ((await stat(root + candidate.replace(/^\//, ''))).isFile()) return true; } catch {}

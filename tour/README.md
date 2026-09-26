@@ -32,9 +32,6 @@ Tapping one makes it float toward you and a panel offers its page.
 | Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
 | Outside | the big clover / finale button → `/meet/` |
 
-`/homechew/` is built on the `homechew/v1.3` branch and is not on `main` yet: the link audit and
-the tour link test list it as **pending** (never as checked) until that branch merges.
-
 Glowing beacons mark pickable objects in the room you are looking at, and every object has an
 invisible, slightly larger tap area. Hovering a link in a card lights up the same object.
 Picking follows the first surface the ray meets, so walls, floors and furniture block what is

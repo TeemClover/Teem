@@ -22,9 +22,7 @@ for(const line of (await readFile(path.join(root,'_redirects'),'utf8')).split('\
   if(!line.trim()||line.trim().startsWith('#'))continue;
   const [from,to]=line.trim().split(/\s+/);if(from&&to)routes.push({from,to,provider:'pages'});
 }
-// public routes built on a branch that has not merged yet; reported as pending, never counted as checked
-const pendingRoutes={'/homechew/':'branch homechew/v1.3'};
-const report={seeds,checked:0,scanned:[],missing:[],redirects:[],barriers:[],external:[],dynamic:[],knownNonLinks:[],unresolvedLiterals:[],untraversedPages:[],pending:[]};
+const report={seeds,checked:0,scanned:[],missing:[],redirects:[],barriers:[],external:[],dynamic:[],knownNonLinks:[],unresolvedLiterals:[],untraversedPages:[]};
 const seen=new Set(),checked=new Set(),queue=seeds.map(url=>({url,from:'release-entry',kind:'href'}));
 const unique=(list,item)=>{if(!list.some(row=>JSON.stringify(row)===JSON.stringify(item)))list.push(item);};
 function routeMatch(pattern,value){
@@ -103,7 +101,6 @@ while(queue.length){
   if(!['www.myclover.com','myclover.com'].includes(url.hostname)){unique(report.external,url.origin);continue;}
   if(privatePath.test(url.pathname)){unique(report.barriers,url.pathname);continue;}
   const filename=await existing(url);
-  if(!filename&&pendingRoutes[url.pathname]){unique(report.pending,{url:url.pathname,on:pendingRoutes[url.pathname]});continue;}
   if(!filename){unique(item.kind==='literal'?report.unresolvedLiterals:report.missing,{from:item.from,line:item.line,url:raw,resolved:url.pathname});continue;}
   if(!checked.has(url.pathname)){report.checked++;checked.add(url.pathname);}
   if(!textTypes.test(filename))continue;
@@ -121,6 +118,5 @@ const jsonIndex=process.argv.indexOf('--json');
 if(jsonIndex>=0&&process.argv[jsonIndex+1])await writeFile(process.argv[jsonIndex+1],JSON.stringify(report,null,2));
 console.log(`Public link audit: ${report.checked} local targets checked; ${report.scanned.length} linked source files scanned; ${report.missing.length} unresolved references.`);
 for(const row of report.missing)console.log(`MISSING ${row.from}${row.line?':'+row.line:''} -> ${row.url} (${row.resolved||row.reason})`);
-for(const row of report.pending)console.log(`PENDING ${row.url} (lives on ${row.on}; resolves when it merges)`);
 console.log(`Explicit boundaries: ${report.barriers.length} API/private paths; ${report.external.length} external origins; ${report.dynamic.length} dynamic templates; ${report.knownNonLinks.length} documented non-link literals; ${report.unresolvedLiterals.length} ambiguous JS literals; ${report.untraversedPages.length} public pages outside selected release journeys.`);
 process.exitCode=report.missing.length?1:0;
