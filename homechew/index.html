@@ -18,6 +18,7 @@
     {"imports": {"three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/"}}
   </script>
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/media.js"></script>
 </head>
 <body>
   <a class="hc-skip" href="#main">ข้ามไปเนื้อหา</a>
@@ -123,19 +124,41 @@
       <h2 class="hc-visually-hidden" id="taste-title">หวาน เปรี้ยว เผ็ด</h2>
       <div class="hc-taste__row hc-taste__row--sweet" style="--accent: #d0621a">
         <p class="hc-taste__word" aria-hidden="true">หวาน</p>
-        <figure class="hc-taste__img"><img src="assets/img/food/hy-dip-orange-v15-720.webp" width="720" height="900" alt="ไก่ทอดจุ่มซอสไก่ทอดหาดใหญ่ ซอสเยิ้มเงา (ภาพ concept)" loading="lazy" decoding="async"></figure>
+        <figure class="hc-taste__img"><video class="hc-loop" data-src="assets/video/hy-dip-loop.mp4" poster="assets/video/hy-dip-loop.webp" width="720" height="900" muted loop playsinline preload="none" aria-label="วิดีโอ concept: ไก่ทอดยกจากถ้วยซอสไก่ทอดหาดใหญ่ ซอสส้มยืดเป็นสายแล้วหยดกลับลงถ้วย"></video></figure>
         <div class="hc-taste__text"><h3>หวาน · เผ็ดกำลังดี</h3><p>ไก่ทอดร้อน ๆ จุ่มซอสฉ่ำเงา<br>กรอบนอก หวานเผ็ดในคำเดียว</p><a class="hc-link" href="#hat-yai">รู้จักรสหาดใหญ่ <span aria-hidden="true">→</span></a></div>
       </div>
       <div class="hc-taste__row hc-taste__row--sour" style="--accent: #9fc13a">
         <p class="hc-taste__word" aria-hidden="true">เปรี้ยว</p>
-        <figure class="hc-taste__img"><img src="assets/img/food/mc-dip-720.webp" width="720" height="900" alt="ปูและกุ้งสุกจุ่มซอสซีฟู้ดสีเขียว (ภาพ concept)" loading="lazy" decoding="async"><span class="hc-lime" aria-hidden="true"></span></figure>
+        <figure class="hc-taste__img"><video class="hc-loop" data-src="assets/video/mc-dip-loop.mp4" poster="assets/video/mc-dip-loop.webp" width="720" height="900" muted loop playsinline preload="none" aria-label="วิดีโอ concept: ปูและกุ้งสุกเคลือบซอสซีฟู้ดมหาชัยสีเขียว หยดกลับลงถ้วย"></video><span class="hc-lime" aria-hidden="true"></span></figure>
         <div class="hc-taste__text"><h3>เปรี้ยวจี๊ด · สดชื่น</h3><p>กุ้งเนื้อเด้ง ปูเนื้อหวาน<br>เจอรสเปรี้ยวสดแล้วอยากจิ้มอีก</p><a class="hc-link" href="#mahachai">รู้จักรสมหาชัย <span aria-hidden="true">→</span></a></div>
       </div>
       <div class="hc-taste__row hc-taste__row--spicy" style="--accent: #c8321c">
         <p class="hc-taste__word" aria-hidden="true">เผ็ด</p>
-        <figure class="hc-taste__img"><img src="assets/img/food/ck-dip-v15-720.webp" width="720" height="900" alt="คอหมูย่างจุ่มซอสแจ่วฉ่ำ ๆ (ภาพ concept)" loading="lazy" decoding="async"><span class="hc-flakes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>
+        <figure class="hc-taste__img"><video class="hc-loop" data-src="assets/video/ck-dip-loop.mp4" poster="assets/video/ck-dip-loop.webp" width="720" height="900" muted loop playsinline preload="none" aria-label="วิดีโอ concept: หมูย่างเคลือบซอสแจ่วเชียงคาน หยดซอสลงถ้วย"></video><span class="hc-flakes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>
         <div class="hc-taste__text"><h3>เข้ม · หอม · เผ็ดร้อน</h3><p>คอหมูย่างหอม ๆ เคลือบแจ่วเข้ม<br>แล้วตามด้วยข้าวเหนียวอีกสักคำ</p><a class="hc-link" href="#chiang-khan">รู้จักรสเชียงคาน <span aria-hidden="true">→</span></a></div>
       </div>
+    </section>
+
+    <section class="hc-film" id="film" aria-labelledby="film-title">
+      <header class="hc-section-head">
+        <p class="hc-eyebrow">From ingredient to table</p>
+        <h2 id="film-title">จากเสน่ห์ของวัตถุดิบ<br>สู่ซอสประจำโต๊ะ</h2>
+        <p>หวานอมเปรี้ยว สดสว่าง หรือหอมคั่ว — เลือกรสที่เข้ากับมื้อของคุณ</p>
+      </header>
+      <div class="hc-film__stage">
+        <video class="hc-film__video" muted playsinline preload="none" width="1280" height="720" poster="assets/video/hy-film-12s-16x9.webp" aria-label="หนังสั้นรสซอสไก่ทอดหาดใหญ่: วัตถุดิบ ซอส และไก่ทอดจุ่มซอส"></video>
+        <div class="hc-film__ui">
+          <button class="hc-film__btn hc-film__sound" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path class="hc-film__wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span class="hc-film__label">เปิดเสียง</span></button>
+          <button class="hc-film__btn hc-film__play" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="hc-film__i-play" d="M8 5v14l11-7Z"/><path class="hc-film__i-pause" d="M7 5h4v14H7Zm6 0h4v14h-4Z"/></svg><span class="hc-film__label">เล่น</span></button>
+        </div>
+      </div>
+      <div class="hc-film__tabs" role="group" aria-label="เลือกหนังสั้น">
+        <button type="button" data-film="hy" aria-pressed="true" style="--accent: #d0621a"><span class="hc-film__dot"></span>ซอสไก่ทอดหาดใหญ่</button>
+        <button type="button" data-film="mc" aria-pressed="false" style="--accent: #9fc13a"><span class="hc-film__dot"></span>ซอสซีฟู้ดมหาชัย</button>
+        <button type="button" data-film="ck" aria-pressed="false" style="--accent: #c8321c"><span class="hc-film__dot"></span>ซอสแจ่วเชียงคาน</button>
+        <button type="button" data-film="trio" aria-pressed="false" style="--accent: #e0b27e"><span class="hc-film__dot"></span>รวม 3 รส · 30 วิ</button>
+      </div>
+      <p class="hc-film__note">วิดีโอสร้างด้วย AI เพื่อแสดงแนวรสและวัตถุดิบบางส่วน ไม่ใช่สูตรหรือรายการส่วนผสมครบ · ขวดตอนท้ายเป็นภาพเรนเดอร์ต้นแบบ · เสียงและเพลงประกอบทำขึ้นสำหรับ Homechew</p>
     </section>
 
     <section class="hc-flavors" id="flavors" aria-labelledby="flavors-title">
