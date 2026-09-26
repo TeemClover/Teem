@@ -171,7 +171,10 @@ export function makeTextures(renderer, hd) {
 const loader = new THREE.TextureLoader();
 const imageCache = new Map();
 export function imageTex(url, material, renderer, aspect = 0) {
+  let disposed = false, owned = null;
+  material.addEventListener('dispose', () => { disposed = true; owned?.dispose(); });
   const apply = base => {
+    if (disposed) return; // an SD/HD rebuild may finish while the download is still pending
     let t = base;
     if (aspect && base.image?.width) {
       const ia = base.image.width / base.image.height;
@@ -179,13 +182,21 @@ export function imageTex(url, material, renderer, aspect = 0) {
       if (ia > aspect) { t.repeat.x = aspect / ia; t.offset.x = (1 - t.repeat.x) / 2; }
       else { t.repeat.y = ia / aspect; t.offset.y = (1 - t.repeat.y) / 2; }
       t.needsUpdate = true;
+      owned = t;
     }
     material.map = t; material.color.set('#ffffff');
     if (material.userData.glow) { material.emissiveMap = t; material.emissiveIntensity = material.userData.glow; } // screens light up once their picture arrives
     material.needsUpdate = true;
   };
-  if (imageCache.has(url)) { const t = imageCache.get(url); if (t.image) apply(t); else t.userData.waiting.push(apply); return; }
-  const t = loader.load(url, tt => { tt.userData.waiting.forEach(fn => fn(tt)); tt.userData.waiting = []; });
-  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  t.userData.waiting = [apply]; imageCache.set(url, t);
+  if (!imageCache.has(url)) {
+    const pending = new Promise(resolve => {
+      loader.load(url, t => {
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+        resolve(t);
+      }, undefined, () => { imageCache.delete(url); resolve(null); });
+    });
+    imageCache.set(url, pending);
+  }
+  return imageCache.get(url).then(base => { if (base) apply(base); });
 }

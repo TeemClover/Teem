@@ -19,7 +19,7 @@ const server = http.createServer(async (q, r) => {
   try { const b = await readFile(join(root, p)); r.writeHead(200, {'content-type': types[extname(p)] || 'application/octet-stream'}); r.end(b); } catch { r.writeHead(404); r.end(); }
 }).listen(0);
 const base = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch({executablePath: process.env.TOUR_CHROME || undefined, args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']});
+const browser = await chromium.launch({executablePath: process.env.TOUR_CHROME || undefined, args: process.env.TOUR_HARDWARE ? [] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']});
 const pass = m => console.log('PASS ' + m);
 
 async function open(opts, init, block) {
@@ -128,7 +128,36 @@ try {
     await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
     await page.waitForTimeout(2500); await page.screenshot({path: `${out}/desktop-hd-kitchen.png`});
     pass('SD/HD toggle rebuilds the house in HD');
+    const sdMemory = [];
+    for (const mode of ['sd', 'hd', 'sd', 'hd', 'sd']) {
+      await page.click(`[data-quality="${mode}"]`);
+      await page.waitForFunction(mode => window.__tour.quality() === mode && !document.body.classList.contains('is-loading') && !window.__tour.stats().building, mode, {timeout: 60000});
+      await page.waitForTimeout(500);
+      assert.equal(await page.locator('[data-quality]:disabled').count(), 0);
+      if (mode === 'sd') sdMemory.push(await page.evaluate(() => window.__tour.stats()));
+    }
+    assert.ok(sdMemory.at(-1).textures <= sdMemory[0].textures + 2, JSON.stringify(sdMemory));
+    assert.ok(sdMemory.at(-1).geometries <= sdMemory[0].geometries + 2, JSON.stringify(sdMemory));
+    assert.ok(sdMemory.at(-1).programs <= sdMemory[0].programs + 1, JSON.stringify(sdMemory));
+    assert.ok(sdMemory[0].batchedMeshes > 100);
+    pass('repeated SD/HD rebuilds release textures and geometry; static objects are batched');
     assert.deepEqual(errors, []);
+    await ctx.close();
+  }
+  { // Real WebGL phone framing and HD path (not just the fallback).
+    const {ctx, page, errors} = await open({viewport: {width: 393, height: 852}, screen: {width: 393, height: 852}, deviceScaleFactor: 3, isMobile: true, hasTouch: true, reducedMotion: 'reduce'});
+    assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
+    await page.click('[data-quality="hd"]');
+    await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});
+    for (const id of ['living', 'classroom', 'office']) {
+      await page.evaluate(id => { const s = document.getElementById(id); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); }, id);
+      await page.waitForTimeout(800);
+      await page.screenshot({path: `${out}/phone-hd-${id}.png`});
+    }
+    const buffer = await page.$eval('#stage', c => c.width * c.height);
+    assert.ok(buffer <= 1_300_000);
+    assert.deepEqual(errors, []);
+    pass('phone WebGL HD loads all rooms within its pixel budget');
     await ctx.close();
   }
   { // No WebGL: the story and links still work

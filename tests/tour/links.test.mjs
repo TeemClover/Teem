@@ -53,3 +53,12 @@ test('classroom computers open บท 1, บท 4, บท 5 and the Dungeon; the
 test('three.js is self-hosted, no third-party script origins', () => {
   assert.doesNotMatch(html, /<script[^>]+src="https?:/);
 });
+
+test('all configured house art resolves, including the instructor and current project screens', async () => {
+  const {slots} = JSON.parse(await readFile(root + 'tour/art/manifest.json', 'utf8'));
+  for (const name of Object.values(slots)) {
+    assert.match(name, /^[\w.-]+\.webp$/);
+    assert.ok(await exists('/tour/art/' + name), name);
+  }
+  for (const slot of ['course-poster', 'screen-resume', 'screen-xvisor']) assert.ok(slots[slot]);
+});

@@ -13,6 +13,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
 import {FONT, imageTex} from './textures.js';
+import {batchStaticSiblings} from './batching.js';
 
 export const H = 3.2, SLAB = 0.2, F2 = H + SLAB, D = 7, W = 8; // wall height, floor-2 level, room depth/width
 export const CLOVER_ROOMS = ['living', 'kitchen', 'classroom', 'office'];
@@ -31,6 +32,7 @@ export const ART = {
   'course-poster': {fallback: '/img/classroom-hero.jpg', aspect: 3 / 2},
   'teambook-cover': {fallback: '', aspect: 11 / 8},
   'screen-resume': {fallback: '/img/og-resume.jpg', aspect: 16 / 9},
+  'screen-xvisor': {fallback: '/xvisor/xvisor-intro-hero.webp', aspect: 16 / 9},
   'dungeon-screen': {fallback: '/tour/art/dungeon-screen.webp', aspect: 16 / 10},
 };
 
@@ -53,9 +55,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     return matCache.get(key);
   };
   const nm = (t, s = 1) => t ? {normalMap: t, normalScale: new THREE.Vector2(s, s)} : {}; // HD-only relief
-  const fabric = color => hd
+  const fabricCache = new Map();
+  const fabric = color => { if (!fabricCache.has(color)) fabricCache.set(color, hd
     ? new THREE.MeshPhysicalMaterial({color, map: tex.fabric, ...nm(tex.fabricN, 0.8), roughness: 0.9, sheen: 0.6, sheenRoughness: 0.6, sheenColor: new THREE.Color(color).lerp(new THREE.Color('#ffffff'), 0.4)})
-    : new THREE.MeshStandardMaterial({color, map: tex.fabric, roughness: 0.92});
+    : new THREE.MeshStandardMaterial({color, map: tex.fabric, roughness: 0.92})); return fabricCache.get(color); };
   const wood = (color = '#b07a4c') => hd ? M(color, {map: tex.grain, normalMap: tex.grainN, roughness: 0.42}) : M(color, {map: tex.grain, roughness: 0.5});
   function geo(kind, args) {
     const key = kind + args.join(',');
@@ -63,7 +66,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
       geoCache.set(key, kind === 'rbox' ? new RoundedBoxGeometry(args[0], args[1], args[2], hd ? 3 : 1, Math.min(args[3], args[0] / 2.2, args[1] / 2.2, args[2] / 2.2))
         : kind === 'box' ? new THREE.BoxGeometry(...args)
         : kind === 'cyl' ? new THREE.CylinderGeometry(args[0], args[1], args[2], hd ? 32 : 18)
-        : kind === 'sph' ? new THREE.SphereGeometry(args[0], hd ? 32 : 16, hd ? 20 : 12)
+        : kind === 'sph' ? new THREE.SphereGeometry(args[0], hd && args[0] >= 0.1 ? 24 : 12, hd && args[0] >= 0.1 ? 16 : 8)
         : new THREE.IcosahedronGeometry(args[0], args[1]));
     }
     return geoCache.get(key);
@@ -109,7 +112,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
   const stack = (p, x, y, z, n, rot = 0) => { for (let k = 0; k < n; k++) rb(p, [0.34 - k * 0.02, 0.05, 0.24], [x, y + k * 0.052, z], ['#e37c5b', '#2e9e5b', '#f3efe6', '#4a8fd1'][k % 4], [0, rot + k * 0.12, 0], 0.01); };
   const clock = (p, x, y, z) => {
     const c = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.04, 40), ceramic); c.rotation.x = Math.PI / 2; place(c, p, x, y, z);
-    const hand = bx(p, [0.02, 0.15, 0.01], [x, y - 0.02, z + 0.035], '#14281d'); out.tickers.push(t => { hand.rotation.z = -t * 0.2; });
+    const hand = bx(p, [0.02, 0.15, 0.01], [x, y - 0.02, z + 0.035], '#14281d'); hand.userData.dynamic = true; out.tickers.push(t => { hand.rotation.z = -t * 0.2; });
   };
   const flowerColors = ['#f28b82', '#fbd46d', '#ffffff', '#c39bd3', '#f7a1c4'];
 
@@ -150,9 +153,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     rb(flowers, [x1 - x0, 0.42, 0.55], [(x0 + x1) / 2, 0, D / 2 + 0.75], hedgeMat, null, 0.18);
     for (let x = x0 + 0.15; x < x1; x += hd ? 0.22 : 0.4) { const k = Math.round(x * 13); sp(flowers, 0.045 + (Math.abs(k) % 3) * 0.01, [x, 0.425, D / 2 + 0.58 + (Math.abs(k) % 5) * 0.08], M(flowerColors[Math.abs(k) % 5], {roughness: 0.6})); }
   }
-  { // clover meadow (instanced three-leaf clovers)
-    const N = hd ? 900 : mobile ? 260 : 480, leafMat = M('#3f9a57', {roughness: 0.6});
-    const meshes = [0, 1, 2].map(() => new THREE.InstancedMesh(leafGeo, leafMat, N));
+  { // Ground cover is only a few pixels tall: reserve bevelled leaves for the hero and quest.
+    const N = hd ? 900 : mobile ? 260 : 480, leafMat = M('#3f9a57', {roughness: 0.6, side: THREE.DoubleSide});
+    const meadowLeaf = new THREE.ShapeGeometry(leafShape, 4);
+    const meshes = [0, 1, 2].map(() => new THREE.InstancedMesh(meadowLeaf, leafMat, N));
     const m4 = new THREE.Matrix4(), rot = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), p = new THREE.Vector3(), sc = new THREE.Vector3();
     let seed = 3; const r = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
     for (let i = 0; i < N; i++) {
@@ -332,7 +336,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     plane(compass, [0.42, 0.42], [0.05, 0.035, 0.02], cbody, [-Math.PI / 2, 0, 0]).castShadow = true;
     const needleMat = new THREE.MeshStandardMaterial({transparent: true, alphaTest: 0.2, color: '#ffffff'}); imageTex('/frontdoor/art/compass-needle.webp', needleMat, renderer, 1);
     const needle = plane(compass, [0.3, 0.3], [0.05, 0.05, 0.02], needleMat, [-Math.PI / 2, 0, 0]);
-    out.tickers.push(t => { needle.rotation.z = Math.sin(t * 0.9) * 0.35 + Math.sin(t * 2.3) * 0.08; });
+    needle.userData.dynamic = true; out.tickers.push(t => { needle.rotation.z = Math.sin(t * 0.9) * 0.35 + Math.sin(t * 2.3) * 0.08; });
     hot(compass, 'compass');
     const core7 = group(g, 0.8, 0.53, 0.45);
     const cards = ['gen-red', 'gen-green', 'gen-blue', 'gen-silver', 'fh-red-courage'].slice(0, hd ? 5 : 4);
@@ -342,7 +346,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     });
     rb(core7, [0.26, 0.08, 0.44], [0.45, 0, -0.12], M('#1d2340', {roughness: 0.5}), [0, 0.3, 0], 0.01);
     hot(core7, 'core7');
-    for (let k = 0; k < 2; k++) { const d = rb(g, [0.11, 0.11, 0.11], [1.05 + k * 0.15, 0.52, 0.95 + k * 0.08], '#ffffff', null, 0.025); out.tickers.push(t => { d.rotation.y = t * 0.5 + k; }); }
+    for (let k = 0; k < 2; k++) { const d = rb(g, [0.11, 0.11, 0.11], [1.05 + k * 0.15, 0.52, 0.95 + k * 0.08], '#ffffff', null, 0.025); d.userData.dynamic = true; out.tickers.push(t => { d.rotation.y = t * 0.5 + k; }); }
     const tea = group(g, 0.2, 0.52, 0.05);
     sp(tea, 0.11, [0, 0.09, 0], ceramic).scale.set(1, 0.8, 1);
     cy(tea, [0.02, 0.03, 0.12], [0.13, 0.09, 0], ceramic).rotation.z = -0.9;
@@ -365,7 +369,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     rb(arm, [0.018, 0.018, 0.26], [0, 0.05, 0.12], M('#c9ced1', {metalness: 0.9, roughness: 0.2}), null, 0.006);
     for (const dx of [-0.42, 0.42]) { const sp_ = group(player, dx, 0, 0); rb(sp_, [0.18, 0.3, 0.2], [0, 0, 0], M('#2b2f31', {roughness: 0.5}), null, 0.02); cy(sp_, [0.055, 0.055, 0.01], [0, 0.14, 0.1], M('#6b7075', {metalness: 0.5})).rotation.x = Math.PI / 2; }
     player.userData.playing = 0;
-    out.tickers.push((t, dt) => { const on = player.userData.playing; platter.rotation.y -= dt * 3.5 * on; arm.rotation.y = 0.5 - 0.35 * on; });
+    platter.userData.dynamic = true; arm.userData.dynamic = true; out.tickers.push((t, dt) => { const on = player.userData.playing; platter.rotation.y -= dt * 3.5 * on; arm.rotation.y = 0.5 - 0.35 * on; });
     player.traverse(o => { o.userData.music = true; });
     // book corner along the left wall: open shelf, three featured books, armchair, reading lamp
     const bs = group(g, -3.7, 0, -1.3); bs.rotation.y = Math.PI / 2;
@@ -418,7 +422,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
       vase(g, 2.35, 1.83, BW + 0.14, '#2f5d44'); vase(g, 3.55, 1.83, BW + 0.14, '#f2c14e', 0.2); stack(g, 2.95, 1.83, BW + 0.14, 3);
       stack(g, 1.0, 0.52, 0.02, 3, 0.6);
       const globe = sp(bs, 0.15, [1.2, 2.8, 0.02], M('#4a8fd1', {roughness: 0.4})); cy(bs, [0.05, 0.07, 0.08], [1.2, 2.64, 0.02], brass);
-      out.tickers.push(t => { globe.rotation.y = t * 0.3; });
+      globe.userData.dynamic = true; out.tickers.push(t => { globe.rotation.y = t * 0.3; });
       vase(bs, -1.2, 2.64, 0.02, '#e37c5b');
     }
   }
@@ -453,7 +457,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     for (const s_ of [-1, 1]) rb(stove, [0.1, 0.025, 0.035], [-0.2 + s_ * 0.25, 0.22, 0], M('#2b2f31', {roughness: 0.5}), null, 0.01); // handles
     const sauce = cy(stove, [0.19, 0.19, 0.02], [-0.2, 0.2, 0], M('#b8411f', {roughness: 0.18, emissive: '#6b1a08', emissiveIntensity: 0.35})); // surface 5 cm under the rim
     const bubbles = [];
-    for (let k = 0; k < (hd ? 9 : 6); k++) { const b = sp(stove, 0.022 + (k % 3) * 0.008, [-0.2 + Math.cos(k * 2.3) * 0.11 * ((k % 2) + 0.4), 0.222, Math.sin(k * 2.3) * 0.1], M('#d4552a', {roughness: 0.1})); b.castShadow = false; bubbles.push(b); }
+    for (let k = 0; k < (hd ? 9 : 6); k++) { const b = sp(stove, 0.022 + (k % 3) * 0.008, [-0.2 + Math.cos(k * 2.3) * 0.11 * ((k % 2) + 0.4), 0.222, Math.sin(k * 2.3) * 0.1], M('#d4552a', {roughness: 0.1})); b.castShadow = false; b.userData.dynamic = true; bubbles.push(b); }
     out.tickers.push(t => bubbles.forEach((b, k) => { const ph = (t * (0.7 + k * 0.09) + k * 0.37) % 1; b.scale.setScalar(ph < 0.85 ? ph / 0.85 : 0.001); b.position.y = 0.214 + ph * 0.012; }));
     const spoon = group(stove, -0.12, 0.2, 0.02); spoon.rotation.set(0.25, 0, -0.55); // wooden spoon resting in the pot
     rb(spoon, [0.022, 0.42, 0.012], [0, 0, 0], wood('#c08a55'), null, 0.005);
@@ -578,7 +582,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
       plane(lap, [0.56, 0.2], [0, 0.024, 0.06], M(L.game ? '#10201a' : '#2b2f31', {roughness: 0.6}), [-Math.PI / 2, 0, 0]); // keyboard deck
       const lid = group(lap, 0, 0.022, -0.21); lid.rotation.x = -0.28;
       rb(lid, [0.66, 0.43, 0.02], [0, 0, 0], shell, null, 0.01);
-      plane(lid, [0.6, 0.345], [0, 0.235, 0.012], photo(L.img, 0.6 / 0.345, true, '#223'));
+      plane(lid, [0.6, L.game ? 0.375 : 0.3375], [0, 0.235, 0.012], photo(L.img, L.game ? 16 / 10 : 16 / 9, true, '#223'));
       plane(lid, [0.6, 0.05], [0, 0.035, 0.013], new THREE.MeshStandardMaterial({map: label(L.tag, 512, 44, L.col, '#10201a', 30), emissive: '#ffffff', emissiveIntensity: 0.25})).castShadow = false;
       if (L.game) { // gamepad and a green glow: someone is mid-run in the Dungeon
         const pad = group(g, dx + 0.48, 0.77, dz + 0.22); pad.rotation.y = -0.4;
@@ -633,7 +637,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     rb(g, [6.2, 0.07, 0.95], [-0.8, 0.75, BW + 0.65], wood('#a8744a'), null, 0.02);
     for (const dx of [-3.7, -0.8, 2.1]) rb(g, [0.07, 0.75, 0.85], [dx, 0, BW + 0.65], M('#2f3a35', {metalness: 0.4}), null, 0.01);
     const screens = [
-      {id: 'xvisor', mat: photo('/xvisor/xvisor-intro-hero.webp', 16 / 9, true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
+      {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
       {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.95, ry: -0.12},
     ];
     for (const s_ of screens) {
@@ -650,7 +654,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     const nb = group(g, -0.8, 0.82, BW + 0.6); nb.rotation.x = -0.9;
     rb(nb, [0.9, 0.62, 0.035], [0, 0, 0], M('#2e9e5b', {roughness: 0.6}), null, 0.012);
     rb(nb, [0.86, 0.58, 0.012], [0, 0.02, 0.03], M('#fbf6ec', {roughness: 0.8}), null, 0.004);
-    plane(nb, [0.82, 0.56], [0, 0.31, 0.043], art.has('teambook-cover') ? artMat('teambook-cover') : canvasMat(440, 320, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 440, 320); c.fillStyle = 'rgba(29,107,61,.12)'; for (let y = 60; y < 320; y += 28) c.fillRect(20, y, 400, 2); c.fillStyle = '#1d6b3d'; c.font = `800 44px ${FONT}`; c.fillText('TeamBook', 24, 50); }));
+    plane(nb, [0.77, 0.56], [0, 0.31, 0.043], art.has('teambook-cover') ? artMat('teambook-cover') : canvasMat(440, 320, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 440, 320); c.fillStyle = 'rgba(29,107,61,.12)'; for (let y = 60; y < 320; y += 28) c.fillRect(20, y, 400, 2); c.fillStyle = '#1d6b3d'; c.font = `800 44px ${FONT}`; c.fillText('TeamBook', 24, 50); }));
     cy(nb, [0.012, 0.012, 0.58], [0, 0.02, 0.05], '#e9b949');
     hot(nb, 'teambook');
     // centre table: the model of our real house turns slowly (→ /showcase/house/)
@@ -673,7 +677,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     for (let k = 0; k < 5; k++) blob(turn, 0.06 + (k % 2) * 0.02, [Math.cos(k * 1.3 + 2) * 0.45, 0.1, Math.sin(k * 1.3 + 2) * 0.45], '#4f9a5c', 1);
     hot(model, 'house3d'); // the model itself, not the whole table: its tap area must not cover the TeamBook
     const mug = cy(g, [0.06, 0.05, 0.12], [-3.3, 0.82, BW + 0.95], '#e9b949');
-    out.tickers.push(t => { mug.rotation.y = t; });
+    mug.userData.dynamic = true; out.tickers.push(t => { mug.rotation.y = t; });
     const chair = group(g, -2.55, 0, -1.8); chair.rotation.y = 0.2;
     cy(chair, [0.3, 0.3, 0.1], [0, 0.44, 0], fabric('#2f5d44')); rb(chair, [0.58, 0.8, 0.1], [0, 0.55, 0.3], fabric('#2f5d44'), [0.12, 0, 0], 0.05);
     cy(chair, [0.035, 0.035, 0.44], [0, 0, 0], M('#555555', {metalness: 0.7}));
@@ -740,5 +744,6 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     s.position.set(v.x, box3.max.y + 0.22, v.z); s.scale.setScalar(0.28); s.renderOrder = 10; s.userData.item = h.id;
     root.add(s); h.beacon = s;
   }
+  out.batchedMeshes = batchStaticSiblings(root);
   return out;
 }

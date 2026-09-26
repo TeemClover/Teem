@@ -46,25 +46,34 @@ headline rises out of a mask, and chips follow one by one. Reduced motion turns 
 **Music:** the myClover Instrument (the Clover Song instrumental, `/assets/audio/clover-song.mp3`,
 `preload="none"`) plays only when someone presses the music button or taps the record player.
 
-**Pictures:** each is cropped to fill its frame (never stretched) and loads room by room (the
-current room and the next two). Every picture material starts with a 1×1 placeholder map, so a
+**Pictures:** each is cropped to fill its frame (never stretched). SD loads room by room (the
+current room and the next two); HD prepares all room art behind its loader, with a 4-second
+deadline so an unavailable image never blocks the house. Every picture material starts with a 1×1 placeholder map, so a
 picture arriving mid-scroll never recompiles a shader. The six purpose-made pictures from
-`IMAGE-PROMPTS.md` are in `art/` as WebP (resized for their frames, 700 KB in total) and mapped in
+`IMAGE-PROMPTS.md` are in `art/` as WebP (resized for their frames) and mapped in
 `art/manifest.json`; `art/dungeon-screen.webp` is a capture of the Dungeon's pixel field.
 
 **SD / HD:** SD is the default and is remembered per viewer (`mc:tour:quality`). HD rebuilds
-the house with 2× procedural textures plus normal maps (wood grain, plank seams, fabric weave,
-plaster, tiles, cork, grass), 16× anisotropy, soft shadows (2048 px desktop, 1024 px phones),
-ambient occlusion (GTAO at half resolution, 8 samples) and a light bloom on lamps and screens,
-up to 1.6× pixel ratio, and HD-only props: clocks, wall shelves and vases, a globe and bookends, utensil rail and
-kettle, desk lamp and keyboard keys, pencil cups, garden lanterns, a bench and a mailbox.
-Post-processing add-ons are vendored from three.js r180 under `vendor/addons/` with their
-`three` import pointed at the vendored module, and are imported only when HD is chosen.
-**Smooth HD:** all materials are compiled while the loader is up (`compileAsync`), and an
-adaptive governor watches the frame time: if a device can't hold ~42 fps it steps down one
-level at a time (pixel ratio 1.6 → 1.3 → 1.1, then AO off, then bloom off) and steps back up
-once when frames are fast again. HD still keeps its textures, normal maps, shadows and props. The AO pass skips sprites, particles, the sky
-and see-through meshes (otherwise they render as dark blocks).
+with 2× surface textures, normal maps, soft shadows (2048 px desktop / 1024 px phones),
+anisotropy and extra room props. Ambient occlusion and bloom are optional adaptive effects.
+Desktop HD starts at DPR 1.35 with bloom; phone HD starts at DPR 1.1 without screen effects.
+A sustained fast device can reach DPR 1.5 + half-resolution GTAO; slow devices shed effects
+before going down to DPR 1.1 / 0.85. Frame buffers are capped at 2.4 million pixels on desktop
+and 1.3 million on phones, including large and high-DPI displays.
+
+**Smooth HD:** the governor reacts to sustained slow frames in under a second, including
+frames slower than 250 ms, and requires 10 continuous fast seconds plus cooldown to recover.
+HD surface detail and props stay enabled at every level. Static repeated furniture is batched;
+small meadow leaves use flat geometry instead of the hero clover's heavily bevelled model.
+Shadows are shared across passes and refreshed at most 24 times per second. Scene, shadow and
+post-process shaders warm behind the loader. Rebuilds pause rendering and release old image
+crops, instance buffers and post-processing resources. A real-device frame rate still depends
+on its GPU, thermal state and other browser work; browser emulation is not a physical-phone benchmark.
+
+**Art corrections:** the course illustration uses Teem's actual identity reference; Resume
+and X-VISOR screens display captures of their current pages. TeamBook and Dungeon frame ratios
+match their art. See `art/POLISH-20260926.md` for sources and the image-edit prompt.
+Portrait room framing puts the room above the card instead of leaving a large empty sky.
 
 **No flicker by design:** the facade sinks into the ground and the roof lifts away (both
 opaque; no transparency sorting); the canvas follows its `100lvh` box and ignores phone toolbar
@@ -112,9 +121,10 @@ then re-run the sync; never edit the root `index.html` by hand.
 - `TOUR_PLAYWRIGHT=<playwright dir> TOUR_CHROME=<chrome> npm run test:tour:ui` — no pick through
   the walls from the garden, walks every room (stairs included), every 3D object matches a page
   link, picks up the TeamBook notebook, lesson computers → บท 1/4/5 + Dungeon, clicks a hidden
-  clover, the record player plays and stops the music, the button quest, persistence, the SD→HD
-  rebuild, rail names and 32×44 px targets on a phone, the no-WebGL fallback, and the blocked-module
+  clover, the record player plays and stops the music, the button quest, persistence, repeated SD/HD rebuilds with GPU-resource checks, phone WebGL HD, rail names and 32×44 px targets on a phone, the no-WebGL fallback, and the blocked-module
   fallback. Screenshots go to `TOUR_PROOF_DIR` (or a temp dir).
+
+`TOUR_HARDWARE=1` runs browser verification on the installed GPU instead of SwiftShader.
 
 ## Book preview (`/book/ai-sauce/`)
 
