@@ -1,0 +1,882 @@
+{
+  "startedAt": "2026-09-26T08:44:38.873Z",
+  "completedAt": "2026-09-26T08:45:18.051Z",
+  "results": [
+    {
+      "tag": "360x800",
+      "frames": {
+        "median": 16.7,
+        "p90": 17.4,
+        "debug": {
+          "liquid": {
+            "bottle": 11.851210464918594,
+            "airborne": 0.062,
+            "bowl": 0.9811530857644206,
+            "retained": 0.9191000717744487,
+            "surfaceVertices": 105,
+            "level": 4.738238712546849
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "medium",
+          "dpr": 1.5,
+          "calls": 33,
+          "triangles": 54512,
+          "textures": 22,
+          "geometries": 35,
+          "frames": 98,
+          "medianFrameMs": null
+        }
+      },
+      "errors": [],
+      "shots": [
+        {
+          "u": 0.6,
+          "debug": {
+            "liquid": {
+              "bottle": 12.791480871302197,
+              "airborne": 0.062,
+              "bowl": 0.0408826793808173,
+              "retained": 0.9920211122498274,
+              "surfaceVertices": 83,
+              "level": 5.082302986117946
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54468,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 5,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.69,
+          "debug": {
+            "liquid": {
+              "bottle": 12.169352906808731,
+              "airborne": 0.062,
+              "bowl": 0.6630106438742838,
+              "retained": 0.943773057039649,
+              "surfaceVertices": 101,
+              "level": 4.829636261370179
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54504,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 6,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.75,
+          "debug": {
+            "liquid": {
+              "bottle": 11.814525808857152,
+              "airborne": 0.062,
+              "bowl": 1.0178377418258628,
+              "retained": 0.916255056902854,
+              "surfaceVertices": 105,
+              "level": 4.722879406041892
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54512,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 7,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.8,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 91,
+              "level": 4.367757235743523
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.47,
+                4.21,
+                0.97
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 26,
+            "triangles": 48388,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 8,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.95,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 128,
+              "level": 4.391189025342465
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                0,
+                0,
+                0.55
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 26,
+            "triangles": 48462,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 9,
+            "medianFrameMs": null
+          }
+        }
+      ],
+      "content": []
+    },
+    {
+      "tag": "390x844",
+      "frames": {
+        "median": 16.7,
+        "p90": 17.2,
+        "debug": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.06198678701257253,
+            "bowl": 1.0444669888377673,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.7147960374244064
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "medium",
+          "dpr": 1.5,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 98,
+          "medianFrameMs": null
+        }
+      },
+      "errors": [],
+      "shots": [
+        {
+          "u": 0.6,
+          "debug": {
+            "liquid": {
+              "bottle": 12.791480871302197,
+              "airborne": 0.062,
+              "bowl": 0.0408826793808173,
+              "retained": 0.9920211122498274,
+              "surfaceVertices": 83,
+              "level": 5.082302986117946
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54468,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 5,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.69,
+          "debug": {
+            "liquid": {
+              "bottle": 12.170766373747636,
+              "airborne": 0.062,
+              "bowl": 0.6615971769353796,
+              "retained": 0.9438826760164484,
+              "surfaceVertices": 101,
+              "level": 4.830097434654836
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54504,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 6,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.75,
+          "debug": {
+            "liquid": {
+              "bottle": 11.814035149695021,
+              "airborne": 0.062,
+              "bowl": 1.0183284009879932,
+              "retained": 0.9162170046825795,
+              "surfaceVertices": 105,
+              "level": 4.722742581706838
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 33,
+            "triangles": 54512,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 7,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.8,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 91,
+              "level": 4.367757235743523
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.47,
+                4.21,
+                0.97
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 26,
+            "triangles": 48388,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 8,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.95,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 128,
+              "level": 4.391189025342465
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                0,
+                0,
+                0.55
+              ]
+            },
+            "tier": "medium",
+            "dpr": 1.5,
+            "calls": 26,
+            "triangles": 48462,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 9,
+            "medianFrameMs": null
+          }
+        }
+      ],
+      "content": [
+        {
+          "id": "taste",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-dip-v15-720.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "hat-yai",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-hy-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "mahachai",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-mc-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "chiang-khan",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-dip-v15-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-ck-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "crave",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/table-cooked-v15-1100.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-feast-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-feast-v15-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-feast-720.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "set",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/product/trio-set.webp"
+            }
+          ],
+          "overflow": 0
+        }
+      ]
+    },
+    {
+      "tag": "1440x900",
+      "frames": {
+        "median": 16.7,
+        "p90": 17.3,
+        "debug": {
+          "liquid": {
+            "bottle": 11.787909774832675,
+            "airborne": 0.06198711252444421,
+            "bowl": 1.0444666633258957,
+            "retained": 0.9141908965493896,
+            "surfaceVertices": 105,
+            "level": 4.714880080353827
+          },
+          "seal": {
+            "visible": false,
+            "opacity": 1.1102230246251565e-16,
+            "sphere": [
+              0,
+              1.56,
+              -2.25,
+              0.47
+            ],
+            "nan": false,
+            "world": [
+              3.31,
+              4.86,
+              1
+            ]
+          },
+          "tier": "high",
+          "dpr": 1,
+          "calls": 45,
+          "triangles": 58736,
+          "textures": 22,
+          "geometries": 36,
+          "frames": 98,
+          "medianFrameMs": null
+        }
+      },
+      "errors": [],
+      "shots": [
+        {
+          "u": 0.6,
+          "debug": {
+            "liquid": {
+              "bottle": 12.791480871302197,
+              "airborne": 0.062,
+              "bowl": 0.0408826793808173,
+              "retained": 0.9920211122498274,
+              "surfaceVertices": 83,
+              "level": 5.082302986117946
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "high",
+            "dpr": 1,
+            "calls": 33,
+            "triangles": 54468,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 5,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.69,
+          "debug": {
+            "liquid": {
+              "bottle": 12.170356506314716,
+              "airborne": 0.062,
+              "bowl": 0.6620070443682993,
+              "retained": 0.9438508894586002,
+              "surfaceVertices": 101,
+              "level": 4.829963709900187
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "high",
+            "dpr": 1,
+            "calls": 33,
+            "triangles": 54504,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 6,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.75,
+          "debug": {
+            "liquid": {
+              "bottle": 11.814525808857152,
+              "airborne": 0.062,
+              "bowl": 1.0178377418258628,
+              "retained": 0.916255056902854,
+              "surfaceVertices": 105,
+              "level": 4.722879406041892
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.31,
+                4.86,
+                1
+              ]
+            },
+            "tier": "high",
+            "dpr": 1,
+            "calls": 33,
+            "triangles": 54512,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 7,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.8,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 91,
+              "level": 4.367757235743523
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                3.47,
+                4.21,
+                0.97
+              ]
+            },
+            "tier": "high",
+            "dpr": 1,
+            "calls": 26,
+            "triangles": 48388,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 8,
+            "medianFrameMs": null
+          }
+        },
+        {
+          "u": 0.95,
+          "debug": {
+            "liquid": {
+              "bottle": 11.787909774832674,
+              "airborne": 0,
+              "bowl": 1.1064537758503399,
+              "retained": 0.9141908965493895,
+              "surfaceVertices": 128,
+              "level": 4.391189025342465
+            },
+            "seal": {
+              "visible": false,
+              "opacity": 1.1102230246251565e-16,
+              "sphere": [
+                0,
+                1.56,
+                -2.25,
+                0.47
+              ],
+              "nan": false,
+              "world": [
+                0,
+                0,
+                0.55
+              ]
+            },
+            "tier": "high",
+            "dpr": 1,
+            "calls": 26,
+            "triangles": 48462,
+            "textures": 22,
+            "geometries": 35,
+            "frames": 9,
+            "medianFrameMs": null
+          }
+        }
+      ],
+      "content": [
+        {
+          "id": "taste",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-dip-v15-720.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "hat-yai",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-hy-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "mahachai",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-dip-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-mc-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "chiang-khan",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-dip-v15-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/label/label-ck-v12.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "crave",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/table-cooked-v15-1672.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/hy-feast-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/mc-feast-v15-720.webp"
+            },
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/food/ck-feast-720.webp"
+            }
+          ],
+          "overflow": 0
+        },
+        {
+          "id": "set",
+          "images": [
+            {
+              "loaded": true,
+              "source": "http://127.0.0.1:4181/homechew/assets/img/product/trio-set.webp"
+            }
+          ],
+          "overflow": 0
+        }
+      ]
+    }
+  ]
+}

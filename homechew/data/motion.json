@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "status": "proposed_starting_values",
+  "story_source": "native_scroll",
+  "narrative_autoplay": false,
+  "native_scroll_required": true,
+  "scenes": [
+    {
+      "id": "S0",
+      "name": "hero",
+      "pinned": false
+    },
+    {
+      "id": "S1",
+      "name": "open-pour-enjoy",
+      "pinned": true,
+      "desktop_scroll_vh": [
+        180,
+        260
+      ],
+      "mobile_scroll_vh": [
+        120,
+        180
+      ],
+      "beats": [
+        {
+          "progress": [
+            0,
+            0.15
+          ],
+          "action": "approach"
+        },
+        {
+          "progress": [
+            0.15,
+            0.32
+          ],
+          "action": "open-seal-and-cap"
+        },
+        {
+          "progress": [
+            0.32,
+            0.45
+          ],
+          "action": "tilt"
+        },
+        {
+          "progress": [
+            0.45,
+            0.75
+          ],
+          "action": "pour"
+        },
+        {
+          "progress": [
+            0.75,
+            0.9
+          ],
+          "action": "appetite-payoff"
+        },
+        {
+          "progress": [
+            0.9,
+            1
+          ],
+          "action": "rest-and-cta"
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "name": "three-flavors",
+      "pinned": false
+    },
+    {
+      "id": "S3",
+      "name": "maker",
+      "pinned": false
+    },
+    {
+      "id": "S4",
+      "name": "optional-recipes",
+      "pinned": false
+    },
+    {
+      "id": "S5",
+      "name": "offer",
+      "pinned": false
+    },
+    {
+      "id": "S6",
+      "name": "home-close",
+      "pinned": false
+    }
+  ],
+  "reduced_motion": {
+    "pinning": false,
+    "camera_motion": false,
+    "show_end_states": true,
+    "keep_all_content": true
+  },
+  "fallbacks": [
+    "responsive_poster",
+    "static_editorial_layout"
+  ]
+}

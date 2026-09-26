@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="th" class="hc-static">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Homechew โฮมชูว — ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท</title>
+  <meta name="description" content="Homechew โฮมชูว ซอส 3 รส หาดใหญ่ · มหาชัย · เชียงคาน — เตรียมเปิดตัว ชุด 3 รส 399 บาท รับข่าวเปิดขายผ่าน LINE">
+  <!-- Gate A private prototype: keep out of search. noindex is not access control; do not deploy before Gate B. -->
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#f6f0e6">
+  <link rel="icon" href="assets/brand/homechew-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500&text=%E6%89%8B%E9%96%93%E3%81%B2%E3%81%BE%E3%81%8B%E3%81%91%E3%81%9F%E3%81%8A%E3%81%84%E3%81%97%E3%81%95%E3%82%92%E3%80%81%E3%81%8B%E3%81%91%E3%82%8B%E3%81%A0%E3%81%91%E3%80%82%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%81%E3%83%A5%E3%82%A6&display=swap">
+  <link rel="stylesheet" href="homechew.css">
+  <script type="importmap">
+    {"imports": {"three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/"}}
+  </script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="hc-skip" href="#main">ข้ามไปเนื้อหา</a>
+
+  <p class="hc-status" role="note">
+    <span class="hc-status__dot" aria-hidden="true"></span>
+    Homechew กำลังจะเปิดบ้าน · แอด LINE รับข่าวเปิดขายก่อนใคร
+  </p>
+
+  <header class="hc-header">
+    <a class="hc-brand" href="#top" aria-label="Homechew โฮมชูว กลับขึ้นด้านบน">
+      <img class="hc-brand__mark" src="assets/brand/homechew-mark.svg" alt="" width="288" height="246">
+      <img class="hc-brand__word" src="assets/brand/homechew-wordmark.svg" alt="" width="657" height="123">
+    </a>
+    <nav class="hc-nav" aria-label="หัวข้อในหน้า">
+      <a href="#flavors">3 รส</a>
+      <a href="#craft">ความพิถีพิถัน</a>
+      <a href="#crave">น่ากินแค่ไหน</a>
+      <a href="#set">ชุดซอส</a>
+    </nav>
+    <a class="hc-btn hc-btn--small hc-btn--line" href="https://lin.ee/owu0J0g" target="_blank" rel="noopener" data-cta="line"><svg class="hc-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6C21.4 14.1 22 12.6 22 11c0-4.4-4.5-8-10-8Z"/></svg>รับข่าวทาง LINE</a>
+  </header>
+
+  <main id="main">
+    <div class="hc-story" id="story" data-beat="hero">
+      <!-- One sticky stage for S0 + S1. HTML stays readable if the canvas never loads. -->
+      <div class="hc-stage" id="stage" aria-hidden="true">
+        <div class="hc-backdrop"><span class="hc-backdrop__leaves"></span><span class="hc-backdrop__sun"></span></div>
+        <!-- A rendered still of this same scene is complete before JavaScript or WebGL loads. -->
+        <picture class="hc-poster">
+          <source media="(min-width: 600px) and (max-aspect-ratio: 9/10)" srcset="assets/img/product/trio-tablet.webp">
+          <source media="(max-aspect-ratio: 9/10)" srcset="assets/img/product/trio-tall.webp">
+          <img src="assets/img/product/trio-wide.webp" width="1440" height="900" alt="" fetchpriority="high" decoding="async">
+        </picture>
+        <canvas class="hc-canvas" id="scene"></canvas>
+        <p class="hc-stage__note">ขวด 3 มิติเป็นโมเดลตัวแทน · ฉลากต้นแบบ</p>
+      </div>
+
+      <section class="hc-hero" id="top" aria-labelledby="hero-title">
+        <div class="hc-hero__copy">
+          <p class="hc-eyebrow">Homechew · โฮมชูว</p>
+          <h1 class="hc-hero__title" id="hero-title">
+            <span>เราคราฟต์ให้</span>
+            <span>คุณแค่เท<svg class="hc-drop" viewBox="0 0 20 28" aria-hidden="true"><path d="M10 0C10 0 0 12.5 0 18.2A10 10 0 0 0 20 18.2C20 12.5 10 0 10 0Z"/></svg></span>
+          </h1>
+          <p class="hc-hero__slogan">ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท</p>
+          <p class="hc-hero__lede">ซอส 3 รส คู่มื้อทอด มื้อทะเล และมื้อย่าง<br>แค่มีติดบ้าน มื้อที่คุ้นเคยก็ชวนกินขึ้น</p>
+          <div class="hc-actions">
+            <a class="hc-btn hc-btn--line" href="https://lin.ee/owu0J0g" target="_blank" rel="noopener" data-cta="line"><svg class="hc-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6C21.4 14.1 22 12.6 22 11c0-4.4-4.5-8-10-8Z"/></svg>แอด LINE รับข่าวเปิดขาย</a>
+            <a class="hc-btn hc-btn--ghost" href="#set">ดูชุด 3 รส</a>
+          </div>
+          <p class="hc-hero__en" lang="en">Crafted with care. Just pour and enjoy.</p>
+        </div>
+        <p class="hc-hero__ja" lang="ja"><span class="hc-ja-full">手間ひまかけたおいしさを、かけるだけ。</span><span class="hc-ja-short">ホームチュウ</span></p>
+        <div class="hc-hero__foot">
+          <ul class="hc-lineup" aria-label="สินค้าเรือธง 3 รส">
+            <li><a href="#hat-yai" style="--accent: var(--hc-hat-yai)"><span class="hc-lineup__dot" aria-hidden="true"></span><span class="hc-lineup__full">ซอสไก่ทอด</span>หาดใหญ่</a></li>
+            <li><a href="#mahachai" style="--accent: var(--hc-mahachai)"><span class="hc-lineup__dot" aria-hidden="true"></span><span class="hc-lineup__full">ซอสซีฟู้ด</span>มหาชัย</a></li>
+            <li><a href="#chiang-khan" style="--accent: var(--hc-chiang-khan)"><span class="hc-lineup__dot" aria-hidden="true"></span><span class="hc-lineup__full">ซอสแจ่ว</span>เชียงคาน</a></li>
+          </ul>
+          <div class="hc-inspect" hidden>
+            <button class="hc-inspect__toggle" type="button" aria-pressed="false" aria-describedby="inspect-hint">หมุนดูขวด</button>
+            <button class="hc-inspect__reset" type="button" hidden>ตั้งตรง</button>
+            <span class="hc-inspect__hint" id="inspect-hint">ลากซ้าย–ขวา หรือกดลูกศร ← → เพื่อหมุนขวดหาดใหญ่</span>
+          </div>
+        </div>
+        <div class="hc-inspect__surface" aria-hidden="true"></div>
+      </section>
+
+      <section class="hc-pour" id="pour" aria-labelledby="pour-title">
+        <div class="hc-pour__pin">
+          <p class="hc-eyebrow" lang="en">We craft. You pour.</p>
+          <h2 class="hc-pour__title" id="pour-title">ฝีมืออยู่ในขวด<br>ความง่ายอยู่บนโต๊ะ</h2>
+          <ol class="hc-steps">
+            <li data-step="open"><span class="hc-steps__n">01</span><div><h3>เปิด</h3><p>ลอกแถบซีล แล้วหมุนฝา</p></div></li>
+            <li data-step="pour"><span class="hc-steps__n">02</span><div><h3>เท</h3><p>เทลงถ้วยให้พอดีมื้อ</p></div></li>
+            <li data-step="enjoy"><span class="hc-steps__n">03</span><div><h3>อร่อย</h3><p>จิ้มคำแรก แล้วต่ออีกคำ</p></div></li>
+          </ol>
+          <div class="hc-pour__end">
+            <p class="hc-pour__mantra">เปิด · เท · อร่อย</p>
+            <p>มื้อทอด มื้อทะเล มื้อย่าง เลือกรสที่เข้าคู่</p>
+            <div class="hc-actions">
+              <a class="hc-btn" href="#flavors">รู้จักแต่ละรส</a>
+              <a class="hc-btn hc-btn--ghost" href="#set">ดูชุดซอส 3 รส</a>
+            </div>
+          </div>
+          <div class="hc-stills" aria-label="ภาพนิ่งของฉากเปิดและเท">
+            <figure><img data-still="open" src="assets/img/label/label-hy-v16.webp" width="590" height="933" alt="ฉลากซอสไก่ทอดหาดใหญ่ (ภาพ concept)" loading="lazy" decoding="async"><figcaption>01 เปิด</figcaption></figure>
+            <figure><img data-still="pour" src="assets/img/food/hy-dip-orange-v15-720.webp" width="720" height="900" alt="ไก่ทอดจิ้มซอสไก่ทอดหาดใหญ่ (ภาพ concept)" loading="lazy" decoding="async"><figcaption>02 เท</figcaption></figure>
+            <figure><img data-still="enjoy" src="assets/img/food/hy-feast-orange-v15-720.webp" width="720" height="900" alt="มื้อไก่ทอดกับซอสไก่ทอดหาดใหญ่ (ภาพ concept)" loading="lazy" decoding="async"><figcaption>03 อร่อย</figcaption></figure>
+          </div>
+          <div class="hc-rail" aria-hidden="true"><span class="hc-rail__fill"></span></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="hc-taste" id="taste" aria-labelledby="taste-title" data-progress>
+      <svg class="hc-drips" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+        <path class="hc-drips__hy" d="M0 0H1440V26C1380 26 1372 60 1352 60S1328 26 1270 26 1180 34 1170 92 1142 98 1136 40 1060 26 1000 26H0Z"/>
+        <path class="hc-drips__mc" d="M0 0H1440V14C1300 14 900 14 860 14S820 50 806 128 780 132 778 60 760 14 700 14H0Z"/>
+        <path class="hc-drips__ck" d="M0 0H1440V8H420C380 8 372 40 360 84S330 88 330 44 310 8 260 8H0Z"/>
+      </svg>
+      <h2 class="hc-visually-hidden" id="taste-title">หวาน เปรี้ยว เผ็ด</h2>
+      <div class="hc-taste__row hc-taste__row--sweet" style="--accent: #d0621a">
+        <p class="hc-taste__word" aria-hidden="true">หวาน</p>
+        <figure class="hc-taste__img"><img src="assets/img/food/hy-dip-orange-v15-720.webp" width="720" height="900" alt="ไก่ทอดจุ่มซอสไก่ทอดหาดใหญ่ ซอสเยิ้มเงา (ภาพ concept)" loading="lazy" decoding="async"></figure>
+        <div class="hc-taste__text"><h3>หวาน · เผ็ดกำลังดี</h3><p>ไก่ทอดร้อน ๆ จุ่มซอสฉ่ำเงา<br>กรอบนอก หวานเผ็ดในคำเดียว</p><a class="hc-link" href="#hat-yai">รู้จักรสหาดใหญ่ <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="hc-taste__row hc-taste__row--sour" style="--accent: #9fc13a">
+        <p class="hc-taste__word" aria-hidden="true">เปรี้ยว</p>
+        <figure class="hc-taste__img"><img src="assets/img/food/mc-dip-720.webp" width="720" height="900" alt="ปูและกุ้งสุกจุ่มซอสซีฟู้ดสีเขียว (ภาพ concept)" loading="lazy" decoding="async"><span class="hc-lime" aria-hidden="true"></span></figure>
+        <div class="hc-taste__text"><h3>เปรี้ยวจี๊ด · สดชื่น</h3><p>กุ้งเนื้อเด้ง ปูเนื้อหวาน<br>เจอรสเปรี้ยวสดแล้วอยากจิ้มอีก</p><a class="hc-link" href="#mahachai">รู้จักรสมหาชัย <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="hc-taste__row hc-taste__row--spicy" style="--accent: #c8321c">
+        <p class="hc-taste__word" aria-hidden="true">เผ็ด</p>
+        <figure class="hc-taste__img"><img src="assets/img/food/ck-dip-v15-720.webp" width="720" height="900" alt="คอหมูย่างจุ่มซอสแจ่วฉ่ำ ๆ (ภาพ concept)" loading="lazy" decoding="async"><span class="hc-flakes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></figure>
+        <div class="hc-taste__text"><h3>เข้ม · หอม · เผ็ดร้อน</h3><p>คอหมูย่างหอม ๆ เคลือบแจ่วเข้ม<br>แล้วตามด้วยข้าวเหนียวอีกสักคำ</p><a class="hc-link" href="#chiang-khan">รู้จักรสเชียงคาน <span aria-hidden="true">→</span></a></div>
+      </div>
+    </section>
+
+    <section class="hc-flavors" id="flavors" aria-labelledby="flavors-title">
+      <header class="hc-section-head">
+        <p class="hc-eyebrow">Different places · same table</p>
+        <h2 id="flavors-title">สามที่ หนึ่งโต๊ะ</h2>
+        <p>หาดใหญ่ มหาชัย เชียงคาน — เก็บรสที่คิดถึงไว้ใกล้มือ<br>วันนี้อยากกินมื้อไหน ก็เปิดขวดนั้น</p>
+      </header>
+
+      <article class="hc-flavor" id="hat-yai" aria-labelledby="hy-name" style="--accent: var(--hc-hat-yai)" data-place="หาดใหญ่">
+        <p class="hc-flavor__place" aria-hidden="true">หาดใหญ่</p>
+        <figure class="hc-flavor__media hc-house">
+          <img src="assets/img/food/hy-dip-orange-v15-720.webp" srcset="assets/img/food/hy-dip-orange-v15-720.webp 720w, assets/img/food/hy-dip-orange-v15-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 86vw" width="1122" height="1402" alt="ภาพ concept: ไก่ทอดจิ้มซอสไก่ทอดหาดใหญ่ สีส้ม" loading="lazy" decoding="async">
+          <img class="hc-flavor__label" src="assets/img/label/label-hy-v16.webp" width="590" height="933" alt="" loading="lazy" decoding="async">
+
+        </figure>
+        <div class="hc-flavor__text">
+          <p class="hc-eyebrow"><span class="hc-num">01</span> หาดใหญ่</p>
+          <h3 id="hy-name">ซอสไก่ทอดหาดใหญ่</h3>
+          <p class="hc-flavor__en" lang="en">HAT YAI CHICKEN SAUCE</p>
+          <p class="hc-flavor__value">หวานนำ เผ็ดกำลังดี เคลือบของทอดให้ฉ่ำทุกคำ</p>
+          <dl class="hc-facts">
+            <div><dt>จับคู่กับ</dt><dd>ไก่ทอดร้อน ๆ ปีกไก่กรอบ และของทอดจานโปรด</dd></div>
+            <div><dt>รสจากความทรงจำ</dt><dd>ความทรงจำจากหาดใหญ่ ที่ชวนให้นึกถึงไก่ทอดร้อน ๆ และซอสถ้วยเล็กข้างจาน</dd></div>
+          </dl>
+          <p class="hc-tip">ชอบกลิ่นผักชีสด? เติมเองในถ้วยซอสไก่ทอดหาดใหญ่ก่อนเสิร์ฟได้ตามชอบ</p>
+          <a class="hc-link" href="#set">ดูชุดคู่บ้าน 3 รส <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="hc-flavor hc-flavor--flip" id="mahachai" aria-labelledby="mc-name" style="--accent: var(--hc-mahachai)" data-place="มหาชัย">
+        <p class="hc-flavor__place" aria-hidden="true">มหาชัย</p>
+        <figure class="hc-flavor__media hc-house">
+          <img src="assets/img/food/mc-dip-720.webp" srcset="assets/img/food/mc-dip-720.webp 720w, assets/img/food/mc-dip-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 86vw" width="1122" height="1402" alt="ภาพ concept: ปูและกุ้งสุกจิ้มซอสซีฟู้ดมหาชัยสีเขียว" loading="lazy" decoding="async">
+          <img class="hc-flavor__label" src="assets/img/label/label-mc-v16.webp" width="590" height="933" alt="" loading="lazy" decoding="async">
+
+        </figure>
+        <div class="hc-flavor__text">
+          <p class="hc-eyebrow"><span class="hc-num">02</span> มหาชัย</p>
+          <h3 id="mc-name">ซอสซีฟู้ดมหาชัย</h3>
+          <p class="hc-flavor__en" lang="en">MAHACHAI SEAFOOD SAUCE</p>
+          <p class="hc-flavor__value">เปรี้ยวสด รสชัด ตัดกับความหวานของเนื้อทะเล</p>
+          <dl class="hc-facts">
+            <div><dt>จับคู่กับ</dt><dd>กุ้งนึ่ง ปูแกะเนื้อ หมึกลวก และปลาย่างสุก</dd></div>
+            <div><dt>รสจากความทรงจำ</dt><dd>รสจากครัวซีฟู้ดมหาชัย สืบต่อความคุ้นเคยของซอสที่ขาดไม่ได้ข้างสำรับทะเล</dd></div>
+          </dl>
+          <p class="hc-tip">ชอบกลิ่นผักชีสด? เติมเองในถ้วยซอสซีฟู้ดมหาชัยก่อนเสิร์ฟได้ตามชอบ</p>
+          <a class="hc-link" href="#set">ดูชุดคู่บ้าน 3 รส <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="hc-flavor" id="chiang-khan" aria-labelledby="ck-name" style="--accent: var(--hc-chiang-khan)" data-place="เชียงคาน">
+        <p class="hc-flavor__place" aria-hidden="true">เชียงคาน</p>
+        <figure class="hc-flavor__media hc-house">
+          <img src="assets/img/food/ck-dip-v15-720.webp" srcset="assets/img/food/ck-dip-v15-720.webp 720w, assets/img/food/ck-dip-v15-1122.webp 1122w" sizes="(min-width: 900px) 40vw, 86vw" width="1122" height="1402" alt="ภาพ concept: หมูย่างกับซอสแจ่วเชียงคาน ข้าวเหนียว และผักสด" loading="lazy" decoding="async">
+          <img class="hc-flavor__label" src="assets/img/label/label-ck-v12.webp" width="590" height="933" alt="" loading="lazy" decoding="async">
+
+        </figure>
+        <div class="hc-flavor__text">
+          <p class="hc-eyebrow"><span class="hc-num">03</span> เชียงคาน</p>
+          <h3 id="ck-name">ซอสแจ่วเชียงคาน</h3>
+          <p class="hc-flavor__en" lang="en">CHIANG KHAN JAEW SAUCE</p>
+          <p class="hc-flavor__value">เข้ม หอม เผ็ดร้อน รับกับรสย่างในทุกคำ</p>
+          <dl class="hc-facts">
+            <div><dt>จับคู่กับ</dt><dd>คอหมูย่าง ไก่ย่าง เนื้อย่าง และข้าวเหนียวร้อน ๆ</dd></div>
+            <div><dt>รสจากความทรงจำ</dt><dd>แรงบันดาลใจจากมื้อย่างที่เชียงคาน เก็บความหอมและรสเข้มไว้ให้จิ้มได้ที่บ้าน</dd></div>
+          </dl>
+          <a class="hc-link" href="#set">ดูชุดคู่บ้าน 3 รส <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </section>
+
+    <section class="hc-crave" id="crave" aria-labelledby="crave-title" data-progress>
+      <header class="hc-section-head">
+        <p class="hc-eyebrow">Just pour and enjoy</p>
+        <h2 id="crave-title">จิ้ม เคลือบ แล้วขอกินอีกคำ</h2>
+        <p>ไก่ทอดที่ยังอุ่น ซีฟู้ดที่เพิ่งนึ่ง หมูย่างหอม ๆ<br>เทซอสลงถ้วย แล้วยกทั้งโต๊ะมาสนุกด้วยกัน</p>
+      </header>
+      <figure class="hc-crave__wide">
+        <img src="assets/img/food/table-cooked-v15-1100.webp" srcset="assets/img/food/table-cooked-v15-1100.webp 1100w, assets/img/food/table-cooked-v15-1672.webp 1672w" sizes="100vw" width="1672" height="941" alt="ภาพ concept: สำรับไก่ทอด อาหารทะเล และหมูย่าง พร้อมซอสสามถ้วย" loading="lazy" decoding="async">
+      </figure>
+      <ul class="hc-crave__row">
+        <li style="--accent: var(--hc-hat-yai)"><img src="assets/img/food/hy-feast-orange-v15-720.webp" width="720" height="900" alt="ภาพ concept: ไก่ทอดหาดใหญ่กับซอส" loading="lazy" decoding="async"><span>หาดใหญ่ · มื้อทอด</span></li>
+        <li style="--accent: var(--hc-mahachai)"><img src="assets/img/food/mc-feast-v15-720.webp" width="720" height="900" alt="ภาพ concept: อาหารทะเลกับซอสซีฟู้ด" loading="lazy" decoding="async"><span>มหาชัย · มื้อทะเล</span></li>
+        <li style="--accent: var(--hc-chiang-khan)"><img src="assets/img/food/ck-feast-720.webp" width="720" height="900" alt="ภาพ concept: หมูย่างกับแจ่ว" loading="lazy" decoding="async"><span>เชียงคาน · มื้อย่าง</span></li>
+      </ul>
+    </section>
+
+    <section class="hc-craft" id="craft" aria-labelledby="craft-title">
+      <header class="hc-section-head">
+        <p class="hc-eyebrow">Crafted with care</p>
+        <h2 id="craft-title">ส่วนที่ต้องพิถีพิถัน<br>เราทำให้แล้ว</h2>
+        <p>จากรายละเอียดบนฉลาก ถึงรสที่ตั้งใจปรุง<br>เพื่อให้เวลาบนโต๊ะเป็นเวลาของความอร่อย</p>
+      </header>
+      <ol class="hc-craft__beats">
+        <li>
+          <figure class="hc-craft__img hc-craft__img--label"><img src="assets/img/label/label-mc-v16.webp" width="630" height="968" alt="ฉลากซอสซีฟู้ดมหาชัย ภาพวาดท่าเรือ (ภาพ concept)" loading="lazy" decoding="async"></figure>
+          <h3>ฉลากวาดจากที่มาของแต่ละรส</h3>
+          <p>หาดใหญ่ มหาชัย เชียงคาน — สามที่ สามความผูกพัน อยู่บนขวด</p>
+        </li>
+        <li>
+          <figure class="hc-craft__img hc-craft__img--seal"><img src="assets/img/label/seal-hy-v12.webp" width="149" height="369" alt="แถบซีลกระดาษ Good Sauce Brings Good People Home" loading="lazy" decoding="async"></figure>
+          <h3>ซีลกระดาษพาดฝาทุกขวด</h3>
+          <p>ลอกซีล หมุนฝา แล้วเทได้เลย</p>
+        </li>
+        <li>
+          <figure class="hc-craft__img"><img src="assets/img/food/hy-dip-orange-v15-720.webp" width="720" height="900" alt="ไก่ทอดจิ้มซอสไก่ทอดหาดใหญ่ (ภาพ concept)" loading="lazy" decoding="async"></figure>
+          <h3>เปิดขวดก็พร้อมจิ้ม</h3>
+          <p>เตรียมมื้อที่อยากกิน แล้วให้ Homechew ดูแลรสจิ้ม</p>
+        </li>
+      </ol>
+      <p class="hc-craft__maker">ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท</p>
+    </section>
+
+    <section class="hc-extra" id="extra" aria-labelledby="extra-title">
+      <div class="hc-extra__inner">
+        <h2 id="extra-title">เปิดขวดก็อร่อย<br>อยากสนุกเพิ่มก็ทำได้</h2>
+        <p>จิ้มได้เลยจากขวด หรือเติมความชอบของคุณลงในถ้วย</p>
+        <details class="hc-extra__more">
+          <summary>ไอเดียเติมอีกนิด</summary>
+          <div>
+            <p>ซอสไก่ทอดหาดใหญ่ และซอสซีฟู้ดมหาชัย: เติมผักชีสดเองในถ้วยก่อนเสิร์ฟได้ตามชอบ เพื่อเพิ่มกลิ่นหอมสดชื่น</p>
+            <p>หาดใหญ่คู่ของทอด · มหาชัยคู่ทะเล · เชียงคานคู่ของย่าง — เริ่มจากจานโปรดในบ้านได้เลย</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="hc-set" id="set" aria-labelledby="set-title">
+      <figure class="hc-set__media">
+        <img class="hc-set__product" src="assets/img/product/trio-set.webp" width="1170" height="1270" alt="Homechew 3 ขวด: ซอสซีฟู้ดมหาชัย ซอสไก่ทอดหาดใหญ่ และซอสแจ่วเชียงคาน พร้อมฉลากแต่ละรส" loading="lazy" decoding="async">
+
+      </figure>
+      <div class="hc-set__text">
+        <p class="hc-eyebrow">ชุดซอสคู่บ้าน หาดใหญ่ · มหาชัย · เชียงคาน</p>
+        <h2 id="set-title">ให้ 3 รสนี้มีที่บนโต๊ะของคุณ</h2>
+        <p class="hc-set__name">Homechew ชุดซอสคู่บ้าน 3 รส</p>
+        <div class="hc-offer"><span class="hc-offer__tag">ราคาเปิดตัวที่เตรียมไว้</span><p class="hc-offer__price">399 <span>บาท / ชุด</span></p><p>ซื้อแยกรวม 477 บาท · ชุด 3 รสประหยัด 78 บาท</p><small>เฉลี่ยขวดละ 133 บาท · ยังไม่รวมค่าจัดส่ง</small></div>
+        <p>หาดใหญ่สำหรับของทอด มหาชัยสำหรับทะเล เชียงคานสำหรับของย่าง<br>เริ่มครบ 3 รส แล้วค่อยเจอขวดโปรดของบ้าน</p>
+        <ul class="hc-set__items">
+          <li><span style="--accent: var(--hc-hat-yai)"></span>1 × ซอสไก่ทอดหาดใหญ่</li>
+          <li><span style="--accent: var(--hc-mahachai)"></span>1 × ซอสซีฟู้ดมหาชัย</li>
+          <li><span style="--accent: var(--hc-chiang-khan)"></span>1 × ซอสแจ่วเชียงคาน</li>
+        </ul>
+        <dl class="hc-spec">
+          <div><dt>ในชุด</dt><dd>3 รส · รสละ 1 ขวด</dd></div>
+          <div><dt>ขวดเดี่ยว</dt><dd>159 บาท / ขวด</dd></div>
+          <div><dt>การจัดส่ง</dt><dd>แจ้งขนาดบรรจุ ค่าส่ง และรอบส่งก่อนเปิดรับออเดอร์</dd></div>
+
+        </dl>
+        <div class="hc-set__status">
+          <p><strong>แอดไว้ แล้วพบกันวันเปิดบ้าน</strong></p>
+          <p>แอด LINE แล้วพิมพ์ “สนใจชุด 3 รส”<br>รับข่าวเปิดขายและรายละเอียดโปรก่อนใคร</p>
+          <a class="hc-btn hc-btn--line hc-btn--big" href="https://lin.ee/owu0J0g" target="_blank" rel="noopener" data-cta="line"><svg class="hc-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6C21.4 14.1 22 12.6 22 11c0-4.4-4.5-8-10-8Z"/></svg>แอด LINE รับข่าวเปิดขาย</a>
+          <p class="hc-set__fine">ตอนนี้เก็บรายชื่อผู้สนใจเท่านั้น ยังไม่รับออเดอร์หรือชำระเงิน<br>การแอด LINE ไม่ใช่การจองสินค้า</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="hc-close" id="home" aria-labelledby="close-title">
+      <img class="hc-close__lockup" src="assets/brand/homechew-lockup.svg" width="657" height="498" alt="Homechew โฮมชูว ホームチュウ" loading="lazy">
+      <h2 class="hc-close__line" id="close-title" lang="en">Good Sauce Brings Good People Home</h2>
+      <p>ขอบคุณที่ให้ Homechew มีที่บนโต๊ะของคุณ</p>
+      <a class="hc-btn hc-btn--line hc-btn--big" href="https://lin.ee/owu0J0g" target="_blank" rel="noopener" data-cta="line"><svg class="hc-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6C21.4 14.1 22 12.6 22 11c0-4.4-4.5-8-10-8Z"/></svg>แอด LINE รับข่าวเปิดขาย</a>
+    </section>
+  </main>
+
+  <footer class="hc-footer">
+    <p><strong>Homechew · รสที่คิดถึง ใกล้มือคุณ</strong></p>
+    <p>กำลังเตรียมเปิดขาย ติดตามรายละเอียดผ่าน LINE</p>
+    <p class="hc-footer__links"><a href="privacy/">ความเป็นส่วนตัว</a> · <a href="https://lin.ee/owu0J0g" target="_blank" rel="noopener">ติดต่อ Homechew</a></p>
+    <small>ภาพอาหารและบรรจุภัณฑ์เป็นภาพประกอบ ผลิตภัณฑ์จริงจะแจ้งให้ทราบก่อนเปิดขาย</small>
+  </footer>
+
+  <a class="hc-mobile-cta" hidden href="https://lin.ee/owu0J0g" target="_blank" rel="noopener" data-cta="line"><svg class="hc-line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8-6C21.4 14.1 22 12.6 22 11c0-4.4-4.5-8-10-8Z"/></svg>แอด LINE รับข่าวเปิดขาย</a>
+</body>
+</html>
