@@ -1,74 +1,71 @@
-/**
- * Homechew media: every photo that has matching footage is shown as that footage.
- * The photo is the <video poster>, so the page reads the same before, during and without video.
- * Rules (pack v1.2 brief, "Video behavior"):
- * - nothing video downloads on first paint (preload="none", src bound near the viewport)
- * - muted + playsinline, playing only while visible; paused off-screen or when the tab is hidden
- * - taste loops: only the most visible one plays; living images: at most MAX_LIVE at once
- * - reduced motion / Save-Data keep the posters until the viewer taps
- * - a failed video keeps its poster
- */
+/** Living images, loaded on demand with automatic playback and real viewport bounds. */
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-const saveData = !!navigator.connection?.saveData;
-const autoplayOK = () => !reduced.matches && !saveData;
+const autoplayOK = () => !reduced.matches && !navigator.connection?.saveData;
 const MAX_LIVE = 3;
+const records = [...document.querySelectorAll('.hc-loop, .hc-live')].map(video => ({
+  video, ratio: 0, wanted: false, pending: false, blocked: false, failed: false,
+}));
+const byVideo = new Map(records.map(record => [record.video, record]));
 
-const bind = video => {
-  if (!video.src && video.dataset.src) { video.src = video.dataset.src; video.load(); }
-};
-const safePlay = video => video.play().catch(() => { /* autoplay refused: the poster stays */ });
-const failSafe = video => video.addEventListener('error', () => { video.removeAttribute('src'); video.load(); });
-
-/* ---------- taste loops: play the most visible one ---------- */
-const loops = [...document.querySelectorAll('.hc-loop')];
-const loopRatio = new Map();
-function pickLoop() {
-  let best = null, bestRatio = 0.45;
-  for (const [v, r] of loopRatio) if (r > bestRatio) { best = v; bestRatio = r; }
-  for (const v of loops) {
-    if (v === best && autoplayOK() && !document.hidden) { bind(v); safePlay(v); }
-    else if (!v.paused) v.pause();
+function play(record) {
+  const {video} = record;
+  if (record.pending || !video.paused) return;
+  if (!video.hasAttribute('src')) {
+    video.src = video.dataset.src;
+    video.load();
   }
-}
-const loopIO = new IntersectionObserver(entries => {
-  for (const e of entries) {
-    loopRatio.set(e.target, e.intersectionRatio);
-    if (e.isIntersecting) bind(e.target);
-  }
-  pickLoop();
-}, {threshold: [0, 0.25, 0.45, 0.6, 0.8, 1], rootMargin: '200px 0px'});
-
-/* ---------- living images: play the most visible few ---------- */
-const lives = [...document.querySelectorAll('.hc-live')];
-const liveRatio = new Map();
-function pickLive() {
-  const ranked = [...liveRatio].filter(([, r]) => r >= 0.3).sort((a, b) => b[1] - a[1]).slice(0, MAX_LIVE).map(([v]) => v);
-  for (const v of lives) {
-    if (ranked.includes(v) && autoplayOK() && !document.hidden) { bind(v); safePlay(v); }
-    else if (!v.paused) v.pause();
-  }
-}
-const liveIO = new IntersectionObserver(entries => {
-  for (const e of entries) {
-    liveRatio.set(e.target, e.intersectionRatio);
-    if (e.isIntersecting) bind(e.target);
-  }
-  pickLive();
-}, {threshold: [0, 0.15, 0.3, 0.5, 0.75, 1], rootMargin: '250px 0px'});
-
-for (const v of [...loops, ...lives]) {
-  (v.classList.contains('hc-loop') ? loopIO : liveIO).observe(v);
-  failSafe(v);
-  // tap to play/pause when autoplay is off (reduced motion, Save-Data)
-  (v.closest('figure, li') || v).addEventListener('click', () => {
-    if (autoplayOK()) return;
-    bind(v);
-    v.paused ? safePlay(v) : v.pause();
+  record.pending = true;
+  video.play().catch(error => {
+    // A scroll/pause can cancel a pending play. Other refusals retain the poster.
+    if (record.wanted && error.name !== 'AbortError') record.blocked = true;
+  }).finally(() => {
+    record.pending = false;
+    if (!record.wanted || document.hidden) video.pause();
+    if (record.blocked) record.wanted = false;
   });
 }
 
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) document.querySelectorAll('video').forEach(v => v.pause());
-  else { pickLoop(); pickLive(); }
-});
-reduced.addEventListener('change', () => { pickLoop(); pickLive(); });
+function update() {
+  const eligible = record => record.ratio > 0 && !record.failed && !record.blocked
+    && autoplayOK() && record.ratio >= (record.video.classList.contains('hc-loop') ? 0.45 : 0.3);
+  const rank = (a, b) => b.ratio - a.ratio;
+  const selected = new Set();
+  if (!document.hidden) {
+    for (const [kind, limit] of [['hc-loop', 1], ['hc-live', MAX_LIVE]]) {
+      records.filter(r => r.video.classList.contains(kind) && eligible(r)).sort(rank)
+        .slice(0, limit).forEach(r => selected.add(r));
+    }
+  }
+  for (const record of records) {
+    record.wanted = selected.has(record);
+    if (record.wanted) play(record);
+    else if (!record.video.paused) record.video.pause();
+  }
+}
+
+// No expanded rootMargin: prefetch bounds must never masquerade as visible pixels.
+// Binding src only when selected also leaves Save-Data/reduced-motion entirely poster-only.
+const observer = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    const record = byVideo.get(entry.target);
+    record.ratio = entry.isIntersecting ? entry.intersectionRatio : 0;
+  }
+  update();
+}, {threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.8, 1]});
+
+for (const record of records) {
+  const {video} = record;
+  video.removeAttribute('tabindex');
+  video.addEventListener('error', () => {
+    record.failed = true;
+    record.wanted = false;
+    video.removeAttribute('src');
+    video.load(); // Reset to the original poster; do not loop automatic retries.
+    update();
+  });
+  observer.observe(video);
+}
+
+document.addEventListener('visibilitychange', update);
+reduced.addEventListener('change', update);
+navigator.connection?.addEventListener?.('change', update);

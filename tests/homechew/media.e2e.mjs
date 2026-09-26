@@ -1,4 +1,4 @@
-/** Video behaviour QA for /homechew/ (loops + film player). Same env as page.e2e.mjs. */
+/** Video behaviour QA for /homechew/ (living imagery). Same env as page.e2e.mjs. */
 import {mkdir, writeFile} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 const base = process.env.HOMECHEW_BASE_URL || 'http://127.0.0.1:4180/homechew/';
@@ -10,6 +10,7 @@ const fails = [], log = [];
 const ok = (c, m) => { (c ? log : fails).push((c ? 'PASS ' : 'FAIL ') + m); console.log((c ? 'PASS ' : 'FAIL ') + m); };
 async function open(w, h, opts = {}) {
   const ctx = await browser.newContext({viewport: {width: w, height: h}, deviceScaleFactor: w < 700 ? 2 : 1, isMobile: w < 700, hasTouch: w < 700, reducedMotion: opts.reduced ? 'reduce' : 'no-preference'});
+  if (opts.saveData) await ctx.addInitScript(() => Object.defineProperty(navigator, 'connection', {value: {saveData: true}, configurable: true}));
   const page = await ctx.newPage();
   const videos = [], errors = [];
   page.on('request', r => { if (/\.mp4(\?|$)/.test(r.url())) videos.push(r.url().split('/').pop()); });
@@ -40,10 +41,17 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
     const lives = st.filter(v => v.cls.includes('hc-live') && !v.paused);
     ok(lives.length >= 1 && lives.length <= 3 && lives.every(v => v.muted && v.t > 0), `${tag}: ${sel} plays muted footage (${lives.map(v => v.src).join(',')})`);
     ok(st.filter(v => v.cls.includes('hc-loop') && !v.paused).length === 0, `${tag}: taste loops paused while ${sel} is in view`);
+    ok(await s.page.evaluate(() => [...document.querySelectorAll('video')].every(v => { const r = v.getBoundingClientRect(); return v.paused || (r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth); })), `${tag}: only on-screen videos play`);
     await s.page.screenshot({path: `${out}/${tag}-${sel.split(' ')[0].slice(1)}.png`});
   }
   const posters = await s.page.evaluate(() => [...document.querySelectorAll('video.hc-live, video.hc-loop')].map(v => v.poster.split('/').pop()));
   ok(new Set(posters).size === posters.length, `${tag}: no footage/poster repeated on the page (${posters.length})`);
+  ok(await s.page.locator('video[controls], .hc-media__toggle').count() === 0, `${tag}: decorative videos have no control overlay`);
+  await s.page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await s.page.waitForTimeout(800);
+  const footer = await s.page.evaluate(() => ({gap: document.documentElement.scrollHeight - (document.querySelector('.hc-footer').getBoundingClientRect().bottom + scrollY), overflow: document.documentElement.scrollWidth - innerWidth, ctaHidden: document.querySelector('.hc-mobile-cta').classList.contains('is-hidden')}));
+  ok(Math.abs(footer.gap) < 2 && footer.overflow <= 0 && footer.ctaHidden, `${tag}: footer ends flush, without overflow or floating CTA (${JSON.stringify(footer)})`);
+  await s.page.screenshot({path: `${out}/${tag}-footer.png`});
   ok(!(await s.page.$('.hc-film')), `${tag}: duplicated film section removed`);
   await s.page.evaluate(() => window.scrollTo(0, 0));
   await s.page.waitForTimeout(800);
@@ -58,8 +66,16 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   await s.page.waitForTimeout(2000);
   const st = await playing(s.page);
   ok(st.every(v => v.paused), 'reduced motion: nothing autoplays');
-  await s.page.click('#hat-yai .hc-flavor__media'); await s.page.waitForTimeout(1500);
-  ok(!(await s.page.evaluate(() => document.querySelector('#hat-yai .hc-live').paused)), 'reduced motion: viewer can tap to play');
+  ok(s.videos.length === 0, 'reduced motion: no video downloaded');
+  await s.ctx.close();
+}
+{
+  const s = await open(390, 844, {saveData: true});
+  for (const sel of ['#hat-yai .hc-live', '#crave .hc-live', '#craft .hc-live']) {
+    await s.page.locator(sel).first().scrollIntoViewIfNeeded();
+    await s.page.waitForTimeout(400);
+  }
+  ok(s.videos.length === 0 && (await playing(s.page)).every(v => v.paused), 'Save-Data: scrolling does not download videos');
   await s.ctx.close();
 }
 { // missing media: page still works, no broken frame

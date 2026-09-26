@@ -204,18 +204,27 @@ const mobileCta = $('.hc-mobile-cta');
 mobileCta.hidden = false;
 const visibleOrderLinks = new Set();
 const orderLinks = [...document.querySelectorAll('main a[data-cta="line"]')];
+let footerVisible = false;
+function updateMobileCta() {
+  const hidden = visibleOrderLinks.size > 0 || footerVisible;
+  mobileCta.classList.toggle('is-hidden', hidden);
+  mobileCta.toggleAttribute('inert', hidden);
+  mobileCta.setAttribute('aria-hidden', String(hidden));
+}
 // Each actual order button, rather than the much taller offer section, controls the bar.
 const orderObserver = new IntersectionObserver(entries => {
   for (const e of entries) {
     if (e.isIntersecting && e.intersectionRatio >= 0.5) visibleOrderLinks.add(e.target);
     else visibleOrderLinks.delete(e.target);
   }
-  const hidden = visibleOrderLinks.size > 0;
-  mobileCta.classList.toggle('is-hidden', hidden);
-  mobileCta.toggleAttribute('inert', hidden);
-  mobileCta.setAttribute('aria-hidden', String(hidden));
+  updateMobileCta();
 }, {threshold: [0, 0.5, 1], rootMargin: '-64px 0px -8px 0px'});
 orderLinks.forEach(link => orderObserver.observe(link));
+const footer = document.querySelector('.hc-footer');
+if (footer) new IntersectionObserver(([entry]) => {
+  footerVisible = entry.isIntersecting;
+  updateMobileCta();
+}, {threshold: 0}).observe(footer);
 
 /* ---------- flavour image parallax (2.5D) ---------- */
 const media = [...document.querySelectorAll('.hc-flavor__media, [data-progress]')];
