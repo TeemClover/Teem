@@ -384,6 +384,11 @@
       "permanent": false
     },
     {
+      "source": "/homechew",
+      "destination": "/homechew/",
+      "permanent": false
+    },
+    {
       "source": "/invite",
       "destination": "/invite/",
       "permanent": false
@@ -425,6 +430,10 @@
     }
   ],
   "headers": [
+    {
+      "source": "/homechew/:path*",
+      "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]
+    },
     {
       "source": "/asksydscience/:path*",
       "headers": [
