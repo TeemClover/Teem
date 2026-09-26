@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "site_mode": "private_prototype",
+  "commerce_enabled": false,
+  "brand": {
+    "latin": "Homechew",
+    "thai": "โฮมชูว",
+    "japanese": "ホームチュウ"
+  },
+  "slogans": {
+    "th": "ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท",
+    "en": "Crafted with care. Just pour and enjoy.",
+    "ja": "手間ひまかけたおいしさを、かけるだけ。",
+    "support": "Good Sauce Brings Good People Home"
+  },
+  "products": [
+    {
+      "id": "HC-HY",
+      "slug": "hat-yai-chicken-sauce",
+      "name_th": "น้ำจิ้มไก่หาดใหญ่",
+      "name_en": "HAT YAI CHICKEN SAUCE",
+      "origin_type": "family_learned_recipe",
+      "accent": "#aa411e",
+      "source_asset_id": "product-hy",
+      "lineup_status": "owner_locked",
+      "recipe_status": "not_verified_in_this_pack",
+      "net_quantity": null,
+      "quantity_unit": null,
+      "price_thb": null,
+      "ingredients": null,
+      "allergens": null,
+      "storage": null,
+      "shelf_life_unopened": null,
+      "shelf_life_opened": null,
+      "batch_capacity": null,
+      "shipping_regions": null,
+      "available_for_purchase": false
+    },
+    {
+      "id": "HC-MC",
+      "slug": "mahachai-seafood-sauce",
+      "name_th": "น้ำจิ้มซีฟู้ดมหาชัย",
+      "name_en": "MAHACHAI SEAFOOD SAUCE",
+      "origin_type": "family_inherited_recipe",
+      "accent": "#315537",
+      "source_asset_id": "product-mc",
+      "lineup_status": "owner_locked",
+      "recipe_status": "not_verified_in_this_pack",
+      "net_quantity": null,
+      "quantity_unit": null,
+      "price_thb": null,
+      "ingredients": null,
+      "allergens": null,
+      "storage": null,
+      "shelf_life_unopened": null,
+      "shelf_life_opened": null,
+      "batch_capacity": null,
+      "shipping_regions": null,
+      "available_for_purchase": false
+    },
+    {
+      "id": "HC-CK",
+      "slug": "chiang-khan-jaew-sauce",
+      "name_th": "ซอสแจ่วเชียงคาน",
+      "name_en": "CHIANG KHAN JAEW SAUCE",
+      "origin_type": "shared_travel_inspiration",
+      "accent": "#743925",
+      "source_asset_id": "product-ck",
+      "lineup_status": "owner_locked",
+      "recipe_status": "not_verified_in_this_pack",
+      "net_quantity": null,
+      "quantity_unit": null,
+      "price_thb": null,
+      "ingredients": null,
+      "allergens": null,
+      "storage": null,
+      "shelf_life_unopened": null,
+      "shelf_life_opened": null,
+      "batch_capacity": null,
+      "shipping_regions": null,
+      "available_for_purchase": false
+    }
+  ],
+  "bundle": {
+    "id": "HC-TRIO",
+    "status": "proposed_offer",
+    "name_th": "ชุดซอสคู่บ้าน 3 รส",
+    "components": [
+      {
+        "product_id": "HC-HY",
+        "quantity": 1
+      },
+      {
+        "product_id": "HC-MC",
+        "quantity": 1
+      },
+      {
+        "product_id": "HC-CK",
+        "quantity": 1
+      }
+    ],
+    "price_thb": null
+  }
+}

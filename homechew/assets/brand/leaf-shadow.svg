@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900" fill="#3b2a1a">
+  <!-- Decorative window-leaf shadow for the hero backdrop (original, abstract; blurred in CSS). -->
+  <g transform="translate(40 -20)">
+    <path d="M40 0 C120 180 210 330 360 470 S600 760 700 900" fill="none" stroke="#3b2a1a" stroke-width="7"/>
+    <path d="M150 190 C250 250 330 380 420 520" fill="none" stroke="#3b2a1a" stroke-width="4"/>
+    <g id="leaf"><path d="M0 0 C40 -30 110 -28 150 0 C110 28 40 30 0 0Z"/></g>
+    <use href="#leaf" transform="translate(70 120) rotate(-35)"/>
+    <use href="#leaf" transform="translate(95 150) rotate(40) scale(.9)"/>
+    <use href="#leaf" transform="translate(150 230) rotate(-50) scale(1.1)"/>
+    <use href="#leaf" transform="translate(185 250) rotate(25)"/>
+    <use href="#leaf" transform="translate(245 330) rotate(-20) scale(1.2)"/>
+    <use href="#leaf" transform="translate(270 350) rotate(60) scale(.85)"/>
+    <use href="#leaf" transform="translate(330 430) rotate(-45) scale(1.05)"/>
+    <use href="#leaf" transform="translate(360 455) rotate(30) scale(1.15)"/>
+    <use href="#leaf" transform="translate(430 540) rotate(-30) scale(.95)"/>
+    <use href="#leaf" transform="translate(470 575) rotate(50) scale(1.1)"/>
+    <use href="#leaf" transform="translate(540 660) rotate(-40) scale(1.2)"/>
+    <use href="#leaf" transform="translate(580 700) rotate(35) scale(.9)"/>
+    <use href="#leaf" transform="translate(240 300) rotate(-80) scale(.8)"/>
+    <use href="#leaf" transform="translate(330 400) rotate(10) scale(.9)"/>
+    <use href="#leaf" transform="translate(400 540) rotate(-70) scale(.85)"/>
+    <use href="#leaf" transform="translate(640 780) rotate(-25) scale(1.1)"/>
+  </g>
+</svg>
