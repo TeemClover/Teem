@@ -9,6 +9,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
+import {HD_LEVELS, createGovernor, updateGovernor, pixelRatio} from './quality.js';
 import {makeTextures, FONT} from './textures.js';
 import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
 
@@ -175,6 +176,8 @@ async function boot() {
   const mobile = touch && Math.min(screen.width, screen.height) < 820;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate = false; // reused by the colour, normals and bloom passes
+  renderer.info.autoReset = false;
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -225,23 +228,36 @@ async function boot() {
     import('./vendor/addons/postprocessing/OutputPass.js'),
   ]).then(([a, b, c, d, e]) => ({...a, ...b, ...c, ...d, ...e})));
 
-  /* ----- adaptive quality: HD keeps its look while the frame rate holds, and steps down (never
-   * below SD's look) when a device can't keep up. Level 0 = full HD; each step is cheaper. ----- */
-  const gov = {level: 0, ema: 1 / 60, since: 0, calm: 0};
-  const maxRatio = () => quality === 'hd' ? [1.6, 1.3, 1.1, 1][gov.level] : (mobile ? 1.25 : 1.5);
+  /* ----- adaptive quality: keep HD surfaces and props; trade screen effects and resolution
+   * for stable motion. Level 0 = full effects; each step is cheaper. ----- */
+  const gov = createGovernor(mobile);
+  const maxRatio = () => pixelRatio({width: canvas.clientWidth || innerWidth, height: canvas.clientHeight || innerHeight, dpr: devicePixelRatio, hd: quality === 'hd', mobile, level: gov.level});
 
   /* ----- house (rebuilt when quality changes) ----- */
   let house = null, tex = null, composer = null, aoPass = null, bloomPass = null;
   const bursts = [], loadedRooms = new Set();
+  let building = false;
+  function disposePost() {
+    if (!composer) return;
+    aoPass?.gtaoMaterial.dispose(); // r180's GTAOPass.dispose omits its AO shader material
+    for (const pass of composer.passes) pass.dispose?.();
+    composer.dispose(); composer = aoPass = bloomPass = null;
+  }
   async function build() {
     const hd = quality === 'hd';
     const pp = hd ? await loadPost() : null;
     if (house) {
       scene.remove(house.root);
-      house.root.traverse(o => { o.geometry?.dispose(); (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m?.dispose()); });
+      const geometries = new Set(), materials = new Set();
+      house.root.traverse(o => {
+        if (o.isInstancedMesh) o.dispose();
+        if (o.geometry) geometries.add(o.geometry);
+        for (const m of [].concat(o.material || [])) materials.add(m);
+      });
+      geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose());
       tex.dispose();
     }
-    gov.level = 0; gov.ema = 1 / 60; gov.since = 0; gov.calm = 0;
+    Object.assign(gov, createGovernor(mobile));
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, maxRatio()));
     renderer.shadowMap.enabled = hd || !mobile;
     sun.castShadow = renderer.shadowMap.enabled;
@@ -250,8 +266,16 @@ async function boot() {
     tex = makeTextures(renderer, hd);
     house = buildHouse({renderer, hd, tex, found, mobile, art});
     scene.add(house.root);
-    loadedRooms.clear(); loadRoomsNear(progress());
-    composer?.dispose(); composer = aoPass = bloomPass = null;
+    loadedRooms.clear();
+    if (hd) {
+      // Complete art uploads before shader warm-up, not halfway through the first HD walk.
+      const pictures = [];
+      for (const [id, loaders] of house.lazy) { loadedRooms.add(id); for (const load of loaders) pictures.push(load()); }
+      let deadline;
+      try { await Promise.race([Promise.all(pictures), new Promise(resolve => { deadline = setTimeout(resolve, 4000); })]); }
+      finally { clearTimeout(deadline); }
+    } else loadRoomsNear(progress());
+    disposePost();
     if (pp) { // HD: ambient occlusion in corners and under furniture, soft glow on lamps and screens
       composer = new pp.EffectComposer(renderer);
       composer.addPass(new pp.RenderPass(scene, camera));
@@ -274,22 +298,28 @@ async function boot() {
       composer.addPass(bloomPass = new pp.UnrealBloomPass(new THREE.Vector2(256, 256), 0.35, 0.4, 2.4)); // threshold above lit walls: only lamps and screens glow
       composer.addPass(new pp.OutputPass());
     }
-    shadowSpan = 0; sizeCanvas(true);
+    shadowSpan = 0; applyGovernor();
+    renderer.shadowMap.needsUpdate = true;
     // compile every material now, while the loader is up, instead of as each room first comes into view
     try { await renderer.compileAsync(scene, camera); } catch {}
+    // compileAsync covers scene materials, not post-process and shadow shaders. Warm those
+    // behind the loader too, including AO which may be enabled later by the governor.
+    targetFor(progress(), camera.aspect < 1);
+    camera.position.copy(wantPos); camera.lookAt(wantLook);
+    if (composer) {
+      aoPass.enabled = bloomPass.enabled = true;
+      composer.render();
+      aoPass.enabled = HD_LEVELS[gov.level].ao; bloomPass.enabled = HD_LEVELS[gov.level].bloom;
+    } else renderer.render(scene, camera);
+    renderer.shadowMap.needsUpdate = true;
   }
   function applyGovernor() {
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, maxRatio()));
-    if (aoPass) aoPass.enabled = gov.level < 2;
-    if (bloomPass) bloomPass.enabled = gov.level < 3;
+    if (aoPass) aoPass.enabled = HD_LEVELS[gov.level].ao;
+    if (bloomPass) bloomPass.enabled = HD_LEVELS[gov.level].bloom;
     sizeCanvas(true);
   }
   function governor(rawDt) {
-    if (quality !== 'hd' || rawDt > 0.25) return; // ignore tab switches and one-off stalls
-    gov.ema = lerp(gov.ema, rawDt, 0.05); gov.since += rawDt;
-    if (gov.since < 1.5) return;
-    if (gov.ema > 1 / 42 && gov.level < 3) { gov.level++; gov.since = 0; gov.calm = 0; applyGovernor(); }
-    else if (gov.ema < 1 / 58 && gov.level > 0) { gov.calm += rawDt; if (gov.calm > 6) { gov.level--; gov.since = 0; gov.calm = -30; applyGovernor(); } } // step back up slowly, once
+    if (quality === 'hd' && updateGovernor(gov, rawDt)) applyGovernor();
   }
 
   /* ----- camera: one continuous spline through every shot ----- */
@@ -351,17 +381,18 @@ async function boot() {
   }
 
   /* ----- sizing: follow the canvas' CSS box (100lvh), ignore mobile toolbar jitter ----- */
-  let viewShift = 0, lastW = 0, lastH = 0, shadowSpan = 0;
+  let viewShift = 0, viewLift = 0, lastW = 0, lastH = 0, shadowSpan = 0;
   function sizeCanvas(force) {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     if (!force && w === lastW && (Math.abs(h - lastH) < 1 || (touch && Math.abs(h - lastH) < 160))) { measure(); return; }
     lastW = w; lastH = h;
+    renderer.setPixelRatio(maxRatio());
     renderer.setSize(w, h, false);
     if (composer) { composer.setPixelRatio(renderer.getPixelRatio()); composer.setSize(w, h); }
     const aspect = w / h;
     camera.aspect = aspect;
     camera.fov = aspect >= 1 ? 45 : Math.min(80, 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(30)) / aspect) * 180 / Math.PI);
-    viewShift = NaN; camera.updateProjectionMatrix();
+    viewShift = viewLift = NaN; camera.updateProjectionMatrix();
     measure();
   }
   addEventListener('resize', () => sizeCanvas(false));
@@ -450,20 +481,33 @@ async function boot() {
   scene3d.glow = (id, on) => { if (on) glowing.add(id); else glowing.delete(id); };
 
   for (const b of $$('[data-quality]')) b.addEventListener('click', () => {
-    if (b.dataset.quality === quality) return;
+    if (building || b.dataset.quality === quality) return;
     quality = b.dataset.quality; store.set('mc:tour:quality', quality); renderQuality();
     $('#loader-text').textContent = quality === 'hd' ? 'กำลังจัดบ้านแบบ HD…' : 'กำลังจัดบ้านแบบ SD…';
+    building = true;
+    for (const button of $$('[data-quality]')) button.disabled = true;
     document.body.classList.add('is-loading');
-    setTimeout(async () => { const keep = inspecting; closeInspect(); try { await build(); } catch (err) { console.error(err); } first = true; if (keep) openInspect(keep); }, 60);
+    setTimeout(async () => {
+      const keep = inspecting; closeInspect();
+      try { await build(); if (keep) openInspect(keep); }
+      catch (err) { console.error(err); document.body.classList.add('no-webgl'); }
+      finally {
+        clock.getDelta(); building = false; first = true;
+        for (const button of $$('[data-quality]')) button.disabled = false;
+        if (document.body.classList.contains('no-webgl')) finishLoading();
+      }
+    }, 60);
   });
 
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
-  let first = true, running = true;
+  let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1;
+  const frameStats = {calls: 0, triangles: 0};
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
   function frame() {
     if (!running) return;
+    if (building) { requestAnimationFrame(frame); return; }
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05), t = clock.elapsedTime, still = reduced;
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
 
@@ -490,7 +534,11 @@ async function boot() {
     house.upper.position.y = house.roof.position.y = inside * 10; house.upper.visible = house.roof.visible = inside < 0.995;
     house.flowers.visible = inside < 0.5;
     const shift = camera.aspect > 1.15 ? -0.17 * inside : 0; // desktop: room sits beside the card
-    if (Number.isNaN(viewShift) || Math.abs(shift - viewShift) > 0.0005) { viewShift = shift; if (shift) camera.setViewOffset(lastW, lastH, shift * lastW, 0, lastW, lastH); else camera.clearViewOffset(); }
+    const lift = portrait ? 0.15 * inside : 0; // phone: room sits above the card, not below an empty sky
+    if (Number.isNaN(viewShift) || Math.abs(shift - viewShift) > 0.0005 || Math.abs(lift - viewLift) > 0.0005) {
+      viewShift = shift; viewLift = lift;
+      if (shift || lift) camera.setViewOffset(lastW, lastH, shift * lastW, lift * lastH, lastW, lastH); else camera.clearViewOffset();
+    }
 
     // mood
     ['top', 'mid', 'bottom'].forEach((key, i) => skyU[key].value.copy(SKY.day[i]).lerp(SKY.warm[i], inside).lerp(SKY.dusk[i], dusk));
@@ -572,7 +620,14 @@ async function boot() {
       if (b.life > 1.4) { scene.remove(b.pts); b.pts.geometry.dispose(); b.pts.material.dispose(); bursts.splice(i, 1); }
     }
 
-    if (composer) composer.render(); else renderer.render(scene, camera);
+    // Shadow geometry changes much more slowly than the camera. Never redraw it in every
+    // post-processing pass; refresh at 24 Hz during motion, once when reduced motion rests.
+    if (first || ((p !== lastShadowProgress || !still || bursts.length || inspecting || hovered) && t - lastShadow >= 1 / 24)) {
+      renderer.shadowMap.needsUpdate = true; lastShadow = t; lastShadowProgress = p;
+    }
+    renderer.info.reset();
+    if (composer && (aoPass?.enabled || bloomPass?.enabled)) composer.render(); else renderer.render(scene, camera);
+    frameStats.calls = renderer.info.render.calls; frameStats.triangles = renderer.info.render.triangles;
     if (first) { first = false; finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
@@ -594,6 +649,7 @@ async function boot() {
   window.__tour = {
     progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
     level: () => gov.level, music: () => musicOn,
+    stats: () => ({...frameStats, pixelRatio: renderer.getPixelRatio(), textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries, programs: renderer.info.programs.length, batchedMeshes: house.batchedMeshes, ao: !!aoPass?.enabled, bloom: !!bloomPass?.enabled, building}),
     screenOf(id) {
       const obj = id === 'music' ? house?.music : house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;
       const v = (house.collectibles.has(id) ? obj.getWorldPosition(new THREE.Vector3()) : new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3())).project(camera);
