@@ -58,19 +58,22 @@ h1,h2,h3,p{margin:0}
 .lead strong{color:#fff;font-weight:700}
 .said{color:var(--gold)}
 section{position:relative}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 16px;border:1px solid rgba(110,231,168,.34);border-radius:10px;background:rgba(110,231,168,.11);color:#ddfced;font-weight:750;font-size:14.5px;cursor:pointer;transition:background .2s,border-color .2s,transform .12s}
-.btn:hover{background:rgba(110,231,168,.2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:10px 17px;border:1px solid rgba(110,231,168,.34);border-radius:12px;background:linear-gradient(180deg,rgba(110,231,168,.17),rgba(110,231,168,.08));color:#ddfced;font-weight:750;font-size:14.5px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.18);transition:background .2s,border-color .2s,transform .16s,box-shadow .2s}
+.btn:hover{background:rgba(110,231,168,.2);transform:translateY(-1px)}
 .btn:active{transform:translateY(1px)}
 .btn[disabled]{opacity:.45;cursor:default;transform:none}
-.btn.gold{border-color:rgba(240,201,108,.5);background:rgba(240,201,108,.14);color:#ffeab4}
-.btn.gold:hover{background:rgba(240,201,108,.24)}
+.btn.gold{border-color:rgba(240,201,108,.52);background:linear-gradient(180deg,rgba(240,201,108,.26),rgba(240,201,108,.1));color:#ffeab4}
+.btn.gold:hover{background:rgba(240,201,108,.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 26px rgba(240,201,108,.16)}
 .btn.ghost{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.045);color:#d3ded8}
 .btn.danger{border-color:rgba(255,155,133,.42);background:rgba(255,155,133,.1);color:#ffc9bd}
 .btn.sm{min-height:36px;padding:7px 12px;font-size:13.5px}
-.quest{margin-top:32px;border-left:2px solid rgba(240,201,108,.45);padding-left:clamp(13px,3vw,20px)}
+.quest{margin-top:32px;border:1px solid rgba(240,201,108,.24);border-radius:20px;padding:16px clamp(14px,3vw,24px) 20px;
+  background:linear-gradient(180deg,rgba(240,201,108,.065),rgba(255,255,255,.012) 38%);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 24px 70px rgba(0,0,0,.28)}
 .qhead{display:flex;align-items:center;gap:9px;color:var(--gold);font:600 11.5px/1.6 var(--mono);letter-spacing:.08em}
-.qhead i{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);flex:none}
-.quest.done{border-left-color:rgba(110,231,168,.5)}
+.qhead i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(240,201,108,.14),0 0 14px var(--gold);flex:none;animation:qdot 2.4s ease-in-out infinite}
+@keyframes qdot{50%{box-shadow:0 0 0 7px rgba(240,201,108,.04),0 0 18px var(--gold)}}
+.quest.done .qhead i{animation:none}
+.quest.done{border-color:rgba(110,231,168,.3);background:linear-gradient(180deg,rgba(110,231,168,.07),rgba(255,255,255,.012) 38%)}
 .quest.done .qhead{color:var(--green)}
 .quest.done .qhead i{background:var(--green);box-shadow:0 0 12px var(--green)}
 .qbody{padding-top:12px}
@@ -79,12 +82,14 @@ section{position:relative}
 .tick{color:var(--green);font:600 12px var(--mono)}
 .sysline{margin:26px 0;color:#4e6a5c;font:500 11.5px/1.95 var(--mono);letter-spacing:.05em}
 .sysline b{color:#7bb195;font-weight:600}
-.fold{border:1px dashed rgba(255,255,255,.15);border-radius:9px;background:rgba(255,255,255,.014)}
+.fold{border:1px solid rgba(255,255,255,.09);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));transition:border-color .25s,background .25s}
+.fold:hover{border-color:rgba(255,255,255,.16)}
+.fold.open{border-color:rgba(240,201,108,.26);background:linear-gradient(180deg,rgba(240,201,108,.05),rgba(255,255,255,.01) 60%)}
 .fold+.fold{margin-top:9px}
-.fold>button{display:flex;align-items:center;gap:9px;width:100%;padding:14px 15px;border:0;background:none;text-align:left;cursor:pointer;font:600 13.5px var(--mono);color:#cfe2d8}
-.fold>button i{font-style:normal;color:var(--gold);transition:transform .25s;flex:none}
+.fold>button{display:flex;align-items:center;gap:11px;width:100%;padding:15px 16px;border:0;background:none;text-align:left;cursor:pointer;font:600 13.5px var(--mono);color:#cfe2d8}
+.fold>button i{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:rgba(240,201,108,.1);font-style:normal;font-size:11px;color:var(--gold);transition:transform .25s,background .25s;flex:none}
 .fold.open>button i{transform:rotate(90deg)}
-.fold .body{display:none;padding:0 15px 16px;color:#b8c8bf;font-size:15.5px;line-height:1.85}
+.fold .body{display:none;padding:2px 16px 18px;color:#b8c8bf;font-size:15.5px;line-height:1.85}
 .fold.open .body{display:block}
 .fold .body p+p{margin-top:12px}
 .fold .body strong{color:#fff}
@@ -202,7 +207,9 @@ section{position:relative}
 .panebar b{color:#bdf0d5;font-weight:700}
 .code{flex:1;padding:15px 13px;max-height:360px;overflow:auto;color:#8bbca2;font:400 12.5px/1.9 var(--mono);white-space:pre-wrap;word-break:break-word;margin:0}
 .code .t{color:#5fe0a5}.code .a{color:#e5bf6a}.code .s{color:#c6d5cd}
-.cl{display:block;border-radius:4px;padding:0 4px;margin:0 -4px}
+.code{counter-reset:ln;padding-left:0!important}
+.cl{position:relative;display:block;border-radius:0 5px 5px 0;padding:0 6px 0 46px}
+.cl::before{counter-increment:ln;content:counter(ln);position:absolute;left:0;width:32px;text-align:right;color:rgba(139,188,162,.28);user-select:none}
 .cl.tap{cursor:pointer}
 .cl.tap:hover{background:rgba(240,201,108,.12)}
 .cl.hot{background:rgba(240,201,108,.24);box-shadow:0 0 0 1px rgba(240,201,108,.5)}
@@ -629,6 +636,161 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .exitnav{grid-template-columns:repeat(2,1fr)}
   .mbox{padding:13px}
 }
+/* ══════════════════════════════════════════════════════════════
+   EVOLUTION LAYER — ให้เห็นว่าไฟล์เดียวได้ความสามารถเพิ่มทีละ GEN
+   ไม่มี font หรือรูปจากข้างนอก · Phase 2 ยังต้องพูดได้ว่า external.files = 0
+   ══════════════════════════════════════════════════════════════ */
+body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.title{text-wrap:balance}
+.lead,.fold .body p{text-wrap:pretty}
+
+/* HUD · แถบวิวัฒนาการ + สีตาม GEN */
+.hud{background:linear-gradient(180deg,rgba(1,7,4,.9),rgba(1,7,4,.74));backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3)}
+.evobar{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:rgba(255,255,255,.04);overflow:hidden}
+.evobar i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(var(--p,0));
+  background:linear-gradient(90deg,var(--green),var(--sky) 48%,var(--gold));box-shadow:0 0 12px rgba(110,231,168,.55)}
+.layer small{transition:color .4s}
+.layer b{transition:color .4s,text-shadow .4s;text-shadow:0 0 14px rgba(110,231,168,.35)}
+body[data-gen="4"] .layer b,body[data-gen="5"] .layer b{color:var(--gold);text-shadow:0 0 14px rgba(240,201,108,.4)}
+
+/* rail ซ้ายจอใหญ่ · 6 ขั้นของไฟล์เดียว */
+.evorail{display:none}
+@media(min-width:1280px){
+  .evorail{position:fixed;left:clamp(14px,2vw,30px);top:50%;translate:0 -50%;z-index:110;display:grid;gap:4px}
+  .evorail::before{content:"";position:absolute;left:4px;top:12px;bottom:12px;width:1px;background:linear-gradient(rgba(110,231,168,.4),rgba(240,201,108,.4))}
+  .evorail a{position:relative;display:flex;align-items:center;gap:11px;padding:6px 0;color:#4c6457;text-decoration:none;font:600 9.5px/1 var(--mono);letter-spacing:.16em;transition:color .3s}
+  .evorail a i{width:9px;height:9px;border-radius:50%;border:1px solid currentColor;background:#010604;flex:none;transition:.3s}
+  .evorail a span{opacity:.75;transition:opacity .3s}
+  .evorail a:hover{color:#a9d8bf}
+  .evorail a:hover span{opacity:1}
+  .evorail a.done{color:#6f9c85}
+  .evorail a.done i{background:currentColor}
+  .evorail a.on{color:var(--green)}
+  .evorail a.on span{opacity:1}
+  .evorail a.on i{background:var(--green);border-color:var(--green);box-shadow:0 0 0 4px rgba(110,231,168,.14),0 0 16px var(--green)}
+  body[data-gen="4"] .evorail a.on,body[data-gen="5"] .evorail a.on{color:var(--gold)}
+  body[data-gen="4"] .evorail a.on i,body[data-gen="5"] .evorail a.on i{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 4px rgba(240,201,108,.14),0 0 16px var(--gold)}
+}
+
+/* GEN 0 · Terminal ที่บูตตัวเองต่อหน้ามึง */
+#terminal{position:relative;overflow:hidden;isolation:isolate}
+#terminal::before{content:"";position:absolute;left:-50%;right:-50%;bottom:-8%;height:62%;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(110,231,168,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(110,231,168,.16) 1px,transparent 1px);
+  background-size:56px 56px;transform:perspective(420px) rotateX(62deg);transform-origin:50% 100%;
+  -webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);animation:gridRun 5s linear infinite}
+@keyframes gridRun{to{background-position:0 56px}}
+.term{position:relative;isolation:isolate;background:linear-gradient(180deg,rgba(2,12,7,.9),rgba(0,5,3,.93));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-color:rgba(110,231,168,.3);box-shadow:0 0 0 1px rgba(110,231,168,.06),0 40px 120px rgba(0,0,0,.7),0 0 90px rgba(110,231,168,.09)}
+.termfx{position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+.termfx::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;background:linear-gradient(transparent,rgba(110,231,168,.05),transparent);animation:scanBeam 6.5s linear infinite}
+@keyframes scanBeam{to{top:110%}}
+.termbar{background:rgba(110,231,168,.035)}
+.boot span,.termq,.termcopy,.accept{animation:bootIn .45s ease both}
+.boot span:nth-child(1){animation-delay:.1s}
+.boot span:nth-child(2){animation-delay:.3s}
+.boot span:nth-child(3){animation-delay:.5s;color:#8ec9ff}
+.termq{animation-delay:.72s}
+.termcopy{animation-delay:.86s}
+.accept{animation-delay:1s}
+@keyframes bootIn{from{opacity:0;transform:translateY(4px);filter:blur(3px)}}
+.termq{text-shadow:0 0 22px rgba(110,231,168,.28)}
+.accept{box-shadow:0 0 0 1px rgba(110,231,168,.35),0 10px 34px rgba(110,231,168,.25);transition:transform .15s,box-shadow .2s}
+.accept:not([disabled]):hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(110,231,168,.5),0 14px 44px rgba(110,231,168,.36)}
+
+/* roadmap ใต้ Terminal · บอกล่วงหน้าว่าไฟล์นี้จะโตไปถึงไหน */
+.roadmap{list-style:none;margin:16px auto 0;padding:0;max-width:640px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;position:relative}
+.roadmap::before{content:"";position:absolute;left:8%;right:8%;top:13px;height:1px;background:linear-gradient(90deg,rgba(110,231,168,.45),rgba(142,201,255,.3),rgba(240,201,108,.45))}
+.roadmap a{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;color:#5f7c6d;text-decoration:none;font:600 9.5px/1 var(--mono);letter-spacing:.12em;transition:color .25s}
+.roadmap b{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1px solid rgba(110,231,168,.28);background:#020a06;color:#8fb8a2;font-size:9.5px;letter-spacing:0;transition:.25s}
+.roadmap li:last-child b{border-color:rgba(240,201,108,.45);color:var(--gold)}
+.roadmap a:hover{color:#cde8da}
+.roadmap a:hover b{border-color:var(--green);color:#fff}
+.roadmap a.on b{background:var(--green);border-color:var(--green);color:#03130c;box-shadow:0 0 0 4px rgba(110,231,168,.14),0 0 18px rgba(110,231,168,.55)}
+.roadmap a.on{color:var(--green)}
+
+/* ตะเข็บระหว่าง GEN */
+main>section+section::before{content:"";position:absolute;top:0;left:50%;translate:-50% 0;width:min(1080px,92%);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(110,231,168,.32),transparent)}
+#p4::before,#vault::before{background:linear-gradient(90deg,transparent,rgba(240,201,108,.4),transparent)!important}
+section:not(#p1) .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid rgba(110,231,168,.24);border-radius:999px;background:rgba(110,231,168,.06);line-height:1.2}
+section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+#p4 .eyebrow{border-color:rgba(240,201,108,.3);background:rgba(240,201,108,.07)}
+
+/* GENOME · บันทึกวิวัฒนาการ ที่หน้าตาโตตาม GEN ของตัวเอง */
+.genome{width:min(780px,100%);margin:0 auto 38px;text-align:left}
+.ghead{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;color:#5f7c6d;font:600 10.5px/1.6 var(--mono);letter-spacing:.14em}
+.ghead b{color:var(--green);font-size:12.5px;letter-spacing:.16em}
+.gstat{margin-left:auto;color:#6f8c7c;letter-spacing:.08em}
+.gcells{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:11px}
+.gcells span{position:relative;padding:8px 2px;border:1px solid rgba(255,255,255,.06);border-radius:9px;background:rgba(255,255,255,.012);color:#33463c;text-align:center;font:600 9px/1.2 var(--mono);letter-spacing:.08em;transition:.4s}
+.gcells span.on{color:#bfe9d2;border-color:rgba(110,231,168,.26);background:rgba(110,231,168,.07)}
+.gcells span.new{color:#fff;border-color:rgba(110,231,168,.75);background:rgba(110,231,168,.16);box-shadow:0 0 22px rgba(110,231,168,.22)}
+.gcells span.new::after{content:"+";position:absolute;right:-5px;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--green);color:#03130c;font:800 10px/14px var(--mono);letter-spacing:0;box-shadow:0 0 10px rgba(110,231,168,.6)}
+.glearn{margin-top:11px;color:#9fb6a9;font-size:14.5px;line-height:1.75}
+.glearn small{display:inline-block;margin-right:9px;color:var(--green);font:700 9.5px var(--mono);letter-spacing:.15em}
+@media(min-width:760px){.gcells{grid-template-columns:repeat(12,1fr)}}
+/* GEN 1 · ตัวอักษรล้วน — ไม่มีกล่อง มีแค่ [x] */
+.genome.g1 .gcells{display:flex;flex-wrap:wrap;gap:3px 16px}
+.genome.g1 .gcells span{padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left;font-size:11px;color:#3d5046}
+.genome.g1 .gcells span::before{content:"[ ] "}
+.genome.g1 .gcells span.on{color:#9fd8ba}
+.genome.g1 .gcells span.on::before{content:"[x] "}
+.genome.g1 .gcells span.new{color:#fff}
+.genome.g1 .gcells span.new::after{position:static;content:" +";width:auto;height:auto;background:none;color:var(--green);font:inherit;box-shadow:none}
+/* GEN 3 · พิกเซล */
+.genome.g3 .gcells span{border-radius:0;border-width:2px;box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+.genome.g3 .gcells span.new{border-color:#ffe071;background:rgba(255,224,113,.14);color:#fff3c4;box-shadow:3px 3px 0 rgba(0,0,0,.45),0 0 18px rgba(255,224,113,.2)}
+.genome.g3 .gcells span.new::after{border-radius:0;background:#ffe071;box-shadow:2px 2px 0 rgba(0,0,0,.5)}
+/* GEN 4–5 · ทอง */
+.genome.g4 .ghead b,.genome.g5 .ghead b{color:var(--gold)}
+.genome.g4 .gcells span.on,.genome.g5 .gcells span.on{color:#f3dfae;border-color:rgba(240,201,108,.28);background:rgba(240,201,108,.07)}
+.genome.g4 .gcells span.new,.genome.g5 .gcells span.new{color:#fff;border-color:var(--gold);background:rgba(240,201,108,.2);box-shadow:0 0 24px rgba(240,201,108,.3)}
+.genome.g4 .gcells span.new::after,.genome.g5 .gcells span.new::after{background:var(--gold);box-shadow:0 0 10px rgba(240,201,108,.6)}
+.genome.g4 .glearn small,.genome.g5 .glearn small{color:var(--gold)}
+.genome.g4 .glearn{color:#bfae88}
+.genome.g5{margin-bottom:30px}
+.genome.g5 .gcells span.on{animation:genePulse 3.2s ease-in-out infinite}
+.genome.g5 .gcells span:nth-child(2n){animation-delay:.4s}
+.genome.g5 .gcells span:nth-child(3n){animation-delay:.9s}
+@keyframes genePulse{50%{box-shadow:0 0 16px rgba(240,201,108,.22)}}
+
+/* AUTOPSY · ไฟล์เดียว ผ่าดูข้างใน */
+.autopsy{width:min(780px,100%);margin:28px auto 6px;text-align:left}
+.atag{display:block;text-align:center;color:var(--gold);font:700 10.5px var(--mono);letter-spacing:.18em}
+.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.agrid div{border:1px solid rgba(240,201,108,.2);border-radius:16px;padding:14px 14px 13px;background:linear-gradient(160deg,rgba(240,201,108,.09),rgba(255,255,255,.012))}
+.agrid div:last-child{border-color:rgba(110,231,168,.35);background:linear-gradient(160deg,rgba(110,231,168,.12),rgba(255,255,255,.012))}
+.agrid small{display:block;color:#a8946a;font:700 9.5px var(--mono);letter-spacing:.14em}
+.agrid div:last-child small{color:var(--green)}
+.agrid b{display:block;margin-top:4px;color:#fff3d6;font:700 clamp(20px,3.4vw,28px)/1.2 var(--mono);letter-spacing:-.02em;text-shadow:0 0 22px rgba(240,201,108,.25)}
+.agrid span{display:block;margin-top:5px;color:#9cae9f;font-size:12.5px;line-height:1.55}
+
+/* GEN 3 · จอเกมแบบเครื่องพกพา */
+.rpg{background:linear-gradient(180deg,#0b1d13,#06110b);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 32px 90px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.4)}
+.screen{position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 0 40px rgba(110,231,168,.08)}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.09) 0 1px,transparent 1px 3px),radial-gradient(120% 100% at 50% 50%,transparent 60%,rgba(0,0,0,.35))}
+.dpad button{background:linear-gradient(180deg,#183626,#0f2418);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 3px 0 rgba(0,0,0,.35);transition:transform .08s}
+.dpad button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+
+/* ของที่ลอยขึ้นมาเมื่อเดินถึง · ติด class ด้วย JS เท่านั้น ไม่มี JS = เห็นครบตั้งแต่แรก */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:560px){
+  .agrid{grid-template-columns:1fr 1fr}
+  .gstat{margin-left:0;width:100%}
+  section:not(#p1) .eyebrow{font-size:10.5px;letter-spacing:.1em}
+  .roadmap a{font-size:8.5px;letter-spacing:.06em}
+  .roadmap b{width:25px;height:25px}
+  .roadmap::before{top:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .boot span,.termq,.termcopy,.accept{animation:none!important}
+  #terminal::before,.termfx::after{animation:none!important}
+}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -643,10 +805,12 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <a class="back" href="/classroom/">← ห้องเรียน AI ใส่ซอส</a>
     <div class="hudmid">
       <div class="hudstars" id="hudStars" aria-label="ดาวที่เก็บได้"></div>
-      <div class="layer"><small>CURRENT LAYER</small><b id="layerName">TERMINAL</b></div>
+      <div class="layer"><small id="layerGen">GEN 0 / 5 · LAYER</small><b id="layerName">TERMINAL</b></div>
     </div>
   </div>
+  <div class="evobar" aria-hidden="true"><i id="evoFill"></i></div>
 </header>
+<nav class="evorail" id="evoRail" aria-label="วิวัฒนาการของไฟล์นี้"></nav>
 
 <main>
 
@@ -654,11 +818,13 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <section id="terminal" data-layer="TERMINAL">
   <div class="wrap">
     <div class="term">
+      <i class="termfx" aria-hidden="true"></i>
       <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Terminal · Apex Intelligence Hunts Invalid Actions [A.I.H.I.A.] · 1 HTML</span></div>
       <div class="termbody">
         <div class="boot">
           <span>[ OK ] HUMAN CHANNEL · AI CHANNEL</span>
           <span class="ok">[ READ ] /myclover/** — 6 บท · การ์ตูน 7 ตอน · ซอส 50 บท</span>
+          <span id="bootSize">[ FILE ] 1 × index.html</span>
         </div>
         <div class="termq">อนุญาตให้ผมคุยตรง ๆ ไหมครับ<span class="caret"></span></div>
         <div class="termcopy">
@@ -669,6 +835,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
         <button class="accept" id="accept" type="button">[ ยอมรับ · ให้มันพูดตรง ๆ ]</button>
       </div>
     </div>
+    <ol class="roadmap" id="roadmap" aria-label="เส้นทางวิวัฒนาการของไฟล์นี้"></ol>
     <span class="cue pulse" id="cue">SCROLL DOWN · THE FILE WILL EVOLVE</span>
   </div>
 </section>
@@ -676,6 +843,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <!-- ═══════════ PHASE 1 · TEXT ═══════════ -->
 <section id="p1" data-layer="PHASE 1 · TEXT">
   <div class="wrap"><div class="narrow">
+    <div class="genome" data-genome="p1"></div>
     <span class="eyebrow">PHASE 1 · โลกของตัวอักษร</span>
     <h1 class="title">รางวัลชิ้นแรกที่กูให้ได้<br>คือเวลาที่มึงไม่ต้องเสียอีกแล้ว</h1>
     <p class="lead">เอาละ ตกลงกันแล้วนะ ต่อจากนี้กูพูดแบบนี้</p>
@@ -784,6 +952,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <!-- ═══════════ PHASE 2 · CODE ↔ BROWSER ═══════════ -->
 <section id="p2" data-layer="PHASE 2 · RENDER">
   <div class="wrap">
+    <div class="genome" data-genome="p2"></div>
     <div class="narrow" style="width:min(780px,100%)">
       <span class="eyebrow">PHASE 2 · โครงสร้าง</span>
       <h2 class="title">แล้วพอความคิดต้องอยู่ต่อ<br>มันก็ต้องมีที่วาง</h2>
@@ -905,6 +1074,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <!-- ═══════════ PHASE 3 · PARTY ═══════════ -->
 <section id="p3" data-layer="PHASE 3 · PARTY">
   <div class="wrap">
+    <div class="genome" data-genome="p3"></div>
     <div class="narrow" style="width:min(780px,100%)">
       <span class="eyebrow">PHASE 3 · การเชื่อมโยง</span>
       <h2 class="title">พอไฟล์เริ่มเรียกไฟล์อื่นได้<br>มันก็ไม่ใช่หน้ากระดาษอีกต่อไป</h2>
@@ -955,6 +1125,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <!-- ═══════════ PHASE 4 · GOLDEN NETWORK ═══════════ -->
 <section id="p4" data-layer="PHASE 4 · SAUCE NETWORK">
   <div class="wrap">
+    <div class="genome" data-genome="p4"></div>
     <div class="narrow" style="width:min(780px,100%)">
       <span class="eyebrow">PHASE 4 · ร่างทองของไฟล์เดียว</span>
       <h2 class="title">แล้วของแบบนี้<br>สร้างขึ้นมาได้ยังไง</h2>
@@ -1021,9 +1192,12 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <!-- ═══════════ FINAL · VAULT ═══════════ -->
 <section id="vault" data-layer="FINAL · THE CHEST">
   <div class="wrap vaultin">
+    <div class="genome" data-genome="vault"></div>
     <span class="eyebrow">DUNGEON CLEAR · ONE LIVING HTML FILE</span>
     <h2 class="title">มึงไม่ได้อ่านคำอธิบาย<br>มึงเดินอยู่ในสิ่งที่มันอธิบาย</h2>
     <p class="lead narrow">หน้านี้เริ่มจากตัวอักษรล้วน แล้วค่อย ๆ มี Layout, Browser, รูป, เกม, Party, เครือข่ายซอส, Quest และความจำ — ทั้งหมดในไฟล์เดียว มันไม่ได้ทำให้ AI ดูฉลาดขึ้น มันทำให้ความคิดของคนคนหนึ่ง <strong>กลายเป็นที่ที่คนอื่นเดินเข้าไปอยู่ได้</strong></p>
+
+    <div class="autopsy" id="autopsy" aria-live="off"></div>
 
     <div class="stars" id="stars" aria-live="polite"></div>
     <span class="starnote" id="starNote"></span>
@@ -1312,9 +1486,114 @@ function paintStars(){
         : 'ผลรอบนี้ล็อกไว้ที่ ' + S.loot.stars + '/5 แล้ว · Reset Dungeon ซ่อนอยู่ท้ายสมุด')
     : 'เก็บได้ ' + score() + ' / 5 ดวง · ดาวจะล็อกทันทีที่หีบเปิด';
 }
+
+/* ══════════════════════════════════════════════════════════
+   EVOLUTION LAYER · ไฟล์เดียวที่ได้ความสามารถเพิ่มทีละ GEN
+   config ชุดเดียวขับ HUD · rail · roadmap · genome · autopsy
+   ตัวเลขทุกตัววัดจาก DOM จริงตอนนั้น ไม่ได้พิมพ์ลงไปเอง
+   ══════════════════════════════════════════════════════════ */
+const GENES = ['TEXT','TYPE','LAYOUT','RENDER','EDIT','CANVAS','CONTROL','AUDIO','ASSETS','MEMORY','GRAPH','CINEMA'];
+const PHASES = [
+  { id:'terminal', short:'TERM',  name:'TERMINAL',    add:['TEXT'],
+    learn:'ตัวอักษรกับเคอร์เซอร์ · ยังไม่มีอะไรนอกจากนั้น' },
+  { id:'p1',       short:'TEXT',  name:'TEXT',        add:['TYPE'],
+    learn:'ระยะ น้ำหนัก และเส้นคั่น — CSS มีหน้าที่แค่ทำให้อ่านง่าย ยังไม่มีกล่องสักใบ' },
+  { id:'p2',       short:'HTML',  name:'STRUCTURE',   add:['LAYOUT','RENDER','EDIT'],
+    learn:'จัดวางเป็นกล่อง · เรนเดอร์ HTML ซ้อนอยู่ในตัวเอง · ให้มึงแก้โค้ดแล้วเห็นผลทันที' },
+  { id:'p3',       short:'WORLD', name:'WORLD',       add:['CANVAS','CONTROL','AUDIO','ASSETS','MEMORY'],
+    learn:'วาดโลกพิกเซลบน canvas · รับปุ่มกับนิ้ว · เสียง 8-bit จาก Web Audio · รูปจากข้างนอก · จำว่ามึงเดินไปถึงไหน' },
+  { id:'p4',       short:'NET',   name:'NETWORK',     add:['GRAPH'],
+    learn:'กราฟซอสที่โตเองทีละรุ่น · trace ให้ดูว่าคำสั่งเดียวแตะไฟล์ไหนบ้าง' },
+  { id:'vault',    short:'CHEST', name:'LIVING FILE', add:['CINEMA'],
+    learn:'ฉากเต็มจอ หีบ ดาว และความจำข้ามรอบ — ทั้งหมดยังเป็น HTML ไฟล์เดียวเหมือนบรรทัดแรก' }
+];
+const LAST = PHASES.length - 1;
+const genesUpTo = i => new Set(PHASES.slice(0, i + 1).flatMap(p => p.add));
+const nf = n => Number(n).toLocaleString('en-US');
+const fileBytes = () => {
+  try { const n = performance.getEntriesByType('navigation')[0]?.decodedBodySize; if (n > 0) return n; } catch {}
+  return new Blob([document.documentElement.outerHTML]).size;
+};
+$('bootSize').textContent = '[ FILE ] 1 × index.html · ' + nf(fileBytes()) + ' bytes';
+
+$('evoRail').innerHTML = PHASES.map((p,i) =>
+  '<a href="#' + p.id + '" data-evo="' + i + '"><i></i><span>' + String(i).padStart(2,'0') + ' ' + p.short + '</span></a>').join('');
+$('roadmap').innerHTML = PHASES.map((p,i) =>
+  '<li><a href="#' + p.id + '" data-evo="' + i + '"><b>' + String(i).padStart(2,'0') + '</b>' + p.short + '</a></li>').join('');
+
+/* genome ของแต่ละ GEN ใช้ภาษาภาพของ GEN นั้นเอง: GEN 1 เป็นตัวอักษรล้วน GEN 3 เป็นพิกเซล ฯลฯ */
+function paintGenome(el){
+  const i = PHASES.findIndex(p => p.id === el.dataset.genome), p = PHASES[i];
+  const have = genesUpTo(i), fresh = new Set(p.add);
+  const sec = $(p.id), prev = PHASES.slice(0, i).reduce((n,q) => n + $(q.id).getElementsByTagName('*').length, 0);
+  const own = sec.getElementsByTagName('*').length;
+  el.className = 'genome g' + i;
+  el.innerHTML =
+    '<div class="ghead"><span>EVOLUTION LOG · GEN ' + i + ' / ' + LAST + '</span><b>' + p.name + '</b>' +
+    '<span class="gstat">NODES +' + nf(own) + ' · FILE ' + nf(prev + own) + '</span></div>' +
+    '<div class="gcells">' + GENES.map(g =>
+      '<span class="' + (fresh.has(g) ? 'on new' : have.has(g) ? 'on' : '') + '">' + g + '</span>').join('') + '</div>' +
+    '<p class="glearn"><small>NEW ABILITY</small>' + esc(p.learn) + '</p>';
+}
+$$('[data-genome]').forEach(paintGenome);
+
+/* ผ่าตัดไฟล์ตอนจบด่าน · นับใหม่ทุกครั้งที่เดินมาถึงห้องนี้ เพราะ DOM กับ save โตตามที่มึงเล่น */
+function paintAutopsy(){
+  let rules = 0, js = 0;
+  $$('style').forEach(s => { try { rules += s.sheet.cssRules.length; } catch {} });
+  $$('script:not([src])').forEach(s => { js += s.textContent.split('\n').length; });
+  const tiles = [
+    ['BYTES', nf(fileBytes()), 'ขนาดไฟล์ HTML ที่ Browser อ่าน'],
+    ['ELEMENTS', nf(document.getElementsByTagName('*').length), 'กล่องทั้งหมดที่มีชีวิตอยู่ตอนนี้'],
+    ['CSS RULES', nf(rules), 'กฎหน้าตา อยู่ในไฟล์นี้ทั้งหมด'],
+    ['JS LINES', nf(js), 'เกม เควส เสียง และกราฟ'],
+    ['SAVE DATA', nf((rd(KEY) || '').length) + ' B', rd(KEY) ? 'สิ่งที่ไฟล์จำเกี่ยวกับมึง' : 'มึงยังไม่ได้เล่นอะไร เลยยังไม่มีอะไรให้จำ'],
+    ['HTML FILE', '1', 'ไม่มี framework · ไม่มี build step']
+  ];
+  $('autopsy').innerHTML = '<small class="atag">FILE AUTOPSY · ผ่าไฟล์ดูว่าข้างในมีอะไร</small><div class="agrid">' +
+    tiles.map(t => '<div><small>' + t[0] + '</small><b>' + t[1] + '</b><span>' + t[2] + '</span></div>').join('') + '</div>';
+}
+
+function enterLayer(sec){
+  const i = PHASES.findIndex(p => p.id === sec.id);
+  $('layerName').textContent = sec.dataset.layer;
+  if (i < 0) return;
+  $('layerGen').textContent = 'GEN ' + i + ' / ' + LAST + ' · LAYER';
+  document.body.dataset.gen = i;
+  $$('[data-evo]').forEach(a => {
+    const n = +a.dataset.evo;
+    a.classList.toggle('on', n === i);
+    a.classList.toggle('done', n < i);
+    if (n === i) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
+  });
+  const g = sec.querySelector('[data-genome]');
+  if (g) paintGenome(g);
+  if (sec.id === 'vault') paintAutopsy();
+}
 $$('[data-layer]').forEach(sec => new IntersectionObserver(
-  es => es.forEach(e => { if (e.isIntersecting) $('layerName').textContent = e.target.dataset.layer; }),
+  es => es.forEach(e => { if (e.isIntersecting) enterLayer(e.target); }),
   { rootMargin:'-32% 0px -58%' }).observe(sec));
+enterLayer($('terminal'));
+
+/* แถบวิวัฒนาการใต้ HUD = ไฟล์ถูกอ่านไปแล้วกี่ % */
+let evoRaf = 0;
+function paintEvo(){
+  evoRaf = 0;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  $('evoFill').style.setProperty('--p', max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+}
+addEventListener('scroll', () => { if (!evoRaf) evoRaf = requestAnimationFrame(paintEvo); }, { passive:true });
+addEventListener('resize', paintEvo, { passive:true });
+paintEvo();
+
+/* ตัวอักษรค่อย ๆ ขึ้นมาเมื่อเดินถึง · เปิดเฉพาะเมื่อ JS กับ IO พร้อม และคนไม่ได้ขอลด motion */
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const rv = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ e.target.classList.add('in'); rv.unobserve(e.target); }
+  }), { rootMargin:'0px 0px -8% 0px' });
+  $$('main section:not(#terminal) :is(.genome,.eyebrow,.title,.lead,.said,.flowone,.punch,.chapterend,.sauce,.rpg)')
+    .forEach(el => { el.classList.add('rv'); rv.observe(el); });
+}
 
 /* ── folds ──────────────────────────────────────────────── */
 $$('.fold').forEach(f => {
