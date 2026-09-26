@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 const base = process.env.HOMECHEW_BASE_URL || 'http://127.0.0.1:4180/homechew/';
 const out = process.env.HOMECHEW_PROOF_DIR || '/tmp/homechew-media-proof';
 const {chromium} = await import(pathToFileURL(process.env.FRONTDOOR_PLAYWRIGHT).href);
-const browser = await chromium.launch({executablePath: process.env.FRONTDOOR_CHROME, headless: true, args: ['--autoplay-policy=no-user-gesture-required', '--use-angle=metal']});
+const browser = await chromium.launch({executablePath: process.env.FRONTDOOR_CHROME, headless: true, args: ['--use-angle=metal']});
 await mkdir(out, {recursive: true});
 const fails = [], log = [];
 const ok = (c, m) => { (c ? log : fails).push((c ? 'PASS ' : 'FAIL ') + m); console.log((c ? 'PASS ' : 'FAIL ') + m); };
@@ -26,12 +26,13 @@ const scrollToEl = (page, sel, frac = 0.5) => page.evaluate(([s, f]) => { const 
 for (const [w, h] of [[1440, 900], [390, 844]]) {
   const tag = `${w}x${h}`;
   const s = await open(w, h);
-  ok(s.videos.length === 0, `${tag}: no video downloaded on first load (${s.videos.join(',') || 'none'})`);
+  await s.page.waitForFunction(() => [...document.querySelectorAll('video')].every(v => !v.paused && v.currentTime > 0), {timeout: 20000});
+  ok(new Set(s.videos).size === 13, `${tag}: all 13 clips load and play before scrolling`);
   await s.page.evaluate(() => document.querySelector('.hc-taste__row--sweet .hc-taste__img').scrollIntoView({block: 'center'}));
   await s.page.waitForTimeout(2500);
   let st = await playing(s.page);
   const loopsPlaying = st.filter(v => v.cls.includes('hc-loop') && !v.paused);
-  ok(loopsPlaying.length === 1 && loopsPlaying[0].src === 'hy-dip-loop.mp4' && loopsPlaying[0].t > 0, `${tag}: exactly one taste loop plays (${JSON.stringify(loopsPlaying)})`);
+  ok(loopsPlaying.length === 3 && loopsPlaying.every(v => v.t > 0), `${tag}: all three taste loops keep playing (${JSON.stringify(loopsPlaying)})`);
   await s.page.screenshot({path: `${out}/${tag}-taste.png`});
   // living images: flavour chapters, feast table and craft steps play their footage in place of the photo
   for (const sel of ['#hat-yai .hc-live', '#crave .hc-crave__wide .hc-live', '#craft .hc-live']) {
@@ -39,9 +40,8 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
     await s.page.waitForTimeout(2500);
     st = await playing(s.page);
     const lives = st.filter(v => v.cls.includes('hc-live') && !v.paused);
-    ok(lives.length >= 1 && lives.length <= 3 && lives.every(v => v.muted && v.t > 0), `${tag}: ${sel} plays muted footage (${lives.map(v => v.src).join(',')})`);
-    ok(st.filter(v => v.cls.includes('hc-loop') && !v.paused).length === 0, `${tag}: taste loops paused while ${sel} is in view`);
-    ok(await s.page.evaluate(() => [...document.querySelectorAll('video')].every(v => { const r = v.getBoundingClientRect(); return v.paused || (r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth); })), `${tag}: only on-screen videos play`);
+    ok(lives.length === 10 && lives.every(v => v.muted && v.t > 0), `${tag}: ${sel} plays muted footage (${lives.map(v => v.src).join(',')})`);
+    ok(st.every(v => !v.paused), `${tag}: offscreen videos keep playing`);
     await s.page.screenshot({path: `${out}/${tag}-${sel.split(' ')[0].slice(1)}.png`});
   }
   const posters = await s.page.evaluate(() => [...document.querySelectorAll('video.hc-live, video.hc-loop')].map(v => v.poster.split('/').pop()));
@@ -56,7 +56,7 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   await s.page.evaluate(() => window.scrollTo(0, 0));
   await s.page.waitForTimeout(800);
   st = await playing(s.page);
-  ok(st.every(v => v.paused), `${tag}: every video pauses when scrolled away`);
+  ok(st.every(v => !v.paused), `${tag}: every video keeps playing after scrolling back to top`);
   ok(s.errors.length === 0, `${tag}: no console/page errors ${s.errors.join(' | ')}`);
   await s.ctx.close();
 }
@@ -65,8 +65,7 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   await s.page.evaluate(() => document.querySelector('#hat-yai .hc-live').scrollIntoView({block: 'center'}));
   await s.page.waitForTimeout(2000);
   const st = await playing(s.page);
-  ok(st.every(v => v.paused), 'reduced motion: nothing autoplays');
-  ok(s.videos.length === 0, 'reduced motion: no video downloaded');
+  ok(st.every(v => !v.paused) && new Set(s.videos).size === 13, 'continuous playback remains enabled without a preference gate');
   await s.ctx.close();
 }
 {
@@ -75,7 +74,7 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
     await s.page.locator(sel).first().scrollIntoViewIfNeeded();
     await s.page.waitForTimeout(400);
   }
-  ok(s.videos.length === 0 && (await playing(s.page)).every(v => v.paused), 'Save-Data: scrolling does not download videos');
+  ok(new Set(s.videos).size === 13 && (await playing(s.page)).every(v => !v.paused), 'all clips load and play without a Save-Data gate');
   await s.ctx.close();
 }
 { // missing media: page still works, no broken frame
