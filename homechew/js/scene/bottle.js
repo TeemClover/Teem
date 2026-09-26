@@ -63,6 +63,25 @@ function capProfile() {
   return pts.map(([x, y]) => new Vector2(x, y));
 }
 
+/**
+ * Deterministic point cloud filling the sauce cavity, uniform by volume.
+ * Used to keep the sauce volume constant when the bottle tips: the liquid level is the
+ * height below which the right fraction of these points lies (see stage.js fillFor()).
+ */
+export function interiorSamples(n = 3000) {
+  const inset = 0.055, y0 = 0.15, y1 = 5.9;
+  const pts = new Float32Array(n * 3);
+  let s = 12345, k = 0;
+  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  while (k < n) {
+    const x = rnd() * 2 - 1, z = rnd() * 2 - 1, y = y0 + rnd() * (y1 - y0);
+    if (Math.hypot(x, z) > bodyRadius(y) - inset) continue;
+    pts[k * 3] = x; pts[k * 3 + 1] = y; pts[k * 3 + 2] = z;
+    k++;
+  }
+  return pts;
+}
+
 /* ---------- seal strip path (x = 0 plane: [z, y]) ---------- */
 const SEAL_W = 0.5;
 const SEAL_LIFT = 0.012;

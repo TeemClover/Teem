@@ -11,7 +11,7 @@ import {
 } from 'three';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import {pose as poseAt, LAYOUT, BOTTLE} from './timeline.js';
-import {createBottle, createGlassMaterial} from './bottle.js';
+import {createBottle, createGlassMaterial, interiorSamples} from './bottle.js';
 import {createPour} from './pour.js';
 import {loadArt, shadowBlob, stoneTexture, backdropTexture} from './textures.js';
 
@@ -158,6 +158,23 @@ export async function createStage({canvas, base, products, onFail}) {
     applyTier();
   }
 
+  /* ---------- sauce volume: conserved while the bottle tips ---------- */
+  const cavity = interiorSamples(3000);
+  const cavityY = new Float32Array(cavity.length / 3);
+  const fractionBelow = level => { let c = 0; for (let i = 1; i < cavity.length; i += 3) if (cavity[i] <= level) c++; return c / (cavity.length / 3); };
+  const FULL = fractionBelow(BOTTLE.fillUpright); // sealed bottle
+  const AFTER = fractionBelow(BOTTLE.fillAfter); // after one bowl
+  /** World-space level for the active bottle: the height under which `fraction` of the cavity sits. */
+  function fillFor(pivot, angle, fraction) {
+    const c = Math.cos(angle), sn = Math.sin(angle);
+    for (let i = 0, j = 0; i < cavity.length; i += 3, j++) {
+      const x = cavity[i], y = cavity[i + 1] - BOTTLE.pivotY;
+      cavityY[j] = pivot[1] + x * sn + y * c;
+    }
+    cavityY.sort();
+    return cavityY[Math.min(cavityY.length - 1, Math.floor(fraction * cavityY.length))];
+  }
+
   /* ---------- per-frame application of the pose ---------- */
   const pointer = {x: 0, y: 0, tx: 0, ty: 0};
   const inspect = {on: false, angle: 0, target: 0};
@@ -214,7 +231,9 @@ export async function createStage({canvas, base, products, onFail}) {
     capBlob.material.opacity = 0.5 * Math.max(0, (c.aside - 0.4) / 0.6);
 
     // sauce level stays horizontal in world space
-    hero.clip.constant = p.fill.level;
+    // sauce level: same volume in any orientation; it only drops by what reached the bowl
+    const remaining = FULL + (AFTER - FULL) * p.pool.level;
+    hero.clip.constant = fillFor(a.pivot, a.angle, remaining);
     for (const b of Object.values(bottles)) if (b !== hero) b.clip.constant = BOTTLE.fillUpright + b.root.position.y;
 
     pour.update(p);

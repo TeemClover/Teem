@@ -3,7 +3,7 @@
  * One scroll clock owns the story: native scroll → u → (DOM beat + CSS vars) and (3D pose).
  * The page is complete without this file; it only upgrades the stage.
  */
-import {beatAt, payoffAt, clamp} from './scene/timeline.js';
+import {beatAt, clamp} from './scene/timeline.js';
 
 const root = document.documentElement;
 const $ = sel => document.querySelector(sel);
@@ -12,7 +12,6 @@ const hero = $('#top');
 const pour = $('#pour');
 const stageEl = $('#stage');
 const canvas = $('#scene');
-const payoff = $('.hc-payoff');
 const base = new URL('../', import.meta.url).href;
 
 // Scene-side product look (visual direction only; facts stay null in data/products.json).
@@ -58,7 +57,7 @@ function tick(now) {
   state.last = now;
   const diff = state.target - state.shown;
   // Exponential approach: visual smoothing only; always converges to the scroll position.
-  const k = 1 - Math.exp(-dt / 0.14); // ~0.3s glide: wheel notches blend into one motion
+  const k = 1 - Math.exp(-dt / 0.16); // ~0.35s glide: wheel notches blend into one motion
   state.shown = Math.abs(diff) < 0.0006 ? state.target : state.shown + diff * (dt ? k : 1);
   apply(state.shown);
   if (state.shown !== state.target) request(); else state.last = 0;
@@ -72,7 +71,6 @@ function apply(u) {
     story.dataset.beat = beat;
   }
   story.style.setProperty('--pour', Math.max(0, u).toFixed(4));
-  payoff.style.setProperty('--p', payoffAt(u).toFixed(4));
   state.stage?.setProgress(u);
   if (inspect.on && u > -0.75) setInspect(false);
 }
@@ -235,9 +233,6 @@ window.addEventListener('scroll', () => {
 }, {passive: true});
 window.addEventListener('resize', () => { measure(); onScroll(); });
 document.fonts?.ready.then(() => { measure(); onScroll(); });
-window.addEventListener('load', () => {
-  measure();
-  onScroll();
-  const go = () => upgrade();
-  if ('requestIdleCallback' in window) requestIdleCallback(go, {timeout: 900}); else setTimeout(go, 200);
-});
+// Start the 3D right after first paint (not after every image has loaded): the bottles are the hero.
+requestAnimationFrame(() => setTimeout(() => upgrade(), 0));
+window.addEventListener('load', () => { measure(); onScroll(); });
