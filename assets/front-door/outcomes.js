@@ -21,7 +21,7 @@ export function prepareOutcomeLink(href,{env,enabled,handoffId=randomId('h'),now
   const context={handoffId,env,enabled:enabled===true,createdAt:now};
   if(snapshot){
     const {installation,journey,visit,visitorClass}=snapshot;
-    const entryPath=['/','/index.html','/frontdoor/','/frontdoor/index.html'].includes(sourcePath)?sourcePath:'/frontdoor/';
+    const entryPath=['/','/index.html','/compass/','/compass/index.html','/frontdoor/','/frontdoor/index.html'].includes(sourcePath)?sourcePath:'/frontdoor/';
     const candidate={eventId:randomId('e'),eventName:'DOOR_OPEN',installId:installation.installId,journeyId:journey.journeyId,visitId:visit.visitId,handoffId,occurredAt:now,path:entryPath,env,analyticsVersion:'2.0.0',experienceVersion:journey.experienceVersion,source:journey.source,visitorClass,intentPrimary:journey.intentPrimary,intentSecondary:journey.intentSecondary,doorId:outcomeDoor(url.pathname),properties:{identityDurable:installation.durable}};
     if(['red','green','blue','silver'].includes(seedColor))candidate.properties.seedColor=seedColor;
     const parsed=validateEvent(candidate);if(parsed.ok){context.departure=parsed.event;context.draft=true;

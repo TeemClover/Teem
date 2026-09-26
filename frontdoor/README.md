@@ -4,7 +4,7 @@
 
 [Release preparation](../docs/frontdoor/RELEASE.md) records the verified local scope, explicit commit review, X-VISOR handoff and the production backend prerequisite.
 
-Local review: run `npm run dev:frontdoor` and use the URL printed by the preview server (`FRONTDOOR_PORT` can select 4173 or 4174). Branch `feat/adaptive-front-door-v1`. Root promotion and publication were authorized on 2026-09-10. `/` is rendered from this exact runtime by `npm run sync:frontdoor-root`; `/frontdoor/` remains its review alias and `/home/` preserves the original welcome. Original logo/favicon/video remain unchanged. Include the four audited TeamBook Compass adapters together. X-VISOR’s owner reopened development and placed its files on HOLD; preserve those files locally until a new READY. Live deployment status is recorded in the release report.
+Local review: run `npm run dev:frontdoor` and use the URL printed by the preview server (`FRONTDOOR_PORT` can select 4173 or 4174). Branch `feat/adaptive-front-door-v1`. Root promotion and publication were authorized on 2026-09-10. Since 2026-09-26 `/compass/` is rendered from this exact runtime by `npm run sync:frontdoor-root` and `/` serves the 3D house tour (`tour/`); `/frontdoor/` remains the Compass review alias and `/home/` preserves the original welcome. Original logo/favicon/video remain unchanged. Include the four audited TeamBook Compass adapters together. X-VISOR’s owner reopened development and placed its files on HOLD; preserve those files locally until a new READY. Live deployment status is recorded in the release report.
 
 ## Experience and purpose
 
