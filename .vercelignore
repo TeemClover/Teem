@@ -55,3 +55,8 @@ tools/lucky-house/
 
 # Legacy main-page downloads remain blocked; the inbox handoff is served only under house/receive/.
 showcase/house/downloads/
+
+# Homechew QA scripts and handoff docs are not site content.
+tests/homechew/
+docs/homechew/
+homechew/vendor/build-three.mjs
