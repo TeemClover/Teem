@@ -32,25 +32,19 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
   const loopsPlaying = st.filter(v => v.cls.includes('hc-loop') && !v.paused);
   ok(loopsPlaying.length === 1 && loopsPlaying[0].src === 'hy-dip-loop.mp4' && loopsPlaying[0].t > 0, `${tag}: exactly one taste loop plays (${JSON.stringify(loopsPlaying)})`);
   await s.page.screenshot({path: `${out}/${tag}-taste.png`});
-  await s.page.evaluate(() => document.querySelector('.hc-film__stage').scrollIntoView({block: 'center'}));
-  await s.page.waitForTimeout(3000);
-  st = await playing(s.page);
-  const f = st.find(v => v.cls.includes('hc-film__video'));
-  ok(f && !f.paused && f.muted && f.t > 0, `${tag}: film autoplays muted when visible (${JSON.stringify(f)})`);
-  ok(st.filter(v => v.cls.includes('hc-loop') && !v.paused).length === 0, `${tag}: loops pause when off-screen`);
-  const expect = w < 700 ? '9x16' : '16x9';
-  ok(f && f.src.includes(expect), `${tag}: film uses ${expect} source (${f && f.src})`);
-  await s.page.screenshot({path: `${out}/${tag}-film.png`});
-  await s.page.click('.hc-film__tabs [data-film="ck"]');
-  await s.page.waitForTimeout(2000);
-  st = await playing(s.page);
-  const g = st.find(v => v.cls.includes('hc-film__video'));
-  ok(g.src.startsWith('ck-film') && !g.paused, `${tag}: tab switches film (${g.src})`);
-  await s.page.click('.hc-film__sound');
-  await s.page.waitForTimeout(500);
-  st = await playing(s.page);
-  ok(!st.find(v => v.cls.includes('hc-film__video')).muted, `${tag}: sound button unmutes`);
-  await s.page.screenshot({path: `${out}/${tag}-film-ck.png`});
+  // living images: flavour chapters, feast table and craft steps play their footage in place of the photo
+  for (const sel of ['#hat-yai .hc-live', '#crave .hc-crave__wide .hc-live', '#craft .hc-live']) {
+    await s.page.evaluate(sel => document.querySelector(sel).scrollIntoView({block: 'center'}), sel);
+    await s.page.waitForTimeout(2500);
+    st = await playing(s.page);
+    const lives = st.filter(v => v.cls.includes('hc-live') && !v.paused);
+    ok(lives.length >= 1 && lives.length <= 3 && lives.every(v => v.muted && v.t > 0), `${tag}: ${sel} plays muted footage (${lives.map(v => v.src).join(',')})`);
+    ok(st.filter(v => v.cls.includes('hc-loop') && !v.paused).length === 0, `${tag}: taste loops paused while ${sel} is in view`);
+    await s.page.screenshot({path: `${out}/${tag}-${sel.split(' ')[0].slice(1)}.png`});
+  }
+  const posters = await s.page.evaluate(() => [...document.querySelectorAll('video.hc-live, video.hc-loop')].map(v => v.poster.split('/').pop()));
+  ok(new Set(posters).size === posters.length, `${tag}: no footage/poster repeated on the page (${posters.length})`);
+  ok(!(await s.page.$('.hc-film')), `${tag}: duplicated film section removed`);
   await s.page.evaluate(() => window.scrollTo(0, 0));
   await s.page.waitForTimeout(800);
   st = await playing(s.page);
@@ -60,21 +54,21 @@ for (const [w, h] of [[1440, 900], [390, 844]]) {
 }
 {
   const s = await open(1440, 900, {reduced: true});
-  await s.page.evaluate(() => document.querySelector('.hc-film__stage').scrollIntoView({block: 'center'}));
+  await s.page.evaluate(() => document.querySelector('#hat-yai .hc-live').scrollIntoView({block: 'center'}));
   await s.page.waitForTimeout(2000);
   const st = await playing(s.page);
   ok(st.every(v => v.paused), 'reduced motion: nothing autoplays');
-  await s.page.click('.hc-film__play'); await s.page.waitForTimeout(1500);
-  ok(!(await playing(s.page)).find(v => v.cls.includes('hc-film__video')).paused, 'reduced motion: viewer can press play');
+  await s.page.click('#hat-yai .hc-flavor__media'); await s.page.waitForTimeout(1500);
+  ok(!(await s.page.evaluate(() => document.querySelector('#hat-yai .hc-live').paused)), 'reduced motion: viewer can tap to play');
   await s.ctx.close();
 }
 { // missing media: page still works, no broken frame
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   await ctx.route('**/*.mp4', r => r.fulfill({status: 404, body: ''}));
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
-  await page.goto(base); await page.evaluate(() => document.querySelector('.hc-film__stage').scrollIntoView({block: 'center'}));
+  await page.goto(base); await page.evaluate(() => document.querySelector('#hat-yai .hc-live').scrollIntoView({block: 'center'}));
   await page.waitForTimeout(2000);
-  const poster = await page.evaluate(() => document.querySelector('.hc-film__video').poster);
+  const poster = await page.evaluate(() => document.querySelector('#hat-yai .hc-live').poster);
   ok(errs.length === 0 && /\.webp$/.test(poster), 'video 404: no script error, poster remains');
   await page.screenshot({path: `${out}/film-404.png`});
   await ctx.close();
