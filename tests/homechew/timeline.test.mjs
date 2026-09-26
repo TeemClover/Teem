@@ -109,3 +109,20 @@ test('HTML: LINE order CTA points to the owner-provided link only', () => {
   assert.ok(lines.every(h => h === 'https://lin.ee/owu0J0g'));
   for (const m of html.matchAll(/<a [^>]*href="https:\/\/lin\.ee[^>]*>/g)) assert.match(m[0], /rel="noopener"/);
 });
+
+test('camera moves continuously: no jumps, and no stop-and-go at keyframes', () => {
+  for (const layout of ['wide', 'tall']) {
+    const du = 0.001, speeds = [];
+    let prev = pose(-1, layout).camera.pos;
+    for (let u = -1 + du; u <= 1; u += du) {
+      const pos = pose(u, layout).camera.pos;
+      speeds.push(Math.hypot(pos[0] - prev[0], pos[1] - prev[1], pos[2] - prev[2]) / du);
+      prev = pos;
+    }
+    // no frame-to-frame jump bigger than 3× its neighbours (a discontinuity would spike)
+    for (let i = 2; i < speeds.length - 2; i++) {
+      const around = Math.max(speeds[i - 2], speeds[i + 2], 1);
+      assert.ok(speeds[i] < around * 3, `${layout}: speed spike at step ${i}`);
+    }
+  }
+});

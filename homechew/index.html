@@ -13,8 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500&text=%E6%89%8B%E9%96%93%E3%81%B2%E3%81%BE%E3%81%8B%E3%81%91%E3%81%9F%E3%81%8A%E3%81%84%E3%81%97%E3%81%95%E3%82%92%E3%80%81%E3%81%8B%E3%81%91%E3%82%8B%E3%81%A0%E3%81%91%E3%80%82%E3%83%9B%E3%83%BC%E3%83%A0%E3%83%81%E3%83%A5%E3%82%A6&display=swap">
-  <link rel="preload" as="image" href="assets/img/food/hy-feast-720.webp" media="(max-aspect-ratio: 9/10)" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/img/food/table-spread-1100.webp" media="(min-aspect-ratio: 9/10)" fetchpriority="high">
+  <link rel="modulepreload" href="vendor/three.module.min.js">
   <link rel="stylesheet" href="homechew.css">
   <script type="importmap">
     {"imports": {"three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/"}}
@@ -48,15 +47,19 @@
       <!-- One sticky stage for S0 + S1. HTML stays readable if the canvas never loads. -->
       <div class="hc-stage" id="stage" aria-hidden="true">
         <div class="hc-backdrop"><span class="hc-backdrop__leaves"></span><span class="hc-backdrop__sun"></span></div>
-        <picture class="hc-poster">
-          <source media="(max-aspect-ratio: 9/10)" srcset="assets/img/food/hy-feast-720.webp 720w, assets/img/food/hy-feast-1122.webp 1122w" sizes="100vw">
-          <img src="assets/img/food/table-spread-1100.webp" srcset="assets/img/food/table-spread-1100.webp 1100w, assets/img/food/table-spread-1672.webp 1672w" sizes="(min-width: 900px) 58vw, 100vw" width="1672" height="941" alt="" fetchpriority="high" decoding="async">
-        </picture>
+        <!-- First paint: the bottles are the hero even before WebGL arrives (soft silhouettes, then the 3D trio). -->
+        <svg class="hc-ghost" viewBox="0 0 420 300" aria-hidden="true">
+          <defs><linearGradient id="hc-ghost-g" x1="0" x2="1"><stop offset="0" stop-color="#e6d6be"/><stop offset=".5" stop-color="#f4eadb"/><stop offset="1" stop-color="#e6d6be"/></linearGradient></defs>
+          <path d="M58 26h24v10c0 3 2 5 2 8v14c0 16 32 24 32 46v160c0 6-4 10-10 10H34c-6 0-10-4-10-10V104c0-22 32-30 32-46V44c0-3 2-5 2-8Z"/>
+          <path d="M198 14h24v10c0 3 2 5 2 8v14c0 16 34 26 34 50v168c0 6-4 10-10 10h-76c-6 0-10-4-10-10V96c0-24 34-34 34-50V32c0-3 2-5 2-8Z"/>
+          <path d="M338 26h24v10c0 3 2 5 2 8v14c0 16 32 24 32 46v160c0 6-4 10-10 10h-72c-6 0-10-4-10-10V104c0-22 32-30 32-46V44c0-3 2-5 2-8Z"/>
+        </svg>
+        <div class="hc-poster" aria-hidden="true">
+          <img src="assets/img/label/label-mc-v12.webp" width="630" height="968" alt="" loading="lazy" decoding="async">
+          <img src="assets/img/label/label-hy-v12.webp" width="590" height="933" alt="" loading="lazy" decoding="async">
+          <img src="assets/img/label/label-ck-v12.webp" width="610" height="933" alt="" loading="lazy" decoding="async">
+        </div>
         <canvas class="hc-canvas" id="scene"></canvas>
-        <figure class="hc-payoff">
-          <img src="assets/img/food/hy-dip-720.webp" width="720" height="900" alt="" loading="lazy" decoding="async">
-          <figcaption>ไก่ทอดจิ้มน้ำจิ้มไก่หาดใหญ่ · ภาพ concept</figcaption>
-        </figure>
         <p class="hc-stage__note">ขวด 3 มิติเป็นโมเดลตัวแทน · ฉลากต้นแบบ</p>
       </div>
 

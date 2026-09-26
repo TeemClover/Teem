@@ -154,8 +154,8 @@ export function createPour(product, anisotropy = 4, sauceMap = null) {
   const poolMap = sauceMap ? sauceMap.clone() : null;
   if (poolMap) { poolMap.repeat.set(1.6, 1.6); poolMap.needsUpdate = true; }
   const sauceMat = new MeshPhysicalMaterial({
-    color: 0xd9cdc2, map: poolMap, roughness: 0.3, clearcoat: 0.45, clearcoatRoughness: 0.2,
-    emissive: product.sauce.glow, emissiveIntensity: 0.22, envMapIntensity: 0.18,
+    color: 0xc4b3a4, map: poolMap, roughness: 0.34, clearcoat: 0.3, clearcoatRoughness: 0.22,
+    emissive: product.sauce.glow, emissiveIntensity: 0.3, envMapIntensity: 0.12, specularIntensity: 0.5,
   });
   const pool = new Mesh(new CircleGeometry(1, 64), sauceMat);
   pool.rotation.x = -Math.PI / 2;

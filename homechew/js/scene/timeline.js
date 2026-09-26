@@ -93,8 +93,8 @@ const CAM = {
     {at: 0.45, target: [0.1, 2.8, 1.05], az: 8, el: 13, dist: 21.45, fov: 26, shift: [0.385, -0.05]},
     {at: 0.62, target: [-0.58, 2.46, 1.05], az: 10, el: 14, dist: 17.35, fov: 26, shift: [0.385, -0.05]},
     {at: 0.76, target: [-1.18, 3.15, 0.97], az: 6, el: 22, dist: 18.35, fov: 26, shift: [0.385, -0.05]},
-    {at: 0.88, target: [-2.52, 0.37, 1.08], az: 12, el: 32, dist: 13.2, fov: 26, shift: [0.14, -0.08]},
-    {at: 1, target: [-1.62, 0.89, 1.15], az: 10, el: 29, dist: 22, fov: 26, shift: [0.14, -0.08]},
+    {at: 0.88, target: [-0.6, 3.04, 1.03], az: 6, el: 20, dist: 20.85, fov: 26, shift: [0.38, -0.06]},
+    {at: 1, target: [-0.59, 3.03, 1.03], az: 4, el: 17, dist: 19.1, fov: 26, shift: [0.38, -0.04]},
   ],
   tall: [
     {at: -1, target: [0, 3.08, 0.32], az: 0, el: 5, dist: 31.6, fov: 30, shift: [0, -0.4]},
@@ -121,25 +121,40 @@ function eyeFrom(k) {
   ];
 }
 
-function cameraAt(u, layout) {
+// Monotone cubic (Fritsch–Carlson) through the keys: the camera keeps moving through each key
+// instead of easing to a stop there, and never overshoots (which the overlap guard relies on).
+const FIELDS = k => [...k.target, k.az, k.el, k.dist, k.fov, ...k.shift];
+const SPLINES = {};
+function spline(layout) {
+  if (SPLINES[layout]) return SPLINES[layout];
   const keys = CAM[layout] || CAM.wide;
-  let k = keys[keys.length - 1];
-  if (u <= keys[0].at) k = keys[0];
-  else {
-    for (let i = 0; i < keys.length - 1; i++) {
-      const a = keys[i], b = keys[i + 1];
-      if (u <= b.at) {
-        // orbit in spherical space so moves arc around the subject instead of cutting through it
-        const t = smoother((u - a.at) / (b.at - a.at));
-        k = {
-          target: lerp3(a.target, b.target, t),
-          az: lerp(a.az, b.az, t), el: lerp(a.el, b.el, t), dist: lerp(a.dist, b.dist, t),
-          fov: lerp(a.fov, b.fov, t), shift: [lerp(a.shift[0], b.shift[0], t), lerp(a.shift[1], b.shift[1], t)],
-        };
-        break;
-      }
+  const xs = keys.map(k => k.at), ys = keys.map(FIELDS), n = keys.length, m = ys[0].length;
+  const tangents = [];
+  for (let c = 0; c < m; c++) {
+    const d = [], t = new Array(n).fill(0);
+    for (let i = 0; i < n - 1; i++) d.push((ys[i + 1][c] - ys[i][c]) / (xs[i + 1] - xs[i]));
+    t[0] = d[0]; t[n - 1] = d[n - 2];
+    for (let i = 1; i < n - 1; i++) t[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for (let i = 0; i < n - 1; i++) {
+      if (d[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
+      const al = t[i] / d[i], be = t[i + 1] / d[i], h = Math.hypot(al, be);
+      if (h > 3) { t[i] = (3 * al / h) * d[i]; t[i + 1] = (3 * be / h) * d[i]; }
     }
+    tangents.push(t);
   }
+  return (SPLINES[layout] = {xs, ys, tangents, n, m});
+}
+
+function cameraAt(u, layout) {
+  const {xs, ys, tangents, n, m} = spline(layout);
+  const x = clamp(u, xs[0], xs[n - 1]);
+  let i = 0;
+  while (i < n - 2 && x > xs[i + 1]) i++;
+  const h = xs[i + 1] - xs[i], t = (x - xs[i]) / h, t2 = t * t, t3 = t2 * t;
+  const h00 = 2 * t3 - 3 * t2 + 1, h10 = t3 - 2 * t2 + t, h01 = -2 * t3 + 3 * t2, h11 = t3 - t2;
+  const v = [];
+  for (let c = 0; c < m; c++) v.push(h00 * ys[i][c] + h10 * h * tangents[c][i] + h01 * ys[i + 1][c] + h11 * h * tangents[c][i + 1]);
+  const k = {target: [v[0], v[1], v[2]], az: v[3], el: v[4], dist: v[5], fov: v[6], shift: [v[7], v[8]]};
   return {pos: eyeFrom(k), target: k.target, fov: k.fov, shift: k.shift};
 }
 
