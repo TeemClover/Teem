@@ -1,4 +1,4 @@
-# บ้าน myClover — 3D house tour (homepage candidate)
+# บ้าน myClover — 3D house tour (homepage)
 
 A scroll-driven 3D walk through the myClover house. Each scroll section moves the camera to a
 room; each room sends the visitor to a real part of the site.
@@ -79,8 +79,11 @@ Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), neve
 
 ## Status
 
-Review route only: `/tour/` is `noindex` and `/` still serves the Compass front door. Promoting
-it means pointing `/` at this page and deciding what happens to the Compass telemetry funnel.
+Promoted on 2026-09-26: `/` is rendered from `tour/index.html` by `npm run sync:frontdoor-root`
+(`index,follow`, canonical `/`). `/tour/` stays as a `noindex` review alias with canonical `/`.
+The previous Compass front door moved to `/compass/` (same runtime, same telemetry; entry path
+`/compass/`), reachable from the compass on the living-room game table. Edit `tour/index.html`,
+then re-run the sync; never edit the root `index.html` by hand.
 
 ## Tests
 

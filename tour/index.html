@@ -25,6 +25,7 @@
 <link rel="modulepreload" href="/tour/vendor/three.module.min.js">
 <link rel="stylesheet" href="/tour/tour.css">
 <script type="module" src="/tour/tour.js"></script>
+<script type="module" src="/assets/my-learning-entry.js"></script>
 </head>
 <body class="is-loading">
 <canvas id="stage" class="stage" aria-hidden="true"></canvas>
@@ -32,7 +33,7 @@
 
 <header class="topbar">
   <a class="brand" href="/" aria-label="myClover หน้าแรก"><img src="/icons/icon-192.png" alt="" width="36" height="36"><span>my<em>Clover</em></span></a>
-  <div class="tools">
+  <div class="tools" data-my-learning-mount>
     <div class="quality" role="group" aria-label="ความละเอียดภาพ">
       <button type="button" data-quality="sd" aria-pressed="true">SD</button><button type="button" data-quality="hd" aria-pressed="false">HD</button>
     </div>
@@ -86,7 +87,7 @@
       <p class="eyebrow"><b>01</b> ห้องนั่งเล่น · ชั้น 1</p>
       <h2>ห้องนั่งเล่นของบ้านเรา</h2>
       <p>เข็มทิศวางบนแผนที่ การ์ด CORE7 กางรอบนโต๊ะเกม มุมหนังสือมีสามเล่มที่อยากให้อ่านก่อน และบนตู้มีบ้านจำลองของบ้านหลังนี้</p>
-      <div class="actions"><a class="btn primary" data-primary data-item="compass" href="/frontdoor/" data-desc="หน้าแรกเดิมของเรา หยิบเข็มทิศขึ้นจากแผนที่ แล้วดูว่าใต้กระดาษมีอะไรรออยู่">หยิบเข็มทิศ <span aria-hidden="true">→</span></a></div>
+      <div class="actions"><a class="btn primary" data-primary data-item="compass" href="/compass/" data-desc="หน้าแรกเดิมของเรา หยิบเข็มทิศขึ้นจากแผนที่ แล้วดูว่าใต้กระดาษมีอะไรรออยู่">หยิบเข็มทิศ <span aria-hidden="true">→</span></a></div>
       <ul class="items">
         <li><a data-item="aisauce-book" href="/book/ai-sauce/" data-desc="คู่มือ AI ใส่ซอส อ่านให้เข้าใจ ใช้ให้เป็น ทดลองอ่าน 10 หน้าแรกฟรี ฉบับเต็มอยู่ในคอร์ส">📗 ทดลองอ่าน AI ใส่ซอส</a></li>
         <li><a data-item="core7" href="/core7/" data-desc="เกมการ์ด 7 ใบ ไม่มีเด็ค ไม่พึ่งดวง เปิดพร้อมกัน อ่านเกมและอ่านคน">🃏 CORE7 เกมการ์ด</a></li>
@@ -154,7 +155,7 @@
         <a class="btn primary big" data-primary data-item="meet" href="/meet/" data-desc="หนึ่งเรื่องของคุณ สองมุมมองจากเทมและเอโกะ">มานั่งคุยกันไหม <span aria-hidden="true">→</span></a>
         <button id="open-lucky" class="btn gold" type="button">เปิดการ์ดโชคดี 🍀</button>
       </div>
-      <p class="more"><a href="/showcase/house/">ดูบ้านจริงของเรา 3D</a> · <a href="/frontdoor/">เดินตามเข็มทิศ</a> · <a href="/home/">หน้าบ้านเดิม</a></p>
+      <p class="more"><a href="/showcase/house/">ดูบ้านจริงของเรา 3D</a> · <a href="/compass/">เดินตามเข็มทิศ</a> · <a href="/home/">หน้าบ้านเดิม</a></p>
     </article>
   </section>
 </main>

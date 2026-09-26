@@ -37,7 +37,6 @@ import { ClearMaskPass, MaskPass } from './MaskPass.js';
  * }
  * ```
  *
- * @three_import import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
  */
 class EffectComposer {
 

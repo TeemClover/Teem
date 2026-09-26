@@ -37,12 +37,12 @@ const mf = new Miniflare({
       return new Response(null, { status: 307, headers: { location: `${url.pathname}${url.search}`, 'cache-control': 'no-store' } });
     }
     if (pathname.endsWith('/')) pathname += 'index.html';
-    if (!/^\/(frontdoor\/|home\/|assets\/|classroom\/|xircle\/|invite\/|meet\/|ako\/|core7\/|guild\/|collection\/|resume\/|paths\/|club\/|xvisor\/|teambook\/assets\/|forge\/|xty\/assets\/|img\/|media\/|icons\/|stat\/frontdoor\/|favicon\.ico$|site\.webmanifest$|hall(?:-full)?\.html$|index\.html$)/.test(pathname)) return new Response('Not found', { status: 404 });
+    if (!/^\/(frontdoor\/|compass\/|tour\/|book\/|home\/|assets\/|classroom\/|xircle\/|invite\/|meet\/|ako\/|core7\/|guild\/|collection\/|resume\/|paths\/|club\/|xvisor\/|teambook\/assets\/|forge\/|xty\/assets\/|img\/|media\/|icons\/|stat\/frontdoor\/|favicon\.ico$|site\.webmanifest$|hall(?:-full)?\.html$|index\.html$)/.test(pathname)) return new Response('Not found', { status: 404 });
     const filename = path.resolve(root, `.${pathname}`);
     if (!filename.startsWith(root)) return new Response('Not found', { status: 404 });
     try {
       let content = await readFile(filename);
-      if (['/frontdoor/index.html','/index.html'].includes(pathname)) content = content.toString().replace('<!-- LOCAL_TELEMETRY -->', '<meta name="frontdoor-telemetry" content="local">');
+      if (['/frontdoor/index.html','/compass/index.html'].includes(pathname)) content = content.toString().replace('<!-- LOCAL_TELEMETRY -->', '<meta name="frontdoor-telemetry" content="local">');
       if (pathname === '/meet/index.html') content = content.toString().replace('</head>', '<meta name="meet-environment" content="local"></head>');
       const headers = { 'content-type': mime[path.extname(filename)] || 'application/octet-stream', 'cache-control': 'no-store' };
       // Safari requests byte ranges for video. This changes only the local review server.

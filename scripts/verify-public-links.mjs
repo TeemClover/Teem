@@ -10,7 +10,7 @@ import {fileURLToPath} from 'node:url';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const origin='https://www.myclover.com';
-const seeds=['/','/frontdoor/','/home/','/hall.html','/ako/','/ako/story/','/ako/kitchen/','/xircle/','/meet/','/forge/','/classroom/','/classroom/dungeon/','/xvisor/','/collection/','/guild/'];
+const seeds=['/','/compass/','/frontdoor/','/tour/','/home/','/hall.html','/ako/','/ako/story/','/ako/kitchen/','/xircle/','/meet/','/forge/','/classroom/','/classroom/dungeon/','/xvisor/','/collection/','/guild/'];
 const pages=/^\/(?:frontdoor|home|ako|xircle|meet|forge|classroom|xvisor|collection|guild)(?:\/|$)|^\/(?:index\.html|hall\.html)?$/;
 const privatePath=/^\/(?:api|stat|admin|backoffice|docs|tests|functions)(?:\/|$)|\/(?:admin|backoffice)(?:\/|$)/;
 const textTypes=/\.(?:html|css|m?js|json|webmanifest)$/i;

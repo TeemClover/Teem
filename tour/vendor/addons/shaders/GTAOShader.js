@@ -8,7 +8,6 @@ import {
 
 /**
  * @module GTAOShader
- * @three_import import { GTAOShader } from 'three/addons/shaders/GTAOShader.js';
  */
 
 /**

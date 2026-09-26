@@ -6,7 +6,6 @@ import {
 
 /**
  * @module PoissonDenoiseShader
- * @three_import import { PoissonDenoiseShader } from 'three/addons/shaders/PoissonDenoiseShader.js';
  */
 
 /**

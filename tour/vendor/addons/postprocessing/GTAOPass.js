@@ -38,7 +38,6 @@ import { SimplexNoise } from '../math/SimplexNoise.js';
  * ```
  *
  * @augments Pass
- * @three_import import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
  */
 class GTAOPass extends Pass {
 

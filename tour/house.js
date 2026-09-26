@@ -400,10 +400,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     });
     rb(g, [1.1, 2.2, 0.8], [2.9, 0, BW + 0.5], M('#dfe5e2', {metalness: 0.45, roughness: 0.3}), null, 0.05);
     cy(g, [0.02, 0.02, 0.6], [2.42, 1.1, BW + 0.92], M('#bbbbbb', {metalness: 0.9, roughness: 0.2}));
-    bx(g, [0.9, 0.03, 0.6], [-2.4, 0.91, BW + 0.45], '#1f2320');
-    for (const dx of [-0.2, 0.2]) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.018, 8, 28), M('#ff7a3d', {emissive: '#ff5a1f', emissiveIntensity: 1.4})); r.rotation.x = Math.PI / 2; r.position.set(-2.4 + dx, 0.955, BW + 0.45); g.add(r); }
-    cy(g, [0.21, 0.19, 0.3], [-2.6, 0.94, BW + 0.45], M('#d6c2a6', {metalness: 0.7, roughness: 0.25}));
-    cy(g, [0.22, 0.22, 0.03], [-2.6, 1.24, BW + 0.45], M('#c9ced1', {metalness: 0.8, roughness: 0.2}));
+    bx(g, [0.9, 0.03, 0.6], [-2.4, 0.945, BW + 0.45], '#1f2320'); // sits 5 mm above the marble top (was coplanar: flickered)
+    for (const dx of [-0.2, 0.2]) { const r = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.018, 8, 28), M('#ff7a3d', {emissive: '#ff5a1f', emissiveIntensity: 1.4})); r.rotation.x = Math.PI / 2; r.position.set(-2.4 + dx, 0.99, BW + 0.45); g.add(r); }
+    cy(g, [0.21, 0.19, 0.3], [-2.6, 0.975, BW + 0.45], M('#d6c2a6', {metalness: 0.7, roughness: 0.25}));
+    cy(g, [0.22, 0.22, 0.03], [-2.6, 1.275, BW + 0.45], M('#c9ced1', {metalness: 0.8, roughness: 0.2}));
     for (let k = 0; k < 7; k++) { const s = new THREE.Mesh(geo('sph', [0.08]), new THREE.MeshStandardMaterial({color: '#ffffff', transparent: true, opacity: 0.4, depthWrite: false})); s.userData = {phase: k / 7, base: new THREE.Vector3(-2.6, 1.3, BW + 0.45)}; g.add(s); out.steam.push(s); }
     for (let k = 0; k < 3; k++) { cy(g, [0.12, 0.1, 0.2], [0.6 + k * 0.35, 0.91, BW + 0.35], '#c56b4a'); for (let j = 0; j < 4; j++) blob(g, 0.08, [0.6 + k * 0.35 + (j % 2 - 0.5) * 0.08, 1.2 + j * 0.05, BW + 0.35 + (j > 1 ? 0.05 : -0.05)], ['#4f9a5c', '#62b06c', '#3f8a50'][k], 1); }
     rb(g, [2.8, 0.88, 1.15], [0, 0, 0.4], wood('#b98352'), null, 0.04);
@@ -436,7 +436,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     if (hd) {
       cy(g, [0.012, 0.012, 1.6], [-1.6, 1.45, BW + 0.1], brass).rotation.z = Math.PI / 2;
       for (let k = 0; k < 5; k++) { const x = -2.2 + k * 0.3; cy(g, [0.008, 0.008, 0.32], [x, 1.13, BW + 0.12], M('#bbbbbb', {metalness: 0.9, roughness: 0.2})); sp(g, 0.05, [x, 1.1, BW + 0.14], M('#bbbbbb', {metalness: 0.9, roughness: 0.2})).scale.set(1, 0.4, 1); }
-      sp(g, 0.15, [-2.2, 1.06, BW + 0.45], M('#e37c5b', {roughness: 0.3, metalness: 0.2})).scale.set(1, 0.85, 1);
+      sp(g, 0.15, [-2.2, 1.1, BW + 0.45], M('#e37c5b', {roughness: 0.3, metalness: 0.2})).scale.set(1, 0.85, 1);
       for (let k = 0; k < 6; k++) cy(g, [0.05, 0.05, 0.015], [-0.35 + k * 0.07, 0.96, 0.92], M(k % 2 ? '#e2412f' : '#9ccf7a', {roughness: 0.4})).rotation.z = Math.PI / 2.3;
       rb(g, [0.3, 0.45, 0.02], [0.7, 0.35, BW + 0.785], fabric('#e37c5b'), null, 0.01);
     }

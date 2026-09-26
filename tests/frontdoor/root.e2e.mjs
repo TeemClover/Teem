@@ -1,4 +1,4 @@
-/** Real root -> saved alias -> old house, through the Pages handler and local D1. */
+/** The Compass at /compass/ -> saved alias -> old house, through the Pages handler and local D1. */
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -16,28 +16,28 @@ try{
   const context=await browser.newContext({viewport:{width,height:width<700?844:900},reducedMotion:'reduce',isMobile:width<700,hasTouch:width<700});
   await context.route('**/*',r=>r.request().url().startsWith(server.base)||/^(data|blob):/.test(r.request().url())?r.continue():r.abort());
   const p=await context.newPage(),requests=[];p.on('pageerror',e=>report.errors.push(e.message));p.on('request',r=>requests.push(new URL(r.url()).pathname));
-  await p.goto(server.base+'/');await p.locator('#pickup').waitFor({state:'visible'});
-  assert.equal(await p.locator('link[rel=canonical]').getAttribute('href'),'https://www.myclover.com/');
+  await p.goto(server.base+'/compass/');await p.locator('#pickup').waitFor({state:'visible'});
+  assert.equal(await p.locator('link[rel=canonical]').getAttribute('href'),'https://www.myclover.com/compass/');
   assert.equal(await p.locator('meta[name=robots]').getAttribute('content'),'index,follow');
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await p.locator('#pickup').click();await p.locator('#continue-discovery').click();await p.locator('#visit-house').click();
   await p.locator('#open-path').waitFor({state:'visible'});await p.waitForFunction(()=>!document.body.classList.contains('path-assembling'));
   const href=await p.locator('#open-path').getAttribute('href'),handoff=new URL(href,server.base).searchParams.get('fdh');
   await p.locator('#save-path').click();await p.getByText('เก็บไว้แล้วบนเครื่องนี้',{exact:true}).waitFor();
-  assert.equal(requests.includes('/assets/track.js'),false,'New root must not import the legacy tracker');
+  assert.equal(requests.includes('/assets/track.js'),false,'The Compass must not import the legacy tracker');
   await p.screenshot({path:output+`/root-house-${width}.png`});report.screenshots.push(`root-house-${width}.png`);
   // Browser context-menu navigation does not dispatch a source click. The prepared
   // destination must deliver that departure with the original root path.
   const dest=await context.newPage();await dest.goto(server.base+href);
   const departure=await waitRow('SELECT path,install_id FROM fd_v2_events WHERE handoff_id=? AND event_name=?',handoff,'DOOR_OPEN');
-  assert.equal(departure.path,'/');await waitRow('SELECT 1 FROM fd_v2_outcomes WHERE handoff_id=? AND path=?',handoff,'/home/');
-  await waitRow('SELECT 1 FROM fd_v2_events WHERE install_id=? AND event_name=? AND path=?',departure.install_id,'FRONTDOOR_OPEN','/');
+  assert.equal(departure.path,'/compass/');await waitRow('SELECT 1 FROM fd_v2_outcomes WHERE handoff_id=? AND path=?',handoff,'/home/');
+  await waitRow('SELECT 1 FROM fd_v2_events WHERE install_id=? AND event_name=? AND path=?',departure.install_id,'FRONTDOOR_OPEN','/compass/');
   assert.equal(await dest.locator('meta[name=mc-act-view]').getAttribute('content'),'home-open');await dest.close();
   await p.goto(server.base+'/frontdoor/');await p.locator('[data-answer=resume]').click();await p.locator('#open-path').waitFor({state:'visible'});
   assert.match(await p.locator('#open-path').getAttribute('href'),/^\/home\//);assert.equal(await p.locator('#pickup').isVisible(),false);
   assert.equal(await p.locator('#opening-film').getAttribute('src'),null);
   const refreshReturns=await db.prepare('SELECT COUNT(*) n FROM fd_v2_events WHERE install_id=? AND event_name=?').bind(departure.install_id,'RETURN').first();assert.equal(refreshReturns.n,0);
-  await context.close();pass(`${width}px: public root -> durable Save -> new-tab house departure retains / -> alias Resume without intro or false RETURN`);
+  await context.close();pass(`${width}px: /compass/ -> durable Save -> new-tab house departure retains /compass/ -> alias Resume without intro or false RETURN`);
  }
  assert.equal((await db.prepare("SELECT COUNT(*) n FROM fd_v2_events WHERE env='prod'").first()).n,0);assert.deepEqual(report.errors,[]);
  pass('Actual root runtime, local HTTP validation, D1 departure/arrival and saved journey verified without production traffic');

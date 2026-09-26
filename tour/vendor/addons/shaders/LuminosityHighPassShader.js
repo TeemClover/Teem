@@ -4,7 +4,6 @@ import {
 
 /**
  * @module LuminosityHighPassShader
- * @three_import import { LuminosityHighPassShader } from 'three/addons/shaders/LuminosityHighPassShader.js';
  */
 
 /**

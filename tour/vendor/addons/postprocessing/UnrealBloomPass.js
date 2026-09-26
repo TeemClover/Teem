@@ -31,7 +31,6 @@ import { LuminosityHighPassShader } from '../shaders/LuminosityHighPassShader.js
  * ```
  *
  * @augments Pass
- * @three_import import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
  */
 class UnrealBloomPass extends Pass {
 

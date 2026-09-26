@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createApi, createLearner, normalizeCourses, parseRoute, courseRoute, safeAssetUrl, progressSummary } from '../assets/learn-core.js';
 import { safeReturn, authRequest, showVerification, googleStartUrl } from '../assets/account-step.js';
-import { renderFrontDoorRoot } from '../../tools/sync-frontdoor-root.mjs';
+import { renderCompassPage } from '../../tools/sync-frontdoor-root.mjs';
 import { renderLessonReading, readingHref, parseReadingDiagram } from '../assets/lesson-reading.js';
 import { createLessonPlayer } from '../assets/lesson-player.js';
 
@@ -281,9 +281,9 @@ test('chapter metadata makes theory, practice, cases and Dungeon one visible uni
   assert.doesNotMatch(d.ids.get('course-format').textContent,/เสริม|เลือกดู/);
 });
 test('static shell protects paid assets and maintains home source sync and accessibility basics',async()=>{
-  const [html,js,css,root,frontdoor,home]=await Promise.all(['learn/index.html','learn/assets/learn.js','learn/assets/learn.css','index.html','frontdoor/index.html','home/index.html'].map(p=>readFile(new URL('../../'+p,import.meta.url),'utf8')));
-  assert.equal(renderFrontDoorRoot(frontdoor),root);
-  for(const page of [root,frontdoor,home])assert.equal((page.match(/src="\/assets\/my-learning-entry.js"/g)||[]).length,1);
+  const [html,js,css,compass,frontdoor,home]=await Promise.all(['learn/index.html','learn/assets/learn.js','learn/assets/learn.css','compass/index.html','frontdoor/index.html','home/index.html'].map(p=>readFile(new URL('../../'+p,import.meta.url),'utf8')));
+  assert.equal(renderCompassPage(frontdoor),compass);
+  for(const page of [compass,frontdoor,home])assert.equal((page.match(/src="\/assets\/my-learning-entry.js"/g)||[]).length,1);
   assert.match(html,/<html lang="th">/);assert.doesNotMatch(html,/href="\/learn\/classroom\/"/);assert.match(html,/href="\/classroom\/dungeon\/"/);assert.match(html,/controls playsinline preload="auto"/);assert.doesNotMatch(html,/autoplay|<iframe|\.mp4|\.zip|COURSE_MANIFEST|file:\/\//);assert.doesNotMatch(js,/innerHTML|localStorage|sessionStorage/);
   assert.match(css,/aspect-ratio:16\/9/);assert.match(css,/\[hidden\]\{display:none!important\}/);assert.match(css,/@media\(max-width:375px\)/);assert.match(css,/prefers-reduced-motion/);
   assert.doesNotMatch(html,/id="supporting-section"|id="application-section"|เลือกดูเพิ่มเติม/);
