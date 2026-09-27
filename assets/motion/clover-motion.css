@@ -1,0 +1,110 @@
+/* Clover Motion · the shared motion layer for every room of myClover.
+   Loaded by each page next to its own stylesheet (see assets/motion/pages.json and
+   tools/motion-pages.mjs). Everything here is progressive: without this file, without
+   JavaScript, or with "reduce motion" turned on, every page looks exactly as it did.
+   Animations only touch opacity and the individual translate/scale properties, so a
+   page's own transforms, hovers and transitions keep working underneath. */
+
+:root{
+  --cm-green:#1d6b3d;--cm-deep:#14281d;--cm-gold:#e9b949;--cm-cream:#fbf6ec;
+  --cm-ease:cubic-bezier(.16,1,.3,1);
+}
+
+/* ---------- page to page: the site feels like one house, not separate tabs ---------- */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  /* the old page stays opaque while the new one rises over it: no blank flash between two themes */
+  ::view-transition-old(root){animation:.62s cubic-bezier(.4,0,.2,1) both cm-vt-out;mix-blend-mode:normal}
+  ::view-transition-new(root){animation:.62s var(--cm-ease) both cm-vt-in;mix-blend-mode:normal}
+  ::view-transition-group(cm-portal){animation-duration:.5s;animation-timing-function:var(--cm-ease)}
+}
+@keyframes cm-vt-out{to{transform:scale(.965);filter:brightness(.82)}}
+@keyframes cm-vt-in{from{opacity:0;transform:translateY(28px) scale(1.012)}}
+
+/* ---------- smooth wheel scrolling, same feel as the house (Lenis) ---------- */
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:clip}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-smooth iframe{pointer-events:none}
+
+/* ---------- reading progress ---------- */
+.cm-progress{position:fixed;left:0;right:0;top:0;height:3px;z-index:2147483000;pointer-events:none;
+  transform-origin:0 50%;transform:scaleX(var(--cm-p,0));opacity:0;transition:opacity .4s;
+  background:linear-gradient(90deg,var(--cm-green),#3fae6c 45%,var(--cm-gold));view-transition-name:none}
+.cm-progress.cm-progress--on{opacity:1}
+@supports (animation-timeline:scroll()){
+  .cm-progress{animation:cm-grow linear both;animation-timeline:scroll(root block)}
+}
+@keyframes cm-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* ---------- scroll reveal: blocks rise into place as they enter the view ---------- */
+html.cm-reveal-on .cm-r{transition:opacity .9s var(--cm-ease) var(--cm-d,0s),translate 1.05s var(--cm-ease) var(--cm-d,0s),scale 1.05s var(--cm-ease) var(--cm-d,0s)!important}
+html.cm-reveal-on .cm-r:not(.cm-in){opacity:0!important;translate:0 34px;scale:.985}
+html.cm-reveal-on .cm-r.cm-r--media:not(.cm-in){translate:0 22px;scale:1.03}
+html.cm-reveal-on .cm-r.cm-r--side:not(.cm-in){translate:-26px 0;scale:1}
+@media print{html.cm-reveal-on .cm-r{opacity:1!important;translate:none!important;scale:none!important}}
+
+/* ---------- the hero gently lets go as you scroll past it ---------- */
+@supports (animation-timeline:view()){
+  .cm-hero-out{animation:cm-hero-out linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
+  @keyframes cm-hero-out{to{opacity:.25;translate:0 -9%;scale:.97}}
+  .cm-par{animation:cm-par linear both;animation-timeline:view();animation-range:cover 0% cover 100%}
+  @keyframes cm-par{from{translate:0 calc(var(--cm-par,6%) * -1)}to{translate:0 var(--cm-par,6%)}}
+}
+.cm-par--zoom{scale:1.08}
+
+/* ---------- cards answer the pointer ---------- */
+.cm-tilt{will-change:transform}
+.cm-tilt--sheen{position:relative;isolation:isolate}
+.cm-tilt--sheen::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;opacity:0;transition:opacity .4s;
+  background:radial-gradient(420px circle at var(--cm-mx,50%) var(--cm-my,50%),rgba(255,248,225,.34),rgba(255,255,255,.06) 38%,transparent 60%);mix-blend-mode:soft-light}
+.cm-tilt--sheen.cm-hot::after{opacity:1}
+
+/* ---------- the way home: a small door back to the room you came from ---------- */
+.cm-portal{position:fixed;z-index:2147482000;bottom:max(16px,env(safe-area-inset-bottom));left:max(16px,env(safe-area-inset-left));
+  display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:6px 16px 6px 6px;border-radius:999px;text-decoration:none;
+  font:700 13.5px/1.2 'Anuphan','Noto Sans Thai',system-ui,sans-serif;color:var(--cm-deep);letter-spacing:0;
+  background:rgba(251,246,236,.88);backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);
+  border:1px solid rgba(20,40,29,.12);box-shadow:0 14px 34px -16px rgba(12,32,20,.55),0 1px 0 rgba(255,255,255,.6) inset;
+  view-transition-name:cm-portal;transition:translate .5s var(--cm-ease),opacity .35s,box-shadow .3s,border-color .3s}
+.cm-portal[data-side="br"]{left:auto;right:max(16px,env(safe-area-inset-right))}
+.cm-portal[hidden]{display:none}
+.cm-portal__leaf{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--cm-green);
+  box-shadow:0 0 0 0 rgba(233,185,73,.5);transition:rotate .7s var(--cm-ease),background .3s}
+.cm-portal__leaf svg{width:20px;height:20px;fill:#fbf6ec}
+.cm-portal__text{display:flex;flex-direction:column;white-space:nowrap}
+.cm-portal__text small{font-weight:500;font-size:11.5px;color:#4b5e51}
+.cm-portal:hover,.cm-portal:focus-visible{border-color:var(--cm-gold);box-shadow:0 18px 40px -16px rgba(12,32,20,.6),0 0 0 3px rgba(233,185,73,.25)}
+.cm-portal:hover .cm-portal__leaf,.cm-portal:focus-visible .cm-portal__leaf{rotate:90deg;background:#2e9e5b}
+.cm-portal:focus-visible{outline:3px solid var(--cm-gold);outline-offset:3px}
+.cm-portal.cm-tuck{translate:0 calc(100% + 28px);opacity:0;pointer-events:none}
+.cm-portal.cm-arrive .cm-portal__leaf{animation:cm-ring 2.4s ease-out 2}
+@keyframes cm-ring{0%{box-shadow:0 0 0 0 rgba(233,185,73,.55)}70%{box-shadow:0 0 0 12px rgba(233,185,73,0)}100%{box-shadow:0 0 0 0 rgba(233,185,73,0)}}
+@media (max-width:560px){
+  .cm-portal{padding:5px;gap:0}
+  .cm-portal__text{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .cm-portal__leaf{width:34px;height:34px}
+}
+@media print{.cm-portal,.cm-progress,.cm-chapters{display:none!important}}
+
+/* ---------- chapter rail for long reads (desktop) ---------- */
+.cm-chapters{position:fixed;z-index:60;right:max(18px,env(safe-area-inset-right));top:50%;translate:0 -50%;margin:0;padding:10px 0;list-style:none;
+  display:flex;flex-direction:column;gap:2px;max-height:78vh;overflow:auto;scrollbar-width:none;opacity:0;transition:opacity .5s}
+.cm-chapters.cm-on{opacity:1}
+.cm-chapters a{position:relative;display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:30px;padding:2px 0 2px 12px;
+  text-decoration:none;color:inherit;font:600 12.5px/1.3 'Anuphan','Noto Sans Thai',system-ui,sans-serif}
+.cm-chapters a span{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:0;translate:8px 0;
+  padding:3px 10px;border-radius:999px;background:rgba(251,246,236,.94);color:var(--cm-deep);box-shadow:0 6px 18px -8px rgba(12,32,20,.4);
+  transition:opacity .25s,translate .35s var(--cm-ease)}
+.cm-chapters a i{flex:none;width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.28;transition:opacity .3s,scale .4s var(--cm-ease),background .3s}
+.cm-chapters:hover a span,.cm-chapters a:focus-visible span{opacity:1;translate:0 0}
+.cm-chapters a.cm-now i{opacity:1;scale:1.6;background:var(--cm-green)}
+.cm-chapters a.cm-now span{opacity:1;translate:0 0}
+.cm-chapters a:focus-visible{outline:none}
+.cm-chapters a:focus-visible i{outline:2px solid var(--cm-gold);outline-offset:3px}
+
+@media (prefers-reduced-motion:reduce){
+  .cm-portal,.cm-portal__leaf,.cm-progress,.cm-chapters a span,.cm-chapters a i{transition:none}
+  .cm-portal.cm-arrive .cm-portal__leaf{animation:none}
+}

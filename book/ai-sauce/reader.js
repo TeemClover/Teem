@@ -66,8 +66,18 @@ addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(index + 1); }
   if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(index - 1); }
 });
+// a mouse resting on one half of the book lifts that page's corner, so the next move is obvious
+const peek = e => {
+  if (e.pointerType !== 'mouse' || reduced) return;
+  const next = e.clientX > book.getBoundingClientRect().left + book.clientWidth / 2;
+  book.classList.toggle('peek-next', next && index < pages.length - 1);
+  book.classList.toggle('peek-prev', !next && index > 0);
+};
+const unpeek = () => book.classList.remove('peek-next', 'peek-prev');
+book.addEventListener('pointermove', peek);
+book.addEventListener('pointerleave', unpeek);
 let sx = null;
-book.addEventListener('pointerdown', e => { sx = e.clientX; });
+book.addEventListener('pointerdown', e => { sx = e.clientX; unpeek(); });
 book.addEventListener('pointerup', e => {
   if (sx === null) return; const dx = e.clientX - sx; sx = null;
   if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));

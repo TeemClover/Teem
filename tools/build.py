@@ -242,7 +242,16 @@ footer a{color:rgb(var(--green));font-weight:600}
   font-size:10.5px;border-radius:6px;padding:2px 8px;letter-spacing:.04em;vertical-align:middle}
 '''
 
-def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act='', reader=''):
+# Clover Motion: the site-wide motion layer (registry: tools/motion-pages.mjs, which also
+# checks that these generated pages carry exactly this block)
+MOTION_VERSION = '20260927'
+def motion_block(profile):
+    return ('<!-- clover-motion -->\n'
+            f'<link rel="stylesheet" href="/assets/motion/clover-motion.css?v={MOTION_VERSION}">\n'
+            f'<script src="/assets/motion/clover-motion.js?v={MOTION_VERSION}" defer data-profile="{profile}"></script>\n'
+            '<!-- /clover-motion -->\n')
+
+def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act='', reader='', motion=''):
     """โครงหน้าเว็บของ /forge/ และ /paths/ ทั้งหมด
 
     act = ชื่อ Act ที่หน้านี้ยิงตอนเปิด (ทะเบียนอยู่ที่ assets/achievements.js)
@@ -273,7 +282,7 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act=
 {canonical}<meta name="theme-color" content="#0A2818">
 <style>{CSS}{extra_css}</style>
 <link rel="stylesheet" href="/assets/readable.css">
-{reader_css}</head>
+{reader_css}{motion_block(motion) if motion else ''}</head>
 <body{body_attrs}>
 {body}
 {extra_js}<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
@@ -977,7 +986,7 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 });
 </script>\n''',
-    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n', act='forge-open', reader='home'))
+    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n', act='forge-open', reader='home', motion='story'))
 
 # ── หน้าอ่านแต่ละตอน ──
 READ_CSS = '''
@@ -1153,7 +1162,7 @@ document.addEventListener('keydown',function(e){
         f'{SERIES} ตอนที่ {num} — {title} · อ่านฟรี ไม่ต้องสมัคร',
         f'{SITE}/forge/img/{key}-og.jpg', body, READ_CSS, js,
         canonical=(f'<link rel="canonical" href="{SITE}/forge/{slug}/">\n'
-                   f'<meta name="mc-item" content="forge:{slug}">\n'), act='forge-ep-open', reader='chapter'))
+                   f'<meta name="mc-item" content="forge:{slug}">\n'), act='forge-ep-open', reader='chapter', motion='immersive'))
 
 # ── บทนำ /forge/intro/ ──
 #
@@ -1232,7 +1241,7 @@ open(f'{_intro_dir}/index.html', 'w', encoding='utf-8').write(page(
     f'{INTRO_TITLE} — บทนำก่อน {SERIES}',
     f'บทนำสั้น ๆ ก่อนเข้า {SERIES} — 2 ช่อง อ่านจบในไม่กี่วินาที',
     f'{SITE}/forge/img/{INTRO_KEY}-og.jpg', intro_body, INTRO_CSS, intro_js,
-    canonical=f'<link rel="canonical" href="{SITE}/forge/{INTRO_SLUG}/">\n', act='forge-intro-open'))
+    canonical=f'<link rel="canonical" href="{SITE}/forge/{INTRO_SLUG}/">\n', act='forge-intro-open', motion='immersive'))
 
 print(f'สร้างหน้าเว็บ {len(EPISODES)+2} หน้า')
 
