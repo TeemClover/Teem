@@ -192,4 +192,9 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
   .rail{right:0}.rail a{width:32px;height:44px}.rail a::before{width:10px;height:10px;margin:-7px 0 0 -7px}
   .hero-card h1{font-size:clamp(44px,13.4vw,64px)}
 }
+/* a student's "ห้องเรียนของฉัน" pill floats in the same corner on a phone (assets/my-learning-entry.js):
+   the music button steps down beneath it instead of covering it */
+@media (max-width:600px){
+  body:has(.my-learning-entry) .music{top:calc(env(safe-area-inset-top,0px) + 124px)}
+}
 .scene-stairs{min-height:130vh}
