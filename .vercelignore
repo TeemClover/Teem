@@ -60,3 +60,6 @@ showcase/house/downloads/
 tests/homechew/
 docs/homechew/
 homechew/vendor/build-three.mjs
+
+# Clover Motion QA stays local; the layer itself ships from assets/motion/.
+tests/motion/

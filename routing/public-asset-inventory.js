@@ -199,6 +199,8 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/assets/main-quest-core7.js",
   "/assets/mini-achievements-secrets.js",
   "/assets/mini-achievements.js",
+  "/assets/motion/clover-motion.css",
+  "/assets/motion/clover-motion.js",
   "/assets/my-learning-entry.js",
   "/assets/myclover-icon.png",
   "/assets/notebook-boss-reset-v2.js",
