@@ -13,6 +13,19 @@ body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(80% 
 .page img{display:block;width:100%;height:100%;object-fit:contain;background:#fff}
 .page:not(.current){box-shadow:none}
 .page.turned{transform:rotateY(-105deg);opacity:0;pointer-events:none}
+/* paper, not a slide: a spine shadow, light that falls across a page as it turns, and the
+   corner of the next page lifting when the pointer rests on its half of the book */
+.page::before{content:"";position:absolute;inset:0 auto 0 0;width:26px;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(60,40,10,.16),rgba(60,40,10,0))}
+.page::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .7s cubic-bezier(.3,.7,.2,1);background:linear-gradient(90deg,rgba(30,20,5,.34),rgba(30,20,5,.06) 55%,rgba(255,255,255,.18))}
+.page.turned::after{opacity:1}
+.book.peek-next .page.current{transform:rotateY(-7deg);box-shadow:14px 22px 44px rgba(40,25,5,.3)}
+.book.peek-prev .page.turned:has(+ .page.current){transform:rotateY(-98deg);opacity:.35}
+.book.peek-next .page.current::after{opacity:.35}
+.book{cursor:pointer}
+.nav{transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s}
+.nav:not(:disabled):hover{transform:scale(1.08);background:#fff}
+.thumbs button{transition:transform .2s cubic-bezier(.16,1,.3,1),background .2s}
+.thumbs button:hover{transform:translateY(-2px)}
 .instant .page{transition:none}
 .lock{background:linear-gradient(160deg,#fffdf6,#f3e6c6);display:flex;align-items:center;justify-content:center;text-align:center}
 .lock-inner{padding:28px 24px;max-width:420px}
@@ -33,4 +46,4 @@ body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(80% 
 .thumbs button[aria-current="true"]{background:var(--ink);color:#fff}
 .empty{margin:0;font-weight:600;color:var(--soft)}
 @media (max-width:700px){.nav{position:fixed;bottom:18px;z-index:5}.nav.prev{left:16px}.nav.next{right:16px}.book{height:min(calc(100dvh - 250px),calc((100vw - 32px) * 16 / 9))}.reader{padding-bottom:84px;justify-content:flex-start}}
-@media (prefers-reduced-motion:reduce){.page{transition:none}}
+@media (prefers-reduced-motion:reduce){.page,.page::after,.nav,.thumbs button{transition:none}.book.peek-next .page.current,.book.peek-prev .page.turned:has(+ .page.current){transform:none}}
