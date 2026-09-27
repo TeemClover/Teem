@@ -70,6 +70,7 @@ export const MOTION_PAGES = Object.freeze({
 
   // classroom (upstairs)
   'courses/index.html': story,
+  'ai-source/index.html': story,
   'classroom/index.html': story,
   'classroom/dungeon/index.html': immersive,
   'classroom/free-ai.html': immersive,

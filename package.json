@@ -59,7 +59,9 @@
     "test:tour:book": "node tests/tour/book.e2e.mjs",
     "motion:pages": "node tools/motion-pages.mjs",
     "test:motion": "node --test tests/motion/motion.test.mjs",
-    "test:motion:ui": "node tests/motion/motion.e2e.mjs"
+    "test:motion:ui": "node tests/motion/motion.e2e.mjs",
+    "test:ai-source:showcase": "node --test tests/ai-source/showcase.test.mjs",
+    "test:ai-source:showcase:ui": "node tests/ai-source/showcase.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",
