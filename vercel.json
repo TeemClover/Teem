@@ -84,6 +84,16 @@
       "permanent": false
     },
     {
+      "source": "/teambook",
+      "destination": "https://teambook.me/",
+      "permanent": false
+    },
+    {
+      "source": "/teambook/",
+      "destination": "https://teambook.me/",
+      "permanent": false
+    },
+    {
       "source": "/airova",
       "destination": "/airova/",
       "permanent": false
