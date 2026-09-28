@@ -29,13 +29,16 @@ Tapping one makes it float toward you and a panel offers its page.
 | Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
-| Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
+| Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova video and marketing studio on its own desk → `/airova/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
 | Outside | the big clover / finale button → `/meet/` |
 
 Glowing beacons mark pickable objects in the room you are looking at, and every object has an
 invisible, slightly larger tap area. Hovering a link in a card lights up the same object.
 Picking follows the first surface the ray meets, so walls, floors and furniture block what is
 behind them, and only objects of the room you are standing in respond.
+
+The Airova screen is an illustrative editor drawn once to a 1024×576 canvas: product video,
+campaign cards and timeline. It adds no video playback, external image request or animated light.
 
 **Motion:** wheel/trackpad scrolling is smoothed by Lenis (self-hosted, MIT,
 `vendor/LENIS-LICENSE.txt`; touch keeps the phone's native scroll). The camera follows one
