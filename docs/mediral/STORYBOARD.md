@@ -1,26 +1,30 @@
-# Mediral — หนึ่งหน้า ห้าเรื่อง (v8)
+# Mediral — one cinema (v9, Motion v2)
 
-Updated 2026-09-29. Supersedes v7's card-per-beat scroll ("15 cards fading in" and ingredients orbiting a bottle). Creative direction agreed with GPT (creative director) in a private proposal round; Claude owns the code experience. Facts, commerce rules and fallbacks from v7 remain; only the storytelling and motion changed.
+Updated 2026-09-29. Supersedes v8 ("หนึ่งหน้า ห้าเรื่อง", five boxed scenes). The owner asked for the reference's scroll charm: camera travel, foreground occlusion, scale change and kinetic Thai type, with each chapter distinct and no long explanations. GPT (director, images, QA) and Claude (code) rebuilt the structure; facts and commerce rules from v7/v8 remain unless changed below.
 
 ## The idea
 
-A new visitor recognises themselves before they see a product list: *one face, five everyday things*. Each concern sits on the pack that looks after it, so the first screen is also the product map. Care is the heart: the maker's intent opens the routine, a user's words close it (ตั้งใจทำ · ใส่ใจใช้ · อยากบอกต่อ), and "take it with you" is only the final, optional line.
+One viewport, one clock. The reader's problem opens every chapter, is read whole, and becomes its kicker; then a promise, a few benefit waves, one support line. Objects and materials carry one chapter into the next instead of cuts.
 
-## First screen (390×844)
+## Timeline (T in screens; the same on tall and wide, composed separately)
 
-Kicker "MEDIRAL · ชุดดูแลผิว 5 ชิ้น" · headline "หนึ่งหน้า / ห้าเรื่อง" · five crisp packs standing on the stone ledge (base at ~72% of the stage image) with labels ล้าง · สิวง่าย · ดูหมอง · แดด · แต่งผิว · "ล้าง บำรุง ปกป้อง แต่งผิว — เลือกดูแลให้ตรงเรื่อง" · dated poster offer · ดูข้อเสนอชุด 5 ชิ้น. The rail is hidden on the opening.
-
-## Five grammars — motion is the job
-
-| Scene | Moment → headline | Start / middle / end (readable with text hidden) |
+| T | Chapter | What happens |
 |---|---|---|
-| CL erase ↑ | กลับถึงบ้าน ผิวผ่านมาทั้งวัน → ล้างวันนี้ออก ก่อนเริ่มดูแล | huge faint "วันทั้งวัน" behind the bottle / foam rises behind it and covers the word / foam settles at the base, word gone |
-| AC drop ↓ | เป็นสิวง่าย แต่ก็ยังอยากชุ่มชื้น → ดูแลความมัน ไม่ลืมความชุ่มชื้น | silent clip with tea tree + mangosteen peel / the source lifts and one amber drop falls onto the rising bottle / a quiet level line: สมดุลความมัน ↔ ความชุ่มชื้น (labels only, no ratio) |
-| BR reveal ↘ | บางวันผิวดูหมอง สีผิวดูไม่เท่ากัน → ให้สีผิว ดูสม่ำเสมอ | scene in warm dusk / a light band sweeps and reveals bearberry, licorice, vitamin C derivative and the bottle / probiotics · สมดุล and bakuchiol · เรียบเนียน |
-| SU glide → | ไม่ชอบกันแดดหนักหน้า? → กันแดด ที่อยากหยิบใช้ | glass sheet enters with its own "สารกรอง UV จากแร่ธาตุ · Zinc Oxide · Titanium Dioxide" label / a clear drop: ไฮยา · ความชุ่มชื้น / the seven Giga White® names with short roles; tube with "ภาพแพ็กจำลอง AI · ค่า SPF/PA ยึดฉลากจริง" |
-| PO settle ↓ | บางวันอยากแต่งผิวนิดเดียว → วันไหนอยากแต่ง ค่อยเติมชิ้นนี้ | outlined "เนียน" over the ledge / fine powder drifts and the word fills / compact lands on the ledge; group labels only |
+| 0 | Opening | "จากล้างหน้า / ถึงผิวพร้อมออกจากบ้าน" · หนึ่งหน้า ห้าเรื่อง · five packs on the ledge · two actions |
+| 0.06–0.78 | Routine | the ensemble opens into one row; ล้าง · บำรุง (สิวง่าย · ดูหมอง) · ปกป้อง · แต่งผิว; "เลือกดูแล / ให้ตรงเรื่อง" |
+| 0.78–1.28 | → CL | the mousse steps forward; a tilted foam front rises and reveals the rinse scene behind it; the bottle hands off at an identical pose |
+| 1.3 | CL | กลับถึงบ้าน ผิวผ่านมาทั้งวัน → ล้างวันนี้ออก → a sideways foam sweep (the swap happens under full cover) → ก่อนเริ่มดูแล → support |
+| 2.9–3.52 | → AC | a water ring lies at the bottle's foot, rises to face us and opens; inside, four depths move at different rates |
+| 3.66 | AC | สิวง่าย แต่ไม่อยากเหนอะหนะ → ปลอบประโลม (tea tree, mangosteen) → สมดุล \| ความมัน at the glass stem → เติมความชุ่มชื้น as the bottle rises; the drop leaves the stem first and rests beside the capped bottle |
+| 6.2–6.8 | → BR | the bottle leaves frame; the camera flies into the drop; gold light clears on a new world |
+| 6.86 | BR | ผิวดูหมอง สีผิวดูไม่สม่ำเสมอ → ผิวดูกระจ่างใส with bearberry, licorice and vitamin C derivative focusing on three depths → สมดุลผิว · โพรไบโอติก / ผิวดูเรียบเนียน · บากูชิล → ให้สีผิว / ดูสม่ำเสมอ |
+| 8.88–9.28 | → SU | a light streak sweeps sideways, the airy scene behind it |
+| 9.3 | SU | ไม่ชอบกันแดดหนักหน้า? → กันแดดเนื้อเซรั่ม / เบาสบายผิว; the tube floats with a thin serum ribbon; ปกป้องผิวจากแดด → เติมความชุ่มชื้น → สีผิวดูสม่ำเสมอ travel sideways |
+| 11.2–11.64 | → PO | air thickens into powder; the veil clears onto a dark room |
+| 11.64 | PO | วันนี้อยากปกปิดรอย → ปกปิดรอย / ให้ผิวดูเนียน (outline becomes solid) → the compact lands on settled powder → บางเบา เกลี่ยง่าย → ชุ่มชื้น · ปลอบประโลม |
+| 13.45–14.3 | → set | PO dissolves over the same compact on the ledge; the other four return: หนึ่งหน้า ห้าเรื่อง · อยู่บ้าน หรือพาไป เลือกหยิบชิ้นที่คุณใช้ · ดูชุด 5 ชิ้น |
 
-Reduced motion shows each scene's composed end still; short screens (< 700px tall) unpin the scenes and keep light position-linked motion; without WebGL the DOM scenes are complete.
+Reading rules: something changes, then a hold before new information; objects cross Thai words only in motion; the drawn pack labels are never magnified. Reduced motion and short screens read the same chapters in normal flow.
 
 ## Customer story (v7 facts, retained)
 
@@ -30,7 +34,7 @@ Reduced motion shows each scene's composed end still; short screens (< 700px tal
 4. **Yellow-green serum — more even-looking skin.** Bearberry/licorice/vitamin C have distinct cosmetic roles in brand material. Probiotics and bakuchiol follow with separate balance/smoothness roles, even without matching plant photography. Finish with the fuller ingredient list and brand-described light, easy-spreading, moisturizing texture. Explain the difference from the white serum here, without prescribing that both must be layered.
 5. **Sunscreen — sun care with moisture.** First identify the named mineral UV filters; then HA hydration; then the seven-plant Giga White family. Plants must not appear to supply mineral UV protection. Do not turn the grouping into a tested SPF, penetration or blue-light demonstration.
 6. **Powder — optional finishing and coverage.** Lead with coverage and the brand-described fine/light texture; follow with the powder/oil group and the hydration/soothing group. Botanical names remain available without a cell-regeneration story. Shade and weight still need current product information.
-7. **Complete-set offer and saved list.** Put the dated price, honest purchase state and copy/card actions before optional customization. Ready buyers retain the fixed offer shortcut throughout.
+7. **The set and saved list.** A short real exchange, the five pieces with their jobs, working save/copy actions and the verified brand profile. The dated poster offer stays in data, off the page, until a verified channel exists. The header shortcut to the set is always available.
 8. **Optional comparison and full ingredient library.** The serum comparison/use-time information can remain in a disclosure after the offer. Retain all ingredient names, roles and sources behind four product disclosures. These are chosen deeper reads, not mandatory chapters before cleansing or 74 full-screen sections before purchase.
 
 The poster supports the sequence used to tell the set's story. It does not by itself establish an instruction to layer AC before BR. The page states: “หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า”. Product-specific label guidance remains accessible; no invented wait times, drop counts or serum hierarchy.
@@ -62,6 +66,9 @@ The footage and stills are illustrative. They are not Mediral's factory, experim
 Run and implementation contracts are in [README.md](README.md). Record actual tests and production verification after integration; earlier release results do not verify this revision.
 
 ## Revision history
+
+- v9: one cinema with a shared clock, problem-first chapters, material transitions (foam, ring, drop, streak, powder, regroup); no buy button, a verified brand profile link, the poster offer off the page.
+- v8: หนึ่งหน้า ห้าเรื่อง — five boxed scenes with one motion grammar each. Superseded by v9.
 
 - v7: continuous product-specific selling, scroll-led ingredient families, crisp DOM packs and decorative no-controls media.
 - v6: WHY/offer opening, separate serum comparison and film chapter, optional full atlas after the offer. Superseded by v7.

@@ -1,5 +1,5 @@
 /**
- * "ใบสรุปก่อนจ่าย" — a PNG checklist of the pieces the buyer ticked, in routine order.
+ * "รายการที่เลือก" — a PNG checklist of the pieces the buyer ticked, in routine order.
  * No prices: the poster offer has dates and the card may be opened later.
  *
  * Contract (used by js/main.js):
@@ -74,8 +74,8 @@ function layout(g, H, {pieces, data, imgs}, pinFooter = true) {
   g.lineWidth = 2;
   g.strokeRect(36, 36, W - 72, H - 72);
 
-  text(g, 'myClover · Mediral 5 Steps', PAD, 130, {font: 'italic 500 40px "Cormorant Garamond"', color: C.forest});
-  let y = text(g, 'ใบสรุปก่อนจ่าย', PAD, 215, {font: `600 60px ${SERIF}`, color: C.deep});
+  text(g, 'myClover · Mediral ชุดดูแลผิว 5 ชิ้น', PAD, 130, {font: `500 34px ${SANS}`, color: C.forest});
+  let y = text(g, 'รายการที่เลือก', PAD, 215, {font: `600 60px ${SERIF}`, color: C.deep});
   g.fillStyle = C.gold;
   g.fillRect(PAD, y + 18, 72, 3);
   y = text(g, full ? 'ชุดครบ 5 ชิ้น' : `เลือก ${pieces.length} จาก ${total} ชิ้น`, PAD, y + 82, {font: `600 34px ${SERIF}`, color: C.deep});
@@ -101,16 +101,13 @@ function layout(g, H, {pieces, data, imgs}, pinFooter = true) {
     text(g, `${p.role_short || p.verb} · ${p.when.join(' / ')}`, PAD + 240, y + 104, {font: `400 24px ${SANS}`, color: C.soft, maxWidth: W - 2 * PAD - 260});
     y += rowH + 16;
   }
-  if (pieces.some(p => !p.image)) {
-    y = text(g, 'มูสล้างหน้า: ภาพแพ็กปัจจุบันยังรอยืนยัน ให้ดูภาพและขนาดที่ร้านระบุ', PAD, y + 20, {font: `500 22px ${SANS}`, color: C.warn});
-  }
 
   // Three checks
-  y = text(g, 'ก่อนกดจ่าย เช็กให้ตรงสามข้อ', PAD, y + 66, {font: `600 32px ${SERIF}`, color: C.deep});
+  y = text(g, 'ก่อนเลือกซื้อ เช็กให้ตรงสามข้อ', PAD, y + 66, {font: `600 32px ${SERIF}`, color: C.deep});
   const checks = [
     full ? 'รายการชุดในร้านมีครบทั้ง 5 ชิ้นนี้' : 'ตัวเลือกในร้านตรงกับชิ้นที่เลือกไว้',
     'แพ็กและขนาดตรงกับที่ร้านระบุว่าจะส่ง',
-    'ยอดหลังใช้สิทธิและค่าส่งที่หน้าชำระ เป็นยอดที่รับได้',
+    'ราคา สิทธิ และค่าส่งที่ร้าน เป็นยอดที่รับได้',
   ];
   y += 26;
   for (const [i, item] of checks.entries()) {
@@ -126,7 +123,7 @@ function layout(g, H, {pieces, data, imgs}, pinFooter = true) {
     y = text(g, item, PAD + 56, y, {font: `400 27px ${SANS}`, maxWidth: W - 2 * PAD - 56}) + 12;
   }
 
-  const note = `${data.order_note} · ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ · ข้อมูลจากสื่อแบรนด์ที่ได้รับ ${data.evidence.received} · ราคาและสิทธิดูที่หน้าชำระเงินเท่านั้น`;
+  const note = `${data.order_note} · ${data.provenance} · ข้อมูลผลิตภัณฑ์จาก Mediral · ราคาและสิทธิดูที่หน้าร้าน`;
   y = text(g, note, PAD, pinFooter ? Math.max(y + 56, H - 160) : y + 56, {font: `400 21px ${SANS}`, color: C.soft, lineHeight: 1.5});
   return y + 70;
 }

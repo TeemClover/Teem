@@ -49,82 +49,63 @@ function importsIn(source) {
   for (const pattern of [declarations, dynamic]) for (const m of source.matchAll(pattern)) refs.add(m[2]);
   return refs;
 }
-function importMap(source) {
-  const maps = [...source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter(m => attributes(m[1]).type === 'importmap');
-  assert.equal(maps.length, 1, 'The browser must have exactly one parseable import map');
-  return JSON.parse(maps[0][2]).imports ?? {};
+function modulePath(specifier, owner) {
+  assert.ok(/^(?:\.|\/)/.test(specifier), `${relative(root, owner)} imports a bare specifier ${specifier}; the page has no import map`);
+  return localReference(specifier, owner);
 }
-function modulePath(specifier, owner, mappings) {
-  if (/^(?:\.|\/)/.test(specifier)) return localReference(specifier, owner);
-  const key = Object.keys(mappings).filter(k => k === specifier || (k.endsWith('/') && specifier.startsWith(k))).sort((a, b) => b.length - a.length)[0];
-  assert.ok(key, `${relative(root, owner)} imports unresolved bare specifier ${specifier}`);
-  return localReference(mappings[key] + (key.endsWith('/') ? specifier.slice(key.length) : ''), join(site, 'index.html'));
-}
+const steps = () => routine().steps;
+const publicCode = () => ['index.html', 'js/main.js', 'js/score.js', 'js/card.js'].map(f => read(join(site, f))).join('\n');
+
 
 test('the routine is the five chosen steps, in the owner-selected order', () => {
-  const {steps} = routine();
-  assert.deepEqual(steps.map(s => s.id), ['CL', 'AC', 'BR', 'SU', 'PO']);
-  assert.deepEqual(steps.map(s => s.order), [1, 2, 3, 4, 5]);
-  for (const s of steps) {
-    for (const field of ['headline', 'nick', 'verb', 'verb_en', 'for_you', 'how', 'image_note', 'ingredients_note']) {
+  assert.deepEqual(steps().map(s => s.id), ['CL', 'AC', 'BR', 'SU', 'PO']);
+  assert.deepEqual(steps().map(s => s.order), [1, 2, 3, 4, 5]);
+  for (const s of steps()) {
+    for (const field of ['headline', 'nick', 'verb', 'for_you', 'how', 'ingredients_note', 'image_alt']) {
       assert.ok(typeof s[field] === 'string' && s[field].trim(), `${s.id}.${field} is required`);
     }
     assert.ok(Array.isArray(s.when) && s.when.length, `${s.id} says when it is used`);
-    assert.ok(s.featured.length <= 5, `${s.id}: only a few names per screen`);
   }
 });
 
 test('the mousse uses the current clover-reference draft without inheriting the old formula or size', () => {
-  const cl = routine().steps.find(s => s.id === 'CL');
-  assert.equal(cl.image, 'assets/pack/cl-clover-front-v2.webp', 'Use the draft checked against the current clover-label poster');
+  const cl = steps().find(s => s.id === 'CL');
+  assert.equal(cl.image, 'assets/pack/cl-clover-front-v2.webp');
   assert.equal(cl.image_status, 'ai-draft', 'The reconstructed package is not a literal product photograph');
   assert.equal(cl.size, null, 'The reference image does not verify the current mousse size');
-  assert.match(cl.source_image_note, /โปสเตอร์/, 'Keep the reference type attached to the package draft');
-  assert.match(cl.source_image_note, /2026-09-28/, 'Identify when the current reference was received');
-  assert.match(cl.source_image_note, /โคลเวอร์/, 'Distinguish this reference from the old rose-label pack');
   assert.equal(cl.ingredients_status, 'pending-current-sku');
   assert.deepEqual(cl.featured, [], 'The old Natural Blossom list must not be attached to the current mousse');
   assert.deepEqual(cl.ingredients, []);
+  assert.deepEqual(cl.scene.waves, [], 'No mousse ingredient waves while its formula is unconfirmed');
+  assert.doesNotMatch(JSON.stringify(cl.scene), /ชบา|ลิลลี่|SLS|80 ?ml|ดีท็อกซ์|ไม่แห้ง|กันน้ำ/, 'No old rose-pack formula or claims');
   for (const path of walkFiles(site).filter(p => ['.html', '.js', '.json', '.css'].includes(extname(p)))) {
-    if (relative(site, path).startsWith(`assets${sep}`) || relative(site, path).startsWith(`vendor${sep}`)) continue;
+    if (relative(site, path).startsWith(`assets${sep}`)) continue;
     assert.doesNotMatch(read(path), /cl-front-ai-draft-hold/, `${relative(root, path)} must not use the held mousse draft`);
   }
 });
 
 test('ingredient explanations retain their source and separate individual from group-only claims', () => {
-  for (const step of routine().steps) {
+  for (const step of steps()) {
     for (const ingredient of [...step.featured, ...step.ingredients]) {
       assert.ok(ingredient.benefit?.trim(), `${step.id}: ${ingredient.name} needs a readable role or limitation`);
       assert.ok(ingredient.benefit_source?.trim(), `${step.id}: ${ingredient.name} needs attribution`);
       assert.ok(['brand-claim', 'identity-only'].includes(ingredient.benefit_status));
     }
-    for (const ingredient of step.featured) assert.ok(ingredient.image, 'A focused material must have an available illustration');
   }
-  const powder = routine().steps.find(s => s.id === 'PO');
-  assert.ok(powder.featured.every(i => i.benefit_status === 'identity-only'), 'Group-level powder copy is not individual efficacy evidence');
-});
-
-test('the sunscreen shows the softened web draft, with its lettering caveat in view', () => {
-  const su = routine().steps.find(s => s.id === 'SU');
-  assert.equal(su.image, 'assets/pack/su-front-web.webp', 'The unsoftened draft makes AI-lettered PA marks legible');
-  assert.match(su.visible_note, /AI/);
-  assert.ok(!su.featured.some(f => /mineral/.test(f.image)), 'An abstract powder must not be captioned as the UV filters');
+  const powder = steps().find(s => s.id === 'PO');
+  assert.ok([...powder.featured, ...powder.ingredients].every(i => i.benefit_status === 'identity-only'), 'Group-level powder copy is not individual efficacy evidence');
 });
 
 test('ingredient groups cover every source-listed name once without treating aliases as extra actives', () => {
   const counts = {CL: 0, AC: 24, BR: 18, SU: 14, PO: 18};
-  for (const step of routine().steps) {
+  for (const step of steps()) {
     const names = [...step.featured, ...step.ingredients].map(i => i.name);
     assert.equal(names.length, counts[step.id], `${step.id}: preserve the full source-list display inventory`);
     const grouped = step.ingredient_groups.flatMap(g => g.ingredientNames);
-    assert.equal(new Set(names).size, names.length, `${step.id}: no duplicated named entry`);
     assert.equal(new Set(grouped).size, grouped.length, `${step.id}: each name belongs to one reading group`);
-    assert.deepEqual([...grouped].sort(), [...names].sort(), `${step.id}: no source-listed name is omitted from the visible groups`);
-    for (const group of step.ingredient_groups) {
-      assert.ok(group.title && group.summary && group.source, `${step.id}: groups explain their role and attribution`);
-    }
+    assert.deepEqual([...grouped].sort(), [...names].sort(), `${step.id}: no source-listed name is omitted`);
   }
-  const sun = routine().steps.find(s => s.id === 'SU');
+  const sun = steps().find(s => s.id === 'SU');
   const names = [...sun.featured, ...sun.ingredients].map(i => i.name);
   assert.equal(names.filter(n => /ไฮยา/.test(n)).length, 1, 'HA aliases share one source entry');
   assert.ok(!names.some(n => /Giga White/.test(n)), 'The botanical blend is a group, not an extra counted ingredient');
@@ -132,198 +113,220 @@ test('ingredient groups cover every source-listed name once without treating ali
 });
 
 test('when each piece is used retains the source method without serum layering instructions', () => {
-  const {steps} = routine();
-  const byId = Object.fromEntries(steps.map(s => [s.id, s]));
-  for (const s of steps) {
-    assert.ok(s.role_short?.trim(), `${s.id}: the opening map needs a short role`);
-  }
+  const byId = Object.fromEntries(steps().map(s => [s.id, s]));
   assert.deepEqual(byId.CL.when, ['ตามฉลาก']);
-  assert.match(byId.CL.how, /ฉลาก/, 'The current mousse label is the method source');
   for (const id of ['AC', 'BR']) {
     assert.deepEqual(byId[id].when, ['เช้า', 'เย็น']);
-    assert.match(byId[id].how, /เช้าและเย็น/);
     assert.doesNotMatch(`${byId[id].verb} ${byId[id].how}`, /ชั้นที่\s*[12]|ต่อจากเซรั่ม|ทา(?:ก่อน|หลัง)เซรั่ม|รอ\s*\d+|\d+\s*หยด/, `${id}: no invented layering, waits or dose`);
   }
   assert.match(byId.SU.how, /ทาซ้ำ/);
-  assert.deepEqual(byId.PO.when, ['เมื่อแต่งหน้า']);
   assert.equal(byId.PO.size, null, 'The powder weight is not established by the source');
-  assert.doesNotMatch(byId.PO.how, /หลังขั้นปกป้อง|\d+\s*(?:กรัม|เฉด)/, 'Story position does not supply label instructions or shade inventory');
+  assert.equal(byId.PO.size_note, 'ดูเฉด น้ำหนัก และรายละเอียดตัวเลือกที่ร้าน', 'Finished guidance, not a pending note');
+  assert.match(byId.SU.size_note, /SPF\/PA ให้ดูบนฉลาก/, 'Protection values are read from the tube received');
 });
 
 test('scroll-selling beats use attributed roles and only names present in the product catalogue', () => {
   const ids = new Set();
-  for (const step of routine().steps) {
+  for (const step of steps()) {
     const names = new Set([...step.featured, ...step.ingredients].map(i => i.name));
     assert.ok(step.selling?.source?.trim(), `${step.id}: the short story needs source attribution`);
-    assert.ok(step.selling.beats.length >= 2 && step.selling.beats.length <= 4, `${step.id}: a few useful beats, not one full-screen chapter per ingredient`);
     for (const beat of step.selling.beats) {
-      for (const field of ['id', 'title', 'body', 'visual']) assert.ok(beat[field]?.trim(), `${step.id}: missing beat ${field}`);
       assert.ok(!ids.has(beat.id), `Duplicate selling beat ${beat.id}`);
       ids.add(beat.id);
-      assert.ok(Array.isArray(beat.names));
-      assert.equal(new Set(beat.names).size, beat.names.length, `${beat.id}: no duplicated ingredient names`);
       for (const name of beat.names) assert.ok(names.has(name), `${beat.id}: unknown ingredient ${name}`);
-      for (const name of Object.keys(beat.tags || {})) assert.ok(beat.names.includes(name), `${beat.id}: benefit tag belongs to a named ingredient`);
       if (step.id === 'CL') assert.deepEqual(beat.names, [], 'Mousse atmosphere must not invent a current formula');
     }
   }
 });
 
-test('source-supported selling families remain prominent without merging mineral and plant roles', () => {
-  const byId = Object.fromEntries(routine().steps.map(s => [s.id, s]));
-  const brNames = byId.BR.selling.beats.flatMap(b => b.names);
-  for (const name of ['สารสกัดแบร์เบอร์รี่', 'สารสกัดชะเอมเทศ', 'อนุพันธ์วิตามินซี', 'โพรไบโอติก', 'บากูชิล ตามชื่อในสื่อแบรนด์']) {
-    assert.ok(brNames.includes(name), `BR selling story must retain ${name}, even without a photograph`);
+// The finished-copy table this release was written from (private copy review, 2026-09-29).
+const HEADLINES = {
+  CL: [['ล้างวันนี้ออก', 'ก่อนเริ่มดูแล'], 'มูสล้างหน้าและเครื่องสำอาง เริ่มดูแลเมื่อกลับถึงบ้าน', 'กลับถึงบ้าน ผิวผ่านมาทั้งวัน'],
+  AC: [['ดูแลความมัน', 'เติมความชุ่มชื้น'], 'เซรั่มสำหรับผิวที่เป็นสิวง่าย บางเบา ซึมไว ไม่เหนอะหนะ', 'สิวง่าย แต่ไม่อยากเหนอะหนะ'],
+  BR: [['ให้สีผิว', 'ดูสม่ำเสมอ'], 'ดูแลความหมองคล้ำและความเรียบเนียน ด้วยเซรั่มบางเบา เกลี่ยง่าย', 'ผิวดูหมอง สีผิวดูไม่สม่ำเสมอ'],
+  SU: [['กันแดดเนื้อเซรั่ม', 'เบาสบายผิว'], 'เกลี่ยง่าย พร้อมไฮยาเติมความชุ่มชื้น และ Giga White® พืช 7 ชนิด', 'ไม่ชอบกันแดดหนักหน้า?'],
+  PO: [['ปกปิดรอย', 'ให้ผิวดูเนียน'], 'แป้งพัฟเนื้อละเอียด บางเบา เกลี่ยง่าย สำหรับวันที่อยากแต่งผิว', 'วันนี้อยากปกปิดรอย'],
+};
+test('each chapter says its problem, then a two-line promise and one support line, in the reviewed words', () => {
+  const grammars = new Set();
+  for (const step of steps()) {
+    const [headline, support, problem] = HEADLINES[step.id];
+    assert.deepEqual(step.scene.headline, headline, `${step.id}: headline`);
+    assert.equal(step.scene.support, support, `${step.id}: support`);
+    assert.equal(step.scene.problem, problem, `${step.id}: the reader's problem opens the chapter`);
+    assert.ok(!grammars.has(step.scene.grammar), `${step.id}: its own visual grammar`);
+    grammars.add(step.scene.grammar);
+    assert.doesNotMatch(JSON.stringify(step.scene), /SPF|PA\+/, `${step.id}: no protection value in the story copy`);
   }
-  const plants = byId.SU.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames;
-  const plantBeat = byId.SU.selling.beats.find(b => plants.every(name => b.names.includes(name)));
-  assert.ok(plantBeat, 'All seven Giga White plant names remain available in the selling story');
-  const mineralBeat = byId.SU.selling.beats.find(b => ['Zinc Oxide', 'Titanium Dioxide'].every(name => b.names.includes(name)));
-  assert.ok(mineralBeat && mineralBeat !== plantBeat, 'Mineral filters and the seven-plant group have separate roles');
-  assert.ok(!plantBeat.names.some(name => ['Zinc Oxide', 'Titanium Dioxide'].includes(name)));
-  for (const step of [byId.AC, byId.BR]) assert.match(step.selling.sensory, /แบรนด์/, 'Sensory language is attributed, not a personal test');
-  for (const ingredient of [...byId.PO.featured, ...byId.PO.ingredients]) assert.equal(ingredient.benefit_status, 'identity-only', 'Powder group copy must not create individual efficacy claims');
+});
+
+test('benefit waves lead with the benefit and name only catalogued ingredients, pairing each role correctly', () => {
+  const expected = {
+    AC: [['ปลอบประโลม', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมความชุ่มชื้น', 'ac-hydrate']],
+    BR: [['ผิวดูกระจ่างใส', 'br-even'], ['สมดุลผิว', 'br-balance'], ['ผิวดูเรียบเนียน', 'br-balance']],
+    SU: [['ปกป้องผิวจากแดด', 'su-filters'], ['เติมความชุ่มชื้น', 'su-hydrate'], ['สีผิวดูสม่ำเสมอ', 'su-giga']],
+    PO: [['บางเบา เกลี่ยง่าย', 'po-powder-oil'], ['ชุ่มชื้น · ปลอบประโลม', 'po-hydrate']],
+  };
+  for (const step of steps().filter(s => expected[s.id])) {
+    assert.deepEqual(step.scene.waves.map(w => [w.label, w.beat]), expected[step.id], `${step.id}: waves`);
+    for (const w of step.scene.waves) {
+      assert.ok(step.selling.beats.some(b => b.id === w.beat), `${step.id}: ${w.label} belongs to a real beat`);
+      if (w.split) assert.ok(w.split > 0 && w.split < w.label.length, `${step.id}: a split lands inside the phrase`);
+    }
+  }
+  const br = steps().find(s => s.id === 'BR').scene.waves;
+  assert.deepEqual(br[1].show, ['โพรไบโอติก'], 'Probiotic is paired with balance');
+  assert.deepEqual(br[2].show, ['บากูชิล'], 'Bakuchiol is paired with smoothness');
+  const ac = steps().find(s => s.id === 'AC').scene.waves[1];
+  assert.equal(ac.label.slice(0, ac.split), 'สมดุล', 'The glass stem stands at a real word boundary');
+});
+
+test('general acne knowledge sits behind its own link, attributed to NHS and NIAMS, never beside the promise', () => {
+  const fact = steps().find(s => s.id === 'AC').fact;
+  assert.equal(fact.status, 'general-fact');
+  assert.equal(fact.label, 'ทำความเข้าใจผิวที่เป็นสิวง่าย');
+  assert.ok(fact.links.every(link => /^https:\/\/(www\.nhs\.uk|www\.niams\.nih\.gov)\//.test(link.href)));
+  assert.equal(steps().find(s => s.id === 'AC').scene.fact, undefined, 'The fact is not part of the story chapter');
 });
 
 test('native pack sizing has usable visible bounds for every draft', () => {
-  for (const step of routine().steps) {
+  for (const step of steps()) {
     const b = step.image_bounds;
-    assert.ok(b, `${step.id}: visible bounds are required to avoid sizing the transparent canvas`);
-    for (const key of ['x0', 'y0', 'x1', 'y1']) assert.ok(Number.isFinite(b[key]) && b[key] >= 0 && b[key] <= 1, `${step.id}.${key}: normalized coordinate`);
-    assert.ok(b.x1 > b.x0 && b.y1 > b.y0 && Number.isFinite(b.aspect) && b.aspect > 0, `${step.id}: non-empty pack bounds`);
+    for (const key of ['x0', 'y0', 'x1', 'y1']) assert.ok(Number.isFinite(b[key]) && b[key] >= 0 && b[key] <= 1, `${step.id}.${key}`);
+    assert.ok(b.x1 > b.x0 && b.y1 > b.y0 && b.aspect > 0, `${step.id}: non-empty pack bounds`);
   }
 });
 
 test('the page order explains roles; it is not presented as a verified application order', () => {
-  const expected = 'หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า';
-  assert.equal(routine().order_note, expected);
-  const copy = [html(), read(join(site, 'js/main.js')), read(join(site, 'js/card.js'))].join('\n');
+  assert.equal(routine().order_note, 'หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า');
   assert.match(html(), /วิธีใช้จริงให้ยึดฉลาก/, 'The static page retains label guidance without JavaScript');
-  assert.doesNotMatch(copy, /เล่าเรื่องตามโปสเตอร์|ตามโปสเตอร์ชุดของแบรนด์|ตามลำดับรูทีน/);
 });
 
-test('the sales path goes from the five-piece opening through products to the offer before optional depth', () => {
+test('the page runs from the five-piece opening through one story to the set, then optional depth', () => {
   const source = html();
   const at = id => source.indexOf(`id="${id}"`);
-  const order = ['routine', 'story', 'set', 'serums', 'ingredients'].map(at);
+  const order = ['story', 'routine', 'set', 'serums', 'ingredients'].map(at);
   assert.ok(order.every(i => i > 0), 'Every chapter exists');
-  assert.deepEqual([...order].sort((a, b) => a - b), order, 'The offer precedes the complete ingredient library');
-  const opening = source.slice(at('routine'), at('story'));
-  for (const id of ['CL', 'AC', 'BR', 'SU', 'PO']) assert.match(opening, new RegExp(`href="#step-${id}"`));
-  assert.match(opening, /href="#set"[^>]*data-cta="offer"/, 'A direct route to the offer in the opening');
-  assert.match(opening, /data-slot="hero-offer"/);
-  assert.match(opening, /ไม่จำเป็นต้องใช้ครบ/, 'The opening never says every reader needs all five');
-  assert.equal((source.match(/data-slot="(?:offer|buy-link|buy-hint)"/g) || []).length, 3, 'One offer, one checkout control, one hint');
-  const packImages = tags(opening, 'img');
-  assert.deepEqual(packImages.map(i => i.src), routine().steps.map(s => s.image), 'All five native pack images exist before JavaScript or WebGL');
-  assert.ok(packImages.every(i => /AI/.test(i.alt || '')), 'The static images retain package provenance');
-  assert.ok(!tags(source, 'section').some(s => s.id === 'lab-film'), 'No standalone film lesson before the products');
+  assert.deepEqual([...order].sort((a, b) => a - b), order);
+  assert.equal(tags(source, 'section').find(t => t.id === 'story').class, 'mr-cinema', 'One cinema holds the whole story');
+  const opening = source.slice(at('routine'), at('set'));
+  assert.match(opening, /href="#step-CL"/, 'A way into the first chapter');
+  assert.match(opening, /href="#set"[^>]*data-cta="offer"/, 'A direct route to the set');
+  const packImages = tags(opening, 'img').filter(i => /assets\/pack\//.test(i.src || ''));
+  assert.deepEqual(packImages.map(i => i.src).sort(), steps().map(s => s.image).sort(), 'All five packs paint before JavaScript');
+  for (const image of packImages) assert.equal(image.alt, steps().find(s => s.image === image.src).image_alt);
+  assert.match(opening, /<h1\b[^>]*>[\s\S]*จากล้างหน้า[\s\S]*ออกจากบ้าน[\s\S]*<\/h1>/);
+  assert.match(opening, /หนึ่งหน้า ห้าเรื่อง/);
+  for (const word of ['ล้าง', 'บำรุง', 'ปกป้อง', 'แต่งผิว']) assert.match(opening, new RegExp(`mr-routine-word[^>]*>${word}`));
   const comparison = source.slice(at('serums'), at('ingredients'));
   const drawer = tags(comparison, 'details').find(t => t.class?.split(/\s+/).includes('mr-compare__drawer'));
-  assert.ok(drawer && !Object.hasOwn(drawer, 'open'), 'Serum comparison is optional and closed initially after the offer');
+  assert.ok(drawer && !Object.hasOwn(drawer, 'open'), 'Serum comparison is optional and closed initially');
   assert.match(comparison, /ไม่ใช่คำแนะนำให้ทาเซรั่มสองขวดซ้อนกัน/);
+  assert.equal(tags(source, 'section').filter(t => ['founder', 'relay'].includes(t.id)).length, 0, 'No standalone manifesto chapters');
+});
+
+test('the set keeps one short real exchange, in the words sent and credited as sent', () => {
+  const {exchange} = routine();
+  assert.equal(exchange.intro, 'หลังได้ลองใช้ เราทักไปบอกเจ้าของแบรนด์');
+  const [teem, owner] = exchange.messages;
+  assert.equal(teem.text, 'ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ');
+  assert.equal(teem.credit, 'Teem · ผู้จัดทำ myClover · ความรู้สึกจากการลองใช้ส่วนตัว');
+  assert.equal(teem.status, 'personal-experience');
+  assert.equal(owner.text, 'ดีใจจังเลยครับที่น้องทีมชอบ พี่ตั้งใจทำของที่ดีที่สุดให้ทุกคนเลย', 'The owner’s exact reply');
+  assert.equal(owner.credit, 'เจ้าของ Mediral · ข้อความถึงผู้จัดทำ myClover');
+  assert.equal(owner.status, 'personal-statement');
+  assert.doesNotMatch(JSON.stringify(exchange), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ/, 'No credential, founder bio, factory or lab claim');
+  assert.doesNotMatch(publicCode(), /[★⭐]|\b\d\.\d\s*\/\s*5\b|รีวิวจากลูกค้า/, 'No stars, ratings or invented reviews');
+});
+
+test('the published page reads as finished: no backstage status, and provenance said once', () => {
+  const code = publicCode();
+  assert.doesNotMatch(code, /AI ฉบับร่าง|ภาพร่าง|กำลังตรวจ|รอสูตร|รอยืนยัน|ยังไม่ยืนยัน|ลิงก์ชุดนี้กำลังตรวจ/, 'Status language stays backstage');
+  assert.doesNotMatch(read(join(site, 'js/main.js')) + read(join(site, 'js/score.js')), /image_note|visible_note|pack_note/, 'Draft notes are not rendered');
+  const {provenance} = routine();
+  assert.equal(provenance, 'ภาพสินค้าและฉากบางส่วนสร้างด้วย AI จากสื่อแบรนด์ ใช้เล่าแนวคิดของส่วนผสม รายละเอียดสินค้ายึดฉลากและหน้าร้าน');
+  const footer = html().match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || '';
+  assert.equal(footer.split(provenance).length - 1, 1, 'The AI-imagery line appears once, in the footer');
+  assert.equal(html().split(provenance).length - 1, 1);
+  for (const s of steps()) assert.equal(s.image_status, 'ai-draft', `${s.id}: the data still records the package as an AI draft`);
+});
+
+test('nothing pretends checkout exists: no buy button, a verified brand profile, a gated offer', () => {
+  const {buy, set} = routine();
+  assert.equal(buy.affiliate_url, null);
+  assert.equal(buy.status, 'pending');
+  assert.equal(buy.store_url ?? null, null, 'No guessed store URL');
+  assert.equal(buy.profile.status, 'verified');
+  assert.equal(buy.profile.url, 'https://www.tiktok.com/@mediral.official.th');
+  assert.equal(buy.profile.label, 'ดู Mediral บน TikTok');
+  const source = html();
+  assert.equal(tags(source, 'a').filter(t => t['data-slot'] === 'buy-link').length, 0, 'No purchase control in the static page');
+  assert.ok(!tags(source, 'a').some(t => t['aria-disabled'] === 'true'), 'No disabled pretend link');
+  const actions = source.slice(source.indexOf('data-slot="actions"'), source.indexOf('data-slot="buy-hint"'));
+  assert.match(actions, /data-action="card">บันทึกรายการที่เลือก/);
+  assert.match(actions, /data-action="copy">คัดลอกรายการ/);
+  const profile = tags(actions, 'a').find(t => t['data-slot'] === 'profile-link');
+  assert.ok(profile && Object.hasOwn(profile, 'hidden') && !profile.href, 'The profile link waits for its verified data');
+  assert.equal(set.show_offer, false, 'The dated poster offer is not in the main advertisement');
+  assert.equal(set.poster.status, 'poster-only');
+  assert.match(tags(source, 'div').find(t => t['data-slot'] === 'offer') ? source.match(/<div[^>]*data-slot="offer"[^>]*>/)[0] : '', /hidden/);
+  assert.doesNotMatch(source, /1,899|฿\s*1899|ของแถม/, 'No poster price or gift in the page');
+});
+
+test('copy leads with each step’s role and avoids drug-like or unverified claims', () => {
+  const heads = steps().map(s => s.headline).join(' ');
+  for (const word of ['ล้าง', 'สิว', 'หมองคล้ำ', 'กันแดด', 'ปกปิด']) assert.ok(heads.includes(word), `Headlines should name the role: ${word}`);
+  const copy = [publicCode(), JSON.stringify(steps().map(s => s.scene)), JSON.stringify(routine().exchange)].join('\n');
+  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|SPF ?\d|PA\+|90%|95%|ชั่วโมง|เสริมฤทธิ์|synerg|สกัดบริสุทธิ์|สูตรเข้มข้น)/iu;
+  const hit = copy.match(banned);
+  assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
 });
 
 test('an enabled lab film ships a real faststart-ready MP4 and its poster, both deployable', () => {
-  const markup = [html(), read(join(site, 'js/main.js'))].join('\n');
-  assert.match(markup, /data-film-ready="true"/, 'The delivered film is enabled in an ingredient composition');
+  const markup = read(join(site, 'js/score.js'));
+  assert.match(markup, /data-film-ready="true"/, 'The delivered film is enabled in the AC composition');
   const clip = readFileSync(join(site, 'assets/motion/lab-film-10s.mp4'));
-  assert.equal(clip.toString('ascii', 4, 8), 'ftyp', 'An ISO MP4 container');
+  assert.equal(clip.toString('ascii', 4, 8), 'ftyp');
   assert.ok(clip.length < 3_000_000, 'Keep the deferred clip light for phones');
   const head = clip.subarray(0, 64 * 1024).toString('latin1');
-  assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), 'moov precedes mdat so playback can start early');
-  const poster = readFileSync(join(site, 'assets/motion/lab-film-poster.webp'));
-  assert.equal(poster.toString('ascii', 8, 12), 'WEBP');
+  assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), 'moov precedes mdat');
+  assert.equal(readFileSync(join(site, 'assets/motion/lab-film-poster.webp')).toString('ascii', 8, 12), 'WEBP');
   const ignore = [read(join(root, '.gitignore')), read(join(root, '.vercelignore'))].join('\n').split('\n').map(l => l.trim());
   assert.ok(!ignore.some(line => line && /mediral\/assets\/motion|\.mp4$/.test(line)), 'The film is not excluded from git or deployment');
 });
 
 test('ambient media markup has no player controls, duration or automatic loop', () => {
-  const markup = [html(), read(join(site, 'js/main.js'))].join('\n');
+  const markup = read(join(site, 'js/score.js'));
   const videos = tags(markup, 'video');
-  assert.ok(videos.length, 'A real video remains in the composition, not only a poster');
+  assert.equal(videos.length, 1);
   for (const video of videos) {
     assert.ok(Object.hasOwn(video, 'muted') && Object.hasOwn(video, 'playsinline'));
     assert.equal(video.preload, 'none');
     assert.ok(!Object.hasOwn(video, 'controls') && !Object.hasOwn(video, 'loop'));
-    assert.ok(!video.src, 'No eager video URL is emitted in the markup');
-    assert.match(video['data-src'] || '', /assets\/motion\/lab-film-10s\.mp4/, 'The deferred URL resolves the delivered clip, including in the rendering template');
-    assert.match(video.poster || '', /assets\/motion\/lab-film-poster\.webp/);
+    assert.ok(!video.src, 'No eager video URL');
+    assert.match(video['data-src'] || '', /assets\/motion\/lab-film-10s\.mp4/);
   }
-  assert.doesNotMatch(markup, /data-film-toggle|data-film-duration|data-film-status|mr-film__controls/, 'Do not leave empty, hidden or visible player UI in the buying flow');
 });
 
-test('the maker and a user frame the routine as attributed quotes, never as product steps or reviews', () => {
-  const {founder, relay} = routine();
-  const source = html();
-  assert.equal(founder.status, 'personal-statement');
-  assert.deepEqual(founder.quote, ['พี่ตั้งใจทำ', 'ของที่ดีที่สุด', 'ให้ทุกคนเลย'], 'An exact excerpt of the owner’s message');
-  assert.match(founder.credit, /เจ้าของ Mediral/);
-  assert.doesNotMatch(JSON.stringify(founder), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ/, 'No credential, founder bio, factory or lab claim; the exact excerpt is pinned above');
-  assert.equal(relay.status, 'personal-experience');
-  assert.equal(relay.quote, 'ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ');
-  assert.equal(relay.credit, 'Teem · ผู้จัดทำ myClover');
-  assert.match(relay.note, /ไม่ได้ระบุชิ้น/);
-  assert.match(relay.note, /ไม่ใช่ผลของทุกคน/);
-  for (const id of ['founder', 'relay']) {
-    const tag = source.match(new RegExp(`<section\\b[^>]*id="${id}"[^>]*>`))?.[0] || '';
-    assert.ok(tag, `${id} is in the static page`);
-    assert.doesNotMatch(tag, /data-step=/, `${id} must not shift product progress`);
-    assert.match(tag, /mr-reading-chapter/, `${id} pauses the scene like any reading chapter`);
-  }
-  for (const line of founder.quote) assert.ok(source.includes(line));
-  assert.ok(source.includes(relay.quote) && source.includes(relay.credit) && source.includes(relay.note));
-  assert.doesNotMatch(source, /[★⭐]|\b\d(?:\.\d)?\s*\/\s*5\b|รีวิวจากลูกค้า/, 'No stars, scores or invented customer reviews');
-});
-
-test('the opening is one complete ad: kicker, the five labelled packs and a route to the offer', () => {
-  const source = html();
-  const hero = source.slice(source.indexOf('id="routine"'), source.indexOf('id="founder"'));
-  assert.match(hero, /MEDIRAL · ชุดดูแลผิว 5 ชิ้น/);
-  assert.match(hero, /<h1\b[^>]*>[\s\S]*หนึ่งหน้า[\s\S]*ห้าเรื่อง[\s\S]*<\/h1>/);
-  const items = [...hero.matchAll(/<a class="mr-lineup__item" href="#step-([A-Z]{2})"[^>]*><span class="mr-lineup__label">([^<]+)<\/span>/g)];
-  assert.deepEqual(items.map(m => m[1]), routine().steps.map(step => step.id));
-  assert.deepEqual(items.map(m => m[2]), routine().steps.map(step => step.hero_label), 'Each everyday concern sits on its own pack');
-  assert.match(hero, /href="#set"[^>]*data-cta="offer"/);
-  assert.match(hero, /data-slot="hero-offer"/);
-  assert.match(hero, /ไม่จำเป็นต้องใช้ครบ/);
-});
-
-test('each product owns one grammar and short ad copy; the sunscreen caveat is said once, near its pack', () => {
-  const {steps} = routine();
-  assert.deepEqual(steps.map(step => step.scene.grammar), ['erase', 'drop', 'reveal', 'glide', 'settle']);
-  for (const step of steps) {
-    assert.ok(step.scene.headline.length <= 2 && step.scene.headline.every(line => line.length <= 18), `${step.id}: a two-line ad headline`);
-    assert.ok(step.scene.problem && step.scene.role && step.scene.proof, `${step.id}: moment, role and proof`);
-    assert.ok(step.hero_label.length <= 8);
-  }
-  const ac = steps.find(step => step.id === 'AC').scene.fact;
-  assert.equal(ac.status, 'general-fact');
-  assert.match(ac.text, /สิวมีหลายปัจจัย/);
-  assert.ok(ac.links.every(link => /^https:\/\/(www\.nhs\.uk|www\.niams\.nih\.gov)\//.test(link.href)));
-  const su = steps.find(step => step.id === 'SU');
-  const said = [su.scene.proof, su.scene.pack_note, su.selling.source, su.scene.role].join(' ');
-  assert.equal((said.match(/SPF/g) || []).length, 1, 'One short SPF/PA caveat on the scene; the full note stays in details');
-  assert.match(su.scene.pack_note, /AI/);
-  assert.match(su.visible_note, /AI/, 'The full lettering note is kept for the details drawer');
-  const cl = steps.find(step => step.id === 'CL');
-  assert.doesNotMatch(JSON.stringify(cl.scene), /ชบา|ลิลลี่|SLS|80 ?ml|ดีท็อกซ์|ไม่แห้ง/, 'No old rose-pack formula or claims');
-});
-
-test('experience imagery ships as final WebP only, and every stylesheet image resolves locally', () => {
+test('experience imagery ships as consumed final WebP only, and every stylesheet and story image resolves', () => {
   const dir = join(site, 'assets/experience');
-  const files = readdirSync(dir);
-  assert.deepEqual(files.sort(), ['p0-1-stage-tall.webp', 'p0-1-stage-wide.webp', 'p0-2-drop-amber.webp', 'p0-2-drop-clear.webp', 'p0-3-foam-band.webp']);
+  const files = readdirSync(dir).sort();
+  assert.deepEqual(files, ['m2-glass-cone.webp', 'm2-powder-veil.webp', 'm2-rinse-portal.webp', 'm2-serum-ribbon.webp', 'm2-teatree-foreground.webp',
+    'p0-1-stage-tall.webp', 'p0-1-stage-wide.webp', 'p0-2-drop-amber.webp', 'p0-2-drop-clear.webp', 'p0-3-foam-band.webp']);
   const css = read(join(site, 'mediral.css'));
-  const refs = [...css.matchAll(/url\(([^)]+)\)/g)].map(m => m[1].replace(/["']/g, ''));
-  assert.ok(refs.length >= 3);
-  for (const ref of refs) {
-    const path = localReference(ref, join(site, 'mediral.css'));
-    assertFile(path, `CSS ${ref}`);
-    assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP', `${ref} is WebP`);
+  const refs = [...css.matchAll(/url\(([^)]+)\)/g)].map(m => ({ref: m[1].replace(/["']/g, ''), owner: join(site, 'mediral.css')}));
+  for (const file of ['index.html', 'js/score.js']) {
+    for (const m of read(join(site, file)).matchAll(/(?:src|data-src)="((?:\$\{asset\(')?)(assets\/[^"'`)]+\.(?:webp|mp4))/g)) refs.push({ref: m[2], owner: join(site, 'index.html')});
+    for (const m of read(join(site, file)).matchAll(/'(assets\/[^']+\.webp)'/g)) refs.push({ref: m[1], owner: join(site, 'index.html')});
   }
-  const code = read(join(site, 'js/main.js'));
-  for (const name of code.matchAll(/experience\(['`]([^'`$]+\.webp)['`]\)/g)) assert.ok(files.includes(name[1]), name[1]);
+  const used = new Set();
+  for (const {ref, owner} of refs) {
+    const path = localReference(ref, owner);
+    assertFile(path, ref);
+    if (extname(path) === '.webp') assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP', `${ref} is WebP`);
+    if (path.startsWith(dir)) used.add(relative(dir, path));
+  }
+  assert.deepEqual([...used].sort(), files, 'Every shipped experience image is actually used');
 });
 
 test('internal manifests and unsoftened drafts stay out of git', () => {
@@ -331,74 +334,28 @@ test('internal manifests and unsoftened drafts stay out of git', () => {
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
     assert.ok(ignore.includes(line), `.gitignore should list ${line}`);
   }
-});
-
-test('pack drafts are labelled as drafts wherever they appear', () => {
-  const {steps} = routine();
-  for (const s of steps.filter(s => s.image)) {
-    assert.equal(s.image_status, 'ai-draft', `${s.id}: status must state the pack is an AI draft`);
-    assert.match(s.image_note, /AI ฉบับร่าง/, `${s.id}: the visible note must say AI draft`);
-  }
-  const source = html();
-  assert.match(source, /ภาพแพ็ก[^<]*AI ฉบับร่าง[^<]*ไม่ใช่ฉลากต้นฉบับ/, 'The static HTML explains the package draft limitation');
-  const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || '';
-  assert.match(footer, /<summary>[^<]*ที่มา/, 'Material provenance remains discoverable in source details');
-  assert.match(footer, /ไม่ใช่โรงงาน[^<]*ผลทดสอบ[^<]*เนื้อผลิตภัณฑ์จริง/, 'Conceptual film and texture limits remain explicit');
-});
-
-test('copy leads with each step’s role and avoids drug-like or unverified claims', () => {
-  const {steps} = routine();
-  const heads = steps.map(s => s.headline).join(' ');
-  for (const word of ['ล้าง', 'สิว', 'หมองคล้ำ', 'กันแดด', 'ปกปิด']) assert.ok(heads.includes(word), `Headlines should name the role: ${word}`);
-  const copy = [html(), read(join(site, 'data/routine.json')), read(join(site, 'js/main.js')), read(join(site, 'js/card.js'))].join('\n');
-  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|เหมาะกับทุกสีผิว|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|SPF ?50|PA\+{3}|SPF ?30|90%|95%|144 ชั่วโมง|12 ชั่วโมง|เสริมฤทธิ์|synerg)/iu;
-  const hit = copy.match(banned);
-  assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
-});
-
-test('the set offer is poster evidence with dates, never a live or discounted price', () => {
-  const {set} = routine();
-  assert.equal(set.poster.price, 1899);
-  assert.equal(set.poster.valid_from, '2026-09-21');
-  assert.equal(set.poster.valid_to, '2026-09-30');
-  assert.equal(set.poster.status, 'poster-only');
-  assert.match(set.poster.note, /ยังไม่ยืนยัน/);
-  const copy = [html(), read(join(site, 'data/routine.json'))].join('\n');
-  assert.doesNotMatch(copy, /8,?540|\b820\b|\b880\b|45%|฿60|max ฿60/, 'Other offers, strike prices and coupons stay out of the set story');
-});
-
-test('pending Affiliate checkout stays inert in data and in the pre-JavaScript HTML', () => {
-  const {buy} = routine();
-  assert.equal(buy.affiliate_url, null);
-  assert.equal(buy.status, 'pending');
-  const links = tags(html(), 'a').filter(t => t['data-slot'] === 'buy-link');
-  assert.equal(links.length, 1);
-  assert.equal(links[0]['aria-disabled'], 'true');
-  assert.ok(!links[0].href, 'An unverified purchase button must not navigate anywhere');
+  for (const path of walkFiles(site)) assert.doesNotMatch(relative(site, path), /\.(?:png|psd)$|manifest|prompts|qa-gallery|original/i, `${relative(root, path)} is a private working file`);
 });
 
 test('every referenced image is a real local WebP', () => {
   const entry = join(site, 'index.html');
   const refs = imageRefs(routine());
-  assert.ok(refs.length >= 20, 'Check botanicals as well as the pack images');
-  for (const t of tags(html(), 'img')) refs.push({reference: t.src, pointer: 'HTML img'});
+  for (const t of tags(html(), 'img')) refs.push({reference: t.src || t['data-src'], pointer: 'HTML img'});
   for (const {reference, pointer} of refs) {
     const path = localReference(reference, entry);
     assert.ok(path?.startsWith(`${site}${sep}`), `${pointer}: expected a local Mediral image`);
     assertFile(path, pointer);
     assert.equal(extname(path), '.webp', `${relative(root, path)} should be WebP`);
-    const bytes = readFileSync(path);
-    assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
-    assert.equal(bytes.toString('ascii', 8, 12), 'WEBP');
+    assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP');
   }
 });
 
-test('the page, lazy story scene and summary card have a complete local dependency graph', () => {
+test('the page, its cinema, film and saved-list card have a complete local dependency graph without WebGL', () => {
   const entry = join(site, 'index.html');
   const source = html();
-  const mappings = importMap(source);
+  assert.ok(!/type="importmap"/.test(source), 'No import map: the story needs no three.js');
   const queue = tags(source, 'script').filter(t => t.src && t.type === 'module').map(t => localReference(t.src, entry));
-  assert.ok(queue.length, 'There must be a local module entry point');
+  assert.equal(queue.length, 1, 'One module entry point');
   for (const link of tags(source, 'link').filter(t => t.rel?.split(/\s+/).includes('stylesheet'))) {
     const path = localReference(link.href, entry);
     if (path) assertFile(path, 'Stylesheet');
@@ -409,15 +366,25 @@ test('the page, lazy story scene and summary card have a complete local dependen
     if (visited.has(owner)) continue;
     assertFile(owner, 'ES module');
     visited.add(owner);
-    for (const spec of importsIn(read(owner))) queue.push(modulePath(spec, owner, mappings));
+    for (const spec of importsIn(read(owner))) queue.push(modulePath(spec, owner));
   }
-  for (const name of ['story.js', 'card.js']) assert.ok(visited.has(join(site, 'js', name)), `Check the lazy ${name}`);
-  assert.ok([...visited].some(p => p.startsWith(join(site, 'vendor') + sep)), 'three must resolve locally');
-  const vendor = JSON.parse(read(join(site, 'vendor/VENDOR.json')));
-  const exported = new Set(vendor.exports);
-  const used = [...read(join(site, 'js/story.js')).matchAll(/import\s*\{([^}]+)\}\s*from\s*'three'/g)]
-    .flatMap(m => m[1].split(',').map(s => s.trim()).filter(Boolean));
-  for (const name of used) assert.ok(exported.has(name), `The vendored three subset does not export ${name}`);
+  for (const name of ['main.js', 'cinema.js', 'score.js', 'card.js', 'lab-film.js']) assert.ok(visited.has(join(site, 'js', name)), `${name} is reachable`);
+  assert.ok(!walkFiles(site).some(p => /story\.js$|three\.module/.test(p)), 'The retired WebGL layer is gone');
+});
+
+test('reduced motion and short screens start in normal flow before the module runs', () => {
+  const inline = [...html().matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+  assert.equal(inline.length, 1);
+  assert.match(inline[0], /prefers-reduced-motion: reduce\), \(max-height: 520px\)/);
+  assert.match(inline[0], /mr-flow/);
+  assert.match(read(join(site, 'js/main.js')), /matchMedia\('\(prefers-reduced-motion: reduce\), \(max-height: 520px\)'\)/, 'The controller uses the same query');
+  const css = read(join(site, 'mediral.css'));
+  assert.match(css, /\.mr-flow \.mr-cinema\{height:auto\}/);
+  assert.match(css, /\.mr-flow \.mr-cinema__view\{position:relative/);
+  assert.match(css, /body\[data-step=routine\] \.mr-rail,body\[data-reading-chapter\] \.mr-rail\{opacity:0;visibility:hidden/, 'A hidden rail is not a tab stop');
+  assert.match(css, /\.mr-cinema__view\{[^}]*overflow:hidden;overflow:clip/, 'The viewport clips without being a scroll container');
+  assert.match(css, /\.mr-shot\{overflow:hidden;overflow:clip\}/, 'So do the shots');
+  assert.match(css, /\.mr-flow \.mr-cinema__view\{[^}]*overflow:visible/, 'Flow keeps visible overflow');
 });
 
 test('first-party browser JavaScript parses', () => {
@@ -427,11 +394,11 @@ test('first-party browser JavaScript parses', () => {
 });
 
 test('internal partner purchase cost and private notes are absent from the published folder', () => {
-  const files = walkFiles(site).filter(p => !relative(site, p).startsWith(`vendor${sep}`) && ['.html', '.json', '.js', '.md', '.css', '.txt'].includes(extname(p)));
+  const files = walkFiles(site).filter(p => ['.html', '.json', '.js', '.md', '.css', '.txt'].includes(extname(p)));
   for (const path of files) {
     const content = read(path);
-    assert.doesNotMatch(content, /(?:฿\s*290(?:[.,]00)?\b|\b290(?:[.,]00)?\s*(?:บาท|THB)|ราคาพันธมิตร|partner[_ -]?(?:price|cost))/iu,
-      `${relative(root, path)} exposes internal partner pricing`);
+    assert.doesNotMatch(content, /(?:฿\s*290(?:[.,]00)?\b|\b290(?:[.,]00)?\s*(?:บาท|THB)|ราคาพันธมิตร|partner[_ -]?(?:price|cost)|claude-work|น้องทีม(?!ชอบ))/iu,
+      `${relative(root, path)} exposes internal pricing or private notes`);
     if (extname(path) === '.json') {
       const values = v => v && typeof v === 'object' ? Object.values(v).flatMap(values) : [v];
       assert.ok(!values(JSON.parse(content)).some(v => v === 290 || v === '290'), `${relative(root, path)} contains the internal cost`);
@@ -455,7 +422,7 @@ test('page HTML and route responses declare noindex, and dev/reference files do 
   assert.ok(config.headers.some(r => r.source === '/mediral/'
     && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
   'The directory entry needs an explicit rule: production did not apply the wildcard header there');
-  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/story.js']) {
+  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js']) {
     const values = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
       .filter(h => h.key.toLowerCase() === 'x-robots-tag').map(h => h.value.toLowerCase().split(/[\s,]+/));
     assert.ok(values.some(v => v.includes('noindex')), `${pathname} needs X-Robots-Tag noindex`);

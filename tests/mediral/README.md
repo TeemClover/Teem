@@ -15,9 +15,9 @@ This document describes coverage, not a claim that the current integration or de
 | File | Contract |
 |---|---|
 | `mediral.test.mjs` | Data, source boundaries, static page order, native first-paint packs, media files/markup, dependencies and deployment exclusions. |
-| `controller.test.mjs` | Actual page-controller behavior: rendering, selling-beat selection, saved lists, offers, anchors, optional ingredient reading and scene/film ownership. |
+| `controller.test.mjs` | Actual page-controller behavior with a stand-in engine: chapter mounting (problem before benefit), markers → rail/step/header, resize keeping the story moment, flow switching, film window, saved lists, the gated offer, the profile and commission-link rules, anchors, legacy hashes and optional ingredient reading. |
 | `lab-film.test.mjs` | Decorative media without controls: visibility/preferences, deferred loading, error/end state, asynchronous ownership and cleanup. |
-| `scene-lifecycle.test.mjs` | Ambient scene lifecycle: progress/mood while paused, a single animation loop, reduced motion, context recovery and disposal. |
+| `cinema.test.mjs` | The scroll engine: history-independent poses and custom properties, `match` offsets, two-sided and parent-bounded load windows, liveness through parent layers, flow reset. |
 
 ## Product and source data
 
@@ -29,13 +29,12 @@ This document describes coverage, not a claim that the current integration or de
 - Method/time copy keeps label guidance, source-supported serum morning/evening use and sunscreen reapplication. No invented serum hierarchy, drops, waits, powder weight or shade inventory.
 - Held treatment, DNA, germ-killing, regeneration, universal-safety/shade, certification and numerical performance claims remain excluded from public copy.
 
-## หนึ่งหน้า ห้าเรื่อง scenes (2026-09-29)
+## Motion v2 cinema (2026-09-29)
 
-- The hero is one complete ad: kicker, five packs labelled with the everyday concern they look after, dated offer and a direct route to `#set`.
-- Founder and relay are attributed quotes (personal statement / personal experience with no SKU) and reading chapters without `data-step`, so product progress and the rail never shift.
-- Five scenes each own one grammar (erase, drop, reveal, glide, settle); the fifteen source beats stay in the DOM with their names; the AC acne note is a general fact linked to NHS/NIAMS and separate from the role.
-- Scroll position sets `--p/--a/--b/--c` per scene, forward and reverse; short screens unpin but still move; one queued update per scroll whose frame or timer winner cancels the other.
-- Experience imagery ships as final WebP only and every stylesheet image resolves locally.
+- One `#story` cinema; markers for `#routine` and each `#step-*`; every chapter mounted with its problem before its first benefit and the reviewed headline, support and waves.
+- The published page reads as finished: no status language, draft notes not rendered, one provenance line in the footer, the owner's exact reply and both credits.
+- No buy control without a verified destination; the brand profile shows for any list; a verified commission link would serve only the full set, with its disclosure; the poster offer is off the page but its date rules stay tested.
+- Only consumed final WebPs ship, and every one is referenced. No import map or WebGL remains.
 
 ## Continuous sales path and scroll
 
@@ -64,7 +63,7 @@ This document describes coverage, not a claim that the current integration or de
 
 ## Files and deployment boundaries
 
-- Referenced WebPs are real local images; lazy modules and every used three.js export resolve locally.
+- Referenced WebPs are real local images; every module resolves locally without an import map.
 - Package and concept-film provenance remains discoverable in source details.
 - HTML and route configuration retain noindex and the slash redirect.
 - Private reference screenshots, asset manifests/briefs, development docs/tests, the held mousse draft and the unsoftened sunscreen draft remain excluded from deployment. Noindex is not access control.

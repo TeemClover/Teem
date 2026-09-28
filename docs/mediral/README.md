@@ -1,12 +1,12 @@
 # Mediral five-piece set — `/mediral/`
 
-**หนึ่งหน้า ห้าเรื่อง (2026-09-29).** The page opens on the reader, not the product list: one face deals with several everyday things (cleansing the day off, blemish-prone skin, dull-looking skin, sun, days you want to finish your skin), and the five-piece set gives each one its own piece. The story order is: **one-screen ad (five labelled packs on a stone ledge + dated offer) → the maker's intent → five product scenes → a user's own words and the five back on the ledge → set offer → optional comparison drawer and complete ingredient library.** This is the page's arrangement, not a verified instruction to layer products or a claim that everyone needs all five.
+**Motion v2 — one cinema (2026-09-29).** The story is one sticky viewport driven by one scroll clock, not five boxed product slides. The order is: **opening (promise "จากล้างหน้า / ถึงผิวพร้อมออกจากบ้าน", five packs on a stone ledge) → the routine row (ล้าง · บำรุง · ปกป้อง · แต่งผิว) → CL → AC → BR → SU → PO → the five reassembled → the set (a short real exchange, the five pieces, working actions) → optional serum comparison and ingredient library.** The order explains roles; it is not a layering instruction, and no one needs all five.
 
-Each product scene has one movement grammar that is the shape of its job: CL **erase** (foam rises behind the pump bottle and washes "วันทั้งวัน" away), AC **extract → drop → bottle** (the existing silent clip, one amber drop falling onto the white serum, then a quiet balance accent), BR **light reveals** (a warm band lights the bottle and its named ingredients), SU **glass glides** (a glass sheet with separately labelled UV filter names passes behind the tube; the light itself never changes), PO **settle** (fine powder drifts down and settles around the compact on the ledge). Selection/extraction imagery is a visual metaphor, never a manufacturing claim. Packs are crisp native DOM images moved only by transform; no label is relit, blurred or projected.
+Every chapter opens on the reader's problem, read whole, then a two-line promise, one to three benefit waves and one support line. Objects carry chapters across: a foam front washes the routine row into the rinse scene and the bottle hands off at an identical pose; a water ring rises at the bottle's foot and opens into AC with four depths moving at different rates; the camera flies into the drop resting beside the capped AC bottle and comes out in BR's gold light (a new world, not AC's formula flowing into BR); a light streak wipes sideways into SU; air thickens into powder over PO; PO dissolves over the reassembled five. Glass, drops, foam, ribbon and powder are concept imagery, never a manufacturing process, test or product texture.
 
-The owner's line (“พี่ตั้งใจทำของที่ดีที่สุดให้ทุกคนเลย”) is an excerpt of a personal statement of intent credited to the brand owner; Teem's line is a personal trial impression with no SKU named. Neither is a review, rating or efficacy proof. The AC scene carries one general fact (“สิวมีหลายปัจจัย ทั้งน้ำมัน การอุดตัน และการอักเสบ”) linked to NHS and NIAMS, kept visually separate from the serum's role.
+The owner's full reply and Teem's message sit together near the set as one editorial exchange: a personal trial impression with no SKU named, and a personal statement of intent. Neither is a review, rating or efficacy proof. General acne knowledge (NHS/NIAMS) sits behind "ทำความเข้าใจผิวที่เป็นสิวง่าย" in the AC library entry, apart from the product's promise.
 
-The Affiliate URL remains pending; the dated poster offer and fixed-set/partial-list rules are unchanged.
+Commerce: there is no buy button. The working actions are "บันทึกรายการที่เลือก" (PNG) and "คัดลอกรายการ", and "ดู Mediral บน TikTok" opens the brand profile, verified 2026-09-29 (not a product link, checkout or Affiliate link). The Affiliate URL stays null. The dated poster offer is kept in data but off the page (`set.show_offer: false`); its code path and date rules stay tested.
 
 Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). Current mousse media limitation: [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -26,22 +26,22 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 
 | File | Responsibility |
 |---|---|
-| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, attributed `selling.beats`, sensory copy, the complete ingredient catalogue and groups, dated offer and purchase state. |
-| `mediral/js/main.js` | Renders semantic product stories and optional ingredient atlases, synchronizes the visible beat with scroll, keeps shopping selection separate, and owns offer dates, clipboard/card actions, anchors and fallback handling. |
-| `mediral/js/story.js` | Optional atmosphere and light effects. It does not render, relight or reconstruct product labels. Its lifecycle must pause when hidden and release resources on disposal. |
-| `mediral/js/lab-film.js` | Decorative, muted in-view media with motion/data preference guards and a poster fallback. No customer-facing player controls or duration/status UI. |
-| `mediral/js/card.js` | Generates a PNG of the saved list without a price, retaining package provenance and pre-payment checks. |
-| `mediral/assets/` | Existing AI draft packs and ingredient illustrations, plus the existing concept film and stills. Private preparation manifests remain excluded. |
-| `mediral/vendor/` | Local three.js subset; no additional external runtime is needed. |
+| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, per-chapter `scene` (problem, headline, support, waves), attributed `selling.beats`, the ingredient catalogue and groups, the exchange, provenance, the gated offer and purchase/profile state. |
+| `mediral/js/cinema.js` | The engine: one clock T from the story track, keyframes resolved around each layer's CSS home (offsets, hand-off `match`, camera `focus`, custom properties held across the track), liveness through parent layers, two-sided load windows, flow mode. No timers or animation loop of its own. |
+| `mediral/js/score.js` | The score: chapter markup from data and every layer's timing. Chapter `from` values are each chapter's first composed hold. |
+| `mediral/js/main.js` | Mounts the chapters and markers, schedules one update per scroll frame, maps markers to rail/`data-step`/header chapter, keeps the story moment across real viewport changes, owns the saved list, profile link, gated offer, clipboard/card actions, anchors, atlases and fallbacks. |
+| `mediral/js/lab-film.js` | Decorative, muted media inside AC with motion/data preference guards and a poster fallback. No customer-facing player controls or duration/status UI. |
+| `mediral/js/card.js` | A PNG of the saved list without a price, with the provenance line and neutral pre-purchase checks. |
+| `mediral/assets/` | AI draft packs, ingredient illustrations, the concept film, stage/drop/foam plates and the five Motion v2 material layers (only consumed final WebPs). Private preparation manifests, prompts and originals stay out. |
 
-### Product and scroll structure
+### Cinema structure
 
-- Five `.mr-product#step-ID[data-step][data-index]` chapters contain semantic text. Each has a sticky `.mr-product__visual`, a `.mr-product__pack .mr-pack > img`, and `.mr-selling-beat` blocks with their title, explanation and ingredient names always in the DOM.
-- `.mr-beat-art[data-beat-art][data-visual]` selects the current visual family without replacing the text or changing shopping selection. Images without a matching source identity are not substituted for unnamed plants or compounds.
-- `.mr-product__finish` retains sensory copy, method/source details and a route onward. The meaning of AC versus BR belongs near the serums; usage information remains accessible without a separate mandatory chapter.
-- The `#serums` disclosure follows the offer and is closed initially. Its optional role/time comparison does not interrupt the route to cleansing or prescribe serum layering.
-- Native pack images remain readable before WebGL, without WebGL and with reduced motion. Use their visible bounds to choose scale; transparent canvas size is not product size. Do not project pack art onto bottle geometry, invent back labels or apply scene exposure/fog to labels.
-- Forward/reverse scrolling, resizing, fast scrolling and fresh product/atlas links must retain useful reading positions. No nested scrolling trap or exact-coordinate flash is required to read a claim.
+- `#story.mr-cinema` is a track `(END + 1)` screens tall with one sticky `100svh` viewport. T = −(track top) ÷ viewport height, clamped to `[0, END]`; the same T always gives the same frame, forwards or backwards, slow or fast.
+- Invisible `.mr-mark` spans (`#routine`, `#step-CL` … `#step-PO`) cover each chapter's stretch, so anchors, the rail and deep links land on a composed hold. `sections()` = markers + `#set`.
+- Layers rest at CSS homes (separate tall/wide compositions, `(max-aspect-ratio: 1/1)`); CSS positions never use transform. Invisible `.mr-slot` boxes mark hand-off poses. A running cinema lets only visible layers take pointer events.
+- Every Thai phrase is whole during its hold; objects cross words only in motion. The AC balance phrase is split at its real word boundary around the glass stem.
+- Reduced motion or a screen under 520 px tall reads the same chapters in normal flow (set before first paint by one inline line and kept by the controller), with every word visible and decorative art left out.
+- Packs are native DOM images moved by transform only. The camera never magnifies a drawn label: the AC bottle leaves frame before the flight into the drop.
 
 ### Ambient film
 
@@ -53,10 +53,10 @@ Decorative mode must work without a toggle button. The source remains deferred, 
 
 ## Content boundaries
 
-- **Mousse:** the current clover-reference pack is an AI draft and visible in the set and its product chapter. Its size and ingredients remain unconfirmed. The old gold-rose list, size, mask method, SLS and hydration claims are not inherited. Category-level cleansing is sufficient; no empty ingredient carousel.
+- **Mousse:** the current clover-reference pack is an AI draft. Its size and ingredients are unconfirmed, so the page omits them (no waves, no library entry) instead of borrowing the old gold-rose list, size, method, SLS or hydration claims. Its role is cleansing face and makeup.
 - **AC:** soothing botanical pair, oil-balance family, then moisture family. Group attribution stays group attribution; no acne cure, germ killing, deadline or universal sensitive-skin claim.
 - **BR:** bearberry/licorice/vitamin C roles, then distinct probiotics/bakuchiol roles, then the fuller source list and light-texture story. No melasma treatment, DNA mechanism, permanent whitening or combined-serum efficacy.
-- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. Illustrated lettering is not current SPF/PA evidence.
+- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. The tube is shown at normal size; its lettering is never zoomed as proof, and the story copy states no SPF/PA value (the details point to the tube label).
 - **PO:** product-level coverage and fine/light/easy-spreading texture, powder/oil group and hydration/soothing group. Group names do not establish an individual ingredient's effect. No live-cell regeneration, universal shade, timed guarantee or sunscreen replacement.
 - AC/BR sensory language and powder texture are attributed brand descriptions, not a fabricated personal review. One truthful section-level attribution can cover the short selling story; detailed sources and limits remain accessible.
 - Every pack is an AI draft, not an authenticated packshot. Ingredient/lab illustrations establish neither concentration, origin, certification nor a manufacturing recipe.
@@ -84,6 +84,14 @@ The optional library after the offer retains **AC 24, BR 18, SU 14 and PO 18** n
 ## Historical verification records
 
 The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the product-selling revision above.
+
+## Verification record — 29 Sep 2026 Motion v2 cinema
+
+- Built from production `86914686` after the owner's review. Claude wrote the engine, score, page, data, tests and docs. GPT supplied five material layers (native size, not upscaled), directed the slice, and ran browser QA and the source/copy reviews. A three-lens read-only review (engine, accessibility/flow, copy) found click-blocking by faded shots, toolbar-resize snap-back, excess compositing and residual audit-voice strings. All were fixed before release.
+- Headless Chrome captures at 390×844 and 1265×720/1440×900 covered 0/25/50/75/100% of every transition, plus reduced-motion flow at 390×844: hero → row → foam wipe/hand-off, word sweep, ring portal (feathered to the ring's measured inner edge), AC's three holds, the flight into the drop, BR's focus planes, the SU streak and ribbon, the powder veil, PO outline-to-solid, and the regroup. No console errors or horizontal overflow. Real hit-testing: the hero CTAs at T 0 and the closing link at T END receive the click.
+- Root browser QA passed the hero, portal, AC, BR, SU, PO and regroup holds on phone and desktop. It also covered the rail numerals on dark chapters, the PO footer clear of the rail, partial selection/copy/profile, and an opened saved PNG with no draft or pending copy.
+- The retired WebGL layer (`story.js`, `vendor/three`) is removed: the opaque viewport would have hidden it while it still used the GPU.
+- Automated: `node --test tests/mediral/*.test.mjs` passes 90/90 (content contracts, controller, the cinema engine and the film), and `node shelf/validate.mjs` passes. Production was checked after the push.
 
 ## Verification record — 28 Sep 2026 polish
 
