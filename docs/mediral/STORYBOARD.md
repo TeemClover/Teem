@@ -1,8 +1,8 @@
-# Mediral /mediral — Storyboard v2 "5 ขั้น จากวัตถุดิบสู่รูทีน"
+# Mediral /mediral — Storyboard v3 "5 ขั้น จากวัตถุดิบสู่รูทีน"
 
 2026-09-28 · Claude (creative direction + page) · replaces the Vitrine/serum-pair direction
 
-> **As built (v2.1):** the page follows the owner's reference clips instead of the layer core below. Each step moves ingredients → glass funnel → one drop → product reveal → role movement → routine rail. See `README.md` for the shipped behaviour. The sections below are kept as the design history; where they differ, README and the evidence rules at the end of this file win.
+> **Current direction (v3):** the owner's new reference asks for a substantial visual upgrade: large focal objects, botanical depth, visible glass highlights and camera movement. The mousse opens on a clover-label bottle illustration with foam/water around it; subsequent chapters move ingredients → glass funnel → one drop → product → role → rail. Forest/chartreuse backgrounds and Thai sans typography replace the small ivory/gold presentation. See `README.md` for the shipped behaviour. The layer-core concept below is retained as design history, not the current implementation.
 
 ## Direction from the owner
 
@@ -63,7 +63,7 @@ Step movements. The words are brand-described cosmetic functions only.
 - "Organic" appears only as the brand's tone and pack wording.
 
 **Mousse**
-- No pack image and no ingredient list: the current clover-label pack and formula are unverified. The step shows water, foam and the product name only, and its timing reads "ตามฉลาก".
+- Show the AI draft of the clover-label bottle derived from the supplied five-piece poster; identify it as an illustration. A verified original packshot is still pending. The formula and size remain unverified, so ingredient arrays stay empty and timing reads "ตามฉลาก".
 - The old gold-rose draft and its ingredient list are not used anywhere on the page. The old mask instruction (1–2 minutes) is not used.
 
 **Sunscreen**

@@ -74,10 +74,15 @@ test('the routine is the five chosen steps, in the owner-selected order', () => 
   }
 });
 
-test('the mousse opens without the held old pack or the old formula', () => {
+test('the mousse uses the current clover-reference draft without inheriting the old formula or size', () => {
   const cl = routine().steps.find(s => s.id === 'CL');
-  assert.equal(cl.image, null, 'No pack image until the current clover-label SKU is verified');
-  assert.equal(cl.image_status, 'current-pack-pending');
+  assert.equal(cl.image, 'assets/pack/cl-clover-front-v2.webp', 'Use the draft checked against the current clover-label poster');
+  assert.equal(cl.image_status, 'ai-draft', 'The reconstructed package is not a literal product photograph');
+  assert.equal(cl.size, null, 'The reference image does not verify the current mousse size');
+  assert.match(cl.source_image_note, /โปสเตอร์/, 'Keep the reference type attached to the package draft');
+  assert.match(cl.source_image_note, /2026-09-28/, 'Identify when the current reference was received');
+  assert.match(cl.source_image_note, /โคลเวอร์/, 'Distinguish this reference from the old rose-label pack');
+  assert.equal(cl.ingredients_status, 'pending-current-sku');
   assert.deepEqual(cl.featured, [], 'The old Natural Blossom list must not be attached to the current mousse');
   assert.deepEqual(cl.ingredients, []);
   for (const path of walkFiles(site).filter(p => ['.html', '.js', '.json', '.css'].includes(extname(p)))) {

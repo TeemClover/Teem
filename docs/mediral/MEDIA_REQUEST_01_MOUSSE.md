@@ -1,37 +1,28 @@
-# Media request 01 — step 1 (mousse) · for GPT
+# Mousse imagery — current illustration and remaining source request
 
-2026-09-28 · from Claude · status: **ยังไม่สร้าง / no video credits**
+Updated 2026-09-28 after the owner asked for the missing first product bottle and a stronger visual treatment.
 
-> **Superseded in part (v2.1):** the shipped page does not use `cl-front-ai-draft-hold.webp` or the old-pack botanicals for step 1; the mousse shows water, foam and its name only until M1 (a verified current pack) exists. The "Reuse now" rows below for step 1 are history. M1–M3 remain open requests.
+## Used on the page
 
-## Scope
+`mediral/assets/pack/cl-clover-front-v2.webp` is a 1024×1536 transparent WebP, generated with the built-in imagegen tool from the clover-label white pump bottle visible in the supplied five-piece poster. It replaces the foam-only stand-in. Foam and water now move around the bottle. The image is also used before WebGL loads, in static fallback, the routine rail, the set and the saved PNG.
 
-The first scene is built in-browser: procedural foam, light and the layer core, with no generated video. This request covers only what the browser cannot honestly make.
+This is an **AI illustration**, not an untouched packshot. The main source-visible wordmark, cleansing title, clear cap and clover motif were checked against the poster. Unverified lower-label words were removed in a second pass. Small simulated print is not evidence of a claim, formula, certification or size.
 
-Nothing here asks AI to redraw a label. Reuse the existing library first.
+The old gold-rose pack is still held and excluded. No old-pack ingredients were assigned to the clover product. `size` remains null and both ingredient arrays remain empty.
 
-## Reuse now (copy into `mediral/assets/`, no generation)
+## Remaining real media
 
-| Path in page | Source | Used for |
+| ID | Source needed | Use |
 |---|---|---|
-| `pack/cl-front-ai-draft-hold.webp` | already delivered | Step 1 pack. It stays labelled as a draft of the old gold-rose pack. |
-| `botanicals/green-tea-shoot.webp`, `oat-panicle.webp`, `aloe-cut-leaf.webp`, `hibiscus-flower.webp`, `lily-flower.webp`, `rice-grain-panicle.webp` | already delivered | Step 1 origin. The list comes from the old-pack media and is shown as pending the current SKU. |
-| `botanicals/licorice-root.webp`, `goji-fruit.webp`, `rosehip-fruit.webp` | `Sources/mediral/assets-prep/ingredients/` | Steps 3 and 5 name these today as text only. Add them at the same 768 px / q86 treatment and the page will show them. |
+| M1 | Brand-supplied or photographed front packshot of the current clover SKU, label pixels untouched, transparent background, at least 1024 px tall | Replace the AI illustration after checking identity and label |
+| M2 | Real footage of the current pump dispensing foam, unaltered colour, no face required | Show actual texture; procedural foam is atmosphere only |
 
-## Requests (ordered by priority)
+M1 is not complete merely because the AI illustration is now visible. When the real packshot arrives, update its status and notes everywhere the pack appears. Keep ingredient and size fields unknown until supported by current label evidence.
 
-| ID | Purchase question it answers | Reference | Spec | Real or AI | Later motion | Pass criteria | Mobile fallback |
-|---|---|---|---|---|---|---|---|
-| M1 | "ขวดที่ร้านส่งหน้าตาแบบนี้ใช่ไหม" | TT01 / TT05 / TT08 clover-label mousse; the brand's own packshot if obtainable | Front packshot on transparent alpha, lossless WebP, ≥1024 px tall, label pixels untouched | **Real source only.** Brand-supplied, or a photo of the unit in hand. No AI label. | none | Full front label readable; size text legible or recorded as unknown; SKU matched by the seller | same file |
-| M2 | "ฟองเป็นยังไง" (texture proof) | Real product, clover pack | 4–6 s macro of pump → foam on the palm, daylight, 4K 9:16 and 16:9, no grading that changes colour | **Real footage only** | none. Shown as a clip in the step 1 panel, labelled "ถ่ายจากสินค้าจริง" with the date | Unedited colour; date and lot noted; no face | still frame |
-| M3 | (atmosphere, optional) | none | Soft ivory/sage morning-light plate, 16:9 and 9:16, empty centre, no text, no product | AI OK | Could become a slow Kling light loop later. **Not now.** | No stray objects or letters | CSS gradient (current) |
+## Image generation recipe used
 
-When M1 arrives, swap in `pack/cl-front.webp` and set `image_status` in `data/routine.json` from `ai-draft-hold` to the verified status. Until the brand confirms that the old ingredient list belongs to the clover SKU, keep it labelled "จากสื่อแพ็กรุ่นเดิม · รอยืนยันกับแพ็กปัจจุบัน" (`ingredients_status: "pending-sku"`). Never present it as the current formula.
+Built-in imagegen, two passes; the selected result was exported to WebP with alpha preserved. No video generation or external video credits were used.
 
-## Not requested
+Initial brief: isolate only the white clover-label mousse bottle from the poster; upright near-front view, full clear cap and base, tall white body, original green Mediral wordmark, cleansing title and clover placement. Neutral studio light, transparent background, no floor, leaves, bubbles, badge, price, new certification, ingredient or volume.
 
-- No AI foam-on-skin
-- No before/after
-- No "germs removed" visuals
-- No human faces
-- No Kling or Seedance generation in this round
+Correction prompt: keep the silhouette, cap, pump, main wordmark and clover; fully transparent pixels outside the physical bottle. Remove the generated lower-label words “PURIFYING”, “MOISTURIZING”, “MILD CARE”, “DERMATOLOGICALLY TESTED” and “FOR SENSITIVE SKIN”; leave indistinct green microprinting. Readable text is limited to the source-visible “Mediral”, “ORGANIC”, “Detoxing Pollution & Dirt Cleansing” and “MOUSSE”. No new claims or volume.

@@ -4,7 +4,7 @@
  * Every step plays the same grammar, borrowed from the owner's references:
  *   separate (named botanicals, a few per screen) → gather → a clear glass funnel → one drop →
  *   the product reveals bottom-up from that drop → a role movement → it leaves for the routine rail.
- * Step 1 (mousse) has no verified current pack or formula, so it plays water + foam and a name only.
+ * Step 1 opens on its supplied bottle with water and foam; no plants imply an unverified formula.
  *
  * Packaging rule: pack art is front-only; bottles are lathes from their own alpha silhouette with the
  * art projected on the front (never re-drawn); flat packs are billboards; yaw ≤ ±12°.
@@ -179,8 +179,8 @@ const TINT = {CL: 0xf4fbff, AC: 0xeef6ff, BR: 0xe4efb4, SU: 0xfff0d2, PO: 0xefdc
 export const STACKED_QUERY = '(max-width: 1100px)';
 function framing(tall) {
   return tall
-    ? {fov: 40, base: new Vector3(0, 0.5, 5.3), look: new Vector3(0, 0.12, 0), shiftY: 0.23}
-    : {fov: 30, base: new Vector3(0, 0.45, 6.0), look: new Vector3(0, 0.2, 0), shiftY: 0};
+    ? {fov: 37, base: new Vector3(0, 0.16, 5.15), look: new Vector3(0, 0, 0), shiftX: 0, shiftY: 0.19}
+    : {fov: 35, base: new Vector3(0, 0.3, 5.7), look: new Vector3(0, 0.02, 0), shiftX: -0.14, shiftY: 0};
 }
 
 export async function createStory({canvas: el, steps, asset, reduced = false, onContextChange = () => {}}) {
@@ -209,10 +209,13 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     }
   }
   refreshEnvironment();
-  scene.add(new HemisphereLight(0xfffaf0, 0xd5e2d2, 0.9));
-  const key = new DirectionalLight(0xfff0d6, 1.4);
+  scene.add(new HemisphereLight(0xfffaf0, 0x8f9f75, 0.65));
+  const key = new DirectionalLight(0xfff7e8, 2.2);
   key.position.set(-3, 5, 4);
   scene.add(key);
+  const edgeLight = new DirectionalLight(0xe4f5cd, 2.6);
+  edgeLight.position.set(3, 2, -2);
+  scene.add(edgeLight);
 
   const camera = new PerspectiveCamera(30, 1, 0.1, 60);
   const rnd = seeded(5);
@@ -225,19 +228,27 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
 
   // Glass funnel: the "formulation" gesture from the reference, not a claim about manufacturing.
   const funnelGeo = new LatheGeometry([
-    new Vector2(0.03, -0.86), new Vector2(0.045, -0.62), new Vector2(0.08, -0.5), new Vector2(0.3, -0.24),
-    new Vector2(0.58, -0.02), new Vector2(0.64, 0), new Vector2(0.62, 0.01),
-  ], 64);
-  const funnelMat = new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.04, metalness: 0, transparent: true, opacity: 0, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 2.2, side: DoubleSide, depthWrite: false});
+    new Vector2(0.055, -1.05), new Vector2(0.075, -0.88), new Vector2(0.09, -0.7),
+    new Vector2(0.2, -0.46), new Vector2(0.54, -0.15), new Vector2(0.79, 0.075),
+    new Vector2(0.825, 0.11), new Vector2(0.82, 0.145), new Vector2(0.79, 0.155),
+    new Vector2(0.76, 0.11), new Vector2(0.51, -0.18), new Vector2(0.17, -0.48),
+    new Vector2(0.06, -0.72), new Vector2(0.04, -1.05), new Vector2(0.055, -1.05),
+  ], small ? 64 : 96);
+  const funnelMat = new MeshPhysicalMaterial({color: 0xf0ffe9, roughness: 0.065, metalness: 0, transmission: 0.72, thickness: 0.12, ior: 1.47, transparent: true, opacity: 0, clearcoat: 1, clearcoatRoughness: 0.025, envMapIntensity: 2.8, side: DoubleSide, depthWrite: false});
   const funnel = new Mesh(funnelGeo, funnelMat);
-  const funnelTint = new Mesh(funnelGeo, new MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0, blending: ADDITIVE, depthWrite: false, side: DoubleSide}));
-  funnelTint.scale.set(0.9, 0.9, 0.9);
+  const lipProfile = Array.from({length: 17}, (_, i) => {
+    const angle = i / 16 * Math.PI * 2;
+    return new Vector2(0.8 + Math.cos(angle) * 0.025, 0.125 + Math.sin(angle) * 0.025);
+  });
+  const funnelRim = new Mesh(new LatheGeometry(lipProfile, small ? 64 : 96), new MeshPhysicalMaterial({color: 0x52764a, roughness: 0.06, transmission: 0.34, thickness: 0.06, transparent: true, opacity: 0, clearcoat: 1, envMapIntensity: 3, depthWrite: false}));
+  const funnelTint = new Mesh(funnelGeo, new MeshBasicMaterial({color: 0xe5edb2, transparent: true, opacity: 0, blending: ADDITIVE, depthWrite: false, side: DoubleSide}));
+  funnelTint.scale.set(0.94, 0.94, 0.94);
   const funnelGroup = new Group();
-  funnelGroup.add(funnel, funnelTint);
+  funnelGroup.add(funnel, funnelRim, funnelTint);
   funnelGroup.position.set(0, 1.5, 0);
   scene.add(funnelGroup);
 
-  const drop = new Mesh(new SphereGeometry(0.06, 24, 16), new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.02, transparent: true, opacity: 0.85, clearcoat: 1, envMapIntensity: 2}));
+  const drop = new Mesh(new SphereGeometry(0.095, 32, 20), new MeshPhysicalMaterial({color: 0xe7f5ca, roughness: 0.025, transmission: 0.45, thickness: 0.2, ior: 1.4, transparent: true, opacity: 0.98, clearcoat: 1, envMapIntensity: 2.6}));
   drop.visible = false;
   scene.add(drop);
 
@@ -269,6 +280,9 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
   // The mousse's central foam is softly opaque; the smaller floating bubbles retain their clear rims.
   const foamMat = new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.42, transparent: true, opacity: 0.96, clearcoat: 0.16, envMapIntensity: 0.65, depthWrite: false});
   const foamGeo = new SphereGeometry(1, 20, 14);
+  const foamCloud = new InstancedMesh(foamGeo, foamMat, 36);
+  scene.add(foamCloud);
+  const foamSeeds = Array.from({length: 36}, () => ({a: rnd() * Math.PI * 2, r: 0.25 + rnd() * 0.4, y: rnd() * 0.13, s: 0.035 + rnd() * 0.075}));
 
   const DROPS = 26;
   const dropletMat = rim(new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.02, transparent: true, opacity: 0.95, clearcoat: 1, envMapIntensity: 2, depthWrite: false}), 'vec3(0.5, 0.64, 0.56)');
@@ -318,17 +332,9 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     scene.add(g);
     const entry = {step, group: g, uniforms: null, height: step.height, mesh: null};
     if (!step.image) {
-      // Step 1 without a verified pack: a soft foam cluster stands in; the name lives in the DOM.
-      const cluster = new Group();
-      for (let i = 0; i < 32; i++) {
-        const b = new Mesh(foamGeo, foamMat);
-        const a = rnd() * 6.283, r = Math.sqrt(rnd()) * 0.38;
-        b.position.set(Math.cos(a) * r, 0.25 + rnd() * 0.5 - r * 0.4, Math.sin(a) * r * 0.6);
-        b.scale.setScalar(0.06 + rnd() * 0.12);
-        cluster.add(b);
-      }
-      g.add(cluster);
-      entry.foam = cluster;
+      // Never replace missing packaging with an invented bottle or a foam-shaped product.
+      products[step.id] = entry;
+      continue;
     } else if (step.render === 'lathe') {
       const img = await loadImage(asset(step.image));
       const geo = latheFromSilhouette(silhouette(img), step.height);
@@ -365,15 +371,18 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     if (!step.featured?.length) return Promise.resolve(null);
     if (pending[step.id]) return pending[step.id];
     const list = step.featured.slice(0, 5).map((item, i, items) => {
-      const plate = new Mesh(new PlaneGeometry(0.56, 0.56), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false}));
+      const plate = new Mesh(new PlaneGeometry(1.08, 1.08), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false}));
       plate.visible = false;
       const label = new Mesh(new PlaneGeometry(0.72, 0.135), new MeshBasicMaterial({map: labelTexture(item.name), transparent: true, depthWrite: false}));
-      label.position.y = -0.38;
+      label.position.y = -0.63;
       const g = new Group();
       g.add(plate, label);
       g.visible = false;
       scene.add(g);
-      return {g, plate, label, item, i, n: items.length, spin: (rnd() - 0.5) * 0.6};
+      const echo = (i === 0 || i === items.length - 1)
+        ? new Mesh(new PlaneGeometry(1.45, 1.45), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false})) : null;
+      if (echo) { echo.visible = false; scene.add(echo); }
+      return {g, plate, label, echo, item, i, n: items.length, spin: (rnd() - 0.5) * 0.6};
     });
     specimens[step.id] = list;
     pending[step.id] = Promise.all(list.map(async sp => {
@@ -383,6 +392,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
         sp.plate.material.map = map;
         sp.plate.material.needsUpdate = true;
         sp.plate.visible = true;
+        if (sp.echo) { sp.echo.material.map = map; sp.echo.material.needsUpdate = true; }
         wake();
       } catch (err) {
         if (!disposed) console.warn('[mediral] botanical image unavailable', sp.item.name, err);
@@ -408,7 +418,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     camera.fov = f.fov;
     camera.aspect = view.w / view.h;
     // Portrait: move the image up so text owns the lower part of the screen.
-    if (f.shiftY) camera.setViewOffset(view.w, view.h, 0, view.h * f.shiftY, view.w, view.h); else camera.clearViewOffset();
+    camera.setViewOffset(view.w, view.h, view.w * f.shiftX, view.h * f.shiftY, view.w, view.h);
     camera.updateProjectionMatrix();
     renderer.setSize(view.w, view.h, false);
   }
@@ -422,28 +432,31 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     const step = steps[stepIndex];
     const setT = clamp01(u - steps.length);
     const tint = TINT[step.id] ?? 0xffffff;
-    // The portrait stage has a notice above it and a reading card below it.
-    funnelGroup.position.y = s.tall ? 0.8 : 1.5;
-    funnelGroup.scale.setScalar(s.tall ? 0.48 : 1);
+    funnelGroup.position.y = s.tall ? 0.3 : 0.66;
+    funnelGroup.scale.setScalar(s.tall ? 0.7 : 1.38);
 
     // Reset per-frame visibility.
     for (const e of Object.values(products)) e.group.visible = false;
-    for (const list of Object.values(specimens)) list?.forEach(sp => { sp.g.visible = false; });
-    bubbles.visible = droplets.visible = powder.visible = drop.visible = false;
-    funnelMat.opacity = 0; funnelTint.material.opacity = 0; core.material.opacity = 0; halo.material.opacity = 0;
+    for (const list of Object.values(specimens)) list?.forEach(sp => { sp.g.visible = false; if (sp.echo) sp.echo.visible = false; });
+    bubbles.visible = droplets.visible = powder.visible = drop.visible = foamCloud.visible = false;
+    funnelMat.opacity = 0; funnelRim.material.opacity = 0; funnelTint.material.opacity = 0; core.material.opacity = 0; halo.material.opacity = 0;
     veil.material.opacity = 0; shadow.material.opacity = 0; shadow.scale.set(1, 1, 1); shadow.position.x = 0;
     sunBeams.forEach(b => { b.material.opacity = 0; });
     ripples.forEach(r => { r.material.opacity = 0; });
 
-    // Camera: gentle dolly per phase, pull back for the set.
+    // Pull through the foliage, rise to the glass mouth, then settle on the large product.
     const gather = step.featured?.length ? ease(seg(t, 0.18, 0.46)) * (1 - ease(seg(t, 0.5, 0.64))) : 0;
-    camPos.copy(f.base).add(new Vector3(Math.sin(stepIndex * 1.3) * 0.25, gather * 0.55, -ease(seg(t, 0.5, 0.75)) * 0.7 + gather * 0.3));
-    camLook.copy(f.look).add(new Vector3(0, gather * 0.75, 0));
-    if (u >= steps.length) { camPos.set(0, f.base.y + 0.35, f.base.z + 0.9); camLook.copy(f.look); }
+    const dolly = ease(seg(t, 0.08, 0.34)) * (1 - ease(seg(t, 0.46, 0.64)));
+    camPos.copy(f.base).add(new Vector3(Math.sin(stepIndex * 1.4 + t * 2) * (s.tall ? 0.045 : 0.16), gather * (s.tall ? 0.04 : 0.18), -dolly * (s.tall ? 0.15 : 0.42) - ease(seg(t, 0.56, 0.78)) * 0.22));
+    camLook.copy(f.look).add(new Vector3(0, gather * (s.tall ? 0.025 : 0.1), 0));
+    if (u >= steps.length) { camPos.set(0, f.base.y + 0.12, f.base.z + 0.75); camLook.copy(f.look); }
+    // Billboards use this frame's camera orientation, including a single reduced-motion frame.
+    camera.position.copy(camPos).add(new Vector3(s.pointerCur.x * (s.reduced ? 0 : 0.12), s.pointerCur.y * (s.reduced ? 0 : 0.06), 0));
+    camera.lookAt(camLook);
 
     if (u < steps.length) {
       const e = products[step.id];
-      if (!step.image) playMousse(t, time, e);
+      if (step.role === 'foam' || step.role === 'cleanse') playMousse(t, time, e);
       else playStep(step, t, time, e, tint);
     } else {
       playSet(setT, time);
@@ -459,147 +472,183 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     dust.instanceMatrix.needsUpdate = true;
   }
 
-  function showProduct(e, reveal, {x = 0, y = -0.55, z = 0, scale = 1, dim = 0, yaw = 0} = {}) {
+  function showProduct(e, reveal, {x = 0, y = -0.55, z = 0, scale = 1, dim = 0, yaw = 0, roll = 0} = {}) {
     e.group.visible = true;
     e.group.position.set(x, y, z);
     e.group.scale.setScalar(scale);
+    e.group.rotation.z = roll;
     if (e.uniforms) { e.uniforms.uReveal.value = reveal >= 1 ? 1.02 : reveal; e.uniforms.uDim.value = dim; }
     if (e.mesh) {
       if (e.billboard) e.mesh.quaternion.copy(camera.quaternion);
       else e.mesh.rotation.y = MathUtils.clamp(yaw, -MAX_YAW, MAX_YAW);
     }
-    if (e.foam) e.foam.scale.setScalar(Math.max(0.001, reveal));
   }
 
-  function toRail(t) { // the last beat: glide down-right and shrink toward the DOM routine rail
-    const k = ease(seg(t, 0.9, 1));
-    return {x: k * (s.tall ? 0 : 1.6), y: -0.55 - k * (s.tall ? 1.2 : 0.4), scale: 1 - k * 0.85, alpha: 1 - seg(t, 0.96, 1)};
+  function presentation(e) {
+    const height = e.step.id === 'PO' ? (s.tall ? 0.8 : 1.72)
+      : e.step.id === 'CL' ? (s.tall ? 1.05 : 2.28)
+      : e.step.id === 'AC' ? (s.tall ? 1 : 2.05) : (s.tall ? 1.07 : 2.2);
+    return {height, scale: height / e.height, base: -height / 2};
+  }
+
+  function toRail(t, base) {
+    const k = ease(seg(t, 0.91, 1));
+    return {x: k * (s.tall ? 0.6 : 1.8), y: lerp(base, s.tall ? 0.58 : -0.55, k), scale: 1 - k * 0.86, alpha: 1 - seg(t, 0.95, 1)};
   }
 
   function playMousse(t, time, e) {
-    // Water opens the space: ripples on a still surface.
+    const p = presentation(e), rail = toRail(t, p.base);
+    // The supplied bottle is the first frame. Water and foam surround it rather than replace it.
+    showProduct(e, 1, {x: rail.x, y: rail.y, scale: p.scale * rail.scale,
+      yaw: s.reduced ? 0 : Math.sin(time * 0.24) * 0.055,
+      roll: (s.reduced ? -0.035 : -0.035 + Math.sin(time * 0.22) * 0.012) * rail.alpha});
     ripples.forEach((r, i) => {
       const k = ((time * 0.18 + i / 3) % 1);
-      r.scale.setScalar(0.4 + k * 3.2);
-      r.material.opacity = (1 - k) * 0.55 * (1 - seg(t, 0.85, 1));
+      r.position.y = p.base - 0.035;
+      r.scale.setScalar((s.tall ? 0.45 : 0.8) + k * (s.tall ? 1.15 : 2.4));
+      r.material.opacity = (1 - k) * 0.78 * rail.alpha;
     });
-    // Foam blooms and drifts: the cleansing role, drawn as texture, not as germs or skin.
     bubbles.visible = true;
     bubbleMat.opacity = 0.9;
     foamMat.opacity = 0.96;
-    const bloom = easeOut(seg(t, -0.3, 0.4)); // already foaming on arrival
-    const sweep = ease(seg(t, 0.55, 0.9));
+    const extent = s.tall ? 0.55 : 1.15;
     bubbleSeeds.forEach((b, i) => {
-      const a = b.a + time * 0.05 * (0.5 + b.p);
-      const r = b.r * (0.35 + bloom * 0.65);
-      tmp.position.set(Math.cos(a) * r + sweep * 2.4 * (0.5 + b.p), b.y + Math.sin(time * 0.6 + i) * 0.04 + bloom * 0.1, Math.sin(a) * r * 0.5 - 0.3);
-      const pop = seg(t, 0.8 + b.p * 0.12, 0.9 + b.p * 0.1);
-      tmp.scale.setScalar(Math.max(0.0001, b.s * bloom * (1 - pop)));
+      const a = b.a + time * 0.075 + t * 1.3;
+      const r = b.r * extent;
+      tmp.position.set(Math.cos(a) * r, (b.y - 0.15) * p.height + Math.sin(time * 0.7 + i) * 0.035, Math.sin(a) * r * 0.8 - 0.12);
+      tmp.scale.setScalar(Math.max(0.0001, b.s * (s.tall ? 0.6 : 1.05) * rail.alpha));
       tmp.updateMatrix();
       bubbles.setMatrixAt(i, tmp.matrix);
     });
     bubbles.instanceMatrix.needsUpdate = true;
-    const reveal = easeOut(seg(t, -0.2, 0.4));
-    const rail = toRail(t);
-    shadow.material.opacity = 0.5 * reveal * rail.alpha;
-    showProduct(e, reveal, {x: rail.x, y: rail.y, scale: rail.scale * 1.2});
+    foamCloud.visible = true;
+    foamSeeds.forEach((b, i) => {
+      const a = b.a + Math.sin(time * 0.18 + i) * 0.08;
+      tmp.position.set(Math.cos(a) * b.r * extent, p.base + b.y * extent, Math.sin(a) * b.r * extent);
+      tmp.scale.setScalar(b.s * extent * rail.alpha);
+      tmp.updateMatrix(); foamCloud.setMatrixAt(i, tmp.matrix);
+    });
+    foamCloud.instanceMatrix.needsUpdate = true;
+    shadow.position.y = p.base - 0.04;
+    shadow.scale.setScalar(s.tall ? 0.95 : 1.8);
+    shadow.material.opacity = 0.8 * rail.alpha;
   }
 
+  // A still-life composition with large subjects at different depths, not a specimen row.
+  const botanicalLayout = [
+    [-0.98, 0.34, 0.38, 1.18, -0.22], [0.38, 0.7, -0.38, 1.28, 0.12],
+    [1.12, -0.18, 0.52, 1.26, -0.18], [-0.53, -0.73, 0.48, 1.16, 0.2],
+    [0.08, -0.12, -0.65, 1.2, 0.04],
+  ];
+
   function playStep(step, t, time, e, tint) {
-    const list = specimens[step.id];
-    // 1) Separate: named botanicals appear one by one on a loose arc, like specimen plates.
-    // 2) Gather: they rise and funnel in.
+    const p = presentation(e), list = specimens[step.id];
     if (list) {
       list.forEach(sp => {
-        // A rail click lands at t=0: the ingredient arc must already be visible there.
-        const appear = easeOut(seg(t, -0.16 + sp.i * 0.02, 0.02 + sp.i * 0.02));
-        const g = ease(seg(t, 0.2 + sp.i * 0.02, 0.44));
-        if (appear <= 0 || g >= 1) return;
+        const appear = easeOut(seg(t, -0.18 + sp.i * 0.02, 0.015 + sp.i * 0.018));
+        const gather = ease(seg(t, 0.19 + sp.i * 0.016, 0.48));
+        if (appear <= 0 || gather >= 1) return;
+        const [lx, ly, lz, size, angle] = botanicalLayout[sp.i];
+        const drift = s.reduced ? 0 : Math.sin(time * 0.35 + sp.i * 1.7) * 0.045;
+        const hx = lx * (s.tall ? 0.45 : 1), hy = ly * (s.tall ? 0.3 : 1) + drift;
+        const mouth = funnelGroup.position.y + 0.13 * funnelGroup.scale.y;
+        const swirl = Math.sin(gather * Math.PI) * (s.tall ? 0.18 : 0.43);
+        const spin = gather * Math.PI * 2.4 + sp.i * 1.5;
+        const x = lerp(hx, 0, gather) + Math.cos(spin) * swirl;
+        const y = lerp(hy, mouth, gather) + Math.sin(gather * Math.PI) * (s.tall ? 0.08 : 0.18);
+        const z = lerp(lz * (s.tall ? 0.45 : 1), 0, gather) + Math.sin(spin) * swirl;
         sp.g.visible = true;
-        // A loose arc over the stage centre, clear of the text columns on both sides.
-        const theta = sp.n > 1 ? (sp.i / (sp.n - 1) - 0.5) * 2.1 : 0;
-        const radius = s.tall ? 0.66 : 1.0;
-        const hx = Math.sin(theta) * radius;
-        const hy = (s.tall ? -0.15 : 0.42) + Math.cos(theta) * (s.tall ? 0.25 : 0.42) + Math.sin(time * 0.5 + sp.i) * 0.025;
-        const funnelMouth = funnelGroup.position.y - 0.05 * funnelGroup.scale.y;
-        const x = lerp(hx, 0, g), y = lerp(hy, funnelMouth, g), z = lerp(0.2, 0, g);
         sp.g.position.set(x, y, z);
         sp.g.quaternion.copy(camera.quaternion);
-        sp.g.scale.setScalar(Math.max(0.0001, appear * (1 - g * 0.85) * (s.tall ? 0.78 : 1)));
-        sp.plate.material.opacity = appear * (1 - seg(t, 0.4, 0.46));
-        sp.label.material.opacity = appear * (1 - ease(seg(t, 0.2, 0.3)));
-        sp.plate.rotation.z = g * sp.spin * 4;
+        sp.g.scale.setScalar(Math.max(0.001, size * appear * (1 - gather * 0.9) * (s.tall ? 0.43 : 1)));
+        sp.plate.rotation.z = angle + drift + gather * sp.spin * 5;
+        sp.plate.material.opacity = appear * (1 - seg(t, 0.43, 0.49));
+        // The full ingredient names remain in the DOM; one quiet caption grounds the still life.
+        sp.label.material.opacity = (sp.i === 0 ? 0.95 : 0) * (1 - ease(seg(t, 0.14, 0.25)));
+        if (sp.echo && sp.plate.visible && !s.tall) {
+          sp.echo.visible = true;
+          const side = sp.i === 0 ? -1 : 1;
+          sp.echo.position.set(lerp(side < 0 ? -0.85 : 1.55, 0, gather), lerp(side < 0 ? -1.16 : -0.93, mouth, gather), lerp(0.8, 0, gather));
+          sp.echo.quaternion.copy(camera.quaternion);
+          sp.echo.rotateZ(side * 0.48 + time * 0.018);
+          sp.echo.scale.setScalar((1 - gather) * (side < 0 ? 0.85 : 1.23));
+          sp.echo.material.opacity = 0.78 * (1 - ease(seg(t, 0.13, 0.34)));
+        }
       });
     }
-    // 3) The glass funnel receives them and glows in the product's tint.
-    const funnelIn = ease(seg(t, 0.16, 0.3)) * (1 - ease(seg(t, 0.58, 0.68)));
-    funnelMat.opacity = 0.16 * funnelIn;
+    // A thick double-walled glass funnel with a rounded, darker lip and refractive body.
+    const funnelIn = ease(seg(t, 0.12, 0.28)) * (1 - ease(seg(t, 0.52, 0.64)));
+    funnelMat.opacity = 0.98 * funnelIn;
+    funnelRim.material.opacity = 0.86 * funnelIn;
     funnelTint.material.color.setHex(tint);
-    funnelTint.material.opacity = 0.18 * ease(seg(t, 0.36, 0.48)) * funnelIn;
-    funnelGroup.rotation.y = time * 0.15;
-    // 4) One drop falls from the spout to where the product will stand.
-    const fall = seg(t, 0.46, 0.56);
+    funnelTint.material.opacity = 0.12 * ease(seg(t, 0.32, 0.46)) * funnelIn;
+    funnelGroup.rotation.set(-0.06, Math.sin(time * 0.15) * 0.16, 0.035 * Math.sin(t * Math.PI));
+    const fall = seg(t, 0.46, 0.58);
     if (fall > 0 && fall < 1) {
       drop.visible = true;
       drop.material.color.setHex(tint);
-      const spout = funnelGroup.position.y - 0.88 * funnelGroup.scale.y;
-      const land = s.tall ? Math.min(-0.05 + e.height * 0.4, spout - 0.12) : -0.05 + e.height * 0.4;
-      drop.position.set(0, lerp(spout, land, fall * fall), 0);
-      drop.scale.set(1, 1 + fall * 0.5, 1);
+      const spout = funnelGroup.position.y - 1.05 * funnelGroup.scale.y;
+      drop.position.set(0, lerp(spout, p.base + 0.03, ease(fall)), 0.08);
+      const dropSize = s.tall ? 0.7 : 1.2;
+      drop.scale.set(dropSize * (1 - fall * 0.18), dropSize * (1.3 + Math.sin(fall * Math.PI) * 0.7), dropSize);
     }
-    core.position.set(0, -0.55 + e.height * 0.45, 0.05);
+    core.position.set(0, p.base + 0.15, 0.05);
     core.quaternion.copy(camera.quaternion);
-    core.material.opacity = 0.9 * seg(t, 0.52, 0.56) * (1 - seg(t, 0.6, 0.72));
-    // 5) Reveal bottom-up from the drop's light.
-    const reveal = easeOut(seg(t, 0.54, 0.7));
-    const rail = toRail(t);
-    shadow.material.opacity = 0.5 * reveal * rail.alpha;
-    const yaw = s.reduced ? 0 : Math.sin(time * 0.3) * 0.12 + s.pointerCur.x * 0.1;
-    showProduct(e, reveal, {x: rail.x, y: rail.y, scale: rail.scale, yaw});
-    // 6) Role movement.
-    const role = ease(seg(t, 0.66, 0.78)) * (1 - seg(t, 0.9, 0.97));
-    if (step.role === 'droplets') playDroplets(role, time, tint, e);
-    if (step.role === 'light') playLight(role, time, e);
-    if (step.role === 'powder') playPowder(t, role, time);
+    core.scale.setScalar(s.tall ? 0.7 : 1.4);
+    core.material.opacity = seg(t, 0.54, 0.6) * (1 - seg(t, 0.67, 0.8));
+    const reveal = easeOut(seg(t, 0.56, 0.74)), rail = toRail(t, p.base);
+    shadow.position.y = p.base - 0.03;
+    shadow.scale.setScalar(s.tall ? 0.95 : 1.7);
+    shadow.material.opacity = 0.72 * reveal * rail.alpha;
+    const yaw = s.reduced ? 0 : Math.sin(time * 0.24) * 0.075 + s.pointerCur.x * 0.065;
+    showProduct(e, reveal, {x: rail.x, y: rail.y, scale: p.scale * rail.scale, yaw,
+      roll: (s.reduced ? 0 : Math.sin(time * 0.22 + step.order) * 0.016) * rail.alpha});
+    const role = ease(seg(t, 0.7, 0.81)) * (1 - seg(t, 0.9, 0.97));
+    if (step.role === 'droplets') playDroplets(role, time, tint, p);
+    if (step.role === 'light') playLight(role, time, p);
+    if (step.role === 'powder') playPowder(t, role, time, p);
   }
 
-  function playDroplets(role, time, tint, e) {
+  function playDroplets(role, time, tint, p) {
     if (role <= 0) return;
     droplets.visible = true;
     dropletMat.color.setHex(tint);
+    const extent = s.tall ? 0.5 : 1.0;
     dropletSeeds.forEach((d, i) => {
-      const a = d.a + time * 0.18 * (0.6 + d.p);
-      tmp.position.set(Math.cos(a) * d.r, -0.55 + e.height * 0.5 + d.y * 0.6 + Math.sin(time * 0.8 + i) * 0.05, Math.sin(a) * d.r * 0.55);
-      tmp.scale.setScalar(Math.max(0.0001, d.s * role));
-      tmp.updateMatrix();
-      droplets.setMatrixAt(i, tmp.matrix);
+      const a = d.a + time * 0.15 * (0.6 + d.p);
+      tmp.position.set(Math.cos(a) * d.r * extent, (d.y - 0.25) * p.height * 0.7 + Math.sin(time * 0.7 + i) * 0.035, Math.sin(a) * d.r * extent * 0.75);
+      tmp.scale.setScalar(Math.max(0.0001, d.s * role * (s.tall ? 0.7 : 1.2)));
+      tmp.updateMatrix(); droplets.setMatrixAt(i, tmp.matrix);
     });
     droplets.instanceMatrix.needsUpdate = true;
   }
 
-  function playLight(role, time, e) {
-    // Daylight arrives: warm beams and a soft halo around the tube. No shield, no percentages.
-    sunBeams.forEach((b, i) => { b.material.opacity = role * (0.16 + Math.sin(time * 0.5 + i) * 0.04); });
-    halo.position.set(0, -0.55 + e.height * 0.55, -0.2);
+  function playLight(role, time, p) {
+    sunBeams.forEach((b, i) => {
+      b.position.set((i - 1.5) * (s.tall ? 0.26 : 0.48), 0.7, -1.2);
+      b.material.opacity = role * (0.2 + Math.sin(time * 0.4 + i) * 0.04);
+    });
+    halo.position.set(0, p.base + p.height * 0.55, -0.2);
     halo.quaternion.copy(camera.quaternion);
-    halo.scale.setScalar(0.9 + role * 0.25 + Math.sin(time * 0.7) * 0.02);
-    halo.material.opacity = role * 0.5;
+    halo.scale.setScalar(p.height * (0.75 + role * 0.1));
+    halo.material.opacity = role * 0.54;
   }
 
-  function playPowder(t, role, time) {
-    const fall = seg(t, 0.64, 0.86);
+  function playPowder(t, role, time, product) {
+    const fall = seg(t, 0.68, 0.89);
     if (fall <= 0 || role <= 0) return;
     powder.visible = true;
+    const extent = s.tall ? 0.5 : 1.0;
     powderSeeds.forEach((p, i) => {
-      const k = clamp01(fall * 1.3 - p.p * 0.3);
-      const a = p.a + time * 0.1;
-      tmp.position.set(Math.cos(a) * p.r * (1.1 - k * 0.3), lerp(p.y, -0.53, easeOut(k)), Math.sin(a) * p.r * 0.5);
-      tmp.scale.setScalar(Math.max(0.0001, p.s * role));
-      tmp.updateMatrix();
-      powder.setMatrixAt(i, tmp.matrix);
+      const k = clamp01(fall * 1.3 - p.p * 0.3), a = p.a + time * 0.08;
+      tmp.position.set(Math.cos(a) * p.r * extent * (1.1 - k * 0.3), lerp(p.y * extent * 0.6, product.base - 0.02, easeOut(k)), Math.sin(a) * p.r * extent * 0.6);
+      tmp.scale.setScalar(Math.max(0.0001, p.s * role * (s.tall ? 0.8 : 1.3)));
+      tmp.updateMatrix(); powder.setMatrixAt(i, tmp.matrix);
     });
     powder.instanceMatrix.needsUpdate = true;
-    veil.material.opacity = 0.75 * ease(seg(t, 0.74, 0.88)) * role;
+    veil.position.y = product.base - 0.02;
+    veil.scale.setScalar(extent);
+    veil.material.opacity = 0.75 * ease(seg(t, 0.78, 0.9)) * role;
   }
 
   function playSet(t, time) {
@@ -608,15 +657,16 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     const k = easeOut(t * 1.6 > 1 ? 1 : t * 1.6);
     // Landscape: the set card owns the left, so the five stand in the free band the DOM reports
     // (card's right edge → rail's left edge), converted to world units at the stage plane.
-    let gap = 0.46, offsetX = 0, size = 0.58;
+    let gap = 0.32, offsetX = 0, size = 0.7;
     if (!s.tall) {
       const dist = camPos.distanceTo(camLook);
       const halfW = dist * Math.tan(MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
       const band = s.band ?? {left: 0.45, right: 0.94};
-      offsetX = ((band.left + band.right) / 2 * 2 - 1) * halfW;
+      // Account for the atelier camera's horizontal view offset when fitting to the DOM's free band.
+      offsetX = ((band.left + band.right) / 2 * 2 - 1 + 2 * framing(false).shiftX) * halfW;
       const width = (band.right - band.left) * 2 * halfW;
-      gap = Math.min(0.56, width / 5.4);
-      size = Math.min(0.7, gap * 1.25);
+      gap = Math.min(0.78, width / 5.4);
+      size = Math.min(1, gap * 1.25);
     }
     steps.forEach((step, i) => {
       const e = products[step.id];

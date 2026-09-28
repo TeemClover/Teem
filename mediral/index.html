@@ -7,10 +7,10 @@
   <meta name="description" content="รูทีน Mediral 5 ขั้นจาก myClover: ล้างหน้า ดูแลผิวที่เป็นสิวง่าย ดูแลผิวที่ดูหมองคล้ำ กันแดด และปกปิด — แต่ละชิ้นใช้ตอนไหน แบรนด์เล่าถึงวัตถุดิบอะไร และชุด 5 ชิ้นมีอะไรบ้าง">
   <!-- Prototype for owner review. noindex is not access control; keep private data out of this folder. -->
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#f3f1ea">
+  <meta name="theme-color" content="#e6edcd">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="mediral.css">
   <script type="importmap">
     {"imports": {"three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/"}}
@@ -26,6 +26,7 @@
       <span class="mr-brand__sep" aria-hidden="true">·</span>
       <span class="mr-brand__room">Mediral</span>
     </a>
+    <span class="mr-header__edition" aria-hidden="true">THE FIVE-STEP EDIT</span>
     <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ดูชุด 5 ชิ้น <span aria-hidden="true">↗</span></a>
   </header>
 
@@ -36,12 +37,14 @@
   <div class="mr-stage" id="stage" aria-hidden="true">
     <div class="mr-stage__sky"></div>
     <p class="mr-stage__word" data-slot="word">CLEANSE</p>
+    <img class="mr-stage__poster" src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="" fetchpriority="high" decoding="async">
     <canvas class="mr-canvas" id="scene"></canvas>
-    <p class="mr-stage__note">ภาพแพ็กและพืชเป็นภาพประกอบ AI · เปิดที่มาและรายละเอียดได้ในแต่ละขั้น</p>
+    <p class="mr-stage__note">ภาพแพ็กและพืช: ภาพประกอบ AI · ดูที่มาในรายละเอียดแต่ละขั้น</p>
+    <span class="mr-scroll-cue" aria-hidden="true"><span>เลื่อนเพื่อสำรวจ</span><i>↓</i></span>
   </div>
 
   <main id="main">
-    <!-- Step 1 is the opening: the mousse, by name and role, before any product image. -->
+    <!-- Step 1 opens on the mousse. Its current pack draft and source status come from routine data. -->
     <section class="mr-step mr-step--hero" id="step-CL" data-step="CL" data-index="0" aria-labelledby="hero-title">
       <div class="mr-step__sticky">
         <div class="mr-step__left">
@@ -55,7 +58,7 @@
             <a class="mr-btn" href="#set" data-cta="skip">ดูชุด 5 ชิ้น</a>
             <a class="mr-btn mr-btn--ghost" href="#step-AC" data-cta="next">สำรวจขั้นต่อไป <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="mr-fine">หน้านี้จัดทำโดย myClover เพื่อช่วยเลือกซื้อ ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
+          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
           <ol class="mr-phase" aria-hidden="true"><li>น้ำ</li><li>ฟอง</li><li>บทบาท</li></ol>
         </div>
         <div class="mr-step__right" data-slot="hero-body"></div>

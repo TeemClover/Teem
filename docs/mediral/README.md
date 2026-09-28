@@ -2,7 +2,7 @@
 
 The Mediral routine page on myClover tells the five-piece routine as one continuous scroll story: mousse → white serum → yellow-green serum → sunscreen → powder puff.
 
-Each step moves from the ingredients the brand names, through a glass funnel and one drop, to the product revealed. A movement then shows the step's role, and the product joins the routine rail. The story ends with the full set of five, which is the main call to action.
+The opening shows the clover-label mousse bottle from the first frame, with water and foam around it. The following steps move from the ingredients the brand names, through a glass funnel and one drop, to the product revealed. The scene uses large products, botanical depth and a moving camera in a forest/chartreuse editorial layout. The story ends with the full set of five, which is the main call to action.
 
 Direction and evidence rules are in [STORYBOARD.md](STORYBOARD.md). The first media request is [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -57,7 +57,8 @@ node --test tests/mediral/*.test.mjs
 ## Content that must stay explicit
 
 **Mousse**
-- The current clover-label pack is not verified, so the mousse opens with water, foam and its name only.
+- The bottle illustration is based on the clover-label pack in the supplied five-piece poster, generated with imagegen and labelled as an AI draft. It is visible before and after WebGL loads, in the static fallback, the set and the PNG.
+- A verified original packshot is still requested. No formula or size is inferred from the illustration; both ingredient arrays are empty and size is null.
 - The old gold-rose draft and its ingredient list are not used.
 
 **Other packs**
@@ -98,3 +99,12 @@ node --test tests/mediral/*.test.mjs
 - `node shelf/validate.mjs` passed. The existing access-cache routing suite could not start because local dependency `@vercel/functions` is absent (the same environment limitation reported before this polish); no routing or dependency files changed in this pass.
 - Production before this polish was verified at commit `d603d810027a688387242764df3291056c313034`: Vercel READY and 38 runtime assets matched Git. The new deployment must be verified against the new commit after pushing.
 - The polish deployment `3d3bb3ac` was READY and all 38 runtime files matched Git. Production showed the directory URL lacked the wildcard's robots header (the HTML robots meta was present); an explicit `/mediral/` header rule was added in the follow-up fix.
+
+## Verification record — 28 Sep 2026 botanical visual upgrade
+
+- The current clover-reference mousse draft appears at entry, in the animated scene, the full set, static fallback and downloaded PNG. The first-paint poster hides when the reader leaves the mousse chapter, including while the scene is still loading.
+- Browser visual checks at 1280×720, 1024×768, 390×844 and 360×640: large botanical compositions, glass gathering, product reveal, mousse first frame and the full set. The short phone view keeps the sunscreen lettering caveat and product-details control visible; there is no horizontal overflow.
+- The mobile hero identifies myClover as independent of the brand. Product facts and AI provenance remain available in each step's expandable details.
+- Reduced-motion mode and blocked scene-module fallback both retain the mousse image. The five-piece PNG was downloaded and opened to verify the new bottle.
+- All 31 Mediral contract, controller and scene-lifecycle tests passed after the visual changes. A separate review caught the loading-poster chapter leak, which was fixed before publication.
+- The upgrade adds one 56 KB WebP. No new video service or third-party runtime is used. The Affiliate link and mousse ingredient/size verification remain pending.
