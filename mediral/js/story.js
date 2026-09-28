@@ -11,7 +11,9 @@
  * Nothing here depicts skin, results, germs, rays blocked or cells: movements illustrate the step's role.
  *
  * Contract (used by js/main.js):
- *   createStory({canvas, steps, asset, reduced}) -> Promise<{setProgress(u), setSelection(ids), setBand({left, right}), state}>
+ *   createStory({canvas, steps, asset, reduced, onContextChange}) -> Promise<stage>
+ *   stage: setProgress(u), setSelection(ids), setBand({left, right}), setReducedMotion(bool), pause(), resume(), dispose(), state
+ *   onContextChange('lost' | 'restored'): main.js switches between the scene and readable DOM stills.
  *   setBand: landscape set view only — the free screen band (0..1) between the set card and the rail.
  *   STACKED_QUERY is the one media query that switches both the CSS and the scene to words-below-scene.
  *   u: 0..1 = step 1, 1..2 = step 2 … 4..5 = step 5, 5..6 = the set. Scene is a pure function of u + idle time.
@@ -174,14 +176,15 @@ function addReveal(material, height, billboard) {
 const TINT = {CL: 0xf4fbff, AC: 0xeef6ff, BR: 0xe4efb4, SU: 0xfff0d2, PO: 0xefdcc6};
 
 /* ---------- camera ---------- */
-export const STACKED_QUERY = '(max-width: 760px), (orientation: portrait) and (max-width: 1100px)';
+export const STACKED_QUERY = '(max-width: 1100px)';
 function framing(tall) {
   return tall
     ? {fov: 40, base: new Vector3(0, 0.5, 5.3), look: new Vector3(0, 0.12, 0), shiftY: 0.23}
     : {fov: 30, base: new Vector3(0, 0.45, 6.0), look: new Vector3(0, 0.2, 0), shiftY: 0};
 }
 
-export async function createStory({canvas: el, steps, asset, reduced = false}) {
+export async function createStory({canvas: el, steps, asset, reduced = false, onContextChange = () => {}}) {
+  let disposed = false;
   const small = Math.min(innerWidth, innerHeight) < 700;
   const renderer = new WebGLRenderer({canvas: el, antialias: !small, alpha: true, powerPreference: 'high-performance'});
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 1.75));
@@ -190,9 +193,22 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
   const anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
   const scene = new Scene();
-  const pmrem = new PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  pmrem.dispose();
+  let environmentTarget;
+  function refreshEnvironment() {
+    const pmrem = new PMREMGenerator(renderer);
+    const room = new RoomEnvironment();
+    try {
+      const next = pmrem.fromScene(room, 0.04);
+      const previous = environmentTarget;
+      scene.environment = next.texture;
+      environmentTarget = next;
+      previous?.dispose();
+    } finally {
+      room.dispose();
+      pmrem.dispose();
+    }
+  }
+  refreshEnvironment();
   scene.add(new HemisphereLight(0xfffaf0, 0xd5e2d2, 0.9));
   const key = new DirectionalLight(0xfff0d6, 1.4);
   key.position.set(-3, 5, 4);
@@ -248,8 +264,11 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
   const bubbleMat = rim(new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.9, clearcoat: 1, iridescence: 1, iridescenceIOR: 1.3, iridescenceThicknessRange: [180, 520], envMapIntensity: 1.8, depthWrite: false}), 'vec3(0.56, 0.68, 0.6)');
   const BUB = small ? 44 : 70;
   const bubbles = new InstancedMesh(new SphereGeometry(1, 20, 14), bubbleMat, BUB);
-  const bubbleSeeds = Array.from({length: BUB}, () => ({a: rnd() * 6.283, r: 0.2 + rnd() * 1.6, y: -0.5 + rnd() * 1.6, s: 0.03 + rnd() * 0.11, p: rnd()}));
+  const bubbleSeeds = Array.from({length: BUB}, () => ({a: rnd() * 6.283, r: 0.18 + rnd() * 0.97, y: -0.4 + rnd() * 1.25, s: 0.022 + rnd() * 0.065, p: rnd()}));
   scene.add(bubbles);
+  // The mousse's central foam is softly opaque; the smaller floating bubbles retain their clear rims.
+  const foamMat = new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.42, transparent: true, opacity: 0.96, clearcoat: 0.16, envMapIntensity: 0.65, depthWrite: false});
+  const foamGeo = new SphereGeometry(1, 20, 14);
 
   const DROPS = 26;
   const dropletMat = rim(new MeshPhysicalMaterial({color: 0xffffff, roughness: 0.02, transparent: true, opacity: 0.95, clearcoat: 1, envMapIntensity: 2, depthWrite: false}), 'vec3(0.5, 0.64, 0.56)');
@@ -301,9 +320,9 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     if (!step.image) {
       // Step 1 without a verified pack: a soft foam cluster stands in; the name lives in the DOM.
       const cluster = new Group();
-      for (let i = 0; i < 26; i++) {
-        const b = new Mesh(new SphereGeometry(1, 20, 14), bubbleMat);
-        const a = rnd() * 6.283, r = Math.sqrt(rnd()) * 0.34;
+      for (let i = 0; i < 32; i++) {
+        const b = new Mesh(foamGeo, foamMat);
+        const a = rnd() * 6.283, r = Math.sqrt(rnd()) * 0.38;
         b.position.set(Math.cos(a) * r, 0.25 + rnd() * 0.5 - r * 0.4, Math.sin(a) * r * 0.6);
         b.scale.setScalar(0.06 + rnd() * 0.12);
         cluster.add(b);
@@ -338,32 +357,43 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
   }
 
   /* ---- specimens (named botanicals), loaded per step ---- */
-  // One load per step, ever: the promise is cached before anything resolves, so scroll events that call
-  // warm() again reuse it. Groups join the scene only when the whole step has loaded. A failed step stays
-  // failed (no retry storm); its product still reveals, just without plates.
+  // Names appear immediately on a cold rail jump; each image joins as soon as it decodes. One slow
+  // botanical must not leave the entire arrival blank. Each step starts its image requests only once.
   const specimens = {};
   const pending = {};
   function loadSpecimens(step) {
     if (!step.featured?.length) return Promise.resolve(null);
-    pending[step.id] ??= Promise.all(step.featured.slice(0, 5).map(async (item, i, list) => {
-      const map = await imageTexture(asset(item.image), anisotropy);
-      const plate = new Mesh(new PlaneGeometry(0.56, 0.56), new MeshBasicMaterial({map, transparent: true, alphaTest: 0.04, depthWrite: false}));
+    if (pending[step.id]) return pending[step.id];
+    const list = step.featured.slice(0, 5).map((item, i, items) => {
+      const plate = new Mesh(new PlaneGeometry(0.56, 0.56), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false}));
+      plate.visible = false;
       const label = new Mesh(new PlaneGeometry(0.72, 0.135), new MeshBasicMaterial({map: labelTexture(item.name), transparent: true, depthWrite: false}));
       label.position.y = -0.38;
       const g = new Group();
       g.add(plate, label);
       g.visible = false;
-      return {g, plate, label, i, n: list.length, spin: (rnd() - 0.5) * 0.6};
-    })).then(list => {
-      list.forEach(sp => scene.add(sp.g));
-      specimens[step.id] = list;
-      return list;
+      scene.add(g);
+      return {g, plate, label, item, i, n: items.length, spin: (rnd() - 0.5) * 0.6};
     });
+    specimens[step.id] = list;
+    pending[step.id] = Promise.all(list.map(async sp => {
+      try {
+        const map = await imageTexture(asset(sp.item.image), anisotropy);
+        if (disposed) { map.dispose(); return; }
+        sp.plate.material.map = map;
+        sp.plate.material.needsUpdate = true;
+        sp.plate.visible = true;
+        wake();
+      } catch (err) {
+        if (!disposed) console.warn('[mediral] botanical image unavailable', sp.item.name, err);
+      }
+    })).then(() => list);
     return pending[step.id];
   }
 
   /* ---- state ---- */
-  const s = {u: 0, target: 0, time: 0, last: 0, running: false, frames: 0, reduced, tall: false,
+  const s = {u: 0, target: 0, progress: 0, time: 0, last: 0, running: false, frames: 0, reduced, tall: false,
+    paused: false, contextLost: false,
     selection: new Set(steps.map(x => x.id)), pointer: new Vector2(), pointerCur: new Vector2(),
     band: null}; // landscape set view: free screen band {left, right} in 0..1, measured by main.js from the DOM
   const view = {w: 1, h: 1};
@@ -392,6 +422,9 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     const step = steps[stepIndex];
     const setT = clamp01(u - steps.length);
     const tint = TINT[step.id] ?? 0xffffff;
+    // The portrait stage has a notice above it and a reading card below it.
+    funnelGroup.position.y = s.tall ? 0.8 : 1.5;
+    funnelGroup.scale.setScalar(s.tall ? 0.48 : 1);
 
     // Reset per-frame visibility.
     for (const e of Object.values(products)) e.group.visible = false;
@@ -453,6 +486,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     // Foam blooms and drifts: the cleansing role, drawn as texture, not as germs or skin.
     bubbles.visible = true;
     bubbleMat.opacity = 0.9;
+    foamMat.opacity = 0.96;
     const bloom = easeOut(seg(t, -0.3, 0.4)); // already foaming on arrival
     const sweep = ease(seg(t, 0.55, 0.9));
     bubbleSeeds.forEach((b, i) => {
@@ -465,10 +499,10 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
       bubbles.setMatrixAt(i, tmp.matrix);
     });
     bubbles.instanceMatrix.needsUpdate = true;
-    const reveal = easeOut(seg(t, 0.05, 0.45));
+    const reveal = easeOut(seg(t, -0.2, 0.4));
     const rail = toRail(t);
     shadow.material.opacity = 0.5 * reveal * rail.alpha;
-    showProduct(e, reveal, {x: rail.x, y: rail.y, scale: rail.scale * 1.1});
+    showProduct(e, reveal, {x: rail.x, y: rail.y, scale: rail.scale * 1.2});
   }
 
   function playStep(step, t, time, e, tint) {
@@ -477,7 +511,8 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     // 2) Gather: they rise and funnel in.
     if (list) {
       list.forEach(sp => {
-        const appear = easeOut(seg(t, 0.02 + sp.i * 0.035, 0.14 + sp.i * 0.035));
+        // A rail click lands at t=0: the ingredient arc must already be visible there.
+        const appear = easeOut(seg(t, -0.16 + sp.i * 0.02, 0.02 + sp.i * 0.02));
         const g = ease(seg(t, 0.2 + sp.i * 0.02, 0.44));
         if (appear <= 0 || g >= 1) return;
         sp.g.visible = true;
@@ -485,11 +520,12 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
         const theta = sp.n > 1 ? (sp.i / (sp.n - 1) - 0.5) * 2.1 : 0;
         const radius = s.tall ? 0.66 : 1.0;
         const hx = Math.sin(theta) * radius;
-        const hy = (s.tall ? 0.2 : 0.42) + Math.cos(theta) * (s.tall ? 0.34 : 0.42) + Math.sin(time * 0.5 + sp.i) * 0.025;
-        const x = lerp(hx, 0, g), y = lerp(hy, 1.45, g), z = lerp(0.2, 0, g);
+        const hy = (s.tall ? -0.15 : 0.42) + Math.cos(theta) * (s.tall ? 0.25 : 0.42) + Math.sin(time * 0.5 + sp.i) * 0.025;
+        const funnelMouth = funnelGroup.position.y - 0.05 * funnelGroup.scale.y;
+        const x = lerp(hx, 0, g), y = lerp(hy, funnelMouth, g), z = lerp(0.2, 0, g);
         sp.g.position.set(x, y, z);
         sp.g.quaternion.copy(camera.quaternion);
-        sp.g.scale.setScalar(Math.max(0.0001, appear * (1 - g * 0.85)));
+        sp.g.scale.setScalar(Math.max(0.0001, appear * (1 - g * 0.85) * (s.tall ? 0.78 : 1)));
         sp.plate.material.opacity = appear * (1 - seg(t, 0.4, 0.46));
         sp.label.material.opacity = appear * (1 - ease(seg(t, 0.2, 0.3)));
         sp.plate.rotation.z = g * sp.spin * 4;
@@ -497,16 +533,18 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     }
     // 3) The glass funnel receives them and glows in the product's tint.
     const funnelIn = ease(seg(t, 0.16, 0.3)) * (1 - ease(seg(t, 0.58, 0.68)));
-    funnelMat.opacity = 0.28 * funnelIn;
+    funnelMat.opacity = 0.16 * funnelIn;
     funnelTint.material.color.setHex(tint);
-    funnelTint.material.opacity = 0.35 * ease(seg(t, 0.36, 0.48)) * funnelIn;
+    funnelTint.material.opacity = 0.18 * ease(seg(t, 0.36, 0.48)) * funnelIn;
     funnelGroup.rotation.y = time * 0.15;
     // 4) One drop falls from the spout to where the product will stand.
     const fall = seg(t, 0.46, 0.56);
     if (fall > 0 && fall < 1) {
       drop.visible = true;
       drop.material.color.setHex(tint);
-      drop.position.set(0, lerp(0.62, -0.05 + e.height * 0.4, fall * fall), 0);
+      const spout = funnelGroup.position.y - 0.88 * funnelGroup.scale.y;
+      const land = s.tall ? Math.min(-0.05 + e.height * 0.4, spout - 0.12) : -0.05 + e.height * 0.4;
+      drop.position.set(0, lerp(spout, land, fall * fall), 0);
       drop.scale.set(1, 1 + fall * 0.5, 1);
     }
     core.position.set(0, -0.55 + e.height * 0.45, 0.05);
@@ -516,7 +554,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     const reveal = easeOut(seg(t, 0.54, 0.7));
     const rail = toRail(t);
     shadow.material.opacity = 0.5 * reveal * rail.alpha;
-    const yaw = reduced ? 0 : Math.sin(time * 0.3) * 0.12 + s.pointerCur.x * 0.1;
+    const yaw = s.reduced ? 0 : Math.sin(time * 0.3) * 0.12 + s.pointerCur.x * 0.1;
     showProduct(e, reveal, {x: rail.x, y: rail.y, scale: rail.scale, yaw});
     // 6) Role movement.
     const role = ease(seg(t, 0.66, 0.78)) * (1 - seg(t, 0.9, 0.97));
@@ -583,14 +621,14 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     steps.forEach((step, i) => {
       const e = products[step.id];
       const x = offsetX + (i - (n - 1) / 2) * gap;
-      const scale = size * (0.6 + 0.4 * k);
+      const scale = size * (0.9 + 0.1 * k);
       const dim = s.selection.has(step.id) ? 0 : 1;
-      showProduct(e, 1, {x, y: -0.55 + Math.sin(time * 0.6 + i) * 0.015, z: -Math.abs(i - (n - 1) / 2) * 0.2, scale, dim, yaw: reduced ? 0 : Math.sin(time * 0.25 + i) * 0.08});
+      showProduct(e, 1, {x, y: -0.55 + Math.sin(time * 0.6 + i) * 0.015, z: -Math.abs(i - (n - 1) / 2) * 0.2, scale, dim, yaw: s.reduced ? 0 : Math.sin(time * 0.25 + i) * 0.08});
     });
     shadow.position.x = offsetX;
     shadow.scale.set(Math.max(1.2, gap * 4.2), 1, 1);
-    shadow.material.opacity = 0.45 * k;
-    bubbleMat.opacity = s.selection.has(steps[0].id) ? 0.9 : 0.3;
+    shadow.material.opacity = 0.25 + 0.2 * k;
+    foamMat.opacity = s.selection.has(steps[0].id) ? 0.96 : 0.3;
   }
 
   /* ---- loop ---- */
@@ -599,25 +637,25 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
   let raf = 0;
   function frame(now) {
     raf = 0;
-    if (!s.running) return;
+    if (!s.running || disposed || s.paused || s.contextLost) return;
     const dt = Math.min(0.05, (now - (s.last || now)) / 1000);
     s.last = now;
-    if (!reduced) s.time += dt;
-    const k = reduced ? 1 : 1 - Math.exp(-dt / 0.12);
+    if (!s.reduced) s.time += dt;
+    const k = s.reduced ? 1 : 1 - Math.exp(-dt / 0.12);
     s.u += (s.target - s.u) * k;
     if (Math.abs(s.target - s.u) < 0.0005) s.u = s.target;
-    s.pointerCur.lerp(s.pointer, reduced ? 0 : 1 - Math.exp(-dt / 0.4));
+    s.pointerCur.lerp(s.pointer, s.reduced ? 0 : 1 - Math.exp(-dt / 0.4));
     place(s.u, s.time);
-    const shake = reduced ? 0 : 1;
+    const shake = s.reduced ? 0 : 1;
     camera.position.copy(camPos).add(new Vector3(s.pointerCur.x * 0.12 * shake, s.pointerCur.y * 0.06 * shake, 0));
     camera.lookAt(camLook);
     renderer.render(scene, camera);
     s.frames++;
-    if (reduced && s.u === s.target) { s.running = false; s.last = 0; return; }
+    if (s.reduced && s.u === s.target) { s.running = false; s.last = 0; return; }
     raf = requestAnimationFrame(frame);
   }
   function wake() {
-    if (raf || document.hidden) return;
+    if (raf || document.hidden || disposed || s.paused || s.contextLost) return;
     s.running = true;
     raf = requestAnimationFrame(frame);
   }
@@ -628,33 +666,101 @@ export async function createStory({canvas: el, steps, asset, reduced = false}) {
     s.last = 0;
   }
 
-  addEventListener('resize', () => { resize(); wake(); });
-  stacked.addEventListener?.('change', () => { resize(); wake(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) sleep(); else wake(); });
-  if (!reduced) addEventListener('pointermove', e => { s.pointer.set((e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1)); }, {passive: true});
+  const onResize = () => { if (!s.contextLost) resize(); wake(); };
+  const onVisibility = () => { if (document.hidden) sleep(); else wake(); };
+  const onPointer = e => {
+    if (!s.reduced) s.pointer.set((e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1));
+  };
+  const onLost = event => {
+    event?.preventDefault();
+    s.contextLost = true;
+    sleep();
+    onContextChange('lost');
+  };
+  const onRestored = () => {
+    if (disposed) return;
+    try {
+      // The renderer restores image textures, but this environment was rendered on the GPU;
+      // its pixels must be generated again before the page reveals the restored scene.
+      refreshEnvironment();
+      resize();
+      s.contextLost = false;
+      onContextChange('restored');
+      wake();
+    } catch (err) {
+      s.contextLost = true;
+      sleep();
+      console.warn('[mediral] environment restore failed, keeping stills', err);
+      onContextChange('lost');
+    }
+  };
+  addEventListener('resize', onResize);
+  stacked.addEventListener?.('change', onResize);
+  document.addEventListener('visibilitychange', onVisibility);
+  addEventListener('pointermove', onPointer, {passive: true});
+  el.addEventListener('webglcontextlost', onLost);
+  el.addEventListener('webglcontextrestored', onRestored);
 
   // Preload specimens for the step in view and the next one. Reduced motion shows each step already
   // composed (plates have left), so it never downloads them; the page's stills carry the botanicals.
   const warm = u => {
-    if (reduced) return;
+    if (s.reduced || disposed) return;
     const i = Math.min(steps.length - 1, Math.floor(Math.max(0, u)));
     for (const j of [i, i + 1]) if (steps[j]) loadSpecimens(steps[j]).then(wake, err => console.warn('[mediral] specimens', err));
   };
 
   resize();
   warm(0);
+  if (renderer.getContext().isContextLost()) onLost();
   wake();
+
+  function setProgress(u) {
+    s.progress = Math.max(0, Math.min(steps.length + 1, u));
+    // Keep the raw progress so changing the motion preference does not lose the reader's place.
+    s.target = s.reduced && s.progress < steps.length ? Math.floor(s.progress) + 0.8 : s.progress;
+    warm(s.target);
+    wake();
+  }
+
+  function dispose() {
+    if (disposed) return;
+    disposed = true;
+    sleep();
+    removeEventListener('resize', onResize);
+    stacked.removeEventListener?.('change', onResize);
+    document.removeEventListener('visibilitychange', onVisibility);
+    removeEventListener('pointermove', onPointer);
+    el.removeEventListener('webglcontextlost', onLost);
+    el.removeEventListener('webglcontextrestored', onRestored);
+    const geometries = new Set(), materials = new Set(), textures = new Set();
+    scene.traverse(object => {
+      if (object.geometry) geometries.add(object.geometry);
+      const list = object.material ? (Array.isArray(object.material) ? object.material : [object.material]) : [];
+      list.forEach(material => {
+        materials.add(material);
+        Object.values(material).forEach(value => { if (value?.isTexture) textures.add(value); });
+      });
+    });
+    textures.forEach(texture => texture.dispose());
+    materials.forEach(material => material.dispose());
+    geometries.forEach(geometry => geometry.dispose());
+    environmentTarget.dispose();
+    renderer.dispose();
+  }
 
   return {
     // Reduced motion: each step is shown composed (product formed, role visible) instead of scrubbed.
-    setProgress(u) {
-      const snapped = reduced && u < steps.length ? Math.floor(u) + 0.8 : u;
-      s.target = Math.max(0, Math.min(steps.length + 1, snapped));
-      warm(s.target);
-      wake();
+    setProgress,
+    setReducedMotion(value) {
+      s.reduced = Boolean(value);
+      if (s.reduced) { s.pointer.set(0, 0); s.pointerCur.set(0, 0); }
+      setProgress(s.progress);
     },
     setSelection(ids) { s.selection = new Set(ids); wake(); },
     setBand(band) { s.band = band; wake(); },
+    pause() { s.paused = true; sleep(); },
+    resume() { s.paused = false; wake(); },
+    dispose,
     state: s,
   };
 }

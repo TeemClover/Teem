@@ -3,8 +3,8 @@
  * data/routine.json drives every product fact. The 3D story (js/story.js) only mirrors scroll progress
  * and the buyer's set selection; without WebGL the DOM story is complete with static stills.
  *
- * The purchase choice (which of the five pieces) changes only by the buyer's own ticks. Scrolling,
- * resizing and the scene never touch it.
+ * The saved list changes only by the reader's own ticks. The store's five-piece bundle stays fixed;
+ * a partial saved list must never inherit that bundle's price or checkout link.
  */
 const root = document.documentElement;
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -16,7 +16,7 @@ const asset = path => new URL(path, base).href;
 root.classList.remove('mr-boot');
 root.classList.add('mr-js');
 
-const state = {data: null, selection: new Set(), u: 0, stage: null, active: -1};
+const state = {data: null, selection: new Set(), u: 0, stage: null, active: -1, contextLost: false};
 window.__mediral = state; // read-only QA hook
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -25,11 +25,39 @@ const baht = n => `฿${n.toLocaleString('th-TH')}`;
 const thaiDate = iso => new Date(`${iso}T12:00:00+07:00`).toLocaleDateString('th-TH', {day: 'numeric', month: 'short', year: 'numeric'});
 const byId = id => state.data.steps.find(s => s.id === id);
 
-// Bangkok calendar date; ?today=YYYY-MM-DD lets QA check the poster's expiry without changing the clock.
+const isLocalQA = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
+const isCalendarDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value || '')
+  && Number.isFinite(Date.parse(`${value}T00:00:00Z`))
+  && new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value;
+
+// The date override is only for a local preview; public links always use Bangkok's real date.
 function today() {
   const q = new URLSearchParams(location.search).get('today');
-  if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) return q;
+  if (isLocalQA && isCalendarDate(q)) return q;
   return new Intl.DateTimeFormat('en-CA', {timeZone: 'Asia/Bangkok'}).format(new Date());
+}
+
+function posterPhase(poster, day = today()) {
+  if (!isCalendarDate(poster.valid_from) || !isCalendarDate(poster.valid_to)
+      || poster.valid_from > poster.valid_to) return 'unknown';
+  if (day < poster.valid_from) return 'upcoming';
+  return day > poster.valid_to ? 'expired' : 'within';
+}
+
+const fullSelection = () => state.data.steps.length > 0
+  && state.data.steps.every(step => state.selection.has(step.id));
+
+let offerTimer;
+function scheduleOfferRefresh() {
+  clearTimeout(offerTimer);
+  const now = Date.now();
+  const day = 86_400_000;
+  const offset = 7 * 3_600_000;
+  const nextMidnight = (Math.floor((now + offset) / day) + 1) * day - offset;
+  offerTimer = setTimeout(() => {
+    renderOffer();
+    scheduleOfferRefresh();
+  }, nextMidnight - now + 50);
 }
 
 /* ---------- render ---------- */
@@ -46,13 +74,13 @@ function stepBody(step) {
   const more = (step.ingredients || []).map(f => esc(f.name)).join(' · ');
   return `
     ${names ? `<p class="mr-step__label">วัตถุดิบที่แบรนด์เล่า <span class="mr-tag">ภาพประกอบ AI</span></p><ul class="mr-names">${names}</ul>` : ''}
-    <dl class="mr-facts">
-      <div><dt>ใช้อย่างไร</dt><dd>${esc(step.how)}</dd></div>
-      <div><dt>เมื่อไร</dt><dd>${step.when.map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
-      ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
-    </dl>
     <details class="mr-more">
-      <summary>ข้อมูลเพิ่มและข้อจำกัด</summary>
+      <summary>วิธีใช้และรายละเอียดชิ้นนี้</summary>
+      <dl class="mr-facts">
+        <div><dt>ใช้อย่างไร</dt><dd>${esc(step.how)}</dd></div>
+        <div><dt>เมื่อไร</dt><dd>${step.when.map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
+        ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
+      </dl>
       <ul>
         ${more ? `<li>ชื่ออื่นที่สื่อแบรนด์ยกมา: ${more}</li>` : ''}
         <li>${esc(step.ingredients_note)}</li>
@@ -111,14 +139,20 @@ function renderSet() {
 
 function renderOffer() {
   const {poster} = state.data.set;
-  const live = today() <= poster.valid_to;
-  slot('offer').innerHTML = live
+  if (!fullSelection()) {
+    slot('offer').innerHTML = '<p>รายการที่บันทึกนี้ไม่ใช่ชุดขาย 5 ชิ้น จึงไม่แสดงราคาชุดกับรายการนี้ ราคาสินค้าแยกชิ้นให้ดูที่ร้าน</p>';
+    return;
+  }
+  const phase = posterPhase(poster);
+  slot('offer').innerHTML = phase === 'within'
     ? `<p class="mr-offer__label"><span class="mr-tag mr-tag--warn">ข้อเสนอที่พบในสื่อแบรนด์</span></p>
        <p class="mr-offer__price">${baht(poster.price)} <small>ชุด 5 ชิ้น</small></p>
        <p>โปสเตอร์ระบุช่วง ${thaiDate(poster.valid_from)} – ${thaiDate(poster.valid_to)} · ${esc(poster.gift)} · ${esc(poster.terms)}</p>
        <p>${esc(poster.note)} ยอดที่ต้องจ่ายจริงดูที่หน้าชำระเงิน</p>`
-    : `<p class="mr-offer__label"><span class="mr-tag">ข้อเสนอในโปสเตอร์สิ้นสุดแล้ว</span></p>
-       <p>โปสเตอร์ชุด 5 ชิ้นที่เราได้รับระบุช่วง ${thaiDate(poster.valid_from)} – ${thaiDate(poster.valid_to)} ดูราคาและข้อเสนอปัจจุบันที่ร้าน</p>`;
+    : phase === 'unknown'
+      ? '<p>ยังยืนยันช่วงเวลาของข้อเสนอไม่ได้ ดูราคาและข้อเสนอปัจจุบันที่ร้าน</p>'
+      : `<p class="mr-offer__label"><span class="mr-tag">${phase === 'upcoming' ? 'ยังไม่ถึงช่วงข้อเสนอในโปสเตอร์' : 'ข้อเสนอในโปสเตอร์สิ้นสุดแล้ว'}</span></p>
+         <p>โปสเตอร์ชุด 5 ชิ้นที่เราได้รับระบุช่วง ${thaiDate(poster.valid_from)} – ${thaiDate(poster.valid_to)} ดูราคาและข้อเสนอปัจจุบันที่ร้าน</p>`;
 }
 
 function renderSummary() {
@@ -126,22 +160,36 @@ function renderSummary() {
   const chosen = steps.filter(s => state.selection.has(s.id));
   const full = chosen.length === steps.length;
   slot('summary').innerHTML = chosen.length
-    ? `<p class="mr-summary__label">${full ? 'ครบ 5 ขั้น' : `เลือก ${chosen.length} จาก ${steps.length} ชิ้น`}</p>
+    ? `<p class="mr-summary__label">${full ? 'บันทึกครบ 5 ชิ้น' : `บันทึกไว้ ${chosen.length} จาก ${steps.length} ชิ้น`}</p>
        <ol>${chosen.map(s => `<li>${esc(s.nick)}${s.size ? ` ${esc(s.size)}` : ''} <small>· ${esc(s.verb)} · ${s.when.map(esc).join('/')}</small></li>`).join('')}</ol>
        <p>${full ? 'ถ้าร้านมีรายการชุด 5 ชิ้น ให้เทียบว่าในชุดมีครบทั้งห้าชิ้นนี้ก่อนกดจ่าย' : 'ข้อเสนอชุด 5 ชิ้นในโปสเตอร์ใช้กับชุดครบ และโปสเตอร์ระบุว่าเปลี่ยนสินค้าไม่ได้ ถ้าเลือกบางชิ้น ให้ดูราคาแยกชิ้นที่ร้าน'}</p>`
-    : '<p class="mr-summary__label">ยังไม่ได้เลือกชิ้นไหน</p><p>ติ๊กชิ้นที่ต้องการด้านบน</p>';
+    : '<p class="mr-summary__label">ยังไม่มีชิ้นที่บันทึก</p><p>ติ๊กชิ้นที่ต้องการเก็บไว้ หรือกลับไปดูชุดครบ 5 ชิ้น</p>';
+  if (!full) slot('summary').insertAdjacentHTML('beforeend', '<button type="button" class="mr-btn mr-btn--ghost mr-btn--small" data-action="select-all">กลับไปดูชุดครบ 5 ชิ้น</button>');
   $$('[data-row]').forEach(f => f.classList.toggle('is-off', !state.selection.has(f.dataset.row)));
-  $$('[data-action]').forEach(b => { b.disabled = !chosen.length; });
+  $$('[data-action="copy"], [data-action="card"]').forEach(b => { b.disabled = !chosen.length; });
   state.stage?.setSelection([...state.selection]);
+  renderOffer();
+  renderBuy();
 }
 
 function renderBuy() {
   const {buy, disclosure} = state.data;
   const link = slot('buy-link');
-  if (buy.affiliate_url && /^https:\/\//.test(buy.affiliate_url)) {
+  link.removeAttribute('href');
+  link.removeAttribute('target');
+  link.removeAttribute('rel');
+  link.setAttribute('aria-disabled', 'true');
+  link.setAttribute('role', 'link');
+  if (!fullSelection()) {
+    link.textContent = state.selection.size ? 'รายการที่บันทึกเป็นบางชิ้น' : 'ยังไม่มีรายการที่บันทึก';
+    slot('buy-hint').textContent = state.selection.size
+      ? 'เก็บรายการนี้ไว้ดูราคาแยกชิ้นที่ร้าน หรือกลับไปดูชุดครบ 5 ชิ้น'
+      : 'เลือกชิ้นที่ต้องการบันทึก หรือกลับไปดูชุดครบ 5 ชิ้น';
+  } else if (buy.status === 'verified' && buy.affiliate_url && /^https:\/\//.test(buy.affiliate_url)) {
     Object.assign(link, {href: buy.affiliate_url, target: '_blank', rel: 'noopener sponsored', textContent: buy.cta_label});
     link.removeAttribute('aria-disabled');
     link.removeAttribute('role');
+    slot('buy-hint').textContent = 'ตรวจรายการทั้ง 5 ชิ้น ราคา และสิทธิที่หน้าร้านก่อนชำระ';
   } else {
     link.removeAttribute('href');
     link.textContent = buy.pending_label;
@@ -158,13 +206,37 @@ function copyText() {
 }
 
 async function copyList() {
+  if (!state.selection.size) return;
   const text = copyText();
   try {
     await navigator.clipboard.writeText(text);
     slot('buy-hint').textContent = `คัดลอกแล้ว: “${text}”`;
   } catch {
-    slot('buy-hint').textContent = `คัดลอกอัตโนมัติไม่ได้ รายการคือ “${text}”`;
+    const hint = slot('buy-hint');
+    hint.textContent = '';
+    const label = document.createElement('label');
+    label.className = 'mr-copy-fallback';
+    label.textContent = 'คัดลอกอัตโนมัติไม่ได้ เลือกข้อความในช่องนี้แล้วคัดลอกได้เลย';
+    const field = document.createElement('textarea');
+    field.readOnly = true;
+    field.rows = 4;
+    field.value = text;
+    field.setAttribute('aria-label', 'รายการ Mediral สำหรับคัดลอก');
+    label.append(field);
+    hint.append(label);
+    field.focus();
+    field.select();
   }
+}
+
+function selectAll() {
+  state.selection = new Set(state.data.steps.map(step => step.id));
+  $$('[data-piece]').forEach(box => { box.checked = true; });
+  renderSummary();
+  // The restore button is replaced by the new summary; leave focus on a stable control.
+  const summary = slot('summary');
+  summary.setAttribute('tabindex', '-1');
+  summary.focus({preventScroll: true});
 }
 
 async function saveCard(button) {
@@ -201,7 +273,9 @@ function progress() {
   list.forEach((sec, i) => {
     const r = sec.getBoundingClientRect();
     const span = Math.max(1, sec.offsetHeight - vh);
-    const t = Math.min(1, Math.max(0, -r.top / span));
+    // Finish the visual phase without advancing the rail until the next section actually arrives.
+    const end = i < list.length - 1 ? 0.9995 : 1;
+    const t = Math.min(end, Math.max(0, -r.top / span));
     if (r.top <= vh * 0.001 || i === 0) u = i + t;
   });
   return u;
@@ -239,6 +313,8 @@ function onScroll() {
   $$('[data-rail]').forEach((a, k) => {
     a.classList.toggle('is-active', k === i);
     a.classList.toggle('is-done', k < state.data.steps.length && u >= k + 0.92);
+    if (k === i) a.setAttribute('aria-current', 'step');
+    else a.removeAttribute('aria-current');
   });
   // Phase dots inside the active step: origin → combine → role.
   const t = u - Math.floor(u);
@@ -248,6 +324,45 @@ function onScroll() {
 }
 
 /* ---------- 3D (optional, lazy) ---------- */
+function preserveReadingPosition(update) {
+  const current = sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress())))];
+  const reading = scrollY > 10;
+  const fraction = current
+    ? Math.min(1, Math.max(0, -current.getBoundingClientRect().top / Math.max(1, current.offsetHeight - innerHeight)))
+    : 0;
+  update();
+  if (reading && current) {
+    const top = current.getBoundingClientRect().top + scrollY;
+    window.scrollTo({top: top + fraction * Math.max(0, current.offsetHeight - innerHeight), behavior: 'instant'});
+  }
+  onScroll();
+  measureBand();
+}
+
+function sceneAvailability(available) {
+  preserveReadingPosition(() => {
+    root.classList.toggle('mr-static', !available);
+    root.classList.toggle('mr-3d', available);
+  });
+}
+
+function onContextChange(status) {
+  state.contextLost = status === 'lost';
+  if (state.contextLost) sceneAvailability(false);
+  else if (state.stage) sceneAvailability(true);
+}
+
+function watchReducedMotion() {
+  const media = matchMedia('(prefers-reduced-motion: reduce)');
+  root.classList.toggle('mr-reduced', media.matches);
+  const change = event => preserveReadingPosition(() => {
+    root.classList.toggle('mr-reduced', event.matches);
+    state.stage?.setReducedMotion(event.matches);
+  });
+  if (media.addEventListener) media.addEventListener('change', change);
+  else media.addListener(change);
+}
+
 function environment() {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const saveData = navigator.connection?.saveData;
@@ -259,22 +374,22 @@ function environment() {
 
 async function bootStage() {
   const env = environment();
-  if (env.reduced) root.classList.add('mr-reduced');
-  if (env.no3d || env.saveData) { root.classList.add('mr-static'); return; }
+  if (env.no3d || env.saveData) { sceneAvailability(false); return; }
   try {
     const {createStory} = await import('./story.js');
-    state.stage = await createStory({canvas: $('#scene'), steps: state.data.steps, asset, reduced: env.reduced});
+    state.stage = await createStory({canvas: $('#scene'), steps: state.data.steps, asset, reduced: env.reduced, onContextChange});
+    state.contextLost = Boolean(state.stage.state.contextLost);
+    // Preferences and context can change while scene textures are loading.
+    state.stage.setReducedMotion(matchMedia('(prefers-reduced-motion: reduce)').matches);
     state.stage.setSelection([...state.selection]);
     state.stage.setProgress(state.u);
-    measureBand();
-    root.classList.add('mr-3d');
+    if (document.visibilityState === 'hidden') state.stage.pause();
+    sceneAvailability(!state.contextLost);
   } catch (err) {
     console.warn('[mediral] 3D story unavailable, using stills', err);
-    // Static steps are much shorter; keep the reader on the section they were reading.
-    const at = Math.min(sections().length - 1, Math.floor(progress()));
-    const reading = scrollY > 10;
-    root.classList.add('mr-static');
-    if (reading) sections()[at]?.scrollIntoView({block: 'start'});
+    state.stage?.dispose();
+    state.stage = null;
+    sceneAvailability(false);
   }
 }
 
@@ -287,9 +402,18 @@ async function boot() {
   renderSteps();
   renderRail();
   renderSet();
-  renderOffer();
   renderSummary();
-  renderBuy();
+  watchReducedMotion();
+  scheduleOfferRefresh();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') {
+      state.stage?.pause();
+      return;
+    }
+    state.stage?.resume();
+    renderOffer();
+    scheduleOfferRefresh();
+  });
 
   document.addEventListener('change', e => {
     const box = e.target.closest('[data-piece]');
@@ -301,6 +425,7 @@ async function boot() {
     const act = e.target.closest('[data-action]');
     if (act?.dataset.action === 'copy') copyList();
     if (act?.dataset.action === 'card') saveCard(act);
+    if (act?.dataset.action === 'select-all') selectAll();
   });
 
   const reveal = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('is-in'); }), {threshold: 0.12});

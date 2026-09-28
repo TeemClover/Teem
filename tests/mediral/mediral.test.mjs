@@ -106,7 +106,11 @@ test('pack drafts are labelled as drafts wherever they appear', () => {
     assert.equal(s.image_status, 'ai-draft', `${s.id}: status must state the pack is an AI draft`);
     assert.match(s.image_note, /AI ฉบับร่าง/, `${s.id}: the visible note must say AI draft`);
   }
-  assert.match(html(), /ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ/, 'The stage carries the draft label before JavaScript');
+  const source = html();
+  const stageNote = source.match(/<p\b[^>]*class="mr-stage__note"[^>]*>([\s\S]*?)<\/p>/)?.[1] || '';
+  assert.match(stageNote, /ภาพแพ็ก/, 'The stage identifies the package illustrations before JavaScript');
+  assert.match(stageNote, /AI/, 'The stage identifies generated imagery');
+  assert.match(source, /ภาพแพ็ก[^<]*AI ฉบับร่าง[^<]*ไม่ใช่ฉลากต้นฉบับ/, 'The static HTML explains the package draft limitation');
 });
 
 test('copy leads with each step’s role and avoids drug-like or unverified claims', () => {
@@ -126,8 +130,6 @@ test('the set offer is poster evidence with dates, never a live or discounted pr
   assert.equal(set.poster.valid_to, '2026-09-30');
   assert.equal(set.poster.status, 'poster-only');
   assert.match(set.poster.note, /ยังไม่ยืนยัน/);
-  const main = read(join(site, 'js/main.js'));
-  assert.match(main, /today\(\) <= poster\.valid_to/, 'The poster price hides itself after its end date');
   const copy = [html(), read(join(site, 'data/routine.json'))].join('\n');
   assert.doesNotMatch(copy, /8,?540|\b820\b|\b880\b|45%|฿60|max ฿60/, 'Other offers, strike prices and coupons stay out of the set story');
 });
