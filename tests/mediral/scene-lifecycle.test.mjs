@@ -15,6 +15,7 @@ function between(start, end) {
 // scheduler and graphics boundary are adapters; no animation-loop or restore logic is copied here.
 // These tests verify lifecycle/resource contracts, not GPU pixels or shader appearance.
 const environmentSource = between('  function refreshEnvironment() {', '\n  refreshEnvironment();');
+const moodSource = between('const LAYERS =', '/* ---------- camera ---------- */');
 const stateSource = between('  const s = {', '  const view =');
 const loopStart = source.indexOf('  /* ---- loop ---- */');
 const loopEnd = source.lastIndexOf('\n}');
@@ -36,7 +37,7 @@ function eventTarget() {
 }
 
 async function fixture({reduced = false} = {}) {
-  const frames = new Map(), targets = [], events = [], order = [];
+  const frames = new Map(), targets = [], events = [], order = [], compositions = [];
   const windowEvents = eventTarget(), canvas = eventTarget(), document = eventTarget(), stacked = eventTarget();
   document.hidden = false;
   let nextFrame = 0, clock = 0, rendered = 0, gpuLost = false, failEnvironment = false;
@@ -62,7 +63,7 @@ async function fixture({reduced = false} = {}) {
     addEventListener: windowEvents.addEventListener, removeEventListener: windowEvents.removeEventListener,
     requestAnimationFrame(fn) { const id = ++nextFrame; frames.set(id, fn); return id; },
     cancelAnimationFrame(id) { frames.delete(id); },
-    resize() {}, place() {}, loadSpecimens: async () => null,
+    resize() {}, place(u, time, dt) { compositions.push({u, time, dt}); },
     onContextChange(status) { events.push(status); order.push(`context:${status}`); },
     console: {warn() {}},
     PMREMGenerator: class {
@@ -79,6 +80,7 @@ async function fixture({reduced = false} = {}) {
     RoomEnvironment: class { dispose() { roomsDisposed++; } },
   });
   vm.runInContext(`
+    ${moodSource}
     function buildLifecycle() {
       let disposed = false, environmentTarget;
       ${environmentSource}
@@ -90,7 +92,7 @@ async function fixture({reduced = false} = {}) {
   `, context, {filename: 'mediral/js/story.js (actual lifecycle source)'});
   await flush();
   return {
-    stage: context.stage, context, frames, targets, events, order, document,
+    stage: context.stage, context, frames, targets, events, order, compositions, document,
     get rendered() { return rendered; },
     get resourceCounts() { return {roomsDisposed, generatorsDisposed, rendererDisposed}; },
     get listenerCount() { return windowEvents.listenerCount + canvas.listenerCount + document.listenerCount + stacked.listenerCount; },
@@ -120,7 +122,7 @@ test('repeated scene wake requests keep exactly one RAF loop', async () => {
   for (let i = 0; i < 5; i++) {
     ui.stage.resume();
     ui.stage.setProgress(1.2);
-    ui.stage.setSelection(['CL', 'AC']);
+    ui.stage.setMood(i % 2 ? 'hydration' : 'botanical');
   }
   await flush();
   ui.frame();
@@ -129,13 +131,15 @@ test('repeated scene wake requests keep exactly one RAF loop', async () => {
   ui.stage.dispose();
 });
 
-test('paused and hidden scenes cannot be restarted by progress or asset completion', async () => {
+test('paused and hidden ambient scenes keep incoming progress and mood without restarting', async () => {
   const ui = await fixture();
   ui.stage.pause();
   ui.stage.setProgress(3.2);
-  ui.stage.setBand({left: 0.45, right: 0.9});
+  ui.stage.setMood('mineral');
   await flush();
   assert.equal(ui.frames.size, 0);
+  assert.equal(ui.stage.state.target, 3.2);
+  assert.equal(ui.stage.state.mood, 'mineral');
   ui.document.hidden = true;
   ui.stage.resume();
   assert.equal(ui.frames.size, 0);
@@ -143,6 +147,24 @@ test('paused and hidden scenes cannot be restarted by progress or asset completi
   ui.document.fire('visibilitychange');
   ui.frame();
   assert.equal(ui.rendered, 1);
+  ui.stage.dispose();
+});
+
+test('a reduced-motion mood change requests one frame, while repeating that mood requests none', async () => {
+  const ui = await fixture({reduced: true});
+  ui.frame();
+  assert.equal(ui.frames.size, 0);
+  ui.stage.setMood('hydration');
+  ui.frame();
+  assert.equal(ui.rendered, 2);
+  assert.equal(ui.stage.state.mood, 'hydration');
+  assert.equal(ui.frames.size, 0);
+  ui.stage.setMood('hydration');
+  assert.equal(ui.frames.size, 0);
+  ui.stage.setMood('not-a-mood');
+  ui.frame();
+  assert.equal(ui.stage.state.mood, 'set');
+  assert.equal(ui.frames.size, 0);
   ui.stage.dispose();
 });
 
@@ -202,14 +224,33 @@ test('failed PMREM regeneration keeps the static fallback and releases temporary
   ui.stage.dispose();
 });
 
+test('context restoration respects the owner pause and draws the latest target only on resume', async () => {
+  const ui = await fixture({reduced: true});
+  ui.stage.pause();
+  ui.loseContext();
+  ui.stage.setProgress(3.2);
+  ui.stage.setMood('plants');
+  ui.restoreContext();
+  assert.equal(ui.frames.size, 0, 'A reading chapter still owns the pause after GPU recovery');
+  assert.equal(ui.stage.state.mood, 'plants');
+  assert.equal(ui.stage.state.progress, 3.2);
+  ui.stage.resume();
+  ui.frame();
+  assert.equal(ui.compositions.at(-1).u, 3.8);
+  assert.equal(ui.frames.size, 0);
+  ui.stage.dispose();
+});
+
 test('disposing a scene cancels frames, removes its listeners and prevents later wakes', async () => {
   const ui = await fixture();
   assert.ok(ui.listenerCount > 0);
-  ui.stage.setProgress(3.1); // Leave an asset-completion microtask pending while disposing.
+  ui.stage.setProgress(3.1);
+  ui.stage.setMood('plants');
   ui.stage.dispose();
   await flush();
   ui.stage.resume();
   ui.stage.setProgress(1.1);
+  ui.stage.setMood('hydration');
   assert.equal(ui.frames.size, 0);
   assert.equal(ui.listenerCount, 0);
   assert.equal(ui.targets[0].disposed, true);

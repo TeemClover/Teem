@@ -6,13 +6,14 @@ import vm from 'node:vm';
 const entry = new URL('../../mediral/js/main.js', import.meta.url);
 const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.stringify(entry.href))
   // Mock only the scene module boundary so the real asynchronous boot path remains under test.
-  .replace("import('./story.js')", 'globalThis.loadStoryModule()');
+  .replace("import('./story.js')", 'globalThis.loadStoryModule()')
+  .replace("import('./lab-film.js')", 'globalThis.loadFilmModule()');
 const routine = JSON.parse(readFileSync(new URL('../../mediral/data/routine.json', import.meta.url), 'utf8'));
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
 // Execute the real controller with a small DOM adapter. No browser or graphics emulation:
 // assertions cover the visible offer, action state, input selection and accessibility attributes.
-async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory, stacked = false} = {}) {
+async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory, filmFactory, stacked = false, productStacked = stacked, productScrollMargin = '0px'} = {}) {
   const listeners = new Map();
   const windowListeners = new Map();
   const timers = new Map();
@@ -57,7 +58,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     select() { this.selected = true; }
     closest(selector) { return selector === '[data-piece]' && this.value ? this : selector === '[data-action]' && this.dataset.action ? this : null; }
     querySelector(selector) { if (!this.nodes.has(selector)) this.nodes.set(selector, new Element()); return this.nodes.get(selector); }
-    querySelectorAll(selector) { return selector === '.mr-phase li' ? [new Element(), new Element(), new Element()] : selector === '.mr-lab__tabs button' ? Array.from({length: 5}, (_, i) => this.querySelector(`button-${i}`)) : selector === '[data-formula-index]' ? Array.from({length: 8}, (_, i) => this.querySelector(`formula-button-${i}`)) : []; }
+    querySelectorAll(selector) { if (this.allNodes?.has(selector)) return this.allNodes.get(selector); return selector === '.mr-phase li' ? [new Element(), new Element(), new Element()] : selector === '.mr-lab__tabs button' ? Array.from({length: 5}, (_, i) => this.querySelector(`button-${i}`)) : selector === '[data-formula-index]' ? Array.from({length: 8}, (_, i) => this.querySelector(`formula-button-${i}`)) : []; }
     getBoundingClientRect() { return {top: 0, right: 450, left: 760}; }
     getContext() { return {getExtension: () => null}; }
   }
@@ -81,10 +82,35 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   const sections = ['routine', ...rails].map((_, i) => {
     const el = new Element('section');
     el.id = i === 0 ? 'routine' : i === 6 ? 'set' : `step-${routine.steps[i - 1].id}`;
+    el.scrollMarginTop = i > 0 && i < 6 ? productScrollMargin : '0px';
     Object.defineProperty(el, 'offsetHeight', {get: () => root.classList.contains('mr-static') ? 600 : sectionHeight});
     el.getBoundingClientRect = () => ({top: i * el.offsetHeight - context.scrollY, bottom: (i + 1) * el.offsetHeight - context.scrollY});
     return el;
   });
+  const beatNodes = [], artNodes = [];
+  routine.steps.forEach((step, i) => {
+    const section = sections[i + 1];
+    const visual = new Element();
+    visual.getBoundingClientRect = () => ({top: 70, bottom: productStacked ? 250 : 500});
+    const finish = new Element();
+    finish.getBoundingClientRect = () => ({top: (i + 1) * section.offsetHeight + section.offsetHeight * .92 - context.scrollY});
+    section.nodes.set('.mr-product__visual', visual);
+    section.nodes.set('.mr-product__finish', finish);
+    const localArt = [];
+    step.selling.beats.forEach((beat, j) => {
+      const node = new Element('article');
+      node.id = `beat-${step.id}-${j}`;
+      node.dataset = {sellingStep: step.id, beatIndex: String(j)};
+      node.getBoundingClientRect = () => ({top: (i + 1) * section.offsetHeight + section.offsetHeight * (.18 + j * .23) - context.scrollY});
+      beatNodes.push(node);
+      const art = new Element();
+      art.dataset.beatArt = `${step.id}:${j}`;
+      if (!j) art.classList.add('is-active');
+      artNodes.push(art); localArt.push(art);
+    });
+    section.allNodes = new Map([['[data-beat-art]', localArt]]);
+  });
+  const film = new Element(); film.id = 'lab-film';
   for (const name of ['routine-map', 'routine-still', 'hero-offer', 'compare', 'uses', 'hero-body', 'steps', 'library', 'rail', 'word', 'set-headline', 'pieces', 'set-row', 'offer', 'summary', 'buy-link', 'buy-hint', 'disclosure']) slots.set(name, new Element());
   const document = {
     documentElement: root, body: new Element('body'), visibilityState: 'visible', activeElement: null, readyState, fonts: {ready: fontReady},
@@ -96,6 +122,9 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '#routine') return sections[0];
       if (selector.startsWith('#step-')) return sections[routine.steps.findIndex(s => selector === `#step-${s.id}`) + 1];
       if (selector === '#set') return sections[6];
+      if (selector === '#lab-film') return film;
+      const beat = beatNodes.find(node => selector === `#${node.id}`);
+      if (beat) return beat;
       const reading = readingNodes.find(node => selector === `#${node.id}`);
       if (reading) return reading;
       if (selector.startsWith('[data-lab=') || selector.startsWith('[data-formula-group=')) { if (!slots.has(selector)) slots.set(selector, new Element()); return slots.get(selector); }
@@ -104,29 +133,34 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       return new Element();
     },
     querySelectorAll(selector) {
-      if (selector === '#story [data-step]') return sections.slice(2, 6);
+      if (selector === '#story [data-step]') return sections.slice(1, 6);
+      if (selector === '[data-selling-step]') return beatNodes;
+      const beatMatch = selector.match(/^\[data-selling-step="([^"]+)"\]$/);
+      if (beatMatch) return beatNodes.filter(node => node.dataset.sellingStep === beatMatch[1]);
       if (selector === '.mr-reading-chapter') return readingNodes;
       if (selector === '[data-piece]') return pieces;
       if (selector === '[data-row]') return rows;
       if (selector === '[data-rail]') return rails;
       if (selector === '[data-action]' || selector === '[data-action="copy"], [data-action="card"]') return actions;
-      if (selector === '.mr-chapter, .mr-step, .mr-routine') return sections;
+      if (selector === '.mr-chapter, .mr-product, .mr-routine') return sections;
       return [];
     },
   };
   const media = {matches: false, addEventListener(_name, listener) { this.change = listener; }};
   const stackedMedia = {matches: stacked, addEventListener() {}};
+  const productMedia = {matches: productStacked, addEventListener() {}};
   class ClockDate extends Date { constructor(...args) { super(...(args.length ? args : [now])); } static now() { return now; } }
   const data = structuredClone(routine);
   if (verifiedLink) data.buy = {...data.buy, status: 'verified', affiliate_url: 'https://shop.example.test/verified-set'};
   context = vm.createContext({document, location: new URL(url), URL, URLSearchParams, Intl, Date: ClockDate, console: {warn() {}, error: (...args) => errors.push(args)},
     navigator: {clipboard: {writeText: async () => { if (clipboardFails) throw new Error('denied'); }}},
-    matchMedia: query => query === '(max-width: 1100px)' ? stackedMedia : media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
+    matchMedia: query => query === '(max-width: 1100px)' ? stackedMedia : query === '(max-width: 700px)' ? productMedia : media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
     getComputedStyle: el => ({scrollMarginTop: el.scrollMarginTop || '0px'}),
     addEventListener: addWindowListener, removeEventListener: removeWindowListener, IntersectionObserver: class { observe() {} },
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
     fetch: async () => ({ok: true, json: async () => data}),
     loadStoryModule: async () => ({createStory: storyFactory}),
+    loadFilmModule: async () => ({initLabFilm: filmFactory}),
   });
   context.window = {requestIdleCallback() {}, scrollTo: ({top}) => { context.scrollY = top; }};
   vm.runInContext(source, context, {filename: 'mediral/js/main.js'});
@@ -134,7 +168,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   assert.deepEqual(errors, [], 'The controller must boot before its behavior is tested');
   const run = code => vm.runInContext(code, context);
   const fire = (name, target) => { for (const handler of listeners.get(name) || []) handler({target}); };
-  return {run, slots, pieces, actions, rails, root, media, timers, document, context,
+  return {run, slots, pieces, actions, rails, root, media, timers, document, context, beatNodes, artNodes,
     change(id, checked) { const box = pieces.find(p => p.value === id); box.checked = checked; fire('change', box); },
     restore() { const button = new Element('button'); button.dataset.action = 'select-all'; fire('click', button); },
     readingNodes,
@@ -256,7 +290,7 @@ test('rail and active role do not advance during the final viewport of a chapter
 
 test('context recovery and motion preference changes keep the reader and saved list in place', async () => {
   const ui = await fixture();
-  ui.run('state.stage = {pause() {}, resume() {}, setProgress() {}, setBand() {}, setSelection() {}, setReducedMotion(value) { this.reduced = value; }}');
+  ui.run('state.stage = {pause() {}, resume() {}, setProgress() {}, setMood() {}, setReducedMotion(value) { this.reduced = value; }}');
   ui.change('CL', false);
   ui.scroll(4900);
   ui.run('onContextChange("lost")');
@@ -310,7 +344,7 @@ test('the complete atlas is optional deep reading after the offer, with every na
     assert.ok(library.includes(`id="formula-${step.id}"`), `${step.id}: rendered in the library`);
     assert.match(ui.run(`stepBody(byId('${step.id}'))`), new RegExp(`href="#formula-${step.id}"[^>]*>อ่านส่วนผสมทั้งหมด ${count} ชื่อ`));
     for (const group of step.ingredient_groups.filter(g => g.ingredientNames.length)) {
-      assert.ok(ui.run(`stepBody(byId('${step.id}'))`).includes(group.title), `${step.id}: the product view names its ingredient families`);
+      assert.ok(html.includes(group.title), `${step.id}: the optional library retains every ingredient family`);
     }
   }
   assert.equal(ui.run('ingredientAtlas(byId("CL"))'), '', 'The unconfirmed mousse formula has no list');
@@ -354,7 +388,7 @@ test('opening or closing an atlas re-measures reading isolation without a scroll
   assert.equal(scene.state.paused, false);
 });
 
-test('a fresh atlas URL lands below the fixed header, while product anchors keep their scene position', async () => {
+test('fresh atlas and product URLs honour the clearance assigned to their target', async () => {
   const ui = await fixture({url: 'https://www.myclover.com/mediral/#formula-AC', readyState: 'interactive', pendingFonts: true,
     readingChapters: [{id: 'formula-AC', tag: 'details', top: 7600, staticTop: 4200, height: 1200, scrollMarginTop: '102px'}]});
   assert.equal(ui.context.scrollY, 7498, 'The summary is not hidden at y=0 under the header');
@@ -438,32 +472,27 @@ test('the two serums are compared by role and brand-stated time, never as a comb
     assert.equal(shown, ['AC', 'BR'].includes(step.id), `${step.id}: only the two serums are compared`);
     if (!shown) continue;
     assert.ok(compare.includes(step.headline));
-    for (const point of step.compare_points) assert.ok(compare.includes(point));
+    for (const beat of step.selling.beats.slice(0, 2)) assert.ok(compare.includes(beat.title));
     assert.ok(compare.includes(step.when.join(' · ')));
-    for (const item of step.featured) assert.ok(compare.includes(item.name));
+    assert.ok(compare.includes(step.selling.choose));
     assert.match(compare, new RegExp(`href="#formula-${step.id}"`));
   }
   assert.match(compare, /ภาพแพ็ก AI ฉบับร่าง/);
   assert.doesNotMatch(compare, /ทาคู่|ใช้คู่|ใช้ร่วมกัน|เสริมฤทธิ์|ได้ผลดีกว่า|ทาก่อน|ทาหลัง/);
 });
 
-test('the use-time table repeats data only: no sequence, mousse deferred to its label', async () => {
+test('the use-time table repeats source timing and how-to without inventing a layering sequence', async () => {
   const ui = await fixture();
   const table = ui.slots.get('uses').innerHTML;
   const rows = table.split('<tr>').slice(2);
-  const labels = routine.use_time_labels;
   assert.equal(rows.length, routine.steps.length);
   routine.steps.forEach((step, i) => {
     const row = rows[i];
     assert.ok(row.includes(step.nick));
-    if (!step.use_times.length) {
-      assert.match(row, /colspan="4"[^>]*>ยึดวิธีใช้บนฉลากขวดที่ได้รับ/);
-      return;
-    }
-    for (const key of Object.keys(labels)) {
-      assert.equal(row.includes(`aria-label="${labels[key]}"`), step.use_times.includes(key), `${step.id}: ${key}`);
-    }
+    assert.ok(row.includes(step.when.join(' · ')));
+    assert.ok(row.includes(step.how));
   });
+  assert.doesNotMatch(table, /บำรุงชั้นที่|ลงต่อจาก|ทาคู่/);
 });
 
 test('reading a non-featured ingredient changes its attributed detail without moving or selecting products', async () => {
@@ -501,7 +530,7 @@ function sceneBoundary() {
     pause() { this.state.paused = true; this.calls.push('pause'); },
     resume() { this.state.paused = false; this.calls.push('resume'); },
     setProgress(value) { this.progress.push({value, paused: this.state.paused}); },
-    setIngredient() {}, setBand() {}, setReducedMotion() {}, setSelection() {}, dispose() {},
+    setMood(value) { this.mood = value; }, setReducedMotion() {}, dispose() {},
   };
 }
 
@@ -533,7 +562,7 @@ test('a scene that finishes loading inside a reading chapter is paused before bo
   const scene = sceneBoundary();
   let finishScene;
   const ui = await fixture({storyFactory: () => new Promise(resolve => { finishScene = resolve; }),
-    readingChapters: [{id: 'lab-film', top: 4100, staticTop: 1900, height: 1500}]});
+    readingChapters: [{id: 'formula-BR', top: 4100, staticTop: 1900, height: 1500}]});
   const boot = ui.run('bootStage()');
   await tick();
   ui.scroll(4280); // The reader moves while scene textures are still loading.
@@ -629,21 +658,100 @@ test('a different hash or leaving the page cancels its pending initial chapter c
   }
 });
 
-test('choosing an ingredient reveals its own role without changing the saved routine', async () => {
+test('all five products and their fifteen selling beats remain readable without motion or a scene', async () => {
   const ui = await fixture();
-  ui.run('state.stage = {pause() {}, resume() {}, setProgress() {}, setSelection() {}, setIngredient(index) { this.focusedIngredient = index; }}');
+  const html = ui.slots.get('steps').innerHTML;
+  assert.equal((html.match(/class="mr-product"/g) || []).length, 5);
+  assert.equal((html.match(/data-selling-step=/g) || []).length, 15);
+  for (const step of routine.steps) {
+    assert.ok(html.includes(`id="step-${step.id}"`));
+    assert.ok(html.includes(step.image));
+    for (const beat of step.selling.beats) {
+      assert.ok(html.includes(beat.title));
+      assert.ok(html.includes(beat.body));
+      for (const name of beat.names) assert.ok(html.includes(`<strong>${name}</strong>`));
+      for (const tag of Object.values(beat.tags || {})) assert.ok(html.includes(`<small>${tag}</small>`));
+    }
+    if (step.selling.sensory) assert.ok(html.includes(step.selling.sensory));
+  }
+  assert.doesNotMatch(html, /data-ingredient-index|mr-lab__tabs/);
+});
+
+test('forward and reverse scrolling promote the matching family and mood without changing the saved list', async () => {
+  const scene = sceneBoundary();
+  const ui = await fixture({storyFactory: async () => scene});
+  await ui.run('bootStage()');
   ui.change('PO', false);
-  ui.scroll(3800); // white serum product phase
-  ui.run('chooseIngredient("AC", 0)');
-  assert.equal(ui.context.scrollY, 3120, 'Return from the product phase to the ingredient view');
-  assert.equal(ui.run('state.stage.focusedIngredient'), 0);
-  assert.equal(ui.run('state.selection.has("PO")'), false);
-  const panel = ui.document.querySelector('[data-lab="AC"]');
-  assert.equal(panel.querySelector('.mr-lab__name').textContent, routine.steps[1].featured[0].name);
-  assert.equal(panel.querySelector('button-0').getAttribute('aria-pressed'), 'true');
+  const selection = ui.run('[...state.selection].join(",")');
+  for (const [y, key, mood] of [[3050, 'AC:0', 'botanical'], [3390, 'AC:1', 'botanical'], [3730, 'AC:2', 'hydration'], [3390, 'AC:1', 'botanical'], [3050, 'AC:0', 'botanical'], [6700, 'SU:1', 'hydration'], [6800, 'SU:2', 'plants']]) {
+    ui.scroll(y);
+    assert.equal(ui.run('state.beat.key'), key, `scroll ${y}`);
+    assert.equal(scene.mood, mood);
+    const activeArt = ui.artNodes.filter(node => node.dataset.beatArt.startsWith(key.slice(0, 2)) && node.classList.contains('is-active'));
+    assert.deepEqual(activeArt.map(node => node.dataset.beatArt), [key]);
+    assert.equal(ui.run('[...state.selection].join(",")'), selection);
+  }
+});
+
+test('phone beat selection reads below the sticky visual rather than behind it', async () => {
+  const ui = await fixture({stacked: true});
+  ui.scroll(3290); // AC beat 1 starts at y=325, below the art bottom (250) + a reading gap (70).
+  assert.equal(ui.run('state.beat.key'), 'AC:0');
   ui.scroll(3300);
-  assert.equal(ui.run('state.ingredientOverride'), null, 'Scrolling resumes the material sequence');
-  ui.scroll(4500);
+  assert.equal(ui.run('state.beat.key'), 'AC:1');
+});
+
+test('ambient film is active only in its owning selling beat, never after scrolling or in a hidden tab', async () => {
+  const film = {active: false, setActive(value) { this.active = value; }};
+  const ui = await fixture({filmFactory: () => film});
+  await ui.run('bootFilm()');
+  assert.equal(film.active, false);
+  ui.scroll(3050);
+  assert.equal(film.active, true);
+  ui.hidePage();
+  assert.equal(film.active, false);
+  ui.returnToPage();
+  assert.equal(film.active, true);
+  ui.scroll(3390);
+  assert.equal(film.active, false);
+  ui.scroll(4550);
+  assert.equal(film.active, false);
+});
+
+test('a legacy incoming film link opens its AC selling beat rather than a hidden art layer', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#lab-film'});
+  await ui.flushImmediateTimers();
+  assert.equal(ui.context.scrollY, 3270);
+  assert.equal(ui.run('state.beat.key'), 'AC:0');
+});
+
+
+test('a two-column tablet uses the text reading line while keeping the separate purchase reading gate', async () => {
+  const ui = await fixture({stacked: true, productStacked: false});
+  ui.scroll(3290);
+  assert.equal(ui.run('state.beat.key'), 'AC:0', 'The next benefit has not reached the middle of its text column');
+  ui.scroll(3390);
+  assert.equal(ui.run('state.beat.key'), 'AC:1');
+  ui.scroll(9000);
+  assert.equal(ui.document.body.dataset.readingChapter, 'set', 'The wider purchase gate remains independent');
+});
+
+test('product anchor clearance activates the destination and survives late layout or context changes', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#step-SU', productScrollMargin: '100px', pendingFonts: true});
+  assert.equal(ui.context.scrollY, 5900);
+  assert.equal(ui.document.body.dataset.step, 'SU');
+  assert.equal(ui.rails[3].getAttribute('aria-current'), 'step');
+  ui.layout(1700);
+  ui.fontsReady();
+  await ui.flushImmediateTimers();
+  assert.equal(ui.context.scrollY, 6700, 'The restored link retains the CSS header clearance');
+  ui.run('onContextChange("lost")');
+  assert.equal(ui.context.scrollY, 2300, 'A positive section offset is preserved through layout changes');
+  assert.equal(ui.document.body.dataset.step, 'SU');
+  ui.run('state.stage = {pause() {}, resume() {}, setProgress() {}, setMood() {}}; onContextChange("restored")');
+  assert.equal(ui.context.scrollY, 6700);
+  ui.scroll(6675);
   assert.equal(ui.document.body.dataset.step, 'BR');
-  assert.equal(ui.run('state.stage.focusedIngredient'), 0, 'A new formula starts on its own first ingredient');
+  ui.scroll(6700); // Where a native #step-SU click lands after applying scroll-margin-top.
+  assert.equal(ui.document.body.dataset.step, 'SU');
 });

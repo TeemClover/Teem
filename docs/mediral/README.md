@@ -1,12 +1,12 @@
 # Mediral five-piece set — `/mediral/`
 
-The Mediral page on myClover sells the fixed five-piece set: mousse → white serum → yellow-green serum → sunscreen → powder puff. The page order shows each piece's role; it is not a verified application order.
+The page presents the five-piece set, then gives each piece a reason to belong: cleanse → white serum → yellow-green serum → sunscreen → optional powder. This is the story order, not a verified instruction to layer the products or a claim that every person needs all five.
 
-The sales path is: customer problem → role → relevant ingredient families → product → offer. The opening answers the buyer who owns several products but does not know what each one does: all five pieces, a role map with brand-stated times, the dated poster offer and a direct route to it. A short chapter compares the two serums side by side with a use-time table. A ten-second illustrated film introduces plants and extracts. The five product chapters keep the extraction/beaker scene and name each product's ingredient families. The purchase card follows; the complete ingredient library comes after the offer as optional deep reading.
+The current revision makes one continuous path: **WHY and the five pieces → five product stories → set offer → optional comparison and complete ingredient library**. Each product keeps a crisp native DOM pack image beside a few readable benefit/ingredient beats. Scroll changes the highlighted family; buyers do not need to tap every ingredient to understand the story. A quiet botanical film sits within a relevant ingredient composition. There is no separate comparison lesson or video chapter before the first product.
 
-**Current implementation — 2026-09-28 sales upgrade:** the lab film is enabled with GPT's approved clip (10.00 s, 1276×720, silent H.264, faststart, 1.15 MB; poster taken from the clip). It is not a seamless loop, so it plays once per visit and offers an explicit replay. The Affiliate link is still pending.
+Local integration checks pass for this revision. Production identity is checked after publishing; historical records below describe older versions. The Affiliate URL remains pending.
 
-Direction and evidence rules are in [STORYBOARD.md](STORYBOARD.md). The first media request is [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
+Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). Current mousse media limitation: [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
 ## Run and check
 
@@ -14,94 +14,74 @@ From the repository root:
 
 ```sh
 python3 -m http.server 9461 --bind 127.0.0.1
-```
-
-Then open `http://127.0.0.1:9461/mediral/`. The static server does not apply Vercel headers.
-
-Test query parameters (QA only):
-
-| Parameter | What it does |
-|---|---|
-| `?u=-1..6` | Pins the scene at a story position. `-1–0` is the routine overview, `0–1` is the mousse, `1–5` are the next four steps, `5–6` is the set. |
-| `?today=YYYY-MM-DD` | Localhost only: previews both boundaries of the poster offer. Public URLs ignore this override. |
-
-Contract and controller behavior checks:
-
-```sh
 node --test tests/mediral/*.test.mjs
+node shelf/validate.mjs
 ```
+
+Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel headers or guarantee HTTP Range support for video. The localhost-only `?today=YYYY-MM-DD` override exercises poster-offer boundaries; public URLs must ignore it. Check actual production identity, headers, assets and media after publishing.
 
 ## Files and contracts
 
-| File | Role |
+| File | Responsibility |
 |---|---|
-| `mediral/data/routine.json` | Product roles, instructions, featured and other ingredient entries, `ingredient_groups`, source attribution, notes, the poster offer and purchase state. A name can have no image and remain fully readable. |
-| `mediral/js/main.js` | Renders the role map, opening offer, serum comparison, use-time table, product chapters and the closed ingredient library; maps the product chapters to `u`. Reading chapters (comparison, film, library, each atlas and — on stacked layouts — the purchase card) have their own visibility state, pause the scene and do not add routine steps. Direct, in-page and history links to `#formula-XX` open that atlas; a fresh link lands below the fixed header. Owns the saved list, copy, card download, dated offer, fallbacks and data-error retry. |
-| `mediral/js/story.js` | See the `createStory` contract below. Exports `STACKED_QUERY`, the one media query that switches both CSS and scene to words-below-scene. |
-| `mediral/js/lab-film.js` | Independent film controller. A false readiness gate returns an inert API. With the gate on, it supports one automatic in-view pass, manual play/pause, an explicit replay after the end, motion/data preferences, visibility pausing and a poster fallback. `loop` is never set. |
-| `mediral/js/card.js` | See the `drawRoutineCard` contract below. |
-| `mediral/assets/` | Pack AI drafts, botanical/material illustrations and the concept lab stills under `motion/`. Private preparation manifests are excluded from deployment. |
-| `mediral/vendor/` | Local three.js subset, copied from Homechew. |
+| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, attributed `selling.beats`, sensory copy, the complete ingredient catalogue and groups, dated offer and purchase state. |
+| `mediral/js/main.js` | Renders semantic product stories and optional ingredient atlases, synchronizes the visible beat with scroll, keeps shopping selection separate, and owns offer dates, clipboard/card actions, anchors and fallback handling. |
+| `mediral/js/story.js` | Optional atmosphere and light effects. It does not render, relight or reconstruct product labels. Its lifecycle must pause when hidden and release resources on disposal. |
+| `mediral/js/lab-film.js` | Decorative, muted in-view media with motion/data preference guards and a poster fallback. No customer-facing player controls or duration/status UI. |
+| `mediral/js/card.js` | Generates a PNG of the saved list without a price, retaining package provenance and pre-payment checks. |
+| `mediral/assets/` | Existing AI draft packs and ingredient illustrations, plus the existing concept film and stills. Private preparation manifests remain excluded. |
+| `mediral/vendor/` | Local three.js subset; no additional external runtime is needed. |
 
-**`story.js` — `createStory({canvas, steps, asset, reduced, onContextChange})`** resolves to `{setProgress(u), setIngredient(indexOrNull), setSelection(ids), setBand({left, right}), setReducedMotion(bool), pause(), resume(), dispose(), state}`. `setBand` gives the landscape set view the free screen band (0..1) between the set card and the rail, measured by `main.js`. CSS and scene stack at widths up to 1100 px.
-- The scene is determined by `u`, the focused ingredient and idle time. The overview is independent of the saved shopping list; selecting an ingredient does not alter purchase selection.
-- It rejects if WebGL or the pack images fail; the page then shows static stills.
-- `onContextChange('lost' | 'restored')` switches to stills and back while retaining the reading position. GPU environment lighting is rebuilt before restoring the scene. If rebuilding fails, stills remain visible.
-- Reduced motion can change while the page is open. Visibility changes pause/resume the renderer; a single animation loop is retained.
-- Ingredient names appear on entry and illustrations load independently. The extraction effect removes illustrated material in place; small abstract streams enter a receiving beaker before the concentrate, formulation and pack-reveal phases. Whole fruits are not dropped through a funnel. Mobile glassware uses a smaller composition clear of the top navigation.
-- Pack art is front-only: bottles are lathes from their own silhouette with the art projected on, and flat packs are billboards. Yaw stays within ±12°.
+### Product and scroll structure
 
-**`card.js` — `drawRoutineCard({pieces, data, asset})`** resolves to an object URL of a 1080-wide PNG.
-- It lists the ticked pieces in routine order with the three pre-payment checks. It shows no price.
-- It rejects on failure, and the page then tells the buyer.
+- Five `.mr-product#step-ID[data-step][data-index]` chapters contain semantic text. Each has a sticky `.mr-product__visual`, a `.mr-product__pack .mr-pack > img`, and `.mr-selling-beat` blocks with their title, explanation and ingredient names always in the DOM.
+- `.mr-beat-art[data-beat-art][data-visual]` selects the current visual family without replacing the text or changing shopping selection. Images without a matching source identity are not substituted for unnamed plants or compounds.
+- `.mr-product__finish` retains sensory copy, method/source details and a route onward. The meaning of AC versus BR belongs near the serums; usage information remains accessible without a separate mandatory chapter.
+- The `#serums` disclosure follows the offer and is closed initially. Its optional role/time comparison does not interrupt the route to cleansing or prescribe serum layering.
+- Native pack images remain readable before WebGL, without WebGL and with reduced motion. Use their visible bounds to choose scale; transparent canvas size is not product size. Do not project pack art onto bottle geometry, invent back labels or apply scene exposure/fog to labels.
+- Forward/reverse scrolling, resizing, fast scrolling and fresh product/atlas links must retain useful reading positions. No nested scrolling trap or exact-coordinate flash is required to read a claim.
 
-`vercel.json` adds the `/mediral` redirect and the `X-Robots-Tag: noindex` header. `.vercelignore` keeps `docs/mediral/` and `tests/mediral/` out of deployment. The internal reference files are both gitignored (local only) and excluded from deployment: the shop screenshots in `mediral/assets/evidence/`, the asset manifests/briefs (`mediral/assets/*.md`, `*.json`), the held old mousse draft, and the unsoftened sunscreen draft (`su-front.webp`; the page uses `su-front-web.webp`). Noindex is not access control.
+### Ambient film
 
-## Content that must stay explicit
+The existing `assets/motion/lab-film-10s.mp4` is a silent 10.00-second H.264 faststart clip, 1276×720, about 1.15 MB. Its matching poster is `lab-film-poster.webp`. The three concept stills remain available; this revision does not require new generation.
 
-**Mousse**
-- The bottle illustration is based on the clover-label pack in the supplied five-piece poster, generated with imagegen and labelled as an AI draft. It is visible in the opening set and mousse chapter, before and after WebGL loads, in the static fallback and the PNG.
-- A verified original packshot is still requested. No formula or size is inferred from the illustration; both ingredient arrays are empty and size is null.
-- The old gold-rose draft and its ingredient list are not used.
+The clip is illustrative botanical/pipette footage. It is not Mediral's factory, research, extraction method, tested absorption or real product texture. Provenance stays accessible in source details/footer, without turning the buying path into a video lesson.
 
-**Other packs**
-- They are AI drafts and are labelled so on the stage, in the notes and on the card.
-- Botanicals are AI illustrations of names in brand material, not proof of ingredients, origin, concentration or effect.
+Decorative mode must work without a toggle button. The source remains deferred, playback is muted and inline, and autoplay requires sufficient visibility, an active tab, no reduced-motion preference and no data-saving preference. Leaving the viewport or hiding the tab pauses it. A denied autoplay or media error leaves the poster visible without an error/control panel. Because the shot is not a seamless loop, it plays through and settles quietly; it must not restart on re-entry. Reduced-motion/data-saving visitors receive a poster without a manual playback prompt. Native controls, custom play/pause/replay, timestamps and duration badges are absent.
 
-**Ingredient atlases and lab media**
-- The four atlases expose AC 24, BR 18, SU 14 and PO 18 named display entries, grouped for reading. These 74 entries are not a count of distinct actives or a verified INCI list. Sunscreen aliases and group headings have been reconciled for display only.
-- Each product chapter names its ingredient families and links to its atlas with the entry count. The atlases live in the library after the offer, one closed `<details>` per product ("รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ"). Opening one shows every family and name button; the selected name shows its existing benefit and source status; selecting it does not change the shopping list. Attributed group claims are not promoted into unverified individual claims.
-- The current mousse has no ingredient atlas because its ingredient list remains unknown. It does not inherit the old pack's formula.
-- Three AI concept stills show botanical, extract and research/texture settings. The poster reuses the research still. They are illustrations, not Mediral's factory, experiment, real product texture or manufacturing instructions.
-- The film is GPT's Higgsfield Kling 3.0 Turbo clip of a botanical/pipette extraction illustration: clear liquid gradually turns amber while the camera moves. It is not Mediral's factory, experiment or product texture, and the caption says so. With the flag on, the source is attached only after the controller starts (`preload="none"`). Automatic playback requires sufficient viewport visibility, an active tab, no reduced-motion preference and no data-saving preference, and happens once; the final frame rests under a soft shade with "เล่นอีกครั้ง". Manual play remains available; failure leaves the poster and text readable. On phones the three beat stills are hidden while the film works.
+## Content boundaries
 
-**Copy**
-- Headlines state the step's role.
-- Brand statements are attributed ("สื่อแบรนด์เล่าว่า…").
-- The serum order is story order: no wait times, drop counts or combined effects. Label instructions win. The serum comparison lists brand-told roles and times only; the use-time table shows when each piece is used, not a layering sequence.
-- The opening leads with the buyer's problem (several products, unclear roles) and never says everyone needs all five or that combined use has a proven effect.
+- **Mousse:** the current clover-reference pack is an AI draft and visible in the set and its product chapter. Its size and ingredients remain unconfirmed. The old gold-rose list, size, mask method, SLS and hydration claims are not inherited. Category-level cleansing is sufficient; no empty ingredient carousel.
+- **AC:** soothing botanical pair, oil-balance family, then moisture family. Group attribution stays group attribution; no acne cure, germ killing, deadline or universal sensitive-skin claim.
+- **BR:** bearberry/licorice/vitamin C roles, then distinct probiotics/bakuchiol roles, then the fuller source list and light-texture story. No melasma treatment, DNA mechanism, permanent whitening or combined-serum efficacy.
+- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. Illustrated lettering is not current SPF/PA evidence.
+- **PO:** product-level coverage and fine/light/easy-spreading texture, powder/oil group and hydration/soothing group. Group names do not establish an individual ingredient's effect. No live-cell regeneration, universal shade, timed guarantee or sunscreen replacement.
+- AC/BR sensory language and powder texture are attributed brand descriptions, not a fabricated personal review. One truthful section-level attribution can cover the short selling story; detailed sources and limits remain accessible.
+- Every pack is an AI draft, not an authenticated packshot. Ingredient/lab illustrations establish neither concentration, origin, certification nor a manufacturing recipe.
 
-**Set offer**
-- 1,899 THB comes from the brand poster, dated 21–30 Sep 2026. It is labelled as unverified in cart or coupons, and displayed only within those dates. The purchase card also requires all five pieces in the saved list; the opening describes the fixed set itself, so it follows only the dates. Both refresh at Bangkok midnight and when returning to the tab. There is one offer slot, one checkout control and one hint.
-- The serum-pair price and coupons are not part of this page.
+The optional library after the offer retains **AC 24, BR 18, SU 14 and PO 18** named display entries. These 74 entries are neither distinct actives across the range nor a verified full INCI list. Ingredient `benefit_status` remains `brand-claim` or `identity-only`; `ingredient_groups` preserve attribution and complete membership. A missing illustration does not remove the name. The current mousse has no fabricated atlas. Closed atlas disclosures open from product links and fresh hashes, below the fixed header; ingredient exploration never changes the saved purchase list.
 
-**Purchase**
-- The Affiliate URL is `null`, so the button says the link is being checked and does not navigate. The page takes no payment.
-- A future checkout needs `buy.status: "verified"`, an HTTPS Affiliate URL and the full five-piece selection. Partial or empty saved lists never receive the bundle's price or checkout link; a button restores all five pieces.
-- Individual selection lives inside an optional disclosure. The summary card scrolls with the document, rather than trapping the buyer in a second scrolling card. Product instructions are expandable on mobile and desktop.
-- If clipboard access fails, a focused, selected, read-only text field supports manual copying.
+## Offer, actions and privacy
 
-## Review checklist
+- The poster's fixed five-piece offer is 1,899 THB for 21–30 September 2026, qualified as unverified in the current cart/channel/coupons. Both hero and set retire it outside the dates and refresh at Bangkok midnight/tab return. The hero describes the fixed set independently; the saved-list card requires all five pieces. Partial/empty lists never inherit the bundle price or checkout.
+- `buy.affiliate_url` is null and `buy.status` is pending. The purchase control has no destination. A future checkout requires verified status, an HTTPS Affiliate URL and the complete set. No price advantage, individual-product price or coupon is invented.
+- Copy/PNG actions reflect the saved list. A failed clipboard operation offers selected, read-only text for manual copying. The page takes no payment.
+- `vercel.json` keeps the slash redirect and noindex header/meta. `.vercelignore` excludes docs, tests, source screenshots, asset manifests/briefs, the held old mousse draft and the unsoftened sunscreen draft. Internal sources and costs stay outside public runtime. Noindex is not access control.
 
-- [ ] Desktop and mobile: words sit beside or below the scene, never covering it. No clipped text, missing media or horizontal overflow.
-- [ ] 390×844 and 360×640 first screen: all five products, the WHY, the dated offer and "ดูข้อเสนอชุด 5 ชิ้น". The header shortcut lands on a purchase card whose price and buy/copy actions are in the first screen.
-- [ ] Each step plays in order: materials → extraction/beaker → concentrate → formulation → drop → product → role → rail. On desktop the set shows all five beside the card.
-- [ ] Each atlas opens from its summary, from a product link and from a fresh `#formula-XX` URL, below the header, with all grouped names and benefit/source text.
-- [ ] The film plays once in view, stops on its last frame with replay, never restarts on re-entry, and waits for a tap with reduced motion or data saving.
-- [ ] Ticking pieces updates the summary, copy text, card and the dimmed pieces in the scene. Scrolling never changes the ticks.
-- [ ] No WebGL or save-data: static stills per step and in the set row, matching the ticks.
-- [ ] Reduced motion: steps are shown already composed, with no continuous loop and no CSS transitions.
-- [ ] A data load failure shows a banner with minimum facts and a retry button.
+## Verification — product selling revision, 28 September 2026
+
+- The complete Mediral suite passes **91/91** after integration; shelf validation passes for 14 sources, and the diff has no whitespace errors.
+- Browser checks at 1280×800, 820×1180, 390×844 and 360×640 cover the opening, native product packs, ingredient compositions and readable benefit text. No horizontal overflow was observed. The mousse pack is visible; the sunscreen's seven named plant roles are readable on a short phone and tablet.
+- Scroll changes the AC botanical/oil-balance family alongside its explanation. Extracts occupy positions beside the pack rather than behind its label. Tablet and mobile reading lines use their actual two-column/stacked layouts; chapter links account for fixed-header clearance.
+- The quiet film plays without controls, stays behind the sharp product image, and has no separate lesson or duration badge. Lifecycle, visibility, end-of-film, denied playback and data-saving cases have focused automated coverage.
+- Removing the powder removes the fixed-set offer. Four-piece selection survives chapter navigation and desktop/mobile resize. Copy succeeds, and the four-piece PNG was downloaded and opened to verify its actual content.
+- Reduced-motion browser checks show five loaded pack images with the video source unattached. Blocking the 3D dependency keeps all five packs and fifteen semantic beats. Blocking product data preserves the static set, a useful failure/retry message and an inert purchase control. All temporary browser overrides were removed afterward.
+- Ingredient and claim audit retains AC 24 / BR 18 / SU 14 / PO 18 named entries. These are source-listed names, not a full INCI or a total of distinct actives. Current mousse formulation remains unconfirmed. Full/partial/empty lists, offer date boundaries, verified-link gating and clipboard denial have automated regression coverage.
+- Real GPU loss was not forced. Real-device performance and assistive-technology testing are not represented by these browser emulation checks. Actual production bytes and deployment identity are checked after pushing; do not infer publication from local tests.
+
+## Historical verification records
+
+The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the product-selling revision above.
 
 ## Verification record — 28 Sep 2026 polish
 

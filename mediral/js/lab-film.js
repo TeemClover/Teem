@@ -1,24 +1,23 @@
-// The film is independent of the scroll-driven scene; pending media stays a still image.
-// The approved clip is not a seamless loop: it plays once per visit, then waits for an explicit replay.
+// Ambient film: a silent part of one ingredient scene, not a player. There are no controls, no
+// duration badge and no status text. The clip is not a seamless loop, so it plays through once per
+// visit and rests on its final frame. Reduced motion, data saving, blocked autoplay and media errors
+// all keep the still poster; nothing is requested for them.
 const instances = new WeakMap();
-const inert = Object.freeze({ play() {}, pause() {}, dispose() {} });
+const completed = new WeakSet();
+const inert = Object.freeze({setActive() {}, dispose() {}});
 
 export function initLabFilm(container = globalThis.document) {
   const section = container?.matches?.('[data-lab-film]')
     ? container : container?.querySelector?.('[data-lab-film]');
   if (!section) return null;
   const video = section.querySelector('[data-film-video]');
-  const button = section.querySelector('[data-film-toggle]');
-  if (!video || !button || typeof video.play !== 'function') return null;
-  const duration = section.querySelector('[data-film-duration]');
+  if (!video || typeof video.play !== 'function') return null;
   if (section.dataset?.filmReady !== 'true') {
-    // A planned film is a still-image chapter until an actual approved file is ready.
+    // A planned film stays a still image until an actual approved file is ready.
     instances.get(section)?.dispose();
     video.removeAttribute('src');
     video.hidden = true;
     video.controls = false;
-    button.hidden = true;
-    if (duration) duration.hidden = true;
     return inert;
   }
   if (instances.has(section)) return instances.get(section);
@@ -26,21 +25,20 @@ export function initLabFilm(container = globalThis.document) {
   const doc = section.ownerDocument;
   const win = doc?.defaultView;
   if (!doc || !win) return null;
-  const label = button.querySelector('[data-film-label]');
-  const icon = button.querySelector('[data-film-icon]');
-  const status = section.querySelector('[data-film-status]');
   const reduced = win.matchMedia?.('(prefers-reduced-motion: reduce)');
   const connection = win.navigator?.connection;
-  const originalControls = video.controls;
+  // The video may be hidden while the poster is showing. Measuring it would deadlock loading:
+  // attach() waits for visibility, but the video only gets a box after attach().
+  const visibilityTarget = section.querySelector('[data-film-frame]') || section;
   const removeListeners = [];
+  let active = false;
   let inView = false;
   let disposed = false;
-  let userPaused = false;
-  let manualRequested = false;
-  let autoplayBlocked = false;
+  let blocked = false;
   let failed = false;
-  let ended = false;
+  let ended = completed.has(video);
   let pending = false;
+  let attached = false;
   let requestId = 0;
   let observer;
 
@@ -49,52 +47,58 @@ export function initLabFilm(container = globalThis.document) {
     target.addEventListener(event, handler, options);
     removeListeners.push(() => target.removeEventListener(event, handler, options));
   }
-  function say(message = '') {
-    if (status) status.textContent = message;
-  }
-  function updateButton() {
-    const playing = !video.paused || pending;
-    if (label) label.textContent = failed ? 'ลองเล่นอีกครั้ง' : playing ? 'หยุดวิดีโอ' : ended ? 'เล่นอีกครั้ง' : 'เล่นวิดีโอ';
-    if (icon) icon.textContent = playing ? 'Ⅱ' : ended ? '↺' : '▶';
-    button.setAttribute('aria-label', failed ? 'ลองเล่นวิดีโอจำลองแล็บอีกครั้ง'
-      : playing ? 'หยุดวิดีโอจำลองแล็บ' : ended ? 'เล่นวิดีโอจำลองแล็บอีกครั้ง' : 'เล่นวิดีโอจำลองแล็บ');
-    section.classList.toggle('is-playing', playing);
-    section.classList.toggle('is-ended', ended && !playing);
-  }
   function allowed() {
-    return !disposed && inView && !doc.hidden && !failed &&
-      (manualRequested || (!ended && !reduced?.matches && !connection?.saveData && !userPaused && !autoplayBlocked));
+    return !disposed && active && inView && !doc.hidden && !failed && !ended && !blocked
+      && !reduced?.matches && !connection?.saveData;
   }
-  function stop(clearManual = true) {
+  function present() {
+    const still = !attached || blocked || failed || reduced?.matches || connection?.saveData;
+    video.hidden = Boolean(still);
+    section.classList.toggle('is-still', Boolean(still));
+    section.classList.toggle('is-ended', ended);
+  }
+  function detach() {
+    const hadSource = Boolean(video.getAttribute('src'));
+    video.removeAttribute('src');
+    attached = false;
+    // Abort an in-flight download/decode when this controller gives up ownership.
+    if (hadSource) video.load();
+  }
+  function stop() {
     requestId += 1;
     pending = false;
-    if (clearManual) manualRequested = false;
-    video.pause();
-    updateButton();
+    if (!video.paused) video.pause();
+    section.classList.toggle('is-playing', false);
   }
-  function finished() {
-    if (disposed) return;
-    // Rest on the final frame. Re-entering the viewport never starts another pass by itself.
-    ended = true;
-    stop();
+  function attach() {
+    // The source is attached on the first permitted pass, so still-only readers never request it.
+    if (!attached) {
+      attached = true;
+      if (video.dataset.src) video.setAttribute('src', video.dataset.src);
+    }
+    present();
   }
   function mediaError() {
     if (disposed) return;
     failed = true;
     stop();
+    detach();
     section.classList.add('is-error');
-    say('ยังเล่นวิดีโอไม่ได้ ดูภาพและคำอธิบายด้านล่างได้');
-    updateButton();
+    present();
   }
   function reconcile() {
+    // An observer delivery may already be queued when dispose() disconnects it. It must not pause
+    // a newer controller that now owns the same video element.
+    if (disposed) return;
     if (!allowed()) {
       if (!video.paused || pending) stop();
+      present();
       return;
     }
     if (pending || !video.paused) return;
+    attach();
     const id = ++requestId;
     pending = true;
-    updateButton();
     let result;
     try {
       result = video.play();
@@ -104,67 +108,47 @@ export function initLabFilm(container = globalThis.document) {
     Promise.resolve(result).then(() => {
       if (instances.get(section) !== api) return;
       if (id !== requestId) {
-        // A late play resolution must not restart a film that has left the viewport.
+        // A late play resolution must not restart a film that has since left its scene.
         if (!allowed()) video.pause();
         return;
       }
       pending = false;
       if (!allowed()) stop();
-      else { say(); updateButton(); }
+      else section.classList.toggle('is-playing', true);
     }).catch(error => {
       if (id !== requestId || disposed) return;
       pending = false;
-      manualRequested = false;
-      if (error?.name === 'AbortError') { updateButton(); return; }
+      if (error?.name === 'AbortError') return;
       if (error?.name === 'NotAllowedError') {
-        autoplayBlocked = true;
-        say('กดเล่นเพื่อชมวิดีโอ');
-        updateButton();
+        // Without controls there is nothing to ask for: settle quietly on the poster.
+        blocked = true;
+        stop();
+        detach();
+        present();
         return;
       }
       mediaError();
     });
   }
+  function finished() {
+    if (disposed) return;
+    // Rest on the final frame. Returning to the scene never starts another pass by itself.
+    ended = true;
+    completed.add(video);
+    stop();
+    present();
+  }
   function setVisibility(visible) {
     inView = visible;
-    if (!visible) stop();
-    else reconcile();
+    reconcile();
   }
   function measureVisibility() {
-    const rect = video.getBoundingClientRect();
+    const rect = visibilityTarget.getBoundingClientRect();
     const height = win.innerHeight || doc.documentElement?.clientHeight || 0;
     const width = win.innerWidth || doc.documentElement?.clientWidth || 0;
     const visibleHeight = Math.max(0, Math.min(rect.bottom, height) - Math.max(rect.top, 0));
     const visibleWidth = Math.max(0, Math.min(rect.right, width) - Math.max(rect.left, 0));
     setVisibility(rect.width > 0 && rect.height > 0 && visibleHeight * visibleWidth / (rect.width * rect.height) >= .25);
-  }
-  function playManually() {
-    if (disposed) return;
-    // Explicit play remains available with reduced motion and data saving enabled.
-    measureVisibility();
-    manualRequested = true;
-    userPaused = false;
-    autoplayBlocked = false;
-    if (ended) {
-      ended = false;
-      try { video.currentTime = 0; } catch { /* The next play() restarts an ended clip anyway. */ }
-    }
-    if (failed) {
-      failed = false;
-      section.classList.remove('is-error');
-      video.load();
-    }
-    say();
-    reconcile();
-  }
-  function pauseManually() {
-    userPaused = true;
-    stop();
-  }
-  function preferenceChanged() {
-    // A new accessibility/data preference takes effect even during existing playback.
-    stop();
-    reconcile();
   }
 
   video.muted = true;
@@ -172,56 +156,59 @@ export function initLabFilm(container = globalThis.document) {
   video.playsInline = true;
   video.loop = false;
   video.removeAttribute?.('loop');
-  video.preload = 'none';
   video.controls = false;
-  video.hidden = false;
-  if (video.dataset.src) video.setAttribute('src', video.dataset.src);
-  button.hidden = false;
-  if (duration) duration.hidden = false;
+  video.preload = 'none';
+  video.setAttribute?.('aria-hidden', 'true');
+  video.tabIndex = -1;
+  section.classList.remove('is-error', 'is-playing', 'is-ended', 'is-still');
   section.classList.add('is-film-ready');
-  listen(button, 'click', () => (!video.paused || pending) ? pauseManually() : playManually());
-  listen(video, 'playing', () => { if (!allowed()) stop(); else updateButton(); });
-  listen(video, 'pause', updateButton);
+  present();
+  listen(video, 'playing', () => { if (!allowed()) stop(); });
+  listen(video, 'pause', () => section.classList.remove('is-playing'));
   listen(video, 'ended', finished);
   listen(video, 'error', mediaError);
-  listen(doc, 'visibilitychange', () => { if (doc.hidden) stop(); else reconcile(); });
-  listen(win, 'pagehide', () => stop());
+  listen(doc, 'visibilitychange', reconcile);
+  listen(win, 'pagehide', stop);
   listen(win, 'pageshow', measureVisibility);
-  listen(connection, 'change', preferenceChanged);
-  if (reduced?.addEventListener) listen(reduced, 'change', preferenceChanged);
+  listen(connection, 'change', reconcile);
+  if (reduced?.addEventListener) listen(reduced, 'change', reconcile);
   else if (reduced?.addListener) {
-    reduced.addListener(preferenceChanged);
-    removeListeners.push(() => reduced.removeListener(preferenceChanged));
+    reduced.addListener(reconcile);
+    removeListeners.push(() => reduced.removeListener(reconcile));
   }
   if (typeof win.IntersectionObserver === 'function') {
     observer = new win.IntersectionObserver(entries => {
-      const entry = entries.find(item => item.target === video);
+      const entry = entries.find(item => item.target === visibilityTarget);
       if (entry) setVisibility(entry.isIntersecting && entry.intersectionRatio >= .25);
-    }, { threshold: [0, .25] });
-    observer.observe(video);
+    }, {threshold: [0, .25]});
+    observer.observe(visibilityTarget);
   } else {
-    listen(win, 'scroll', measureVisibility, { passive: true });
-    listen(win, 'resize', measureVisibility, { passive: true });
+    listen(win, 'scroll', measureVisibility, {passive: true});
+    listen(win, 'resize', measureVisibility, {passive: true});
   }
 
   const api = {
-    play: playManually,
-    pause: pauseManually,
+    // The owning scene says when this ingredient beat is on screen; hidden beats never play.
+    setActive(value) {
+      if (disposed) return;
+      active = Boolean(value);
+      if (active && !observer) measureVisibility();
+      reconcile();
+    },
+    get state() { return {active, inView, ended, blocked, failed, attached}; },
     dispose() {
       if (disposed) return;
       disposed = true;
       stop();
       observer?.disconnect();
       removeListeners.forEach(remove => remove());
-      video.controls = originalControls;
-      button.hidden = true;
-      if (duration) duration.hidden = true;
-      section.classList.remove('is-film-ready', 'is-playing', 'is-ended');
+      detach();
+      video.hidden = true;
+      section.classList.remove('is-film-ready', 'is-playing', 'is-ended', 'is-still', 'is-error');
       instances.delete(section);
     },
   };
   instances.set(section, api);
-  updateButton();
   measureVisibility();
   return api;
 }

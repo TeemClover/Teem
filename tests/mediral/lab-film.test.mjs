@@ -1,29 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {existsSync, readFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 
-// Run the real module with DOM/media event adapters. No network, timers or video decoding.
+// Run the actual decorative-media controller, with only browser/media events adapted. The video
+// really has a zero-sized box when hidden; its poster frame remains measurable independently.
 const source = readFileSync(new URL('../../mediral/js/lab-film.js', import.meta.url), 'utf8');
 const {initLabFilm} = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 const tick = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ready = true, reduce = false, save = false, observer = true} = {}) {
+function fixture({ready = true, reduce = false, save = false, observer = true, innerFrame = false} = {}) {
   const classes = new Set();
-  const label = {textContent: ''};
-  const icon = {textContent: ''};
-  const status = {textContent: ''};
-  const duration = {hidden: true};
-  const button = Object.assign(new EventTarget(), {
-    hidden: true, attributes: {},
-    querySelector(selector) { return selector.includes('label') ? label : icon; },
-    setAttribute(name, value) { this.attributes[name] = value; },
-  });
   let rect = {top: 900, bottom: 1100, left: 0, right: 400, width: 400, height: 200};
+  const zero = {top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0};
   const video = Object.assign(new EventTarget(), {
     paused: true, controls: false, hidden: true, attributes: {}, currentTime: 0, loop: true,
     dataset: {src: 'assets/motion/lab-film-10s.mp4'},
     playCalls: 0, pauseCalls: 0, loadCalls: 0,
-    getBoundingClientRect() { return rect; },
+    getBoundingClientRect() { return this.hidden ? zero : rect; },
+    getAttribute(name) { return this.attributes[name] ?? null; },
     setAttribute(name, value) { this.attributes[name] = value; },
     removeAttribute(name) { delete this.attributes[name]; },
     play() {
@@ -39,7 +33,7 @@ function fixture({ready = true, reduce = false, save = false, observer = true} =
       this.paused = true;
       if (!wasPaused) this.dispatchEvent(new Event('pause'));
     },
-    load() { this.loadCalls++; },
+    load() { this.loadCalls++; this.currentTime = 0; },
   });
   const reduced = Object.assign(new EventTarget(), {matches: reduce});
   const connection = Object.assign(new EventTarget(), {saveData: save});
@@ -50,38 +44,40 @@ function fixture({ready = true, reduce = false, save = false, observer = true} =
   let io;
   if (observer) win.IntersectionObserver = class {
     constructor(callback) { this.callback = callback; io = this; }
-    observe() {}
+    observe(target) { this.target = target; }
     disconnect() { this.disconnected = true; }
   };
   const doc = Object.assign(new EventTarget(), {hidden: false, defaultView: win});
+  const frame = {getBoundingClientRect: () => rect};
   const section = {
     ownerDocument: doc, dataset: {filmReady: String(ready)},
+    matches: selector => selector === '[data-lab-film]',
+    getBoundingClientRect: () => rect,
     classList: {
       add(...names) { names.forEach(name => classes.add(name)); },
       remove(...names) { names.forEach(name => classes.delete(name)); },
       toggle(name, on) { on ? classes.add(name) : classes.delete(name); },
     },
     querySelector(selector) {
-      if (selector.includes('video')) return video;
-      if (selector.includes('toggle')) return button;
-      if (selector.includes('duration')) return duration;
-      return status;
+      if (selector === '[data-film-video]') return video;
+      if (selector === '[data-film-frame]') return innerFrame ? frame : null;
+      return null; // No button, duration label or status text exists in this scene.
     },
   };
   doc.querySelector = () => section;
   return {
-    doc, win, reduced, connection, button, video, section, status, label, duration, classes,
+    doc, win, reduced, connection, video, section, frame, classes,
     get io() { return io; },
     inView(visible = true) {
       rect = visible
         ? {top: 100, bottom: 300, left: 0, right: 400, width: 400, height: 200}
         : {top: 900, bottom: 1100, left: 0, right: 400, width: 400, height: 200};
-      if (io) io.callback([{target: video, isIntersecting: visible, intersectionRatio: visible ? 1 : 0}]);
-      else win.dispatchEvent(new Event('scroll'));
+      if (io && !io.disconnected) {
+        const measurable = io.target.getBoundingClientRect().height > 0;
+        io.callback([{target: io.target, isIntersecting: visible && measurable, intersectionRatio: visible && measurable ? 1 : 0}]);
+      } else win.dispatchEvent(new Event('scroll'));
     },
-    click() { button.dispatchEvent(new Event('click')); },
     end() {
-      // Browser order at the natural end of a non-looping clip: pause, then ended.
       video.currentTime = 10;
       video.paused = true;
       video.dispatchEvent(new Event('pause'));
@@ -96,51 +92,40 @@ function mount(t, options) {
   t.after(() => api.dispose());
   return {...f, api};
 }
+const activate = async f => { f.inView(); f.api.setActive(true); await tick(); };
 
-test('pending media remains a still chapter, without a source, controls or playback work', async () => {
-  const html = readFileSync(new URL('../../mediral/index.html', import.meta.url), 'utf8');
-  const film = html.match(/<section\b[^>]*id="lab-film"[^>]*>/)?.[0];
-  const videoTag = html.match(/<video\b[^>]*data-film-video[^>]*>/)?.[0];
-  assert.match(film, /data-film-ready="(?:true|false)"/);
-  if (film.includes('data-film-ready="true"')) {
-    assert.equal(existsSync(new URL('../../mediral/assets/motion/lab-film-10s.mp4', import.meta.url)), true,
-      'The public readiness flag requires an actual film asset');
-  }
-  assert.match(videoTag, /data-src="assets\/motion\/lab-film-10s\.mp4"/);
-  assert.doesNotMatch(videoTag, /\ssrc=|\scontrols(?:\s|>)/);
-  assert.doesNotMatch(videoTag, /\sloop(?:[\s=>])/, 'The delivered clip is not a seamless loop');
-  assert.match(videoTag, /\shidden(?:\s|>)/);
+test('pending media remains a poster, without a source or playback work', async () => {
   const f = fixture({ready: false});
   const api = initLabFilm(f.doc);
-  f.inView(); api.play(); f.click(); await tick();
+  f.inView(); api.setActive(true); await tick();
   assert.equal(f.io, undefined);
   assert.equal(f.video.attributes.src, undefined);
   assert.equal(f.video.playCalls, 0);
   assert.equal(f.video.loadCalls, 0);
   assert.equal(f.video.hidden, true);
   assert.equal(f.video.controls, false);
-  assert.equal(f.button.hidden, true);
-  assert.equal(f.duration.hidden, true);
-  assert.equal(f.status.textContent, '');
   assert.doesNotThrow(() => api.dispose());
 });
 
-test('pending gate can be enabled later without retaining an inert cached instance', async t => {
+test('pending media can be enabled later, but still waits for its visible owning beat', async t => {
   const f = fixture({ready: false});
   const inert = initLabFilm(f.doc);
   f.section.dataset.filmReady = 'true';
-  const active = initLabFilm(f.doc);
-  t.after(() => active.dispose());
-  assert.notEqual(active, inert);
-  assert.equal(f.video.attributes.src, f.video.dataset.src);
+  const api = initLabFilm(f.doc);
+  t.after(() => api.dispose());
+  assert.notEqual(api, inert);
   f.inView(); await tick();
+  assert.equal(f.video.attributes.src, undefined);
+  assert.equal(f.video.playCalls, 0);
+  api.setActive(true); await tick();
   assert.equal(f.video.paused, false);
 });
 
-test('DOM guard, one instance, muted inline media and no boot preload', t => {
+test('one instance needs no button and preserves muted inline, deferred-load media', t => {
   assert.equal(initLabFilm(null), null);
   const f = mount(t);
-  assert.equal(initLabFilm(f.doc), f.api);
+  assert.equal(initLabFilm(f.section), f.api);
+  assert.equal(f.video.attributes.src, undefined);
   assert.equal(f.video.playCalls, 0);
   assert.equal(f.video.loadCalls, 0);
   assert.equal(f.video.preload, 'none');
@@ -148,157 +133,182 @@ test('DOM guard, one instance, muted inline media and no boot preload', t => {
   assert.equal(f.video.defaultMuted, true);
   assert.equal(f.video.playsInline, true);
   assert.equal(f.video.controls, false);
-  assert.equal(f.button.hidden, false);
+  assert.equal(f.video.attributes['aria-hidden'], 'true');
+  assert.equal(f.video.tabIndex, -1);
 });
 
-test('autoplay follows viewport and document visibility, with accessible button state', async t => {
+for (const innerFrame of [false, true]) {
+  test(`initial hidden video loads from the visible ${innerFrame ? 'inner poster frame' : 'container'}`, async t => {
+    const f = mount(t, {innerFrame});
+    assert.equal(f.video.getBoundingClientRect().height, 0);
+    assert.equal(f.io.target, innerFrame ? f.frame : f.section);
+    await activate(f);
+    assert.equal(f.video.playCalls, 1);
+    assert.equal(f.video.hidden, false);
+    assert.equal(f.video.attributes.src, f.video.dataset.src);
+  });
+}
+
+test('active beat, viewport and document visibility all gate playback', async t => {
   const f = mount(t);
+  f.api.setActive(true); await tick();
+  assert.equal(f.video.playCalls, 0, 'An active but offscreen beat does not load');
   f.inView(); await tick();
   assert.equal(f.video.paused, false);
-  assert.equal(f.label.textContent, 'หยุดวิดีโอ');
-  assert.match(f.button.attributes['aria-label'], /^หยุด/);
+  f.api.setActive(false);
+  assert.equal(f.video.paused, true);
+  f.inView(); await tick();
+  assert.equal(f.video.playCalls, 1, 'A visible but inactive beat does not resume');
+  f.api.setActive(true); await tick();
   f.inView(false);
   assert.equal(f.video.paused, true);
   f.inView(); await tick();
-  f.doc.hidden = true;
-  f.doc.dispatchEvent(new Event('visibilitychange'));
+  f.doc.hidden = true; f.doc.dispatchEvent(new Event('visibilitychange'));
   assert.equal(f.video.paused, true);
-  f.doc.hidden = false;
-  f.doc.dispatchEvent(new Event('visibilitychange')); await tick();
-  assert.equal(f.video.paused, false);
-});
-
-test('manual pause survives leaving and returning; manual play resumes', async t => {
-  const f = mount(t);
-  f.inView(); await tick(); f.click();
-  assert.equal(f.video.paused, true);
-  f.inView(false); f.inView(); await tick();
-  assert.equal(f.video.paused, true);
-  f.click(); await tick();
+  f.doc.hidden = false; f.doc.dispatchEvent(new Event('visibilitychange')); await tick();
   assert.equal(f.video.paused, false);
 });
 
 for (const [name, option] of [['reduced motion', {reduce: true}], ['data saving', {save: true}]]) {
-  test(`${name}: poster stays still until explicit play, without automatic re-entry playback`, async t => {
+  test(`${name} keeps the poster and does not request a video source`, async t => {
     const f = mount(t, option);
-    f.inView(); await tick();
+    await activate(f);
+    f.api.setActive(false); f.api.setActive(true); f.inView(false); f.inView(); await tick();
     assert.equal(f.video.playCalls, 0);
-    f.click(); await tick();
-    assert.equal(f.video.paused, false);
-    f.inView(false); f.inView(); await tick();
-    assert.equal(f.video.paused, true);
+    assert.equal(f.video.attributes.src, undefined);
+    assert.equal(f.video.hidden, true);
+    assert.equal(f.classes.has('is-still'), true);
   });
 }
 
-test('changed motion or data preferences stop playback immediately', async t => {
+test('changing motion/data preferences stops playback and shows a poster; permission restoration resumes', async t => {
   const f = mount(t);
-  f.inView(); await tick();
-  f.reduced.matches = true;
-  f.reduced.dispatchEvent(new Event('change'));
+  await activate(f);
+  f.video.currentTime = 3;
+  f.reduced.matches = true; f.reduced.dispatchEvent(new Event('change'));
   assert.equal(f.video.paused, true);
-  f.click(); await tick();
+  assert.equal(f.video.hidden, true);
+  assert.equal(f.classes.has('is-still'), true);
+  f.reduced.matches = false; f.reduced.dispatchEvent(new Event('change')); await tick();
   assert.equal(f.video.paused, false);
-  f.connection.saveData = true;
-  f.connection.dispatchEvent(new Event('change'));
+  assert.equal(f.video.hidden, false);
+  assert.equal(f.video.currentTime, 3, 'Changing preference does not replay the beginning');
+  f.connection.saveData = true; f.connection.dispatchEvent(new Event('change'));
   assert.equal(f.video.paused, true);
+  assert.equal(f.video.hidden, true);
 });
 
-test('blocked autoplay asks for play once without treating the media as broken', async t => {
+for (const [name, errorName, errorClass] of [['blocked autoplay', 'NotAllowedError', false], ['media failure', 'NotSupportedError', true]]) {
+  test(`${name} settles silently on the poster, without repeated attempts`, async t => {
+    const f = mount(t);
+    f.video.playImpl = () => Promise.reject(Object.assign(new Error(name), {name: errorName}));
+    await activate(f);
+    assert.equal(f.video.hidden, true);
+    assert.equal(f.classes.has('is-error'), errorClass);
+    assert.equal(f.classes.has('is-still'), true);
+    assert.equal(f.video.attributes.src, undefined, 'Release a source that will not be played');
+    const calls = f.video.playCalls;
+    f.inView(false); f.inView(); f.api.setActive(true); await tick();
+    assert.equal(f.video.playCalls, calls);
+  });
+
+  test(`dispose/re-init recovers from ${name} while the old hidden video stays measurable through its frame`, async t => {
+    const f = fixture();
+    const old = initLabFilm(f.doc);
+    f.video.playImpl = () => Promise.reject(Object.assign(new Error(name), {name: errorName}));
+    f.inView(); old.setActive(true); await tick();
+    assert.equal(f.video.hidden, true);
+    old.dispose();
+    assert.equal(f.classes.has('is-error'), false);
+    f.video.playImpl = null;
+    const current = initLabFilm(f.doc);
+    t.after(() => current.dispose());
+    current.setActive(true); await tick();
+    assert.equal(f.video.playCalls, 2);
+    assert.equal(f.video.hidden, false);
+    assert.equal(f.video.paused, false);
+  });
+}
+
+test('an asynchronous media error exposes a poster and stops the active pass', async t => {
   const f = mount(t);
-  f.video.playImpl = () => Promise.reject(Object.assign(new Error('blocked'), {name: 'NotAllowedError'}));
-  f.inView(); await tick();
-  assert.equal(f.classes.has('is-error'), false);
-  assert.equal(f.status.textContent, 'กดเล่นเพื่อชมวิดีโอ');
-  const calls = f.video.playCalls;
-  f.inView(); await tick();
-  assert.equal(f.video.playCalls, calls);
-  f.video.playImpl = null;
-  f.click(); await tick();
-  assert.equal(f.video.paused, false);
+  await activate(f);
+  f.video.dispatchEvent(new Event('error'));
+  assert.equal(f.video.paused, true);
+  assert.equal(f.video.hidden, true);
+  assert.equal(f.api.state.failed, true);
 });
 
-test('media failure exposes the poster and reading fallback, with manual retry', async t => {
-  const f = mount(t);
-  f.video.playImpl = () => Promise.reject(Object.assign(new Error('missing'), {name: 'NotSupportedError'}));
-  f.inView(); await tick();
-  assert.equal(f.classes.has('is-error'), true);
-  assert.match(f.status.textContent, /ดูภาพและคำอธิบาย/);
-  assert.equal(f.label.textContent, 'ลองเล่นอีกครั้ง');
-  f.video.playImpl = null;
-  f.click(); await tick();
-  assert.equal(f.video.loadCalls, 1);
-  assert.equal(f.classes.has('is-error'), false);
-  assert.equal(f.video.paused, false);
-});
-
-test('a late play promise cannot restart the film after it leaves the viewport', async t => {
+test('a late play promise cannot restart a film after its beat becomes inactive', async t => {
   const f = mount(t);
   let resolve;
   f.video.playImpl = () => new Promise(done => { resolve = done; });
-  f.inView(); f.inView(false);
+  f.inView(); f.api.setActive(true); f.api.setActive(false);
   f.video.paused = false;
   resolve(); await tick();
   assert.equal(f.video.paused, true);
+  assert.equal(f.classes.has('is-playing'), false);
 });
 
-test('a disposed instance cannot pause the new owner when its old play promise resolves', async t => {
+test('a disposed instance cannot pause a new owner when its old play promise resolves', async t => {
   const f = fixture();
   let resolve;
   f.video.playImpl = () => new Promise(done => { resolve = done; });
   const old = initLabFilm(f.doc);
-  f.inView(); old.dispose();
+  f.inView(); old.setActive(true); old.dispose();
   f.video.playImpl = null;
   const current = initLabFilm(f.doc);
   t.after(() => current.dispose());
-  await tick();
+  current.setActive(true); await tick();
   assert.equal(f.video.paused, false);
   resolve(); await tick();
   assert.equal(f.video.paused, false);
 });
 
-test('viewport fallback works without IntersectionObserver and disposal removes it', async t => {
+test('a queued observer delivery from a disposed controller cannot pause the new owner', async t => {
+  const f = fixture();
+  const old = initLabFilm(f.doc);
+  f.inView(); old.setActive(true); await tick();
+  const staleObserver = f.io;
+  old.dispose();
+  const current = initLabFilm(f.doc);
+  t.after(() => current.dispose());
+  current.setActive(true); await tick();
+  staleObserver.callback([{target: staleObserver.target, isIntersecting: false, intersectionRatio: 0}]);
+  assert.equal(f.video.paused, false);
+});
+
+test('viewport fallback observes the poster box, and disposal releases the source and listeners', async t => {
   const f = mount(t, {observer: false});
-  f.inView(); await tick();
+  await activate(f);
   assert.equal(f.video.paused, false);
   f.inView(false);
   assert.equal(f.video.paused, true);
   f.api.dispose();
+  assert.equal(f.video.attributes.src, undefined);
+  assert.equal(f.video.hidden, true);
   const calls = f.video.playCalls;
-  f.inView(); f.click(); await tick();
+  f.inView(); f.api.setActive(true); f.win.dispatchEvent(new Event('pageshow')); await tick();
   assert.equal(f.video.playCalls, calls);
-  assert.equal(f.button.hidden, true);
 });
 
-test('the clip plays once, rests on its final frame and offers an explicit replay', async t => {
+test('a completed clip keeps its final frame and cannot replay on scene/tab return or controller re-init', async t => {
   const f = mount(t);
-  assert.equal(f.video.loop, false, 'Never force a seam between the clear and amber ends of the clip');
-  f.inView(); await tick();
-  assert.equal(f.video.paused, false);
+  assert.equal(f.video.loop, false);
+  await activate(f);
   f.end();
   assert.equal(f.classes.has('is-ended'), true);
-  assert.equal(f.label.textContent, 'เล่นอีกครั้ง');
-  assert.match(f.button.attributes['aria-label'], /อีกครั้ง/);
+  assert.equal(f.video.hidden, false);
+  assert.equal(f.video.currentTime, 10);
   const calls = f.video.playCalls;
-  f.inView(false); f.inView(); await tick();
-  assert.equal(f.video.playCalls, calls, 'Returning to the chapter does not start another pass');
+  f.api.setActive(false); f.api.setActive(true); f.inView(false); f.inView(); await tick();
   f.doc.hidden = true; f.doc.dispatchEvent(new Event('visibilitychange'));
   f.doc.hidden = false; f.doc.dispatchEvent(new Event('visibilitychange')); await tick();
-  assert.equal(f.video.playCalls, calls, 'Returning to the tab does not start another pass');
-  f.click(); await tick();
-  assert.equal(f.video.currentTime, 0, 'Replay starts from the beginning');
-  assert.equal(f.video.paused, false);
-  assert.equal(f.classes.has('is-ended'), false);
-  assert.equal(f.label.textContent, 'หยุดวิดีโอ');
-});
-
-test('a manually started reduced-motion pass also ends once, without automatic replay', async t => {
-  const f = mount(t, {reduce: true});
-  f.inView(); await tick();
-  f.click(); await tick();
-  assert.equal(f.video.paused, false);
-  f.end();
-  const calls = f.video.playCalls;
-  f.inView(false); f.inView(); await tick();
   assert.equal(f.video.playCalls, calls);
-  assert.equal(f.label.textContent, 'เล่นอีกครั้ง');
+  f.api.dispose();
+  const current = initLabFilm(f.doc);
+  t.after(() => current.dispose());
+  current.setActive(true); await tick();
+  assert.equal(f.video.playCalls, calls, 'Once per visit survives disposal/re-init of the same element');
+  assert.equal(f.video.hidden, true, 'After a disposed media resource, the completed scene uses its poster');
 });

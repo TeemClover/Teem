@@ -112,8 +112,10 @@ test('the sunscreen shows the softened web draft, with its lettering caveat in v
 });
 
 test('ingredient groups cover every source-listed name once without treating aliases as extra actives', () => {
+  const counts = {CL: 0, AC: 24, BR: 18, SU: 14, PO: 18};
   for (const step of routine().steps) {
     const names = [...step.featured, ...step.ingredients].map(i => i.name);
+    assert.equal(names.length, counts[step.id], `${step.id}: preserve the full source-list display inventory`);
     const grouped = step.ingredient_groups.flatMap(g => g.ingredientNames);
     assert.equal(new Set(names).size, names.length, `${step.id}: no duplicated named entry`);
     assert.equal(new Set(grouped).size, grouped.length, `${step.id}: each name belongs to one reading group`);
@@ -129,55 +131,102 @@ test('ingredient groups cover every source-listed name once without treating ali
   assert.equal(sun.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames.length, 7);
 });
 
-test('when each piece is used comes from the brand-stated method, with no invented sequence', () => {
-  const {steps, use_time_labels: labels} = routine();
+test('when each piece is used retains the source method without serum layering instructions', () => {
+  const {steps} = routine();
   const byId = Object.fromEntries(steps.map(s => [s.id, s]));
-  assert.deepEqual(Object.keys(labels), ['morning', 'evening', 'reapply', 'makeup']);
   for (const s of steps) {
-    assert.ok(s.use_times.every(key => key in labels), `${s.id}: known time keys only`);
     assert.ok(s.role_short?.trim(), `${s.id}: the opening map needs a short role`);
   }
-  assert.deepEqual(byId.CL.use_times, [], 'The current mousse label is the only method source');
   assert.deepEqual(byId.CL.when, ['ตามฉลาก']);
+  assert.match(byId.CL.how, /ฉลาก/, 'The current mousse label is the method source');
   for (const id of ['AC', 'BR']) {
-    assert.deepEqual(byId[id].use_times, ['morning', 'evening']);
     assert.deepEqual(byId[id].when, ['เช้า', 'เย็น']);
     assert.match(byId[id].how, /เช้าและเย็น/);
-    assert.equal(byId[id].compare_points.length, 3, `${id}: a short, comparable role summary`);
+    assert.doesNotMatch(`${byId[id].verb} ${byId[id].how}`, /ชั้นที่\s*[12]|ต่อจากเซรั่ม|ทา(?:ก่อน|หลัง)เซรั่ม|รอ\s*\d+|\d+\s*หยด/, `${id}: no invented layering, waits or dose`);
   }
-  assert.deepEqual(byId.SU.use_times, ['morning', 'reapply']);
   assert.match(byId.SU.how, /ทาซ้ำ/);
-  assert.deepEqual(byId.PO.use_times, ['makeup']);
   assert.deepEqual(byId.PO.when, ['เมื่อแต่งหน้า']);
-  assert.ok(!steps.some(s => s.compare_points && !['AC', 'BR'].includes(s.id)), 'Only the two serums are compared');
+  assert.equal(byId.PO.size, null, 'The powder weight is not established by the source');
+  assert.doesNotMatch(byId.PO.how, /หลังขั้นปกป้อง|\d+\s*(?:กรัม|เฉด)/, 'Story position does not supply label instructions or shade inventory');
+});
+
+test('scroll-selling beats use attributed roles and only names present in the product catalogue', () => {
+  const ids = new Set();
+  for (const step of routine().steps) {
+    const names = new Set([...step.featured, ...step.ingredients].map(i => i.name));
+    assert.ok(step.selling?.source?.trim(), `${step.id}: the short story needs source attribution`);
+    assert.ok(step.selling.beats.length >= 2 && step.selling.beats.length <= 4, `${step.id}: a few useful beats, not one full-screen chapter per ingredient`);
+    for (const beat of step.selling.beats) {
+      for (const field of ['id', 'title', 'body', 'visual']) assert.ok(beat[field]?.trim(), `${step.id}: missing beat ${field}`);
+      assert.ok(!ids.has(beat.id), `Duplicate selling beat ${beat.id}`);
+      ids.add(beat.id);
+      assert.ok(Array.isArray(beat.names));
+      assert.equal(new Set(beat.names).size, beat.names.length, `${beat.id}: no duplicated ingredient names`);
+      for (const name of beat.names) assert.ok(names.has(name), `${beat.id}: unknown ingredient ${name}`);
+      for (const name of Object.keys(beat.tags || {})) assert.ok(beat.names.includes(name), `${beat.id}: benefit tag belongs to a named ingredient`);
+      if (step.id === 'CL') assert.deepEqual(beat.names, [], 'Mousse atmosphere must not invent a current formula');
+    }
+  }
+});
+
+test('source-supported selling families remain prominent without merging mineral and plant roles', () => {
+  const byId = Object.fromEntries(routine().steps.map(s => [s.id, s]));
+  const brNames = byId.BR.selling.beats.flatMap(b => b.names);
+  for (const name of ['สารสกัดแบร์เบอร์รี่', 'สารสกัดชะเอมเทศ', 'อนุพันธ์วิตามินซี', 'โพรไบโอติก', 'บากูชิล ตามชื่อในสื่อแบรนด์']) {
+    assert.ok(brNames.includes(name), `BR selling story must retain ${name}, even without a photograph`);
+  }
+  const plants = byId.SU.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames;
+  const plantBeat = byId.SU.selling.beats.find(b => plants.every(name => b.names.includes(name)));
+  assert.ok(plantBeat, 'All seven Giga White plant names remain available in the selling story');
+  const mineralBeat = byId.SU.selling.beats.find(b => ['Zinc Oxide', 'Titanium Dioxide'].every(name => b.names.includes(name)));
+  assert.ok(mineralBeat && mineralBeat !== plantBeat, 'Mineral filters and the seven-plant group have separate roles');
+  assert.ok(!plantBeat.names.some(name => ['Zinc Oxide', 'Titanium Dioxide'].includes(name)));
+  for (const step of [byId.AC, byId.BR]) assert.match(step.selling.sensory, /แบรนด์/, 'Sensory language is attributed, not a personal test');
+  for (const ingredient of [...byId.PO.featured, ...byId.PO.ingredients]) assert.equal(ingredient.benefit_status, 'identity-only', 'Powder group copy must not create individual efficacy claims');
+});
+
+test('native pack sizing has usable visible bounds for every draft', () => {
+  for (const step of routine().steps) {
+    const b = step.image_bounds;
+    assert.ok(b, `${step.id}: visible bounds are required to avoid sizing the transparent canvas`);
+    for (const key of ['x0', 'y0', 'x1', 'y1']) assert.ok(Number.isFinite(b[key]) && b[key] >= 0 && b[key] <= 1, `${step.id}.${key}: normalized coordinate`);
+    assert.ok(b.x1 > b.x0 && b.y1 > b.y0 && Number.isFinite(b.aspect) && b.aspect > 0, `${step.id}: non-empty pack bounds`);
+  }
 });
 
 test('the page order explains roles; it is not presented as a verified application order', () => {
   const expected = 'หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า';
   assert.equal(routine().order_note, expected);
   const copy = [html(), read(join(site, 'js/main.js')), read(join(site, 'js/card.js'))].join('\n');
-  assert.ok(html().includes(expected), 'The static page repeats the correction without JavaScript');
+  assert.match(html(), /วิธีใช้จริงให้ยึดฉลาก/, 'The static page retains label guidance without JavaScript');
   assert.doesNotMatch(copy, /เล่าเรื่องตามโปสเตอร์|ตามโปสเตอร์ชุดของแบรนด์|ตามลำดับรูทีน/);
 });
 
-test('the sales path: why and roles, serum comparison, product chapters, offer, then optional atlas', () => {
+test('the sales path goes from the five-piece opening through products to the offer before optional depth', () => {
   const source = html();
   const at = id => source.indexOf(`id="${id}"`);
-  const order = ['routine', 'serums', 'lab-film', 'step-CL', 'story', 'set', 'ingredients'].map(at);
+  const order = ['routine', 'story', 'set', 'serums', 'ingredients'].map(at);
   assert.ok(order.every(i => i > 0), 'Every chapter exists');
   assert.deepEqual([...order].sort((a, b) => a - b), order, 'The offer precedes the complete ingredient library');
-  const opening = source.slice(at('routine'), at('serums'));
+  const opening = source.slice(at('routine'), at('story'));
   for (const id of ['CL', 'AC', 'BR', 'SU', 'PO']) assert.match(opening, new RegExp(`href="#step-${id}"`));
   assert.match(opening, /href="#set"[^>]*data-cta="offer"/, 'A direct route to the offer in the opening');
   assert.match(opening, /data-slot="hero-offer"/);
   assert.match(opening, /ไม่จำเป็นต้องใช้ครบ/, 'The opening never says every reader needs all five');
   assert.equal((source.match(/data-slot="(?:offer|buy-link|buy-hint)"/g) || []).length, 3, 'One offer, one checkout control, one hint');
-  assert.match(source.slice(at('serums'), at('lab-film')), /ไม่ใช่คำแนะนำให้ทาหลายชิ้นซ้อนกัน/);
+  const packImages = tags(opening, 'img');
+  assert.deepEqual(packImages.map(i => i.src), routine().steps.map(s => s.image), 'All five native pack images exist before JavaScript or WebGL');
+  assert.ok(packImages.every(i => /AI/.test(i.alt || '')), 'The static images retain package provenance');
+  assert.ok(!tags(source, 'section').some(s => s.id === 'lab-film'), 'No standalone film lesson before the products');
+  const comparison = source.slice(at('serums'), at('ingredients'));
+  const drawer = tags(comparison, 'details').find(t => t.class?.split(/\s+/).includes('mr-compare__drawer'));
+  assert.ok(drawer && !Object.hasOwn(drawer, 'open'), 'Serum comparison is optional and closed initially after the offer');
+  assert.match(comparison, /ไม่ใช่คำแนะนำให้ทาเซรั่มสองขวดซ้อนกัน/);
 });
 
 test('an enabled lab film ships a real faststart-ready MP4 and its poster, both deployable', () => {
-  const film = html().match(/<section\b[^>]*id="lab-film"[^>]*>/)?.[0] || '';
-  if (!film.includes('data-film-ready="true"')) return;
+  const markup = [html(), read(join(site, 'js/main.js'))].join('\n');
+  assert.match(markup, /data-film-ready="true"/, 'The delivered film is enabled in an ingredient composition');
   const clip = readFileSync(join(site, 'assets/motion/lab-film-10s.mp4'));
   assert.equal(clip.toString('ascii', 4, 8), 'ftyp', 'An ISO MP4 container');
   assert.ok(clip.length < 3_000_000, 'Keep the deferred clip light for phones');
@@ -187,6 +236,21 @@ test('an enabled lab film ships a real faststart-ready MP4 and its poster, both 
   assert.equal(poster.toString('ascii', 8, 12), 'WEBP');
   const ignore = [read(join(root, '.gitignore')), read(join(root, '.vercelignore'))].join('\n').split('\n').map(l => l.trim());
   assert.ok(!ignore.some(line => line && /mediral\/assets\/motion|\.mp4$/.test(line)), 'The film is not excluded from git or deployment');
+});
+
+test('ambient media markup has no player controls, duration or automatic loop', () => {
+  const markup = [html(), read(join(site, 'js/main.js'))].join('\n');
+  const videos = tags(markup, 'video');
+  assert.ok(videos.length, 'A real video remains in the composition, not only a poster');
+  for (const video of videos) {
+    assert.ok(Object.hasOwn(video, 'muted') && Object.hasOwn(video, 'playsinline'));
+    assert.equal(video.preload, 'none');
+    assert.ok(!Object.hasOwn(video, 'controls') && !Object.hasOwn(video, 'loop'));
+    assert.ok(!video.src, 'No eager video URL is emitted in the markup');
+    assert.match(video['data-src'] || '', /assets\/motion\/lab-film-10s\.mp4/, 'The deferred URL resolves the delivered clip, including in the rendering template');
+    assert.match(video.poster || '', /assets\/motion\/lab-film-poster\.webp/);
+  }
+  assert.doesNotMatch(markup, /data-film-toggle|data-film-duration|data-film-status|mr-film__controls/, 'Do not leave empty, hidden or visible player UI in the buying flow');
 });
 
 test('internal manifests and unsoftened drafts stay out of git', () => {
@@ -203,10 +267,10 @@ test('pack drafts are labelled as drafts wherever they appear', () => {
     assert.match(s.image_note, /AI ฉบับร่าง/, `${s.id}: the visible note must say AI draft`);
   }
   const source = html();
-  const stageNote = source.match(/<p\b[^>]*class="mr-stage__note"[^>]*>([\s\S]*?)<\/p>/)?.[1] || '';
-  assert.match(stageNote, /ภาพแพ็ก/, 'The stage identifies the package illustrations before JavaScript');
-  assert.match(stageNote, /AI/, 'The stage identifies generated imagery');
   assert.match(source, /ภาพแพ็ก[^<]*AI ฉบับร่าง[^<]*ไม่ใช่ฉลากต้นฉบับ/, 'The static HTML explains the package draft limitation');
+  const footer = source.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/)?.[1] || '';
+  assert.match(footer, /<summary>[^<]*ที่มา/, 'Material provenance remains discoverable in source details');
+  assert.match(footer, /ไม่ใช่โรงงาน[^<]*ผลทดสอบ[^<]*เนื้อผลิตภัณฑ์จริง/, 'Conceptual film and texture limits remain explicit');
 });
 
 test('copy leads with each step’s role and avoids drug-like or unverified claims', () => {

@@ -1,7 +1,7 @@
 /**
  * Mediral 5 Steps — page controller.
- * data/routine.json drives every product fact. The 3D story (js/story.js) only mirrors scroll progress
- * and the buyer's set selection; without WebGL the DOM story is complete with static stills.
+ * data/routine.json drives every product fact. Crisp packs and the complete selling story live in
+ * the DOM; js/story.js adds only ambient depth and light around the current ingredient family.
  *
  * The saved list changes only by the reader's own ticks. The store's five-piece bundle stays fixed;
  * a partial saved list must never inherit that bundle's price or checkout link.
@@ -16,7 +16,7 @@ const asset = path => new URL(path, base).href;
 root.classList.remove('mr-boot');
 root.classList.add('mr-js');
 
-const state = {data: null, selection: new Set(), u: -1, stage: null, active: null, contextLost: false, ingredientOverride: null, labKey: null};
+const state = {data: null, selection: new Set(), u: -1, stage: null, active: null, contextLost: false, beat: null, mood: 'intro', film: null};
 window.__mediral = state; // read-only QA hook
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -61,34 +61,19 @@ function scheduleOfferRefresh() {
 }
 
 /* ---------- render ---------- */
-function stillFigure(step) {
-  const bots = (step.featured || []).map(f => `<img src="${asset(f.image)}" alt="ภาพประกอบ AI: ${esc(f.name)}" loading="lazy" decoding="async">`).join('');
-  const pack = step.image
-    ? `<img class="mr-still__pack" src="${asset(step.image)}" alt="${esc(step.image_note)}: ${esc(step.nick)}" loading="lazy" decoding="async">`
-    : '<span class="mr-still__foam" aria-hidden="true"></span>';
-  return `<figure class="mr-still">${pack}<div class="mr-still__bots">${bots}</div><figcaption>${esc(step.image_note)}</figcaption></figure>`;
+// Crop only transparent canvas around the original artwork; never redraw or relight the label.
+function packImage(step, {loading = 'lazy', decorative = false} = {}) {
+  if (!step.image) return '';
+  const b = step.image_bounds;
+  const crop = b && b.x1 > b.x0 && b.y1 > b.y0 ? b : {x0: 0, y0: 0, x1: 1, y1: 1, aspect: 2 / 3};
+  const w = crop.x1 - crop.x0, h = crop.y1 - crop.y0;
+  const style = `--pack-aspect:${crop.aspect};--pack-img-width:${100 / w}%;--pack-img-height:${100 / h}%;--pack-img-left:${-100 * crop.x0 / w}%;--pack-img-top:${-100 * crop.y0 / h}%`;
+  return `<span class="mr-pack" style="${style}"><img src="${asset(step.image)}" alt="${decorative ? '' : esc(`${step.nick} — ${step.image_note}`)}" loading="${loading}" decoding="async"></span>`;
 }
-
 const listedCount = step => (step.featured?.length || 0) + (step.ingredients?.length || 0);
-const whenText = step => step.when.map(esc).join(' · ');
+const whenText = step => (step.when || []).map(esc).join(' · ');
+const namedIngredients = step => new Map([...(step.featured || []), ...(step.ingredients || [])].map(item => [item.name, item]));
 
-function ingredientPanel(step) {
-  if (!step.featured?.length) return step.ingredients_status === 'pending-current-sku'
-    ? `<p class="mr-step__note">${esc(step.ingredients_note)}</p>` : '';
-  const first = step.featured[0];
-  const families = (step.ingredient_groups || []).filter(group => group.ingredientNames?.length);
-  return `<section class="mr-lab" data-lab="${step.id}" aria-label="สำรวจส่วนผสม ${esc(step.nick)}">
-    <p class="mr-lab__eyebrow">เลือกส่วนผสม แล้วดูว่ามีบทบาทอะไร <span class="mr-tag">ภาพจำลอง</span></p>
-    <div class="mr-lab__tabs" aria-label="ส่วนผสมเด่น">${step.featured.map((f, i) => `<button type="button" data-ingredient-step="${step.id}" data-ingredient-index="${i}" aria-pressed="${i === 0}" aria-controls="lab-${step.id}">${esc(f.name)}</button>`).join('')}</div>
-    <div class="mr-lab__detail" id="lab-${step.id}">
-      <h3 class="mr-lab__name">${esc(first.name)}</h3>
-      <p class="mr-lab__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
-      <small class="mr-lab__source">${esc(ingredientSource(first))}</small>
-    </div>
-    ${families.length ? `<p class="mr-lab__families"><span>กลุ่มส่วนผสม</span>${families.map(group => esc(group.title)).join(' · ')}</p>` : ''}
-    <a class="mr-lab__all" href="#formula-${step.id}">อ่านส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ <span aria-hidden="true">↓</span></a>
-  </section>`;
-}
 function ingredientSource(ingredient) {
   return `${ingredient.benefit_status === 'brand-claim' ? 'บทบาทตามสื่อแบรนด์' : 'ข้อมูลจากสื่อแบรนด์'}${ingredient.benefit_source ? ` · ${ingredient.benefit_source}` : ''}`;
 }
@@ -125,83 +110,104 @@ function ingredientAtlas(step) {
   </details>`;
 }
 function stepBody(step) {
-  return `
-    ${ingredientPanel(step)}
-    <details class="mr-more">
+  return `<details class="mr-more">
       <summary>วิธีใช้และรายละเอียดชิ้นนี้</summary>
       <dl class="mr-facts">
         <div><dt>ใช้อย่างไร</dt><dd>${esc(step.how)}</dd></div>
-        <div><dt>เมื่อไร</dt><dd>${step.when.map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
+        <div><dt>เมื่อไร</dt><dd>${(step.when || []).map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
         ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
       </dl>
       <ul>
         <li>${esc(step.ingredients_note)}</li>
-        <li class="${step.image_status === 'ai-draft' ? '' : 'is-warn'}">${esc(step.image_note)}</li>
+        <li>${esc(step.image_note)}</li>
         ${step.size_note ? `<li>${esc(step.size_note)}</li>` : ''}
         <li>${esc(state.data.order_note)}</li>
       </ul>
-    </details>
-    ${stillFigure(step)}`;
+      ${listedCount(step) ? `<a href="#formula-${step.id}">อ่านส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a>` : ''}
+    </details>`;
 }
 
 function renderRoutine() {
-  // Role first, product second, brand-stated time last: the whole set can be read in one glance.
-  slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.role_short || step.verb)}<em>${esc(step.nick)}</em></strong><small>${whenText(step)}</small></a></li>`).join('');
-  slot('routine-still').innerHTML = state.data.steps.map(step => `<figure><img src="${asset(step.image)}" alt="${esc(step.nick)} — ภาพแพ็ก AI ร่าง" decoding="async"><figcaption>${esc(step.nick)}</figcaption></figure>`).join('');
+  if (slot('routine-map')) slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.role_short || step.verb)}<em>${esc(step.nick)}</em></strong><small>${whenText(step)}</small></a></li>`).join('');
+  if (slot('routine-still')) slot('routine-still').innerHTML = state.data.steps.map(step => `<figure data-routine-pack="${step.id}">${packImage(step, {loading: 'eager'})}<figcaption>${esc(step.nick)}</figcaption></figure>`).join('');
 }
 
 function renderCompare() {
-  // Two serums, two roles. Points and times come from brand copy; nothing here pairs or sequences them.
-  slot('compare').innerHTML = state.data.steps.filter(step => step.compare_points?.length).map(step => `
+  const target = slot('compare');
+  if (!target) return;
+  target.innerHTML = state.data.steps.filter(step => ['AC', 'BR'].includes(step.id)).map(step => `
     <article class="mr-serum mr-serum--${step.id.toLowerCase()}">
-      <figure class="mr-serum__pack"><img src="${asset(step.image)}" alt="${esc(step.image_note)}: ${esc(step.nick)}" loading="lazy" decoding="async"><figcaption>ภาพแพ็ก AI ฉบับร่าง</figcaption></figure>
+      <figure class="mr-serum__pack">${packImage(step)}<figcaption>ภาพแพ็ก AI ฉบับร่าง</figcaption></figure>
       <p class="mr-serum__code"><span>${pad(step.order)}</span>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p>
       <h3>${esc(step.headline)}</h3>
-      <p class="mr-serum__label">สื่อแบรนด์เล่าเรื่อง</p>
-      <ul class="mr-serum__points">${step.compare_points.map(point => `<li>${esc(point)}</li>`).join('')}</ul>
-      <dl class="mr-serum__facts">
-        <div><dt>ใช้เมื่อไร</dt><dd>${whenText(step)} <small>ตามสื่อแบรนด์</small></dd></div>
-        <div><dt>ส่วนผสมเด่นที่แบรนด์เล่า</dt><dd>${step.featured.map(item => esc(item.name)).join(' · ')}</dd></div>
-      </dl>
-      <p class="mr-serum__links"><a href="#step-${step.id}">ดูบทบาทของขวดนี้ <span aria-hidden="true">↓</span></a><a href="#formula-${step.id}">ส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a></p>
+      <p>${esc(step.selling?.choose || step.for_you)}</p>
+      <ul class="mr-serum__points">${(step.selling?.beats || []).slice(0, 2).map(beat => `<li>${esc(beat.title)}</li>`).join('')}</ul>
+      <p>${whenText(step)} · ตามสื่อแบรนด์</p>
+      <p class="mr-serum__links"><a href="#step-${step.id}">ดูบทบาทของขวดนี้</a><a href="#formula-${step.id}">ส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a></p>
     </article>`).join('');
 }
 
 function renderUses() {
-  const labels = state.data.use_time_labels;
-  const keys = Object.keys(labels);
-  slot('uses').innerHTML = `<table class="mr-uses__table">
+  const target = slot('uses');
+  if (!target) return;
+  target.innerHTML = `<table class="mr-uses__table">
     <caption>แต่ละชิ้นใช้เมื่อไร <small>ตามข้อมูลที่แบรนด์ระบุ</small></caption>
-    <thead><tr><th scope="col">ชิ้นในชุด</th>${keys.map(key => `<th scope="col">${esc(labels[key])}</th>`).join('')}</tr></thead>
-    <tbody>${state.data.steps.map(step => `<tr>
-      <th scope="row"><span>${pad(step.order)}</span>${esc(step.nick)}</th>
-      ${step.use_times.length
-        ? keys.map(key => step.use_times.includes(key)
-          ? `<td><span class="mr-uses__dot" role="img" aria-label="${esc(labels[key])}"></span></td>`
-          : '<td><span class="mr-sr">ไม่ระบุ</span></td>').join('')
-        : `<td colspan="${keys.length}" class="mr-uses__label">ยึดวิธีใช้บนฉลากขวดที่ได้รับ</td>`}
-    </tr>`).join('')}</tbody>
+    <thead><tr><th scope="col">ชิ้นในชุด</th><th scope="col">เมื่อไร</th><th scope="col">วิธีใช้ที่ระบุ</th></tr></thead>
+    <tbody>${state.data.steps.map(step => `<tr><th scope="row"><span>${pad(step.order)}</span>${esc(step.nick)}</th><td>${whenText(step)}</td><td>${esc(step.how)}</td></tr>`).join('')}</tbody>
   </table>`;
 }
 
+function ambientFilm() {
+  return `<div class="mr-ambient-film" id="lab-film" data-lab-film data-film-ready="true">
+    <img class="mr-ambient-film__poster" src="${asset('assets/motion/lab-film-poster.webp')}" alt="" loading="lazy" decoding="async">
+    <video data-film-video data-src="${asset('assets/motion/lab-film-10s.mp4')}" poster="${asset('assets/motion/lab-film-poster.webp')}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
+  </div>`;
+}
+
+function beatArt(step, beat, index) {
+  const named = namedIngredients(step);
+  const ingredients = (beat.names || []).map(name => named.get(name)).filter(Boolean);
+  return `<div class="mr-beat-art${index === 0 ? ' is-active' : ''}" data-beat-art="${step.id}:${index}" data-visual="${esc(beat.visual)}">
+    ${beat.media === 'film' ? ambientFilm() : ''}
+    <div class="mr-beat-art__ingredients">${ingredients.map((item, i) => item.image
+      ? `<figure class="mr-extract" style="--extract-index:${i}"><img src="${asset(item.image)}" alt="" loading="lazy" decoding="async"><figcaption>${esc(item.name)}</figcaption></figure>`
+      : `<span class="mr-extract-name" style="--extract-index:${i}">${esc(item.name)}</span>`).join('')}</div>
+    ${ingredients.length ? '' : `<span class="mr-beat-art__abstract mr-beat-art__abstract--${esc(beat.visual)}"></span>`}
+  </div>`;
+}
+
 function renderSteps() {
-  // The routine overview precedes the five steps; the first step keeps static HTML for resilience.
-  const [first, ...rest] = state.data.steps;
-  slot('hero-body').innerHTML = stepBody(first);
-  slot('steps').innerHTML = rest.map(step => `
-    <section class="mr-step" id="step-${step.id}" data-step="${step.id}" data-index="${step.order - 1}" aria-labelledby="h-${step.id}">
-      <div class="mr-step__sticky">
-        <div class="mr-step__left">
-          <p class="mr-step__code"><span class="mr-step__num">${pad(step.order)}</span><span class="mr-step__en">${esc(step.verb_en)}</span><span class="mr-step__verb">${esc(step.verb)} · ${esc(step.nick)}</span></p>
-          <h2 class="mr-step__title" id="h-${step.id}">${esc(step.headline)}</h2>
-          <p class="mr-step__lead">${esc(step.for_you)}</p>
-          <p class="mr-step__when"><span>ใช้เมื่อไร</span> ${whenText(step)}${step.use_times.includes('reapply') ? ' · ทาซ้ำระหว่างวันได้' : ''}</p>
-          ${step.visible_note ? `<p class="mr-step__note">${esc(step.visible_note)}</p>` : ''}
-          <ol class="mr-phase" aria-hidden="true"><li>วัตถุดิบ</li><li>สกัด · ผสม</li><li>บทบาท</li></ol>
+  slot('steps').innerHTML = state.data.steps.map((step, index) => {
+    const selling = step.selling || {beats: []};
+    return `<section class="mr-product" id="step-${step.id}" data-step="${step.id}" data-index="${index}" aria-labelledby="h-${step.id}">
+      <header class="mr-product__head">
+        <p class="mr-product__code"><span>${pad(step.order)}</span><span>${esc(step.verb_en)}</span><span>${esc(step.nick)}</span></p>
+        <h2 id="h-${step.id}">${esc(step.headline)}</h2>
+        <p class="mr-product__lead">${esc(step.for_you)}</p>
+        <p class="mr-product__when">${whenText(step)}</p>
+      </header>
+      <div class="mr-product__layout">
+        <div class="mr-product__visual" aria-hidden="true">
+          <div class="mr-product__pack">${packImage(step, {decorative: true})}</div>
+          <div class="mr-product__extracts">${selling.beats.map((beat, i) => beatArt(step, beat, i)).join('')}</div>
         </div>
-        <div class="mr-step__right">${stepBody(step)}</div>
+        <div class="mr-product__beats">${selling.beats.map((beat, i) => `<article class="mr-selling-beat${i === 0 ? ' is-active' : ''}" id="beat-${step.id}-${i}" data-selling-step="${step.id}" data-beat-index="${i}" aria-labelledby="beat-title-${step.id}-${i}">
+          <p class="mr-selling-beat__kicker">${esc(beat.kicker)}</p>
+          <h3 id="beat-title-${step.id}-${i}">${esc(beat.title)}</h3>
+          <p class="mr-selling-beat__body">${esc(beat.body)}</p>
+          ${beat.names?.length ? `${beat.names_label ? `<p class="mr-selling-beat__names-label">${esc(beat.names_label)}</p>` : ''}<ul class="mr-selling-beat__names">${beat.names.map(name => `<li><strong>${esc(name)}</strong>${beat.tags?.[name] ? `<small>${esc(beat.tags[name])}</small>` : ''}</li>`).join('')}</ul>` : ''}
+        </article>`).join('')}</div>
       </div>
-    </section>`).join('');
+      <footer class="mr-product__finish">
+        ${selling.sensory ? `<p class="mr-product__sensory">${esc(selling.sensory)}</p>` : ''}
+        ${selling.choose ? `<p class="mr-product__choose">${esc(selling.choose)}</p>` : ''}
+        ${selling.decide ? `<p>${esc(selling.decide)}</p>` : ''}
+        <p class="mr-product__source">${esc(selling.source || '')}</p>
+        ${stepBody(step)}
+        <div class="mr-product__links"><a class="mr-btn mr-btn--small" href="#set">ดูชุด 5 ชิ้น</a>${listedCount(step) ? `<a href="#formula-${step.id}">ดูส่วนผสมที่แบรนด์ระบุทั้งหมด</a>` : ''}${state.data.steps[index + 1] ? `<a href="#step-${state.data.steps[index + 1].id}">ต่อไป ${esc(state.data.steps[index + 1].nick)} ↓</a>` : ''}</div>
+      </footer>
+    </section>`;
+  }).join('');
 }
 
 function renderLibrary() {
@@ -228,7 +234,7 @@ function renderRail() {
 
 function renderSet() {
   const {steps, set} = state.data;
-  slot('set-headline').textContent = set.headline;
+  if (slot('set-headline')) slot('set-headline').textContent = set.headline;
   slot('pieces').insertAdjacentHTML('beforeend', steps.map(step => `
     <label class="mr-piece">
       <input type="checkbox" value="${step.id}" checked data-piece>
@@ -238,7 +244,7 @@ function renderSet() {
     </label>`).join(''));
   slot('set-row').innerHTML = steps.map(step => `
     <figure data-row="${step.id}">
-      ${step.image ? `<img src="${asset(step.image)}" alt="" loading="lazy" decoding="async">` : '<span class="mr-still__foam" aria-hidden="true"></span>'}
+      ${packImage(step)}
       <figcaption>${step.order} ${esc(step.nick)}</figcaption>
     </figure>`).join('');
 }
@@ -285,7 +291,6 @@ function renderSummary() {
   if (!full) slot('summary').insertAdjacentHTML('beforeend', '<button type="button" class="mr-btn mr-btn--ghost mr-btn--small" data-action="select-all">กลับไปดูชุดครบ 5 ชิ้น</button>');
   $$('[data-row]').forEach(f => f.classList.toggle('is-off', !state.selection.has(f.dataset.row)));
   $$('[data-action="copy"], [data-action="card"]').forEach(b => { b.disabled = !chosen.length; });
-  state.stage?.setSelection([...state.selection]);
   renderOffer();
   renderBuy();
 }
@@ -382,8 +387,9 @@ async function saveCard(button) {
 
 /* ---------- scroll → story progress ---------- */
 function sections() {
-  return [$('#routine'), $('#step-CL'), ...$$('#story [data-step]'), $('#set')];
+  return [$('#routine'), ...$$('#story [data-step]'), $('#set')].filter(Boolean);
 }
+const anchorClearance = section => parseFloat(globalThis.getComputedStyle?.(section)?.scrollMarginTop) || 0;
 function progress() {
   const vh = innerHeight;
   const list = sections();
@@ -394,7 +400,9 @@ function progress() {
     // Finish the visual phase without advancing the rail until the next section actually arrives.
     const end = i < list.length - 1 ? 0.9995 : 1;
     const t = Math.min(end, Math.max(0, -r.top / span));
-    if (r.top <= vh * 0.001 || i === 0) u = i - 1 + t;
+    // Native anchor navigation stops below the fixed header. That is already this chapter,
+    // even when its section top has not crossed the viewport's absolute top yet.
+    if (r.top <= Math.max(vh * 0.001, anchorClearance(sec) + .5) || i === 0) u = i - 1 + t;
   });
   return u;
 }
@@ -404,49 +412,44 @@ const pinnedU = (() => {
   return Number.isFinite(v) ? Math.min(6, Math.max(-1, v)) : null;
 })();
 
-function measureBand() {
-  const card = $('#set .mr-card')?.getBoundingClientRect();
-  const rail = slot('rail')?.getBoundingClientRect();
-  if (!card || !rail || !innerWidth) return;
-  const left = Math.min(0.9, (card.right + 24) / innerWidth);
-  const right = Math.max(left + 0.05, Math.min(1, (rail.left - 12) / innerWidth));
-  state.stage?.setBand({left, right});
+// Read against visible text, below the sticky art on phones, not behind its centre.
+function beatReadingLine(section) {
+  const header = $('.mr-header')?.getBoundingClientRect().bottom || 88;
+  const art = $('.mr-product__visual', section)?.getBoundingClientRect();
+  return productStacked.matches && art
+    ? Math.min(innerHeight * .82, Math.max(header + 36, art.bottom + Math.min(100, innerHeight * .14)))
+    : Math.max(header + 72, innerHeight * .48);
 }
 
-function setIngredientDetail(step, index) {
-  const ingredient = step.featured[index];
-  const panel = $(`[data-lab="${step.id}"]`);
-  if (!panel || !ingredient) return;
-  $$('.mr-lab__tabs button', panel).forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
-  $('.mr-lab__name', panel).textContent = ingredient.name;
-  $('.mr-lab__benefit', panel).textContent = ingredient.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ';
-  $('.mr-lab__source', panel).textContent = ingredientSource(ingredient);
-}
-function syncIngredient(i, t) {
-  const step = state.data.steps[i];
-  if (!step?.featured?.length) { state.stage?.setIngredient?.(null); return; }
-  const override = state.ingredientOverride;
-  if (override && (override.id !== step.id || Math.abs(scrollY - override.y) > 8)) state.ingredientOverride = null;
-  const index = state.ingredientOverride?.index ?? Math.min(step.featured.length - 1, Math.floor(Math.min(t, .359) / .36 * step.featured.length));
-  const key = `${step.id}:${index}`;
-  if (state.labKey !== key) { setIngredientDetail(step, index); state.labKey = key; }
-  state.stage?.setIngredient?.(t < .52 ? index : null);
-}
-function chooseIngredient(id, index) {
-  const step = byId(id);
-  if (!step || !Number.isInteger(index) || !step.featured[index]) return;
-  const section = $(`#step-${id}`);
-  const r = section.getBoundingClientRect();
-  const span = Math.max(1, section.offsetHeight - innerHeight);
-  // Selecting a material returns to its lab view without touching the saved shopping list.
-  if (state.active !== step.order - 1 || state.u % 1 >= .36) {
-    window.scrollTo({top: r.top + scrollY + span * .12, behavior: 'instant'});
-    onScroll();
+function syncSellingBeat(step, chapter) {
+  if (!step) {
+    state.beat = null;
+    state.mood = state.active < 0 ? 'intro' : 'set';
+    state.stage?.setMood(state.mood);
+    state.film?.setActive(false);
+    delete document.body.dataset.beat;
+    return;
   }
-  state.ingredientOverride = {id, index, y: scrollY};
-  state.labKey = null;
-  onScroll();
+  const section = $(`#step-${step.id}`);
+  const beats = $$(`[data-selling-step="${step.id}"]`);
+  const line = beatReadingLine(section);
+  let index = 0;
+  beats.forEach((beat, i) => { if (beat.getBoundingClientRect().top <= line) index = i; });
+  const beat = step.selling?.beats[index];
+  const key = `${step.id}:${index}`;
+  if (state.beat?.key !== key) {
+    beats.forEach((node, i) => node.classList.toggle('is-active', i === index));
+    $$('[data-beat-art]', section).forEach((node, i) => node.classList.toggle('is-active', i === index));
+    state.beat = {id: step.id, index, key};
+    document.body.dataset.beat = key;
+  }
+  const finish = $('.mr-product__finish', section)?.getBoundingClientRect();
+  const isFinish = finish && finish.top <= line;
+  state.mood = isFinish ? 'texture' : beat?.visual || 'botanical';
+  state.stage?.setMood(state.mood);
+  state.film?.setActive(!chapter && !isFinish && beat?.media === 'film' && document.visibilityState !== 'hidden');
 }
+
 function chooseFormulaIngredient(id, groupIndex, index) {
   const step = byId(id);
   if (!step || !Number.isInteger(groupIndex) || !Number.isInteger(index) || groupIndex < 0 || index < 0) return;
@@ -461,6 +464,8 @@ function chooseFormulaIngredient(id, groupIndex, index) {
 
 // Same query as STACKED_QUERY in js/story.js and the CSS words-below-scene switch.
 const stackedLayout = matchMedia('(max-width: 1100px)');
+// Product art moves above the text only on phones; the wider query above gates the purchase scene.
+const productStacked = matchMedia('(max-width: 700px)');
 
 function readingChapter() {
   const readingTop = Math.min(innerHeight / 3, ($('.mr-header')?.getBoundingClientRect().bottom || 88) + 16);
@@ -484,6 +489,7 @@ function syncStagePlayback(chapter = readingChapter()) {
 }
 
 function onScroll() {
+  if (!state.data) return;
   const chapter = readingChapter();
   syncStagePlayback(chapter);
   if (chapter) document.body.dataset.readingChapter = chapter.id;
@@ -495,14 +501,14 @@ function onScroll() {
     state.active = i;
     const step = state.data.steps[i];
     document.body.dataset.step = i < 0 ? 'routine' : step ? step.id : 'set';
-    state.ingredientOverride = null;
-    state.labKey = null;
-    // The large word behind the scene names the role (CLEANSE, TREAT · I …), as in the owner's references.
+    // The optional large word behind the scene names the current product role.
     const word = slot('word');
-    word.classList.remove('is-in');
-    void word.offsetWidth;
-    word.textContent = i < 0 ? 'SKIN ROUTINE' : step ? step.verb_en : '5 STEPS';
-    word.classList.add('is-in');
+    if (word) {
+      word.classList.remove('is-in');
+      void word.offsetWidth;
+      word.textContent = i < 0 ? 'SKIN ROUTINE' : step ? step.verb_en : '5 STEPS';
+      word.classList.add('is-in');
+    }
   }
   $$('[data-rail]').forEach((a, k) => {
     a.classList.toggle('is-active', k === i);
@@ -510,11 +516,7 @@ function onScroll() {
     if (k === i) a.setAttribute('aria-current', 'step');
     else a.removeAttribute('aria-current');
   });
-  // Phase dots inside the active step: origin → combine → role.
-  const t = u - Math.floor(u);
-  const sec = sections()[i + 1];
-  $$('.mr-phase li', sec).forEach((li, k) => li.classList.toggle('is-on', t >= (i === 0 ? [0, 0.3, 0.64] : [0, 0.38, 0.81])[k]));
-  syncIngredient(i, t);
+  syncSellingBeat(state.data.steps[i], chapter);
   state.stage?.setProgress(u);
 }
 
@@ -523,6 +525,7 @@ function preserveReadingPosition(update) {
   const chapter = readingChapter();
   const chapterTop = chapter?.getBoundingClientRect().top;
   const current = chapter || sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress()) + 1))];
+  const currentTop = current?.getBoundingClientRect().top;
   const reading = scrollY > 10;
   const fraction = current
     ? Math.min(1, Math.max(0, -current.getBoundingClientRect().top / Math.max(1, current.offsetHeight - innerHeight)))
@@ -530,11 +533,11 @@ function preserveReadingPosition(update) {
   update();
   if (reading && current) {
     const top = current.getBoundingClientRect().top + scrollY;
-    const target = chapter ? top - chapterTop : top + fraction * Math.max(0, current.offsetHeight - innerHeight);
+    const target = chapter ? top - chapterTop : currentTop > 0 ? top - currentTop
+      : top + fraction * Math.max(0, current.offsetHeight - innerHeight);
     window.scrollTo({top: target, behavior: 'instant'});
   }
   onScroll();
-  measureBand();
 }
 
 function sceneAvailability(available) {
@@ -575,12 +578,12 @@ async function bootStage() {
   if (env.no3d || env.saveData) { sceneAvailability(false); return; }
   try {
     const {createStory} = await import('./story.js');
-    state.stage = await createStory({canvas: $('#scene'), steps: state.data.steps, asset, reduced: env.reduced, onContextChange});
+    state.stage = await createStory({canvas: $('#scene'), steps: state.data.steps, reduced: env.reduced, onContextChange});
     state.contextLost = Boolean(state.stage.state.contextLost);
     syncStagePlayback();
     // Preferences and context can change while scene textures are loading.
     state.stage.setReducedMotion(matchMedia('(prefers-reduced-motion: reduce)').matches);
-    state.stage.setSelection([...state.selection]);
+    state.stage.setMood(state.mood);
     state.stage.setProgress(state.u);
     sceneAvailability(!state.contextLost);
   } catch (err) {
@@ -608,7 +611,7 @@ async function boot() {
   // Product sections are created after the document parses. Restore incoming chapter links now,
   // before the optional scene changes layout, rather than relying on the browser's early hash pass.
   openAtlas(location.hash);
-  const incomingChapter = [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === location.hash);
+  const incomingChapter = location.hash === '#lab-film' ? $('#beat-AC-0') : [...sections(), ...$$('.mr-reading-chapter'), ...$$('[data-selling-step]')].find(section => `#${section.id}` === location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
     const inputEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
@@ -624,10 +627,8 @@ async function boot() {
       removeEventListener('hashchange', cleanup);
       removeEventListener('pagehide', cleanup);
     };
-    // Product chapters keep their exact scene anchor. Reading chapters and atlases honour their CSS
-    // scroll-margin (header clearance), measured each time because the header changes with layout.
-    const anchorOffset = () => sections().includes(incomingChapter) ? 0
-      : parseFloat(globalThis.getComputedStyle?.(incomingChapter)?.scrollMarginTop) || 0;
+    // Match native links for products, beats and atlases. Re-measure after responsive/font layout.
+    const anchorOffset = () => anchorClearance(incomingChapter);
     const restoreChapter = () => {
       if (active && location.hash === incomingHash) {
         window.scrollTo({top: incomingChapter.getBoundingClientRect().top + scrollY - anchorOffset(), behavior: 'instant'});
@@ -658,7 +659,7 @@ async function boot() {
   watchReducedMotion();
   scheduleOfferRefresh();
   document.addEventListener('visibilitychange', () => {
-    syncStagePlayback();
+    onScroll();
     if (document.visibilityState !== 'visible') return;
     renderOffer();
     scheduleOfferRefresh();
@@ -676,8 +677,6 @@ async function boot() {
   document.addEventListener('click', e => {
     const atlasLink = e.target.closest('a[href^="#formula-"]');
     if (atlasLink) openAtlas(atlasLink.getAttribute('href'));
-    const ingredient = e.target.closest('[data-ingredient-index]');
-    if (ingredient) chooseIngredient(ingredient.dataset.ingredientStep, Number(ingredient.dataset.ingredientIndex));
     const formula = e.target.closest('[data-formula-index]');
     if (formula) chooseFormulaIngredient(formula.dataset.formulaStep, Number(formula.dataset.formulaGroupIndex), Number(formula.dataset.formulaIndex));
     const act = e.target.closest('[data-action]');
@@ -687,13 +686,16 @@ async function boot() {
   });
 
   const reveal = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('is-in'); }), {threshold: 0.12});
-  $$('.mr-chapter, .mr-step, .mr-routine').forEach(el => reveal.observe(el));
+  $$('.mr-chapter, .mr-product, .mr-routine').forEach(el => reveal.observe(el));
   $$('.mr-compare, .mr-library').forEach(el => reveal.observe(el));
   addEventListener('scroll', onScroll, {passive: true});
-  addEventListener('resize', () => { onScroll(); measureBand(); });
+  addEventListener('resize', onScroll);
   onScroll();
   // Let the page paint first; the 3D module and its textures come after.
-  (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(bootStage);
+  (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(() => {
+    bootStage();
+    bootFilm();
+  });
 }
 
 function bootFailed(err) {
@@ -714,9 +716,15 @@ function bootFailed(err) {
 
 boot().catch(bootFailed);
 
-// Enhance approved media independently of product-data loading; pending media remains a still.
-if ($('#lab-film')?.id === 'lab-film') {
-  (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(() => {
-    import('./lab-film.js').then(({initLabFilm}) => initLabFilm()).catch(err => console.warn('[mediral] film enhancement unavailable', err));
-  });
+// The film is created with its product beat. Its optional enhancement never blocks page data.
+async function bootFilm() {
+  const container = $('#lab-film');
+  if (container?.id !== 'lab-film') return;
+  try {
+    const {initLabFilm} = await import('./lab-film.js');
+    state.film = initLabFilm(container);
+    onScroll();
+  } catch (err) {
+    console.warn('[mediral] film enhancement unavailable, keeping poster', err);
+  }
 }

@@ -1,44 +1,48 @@
-# Mediral — Five-piece sales path (v6)
+# Mediral — Product selling through scroll (v7)
 
-Updated 2026-09-28. Supersedes v5's routine-first order: the page now sells the fixed five-piece set, with WHY and benefit first and the complete ingredient atlas as optional deep reading after the offer. The cabinet, serum-pair and mousse-only openings remain superseded. The page order shows each piece's role; it is not a verified application order ("หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า").
+Updated 2026-09-28. This revision continues the five-piece set story while replacing v6's separate introductory comparison/film chapters and generic extraction sequence. Implementation and visual acceptance are in progress; this document is the current design and content contract, not a deployment report.
 
-## Customer story
+## One customer story
 
-1. **Opening — the problem and the set.** "เห็นหน้าที่ของทุกชิ้น ตั้งแต่ล้างหน้าถึงแต่งผิว": for someone who owns several products without knowing what each does. All five products stand together; a role map lists role → product → brand-stated time; the dated poster offer and "ดูข้อเสนอชุด 5 ชิ้น" follow. On phones the offer route precedes the map so both fit the first screen. No claim that everyone needs all five or that combined use is proven.
-2. **Two serums, two roles.** White AC (ผิวที่มีแนวโน้มเป็นสิว · สมดุลผิว · ความชุ่มชื้น) beside yellow-green BR (ผิวที่ดูหมองคล้ำ · กระจ่างใส สีผิวดูสม่ำเสมอ · เรียบเนียนและสมดุล), both "เช้า · เย็น ตามสื่อแบรนด์", with featured names and links. A use-time table (เช้า / เย็น / ทาซ้ำระหว่างวัน / เมื่อแต่งหน้า; mousse: label) states times only, not layering.
-3. **Material study film.** GPT's ten-second botanical/pipette clip plays once in view and rests on its last frame with replay. Caption: AI illustration, not factory, experiment, results or product texture.
-4. **Five product chapters.** Unchanged grammar: materials → extraction/beaker → concentrate → formulation → drop → reveal → role. Each chapter now states when it is used and names its ingredient families, with a link to the full list and its count.
-5. **Offer.** Poster price with dates and terms, then the checkout control, copy and summary card, then the saved list. On stacked layouts this card is read full-screen right under the header (the hero already showed all five) and the scene pauses; desktop keeps the five beside it.
-6. **Ingredient library.** "รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ": one closed disclosure per product with every name, role and source. Links open it directly.
+1. **WHY and the five pieces.** Show the set, its roles and a direct route to the dated offer. The idea is a routine from cleansing to optional makeup with one brand. Never say everyone needs all five or that combined use has proven superior results.
+2. **Mousse — the cleansing piece.** Clear water/foam imagery identifies the rinse-off role and the current clover-label pump bottle. Do not borrow ingredients or performance claims from the old rose-label pack.
+3. **White serum — care for blemish-prone skin.** Tea tree and mangosteen peel introduce the brand's soothing story; Zinc PCA/witch hazel/grapefruit introduce its balance family; HA/trehalose/Sodium PCA introduce moisture. Brand-described light, quick-absorbing and non-sticky feel closes the piece.
+4. **Yellow-green serum — more even-looking skin.** Bearberry/licorice/vitamin C have distinct cosmetic roles in brand material. Probiotics and bakuchiol follow with separate balance/smoothness roles, even without matching plant photography. Finish with the fuller ingredient list and brand-described light, easy-spreading, moisturizing texture. Explain the difference from the white serum here, without prescribing that both must be layered.
+5. **Sunscreen — sun care with moisture.** First identify the named mineral UV filters; then HA hydration; then the seven-plant Giga White family. Plants must not appear to supply mineral UV protection. Do not turn the grouping into a tested SPF, penetration or blue-light demonstration.
+6. **Powder — optional finishing and coverage.** Lead with coverage and the brand-described fine/light texture; follow with the powder/oil group and the hydration/soothing group. Botanical names remain available without a cell-regeneration story. Shade and weight still need current product information.
+7. **Complete-set offer and saved list.** Put the dated price, honest purchase state and copy/card actions before optional customization. Ready buyers retain the fixed offer shortcut throughout.
+8. **Optional comparison and full ingredient library.** The serum comparison/use-time information can remain in a disclosure after the offer. Retain all ingredient names, roles and sources behind four product disclosures. These are chosen deeper reads, not mandatory chapters before cleansing or 74 full-screen sections before purchase.
 
-## Motion and reading chapters
+The poster supports the sequence used to tell the set's story. It does not by itself establish an instruction to layer AC before BR. The page states: “หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า”. Product-specific label guidance remains accessible; no invented wait times, drop counts or serum hierarchy.
 
-- `u=-1..0` opening, `0..5` the five products, `5..6` the set; unchanged. Comparison, film, library and atlases are reading chapters: the fixed stage and rail withdraw and WebGL pauses. Opening/closing an atlas re-measures this without a scroll.
-- Selecting any ingredient changes its detail only, never the saved list.
-- Reduced motion, failed WebGL and data errors keep all sales content, the offer route and ingredient text.
+## What changes with scroll
 
-## Lab-media delivery state
+Each product has about three meaningful beats. Each beat shows a benefit or role, its relevant ingredient names and the same crisp pack. Scroll promotes the next family; it does not require taps to reveal the selling story. All text remains in semantic DOM, readable during fast/reverse scrolling, resizing, failed WebGL and reduced motion.
 
-| Asset | Purpose |
-|---|---|
-| `assets/motion/lab-film-10s.mp4` | GPT's approved clip: 10.00 s, 1276×720, silent H.264 faststart, 1.15 MB. Not a seamless loop. |
-| `assets/motion/lab-film-poster.webp` | Poster frame from the clip (51 KB) |
-| `assets/motion/lab-botanical.webp`, `lab-research.webp`, `lab-compound.webp` | Beat stills; the reading fallback when the film is unavailable |
+Native DOM pack images supply the labels and shape. Contact shadows, modest movement and ingredient layers can provide depth; WebGL may provide restrained atmosphere. Do not reconstruct bottles, project labels onto lathes, invent an unseen back or alter pack lettering with fog, bloom or exposure. Size the visible pack bounds, not the transparent image canvas.
 
-`data-film-ready="true"`. The MP4 path stays in `data-src` until the controller attaches it; `preload="none"`, muted, inline, no `loop`.
+Ingredient motion explains the product-specific family. Avoid repeating a funnel or a measured mixing recipe for every piece. Missing images become readable names rather than a guessed plant or chemical diagram. Keep complete optional source lists separate from shopping selection. No nested scrolling traps or long empty travel; phones 390×844 and 360×640 have priority.
 
-## Source contract
+## Quiet media within the composition
 
-Each ingredient retains `name`, optional `image`, `benefit`, `benefit_source` and `benefit_status`. `brand-claim` attributes a role to brand marketing; `identity-only` does not establish an individual effect. `ingredient_groups` resolve names against featured and other ingredient entries and retain family-level attribution. Editorial groupings are identified as myClover's reading aid.
+The existing silent botanical/pipette film belongs inside a relevant ingredient scene. Remove the standalone film chapter, three lesson cards, customer-facing play/pause/replay buttons, duration badges and status announcements. Keep the AI/concept provenance accessible in source details/footer.
 
-The four atlases (now in the library after the offer) contain AC 24, BR 18, SU 14 and PO 18 display entries. This is a source-list reading inventory, not 74 distinct actives or a verified INCI total. Sunscreen aliases, collective headings and component names are reconciled for display; they do not prove a formula count, molecular size or botanical species. Group roles do not become individual efficacy claims.
+Use the existing 10.00-second H.264 faststart file and its matching WebP poster. Defer loading; autoplay muted/inline only when visible, the tab is active, reduced motion is off and data saving is off. Pause offscreen/hidden. Settle quietly at the end: the clip is not a seamless loop. Reduced motion, data saving, blocked autoplay and failure show the poster, without asking the visitor to play it. No additional generation is required.
 
-The current clover-label mousse still has unknown formula and size. The old gold-rose formula is not reused. Sunscreen illustration lettering is not authoritative for SPF/PA. Powder shade, weight and SPF are not inferred. Package images remain labelled AI drafts.
+The footage and stills are illustrative. They are not Mediral's factory, experiment, formula, real product texture or evidence of results. Glassware, droplets and motion establish no dose, concentration, penetration or efficacy.
 
-All lab scenes and stills are illustrative. They do not show Mediral's actual factory, research, manufacturing sequence, verified product texture or clinical result. Glassware and abstract particles establish no dose, chemical identity, concentration, penetration or effectiveness. No germ-killing footage, clinical charts, invented percentages or chemical bonds are introduced.
+## Source and sales boundaries
 
-## Sales contract
+- Ingredient records keep `name`, optional `image`, `benefit`, `benefit_source` and `benefit_status`. `brand-claim` means attributed brand marketing, not independent validation. `identity-only` does not gain an individual benefit by appearing in a family. Editorial groupings remain identified as reading aids.
+- Complete display inventory remains AC 24 / BR 18 / SU 14 / PO 18. This is neither a full INCI list nor 74 distinct actives. Reconciled sunscreen names do not prove species, molecular sizes or formula counts.
+- Keep the current mousse formula and size unresolved. Package illustrations remain AI drafts; sunscreen lettering and powder shade/weight cannot be verified from them. Certification logos alone do not establish finished-product organic or medical certification.
+- Use strong cosmetic role and sensory copy that the brand actually provides. No acne/melasma treatment, DNA control, germ-killing, live-cell repair, universal safety/shade, invented percentages or timed guarantees.
+- The fixed-set poster offer is dated 21–30 September 2026 and remains unverified in the current cart. Preserve expiry, full-set/partial-summary separation and inert purchase behavior until a verified Affiliate URL is supplied. No internal costs or private source paths enter public data or docs.
 
-The five-piece offer comes from the supplied poster for 21–30 September 2026 and remains qualified as unverified in the cart. It appears only in its date window; the purchase card additionally requires all five products in the saved list. Partial lists do not inherit the bundle offer. Affiliate checkout remains unavailable until a verified link is supplied. Internal partner pricing and private evidence remain outside public documentation and runtime assets.
+Run and implementation contracts are in [README.md](README.md). Record actual tests and production verification after integration; earlier release results do not verify this revision.
 
-For implementation contracts, release status and checks, see [README.md](README.md). The current mousse media limitation is recorded in [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
+## Revision history
+
+- v7: continuous product-specific selling, scroll-led ingredient families, crisp DOM packs and decorative no-controls media.
+- v6: WHY/offer opening, separate serum comparison and film chapter, optional full atlas after the offer. Superseded by v7.
+- Earlier cabinet, serum-pair and mousse-only openings remain superseded.
