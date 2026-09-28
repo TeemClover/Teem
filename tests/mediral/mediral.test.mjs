@@ -219,6 +219,9 @@ test('page HTML and route responses declare noindex, and dev/reference files do 
   const robots = tags(html(), 'meta').filter(t => t.name?.toLowerCase() === 'robots');
   assert.ok(robots.some(t => t.content?.toLowerCase().split(/[\s,]+/).includes('noindex')));
   const config = JSON.parse(read(join(root, 'vercel.json')));
+  assert.ok(config.headers.some(r => r.source === '/mediral/'
+    && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
+  'The directory entry needs an explicit rule: production did not apply the wildcard header there');
   for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/story.js']) {
     const values = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
       .filter(h => h.key.toLowerCase() === 'x-robots-tag').map(h => h.value.toLowerCase().split(/[\s,]+/));

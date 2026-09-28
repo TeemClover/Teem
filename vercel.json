@@ -446,6 +446,10 @@
   ],
   "headers": [
     {
+      "source": "/mediral/",
+      "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}]
+    },
+    {
       "source": "/mediral/:path*",
       "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}]
     },
