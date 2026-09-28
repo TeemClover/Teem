@@ -638,8 +638,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     rb(g, [6.2, 0.07, 0.95], [-0.8, 0.75, BW + 0.65], wood('#a8744a'), null, 0.02);
     for (const dx of [-3.7, -0.8, 2.1]) rb(g, [0.07, 0.75, 0.85], [dx, 0, BW + 0.65], M('#2f3a35', {metalness: 0.4}), null, 0.01);
     // A dedicated studio desk; its editor is a single static texture, with no video decoder or extra light.
-    rb(g, [1.95, 0.07, 1.15], [2.6, 0.75, -0.35], wood('#a8744a'), null, 0.02);
-    for (const dx of [1.75, 3.45]) rb(g, [0.07, 0.75, 0.95], [dx, 0, -0.35], M('#2f3a35', {metalness: 0.4}), null, 0.01);
+    rb(g, [1.95, 0.07, 1.15], [2.25, 0.75, -1.2], wood('#a8744a'), null, 0.02);
+    for (const dx of [1.4, 3.1]) rb(g, [0.07, 0.75, 0.95], [dx, 0, -1.2], M('#2f3a35', {metalness: 0.4}), null, 0.01);
     const studioScreen = canvasMat(1024, 576, c => {
       c.fillStyle = '#101716'; c.fillRect(0, 0, 1024, 576);
       c.fillStyle = '#c5f36b'; c.font = `800 44px ${FONT}`; c.fillText('AIROVA STUDIO', 32, 62);
@@ -669,8 +669,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     }, 0.65);
     const screens = [
       {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
-      {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.95, ry: -0.12},
-      {id: 'airova', mat: studioScreen, tag: 'AIROVA STUDIO', col: '#c5f36b', x: 2.6, z: -0.6, ry: -0.18},
+      {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.55, ry: -0.12},
+      {id: 'airova', mat: studioScreen, tag: 'AIROVA STUDIO', col: '#c5f36b', x: 2.25, z: -1.45, ry: -0.18},
     ];
     for (const s_ of screens) {
       const mon = group(g, s_.x, 0.82, s_.z ?? BW + 0.45); mon.rotation.y = s_.ry;
@@ -680,8 +680,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
       cy(mon, [0.03, 0.03, 0.26], [0, 0, 0], M('#1b1f1d')); rb(mon, [0.34, 0.02, 0.2], [0, 0, 0.02], M('#1b1f1d'), null, 0.005);
       hot(mon, s_.id);
     }
-    rb(g, [0.8, 0.025, 0.26], [2.45, 0.82, -0.04], M('#26352c'), null, 0.01);
-    rb(g, [0.12, 0.03, 0.18], [3.12, 0.82, -0.04], M('#c5f36b'), null, 0.01);
+    rb(g, [0.8, 0.025, 0.26], [2.1, 0.82, -0.89], M('#26352c'), null, 0.01);
+    rb(g, [0.12, 0.03, 0.18], [2.77, 0.82, -0.89], M('#c5f36b'), null, 0.01);
     rb(g, [0.9, 0.03, 0.28], [-2.55, 0.82, BW + 1.0], M('#e9ecef', {roughness: 0.4}), null, 0.01);
     rb(g, [0.12, 0.03, 0.18], [-1.9, 0.82, BW + 1.0], M('#e9ecef'), null, 0.01);
     // TeamBook: the green notebook, open on a stand between the screens (→ /teambook/)
@@ -747,7 +747,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
   const cl = out.cloverLight = new THREE.PointLight('#9dffc3', 0, 14, 1.5); cl.position.set(HERO_CLOVER.wide[0], HERO_CLOVER.wide[1], 2.5); root.add(cl);
 
   /* ---------- hidden clovers (room-local spots → world) ---------- */
-  const SPOTS = {living: [2.95, 1.32, BW + 0.3], kitchen: [1.8, 1.12, BW + 0.4], classroom: [0.95, 2.72, BW + 0.25], office: [3.4, 1.42, BW + 0.15]};
+  const SPOTS = {living: [2.95, 1.32, BW + 0.3], kitchen: [1.8, 1.12, BW + 0.4], classroom: [0.95, 2.72, BW + 0.25], office: [3.0, 1.0, -0.73]};
   for (const id of CLOVER_ROOMS) {
     const [cx, fy] = ROOMS[id], at = new THREE.Vector3(SPOTS[id][0] + cx, SPOTS[id][1] + fy, SPOTS[id][2]);
     const m = new THREE.MeshStandardMaterial({color: '#39b86b', roughness: 0.3, emissive: '#1d8a48', emissiveIntensity: 0.5});
