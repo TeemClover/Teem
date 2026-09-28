@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "title": "Shelf — ขวดซอสของเรา",
-  "updated_at": "2026-09-26",
+  "updated_at": "2026-09-28",
   "timezone": "Asia/Bangkok",
   "source_root": "/shelf/source/",
   "categories": [
@@ -667,6 +667,54 @@
       ],
       "notes": "DERIVED — สูตรประยุกต์และบ้านสมมติ ส่งลิงก์หน้ารับซอสทาง inbox มี ZIP และ prompt พร้อมใช้ เครดิตท้ายงานผู้รับ ไม่ปลดล็อกบทเรียนอื่น",
       "sections": []
+    },
+    {
+      "id": "mediral-brand",
+      "title": "Mediral (เมดิรอล) — ซอสแบรนด์และสินค้า",
+      "description": "สรุปแบรนด์ Mediral สินค้า 5 กลุ่มพร้อมชื่อเรียกอื่น ขนาด แพ็ก ส่วนผสมตามสื่อแบรนด์ ตราที่ปรากฏ ความไม่สอดคล้อง และเรื่องรอยืนยัน",
+      "path": "source/mediral/brand.md",
+      "version": "0.1.0",
+      "created_at": "2026-09-28",
+      "updated_at": "2026-09-28",
+      "added_to_shelf_at": "2026-09-28",
+      "status": "needs-confirmation",
+      "status_label": "ถอดจากสื่อแบรนด์ ยังไม่ใช่ข้อมูลที่แบรนด์อนุมัติ",
+      "categories": [
+        "products"
+      ],
+      "tags": [
+        "Mediral",
+        "เมดิรอล",
+        "BY WARANCHAYA",
+        "สกินแคร์",
+        "เซรั่ม",
+        "กันแดด",
+        "มูสล้างหน้า",
+        "แป้งพัฟ",
+        "Anti-Acne",
+        "Anti-Melasma",
+        "TikTok Shop",
+        "Source"
+      ],
+      "aliases": [
+        "MEDIRAL_BRAND_SOURCE.md",
+        "Sources/mediral"
+      ],
+      "notes": "ถอดจากภาพสื่อแบรนด์ 40 ภาพ ภาพหน้าร้าน 8 ภาพ และข้อความ 1 ไฟล์ที่ได้รับ 2026-09-28 ภาพต้นฉบับ ราคา ข้อเสนอ และข้อมูลการขายเก็บนอก repo ทุกคำเรื่องผลลัพธ์เป็น COMPANY CLAIM",
+      "sections": [
+        {
+          "label": "สินค้าและชื่อเรียก",
+          "heading": "### 3. สินค้า 5 กลุ่มและชื่อเรียกที่หมายถึงชิ้นเดียวกัน"
+        },
+        {
+          "label": "ส่วนผสมตามแบรนด์",
+          "heading": "### 4. สิ่งที่แบรนด์เล่าต่อสินค้า (COMPANY CLAIM ทั้งหมด)"
+        },
+        {
+          "label": "รอยืนยัน",
+          "heading": "## ข้อมูลรอยืนยัน"
+        }
+      ]
     }
   ],
   "collections": [
