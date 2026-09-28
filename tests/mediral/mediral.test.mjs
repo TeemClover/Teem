@@ -129,6 +129,66 @@ test('ingredient groups cover every source-listed name once without treating ali
   assert.equal(sun.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames.length, 7);
 });
 
+test('when each piece is used comes from the brand-stated method, with no invented sequence', () => {
+  const {steps, use_time_labels: labels} = routine();
+  const byId = Object.fromEntries(steps.map(s => [s.id, s]));
+  assert.deepEqual(Object.keys(labels), ['morning', 'evening', 'reapply', 'makeup']);
+  for (const s of steps) {
+    assert.ok(s.use_times.every(key => key in labels), `${s.id}: known time keys only`);
+    assert.ok(s.role_short?.trim(), `${s.id}: the opening map needs a short role`);
+  }
+  assert.deepEqual(byId.CL.use_times, [], 'The current mousse label is the only method source');
+  assert.deepEqual(byId.CL.when, ['ตามฉลาก']);
+  for (const id of ['AC', 'BR']) {
+    assert.deepEqual(byId[id].use_times, ['morning', 'evening']);
+    assert.deepEqual(byId[id].when, ['เช้า', 'เย็น']);
+    assert.match(byId[id].how, /เช้าและเย็น/);
+    assert.equal(byId[id].compare_points.length, 3, `${id}: a short, comparable role summary`);
+  }
+  assert.deepEqual(byId.SU.use_times, ['morning', 'reapply']);
+  assert.match(byId.SU.how, /ทาซ้ำ/);
+  assert.deepEqual(byId.PO.use_times, ['makeup']);
+  assert.deepEqual(byId.PO.when, ['เมื่อแต่งหน้า']);
+  assert.ok(!steps.some(s => s.compare_points && !['AC', 'BR'].includes(s.id)), 'Only the two serums are compared');
+});
+
+test('the page order explains roles; it is not presented as a verified application order', () => {
+  const expected = 'หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า';
+  assert.equal(routine().order_note, expected);
+  const copy = [html(), read(join(site, 'js/main.js')), read(join(site, 'js/card.js'))].join('\n');
+  assert.ok(html().includes(expected), 'The static page repeats the correction without JavaScript');
+  assert.doesNotMatch(copy, /เล่าเรื่องตามโปสเตอร์|ตามโปสเตอร์ชุดของแบรนด์|ตามลำดับรูทีน/);
+});
+
+test('the sales path: why and roles, serum comparison, product chapters, offer, then optional atlas', () => {
+  const source = html();
+  const at = id => source.indexOf(`id="${id}"`);
+  const order = ['routine', 'serums', 'lab-film', 'step-CL', 'story', 'set', 'ingredients'].map(at);
+  assert.ok(order.every(i => i > 0), 'Every chapter exists');
+  assert.deepEqual([...order].sort((a, b) => a - b), order, 'The offer precedes the complete ingredient library');
+  const opening = source.slice(at('routine'), at('serums'));
+  for (const id of ['CL', 'AC', 'BR', 'SU', 'PO']) assert.match(opening, new RegExp(`href="#step-${id}"`));
+  assert.match(opening, /href="#set"[^>]*data-cta="offer"/, 'A direct route to the offer in the opening');
+  assert.match(opening, /data-slot="hero-offer"/);
+  assert.match(opening, /ไม่จำเป็นต้องใช้ครบ/, 'The opening never says every reader needs all five');
+  assert.equal((source.match(/data-slot="(?:offer|buy-link|buy-hint)"/g) || []).length, 3, 'One offer, one checkout control, one hint');
+  assert.match(source.slice(at('serums'), at('lab-film')), /ไม่ใช่คำแนะนำให้ทาหลายชิ้นซ้อนกัน/);
+});
+
+test('an enabled lab film ships a real faststart-ready MP4 and its poster, both deployable', () => {
+  const film = html().match(/<section\b[^>]*id="lab-film"[^>]*>/)?.[0] || '';
+  if (!film.includes('data-film-ready="true"')) return;
+  const clip = readFileSync(join(site, 'assets/motion/lab-film-10s.mp4'));
+  assert.equal(clip.toString('ascii', 4, 8), 'ftyp', 'An ISO MP4 container');
+  assert.ok(clip.length < 3_000_000, 'Keep the deferred clip light for phones');
+  const head = clip.subarray(0, 64 * 1024).toString('latin1');
+  assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), 'moov precedes mdat so playback can start early');
+  const poster = readFileSync(join(site, 'assets/motion/lab-film-poster.webp'));
+  assert.equal(poster.toString('ascii', 8, 12), 'WEBP');
+  const ignore = [read(join(root, '.gitignore')), read(join(root, '.vercelignore'))].join('\n').split('\n').map(l => l.trim());
+  assert.ok(!ignore.some(line => line && /mediral\/assets\/motion|\.mp4$/.test(line)), 'The film is not excluded from git or deployment');
+});
+
 test('internal manifests and unsoftened drafts stay out of git', () => {
   const ignore = read(join(root, '.gitignore')).split('\n').map(l => l.trim());
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
@@ -154,7 +214,7 @@ test('copy leads with each step’s role and avoids drug-like or unverified clai
   const heads = steps.map(s => s.headline).join(' ');
   for (const word of ['ล้าง', 'สิว', 'หมองคล้ำ', 'กันแดด', 'ปกปิด']) assert.ok(heads.includes(word), `Headlines should name the role: ${word}`);
   const copy = [html(), read(join(site, 'data/routine.json')), read(join(site, 'js/main.js')), read(join(site, 'js/card.js'))].join('\n');
-  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|เหมาะกับทุกสีผิว|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|SPF ?50|PA\+{3}|SPF ?30|90%|95%|144 ชั่วโมง|12 ชั่วโมง)/iu;
+  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|เหมาะกับทุกสีผิว|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|SPF ?50|PA\+{3}|SPF ?30|90%|95%|144 ชั่วโมง|12 ชั่วโมง|เสริมฤทธิ์|synerg)/iu;
   const hit = copy.match(banned);
   assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
 });

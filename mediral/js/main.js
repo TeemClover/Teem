@@ -69,10 +69,14 @@ function stillFigure(step) {
   return `<figure class="mr-still">${pack}<div class="mr-still__bots">${bots}</div><figcaption>${esc(step.image_note)}</figcaption></figure>`;
 }
 
+const listedCount = step => (step.featured?.length || 0) + (step.ingredients?.length || 0);
+const whenText = step => step.when.map(esc).join(' · ');
+
 function ingredientPanel(step) {
   if (!step.featured?.length) return step.ingredients_status === 'pending-current-sku'
     ? `<p class="mr-step__note">${esc(step.ingredients_note)}</p>` : '';
   const first = step.featured[0];
+  const families = (step.ingredient_groups || []).filter(group => group.ingredientNames?.length);
   return `<section class="mr-lab" data-lab="${step.id}" aria-label="สำรวจส่วนผสม ${esc(step.nick)}">
     <p class="mr-lab__eyebrow">เลือกส่วนผสม แล้วดูว่ามีบทบาทอะไร <span class="mr-tag">ภาพจำลอง</span></p>
     <div class="mr-lab__tabs" aria-label="ส่วนผสมเด่น">${step.featured.map((f, i) => `<button type="button" data-ingredient-step="${step.id}" data-ingredient-index="${i}" aria-pressed="${i === 0}" aria-controls="lab-${step.id}">${esc(f.name)}</button>`).join('')}</div>
@@ -81,7 +85,8 @@ function ingredientPanel(step) {
       <p class="mr-lab__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
       <small class="mr-lab__source">${esc(ingredientSource(first))}</small>
     </div>
-    <a class="mr-lab__all" href="#formula-${step.id}">ดูส่วนผสมที่แบรนด์ระบุทั้งหมด <span aria-hidden="true">↓</span></a>
+    ${families.length ? `<p class="mr-lab__families"><span>กลุ่มส่วนผสม</span>${families.map(group => esc(group.title)).join(' · ')}</p>` : ''}
+    <a class="mr-lab__all" href="#formula-${step.id}">อ่านส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ <span aria-hidden="true">↓</span></a>
   </section>`;
 }
 function ingredientSource(ingredient) {
@@ -91,14 +96,14 @@ function formulaIngredients(step, groupIndex) {
   const named = new Map([...(step.featured || []), ...(step.ingredients || [])].map(ingredient => [ingredient.name, ingredient]));
   return (step.ingredient_groups?.[groupIndex]?.ingredientNames || []).map(name => named.get(name)).filter(Boolean);
 }
+// The complete list is optional deep reading: closed by default, opened by the reader or a direct link.
 function ingredientAtlas(step) {
   if (step.ingredients_status === 'pending-current-sku' || !step.ingredient_groups?.some(group => group.ingredientNames.length)) return '';
-  const next = state.data.steps[step.order];
-  return `<section class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}" aria-labelledby="formula-title-${step.id}">
+  const groups = step.ingredient_groups.filter(group => group.ingredientNames.length).length;
+  return `<details class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}">
+    <summary id="formula-title-${step.id}"><span class="mr-atlas__num">${pad(step.order)}</span><span class="mr-atlas__name">${esc(step.nick)}<small>${esc(step.role_short || step.verb)}</small></span><span class="mr-atlas__count">${listedCount(step)} ชื่อ · ${groups} กลุ่ม</span></summary>
     <header>
-      <h2 id="formula-title-${step.id}">รู้จักส่วนผสมของ${esc(step.nick)}</h2>
-      <p>เลือกชื่อในแต่ละกลุ่ม เพื่ออ่านบทบาทและที่มาที่แบรนด์ระบุ</p>
-      <p>${esc(step.ingredients_note)}</p>
+      <p>เลือกชื่อในแต่ละกลุ่ม เพื่ออ่านบทบาทและที่มาที่แบรนด์ระบุ ${esc(step.ingredients_note)}</p>
     </header>
     <div class="mr-ingredient-atlas__groups">${step.ingredient_groups.map((group, groupIndex) => {
       const ingredients = formulaIngredients(step, groupIndex);
@@ -116,8 +121,8 @@ function ingredientAtlas(step) {
         </div>
       </article>`;
     }).join('')}</div>
-    <a class="mr-ingredient-atlas__next" href="${next ? `#step-${next.id}` : '#set'}">${next ? `ต่อไป: ${esc(next.nick)}` : 'ดูชุดและรายการที่บันทึก'} <span aria-hidden="true">↓</span></a>
-  </section>`;
+    <p class="mr-ingredient-atlas__next"><a href="#step-${step.id}">กลับไปดู${esc(step.nick)} <span aria-hidden="true">↑</span></a><a href="#set">ดูข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↑</span></a></p>
+  </details>`;
 }
 function stepBody(step) {
   return `
@@ -140,12 +145,43 @@ function stepBody(step) {
 }
 
 function renderRoutine() {
-  const reasons = {
-    CL: 'เริ่มจากการทำความสะอาด', AC: 'ดูแลผิวที่เป็นสิวง่าย',
-    BR: 'ดูแลผิวที่ดูหมองคล้ำ', SU: 'ขั้นกันแดดตอนเช้า', PO: 'ปิดท้ายเมื่ออยากแต่งผิว',
-  };
-  slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.verb)}</strong><small>${esc(reasons[step.id])}</small></a></li>`).join('');
+  // Role first, product second, brand-stated time last: the whole set can be read in one glance.
+  slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.role_short || step.verb)}<em>${esc(step.nick)}</em></strong><small>${whenText(step)}</small></a></li>`).join('');
   slot('routine-still').innerHTML = state.data.steps.map(step => `<figure><img src="${asset(step.image)}" alt="${esc(step.nick)} — ภาพแพ็ก AI ร่าง" decoding="async"><figcaption>${esc(step.nick)}</figcaption></figure>`).join('');
+}
+
+function renderCompare() {
+  // Two serums, two roles. Points and times come from brand copy; nothing here pairs or sequences them.
+  slot('compare').innerHTML = state.data.steps.filter(step => step.compare_points?.length).map(step => `
+    <article class="mr-serum mr-serum--${step.id.toLowerCase()}">
+      <figure class="mr-serum__pack"><img src="${asset(step.image)}" alt="${esc(step.image_note)}: ${esc(step.nick)}" loading="lazy" decoding="async"><figcaption>ภาพแพ็ก AI ฉบับร่าง</figcaption></figure>
+      <p class="mr-serum__code"><span>${pad(step.order)}</span>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p>
+      <h3>${esc(step.headline)}</h3>
+      <p class="mr-serum__label">สื่อแบรนด์เล่าเรื่อง</p>
+      <ul class="mr-serum__points">${step.compare_points.map(point => `<li>${esc(point)}</li>`).join('')}</ul>
+      <dl class="mr-serum__facts">
+        <div><dt>ใช้เมื่อไร</dt><dd>${whenText(step)} <small>ตามสื่อแบรนด์</small></dd></div>
+        <div><dt>ส่วนผสมเด่นที่แบรนด์เล่า</dt><dd>${step.featured.map(item => esc(item.name)).join(' · ')}</dd></div>
+      </dl>
+      <p class="mr-serum__links"><a href="#step-${step.id}">ดูบทบาทของขวดนี้ <span aria-hidden="true">↓</span></a><a href="#formula-${step.id}">ส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a></p>
+    </article>`).join('');
+}
+
+function renderUses() {
+  const labels = state.data.use_time_labels;
+  const keys = Object.keys(labels);
+  slot('uses').innerHTML = `<table class="mr-uses__table">
+    <caption>แต่ละชิ้นใช้เมื่อไร <small>ตามข้อมูลที่แบรนด์ระบุ</small></caption>
+    <thead><tr><th scope="col">ชิ้นในชุด</th>${keys.map(key => `<th scope="col">${esc(labels[key])}</th>`).join('')}</tr></thead>
+    <tbody>${state.data.steps.map(step => `<tr>
+      <th scope="row"><span>${pad(step.order)}</span>${esc(step.nick)}</th>
+      ${step.use_times.length
+        ? keys.map(key => step.use_times.includes(key)
+          ? `<td><span class="mr-uses__dot" role="img" aria-label="${esc(labels[key])}"></span></td>`
+          : '<td><span class="mr-sr">ไม่ระบุ</span></td>').join('')
+        : `<td colspan="${keys.length}" class="mr-uses__label">ยึดวิธีใช้บนฉลากขวดที่ได้รับ</td>`}
+    </tr>`).join('')}</tbody>
+  </table>`;
 }
 
 function renderSteps() {
@@ -159,12 +195,26 @@ function renderSteps() {
           <p class="mr-step__code"><span class="mr-step__num">${pad(step.order)}</span><span class="mr-step__en">${esc(step.verb_en)}</span><span class="mr-step__verb">${esc(step.verb)} · ${esc(step.nick)}</span></p>
           <h2 class="mr-step__title" id="h-${step.id}">${esc(step.headline)}</h2>
           <p class="mr-step__lead">${esc(step.for_you)}</p>
+          <p class="mr-step__when"><span>ใช้เมื่อไร</span> ${whenText(step)}${step.use_times.includes('reapply') ? ' · ทาซ้ำระหว่างวันได้' : ''}</p>
           ${step.visible_note ? `<p class="mr-step__note">${esc(step.visible_note)}</p>` : ''}
           <ol class="mr-phase" aria-hidden="true"><li>วัตถุดิบ</li><li>สกัด · ผสม</li><li>บทบาท</li></ol>
         </div>
         <div class="mr-step__right">${stepBody(step)}</div>
       </div>
-    </section>${ingredientAtlas(step)}`).join('');
+    </section>`).join('');
+}
+
+function renderLibrary() {
+  // Every listed name stays one tap away, after the offer, without lengthening the product story.
+  slot('library').innerHTML = state.data.steps.map(ingredientAtlas).join('');
+}
+
+// A direct link to a closed atlas opens it first, so the reader lands on visible content.
+function openAtlas(hash) {
+  if (!/^#formula-[A-Z]{2}$/.test(hash || '')) return null;
+  const atlas = $(hash);
+  if (atlas?.tagName === 'DETAILS' && !atlas.open) atlas.open = true;
+  return atlas;
 }
 
 function renderRail() {
@@ -193,8 +243,20 @@ function renderSet() {
     </figure>`).join('');
 }
 
+// The opening describes the fixed set itself, so it follows the poster dates but never the saved list.
+function renderHeroOffer() {
+  const {poster} = state.data.set;
+  const phase = posterPhase(poster);
+  slot('hero-offer').innerHTML = phase === 'within'
+    ? `<p class="mr-hero-offer__label">ข้อเสนอชุดในโปสเตอร์แบรนด์ · ถึง ${thaiDate(poster.valid_to)}</p>
+       <p class="mr-hero-offer__price">${baht(poster.price)} <small>ชุด 5 ชิ้น · ยังไม่ยืนยันในตะกร้า ยอดจริงดูที่หน้าชำระเงิน</small></p>`
+    : `<p class="mr-hero-offer__label">${phase === 'upcoming' ? 'ข้อเสนอชุดในโปสเตอร์ยังไม่เริ่ม' : phase === 'expired' ? 'ข้อเสนอชุดในโปสเตอร์สิ้นสุดแล้ว' : 'ยังยืนยันช่วงข้อเสนอชุดไม่ได้'}</p>
+       <p class="mr-hero-offer__note">ดูราคาและสิทธิปัจจุบันของชุด 5 ชิ้นที่ร้าน</p>`;
+}
+
 function renderOffer() {
   const {poster} = state.data.set;
+  renderHeroOffer();
   if (!fullSelection()) {
     slot('offer').innerHTML = '<p>รายการที่บันทึกนี้ไม่ใช่ชุดขาย 5 ชิ้น จึงไม่แสดงราคาชุดกับรายการนี้ ราคาสินค้าแยกชิ้นให้ดูที่ร้าน</p>';
     return;
@@ -397,12 +459,21 @@ function chooseFormulaIngredient(id, groupIndex, index) {
   $('.mr-ingredient-group__source', group).textContent = ingredientSource(ingredient);
 }
 
+// Same query as STACKED_QUERY in js/story.js and the CSS words-below-scene switch.
+const stackedLayout = matchMedia('(max-width: 1100px)');
+
 function readingChapter() {
   const readingTop = Math.min(innerHeight / 3, ($('.mr-header')?.getBoundingClientRect().bottom || 88) + 16);
-  return $$('.mr-reading-chapter').find(chapter => {
+  const covers = chapter => {
     const rect = chapter.getBoundingClientRect();
     return rect.top <= readingTop && rect.bottom > readingTop;
-  });
+  };
+  const chapter = $$('.mr-reading-chapter').find(covers);
+  if (chapter) return chapter;
+  // Stacked layouts give the purchase card the whole screen: the hero already showed all five,
+  // so the set is read like a chapter, and the scene behind it pauses.
+  const set = stackedLayout.matches ? $('#set') : null;
+  return set && covers(set) ? set : undefined;
 }
 
 function syncStagePlayback(chapter = readingChapter()) {
@@ -527,12 +598,16 @@ async function boot() {
   state.data = await res.json();
   state.selection = new Set(state.data.steps.map(s => s.id));
   renderRoutine();
+  renderCompare();
+  renderUses();
   renderSteps();
+  renderLibrary();
   renderRail();
   renderSet();
   renderSummary();
   // Product sections are created after the document parses. Restore incoming chapter links now,
   // before the optional scene changes layout, rather than relying on the browser's early hash pass.
+  openAtlas(location.hash);
   const incomingChapter = [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
@@ -549,9 +624,13 @@ async function boot() {
       removeEventListener('hashchange', cleanup);
       removeEventListener('pagehide', cleanup);
     };
+    // Product chapters keep their exact scene anchor. Reading chapters and atlases honour their CSS
+    // scroll-margin (header clearance), measured each time because the header changes with layout.
+    const anchorOffset = () => sections().includes(incomingChapter) ? 0
+      : parseFloat(globalThis.getComputedStyle?.(incomingChapter)?.scrollMarginTop) || 0;
     const restoreChapter = () => {
       if (active && location.hash === incomingHash) {
-        window.scrollTo({top: incomingChapter.getBoundingClientRect().top + scrollY, behavior: 'instant'});
+        window.scrollTo({top: incomingChapter.getBoundingClientRect().top + scrollY - anchorOffset(), behavior: 'instant'});
         onScroll();
       }
     };
@@ -591,7 +670,12 @@ async function boot() {
     if (box.checked) state.selection.add(box.value); else state.selection.delete(box.value);
     renderSummary();
   });
+  // Opening or closing an atlas changes layout without a scroll; re-measure the reading gate now.
+  document.addEventListener('toggle', e => { if (e.target?.matches?.('.mr-ingredient-atlas')) onScroll(); }, true);
+  addEventListener('hashchange', () => { if (openAtlas(location.hash)) onScroll(); });
   document.addEventListener('click', e => {
+    const atlasLink = e.target.closest('a[href^="#formula-"]');
+    if (atlasLink) openAtlas(atlasLink.getAttribute('href'));
     const ingredient = e.target.closest('[data-ingredient-index]');
     if (ingredient) chooseIngredient(ingredient.dataset.ingredientStep, Number(ingredient.dataset.ingredientIndex));
     const formula = e.target.closest('[data-formula-index]');
@@ -604,6 +688,7 @@ async function boot() {
 
   const reveal = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('is-in'); }), {threshold: 0.12});
   $$('.mr-chapter, .mr-step, .mr-routine').forEach(el => reveal.observe(el));
+  $$('.mr-compare, .mr-library').forEach(el => reveal.observe(el));
   addEventListener('scroll', onScroll, {passive: true});
   addEventListener('resize', () => { onScroll(); measureBand(); });
   onScroll();
@@ -618,7 +703,7 @@ function bootFailed(err) {
   const note = document.createElement('div');
   note.className = 'mr-alert';
   note.setAttribute('role', 'alert');
-  note.innerHTML = `<p><strong>โหลดข้อมูลรูทีนไม่สำเร็จ</strong> รูทีน 5 ขั้นตามโปสเตอร์ชุดของแบรนด์: 1 มูสโฟมล้างหน้า · 2 เซรั่มขวดขาว · 3 เซรั่มขวดเหลืองเขียว · 4 เซรั่มกันแดด · 5 แป้งพัฟ ก่อนจ่ายให้เช็กรายการในชุดและยอดที่หน้าชำระ</p>
+  note.innerHTML = `<p><strong>โหลดข้อมูลชุดไม่สำเร็จ</strong> ชุด 5 ชิ้น: 1 มูสโฟมล้างหน้า · 2 เซรั่มขวดขาว · 3 เซรั่มขวดเหลืองเขียว · 4 เซรั่มกันแดด · 5 แป้งพัฟ วิธีใช้จริงให้ยึดฉลากสินค้า ก่อนจ่ายให้เช็กรายการในชุดและยอดที่หน้าชำระ</p>
     <button type="button" class="mr-btn mr-btn--small">ลองโหลดอีกครั้ง</button>`;
   note.querySelector('button').addEventListener('click', () => location.reload());
   $('#main').prepend(note);

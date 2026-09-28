@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Mediral 5 ขั้น — ล้าง บำรุง ปกป้อง ปกปิด · myClover</title>
-  <meta name="description" content="รูทีน Mediral 5 ขั้นจาก myClover: ล้างหน้า ดูแลผิวที่เป็นสิวง่าย ดูแลผิวที่ดูหมองคล้ำ กันแดด และปกปิด — แต่ละชิ้นใช้ตอนไหน แบรนด์เล่าถึงวัตถุดิบอะไร และชุด 5 ชิ้นมีอะไรบ้าง">
+  <title>Mediral ชุด 5 ชิ้น — เห็นหน้าที่ของทุกชิ้น ตั้งแต่ล้างหน้าถึงแต่งผิว · myClover</title>
+  <meta name="description" content="ชุด Mediral 5 ชิ้นจาก myClover: มูสโฟมล้างหน้า เซรั่มขวดขาวสำหรับผิวที่เป็นสิวง่าย เซรั่มขวดเหลืองเขียวสำหรับผิวที่ดูหมองคล้ำ เซรั่มกันแดด และแป้งพัฟ — แต่ละชิ้นทำหน้าที่อะไร ใช้เมื่อไร และข้อเสนอชุด">
   <!-- Prototype for owner review. noindex is not access control; keep private data out of this folder. -->
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="theme-color" content="#e6edcd">
@@ -21,17 +21,17 @@
   <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>
 
   <header class="mr-header">
-    <a class="mr-brand" href="#routine" aria-label="กลับไปดูภาพรวมรูทีน">
+    <a class="mr-brand" href="#routine" aria-label="กลับไปดูภาพรวมชุด">
       <span class="mr-brand__house">myClover</span>
       <span class="mr-brand__sep" aria-hidden="true">·</span>
       <span class="mr-brand__room">Mediral</span>
     </a>
-    <span class="mr-header__edition" aria-hidden="true">THE FIVE-STEP EDIT</span>
-    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ดูชุด 5 ชิ้น <span aria-hidden="true">↗</span></a>
+    <span class="mr-header__edition" aria-hidden="true">THE FIVE-PIECE SET</span>
+    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↓</span></a>
   </header>
 
   <!-- Routine rail: where you are in the five steps; finished pieces stay here small. -->
-  <nav class="mr-rail" aria-label="ลำดับรูทีน 5 ขั้น" data-slot="rail"></nav>
+  <nav class="mr-rail" aria-label="5 ชิ้นในชุด" data-slot="rail"></nav>
 
   <!-- One fixed stage under the text. The page stays complete when WebGL never loads. -->
   <div class="mr-stage" id="stage" aria-hidden="true">
@@ -50,25 +50,26 @@
   </div>
 
   <main id="main">
-    <!-- Start with the customer's routine, then let them inspect one role at a time. -->
+    <!-- Why the set, what each piece does, and the fastest route to the offer. -->
     <section class="mr-routine" id="routine" data-chapter="routine" aria-labelledby="routine-title">
       <div class="mr-routine__sticky">
         <div class="mr-routine__copy">
-          <p class="mr-kicker">จากโจทย์ผิว สู่บทบาทของแต่ละชิ้น</p>
-          <h1 class="mr-routine__title" id="routine-title"><span>ผิวมีหลายโจทย์</span><span>แต่ละขั้นจึงมีหน้าที่</span></h1>
-          <p class="mr-routine__lead">ล้างให้สะอาด ดูแลผิวที่เป็นสิวง่ายและความหมองคล้ำ กันแดด แล้วปิดท้ายเมื่ออยากแต่งผิว มาดูว่าแต่ละชิ้นแบ่งหน้าที่อย่างไร โดยไม่จำเป็นต้องใช้ครบทั้ง 5 ชิ้น</p>
+          <p class="mr-kicker">ชุด MEDIRAL 5 ชิ้น</p>
+          <h1 class="mr-routine__title" id="routine-title"><span>เห็นหน้าที่ของทุกชิ้น</span><span>ตั้งแต่ล้างหน้าถึงแต่งผิว</span></h1>
+          <p class="mr-routine__lead">ซื้อสกินแคร์หลายชิ้นแล้วไม่แน่ใจว่าชิ้นไหนทำอะไร? ชุดนี้แยกบทบาทของแต่ละชิ้นไว้ชัด ดูว่าชิ้นไหนดูแลเรื่องอะไร แล้วเลือกใช้ให้ตรงกับผิวของคุณ</p>
           <ol class="mr-routine__map" data-slot="routine-map">
-            <li><a href="#step-CL"><span>01</span><strong>ล้าง</strong><small>เริ่มจากทำความสะอาด</small></a></li>
-            <li><a href="#step-AC"><span>02</span><strong>เซรั่มขวดขาว</strong><small>ดูแลผิวที่เป็นสิวง่าย</small></a></li>
-            <li><a href="#step-BR"><span>03</span><strong>เซรั่มเหลืองเขียว</strong><small>ดูแลผิวที่ดูหมองคล้ำ</small></a></li>
-            <li><a href="#step-SU"><span>04</span><strong>กันแดด</strong><small>ขั้นปกป้องตอนเช้า</small></a></li>
-            <li><a href="#step-PO"><span>05</span><strong>แป้งพัฟ</strong><small>เมื่อต้องการแต่งผิว</small></a></li>
+            <li><a href="#step-CL"><span>01</span><strong>ล้างหน้าและเครื่องสำอาง<em>มูสโฟมล้างหน้า</em></strong><small>ตามฉลาก</small></a></li>
+            <li><a href="#step-AC"><span>02</span><strong>ผิวที่เป็นสิวง่าย<em>เซรั่มขวดขาว</em></strong><small>เช้า · เย็น</small></a></li>
+            <li><a href="#step-BR"><span>03</span><strong>ผิวที่ดูหมองคล้ำ<em>เซรั่มขวดเหลืองเขียว</em></strong><small>เช้า · เย็น</small></a></li>
+            <li><a href="#step-SU"><span>04</span><strong>กันแดดตอนเช้า<em>เซรั่มกันแดด</em></strong><small>เช้า</small></a></li>
+            <li><a href="#step-PO"><span>05</span><strong>แต่งผิวเมื่อต้องการ<em>แป้งพัฟตลับเขียว</em></strong><small>เมื่อแต่งหน้า</small></a></li>
           </ol>
+          <div class="mr-hero-offer" data-slot="hero-offer" aria-live="polite"></div>
           <div class="mr-actions">
-            <a class="mr-btn" href="#lab-film" data-cta="enter-lab">เข้าแล็บดูทีละขั้น <span aria-hidden="true">↓</span></a>
-            <a class="mr-btn mr-btn--ghost" href="#set" data-cta="skip">ดูชุดและข้อเสนอ</a>
+            <a class="mr-btn" href="#set" data-cta="offer">ดูข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↓</span></a>
+            <a class="mr-btn mr-btn--ghost" href="#serums" data-cta="compare">เทียบเซรั่มสองขวด</a>
           </div>
-          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
+          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral · ไม่จำเป็นต้องใช้ครบทั้ง 5 ชิ้น</p>
         </div>
         <div class="mr-routine__still" data-slot="routine-still">
           <figure><img src="assets/pack/cl-clover-front-v2.webp" alt="ภาพแพ็ก AI ฉบับร่าง: มูสโฟมล้างหน้า" decoding="async"><figcaption>01 · ล้าง</figcaption></figure>
@@ -80,25 +81,44 @@
       </div>
     </section>
 
-    <section class="mr-film mr-reading-chapter" id="lab-film" data-chapter="lab-film" data-lab-film data-film-ready="false" aria-labelledby="lab-film-title">
+    <!-- The two serums are the most common question: two roles, side by side, with brand-stated times. -->
+    <section class="mr-compare mr-reading-chapter" id="serums" data-chapter="serums" aria-labelledby="serums-title">
+      <header class="mr-compare__head">
+        <p class="mr-kicker">เซรั่มสองขวดในชุด</p>
+        <h2 id="serums-title">ขวดขาวกับขวดเหลืองเขียว<br>ดูแลคนละโจทย์</h2>
+        <p>สื่อแบรนด์วางเซรั่มสองขวดไว้คนละบทบาท ดูว่าโจทย์ไหนตรงกับผิวของคุณ</p>
+      </header>
+      <div class="mr-compare__pair" data-slot="compare">
+        <article class="mr-serum"><p class="mr-serum__code"><span>02</span> เซรั่มขวดขาว</p><h3>ดูแลผิวที่เป็นสิวง่าย</h3><p>สื่อแบรนด์ระบุใช้เช้าและเย็น</p></article>
+        <article class="mr-serum"><p class="mr-serum__code"><span>03</span> เซรั่มขวดเหลืองเขียว</p><h3>ดูแลผิวที่ดูหมองคล้ำ</h3><p>สื่อแบรนด์ระบุใช้เช้าและเย็น</p></article>
+      </div>
+      <div class="mr-uses" data-slot="uses"></div>
+      <p class="mr-compare__note">หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า ตารางบอกช่วงเวลาของแต่ละชิ้น ไม่ใช่คำแนะนำให้ทาหลายชิ้นซ้อนกัน</p>
+      <div class="mr-actions mr-compare__actions">
+        <a class="mr-btn" href="#set" data-cta="compare-offer">ดูข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↓</span></a>
+        <a class="mr-btn mr-btn--ghost" href="#step-CL">ดูทีละชิ้น เริ่มจากล้างหน้า</a>
+      </div>
+    </section>
+
+    <section class="mr-film mr-reading-chapter" id="lab-film" data-chapter="lab-film" data-lab-film data-film-ready="true" aria-labelledby="lab-film-title">
       <div class="mr-film__heading">
         <div>
-          <p class="mr-kicker">MATERIAL STUDY · อ่านเรื่องราวของสูตร</p>
-          <h2 id="lab-film-title">จากวัตถุดิบ<br>สู่ภาพของสูตร</h2>
+          <p class="mr-kicker">MATERIAL STUDY · เรื่องเล่าจากวัตถุดิบ</p>
+          <h2 id="lab-film-title">จากพืชและสารสกัด<br>สู่ภาพของสูตร</h2>
         </div>
-        <p>ก่อนเลือกขวดหนึ่ง ลองรู้จักกลุ่มส่วนผสมที่แบรนด์เล่า ตั้งแต่พืชและสารสกัด ไปจนถึงความชุ่มชื้นและเนื้อสัมผัส</p>
+        <p>แบรนด์เล่าถึงพืช สารสกัด และสารให้ความชุ่มชื้นในแต่ละชิ้น คลิปสั้นนี้ช่วยให้เห็นภาพ ก่อนอ่านบทบาทของแต่ละขวด</p>
       </div>
       <figure class="mr-film__figure">
         <div class="mr-film__frame">
           <img class="mr-film__fallback" src="assets/motion/lab-film-poster.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <video class="mr-film__video" id="lab-film-media" data-film-video data-src="assets/motion/lab-film-10s.mp4" poster="assets/motion/lab-film-poster.webp" muted playsinline loop preload="none" hidden aria-label="ภาพเล่าเรื่องวัตถุดิบ สารสกัด และเนื้อสัมผัสแบบไม่มีเสียง" aria-describedby="lab-film-caption">ดูภาพประกอบและคำอธิบายสามช่วงด้านล่างแทนวิดีโอได้</video>
+          <video class="mr-film__video" id="lab-film-media" data-film-video data-src="assets/motion/lab-film-10s.mp4" poster="assets/motion/lab-film-poster.webp" muted playsinline preload="none" hidden aria-label="ภาพจำลองพืชและการหยดสารสกัด แบบไม่มีเสียง" aria-describedby="lab-film-caption">ดูภาพประกอบและคำอธิบายสามช่วงด้านล่างแทนวิดีโอได้</video>
           <div class="mr-film__controls">
             <span class="mr-film__still-label">ภาพจำลองงานแล็บ</span>
             <span class="mr-film__duration" data-film-duration hidden>10 วินาที · ไม่มีเสียง</span>
             <button class="mr-film__toggle" type="button" data-film-toggle aria-controls="lab-film-media" aria-label="เล่นวิดีโอจำลองแล็บ" hidden><span data-film-icon aria-hidden="true">▶</span><span data-film-label>เล่นวิดีโอ</span></button>
           </div>
         </div>
-        <figcaption id="lab-film-caption">ภาพจำลองด้วย AI เพื่อเล่าเรื่องวัตถุดิบ ไม่ใช่โรงงาน การทดลอง หรือเนื้อผลิตภัณฑ์จริงของ Mediral</figcaption>
+        <figcaption id="lab-film-caption">ภาพจำลองด้วย AI: พืชและการหยดสารสกัดเพื่อเล่าเรื่อง ไม่ใช่โรงงาน การทดลอง ผลทดสอบ หรือเนื้อผลิตภัณฑ์จริงของ Mediral</figcaption>
         <p class="mr-film__status" data-film-status role="status" aria-live="polite"></p>
       </figure>
       <ol class="mr-film__beats">
@@ -106,16 +126,17 @@
         <li><img class="mr-film__still" src="assets/motion/lab-research.webp" alt="ภาพจำลอง AI: การเตรียมตัวอย่างด้วยปิเปตในฉากแล็บ" width="1200" height="800" loading="lazy" decoding="async"><span>02</span><h3>มองสารสกัด</h3><p>ดูบทบาทของแต่ละกลุ่ม ทั้งการดูแลผิวและความชุ่มชื้น ตามข้อมูลที่แบรนด์ให้ไว้</p></li>
         <li><img class="mr-film__still" src="assets/motion/lab-compound.webp" alt="ภาพจำลอง AI: หยดเจลใสเพื่อเล่าเรื่องเนื้อสัมผัส" width="1200" height="800" loading="lazy" decoding="async"><span>03</span><h3>เข้าใจเนื้อสัมผัส</h3><p>ใช้ภาพช่วยเล่าเรื่อง แล้วดูเนื้อจริงและวิธีใช้จากสินค้าที่ได้รับ</p></li>
       </ol>
-      <a class="mr-film__next" href="#step-CL">เริ่มอ่านจากขั้นล้างหน้า <span aria-hidden="true">↘</span></a>
+      <a class="mr-film__next" href="#step-CL">ดูทีละชิ้น เริ่มจากล้างหน้า <span aria-hidden="true">↘</span></a>
     </section>
 
-    <!-- The first lab chapter keeps a static role explanation before data loads. -->
+    <!-- The first product chapter keeps a static role explanation before data loads. -->
     <section class="mr-step" id="step-CL" data-step="CL" data-index="0" aria-labelledby="hero-title">
       <div class="mr-step__sticky">
         <div class="mr-step__left">
           <p class="mr-step__code"><span class="mr-step__num">01</span><span class="mr-step__en">CLEANSE</span><span class="mr-step__verb">ล้าง · มูสโฟมล้างหน้า</span></p>
           <h2 class="mr-step__title" id="hero-title">เริ่มจากล้างหน้าให้สะอาด</h2>
           <p class="mr-step__lead">มูสทำหน้าที่ล้างออก ก่อนเข้าสู่ขั้นบำรุง ปั๊มฟองลงฝ่ามือ ล้างหน้าแล้วล้างออก โดยยึดวิธีใช้บนฉลากขวดที่ได้รับ</p>
+          <p class="mr-step__when"><span>ใช้เมื่อไร</span> ตามฉลาก</p>
           <ol class="mr-phase" aria-hidden="true"><li>น้ำ</li><li>ฟอง</li><li>บทบาท</li></ol>
         </div>
         <div class="mr-step__right" data-slot="hero-body"></div>
@@ -127,12 +148,18 @@
     <section class="mr-chapter mr-set" id="set" data-chapter="set" aria-labelledby="set-title">
       <div class="mr-set__inner">
         <div class="mr-card mr-card--wide">
-          <p class="mr-kicker">ครบ 5 ขั้น</p>
+          <p class="mr-kicker">ชุด 5 ชิ้น · อย่างละ 1 ชิ้น</p>
           <h2 class="mr-h2" id="set-title" data-slot="set-headline">5 ชิ้น จากล้างหน้าถึงปิดท้ายลุค</h2>
-          <p class="mr-set__intro">มูส · เซรั่มสองตัว · กันแดด · แป้งพัฟ<br>ในชุดมีอย่างละ 1 ชิ้น</p>
+          <p class="mr-set__intro">สำหรับคนที่อยากใช้แบรนด์เดียว ตั้งแต่ล้างหน้า บำรุง กันแดด จนถึงแต่งผิว ใช้เฉพาะชิ้นที่เหมาะกับผิวได้ ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
           <div class="mr-setrow" data-slot="set-row" aria-hidden="true"></div>
-          <div class="mr-summary" data-slot="summary" aria-live="polite"></div>
           <div class="mr-offer" data-slot="offer"></div>
+          <div class="mr-actions mr-actions--buy">
+            <a class="mr-btn" data-slot="buy-link" aria-disabled="true" role="link">ลิงก์ชุดนี้กำลังตรวจ</a>
+            <button type="button" class="mr-btn mr-btn--ghost" data-action="copy">คัดลอกรายการ</button>
+            <button type="button" class="mr-btn mr-btn--ghost" data-action="card">บันทึกใบสรุปก่อนจ่าย</button>
+          </div>
+          <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
+          <div class="mr-summary" data-slot="summary" aria-live="polite"></div>
           <details class="mr-customize">
             <summary>เลือกเฉพาะชิ้นไว้ในใบสรุป</summary>
             <p>จัดรายการที่อยากบันทึกได้ ส่วนข้อเสนอของร้านเป็นชุด 5 ชิ้นตายตัว เปลี่ยนสินค้าในชุดไม่ได้</p>
@@ -140,29 +167,34 @@
               <legend class="mr-pieces__legend">ชิ้นที่ต้องการบันทึก</legend>
             </fieldset>
           </details>
-          <div class="mr-actions mr-actions--buy">
-            <a class="mr-btn" data-slot="buy-link" aria-disabled="true" role="link">ลิงก์ชุดนี้กำลังตรวจ</a>
-            <button type="button" class="mr-btn mr-btn--ghost" data-action="copy">คัดลอกรายการ</button>
-            <button type="button" class="mr-btn mr-btn--ghost" data-action="card">บันทึกใบสรุปก่อนจ่าย</button>
-          </div>
-          <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
           <p class="mr-disclosure" data-slot="disclosure"></p>
           <p class="mr-disclosure">หน้านี้จัดทำโดย myClover เพื่อช่วยเลือกซื้อ ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
+          <a class="mr-set__library" href="#ingredients">รู้จักส่วนผสมทุกชื่อที่แบรนด์ระบุ <span aria-hidden="true">↓</span></a>
         </div>
       </div>
+    </section>
+
+    <!-- Optional deep reading: every listed ingredient name, role and attribution, closed by default. -->
+    <section class="mr-library mr-reading-chapter" id="ingredients" data-chapter="ingredients" aria-labelledby="ingredients-title">
+      <header class="mr-library__head">
+        <p class="mr-kicker">รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ</p>
+        <h2 id="ingredients-title">ส่วนผสมทุกชื่อที่แบรนด์ระบุ</h2>
+        <p>เปิดดูทีละชิ้น แต่ละชื่อมีบทบาทและที่มาตามสื่อแบรนด์ รายชื่อนี้ไม่ใช่ส่วนผสมครบตามฉลาก และไม่ได้บอกสัดส่วนของสูตร ส่วนผสมของมูสแพ็กปัจจุบันยังไม่ยืนยัน จึงยังไม่แสดง</p>
+      </header>
+      <div class="mr-library__list" data-slot="library"></div>
     </section>
   </main>
 
   <footer class="mr-footer">
-    <p><strong>ที่มาของข้อมูล</strong> ชื่อ ขนาด วิธีใช้ และรายชื่อส่วนผสมถอดจากสื่อการตลาดของแบรนด์ Mediral รายชื่อส่วนผสมไม่ใช่ส่วนผสมครบตามฉลาก ลำดับ 5 ขั้นเป็นการเล่าเรื่องตามโปสเตอร์ชุดของแบรนด์ วิธีใช้และลำดับทาจริงให้ยึดฉลากของสินค้าที่ได้รับ ข้อเสนอชุดมาจากโปสเตอร์ที่ได้รับวันที่ 28 ก.ย. 2026 ยอดที่ต้องจ่ายจริงให้ดูที่หน้าชำระเงิน</p>
-    <p>ภาพแพ็กเป็นภาพ AI ฉบับร่างจากสื่อของแบรนด์ ไม่ใช่ฉลากต้นฉบับ ภาพพืชสร้างด้วย AI การรวมวัตถุดิบและการเคลื่อนไหวในฉากเป็นภาพเล่าเรื่อง ไม่ใช่กระบวนการผลิต ผลบนผิว หรือผลทดสอบ หน้านี้ไม่ใช่คำแนะนำทางการแพทย์ หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
+    <p><strong>ที่มาของข้อมูล</strong> ชื่อ ขนาด วิธีใช้ และรายชื่อส่วนผสมถอดจากสื่อการตลาดของแบรนด์ Mediral รายชื่อส่วนผสมไม่ใช่ส่วนผสมครบตามฉลาก หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า ข้อเสนอชุดมาจากโปสเตอร์ที่ได้รับวันที่ 28 ก.ย. 2026 ยอดที่ต้องจ่ายจริงให้ดูที่หน้าชำระเงิน</p>
+    <p>ภาพแพ็กเป็นภาพ AI ฉบับร่างจากสื่อของแบรนด์ ไม่ใช่ฉลากต้นฉบับ ภาพพืชและคลิปแล็บสร้างด้วย AI การรวมวัตถุดิบและการเคลื่อนไหวในฉากเป็นภาพเล่าเรื่อง ไม่ใช่กระบวนการผลิต ผลบนผิว หรือผลทดสอบ หน้านี้ไม่ใช่คำแนะนำทางการแพทย์ หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
     <p>หน้านี้จัดทำโดย myClover ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
-    <p class="mr-footer__house">myClover · Mediral 5 Steps (ต้นแบบ)</p>
+    <p class="mr-footer__house">myClover · Mediral ชุด 5 ชิ้น (ต้นแบบ)</p>
   </footer>
 
   <noscript>
-    <style>.mr-stage{position:absolute;height:100svh}.mr-stage__poster{display:none}.mr-routine{height:auto}.mr-routine__sticky{position:relative;height:auto;min-height:100svh;padding-top:132px}.mr-routine__still{display:grid}.mr-routine__map a{pointer-events:none}.mr-step{height:auto}.mr-step__sticky{position:relative;height:auto;min-height:0;padding-top:80px;padding-bottom:40px}.mr-set__inner{padding-top:60px}</style>
-    <p class="mr-noscript">เปิด JavaScript เพื่อสำรวจวัตถุดิบและบันทึกใบสรุป ภาพรวมข้างต้นแยกบทบาทของทั้ง 5 ชิ้นไว้แล้ว วิธีใช้และลำดับทาจริงให้ยึดฉลาก ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
+    <style>.mr-stage{position:absolute;height:100svh}.mr-stage__poster{display:none}.mr-routine{height:auto}.mr-routine__sticky{position:relative;height:auto;min-height:100svh;padding-top:132px}.mr-routine__still{display:grid}.mr-routine__map a{pointer-events:none}.mr-step{height:auto}.mr-step__sticky{position:relative;height:auto;min-height:0;padding-top:80px;padding-bottom:40px}.mr-set__inner{padding-top:60px}.mr-library{display:none}</style>
+    <p class="mr-noscript">เปิด JavaScript เพื่อดูข้อเสนอ สำรวจวัตถุดิบ และบันทึกใบสรุป ภาพรวมข้างต้นแยกบทบาทของทั้ง 5 ชิ้นไว้แล้ว หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
   </noscript>
 </body>
 </html>

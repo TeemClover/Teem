@@ -12,7 +12,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 
 // Execute the real controller with a small DOM adapter. No browser or graphics emulation:
 // assertions cover the visible offer, action state, input selection and accessibility attributes.
-async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory} = {}) {
+async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory, stacked = false} = {}) {
   const listeners = new Map();
   const windowListeners = new Map();
   const timers = new Map();
@@ -63,8 +63,10 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   }
   const root = new Element('html');
   const readingNodes = readingChapters.map(chapter => {
-    const el = new Element('section');
+    const el = new Element(chapter.tag || 'section');
     el.id = chapter.id;
+    el.scrollMarginTop = chapter.scrollMarginTop || '0px';
+    if (chapter.tag === 'details') el.open = false;
     el.offsetHeight = chapter.height;
     el.getBoundingClientRect = () => {
       const top = (root.classList.contains('mr-static') ? chapter.staticTop : chapter.top) - context.scrollY;
@@ -80,10 +82,10 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     const el = new Element('section');
     el.id = i === 0 ? 'routine' : i === 6 ? 'set' : `step-${routine.steps[i - 1].id}`;
     Object.defineProperty(el, 'offsetHeight', {get: () => root.classList.contains('mr-static') ? 600 : sectionHeight});
-    el.getBoundingClientRect = () => ({top: i * el.offsetHeight - context.scrollY});
+    el.getBoundingClientRect = () => ({top: i * el.offsetHeight - context.scrollY, bottom: (i + 1) * el.offsetHeight - context.scrollY});
     return el;
   });
-  for (const name of ['routine-map', 'routine-still', 'hero-body', 'steps', 'rail', 'word', 'set-headline', 'pieces', 'set-row', 'offer', 'summary', 'buy-link', 'buy-hint', 'disclosure']) slots.set(name, new Element());
+  for (const name of ['routine-map', 'routine-still', 'hero-offer', 'compare', 'uses', 'hero-body', 'steps', 'library', 'rail', 'word', 'set-headline', 'pieces', 'set-row', 'offer', 'summary', 'buy-link', 'buy-hint', 'disclosure']) slots.set(name, new Element());
   const document = {
     documentElement: root, body: new Element('body'), visibilityState: 'visible', activeElement: null, readyState, fonts: {ready: fontReady},
     createElement: tag => new Element(tag),
@@ -94,6 +96,8 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '#routine') return sections[0];
       if (selector.startsWith('#step-')) return sections[routine.steps.findIndex(s => selector === `#step-${s.id}`) + 1];
       if (selector === '#set') return sections[6];
+      const reading = readingNodes.find(node => selector === `#${node.id}`);
+      if (reading) return reading;
       if (selector.startsWith('[data-lab=') || selector.startsWith('[data-formula-group=')) { if (!slots.has(selector)) slots.set(selector, new Element()); return slots.get(selector); }
       if (selector === '[data-piece]') return pieces[0];
       if (selector === '#set .mr-card') return new Element();
@@ -111,12 +115,14 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     },
   };
   const media = {matches: false, addEventListener(_name, listener) { this.change = listener; }};
+  const stackedMedia = {matches: stacked, addEventListener() {}};
   class ClockDate extends Date { constructor(...args) { super(...(args.length ? args : [now])); } static now() { return now; } }
   const data = structuredClone(routine);
   if (verifiedLink) data.buy = {...data.buy, status: 'verified', affiliate_url: 'https://shop.example.test/verified-set'};
   context = vm.createContext({document, location: new URL(url), URL, URLSearchParams, Intl, Date: ClockDate, console: {warn() {}, error: (...args) => errors.push(args)},
     navigator: {clipboard: {writeText: async () => { if (clipboardFails) throw new Error('denied'); }}},
-    matchMedia: () => media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
+    matchMedia: query => query === '(max-width: 1100px)' ? stackedMedia : media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
+    getComputedStyle: el => ({scrollMarginTop: el.scrollMarginTop || '0px'}),
     addEventListener: addWindowListener, removeEventListener: removeWindowListener, IntersectionObserver: class { observe() {} },
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
     fetch: async () => ({ok: true, json: async () => data}),
@@ -131,6 +137,9 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   return {run, slots, pieces, actions, rails, root, media, timers, document, context,
     change(id, checked) { const box = pieces.find(p => p.value === id); box.checked = checked; fire('change', box); },
     restore() { const button = new Element('button'); button.dataset.action = 'select-all'; fire('click', button); },
+    readingNodes,
+    followLink(href) { fire('click', {closest: selector => selector === 'a[href^="#formula-"]' && href.startsWith('#formula-') ? {getAttribute: () => href} : null}); },
+    toggleAtlas() { fire('toggle', {matches: selector => selector === '.mr-ingredient-atlas'}); },
     clock(value) { now = Date.parse(value); },
     returnToPage() { document.visibilityState = 'visible'; fire('visibilitychange'); },
     hidePage() { document.visibilityState = 'hidden'; fire('visibilitychange'); },
@@ -139,7 +148,9 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     load() { document.readyState = 'complete'; fireWindow('load'); },
     fontsReady() { resolveFonts?.(); },
     windowEvent: fireWindow,
-    initialLinkListeners() { return ['wheel', 'touchstart', 'pointerdown', 'keydown', 'load', 'hashchange', 'pagehide'].reduce((count, name) => count + (windowListeners.get(name)?.length || 0), 0); },
+    // Temporary incoming-link restorers only; the permanent atlas hash opener is expected to stay.
+    initialLinkListeners() { return ['wheel', 'touchstart', 'pointerdown', 'keydown', 'load', 'hashchange', 'pagehide'].reduce((count, name) => count + (windowListeners.get(name) || []).filter(entry => !String(entry.handler).includes('openAtlas')).length, 0); },
+    windowListenerSources(name) { return (windowListeners.get(name) || []).map(entry => String(entry.handler)); },
     async flushImmediateTimers() {
       await tick();
       for (const [id, timer] of [...timers]) if (timer.delay === 0) { timers.delete(id); timer.fn(); }
@@ -280,16 +291,179 @@ test('the routine opens with all five roles before the first product chapter', a
   assert.equal(ui.rails[0].getAttribute('aria-current'), 'step');
 });
 
-test('the ingredient atlas exposes every group name before any disclosure is opened', async () => {
+test('the complete atlas is optional deep reading after the offer, with every name and role retained', async () => {
   const ui = await fixture();
+  const steps = ui.slots.get('steps').innerHTML;
+  const library = ui.slots.get('library').innerHTML;
+  assert.doesNotMatch(steps, /id="formula-/, 'Full ingredient lists no longer lengthen the product story');
   for (const step of routine.steps.filter(s => s.id !== 'CL')) {
     const html = ui.run(`ingredientAtlas(byId('${step.id}'))`);
-    assert.doesNotMatch(html, /<details/);
-    assert.equal((html.match(/data-formula-index=/g) || []).length, step.featured.length + step.ingredients.length);
+    const opening = html.match(/^<details\b[^>]*>/)?.[0];
+    assert.ok(opening, `${step.id}: the atlas is a disclosure`);
+    assert.match(opening, new RegExp(`id="formula-${step.id}"`));
+    assert.doesNotMatch(opening, /\sopen\b/, `${step.id}: closed until the reader or a direct link opens it`);
+    assert.match(html, /<summary\b/, `${step.id}: a keyboard-operable summary names the product`);
+    const count = step.featured.length + step.ingredients.length;
+    assert.match(html, new RegExp(`${count} ชื่อ`), `${step.id}: the closed summary states how many names it holds`);
+    assert.equal((html.match(/data-formula-index=/g) || []).length, count);
     for (const ingredient of [...step.featured, ...step.ingredients]) assert.ok(html.includes(`>${ingredient.name}</button>`), ingredient.name);
-    assert.ok(ui.slots.get('steps').innerHTML.includes(`id="formula-${step.id}"`));
+    assert.ok(library.includes(`id="formula-${step.id}"`), `${step.id}: rendered in the library`);
+    assert.match(ui.run(`stepBody(byId('${step.id}'))`), new RegExp(`href="#formula-${step.id}"[^>]*>อ่านส่วนผสมทั้งหมด ${count} ชื่อ`));
+    for (const group of step.ingredient_groups.filter(g => g.ingredientNames.length)) {
+      assert.ok(ui.run(`stepBody(byId('${step.id}'))`).includes(group.title), `${step.id}: the product view names its ingredient families`);
+    }
   }
-  assert.equal(ui.run('ingredientAtlas(byId("CL"))'), '');
+  assert.equal(ui.run('ingredientAtlas(byId("CL"))'), '', 'The unconfirmed mousse formula has no list');
+});
+
+test('direct, in-page and history links open a closed atlas before the reader lands on it', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#formula-SU', readingChapters: [
+    {id: 'formula-SU', tag: 'details', top: 9100, staticTop: 5200, height: 1200},
+    {id: 'formula-AC', tag: 'details', top: 7600, staticTop: 4200, height: 1200},
+  ]});
+  await ui.flushImmediateTimers();
+  const [su, ac] = ui.readingNodes;
+  assert.equal(su.open, true, 'A fresh URL opens its own atlas');
+  assert.equal(ui.context.scrollY, 9100);
+  assert.equal(ac.open, false, 'Other atlases stay closed');
+  ui.followLink('#formula-AC');
+  assert.equal(ac.open, true, 'The click opens the atlas before the browser follows the anchor');
+  ac.open = false;
+  ui.context.location.hash = '#formula-AC';
+  ui.windowEvent('hashchange');
+  assert.equal(ac.open, true, 'Back/forward navigation opens it again');
+  assert.equal(ui.run('openAtlas("#formula-AC\\" onmouseover=\\"x")'), null, 'Only product atlas ids are accepted');
+});
+
+test('opening or closing an atlas re-measures reading isolation without a scroll event', async () => {
+  const scene = sceneBoundary();
+  const chapter = {id: 'formula-BR', tag: 'details', top: 9000, staticTop: 5200, height: 300};
+  const ui = await fixture({storyFactory: async () => scene, readingChapters: [chapter]});
+  await ui.run('bootStage()');
+  ui.scroll(8600);
+  assert.equal(scene.state.paused, false);
+  chapter.top = 8600; // The disclosure above opened and moved this atlas under the header.
+  chapter.height = 1400;
+  ui.toggleAtlas();
+  assert.equal(ui.document.body.dataset.readingChapter, 'formula-BR');
+  assert.equal(scene.state.paused, true);
+  chapter.top = 9000;
+  chapter.height = 300;
+  ui.toggleAtlas();
+  assert.equal(ui.document.body.dataset.readingChapter, undefined);
+  assert.equal(scene.state.paused, false);
+});
+
+test('a fresh atlas URL lands below the fixed header, while product anchors keep their scene position', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#formula-AC', readyState: 'interactive', pendingFonts: true,
+    readingChapters: [{id: 'formula-AC', tag: 'details', top: 7600, staticTop: 4200, height: 1200, scrollMarginTop: '102px'}]});
+  assert.equal(ui.context.scrollY, 7498, 'The summary is not hidden at y=0 under the header');
+  ui.load();
+  ui.fontsReady();
+  await ui.flushImmediateTimers();
+  assert.equal(ui.context.scrollY, 7498, 'Repeated restoration after load and fonts keeps the same clearance');
+  const product = await fixture({url: 'https://www.myclover.com/mediral/#step-SU'});
+  assert.equal(product.context.scrollY, 6000, 'Product chapters still start their scene at the exact top');
+});
+
+test('stacked layouts read the purchase card like a chapter and pause the scene; desktop keeps the set scene', async () => {
+  for (const stacked of [true, false]) {
+    const scene = sceneBoundary();
+    const ui = await fixture({stacked, storyFactory: async () => scene});
+    await ui.run('bootStage()');
+    ui.change('BR', false);
+    ui.scroll(8000); // powder chapter
+    assert.equal(scene.state.paused, false);
+    ui.scroll(9000); // #set reaches the top after the header shortcut
+    assert.equal(ui.document.body.dataset.readingChapter, stacked ? 'set' : undefined);
+    assert.equal(scene.state.paused, stacked, stacked ? 'No frames behind the full-width offer' : 'Desktop set scene keeps rendering');
+    assert.equal(ui.document.body.dataset.step, 'set', 'Scene progress and the rail still reach the set');
+    assert.equal(ui.run('state.selection.has("BR")'), false, 'Layout gating never changes the saved list');
+    ui.scroll(8000);
+    assert.equal(scene.state.paused, false);
+  }
+});
+
+test('the controller and scene share one stacked-layout query', () => {
+  const main = readFileSync(new URL('../../mediral/js/main.js', import.meta.url), 'utf8');
+  const story = readFileSync(new URL('../../mediral/js/story.js', import.meta.url), 'utf8');
+  const query = story.match(/export const STACKED_QUERY = '([^']+)'/)?.[1];
+  assert.ok(query);
+  assert.ok(main.includes(`matchMedia('${query}')`));
+});
+
+test('the opening names every role with its product and brand-stated time, then routes to the offer', async () => {
+  const ui = await fixture();
+  const map = ui.slots.get('routine-map').innerHTML;
+  for (const step of routine.steps) {
+    assert.match(map, new RegExp(`href="#step-${step.id}"`));
+    assert.ok(map.includes(step.role_short), `${step.id}: role first`);
+    assert.ok(map.includes(step.nick), `${step.id}: then the product`);
+    assert.ok(map.includes(step.when.join(' · ')), `${step.id}: then when it is used`);
+  }
+});
+
+test('the opening shows the fixed set’s dated poster offer, independent of a partial saved list', async () => {
+  const ui = await fixture({url: 'http://localhost:3000/mediral/?today=2026-09-28'});
+  const hero = () => ui.slots.get('hero-offer').innerHTML;
+  assert.match(hero(), /฿1,899/);
+  assert.match(hero(), /โปสเตอร์/, 'The price is identified as poster evidence');
+  assert.match(hero(), /ยังไม่ยืนยันในตะกร้า/);
+  ui.change('BR', false);
+  assert.match(hero(), /฿1,899/, 'The opening describes the fixed set, not the reader’s saved list');
+  assert.doesNotMatch(ui.slots.get('offer').innerHTML, /1,899/, 'The saved-list summary still refuses the bundle price');
+  for (const [date, text] of [['2026-09-20', 'ยังไม่เริ่ม'], ['2026-10-01', 'สิ้นสุดแล้ว']]) {
+    const later = await fixture({url: `http://localhost:3000/mediral/?today=${date}`});
+    assert.doesNotMatch(later.slots.get('hero-offer').innerHTML, /1,899/);
+    assert.match(later.slots.get('hero-offer').innerHTML, new RegExp(text));
+  }
+});
+
+test('Bangkok midnight retires the opening offer together with the set offer', async () => {
+  const ui = await fixture({clock: '2026-09-30T16:59:30Z'});
+  assert.match(ui.slots.get('hero-offer').innerHTML, /1,899/);
+  ui.clock('2026-09-30T17:00:01Z');
+  [...ui.timers.values()][0].fn();
+  assert.doesNotMatch(ui.slots.get('hero-offer').innerHTML, /1,899/);
+  assert.doesNotMatch(ui.slots.get('offer').innerHTML, /1,899/);
+});
+
+test('the two serums are compared by role and brand-stated time, never as a combined regimen', async () => {
+  const ui = await fixture();
+  const compare = ui.slots.get('compare').innerHTML;
+  const cards = compare.match(/<article\b/g) || [];
+  assert.equal(cards.length, 2);
+  for (const step of routine.steps) {
+    const shown = compare.includes(`href="#step-${step.id}"`);
+    assert.equal(shown, ['AC', 'BR'].includes(step.id), `${step.id}: only the two serums are compared`);
+    if (!shown) continue;
+    assert.ok(compare.includes(step.headline));
+    for (const point of step.compare_points) assert.ok(compare.includes(point));
+    assert.ok(compare.includes(step.when.join(' · ')));
+    for (const item of step.featured) assert.ok(compare.includes(item.name));
+    assert.match(compare, new RegExp(`href="#formula-${step.id}"`));
+  }
+  assert.match(compare, /ภาพแพ็ก AI ฉบับร่าง/);
+  assert.doesNotMatch(compare, /ทาคู่|ใช้คู่|ใช้ร่วมกัน|เสริมฤทธิ์|ได้ผลดีกว่า|ทาก่อน|ทาหลัง/);
+});
+
+test('the use-time table repeats data only: no sequence, mousse deferred to its label', async () => {
+  const ui = await fixture();
+  const table = ui.slots.get('uses').innerHTML;
+  const rows = table.split('<tr>').slice(2);
+  const labels = routine.use_time_labels;
+  assert.equal(rows.length, routine.steps.length);
+  routine.steps.forEach((step, i) => {
+    const row = rows[i];
+    assert.ok(row.includes(step.nick));
+    if (!step.use_times.length) {
+      assert.match(row, /colspan="4"[^>]*>ยึดวิธีใช้บนฉลากขวดที่ได้รับ/);
+      return;
+    }
+    for (const key of Object.keys(labels)) {
+      assert.equal(row.includes(`aria-label="${labels[key]}"`), step.use_times.includes(key), `${step.id}: ${key}`);
+    }
+  });
 });
 
 test('reading a non-featured ingredient changes its attributed detail without moving or selecting products', async () => {

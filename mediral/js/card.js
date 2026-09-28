@@ -78,7 +78,7 @@ function layout(g, H, {pieces, data, imgs}, pinFooter = true) {
   let y = text(g, 'ใบสรุปก่อนจ่าย', PAD, 215, {font: `600 60px ${SERIF}`, color: C.deep});
   g.fillStyle = C.gold;
   g.fillRect(PAD, y + 18, 72, 3);
-  y = text(g, full ? 'ครบ 5 ขั้นตามลำดับรูทีน' : `เลือก ${pieces.length} จาก ${total} ชิ้น`, PAD, y + 82, {font: `600 34px ${SERIF}`, color: C.deep});
+  y = text(g, full ? 'ชุดครบ 5 ชิ้น' : `เลือก ${pieces.length} จาก ${total} ชิ้น`, PAD, y + 82, {font: `600 34px ${SERIF}`, color: C.deep});
 
   // One row per piece: image, step number, name, role, when.
   y += 30;
@@ -98,7 +98,7 @@ function layout(g, H, {pieces, data, imgs}, pinFooter = true) {
     } else foam(g, PAD + 75, y + rowH / 2, 34);
     text(g, String(p.order).padStart(2, '0'), PAD + 160, y + 62, {font: 'italic 500 48px "Cormorant Garamond"', color: C.gold});
     text(g, `${p.nick}${p.size ? ` · ${p.size}` : ''}`, PAD + 240, y + 58, {font: `600 30px ${SERIF}`, color: C.deep, maxWidth: W - 2 * PAD - 260});
-    text(g, `${p.verb} · ${p.when.join(' / ')}`, PAD + 240, y + 104, {font: `400 24px ${SANS}`, color: C.soft, maxWidth: W - 2 * PAD - 260});
+    text(g, `${p.role_short || p.verb} · ${p.when.join(' / ')}`, PAD + 240, y + 104, {font: `400 24px ${SANS}`, color: C.soft, maxWidth: W - 2 * PAD - 260});
     y += rowH + 16;
   }
   if (pieces.some(p => !p.image)) {

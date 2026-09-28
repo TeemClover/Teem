@@ -20,7 +20,7 @@ function fixture({ready = true, reduce = false, save = false, observer = true} =
   });
   let rect = {top: 900, bottom: 1100, left: 0, right: 400, width: 400, height: 200};
   const video = Object.assign(new EventTarget(), {
-    paused: true, controls: false, hidden: true, attributes: {},
+    paused: true, controls: false, hidden: true, attributes: {}, currentTime: 0, loop: true,
     dataset: {src: 'assets/motion/lab-film-10s.mp4'},
     playCalls: 0, pauseCalls: 0, loadCalls: 0,
     getBoundingClientRect() { return rect; },
@@ -80,6 +80,13 @@ function fixture({ready = true, reduce = false, save = false, observer = true} =
       else win.dispatchEvent(new Event('scroll'));
     },
     click() { button.dispatchEvent(new Event('click')); },
+    end() {
+      // Browser order at the natural end of a non-looping clip: pause, then ended.
+      video.currentTime = 10;
+      video.paused = true;
+      video.dispatchEvent(new Event('pause'));
+      video.dispatchEvent(new Event('ended'));
+    },
   };
 }
 
@@ -101,6 +108,7 @@ test('pending media remains a still chapter, without a source, controls or playb
   }
   assert.match(videoTag, /data-src="assets\/motion\/lab-film-10s\.mp4"/);
   assert.doesNotMatch(videoTag, /\ssrc=|\scontrols(?:\s|>)/);
+  assert.doesNotMatch(videoTag, /\sloop(?:[\s=>])/, 'The delivered clip is not a seamless loop');
   assert.match(videoTag, /\shidden(?:\s|>)/);
   const f = fixture({ready: false});
   const api = initLabFilm(f.doc);
@@ -259,4 +267,38 @@ test('viewport fallback works without IntersectionObserver and disposal removes 
   f.inView(); f.click(); await tick();
   assert.equal(f.video.playCalls, calls);
   assert.equal(f.button.hidden, true);
+});
+
+test('the clip plays once, rests on its final frame and offers an explicit replay', async t => {
+  const f = mount(t);
+  assert.equal(f.video.loop, false, 'Never force a seam between the clear and amber ends of the clip');
+  f.inView(); await tick();
+  assert.equal(f.video.paused, false);
+  f.end();
+  assert.equal(f.classes.has('is-ended'), true);
+  assert.equal(f.label.textContent, 'เล่นอีกครั้ง');
+  assert.match(f.button.attributes['aria-label'], /อีกครั้ง/);
+  const calls = f.video.playCalls;
+  f.inView(false); f.inView(); await tick();
+  assert.equal(f.video.playCalls, calls, 'Returning to the chapter does not start another pass');
+  f.doc.hidden = true; f.doc.dispatchEvent(new Event('visibilitychange'));
+  f.doc.hidden = false; f.doc.dispatchEvent(new Event('visibilitychange')); await tick();
+  assert.equal(f.video.playCalls, calls, 'Returning to the tab does not start another pass');
+  f.click(); await tick();
+  assert.equal(f.video.currentTime, 0, 'Replay starts from the beginning');
+  assert.equal(f.video.paused, false);
+  assert.equal(f.classes.has('is-ended'), false);
+  assert.equal(f.label.textContent, 'หยุดวิดีโอ');
+});
+
+test('a manually started reduced-motion pass also ends once, without automatic replay', async t => {
+  const f = mount(t, {reduce: true});
+  f.inView(); await tick();
+  f.click(); await tick();
+  assert.equal(f.video.paused, false);
+  f.end();
+  const calls = f.video.playCalls;
+  f.inView(false); f.inView(); await tick();
+  assert.equal(f.video.playCalls, calls);
+  assert.equal(f.label.textContent, 'เล่นอีกครั้ง');
 });

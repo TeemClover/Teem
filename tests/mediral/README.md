@@ -22,6 +22,14 @@ The suite uses Node's built-in test runner and standard library only. There is n
 - The serum-pair price, coupons and strike prices stay out of the page.
 - The Affiliate button is inert while its URL is `null`.
 
+**The sales path**
+- Chapter order: opening (WHY, role map, dated offer, route to `#set`) → serum comparison → film → products → offer → optional ingredient library.
+- The opening offer follows the poster dates only; the purchase card also refuses partial saved lists. One offer slot, one checkout control.
+- The two serums are compared by brand-told role and time only; the use-time table repeats data and adds no layering sequence. The order note says the page shows roles, not a verified order.
+- Every atlas is a closed disclosure holding every name, role and source; direct, in-page and history links open it; a fresh link lands below the header; toggling re-measures the reading gate.
+- Stacked layouts read the purchase card like a chapter and pause the scene; desktop keeps the set scene.
+- The film is a real faststart MP4, never loops, plays once automatically and replays only on request.
+
 **Files, dependencies and deployment**
 - Every referenced image is a real local WebP.
 - The lazy `story.js` and `card.js` resolve locally, and every `three` export they use exists in the vendored subset.

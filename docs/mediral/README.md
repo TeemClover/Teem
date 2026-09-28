@@ -1,10 +1,10 @@
-# Mediral 5 Steps — `/mediral/`
+# Mediral five-piece set — `/mediral/`
 
-The Mediral routine page on myClover tells the five-piece routine as one continuous scroll story: mousse → white serum → yellow-green serum → sunscreen → powder puff.
+The Mediral page on myClover sells the fixed five-piece set: mousse → white serum → yellow-green serum → sunscreen → powder puff. The page order shows each piece's role; it is not a verified application order.
 
-The opening shows all five products together and explains their roles. A separate illustrated lab chapter introduces plants, extracts and texture. The mousse opens the product sequence; four ingredient atlases then let visitors read every source-listed name for the serums, sunscreen and powder. The animated materials dissolve into abstract extract streams, collect in a beaker and lead to the pack reveal. The full set and purchase checks close the story.
+The sales path is: customer problem → role → relevant ingredient families → product → offer. The opening answers the buyer who owns several products but does not know what each one does: all five pieces, a role map with brand-stated times, the dated poster offer and a direct route to it. A short chapter compares the two serums side by side with a use-time table. A ten-second illustrated film introduces plants and extracts. The five product chapters keep the extraction/beaker scene and name each product's ingredient families. The purchase card follows; the complete ingredient library comes after the offer as optional deep reading.
 
-**Current implementation — 2026-09-28:** the ingredient atlas, extraction/beaker motion and three concept lab stills are complete. The requested ten-second film is not produced or active: model selection is pending, and `data-film-ready="false"` keeps the chapter as a poster with no video source, play control, duration badge or media request.
+**Current implementation — 2026-09-28 sales upgrade:** the lab film is enabled with GPT's approved clip (10.00 s, 1276×720, silent H.264, faststart, 1.15 MB; poster taken from the clip). It is not a seamless loop, so it plays once per visit and offers an explicit replay. The Affiliate link is still pending.
 
 Direction and evidence rules are in [STORYBOARD.md](STORYBOARD.md). The first media request is [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -36,9 +36,9 @@ node --test tests/mediral/*.test.mjs
 | File | Role |
 |---|---|
 | `mediral/data/routine.json` | Product roles, instructions, featured and other ingredient entries, `ingredient_groups`, source attribution, notes, the poster offer and purchase state. A name can have no image and remain fully readable. |
-| `mediral/js/main.js` | Renders the routine, ingredient controls and full atlases; maps the product chapters to `u`. Reading chapters have their own visibility state and do not add routine steps. Owns the saved list, copy, card download, dated offer, fallbacks and data-error retry. |
+| `mediral/js/main.js` | Renders the role map, opening offer, serum comparison, use-time table, product chapters and the closed ingredient library; maps the product chapters to `u`. Reading chapters (comparison, film, library, each atlas and — on stacked layouts — the purchase card) have their own visibility state, pause the scene and do not add routine steps. Direct, in-page and history links to `#formula-XX` open that atlas; a fresh link lands below the fixed header. Owns the saved list, copy, card download, dated offer, fallbacks and data-error retry. |
 | `mediral/js/story.js` | See the `createStory` contract below. Exports `STACKED_QUERY`, the one media query that switches both CSS and scene to words-below-scene. |
-| `mediral/js/lab-film.js` | Independent film controller. A false readiness gate returns an inert API. Once a real film is approved and supplied, it supports in-view playback, manual play/pause, motion/data preferences, visibility pausing and a poster fallback. |
+| `mediral/js/lab-film.js` | Independent film controller. A false readiness gate returns an inert API. With the gate on, it supports one automatic in-view pass, manual play/pause, an explicit replay after the end, motion/data preferences, visibility pausing and a poster fallback. `loop` is never set. |
 | `mediral/js/card.js` | See the `drawRoutineCard` contract below. |
 | `mediral/assets/` | Pack AI drafts, botanical/material illustrations and the concept lab stills under `motion/`. Private preparation manifests are excluded from deployment. |
 | `mediral/vendor/` | Local three.js subset, copied from Homechew. |
@@ -70,18 +70,19 @@ node --test tests/mediral/*.test.mjs
 
 **Ingredient atlases and lab media**
 - The four atlases expose AC 24, BR 18, SU 14 and PO 18 named display entries, grouped for reading. These 74 entries are not a count of distinct actives or a verified INCI list. Sunscreen aliases and group headings have been reconciled for display only.
-- Each family and every ingredient-name button is visible initially. The selected name shows its existing benefit and source status; selecting it does not change the shopping list. Attributed group claims are not promoted into unverified individual claims.
+- Each product chapter names its ingredient families and links to its atlas with the entry count. The atlases live in the library after the offer, one closed `<details>` per product ("รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ"). Opening one shows every family and name button; the selected name shows its existing benefit and source status; selecting it does not change the shopping list. Attributed group claims are not promoted into unverified individual claims.
 - The current mousse has no ingredient atlas because its ingredient list remains unknown. It does not inherit the old pack's formula.
 - Three AI concept stills show botanical, extract and research/texture settings. The poster reuses the research still. They are illustrations, not Mediral's factory, experiment, real product texture or manufacturing instructions.
-- The film stays disabled until a real approved MP4 is supplied and the readiness flag is switched on. With the flag off, its path exists only in `data-src`; there is no video request or false play button. With the flag on, automatic playback requires sufficient viewport visibility, an active tab, no reduced-motion preference and no data-saving preference. Manual play remains available; failure leaves the poster and text readable.
+- The film is GPT's Higgsfield Kling 3.0 Turbo clip of a botanical/pipette extraction illustration: clear liquid gradually turns amber while the camera moves. It is not Mediral's factory, experiment or product texture, and the caption says so. With the flag on, the source is attached only after the controller starts (`preload="none"`). Automatic playback requires sufficient viewport visibility, an active tab, no reduced-motion preference and no data-saving preference, and happens once; the final frame rests under a soft shade with "เล่นอีกครั้ง". Manual play remains available; failure leaves the poster and text readable. On phones the three beat stills are hidden while the film works.
 
 **Copy**
 - Headlines state the step's role.
 - Brand statements are attributed ("สื่อแบรนด์เล่าว่า…").
-- The serum order is story order: no wait times, drop counts or combined effects. Label instructions win.
+- The serum order is story order: no wait times, drop counts or combined effects. Label instructions win. The serum comparison lists brand-told roles and times only; the use-time table shows when each piece is used, not a layering sequence.
+- The opening leads with the buyer's problem (several products, unclear roles) and never says everyone needs all five or that combined use has a proven effect.
 
 **Set offer**
-- 1,899 THB comes from the brand poster, dated 21–30 Sep 2026. It is labelled as unverified in cart or coupons, and displayed only within those dates and with all five pieces selected. The page refreshes the offer at Bangkok midnight and when returning to the tab.
+- 1,899 THB comes from the brand poster, dated 21–30 Sep 2026. It is labelled as unverified in cart or coupons, and displayed only within those dates. The purchase card also requires all five pieces in the saved list; the opening describes the fixed set itself, so it follows only the dates. Both refresh at Bangkok midnight and when returning to the tab. There is one offer slot, one checkout control and one hint.
 - The serum-pair price and coupons are not part of this page.
 
 **Purchase**
@@ -93,9 +94,10 @@ node --test tests/mediral/*.test.mjs
 ## Review checklist
 
 - [ ] Desktop and mobile: words sit beside or below the scene, never covering it. No clipped text, missing media or horizontal overflow.
-- [ ] Each step plays in order: materials → extraction/beaker → concentrate → formulation → drop → product → role → rail. The set shows all five.
-- [ ] Each full ingredient atlas exposes all grouped names, keeps benefit/source text readable and continues to the next product without an inner scrolling trap.
-- [ ] The pending film remains a still image, with no MP4 request, play control or duration. Three concept images load; all carry the shared AI provenance.
+- [ ] 390×844 and 360×640 first screen: all five products, the WHY, the dated offer and "ดูข้อเสนอชุด 5 ชิ้น". The header shortcut lands on a purchase card whose price and buy/copy actions are in the first screen.
+- [ ] Each step plays in order: materials → extraction/beaker → concentrate → formulation → drop → product → role → rail. On desktop the set shows all five beside the card.
+- [ ] Each atlas opens from its summary, from a product link and from a fresh `#formula-XX` URL, below the header, with all grouped names and benefit/source text.
+- [ ] The film plays once in view, stops on its last frame with replay, never restarts on re-entry, and waits for a tap with reduced motion or data saving.
 - [ ] Ticking pieces updates the summary, copy text, card and the dimmed pieces in the scene. Scrolling never changes the ticks.
 - [ ] No WebGL or save-data: static stills per step and in the set row, matching the ticks.
 - [ ] Reduced motion: steps are shown already composed, with no continuous loop and no CSS transitions.
@@ -137,3 +139,10 @@ node --test tests/mediral/*.test.mjs
 - Three concept WebPs and a reused poster are present. The requested film remains pending; the readiness gate is false. This is not a completed video delivery.
 - The dedicated film behavior suite passes 13 tests: gate/no-source behavior, later activation, DOM safety, viewport/tab visibility, manual pause, reduced motion, data saving, preference changes, blocked playback, media fallback/retry, late promise resolution, ownership across dispose/re-init and the no-IntersectionObserver fallback.
 - The final combined Mediral suite passes 59/59 and the shelf validator passes. Browser QA covered desktop/mobile atlases, all-name visibility, non-featured ingredient selection changing detail/source without changing products, four loaded lab images with no video source, reduced-motion sunscreen reading without overflow, and the mobile extraction/beaker scene. The renderer pauses behind reading chapters; regression checks cover that behavior.
+
+## Verification record — 28 Sep 2026 sales upgrade
+
+- Starting point: production `f2c186d2`. Owner direction relayed by GPT: WHY first, benefit before depth, optional deep ingredient reading, faster offer. Claude changed HTML/CSS/JS/data/docs/tests; GPT supplied and checked the film and poster (Higgsfield Kling 3.0 Turbo, one job, no additional generation) and reviews QA.
+- Scroll to the offer on a 390×844 phone: `#set` begins at about 14.0 screen heights (previously 26.4). At 360×640 it is 11.3; at 1440×900 it is 16.8. The difference comes from moving the full atlases after the offer, shorter product chapters (230 vh desktop / 200 vh stacked) and a flowing phone opening.
+- Browser checks at 390×844, 360×640 and 1440×900: opening, serum comparison, use-time table, header shortcut to the purchase card (390×844: price at y≈254, buy button at y≈438; scene paused behind it), fresh `#formula-SU` (summary below the 60 px header), fresh `#serums`, no horizontal overflow. The film played once to 10.00 s, showed "เล่นอีกครั้ง", did not restart on re-entry and replayed from the start. The local static server lacks HTTP Range, so seeking was checked only on production.
+- Automated: every Mediral contract, controller, lab-film and scene-lifecycle test passes, together with the shelf validator (see the commit for counts).

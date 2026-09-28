@@ -1,4 +1,5 @@
 // The film is independent of the scroll-driven scene; pending media stays a still image.
+// The approved clip is not a seamless loop: it plays once per visit, then waits for an explicit replay.
 const instances = new WeakMap();
 const inert = Object.freeze({ play() {}, pause() {}, dispose() {} });
 
@@ -38,6 +39,7 @@ export function initLabFilm(container = globalThis.document) {
   let manualRequested = false;
   let autoplayBlocked = false;
   let failed = false;
+  let ended = false;
   let pending = false;
   let requestId = 0;
   let observer;
@@ -52,15 +54,16 @@ export function initLabFilm(container = globalThis.document) {
   }
   function updateButton() {
     const playing = !video.paused || pending;
-    if (label) label.textContent = failed ? 'ลองเล่นอีกครั้ง' : playing ? 'หยุดวิดีโอ' : 'เล่นวิดีโอ';
-    if (icon) icon.textContent = playing ? 'Ⅱ' : '▶';
+    if (label) label.textContent = failed ? 'ลองเล่นอีกครั้ง' : playing ? 'หยุดวิดีโอ' : ended ? 'เล่นอีกครั้ง' : 'เล่นวิดีโอ';
+    if (icon) icon.textContent = playing ? 'Ⅱ' : ended ? '↺' : '▶';
     button.setAttribute('aria-label', failed ? 'ลองเล่นวิดีโอจำลองแล็บอีกครั้ง'
-      : playing ? 'หยุดวิดีโอจำลองแล็บ' : 'เล่นวิดีโอจำลองแล็บ');
+      : playing ? 'หยุดวิดีโอจำลองแล็บ' : ended ? 'เล่นวิดีโอจำลองแล็บอีกครั้ง' : 'เล่นวิดีโอจำลองแล็บ');
     section.classList.toggle('is-playing', playing);
+    section.classList.toggle('is-ended', ended && !playing);
   }
   function allowed() {
     return !disposed && inView && !doc.hidden && !failed &&
-      (manualRequested || (!reduced?.matches && !connection?.saveData && !userPaused && !autoplayBlocked));
+      (manualRequested || (!ended && !reduced?.matches && !connection?.saveData && !userPaused && !autoplayBlocked));
   }
   function stop(clearManual = true) {
     requestId += 1;
@@ -68,6 +71,12 @@ export function initLabFilm(container = globalThis.document) {
     if (clearManual) manualRequested = false;
     video.pause();
     updateButton();
+  }
+  function finished() {
+    if (disposed) return;
+    // Rest on the final frame. Re-entering the viewport never starts another pass by itself.
+    ended = true;
+    stop();
   }
   function mediaError() {
     if (disposed) return;
@@ -136,6 +145,10 @@ export function initLabFilm(container = globalThis.document) {
     manualRequested = true;
     userPaused = false;
     autoplayBlocked = false;
+    if (ended) {
+      ended = false;
+      try { video.currentTime = 0; } catch { /* The next play() restarts an ended clip anyway. */ }
+    }
     if (failed) {
       failed = false;
       section.classList.remove('is-error');
@@ -157,7 +170,8 @@ export function initLabFilm(container = globalThis.document) {
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
-  video.loop = true;
+  video.loop = false;
+  video.removeAttribute?.('loop');
   video.preload = 'none';
   video.controls = false;
   video.hidden = false;
@@ -168,6 +182,7 @@ export function initLabFilm(container = globalThis.document) {
   listen(button, 'click', () => (!video.paused || pending) ? pauseManually() : playManually());
   listen(video, 'playing', () => { if (!allowed()) stop(); else updateButton(); });
   listen(video, 'pause', updateButton);
+  listen(video, 'ended', finished);
   listen(video, 'error', mediaError);
   listen(doc, 'visibilitychange', () => { if (doc.hidden) stop(); else reconcile(); });
   listen(win, 'pagehide', () => stop());
@@ -201,7 +216,7 @@ export function initLabFilm(container = globalThis.document) {
       video.controls = originalControls;
       button.hidden = true;
       if (duration) duration.hidden = true;
-      section.classList.remove('is-film-ready', 'is-playing');
+      section.classList.remove('is-film-ready', 'is-playing', 'is-ended');
       instances.delete(section);
     },
   };
