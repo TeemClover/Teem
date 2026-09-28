@@ -1,0 +1,318 @@
+{
+  "schema": 2,
+  "status": "prototype",
+  "evidence": {
+    "received": "2026-09-28",
+    "capture": "unknown",
+    "summary": "ภาพสื่อแบรนด์และภาพหน้าร้านที่ได้รับวันที่ 28 ก.ย. 2026 ไม่ทราบวันที่ถ่าย ราคาและสิทธิอาจเปลี่ยนแล้ว"
+  },
+  "order_note": "ลำดับ 5 ขั้นเป็นการเล่าเรื่องตามโปสเตอร์ชุดของแบรนด์ วิธีใช้และลำดับทาจริง ให้ยึดฉลากของสินค้าที่ได้รับ",
+  "steps": [
+    {
+      "id": "CL",
+      "order": 1,
+      "verb": "ล้าง",
+      "verb_en": "CLEANSE",
+      "headline": "เริ่มจากล้างหน้าให้สะอาด",
+      "nick": "มูสโฟมล้างหน้า",
+      "size": null,
+      "image": null,
+      "image_status": "current-pack-pending",
+      "image_note": "ยังไม่แสดงภาพแพ็ก: หน้าร้านล่าสุดเห็นฉลากลายโคลเวอร์ ซึ่งยังไม่ได้เทียบกับรุ่นในสื่อเดิม ภาพฟองและน้ำเป็นภาพบรรยากาศ",
+      "render": "foam",
+      "role": "foam",
+      "height": 0.9,
+      "for_you": "ขั้นแรกของรูทีนคือล้างหน้าด้วยมูสโฟม ชื่อรายการในร้านระบุว่าใช้ล้างหน้าและเครื่องสำอาง",
+      "how": "ปั๊มฟองลงฝ่ามือ ล้างหน้าแล้วล้างออก ดูวิธีใช้บนฉลากของขวดที่ได้รับ",
+      "when": [
+        "ตามฉลาก"
+      ],
+      "ingredients_status": "pending-current-sku",
+      "ingredients_note": "ส่วนผสมของแพ็กปัจจุบันยังไม่ยืนยัน จึงยังไม่แสดงรายชื่อ",
+      "featured": [],
+      "ingredients": [],
+      "subline": "แล้วค่อยเติมการดูแลทีละขั้น"
+    },
+    {
+      "id": "AC",
+      "order": 2,
+      "verb": "บำรุงชั้นที่ 1",
+      "verb_en": "TREAT · I",
+      "headline": "ดูแลผิวที่เป็นสิวง่าย",
+      "nick": "เซรั่มขวดขาว",
+      "size": "15 ml",
+      "image": "assets/pack/ac-front.webp",
+      "image_status": "ai-draft",
+      "image_note": "ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ",
+      "render": "lathe",
+      "role": "droplets",
+      "height": 0.8,
+      "for_you": "เซรั่มขวดขาวที่สื่อแบรนด์เล่าว่าทำมาสำหรับผิวที่มีแนวโน้มเป็นสิว ช่วยดูแลผิวให้สมดุล พร้อมเติมความชุ่มชื้น",
+      "how": "หลังล้างหน้า ทาทั่วใบหน้าเช้าและเย็น ตามที่สื่อแบรนด์ระบุ",
+      "when": [
+        "เช้า",
+        "เย็น"
+      ],
+      "ingredients_status": "brand-marketing-list",
+      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก และไม่บอกปริมาณ",
+      "featured": [
+        {
+          "name": "ทีทรี",
+          "image": "assets/botanicals/tea-tree-leaves.webp"
+        },
+        {
+          "name": "เปลือกมังคุด",
+          "image": "assets/botanicals/mangosteen-peel.webp"
+        },
+        {
+          "name": "ดอกฝ้าย",
+          "image": "assets/botanicals/cotton-flower.webp"
+        },
+        {
+          "name": "เกรปฟรุต",
+          "image": "assets/botanicals/grapefruit-section.webp"
+        },
+        {
+          "name": "วิชฮาเซล",
+          "image": "assets/botanicals/witch-hazel-flower.webp"
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "ว่านหางจระเข้",
+          "image": "assets/botanicals/aloe-cut-leaf.webp"
+        },
+        {
+          "name": "น้ำดอกกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp"
+        },
+        {
+          "name": "จมูกข้าวญี่ปุ่น",
+          "image": "assets/botanicals/rice-grain-panicle.webp"
+        },
+        {
+          "name": "โจโจ้บา",
+          "image": "assets/botanicals/jojoba-seeds.webp"
+        },
+        {
+          "name": "สาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp"
+        }
+      ]
+    },
+    {
+      "id": "BR",
+      "order": 3,
+      "verb": "บำรุงชั้นที่ 2",
+      "verb_en": "TREAT · II",
+      "headline": "ดูแลผิวที่ดูหมองคล้ำ",
+      "nick": "เซรั่มขวดเหลืองเขียว",
+      "size": "30 ml",
+      "image": "assets/pack/br-front.webp",
+      "image_status": "ai-draft",
+      "image_note": "ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ",
+      "render": "lathe",
+      "role": "droplets",
+      "height": 1.0,
+      "for_you": "เซรั่มแบร์เบอร์รี่ขวดเหลืองเขียว ที่ร้านเรียกว่าเซรั่มหน้าใส สื่อแบรนด์เล่าว่าเพื่อผิวดูกระจ่างใส เรียบเนียน และสมดุล",
+      "how": "ในเรื่องนี้ต่อจากเซรั่มขวดขาว สื่อแบรนด์ระบุทาเช้าและเย็น",
+      "when": [
+        "เช้า",
+        "เย็น"
+      ],
+      "ingredients_status": "brand-marketing-list",
+      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก และไม่บอกปริมาณ",
+      "featured": [
+        {
+          "name": "แบร์เบอร์รี่",
+          "image": "assets/botanicals/bearberry-sprig.webp"
+        },
+        {
+          "name": "ชาเขียว",
+          "image": "assets/botanicals/green-tea-shoot.webp"
+        },
+        {
+          "name": "ชะเอมเทศ",
+          "image": "assets/botanicals/licorice-root.webp"
+        },
+        {
+          "name": "ไวท์มัลเบอร์รี่",
+          "image": "assets/botanicals/white-mulberry-fruit.webp"
+        },
+        {
+          "name": "ทับทิม",
+          "image": "assets/botanicals/pomegranate-arils.webp"
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "วิชฮาเซล",
+          "image": "assets/botanicals/witch-hazel-flower.webp"
+        },
+        {
+          "name": "โรสฮิป",
+          "image": "assets/botanicals/rosehip-fruit.webp"
+        },
+        {
+          "name": "โกจิเบอร์รี่",
+          "image": "assets/botanicals/goji-fruit.webp"
+        },
+        {
+          "name": "น้ำกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp"
+        },
+        {
+          "name": "สาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp"
+        }
+      ]
+    },
+    {
+      "id": "SU",
+      "order": 4,
+      "verb": "ปกป้อง",
+      "verb_en": "PROTECT",
+      "headline": "กันแดด ก่อนออกไปเจอแสง",
+      "nick": "เซรั่มกันแดด",
+      "size": "15 ml",
+      "size_note": "ค่า SPF/PA ให้ดูบนฉลากของหลอดที่ได้รับ",
+      "image": "assets/pack/su-front-web.webp",
+      "image_status": "ai-draft",
+      "image_note": "ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ · ตัวอักษรบนหลอดในภาพวาดใหม่ด้วย AI ค่า SPF/PA ให้ดูบนฉลากจริง",
+      "render": "billboard",
+      "role": "light",
+      "height": 1.12,
+      "for_you": "ขั้นสุดท้ายของการบำรุงตอนเช้า กันแดดเนื้อเซรั่มที่สื่อแบรนด์เล่าว่าบำรุงไปในขั้นตอนเดียว",
+      "how": "ขั้นสุดท้ายของการบำรุงตอนเช้า ทาทุกวันและทาซ้ำระหว่างวันได้ ตามที่สื่อแบรนด์ระบุ",
+      "when": [
+        "เช้า"
+      ],
+      "ingredients_status": "brand-marketing-list",
+      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก ภาพผงเป็นภาพนามธรรม ไม่ใช่ภาพสารกันแดดจริง",
+      "featured": [
+        {
+          "name": "ทานตะวัน",
+          "image": "assets/botanicals/sunflower-seed-oil.webp"
+        },
+        {
+          "name": "แอปริคอท",
+          "image": "assets/botanicals/apricot-half.webp"
+        },
+        {
+          "name": "สาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp"
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "Zinc Oxide · Titanium Dioxide",
+          "image": null
+        },
+        {
+          "name": "Giga White® (สื่อแบรนด์ระบุกลุ่มพืชจากเทือกเขาแอลป์)",
+          "image": null
+        },
+        {
+          "name": "โซเดียมไฮยาลูรอเนต",
+          "image": "assets/materials/hydration-clear-gel.webp"
+        }
+      ],
+      "visible_note": "ตัวเลขบนหลอดในภาพเป็นตัวอักษรที่ AI วาดใหม่ ค่า SPF/PA ให้ดูบนฉลากของหลอดที่ได้รับ"
+    },
+    {
+      "id": "PO",
+      "order": 5,
+      "verb": "ปกปิด",
+      "verb_en": "FINISH",
+      "headline": "ปกปิด ปิดท้ายลุค",
+      "nick": "แป้งพัฟตลับเขียว",
+      "size": null,
+      "size_note": "น้ำหนักและเฉดยังไม่ยืนยัน ดูรายละเอียดตัวเลือกที่ร้าน",
+      "image": "assets/pack/po-closed.webp",
+      "image_status": "ai-draft",
+      "image_note": "ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ · ไม่แสดงสีเนื้อแป้งจริง",
+      "render": "billboard",
+      "role": "powder",
+      "height": 0.72,
+      "for_you": "ขั้นแต่งผิวในชุด ตลับแป้งพัฟสีเขียวที่สื่อแบรนด์เล่าว่าเนียนนุ่ม เกลี่ยง่าย",
+      "how": "ตบแป้งด้วยพัฟหลังขั้นปกป้อง ดูเฉดและวิธีใช้ที่ร้านก่อนเลือก",
+      "when": [
+        "เมื่อแต่งหน้า"
+      ],
+      "ingredients_status": "brand-marketing-list",
+      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก",
+      "featured": [
+        {
+          "name": "รำข้าว",
+          "image": "assets/botanicals/rice-grain-panicle.webp"
+        },
+        {
+          "name": "ดอกกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp"
+        },
+        {
+          "name": "ดอกฝ้าย",
+          "image": "assets/botanicals/cotton-flower.webp"
+        },
+        {
+          "name": "โรสฮิป",
+          "image": "assets/botanicals/rosehip-fruit.webp"
+        },
+        {
+          "name": "มะกอก",
+          "image": "assets/botanicals/olive-oil-fruit.webp"
+        }
+      ],
+      "ingredients": [
+        {
+          "name": "ว่านหางจระเข้",
+          "image": "assets/botanicals/aloe-cut-leaf.webp"
+        },
+        {
+          "name": "ทานตะวัน",
+          "image": "assets/botanicals/sunflower-seed-oil.webp"
+        },
+        {
+          "name": "ข้าวโพด",
+          "image": null
+        },
+        {
+          "name": "มันสำปะหลัง",
+          "image": null
+        }
+      ]
+    }
+  ],
+  "set": {
+    "id": "SET5",
+    "name": "Mediral ชุด 5 ขั้น",
+    "headline": "5 ชิ้น จากล้างหน้าถึงปิดท้ายลุค",
+    "listing_name_confirmed": false,
+    "copy_prefix": "Mediral ชุด 5 ชิ้น",
+    "shop_names": {
+      "CL": "มูสโฟมล้างหน้า",
+      "AC": "เซรั่มสิว",
+      "BR": "เซรั่มหน้าใส",
+      "SU": "เซรั่มกันแดด",
+      "PO": "แป้งพัฟ"
+    },
+    "poster": {
+      "price": 1899,
+      "valid_from": "2026-09-21",
+      "valid_to": "2026-09-30",
+      "gift": "โปสเตอร์ระบุแถมเครื่องนวดหน้า 1 ชิ้น",
+      "terms": "โปสเตอร์ระบุว่าเป็นชุดตายตัว เปลี่ยนสินค้าไม่ได้",
+      "status": "poster-only",
+      "note": "ข้อเสนอที่พบในสื่อแบรนด์ ยังไม่ยืนยันในตะกร้า ช่องทาง หรือคูปองปัจจุบัน"
+    }
+  },
+  "buy": {
+    "affiliate_url": null,
+    "status": "pending",
+    "pending_label": "ลิงก์ชุดนี้กำลังตรวจ",
+    "cta_label": "ตรวจราคาและสิทธิชุดนี้",
+    "store": "Mediral Official",
+    "platform": "TikTok Shop"
+  },
+  "disclosure": "myClover อาจได้รับค่าคอมมิชชันเมื่อคุณซื้อผ่านลิงก์ของเรา"
+}

@@ -38,3 +38,11 @@ PLAN-V*.md
 
 # Inbox-only Lucky Source exports belong outside this public repository.
 /showcase/house/downloads/
+
+# Mediral: shop screenshots kept locally for label comparison; the held old mousse draft is internal only.
+mediral/assets/evidence/
+mediral/assets/pack/cl-front-ai-draft-hold.webp
+# Internal asset manifests/briefs (point into the private Sources folder) and the unsoftened sunscreen draft.
+mediral/assets/*.md
+mediral/assets/*.json
+mediral/assets/pack/su-front.webp

@@ -63,3 +63,13 @@ homechew/vendor/build-three.mjs
 
 # Clover Motion QA stays local; the layer itself ships from assets/motion/.
 tests/motion/
+
+# Mediral development checks and review notes are not public page assets.
+tests/mediral/
+docs/mediral/
+# Mediral reference screenshots, asset manifests and the held old mousse draft are not page assets.
+mediral/assets/evidence/
+mediral/assets/*.md
+mediral/assets/*.json
+mediral/assets/pack/cl-front-ai-draft-hold.webp
+mediral/assets/pack/su-front.webp

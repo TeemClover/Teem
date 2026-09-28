@@ -1,0 +1,51 @@
+{
+  "three": "0.186.1",
+  "esbuild": "0.25.12",
+  "exports": [
+    "BackSide",
+    "BoxGeometry",
+    "BufferAttribute",
+    "BufferGeometry",
+    "CanvasTexture",
+    "CircleGeometry",
+    "CylinderGeometry",
+    "DirectionalLight",
+    "DoubleSide",
+    "FrontSide",
+    "Group",
+    "HemisphereLight",
+    "InstancedMesh",
+    "LatheGeometry",
+    "MathUtils",
+    "Mesh",
+    "MeshBasicMaterial",
+    "MeshLambertMaterial",
+    "MeshPhysicalMaterial",
+    "MeshStandardMaterial",
+    "NeutralToneMapping",
+    "Object3D",
+    "PCFShadowMap",
+    "PMREMGenerator",
+    "PerspectiveCamera",
+    "Plane",
+    "PlaneGeometry",
+    "PointLight",
+    "RepeatWrapping",
+    "SRGBColorSpace",
+    "Scene",
+    "SphereGeometry",
+    "Vector2",
+    "Vector3",
+    "WebGLRenderer"
+  ],
+  "files": {
+    "three.module.min.js": {
+      "bytes": 550476,
+      "sha256": "83e248a03c1ded586768fce6e6d5ae3543cc0e99a3e88f768f393f560a20c47e"
+    },
+    "addons/environments/RoomEnvironment.js": {
+      "bytes": 4960,
+      "sha256": "55f466192cc84298755a424c5e040345006b2ee1455589b3b54126c2ea4123f4"
+    }
+  }
+}

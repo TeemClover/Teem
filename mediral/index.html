@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="th" class="mr-boot">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mediral 5 ขั้น — ล้าง บำรุง ปกป้อง ปกปิด · myClover</title>
+  <meta name="description" content="รูทีน Mediral 5 ขั้นจาก myClover: ล้างหน้า ดูแลผิวที่เป็นสิวง่าย ดูแลผิวที่ดูหมองคล้ำ กันแดด และปกปิด — แต่ละชิ้นใช้ตอนไหน แบรนด์เล่าถึงวัตถุดิบอะไร และชุด 5 ชิ้นมีอะไรบ้าง">
+  <!-- Prototype for owner review. noindex is not access control; keep private data out of this folder. -->
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#f3f1ea">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="mediral.css">
+  <script type="importmap">
+    {"imports": {"three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/"}}
+  </script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body data-step="CL">
+  <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>
+
+  <header class="mr-header">
+    <a class="mr-brand" href="#step-CL" aria-label="กลับขึ้นด้านบน">
+      <span class="mr-brand__house">myClover</span>
+      <span class="mr-brand__sep" aria-hidden="true">·</span>
+      <span class="mr-brand__room">Mediral 5 Steps</span>
+    </a>
+    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ดูรายละเอียดชุด 5 ชิ้น</a>
+  </header>
+
+  <!-- Routine rail: where you are in the five steps; finished pieces stay here small. -->
+  <nav class="mr-rail" aria-label="ลำดับรูทีน 5 ขั้น" data-slot="rail"></nav>
+
+  <!-- One fixed stage under the text. The page stays complete when WebGL never loads. -->
+  <div class="mr-stage" id="stage" aria-hidden="true">
+    <div class="mr-stage__sky"></div>
+    <p class="mr-stage__word" data-slot="word">CLEANSE</p>
+    <canvas class="mr-canvas" id="scene"></canvas>
+    <p class="mr-stage__note">ภาพแพ็ก AI ฉบับร่าง ไม่ใช่ฉลากต้นฉบับ · ภาพพืชเป็นภาพประกอบ AI · การรวมวัตถุดิบเป็นภาพเล่าเรื่อง ไม่ใช่กระบวนการผลิตจริง</p>
+  </div>
+
+  <main id="main">
+    <!-- Step 1 is the opening: the mousse, by name and role, before any product image. -->
+    <section class="mr-step mr-step--hero" id="step-CL" data-step="CL" data-index="0" aria-labelledby="hero-title">
+      <div class="mr-step__sticky">
+        <div class="mr-step__left">
+          <p class="mr-step__code"><span class="mr-step__num">01</span><span class="mr-step__en">CLEANSE</span><span class="mr-step__verb">ล้าง · มูสโฟมล้างหน้า</span></p>
+          <h1 class="mr-step__title mr-step__title--hero" id="hero-title">
+            <span>เริ่มจากล้างหน้าให้สะอาด</span>
+            <span>แล้วค่อยเติมการดูแลทีละขั้น</span>
+          </h1>
+          <p class="mr-step__lead">ทำความรู้จัก Mediral ทั้ง 5 ชิ้น ตั้งแต่ล้างหน้า ดูแลผิวที่เป็นสิวง่ายและผิวที่ดูหมองคล้ำ กันแดด จนถึงปกปิด พร้อมออกไปใช้วันของคุณ</p>
+          <div class="mr-actions">
+            <a class="mr-btn" href="#set" data-cta="skip">ดูรายละเอียดชุด 5 ชิ้น</a>
+            <a class="mr-btn mr-btn--ghost" href="#step-AC" data-cta="next">ขั้นถัดไป</a>
+          </div>
+          <p class="mr-fine">หน้านี้จัดทำโดย myClover เพื่อช่วยเลือกซื้อ ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
+          <ol class="mr-phase" aria-hidden="true"><li>น้ำ</li><li>ฟอง</li><li>บทบาท</li></ol>
+        </div>
+        <div class="mr-step__right" data-slot="hero-body"></div>
+      </div>
+    </section>
+
+    <div class="mr-story" id="story" data-slot="steps"></div>
+
+    <section class="mr-chapter mr-set" id="set" data-chapter="set" aria-labelledby="set-title">
+      <div class="mr-set__inner">
+        <div class="mr-card mr-card--wide">
+          <p class="mr-kicker">ครบ 5 ขั้น</p>
+          <h2 class="mr-h2" id="set-title" data-slot="set-headline">5 ชิ้น จากล้างหน้าถึงปิดท้ายลุค</h2>
+          <div class="mr-setrow" data-slot="set-row" aria-hidden="true"></div>
+          <fieldset class="mr-pieces" data-slot="pieces">
+            <legend class="mr-pieces__legend">ในชุดมีอะไร · ติ๊กออกได้ถ้ามีบางขั้นที่ใช้ของเดิมอยู่แล้ว</legend>
+          </fieldset>
+          <div class="mr-offer" data-slot="offer"></div>
+          <div class="mr-summary" data-slot="summary" aria-live="polite"></div>
+          <div class="mr-actions mr-actions--buy">
+            <a class="mr-btn" data-slot="buy-link" aria-disabled="true" role="link">ลิงก์ชุดนี้กำลังตรวจ</a>
+            <button type="button" class="mr-btn mr-btn--ghost" data-action="copy">คัดลอกรายการ</button>
+            <button type="button" class="mr-btn mr-btn--ghost" data-action="card">บันทึกใบสรุปก่อนจ่าย</button>
+          </div>
+          <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
+          <p class="mr-disclosure" data-slot="disclosure"></p>
+          <p class="mr-disclosure">หน้านี้จัดทำโดย myClover เพื่อช่วยเลือกซื้อ ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mr-footer">
+    <p><strong>ที่มาของข้อมูล</strong> ชื่อ ขนาด วิธีใช้ และรายชื่อส่วนผสมถอดจากสื่อการตลาดของแบรนด์ Mediral รายชื่อส่วนผสมไม่ใช่ส่วนผสมครบตามฉลาก ลำดับ 5 ขั้นเป็นการเล่าเรื่องตามโปสเตอร์ชุดของแบรนด์ วิธีใช้และลำดับทาจริงให้ยึดฉลากของสินค้าที่ได้รับ ข้อเสนอชุดมาจากโปสเตอร์ที่ได้รับวันที่ 28 ก.ย. 2026 ยอดที่ต้องจ่ายจริงให้ดูที่หน้าชำระเงิน</p>
+    <p>ภาพแพ็กเป็นภาพ AI ฉบับร่างจากสื่อของแบรนด์ ไม่ใช่ฉลากต้นฉบับ ภาพพืชสร้างด้วย AI การรวมวัตถุดิบและการเคลื่อนไหวในฉากเป็นภาพเล่าเรื่อง ไม่ใช่กระบวนการผลิต ผลบนผิว หรือผลทดสอบ หน้านี้ไม่ใช่คำแนะนำทางการแพทย์ หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
+    <p>หน้านี้จัดทำโดย myClover ไม่ใช่เว็บไซต์ทางการของแบรนด์ Mediral</p>
+    <p class="mr-footer__house">myClover · Mediral 5 Steps (ต้นแบบ)</p>
+  </footer>
+
+  <noscript><p class="mr-noscript">หน้านี้ใช้ JavaScript เพื่อแสดงรูทีน รูทีน 5 ขั้นตามโปสเตอร์ชุดของแบรนด์: 1 มูสโฟมล้างหน้า · 2 เซรั่มขวดขาว · 3 เซรั่มขวดเหลืองเขียว · 4 เซรั่มกันแดด · 5 แป้งพัฟ</p></noscript>
+</body>
+</html>
