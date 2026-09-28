@@ -70,7 +70,8 @@ function stillFigure(step) {
 }
 
 function ingredientPanel(step) {
-  if (!step.featured?.length) return '';
+  if (!step.featured?.length) return step.ingredients_status === 'pending-current-sku'
+    ? `<p class="mr-step__note">${esc(step.ingredients_note)}</p>` : '';
   const first = step.featured[0];
   return `<section class="mr-lab" data-lab="${step.id}" aria-label="สำรวจส่วนผสม ${esc(step.nick)}">
     <p class="mr-lab__eyebrow">เลือกส่วนผสม แล้วดูว่ามีบทบาทอะไร <span class="mr-tag">ภาพจำลอง</span></p>
@@ -80,13 +81,45 @@ function ingredientPanel(step) {
       <p class="mr-lab__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
       <small class="mr-lab__source">${esc(ingredientSource(first))}</small>
     </div>
+    <a class="mr-lab__all" href="#formula-${step.id}">ดูส่วนผสมที่แบรนด์ระบุทั้งหมด <span aria-hidden="true">↓</span></a>
   </section>`;
 }
 function ingredientSource(ingredient) {
   return `${ingredient.benefit_status === 'brand-claim' ? 'บทบาทตามสื่อแบรนด์' : 'ข้อมูลจากสื่อแบรนด์'}${ingredient.benefit_source ? ` · ${ingredient.benefit_source}` : ''}`;
 }
+function formulaIngredients(step, groupIndex) {
+  const named = new Map([...(step.featured || []), ...(step.ingredients || [])].map(ingredient => [ingredient.name, ingredient]));
+  return (step.ingredient_groups?.[groupIndex]?.ingredientNames || []).map(name => named.get(name)).filter(Boolean);
+}
+function ingredientAtlas(step) {
+  if (step.ingredients_status === 'pending-current-sku' || !step.ingredient_groups?.some(group => group.ingredientNames.length)) return '';
+  const next = state.data.steps[step.order];
+  return `<section class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}" aria-labelledby="formula-title-${step.id}">
+    <header>
+      <h2 id="formula-title-${step.id}">รู้จักส่วนผสมของ${esc(step.nick)}</h2>
+      <p>เลือกชื่อในแต่ละกลุ่ม เพื่ออ่านบทบาทและที่มาที่แบรนด์ระบุ</p>
+      <p>${esc(step.ingredients_note)}</p>
+    </header>
+    <div class="mr-ingredient-atlas__groups">${step.ingredient_groups.map((group, groupIndex) => {
+      const ingredients = formulaIngredients(step, groupIndex);
+      if (!ingredients.length) return '';
+      const first = ingredients[0];
+      const detailId = `formula-detail-${step.id}-${groupIndex}`;
+      return `<article class="mr-ingredient-group" data-formula-group="${step.id}:${groupIndex}">
+        <h3 id="formula-group-${step.id}-${groupIndex}">${esc(group.title)}</h3>
+        <p class="mr-ingredient-group__summary">${esc(group.summary)}<small class="mr-ingredient-group__origin">${esc(group.source)}</small></p>
+        <div class="mr-ingredient-group__names" role="group" aria-labelledby="formula-group-${step.id}-${groupIndex}">${ingredients.map((ingredient, index) => `<button type="button" data-formula-step="${step.id}" data-formula-group-index="${groupIndex}" data-formula-index="${index}" aria-pressed="${index === 0}" aria-controls="${detailId}">${esc(ingredient.name)}</button>`).join('')}</div>
+        <div class="mr-ingredient-group__detail" id="${detailId}" aria-live="polite" aria-atomic="true">
+          <h4 class="mr-ingredient-group__name">${esc(first.name)}</h4>
+          <p class="mr-ingredient-group__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
+          <small class="mr-ingredient-group__source">${esc(ingredientSource(first))}</small>
+        </div>
+      </article>`;
+    }).join('')}</div>
+    <a class="mr-ingredient-atlas__next" href="${next ? `#step-${next.id}` : '#set'}">${next ? `ต่อไป: ${esc(next.nick)}` : 'ดูชุดและรายการที่บันทึก'} <span aria-hidden="true">↓</span></a>
+  </section>`;
+}
 function stepBody(step) {
-  const more = (step.ingredients || []).map(f => `<li><strong>${esc(f.name)}</strong>${f.benefit ? ` — ${esc(f.benefit)}` : ''}</li>`).join('');
   return `
     ${ingredientPanel(step)}
     <details class="mr-more">
@@ -96,7 +129,6 @@ function stepBody(step) {
         <div><dt>เมื่อไร</dt><dd>${step.when.map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
         ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
       </dl>
-      ${more ? `<details class="mr-formula"><summary>ส่วนผสมอื่นที่แบรนด์เล่า (${step.ingredients.length})</summary><p>บทบาทต่อไปนี้เป็นคำอธิบายของแบรนด์ ไม่ใช่ผลทดสอบของสูตรสำเร็จ</p><ul>${more}</ul></details>` : ''}
       <ul>
         <li>${esc(step.ingredients_note)}</li>
         <li class="${step.image_status === 'ai-draft' ? '' : 'is-warn'}">${esc(step.image_note)}</li>
@@ -128,11 +160,11 @@ function renderSteps() {
           <h2 class="mr-step__title" id="h-${step.id}">${esc(step.headline)}</h2>
           <p class="mr-step__lead">${esc(step.for_you)}</p>
           ${step.visible_note ? `<p class="mr-step__note">${esc(step.visible_note)}</p>` : ''}
-          <ol class="mr-phase" aria-hidden="true"><li>ที่มา</li><li>รวม</li><li>บทบาท</li></ol>
+          <ol class="mr-phase" aria-hidden="true"><li>วัตถุดิบ</li><li>สกัด · ผสม</li><li>บทบาท</li></ol>
         </div>
         <div class="mr-step__right">${stepBody(step)}</div>
       </div>
-    </section>`).join('');
+    </section>${ingredientAtlas(step)}`).join('');
 }
 
 function renderRail() {
@@ -353,8 +385,38 @@ function chooseIngredient(id, index) {
   state.labKey = null;
   onScroll();
 }
+function chooseFormulaIngredient(id, groupIndex, index) {
+  const step = byId(id);
+  if (!step || !Number.isInteger(groupIndex) || !Number.isInteger(index) || groupIndex < 0 || index < 0) return;
+  const ingredient = formulaIngredients(step, groupIndex)[index];
+  const group = $(`[data-formula-group="${id}:${groupIndex}"]`);
+  if (!ingredient || !group) return;
+  $$('[data-formula-index]', group).forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+  $('.mr-ingredient-group__name', group).textContent = ingredient.name;
+  $('.mr-ingredient-group__benefit', group).textContent = ingredient.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ';
+  $('.mr-ingredient-group__source', group).textContent = ingredientSource(ingredient);
+}
+
+function readingChapter() {
+  const readingTop = Math.min(innerHeight / 3, ($('.mr-header')?.getBoundingClientRect().bottom || 88) + 16);
+  return $$('.mr-reading-chapter').find(chapter => {
+    const rect = chapter.getBoundingClientRect();
+    return rect.top <= readingTop && rect.bottom > readingTop;
+  });
+}
+
+function syncStagePlayback(chapter = readingChapter()) {
+  if (!state.stage) return;
+  // Reading chapters cover the canvas. Keep its target current, but spend no frames behind them.
+  if (chapter || document.visibilityState === 'hidden') state.stage.pause();
+  else state.stage.resume();
+}
 
 function onScroll() {
+  const chapter = readingChapter();
+  syncStagePlayback(chapter);
+  if (chapter) document.body.dataset.readingChapter = chapter.id;
+  else delete document.body.dataset.readingChapter;
   const u = pinnedU ?? progress();
   state.u = u;
   const i = Math.min(state.data.steps.length, Math.floor(u));
@@ -387,7 +449,9 @@ function onScroll() {
 
 /* ---------- 3D (optional, lazy) ---------- */
 function preserveReadingPosition(update) {
-  const current = sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress()) + 1))];
+  const chapter = readingChapter();
+  const chapterTop = chapter?.getBoundingClientRect().top;
+  const current = chapter || sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress()) + 1))];
   const reading = scrollY > 10;
   const fraction = current
     ? Math.min(1, Math.max(0, -current.getBoundingClientRect().top / Math.max(1, current.offsetHeight - innerHeight)))
@@ -395,7 +459,8 @@ function preserveReadingPosition(update) {
   update();
   if (reading && current) {
     const top = current.getBoundingClientRect().top + scrollY;
-    window.scrollTo({top: top + fraction * Math.max(0, current.offsetHeight - innerHeight), behavior: 'instant'});
+    const target = chapter ? top - chapterTop : top + fraction * Math.max(0, current.offsetHeight - innerHeight);
+    window.scrollTo({top: target, behavior: 'instant'});
   }
   onScroll();
   measureBand();
@@ -441,11 +506,11 @@ async function bootStage() {
     const {createStory} = await import('./story.js');
     state.stage = await createStory({canvas: $('#scene'), steps: state.data.steps, asset, reduced: env.reduced, onContextChange});
     state.contextLost = Boolean(state.stage.state.contextLost);
+    syncStagePlayback();
     // Preferences and context can change while scene textures are loading.
     state.stage.setReducedMotion(matchMedia('(prefers-reduced-motion: reduce)').matches);
     state.stage.setSelection([...state.selection]);
     state.stage.setProgress(state.u);
-    if (document.visibilityState === 'hidden') state.stage.pause();
     sceneAvailability(!state.contextLost);
   } catch (err) {
     console.warn('[mediral] 3D story unavailable, using stills', err);
@@ -468,7 +533,7 @@ async function boot() {
   renderSummary();
   // Product sections are created after the document parses. Restore incoming chapter links now,
   // before the optional scene changes layout, rather than relying on the browser's early hash pass.
-  const incomingChapter = sections().find(section => `#${section.id}` === location.hash);
+  const incomingChapter = [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
     const inputEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
@@ -514,11 +579,8 @@ async function boot() {
   watchReducedMotion();
   scheduleOfferRefresh();
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') {
-      state.stage?.pause();
-      return;
-    }
-    state.stage?.resume();
+    syncStagePlayback();
+    if (document.visibilityState !== 'visible') return;
     renderOffer();
     scheduleOfferRefresh();
   });
@@ -532,6 +594,8 @@ async function boot() {
   document.addEventListener('click', e => {
     const ingredient = e.target.closest('[data-ingredient-index]');
     if (ingredient) chooseIngredient(ingredient.dataset.ingredientStep, Number(ingredient.dataset.ingredientIndex));
+    const formula = e.target.closest('[data-formula-index]');
+    if (formula) chooseFormulaIngredient(formula.dataset.formulaStep, Number(formula.dataset.formulaGroupIndex), Number(formula.dataset.formulaIndex));
     const act = e.target.closest('[data-action]');
     if (act?.dataset.action === 'copy') copyList();
     if (act?.dataset.action === 'card') saveCard(act);
@@ -564,3 +628,10 @@ function bootFailed(err) {
 }
 
 boot().catch(bootFailed);
+
+// Enhance approved media independently of product-data loading; pending media remains a still.
+if ($('#lab-film')?.id === 'lab-film') {
+  (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(() => {
+    import('./lab-film.js').then(({initLabFilm}) => initLabFilm()).catch(err => console.warn('[mediral] film enhancement unavailable', err));
+  });
+}

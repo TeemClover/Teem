@@ -1,6 +1,6 @@
 # Repository layout and safe cleanup boundaries
 
-Updated 2026-09-10. This map describes the current route-oriented repository. It does not authorize moving a public route, changing deployment, or removing a legacy save contract.
+Updated 2026-09-10; Mediral entries added 2026-09-28. This map describes the route-oriented repository. It does not authorize moving a public route, changing deployment, or removing a legacy save contract.
 
 ## The directory tree is also the URL tree
 
@@ -28,6 +28,7 @@ This is a static HTML/CSS/JavaScript site with provider-specific API entrypoints
 | `blueprint/` | Approved product/architecture source documents | Preserve their stable names and chronology. |
 | `docs/` | Repository maps, evidence indexes and cleanup reports | Preferred home for new cross-repository documentation. |
 | `docs/frontdoor/` | Front Door storyboard, generation provenance, exact prompts and mobile export notes | Documentation only; runtime images remain under `frontdoor/art/`. |
+| `mediral/`, `docs/mediral/`, `tests/mediral/` | Mediral routine, ingredient atlas and illustrative lab experience; [implementation and release notes](mediral/README.md) | Runtime stays under `mediral/`; docs/tests and private preparation files are excluded from deployment. The film readiness gate stays off until its actual media is supplied. |
 | `tools/`, `scripts/`, `.github/workflows/` | Build, verification, migration and automation sources | Not public experience code, but operational paths are referenced explicitly. |
 | `.forge-src/` | Original comic panels | Default input of `tools/build.py`; preserve originals and generator linkage. |
 | `.tmp/classroom-hero/` | Historical image-upload chunks | Despite its name, a GitHub workflow explicitly reads this path. Do not sweep it as generic temporary output. |
@@ -45,6 +46,7 @@ Ownership here identifies a code boundary, not permission to absorb another acti
 | `/home/` | `home/` | Implemented original-house destination from the Compass; original voice video is explicitly opened, and legacy routes remain available. The approved root now uses the Compass; this old-house route remains separate. |
 | `/hall.html` | `hall.html` | Existing Hall route; preserve independently of the homepage entrance. |
 | `/ako/` | `ako/` | Ako's food/life experience and existing media. |
+| `/mediral/` | `mediral/` | myClover's independent Mediral routine and ingredient experience; AI imagery remains labelled and Affiliate checkout is pending. See [current status](mediral/README.md). |
 | `/xircle/`, `/Xircle/` | `xircle/` | Current V3 experience plus compatibility aliases. |
 | `/meet/` | `meet/` | Meeting intake UI; shared server validation remains in `api/_lib/`. |
 | `/forge/` | `forge/` | Seven-episode comic; source generator is `tools/build.py`. |

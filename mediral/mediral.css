@@ -119,6 +119,63 @@ main { position: relative; z-index: 1; }
 .mr-static .mr-routine { height: auto; }
 .mr-static .mr-routine__sticky { position: relative; height: auto; min-height: 100svh; }
 .mr-static .mr-routine__still { display: grid; }
+
+/* A short moving-image chapter in the document flow, separate from the scrubbed product scene. */
+.mr-reading-chapter { scroll-margin-top: 72px; }
+body[data-reading-chapter]:not([data-reading-chapter='']) .mr-stage,
+body[data-reading-chapter]:not([data-reading-chapter='']) .mr-rail { visibility: hidden; }
+.mr-film { position: relative; isolation: isolate; padding: 88px var(--gutter) 70px; color: var(--forest-deep); background: #edf1df; border-block: 1px solid var(--line); }
+.mr-film__heading { display: grid; grid-template-columns: 1.1fr .7fr; align-items: end; gap: 6vw; max-width: 1440px; margin: 0 auto 30px; }
+.mr-film__heading h2 { margin: 0; font: 600 clamp(30px, 3.7vw, 60px)/1.25 var(--sans); letter-spacing: -.035em; }
+.mr-film__heading > p { max-width: 32em; margin: 0 0 4px; font-size: 14px; line-height: 1.85; color: var(--ink-soft); }
+.mr-film__figure { max-width: 1440px; margin: 0 auto; }
+.mr-film__frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--forest-deep); }
+.mr-film__fallback, .mr-film__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mr-film__fallback { z-index: 0; }
+.mr-film__video { z-index: 1; }
+.mr-film__video[hidden], .mr-film__duration[hidden] { display: none; }
+.mr-film.is-film-ready .mr-film__still-label { display: none; }
+.mr-film.is-error .mr-film__video { opacity: 0; }
+.mr-film__controls { position: absolute; z-index: 2; inset: auto 20px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; }
+.mr-film__duration, .mr-film__still-label { padding: 6px 9px; color: #f4f6ed; background: rgba(12, 32, 22, .58); font: 400 10px/1.5 var(--sans); letter-spacing: .02em; }
+.mr-film__toggle { display: inline-flex; align-items: center; gap: 9px; min-height: 42px; padding: 8px 14px; border: 1px solid rgba(255, 255, 255, .55); border-radius: 2px; background: rgba(12, 32, 22, .75); color: #f4f6ed; font: 500 12px/1.5 var(--sans); cursor: pointer; pointer-events: auto; transition: background .2s ease; }
+.mr-film__toggle[hidden] { display: none; }
+.mr-film__toggle:hover { background: var(--forest-deep); }
+.mr-film__toggle:focus-visible { outline-color: var(--chartreuse); }
+.mr-film__toggle [data-film-icon] { display: inline-block; width: 12px; text-align: center; font: 600 11px/1 var(--display); }
+.mr-film__figure figcaption { margin-top: 11px; color: var(--ink-soft); font-size: 10.5px; line-height: 1.65; }
+.mr-film__status { margin: 7px 0 0; color: var(--forest); font-size: 12px; line-height: 1.7; }
+.mr-film__status:empty { display: none; }
+.mr-film__beats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3vw; max-width: 1440px; margin: 34px auto 0; padding: 0; list-style: none; }
+.mr-film__beats li { padding-top: 17px; border-top: 1px solid var(--line); }
+.mr-film__still { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin-bottom: 20px; background: var(--sage); }
+.mr-film__beats li > span { display: block; margin-bottom: 8px; font: 600 10px/1 var(--display); color: var(--ink-soft); }
+.mr-film__beats h3 { margin: 0 0 8px; font: 500 18px/1.5 var(--sans); letter-spacing: -.02em; }
+.mr-film__beats p { max-width: 30em; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.75; }
+.mr-film__next { display: flex; align-items: center; justify-content: space-between; max-width: 1440px; margin: 35px auto 0; padding-top: 18px; border-top: 1px solid var(--line); text-decoration: none; color: var(--forest-deep); font-size: 13px; }
+.mr-film__next span { font: 400 22px/1 var(--display); }
+
+/* A complete ingredient index is a reading chapter, not another scroll-trapped panel. */
+.mr-ingredient-atlas { position: relative; isolation: isolate; padding: 86px var(--gutter) 76px; background: #f3f3e9; color: var(--forest-deep); border-block: 1px solid var(--line); }
+.mr-ingredient-atlas > header { max-width: 1440px; margin: 0 auto 35px; }
+.mr-ingredient-atlas > header h2 { max-width: 24em; margin: 0 0 15px; font: 600 clamp(28px, 3vw, 46px)/1.3 var(--sans); letter-spacing: -.03em; text-wrap: balance; }
+.mr-ingredient-atlas > header > p:not(.mr-kicker) { max-width: 66em; margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.85; }
+.mr-ingredient-atlas__groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 24px; max-width: 1440px; margin: 0 auto; }
+.mr-ingredient-group { min-width: 0; padding: clamp(20px, 2.5vw, 36px); border: 1px solid rgba(35, 77, 53, .2); border-top: 3px solid var(--forest); background: rgba(255, 255, 255, .25); }
+.mr-ingredient-group > h3 { margin: 0 0 10px; color: var(--forest-deep); font: 600 clamp(19px, 1.6vw, 25px)/1.45 var(--sans); letter-spacing: -.02em; }
+.mr-ingredient-group__summary { max-width: 43em; margin: 0 0 22px; color: var(--ink-soft); font-size: 13px; line-height: 1.8; }
+.mr-ingredient-group__origin { display: block; margin-top: 7px; color: var(--ink-soft); font-size: 10.5px; line-height: 1.7; }
+.mr-ingredient-group__names { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.mr-ingredient-group__names button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; max-width: 100%; padding: 7px 11px; border: 1px solid var(--line); border-radius: 2px; background: transparent; color: var(--forest); font: 400 12px/1.5 var(--sans); text-align: left; overflow-wrap: anywhere; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.mr-ingredient-group__names button:hover { background: #e5ead8; border-color: var(--forest); }
+.mr-ingredient-group__names button[aria-pressed='true'] { background: var(--forest-deep); border-color: var(--forest-deep); color: var(--ivory); }
+.mr-ingredient-group__detail { min-width: 0; padding-top: 21px; border-top: 1px solid var(--line); }
+.mr-ingredient-group__name { margin: 0 0 9px; color: var(--forest-deep); font: 600 21px/1.5 var(--sans); overflow-wrap: anywhere; }
+.mr-ingredient-group__benefit { margin: 0 0 12px; color: var(--ink); font-size: 14px; line-height: 1.85; }
+.mr-ingredient-group__source { display: block; color: var(--ink-soft); font-size: 11px; line-height: 1.75; }
+.mr-ingredient-atlas > a, .mr-ingredient-atlas__next { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1440px; margin: 32px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--forest-deep); font-size: 13px; line-height: 1.7; text-decoration: none; }
+.mr-lab__all { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; margin-top: 12px; color: var(--forest); font-size: 11px; line-height: 1.65; text-underline-offset: 4px; }
+
 .mr-step { position: relative; height: 270vh; }
 .mr-step--hero { height: 210vh; }
 .mr-step__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: var(--reading-width) 1fr; grid-template-rows: auto auto; align-content: center; column-gap: 5vw; row-gap: 20px; padding: 100px var(--gutter) 74px; }
@@ -303,6 +360,25 @@ main { position: relative; z-index: 1; }
   .mr-routine__still img { height: min(28svh, 210px); }
   .mr-routine__still figcaption { font-size: 8px; }
   .mr-static .mr-routine__sticky { padding-top: 138px; }
+  .mr-film { padding-top: 72px; padding-bottom: 42px; }
+  .mr-film__heading { grid-template-columns: 1fr; gap: 14px; margin-bottom: 24px; }
+  .mr-film__heading h2 { font-size: clamp(29px, 5vw, 45px); }
+  .mr-film__heading > p { font-size: 13px; max-width: 42em; }
+  .mr-film__controls { inset: auto 10px 10px; gap: 8px; }
+  .mr-film__toggle { min-height: 40px; padding: 7px 10px; font-size: 11px; }
+  .mr-film__duration, .mr-film__still-label { font-size: 9px; padding: 4px 6px; }
+  .mr-film__beats { gap: 18px; margin-top: 25px; }
+  .mr-film__beats h3 { font-size: 16px; }
+  .mr-film__beats p { font-size: 12px; }
+  .mr-ingredient-atlas { padding-top: 65px; padding-bottom: 48px; }
+  .mr-ingredient-atlas > header { margin-bottom: 27px; }
+  .mr-ingredient-atlas > header h2 { font-size: clamp(28px, 4vw, 39px); }
+  .mr-ingredient-atlas__groups { gap: 18px; }
+  .mr-ingredient-group { padding: 21px; }
+  .mr-ingredient-group__names { gap: 7px; }
+  .mr-ingredient-group__names button { font-size: 11px; }
+  .mr-ingredient-group__name { font-size: 19px; }
+  .mr-ingredient-group__benefit { font-size: 13px; }
   .mr-step__sticky { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0; padding: 47svh 0 18px; background: linear-gradient(180deg, transparent 42%, rgba(237, 241, 222, .78) 49%, rgba(237, 241, 222, .97) 72%); }
   .mr-step__left, .mr-step__right { width: min(680px, 100%); padding: 0 var(--gutter); background: transparent; }
   .mr-step__left { flex-shrink: 0; }
@@ -349,6 +425,22 @@ main { position: relative; z-index: 1; }
   .mr-piece__when { display: none; }
   .mr-h2 { font-size: 32px; }
   .mr-footer { padding-top: 30px; }
+}
+
+@media (max-width: 600px) {
+  .mr-film__beats { grid-template-columns: 1fr; gap: 17px; }
+  .mr-film__beats li { display: grid; grid-template-columns: 24px 1fr; column-gap: 9px; padding-top: 13px; }
+  .mr-film__still { grid-column: 1 / -1; margin-bottom: 15px; aspect-ratio: 16 / 9; }
+  .mr-film__beats li > span { grid-row: 2 / 4; margin-top: 6px; }
+  .mr-film__beats h3 { margin-bottom: 4px; }
+  .mr-film__beats p { grid-column: 2; }
+  .mr-film__figure figcaption { font-size: 10px; }
+  .mr-ingredient-atlas__groups { grid-template-columns: 1fr; }
+  .mr-ingredient-group { padding: 20px 18px; }
+  .mr-ingredient-group__summary { margin-bottom: 18px; font-size: 12px; }
+  .mr-ingredient-group__names { gap: 7px; margin-bottom: 21px; }
+  .mr-ingredient-group__detail { padding-top: 18px; }
+  .mr-ingredient-group__source { font-size: 10.5px; }
 }
 
 /* Mid-height tablets keep the entire introduction under the unchanged artwork band. */

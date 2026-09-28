@@ -2,7 +2,9 @@
 
 The Mediral routine page on myClover tells the five-piece routine as one continuous scroll story: mousse → white serum → yellow-green serum → sunscreen → powder puff.
 
-The opening shows all five products together and explains the roles behind the routine before entering individual product chapters. The mousse opens the detailed sequence. Ingredient controls explain each selected material’s attributed role and highlight it in the 3D lab; gathering through glassware leads to the product reveal. The full set and purchase checks close the story.
+The opening shows all five products together and explains their roles. A separate illustrated lab chapter introduces plants, extracts and texture. The mousse opens the product sequence; four ingredient atlases then let visitors read every source-listed name for the serums, sunscreen and powder. The animated materials dissolve into abstract extract streams, collect in a beaker and lead to the pack reveal. The full set and purchase checks close the story.
+
+**Current implementation — 2026-09-28:** the ingredient atlas, extraction/beaker motion and three concept lab stills are complete. The requested ten-second film is not produced or active: model selection is pending, and `data-film-ready="false"` keeps the chapter as a poster with no video source, play control, duration badge or media request.
 
 Direction and evidence rules are in [STORYBOARD.md](STORYBOARD.md). The first media request is [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -33,11 +35,12 @@ node --test tests/mediral/*.test.mjs
 
 | File | Role |
 |---|---|
-| `mediral/data/routine.json` | Every product fact: step order, role headline, how and when to use, featured and other ingredient names with images, notes, the set poster offer, the buy state and the disclosure. |
-| `mediral/js/main.js` | Renders the accessible page from the data. Maps scroll to story progress `u`. Owns the reader's saved list, copy, card download, dated offer, fallbacks and the data-error retry. Saving individual pieces does not change the store's fixed bundle. |
+| `mediral/data/routine.json` | Product roles, instructions, featured and other ingredient entries, `ingredient_groups`, source attribution, notes, the poster offer and purchase state. A name can have no image and remain fully readable. |
+| `mediral/js/main.js` | Renders the routine, ingredient controls and full atlases; maps the product chapters to `u`. Reading chapters have their own visibility state and do not add routine steps. Owns the saved list, copy, card download, dated offer, fallbacks and data-error retry. |
 | `mediral/js/story.js` | See the `createStory` contract below. Exports `STACKED_QUERY`, the one media query that switches both CSS and scene to words-below-scene. |
+| `mediral/js/lab-film.js` | Independent film controller. A false readiness gate returns an inert API. Once a real film is approved and supplied, it supports in-view playback, manual play/pause, motion/data preferences, visibility pausing and a poster fallback. |
 | `mediral/js/card.js` | See the `drawRoutineCard` contract below. |
-| `mediral/assets/` | Pack AI drafts, botanical and material illustrations (prepared by GPT; see `FIVE_STEP_ASSETS.json`). |
+| `mediral/assets/` | Pack AI drafts, botanical/material illustrations and the concept lab stills under `motion/`. Private preparation manifests are excluded from deployment. |
 | `mediral/vendor/` | Local three.js subset, copied from Homechew. |
 
 **`story.js` — `createStory({canvas, steps, asset, reduced, onContextChange})`** resolves to `{setProgress(u), setIngredient(indexOrNull), setSelection(ids), setBand({left, right}), setReducedMotion(bool), pause(), resume(), dispose(), state}`. `setBand` gives the landscape set view the free screen band (0..1) between the set card and the rail, measured by `main.js`. CSS and scene stack at widths up to 1100 px.
@@ -45,7 +48,7 @@ node --test tests/mediral/*.test.mjs
 - It rejects if WebGL or the pack images fail; the page then shows static stills.
 - `onContextChange('lost' | 'restored')` switches to stills and back while retaining the reading position. GPU environment lighting is rebuilt before restoring the scene. If rebuilding fails, stills remain visible.
 - Reduced motion can change while the page is open. Visibility changes pause/resume the renderer; a single animation loop is retained.
-- Ingredient names appear on entry and illustrations load independently. Mobile botanicals and funnel use a smaller composition clear of the top navigation.
+- Ingredient names appear on entry and illustrations load independently. The extraction effect removes illustrated material in place; small abstract streams enter a receiving beaker before the concentrate, formulation and pack-reveal phases. Whole fruits are not dropped through a funnel. Mobile glassware uses a smaller composition clear of the top navigation.
 - Pack art is front-only: bottles are lathes from their own silhouette with the art projected on, and flat packs are billboards. Yaw stays within ±12°.
 
 **`card.js` — `drawRoutineCard({pieces, data, asset})`** resolves to an object URL of a 1080-wide PNG.
@@ -65,6 +68,13 @@ node --test tests/mediral/*.test.mjs
 - They are AI drafts and are labelled so on the stage, in the notes and on the card.
 - Botanicals are AI illustrations of names in brand material, not proof of ingredients, origin, concentration or effect.
 
+**Ingredient atlases and lab media**
+- The four atlases expose AC 24, BR 18, SU 14 and PO 18 named display entries, grouped for reading. These 74 entries are not a count of distinct actives or a verified INCI list. Sunscreen aliases and group headings have been reconciled for display only.
+- Each family and every ingredient-name button is visible initially. The selected name shows its existing benefit and source status; selecting it does not change the shopping list. Attributed group claims are not promoted into unverified individual claims.
+- The current mousse has no ingredient atlas because its ingredient list remains unknown. It does not inherit the old pack's formula.
+- Three AI concept stills show botanical, extract and research/texture settings. The poster reuses the research still. They are illustrations, not Mediral's factory, experiment, real product texture or manufacturing instructions.
+- The film stays disabled until a real approved MP4 is supplied and the readiness flag is switched on. With the flag off, its path exists only in `data-src`; there is no video request or false play button. With the flag on, automatic playback requires sufficient viewport visibility, an active tab, no reduced-motion preference and no data-saving preference. Manual play remains available; failure leaves the poster and text readable.
+
 **Copy**
 - Headlines state the step's role.
 - Brand statements are attributed ("สื่อแบรนด์เล่าว่า…").
@@ -83,7 +93,9 @@ node --test tests/mediral/*.test.mjs
 ## Review checklist
 
 - [ ] Desktop and mobile: words sit beside or below the scene, never covering it. No clipped text, missing media or horizontal overflow.
-- [ ] Each step plays in order: ingredients → funnel → drop → product → role → rail. The set shows all five.
+- [ ] Each step plays in order: materials → extraction/beaker → concentrate → formulation → drop → product → role → rail. The set shows all five.
+- [ ] Each full ingredient atlas exposes all grouped names, keeps benefit/source text readable and continues to the next product without an inner scrolling trap.
+- [ ] The pending film remains a still image, with no MP4 request, play control or duration. Three concept images load; all carry the shared AI provenance.
 - [ ] Ticking pieces updates the summary, copy text, card and the dimmed pieces in the scene. Scrolling never changes the ticks.
 - [ ] No WebGL or save-data: static stills per step and in the set row, matching the ticks.
 - [ ] Reduced motion: steps are shown already composed, with no continuous loop and no CSS transitions.
@@ -118,3 +130,10 @@ node --test tests/mediral/*.test.mjs
 - Reloading a dynamic chapter link lands in the correct chapter. Initial anchor alignment handles late document/font layout and cancels when the reader interacts or changes the hash. Controller tests cover these races and cleanup.
 - All 39 Mediral contract, controller and scene-lifecycle tests passed. The lab is explicitly illustrative; it does not depict verified manufacturing or test results. No additional media or third-party runtime was introduced.
 - Production verification is performed after pushing this revision; the Affiliate link, verified packshots and current mousse formula remain pending.
+
+## Verification record — 28 Sep 2026 ingredient atlas and concept lab
+
+- Four natural-flow atlases expose every grouped source-list entry; the mousse stays unpopulated. Product indices and the saved shopping list remain separate from ingredient exploration.
+- Three concept WebPs and a reused poster are present. The requested film remains pending; the readiness gate is false. This is not a completed video delivery.
+- The dedicated film behavior suite passes 13 tests: gate/no-source behavior, later activation, DOM safety, viewport/tab visibility, manual pause, reduced motion, data saving, preference changes, blocked playback, media fallback/retry, late promise resolution, ownership across dispose/re-init and the no-IntersectionObserver fallback.
+- The final combined Mediral suite passes 59/59 and the shelf validator passes. Browser QA covered desktop/mobile atlases, all-name visibility, non-featured ingredient selection changing detail/source without changing products, four loaded lab images with no video source, reduced-motion sunscreen reading without overflow, and the mobile extraction/beaker scene. The renderer pauses behind reading chapters; regression checks cover that behavior.

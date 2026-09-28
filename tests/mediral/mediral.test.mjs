@@ -111,6 +111,24 @@ test('the sunscreen shows the softened web draft, with its lettering caveat in v
   assert.ok(!su.featured.some(f => /mineral/.test(f.image)), 'An abstract powder must not be captioned as the UV filters');
 });
 
+test('ingredient groups cover every source-listed name once without treating aliases as extra actives', () => {
+  for (const step of routine().steps) {
+    const names = [...step.featured, ...step.ingredients].map(i => i.name);
+    const grouped = step.ingredient_groups.flatMap(g => g.ingredientNames);
+    assert.equal(new Set(names).size, names.length, `${step.id}: no duplicated named entry`);
+    assert.equal(new Set(grouped).size, grouped.length, `${step.id}: each name belongs to one reading group`);
+    assert.deepEqual([...grouped].sort(), [...names].sort(), `${step.id}: no source-listed name is omitted from the visible groups`);
+    for (const group of step.ingredient_groups) {
+      assert.ok(group.title && group.summary && group.source, `${step.id}: groups explain their role and attribution`);
+    }
+  }
+  const sun = routine().steps.find(s => s.id === 'SU');
+  const names = [...sun.featured, ...sun.ingredients].map(i => i.name);
+  assert.equal(names.filter(n => /ไฮยา/.test(n)).length, 1, 'HA aliases share one source entry');
+  assert.ok(!names.some(n => /Giga White/.test(n)), 'The botanical blend is a group, not an extra counted ingredient');
+  assert.equal(sun.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames.length, 7);
+});
+
 test('internal manifests and unsoftened drafts stay out of git', () => {
   const ignore = read(join(root, '.gitignore')).split('\n').map(l => l.trim());
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {

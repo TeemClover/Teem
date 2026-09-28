@@ -2,7 +2,7 @@
  * Mediral 5 Steps — the scroll-scrubbed scene.
  *
  * Every step plays the same grammar, borrowed from the owner's references:
- *   separate (named botanicals, a few per screen) → gather → a clear glass funnel → one drop →
+ *   named botanicals → abstract extract streams → a glass blending vessel → one drop →
  *   the product reveals bottom-up from that drop → a role movement → it leaves for the routine rail.
  * Step 1 opens on its supplied bottle with water and foam; no plants imply an unverified formula.
  *
@@ -18,6 +18,7 @@
  *   STACKED_QUERY is the one media query that switches both the CSS and the scene to words-below-scene.
  *   u: -1..0 = all-five introduction; 0..1 = step 1 … 4..5 = step 5, 5..6 = the selected set.
  *   Ingredient focus accents a botanical without altering the purchase selection or hiding its peers.
+ *   state.phase, phaseProgress and stepId expose the current visual phase for companion media.
  *   Rejects if WebGL or the pack images fail, so main.js keeps the static stills.
  */
 import {
@@ -35,6 +36,8 @@ const seg = (t, a, b) => clamp01((t - a) / (b - a)); // 0..1 inside [a, b]
 const ease = x => x * x * (3 - 2 * x);
 const easeOut = x => 1 - (1 - x) ** 3;
 const lerp = MathUtils.lerp;
+const cubic = (a, b, c, d, t) => (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c + t ** 3 * d;
+const LAB_PHASES = [['material', 0, 0.38], ['extraction', 0.38, 0.5], ['concentrate', 0.5, 0.58], ['formulation', 0.58, 0.67], ['drop', 0.67, 0.74], ['reveal', 0.74, 0.85], ['role', 0.85, 1]];
 
 /* ---------- canvas helpers ---------- */
 function canvas(w, h) {
@@ -173,6 +176,25 @@ function addReveal(material, height, billboard) {
   return u;
 }
 
+function addExtraction(material) {
+  const amount = {value: 0};
+  material.onBeforeCompile = shader => {
+    shader.uniforms.uExtraction = amount;
+    shader.fragmentShader = 'uniform float uExtraction;\n' + shader.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+  #ifdef USE_MAP
+    float extractionNoise = fract(sin(dot(floor(vMapUv * 92.0), vec2(12.9898, 78.233))) * 43758.5453);
+    float extractionFront = mix(-0.16, 1.16, uExtraction);
+    float extractionGrain = vMapUv.y + (extractionNoise - 0.5) * 0.12;
+    float extractionKeep = smoothstep(extractionFront - 0.025, extractionFront + 0.045, extractionGrain);
+    float extractionEdge = 1.0 - smoothstep(0.0, 0.045, abs(extractionGrain - extractionFront));
+    diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.82, 0.92, 0.58), extractionEdge * 0.28);
+    diffuseColor.a *= extractionKeep;
+  #endif`);
+  };
+  material.customProgramCacheKey = () => 'mediral-botanical-extraction-v1';
+  return amount;
+}
+
 /* ---------- step look ---------- */
 const TINT = {CL: 0xf4fbff, AC: 0xeef6ff, BR: 0xe4efb4, SU: 0xfff0d2, PO: 0xefdcc6};
 
@@ -281,6 +303,22 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     reservoir.add(tick);
   }
   scene.add(reservoir);
+
+  // Abstract extract droplets, not whole leaves or fruit going through a filter.
+  const EXTRACT = small ? 45 : 70;
+  const extractMat = new MeshPhysicalMaterial({color: 0xb5c990, roughness: 0.17, metalness: 0, transparent: true, opacity: 0.88, clearcoat: 1, envMapIntensity: 1.5, emissive: 0x63753f, emissiveIntensity: 0.13, depthWrite: false});
+  const extracts = new InstancedMesh(new SphereGeometry(1, 12, 8), extractMat, EXTRACT);
+  extracts.frustumCulled = false;
+  const extractSeeds = Array.from({length: EXTRACT}, (_, i) => ({source: i % 5, p: rnd(), a: rnd() * Math.PI * 2, r: rnd(), s: 0.012 + rnd() * 0.015}));
+  const extractPalette = [0xa7bf82, 0xd7cd9d, 0xe9eed2, 0xb6c99f, 0xdce8c0];
+  extractSeeds.forEach((seed, i) => extracts.setColorAt(i, extractMat.color.clone().setHex(extractPalette[seed.source])));
+  scene.add(extracts);
+  const BLEND = small ? 24 : 38;
+  const blendMat = new MeshPhysicalMaterial({color: 0xdde7b2, roughness: 0.16, transparent: true, opacity: 0.78, clearcoat: 1, envMapIntensity: 1.25, depthWrite: false});
+  const blending = new InstancedMesh(new SphereGeometry(1, 10, 7), blendMat, BLEND);
+  blending.frustumCulled = false;
+  const blendSeeds = Array.from({length: BLEND}, (_, i) => ({a: i / BLEND * Math.PI * 2, r: 0.09 + rnd() * 0.15, y: rnd(), s: 0.007 + rnd() * 0.009}));
+  scene.add(blending);
 
   const drop = new Mesh(new SphereGeometry(0.095, 32, 20), new MeshPhysicalMaterial({color: 0xe7f5ca, roughness: 0.025, transmission: 0.45, thickness: 0.2, ior: 1.4, transparent: true, opacity: 0.98, clearcoat: 1, envMapIntensity: 2.6}));
   drop.visible = false;
@@ -406,6 +444,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     if (pending[step.id]) return pending[step.id];
     const list = step.featured.slice(0, 5).map((item, i, items) => {
       const plate = new Mesh(new PlaneGeometry(1.08, 1.08), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false}));
+      const extraction = addExtraction(plate.material);
       plate.visible = false;
       const label = new Mesh(new PlaneGeometry(0.72, 0.135), new MeshBasicMaterial({map: labelTexture(item.name), transparent: true, depthWrite: false}));
       label.position.y = -0.63;
@@ -416,7 +455,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
       const echo = (i === 0 || i === items.length - 1)
         ? new Mesh(new PlaneGeometry(1.45, 1.45), new MeshBasicMaterial({transparent: true, alphaTest: 0.04, depthWrite: false})) : null;
       if (echo) { echo.visible = false; scene.add(echo); }
-      return {g, plate, label, echo, item, i, n: items.length, focus: 0, spin: (rnd() - 0.5) * 0.6};
+      return {g, plate, label, echo, extraction, item, i, n: items.length, focus: 0, spin: (rnd() - 0.5) * 0.6};
     });
     specimens[step.id] = list;
     pending[step.id] = Promise.all(list.map(async sp => {
@@ -437,7 +476,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
 
   /* ---- state ---- */
   const s = {u: -1, target: -1, progress: -1, time: 0, last: 0, running: false, frames: 0, reduced, tall: false,
-    paused: false, contextLost: false, ingredient: null,
+    paused: false, contextLost: false, ingredient: null, phase: 'intro', phaseProgress: 0, stepId: null,
     selection: new Set(steps.map(x => x.id)), pointer: new Vector2(), pointerCur: new Vector2(),
     band: null}; // landscape set view: free screen band {left, right} in 0..1, measured by main.js from the DOM
   const view = {w: 1, h: 1};
@@ -473,7 +512,8 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     // Reset per-frame visibility.
     for (const e of Object.values(products)) e.group.visible = false;
     for (const list of Object.values(specimens)) list?.forEach(sp => { sp.g.visible = false; if (sp.echo) sp.echo.visible = false; });
-    bubbles.visible = droplets.visible = powder.visible = drop.visible = foamCloud.visible = false;
+    bubbles.visible = droplets.visible = powder.visible = drop.visible = foamCloud.visible = extracts.visible = blending.visible = false;
+    funnelGroup.visible = false;
     funnelMat.opacity = 0; funnelRim.material.opacity = 0; core.material.opacity = 0; halo.material.opacity = 0;
     reservoir.visible = false;
     reservoirMat.opacity = meniscus.material.opacity = measureMat.opacity = 0;
@@ -481,11 +521,16 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     sunBeams.forEach(b => { b.material.opacity = 0; });
     ripples.forEach(r => { r.material.opacity = 0; });
 
+    const phase = LAB_PHASES.find(([, , end]) => t < end) || LAB_PHASES[LAB_PHASES.length - 1];
+    s.stepId = intro || u >= steps.length ? null : step.id;
+    s.phase = intro ? 'intro' : u >= steps.length ? 'set' : step.role === 'foam' || step.role === 'cleanse' ? 'cleanse' : phase[0];
+    s.phaseProgress = intro ? clamp01(u + 1) : u >= steps.length ? setT : s.phase === 'cleanse' ? t : seg(t, phase[1], phase[2]);
+
     // Pull through the foliage, rise to the glass mouth, then settle on the large product.
-    const gather = step.featured?.length ? ease(seg(t, 0.34, 0.55)) * (1 - ease(seg(t, 0.62, 0.76))) : 0;
+    const gather = step.featured?.length ? ease(seg(t, 0.4, 0.54)) * (1 - ease(seg(t, 0.67, 0.78))) : 0;
     const dolly = ease(seg(t, 0.12, 0.44)) * (1 - ease(seg(t, 0.6, 0.76)));
-    camPos.copy(f.base).add(new Vector3(Math.sin(stepIndex * 1.4 + t * 2) * (s.tall ? 0.045 : 0.16), gather * (s.tall ? 0.04 : 0.18), -dolly * (s.tall ? 0.15 : 0.42) - ease(seg(t, 0.7, 0.88)) * 0.22));
-    camLook.copy(f.look).add(new Vector3(0, gather * (s.tall ? 0.025 : 0.1), 0));
+    camPos.copy(f.base).add(new Vector3(Math.sin(stepIndex * 1.4 + t * 2) * (s.tall ? 0.045 : 0.16), gather * (s.tall ? 0.42 : 0.72), -dolly * (s.tall ? 0.15 : 0.42) - ease(seg(t, 0.7, 0.88)) * 0.22));
+    camLook.copy(f.look).add(new Vector3(0, -gather * (s.tall ? 0.1 : 0.28), 0));
     if (intro) {
       camPos.copy(f.base).add(new Vector3(0, 0.08, -ease(clamp01(u + 1)) * 0.22));
       camLook.copy(f.look);
@@ -547,7 +592,7 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
       roll: (s.reduced ? -0.035 : -0.035 + Math.sin(time * 0.22) * 0.012) * rail.alpha});
     ripples.forEach((r, i) => {
       const k = ((time * 0.18 + i / 3) % 1);
-      r.position.y = p.base - 0.035;
+      r.position.set(0, p.base - 0.035, 0);
       r.scale.setScalar((s.tall ? 0.45 : 0.8) + k * (s.tall ? 1.15 : 2.4));
       r.material.opacity = (1 - k) * 0.78 * rail.alpha;
     });
@@ -590,79 +635,137 @@ export async function createStory({canvas: el, steps, asset, reduced = false, on
     if (list) {
       list.forEach(sp => {
         const appear = easeOut(seg(t, -0.18 + sp.i * 0.02, 0.015 + sp.i * 0.018));
-        const gather = ease(seg(t, 0.38 + sp.i * 0.01, 0.58));
-        if (appear <= 0 || gather >= 1) return;
+        const extracted = ease(seg(t, 0.38 + sp.i * 0.006, 0.53 + sp.i * 0.005));
+        if (appear <= 0 || extracted >= 1) return;
         const focusTarget = hasFocus && sp.i === s.ingredient ? 1 : 0;
         sp.focus = s.reduced ? focusTarget : lerp(sp.focus, focusTarget, 0.14);
         const emphasis = hasFocus ? 0.94 + sp.focus * (s.tall ? 0.22 : 0.3) : 1;
         const [lx, ly, lz, size, angle] = botanicalLayout[sp.i];
-        const drift = s.reduced ? 0 : Math.sin(time * 0.35 + sp.i * 1.7) * 0.045;
-        // Bring the selected specimen inward as it enlarges, keeping it clear of copy and edges.
+        const drift = s.reduced ? 0 : Math.sin(time * 0.35 + sp.i * 1.7) * 0.035;
         const hx = lx * (s.tall ? 0.45 : 1) * (1 - sp.focus * 0.2);
         const hy = ly * (s.tall ? 0.3 : 1) * (1 - sp.focus * 0.12) + drift;
-        const mouth = funnelGroup.position.y + 0.13 * funnelGroup.scale.y;
-        const swirl = Math.sin(gather * Math.PI) * (s.tall ? 0.18 : 0.43);
-        const spin = gather * Math.PI * 2.4 + sp.i * 1.5;
-        const x = lerp(hx, 0, gather) + Math.cos(spin) * swirl;
-        const y = lerp(hy, mouth, gather) + Math.sin(gather * Math.PI) * (s.tall ? 0.08 : 0.18);
-        const z = lerp(lz * (s.tall ? 0.45 : 1) + sp.focus * (s.tall ? 0.075 : 0.22), 0, gather) + Math.sin(spin) * swirl;
+        // Keep the material in place while its texture dissolves. Never filter a whole fruit.
         sp.g.visible = true;
-        sp.g.position.set(x, y, z);
+        sp.g.position.set(hx, hy + extracted * (s.tall ? 0.02 : 0.05), lz * (s.tall ? 0.45 : 1) + sp.focus * (s.tall ? 0.075 : 0.22));
         sp.g.quaternion.copy(camera.quaternion);
-        sp.g.scale.setScalar(Math.max(0.001, size * appear * emphasis * (1 - gather * 0.9) * (s.tall ? 0.43 : 1)));
-        sp.plate.rotation.z = angle + drift + gather * sp.spin * 5;
-        sp.plate.material.opacity = appear * (hasFocus ? 0.7 + sp.focus * 0.3 : 1) * (1 - seg(t, 0.54, 0.59));
-        // The full ingredient names remain in the DOM; one quiet caption grounds the still life.
-        sp.label.material.opacity = (hasFocus ? sp.focus : sp.i === 0 ? 0.95 : 0) * (1 - ease(seg(t, 0.36, 0.45)));
+        sp.g.scale.setScalar(size * appear * emphasis * (1 - extracted * 0.06) * (s.tall ? 0.43 : 1));
+        sp.extraction.value = extracted;
+        sp.plate.rotation.z = angle + drift;
+        sp.plate.material.opacity = appear * (hasFocus ? 0.7 + sp.focus * 0.3 : 1);
+        sp.label.material.opacity = (hasFocus ? sp.focus : sp.i === 0 ? 0.95 : 0) * (1 - ease(seg(t, 0.35, 0.41)));
         if (sp.echo && sp.plate.visible && !s.tall) {
-          sp.echo.visible = true;
           const side = sp.i === 0 ? -1 : 1;
-          sp.echo.position.set(lerp(side < 0 ? -0.85 : 1.55, 0, gather), lerp(side < 0 ? -1.16 : -0.93, mouth, gather), lerp(0.8, 0, gather));
+          sp.echo.visible = t < 0.41;
+          sp.echo.position.set(side < 0 ? -0.85 : 1.55, side < 0 ? -1.16 : -0.93, 0.8);
           sp.echo.quaternion.copy(camera.quaternion);
           sp.echo.rotateZ(side * 0.48 + time * 0.018);
-          sp.echo.scale.setScalar((1 - gather) * (side < 0 ? 0.85 : 1.23));
-          sp.echo.material.opacity = (hasFocus ? 0.48 + sp.focus * 0.3 : 0.78) * (1 - ease(seg(t, 0.3, 0.48)));
+          sp.echo.scale.setScalar(side < 0 ? 0.85 : 1.23);
+          sp.echo.material.opacity = (hasFocus ? 0.48 + sp.focus * 0.3 : 0.78) * (1 - ease(seg(t, 0.29, 0.41)));
         }
       });
     }
-    // A thick double-walled glass funnel with a rounded, darker lip and refractive body.
-    const funnelIn = ease(seg(t, 0.31, 0.45)) * (1 - ease(seg(t, 0.63, 0.73)));
-    funnelMat.opacity = funnelIn;
-    funnelRim.material.opacity = 0.86 * funnelIn;
-    funnelGroup.rotation.set(-0.06, Math.sin(time * 0.15) * 0.16, 0.035 * Math.sin(t * Math.PI));
-    const vesselIn = ease(seg(t, 0.36, 0.5)) * (1 - ease(seg(t, 0.67, 0.78)));
-    reservoir.visible = vesselIn > 0;
-    reservoir.position.set(0, p.base - 0.045, 0);
-    reservoir.scale.setScalar(s.tall ? 0.62 : 1.05);
-    reservoir.rotation.y = -0.18;
-    reservoirMat.opacity = 0.82 * vesselIn;
-    measureMat.opacity = 0.55 * vesselIn;
-    meniscus.material.color.setHex(tint);
-    meniscus.material.opacity = 0.65 * vesselIn * ease(seg(t, 0.59, 0.69));
-    const fall = seg(t, 0.59, 0.7);
-    if (fall > 0 && fall < 1) {
-      drop.visible = true;
-      drop.material.color.setHex(tint);
-      const spout = funnelGroup.position.y - 1.05 * funnelGroup.scale.y;
-      drop.position.set(0, lerp(spout, p.base + 0.03, ease(fall)), 0.08);
-      const dropSize = s.tall ? 0.7 : 1.2;
-      drop.scale.set(dropSize * (1 - fall * 0.18), dropSize * (1.3 + Math.sin(fall * Math.PI) * 0.7), dropSize);
-    }
+    if (!s.reduced) playLab(step, t, time, p);
     core.position.set(0, p.base + 0.15, 0.05);
     core.quaternion.copy(camera.quaternion);
-    core.scale.setScalar(s.tall ? 0.7 : 1.4);
-    core.material.opacity = seg(t, 0.67, 0.71) * (1 - seg(t, 0.77, 0.86));
-    const reveal = s.reduced ? 1 : easeOut(seg(t, 0.68, 0.84)), rail = toRail(t, p.base);
+    core.scale.setScalar(s.tall ? 0.65 : 1.25);
+    core.material.opacity = 0.55 * seg(t, 0.72, 0.77) * (1 - seg(t, 0.82, 0.9));
+    const reveal = s.reduced ? 1 : easeOut(seg(t, 0.74, 0.85)), rail = toRail(t, p.base);
     shadow.position.y = p.base - 0.03;
     shadow.scale.setScalar(s.tall ? 0.95 : 1.7);
     shadow.material.opacity = 0.72 * reveal * rail.alpha;
     const yaw = s.reduced ? 0 : Math.sin(time * 0.24) * 0.075 + s.pointerCur.x * 0.065;
     showProduct(e, reveal, {x: rail.x, y: rail.y, scale: p.scale * rail.scale, yaw,
       roll: (s.reduced ? 0 : Math.sin(time * 0.22 + step.order) * 0.016) * rail.alpha});
-    const role = s.reduced ? 1 : ease(seg(t, 0.81, 0.89)) * (1 - seg(t, 0.92, 0.98));
+    const role = s.reduced ? 1 : ease(seg(t, 0.84, 0.9)) * (1 - seg(t, 0.93, 0.98));
     if (step.role === 'droplets') playDroplets(role, time, tint, p);
     if (step.role === 'light') playLight(role, time, p);
     if (step.role === 'powder') playPowder(t, role, time, p);
+  }
+
+  function playLab(step, t, time, product) {
+    if (t <= 0.38 || t >= 0.8) return;
+    const labTint = {AC: 0xb9cca0, BR: 0xd6d992, SU: 0xe0cea2, PO: 0xe0c3b2}[step.id] || 0xc5d7ae;
+    const unit = s.tall ? 0.48 : 1;
+    const vesselScale = s.tall ? 0.82 : 1.48;
+    const vesselBase = s.tall ? -0.4 : -0.75;
+    const fill = ease(seg(t, 0.46, 0.61));
+    const vesselIn = ease(seg(t, 0.39, 0.48)) * (1 - ease(seg(t, 0.67, 0.78)));
+    const moveAside = ease(seg(t, 0.65, 0.75));
+    reservoir.visible = vesselIn > 0;
+    reservoir.position.set(-moveAside * (s.tall ? 0.45 : 0.9), vesselBase, 0);
+    reservoir.scale.setScalar(vesselScale);
+    reservoir.rotation.set(0, -0.18 + Math.sin(time * 0.2) * 0.035, -moveAside * 0.06);
+    reservoirMat.opacity = 0.8 * vesselIn;
+    measureMat.opacity = 0.48 * vesselIn;
+    meniscus.scale.y = 0.55 + fill * 2.55;
+    meniscus.material.color.setHex(labTint);
+    meniscus.material.opacity = 0.72 * vesselIn * ease(seg(t, 0.44, 0.52));
+    const liquidY = vesselBase + (0.045 + 0.13 * meniscus.scale.y) * vesselScale;
+    const mouthY = vesselBase + 0.72 * vesselScale;
+
+    // Multiple small streams separate from the material and collect as an abstract extract.
+    const count = Math.min(5, step.featured?.length || 0);
+    if (count && t < 0.67) {
+      extracts.visible = true;
+      extractMat.color.setHex(labTint);
+      extractMat.opacity = 0.86 * ease(seg(t, 0.38, 0.42)) * (1 - ease(seg(t, 0.61, 0.67)));
+      extractSeeds.forEach((seed, i) => {
+        const source = seed.source % count;
+        const [lx, ly, lz] = botanicalLayout[source];
+        const start = 0.382 + source * 0.004 + seed.p * 0.073;
+        const end = start + 0.13 + seed.r * 0.055;
+        const travel = seg(t, start, end);
+        const u = ease(travel), arc = Math.sin(seed.a) * 0.13 * unit;
+        const sx = lx * (s.tall ? 0.45 : 1) + Math.cos(seed.a) * seed.r * 0.22 * unit;
+        const sy = ly * (s.tall ? 0.3 : 1) + Math.sin(seed.a) * seed.r * 0.2 * unit;
+        const sz = lz * (s.tall ? 0.45 : 1);
+        const ex = reservoir.position.x + Math.cos(seed.a) * 0.15 * vesselScale, ez = Math.sin(seed.a) * 0.15 * vesselScale;
+        tmp.position.set(
+          cubic(sx, sx * 0.6 + arc, ex + arc, ex, u),
+          cubic(sy, sy + 0.22 * unit, mouthY + 0.1 * unit, liquidY + 0.02, u),
+          cubic(sz, sz * 0.7 + arc, ez - arc, ez, u),
+        );
+        const pulse = travel > 0 && travel < 1 ? Math.sin(travel * Math.PI) ** 0.35 : 0;
+        const size = seed.s * (s.tall ? 0.68 : 1) * pulse;
+        tmp.scale.set(Math.max(0.00001, size), Math.max(0.00001, size * (1 + travel * 0.8)), Math.max(0.00001, size));
+        tmp.updateMatrix(); extracts.setMatrixAt(i, tmp.matrix);
+      });
+      extracts.instanceMatrix.needsUpdate = true;
+    }
+
+    // Quiet depth layers inside the liquid: a brief stirring current, then a settled meniscus.
+    const mixing = ease(seg(t, 0.5, 0.58)) * (1 - ease(seg(t, 0.635, 0.69)));
+    if (mixing > 0) {
+      blending.visible = true;
+      blendMat.color.setHex(labTint);
+      blendMat.opacity = 0.72 * mixing * vesselIn;
+      const liquidDepth = 0.13 * meniscus.scale.y * vesselScale;
+      blendSeeds.forEach((seed, i) => {
+        const angle = seed.a + seg(t, 0.5, 0.67) * Math.PI * 5.2 + time * 0.2 * mixing;
+        const radius = seed.r * vesselScale * (0.78 + mixing * 0.22);
+        tmp.position.set(reservoir.position.x + Math.cos(angle) * radius,
+          vesselBase + 0.08 * vesselScale + liquidDepth * (0.12 + seed.y * 0.67), Math.sin(angle) * radius);
+        tmp.scale.setScalar(seed.s * vesselScale * (0.5 + mixing * 0.5));
+        tmp.updateMatrix(); blending.setMatrixAt(i, tmp.matrix);
+      });
+      blending.instanceMatrix.needsUpdate = true;
+      meniscus.rotation.z = Math.sin(time * 0.65) * 0.018 * mixing;
+    } else meniscus.rotation.z = 0;
+    ripples.slice(0, 2).forEach((r, i) => {
+      r.position.set(reservoir.position.x, liquidY + 0.008 + i * 0.003, 0);
+      r.scale.setScalar(vesselScale * (0.31 + i * 0.13 + Math.sin(time * 0.5 + i) * mixing * 0.025));
+      r.material.opacity = 0.2 * mixing * vesselIn;
+    });
+
+    // The receiving vessel moves aside as one concentrate drop takes over the composition.
+    const coalesce = ease(seg(t, 0.625, 0.67)), fall = seg(t, 0.67, 0.74);
+    if (coalesce > 0 && fall < 1) {
+      drop.visible = true;
+      drop.material.color.setHex(labTint);
+      drop.position.set(0, lerp(liquidY + 0.13 * unit, product.base + 0.03, ease(fall)), 0.1);
+      const size = (s.tall ? 0.68 : 1.1) * coalesce;
+      drop.scale.set(size * (1 - fall * 0.12), size * (1.12 + Math.sin(fall * Math.PI) * 0.62), size);
+    }
   }
 
   function playDroplets(role, time, tint, p) {

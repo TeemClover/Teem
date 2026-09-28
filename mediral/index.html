@@ -65,7 +65,7 @@
             <li><a href="#step-PO"><span>05</span><strong>แป้งพัฟ</strong><small>เมื่อต้องการแต่งผิว</small></a></li>
           </ol>
           <div class="mr-actions">
-            <a class="mr-btn" href="#step-CL" data-cta="enter-lab">เข้าแล็บดูทีละขั้น <span aria-hidden="true">↓</span></a>
+            <a class="mr-btn" href="#lab-film" data-cta="enter-lab">เข้าแล็บดูทีละขั้น <span aria-hidden="true">↓</span></a>
             <a class="mr-btn mr-btn--ghost" href="#set" data-cta="skip">ดูชุดและข้อเสนอ</a>
           </div>
           <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
@@ -78,6 +78,35 @@
           <figure><img src="assets/pack/po-closed.webp" alt="ภาพแพ็ก AI ฉบับร่าง: แป้งพัฟ" decoding="async"><figcaption>05 · แต่งผิว</figcaption></figure>
         </div>
       </div>
+    </section>
+
+    <section class="mr-film mr-reading-chapter" id="lab-film" data-chapter="lab-film" data-lab-film data-film-ready="false" aria-labelledby="lab-film-title">
+      <div class="mr-film__heading">
+        <div>
+          <p class="mr-kicker">MATERIAL STUDY · อ่านเรื่องราวของสูตร</p>
+          <h2 id="lab-film-title">จากวัตถุดิบ<br>สู่ภาพของสูตร</h2>
+        </div>
+        <p>ก่อนเลือกขวดหนึ่ง ลองรู้จักกลุ่มส่วนผสมที่แบรนด์เล่า ตั้งแต่พืชและสารสกัด ไปจนถึงความชุ่มชื้นและเนื้อสัมผัส</p>
+      </div>
+      <figure class="mr-film__figure">
+        <div class="mr-film__frame">
+          <img class="mr-film__fallback" src="assets/motion/lab-film-poster.webp" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <video class="mr-film__video" id="lab-film-media" data-film-video data-src="assets/motion/lab-film-10s.mp4" poster="assets/motion/lab-film-poster.webp" muted playsinline loop preload="none" hidden aria-label="ภาพเล่าเรื่องวัตถุดิบ สารสกัด และเนื้อสัมผัสแบบไม่มีเสียง" aria-describedby="lab-film-caption">ดูภาพประกอบและคำอธิบายสามช่วงด้านล่างแทนวิดีโอได้</video>
+          <div class="mr-film__controls">
+            <span class="mr-film__still-label">ภาพจำลองงานแล็บ</span>
+            <span class="mr-film__duration" data-film-duration hidden>10 วินาที · ไม่มีเสียง</span>
+            <button class="mr-film__toggle" type="button" data-film-toggle aria-controls="lab-film-media" aria-label="เล่นวิดีโอจำลองแล็บ" hidden><span data-film-icon aria-hidden="true">▶</span><span data-film-label>เล่นวิดีโอ</span></button>
+          </div>
+        </div>
+        <figcaption id="lab-film-caption">ภาพจำลองด้วย AI เพื่อเล่าเรื่องวัตถุดิบ ไม่ใช่โรงงาน การทดลอง หรือเนื้อผลิตภัณฑ์จริงของ Mediral</figcaption>
+        <p class="mr-film__status" data-film-status role="status" aria-live="polite"></p>
+      </figure>
+      <ol class="mr-film__beats">
+        <li><img class="mr-film__still" src="assets/motion/lab-botanical.webp" alt="ภาพจำลอง AI: การจัดวางวัตถุดิบพืชเพื่อเล่าเรื่อง" width="1200" height="800" loading="lazy" decoding="async"><span>01</span><h3>อ่านวัตถุดิบ</h3><p>จากพืชและน้ำมัน สู่ชื่อที่แบรนด์ระบุในแต่ละสูตร</p></li>
+        <li><img class="mr-film__still" src="assets/motion/lab-research.webp" alt="ภาพจำลอง AI: การเตรียมตัวอย่างด้วยปิเปตในฉากแล็บ" width="1200" height="800" loading="lazy" decoding="async"><span>02</span><h3>มองสารสกัด</h3><p>ดูบทบาทของแต่ละกลุ่ม ทั้งการดูแลผิวและความชุ่มชื้น ตามข้อมูลที่แบรนด์ให้ไว้</p></li>
+        <li><img class="mr-film__still" src="assets/motion/lab-compound.webp" alt="ภาพจำลอง AI: หยดเจลใสเพื่อเล่าเรื่องเนื้อสัมผัส" width="1200" height="800" loading="lazy" decoding="async"><span>03</span><h3>เข้าใจเนื้อสัมผัส</h3><p>ใช้ภาพช่วยเล่าเรื่อง แล้วดูเนื้อจริงและวิธีใช้จากสินค้าที่ได้รับ</p></li>
+      </ol>
+      <a class="mr-film__next" href="#step-CL">เริ่มอ่านจากขั้นล้างหน้า <span aria-hidden="true">↘</span></a>
     </section>
 
     <!-- The first lab chapter keeps a static role explanation before data loads. -->
