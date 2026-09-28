@@ -29,6 +29,14 @@ This document describes coverage, not a claim that the current integration or de
 - Method/time copy keeps label guidance, source-supported serum morning/evening use and sunscreen reapplication. No invented serum hierarchy, drops, waits, powder weight or shade inventory.
 - Held treatment, DNA, germ-killing, regeneration, universal-safety/shade, certification and numerical performance claims remain excluded from public copy.
 
+## หนึ่งหน้า ห้าเรื่อง scenes (2026-09-29)
+
+- The hero is one complete ad: kicker, five packs labelled with the everyday concern they look after, dated offer and a direct route to `#set`.
+- Founder and relay are attributed quotes (personal statement / personal experience with no SKU) and reading chapters without `data-step`, so product progress and the rail never shift.
+- Five scenes each own one grammar (erase, drop, reveal, glide, settle); the fifteen source beats stay in the DOM with their names; the AC acne note is a general fact linked to NHS/NIAMS and separate from the role.
+- Scroll position sets `--p/--a/--b/--c` per scene, forward and reverse; short screens unpin but still move; one queued update per scroll whose frame or timer winner cancels the other.
+- Experience imagery ships as final WebP only and every stylesheet image resolves locally.
+
 ## Continuous sales path and scroll
 
 - Static order: opening with all five DOM pack images, WHY, dated hero offer and direct `#set` route → product-story container → set offer → optional serum comparison → optional complete ingredient library.

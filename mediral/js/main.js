@@ -1,7 +1,9 @@
 /**
- * Mediral 5 Steps — page controller.
- * data/routine.json drives every product fact. Crisp packs and the complete selling story live in
- * the DOM; js/story.js adds only ambient depth and light around the current ingredient family.
+ * Mediral — "หนึ่งหน้า ห้าเรื่อง": page controller.
+ * data/routine.json drives every product fact. Each product is one scene whose motion is the shape of
+ * its job (clear away, extract → drop, light reveals, glass glides, powder settles). One read/write pass
+ * per frame turns scroll position into --a/--b/--c on each scene; CSS does the rest. Crisp packs and
+ * every word live in the DOM; js/story.js adds only optional ambient light behind them.
  *
  * The saved list changes only by the reader's own ticks. The store's five-piece bundle stays fixed;
  * a partial saved list must never inherit that bundle's price or checkout link.
@@ -83,13 +85,21 @@ function formulaIngredients(step, groupIndex) {
 }
 // The complete list is optional deep reading: closed by default, opened by the reader or a direct link.
 function ingredientAtlas(step) {
-  if (step.ingredients_status === 'pending-current-sku' || !step.ingredient_groups?.some(group => group.ingredientNames.length)) return '';
+  if (step.ingredients_status === 'pending-current-sku' || !step.ingredient_groups?.some(group => group.ingredientNames.length)) {
+    // No names are shown for a formula that is not confirmed; method and provenance stay readable.
+    return `<details class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}">
+      <summary id="formula-title-${step.id}"><span class="mr-atlas__num">${pad(step.order)}</span><span class="mr-atlas__name">${esc(step.nick)}<small>${esc(step.role_short || step.verb)}</small></span><span class="mr-atlas__count">สูตรแพ็กปัจจุบันรอยืนยัน</span></summary>
+      <header><p>${esc(step.ingredients_note)}</p></header>
+      ${stepBody(step)}
+    </details>`;
+  }
   const groups = step.ingredient_groups.filter(group => group.ingredientNames.length).length;
   return `<details class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}">
     <summary id="formula-title-${step.id}"><span class="mr-atlas__num">${pad(step.order)}</span><span class="mr-atlas__name">${esc(step.nick)}<small>${esc(step.role_short || step.verb)}</small></span><span class="mr-atlas__count">${listedCount(step)} ชื่อ · ${groups} กลุ่ม</span></summary>
     <header>
       <p>เลือกชื่อในแต่ละกลุ่ม เพื่ออ่านบทบาทและที่มาที่แบรนด์ระบุ ${esc(step.ingredients_note)}</p>
     </header>
+    ${stepBody(step)}
     <div class="mr-ingredient-atlas__groups">${step.ingredient_groups.map((group, groupIndex) => {
       const ingredients = formulaIngredients(step, groupIndex);
       if (!ingredients.length) return '';
@@ -120,16 +130,21 @@ function stepBody(step) {
       <ul>
         <li>${esc(step.ingredients_note)}</li>
         <li>${esc(step.image_note)}</li>
+        ${step.visible_note ? `<li>${esc(step.visible_note)}</li>` : ''}
         ${step.size_note ? `<li>${esc(step.size_note)}</li>` : ''}
         <li>${esc(state.data.order_note)}</li>
       </ul>
-      ${listedCount(step) ? `<a href="#formula-${step.id}">อ่านส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a>` : ''}
     </details>`;
 }
 
+// Five everyday skin moments, each written above the pack that looks after it. The static lineup
+// already paints with the first HTML; it is rebuilt only if missing, so decoded packs never reload.
 function renderRoutine() {
-  if (slot('routine-map')) slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.role_short || step.verb)}<em>${esc(step.nick)}</em></strong><small>${whenText(step)}</small></a></li>`).join('');
-  if (slot('routine-still')) slot('routine-still').innerHTML = state.data.steps.map(step => `<figure data-routine-pack="${step.id}">${packImage(step, {loading: 'eager'})}<figcaption>${esc(step.nick)}</figcaption></figure>`).join('');
+  const lineup = slot('routine-map');
+  if (lineup.querySelectorAll?.('[data-lineup]').length === state.data.steps.length) return;
+  lineup.innerHTML = state.data.steps.map((step, i) => `<a class="mr-lineup__item" href="#step-${step.id}" data-lineup="${step.id}" style="--i:${i}">
+    <span class="mr-lineup__label">${esc(step.hero_label)}</span>${packImage(step, {loading: 'eager'})}<span class="mr-lineup__name">${esc(step.nick)}</span>
+    <span class="mr-sr">${esc(step.role_short)} · ${whenText(step)}</span></a>`).join('');
 }
 
 function renderCompare() {
@@ -158,54 +173,95 @@ function renderUses() {
 }
 
 function ambientFilm() {
-  return `<div class="mr-ambient-film" id="lab-film" data-lab-film data-film-ready="true">
-    <img class="mr-ambient-film__poster" src="${asset('assets/motion/lab-film-poster.webp')}" alt="" loading="lazy" decoding="async">
-    <video data-film-video data-src="${asset('assets/motion/lab-film-10s.mp4')}" poster="${asset('assets/motion/lab-film-poster.webp')}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
+  return `<div class="mr-fx__clip" id="lab-film" data-lab-film data-film-ready="true">
+    <div class="mr-fx__clipframe" data-film-frame>
+      <img src="${asset('assets/motion/lab-film-poster.webp')}" alt="" loading="lazy" decoding="async">
+      <video data-film-video data-src="${asset('assets/motion/lab-film-10s.mp4')}" poster="${asset('assets/motion/lab-film-poster.webp')}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
+    </div>
   </div>`;
 }
 
-function beatArt(step, beat, index) {
-  const named = namedIngredients(step);
-  const ingredients = (beat.names || []).map(name => named.get(name)).filter(Boolean);
-  return `<div class="mr-beat-art${index === 0 ? ' is-active' : ''}" data-beat-art="${step.id}:${index}" data-visual="${esc(beat.visual)}">
-    ${beat.media === 'film' ? ambientFilm() : ''}
-    <div class="mr-beat-art__ingredients">${ingredients.map((item, i) => item.image
-      ? `<figure class="mr-extract" style="--extract-index:${i}"><img src="${asset(item.image)}" alt="" loading="lazy" decoding="async"><figcaption>${esc(item.name)}</figcaption></figure>`
-      : `<span class="mr-extract-name" style="--extract-index:${i}">${esc(item.name)}</span>`).join('')}</div>
-    ${ingredients.length ? '' : `<span class="mr-beat-art__abstract mr-beat-art__abstract--${esc(beat.visual)}"></span>`}
-  </div>`;
+const experience = file => asset(`assets/experience/${file}`);
+const shortName = name => name.replace(/^สารสกัด/, '').replace(/ ตามชื่อในสื่อแบรนด์$/, '');
+const beatNames = (step, id) => step.selling?.beats.find(beat => beat.id === id)?.names || [];
+const nameList = names => names.map(shortName).map(esc).join(' · ');
+
+function botanical(step, name, variant) {
+  const item = namedIngredients(step).get(name);
+  if (!item?.image) return '';
+  return `<figure class="mr-fx__botanical mr-fx__botanical--${variant}"><img src="${asset(item.image)}" alt="" loading="lazy" decoding="async"><figcaption>${esc(shortName(name))}</figcaption></figure>`;
 }
+const drop = (tone, variant) => `<span class="mr-fx__drop mr-fx__drop--${variant}"><img src="${experience(`p0-2-drop-${tone}.webp`)}" alt="" loading="lazy" decoding="async"></span>`;
+const scatter = (count, make) => Array.from({length: count}, (_, i) => make(i)).join('');
+
+// One visual grammar per product. Every label is a name or role that the selling beats already carry.
+const SCENE_FX = {
+  erase: step => `<p class="mr-fx__word">${esc(step.scene.erase_word)}</p>
+    <span class="mr-fx__foam"><img src="${experience('p0-3-foam-band.webp')}" alt="" loading="lazy" decoding="async"></span>
+    ${scatter(7, i => `<span class="mr-fx__bubble" style="--x:${[8, 20, 34, 58, 70, 82, 46][i]}%;--s:${[16, 26, 12, 22, 14, 30, 10][i]}px;--rise:${[34, 52, 44, 60, 38, 48, 66][i]}%"></span>`)}`,
+  drop: step => {
+    const [balance, hydrate] = step.scene.balance;
+    return `<div class="mr-fx__source">${ambientFilm()}
+        <p class="mr-fx__tag mr-fx__tag--select">${esc(step.scene.select.label)}<small>${nameList(beatNames(step, step.scene.select.beat))}</small></p></div>
+      ${botanical(step, 'น้ำมันใบทีทรี', 'a')}${botanical(step, 'สารสกัดเปลือกมังคุด', 'b')}
+      ${drop('amber', 'fall')}<span class="mr-fx__ripple"></span><span class="mr-fx__balance"></span>
+      <p class="mr-fx__end mr-fx__end--l"><img src="${experience('p0-2-drop-amber.webp')}" alt="" loading="lazy" decoding="async">${esc(balance.label)}<small>${nameList(beatNames(step, balance.beat))}</small></p>
+      <p class="mr-fx__end mr-fx__end--r"><img src="${experience('p0-2-drop-clear.webp')}" alt="" loading="lazy" decoding="async">${esc(hydrate.label)}<small>${nameList(beatNames(step, hydrate.beat))}</small></p>`;
+  },
+  reveal: step => {
+    const [glow, pair] = step.scene.reveal;
+    const [probiotic, bakuchiol] = beatNames(step, pair.beat);
+    const evenNames = beatNames(step, glow.beat);
+    return `${botanical(step, evenNames[0], 'a')}${botanical(step, evenNames[1], 'b')}
+      <p class="mr-fx__tag mr-fx__tag--vitc">${esc(shortName(evenNames[2]))}</p>
+      <p class="mr-fx__tag mr-fx__tag--glow">${esc(glow.label)}</p>
+      <p class="mr-fx__tag mr-fx__tag--probiotic">${esc(shortName(probiotic))}<small>สมดุล</small></p>
+      <p class="mr-fx__tag mr-fx__tag--bakuchiol">${esc(shortName(bakuchiol))}<small>เรียบเนียน</small></p>
+      <span class="mr-fx__shade"></span><span class="mr-fx__sweep"></span>`;
+  },
+  glide: step => {
+    const giga = step.selling.beats.find(beat => beat.id === step.scene.garden.beat);
+    return `<span class="mr-fx__sheet"></span>
+      <p class="mr-fx__tag mr-fx__tag--filters">${esc(step.scene.filters.label)}<small>${nameList(beatNames(step, step.scene.filters.beat))}</small></p>
+      ${drop('clear', 'sheet')}
+      <p class="mr-fx__tag mr-fx__tag--hydrate">ไฮยา<small>${esc(step.scene.drop.label)}</small></p>
+      <div class="mr-fx__garden"><p>${esc(step.scene.garden.label)}</p><ul>${giga.names.map((name, k) => `<li style="--k:${k}">${esc(shortName(name))}<small>${esc(giga.tags?.[name] || '')}</small></li>`).join('')}</ul></div>`;
+  },
+  settle: step => {
+    const [powder, hydrate] = step.scene.groups;
+    return `<p class="mr-fx__word mr-fx__word--veil">${esc(step.scene.veil_word)}</p>
+      ${scatter(18, i => `<span class="mr-fx__mote" style="--x:${8 + (i * 37) % 84}%;--s:${5 + (i * 7) % 11}px;--fall:${62 + (i * 17) % 26}%"></span>`)}
+      <span class="mr-fx__veil"></span>
+      <p class="mr-fx__tag mr-fx__tag--powder">${esc(powder.label)}</p>
+      <p class="mr-fx__tag mr-fx__tag--hydrate">${esc(hydrate.label)}</p>`;
+  },
+};
+const SCENE_LENGTH = {CL: 150, AC: 210, BR: 180, SU: 200, PO: 150};
 
 function renderSteps() {
   slot('steps').innerHTML = state.data.steps.map((step, index) => {
-    const selling = step.selling || {beats: []};
-    return `<section class="mr-product" id="step-${step.id}" data-step="${step.id}" data-index="${index}" aria-labelledby="h-${step.id}">
-      <header class="mr-product__head">
-        <p class="mr-product__code"><span>${pad(step.order)}</span><span>${esc(step.verb_en)}</span><span>${esc(step.nick)}</span></p>
-        <h2 id="h-${step.id}">${esc(step.headline)}</h2>
-        <p class="mr-product__lead">${esc(step.for_you)}</p>
-        <p class="mr-product__when">${whenText(step)}</p>
-      </header>
-      <div class="mr-product__layout">
-        <div class="mr-product__visual" aria-hidden="true">
-          <div class="mr-product__pack">${packImage(step, {decorative: true})}</div>
-          <div class="mr-product__extracts">${selling.beats.map((beat, i) => beatArt(step, beat, i)).join('')}</div>
+    const scene = step.scene;
+    const next = state.data.steps[index + 1];
+    return `<section class="mr-scene mr-scene--${step.id.toLowerCase()}" id="step-${step.id}" data-step="${step.id}" data-index="${index}" data-scene="${step.id}" data-grammar="${scene.grammar}" data-pin="true" style="--len:${SCENE_LENGTH[step.id] || 180}" aria-labelledby="h-${step.id}">
+      <div class="mr-scene__frame">
+        <header class="mr-scene__type">
+          <p class="mr-scene__code"><b>${pad(step.order)}</b><span>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</span></p>
+          <p class="mr-scene__problem">${esc(scene.problem)}</p>
+          <h2 class="mr-scene__title" id="h-${step.id}">${scene.headline.map(line => `<span class="mr-line">${esc(line)}</span>`).join('')}</h2>
+        </header>
+        <div class="mr-scene__stage">
+          <div class="mr-fx" aria-hidden="true">${SCENE_FX[scene.grammar](step)}</div>
+          <div class="mr-scene__pack">${packImage(step)}</div>
+          ${scene.pack_note ? `<p class="mr-scene__packnote">${esc(scene.pack_note)}</p>` : ''}
         </div>
-        <div class="mr-product__beats">${selling.beats.map((beat, i) => `<article class="mr-selling-beat${i === 0 ? ' is-active' : ''}" id="beat-${step.id}-${i}" data-selling-step="${step.id}" data-beat-index="${i}" aria-labelledby="beat-title-${step.id}-${i}">
-          <p class="mr-selling-beat__kicker">${esc(beat.kicker)}</p>
-          <h3 id="beat-title-${step.id}-${i}">${esc(beat.title)}</h3>
-          <p class="mr-selling-beat__body">${esc(beat.body)}</p>
-          ${beat.names?.length ? `${beat.names_label ? `<p class="mr-selling-beat__names-label">${esc(beat.names_label)}</p>` : ''}<ul class="mr-selling-beat__names">${beat.names.map(name => `<li><strong>${esc(name)}</strong>${beat.tags?.[name] ? `<small>${esc(beat.tags[name])}</small>` : ''}</li>`).join('')}</ul>` : ''}
-        </article>`).join('')}</div>
+        <div class="mr-scene__copy">
+          ${scene.fact ? `<p class="mr-scene__fact">${esc(scene.fact.text)}<small>${esc(scene.fact.source)} · ${scene.fact.links.map(link => `<a href="${esc(link.href)}" rel="noopener" target="_blank">${esc(link.label)}</a>`).join(' · ')}</small></p>` : ''}
+          <p class="mr-scene__role">${esc(scene.role)}</p>
+          <p class="mr-scene__proof">${esc(scene.proof)}<small class="mr-scene__source">${esc(step.selling?.source || '')}</small></p>
+          <ol class="mr-sr" aria-label="เรื่องที่แบรนด์เล่าในชิ้นนี้">${(step.selling?.beats || []).map((beat, i) => `<li id="beat-${step.id}-${i}" data-selling-step="${step.id}" data-beat-index="${i}"><strong>${esc(beat.kicker)}: ${esc(beat.title)}</strong> ${esc(beat.body)}${beat.names?.length ? ` (${beat.names.map(esc).join(', ')})` : ''}</li>`).join('')}</ol>
+          <p class="mr-scene__links"><a href="#set">ดูชุด 5 ชิ้น</a>${listedCount(step) ? `<a href="#formula-${step.id}">ส่วนผสมทั้งหมด ${listedCount(step)} ชื่อ</a>` : `<a href="#formula-${step.id}">รายละเอียดชิ้นนี้</a>`}${next ? `<a href="#step-${next.id}">ต่อไป ${esc(next.hero_label)} ↓</a>` : ''}</p>
+        </div>
       </div>
-      <footer class="mr-product__finish">
-        ${selling.sensory ? `<p class="mr-product__sensory">${esc(selling.sensory)}</p>` : ''}
-        ${selling.choose ? `<p class="mr-product__choose">${esc(selling.choose)}</p>` : ''}
-        ${selling.decide ? `<p>${esc(selling.decide)}</p>` : ''}
-        <p class="mr-product__source">${esc(selling.source || '')}</p>
-        ${stepBody(step)}
-        <div class="mr-product__links"><a class="mr-btn mr-btn--small" href="#set">ดูชุด 5 ชิ้น</a>${listedCount(step) ? `<a href="#formula-${step.id}">ดูส่วนผสมที่แบรนด์ระบุทั้งหมด</a>` : ''}${state.data.steps[index + 1] ? `<a href="#step-${state.data.steps[index + 1].id}">ต่อไป ${esc(state.data.steps[index + 1].nick)} ↓</a>` : ''}</div>
-      </footer>
     </section>`;
   }).join('');
 }
@@ -412,42 +468,70 @@ const pinnedU = (() => {
   return Number.isFinite(v) ? Math.min(6, Math.max(-1, v)) : null;
 })();
 
-// Read against visible text, below the sticky art on phones, not behind its centre.
-function beatReadingLine(section) {
-  const header = $('.mr-header')?.getBoundingClientRect().bottom || 88;
-  const art = $('.mr-product__visual', section)?.getBoundingClientRect();
-  return productStacked.matches && art
-    ? Math.min(innerHeight * .82, Math.max(header + 36, art.bottom + Math.min(100, innerHeight * .14)))
-    : Math.max(header + 72, innerHeight * .48);
+/* ---------- scenes: scroll position → --a/--b/--c ---------- */
+// Phase windows per grammar, as fractions of a scene's own progress. Easing lives here so CSS only
+// multiplies; every value defaults to 1 in CSS, which is the composed still.
+const SCENE_PHASES = {
+  founder: {a: [0.02, 0.55], b: [0.35, 0.8]},
+  relay: {a: [0.02, 0.4], b: [0.25, 0.65], c: [0.5, 0.9]},
+  erase: {a: [0.04, 0.5], b: [0.46, 0.78], c: [0.7, 0.92]},
+  drop: {a: [0, 0.28], b: [0.26, 0.62], c: [0.58, 0.86]},
+  reveal: {a: [0.04, 0.58], b: [0.3, 0.7], c: [0.62, 0.88]},
+  glide: {a: [0, 0.4], b: [0.36, 0.6], c: [0.56, 0.86]},
+  settle: {a: [0.02, 0.48], b: [0.34, 0.66], c: [0.6, 0.88]},
+};
+// Ambient layer mood for each third of a product scene; the page never depends on it.
+const SCENE_MOODS = {
+  erase: ['foam', 'foam', 'foam'], drop: ['botanical', 'hydration', 'texture'], reveal: ['botanical', 'botanical', 'texture'],
+  glide: ['texture', 'hydration', 'plants'], settle: ['powder', 'powder', 'texture'],
+};
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const smooth = x => x * x * (3 - 2 * x);
+// Short screens unpin every scene; they still move lightly with position unless motion is reduced.
+const flowLayout = matchMedia('(max-height: 699px)');
+
+function sceneProgress(el, rect, vh) {
+  if (el.dataset.pin === 'true' && !flowLayout.matches) return clamp01(-rect.top / Math.max(1, rect.height - vh));
+  return clamp01((vh * 0.9 - rect.top) / Math.max(1, rect.height * 0.75 + vh * 0.2));
 }
 
-function syncSellingBeat(step, chapter) {
+function syncScenes() {
+  const vh = innerHeight;
+  // Read every rectangle first, then write: one layout per frame however many scenes are near.
+  const near = $$('[data-scene]').map(el => ({el, rect: el.getBoundingClientRect()}))
+    .filter(({rect}) => rect.bottom > -vh * 0.5 && rect.top < vh * 1.5);
+  for (const {el, rect} of near) {
+    const p = sceneProgress(el, rect, vh);
+    if (el.mrProgress !== undefined && Math.abs(el.mrProgress - p) < 0.0004) continue;
+    el.mrProgress = p;
+    el.style.setProperty('--p', p.toFixed(4));
+    for (const [key, [from, to]] of Object.entries(SCENE_PHASES[el.dataset.grammar || el.dataset.scene] || {})) {
+      el.style.setProperty(`--${key}`, smooth(clamp01((p - from) / (to - from))).toFixed(4));
+    }
+  }
+}
+
+function syncStory(step, chapter) {
   if (!step) {
     state.beat = null;
     state.mood = state.active < 0 ? 'intro' : 'set';
-    state.stage?.setMood(state.mood);
+    state.stage?.setMood?.(state.mood);
     state.film?.setActive(false);
     delete document.body.dataset.beat;
     return;
   }
-  const section = $(`#step-${step.id}`);
-  const beats = $$(`[data-selling-step="${step.id}"]`);
-  const line = beatReadingLine(section);
-  let index = 0;
-  beats.forEach((beat, i) => { if (beat.getBoundingClientRect().top <= line) index = i; });
-  const beat = step.selling?.beats[index];
-  const key = `${step.id}:${index}`;
+  const scene = $(`#step-${step.id}`);
+  const p = scene?.mrProgress ?? 0;
+  const third = p < 1 / 3 ? 0 : p < 2 / 3 ? 1 : 2;
+  const key = `${step.id}:${third}`;
   if (state.beat?.key !== key) {
-    beats.forEach((node, i) => node.classList.toggle('is-active', i === index));
-    $$('[data-beat-art]', section).forEach((node, i) => node.classList.toggle('is-active', i === index));
-    state.beat = {id: step.id, index, key};
+    state.beat = {id: step.id, index: third, key};
     document.body.dataset.beat = key;
   }
-  const finish = $('.mr-product__finish', section)?.getBoundingClientRect();
-  const isFinish = finish && finish.top <= line;
-  state.mood = isFinish ? 'texture' : beat?.visual || 'botanical';
-  state.stage?.setMood(state.mood);
-  state.film?.setActive(!chapter && !isFinish && beat?.media === 'film' && document.visibilityState !== 'hidden');
+  state.mood = SCENE_MOODS[step.scene?.grammar]?.[third] || 'texture';
+  state.stage?.setMood?.(state.mood);
+  // The extraction clip belongs to AC's opening; it rests once the drop has left it.
+  state.film?.setActive(!chapter && step.id === 'AC' && p < 0.5 && document.visibilityState !== 'hidden');
 }
 
 function chooseFormulaIngredient(id, groupIndex, index) {
@@ -464,8 +548,6 @@ function chooseFormulaIngredient(id, groupIndex, index) {
 
 // Same query as STACKED_QUERY in js/story.js and the CSS words-below-scene switch.
 const stackedLayout = matchMedia('(max-width: 1100px)');
-// Product art moves above the text only on phones; the wider query above gates the purchase scene.
-const productStacked = matchMedia('(max-width: 700px)');
 
 function readingChapter() {
   const readingTop = Math.min(innerHeight / 3, ($('.mr-header')?.getBoundingClientRect().bottom || 88) + 16);
@@ -516,8 +598,30 @@ function onScroll() {
     if (k === i) a.setAttribute('aria-current', 'step');
     else a.removeAttribute('aria-current');
   });
-  syncSellingBeat(state.data.steps[i], chapter);
+  syncScenes();
+  syncStory(state.data.steps[i], chapter);
   state.stage?.setProgress(u);
+}
+// Scroll and resize schedule one update per frame. Some embedded browsers throttle animation frames
+// for unfocused views; a short timer then does the same single update so text and art never lag.
+// Exactly one pending pair (frame + timer) exists at a time; whichever fires first cancels the other,
+// and a generation token stops any late callback from consuming a newer request.
+const scrollRequest = {generation: 0, frame: 0, timer: 0, pending: false};
+function requestScroll() {
+  if (scrollRequest.pending) return;
+  scrollRequest.pending = true;
+  const generation = ++scrollRequest.generation;
+  const run = () => {
+    if (!scrollRequest.pending || generation !== scrollRequest.generation) return;
+    scrollRequest.pending = false;
+    if (scrollRequest.frame) window.cancelAnimationFrame?.(scrollRequest.frame);
+    clearTimeout(scrollRequest.timer);
+    scrollRequest.frame = 0;
+    scrollRequest.timer = 0;
+    onScroll();
+  };
+  scrollRequest.frame = window.requestAnimationFrame?.(run) || 0;
+  scrollRequest.timer = setTimeout(run, 60);
 }
 
 /* ---------- 3D (optional, lazy) ---------- */
@@ -556,8 +660,10 @@ function onContextChange(status) {
 function watchReducedMotion() {
   const media = matchMedia('(prefers-reduced-motion: reduce)');
   root.classList.toggle('mr-reduced', media.matches);
+  root.classList.toggle('mr-motion', !media.matches);
   const change = event => preserveReadingPosition(() => {
     root.classList.toggle('mr-reduced', event.matches);
+    root.classList.toggle('mr-motion', !event.matches);
     state.stage?.setReducedMotion(event.matches);
   });
   if (media.addEventListener) media.addEventListener('change', change);
@@ -611,7 +717,10 @@ async function boot() {
   // Product sections are created after the document parses. Restore incoming chapter links now,
   // before the optional scene changes layout, rather than relying on the browser's early hash pass.
   openAtlas(location.hash);
-  const incomingChapter = location.hash === '#lab-film' ? $('#beat-AC-0') : [...sections(), ...$$('.mr-reading-chapter'), ...$$('[data-selling-step]')].find(section => `#${section.id}` === location.hash);
+  // Older links to the film or to a single selling beat land on the product scene that now tells it.
+  const legacy = location.hash === '#lab-film' ? 'AC' : /^#beat-([A-Z]{2})-\d+$/.exec(location.hash)?.[1];
+  const incomingChapter = legacy ? $(`#step-${legacy}`)
+    : [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
     const inputEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
@@ -686,10 +795,10 @@ async function boot() {
   });
 
   const reveal = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('is-in'); }), {threshold: 0.12});
-  $$('.mr-chapter, .mr-product, .mr-routine').forEach(el => reveal.observe(el));
-  $$('.mr-compare, .mr-library').forEach(el => reveal.observe(el));
-  addEventListener('scroll', onScroll, {passive: true});
-  addEventListener('resize', onScroll);
+  $$('.mr-chapter, .mr-scene, .mr-note, .mr-library').forEach(el => reveal.observe(el));
+  addEventListener('scroll', requestScroll, {passive: true});
+  addEventListener('resize', requestScroll);
+  flowLayout.addEventListener?.('change', requestScroll);
   onScroll();
   // Let the page paint first; the 3D module and its textures come after.
   (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(() => {

@@ -1,10 +1,12 @@
 # Mediral five-piece set — `/mediral/`
 
-The page presents the five-piece set, then gives each piece a reason to belong: cleanse → white serum → yellow-green serum → sunscreen → optional powder. This is the story order, not a verified instruction to layer the products or a claim that every person needs all five.
+**หนึ่งหน้า ห้าเรื่อง (2026-09-29).** The page opens on the reader, not the product list: one face deals with several everyday things (cleansing the day off, blemish-prone skin, dull-looking skin, sun, days you want to finish your skin), and the five-piece set gives each one its own piece. The story order is: **one-screen ad (five labelled packs on a stone ledge + dated offer) → the maker's intent → five product scenes → a user's own words and the five back on the ledge → set offer → optional comparison drawer and complete ingredient library.** This is the page's arrangement, not a verified instruction to layer products or a claim that everyone needs all five.
 
-The current revision makes one continuous path: **WHY and the five pieces → five product stories → set offer → optional comparison and complete ingredient library**. Each product keeps a crisp native DOM pack image beside a few readable benefit/ingredient beats. Scroll changes the highlighted family; buyers do not need to tap every ingredient to understand the story. A quiet botanical film sits within a relevant ingredient composition. There is no separate comparison lesson or video chapter before the first product.
+Each product scene has one movement grammar that is the shape of its job: CL **erase** (foam rises behind the pump bottle and washes "วันทั้งวัน" away), AC **extract → drop → bottle** (the existing silent clip, one amber drop falling onto the white serum, then a quiet balance accent), BR **light reveals** (a warm band lights the bottle and its named ingredients), SU **glass glides** (a glass sheet with separately labelled UV filter names passes behind the tube; the light itself never changes), PO **settle** (fine powder drifts down and settles around the compact on the ledge). Selection/extraction imagery is a visual metaphor, never a manufacturing claim. Packs are crisp native DOM images moved only by transform; no label is relit, blurred or projected.
 
-Local integration checks pass for this revision. Production identity is checked after publishing; historical records below describe older versions. The Affiliate URL remains pending.
+The owner's line (“พี่ตั้งใจทำของที่ดีที่สุดให้ทุกคนเลย”) is an excerpt of a personal statement of intent credited to the brand owner; Teem's line is a personal trial impression with no SKU named. Neither is a review, rating or efficacy proof. The AC scene carries one general fact (“สิวมีหลายปัจจัย ทั้งน้ำมัน การอุดตัน และการอักเสบ”) linked to NHS and NIAMS, kept visually separate from the serum's role.
+
+The Affiliate URL remains pending; the dated poster offer and fixed-set/partial-list rules are unchanged.
 
 Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). Current mousse media limitation: [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 

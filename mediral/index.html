@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Mediral ชุด 5 ชิ้น — จากล้างหน้า ถึงผิวพร้อมออกจากบ้าน · myClover</title>
-  <meta name="description" content="รู้จัก Mediral 5 ชิ้น ตั้งแต่มูสล้างหน้า เซรั่มสำหรับผิวเป็นสิวง่าย เซรั่มหน้าใส กันแดด จนถึงแป้งพัฟ พร้อมจุดเด่นและส่วนผสมตามข้อมูลแบรนด์">
+  <title>Mediral ชุดดูแลผิว 5 ชิ้น — หนึ่งหน้า ห้าเรื่อง · myClover</title>
+  <meta name="description" content="Mediral ชุดดูแลผิว 5 ชิ้น: มูสโฟมล้างหน้า เซรั่มขวดขาวสำหรับผิวที่เป็นสิวง่าย เซรั่มหน้าใสสำหรับผิวที่ดูหมอง เซรั่มกันแดด และแป้งพัฟ — ล้าง บำรุง ปกป้อง แต่งผิว เลือกดูแลให้ตรงเรื่อง">
+  <!-- Prototype for owner review. noindex is not access control; keep private data out of this folder. -->
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#f2f3e9">
+  <meta name="theme-color" content="#f4f1e8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="mediral.css">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
   <script type="module" src="js/main.js"></script>
@@ -17,55 +18,78 @@
 <body data-step="routine">
   <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>
   <header class="mr-header">
-    <a class="mr-brand" href="#routine" aria-label="กลับไปดูภาพรวมชุด"><span class="mr-brand__house">myClover</span><span class="mr-brand__sep">·</span><span class="mr-brand__room">Mediral</span></a>
-    <span class="mr-header__edition" aria-hidden="true">BOTANICAL CARE · THE DAILY EDIT</span>
-    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↗</span></a>
+    <a class="mr-brand" href="#routine" aria-label="กลับไปหน้าแรกของชุด"><span class="mr-brand__house">myClover</span><span class="mr-brand__sep">·</span><span class="mr-brand__room">Mediral</span></a>
+    <span class="mr-header__edition" aria-hidden="true">ONE FACE · FIVE STORIES</span>
+    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↓</span></a>
   </header>
   <nav class="mr-rail" aria-label="5 ชิ้นในชุด" data-slot="rail"></nav>
   <div class="mr-stage" id="stage" aria-hidden="true"><div class="mr-stage__sky"></div><canvas class="mr-canvas" id="scene"></canvas></div>
 
   <main id="main">
-    <section class="mr-routine" id="routine" data-chapter="routine" aria-labelledby="routine-title">
-      <div class="mr-routine__sticky">
-        <div class="mr-routine__copy">
-          <p class="mr-kicker">MEDIRAL · ชุดดูแลผิว 5 ชิ้น</p>
-          <h1 class="mr-routine__title" id="routine-title"><span>จากล้างหน้า</span><span>ถึงผิวพร้อมออกจากบ้าน</span></h1>
-          <p class="mr-routine__lead">ผิวที่เป็นสิวง่าย ความหมองคล้ำ และวันที่อยากแต่งผิว ต้องการการดูแลคนละแบบ รู้จัก 5 ชิ้นที่แบ่งหน้าที่ชัด ตั้งแต่ล้าง บำรุง ปกป้อง จนถึงปกปิด</p>
-          <div class="mr-hero-offer" data-slot="hero-offer" aria-live="polite"></div>
-          <div class="mr-actions"><a class="mr-btn" href="#set" data-cta="offer">ดูข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↗</span></a><a class="mr-btn mr-btn--ghost" href="#step-CL">รู้จักทีละชิ้น <span aria-hidden="true">↓</span></a></div>
-          <p class="mr-fine">คัดข้อมูลโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral<br>เลือกใช้ตามสิ่งที่อยากดูแล ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
+    <!-- The opening is one complete ad: who it is for, the five pieces, and the way to the offer. -->
+    <section class="mr-hero" id="routine" data-chapter="routine" data-scene="hero" aria-labelledby="routine-title">
+      <div class="mr-hero__frame">
+        <div class="mr-hero__stage" aria-hidden="true"><span class="mr-hero__ledge"></span></div>
+        <div class="mr-hero__copy">
+          <p class="mr-kicker mr-hero__kicker">MEDIRAL · ชุดดูแลผิว 5 ชิ้น</p>
+          <h1 class="mr-hero__title" id="routine-title"><span class="mr-line">หนึ่งหน้า</span><span class="mr-line">ห้าเรื่อง</span></h1>
         </div>
-        <div class="mr-routine__still" data-slot="routine-still" aria-label="สินค้า 5 ชิ้นในชุด">
-          <figure><img src="assets/pack/cl-clover-front-v2.webp" alt="มูสล้างหน้า — ภาพแพ็ก AI ฉบับร่าง" fetchpriority="high" decoding="async"><figcaption>ล้าง</figcaption></figure>
-          <figure><img src="assets/pack/ac-front.webp" alt="เซรั่มขวดขาว — ภาพแพ็ก AI ฉบับร่าง" decoding="async"><figcaption>ดูแลผิวเป็นสิวง่าย</figcaption></figure>
-          <figure><img src="assets/pack/br-front.webp" alt="เซรั่มหน้าใส — ภาพแพ็ก AI ฉบับร่าง" decoding="async"><figcaption>ดูแลความหมองคล้ำ</figcaption></figure>
-          <figure><img src="assets/pack/su-front-web.webp" alt="เซรั่มกันแดด — ภาพแพ็ก AI ฉบับร่าง" decoding="async"><figcaption>ปกป้อง</figcaption></figure>
-          <figure><img src="assets/pack/po-closed.webp" alt="แป้งพัฟ — ภาพแพ็ก AI ฉบับร่าง" decoding="async"><figcaption>ปกปิด</figcaption></figure>
+        <nav class="mr-lineup mr-hero__lineup" aria-label="ห้าเรื่องที่ผิวเจอ และชิ้นที่ดูแล" data-slot="routine-map">
+          <a class="mr-lineup__item" href="#step-CL" data-lineup="CL" style="--i:0"><span class="mr-lineup__label">ล้าง</span><span class="mr-pack" style="--pack-aspect:0.2667;--pack-img-width:270.197%;--pack-img-height:108.096%;--pack-img-left:-85.22%;--pack-img-top:-3.027%"><img src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="มูสโฟมล้างหน้า — ภาพแพ็ก AI ฉบับร่าง" fetchpriority="high" decoding="async"></span><span class="mr-lineup__name">มูสโฟมล้างหน้า</span><span class="mr-sr">ล้างหน้าและเครื่องสำอาง · ตามฉลาก</span></a>
+          <a class="mr-lineup__item" href="#step-AC" data-lineup="AC" style="--i:1"><span class="mr-lineup__label">สิวง่าย</span><span class="mr-pack" style="--pack-aspect:0.4107;--pack-img-width:194.666%;--pack-img-height:119.918%;--pack-img-left:-47.518%;--pack-img-top:-8.047%"><img src="assets/pack/ac-front.webp" width="1024" height="1536" alt="เซรั่มขวดขาว — ภาพแพ็ก AI ฉบับร่าง" decoding="async"></span><span class="mr-lineup__name">เซรั่มขวดขาว</span><span class="mr-sr">ผิวที่เป็นสิวง่าย · เช้า · เย็น</span></a>
+          <a class="mr-lineup__item" href="#step-BR" data-lineup="BR" style="--i:2"><span class="mr-lineup__label">ดูหมอง</span><span class="mr-pack" style="--pack-aspect:0.3184;--pack-img-width:240.385%;--pack-img-height:114.797%;--pack-img-left:-70.192%;--pack-img-top:-9.861%"><img src="assets/pack/br-front.webp" width="1024" height="1536" alt="เซรั่มขวดเหลืองเขียว — ภาพแพ็ก AI ฉบับร่าง" decoding="async"></span><span class="mr-lineup__name">เซรั่มขวดเหลืองเขียว</span><span class="mr-sr">ผิวที่ดูหมองคล้ำ · เช้า · เย็น</span></a>
+          <a class="mr-lineup__item" href="#step-SU" data-lineup="SU" style="--i:3"><span class="mr-lineup__label">แดด</span><span class="mr-pack" style="--pack-aspect:0.2455;--pack-img-width:310.366%;--pack-img-height:114.286%;--pack-img-left:-105.183%;--pack-img-top:-7.737%"><img src="assets/pack/su-front-web.webp" width="1024" height="1536" alt="เซรั่มกันแดด — ภาพแพ็ก AI ฉบับร่าง" decoding="async"></span><span class="mr-lineup__name">เซรั่มกันแดด</span><span class="mr-sr">กันแดด · ทุกวัน · ทาซ้ำได้</span></a>
+          <a class="mr-lineup__item" href="#step-PO" data-lineup="PO" style="--i:4"><span class="mr-lineup__label">แต่งผิว</span><span class="mr-pack" style="--pack-aspect:1.0681;--pack-img-width:138.581%;--pack-img-height:128.353%;--pack-img-left:-19.235%;--pack-img-top:-18.906%"><img src="assets/pack/po-closed.webp" width="1347" height="1168" alt="แป้งพัฟตลับเขียว — ภาพแพ็ก AI ฉบับร่าง" decoding="async"></span><span class="mr-lineup__name">แป้งพัฟตลับเขียว</span><span class="mr-sr">แต่งผิวเมื่อต้องการ · เมื่อแต่งหน้า</span></a>
+        </nav>
+        <div class="mr-hero__buy">
+          <p class="mr-hero__sub">ล้าง บำรุง ปกป้อง แต่งผิว — เลือกดูแลให้ตรงเรื่อง</p>
+          <div class="mr-hero-offer" data-slot="hero-offer" aria-live="polite"></div>
+          <div class="mr-actions"><a class="mr-btn" href="#set" data-cta="offer">ดูข้อเสนอชุด 5 ชิ้น <span aria-hidden="true">↓</span></a><a class="mr-btn mr-btn--ghost" href="#step-CL">เริ่มจากล้างหน้า <span aria-hidden="true">→</span></a></div>
+          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral · ภาพแพ็กเป็นภาพร่าง AI · ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
         </div>
       </div>
-      <ol class="mr-routine__map" data-slot="routine-map">
-        <li><a href="#step-CL"><span>01</span><strong>ล้างหน้า<em>มูสโฟมล้างหน้า</em></strong></a></li>
-        <li><a href="#step-AC"><span>02</span><strong>ผิวเป็นสิวง่าย<em>เซรั่มขวดขาว</em></strong></a></li>
-        <li><a href="#step-BR"><span>03</span><strong>ความหมองคล้ำ<em>เซรั่มหน้าใส</em></strong></a></li>
-        <li><a href="#step-SU"><span>04</span><strong>ปกป้อง<em>เซรั่มกันแดด</em></strong></a></li>
-        <li><a href="#step-PO"><span>05</span><strong>ปกปิด<em>แป้งพัฟ</em></strong></a></li>
-      </ol>
-      <p class="mr-routine__provenance">ภาพแพ็กและพืชเป็นภาพประกอบ AI · เลื่อนลงเพื่อรู้จักส่วนผสมและบทบาทของแต่ละชิ้น</p>
+    </section>
+
+    <!-- The maker's intent frames the routine. It is a reading chapter, never a product step. -->
+    <section class="mr-note mr-note--founder mr-reading-chapter" id="founder" data-scene="founder" aria-labelledby="founder-quote">
+      <div class="mr-note__frame">
+        <p class="mr-kicker">ก่อนจะเป็นห้าชิ้นนี้</p>
+        <blockquote class="mr-note__quote" id="founder-quote"><p><span class="mr-line">พี่ตั้งใจทำ</span><span class="mr-line">ของที่ดีที่สุด</span><span class="mr-line">ให้ทุกคนเลย</span></p></blockquote>
+        <p class="mr-note__credit">— เจ้าของ Mediral · ข้อความถึงผู้จัดทำ myClover</p>
+        <p class="mr-note__bridge">ส่วนความใส่ใจ เริ่มได้ที่บ้าน</p>
+      </div>
     </section>
 
     <div class="mr-story" id="story" data-slot="steps"></div>
 
+    <!-- A user's own words close the routine, then the five return to the opening line-up. -->
+    <section class="mr-note mr-note--relay mr-reading-chapter" id="relay" data-scene="relay" aria-labelledby="relay-quote">
+      <div class="mr-note__frame">
+        <blockquote class="mr-note__quote mr-note__quote--relay" id="relay-quote"><p>“ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ” <span aria-hidden="true">🍀</span></p></blockquote>
+        <p class="mr-note__credit">— Teem · ผู้จัดทำ myClover<small>ความรู้สึกจากการลองใช้ส่วนตัว ไม่ได้ระบุชิ้น ไม่ใช่ผลของทุกคน</small></p>
+        <p class="mr-note__chain"><span class="mr-line">ตั้งใจทำ</span><span class="mr-line">ใส่ใจใช้</span><span class="mr-line">อยากบอกต่อ</span></p>
+        <div class="mr-lineup mr-relay__lineup" aria-hidden="true">
+          <span class="mr-lineup__item" data-lineup="CL" style="--i:0"><span class="mr-lineup__label">ล้าง</span><span class="mr-pack" style="--pack-aspect:0.2667;--pack-img-width:270.197%;--pack-img-height:108.096%;--pack-img-left:-85.22%;--pack-img-top:-3.027%"><img src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="มูสโฟมล้างหน้า — ภาพแพ็ก AI ฉบับร่าง" loading="lazy" decoding="async"></span></span>
+          <span class="mr-lineup__item" data-lineup="AC" style="--i:1"><span class="mr-lineup__label">สิวง่าย</span><span class="mr-pack" style="--pack-aspect:0.4107;--pack-img-width:194.666%;--pack-img-height:119.918%;--pack-img-left:-47.518%;--pack-img-top:-8.047%"><img src="assets/pack/ac-front.webp" width="1024" height="1536" alt="เซรั่มขวดขาว — ภาพแพ็ก AI ฉบับร่าง" loading="lazy" decoding="async"></span></span>
+          <span class="mr-lineup__item" data-lineup="BR" style="--i:2"><span class="mr-lineup__label">ดูหมอง</span><span class="mr-pack" style="--pack-aspect:0.3184;--pack-img-width:240.385%;--pack-img-height:114.797%;--pack-img-left:-70.192%;--pack-img-top:-9.861%"><img src="assets/pack/br-front.webp" width="1024" height="1536" alt="เซรั่มขวดเหลืองเขียว — ภาพแพ็ก AI ฉบับร่าง" loading="lazy" decoding="async"></span></span>
+          <span class="mr-lineup__item" data-lineup="SU" style="--i:3"><span class="mr-lineup__label">แดด</span><span class="mr-pack" style="--pack-aspect:0.2455;--pack-img-width:310.366%;--pack-img-height:114.286%;--pack-img-left:-105.183%;--pack-img-top:-7.737%"><img src="assets/pack/su-front-web.webp" width="1024" height="1536" alt="เซรั่มกันแดด — ภาพแพ็ก AI ฉบับร่าง" loading="lazy" decoding="async"></span></span>
+          <span class="mr-lineup__item" data-lineup="PO" style="--i:4"><span class="mr-lineup__label">แต่งผิว</span><span class="mr-pack" style="--pack-aspect:1.0681;--pack-img-width:138.581%;--pack-img-height:128.353%;--pack-img-left:-19.235%;--pack-img-top:-18.906%"><img src="assets/pack/po-closed.webp" width="1347" height="1168" alt="แป้งพัฟตลับเขียว — ภาพแพ็ก AI ฉบับร่าง" loading="lazy" decoding="async"></span></span>
+        </div>
+      </div>
+    </section>
+
     <section class="mr-chapter mr-set mr-reading-chapter" id="set" data-chapter="set" aria-labelledby="set-title">
       <div class="mr-set__inner"><div class="mr-card mr-card--wide">
-        <p class="mr-kicker">THE COMPLETE EDIT · อย่างละ 1 ชิ้น</p>
-        <h2 class="mr-h2" id="set-title" data-slot="set-headline">5 ชิ้น จากล้างหน้าถึงปิดท้ายลุค</h2>
-        <p class="mr-set__intro">สำหรับคนที่อยากใช้แบรนด์เดียว ตั้งแต่ทำความสะอาด ดูแลผิว ปกป้อง จนถึงแต่งผิว เลือกใช้ให้เหมาะกับวันและผิวของคุณ</p>
+        <p class="mr-kicker">MEDIRAL · ชุดดูแลผิว 5 ชิ้น · อย่างละ 1 ชิ้น</p>
+        <h2 class="mr-h2" id="set-title" data-slot="set-headline">หนึ่งหน้า ห้าเรื่อง ในชุดเดียว</h2>
+        <p class="mr-set__intro">มูสล้างหน้า เซรั่มขวดขาว เซรั่มหน้าใส เซรั่มกันแดด และแป้งพัฟ ใช้เฉพาะเรื่องที่ผิวคุณเจอได้ ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
         <div class="mr-setrow" data-slot="set-row" aria-hidden="true"></div>
         <div class="mr-offer" data-slot="offer"></div>
         <div class="mr-actions mr-actions--buy"><a class="mr-btn" data-slot="buy-link" aria-disabled="true" role="link">ลิงก์ชุดนี้กำลังตรวจ</a><button type="button" class="mr-btn mr-btn--ghost" data-action="copy">คัดลอกรายการ</button><button type="button" class="mr-btn mr-btn--ghost" data-action="card">บันทึกใบสรุปก่อนจ่าย</button></div>
         <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
         <div class="mr-summary" data-slot="summary" aria-live="polite"></div>
         <details class="mr-customize"><summary>เลือกเฉพาะชิ้นไว้ในใบสรุป</summary><p>จัดรายการที่อยากบันทึกได้ ส่วนข้อเสนอของร้านเป็นชุด 5 ชิ้นตายตัว เปลี่ยนสินค้าในชุดไม่ได้</p><fieldset class="mr-pieces" data-slot="pieces"><legend class="mr-pieces__legend">ชิ้นที่ต้องการบันทึก</legend></fieldset></details>
+        <p class="mr-set__carry">อยู่บ้าน หรือพาไป เลือกหยิบชิ้นที่คุณใช้</p>
         <p class="mr-disclosure" data-slot="disclosure"></p>
         <p class="mr-disclosure">จัดทำโดย myClover ไม่ใช่เว็บไซต์ทางการของ Mediral · ราคาและสิทธิจริงให้ตรวจที่หน้าชำระเงิน</p>
         <a class="mr-set__library" href="#ingredients">รู้จักส่วนผสมให้ลึกขึ้น <span aria-hidden="true">↓</span></a>
@@ -79,19 +103,20 @@
       </details>
     </section>
     <section class="mr-library mr-reading-chapter" id="ingredients" data-chapter="ingredients" aria-labelledby="ingredients-title">
-      <header class="mr-library__head"><p class="mr-kicker">THE INGREDIENT NOTES</p><h2 id="ingredients-title">รู้จักทุกชื่อที่แบรนด์ระบุ</h2><p>เลือกเปิดอ่านตามชิ้นที่สนใจ พร้อมบทบาทและที่มา รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ส่วนผสมครบตามฉลาก</p></header>
+      <header class="mr-library__head"><p class="mr-kicker">รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ</p><h2 id="ingredients-title">รู้จักทุกชื่อที่แบรนด์ระบุ</h2><p>พร้อมบทบาทและที่มา รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ส่วนผสมครบตามฉลาก</p></header>
       <div class="mr-library__list" data-slot="library"></div>
     </section>
   </main>
 
   <footer class="mr-footer">
     <details><summary>ที่มาของข้อมูลและภาพประกอบ</summary>
-      <p>ชื่อ ขนาด วิธีใช้ บทบาท เนื้อสัมผัส และรายชื่อส่วนผสมอ้างอิงสื่อการตลาดของ Mediral เป็นข้อมูลที่แบรนด์เผยแพร่ ไม่ใช่ผลทดสอบอิสระ รายชื่อไม่ใช่ INCI เต็มและไม่ได้ระบุสัดส่วน สูตรและขนาดของมูสแพ็กโคลเวอร์ยังรอยืนยัน</p>
-      <p>ภาพแพ็กเป็นภาพ AI ฉบับร่างจากสื่อแบรนด์ ไม่ใช่ฉลากต้นฉบับ ภาพพืช หยดสาร และคลิปแล็บเป็นภาพประกอบ AI เพื่อเล่าเรื่อง ไม่ใช่โรงงาน กระบวนการผลิต ผลบนผิว ผลทดสอบ หรือเนื้อผลิตภัณฑ์จริง</p>
-      <p>ข้อเสนอชุดมาจากโปสเตอร์ที่ได้รับวันที่ 28 ก.ย. 2026 ไม่ใช่ราคาตะกร้าปัจจุบัน วิธีใช้และข้อมูลผลิตภัณฑ์ที่ได้รับให้ยึดฉลาก หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
+      <p>ชื่อ ขนาด วิธีใช้ บทบาท เนื้อสัมผัส และรายชื่อส่วนผสมอ้างอิงสื่อการตลาดของ Mediral เป็นข้อมูลที่แบรนด์เผยแพร่ ไม่ใช่ผลทดสอบอิสระ รายชื่อไม่ใช่ INCI เต็มและไม่ได้ระบุสัดส่วน สูตรและขนาดของมูสแพ็กโคลเวอร์ยังรอยืนยัน หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า</p>
+      <p>ภาพแพ็กเป็นภาพ AI ฉบับร่างจากสื่อแบรนด์ ไม่ใช่ฉลากต้นฉบับ ภาพพืช หยดสาร แผ่นแก้ว แสง ละออง และคลิปการหยดสารสกัดเป็นภาพประกอบแนวคิดเพื่อเล่าเรื่อง ไม่ใช่โรงงาน ห้องแล็บจริง กระบวนการผลิต ผลบนผิว ผลทดสอบ หรือเนื้อผลิตภัณฑ์จริง</p>
+      <p>คำของเจ้าของ Mediral เป็นข้อความแสดงความตั้งใจที่ส่งถึงผู้จัดทำ ไม่ใช่คำรับรองผล คำของ Teem เป็นความรู้สึกจากการลองใช้ส่วนตัว ไม่ได้ระบุชิ้นและไม่ใช่ผลของทุกคน myClover อาจได้รับค่าคอมมิชชันเมื่อซื้อผ่านลิงก์ของเรา</p>
+      <p>ข้อเสนอชุดมาจากโปสเตอร์ที่ได้รับวันที่ 28 ก.ย. 2026 ไม่ใช่ราคาตะกร้าปัจจุบัน หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
     </details>
     <p class="mr-footer__house">myClover · Mediral</p><p>จัดทำโดย myClover ไม่ใช่เว็บไซต์ทางการของแบรนด์</p>
   </footer>
-  <noscript><p class="mr-noscript">เปิด JavaScript เพื่อสำรวจส่วนผสมและบันทึกใบสรุป สินค้า 5 ชิ้นมีหน้าที่ล้างหน้า บำรุง ปกป้อง และแต่งผิว วิธีใช้จริงให้ยึดฉลากของแต่ละชิ้น</p></noscript>
+  <noscript><p class="mr-noscript">เปิด JavaScript เพื่อดูเรื่องของแต่ละชิ้นและบันทึกใบสรุป สินค้า 5 ชิ้นมีหน้าที่ล้างหน้า บำรุง ปกป้อง และแต่งผิว วิธีใช้จริงให้ยึดฉลากของแต่ละชิ้น</p></noscript>
 </body>
 </html>

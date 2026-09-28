@@ -1,8 +1,28 @@
-# Mediral — Product selling through scroll (v7)
+# Mediral — หนึ่งหน้า ห้าเรื่อง (v8)
 
-Updated 2026-09-28. This revision continues the five-piece set story while replacing v6's separate introductory comparison/film chapters and generic extraction sequence. Implementation and visual acceptance are in progress; this document is the current design and content contract, not a deployment report.
+Updated 2026-09-29. Supersedes v7's card-per-beat scroll ("15 cards fading in" and ingredients orbiting a bottle). Creative direction agreed with GPT (creative director) in a private proposal round; Claude owns the code experience. Facts, commerce rules and fallbacks from v7 remain; only the storytelling and motion changed.
 
-## One customer story
+## The idea
+
+A new visitor recognises themselves before they see a product list: *one face, five everyday things*. Each concern sits on the pack that looks after it, so the first screen is also the product map. Care is the heart: the maker's intent opens the routine, a user's words close it (ตั้งใจทำ · ใส่ใจใช้ · อยากบอกต่อ), and "take it with you" is only the final, optional line.
+
+## First screen (390×844)
+
+Kicker "MEDIRAL · ชุดดูแลผิว 5 ชิ้น" · headline "หนึ่งหน้า / ห้าเรื่อง" · five crisp packs standing on the stone ledge (base at ~72% of the stage image) with labels ล้าง · สิวง่าย · ดูหมอง · แดด · แต่งผิว · "ล้าง บำรุง ปกป้อง แต่งผิว — เลือกดูแลให้ตรงเรื่อง" · dated poster offer · ดูข้อเสนอชุด 5 ชิ้น. The rail is hidden on the opening.
+
+## Five grammars — motion is the job
+
+| Scene | Moment → headline | Start / middle / end (readable with text hidden) |
+|---|---|---|
+| CL erase ↑ | กลับถึงบ้าน ผิวผ่านมาทั้งวัน → ล้างวันนี้ออก ก่อนเริ่มดูแล | huge faint "วันทั้งวัน" behind the bottle / foam rises behind it and covers the word / foam settles at the base, word gone |
+| AC drop ↓ | เป็นสิวง่าย แต่ก็ยังอยากชุ่มชื้น → ดูแลความมัน ไม่ลืมความชุ่มชื้น | silent clip with tea tree + mangosteen peel / the source lifts and one amber drop falls onto the rising bottle / a quiet level line: สมดุลความมัน ↔ ความชุ่มชื้น (labels only, no ratio) |
+| BR reveal ↘ | บางวันผิวดูหมอง สีผิวดูไม่เท่ากัน → ให้สีผิว ดูสม่ำเสมอ | scene in warm dusk / a light band sweeps and reveals bearberry, licorice, vitamin C derivative and the bottle / probiotics · สมดุล and bakuchiol · เรียบเนียน |
+| SU glide → | ไม่ชอบกันแดดหนักหน้า? → กันแดด ที่อยากหยิบใช้ | glass sheet enters with its own "สารกรอง UV จากแร่ธาตุ · Zinc Oxide · Titanium Dioxide" label / a clear drop: ไฮยา · ความชุ่มชื้น / the seven Giga White® names with short roles; tube with "ภาพแพ็กจำลอง AI · ค่า SPF/PA ยึดฉลากจริง" |
+| PO settle ↓ | บางวันอยากแต่งผิวนิดเดียว → วันไหนอยากแต่ง ค่อยเติมชิ้นนี้ | outlined "เนียน" over the ledge / fine powder drifts and the word fills / compact lands on the ledge; group labels only |
+
+Reduced motion shows each scene's composed end still; short screens (< 700px tall) unpin the scenes and keep light position-linked motion; without WebGL the DOM scenes are complete.
+
+## Customer story (v7 facts, retained)
 
 1. **WHY and the five pieces.** Show the set, its roles and a direct route to the dated offer. The idea is a routine from cleansing to optional makeup with one brand. Never say everyone needs all five or that combined use has proven superior results.
 2. **Mousse — the cleansing piece.** Clear water/foam imagery identifies the rinse-off role and the current clover-label pump bottle. Do not borrow ingredients or performance claims from the old rose-label pack.

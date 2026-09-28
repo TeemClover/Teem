@@ -13,7 +13,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 
 // Execute the real controller with a small DOM adapter. No browser or graphics emulation:
 // assertions cover the visible offer, action state, input selection and accessibility attributes.
-async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory, filmFactory, stacked = false, productStacked = stacked, productScrollMargin = '0px'} = {}) {
+async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, verifiedLink = false, readyState = 'complete', pendingFonts = false, readingChapters = [], storyFactory, filmFactory, stacked = false, flow = false, productScrollMargin = '0px'} = {}) {
   const listeners = new Map();
   const windowListeners = new Map();
   const timers = new Map();
@@ -79,37 +79,22 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   const rows = routine.steps.map(step => { const el = new Element(); el.dataset.row = step.id; return el; });
   const rails = [...routine.steps, {id: 'set'}].map(step => { const el = new Element('a'); el.dataset.rail = step.id; return el; });
   const actions = ['copy', 'card'].map(action => { const el = new Element('button'); el.dataset.action = action; return el; });
+  // Inline custom properties written by the scene engine are recorded as the page would hold them.
+  const styleStore = () => { const values = new Map(); return {setProperty: (k, v) => values.set(k, String(v)), getPropertyValue: k => values.get(k) ?? '', values}; };
   const sections = ['routine', ...rails].map((_, i) => {
     const el = new Element('section');
     el.id = i === 0 ? 'routine' : i === 6 ? 'set' : `step-${routine.steps[i - 1].id}`;
     el.scrollMarginTop = i > 0 && i < 6 ? productScrollMargin : '0px';
+    el.style = styleStore();
+    if (i > 0 && i < 6) {
+      const step = routine.steps[i - 1];
+      el.dataset = {step: step.id, scene: step.id, grammar: step.scene.grammar, pin: 'true'};
+    }
     Object.defineProperty(el, 'offsetHeight', {get: () => root.classList.contains('mr-static') ? 600 : sectionHeight});
-    el.getBoundingClientRect = () => ({top: i * el.offsetHeight - context.scrollY, bottom: (i + 1) * el.offsetHeight - context.scrollY});
+    el.getBoundingClientRect = () => ({top: i * el.offsetHeight - context.scrollY, bottom: (i + 1) * el.offsetHeight - context.scrollY, height: el.offsetHeight});
     return el;
   });
-  const beatNodes = [], artNodes = [];
-  routine.steps.forEach((step, i) => {
-    const section = sections[i + 1];
-    const visual = new Element();
-    visual.getBoundingClientRect = () => ({top: 70, bottom: productStacked ? 250 : 500});
-    const finish = new Element();
-    finish.getBoundingClientRect = () => ({top: (i + 1) * section.offsetHeight + section.offsetHeight * .92 - context.scrollY});
-    section.nodes.set('.mr-product__visual', visual);
-    section.nodes.set('.mr-product__finish', finish);
-    const localArt = [];
-    step.selling.beats.forEach((beat, j) => {
-      const node = new Element('article');
-      node.id = `beat-${step.id}-${j}`;
-      node.dataset = {sellingStep: step.id, beatIndex: String(j)};
-      node.getBoundingClientRect = () => ({top: (i + 1) * section.offsetHeight + section.offsetHeight * (.18 + j * .23) - context.scrollY});
-      beatNodes.push(node);
-      const art = new Element();
-      art.dataset.beatArt = `${step.id}:${j}`;
-      if (!j) art.classList.add('is-active');
-      artNodes.push(art); localArt.push(art);
-    });
-    section.allNodes = new Map([['[data-beat-art]', localArt]]);
-  });
+  const scenes = sections.slice(1, 6);
   const film = new Element(); film.id = 'lab-film';
   for (const name of ['routine-map', 'routine-still', 'hero-offer', 'compare', 'uses', 'hero-body', 'steps', 'library', 'rail', 'word', 'set-headline', 'pieces', 'set-row', 'offer', 'summary', 'buy-link', 'buy-hint', 'disclosure']) slots.set(name, new Element());
   const document = {
@@ -123,8 +108,6 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector.startsWith('#step-')) return sections[routine.steps.findIndex(s => selector === `#step-${s.id}`) + 1];
       if (selector === '#set') return sections[6];
       if (selector === '#lab-film') return film;
-      const beat = beatNodes.find(node => selector === `#${node.id}`);
-      if (beat) return beat;
       const reading = readingNodes.find(node => selector === `#${node.id}`);
       if (reading) return reading;
       if (selector.startsWith('[data-lab=') || selector.startsWith('[data-formula-group=')) { if (!slots.has(selector)) slots.set(selector, new Element()); return slots.get(selector); }
@@ -134,27 +117,25 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     },
     querySelectorAll(selector) {
       if (selector === '#story [data-step]') return sections.slice(1, 6);
-      if (selector === '[data-selling-step]') return beatNodes;
-      const beatMatch = selector.match(/^\[data-selling-step="([^"]+)"\]$/);
-      if (beatMatch) return beatNodes.filter(node => node.dataset.sellingStep === beatMatch[1]);
+      if (selector === '[data-scene]') return scenes;
       if (selector === '.mr-reading-chapter') return readingNodes;
       if (selector === '[data-piece]') return pieces;
       if (selector === '[data-row]') return rows;
       if (selector === '[data-rail]') return rails;
       if (selector === '[data-action]' || selector === '[data-action="copy"], [data-action="card"]') return actions;
-      if (selector === '.mr-chapter, .mr-product, .mr-routine') return sections;
+      if (selector === '.mr-chapter, .mr-scene, .mr-note, .mr-library') return sections;
       return [];
     },
   };
   const media = {matches: false, addEventListener(_name, listener) { this.change = listener; }};
   const stackedMedia = {matches: stacked, addEventListener() {}};
-  const productMedia = {matches: productStacked, addEventListener() {}};
+  const flowMedia = {matches: flow, addEventListener() {}};
   class ClockDate extends Date { constructor(...args) { super(...(args.length ? args : [now])); } static now() { return now; } }
   const data = structuredClone(routine);
   if (verifiedLink) data.buy = {...data.buy, status: 'verified', affiliate_url: 'https://shop.example.test/verified-set'};
   context = vm.createContext({document, location: new URL(url), URL, URLSearchParams, Intl, Date: ClockDate, console: {warn() {}, error: (...args) => errors.push(args)},
     navigator: {clipboard: {writeText: async () => { if (clipboardFails) throw new Error('denied'); }}},
-    matchMedia: query => query === '(max-width: 1100px)' ? stackedMedia : query === '(max-width: 700px)' ? productMedia : media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
+    matchMedia: query => query === '(max-width: 1100px)' ? stackedMedia : query === '(max-height: 699px)' ? flowMedia : media, innerHeight: 500, innerWidth: 1000, scrollY: 0,
     getComputedStyle: el => ({scrollMarginTop: el.scrollMarginTop || '0px'}),
     addEventListener: addWindowListener, removeEventListener: removeWindowListener, IntersectionObserver: class { observe() {} },
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
@@ -162,13 +143,16 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     loadStoryModule: async () => ({createStory: storyFactory}),
     loadFilmModule: async () => ({initLabFilm: filmFactory}),
   });
-  context.window = {requestIdleCallback() {}, scrollTo: ({top}) => { context.scrollY = top; }};
+  const animationFrames = new Map();
+  let frameId = 0;
+  context.window = {requestIdleCallback() {}, scrollTo: ({top}) => { context.scrollY = top; },
+    requestAnimationFrame(fn) { animationFrames.set(++frameId, fn); return frameId; }, cancelAnimationFrame(id) { animationFrames.delete(id); }};
   vm.runInContext(source, context, {filename: 'mediral/js/main.js'});
   await tick();
   assert.deepEqual(errors, [], 'The controller must boot before its behavior is tested');
   const run = code => vm.runInContext(code, context);
   const fire = (name, target) => { for (const handler of listeners.get(name) || []) handler({target}); };
-  return {run, slots, pieces, actions, rails, root, media, timers, document, context, beatNodes, artNodes,
+  return {run, slots, pieces, actions, rails, root, media, timers, document, context, scenes, animationFrames,
     change(id, checked) { const box = pieces.find(p => p.value === id); box.checked = checked; fire('change', box); },
     restore() { const button = new Element('button'); button.dataset.action = 'select-all'; fire('click', button); },
     readingNodes,
@@ -342,12 +326,16 @@ test('the complete atlas is optional deep reading after the offer, with every na
     assert.equal((html.match(/data-formula-index=/g) || []).length, count);
     for (const ingredient of [...step.featured, ...step.ingredients]) assert.ok(html.includes(`>${ingredient.name}</button>`), ingredient.name);
     assert.ok(library.includes(`id="formula-${step.id}"`), `${step.id}: rendered in the library`);
-    assert.match(ui.run(`stepBody(byId('${step.id}'))`), new RegExp(`href="#formula-${step.id}"[^>]*>อ่านส่วนผสมทั้งหมด ${count} ชื่อ`));
+    assert.ok(html.includes(step.how), `${step.id}: method lives with the complete list`);
+    assert.match(steps, new RegExp(`href="#formula-${step.id}"[^>]*>ส่วนผสมทั้งหมด ${count} ชื่อ`), `${step.id}: the scene links to its full list`);
     for (const group of step.ingredient_groups.filter(g => g.ingredientNames.length)) {
       assert.ok(html.includes(group.title), `${step.id}: the optional library retains every ingredient family`);
     }
   }
-  assert.equal(ui.run('ingredientAtlas(byId("CL"))'), '', 'The unconfirmed mousse formula has no list');
+  const mousse = ui.run('ingredientAtlas(byId("CL"))');
+  assert.match(mousse, /^<details\b[^>]*id="formula-CL"/, 'The mousse keeps a details entry for its method and provenance');
+  assert.doesNotMatch(mousse, /data-formula-index=/, 'The unconfirmed mousse formula has no ingredient names');
+  assert.ok(mousse.includes(routine.steps[0].ingredients_note));
 });
 
 test('direct, in-page and history links open a closed atlas before the reader lands on it', async () => {
@@ -658,50 +646,76 @@ test('a different hash or leaving the page cancels its pending initial chapter c
   }
 });
 
-test('all five products and their fifteen selling beats remain readable without motion or a scene', async () => {
+test('five scenes carry the ad copy, the fifteen attributed beats and a crisp pack without any motion', async () => {
   const ui = await fixture();
   const html = ui.slots.get('steps').innerHTML;
-  assert.equal((html.match(/class="mr-product"/g) || []).length, 5);
+  assert.equal((html.match(/class="mr-scene mr-scene--/g) || []).length, 5);
   assert.equal((html.match(/data-selling-step=/g) || []).length, 15);
+  const grammars = new Set();
   for (const step of routine.steps) {
     assert.ok(html.includes(`id="step-${step.id}"`));
-    assert.ok(html.includes(step.image));
+    assert.ok(html.includes(`data-grammar="${step.scene.grammar}"`));
+    grammars.add(step.scene.grammar);
+    assert.ok(html.includes(step.image), `${step.id}: the native pack image`);
+    assert.ok(html.includes(step.scene.problem) && html.includes(step.scene.role) && html.includes(step.scene.proof));
+    for (const line of step.scene.headline) assert.ok(html.includes(`<span class="mr-line">${line}</span>`));
     for (const beat of step.selling.beats) {
-      assert.ok(html.includes(beat.title));
-      assert.ok(html.includes(beat.body));
-      for (const name of beat.names) assert.ok(html.includes(`<strong>${name}</strong>`));
+      assert.ok(html.includes(beat.title) && html.includes(beat.body), `${step.id}: ${beat.id}`);
+      if (beat.names.length) assert.ok(html.includes(`(${beat.names.join(', ')})`), `${step.id}: ${beat.id} names`);
       for (const tag of Object.values(beat.tags || {})) assert.ok(html.includes(`<small>${tag}</small>`));
     }
-    if (step.selling.sensory) assert.ok(html.includes(step.selling.sensory));
   }
-  assert.doesNotMatch(html, /data-ingredient-index|mr-lab__tabs/);
+  assert.equal(grammars.size, 5, 'Each product has its own movement grammar');
+  assert.doesNotMatch(html, /data-ingredient-index|mr-lab__tabs|mr-product/);
 });
 
-test('forward and reverse scrolling promote the matching family and mood without changing the saved list', async () => {
+test('the acne note is a general fact, visibly separate from the serum role and linked to its sources', async () => {
+  const ui = await fixture();
+  const html = ui.slots.get('steps').innerHTML;
+  const ac = html.slice(html.indexOf('id="step-AC"'), html.indexOf('id="step-BR"'));
+  const fact = ac.match(/<p class="mr-scene__fact">[\s\S]*?<\/p>/)?.[0] || '';
+  assert.match(fact, /สิวมีหลายปัจจัย ทั้งน้ำมัน การอุดตัน และการอักเสบ/);
+  assert.match(fact, /ไม่ใช่ผลของผลิตภัณฑ์/);
+  assert.match(fact, /href="https:\/\/www\.nhs\.uk\/conditions\/acne\/"/);
+  assert.match(fact, /href="https:\/\/www\.niams\.nih\.gov\/health-topics\/acne"/);
+  assert.doesNotMatch(fact, /Mediral|เซรั่ม/, 'The general fact does not become a product claim');
+  assert.equal((html.match(/mr-scene__fact/g) || []).length, 1, 'Only AC carries the general note');
+});
+
+test('forward and reverse scrolling set each scene phase from position, without changing the saved list', async () => {
   const scene = sceneBoundary();
   const ui = await fixture({storyFactory: async () => scene});
   await ui.run('bootStage()');
   ui.change('PO', false);
   const selection = ui.run('[...state.selection].join(",")');
-  for (const [y, key, mood] of [[3050, 'AC:0', 'botanical'], [3390, 'AC:1', 'botanical'], [3730, 'AC:2', 'hydration'], [3390, 'AC:1', 'botanical'], [3050, 'AC:0', 'botanical'], [6700, 'SU:1', 'hydration'], [6800, 'SU:2', 'plants']]) {
+  const ac = ui.scenes[1];
+  for (const [y, key, mood, p] of [[3100, 'AC:0', 'botanical', .1], [3450, 'AC:1', 'hydration', .45], [3800, 'AC:2', 'texture', .8], [3450, 'AC:1', 'hydration', .45], [3100, 'AC:0', 'botanical', .1], [6500, 'SU:1', 'hydration', .5], [6800, 'SU:2', 'plants', .8]]) {
     ui.scroll(y);
     assert.equal(ui.run('state.beat.key'), key, `scroll ${y}`);
-    assert.equal(scene.mood, mood);
-    const activeArt = ui.artNodes.filter(node => node.dataset.beatArt.startsWith(key.slice(0, 2)) && node.classList.contains('is-active'));
-    assert.deepEqual(activeArt.map(node => node.dataset.beatArt), [key]);
+    assert.equal(scene.mood, mood, `mood at ${y}`);
+    const owner = ui.scenes[routine.steps.findIndex(step => step.id === key.slice(0, 2))];
+    assert.equal(Number(owner.style.getPropertyValue('--p')), p);
     assert.equal(ui.run('[...state.selection].join(",")'), selection);
   }
+  ui.scroll(3450); // p = .45 in the drop grammar: the source is formed, the drop is travelling
+  assert.equal(ac.style.getPropertyValue('--a'), '1.0000');
+  const drop = Number(ac.style.getPropertyValue('--b'));
+  assert.ok(drop > 0 && drop < 1, 'The drop is mid-flight');
+  assert.equal(ac.style.getPropertyValue('--c'), '0.0000');
 });
 
-test('phone beat selection reads below the sticky visual rather than behind it', async () => {
-  const ui = await fixture({stacked: true});
-  ui.scroll(3290); // AC beat 1 starts at y=325, below the art bottom (250) + a reading gap (70).
-  assert.equal(ui.run('state.beat.key'), 'AC:0');
-  ui.scroll(3300);
-  assert.equal(ui.run('state.beat.key'), 'AC:1');
+test('short screens unpin scenes but still map position to lightweight motion', async () => {
+  const pinned = await fixture();
+  pinned.scroll(3000);
+  assert.equal(pinned.scenes[1].style.getPropertyValue('--p'), '0.0000', 'A pinned scene starts when its frame arrives');
+  const flow = await fixture({flow: true});
+  flow.scroll(3000);
+  assert.equal(flow.scenes[1].style.getPropertyValue('--p'), '0.3673', 'An unpinned scene plays while it crosses the reading band');
+  flow.scroll(3775);
+  assert.equal(flow.scenes[1].style.getPropertyValue('--p'), '1.0000');
 });
 
-test('ambient film is active only in its owning selling beat, never after scrolling or in a hidden tab', async () => {
+test('ambient film is active only in its owning AC opening, never after the drop or in a hidden tab', async () => {
   const film = {active: false, setActive(value) { this.active = value; }};
   const ui = await fixture({filmFactory: () => film});
   await ui.run('bootFilm()');
@@ -712,28 +726,51 @@ test('ambient film is active only in its owning selling beat, never after scroll
   assert.equal(film.active, false);
   ui.returnToPage();
   assert.equal(film.active, true);
-  ui.scroll(3390);
+  ui.scroll(3600);
   assert.equal(film.active, false);
   ui.scroll(4550);
   assert.equal(film.active, false);
 });
 
-test('a legacy incoming film link opens its AC selling beat rather than a hidden art layer', async () => {
-  const ui = await fixture({url: 'https://www.myclover.com/mediral/#lab-film'});
-  await ui.flushImmediateTimers();
-  assert.equal(ui.context.scrollY, 3270);
-  assert.equal(ui.run('state.beat.key'), 'AC:0');
+for (const [hash, target, key] of [['#lab-film', 3000, 'AC:0'], ['#beat-BR-1', 4500, 'BR:0']]) {
+  test(`a legacy ${hash} link lands on the product scene that now tells it`, async () => {
+    const ui = await fixture({url: `https://www.myclover.com/mediral/${hash}`});
+    await ui.flushImmediateTimers();
+    assert.equal(ui.context.scrollY, target);
+    assert.equal(ui.run('state.beat.key'), key);
+  });
+}
+
+test('scene phases are the same in stacked and wide layouts; the purchase gate stays separate', async () => {
+  for (const stacked of [false, true]) {
+    const ui = await fixture({stacked});
+    ui.scroll(3450);
+    assert.equal(ui.run('state.beat.key'), 'AC:1');
+    ui.scroll(9000);
+    assert.equal(ui.document.body.dataset.readingChapter, stacked ? 'set' : undefined);
+  }
 });
 
-
-test('a two-column tablet uses the text reading line while keeping the separate purchase reading gate', async () => {
-  const ui = await fixture({stacked: true, productStacked: false});
-  ui.scroll(3290);
-  assert.equal(ui.run('state.beat.key'), 'AC:0', 'The next benefit has not reached the middle of its text column');
-  ui.scroll(3390);
-  assert.equal(ui.run('state.beat.key'), 'AC:1');
-  ui.scroll(9000);
-  assert.equal(ui.document.body.dataset.readingChapter, 'set', 'The wider purchase gate remains independent');
+test('many scroll events queue one update; the winning frame or timer cancels the other and stale callbacks do nothing', async () => {
+  const ui = await fixture();
+  ui.run('globalThis.__updates = 0; onScroll = (original => () => { globalThis.__updates++; original(); })(onScroll)');
+  const scrollTimers = () => [...ui.timers.values()].filter(timer => timer.delay === 60);
+  for (let i = 0; i < 100; i++) ui.run('requestScroll()');
+  assert.equal(scrollTimers().length, 1);
+  assert.equal(ui.animationFrames.size, 1);
+  const [timerId, timer] = [...ui.timers.entries()].find(([, t]) => t.delay === 60);
+  ui.timers.delete(timerId);
+  timer.fn(); // A throttled view: the timer wins.
+  assert.equal(ui.run('__updates'), 1);
+  assert.equal(ui.animationFrames.size, 0, 'The losing frame is cancelled, not left to pile up');
+  ui.run('requestScroll()');
+  const [frameId, frame] = [...ui.animationFrames.entries()][0];
+  ui.animationFrames.delete(frameId);
+  timer.fn(); // A stale timer from the previous generation must not consume the new request.
+  assert.equal(ui.run('__updates'), 1);
+  frame();
+  assert.equal(ui.run('__updates'), 2);
+  assert.equal(scrollTimers().length, 0, 'The losing timer is cleared');
 });
 
 test('product anchor clearance activates the destination and survives late layout or context changes', async () => {

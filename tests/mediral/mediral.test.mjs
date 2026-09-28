@@ -253,6 +253,79 @@ test('ambient media markup has no player controls, duration or automatic loop', 
   assert.doesNotMatch(markup, /data-film-toggle|data-film-duration|data-film-status|mr-film__controls/, 'Do not leave empty, hidden or visible player UI in the buying flow');
 });
 
+test('the maker and a user frame the routine as attributed quotes, never as product steps or reviews', () => {
+  const {founder, relay} = routine();
+  const source = html();
+  assert.equal(founder.status, 'personal-statement');
+  assert.deepEqual(founder.quote, ['พี่ตั้งใจทำ', 'ของที่ดีที่สุด', 'ให้ทุกคนเลย'], 'An exact excerpt of the owner’s message');
+  assert.match(founder.credit, /เจ้าของ Mediral/);
+  assert.doesNotMatch(JSON.stringify(founder), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ/, 'No credential, founder bio, factory or lab claim; the exact excerpt is pinned above');
+  assert.equal(relay.status, 'personal-experience');
+  assert.equal(relay.quote, 'ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ');
+  assert.equal(relay.credit, 'Teem · ผู้จัดทำ myClover');
+  assert.match(relay.note, /ไม่ได้ระบุชิ้น/);
+  assert.match(relay.note, /ไม่ใช่ผลของทุกคน/);
+  for (const id of ['founder', 'relay']) {
+    const tag = source.match(new RegExp(`<section\\b[^>]*id="${id}"[^>]*>`))?.[0] || '';
+    assert.ok(tag, `${id} is in the static page`);
+    assert.doesNotMatch(tag, /data-step=/, `${id} must not shift product progress`);
+    assert.match(tag, /mr-reading-chapter/, `${id} pauses the scene like any reading chapter`);
+  }
+  for (const line of founder.quote) assert.ok(source.includes(line));
+  assert.ok(source.includes(relay.quote) && source.includes(relay.credit) && source.includes(relay.note));
+  assert.doesNotMatch(source, /[★⭐]|\b\d(?:\.\d)?\s*\/\s*5\b|รีวิวจากลูกค้า/, 'No stars, scores or invented customer reviews');
+});
+
+test('the opening is one complete ad: kicker, the five labelled packs and a route to the offer', () => {
+  const source = html();
+  const hero = source.slice(source.indexOf('id="routine"'), source.indexOf('id="founder"'));
+  assert.match(hero, /MEDIRAL · ชุดดูแลผิว 5 ชิ้น/);
+  assert.match(hero, /<h1\b[^>]*>[\s\S]*หนึ่งหน้า[\s\S]*ห้าเรื่อง[\s\S]*<\/h1>/);
+  const items = [...hero.matchAll(/<a class="mr-lineup__item" href="#step-([A-Z]{2})"[^>]*><span class="mr-lineup__label">([^<]+)<\/span>/g)];
+  assert.deepEqual(items.map(m => m[1]), routine().steps.map(step => step.id));
+  assert.deepEqual(items.map(m => m[2]), routine().steps.map(step => step.hero_label), 'Each everyday concern sits on its own pack');
+  assert.match(hero, /href="#set"[^>]*data-cta="offer"/);
+  assert.match(hero, /data-slot="hero-offer"/);
+  assert.match(hero, /ไม่จำเป็นต้องใช้ครบ/);
+});
+
+test('each product owns one grammar and short ad copy; the sunscreen caveat is said once, near its pack', () => {
+  const {steps} = routine();
+  assert.deepEqual(steps.map(step => step.scene.grammar), ['erase', 'drop', 'reveal', 'glide', 'settle']);
+  for (const step of steps) {
+    assert.ok(step.scene.headline.length <= 2 && step.scene.headline.every(line => line.length <= 18), `${step.id}: a two-line ad headline`);
+    assert.ok(step.scene.problem && step.scene.role && step.scene.proof, `${step.id}: moment, role and proof`);
+    assert.ok(step.hero_label.length <= 8);
+  }
+  const ac = steps.find(step => step.id === 'AC').scene.fact;
+  assert.equal(ac.status, 'general-fact');
+  assert.match(ac.text, /สิวมีหลายปัจจัย/);
+  assert.ok(ac.links.every(link => /^https:\/\/(www\.nhs\.uk|www\.niams\.nih\.gov)\//.test(link.href)));
+  const su = steps.find(step => step.id === 'SU');
+  const said = [su.scene.proof, su.scene.pack_note, su.selling.source, su.scene.role].join(' ');
+  assert.equal((said.match(/SPF/g) || []).length, 1, 'One short SPF/PA caveat on the scene; the full note stays in details');
+  assert.match(su.scene.pack_note, /AI/);
+  assert.match(su.visible_note, /AI/, 'The full lettering note is kept for the details drawer');
+  const cl = steps.find(step => step.id === 'CL');
+  assert.doesNotMatch(JSON.stringify(cl.scene), /ชบา|ลิลลี่|SLS|80 ?ml|ดีท็อกซ์|ไม่แห้ง/, 'No old rose-pack formula or claims');
+});
+
+test('experience imagery ships as final WebP only, and every stylesheet image resolves locally', () => {
+  const dir = join(site, 'assets/experience');
+  const files = readdirSync(dir);
+  assert.deepEqual(files.sort(), ['p0-1-stage-tall.webp', 'p0-1-stage-wide.webp', 'p0-2-drop-amber.webp', 'p0-2-drop-clear.webp', 'p0-3-foam-band.webp']);
+  const css = read(join(site, 'mediral.css'));
+  const refs = [...css.matchAll(/url\(([^)]+)\)/g)].map(m => m[1].replace(/["']/g, ''));
+  assert.ok(refs.length >= 3);
+  for (const ref of refs) {
+    const path = localReference(ref, join(site, 'mediral.css'));
+    assertFile(path, `CSS ${ref}`);
+    assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP', `${ref} is WebP`);
+  }
+  const code = read(join(site, 'js/main.js'));
+  for (const name of code.matchAll(/experience\(['`]([^'`$]+\.webp)['`]\)/g)) assert.ok(files.includes(name[1]), name[1]);
+});
+
 test('internal manifests and unsoftened drafts stay out of git', () => {
   const ignore = read(join(root, '.gitignore')).split('\n').map(l => l.trim());
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
