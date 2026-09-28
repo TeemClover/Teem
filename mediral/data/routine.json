@@ -55,49 +55,114 @@
         "เย็น"
       ],
       "ingredients_status": "brand-marketing-list",
-      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก และไม่บอกปริมาณ",
+      "ingredients_note": "ชื่อและบทบาทที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลากหรือปริมาณจริง ภาพเจลแทนเรื่องความชุ่มชื้น ไม่ใช่ภาพโมเลกุลหรือเนื้อเซรั่มจริง",
       "featured": [
         {
-          "name": "ทีทรี",
-          "image": "assets/botanicals/tea-tree-leaves.webp"
+          "name": "น้ำมันใบทีทรี",
+          "image": "assets/botanicals/tea-tree-leaves.webp",
+          "benefit": "ปลอบประโลมผิวที่มีแนวโน้มเป็นสิวง่าย และช่วยให้ผิวดูสมดุล",
+          "benefit_source": "สื่อ Mediral: 3 สารสกัดในเซรั่มขวดขาว",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "เปลือกมังคุด",
-          "image": "assets/botanicals/mangosteen-peel.webp"
+          "name": "สารสกัดเปลือกมังคุด",
+          "image": "assets/botanicals/mangosteen-peel.webp",
+          "benefit": "ปลอบประโลมผิว และช่วยให้ผิวที่ดูหมองคล้ำดูสุขภาพดี",
+          "benefit_source": "สื่อ Mediral: 3 สารสกัดในเซรั่มขวดขาว",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "ดอกฝ้าย",
-          "image": "assets/botanicals/cotton-flower.webp"
+          "name": "ไฮยา (HA)",
+          "image": "assets/materials/hydration-clear-gel.webp",
+          "benefit": "เติมความชุ่มชื้นให้ผิว เป็นบทบาทที่แบรนด์เล่าไว้ในเซรั่มขวดขาว",
+          "benefit_source": "สื่อ Mediral: Deep Hydration ของเซรั่มขวดขาว",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "เกรปฟรุต",
-          "image": "assets/botanicals/grapefruit-section.webp"
-        },
-        {
-          "name": "วิชฮาเซล",
-          "image": "assets/botanicals/witch-hazel-flower.webp"
+          "name": "สารสกัดเกรปฟรุต",
+          "image": "assets/botanicals/grapefruit-section.webp",
+          "benefit": "ช่วยให้ผิวดูกระจ่างใสและรู้สึกสดชื่น",
+          "benefit_source": "สื่อ Mediral: 3 สารสกัดในเซรั่มขวดขาว",
+          "benefit_status": "brand-claim"
         }
       ],
       "ingredients": [
         {
-          "name": "ว่านหางจระเข้",
-          "image": "assets/botanicals/aloe-cut-leaf.webp"
+          "name": "สารสกัดวิชฮาเซล",
+          "image": "assets/botanicals/witch-hazel-flower.webp",
+          "benefit": "แบรนด์จัดร่วมกับซิงค์ พีซีเอและเกรปฟรุต ในกลุ่มดูแลสมดุลความมัน",
+          "benefit_source": "สื่อ Mediral: 4 มิติการดูแลผิวของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "น้ำดอกกุหลาบ",
-          "image": "assets/botanicals/rose-flower-petals.webp"
+          "name": "ซิงค์ พีซีเอ",
+          "image": null,
+          "benefit": "แบรนด์จัดร่วมกับวิชฮาเซลและเกรปฟรุต ในกลุ่มดูแลสมดุลความมัน",
+          "benefit_source": "สื่อ Mediral: 4 มิติการดูแลผิวของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "จมูกข้าวญี่ปุ่น",
-          "image": "assets/botanicals/rice-grain-panicle.webp"
+          "name": "ทรีฮาโลส",
+          "image": null,
+          "benefit": "แบรนด์จัดร่วมกับไฮยาและโซเดียม พีซีเอ ในกลุ่มเติมและกักเก็บความชุ่มชื้น",
+          "benefit_source": "สื่อ Mediral: 4 มิติการดูแลผิวของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "โจโจ้บา",
-          "image": "assets/botanicals/jojoba-seeds.webp"
+          "name": "โซเดียม พีซีเอ",
+          "image": null,
+          "benefit": "แบรนด์จัดร่วมกับไฮยาและทรีฮาโลส ในกลุ่มเติมและกักเก็บความชุ่มชื้น",
+          "benefit_source": "สื่อ Mediral: 4 มิติการดูแลผิวของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "สาหร่ายทะเล",
-          "image": "assets/botanicals/seaweed-generic.webp"
+          "name": "สารสกัดว่านหางจระเข้",
+          "image": "assets/botanicals/aloe-cut-leaf.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มดูแลสมดุลผิว โดยไม่ได้แยกบทบาทรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดน้ำดอกกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มเติมความชุ่มชื้น โดยไม่ได้แยกบทบาทรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "วิตามินจากจมูกข้าวญี่ปุ่น",
+          "image": "assets/botanicals/rice-grain-panicle.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มดูแลความกระจ่างใส โดยไม่ได้แยกบทบาทรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "น้ำมันโจโจ้บา",
+          "image": "assets/botanicals/jojoba-seeds.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มดูแลสมดุลผิว โดยไม่ได้แยกบทบาทรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดสาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp",
+          "benefit": "สื่อแบรนด์ระบุสาหร่ายทะเลน้ำลึก แต่ไม่ได้บอกชนิดหรือบทบาทเฉพาะ",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "ดอกฝ้าย",
+          "image": "assets/botanicals/cotton-flower.webp",
+          "benefit": "หนึ่งในชื่อวัตถุดิบจากพืชที่แบรนด์ระบุ โดยไม่ได้อธิบายผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "GO-VC อนุพันธ์วิตามินซี",
+          "image": null,
+          "benefit": "แบรนด์จัดไว้ในกลุ่มดูแลความกระจ่างใส โดยไม่ได้ระบุชนิดหรือปริมาณบนภาพ",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของเซรั่มขวดขาว",
+          "benefit_status": "identity-only"
         }
       ]
     },
@@ -122,49 +187,107 @@
         "เย็น"
       ],
       "ingredients_status": "brand-marketing-list",
-      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก และไม่บอกปริมาณ",
+      "ingredients_note": "ชื่อและบทบาทที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลากและไม่บอกปริมาณ ภาพพืชและเจลเป็นภาพประกอบ ไม่ใช่วัตถุดิบหรือเนื้อเซรั่มจริง",
       "featured": [
         {
-          "name": "แบร์เบอร์รี่",
-          "image": "assets/botanicals/bearberry-sprig.webp"
+          "name": "สารสกัดแบร์เบอร์รี่",
+          "image": "assets/botanicals/bearberry-sprig.webp",
+          "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "ชาเขียว",
-          "image": "assets/botanicals/green-tea-shoot.webp"
-        },
-        {
-          "name": "ชะเอมเทศ",
-          "image": "assets/botanicals/licorice-root.webp"
-        },
-        {
-          "name": "ไวท์มัลเบอร์รี่",
-          "image": "assets/botanicals/white-mulberry-fruit.webp"
-        },
-        {
-          "name": "ทับทิม",
-          "image": "assets/botanicals/pomegranate-arils.webp"
+          "name": "สารสกัดชะเอมเทศ",
+          "image": "assets/botanicals/licorice-root.webp",
+          "benefit": "ปลอบประโลมผิว พร้อมดูแลรอยดำและสีผิวให้ดูสม่ำเสมอ",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "brand-claim"
         }
       ],
       "ingredients": [
         {
-          "name": "วิชฮาเซล",
-          "image": "assets/botanicals/witch-hazel-flower.webp"
+          "name": "โพรไบโอติก",
+          "image": null,
+          "benefit": "ดูแลสมดุลผิวและเกราะปกป้องผิว ตามบทบาทที่แบรนด์ระบุ",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "โรสฮิป",
-          "image": "assets/botanicals/rosehip-fruit.webp"
+          "name": "อนุพันธ์วิตามินซี",
+          "image": null,
+          "benefit": "ช่วยให้ผิวดูกระจ่างใสและลดเลือนความหมองคล้ำ",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "โกจิเบอร์รี่",
-          "image": "assets/botanicals/goji-fruit.webp"
+          "name": "บากูชิล ตามชื่อในสื่อแบรนด์",
+          "image": null,
+          "benefit": "ช่วยดูแลผิวให้เรียบเนียน ตามคำอธิบายของแบรนด์",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "น้ำกุหลาบ",
-          "image": "assets/botanicals/rose-flower-petals.webp"
+          "name": "สารสกัดไวท์มัลเบอร์รี่",
+          "image": "assets/botanicals/white-mulberry-fruit.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "สาหร่ายทะเล",
-          "image": "assets/botanicals/seaweed-generic.webp"
+          "name": "สารสกัดชาเขียว",
+          "image": "assets/botanicals/green-tea-shoot.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดทับทิม",
+          "image": "assets/botanicals/pomegranate-arils.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดวิชฮาเซล",
+          "image": "assets/botanicals/witch-hazel-flower.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "โรสฮิปออย",
+          "image": "assets/botanicals/rosehip-fruit.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดโกจิเบอร์รี่",
+          "image": "assets/botanicals/goji-fruit.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "น้ำสกัดกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp",
+          "benefit": "สื่อระบุน้ำสกัดกุหลาบบัลแกเรีย โดยไม่ได้แยกบทบาทรายตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดสาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp",
+          "benefit": "สื่อระบุสาหร่ายทะเลน้ำลึก โดยไม่ได้บอกชนิดหรือบทบาทเฉพาะ",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "โซเดียมไฮยาลูรอเนต",
+          "image": "assets/materials/hydration-clear-gel.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของเซรั่มนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: ส่วนผสมของเซรั่มแบร์เบอร์รี่",
+          "benefit_status": "identity-only"
         }
       ]
     },
@@ -189,33 +312,107 @@
         "เช้า"
       ],
       "ingredients_status": "brand-marketing-list",
-      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก ภาพผงเป็นภาพนามธรรม ไม่ใช่ภาพสารกันแดดจริง",
+      "ingredients_note": "ชื่อและบทบาทที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก ภาพเจลและพืชเป็นภาพประกอบ ไม่ยืนยันเนื้อสาร ชนิดโมเลกุล หรือระดับการปกป้อง",
       "featured": [
         {
-          "name": "ทานตะวัน",
-          "image": "assets/botanicals/sunflower-seed-oil.webp"
+          "name": "ไฮยา (HA)",
+          "image": "assets/materials/hydration-clear-gel.webp",
+          "benefit": "เติมความชุ่มชื้นให้ผิว เป็นบทบาทบำรุงที่แบรนด์เล่าคู่กับกันแดด",
+          "benefit_source": "สื่อ Mediral: Deep Hydration ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
         },
         {
-          "name": "แอปริคอท",
-          "image": "assets/botanicals/apricot-half.webp"
+          "name": "น้ำมันดอกทานตะวัน",
+          "image": "assets/botanicals/sunflower-seed-oil.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของกันแดดนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: รายการส่วนผสมของเซรั่มกันแดด",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "สาหร่ายทะเล",
-          "image": "assets/botanicals/seaweed-generic.webp"
+          "name": "สารสกัดแอปริคอท",
+          "image": "assets/botanicals/apricot-half.webp",
+          "benefit": "อยู่ในรายชื่อส่วนผสมของกันแดดนี้ สื่อไม่ได้แยกประโยชน์เฉพาะตัว",
+          "benefit_source": "สื่อ Mediral: รายการส่วนผสมของเซรั่มกันแดด",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดสาหร่ายทะเล",
+          "image": "assets/botanicals/seaweed-generic.webp",
+          "benefit": "สื่อระบุสาหร่ายทะเลน้ำลึก โดยไม่ได้ยืนยันชนิดของสาหร่าย",
+          "benefit_source": "สื่อ Mediral: รายการส่วนผสมของเซรั่มกันแดด",
+          "benefit_status": "identity-only"
         }
       ],
       "ingredients": [
         {
           "name": "Zinc Oxide · Titanium Dioxide",
-          "image": null
+          "image": null,
+          "benefit": "สื่อแบรนด์ระบุสารกรองรังสีจากแร่ธาตุ ให้ดูค่าการปกป้องบนฉลากของหลอดจริง",
+          "benefit_source": "สื่อ Mediral: Deep Hydration ของเซรั่มกันแดด",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "Giga White® (สื่อแบรนด์ระบุกลุ่มพืชจากเทือกเขาแอลป์)",
-          "image": null
+          "name": "Giga White®",
+          "image": null,
+          "benefit": "แบรนด์อธิบายว่ากลุ่มพืชนี้ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
         },
         {
           "name": "โซเดียมไฮยาลูรอเนต",
-          "image": "assets/materials/hydration-clear-gel.webp"
+          "image": "assets/materials/hydration-clear-gel.webp",
+          "benefit": "เป็นชื่อที่พบในภาพรายการส่วนผสม แต่ยังไม่มีรายละเอียดชนิดหรือขนาดโมเลกุล",
+          "benefit_source": "สื่อ Mediral: รายการส่วนผสมของเซรั่มกันแดด",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดมาลโลว์",
+          "image": null,
+          "benefit": "ปลอบประโลมและเติมความชุ่มชื้นให้ผิว",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดเปปเปอร์มินต์",
+          "image": null,
+          "benefit": "ช่วยให้ผิวรู้สึกสดชื่นและสบายผิว",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดพริมูลา",
+          "image": null,
+          "benefit": "ดูแลผิวให้เรียบเนียนและดูสุขภาพดี",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดอัลเคมิลลา",
+          "image": null,
+          "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดเวโรนิก้า",
+          "image": null,
+          "benefit": "ดูแลผิวให้ดูกระจ่างใสอย่างเป็นธรรมชาติ",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดเมลิสสา",
+          "image": null,
+          "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
+        },
+        {
+          "name": "สารสกัดยาร์โรว์",
+          "image": null,
+          "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
+          "benefit_source": "สื่อ Mediral: 7 พืชในกลุ่ม Giga White ของเซรั่มกันแดด",
+          "benefit_status": "brand-claim"
         }
       ],
       "visible_note": "ตัวเลขบนหลอดในภาพเป็นตัวอักษรที่ AI วาดใหม่ ค่า SPF/PA ให้ดูบนฉลากของหลอดที่ได้รับ"
@@ -241,45 +438,79 @@
         "เมื่อแต่งหน้า"
       ],
       "ingredients_status": "brand-marketing-list",
-      "ingredients_note": "ชื่อที่สื่อแบรนด์ยกมาเล่า ไม่ใช่ส่วนผสมครบตามฉลาก",
+      "ingredients_note": "สื่อแบรนด์อธิบายบทบาทเป็นกลุ่ม ไม่ได้แยกผลของแต่ละตัว รายการนี้ไม่ใช่ส่วนผสมครบตามฉลาก ภาพเจล พืช และผลไม้เป็นภาพประกอบ",
       "featured": [
         {
-          "name": "รำข้าว",
-          "image": "assets/botanicals/rice-grain-panicle.webp"
+          "name": "สารสกัดแป้งรำข้าว",
+          "image": "assets/botanicals/rice-grain-panicle.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มแป้งและน้ำมันจากธรรมชาติ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "ดอกกุหลาบ",
-          "image": "assets/botanicals/rose-flower-petals.webp"
+          "name": "โซเดียมไฮยาลูรอเนต",
+          "image": "assets/materials/hydration-clear-gel.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มเติมความชุ่มชื้นและปลอบประโลมผิว โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "ดอกฝ้าย",
-          "image": "assets/botanicals/cotton-flower.webp"
+          "name": "สารสกัดว่านหางจระเข้",
+          "image": "assets/botanicals/aloe-cut-leaf.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มเติมความชุ่มชื้นและปลอบประโลมผิว โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "โรสฮิป",
-          "image": "assets/botanicals/rosehip-fruit.webp"
+          "name": "สารสกัดผลโรสฮิป",
+          "image": "assets/botanicals/rosehip-fruit.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มเติมความชุ่มชื้นและปลอบประโลมผิว โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "มะกอก",
-          "image": "assets/botanicals/olive-oil-fruit.webp"
+          "name": "น้ำมันมะกอก",
+          "image": "assets/botanicals/olive-oil-fruit.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มแป้งและน้ำมันจากธรรมชาติ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         }
       ],
       "ingredients": [
         {
-          "name": "ว่านหางจระเข้",
-          "image": "assets/botanicals/aloe-cut-leaf.webp"
+          "name": "ดอกกุหลาบ",
+          "image": "assets/botanicals/rose-flower-petals.webp",
+          "benefit": "หนึ่งในชื่อวัตถุดิบจากพืชและดอกไม้ที่แบรนด์ระบุ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "ทานตะวัน",
-          "image": "assets/botanicals/sunflower-seed-oil.webp"
+          "name": "ดอกฝ้าย",
+          "image": "assets/botanicals/cotton-flower.webp",
+          "benefit": "หนึ่งในชื่อวัตถุดิบจากพืชและดอกไม้ที่แบรนด์ระบุ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "ข้าวโพด",
-          "image": null
+          "name": "น้ำมันเมล็ดทานตะวัน",
+          "image": "assets/botanicals/sunflower-seed-oil.webp",
+          "benefit": "แบรนด์จัดไว้ในกลุ่มแป้งและน้ำมันจากธรรมชาติ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         },
         {
-          "name": "มันสำปะหลัง",
-          "image": null
+          "name": "สารสกัดแป้งข้าวโพด",
+          "image": null,
+          "benefit": "แบรนด์จัดไว้ในกลุ่มแป้งและน้ำมันจากธรรมชาติ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
+        },
+        {
+          "name": "สารสกัดแป้งมันสำปะหลัง",
+          "image": null,
+          "benefit": "แบรนด์จัดไว้ในกลุ่มแป้งและน้ำมันจากธรรมชาติ โดยไม่ได้แยกผลรายตัว",
+          "benefit_source": "สื่อ Mediral: กลุ่มส่วนผสมของแป้งพัฟตลับเขียว",
+          "benefit_status": "identity-only"
         }
       ]
     }

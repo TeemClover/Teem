@@ -91,6 +91,19 @@ test('the mousse uses the current clover-reference draft without inheriting the 
   }
 });
 
+test('ingredient explanations retain their source and separate individual from group-only claims', () => {
+  for (const step of routine().steps) {
+    for (const ingredient of [...step.featured, ...step.ingredients]) {
+      assert.ok(ingredient.benefit?.trim(), `${step.id}: ${ingredient.name} needs a readable role or limitation`);
+      assert.ok(ingredient.benefit_source?.trim(), `${step.id}: ${ingredient.name} needs attribution`);
+      assert.ok(['brand-claim', 'identity-only'].includes(ingredient.benefit_status));
+    }
+    for (const ingredient of step.featured) assert.ok(ingredient.image, 'A focused material must have an available illustration');
+  }
+  const powder = routine().steps.find(s => s.id === 'PO');
+  assert.ok(powder.featured.every(i => i.benefit_status === 'identity-only'), 'Group-level powder copy is not individual efficacy evidence');
+});
+
 test('the sunscreen shows the softened web draft, with its lettering caveat in view', () => {
   const su = routine().steps.find(s => s.id === 'SU');
   assert.equal(su.image, 'assets/pack/su-front-web.webp', 'The unsoftened draft makes AI-lettered PA marks legible');

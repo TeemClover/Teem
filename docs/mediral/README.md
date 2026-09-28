@@ -2,7 +2,7 @@
 
 The Mediral routine page on myClover tells the five-piece routine as one continuous scroll story: mousse → white serum → yellow-green serum → sunscreen → powder puff.
 
-The opening shows the clover-label mousse bottle from the first frame, with water and foam around it. The following steps move from the ingredients the brand names, through a glass funnel and one drop, to the product revealed. The scene uses large products, botanical depth and a moving camera in a forest/chartreuse editorial layout. The story ends with the full set of five, which is the main call to action.
+The opening shows all five products together and explains the roles behind the routine before entering individual product chapters. The mousse opens the detailed sequence. Ingredient controls explain each selected material’s attributed role and highlight it in the 3D lab; gathering through glassware leads to the product reveal. The full set and purchase checks close the story.
 
 Direction and evidence rules are in [STORYBOARD.md](STORYBOARD.md). The first media request is [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -20,7 +20,7 @@ Test query parameters (QA only):
 
 | Parameter | What it does |
 |---|---|
-| `?u=0..6` | Pins the scene at a story position. `0–1` is the mousse, `1–5` are the next four steps, `5–6` is the set. |
+| `?u=-1..6` | Pins the scene at a story position. `-1–0` is the routine overview, `0–1` is the mousse, `1–5` are the next four steps, `5–6` is the set. |
 | `?today=YYYY-MM-DD` | Localhost only: previews both boundaries of the poster offer. Public URLs ignore this override. |
 
 Contract and controller behavior checks:
@@ -40,8 +40,8 @@ node --test tests/mediral/*.test.mjs
 | `mediral/assets/` | Pack AI drafts, botanical and material illustrations (prepared by GPT; see `FIVE_STEP_ASSETS.json`). |
 | `mediral/vendor/` | Local three.js subset, copied from Homechew. |
 
-**`story.js` — `createStory({canvas, steps, asset, reduced, onContextChange})`** resolves to `{setProgress(u), setSelection(ids), setBand({left, right}), setReducedMotion(bool), pause(), resume(), dispose(), state}`. `setBand` gives the landscape set view the free screen band (0..1) between the set card and the rail, measured by `main.js`. CSS and scene stack at widths up to 1100 px.
-- The scene is a pure function of `u` plus idle time.
+**`story.js` — `createStory({canvas, steps, asset, reduced, onContextChange})`** resolves to `{setProgress(u), setIngredient(indexOrNull), setSelection(ids), setBand({left, right}), setReducedMotion(bool), pause(), resume(), dispose(), state}`. `setBand` gives the landscape set view the free screen band (0..1) between the set card and the rail, measured by `main.js`. CSS and scene stack at widths up to 1100 px.
+- The scene is determined by `u`, the focused ingredient and idle time. The overview is independent of the saved shopping list; selecting an ingredient does not alter purchase selection.
 - It rejects if WebGL or the pack images fail; the page then shows static stills.
 - `onContextChange('lost' | 'restored')` switches to stills and back while retaining the reading position. GPU environment lighting is rebuilt before restoring the scene. If rebuilding fails, stills remain visible.
 - Reduced motion can change while the page is open. Visibility changes pause/resume the renderer; a single animation loop is retained.
@@ -57,7 +57,7 @@ node --test tests/mediral/*.test.mjs
 ## Content that must stay explicit
 
 **Mousse**
-- The bottle illustration is based on the clover-label pack in the supplied five-piece poster, generated with imagegen and labelled as an AI draft. It is visible before and after WebGL loads, in the static fallback, the set and the PNG.
+- The bottle illustration is based on the clover-label pack in the supplied five-piece poster, generated with imagegen and labelled as an AI draft. It is visible in the opening set and mousse chapter, before and after WebGL loads, in the static fallback and the PNG.
 - A verified original packshot is still requested. No formula or size is inferred from the illustration; both ingredient arrays are empty and size is null.
 - The old gold-rose draft and its ingredient list are not used.
 
@@ -108,3 +108,13 @@ node --test tests/mediral/*.test.mjs
 - Reduced-motion mode and blocked scene-module fallback both retain the mousse image. The five-piece PNG was downloaded and opened to verify the new bottle.
 - All 31 Mediral contract, controller and scene-lifecycle tests passed after the visual changes. A separate review caught the loading-poster chapter leak, which was fixed before publication.
 - The upgrade adds one 56 KB WebP. No new video service or third-party runtime is used. The Affiliate link and mousse ingredient/size verification remain pending.
+
+## Verification record — 28 Sep 2026 routine-first lab
+
+- The opening presents all five pieces and the reason for each step before individual products. Its composition remains complete when a reader removes a piece from the optional saved list.
+- Featured ingredient buttons reveal an attributed role and focus the matching illustration. Scrolling resumes the ingredient sequence; returning from the product reveal to a selected ingredient leaves the saved list unchanged. Other source-listed ingredients have explanations inside product details; these entries are not a claim about the number of distinct actives in a formula.
+- Browser checks at 1280×720, 1024×768, 390×844 and 360×640 covered the overview, ingredient controls and the glass gathering scene. The tablet overview includes its independent-site notice; short phone chapters use normal document flow so details are not trapped in a nested panel.
+- Reduced motion retains a single five-piece composition. Blocking the scene module renders five loaded static packs and working ingredient explanations. Removing the powder hides the fixed bundle price while the opening retains all five products.
+- Reloading a dynamic chapter link lands in the correct chapter. Initial anchor alignment handles late document/font layout and cancels when the reader interacts or changes the hash. Controller tests cover these races and cleanup.
+- All 39 Mediral contract, controller and scene-lifecycle tests passed. The lab is explicitly illustrative; it does not depict verified manufacturing or test results. No additional media or third-party runtime was introduced.
+- Production verification is performed after pushing this revision; the Affiliate link, verified packshots and current mousse formula remain pending.

@@ -17,11 +17,11 @@
   </script>
   <script type="module" src="js/main.js"></script>
 </head>
-<body data-step="CL">
+<body data-step="routine">
   <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>
 
   <header class="mr-header">
-    <a class="mr-brand" href="#step-CL" aria-label="กลับขึ้นด้านบน">
+    <a class="mr-brand" href="#routine" aria-label="กลับไปดูภาพรวมรูทีน">
       <span class="mr-brand__house">myClover</span>
       <span class="mr-brand__sep" aria-hidden="true">·</span>
       <span class="mr-brand__room">Mediral</span>
@@ -36,29 +36,57 @@
   <!-- One fixed stage under the text. The page stays complete when WebGL never loads. -->
   <div class="mr-stage" id="stage" aria-hidden="true">
     <div class="mr-stage__sky"></div>
-    <p class="mr-stage__word" data-slot="word">CLEANSE</p>
-    <img class="mr-stage__poster" src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="" fetchpriority="high" decoding="async">
+    <p class="mr-stage__word" data-slot="word">ROUTINE</p>
+    <div class="mr-stage__poster mr-stage__poster--routine">
+      <img class="mr-stage__pack mr-stage__pack--cl" src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="" fetchpriority="high" decoding="async">
+      <img class="mr-stage__pack mr-stage__pack--ac" src="assets/pack/ac-front.webp" width="1024" height="1536" alt="" decoding="async">
+      <img class="mr-stage__pack mr-stage__pack--br" src="assets/pack/br-front.webp" width="1024" height="1536" alt="" decoding="async">
+      <img class="mr-stage__pack mr-stage__pack--su" src="assets/pack/su-front-web.webp" width="1024" height="1536" alt="" decoding="async">
+      <img class="mr-stage__pack mr-stage__pack--po" src="assets/pack/po-closed.webp" width="1024" height="1536" alt="" decoding="async">
+    </div>
     <canvas class="mr-canvas" id="scene"></canvas>
     <p class="mr-stage__note">ภาพแพ็กและพืช: ภาพประกอบ AI · ดูที่มาในรายละเอียดแต่ละขั้น</p>
     <span class="mr-scroll-cue" aria-hidden="true"><span>เลื่อนเพื่อสำรวจ</span><i>↓</i></span>
   </div>
 
   <main id="main">
-    <!-- Step 1 opens on the mousse. Its current pack draft and source status come from routine data. -->
-    <section class="mr-step mr-step--hero" id="step-CL" data-step="CL" data-index="0" aria-labelledby="hero-title">
+    <!-- Start with the customer's routine, then let them inspect one role at a time. -->
+    <section class="mr-routine" id="routine" data-chapter="routine" aria-labelledby="routine-title">
+      <div class="mr-routine__sticky">
+        <div class="mr-routine__copy">
+          <p class="mr-kicker">จากโจทย์ผิว สู่บทบาทของแต่ละชิ้น</p>
+          <h1 class="mr-routine__title" id="routine-title"><span>ผิวมีหลายโจทย์</span><span>แต่ละขั้นจึงมีหน้าที่</span></h1>
+          <p class="mr-routine__lead">ล้างให้สะอาด ดูแลผิวที่เป็นสิวง่ายและความหมองคล้ำ กันแดด แล้วปิดท้ายเมื่ออยากแต่งผิว มาดูว่าแต่ละชิ้นแบ่งหน้าที่อย่างไร โดยไม่จำเป็นต้องใช้ครบทั้ง 5 ชิ้น</p>
+          <ol class="mr-routine__map" data-slot="routine-map">
+            <li><a href="#step-CL"><span>01</span><strong>ล้าง</strong><small>เริ่มจากทำความสะอาด</small></a></li>
+            <li><a href="#step-AC"><span>02</span><strong>เซรั่มขวดขาว</strong><small>ดูแลผิวที่เป็นสิวง่าย</small></a></li>
+            <li><a href="#step-BR"><span>03</span><strong>เซรั่มเหลืองเขียว</strong><small>ดูแลผิวที่ดูหมองคล้ำ</small></a></li>
+            <li><a href="#step-SU"><span>04</span><strong>กันแดด</strong><small>ขั้นปกป้องตอนเช้า</small></a></li>
+            <li><a href="#step-PO"><span>05</span><strong>แป้งพัฟ</strong><small>เมื่อต้องการแต่งผิว</small></a></li>
+          </ol>
+          <div class="mr-actions">
+            <a class="mr-btn" href="#step-CL" data-cta="enter-lab">เข้าแล็บดูทีละขั้น <span aria-hidden="true">↓</span></a>
+            <a class="mr-btn mr-btn--ghost" href="#set" data-cta="skip">ดูชุดและข้อเสนอ</a>
+          </div>
+          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
+        </div>
+        <div class="mr-routine__still" data-slot="routine-still">
+          <figure><img src="assets/pack/cl-clover-front-v2.webp" alt="ภาพแพ็ก AI ฉบับร่าง: มูสโฟมล้างหน้า" decoding="async"><figcaption>01 · ล้าง</figcaption></figure>
+          <figure><img src="assets/pack/ac-front.webp" alt="ภาพแพ็ก AI ฉบับร่าง: เซรั่มขวดขาว" decoding="async"><figcaption>02 · เซรั่มขวดขาว</figcaption></figure>
+          <figure><img src="assets/pack/br-front.webp" alt="ภาพแพ็ก AI ฉบับร่าง: เซรั่มขวดเหลืองเขียว" decoding="async"><figcaption>03 · เซรั่มเหลืองเขียว</figcaption></figure>
+          <figure><img src="assets/pack/su-front-web.webp" alt="ภาพแพ็ก AI ฉบับร่าง: เซรั่มกันแดด" decoding="async"><figcaption>04 · กันแดด</figcaption></figure>
+          <figure><img src="assets/pack/po-closed.webp" alt="ภาพแพ็ก AI ฉบับร่าง: แป้งพัฟ" decoding="async"><figcaption>05 · แต่งผิว</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- The first lab chapter keeps a static role explanation before data loads. -->
+    <section class="mr-step" id="step-CL" data-step="CL" data-index="0" aria-labelledby="hero-title">
       <div class="mr-step__sticky">
         <div class="mr-step__left">
           <p class="mr-step__code"><span class="mr-step__num">01</span><span class="mr-step__en">CLEANSE</span><span class="mr-step__verb">ล้าง · มูสโฟมล้างหน้า</span></p>
-          <h1 class="mr-step__title mr-step__title--hero" id="hero-title">
-            <span>เริ่มสะอาด</span>
-            <span>แล้วค่อยเติมการดูแลทีละขั้น</span>
-          </h1>
-          <p class="mr-step__lead">จากมูสล้างหน้า สู่เซรั่มสองขั้น กันแดด และแป้งพัฟ สำรวจสิ่งที่อยู่เบื้องหลัง Mediral ทั้ง 5 ชิ้น</p>
-          <div class="mr-actions">
-            <a class="mr-btn" href="#set" data-cta="skip">ดูชุด 5 ชิ้น</a>
-            <a class="mr-btn mr-btn--ghost" href="#step-AC" data-cta="next">สำรวจขั้นต่อไป <span aria-hidden="true">↓</span></a>
-          </div>
-          <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
+          <h2 class="mr-step__title" id="hero-title">เริ่มจากล้างหน้าให้สะอาด</h2>
+          <p class="mr-step__lead">มูสทำหน้าที่ล้างออก ก่อนเข้าสู่ขั้นบำรุง ปั๊มฟองลงฝ่ามือ ล้างหน้าแล้วล้างออก โดยยึดวิธีใช้บนฉลากขวดที่ได้รับ</p>
           <ol class="mr-phase" aria-hidden="true"><li>น้ำ</li><li>ฟอง</li><li>บทบาท</li></ol>
         </div>
         <div class="mr-step__right" data-slot="hero-body"></div>
@@ -103,6 +131,9 @@
     <p class="mr-footer__house">myClover · Mediral 5 Steps (ต้นแบบ)</p>
   </footer>
 
-  <noscript><p class="mr-noscript">หน้านี้ใช้ JavaScript เพื่อแสดงรูทีน รูทีน 5 ขั้นตามโปสเตอร์ชุดของแบรนด์: 1 มูสโฟมล้างหน้า · 2 เซรั่มขวดขาว · 3 เซรั่มขวดเหลืองเขียว · 4 เซรั่มกันแดด · 5 แป้งพัฟ</p></noscript>
+  <noscript>
+    <style>.mr-stage{position:absolute;height:100svh}.mr-stage__poster{display:none}.mr-routine{height:auto}.mr-routine__sticky{position:relative;height:auto;min-height:100svh;padding-top:132px}.mr-routine__still{display:grid}.mr-routine__map a{pointer-events:none}.mr-step{height:auto}.mr-step__sticky{position:relative;height:auto;min-height:0;padding-top:80px;padding-bottom:40px}.mr-set__inner{padding-top:60px}</style>
+    <p class="mr-noscript">เปิด JavaScript เพื่อสำรวจวัตถุดิบและบันทึกใบสรุป ภาพรวมข้างต้นแยกบทบาทของทั้ง 5 ชิ้นไว้แล้ว วิธีใช้และลำดับทาจริงให้ยึดฉลาก ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
+  </noscript>
 </body>
 </html>

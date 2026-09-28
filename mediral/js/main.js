@@ -16,7 +16,7 @@ const asset = path => new URL(path, base).href;
 root.classList.remove('mr-boot');
 root.classList.add('mr-js');
 
-const state = {data: null, selection: new Set(), u: 0, stage: null, active: -1, contextLost: false};
+const state = {data: null, selection: new Set(), u: -1, stage: null, active: null, contextLost: false, ingredientOverride: null, labKey: null};
 window.__mediral = state; // read-only QA hook
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -69,11 +69,26 @@ function stillFigure(step) {
   return `<figure class="mr-still">${pack}<div class="mr-still__bots">${bots}</div><figcaption>${esc(step.image_note)}</figcaption></figure>`;
 }
 
+function ingredientPanel(step) {
+  if (!step.featured?.length) return '';
+  const first = step.featured[0];
+  return `<section class="mr-lab" data-lab="${step.id}" aria-label="สำรวจส่วนผสม ${esc(step.nick)}">
+    <p class="mr-lab__eyebrow">เลือกส่วนผสม แล้วดูว่ามีบทบาทอะไร <span class="mr-tag">ภาพจำลอง</span></p>
+    <div class="mr-lab__tabs" aria-label="ส่วนผสมเด่น">${step.featured.map((f, i) => `<button type="button" data-ingredient-step="${step.id}" data-ingredient-index="${i}" aria-pressed="${i === 0}" aria-controls="lab-${step.id}">${esc(f.name)}</button>`).join('')}</div>
+    <div class="mr-lab__detail" id="lab-${step.id}">
+      <h3 class="mr-lab__name">${esc(first.name)}</h3>
+      <p class="mr-lab__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
+      <small class="mr-lab__source">${esc(ingredientSource(first))}</small>
+    </div>
+  </section>`;
+}
+function ingredientSource(ingredient) {
+  return `${ingredient.benefit_status === 'brand-claim' ? 'บทบาทตามสื่อแบรนด์' : 'ข้อมูลจากสื่อแบรนด์'}${ingredient.benefit_source ? ` · ${ingredient.benefit_source}` : ''}`;
+}
 function stepBody(step) {
-  const names = (step.featured || []).map(f => `<li>${esc(f.name)}</li>`).join('');
-  const more = (step.ingredients || []).map(f => esc(f.name)).join(' · ');
+  const more = (step.ingredients || []).map(f => `<li><strong>${esc(f.name)}</strong>${f.benefit ? ` — ${esc(f.benefit)}` : ''}</li>`).join('');
   return `
-    ${names ? `<p class="mr-step__label">วัตถุดิบที่แบรนด์เล่า <span class="mr-tag">ภาพประกอบ AI</span></p><ul class="mr-names">${names}</ul>` : ''}
+    ${ingredientPanel(step)}
     <details class="mr-more">
       <summary>วิธีใช้และรายละเอียดชิ้นนี้</summary>
       <dl class="mr-facts">
@@ -81,8 +96,8 @@ function stepBody(step) {
         <div><dt>เมื่อไร</dt><dd>${step.when.map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
         ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
       </dl>
+      ${more ? `<details class="mr-formula"><summary>ส่วนผสมอื่นที่แบรนด์เล่า (${step.ingredients.length})</summary><p>บทบาทต่อไปนี้เป็นคำอธิบายของแบรนด์ ไม่ใช่ผลทดสอบของสูตรสำเร็จ</p><ul>${more}</ul></details>` : ''}
       <ul>
-        ${more ? `<li>ชื่ออื่นที่สื่อแบรนด์ยกมา: ${more}</li>` : ''}
         <li>${esc(step.ingredients_note)}</li>
         <li class="${step.image_status === 'ai-draft' ? '' : 'is-warn'}">${esc(step.image_note)}</li>
         ${step.size_note ? `<li>${esc(step.size_note)}</li>` : ''}
@@ -92,8 +107,17 @@ function stepBody(step) {
     ${stillFigure(step)}`;
 }
 
+function renderRoutine() {
+  const reasons = {
+    CL: 'เริ่มจากการทำความสะอาด', AC: 'ดูแลผิวที่เป็นสิวง่าย',
+    BR: 'ดูแลผิวที่ดูหมองคล้ำ', SU: 'ขั้นกันแดดตอนเช้า', PO: 'ปิดท้ายเมื่ออยากแต่งผิว',
+  };
+  slot('routine-map').innerHTML = state.data.steps.map(step => `<li><a href="#step-${step.id}"><span>${pad(step.order)}</span><strong>${esc(step.verb)}</strong><small>${esc(reasons[step.id])}</small></a></li>`).join('');
+  slot('routine-still').innerHTML = state.data.steps.map(step => `<figure><img src="${asset(step.image)}" alt="${esc(step.nick)} — ภาพแพ็ก AI ร่าง" decoding="async"><figcaption>${esc(step.nick)}</figcaption></figure>`).join('');
+}
+
 function renderSteps() {
-  // Step 1 is the hero (static HTML, so the page opens on the mousse even before data); fill its details.
+  // The routine overview precedes the five steps; the first step keeps static HTML for resilience.
   const [first, ...rest] = state.data.steps;
   slot('hero-body').innerHTML = stepBody(first);
   slot('steps').innerHTML = rest.map(step => `
@@ -264,26 +288,26 @@ async function saveCard(button) {
 
 /* ---------- scroll → story progress ---------- */
 function sections() {
-  return [$('#step-CL'), ...$$('#story [data-step]'), $('#set')];
+  return [$('#routine'), $('#step-CL'), ...$$('#story [data-step]'), $('#set')];
 }
 function progress() {
   const vh = innerHeight;
   const list = sections();
-  let u = 0;
+  let u = -1;
   list.forEach((sec, i) => {
     const r = sec.getBoundingClientRect();
     const span = Math.max(1, sec.offsetHeight - vh);
     // Finish the visual phase without advancing the rail until the next section actually arrives.
     const end = i < list.length - 1 ? 0.9995 : 1;
     const t = Math.min(end, Math.max(0, -r.top / span));
-    if (r.top <= vh * 0.001 || i === 0) u = i + t;
+    if (r.top <= vh * 0.001 || i === 0) u = i - 1 + t;
   });
   return u;
 }
-// QA only: ?u=1.6 pins the story at a progress value (0..6) so a frame can be inspected without scrolling.
+// QA only: ?u=1.6 pins the story at a progress value (-1..6) so a frame can be inspected without scrolling.
 const pinnedU = (() => {
   const v = parseFloat(new URLSearchParams(location.search).get('u'));
-  return Number.isFinite(v) ? Math.min(6, Math.max(0, v)) : null;
+  return Number.isFinite(v) ? Math.min(6, Math.max(-1, v)) : null;
 })();
 
 function measureBand() {
@@ -295,6 +319,41 @@ function measureBand() {
   state.stage?.setBand({left, right});
 }
 
+function setIngredientDetail(step, index) {
+  const ingredient = step.featured[index];
+  const panel = $(`[data-lab="${step.id}"]`);
+  if (!panel || !ingredient) return;
+  $$('.mr-lab__tabs button', panel).forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+  $('.mr-lab__name', panel).textContent = ingredient.name;
+  $('.mr-lab__benefit', panel).textContent = ingredient.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ';
+  $('.mr-lab__source', panel).textContent = ingredientSource(ingredient);
+}
+function syncIngredient(i, t) {
+  const step = state.data.steps[i];
+  if (!step?.featured?.length) { state.stage?.setIngredient?.(null); return; }
+  const override = state.ingredientOverride;
+  if (override && (override.id !== step.id || Math.abs(scrollY - override.y) > 8)) state.ingredientOverride = null;
+  const index = state.ingredientOverride?.index ?? Math.min(step.featured.length - 1, Math.floor(Math.min(t, .359) / .36 * step.featured.length));
+  const key = `${step.id}:${index}`;
+  if (state.labKey !== key) { setIngredientDetail(step, index); state.labKey = key; }
+  state.stage?.setIngredient?.(t < .52 ? index : null);
+}
+function chooseIngredient(id, index) {
+  const step = byId(id);
+  if (!step || !Number.isInteger(index) || !step.featured[index]) return;
+  const section = $(`#step-${id}`);
+  const r = section.getBoundingClientRect();
+  const span = Math.max(1, section.offsetHeight - innerHeight);
+  // Selecting a material returns to its lab view without touching the saved shopping list.
+  if (state.active !== step.order - 1 || state.u % 1 >= .36) {
+    window.scrollTo({top: r.top + scrollY + span * .12, behavior: 'instant'});
+    onScroll();
+  }
+  state.ingredientOverride = {id, index, y: scrollY};
+  state.labKey = null;
+  onScroll();
+}
+
 function onScroll() {
   const u = pinnedU ?? progress();
   state.u = u;
@@ -302,12 +361,14 @@ function onScroll() {
   if (i !== state.active) {
     state.active = i;
     const step = state.data.steps[i];
-    document.body.dataset.step = step ? step.id : 'set';
+    document.body.dataset.step = i < 0 ? 'routine' : step ? step.id : 'set';
+    state.ingredientOverride = null;
+    state.labKey = null;
     // The large word behind the scene names the role (CLEANSE, TREAT · I …), as in the owner's references.
     const word = slot('word');
     word.classList.remove('is-in');
     void word.offsetWidth;
-    word.textContent = step ? step.verb_en : '5 STEPS';
+    word.textContent = i < 0 ? 'SKIN ROUTINE' : step ? step.verb_en : '5 STEPS';
     word.classList.add('is-in');
   }
   $$('[data-rail]').forEach((a, k) => {
@@ -318,14 +379,15 @@ function onScroll() {
   });
   // Phase dots inside the active step: origin → combine → role.
   const t = u - Math.floor(u);
-  const sec = sections()[i];
-  $$('.mr-phase li', sec).forEach((li, k) => li.classList.toggle('is-on', t >= [0, 0.3, 0.64][k]));
+  const sec = sections()[i + 1];
+  $$('.mr-phase li', sec).forEach((li, k) => li.classList.toggle('is-on', t >= (i === 0 ? [0, 0.3, 0.64] : [0, 0.38, 0.81])[k]));
+  syncIngredient(i, t);
   state.stage?.setProgress(u);
 }
 
 /* ---------- 3D (optional, lazy) ---------- */
 function preserveReadingPosition(update) {
-  const current = sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress())))];
+  const current = sections()[Math.max(0, Math.min(sections().length - 1, Math.floor(progress()) + 1))];
   const reading = scrollY > 10;
   const fraction = current
     ? Math.min(1, Math.max(0, -current.getBoundingClientRect().top / Math.max(1, current.offsetHeight - innerHeight)))
@@ -399,10 +461,56 @@ async function boot() {
   if (!res.ok) throw new Error(`routine.json ${res.status}`);
   state.data = await res.json();
   state.selection = new Set(state.data.steps.map(s => s.id));
+  renderRoutine();
   renderSteps();
   renderRail();
   renderSet();
   renderSummary();
+  // Product sections are created after the document parses. Restore incoming chapter links now,
+  // before the optional scene changes layout, rather than relying on the browser's early hash pass.
+  const incomingChapter = sections().find(section => `#${section.id}` === location.hash);
+  if (incomingChapter) {
+    const incomingHash = location.hash;
+    const inputEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    let active = true;
+    let loaded = document.readyState === 'complete';
+    let fontsReady = !document.fonts?.ready;
+    let restoreTimer;
+    const cleanup = () => {
+      active = false;
+      clearTimeout(restoreTimer);
+      inputEvents.forEach(event => removeEventListener(event, cleanup, true));
+      removeEventListener('load', onLoad);
+      removeEventListener('hashchange', cleanup);
+      removeEventListener('pagehide', cleanup);
+    };
+    const restoreChapter = () => {
+      if (active && location.hash === incomingHash) {
+        window.scrollTo({top: incomingChapter.getBoundingClientRect().top + scrollY, behavior: 'instant'});
+        onScroll();
+      }
+    };
+    const queueRestore = () => {
+      if (!active) return;
+      clearTimeout(restoreTimer);
+      // Run after native load restoration; recompute the target after late font layout changes.
+      restoreTimer = setTimeout(() => {
+        restoreChapter();
+        if (loaded && fontsReady) cleanup();
+      }, 0);
+    };
+    function onLoad() { loaded = true; queueRestore(); }
+    inputEvents.forEach(event => addEventListener(event, cleanup, {capture: true, passive: true}));
+    addEventListener('hashchange', cleanup);
+    addEventListener('pagehide', cleanup);
+    if (!loaded) addEventListener('load', onLoad, {once: true});
+    restoreChapter();
+    if (loaded) queueRestore();
+    if (!fontsReady) {
+      const onFontsReady = () => { fontsReady = true; queueRestore(); };
+      Promise.resolve(document.fonts.ready).then(onFontsReady, onFontsReady);
+    }
+  }
   watchReducedMotion();
   scheduleOfferRefresh();
   document.addEventListener('visibilitychange', () => {
@@ -422,6 +530,8 @@ async function boot() {
     renderSummary();
   });
   document.addEventListener('click', e => {
+    const ingredient = e.target.closest('[data-ingredient-index]');
+    if (ingredient) chooseIngredient(ingredient.dataset.ingredientStep, Number(ingredient.dataset.ingredientIndex));
     const act = e.target.closest('[data-action]');
     if (act?.dataset.action === 'copy') copyList();
     if (act?.dataset.action === 'card') saveCard(act);
@@ -429,7 +539,7 @@ async function boot() {
   });
 
   const reveal = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) en.target.classList.add('is-in'); }), {threshold: 0.12});
-  $$('.mr-chapter, .mr-step').forEach(el => reveal.observe(el));
+  $$('.mr-chapter, .mr-step, .mr-routine').forEach(el => reveal.observe(el));
   addEventListener('scroll', onScroll, {passive: true});
   addEventListener('resize', () => { onScroll(); measureBand(); });
   onScroll();
