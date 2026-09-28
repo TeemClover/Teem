@@ -566,3 +566,12 @@ test('only the page scrolls: an internal scroll of the cinema viewport is undone
   guard.handler({target: ui.view});
   assert.equal(ui.view.scrollTop, 0);
 });
+
+test('a same-document legacy link resolves like a fresh one', async () => {
+  const ui = await fixture();
+  for (const [hash, step] of [['#lab-film', 'AC'], ['#beat-BR-1', 'BR'], ['#founder', 'set']]) {
+    ui.context.location.hash = hash;
+    ui.windowEvent('hashchange');
+    assert.equal(ui.document.body.dataset.step, step, hash);
+  }
+});

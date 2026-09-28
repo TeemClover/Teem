@@ -22,8 +22,9 @@ function cropStyle(step) {
   const w = b.x1 - b.x0, h = b.y1 - b.y0;
   return `--pack-aspect:${b.aspect};--pack-img-width:${100 / w}%;--pack-img-height:${100 / h}%;--pack-img-left:${-100 * b.x0 / w}%;--pack-img-top:${-100 * b.y0 / h}%`;
 }
-function packMarkup(step, asset, {layer, src = 'src'} = {}) {
-  return `<figure class="mr-actor mr-actor--${step.id.toLowerCase()}" data-layer="${layer}"><span class="mr-pack" style="${cropStyle(step)}"><img ${src}="${asset(step.image)}" alt="${esc(step.image_alt)}" decoding="async"></span></figure>`;
+// A decorative pack repeats one already announced elsewhere; it is hidden from assistive technology.
+function packMarkup(step, asset, {layer, src = 'src', decorative = false} = {}) {
+  return `<figure class="mr-actor mr-actor--${step.id.toLowerCase()}" data-layer="${layer}"${decorative ? ' aria-hidden="true"' : ''}><span class="mr-pack" style="${cropStyle(step)}"><img ${src}="${asset(step.image)}" alt="${decorative ? '' : esc(step.image_alt)}" decoding="async"></span></figure>`;
 }
 const art = (layer, file, cls, asset) => `<div class="mr-art ${cls}" data-layer="${layer}" aria-hidden="true"><img data-src="${asset(file)}" alt="" decoding="async"></div>`;
 const slot = (layer, cls, style = '') => `<span class="mr-slot ${cls}" data-layer="${layer}" aria-hidden="true"${style ? ` style="${style}"` : ''}></span>`;
@@ -42,7 +43,7 @@ const imageOf = (step, name) => [...(step.featured || []), ...(step.ingredients 
 
 export const SHOTS = {
   CL: (step, asset) => `
-    <div class="mr-shot mr-shot--cl" data-shot="CL" data-layer="cl" aria-labelledby="h-CL">
+    <div role="region" class="mr-shot mr-shot--cl" data-shot="CL" data-layer="cl" aria-labelledby="h-CL">
       <div class="mr-shot__bg" data-layer="cl.bg" aria-hidden="true"></div>
       ${problem(step, 'cl')}
       <h2 class="mr-cl__title" id="h-CL"><span class="mr-line mr-cl__word" data-layer="cl.word1">${esc(step.scene.headline[0])}</span><span class="mr-line mr-cl__word mr-cl__word--next" data-layer="cl.word2">${esc(step.scene.headline[1])}</span></h2>
@@ -51,7 +52,7 @@ export const SHOTS = {
       ${foot(step, 'cl')}
     </div>`,
   AC: (step, asset) => `
-    <div class="mr-shot mr-shot--ac mr-shot--dark" data-shot="AC" data-layer="ac" aria-labelledby="h-AC">
+    <div role="region" class="mr-shot mr-shot--ac mr-shot--dark" data-shot="AC" data-layer="ac" aria-labelledby="h-AC">
       <div class="mr-shot__cam" data-layer="ac.cam">
         <div class="mr-shot__bg" data-layer="ac.bg" aria-hidden="true"></div>
         <div class="mr-art mr-ac__film" data-layer="ac.film" aria-hidden="true">
@@ -62,6 +63,7 @@ export const SHOTS = {
         </div>
         ${art('ac.mangosteen', 'assets/botanicals/mangosteen-peel.webp', 'mr-ac__mangosteen', asset)}
         ${problem(step, 'ac')}
+        ${title(step, 'ac', 'mr-ac__title')}
         ${wave(step, 0, 'ac.w1')}
         ${art('ac.witch', 'assets/botanicals/witch-hazel-flower.webp', 'mr-ac__witch', asset)}
         ${art('ac.grape', 'assets/botanicals/grapefruit-section.webp', 'mr-ac__grape', asset)}
@@ -74,7 +76,6 @@ export const SHOTS = {
         ${slot('slot.stem', 'mr-slot--stem')}
         ${packMarkup(step, asset, {layer: 'ac.pack', src: 'data-src'})}
         ${art('ac.lens', 'assets/experience/p0-2-drop-amber.webp', 'mr-ac__lens', asset)}
-        ${title(step, 'ac', 'mr-ac__title')}
         ${foot(step, 'ac')}
         ${art('ac.tea', 'assets/experience/m2-teatree-foreground.webp', 'mr-ac__tea', asset)}
       </div>
@@ -85,28 +86,28 @@ export const SHOTS = {
     const [even, balance, smooth] = step.scene.waves;
     const plane = (key, file, name, cls) => `<figure class="mr-plane ${cls}" data-layer="br.${key}" aria-hidden="true">${file ? `<img data-src="${asset(file)}" alt="" decoding="async">` : ''}<figcaption>${esc(name)}</figcaption></figure>`;
     return `
-    <div class="mr-shot mr-shot--br" data-shot="BR" data-layer="br" aria-labelledby="h-BR">
+    <div role="region" class="mr-shot mr-shot--br" data-shot="BR" data-layer="br" aria-labelledby="h-BR">
       <div class="mr-shot__cam" data-layer="br.cam">
         <div class="mr-shot__bg" data-layer="br.bg" aria-hidden="true"></div>
         <div class="mr-br__beams" data-layer="br.beams" aria-hidden="true"><i></i><i></i><i></i></div>
+        ${problem(step, 'br')}
+        ${title(step, 'br', 'mr-br__title')}
         ${packMarkup(step, asset, {layer: 'br.pack', src: 'data-src'})}
         ${plane('vitc', 'assets/experience/p0-2-drop-clear.webp', even.show[2], 'mr-plane--far')}
         ${plane('lic', licorice, even.show[1], 'mr-plane--mid')}
         ${plane('bear', bear, even.show[0], 'mr-plane--near')}
-        ${problem(step, 'br')}
         <p class="mr-wave" data-layer="br.w1"><span class="mr-wave__word">${esc(even.label)}</span><span class="mr-sr">${even.show.map(esc).join(' · ')}</span></p>
         <div class="mr-pairs" data-layer="br.w2">
           <p><span class="mr-wave__word">${esc(balance.label)}</span><span class="mr-wave__names">${balance.show.map(esc).join(' · ')}</span></p>
           <p><span class="mr-wave__word">${esc(smooth.label)}</span><span class="mr-wave__names">${smooth.show.map(esc).join(' · ')}</span></p>
         </div>
-        ${title(step, 'br', 'mr-br__title')}
         ${foot(step, 'br')}
       </div>
     </div>`;
   },
   // Weightless: everything travels sideways; the tube floats with a thin serum ribbon.
   SU: (step, asset) => `
-    <div class="mr-shot mr-shot--su" data-shot="SU" data-layer="su" aria-labelledby="h-SU">
+    <div role="region" class="mr-shot mr-shot--su" data-shot="SU" data-layer="su" aria-labelledby="h-SU">
       <div class="mr-shot__bg" data-layer="su.bg" aria-hidden="true"></div>
       ${art('su.air', 'assets/experience/p0-2-drop-clear.webp', 'mr-su__air', asset)}
       ${problem(step, 'su')}
@@ -121,7 +122,7 @@ export const SHOTS = {
     </div>`,
   // Quiet finish: the powder settles, the headline's outline becomes solid, the compact lands.
   PO: (step, asset) => `
-    <div class="mr-shot mr-shot--po mr-shot--dark" data-shot="PO" data-layer="po" aria-labelledby="h-PO">
+    <div role="region" class="mr-shot mr-shot--po mr-shot--dark" data-shot="PO" data-layer="po" aria-labelledby="h-PO">
       <div class="mr-shot__bg" data-layer="po.bg" aria-hidden="true"></div>
       ${art('po.band', 'assets/experience/m2-powder-veil.webp', 'mr-po__band', asset)}
       ${problem(step, 'po')}
@@ -136,12 +137,12 @@ export const SHOTS = {
 // The five come back together on the ledge where they began, and the story hands over to the set.
 export function closingShot(steps, set, asset) {
   return `
-    <div class="mr-shot mr-shot--rg" data-shot="set-close" data-layer="rg" aria-labelledby="closing-title">
+    <div class="mr-shot mr-shot--rg" data-shot="set-close" data-layer="rg">
       <div class="mr-shot__bg mr-hero__bg" data-layer="rg.bg" aria-hidden="true"></div>
-      <p class="mr-rg__title" id="closing-title" data-layer="rg.title">${esc(set.closing.headline)}</p>
-      ${steps.map(step => packMarkup(step, asset, {layer: `rg.${step.id}`, src: 'data-src'})).join('')}
+      <p class="mr-rg__title" id="closing-title" data-layer="rg.title" aria-hidden="true">${esc(set.closing.headline)}</p>
+      ${steps.map(step => packMarkup(step, asset, {layer: `rg.${step.id}`, src: 'data-src', decorative: true})).join('')}
       <div class="mr-rg__foot" data-layer="rg.foot" data-inert-hidden>
-        <p class="mr-rg__carry">${esc(set.carry)}</p>
+        <p class="mr-rg__carry" aria-hidden="true">${esc(set.carry)}</p>
         <a class="mr-btn" href="#set">${esc(set.closing.cta)} <span aria-hidden="true">↓</span></a>
       </div>
     </div>`;

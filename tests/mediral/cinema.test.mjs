@@ -253,3 +253,23 @@ test('a child layer loads no earlier than the window of the layer around it', ()
   f.move(9);
   assert.equal(f.images.get('art').src, 'art.webp');
 });
+
+test('focus inside a control that fades out moves to the story, not to nowhere', () => {
+  const f = fixture({tracks: {cta: [[0, {}], [1, {o: 0}]]}, definitions: [{name: 'cta', inert: true}]});
+  const cta = f.layers.get('cta');
+  const button = {};
+  cta.contains = node => node === button;
+  const previous = globalThis.document;
+  globalThis.document = {activeElement: button};
+  let focused = null;
+  f.section.focus = options => { focused = options; };
+  try {
+    f.measure();
+    assert.equal(cta.inert, false);
+    f.move(1);
+    assert.equal(cta.inert, true);
+    assert.deepEqual(focused, {preventScroll: true});
+  } finally {
+    globalThis.document = previous;
+  }
+});

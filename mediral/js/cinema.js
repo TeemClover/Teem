@@ -195,7 +195,12 @@ export function createCinema({section, view, score, tallQuery}) {
       if (el.getAttribute('aria-hidden') === 'true') el.style.visibility = live ? '' : 'hidden';
     }
     const inert = pose.o < 0.5;
-    if (el.hasAttribute('data-inert-hidden') && written.inert !== inert) el.inert = written.inert = inert;
+    if (el.hasAttribute('data-inert-hidden') && written.inert !== inert) {
+      // Focus inside a control that fades out moves to the story itself, never to nowhere.
+      const focused = globalThis.document?.activeElement;
+      if (inert && focused && el.contains?.(focused)) section.focus?.({preventScroll: true});
+      el.inert = written.inert = inert;
+    }
     loadNear(layer, T);
   }
 

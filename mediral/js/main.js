@@ -539,6 +539,20 @@ function bootCinema() {
   });
 }
 
+// Older links land on what now tells the same thing: the film and beats on their product,
+// the retired maker and reader chapters on the set, where their exchange now lives.
+function legacyTarget(hash) {
+  if (hash === '#lab-film') return '#step-AC';
+  const beat = /^#beat-([A-Z]{2})-\d+$/.exec(hash || '');
+  if (beat) return `#step-${beat[1]}`;
+  return ['#founder', '#relay'].includes(hash) ? '#set' : null;
+}
+function resolveHash(hash) {
+  const legacy = legacyTarget(hash);
+  if (legacy) return $(legacy);
+  return [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === hash) || null;
+}
+
 /* ---------- boot ---------- */
 async function boot() {
   const res = await fetch(new URL('data/routine.json', base), {cache: 'no-cache'});
@@ -564,13 +578,7 @@ async function boot() {
   // Product markers are created after the document parses. Restore incoming chapter links now,
   // rather than relying on the browser's early hash pass.
   openAtlas(location.hash);
-  // Older links land on what now tells the same thing: the film and beats on their product,
-  // the retired maker and reader chapters on the set, where their exchange now lives.
-  const legacy = location.hash === '#lab-film' ? '#step-AC'
-    : /^#beat-([A-Z]{2})-\d+$/.test(location.hash) ? `#step-${/^#beat-([A-Z]{2})/.exec(location.hash)[1]}`
-      : ['#founder', '#relay'].includes(location.hash) ? '#set' : null;
-  const incomingChapter = legacy ? $(legacy)
-    : [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === location.hash);
+  const incomingChapter = resolveHash(location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
     const inputEvents = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
@@ -631,7 +639,15 @@ async function boot() {
   });
   // Opening or closing an atlas changes layout without a scroll; re-measure the reading gate now.
   document.addEventListener('toggle', e => { if (e.target?.matches?.('.mr-ingredient-atlas')) onScroll(); }, true);
-  addEventListener('hashchange', () => { if (openAtlas(location.hash)) onScroll(); });
+  // Same-document links resolve like fresh ones: legacy names, atlases opened before landing.
+  addEventListener('hashchange', () => {
+    const atlas = openAtlas(location.hash);
+    const target = resolveHash(location.hash);
+    if (target && (atlas || legacyTarget(location.hash))) {
+      window.scrollTo({top: target.getBoundingClientRect().top + scrollY - anchorClearance(target), behavior: 'instant'});
+    }
+    onScroll();
+  });
   document.addEventListener('click', e => {
     const atlasLink = e.target.closest('a[href^="#formula-"]');
     if (atlasLink) openAtlas(atlasLink.getAttribute('href'));

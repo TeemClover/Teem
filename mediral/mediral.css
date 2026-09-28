@@ -204,6 +204,7 @@ main{position:relative;z-index:1}
    Invisible .mr-slot boxes mark hand-off poses (the routine row, the rising bottle, the glass stem).
    ========================================================================== */
 .mr-cinema{position:relative;height:calc(var(--screens,15.3) * 100svh);background:#163a28}
+.mr-cinema:focus{outline:none}
 .mr-mark{position:absolute;left:0;width:1px;height:1px;pointer-events:none;scroll-margin-top:0}
 /* The viewport and shots clip without being scroll containers: focusing or revealing a layer near an
    edge must never scroll the cinema internally (hidden stays as a fallback where clip is unknown). */
@@ -254,7 +255,7 @@ main{position:relative;z-index:1}
 .mr-hero__cta{top:86svh}
 .mr-hero__cta .mr-actions,.mr-rg__foot .mr-actions{justify-content:center}
 .mr-hero__cta .mr-btn{min-height:46px}
-.mr-hero__cta .mr-fine{margin-top:10px;font-size:10px}
+.mr-hero__cta .mr-fine{display:inline-block;margin-top:10px;padding:2px 10px;border-radius:99px;background:rgba(244,244,236,.82);color:var(--forest-deep);font-size:11px}
 :is([data-layer^=hero],[data-layer^=rg]).mr-actor--br{--x:60%;--base:66svh;--h:24svh}
 :is([data-layer^=hero],[data-layer^=rg]).mr-actor--ac{--x:37%;--base:67.5svh;--h:20svh}
 :is([data-layer^=hero],[data-layer^=rg]).mr-actor--su{--x:83%;--base:77svh;--h:24svh}
@@ -381,13 +382,16 @@ main{position:relative;z-index:1}
 .mr-rg__carry{margin:0 0 12px;font:500 clamp(13px,1.5vw,17px)/1.5 var(--sans)}
 
 /* Header and rail follow the chapter on screen. */
-body:is([data-chapter=AC],[data-chapter=PO]) .mr-header{background:rgba(15,42,28,.62);border-color:transparent;color:var(--ivory)}
+body:is([data-chapter=AC],[data-chapter=PO]) .mr-header{background:rgba(15,42,28,.78);border-color:transparent;color:var(--ivory)}
+/* Keyboard focus and rail labels stay visible on the dark chapters. */
+body:is([data-chapter=AC],[data-chapter=PO]) :is(.mr-header,.mr-rail) :focus-visible{outline-color:var(--chartreuse)}
+body:is([data-chapter=AC],[data-chapter=PO]) .mr-rail__label{color:var(--ivory);text-shadow:0 1px 6px rgba(0,0,0,.5)}
 body:is([data-chapter=AC],[data-chapter=PO]) .mr-header .mr-btn{color:var(--ivory);border-color:rgba(238,242,223,.4)}
 body:is([data-chapter=routine],[data-chapter=CL],[data-chapter=BR],[data-chapter=SU],[data-chapter=close]) .mr-header{background:rgba(244,244,236,.72)}
 .mr-rail{right:10px;left:auto;top:50%;transform:translateY(-50%);flex-direction:column;gap:6px;transition:opacity .25s,visibility .25s}
 .mr-rail::before{display:none}
 .mr-rail__dot{width:24px;height:24px;background:rgba(244,244,236,.72);color:var(--forest-deep)}
-body:is([data-chapter=AC],[data-chapter=PO]) .mr-rail__dot{background:rgba(15,42,28,.5);color:var(--ivory)}
+body:is([data-chapter=AC],[data-chapter=PO]) .mr-rail__dot{background:rgba(15,42,28,.72);color:var(--ivory)}
 body:is([data-chapter=AC],[data-chapter=PO]) .mr-rail a.is-active .mr-rail__dot{border-color:var(--chartreuse)}
 body:is([data-chapter=AC],[data-chapter=PO]) .mr-rail a.is-done .mr-rail__dot{background:var(--chartreuse);color:var(--forest-deep)}
 /* A hidden rail also leaves the tab order: invisible links are never focus stops. */
@@ -493,7 +497,9 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail{opacity:0;v
 .mr-flow .mr-wave__word--split>span{display:inline}
 .mr-flow .mr-pairs{display:grid;gap:12px}
 .mr-flow .mr-shot:not(.mr-shot--hero) .mr-actor{order:6;--h:clamp(220px,48vh,340px)}
-.mr-flow [data-layer="po.pack"]{--h:clamp(110px,22vh,160px)}
+.mr-flow .mr-shot--po .mr-actor.mr-actor--po{--h:clamp(96px,20vh,150px)}
+/* No pack or its shadow may widen the phone layout in flow. */
+.mr-flow .mr-shot{overflow-x:clip}
 .mr-flow .mr-foot{order:7;text-align:center;width:auto;color:inherit!important;text-shadow:none}
 .mr-flow .mr-foot .mr-support{margin-inline:auto}
 .mr-flow .mr-po__title{-webkit-text-stroke:0}

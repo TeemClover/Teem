@@ -385,6 +385,9 @@ test('reduced motion and short screens start in normal flow before the module ru
   assert.match(css, /\.mr-cinema__view\{[^}]*overflow:hidden;overflow:clip/, 'The viewport clips without being a scroll container');
   assert.match(css, /\.mr-shot\{overflow:hidden;overflow:clip\}/, 'So do the shots');
   assert.match(css, /\.mr-flow \.mr-cinema__view\{[^}]*overflow:visible/, 'Flow keeps visible overflow');
+  assert.match(css, /\.mr-flow \.mr-shot--po \.mr-actor\.mr-actor--po\{--h:clamp\(96px,20vh,150px\)\}/, 'The compact keeps its own size in flow');
+  assert.match(css, /\.mr-flow \.mr-shot\{overflow-x:clip\}/, 'No pack or shadow widens the phone layout');
+  assert.match(css, /body:is\(\[data-chapter=AC\],\[data-chapter=PO\]\) :is\(\.mr-header,\.mr-rail\) :focus-visible\{outline-color:var\(--chartreuse\)\}/, 'Focus stays visible on dark chapters');
 });
 
 test('first-party browser JavaScript parses', () => {
@@ -432,4 +435,20 @@ test('page HTML and route responses declare noindex, and dev/reference files do 
   for (const line of ['tests/mediral/', 'docs/mediral/', 'mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
     assert.ok(ignore.split('\n').map(l => l.trim()).includes(line), `.vercelignore should exclude ${line}`);
   }
+});
+
+test('assistive technology meets each chapter by its heading, and the closing ensemble is not read twice', () => {
+  const score = read(join(site, 'js/score.js'));
+  for (const key of ['ac', 'br', 'su', 'po']) {
+    const problem = score.indexOf(`problem(step, '${key}')`), heading = score.indexOf(`title(step, '${key}'`);
+    assert.ok(problem > 0 && heading > problem, `${key}: the heading follows the problem line in the markup`);
+    const next = score.slice(heading).search(/wave\(step|<p class="mr-wave"|packMarkup\(step/);
+    assert.ok(next > 0, `${key}: and precedes its waves and pack`);
+  }
+  assert.equal((score.match(/<div role="region" class="mr-shot mr-shot--/g) || []).length, 5, 'Each product chapter is a labelled region');
+  const closing = score.slice(score.indexOf('export function closingShot'));
+  assert.match(closing, /decorative: true/, 'The reassembled packs repeat the opening and are decorative');
+  assert.match(closing, /data-layer="rg.title" aria-hidden="true"/);
+  const brand = tags(html(), 'a').find(t => t.class === 'mr-brand');
+  assert.ok(brand['aria-label'].startsWith('myClover · Mediral'), 'The accessible name contains the visible brand text');
 });
