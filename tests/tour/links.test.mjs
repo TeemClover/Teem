@@ -43,10 +43,10 @@ test('every pickable object has a unique id, a real link and a description', () 
   }
 });
 
-test('classroom computers open บท 1, บท 4, บท 5 and the Dungeon; the project room shows X-VISOR, TeamBook, Resume', () => {
+test('classroom computers open lessons and the Dungeon; the project room includes the Airova studio', () => {
   const cls = html.split('data-scene="classroom"')[1].split('</section>')[0], office = html.split('data-scene="office"')[1].split('</section>')[0];
   for (const href of ['/classroom/free-ai.html', '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/dungeon/']) assert.ok(cls.includes(`href="${href}"`), href);
-  for (const href of ['/xvisor/', '/teambook/', '/resume/', '/showcase/house/']) assert.ok(office.includes(`href="${href}"`), href);
+  for (const href of ['/xvisor/', '/teambook/', '/resume/', '/airova/', '/showcase/house/']) assert.ok(office.includes(`href="${href}"`), href);
   assert.doesNotMatch(html, /ไม่มีอะไรขาย/);
 });
 

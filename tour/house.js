@@ -629,7 +629,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     }
   }
 
-  /* ================= PROJECT ROOM (floor 2, left): X-VISOR + Resume screens, TeamBook, the house model ================= */
+  /* ================= PROJECT ROOM (floor 2, left): X-VISOR + Resume + Airova studio, TeamBook, the house model ================= */
   {
     const g = room('office');
     const skyMat = canvasMat(512, 320, (c, w, h) => { const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#9fd3f0'); gr.addColorStop(1, '#fbe3b4'); c.fillStyle = gr; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(40,70,60,.35)'; for (let x = 0; x < w; x += 38) { const bh = 60 + (x * 37 % 110); c.fillRect(x, h - bh, 32, bh); } }, 0.7);
@@ -637,18 +637,51 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     rb(g, [1.76, 0.07, 0.18], [3.0, 1.3, BW + 0.09], '#ffffff', null, 0.01);
     rb(g, [6.2, 0.07, 0.95], [-0.8, 0.75, BW + 0.65], wood('#a8744a'), null, 0.02);
     for (const dx of [-3.7, -0.8, 2.1]) rb(g, [0.07, 0.75, 0.85], [dx, 0, BW + 0.65], M('#2f3a35', {metalness: 0.4}), null, 0.01);
+    // A dedicated studio desk; its editor is a single static texture, with no video decoder or extra light.
+    rb(g, [1.95, 0.07, 1.15], [2.6, 0.75, -0.35], wood('#a8744a'), null, 0.02);
+    for (const dx of [1.75, 3.45]) rb(g, [0.07, 0.75, 0.95], [dx, 0, -0.35], M('#2f3a35', {metalness: 0.4}), null, 0.01);
+    const studioScreen = canvasMat(1024, 576, c => {
+      c.fillStyle = '#101716'; c.fillRect(0, 0, 1024, 576);
+      c.fillStyle = '#c5f36b'; c.font = `800 44px ${FONT}`; c.fillText('AIROVA STUDIO', 32, 62);
+      c.fillStyle = '#e7eee5'; c.font = `600 23px ${FONT}`; c.fillText('VIDEO + MARKETING', 682, 57);
+      const gr = c.createLinearGradient(32, 102, 650, 370);
+      gr.addColorStop(0, '#345e58'); gr.addColorStop(0.55, '#929965'); gr.addColorStop(1, '#dca182');
+      c.fillStyle = gr; c.fillRect(32, 98, 616, 274);
+      // A product film preview, a play button and campaign cards make this a recognisable editing station.
+      c.fillStyle = '#203d34'; c.beginPath(); c.ellipse(340, 320, 150, 24, 0, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#f8e7bf'; c.beginPath(); c.roundRect(292, 166, 96, 145, 18); c.fill();
+      c.fillStyle = '#233b30'; c.fillRect(313, 146, 54, 28); c.fillRect(312, 212, 56, 48);
+      c.fillStyle = '#ffffff'; c.beginPath(); c.moveTo(332, 221); c.lineTo(332, 251); c.lineTo(354, 236); c.closePath(); c.fill();
+      c.fillStyle = '#e7eee5'; c.font = `700 24px ${FONT}`; c.fillText('CAMPAIGN', 682, 128);
+      ['VIDEO', 'SOCIAL', 'ADS'].forEach((name, i) => {
+        c.fillStyle = '#26352c'; c.fillRect(682, 150 + i * 72, 310, 56);
+        c.fillStyle = ['#c5f36b', '#80d7ce', '#e9aa90'][i]; c.fillRect(698, 166 + i * 72, 24, 24);
+        c.fillStyle = '#e7eee5'; c.font = `600 23px ${FONT}`; c.fillText(name, 741, 190 + i * 72);
+      });
+      for (let row = 0; row < 3; row++) {
+        c.fillStyle = '#26352c'; c.fillRect(32, 404 + row * 46, 960, 32);
+        for (let clip = 0; clip < 4; clip++) {
+          c.fillStyle = ['#c5f36b', '#80d7ce', '#e9aa90'][row];
+          c.fillRect(42 + clip * 235 + row * 12, 410 + row * 46, 175 - row * 20, 20);
+        }
+      }
+      c.fillStyle = '#ffffff'; c.fillRect(410, 394, 3, 150);
+    }, 0.65);
     const screens = [
       {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
       {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.95, ry: -0.12},
+      {id: 'airova', mat: studioScreen, tag: 'AIROVA STUDIO', col: '#c5f36b', x: 2.6, z: -0.6, ry: -0.18},
     ];
     for (const s_ of screens) {
-      const mon = group(g, s_.x, 0.82, BW + 0.45); mon.rotation.y = s_.ry;
+      const mon = group(g, s_.x, 0.82, s_.z ?? BW + 0.45); mon.rotation.y = s_.ry;
       rb(mon, [1.6, 0.96, 0.05], [0, 0.26, 0], M('#1b1f1d', {roughness: 0.4}), null, 0.02);
       plane(mon, [1.52, 0.855], [0, 0.74, 0.032], s_.mat);
       plane(mon, [0.8, 0.13], [0, 0.2, 0.034], new THREE.MeshStandardMaterial({map: label(s_.tag, 512, 84, s_.col, '#10201a', 48)})).castShadow = false;
       cy(mon, [0.03, 0.03, 0.26], [0, 0, 0], M('#1b1f1d')); rb(mon, [0.34, 0.02, 0.2], [0, 0, 0.02], M('#1b1f1d'), null, 0.005);
       hot(mon, s_.id);
     }
+    rb(g, [0.8, 0.025, 0.26], [2.45, 0.82, -0.04], M('#26352c'), null, 0.01);
+    rb(g, [0.12, 0.03, 0.18], [3.12, 0.82, -0.04], M('#c5f36b'), null, 0.01);
     rb(g, [0.9, 0.03, 0.28], [-2.55, 0.82, BW + 1.0], M('#e9ecef', {roughness: 0.4}), null, 0.01);
     rb(g, [0.12, 0.03, 0.18], [-1.9, 0.82, BW + 1.0], M('#e9ecef'), null, 0.01);
     // TeamBook: the green notebook, open on a stand between the screens (→ /teambook/)

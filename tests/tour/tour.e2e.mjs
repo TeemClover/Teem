@@ -83,6 +83,13 @@ try {
     await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
     pass('tapping the TeamBook notebook in the project room picks it up and offers its page');
 
+    await tap('airova', () => window.__tour.inspecting() === 'airova');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/airova/');
+    assert.match(await page.textContent('#inspect-title'), /Airova/);
+    await page.screenshot({path: `${out}/desktop-airova.png`});
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    pass('the additional studio computer opens Airova for video and marketing');
+
     // the classroom computers open lessons 1, 4, 5 and the Dungeon; objects of other rooms stay out of reach
     const lessonHref = await page.$$eval('#classroom [data-item]', as => Object.fromEntries(as.map(a => [a.dataset.item, a.getAttribute('href')])));
     assert.deepEqual([lessonHref['lesson-1'], lessonHref['lesson-4'], lessonHref['lesson-5'], lessonHref.dungeon], ['/classroom/free-ai.html', '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/dungeon/']);
