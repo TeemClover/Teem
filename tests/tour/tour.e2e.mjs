@@ -75,6 +75,16 @@ try {
       }
       throw Error('tap did not register on ' + id);
     };
+    await tap('house3d', () => window.__tour.inspecting() === 'house3d');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/showcase/house/');
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    await tap('xvisor', () => window.__tour.inspecting() === 'xvisor');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/xvisor/');
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    await tap('resume', () => window.__tour.inspecting() === 'resume');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/resume/');
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    pass('the sideboard house model and desk screens remain reachable in the new office layout');
     await tap('mediral', () => window.__tour.inspecting() === 'mediral');
     assert.equal(await page.getAttribute('#inspect-go', 'href'), '/mediral/');
     assert.match(await page.textContent('#inspect-title'), /Mediral.*Partner Project/);
@@ -134,6 +144,14 @@ try {
     await tap('office', () => document.querySelector('#clover-count .count-text').textContent === '1/4');
     assert.match(await page.textContent('[data-find="office"]'), /เก็บใบนี้แล้ว/);
     pass('clicking the hidden clover in the 3D room collects it');
+
+    await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
+    await page.waitForFunction(() => Math.abs(window.__tour.progress() - window.__tour.order.indexOf('kitchen')) < 0.05);
+    await tap('ako', () => window.__tour.inspecting() === 'ako');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/ako/');
+    await page.screenshot({path: `${out}/desktop-ako-cookbook.png`});
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    pass('the illustrated Ako recipe notebook is pickable and opens Ako');
 
     // the record player in the living room plays the house music
     await page.evaluate(() => { const s = document.getElementById('living'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });

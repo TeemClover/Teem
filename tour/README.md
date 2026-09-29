@@ -13,12 +13,12 @@ opened like a dollhouse. Inside are four rooms of the website, two per floor, pl
 added on the right so the walk goes from the kitchen up to the classroom:
 
 ```
-ชั้น 2   ห้องโปรเจกต์ (project room)   ห้องเรียน (classroom)   ┐ โถงบันได
+ชั้น 2   ห้องทำงาน (office)            ห้องเรียน (classroom)   ┐ โถงบันได
 ชั้น 1   ห้องนั่งเล่น (living room)     ห้องครัว (kitchen)       ┘ (stair hall)
 ```
 
 Scrolling runs straight down the page: front garden → door → living room → kitchen → stairs →
-classroom → project room → back outside at dusk. The floor-1 front sinks into the ground; the
+classroom → office → back outside at dusk. The floor-1 front sinks into the ground; the
 floor-2 front, balcony and roofs lift away together. Every object people can pick up is a
 `[data-item]` link in `index.html`; the 3D hotspot reads its label, description and URL there.
 Tapping one makes it float toward you and a panel offers its page.
@@ -29,12 +29,14 @@ Tapping one makes it float toward you and a panel offers its page.
 | Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
-| Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova video and marketing studio on its own desk → `/airova/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
+| Office | three screens on one rear worktop: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova → `/airova/` · TeamBook in the front-left planning nook → `/teambook/` · house model on the left sideboard → `/showcase/house/` · Mediral cabinet by the right wall → `/mediral/` |
 | Outside | the big clover / finale button → `/meet/` |
 
 Gold cursor badges mark every pickable object in the current room. Opened objects keep a silver check badge, remain pickable, and retain their status in `mc:tour:opened:v1` local storage. Inspecting an object or opening its destination records it; storage denial falls back to memory. Badges stay about 30 CSS pixels across SD/HD and phone views. The original object materials and image colours stay unchanged in both states.
 
 The paired living-room portraits reuse `/meet/img/teem.jpg` and `/meet/img/ako.jpg`, linking to `/resume/` and `/ako/`. The upstairs office includes a forest-green and cream glass display cabinet marked **Mediral · Partner Project**, linking to `/mediral/`. Its five product images reuse `/mediral/assets/`. `art/mediral-wordmark.svg` copies the original brand wordmark paths, adding explicit dimensions so WebGL can upload it. These textures load with the office and add no lights or animation.
+
+The office centre stays empty for circulation. Two chairs tuck under the rear worktop; the tower sits under it, and the house model no longer has a pedestal in the walkway. The wider office camera and narrower desktop card keep the side furnishings visible. The kitchen notebook uses the generated `art/ako-cookbook-v1.webp` illustration, documented in `art/AKO-COOKBOOK.md`; its Thai title is a separate font-rendered decal.
 
 All destination links, including the inspect panel and fallback HTML, use a new tab with `noopener noreferrer`. In-page room navigation stays in the house. Arrows/checkmarks and link titles distinguish states without relying only on colour.
 

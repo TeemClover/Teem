@@ -28,6 +28,7 @@ export const HERO_CLOVER = {wide: [12.4, 9.9, 0.5], tall: [-1.5, 10.4, 0.5]};
 export const ART = {
   'teem-portrait': {fallback: '/meet/img/teem.jpg', aspect: 3 / 5},
   'ako-portrait': {fallback: '/meet/img/ako.jpg', aspect: 3 / 5},
+  'ako-cookbook': {fallback: '/tour/art/ako-cookbook-v1.webp', aspect: 3 / 2},
   'forge-cover': {fallback: '/img/card-forge.jpg', aspect: 2 / 3},
   'walkthrough-cover': {fallback: '/img/col-walkthrough.webp', aspect: 2 / 3},
   'table-map': {fallback: '/frontdoor/art/underpaper-valley-mobile.webp', aspect: 4 / 3},
@@ -483,9 +484,18 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     for (let k = 0; k < (hd ? 26 : 14); k++) { const a = k * 2.4, r = 0.06 + (k % 5) * 0.06; blob(bowl, 0.1 + (k % 3) * 0.02, [Math.cos(a) * r, 0.4 + (k % 3) * 0.03, Math.sin(a) * r], ['#5fb25a', '#8fd16a', '#3f8a50', '#b5d96a'][k % 4], 1); }
     for (let k = 0; k < 6; k++) { const a = k * 1.1; sp(bowl, 0.055, [Math.cos(a) * 0.2, 0.49, Math.sin(a) * 0.2], M('#e2412f', {roughness: 0.25})); }
     hot(bowl, 'ako-kitchen');
-    const rbk = group(g, 0.35, 0.94, 0.25); rbk.rotation.set(-0.5, -0.2, 0);
-    rb(rbk, [0.5, 0.36, 0.03], [0, 0, 0], M('#e37c5b'), null, 0.01);
-    plane(rbk, [0.46, 0.32], [0, 0.18, 0.02], new THREE.MeshStandardMaterial({map: label('ครัวเอโกะ', 512, 360, '#fbf6ec', '#b8573c', 88)}));
+    const rbk = group(g, 0.4, 0.94, 0.2); rbk.rotation.set(-0.55, -0.2, 0);
+    rb(rbk, [0.66, 0.46, 0.035], [0, 0, 0], M('#ab6449'), null, 0.01);
+    rb(rbk, [0.63, 0.43, 0.012], [0.004, 0.014, 0.026], M('#eee3d0'), null, 0.004);
+    // Preserve the illustration and title contrast under the kitchen's warm lights.
+    const recipeCover = new THREE.MeshBasicMaterial({map: blank});
+    out.lazy.get(area).push(() => imageTex(artUrl('ako-cookbook'), recipeCover, renderer, ART['ako-cookbook'].aspect));
+    plane(rbk, [0.6, 0.4], [0, 0.235, 0.037], recipeCover);
+    const recipeTitle = new THREE.MeshBasicMaterial({map: tex.canvasTex(768, 144, c => {
+      c.fillStyle = '#38513a'; c.font = `800 94px ${FONT}`;
+      centeredText(c, 'ครัวเอโกะ', 384, 108, 700);
+    }), transparent: true, depthWrite: false});
+    plane(rbk, [0.54, 0.101], [0, 0.37, 0.039], recipeTitle);
     hot(rbk, 'ako');
     rb(g, [0.6, 0.04, 0.34], [1.0, 0.94, 0.7], wood('#c79a63'), null, 0.02);
     sp(g, 0.1, [1.0, 1.04, 0.7], M('#d99a4e', {roughness: 0.7})).scale.set(2.6, 0.8, 0.9);
@@ -638,15 +648,15 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const skyMat = canvasMat(512, 320, (c, w, h) => { const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#9fd3f0'); gr.addColorStop(1, '#fbe3b4'); c.fillStyle = gr; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(40,70,60,.35)'; for (let x = 0; x < w; x += 38) { const bh = 60 + (x * 37 % 110); c.fillRect(x, h - bh, 32, bh); } }, 0.7);
     plane(g, [1.6, 1.3], [3.0, 2.0, BW + 0.02], skyMat);
     rb(g, [1.76, 0.07, 0.18], [3.0, 1.3, BW + 0.09], '#ffffff', null, 0.01);
-    rb(g, [6.2, 0.07, 0.95], [-0.8, 0.75, BW + 0.65], wood('#a8744a'), null, 0.02);
-    for (const dx of [-3.7, -0.8, 2.1]) rb(g, [0.07, 0.75, 0.85], [dx, 0, BW + 0.65], M('#2f3a35', {metalness: 0.4}), null, 0.01);
-    // A dedicated studio desk; its editor is a single static texture, with no video decoder or extra light.
-    rb(g, [1.95, 0.07, 1.15], [2.25, 0.75, -1.2], wood('#a8744a'), null, 0.02);
-    for (const dx of [1.4, 3.1]) rb(g, [0.07, 0.75, 0.95], [dx, 0, -1.2], M('#2f3a35', {metalness: 0.4}), null, 0.01);
+    // One continuous worktop against the back wall; the doorway at x=4 stays clear.
+    rb(g, [6.4, 0.07, 0.8], [-0.25, 0.75, BW + 0.46], wood('#a8744a'), null, 0.02);
+    for (const dx of [-3.3, 2.8]) rb(g, [0.08, 0.75, 0.7], [dx, 0, BW + 0.46], M('#2f3a35', {metalness: 0.4}), null, 0.01);
+    rb(g, [0.62, 0.68, 0.66], [-0.25, 0, BW + 0.46], M('#ece7db'), null, 0.02);
+    for (const y of [0.19, 0.4, 0.61]) rb(g, [0.18, 0.018, 0.025], [-0.25, y, BW + 0.8], M('#7d8b80'), null, 0.006);
     const screens = [
-      {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
-      {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.55, ry: -0.12},
-      {id: 'airova', mat: artMat('screen-airova', true, '#223'), tag: 'AIROVA · GEN VIDEO', col: '#c5f36b', x: 2.25, z: -1.45, ry: -0.18},
+      {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.4, ry: 0.08},
+      {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: -0.25, ry: 0},
+      {id: 'airova', mat: artMat('screen-airova', true, '#223'), tag: 'AIROVA · GEN VIDEO', col: '#c5f36b', x: 1.9, ry: -0.08},
     ];
     for (const s_ of screens) {
       const mon = group(g, s_.x, 0.82, s_.z ?? BW + 0.45); mon.rotation.y = s_.ry;
@@ -656,19 +666,25 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
       cy(mon, [0.03, 0.03, 0.26], [0, 0, 0], M('#1b1f1d')); rb(mon, [0.34, 0.02, 0.2], [0, 0, 0.02], M('#1b1f1d'), null, 0.005);
       hot(mon, s_.id);
     }
-    rb(g, [0.8, 0.025, 0.26], [2.1, 0.82, -0.89], M('#26352c'), null, 0.01);
-    rb(g, [0.12, 0.03, 0.18], [2.77, 0.82, -0.89], M('#c5f36b'), null, 0.01);
-    rb(g, [0.9, 0.03, 0.28], [-2.55, 0.82, BW + 1.0], M('#e9ecef', {roughness: 0.4}), null, 0.01);
-    rb(g, [0.12, 0.03, 0.18], [-1.9, 0.82, BW + 1.0], M('#e9ecef'), null, 0.01);
-    // TeamBook: the green notebook, open on a stand between the screens (→ /teambook/)
-    const nb = group(g, -0.8, 0.82, BW + 0.6); nb.rotation.x = -0.9;
+    for (const x of [-2.4, 1.9]) {
+      rb(g, [0.72, 0.018, 0.22], [x, 0.822, BW + 0.72], M('#39433e'), null, 0.008);
+      rb(g, [0.1, 0.025, 0.14], [x + 0.5, 0.822, BW + 0.72], M('#e9ecef'), null, 0.012);
+    }
+    // A shallow planning console in the front-left corner; no table in the walkway.
+    const nook = group(g, -2.85, 0, 2.45);
+    rb(nook, [1.45, 0.05, 0.66], [0, 0.73, 0], wood('#c49a6c'), null, 0.025);
+    for (const x of [-0.64, 0.64]) rb(nook, [0.045, 0.73, 0.54], [x, 0, 0], M('#45564a'), null, 0.01);
+    // A stool tucked beneath the console keeps the corner usable without filling the room.
+    cy(nook, [0.22, 0.22, 0.08], [0.28, 0.42, 0.16], fabric('#c9d7bd'));
+    for (const x of [0.13, 0.43]) for (const z of [0.03, 0.29]) cy(nook, [0.022, 0.022, 0.42], [x, 0, z], wood('#8c6242'));
+    const nb = group(nook, -0.12, 0.79, -0.08); nb.rotation.set(-0.9, -0.12, 0);
     rb(nb, [0.9, 0.62, 0.035], [0, 0, 0], M('#2e9e5b', {roughness: 0.6}), null, 0.012);
     rb(nb, [0.86, 0.58, 0.012], [0, 0.02, 0.03], M('#fbf6ec', {roughness: 0.8}), null, 0.004);
     plane(nb, [0.77, 0.56], [0, 0.31, 0.043], art.has('teambook-cover') ? artMat('teambook-cover') : canvasMat(440, 320, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 440, 320); c.fillStyle = 'rgba(29,107,61,.12)'; for (let y = 60; y < 320; y += 28) c.fillRect(20, y, 400, 2); c.fillStyle = '#1d6b3d'; c.font = `800 44px ${FONT}`; c.fillText('TeamBook', 24, 50); }));
     cy(nb, [0.012, 0.012, 0.58], [0, 0.02, 0.05], '#e9b949');
     hot(nb, 'teambook');
     // Boutique vitrine: reuse Mediral's transparent product assets, with no extra lights/video.
-    const cabinet = group(g, -1.5, 0, 0.6);
+    const cabinet = group(g, 3.05, 0, -0.35); cabinet.scale.setScalar(0.9);
     const forest = M('#173f34', {roughness: 0.35});
     const stone = M('#eee8db', {roughness: 0.32});
     const trim = M('#bfc7be', {metalness: 0.75, roughness: 0.3});
@@ -704,12 +720,12 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     plane(cabinet, [0.76, 0.76 * 14.690 / 62.312], [0, 0.335, 0.39], wordmark);
     plane(cabinet, [1.32, 0.11], [0, 0.195, 0.39], new THREE.MeshStandardMaterial({map: label('PARTNER PROJECT', 768, 64, '#173f34', '#eee8db', 40)}));
     hot(cabinet, 'mediral');
-    // centre table: the model of our real house turns slowly (→ /showcase/house/)
-    const table = group(g, 0.2, 0, 1.05);
-    cy(table, [0.12, 0.2, 0.74], [0, 0, 0], M('#2b2f31', {metalness: 0.4, roughness: 0.4}));
-    cy(table, [0.82, 0.82, 0.05], [0, 0.74, 0], wood('#c08a55'));
-    plane(table, [0.6, 0.12], [0, 0.793, 0.66], new THREE.MeshStandardMaterial({map: label('บ้านจริงของเรา · 3D', 512, 100, '#14281d', '#f2c14e', 44)}), [-Math.PI / 2, 0, 0]);
-    const model = group(table, 0, 0.79, -0.05);
+    // House model on a built-in sideboard at the left wall, leaving the centre open.
+    const table = group(g, -3.22, 0, 0.3);
+    rb(table, [1.2, 0.72, 1.8], [0, 0.06, 0], M('#dfd7c8'), null, 0.025);
+    rb(table, [1.28, 0.055, 1.88], [0, 0.78, 0], wood('#b78c60'), null, 0.02);
+    plane(table, [0.94, 0.12], [0, 0.57, 0.908], new THREE.MeshStandardMaterial({map: label('บ้านจริงของเรา · 3D', 512, 80, '#dfd7c8', '#294536', 36)}));
+    const model = group(table, 0, 0.84, -0.12);
     const turn = group(model); out.tickers.push(t => { turn.rotation.y = t * 0.25; });
     cy(turn, [0.6, 0.62, 0.04], [0, 0, 0], M('#f3efe6', {roughness: 0.5}));
     cy(turn, [0.56, 0.56, 0.012], [0, 0.04, 0], M('#5fae6a', {roughness: 0.9})); // lawn
@@ -723,31 +739,24 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     rb(mh, [0.12, 0.07, 0.22], [-0.46, 0, 0.02], M('#f2f2f0', {roughness: 0.3, metalness: 0.4}), null, 0.02); // the family car
     for (let k = 0; k < 5; k++) blob(turn, 0.06 + (k % 2) * 0.02, [Math.cos(k * 1.3 + 2) * 0.45, 0.1, Math.sin(k * 1.3 + 2) * 0.45], '#4f9a5c', 1);
     hot(model, 'house3d'); // the model itself, not the whole table: its tap area must not cover the TeamBook
-    const mug = cy(g, [0.06, 0.05, 0.12], [-3.3, 0.82, BW + 0.95], '#e9b949');
-    mug.userData.dynamic = true; out.tickers.push(t => { mug.rotation.y = t; });
-    const chair = group(g, -2.55, 0, -1.8); chair.rotation.y = 0.2;
-    cy(chair, [0.3, 0.3, 0.1], [0, 0.44, 0], fabric('#2f5d44')); rb(chair, [0.58, 0.8, 0.1], [0, 0.55, 0.3], fabric('#2f5d44'), [0.12, 0, 0], 0.05);
-    cy(chair, [0.035, 0.035, 0.44], [0, 0, 0], M('#555555', {metalness: 0.7}));
-    for (let k = 0; k < 5; k++) rb(chair, [0.34, 0.04, 0.05], [Math.cos(k * 1.256) * 0.17, 0.04, Math.sin(k * 1.256) * 0.17], M('#333333'), [0, -k * 1.256, 0], 0.01);
-    rb(g, [1.5, 0.9, 0.04], [0.3, 2.05, BW + 0.03], M('#ffffff', {map: tex.cork, ...nm(tex.corkN)}), null, 0.01);
-    const noteCols = ['#fff27a', '#ffc2d1', '#bdf0c9', '#b9dcff', '#ffd9a0', '#e3c9ff'];
-    for (let k = 0; k < 6; k++) plane(g, [0.3, 0.26], [-0.15 + (k % 3) * 0.45, 2.72 - Math.floor(k / 3) * 0.38, BW + 0.06], M(noteCols[k]).clone(), [0, 0, (k % 2 ? 1 : -1) * 0.06]);
-    rb(g, [0.6, 1.5, 0.6], [-3.55, 0, -1.2], M('#23282a', {roughness: 0.4, metalness: 0.4}), null, 0.02);
-    const leds = [];
-    for (let k = 0; k < 8; k++) leds.push(bx(g, [0.05, 0.03, 0.01], [-3.55 - 0.18 + (k % 2) * 0.1, 0.25 + Math.floor(k / 2) * 0.3, -0.895], new THREE.MeshStandardMaterial({color: '#7fe0a8', emissive: '#7fe0a8', emissiveIntensity: 1})));
-    out.tickers.push(t => { leds.forEach((l, k) => { l.material.emissiveIntensity = (Math.sin(t * (3 + k) + k) > 0) ? 1.6 : 0.2; }); });
-    rb(g, [1.3, 0.05, 0.3], [3.0, 1.1, BW + 0.15], wood('#6b4a30'), null, 0.01);
-    cy(g, [0.08, 0.12, 0.25], [2.6, 1.15, BW + 0.15], M('#e9b949', {metalness: 0.9, roughness: 0.2}));
-    plant(g, 3.3, 2.5, 1.05); plant(g, -3.3, 2.7, 0.8, '#2f5d44');
+    cy(g, [0.05, 0.045, 0.1], [-3.02, 0.82, BW + 0.67], M('#e9e3d5'));
+    // Two working seats, tucked towards the desk; both fronts of the room remain walkable.
+    for (const x of [-2.4, 1.9]) {
+      const chair = group(g, x, 0, -1.95);
+      cy(chair, [0.27, 0.27, 0.08], [0, 0.44, 0], fabric('#2f5d44'));
+      rb(chair, [0.5, 0.6, 0.08], [0, 0.53, 0.25], fabric('#2f5d44'), [0.1, 0, 0], 0.05);
+      cy(chair, [0.035, 0.035, 0.44], [0, 0, 0], M('#555555', {metalness: 0.7}));
+      for (let k = 0; k < 5; k++) rb(chair, [0.29, 0.035, 0.045], [Math.cos(k * 1.256) * 0.14, 0.04, Math.sin(k * 1.256) * 0.14], M('#333333'), [0, -k * 1.256, 0], 0.01);
+    }
+    rb(g, [1.45, 0.55, 0.04], [-0.25, 2.32, BW + 0.03], M('#ffffff', {map: tex.cork, ...nm(tex.corkN)}), null, 0.01);
+    for (let k = 0; k < 3; k++) plane(g, [0.28, 0.24], [-0.69 + k * 0.44, 2.59, BW + 0.06], M(['#fff2ba', '#cbdcc5', '#edcdb9'][k]).clone(), [0, 0, (k - 1) * 0.03]);
+    // Compact tower under the desk, instead of the tall rack on the floor.
+    rb(g, [0.26, 0.5, 0.48], [-2.95, 0.03, BW + 0.48], M('#23282a', {roughness: 0.4}), null, 0.02);
+    bx(g, [0.018, 0.018, 0.01], [-2.95, 0.41, BW + 0.725], M('#7fe0a8', {emissive: '#7fe0a8', emissiveIntensity: 0.6}));
+    plant(g, -3.5, -1.3, 0.65, '#2f5d44');
     lampLight(g, -0.8, 2.4, -1.5, 7, 8);
     if (hd) {
-      cy(g, [0.1, 0.12, 0.03], [2.0, 0.82, BW + 0.55], M('#1b1f1d'));
-      cy(g, [0.015, 0.015, 0.5], [2.0, 0.84, BW + 0.55], M('#1b1f1d')).rotation.z = 0.3;
-      const dl = cy(g, [0.05, 0.12, 0.14], [1.82, 1.22, BW + 0.55], M('#f2c14e', {emissive: '#ffcf7a', emissiveIntensity: 0.9})); dl.castShadow = false;
-      lampLight(g, 1.82, 1.1, BW + 0.75, 2.5, 3);
-      for (let r = 0; r < 4; r++) for (let k = 0; k < 12; k++) bx(g, [0.055, 0.015, 0.05], [-2.55 - 0.36 + k * 0.066, 0.855, BW + 0.91 + r * 0.06], M('#fbfbfb', {roughness: 0.5}));
-      place(new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.018, 10, 32, Math.PI), M('#1b1f1d', {roughness: 0.4})), g, 0.6, 0.95, BW + 0.9);
-      for (const x of [0.48, 0.72]) cy(g, [0.05, 0.05, 0.04], [x, 0.84, BW + 0.9], M('#1b1f1d')).rotation.z = Math.PI / 2;
+      for (const x of [-2.4, 1.9]) for (let r = 0; r < 3; r++) for (let k = 0; k < 10; k++) bx(g, [0.052, 0.008, 0.038], [x - 0.3 + k * 0.066, 0.841, BW + 0.65 + r * 0.06], M('#8f9991', {roughness: 0.5}));
     }
   }
 
@@ -760,7 +769,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   const cl = out.cloverLight = new THREE.PointLight('#9dffc3', 0, 14, 1.5); cl.position.set(HERO_CLOVER.wide[0], HERO_CLOVER.wide[1], 2.5); root.add(cl);
 
   /* ---------- hidden clovers (room-local spots → world) ---------- */
-  const SPOTS = {living: [2.95, 1.32, BW + 0.3], kitchen: [1.8, 1.12, BW + 0.4], classroom: [0.95, 2.72, BW + 0.25], office: [3.0, 1.0, -0.73]};
+  const SPOTS = {living: [2.95, 1.32, BW + 0.3], kitchen: [1.8, 1.12, BW + 0.4], classroom: [0.95, 2.72, BW + 0.25], office: [0.8, 1.03, BW + 0.72]};
   for (const id of CLOVER_ROOMS) {
     const [cx, fy] = ROOMS[id], at = new THREE.Vector3(SPOTS[id][0] + cx, SPOTS[id][1] + fy, SPOTS[id][2]);
     const m = new THREE.MeshStandardMaterial({color: '#39b86b', roughness: 0.3, emissive: '#1d8a48', emissiveIntensity: 0.5});
