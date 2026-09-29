@@ -54,49 +54,45 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 - Reduced motion or a screen under 520 px tall reads the same chapters in normal flow (set before first paint by one inline line and kept by the controller), with every word visible and decorative art left out.
 - Packs are native DOM images moved by transform only. The camera never magnifies a drawn label: the AC bottle leaves frame before the flight into the drop.
 
-### Ambient film
+### AC's film
 
-The existing `assets/motion/lab-film-10s.mp4` is a silent 10.00-second H.264 faststart clip, 1276×720, about 1.15 MB. Its matching poster is `lab-film-poster.webp`. The three concept stills remain available; this revision does not require new generation.
-
-The clip is illustrative botanical/pipette footage. It is not Mediral's factory, research, extraction method, tested absorption or real product texture. Provenance stays accessible in source details/footer, without turning the buying path into a video lesson.
-
-Decorative mode must work without a toggle button. The source remains deferred, playback is muted and inline, and autoplay requires sufficient visibility, an active tab, no reduced-motion preference and no data-saving preference. Leaving the viewport or hiding the tab pauses it. A denied autoplay or media error leaves the poster visible without an error/control panel. Because the shot is not a seamless loop, it plays through and settles quietly; it must not restart on re-entry. Reduced-motion/data-saving visitors receive a poster without a manual playback prompt. Native controls, custom play/pause/replay, timestamps and duration badges are absent.
+- **Files:** `assets/motion/crown-body-1080.mp4` (1920×1080) and `crown-body-720.mp4` (1280×720, for screens up to 900 px wide). Both are silent 24 fps H.264 faststart files, 6.25 seconds long.
+- **What they are:** the body of one concept film (botanicals, then a clear glass funnel with a fine stream), cut before the film's lens so it can rest under AC's words however long a reader stays.
+- **Stills:** `crown-poster.webp` is the still for reduced motion, data saving and playback failure. `crown-end.webp`, the film's own last frame, is the lens the camera enters between AC and BR.
+- **Not evidence:** the footage is concept imagery, not Mediral's factory, research, extraction method, formula, tested results or real product texture. Provenance stays in the footer.
+- **Material, not a player:** it is a full-bleed feathered layer, with no frame, controls, timestamps, duration badge or labels.
+- **Loading and playback:** nothing is requested at the opening. The source is attached on the first permitted pass. It plays muted and inline from the portal to the lens, and pauses in a hidden tab or outside that window.
+- **Revisits:** leaving AC deactivates it first. A genuine return, after truly leaving AC, rewinds it once before it may play again. Scroll frames elsewhere and tab visibility never seek it.
 
 ## Content boundaries
 
-- **Mousse:** the current clover-reference pack is an AI draft. Its size and ingredients are unconfirmed, so the page omits them (no waves, no library entry) instead of borrowing the old gold-rose list, size, method, SLS or hydration claims. Its role is cleansing face and makeup.
+- **Mousse:** the current clover-reference pack is an AI draft. Its size and ingredients are unconfirmed, so the pages omit them (no waves, no ingredient block on its product page) instead of borrowing the old gold-rose list, size, method, SLS or hydration claims. Its role is cleansing face and makeup.
 - **AC:** soothing botanical pair, oil-balance family, then moisture family. Group attribution stays group attribution; no acne cure, germ killing, deadline or universal sensitive-skin claim.
 - **BR:** bearberry/licorice/vitamin C roles, then distinct probiotics/bakuchiol roles, then the fuller source list and light-texture story. No melasma treatment, DNA mechanism, permanent whitening or combined-serum efficacy.
-- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. The tube is shown at normal size; its lettering is never zoomed as proof, and the story copy states no SPF/PA value (the details point to the tube label).
+- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. The tube is shown at normal size and its lettering is never zoomed as proof. The story copy states no SPF/PA value; the sunscreen's own page answers the question with the brand-attributed “สื่อ Mediral ระบุ SPF 50 PA+++” (brand source, checked) and points to the label for use.
 - **PO:** product-level coverage and fine/light/easy-spreading texture, powder/oil group and hydration/soothing group. Group names do not establish an individual ingredient's effect. No live-cell regeneration, universal shade, timed guarantee or sunscreen replacement.
 - AC/BR sensory language and powder texture are attributed brand descriptions, not a fabricated personal review. One truthful section-level attribution can cover the short selling story; detailed sources and limits remain accessible.
 - Every pack is an AI draft, not an authenticated packshot. Ingredient/lab illustrations establish neither concentration, origin, certification nor a manufacturing recipe.
 
-The optional library after the offer retains **AC 24, BR 18, SU 14 and PO 18** named display entries. These 74 entries are neither distinct actives across the range nor a verified full INCI list. Ingredient `benefit_status` remains `brand-claim` or `identity-only`; `ingredient_groups` preserve attribution and complete membership. A missing illustration does not remove the name. The current mousse has no fabricated atlas. Closed atlas disclosures open from product links and fresh hashes, below the fixed header; ingredient exploration never changes the saved purchase list.
+The five product pages (`/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/`) list **AC 24, BR 18, SU 14 and PO 18** names from brand material. These 74 names are neither distinct actives across the range nor a verified full INCI list, and each page says so. Names are grouped as the brand groups them. A name the source lists without a role is shown as a name only, and a missing illustration does not remove it. The sunscreen page notes the trade name HydroAlgae™ without counting it. The mousse page has no ingredient block. Old `#formula-*` links open the matching product page; old `#serums` and `#ingredients` links land on the set.
 
-## Offer, actions and privacy
+## Ordering, actions and privacy
 
-- The poster's fixed five-piece offer is 1,899 THB for 21–30 September 2026, qualified as unverified in the current cart/channel/coupons. Both hero and set retire it outside the dates and refresh at Bangkok midnight/tab return. The hero describes the fixed set independently; the saved-list card requires all five pieces. Partial/empty lists never inherit the bundle price or checkout.
-- `buy.affiliate_url` is null and `buy.status` is pending. The purchase control has no destination. A future checkout requires verified status, an HTTPS Affiliate URL and the complete set. No price advantage, individual-product price or coupon is invented.
-- Copy/PNG actions reflect the saved list. A failed clipboard operation offers selected, read-only text for manual copying. The page takes no payment.
-- `vercel.json` keeps the slash redirect and noindex header/meta. `.vercelignore` excludes docs, tests, source screenshots, asset manifests/briefs, the held old mousse draft and the unsoftened sunscreen draft. Internal sources and costs stay outside public runtime. Noindex is not access control.
+- **One way to order: a conversation with myClover on LINE.**
+  - The destination is `https://lin.ee/rlSlhzT`, the myClover house account (not the brand's LINE).
+  - Every order action on the main page and the product pages reads `routine.json → order`, so the channel changes in one place.
+  - Opening LINE is not an order: myClover gives price, shipping and payment in the chat before anything is confirmed. There is no prefilled-message endpoint.
+- **Pieces chooser:** it only shapes an optional message to paste in LINE. With none chosen, copy is disabled and LINE stays available. A failed clipboard operation offers selected, read-only text. The saved-list picture is gone.
+- **Poster offer:** the fixed five-piece poster offer (1,899 THB, 21–30 September 2026) stays in data with `set.show_offer: false`. Its date rules stay tested for a verified future channel, and it is never shown as a current price.
+- **Affiliate:** `buy.affiliate_url` is null. A future commission link needs verified status, an HTTPS URL and the complete set, and is disclosed beside it. The page takes no payment.
+- **Brand profile:** a quiet footer link to the brand's verified TikTok profile. It is not a product link, a checkout or a commission link.
+- **Real exchange:** the authorized chat screenshot is shipped unchanged (SHA-256 pinned in tests). Teem's own experience is a separate personal account with individual-result context, tied to no product.
+- **Deployment:**
+  - `vercel.json` keeps the slash redirect and the noindex header, with explicit rules for `/mediral/` and for `/mediral/:page(cl|ac|br|su|po)/` (the wildcard does not reach directory indexes), and noindex meta on every page.
+  - `.vercelignore` excludes docs, tests, source screenshots, asset manifests/briefs and held drafts.
+  - Internal sources and costs stay outside the public runtime. Noindex is not access control.
 
-## Verification — product selling revision, 28 September 2026
-
-- The complete Mediral suite passes **91/91** after integration; shelf validation passes for 14 sources, and the diff has no whitespace errors.
-- Browser checks at 1280×800, 820×1180, 390×844 and 360×640 cover the opening, native product packs, ingredient compositions and readable benefit text. No horizontal overflow was observed. The mousse pack is visible; the sunscreen's seven named plant roles are readable on a short phone and tablet.
-- Scroll changes the AC botanical/oil-balance family alongside its explanation. Extracts occupy positions beside the pack rather than behind its label. Tablet and mobile reading lines use their actual two-column/stacked layouts; chapter links account for fixed-header clearance.
-- The quiet film plays without controls, stays behind the sharp product image, and has no separate lesson or duration badge. Lifecycle, visibility, end-of-film, denied playback and data-saving cases have focused automated coverage.
-- Removing the powder removes the fixed-set offer. Four-piece selection survives chapter navigation and desktop/mobile resize. Copy succeeds, and the four-piece PNG was downloaded and opened to verify its actual content.
-- Reduced-motion browser checks show five loaded pack images with the video source unattached. Blocking the 3D dependency keeps all five packs and fifteen semantic beats. Blocking product data preserves the static set, a useful failure/retry message and an inert purchase control. All temporary browser overrides were removed afterward.
-- Ingredient and claim audit retains AC 24 / BR 18 / SU 14 / PO 18 named entries. These are source-listed names, not a full INCI or a total of distinct actives. Current mousse formulation remains unconfirmed. Full/partial/empty lists, offer date boundaries, verified-link gating and clipboard denial have automated regression coverage.
-- Real GPU loss was not forced. Real-device performance and assistive-technology testing are not represented by these browser emulation checks. Actual production bytes and deployment identity are checked after pushing; do not infer publication from local tests.
-
-## Historical verification records
-
-The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the product-selling revision above.
-
-## Verification record — 29 Sep 2026 crown increment
+## Current verification — 29 Sep 2026 crown increment
 
 - **Roles:** built on production `b260673c`. GPT/root supplied one Seedance film (plus the body cut), the public product content, the verified LINE destination and QA. Claude wrote the code, tests and docs.
 - **Tests:** `node --test tests/mediral/*.test.mjs` passes 105/105 (content contracts, controller, engine, film, product pages), and `node shelf/validate.mjs` passes.
@@ -109,6 +105,27 @@ The records below describe earlier implementations, including retired scene and 
   - the reduced-motion flow reads every chapter and the close;
   - the product pages render with no overflow;
   - no console errors.
+- **Production:**
+  - `563451ca` served all 60 deployable files byte for byte.
+  - It sent product routes without the noindex header, so `0d117321` added the explicit directory rule. After that, `/mediral/` and all five product routes send `X-Robots-Tag: noindex, nofollow, noarchive`, and 60/60 files still match.
+  - The film body answers Range with 206. The screenshot hash matches in production. Retired `card.js` and the old clip return 404.
+  - Live headless Chrome: the phone plays the 720 body and desktop the 1080; `#order` lands below the header; the closing link lands on the set.
+  - Root confirmed `563451ca` READY independently.
+
+## Historical verification records
+
+The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the current page described above.
+
+## Verification record — 28 Sep 2026 product selling revision
+
+- The complete Mediral suite passes **91/91** after integration; shelf validation passes for 14 sources, and the diff has no whitespace errors.
+- Browser checks at 1280×800, 820×1180, 390×844 and 360×640 cover the opening, native product packs, ingredient compositions and readable benefit text. No horizontal overflow was observed. The mousse pack is visible; the sunscreen's seven named plant roles are readable on a short phone and tablet.
+- Scroll changes the AC botanical/oil-balance family alongside its explanation. Extracts occupy positions beside the pack rather than behind its label. Tablet and mobile reading lines use their actual two-column/stacked layouts; chapter links account for fixed-header clearance.
+- The quiet film plays without controls, stays behind the sharp product image, and has no separate lesson or duration badge. Lifecycle, visibility, end-of-film, denied playback and data-saving cases have focused automated coverage.
+- Removing the powder removes the fixed-set offer. Four-piece selection survives chapter navigation and desktop/mobile resize. Copy succeeds, and the four-piece PNG was downloaded and opened to verify its actual content.
+- Reduced-motion browser checks show five loaded pack images with the video source unattached. Blocking the 3D dependency keeps all five packs and fifteen semantic beats. Blocking product data preserves the static set, a useful failure/retry message and an inert purchase control. All temporary browser overrides were removed afterward.
+- Ingredient and claim audit retains AC 24 / BR 18 / SU 14 / PO 18 named entries. These are source-listed names, not a full INCI or a total of distinct actives. Current mousse formulation remains unconfirmed. Full/partial/empty lists, offer date boundaries, verified-link gating and clipboard denial have automated regression coverage.
+- Real GPU loss was not forced. Real-device performance and assistive-technology testing are not represented by these browser emulation checks. Actual production bytes and deployment identity are checked after pushing; do not infer publication from local tests.
 
 ## Verification record — 29 Sep 2026 Motion v2 cinema
 
