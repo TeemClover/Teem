@@ -11,19 +11,21 @@ async function raw(req,max=1024*1024){if(Buffer.isBuffer(req.body)){if(req.body.
 function parse(b){try{return JSON.parse(b.toString('utf8'));}catch{throw new Fault('INVALID_JSON');}}
 export function createHandler({store,providers,env=process.env,clock=()=>Date.now()}){
  const configured=()=>Boolean(env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_SECRET&&(env.MEDIRAL_LINE_BOT_ID||env.MEDIRAL_LINE_BASIC_ID));
+ const operatorReady=()=>String(env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY||'').length>=24;
  const botId=()=>env.MEDIRAL_LINE_BOT_ID||providers.botId();
  return async(req,res)=>{
   res.setHeader('Cache-Control','no-store');res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Content-Type-Options','nosniff');
   const json=(value,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(value));};
   const action=new URL(req.url,'https://local.invalid').searchParams.get('action')||'status';const now=clock();
   try{
-   if(action==='health'&&req.method==='GET')return json({ok:true,service:'mediral-commerce',acceptingOrders:env.MEDIRAL_MODE==='live'&&configured()});
+   if(action==='health'&&req.method==='GET')return json({ok:true,service:'mediral-commerce',acceptingOrders:env.MEDIRAL_MODE==='live'&&configured()&&operatorReady()});
    if(action==='webhook'){
     if(req.method!=='POST')throw new Fault('METHOD_NOT_ALLOWED',405);
     if(!configured())throw new Fault('LINE_NOT_CONFIGURED',503);
     const bytes=await raw(req);if(!same(req.headers['x-line-signature'],hmac(bytes,env.MEDIRAL_LINE_SECRET)))throw new Fault('INVALID_SIGNATURE',401);
     const body=parse(bytes);if(body.destination!==await botId()||!Array.isArray(body.events)||body.events.length>100)throw new Fault('INVALID_WEBHOOK');
     if(!body.events.length)return json({ok:true});
+    if(!operatorReady())throw new Fault('ADMIN_NOT_CONFIGURED',503);
     if(env.MEDIRAL_MODE!=='live')return json({ok:true,paused:true});
     if(!env.MEDIRAL_LINE_ACCESS_TOKEN)throw new Fault('LINE_NOT_CONFIGURED',503);
     await store.ensure();
