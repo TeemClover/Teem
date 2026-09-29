@@ -81,3 +81,31 @@ Next sales principle: source-specific entry messages, current conversation conte
 Before enabling follow replies, choose a single greeting source (OA Manager or bot). Keep the existing greeting until bot connection is verified. Do not issue credentials, replace webhook or activate broadcasts as part of this read-only OA inspection.
 
 Future AI scope: understand product questions, retrieve approved product facts, suggest an appropriate next step and draft targeted campaigns. Keep funds, stock and price controlled by the order engine. Campaigns should be previewed by segment and require an explicit send action, respect opt-outs, cap frequency, deduplicate against order messages and measure replies/clicks/orders rather than assuming broadcasts are read. No such campaign was sent in this task.
+# LINE storefront update — 2026-09-30
+
+The shared myClover OA has a six-area rich menu: Mediral information, ordering,
+AI learning, order status, news preferences, and human support. Its native greeting
+and keyword replies are configured separately in OA Manager. Disable native auto
+responses when the webhook goes live to avoid two replies. Keep the native greeting
+and suppress the bot's follow greeting via MEDIRAL_NATIVE_GREETING=1.
+
+The owner approved LINE pricing at 399 THB per unit and 1,899 THB per complete
+five-product set, with no gifts. Shipping and available stock are not confirmed.
+The bot shows merchandise price, but payment still requires an operator quote.
+The quote screen supports the set discount; do not substitute historical TikTok prices.
+
+MEDIRAL_LINE_BASIC_ID allows the server to resolve and validate bot identity using
+LINE GET /v2/bot/info, without exporting its token to a local file. An explicit
+MEDIRAL_LINE_BOT_ID continues to work for existing installations.
+
+An authenticated dashboard now has an attention summary built from known order
+states and handoff reasons. It does not claim to summarize complete transcripts.
+When MEDIRAL_OWNER_LINE_ID is set to the verified owner's LINE ID, the existing
+five-minute drain schedules one private push per new actionable state. Deduplication
+and the durable outbox prevent repeated alerts on unchanged cases. Alerts contain
+task type and order number, never addresses or receipt images. LINE push quotas
+and delivery failures still apply. No broadcast endpoint is introduced.
+
+Live acceptance still requires a real inbound user message, a reply in LINE,
+owner alert delivery, working admin login, and payment-provider configuration.
+No EasySlip key means slips go to manual review; no image model marks payments paid.

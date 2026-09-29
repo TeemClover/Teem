@@ -6,6 +6,7 @@ const message=text=>lineText(text,choices);
 // Shared-OA routing is explicit and deterministic. An LLM is not connected here.
 // Only coarse, customer-expressed interests are recorded; never inferred conditions.
 export function houseReducer(state,event,order,options={}){
+ if(event.message?.text==='ติดต่อทีม')event={...event,message:{...event.message,text:'คุยกับคนดูแล'}};
  const s=structuredClone(state||{}),text=clean(event.message?.text,1800),now=options.now??Date.now();
  const h=s.house||={topic:null,interests:{},subscriptions:{}};
  const answer=text=>({state:s,order:null,messages:[typeof text==='string'?message(text):text]});
@@ -14,6 +15,7 @@ export function houseReducer(state,event,order,options={}){
  if(text==='หยุดข่าวทั้งหมด'){h.subscriptions={};h.stoppedAt=now;return answer('หยุดข่าวและข้อเสนอให้แล้วค่ะ 🍀 ยังสอบถามสินค้าและติดตามออเดอร์ได้ตามปกติ');}
  if(event.type==='follow'){
   h.blocked=false;
+  if(options.nativeGreeting)return {state:s,order:null,messages:[]};
   // Do not resume a staff handoff or abandoned checkout on refollow.
   return answer('ยินดีต้อนรับสู่บ้าน myClover 🍀\nอยากคุยเรื่องไหน พิมพ์มาได้เลยค่ะ ทั้งดูแลผิวและเรียนรู้เรื่อง AI\nเพิ่มเพื่อนแล้วเรายังไม่สมัครข่าวให้ จนกว่าคุณจะเลือกเอง');
  }
@@ -21,6 +23,7 @@ export function houseReducer(state,event,order,options={}){
  if(text==='เลือกข่าวที่สนใจ')return answer(lineText('เลือกเฉพาะเรื่องที่อยากให้บ้านส่งมาหาได้ค่ะ ไม่เลือกก็ยังสั่งซื้อได้ตามปกติ\nพิมพ์ “หยุดข่าวทั้งหมด” เพื่อหยุดได้ทุกเวลา',['รับข่าวดูแลผิว','รับข่าว AI','รับข่าวของใช้ในบ้าน','หยุดข่าวทั้งหมด']));
  const subscription={'รับข่าวดูแลผิว':'mediral','รับข่าว AI':'ai','รับข่าวของใช้ในบ้าน':'home'}[text];
  if(subscription){h.subscriptions[subscription]={at:now,via:'explicit_message'};h.interests[subscription]||={at:now,via:'explicit_preference'};return answer(`บันทึกไว้แล้วค่ะ จะรับเฉพาะข่าว${TOPICS[subscription]}ที่คุณเลือก 🍀\nหากไม่ต้องการรับต่อ พิมพ์ “หยุดข่าวทั้งหมด” ได้เลย`);}
+ if(text==='สถานะออเดอร์'&&!order)return answer('ยังไม่มีออเดอร์ในระบบค่ะ ถ้าเคยสั่งผ่านทีม ส่งเลขออเดอร์ให้คนดูแลช่วยตรวจได้เลย');
  if(/^(คุยกับคนดูแล|แอดมิน|ขอลบข้อมูล|สถานะออเดอร์)$/.test(text))return mediral(s,event,order,options);
  const explicit={'คุยเรื่อง Mediral':'mediral','คุยเรื่อง AI':'ai'}[text];
  const collecting=['consent','name','phone','address','confirm'].includes(s.stage);

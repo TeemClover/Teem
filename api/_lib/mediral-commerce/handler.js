@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {BANK,Fault,clean,hmac,same,reducer,quote,inspectSlip,paymentMessage,lineText,amount} from './domain.js';
 import {dispatch} from './providers.js';
 import {houseReducer} from './house.js';
+import {attention,queueOwnerAttention} from './attention.js';
 const COOKIE='__Host-mediral-admin';
 function cookieToken(env,now){const expires=String(now+4*3600000);return `${expires}.${hmac('mediral-admin:'+expires,env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'')}`;}
 function authenticated(req,env,now){const value=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='))?.slice(COOKIE.length+1)||'';const [expires]=value.split('.');return /^\d{13}$/.test(expires)&&+expires>now&&+expires<=now+4*3600000&&same(value,cookieToken(env,+expires-4*3600000));}
@@ -9,17 +10,19 @@ function originOK(req){return req.headers.origin===`https://${req.headers.host}`
 async function raw(req,max=1024*1024){if(Buffer.isBuffer(req.body)){if(req.body.length>max)throw new Fault('BODY_TOO_LARGE',413);return req.body;}if(typeof req.body==='string'){const b=Buffer.from(req.body);if(b.length>max)throw new Fault('BODY_TOO_LARGE',413);return b;}if(req.body&&typeof req.body==='object')throw new Fault('RAW_BODY_REQUIRED',400);const chunks=[];let size=0;for await(const c of req){const b=Buffer.from(c);size+=b.length;if(size>max)throw new Fault('BODY_TOO_LARGE',413);chunks.push(b);}return Buffer.concat(chunks);}
 function parse(b){try{return JSON.parse(b.toString('utf8'));}catch{throw new Fault('INVALID_JSON');}}
 export function createHandler({store,providers,env=process.env,clock=()=>Date.now()}){
+ const configured=()=>Boolean(env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_SECRET&&(env.MEDIRAL_LINE_BOT_ID||env.MEDIRAL_LINE_BASIC_ID));
+ const botId=()=>env.MEDIRAL_LINE_BOT_ID||providers.botId();
  return async(req,res)=>{
   res.setHeader('Cache-Control','no-store');res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Content-Type-Options','nosniff');
   const json=(value,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(value));};
   const action=new URL(req.url,'https://local.invalid').searchParams.get('action')||'status';const now=clock();
   try{
-   if(action==='health'&&req.method==='GET')return json({ok:true,service:'mediral-commerce',acceptingOrders:env.MEDIRAL_MODE==='live'&&Boolean(env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_SECRET&&env.MEDIRAL_LINE_BOT_ID)});
+   if(action==='health'&&req.method==='GET')return json({ok:true,service:'mediral-commerce',acceptingOrders:env.MEDIRAL_MODE==='live'&&configured()});
    if(action==='webhook'){
     if(req.method!=='POST')throw new Fault('METHOD_NOT_ALLOWED',405);
-    if(!env.MEDIRAL_LINE_SECRET||!env.MEDIRAL_LINE_BOT_ID)throw new Fault('LINE_NOT_CONFIGURED',503);
+    if(!configured())throw new Fault('LINE_NOT_CONFIGURED',503);
     const bytes=await raw(req);if(!same(req.headers['x-line-signature'],hmac(bytes,env.MEDIRAL_LINE_SECRET)))throw new Fault('INVALID_SIGNATURE',401);
-    const body=parse(bytes);if(body.destination!==env.MEDIRAL_LINE_BOT_ID||!Array.isArray(body.events)||body.events.length>100)throw new Fault('INVALID_WEBHOOK');
+    const body=parse(bytes);if(body.destination!==await botId()||!Array.isArray(body.events)||body.events.length>100)throw new Fault('INVALID_WEBHOOK');
     if(!body.events.length)return json({ok:true});
     if(env.MEDIRAL_MODE!=='live')return json({ok:true,paused:true});
     if(!env.MEDIRAL_LINE_ACCESS_TOKEN)throw new Fault('LINE_NOT_CONFIGURED',503);
@@ -34,7 +37,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
       if(await store.event(event.webhookEventId))continue;
       if(event.timestamp<(c.state.lastEventAt||0)||event.timestamp<clock()-24*3600000){await store.commit(c,{state:c.state,eventId:event.webhookEventId},clock());continue;}
       const order=c.state.orderId?await store.order(c.state.orderId):null;
-      let result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock()});result.state.lastEventAt=event.timestamp;
+      let result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock(),nativeGreeting:env.MEDIRAL_NATIVE_GREETING!=='0'});result.state.lastEventAt=event.timestamp;
       if(await store.limited('user:'+user,40,60000,clock())){result={state:c.state,order:null,messages:[]};}
       if(result.verifyImage){
        const o=result.order;let checked={ok:false,reason:'PROVIDER_UNAVAILABLE'};
@@ -45,6 +48,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
        // Provider results are evidence; staff confirms actual receipt of funds before fulfillment.
        result.messages=[lineText(checked.ok?`สลิปตรงกับยอดและบัญชีของรายการ ${o.id} ค่ะ กำลังยืนยันยอดเงินเข้า แล้วจะแจ้งเตรียมจัดส่งให้ ไม่ต้องโอนซ้ำนะคะ`:`ได้รับสลิปของ ${o.id} แล้วค่ะ ให้คนดูแลตรวจเพิ่มเติมก่อน ยังไม่ต้องโอนซ้ำหรือโอนเพิ่ม`)];
       }
+      if(result.state.paused&&(!c.state.paused||result.state.reason!==c.state.reason))result.state.attentionId=event.webhookEventId;
       const out=await store.commit(c,{...result,eventId:event.webhookEventId,replyToken:event.replyToken,messages:event.replyToken?result.messages:[]},clock());
       if(out)await dispatch(store,providers,out,clock());
      }finally{await store.release(c);}
@@ -54,10 +58,10 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     return json({ok:true});
    }
    if(action==='drain'){
-    if(!env.MEDIRAL_LINE_BOT_ID)return json({ok:true,skipped:'not_connected'});
+    if(!configured())return json({ok:true,skipped:'not_connected'});
     if(!['GET','POST'].includes(req.method))throw new Fault('METHOD_NOT_ALLOWED',405);
     if(!env.CRON_SECRET||!same(req.headers.authorization,`Bearer ${env.CRON_SECRET}`))throw new Fault('UNAUTHORIZED',401);
-    await store.ensure();for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}await store.cleanup(clock());return json({ok:true});
+    await store.ensure();await queueOwnerAttention(store,env,clock());for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}await store.cleanup(clock());return json({ok:true});
    }
    const key=env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY;if(!key||key.length<24)throw new Fault('ADMIN_NOT_CONFIGURED',503);
    if(req.method!=='GET'&&!originOK(req))throw new Fault('INVALID_ORIGIN',403);
@@ -69,9 +73,9 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
    if(!authenticated(req,env,now))throw new Fault('UNAUTHORIZED',401);
    if(action==='logout'&&req.method==='POST'){res.setHeader('Set-Cookie',`${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);return json({ok:true});}
    await store.ensure();
-   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:Boolean(env.MEDIRAL_LINE_SECRET&&env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_BOT_ID),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
+   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
    if(action==='retry'&&req.method==='POST'){for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}return json({ok:true});}
-   if(action==='list'&&req.method==='GET')return json({ok:true,...await store.list()});
+   if(action==='list'&&req.method==='GET'){const data=await store.list();return json({ok:true,...data,attention:attention(data)});}
    if(action==='receipt'&&req.method==='GET'){
     const id=new URL(req.url,'https://local.invalid').searchParams.get('id');const order=await store.order(id);if(!order?.receipt)throw new Fault('NOT_FOUND',404);if(!['image/jpeg','image/png'].includes(order.receipt.mime))throw new Fault('INVALID_IMAGE',500);
     res.setHeader('Content-Type',order.receipt.mime);res.setHeader('Content-Disposition','attachment; filename="receipt.'+(order.receipt.mime==='image/png'?'png':'jpg')+'"');res.setHeader('Content-Security-Policy',"default-src 'none'; sandbox");res.statusCode=200;return res.end(Buffer.from(order.receipt.base64,'base64'));
@@ -86,7 +90,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     else if(body.command==='pause'){state.paused=true;state.reason='คนดูแลรับช่วง';}
     else{
      if(!order)throw new Fault('NOT_FOUND',404);
-     if(body.command==='quote'){if(env.MEDIRAL_MODE!=='live'||!env.MEDIRAL_LINE_ACCESS_TOKEN||!env.MEDIRAL_LINE_SECRET||!env.MEDIRAL_LINE_BOT_ID)throw new Fault('LINE_NOT_READY',409);order=quote(order,body,now);state.paused=false;delete state.reason;messages=[paymentMessage(order)];}
+     if(body.command==='quote'){if(env.MEDIRAL_MODE!=='live'||!configured())throw new Fault('LINE_NOT_READY',409);order=quote(order,body,now);state.paused=false;delete state.reason;messages=[paymentMessage(order)];}
      else if(body.command==='paid'){
       if(!['awaiting_payment','payment_review'].includes(order.status))throw new Fault('ORDER_NOT_PAYABLE',409);
       const ref=clean(body.transRef,120).toUpperCase();const transferred=Date.parse(body.transferredAt);

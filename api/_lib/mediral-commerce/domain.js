@@ -1,4 +1,5 @@
 import {createHmac, timingSafeEqual, randomUUID} from 'node:crypto';
+import {retailPrice} from './catalog.js';
 export const PRODUCTS = {CL:'มูสโฟมล้างหน้า',AC:'เซรั่มขวดขาว',BR:'เซรั่มขวดเหลืองเขียว',SU:'เซรั่มกันแดด',PO:'แป้งพัฟตลับเขียว'};
 // The owner explicitly selected the existing, public AI Sauce receiving account.
 export const BANK = {code:'004',name:'ธนาคารกสิกรไทย (KBank)',number:'0493864300',owner:'นรินทร์ ลีลาภรณ์'};
@@ -10,7 +11,7 @@ export const money = n => (n/100).toLocaleString('th-TH',{minimumFractionDigits:
 export class Fault extends Error {constructor(code,status=400){super(code);this.code=code;this.status=status;}}
 export function amount(s) {if(!/^\d{1,6}(\.\d{1,2})?$/.test(String(s)))throw new Fault('INVALID_AMOUNT');const [a,b='']=String(s).split('.');return Number(a)*100+Number(b.padEnd(2,'0'));}
 export const lineText = (text,buttons=[]) => ({type:'text',text:text.slice(0,4900),...(buttons.length?{quickReply:{items:buttons.slice(0,13).map(label=>({type:'action',action:{type:'message',label:label.slice(0,20),text:label}}))}}:{})});
-const menu = () => lineText('myClover ยินดีช่วยเลือก Mediral ค่ะ 🍀\nเลือกชุด 5 ชิ้น หรือเริ่มจากชิ้นที่ต้องการได้เลย\nเราจะแจ้งราคาและค่าส่งให้ยืนยันก่อนโอนทุกครั้ง',['ชุด 5 ชิ้น',...Object.values(PRODUCTS),'คุยกับคนดูแล']);
+const menu = () => lineText('เลือก Mediral ที่อยากใช้ได้เลยค่ะ 🍀\nชิ้นละ 399 บาท · ครบชุด 5 ชิ้น 1,899 บาท\nไม่มีของแถม ค่าส่งและของพร้อมส่งจะยืนยันก่อนโอน',['ชุด 5 ชิ้น',...Object.values(PRODUCTS),'คุยกับคนดูแล']);
 export function cartText(items){return Object.entries(items).map(([id,qty])=>`${PRODUCTS[id]} × ${qty}`).join('\n');}
 export function summary(o){return `${o.id}\n${cartText(o.items)}\n\nผู้รับ: ${o.name}\nโทร: ${o.phone}\n${o.address}`;}
 export function paymentMessage(o){return lineText(`${summary(o)}\n\nสินค้า ${money(o.subtotal)} บาท\nค่าส่ง ${money(o.shipping)} บาท\nรวมโอน ${money(o.total)} บาท\n\n${BANK.name}\n${BANK.number}\n${BANK.owner}\nชำระภายใน ${new Date(o.expiresAt).toLocaleString('th-TH',{timeZone:'Asia/Bangkok'})}\nกรุณาตรวจชื่อบัญชี ยอด และที่อยู่ก่อนโอน แล้วส่งภาพสลิปในแชทนี้\nคำสั่งซื้อนี้มีผลเมื่อเรายืนยันรับชำระ`,['ส่งสลิป','แก้ข้อมูลก่อนโอน','คุยกับคนดูแล']);}
@@ -38,7 +39,7 @@ export function reducer(state,event,order,{now=Date.now(),id=()=>`MD-${randomUUI
   else if(text==='ยืนยันสินค้า'&&Object.keys(s.items).length){s.stage='consent';return reply(`เราขอชื่อ เบอร์โทร และที่อยู่เพื่อรับออเดอร์และจัดส่ง สลิปจะส่งให้ EasySlip ตรวจธุรกรรมเมื่อเปิดบริการ ข้อมูลไม่ใช้สมัครโฆษณาและไม่ส่งให้ AI\nรายละเอียด: ${SITE}/mediral/privacy/\nยินยอมให้ใช้ข้อมูลเพื่อทำรายการนี้ไหมคะ`,['ยินยอมทำรายการ','คุยกับคนดูแล']);}
   else if(/(สารสกัด|ส่วนผสม|วิธีใช้|กันแดด|สิว|แพ้)/.test(text))return reply(`ดูข้อมูลแต่ละชิ้นและส่วนผสมได้ที่ ${SITE}/mediral/\nถ้าอยากให้ช่วยเลือกหรือมีอาการแพ้ ให้คนดูแลช่วยตอบเป็นรายกรณีนะคะ`,['คุยกับคนดูแล','ชุด 5 ชิ้น']);
   else return reply(menu());
-  return reply(`ชิ้นที่เลือก 🍀\n${cartText(s.items)}\nกดสินค้าอีกครั้งเพื่อเพิ่มจำนวน (สูงสุด 5 ต่อชนิด)\nคนดูแลจะเช็กของและแจ้งราคาก่อนรับเงิน`,['ยืนยันสินค้า','เริ่มใหม่',...Object.values(PRODUCTS)]);
+  return reply(`ชิ้นที่เลือก 🍀\n${cartText(s.items)}\nราคาสินค้า ${money(retailPrice(s.items).subtotal)} บาท ยังไม่รวมค่าส่ง\nกดสินค้าอีกครั้งเพื่อเพิ่มจำนวน (สูงสุด 5 ต่อชนิด)\nคนดูแลจะเช็กของและแจ้งยอดก่อนรับเงิน`,['ยืนยันสินค้า','เริ่มใหม่',...Object.values(PRODUCTS)]);
  }
  if(s.stage==='consent'){if(text!=='ยินยอมทำรายการ')return reply('กดยินยอมเพื่อเริ่มกรอกข้อมูล หรือคุยกับคนดูแลได้ค่ะ',['ยินยอมทำรายการ','คุยกับคนดูแล']);s.consentAt=now;s.stage='name';return reply('ขอชื่อ–นามสกุลผู้รับค่ะ');}
  if(s.stage==='name'){if(text.length<2||text.length>120)return reply('กรุณาส่งชื่อผู้รับ ความยาวไม่เกิน 120 ตัวอักษรค่ะ');s.name=text;s.stage='phone';return reply('ขอเบอร์โทรผู้รับสำหรับจัดส่งค่ะ');}
@@ -51,8 +52,10 @@ export function quote(order,body,now){
  if(order.status!=='awaiting_quote')throw new Fault('ORDER_NOT_QUOTABLE',409);
  if(body.stockConfirmed!==true)throw new Fault('CONFIRM_STOCK_FIRST');
  const prices={};let subtotal=0;for(const [sku,qty] of Object.entries(order.items)){const p=amount(body.prices?.[sku]);if(p<=0)throw new Fault('INVALID_PRICE');prices[sku]=p;subtotal+=p*qty;}
+ const retail=body.useRetailPricing===true?retailPrice(order.items):null;
+ if(retail)subtotal=retail.subtotal;
  const shipping=amount(body.shipping);if(subtotal+shipping>10000000)throw new Fault('TOTAL_TOO_HIGH');
- return {...order,prices,subtotal,shipping,total:subtotal+shipping,status:'awaiting_payment',quotedAt:now,expiresAt:now+24*3600000,history:[...order.history,{at:now,action:'quoted'}]};
+ return {...order,prices:retail?.prices||prices,discount:retail?.discount||0,subtotal,shipping,total:subtotal+shipping,status:'awaiting_payment',quotedAt:now,expiresAt:now+24*3600000,history:[...order.history,{at:now,action:'quoted'}]};
 }
 export function inspectSlip(result,order,now){
  const fail=reason=>({ok:false,reason});if(result?.success!==true)return fail('PROVIDER_UNAVAILABLE_OR_INVALID');const d=result.data,a=d?.matchedAccount,r=d?.rawSlip;

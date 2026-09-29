@@ -7,7 +7,8 @@ export const SCHEMA = [
 `CREATE TABLE IF NOT EXISTS mc_mediral_events (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_at BIGINT NOT NULL)`,
 `CREATE TABLE IF NOT EXISTS mc_mediral_transfers (reference TEXT PRIMARY KEY, order_id TEXT NOT NULL UNIQUE, created_at BIGINT NOT NULL)`,
 `CREATE TABLE IF NOT EXISTS mc_mediral_outbox (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, kind TEXT NOT NULL, order_id TEXT, order_status TEXT, token TEXT, messages TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', attempts INTEGER NOT NULL DEFAULT 0, lease TEXT, lease_until BIGINT NOT NULL DEFAULT 0, created_at BIGINT NOT NULL, sent_at BIGINT, error_code TEXT)`,
-`CREATE TABLE IF NOT EXISTS mc_mediral_limits (id TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_at BIGINT NOT NULL)`
+`CREATE TABLE IF NOT EXISTS mc_mediral_limits (id TEXT PRIMARY KEY, hits INTEGER NOT NULL, expires_at BIGINT NOT NULL)`,
+`CREATE TABLE IF NOT EXISTS mc_mediral_owner_notices (id TEXT PRIMARY KEY, write_id TEXT NOT NULL, created_at BIGINT NOT NULL)`
 ];
 export function createStore(sql){
  const q=(s,p=[])=>sql.query(s,p);let ready;
@@ -33,6 +34,12 @@ export function createStore(sql){
    const result=await tx(parts);if(!result[0].length)throw new Fault('CUSTOMER_BUSY',409);return messages.length?outboxId:null;
   },
   async drainRows(now){return q(`SELECT id FROM mc_mediral_outbox WHERE status='pending' AND lease_until<$1 ORDER BY created_at LIMIT 20`,[now]);},
+  async ownerNotice(key,user,messages,now){
+   const id=randomUUID();const rows=await tx([
+    ['INSERT INTO mc_mediral_owner_notices (id,write_id,created_at) VALUES ($1,$2,$3) ON CONFLICT(id) DO NOTHING RETURNING id',[key,id,now]],
+    ["INSERT INTO mc_mediral_outbox (id,user_id,kind,messages,created_at) SELECT $1,$2,'push',$3,$4 WHERE EXISTS (SELECT 1 FROM mc_mediral_owner_notices WHERE id=$5 AND write_id=$1)",[id,user,JSON.stringify(messages),now,key]]
+   ]);return rows[0].length>0;
+  },
   async claimMessage(id,now){const lease=randomUUID();const [r]=await q(`UPDATE mc_mediral_outbox SET lease=$2,lease_until=$3,attempts=attempts+1 WHERE id=$1 AND status='pending' AND lease_until<$4 RETURNING *`,[id,lease,now+20000,now]);return r?{...r,messages:JSON.parse(r.messages)}:null;},
   async finishMessage(row,status,code,now){await q(`UPDATE mc_mediral_outbox SET status=$3,error_code=$4,sent_at=$5,lease=NULL,lease_until=0,token=CASE WHEN $3='pending' THEN token ELSE NULL END,messages=CASE WHEN $3='pending' THEN messages ELSE '[]' END WHERE id=$1 AND lease=$2 AND status='pending'`,[row.id,row.lease,status,code,status==='sent'?now:null]);},
   async queueStatus(){return q(`SELECT id,kind,status,attempts,created_at,error_code FROM mc_mediral_outbox WHERE status IN ('pending','failed') ORDER BY created_at DESC LIMIT 50`);},
