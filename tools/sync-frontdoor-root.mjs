@@ -2,7 +2,7 @@
  * Render the public entrances from their source documents; never rewrite /home/.
  *   /          ← tour/index.html      (บ้าน myClover 3D: the homepage)
  *   /compass/  ← frontdoor/index.html (the Compass: the previous homepage)
- * /tour/ and /frontdoor/ stay as noindex review aliases of the same documents.
+ * Source aliases may omit robots metadata; publication keeps explicit canonical metadata.
  */
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -31,7 +31,9 @@ ${SHARE}
 <meta property="og:url" content="https://www.myclover.com/compass/">
 <meta name="twitter:title" content="เข็มทิศ myClover — ลองหยิบเข็มทิศดู">
 <meta name="twitter:description" content="ค้นพบสิ่งที่ใช่ เรียนรู้สิ่งใหม่ และเริ่มต้นโอกาสดี ๆ ในแบบของคุณ">`;
-  return source.replace(/<meta name="robots"[^>]+>/,metadata)
+  const robots=/<meta name="robots"[^>]+>/;
+  const withMetadata=robots.test(source) ? source.replace(robots,metadata) : source.replace(/(<meta name="theme-color"[^>]+>)/,`$1\n${metadata}`);
+  return withMetadata
     .replace('<title>myClover — ลองหยิบเข็มทิศดู</title>','<title>เข็มทิศ myClover — โชคดีในแบบของคุณ</title>')
     .replace('content="บางอย่างในบ้านนี้ กำลังรอมือคุณ"','content="ลองหยิบเข็มทิศ สำรวจสิ่งที่ตรงกับคุณ ทั้ง AI ครัวเอโกะ กิจวัตร และโอกาสใหม่ แล้วเริ่มทำอะไรดี ๆ ไปด้วยกัน"');
 }
@@ -39,7 +41,7 @@ ${SHARE}
 /** The house tour, published at /. */
 export function renderTourRoot(source){
   if(!source.includes('id="stage"')||!source.includes('/tour/tour.js'))throw Error('Expected the current house tour document');
-  const tour=/<!-- Candidate homepage[^>]*-->\n<meta name="robots"[^>]+>\n<link rel="canonical"[^>]+>/;
+  const tour=/<!-- Candidate homepage[^>]*-->\n(?:<meta name="robots"[^>]+>\n)?<link rel="canonical"[^>]+>/;
   if(!tour.test(source))throw Error('Expected the tour robots/canonical block');
   return source.replace(tour,`<meta name="robots" content="index,follow">
 <link rel="canonical" href="https://www.myclover.com/">`)

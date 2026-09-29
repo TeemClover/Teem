@@ -59,7 +59,7 @@ function openLucky() {
 }
 $('#open-lucky')?.addEventListener('click', openLucky);
 $('#lucky-again')?.addEventListener('click', () => { $('#lucky-message').textContent = drawLucky(); });
-const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องโปรเจกต์'})[id] || 'บ้าน';
+const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องทำงาน'})[id] || 'บ้าน';
 
 function renderCount(pop) {
   const btn = $('#clover-count'); if (!btn) return;
@@ -368,7 +368,7 @@ async function boot() {
     kitchen: {pos: [5.4, 2.65, 7.4], look: [3.9, 0.95, -1]},
     stairs: {pos: [7.6, 3.6, 9.2], look: [10.1, 2.3, -0.8], phone: [1.2, -0.6]},
     classroom: {pos: [5.4, F2 + 2.65, 7.4], look: [3.9, F2 + 1.05, -1]},
-    office: {pos: [-2.6, F2 + 2.65, 7.4], look: [-4.1, F2 + 1.05, -1]},
+    office: {pos: [-2.2, F2 + 2.8, 10.3], look: [-4.0, F2 + 1.1, -0.5]},
     finale: {pos: [8, 5.6, 28], look: [1.0, 3.4, 0], phoneShot: {pos: [3.2, 4.4, 37], look: [0.4, 3.4, 0]}},
   };
   const order = sections.map(s => s.dataset.scene).filter(id => SHOTS[id]);

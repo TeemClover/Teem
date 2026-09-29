@@ -69,6 +69,7 @@ test('all configured house art resolves, including the instructor and current pr
   }
   for (const slot of ['course-poster', 'screen-resume', 'screen-xvisor', 'screen-airova']) assert.ok(slots[slot]);
   const {ART} = await import('../../tour/house.js');
+  assert.ok(await exists(ART['ako-cookbook'].fallback), 'generated Ako cookbook cover resolves');
   for (const [slot, path] of [['teem-portrait', '/meet/img/teem.jpg'], ['ako-portrait', '/meet/img/ako.jpg']]) {
     assert.equal(slots[slot], undefined, 'Meet portraits must not be replaced by generated art');
     assert.equal(ART[slot].fallback, path);
