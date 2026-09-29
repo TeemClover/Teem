@@ -73,3 +73,7 @@ mediral/assets/*.md
 mediral/assets/*.json
 mediral/assets/pack/cl-front-ai-draft-hold.webp
 mediral/assets/pack/su-front.webp
+
+# LINE commerce local fixtures and setup template are not public assets.
+tests/mediral-commerce/
+.env.mediral.example
