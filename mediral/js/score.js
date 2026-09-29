@@ -34,7 +34,7 @@ const problem = (step, key) => `<p class="mr-problem" data-layer="${key}.problem
 // Each chapter's last hold names the piece and offers its full page; the link is inert while faded.
 // The route mark: number and pack colour always travel with the name, never colour alone.
 export const toneMark = step => `<b>${pad(step.order)}</b><i class="mr-tone mr-tone--${step.tone.key}" aria-hidden="true"></i>${esc(step.tone.word)}`;
-const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot" data-inert-hidden><p class="mr-tag-line">${toneMark(step)} · ${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p><p class="mr-support">${esc(step.scene.support)}</p><a class="mr-foot__more" href="${detailHref(step)}">รู้จัก${esc(step.nick)}ให้ลึกขึ้น <span aria-hidden="true">→</span></a></div>`;
+const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot" data-inert-hidden><p class="mr-tag-line">${toneMark(step)} · ${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p>${step.scene.support ? `<p class="mr-support">${esc(step.scene.support)}</p>` : ''}<a class="mr-foot__more" href="${detailHref(step)}">รู้จัก${esc(step.nick)}ให้ลึกขึ้น <span aria-hidden="true">→</span></a></div>`;
 const title = (step, key, cls = '') => `<h2 class="mr-title ${cls}" id="h-${step.id}" data-layer="${key}.title">${lines(step.scene.headline)}</h2>`;
 // A wave may name a word boundary (split) where an object stands between two whole Thai words.
 function wave(step, index, layer, cls = '') {
@@ -126,7 +126,7 @@ export const SHOTS = {
   // Light through the drop: three names come into focus on three depths, then balance and smoothness.
   BR: (step, asset) => {
     const [bear, licorice] = ['สารสกัดแบร์เบอร์รี่', 'สารสกัดชะเอมเทศ'].map(name => imageOf(step, name));
-    const [even, balance, smooth] = step.scene.waves;
+    const [even] = step.scene.waves;
     const plane = (key, file, name, cls) => `<figure class="mr-plane ${cls}" data-layer="br.${key}" aria-hidden="true">${file ? `<img data-src="${asset(file)}" alt="" decoding="async">` : ''}<figcaption>${esc(name)}</figcaption></figure>`;
     return `
     <div role="region" class="mr-shot mr-shot--br" data-shot="BR" data-layer="br" aria-labelledby="h-BR">
@@ -140,11 +140,9 @@ export const SHOTS = {
         ${plane('vitc', 'assets/experience/p0-2-drop-clear.webp', even.show[2], 'mr-plane--far')}
         ${plane('lic', licorice, even.show[1], 'mr-plane--mid')}
         ${plane('bear', bear, even.show[0], 'mr-plane--near')}
-        <p class="mr-wave" data-layer="br.w1"><span class="mr-wave__word">${esc(even.label)}</span><span class="mr-sr">${even.show.map(esc).join(' · ')}</span></p>
-        <div class="mr-pairs" data-layer="br.w2">
-          <p><span class="mr-wave__word">${esc(balance.label)}</span><span class="mr-wave__names">${balance.show.map(esc).join(' · ')}</span></p>
-          <p><span class="mr-wave__word">${esc(smooth.label)}</span><span class="mr-wave__names">${smooth.show.map(esc).join(' · ')}</span></p>
-        </div>
+        <span class="mr-sr">${even.show.map(esc).join(' · ')}</span>
+        ${wave(step, 1, 'br.w2', 'mr-br__secondary')}
+        ${wave(step, 2, 'br.w3', 'mr-br__secondary')}
         ${foot(step, 'br')}
       </div>
     </div>`;
@@ -210,8 +208,6 @@ export const CHAPTERS = [
 ];
 export const END = 14.75;
 
-// A chapter's problem is read large where its words will be, then settles into its kicker and later leaves.
-const kicker = (frames, leaveAt) => [...frames, [leaveAt, {}], [leaveAt + 0.08, {dy: -3, o: 0}]];
 // Fade in from below, hold, and (optionally) fade out upwards.
 const beat = (inAt, outAt, from = {dy: 3}, to = {dy: -3}) => {
   const frames = [[inAt, {...from, o: 0}], [inAt + 0.1, {}]];
@@ -265,17 +261,19 @@ export function score({tall, W, H}) {
     [1.44, {x: 60, y: foamY(-tilt - 1) - 14, r: rot, o: 0}, 'out'],
     [sweep.from - 0.01, {...across(150), o: 0}, 'step'],
     [sweep.from, across(150), 'step'],
-    [sweep.to, across(-50), 'lin'],
+    [sweep.to, across(-50), 'io'],
     [sweep.to + 0.01, {...across(-50), o: 0}, 'step'],
   ]);
   const big = {dy: tall ? 9 : 10, s: 1.5};
-  set('cl.problem', kicker([[1.0, big], [1.52, big], [1.64, {}]], 2.86));
-  // The swap happens only while the foam's dense centre covers the whole word.
+  const questionOut = {...big, dy: big.dy - 2, o: 0};
+  // A question finishes before its answer; it does not remain as another text layer above it.
+  set('cl.problem', [[1.0, big], [1.44, big], [1.56, questionOut]]);
+  // The first phrase dissolves under dense foam; its softer answer blooms in the cleared space.
   const cover = (sweep.from + sweep.to) / 2;
-  set('cl.word1', [[1.56, {dy: 3, o: 0}], [1.68, {}], [cover - 0.02, {}], [cover - 0.019, {o: 0}, 'step']]);
-  // Finish “ออก” before naming the botanicals and product: each text gets its own reading hold.
-  const namesAt = 2.5;
-  set('cl.word2', [[cover - 0.02, {o: 0}], [cover - 0.019, {}, 'step'], [2.4, {}], [namesAt, {dy: -3, o: 0}]]);
+  set('cl.word1', [[1.56, {dy: 3, o: 0}], [1.68, {}], [cover - 0.06, {}], [cover, {o: 0}]]);
+  // Finish the gentle rinse before naming the botanicals and product: each gets a reading hold.
+  const namesAt = 2.6;
+  set('cl.word2', [[2.22, {dy: .7, o: 0}], [2.38, {}, 'out'], [2.5, {}], [namesAt, {dy: -1, o: 0}]]);
   set('cl.foot', beat(namesAt, 2.86, {dy: 2}, {dy: 2}));
   for (let i = 0; i < 3; i++) {
     const side = i === 1 ? 1 : -1;
@@ -307,26 +305,26 @@ export function score({tall, W, H}) {
   // The film is the chapter's material: whole as the portal opens, quieter while words are read.
   set('ac.film', [[ringUp, {s: 1.3}], [3.9, {s: 1.06}, 'out'], [4.3, {s: 1.03, o: 0.55}], [4.5, {s: 1.02, o: 0.3}], [5.7, {o: 0.26}], [6.2, {o: 0.4}]]);
   set('ac.tea', [[ringUp, {dx: -36, dy: 14, s: 1.6}], [3.85, {dx: -4, dy: 2, s: 1.12}, 'out'], [4.3, {}], [4.48, {dx: -70, dy: 18, s: 1.5}, 'in'], [4.49, {dx: -70, dy: 18, s: 1.5, o: 0}, 'step']]);
-  set('ac.problem', kicker([[3.5, {...big, o: 0}], [3.6, big], [3.9, big], [4.0, {}]], 5.6));
-  set('ac.w1', beat(3.95, 4.32));
+  set('ac.problem', [[3.5, {...big, o: 0}], [3.6, big], [3.9, big], [4.0, questionOut]]);
+  set('ac.w1', beat(4.0, 4.25));
   // The glass descends; the balance words stand either side of its stem, whole, during the hold.
   set('ac.cone', [[4.3, {dy: -60}], [4.58, {}, 'out'], [5.02, {}], [5.3, {dy: -58}, 'in'], [5.31, {dy: -58, o: 0}, 'step']]);
   set('ac.amber', [[4.46, {dy: -40, s: 0.6, o: 0}], [4.52, {dy: -34, s: 0.6}], [4.74, {s: 0.9}, 'in'], [4.8, {dy: 2, s: 0.9, o: 0}]]);
   set('ac.witch', [[4.4, {dx: -18, o: 0}], [4.62, {}, 'out'], [4.98, {}], [5.1, {dx: -10, dy: -6, o: 0}]]);
   set('ac.grape', [[4.44, {dx: 18, o: 0}], [4.66, {}, 'out'], [4.98, {}], [5.1, {dx: 10, dy: -6, o: 0}]]);
-  set('ac.w2', beat(4.5, 4.95));
+  set('ac.w2', beat(4.4, 4.8));
   // Hydration: the bottle rises into a lower stand-in pose; a clear drop floats beside it.
   const rise = {match: 'slot.ac-rise'};
   // Before the camera flies into the drop the bottle steps out of frame: its drawn label is never magnified.
   set('ac.pack', [[5.08, {...rise, dy: 72}], [5.36, rise, 'out'], [5.6, rise], [5.86, {}], [6.2, {}], [6.38, {dy: 70, o: 0}, 'in']]);
   set('ac.gel', [[5.1, {dy: 6, s: 0.6, o: 0}], [5.3, {}], [5.6, {}], [5.74, {dy: -6, s: 0.8, o: 0}]]);
-  set('ac.w3', beat(5.16, 5.58));
+  set('ac.w3', beat(5.02, 5.4));
   // The drop leaves the glass at its stem before the bottle arrives, and comes to rest beside the
   // bottle's foot as a small lens. It never lands on or passes through the closed cap.
   const stem = {match: 'slot.stem'};
   set('ac.lens', [[4.98, {...stem, o: 0}], [5.03, stem], [5.28, {}, 'in'], [6.2, {s: 1.06}]]);
-  set('ac.title', beat(5.66, 6.2));
-  set('ac.foot', beat(5.78, 6.2, {dy: 2}, {dy: 2}));
+  set('ac.title', beat(5.5, 5.8));
+  set('ac.foot', beat(5.9, 6.2, {dy: 2}, {dy: 2}));
   // The drop's lens becomes the film's final frame, which clears into BR's light.
   set('fx.lens', [[6.3, {s: 0.72, o: 0}], [6.46, {s: 0.92}, 'out'], [6.6, {}], [6.9, {s: 2.4, o: 0}, 'in']]);
 
@@ -335,17 +333,18 @@ export function score({tall, W, H}) {
   set('br.cam', [[6.6, {s: 1.16}], [6.95, {}, 'out'], [8.85, {s: 1.03}]]);
   set('br.film', [[6.6, {s: 1.1, o: 0.8}], [7.05, {s: 1.02, o: 0.78}, 'out'], [7.45, {o: 0.5}], [7.86, {o: 0.3}], [8.25, {o: 0.15}], [8.36, {o: 0}]]);
   set('br.beams', [[6.6, {dx: -6, o: 0.4}], [7.2, {}], [8.85, {dx: 6}], [9.1, {dx: 30, o: 0}]]);
-  set('br.problem', kicker([[6.6, big], [7.02, big], [7.12, {}]], 8.3));
-  set('br.w1', beat(7.1, 7.82));
+  set('br.problem', [[6.6, big], [7.0, big], [7.1, questionOut]]);
+  // The headline carries the first benefit once; later benefits and the product each get a turn.
+  set('br.title', beat(7.1, 7.62));
   // Rack focus: near, then mid, then far. Each stays sharp once found, until the three leave together.
-  const focusIn = (at, drift) => [[6.6, {...drift, '--focus': 0, o: 0.5}], [at, {...drift, '--focus': 0, o: 0.6}], [at + 0.12, {'--focus': 1}], [7.82, {'--focus': 1}], [7.94, {...drift, '--focus': 0, o: 0}]];
+  const focusIn = (at, drift) => [[6.6, {...drift, '--focus': 0, o: 0.5}], [at, {...drift, '--focus': 0, o: 0.6}], [at + 0.12, {'--focus': 1}], [7.7, {'--focus': 1}], [7.82, {...drift, '--focus': 0, o: 0}]];
   set('br.bear', focusIn(7.2, {dx: -4, s: 1.12}));
   set('br.lic', focusIn(7.31, {dx: 5, s: 0.92}));
   set('br.vitc', focusIn(7.42, {dy: -3, s: 0.88}));
-  set('br.w2', beat(7.92, 8.3));
+  set('br.w2', beat(7.72, 8.0));
+  set('br.w3', beat(8.1, 8.4));
   set('br.pack', [[6.6, {s: 0.8, dy: 80, o: 0}], [8.16, {s: 0.8, dy: 80, o: 0}], [8.5, {}, 'out'], [8.85, {}], [9.28, {dx: 20, s: 0.95}]]);
-  set('br.title', beat(8.36, 8.86));
-  set('br.foot', beat(8.44, 8.86, {dy: 2}, {dy: 2}));
+  set('br.foot', beat(8.5, 8.86, {dy: 2}, {dy: 2}));
 
   /* BR → SU (T 8.88 → 9.28): a streak of light sweeps sideways; behind it the airy SU scene. ---- */
   const streak = [8.88, 9.28];
@@ -356,9 +355,9 @@ export function score({tall, W, H}) {
   set('su.bg', [[8.9, {dx: -6}], [11.7, {dx: 4}]]);
   set('su.film', [[9.05, {dy: 3, o: 0}], [9.28, {}, 'out'], [10.3, {}], [10.42, {dy: -2, o: 0}]]);
   set('su.air', [[8.9, {dx: 20, o: 0}], [10.35, {dx: 20, o: 0}], [10.58, {}], [11.7, {dx: -30, dy: -10}], [11.95, {dx: -40, dy: -16, o: 0}]]);
-  set('su.problem', kicker([[8.95, big], [9.45, big], [9.55, {}]], 11.65));
-  set('su.title', beat(9.5, 11.65));
-  set('su.protection', [[9.15, {dy: 2, o: 0}], [9.4, {}, 'out'], [10.25, {}], [10.4, {dy: -2, o: 0}]]);
+  set('su.problem', [[8.95, big], [9.45, big], [9.55, questionOut]]);
+  set('su.title', beat(9.55, 9.76));
+  set('su.protection', [[9.55, {dy: 2, o: 0}], [9.7, {}, 'out'], [10.25, {}], [10.4, {dy: -2, o: 0}]]);
   set('su.pack', [[8.95, {dx: 85, dy: 4, r: -24, o: 0}], [10.3, {dx: 85, dy: 4, r: -24, o: 0}], [10.62, {r: -12}, 'out'], [11.35, {dx: -3, dy: -2, r: -10}], [11.75, {dx: -12, dy: -6, r: -8}]]);
   set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [10.3, {dx: 70, o: 0}], [10.62, {}, 'out'], [11.65, {dx: -12, dy: 2}], [11.95, {dx: -60, o: 0}]]);
   // The ribbon crosses while nothing is being read, then rests beside the tube, clear of the words.
@@ -372,7 +371,7 @@ export function score({tall, W, H}) {
   set('su.w1', sideways(9.85, 10.3));
   set('su.w2', sideways(10.38, 10.83));
   set('su.w3', sideways(10.91, 11.36));
-  set('su.foot', beat(11.36, 11.65, {dy: 2}, {dy: 2}));
+  set('su.foot', beat(11.44, 11.65, {dy: 2}, {dy: 2}));
 
   /* SU → PO (T 11.65 → 12.09): the air thickens into powder; the veil clears onto the PO scene. -- */
   set('fx.motes', [[11.55, {o: 0, dy: 10}], [11.75, {}], [12.01, {dy: -18, s: 1.3}], [12.11, {dy: -24, s: 1.4, o: 0}]]);
@@ -382,12 +381,12 @@ export function score({tall, W, H}) {
   set('po', [[11.94, {o: 0}], [11.95, {}, 'step'], [14.05, {}], [14.21, {o: 0}]]);
   set('po.bg', [[11.95, {s: 1.1}], [12.65, {}], [13.9, {s: 1.03}]]);
   set('po.band', [[11.95, {dy: -14, s: 1.2, o: 0.6}], [12.55, {}, 'out'], [13.9, {dy: 2}], [14.15, {dy: 20, o: 0}]]);
-  set('po.problem', kicker([[11.95, big], [12.29, big], [12.39, {}]], 13.85));
-  set('po.title', [[12.35, {dy: 2, o: 0, '--fill': 0}], [12.45, {'--fill': 0}], [12.59, {'--fill': 1}], [13.87, {}], [13.95, {dy: -3, o: 0}]]);
+  set('po.problem', [[11.95, big], [12.25, big], [12.35, questionOut]]);
+  set('po.title', [[12.35, {dy: 2, o: 0, '--fill': 0}], [12.45, {'--fill': 0}], [12.59, {'--fill': 1}], [12.71, {}], [12.8, {dy: -3, o: 0}]]);
   set('po.pack', [[12.35, {dy: -95, r: -16, s: 1.25}], [12.65, {}, 'out'], [13.89, {}], [14.05, {match: 'rg.PO'}]]);
   set('po.w1', beat(12.85, 13.11));
-  set('po.w2', beat(13.17, 13.5));
-  set('po.foot', beat(13.53, 13.9, {dy: 2}, {dy: 2}));
+  set('po.w2', beat(13.2, 13.45));
+  set('po.foot', beat(13.54, 13.9, {dy: 2}, {dy: 2}));
 
   /* PO → the set (T 13.9 → 14.75): the compact finds its place; the other four return. -------- */
   // The set lies beneath PO. PO dissolves only once its compact matches the set's own, so the

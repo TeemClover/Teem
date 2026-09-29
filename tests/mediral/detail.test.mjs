@@ -172,6 +172,7 @@ test('each static page is readable before scripts: noindex, its name, the way ba
     assert.match(html, /<meta name="robots" content="noindex, nofollow, noarchive">/);
     assert.match(html, new RegExp(`<body class="mr-detail-page" data-product="${id}">`));
     assert.ok(html.includes(product.short_name) && html.includes(product.problem));
+    assert.ok(html.includes(product.headline) && html.includes(product.lead), `${id}: the static opening matches the hydrated editorial copy`);
     assert.match(html, new RegExp(`href="\\.\\./#step-${id}"`));
     assert.deepEqual([...new Set([...html.matchAll(/href="(https:\/\/lin[^"]+)"/g)].map(m => m[1]))], [routine.order.url]);
     assert.match(html, /<script type="module" src="\.\.\/js\/detail\.js"><\/script>/);

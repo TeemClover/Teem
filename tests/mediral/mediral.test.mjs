@@ -154,13 +154,13 @@ test('scroll-selling beats use attributed roles and only names present in the pr
 
 // The finished-copy table this release was written from (private copy review, 2026-09-29).
 const HEADLINES = {
-  CL: [['ล้างวันนี้', 'ออก'], 'มูสโฟมนุ่ม ล้างหน้าและเครื่องสำอางอย่างอ่อนโยน ไม่แห้งตึง', 'คราบมันและเครื่องสำอาง ติดผิวมาทั้งวัน?'],
-  AC: [['ดูแลความมัน', 'เติมความชุ่มชื้น'], 'เซรั่มสำหรับผิวที่เป็นสิวง่าย บางเบา ซึมไว ไม่เหนอะหนะ', 'สิวขึ้นง่าย แต่ไม่อยากเหนอะหนะ'],
-  BR: [['เติมการบำรุง', 'ลดเลือนความหมองคล้ำ'], 'แบร์เบอร์รี่ ชะเอมเทศ และอนุพันธ์วิตามินซี ในเซรั่มบางเบา เกลี่ยง่าย', 'ผิวดูหมอง ไม่สดใส?'],
-  SU: [['กันแดดเนื้อเซรั่ม', 'เบาสบายผิว'], 'เกลี่ยง่าย พร้อมไฮยาเติมความชุ่มชื้น และ Giga White® พืช 7 ชนิด', 'มองไม่เห็น UV ไม่ได้แปลว่าผิวไม่เจอ'],
-  PO: [['ปกปิดบางเบา', 'สบายผิว'], 'แป้งพัฟเนื้อละเอียด เกลี่ยง่าย ที่ Mediral ระบุว่าไม่อุดตัน', 'อยากปกปิด แต่กลัวแป้งอุดตัน?'],
+  CL: [['ล้างวันนี้', 'ออกอย่างอ่อนโยน'], 'สะอาด สดชื่น ไม่แห้งตึง', 'คราบมันและเครื่องสำอาง ติดผิวมาทั้งวัน?'],
+  AC: [['ซึมไว'], '', 'สิวขึ้นง่าย แต่ไม่อยากเหนอะหนะ'],
+  BR: [['ลดเลือน', 'ความหมองคล้ำ'], '', 'ผิวดูหมอง ไม่สดใส?'],
+  SU: [['กันแดด', 'เนื้อเซรั่ม'], '', 'มองไม่เห็น UV ไม่ได้แปลว่าผิวไม่เจอ'],
+  PO: [['ปกปิดรอย', 'ไม่หนักหน้า'], 'Mediral ระบุว่าไม่อุดตัน', 'อยากปกปิด แต่กลัวแป้งอุดตัน?'],
 };
-test('each chapter says its problem, then a two-line promise and one support line, in the reviewed words', () => {
+test('each chapter says its problem, then a short promise and only necessary support, in the reviewed words', () => {
   const grammars = new Set();
   for (const step of steps()) {
     const [headline, support, problem] = HEADLINES[step.id];
@@ -176,10 +176,10 @@ test('each chapter says its problem, then a two-line promise and one support lin
 
 test('benefit waves lead with the benefit and name only catalogued ingredients, pairing each role correctly', () => {
   const expected = {
-    AC: [['ปลอบประโลม', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมความชุ่มชื้น', 'ac-hydrate']],
+    AC: [['สบายผิว', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมน้ำให้ผิว', 'ac-hydrate']],
     BR: [['ลดเลือนความหมองคล้ำ', 'br-even'], ['สมดุลผิว', 'br-balance'], ['ผิวดูเรียบเนียน', 'br-balance']],
-    SU: [['ปกป้องผิวจากแดด', 'su-filters'], ['เติมความชุ่มชื้น', 'su-hydrate'], ['สีผิวดูสม่ำเสมอ', 'su-giga']],
-    PO: [['บางเบา เกลี่ยง่าย', 'po-powder-oil'], ['ชุ่มชื้น · ปลอบประโลม', 'po-hydrate']],
+    SU: [['สารกรอง UV', 'su-filters'], ['เติมความชุ่มชื้น', 'su-hydrate'], ['สีผิวดูสม่ำเสมอ', 'su-giga']],
+    PO: [['เนื้อละเอียด', 'po-powder-oil'], ['คงความชุ่มชื้น', 'po-hydrate']],
   };
   for (const step of steps().filter(s => expected[s.id])) {
     assert.deepEqual(step.scene.waves.map(w => [w.label, w.beat]), expected[step.id], `${step.id}: waves`);

@@ -20,34 +20,34 @@ function poses(layout) {
   return (key, T) => sample(resolved[key], T);
 }
 
-test('CL uses two short whole words in the rinse title and static-flow markup', () => {
-  assert.equal(cl.headline, 'ล้างวันนี้ออก');
-  assert.deepEqual(cl.scene.headline, ['ล้างวันนี้', 'ออก']);
+test('CL uses the gentle rinse phrase in the title and static-flow markup', () => {
+  assert.equal(cl.headline, 'ล้างวันนี้ออกอย่างอ่อนโยน');
+  assert.deepEqual(cl.scene.headline, ['ล้างวันนี้', 'ออกอย่างอ่อนโยน']);
   const html = SHOTS.CL(cl, path => path);
   assert.match(html, /data-layer="cl\.word1">ล้างวันนี้<\/span>/);
-  assert.match(html, /data-layer="cl\.word2">ออก<\/span>/);
-  assert.ok(html.indexOf('>ล้างวันนี้</span>') < html.indexOf('>ออก</span>'));
+  assert.match(html, /data-layer="cl\.word2">ออกอย่างอ่อนโยน<\/span>/);
+  assert.ok(html.indexOf('>ล้างวันนี้</span>') < html.indexOf('>ออกอย่างอ่อนโยน</span>'));
 });
 
-test('the rinse promise holds both words and swaps only under visible foam', () => {
+test('the rinse promise dissolves under foam and reveals its gentle answer without a snap', () => {
   for (const layout of layouts) {
     const at = poses(layout);
     assert.equal(at('cl.word1', 1.8).o, 1);
     assert.equal(at('cl.word2', 1.8).o, 0);
     assert.equal(at('cl.word2', 2.38).o, 1, 'The revealed word remains whole after the foam passes');
     assert.equal(at('cl.word1', 2.38).o, 0);
-    let lastWord = 1, swaps = 0;
+    assert.ok(at('cl.word1', 2.11).o > 0 && at('cl.word1', 2.11).o < 1, 'The first phrase dissolves instead of snapping off');
+    assert.ok(at('cl.word2', 2.28).o > 0 && at('cl.word2', 2.28).o < 1, 'The answer eases into the rinsed space instead of snapping on');
+    assert.equal(at('fx.foam', 2.38).o, 0, 'The foam has cleared for the composed reading hold');
+    let lastOpacity = 0;
     for (let n = 1680; n <= 2380; n++) {
       const T = n / 1000, first = at('cl.word1', T).o, second = at('cl.word2', T).o;
       assert.equal(first * second, 0, `Only one word may occupy the title at T${T}`);
-      const word = second > .99 ? 2 : 1;
-      if (word !== lastWord) {
-        swaps++;
-        assert.equal(at('fx.foam', T).o, 1, 'Foam must cover the word change');
-      }
-      lastWord = word;
+      assert.ok(second >= lastOpacity, 'The answer reveals continuously behind the foam');
+      assert.ok(second - lastOpacity < .03, 'No one-frame appearance');
+      lastOpacity = second;
     }
-    assert.equal(swaps, 1);
+    assert.equal(lastOpacity, 1);
   }
 });
 

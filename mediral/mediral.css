@@ -226,6 +226,7 @@ main{position:relative;z-index:1}
 .mr-shot--cl .mr-shot__bg{background:radial-gradient(110% 70% at 50% 34%,#fdfcf7 0%,#f1f4ea 52%,#dde7da 100%)}
 .mr-cl__title{position:absolute;inset:0;margin:0;pointer-events:none}
 .mr-cl__word{--y:20svh;top:calc(var(--y) - .62em);font:700 min(14vw,8.4svh)/1.2 var(--sans);letter-spacing:-.04em;white-space:nowrap}
+.mr-cl__word--next{font-size:min(7.8vw,5.4svh);font-weight:400;letter-spacing:-.015em;color:#38614c}
 [data-layer^=cl].mr-actor--cl{--x:50%;--base:83svh;--h:49svh}
 .mr-shot--cl .mr-actor::after{background:radial-gradient(closest-side,rgba(40,70,60,.22),rgba(40,70,60,0))}
 .mr-cl__botanical{width:29vw;filter:drop-shadow(0 12px 15px rgba(42,76,47,.13))}
@@ -309,6 +310,8 @@ main{position:relative;z-index:1}
 .mr-pairs p{margin:0}
 .mr-pairs .mr-wave__word{font-size:min(9vw,5.4svh)}
 .mr-pairs .mr-wave__names{margin-top:.35em}
+.mr-br__title{top:17svh;font-size:min(9.2vw,5.8svh);font-weight:600;line-height:1.25;text-wrap:balance}
+.mr-br__secondary .mr-wave__word{font-size:min(9.2vw,5.8svh);font-weight:600}
 .mr-shot--br .mr-foot{color:#fbf6e6;text-shadow:0 1px 10px rgba(30,40,20,.5)}
 .mr-shot--br .mr-problem,.mr-shot--br .mr-wave__names{color:#4d5a2a}
 
@@ -423,6 +426,7 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-fx-veil{width:140vw;left:-20vw;top:calc(50% - 35vw)}
   .mr-fx-lens{width:112vw;left:-6vw;top:calc(50% - 31.5vw)}
   .mr-cl__word{--y:25svh;font-size:min(8.6vw,13.5svh)}
+  .mr-cl__word--next{font-size:min(5.2vw,8.2svh)}
   .mr-cl__botanical{width:19vw}
   .mr-cl__botanical--0{left:14vw;top:43svh}
   .mr-cl__botanical--1{left:68vw;top:39svh;width:19vw}
@@ -442,8 +446,8 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-slot--stem{--base:51.5svh;--h:3.4svh}
   [data-layer^=ac].mr-actor--ac{--x:66%;--base:88svh;--h:58svh}
   .mr-ac__lens{width:8.5vw;left:74.5vw;top:74svh}
-  .mr-ac__title{top:26svh;left:7vw;right:auto;width:46vw;text-align:left}
-  .mr-shot--ac .mr-foot{top:56svh;left:7vw;right:auto;width:40vw;text-align:left}
+  .mr-ac__title{top:26svh;left:7vw;right:auto;width:46vw;padding-inline:0;text-align:left}
+  .mr-shot--ac .mr-foot{top:56svh;left:7vw;right:auto;width:40vw;padding-inline:0;text-align:left}
   .mr-shot--ac .mr-foot .mr-support{margin-inline:0}
   [data-layer^=br].mr-actor--br{--x:50%;--base:86svh;--h:54svh}
   .mr-plane--near{width:26vw;left:4vw;top:50svh}
@@ -452,8 +456,11 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-plane--far{width:9vw;left:15vw;top:22svh}
   .mr-pairs{grid-template-columns:1fr 1fr;max-width:1000px;margin-inline:auto}
   .mr-pairs .mr-wave__word{font-size:min(4.6vw,8svh)}
-  .mr-br__title{top:24svh;left:auto;right:6vw;width:38vw;text-align:left}
-  .mr-shot--br .mr-foot{top:52svh;left:auto;right:6vw;width:36vw;text-align:left;color:var(--forest-deep);text-shadow:none}
+  .mr-br__title{top:17svh;left:10vw;right:10vw;width:auto;padding-inline:0;text-align:center;font-size:min(4.6vw,7.4svh)}
+  .mr-br__secondary .mr-wave__word{font-size:min(4.6vw,8svh)}
+  .mr-shot--br .mr-foot{top:52svh;left:auto;right:6vw;width:36vw;padding-inline:0;text-align:left;color:var(--forest-deep);text-shadow:none}
+  .mr-shot--br .mr-foot .mr-tag-line{font-size:clamp(16px,1.6vw,22px)}
+  .mr-shot--br .mr-foot__more{font-size:14px}
   .mr-shot--br .mr-foot .mr-support{margin-inline:0}
   [data-layer^=su].mr-actor--su{--x:60%;--base:72svh;--h:40svh}
   .mr-su__title{top:24svh;left:6vw;right:auto;width:auto;text-align:left;font-size:min(4.6vw,8.4svh)}
@@ -496,9 +503,11 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 .mr-flow .mr-step--po{padding-bottom:20px;border-radius:0 0 20px 20px}
 .mr-flow .mr-badge,.mr-flow .mr-route{display:none}
 .mr-flow .mr-problem{order:1;font-size:17px}
+.mr-flow :is(.mr-problem,.mr-title,.mr-wave,.mr-pairs,.mr-foot,.mr-cl__word){padding-inline:0}
 .mr-flow .mr-cl__title{position:relative;inset:auto;grid-column:1/-1;order:2}
 .mr-flow .mr-cl__botanical-label{order:3;width:auto;font-size:16px}
 .mr-flow .mr-cl__word{font-size:clamp(34px,8vw,64px)}
+.mr-flow .mr-cl__word--next{font-size:clamp(25px,6.2vw,46px);white-space:normal}
 .mr-flow .mr-title{order:2;font-size:clamp(30px,6vw,52px);text-align:center;width:auto}
 .mr-flow .mr-su__protection{order:3;width:min(100%,430px);justify-self:center;text-align:center;margin-block:4px 14px}
 .mr-flow .mr-su__protection dt{font-size:clamp(29px,6vw,45px)}
