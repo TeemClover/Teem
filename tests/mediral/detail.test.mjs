@@ -65,6 +65,13 @@ test('each page orders through the one LINE config and returns to its exact chap
     if (i < 4) assert.match(html, new RegExp(`href="\\.\\./${DETAIL_IDS[i + 1].toLowerCase()}/" rel="next"`));
     assert.match(html, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/);
   }
+  for (const id of DETAIL_IDS) {
+    const nav = render(id).match(/<nav class="mr-route-nav"[\s\S]*?<\/nav>/)[0];
+    const links = [...nav.matchAll(/<a href="\.\.\/(\w+)\/" aria-label="([^"]+)"( aria-current="page")?>/g)];
+    assert.deepEqual(links.map(l => l[1]), DETAIL_IDS.map(x => x.toLowerCase()), `${id}: the route strip links all five in order`);
+    for (const [k, step] of routine.steps.entries()) assert.equal(links[k][2], `ขั้น 0${step.order} ${step.tone.word} ${step.nick}`, `${id}: each link is named by number, colour and piece`);
+    assert.deepEqual(links.filter(l => l[3]).map(l => l[1]), [id.toLowerCase()], `${id}: only the current piece is marked current`);
+  }
   assert.match(render('AC'), /ทำความเข้าใจผิวที่เป็นสิวง่าย[\s\S]*nhs\.uk[\s\S]*niams/, 'General acne knowledge stays behind its own link');
 });
 

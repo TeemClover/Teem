@@ -32,7 +32,9 @@ const art = (layer, file, cls, asset) => `<div class="mr-art ${cls}" data-layer=
 const slot = (layer, cls, style = '') => `<span class="mr-slot ${cls}" data-layer="${layer}" aria-hidden="true"${style ? ` style="${style}"` : ''}></span>`;
 const problem = (step, key) => `<p class="mr-problem" data-layer="${key}.problem">${esc(step.scene.problem)}</p>`;
 // Each chapter's last hold names the piece and offers its full page; the link is inert while faded.
-const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot" data-inert-hidden><p class="mr-tag-line"><b>${pad(step.order)}</b>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p><p class="mr-support">${esc(step.scene.support)}</p><a class="mr-foot__more" href="${detailHref(step)}">รู้จัก${esc(step.nick)}ให้ลึกขึ้น <span aria-hidden="true">→</span></a></div>`;
+// The route mark: number and pack colour always travel with the name, never colour alone.
+export const toneMark = step => `<b>${pad(step.order)}</b><i class="mr-tone mr-tone--${step.tone.key}" aria-hidden="true"></i>${esc(step.tone.word)}`;
+const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot" data-inert-hidden><p class="mr-tag-line">${toneMark(step)} · ${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p><p class="mr-support">${esc(step.scene.support)}</p><a class="mr-foot__more" href="${detailHref(step)}">รู้จัก${esc(step.nick)}ให้ลึกขึ้น <span aria-hidden="true">→</span></a></div>`;
 const title = (step, key, cls = '') => `<h2 class="mr-title ${cls}" id="h-${step.id}" data-layer="${key}.title">${lines(step.scene.headline)}</h2>`;
 // A wave may name a word boundary (split) where an object stands between two whole Thai words.
 function wave(step, index, layer, cls = '') {
@@ -149,12 +151,14 @@ export const SHOTS = {
 };
 
 // The five come back together on the ledge where they began, and the story hands over to the set.
-export function closingShot(steps, set, asset) {
+export function closingShot(steps, set, asset, route = {title: [set.closing.headline]}) {
   return `
     <div class="mr-shot mr-shot--rg" data-shot="set-close" data-layer="rg">
       <div class="mr-shot__bg mr-hero__bg" data-layer="rg.bg" aria-hidden="true"></div>
-      <p class="mr-rg__title" id="closing-title" data-layer="rg.title" aria-hidden="true">${esc(set.closing.headline)}</p>
+      <p class="mr-rg__title" id="closing-title" data-layer="rg.title" aria-hidden="true">${lines(route.title)}</p>
+      <div class="mr-route mr-route--rg" data-layer="rg.route" aria-hidden="true"><i></i></div>
       ${steps.map(step => packMarkup(step, asset, {layer: `rg.${step.id}`, src: 'data-src', decorative: true})).join('')}
+      ${steps.map((step, i) => `<p class="mr-badge mr-badge--${step.id.toLowerCase()}" data-layer="rg.b${i + 1}" aria-hidden="true"><b>${pad(step.order)}</b><i class="mr-tone mr-tone--${step.tone.key}"></i><span class="mr-badge__word">${esc(step.tone.word)}</span></p>`).join('')}
       <div class="mr-rg__foot" data-layer="rg.foot" data-inert-hidden>
         <p class="mr-rg__carry" aria-hidden="true">${esc(set.carry)}</p>
         <a class="mr-btn" href="#set">${esc(set.closing.cta)} <span aria-hidden="true">↓</span></a>
@@ -191,17 +195,23 @@ export function score({tall, W, H}) {
 
   /* Hero → routine → CL (T 0 → 1.3) ------------------------------------------------------------ */
   // First scroll: the ensemble opens into one routine row; the promise lifts away.
-  set('hero.kicker', [[0, {}], [0.08, {}], [0.3, {dy: -6, o: 0}]]);
-  set('hero.promise', [[0, {}], [0.06, {}], [0.36, {dy: -9, s: 0.92, o: 0}]]);
-  set('hero.cta', [[0, {}], [0.04, {}], [0.16, {dy: 3, o: 0}]]);
+  set('hero.kicker', [[0, {}], [0.06, {}], [0.24, {dy: -6, o: 0}]]);
+  set('hero.promise', [[0, {}], [0.04, {}], [0.28, {dy: -9, s: 0.92, o: 0}]]);
+  set('hero.cta', [[0, {}], [0.02, {}], [0.14, {dy: 3, o: 0}]]);
   set('hero.bg', [[0, {}], [0.45, {s: 1.06, dy: -2}], [1.3, {s: 1.12, dy: -4}]]);
   for (const id of ['CL', 'AC', 'BR', 'SU', 'PO']) {
     const row = {match: `row.${id}`};
-    if (id === 'CL') set(`hero.${id}`, [[0.06, {}], [0.46, row], [0.78, row], [0.95, {match: 'cl.pack'}, 'in'], [1.28, {match: 'cl.pack'}], [1.29, {match: 'cl.pack', o: 0}, 'step']]);
-    else set(`hero.${id}`, [[0.06, {}], [0.46, row], [0.78, row], [0.95, {...row, s: 0.9, dy: -2}], [1.28, {...row, s: 0.9, dy: -2}], [1.29, {...row, o: 0}, 'step']]);
+    if (id === 'CL') set(`hero.${id}`, [[0.06, {}], [0.34, row], [0.78, row], [0.95, {match: 'cl.pack'}, 'in'], [1.28, {match: 'cl.pack'}], [1.29, {match: 'cl.pack', o: 0}, 'step']]);
+    else set(`hero.${id}`, [[0.06, {}], [0.34, row], [0.78, row], [0.95, {...row, s: 0.9, dy: -2}], [1.28, {...row, s: 0.9, dy: -2}], [1.29, {...row, o: 0}, 'step']]);
   }
-  ['w1', 'w2', 'w3', 'w4'].forEach((w, i) => set(`hero.${w}`, [[0.24 + i * 0.04, {dy: 2.5, o: 0}], [0.44 + i * 0.04, {}], [0.78, {}], [0.88, {dy: -1.5, o: 0}]]));
-  set('hero.pick', [[0.3, {dy: 3, o: 0}], [0.5, {}], [0.78, {}], [0.9, {dy: -2, o: 0}]]);
+  // The route: the title, a stripe that draws from white to forest, then number/colour marks under
+  // the packs and one whole line per piece. Everything holds together until the mousse steps forward.
+  set('hero.pick', [[0.2, {dy: 3, o: 0}], [0.32, {}], [0.78, {}], [0.9, {dy: -2, o: 0}]]);
+  set('hero.route', [[0.22, {'--draw': 0, o: 0}], [0.24, {'--draw': 0}], [0.44, {'--draw': 1}, 'out'], [0.78, {}], [0.88, {o: 0}]]);
+  for (let i = 0; i < 5; i++) {
+    set(`hero.b${i + 1}`, [[0.26 + i * 0.025, {dy: 2, o: 0}], [0.36 + i * 0.025, {}], [0.78, {}], [0.86, {dy: -1.5, o: 0}]]);
+    set(`hero.s${i + 1}`, [[0.3 + i * 0.03, {dy: 2, o: 0}], [0.4 + i * 0.03, {}], [0.78, {}], [0.9, {dy: -1.5, o: 0}]]);
+  }
   set('hero', [[0, {}], [1.28, {}], [1.29, {o: 0}, 'step']]);
 
   // A tilted foam front rises through the frame; below it is the CL scene (clip edge moves with it).
@@ -346,6 +356,8 @@ export function score({tall, W, H}) {
   set('rg.bg', [[14.05, {s: 1.08}], [14.55, {}]]);
   const back = {CL: {dx: -60, dy: 6}, AC: {dx: -30, dy: -60}, BR: {dx: 20, dy: -64}, SU: {dx: 60, dy: 4}};
   for (const [id, from] of Object.entries(back)) set(`rg.${id}`, [[14.09, {...from, s: 1.2}], [14.39, {}, 'out']]);
+  set('rg.route', [[14.28, {'--draw': 0, o: 0}], [14.3, {'--draw': 0}], [14.5, {'--draw': 1}, 'out']]);
+  for (let i = 0; i < 5; i++) set(`rg.b${i + 1}`, beat(14.36 + i * 0.02, null, {dy: 2}));
   set('rg.title', beat(14.31, null));
   set('rg.foot', beat(14.37, null, {dy: 2}));
 

@@ -61,6 +61,16 @@ function fact(step) {
     <small>${esc(f.source)} · ${f.links.map(link => `<a href="${esc(link.href)}" rel="noopener" target="_blank">${esc(link.label)}</a>`).join(' · ')}</small></details>`;
 }
 
+// The set's route, at the top of every product page: number and colour for each piece, the current
+// one named and marked, each a link. Colour is never the only cue.
+function routeStrip(routine, id) {
+  return `<nav class="mr-route-nav" aria-label="ลำดับของชุด: ${esc(routine.route.title.join(' '))}">
+    <p>${esc(routine.route.title.join(' '))}</p>
+    <ol>${routine.steps.map(step => `<li${step.id === id ? ' class="is-current"' : ''}><a href="../${detailPath(step.id)}" aria-label="${esc(`ขั้น ${pad(step.order)} ${step.tone.word} ${step.nick}`)}"${step.id === id ? ' aria-current="page"' : ''}>${mark(step)}<span class="mr-route-nav__name">${esc(step.nick)}</span></a></li>`).join('')}</ol>
+  </nav>`;
+}
+const mark = step => `<b>${pad(step.order)}</b><i class="mr-tone mr-tone--${step.tone.key}" aria-hidden="true"></i>${esc(step.tone.word)}`;
+
 export function detailHTML({routine, details, id, asset = path => `../${path}`}) {
   const step = routine.steps.find(s => s.id === id);
   const product = details.products.find(p => p.id === id);
@@ -72,10 +82,11 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
   const back = `../#step-${id}`;
   const size = product.size || step.size;
   return `
+  ${routeStrip(routine, id)}
   <section class="mr-detail__hero" aria-labelledby="detail-title">
     <div class="mr-detail__material" aria-hidden="true"><img src="${asset(MATERIAL[id])}" alt="" decoding="async"></div>
     <div class="mr-detail__copy">
-      <p class="mr-kicker"><b>${pad(step.order)}</b> Mediral${size ? ` · ${esc(size)}` : ''}</p>
+      <p class="mr-kicker">${mark(step)} · Mediral${size ? ` · ${esc(size)}` : ''}</p>
       <p class="mr-detail__problem">${esc(product.problem)}</p>
       <h1 id="detail-title">${(([name, ...role]) => `${esc(name)}${role.length ? `<span class="mr-detail__role">${esc(role.join(' · '))}</span>` : ''}`)(product.short_name.split(' · '))}</h1>
       <p class="mr-detail__headline">${esc(product.headline)}</p>
@@ -119,8 +130,8 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
   </section>
 
   <nav class="mr-detail__nav" aria-label="ชิ้นอื่นในชุด">
-    ${prev ? `<a href="../${detailPath(prev.id)}" rel="prev"><span aria-hidden="true">←</span> ${esc(prev.nick)}</a>` : '<span></span>'}
+    ${prev ? `<a href="../${detailPath(prev.id)}" rel="prev"><span aria-hidden="true">←</span> ${mark(prev)} · ${esc(prev.nick)}</a>` : '<span></span>'}
     <a href="${back}">กลับไปที่เรื่องของ${esc(step.nick)}</a>
-    ${next ? `<a href="../${detailPath(next.id)}" rel="next">${esc(next.nick)} <span aria-hidden="true">→</span></a>` : '<a href="../#set">ชุด 5 ชิ้น</a>'}
+    ${next ? `<a href="../${detailPath(next.id)}" rel="next">${mark(next)} · ${esc(next.nick)} <span aria-hidden="true">→</span></a>` : '<a href="../#set">ชุด 5 ชิ้น</a>'}
   </nav>`;
 }

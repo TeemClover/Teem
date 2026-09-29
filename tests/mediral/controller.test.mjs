@@ -11,7 +11,7 @@ const scoreModule = await import(new URL('../../mediral/js/score.js', import.met
 const {CHAPTERS, END} = scoreModule;
 const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.stringify(entry.href))
   .replace("import {createCinema} from './cinema.js';", 'const {createCinema} = globalThis.cinemaModule;')
-  .replace("import {SHOTS, CHAPTERS, score, closingShot, detailHref} from './score.js';", 'const {SHOTS, CHAPTERS, score, closingShot, detailHref} = globalThis.scoreModule;')
+  .replace(/import \{([^}]*)\} from '\.\/score\.js';/, 'const {$1} = globalThis.scoreModule;')
   .replace("import('./lab-film.js')", 'globalThis.loadFilmModule()');
 const routine = JSON.parse(readFileSync(new URL('../../mediral/data/routine.json', import.meta.url), 'utf8'));
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -88,7 +88,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   const rails = [...routine.steps, {id: 'set'}].map(step => { const el = new Element('a'); el.dataset.rail = step.id; return el; });
   const actions = ['copy'].map(action => { const el = new Element('button'); el.dataset.action = action; return el; });
   const film = new Element(); film.id = 'lab-film';
-  for (const name of ['rail', 'trust', 'order-title', 'order-how', 'order-note', 'line-link', 'pieces', 'message', 'offer', 'actions', 'buy-hint', 'disclosure', 'profile-link']) slots.set(name, new Element());
+  for (const name of ['rail', 'trust', 'order-title', 'order-how', 'order-note', 'route-close', 'line-link', 'pieces', 'message', 'offer', 'actions', 'buy-hint', 'disclosure', 'profile-link']) slots.set(name, new Element());
   const order = new Element('div'); order.id = 'order'; order.scrollMarginTop = '86px';
   order.getBoundingClientRect = () => ({top: (END + 1) * H + setShift + 600 - context.scrollY, bottom: (END + 1) * H + setShift + 1300 - context.scrollY});
   slots.get('actions').prepend = link => { slots.set('buy-link', link); link.remove = () => slots.delete('buy-link'); };
@@ -255,6 +255,7 @@ test('one order channel: the LINE action reads the verified config; an unverifie
   assert.equal(ui.slots.get('order-title').textContent, routine.order.heading);
   assert.match(ui.slots.get('order-how').textContent, /แจ้งราคา ค่าส่ง และวิธีชำระในแชต ก่อนยืนยันการสั่ง/);
   assert.match(ui.slots.get('order-note').textContent, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
+  assert.equal(ui.slots.get('route-close').textContent, routine.route.close, 'The close repeats the route in one short line');
   const off = await fixture({line: false});
   assert.equal(off.slots.get('line-link').hidden, true);
 });
@@ -356,6 +357,8 @@ test('the rail and the active chapter follow the markers, and only one rail item
   ui.at(END + 1.2);
   assert.equal(ui.document.body.dataset.step, 'set');
   assert.equal(ui.rails[5].getAttribute('aria-current'), 'step');
+  const rail = ui.slots.get('rail').innerHTML;
+  for (const step of routine.steps) assert.match(rail, new RegExp(`data-rail="${step.id}" data-tone="${step.tone.key}" aria-label="ชิ้นที่ ${step.order} ${step.tone.word} ${step.nick}"`), `${step.id}: the rail names the colour with its number`);
 });
 
 test('the header takes the chapter on screen, leading its marker slightly, and returns to the page after', async () => {

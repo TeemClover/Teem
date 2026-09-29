@@ -220,10 +220,24 @@ test('the page runs from the opening through one story to one LINE close, with e
   assert.deepEqual(packImages.map(i => i.src).sort(), steps().map(s => s.image).sort(), 'All five packs paint before JavaScript');
   assert.match(opening, /<h1\b[^>]*>[\s\S]*จากล้างหน้า[\s\S]*ออกจากบ้าน[\s\S]*<\/h1>/);
   assert.match(opening, /ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ/, 'The set first, and nobody needs all five');
-  assert.match(opening, /บำรุง<small>ผิวเป็นสิวง่าย · ผิวดูหมอง<\/small>/, 'The two serums are told apart by what they are for');
+  assert.match(opening, /เซรั่มผิวเป็นสิวง่าย[\s\S]*เลือกบำรุง[\s\S]*เซรั่มผิวดูหมอง[\s\S]*เลือกบำรุง/, 'The two serums are told apart by what they are for, and chosen');
   for (const id of ['serums', 'ingredients', 'founder', 'relay']) assert.equal(at(id), -1, `#${id} is retired from the page`);
   for (const page of PAGES) assert.ok(read(join(site, page, 'index.html')).includes(`data-product="${page.toUpperCase()}"`), `/${page}/ exists`);
   assert.match(read(join(site, 'js/score.js')), /class="mr-foot__more" href="\$\{detailHref\(step\)\}"/, 'Each chapter’s last hold offers its page');
+});
+
+test('the colour route names every piece: number, colour, pack and role, in pack order, with no barrier claim', () => {
+  const {steps: list, route} = routine();
+  const opening = html().slice(html().indexOf('id="routine"'), html().indexOf('id="set"'));
+  const rows = [...opening.matchAll(/<p class="mr-step mr-step--(\w+)" data-layer="hero\.s\d">([\s\S]*?)<\/p>/g)];
+  assert.deepEqual(rows.map(r => r[1]), list.map(s => s.id.toLowerCase()), 'One whole line per piece, in pack order');
+  for (const [i, [, , row]] of rows.entries()) {
+    const step = list[i], text = row.replace(/<[^>]+>/g, '');
+    for (const part of [`0${step.order}`, step.tone.word, step.route.name, step.route.role]) assert.ok(text.includes(part), `${step.id}: ${part}`);
+  }
+  assert.equal(list[0].tone.word, list[1].tone.word, 'CL and AC share white, so the number and name tell them apart');
+  const code = [html(), ...['js/score.js', 'js/main.js', 'js/detail-view.js'].map(f => read(join(site, f))), JSON.stringify(route)].join('\n');
+  assert.doesNotMatch(code, /PM ?2\.?5|มลพิษ|กันฝุ่น|ป้องกันฝุ่น|ฝุ่นละออง|anti[- ]?pollution|ความเข้มข้น/iu, 'A memory aid, not a dust barrier or a strength scale');
 });
 
 test('the real exchange is the authorized screenshot, unchanged, with exact quotes and a separate personal account', () => {
@@ -391,7 +405,9 @@ test('reduced motion and short screens start in normal flow before the module ru
   const css = read(join(site, 'mediral.css'));
   assert.match(css, /\.mr-flow \.mr-cinema\{height:auto\}/);
   assert.match(css, /\.mr-flow \.mr-cinema__view\{position:relative/);
-  assert.match(css, /body\[data-step=routine\] \.mr-rail,body\[data-reading-chapter\] \.mr-rail\{opacity:0;visibility:hidden/, 'A hidden rail is not a tab stop');
+  assert.match(css, /body\[data-step=routine\] \.mr-rail,body\[data-reading-chapter\] \.mr-rail,body\[data-chapter=close\] \.mr-rail\{opacity:0;visibility:hidden/, 'A hidden rail is not a tab stop, and it clears the regroup');
+  assert.match(css, /\.mr-flow \.mr-hero__pick,\.mr-flow \.mr-step\{background:rgba\(250,249,241,\.96\)\}/, 'In flow the route reads on an ivory ledge over any stage');
+  assert.match(css, /\.mr-flow \.mr-badge,\.mr-flow \.mr-route\{display:none\}/, 'Flow keeps the whole lines, not the marks');
   assert.match(css, /\.mr-cinema__view\{[^}]*overflow:hidden;overflow:clip/, 'The viewport clips without being a scroll container');
   assert.match(css, /\.mr-shot\{overflow:hidden;overflow:clip\}/, 'So do the shots');
   assert.match(css, /\.mr-flow \.mr-cinema__view\{[^}]*overflow:visible/, 'Flow keeps visible overflow');
@@ -461,7 +477,7 @@ test('assistive technology meets each chapter by its heading, and the closing en
   assert.equal((score.match(/<div role="region" class="mr-shot mr-shot--/g) || []).length, 5, 'Each product chapter is a labelled region');
   const closing = score.slice(score.indexOf('export function closingShot'));
   assert.match(closing, /decorative: true/, 'The reassembled packs repeat the opening and are decorative');
-  assert.match(closing, /data-layer="rg.title" aria-hidden="true"/);
+  assert.match(closing, /data-layer="rg.title" aria-hidden="true">\$\{lines\(route.title\)\}/, 'The closing title is the route, one whole phrase per line');
   const brand = tags(html(), 'a').find(t => t.class === 'mr-brand');
   assert.ok(brand['aria-label'].startsWith('myClover · Mediral'), 'The accessible name contains the visible brand text');
 });

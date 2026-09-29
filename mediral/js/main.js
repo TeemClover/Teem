@@ -10,7 +10,7 @@
  * stays fixed; a partial list never inherits a bundle price or a commission link.
  */
 import {createCinema} from './cinema.js';
-import {SHOTS, CHAPTERS, score, closingShot, detailHref} from './score.js';
+import {SHOTS, CHAPTERS, score, closingShot, detailHref, toneMark} from './score.js';
 
 const root = document.documentElement;
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -84,7 +84,7 @@ function renderStory() {
   const story = state.data.steps.filter(step => SHOTS[step.id] && CHAPTERS.some(c => c.id === step.id));
   actors.insertAdjacentHTML('beforebegin', story.map(step => SHOTS[step.id](step, asset)).join(''));
   // The reassembled set sits beneath every chapter, so PO can dissolve away over it.
-  if (story.length === state.data.steps.length) $('[data-shot="routine"]', view).insertAdjacentHTML('afterend', closingShot(state.data.steps, state.data.set, asset));
+  if (story.length === state.data.steps.length) $('[data-shot="routine"]', view).insertAdjacentHTML('afterend', closingShot(state.data.steps, state.data.set, asset, state.data.route));
   $('#routine').insertAdjacentHTML('afterend', story.map(step => `<span class="mr-mark" id="step-${step.id}" data-mark="${step.id}" data-step="${step.id}"></span>`).join(''));
   // The story index for assistive technology lists every attributed beat once.
   const index = story.map(step => `<ol class="mr-sr" aria-label="เรื่องที่แบรนด์เล่าใน${esc(step.nick)}">${(step.selling?.beats || []).map((beat, i) => `<li id="beat-${step.id}-${i}" data-selling-step="${step.id}" data-beat-index="${i}"><strong>${esc(beat.kicker)}: ${esc(beat.title)}</strong> ${esc(beat.body)}${beat.names?.length ? ` (${beat.names.map(esc).join(', ')})` : ''}</li>`).join('')}</ol>`).join('');
@@ -94,7 +94,7 @@ function renderStory() {
 function renderRail() {
   const told = state.data.steps.filter(step => $(`#step-${step.id}`));
   const items = told.map(step => `
-    <a href="#step-${step.id}" data-rail="${step.id}" aria-label="ชิ้นที่ ${step.order} ${esc(step.nick)}">
+    <a href="#step-${step.id}" data-rail="${step.id}" data-tone="${step.tone.key}" aria-label="ชิ้นที่ ${step.order} ${esc(step.tone.word)} ${esc(step.nick)}">
       <span class="mr-rail__label">${pad(step.order)} ${esc(step.nick)}</span>
       <span class="mr-rail__dot"><b>${step.order}</b></span>
     </a>`).join('');
@@ -131,12 +131,14 @@ function renderOrder() {
   slot('order-title').textContent = order.heading;
   slot('order-how').textContent = order.how;
   slot('order-note').textContent = order.note;
-  // One list: what each piece is for, its own page, and whether to mention it in the chat.
+  // The route in one short line, then one list: each piece's number, colour and name, its own page,
+  // and whether to mention it in the chat.
+  slot('route-close').textContent = state.data.route.close;
   slot('pieces').insertAdjacentHTML('beforeend', steps.map(step => `
     <label class="mr-pick" data-row="${step.id}">
       <input type="checkbox" value="${step.id}" checked data-piece>
       ${packImage(step, {decorative: true})}
-      <span class="mr-pick__name"><b>${pad(step.order)}</b>${esc(step.order_name)}<small>${esc(step.nick)} · ${esc(step.scene.headline.join(' '))}</small></span>
+      <span class="mr-pick__name"><span class="mr-pick__mark">${toneMark(step)}</span>${esc(step.order_name)}<small>${esc(step.nick)}${step.id === 'PO' ? ' · เมื่ออยากแต่ง' : ''} · ${esc(step.scene.headline.join(' '))}</small></span>
       <a class="mr-pick__more" href="${detailHref(step)}">รายละเอียด <span aria-hidden="true">→</span></a>
     </label>`).join(''));
 }

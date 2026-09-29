@@ -1,7 +1,27 @@
 # Mediral five-piece set — `/mediral/`
 
+**Colour route (2026-09-29, on `11453867`).** The owner's memory aid, "เริ่มจากขาว ค่อยไปเขียว", is taught through the five real packs in order:
+
+| # | Colour | Pack | Role |
+|---|---|---|---|
+| 01 | ขาว | มูสโฟมล้างหน้า | ล้าง |
+| 02 | ขาว | เซรั่มผิวเป็นสิวง่าย | เลือกบำรุง |
+| 03 | เขียวอ่อน | เซรั่มผิวดูหมอง | เลือกบำรุง |
+| 04 | เขียวเข้ม | เซรั่มกันแดด | กันแดด |
+| 05 | ตลับเขียว | แป้งพัฟ | แต่งผิวเมื่ออยากแต่ง |
+
+- **Always tied:** colour is always shown with the number, pack name and role, because CL and AC are both white and PO is not the darkest.
+- **Where it appears:**
+  - the routine hold: the daily context "เจอแดด เจอฝุ่นทุกวัน", a drawn colour stripe, number and colour marks under the packs (number and dot only on phones), and one whole line per piece;
+  - the chapter foot tags and the rail's colour rings;
+  - the closing regroup, where the rail clears so the five stand free;
+  - one short line at the LINE close, with marks on the pieces;
+  - a route strip on every product page, with the current piece marked and each link named by number, colour and piece.
+- **In flow**, the route sits on an ivory ledge.
+- **Scope:** it is a memory aid for this set. It is not a strength scale, a proven two-serum layering order or a dust/pollution barrier. The serums are chosen by concern, PO stays optional, and label guidance stays.
+
 **Crown increment (2026-09-29).** The page runs **WHY → the five motion chapters (each with an exit to its own page) → a real exchange → one LINE close.**
-- **WHY:** the opening sells an at-home set with practical roles, "ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ". The routine row tells the two serums apart by what they are for (ผิวเป็นสิวง่าย · ผิวดูหมอง), not by colour.
+- **WHY:** the opening sells an at-home set with practical roles, "ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ". The two serums are told apart by what they are for, and the colour route (above) carries each piece's number, name and role.
 - **The cinema:** one scroll clock, material transitions, holds and every accessibility/runtime fix, all as released in Motion v2.
 - **AC's film:** AC's material is now a silent concept film (botanicals, then a glass funnel with a fine stream). It plays from its body cut, which ends before the film's lens, so it can rest under the words. The film's own last frame is a still that the camera enters on the way to BR.
 - **SU:** its sideways waves hold longer, and each phrase stays on one line.
@@ -35,13 +55,13 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 
 | File | Responsibility |
 |---|---|
-| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, per-chapter `scene`, attributed `selling.beats`, the ingredient catalogue, the exchange (exact texts, screenshot, personal experience), provenance, the order channel (`order`), the gated offer and the profile link. |
+| `mediral/data/routine.json` | Product roles, each piece's colour (`tone`) and route line (`route`), the colour route copy (`route`), `when`/`how`, image bounds, per-chapter `scene`, attributed `selling.beats`, the ingredient catalogue, the exchange (exact texts, screenshot, personal experience), provenance, the order channel (`order`), the gated offer and the profile link. |
 | `mediral/data/details.json` | Public copy for the five product pages: role, problem, benefits, texture, fit, how, FAQ and every source-listed name with its sourced role (or none). Only public fields. |
 | `mediral/js/cinema.js` | The engine: one clock T from the story track, keyframes around each layer's CSS home (offsets, hand-off `match`, camera `focus`, custom properties held across the track), liveness through parent layers, two-sided load windows, flow mode. |
-| `mediral/js/score.js` | The score: chapter markup from data, the AC film (`FILM`), each chapter's exit to its page, and every layer's timing. |
+| `mediral/js/score.js` | The score: chapter markup from data, the colour mark (`toneMark`), the AC film (`FILM`), each chapter's exit to its page, the closing regroup in route order, and every layer's timing. |
 | `mediral/js/main.js` | Mounts the story and markers, one update per scroll frame, rail/`data-step`/header chapter, keeps the story moment across real viewport changes, the trust block, the LINE close and message, legacy links, the AC film's window and one rewind per genuine revisit. |
 | `mediral/js/lab-film.js` | Decorative, muted, inline media with a poster fallback; picks the smaller file on narrow screens; `rewind()` for the owning scene. |
-| `mediral/js/detail-view.js`, `mediral/js/detail.js` | The product-page template (pure) and its boot. |
+| `mediral/js/detail-view.js`, `mediral/js/detail.js` | The product-page template (pure, with the route strip) and its boot. |
 | `mediral/{cl,ac,br,su,po}/index.html` | Static product-page shells: noindex, name, role, way back, LINE link. |
 | `mediral/assets/` | AI draft packs, ingredient illustrations, stage/drop/foam and Motion v2 layers, AC's film (two sizes, poster, final lens) and the unchanged chat screenshot. |
 
@@ -66,6 +86,7 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 
 ## Content boundaries
 
+- **Colour route:** "เจอแดด เจอฝุ่นทุกวัน" is daily context only. No product claims a dust, PM2.5 or pollution barrier. CL's "Detoxing Pollution & Dirt Cleansing" establishes its name and its cleansing role, and nothing from the legacy rose mousse is transplanted. Colour is not strength or concentration.
 - **Mousse:** the current clover-reference pack is an AI draft. Its size and ingredients are unconfirmed, so the pages omit them (no waves, no ingredient block on its product page) instead of borrowing the old gold-rose list, size, method, SLS or hydration claims. Its role is cleansing face and makeup.
 - **AC:** soothing botanical pair, oil-balance family, then moisture family. Group attribution stays group attribution; no acne cure, germ killing, deadline or universal sensitive-skin claim.
 - **BR:** bearberry/licorice/vitamin C roles, then distinct probiotics/bakuchiol roles, then the fuller source list and light-texture story. No melasma treatment, DNA mechanism, permanent whitening or combined-serum efficacy.
@@ -92,7 +113,23 @@ The five product pages (`/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/`) list **A
   - `.vercelignore` excludes docs, tests, source screenshots, asset manifests/briefs and held drafts.
   - Internal sources and costs stay outside the public runtime. Noindex is not access control.
 
-## Current verification — 29 Sep 2026 crown increment
+## Current verification — 29 Sep 2026 colour route
+
+- **Roles:** built on production `11453867`. Root supplied the source check and the browser QA; Claude wrote the code, tests and docs.
+- **Tests:** `node --test tests/mediral/*.test.mjs` passes 106/106, and `node shelf/validate.mjs` passes.
+- **Headless Chrome (Claude) and root's browser:**
+  - at 390×844 and 360×640, all five route lines are whole at 13 px or more, the marks do not overlap and nothing overflows;
+  - at 1280×800 and 1440×900, each column stays inside its own product (11vw columns on 12vw spacing);
+  - the rail shows through PO and clears in the regroup;
+  - in reduced-motion flow, the route is readable on its ivory ledge and no film source is requested;
+  - the product pages' AC → BR link and current mark, and the LINE close, work.
+- **Production:** verified against the release commit after pushing (not recorded here before that).
+
+## Historical verification records
+
+The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the current page described above.
+
+## Verification record — 29 Sep 2026 crown increment
 
 - **Roles:** built on production `b260673c`. GPT/root supplied one Seedance film (plus the body cut), the public product content, the verified LINE destination and QA. Claude wrote the code, tests and docs.
 - **Tests:** `node --test tests/mediral/*.test.mjs` passes 105/105 (content contracts, controller, engine, film, product pages), and `node shelf/validate.mjs` passes.
@@ -111,10 +148,6 @@ The five product pages (`/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/`) list **A
   - The film body answers Range with 206. The screenshot hash matches in production. Retired `card.js` and the old clip return 404.
   - Live headless Chrome: the phone plays the 720 body and desktop the 1080; `#order` lands below the header; the closing link lands on the set.
   - Root confirmed `563451ca` READY independently.
-
-## Historical verification records
-
-The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the current page described above.
 
 ## Verification record — 28 Sep 2026 product selling revision
 

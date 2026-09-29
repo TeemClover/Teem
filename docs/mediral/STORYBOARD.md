@@ -1,4 +1,11 @@
-# Mediral — one cinema (v10: crown increment)
+# Mediral — one cinema (v11: colour route)
+
+**v11 (2026-09-29).** v10 stays. The routine hold teaches the owner's memory aid, "เริ่มจากขาว ค่อยไปเขียว":
+- the route runs 01 ขาว มูสโฟมล้างหน้า → 02 ขาว เซรั่มผิวเป็นสิวง่าย → 03 เขียวอ่อน เซรั่มผิวดูหมอง → 04 เขียวเข้ม เซรั่มกันแดด → 05 ตลับเขียว แป้งพัฟ;
+- the roles run ล้าง → เลือกบำรุง → กันแดด → แต่งผิวเมื่ออยากแต่ง;
+- colour always travels with the number, pack name and role;
+- it recurs in the foot tags, the rail, the regroup (with the rail cleared), the LINE close and a route strip on each product page;
+- "เจอแดด เจอฝุ่นทุกวัน" is context only, with no barrier claim; colour is not strength, and PO stays optional.
 
 **v10 (2026-09-29).** v9's cinema stays. Changes:
 - the opening sells the at-home set with practical roles;
@@ -76,6 +83,7 @@ Run and implementation contracts are in [README.md](README.md). Record actual te
 
 ## Revision history
 
+- v11: the colour route "เริ่มจากขาว ค่อยไปเขียว" (number + colour + pack + role) in the routine hold, foot tags, rail, regroup, LINE close and product pages.
 - v10: crown film in AC, product pages, LINE close, WHY with practical roles, longer SU holds.
 
 - v9: one cinema with a shared clock, problem-first chapters, material transitions (foam, ring, drop, streak, powder, regroup); no buy button, a verified brand profile link, the poster offer off the page.

@@ -14,10 +14,10 @@ This document describes coverage, not a claim that the current integration or de
 
 | File | Contract |
 |---|---|
-| `mediral.test.mjs` | Data, source boundaries, static page order, native first-paint packs, media files/markup, dependencies and deployment exclusions. |
-| `controller.test.mjs` | Actual page-controller behavior with a stand-in engine: chapter mounting (problem before benefit), markers → rail/step/header, resize keeping the story moment, flow switching, film window, saved lists, the gated offer, the profile and commission-link rules, anchors, legacy hashes and optional ingredient reading. |
+| `mediral.test.mjs` | Data, source boundaries, the colour route (each line names number, colour, pack and role in pack order, with no barrier or strength wording), static page order, native first-paint packs, media files/markup, dependencies and deployment exclusions. |
+| `controller.test.mjs` | Actual page-controller behavior with a stand-in engine: chapter mounting (problem before benefit), markers → rail/step/header (the rail names each colour with its number), the LINE close's one route line, resize keeping the story moment, flow switching, film window, saved lists, the gated offer, the profile and commission-link rules, anchors, legacy hashes and optional ingredient reading. |
 | `lab-film.test.mjs` | Decorative media without controls: visibility/preferences, deferred loading, error/end state, asynchronous ownership and cleanup. |
-| `detail.test.mjs` | The five product pages: every source-listed name in its group, names without a sourced role left as names, the mousse page without a formula, the sunscreen trade-name note, one LINE config, the way back, public-only data. |
+| `detail.test.mjs` | The five product pages: the route strip (all five linked in order, each named by number, colour and piece, only the current one marked), every source-listed name in its group, names without a sourced role left as names, the mousse page without a formula, the sunscreen trade-name note, one LINE config, the way back, public-only data. |
 | `cinema.test.mjs` | The scroll engine: history-independent poses and custom properties, `match` offsets, two-sided and parent-bounded load windows, liveness through parent layers, flow reset. |
 
 ## Product and source data

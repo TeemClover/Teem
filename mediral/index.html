@@ -48,11 +48,19 @@
           <figure class="mr-actor mr-actor--su" data-layer="hero.SU"><span class="mr-pack" style="--pack-aspect:0.2455;--pack-img-width:310.366%;--pack-img-height:114.286%;--pack-img-left:-105.183%;--pack-img-top:-7.737%"><img src="assets/pack/su-front-web.webp" width="1024" height="1536" alt="ภาพประกอบเซรั่มกันแดด Mediral" decoding="async"></span></figure>
           <figure class="mr-actor mr-actor--cl" data-layer="hero.CL"><span class="mr-pack" style="--pack-aspect:0.2667;--pack-img-width:270.197%;--pack-img-height:108.096%;--pack-img-left:-85.22%;--pack-img-top:-3.027%"><img src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="ภาพประกอบมูสโฟมล้างหน้า Mediral" fetchpriority="high" decoding="async"></span></figure>
           <figure class="mr-actor mr-actor--po" data-layer="hero.PO"><span class="mr-pack" style="--pack-aspect:1.0681;--pack-img-width:138.581%;--pack-img-height:128.353%;--pack-img-left:-19.235%;--pack-img-top:-18.906%"><img src="assets/pack/po-closed.webp" width="1347" height="1168" alt="ภาพประกอบแป้งพัฟตลับเขียว Mediral" decoding="async"></span></figure>
-          <p class="mr-routine-word mr-routine-word--cl" data-layer="hero.w1">ล้าง<small>หน้าและเครื่องสำอาง</small></p>
-          <p class="mr-routine-word mr-routine-word--serums" data-layer="hero.w2">บำรุง<small>ผิวเป็นสิวง่าย · ผิวดูหมอง</small></p>
-          <p class="mr-routine-word mr-routine-word--su" data-layer="hero.w3">ปกป้อง<small>กันแดด</small></p>
-          <p class="mr-routine-word mr-routine-word--po" data-layer="hero.w4">แต่งผิว<small>เมื่ออยากแต่ง</small></p>
-          <p class="mr-hero__pick" data-layer="hero.pick"><span class="mr-line">ครบในชุดเดียว</span><span class="mr-line">ใช้เท่าที่ผิวต้องการ</span></p>
+          <!-- The set's memory aid: number, pack colour, name and role, in the order the packs stand. -->
+          <div class="mr-route" data-layer="hero.route" aria-hidden="true"><i></i></div>
+          <p class="mr-badge mr-badge--cl" data-layer="hero.b1" aria-hidden="true"><b>01</b><i class="mr-tone mr-tone--white"></i><span class="mr-badge__word">ขาว</span></p>
+          <p class="mr-badge mr-badge--ac" data-layer="hero.b2" aria-hidden="true"><b>02</b><i class="mr-tone mr-tone--white"></i><span class="mr-badge__word">ขาว</span></p>
+          <p class="mr-badge mr-badge--br" data-layer="hero.b3" aria-hidden="true"><b>03</b><i class="mr-tone mr-tone--pale"></i><span class="mr-badge__word">เขียวอ่อน</span></p>
+          <p class="mr-badge mr-badge--su" data-layer="hero.b4" aria-hidden="true"><b>04</b><i class="mr-tone mr-tone--deep"></i><span class="mr-badge__word">เขียวเข้ม</span></p>
+          <p class="mr-badge mr-badge--po" data-layer="hero.b5" aria-hidden="true"><b>05</b><i class="mr-tone mr-tone--compact"></i><span class="mr-badge__word">ตลับเขียว</span></p>
+          <p class="mr-step mr-step--cl" data-layer="hero.s1"><span class="mr-step__n"><b>01</b><i class="mr-tone mr-tone--white" aria-hidden="true"></i>ขาว</span> <span class="mr-step__name">มูสโฟมล้างหน้า</span> <span class="mr-step__role">ล้าง</span></p>
+          <p class="mr-step mr-step--ac" data-layer="hero.s2"><span class="mr-step__n"><b>02</b><i class="mr-tone mr-tone--white" aria-hidden="true"></i>ขาว</span> <span class="mr-step__name">เซรั่มผิวเป็นสิวง่าย</span> <span class="mr-step__role">เลือกบำรุง</span></p>
+          <p class="mr-step mr-step--br" data-layer="hero.s3"><span class="mr-step__n"><b>03</b><i class="mr-tone mr-tone--pale" aria-hidden="true"></i>เขียวอ่อน</span> <span class="mr-step__name">เซรั่มผิวดูหมอง</span> <span class="mr-step__role">เลือกบำรุง</span></p>
+          <p class="mr-step mr-step--su" data-layer="hero.s4"><span class="mr-step__n"><b>04</b><i class="mr-tone mr-tone--deep" aria-hidden="true"></i>เขียวเข้ม</span> <span class="mr-step__name">เซรั่มกันแดด</span> <span class="mr-step__role">กันแดด</span></p>
+          <p class="mr-step mr-step--po" data-layer="hero.s5"><span class="mr-step__n"><b>05</b><i class="mr-tone mr-tone--compact" aria-hidden="true"></i>ตลับเขียว</span> <span class="mr-step__name">แป้งพัฟ</span> <span class="mr-step__role">แต่งผิวเมื่ออยากแต่ง</span></p>
+          <p class="mr-hero__pick" data-layer="hero.pick"><span class="mr-hero__context">เจอแดด เจอฝุ่นทุกวัน</span><span class="mr-line">เริ่มจากขาว</span><span class="mr-line">ค่อยไปเขียว</span><span class="mr-hero__route">จำสีแพ็ก แล้วใช้ตามขั้น · ใช้เฉพาะชิ้นที่ต้องการ</span></p>
           <div class="mr-hero__cta" data-layer="hero.cta" data-inert-hidden>
             <div class="mr-actions"><a class="mr-btn" href="#step-CL">เริ่มจากล้างหน้า <span aria-hidden="true">↓</span></a><a class="mr-btn mr-btn--ghost" href="#order" data-cta="order">สั่งผ่าน LINE</a></div>
             <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
@@ -78,6 +86,7 @@
           <p class="mr-order__how" data-slot="order-how">แอด LINE แล้วบอกว่าสนใจชุดครบ 5 ชิ้น หรือชิ้นไหน myClover จะแจ้งราคา ค่าส่ง และวิธีชำระในแชต ก่อนยืนยันการสั่ง</p>
           <div class="mr-actions mr-actions--order" data-slot="actions"><a class="mr-btn mr-btn--line" data-slot="line-link" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener">แอด LINE สั่งชุดดูแลผิว</a></div>
           <p class="mr-order__note" data-slot="order-note">ปุ่มนี้เปิดหน้าเพิ่มเพื่อน LINE ของ myClover การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น</p>
+          <p class="mr-order__route" data-slot="route-close">เริ่มจากขาว ค่อยไปเขียว</p>
           <fieldset class="mr-picks" data-slot="pieces"><legend>ชิ้นที่สนใจ · ไม่จำเป็นต้องครบทุกชิ้น</legend></fieldset>
           <div class="mr-order__message"><p data-slot="message" aria-live="polite"></p><button type="button" class="mr-btn mr-btn--ghost mr-btn--small" data-action="copy">คัดลอกข้อความไว้ส่งใน LINE</button></div>
           <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
