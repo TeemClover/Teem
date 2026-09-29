@@ -10,6 +10,7 @@
  * stays fixed; a partial list never inherits a bundle price or a commission link.
  */
 import {createCinema} from './cinema.js';
+import {createLetterMotion} from './letter.js';
 import {SHOTS, CHAPTERS, FILMS, score, closingShot, detailHref, toneMark} from './score.js';
 
 const root = document.documentElement;
@@ -22,7 +23,7 @@ const asset = path => new URL(path, base).href;
 root.classList.remove('mr-boot');
 root.classList.add('mr-js');
 
-const state = {data: null, selection: new Set(), u: -1, active: null, chapter: null, film: null, films: new Map(), cinema: null};
+const state = {data: null, selection: new Set(), u: -1, active: null, chapter: null, film: null, films: new Map(), cinema: null, letter: null};
 window.__mediral = state; // read-only QA hook
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -101,7 +102,7 @@ function renderRail() {
   slot('rail').innerHTML = items + `<a href="#set" class="mr-rail__set" data-rail="set" aria-label="ดูชุด 5 ชิ้น"><span class="mr-rail__label">ชุด 5 ชิ้น</span><span class="mr-rail__dot">5/5</span></a>`;
 }
 
-// The real exchange, as the unchanged original screenshot, then Teem's own experience in his words.
+// A personal letter, followed by the original exchange as its attached photograph.
 function renderTrust() {
   const {exchange} = state.data;
   const target = slot('trust');
@@ -110,24 +111,34 @@ function renderTrust() {
   const [first, reply] = exchange.messages;
   const said = `${first.text} — ${reply.text}`;
   const story = exchange.experience;
-  const clover = `<svg viewBox="0 0 80 88" fill="none" aria-hidden="true"><path d="M40 40C32 58 40 73 56 82" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><g fill="currentColor"><path id="review-leaf" d="M40 40C26 31 18 19 26 12C32 7 38 11 40 17C42 11 49 7 54 12C62 20 54 32 40 40Z"/><use href="#review-leaf" transform="rotate(90 40 40)"/><use href="#review-leaf" transform="rotate(180 40 40)"/><use href="#review-leaf" transform="rotate(270 40 40)"/></g></svg>`;
+  // Four separate heart-shaped leaves: preserve a little air at the centre, like a real clover.
+  const leaf = 'M50 44C42 39 32 30 32 21C32 10 45 7 50 16C55 7 68 10 68 21C68 30 58 39 50 44Z';
+  const clover = `<svg viewBox="0 0 100 112" fill="none" aria-hidden="true"><path d="M50 55C47 74 53 90 67 101" stroke="#466f39" stroke-width="3" stroke-linecap="round"/>${['#577d43','#729452','#4c713b','#648b48'].map((fill, i) => `<g transform="rotate(${i * 90} 50 50)"><path d="${leaf}" fill="${fill}" stroke="#fffdf4" stroke-width="3" stroke-linejoin="round"/><path d="M50 40V24" stroke="#dce9bb" stroke-width=".8" stroke-linecap="round" opacity=".75"/></g>`).join('')}</svg>`;
   target.innerHTML = `<figcaption class="mr-trust__intro" id="trust-title">ประสบการณ์ใช้เองของ Teem</figcaption>
-    <article class="mr-trust__experience" aria-labelledby="experience-title">
-      <div class="mr-trust__clover">${clover}</div>
-      <p class="mr-trust__eyebrow">${esc(story.eyebrow)}</p>
-      <h3 id="experience-title">${esc(story.heading)}</h3>
-      <p class="mr-trust__lead">${esc(story.text)}</p>
-      <div class="mr-trust__story">${story.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>
-      <p class="mr-trust__wish"><span aria-hidden="true">🍀</span> ${esc(story.wish)}</p>
-      <footer>${esc(story.credit)} <small>${esc(story.note)}</small></footer>
-    </article>
-    <p class="mr-trust__intro mr-trust__chat-title">${esc(exchange.intro)}</p>
-    <a class="mr-trust__shot" href="${asset(shot.src)}" target="_blank" rel="noopener">
-      <img src="${asset(shot.src)}" width="${shot.width}" height="${shot.height}" loading="lazy" decoding="async"
-        alt="${esc(`ภาพแชตจริง: Teem ส่งข้อความว่า “${first.text}” และเจ้าของ Mediral ตอบว่า “${reply.text}”`)}">
-    </a>
-    <p class="mr-trust__caption">${esc(shot.caption)} · <span>เปิดดูภาพเต็ม</span></p>
+    <div class="mr-letter-anchor" data-letter-anchor>
+      <article class="mr-trust__experience" aria-labelledby="experience-title">
+        <span class="mr-letter__fold" aria-hidden="true"></span>
+        <div class="mr-trust__clover">${clover}</div>
+        <p class="mr-trust__eyebrow">${esc(story.eyebrow)}</p>
+        <h3 id="experience-title">${esc(story.heading)}</h3>
+        <p class="mr-trust__lead">${esc(story.text)}</p>
+        <div class="mr-trust__story">${story.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+        <p class="mr-trust__wish">${esc(story.wish)}</p>
+        <footer>${esc(story.credit)} <small>${esc(story.note)}</small></footer>
+      </article>
+    </div>
+    <div class="mr-letter__attachment" data-photo-anchor>
+      <figure class="mr-trust__photo">
+        <p class="mr-trust__intro mr-trust__chat-title">${esc(exchange.intro)}</p>
+        <div class="mr-trust__shot">
+          <img src="${asset(shot.src)}" width="${shot.width}" height="${shot.height}" loading="lazy" decoding="async"
+            alt="${esc(`ภาพแชตจริง: Teem ส่งข้อความว่า “${first.text}” และเจ้าของ Mediral ตอบว่า “${reply.text}”`)}">
+        </div>
+        <figcaption class="mr-trust__caption">${esc(shot.caption)}</figcaption>
+      </figure>
+    </div>
     <p class="mr-sr">${esc(said)}</p>`;
+  state.letter = createLetterMotion({element: target});
 }
 
 // One order channel, read from data: every LINE action on the page shows the same verified link.
@@ -309,6 +320,7 @@ function onScroll() {
   const chapter = readingChapter();
   const u = progress();
   const storyRect = $('#story').getBoundingClientRect();
+  const letterFrame = state.letter?.read();
   const T = state.cinema ? state.cinema.render() : 0;
   if (chapter) document.body.dataset.readingChapter = chapter.id;
   else delete document.body.dataset.readingChapter;
@@ -340,6 +352,7 @@ function onScroll() {
     state.stable = {T, H, inTrack: storyRect.top <= 0 && storyRect.bottom > H};
   }
   syncFilms(T, inStory);
+  state.letter?.render(letterFrame, {settled: flowQuery.matches});
 }
 // Scroll and resize schedule one update per frame. Some embedded browsers throttle animation frames
 // for unfocused views; a short timer then does the same single update so text and art never lag.

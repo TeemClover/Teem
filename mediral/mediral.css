@@ -1,4 +1,4 @@
-:root{--forest:#234d35;--forest-deep:#163a28;--ink:#193528;--ink-soft:#586653;--sage:#d8e2c7;--sage-deep:#a9bd91;--ivory:#f4f4ec;--ivory-warm:#eaf0d9;--chartreuse:#dceab6;--gold:#789348;--warn-bg:#edeccf;--warn-ink:#586324;--line:rgba(25,53,40,.17);--sans:'Noto Sans Thai',system-ui,sans-serif;--display:'Manrope','Noto Sans Thai',sans-serif;--gutter:clamp(24px,5.4vw,96px);--header-h:76px;--visual-top:100px;color-scheme:light}
+:root{--forest:#234d35;--forest-deep:#163a28;--ink:#193528;--ink-soft:#586653;--sage:#d8e2c7;--sage-deep:#a9bd91;--ivory:#f4f4ec;--ivory-warm:#eaf0d9;--chartreuse:#dceab6;--gold:#789348;--warn-bg:#edeccf;--warn-ink:#586324;--line:rgba(25,53,40,.17);--sans:'Noto Sans Thai',system-ui,sans-serif;--display:'Manrope','Noto Sans Thai',sans-serif;--brand-wordmark-font:'Kanit',var(--display);--brand-wordmark-weight:400;--gutter:clamp(24px,5.4vw,96px);--header-h:76px;--visual-top:100px;color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--ivory);color:var(--ink);font:400 16px/1.75 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
@@ -17,7 +17,7 @@ p{margin-top:0}
 .mr-header{position:fixed;inset:0 0 auto;z-index:30;height:var(--header-h);padding:0 var(--gutter);display:flex;align-items:center;gap:20px;background:rgba(244,244,236,.94);border-bottom:1px solid rgba(25,53,40,.08);backdrop-filter:blur(14px)}
 .mr-brand{display:flex;align-items:center;gap:12px;margin-right:auto;text-decoration:none;flex:none}
 .mr-brand__logos{display:flex;align-items:center;gap:12px}
-.mr-brand__house{display:flex;align-items:center;gap:7px;font:700 14px 'Kanit',var(--display);white-space:nowrap}
+.mr-brand__house{display:flex;align-items:center;gap:7px;font:var(--brand-wordmark-weight) 14px var(--brand-wordmark-font);white-space:nowrap}
 .mr-brand__house img{width:30px;height:33px;object-fit:contain}
 .mr-brand__sep{opacity:.5;font:400 16px/1 var(--sans)}
 /* Original outlined logo extracted from official label artwork, with true transparent counters. */
@@ -519,25 +519,37 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 /* ---------- after the story: the real exchange, then one way to order (LINE with myClover) ---------- */
 .mr-close{background:#eef1e3;border-bottom:1px solid var(--line)}
 .mr-close__inner{max-width:1100px;margin:auto;padding:76px var(--gutter) 68px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,6vw,72px);align-items:start}
-.mr-trust{margin:0;display:grid;gap:14px;align-content:start}
-.mr-trust__intro{font:600 12px/1.6 var(--sans);letter-spacing:.06em;color:var(--forest)}
-/* The original screenshot, unchanged: a quiet frame, full image a tap away. */
-.mr-trust__shot{display:block;max-width:400px;border-radius:14px;overflow:hidden;background:#111;box-shadow:0 22px 44px -26px rgba(22,58,40,.6),0 0 0 1px rgba(22,58,40,.14)}
-.mr-trust__shot img{width:100%;height:auto}
-.mr-trust__caption{margin:0;font-size:11px;line-height:1.6;color:var(--ink-soft)}
-.mr-trust__caption span{text-decoration:underline;text-underline-offset:3px}
-.mr-trust__experience{position:relative;isolation:isolate;margin:0;padding:30px 27px 24px;background:radial-gradient(ellipse at 100% 0,rgba(202,224,169,.52),transparent 58%),#fffdf4;border:1px solid #d7dfc8;border-radius:24px 24px 28px 8px;box-shadow:0 16px 36px -26px rgba(22,58,40,.45);max-width:440px;color:var(--forest-deep)}
-.mr-trust__experience:before{content:'';position:absolute;inset:7px;border:1px solid rgba(121,151,88,.18);border-radius:18px 18px 22px 4px;pointer-events:none;z-index:-1}
-.mr-trust__clover{position:absolute;right:19px;top:17px;width:52px;color:#58853b;transform:rotate(13deg)}
-.mr-trust__clover svg{display:block;width:100%;height:auto}
-.mr-trust__experience .mr-trust__eyebrow{padding-right:52px;margin:0 0 14px;font:500 10px/1.6 var(--sans);letter-spacing:.03em;color:#587048}
-.mr-trust__experience h3{font:600 clamp(28px,3.3vw,38px)/1.3 var(--sans);letter-spacing:-.04em;margin:0 0 13px;padding-right:20px}
-.mr-trust__experience .mr-trust__lead{margin:0 0 20px;font:600 17px/1.7 var(--sans);text-wrap:pretty}
-.mr-trust__story p{margin:0 0 14px;font:400 14px/1.95 var(--sans);color:#3d5138;text-wrap:pretty}
-.mr-trust__experience .mr-trust__wish{margin:22px 0 20px;padding-top:16px;border-top:1px dashed #b9c8a5;font:500 13px/1.8 var(--sans);color:#476d36}
-.mr-trust__experience footer{font:600 12px/1.7 var(--sans);color:var(--forest-deep)}
+/* Scroll poses belong to descendants; these two anchors keep their natural document positions. */
+.mr-trust{margin:0;display:grid;gap:14px;align-content:start;perspective:1600px;--letter-y:0px;--letter-turn:0deg;--letter-fold:0deg;--letter-fold-shade:0;--letter-sticker-y:0px;--letter-sticker-turn:-12deg;--letter-sticker-scale:1;--letter-sticker-opacity:1;--letter-photo-y:0px;--letter-photo-turn:-2deg;--letter-photo-opacity:1}
+.mr-trust__intro{font:500 12px/1.6 var(--sans);letter-spacing:.04em;color:var(--forest)}
+.mr-letter-anchor{position:relative;z-index:2;perspective:1400px;max-width:440px}
+.mr-trust__experience{position:relative;isolation:isolate;margin:0;padding:34px 27px 32px;background:radial-gradient(ellipse at 100% 0,rgba(220,230,190,.28),transparent 52%),#fffdf4;border:1px solid #d8dcc9;border-radius:3px 8px 4px 3px;box-shadow:0 3px 7px -4px #34482540,0 23px 40px -30px #34482570;color:var(--forest-deep);transform-origin:50% 20%;transform:translate3d(0,var(--letter-y),0) rotate(calc(var(--letter-turn) * var(--letter-tilt-factor,1)))}
+/* A pressed crease has a highlight on one side and a soft shadow on the other. */
+.mr-trust__experience:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,transparent 33.1%,#bbc2a416 33.2%,#8e987126 33.33%,#fffef9cc 33.55%,transparent 34.4%,transparent 66.1%,#b8bca41c 66.2%,#89946c22 66.35%,#fffffbcc 66.55%,transparent 67.4%),linear-gradient(90deg,transparent 49.5%,#aab08e0b 49.8%,#fffef97a 50%,transparent 50.6%)}
+.mr-trust__experience:after{content:'';position:absolute;inset:7px;border:1px solid #85936714;pointer-events:none;border-radius:1px}
+.mr-letter__fold{position:absolute;inset:0 0 auto;height:33.33%;z-index:3;pointer-events:none;transform-origin:50% 100%;transform:rotateX(var(--letter-fold));opacity:var(--letter-fold-shade);background:linear-gradient(180deg,#fffdf4,#edf0de);border:1px solid #d8dcc9;box-shadow:0 -12px 28px -14px #34482570;backface-visibility:hidden}
+.mr-trust__clover{position:absolute;z-index:4;right:9px;top:-20px;width:64px;pointer-events:none;transform:translate3d(0,var(--letter-sticker-y),0) rotate(var(--letter-sticker-turn)) scale(var(--letter-sticker-scale));opacity:var(--letter-sticker-opacity);filter:drop-shadow(0 2px 1px #29421e33)}
+.mr-trust__clover svg{display:block;width:100%;height:auto;overflow:visible}
+.mr-trust__experience .mr-trust__eyebrow{padding-right:32px;margin:0 0 14px;font:400 10px/1.6 var(--sans);letter-spacing:.03em;color:#587048}
+.mr-trust__experience h3{font:600 clamp(28px,3.3vw,38px)/1.3 var(--sans);letter-spacing:-.04em;margin:0 0 13px;padding-right:15px}
+.mr-trust__experience .mr-trust__lead{margin:0 0 24px;font:500 17px/1.7 var(--sans);text-wrap:pretty}
+.mr-trust__story p{margin:0 0 18px;font:400 14px/1.95 var(--sans);color:#3d5138;text-wrap:pretty}
+.mr-trust__experience .mr-trust__wish{margin:24px 0 20px;padding-top:16px;border-top:1px dashed #b9c8a5;font:400 13px/1.8 var(--sans);color:#476d36}
+.mr-trust__experience footer{font:500 12px/1.7 var(--sans);color:var(--forest-deep)}
 .mr-trust__experience small{display:block;margin-top:5px;font:400 10px/1.7 var(--sans);color:var(--ink-soft)}
-.mr-trust__chat-title{margin:12px 0 0}
+.mr-letter__attachment{position:relative;z-index:1;max-width:414px;margin:4px 10px 0 16px}
+.mr-trust__photo{position:relative;margin:0;padding:14px 10px 15px;background:#fffef9;border:1px solid #dedfce;box-shadow:0 3px 5px -3px #30432240,0 21px 38px -25px #30432277;transform:translate3d(0,var(--letter-photo-y),0) rotate(var(--letter-photo-turn));opacity:var(--letter-photo-opacity)}
+.mr-trust__photo:after{content:'';position:absolute;right:18px;top:-10px;width:62px;height:21px;transform:rotate(8deg);background:linear-gradient(90deg,#d9dfbf70,#dce3c6b8,#d9dfbf70);border-inline:1px dashed #b7c29580}
+.mr-trust__chat-title{margin:0 0 12px;font-size:11px;letter-spacing:0}
+/* The unchanged screenshot is the photograph itself, not a control or a lightbox. */
+.mr-trust__shot{display:block;overflow:hidden;background:#111;border:1px solid #26392120}
+.mr-trust__shot img{width:100%;height:auto}
+.mr-trust__caption{margin:12px 3px 0;font-size:10px;line-height:1.7;color:var(--ink-soft)}
+@media(max-width:700px){.mr-trust{--letter-tilt-factor:.25}.mr-trust__experience{padding:32px 23px 29px}.mr-trust__clover{right:8px;width:59px}.mr-letter__attachment{margin-inline:9px}}
+/* Readable, open stationery is the baseline, including short screens and reduced motion. */
+.mr-flow .mr-trust__experience,.mr-flow .mr-trust__photo,.mr-flow .mr-trust__clover{transform:none;opacity:1}
+.mr-flow .mr-letter__fold{display:none}
+@media(prefers-reduced-motion:reduce),(max-height:520px){.mr-trust__experience,.mr-trust__photo,.mr-trust__clover{transform:none!important;opacity:1!important}.mr-letter__fold{display:none}}
 /* In-page links to the order land below the fixed header, like every reading chapter. */
 .mr-order{scroll-margin-top:calc(var(--header-h) + 28px)}
 .mr-order .mr-h2{margin-bottom:12px}
@@ -566,7 +578,7 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 .mr-fact small{display:block;color:var(--ink-soft)}
 @media (max-width:900px){
   .mr-close__inner{grid-template-columns:1fr;gap:36px;padding:44px var(--gutter) 48px}
-  .mr-trust__shot,.mr-trust__experience{max-width:100%}
+  .mr-letter-anchor{max-width:100%}.mr-letter__attachment{max-width:calc(100% - 26px)}
 }
 @media (max-width:420px){
   .mr-pick{grid-template-columns:20px 32px minmax(0,1fr);row-gap:2px}

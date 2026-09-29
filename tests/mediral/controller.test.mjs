@@ -7,9 +7,11 @@ import vm from 'node:vm';
 // one; the cinema engine is replaced by a stand-in with the same contract (the engine has its own
 // suite in cinema.test.mjs), so these tests cover what the controller decides, not how layers move.
 const entry = new URL('../../mediral/js/main.js', import.meta.url);
+const letterModule = await import(new URL('../../mediral/js/letter.js', import.meta.url));
 const scoreModule = await import(new URL('../../mediral/js/score.js', import.meta.url));
 const {CHAPTERS, END} = scoreModule;
 const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.stringify(entry.href))
+  .replace("import {createLetterMotion} from './letter.js';", 'const {createLetterMotion} = globalThis.letterModule;')
   .replace("import {createCinema} from './cinema.js';", 'const {createCinema} = globalThis.cinemaModule;')
   .replace(/import \{([^}]*)\} from '\.\/score\.js';/, 'const {$1} = globalThis.scoreModule;')
   .replace("import('./lab-film.js')", 'globalThis.loadFilmModule()');
@@ -160,7 +162,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
     fetch: async () => ({ok: true, json: async () => data}),
     loadFilmModule: async () => ({initLabFilm: filmFactory}),
-    cinemaModule, scoreModule,
+    cinemaModule, scoreModule, letterModule,
   });
   const animationFrames = new Map();
   let frameId = 0;
@@ -297,6 +299,8 @@ test('the real exchange is the unchanged screenshot, with Teem’s own experienc
   const trust = ui.slots.get('trust').innerHTML;
   assert.match(trust, /src="[^"]*assets\/trust\/owner-chat-original\.jpg" width="640" height="562"/);
   assert.ok(trust.includes(routine.exchange.messages[0].text) && trust.includes(routine.exchange.messages[1].text), 'The alt text quotes both messages exactly');
+  assert.doesNotMatch(trust, /<a\b|เปิดดูภาพเต็ม/, 'The attached original photograph is not a lightbox control');
+  assert.ok(trust.indexOf('mr-trust__experience') < trust.indexOf('mr-trust__photo'), 'Read the personal letter before its attached exchange');
   assert.match(trust, /น้องงทีม/, 'The original spelling is kept');
   const experience = trust.slice(trust.indexOf('mr-trust__experience'));
   assert.match(experience, /เริ่มจากชอบกลิ่นตอนล้างหน้า จนแฟนหยิบไปลองด้วย/);
