@@ -312,3 +312,29 @@ test('a completed clip keeps its final frame and cannot replay on scene/tab retu
   assert.equal(f.video.playCalls, calls, 'Once per visit survives disposal/re-init of the same element');
   assert.equal(f.video.hidden, true, 'After a disposed media resource, the completed scene uses its poster');
 });
+
+test('a genuine new visit rewinds a finished film to its first frame; before any source it does nothing', async t => {
+  const f = mount(t);
+  f.api.rewind();
+  assert.equal(f.video.getAttribute('src'), null, 'Nothing is requested by a rewind alone');
+  await activate(f);
+  f.end();
+  const calls = f.video.playCalls;
+  f.api.setActive(false);
+  f.api.rewind();
+  assert.equal(f.video.currentTime, 0);
+  assert.equal(f.classes.has('is-ended'), false);
+  assert.equal(f.video.playCalls, calls, 'An inactive rewind waits; it does not play');
+  f.api.setActive(true); await tick();
+  assert.equal(f.video.playCalls, calls + 1, 'The next visit plays from the start');
+});
+
+test('narrow screens take the smaller file when one exists', async t => {
+  const f = fixture();
+  f.video.dataset.srcSmall = 'assets/motion/small.mp4';
+  f.win.matchMedia = query => ({matches: query === '(max-width: 900px)', addEventListener() {}, removeEventListener() {}});
+  const api = initLabFilm(f.doc);
+  t.after(() => api.dispose());
+  f.inView(); api.setActive(true); await tick();
+  assert.equal(f.video.getAttribute('src'), 'assets/motion/small.mp4');
+});

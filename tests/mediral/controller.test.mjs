@@ -11,7 +11,7 @@ const scoreModule = await import(new URL('../../mediral/js/score.js', import.met
 const {CHAPTERS, END} = scoreModule;
 const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.stringify(entry.href))
   .replace("import {createCinema} from './cinema.js';", 'const {createCinema} = globalThis.cinemaModule;')
-  .replace("import {SHOTS, CHAPTERS, score, closingShot} from './score.js';", 'const {SHOTS, CHAPTERS, score, closingShot} = globalThis.scoreModule;')
+  .replace("import {SHOTS, CHAPTERS, score, closingShot, detailHref} from './score.js';", 'const {SHOTS, CHAPTERS, score, closingShot, detailHref} = globalThis.scoreModule;')
   .replace("import('./lab-film.js')", 'globalThis.loadFilmModule()');
 const routine = JSON.parse(readFileSync(new URL('../../mediral/data/routine.json', import.meta.url), 'utf8'));
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -20,7 +20,7 @@ const TALL = '(max-aspect-ratio: 1/1)';
 const from = id => CHAPTERS.find(c => c.id === id).from;
 
 async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, readyState = 'complete',
-  pendingFonts = false, flow = false, showOffer = false, affiliate = false, profile = true, cinemaFails = false, filmFactory} = {}) {
+  pendingFonts = false, flow = false, showOffer = false, affiliate = false, profile = true, line = true, cinemaFails = false, filmFactory} = {}) {
   const listeners = new Map(), windowListeners = new Map(), timers = new Map(), slots = new Map(), inserted = [];
   const errors = [];
   let now = Date.parse(clock), context, timerId = 0, H = 800, setShift = 0, resolveFonts;
@@ -86,9 +86,11 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   const pieces = routine.steps.map(step => Object.assign(new Element('input'), {value: step.id}));
   const rows = routine.steps.map(step => { const el = new Element(); el.dataset.row = step.id; return el; });
   const rails = [...routine.steps, {id: 'set'}].map(step => { const el = new Element('a'); el.dataset.rail = step.id; return el; });
-  const actions = ['card', 'copy'].map(action => { const el = new Element('button'); el.dataset.action = action; return el; });
+  const actions = ['copy'].map(action => { const el = new Element('button'); el.dataset.action = action; return el; });
   const film = new Element(); film.id = 'lab-film';
-  for (const name of ['compare', 'uses', 'library', 'rail', 'exchange', 'set-headline', 'set-carry', 'pieces', 'set-row', 'offer', 'actions', 'summary', 'buy-hint', 'disclosure', 'profile-link']) slots.set(name, new Element());
+  for (const name of ['rail', 'trust', 'order-title', 'order-how', 'order-note', 'line-link', 'pieces', 'message', 'offer', 'actions', 'buy-hint', 'disclosure', 'profile-link']) slots.set(name, new Element());
+  const order = new Element('div'); order.id = 'order'; order.scrollMarginTop = '86px';
+  order.getBoundingClientRect = () => ({top: (END + 1) * H + setShift + 600 - context.scrollY, bottom: (END + 1) * H + setShift + 1300 - context.scrollY});
   slots.get('actions').prepend = link => { slots.set('buy-link', link); link.remove = () => slots.delete('buy-link'); };
   const document = {
     documentElement: root, body: new Element('body'), visibilityState: 'visible', activeElement: null, readyState, fonts: {ready: fontReady},
@@ -101,6 +103,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '#story') return section;
       if (selector === '#set') return set;
       if (selector === '#lab-film') return film;
+      if (selector === '#order') return order;
       const mark = marks.find(m => selector === `#${m.id}`);
       if (mark) return mark;
       if (selector.startsWith('#step-')) return null;
@@ -114,7 +117,8 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '[data-piece]') return pieces;
       if (selector === '[data-row]') return rows;
       if (selector === '[data-rail]') return rails;
-      if (selector === '[data-action="copy"], [data-action="card"]') return actions;
+      if (selector === '[data-action="copy"]') return actions;
+      if (selector === '[data-slot="line-link"]') return [slots.get('line-link')];
       return [];
     },
   };
@@ -143,7 +147,8 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   data.set.show_offer = showOffer;
   if (affiliate) data.buy = {...data.buy, status: 'verified', affiliate_url: 'https://shop.example.test/verified-set'};
   if (!profile) data.buy.profile = {...data.buy.profile, status: 'unverified'};
-  context = vm.createContext({document, location: new URL(url), URL, URLSearchParams, Intl, Date: ClockDate, console: {warn() {}, error: (...args) => errors.push(args)},
+  if (!line) data.order = {...data.order, status: 'unverified'};
+  context = vm.createContext({document, location: Object.assign(new URL(url), {replace(href) { this.replaced = href; }, assign(href) { this.assigned = href; }}), URL, URLSearchParams, Intl, Date: ClockDate, console: {warn() {}, error: (...args) => errors.push(args)},
     navigator: {clipboard: {writeText: async () => { if (clipboardFails) throw new Error('denied'); }}},
     matchMedia: media, innerHeight: H, innerWidth: 1000, scrollY: 0,
     getComputedStyle: el => ({scrollMarginTop: el.scrollMarginTop || '0px'}),
@@ -239,54 +244,59 @@ test('without a verified destination there is no buy control at all, only workin
   assert.ok(ui.actions.every(button => !button.disabled), 'Save and copy work for the full list');
 });
 
-test('the brand profile is a verified link for any list; it is never the set checkout or a commission link', async () => {
+test('one order channel: the LINE action reads the verified config; an unverified channel shows no action', async () => {
   const ui = await fixture();
-  const link = ui.slots.get('profile-link');
-  const check = () => {
-    assert.equal(link.hidden, false);
-    assert.equal(link.href, routine.buy.profile.url);
-    assert.match(link.href, /^https:\/\/www\.tiktok\.com\/@mediral\.official\.th$/);
-    assert.equal(link.textContent, 'ดู Mediral บน TikTok');
-    assert.equal(link.rel, 'noopener', 'Not marked sponsored');
-    assert.equal(ui.slots.get('disclosure').hidden, true);
-  };
-  check();
-  ui.change('BR', false);
-  check();
-  for (const id of ['CL', 'AC', 'SU', 'PO']) ui.change(id, false);
-  check();
-  const hidden = await fixture({profile: false});
-  assert.equal(hidden.slots.get('profile-link').hidden, true, 'An unverified profile is not shown');
+  const link = ui.slots.get('line-link');
+  assert.equal(link.hidden, false);
+  assert.equal(link.href, routine.order.url);
+  assert.match(link.href, /^https:\/\/lin\.ee\/rlSlhzT$/, 'The myClover house LINE, not the brand’s');
+  assert.equal(link.textContent, 'แอด LINE สั่งชุดดูแลผิว');
+  assert.equal(link.rel, 'noopener');
+  assert.equal(ui.slots.get('order-title').textContent, routine.order.heading);
+  assert.match(ui.slots.get('order-how').textContent, /แจ้งราคา ค่าส่ง และวิธีชำระในแชต ก่อนยืนยันการสั่ง/);
+  assert.match(ui.slots.get('order-note').textContent, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
+  const off = await fixture({line: false});
+  assert.equal(off.slots.get('line-link').hidden, true);
 });
 
-test('a verified commission link serves only the full set, disclosed beside it, and partial lists lose it', async () => {
+test('the chosen pieces only shape a message to paste in LINE; none chosen still leaves LINE open', async () => {
+  const ui = await fixture();
+  assert.equal(ui.slots.get('message').textContent, 'สนใจสั่ง Mediral ชุดดูแลผิว 5 ชิ้น');
+  ui.change('BR', false); ui.change('PO', false);
+  assert.equal(ui.slots.get('message').textContent, 'สนใจสั่ง Mediral: มูสโฟมล้างหน้า, เซรั่มสำหรับผิวที่เป็นสิวง่าย, เซรั่มกันแดด');
+  for (const id of ['CL', 'AC', 'SU']) ui.change(id, false);
+  assert.ok(ui.actions.every(button => button.disabled), 'Nothing to copy');
+  assert.equal(ui.slots.get('line-link').hidden, false, 'LINE stays available');
+  const picks = ui.inserted.find(i => i.target === ui.slots.get('pieces')).html;
+  for (const step of routine.steps) {
+    assert.match(picks, new RegExp(`href="${step.id.toLowerCase()}/"`), `${step.id}: an exit to its own page`);
+    assert.ok(picks.includes(step.order_name));
+  }
+  assert.match(picks, /เซรั่มสำหรับผิวที่เป็นสิวง่าย[\s\S]*เซรั่มสำหรับผิวที่ดูหมอง/, 'Serums are told apart by what they are for');
+});
+
+test('a verified commission link would serve only the full set, disclosed beside it', async () => {
   const ui = await fixture({affiliate: true});
   const link = () => ui.slots.get('buy-link');
   assert.equal(link().href, 'https://shop.example.test/verified-set');
   assert.equal(link().rel, 'noopener sponsored');
   assert.equal(ui.slots.get('disclosure').hidden, false);
-  assert.match(ui.slots.get('disclosure').textContent, /ค่าคอมมิชชัน/);
   ui.change('BR', false);
   assert.equal(link(), undefined);
   assert.equal(ui.slots.get('disclosure').hidden, true);
-  assert.match(ui.slots.get('summary').innerHTML, /data-action="select-all"/);
-  for (const id of ['CL', 'AC', 'SU', 'PO']) ui.change(id, false);
-  assert.ok(ui.actions.every(button => button.disabled));
-  ui.restore();
-  assert.ok(ui.pieces.every(box => box.checked));
-  assert.ok(ui.actions.every(button => !button.disabled));
-  assert.equal(link().href, 'https://shop.example.test/verified-set');
-  assert.equal(ui.document.activeElement, ui.slots.get('summary'));
 });
 
-test('the saved-list summary talks about the list and the store, never a poster price or payment step', async () => {
+test('the real exchange is the unchanged screenshot, with Teem’s own experience beside it, not inside it', async () => {
   const ui = await fixture();
-  const full = ui.slots.get('summary').innerHTML;
-  assert.match(full, /รายการครบ 5 ชิ้น/);
-  ui.change('SU', false);
-  const partial = ui.slots.get('summary').innerHTML;
-  assert.match(partial, /เลือกไว้ 4 จาก 5 ชิ้น/);
-  for (const html of [full, partial]) assert.doesNotMatch(html, /โปสเตอร์|1,899|ชำระ|กดจ่าย/);
+  const trust = ui.slots.get('trust').innerHTML;
+  assert.match(trust, /src="[^"]*assets\/trust\/owner-chat-original\.jpg" width="640" height="562"/);
+  assert.ok(trust.includes(routine.exchange.messages[0].text) && trust.includes(routine.exchange.messages[1].text), 'The alt text quotes both messages exactly');
+  assert.match(trust, /น้องงทีม/, 'The original spelling is kept');
+  const experience = trust.slice(trust.indexOf('mr-trust__experience'));
+  assert.match(experience, /หลังได้ลองใช้ ผมรู้สึกว่าสิวดีขึ้น/);
+  assert.match(experience, /ประสบการณ์ใช้ส่วนตัวของ Teem ผลของแต่ละคนแตกต่างกัน/);
+  assert.doesNotMatch(experience, /[“”"]หลังได้ลองใช้/, 'A personal account, not presented as a verbatim quote');
+  assert.doesNotMatch(trust, /เซรั่มขวดขาว|AC|รักษา|หายขาด/, 'Not tied to a product, never a cure');
 });
 
 test('clipboard denial leaves a readonly focused and selected copy field', async () => {
@@ -299,7 +309,7 @@ test('clipboard denial leaves a readonly focused and selected copy field', async
   assert.equal(field.readOnly, true);
   assert.equal(field.value, expected);
   assert.equal(field.selected, true);
-  assert.match(field.getAttribute('aria-label'), /รายการ Mediral/);
+  assert.match(field.getAttribute('aria-label'), /ข้อความสั่ง Mediral/);
 });
 
 /* ---------- the story ---------- */
@@ -356,26 +366,38 @@ test('the header takes the chapter on screen, leading its marker slightly, and r
   assert.equal(ui.document.body.dataset.chapter, 'AC', 'A mostly open portal already shows the dark chapter');
   ui.at(from('PO') + 0.1);
   assert.equal(ui.document.body.dataset.chapter, 'PO');
-  ui.at(14.0);
+  ui.at(14.5);
   assert.equal(ui.document.body.dataset.chapter, 'close');
   ui.scroll((END + 1) * ui.H + 200);
   assert.equal(ui.document.body.dataset.chapter, 'page');
 });
 
-test('the extraction film plays only while AC opens, and never in a hidden tab', async () => {
-  const film = {active: false, setActive(value) { this.active = value; }};
+test('the AC film plays from the portal to the lens, never in a hidden tab, and rewinds once per genuine revisit', async () => {
+  const calls = [];
+  const film = {active: false, setActive(value) { this.active = value; calls.push(value ? 'on' : 'off'); }, rewind() { calls.push('rewind'); }};
   const ui = await fixture({filmFactory: () => film});
   await ui.run('bootFilm()');
   ui.at(2.0);
   assert.equal(film.active, false);
   ui.at(3.8);
   assert.equal(film.active, true);
+  ui.at(5.8);
+  assert.equal(film.active, true, 'Still AC: the film keeps its place under the words');
   ui.hidePage();
   assert.equal(film.active, false);
   ui.returnToPage();
   assert.equal(film.active, true);
-  ui.at(5.0);
-  assert.equal(film.active, false);
+  assert.equal(calls.filter(c => c === 'rewind').length, 1, 'Only the first entry into AC counts as a visit');
+  calls.length = 0;
+  for (const T of [8, 9, 10, 12]) ui.at(T);  // several frames in later chapters
+  assert.deepEqual(calls.filter(c => c !== 'off'), [], 'Leaving deactivates; frames elsewhere never seek the film');
+  assert.equal(calls[0], 'off', 'Deactivated before anything else happens to it');
+  ui.hidePage(); ui.returnToPage();
+  assert.ok(!calls.includes('rewind'), 'Tab visibility is not a visit');
+  ui.at(4.0);
+  const back = calls.slice(calls.lastIndexOf('rewind'));
+  assert.equal(calls.filter(c => c === 'rewind').length, 1, 'A genuine return rewinds once');
+  assert.deepEqual(back.slice(0, 2), ['rewind', 'on'], 'Rewound before it may play again');
 });
 
 test('a new viewport keeps the reader at the same story moment, unless they moved or were outside it', async () => {
@@ -437,59 +459,6 @@ test('a failing cinema leaves the readable flow and working commerce, not the da
 });
 
 /* ---------- optional depth ---------- */
-test('method, timing and size are inside the expandable product details, without image-status notes', async () => {
-  const ui = await fixture();
-  const html = ui.run('stepBody(state.data.steps[1])');
-  const details = html.slice(html.indexOf('<details'), html.indexOf('</details>'));
-  assert.match(details, /วิธีใช้และรายละเอียดชิ้นนี้/);
-  assert.ok(details.includes(routine.steps[1].how));
-  assert.ok(details.includes(routine.steps[1].size));
-  for (const step of routine.steps) assert.doesNotMatch(ui.run(`stepBody(byId('${step.id}'))`), /AI ฉบับร่าง|ยังไม่ยืนยัน|รอยืนยัน|รอข้อมูล/, `${step.id}: finished wording`);
-  assert.match(ui.run("stepBody(byId('PO'))"), /ดูเฉด น้ำหนัก และรายละเอียดตัวเลือกที่ร้าน/);
-});
-
-test('the library omits an unconfirmed formula and keeps every other name one tap away', async () => {
-  const ui = await fixture();
-  const library = ui.slots.get('library').innerHTML;
-  assert.doesNotMatch(library, /id="formula-CL"/, 'No empty or pending mousse entry');
-  for (const step of routine.steps.filter(s => s.id !== 'CL')) {
-    const html = ui.run(`ingredientAtlas(byId('${step.id}'))`);
-    assert.match(html.match(/^<details\b[^>]*>/)[0], new RegExp(`id="formula-${step.id}"`));
-    assert.doesNotMatch(html.match(/^<details\b[^>]*>/)[0], /\sopen\b/);
-    const count = step.featured.length + step.ingredients.length;
-    assert.equal((html.match(/data-formula-index=/g) || []).length, count);
-    for (const ingredient of [...step.featured, ...step.ingredients]) assert.ok(html.includes(`>${ingredient.name}</button>`), ingredient.name);
-  }
-  const ac = ui.run("ingredientAtlas(byId('AC'))");
-  assert.match(ac, /<details class="mr-fact"><summary>ทำความเข้าใจผิวที่เป็นสิวง่าย<\/summary>/, 'General acne knowledge sits behind its own link');
-  assert.match(ac, /href="https:\/\/www\.nhs\.uk\/conditions\/acne\/"/);
-  assert.match(ac, /href="https:\/\/www\.niams\.nih\.gov\/health-topics\/acne"/);
-});
-
-test('direct, in-page and history links open a closed atlas before the reader lands on it', async () => {
-  const ui = await fixture();
-  const atlas = {tagName: 'DETAILS', open: false};
-  ui.document.querySelector = (original => selector => selector === '#formula-BR' ? atlas : original(selector))(ui.document.querySelector);
-  ui.followLink('#formula-BR');
-  assert.equal(atlas.open, true);
-  atlas.open = false;
-  ui.context.location.hash = '#formula-BR';
-  ui.windowEvent('hashchange');
-  assert.equal(atlas.open, true);
-});
-
-test('reading a non-featured ingredient changes its attributed detail without selecting products', async () => {
-  const ui = await fixture();
-  const step = routine.steps.find(s => s.id === 'BR');
-  const groupIndex = step.ingredient_groups.findIndex(g => g.ingredientNames.length > 1);
-  const name = step.ingredient_groups[groupIndex].ingredientNames[1];
-  ui.run(`chooseFormulaIngredient('BR', ${groupIndex}, 1)`);
-  const group = ui.slots.get(`[data-formula-group="BR:${groupIndex}"]`);
-  assert.equal(group.querySelector('.mr-ingredient-group__name').textContent, name);
-  assert.ok(ui.pieces.every(box => box.checked));
-});
-
-/* ---------- links and scheduling ---------- */
 test('incoming product links land on the chapter\'s first composed hold after the markers exist', async () => {
   const ui = await fixture({url: 'https://www.myclover.com/mediral/#step-SU'});
   assert.equal(ui.context.scrollY, from('SU') * ui.H);
@@ -528,7 +497,22 @@ test('reader input cancels a queued incoming-link restoration', async () => {
   }
 });
 
-for (const [hash, target] of [['#lab-film', 'AC'], ['#beat-BR-1', 'BR'], ['#founder', 'set'], ['#relay', 'set']]) {
+test('an old link to a product’s ingredient list opens that product’s own page', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#formula-BR'});
+  assert.equal(ui.context.location.replaced, 'br/#ingredients');
+});
+
+test('an incoming order link is restored below the header after the story is mounted', async () => {
+  const ui = await fixture({url: 'https://www.myclover.com/mediral/#order', readyState: 'interactive', pendingFonts: true});
+  const target = () => (END + 1) * ui.H + 600 - 86;
+  assert.equal(ui.context.scrollY, target());
+  ui.shiftSet(200);
+  ui.fontsReady();
+  await ui.flushImmediateTimers();
+  assert.equal(ui.context.scrollY, target() + 200);
+});
+
+for (const [hash, target] of [['#lab-film', 'AC'], ['#beat-BR-1', 'BR'], ['#founder', 'set'], ['#relay', 'set'], ['#serums', 'set'], ['#ingredients', 'set']]) {
   test(`a legacy ${hash} link lands on what now tells it`, async () => {
     const ui = await fixture({url: `https://www.myclover.com/mediral/${hash}`});
     await ui.flushImmediateTimers();

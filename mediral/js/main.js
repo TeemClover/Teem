@@ -2,14 +2,15 @@
  * Mediral — page controller.
  * data/routine.json drives every product fact. The story is one cinema (js/cinema.js): a sticky
  * viewport whose layers are posed by one clock T from the scroll position, following js/score.js.
- * Reduced motion and short screens read the same chapters in normal flow. After the cinema, the set
- * gives a short real exchange, the five pieces and working actions; the ingredient library is optional.
+ * Reduced motion and short screens read the same chapters in normal flow. After the cinema comes the
+ * real exchange and one way to order: a conversation with myClover on LINE (one channel config,
+ * routine.json → order). Each product's full story and listed names live on its own page.
  *
- * The saved list changes only by the reader's own ticks. The store's five-piece bundle stays fixed;
- * a partial saved list must never inherit a bundle price or a store link.
+ * The chosen pieces only shape an optional message to paste in LINE. The store's five-piece bundle
+ * stays fixed; a partial list never inherits a bundle price or a commission link.
  */
 import {createCinema} from './cinema.js';
-import {SHOTS, CHAPTERS, score, closingShot} from './score.js';
+import {SHOTS, CHAPTERS, score, closingShot, detailHref} from './score.js';
 
 const root = document.documentElement;
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -28,7 +29,6 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', 
 const pad = n => String(n).padStart(2, '0');
 const baht = n => `฿${n.toLocaleString('th-TH')}`;
 const thaiDate = iso => new Date(`${iso}T12:00:00+07:00`).toLocaleDateString('th-TH', {day: 'numeric', month: 'short', year: 'numeric'});
-const byId = id => state.data.steps.find(s => s.id === id);
 
 const isLocalQA = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
 const isCalendarDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value || '')
@@ -76,97 +76,6 @@ function packImage(step, {loading = 'lazy', decorative = false} = {}) {
   const style = `--pack-aspect:${crop.aspect};--pack-img-width:${100 / w}%;--pack-img-height:${100 / h}%;--pack-img-left:${-100 * crop.x0 / w}%;--pack-img-top:${-100 * crop.y0 / h}%`;
   return `<span class="mr-pack" style="${style}"><img src="${asset(step.image)}" alt="${decorative ? '' : esc(step.image_alt)}" loading="${loading}" decoding="async"></span>`;
 }
-const listedCount = step => (step.featured?.length || 0) + (step.ingredients?.length || 0);
-const whenText = step => (step.when || []).map(esc).join(' · ');
-const hasFormula = step => step.ingredients_status !== 'pending-current-sku'
-  && step.ingredient_groups?.some(group => group.ingredientNames.length);
-
-function ingredientSource(ingredient) {
-  return `${ingredient.benefit_status === 'brand-claim' ? 'บทบาทตามสื่อแบรนด์' : 'ข้อมูลจากสื่อแบรนด์'}${ingredient.benefit_source ? ` · ${ingredient.benefit_source}` : ''}`;
-}
-function formulaIngredients(step, groupIndex) {
-  const named = new Map([...(step.featured || []), ...(step.ingredients || [])].map(ingredient => [ingredient.name, ingredient]));
-  return (step.ingredient_groups?.[groupIndex]?.ingredientNames || []).map(name => named.get(name)).filter(Boolean);
-}
-// General skin knowledge stays behind its own link, never beside the product's promise.
-function factNote(step) {
-  const fact = step.fact;
-  if (!fact) return '';
-  return `<details class="mr-fact"><summary>${esc(fact.label)}</summary><p>${esc(fact.text)}</p>
-    <small>${esc(fact.source)} · ${fact.links.map(link => `<a href="${esc(link.href)}" rel="noopener" target="_blank">${esc(link.label)}</a>`).join(' · ')}</small></details>`;
-}
-// The complete list is optional deep reading: closed by default, opened by the reader or a direct link.
-// A piece whose current formula is not confirmed has no entry at all, rather than an empty one.
-function ingredientAtlas(step) {
-  if (!hasFormula(step)) return '';
-  const groups = step.ingredient_groups.filter(group => group.ingredientNames.length).length;
-  return `<details class="mr-ingredient-atlas mr-reading-chapter" id="formula-${step.id}" data-atlas="${step.id}">
-    <summary id="formula-title-${step.id}"><span class="mr-atlas__num">${pad(step.order)}</span><span class="mr-atlas__name">${esc(step.nick)}<small>${esc(step.role_short || step.verb)}</small></span><span class="mr-atlas__count">${listedCount(step)} ชื่อ · ${groups} กลุ่ม</span></summary>
-    <header>
-      <p>เลือกชื่อในแต่ละกลุ่ม เพื่ออ่านบทบาทและที่มาที่แบรนด์ระบุ ${esc(step.ingredients_note)}</p>
-      ${factNote(step)}
-    </header>
-    ${stepBody(step)}
-    <div class="mr-ingredient-atlas__groups">${step.ingredient_groups.map((group, groupIndex) => {
-      const ingredients = formulaIngredients(step, groupIndex);
-      if (!ingredients.length) return '';
-      const first = ingredients[0];
-      const detailId = `formula-detail-${step.id}-${groupIndex}`;
-      return `<article class="mr-ingredient-group" data-formula-group="${step.id}:${groupIndex}">
-        <h3 id="formula-group-${step.id}-${groupIndex}">${esc(group.title)}</h3>
-        <p class="mr-ingredient-group__summary">${esc(group.summary)}<small class="mr-ingredient-group__origin">${esc(group.source)}</small></p>
-        <div class="mr-ingredient-group__names" role="group" aria-labelledby="formula-group-${step.id}-${groupIndex}">${ingredients.map((ingredient, index) => `<button type="button" data-formula-step="${step.id}" data-formula-group-index="${groupIndex}" data-formula-index="${index}" aria-pressed="${index === 0}" aria-controls="${detailId}">${esc(ingredient.name)}</button>`).join('')}</div>
-        <div class="mr-ingredient-group__detail" id="${detailId}" aria-live="polite" aria-atomic="true">
-          <h4 class="mr-ingredient-group__name">${esc(first.name)}</h4>
-          <p class="mr-ingredient-group__benefit">${esc(first.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ')}</p>
-          <small class="mr-ingredient-group__source">${esc(ingredientSource(first))}</small>
-        </div>
-      </article>`;
-    }).join('')}</div>
-    <p class="mr-ingredient-atlas__next"><a href="#step-${step.id}">กลับไปดู${esc(step.nick)} <span aria-hidden="true">↑</span></a><a href="#set">ดูชุด 5 ชิ้น <span aria-hidden="true">↑</span></a></p>
-  </details>`;
-}
-function stepBody(step) {
-  return `<details class="mr-more">
-      <summary>วิธีใช้และรายละเอียดชิ้นนี้</summary>
-      <dl class="mr-facts">
-        <div><dt>ใช้อย่างไร</dt><dd>${esc(step.how)}</dd></div>
-        <div><dt>เมื่อไร</dt><dd>${(step.when || []).map(w => `<span class="mr-tag">${esc(w)}</span>`).join(' ')}</dd></div>
-        ${step.size ? `<div><dt>ขนาด</dt><dd>${esc(step.size)}</dd></div>` : ''}
-      </dl>
-      <ul>
-        <li>${esc(step.ingredients_note)}</li>
-        ${step.size_note ? `<li>${esc(step.size_note)}</li>` : ''}
-        <li>${esc(state.data.order_note)}</li>
-      </ul>
-    </details>`;
-}
-
-function renderCompare() {
-  const target = slot('compare');
-  if (!target) return;
-  target.innerHTML = state.data.steps.filter(step => ['AC', 'BR'].includes(step.id)).map(step => `
-    <article class="mr-serum mr-serum--${step.id.toLowerCase()}">
-      <figure class="mr-serum__pack">${packImage(step)}</figure>
-      <p class="mr-serum__code"><span>${pad(step.order)}</span>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p>
-      <h3>${esc(step.headline)}</h3>
-      <p>${esc(step.selling?.choose || step.for_you)}</p>
-      <ul class="mr-serum__points">${(step.selling?.beats || []).slice(0, 2).map(beat => `<li>${esc(beat.title)}</li>`).join('')}</ul>
-      <p>${whenText(step)} · ตามสื่อแบรนด์</p>
-      <p class="mr-serum__links"><a href="#step-${step.id}">ดูบทบาทของขวดนี้</a><a href="#formula-${step.id}">ส่วนผสมที่แบรนด์ระบุ ${listedCount(step)} ชื่อ</a></p>
-    </article>`).join('');
-}
-
-function renderUses() {
-  const target = slot('uses');
-  if (!target) return;
-  target.innerHTML = `<table class="mr-uses__table">
-    <caption>แต่ละชิ้นใช้เมื่อไร <small>ตามข้อมูลที่แบรนด์ระบุ</small></caption>
-    <thead><tr><th scope="col">ชิ้นในชุด</th><th scope="col">เมื่อไร</th><th scope="col">วิธีใช้ที่ระบุ</th></tr></thead>
-    <tbody>${state.data.steps.map(step => `<tr><th scope="row"><span>${pad(step.order)}</span>${esc(step.nick)}</th><td>${whenText(step)}</td><td>${esc(step.how)}</td></tr>`).join('')}</tbody>
-  </table>`;
-}
-
 // Chapters are added inside the one viewport, beneath the shared foam and ring that carry them.
 // Each also gets an invisible marker so #step-* links and the rail land on its first composed hold.
 function renderStory() {
@@ -182,19 +91,6 @@ function renderStory() {
   $('[data-shot="routine"]', view).insertAdjacentHTML('beforeend', `<div class="mr-sr">${index}</div>`);
 }
 
-function renderLibrary() {
-  // Every listed name stays one tap away, after the offer, without lengthening the product story.
-  slot('library').innerHTML = state.data.steps.map(ingredientAtlas).join('');
-}
-
-// A direct link to a closed atlas opens it first, so the reader lands on visible content.
-function openAtlas(hash) {
-  if (!/^#formula-[A-Z]{2}$/.test(hash || '')) return null;
-  const atlas = $(hash);
-  if (atlas?.tagName === 'DETAILS' && !atlas.open) atlas.open = true;
-  return atlas;
-}
-
 function renderRail() {
   const told = state.data.steps.filter(step => $(`#step-${step.id}`));
   const items = told.map(step => `
@@ -205,35 +101,44 @@ function renderRail() {
   slot('rail').innerHTML = items + `<a href="#set" class="mr-rail__set" data-rail="set" aria-label="ดูชุด 5 ชิ้น"><span class="mr-rail__label">ชุด 5 ชิ้น</span><span class="mr-rail__dot">5/5</span></a>`;
 }
 
-// A real exchange, in the words sent, credited as a personal experience and a personal intent.
-function renderExchange() {
+// The real exchange, as the unchanged original screenshot, then Teem's own experience in his words.
+function renderTrust() {
   const {exchange} = state.data;
-  const target = slot('exchange');
+  const target = slot('trust');
   if (!target || !exchange) return;
-  target.innerHTML = `<figcaption class="mr-exchange__intro" id="exchange-title">${esc(exchange.intro)}</figcaption>
-    ${exchange.messages.map((m, i) => `<blockquote class="mr-exchange__msg mr-exchange__msg--${i ? 'reply' : 'first'}">
-      <p>“${esc(m.text)}”${m.emoji ? ` <span aria-hidden="true">${m.emoji}</span>` : ''}</p>
-      <footer>— ${esc(m.credit)}</footer></blockquote>`).join('')}`;
+  const shot = exchange.screenshot;
+  const [first, reply] = exchange.messages;
+  const said = `${first.text} — ${reply.text}`;
+  target.innerHTML = `<figcaption class="mr-trust__intro" id="trust-title">${esc(exchange.intro)}</figcaption>
+    <a class="mr-trust__shot" href="${asset(shot.src)}" target="_blank" rel="noopener">
+      <img src="${asset(shot.src)}" width="${shot.width}" height="${shot.height}" loading="lazy" decoding="async"
+        alt="${esc(`ภาพแชตจริง: Teem ส่งข้อความว่า “${first.text}” และเจ้าของ Mediral ตอบว่า “${reply.text}”`)}">
+    </a>
+    <p class="mr-trust__caption">${esc(shot.caption)} · <span>เปิดดูภาพเต็ม</span></p>
+    <blockquote class="mr-trust__experience"><p>${esc(exchange.experience.text)}</p>
+      <footer>— ${esc(exchange.experience.credit)} <small>${esc(exchange.experience.note)}</small></footer></blockquote>
+    <p class="mr-sr">${esc(said)}</p>`;
 }
 
-function renderSet() {
-  const {steps, set} = state.data;
-  if (slot('set-headline')) slot('set-headline').textContent = set.headline;
-  if (slot('set-carry')) slot('set-carry').textContent = set.carry;
+// One order channel, read from data: every LINE action on the page shows the same verified link.
+function renderOrder() {
+  const {order, steps} = state.data;
+  const verified = order?.status === 'verified' && /^https:\/\//.test(order.url || '');
+  $$('[data-slot="line-link"]').forEach(link => {
+    link.hidden = !verified;
+    if (verified) Object.assign(link, {href: order.url, target: '_blank', rel: 'noopener', textContent: order.label});
+  });
+  slot('order-title').textContent = order.heading;
+  slot('order-how').textContent = order.how;
+  slot('order-note').textContent = order.note;
+  // One list: what each piece is for, its own page, and whether to mention it in the chat.
   slot('pieces').insertAdjacentHTML('beforeend', steps.map(step => `
-    <label class="mr-piece">
+    <label class="mr-pick" data-row="${step.id}">
       <input type="checkbox" value="${step.id}" checked data-piece>
-      <span class="mr-piece__num">${step.order}</span>
-      <span class="mr-piece__name">${esc(step.nick)}<small>${esc(step.verb)}${step.size ? ` · ${esc(step.size)}` : ''}</small></span>
-      <span class="mr-piece__when">${step.when.map(esc).join(' · ')}</span>
+      ${packImage(step, {decorative: true})}
+      <span class="mr-pick__name"><b>${pad(step.order)}</b>${esc(step.order_name)}<small>${esc(step.nick)} · ${esc(step.scene.headline.join(' '))}</small></span>
+      <a class="mr-pick__more" href="${detailHref(step)}">รายละเอียด <span aria-hidden="true">→</span></a>
     </label>`).join(''));
-  // Who it is for and what each piece does, in one glance.
-  slot('set-row').innerHTML = steps.map(step => `
-    <li data-row="${step.id}">
-      ${packImage(step)}
-      <span class="mr-setlist__name"><b>${pad(step.order)}</b>${esc(step.nick)}</span>
-      <span class="mr-setlist__job">${esc(step.scene.headline.join(' '))}</span>
-    </li>`).join('');
 }
 
 // A dated poster offer is shown only when the data says it may be; otherwise the slot stays empty.
@@ -251,25 +156,19 @@ function renderOffer() {
     ? `<p class="mr-offer__label"><span class="mr-tag mr-tag--warn">ข้อเสนอที่พบในสื่อแบรนด์</span></p>
        <p class="mr-offer__price">${baht(poster.price)} <small>ชุด 5 ชิ้น</small></p>
        <p>โปสเตอร์ระบุช่วง ${thaiDate(poster.valid_from)} – ${thaiDate(poster.valid_to)} · ${esc(poster.gift)} · ${esc(poster.terms)}</p>
-       <p>${esc(poster.note)} ยอดที่ต้องจ่ายจริงดูที่หน้าชำระเงิน</p>`
+       <p>${esc(poster.note)} ราคาจริงยืนยันในแชตก่อนสั่ง</p>`
     : phase === 'unknown'
       ? '<p>ยังยืนยันช่วงเวลาของข้อเสนอไม่ได้ ดูราคาและข้อเสนอปัจจุบันที่ร้าน</p>'
       : `<p class="mr-offer__label"><span class="mr-tag">${phase === 'upcoming' ? 'ยังไม่ถึงช่วงข้อเสนอในโปสเตอร์' : 'ข้อเสนอในโปสเตอร์สิ้นสุดแล้ว'}</span></p>
          <p>โปสเตอร์ชุด 5 ชิ้นที่เราได้รับระบุช่วง ${thaiDate(poster.valid_from)} – ${thaiDate(poster.valid_to)} ดูราคาและข้อเสนอปัจจุบันที่ร้าน</p>`;
 }
 
-function renderSummary() {
-  const {steps} = state.data;
-  const chosen = steps.filter(s => state.selection.has(s.id));
-  const full = chosen.length === steps.length;
-  slot('summary').innerHTML = chosen.length
-    ? `<p class="mr-summary__label">${full ? 'รายการครบ 5 ชิ้น' : `เลือกไว้ ${chosen.length} จาก ${steps.length} ชิ้น`}</p>
-       <ol>${chosen.map(s => `<li>${esc(s.nick)}${s.size ? ` ${esc(s.size)}` : ''} <small>· ${esc(s.verb)} · ${s.when.map(esc).join('/')}</small></li>`).join('')}</ol>
-       <p>${full ? 'บันทึกหรือคัดลอกรายการนี้ไว้ เทียบกับรายการในร้านว่ามีครบทั้งห้าชิ้นก่อนเลือกซื้อ' : 'รายการนี้บันทึกไว้ดูเอง ดูตัวเลือกและราคาของแต่ละชิ้นที่ร้านก่อนเลือกซื้อ'}</p>`
-    : '<p class="mr-summary__label">ยังไม่มีชิ้นที่เลือก</p><p>ติ๊กชิ้นที่ต้องการเก็บไว้ หรือกลับไปดูชุดครบ 5 ชิ้น</p>';
-  if (!full) slot('summary').insertAdjacentHTML('beforeend', '<button type="button" class="mr-btn mr-btn--ghost mr-btn--small" data-action="select-all">กลับไปดูชุดครบ 5 ชิ้น</button>');
+// The chosen pieces become a short message the reader may paste in LINE; nothing is sent from here.
+function renderMessage() {
+  const chosen = state.data.steps.filter(s => state.selection.has(s.id));
+  slot('message').textContent = chosen.length ? copyText() : 'ยังไม่ได้เลือกชิ้นไหน เลือกอย่างน้อยหนึ่งชิ้น หรือแอด LINE แล้วถามได้เลย';
   $$('[data-row]').forEach(f => f.classList.toggle('is-off', !state.selection.has(f.dataset.row)));
-  $$('[data-action="copy"], [data-action="card"]').forEach(b => { b.disabled = !chosen.length; });
+  $$('[data-action="copy"]').forEach(b => { b.disabled = !chosen.length; });
   renderOffer();
   renderBuy();
 }
@@ -283,8 +182,8 @@ function verifiedLink(buy) {
 function renderBuy() {
   const {buy, disclosure} = state.data;
   const actions = slot('actions');
-  // The brand's own profile is a verified place to continue, for any list: it is not the fixed
-  // set's checkout, a price, or a commission link, and it never inherits the bundle's terms.
+  // The brand's own profile (footer) is a verified place to learn more, for any list: it is not
+  // the set's checkout, a price, or a commission link.
   const profile = slot('profile-link');
   const verifiedProfile = buy.profile?.status === 'verified' && /^https:\/\//.test(buy.profile.url || '');
   profile.hidden = !verifiedProfile;
@@ -311,10 +210,9 @@ function renderBuy() {
 
 /* ---------- actions ---------- */
 function copyText() {
-  const {set} = state.data;
-  // The page's own names: the store's listing names are not confirmed.
-  const chosen = state.data.steps.filter(s => state.selection.has(s.id)).map(s => s.nick);
-  return chosen.length === state.data.steps.length ? `${set.copy_prefix}: ${chosen.join(', ')}` : `Mediral: ${chosen.join(', ')}`;
+  const {order, steps} = state.data;
+  const chosen = steps.filter(s => state.selection.has(s.id));
+  return chosen.length === steps.length ? order.message_all : `${order.message_some} ${chosen.map(s => s.order_name).join(', ')}`;
 }
 
 async function copyList() {
@@ -322,55 +220,22 @@ async function copyList() {
   const text = copyText();
   try {
     await navigator.clipboard.writeText(text);
-    slot('buy-hint').textContent = `คัดลอกแล้ว: “${text}”`;
+    slot('buy-hint').textContent = 'คัดลอกข้อความแล้ว วางในแชต LINE ได้เลย';
   } catch {
     const hint = slot('buy-hint');
     hint.textContent = '';
     const label = document.createElement('label');
     label.className = 'mr-copy-fallback';
-    label.textContent = 'คัดลอกอัตโนมัติไม่ได้ เลือกข้อความในช่องนี้แล้วคัดลอกได้เลย';
+    label.textContent = 'คัดลอกอัตโนมัติไม่ได้ เลือกข้อความในช่องนี้แล้วคัดลอกไปวางใน LINE ได้เลย';
     const field = document.createElement('textarea');
     field.readOnly = true;
     field.rows = 4;
     field.value = text;
-    field.setAttribute('aria-label', 'รายการ Mediral สำหรับคัดลอก');
+    field.setAttribute('aria-label', 'ข้อความสั่ง Mediral สำหรับคัดลอก');
     label.append(field);
     hint.append(label);
     field.focus();
     field.select();
-  }
-}
-
-function selectAll() {
-  state.selection = new Set(state.data.steps.map(step => step.id));
-  $$('[data-piece]').forEach(box => { box.checked = true; });
-  renderSummary();
-  // The restore button is replaced by the new summary; leave focus on a stable control.
-  const summary = slot('summary');
-  summary.setAttribute('tabindex', '-1');
-  summary.focus({preventScroll: true});
-}
-
-async function saveCard(button) {
-  const hint = slot('buy-hint');
-  button.disabled = true;
-  hint.textContent = 'กำลังทำภาพรายการ…';
-  try {
-    const {drawRoutineCard} = await import('./card.js');
-    const pieces = state.data.steps.filter(s => state.selection.has(s.id));
-    const url = await drawRoutineCard({pieces, data: state.data, asset});
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mediral-routine-${pieces.map(p => p.id.toLowerCase()).join('-')}.png`;
-    document.body.append(a);
-    a.click();
-    a.remove();
-    hint.textContent = 'บันทึกรายการแล้ว เปิดดูคู่กับหน้าร้านตอนเลือกซื้อได้';
-  } catch (err) {
-    console.warn('[mediral] routine card failed', err);
-    hint.textContent = 'บันทึกรายการไม่สำเร็จ ลองอีกครั้ง หรือแคปหน้าจอส่วนนี้แทน';
-  } finally {
-    button.disabled = !state.selection.size;
   }
 }
 
@@ -405,8 +270,11 @@ function readingChapter() {
   });
 }
 
-// The extraction clip is AC's opening material: it plays once as the portal opens, then rests.
-const FILM_WINDOW = [3.25, 4.5];
+// AC's film plays from the portal to the lens, once per visit. Leaving the chapter well behind (or
+// ahead) and coming back is a new visit: the film starts again from its first frame.
+const FILM_WINDOW = [3.25, 6.35];
+const FILM_AWAY = [2.6, 7.4];
+const filmVisit = {away: true};
 const resizing = {held: null};
 
 function onScroll() {
@@ -446,6 +314,14 @@ function onScroll() {
     state.stable = {T, H, inTrack: storyRect.top <= 0 && storyRect.bottom > H};
   }
   const filmOn = inStory && T >= FILM_WINDOW[0] && T <= FILM_WINDOW[1] && document.visibilityState !== 'hidden';
+  // Edges only: leaving AC deactivates the film once; coming back after truly leaving rewinds it once,
+  // before it may play. Frames spent elsewhere, and tab visibility, never seek it.
+  const away = !inStory || T < FILM_AWAY[0] || T > FILM_AWAY[1];
+  if (state.film && away !== filmVisit.away) {
+    if (away) state.film.setActive(false);
+    else state.film.rewind?.();
+    filmVisit.away = away;
+  }
   state.film?.setActive(filmOn);
 }
 // Scroll and resize schedule one update per frame. Some embedded browsers throttle animation frames
@@ -543,14 +419,21 @@ function bootCinema() {
 // the retired maker and reader chapters on the set, where their exchange now lives.
 function legacyTarget(hash) {
   if (hash === '#lab-film') return '#step-AC';
+  if (['#serums', '#ingredients'].includes(hash)) return '#set';
   const beat = /^#beat-([A-Z]{2})-\d+$/.exec(hash || '');
   if (beat) return `#step-${beat[1]}`;
   return ['#founder', '#relay'].includes(hash) ? '#set' : null;
 }
+// An old link to a product's full ingredient list goes to that product's own page.
+function productPageFor(hash) {
+  const id = /^#formula-([A-Z]{2})$/.exec(hash || '')?.[1];
+  const step = id && state.data?.steps.find(s => s.id === id);
+  return step ? `${detailHref(step)}#ingredients` : null;
+}
 function resolveHash(hash) {
   const legacy = legacyTarget(hash);
   if (legacy) return $(legacy);
-  return [...sections(), ...$$('.mr-reading-chapter')].find(section => `#${section.id}` === hash) || null;
+  return [...sections(), ...$$('.mr-reading-chapter'), $('#order')].filter(Boolean).find(section => `#${section.id}` === hash) || null;
 }
 
 /* ---------- boot ---------- */
@@ -559,14 +442,13 @@ async function boot() {
   if (!res.ok) throw new Error(`routine.json ${res.status}`);
   state.data = await res.json();
   state.selection = new Set(state.data.steps.map(s => s.id));
+  const page = productPageFor(location.hash);
+  if (page) { location.replace(page); return; }
   renderStory();
-  renderCompare();
-  renderUses();
-  renderLibrary();
   renderRail();
-  renderExchange();
-  renderSet();
-  renderSummary();
+  renderTrust();
+  renderOrder();
+  renderMessage();
   try {
     bootCinema();
   } catch (err) {
@@ -577,7 +459,6 @@ async function boot() {
   }
   // Product markers are created after the document parses. Restore incoming chapter links now,
   // rather than relying on the browser's early hash pass.
-  openAtlas(location.hash);
   const incomingChapter = resolveHash(location.hash);
   if (incomingChapter) {
     const incomingHash = location.hash;
@@ -635,46 +516,27 @@ async function boot() {
     const box = e.target.closest('[data-piece]');
     if (!box) return;
     if (box.checked) state.selection.add(box.value); else state.selection.delete(box.value);
-    renderSummary();
+    renderMessage();
   });
-  // Opening or closing an atlas changes layout without a scroll; re-measure the reading gate now.
-  document.addEventListener('toggle', e => { if (e.target?.matches?.('.mr-ingredient-atlas')) onScroll(); }, true);
   // Same-document links resolve like fresh ones: legacy names, atlases opened before landing.
   addEventListener('hashchange', () => {
-    const atlas = openAtlas(location.hash);
+    const page = productPageFor(location.hash);
+    if (page) { location.assign(page); return; }
     const target = resolveHash(location.hash);
-    if (target && (atlas || legacyTarget(location.hash))) {
+    if (target && legacyTarget(location.hash)) {
       window.scrollTo({top: target.getBoundingClientRect().top + scrollY - anchorClearance(target), behavior: 'instant'});
     }
     onScroll();
   });
   document.addEventListener('click', e => {
-    const atlasLink = e.target.closest('a[href^="#formula-"]');
-    if (atlasLink) openAtlas(atlasLink.getAttribute('href'));
-    const formula = e.target.closest('[data-formula-index]');
-    if (formula) chooseFormulaIngredient(formula.dataset.formulaStep, Number(formula.dataset.formulaGroupIndex), Number(formula.dataset.formulaIndex));
     const act = e.target.closest('[data-action]');
     if (act?.dataset.action === 'copy') copyList();
-    if (act?.dataset.action === 'card') saveCard(act);
-    if (act?.dataset.action === 'select-all') selectAll();
   });
 
   addEventListener('scroll', requestScroll, {passive: true});
   addEventListener('resize', requestScroll);
   onScroll();
   (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(bootFilm);
-}
-
-function chooseFormulaIngredient(id, groupIndex, index) {
-  const step = byId(id);
-  if (!step || !Number.isInteger(groupIndex) || !Number.isInteger(index) || groupIndex < 0 || index < 0) return;
-  const ingredient = formulaIngredients(step, groupIndex)[index];
-  const group = $(`[data-formula-group="${id}:${groupIndex}"]`);
-  if (!ingredient || !group) return;
-  $$('[data-formula-index]', group).forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
-  $('.mr-ingredient-group__name', group).textContent = ingredient.name;
-  $('.mr-ingredient-group__benefit', group).textContent = ingredient.benefit || 'สื่อแบรนด์ระบุชื่อส่วนผสมนี้ ยังไม่มีคำอธิบายบทบาทเฉพาะในข้อมูลที่ได้รับ';
-  $('.mr-ingredient-group__source', group).textContent = ingredientSource(ingredient);
 }
 
 function bootFailed(err) {

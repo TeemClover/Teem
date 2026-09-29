@@ -1,4 +1,13 @@
-# Mediral — one cinema (v9, Motion v2)
+# Mediral — one cinema (v10: crown increment)
+
+**v10 (2026-09-29).** v9's cinema stays. Changes:
+- the opening sells the at-home set with practical roles;
+- AC's material is a silent concept film (body cut), whose last frame is the lens into BR;
+- SU's waves hold longer;
+- every chapter's last hold offers its product page;
+- after the story: the unchanged real chat screenshot, Teem's own experience as a separate personal account, and one close to order through myClover on LINE (no saved-list picture, no pretend checkout).
+
+# v9 — one cinema (Motion v2)
 
 Updated 2026-09-29. Supersedes v8 ("หนึ่งหน้า ห้าเรื่อง", five boxed scenes). The owner asked for the reference's scroll charm: camera travel, foreground occlusion, scale change and kinetic Thai type, with each chapter distinct and no long explanations. GPT (director, images, QA) and Claude (code) rebuilt the structure; facts and commerce rules from v7/v8 remain unless changed below.
 
@@ -66,6 +75,8 @@ The footage and stills are illustrative. They are not Mediral's factory, experim
 Run and implementation contracts are in [README.md](README.md). Record actual tests and production verification after integration; earlier release results do not verify this revision.
 
 ## Revision history
+
+- v10: crown film in AC, product pages, LINE close, WHY with practical roles, longer SU holds.
 
 - v9: one cinema with a shared clock, problem-first chapters, material transitions (foam, ring, drop, streak, powder, regroup); no buy button, a verified brand profile link, the poster offer off the page.
 - v8: หนึ่งหน้า ห้าเรื่อง — five boxed scenes with one motion grammar each. Superseded by v9.

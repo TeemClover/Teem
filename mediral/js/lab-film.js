@@ -1,10 +1,11 @@
 // Ambient film: a silent part of one ingredient scene, not a player. There are no controls, no
 // duration badge and no status text. The clip is not a seamless loop, so it plays through once per
-// visit and rests on its final frame. Reduced motion, data saving, blocked autoplay and media errors
-// all keep the still poster; nothing is requested for them.
+// visit and rests on its final frame; only the owning scene may rewind it, when the reader has truly
+// left and comes back. Reduced motion, data saving, blocked autoplay and media errors all keep the
+// still poster; nothing is requested for them. Narrow screens take the smaller file when one exists.
 const instances = new WeakMap();
 const completed = new WeakSet();
-const inert = Object.freeze({setActive() {}, dispose() {}});
+const inert = Object.freeze({setActive() {}, rewind() {}, dispose() {}});
 
 export function initLabFilm(container = globalThis.document) {
   const section = container?.matches?.('[data-lab-film]')
@@ -74,7 +75,9 @@ export function initLabFilm(container = globalThis.document) {
     // The source is attached on the first permitted pass, so still-only readers never request it.
     if (!attached) {
       attached = true;
-      if (video.dataset.src) video.setAttribute('src', video.dataset.src);
+      const small = video.dataset.srcSmall && win.matchMedia?.('(max-width: 900px)')?.matches;
+      const src = small ? video.dataset.srcSmall : video.dataset.src;
+      if (src) video.setAttribute('src', src);
     }
     present();
   }
@@ -193,6 +196,18 @@ export function initLabFilm(container = globalThis.document) {
       if (disposed) return;
       active = Boolean(value);
       if (active && !observer) measureVisibility();
+      reconcile();
+    },
+    // A genuine new visit to the scene: start the pass again from its first frame.
+    rewind() {
+      if (disposed || (!ended && !attached)) return;
+      stop();
+      ended = false;
+      completed.delete(video);
+      if (attached) {
+        try { video.currentTime = 0; } catch { /* not seekable yet: it starts from 0 anyway */ }
+      }
+      present();
       reconcile();
     },
     get state() { return {active, inView, ended, blocked, failed, attached}; },

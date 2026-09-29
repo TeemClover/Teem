@@ -9,8 +9,10 @@
  *   - a word may be crossed by an object only while moving; every Thai phrase is whole in its hold;
  *   - packs move by transform only, and fade only while they fully leave;
  *   - objects carry chapters across: the CL bottle and foam (hero → CL), the water ring (CL → AC),
- *     a flight into the drop beside the AC bottle (AC → BR, a new world, not its formula), a light
- *     streak (BR → SU), air turning to powder (SU → PO), and the five packs regrouping (PO → set).
+ *     a flight into the drop beside the AC bottle that becomes the film's own lens (AC → BR, a new
+ *     world, not its formula), a light streak (BR → SU), air turning to powder (SU → PO), and the
+ *     five packs regrouping (PO → set);
+ *   - AC's film is decorative material, masked into the scene: no frame, player or labels.
  */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const lines = list => list.map(line => `<span class="mr-line">${esc(line)}</span>`).join('');
@@ -29,7 +31,8 @@ function packMarkup(step, asset, {layer, src = 'src', decorative = false} = {}) 
 const art = (layer, file, cls, asset) => `<div class="mr-art ${cls}" data-layer="${layer}" aria-hidden="true"><img data-src="${asset(file)}" alt="" decoding="async"></div>`;
 const slot = (layer, cls, style = '') => `<span class="mr-slot ${cls}" data-layer="${layer}" aria-hidden="true"${style ? ` style="${style}"` : ''}></span>`;
 const problem = (step, key) => `<p class="mr-problem" data-layer="${key}.problem">${esc(step.scene.problem)}</p>`;
-const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot"><p class="mr-tag-line"><b>${pad(step.order)}</b>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p><p class="mr-support">${esc(step.scene.support)}</p></div>`;
+// Each chapter's last hold names the piece and offers its full page; the link is inert while faded.
+const foot = (step, key) => `<div class="mr-foot" data-layer="${key}.foot" data-inert-hidden><p class="mr-tag-line"><b>${pad(step.order)}</b>${esc(step.nick)}${step.size ? ` · ${esc(step.size)}` : ''}</p><p class="mr-support">${esc(step.scene.support)}</p><a class="mr-foot__more" href="${detailHref(step)}">รู้จัก${esc(step.nick)}ให้ลึกขึ้น <span aria-hidden="true">→</span></a></div>`;
 const title = (step, key, cls = '') => `<h2 class="mr-title ${cls}" id="h-${step.id}" data-layer="${key}.title">${lines(step.scene.headline)}</h2>`;
 // A wave may name a word boundary (split) where an object stands between two whole Thai words.
 function wave(step, index, layer, cls = '') {
@@ -39,7 +42,19 @@ function wave(step, index, layer, cls = '') {
     : `<span class="mr-wave__word">${esc(w.label)}</span>`;
   return `<p class="mr-wave ${cls}" data-layer="${layer}">${word}${w.show.length ? `<span class="mr-wave__names">${w.show.map(esc).join(' · ')}</span>` : ''}</p>`;
 }
+export const detailHref = step => `${step.id.toLowerCase()}/`;
 const imageOf = (step, name) => [...(step.featured || []), ...(step.ingredients || [])].find(item => item.name === name)?.image;
+
+// AC's film: the body of one silent concept film (botanicals, then a glass funnel with a fine stream),
+// cut before its lens so it may rest under the words however long a reader stays. The smaller file
+// serves narrow screens; the poster is the still for reduced motion and data saving. The film's own
+// final lens is kept as a still: the camera enters it only in the bridge to BR.
+export const FILM = {
+  src: 'assets/motion/crown-body-1080.mp4',
+  small: 'assets/motion/crown-body-720.mp4',
+  poster: 'assets/motion/crown-poster.webp',
+  end: 'assets/motion/crown-end.webp',
+};
 
 export const SHOTS = {
   CL: (step, asset) => `
@@ -51,17 +66,16 @@ export const SHOTS = {
       <div class="mr-bubbles" data-layer="cl.bubbles" aria-hidden="true">${Array.from({length: 9}, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
       ${foot(step, 'cl')}
     </div>`,
-  AC: (step, asset) => `
+  AC: (step, asset, film = FILM) => `
     <div role="region" class="mr-shot mr-shot--ac mr-shot--dark" data-shot="AC" data-layer="ac" aria-labelledby="h-AC">
       <div class="mr-shot__cam" data-layer="ac.cam">
         <div class="mr-shot__bg" data-layer="ac.bg" aria-hidden="true"></div>
         <div class="mr-art mr-ac__film" data-layer="ac.film" aria-hidden="true">
           <div class="mr-fx__clip" id="lab-film" data-lab-film data-film-ready="true"><div class="mr-fx__clipframe" data-film-frame>
-            <img data-src="${asset('assets/motion/lab-film-poster.webp')}" alt="" decoding="async">
-            <video data-film-video data-src="${asset('assets/motion/lab-film-10s.mp4')}" poster="${asset('assets/motion/lab-film-poster.webp')}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
+            <img data-src="${asset(film.poster)}" alt="" decoding="async">
+            <video data-film-video data-src="${asset(film.src)}" data-src-small="${asset(film.small)}" poster="${asset(film.poster)}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
           </div></div>
         </div>
-        ${art('ac.mangosteen', 'assets/botanicals/mangosteen-peel.webp', 'mr-ac__mangosteen', asset)}
         ${problem(step, 'ac')}
         ${title(step, 'ac', 'mr-ac__title')}
         ${wave(step, 0, 'ac.w1')}
@@ -156,11 +170,11 @@ export const CHAPTERS = [
   {id: 'AC', from: 3.66},
   {id: 'BR', from: 6.86},
   {id: 'SU', from: 9.3},
-  {id: 'PO', from: 11.64},
+  {id: 'PO', from: 12.09},
   // Not a product chapter: the reassembled set. It only colours the header; the rail keeps PO.
-  {id: 'close', from: 13.9},
+  {id: 'close', from: 14.35},
 ];
-export const END = 14.3;
+export const END = 14.75;
 
 // A chapter's problem is read large where its words will be, then settles into its kicker and later leaves.
 const kicker = (frames, leaveAt) => [...frames, [leaveAt, {}], [leaveAt + 0.08, {dy: -3, o: 0}]];
@@ -243,8 +257,8 @@ export function score({tall, W, H}) {
   // T3 follows: the camera flies into that drop, and the gold inside opens on another world.
   set('ac.cam', [[ringUp, {s: 1.22}], [open + 0.1, {}, 'out'], [6.22, {}], [6.62, {focus: 'ac.lens', s: 7}, 'in']]);
   set('ac.bg', [[ringUp, {s: 1.1}], [4.5, {}], [6.2, {s: 1.04}]]);
-  set('ac.film', [[ringUp, {s: 1.35, dy: 6}], [3.95, {s: 1.08}, 'out'], [4.3, {s: 1.02, dx: -3, o: 0.5}], [5.7, {s: 1, dx: -6, o: 0.32}]]);
-  set('ac.mangosteen', [[ringUp, {dx: 16, dy: 6, s: 1.3}], [3.95, {}, 'out'], [4.3, {}], [4.48, {dx: 26, dy: 10, s: 1.2, o: 0}]]);
+  // The film is the chapter's material: whole as the portal opens, quieter while words are read.
+  set('ac.film', [[ringUp, {s: 1.3}], [3.9, {s: 1.06}, 'out'], [4.3, {s: 1.03, o: 0.55}], [4.5, {s: 1.02, o: 0.3}], [5.7, {o: 0.26}], [6.2, {o: 0.4}]]);
   set('ac.tea', [[ringUp, {dx: -36, dy: 14, s: 1.6}], [3.85, {dx: -4, dy: 2, s: 1.12}, 'out'], [4.3, {}], [4.48, {dx: -70, dy: 18, s: 1.5}, 'in'], [4.49, {dx: -70, dy: 18, s: 1.5, o: 0}, 'step']]);
   set('ac.problem', kicker([[3.5, {...big, o: 0}], [3.6, big], [3.9, big], [4.0, {}]], 5.6));
   set('ac.w1', beat(3.95, 4.32));
@@ -266,7 +280,8 @@ export function score({tall, W, H}) {
   set('ac.lens', [[4.98, {...stem, o: 0}], [5.03, stem], [5.28, {}, 'in'], [6.2, {s: 1.06}]]);
   set('ac.title', beat(5.66, 6.2));
   set('ac.foot', beat(5.78, 6.2, {dy: 2}, {dy: 2}));
-  set('fx.gold', [[6.44, {o: 0}], [6.6, {}], [6.62, {}], [6.82, {o: 0}]]);
+  // The drop's lens becomes the film's final frame, which clears into BR's light.
+  set('fx.lens', [[6.3, {s: 0.72, o: 0}], [6.46, {s: 0.92}, 'out'], [6.6, {}], [6.9, {s: 2.4, o: 0}, 'in']]);
 
   /* BR (T 6.6 → 8.85): light through the drop; three names focus on three depths; two pairs. ---- */
   set('br', [[6.59, {o: 0}], [6.6, {}, 'step'], [9.28, {}], [9.29, {o: 0}, 'step']]);
@@ -287,52 +302,52 @@ export function score({tall, W, H}) {
   /* BR → SU (T 8.88 → 9.28): a streak of light sweeps sideways; behind it the airy SU scene. ---- */
   const streak = [8.88, 9.28];
   set('fx.streak', [[streak[0] - 0.01, {x: -20, o: 0}], [streak[0], {x: -20}, 'step'], [streak[1], {x: 118}, 'lin'], [streak[1] + 0.01, {x: 118, o: 0}, 'step']]);
-  set('su', [[streak[0] - 0.01, {'--wipe': -0.2, o: 0}], [streak[0], {'--wipe': -0.2}, 'step'], [streak[1], {'--wipe': 1.18}, 'lin'], [11.5, {}], [11.51, {o: 0}, 'step']]);
+  set('su', [[streak[0] - 0.01, {'--wipe': -0.2, o: 0}], [streak[0], {'--wipe': -0.2}, 'step'], [streak[1], {'--wipe': 1.18}, 'lin'], [11.95, {}], [11.96, {o: 0}, 'step']]);
 
-  /* SU (T 9.28 → 11.25): weightless; the headline, then three jobs travel sideways. ----------- */
-  set('su.bg', [[8.9, {dx: -6}], [11.25, {dx: 4}]]);
-  set('su.air', [[8.9, {dx: 20, o: 0}], [9.5, {}], [11.25, {dx: -30, dy: -10}], [11.5, {dx: -40, dy: -16, o: 0}]]);
-  set('su.problem', kicker([[8.95, big], [9.45, big], [9.55, {}]], 11.2));
-  set('su.title', beat(9.5, 11.2));
-  set('su.pack', [[8.95, {dx: 40, dy: 4, r: -24}], [9.7, {r: -12}, 'out'], [10.9, {dx: -3, dy: -2, r: -10}], [11.3, {dx: -12, dy: -6, r: -8}]]);
-  set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [9.1, {dx: 60}], [9.8, {}, 'out'], [11.2, {dx: -12, dy: 2}], [11.5, {dx: -60, o: 0}]]);
+  /* SU (T 9.28 → 11.7): weightless; the headline, then three jobs travel sideways. ----------- */
+  set('su.bg', [[8.9, {dx: -6}], [11.7, {dx: 4}]]);
+  set('su.air', [[8.9, {dx: 20, o: 0}], [9.5, {}], [11.7, {dx: -30, dy: -10}], [11.95, {dx: -40, dy: -16, o: 0}]]);
+  set('su.problem', kicker([[8.95, big], [9.45, big], [9.55, {}]], 11.65));
+  set('su.title', beat(9.5, 11.65));
+  set('su.pack', [[8.95, {dx: 40, dy: 4, r: -24}], [9.7, {r: -12}, 'out'], [11.35, {dx: -3, dy: -2, r: -10}], [11.75, {dx: -12, dy: -6, r: -8}]]);
+  set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [9.1, {dx: 60}], [9.8, {}, 'out'], [11.65, {dx: -12, dy: 2}], [11.95, {dx: -60, o: 0}]]);
   // The ribbon crosses while nothing is being read, then rests beside the tube, clear of the words.
   const rest = tall ? {dx: 18, dy: -6} : {dx: 34, dy: -4};
-  set('su.ribbon', [[9.3, {dx: -120}], [9.84, rest, 'out'], [10.9, {...rest, dx: rest.dx - 6}], [11.3, {dx: -110}, 'in'], [11.31, {dx: -110, o: 0}, 'step']]);
+  set('su.ribbon', [[9.3, {dx: -120}], [9.84, rest, 'out'], [11.35, {...rest, dx: rest.dx - 6}], [11.75, {dx: -110}, 'in'], [11.76, {dx: -110, o: 0}, 'step']]);
   const sideways = (inAt, outAt) => {
     const frames = [[inAt, {dx: 36, o: 0}], [inAt + 0.1, {}, 'out']];
     if (outAt != null) frames.push([outAt, {}], [outAt + 0.08, {dx: -36, o: 0}, 'in']);
     return frames;
   };
-  set('su.w1', sideways(9.85, 10.15));
-  set('su.w2', sideways(10.2, 10.5));
-  set('su.w3', sideways(10.55, 10.9));
-  set('su.foot', beat(10.9, 11.2, {dy: 2}, {dy: 2}));
+  set('su.w1', sideways(9.85, 10.3));
+  set('su.w2', sideways(10.38, 10.83));
+  set('su.w3', sideways(10.91, 11.36));
+  set('su.foot', beat(11.36, 11.65, {dy: 2}, {dy: 2}));
 
-  /* SU → PO (T 11.2 → 11.64): the air thickens into powder; the veil clears onto the PO scene. -- */
-  set('fx.motes', [[11.1, {o: 0, dy: 10}], [11.3, {}], [11.56, {dy: -18, s: 1.3}], [11.66, {dy: -24, s: 1.4, o: 0}]]);
-  set('fx.veil', [[11.22, {dy: 70, s: 1.1, o: 0}], [11.3, {dy: 60, s: 1.1}], [11.5, {s: 1.35}, 'out'], [11.66, {dy: -55, s: 1.6}, 'in'], [11.67, {dy: -55, s: 1.6, o: 0}, 'step']]);
+  /* SU → PO (T 11.65 → 12.09): the air thickens into powder; the veil clears onto the PO scene. -- */
+  set('fx.motes', [[11.55, {o: 0, dy: 10}], [11.75, {}], [12.01, {dy: -18, s: 1.3}], [12.11, {dy: -24, s: 1.4, o: 0}]]);
+  set('fx.veil', [[11.67, {dy: 70, s: 1.1, o: 0}], [11.75, {dy: 60, s: 1.1}], [11.95, {s: 1.35}, 'out'], [12.11, {dy: -55, s: 1.6}, 'in'], [12.12, {dy: -55, s: 1.6, o: 0}, 'step']]);
 
-  /* PO (T 11.5 → 13.45): the problem; the outline fills; the compact lands; two waves; support. -- */
-  set('po', [[11.49, {o: 0}], [11.5, {}, 'step'], [13.6, {}], [13.76, {o: 0}]]);
-  set('po.bg', [[11.5, {s: 1.1}], [12.2, {}], [13.45, {s: 1.03}]]);
-  set('po.band', [[11.5, {dy: -14, s: 1.2, o: 0.6}], [12.1, {}, 'out'], [13.45, {dy: 2}], [13.7, {dy: 20, o: 0}]]);
-  set('po.problem', kicker([[11.5, big], [11.84, big], [11.94, {}]], 13.4));
-  set('po.title', [[11.9, {dy: 2, o: 0, '--fill': 0}], [12.0, {'--fill': 0}], [12.14, {'--fill': 1}], [13.42, {}], [13.5, {dy: -3, o: 0}]]);
-  set('po.pack', [[11.9, {dy: -95, r: -16, s: 1.25}], [12.2, {}, 'out'], [13.44, {}], [13.6, {match: 'rg.PO'}]]);
-  set('po.w1', beat(12.4, 12.66));
-  set('po.w2', beat(12.72, 13.05));
-  set('po.foot', beat(13.08, 13.45, {dy: 2}, {dy: 2}));
+  /* PO (T 11.95 → 13.9): the problem; the outline fills; the compact lands; two waves; support. -- */
+  set('po', [[11.94, {o: 0}], [11.95, {}, 'step'], [14.05, {}], [14.21, {o: 0}]]);
+  set('po.bg', [[11.95, {s: 1.1}], [12.65, {}], [13.9, {s: 1.03}]]);
+  set('po.band', [[11.95, {dy: -14, s: 1.2, o: 0.6}], [12.55, {}, 'out'], [13.9, {dy: 2}], [14.15, {dy: 20, o: 0}]]);
+  set('po.problem', kicker([[11.95, big], [12.29, big], [12.39, {}]], 13.85));
+  set('po.title', [[12.35, {dy: 2, o: 0, '--fill': 0}], [12.45, {'--fill': 0}], [12.59, {'--fill': 1}], [13.87, {}], [13.95, {dy: -3, o: 0}]]);
+  set('po.pack', [[12.35, {dy: -95, r: -16, s: 1.25}], [12.65, {}, 'out'], [13.89, {}], [14.05, {match: 'rg.PO'}]]);
+  set('po.w1', beat(12.85, 13.11));
+  set('po.w2', beat(13.17, 13.5));
+  set('po.foot', beat(13.53, 13.9, {dy: 2}, {dy: 2}));
 
-  /* PO → the set (T 13.45 → 14.3): the compact finds its place; the other four return. -------- */
+  /* PO → the set (T 13.9 → 14.75): the compact finds its place; the other four return. -------- */
   // The set lies beneath PO. PO dissolves only once its compact matches the set's own, so the
   // compact stays solid while the room around it changes.
-  set('rg', [[13.59, {o: 0}], [13.6, {}, 'step']]);
-  set('rg.bg', [[13.6, {s: 1.08}], [14.1, {}]]);
+  set('rg', [[14.04, {o: 0}], [14.05, {}, 'step']]);
+  set('rg.bg', [[14.05, {s: 1.08}], [14.55, {}]]);
   const back = {CL: {dx: -60, dy: 6}, AC: {dx: -30, dy: -60}, BR: {dx: 20, dy: -64}, SU: {dx: 60, dy: 4}};
-  for (const [id, from] of Object.entries(back)) set(`rg.${id}`, [[13.64, {...from, s: 1.2}], [13.94, {}, 'out']]);
-  set('rg.title', beat(13.86, null));
-  set('rg.foot', beat(13.92, null, {dy: 2}));
+  for (const [id, from] of Object.entries(back)) set(`rg.${id}`, [[14.09, {...from, s: 1.2}], [14.39, {}, 'out']]);
+  set('rg.title', beat(14.31, null));
+  set('rg.foot', beat(14.37, null, {dy: 2}));
 
   return {end: END, chapters: CHAPTERS, tracks};
 }

@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync, readdirSync, statSync} from 'node:fs';
+import {readFileSync, readdirSync, statSync, existsSync} from 'node:fs';
 import {dirname, extname, join, relative, resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 
 const root = resolve(fileURLToPath(new URL('../../', import.meta.url)));
 const site = join(root, 'mediral');
@@ -54,7 +55,10 @@ function modulePath(specifier, owner) {
   return localReference(specifier, owner);
 }
 const steps = () => routine().steps;
-const publicCode = () => ['index.html', 'js/main.js', 'js/score.js', 'js/card.js'].map(f => read(join(site, f))).join('\n');
+const PAGES = ['cl', 'ac', 'br', 'su', 'po'];
+const publicCode = () => ['index.html', 'js/main.js', 'js/score.js', 'js/detail-view.js', 'js/detail.js', ...PAGES.map(p => `${p}/index.html`)].map(f => read(join(site, f))).join('\n');
+const details = () => JSON.parse(read(join(site, 'data/details.json')));
+const SCREENSHOT = {path: 'assets/trust/owner-chat-original.jpg', sha256: '0bbe1a1155b323d4d58d11269ddbb5b4b0d98532f8919f0da1f1285a86894b92'};
 
 
 test('the routine is the five chosen steps, in the owner-selected order', () => {
@@ -202,40 +206,38 @@ test('the page order explains roles; it is not presented as a verified applicati
   assert.match(html(), /วิธีใช้จริงให้ยึดฉลาก/, 'The static page retains label guidance without JavaScript');
 });
 
-test('the page runs from the five-piece opening through one story to the set, then optional depth', () => {
+test('the page runs from the opening through one story to one LINE close, with every piece a page of its own', () => {
   const source = html();
   const at = id => source.indexOf(`id="${id}"`);
-  const order = ['story', 'routine', 'set', 'serums', 'ingredients'].map(at);
-  assert.ok(order.every(i => i > 0), 'Every chapter exists');
+  const order = ['story', 'routine', 'set', 'order'].map(at);
+  assert.ok(order.every(i => i > 0), 'Every part exists');
   assert.deepEqual([...order].sort((a, b) => a - b), order);
   assert.equal(tags(source, 'section').find(t => t.id === 'story').class, 'mr-cinema', 'One cinema holds the whole story');
   const opening = source.slice(at('routine'), at('set'));
   assert.match(opening, /href="#step-CL"/, 'A way into the first chapter');
-  assert.match(opening, /href="#set"[^>]*data-cta="offer"/, 'A direct route to the set');
+  assert.match(opening, /href="#order"[^>]*data-cta="order"/, 'A direct route to ordering');
   const packImages = tags(opening, 'img').filter(i => /assets\/pack\//.test(i.src || ''));
   assert.deepEqual(packImages.map(i => i.src).sort(), steps().map(s => s.image).sort(), 'All five packs paint before JavaScript');
-  for (const image of packImages) assert.equal(image.alt, steps().find(s => s.image === image.src).image_alt);
   assert.match(opening, /<h1\b[^>]*>[\s\S]*จากล้างหน้า[\s\S]*ออกจากบ้าน[\s\S]*<\/h1>/);
-  assert.match(opening, /หนึ่งหน้า ห้าเรื่อง/);
-  for (const word of ['ล้าง', 'บำรุง', 'ปกป้อง', 'แต่งผิว']) assert.match(opening, new RegExp(`mr-routine-word[^>]*>${word}`));
-  const comparison = source.slice(at('serums'), at('ingredients'));
-  const drawer = tags(comparison, 'details').find(t => t.class?.split(/\s+/).includes('mr-compare__drawer'));
-  assert.ok(drawer && !Object.hasOwn(drawer, 'open'), 'Serum comparison is optional and closed initially');
-  assert.match(comparison, /ไม่ใช่คำแนะนำให้ทาเซรั่มสองขวดซ้อนกัน/);
-  assert.equal(tags(source, 'section').filter(t => ['founder', 'relay'].includes(t.id)).length, 0, 'No standalone manifesto chapters');
+  assert.match(opening, /ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ/, 'The set first, and nobody needs all five');
+  assert.match(opening, /บำรุง<small>ผิวเป็นสิวง่าย · ผิวดูหมอง<\/small>/, 'The two serums are told apart by what they are for');
+  for (const id of ['serums', 'ingredients', 'founder', 'relay']) assert.equal(at(id), -1, `#${id} is retired from the page`);
+  for (const page of PAGES) assert.ok(read(join(site, page, 'index.html')).includes(`data-product="${page.toUpperCase()}"`), `/${page}/ exists`);
+  assert.match(read(join(site, 'js/score.js')), /class="mr-foot__more" href="\$\{detailHref\(step\)\}"/, 'Each chapter’s last hold offers its page');
 });
 
-test('the set keeps one short real exchange, in the words sent and credited as sent', () => {
+test('the real exchange is the authorized screenshot, unchanged, with exact quotes and a separate personal account', () => {
   const {exchange} = routine();
-  assert.equal(exchange.intro, 'หลังได้ลองใช้ เราทักไปบอกเจ้าของแบรนด์');
   const [teem, owner] = exchange.messages;
-  assert.equal(teem.text, 'ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ');
-  assert.equal(teem.credit, 'Teem · ผู้จัดทำ myClover · ความรู้สึกจากการลองใช้ส่วนตัว');
-  assert.equal(teem.status, 'personal-experience');
-  assert.equal(owner.text, 'ดีใจจังเลยครับที่น้องทีมชอบ พี่ตั้งใจทำของที่ดีที่สุดให้ทุกคนเลย', 'The owner’s exact reply');
-  assert.equal(owner.credit, 'เจ้าของ Mediral · ข้อความถึงผู้จัดทำ myClover');
-  assert.equal(owner.status, 'personal-statement');
-  assert.doesNotMatch(JSON.stringify(exchange), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ/, 'No credential, founder bio, factory or lab claim');
+  assert.equal(teem.text, 'ได้ลองใช้แล้ว กลิ่นหอม สบายหน้ามากครับ ของดี น่าบอกต่อ ชอบที่มี 🍀 ด้วยครับ', 'Teem’s whole message, as sent');
+  assert.equal(owner.text, 'ดีใจจังเลยครับที่น้องงทีมชอบ พี่ตั้งใจทำของที่ดีที่สุดให้ทุกคนเลย', 'The owner’s reply, spelling as sent');
+  assert.equal(exchange.screenshot.src, SCREENSHOT.path);
+  const bytes = readFileSync(join(site, SCREENSHOT.path));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), SCREENSHOT.sha256, 'The evidence file is the original, byte for byte');
+  assert.equal(exchange.experience.text, 'หลังได้ลองใช้ ผมรู้สึกว่าสิวดีขึ้น');
+  assert.equal(exchange.experience.note, 'ประสบการณ์ใช้ส่วนตัวของ Teem ผลของแต่ละคนแตกต่างกัน');
+  assert.equal(exchange.experience.verbatim, false);
+  assert.doesNotMatch(JSON.stringify(exchange), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ|รักษา|หายขาด/, 'No credential, cure or process claim');
   assert.doesNotMatch(publicCode(), /[★⭐]|\b\d\.\d\s*\/\s*5\b|รีวิวจากลูกค้า/, 'No stars, ratings or invented reviews');
 });
 
@@ -251,26 +253,24 @@ test('the published page reads as finished: no backstage status, and provenance 
   for (const s of steps()) assert.equal(s.image_status, 'ai-draft', `${s.id}: the data still records the package as an AI draft`);
 });
 
-test('nothing pretends checkout exists: no buy button, a verified brand profile, a gated offer', () => {
-  const {buy, set} = routine();
+test('one way to order: the myClover LINE from one config, no pretend checkout, a gated offer', () => {
+  const {buy, set, order} = routine();
   assert.equal(buy.affiliate_url, null);
   assert.equal(buy.status, 'pending');
-  assert.equal(buy.store_url ?? null, null, 'No guessed store URL');
-  assert.equal(buy.profile.status, 'verified');
-  assert.equal(buy.profile.url, 'https://www.tiktok.com/@mediral.official.th');
-  assert.equal(buy.profile.label, 'ดู Mediral บน TikTok');
-  const source = html();
-  assert.equal(tags(source, 'a').filter(t => t['data-slot'] === 'buy-link').length, 0, 'No purchase control in the static page');
-  assert.ok(!tags(source, 'a').some(t => t['aria-disabled'] === 'true'), 'No disabled pretend link');
-  const actions = source.slice(source.indexOf('data-slot="actions"'), source.indexOf('data-slot="buy-hint"'));
-  assert.match(actions, /data-action="card">บันทึกรายการที่เลือก/);
-  assert.match(actions, /data-action="copy">คัดลอกรายการ/);
-  const profile = tags(actions, 'a').find(t => t['data-slot'] === 'profile-link');
-  assert.ok(profile && Object.hasOwn(profile, 'hidden') && !profile.href, 'The profile link waits for its verified data');
-  assert.equal(set.show_offer, false, 'The dated poster offer is not in the main advertisement');
-  assert.equal(set.poster.status, 'poster-only');
-  assert.match(tags(source, 'div').find(t => t['data-slot'] === 'offer') ? source.match(/<div[^>]*data-slot="offer"[^>]*>/)[0] : '', /hidden/);
-  assert.doesNotMatch(source, /1,899|฿\s*1899|ของแถม/, 'No poster price or gift in the page');
+  assert.equal(order.channel, 'line');
+  assert.equal(order.url, 'https://lin.ee/rlSlhzT', 'The myClover house LINE');
+  assert.equal(order.status, 'verified');
+  assert.equal(order.label, 'แอด LINE สั่งชุดดูแลผิว');
+  assert.match(order.note, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
+  const code = publicCode();
+  const lineUrls = [...new Set([...code.matchAll(/https:\/\/(?:lin\.ee|line\.me)\/[^"'\s)]+/g)].map(m => m[0]))];
+  assert.deepEqual(lineUrls, [order.url], 'Every static LINE link equals the config');
+  assert.doesNotMatch(code, /oaMessage|line\.me\/R\//, 'No prefilled-message endpoint');
+  assert.ok(!existsSync(join(site, 'js/card.js')), 'No saved-list picture any more');
+  assert.doesNotMatch(code, /บันทึกรายการ|ใบสรุป|กดจ่าย|หน้าชำระ/, 'No save or payment framing');
+  assert.equal(tags(html(), 'a').filter(t => t['data-slot'] === 'buy-link').length, 0);
+  assert.equal(set.show_offer, false);
+  assert.doesNotMatch(html(), /1,899|฿\s*1899|ของแถม/, 'No poster price or gift');
 });
 
 test('copy leads with each step’s role and avoids drug-like or unverified claims', () => {
@@ -282,30 +282,33 @@ test('copy leads with each step’s role and avoids drug-like or unverified clai
   assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
 });
 
-test('an enabled lab film ships a real faststart-ready MP4 and its poster, both deployable', () => {
-  const markup = read(join(site, 'js/score.js'));
-  assert.match(markup, /data-film-ready="true"/, 'The delivered film is enabled in the AC composition');
-  const clip = readFileSync(join(site, 'assets/motion/lab-film-10s.mp4'));
-  assert.equal(clip.toString('ascii', 4, 8), 'ftyp');
-  assert.ok(clip.length < 3_000_000, 'Keep the deferred clip light for phones');
-  const head = clip.subarray(0, 64 * 1024).toString('latin1');
-  assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), 'moov precedes mdat');
-  assert.equal(readFileSync(join(site, 'assets/motion/lab-film-poster.webp')).toString('ascii', 8, 12), 'WEBP');
-  const ignore = [read(join(root, '.gitignore')), read(join(root, '.vercelignore'))].join('\n').split('\n').map(l => l.trim());
-  assert.ok(!ignore.some(line => line && /mediral\/assets\/motion|\.mp4$/.test(line)), 'The film is not excluded from git or deployment');
+test('AC’s film ships as a faststart-ready body cut in two sizes, with its poster and final lens', () => {
+  const score = read(join(site, 'js/score.js'));
+  for (const file of ['crown-body-1080.mp4', 'crown-body-720.mp4']) {
+    assert.match(score, new RegExp(`assets/motion/${file.replace('.', '\\.')}`));
+    const clip = readFileSync(join(site, 'assets/motion', file));
+    assert.equal(clip.toString('ascii', 4, 8), 'ftyp');
+    assert.ok(clip.length < 2_500_000, `${file} stays light`);
+    const head = clip.subarray(0, 64 * 1024).toString('latin1');
+    assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), `${file}: moov precedes mdat`);
+  }
+  for (const file of ['crown-poster.webp', 'crown-end.webp']) assert.equal(readFileSync(join(site, 'assets/motion', file)).toString('ascii', 8, 12), 'WEBP');
+  assert.match(html(), /data-layer="fx.lens"[^>]*>[^<]*<img data-src="assets\/motion\/crown-end\.webp"/, 'The film’s lens bridges AC into BR');
+  assert.deepEqual(readdirSync(join(site, 'assets/motion')).sort(), ['crown-body-1080.mp4', 'crown-body-720.mp4', 'crown-end.webp', 'crown-poster.webp'], 'Only what the page uses ships');
 });
 
-test('ambient media markup has no player controls, duration or automatic loop', () => {
-  const markup = read(join(site, 'js/score.js'));
-  const videos = tags(markup, 'video');
+test('the film is material, not a player: muted, inline, deferred, no controls, no loop, a small source for phones', () => {
+  const videos = tags(read(join(site, 'js/score.js')), 'video');
   assert.equal(videos.length, 1);
   for (const video of videos) {
     assert.ok(Object.hasOwn(video, 'muted') && Object.hasOwn(video, 'playsinline'));
     assert.equal(video.preload, 'none');
     assert.ok(!Object.hasOwn(video, 'controls') && !Object.hasOwn(video, 'loop'));
     assert.ok(!video.src, 'No eager video URL');
-    assert.match(video['data-src'] || '', /assets\/motion\/lab-film-10s\.mp4/);
+    assert.match(video['data-src'], /film\.src/);
+    assert.match(video['data-src-small'], /film\.small/);
   }
+  assert.doesNotMatch(publicCode(), /data-film-toggle|data-film-duration|mr-film__controls|เล่นอีกครั้ง/, 'No player interface');
 });
 
 test('experience imagery ships as consumed final WebP only, and every stylesheet and story image resolves', () => {
@@ -334,13 +337,17 @@ test('internal manifests and unsoftened drafts stay out of git', () => {
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
     assert.ok(ignore.includes(line), `.gitignore should list ${line}`);
   }
-  for (const path of walkFiles(site)) assert.doesNotMatch(relative(site, path), /\.(?:png|psd)$|manifest|prompts|qa-gallery|original/i, `${relative(root, path)} is a private working file`);
+  // The one original shipped on purpose is the authorized chat screenshot, pinned by hash above.
+  for (const path of walkFiles(site).filter(p => relative(site, p) !== SCREENSHOT.path)) {
+    assert.doesNotMatch(relative(site, path), /\.(?:png|psd)$|manifest|prompts|qa-gallery|original|provenance|contact-sheet/i, `${relative(root, path)} is a private working file`);
+  }
 });
 
-test('every referenced image is a real local WebP', () => {
+test('every referenced image is a real local WebP, except the authorized original screenshot', () => {
   const entry = join(site, 'index.html');
   const refs = imageRefs(routine());
   for (const t of tags(html(), 'img')) refs.push({reference: t.src || t['data-src'], pointer: 'HTML img'});
+  for (const product of details().products) for (const g of product.ingredient_groups) for (const item of g.items) if (item.image) refs.push({reference: item.image, pointer: `${product.id} ${item.name}`});
   for (const {reference, pointer} of refs) {
     const path = localReference(reference, entry);
     assert.ok(path?.startsWith(`${site}${sep}`), `${pointer}: expected a local Mediral image`);
@@ -348,28 +355,31 @@ test('every referenced image is a real local WebP', () => {
     assert.equal(extname(path), '.webp', `${relative(root, path)} should be WebP`);
     assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP');
   }
+  assert.equal(extname(routine().exchange.screenshot.src), '.jpg', 'The evidence keeps its original format');
 });
 
-test('the page, its cinema, film and saved-list card have a complete local dependency graph without WebGL', () => {
-  const entry = join(site, 'index.html');
-  const source = html();
-  assert.ok(!/type="importmap"/.test(source), 'No import map: the story needs no three.js');
-  const queue = tags(source, 'script').filter(t => t.src && t.type === 'module').map(t => localReference(t.src, entry));
-  assert.equal(queue.length, 1, 'One module entry point');
-  for (const link of tags(source, 'link').filter(t => t.rel?.split(/\s+/).includes('stylesheet'))) {
-    const path = localReference(link.href, entry);
-    if (path) assertFile(path, 'Stylesheet');
-  }
+test('the page and the five product pages have a complete local module graph without WebGL', () => {
+  const entries = [join(site, 'index.html'), ...PAGES.map(p => join(site, p, 'index.html'))];
   const visited = new Set();
-  while (queue.length) {
-    const owner = queue.pop();
-    if (visited.has(owner)) continue;
-    assertFile(owner, 'ES module');
-    visited.add(owner);
-    for (const spec of importsIn(read(owner))) queue.push(modulePath(spec, owner));
+  for (const entry of entries) {
+    const source = read(entry);
+    assert.ok(!/type="importmap"/.test(source), 'No import map');
+    const queue = tags(source, 'script').filter(t => t.src && t.type === 'module').map(t => localReference(t.src, entry));
+    assert.equal(queue.length, 1, `${relative(root, entry)}: one module entry point`);
+    for (const link of tags(source, 'link').filter(t => t.rel?.split(/\s+/).includes('stylesheet'))) {
+      const path = localReference(link.href, entry);
+      if (path) assertFile(path, 'Stylesheet');
+    }
+    while (queue.length) {
+      const owner = queue.pop();
+      if (visited.has(owner)) continue;
+      assertFile(owner, 'ES module');
+      visited.add(owner);
+      for (const spec of importsIn(read(owner))) queue.push(modulePath(spec, owner));
+    }
   }
-  for (const name of ['main.js', 'cinema.js', 'score.js', 'card.js', 'lab-film.js']) assert.ok(visited.has(join(site, 'js', name)), `${name} is reachable`);
-  assert.ok(!walkFiles(site).some(p => /story\.js$|three\.module/.test(p)), 'The retired WebGL layer is gone');
+  for (const name of ['main.js', 'cinema.js', 'score.js', 'lab-film.js', 'detail.js', 'detail-view.js']) assert.ok(visited.has(join(site, 'js', name)), `${name} is reachable`);
+  assert.ok(!walkFiles(site).some(p => /story\.js$|three\.module|card\.js$/.test(p)), 'Retired modules are gone');
 });
 
 test('reduced motion and short screens start in normal flow before the module runs', () => {
@@ -425,7 +435,7 @@ test('page HTML and route responses declare noindex, and dev/reference files do 
   assert.ok(config.headers.some(r => r.source === '/mediral/'
     && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
   'The directory entry needs an explicit rule: production did not apply the wildcard header there');
-  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js']) {
+  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js', '/mediral/ac/', '/mediral/cl/index.html', '/mediral/data/details.json']) {
     const values = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
       .filter(h => h.key.toLowerCase() === 'x-robots-tag').map(h => h.value.toLowerCase().split(/[\s,]+/));
     assert.ok(values.some(v => v.includes('noindex')), `${pathname} needs X-Robots-Tag noindex`);

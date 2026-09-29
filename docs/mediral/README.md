@@ -1,12 +1,21 @@
 # Mediral five-piece set — `/mediral/`
 
-**Motion v2 — one cinema (2026-09-29).** The story is one sticky viewport driven by one scroll clock, not five boxed product slides. The order is: **opening (promise "จากล้างหน้า / ถึงผิวพร้อมออกจากบ้าน", five packs on a stone ledge) → the routine row (ล้าง · บำรุง · ปกป้อง · แต่งผิว) → CL → AC → BR → SU → PO → the five reassembled → the set (a short real exchange, the five pieces, working actions) → optional serum comparison and ingredient library.** The order explains roles; it is not a layering instruction, and no one needs all five.
+**Crown increment (2026-09-29).** The page runs **WHY → the five motion chapters (each with an exit to its own page) → a real exchange → one LINE close.**
+- **WHY:** the opening sells an at-home set with practical roles, "ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ". The routine row tells the two serums apart by what they are for (ผิวเป็นสิวง่าย · ผิวดูหมอง), not by colour.
+- **The cinema:** one scroll clock, material transitions, holds and every accessibility/runtime fix, all as released in Motion v2.
+- **AC's film:** AC's material is now a silent concept film (botanicals, then a glass funnel with a fine stream). It plays from its body cut, which ends before the film's lens, so it can rest under the words. The film's own last frame is a still that the camera enters on the way to BR.
+- **SU:** its sideways waves hold longer, and each phrase stays on one line.
 
-Every chapter opens on the reader's problem, read whole, then a two-line promise, one to three benefit waves and one support line. Objects carry chapters across: a foam front washes the routine row into the rinse scene and the bottle hands off at an identical pose; a water ring rises at the bottle's foot and opens into AC with four depths moving at different rates; the camera flies into the drop resting beside the capped AC bottle and comes out in BR's gold light (a new world, not AC's formula flowing into BR); a light streak wipes sideways into SU; air thickens into powder over PO; PO dissolves over the reassembled five. Glass, drops, foam, ribbon and powder are concept imagery, never a manufacturing process, test or product texture.
+**Ordering** is a conversation with myClover on LINE (`https://lin.ee/rlSlhzT`, the myClover house account). Every order action on the page and the five product pages reads one config, `routine.json → order`. Opening LINE is not an order: myClover gives price, shipping and payment in the chat before anything is confirmed. The pieces chooser only shapes an optional message to paste. The saved-list picture is gone. The Affiliate URL stays null, and the dated poster offer stays in data only.
 
-The owner's full reply and Teem's message sit together near the set as one editorial exchange: a personal trial impression with no SKU named, and a personal statement of intent. Neither is a review, rating or efficacy proof. General acne knowledge (NHS/NIAMS) sits behind "ทำความเข้าใจผิวที่เป็นสิวง่าย" in the AC library entry, apart from the product's promise.
+**Trust:** the authorized chat screenshot is shipped unchanged (SHA-256 pinned in tests). Teem's own experience ("หลังได้ลองใช้ ผมรู้สึกว่าสิวดีขึ้น") is a separate personal account with individual-result context, tied to no product.
 
-Commerce: there is no buy button. The working actions are "บันทึกรายการที่เลือก" (PNG) and "คัดลอกรายการ", and "ดู Mediral บน TikTok" opens the brand profile, verified 2026-09-29 (not a product link, checkout or Affiliate link). The Affiliate URL stays null. The dated poster offer is kept in data but off the page (`set.show_offer: false`); its code path and date rules stay tested.
+**Product pages:** `/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/` share one template:
+- problem → promise → what it looks after → how and when;
+- every source-listed name, grouped (AC 24 / BR 18 / SU 14 / PO 18 names in brand material, not full label lists);
+- FAQ → LINE → back to the exact chapter.
+
+The mousse page gives its known role only. `data/details.json` holds only the public product fields.
 
 Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). Current mousse media limitation: [MEDIA_REQUEST_01_MOUSSE.md](MEDIA_REQUEST_01_MOUSSE.md).
 
@@ -26,13 +35,15 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 
 | File | Responsibility |
 |---|---|
-| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, per-chapter `scene` (problem, headline, support, waves), attributed `selling.beats`, the ingredient catalogue and groups, the exchange, provenance, the gated offer and purchase/profile state. |
-| `mediral/js/cinema.js` | The engine: one clock T from the story track, keyframes resolved around each layer's CSS home (offsets, hand-off `match`, camera `focus`, custom properties held across the track), liveness through parent layers, two-sided load windows, flow mode. No timers or animation loop of its own. |
-| `mediral/js/score.js` | The score: chapter markup from data and every layer's timing. Chapter `from` values are each chapter's first composed hold. |
-| `mediral/js/main.js` | Mounts the chapters and markers, schedules one update per scroll frame, maps markers to rail/`data-step`/header chapter, keeps the story moment across real viewport changes, owns the saved list, profile link, gated offer, clipboard/card actions, anchors, atlases and fallbacks. |
-| `mediral/js/lab-film.js` | Decorative, muted media inside AC with motion/data preference guards and a poster fallback. No customer-facing player controls or duration/status UI. |
-| `mediral/js/card.js` | A PNG of the saved list without a price, with the provenance line and neutral pre-purchase checks. |
-| `mediral/assets/` | AI draft packs, ingredient illustrations, the concept film, stage/drop/foam plates and the five Motion v2 material layers (only consumed final WebPs). Private preparation manifests, prompts and originals stay out. |
+| `mediral/data/routine.json` | Product roles, `when`/`how`, image bounds, per-chapter `scene`, attributed `selling.beats`, the ingredient catalogue, the exchange (exact texts, screenshot, personal experience), provenance, the order channel (`order`), the gated offer and the profile link. |
+| `mediral/data/details.json` | Public copy for the five product pages: role, problem, benefits, texture, fit, how, FAQ and every source-listed name with its sourced role (or none). Only public fields. |
+| `mediral/js/cinema.js` | The engine: one clock T from the story track, keyframes around each layer's CSS home (offsets, hand-off `match`, camera `focus`, custom properties held across the track), liveness through parent layers, two-sided load windows, flow mode. |
+| `mediral/js/score.js` | The score: chapter markup from data, the AC film (`FILM`), each chapter's exit to its page, and every layer's timing. |
+| `mediral/js/main.js` | Mounts the story and markers, one update per scroll frame, rail/`data-step`/header chapter, keeps the story moment across real viewport changes, the trust block, the LINE close and message, legacy links, the AC film's window and one rewind per genuine revisit. |
+| `mediral/js/lab-film.js` | Decorative, muted, inline media with a poster fallback; picks the smaller file on narrow screens; `rewind()` for the owning scene. |
+| `mediral/js/detail-view.js`, `mediral/js/detail.js` | The product-page template (pure) and its boot. |
+| `mediral/{cl,ac,br,su,po}/index.html` | Static product-page shells: noindex, name, role, way back, LINE link. |
+| `mediral/assets/` | AI draft packs, ingredient illustrations, stage/drop/foam and Motion v2 layers, AC's film (two sizes, poster, final lens) and the unchanged chat screenshot. |
 
 ### Cinema structure
 
@@ -84,6 +95,20 @@ The optional library after the offer retains **AC 24, BR 18, SU 14 and PO 18** n
 ## Historical verification records
 
 The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the product-selling revision above.
+
+## Verification record — 29 Sep 2026 crown increment
+
+- **Roles:** built on production `b260673c`. GPT/root supplied one Seedance film (plus the body cut), the public product content, the verified LINE destination and QA. Claude wrote the code, tests and docs.
+- **Tests:** `node --test tests/mediral/*.test.mjs` passes 105/105 (content contracts, controller, engine, film, product pages), and `node shelf/validate.mjs` passes.
+- **Headless Chrome:**
+  - no film is requested at the opening;
+  - the phone plays `crown-body-720.mp4` and desktop `crown-body-1080.mp4`, with no controls;
+  - the lens bridge reads as a circle on both sizes;
+  - SU phrases stay whole;
+  - `#order` lands below the header, both fresh and in-page;
+  - the reduced-motion flow reads every chapter and the close;
+  - the product pages render with no overflow;
+  - no console errors.
 
 ## Verification record — 29 Sep 2026 Motion v2 cinema
 

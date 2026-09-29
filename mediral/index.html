@@ -20,7 +20,7 @@
   <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>
   <header class="mr-header">
     <a class="mr-brand" href="#routine" aria-label="myClover · Mediral — กลับไปหน้าแรกของชุด"><span class="mr-brand__house">myClover</span><span class="mr-brand__sep">·</span><span class="mr-brand__room">Mediral</span></a>
-    <a class="mr-btn mr-btn--small" href="#set" data-cta="shortcut">ดูชุด 5 ชิ้น <span aria-hidden="true">↓</span></a>
+    <a class="mr-btn mr-btn--small" href="#order" data-cta="shortcut">สั่งผ่าน LINE <span aria-hidden="true">↓</span></a>
   </header>
   <nav class="mr-rail" aria-label="5 ชิ้นในชุด" data-slot="rail"></nav>
 
@@ -32,10 +32,10 @@
       <div class="mr-cinema__view" data-view>
         <div class="mr-shot mr-shot--hero" data-shot="routine" data-layer="hero">
           <div class="mr-shot__bg mr-hero__bg" data-layer="hero.bg" aria-hidden="true"></div>
-          <p class="mr-kicker mr-hero__kicker" data-layer="hero.kicker">Mediral · ชุดดูแลผิว 5 ชิ้น</p>
+          <p class="mr-kicker mr-hero__kicker" data-layer="hero.kicker">Mediral · ชุดดูแลผิวที่บ้าน 5 ชิ้น</p>
           <div class="mr-hero__promise" data-layer="hero.promise">
             <h1 class="mr-hero__title" id="routine-title"><span class="mr-line">จากล้างหน้า</span> <span class="mr-line">ถึงผิวพร้อม</span><span class="mr-line">ออกจากบ้าน</span></h1>
-            <p class="mr-hero__sig">หนึ่งหน้า ห้าเรื่อง</p>
+            <p class="mr-hero__why">ครบทุกขั้นในชุดเดียว · ใช้เฉพาะชิ้นที่ผิวต้องการ</p>
           </div>
           <!-- Where each pack stands once the routine opens into one row. -->
           <span class="mr-slot mr-slot--cl" data-layer="row.CL" aria-hidden="true" style="--pack-aspect:0.2667"></span>
@@ -48,56 +48,43 @@
           <figure class="mr-actor mr-actor--su" data-layer="hero.SU"><span class="mr-pack" style="--pack-aspect:0.2455;--pack-img-width:310.366%;--pack-img-height:114.286%;--pack-img-left:-105.183%;--pack-img-top:-7.737%"><img src="assets/pack/su-front-web.webp" width="1024" height="1536" alt="ภาพประกอบเซรั่มกันแดด Mediral" decoding="async"></span></figure>
           <figure class="mr-actor mr-actor--cl" data-layer="hero.CL"><span class="mr-pack" style="--pack-aspect:0.2667;--pack-img-width:270.197%;--pack-img-height:108.096%;--pack-img-left:-85.22%;--pack-img-top:-3.027%"><img src="assets/pack/cl-clover-front-v2.webp" width="1024" height="1536" alt="ภาพประกอบมูสโฟมล้างหน้า Mediral" fetchpriority="high" decoding="async"></span></figure>
           <figure class="mr-actor mr-actor--po" data-layer="hero.PO"><span class="mr-pack" style="--pack-aspect:1.0681;--pack-img-width:138.581%;--pack-img-height:128.353%;--pack-img-left:-19.235%;--pack-img-top:-18.906%"><img src="assets/pack/po-closed.webp" width="1347" height="1168" alt="ภาพประกอบแป้งพัฟตลับเขียว Mediral" decoding="async"></span></figure>
-          <p class="mr-routine-word mr-routine-word--cl" data-layer="hero.w1">ล้าง</p>
-          <p class="mr-routine-word mr-routine-word--serums" data-layer="hero.w2">บำรุง<small>สิวง่าย · ดูหมอง</small></p>
-          <p class="mr-routine-word mr-routine-word--su" data-layer="hero.w3">ปกป้อง</p>
-          <p class="mr-routine-word mr-routine-word--po" data-layer="hero.w4">แต่งผิว</p>
-          <p class="mr-hero__pick" data-layer="hero.pick"><span class="mr-line">เลือกดูแล</span><span class="mr-line">ให้ตรงเรื่อง</span></p>
+          <p class="mr-routine-word mr-routine-word--cl" data-layer="hero.w1">ล้าง<small>หน้าและเครื่องสำอาง</small></p>
+          <p class="mr-routine-word mr-routine-word--serums" data-layer="hero.w2">บำรุง<small>ผิวเป็นสิวง่าย · ผิวดูหมอง</small></p>
+          <p class="mr-routine-word mr-routine-word--su" data-layer="hero.w3">ปกป้อง<small>กันแดด</small></p>
+          <p class="mr-routine-word mr-routine-word--po" data-layer="hero.w4">แต่งผิว<small>เมื่ออยากแต่ง</small></p>
+          <p class="mr-hero__pick" data-layer="hero.pick"><span class="mr-line">ครบในชุดเดียว</span><span class="mr-line">ใช้เท่าที่ผิวต้องการ</span></p>
           <div class="mr-hero__cta" data-layer="hero.cta" data-inert-hidden>
-            <div class="mr-actions"><a class="mr-btn" href="#step-CL">เริ่มจากล้างหน้า <span aria-hidden="true">↓</span></a><a class="mr-btn mr-btn--ghost" href="#set" data-cta="offer">ดูชุด 5 ชิ้น</a></div>
+            <div class="mr-actions"><a class="mr-btn" href="#step-CL">เริ่มจากล้างหน้า <span aria-hidden="true">↓</span></a><a class="mr-btn mr-btn--ghost" href="#order" data-cta="order">สั่งผ่าน LINE</a></div>
             <p class="mr-fine">จัดทำโดย myClover · ไม่ใช่เว็บไซต์ทางการของ Mediral</p>
           </div>
         </div>
         <!-- Product chapters are added here from data/routine.json. -->
         <div class="mr-art mr-fx-foam" data-layer="fx.foam" aria-hidden="true"><img src="assets/experience/p0-3-foam-band.webp" alt="" decoding="async"></div>
         <div class="mr-art mr-fx-ring" data-layer="fx.ring" aria-hidden="true"><img data-src="assets/experience/m2-rinse-portal.webp" alt="" decoding="async"></div>
-        <div class="mr-fx-gold" data-layer="fx.gold" aria-hidden="true"></div>
+        <div class="mr-art mr-fx-lens" data-layer="fx.lens" aria-hidden="true"><img data-src="assets/motion/crown-end.webp" alt="" decoding="async"></div>
         <div class="mr-fx-streak" data-layer="fx.streak" aria-hidden="true"></div>
         <div class="mr-fx-motes" data-layer="fx.motes" aria-hidden="true"></div>
         <div class="mr-art mr-fx-veil" data-layer="fx.veil" aria-hidden="true"><img data-src="assets/experience/m2-powder-veil.webp" alt="" decoding="async"></div>
       </div>
     </section>
 
-    <!-- The set: a short real exchange, then who it is for, what each piece does, and one working action. -->
-    <section class="mr-chapter mr-set mr-reading-chapter" id="set" data-chapter="set" aria-labelledby="set-title">
-      <div class="mr-set__inner">
-        <figure class="mr-exchange" data-slot="exchange" aria-labelledby="exchange-title"></figure>
-        <div class="mr-card mr-card--wide">
-          <p class="mr-kicker">MEDIRAL · ชุดดูแลผิว 5 ชิ้น</p>
-          <h2 class="mr-h2" id="set-title" data-slot="set-headline">หนึ่งหน้า ห้าเรื่อง ในชุดเดียว</h2>
-          <p class="mr-set__intro">มูสล้างหน้า เซรั่มขวดขาว เซรั่มหน้าใส เซรั่มกันแดด และแป้งพัฟ ใช้เฉพาะเรื่องที่ผิวคุณเจอได้ ไม่จำเป็นต้องใช้ครบทุกชิ้น</p>
-          <ol class="mr-setlist" data-slot="set-row"></ol>
-          <div class="mr-offer" data-slot="offer" hidden></div>
-          <div class="mr-actions mr-actions--buy" data-slot="actions"><button type="button" class="mr-btn" data-action="card">บันทึกรายการที่เลือก</button><button type="button" class="mr-btn mr-btn--ghost" data-action="copy">คัดลอกรายการ</button><a class="mr-btn mr-btn--ghost" data-slot="profile-link" hidden>ดู Mediral บน TikTok</a></div>
+    <!-- After the story: the real exchange, then one way to order — a conversation with myClover on LINE. -->
+    <section class="mr-close mr-reading-chapter" id="set" data-chapter="set" aria-labelledby="order-title">
+      <div class="mr-close__inner">
+        <figure class="mr-trust" data-slot="trust" aria-labelledby="trust-title"></figure>
+        <div class="mr-order" id="order">
+          <p class="mr-kicker">MEDIRAL · ชุดดูแลผิวที่บ้าน 5 ชิ้น</p>
+          <h2 class="mr-h2" id="order-title" data-slot="order-title">สั่งผ่าน myClover ทาง LINE</h2>
+          <p class="mr-order__how" data-slot="order-how">แอด LINE แล้วบอกว่าสนใจชุดครบ 5 ชิ้น หรือชิ้นไหน myClover จะแจ้งราคา ค่าส่ง และวิธีชำระในแชต ก่อนยืนยันการสั่ง</p>
+          <div class="mr-actions mr-actions--order" data-slot="actions"><a class="mr-btn mr-btn--line" data-slot="line-link" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener">แอด LINE สั่งชุดดูแลผิว</a></div>
+          <p class="mr-order__note" data-slot="order-note">ปุ่มนี้เปิดหน้าเพิ่มเพื่อน LINE ของ myClover การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น</p>
+          <fieldset class="mr-picks" data-slot="pieces"><legend>ชิ้นที่สนใจ · ไม่จำเป็นต้องครบทุกชิ้น</legend></fieldset>
+          <div class="mr-order__message"><p data-slot="message" aria-live="polite"></p><button type="button" class="mr-btn mr-btn--ghost mr-btn--small" data-action="copy">คัดลอกข้อความไว้ส่งใน LINE</button></div>
           <p class="mr-hint" data-slot="buy-hint" aria-live="polite"></p>
-          <div class="mr-summary" data-slot="summary" aria-live="polite"></div>
-          <details class="mr-customize"><summary>เลือกเฉพาะชิ้นที่อยากบันทึก</summary><fieldset class="mr-pieces" data-slot="pieces"><legend class="mr-pieces__legend">ชิ้นที่ต้องการบันทึก</legend></fieldset></details>
-          <p class="mr-set__carry" data-slot="set-carry">อยู่บ้าน หรือพาไป เลือกหยิบชิ้นที่คุณใช้</p>
+          <div class="mr-offer" data-slot="offer" hidden></div>
           <p class="mr-disclosure" data-slot="disclosure" hidden></p>
-          <a class="mr-set__library" href="#ingredients">รู้จักส่วนผสมที่แบรนด์ระบุ <span aria-hidden="true">↓</span></a>
         </div>
       </div>
-    </section>
-
-    <section class="mr-compare mr-reading-chapter" id="serums" data-chapter="serums">
-      <details class="mr-more mr-compare__drawer"><summary>เซรั่มสองขวดต่างกันอย่างไร และแต่ละชิ้นใช้เมื่อไร</summary>
-        <div class="mr-compare__pair" data-slot="compare"></div><div class="mr-uses" data-slot="uses"></div>
-        <p class="mr-disclosure">ลำดับของหน้าใช้เล่าเรื่องหน้าที่ของแต่ละชิ้น วิธีใช้จริงให้ยึดฉลาก ไม่ใช่คำแนะนำให้ทาเซรั่มสองขวดซ้อนกัน</p>
-      </details>
-    </section>
-    <section class="mr-library mr-reading-chapter" id="ingredients" data-chapter="ingredients" aria-labelledby="ingredients-title">
-      <header class="mr-library__head"><p class="mr-kicker">รู้จักสูตรให้ลึกขึ้น · เลือกอ่านตามชิ้นที่สนใจ</p><h2 id="ingredients-title">รู้จักส่วนผสมที่แบรนด์ระบุ</h2><p>พร้อมบทบาทและที่มาของแต่ละชื่อ ข้อมูลผลิตภัณฑ์จาก Mediral</p></header>
-      <div class="mr-library__list" data-slot="library"></div>
     </section>
   </main>
 
@@ -106,8 +93,8 @@
       <p>ภาพสินค้าและฉากบางส่วนสร้างด้วย AI จากสื่อแบรนด์ ใช้เล่าแนวคิดของส่วนผสม รายละเอียดสินค้ายึดฉลากและหน้าร้าน</p>
       <p>ชื่อ ขนาด วิธีใช้ บทบาท และรายชื่อส่วนผสมมาจากสื่อการตลาดของ Mediral เป็นข้อมูลที่แบรนด์เผยแพร่ ไม่ใช่ผลทดสอบอิสระ และไม่ใช่ส่วนผสมครบตามฉลาก หน้านี้เรียงให้เห็นบทบาทของทั้ง 5 ชิ้น วิธีใช้จริงให้ยึดฉลากสินค้า หากมีปัญหาผิวหรือประวัติแพ้ ควรปรึกษาแพทย์หรือเภสัชกร</p>
     </details>
-    <p class="mr-footer__house">myClover · Mediral</p><p>จัดทำโดย myClover ไม่ใช่เว็บไซต์ทางการของแบรนด์</p>
+    <p class="mr-footer__house">myClover · Mediral</p><p>จัดทำและรับสั่งโดย myClover ไม่ใช่เว็บไซต์ทางการของแบรนด์ · <a data-slot="profile-link" hidden>Mediral บน TikTok</a></p>
   </footer>
-  <noscript><style>.mr-cinema{height:auto!important}.mr-cinema__view{position:relative!important;height:auto!important}.mr-shot:not(.mr-shot--hero),.mr-art{display:none!important}</style><p class="mr-noscript">เปิด JavaScript เพื่อดูเรื่องของแต่ละชิ้นและบันทึกรายการ สินค้า 5 ชิ้นมีหน้าที่ล้างหน้า บำรุง ปกป้อง และแต่งผิว วิธีใช้จริงให้ยึดฉลากของแต่ละชิ้น</p></noscript>
+  <noscript><style>.mr-picks,.mr-order__message{display:none}.mr-cinema{height:auto!important}.mr-cinema__view{position:relative!important;height:auto!important}.mr-shot:not(.mr-shot--hero),.mr-art{display:none!important}</style><p class="mr-noscript">เปิด JavaScript เพื่อดูเรื่องของแต่ละชิ้น สินค้า 5 ชิ้นมีหน้าที่ล้างหน้า บำรุง ปกป้อง และแต่งผิว วิธีใช้จริงให้ยึดฉลากของแต่ละชิ้น สั่งผ่าน LINE ของ myClover ได้จากปุ่มในส่วนท้ายของหน้า</p></noscript>
 </body>
 </html>
