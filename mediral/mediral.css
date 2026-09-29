@@ -164,6 +164,7 @@ main{position:relative;z-index:1}
 .mr-wave__word{display:block;font:700 min(12vw,7svh)/1.2 var(--sans);letter-spacing:-.02em}
 .mr-wave__names{display:block;margin-top:.8em;font:500 clamp(13px,1.3vw,17px)/1.5 var(--display);letter-spacing:.02em;opacity:.88}
 .mr-foot{top:85.5svh}
+.mr-foot__headline{margin:0 0 18px;font:600 min(10.4vw,6svh)/1.2 var(--sans);letter-spacing:-.03em}
 .mr-foot .mr-support{margin:4px auto 0;max-width:32em;font:400 clamp(13px,1.45vw,18px)/1.6 var(--sans);text-wrap:balance}
 .mr-foot__more{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:99px;font:600 12px/1.5 var(--sans);text-decoration:none;color:inherit;border:1px solid currentColor;opacity:.9}
 .mr-foot__more:hover{opacity:1}
@@ -295,7 +296,7 @@ main{position:relative;z-index:1}
 .mr-br__beams{position:absolute;inset:0;pointer-events:none}
 .mr-br__beams i{position:absolute;top:-20svh;height:140svh;width:16vw;left:calc(38vw + var(--k,0) * 18vw);transform:rotate(24deg);background:linear-gradient(90deg,rgba(255,252,236,0),rgba(255,250,230,.5) 50%,rgba(255,252,236,0))}
 .mr-br__beams i:nth-child(2){--k:1;width:10vw;opacity:.7}.mr-br__beams i:nth-child(3){--k:2;width:22vw;opacity:.5}
-[data-layer^=br].mr-actor--br{--x:50%;--base:81svh;--h:46svh}
+[data-layer^=br].mr-actor--br{--x:50%;--base:78svh;--h:46svh}
 .mr-plane{filter:blur(calc((1 - var(--focus,1)) * 7px))}
 .mr-plane img{width:100%;height:auto}
 .mr-plane figcaption{position:absolute;white-space:nowrap;font:700 clamp(15px,1.6vw,21px)/1.3 var(--sans);color:var(--forest-deep);text-shadow:0 1px 12px rgba(255,250,232,.9)}
@@ -311,8 +312,8 @@ main{position:relative;z-index:1}
 .mr-pairs .mr-wave__word{font-size:min(9vw,5.4svh)}
 .mr-pairs .mr-wave__names{margin-top:.35em}
 .mr-br__title{top:17svh;font-size:min(9.2vw,5.8svh);font-weight:600;line-height:1.25;text-wrap:balance}
-.mr-br__secondary .mr-wave__word{font-size:min(9.2vw,5.8svh);font-weight:600}
-.mr-shot--br .mr-foot{color:#fbf6e6;text-shadow:0 1px 10px rgba(30,40,20,.5)}
+.mr-shot--br .mr-foot{top:83svh;color:#fbf6e6;text-shadow:0 1px 10px rgba(30,40,20,.5)}
+.mr-shot--br .mr-foot__headline{position:absolute;top:-66svh;left:0;right:0;padding-inline:var(--safe);margin:0;color:var(--forest-deep);text-shadow:none}
 .mr-shot--br .mr-problem,.mr-shot--br .mr-wave__names{color:#4d5a2a}
 
 /* SU — weightless: an airy, cool frame; the tube floats; three jobs travel sideways. */
@@ -449,7 +450,7 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-ac__title{top:26svh;left:7vw;right:auto;width:46vw;padding-inline:0;text-align:left}
   .mr-shot--ac .mr-foot{top:56svh;left:7vw;right:auto;width:40vw;padding-inline:0;text-align:left}
   .mr-shot--ac .mr-foot .mr-support{margin-inline:0}
-  [data-layer^=br].mr-actor--br{--x:50%;--base:86svh;--h:54svh}
+  [data-layer^=br].mr-actor--br{--x:34%;--base:86svh;--h:58svh}
   .mr-plane--near{width:26vw;left:4vw;top:50svh}
   .mr-plane--mid{width:20vw;left:64vw;top:34svh}
   .mr-plane--mid figcaption{right:auto;left:30%}
@@ -457,8 +458,8 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-pairs{grid-template-columns:1fr 1fr;max-width:1000px;margin-inline:auto}
   .mr-pairs .mr-wave__word{font-size:min(4.6vw,8svh)}
   .mr-br__title{top:17svh;left:10vw;right:10vw;width:auto;padding-inline:0;text-align:center;font-size:min(4.6vw,7.4svh)}
-  .mr-br__secondary .mr-wave__word{font-size:min(4.6vw,8svh)}
-  .mr-shot--br .mr-foot{top:52svh;left:auto;right:6vw;width:36vw;padding-inline:0;text-align:left;color:var(--forest-deep);text-shadow:none}
+  .mr-shot--br .mr-foot{top:26svh;bottom:auto;left:auto;right:6vw;width:40vw;padding-inline:0;display:block;text-align:left;color:var(--forest-deep);text-shadow:none}
+  .mr-shot--br .mr-foot__headline{position:static;padding-inline:0;margin-bottom:24px;font-size:min(5.2vw,8.4svh)}
   .mr-shot--br .mr-foot .mr-tag-line{font-size:clamp(16px,1.6vw,22px)}
   .mr-shot--br .mr-foot__more{font-size:14px}
   .mr-shot--br .mr-foot .mr-support{margin-inline:0}
@@ -474,7 +475,7 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-chapter-film__caption{font-size:12px}
   .mr-wave--band{top:72svh;left:6vw;right:auto;width:44vw;text-align:left}
   .mr-wave--band .mr-wave__word{font-size:min(4.4vw,8svh)}
-  .mr-shot--su .mr-foot{top:88svh}
+  .mr-shot--su .mr-foot{top:86svh}
   .mr-po__band{width:120vw;left:-10vw;top:56svh}
   [data-layer^=po].mr-actor--po{--base:78svh;--h:24svh}
   .mr-shot--po .mr-wave,.mr-shot--po .mr-foot{top:40svh}
@@ -522,7 +523,9 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 /* No pack or its shadow may widen the phone layout in flow. */
 .mr-flow .mr-shot{overflow-x:clip}
 .mr-flow .mr-foot{order:7;text-align:center;width:auto;color:inherit!important;text-shadow:none}
-.mr-flow .mr-shot--br .mr-foot{color:#fbf6e6!important;text-shadow:0 1px 10px rgba(30,40,20,.55)}
+.mr-flow .mr-shot--br .mr-foot{display:block;color:#fbf6e6!important;text-shadow:0 1px 10px rgba(30,40,20,.55)}
+.mr-flow .mr-shot--br .mr-foot__headline{position:static;padding-inline:0}
+.mr-flow .mr-foot__headline{font-size:clamp(28px,6vw,42px);margin-bottom:16px;color:inherit!important;text-shadow:inherit}
 .mr-flow .mr-foot .mr-support{margin-inline:auto}
 .mr-flow .mr-po__title{-webkit-text-stroke:0}
 .mr-flow .mr-shot--su{clip-path:none}

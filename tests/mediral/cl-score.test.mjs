@@ -51,18 +51,18 @@ test('the rinse promise dissolves under foam and reveals its gentle answer witho
   }
 });
 
-test('CL finishes its promise before the botanical names and product foot appear', () => {
+test('CL retains the gentle answer beside the botanical names and product close', () => {
   for (const layout of layouts) {
     const at = poses(layout);
-    for (let n = 1300; n <= 3100; n++) {
+    for (let n = 2600; n <= 2800; n++) {
       const T = n / 1000;
-      const titleOpacity = Math.max(at('cl.word1', T).o, at('cl.word2', T).o);
-      for (const key of ['cl.botanical-label', 'cl.foot']) {
-        assert.ok(titleOpacity === 0 || at(key, T).o === 0,
-          `${key} must not compete with the title at T${T}, ${layout.W}px`);
+      assert.equal(at('cl.word1', T).o, 0, 'The first word still leaves the shared title space');
+      assert.equal(at('fx.foam', T).o, 0, 'The composed hold follows the foam reveal');
+      for (const key of ['cl.word2', 'cl.botanical-label', 'cl.foot']) {
+        assert.equal(at(key, T).o, 1, `${key} remains readable at T${T}, ${layout.W}px`);
       }
     }
-    assert.equal(at('cl.botanical-label', 2.7).o, 1);
-    assert.equal(at('cl.foot', 2.7).o, 1, 'The product link still has a composed reading hold');
+    assert.ok(at('cl.word2', 2.88).o > 0 && at('cl.word2', 2.88).o < 1);
+    assert.equal(at('cl.word2', 2.94).o, 0, 'The answer clears for the ring transition');
   }
 });
