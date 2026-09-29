@@ -13,7 +13,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 const {chromium} = await import(process.env.TOUR_PLAYWRIGHT ? pathToFileURL(process.env.TOUR_PLAYWRIGHT + '/index.mjs').href : 'playwright');
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const out = process.env.TOUR_PROOF_DIR || await mkdtemp(tmpdir() + '/tour-'); await mkdir(out, {recursive: true});
-const types = {'.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.ico': 'image/x-icon', '.webmanifest': 'application/json', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.json': 'application/json', '.mp3': 'audio/mpeg'};
+const types = {'.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webmanifest': 'application/json', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.json': 'application/json', '.mp3': 'audio/mpeg'};
 const server = http.createServer(async (q, r) => {
   let p = decodeURIComponent(q.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html';
   try { const b = await readFile(join(root, p)); r.writeHead(200, {'content-type': types[extname(p)] || 'application/octet-stream'}); r.end(b); } catch { r.writeHead(404); r.end(); }
@@ -75,6 +75,18 @@ try {
       }
       throw Error('tap did not register on ' + id);
     };
+    await tap('mediral', () => window.__tour.inspecting() === 'mediral');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/mediral/');
+    assert.match(await page.textContent('#inspect-title'), /Mediral.*Partner Project/);
+    await page.waitForTimeout(800);
+    await page.screenshot({path: `${out}/desktop-mediral.png`});
+    const [mediralTab] = await Promise.all([page.waitForEvent('popup'), page.click('#inspect-go')]);
+    await mediralTab.waitForLoadState('domcontentloaded');
+    assert.equal(new URL(mediralTab.url()).pathname, '/mediral/');
+    await mediralTab.close();
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    pass('the skincare cabinet opens Mediral as a Partner Project in a new tab');
+
     assert.equal(await page.evaluate(() => window.__tour.itemState('teambook').badge), 'gold');
     await tap('teambook', () => window.__tour.inspecting() === 'teambook');
     await page.waitForSelector('#inspect.open');
@@ -130,6 +142,18 @@ try {
     await page.click('#music'); await page.waitForFunction(() => document.querySelector('#music').getAttribute('aria-pressed') === 'false');
     pass('the record player (and the music button) play and stop the house music');
 
+    for (const [id, href] of [['teem-photo', '/resume/'], ['ako-photo', '/ako/']]) {
+      await tap(id, () => document.querySelector('#inspect').classList.contains('open'));
+      assert.equal(await page.evaluate(() => window.__tour.inspecting()), id);
+      assert.equal(await page.getAttribute('#inspect-go', 'href'), href);
+      const [portraitTab] = await Promise.all([page.waitForEvent('popup'), page.click('#inspect-go')]);
+      await portraitTab.waitForLoadState('domcontentloaded');
+      assert.equal(new URL(portraitTab.url()).pathname, href);
+      await portraitTab.close();
+      await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    }
+    pass('both Meet portraits are pickable and open their own profile in a new tab');
+
     await page.evaluate(() => scrollTo(0, 0));
     for (const room of ['living', 'kitchen', 'classroom']) {
       const btn = page.locator(`[data-find="${room}"]`);
@@ -147,7 +171,7 @@ try {
     await page.waitForFunction(() => !document.body.classList.contains('is-loading'));
     assert.equal(await page.textContent('#clover-count .count-text'), '4/4');
     pass('collected clovers persist for this viewer');
-    for (const id of ['teambook', 'airova', 'resume']) assert.equal(await page.evaluate(id => window.__tour.itemState(id).badge, id), 'silver');
+    for (const id of ['teambook', 'airova', 'resume', 'teem-photo', 'ako-photo', 'mediral']) assert.equal(await page.evaluate(id => window.__tour.itemState(id).badge, id), 'silver');
 
     await page.click('[data-quality="hd"]');
     await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});

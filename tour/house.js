@@ -26,7 +26,8 @@ export const HERO_CLOVER = {wide: [12.4, 9.9, 0.5], tall: [-1.5, 10.4, 0.5]};
  * slot is mapped to its filename in /tour/art/manifest.json (see IMAGE-PROMPTS.md).
  * `aspect` = the frame's width/height; any picture is cropped to fill it, never stretched. */
 export const ART = {
-  'teem-portrait': {fallback: '/img/party-teem.webp', aspect: 4 / 5},
+  'teem-portrait': {fallback: '/meet/img/teem.jpg', aspect: 3 / 5},
+  'ako-portrait': {fallback: '/meet/img/ako.jpg', aspect: 3 / 5},
   'forge-cover': {fallback: '/img/card-forge.jpg', aspect: 2 / 3},
   'walkthrough-cover': {fallback: '/img/col-walkthrough.webp', aspect: 2 / 3},
   'table-map': {fallback: '/frontdoor/art/underpaper-valley-mobile.webp', aspect: 4 / 3},
@@ -320,14 +321,15 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     for (const dx of [-0.52, 0.92]) rb(g, [1.4, 0.18, 0.88], [dx, 0.5, BW + 0.9], fabric('#6f9e82'), null, 0.08);
     rb(g, [0.5, 0.44, 0.16], [-0.9, 0.64, BW + 0.62], fabric('#f2c14e'), [0.2, 0.25, 0], 0.08);
     rb(g, [0.5, 0.44, 0.16], [1.3, 0.64, BW + 0.62], fabric('#e37c5b'), [0.2, -0.25, 0], 0.08);
-    // photo of Teem → /resume/, clover art
-    const frame = group(g, -0.45, 1.5, BW + 0.03);
-    rb(frame, [0.84, 1.04, 0.05], [0, 0, 0], wood('#6d4a30'), null, 0.01);
-    plane(frame, [0.72, 0.9], [0, 0.52, 0.035], artMat('teem-portrait'));
-    hot(frame, 'teem-photo');
-    const art = group(g, 0.95, 1.66, BW + 0.03);
-    rb(art, [0.9, 0.72, 0.05], [0, 0, 0], wood('#6d4a30'), null, 0.01);
-    plane(art, [0.78, 0.6], [0, 0.36, 0.035], canvasMat(256, 200, (c, w, h) => { const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#bfe3f0'); gr.addColorStop(1, '#f7e7c4'); c.fillStyle = gr; c.fillRect(0, 0, w, h); c.fillStyle = '#2e9e5b'; for (let k = 0; k < 4; k++) { c.save(); c.translate(128, 100); c.rotate(k * Math.PI / 2 + Math.PI / 4); c.beginPath(); c.ellipse(0, -26, 20, 28, 0, 0, 7); c.fill(); c.restore(); } }));
+    // Matching portraits from /meet/: each frame has its own destination.
+    for (const [id, slot, x] of [['teem-photo', 'teem-portrait', -0.55], ['ako-photo', 'ako-portrait', 0.65]]) {
+      const frame = group(g, x, 1.36, BW + 0.03);
+      rb(frame, [0.8, 1.34, 0.055], [0, 0, 0], wood('#6d4a30'), null, 0.012);
+      plane(frame, [0.68, 1.22], [0, 0.67, 0.035], M('#fbf6ec'));
+      plane(frame, [0.63, 1.05], [0, 0.74, 0.039], artMat(slot));
+      plane(frame, [0.63, 0.11], [0, 0.115, 0.04], new THREE.MeshStandardMaterial({map: label(id === 'teem-photo' ? 'TEEM' : 'AKO', 384, 64, '#fbf6ec', '#294536', 40)}));
+      hot(frame, id);
+    }
     // game table: compass on the map (old homepage), CORE7 cards, dice, tea for guests
     rb(g, [2.2, 0.1, 1.4], [0.2, 0.42, 0.45], wood('#a8744a'), null, 0.04);
     for (const [dx, dz] of [[-0.95, -0.58], [0.95, -0.58], [-0.95, 0.58], [0.95, 0.58]]) cy(g, [0.05, 0.04, 0.42], [0.2 + dx, 0, 0.45 + dz], '#6d4a30');
@@ -665,6 +667,43 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     plane(nb, [0.77, 0.56], [0, 0.31, 0.043], art.has('teambook-cover') ? artMat('teambook-cover') : canvasMat(440, 320, c => { c.fillStyle = '#fbf6ec'; c.fillRect(0, 0, 440, 320); c.fillStyle = 'rgba(29,107,61,.12)'; for (let y = 60; y < 320; y += 28) c.fillRect(20, y, 400, 2); c.fillStyle = '#1d6b3d'; c.font = `800 44px ${FONT}`; c.fillText('TeamBook', 24, 50); }));
     cy(nb, [0.012, 0.012, 0.58], [0, 0.02, 0.05], '#e9b949');
     hot(nb, 'teambook');
+    // Boutique vitrine: reuse Mediral's transparent product assets, with no extra lights/video.
+    const cabinet = group(g, -1.5, 0, 0.6);
+    const forest = M('#173f34', {roughness: 0.35});
+    const stone = M('#eee8db', {roughness: 0.32});
+    const trim = M('#bfc7be', {metalness: 0.75, roughness: 0.3});
+    rb(cabinet, [1.72, 0.1, 0.82], [0, 0.04, 0], M('#182b25'), null, 0.025);
+    rb(cabinet, [1.64, 0.33, 0.76], [0, 0.14, 0], forest, null, 0.025);
+    rb(cabinet, [1.74, 0.045, 0.84], [0, 0.47, 0], stone, null, 0.015);
+    rb(cabinet, [1.66, 0.035, 0.76], [0, 1.36, 0], trim, null, 0.008);
+    for (const x of [-0.81, 0.81]) for (const z of [-0.36, 0.36]) rb(cabinet, [0.024, 0.85, 0.024], [x, 0.515, z], trim, null, 0.005);
+    const glass = M('#dbece5', {transparent: true, opacity: 0.08, depthWrite: false, roughness: 0.08, side: THREE.DoubleSide});
+    plane(cabinet, [1.6, 0.83], [0, 0.935, 0.37], glass);
+    for (const x of [-0.815, 0.815]) plane(cabinet, [0.72, 0.83], [x, 0.935, 0], glass, [0, Math.PI / 2, 0]);
+    plane(cabinet, [1.6, 0.72], [0, 1.375, 0], glass, [-Math.PI / 2, 0, 0]);
+    rb(cabinet, [1.48, 0.035, 0.04], [0, 1.32, -0.3], M('#fff0d2', {emissive: '#fff0d2', emissiveIntensity: 0.45}), null, 0.005);
+    rb(cabinet, [1.52, 0.055, 0.42], [0, 0.515, -0.09], stone, null, 0.014);
+    // Cropped to the product aspect ratios documented in /mediral/data/routine.json.
+    const packs = [
+      ['cl-clover-front-v2.webp', 0.2667, 0.73, -0.56, -0.1, 0.57],
+      ['ac-front.webp', 0.4107, 0.58, -0.22, -0.1, 0.57],
+      ['br-front.webp', 0.3184, 0.6, 0.15, -0.1, 0.57],
+      ['su-front-web.webp', 0.2455, 0.7, 0.51, -0.1, 0.57],
+      ['po-closed.webp', 1.0681, 0.3, 0.07, 0.23, 0.52],
+    ];
+    for (const [file, aspect, height, x, z, bottom] of packs) {
+      const mat = new THREE.MeshStandardMaterial({map: blank, transparent: true, opacity: 0, alphaTest: 0.025, roughness: 0.35, side: THREE.DoubleSide});
+      if (!out.lazy.has(area)) out.lazy.set(area, []);
+      out.lazy.get(area).push(() => imageTex(`/mediral/assets/pack/${file}`, mat, renderer, aspect).then(() => { if (mat.map !== blank) mat.opacity = 1; }));
+      plane(cabinet, [height * aspect, height], [x, bottom + height / 2, z], mat);
+    }
+    plane(cabinet, [1.3, 0.24], [0, 0.335, 0.385], M('#f4efe5'));
+    // Original brand paths with explicit SVG dimensions for WebGL texture upload.
+    const wordmark = photo('/tour/art/mediral-wordmark.svg', 62.312 / 14.690);
+    wordmark.transparent = true; wordmark.alphaTest = 0.03;
+    plane(cabinet, [0.76, 0.76 * 14.690 / 62.312], [0, 0.335, 0.39], wordmark);
+    plane(cabinet, [1.32, 0.11], [0, 0.195, 0.39], new THREE.MeshStandardMaterial({map: label('PARTNER PROJECT', 768, 64, '#173f34', '#eee8db', 40)}));
+    hot(cabinet, 'mediral');
     // centre table: the model of our real house turns slowly (→ /showcase/house/)
     const table = group(g, 0.2, 0, 1.05);
     cy(table, [0.12, 0.2, 0.74], [0, 0, 0], M('#2b2f31', {metalness: 0.4, roughness: 0.4}));
@@ -756,17 +795,6 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   for (const h of out.hotspots) {
     h.invParent = h.root.parent.getWorldQuaternion(new THREE.Quaternion()).invert(); // "toward the camera" in the parent's frame
     if (h.id === 'meet') continue;
-    // Tint only solid surfaces; retain the colours of all screen/book artwork.
-    const accents = new Map();
-    h.root.traverse(o => {
-      if (!o.isMesh) return;
-      const tint = m => {
-        if (!m.emissive || m.map || m.transparent) return m;
-        if (!accents.has(m)) accents.set(m, {mat: m.clone(), base: m.emissive.clone()});
-        return accents.get(m).mat;
-      };
-      o.material = Array.isArray(o.material) ? o.material.map(tint) : tint(o.material);
-    });
     box3.setFromObject(h.root); box3.getCenter(v);
     // invisible, slightly larger tap area: flat things (a notebook, a map, cards) are tiny on a phone
     const size = box3.getSize(new THREE.Vector3()), hit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(size.x, 0.2) + 0.12, Math.max(size.y, 0.14) + 0.12, Math.max(size.z, 0.2) + 0.12), hitMat);
@@ -778,8 +806,6 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     h.setOpened = seen => {
       h.opened = seen;
       s.material.map = seen ? silverBadge : goldBadge;
-      const tint = new THREE.Color(seen ? '#cbd5e1' : '#ffcc45').multiplyScalar(0.18);
-      for (const {mat, base} of accents.values()) mat.emissive.copy(base).add(tint);
     };
     h.setOpened(opened.has(h.id));
   }
