@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="th" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คุณกินอิ่มแล้ว แล้วจุลินทรีย์ในลำไส้ล่ะ? · RoutineX ห้อง A</title>
+<meta name="description" content="เดินทางจากมื้ออาหารหนึ่งมื้อ ไปยังจุลินทรีย์ในลำไส้ แล้วกลับมาที่ก้าวเล็ก ๆ ที่ทำซ้ำได้ ห้อง A ของ RoutineX เรื่องพรีไบโอติก และแนวคิดสูตร G.U.S.+">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f5efe6">
+<link rel="preload" href="fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/absorb.css">
+<script>(function(d){d.className='js';setTimeout(function(){if(!d.classList.contains('ready')){d.classList.remove('js');d.dataset.wd='1'}},4500)})(document.documentElement)</script>
+</head>
+<body>
+
+<a class="skip" href="#ch1" data-skip>ข้ามฉากเปิด</a>
+<a class="skip skip--main" href="#story">ไปที่เนื้อหา</a>
+
+<header class="bar" role="banner">
+  <a class="bar__brand" href="#ch0" aria-label="RoutineX ห้อง A กลับต้นเรื่อง"><span class="bar__mark" aria-hidden="true"></span>RoutineX <b>· ห้อง A</b></a>
+  <div class="bar__tools">
+    <button class="chip" type="button" id="readToggle" aria-pressed="false">อ่านต่อเนื่อง</button>
+    <button class="chip chip--solid" type="button" id="srcOpen" aria-controls="sources" aria-expanded="false">แหล่งข้อมูล</button>
+  </div>
+</header>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="film" id="film"><video id="filmVideo" muted playsinline preload="none" poster="assets/ritual-poster.jpg" role="img" aria-label="ภาพประกอบ: ผงสีพีชกระจายตัวในแก้วน้ำใส ไม่ใช่การวัดจริงของความเร็วการละลายหรือสีเครื่องดื่ม"></video></div>
+<div class="veil" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="rail" aria-label="ตอนของเรื่อง" id="rail">
+  <ol>
+    <li><a href="#ch0" data-i="0"><span>มื้อนี้</span></a></li>
+    <li><a href="#ch1" data-i="1"><span>วันของคุณ</span></a></li>
+    <li><a href="#ch2" data-i="2"><span>คำถามใหม่</span></a></li>
+    <li><a href="#ch3" data-i="3"><span>คนละบทบาท</span></a></li>
+    <li><a href="#ch4" data-i="4"><span>สิ่งที่เกิดขึ้น</span></a></li>
+    <li><a href="#ch5" data-i="5"><span>แนวคิดสูตร</span></a></li>
+    <li><a href="#ch6" data-i="6"><span>ทำซ้ำง่าย</span></a></li>
+    <li><a href="#ch7" data-i="7"><span>เลือกให้ตรง</span></a></li>
+    <li><a href="#ch8" data-i="8"><span>ก้าวแรก</span></a></li>
+    <li><a href="#ch9" data-i="9"><span>ห้อง A</span></a></li>
+  </ol>
+  <div class="rail__bar" aria-hidden="true"><i id="railFill"></i></div>
+</nav>
+
+<main id="story" tabindex="-1">
+
+<!-- ═════ 0 · THE OTHER MEAL ═════ -->
+<section class="chapter" id="ch0" data-ch="0" style="--len:330" aria-labelledby="h0">
+  <div class="pin">
+    <div class="beat beat--hero" data-pos="l">
+      <h1 class="mega" id="h0"><span class="ln" style="--i:0">คุณ<wbr>กินอิ่ม<wbr>แล้ว</span></h1>
+      <p class="hint" aria-hidden="true"><i></i>เลื่อนลง ตามมื้อนี้ไป</p>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">แล้ว<wbr>จุลินทรีย์</span><span class="ln" style="--i:1">ในลำไส้ล่ะ?</span></h2>
+      <p class="lede">ในทุกมื้อ ยังมีอีกโลกที่ได้รับอาหารไปกับคุณ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 1 · RECOGNITION ═════ -->
+<section class="chapter" id="ch1" data-ch="1" style="--len:320" aria-labelledby="h1">
+  <div class="pin">
+    <div class="beat" data-pos="l">
+      <h2 class="big" id="h1"><span class="ln" style="--i:0">บางวัน</span><span class="ln" style="--i:1">มื้อก็รีบ</span><span class="ln" style="--i:2">ผักก็ไม่ถึง</span></h2>
+      <p class="lede">วันที่แน่น จนแทบไม่ได้เลือกมื้อของตัวเอง</p>
+    </div>
+    <div class="beat beat--stay" data-pos="l">
+      <h3 class="mid">วันของคุณใกล้กับแบบไหน?</h3>
+      <div class="lens" role="radiogroup" aria-label="วันของคุณใกล้กับแบบไหน">
+        <button type="button" role="radio" aria-checked="false" data-lens="1" data-out="เริ่มจากอาหารให้หลากหลาย แล้วดูว่าตัวช่วยแบบไหนทำต่อได้จริง"><b>มื้อรีบ ผักน้อย</b></button>
+        <button type="button" role="radio" aria-checked="false" data-lens="2" data-out="ดีเลย ลองดูต่อว่าใยอาหารกับพรีไบโอติกต่างกันตรงไหน"><b>กินผักอยู่แล้ว</b></button>
+        <button type="button" role="radio" aria-checked="false" data-lens="3" data-out="วิธีที่ดีสำหรับวันของคุณ ต้องทำซ้ำได้ด้วย"><b>อยากมีรูทีนง่าย ๆ</b></button>
+      </div>
+      <p class="lens__out" id="lensOut" aria-live="polite">เลือกเรื่องที่ใกล้กับคุณ หรือเลื่อนต่อได้เลย</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 2 · CHANGE THE QUESTION ═════ -->
+<section class="chapter" id="ch2" data-ch="2" style="--len:450" aria-labelledby="h2">
+  <div class="pin">
+    <div class="beat" data-pos="r">
+      <h2 class="big" id="h2"><span class="ln" style="--i:0">ส่วนใหญ่</span><span class="ln" style="--i:1">ถูกย่อยและ</span><span class="ln" style="--i:2">ดูดซึมไปก่อน</span></h2>
+      <p class="lede">แต่ใยอาหารบางชนิดผ่านไปได้ทั้งที่ยังไม่ถูกย่อย และเดินทางต่อ</p>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big q"><span class="ln" style="--i:0">สุขภาพลำไส้</span><span class="ln" style="--i:1">ไม่ได้มีแค่</span><span class="ln strike" style="--i:2"><s>วันนี้ถ่ายหรือยัง</s></span></h2>
+      <p class="lede">คำถามที่กว้างกว่า: <em>ใครอยู่ในนั้น และพวกเขากินอะไร?</em></p>
+    </div>
+    <div class="beat" data-pos="r">
+      <p class="kick">GUT MICROBIOME</p>
+      <h2 class="big"><span class="ln" style="--i:0">คุณไม่ได้</span><span class="ln" style="--i:1">อยู่ตัวคนเดียว</span></h2>
+      <p class="lede">ลำไส้ใหญ่เป็นบ้านของจุลินทรีย์จำนวนมหาศาล เรียกรวมกันว่า <b>ไมโครไบโอม</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 3 · PRO vs PRE ═════ -->
+<section class="chapter" id="ch3" data-ch="3" style="--len:450" aria-labelledby="h3">
+  <div class="pin">
+    <div class="beat" data-pos="l">
+      <h2 class="big" id="h3"><span class="ln" style="--i:0">คนละคำ</span><span class="ln" style="--i:1">คนละบทบาท</span></h2>
+      <dl class="pair">
+        <div><dt class="k-pro">โพรไบโอติก</dt><dd>จุลินทรีย์มีชีวิตที่ให้ประโยชน์ เมื่อได้รับในปริมาณที่เหมาะสม</dd></div>
+        <div><dt class="k-pre">พรีไบโอติก</dt><dd>อาหารที่จุลินทรีย์บางกลุ่มใช้ แล้วเกิดประโยชน์ต่อร่างกาย</dd></div>
+      </dl>
+      <details class="def">
+        <summary>คำนิยามอย่างเป็นทางการ</summary>
+        <p><b>พรีไบโอติก</b> ต้องถูกจุลินทรีย์ของร่างกายนำไปใช้อย่างเฉพาะเจาะจง และมีประโยชน์ต่อสุขภาพที่แสดงให้เห็นได้ ไม่ใช่แค่ถูกหมักได้ (ISAPP, 2017)</p>
+        <p><b>โพรไบโอติก</b> คือจุลินทรีย์ที่มีชีวิต ผลต่างกันไปตามชนิดและบริบท (NCCIH)</p>
+      </details>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">ใยอาหาร</span><span class="ln" style="--i:1">ทุกชนิด</span><span class="ln" style="--i:2">ไม่ได้เป็น</span><span class="ln" style="--i:3">พรีไบโอติก</span><span class="ln" style="--i:4">ทั้งหมด</span></h2>
+    </div>
+    <div class="beat beat--stay" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">อาหารหลากหลาย</span><span class="ln" style="--i:1">ยังเป็นจุดเริ่มต้น</span></h2>
+      <ul class="foods" aria-label="ตัวอย่างอาหารที่มีสารกลุ่มพรีไบโอติก">
+        <li>หัวหอม</li><li>กระเทียม</li><li>กล้วย</li><li>ธัญพืช</li><li>ถั่วบางชนิด</li><li>หน่อไม้ฝรั่ง</li>
+      </ul>
+      <p class="lede">อาหารที่หลากหลายให้ประโยชน์หลายด้าน พรีไบโอติกเป็นเพียงหนึ่งส่วนในนั้น</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 4 · SEE THE PROCESS ═════ -->
+<section class="chapter" id="ch4" data-ch="4" style="--len:480" aria-labelledby="h4">
+  <div class="pin">
+    <div class="beat" data-pos="r">
+      <h2 class="big" id="h4"><span class="ln" style="--i:0">เส้นใยบางส่วน</span><span class="ln" style="--i:1">ที่เราไม่ย่อย</span></h2>
+      <figure class="tract" aria-label="แผนผังทางเดินอาหารอย่างย่อ">
+        <svg viewBox="0 0 320 64" role="img" aria-label="กระเพาะ ลำไส้เล็ก ลำไส้ใหญ่">
+          <line x1="20" y1="32" x2="300" y2="32" class="tr-line"/>
+          <line x1="20" y1="32" x2="300" y2="32" class="tr-line tr-line--on" id="trOn" pathLength="1"/>
+          <circle cx="24" cy="32" r="6" class="tr-st"/><circle cx="130" cy="32" r="6" class="tr-st"/><circle cx="252" cy="32" r="6" class="tr-st tr-st--big"/>
+          <circle cx="24" cy="32" r="12" class="tr-dot" id="trDot"/>
+        </svg>
+        <figcaption><span>กระเพาะ</span><span>ลำไส้เล็ก<br><small>ดูดซึมสารอาหารส่วนใหญ่</small></span><span>ลำไส้ใหญ่<br><small>จุลินทรีย์อาศัยอยู่มาก</small></span></figcaption>
+      </figure>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">จุลินทรีย์</span><span class="ln" style="--i:1">ในลำไส้ใหญ่</span><span class="ln" style="--i:2">ใช้ประโยชน์</span></h2>
+      <p class="lede">พวกมันใช้ใยอาหารเหล่านี้เป็นแหล่งพลังงาน กระบวนการนี้เรียกว่า <b>การหมัก</b></p>
+    </div>
+    <div class="beat" data-pos="r">
+      <h2 class="big"><span class="ln" style="--i:0">เกิดสาร</span><span class="ln" style="--i:1">จากการหมัก</span></h2>
+      <p class="lede">เช่น <b>กรดไขมันสายสั้น (SCFAs)</b> อย่างอะซีเตต โพรพิโอเนต และบิวทิเรต</p>
+      <p class="tag"><i></i>ภาพอธิบายแนวคิด ไม่ใช่ภาพผลลัพธ์ของผลิตภัณฑ์</p>
+    </div>
+    <div class="beat" data-pos="c">
+      <h2 class="big"><span class="ln" style="--i:0">เรื่องของลำไส้</span><span class="ln" style="--i:1">จึงกว้างกว่าการขับถ่าย</span></h2>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 5 · WHY THIS FORMULA ═════ -->
+<section class="chapter" id="ch5" data-ch="5" style="--len:560" aria-labelledby="h5">
+  <div class="pin">
+    <div class="beat" data-pos="l">
+      <p class="kick">แนวคิดสูตรจาก HabiX</p>
+      <h2 class="big" id="h5"><span class="ln" style="--i:0">จากความเข้าใจนี้</span><span class="ln" style="--i:1">สู่แนวคิดของ</span><span class="ln accent" style="--i:2">G.U.S.+</span></h2>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">สามเส้นใย</span><span class="ln" style="--i:1">สามลักษณะ</span></h2>
+      <ol class="lanes">
+        <li style="--c:var(--gold)"><b>GOFOS™ (sc-FOS)</b><span>หมักเร็ว</span><i></i></li>
+        <li style="--c:var(--leaf)"><b>PHGG</b><span>ค่อยเป็นค่อยไป</span><i></i></li>
+        <li style="--c:var(--amber)"><b>Fibruline® (อินูลิน)</b><span>ปานกลางถึงช้า</span><i></i></li>
+      </ol>
+      <p class="tag"><i></i>ลักษณะการหมักตามคำอธิบายสูตรของแบรนด์</p>
+    </div>
+    <div class="beat" data-pos="r">
+      <h2 class="big"><span class="ln" style="--i:0">เป็นกีวีเหมือนกัน</span><span class="ln" style="--i:1">แต่เลือกมา</span><span class="ln" style="--i:2">คนละเหตุผล</span></h2>
+      <dl class="kiwis">
+        <div class="kiwis__g"><dt>กีวีทอง · มุมจุลินทรีย์</dt><dd>Livaux® ส่วนผสมจากผลไม้ทั้งลูก แบรนด์เล่าในมุมของจุลินทรีย์ในลำไส้</dd></div>
+        <div class="kiwis__v"><dt>กีวีเขียว · มุมการย่อย</dt><dd>Actazin® ส่วนผสมจากผลไม้ทั้งลูก แบรนด์เล่าในมุมการย่อยและการเคลื่อนไหวของลำไส้</dd></div>
+      </dl>
+      <p class="tag"><i></i><button type="button" class="linkbtn" data-src>อ่านที่มาของแนวคิดสูตร</button></p>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">เลือกสิ่งที่จะใส่</span><span class="ln" style="--i:1">คิดถึงสิ่งที่</span><span class="ln" style="--i:2">อยากดื่มต่อ</span></h2>
+      <p class="lede">ความหวานจาก Monk Fruit &amp; Stevia แบรนด์ระบุ No Maltodextrin</p>
+    </div>
+    <div class="beat beat--stay" data-pos="l">
+      <p class="kick">อ่านจากซองเอง</p>
+      <figure class="pack">
+        <img src="assets/gus-pack-reference.jpg" width="625" height="735" alt="ซอง G.U.S.+ รสพีช พร้อมซองเดี่ยว บนฉลากมีชื่อ Livaux, Actazin, Gofos, Fibruline, Bacillus coagulans, Monk Fruit และ Stevia, No Maltodextrin" loading="lazy" decoding="async">
+        <figcaption>
+          <p>ตามที่ปรากฏบนซอง: Livaux® · Actazin® · Gofos™ · Fibruline® · Bacillus coagulans · Monk Fruit &amp; Stevia · No Maltodextrin · Peach flavor</p>
+          <p>ปริมาณและรายละเอียด ให้ดูจากฉลากจริง</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 6 · EASY TO REPEAT ═════ -->
+<section class="chapter" id="ch6" data-ch="6" style="--len:470" aria-labelledby="h6">
+  <div class="pin">
+    <div class="beat" data-pos="l">
+      <h2 class="big" id="h6"><span class="ln" style="--i:0">จากเรื่องข้างใน</span><span class="ln" style="--i:1">สู่แก้วที่อยู่ใน</span><span class="ln accent" style="--i:2">วันของคุณ</span></h2>
+      <p class="lede">รสพีช</p>
+      <button type="button" class="chip film-replay" id="filmReplay" hidden>เล่นภาพอีกครั้ง</button>
+      <img class="flowonly" src="assets/ritual-poster.jpg" width="640" height="360" alt="ภาพประกอบ: ผงสีพีชกระจายตัวในแก้วน้ำใส เป็นภาพสไตล์ไลซ์ ไม่ใช่การวัดจริง" loading="lazy">
+    </div>
+    <div class="beat beat--stay" data-pos="l" data-film>
+      <ol class="steps">
+        <li><b>1</b>ฉีก 1 ซอง</li>
+        <li><b>2</b>ผสมน้ำ คนให้ละลาย</li>
+        <li><b>3</b>ดื่ม</li>
+      </ol>
+      <div class="water" role="radiogroup" aria-label="ปริมาณน้ำ">
+        <button type="button" role="radio" aria-checked="true" data-water="0"><b>150 มล.</b><span>1 ซอง + น้ำ</span></button>
+        <button type="button" role="radio" aria-checked="false" data-water="1"><b>250–300 มล.</b><span>รสอ่อนลง</span></button>
+      </div>
+      <p class="lede water__out" id="waterOut" aria-live="polite">ชงกับน้ำ 150 มล. • ชอบรสอ่อนลง ใช้น้ำ 250–300 มล.</p>
+      <details class="def">
+        <summary>วิธีชงและหมายเหตุ</summary>
+        <p>ตัวเลข 250–300 มล. คือปริมาณน้ำรวมทั้งหมด ไม่ใช่เติมเพิ่มจาก 150 มล.</p>
+        <p>บางคนชอบทำเป็นรูทีนช่วงค่ำ สื่อของแบรนด์ไม่ได้กำหนดเวลา เลือกช่วงที่ทำต่อได้ง่ายที่สุด</p>
+        <p>ภาพแก้วเป็นภาพประกอบ ไม่ใช่การทดลองความเร็วการละลายหรือสีเครื่องดื่มจริง</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 7 · CHOOSE WITH REASONS ═════ -->
+<section class="chapter" id="ch7" data-ch="7" style="--len:300" aria-labelledby="h7">
+  <div class="pin">
+    <div class="beat beat--stay" data-pos="l">
+      <h2 class="big small" id="h7"><span class="ln" style="--i:0">ก่อนเลือก</span><span class="ln" style="--i:1">ขอให้ตรงกับคุณ</span></h2>
+      <div class="qa" id="qa">
+        <div class="qa__i" data-for="2">
+          <button type="button" aria-expanded="false">กินผักอยู่แล้ว?</button>
+          <p hidden>ดีแล้ว อาหารจริงคือจุดเริ่มต้นที่ดีเสมอ ผักแต่ละชนิดมีใยอาหารไม่เหมือนกัน และไม่ใช่ทุกชนิดเป็นพรีไบโอติก ถ้าจานของคุณมีหอม กระเทียม กล้วย ถั่ว ธัญพืช อยู่เป็นประจำ คุณอาจไม่ต้องรีบหาอะไรเพิ่ม</p>
+        </div>
+        <div class="qa__i" data-for="1">
+          <button type="button" aria-expanded="false">กลัวรสชาติ?</button>
+          <p hidden>เป็นรสพีช และชงกับน้ำ 250–300 มล. ได้ถ้าอยากให้รสอ่อนลง และสอบถามเรื่องการลองชิมได้</p>
+        </div>
+        <div class="qa__i" data-for="3">
+          <button type="button" aria-expanded="false">ต่างจากที่เคยกินอย่างไร?</button>
+          <p hidden>อย่าดูจากชื่อสารเด่นตัวเดียว ลองอ่านรายการส่วนประกอบทั้งหมด ปริมาณ ชนิดของสารให้ความหวาน และความเหมาะกับร่างกายคุณเอง</p>
+        </div>
+        <div class="qa__i" data-for="0">
+          <button type="button" aria-expanded="false">ต้องกินทุกคนไหม?</button>
+          <p hidden>ไม่ต้อง ขึ้นอยู่กับอาหารและความต้องการของแต่ละคน หากมีโรคประจำตัวหรือกำลังรักษาอยู่ ควรปรึกษาแพทย์ก่อน</p>
+        </div>
+        <div class="qa__i" data-for="0">
+          <button type="button" aria-expanded="false">ราคาเท่าไร?</button>
+          <p hidden>ขอราคาปัจจุบัน จำนวนซอง และเงื่อนไขก่อนตัดสินใจ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 8 · FIRST STEP ═════ -->
+<section class="chapter" id="ch8" data-ch="8" style="--len:290" aria-labelledby="h8">
+  <div class="pin">
+    <div class="beat" data-pos="c">
+      <h2 class="big" id="h8"><span class="ln" style="--i:0">เริ่มด้วยข้อมูลที่ชัด</span><span class="ln" style="--i:1">และวิธีที่ทำต่อได้</span></h2>
+      <p class="lede" id="stepLine">เริ่มจากสิ่งที่เข้ากับมื้ออาหารและวันของคุณ แล้วค่อยสังเกตว่าทำต่อได้ไหม</p>
+    </div>
+    <div class="beat beat--stay" data-pos="c">
+      <div class="cta">
+        <a class="btn" id="ctaLine" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">ถามข้อมูลและราคา G.U.S.+<span aria-hidden="true">↗</span></a>
+        <button class="btn btn--ghost" type="button" id="srcOpen2" aria-controls="sources">ดูส่วนผสมและที่มาของข้อมูล</button>
+      </div>
+      <p class="fine">ช่องทางคือ LINE บ้าน myClover ไม่มีการสั่งซื้อบนหน้านี้</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ 9 · ROOM A ═════ -->
+<section class="chapter" id="ch9" data-ch="9" style="--len:250" aria-labelledby="h9">
+  <div class="pin">
+    <div class="beat beat--stay" data-pos="c">
+      <p class="kick">ROUTINEX</p>
+      <h2 class="big" id="h9"><span class="ln" style="--i:0">นี่คือห้อง A</span></h2>
+      <p class="lede">เริ่มจากการเข้าใจว่าอาหารเดินทางไปไหน ห้องต่อไปจะพาไปดูเรื่องอื่นของร่างกายและวันธรรมดา</p>
+      <ol class="rooms" aria-label="ห้องของ RoutineX">
+        <li class="on" aria-current="step"><b>A</b><span>Absorb</span><small>ห้องนี้</small></li>
+        <li style="opacity:1"><a class="roomlink" href="../build/" style="display:grid;justify-items:center;text-decoration:none;color:inherit"><b>B</b><span>Build</span><small>เข้าห้อง B →</small></a></li>
+        <li><b>C</b><span>Control</span><small>เร็ว ๆ นี้</small></li>
+        <li><b>D</b><span>—</span><small>เร็ว ๆ นี้</small></li>
+      </ol>
+      <p class="fine legal">ผลิตภัณฑ์เสริมอาหาร ไม่ใช่ยา • อ่านฉลากก่อนใช้ · “Absorb” เป็นชื่อห้องของโปรเจกต์ ไม่ใช่คำกล่าวอ้างว่าผลิตภัณฑ์ใดเพิ่มการดูดซึม</p>
+      <p class="fine"><a href="#ch0" class="again">กลับไปต้นเรื่อง ↑</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<aside id="sources" class="drawer" role="dialog" aria-modal="false" aria-labelledby="srcTitle" hidden>
+  <div class="drawer__in">
+    <div class="drawer__head">
+      <h2 id="srcTitle">ที่มาของข้อมูลในหน้านี้</h2>
+      <button type="button" class="chip" id="srcClose">ปิด</button>
+    </div>
+    <p>หน้านี้แยกข้อมูลเป็นสามแบบ เพื่อให้รู้ว่าอะไรคือความรู้ทั่วไป อะไรคือคำอธิบายของบริษัท และอะไรที่ยังไม่ยืนยัน</p>
+    <h3>ความรู้ทั่วไป · เอกสารสาธารณะ</h3>
+    <ul>
+      <li><a href="https://www.nature.com/articles/nrgastro.2017.75" target="_blank" rel="noopener noreferrer">ISAPP consensus statement on the definition and scope of prebiotics (2017)</a></li>
+      <li><a href="https://www.niddk.nih.gov/health-information/digestive-diseases/digestive-system-how-it-works" target="_blank" rel="noopener noreferrer">NIDDK · Your digestive system &amp; how it works</a></li>
+      <li><a href="https://www.nccih.nih.gov/health/probiotics-usefulness-and-safety" target="_blank" rel="noopener noreferrer">NCCIH · Probiotics: usefulness and safety</a></li>
+    </ul>
+    <h3>ข้อมูลจากบริษัท · ยังไม่ได้ตรวจอิสระ</h3>
+    <ul>
+      <li>รายชื่อส่วนผสมบนซอง: Livaux®, Actazin®, Gofos™, Fibruline®, Bacillus coagulans, Monk Fruit &amp; Stevia, No Maltodextrin, Peach flavor</li>
+      <li>วิธีรับประทาน: วันละ 1 ซอง ผสมน้ำ 150 มล. หรือชงกับน้ำ 250–300 มล. หากต้องการรสอ่อนลง</li>
+      <li>บทบาทของกีวีสองชนิดและ “สามลักษณะ” ของใยอาหาร เป็นแนวคิดการออกแบบสูตรตามที่บริษัทอธิบาย</li>
+    </ul>
+    <h3>ข้อจำกัดของข้อมูลสูตร</h3>
+    <ul>
+      <li>คำอธิบายกีวีสองชนิดเป็นเหตุผลของแบรนด์ในการเลือกวัตถุดิบ ไม่ได้แปลว่าสูตรสำเร็จรูปให้ผลเท่างานศึกษาของวัตถุดิบ</li>
+      <li>ลักษณะการหมัก เร็ว / ค่อยเป็นค่อยไป / ปานกลางถึงช้า เป็นคำอธิบายของแบรนด์ ไม่ใช่เวลาที่วัดจริงหรือตำแหน่งที่แน่นอนในลำไส้</li>
+      <li>Monk Fruit &amp; Stevia และ No Maltodextrin คือส่วนประกอบที่แบรนด์ระบุ ไม่ใช่คำกล่าวอ้างเรื่องน้ำตาลในเลือด</li>
+      <li>ปริมาณ 250–300 มล. คือน้ำรวมทั้งหมดสำหรับ 1 ซอง ภาพแก้วเป็นภาพประกอบ</li>
+      <li>งานศึกษาส่วนผสมกีวีกับจุลินทรีย์ในลำไส้ เช่น F. prausnitzii มีอยู่ (<a href="https://pubmed.ncbi.nlm.nih.gov/29152256/" target="_blank" rel="noopener noreferrer">PubMed 29152256</a>) แต่ชนิด ปริมาณ และกลุ่มผู้เข้าร่วมแตกต่างจากสูตร G.U.S.+ จึงใช้แทนผลการทดลองของผลิตภัณฑ์ไม่ได้</li>
+    </ul>
+    <h3>ตัวเลือก “วันของคุณ”</h3>
+    <p>ใช้ปรับตัวอย่างและข้อความสรุปในหน้านี้เท่านั้น ไม่ใช่การประเมินสุขภาพ ไม่ได้บอกว่าใครเป็นอะไร และไม่มีการบันทึกข้อมูลของคุณ</p>
+    <h3>ที่ยังไม่ใส่ในหน้านี้ เพราะยังไม่ยืนยัน</h3>
+    <ul>
+      <li>ปริมาณของส่วนผสมแต่ละชนิด (สื่อของแบรนด์ให้ตัวเลขไม่ตรงกัน จนกว่าจะเทียบกับฉลากจริง)</li>
+      <li>สายพันธุ์และจำนวน CFU ของ Bacillus coagulans</li>
+      <li>ราคาและเงื่อนไขการขายล่าสุด</li>
+      <li>งานวิจัยของสูตรสำเร็จรูป แยกจากงานของวัตถุดิบ</li>
+    </ul>
+    <p class="fine">ภาพในหน้านี้เป็นภาพประกอบเชิงแนวคิดที่สร้างด้วยโค้ด ไม่ใช่ภาพถ่ายหรือผลตรวจของใคร ภาพซองคือภาพอ้างอิงจากสื่อของแบรนด์</p>
+  </div>
+</aside>
+
+<noscript><p class="noscript">เนื้อหาทั้งหมดอ่านได้โดยไม่ต้องใช้ JavaScript แต่ฉากภาพเคลื่อนไหวต้องใช้ JavaScript และ WebGL</p></noscript>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
