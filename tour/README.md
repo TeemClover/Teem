@@ -32,7 +32,9 @@ Tapping one makes it float toward you and a panel offers its page.
 | Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova video and marketing studio on its own desk → `/airova/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
 | Outside | the big clover / finale button → `/meet/` |
 
-Gold cursor badges mark every pickable object in the current room. Opened objects keep a silver check badge, remain pickable, and retain their status in `mc:tour:opened:v1` local storage. Inspecting an object or opening its destination records it; storage denial falls back to memory. Badges stay about 30 CSS pixels across SD/HD and phone views. Solid surfaces receive a subtle gold/silver tint while image colours are preserved.
+Gold cursor badges mark every pickable object in the current room. Opened objects keep a silver check badge, remain pickable, and retain their status in `mc:tour:opened:v1` local storage. Inspecting an object or opening its destination records it; storage denial falls back to memory. Badges stay about 30 CSS pixels across SD/HD and phone views. The original object materials and image colours stay unchanged in both states.
+
+The paired living-room portraits reuse `/meet/img/teem.jpg` and `/meet/img/ako.jpg`, linking to `/resume/` and `/ako/`. The upstairs office includes a forest-green and cream glass display cabinet marked **Mediral · Partner Project**, linking to `/mediral/`. Its five product images reuse `/mediral/assets/`. `art/mediral-wordmark.svg` copies the original brand wordmark paths, adding explicit dimensions so WebGL can upload it. These textures load with the office and add no lights or animation.
 
 All destination links, including the inspect panel and fallback HTML, use a new tab with `noopener noreferrer`. In-page room navigation stays in the house. Arrows/checkmarks and link titles distinguish states without relying only on colour.
 

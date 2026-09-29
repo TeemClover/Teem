@@ -46,7 +46,7 @@ test('every pickable object has a unique id, a real link and a description', () 
 test('classroom computers open lessons and the Dungeon; the project room includes the Airova studio', () => {
   const cls = html.split('data-scene="classroom"')[1].split('</section>')[0], office = html.split('data-scene="office"')[1].split('</section>')[0];
   for (const href of ['/classroom/free-ai.html', '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/dungeon/']) assert.ok(cls.includes(`href="${href}"`), href);
-  for (const href of ['/xvisor/', '/teambook/', '/resume/', '/airova/', '/showcase/house/']) assert.ok(office.includes(`href="${href}"`), href);
+  for (const href of ['/xvisor/', '/teambook/', '/resume/', '/airova/', '/showcase/house/', '/mediral/']) assert.ok(office.includes(`href="${href}"`), href);
   assert.doesNotMatch(html, /ไม่มีอะไรขาย/);
 });
 
@@ -68,4 +68,10 @@ test('all configured house art resolves, including the instructor and current pr
     assert.ok(await exists('/tour/art/' + name), name);
   }
   for (const slot of ['course-poster', 'screen-resume', 'screen-xvisor', 'screen-airova']) assert.ok(slots[slot]);
+  const {ART} = await import('../../tour/house.js');
+  for (const [slot, path] of [['teem-portrait', '/meet/img/teem.jpg'], ['ako-portrait', '/meet/img/ako.jpg']]) {
+    assert.equal(slots[slot], undefined, 'Meet portraits must not be replaced by generated art');
+    assert.equal(ART[slot].fallback, path);
+    assert.ok(await exists(path));
+  }
 });
