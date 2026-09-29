@@ -435,7 +435,10 @@ test('page HTML and route responses declare noindex, and dev/reference files do 
   assert.ok(config.headers.some(r => r.source === '/mediral/'
     && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
   'The directory entry needs an explicit rule: production did not apply the wildcard header there');
-  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js', '/mediral/ac/', '/mediral/cl/index.html', '/mediral/data/details.json']) {
+  assert.ok(config.headers.some(r => r.source === '/mediral/:page(cl|ac|br|su|po)/'
+    && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
+  'Product directory pages need the same explicit rule as the entry');
+  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js', '/mediral/cl/index.html', '/mediral/data/details.json']) {
     const values = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
       .filter(h => h.key.toLowerCase() === 'x-robots-tag').map(h => h.value.toLowerCase().split(/[\s,]+/));
     assert.ok(values.some(v => v.includes('noindex')), `${pathname} needs X-Robots-Tag noindex`);

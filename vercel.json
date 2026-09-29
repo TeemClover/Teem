@@ -450,6 +450,10 @@
       "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}]
     },
     {
+      "source": "/mediral/:page(cl|ac|br|su|po)/",
+      "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}]
+    },
+    {
       "source": "/mediral/:path*",
       "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}]
     },
