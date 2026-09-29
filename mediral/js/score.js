@@ -273,13 +273,15 @@ export function score({tall, W, H}) {
   // The swap happens only while the foam's dense centre covers the whole word.
   const cover = (sweep.from + sweep.to) / 2;
   set('cl.word1', [[1.56, {dy: 3, o: 0}], [1.68, {}], [cover - 0.02, {}], [cover - 0.019, {o: 0}, 'step']]);
-  set('cl.word2', [[cover - 0.02, {o: 0}], [cover - 0.019, {}, 'step'], [2.86, {}], [3.0, {dy: -5, o: 0}]]);
-  set('cl.foot', beat(2.36, 2.86, {dy: 2}, {dy: 2}));
+  // Finish “ออก” before naming the botanicals and product: each text gets its own reading hold.
+  const namesAt = 2.5;
+  set('cl.word2', [[cover - 0.02, {o: 0}], [cover - 0.019, {}, 'step'], [2.4, {}], [namesAt, {dy: -3, o: 0}]]);
+  set('cl.foot', beat(namesAt, 2.86, {dy: 2}, {dy: 2}));
   for (let i = 0; i < 3; i++) {
     const side = i === 1 ? 1 : -1;
     set(`cl.botanical${i}`, [[2.1 + i * .025, {dx: side * 12, dy: 5, s: .85, o: 0}], [2.4 + i * .025, {}, 'out'], [2.78, {}], [3.1, {dx: side * 24, dy: -4, o: 0}, 'in']]);
   }
-  set('cl.botanical-label', beat(2.35, 2.86, {dy: 1.5}, {dy: -1.5}));
+  set('cl.botanical-label', beat(namesAt, 2.86, {dy: 1.5}, {dy: -1.5}));
   set('cl.bubbles', [[1.1, {o: 0}], [1.4, {}], [2.9, {dy: -6}], [3.2, {dy: -12, o: 0}]]);
   // The bottle stays whole; at the end it recedes up and back, out of the ring's opening.
   set('cl.pack', [[1.28, {}], [2.9, {}], [3.18, {dy: tall ? -25 : -18, dx: tall ? -18 : -24, s: 0.46}], [3.52, {dy: tall ? -32 : -24, dx: tall ? -26 : -32, s: 0.3}]]);

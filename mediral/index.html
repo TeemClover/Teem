@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th" class="mr-boot">
+<html lang="th" class="mr-flow mr-boot">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -12,9 +12,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="mediral.css">
-  <!-- Reduced motion and short screens read the story in normal flow from the first paint. -->
-  <script>if(matchMedia('(prefers-reduced-motion: reduce), (max-height: 520px)').matches)document.documentElement.classList.add('mr-flow')</script>
-  <script type="module" src="js/main.js"></script>
+  <!-- The static page is readable without JavaScript. Motion releases its first-paint gate only
+       after the controller has posed the opening (or restored the requested chapter). -->
+  <script>
+    (() => {
+      const root = document.documentElement;
+      if (!matchMedia('(prefers-reduced-motion: reduce), (max-height: 520px)').matches) root.classList.remove('mr-flow');
+      let timer;
+      const cleanup = () => { clearTimeout(timer); removeEventListener('error', moduleError, true); };
+      const startup = window.__mediralStartup = {
+        pending: true, fallback: false,
+        ready() {
+          if (!this.pending) return;
+          this.pending = false;
+          cleanup();
+          root.classList.remove('mr-boot');
+        },
+        fail() {
+          if (!this.pending) return;
+          this.pending = false;
+          this.fallback = true;
+          cleanup();
+          root.classList.add('mr-flow', 'mr-nodata');
+          root.classList.remove('mr-boot', 'mr-js');
+        }
+      };
+      function moduleError(event) { if (event.target?.id === 'mediral-module') startup.fail(); }
+      addEventListener('error', moduleError, true);
+      timer = setTimeout(() => startup.fail(), 8000);
+    })();
+  </script>
+  <script id="mediral-module" type="module" src="js/main.js"></script>
 </head>
 <body data-step="routine">
   <a class="mr-skip" href="#main">ข้ามไปเนื้อหา</a>

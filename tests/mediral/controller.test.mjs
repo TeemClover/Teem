@@ -16,17 +16,19 @@ const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.st
   .replace(/import \{([^}]*)\} from '\.\/score\.js';/, 'const {$1} = globalThis.scoreModule;')
   .replace("import('./lab-film.js')", 'globalThis.loadFilmModule()');
 const routine = JSON.parse(readFileSync(new URL('../../mediral/data/routine.json', import.meta.url), 'utf8'));
+const startupSource = readFileSync(new URL('../../mediral/index.html', import.meta.url), 'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const FLOW = '(prefers-reduced-motion: reduce), (max-height: 520px)';
 const TALL = '(max-aspect-ratio: 1/1)';
 const from = id => CHAPTERS.find(c => c.id === id).from;
 
 async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026-09-28T05:00:00Z', clipboardFails = false, readyState = 'complete',
-  pendingFonts = false, flow = false, showOffer = false, affiliate = false, profile = true, line = true, cinemaFails = false, filmFactory} = {}) {
+  pendingFonts = false, pendingData = false, fetchFails = false, flow = false, showOffer = false, affiliate = false, profile = true, line = true, cinemaFails = false, filmFactory} = {}) {
   const listeners = new Map(), windowListeners = new Map(), timers = new Map(), slots = new Map(), inserted = [];
   const errors = [];
-  let now = Date.parse(clock), context, timerId = 0, H = 800, setShift = 0, resolveFonts;
+  let now = Date.parse(clock), context, timerId = 0, H = 800, setShift = 0, resolveFonts, resolveData;
   const fontReady = pendingFonts ? new Promise(resolve => { resolveFonts = resolve; }) : Promise.resolve();
+  const dataReady = pendingData ? new Promise(resolve => { resolveData = resolve; }) : Promise.resolve();
   const addWindowListener = (name, handler, options = {}) => {
     if (!windowListeners.has(name)) windowListeners.set(name, []);
     windowListeners.get(name).push({handler, once: options.once});
@@ -53,6 +55,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     append(...children) { this.children.push(...children); }
     prepend(...children) { this.children.unshift(...children); }
     remove() { this.removed = true; }
+    addEventListener() {}
     focus() { document.activeElement = this; }
     select() { this.selected = true; }
     closest(selector) { return selector === '[data-piece]' && this.value ? this : selector === '[data-action]' && this.dataset.action ? this : null; }
@@ -61,6 +64,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     getBoundingClientRect() { return {top: 0, bottom: 0}; }
   }
   const root = new Element('html');
+  root.classList.add('mr-flow', 'mr-boot');
   // The story track: one marker per chapter, placed where its first composed hold begins.
   const section = new Element('section');
   section.id = 'story';
@@ -122,7 +126,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '[data-piece]') return pieces;
       if (selector === '[data-row]') return rows;
       if (selector === '[data-rail]') return rails;
-      if (selector === '[data-action="copy"]') return actions;
+      if (selector === '[data-action="copy"]' || selector === '[data-action]') return actions;
       if (selector === '[data-slot="line-link"]') return [slots.get('line-link')];
       if (selector === '[data-lab-film][data-film-step]') return films;
       return [];
@@ -134,14 +138,14 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     return m;
   };
   const medias = new Map();
-  const cinemas = [];
+  const cinemas = [], poses = [];
   // Stand-in engine: T comes from the section position, exactly as the real one computes it.
   const cinemaModule = {createCinema({section: s}) {
     if (cinemaFails) throw new Error('no cinema');
     const c = {measures: 0, flows: [], state: {T: 0, flow: false, layout: {H}},
       measure() { c.measures++; c.state.layout = {H}; },
       time() { return Math.min(END, Math.max(0, -s.getBoundingClientRect().top / c.state.layout.H)); },
-      render() { if (!c.state.flow) c.state.T = c.time(); return c.state.T; },
+      render() { if (!c.state.flow) c.state.T = c.time(); poses.push({T: c.state.T, gated: root.classList.contains('mr-boot'), scrollY: context.scrollY}); return c.state.T; },
       setFlow(value) { c.flows.push(value); c.state.flow = value; if (!value) c.measure(); },
       chapterAt(T = c.state.T) { let index = -1; CHAPTERS.forEach((ch, i) => { if (T >= ch.from) index = i; }); return index; },
       placeFlowMarks() { c.placed = (c.placed || 0) + 1; }};
@@ -160,7 +164,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     getComputedStyle: el => ({scrollMarginTop: el.scrollMarginTop || '0px'}),
     addEventListener: addWindowListener, removeEventListener: removeWindowListener,
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
-    fetch: async () => ({ok: true, json: async () => data}),
+    fetch: async () => { await dataReady; if (fetchFails) throw new Error('routine unavailable'); return {ok: true, json: async () => data}; },
     loadFilmModule: async () => ({initLabFilm: filmFactory}),
     cinemaModule, scoreModule, letterModule,
   });
@@ -168,9 +172,10 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   let frameId = 0;
   context.window = {requestIdleCallback() {}, scrollTo: ({top}) => { context.scrollY = top; },
     requestAnimationFrame(fn) { animationFrames.set(++frameId, fn); return frameId; }, cancelAnimationFrame(id) { animationFrames.delete(id); }};
+  vm.runInContext(startupSource, context, {filename: 'mediral/index.html startup'});
   vm.runInContext(source, context, {filename: 'mediral/js/main.js'});
   await tick();
-  assert.deepEqual(errors, [], 'The controller must boot before its behavior is tested');
+  if (!fetchFails) assert.deepEqual(errors, [], 'The controller must boot before its behavior is tested');
   const run = code => vm.runInContext(code, context);
   const fire = (name, target) => { for (const handler of listeners.get(name) || []) handler({target}); };
   const flushTimers = async delay => {
@@ -178,7 +183,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     for (const [id, timer] of [...timers]) if (timer.delay === delay) { timers.delete(id); timer.fn(); }
     await tick();
   };
-  return {run, slots, pieces, actions, rails, root, marks, set, timers, document, context, animationFrames, inserted, cinemas, medias, film, films, view, section, sectionListeners,
+  return {run, slots, pieces, actions, rails, root, marks, set, timers, document, context, animationFrames, inserted, cinemas, poses, errors, medias, film, films, view, section, sectionListeners,
     get cinema() { return cinemas[0]; },
     change(id, checked) { const box = pieces.find(p => p.value === id); box.checked = checked; fire('change', box); },
     restore() { const button = new Element('button'); button.dataset.action = 'select-all'; fire('click', button); },
@@ -196,9 +201,69 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     initialLinkListeners() { return ['wheel', 'touchstart', 'pointerdown', 'keydown', 'load', 'hashchange', 'pagehide'].reduce((count, name) => count + (windowListeners.get(name) || []).filter(e => /cleanup|onLoad/.test(String(e.handler)) || e.handler.name === 'cleanup' || e.handler.name === 'onLoad').length, 0); },
     flushImmediateTimers: () => flushTimers(0),
     flushResize: () => flushTimers(120),
+    flushStartup: () => flushTimers(8000),
+    async releaseData() { resolveData?.(); await tick(); },
     get H() { return H; },
   };
 }
+
+/* ---------- first paint: one static opening until the initial cinematic pose exists ---------- */
+test('delayed data keeps the startup gate until the first pose, without waiting for fonts or images', async () => {
+  const ui = await fixture({pendingData: true, pendingFonts: true, readyState: 'interactive'});
+  assert.ok(ui.root.classList.contains('mr-boot'));
+  assert.equal(ui.cinemas.length, 0);
+  await ui.releaseData();
+  assert.ok(ui.poses[0]?.gated, 'The initial cinema render occurs behind the gate');
+  assert.ok(!ui.root.classList.contains('mr-boot'));
+  assert.equal(ui.context.window.__mediralStartup.pending, false);
+  assert.equal([...ui.timers.values()].filter(t => t.delay === 8000).length, 0);
+});
+
+for (const hash of ['#step-AC', '#set']) {
+  test(`a direct ${hash} link is posed before the startup gate is removed`, async () => {
+    const ui = await fixture({url: `https://www.myclover.com/mediral/${hash}`, pendingData: true});
+    await ui.releaseData();
+    assert.ok(ui.poses.some(pose => pose.gated && pose.scrollY > 0), 'The restored position is rendered before release');
+    assert.equal(ui.document.body.dataset.step, hash === '#set' ? 'set' : 'AC');
+    assert.ok(!ui.root.classList.contains('mr-boot'));
+  });
+}
+
+test('data rejection releases the gate into static flow with no inactive order controls', async () => {
+  const ui = await fixture({fetchFails: true});
+  assert.equal(ui.errors.length, 1);
+  assert.ok(ui.root.classList.contains('mr-flow'));
+  assert.ok(ui.root.classList.contains('mr-nodata'));
+  assert.ok(!ui.root.classList.contains('mr-boot'));
+  assert.ok(ui.actions.every(action => action.disabled));
+  assert.equal(ui.context.window.__mediralStartup.fallback, true);
+});
+
+for (const failure of ['watchdog', 'module-error']) {
+  test(`${failure} falls back and a late response never repins or restores an old chapter`, async () => {
+    const ui = await fixture({pendingData: true, url: 'https://www.myclover.com/mediral/#step-AC'});
+    if (failure === 'watchdog') await ui.flushStartup();
+    else ui.windowEvent('error', {target: {id: 'mediral-module'}});
+    assert.ok(ui.root.classList.contains('mr-flow'));
+    assert.ok(ui.root.classList.contains('mr-nodata'));
+    assert.ok(!ui.root.classList.contains('mr-boot'));
+    ui.context.scrollY = 1200;
+    await ui.releaseData();
+    assert.equal(ui.context.scrollY, 1200);
+    assert.equal(ui.cinemas.length, 0);
+    assert.equal(ui.inserted.length, 0, 'Late content does not shift the static page');
+  });
+}
+
+test('a late rejected request after static fallback does not insert a new alert or shift the reader', async () => {
+  const ui = await fixture({pendingData: true, fetchFails: true});
+  await ui.flushStartup();
+  ui.context.scrollY = 1200;
+  await ui.releaseData();
+  assert.equal(ui.context.scrollY, 1200);
+  assert.equal(ui.errors.length, 0, 'Fallback already handled this load failure');
+  assert.equal(ui.inserted.length, 0);
+});
 
 /* ---------- commerce: nothing pretends checkout exists ---------- */
 test('the poster offer stays hidden while the data does not allow it, and schedules no refresh', async () => {
@@ -512,6 +577,8 @@ test('a failing cinema leaves the readable flow and working commerce, not the da
   const ui = await fixture({cinemaFails: true});
   assert.ok(ui.root.classList.contains('mr-flow'));
   assert.ok(!ui.root.classList.contains('mr-nodata'));
+  assert.ok(!ui.root.classList.contains('mr-boot'));
+  assert.equal(ui.context.window.__mediralStartup.pending, false);
   assert.ok(ui.actions.every(button => !button.disabled));
   ui.scroll(1200);
   assert.equal(ui.document.body.dataset.chapter, 'page');

@@ -20,8 +20,8 @@ const slot = name => $(`[data-slot="${name}"]`);
 const base = new URL('../', import.meta.url);
 const asset = path => new URL(path, base).href;
 
-root.classList.remove('mr-boot');
-root.classList.add('mr-js');
+const startup = window.__mediralStartup;
+if (!startup?.fallback) root.classList.add('mr-js');
 
 const state = {data: null, selection: new Set(), u: -1, active: null, chapter: null, film: null, films: new Map(), cinema: null, letter: null};
 window.__mediral = state; // read-only QA hook
@@ -468,9 +468,15 @@ function resolveHash(hash) {
 
 /* ---------- boot ---------- */
 async function boot() {
+  // A timed-out or failed module leaves the static flow in charge. A late response must not
+  // repin the page or restore an old hash after the reader has already started using it.
+  if (startup?.fallback) return;
   const res = await fetch(new URL('data/routine.json', base), {cache: 'no-cache'});
+  if (startup?.fallback) return;
   if (!res.ok) throw new Error(`routine.json ${res.status}`);
-  state.data = await res.json();
+  const data = await res.json();
+  if (startup?.fallback) return;
+  state.data = data;
   state.selection = new Set(state.data.steps.map(s => s.id));
   const page = productPageFor(location.hash);
   if (page) { location.replace(page); return; }
@@ -566,12 +572,19 @@ async function boot() {
   addEventListener('scroll', requestScroll, {passive: true});
   addEventListener('resize', requestScroll);
   onScroll();
+  // The entire initial pose is now written, including a direct chapter/order link.
+  startup?.ready();
+  root.classList.remove('mr-boot');
   (window.requestIdleCallback || (fn => setTimeout(fn, 200)))(bootFilm);
 }
 
 function bootFailed(err) {
+  // Once the watchdog has handed over to static flow, a late failed request must not insert
+  // an alert above the content the reader is already using.
+  if (startup?.fallback) return;
   console.error('[mediral] boot failed', err);
-  root.classList.remove('mr-js');
+  startup?.fail();
+  root.classList.remove('mr-js', 'mr-boot');
   root.classList.add('mr-flow', 'mr-nodata');
   const note = document.createElement('div');
   note.className = 'mr-alert';

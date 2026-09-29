@@ -75,7 +75,7 @@ main{position:relative;z-index:1}
 .mr-alert{position:relative;z-index:5;margin:100px var(--gutter) 30px;padding:20px;background:var(--warn-bg);font-size:13px}
 .mr-alert p{margin:0 0 10px}
 .mr-noscript{position:relative;z-index:5;background:var(--ivory);padding:25px var(--gutter)}
-.mr-nodata [data-slot=offer],.mr-nodata [data-slot=pieces],.mr-nodata [data-slot=summary]{display:none}
+.mr-nodata .mr-order__message,.mr-nodata [data-slot=offer],.mr-nodata [data-slot=pieces],.mr-nodata [data-slot=summary]{display:none}
 @media(max-width:1100px){:root{--gutter:30px;--header-h:64px;--visual-top:106px}
 .mr-header{padding-inline:24px}
 .mr-rail{left:50%;right:auto;top:69px;transform:translateX(-50%);flex-direction:row;gap:5px}
@@ -130,6 +130,11 @@ main{position:relative;z-index:1}
 .mr-shot,.mr-shot__cam,.mr-shot__bg{position:absolute;inset:0}
 .mr-shot{overflow:hidden;overflow:clip}
 [data-layer]{transform-origin:50% 50%}
+/* First paint is a composed opening, not every future scene at its unposed CSS home.
+   Visibility keeps geometry measurable. The controller releases mr-boot only after its first pose. */
+.mr-boot:not(.mr-flow) .mr-cinema [data-layer]{visibility:hidden}
+.mr-boot:not(.mr-flow) .mr-cinema :is([data-layer="hero"],[data-layer="hero.bg"],[data-layer="hero.kicker"],[data-layer="hero.promise"],[data-layer="hero.BR"],[data-layer="hero.AC"],[data-layer="hero.SU"],[data-layer="hero.CL"],[data-layer="hero.PO"],[data-layer="hero.cta"]){visibility:visible}
+
 .mr-art,.mr-actor,.mr-slot,.mr-plane,.mr-bubbles{position:absolute;margin:0}
 .mr-art img{width:100%;height:100%;object-fit:contain}
 /* Art boxes have their own aspect, so a home is measurable before its picture has loaded. */
@@ -220,7 +225,7 @@ main{position:relative;z-index:1}
 .mr-shot--cl{clip-path:polygon(0 calc((var(--edge,-12) + var(--tilt,0)) * 1%),100% calc((var(--edge,-12) - var(--tilt,0)) * 1%),100% 100%,0 100%);color:var(--forest-deep)}
 .mr-shot--cl .mr-shot__bg{background:radial-gradient(110% 70% at 50% 34%,#fdfcf7 0%,#f1f4ea 52%,#dde7da 100%)}
 .mr-cl__title{position:absolute;inset:0;margin:0;pointer-events:none}
-.mr-cl__word{--y:20svh;top:calc(var(--y) - .62em);font:700 min(15vw,8.4svh)/1.2 var(--sans);letter-spacing:-.04em}
+.mr-cl__word{--y:20svh;top:calc(var(--y) - .62em);font:700 min(14vw,8.4svh)/1.2 var(--sans);letter-spacing:-.04em;white-space:nowrap}
 [data-layer^=cl].mr-actor--cl{--x:50%;--base:83svh;--h:49svh}
 .mr-shot--cl .mr-actor::after{background:radial-gradient(closest-side,rgba(40,70,60,.22),rgba(40,70,60,0))}
 .mr-cl__botanical{width:29vw;filter:drop-shadow(0 12px 15px rgba(42,76,47,.13))}
