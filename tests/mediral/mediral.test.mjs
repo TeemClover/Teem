@@ -377,7 +377,7 @@ test('internal manifests and unsoftened drafts stay out of git', () => {
   }
 });
 
-test('every referenced image is a real local WebP, except the authorized original screenshot', () => {
+test('referenced images use WebP, except the original screenshot and outlined brand SVG', () => {
   const entry = join(site, 'index.html');
   const refs = imageRefs(routine());
   for (const t of tags(html(), 'img')) refs.push({reference: t.src || t['data-src'], pointer: 'HTML img'});
@@ -386,6 +386,12 @@ test('every referenced image is a real local WebP, except the authorized origina
     const path = localReference(reference, entry);
     assert.ok(path?.startsWith(`${site}${sep}`), `${pointer}: expected a local Mediral image`);
     assertFile(path, pointer);
+    if (path === join(site, 'assets/brand/mediral-wordmark.svg')) {
+      const svg = read(path);
+      assert.match(svg, /<svg[^>]+viewBox=/);
+      assert.ok(!/<(?:image|script|foreignObject|text)\b/.test(svg), 'Official logo contains only outlined geometry');
+      continue;
+    }
     assert.equal(extname(path), '.webp', `${relative(root, path)} should be WebP`);
     assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP');
   }
