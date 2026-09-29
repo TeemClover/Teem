@@ -33,7 +33,9 @@ test('AC, BR and SU render independent deferred films with a shared silent-media
 
 test('the UV concept is visibly attributed without inventing test results or hiding its note with the video', () => {
   const html = markup('SU');
-  assert.match(html, /<p class="mr-chapter-film__caption">ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า<\/p>/);
+  assert.match(html, /<p class="mr-chapter-film__caption">[\s\S]*ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า<\/small><\/p>/);
+  assert.match(html, /สารกรองแสงดูดซับ UV/);
+  assert.match(html, /ไม่ใช่สีผิวที่เปลี่ยนไป/);
   assert.match(html, /mr-chapter-film__comparison"><span>ยังไม่ทา<\/span><span>ทาแล้ว<\/span>/, 'The reviewed left/right orientation stays explicit');
   assert.ok(html.indexOf('mr-chapter-film__caption') > html.indexOf('</video>'));
   assert.doesNotMatch(html.match(/<div class="mr-art mr-chapter-film[^>]*>/)[0], /aria-hidden/);

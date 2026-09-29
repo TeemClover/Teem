@@ -81,7 +81,7 @@ function filmMarkup(id, asset, film = FILMS[id]) {
     <div class="mr-fx__clip" id="${esc(film.id || FILMS[id].id)}" data-lab-film data-film-step="${id}" data-film-ready="true"><div class="mr-fx__clipframe" data-film-frame>
       <img data-src="${asset(film.poster)}" alt="" decoding="async">
       <video data-film-video data-src="${asset(film.src)}" data-src-small="${asset(film.small)}" poster="${asset(film.poster)}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
-    </div>${id === 'SU' ? '<div class="mr-chapter-film__comparison"><span>ยังไม่ทา</span><span>ทาแล้ว</span></div>' : ''}</div>${id === 'SU' ? '<p class="mr-chapter-film__caption">ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า</p>' : ''}
+    </div>${id === 'SU' ? '<div class="mr-chapter-film__comparison"><span>ยังไม่ทา</span><span>ทาแล้ว</span></div>' : ''}</div>${id === 'SU' ? '<p class="mr-chapter-film__caption"><strong>สารกรองแสงดูดซับ UV<br>จึงเห็นบริเวณที่ทาเป็นสีดำในกล้อง</strong><span>ไม่ใช่สีผิวที่เปลี่ยนไป</span><small>ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า</small></p>' : ''}
   </div>`;
 }
 
@@ -376,7 +376,7 @@ export function score({tall, W, H}) {
     return frames;
   };
   set('su.w1', sideways(9.85, 10.3));
-  set('su.w2', sideways(10.38, 10.83));
+  set('su.w2', sideways(tall ? 10.46 : 10.38, 10.83));
   set('su.w3', sideways(10.91, 11.36));
   set('su.foot', beat(11.36, 11.65, {dy: 2}, {dy: 2}));
 

@@ -154,8 +154,8 @@ test('scroll-selling beats use attributed roles and only names present in the pr
 
 // The finished-copy table this release was written from (private copy review, 2026-09-29).
 const HEADLINES = {
-  CL: [['ล้างวันนี้', 'ออกอย่างอ่อนโยน'], 'ฟองมูสนุ่ม ล้างคราบมันและเครื่องสำอาง ไม่แห้งตึง', 'คราบมันและเครื่องสำอาง ติดผิวมาทั้งวัน?'],
-  AC: [['ซึมไว', 'ไม่เหนอะหนะ'], 'เซรั่มบางเบา สำหรับผิวที่เป็นสิวง่าย', 'สิวขึ้นง่าย แต่ไม่อยากเหนอะหนะ'],
+  CL: [['ล้างวันนี้', 'ออกอย่างอ่อนโยน'], 'ฟองมูสนุ่ม ล้างคราบมันและเครื่องสำอาง ไม่แห้งตึง', 'คราบมัน ติดผิวมาทั้งวัน'],
+  AC: [['ซึมไว', 'ไม่เหนอะหนะ'], 'เซรั่มบางเบา สำหรับผิวที่เป็นสิวง่าย', 'หน้าสะอาด\nพร้อมรับอาหารผิว'],
   BR: [['ลดเลือน', 'ความหมองคล้ำ'], 'เนื้อบางเบา เกลี่ยง่าย', 'ผิวดูหมอง ไม่สดใส?'],
   SU: [['กันแดด', 'เนื้อเซรั่ม'], 'เกลี่ยง่าย เบาสบายผิว', 'มองไม่เห็น UV ไม่ได้แปลว่าผิวไม่เจอ'],
   PO: [['ปกปิดรอย', 'ไม่หนักหน้า'], 'เกลี่ยง่าย · Mediral ระบุว่าไม่อุดตัน', 'อยากปกปิด แต่กลัวแป้งอุดตัน?'],
@@ -176,7 +176,7 @@ test('each chapter says its problem, then a short promise and only necessary sup
 
 test('benefit waves lead with the benefit and name only catalogued ingredients, pairing each role correctly', () => {
   const expected = {
-    AC: [['สบายผิว', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมน้ำให้ผิว', 'ac-hydrate']],
+    AC: [['เซรั่มสบายผิว', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมน้ำให้ผิว', 'ac-hydrate']],
     BR: [['ลดเลือนความหมองคล้ำ', 'br-even'], ['สมดุลผิว', 'br-balance'], ['ผิวดูเรียบเนียน', 'br-balance']],
     SU: [['สารกรอง UV', 'su-filters'], ['เติมความชุ่มชื้น', 'su-hydrate'], ['สีผิวดูสม่ำเสมอ', 'su-giga']],
     PO: [['เนื้อละเอียด', 'po-powder-oil'], ['คงความชุ่มชื้น', 'po-hydrate']],
