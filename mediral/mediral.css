@@ -15,15 +15,16 @@ p{margin-top:0}
 .mr-skip{position:absolute;left:-999px;top:8px;z-index:50;background:var(--forest);color:white;padding:8px 14px}
 .mr-skip:focus{left:12px}
 .mr-header{position:fixed;inset:0 0 auto;z-index:30;height:var(--header-h);padding:0 var(--gutter);display:flex;align-items:center;gap:20px;background:rgba(244,244,236,.94);border-bottom:1px solid rgba(25,53,40,.08);backdrop-filter:blur(14px)}
-.mr-brand{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-right:auto;text-decoration:none;flex:none}
+.mr-brand{display:flex;align-items:center;gap:12px;margin-right:auto;text-decoration:none;flex:none}
 .mr-brand__logos{display:flex;align-items:center;gap:12px}
 .mr-brand__house{display:flex;align-items:center;gap:7px;font:600 14px var(--display);white-space:nowrap}
 .mr-brand__house img{width:30px;height:33px;object-fit:contain}
 .mr-brand__sep{opacity:.5;font:400 16px/1 var(--sans)}
-/* Show only the original brand wordmark inside the supplied artwork; preserve its pixels. */
-.mr-brand__mediral{position:relative;display:block;width:106px;aspect-ratio:250/92;overflow:hidden;mix-blend-mode:multiply}
-.mr-brand__mediral img{position:absolute;width:256%;max-width:none;height:auto;left:-81.6%;top:-36.9565%}
-.mr-brand__partner{font:500 9px/1.3 var(--display);letter-spacing:.12em;color:inherit;opacity:.76}
+/* Isolate the original Mediral glyphs: crop the subtitle, remove light artwork pixels at render time. */
+.mr-brand__mediral{position:relative;display:block;width:106px;aspect-ratio:250/72;overflow:hidden}
+.mr-brand__mediral img{position:absolute;width:256%;max-width:none;height:auto;left:-81.6%;top:-41.6667%;filter:url(#mediral-wordmark-ink)}
+.mr-brand__filter{position:absolute;overflow:hidden;pointer-events:none}
+.mr-brand__partner{font:500 9px/1.45 var(--display);letter-spacing:.03em;color:inherit;opacity:.76;border-left:1px solid currentColor;padding-left:10px;white-space:nowrap}
 .mr-btn{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:10px 22px;border:1px solid var(--forest-deep);border-radius:2px;background:var(--forest-deep);color:var(--ivory);font:500 13px/1.5 var(--sans);text-decoration:none;cursor:pointer;transition:background .2s,transform .2s}
 .mr-btn:hover{background:#315b3e;transform:translateY(-2px)}
 .mr-btn--ghost{background:transparent;color:var(--forest-deep);border-color:var(--line)}
@@ -85,13 +86,15 @@ main{position:relative;z-index:1}
 .mr-reading-chapter{scroll-margin-top:106px}}
 @media(max-width:700px){:root{--gutter:22px;--header-h:58px;--visual-top:96px;--mobile-art-h:34svh}
 .mr-header{padding-inline:17px;gap:10px}
-.mr-brand{gap:2px}
-.mr-brand__logos{gap:7px}
-.mr-brand__house{font-size:11px;gap:5px}
-.mr-brand__house img{width:22px;height:24px}
-.mr-brand__mediral{width:78px}
+.mr-brand{gap:7px}
+.mr-brand__logos{gap:5px}
+.mr-brand__house{font-size:10px;gap:4px}
+.mr-brand__house img{width:20px;height:22px}
+.mr-brand__mediral{width:66px}
 .mr-brand__sep{font-size:12px}
-.mr-brand__partner{font-size:8px;letter-spacing:.09em}
+.mr-brand__partner{font-size:8px;letter-spacing:0;padding-left:7px;white-space:normal}
+.mr-brand__partner span{display:block}
+@media(max-width:360px){.mr-header{padding-inline:12px;gap:6px}.mr-header .mr-btn{padding-inline:7px;font-size:9px}.mr-brand__house span{font-size:9px}.mr-brand__logos{gap:4px}.mr-brand__mediral{width:61px}}
 .mr-header .mr-btn{min-height:32px;padding:5px 10px;font-size:10px;gap:6px}
 .mr-rail{top:61px}
 .mr-rail a{min-height:26px}
@@ -354,7 +357,7 @@ main{position:relative;z-index:1}
 .mr-rg__carry{margin:0 0 12px;font:500 clamp(13px,1.5vw,17px)/1.5 var(--sans)}
 
 /* Header and rail follow the chapter on screen. */
-body:is([data-chapter=AC],[data-chapter=PO]) .mr-brand__mediral{mix-blend-mode:screen;filter:grayscale(1) invert(1)}
+body:is([data-chapter=AC],[data-chapter=PO]) .mr-brand__mediral{filter:brightness(0) invert(1)}
 body:is([data-chapter=AC],[data-chapter=PO]) .mr-header{background:rgba(15,42,28,.78);border-color:transparent;color:var(--ivory)}
 /* Keyboard focus and rail labels stay visible on the dark chapters. */
 body:is([data-chapter=AC],[data-chapter=PO]) :is(.mr-header,.mr-rail) :focus-visible{outline-color:var(--chartreuse)}
@@ -524,10 +527,18 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 .mr-trust__shot img{width:100%;height:auto}
 .mr-trust__caption{margin:0;font-size:11px;line-height:1.6;color:var(--ink-soft)}
 .mr-trust__caption span{text-decoration:underline;text-underline-offset:3px}
-.mr-trust__experience{margin:10px 0 0;padding:18px 20px;background:#fff;border-left:3px solid var(--gold);max-width:400px}
-.mr-trust__experience p{margin:0 0 8px;font:600 clamp(17px,1.8vw,20px)/1.55 var(--sans);color:var(--forest-deep)}
-.mr-trust__experience footer{font-size:12px;color:var(--ink)}
-.mr-trust__experience small{display:block;font-size:11px;color:var(--ink-soft)}
+.mr-trust__experience{position:relative;isolation:isolate;margin:0;padding:30px 27px 24px;background:radial-gradient(ellipse at 100% 0,rgba(202,224,169,.52),transparent 58%),#fffdf4;border:1px solid #d7dfc8;border-radius:24px 24px 28px 8px;box-shadow:0 16px 36px -26px rgba(22,58,40,.45);max-width:440px;color:var(--forest-deep)}
+.mr-trust__experience:before{content:'';position:absolute;inset:7px;border:1px solid rgba(121,151,88,.18);border-radius:18px 18px 22px 4px;pointer-events:none;z-index:-1}
+.mr-trust__clover{position:absolute;right:19px;top:17px;width:52px;color:#58853b;transform:rotate(13deg)}
+.mr-trust__clover svg{display:block;width:100%;height:auto}
+.mr-trust__experience .mr-trust__eyebrow{padding-right:52px;margin:0 0 14px;font:500 10px/1.6 var(--sans);letter-spacing:.03em;color:#587048}
+.mr-trust__experience h3{font:600 clamp(28px,3.3vw,38px)/1.3 var(--sans);letter-spacing:-.04em;margin:0 0 13px;padding-right:20px}
+.mr-trust__experience .mr-trust__lead{margin:0 0 20px;font:600 17px/1.7 var(--sans);text-wrap:pretty}
+.mr-trust__story p{margin:0 0 14px;font:400 14px/1.95 var(--sans);color:#3d5138;text-wrap:pretty}
+.mr-trust__experience .mr-trust__wish{margin:22px 0 20px;padding-top:16px;border-top:1px dashed #b9c8a5;font:500 13px/1.8 var(--sans);color:#476d36}
+.mr-trust__experience footer{font:600 12px/1.7 var(--sans);color:var(--forest-deep)}
+.mr-trust__experience small{display:block;margin-top:5px;font:400 10px/1.7 var(--sans);color:var(--ink-soft)}
+.mr-trust__chat-title{margin:12px 0 0}
 /* In-page links to the order land below the fixed header, like every reading chapter. */
 .mr-order{scroll-margin-top:calc(var(--header-h) + 28px)}
 .mr-order .mr-h2{margin-bottom:12px}

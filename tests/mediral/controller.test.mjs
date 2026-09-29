@@ -299,7 +299,7 @@ test('the real exchange is the unchanged screenshot, with Teem’s own experienc
   assert.ok(trust.includes(routine.exchange.messages[0].text) && trust.includes(routine.exchange.messages[1].text), 'The alt text quotes both messages exactly');
   assert.match(trust, /น้องงทีม/, 'The original spelling is kept');
   const experience = trust.slice(trust.indexOf('mr-trust__experience'));
-  assert.match(experience, /หลังได้ลองใช้ ผมรู้สึกว่าสิวดีขึ้น/);
+  assert.match(experience, /เริ่มจากชอบกลิ่นตอนล้างหน้า จนแฟนหยิบไปลองด้วย/);
   assert.match(experience, /ประสบการณ์ใช้ส่วนตัวของ Teem ผลของแต่ละคนแตกต่างกัน/);
   assert.doesNotMatch(experience, /[“”"]หลังได้ลองใช้/, 'A personal account, not presented as a verbatim quote');
   assert.doesNotMatch(trust, /เซรั่มขวดขาว|AC|รักษา|หายขาด/, 'Not tied to a product, never a cure');

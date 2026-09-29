@@ -109,14 +109,24 @@ function renderTrust() {
   const shot = exchange.screenshot;
   const [first, reply] = exchange.messages;
   const said = `${first.text} — ${reply.text}`;
-  target.innerHTML = `<figcaption class="mr-trust__intro" id="trust-title">${esc(exchange.intro)}</figcaption>
+  const story = exchange.experience;
+  const clover = `<svg viewBox="0 0 80 88" fill="none" aria-hidden="true"><path d="M40 40C32 58 40 73 56 82" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><g fill="currentColor"><path id="review-leaf" d="M40 40C26 31 18 19 26 12C32 7 38 11 40 17C42 11 49 7 54 12C62 20 54 32 40 40Z"/><use href="#review-leaf" transform="rotate(90 40 40)"/><use href="#review-leaf" transform="rotate(180 40 40)"/><use href="#review-leaf" transform="rotate(270 40 40)"/></g></svg>`;
+  target.innerHTML = `<figcaption class="mr-trust__intro" id="trust-title">ประสบการณ์ใช้เองของ Teem</figcaption>
+    <article class="mr-trust__experience" aria-labelledby="experience-title">
+      <div class="mr-trust__clover">${clover}</div>
+      <p class="mr-trust__eyebrow">${esc(story.eyebrow)}</p>
+      <h3 id="experience-title">${esc(story.heading)}</h3>
+      <p class="mr-trust__lead">${esc(story.text)}</p>
+      <div class="mr-trust__story">${story.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</div>
+      <p class="mr-trust__wish"><span aria-hidden="true">🍀</span> ${esc(story.wish)}</p>
+      <footer>${esc(story.credit)} <small>${esc(story.note)}</small></footer>
+    </article>
+    <p class="mr-trust__intro mr-trust__chat-title">${esc(exchange.intro)}</p>
     <a class="mr-trust__shot" href="${asset(shot.src)}" target="_blank" rel="noopener">
       <img src="${asset(shot.src)}" width="${shot.width}" height="${shot.height}" loading="lazy" decoding="async"
         alt="${esc(`ภาพแชตจริง: Teem ส่งข้อความว่า “${first.text}” และเจ้าของ Mediral ตอบว่า “${reply.text}”`)}">
     </a>
     <p class="mr-trust__caption">${esc(shot.caption)} · <span>เปิดดูภาพเต็ม</span></p>
-    <blockquote class="mr-trust__experience"><p>${esc(exchange.experience.text)}</p>
-      <footer>— ${esc(exchange.experience.credit)} <small>${esc(exchange.experience.note)}</small></footer></blockquote>
     <p class="mr-sr">${esc(said)}</p>`;
 }
 

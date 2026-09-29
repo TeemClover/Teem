@@ -258,7 +258,7 @@ test('the real exchange is the authorized screenshot, unchanged, with exact quot
   assert.equal(exchange.screenshot.src, SCREENSHOT.path);
   const bytes = readFileSync(join(site, SCREENSHOT.path));
   assert.equal(createHash('sha256').update(bytes).digest('hex'), SCREENSHOT.sha256, 'The evidence file is the original, byte for byte');
-  assert.equal(exchange.experience.text, 'หลังได้ลองใช้ ผมรู้สึกว่าสิวดีขึ้น');
+  assert.equal(exchange.experience.text, 'เริ่มจากชอบกลิ่นตอนล้างหน้า จนแฟนหยิบไปลองด้วย');
   assert.equal(exchange.experience.note, 'ประสบการณ์ใช้ส่วนตัวของ Teem ผลของแต่ละคนแตกต่างกัน');
   assert.equal(exchange.experience.verbatim, false);
   assert.doesNotMatch(JSON.stringify(exchange), /หมอ|แพทย์|ผู้ก่อตั้ง|โรงงาน|ห้องแล็บ|รักษา|หายขาด/, 'No credential, cure or process claim');
@@ -354,6 +354,10 @@ test('experience imagery ships as consumed final WebP only, and every stylesheet
   }
   const used = new Set();
   for (const {ref, owner} of refs) {
+    if (ref.startsWith('#')) {
+      assert.ok(html().includes(`id="${ref.slice(1)}"`), `${ref} resolves to an inline SVG definition`);
+      continue;
+    }
     const path = localReference(ref, owner);
     assertFile(path, ref);
     if (extname(path) === '.webp') assert.equal(readFileSync(path).toString('ascii', 8, 12), 'WEBP', `${ref} is WebP`);
