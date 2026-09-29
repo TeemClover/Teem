@@ -67,3 +67,17 @@ Optional PostgreSQL-engine test uses PGlite installed outside the repo: `PGLITE_
 `npm run dev:mediral-commerce` starts `http://127.0.0.1:4183/mediral/admin/`. Login `LOCAL-DEMO` is **only implemented in the loopback test fixture**, not in the deployable API. All records, quotes, messages and slips in that demo are synthetic and disappear on restart. No LINE or EasySlip requests are made. Fixtures and this guide are excluded from Vercel's public assets.
 
 Official integration references: https://developers.line.biz/en/docs/messaging-api/receiving-messages/ · https://developers.line.biz/en/reference/messaging-api/ · https://document.easyslip.com/en/v2/verify/bank/ · https://vercel.com/docs/functions/runtimes/node-js
+
+## Shared myClover OA — 2026-09-30 update
+
+Verified in the logged-in OA Manager: บ้าน myClover 🍀, basic ID `@140xlsju`, Messaging API enabled, webhook URL empty, webhook switch off, Chat on, greeting on, manual chat during configured hours and auto-response outside hours. No setting has been changed. Review existing greeting/out-of-hours messages before activation to avoid duplicate replies.
+
+`MEDIRAL_SHARED_OA=1` enables the house router. It supports Mediral checkout, an AI Sauce information/human-handoff route, a neutral house menu, multiple coarse interests per customer and explicit topic-specific news preferences. It is **rule-based routing, not an LLM chat integration**. No bulk sending endpoint or automatic campaign scheduler is added.
+
+People can say “คุยเรื่อง AI” / “คุยเรื่อง Mediral” without losing an unfinished Mediral checkout. Recipient data is not scanned for marketing intent. News subscriptions require “รับข่าวดูแลผิว”, “รับข่าว AI” or “รับข่าวของใช้ในบ้าน”; “หยุดข่าวทั้งหมด” works even during handoff. Unfollow clears news subscriptions. These are internal CRM preferences; they do not create LINE OA Manager chat tags. LINE's Messaging API cannot create chat-tag audiences directly (https://developers.line.biz/en/docs/messaging-api/using-audience/).
+
+Next sales principle: source-specific entry messages, current conversation context, an optional customer-selected interest, and explicit handoff when ambiguous. A generic friend-add event does not reveal the ad or exact product that brought someone here. Add tracked source codes only when supported by an explicit entry link/action; do not infer provenance from generic follows.
+
+Before enabling follow replies, choose a single greeting source (OA Manager or bot). Keep the existing greeting until bot connection is verified. Do not issue credentials, replace webhook or activate broadcasts as part of this read-only OA inspection.
+
+Future AI scope: understand product questions, retrieve approved product facts, suggest an appropriate next step and draft targeted campaigns. Keep funds, stock and price controlled by the order engine. Campaigns should be previewed by segment and require an explicit send action, respect opt-outs, cap frequency, deduplicate against order messages and measure replies/clicks/orders rather than assuming broadcasts are read. No such campaign was sent in this task.

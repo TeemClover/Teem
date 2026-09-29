@@ -1,6 +1,7 @@
 import {createHash} from 'node:crypto';
 import {BANK,Fault,clean,hmac,same,reducer,quote,inspectSlip,paymentMessage,lineText,amount} from './domain.js';
 import {dispatch} from './providers.js';
+import {houseReducer} from './house.js';
 const COOKIE='__Host-mediral-admin';
 function cookieToken(env,now){const expires=String(now+4*3600000);return `${expires}.${hmac('mediral-admin:'+expires,env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'')}`;}
 function authenticated(req,env,now){const value=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='))?.slice(COOKIE.length+1)||'';const [expires]=value.split('.');return /^\d{13}$/.test(expires)&&+expires>now&&+expires<=now+4*3600000&&same(value,cookieToken(env,+expires-4*3600000));}
@@ -33,7 +34,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
       if(await store.event(event.webhookEventId))continue;
       if(event.timestamp<(c.state.lastEventAt||0)||event.timestamp<clock()-24*3600000){await store.commit(c,{state:c.state,eventId:event.webhookEventId},clock());continue;}
       const order=c.state.orderId?await store.order(c.state.orderId):null;
-      let result=reducer(c.state,event,order,{now:clock()});result.state.lastEventAt=event.timestamp;
+      let result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock()});result.state.lastEventAt=event.timestamp;
       if(await store.limited('user:'+user,40,60000,clock())){result={state:c.state,order:null,messages:[]};}
       if(result.verifyImage){
        const o=result.order;let checked={ok:false,reason:'PROVIDER_UNAVAILABLE'};
