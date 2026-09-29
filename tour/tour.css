@@ -133,6 +133,11 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
 .items{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px;padding:0}
 .items a{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px;font-weight:600;text-decoration:none;color:var(--ink);transition:transform .2s,border-color .2s,box-shadow .2s}
 .items a:hover,.items a:focus-visible{transform:translateY(-2px);border-color:var(--clover);box-shadow:0 6px 16px rgba(46,158,91,.18);outline:none}
+/* Match room badges; arrows/checkmarks also distinguish the states without colour. */
+[data-item]::after{content:"↗";display:inline-grid;place-items:center;flex:none;width:22px;height:22px;margin-left:5px;border-radius:50%;background:linear-gradient(135deg,#fff0b0,#e7ad32);border:1px solid #8c651e;color:#3a301b;font:800 13px/1 var(--font)}
+[data-item][data-opened="true"]::after{content:"✓";background:linear-gradient(135deg,#fff,#aab8c9);border-color:#65758a;color:#26332f}
+.items a{border-color:#c69b42;background:#fffbef}
+.items a[data-opened="true"]{border-color:#98a6b7;background:#f0f3f7}
 
 /* inspect panel: an object you picked up */
 .inspect{position:fixed;z-index:22;right:24px;bottom:24px;width:min(360px,calc(100vw - 32px));padding:20px 20px 18px;border-radius:22px;

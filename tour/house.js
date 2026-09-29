@@ -32,6 +32,7 @@ export const ART = {
   'table-map': {fallback: '/frontdoor/art/underpaper-valley-mobile.webp', aspect: 4 / 3},
   'course-poster': {fallback: '/img/classroom-hero.jpg', aspect: 3 / 2},
   'teambook-cover': {fallback: '', aspect: 11 / 8},
+  'screen-airova': {fallback: '/tour/art/screen-airova-cinema.webp', aspect: 16 / 9},
   'screen-resume': {fallback: '/img/og-resume.jpg', aspect: 16 / 9},
   'screen-xvisor': {fallback: '/xvisor/xvisor-intro-hero.webp', aspect: 16 / 9},
   'dungeon-screen': {fallback: '/tour/art/dungeon-screen.webp', aspect: 16 / 10},
@@ -41,7 +42,7 @@ export const ART = {
  * image later never recompiles a shader mid-scroll (a recompile is a visible hitch in HD) */
 const blank = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1); blank.needsUpdate = true;
 
-export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) {
+export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set(), art = new Map()}) {
   const root = new THREE.Group();
   const out = {root, hotspots: [], collectibles: new Map(), tickers: [], lights: [], screens: [], smoke: [], steam: [], lazy: new Map(), music: null};
   let area = 'outside'; // which room is being built: pictures load per room, as the visitor gets near
@@ -640,37 +641,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
     // A dedicated studio desk; its editor is a single static texture, with no video decoder or extra light.
     rb(g, [1.95, 0.07, 1.15], [2.25, 0.75, -1.2], wood('#a8744a'), null, 0.02);
     for (const dx of [1.4, 3.1]) rb(g, [0.07, 0.75, 0.95], [dx, 0, -1.2], M('#2f3a35', {metalness: 0.4}), null, 0.01);
-    const studioScreen = canvasMat(1024, 576, c => {
-      c.fillStyle = '#101716'; c.fillRect(0, 0, 1024, 576);
-      c.fillStyle = '#c5f36b'; c.font = `800 44px ${FONT}`; c.fillText('AIROVA STUDIO', 32, 62);
-      c.fillStyle = '#e7eee5'; c.font = `600 23px ${FONT}`; c.fillText('VIDEO + MARKETING', 682, 57);
-      const gr = c.createLinearGradient(32, 102, 650, 370);
-      gr.addColorStop(0, '#345e58'); gr.addColorStop(0.55, '#929965'); gr.addColorStop(1, '#dca182');
-      c.fillStyle = gr; c.fillRect(32, 98, 616, 274);
-      // A product film preview, a play button and campaign cards make this a recognisable editing station.
-      c.fillStyle = '#203d34'; c.beginPath(); c.ellipse(340, 320, 150, 24, 0, 0, Math.PI * 2); c.fill();
-      c.fillStyle = '#f8e7bf'; c.beginPath(); c.roundRect(292, 166, 96, 145, 18); c.fill();
-      c.fillStyle = '#233b30'; c.fillRect(313, 146, 54, 28); c.fillRect(312, 212, 56, 48);
-      c.fillStyle = '#ffffff'; c.beginPath(); c.moveTo(332, 221); c.lineTo(332, 251); c.lineTo(354, 236); c.closePath(); c.fill();
-      c.fillStyle = '#e7eee5'; c.font = `700 24px ${FONT}`; c.fillText('CAMPAIGN', 682, 128);
-      ['VIDEO', 'SOCIAL', 'ADS'].forEach((name, i) => {
-        c.fillStyle = '#26352c'; c.fillRect(682, 150 + i * 72, 310, 56);
-        c.fillStyle = ['#c5f36b', '#80d7ce', '#e9aa90'][i]; c.fillRect(698, 166 + i * 72, 24, 24);
-        c.fillStyle = '#e7eee5'; c.font = `600 23px ${FONT}`; c.fillText(name, 741, 190 + i * 72);
-      });
-      for (let row = 0; row < 3; row++) {
-        c.fillStyle = '#26352c'; c.fillRect(32, 404 + row * 46, 960, 32);
-        for (let clip = 0; clip < 4; clip++) {
-          c.fillStyle = ['#c5f36b', '#80d7ce', '#e9aa90'][row];
-          c.fillRect(42 + clip * 235 + row * 12, 410 + row * 46, 175 - row * 20, 20);
-        }
-      }
-      c.fillStyle = '#ffffff'; c.fillRect(410, 394, 3, 150);
-    }, 0.65);
     const screens = [
       {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.55, ry: 0.12},
       {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: 0.55, ry: -0.12},
-      {id: 'airova', mat: studioScreen, tag: 'AIROVA STUDIO', col: '#c5f36b', x: 2.25, z: -1.45, ry: -0.18},
+      {id: 'airova', mat: artMat('screen-airova', true, '#223'), tag: 'AIROVA · GEN VIDEO', col: '#c5f36b', x: 2.25, z: -1.45, ry: -0.18},
     ];
     for (const s_ of screens) {
       const mon = group(g, s_.x, 0.82, s_.z ?? BW + 0.45); mon.rotation.y = s_.ry;
@@ -759,24 +733,55 @@ export function buildHouse({renderer, hd, tex, found, mobile, art = new Map()}) 
   }
 
   /* ---------- hint beacons above every interactive object ---------- */
-  const beaconTex = tex.canvasTex(128, 128, (c) => {
-    const g = c.createRadialGradient(64, 64, 0, 64, 64, 64); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.25, 'rgba(255,240,180,.9)'); g.addColorStop(0.5, 'rgba(255,220,120,.25)'); g.addColorStop(1, 'rgba(255,220,120,0)');
-    c.fillStyle = g; c.fillRect(0, 0, 128, 128); c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineWidth = 5; c.beginPath(); c.arc(64, 64, 40, 0, 7); c.stroke();
+  const badge = seen => tex.canvasTex(128, 128, c => {
+    const gr = c.createLinearGradient(20, 14, 104, 112);
+    gr.addColorStop(0, seen ? '#ffffff' : '#fff0b0');
+    gr.addColorStop(0.45, seen ? '#cbd5e1' : '#f5c451');
+    gr.addColorStop(1, seen ? '#8999ad' : '#b57912');
+    c.shadowColor = '#14281d'; c.shadowBlur = 8; c.shadowOffsetY = 3;
+    c.fillStyle = gr; c.strokeStyle = '#493815'; c.lineWidth = 6;
+    c.beginPath(); c.arc(64, 58, 45, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.shadowBlur = 0; c.shadowOffsetY = 0;
+    c.fillStyle = seen ? '#aab8c9' : '#e7ad32';
+    c.beginPath(); c.moveTo(53, 102); c.lineTo(64, 118); c.lineTo(75, 102); c.fill();
+    c.strokeStyle = '#26332f'; c.fillStyle = '#26332f'; c.lineWidth = 8; c.lineCap = 'round'; c.lineJoin = 'round';
+    c.beginPath();
+    if (seen) { c.moveTo(43, 58); c.lineTo(58, 73); c.lineTo(85, 43); c.stroke(); }
+    else { c.moveTo(49, 33); c.lineTo(49, 80); c.lineTo(62, 66); c.lineTo(75, 85); c.lineTo(84, 78); c.lineTo(70, 59); c.lineTo(90, 55); c.closePath(); c.fill(); }
   });
+  const goldBadge = badge(false), silverBadge = badge(true);
   const box3 = new THREE.Box3(), v = new THREE.Vector3();
   root.updateMatrixWorld(true);
   const hitMat = new THREE.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false});
   for (const h of out.hotspots) {
     h.invParent = h.root.parent.getWorldQuaternion(new THREE.Quaternion()).invert(); // "toward the camera" in the parent's frame
     if (h.id === 'meet') continue;
+    // Tint only solid surfaces; retain the colours of all screen/book artwork.
+    const accents = new Map();
+    h.root.traverse(o => {
+      if (!o.isMesh) return;
+      const tint = m => {
+        if (!m.emissive || m.map || m.transparent) return m;
+        if (!accents.has(m)) accents.set(m, {mat: m.clone(), base: m.emissive.clone()});
+        return accents.get(m).mat;
+      };
+      o.material = Array.isArray(o.material) ? o.material.map(tint) : tint(o.material);
+    });
     box3.setFromObject(h.root); box3.getCenter(v);
     // invisible, slightly larger tap area: flat things (a notebook, a map, cards) are tiny on a phone
     const size = box3.getSize(new THREE.Vector3()), hit = new THREE.Mesh(new THREE.BoxGeometry(Math.max(size.x, 0.2) + 0.12, Math.max(size.y, 0.14) + 0.12, Math.max(size.z, 0.2) + 0.12), hitMat);
     hit.position.copy(h.root.worldToLocal(v.clone())); hit.quaternion.copy(h.root.getWorldQuaternion(new THREE.Quaternion()).invert());
     hit.scale.divide(h.root.getWorldScale(new THREE.Vector3())); hit.userData.item = h.id; h.root.add(hit);
-    const s = new THREE.Sprite(new THREE.SpriteMaterial({map: beaconTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0}));
-    s.position.set(v.x, box3.max.y + 0.22, v.z); s.scale.setScalar(0.28); s.renderOrder = 10; s.userData.item = h.id;
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({map: goldBadge, transparent: true, depthWrite: false, depthTest: false, opacity: 0}));
+    s.position.set(v.x, box3.max.y + 0.28, v.z); s.scale.setScalar(0.28); s.renderOrder = 10; s.userData.item = h.id;
     root.add(s); h.beacon = s;
+    h.setOpened = seen => {
+      h.opened = seen;
+      s.material.map = seen ? silverBadge : goldBadge;
+      const tint = new THREE.Color(seen ? '#cbd5e1' : '#ffcc45').multiplyScalar(0.18);
+      for (const {mat, base} of accents.values()) mat.emissive.copy(base).add(tint);
+    };
+    h.setOpened(opened.has(h.id));
   }
   out.batchedMeshes = batchStaticSiblings(root);
   return out;

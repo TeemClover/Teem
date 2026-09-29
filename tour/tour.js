@@ -86,7 +86,7 @@ function showTip(text, x, y, ms = 0) {
 }
 function hideTip() { const tip = $('#tip'); if (tip) tip.hidden = true; }
 
-const scene3d = {collect: null, hint: null, pick: null, drop: null, glow: null}; // filled once WebGL is up
+const scene3d = {collect: null, hint: null, pick: null, drop: null, glow: null, visit: null}; // filled once WebGL is up
 function collect(id, fromScene) {
   if (!CLOVER_ROOMS.includes(id) || found.has(id)) return;
   found.add(id); store.set(STORE_KEY, JSON.stringify([...found])); renderCount(true);
@@ -120,9 +120,44 @@ song?.addEventListener('pause', () => paintMusic(false));
 /* ---------- inspect panel: "picking up" an object ---------- */
 const itemLink = id => $(`[data-item="${id}"]`);
 const sceneOfItem = id => itemLink(id)?.closest('[data-scene]')?.dataset.scene;
+const OPENED_KEY = 'mc:tour:opened:v1';
+const opened = new Set();
+function readOpened(raw) {
+  try { const ids = JSON.parse(raw); return Array.isArray(ids) ? ids.filter(id => typeof id === 'string' && itemLink(id)) : []; } catch { return []; }
+}
+for (const id of readOpened(store.get(OPENED_KEY, '[]'))) opened.add(id);
+function paintOpened(id) {
+  const a = itemLink(id); if (!a) return;
+  const seen = opened.has(id);
+  a.dataset.opened = String(seen);
+  a.title = seen ? 'เคยเปิดแล้ว · เปิดซ้ำในแท็บใหม่' : 'ยังไม่เคยเปิด · เปิดในแท็บใหม่';
+  scene3d.visit?.(id, seen);
+}
+function markOpened(id) {
+  if (!itemLink(id) || opened.has(id)) return;
+  // Merge other tabs' progress before writing; denied storage still works for this visit.
+  for (const saved of readOpened(store.get(OPENED_KEY, '[]'))) opened.add(saved);
+  opened.add(id); store.set(OPENED_KEY, JSON.stringify([...opened]));
+  for (const a of $$('[data-item]')) paintOpened(a.dataset.item);
+}
+for (const a of $$('[data-item]')) paintOpened(a.dataset.item);
+addEventListener('storage', e => {
+  if (e.key !== OPENED_KEY) return;
+  opened.clear(); for (const id of readOpened(e.newValue)) opened.add(id);
+  for (const a of $$('[data-item]')) paintOpened(a.dataset.item);
+});
+for (const a of $$('a[target="_blank"]')) {
+  const visit = e => {
+    if (e.type === 'auxclick' && e.button !== 1) return;
+    if (a.id === 'inspect-go') { if (inspecting) markOpened(inspecting); }
+    else for (const item of $$('[data-item]')) if (item.getAttribute('href') === a.getAttribute('href')) markOpened(item.dataset.item);
+  };
+  a.addEventListener('click', visit); a.addEventListener('auxclick', visit);
+}
 let inspecting = null;
 function openInspect(id) {
   const a = itemLink(id); if (!a) return;
+  markOpened(id);
   const panel = $('#inspect');
   $('#inspect-room').textContent = a.closest('section')?.querySelector('.eyebrow')?.textContent.replace(/^\d+\s*/, '') || 'บ้าน myClover';
   $('#inspect-title').textContent = a.textContent.replace('→', '').trim();
@@ -264,7 +299,7 @@ async function boot() {
     sun.shadow.mapSize.set(hd && !mobile ? 2048 : 1024, hd && !mobile ? 2048 : 1024);
     sun.shadow.map?.dispose(); sun.shadow.map = null;
     tex = makeTextures(renderer, hd);
-    house = buildHouse({renderer, hd, tex, found, mobile, art});
+    house = buildHouse({renderer, hd, tex, found, mobile, opened, art});
     scene.add(house.root);
     loadedRooms.clear();
     if (hd) {
@@ -479,6 +514,7 @@ async function boot() {
   scene3d.pick = id => { const h = hotById(id); if (h) h.picked = true; };
   scene3d.drop = id => { const h = hotById(id); if (h) h.picked = false; };
   scene3d.glow = (id, on) => { if (on) glowing.add(id); else glowing.delete(id); };
+  scene3d.visit = (id, seen) => hotById(id)?.setOpened?.(seen);
 
   for (const b of $$('[data-quality]')) b.addEventListener('click', () => {
     if (building || b.dataset.quality === quality) return;
@@ -583,10 +619,12 @@ async function boot() {
       h.root.rotation.y = h.rot.y + (h.picked && !still ? Math.sin(t * 1.5) * 0.18 : 0);
       if (h.beacon) {
         const here = inReach(h.id) ? 1 : 0;
-        const near = clamp(1 - Math.hypot(h.beacon.position.x - camLook.x, (h.beacon.position.y - camLook.y) * 1.6) / 5.5) * inside * here; // this room, this floor
-        const want = h.picked ? 0 : near * (hov ? 1 : 0.85);
+        const want = h.picked ? 0 : inside * here; // all items in this room stay equally legible
         h.beacon.material.opacity = lerp(h.beacon.material.opacity, want, 1 - Math.exp(-dt * 6));
-        h.beacon.scale.setScalar((hov ? 0.36 : 0.26) * (1 + (still ? 0 : Math.sin(t * 3 + h.beacon.position.x) * 0.15)));
+        // Keep the badge roughly 30–38 CSS pixels even on a phone or a distant shelf.
+        const px = hov ? 38 : 30;
+        const world = 2 * camera.position.distanceTo(h.beacon.position) * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * px / innerHeight;
+        h.beacon.scale.setScalar(world);
         h.beacon.visible = h.beacon.material.opacity > 0.01;
       }
     }
@@ -649,6 +687,7 @@ async function boot() {
   window.__tour = {
     progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
     level: () => gov.level, music: () => musicOn,
+    itemState: id => { const h = hotById(id); return h ? {opened: opened.has(id), badge: h.opened ? 'silver' : 'gold', opacity: h.beacon?.material.opacity} : null; },
     stats: () => ({...frameStats, pixelRatio: renderer.getPixelRatio(), textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries, programs: renderer.info.programs.length, batchedMeshes: house.batchedMeshes, ao: !!aoPass?.enabled, bloom: !!bloomPass?.enabled, building}),
     screenOf(id) {
       const obj = id === 'music' ? house?.music : house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;

@@ -75,19 +75,39 @@ try {
       }
       throw Error('tap did not register on ' + id);
     };
+    assert.equal(await page.evaluate(() => window.__tour.itemState('teambook').badge), 'gold');
     await tap('teambook', () => window.__tour.inspecting() === 'teambook');
     await page.waitForSelector('#inspect.open');
     assert.equal(await page.getAttribute('#inspect-go', 'href'), '/teambook/');
     assert.match(await page.textContent('#inspect-title'), /TeamBook/);
     await page.screenshot({path: `${out}/desktop-inspect.png`});
     await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    assert.equal(await page.evaluate(() => window.__tour.itemState('teambook').badge), 'silver');
+    await page.waitForFunction(() => window.__tour.itemState('teambook').opacity > 0.9);
     pass('tapping the TeamBook notebook in the project room picks it up and offers its page');
 
     await tap('airova', () => window.__tour.inspecting() === 'airova');
     assert.equal(await page.getAttribute('#inspect-go', 'href'), '/airova/');
     assert.match(await page.textContent('#inspect-title'), /Airova/);
     await page.screenshot({path: `${out}/desktop-airova.png`});
+    const homeURL = page.url(), homeScroll = await page.evaluate(() => scrollY);
+    const [airovaTab] = await Promise.all([page.waitForEvent('popup'), page.click('#inspect-go')]);
+    await airovaTab.waitForLoadState('domcontentloaded');
+    assert.equal(new URL(airovaTab.url()).pathname, '/airova/');
+    assert.equal(await airovaTab.evaluate(() => window.opener), null);
+    await airovaTab.close();
+    assert.equal(page.url(), homeURL);
+    assert.equal(await page.evaluate(() => scrollY), homeScroll);
     await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    assert.equal(await page.evaluate(() => window.__tour.itemState('airova').badge), 'silver');
+    const [resumeTab] = await Promise.all([page.waitForEvent('popup'), page.click('#office [data-item="resume"]')]);
+    await resumeTab.waitForLoadState('domcontentloaded');
+    assert.equal(new URL(resumeTab.url()).pathname, '/resume/');
+    await resumeTab.close();
+    assert.equal(await page.evaluate(() => window.__tour.itemState('resume').badge), 'silver');
+    await tap('teambook', () => window.__tour.inspecting() === 'teambook');
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    pass('gold changes to persistent silver; silver items remain pickable; panel and direct links open a new tab while home stays put');
     pass('the additional studio computer opens Airova for video and marketing');
 
     // the classroom computers open lessons 1, 4, 5 and the Dungeon; objects of other rooms stay out of reach
@@ -127,10 +147,12 @@ try {
     await page.waitForFunction(() => !document.body.classList.contains('is-loading'));
     assert.equal(await page.textContent('#clover-count .count-text'), '4/4');
     pass('collected clovers persist for this viewer');
+    for (const id of ['teambook', 'airova', 'resume']) assert.equal(await page.evaluate(id => window.__tour.itemState(id).badge, id), 'silver');
 
     await page.click('[data-quality="hd"]');
     await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});
     assert.equal(await page.getAttribute('[data-quality="hd"]', 'aria-pressed'), 'true');
+    assert.equal(await page.evaluate(() => window.__tour.itemState('airova').badge), 'silver');
     assert.deepEqual(await page.evaluate(() => window.__tour.items().sort()), await page.$$eval('[data-item]', as => as.map(a => a.dataset.item).sort()));
     await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
     await page.waitForTimeout(2500); await page.screenshot({path: `${out}/desktop-hd-kitchen.png`});
