@@ -19,7 +19,7 @@ export function createStore(sql){
   async release(c){await q('UPDATE mc_mediral_customers SET lease=NULL,lease_until=0 WHERE id=$1 AND lease=$2',[c.id,c.token]);},
   async event(id){return (await q('SELECT id FROM mc_mediral_events WHERE id=$1',[id]))[0]||null;},
   async order(id){const [r]=await q('SELECT data FROM mc_mediral_orders WHERE id=$1',[id]);return r?JSON.parse(r.data):null;},
-  async list(){const rows=await q('SELECT data FROM mc_mediral_orders ORDER BY updated_at DESC LIMIT 100');const people=await q('SELECT id,state,updated_at FROM mc_mediral_customers ORDER BY updated_at DESC LIMIT 100');return {orders:rows.map(x=>{const o=JSON.parse(x.data);o.hasReceipt=Boolean(o.receipt);delete o.receipt;return o;}),handoffs:people.map(x=>({id:x.id,...JSON.parse(x.state),updatedAt:Number(x.updated_at)})).filter(x=>x.paused)};},
+  async list(){const rows=await q('SELECT data FROM mc_mediral_orders ORDER BY updated_at DESC LIMIT 100');const people=await q('SELECT id,state,updated_at FROM mc_mediral_customers ORDER BY updated_at DESC LIMIT 100');return {contacts:people.map(x=>({id:x.id,house:JSON.parse(x.state).house||null})).filter(x=>x.house),orders:rows.map(x=>{const o=JSON.parse(x.data);o.hasReceipt=Boolean(o.receipt);delete o.receipt;return o;}),handoffs:people.map(x=>({id:x.id,...JSON.parse(x.state),updatedAt:Number(x.updated_at)})).filter(x=>x.paused)};},
   async crossCourseReference(ref){const [r]=await q('SELECT reference FROM mc_ai_source_registrations WHERE UPPER(TRIM(bank_transaction_id))=$1 LIMIT 1',[ref]);return Boolean(r);},
   async commit(c,{state,order,eventId,messages=[],kind='reply',replyToken=null,transfer},now){
    const writeId=randomUUID();
