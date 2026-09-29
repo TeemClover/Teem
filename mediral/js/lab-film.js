@@ -1,5 +1,5 @@
 // Ambient film: a silent part of one ingredient scene, not a player. There are no controls, no
-// duration badge and no status text. The clip is not a seamless loop, so it plays through once per
+// duration badge and no status text. Each clip plays through once per
 // visit and rests on its final frame; only the owning scene may rewind it, when the reader has truly
 // left and comes back. Reduced motion, data saving, blocked autoplay and media errors all keep the
 // still poster; nothing is requested for them. Narrow screens take the smaller file when one exists.

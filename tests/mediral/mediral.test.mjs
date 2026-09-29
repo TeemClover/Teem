@@ -72,16 +72,17 @@ test('the routine is the five chosen steps, in the owner-selected order', () => 
   }
 });
 
-test('the mousse uses the current clover-reference draft without inheriting the old formula or size', () => {
+test('the mousse keeps its clover-reference pack and restores only the now-confirmed ingredient inventory', () => {
   const cl = steps().find(s => s.id === 'CL');
   assert.equal(cl.image, 'assets/pack/cl-clover-front-v2.webp');
   assert.equal(cl.image_status, 'ai-draft', 'The reconstructed package is not a literal product photograph');
   assert.equal(cl.size, null, 'The reference image does not verify the current mousse size');
-  assert.equal(cl.ingredients_status, 'pending-current-sku');
-  assert.deepEqual(cl.featured, [], 'The old Natural Blossom list must not be attached to the current mousse');
-  assert.deepEqual(cl.ingredients, []);
-  assert.deepEqual(cl.scene.waves, [], 'No mousse ingredient waves while its formula is unconfirmed');
-  assert.doesNotMatch(JSON.stringify(cl.scene), /ชบา|ลิลลี่|SLS|80 ?ml|ดีท็อกซ์|ไม่แห้ง|กันน้ำ/, 'No old rose-pack formula or claims');
+  assert.equal(cl.ingredients_status, 'brand-marketing-list');
+  assert.equal(cl.featured.length, 5);
+  assert.equal(cl.ingredients.length, 10);
+  assert.ok([...cl.featured, ...cl.ingredients].every(i => i.benefit_status === 'identity-only'));
+  assert.equal(cl.scene.waves.length, 3);
+  assert.doesNotMatch(JSON.stringify(cl.scene), /SLS|80 ?ml|ดีท็อกซ์|กันน้ำ|กลิ่น(?:ชบา|ลิลลี่)/, 'Do not extend ingredient confirmation to unsupported claims');
   for (const path of walkFiles(site).filter(p => ['.html', '.js', '.json', '.css'].includes(extname(p)))) {
     if (relative(site, path).startsWith(`assets${sep}`)) continue;
     assert.doesNotMatch(read(path), /cl-front-ai-draft-hold/, `${relative(root, path)} must not use the held mousse draft`);
@@ -101,7 +102,7 @@ test('ingredient explanations retain their source and separate individual from g
 });
 
 test('ingredient groups cover every source-listed name once without treating aliases as extra actives', () => {
-  const counts = {CL: 0, AC: 24, BR: 18, SU: 14, PO: 18};
+  const counts = {CL: 15, AC: 24, BR: 18, SU: 14, PO: 18};
   for (const step of steps()) {
     const names = [...step.featured, ...step.ingredients].map(i => i.name);
     assert.equal(names.length, counts[step.id], `${step.id}: preserve the full source-list display inventory`);
@@ -138,18 +139,17 @@ test('scroll-selling beats use attributed roles and only names present in the pr
       assert.ok(!ids.has(beat.id), `Duplicate selling beat ${beat.id}`);
       ids.add(beat.id);
       for (const name of beat.names) assert.ok(names.has(name), `${beat.id}: unknown ingredient ${name}`);
-      if (step.id === 'CL') assert.deepEqual(beat.names, [], 'Mousse atmosphere must not invent a current formula');
     }
   }
 });
 
 // The finished-copy table this release was written from (private copy review, 2026-09-29).
 const HEADLINES = {
-  CL: [['ล้างวันนี้ออก', 'ก่อนเริ่มดูแล'], 'มูสล้างหน้าและเครื่องสำอาง เริ่มดูแลเมื่อกลับถึงบ้าน', 'กลับถึงบ้าน ผิวผ่านมาทั้งวัน'],
-  AC: [['ดูแลความมัน', 'เติมความชุ่มชื้น'], 'เซรั่มสำหรับผิวที่เป็นสิวง่าย บางเบา ซึมไว ไม่เหนอะหนะ', 'สิวง่าย แต่ไม่อยากเหนอะหนะ'],
-  BR: [['ให้สีผิว', 'ดูสม่ำเสมอ'], 'ดูแลความหมองคล้ำและความเรียบเนียน ด้วยเซรั่มบางเบา เกลี่ยง่าย', 'ผิวดูหมอง สีผิวดูไม่สม่ำเสมอ'],
-  SU: [['กันแดดเนื้อเซรั่ม', 'เบาสบายผิว'], 'เกลี่ยง่าย พร้อมไฮยาเติมความชุ่มชื้น และ Giga White® พืช 7 ชนิด', 'ไม่ชอบกันแดดหนักหน้า?'],
-  PO: [['ปกปิดรอย', 'ให้ผิวดูเนียน'], 'แป้งพัฟเนื้อละเอียด บางเบา เกลี่ยง่าย สำหรับวันที่อยากแต่งผิว', 'วันนี้อยากปกปิดรอย'],
+  CL: [['ล้างคราบสะสม', 'ให้ผิวรู้สึกสดชื่น'], 'มูสโฟมนุ่ม ล้างหน้าและเครื่องสำอางอย่างอ่อนโยน ไม่แห้งตึง', 'คราบมันและเครื่องสำอาง ติดผิวมาทั้งวัน?'],
+  AC: [['ดูแลความมัน', 'เติมความชุ่มชื้น'], 'เซรั่มสำหรับผิวที่เป็นสิวง่าย บางเบา ซึมไว ไม่เหนอะหนะ', 'สิวขึ้นง่าย แต่ไม่อยากเหนอะหนะ'],
+  BR: [['เติมการบำรุง', 'ลดเลือนความหมองคล้ำ'], 'แบร์เบอร์รี่ ชะเอมเทศ และอนุพันธ์วิตามินซี ในเซรั่มบางเบา เกลี่ยง่าย', 'ผิวดูหมอง ไม่สดใส?'],
+  SU: [['กันแดดเนื้อเซรั่ม', 'เบาสบายผิว'], 'เกลี่ยง่าย พร้อมไฮยาเติมความชุ่มชื้น และ Giga White® พืช 7 ชนิด', 'มองไม่เห็น UV ไม่ได้แปลว่าผิวไม่เจอ'],
+  PO: [['ปกปิดบางเบา', 'สบายผิว'], 'แป้งพัฟเนื้อละเอียด เกลี่ยง่าย ที่ Mediral ระบุว่าไม่อุดตัน', 'อยากปกปิด แต่กลัวแป้งอุดตัน?'],
 };
 test('each chapter says its problem, then a two-line promise and one support line, in the reviewed words', () => {
   const grammars = new Set();
@@ -167,7 +167,7 @@ test('each chapter says its problem, then a two-line promise and one support lin
 test('benefit waves lead with the benefit and name only catalogued ingredients, pairing each role correctly', () => {
   const expected = {
     AC: [['ปลอบประโลม', 'ac-soothe'], ['สมดุลความมัน', 'ac-balance'], ['เติมความชุ่มชื้น', 'ac-hydrate']],
-    BR: [['ผิวดูกระจ่างใส', 'br-even'], ['สมดุลผิว', 'br-balance'], ['ผิวดูเรียบเนียน', 'br-balance']],
+    BR: [['ลดเลือนความหมองคล้ำ', 'br-even'], ['สมดุลผิว', 'br-balance'], ['ผิวดูเรียบเนียน', 'br-balance']],
     SU: [['ปกป้องผิวจากแดด', 'su-filters'], ['เติมความชุ่มชื้น', 'su-hydrate'], ['สีผิวดูสม่ำเสมอ', 'su-giga']],
     PO: [['บางเบา เกลี่ยง่าย', 'po-powder-oil'], ['ชุ่มชื้น · ปลอบประโลม', 'po-hydrate']],
   };

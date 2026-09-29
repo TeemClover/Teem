@@ -12,7 +12,7 @@
  *     a flight into the drop beside the AC bottle that becomes the film's own lens (AC → BR, a new
  *     world, not its formula), a light streak (BR → SU), air turning to powder (SU → PO), and the
  *     five packs regrouping (PO → set);
- *   - AC's film is decorative material, masked into the scene: no frame, player or labels.
+ *   - films are silent scene material, without players; the UV concept carries its own disclosure.
  */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const lines = list => list.map(line => `<span class="mr-line">${esc(line)}</span>`).join('');
@@ -57,6 +57,24 @@ export const FILM = {
   poster: 'assets/motion/crown-poster.webp',
   end: 'assets/motion/crown-end.webp',
 };
+// A film's visible window is narrower than its visit boundary. Small scroll reversals and tab
+// visibility changes retain playback position; crossing the wider boundary permits a fresh pass.
+export const FILMS = {
+  AC: {...FILM, id: 'lab-film', window: [3.25, 6.35], away: [2.6, 7.4]},
+  BR: {src: 'assets/films/br-clarity-1080.mp4', small: 'assets/films/br-clarity-720.mp4',
+    poster: 'assets/films/br-clarity-poster.webp', id: 'lab-film-BR', window: [6.6, 8.35], away: [6.05, 9.3]},
+  SU: {src: 'assets/films/su-uv-concept-1080.mp4', small: 'assets/films/su-uv-concept-720.mp4',
+    poster: 'assets/films/su-uv-concept-poster.webp', id: 'lab-film-SU', window: [9.1, 10.4], away: [8.55, 11.3]},
+};
+function filmMarkup(id, asset, film = FILMS[id]) {
+  const key = id.toLowerCase();
+  return `<div class="mr-art mr-chapter-film mr-${key}__film" data-layer="${key}.film"${id === 'SU' ? '' : ' aria-hidden="true"'}>
+    <div class="mr-fx__clip" id="${esc(film.id || FILMS[id].id)}" data-lab-film data-film-step="${id}" data-film-ready="true"><div class="mr-fx__clipframe" data-film-frame>
+      <img data-src="${asset(film.poster)}" alt="" decoding="async">
+      <video data-film-video data-src="${asset(film.src)}" data-src-small="${asset(film.small)}" poster="${asset(film.poster)}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
+    </div>${id === 'SU' ? '<div class="mr-chapter-film__comparison"><span>ยังไม่ทา</span><span>ทาแล้ว</span></div>' : ''}</div>${id === 'SU' ? '<p class="mr-chapter-film__caption">ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า</p>' : ''}
+  </div>`;
+}
 
 export const SHOTS = {
   CL: (step, asset) => `
@@ -64,6 +82,11 @@ export const SHOTS = {
       <div class="mr-shot__bg" data-layer="cl.bg" aria-hidden="true"></div>
       ${problem(step, 'cl')}
       <h2 class="mr-cl__title" id="h-CL"><span class="mr-line mr-cl__word" data-layer="cl.word1">${esc(step.scene.headline[0])}</span><span class="mr-line mr-cl__word mr-cl__word--next" data-layer="cl.word2">${esc(step.scene.headline[1])}</span></h2>
+      ${(step.selling?.beats?.find(beat => beat.id === 'cl-pack')?.names || []).slice(0, 3).map((name, i) => {
+        const file = imageOf(step, name);
+        return file ? art(`cl.botanical${i}`, file, `mr-cl__botanical mr-cl__botanical--${i}`, asset) : '';
+      }).join('')}
+      ${step.scene.waves?.[1]?.label ? `<p class="mr-cl__botanical-label" data-layer="cl.botanical-label">${esc(step.scene.waves[1].label)}</p>` : ''}
       ${packMarkup(step, asset, {layer: 'cl.pack'})}
       <div class="mr-bubbles" data-layer="cl.bubbles" aria-hidden="true">${Array.from({length: 9}, (_, i) => `<i style="--i:${i}"></i>`).join('')}</div>
       ${foot(step, 'cl')}
@@ -72,12 +95,7 @@ export const SHOTS = {
     <div role="region" class="mr-shot mr-shot--ac mr-shot--dark" data-shot="AC" data-layer="ac" aria-labelledby="h-AC">
       <div class="mr-shot__cam" data-layer="ac.cam">
         <div class="mr-shot__bg" data-layer="ac.bg" aria-hidden="true"></div>
-        <div class="mr-art mr-ac__film" data-layer="ac.film" aria-hidden="true">
-          <div class="mr-fx__clip" id="lab-film" data-lab-film data-film-ready="true"><div class="mr-fx__clipframe" data-film-frame>
-            <img data-src="${asset(film.poster)}" alt="" decoding="async">
-            <video data-film-video data-src="${asset(film.src)}" data-src-small="${asset(film.small)}" poster="${asset(film.poster)}" muted playsinline preload="none" aria-hidden="true" tabindex="-1" hidden></video>
-          </div></div>
-        </div>
+        ${filmMarkup('AC', asset, film)}
         ${problem(step, 'ac')}
         ${title(step, 'ac', 'mr-ac__title')}
         ${wave(step, 0, 'ac.w1')}
@@ -105,6 +123,7 @@ export const SHOTS = {
     <div role="region" class="mr-shot mr-shot--br" data-shot="BR" data-layer="br" aria-labelledby="h-BR">
       <div class="mr-shot__cam" data-layer="br.cam">
         <div class="mr-shot__bg" data-layer="br.bg" aria-hidden="true"></div>
+        ${filmMarkup('BR', asset)}
         <div class="mr-br__beams" data-layer="br.beams" aria-hidden="true"><i></i><i></i><i></i></div>
         ${problem(step, 'br')}
         ${title(step, 'br', 'mr-br__title')}
@@ -125,6 +144,7 @@ export const SHOTS = {
   SU: (step, asset) => `
     <div role="region" class="mr-shot mr-shot--su" data-shot="SU" data-layer="su" aria-labelledby="h-SU">
       <div class="mr-shot__bg" data-layer="su.bg" aria-hidden="true"></div>
+      ${filmMarkup('SU', asset)}
       ${art('su.air', 'assets/experience/p0-2-drop-clear.webp', 'mr-su__air', asset)}
       ${problem(step, 'su')}
       ${title(step, 'su', 'mr-su__title')}
@@ -245,6 +265,11 @@ export function score({tall, W, H}) {
   set('cl.word1', [[1.56, {dy: 3, o: 0}], [1.68, {}], [cover - 0.02, {}], [cover - 0.019, {o: 0}, 'step']]);
   set('cl.word2', [[cover - 0.02, {o: 0}], [cover - 0.019, {}, 'step'], [2.86, {}], [3.0, {dy: -5, o: 0}]]);
   set('cl.foot', beat(2.36, 2.86, {dy: 2}, {dy: 2}));
+  for (let i = 0; i < 3; i++) {
+    const side = i === 1 ? 1 : -1;
+    set(`cl.botanical${i}`, [[2.1 + i * .025, {dx: side * 12, dy: 5, s: .85, o: 0}], [2.4 + i * .025, {}, 'out'], [2.78, {}], [3.1, {dx: side * 24, dy: -4, o: 0}, 'in']]);
+  }
+  set('cl.botanical-label', beat(2.35, 2.86, {dy: 1.5}, {dy: -1.5}));
   set('cl.bubbles', [[1.1, {o: 0}], [1.4, {}], [2.9, {dy: -6}], [3.2, {dy: -12, o: 0}]]);
   // The bottle stays whole; at the end it recedes up and back, out of the ring's opening.
   set('cl.pack', [[1.28, {}], [2.9, {}], [3.18, {dy: tall ? -25 : -18, dx: tall ? -18 : -24, s: 0.46}], [3.52, {dy: tall ? -32 : -24, dx: tall ? -26 : -32, s: 0.3}]]);
@@ -296,6 +321,7 @@ export function score({tall, W, H}) {
   /* BR (T 6.6 → 8.85): light through the drop; three names focus on three depths; two pairs. ---- */
   set('br', [[6.59, {o: 0}], [6.6, {}, 'step'], [9.28, {}], [9.29, {o: 0}, 'step']]);
   set('br.cam', [[6.6, {s: 1.16}], [6.95, {}, 'out'], [8.85, {s: 1.03}]]);
+  set('br.film', [[6.6, {s: 1.1, o: 0.8}], [7.05, {s: 1.02, o: 0.78}, 'out'], [7.45, {o: 0.5}], [7.86, {o: 0.3}], [8.25, {o: 0.15}], [8.36, {o: 0}]]);
   set('br.beams', [[6.6, {dx: -6, o: 0.4}], [7.2, {}], [8.85, {dx: 6}], [9.1, {dx: 30, o: 0}]]);
   set('br.problem', kicker([[6.6, big], [7.02, big], [7.12, {}]], 8.3));
   set('br.w1', beat(7.1, 7.82));
@@ -305,7 +331,7 @@ export function score({tall, W, H}) {
   set('br.lic', focusIn(7.31, {dx: 5, s: 0.92}));
   set('br.vitc', focusIn(7.42, {dy: -3, s: 0.88}));
   set('br.w2', beat(7.92, 8.3));
-  set('br.pack', [[6.6, {s: 0.78, dy: -3}], [8.3, {s: 0.8, dy: -3}], [8.5, {}], [8.85, {}], [9.28, {dx: 20, s: 0.95}]]);
+  set('br.pack', [[6.6, {s: 0.8, dy: 80, o: 0}], [8.16, {s: 0.8, dy: 80, o: 0}], [8.5, {}, 'out'], [8.85, {}], [9.28, {dx: 20, s: 0.95}]]);
   set('br.title', beat(8.36, 8.86));
   set('br.foot', beat(8.44, 8.86, {dy: 2}, {dy: 2}));
 
@@ -316,14 +342,15 @@ export function score({tall, W, H}) {
 
   /* SU (T 9.28 → 11.7): weightless; the headline, then three jobs travel sideways. ----------- */
   set('su.bg', [[8.9, {dx: -6}], [11.7, {dx: 4}]]);
-  set('su.air', [[8.9, {dx: 20, o: 0}], [9.5, {}], [11.7, {dx: -30, dy: -10}], [11.95, {dx: -40, dy: -16, o: 0}]]);
+  set('su.film', [[9.05, {dy: 3, o: 0}], [9.28, {}, 'out'], [10.3, {}], [10.42, {dy: -2, o: 0}]]);
+  set('su.air', [[8.9, {dx: 20, o: 0}], [10.35, {dx: 20, o: 0}], [10.58, {}], [11.7, {dx: -30, dy: -10}], [11.95, {dx: -40, dy: -16, o: 0}]]);
   set('su.problem', kicker([[8.95, big], [9.45, big], [9.55, {}]], 11.65));
   set('su.title', beat(9.5, 11.65));
-  set('su.pack', [[8.95, {dx: 40, dy: 4, r: -24}], [9.7, {r: -12}, 'out'], [11.35, {dx: -3, dy: -2, r: -10}], [11.75, {dx: -12, dy: -6, r: -8}]]);
-  set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [9.1, {dx: 60}], [9.8, {}, 'out'], [11.65, {dx: -12, dy: 2}], [11.95, {dx: -60, o: 0}]]);
+  set('su.pack', [[8.95, {dx: 85, dy: 4, r: -24, o: 0}], [10.3, {dx: 85, dy: 4, r: -24, o: 0}], [10.62, {r: -12}, 'out'], [11.35, {dx: -3, dy: -2, r: -10}], [11.75, {dx: -12, dy: -6, r: -8}]]);
+  set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [10.3, {dx: 70, o: 0}], [10.62, {}, 'out'], [11.65, {dx: -12, dy: 2}], [11.95, {dx: -60, o: 0}]]);
   // The ribbon crosses while nothing is being read, then rests beside the tube, clear of the words.
   const rest = tall ? {dx: 18, dy: -6} : {dx: 34, dy: -4};
-  set('su.ribbon', [[9.3, {dx: -120}], [9.84, rest, 'out'], [11.35, {...rest, dx: rest.dx - 6}], [11.75, {dx: -110}, 'in'], [11.76, {dx: -110, o: 0}, 'step']]);
+  set('su.ribbon', [[9.3, {dx: -120, o: 0}], [10.4, {dx: -120, o: 0}], [10.7, rest, 'out'], [11.35, {...rest, dx: rest.dx - 6}], [11.75, {dx: -110}, 'in'], [11.76, {dx: -110, o: 0}, 'step']]);
   const sideways = (inAt, outAt) => {
     const frames = [[inAt, {dx: 36, o: 0}], [inAt + 0.1, {}, 'out']];
     if (outAt != null) frames.push([outAt, {}], [outAt + 0.08, {dx: -36, o: 0}, 'in']);

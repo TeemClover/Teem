@@ -51,12 +51,12 @@ function ingredients(product, asset) {
   const total = groups.reduce((n, g) => n + g.items.length, 0);
   return `<section class="mr-detail__block mr-atlas" id="ingredients" aria-labelledby="names-title">
     <h2 id="names-title">${esc(product.ingredients_heading)}</h2>
-    <p class="mr-detail__intro">${esc(product.ingredients_intro)} · ${total} ชื่อ</p>
+    <p class="mr-detail__intro">${esc(product.ingredients_intro)} · ${total} รายการ</p>
     ${groups.map((g, i) => {
       const seen = new Set();
       const roles = g.items.some(item => item.benefit);
       return `<section class="mr-atlas__group${roles ? ' mr-atlas__group--roles' : ''}" aria-labelledby="names-${i + 1}">
-      <h3 id="names-${i + 1}"><span>${esc(g.title)}</span><small>${g.items.length} ชื่อ</small></h3>
+      <h3 id="names-${i + 1}"><span>${esc(g.title)}</span><small>${g.items.length} รายการ</small></h3>
       ${g.summary ? `<p class="mr-atlas__summary">${esc(g.summary)}</p>` : ''}
       <ul class="mr-atlas__grid">${g.items.map((item, k) => {
         const repeat = item.image && seen.has(item.image);
@@ -104,7 +104,7 @@ function sequence(product, step, routine, asset) {
     <ol class="mr-seq__beats">
       ${beat(1, 'select', tableau(select, product, asset), `<p>${esc(select.body)}</p>
         ${select.names?.length ? `<ul class="mr-beat__names">${select.names.map(name => `<li>${esc(name)}</li>`).join('')}</ul>` : ''}
-        ${total ? `<a class="mr-beat__more" href="#ingredients">ดูส่วนผสมทั้ง ${total} ชื่อ</a>` : ''}`)}
+        ${total ? `<a class="mr-beat__more" href="#ingredients">ดูส่วนผสมทั้ง ${total} รายการ</a>` : ''}`)}
       ${beat(2, 'material', `<div class="mr-material"><img src="${asset(material.image)}" alt="" loading="lazy" decoding="async"></div>`, `<p>${esc(material.body)}</p>`)}
       ${beat(3, 'care', `<div class="mr-beat__pack">${pack(step, asset, {lazy: true})}</div>`, `<ul class="mr-care">${product.benefits.map(b => `<li><b>${esc(b.title)}</b><span>${esc(b.body)}</span></li>`).join('')}</ul>
         ${product.fit ? `<p class="mr-detail__fit">${esc(product.fit)}</p>` : ''}
@@ -151,7 +151,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
       <h1 id="detail-title">${(([name, ...role]) => `${esc(name)}${role.length ? `<span class="mr-detail__role">${esc(role.join(' · '))}</span>` : ''}`)(product.short_name.split(' · '))}</h1>
       <p class="mr-detail__headline">${esc(product.headline)}</p>
       <p class="mr-detail__lead">${esc(product.lead)}</p>
-      <div class="mr-actions">${lineAction(order, order.label_product)}<a class="mr-btn mr-btn--ghost" href="${back}">กลับไปที่เรื่องของชิ้นนี้</a></div>
+      <div class="mr-actions">${lineAction(order, order.label_product)}<a class="mr-btn mr-btn--ghost" href="${back}">กลับไปดูรูทีน 5 ชิ้น</a></div>
     </div>
     <figure class="mr-detail__pack">${pack(step, asset)}</figure>
   </section>
@@ -186,7 +186,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
 
   <nav class="mr-detail__nav" aria-label="ชิ้นอื่นในชุด">
     ${prev ? `<a href="../${detailPath(prev.id)}" rel="prev"><span aria-hidden="true">←</span> ${mark(prev)} · ${esc(prev.nick)}</a>` : '<span></span>'}
-    <a href="${back}">กลับไปที่เรื่องของ${esc(step.nick)}</a>
+    <a href="${back}">กลับไปดู${esc(step.nick)}ในรูทีน</a>
     ${next ? `<a href="../${detailPath(next.id)}" rel="next">${mark(next)} · ${esc(next.nick)} <span aria-hidden="true">→</span></a>` : '<a href="../#set">ชุด 5 ชิ้น</a>'}
   </nav>`;
 }

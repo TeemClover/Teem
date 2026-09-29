@@ -8,7 +8,7 @@ const routine = JSON.parse(read('data/routine.json'));
 const details = JSON.parse(read('data/details.json'));
 const {detailHTML, DETAIL_IDS} = await import(new URL('../../mediral/js/detail-view.js', import.meta.url));
 const render = id => detailHTML({routine, details, id, asset: path => `../${path}`});
-const COUNTS = {CL: 0, AC: 24, BR: 18, SU: 14, PO: 18};
+const COUNTS = {CL: 15, AC: 24, BR: 18, SU: 14, PO: 18};
 
 test('every source-listed name appears in its group, and the counts are names in brand material', () => {
   for (const id of DETAIL_IDS) {
@@ -26,7 +26,7 @@ test('every source-listed name appears in its group, and the counts are names in
         if (item.benefit) assert.ok(block.includes(item.benefit), `${id}: ${item.name} keeps its sourced role`);
       }
     }
-    if (COUNTS[id]) assert.match(html, new RegExp(`${COUNTS[id]} ชื่อ`));
+    if (COUNTS[id]) assert.match(html, new RegExp(`${COUNTS[id]} รายการ`));
     if (COUNTS[id]) assert.match(html, /รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก/, `${id}: not presented as the full label list`);
   }
 });
@@ -40,11 +40,18 @@ test('a name without a sourced role is shown as a name only; nothing is filled i
   }
 });
 
-test('the mousse page tells its known role only: no ingredient block, formula or size', () => {
+test('the mousse restores the confirmed fifteen source names without invented individual benefits or size', () => {
   const html = render('CL');
-  assert.doesNotMatch(html, /id="ingredients"|mr-names/);
-  assert.doesNotMatch(html, /ml|กรัม/, 'No size');
-  assert.doesNotMatch(html, /กุหลาบ|SLS|ดีท็อกซ์|ไม่แห้ง|80 ?ml/, 'No old rose-label claims');
+  const product = details.products.find(p => p.id === 'CL');
+  const items = product.ingredient_groups.flatMap(g => g.items);
+  assert.equal(items.length, 15);
+  assert.ok(items.every(i => i.benefit === null), 'Names are not ingredient-specific efficacy evidence');
+  assert.match(html, /id="ingredients"/);
+  assert.match(html, /สเต็มเซลล์จากดอกชบา/);
+  assert.match(html, /สเต็มเซลล์จากดอกลิลลี่/);
+  assert.match(html, /กรดโคจิ จากเห็ดและยีสต์/);
+  assert.doesNotMatch(html, /80 ?ml|มาร์ก.{0,12}นาที|กลิ่น(?:ชบา|ลิลลี่)|ฟื้นฟูเซลล์/);
+  assert.equal(product.size, null);
   assert.match(html, /ทำความสะอาด|ล้างหน้า/);
 });
 
@@ -52,7 +59,7 @@ test('the sunscreen page notes a brand trade name without counting it as an ingr
   const html = render('SU');
   assert.match(html, /<h3>ชื่อที่พบในสื่อแบรนด์<\/h3><p>สื่อ Mediral อีกภาพใช้ชื่อ HydroAlgae™ ในเรื่องราวของสารสกัดสาหร่าย<\/p>/);
   assert.ok(!details.products.find(p => p.id === 'SU').ingredient_groups.some(g => g.items.some(i => /HydroAlgae/.test(i.name))), 'Not a fifteenth name');
-  assert.match(html, /14 ชื่อ/);
+  assert.match(html, /14 รายการ/);
 });
 
 test('each page orders through the one LINE config and returns to its exact chapter and neighbours', () => {
@@ -80,7 +87,7 @@ test('the pages read as finished and carry no backstage wording or treatment cla
   for (const id of DETAIL_IDS) {
     const html = render(id);
     assert.doesNotMatch(html, /ยังไม่ยืนยัน|รอยืนยัน|กำลังตรวจ|ฉบับร่าง|ภาพร่าง|รอสูตร|source_ids|internal/, `${id}: status wording`);
-    assert.doesNotMatch(html, /รักษา(?:สิว|ฝ้า)|สิวหาย|ฝ้าหาย|ฆ่าเชื้อ|เซลล์/, `${id}: claims to hold`);
+    assert.doesNotMatch(html, /รักษา(?:สิว|ฝ้า)|สิวหาย|ฝ้าหาย|ฆ่าเชื้อ|(?:ซ่อม|ฟื้นฟู|สร้างใหม่).{0,6}เซลล์/, `${id}: claims to hold`);
     // A protection value appears only on the sunscreen page, and only as what brand material states.
     const spf = [...html.matchAll(/.{0,24}SPF ?\d+.{0,8}/g)].map(m => m[0]);
     if (id !== 'SU') assert.deepEqual(spf, [], `${id}: no SPF`);
@@ -119,7 +126,7 @@ test('every listed name is image-led: each card shows its picture, and a shared 
   assert.match(html, /ภาพส่วนผสมเป็นภาพประกอบชื่อหรือลักษณะวัตถุดิบ ไม่ใช่ภาพจากผู้ผลิต/, 'Pictures are illustrations');
 });
 
-test('each page tells one short sequence from its own sourced lines; the mousse tells foam, not botanicals', () => {
+test('each page tells one short sequence from its own sourced lines including the confirmed mousse ingredients', () => {
   for (const product of details.products) {
     const {sequence} = product;
     const names = new Set(product.ingredient_groups.flatMap(g => g.items.map(i => i.name)));
@@ -130,8 +137,8 @@ test('each page tells one short sequence from its own sourced lines; the mousse 
     for (const benefit of product.benefits) assert.ok(html.includes(benefit.title), `${product.id}: care keeps "${benefit.title}"`);
   }
   const cl = details.products.find(p => p.id === 'CL').sequence;
-  assert.equal(cl.select.names, undefined, 'CL names no ingredient');
-  assert.doesNotMatch(render('CL'), /assets\/botanicals\//, 'CL shows no botanical');
+  assert.equal(cl.select.names.length, 5, 'CL introduces the five source-listed hero ingredients');
+  assert.match(render('CL'), /assets\/botanicals\/hibiscus-flower\.webp/);
   const copy = JSON.stringify(details.products.map(p => p.sequence));
   assert.doesNotMatch(copy, /ที่แบรนด์เลือกมาเล่า|คัดสรร|คัดพิเศษ|บริสุทธิ์|ธรรมชาติ ?100|จากธรรมชาติทั้งหมด|สกัดเย็น|สกัดด้วย|เก็บเกี่ยว|เข้มข้น|%/, 'No selection, purity, harvest, method or concentration claim');
 });

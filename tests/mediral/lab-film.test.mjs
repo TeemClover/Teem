@@ -338,3 +338,25 @@ test('narrow screens take the smaller file when one exists', async t => {
   f.inView(); api.setActive(true); await tick();
   assert.equal(f.video.getAttribute('src'), 'assets/motion/small.mp4');
 });
+
+test('three scene instances keep completion, media errors and replay ownership independent', async t => {
+  const [ac, br, su] = Array.from({length: 3}, () => mount(t));
+  for (const f of [ac, br, su]) f.inView();
+  ac.api.setActive(true); await tick();
+  ac.end();
+  ac.api.setActive(false);
+  br.api.setActive(true); await tick();
+  assert.equal(ac.video.playCalls, 1);
+  assert.equal(br.video.playCalls, 1, 'Completing AC never completes BR');
+  br.video.dispatchEvent(new Event('error'));
+  br.api.setActive(false);
+  su.api.setActive(true); await tick();
+  assert.equal(br.video.hidden, true);
+  assert.equal(su.video.paused, false, 'A BR media failure cannot block SU');
+  su.api.setActive(false);
+  ac.api.rewind(); ac.api.setActive(true); await tick();
+  assert.equal(ac.video.currentTime, 0);
+  assert.equal(ac.video.playCalls, 2);
+  assert.equal(br.video.playCalls, 1);
+  assert.equal(su.video.playCalls, 1);
+});

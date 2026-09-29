@@ -10,7 +10,7 @@
  * stays fixed; a partial list never inherits a bundle price or a commission link.
  */
 import {createCinema} from './cinema.js';
-import {SHOTS, CHAPTERS, score, closingShot, detailHref, toneMark} from './score.js';
+import {SHOTS, CHAPTERS, FILMS, score, closingShot, detailHref, toneMark} from './score.js';
 
 const root = document.documentElement;
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -22,7 +22,7 @@ const asset = path => new URL(path, base).href;
 root.classList.remove('mr-boot');
 root.classList.add('mr-js');
 
-const state = {data: null, selection: new Set(), u: -1, active: null, chapter: null, film: null, cinema: null};
+const state = {data: null, selection: new Set(), u: -1, active: null, chapter: null, film: null, films: new Map(), cinema: null};
 window.__mediral = state; // read-only QA hook
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
@@ -272,11 +272,25 @@ function readingChapter() {
   });
 }
 
-// AC's film plays from the portal to the lens, once per visit. Leaving the chapter well behind (or
-// ahead) and coming back is a new visit: the film starts again from its first frame.
-const FILM_WINDOW = [3.25, 6.35];
-const FILM_AWAY = [2.6, 7.4];
-const filmVisit = {away: true};
+// Each material film owns its own visit. Deactivate all other films before waking this one, also
+// when a reader jumps backwards across several chapters in one frame.
+function syncFilms(T, inStory) {
+  const visible = document.visibilityState !== 'hidden';
+  for (const entry of state.films.values()) {
+    const [start, end] = entry.config.window;
+    entry.play = inStory && visible && T >= start && T <= end;
+    if (!entry.play) entry.api.setActive(false);
+  }
+  for (const entry of state.films.values()) {
+    const [start, end] = entry.config.away;
+    const away = !inStory || T < start || T > end;
+    if (away !== entry.away) {
+      if (!away) entry.api.rewind?.();
+      entry.away = away;
+    }
+    if (entry.play) entry.api.setActive(true);
+  }
+}
 const resizing = {held: null};
 
 function onScroll() {
@@ -315,16 +329,7 @@ function onScroll() {
     const {H} = state.cinema.state.layout;
     state.stable = {T, H, inTrack: storyRect.top <= 0 && storyRect.bottom > H};
   }
-  const filmOn = inStory && T >= FILM_WINDOW[0] && T <= FILM_WINDOW[1] && document.visibilityState !== 'hidden';
-  // Edges only: leaving AC deactivates the film once; coming back after truly leaving rewinds it once,
-  // before it may play. Frames spent elsewhere, and tab visibility, never seek it.
-  const away = !inStory || T < FILM_AWAY[0] || T > FILM_AWAY[1];
-  if (state.film && away !== filmVisit.away) {
-    if (away) state.film.setActive(false);
-    else state.film.rewind?.();
-    filmVisit.away = away;
-  }
-  state.film?.setActive(filmOn);
+  syncFilms(T, inStory);
 }
 // Scroll and resize schedule one update per frame. Some embedded browsers throttle animation frames
 // for unfocused views; a short timer then does the same single update so text and art never lag.
@@ -559,13 +564,24 @@ function bootFailed(err) {
 
 boot().catch(bootFailed);
 
-// The film is created with its product chapter. Its optional enhancement never blocks page data.
+// Each film is created with its product chapter. Optional media never blocks data or another film.
 async function bootFilm() {
-  const container = $('#lab-film');
-  if (container?.id !== 'lab-film') return;
+  const containers = $$('[data-lab-film][data-film-step]');
+  if (!containers.length) return;
   try {
     const {initLabFilm} = await import('./lab-film.js');
-    state.film = initLabFilm(container);
+    for (const container of containers) {
+      const id = container.dataset.filmStep;
+      if (!FILMS[id] || state.films.has(id)) continue;
+      try {
+        const api = initLabFilm(container);
+        if (!api) continue;
+        state.films.set(id, {api, config: FILMS[id], away: true});
+        if (id === 'AC') state.film = api; // preserve the existing AC QA handle
+      } catch (err) {
+        console.warn(`[mediral] ${id} film unavailable, keeping poster`, err);
+      }
+    }
     onScroll();
   } catch (err) {
     console.warn('[mediral] film enhancement unavailable, keeping poster', err);

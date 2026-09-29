@@ -87,7 +87,10 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
   const rows = routine.steps.map(step => { const el = new Element(); el.dataset.row = step.id; return el; });
   const rails = [...routine.steps, {id: 'set'}].map(step => { const el = new Element('a'); el.dataset.rail = step.id; return el; });
   const actions = ['copy'].map(action => { const el = new Element('button'); el.dataset.action = action; return el; });
-  const film = new Element(); film.id = 'lab-film';
+  const films = Object.entries(scoreModule.FILMS).map(([id, config]) => {
+    const el = new Element(); el.id = config.id; el.dataset.filmStep = id; return el;
+  });
+  const film = films[0];
   for (const name of ['rail', 'trust', 'order-title', 'order-how', 'order-note', 'route-close', 'line-link', 'pieces', 'message', 'offer', 'actions', 'buy-hint', 'disclosure', 'profile-link']) slots.set(name, new Element());
   const order = new Element('div'); order.id = 'order'; order.scrollMarginTop = '86px';
   order.getBoundingClientRect = () => ({top: (END + 1) * H + setShift + 600 - context.scrollY, bottom: (END + 1) * H + setShift + 1300 - context.scrollY});
@@ -119,6 +122,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
       if (selector === '[data-rail]') return rails;
       if (selector === '[data-action="copy"]') return actions;
       if (selector === '[data-slot="line-link"]') return [slots.get('line-link')];
+      if (selector === '[data-lab-film][data-film-step]') return films;
       return [];
     },
   };
@@ -172,7 +176,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     for (const [id, timer] of [...timers]) if (timer.delay === delay) { timers.delete(id); timer.fn(); }
     await tick();
   };
-  return {run, slots, pieces, actions, rails, root, marks, set, timers, document, context, animationFrames, inserted, cinemas, medias, film, view, section, sectionListeners,
+  return {run, slots, pieces, actions, rails, root, marks, set, timers, document, context, animationFrames, inserted, cinemas, medias, film, films, view, section, sectionListeners,
     get cinema() { return cinemas[0]; },
     change(id, checked) { const box = pieces.find(p => p.value === id); box.checked = checked; fire('change', box); },
     restore() { const button = new Element('button'); button.dataset.action = 'select-all'; fire('click', button); },
@@ -253,7 +257,8 @@ test('one order channel: the LINE action reads the verified config; an unverifie
   assert.equal(link.textContent, 'แอด LINE สั่งชุดดูแลผิว');
   assert.equal(link.rel, 'noopener');
   assert.equal(ui.slots.get('order-title').textContent, routine.order.heading);
-  assert.match(ui.slots.get('order-how').textContent, /แจ้งราคา ค่าส่ง และวิธีชำระในแชต ก่อนยืนยันการสั่ง/);
+  assert.equal(ui.slots.get('order-how').textContent, routine.order.how);
+  assert.match(ui.slots.get('order-how').textContent, /แจ้งราคา ค่าส่ง และวิธีชำระ.*ก่อนยืนยัน/);
   assert.match(ui.slots.get('order-note').textContent, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
   assert.equal(ui.slots.get('route-close').textContent, routine.route.close, 'The close repeats the route in one short line');
   const off = await fixture({line: false});
@@ -378,7 +383,7 @@ test('the header takes the chapter on screen, leading its marker slightly, and r
 test('the AC film plays from the portal to the lens, never in a hidden tab, and rewinds once per genuine revisit', async () => {
   const calls = [];
   const film = {active: false, setActive(value) { this.active = value; calls.push(value ? 'on' : 'off'); }, rewind() { calls.push('rewind'); }};
-  const ui = await fixture({filmFactory: () => film});
+  const ui = await fixture({filmFactory: el => el.dataset.filmStep === 'AC' ? film : null});
   await ui.run('bootFilm()');
   ui.at(2.0);
   assert.equal(film.active, false);
@@ -401,6 +406,53 @@ test('the AC film plays from the portal to the lens, never in a hidden tab, and 
   const back = calls.slice(calls.lastIndexOf('rewind'));
   assert.equal(calls.filter(c => c === 'rewind').length, 1, 'A genuine return rewinds once');
   assert.deepEqual(back.slice(0, 2), ['rewind', 'on'], 'Rewound before it may play again');
+});
+
+test('each chapter owns one film: direct jumps stop the old pass before the next wakes; revisits stay independent', async () => {
+  const calls = [], films = new Map();
+  const ui = await fixture({filmFactory: el => {
+    const id = el.dataset.filmStep;
+    const api = {active: false, setActive(value) {
+      this.active = value;
+      calls.push(`${id}:${value ? 'on' : 'off'}`);
+      assert.ok([...films.values()].filter(f => f.active).length <= 1, 'Only one chapter can play at a time, even on backwards jumps');
+    }, rewind() { calls.push(`${id}:rewind`); }};
+    films.set(id, api); return api;
+  }});
+  await ui.run('bootFilm()');
+  await ui.run('bootFilm()');
+  assert.equal(films.size, 3);
+  for (const [id, T] of [['AC', 3.8], ['BR', 7.2], ['SU', 9.8], ['AC', 4]]) {
+    ui.at(T);
+    assert.equal(films.get(id).active, true);
+    assert.deepEqual([...films].filter(([, f]) => f.active).map(([key]) => key), [id]);
+  }
+  assert.equal(calls.filter(c => c === 'AC:rewind').length, 2);
+  assert.equal(calls.filter(c => c === 'BR:rewind').length, 1);
+  assert.equal(calls.filter(c => c === 'SU:rewind').length, 1);
+  ui.at(7.3);
+  const rewinds = calls.filter(c => c === 'BR:rewind').length;
+  ui.at(8.4); ui.at(7.4); // outside playback, still within this visit
+  ui.hidePage(); ui.returnToPage();
+  assert.equal(calls.filter(c => c === 'BR:rewind').length, rewinds);
+  assert.equal(films.get('BR').active, true);
+  ui.at(12);
+  assert.ok([...films.values()].every(f => !f.active));
+  assert.ok(ui.pieces.every(p => p.checked), 'Films never change the order selection');
+});
+
+test('a failed chapter film does not prevent the other films; normal flow never activates any', async () => {
+  const films = new Map();
+  const ui = await fixture({flow: true, filmFactory: el => {
+    if (el.dataset.filmStep === 'BR') throw new Error('missing optional film');
+    const api = {setActive(value) { this.active = value; }, rewind() {}};
+    films.set(el.dataset.filmStep, api); return api;
+  }});
+  await ui.run('bootFilm()');
+  assert.equal(films.size, 2);
+  for (const T of [3.8, 7.2, 9.8]) ui.at(T);
+  assert.ok([...films.values()].every(f => !f.active));
+  assert.ok(!ui.root.classList.contains('mr-nodata'));
 });
 
 test('a new viewport keeps the reader at the same story moment, unless they moved or were outside it', async () => {

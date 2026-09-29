@@ -212,6 +212,11 @@ main{position:relative;z-index:1}
 .mr-cl__word{--y:20svh;top:calc(var(--y) - .62em);font:700 min(15vw,8.4svh)/1.2 var(--sans);letter-spacing:-.04em}
 [data-layer^=cl].mr-actor--cl{--x:50%;--base:83svh;--h:49svh}
 .mr-shot--cl .mr-actor::after{background:radial-gradient(closest-side,rgba(40,70,60,.22),rgba(40,70,60,0))}
+.mr-cl__botanical{width:29vw;filter:drop-shadow(0 12px 15px rgba(42,76,47,.13))}
+.mr-cl__botanical--0{left:-3vw;top:51svh}
+.mr-cl__botanical--1{left:76vw;top:47svh;width:26vw}
+.mr-cl__botanical--2{left:1vw;top:65svh;width:24vw}
+.mr-cl__botanical-label{position:absolute;top:29svh;left:5vw;width:90vw;margin:0;text-align:center;font:600 clamp(14px,3.8vw,18px)/1.5 var(--sans);color:var(--forest)}
 .mr-bubbles{inset:0;pointer-events:none}
 .mr-bubbles i{position:absolute;border-radius:50%;background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.95),rgba(255,255,255,.35) 42%,rgba(190,214,205,.25) 70%,rgba(255,255,255,0) 72%);box-shadow:inset 0 0 0 1px rgba(130,170,160,.28);width:calc(10px + var(--i) * 3px);aspect-ratio:1;left:calc(22% + var(--i) * 7%);top:calc(80svh - var(--i) * 5.2svh)}
 .mr-bubbles i:nth-child(odd){left:calc(70% - var(--i) * 5%)}
@@ -237,9 +242,10 @@ main{position:relative;z-index:1}
 .mr-shot--ac{--m:var(--portal,9);-webkit-mask-image:radial-gradient(calc(var(--m) * 35vmax) calc(var(--m) * 32.5vmax) at calc(50% - var(--m) * 3vmax) calc(58% - var(--m) * 3.5vmax),#000 90%,transparent 100%);mask-image:radial-gradient(calc(var(--m) * 35vmax) calc(var(--m) * 32.5vmax) at calc(50% - var(--m) * 3vmax) calc(58% - var(--m) * 3.5vmax),#000 90%,transparent 100%);color:#eef2df}
 .mr-shot--ac .mr-shot__bg{background:radial-gradient(90% 70% at 50% 34%,#2f5d3e 0%,#1a3f2b 54%,#0f2a1c 100%)}
 /* AC's film fills the room behind every AC layer, feathered into the forest: no frame, no player. */
-.mr-ac__film{inset:0;width:auto;aspect-ratio:auto}
-.mr-ac__film .mr-fx__clip,.mr-ac__film .mr-fx__clipframe{position:relative;width:100%;height:100%}
-.mr-ac__film img,.mr-ac__film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mr-chapter-film{pointer-events:none}
+.mr-ac__film,.mr-br__film{inset:0;width:auto;aspect-ratio:auto}
+.mr-chapter-film .mr-fx__clip,.mr-chapter-film .mr-fx__clipframe{position:relative;width:100%;height:100%}
+.mr-chapter-film img,.mr-chapter-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .mr-ac__film .mr-fx__clipframe{-webkit-mask-image:radial-gradient(ellipse 72% 62% at 50% 52%,#000 55%,rgba(0,0,0,.6) 78%,transparent 100%);mask-image:radial-gradient(ellipse 72% 62% at 50% 52%,#000 55%,rgba(0,0,0,.6) 78%,transparent 100%)}
 .mr-ac__film .mr-fx__clipframe::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,36,24,.78),rgba(12,36,24,.42) 30%,rgba(12,36,24,.12) 50%,rgba(12,36,24,.14) 64%,rgba(12,36,24,.55))}
 .mr-shot--ac :is(.mr-problem,.mr-wave,.mr-title){text-shadow:0 2px 18px rgba(8,24,16,.7)}
@@ -267,6 +273,8 @@ main{position:relative;z-index:1}
 /* BR — light through the drop: a warm, lit world; three depths come into focus; two pairs. */
 .mr-shot--br{color:var(--forest-deep)}
 .mr-shot--br .mr-shot__bg{background:radial-gradient(95% 70% at 64% 16%,#fffbee 0%,#f6e9c4 30%,#d8c186 58%,#7c7a45 84%,#3e5534 100%)}
+.mr-br__film .mr-fx__clipframe{-webkit-mask-image:radial-gradient(ellipse 76% 64% at 50% 51%,#000 38%,rgba(0,0,0,.72) 68%,transparent 100%);mask-image:radial-gradient(ellipse 76% 64% at 50% 51%,#000 38%,rgba(0,0,0,.72) 68%,transparent 100%)}
+.mr-br__film .mr-fx__clipframe::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,241,214,.88),rgba(250,241,214,.38) 29%,transparent 47%,rgba(83,91,48,.12) 70%,rgba(49,70,37,.6))}
 .mr-br__beams{position:absolute;inset:0;pointer-events:none}
 .mr-br__beams i{position:absolute;top:-20svh;height:140svh;width:16vw;left:calc(38vw + var(--k,0) * 18vw);transform:rotate(24deg);background:linear-gradient(90deg,rgba(255,252,236,0),rgba(255,250,230,.5) 50%,rgba(255,252,236,0))}
 .mr-br__beams i:nth-child(2){--k:1;width:10vw;opacity:.7}.mr-br__beams i:nth-child(3){--k:2;width:22vw;opacity:.5}
@@ -291,6 +299,12 @@ main{position:relative;z-index:1}
 /* SU — weightless: an airy, cool frame; the tube floats; three jobs travel sideways. */
 .mr-shot--su{clip-path:inset(0 calc((1 - var(--wipe,1.2)) * 100%) 0 0);color:var(--forest-deep)}
 .mr-shot--su .mr-shot__bg{inset:0 -8%;background:radial-gradient(60% 40% at 78% 14%,rgba(255,252,230,.95),rgba(255,252,230,0) 70%),linear-gradient(180deg,#eaf3ef 0%,#f7faf2 48%,#e0ecdb 100%)}
+.mr-su__film{left:4vw;top:35svh;width:92vw;height:auto;aspect-ratio:16/9}
+.mr-su__film .mr-fx__clipframe{-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 48%,rgba(0,0,0,.92) 65%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 48%,rgba(0,0,0,.92) 65%,transparent 100%)}
+.mr-su__film img,.mr-su__film video{object-fit:contain;object-position:50% 50%}
+.mr-chapter-film__comparison{position:absolute;bottom:8px;left:0;width:100%;display:grid;grid-template-columns:1fr 1fr;justify-items:center;font:500 clamp(11px,2.9vw,13px)/1.4 var(--sans);color:#fff}
+.mr-chapter-film__comparison span{padding:3px 10px;border-radius:20px;background:rgba(24,41,33,.78)}
+.mr-chapter-film__caption{position:absolute;top:100%;left:0;width:100%;margin:8px 0 0;text-align:center;color:#375346;font:500 clamp(11px,2.9vw,13px)/1.5 var(--sans)}
 .mr-su__air{width:17vw;left:70vw;top:30svh;opacity:.9}
 [data-layer^=su].mr-actor--su{--x:52%;--base:67svh;--h:33svh}
 .mr-su__ribbon{aspect-ratio:2138/735;width:150vw;left:-25vw;top:44svh;z-index:1}
@@ -383,6 +397,11 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-fx-veil{width:140vw;left:-20vw;top:calc(50% - 35vw)}
   .mr-fx-lens{width:112vw;left:-6vw;top:calc(50% - 31.5vw)}
   .mr-cl__word{--y:25svh;font-size:min(8.6vw,13.5svh)}
+  .mr-cl__botanical{width:19vw}
+  .mr-cl__botanical--0{left:14vw;top:43svh}
+  .mr-cl__botanical--1{left:68vw;top:39svh;width:19vw}
+  .mr-cl__botanical--2{left:25vw;top:59svh;width:15vw}
+  .mr-cl__botanical-label{top:73svh;left:66vw;width:25vw}
   [data-layer^=cl].mr-actor--cl{--base:83svh;--h:48svh}
   .mr-ac__tea{width:66vw;left:-10vw;top:48svh}
   .mr-ac__witch{width:13vw;left:16vw;top:56svh}
@@ -416,6 +435,8 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-su__ribbon{width:84vw;left:8vw;top:46svh}
   .mr-su__ribbon--back{width:62vw;left:44vw;top:12svh}
   .mr-su__air{width:8vw;left:80vw;top:24svh}
+  .mr-su__film{left:auto;right:5vw;top:29svh;width:min(50vw,64svh)}
+  .mr-chapter-film__caption{font-size:12px}
   .mr-wave--band{top:72svh;left:6vw;right:auto;width:44vw;text-align:left}
   .mr-wave--band .mr-wave__word{font-size:min(4.4vw,8svh)}
   .mr-shot--su .mr-foot{top:88svh}
@@ -448,6 +469,7 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 .mr-flow .mr-badge,.mr-flow .mr-route{display:none}
 .mr-flow .mr-problem{order:1;font-size:17px}
 .mr-flow .mr-cl__title{position:relative;inset:auto;grid-column:1/-1;order:2}
+.mr-flow .mr-cl__botanical-label{order:3;width:auto;font-size:16px}
 .mr-flow .mr-cl__word{font-size:clamp(34px,8vw,64px)}
 .mr-flow .mr-title{order:2;font-size:clamp(30px,6vw,52px);text-align:center;width:auto}
 .mr-flow .mr-wave,.mr-flow .mr-pairs{order:3;text-align:center;width:auto}
