@@ -117,18 +117,19 @@ function visibleSpan(track) {
 }
 
 /**
- * createCinema({section, view, score})
+ * createCinema({section, view, clock, score})
+ *   clock is a stable 100svh probe; view paints 100lvh to cover folding browser chrome.
  *   score(layout) -> {end, chapters: [{id, from}], tracks: {name: frames}}
  *   layout = {tall, W, H}; chapters mark where each chapter's first composed hold begins.
  * Returns {T, layout, measure(), render(), setFlow(bool), time(), chapterAt(T)}.
  */
-export function createCinema({section, view, score, tallQuery}) {
+export function createCinema({section, view, clock = view, score, tallQuery}) {
   const layers = new Map([...view.querySelectorAll('[data-layer]')].map(el => [el.dataset.layer, {el, written: {}}]));
   const state = {T: 0, flow: false, layout: null, plan: null, spans: new Map()};
 
   function measure() {
     if (state.flow) return;
-    const W = view.clientWidth || innerWidth, H = view.clientHeight || innerHeight;
+    const W = view.clientWidth || innerWidth, H = clock?.clientHeight || view.clientHeight || innerHeight;
     const layout = {tall: tallQuery ? tallQuery.matches : W / H < 1, W, H};
     const plan = score(layout);
     const homes = {};

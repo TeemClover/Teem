@@ -61,6 +61,7 @@ function fixture({tracks = {}, plan = null, definitions = [{name: 'fx'}], at = 0
   const view = section.append(new Element());
   view.clientWidth = 1000;
   view.clientHeight = 800;
+  const clock = {clientHeight: 800};
   const layers = new Map(), images = new Map();
   for (const definition of definitions) {
     const parent = definition.parent ? layers.get(definition.parent) : view;
@@ -76,9 +77,9 @@ function fixture({tracks = {}, plan = null, definitions = [{name: 'fx'}], at = 0
       images.set(definition.name, image);
     }
   }
-  section.getBoundingClientRect = () => ({top: -T * view.clientHeight});
-  const cinema = createCinema({section, view, score: plan || (() => ({end, chapters: [], tracks}))});
-  return {cinema, section, layers, images,
+  section.getBoundingClientRect = () => ({top: -T * clock.clientHeight});
+  const cinema = createCinema({section, view, clock, score: plan || (() => ({end, chapters: [], tracks}))});
+  return {cinema, section, view, clock, layers, images,
     move(next) { T = next; cinema.render(); },
     measure() { cinema.measure(); },
   };
@@ -272,4 +273,20 @@ test('focus inside a control that fades out moves to the story, not to nowhere',
   } finally {
     globalThis.document = previous;
   }
+});
+
+
+test('browser chrome can reveal more artwork without advancing the story or moving its chapter anchors', () => {
+  const f = fixture({plan: actualScore, definitions: [{name: 'po'}, {name: 'po.title'}], at: 13.65});
+  const mark = f.section.append(new Element('span', {mark: 'PO'}));
+  f.measure();
+  assert.equal(mark.style.top, `${12.09 * 800}px`);
+  const before = {time: f.cinema.time(), top: mark.style.top, pose: f.layers.get('po.title').style.transform};
+  f.view.clientHeight = 900;
+  f.measure();
+  assert.equal(f.cinema.state.layout.H, 800);
+  assert.deepEqual({time: f.cinema.time(), top: mark.style.top, pose: f.layers.get('po.title').style.transform}, before);
+  f.view.clientHeight = 800;
+  f.measure();
+  assert.equal(f.cinema.time(), before.time);
 });

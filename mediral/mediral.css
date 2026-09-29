@@ -121,12 +121,17 @@ main{position:relative;z-index:1}
    every hold. Positions use left/top, never transform: the engine owns transform and opacity.
    Invisible .mr-slot boxes mark hand-off poses (the routine row, the rising bottle, the glass stem).
    ========================================================================== */
-.mr-cinema{position:relative;height:calc(var(--screens,15.75) * 100svh);background:#163a28}
+.mr-cinema{position:relative;height:calc(var(--screens,15.75) * 100svh);height:calc((var(--screens,15.75) - 1) * 100svh + 100lvh);background:#163a28}
 .mr-cinema:focus{outline:none}
 .mr-mark{position:absolute;left:0;width:1px;height:1px;pointer-events:none;scroll-margin-top:0}
 /* The viewport and shots clip without being scroll containers: focusing or revealing a layer near an
    edge must never scroll the cinema internally (hidden stays as a fallback where clip is unknown). */
-.mr-cinema__view{position:sticky;top:0;height:100svh;overflow:hidden;overflow:clip;isolation:isolate;perspective:1400px;background:var(--ivory)}
+.mr-cinema__view{position:sticky;top:0;height:100svh;height:100lvh;overflow:hidden;overflow:clip;isolation:isolate;perspective:1400px;background:var(--ivory)}
+/* Paint through the space Safari reveals when its toolbar folds away. The large viewport is
+   stable during that gesture; the separate small-viewport clock keeps chapter timing and text
+   positions unchanged. The track includes the extra painted height so its final hold stays pinned. */
+.mr-cinema__clock{position:absolute;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none}
+.mr-flow .mr-cinema__clock{display:none}
 .mr-shot,.mr-shot__cam,.mr-shot__bg{position:absolute;inset:0}
 .mr-shot{overflow:hidden;overflow:clip}
 [data-layer]{transform-origin:50% 50%}

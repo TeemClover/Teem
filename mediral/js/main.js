@@ -402,7 +402,7 @@ function bootCinema() {
     const el = event.target;
     if (el !== section && el?.nodeType === 1 && (el.scrollTop || el.scrollLeft)) { el.scrollTop = 0; el.scrollLeft = 0; }
   }, {capture: true, passive: true});
-  state.cinema = createCinema({section, view: $('[data-view]', section), score, tallQuery});
+  state.cinema = createCinema({section, view: $('[data-view]', section), clock: $('[data-clock]', section), score, tallQuery});
   const applyFlow = () => {
     root.classList.toggle('mr-flow', flowQuery.matches);
     state.cinema.setFlow(flowQuery.matches);
