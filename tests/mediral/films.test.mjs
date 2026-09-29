@@ -37,7 +37,22 @@ test('the UV concept is visibly attributed without inventing test results or hid
   assert.match(html, /mr-chapter-film__comparison"><span>ยังไม่ทา<\/span><span>ทาแล้ว<\/span>/, 'The reviewed left/right orientation stays explicit');
   assert.ok(html.indexOf('mr-chapter-film__caption') > html.indexOf('</video>'));
   assert.doesNotMatch(html.match(/<div class="mr-art mr-chapter-film[^>]*>/)[0], /aria-hidden/);
-  assert.doesNotMatch(html, /(?:100%|SPF\s*\d|PA\+|ผลทดสอบยืนยัน)/);
+  const film = html.match(/<div class="mr-art mr-chapter-film[\s\S]*?<p class="mr-chapter-film__caption">[\s\S]*?<\/p>\s*<\/div>/)[0];
+  assert.doesNotMatch(film, /(?:100%|SPF\s*\d|PA\+|ผลทดสอบยืนยัน)/, 'The concept film never supplies a product protection rating');
+  assert.match(FILMS.SU.src, /su-uv-patch-v2-1080\.mp4$/, 'The corrected sunscreen-patch film replaces the whole-frame colour split');
+});
+
+test('the main sunscreen rating comes from attributed product data, distinct from the UV film', () => {
+  const sun = step('SU');
+  assert.deepEqual(sun.protection, {spf: '50', pa: '+++', spf_meaning: 'การปกป้อง UVB', pa_meaning: 'การปกป้อง UVA ระดับสูง', attribution: 'ค่าที่ Mediral ระบุ'});
+  const block = markup('SU').match(/<div class="mr-protection mr-su__protection"[\s\S]*?<\/dl>[\s\S]*?<\/div>/)[0];
+  assert.match(block, /<dt><span>SPF <\/span>50<\/dt>/);
+  assert.match(block, /<dt>PA\+\+\+<\/dt>/);
+  for (const text of [sun.protection.spf_meaning, sun.protection.pa_meaning, sun.protection.attribution]) assert.ok(block.includes(text));
+  for (const id of ['CL', 'AC', 'BR', 'PO']) assert.doesNotMatch(markup(id), /mr-protection/);
+  const missing = structuredClone(sun);
+  delete missing.protection.attribution;
+  assert.doesNotMatch(SHOTS.SU(missing, path => path), /mr-protection/, 'An unattributed rating is not rendered');
 });
 
 test('new film assets are real compact faststart MP4s in both sizes, with WebP fallback posters', () => {
@@ -72,10 +87,12 @@ test('film holds leave their subject clear; the native products return for their
     assert.ok(pose('br.film', 7.05).o > .5);
     assert.equal(pose('br.pack', 7.05).o, 0, 'The BR bottle does not cover the extraction film');
     assert.equal(pose('su.film', 9.8).o, 1);
+    assert.equal(pose('su.protection', 9.8).o, 1);
     for (const name of ['su.pack', 'su.ribbon', 'su.ribbonBack']) assert.equal(pose(name, 9.8).o, 0, `${name} does not cover the UV comparison`);
     assert.equal(pose('br.film', 8.5).o, 0);
     assert.equal(pose('br.pack', 8.5).o, 1);
     assert.equal(pose('su.film', 10.7).o, 0);
+    assert.equal(pose('su.protection', 10.7).o, 0, 'The rating makes room for hydration and the pack');
     assert.equal(pose('su.pack', 10.7).o, 1);
   }
 });

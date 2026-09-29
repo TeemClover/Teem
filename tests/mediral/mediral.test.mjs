@@ -101,20 +101,29 @@ test('ingredient explanations retain their source and separate individual from g
   assert.ok([...powder.featured, ...powder.ingredients].every(i => i.benefit_status === 'identity-only'), 'Group-level powder copy is not individual efficacy evidence');
 });
 
-test('ingredient groups cover every source-listed name once without treating aliases as extra actives', () => {
-  const counts = {CL: 15, AC: 24, BR: 18, SU: 14, PO: 18};
+test('source display groups agree across main and detail, without treating a blend and its members as a distinct total', () => {
+  const counts = {CL: 15, AC: 24, BR: 18, SU: 15, PO: 18};
   for (const step of steps()) {
     const names = [...step.featured, ...step.ingredients].map(i => i.name);
     assert.equal(names.length, counts[step.id], `${step.id}: preserve the full source-list display inventory`);
     const grouped = step.ingredient_groups.flatMap(g => g.ingredientNames);
     assert.equal(new Set(grouped).size, grouped.length, `${step.id}: each name belongs to one reading group`);
     assert.deepEqual([...grouped].sort(), [...names].sort(), `${step.id}: no source-listed name is omitted`);
+    const page = details().products.find(p => p.id === step.id);
+    assert.deepEqual(step.ingredient_groups.map(g => ({id: g.id, names: g.ingredientNames})),
+      page.ingredient_groups.map(g => ({id: g.id, names: g.items.map(i => i.name)})), `${step.id}: main and detail use the same source grouping`);
   }
   const sun = steps().find(s => s.id === 'SU');
   const names = [...sun.featured, ...sun.ingredients].map(i => i.name);
   assert.equal(names.filter(n => /ไฮยา/.test(n)).length, 1, 'HA aliases share one source entry');
-  assert.ok(!names.some(n => /Giga White/.test(n)), 'The botanical blend is a group, not an extra counted ingredient');
-  assert.equal(sun.ingredient_groups.find(g => g.id === 'su-alpine-botanicals').ingredientNames.length, 7);
+  assert.equal(names.filter(n => /Giga White/.test(n)).length, 1, 'One card describes the branded blend');
+  assert.deepEqual(sun.ingredient_groups.map(g => g.ingredientNames.length), [5, 10], 'Hero and Supporting follow the source classification');
+  assert.equal(sun.show_ingredient_total, false, 'The blend and its members do not become a distinct-ingredient total');
+  assert.match(sun.ingredients_note, /Giga White.*7 ชนิด/);
+  const support = sun.ingredient_groups.find(g => /support/.test(g.id)).ingredientNames;
+  for (const name of ['สารสกัดมาลโลว์', 'สารสกัดเปปเปอร์มินต์', 'สารสกัดพริมูลา', 'สารสกัดอัลเคมิลลา', 'สารสกัดเวโรนิก้า', 'สารสกัดเมลิสสา', 'สารสกัดยาร์โรว์']) {
+    assert.ok(support.includes(name), `The blend member ${name} remains individually visible`);
+  }
 });
 
 test('when each piece is used retains the source method without serum layering instructions', () => {
@@ -160,7 +169,8 @@ test('each chapter says its problem, then a two-line promise and one support lin
     assert.equal(step.scene.problem, problem, `${step.id}: the reader's problem opens the chapter`);
     assert.ok(!grammars.has(step.scene.grammar), `${step.id}: its own visual grammar`);
     grammars.add(step.scene.grammar);
-    assert.doesNotMatch(JSON.stringify(step.scene), /SPF|PA\+/, `${step.id}: no protection value in the story copy`);
+    if (step.id !== 'SU') assert.doesNotMatch(JSON.stringify(step.scene), /SPF|PA\+/, `${step.id}: protection values belong only to sunscreen`);
+    else assert.match(step.protection?.attribution || '', /Mediral ระบุ/, 'The sunscreen rating remains an attributed brand value');
   }
 });
 
@@ -291,9 +301,15 @@ test('copy leads with each step’s role and avoids drug-like or unverified clai
   const heads = steps().map(s => s.headline).join(' ');
   for (const word of ['ล้าง', 'สิว', 'หมองคล้ำ', 'กันแดด', 'ปกปิด']) assert.ok(heads.includes(word), `Headlines should name the role: ${word}`);
   const copy = [publicCode(), JSON.stringify(steps().map(s => s.scene)), JSON.stringify(routine().exchange)].join('\n');
-  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|SPF ?\d|PA\+|90%|95%|ชั่วโมง|เสริมฤทธิ์|synerg|สกัดบริสุทธิ์|สูตรเข้มข้น)/iu;
+  const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|90%|95%|ชั่วโมง|เสริมฤทธิ์|synerg|สกัดบริสุทธิ์|สูตรเข้มข้น)/iu;
   const hit = copy.match(banned);
   assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
+  for (const step of steps().filter(s => s.id !== 'SU')) assert.doesNotMatch(JSON.stringify(step), /SPF\s*\d|PA\+/, `${step.id}: no sunscreen rating transferred to another product`);
+  const sun = steps().find(s => s.id === 'SU');
+  assert.equal(sun.protection.spf, '50');
+  assert.equal(sun.protection.pa, '+++');
+  assert.match(sun.protection.attribution, /Mediral ระบุ/);
+  assert.doesNotMatch(JSON.stringify(sun), /(?:บล็อก|กัน|ปกป้อง).{0,16}100%/, 'A rating never promises total UV protection');
 });
 
 test('AC’s film ships as a faststart-ready body cut in two sizes, with its poster and final lens', () => {

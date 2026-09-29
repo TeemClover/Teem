@@ -49,14 +49,16 @@ function ingredients(product, asset) {
   const groups = product.ingredient_groups || [];
   if (!groups.length) return '';
   const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const showTotal = product.show_ingredient_total !== false;
   return `<section class="mr-detail__block mr-atlas" id="ingredients" aria-labelledby="names-title">
     <h2 id="names-title">${esc(product.ingredients_heading)}</h2>
-    <p class="mr-detail__intro">${esc(product.ingredients_intro)} · ${total} รายการ</p>
+    <p class="mr-detail__intro">${esc(product.ingredients_intro)}${showTotal ? ` · ${total} ชนิด` : ''}</p>
+    ${!showTotal && product.ingredient_note ? `<p class="mr-atlas__count-note">${esc(product.ingredient_note)}</p>` : ''}
     ${groups.map((g, i) => {
       const seen = new Set();
       const roles = g.items.some(item => item.benefit);
       return `<section class="mr-atlas__group${roles ? ' mr-atlas__group--roles' : ''}" aria-labelledby="names-${i + 1}">
-      <h3 id="names-${i + 1}"><span>${esc(g.title)}</span><small>${g.items.length} รายการ</small></h3>
+      <h3 id="names-${i + 1}"><span>${esc(g.title)}</span><small>${g.items.length} ชนิด</small></h3>
       ${g.summary ? `<p class="mr-atlas__summary">${esc(g.summary)}</p>` : ''}
       <ul class="mr-atlas__grid">${g.items.map((item, k) => {
         const repeat = item.image && seen.has(item.image);
@@ -68,7 +70,7 @@ function ingredients(product, asset) {
       }).join('')}</ul>
     </section>`;
     }).join('')}
-    ${product.ingredient_note ? `<p class="mr-detail__fine">${esc(product.ingredient_note)} · ภาพส่วนผสมเป็นภาพประกอบชื่อหรือลักษณะวัตถุดิบ ไม่ใช่ภาพจากผู้ผลิต</p>` : ''}
+    <p class="mr-detail__fine">${showTotal && product.ingredient_note ? `${esc(product.ingredient_note)} · ` : ''}ภาพส่วนผสมเป็นภาพประกอบชื่อหรือลักษณะวัตถุดิบ ไม่ใช่ภาพจากผู้ผลิต</p>
     ${product.name_notes?.length ? `<div class="mr-detail__aka"><h3>ชื่อที่พบในสื่อแบรนด์</h3>${product.name_notes.map(n => `<p>${esc(n)}</p>`).join('')}</div>` : ''}
   </section>`;
 }
@@ -104,7 +106,7 @@ function sequence(product, step, routine, asset) {
     <ol class="mr-seq__beats">
       ${beat(1, 'select', tableau(select, product, asset), `<p>${esc(select.body)}</p>
         ${select.names?.length ? `<ul class="mr-beat__names">${select.names.map(name => `<li>${esc(name)}</li>`).join('')}</ul>` : ''}
-        ${total ? `<a class="mr-beat__more" href="#ingredients">ดูส่วนผสมทั้ง ${total} รายการ</a>` : ''}`)}
+        ${total ? `<a class="mr-beat__more" href="#ingredients">${product.show_ingredient_total === false ? 'ดูส่วนประกอบและสรรพคุณ' : `ดูส่วนผสมทั้ง ${total} ชนิด`}</a>` : ''}`)}
       ${beat(2, 'material', `<div class="mr-material"><img src="${asset(material.image)}" alt="" loading="lazy" decoding="async"></div>`, `<p>${esc(material.body)}</p>`)}
       ${beat(3, 'care', `<div class="mr-beat__pack">${pack(step, asset, {lazy: true})}</div>`, `<ul class="mr-care">${product.benefits.map(b => `<li><b>${esc(b.title)}</b><span>${esc(b.body)}</span></li>`).join('')}</ul>
         ${product.fit ? `<p class="mr-detail__fit">${esc(product.fit)}</p>` : ''}
@@ -119,6 +121,17 @@ function fact(step) {
   if (!f) return '';
   return `<details class="mr-fact"><summary>${esc(f.label)}</summary><p>${esc(f.text)}</p>
     <small>${esc(f.source)} · ${f.links.map(link => `<a href="${esc(link.href)}" rel="noopener" target="_blank">${esc(link.label)}</a>`).join(' · ')}</small></details>`;
+}
+
+// The rating is the brand's declared value from the shared routine data, separate from film imagery.
+function protection(step) {
+  const p = step.protection;
+  if (!p?.spf || !p.pa || !p.attribution) return '';
+  return `<div class="mr-protection mr-detail__protection">
+    <dl><div><dt><span>SPF </span>${esc(p.spf)}</dt><dd>${esc(p.spf_meaning)}</dd></div>
+      <div><dt>PA${esc(p.pa)}</dt><dd>${esc(p.pa_meaning)}</dd></div></dl>
+    <p class="mr-protection__source">${esc(p.attribution)}</p>
+  </div>`;
 }
 
 // The set's route, at the top of every product page: number and colour for each piece, the current
@@ -150,6 +163,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
       <p class="mr-detail__problem">${esc(product.problem)}</p>
       <h1 id="detail-title">${(([name, ...role]) => `${esc(name)}${role.length ? `<span class="mr-detail__role">${esc(role.join(' · '))}</span>` : ''}`)(product.short_name.split(' · '))}</h1>
       <p class="mr-detail__headline">${esc(product.headline)}</p>
+      ${protection(step)}
       <p class="mr-detail__lead">${esc(product.lead)}</p>
       <div class="mr-actions">${lineAction(order, order.label_product)}<a class="mr-btn mr-btn--ghost" href="${back}">กลับไปดูรูทีน 5 ชิ้น</a></div>
     </div>

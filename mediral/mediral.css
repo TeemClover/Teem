@@ -299,7 +299,16 @@ main{position:relative;z-index:1}
 /* SU — weightless: an airy, cool frame; the tube floats; three jobs travel sideways. */
 .mr-shot--su{clip-path:inset(0 calc((1 - var(--wipe,1.2)) * 100%) 0 0);color:var(--forest-deep)}
 .mr-shot--su .mr-shot__bg{inset:0 -8%;background:radial-gradient(60% 40% at 78% 14%,rgba(255,252,230,.95),rgba(255,252,230,0) 70%),linear-gradient(180deg,#eaf3ef 0%,#f7faf2 48%,#e0ecdb 100%)}
-.mr-su__film{left:4vw;top:35svh;width:92vw;height:auto;aspect-ratio:16/9}
+.mr-su__title{font-size:min(8.6vw,4.7svh)}
+.mr-su__film{left:calc(50% - min(46vw,21.333svh));top:40.5svh;width:min(92vw,42.666svh);height:auto;aspect-ratio:16/9}
+.mr-protection{color:var(--forest-deep)}
+.mr-protection dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.mr-protection dl>div+div{border-left:1px solid rgba(43,77,55,.2);padding-left:12px}
+.mr-protection dt{white-space:nowrap;font:700 clamp(29px,6vw,45px)/1.1 var(--display);letter-spacing:-.035em}
+.mr-protection dt span{font-size:.57em;letter-spacing:.01em}
+.mr-protection dd{margin:5px 0 0;font:500 clamp(11px,2.6vw,13px)/1.4 var(--sans)}
+.mr-protection__source{margin:7px 0 0;font:500 11px/1.5 var(--sans);color:var(--forest)}
+.mr-su__protection{position:absolute;top:27.5svh;left:7vw;width:86vw;text-align:center}
 .mr-su__film .mr-fx__clipframe{-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 48%,rgba(0,0,0,.92) 65%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 48%,rgba(0,0,0,.92) 65%,transparent 100%)}
 .mr-su__film img,.mr-su__film video{object-fit:contain;object-position:50% 50%}
 .mr-chapter-film__comparison{position:absolute;bottom:8px;left:0;width:100%;display:grid;grid-template-columns:1fr 1fr;justify-items:center;font:500 clamp(11px,2.9vw,13px)/1.4 var(--sans);color:#fff}
@@ -436,6 +445,8 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-su__ribbon--back{width:62vw;left:44vw;top:12svh}
   .mr-su__air{width:8vw;left:80vw;top:24svh}
   .mr-su__film{left:auto;right:5vw;top:29svh;width:min(50vw,64svh)}
+  .mr-su__protection{top:49svh;left:6vw;width:36vw;text-align:left}
+  .mr-su__protection dt{font-size:clamp(34px,4.2vw,62px)}
   .mr-chapter-film__caption{font-size:12px}
   .mr-wave--band{top:72svh;left:6vw;right:auto;width:44vw;text-align:left}
   .mr-wave--band .mr-wave__word{font-size:min(4.4vw,8svh)}
@@ -472,6 +483,8 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
 .mr-flow .mr-cl__botanical-label{order:3;width:auto;font-size:16px}
 .mr-flow .mr-cl__word{font-size:clamp(34px,8vw,64px)}
 .mr-flow .mr-title{order:2;font-size:clamp(30px,6vw,52px);text-align:center;width:auto}
+.mr-flow .mr-su__protection{order:3;width:min(100%,430px);justify-self:center;text-align:center;margin-block:4px 14px}
+.mr-flow .mr-su__protection dt{font-size:clamp(29px,6vw,45px)}
 .mr-flow .mr-wave,.mr-flow .mr-pairs{order:3;text-align:center;width:auto}
 .mr-flow .mr-wave__word,.mr-flow .mr-pairs .mr-wave__word{font-size:clamp(22px,4vw,32px)}
 .mr-flow .mr-wave__names{margin-top:.4em!important}
@@ -570,6 +583,8 @@ body[data-product=PO] .mr-detail__material img{width:100%;right:-18%;top:80%;opa
 .mr-detail__role{display:block;margin-top:6px;font:600 clamp(17px,2vw,22px)/1.4 var(--sans);letter-spacing:0;opacity:.85}
 .mr-detail__headline{margin:0 0 14px;font:600 clamp(19px,2.2vw,26px)/1.4 var(--sans)}
 .mr-detail__lead{font-size:15px;line-height:1.85;max-width:34em}
+.mr-detail__protection{max-width:440px;margin:20px 0 18px;padding-block:16px;border-block:1px solid rgba(43,77,55,.2)}
+.mr-detail__protection dt{font-size:clamp(34px,4vw,52px)}
 .mr-detail__hero .mr-actions{margin-top:22px}
 .mr-detail__hero .mr-btn--ghost{color:inherit;border-color:currentColor}
 .mr-detail__pack{position:relative;margin:0;justify-self:center;height:min(58svh,480px);isolation:isolate}
@@ -585,6 +600,7 @@ body[data-product=PO] .mr-detail__pack{height:min(28svh,240px)}
 .mr-detail__use dt{font-size:12px;color:var(--ink-soft)}
 .mr-detail__use dd{margin:0;font-size:14px;line-height:1.7}
 .mr-detail__intro{font-size:13px;color:var(--ink-soft);margin:-6px 0 16px}
+.mr-atlas__count-note{margin:0 0 22px;font-size:13px;line-height:1.8;color:var(--ink-soft)}
 .mr-detail__fine{font-size:11px;color:var(--ink-soft);margin-top:12px}
 .mr-detail__aka{margin-top:14px;padding:12px 14px;border-left:2px solid var(--sage-deep);background:rgba(255,255,255,.6)}
 .mr-detail__aka h3{margin:0 0 4px;font:600 12px/1.5 var(--sans);color:var(--forest)}
@@ -705,6 +721,7 @@ body[data-product=PO] .mr-beat__pack .mr-pack{height:44%;margin-bottom:18%}
   .mr-route-nav .is-current .mr-route-nav__name{display:block;font-size:10px}
   .mr-detail__hero{grid-template-columns:1fr;min-height:0;padding-top:28px}
   .mr-detail__pack{order:-1;height:min(36svh,300px)}
+  body[data-product=SU] .mr-detail__pack{order:0}
   body[data-product=PO] .mr-detail__pack{height:min(20svh,170px)}
   .mr-detail__material img{width:120%;right:-40%;top:22%}
   .mr-detail__use dl div{grid-template-columns:1fr;gap:2px}

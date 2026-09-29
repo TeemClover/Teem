@@ -8,36 +8,89 @@ const routine = JSON.parse(read('data/routine.json'));
 const details = JSON.parse(read('data/details.json'));
 const {detailHTML, DETAIL_IDS} = await import(new URL('../../mediral/js/detail-view.js', import.meta.url));
 const render = id => detailHTML({routine, details, id, asset: path => `../${path}`});
-const COUNTS = {CL: 15, AC: 24, BR: 18, SU: 14, PO: 18};
+// These are source-display cards, not a claim that a compound and its constituents are distinct.
+const COUNTS = {CL: 15, AC: 24, BR: 18, SU: 15, PO: 18};
 
-test('every source-listed name appears in its group, and the counts are names in brand material', () => {
+test('every source-listed entry appears once in its group, with count units and compound totals handled explicitly', () => {
   for (const id of DETAIL_IDS) {
     const html = render(id);
     const product = details.products.find(p => p.id === id);
     const names = product.ingredient_groups.flatMap(g => g.items.map(i => i.name));
     assert.equal(names.length, COUNTS[id], `${id}: the source-listed names`);
-    for (const group of product.ingredient_groups) {
-      const start = html.indexOf(`<span>${group.title}</span>`);
+    for (const [index, group] of product.ingredient_groups.entries()) {
+      const start = html.indexOf(`<h3 id="names-${index + 1}">`);
       assert.ok(start > 0, `${id}: group ${group.title}`);
       const block = html.slice(start, html.indexOf('</ul>', start));
+      assert.ok(block.includes(`<span>${group.title.replaceAll('&', '&amp;')}</span>`), `${id}: the source group title remains intact`);
       assert.equal((block.match(/class="mr-atlas__item"/g) || []).length, group.items.length, `${id}: one card per name in ${group.title}`);
       for (const item of group.items) {
         assert.ok(block.includes(`<b>${item.name}</b>`), `${id}: ${item.name} sits in ${group.title}`);
         if (item.benefit) assert.ok(block.includes(item.benefit), `${id}: ${item.name} keeps its sourced role`);
       }
     }
-    if (COUNTS[id]) assert.match(html, new RegExp(`${COUNTS[id]} รายการ`));
-    if (COUNTS[id]) assert.match(html, /รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก/, `${id}: not presented as the full label list`);
+    if (product.show_ingredient_total !== false) assert.match(html, new RegExp(`${COUNTS[id]} ชนิด`));
+    for (const group of product.ingredient_groups) assert.ok(html.includes(`<small>${group.items.length} ชนิด</small>`));
+    assert.doesNotMatch(html, /\d+ (?:รายการ|ชื่อ)(?:<|\s|$)/, `${id}: counts use the customer-facing unit ชนิด`);
+    assert.ok(html.includes(product.ingredient_note), `${id}: preserves the source-list boundary`);
   }
+});
+
+test('Hero and Supporting classification follows the brand groups; powder retains its four complexes', () => {
+  const classified = {CL: [5, 10], AC: [5, 19], BR: [5, 13], SU: [5, 10]};
+  for (const [id, counts] of Object.entries(classified)) {
+    const groups = details.products.find(p => p.id === id).ingredient_groups;
+    assert.deepEqual(groups.map(g => g.items.length), counts, id);
+    assert.match(groups[0].title, /Hero Active/);
+    assert.match(groups[1].title, /Supporting Active/);
+    assert.ok(groups.every(g => /Mediral/.test(g.source)), `${id}: classification retains its attribution`);
+  }
+  const powder = details.products.find(p => p.id === 'PO');
+  assert.deepEqual(powder.ingredient_groups.map(g => g.items.length), [6, 3, 6, 3]);
+  assert.ok(powder.ingredient_groups.every(g => /Complex/.test(g.title)));
+  assert.ok(powder.ingredient_groups.every(g => g.items.every(i => i.benefit === null)), 'Group copy never becomes an invented individual effect');
+  const sun = details.products.find(p => p.id === 'SU');
+  assert.equal(sun.ingredient_groups.flatMap(g => g.items).filter(i => /Giga White/.test(i.name)).length, 1);
+  assert.equal(sun.show_ingredient_total, false);
+  assert.match(sun.ingredient_note, /Giga White®.*พืช 7 ชนิด.*Supporting Active/);
 });
 
 test('a name without a sourced role is shown as a name only; nothing is filled in for it', () => {
   for (const product of details.products) for (const group of product.ingredient_groups) for (const item of group.items) {
-    if (item.benefit) continue;
+    if (item.benefit) {
+      assert.ok(item.benefit_source?.trim(), `${product.id}: ${item.name} retains its benefit source`);
+      assert.ok(['individual', 'group'].includes(item.benefit_scope), `${product.id}: ${item.name} names its claim scope`);
+      continue;
+    }
     const html = render(product.id);
     const at = html.indexOf(`<b>${item.name}</b>`);
     assert.equal(html.slice(at, at + item.name.length + 20).includes('<small>'), false, `${product.id}: ${item.name}`);
   }
+});
+
+test('suppressing a compound-list total preserves every group and moves its explanation beside the heading', () => {
+  const custom = structuredClone(details);
+  const product = custom.products.find(p => p.id === 'AC');
+  product.show_ingredient_total = false;
+  product.ingredient_note = 'กลุ่มสารนี้แจกแจงส่วนประกอบด้านล่าง จึงไม่รวมยอดซ้ำ';
+  const html = detailHTML({routine, details: custom, id: 'AC'});
+  const atlas = html.slice(html.indexOf('id="ingredients"'));
+  const intro = atlas.slice(0, atlas.indexOf('class="mr-atlas__group'));
+  assert.ok(intro.includes(product.ingredient_note));
+  assert.doesNotMatch(intro, /24 ชนิด/);
+  assert.ok(html.includes('ดูส่วนประกอบและสรรพคุณ'));
+  assert.equal((html.match(/class="mr-atlas__item"/g) || []).length, COUNTS.AC);
+  assert.equal(html.split(product.ingredient_note).length - 1, 1, 'The count explanation is shown once');
+});
+
+test('the detail rating uses the same source fields as the main page and never invents a missing attribution', () => {
+  const custom = structuredClone(routine);
+  const sun = custom.steps.find(s => s.id === 'SU');
+  for (const value of [sun.protection.spf_meaning, sun.protection.pa_meaning, sun.protection.attribution]) assert.ok(render('SU').includes(value));
+  sun.protection.spf = '30';
+  const changed = detailHTML({routine: custom, details, id: 'SU'});
+  assert.match(changed, /<dt><span>SPF <\/span>30<\/dt>/, 'The renderer does not hardcode a rating');
+  delete sun.protection.attribution;
+  assert.doesNotMatch(detailHTML({routine: custom, details, id: 'SU'}), /mr-detail__protection/);
 });
 
 test('the mousse restores the confirmed fifteen source names without invented individual benefits or size', () => {
@@ -58,8 +111,10 @@ test('the mousse restores the confirmed fifteen source names without invented in
 test('the sunscreen page notes a brand trade name without counting it as an ingredient', () => {
   const html = render('SU');
   assert.match(html, /<h3>ชื่อที่พบในสื่อแบรนด์<\/h3><p>สื่อ Mediral อีกภาพใช้ชื่อ HydroAlgae™ ในเรื่องราวของสารสกัดสาหร่าย<\/p>/);
-  assert.ok(!details.products.find(p => p.id === 'SU').ingredient_groups.some(g => g.items.some(i => /HydroAlgae/.test(i.name))), 'Not a fifteenth name');
-  assert.match(html, /14 รายการ/);
+  assert.ok(!details.products.find(p => p.id === 'SU').ingredient_groups.some(g => g.items.some(i => /HydroAlgae/.test(i.name))), 'An unconfirmed trade-name alias does not become an additional ingredient');
+  assert.equal(details.products.find(p => p.id === 'SU').show_ingredient_total, false);
+  assert.doesNotMatch(html, /(?:14|15) ชนิด/);
+  assert.match(html, /ดูส่วนประกอบและสรรพคุณ/);
 });
 
 test('each page orders through the one LINE config and returns to its exact chapter and neighbours', () => {
@@ -89,9 +144,13 @@ test('the pages read as finished and carry no backstage wording or treatment cla
     assert.doesNotMatch(html, /ยังไม่ยืนยัน|รอยืนยัน|กำลังตรวจ|ฉบับร่าง|ภาพร่าง|รอสูตร|source_ids|internal/, `${id}: status wording`);
     assert.doesNotMatch(html, /รักษา(?:สิว|ฝ้า)|สิวหาย|ฝ้าหาย|ฆ่าเชื้อ|(?:ซ่อม|ฟื้นฟู|สร้างใหม่).{0,6}เซลล์/, `${id}: claims to hold`);
     // A protection value appears only on the sunscreen page, and only as what brand material states.
-    const spf = [...html.matchAll(/.{0,24}SPF ?\d+.{0,8}/g)].map(m => m[0]);
-    if (id !== 'SU') assert.deepEqual(spf, [], `${id}: no SPF`);
-    else assert.ok(spf.length && spf.every(line => /สื่อ Mediral ระบุ SPF 50 PA\+\+\+/.test(line)), 'SU: attributed to brand media');
+    if (id !== 'SU') assert.doesNotMatch(html, /SPF ?\d|mr-protection/, `${id}: no protection rating`);
+    else {
+      const block = html.match(/<div class="mr-protection mr-detail__protection">[\s\S]*?<\/dl>[\s\S]*?<\/div>/)[0];
+      assert.match(block, /<dt><span>SPF <\/span>50<\/dt>/);
+      assert.match(block, /<dt>PA\+\+\+<\/dt>/);
+      assert.ok(block.includes(routine.steps.find(s => s.id === 'SU').protection.attribution));
+    }
   }
 });
 
@@ -99,7 +158,10 @@ test('the public details file holds only public fields', () => {
   const text = read('data/details.json');
   assert.doesNotMatch(text, /source_ids|"internal"|claude-work|Sources\/|LINE_NOTE|\b[A-Z]{2}-K\d\b|\bTT0\d\b|\b290\b/);
   for (const product of details.products) {
-    assert.deepEqual(Object.keys(product).sort(), ['benefits', 'brand_attribution', 'faq', 'fit', 'headline', 'how', 'id', 'ingredient_groups', 'ingredient_note', 'ingredients_heading', 'ingredients_intro', 'lead', 'name_notes', 'problem', 'role', 'role_in_set', 'sequence', 'short_name', 'size', 'texture', 'title']);
+    const fields = ['benefits', 'brand_attribution', 'faq', 'fit', 'headline', 'how', 'id', 'ingredient_groups', 'ingredient_note', 'ingredients_heading', 'ingredients_intro', 'lead', 'name_notes', 'problem', 'role', 'role_in_set', 'sequence', 'short_name', 'size', 'texture', 'title'];
+    if (Object.hasOwn(product, 'show_ingredient_total')) fields.push('show_ingredient_total');
+    assert.deepEqual(Object.keys(product).sort(), fields.sort());
+    if (Object.hasOwn(product, 'show_ingredient_total')) assert.equal(typeof product.show_ingredient_total, 'boolean');
   }
 });
 

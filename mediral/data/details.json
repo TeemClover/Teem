@@ -42,7 +42,7 @@
         },
         {
           "question": "มีส่วนผสมอะไรเด่น?",
-          "answer": "กลุ่ม Hero Active ประกอบด้วยชบา ลิลลี่ จมูกข้าวญี่ปุ่น ชาเขียว และสาหร่ายทะเลน้ำลึก ดูรายชื่อทั้ง 15 รายการได้ด้านบน"
+          "answer": "กลุ่ม Hero Active ประกอบด้วยชบา ลิลลี่ จมูกข้าวญี่ปุ่น ชาเขียว และสาหร่ายทะเลน้ำลึก ดูรายชื่อทั้ง 15 ชนิดได้ด้านบน"
         },
         {
           "question": "หลังล้างหน้าต้องทำอะไรต่อ?",
@@ -52,12 +52,12 @@
       "brand_attribution": "บทบาทและเนื้อสัมผัสสรุปจากสื่อ Mediral",
       "size": null,
       "ingredients_heading": "ส่วนผสมในสูตร",
-      "ingredients_intro": "จัดกลุ่มตามรายชื่อที่ Mediral ระบุ",
+      "ingredients_intro": "ส่วนประกอบตามกลุ่มที่ Mediral ระบุ พร้อมบทบาทที่มีคำอธิบายในสื่อแบรนด์",
       "ingredient_groups": [
         {
           "id": "cl-hero",
-          "title": "ส่วนผสมเด่น",
-          "summary": "ชบา ลิลลี่ จมูกข้าวญี่ปุ่น ชาเขียว และสาหร่ายทะเลน้ำลึก อยู่ในกลุ่ม Hero Active ที่ Mediral ระบุ",
+          "title": "ส่วนประกอบหลัก (Hero Active)",
+          "summary": "ส่วนประกอบหลัก 5 ชนิดตามตารางของ Mediral ได้แก่ ชบา ลิลลี่ จมูกข้าวญี่ปุ่น ชาเขียว และสาหร่ายทะเลน้ำลึก",
           "items": [
             {
               "name": "สเต็มเซลล์จากดอกชบา",
@@ -84,12 +84,13 @@
               "benefit": null,
               "image": "assets/botanicals/seaweed-generic.webp"
             }
-          ]
+          ],
+          "source": "สื่อ Mediral · ตารางส่วนประกอบมูสโฟมดีท็อกซ์ผิว"
         },
         {
           "id": "cl-support",
-          "title": "ส่วนผสมร่วมสูตร",
-          "summary": "อีก 10 รายการในสูตร ตั้งแต่ข้าวโอ๊ตและพืชดอก ไปจนถึงน้ำมันจากพืชและกรดโคจิ",
+          "title": "ส่วนประกอบเสริม (Supporting Active)",
+          "summary": "ส่วนประกอบเสริม 10 ชนิดตามตารางของ Mediral มีทั้งสารสกัดจากพืช น้ำมันจากพืช และกรดโคจิ",
           "items": [
             {
               "name": "สารสกัดเบต้ากลูแคนจากข้าวโอ๊ต",
@@ -141,7 +142,8 @@
               "benefit": null,
               "image": "assets/botanicals/pomegranate-arils.webp"
             }
-          ]
+          ],
+          "source": "สื่อ Mediral · ตารางส่วนประกอบมูสโฟมดีท็อกซ์ผิว"
         }
       ],
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
@@ -216,87 +218,78 @@
       "brand_attribution": "บทบาทและเนื้อสัมผัสสรุปจากสื่อ Mediral",
       "size": "15 ml",
       "ingredients_heading": "ส่วนผสมในสูตร",
-      "ingredients_intro": "จัดกลุ่มตามรายชื่อที่ Mediral ระบุ",
+      "ingredients_intro": "ส่วนประกอบตามกลุ่มที่ Mediral ระบุ พร้อมบทบาทที่มีคำอธิบายในสื่อแบรนด์",
       "ingredient_groups": [
         {
-          "id": "ac-balance",
-          "title": "กลุ่มดูแลสมดุลผิว",
-          "summary": "ทีทรีเป็นส่วนผสมที่แบรนด์ระบุว่าช่วยปลอบประโลมผิว ส่วนซิงค์ พีซีเอ วิชฮาเซล และเกรปฟรุตถูกจับคู่ในเรื่องสมดุลความมัน",
+          "id": "ac-hero",
+          "title": "ส่วนประกอบหลัก (Hero Active)",
+          "summary": "น้ำแร่เอิร์ธมารีน ดอกฝ้าย เปลือกมังคุด ซิงค์ พีซีเอ และทีทรี เป็นส่วนประกอบหลัก 5 ชนิดตามตารางของ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบเซรั่มลดสิว",
           "items": [
             {
-              "name": "ซิงค์ พีซีเอ",
+              "name": "สารสกัดน้ำแร่เอิร์ธมารีน",
               "benefit": null,
-              "image": "assets/materials/mineral-white-powder.webp"
+              "image": "assets/experience/p0-2-drop-clear.webp",
+              "source_name": "สารสกัดจากน้ำแร่เอิร์ธมารีน"
+            },
+            {
+              "name": "ดอกฝ้าย",
+              "benefit": null,
+              "image": "assets/botanicals/cotton-flower.webp",
+              "source_name": "สารสกัดจากสเต็มเซลล์ดอกฝ้าย"
+            },
+            {
+              "name": "สารสกัดเปลือกมังคุด",
+              "benefit": "ปลอบประโลมผิว และช่วยให้ผิวที่ดูหมองคล้ำดูสุขภาพดี",
+              "image": "assets/botanicals/mangosteen-peel.webp",
+              "source_name": "สารสกัดจากเปลือกมังคุด",
+              "benefit_source": "สื่อ Mediral · บทบาทของทีทรี เกรปฟรุต และเปลือกมังคุดในเซรั่มลดสิว",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "ซิงค์ พีซีเอ",
+              "benefit": "อยู่ในกลุ่มดูแลสมดุลความมัน ร่วมกับวิชฮาเซลและเกรปฟรุต",
+              "image": "assets/materials/mineral-white-powder.webp",
+              "benefit_source": "สื่อ Mediral · กลุ่มดูแลสมดุลความมันของเซรั่มลดสิว",
+              "benefit_scope": "group"
             },
             {
               "name": "น้ำมันใบทีทรี",
               "benefit": "ปลอบประโลมผิวที่มีแนวโน้มเป็นสิวง่าย และช่วยให้ผิวดูสมดุล",
-              "image": "assets/botanicals/tea-tree-leaves.webp"
-            },
-            {
-              "name": "สารสกัดเกรปฟรุต",
-              "benefit": "ช่วยให้ผิวดูกระจ่างใสและรู้สึกสดชื่น",
-              "image": "assets/botanicals/grapefruit-section.webp"
-            },
-            {
-              "name": "สารสกัดวิชฮาเซล",
-              "benefit": null,
-              "image": "assets/botanicals/witch-hazel-flower.webp"
-            },
-            {
-              "name": "สารสกัดว่านหางจระเข้",
-              "benefit": null,
-              "image": "assets/botanicals/aloe-cut-leaf.webp"
-            },
-            {
-              "name": "น้ำมันโจโจ้บา",
-              "benefit": null,
-              "image": "assets/botanicals/jojoba-seeds.webp"
+              "image": "assets/botanicals/tea-tree-leaves.webp",
+              "source_name": "น้ำมันสกัดจากใบต้นทีทรี",
+              "benefit_source": "สื่อ Mediral · บทบาทของทีทรี เกรปฟรุต และเปลือกมังคุดในเซรั่มลดสิว",
+              "benefit_scope": "individual"
             }
           ]
         },
         {
-          "id": "ac-hydration",
-          "title": "กลุ่มเติมความชุ่มชื้น",
-          "summary": "Mediral จัดหกชื่อนี้ไว้ในกลุ่มความชุ่มชื้น และยกไฮยา ทรีฮาโลส กับโซเดียม พีซีเอมาอธิบายเรื่องเติมและกักเก็บความชุ่มชื้น",
+          "id": "ac-support",
+          "title": "ส่วนประกอบเสริม (Supporting Active)",
+          "summary": "ส่วนประกอบเสริม 19 ชนิด ครอบคลุมกลุ่มดูแลสมดุลความมัน ความชุ่มชื้น และความกระจ่างใสตามคำอธิบายของ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบและบทบาทส่วนผสมเซรั่มลดสิว",
           "items": [
             {
-              "name": "ไฮยา (HA)",
-              "benefit": "เติมความชุ่มชื้นให้ผิว",
-              "image": "assets/materials/hydration-clear-gel.webp"
+              "name": "สารสกัดน้ำแร่ Lipobelle Glacier",
+              "benefit": null,
+              "image": "assets/experience/p0-2-drop-clear.webp"
             },
             {
-              "name": "ทรีฮาโลส",
+              "name": "สารสกัดสาหร่ายทะเล",
               "benefit": null,
-              "image": "assets/materials/mineral-white-powder.webp"
+              "image": "assets/botanicals/seaweed-generic.webp"
             },
             {
-              "name": "โซเดียม พีซีเอ",
+              "name": "น้ำมันหอมระเหยกลิ่นดอกซากุระ",
               "benefit": null,
-              "image": "assets/materials/hydration-clear-gel.webp"
+              "image": "assets/materials/amber-oil.webp"
             },
             {
-              "name": "สารสกัดน้ำดอกกุหลาบ",
+              "name": "อัลลันโทอิน",
               "benefit": null,
-              "image": "assets/botanicals/rose-flower-petals.webp"
+              "image": "assets/materials/mineral-white-powder.webp",
+              "source_name": "สารสกัดจากอัลลานโทอิน"
             },
-            {
-              "name": "สารสกัดเปลือกมะม่วง",
-              "benefit": null,
-              "image": "assets/botanicals/mango-peel.webp"
-            },
-            {
-              "name": "สารสกัดเปลือกกล้วย",
-              "benefit": null,
-              "image": "assets/botanicals/banana-peel.webp"
-            }
-          ]
-        },
-        {
-          "id": "ac-brightening",
-          "title": "กลุ่มดูแลความกระจ่างใส",
-          "summary": "หกชื่อในกลุ่ม Brightening ของแบรนด์ โดยเปลือกมังคุดมีคำอธิบายเพิ่มเติมเรื่องปลอบประโลมและดูแลความหมองคล้ำ",
-          "items": [
             {
               "name": "วิตามินจากจมูกข้าวญี่ปุ่น",
               "benefit": null,
@@ -308,9 +301,9 @@
               "image": "assets/experience/p0-2-drop-clear.webp"
             },
             {
-              "name": "สารสกัดเปลือกมังคุด",
-              "benefit": "ปลอบประโลมผิว และช่วยให้ผิวที่ดูหมองคล้ำดูสุขภาพดี",
-              "image": "assets/botanicals/mangosteen-peel.webp"
+              "name": "สารสกัดเปลือกมะกอก",
+              "benefit": null,
+              "image": "assets/botanicals/olive-peel.webp"
             },
             {
               "name": "สารสกัดข้าวโพด",
@@ -318,51 +311,71 @@
               "image": "assets/botanicals/corn-source.webp"
             },
             {
+              "name": "สารสกัดเกรปฟรุต",
+              "benefit": "ช่วยให้ผิวดูกระจ่างใสและรู้สึกสดชื่น",
+              "image": "assets/botanicals/grapefruit-section.webp",
+              "source_name": "สารสกัดน้ำมันเกรปฟรุต",
+              "benefit_source": "สื่อ Mediral · บทบาทของทีทรี เกรปฟรุต และเปลือกมังคุดในเซรั่มลดสิว",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "น้ำมันโจโจ้บา",
+              "benefit": null,
+              "image": "assets/botanicals/jojoba-seeds.webp"
+            },
+            {
+              "name": "ทรีฮาโลส",
+              "benefit": "อยู่ในกลุ่มเติมและกักเก็บความชุ่มชื้น ร่วมกับไฮยาและโซเดียม พีซีเอ",
+              "image": "assets/materials/mineral-white-powder.webp",
+              "benefit_source": "สื่อ Mediral · กลุ่มเติมและกักเก็บความชุ่มชื้นของเซรั่มลดสิว",
+              "benefit_scope": "group"
+            },
+            {
+              "name": "ไฮยา (HA)",
+              "benefit": "เติมความชุ่มชื้นให้ผิว",
+              "image": "assets/materials/hydration-clear-gel.webp",
+              "source_name": "ไฮยา ทริปเปิ้ลโมเลกุล",
+              "benefit_source": "สื่อ Mediral · ไฮยาในเซรั่มลดสิว",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "โซเดียม พีซีเอ",
+              "benefit": "อยู่ในกลุ่มเติมและกักเก็บความชุ่มชื้น ร่วมกับไฮยาและทรีฮาโลส",
+              "image": "assets/materials/hydration-clear-gel.webp",
+              "benefit_source": "สื่อ Mediral · กลุ่มเติมและกักเก็บความชุ่มชื้นของเซรั่มลดสิว",
+              "benefit_scope": "group"
+            },
+            {
+              "name": "สารสกัดน้ำดอกกุหลาบ",
+              "benefit": null,
+              "image": "assets/botanicals/rose-flower-petals.webp"
+            },
+            {
+              "name": "สารสกัดวิชฮาเซล",
+              "benefit": "อยู่ในกลุ่มดูแลสมดุลความมัน ร่วมกับซิงค์ พีซีเอและเกรปฟรุต",
+              "image": "assets/botanicals/witch-hazel-flower.webp",
+              "benefit_source": "สื่อ Mediral · กลุ่มดูแลสมดุลความมันของเซรั่มลดสิว",
+              "benefit_scope": "group"
+            },
+            {
               "name": "สารสกัดอ้อย",
               "benefit": null,
               "image": "assets/botanicals/sugarcane-stem.webp"
             },
             {
-              "name": "สารสกัดเปลือกมะกอก",
+              "name": "สารสกัดว่านหางจระเข้",
               "benefit": null,
-              "image": "assets/botanicals/olive-peel.webp"
-            }
-          ]
-        },
-        {
-          "id": "ac-other-materials",
-          "title": "พืช น้ำแร่ และสารบำรุงร่วมสูตร",
-          "summary": "อีกหกชื่อในสูตรเซรั่มขวดขาว มีทั้งดอกฝ้าย สาหร่าย น้ำแร่ ส่วนผสมให้กลิ่น และอัลลันโทอิน",
-          "items": [
-            {
-              "name": "ดอกฝ้าย",
-              "benefit": null,
-              "image": "assets/botanicals/cotton-flower.webp"
+              "image": "assets/botanicals/aloe-cut-leaf.webp"
             },
             {
-              "name": "สารสกัดสาหร่ายทะเล",
+              "name": "สารสกัดเปลือกมะม่วง",
               "benefit": null,
-              "image": "assets/botanicals/seaweed-generic.webp"
+              "image": "assets/botanicals/mango-peel.webp"
             },
             {
-              "name": "สารสกัดน้ำแร่เอิร์ธมารีน",
+              "name": "สารสกัดเปลือกกล้วย",
               "benefit": null,
-              "image": "assets/experience/p0-2-drop-clear.webp"
-            },
-            {
-              "name": "สารสกัดน้ำแร่ Lipobelle Glacier",
-              "benefit": null,
-              "image": "assets/experience/p0-2-drop-clear.webp"
-            },
-            {
-              "name": "น้ำมันหอมระเหยกลิ่นดอกซากุระ",
-              "benefit": null,
-              "image": "assets/materials/amber-oil.webp"
-            },
-            {
-              "name": "อัลลันโทอิน",
-              "benefit": null,
-              "image": "assets/materials/mineral-white-powder.webp"
+              "image": "assets/botanicals/banana-peel.webp"
             }
           ]
         }
@@ -439,66 +452,34 @@
       "brand_attribution": "บทบาทและเนื้อสัมผัสสรุปจากสื่อ Mediral",
       "size": "30 ml",
       "ingredients_heading": "ส่วนผสมในสูตร",
-      "ingredients_intro": "จัดกลุ่มตามรายชื่อที่ Mediral ระบุ",
+      "ingredients_intro": "ส่วนประกอบตามกลุ่มที่ Mediral ระบุ พร้อมบทบาทที่มีคำอธิบายในสื่อแบรนด์",
       "ingredient_groups": [
         {
-          "id": "br-even-looking",
-          "title": "ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
-          "summary": "แบร์เบอร์รี่ ชะเอมเทศ และอนุพันธ์วิตามินซี เป็นสามชื่อที่ Mediral ระบุว่าช่วยดูแลความหมองและสีผิว",
+          "id": "br-hero",
+          "title": "ส่วนประกอบหลัก (Hero Active)",
+          "summary": "แบร์เบอร์รี่ โพรไบโอติก ไวท์มัลเบอร์รี่ วิชฮาเซล และสาหร่ายทะเลน้ำลึก เป็นส่วนประกอบหลัก 5 ชนิดตามตารางของ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบเซรั่มแบร์เบอร์รี่",
           "items": [
             {
               "name": "สารสกัดแบร์เบอร์รี่",
               "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
-              "image": "assets/botanicals/bearberry-sprig.webp"
+              "image": "assets/botanicals/bearberry-sprig.webp",
+              "source_name": "สารสกัดจากแบร์เบอร์รี่",
+              "benefit_source": "สื่อ Mediral · บทบาทส่วนผสมเด่นของเซรั่มแบร์เบอร์รี่",
+              "benefit_scope": "individual"
             },
-            {
-              "name": "สารสกัดชะเอมเทศ",
-              "benefit": "ปลอบประโลมผิว พร้อมดูแลรอยดำและสีผิวให้ดูสม่ำเสมอ",
-              "image": "assets/botanicals/licorice-root.webp"
-            },
-            {
-              "name": "อนุพันธ์วิตามินซี",
-              "benefit": "ช่วยให้ผิวดูกระจ่างใสและลดเลือนความหมองคล้ำ",
-              "image": "assets/experience/p0-2-drop-clear.webp"
-            }
-          ]
-        },
-        {
-          "id": "br-balance-smooth",
-          "title": "สมดุลผิวและความเรียบเนียน",
-          "summary": "โพรไบโอติกมีเรื่องสมดุลและเกราะปกป้องผิว ส่วนบากูชิลมีเรื่องผิวดูเรียบเนียน ตามคำอธิบายของแบรนด์",
-          "items": [
             {
               "name": "โพรไบโอติก",
               "benefit": "ดูแลสมดุลผิวและเกราะปกป้องผิว",
-              "image": "assets/materials/ferment-abstract.webp"
+              "image": "assets/materials/ferment-abstract.webp",
+              "source_name": "จุลินทรีย์โพรไบโอติก",
+              "benefit_source": "สื่อ Mediral · บทบาทส่วนผสมเด่นของเซรั่มแบร์เบอร์รี่",
+              "benefit_scope": "individual"
             },
-            {
-              "name": "บากูชิล ตามชื่อในสื่อแบรนด์",
-              "benefit": "ดูแลผิวให้เรียบเนียน",
-              "image": "assets/materials/amber-oil.webp"
-            }
-          ]
-        },
-        {
-          "id": "br-botanicals",
-          "title": "พืชและสารสกัดร่วมสูตร",
-          "summary": "รายชื่อพืชและสารสกัดอีกแปดชื่อที่ Mediral ระบุไว้ในเซรั่มแบร์เบอร์รี่",
-          "items": [
             {
               "name": "สารสกัดไวท์มัลเบอร์รี่",
               "benefit": null,
               "image": "assets/botanicals/white-mulberry-fruit.webp"
-            },
-            {
-              "name": "สารสกัดชาเขียว",
-              "benefit": null,
-              "image": "assets/botanicals/green-tea-shoot.webp"
-            },
-            {
-              "name": "สารสกัดทับทิม",
-              "benefit": null,
-              "image": "assets/botanicals/pomegranate-arils.webp"
             },
             {
               "name": "สารสกัดวิชฮาเซล",
@@ -506,36 +487,26 @@
               "image": "assets/botanicals/witch-hazel-flower.webp"
             },
             {
-              "name": "สารสกัดโกจิเบอร์รี่",
-              "benefit": null,
-              "image": "assets/botanicals/goji-fruit.webp"
-            },
-            {
               "name": "สารสกัดสาหร่ายทะเล",
               "benefit": null,
-              "image": "assets/botanicals/seaweed-generic.webp"
-            },
-            {
-              "name": "สารสกัดเปลือกสนมาริไทม์",
-              "benefit": null,
-              "image": "assets/botanicals/pine-bark.webp"
-            },
-            {
-              "name": "สารสกัดต้นหลิว",
-              "benefit": null,
-              "image": "assets/botanicals/willow-twig.webp"
+              "image": "assets/botanicals/seaweed-generic.webp",
+              "source_name": "สารสกัดจากสาหร่ายทะเลน้ำลึก"
             }
           ]
         },
         {
-          "id": "br-other-materials",
-          "title": "น้ำมัน น้ำสกัด และสารบำรุงร่วมสูตร",
-          "summary": "อีกกลุ่มส่วนผสมในสื่อของขวดแบร์เบอร์รี่ ตั้งแต่น้ำมันและน้ำสกัด ไปจนถึงโซเดียมไฮยาลูรอเนตและอนุพันธ์วิตามินอี",
+          "id": "br-support",
+          "title": "ส่วนประกอบเสริม (Supporting Active)",
+          "summary": "ส่วนประกอบเสริม 13 ชนิด มีทั้งบากูชิล ชะเอมเทศ และอนุพันธ์วิตามินซี ซึ่งมีคำอธิบายเรื่องผิวเรียบเนียนและความกระจ่างใสในสื่อ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบและบทบาทส่วนผสมเซรั่มแบร์เบอร์รี่",
           "items": [
             {
-              "name": "โรสฮิปออย",
-              "benefit": null,
-              "image": "assets/botanicals/rosehip-fruit.webp"
+              "name": "บากูชิล ตามชื่อในสื่อแบรนด์",
+              "benefit": "ดูแลผิวให้เรียบเนียน",
+              "image": "assets/materials/amber-oil.webp",
+              "source_name": "สารสกัดจากต้นบากูชิล",
+              "benefit_source": "สื่อ Mediral · บทบาทส่วนผสมเด่นของเซรั่มแบร์เบอร์รี่",
+              "benefit_scope": "individual"
             },
             {
               "name": "น้ำมันเห็ดทรัฟเฟิลขาว",
@@ -543,14 +514,63 @@
               "image": "assets/materials/amber-oil.webp"
             },
             {
-              "name": "น้ำสกัดกุหลาบ",
+              "name": "โรสฮิปออย",
               "benefit": null,
-              "image": "assets/botanicals/rose-flower-petals.webp"
+              "image": "assets/botanicals/rosehip-fruit.webp",
+              "source_name": "สารสกัดผลโรสฮิปออย"
+            },
+            {
+              "name": "สารสกัดเปลือกสนมาริไทม์",
+              "benefit": null,
+              "image": "assets/botanicals/pine-bark.webp",
+              "source_name": "สารสกัดจากเปลือกต้นสนมาริไทม์"
+            },
+            {
+              "name": "สารสกัดชาเขียว",
+              "benefit": null,
+              "image": "assets/botanicals/green-tea-shoot.webp"
+            },
+            {
+              "name": "สารสกัดชะเอมเทศ",
+              "benefit": "ปลอบประโลมผิว พร้อมดูแลรอยดำและสีผิวให้ดูสม่ำเสมอ",
+              "image": "assets/botanicals/licorice-root.webp",
+              "benefit_source": "สื่อ Mediral · บทบาทส่วนผสมเด่นของเซรั่มแบร์เบอร์รี่",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดต้นหลิว",
+              "benefit": null,
+              "image": "assets/botanicals/willow-twig.webp"
+            },
+            {
+              "name": "อนุพันธ์วิตามินซี",
+              "benefit": "ช่วยให้ผิวดูกระจ่างใสและลดเลือนความหมองคล้ำ",
+              "image": "assets/experience/p0-2-drop-clear.webp",
+              "source_name": "อนุพันธ์วิตามินซีเข้มข้น",
+              "benefit_source": "สื่อ Mediral · บทบาทส่วนผสมเด่นของเซรั่มแบร์เบอร์รี่",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดโกจิเบอร์รี่",
+              "benefit": null,
+              "image": "assets/botanicals/goji-fruit.webp"
             },
             {
               "name": "โซเดียมไฮยาลูรอเนต",
               "benefit": null,
-              "image": "assets/materials/hydration-clear-gel.webp"
+              "image": "assets/materials/hydration-clear-gel.webp",
+              "source_name": "โซเดียมไฮยาลูรอเนตจากเห็ดเยื่อไผ่"
+            },
+            {
+              "name": "น้ำสกัดกุหลาบ",
+              "benefit": null,
+              "image": "assets/botanicals/rose-flower-petals.webp",
+              "source_name": "น้ำสกัดจากกุหลาบบัลแกเรีย"
+            },
+            {
+              "name": "สารสกัดทับทิม",
+              "benefit": null,
+              "image": "assets/botanicals/pomegranate-arils.webp"
             },
             {
               "name": "อนุพันธ์วิตามินอี",
@@ -596,7 +616,7 @@
       "role": "กันแดดเนื้อเซรั่ม พร้อมดูแลความชุ่มชื้นและสีผิว",
       "problem": "มองไม่เห็น UV ไม่ได้แปลว่าผิวไม่เจอ",
       "headline": "กันแดดเนื้อเซรั่ม เบาสบายผิว",
-      "lead": "กันแดดเนื้อเซรั่มครีมบางเบา เกลี่ยง่าย มี Zinc Oxide และ Titanium Dioxide พร้อมไฮยาเติมความชุ่มชื้น และสารสกัดจากพืช 7 ชนิดในกลุ่ม Giga White®",
+      "lead": "กันแดด SPF 50 PA+++ ตามที่ Mediral ระบุ เนื้อเซรั่มครีมบางเบา เกลี่ยง่าย มี Zinc Oxide และ Titanium Dioxide พร้อมไฮยาเติมความชุ่มชื้น และกลุ่มพืช Giga White®",
       "benefits": [
         {
           "title": "ปกป้องผิวจากแสงแดด",
@@ -632,110 +652,141 @@
       "brand_attribution": "บทบาทและเนื้อสัมผัสสรุปจากสื่อ Mediral",
       "size": "15 ml",
       "ingredients_heading": "ส่วนผสมในสูตร",
-      "ingredients_intro": "จัดกลุ่มตามรายชื่อที่ Mediral ระบุ",
+      "ingredients_intro": "ส่วนประกอบตามกลุ่มที่ Mediral ระบุ พร้อมบทบาทที่มีคำอธิบายในสื่อแบรนด์",
       "ingredient_groups": [
         {
-          "id": "su-mineral-filters",
-          "title": "สารกรอง UV จากแร่ธาตุ",
-          "summary": "Zinc Oxide และ Titanium Dioxide คือสารกรอง UV จากแร่ธาตุที่ Mediral ระบุในกันแดดหลอดนี้",
+          "id": "su-hero",
+          "title": "ส่วนประกอบหลัก (Hero Active)",
+          "summary": "Giga White® สารกรอง UV สองชนิด ไฮยา และสารสกัดสาหร่ายทะเลน้ำลึก อยู่ในส่วนประกอบหลักตามตารางของ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบเซรั่มกันแดด",
           "items": [
             {
+              "name": "Giga White®",
+              "benefit": "กลุ่มสารสกัดจากพืช 7 ชนิดที่แบรนด์ระบุว่าช่วยให้ผิวดูกระจ่างใส เรียบเนียน และสีผิวดูสม่ำเสมอ",
+              "image": "assets/materials/botanical-extract.webp",
+              "source_name": "Giga White บนเทือกเขาแอลป์",
+              "benefit_source": "สื่อ Mediral · Giga White® ในเซรั่มกันแดด",
+              "benefit_scope": "group"
+            },
+            {
               "name": "Zinc Oxide",
-              "benefit": null,
-              "image": "assets/materials/mineral-white-powder.webp"
+              "benefit": "สารกรอง UV ที่แบรนด์ระบุว่าช่วยปกป้องผิวจากรังสี UVA",
+              "image": "assets/materials/mineral-white-powder.webp",
+              "source_name": "ซิงค์ อ็อกไซด์",
+              "benefit_source": "สื่อ Mediral · บทบาทสารกรอง UV ในเซรั่มกันแดด",
+              "benefit_scope": "individual"
             },
             {
               "name": "Titanium Dioxide",
-              "benefit": null,
-              "image": "assets/materials/mineral-white-powder.webp"
-            }
-          ]
-        },
-        {
-          "id": "su-hydration",
-          "title": "ความชุ่มชื้นในกันแดด",
-          "summary": "ไฮยาเป็นส่วนผสมที่แบรนด์ระบุว่าช่วยเติมความชุ่มชื้น และในรายการส่วนผสมมีชื่อโซเดียมไฮยาลูรอเนตด้วย",
-          "items": [
+              "benefit": "สารกรอง UV ที่แบรนด์ระบุว่าช่วยปกป้องผิวจากรังสี UVB",
+              "image": "assets/materials/mineral-white-powder.webp",
+              "source_name": "ไทเทเนี่ยม ไดอ็อกไซด์",
+              "benefit_source": "สื่อ Mediral · บทบาทสารกรอง UV ในเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
             {
               "name": "ไฮยา (HA) / โซเดียมไฮยาลูรอเนต",
-              "benefit": "เติมความชุ่มชื้นให้ผิว ตามเรื่องราวของไฮยาในสื่อ",
-              "image": "assets/materials/hydration-clear-gel.webp"
-            }
-          ]
-        },
-        {
-          "id": "su-alpine-botanicals",
-          "title": "Giga White® · พืช 7 ชื่อ",
-          "summary": "กลุ่มพืชที่ Mediral ระบุว่าช่วยให้ผิวดูกระจ่างใส เรียบเนียน และสีผิวดูสม่ำเสมอ พร้อมบทบาทของแต่ละชื่อ",
-          "items": [
-            {
-              "name": "สารสกัดมาลโลว์",
-              "benefit": "ปลอบประโลมและเติมความชุ่มชื้นให้ผิว",
-              "image": "assets/botanicals/mallow-flower.webp"
-            },
-            {
-              "name": "สารสกัดเปปเปอร์มินต์",
-              "benefit": "ช่วยให้ผิวรู้สึกสดชื่นและสบายผิว",
-              "image": "assets/botanicals/peppermint-leaves.webp"
-            },
-            {
-              "name": "สารสกัดพริมูลา",
-              "benefit": "ดูแลผิวให้เรียบเนียนและดูสุขภาพดี",
-              "image": "assets/botanicals/primula-flower.webp"
-            },
-            {
-              "name": "สารสกัดอัลเคมิลลา",
-              "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
-              "image": "assets/botanicals/alchemilla-leaf.webp"
-            },
-            {
-              "name": "สารสกัดเวโรนิก้า",
-              "benefit": "ดูแลผิวให้ดูกระจ่างใสอย่างเป็นธรรมชาติ",
-              "image": "assets/botanicals/veronica-flower.webp"
-            },
-            {
-              "name": "สารสกัดเมลิสสา",
-              "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
-              "image": "assets/botanicals/melissa-leaves.webp"
-            },
-            {
-              "name": "สารสกัดยาร์โรว์",
-              "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
-              "image": "assets/botanicals/yarrow-flower.webp"
-            }
-          ]
-        },
-        {
-          "id": "su-other-botanicals",
-          "title": "พืชและส่วนผสมร่วมสูตร",
-          "summary": "ทานตะวัน แอปริคอท เชียร์บัตเตอร์ และสาหร่ายทะเล เป็นอีกกลุ่มส่วนผสมที่แบรนด์ระบุในหลอดนี้",
-          "items": [
-            {
-              "name": "น้ำมันดอกทานตะวัน",
-              "benefit": null,
-              "image": "assets/botanicals/sunflower-seed-oil.webp"
-            },
-            {
-              "name": "สารสกัดแอปริคอท",
-              "benefit": null,
-              "image": "assets/botanicals/apricot-half.webp"
-            },
-            {
-              "name": "สารสกัดเชียร์บัตเตอร์",
-              "benefit": null,
-              "image": "assets/materials/shea-butter.webp"
+              "benefit": "เติมความชุ่มชื้นให้ผิว ตามคำอธิบายไฮยาในสื่อ Mediral",
+              "image": "assets/materials/hydration-clear-gel.webp",
+              "source_name": "โซเดียมไฮยารูลอเนตจากเห็ดเยื่อไผ่",
+              "benefit_source": "สื่อ Mediral · ไฮยาในเซรั่มกันแดด",
+              "benefit_scope": "individual"
             },
             {
               "name": "สารสกัดสาหร่ายทะเล",
               "benefit": null,
-              "image": "assets/botanicals/seaweed-generic.webp"
+              "image": "assets/botanicals/seaweed-generic.webp",
+              "source_name": "สารสกัดจากสาหร่ายทะเลน้ำลึก"
+            }
+          ]
+        },
+        {
+          "id": "su-support",
+          "title": "ส่วนประกอบเสริม (Supporting Active)",
+          "summary": "แอปริคอท เชียร์บัตเตอร์ น้ำมันดอกทานตะวัน และพืช 7 ชนิดใน Giga White® ตามตารางและคำอธิบายของ Mediral",
+          "source": "สื่อ Mediral · ตารางส่วนประกอบเซรั่มกันแดดและบทบาทพืชใน Giga White®",
+          "items": [
+            {
+              "name": "สารสกัดแอปริคอท",
+              "benefit": null,
+              "image": "assets/botanicals/apricot-half.webp",
+              "source_name": "สารสกัดจากแอปริคอท"
+            },
+            {
+              "name": "สารสกัดเชียร์บัตเตอร์",
+              "benefit": null,
+              "image": "assets/materials/shea-butter.webp",
+              "source_name": "สารสกัดจากเชียร์บัตเตอร์"
+            },
+            {
+              "name": "น้ำมันดอกทานตะวัน",
+              "benefit": null,
+              "image": "assets/botanicals/sunflower-seed-oil.webp",
+              "source_name": "สารสกัดจากน้ำมันดอกทานตะวัน"
+            },
+            {
+              "name": "สารสกัดมาลโลว์",
+              "benefit": "ปลอบประโลมและเติมความชุ่มชื้นให้ผิว",
+              "image": "assets/botanicals/mallow-flower.webp",
+              "source_name": "สารสกัดจากดอกมาลโลว์",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดเวโรนิก้า",
+              "benefit": "ดูแลผิวให้ดูกระจ่างใสอย่างเป็นธรรมชาติ",
+              "image": "assets/botanicals/veronica-flower.webp",
+              "source_name": "สารสกัดจากดอกสปีดเวลล์",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดพริมูลา",
+              "benefit": "ดูแลผิวให้เรียบเนียนและดูสุขภาพดี",
+              "image": "assets/botanicals/primula-flower.webp",
+              "source_name": "สารสกัดจากดอกคาวสลิป",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดอัลเคมิลลา",
+              "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
+              "image": "assets/botanicals/alchemilla-leaf.webp",
+              "source_name": "สารสกัดจากดอกเลดี้แมนเทิล",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดเมลิสสา",
+              "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
+              "image": "assets/botanicals/melissa-leaves.webp",
+              "source_name": "สารสกัดจากเลมอนบาล์ม",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดยาร์โรว์",
+              "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
+              "image": "assets/botanicals/yarrow-flower.webp",
+              "source_name": "น้ำสกัดจากดอกยาร์โรว",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
+            },
+            {
+              "name": "สารสกัดเปปเปอร์มินต์",
+              "benefit": "ช่วยให้ผิวรู้สึกสดชื่นและสบายผิว",
+              "image": "assets/botanicals/peppermint-leaves.webp",
+              "source_name": "สารสกัดจากเปปเปอร์มินต์",
+              "benefit_source": "สื่อ Mediral · บทบาทรายพืชใน Giga White® ของเซรั่มกันแดด",
+              "benefit_scope": "individual"
             }
           ]
         }
       ],
-      "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
+      "ingredient_note": "Mediral แบ่งเป็น Hero Active 5 ชนิด และ Supporting Active 10 ชนิด โดย Giga White® เป็นกลุ่มของพืช 7 ชนิดที่แจกแจงอยู่ใน Supporting Active ด้วย จึงไม่นับกลุ่มและพืชซ้ำเป็นยอดรวม รายชื่อนี้ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
       "name_notes": [
-        "สื่อ Mediral อีกภาพใช้ชื่อ HydroAlgae™ ในเรื่องราวของสารสกัดสาหร่าย"
+        "สื่อ Mediral อีกภาพใช้ชื่อ HydroAlgae™ ในเรื่องราวของสารสกัดสาหร่าย",
+        "ตารางส่วนประกอบใช้ชื่อสปีดเวลล์ คาวสลิป เลดี้แมนเทิล และเลมอนบาล์ม ส่วนภาพ Giga White® ใช้ชื่อเวโรนิก้า พริมูลา อัลเคมิลลา และเมลิสสาตามลำดับ"
       ],
       "sequence": {
         "title": "จากส่วนผสม ถึงผิว",
@@ -765,7 +816,8 @@
           "label": "ถึงผิว",
           "title": "กันแดด เบาสบายผิว"
         }
-      }
+      },
+      "show_ingredient_total": false
     },
     {
       "id": "PO",
@@ -814,12 +866,80 @@
       "brand_attribution": "บทบาทและเนื้อสัมผัสสรุปจากสื่อ Mediral",
       "size": null,
       "ingredients_heading": "ส่วนผสมในสูตร",
-      "ingredients_intro": "จัดกลุ่มตามรายชื่อที่ Mediral ระบุ",
+      "ingredients_intro": "ส่วนประกอบ 4 กลุ่มตามภาพ Mediral พร้อมบทบาทระดับกลุ่มที่แบรนด์ระบุ",
       "ingredient_groups": [
         {
+          "id": "po-plant-flower",
+          "title": "กลุ่มสเต็มเซลล์จากพืชและดอกไม้ (Stem Cell Complex)",
+          "summary": "Mediral จัดส่วนประกอบจากพืชและดอกไม้ 6 ชนิดไว้ในกลุ่ม Stem Cell Complex",
+          "items": [
+            {
+              "name": "ซาโปนาเรีย พูมิล่า ตามชื่อในสื่อแบรนด์",
+              "benefit": null,
+              "image": "assets/materials/botanical-extract.webp",
+              "source_name": "สเต็มเซลล์จากดอกซาโปนาเรีย พูมิล่า"
+            },
+            {
+              "name": "ดอกกุหลาบ",
+              "benefit": null,
+              "image": "assets/botanicals/rose-flower-petals.webp",
+              "source_name": "สเต็มเซลล์จากดอกกุหลาบบัลแกเรีย"
+            },
+            {
+              "name": "ใบกุหลาบอังกฤษ",
+              "benefit": null,
+              "image": "assets/botanicals/rose-leaves.webp",
+              "source_name": "สเต็มเซลล์จากใบกุหลาบอังกฤษ"
+            },
+            {
+              "name": "ใบกุหลาบทะเลทราย ตามชื่อในสื่อแบรนด์",
+              "benefit": null,
+              "image": "assets/materials/botanical-extract.webp",
+              "source_name": "สเต็มเซลล์จากใบกุหลาบทะเลทราย"
+            },
+            {
+              "name": "ซีบัคธอร์น",
+              "benefit": null,
+              "image": "assets/botanicals/sea-buckthorn.webp",
+              "source_name": "สเต็มเซลล์จากซีบัคธอร์น"
+            },
+            {
+              "name": "ดอกฝ้าย",
+              "benefit": null,
+              "image": "assets/botanicals/cotton-flower.webp",
+              "source_name": "สเต็มเซลล์จากดอกฝ้าย"
+            }
+          ],
+          "source": "สื่อ Mediral · ส่วนประกอบ 4 กลุ่มของแป้งพัฟ"
+        },
+        {
+          "id": "po-hydration",
+          "title": "กลุ่มเติมความชุ่มชื้นและปลอบประโลมผิว (Hydration & Soothing Complex)",
+          "summary": "โซเดียมไฮยาลูรอเนต ว่านหางจระเข้ และโรสฮิป เป็นกลุ่มที่ Mediral ระบุเรื่องเติมความชุ่มชื้นและปลอบประโลมผิว",
+          "items": [
+            {
+              "name": "โซเดียมไฮยาลูรอเนต",
+              "benefit": null,
+              "image": "assets/materials/hydration-clear-gel.webp",
+              "source_name": "โซเดียมไฮยาลูรอเนตจากเห็ดเยื่อไผ่"
+            },
+            {
+              "name": "สารสกัดว่านหางจระเข้",
+              "benefit": null,
+              "image": "assets/botanicals/aloe-cut-leaf.webp"
+            },
+            {
+              "name": "สารสกัดผลโรสฮิป",
+              "benefit": null,
+              "image": "assets/botanicals/rosehip-fruit.webp"
+            }
+          ],
+          "source": "สื่อ Mediral · ส่วนประกอบ 4 กลุ่มของแป้งพัฟ"
+        },
+        {
           "id": "po-powder-oils",
-          "title": "แป้งและน้ำมันจากพืช",
-          "summary": "Mediral จัดแป้งจากพืชสามชื่อไว้ร่วมกับน้ำมันจากพืชสามชื่อในกลุ่ม Natural Powder & Oil",
+          "title": "กลุ่มแป้งและน้ำมันจากธรรมชาติ (Natural Powder & Oil Complex)",
+          "summary": "Mediral จัดแป้งจากพืช 3 ชนิดร่วมกับน้ำมันจากพืช 3 ชนิดไว้ในกลุ่มนี้",
           "items": [
             {
               "name": "สารสกัดแป้งข้าวโพด",
@@ -851,71 +971,13 @@
               "benefit": null,
               "image": "assets/botanicals/olive-oil-fruit.webp"
             }
-          ]
-        },
-        {
-          "id": "po-hydration",
-          "title": "ความชุ่มชื้นและปลอบประโลม",
-          "summary": "โซเดียมไฮยาลูรอเนต ว่านหางจระเข้ และโรสฮิป เป็นกลุ่มที่แบรนด์อธิบายเรื่องเติมความชุ่มชื้นและปลอบประโลมผิว",
-          "items": [
-            {
-              "name": "โซเดียมไฮยาลูรอเนต",
-              "benefit": null,
-              "image": "assets/materials/hydration-clear-gel.webp"
-            },
-            {
-              "name": "สารสกัดว่านหางจระเข้",
-              "benefit": null,
-              "image": "assets/botanicals/aloe-cut-leaf.webp"
-            },
-            {
-              "name": "สารสกัดผลโรสฮิป",
-              "benefit": null,
-              "image": "assets/botanicals/rosehip-fruit.webp"
-            }
-          ]
-        },
-        {
-          "id": "po-plant-flower",
-          "title": "พืชและดอกไม้",
-          "summary": "พืชและดอกไม้ 6 ชนิดที่ Mediral ระบุในสูตรแป้งพัฟ มีทั้งส่วนดอกและส่วนใบ",
-          "items": [
-            {
-              "name": "ซาโปนาเรีย พูมิล่า ตามชื่อในสื่อแบรนด์",
-              "benefit": null,
-              "image": "assets/materials/botanical-extract.webp"
-            },
-            {
-              "name": "ดอกกุหลาบ",
-              "benefit": null,
-              "image": "assets/botanicals/rose-flower-petals.webp"
-            },
-            {
-              "name": "ใบกุหลาบอังกฤษ",
-              "benefit": null,
-              "image": "assets/botanicals/rose-leaves.webp"
-            },
-            {
-              "name": "ใบกุหลาบทะเลทราย ตามชื่อในสื่อแบรนด์",
-              "benefit": null,
-              "image": "assets/materials/botanical-extract.webp"
-            },
-            {
-              "name": "ซีบัคธอร์น",
-              "benefit": null,
-              "image": "assets/botanicals/sea-buckthorn.webp"
-            },
-            {
-              "name": "ดอกฝ้าย",
-              "benefit": null,
-              "image": "assets/botanicals/cotton-flower.webp"
-            }
-          ]
+          ],
+          "source": "สื่อ Mediral · ส่วนประกอบ 4 กลุ่มของแป้งพัฟ"
         },
         {
           "id": "po-mineral-powders",
-          "title": "แร่และผงร่วมสูตร",
-          "summary": "Titanium Dioxide, Zinc Oxide และผงเพชร คืออีกสามชื่อที่แบรนด์ระบุไว้ในตลับนี้",
+          "title": "กลุ่มปกป้องผิวและเสริมความกระจ่างใส (Skin Defense Complex)",
+          "summary": "Titanium Dioxide, Zinc Oxide และผงเพชร อยู่ในกลุ่มปกป้องผิวและเสริมความกระจ่างใสตามการจัดกลุ่มของ Mediral",
           "items": [
             {
               "name": "Titanium Dioxide",
@@ -932,7 +994,8 @@
               "benefit": null,
               "image": "assets/materials/diamond-dust.webp"
             }
-          ]
+          ],
+          "source": "สื่อ Mediral · ส่วนประกอบ 4 กลุ่มของแป้งพัฟ"
         }
       ],
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",

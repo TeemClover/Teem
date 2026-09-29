@@ -1,14 +1,12 @@
 # Mediral five-piece set — `/mediral/`
 
-**CL ingredient restoration and three concept films (2026-09-29, built from `8b9b09ec`).** The owner confirmed that the 15 names in the mousse ingredient source still apply to the current clover-label pack. The five product pages now show **89 ingredient records: CL 15 / AC 24 / BR 18 / SU 14 / PO 18**. Each page keeps three short beats — ingredients → material/texture → care — and normal document scrolling with one-time entrance motion.
+**Source groups, sunscreen rating and SU film revision (2026-09-29, based on released `7dac178e`).** This increment restores the source's Hero/Supporting hierarchy, keeps PO's four named Complex groups, and uses the Thai count unit **ชนิด** within each source group. GigaWhite is a named blend whose seven plants also appear among SU's supporting names, so the interface must not promote a summed total as distinct ingredients or a full INCI list.
 
-- **Complete imagery:** this increment adds two CL illustrations, daisy and portulaca, and reuses the existing botanical/material library for the other restored names. All 89 records have an image and remain separate named records, even when they share an abstract material illustration. The preceding detail-gallery increment added 23 illustrations.
-- **Open gallery:** every ingredient group and card is visible without opening a disclosure. The images are illustrations of names or materials, not supplier photographs, verified botanical species or proof of a manufacturing process.
-- **Motion is optional:** CL uses a wipe, AC a rise, BR a bloom, SU a glide and PO a settle. Reduced motion, an unavailable observer or an unavailable motion enhancement leaves the rendered content visible. Turning reduced motion on reveals everything; direct `#ingredients` arrival reveals that gallery before scrolling to it.
-- **Mousse authority:** `USERCONFIRMED` establishes that the 15 source-listed names apply to the current pack. It does not validate individual efficacy, a full INCI list, size, certification or an extraction process. Its gentle-cleansing/no-dry-feeling copy follows the brand's mousse material; soft foam and freshness follow the owner's sensory direction without inventing a floral perfume source.
-- **Three films:** the existing AC material film is joined by two 8-second Seedance concept films for BR and SU, each with a poster and 1080/720 delivery variants. SU carries the visible caption “ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า”. Each film keeps its own active window and genuine-revisit state.
-- **Copy:** direct Thai benefit language replaces process-heavy phrasing. BR describes dull-looking skin without diagnosing a lack of skin nutrition. PO's non-clogging wording explicitly attributes the claim to Mediral; it is not an independent test or a guarantee against acne.
-- **Ownership:** GPT/root implemented this increment while Claude's quota was exhausted; this is not recorded as a Claude implementation. The colour route and LINE ordering remain. Root reports local checks below; this increment is not yet verified live.
+- **Source groups:** CL, AC, BR and SU follow their own Hero/Supporting source structure. SU follows Hero5/Supporting10; its GigaWhite card explains the blend’s relationship to the seven supporting plant names rather than implying another independent active. PO keeps its four Complex groups without an invented Hero tier. Every displayed name retains an illustration and only source-supported individual roles.
+- **Sunscreen rating:** the main and SU detail page share the brand-attributed **SPF 50 PA+++** value. The explanation distinguishes SPF/UVB-related sunburn protection from PA/UVA protection; it does not promise complete blocking, a duration in hours or independently tested Mediral performance. General explanations and brand claims remain separate.
+- **Versioned SU media:** the replacement asset family is `assets/films/su-uv-patch-v2-*`. The 6-second silent H.264/yuv420p/24 fps faststart exports and 4-second-frame poster are delivered, and root completed frame review. Local playback checks are complete; exact-SHA production acceptance remains pending. Do not treat the previous `su-uv-concept-*` comparison as verification of v2. The new scene must retain a visible simulation disclosure and cannot use image darkness as an SPF/PA measurement.
+- **Preserved behavior:** native pack images, the colour route, optional detail motion, independent AC/BR/SU film lifecycle and myClover LINE ordering remain. CL's confirmed ingredient applicability and PO's attributed non-clogging copy retain their source boundaries.
+- **Acceptance:** **121/121 tests** and shelf validation (**14 sources**) pass. Root completed the local browser checks below; production verification remains pending. The **117-test / 92-file** release belongs to historical `7dac178e`, not this revision. No new production claim is made here.
 
 **Colour route (2026-09-29, on `11453867`).** The owner's memory aid, "เริ่มจากขาว ค่อยไปเขียว", is taught through the five real packs in order:
 
@@ -42,12 +40,12 @@
 
 **Product pages:** `/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/` share one template:
 - problem → promise → three ingredient/category, material and care beats → how and when;
-- an open image gallery of every source-listed name, grouped (CL 15 / AC 24 / BR 18 / SU 14 / PO 18 names in brand material, not full label lists);
+- an open image gallery with source Hero/Supporting groups (PO retains four Complex groups), counts labelled ชนิด and blend relationships preserved;
 - FAQ → LINE → back to the exact chapter.
 
 The mousse page includes its restored 15-name list and its product-level cleansing role; its sources do not assign individual ingredient benefits. `data/details.json` holds only the public product fields.
 
-Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). The older [mousse media request](MEDIA_REQUEST_01_MOUSSE.md) records the earlier hold; the current ingredient applicability is updated in [Mediral source 0.2.0](../../shelf/source/mediral/brand.md). Pack authenticity and current size remain separate from that confirmation.
+Direction and evidence rules: [STORYBOARD.md](STORYBOARD.md). The older [mousse media request](MEDIA_REQUEST_01_MOUSSE.md) records the earlier hold; the current ingredient applicability is updated in [Mediral source 0.3.0](../../shelf/source/mediral/brand.md). Pack authenticity and current size remain separate from that confirmation.
 
 ## Run and check
 
@@ -98,22 +96,22 @@ Open `http://127.0.0.1:9461/mediral/`. A static server does not reproduce Vercel
 ### BR and SU concept films
 
 - **BR:** `assets/films/br-clarity-1080.mp4`, `br-clarity-720.mp4` and `br-clarity-poster.webp` accompany its clarity/care chapter.
-- **SU:** `assets/films/su-uv-concept-1080.mp4`, `su-uv-concept-720.mp4` and `su-uv-concept-poster.webp` accompany the sunscreen chapter. The visible comparison labels are part of a concept visualization; “ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า” remains beside the scene.
-- Both are 8-second Seedance concept films. They are not footage of Mediral manufacturing, product trials, real UV-camera measurements or demonstrated skin results.
+- **SU:** replacement files use the versioned `assets/films/su-uv-patch-v2-*` family, with 1080p (2,033,698 bytes), 720p (716,114 bytes) and a 71,682-byte poster taken at 4 seconds. The 6-second footage changes from a normal view to a grayscale UV-style view with a localized dark patch; frame review and local playback checks are complete; production verification remains pending; the previous `su-uv-concept-*` files belong to `7dac178e`. The comparison must keep “ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า” visible and must not imply that the image tests the Mediral formula.
+- BR retains its accepted 8-second concept film; SU v2 is 6 seconds. Neither is footage of Mediral manufacturing, product trials, real UV-camera measurements or demonstrated skin results.
 - Each instance has its own permitted playback window and visit boundary. Activating one deactivates the others; optional-media failure cannot prevent the page or the other film instances from working. Reduced motion, data saving and playback failure retain stills.
 
 ## Content boundaries
 
 - **Colour route:** "เจอแดด เจอฝุ่นทุกวัน" is daily context only. No product claims a dust, PM2.5 or pollution barrier. CL's "Detoxing Pollution & Dirt Cleansing" establishes its name and cleansing role; the later user confirmation separately establishes applicability of its 15 ingredient names. Colour is not strength or concentration.
-- **Mousse:** the current clover-reference pack remains an AI draft and its current size remains unconfirmed. The owner confirmed the applicability of the 15 names in `S01 _3` on 2026-09-29 (`UC01`, `USERCONFIRMED`; canonical source 0.2.0). The pages restore those names with illustrations and identity-only roles. Product-level gentle cleansing/no dry feeling comes from the brand's `S01 _2` material, not newly proved efficacy. No individual ingredient effect, old 80 ml size, mask method, SLS/free-perfume guarantee, 144-hour claim or germ-killing claim is inherited. Freshness is sensory direction; no scent is assigned to a particular flower.
+- **Mousse:** the current clover-reference pack remains an AI draft and its current size remains unconfirmed. The owner confirmed the applicability of the 15 names in `S01 _3` on 2026-09-29 (`UC01`, `USERCONFIRMED`; canonical source 0.3.0). The pages restore those names with illustrations and identity-only roles. Product-level gentle cleansing/no dry feeling comes from the brand's `S01 _2` material, not newly proved efficacy. No individual ingredient effect, old 80 ml size, mask method, SLS/free-perfume guarantee, 144-hour claim or germ-killing claim is inherited. Freshness is sensory direction; no scent is assigned to a particular flower.
 - **AC:** soothing botanical pair, oil-balance family, then moisture family. Group attribution stays group attribution; no acne cure, germ killing, deadline or universal sensitive-skin claim.
 - **BR:** bearberry/licorice/vitamin C roles, then distinct probiotics/bakuchiol roles, then the fuller source list and light-texture story. No melasma treatment, DNA mechanism, permanent whitening or combined-serum efficacy.
-- **SU:** mineral UV-filter names are distinct from hydration and the seven-plant Giga White group. Generic seaweed imagery does not establish HydroAlgae identity or blue-light performance. The tube is shown at normal size and its lettering is never zoomed as proof. The story copy states no SPF/PA value; the sunscreen's own page answers the question with the brand-attributed “สื่อ Mediral ระบุ SPF 50 PA+++” (brand source, checked) and points to the label for use.
+- **SU:** main and detail copy share the brand-attributed SPF 50 PA+++ rating and its general UVB/UVA explanation. SPF is not hours outdoors; PA+++ is a UVA protection grade, not 100% blocking. Camera darkness does not verify either rating. GigaWhite is a blend related to seven supporting plants; HydroAlgae and Triple Molecular HA are not extra Hero entries or verified synonyms for the poster's seaweed/HA names. Seaweed imagery proves neither identity nor blue-light performance. The tube lettering is never zoomed as test evidence.
 - **PO:** product-level coverage and fine/light/easy-spreading texture, powder/oil group and hydration/soothing group. Non-clogging copy explicitly attributes “ไม่อุดตัน” to Mediral's `S08 _1`; it is not a verified comedogenicity test, an acne guarantee or proof of 12-hour biodegradation. Group names do not establish an individual ingredient's effect. No live-cell regeneration, universal shade, timed guarantee or sunscreen replacement.
 - AC/BR sensory language and powder texture are attributed brand descriptions, not a fabricated personal review. One truthful section-level attribution can cover the short selling story; detailed sources and limits remain accessible.
 - Every pack is an AI draft, not an authenticated packshot. Ingredient/lab illustrations establish neither concentration, origin, certification nor a manufacturing recipe.
 
-The five product pages (`/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/`) list **CL 15, AC 24, BR 18, SU 14 and PO 18** names from brand material. These 89 records are neither distinct actives across the range nor a verified full INCI list, and each page says so. Names are grouped as the brand groups them, with an illustration on every card in the open gallery. A name the source lists without a role gains no invented benefit, including all 15 restored CL entries. Shared abstract imagery does not merge ingredient identities or prove origin, composition or actual material appearance. The sunscreen page notes the trade name HydroAlgae™ without counting it. Old `#formula-*` links open the matching product page; old `#serums` and `#ingredients` links land on the set.
+The product galleries keep the source's hierarchy: Hero/Supporting for CL/AC/BR/SU and four Complex groups for PO. Group counts use **ชนิด**; SU shows the source's 5 main / 10 supporting entries while explaining that GigaWhite overlaps seven supporting plants. There is no grand total marketed as distinct ingredients. Every card keeps its image/name; a listed-only ingredient gains no invented benefit. Shared material art does not merge names or prove origin. Old `#formula-*` links open the corresponding gallery, while old main `#serums`/`#ingredients` links land on the set.
 
 ## Ordering, actions and privacy
 
@@ -131,16 +129,21 @@ The five product pages (`/mediral/cl/`, `/ac/`, `/br/`, `/su/`, `/po/`) list **C
   - `.vercelignore` excludes docs, tests, source screenshots, asset manifests/briefs and held drafts.
   - Internal sources and costs stay outside the public runtime. Noindex is not access control.
 
-## Current verification — 29 Sep 2026 CL restoration and three films
+## Current acceptance — source groups and SU v2
 
-- **Implementation:** GPT/root took over while Claude's quota was exhausted, building from `8b9b09ec`. The increment restores CL's 15 ingredient entries, adds daisy/portulaca illustrations and the BR/SU films, and updates the Thai selling copy and independent film lifecycle.
-- **Local checks:** root reports `node --test tests/mediral/*.test.mjs` with **117/117 passing**, and `node shelf/validate.mjs` passed. This records the root's local run, not a new run by the documentation editor.
-- **Coverage:** all 89 ingredient records resolve to illustrations; group and individual-role boundaries remain intact; CL's ingredient applicability is distinct from current size and unsupported claims; three film instances retain independent playback/revisit behavior; reduced-motion content remains visible.
-- **Browser and production:** visual, interaction and deployment checks must be recorded separately. No production verification is claimed for this increment here.
+The source correction and general SPF/PA/UV interpretation are documented in [Mediral source 0.3.0](../../shelf/source/mediral/brand.md). **121/121 tests** and shelf validation (**14 sources**) pass.
+
+Root's local browser checks confirmed the shared sunscreen rating, the 1080p film reaching `readyState: 4` and holding at its 6-second end without controls, and the SU detail gallery's Hero5/Supporting10 groups. At 390 px wide, main/detail DOM measurements showed no horizontal overflow and the 720p film reached `readyState: 4`. Reduced motion left all three film sources unset; the LINE destination remained valid. No browser errors were observed. Phone screenshot capture was limited, so these checks do not claim complete visual acceptance on mobile.
+
+Exact-SHA production identity, runtime bytes, headers and media Range verification remain pending and are recorded separately after release.
 
 ## Historical verification records
 
 The records below describe earlier implementations, including retired scene and player behavior. They are retained as history, not acceptance results for the current page described above.
+
+### Previous release — `7dac178e` (29 Sep 2026)
+
+Root completed CL15 restoration, Thai copy and the prior BR/SU concept films: 117/117 tests and shelf14 passed; exact-SHA production READY and independent HTTP92/92 matched. That release used 89 display records and the first SU comparison. Its counts and footage are historical for the present source-group/v2 revision.
 
 ## Verification record — 29 Sep 2026 product-detail imagery and motion
 

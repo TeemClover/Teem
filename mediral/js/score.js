@@ -46,6 +46,15 @@ function wave(step, index, layer, cls = '') {
 }
 export const detailHref = step => `${step.id.toLowerCase()}/`;
 const imageOf = (step, name) => [...(step.featured || []), ...(step.ingredients || [])].find(item => item.name === name)?.image;
+function protection(step) {
+  const p = step.protection;
+  if (!p?.spf || !p.pa || !p.attribution) return '';
+  return `<div class="mr-protection mr-su__protection" data-layer="su.protection">
+    <dl><div><dt><span>SPF </span>${esc(p.spf)}</dt><dd>${esc(p.spf_meaning)}</dd></div>
+      <div><dt>PA${esc(p.pa)}</dt><dd>${esc(p.pa_meaning)}</dd></div></dl>
+    <p class="mr-protection__source">${esc(p.attribution)}</p>
+  </div>`;
+}
 
 // AC's film: the body of one silent concept film (botanicals, then a glass funnel with a fine stream),
 // cut before its lens so it may rest under the words however long a reader stays. The smaller file
@@ -63,8 +72,8 @@ export const FILMS = {
   AC: {...FILM, id: 'lab-film', window: [3.25, 6.35], away: [2.6, 7.4]},
   BR: {src: 'assets/films/br-clarity-1080.mp4', small: 'assets/films/br-clarity-720.mp4',
     poster: 'assets/films/br-clarity-poster.webp', id: 'lab-film-BR', window: [6.6, 8.35], away: [6.05, 9.3]},
-  SU: {src: 'assets/films/su-uv-concept-1080.mp4', small: 'assets/films/su-uv-concept-720.mp4',
-    poster: 'assets/films/su-uv-concept-poster.webp', id: 'lab-film-SU', window: [9.1, 10.4], away: [8.55, 11.3]},
+  SU: {src: 'assets/films/su-uv-patch-v2-1080.mp4', small: 'assets/films/su-uv-patch-v2-720.mp4',
+    poster: 'assets/films/su-uv-patch-v2-poster.webp', id: 'lab-film-SU', window: [9.1, 10.4], away: [8.55, 11.3]},
 };
 function filmMarkup(id, asset, film = FILMS[id]) {
   const key = id.toLowerCase();
@@ -148,6 +157,7 @@ export const SHOTS = {
       ${art('su.air', 'assets/experience/p0-2-drop-clear.webp', 'mr-su__air', asset)}
       ${problem(step, 'su')}
       ${title(step, 'su', 'mr-su__title')}
+      ${protection(step)}
       ${art('su.ribbonBack', 'assets/experience/m2-serum-ribbon.webp', 'mr-su__ribbon mr-su__ribbon--back', asset)}
       ${packMarkup(step, asset, {layer: 'su.pack', src: 'data-src'})}
       ${wave(step, 0, 'su.w1', 'mr-wave--band')}
@@ -346,6 +356,7 @@ export function score({tall, W, H}) {
   set('su.air', [[8.9, {dx: 20, o: 0}], [10.35, {dx: 20, o: 0}], [10.58, {}], [11.7, {dx: -30, dy: -10}], [11.95, {dx: -40, dy: -16, o: 0}]]);
   set('su.problem', kicker([[8.95, big], [9.45, big], [9.55, {}]], 11.65));
   set('su.title', beat(9.5, 11.65));
+  set('su.protection', [[9.15, {dy: 2, o: 0}], [9.4, {}, 'out'], [10.25, {}], [10.4, {dy: -2, o: 0}]]);
   set('su.pack', [[8.95, {dx: 85, dy: 4, r: -24, o: 0}], [10.3, {dx: 85, dy: 4, r: -24, o: 0}], [10.62, {r: -12}, 'out'], [11.35, {dx: -3, dy: -2, r: -10}], [11.75, {dx: -12, dy: -6, r: -8}]]);
   set('su.ribbonBack', [[8.95, {dx: 70, o: 0}], [10.3, {dx: 70, o: 0}], [10.62, {}, 'out'], [11.65, {dx: -12, dy: 2}], [11.95, {dx: -60, o: 0}]]);
   // The ribbon crosses while nothing is being read, then rests beside the tube, clear of the words.
