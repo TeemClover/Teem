@@ -302,7 +302,9 @@ test('copy leads with each step’s role and avoids drug-like or unverified clai
   for (const word of ['ล้าง', 'สิว', 'หมองคล้ำ', 'กันแดด', 'ปกปิด']) assert.ok(heads.includes(word), `Headlines should name the role: ${word}`);
   const copy = [publicCode(), JSON.stringify(steps().map(s => s.scene)), JSON.stringify(routine().exchange)].join('\n');
   const banned = /(melasma|anti[- ]?acne|stem ?x?cell|สเต็มเซลล์|รักษา(?:สิว|ฝ้า|ได้)|สิวหาย|ฝ้าหาย|สลายฝ้า|ปราบฝ้า|ฆ่าเชื้อ|จบเชื้อ|ล็อก ?DNA|ซ่อมเซลล์|ไม่มีสารเคมี|ออร์แกนิก ?100|organic 100|ทุกสีผิว|ไม่แพ้|แพทย์รับรอง|USDA|ECOCERT|90%|95%|ชั่วโมง|เสริมฤทธิ์|synerg|สกัดบริสุทธิ์|สูตรเข้มข้น)/iu;
-  const hit = copy.match(banned);
+  // S08 explicitly names plant stem cells and diamond powder; allow only this attributed ingredient line.
+  const checkedCopy = copy.replaceAll('สเต็มเซลล์จากพืช · ผงเพชร<small>ส่วนผสมตามข้อมูล Mediral</small>', 'ส่วนผสมตามข้อมูล Mediral');
+  const hit = checkedCopy.match(banned);
   assert.equal(hit, null, `Public copy contains a claim to hold: ${hit?.[0]}`);
   for (const step of steps().filter(s => s.id !== 'SU')) assert.doesNotMatch(JSON.stringify(step), /SPF\s*\d|PA\+/, `${step.id}: no sunscreen rating transferred to another product`);
   const sun = steps().find(s => s.id === 'SU');
@@ -323,8 +325,8 @@ test('AC’s film ships as a faststart-ready body cut in two sizes, with its pos
     assert.ok(head.indexOf('moov') >= 0 && head.indexOf('moov') < head.indexOf('mdat'), `${file}: moov precedes mdat`);
   }
   for (const file of ['crown-poster.webp', 'crown-end.webp']) assert.equal(readFileSync(join(site, 'assets/motion', file)).toString('ascii', 8, 12), 'WEBP');
-  assert.match(html(), /data-layer="fx.lens"[^>]*>[^<]*<img data-src="assets\/motion\/crown-end\.webp"/, 'The film’s lens bridges AC into BR');
-  assert.deepEqual(readdirSync(join(site, 'assets/motion')).sort(), ['crown-body-1080.mp4', 'crown-body-720.mp4', 'crown-end.webp', 'crown-poster.webp'], 'Only what the page uses ships');
+  assert.doesNotMatch(html(), /data-layer="fx.lens"/, 'The opaque still lens is retired');
+  assert.deepEqual(readdirSync(join(site, 'assets/motion')).sort(), ['crown-body-1080.mp4', 'crown-body-720.mp4', 'crown-end.webp', 'crown-poster.webp'], 'Historical AC assets stay intact');
 });
 
 test('the film is material, not a player: muted, inline, deferred, no controls, no loop, a small source for phones', () => {

@@ -250,3 +250,13 @@ Root completed CL15 restoration, Thai copy and the prior BR/SU concept films: 11
 ## Share preview (2026-09-29)
 
 The main routine URL now provides static Open Graph and Twitter large-image metadata. `mediral/assets/social/mediral-routine-og-v1.jpg` is a 1200 × 630 JPEG; its editable HTML layout is `docs/mediral/social-preview.html` (serve from the repository root). It uses the existing website pack images and original wordmark, without regenerating packaging text. Export only after fonts and all images load. Update the versioned image URL when replacing the image; social applications may still retain an older page preview in their own cache. Fragment links such as `#step-PO` share the main routine card.
+
+## Final material transitions — 2026-09-29
+
+The opaque `fx.lens` still and 7× camera flight are retired. A transparent serum-flow film bridges AC→BR at T6.24–6.95, then clears before BR's film starts. The historical crown-end image remains in the asset archive but is no longer rendered.
+
+SU→PO now dissolves into a fine champagne-powder film with restrained micro-sparkle. The native compact enters over it; the existing powder veil returns beneath the final support/CTA hold. The old opaque powder wipe and static dot overlay are removed. A brief attributed ingredient line names plant stem cells and diamond powder, matching the brand's powder ingredient sheet. The generated visuals are editorial illustrations, not microscopy, particle-size measurements or clinical evidence.
+
+Both new silent Kling clips are 5.04 seconds, native 1280×720, exported as 720p (about 710/726 KB) and 480p (354/372 KB), with WebP posters. They share the existing deferred one-pass-per-visit lifecycle: no controls, no autoplay while inactive, one active film at a time, poster on playback failure, and no video fetch in reduced-motion/static flow. No upscaling. Tests now cover all five independent films and the retired disk regression.
+
+Verified locally at 1280×720 and 393×852: clean material bridges, native compact/label preserved, ingredient signature readable, mobile selects 480p. Test suite: 151/151. Production acceptance is recorded separately after deployment.

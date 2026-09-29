@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {SHOTS, FILMS, score} from '../../mediral/js/score.js';
+import {SHOTS, FILMS, score, transitionShot} from '../../mediral/js/score.js';
 import {resolveTrack, sample} from '../../mediral/js/cinema.js';
 
 const data = JSON.parse(readFileSync(new URL('../../mediral/data/routine.json', import.meta.url), 'utf8'));
 const step = id => data.steps.find(s => s.id === id);
-const markup = id => SHOTS[id](step(id), path => path);
+const markup = id => id === 'MELT' ? transitionShot(path => path) : SHOTS[id](step(id), path => path);
 
-test('AC, BR and SU render independent deferred films with a shared silent-media contract', () => {
+test('All five scenes render independent deferred films with a shared silent-media contract', () => {
   const ids = [];
   for (const [id, film] of Object.entries(FILMS)) {
     const html = markup(id);
@@ -25,8 +25,8 @@ test('AC, BR and SU render independent deferred films with a shared silent-media
     assert.ok(html.includes(`data-src="${film.poster}"`), 'A separate still survives blocked or failed playback');
     assert.ok(film.away[0] < film.window[0] && film.away[1] > film.window[1]);
   }
-  assert.equal(new Set(ids).size, 3);
-  assert.doesNotMatch(markup('CL') + markup('PO'), /<video/);
+  assert.equal(new Set(ids).size, 5);
+  assert.doesNotMatch(markup('CL'), /<video/);
   const windows = Object.values(FILMS).map(f => f.window).sort((a, b) => a[0] - b[0]);
   for (let i = 1; i < windows.length; i++) assert.ok(windows[i][0] > windows[i - 1][1], 'No two video playback windows overlap');
 });
@@ -58,7 +58,7 @@ test('the main sunscreen rating comes from attributed product data, distinct fro
 });
 
 test('new film assets are real compact faststart MP4s in both sizes, with WebP fallback posters', () => {
-  for (const id of ['BR', 'SU']) {
+  for (const id of ['BR', 'SU', 'MELT', 'PO']) {
     const film = FILMS[id];
     for (const path of [film.src, film.small]) {
       const bytes = readFileSync(new URL(`../../mediral/${path}`, import.meta.url));
@@ -105,4 +105,18 @@ test('the CL tableau uses its named source beat, not the first three featured re
   assert.ok(!html.includes('rice-grain-panicle.webp'));
   assert.match(html, /ชบา · ลิลลี่ · ชาเขียว/);
   assert.ok(html.includes('cl.word1') && html.includes('cl.word2'), 'The original foam-led word handoff remains');
+});
+
+
+test('the final material bridges remove the opaque lens and preserve powder readability', () => {
+  const html = readFileSync(new URL('../../mediral/index.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(html, /data-layer="fx\.(?:lens|veil|motes)"/);
+  assert.match(markup('PO'), /สเต็มเซลล์จากพืช · ผงเพชร/);
+  for (const tall of [true, false]) {
+    const plan = score({tall, W: tall ? 390 : 1280, H: 800});
+    assert.ok(plan.tracks['melt.film']);
+    assert.ok(plan.tracks['po.film']);
+    assert.ok(!plan.tracks['fx.lens']);
+    assert.ok(!JSON.stringify(plan.tracks['ac.cam']).includes('ac.lens'), 'No camera flight magnifies the drop into a disk');
+  }
 });

@@ -9,7 +9,7 @@
  *   - a word may be crossed by an object only while moving; every Thai phrase is whole in its hold;
  *   - packs move by transform only, and fade only while they fully leave;
  *   - objects carry chapters across: the CL bottle and foam (hero → CL), the water ring (CL → AC),
- *     a flight into the drop beside the AC bottle that becomes the film's own lens (AC → BR, a new
+ *     a translucent serum ribbon flowing into warm light (AC → BR, a new
  *     world, not its formula), a light streak (BR → SU), air turning to powder (SU → PO), and the
  *     five packs regrouping (PO → set);
  *   - films are silent scene material, without players; the UV concept carries its own disclosure.
@@ -59,7 +59,7 @@ function protection(step) {
 // AC's film: the body of one silent concept film (botanicals, then a glass funnel with a fine stream),
 // cut before its lens so it may rest under the words however long a reader stays. The smaller file
 // serves narrow screens; the poster is the still for reduced motion and data saving. The film's own
-// final lens is kept as a still: the camera enters it only in the bridge to BR.
+// historical final lens is retained as an asset but is no longer displayed in the bridge to BR.
 export const FILM = {
   src: 'assets/motion/crown-body-1080.mp4',
   small: 'assets/motion/crown-body-720.mp4',
@@ -69,9 +69,13 @@ export const FILM = {
 // A film's visible window is narrower than its visit boundary. Small scroll reversals and tab
 // visibility changes retain playback position; crossing the wider boundary permits a fresh pass.
 export const FILMS = {
-  AC: {...FILM, id: 'lab-film', window: [3.25, 6.35], away: [2.6, 7.4]},
+  AC: {...FILM, id: 'lab-film', window: [3.25, 6.22], away: [2.6, 7.4]},
+  MELT: {src: 'assets/films/serum-flow-720.mp4', small: 'assets/films/serum-flow-480.mp4',
+    poster: 'assets/films/serum-flow-poster.webp', id: 'lab-film-MELT', window: [6.24, 6.95], away: [5.9, 7.5]},
+  PO: {src: 'assets/films/diamond-powder-720.mp4', small: 'assets/films/diamond-powder-480.mp4',
+    poster: 'assets/films/diamond-powder-poster.webp', id: 'lab-film-PO', window: [11.7, 13.5], away: [11.15, 14.3]},
   BR: {src: 'assets/films/br-clarity-1080.mp4', small: 'assets/films/br-clarity-720.mp4',
-    poster: 'assets/films/br-clarity-poster.webp', id: 'lab-film-BR', window: [6.6, 8.35], away: [6.05, 9.3]},
+    poster: 'assets/films/br-clarity-poster.webp', id: 'lab-film-BR', window: [6.96, 8.35], away: [6.05, 9.3]},
   SU: {src: 'assets/films/su-uv-patch-v2-1080.mp4', small: 'assets/films/su-uv-patch-v2-720.mp4',
     poster: 'assets/films/su-uv-patch-v2-poster.webp', id: 'lab-film-SU', window: [9.1, 10.4], away: [8.55, 11.3]},
 };
@@ -84,6 +88,8 @@ function filmMarkup(id, asset, film = FILMS[id]) {
     </div>${id === 'SU' ? '<div class="mr-chapter-film__comparison"><span>ยังไม่ทา</span><span>ทาแล้ว</span></div>' : ''}</div>${id === 'SU' ? '<p class="mr-chapter-film__caption"><strong>สารกรองแสงดูดซับ UV<br>จึงเห็นบริเวณที่ทาเป็นสีดำในกล้อง</strong><span>ไม่ใช่สีผิวที่เปลี่ยนไป</span><small>ภาพจำลองกล้อง UV · ไม่ใช่ผลทดสอบสินค้า</small></p>' : ''}
   </div>`;
 }
+
+export const transitionShot = asset => filmMarkup('MELT', asset);
 
 export const SHOTS = {
   CL: (step, asset) => `
@@ -170,10 +176,12 @@ export const SHOTS = {
   PO: (step, asset) => `
     <div role="region" class="mr-shot mr-shot--po mr-shot--dark" data-shot="PO" data-layer="po" aria-labelledby="h-PO">
       <div class="mr-shot__bg" data-layer="po.bg" aria-hidden="true"></div>
+      ${filmMarkup('PO', asset)}
       ${art('po.band', 'assets/experience/m2-powder-veil.webp', 'mr-po__band', asset)}
       ${problem(step, 'po')}
       ${title(step, 'po', 'mr-po__title')}
       ${packMarkup(step, asset, {layer: 'po.pack', src: 'data-src'})}
+      <p class="mr-po__signature" data-layer="po.signature">สเต็มเซลล์จากพืช · ผงเพชร<small>ส่วนผสมตามข้อมูล Mediral</small></p>
       ${wave(step, 0, 'po.w1')}
       ${wave(step, 1, 'po.w2')}
       ${foot(step, 'po')}
@@ -304,8 +312,8 @@ export function score({tall, W, H}) {
   set('ac', [[ringUp - 0.01, {'--portal': 0, o: 0}], [ringUp, {'--portal': ringS[1]}, 'step'], [open, {'--portal': ringS[2]}, 'in'], [open + 0.01, {'--portal': 9}, 'step'], [6.6, {}], [6.61, {o: 0}, 'step']]);
 
   /* AC (T 3.56 → 6.2): soothe → balance in glass → hydration → the bottle, the drop as a lens. -- */
-  // T3 follows: the camera flies into that drop, and the gold inside opens on another world.
-  set('ac.cam', [[ringUp, {s: 1.22}], [open + 0.1, {}, 'out'], [6.22, {}], [6.62, {focus: 'ac.lens', s: 7}, 'in']]);
+  // Keep the native pack sharp; moving liquid, rather than a magnified still, bridges into BR.
+  set('ac.cam', [[ringUp, {s: 1.22}], [open + 0.1, {}, 'out'], [6.22, {}], [6.6, {s: 1.08}, 'in']]);
   set('ac.bg', [[ringUp, {s: 1.1}], [4.5, {}], [6.2, {s: 1.04}]]);
   // The film is the chapter's material: whole as the portal opens, quieter while words are read.
   set('ac.film', [[ringUp, {s: 1.3}], [3.9, {s: 1.06}, 'out'], [4.3, {s: 1.03, o: 0.55}], [4.5, {s: 1.02, o: 0.3}], [5.7, {o: 0.26}], [6.2, {o: 0.4}]]);
@@ -328,11 +336,11 @@ export function score({tall, W, H}) {
   // The drop leaves the glass at its stem before the bottle arrives, and comes to rest beside the
   // bottle's foot as a small lens. It never lands on or passes through the closed cap.
   const stem = {match: 'slot.stem'};
-  set('ac.lens', [[4.98, {...stem, o: 0}], [5.03, stem], [5.28, {}, 'in'], [6.2, {s: 1.06}]]);
+  set('ac.lens', [[4.98, {...stem, o: 0}], [5.03, stem], [5.28, {}, 'in'], [6.18, {s: 1.06}], [6.42, {dy: -8, s: 0.8, o: 0}]]);
   set('ac.title', beat(5.7, 6.2));
   set('ac.foot', beat(5.78, 6.2, {dy: 2}, {dy: 2}));
-  // The drop's lens becomes the film's final frame, which clears into BR's light.
-  set('fx.lens', [[6.3, {s: 0.72, o: 0}], [6.46, {s: 0.92}, 'out'], [6.6, {}], [6.9, {s: 2.4, o: 0}, 'in']]);
+  // A flowing transparent film bridges the chapters without magnifying a solid disk.
+  set('melt.film', [[6.23, {o: 0, s: 1.02}], [6.43, {}, 'out'], [6.64, {s: 1.04}], [6.96, {o: 0, s: 1.08}]]);
 
   /* BR (T 6.6 → 8.85): light through the drop; three names focus on three depths; two pairs. ---- */
   set('br', [[6.59, {o: 0}], [6.6, {}, 'step'], [9.28, {}], [9.29, {o: 0}, 'step']]);
@@ -381,13 +389,12 @@ export function score({tall, W, H}) {
   set('su.foot', beat(11.36, 11.65, {dy: 2}, {dy: 2}));
 
   /* SU → PO (T 11.65 → 12.09): the air thickens into powder; the veil clears onto the PO scene. -- */
-  set('fx.motes', [[11.55, {o: 0, dy: 10}], [11.75, {}], [12.01, {dy: -18, s: 1.3}], [12.11, {dy: -24, s: 1.4, o: 0}]]);
-  set('fx.veil', [[11.67, {dy: 70, s: 1.1, o: 0}], [11.75, {dy: 60, s: 1.1}], [11.95, {s: 1.35}, 'out'], [12.11, {dy: -55, s: 1.6}, 'in'], [12.12, {dy: -55, s: 1.6, o: 0}, 'step']]);
-
-  /* PO (T 11.95 → 13.9): the problem; the outline fills; the compact lands; two waves; support. -- */
-  set('po', [[11.94, {o: 0}], [11.95, {}, 'step'], [14.05, {}], [14.21, {o: 0}]]);
-  set('po.bg', [[11.95, {s: 1.1}], [12.65, {}], [13.9, {s: 1.03}]]);
-  set('po.band', [[11.95, {dy: -14, s: 1.2, o: 0.6}], [12.55, {}, 'out'], [13.9, {dy: 2}], [14.15, {dy: 20, o: 0}]]);
+  // A real macro film carries the air into fine powder; no opaque still-image wipe.
+  set('po', [[11.67, {o: 0}], [11.96, {}, 'out'], [14.05, {}], [14.21, {o: 0}]]);
+  set('po.bg', [[11.67, {o: 0, s: 1.1}], [12.08, {}], [12.65, {}], [13.9, {s: 1.03}]]);
+  set('po.film', [[11.67, {o: 0, dy: 8, s: 1.12}], [11.95, {}, 'out'], [12.65, {s: 1.02}], [13.25, {o: 0.82}], [13.55, {o: 0}]]);
+  set('po.band', [[12.7, {dy: 10, o: 0}], [13.5, {o: 0.75}, 'out'], [13.9, {dy: 2}], [14.15, {dy: 20, o: 0}]]);
+  set('po.signature', beat(12.68, 13.43, {dy: 1}, {dy: -1}));
   set('po.problem', tall ? [[11.95, big], [12.25, big], [12.35, questionOut]]
     : kicker([[11.95, big], [12.29, big], [12.39, {}]], 13.85));
   set('po.title', [[12.35, {dy: 2, o: 0, '--fill': 0}], [12.45, {'--fill': 0}], [12.59, {'--fill': 1}], [13.85, {}], [13.95, {dy: -3, o: 0}]]);

@@ -11,7 +11,7 @@
  */
 import {createCinema} from './cinema.js';
 import {createLetterMotion} from './letter.js';
-import {SHOTS, CHAPTERS, FILMS, score, closingShot, detailHref, toneMark} from './score.js';
+import {SHOTS, CHAPTERS, FILMS, score, closingShot, transitionShot, detailHref, toneMark} from './score.js';
 
 const root = document.documentElement;
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -83,7 +83,7 @@ function renderStory() {
   const view = $('[data-view]');
   const actors = $('[data-layer="fx.foam"]', view);
   const story = state.data.steps.filter(step => SHOTS[step.id] && CHAPTERS.some(c => c.id === step.id));
-  actors.insertAdjacentHTML('beforebegin', story.map(step => SHOTS[step.id](step, asset)).join(''));
+  actors.insertAdjacentHTML('beforebegin', story.map(step => SHOTS[step.id](step, asset)).join('') + transitionShot(asset));
   // The reassembled set sits beneath every chapter, so PO can dissolve away over it.
   if (story.length === state.data.steps.length) $('[data-shot="routine"]', view).insertAdjacentHTML('afterend', closingShot(state.data.steps, state.data.set, asset, state.data.route));
   $('#routine').insertAdjacentHTML('afterend', story.map(step => `<span class="mr-mark" id="step-${step.id}" data-mark="${step.id}" data-step="${step.id}"></span>`).join(''));

@@ -247,9 +247,7 @@ main{position:relative;z-index:1}
 /* Shared transition materials, above every chapter. */
 .mr-fx-foam{aspect-ratio:1774/887;width:170vw;left:-35vw;top:calc(50% - 42.5vw);pointer-events:none;z-index:5}
 .mr-fx-ring{width:100vmax;left:calc(50% - 50vmax);top:calc(58% - 50vmax);pointer-events:none;z-index:6}
-/* The film's own last frame — a luminous lens — carries AC into BR's light. Sized so its circle is
-   the width of a phone, feathered into the forest, then it opens outward. */
-.mr-fx-lens{aspect-ratio:16/9;width:185vw;left:-42.5vw;top:calc(50% - 52vw);z-index:7;pointer-events:none;-webkit-mask-image:radial-gradient(circle closest-side at 50% 50%,#000 90%,transparent 100%);mask-image:radial-gradient(circle closest-side at 50% 50%,#000 90%,transparent 100%)}
+/* Shared light streak between the brightening and sunscreen chapters. */
 .mr-fx-streak{position:absolute;width:38vw;height:130svh;left:31vw;top:-15svh;z-index:7;pointer-events:none;background:linear-gradient(90deg,rgba(255,250,232,0),rgba(255,247,222,.55) 34%,rgba(255,255,252,.97) 50%,rgba(255,247,222,.55) 66%,rgba(255,250,232,0));transform-origin:50% 50%}
 .mr-fx-motes{position:absolute;inset:-10% 0;z-index:7;pointer-events:none;background:
   radial-gradient(circle at 12% 70%,rgba(255,255,250,.9) 0 3px,transparent 4px),radial-gradient(circle at 22% 40%,rgba(255,255,250,.8) 0 2px,transparent 3px),
@@ -435,7 +433,6 @@ body[data-step=routine] .mr-rail,body[data-reading-chapter] .mr-rail,body[data-c
   .mr-foot{top:86svh}
   .mr-fx-foam{width:130vw;left:-15vw;top:calc(50% - 32.5vw)}
   .mr-fx-veil{width:140vw;left:-20vw;top:calc(50% - 35vw)}
-  .mr-fx-lens{width:112vw;left:-6vw;top:calc(50% - 31.5vw)}
   .mr-cl__word{--y:25svh;font-size:min(8.6vw,13.5svh)}
   .mr-cl__word--next{font-size:min(5.2vw,8.2svh)}
   .mr-cl__botanical{width:19vw}
@@ -798,3 +795,13 @@ body[data-product=PO] .mr-beat__pack .mr-pack{height:44%;margin-bottom:18%}
   .mr-atlas__group--roles .mr-atlas__text b{font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){.mr-rail{transition:none}}
+
+/* Flowing serum and fine powder are scene material, not circular overlays or video players. */
+.mr-melt__film{inset:0;width:auto;aspect-ratio:auto;z-index:7}
+.mr-melt__film .mr-fx__clipframe{-webkit-mask-image:radial-gradient(ellipse 85% 72% at 50% 50%,#000 35%,transparent 100%);mask-image:radial-gradient(ellipse 85% 72% at 50% 50%,#000 35%,transparent 100%)}
+.mr-po__film{left:0;right:0;top:25svh;height:75svh;width:auto;aspect-ratio:auto}
+.mr-po__film .mr-fx__clipframe{-webkit-mask-image:linear-gradient(transparent,#000 24%,#000 85%,transparent);mask-image:linear-gradient(transparent,#000 24%,#000 85%,transparent)}
+.mr-po__film img,.mr-po__film video{object-position:50% 75%}
+.mr-po__signature{position:absolute;top:80svh;left:7%;width:86%;margin:0;text-align:center;color:#163b2b;font:500 clamp(13px,3.6vw,20px)/1.55 var(--sans);text-shadow:0 1px 8px rgba(255,255,244,.85)}
+.mr-po__signature small{display:block;margin-top:4px;font-size:10px;opacity:.8}
+.mr-flow .mr-po__signature{position:static;width:auto;margin:20px 0}

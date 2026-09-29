@@ -490,8 +490,8 @@ test('each chapter owns one film: direct jumps stop the old pass before the next
   }});
   await ui.run('bootFilm()');
   await ui.run('bootFilm()');
-  assert.equal(films.size, 3);
-  for (const [id, T] of [['AC', 3.8], ['BR', 7.2], ['SU', 9.8], ['AC', 4]]) {
+  assert.equal(films.size, 5);
+  for (const [id, T] of [['AC', 3.8], ['MELT', 6.5], ['BR', 7.2], ['SU', 9.8], ['PO', 12.3], ['AC', 4]]) {
     ui.at(T);
     assert.equal(films.get(id).active, true);
     assert.deepEqual([...films].filter(([, f]) => f.active).map(([key]) => key), [id]);
@@ -505,7 +505,7 @@ test('each chapter owns one film: direct jumps stop the old pass before the next
   ui.hidePage(); ui.returnToPage();
   assert.equal(calls.filter(c => c === 'BR:rewind').length, rewinds);
   assert.equal(films.get('BR').active, true);
-  ui.at(12);
+  ui.at(14.6);
   assert.ok([...films.values()].every(f => !f.active));
   assert.ok(ui.pieces.every(p => p.checked), 'Films never change the order selection');
 });
@@ -518,7 +518,7 @@ test('a failed chapter film does not prevent the other films; normal flow never 
     films.set(el.dataset.filmStep, api); return api;
   }});
   await ui.run('bootFilm()');
-  assert.equal(films.size, 2);
+  assert.equal(films.size, 4);
   for (const T of [3.8, 7.2, 9.8]) ui.at(T);
   assert.ok([...films.values()].every(f => !f.active));
   assert.ok(!ui.root.classList.contains('mr-nodata'));
