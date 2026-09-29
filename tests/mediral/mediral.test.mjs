@@ -470,21 +470,17 @@ function matchesRoute(source, pathname) {
   return false;
 }
 
-test('page HTML and route responses declare noindex, and dev/reference files do not deploy', () => {
+test('the page and its product pages are open to search and AI crawlers, and dev/reference files do not deploy', () => {
   const robots = tags(html(), 'meta').filter(t => t.name?.toLowerCase() === 'robots');
-  assert.ok(robots.some(t => t.content?.toLowerCase().split(/[\s,]+/).includes('noindex')));
+  assert.ok(!robots.some(t => /noindex|nofollow/i.test(t.content || '')), 'No noindex meta on the page');
   const config = JSON.parse(read(join(root, 'vercel.json')));
-  assert.ok(config.headers.some(r => r.source === '/mediral/'
-    && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
-  'The directory entry needs an explicit rule: production did not apply the wildcard header there');
-  assert.ok(config.headers.some(r => r.source === '/mediral/:page(cl|ac|br|su|po)/'
-    && r.headers.some(h => h.key.toLowerCase() === 'x-robots-tag' && h.value.includes('noindex'))),
-  'Product directory pages need the same explicit rule as the entry');
-  for (const pathname of ['/mediral', '/mediral/', '/mediral/index.html', '/mediral/data/routine.json', '/mediral/js/cinema.js', '/mediral/cl/index.html', '/mediral/data/details.json']) {
-    const values = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
-      .filter(h => h.key.toLowerCase() === 'x-robots-tag').map(h => h.value.toLowerCase().split(/[\s,]+/));
-    assert.ok(values.some(v => v.includes('noindex')), `${pathname} needs X-Robots-Tag noindex`);
+  for (const pathname of ['/mediral/', '/mediral/index.html', '/mediral/cl/', '/mediral/po/']) {
+    const blocked = config.headers.filter(r => !r.has?.length && matchesRoute(r.source, pathname)).flatMap(r => r.headers)
+      .some(h => h.key.toLowerCase() === 'x-robots-tag' && /noindex/i.test(h.value));
+    assert.equal(blocked, false, `${pathname} sends no noindex header`);
   }
+  const sitemap = read(join(root, 'sitemap.xml'));
+  for (const path of ['', 'cl/', 'ac/', 'br/', 'su/', 'po/']) assert.ok(sitemap.includes(`<loc>https://www.myclover.com/mediral/${path}</loc>`), `sitemap lists /mediral/${path}`);
   assert.ok(config.redirects.some(r => r.source === '/mediral' && r.destination === '/mediral/'));
   const ignore = read(join(root, '.vercelignore'));
   for (const line of ['tests/mediral/', 'docs/mediral/', 'mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {

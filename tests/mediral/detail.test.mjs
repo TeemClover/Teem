@@ -165,11 +165,11 @@ test('the public details file holds only public fields', () => {
   }
 });
 
-test('each static page is readable before scripts: noindex, its name, the way back and the LINE link', () => {
+test('each static page is readable before scripts and open to search: its name, the way back and the LINE link', () => {
   for (const id of DETAIL_IDS) {
     const html = read(`${id.toLowerCase()}/index.html`);
     const product = details.products.find(p => p.id === id);
-    assert.match(html, /<meta name="robots" content="noindex, nofollow, noarchive">/);
+    assert.doesNotMatch(html, /<meta name="robots"[^>]*noindex/);
     assert.match(html, new RegExp(`<body class="mr-detail-page" data-product="${id}">`));
     assert.ok(html.includes(product.short_name) && html.includes(product.problem));
     assert.ok(html.includes(product.headline) && html.includes(product.lead), `${id}: the static opening matches the hydrated editorial copy`);
