@@ -6,9 +6,12 @@
  *     routine = data/routine.json (packs, order channel, facts); details = data/details.json
  *     (public product copy and every source-listed name); id = CL | AC | BR | SU | PO
  *
- * Hierarchy: problem → promise → what it looks after → how and when → every listed name, grouped
- * → questions → one LINE action → back to the exact chapter, and on to the next piece.
+ * Hierarchy: problem → promise → one short sequence (ingredients → material → care) → how and when
+ * → every listed name, grouped, each with its picture → questions → one LINE action → back to the
+ * exact chapter, and on to the next piece.
  * A name the source lists without a role is shown as a name only; nothing is filled in for it.
+ * Pictures are illustrations of a name or a material, never a supplier photo or proof of origin.
+ * Motion is added by detail-motion.js: anything marked data-reveal is complete without it.
  */
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const pad = n => String(n).padStart(2, '0');
@@ -25,11 +28,13 @@ export const MATERIAL = {
   PO: 'assets/experience/m2-powder-veil.webp',
 };
 
-function pack(step, asset) {
+function pack(step, asset, {lazy = false} = {}) {
   const b = step.image_bounds;
   const w = b.x1 - b.x0, h = b.y1 - b.y0;
   const style = `--pack-aspect:${b.aspect};--pack-img-width:${100 / w}%;--pack-img-height:${100 / h}%;--pack-img-left:${-100 * b.x0 / w}%;--pack-img-top:${-100 * b.y0 / h}%`;
-  return `<span class="mr-pack" style="${style}"><img src="${asset(step.image)}" alt="${esc(step.image_alt)}" decoding="async" fetchpriority="high"></span>`;
+  // The hero pack is the page's first image; a repeat further down is decorative and loads late.
+  const img = lazy ? `alt="" loading="lazy"` : `alt="${esc(step.image_alt)}" fetchpriority="high"`;
+  return `<span class="mr-pack" style="${style}"><img src="${asset(step.image)}" ${img} decoding="async"></span>`;
 }
 
 export function lineAction(order, label = order.label) {
@@ -37,20 +42,75 @@ export function lineAction(order, label = order.label) {
   return `<a class="mr-btn mr-btn--line" href="${esc(order.url)}" target="_blank" rel="noopener">${esc(label)}</a>`;
 }
 
+// Every listed name, image-led: one card per name, in the brand's groups, all open. A name whose
+// picture is not ready yet keeps a quiet tile, never a bare dot. Two names sharing one abstract
+// material picture stay two cards; the second is mirrored so they do not read as a duplicate.
 function ingredients(product, asset) {
   const groups = product.ingredient_groups || [];
   if (!groups.length) return '';
   const total = groups.reduce((n, g) => n + g.items.length, 0);
-  return `<section class="mr-detail__block mr-detail__names" id="ingredients" aria-labelledby="names-title">
+  return `<section class="mr-detail__block mr-atlas" id="ingredients" aria-labelledby="names-title">
     <h2 id="names-title">${esc(product.ingredients_heading)}</h2>
     <p class="mr-detail__intro">${esc(product.ingredients_intro)} · ${total} ชื่อ</p>
-    ${groups.map((g, i) => `<details class="mr-names"${i === 0 ? ' open' : ''}>
-      <summary><span>${esc(g.title)}</span><small>${g.items.length} ชื่อ</small></summary>
-      ${g.summary ? `<p class="mr-names__summary">${esc(g.summary)}</p>` : ''}
-      <ul>${g.items.map(item => `<li>${item.image ? `<img src="${asset(item.image)}" alt="" loading="lazy" decoding="async">` : '<span class="mr-names__dot" aria-hidden="true"></span>'}<span><b>${esc(item.name)}</b>${item.benefit ? `<small>${esc(item.benefit)}</small>` : ''}</span></li>`).join('')}</ul>
-    </details>`).join('')}
-    ${product.ingredient_note ? `<p class="mr-detail__fine">${esc(product.ingredient_note)}</p>` : ''}
+    ${groups.map((g, i) => {
+      const seen = new Set();
+      const roles = g.items.some(item => item.benefit);
+      return `<section class="mr-atlas__group${roles ? ' mr-atlas__group--roles' : ''}" aria-labelledby="names-${i + 1}">
+      <h3 id="names-${i + 1}"><span>${esc(g.title)}</span><small>${g.items.length} ชื่อ</small></h3>
+      ${g.summary ? `<p class="mr-atlas__summary">${esc(g.summary)}</p>` : ''}
+      <ul class="mr-atlas__grid">${g.items.map((item, k) => {
+        const repeat = item.image && seen.has(item.image);
+        if (item.image) seen.add(item.image);
+        const picture = item.image
+          ? `<img src="${asset(item.image)}" alt="" width="768" height="768" loading="lazy" decoding="async">`
+          : '<span class="mr-atlas__tile"></span>';
+        return `<li class="mr-atlas__item" data-reveal style="--i:${Math.min(k, 8)}"><span class="mr-atlas__img${repeat ? ' is-repeat' : ''}" aria-hidden="true">${picture}</span><span class="mr-atlas__text"><b>${esc(item.name)}</b>${item.benefit ? `<small>${esc(item.benefit)}</small>` : ''}</span></li>`;
+      }).join('')}</ul>
+    </section>`;
+    }).join('')}
+    ${product.ingredient_note ? `<p class="mr-detail__fine">${esc(product.ingredient_note)} · ภาพส่วนผสมเป็นภาพประกอบชื่อหรือลักษณะวัตถุดิบ ไม่ใช่ภาพจากผู้ผลิต</p>` : ''}
     ${product.name_notes?.length ? `<div class="mr-detail__aka"><h3>ชื่อที่พบในสื่อแบรนด์</h3>${product.name_notes.map(n => `<p>${esc(n)}</p>`).join('')}</div>` : ''}
+  </section>`;
+}
+
+// One short editorial sequence per page: what goes in, what it becomes, what it does for skin.
+// Each page keeps its own rhythm (wipe, rise, bloom, glide, settle); the words are the product's own
+// sourced lines, and pictures only illustrate them.
+function tableau(select, product, asset) {
+  if (select.image) return `<div class="mr-tableau mr-tableau--scene"><img src="${asset(select.image)}" alt="" loading="lazy" decoding="async"></div>`;
+  const items = new Map((product.ingredient_groups || []).flatMap(g => g.items).map(item => [item.name, item]));
+  const shown = select.names.map(name => items.get(name)).filter(item => item?.image);
+  const ring = select.layout === 'ring';
+  return `<div class="mr-tableau${ring ? ' mr-tableau--ring' : ''}" style="--n:${shown.length}">
+    ${ring ? `<b class="mr-tableau__count">${select.names.length}</b>` : ''}
+    ${shown.map((item, k) => `<span class="mr-tableau__item" style="--k:${k}"><img src="${asset(item.image)}" alt="" width="768" height="768" loading="lazy" decoding="async"></span>`).join('')}
+  </div>`;
+}
+
+// A bold title breaks only between its phrases, and the dot stays with the phrase before it.
+const phrases = title => title.split(' · ').map(part => `<span>${esc(part)}</span>`).join('&nbsp;· ');
+
+function sequence(product, step, routine, asset) {
+  const seq = product.sequence;
+  if (!seq) return '';
+  const {select, material, care} = seq;
+  const beat = (n, key, visual, copy) => `<li class="mr-beat mr-beat--${key}" data-reveal>
+      <div class="mr-beat__visual" aria-hidden="true">${visual}</div>
+      <div class="mr-beat__copy"><p class="mr-beat__label"><b>0${n}</b> ${esc(seq[key].label)}</p><h3>${phrases(seq[key].title)}</h3>${copy}</div>
+    </li>`;
+  const total = (product.ingredient_groups || []).reduce((n, g) => n + g.items.length, 0);
+  return `<section class="mr-seq mr-seq--${esc(seq.rhythm)}" aria-labelledby="seq-title">
+    <h2 id="seq-title" class="mr-seq__title" data-reveal>${esc(seq.title)}</h2>
+    <ol class="mr-seq__beats">
+      ${beat(1, 'select', tableau(select, product, asset), `<p>${esc(select.body)}</p>
+        ${select.names?.length ? `<ul class="mr-beat__names">${select.names.map(name => `<li>${esc(name)}</li>`).join('')}</ul>` : ''}
+        ${total ? `<a class="mr-beat__more" href="#ingredients">ดูส่วนผสมทั้ง ${total} ชื่อ</a>` : ''}`)}
+      ${beat(2, 'material', `<div class="mr-material"><img src="${asset(material.image)}" alt="" loading="lazy" decoding="async"></div>`, `<p>${esc(material.body)}</p>`)}
+      ${beat(3, 'care', `<div class="mr-beat__pack">${pack(step, asset, {lazy: true})}</div>`, `<ul class="mr-care">${product.benefits.map(b => `<li><b>${esc(b.title)}</b><span>${esc(b.body)}</span></li>`).join('')}</ul>
+        ${product.fit ? `<p class="mr-detail__fit">${esc(product.fit)}</p>` : ''}
+        ${fact(step)}`)}
+    </ol>
+    <p class="mr-seq__fine">${esc(product.brand_attribution)} · ภาพเป็นภาพประกอบ ไม่ใช่ภาพจากผู้ผลิตหรือเนื้อสินค้าจริง</p>
   </section>`;
 }
 
@@ -96,13 +156,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
     <figure class="mr-detail__pack">${pack(step, asset)}</figure>
   </section>
 
-  <section class="mr-detail__block" aria-labelledby="care-title">
-    <h2 id="care-title">ดูแลเรื่องไหน</h2>
-    <ul class="mr-detail__benefits">${product.benefits.map(b => `<li><h3>${esc(b.title)}</h3><p>${esc(b.body)}</p></li>`).join('')}</ul>
-    ${product.texture ? `<p class="mr-detail__texture"><b>เนื้อสัมผัส</b> ${esc(product.texture)}</p>` : ''}
-    ${product.fit ? `<p class="mr-detail__fit">${esc(product.fit)}</p>` : ''}
-    ${fact(step)}
-  </section>
+  ${sequence(product, step, routine, asset)}
 
   <section class="mr-detail__block mr-detail__use" aria-labelledby="use-title">
     <h2 id="use-title">ใช้อย่างไร</h2>
@@ -112,6 +166,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
       ${size ? `<div><dt>ขนาด</dt><dd>${esc(size)}</dd></div>` : ''}
       ${step.size_note ? `<div><dt>หมายเหตุ</dt><dd>${esc(step.size_note)}</dd></div>` : ''}
     </dl>
+    ${product.texture ? `<p class="mr-detail__texture"><b>เนื้อสัมผัส</b> ${esc(product.texture)}</p>` : ''}
     ${product.role_in_set ? `<p class="mr-detail__set">${esc(product.role_in_set)}</p>` : ''}
   </section>
 

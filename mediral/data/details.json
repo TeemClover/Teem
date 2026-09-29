@@ -47,7 +47,27 @@
       "ingredients_intro": "จัดเป็นกลุ่มเพื่อให้อ่านง่าย ตามรายชื่อที่แบรนด์เผยแพร่",
       "ingredient_groups": [],
       "ingredient_note": null,
-      "name_notes": []
+      "name_notes": [],
+      "sequence": {
+        "title": "จากฟอง ถึงผิว",
+        "rhythm": "wipe",
+        "select": {
+          "label": "เริ่มต้น",
+          "title": "เลือกเริ่มที่ขั้นล้าง",
+          "body": "ชิ้นทำความสะอาดที่แยกหน้าที่ชัดจากเซรั่มบำรุง",
+          "image": "assets/experience/m2-rinse-portal.webp"
+        },
+        "material": {
+          "label": "เนื้อโฟม",
+          "title": "มูสโฟม",
+          "body": "มูสล้างหน้าและเครื่องสำอาง ในขวดปั๊มฉลากโคลเวอร์",
+          "image": "assets/experience/p0-3-foam-band.webp"
+        },
+        "care": {
+          "label": "ถึงผิว",
+          "title": "ล้างหน้าและเครื่องสำอาง"
+        }
+      }
     },
     {
       "id": "AC",
@@ -102,7 +122,7 @@
             {
               "name": "ซิงค์ พีซีเอ",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             },
             {
               "name": "น้ำมันใบทีทรี",
@@ -144,12 +164,12 @@
             {
               "name": "ทรีฮาโลส",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             },
             {
               "name": "โซเดียม พีซีเอ",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/hydration-clear-gel.webp"
             },
             {
               "name": "สารสกัดน้ำดอกกุหลาบ",
@@ -159,12 +179,12 @@
             {
               "name": "สารสกัดเปลือกมะม่วง",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/mango-peel.webp"
             },
             {
               "name": "สารสกัดเปลือกกล้วย",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/banana-peel.webp"
             }
           ]
         },
@@ -181,7 +201,7 @@
             {
               "name": "GO-VC อนุพันธ์วิตามินซี",
               "benefit": null,
-              "image": null
+              "image": "assets/experience/p0-2-drop-clear.webp"
             },
             {
               "name": "สารสกัดเปลือกมังคุด",
@@ -191,17 +211,17 @@
             {
               "name": "สารสกัดข้าวโพด",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/corn-source.webp"
             },
             {
               "name": "สารสกัดอ้อย",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/sugarcane-stem.webp"
             },
             {
               "name": "สารสกัดเปลือกมะกอก",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/olive-peel.webp"
             }
           ]
         },
@@ -223,28 +243,54 @@
             {
               "name": "สารสกัดน้ำแร่เอิร์ธมารีน",
               "benefit": null,
-              "image": null
+              "image": "assets/experience/p0-2-drop-clear.webp"
             },
             {
               "name": "สารสกัดน้ำแร่ Lipobelle Glacier",
               "benefit": null,
-              "image": null
+              "image": "assets/experience/p0-2-drop-clear.webp"
             },
             {
               "name": "น้ำมันหอมระเหยกลิ่นดอกซากุระ",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/amber-oil.webp"
             },
             {
               "name": "อัลลันโทอิน",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             }
           ]
         }
       ],
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
-      "name_notes": []
+      "name_notes": [],
+      "sequence": {
+        "title": "จากส่วนผสม ถึงผิว",
+        "rhythm": "rise",
+        "select": {
+          "label": "ส่วนผสม",
+          "title": "ทีทรี · เปลือกมังคุด",
+          "body": "สองชื่อที่ Mediral เล่าเรื่องปลอบประโลม คู่กับวิชฮาเซลและเกรปฟรุตในเรื่องสมดุลความมัน และไฮยาในเรื่องความชุ่มชื้น",
+          "names": [
+            "น้ำมันใบทีทรี",
+            "สารสกัดเปลือกมังคุด",
+            "สารสกัดวิชฮาเซล",
+            "สารสกัดเกรปฟรุต",
+            "ไฮยา (HA)"
+          ]
+        },
+        "material": {
+          "label": "เนื้อสัมผัส",
+          "title": "บางเบา ซึมไว",
+          "body": "บางเบา ซึมไว ไม่เหนอะหนะ ให้ความรู้สึกสดชื่น",
+          "image": "assets/experience/p0-2-drop-clear.webp"
+        },
+        "care": {
+          "label": "ถึงผิว",
+          "title": "ปลอบประโลม · สมดุล · ชุ่มชื้น"
+        }
+      }
     },
     {
       "id": "BR",
@@ -309,7 +355,7 @@
             {
               "name": "อนุพันธ์วิตามินซี",
               "benefit": "ช่วยให้ผิวดูกระจ่างใสและลดเลือนความหมองคล้ำ",
-              "image": null
+              "image": "assets/experience/p0-2-drop-clear.webp"
             }
           ]
         },
@@ -321,12 +367,12 @@
             {
               "name": "โพรไบโอติก",
               "benefit": "ดูแลสมดุลผิวและเกราะปกป้องผิว",
-              "image": null
+              "image": "assets/materials/ferment-abstract.webp"
             },
             {
               "name": "บากูชิล ตามชื่อในสื่อแบรนด์",
               "benefit": "ดูแลผิวให้เรียบเนียน",
-              "image": null
+              "image": "assets/materials/amber-oil.webp"
             }
           ]
         },
@@ -368,12 +414,12 @@
             {
               "name": "สารสกัดเปลือกสนมาริไทม์",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/pine-bark.webp"
             },
             {
               "name": "สารสกัดต้นหลิว",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/willow-twig.webp"
             }
           ]
         },
@@ -390,7 +436,7 @@
             {
               "name": "น้ำมันเห็ดทรัฟเฟิลขาว",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/amber-oil.webp"
             },
             {
               "name": "น้ำสกัดกุหลาบ",
@@ -405,13 +451,39 @@
             {
               "name": "อนุพันธ์วิตามินอี",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/amber-oil.webp"
             }
           ]
         }
       ],
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
-      "name_notes": []
+      "name_notes": [],
+      "sequence": {
+        "title": "จากส่วนผสม ถึงผิว",
+        "rhythm": "bloom",
+        "select": {
+          "label": "ส่วนผสม",
+          "title": "แบร์เบอร์รี่ · ชะเอมเทศ",
+          "body": "สองชื่อที่ Mediral เล่าเรื่องความหมองและสีผิว ร่วมกับอนุพันธ์วิตามินซี โพรไบโอติก และบากูชิล",
+          "names": [
+            "สารสกัดแบร์เบอร์รี่",
+            "สารสกัดชะเอมเทศ",
+            "อนุพันธ์วิตามินซี",
+            "โพรไบโอติก",
+            "บากูชิล ตามชื่อในสื่อแบรนด์"
+          ]
+        },
+        "material": {
+          "label": "เนื้อสัมผัส",
+          "title": "บางเบา เกลี่ยง่าย",
+          "body": "บางเบา เกลี่ยง่าย ไม่เหนอะหนะ พร้อมความชุ่มชื้น",
+          "image": "assets/experience/p0-2-drop-amber.webp"
+        },
+        "care": {
+          "label": "ถึงผิว",
+          "title": "ผิวดูกระจ่างใส · ดูเรียบเนียน"
+        }
+      }
     },
     {
       "id": "SU",
@@ -466,12 +538,12 @@
             {
               "name": "Zinc Oxide",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             },
             {
               "name": "Titanium Dioxide",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             }
           ]
         },
@@ -495,37 +567,37 @@
             {
               "name": "สารสกัดมาลโลว์",
               "benefit": "ปลอบประโลมและเติมความชุ่มชื้นให้ผิว",
-              "image": null
+              "image": "assets/botanicals/mallow-flower.webp"
             },
             {
               "name": "สารสกัดเปปเปอร์มินต์",
               "benefit": "ช่วยให้ผิวรู้สึกสดชื่นและสบายผิว",
-              "image": null
+              "image": "assets/botanicals/peppermint-leaves.webp"
             },
             {
               "name": "สารสกัดพริมูลา",
               "benefit": "ดูแลผิวให้เรียบเนียนและดูสุขภาพดี",
-              "image": null
+              "image": "assets/botanicals/primula-flower.webp"
             },
             {
               "name": "สารสกัดอัลเคมิลลา",
               "benefit": "ช่วยให้ผิวดูกระจ่างใสและสีผิวดูสม่ำเสมอ",
-              "image": null
+              "image": "assets/botanicals/alchemilla-leaf.webp"
             },
             {
               "name": "สารสกัดเวโรนิก้า",
               "benefit": "ดูแลผิวให้ดูกระจ่างใสอย่างเป็นธรรมชาติ",
-              "image": null
+              "image": "assets/botanicals/veronica-flower.webp"
             },
             {
               "name": "สารสกัดเมลิสสา",
               "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
-              "image": null
+              "image": "assets/botanicals/melissa-leaves.webp"
             },
             {
               "name": "สารสกัดยาร์โรว์",
               "benefit": "ปลอบประโลมและดูแลผิวให้สมดุล",
-              "image": null
+              "image": "assets/botanicals/yarrow-flower.webp"
             }
           ]
         },
@@ -547,7 +619,7 @@
             {
               "name": "สารสกัดเชียร์บัตเตอร์",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/shea-butter.webp"
             },
             {
               "name": "สารสกัดสาหร่ายทะเล",
@@ -560,7 +632,36 @@
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
       "name_notes": [
         "สื่อ Mediral อีกภาพใช้ชื่อ HydroAlgae™ ในเรื่องราวของสารสกัดสาหร่าย"
-      ]
+      ],
+      "sequence": {
+        "title": "จากส่วนผสม ถึงผิว",
+        "rhythm": "glide",
+        "select": {
+          "label": "ส่วนผสม",
+          "title": "Giga White® · พืช 7 ชื่อ",
+          "layout": "ring",
+          "body": "กลุ่มพืชที่ Mediral เล่าเรื่องผิวดูกระจ่างใส เรียบเนียน และสีผิวดูสม่ำเสมอ อยู่คู่กับสารกรอง UV จากแร่ธาตุ Zinc Oxide และ Titanium Dioxide",
+          "names": [
+            "สารสกัดมาลโลว์",
+            "สารสกัดเปปเปอร์มินต์",
+            "สารสกัดพริมูลา",
+            "สารสกัดอัลเคมิลลา",
+            "สารสกัดเวโรนิก้า",
+            "สารสกัดเมลิสสา",
+            "สารสกัดยาร์โรว์"
+          ]
+        },
+        "material": {
+          "label": "เนื้อสัมผัส",
+          "title": "เนื้อเซรั่มครีมบางเบา",
+          "body": "เนื้อเซรั่มครีมบางเบา เกลี่ยง่าย ให้ความชุ่มชื้นและสบายผิว",
+          "image": "assets/experience/m2-serum-ribbon.webp"
+        },
+        "care": {
+          "label": "ถึงผิว",
+          "title": "กันแดด เบาสบายผิว"
+        }
+      }
     },
     {
       "id": "PO",
@@ -615,7 +716,7 @@
             {
               "name": "สารสกัดแป้งข้าวโพด",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/corn-source.webp"
             },
             {
               "name": "สารสกัดแป้งรำข้าว",
@@ -625,7 +726,7 @@
             {
               "name": "สารสกัดแป้งมันสำปะหลัง",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/cassava-root.webp"
             },
             {
               "name": "น้ำมันเมล็ดทานตะวัน",
@@ -635,7 +736,7 @@
             {
               "name": "น้ำมันเมล็ดคำฝอย",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/safflower-head.webp"
             },
             {
               "name": "น้ำมันมะกอก",
@@ -674,7 +775,7 @@
             {
               "name": "ซาโปนาเรีย พูมิล่า ตามชื่อในสื่อแบรนด์",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/botanical-extract.webp"
             },
             {
               "name": "ดอกกุหลาบ",
@@ -684,17 +785,17 @@
             {
               "name": "ใบกุหลาบอังกฤษ",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/rose-leaves.webp"
             },
             {
               "name": "ใบกุหลาบทะเลทราย ตามชื่อในสื่อแบรนด์",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/botanical-extract.webp"
             },
             {
               "name": "ซีบัคธอร์น",
               "benefit": null,
-              "image": null
+              "image": "assets/botanicals/sea-buckthorn.webp"
             },
             {
               "name": "ดอกฝ้าย",
@@ -711,23 +812,49 @@
             {
               "name": "Titanium Dioxide",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             },
             {
               "name": "Zinc Oxide",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/mineral-white-powder.webp"
             },
             {
               "name": "ผงเพชร",
               "benefit": null,
-              "image": null
+              "image": "assets/materials/diamond-dust.webp"
             }
           ]
         }
       ],
       "ingredient_note": "รายการนี้มาจากสื่อแบรนด์ ไม่ใช่ลำดับส่วนผสมทั้งหมดบนฉลาก",
-      "name_notes": []
+      "name_notes": [],
+      "sequence": {
+        "title": "จากส่วนผสม ถึงผิว",
+        "rhythm": "settle",
+        "select": {
+          "label": "ส่วนผสม",
+          "title": "ว่านหางจระเข้ · โรสฮิป",
+          "body": "Mediral จัดโซเดียมไฮยาลูรอเนต ว่านหางจระเข้ และโรสฮิปไว้เรื่องเติมความชุ่มชื้นและปลอบประโลม อยู่ในตลับเดียวกับแป้งและน้ำมันจากพืช",
+          "names": [
+            "สารสกัดว่านหางจระเข้",
+            "สารสกัดผลโรสฮิป",
+            "โซเดียมไฮยาลูรอเนต",
+            "สารสกัดแป้งรำข้าว",
+            "น้ำมันมะกอก"
+          ]
+        },
+        "material": {
+          "label": "เนื้อสัมผัส",
+          "title": "ละเอียด บางเบา",
+          "body": "เนื้อละเอียด บางเบา เกลี่ยง่าย",
+          "image": "assets/experience/m2-powder-veil.webp"
+        },
+        "care": {
+          "label": "ถึงผิว",
+          "title": "ปกปิดในวันที่อยากแต่งผิว"
+        }
+      }
     }
   ]
 }

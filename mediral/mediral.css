@@ -556,10 +556,6 @@ body[data-product=PO] .mr-detail__material img{width:100%;right:-18%;top:80%;opa
 body[data-product=PO] .mr-detail__pack{height:min(28svh,240px)}
 .mr-detail__block{max-width:900px;margin:0 auto;padding:clamp(36px,6vh,56px) var(--gutter);border-bottom:1px solid var(--line)}
 .mr-detail__block h2{margin:0 0 18px;font:700 clamp(22px,2.6vw,30px)/1.3 var(--sans);letter-spacing:-.02em;color:var(--forest-deep)}
-.mr-detail__benefits{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.mr-detail__benefits li{padding:18px 20px;background:#fff;border:1px solid rgba(35,77,53,.1)}
-.mr-detail__benefits h3{margin:0 0 6px;font:700 17px/1.4 var(--sans);color:var(--forest-deep)}
-.mr-detail__benefits p{margin:0;font-size:14px;line-height:1.75}
 .mr-detail__texture,.mr-detail__fit,.mr-detail__set{margin:16px 0 0;font-size:14px;line-height:1.8}
 .mr-detail__texture b{margin-right:8px;color:var(--forest)}
 .mr-detail__use dl{display:grid;gap:10px;margin:0}
@@ -567,20 +563,6 @@ body[data-product=PO] .mr-detail__pack{height:min(28svh,240px)}
 .mr-detail__use dt{font-size:12px;color:var(--ink-soft)}
 .mr-detail__use dd{margin:0;font-size:14px;line-height:1.7}
 .mr-detail__intro{font-size:13px;color:var(--ink-soft);margin:-6px 0 16px}
-.mr-names{border-top:1px solid var(--line)}
-.mr-names:last-of-type{border-bottom:1px solid var(--line)}
-.mr-names summary{display:flex;justify-content:space-between;gap:16px;padding:16px 0;font:600 16px/1.4 var(--sans);color:var(--forest-deep);list-style:none}
-.mr-names summary::-webkit-details-marker{display:none}
-.mr-names summary::after{content:'+';font-weight:400}
-.mr-names[open] summary::after{content:'−'}
-.mr-names summary small{margin-left:auto;font-weight:400;font-size:12px;color:var(--ink-soft)}
-.mr-names__summary{font-size:13px;line-height:1.75;color:var(--ink);margin:0 0 12px}
-.mr-names ul{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px 18px}
-.mr-names li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;align-items:start}
-.mr-names li img{width:36px;height:36px;object-fit:contain}
-.mr-names__dot{width:8px;height:8px;margin:8px 14px;border-radius:50%;background:var(--sage-deep)}
-.mr-names li b{display:block;font-size:14px;font-weight:600;line-height:1.5}
-.mr-names li small{display:block;font-size:12px;line-height:1.6;color:var(--ink-soft)}
 .mr-detail__fine{font-size:11px;color:var(--ink-soft);margin-top:12px}
 .mr-detail__aka{margin-top:14px;padding:12px 14px;border-left:2px solid var(--sage-deep);background:rgba(255,255,255,.6)}
 .mr-detail__aka h3{margin:0 0 4px;font:600 12px/1.5 var(--sans);color:var(--forest)}
@@ -588,6 +570,107 @@ body[data-product=PO] .mr-detail__pack{height:min(28svh,240px)}
 .mr-detail__faq details{border-top:1px solid var(--line);padding:4px 0}
 .mr-detail__faq summary{padding:12px 0;font-weight:600;color:var(--forest-deep)}
 .mr-detail__faq p{margin:0 0 14px;font-size:14px;line-height:1.8}
+/* Product pages — one short sequence per page: ingredients → material → care. Each page keeps its
+   own palette and rhythm; the pictures illustrate names and materials, never a supplier or a result. */
+.mr-detail-page{--seq-bg:#f2f5ec;--seq-accent:var(--forest);--seq-tint:#e4ecdb;--seq-panel:#e9efe2;--ease:cubic-bezier(.2,.7,.2,1)}
+body[data-product=CL]{--seq-bg:#f4f7f2;--seq-accent:#2a6246;--seq-tint:#e2eee7;--seq-panel:#e8f1ec}
+body[data-product=AC]{--seq-bg:#eef3ea;--seq-accent:#234d35;--seq-tint:#dde8d5;--seq-panel:#173a2a}
+body[data-product=BR]{--seq-bg:#fbf7e9;--seq-accent:#6f5f1c;--seq-tint:#f1e6c0;--seq-panel:#f5ebc7}
+body[data-product=SU]{--seq-bg:#f1f7f3;--seq-accent:#1d5433;--seq-tint:#dfede4;--seq-panel:#e4f0ea}
+body[data-product=PO]{--seq-bg:#eef1e8;--seq-accent:#1f4a33;--seq-tint:#dde6d8;--seq-panel:#12301f}
+.mr-seq{background:var(--seq-bg);color:var(--forest-deep);padding:clamp(48px,9vh,96px) var(--gutter) clamp(36px,6vh,64px);overflow:hidden;overflow:clip}
+.mr-seq__title{max-width:1100px;margin:0 auto clamp(28px,6vh,56px);font:700 clamp(15px,1.4vw,18px)/1.4 var(--sans);letter-spacing:.02em;color:var(--seq-accent)}
+.mr-seq__beats{list-style:none;margin:0 auto;padding:0;max-width:1100px;display:grid;gap:clamp(48px,10vh,120px)}
+.mr-beat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(24px,5vw,72px)}
+.mr-beat:nth-child(2) .mr-beat__visual{order:2}
+.mr-beat__visual{position:relative;width:100%;max-width:500px;aspect-ratio:1;justify-self:center}
+.mr-beat__label{margin:0 0 10px;font:600 14px/1.4 var(--sans);color:var(--seq-accent)}
+.mr-beat__label b{margin-right:8px;font:700 12px var(--display);letter-spacing:.06em}
+.mr-beat h3 span{display:inline-block}
+.mr-beat h3{margin:0 0 16px;font:800 clamp(32px,5vw,60px)/1.25 var(--sans);letter-spacing:-.02em;text-wrap:balance}
+.mr-beat__copy>p{margin:0;max-width:32em;font-size:15px;line-height:1.85}
+.mr-beat__names{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.mr-beat__names li{padding:3px 11px;border-radius:99px;background:var(--seq-tint);font:500 13px/1.6 var(--sans)}
+.mr-beat__more{display:inline-block;margin-top:16px;padding:6px 0;font:600 14px/1.5 var(--sans);color:var(--seq-accent)}
+.mr-seq__fine{max-width:1100px;margin:clamp(36px,7vh,64px) auto 0;font-size:11px;line-height:1.7;color:var(--ink-soft)}
+/* Beat 1: the named ingredients as a small still life, or for SU its seven plants as one ring. */
+.mr-tableau{position:absolute;inset:0;border-radius:50%;background:radial-gradient(closest-side,var(--seq-tint),rgba(255,255,255,0))}
+.mr-tableau__item{position:absolute;width:40%;aspect-ratio:1;left:var(--x);top:var(--y);transform:rotate(var(--r,0deg))}
+.mr-tableau__item img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 12px 14px rgba(30,45,25,.16))}
+.mr-tableau__item:nth-of-type(1){--x:5%;--y:9%;--r:-7deg}
+.mr-tableau__item:nth-of-type(2){--x:55%;--y:4%;--r:6deg}
+.mr-tableau__item:nth-of-type(3){--x:29%;--y:32%;width:44%}
+.mr-tableau__item:nth-of-type(4){--x:3%;--y:56%;--r:5deg}
+.mr-tableau__item:nth-of-type(5){--x:56%;--y:55%;--r:-4deg}
+.mr-tableau--ring .mr-tableau__item{--a:calc(var(--k) / var(--n) * 360deg - 90deg);width:27%;left:calc(50% + cos(var(--a)) * 36% - 13.5%);top:calc(50% + sin(var(--a)) * 36% - 13.5%);--r:0deg}
+.mr-tableau__count{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 clamp(72px,11vw,132px)/1 var(--display);color:var(--seq-accent)}
+.mr-tableau--scene{overflow:hidden;background:var(--seq-panel)}
+.mr-tableau--scene img{width:100%;height:100%;object-fit:cover}
+/* Beat 2: the material, in an arch. Beat 3: the pack, with each sourced benefit in bold. */
+.mr-material{position:absolute;inset:0;overflow:hidden;overflow:clip;border-radius:48% 48% 20px 20px / 36% 36% 20px 20px;background:var(--seq-panel)}
+.mr-material img{width:100%;height:100%;object-fit:cover;transform:scale(1.08)}
+.mr-beat__pack{position:absolute;inset:6% 14%;display:flex;align-items:flex-end;justify-content:center;background:radial-gradient(closest-side,var(--seq-tint),rgba(255,255,255,0) 74%)}
+.mr-beat__pack .mr-pack{height:88%}
+body[data-product=PO] .mr-beat__pack .mr-pack{height:44%;margin-bottom:18%}
+.mr-care{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.mr-care li{display:grid;gap:2px;padding-left:16px;border-left:2px solid var(--seq-accent)}
+.mr-care b{font:700 clamp(18px,1.8vw,22px)/1.45 var(--sans)}
+.mr-care span{font-size:14px;line-height:1.75;color:var(--ink)}
+.mr-beat--care .mr-detail__fit{margin:18px 0 0}
+/* Every listed name, image-led, all groups open. */
+.mr-atlas{max-width:1100px}
+/* In-page and direct links land below the fixed header. */
+.mr-detail-page :is(#ingredients,.mr-seq){scroll-margin-top:calc(var(--header-h) + 16px)}
+.mr-atlas__group{margin-top:32px}
+.mr-atlas__group h3{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0 0 6px;font:700 18px/1.45 var(--sans);color:var(--forest-deep)}
+.mr-atlas__group h3 small{font:500 12px/1.4 var(--sans);color:var(--ink-soft)}
+.mr-atlas__summary{max-width:48em;margin:0 0 16px;font-size:13px;line-height:1.75}
+.mr-atlas__grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:22px 16px}
+.mr-atlas__item{display:grid;align-content:start;justify-items:center;gap:8px;text-align:center}
+.mr-atlas__img{display:block;width:100%;max-width:150px;aspect-ratio:1;padding:11%;border-radius:50%;background:radial-gradient(closest-side,#fff,var(--seq-tint))}
+.mr-atlas__img img{width:100%;height:100%;object-fit:contain}
+.mr-atlas__img.is-repeat img{transform:scaleX(-1) rotate(10deg)}
+.mr-atlas__tile{display:block;width:100%;height:100%;border-radius:50%;border:1px dashed var(--sage-deep)}
+.mr-atlas__text b{display:block;font:600 14px/1.5 var(--sans);color:var(--forest-deep)}
+.mr-atlas__text small{display:block;margin-top:4px;font-size:12px;line-height:1.6;color:var(--ink-soft)}
+/* Motion only with scripts and motion allowed (detail-motion.js adds .mr-reveal); otherwise all is still. */
+@media (prefers-reduced-motion:no-preference){
+  .mr-reveal .mr-seq__title{transition:opacity .7s var(--ease),transform .9s var(--ease)}
+  .mr-reveal .mr-seq__title:not(.is-in){opacity:0;transform:translateY(12px)}
+  .mr-reveal .mr-beat__visual,.mr-reveal .mr-beat__copy{transition:opacity .8s var(--ease),transform 1.05s var(--ease),clip-path 1.15s var(--ease)}
+  .mr-reveal .mr-beat__copy{transition-delay:.12s}
+  .mr-reveal .mr-beat:not(.is-in) .mr-beat__copy{opacity:0;transform:translateY(18px)}
+  .mr-reveal .mr-beat:not(.is-in) .mr-beat__visual{opacity:0;transform:var(--seq-from,translateY(28px))}
+  .mr-reveal .mr-tableau__item{transition:opacity .7s var(--ease) calc(.2s + var(--k) * 80ms),translate .95s var(--ease) calc(.2s + var(--k) * 80ms)}
+  .mr-reveal .mr-beat:not(.is-in) .mr-tableau__item{opacity:0;translate:var(--item-from,0 22px)}
+  .mr-reveal .mr-care li{transition:opacity .6s var(--ease) calc(.3s + var(--j,0) * 90ms),translate .8s var(--ease) calc(.3s + var(--j,0) * 90ms)}
+  .mr-reveal .mr-care li:nth-child(2){--j:1}.mr-reveal .mr-care li:nth-child(3){--j:2}
+  .mr-reveal .mr-beat:not(.is-in) .mr-care li{opacity:0;translate:0 12px}
+  .mr-reveal .mr-atlas__item{transition:opacity .6s var(--ease) calc(var(--i) * 45ms),translate .8s var(--ease) calc(var(--i) * 45ms)}
+  .mr-reveal .mr-atlas__item:not(.is-in){opacity:0;translate:0 14px}
+  /* Five rhythms: CL wipes like foam, AC rises, BR blooms open, SU glides, PO settles. */
+  .mr-reveal .mr-seq--wipe .mr-beat__visual{clip-path:inset(0 0 0 0)}
+  .mr-reveal .mr-seq--wipe .mr-beat:not(.is-in) .mr-beat__visual{opacity:1;clip-path:inset(0 100% 0 0);transform:none}
+  .mr-seq--rise{--seq-from:translateY(44px);--item-from:0 34px}
+  .mr-reveal .mr-seq--bloom .mr-beat__visual{clip-path:circle(75% at 50% 50%)}
+  .mr-reveal .mr-seq--bloom .mr-beat:not(.is-in) .mr-beat__visual{clip-path:circle(0% at 50% 50%);transform:scale(.94)}
+  .mr-seq--glide{--seq-from:translateX(-56px);--item-from:-30px 0}
+  .mr-seq--glide .mr-beat:nth-child(2){--seq-from:translateX(56px);--item-from:30px 0}
+  .mr-seq--settle{--seq-from:translateY(-36px);--item-from:0 -26px}
+  .mr-reveal .mr-detail__pack{animation:mr-arrive 1.1s var(--ease) both}
+  .mr-reveal .mr-detail__material{animation:mr-fade 1.6s ease both}
+  /* Where the browser links animation to scroll, each material drifts gently with the page. */
+  @supports (animation-timeline:view()){
+    .mr-material img{animation:mr-drift linear both;animation-timeline:view();animation-range:cover}
+    .mr-seq--glide .mr-material img{animation-name:mr-glide}
+    .mr-seq--settle .mr-material img{animation-name:mr-settle}
+  }
+}
+@keyframes mr-drift{from{transform:translateY(-4%) scale(1.1)}to{transform:translateY(4%) scale(1.1)}}
+@keyframes mr-glide{from{transform:translateX(-5%) scale(1.12)}to{transform:translateX(5%) scale(1.12)}}
+@keyframes mr-settle{from{transform:translateY(-6%) scale(1.1)}to{transform:translateY(0) scale(1.1)}}
+@keyframes mr-arrive{from{opacity:0;transform:translateY(18px)}}
+@keyframes mr-fade{from{opacity:0}}
 .mr-detail__order{background:#eef1e3;max-width:none;padding-inline:max(var(--gutter),calc((100% - 900px) / 2))}
 .mr-detail__nav{max-width:900px;margin:0 auto;padding:26px var(--gutter) 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px}
 .mr-detail__nav a{color:var(--forest)}
@@ -603,5 +686,15 @@ body[data-product=PO] .mr-detail__pack{height:min(28svh,240px)}
   body[data-product=PO] .mr-detail__pack{height:min(20svh,170px)}
   .mr-detail__material img{width:120%;right:-40%;top:22%}
   .mr-detail__use dl div{grid-template-columns:1fr;gap:2px}
+  .mr-beat{grid-template-columns:1fr;gap:22px}
+  .mr-beat:nth-child(2) .mr-beat__visual{order:0}
+  .mr-beat__visual{max-width:min(100%,400px)}
+  .mr-beat h3{font-size:clamp(28px,8.2vw,40px)}
+  .mr-atlas__grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px}
+  .mr-atlas__text b{font-size:13px}
+  /* Where names carry a sourced role, a phone reads them as rows: picture, then name and role. */
+  .mr-atlas__group--roles .mr-atlas__grid{grid-template-columns:1fr;gap:12px}
+  .mr-atlas__group--roles .mr-atlas__item{grid-template-columns:76px minmax(0,1fr);align-items:center;justify-items:start;gap:14px;text-align:left}
+  .mr-atlas__group--roles .mr-atlas__text b{font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){.mr-rail{transition:none}}

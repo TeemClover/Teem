@@ -19,7 +19,8 @@ test('every source-listed name appears in its group, and the counts are names in
     for (const group of product.ingredient_groups) {
       const start = html.indexOf(`<span>${group.title}</span>`);
       assert.ok(start > 0, `${id}: group ${group.title}`);
-      const block = html.slice(start, html.indexOf('</details>', start));
+      const block = html.slice(start, html.indexOf('</ul>', start));
+      assert.equal((block.match(/class="mr-atlas__item"/g) || []).length, group.items.length, `${id}: one card per name in ${group.title}`);
       for (const item of group.items) {
         assert.ok(block.includes(`<b>${item.name}</b>`), `${id}: ${item.name} sits in ${group.title}`);
         if (item.benefit) assert.ok(block.includes(item.benefit), `${id}: ${item.name} keeps its sourced role`);
@@ -91,7 +92,7 @@ test('the public details file holds only public fields', () => {
   const text = read('data/details.json');
   assert.doesNotMatch(text, /source_ids|"internal"|claude-work|Sources\/|LINE_NOTE|\b[A-Z]{2}-K\d\b|\bTT0\d\b|\b290\b/);
   for (const product of details.products) {
-    assert.deepEqual(Object.keys(product).sort(), ['benefits', 'brand_attribution', 'faq', 'fit', 'headline', 'how', 'id', 'ingredient_groups', 'ingredient_note', 'ingredients_heading', 'ingredients_intro', 'lead', 'name_notes', 'problem', 'role', 'role_in_set', 'short_name', 'size', 'texture', 'title']);
+    assert.deepEqual(Object.keys(product).sort(), ['benefits', 'brand_attribution', 'faq', 'fit', 'headline', 'how', 'id', 'ingredient_groups', 'ingredient_note', 'ingredients_heading', 'ingredients_intro', 'lead', 'name_notes', 'problem', 'role', 'role_in_set', 'sequence', 'short_name', 'size', 'texture', 'title']);
   }
 });
 
@@ -106,4 +107,52 @@ test('each static page is readable before scripts: noindex, its name, the way ba
     assert.deepEqual([...new Set([...html.matchAll(/href="(https:\/\/lin[^"]+)"/g)].map(m => m[1]))], [routine.order.url]);
     assert.match(html, /<script type="module" src="\.\.\/js\/detail\.js"><\/script>/);
   }
+});
+
+test('every listed name is image-led: each card shows its picture, and a shared material picture never merges names', () => {
+  for (const product of details.products) for (const group of product.ingredient_groups) for (const item of group.items) {
+    assert.match(item.image || '', /^assets\/(botanicals|materials|experience)\/[a-z0-9-]+\.webp$/, `${product.id}: ${item.name} has its picture`);
+  }
+  const html = render('AC');
+  assert.doesNotMatch(html, /<details class="mr-names"|mr-names__dot/, 'No closed lists, no bare dots');
+  assert.equal((html.match(/class="mr-atlas__item"/g) || []).length, COUNTS.AC);
+  assert.match(html, /ภาพส่วนผสมเป็นภาพประกอบชื่อหรือลักษณะวัตถุดิบ ไม่ใช่ภาพจากผู้ผลิต/, 'Pictures are illustrations');
+});
+
+test('each page tells one short sequence from its own sourced lines; the mousse tells foam, not botanicals', () => {
+  for (const product of details.products) {
+    const {sequence} = product;
+    const names = new Set(product.ingredient_groups.flatMap(g => g.items.map(i => i.name)));
+    for (const name of sequence.select.names || []) assert.ok(names.has(name), `${product.id}: ${name} is a listed name`);
+    const html = render(product.id);
+    assert.equal((html.match(/<li class="mr-beat mr-beat--/g) || []).length, 3, `${product.id}: three beats`);
+    assert.match(html, new RegExp(`mr-seq--${sequence.rhythm}`));
+    for (const benefit of product.benefits) assert.ok(html.includes(benefit.title), `${product.id}: care keeps "${benefit.title}"`);
+  }
+  const cl = details.products.find(p => p.id === 'CL').sequence;
+  assert.equal(cl.select.names, undefined, 'CL names no ingredient');
+  assert.doesNotMatch(render('CL'), /assets\/botanicals\//, 'CL shows no botanical');
+  const copy = JSON.stringify(details.products.map(p => p.sequence));
+  assert.doesNotMatch(copy, /ที่แบรนด์เลือกมาเล่า|คัดสรร|คัดพิเศษ|บริสุทธิ์|ธรรมชาติ ?100|จากธรรมชาติทั้งหมด|สกัดเย็น|สกัดด้วย|เก็บเกี่ยว|เข้มข้น|%/, 'No selection, purity, harvest, method or concentration claim');
+});
+
+test('motion is optional: reduced motion or no observer leaves every part shown and nothing waiting', async () => {
+  const {initDetailMotion} = await import(new URL('../../mediral/js/detail-motion.js', import.meta.url));
+  const classList = () => { const set = new Set(); return {add: c => set.add(c), remove: c => set.delete(c), contains: c => set.has(c)}; };
+  const targets = [1, 2, 3].map(() => ({classList: classList()}));
+  const root = {querySelectorAll: () => targets};
+  const saved = {document: globalThis.document, matchMedia: globalThis.matchMedia, IntersectionObserver: globalThis.IntersectionObserver};
+  try {
+    globalThis.document = {documentElement: {classList: classList()}};
+    globalThis.matchMedia = () => ({matches: true, addEventListener() {}});
+    globalThis.IntersectionObserver = class { observe() { throw new Error('no observing under reduced motion'); } };
+    initDetailMotion(root);
+    assert.ok(targets.every(t => t.classList.contains('is-in')), 'Everything is shown');
+    assert.equal(document.documentElement.classList.contains('mr-reveal'), false, 'Nothing is held back');
+  } finally { Object.assign(globalThis, saved); }
+  const css = read('mediral.css');
+  const hidden = [...css.matchAll(/[^{}]*:not\(\.is-in\)[^{]*\{[^}]*opacity:0/g)].map(m => m[0]);
+  assert.ok(hidden.length && hidden.every(rule => /\.mr-reveal /.test(rule)), 'Only a running reveal hides anything');
+  const motion = css.slice(css.indexOf('@media (prefers-reduced-motion:no-preference){'));
+  assert.ok(hidden.every(rule => motion.includes(rule.trim())), 'And only when motion is allowed');
 });
