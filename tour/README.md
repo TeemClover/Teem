@@ -32,13 +32,11 @@ Tapping one makes it float toward you and a panel offers its page.
 | Project room | screens: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova video and marketing studio on its own desk → `/airova/` · TeamBook notebook on its stand → `/teambook/` · model of our real house turning on the centre table → `/showcase/house/` |
 | Outside | the big clover / finale button → `/meet/` |
 
-Glowing beacons mark pickable objects in the room you are looking at, and every object has an
-invisible, slightly larger tap area. Hovering a link in a card lights up the same object.
-Picking follows the first surface the ray meets, so walls, floors and furniture block what is
-behind them, and only objects of the room you are standing in respond.
+Gold cursor badges mark every pickable object in the current room. Opened objects keep a silver check badge, remain pickable, and retain their status in `mc:tour:opened:v1` local storage. Inspecting an object or opening its destination records it; storage denial falls back to memory. Badges stay about 30 CSS pixels across SD/HD and phone views. Solid surfaces receive a subtle gold/silver tint while image colours are preserved.
 
-The Airova screen is an illustrative editor drawn once to a 1024×576 canvas: product video,
-campaign cards and timeline. It adds no video playback, external image request or animated light.
+All destination links, including the inspect panel and fallback HTML, use a new tab with `noopener noreferrer`. In-page room navigation stays in the house. Arrows/checkmarks and link titles distinguish states without relying only on colour.
+
+Picking follows the first surface the ray meets, so walls, floors and furniture block objects behind them; only the current room responds. The Airova screen uses a generated cinema illustration with a film preview and shot sequence, documented in `art/AIROVA-CINEMA.md`. It adds no video playback or animated light.
 
 **Motion:** wheel/trackpad scrolling is smoothed by Lenis (self-hosted, MIT,
 `vendor/LENIS-LICENSE.txt`; touch keeps the phone's native scroll). The camera follows one

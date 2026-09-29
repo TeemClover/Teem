@@ -54,11 +54,18 @@ test('three.js is self-hosted, no third-party script origins', () => {
   assert.doesNotMatch(html, /<script[^>]+src="https?:/);
 });
 
+test('destinations open in a separate tab even without JavaScript', () => {
+  for (const [tag] of html.matchAll(/<a\b[^>]*href="(?:\/|https?:\/\/)[^>]*>/g)) {
+    assert.match(tag, /target="_blank"/);
+    assert.match(tag, /rel="noopener noreferrer"/);
+  }
+});
+
 test('all configured house art resolves, including the instructor and current project screens', async () => {
   const {slots} = JSON.parse(await readFile(root + 'tour/art/manifest.json', 'utf8'));
   for (const name of Object.values(slots)) {
     assert.match(name, /^[\w.-]+\.webp$/);
     assert.ok(await exists('/tour/art/' + name), name);
   }
-  for (const slot of ['course-poster', 'screen-resume', 'screen-xvisor']) assert.ok(slots[slot]);
+  for (const slot of ['course-poster', 'screen-resume', 'screen-xvisor', 'screen-airova']) assert.ok(slots[slot]);
 });
