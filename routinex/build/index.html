@@ -27,12 +27,12 @@
 <meta name="theme-color" content="#f5efe6">
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/build.css?v=intro2">
+<link rel="stylesheet" href="css/build.css?v=journey2">
 <script>(function(d){d.className='js';setTimeout(function(){if(!d.classList.contains('ready')){d.classList.remove('js');d.dataset.wd='1'}},4500)})(document.documentElement)</script>
 </head>
 <body>
-<a class="skip" href="#ch1" data-skip>ข้ามฉากเปิด</a>
 <a class="skip skip--main" href="#story">ไปที่เนื้อหา</a>
+<noscript><style>.film{display:none}</style></noscript>
 
 <header class="bar" role="banner" id="bar">
   <a class="bar__brand" href="#ch0" aria-label="RoutineX ห้อง B กลับต้นเรื่อง"><img class="bar__mark" src="assets/myclover-mark.webp" alt="" width="28" height="30">RoutineX <b>· ห้อง B</b></a>
@@ -44,35 +44,38 @@
 </header>
 
 <canvas id="stage" aria-hidden="true"></canvas>
+<div class="film" id="film1" aria-hidden="true"><img class="film__poster" alt="" width="1600" height="900" decoding="async"><video muted playsinline preload="none" disablepictureinpicture disableremoteplayback tabindex="-1"></video></div>
+<div class="film" id="film2" aria-hidden="true"><img class="film__poster" alt="" width="1600" height="900" decoding="async"><video muted playsinline preload="none" disablepictureinpicture disableremoteplayback tabindex="-1"></video></div>
 <div class="veil" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
 <nav class="rail" aria-label="ตอนของเรื่อง" id="rail">
   <ol>
     <li><a href="#ch0" data-i="0"><span>จากสิ่งที่กิน</span></a></li>
-    <li><a href="#ch1" data-i="1"><span>ประกอบ</span></a></li>
+    <li><a href="#ch1" data-i="1"><span>งานสร้างของเซลล์</span></a></li>
     <li><a href="#ch2" data-i="2"><span>สร้าง–สลาย</span></a></li>
     <li><a href="#ch3" data-i="3"><span>พื้นฐานรายวัน</span></a></li>
     <li><a href="#ch4" data-i="4"><span>HMB</span></a></li>
-    <li><a href="#ch5" data-i="5"><span>การเคลื่อนไหว</span></a></li>
-    <li><a href="#ch6" data-i="6"><span>เริ่มต่อ</span></a></li>
+    <li><a href="#ch5" data-i="5"><span>ชีวิตประจำวัน</span></a></li>
+    <li><a href="#ch6" data-i="6"><span>มื้อต่อไป</span></a></li>
   </ol>
   <div class="rail__bar" aria-hidden="true"><i></i></div>
 </nav>
 
 <main id="story" tabindex="-1">
 
-<section class="chapter" id="ch0" data-ch="0" style="--len:360" aria-labelledby="h0">
+<section class="chapter" id="ch0" data-ch="0" style="--len:380" aria-labelledby="h0">
   <div class="pin">
     <div class="beat beat--hero" data-pos="l">
-      <p class="kick">RoutineX · B / Build</p>
-      <h1 class="mega" id="h0"><span class="ln" style="--i:0">จากสิ่งที่กิน</span><span class="ln" style="--i:1">ไปสู่สิ่งที่</span><span class="ln" style="--i:2">ยังอยากทำ</span></h1>
-      <p class="lede">ตามสารอาหารเล็ก ๆ ไปดูงานสร้างที่เกิดขึ้นภายในคุณ</p>
+      <p class="kick">B / BUILD</p>
+      <h1 class="mega" id="h0"><span class="ln" style="--i:0">แรงของวันพรุ่งนี้</span><span class="ln" style="--i:1">เริ่มจากสิ่งที่กินวันนี้</span></h1>
+      <p class="lede">ตามโปรตีนจากมื้ออาหาร ไปดูงานสร้างที่เกิดขึ้นข้างในคุณ</p>
       <p class="hint" aria-hidden="true"><i></i>เลื่อนลง ตามเข้าไปข้างใน</p>
     </div>
     <div class="beat" data-pos="l">
-      <h2 class="big"><span class="ln" style="--i:0">โปรตีนในมื้ออาหาร</span><span class="ln" style="--i:1">เดินทางต่อ</span><span class="ln" style="--i:2">ในรูปที่เล็กลง</span></h2>
-      <p class="lede">โปรตีนถูกย่อยเป็นกรดอะมิโน ก่อนดูดซึมผ่านลำไส้เล็กเข้าสู่ร่างกาย</p>
+      <h2 class="big"><span class="ln" style="--i:0">โปรตีนที่กิน</span><span class="ln" style="--i:1">ต้องเล็กลงก่อน</span></h2>
+      <p class="lede">ร่างกายย่อยโปรตีนเป็นกรดอะมิโน ก่อนดูดซึมผ่านลำไส้เล็ก</p>
+      <p class="tag"><i></i>หน่วยเล็ก ๆ ในภาพแทนกรดอะมิโน — หน่วยย่อยของโปรตีน</p>
       <figure class="flowfig" aria-hidden="false"><svg viewBox="0 0 640 220" role="img" aria-label="ภาพประกอบเชิงแนวคิด: โซ่โปรตีนถูกย่อยเป็นหน่วยเล็ก แล้วผ่านผนังลำไส้เล็กเข้าสู่ร่างกาย" focusable="false">
 <defs><radialGradient id="fb"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#f4d9b0"/><stop offset="1" stop-color="#d69557"/></radialGradient></defs>
 <g fill="url(#fb)"><circle cx="40" cy="29.0" r="8"/><circle cx="57" cy="43.0" r="8"/><circle cx="74" cy="57.0" r="8"/><circle cx="91" cy="71.0" r="8"/><circle cx="108" cy="29.0" r="8"/><circle cx="125" cy="43.0" r="8"/><circle cx="142" cy="57.0" r="8"/><circle cx="159" cy="71.0" r="8"/><circle cx="176" cy="29.0" r="8"/><circle cx="193" cy="43.0" r="8"/><circle cx="210" cy="57.0" r="8"/></g>
@@ -87,11 +90,11 @@
   </div>
 </section>
 
-<section class="chapter" id="ch1" data-ch="1" style="--len:380" aria-labelledby="h1">
+<section class="chapter" id="ch1" data-ch="1" style="--len:420" aria-labelledby="h1">
   <div class="pin">
     <div class="beat" data-pos="l">
-      <h2 class="big" id="h1"><span class="ln" style="--i:0">ชิ้นเล็ก ๆ</span><span class="ln" style="--i:1">ที่ร่างกายนำไปสร้างต่อ</span></h2>
-      <p class="lede">เซลล์นำกรดอะมิโนมาประกอบเป็นโปรตีน รวมถึงโปรตีนที่เป็นส่วนหนึ่งของกล้ามเนื้อ</p>
+      <h2 class="big" id="h1"><span class="ln" style="--i:0">จากกรดอะมิโน</span><span class="ln" style="--i:1">สู่งานสร้างของเซลล์</span></h2>
+      <p class="lede">เซลล์นำกรดอะมิโนมาประกอบเป็นโปรตีน รวมถึงส่วนหนึ่งของกล้ามเนื้อ</p>
       <figure class="flowfig" aria-hidden="false"><svg viewBox="0 0 640 200" role="img" aria-label="ภาพประกอบเชิงแนวคิด: หน่วยเล็กมาต่อกันเป็นเส้นใยโปรตีน" focusable="false">
 <defs><radialGradient id="ab"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#f4d9b0"/><stop offset="1" stop-color="#d69557"/></radialGradient></defs>
 <g stroke="#c7803f" stroke-width="7" stroke-linecap="round" fill="none" opacity=".85"><path d="M 20 70 C 160 50, 260 96, 420 70"/><path d="M 20 100 C 160 80, 260 126, 420 100" opacity=".7"/><path d="M 20 130 C 160 110, 260 156, 420 130" opacity=".5"/></g>
@@ -99,18 +102,23 @@
 <g fill="url(#ab)"><circle cx="450" cy="30" r="8"/><circle cx="482" cy="30" r="8"/><circle cx="514" cy="30" r="8"/><circle cx="546" cy="30" r="8"/><circle cx="578" cy="30" r="8"/><circle cx="450" cy="76" r="8"/><circle cx="482" cy="76" r="8"/><circle cx="514" cy="76" r="8"/><circle cx="546" cy="76" r="8"/><circle cx="578" cy="76" r="8"/></g>
 </svg></figure>
     </div>
-    <div class="beat" data-pos="r">
-      <h2 class="big"><span class="ln" style="--i:0">ข้างในคุณ</span><span class="ln" style="--i:1">มีงานสร้างอยู่เสมอ</span></h2>
-      <p class="tag"><i></i>ภาพอธิบายแบบย่อ ทั้งขนาดและเวลา</p>
+    <div class="beat" data-pos="l" data-steps="3">
+      <h2 class="big"><span class="ln" style="--i:0">ไม่ใช่แค่กล้ามที่เห็น</span><span class="ln" style="--i:1">แต่คือแรงที่ใช้ทุกวัน</span></h2>
+      <ol class="scale" aria-label="จากเล็กไปใหญ่ (ภาพแนวคิด)">
+        <li><i class="dotx"></i><b>กรดอะมิโน</b><span>หน่วยย่อยของโปรตีน</span></li>
+        <li><i class="chainx"></i><b>โปรตีน</b><span>ต่อกันเป็นสาย</span></li>
+        <li><i class="fibx"></i><b>เส้นใยกล้ามเนื้อ</b><span>รวมกันเป็นกำลัง</span></li>
+      </ol>
+      <p class="tag"><i></i>ภาพอธิบายแบบย่อ ทั้งขนาดและเวลา ไม่ใช่สัดส่วนจริง</p>
     </div>
   </div>
 </section>
 
-<section class="chapter" id="ch2" data-ch="2" style="--len:420" aria-labelledby="h2">
+<section class="chapter" id="ch2" data-ch="2" style="--len:520" aria-labelledby="h2">
   <div class="pin">
     <div class="beat" data-pos="l">
       <h2 class="big" id="h2"><span class="ln" style="--i:0">สร้างขึ้น</span><span class="ln" style="--i:1">สลายลง</span><span class="ln" style="--i:2">สร้างใหม่</span></h2>
-      <p class="lede">โปรตีนในกล้ามเนื้อมีการสร้างและสลายอยู่ตลอด กรดอะมิโนบางส่วนกลับมาใช้ได้อีก</p>
+      <p class="lede">กล้ามเนื้อมีการสร้างและสลายโปรตีนอยู่เสมอ กรดอะมิโนบางส่วนกลับมาใช้ใหม่ได้</p>
       <figure class="flowfig" aria-hidden="false"><svg viewBox="0 0 640 220" role="img" aria-label="ภาพประกอบเชิงแนวคิด: วงจรสร้าง สลาย และนำกลับมาสร้างใหม่" focusable="false">
 <defs><marker id="tr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#b0703a"/></marker></defs>
 <circle cx="320" cy="112" r="78" fill="none" stroke="#e5cfae" stroke-width="2"/>
@@ -120,28 +128,37 @@
 <g font-size="15" fill="#5b3f27" text-anchor="middle"><text x="320" y="22">สร้างขึ้น</text><text x="430" y="182">สลายลง</text><text x="210" y="182">สร้างใหม่</text></g>
 </svg></figure>
     </div>
-    <div class="beat" data-pos="r">
-      <h2 class="big"><span class="ln" style="--i:0">ดูแลสมดุล</span><span class="ln" style="--i:1">ของงานที่ไม่เคยหยุด</span></h2>
-      <p class="lede">การกิน การเคลื่อนไหว อายุ และภาวะร่างกาย ล้วนเกี่ยวข้องกับสมดุลนี้</p>
+    <div class="beat" data-pos="r" data-steps="3">
+      <p class="kick">วงจรที่เกิดขึ้นทุกวัน</p>
+      <ol class="phases" aria-label="สามช่วงของการหมุนเวียนโปรตีน (ภาพแนวคิด)">
+        <li class="ph ph--build"><svg viewBox="0 0 96 40" aria-hidden="true" focusable="false"><g fill="#f4d9b0" stroke="#b0703a"><circle cx="12" cy="20" r="5"/><circle cx="30" cy="20" r="5"/><circle cx="48" cy="20" r="5"/><circle cx="66" cy="20" r="5"/><circle cx="84" cy="20" r="5"/></g><path d="M17 20h8M35 20h8M53 20h8M71 20h8" stroke="#e9b45f" stroke-width="3" stroke-linecap="round"/></svg><b>สร้างขึ้น</b><span>กรดอะมิโนต่อกันเป็นโปรตีน</span></li>
+        <li class="ph ph--break"><svg viewBox="0 0 96 40" aria-hidden="true" focusable="false"><g fill="#d9dde2" stroke="#8b949e"><circle cx="10" cy="12" r="5"/><circle cx="34" cy="28" r="5"/><circle cx="50" cy="10" r="5"/><circle cx="70" cy="30" r="5"/><circle cx="86" cy="14" r="5"/></g></svg><b>สลายลง</b><span>โปรตีนบางส่วนถูกย่อยตามปกติ</span></li>
+        <li class="ph ph--again"><svg viewBox="0 0 96 40" aria-hidden="true" focusable="false"><path d="M12 30 C 30 4, 66 4, 84 28" fill="none" stroke="#b0703a" stroke-width="2.5" stroke-dasharray="3 5" stroke-linecap="round"/><g fill="#f4d9b0" stroke="#b0703a"><circle cx="12" cy="30" r="5"/><circle cx="84" cy="28" r="5"/></g></svg><b>สร้างใหม่</b><span>กรดอะมิโนบางส่วนกลับมาใช้ใหม่</span></li>
+      </ol>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">เติมวัตถุดิบ</span><span class="ln" style="--i:1">แล้วให้กล้ามเนื้อได้ใช้งาน</span></h2>
+      <p class="lede">โปรตีนและพลังงานจากอาหารที่เพียงพอ คู่กับการฝึกแรงต้านที่เหมาะกับคุณ</p>
     </div>
   </div>
 </section>
 
-<section class="chapter" id="ch3" data-ch="3" style="--len:320" aria-labelledby="h3">
+<section class="chapter" id="ch3" data-ch="3" style="--len:420" aria-labelledby="h3">
   <div class="pin">
-    <div class="beat beat--stay" data-pos="l">
-      <h2 class="big" id="h3"><span class="ln" style="--i:0">กินให้พอ</span><span class="ln" style="--i:1">ใช้กล้ามเนื้อ</span><span class="ln" style="--i:2">ให้เวลาพักฟื้น</span></h2>
-      <p class="lede">อาหารและพลังงานที่เพียงพอ ร่วมกับการฝึกแรงต้าน เป็นฐานของการดูแลกล้ามเนื้อ</p>
-      <div class="tabs" role="tablist" aria-label="พื้นฐานสามอย่าง">
-        <button type="button" role="tab" id="tab-food" aria-selected="true" aria-controls="pan-food" data-mode="0">อาหาร</button>
-        <button type="button" role="tab" id="tab-res" aria-selected="false" aria-controls="pan-res" data-mode="1" tabindex="-1">แรงต้าน</button>
-        <button type="button" role="tab" id="tab-rest" aria-selected="false" aria-controls="pan-rest" data-mode="2" tabindex="-1">พักฟื้น</button>
-      </div>
-      <div class="panels">
-        <p role="tabpanel" id="pan-food" aria-labelledby="tab-food"><b class="pn">อาหาร</b>โปรตีนหาได้จากอาหาร เช่น ปลา ไข่ นม เต้าหู้ และถั่ว เลือกให้เหมาะกับมื้อและตัวเรา</p>
-        <p role="tabpanel" id="pan-res" aria-labelledby="tab-res" hidden><b class="pn">แรงต้าน</b>กล้ามเนื้อตอบสนองต่อการใช้งานที่มีแรงต้าน ค่อย ๆ ฝึกให้เหมาะกับกำลังของตัวเอง</p>
-        <p role="tabpanel" id="pan-rest" aria-labelledby="tab-rest" hidden><b class="pn">พักฟื้น</b>จัดเวลาให้ร่างกายพักและฟื้นตัว เพื่อให้รูทีนที่ทำอยู่ไปต่อได้</p>
-      </div>
+    <div class="beat" data-pos="l">
+      <p class="kick">01 / 03 · อาหาร</p>
+      <h2 class="big" id="h3"><span class="ln" style="--i:0">เติมให้พอ</span></h2>
+      <p class="lede">โปรตีนหาได้จากปลา ไข่ นม เต้าหู้ และถั่ว เลือกให้เหมาะกับมื้อและตัวเรา</p>
+    </div>
+    <div class="beat" data-pos="l">
+      <p class="kick">02 / 03 · แรงต้าน</p>
+      <h2 class="big"><span class="ln" style="--i:0">ใช้ให้เป็น</span></h2>
+      <p class="lede">กล้ามเนื้อตอบสนองต่อการใช้งานที่มีแรงต้าน ค่อย ๆ ฝึกให้เหมาะกับกำลังของตัวเอง</p>
+    </div>
+    <div class="beat" data-pos="l">
+      <p class="kick">03 / 03 · พักฟื้น</p>
+      <h2 class="big"><span class="ln" style="--i:0">พักให้ได้</span></h2>
+      <p class="lede">จัดเวลาให้ร่างกายฟื้นตัว ด้วยรูทีนที่ทำต่อไปได้จริง</p>
       <figure class="flowfig" aria-hidden="false"><svg viewBox="0 0 640 170" role="img" aria-label="ภาพประกอบ: อาหาร แรงต้าน และการพักฟื้น" focusable="false">
 <g fill="none" stroke="#b0703a" stroke-width="3" stroke-linecap="round"><circle cx="120" cy="80" r="42"/><circle cx="120" cy="80" r="22"/><path d="M 60 80 h -24 M 180 80 h 24"/>
 <path d="M 250 80 h 140 M 266 56 v 48 M 374 56 v 48 M 246 66 v 28 M 394 66 v 28"/>
@@ -151,12 +168,18 @@
   </div>
 </section>
 
-<section class="chapter" id="ch4" data-ch="4" style="--len:440" aria-labelledby="h4">
+<section class="chapter" id="ch4" data-ch="4" style="--len:480" aria-labelledby="h4">
   <div class="pin">
     <div class="beat" data-pos="l">
-      <p class="kick">A closer look · HMB</p>
-      <h2 class="big" id="h4"><span class="ln" style="--i:0">แล้ว HMB</span><span class="ln" style="--i:1">อยู่ตรงไหน</span><span class="ln" style="--i:2">ในเรื่องนี้?</span></h2>
-      <p class="lede">HMB เป็นสารที่เกิดจากกระบวนการเปลี่ยนแปลงของลิวซีน ซึ่งเป็นกรดอะมิโนชนิดหนึ่ง</p>
+      <h2 class="big" id="h4"><span class="ln" style="--i:0">โปรตีนคือวัตถุดิบ</span><span class="ln" style="--i:1">แล้ว HMB ล่ะ?</span></h2>
+      <p class="lede">HMB เป็นสารที่เกิดตามเส้นทางการเปลี่ยนแปลงของลิวซีน ซึ่งเป็นกรดอะมิโนชนิดหนึ่ง</p>
+      <figure class="concept"><svg viewBox="0 0 320 84" role="img" aria-label="ภาพแนวคิด: สายกรดอะมิโนที่มีลิวซีน และ HMB เป็นหน่วยแยกต่างหาก" focusable="false">
+<g fill="#f4d9b0" stroke="#b0703a" stroke-width="1.5"><circle cx="24" cy="30" r="9"/><circle cx="50" cy="30" r="9"/><circle cx="76" cy="30" r="9" fill="#e5a86a"/><circle cx="102" cy="30" r="9"/><circle cx="128" cy="30" r="9"/></g>
+<path d="M33 30h8M59 30h8M85 30h8M111 30h8" stroke="#e9b45f" stroke-width="3" stroke-linecap="round"/>
+<path class="cx-arc" pathLength="1" d="M76 42 C 100 72, 190 76, 236 48" fill="none" stroke="#8b949e" stroke-width="2" stroke-dasharray="1" stroke-linecap="round"/>
+<path class="cx-hmb" d="M250 26 l14 -14 l14 14 l-14 14 z" fill="#e9edf1" stroke="#8b949e" stroke-width="1.5"/>
+<text x="76" y="14" text-anchor="middle" font-size="11" fill="currentColor">ลิวซีน</text><text x="264" y="60" text-anchor="middle" font-size="11" fill="currentColor">HMB</text><text x="76" y="80" text-anchor="middle" font-size="10" fill="currentColor" opacity=".7">สายกรดอะมิโน</text>
+</svg><figcaption>ภาพแนวคิด ไม่ใช่โครงสร้างเคมีจริง HMB ไม่ได้ต่อเข้าเป็นส่วนของสายโปรตีน</figcaption></figure>
       <figure class="flowfig" aria-hidden="false"><svg viewBox="0 0 640 200" role="img" aria-label="ภาพประกอบเชิงแนวคิด: ลิวซีนและสาร HMB ที่เกิดตามเส้นทางของลิวซีน" focusable="false">
 <defs><radialGradient id="hb"><stop offset="0" stop-color="#ffe9c4"/><stop offset="1" stop-color="#c8783a"/></radialGradient><linearGradient id="hs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#aab3bd"/></linearGradient></defs>
 <circle cx="230" cy="100" r="44" fill="url(#hb)"/><text x="230" y="106" text-anchor="middle" font-size="16" fill="#4a2c14">ลิวซีน</text>
@@ -165,15 +188,15 @@
 </svg></figure>
     </div>
     <div class="beat beat--stay" data-pos="l">
-      <h2 class="big"><span class="ln" style="--i:0">อีกบทบาท</span><span class="ln" style="--i:1">ที่นักวิจัยกำลังศึกษา</span></h2>
-      <p class="lede">มีงานศึกษา HMB กับการสร้างและสลายโปรตีนในกล้ามเนื้อ ผลที่พบต่างกันตามกลุ่มคน ปริมาณ และเงื่อนไขการศึกษา</p>
-      <p class="fine">เป็นส่วนเสริมของการดูแล ไม่แทนอาหารหรือการออกกำลังกาย</p>
+      <h2 class="big"><span class="ln" style="--i:0">อีกบทบาทในสมดุล</span><span class="ln" style="--i:1">การสร้างและสลาย</span></h2>
+      <p class="lede">งานทดลองบางส่วนพบว่า HMB กระตุ้นการสร้างและลดการสลายโปรตีนในกล้ามเนื้อ</p>
+      <p class="fine">ผลขึ้นกับกลุ่มคน ปริมาณ และบริบทที่ศึกษา เป็นส่วนเสริมของอาหารและการออกกำลัง</p>
       <button type="button" class="linkbtn" data-open="evidence">งานวิจัยบอกอะไรบ้าง?</button>
     </div>
   </div>
 </section>
 
-<section class="chapter" id="ch5" data-ch="5" style="--len:560" aria-labelledby="h5">
+<section class="chapter" id="ch5" data-ch="5" style="--len:640" aria-labelledby="h5">
   <div class="pin">
     <div class="human" aria-hidden="false"><svg class="arm" id="arm" viewBox="0 0 900 720" role="img" aria-labelledby="armT armD" focusable="false">
 <title id="armT">แขนที่ยกแก้วน้ำขึ้น</title>
@@ -290,41 +313,55 @@
 <g clip-path="url(#elClip)" class="arm__fibres"><path class="fl" style="--i:60" pathLength="1" d="M 270 560 C 300 546, 350 570, 400 550"/><path class="fl" style="--i:61" pathLength="1" d="M 270 568 C 300 554, 350 578, 400 558"/><path class="fl" style="--i:62" pathLength="1" d="M 270 576 C 300 562, 350 586, 400 566"/><path class="fl" style="--i:63" pathLength="1" d="M 270 584 C 300 570, 350 594, 400 574"/><path class="fl" style="--i:64" pathLength="1" d="M 270 592 C 300 578, 350 602, 400 582"/><path class="fl" style="--i:65" pathLength="1" d="M 270 600 C 300 586, 350 610, 400 590"/><path class="fl" style="--i:66" pathLength="1" d="M 270 608 C 300 594, 350 618, 400 598"/><path class="fl" style="--i:67" pathLength="1" d="M 270 616 C 300 602, 350 626, 400 606"/><path class="fl" style="--i:68" pathLength="1" d="M 270 624 C 300 610, 350 634, 400 614"/><path class="fl" style="--i:69" pathLength="1" d="M 270 632 C 300 618, 350 642, 400 622"/></g>
 </svg></div>
     <div class="beat" data-pos="l">
-      <h2 class="big" id="h5"><span class="ln" style="--i:0">ทั้งหมดนี้</span><span class="ln" style="--i:1">อยู่เบื้องหลัง</span><span class="ln" style="--i:2">การเคลื่อนไหวของคุณ</span></h2>
+      <h2 class="big" id="h5"><span class="ln" style="--i:0">ข้างในที่มองไม่เห็น</span><span class="ln" style="--i:1">ทำให้ข้างนอกเป็นไปได้</span></h2>
+      <p class="tag"><i></i>ภาพแสดงกล้ามเนื้อที่มีอยู่เดิมกำลังทำงาน ไม่ใช่การเติบโตหลังดื่ม</p>
     </div>
     <div class="beat" data-pos="l">
       <ol class="acts" aria-label="ตัวอย่างการเคลื่อนไหวในชีวิตประจำวัน">
-        <li style="--k:0">ลุกขึ้น</li>
-        <li style="--k:1">หยิบแก้ว</li>
-        <li style="--k:2">ออกไปใช้ชีวิต</li>
+        <li style="--k:0">หยิบแก้ว</li>
+        <li style="--k:1">ลุกเดิน</li>
+        <li style="--k:2">ใช้ชีวิต</li>
       </ol>
-      <p class="lede">การดูแลกล้ามเนื้อ คือการดูแลความสามารถที่เราใช้ในทุกวัน</p>
+      <p class="lede">ดูแลกล้ามเนื้อ เพื่อสิ่งที่ยังอยากทำ</p>
     </div>
   </div>
 </section>
 
-<section class="chapter" id="ch6" data-ch="6" style="--len:520" aria-labelledby="h6">
+<section class="chapter" id="ch6" data-ch="6" style="--len:760" aria-labelledby="h6">
   <div class="pin">
     <div class="beat" data-pos="l">
-      <h2 class="big" id="h6"><span class="ln" style="--i:0">เริ่มจากสิ่งที่</span><span class="ln" style="--i:1">ทำซ้ำได้</span></h2>
-      <p class="lede">อาหารที่เหมาะกับเรา การใช้กล้ามเนื้อ และรูทีนที่ทำต่อได้</p>
+      <p class="kick">มื้อต่อไป</p>
+      <h2 class="big" id="h6"><span class="ln" style="--i:0">ให้โปรตีน</span><span class="ln" style="--i:1">มีที่ของมัน</span></h2>
+      <p class="lede">เริ่มจากอาหารที่เหมาะกับคุณ ถ้าอยากมีตัวช่วยที่จัดง่าย นี่คือหนึ่งทางเลือกที่เราใช้</p>
     </div>
-    <div class="beat beat--stay" data-pos="l">
-      <div class="prod">
-        <img class="prod__img" src="assets/hmb-pack.webp" width="900" height="900" alt="ซอง Protein HMB+ ของ HabiX สีเงิน" loading="lazy" decoding="async">
-        <div class="prod__txt">
-          <p class="kick">หนึ่งทางเลือกที่เราใช้</p>
-          <h2 class="mid">Protein HMB+</h2>
-          <p>โปรตีน 20 กรัม พร้อม myHMB® 750 มก. ต่อซอง รส Hokkaido Milk Malt</p>
-          <p class="fine">นี่เป็นตัวที่เราเลือกดื่ม คุณเลือกเริ่มจากอาหารหรือวิธีที่เหมาะกับตัวเองได้</p>
-          <p class="prod__links"><button type="button" class="linkbtn" data-open="formula">อ่านรายละเอียดสูตร</button><a class="linkbtn" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">สอบถามผ่าน LINE ↗</a></p>
-        </div>
-      </div>
+    <div class="beat" data-pos="l">
+      <p class="kick">Protein HMB+ · หนึ่งทางเลือก</p>
+      <dl class="formula">
+        <div><dt>20 g</dt><dd>โปรตีนรวมต่อซอง</dd></div>
+        <div><dt>3 แหล่ง</dt><dd>เวย์ · ถั่วเหลือง · ถั่วลันเตา</dd></div>
+        <div><dt>750 mg</dt><dd>myHMB®</dd></div>
+      </dl>
+      <p class="lede">โปรตีนสามแหล่ง พร้อม myHMB® ในหนึ่งซอง ชงง่าย รส Hokkaido Milk Malt</p>
+      <p class="fine">เติมให้รูทีนสะดวกขึ้น ควบคู่กับอาหารและการใช้กล้ามเนื้อ</p>
+    </div>
+    <div class="beat" data-pos="l">
+      <h2 class="mid" id="h6c">นี่เป็นตัวที่เราเลือกดื่ม คุณเริ่มจากอาหารหรือวิธีที่เหมาะกับตัวเองได้</h2>
+      <p class="cta"><a class="btn" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">คุยเรื่องโปรตีนที่เหมาะกับคุณ ↗</a><a class="btn btn--ghost" href="/xircle/doc/habix/protein-hmb/">ดูสูตร Protein HMB+ ↗</a></p>
+      <p class="fine"><button type="button" class="linkbtn" data-open="formula">ข้อมูลสูตร ข้อควรระวัง และแหล่งอ้างอิง</button></p>
     </div>
     <div class="beat beat--stay" data-pos="c">
       <h2 class="big" id="h6b"><span class="ln" style="--i:0">เข้าใจข้างใน</span><span class="ln" style="--i:1">แล้วดูแลในแบบของคุณ</span></h2>
+      <nav class="path" aria-label="เส้นทางห้อง RoutineX">
+        <ol>
+          <li><a href="../absorb/"><b>A</b><span>Absorb</span></a></li>
+          <li aria-current="step"><b>B</b><span>Build</span></li>
+          <li class="soon"><b>C</b><span>Control</span><small>เร็ว ๆ นี้</small></li>
+          <li class="soon"><b>D</b><span>—</span><small>เร็ว ๆ นี้</small></li>
+        </ol>
+        <p class="fine">ห้องต่อไป C · Control — จากความเข้าใจ สู่พฤติกรรมที่ทำต่อได้ <a href="/xircle/doc/routinex/">สำรวจ RoutineX ↗</a></p>
+      </nav>
       <p class="fine legal">ผลิตภัณฑ์เสริมอาหาร ไม่มีผลในการป้องกันหรือรักษาโรค โปรดอ่านฉลากก่อนบริโภค</p>
-      <p class="fine foot"><a href="../absorb/">กลับห้อง A · Absorb</a><a href="#ch0" class="again">กลับต้นเรื่อง ↑</a></p>
+      <p class="fine foot"><a href="#ch0" class="again">กลับต้นเรื่อง ↑</a></p>
     </div>
   </div>
 </section>
@@ -358,8 +395,10 @@
       <li>myHMB® 750 มก. ต่อซอง (ซอง 30 กรัม)</li>
       <li>พลังงาน 120 กิโลแคลอรี · คาร์โบไฮเดรต 7 กรัม · ไขมัน 1 กรัม</li>
       <li>1 ถุงบรรจุ 7 ซอง · ชงกับน้ำ 200 มล. อุณหภูมิปกติหรือเย็น</li>
+      <li>โปรตีนรวม 20 กรัม จากเวย์ 10 · ถั่วเหลือง 5 · ถั่วลันเตา 5 กรัม</li>
       <li>รส Hokkaido Milk Malt</li>
-      <li>มีส่วนประกอบจากนมและถั่วเหลือง</li>
+      <li>มี L-ลิวซีนและวิตามินดี3 เป็นส่วนประกอบ</li>
+      <li>สารก่อภูมิแพ้: มีส่วนประกอบจากนมและถั่วเหลือง</li>
     </ul>
     <h3>ข้อควรรู้</h3>
     <ul>
@@ -369,10 +408,10 @@
       <li>อาหารที่เหมาะกับตัวเอง การใช้กล้ามเนื้อ และการพัก คือพื้นฐานที่ต้องมีอยู่แล้ว ผลิตภัณฑ์เป็นเพียงตัวเลือกเสริม</li>
     </ul>
     <p class="fine">ตรวจฉลากปัจจุบันและข้อมูลเพิ่มเติมก่อนเลือกใช้</p>
-    <p class="fine">myHMB® เป็นเครื่องหมายการค้าจดทะเบียนของ TSI Group Ltd. ภาพซองเป็นภาพสินค้าจากสื่อของแบรนด์</p>
+    <p class="fine">myHMB® เป็นเครื่องหมายการค้าจดทะเบียนของ TSI Group Ltd.</p>
   </div>
 </aside>
 
-<script type="module" src="js/main.js?v=intro2"></script>
+<script type="module" src="js/main.js?v=journey2"></script>
 </body>
 </html>

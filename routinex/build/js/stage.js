@@ -1,6 +1,6 @@
 // B / Build stage — one WebGL2 canvas. T = chapter index + progress; same T → same frame (idle drift aside).
-import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js';
-import { SRC } from './shaders.js';
+import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js?v=journey2';
+import { SRC } from './shaders.js?v=journey2';
 
 const STRIDE = 23; // H0(3) H1(3) H2(3) P(4) Q(4) C(3) DIR(3)
 class Buf {
@@ -207,7 +207,9 @@ export function createStage(canvas) {
       u1('memb', 'uY', 0); u1('memb', 'uMemb', membV); u3('memb', 'uCam', pos); u3('memb', 'uFog', pal.fog); u1('memb', 'uT', time);
       gl.bindVertexArray(quadVAO); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
-    const dustPass = () => { common('dust', c, time, 1); u1('dust', 'uDust', dark > .5 ? .8 : .7); u3('dust', 'uDustCol', dark > .5 ? [1, .74, .52] : [1, .8, .6]); draw(G.dust, q); };
+    // ch2 is the GL hero: keep the background quiet so the fibres and returning units carry the scene
+    const quiet = 1 - .55 * w(1.95, 2.3, T) * (1 - w(3.0, 3.3, T));
+    const dustPass = () => { common('dust', c, time, 1); u1('dust', 'uDust', (dark > .5 ? .8 : .7) * quiet); u3('dust', 'uDustCol', dark > .5 ? [1, .74, .52] : [1, .8, .6]); draw(G.dust, q); };
     dustPass();
     // fibres
     common('fibre', c, time, 1);
