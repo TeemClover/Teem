@@ -27,7 +27,7 @@
 <meta name="theme-color" content="#f5efe6">
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/absorb.css?v=intro2">
+<link rel="stylesheet" href="css/absorb.css?v=journey3">
 <script>(function(d){d.className='js';setTimeout(function(){if(!d.classList.contains('ready')){d.classList.remove('js');d.dataset.wd='1'}},4500)})(document.documentElement)</script>
 </head>
 <body>
@@ -47,13 +47,16 @@
 <div class="film" id="film"><video id="filmVideo" muted playsinline preload="none" poster="assets/ritual-poster.jpg" role="img" aria-label="ภาพประกอบ: ผงสีพีชกระจายตัวในแก้วน้ำใส ไม่ใช่การวัดจริงของความเร็วการละลายหรือสีเครื่องดื่ม"></video></div>
 <div class="veil" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
-<div class="intro-meal" aria-hidden="true"><img src="assets/intro-meal.svg" width="600" height="600" alt=""><span>เริ่มจากอาหารหนึ่งมื้อ</span></div>
+<div class="meal-film" id="mealFilm" aria-hidden="true">
+  <img src="assets/meal-zoom-v3.jpg" width="1920" height="1080" alt="" fetchpriority="high">
+  <video id="mealVideo" muted playsinline preload="none" poster="assets/meal-zoom-v3.jpg"></video>
+</div>
 
 <nav class="rail" aria-label="ตอนของเรื่อง" id="rail">
   <ol>
     <li><a href="#ch0" data-i="0"><span>มื้อของคุณ</span></a></li>
     <li><a href="#ch1" data-i="1"><span>ตามสารอาหาร</span></a></li>
-    <li><a href="#ch2" data-i="2"><span>คำถามใหม่</span></a></li>
+    <li><a href="#ch2" data-i="2"><span>แยกทางไปทำหน้าที่</span></a></li>
     <li><a href="#ch3" data-i="3"><span>คนละบทบาท</span></a></li>
     <li><a href="#ch4" data-i="4"><span>สิ่งที่เกิดขึ้น</span></a></li>
     <li><a href="#ch5" data-i="5"><span>แนวคิดสูตร</span></a></li>
@@ -67,56 +70,53 @@
 
 <main id="story" tabindex="-1">
 
-<!-- Intro: recognise the meal, choose a familiar entry, then learn the visual language. -->
-<section class="chapter intro-chapter" id="ch0" data-ch="0" style="--len:360" aria-labelledby="h0">
-  <div class="pin">
-    <div class="beat beat--hero" data-pos="l">
-      <p class="kick">A / ABSORB · เริ่มจากมื้อของคุณ</p>
-      <h1 class="mega" id="h0"><span class="ln" style="--i:0">คุณกินอิ่มแล้ว</span><span class="ln" style="--i:1">แล้วข้างในล่ะ?</span></h1>
-      <p class="lede">ลองตามอาหารมื้อนี้ เข้าไปดูว่า<br>ร่างกายและจุลินทรีย์ได้รับอะไรบ้าง</p>
-      <img class="flowonly intro-meal-static" src="assets/intro-meal.svg" width="600" height="600" alt="ภาพประกอบมื้ออาหาร มีข้าว ผัก และปลา">
-      <p class="hint" aria-hidden="true"><i></i>เลื่อนลง เริ่มสำรวจจากมื้อของคุณ</p>
-    </div>
-    <div class="beat beat--stay intro-choice" data-pos="l">
-      <h2 class="big"><span class="ln" style="--i:0">ปกติคุณ</span><span class="ln" style="--i:1">กินผักแบบไหน?</span></h2>
-      <div class="lens" role="radiogroup" aria-label="ปกติคุณกินผักแบบไหน">
-        <button type="button" role="radio" aria-checked="false" data-lens="1" data-out="ลองตามผักที่คุณกิน ไปดูว่าใยอาหารเดินทางถึงไหน"><b>กินผักเป็นประจำ</b></button>
-        <button type="button" role="radio" aria-checked="false" data-lens="2" data-out="บางมื้อมี บางมื้อไม่มี ลองรู้จักส่วนของอาหารที่เดินทางต่อไปถึงจุลินทรีย์"><b>กินบ้างบางมื้อ</b></button>
-        <button type="button" role="radio" aria-checked="false" data-lens="3" data-out="เริ่มจากรู้จักใยอาหารก่อนก็ได้ นอกจากผัก ยังพบได้ในผลไม้ ถั่ว และธัญพืชไม่ขัดสี"><b>ไม่ค่อยชอบผัก</b></button>
-      </div>
-      <p class="lens__out" id="lensOut" aria-live="polite">เลือกข้อที่ใกล้กับคุณ หรือเลื่อนต่อได้เลย</p>
-    </div>
+<!-- One continuous journey: meal → macro → conceptual nutrients. -->
+<section class="chapter intro-chapter" id="ch0" data-ch="0" style="--len:320" aria-labelledby="h0">
+ <div class="pin">
+  <div class="beat beat--hero" data-pos="l">
+   <p class="kick">A / ABSORB · จากมื้อหนึ่ง สู่โลกข้างใน</p>
+   <h1 class="mega" id="h0"><span class="ln" style="--i:0">หนึ่งมื้อของคุณ</span><span class="ln" style="--i:1">เดินทางไปไหน?</span></h1>
+   <p class="lede">ตามอาหารเข้าไปดู<br>สิ่งเล็ก ๆ ที่ร่างกายได้รับ</p>
+   <img class="flowonly meal-static" src="assets/meal-zoom-v3.jpg" width="1920" height="1080" alt="ภาพอาหาร: ข้าว ปลาแซลมอน และบรอกโคลีบนจานเซรามิก">
+   <p class="hint" aria-hidden="true"><i></i>เลื่อนเพื่อเข้าใกล้ · ย้อนเพื่อถอยออก</p>
   </div>
+  <div class="beat" data-pos="l">
+   <p class="kick">เริ่มจากสิ่งที่คุณคุ้นเคย</p>
+   <h2 class="big"><span class="ln" style="--i:0">ลองเข้าไป</span><span class="ln" style="--i:1">ใกล้อีกนิด</span></h2>
+   <p class="lede">อาหารหนึ่งคำ<br>มีส่วนประกอบมากกว่าที่ตาเห็น</p>
+  </div>
+ </div>
 </section>
-<section class="chapter intro-chapter" id="ch1" data-ch="1" style="--len:370" aria-labelledby="h1">
-  <div class="pin">
-    <div class="beat" data-pos="l">
-      <h2 class="big" id="h1"><span class="ln" style="--i:0">จากอาหารในจาน</span><span class="ln" style="--i:1">สู่ส่วนเล็ก ๆ</span><span class="ln" style="--i:2">ข้างใน</span></h2>
-      <p class="lede">เราจะค่อย ๆ เปลี่ยนภาพอาหาร เป็นเม็ดและเส้น เพื่อพาคุณตามเข้าไปดูข้างใน</p>
-      <p class="intro-note">ภาพอธิบายแนวคิด ย่อทั้งขนาดและเวลา</p>
-    </div>
-    <div class="beat beat--stay" data-pos="l">
-      <h2 class="big"><span class="ln" style="--i:0">เส้นสีทองนี้</span><span class="ln" style="--i:1">คือใยอาหาร</span></h2>
-      <div class="intro-key">
-        <div><i class="key-beads" aria-hidden="true"></i><p><b>เม็ดต่าง ๆ</b><span>แทนส่วนประกอบจากอาหาร รวมถึงสารอาหารที่ร่างกายนำไปใช้</span></p></div>
-        <div><i class="key-fibre" aria-hidden="true"></i><p><b>เส้นสีทอง</b><span>แทนใยอาหาร ส่วนที่เราจะตามไปดูต่อ</span></p></div>
-      </div>
-      <p class="intro-note">สีและรูปร่างใช้ช่วยเล่าเรื่อง ไม่ใช่ภาพจริงของสารอาหาร</p>
-      <p class="hint" aria-hidden="true"><i></i>ตามเส้นสีทองไปด้วยกัน</p>
-    </div>
+<section class="chapter intro-chapter" id="ch1" data-ch="1" style="--len:330" aria-labelledby="h1">
+ <div class="pin">
+  <div class="beat" data-pos="l">
+   <p class="kick">เปลี่ยนสเกล เพื่อทำความเข้าใจ</p>
+   <h2 class="big" id="h1"><span class="ln" style="--i:0">จากอาหาร</span><span class="ln" style="--i:1">สู่ส่วนเล็ก ๆ</span><span class="ln" style="--i:2">ข้างใน</span></h2>
+   <p class="lede">จากนี้ ใช้เม็ดและเส้นแทนส่วนประกอบของอาหาร เพื่อให้ตามการเดินทางได้ง่ายขึ้น</p>
+   <p class="intro-note">ภาพจำลองเพื่ออธิบาย ย่อขนาดและเวลา</p>
   </div>
+  <div class="beat beat--stay" data-pos="l">
+   <h2 class="big"><span class="ln" style="--i:0">เม็ดสารอาหาร</span><span class="ln" style="--i:1">และเส้นใยสีทอง</span></h2>
+   <div class="intro-key">
+    <div><i class="key-beads" aria-hidden="true"></i><p><b>เม็ดต่าง ๆ</b><span>แทนสารอาหารที่ร่างกายนำไปใช้</span></p></div>
+    <div><i class="key-fibre" aria-hidden="true"></i><p><b>เส้นสีทอง = ใยอาหาร</b><span>ส่วนที่เราจะตามเดินทางต่อ</span></p></div>
+   </div>
+   <img class="flowonly meal-static" src="assets/meal-particles-v3.jpg" width="1920" height="1080" loading="lazy" alt="ภาพจำลองเม็ดสารอาหารและเส้นใยสีทอง มีพื้นที่ว่างระหว่างอนุภาค">
+   <p class="intro-note">สีและรูปร่างใช้เล่าเรื่อง ไม่ใช่ภาพจริงจากกล้องจุลทรรศน์</p>
+  </div>
+ </div>
 </section>
 
 <!-- ═════ 2 · CHANGE THE QUESTION ═════ -->
 <section class="chapter" id="ch2" data-ch="2" style="--len:450" aria-labelledby="h2">
   <div class="pin">
     <div class="beat" data-pos="r">
-      <h2 class="big" id="h2"><span class="ln" style="--i:0">สารอาหารหลายชนิด</span><span class="ln" style="--i:1">ถูกย่อยและ</span><span class="ln" style="--i:2">ดูดซึมไปก่อน</span></h2>
-      <p class="lede">แต่ใยอาหารบางส่วนไม่ถูกย่อยในลำไส้เล็ก จึงเดินทางต่อไปถึงจุลินทรีย์ในลำไส้ใหญ่</p>
+      <h2 class="big" id="h2"><span class="ln" style="--i:0">ย่อยให้เล็ก</span><span class="ln" style="--i:1">แล้วดูดซึม</span><span class="ln" style="--i:2">ไปใช้</span></h2>
+      <p class="lede">สารอาหารส่วนใหญ่ถูกดูดซึมผ่านผนังลำไส้เล็ก เพื่อนำไปใช้ในร่างกาย</p>
     </div>
     <div class="beat" data-pos="l">
-      <h2 class="big q"><span class="ln" style="--i:0">สุขภาพลำไส้</span><span class="ln" style="--i:1">ไม่ได้มีแค่</span><span class="ln strike" style="--i:2"><s>วันนี้ถ่ายหรือยัง</s></span></h2>
-      <p class="lede">คำถามที่กว้างกว่า: <em>ใครอยู่ในนั้น และพวกเขากินอะไร?</em></p>
+      <h2 class="big q"><span class="ln" style="--i:0">แต่ใยอาหาร</span><span class="ln" style="--i:1">ยังเดินทางต่อ</span></h2>
+      <p class="lede">ใยอาหารบางส่วนผ่านลำไส้เล็กไป จนถึงบ้านของจุลินทรีย์ในลำไส้ใหญ่</p>
     </div>
     <div class="beat" data-pos="r">
       <p class="kick">GUT MICROBIOME</p>
@@ -366,6 +366,6 @@
 
 <noscript><p class="noscript">เนื้อหาทั้งหมดอ่านได้โดยไม่ต้องใช้ JavaScript แต่ฉากภาพเคลื่อนไหวต้องใช้ JavaScript และ WebGL</p></noscript>
 
-<script type="module" src="js/main.js?v=intro2"></script>
+<script type="module" src="js/main.js?v=journey3"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 // The stage: one WebGL2 canvas that draws the whole journey, driven only by scroll-time T (chapters, in units).
 // T = chapterIndex + progressInsideChapter. Same T → same frame (idle drift aside), forwards or backwards.
 import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js';
-import { SRC, TUN } from './shaders.js?v=intro2';
+import { SRC, TUN } from './shaders.js?v=journey3';
 
 const STRIDE = 23; // H0(3) H1(3) H2(3) P(4) Q(4) C(3) DIR(3)
 const cl = (z) => [TUN.A * Math.sin(z * 0.041), TUN.Y0 + TUN.B * Math.sin(z * 0.027 + 0.7), z];
@@ -23,81 +23,53 @@ function shuffleBuf(buf, r) {
 }
 
 function buildFood(r) {
+  // Sparse: 12 nutrient beads + 3 gold fibre strands. No plate, no rice mound.
   const rods = new Buf(), orbs = new Buf();
-  const plateR = 9.6;
-  const jit = (v, s) => v + (r() - 0.5) * s;
-  const lift = (p, kind, seed) => {
-    const rr = Math.hypot(p[0], p[2]) + 0.001;
-    const h1 = [p[0] * 1.3 + (r() - .5) * 2, p[1] + 1.5 + r() * 5, p[2] * 1.3 + (r() - .5) * 2];
-    const h2 = kind === 1
-      ? (() => { const z = -7 - r() * 36, a = r() * 6.283, rd = Math.sqrt(r()) * 3.4; return at(z, Math.cos(a) * rd, Math.sin(a) * rd * .85); })()
-      : [h1[0] * 1.1, h1[1] + 10 + r() * 6, h1[2] * 1.1];
-    return [h1, h2];
-  };
-  // rice mound (absorbed)
-  for (let i = 0; i < 2700; i++) {
-    const rr = 3.7 * Math.sqrt(r()), a = r() * 6.283;
-    const x = -2.4 + rr * Math.cos(a), z = 1.3 + rr * Math.sin(a) * 0.9;
-    const heap = 1 - (rr / 3.7) ** 2;
-    const y = 0.16 + 1.5 * heap * (0.55 + 0.45 * r());
-    const b = r() * Math.PI, d = norm3([Math.cos(b), (r() - .5) * .5, Math.sin(b)]);
-    const s = r(), k = 0.9 + 0.1 * r();
-    const p = [x, y, z], [h1, h2] = lift(p, 0, s);
-    rods.push(p, h1, h2, [0.4, 0.088, s, r()], [0, 0, 0, 0], [0.97 * k, 0.93 * k, 0.84 * k], d);
+  const plateR = 9.6; // kept for API compat (disc is never drawn)
+  const beadCols = [
+    [.97,.93,.84],[.62,.84,.34],[.72,.85,.36],[.96,.58,.24],
+    [.66,.50,.28],[.64,.82,.35],[.94,.54,.22],[.98,.88,.60],
+    [.56,.76,.30],[.70,.48,.24],[.95,.72,.42],[.84,.90,.60],
+  ];
+  // 12 beads — absorbed nutrients, disperse before gut (cls=0, kind=0)
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * 6.283 + r() * .3;
+    const rr = 1.6 + r() * 1.8;
+    const p = [Math.cos(a) * rr, .18 + r() * .4, Math.sin(a) * rr * .9];
+    const h1 = [p[0] * 1.3 + (r() - .5) * 1.5, p[1] + 2 + r() * 3, p[2] * 1.3];
+    const h2 = [h1[0] * 1.1, h1[1] + 8 + r() * 5, h1[2] * 1.1];
+    orbs.push(p, h1, h2, [.16 + .14 * r(), 0, r(), r()], [0, 0, 0, 0], beadCols[i], [1, 0, 0]);
   }
-  // greens (mostly fibre)
-  const greens = [[.36, .64, .2], [.5, .76, .26], [.26, .52, .18], [.62, .8, .3]];
-  for (let i = 0; i < 1250; i++) {
-    const rr = 3.4 * Math.sqrt(r()), a = r() * 6.283;
-    const p = [3.5 + rr * Math.cos(a), 0.14 + 0.75 * r() * (1 - rr / 4) + 0.1, -2.7 + rr * Math.sin(a) * 0.9];
-    const b = r() * Math.PI, d = norm3([Math.cos(b), (r() - .5) * .8, Math.sin(b)]);
-    const kind = r() < 0.7 ? 1 : 0, s = r();
-    const [h1, h2] = lift(p, kind, s);
-    const c = greens[Math.floor(r() * greens.length)];
-    rods.push(p, h1, h2, [0.42 + 0.4 * r(), 0.052, s, r()], [1, kind, 0, 0], c, d);
-  }
-  // broccoli / green orbs (fibre)
-  for (let i = 0; i < 110; i++) {
-    const rr = 3.2 * Math.sqrt(r()), a = r() * 6.283, s = r();
-    const p = [3.5 + rr * Math.cos(a), 0.4 + 0.5 * r(), -2.7 + rr * Math.sin(a) * 0.9];
-    const [h1, h2] = lift(p, 1, s);
-    orbs.push(p, h1, h2, [0.2 + 0.16 * r(), 0, s, r()], [1, 1, 0, 0], [.2, .44 + .12 * r(), .16], [1, 0, 0]);
-  }
-  // protein (absorbed)
-  for (let i = 0; i < 200; i++) {
-    const rr = 2.5 * Math.sqrt(r()), a = r() * 6.283, s = r();
-    const p = [2.4 + rr * Math.cos(a), 0.3 + 0.35 * r(), 3.5 + rr * Math.sin(a)];
-    const [h1, h2] = lift(p, 0, s), t = r();
-    orbs.push(p, h1, h2, [0.26 + 0.24 * r(), 0, s, r()], [2, 0, 0, 0], [.66 + .1 * t, .43 + .1 * t, .22 + .06 * t], [1, 0, 0]);
-  }
-  // carrot + tomato (absorbed)
-  for (let i = 0; i < 150; i++) {
-    const rr = 3.6 * Math.sqrt(r()), a = r() * 6.283, s = r();
-    const p = [3.3 + rr * Math.cos(a), 0.3 + 0.4 * r(), -2.4 + rr * Math.sin(a) * .9];
-    const [h1, h2] = lift(p, 0, s);
-    orbs.push(p, h1, h2, [0.17 + 0.12 * r(), 0, s, r()], [3, 0, 0, 0], [.96, .56 + .1 * r(), .14], [1, 0, 0]);
-  }
-  for (let i = 0; i < 55; i++) {
-    const rr = 5 * Math.sqrt(r()), a = r() * 6.283, s = r();
-    const p = [-.5 + rr * Math.cos(a), 0.3 + 0.3 * r(), 0.8 + rr * Math.sin(a) * .9];
-    const [h1, h2] = lift(p, 0, s);
-    orbs.push(p, h1, h2, [0.16 + 0.1 * r(), 0, s, r()], [4, 0, 0, 0], [.88, .2 + .06 * r(), .15], [1, 0, 0]);
-  }
-  // hidden fibre, gold (kept)
-  for (let i = 0; i < 120; i++) {
-    const rr = 7.4 * Math.sqrt(r()), a = r() * 6.283, s = r();
-    const p = [rr * Math.cos(a), 0.3 + 1.3 * r() * (rr < 4 ? 1 : .3), rr * Math.sin(a) * .95];
-    const b = r() * Math.PI, d = norm3([Math.cos(b), (r() - .5) * .9, Math.sin(b)]);
-    const [h1, h2] = lift(p, 1, s);
-    rods.push(p, h1, h2, [0.45 + 0.35 * r(), 0.042, s, r()], [5, 1, 0, 0], [.98, .78 + .08 * r(), .22], d);
-  }
-  // routine-lens ring (fibre)
-  for (let i = 0; i < 150; i++) {
-    const a = (i / 150) * 6.283 + r() * .04, R = 10.7 + r() * .5, s = r();
-    const p = [R * Math.cos(a), 0.08, R * Math.sin(a)];
-    const d = norm3([-Math.sin(a), 0.02, Math.cos(a)]);
-    const [h1, h2] = lift(p, 1, s);
-    rods.push(p, h1, h2, [0.5, 0.05, s, r()], [6, 1, 0, 0], [.98, .78, .25], d);
+  // 3 gold fibre strands — 20 contiguous curved segments each.
+  // pts[i] are pre-computed so tangent direction is exact per segment.
+  for (let s = 0; s < 3; s++) {
+    const ang = (s / 3) * 6.283;
+    const spin = s % 2 === 0 ? 1 : -1;
+    const N = 20;
+    const pts = Array.from({ length: N + 1 }, (_, i) => {
+      const t = i / N;
+      const radius = 1.8 + t * 0.7;
+      const twist = ang + t * 0.55 * spin;
+      return [
+        Math.cos(twist) * radius + Math.sin(t * Math.PI * 1.8) * 0.22,
+        0.14 + t * 1.35 + Math.sin(t * Math.PI * 1.4) * 0.18,
+        Math.sin(twist) * radius * 0.9 + Math.cos(t * Math.PI * 1.6) * 0.14,
+      ];
+    });
+    // one gut destination per strand for a coherent trajectory
+    const z2 = -10 - r() * 22, a2 = ang + (r() - .5) * 0.5, rd2 = 0.8 + r() * 1.6;
+    const gutDest = at(z2, Math.cos(a2) * rd2, Math.sin(a2) * rd2 * .85);
+    const phase = r(), seed = .1 + s * .07;
+    for (let i = 0; i < N; i++) {
+      const a = pts[i], b = pts[i + 1];
+      const h0 = a.map((v, k) => (v + b[k]) * .5);
+      const delta = b.map((v, k) => v - a[k]);
+      const d = norm3(delta), length = Math.hypot(...delta) * 1.08;
+      // Preserve the same arc and phase in every keyframe: no detached segments.
+      const h1 = [h0[0], h0[1] + 3, h0[2]];
+      const h2 = h0.map((v, k) => gutDest[k] + v);
+      rods.push(h0, h1, h2, [length, .045, seed, phase], [5, 1, 0, 0], [.98, .81, .25], d);
+    }
   }
   return { rods: shuffleBuf(rods, r), orbs: shuffleBuf(orbs, r), nr: rods.n, no: orbs.n, plateR };
 }
@@ -105,7 +77,7 @@ function buildFood(r) {
 function buildWall(r) {
   const b = new Buf();
   const cols = [[.93, .56, .5], [.87, .46, .43], [.96, .68, .56], [.74, .38, .38], [.9, .6, .52]];
-  for (let i = 0; i < 4200; i++) {
+  for (let i = 0; i < 180; i++) {
     const z = -3 - r() * 195, th = r() * 6.283;
     const R = 5.0 + 0.5 * Math.sin(z * 0.35) + 0.3 * Math.sin(z * 0.9 + th * 2);
     const c = cl(z), cx = Math.cos(th), sy = Math.sin(th);
@@ -119,16 +91,27 @@ function buildWall(r) {
 }
 
 function buildMicro(r) {
+  // Fewer, more distinct organisms per scene zone.
+  // g=0: SI wall boundary — cool blue-teal, elongated rods
+  // g=1: fermentation — warm amber, rounder
+  // g=2: colon colony — diverse hues, varied size
+  // g=3: SCFA context — minimal rose+gold
   const rods = new Buf(), orbs = new Buf();
-  const tints = [[.95, .52, .55], [.5, .8, .68], [.68, .6, .92], [.95, .72, .42]];
+  const groupTints = [
+    [[.62,.82,.95],[.50,.72,.88],[.72,.88,.96]],
+    [[.95,.72,.42],[.88,.58,.32],[.98,.82,.48]],
+    [[.50,.80,.68],[.62,.60,.92],[.68,.78,.92],[.92,.62,.72]],
+    [[.95,.52,.55],[.98,.78,.36]],
+  ];
+  const counts = [[14, 10], [12, 16], [20, 14], [8, 6]];
   const zr = [[-46, -14], [-80, -44], [-140, -82], [-190, -8]];
-  const add = (buf, isRod, n, g, sizeF) => {
+  const add = (buf, n, g, sizeF) => {
+    const tints = groupTints[g];
     for (let i = 0; i < n; i++) {
       const [za, zb] = zr[g];
       const z = za + (zb - za) * r();
       const a = r() * 6.283, rr = 1.5 + Math.sqrt(r()) * 2.9;
       const c = at(z, Math.cos(a) * rr, Math.sin(a) * rr * .85);
-      // attractor offset
       let off;
       if (g === 0) off = [(r() - .5) * 7, (r() - .5) * 3, (r() - .5) * 3];
       else if (g === 1) { const q = r() * 6.283, w = 1 + r() * 2.4; off = [Math.cos(q) * w, Math.sin(q) * w * .8, (r() - .5) * 6]; }
@@ -140,9 +123,14 @@ function buildMicro(r) {
     }
   };
   for (let g = 0; g < 4; g++) {
-    const nr = g === 3 ? 130 : 120, no = g === 3 ? 120 : 100;
-    add(rods, true, nr, g, () => [0.55 + 0.6 * r(), 0.11 + 0.06 * r(), r(), r()]);
-    add(orbs, false, no, g, () => [0.16 + 0.16 * r(), 0, r(), r()]);
+    const [nr, no] = counts[g];
+    const rs = g === 0 ? () => [.80 + .50 * r(), .10 + .04 * r(), r(), r()]
+             : g === 1 ? () => [.45 + .35 * r(), .13 + .05 * r(), r(), r()]
+             : g === 2 ? () => [.55 + .50 * r(), .11 + .06 * r(), r(), r()]
+                       : () => [.35 + .25 * r(), .09 + .03 * r(), r(), r()];
+    const os = g === 1 ? () => [.22 + .18 * r(), 0, r(), r()] : () => [.14 + .12 * r(), 0, r(), r()];
+    add(rods, nr, g, rs);
+    add(orbs, no, g, os);
   }
   return { rods: shuffleBuf(rods, r), orbs: shuffleBuf(orbs, r), nr: rods.n, no: orbs.n };
 }
@@ -169,7 +157,7 @@ function buildScfa(r) {
   const b = new Buf();
   const cols = [[1, .78, .3], [1, .55, .42], [1, .86, .25]];
   const A1 = at(-60);
-  for (let i = 0; i < 300; i++) {
+  for (let i = 0; i < 40; i++) {
     const a = r() * 6.283, rr = 1.4 + r() * 3.4;
     const p = [A1[0] + Math.cos(a) * rr * .8, A1[1] + Math.sin(a) * rr * .7, A1[2] + (r() - .5) * 16];
     const d = norm3([Math.cos(a) + (r() - .5) * .5, Math.sin(a) + (r() - .5) * .5, (r() - .5) * .3]);
@@ -182,7 +170,7 @@ function buildScfa(r) {
 function buildDust(r) {
   const b = new Buf();
   const cols = [[1, .82, .62], [1, .7, .55], [.95, .9, .75], [.85, .95, .7]];
-  for (let i = 0; i < 380; i++) {
+  for (let i = 0; i < 50; i++) {
     const big = r() < .12;
     b.push([r() * 28, r() * 20, r() * 28], [0, 0, 0], [0, 0, 0], [big ? 0.28 + r() * .4 : 0.05 + r() * .16, 0, r(), r()], [r(), 0, 0, 0], cols[i % 4], [1, 0, 0]);
   }
@@ -220,12 +208,12 @@ const CAM = [
   [2.62, [0, -8, 3.5], [0, -20, 0], 42, 10, 1.5],
   [2.85, [0, -27, 3.5], [0, -31, -10], 44, 10, 1.5],
   [3.00, [...at(-1, 0, .3)], [...at(-20)], 46, 14, 1.6],
-  [3.30, [...at(-15, 0, .4)], [...at(-28, 0, 0)], 44, 12, 4],
-  [3.95, [...at(-18, .1, .3)], [...at(-28, 0, 0)], 44, 10, 4.5],
-  [4.05, [...at(-30, 0, .2)], [...at(-46)], 46, 16, 3],
+  [3.30, [...at(-15, 0, .4)], [...at(-28, 0, 0)], 42, 12, 3.5], // tight: absorption focus
+  [3.95, [...at(-18, .1, .3)], [...at(-28, 0, 0)], 48, 10, 4.0], // wide peek before transition
+  [4.05, [...at(-30, 0, .2)], [...at(-46)], 44, 16, 2.5], // deep focus: gold fibre path
   [4.40, [...at(-44, .3, .2)], [...at(-60)], 46, 16, 3.2],
-  [4.72, [...at(-52, 0, .4)], [...at(-62)], 46, 10, 4.5],
-  [5.00, [...at(-72, 0, .2)], [...at(-95)], 46, 20, 2.6],
+  [4.72, [...at(-52, 0, .4)], [...at(-62)], 50, 10, 5.5], // wide+shallow: fermentation cloud
+  [5.00, [...at(-72, 0, .2)], [...at(-95)], 44, 20, 2.0], // deep: SCFA distinct beat
   [5.30, [...at(-94, 0, .3)], [...at(-116)], 46, 16, 3],
   [5.62, [...at(-104, .3, .3)], [...at(-124)], 46, 12, 3.5],
   [5.90, [...at(-124)], [...at(-150)], 46, 20, 2.4],
@@ -333,7 +321,7 @@ export function createStage(canvas) {
     const sx = stack ? 0 : -side * 0.3 * (1 + 0.0);
     const sy = stack ? 0.34 : 0;
     const px = (pointer[0] || 0) * 0.012, py = (pointer[1] || 0) * 0.008;
-    persp(Pm, cam.fov * Math.PI / 180 * (stack ? 1.18 : 1), asp, 0.25, 420, sx + px, sy + py);
+    persp(Pm, cam.fov * Math.PI / 180 * (stack ? (1.18 + .52 * sstep(2.85, 3.05, T) * (1 - sstep(3.95, 4.15, T))) : 1), asp, 0.25, 420, sx + px, sy + py);
     const pos = cam.pos.slice();
     pos[0] += (pointer[0] || 0) * 0.35; pos[1] += (pointer[1] || 0) * 0.2;
     lookAt(V, pos, cam.tgt, [0, 1, 0]);
@@ -358,8 +346,9 @@ export function createStage(canvas) {
 
     const w = sstep;
     // weights
-    const m1 = w(1.25, 1.75, T), m2 = w(2.4, 2.9, T);
-    const foodVis = w(1.12, 1.62, T) * (1 - w(2.75, 3.15, T));
+    // Food appears after video fades out (~T=1.7); mix drives bead→gut trajectory.
+    const m1 = w(1.70, 2.10, T), m2 = w(2.35, 2.90, T);
+    const foodVis = w(1.65, 1.90, T) * (1 - w(2.75, 3.15, T));
     const plateVis = 0; // Opening plate is the authored meal illustration.
     const wallVis = w(2.55, 2.95, T) * (1 - w(5.85, 6.15, T));
     const microStage = w(2.8, 3.3, T), microVis = w(2.75, 3.05, T) * (1 - w(5.9, 6.2, T));

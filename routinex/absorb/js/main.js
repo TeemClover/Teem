@@ -1,6 +1,6 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createStage } from './stage.js?v=intro2';
+import { createStage } from './stage.js?v=journey3';
 import { clamp, lerp, sstep } from './gl.js';
 
 const root = document.documentElement;
@@ -136,6 +136,40 @@ function applyTone(lum, side) {
   if (meta && st.metaK !== Math.round(k)) { st.metaK = Math.round(k); meta.content = k > 0.5 ? '#f5efe6' : '#1a0f14'; }
 }
 
+// Opening film: the scroll position is the playhead, never autoplay.
+const mealFilm = $('#mealFilm'), mealVideo = $('#mealVideo');
+const mealState = { loaded: false, failed: false, target: 0, seeking: false };
+function seekMealFrame() {
+  if (!mealVideo || mealState.failed || mealVideo.readyState < 2 || !Number.isFinite(mealVideo.duration) || mealVideo.seeking || mealState.seeking) return;
+  const target = Math.min(mealState.target, Math.max(0, mealVideo.duration - 0.045));
+  if (Math.abs(mealVideo.currentTime - target) < 1 / 30) return;
+  mealState.seeking = true;
+  try { mealVideo.currentTime = target; } catch { mealState.seeking = false; }
+}
+function updateMealFilm(T) {
+  if (!mealFilm || !mealVideo) return;
+  const visible = !st.flow && !st.reduced && T < 1.98;
+  const opacity = visible ? 1 - sstep(1.65, 1.95, T) : 0;
+  mealFilm.style.opacity = opacity.toFixed(3);
+  mealFilm.style.visibility = opacity > .002 ? 'visible' : 'hidden';
+  if (visible && !mealState.loaded && !mealState.failed) {
+    mealState.loaded = true;
+    // A complete small blob supports precise reverse seeking even on static hosts
+    // that do not implement byte-range responses. Poster stays visible during load.
+    fetch('assets/meal-zoom-v3.mp4').then(r => { if (!r.ok) throw new Error('Meal film unavailable'); return r.blob(); })
+      .then(blob => { mealVideo.src = URL.createObjectURL(blob); mealVideo.preload = 'auto'; mealVideo.load(); })
+      .catch(() => { mealState.failed = true; mealVideo.hidden = true; });
+  }
+  const duration = Number.isFinite(mealVideo.duration) ? mealVideo.duration : 6;
+  mealState.target = clamp((T - .13) / 1.47) * Math.max(0, duration - .045);
+  if (visible) seekMealFrame();
+}
+if (mealVideo) {
+  mealVideo.addEventListener('loadeddata', seekMealFrame);
+  mealVideo.addEventListener('seeked', () => { mealState.seeking = false; seekMealFrame(); });
+  mealVideo.addEventListener('error', () => { mealState.failed = true; mealVideo.hidden = true; });
+}
+
 // Ritual film: plays once on entering the glass scene, resets when the reader leaves, replayable by button.
 const film = $('#film'), vid = $('#filmVideo'), replayBtn = $('#filmReplay');
 const filmS = { started: false, ok: true, failed: false, blocked: false, playing: false, done: false, armed: true };
@@ -210,25 +244,18 @@ function tick(now) {
   const diff = target - st.Ts;
   const moving = Math.abs(diff) > 0.0004;
   st.Ts = moving ? st.Ts + diff * (1 - Math.exp(-dt * rate)) : target;
-  // lens / water easing
-  let lensMoving = false;
-  for (let i = 0; i < 3; i++) {
-    const tv = st.lens === i + 1 ? 1 : 0, d = tv - st.lensV[i];
-    if (Math.abs(d) > 0.002) { st.lensV[i] += d * (1 - Math.exp(-dt * 4)); lensMoving = true; } else st.lensV[i] = tv;
-  }
+  // Water selection belongs only to the later mixing scene.
   const wd = st.water - st.waterV; if (Math.abs(wd) > 0.002) { st.waterV += wd * (1 - Math.exp(-dt * 5)); root.style.setProperty('--wash', st.waterV.toFixed(3)); }
   const pd = [st.pointerT[0] - st.pointer[0], st.pointerT[1] - st.pointer[1]];
   if (Math.abs(pd[0]) + Math.abs(pd[1]) > 0.001) { st.pointer[0] += pd[0] * (1 - Math.exp(-dt * 3)); st.pointer[1] += pd[1] * (1 - Math.exp(-dt * 3)); st.dirty = true; }
 
   updateBeats(dt);
-  const mealOpacity = st.flow ? 0 : 1 - sstep(1.12, 1.62, st.Ts);
-  root.style.setProperty('--meal-o', mealOpacity.toFixed(3));
-  root.style.setProperty('--meal-scale', (1 + sstep(.9, 1.6, st.Ts) * .12).toFixed(3));
+  updateMealFilm(st.Ts);
   const idle = !st.reduced && !st.flow;
   if (idle) st.time += dt;
   if (!st.flow && chapters.some((c) => c.beats.some((b) => b.ae != null && b.ae !== (b.o > 0.45 ? 1 : 0)))) st.dirty = true;
   if (!st.stage) { updateFilm(st.Ts); return; }
-  if (!(idle || moving || lensMoving || st.dirty || st.pointer[0] || st.pointer[1])) return;
+  if (!(idle || moving || st.dirty || st.pointer[0] || st.pointer[1])) return;
   st.dirty = false;
 
   const time = st.reduced || st.flow ? st.Ts * 5 : st.time;
@@ -308,13 +335,6 @@ function radioGroup(container, onPick) {
   btns.forEach((b, j) => { b.tabIndex = b.getAttribute('aria-checked') === 'true' || (j === 0 && !btns.some((x) => x.getAttribute('aria-checked') === 'true')) ? 0 : -1; });
 }
 
-const DEFAULT_STEP = $('#stepLine')?.textContent || '';
-const lensGroup = $('.lens');
-if (lensGroup) {
-  radioGroup(lensGroup, (i, btn) => {
-    $('#lensOut').textContent = btn.dataset.out || '';
-  });
-}
 const waterGroup = $('.water');
 if (waterGroup) {
   radioGroup(waterGroup, (i) => {
