@@ -72,7 +72,7 @@ ol,ul{list-style:none}
 .pin{position:sticky;top:0;height:100svh;overflow:hidden;pointer-events:none}
 .chapter+.chapter{margin-top:calc(-1 * var(--pinh,100svh))}
 .js:not(.ready):not(.flow) #story{visibility:hidden}
-.beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:safe center;overflow-y:auto;scrollbar-width:none;align-items:flex-start;gap:clamp(12px,2vh,22px);padding:calc(56px + 2vh) var(--gut) 6vh;opacity:var(--o,0);transform:translate3d(0,calc(var(--y,0) * 1px),0);pointer-events:none;will-change:opacity,transform;visibility:var(--vis,hidden)}
+.beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:safe center;overflow-y:auto;scrollbar-width:none;align-items:flex-start;gap:clamp(12px,2vh,22px);padding:calc(56px + 2vh) var(--gut) 6vh;opacity:var(--o,0);transform:translate3d(0,calc(var(--y,0) * 1px),0);pointer-events:none;visibility:var(--vis,hidden)}
 .beat.on{pointer-events:none}
 .beat.on>*{pointer-events:auto}
 .beat>*{max-width:min(34rem,100%)}
@@ -401,3 +401,14 @@ html,body{overscroll-behavior-y:none;touch-action:pan-y}
 @media(max-height:520px) and (min-aspect-ratio:1/1) and (max-width:950px){
  .meal-film{background:#f6efe4}.meal-film:after{display:none}
 }
+
+/* Keep only nearby typography in the compositor; chapter spacers preserve scroll. */
+.js:not(.flow) .chapter.is-dormant .pin{display:none}
+.js:not(.flow) .beat{display:var(--beat-display,none)}
+.flow .beat,html:not(.js) .beat{display:flex}
+@media(pointer:coarse),(max-width:820px){
+ .grain{display:none}
+ .ln{filter:none;transform:translateY(calc((1 - var(--t)) * 26px))}
+ .chip,.rail a span,.water button,.def,.kiwis>div,.qa__i{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(var(--bg-rgb),.88)}
+}
+@media print{.js .chapter.is-dormant .pin{display:block}.js .beat{display:flex}}

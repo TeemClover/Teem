@@ -1,6 +1,7 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createOpening } from './opening.js?v=arrival3';
+import { createProgress } from './progress.js?v=steady1';
+import { createOpening } from './opening.js?v=steady1';
 import { createStage } from './stage.js?v=arrival3';
 import { clamp, lerp, sstep } from './gl.js?v=arrival3';
 
@@ -14,7 +15,7 @@ const compactView = () => mqStack.matches || mqTouch.matches || Math.min(innerWi
 
 const canvas = $('#stage');
 const chapters = $$('.chapter').map((el, i) => ({
-  el, i, beats: $$('.beat', el).map((b) => ({ el: b, pos: b.dataset.pos === 'l' ? -1 : b.dataset.pos === 'r' ? 1 : 0, o: -1 })),
+  el, i, dormant: false, beats: $$('.beat', el).map((b) => ({ el: b, pos: b.dataset.pos === 'l' ? -1 : b.dataset.pos === 'r' ? 1 : 0, o: -1 })),
   top: 0, height: 0, travel: 1,
 }));
 
@@ -23,9 +24,16 @@ const st = {
   vh: innerHeight, T: 0, Ts: 0, time: 0, last: 0,
   lens: 0, lensV: [0, 0, 0], water: 0, waterV: 0,
   pointer: [0, 0], pointerT: [0, 0],
-  stage: null, tone: -1, layout: mqStack.matches ? 'stack' : 'side',
+  stage: null, stageAttempted: false, tone: -1, layout: mqStack.matches ? 'stack' : 'side',
   dirty: true, sides: [], hidden: false, drawer: false,
 };
+
+const progress = createProgress();
+let entered = false;
+let checkpointTimer = 0;
+function checkpoint() {
+  if (entered && !opening.state.open && rzT === null) progress.save(scrollT(), st.flow);
+}
 
 // ───────────────────────── layout / scroll ─────────────────────────
 const viewportProbe = document.createElement('div');
@@ -90,6 +98,9 @@ function updateBeats(dt = 0.016) {
   const y = scrollY;
   let maxO = 0, curSide = 0;
   for (const c of chapters) {
+    const dormant = !st.flow && (y + st.vh < c.top || y > c.top + c.height);
+    if (dormant !== c.dormant) { c.dormant = dormant; c.el.classList.toggle('is-dormant', dormant); }
+    if (dormant) continue;
     const p = st.flow ? 0.5 : clamp((y - c.top) / c.travel, -0.2, 1.2);
     const fadeP = clamp(0.42 * st.vh / c.travel, 0.03, 0.17);
     const n = c.beats.length;
@@ -116,6 +127,7 @@ function updateBeats(dt = 0.016) {
           b.el.style.setProperty('--e', enter.toFixed(3));
           b.el.style.setProperty('--bp', bp.toFixed(3));
           b.el.style.setProperty('--vis', o > 0.004 ? 'visible' : 'hidden');
+          b.el.style.setProperty('--beat-display', o > 0.004 ? 'flex' : 'none');
           b.el.classList.toggle('on', o > 0.55);
           b.o = o; b.bp = bp;
           const tr = $('.tract', b.el);
@@ -153,7 +165,7 @@ const opening = createOpening({
   isReading: () => st.flow || st.reduced,
   enterStory: (reading) => {
     if (reading) setFlow(true, true);
-    measure(); seek(0, false); st.Ts = 0; st.dirty = true;
+    measure(); seek(0, false); st.Ts = 0; st.dirty = true; entered = true; checkpoint();
   },
 });
 
@@ -176,6 +188,11 @@ function playFilm(fromStart) {
   filmS.done = false; filmS.blocked = false;
   tryPlay();
 }
+function releaseFilm() {
+  if (!vid || !filmS.started) return;
+  filmS.started = false; filmS.armed = true; filmS.playing = false; filmS.done = false;
+  vid.pause(); vid.removeAttribute('src'); vid.load();
+}
 function updateFilm(T) {
   if (!film) return;
   const fm = sstep(5.8, 6.1, T);
@@ -183,7 +200,8 @@ function updateFilm(T) {
   film.style.setProperty('--fm', fm.toFixed(3));
   film.style.setProperty('--fo', (fo * Math.min(1, fm * 3)).toFixed(3));
   film.style.setProperty('--fv', fm > 0.002 && fo > 0.002 ? 'visible' : 'hidden');
-  if (T > 5.2) loadFilm();
+  if (T > 5.2 && T < 8.7 && !st.hidden) loadFilm();
+  if (T < 4.9 || T > 8.9 || st.flow || st.reduced) releaseFilm();
   const inScene = !st.reduced && !st.flow && !st.hidden && fm > 0.85 && T < 8.2;
   if (inScene && filmS.armed) { filmS.armed = false; playFilm(true); }
   if (!inScene && filmS.playing) vid.pause();
@@ -212,6 +230,15 @@ function initStage() {
   canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); const ref = scrollT(); root.classList.add('no-gl'); st.stage = null; setFlow(true, true); requestAnimationFrame(() => seek(ref, false)); });
   return stage;
 }
+function ensureStage() {
+  if (st.stageAttempted || st.flow || st.reduced) return;
+  st.stageAttempted = true; st.stage = initStage();
+  if (!st.stage) return;
+  const small = compactView();
+  st.stage.S.dprCap = small ? 1 : 2;
+  st.stage.S.qMax = small ? 0.66 : 1; st.stage.S.q = small ? 0.55 : 1;
+  resizeStage();
+}
 function resizeStage() {
   if (!st.stage) return;
   const cap = st.stage.S.dprCap;
@@ -232,7 +259,8 @@ function tick(now) {
   const rate = st.reduced ? 3 : 7.5;
   const diff = target - st.Ts;
   const moving = Math.abs(diff) > 0.0004;
-  st.Ts = moving ? st.Ts + diff * (1 - Math.exp(-dt * rate)) : target;
+  // A fast swipe across chapters should not decode every scene skipped on the way.
+  st.Ts = Math.abs(diff) > 1.25 ? target : moving ? st.Ts + diff * (1 - Math.exp(-dt * rate)) : target;
   // Water selection belongs only to the later mixing scene.
   const wd = st.water - st.waterV; if (Math.abs(wd) > 0.002) { st.waterV += wd * (1 - Math.exp(-dt * 5)); root.style.setProperty('--wash', st.waterV.toFixed(3)); }
   const pd = [st.pointerT[0] - st.pointer[0], st.pointerT[1] - st.pointer[1]];
@@ -244,9 +272,11 @@ function tick(now) {
   const idle = !st.reduced && !st.flow;
   if (idle) st.time += dt;
   if (!st.flow && chapters.some((c) => c.beats.some((b) => b.ae != null && b.ae !== (b.o > 0.45 ? 1 : 0)))) st.dirty = true;
-  if (!st.stage || st.flow) { updateFilm(st.Ts); return; }
+  if (st.flow) { applyTone(1, 0); updateFilm(st.Ts); updateRail(st.Ts); return; }
   // The opaque opening film does not need a second renderer running behind it.
   if (st.Ts < 1.62) { applyTone(1, sideAt(st.Ts)); updateFilm(st.Ts); updateRail(st.Ts); return; }
+  ensureStage();
+  if (!st.stage) { updateFilm(st.Ts); updateRail(st.Ts); return; }
   if (!(idle || moving || st.dirty || st.pointer[0] || st.pointer[1])) return;
   st.dirty = false;
 
@@ -283,7 +313,7 @@ function updateRail(T) {
 function seek(T, smoothScroll = true) {
   const i = clamp(Math.floor(T), 0, chapters.length - 1), c = chapters[i];
   const p = clamp(T - i, 0, 1);
-  const y = st.flow ? c.top : c.top + p * c.travel;
+  const y = st.flow ? Math.max(0, c.top + p * c.height - st.vh * 0.55) : c.top + p * c.travel;
   scrollTo({ top: y, behavior: smoothScroll && !st.reduced ? 'smooth' : 'auto' });
 }
 function goChapter(i) {
@@ -291,7 +321,7 @@ function goChapter(i) {
   const fadeP = clamp(0.42 * st.vh / c.travel, 0.03, 0.17);
   const off = i === 0 ? 0 : Math.min(fadeP * 1.25, 0.5 / c.beats.length);
   seek(i + off);
-  history.replaceState(null, '', '#ch' + i);
+  history.replaceState(history.state, '', '#ch' + i);
 }
 $$('a[href^="#ch"]').forEach((a) => {
   a.addEventListener('click', (e) => {
@@ -377,7 +407,11 @@ addEventListener('pointermove', (e) => {
   if (st.reduced || e.pointerType === 'touch') return;
   st.pointerT = [(e.clientX / innerWidth - 0.5) * 2, (e.clientY / innerHeight - 0.5) * 2];
 }, { passive: true });
-addEventListener('scroll', () => { st.dirty = true; }, { passive: true });
+addEventListener('scroll', () => {
+  st.dirty = true;
+  if (!checkpointTimer) checkpointTimer = setTimeout(() => { checkpointTimer = 0; checkpoint(); }, 200);
+}, { passive: true });
+addEventListener('pagehide', checkpoint);
 let rz = 0;
 let rzT = null;
 addEventListener('resize', () => {
@@ -393,23 +427,28 @@ addEventListener('resize', () => {
   });
 });
 mqReduce.addEventListener?.('change', () => { st.reduced = mqReduce.matches; if (st.reduced) setFlow(true); });
-document.addEventListener('visibilitychange', () => { st.last = 0; });
+document.addEventListener('visibilitychange', () => {
+  st.last = 0;
+  if (document.hidden) { checkpoint(); vid?.pause(); }
+});
 
 // ───────────────────────── boot ─────────────────────────
 function boot() {
-  st.stage = initStage();
-  if (st.stage) {
-    const small = compactView();
-    st.stage.S.dprCap = small ? 1 : 2;
-    st.stage.S.qMax = small ? 0.66 : 1; st.stage.S.q = small ? 0.55 : 1;
-  }
   if (st.reduced) { st.flow = true; root.classList.add('flow'); readBtn.setAttribute('aria-pressed', 'true'); }
   else if (root.dataset.wd) { root.classList.add('js'); delete root.dataset.wd; }
   chapters.forEach((c) => c.beats.forEach((b) => b.el.style.setProperty('--n', $$('.ln', b.el).length || 1)));
-  measure(); resizeStage();
-  if (location.hash && /^#ch\d+$/.test(location.hash)) requestAnimationFrame(() => goChapter(+location.hash.slice(3)));
+  const saved = progress.restore();
+  if (saved?.flow && !st.flow) setFlow(true, true);
+  measure();
+  if (saved) {
+    entered = true; st.Ts = saved.T;
+    requestAnimationFrame(() => { seek(saved.T, false); updateBeats(); });
+  }
+  if (!saved && location.hash && /^#ch\d+$/.test(location.hash)) requestAnimationFrame(() => goChapter(+location.hash.slice(3)));
   root.classList.add('ready');
-  opening.start(!location.hash && scrollY < 100);
+  const showInvitation = !saved && !location.hash && scrollY < 100;
+  entered = !showInvitation;
+  opening.start(showInvitation);
   requestAnimationFrame(tick);
   if (document.fonts?.ready) document.fonts.ready.then(() => { measure(); });
   // late layout shifts (images) – re-measure a couple of times

@@ -8,7 +8,7 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
   const meter = document.querySelector('#arrivalMeter');
   const background = [...document.querySelectorAll('.bar, .rail, #story, .skip')];
   const state = { loaded: false, ready: false, failed: false, target: 0, seeking: false, warming: 0, released: false, slow: false, open: false, bytes: 0, total: 0 };
-  let controller, objectURL, deadline, slowTimer, lastStatus = '', lastSeek = 0;
+  let controller, objectURL, deadline, slowTimer, lastStatus = '', lastSeek = 0, generation = 0;
   const poster = layer.querySelector('img');
   const mobileMedia = matchMedia('(max-width: 820px), (pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 520 || navigator.connection?.saveData;
   function report() {
@@ -47,12 +47,15 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
   }
   async function preload() {
     if (state.loaded || isReading()) return;
-    state.loaded = true;
+    state.loaded = true; state.failed = false; state.bytes = 0; state.total = 0;
+    video.hidden = false;
+    const currentGeneration = ++generation;
     controller = new AbortController();
     slowTimer = setTimeout(() => { state.slow = true; report(); }, 8000);
     deadline = setTimeout(() => { controller.abort(); fail(); }, 30000);
     try {
       const response = await fetch(mobileMedia ? 'assets/meal-zoom-mobile-v4.mp4' : 'assets/meal-zoom-v3.mp4', { signal: controller.signal });
+      if (currentGeneration !== generation) return;
       if (!response.ok) throw new Error('Opening film unavailable');
       state.total = Number(response.headers.get('content-length')) || 0;
       let blob;
@@ -61,6 +64,7 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
         let lastPct = -1;
         while (true) {
           const { done, value } = await reader.read();
+          if (currentGeneration !== generation) return;
           if (done) break;
           chunks.push(value); state.bytes += value.byteLength;
           const pct = state.total ? Math.floor(state.bytes / state.total * 10) : 0;
@@ -68,14 +72,14 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
         }
         blob = new Blob(chunks, { type: 'video/mp4' });
       } else { blob = await response.blob(); state.bytes = blob.size; }
-      if (state.failed) return;
+      if (state.failed || currentGeneration !== generation) return;
       state.total = state.bytes; report();
       objectURL = URL.createObjectURL(blob);
       video.src = objectURL; video.preload = 'auto'; video.load();
-    } catch { fail(); }
+    } catch { if (currentGeneration === generation) fail(); }
   }
   function warmDecoder() {
-    if (state.failed || state.ready || state.warming || video.readyState < 2 || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    if (state.failed || state.released || state.ready || state.warming || video.readyState < 2 || !Number.isFinite(video.duration) || video.duration <= 0) return;
     // Decode a non-zero frame and return to the beginning before enabling entry.
     state.warming = 1;
     try { video.currentTime = Math.min(.08, video.duration / 2); } catch { fail(); }
@@ -83,7 +87,7 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
   video.addEventListener('loadeddata', warmDecoder);
   video.addEventListener('durationchange', warmDecoder);
   video.addEventListener('seeked', () => {
-    if (state.failed) return;
+    if (state.failed || state.released) return;
     if (state.warming === 1) { state.warming = 2; video.currentTime = 0; return; }
     if (state.warming === 2) { markReady(); return; }
     state.seeking = false; seek();
@@ -134,14 +138,15 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
       const opacity = visible ? 1 - p * p * (3 - 2 * p) : 0;
       layer.style.opacity = opacity.toFixed(3); layer.style.visibility = opacity > .002 ? 'visible' : 'hidden';
       if (visible && state.released && objectURL) {
-        state.released = false; video.src = objectURL; video.load();
+        state.released = false; state.failed = false; video.hidden = false; video.src = objectURL; video.load();
         deadline = setTimeout(fail, 10000);
       }
       if (visible) preload();
       // Release the decoded frame surfaces once the introduction is out of view.
       // The small compressed blob stays available for a reverse scroll.
-      if ((T > 2.4 || isReading()) && state.ready && !state.open) {
-        state.ready = false; state.released = true; state.seeking = false;
+      if ((T > 2.15 || isReading()) && state.loaded && !state.released && !state.open) {
+        generation++; controller?.abort(); clearTimeout(deadline); clearTimeout(slowTimer);
+        state.ready = false; state.released = !!objectURL; state.loaded = !!objectURL; state.seeking = false; state.warming = 0;
         video.pause(); video.removeAttribute('src'); video.load();
       }
       video.style.opacity = state.ready ? '1' : '0';
