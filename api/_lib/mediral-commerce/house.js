@@ -1,4 +1,4 @@
-import {reducer as mediral,clean,lineText,SITE,PRODUCTS} from './domain.js';
+import {reducer as mediral,clean,lineText,SITE,isMediralInquiry} from './domain.js';
 
 const TOPICS={mediral:'ดูแลผิว',ai:'AI และการเรียนรู้',home:'ของใช้ในบ้าน'};
 const choices=['คุยเรื่อง Mediral','คุยเรื่อง AI','เลือกข่าวที่สนใจ','คุยกับคนดูแล'];
@@ -30,7 +30,7 @@ export function houseReducer(state,event,order,options={}){
  // A name/address can contain product words. Never classify it as marketing intent.
  let topic=explicit;
  if(!topic&&!collecting&&event.message?.type==='text'){
-  const skin=/mediral|เมดิรัล|^ชุด 5 ชิ้น$|^สั่งชุด$/i.test(text)||Object.values(PRODUCTS).includes(text);
+  const skin=isMediralInquiry(text);
   const ai=/ai[- ]?source|AI ใส่ซอส|เรียน\s*AI|คอร์ส\s*AI|เรียนฟรี/i.test(text);
   if(skin&&ai)return answer('สนใจทั้งสองเรื่องได้เลยค่ะ อยากเริ่มคุยเรื่องไหนก่อน');
   topic=skin?'mediral':ai?'ai':null;
