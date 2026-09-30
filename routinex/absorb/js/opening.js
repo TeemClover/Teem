@@ -17,7 +17,7 @@ export function createOpening({ video, layer, isReading }) {
     const t = Math.min(state.target, Math.max(0, video.duration - .045));
     if (Math.abs(video.currentTime - t) < 1 / 30) return;
     const now = performance.now();
-    if (now - lastSeek < (mobileMedia ? 65 : 32)) return;
+    if (now - lastSeek < 32) return;
     lastSeek = now; state.seeking = true;
     try { video.currentTime = t; } catch { fail(); }
   }
@@ -29,7 +29,7 @@ export function createOpening({ video, layer, isReading }) {
     controller = new AbortController();
     deadline = setTimeout(() => { controller.abort(); fail(); }, 30000);
     try {
-      const response = await fetch(mobileMedia ? 'assets/meal-zoom-mobile-v4.mp4' : 'assets/meal-zoom-v3.mp4', { signal: controller.signal });
+      const response = await fetch(mobileMedia ? 'assets/meal-zoom-mobile-v5.mp4' : 'assets/meal-zoom-v3.mp4', { signal: controller.signal });
       if (currentGeneration !== generation) return;
       if (!response.ok) throw new Error('Opening film unavailable');
       state.total = Number(response.headers.get('content-length')) || 0;

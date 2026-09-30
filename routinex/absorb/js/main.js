@@ -1,7 +1,7 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
 import { createProgress } from './progress.js?v=steady1';
-import { createOpening } from './opening.js?v=direct1';
+import { createOpening } from './opening.js?v=touch2';
 import { createStage } from './stage.js?v=arrival3';
 import { clamp, lerp, sstep } from './gl.js?v=arrival3';
 
@@ -39,11 +39,22 @@ function checkpoint() {
 const viewportProbe = document.createElement('div');
 viewportProbe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;width:0;height:100svh;';
 document.body.append(viewportProbe);
+// Only the text frame follows browser chrome. Story lengths and GPU surfaces stay fixed.
+function fitReadingViewport() {
+  const visual = window.visualViewport;
+  if (visual && Math.abs(visual.scale - 1) > .02) return;
+  const height = Math.floor(Math.min(st.viewportH || innerHeight, innerHeight, visual?.height || innerHeight));
+  if (height === st.readHeight) return;
+  st.readHeight = height;
+  root.style.setProperty('--read-h', height + 'px');
+}
+window.visualViewport?.addEventListener('resize', fitReadingViewport, { passive: true });
 let measuredWidth = innerWidth;
 function measure(resetViewport = false) {
   // Stable viewport units keep chapter lengths unchanged as mobile browser bars move.
   if (!st.viewportH || resetViewport) st.viewportH = viewportProbe.offsetHeight || innerHeight;
   st.vh = st.viewportH;
+  fitReadingViewport();
   measuredWidth = innerWidth;
   root.style.setProperty('--unit-vh', (st.vh / 100) + 'px');
   const sy = scrollY;
@@ -245,15 +256,16 @@ function tick(now) {
   requestAnimationFrame(tick);
   if (document.hidden) { st.hidden = true; st.last = now; return; }
   st.hidden = false;
-  const frameBudget = compactView() ? 1000 / 30 : 1000 / 60;
+  const target = scrollT();
+  const inOpening = target < 1.98;
+  const frameBudget = compactView() && target >= 1.62 ? 1000 / 30 : 1000 / 60;
   if (st.last && now - st.last < frameBudget - 1) return;
   const dt = Math.min(0.1, (now - (st.last || now)) / 1000); st.last = now;
-  const target = scrollT();
   const rate = st.reduced ? 3 : 7.5;
   const diff = target - st.Ts;
   const moving = Math.abs(diff) > 0.0004;
   // A fast swipe across chapters should not decode every scene skipped on the way.
-  st.Ts = Math.abs(diff) > 1.25 ? target : moving ? st.Ts + diff * (1 - Math.exp(-dt * rate)) : target;
+  st.Ts = inOpening || Math.abs(diff) > 1.25 ? target : moving ? st.Ts + diff * (1 - Math.exp(-dt * rate)) : target;
   // Water selection belongs only to the later mixing scene.
   const wd = st.water - st.waterV; if (Math.abs(wd) > 0.002) { st.waterV += wd * (1 - Math.exp(-dt * 5)); root.style.setProperty('--wash', st.waterV.toFixed(3)); }
   const pd = [st.pointerT[0] - st.pointer[0], st.pointerT[1] - st.pointer[1]];
@@ -407,6 +419,7 @@ addEventListener('pagehide', checkpoint);
 let rz = 0;
 let rzT = null;
 addEventListener('resize', () => {
+  fitReadingViewport();
   // Height-only events on phones are usually browser chrome, not a new layout.
   // Do not realloc the WebGL surface or scrollTo during an active swipe.
   if (compactView() && Math.abs(innerWidth - measuredWidth) < 4) return;
