@@ -1,7 +1,7 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
 import { createProgress } from './progress.js?v=steady1';
-import { createOpening } from './opening.js?v=steady1';
+import { createOpening } from './opening.js?v=direct1';
 import { createStage } from './stage.js?v=arrival3';
 import { clamp, lerp, sstep } from './gl.js?v=arrival3';
 
@@ -32,7 +32,7 @@ const progress = createProgress();
 let entered = false;
 let checkpointTimer = 0;
 function checkpoint() {
-  if (entered && !opening.state.open && rzT === null) progress.save(scrollT(), st.flow);
+  if (entered && rzT === null) progress.save(scrollT(), st.flow);
 }
 
 // ───────────────────────── layout / scroll ─────────────────────────
@@ -159,15 +159,8 @@ function applyTone(lum, side) {
   if (meta && st.metaK !== Math.round(k)) { st.metaK = Math.round(k); meta.content = k > 0.5 ? '#f5efe6' : '#1a0f14'; }
 }
 
-// Prepare the scroll film while the visitor reads the invitation.
-const opening = createOpening({
-  root, video: $('#mealVideo'), layer: $('#mealFilm'),
-  isReading: () => st.flow || st.reduced,
-  enterStory: (reading) => {
-    if (reading) setFlow(true, true);
-    measure(); seek(0, false); st.Ts = 0; st.dirty = true; entered = true; checkpoint();
-  },
-});
+// Begin with the food scene; a poster covers loading without blocking scrolling.
+const opening = createOpening({ video: $('#mealVideo'), layer: $('#mealFilm'), isReading: () => st.flow || st.reduced });
 
 // Ritual film: plays once on entering the glass scene, resets when the reader leaves, replayable by button.
 const film = $('#film'), vid = $('#filmVideo'), replayBtn = $('#filmReplay');
@@ -268,7 +261,6 @@ function tick(now) {
 
   updateBeats(dt);
   opening.update(st.Ts);
-  if (opening.state.open) { st.last = now; return; }
   const idle = !st.reduced && !st.flow;
   if (idle) st.time += dt;
   if (!st.flow && chapters.some((c) => c.beats.some((b) => b.ae != null && b.ae !== (b.o > 0.45 ? 1 : 0)))) st.dirty = true;
@@ -422,7 +414,7 @@ addEventListener('resize', () => {
   cancelAnimationFrame(rz);
   rz = requestAnimationFrame(() => {
     measuredWidth = innerWidth; measure(true); resizeStage();
-    if (!st.flow && !opening.state.open) seek(rzT, false);
+    if (!st.flow) seek(rzT, false);
     rzT = null;
   });
 });
@@ -446,13 +438,11 @@ function boot() {
   }
   if (!saved && location.hash && /^#ch\d+$/.test(location.hash)) requestAnimationFrame(() => goChapter(+location.hash.slice(3)));
   root.classList.add('ready');
-  const showInvitation = !saved && !location.hash && scrollY < 100;
-  entered = !showInvitation;
-  opening.start(showInvitation);
+  entered = true;
   requestAnimationFrame(tick);
   if (document.fonts?.ready) document.fonts.ready.then(() => { measure(); });
   // late layout shifts (images) – re-measure a couple of times
   setTimeout(measure, 600); setTimeout(measure, 2000);
 }
 window.absorb = { seek: (T) => seek(T, false), get T() { return st.Ts; }, state: st, opening: opening.state };
-try { boot(); } catch (e) { console.error(e); root.classList.remove('js'); root.classList.add('flow'); root.classList.remove('arrival-open'); document.querySelectorAll('[inert]').forEach(e => e.inert = false); }
+try { boot(); } catch (e) { console.error(e); root.classList.remove('js'); root.classList.add('flow'); }
