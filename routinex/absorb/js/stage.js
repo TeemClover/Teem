@@ -1,6 +1,6 @@
 // The stage: one WebGL2 canvas that draws the whole journey, driven only by scroll-time T (chapters, in units).
 // T = chapterIndex + progressInsideChapter. Same T → same frame (idle drift aside), forwards or backwards.
-import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js?v=arrival2';
+import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js?v=arrival3';
 import { SRC, TUN } from './shaders.js?v=journey3';
 
 const STRIDE = 23; // H0(3) H1(3) H2(3) P(4) Q(4) C(3) DIR(3)

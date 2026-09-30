@@ -397,3 +397,7 @@ html,body{overscroll-behavior-y:none;touch-action:pan-y}
  .js:not(.flow) .intro-chapter .mega,.js:not(.flow) .intro-chapter .big{font-size:26px}
  .intro-chapter .lede{font-size:14px}.intro-chapter .hint{display:none}
 }
+
+@media(max-height:520px) and (min-aspect-ratio:1/1) and (max-width:950px){
+ .meal-film{background:#f6efe4}.meal-film:after{display:none}
+}

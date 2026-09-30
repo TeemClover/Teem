@@ -1,14 +1,16 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createOpening } from './opening.js?v=arrival2';
-import { createStage } from './stage.js?v=arrival2';
-import { clamp, lerp, sstep } from './gl.js?v=arrival2';
+import { createOpening } from './opening.js?v=arrival3';
+import { createStage } from './stage.js?v=arrival3';
+import { clamp, lerp, sstep } from './gl.js?v=arrival3';
 
 const root = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
 const mqStack = matchMedia('(max-aspect-ratio: 1/1), (max-width: 820px)');
+const mqTouch = matchMedia('(pointer: coarse)');
+const compactView = () => mqStack.matches || mqTouch.matches || Math.min(innerWidth, innerHeight) < 520;
 
 const canvas = $('#stage');
 const chapters = $$('.chapter').map((el, i) => ({
@@ -223,7 +225,7 @@ function tick(now) {
   requestAnimationFrame(tick);
   if (document.hidden) { st.hidden = true; st.last = now; return; }
   st.hidden = false;
-  const frameBudget = mqStack.matches ? 1000 / 30 : 1000 / 60;
+  const frameBudget = compactView() ? 1000 / 30 : 1000 / 60;
   if (st.last && now - st.last < frameBudget - 1) return;
   const dt = Math.min(0.1, (now - (st.last || now)) / 1000); st.last = now;
   const target = scrollT();
@@ -259,7 +261,7 @@ function tick(now) {
     acc += dt; accN++;
     if (accN >= 50) {
       const ms = acc / accN * 1000;
-      const slowLimit = mqStack.matches ? 46 : 26; acc = 0; accN = 0;
+      const slowLimit = compactView() ? 46 : 26; acc = 0; accN = 0;
       const S = st.stage.S;
       if (ms > slowLimit && S.q > 0.32) { S.q = Math.max(0.32, S.q - 0.16); if (S.dprCap > 1.1) { S.dprCap = Math.max(1, S.dprCap - 0.25); resizeStage(); } }
       else if (ms < 13 && S.q < S.qMax) S.q = Math.min(S.qMax, S.q + 0.08);
@@ -381,7 +383,7 @@ let rzT = null;
 addEventListener('resize', () => {
   // Height-only events on phones are usually browser chrome, not a new layout.
   // Do not realloc the WebGL surface or scrollTo during an active swipe.
-  if (mqStack.matches && Math.abs(innerWidth - measuredWidth) < 4) return;
+  if (compactView() && Math.abs(innerWidth - measuredWidth) < 4) return;
   if (rzT == null) rzT = scrollT();
   cancelAnimationFrame(rz);
   rz = requestAnimationFrame(() => {
@@ -397,7 +399,7 @@ document.addEventListener('visibilitychange', () => { st.last = 0; });
 function boot() {
   st.stage = initStage();
   if (st.stage) {
-    const small = mqStack.matches || Math.min(screen.width, screen.height) < 700;
+    const small = compactView();
     st.stage.S.dprCap = small ? 1 : 2;
     st.stage.S.qMax = small ? 0.66 : 1; st.stage.S.q = small ? 0.55 : 1;
   }

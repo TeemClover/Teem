@@ -10,7 +10,7 @@ export function createOpening({ root, video, layer, isReading, enterStory }) {
   const state = { loaded: false, ready: false, failed: false, target: 0, seeking: false, warming: 0, released: false, slow: false, open: false, bytes: 0, total: 0 };
   let controller, objectURL, deadline, slowTimer, lastStatus = '', lastSeek = 0;
   const poster = layer.querySelector('img');
-  const mobileMedia = matchMedia('(max-width: 820px)').matches || navigator.connection?.saveData;
+  const mobileMedia = matchMedia('(max-width: 820px), (pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 520 || navigator.connection?.saveData;
   function report() {
     const reading = isReading();
     const pct = state.total ? Math.min(99, Math.floor(state.bytes / state.total * 100)) : null;
