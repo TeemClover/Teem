@@ -1,7 +1,7 @@
 // The stage: one WebGL2 canvas that draws the whole journey, driven only by scroll-time T (chapters, in units).
 // T = chapterIndex + progressInsideChapter. Same T → same frame (idle drift aside), forwards or backwards.
 import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js';
-import { SRC, TUN } from './shaders.js';
+import { SRC, TUN } from './shaders.js?v=intro2';
 
 const STRIDE = 23; // H0(3) H1(3) H2(3) P(4) Q(4) C(3) DIR(3)
 const cl = (z) => [TUN.A * Math.sin(z * 0.041), TUN.Y0 + TUN.B * Math.sin(z * 0.027 + 0.7), z];
@@ -358,9 +358,9 @@ export function createStage(canvas) {
 
     const w = sstep;
     // weights
-    const m1 = w(1.7, 2.15, T), m2 = w(2.4, 2.9, T);
-    const foodVis = 1 - w(2.75, 3.15, T);
-    const plateVis = 1 - w(2.25, 2.6, T);
+    const m1 = w(1.25, 1.75, T), m2 = w(2.4, 2.9, T);
+    const foodVis = w(1.12, 1.62, T) * (1 - w(2.75, 3.15, T));
+    const plateVis = 0; // Opening plate is the authored meal illustration.
     const wallVis = w(2.55, 2.95, T) * (1 - w(5.85, 6.15, T));
     const microStage = w(2.8, 3.3, T), microVis = w(2.75, 3.05, T) * (1 - w(5.9, 6.2, T));
     const hero = w(3.0, 3.2, T) * (1 - w(3.95, 4.1, T));

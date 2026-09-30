@@ -289,3 +289,10 @@ html:not(.js) [data-open],html:not(.js) [data-close],html:not(.js) #srcOpen,html
 }
 
 @media (max-width:430px){.chip--quiet{display:none}.bar{padding-left:14px;padding-right:14px}.bar__tools{gap:5px}.chip{padding:6px 10px;font-size:12px}.bar__brand{font-size:13.5px;gap:7px;white-space:nowrap}}
+
+/* Authentic myClover mark; RoutineX remains the room label. */
+.bar__mark{width:28px;height:30px;object-fit:contain;flex:none;background:none;border-radius:0;transform:none}
+
+@media(max-width:480px){
+ .bar{padding-left:12px;padding-right:12px;gap:8px}.bar__brand{gap:6px;font-size:12px;white-space:nowrap}.bar__brand b{display:none}.bar__tools{gap:4px}.bar .chip{padding:7px 9px;font-size:11px;white-space:nowrap}.bar__mark{width:24px;height:26px}
+}

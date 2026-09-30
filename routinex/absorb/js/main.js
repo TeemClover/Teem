@@ -1,6 +1,6 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createStage } from './stage.js';
+import { createStage } from './stage.js?v=intro2';
 import { clamp, lerp, sstep } from './gl.js';
 
 const root = document.documentElement;
@@ -221,6 +221,9 @@ function tick(now) {
   if (Math.abs(pd[0]) + Math.abs(pd[1]) > 0.001) { st.pointer[0] += pd[0] * (1 - Math.exp(-dt * 3)); st.pointer[1] += pd[1] * (1 - Math.exp(-dt * 3)); st.dirty = true; }
 
   updateBeats(dt);
+  const mealOpacity = st.flow ? 0 : 1 - sstep(1.12, 1.62, st.Ts);
+  root.style.setProperty('--meal-o', mealOpacity.toFixed(3));
+  root.style.setProperty('--meal-scale', (1 + sstep(.9, 1.6, st.Ts) * .12).toFixed(3));
   const idle = !st.reduced && !st.flow;
   if (idle) st.time += dt;
   if (!st.flow && chapters.some((c) => c.beats.some((b) => b.ae != null && b.ae !== (b.o > 0.45 ? 1 : 0)))) st.dirty = true;
@@ -309,10 +312,7 @@ const DEFAULT_STEP = $('#stepLine')?.textContent || '';
 const lensGroup = $('.lens');
 if (lensGroup) {
   radioGroup(lensGroup, (i, btn) => {
-    st.lens = i + 1; st.dirty = true;
     $('#lensOut').textContent = btn.dataset.out || '';
-    const step = $('#stepLine'); if (step) step.textContent = btn.dataset.out;
-    $$('#qa .qa__i').forEach((q) => { const on = +q.dataset.for === st.lens; q.classList.toggle('hint-lens', on); q.style.order = on ? -1 : 0; });
   });
 }
 const waterGroup = $('.water');

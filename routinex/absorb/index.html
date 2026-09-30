@@ -27,7 +27,7 @@
 <meta name="theme-color" content="#f5efe6">
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/absorb.css">
+<link rel="stylesheet" href="css/absorb.css?v=intro2">
 <script>(function(d){d.className='js';setTimeout(function(){if(!d.classList.contains('ready')){d.classList.remove('js');d.dataset.wd='1'}},4500)})(document.documentElement)</script>
 </head>
 <body>
@@ -36,7 +36,7 @@
 <a class="skip skip--main" href="#story">ไปที่เนื้อหา</a>
 
 <header class="bar" role="banner">
-  <a class="bar__brand" href="#ch0" aria-label="RoutineX ห้อง A กลับต้นเรื่อง"><span class="bar__mark" aria-hidden="true"></span>RoutineX <b>· ห้อง A</b></a>
+  <a class="bar__brand" href="#ch0" aria-label="RoutineX ห้อง A กลับต้นเรื่อง"><img class="bar__mark" src="assets/myclover-mark.webp" alt="" width="28" height="30">RoutineX <b>· ห้อง A</b></a>
   <div class="bar__tools">
     <button class="chip" type="button" id="readToggle" aria-pressed="false">อ่านต่อเนื่อง</button>
     <button class="chip chip--solid" type="button" id="srcOpen" aria-controls="sources" aria-expanded="false">แหล่งข้อมูล</button>
@@ -47,11 +47,12 @@
 <div class="film" id="film"><video id="filmVideo" muted playsinline preload="none" poster="assets/ritual-poster.jpg" role="img" aria-label="ภาพประกอบ: ผงสีพีชกระจายตัวในแก้วน้ำใส ไม่ใช่การวัดจริงของความเร็วการละลายหรือสีเครื่องดื่ม"></video></div>
 <div class="veil" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
+<div class="intro-meal" aria-hidden="true"><img src="assets/intro-meal.svg" width="600" height="600" alt=""><span>เริ่มจากอาหารหนึ่งมื้อ</span></div>
 
 <nav class="rail" aria-label="ตอนของเรื่อง" id="rail">
   <ol>
-    <li><a href="#ch0" data-i="0"><span>มื้อนี้</span></a></li>
-    <li><a href="#ch1" data-i="1"><span>วันของคุณ</span></a></li>
+    <li><a href="#ch0" data-i="0"><span>มื้อของคุณ</span></a></li>
+    <li><a href="#ch1" data-i="1"><span>ตามสารอาหาร</span></a></li>
     <li><a href="#ch2" data-i="2"><span>คำถามใหม่</span></a></li>
     <li><a href="#ch3" data-i="3"><span>คนละบทบาท</span></a></li>
     <li><a href="#ch4" data-i="4"><span>สิ่งที่เกิดขึ้น</span></a></li>
@@ -66,35 +67,42 @@
 
 <main id="story" tabindex="-1">
 
-<!-- ═════ 0 · THE OTHER MEAL ═════ -->
-<section class="chapter" id="ch0" data-ch="0" style="--len:330" aria-labelledby="h0">
+<!-- Intro: recognise the meal, choose a familiar entry, then learn the visual language. -->
+<section class="chapter intro-chapter" id="ch0" data-ch="0" style="--len:360" aria-labelledby="h0">
   <div class="pin">
     <div class="beat beat--hero" data-pos="l">
-      <h1 class="mega" id="h0"><span class="ln" style="--i:0">คุณ<wbr>กินอิ่ม<wbr>แล้ว</span></h1>
-      <p class="hint" aria-hidden="true"><i></i>เลื่อนลง ตามมื้อนี้ไป</p>
+      <p class="kick">A / ABSORB · เริ่มจากมื้อของคุณ</p>
+      <h1 class="mega" id="h0"><span class="ln" style="--i:0">คุณกินอิ่มแล้ว</span><span class="ln" style="--i:1">แล้วข้างในล่ะ?</span></h1>
+      <p class="lede">ลองตามอาหารมื้อนี้ เข้าไปดูว่า<br>ร่างกายและจุลินทรีย์ได้รับอะไรบ้าง</p>
+      <img class="flowonly intro-meal-static" src="assets/intro-meal.svg" width="600" height="600" alt="ภาพประกอบมื้ออาหาร มีข้าว ผัก และปลา">
+      <p class="hint" aria-hidden="true"><i></i>เลื่อนลง เริ่มสำรวจจากมื้อของคุณ</p>
     </div>
-    <div class="beat" data-pos="l">
-      <h2 class="big"><span class="ln" style="--i:0">แล้ว<wbr>จุลินทรีย์</span><span class="ln" style="--i:1">ในลำไส้ล่ะ?</span></h2>
-      <p class="lede">ในทุกมื้อ ยังมีอีกโลกที่ได้รับอาหารไปกับคุณ</p>
+    <div class="beat beat--stay intro-choice" data-pos="l">
+      <h2 class="big"><span class="ln" style="--i:0">ปกติคุณ</span><span class="ln" style="--i:1">กินผักแบบไหน?</span></h2>
+      <div class="lens" role="radiogroup" aria-label="ปกติคุณกินผักแบบไหน">
+        <button type="button" role="radio" aria-checked="false" data-lens="1" data-out="ลองตามผักที่คุณกิน ไปดูว่าใยอาหารเดินทางถึงไหน"><b>กินผักเป็นประจำ</b></button>
+        <button type="button" role="radio" aria-checked="false" data-lens="2" data-out="บางมื้อมี บางมื้อไม่มี ลองรู้จักส่วนของอาหารที่เดินทางต่อไปถึงจุลินทรีย์"><b>กินบ้างบางมื้อ</b></button>
+        <button type="button" role="radio" aria-checked="false" data-lens="3" data-out="เริ่มจากรู้จักใยอาหารก่อนก็ได้ นอกจากผัก ยังพบได้ในผลไม้ ถั่ว และธัญพืชไม่ขัดสี"><b>ไม่ค่อยชอบผัก</b></button>
+      </div>
+      <p class="lens__out" id="lensOut" aria-live="polite">เลือกข้อที่ใกล้กับคุณ หรือเลื่อนต่อได้เลย</p>
     </div>
   </div>
 </section>
-
-<!-- ═════ 1 · RECOGNITION ═════ -->
-<section class="chapter" id="ch1" data-ch="1" style="--len:320" aria-labelledby="h1">
+<section class="chapter intro-chapter" id="ch1" data-ch="1" style="--len:370" aria-labelledby="h1">
   <div class="pin">
     <div class="beat" data-pos="l">
-      <h2 class="big" id="h1"><span class="ln" style="--i:0">บางวัน</span><span class="ln" style="--i:1">มื้อก็รีบ</span><span class="ln" style="--i:2">ผักก็ไม่ถึง</span></h2>
-      <p class="lede">วันที่แน่น จนแทบไม่ได้เลือกมื้อของตัวเอง</p>
+      <h2 class="big" id="h1"><span class="ln" style="--i:0">จากอาหารในจาน</span><span class="ln" style="--i:1">สู่ส่วนเล็ก ๆ</span><span class="ln" style="--i:2">ข้างใน</span></h2>
+      <p class="lede">เราจะค่อย ๆ เปลี่ยนภาพอาหาร เป็นเม็ดและเส้น เพื่อพาคุณตามเข้าไปดูข้างใน</p>
+      <p class="intro-note">ภาพอธิบายแนวคิด ย่อทั้งขนาดและเวลา</p>
     </div>
     <div class="beat beat--stay" data-pos="l">
-      <h3 class="mid">วันของคุณใกล้กับแบบไหน?</h3>
-      <div class="lens" role="radiogroup" aria-label="วันของคุณใกล้กับแบบไหน">
-        <button type="button" role="radio" aria-checked="false" data-lens="1" data-out="เริ่มจากอาหารให้หลากหลาย แล้วดูว่าตัวช่วยแบบไหนทำต่อได้จริง"><b>มื้อรีบ ผักน้อย</b></button>
-        <button type="button" role="radio" aria-checked="false" data-lens="2" data-out="ดีเลย ลองดูต่อว่าใยอาหารกับพรีไบโอติกต่างกันตรงไหน"><b>กินผักอยู่แล้ว</b></button>
-        <button type="button" role="radio" aria-checked="false" data-lens="3" data-out="วิธีที่ดีสำหรับวันของคุณ ต้องทำซ้ำได้ด้วย"><b>อยากมีรูทีนง่าย ๆ</b></button>
+      <h2 class="big"><span class="ln" style="--i:0">เส้นสีทองนี้</span><span class="ln" style="--i:1">คือใยอาหาร</span></h2>
+      <div class="intro-key">
+        <div><i class="key-beads" aria-hidden="true"></i><p><b>เม็ดต่าง ๆ</b><span>แทนส่วนประกอบจากอาหาร รวมถึงสารอาหารที่ร่างกายนำไปใช้</span></p></div>
+        <div><i class="key-fibre" aria-hidden="true"></i><p><b>เส้นสีทอง</b><span>แทนใยอาหาร ส่วนที่เราจะตามไปดูต่อ</span></p></div>
       </div>
-      <p class="lens__out" id="lensOut" aria-live="polite">เลือกเรื่องที่ใกล้กับคุณ หรือเลื่อนต่อได้เลย</p>
+      <p class="intro-note">สีและรูปร่างใช้ช่วยเล่าเรื่อง ไม่ใช่ภาพจริงของสารอาหาร</p>
+      <p class="hint" aria-hidden="true"><i></i>ตามเส้นสีทองไปด้วยกัน</p>
     </div>
   </div>
 </section>
@@ -103,8 +111,8 @@
 <section class="chapter" id="ch2" data-ch="2" style="--len:450" aria-labelledby="h2">
   <div class="pin">
     <div class="beat" data-pos="r">
-      <h2 class="big" id="h2"><span class="ln" style="--i:0">ส่วนใหญ่</span><span class="ln" style="--i:1">ถูกย่อยและ</span><span class="ln" style="--i:2">ดูดซึมไปก่อน</span></h2>
-      <p class="lede">แต่ใยอาหารบางชนิดผ่านไปได้ทั้งที่ยังไม่ถูกย่อย และเดินทางต่อ</p>
+      <h2 class="big" id="h2"><span class="ln" style="--i:0">สารอาหารหลายชนิด</span><span class="ln" style="--i:1">ถูกย่อยและ</span><span class="ln" style="--i:2">ดูดซึมไปก่อน</span></h2>
+      <p class="lede">แต่ใยอาหารบางส่วนไม่ถูกย่อยในลำไส้เล็ก จึงเดินทางต่อไปถึงจุลินทรีย์ในลำไส้ใหญ่</p>
     </div>
     <div class="beat" data-pos="l">
       <h2 class="big q"><span class="ln" style="--i:0">สุขภาพลำไส้</span><span class="ln" style="--i:1">ไม่ได้มีแค่</span><span class="ln strike" style="--i:2"><s>วันนี้ถ่ายหรือยัง</s></span></h2>
@@ -358,6 +366,6 @@
 
 <noscript><p class="noscript">เนื้อหาทั้งหมดอ่านได้โดยไม่ต้องใช้ JavaScript แต่ฉากภาพเคลื่อนไหวต้องใช้ JavaScript และ WebGL</p></noscript>
 
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js?v=intro2"></script>
 </body>
 </html>

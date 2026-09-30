@@ -27,7 +27,7 @@ void place(out vec3 p,out float sz,out float rad,out float al,out vec3 col,out v
   if(cls==1.0 && seed>.42) col=mix(col,vec3(.66,.47,.26),uLens.x);
   if(cls==0.0 && seed>.78) col=mix(col,vec3(.52,.72,.26),uLens.y);
   if(cls==2.0 && seed>.55) col=mix(col,vec3(.94,.56,.17),uLens.y);
-  if(cls==5.0){ float k=1.+.6*uLens.z; sz*=k; rad*=k; }
+  if(cls==5.0){ al*=smoothstep(0.,.35,uMixW.y+uMixW.z); }
   if(cls==6.0){ al=uLens.z*uMixW.x; sz*=max(uLens.z,.001); rad*=max(uLens.z,.001); }
   if(kind>.5){ float keep = mix(1., step(seed,.34), uMixW.z); al*=keep; sz*=mix(1.,.6,uMixW.z); rad*=mix(1.,.6,uMixW.z); }
   if(kind<.5){
