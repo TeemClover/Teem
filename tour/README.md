@@ -40,6 +40,8 @@ The office centre stays empty for circulation. Two chairs tuck under the rear wo
 
 All destination links, including the inspect panel and fallback HTML, use a new tab with `noopener noreferrer`. In-page room navigation stays in the house. Arrows/checkmarks and link titles distinguish states without relying only on colour.
 
+A static anatomical torso stands by the kitchen's left wall and opens `/routinex/absorb/` for the nutrition/body learning journey. The stylized teaching model uses shared native geometry and materials, without another image download or animation. The upper-storey fascia sits 2 cm ahead of the slab face to prevent the coplanar shimmer seen from outside; the SD/HD browser checks verify the actual geometry clearance.
+
 Picking follows the first surface the ray meets, so walls, floors and furniture block objects behind them; only the current room responds. The Airova screen uses a generated cinema illustration with a film preview and shot sequence, documented in `art/AIROVA-CINEMA.md`. It adds no video playback or animated light.
 
 **Motion:** wheel/trackpad scrolling is smoothed by Lenis (self-hosted, MIT,

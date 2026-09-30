@@ -688,6 +688,10 @@ async function boot() {
     progress, order, found, quality: () => quality, items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
     level: () => gov.level, music: () => musicOn,
     itemState: id => { const h = hotById(id); return h ? {opened: opened.has(id), badge: h.opened ? 'silver' : 'gold', opacity: h.beacon?.material.opacity} : null; },
+    storeySeam: () => {
+      const slab = new THREE.Box3().setFromObject(house.storey.slab), edge = new THREE.Box3().setFromObject(house.storey.edge);
+      return {frontClearance: edge.max.z - slab.max.z, overlap: slab.max.z - edge.min.z};
+    },
     stats: () => ({...frameStats, pixelRatio: renderer.getPixelRatio(), textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries, programs: renderer.info.programs.length, batchedMeshes: house.batchedMeshes, ao: !!aoPass?.enabled, bloom: !!bloomPass?.enabled, building}),
     screenOf(id) {
       const obj = id === 'music' ? house?.music : house?.collectibles.get(id) || hotById(id)?.root; if (!obj || !obj.visible) return null;

@@ -38,6 +38,8 @@ try {
   { // WebGL tour, reduced motion so camera and cards settle immediately
     const {ctx, page, errors} = await open({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
+    const seam = await page.evaluate(() => window.__tour.storeySeam());
+    assert.ok(seam.frontClearance > 0.005 && seam.overlap > 0, `storey edge must overlap without coplanar faces: ${JSON.stringify(seam)}`);
     assert.deepEqual(await page.evaluate(() => window.__tour.order), ['hero', 'door', 'living', 'kitchen', 'stairs', 'classroom', 'office', 'finale']);
     // outside the house nothing inside can be picked: the walls are in the way
     const outside = await page.evaluate(() => { const got = new Set(); for (let x = 20; x < innerWidth; x += 40) for (let y = 60; y < innerHeight; y += 40) { const h = window.__tour.pickAt(x, y); if (h) got.add(h.id || h.type); } return [...got]; });
@@ -147,6 +149,19 @@ try {
 
     await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
     await page.waitForFunction(() => Math.abs(window.__tour.progress() - window.__tour.order.indexOf('kitchen')) < 0.05);
+    await tap('absorb', () => window.__tour.inspecting() === 'absorb');
+    assert.equal(await page.getAttribute('#inspect-go', 'href'), '/routinex/absorb/');
+    const kitchenURL = page.url(), kitchenScroll = await page.evaluate(() => scrollY);
+    const [absorbTab] = await Promise.all([page.waitForEvent('popup'), page.click('#inspect-go')]);
+    await absorbTab.waitForLoadState('domcontentloaded');
+    assert.equal(new URL(absorbTab.url()).pathname, '/routinex/absorb/');
+    assert.equal(await absorbTab.evaluate(() => window.opener), null);
+    await absorbTab.close();
+    assert.equal(page.url(), kitchenURL);
+    assert.equal(await page.evaluate(() => scrollY), kitchenScroll);
+    await page.click('.inspect-close'); await page.waitForFunction(() => document.querySelector('#inspect').hidden);
+    assert.equal(await page.evaluate(() => window.__tour.itemState('absorb').badge), 'silver');
+    pass('the left-wall anatomy model opens Absorb in a new tab and keeps the kitchen in place');
     await tap('ako', () => window.__tour.inspecting() === 'ako');
     assert.equal(await page.getAttribute('#inspect-go', 'href'), '/ako/');
     await page.screenshot({path: `${out}/desktop-ako-cookbook.png`});
@@ -199,6 +214,9 @@ try {
     await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
     await page.waitForTimeout(2500); await page.screenshot({path: `${out}/desktop-hd-kitchen.png`});
     pass('SD/HD toggle rebuilds the house in HD');
+    const hdSeam = await page.evaluate(() => window.__tour.storeySeam());
+    assert.ok(hdSeam.frontClearance > 0.005 && hdSeam.overlap > 0);
+    pass('the upper-storey fascia has depth clearance in SD and HD, without an exposed gap');
     const sdMemory = [];
     for (const mode of ['sd', 'hd', 'sd', 'hd', 'sd']) {
       await page.click(`[data-quality="${mode}"]`);
@@ -220,7 +238,7 @@ try {
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
     await page.click('[data-quality="hd"]');
     await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});
-    for (const id of ['living', 'classroom', 'office']) {
+    for (const id of ['living', 'kitchen', 'classroom', 'office']) {
       await page.evaluate(id => { const s = document.getElementById(id); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); }, id);
       await page.waitForTimeout(800);
       await page.screenshot({path: `${out}/phone-hd-${id}.png`});
