@@ -208,8 +208,11 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     if (id !== 'kitchen') bx(root, [W, 0.9, 0.03], [cx, fy, -D / 2 + 0.015], M('#f3f0e6', {map: tex.plaster})); // wainscot, 1.5 cm behind the skirting face
   }
   // floor-2 slab: between the ceiling of floor 1 (y=H) and the floor boxes of floor 2 (bottom F2-0.12)
-  bx(root, [16.4, SLAB - 0.12, D + 0.3], [0, H, 0], white);
-  bx(root, [16.4, 0.12, 0.14], [0, H + 0.02, D / 2 + 0.08], grey); // slab edge band seen in section
+  const storeySlab = bx(root, [16.4, SLAB - 0.12, D + 0.3], [0, H, 0], white);
+  // Slab front is z=D/2+0.15. Keep the fascia front 2 cm ahead of it;
+  // coincident faces used to shimmer along the whole storey in exterior views.
+  const storeyEdge = bx(root, [16.4, 0.12, 0.14], [0, H + 0.02, D / 2 + 0.10], grey);
+  out.storey = {slab: storeySlab, edge: storeyEdge};
   // side walls (always visible; they frame the dollhouse), with window decals inside and out
   const sideWindow = canvasMat(256, 256, (c, w, h) => { const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#a9d8ef'); g.addColorStop(1, '#f4e6c3'); c.fillStyle = g; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(60,110,70,.5)'; for (let x = 0; x < w; x += 42) { c.beginPath(); c.arc(x + 20, h - 10, 34, Math.PI, 0); c.fill(); } c.strokeStyle = '#2b2f31'; c.lineWidth = 12; c.strokeRect(6, 6, w - 12, h - 12); c.beginPath(); c.moveTo(w / 2, 0); c.lineTo(w / 2, h); c.stroke(); }, 0.45);
   // right wall: doorways into the stair hall (floor 1 near the front, floor 2 at the back)
@@ -435,6 +438,41 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   /* ================= KITCHEN (floor 1, right): Ako's dishes + the XIRCLE Scale ================= */
   {
     const g = room('kitchen');
+    // A classroom-style anatomical torso by the left wall: a lightweight, static exhibit.
+    const anatomy = group(g, -3.15, 0, 0.35); anatomy.rotation.y = 0.5;
+    const ivory = M('#eee4d2', {roughness: 0.58});
+    cy(anatomy, [0.43, 0.46, 0.07], [0, 0, 0], M('#496859'));
+    cy(anatomy, [0.28, 0.31, 0.48], [0, 0.07, 0], ivory);
+    cy(anatomy, [0.045, 0.045, 0.36], [0, 0.55, 0], M('#7d8c83', {metalness: 0.5, roughness: 0.4}));
+    const body = new THREE.Shape();
+    body.moveTo(-0.22, 0.83); body.quadraticCurveTo(-0.32, 0.97, -0.27, 1.2);
+    body.quadraticCurveTo(-0.42, 1.49, -0.36, 1.65); body.quadraticCurveTo(-0.31, 1.74, -0.12, 1.76);
+    body.lineTo(-0.1, 1.87); body.lineTo(0.1, 1.87); body.lineTo(0.12, 1.76);
+    body.quadraticCurveTo(0.31, 1.74, 0.36, 1.65); body.quadraticCurveTo(0.42, 1.49, 0.27, 1.2);
+    body.quadraticCurveTo(0.32, 0.97, 0.22, 0.83); body.closePath();
+    const torso = new THREE.Mesh(new THREE.ExtrudeGeometry(body, {depth: 0.2, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelSegments: hd ? 3 : 1, curveSegments: hd ? 16 : 10}), ivory);
+    torso.position.z = -0.12; torso.castShadow = true; anatomy.add(torso);
+    const organ = (r, at, scale, color) => { const part = sp(anatomy, r, at, M(color, {roughness: 0.6})); part.scale.set(...scale); return part; };
+    organ(0.19, [0, 2.03, -0.025], [0.86, 1.18, 0.82], '#eee4d2');
+    organ(0.034, [0, 2.025, 0.135], [0.65, 1.1, 1], '#e0cfb4'); // nose
+    for (const x of [-0.166, 0.166]) organ(0.033, [x, 2.025, -0.025], [0.45, 1, 0.75], '#e0cfb4');
+    for (const x of [-0.38, 0.38]) organ(0.12, [x, 1.57, -0.025], [0.66, 1.7, 0.8], '#eee4d2');
+    organ(0.28, [0, 1.3, 0.102], [0.94, 1.5, 0.11], '#ad8c75'); // recessed chest/abdomen
+    // Simplified coloured teaching pieces, arranged in anatomical left/right orientation.
+    for (const x of [-0.145, 0.145]) organ(0.12, [x, 1.565, 0.153], [0.87, 1.48, 0.48], '#dba49b');
+    cy(anatomy, [0.021, 0.026, 0.24], [0, 1.53, 0.177], M('#afc8c4'));
+    organ(0.069, [0.057, 1.5, 0.215], [0.8, 1.25, 0.65], '#bb6257').rotation.z = -0.3;
+    organ(0.13, [-0.115, 1.34, 0.174], [1.05, 0.57, 0.5], '#a9674d').rotation.z = 0.15;
+    organ(0.09, [0.13, 1.295, 0.181], [0.85, 1.05, 0.55], '#e4b58e').rotation.z = -0.3;
+    const tube = (points, radius, color) => {
+      const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
+      const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, hd ? 64 : 40, radius, hd ? 8 : 6, false), M(color, {roughness: 0.6}));
+      anatomy.add(mesh);
+    };
+    tube([[-0.18, 0.98, 0.18], [-0.215, 1.14, 0.18], [-0.18, 1.215, 0.18], [0.16, 1.205, 0.18], [0.2, 1.1, 0.18], [0.15, 0.96, 0.18], [0.04, 0.94, 0.18]], 0.028, '#d99a86');
+    tube([[-0.11, 1.16, 0.195], [0.12, 1.145, 0.195], [-0.12, 1.105, 0.195], [0.11, 1.07, 0.195], [-0.1, 1.035, 0.195], [0.1, 1.005, 0.195]], 0.022, '#ecc49f');
+    plane(anatomy, [0.42, 0.14], [0, 0.34, 0.296], new THREE.MeshBasicMaterial({map: label('ABSORB', 512, 160, '#496859', '#fff8e8', 70)}));
+    hot(anatomy, 'absorb');
     const counterMat = M('#fbf8f1', {roughness: 0.4}), marble = M('#ffffff', {map: tex.marble, roughness: 0.25});
     rb(g, [5.6, 0.88, 0.7], [-0.8, 0, BW + 0.4], counterMat, null, 0.02);
     rb(g, [5.7, 0.06, 0.78], [-0.8, 0.88, BW + 0.42], marble, null, 0.01);
