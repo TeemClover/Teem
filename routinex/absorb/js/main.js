@@ -2,7 +2,7 @@
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
 import { createProgress } from './progress.js?v=steady1';
 import { createOpening } from './opening.js?v=touch2';
-import { createStage } from './stage.js?v=arrival3';
+import { createStage } from './stage.js?v=reveal1';
 import { clamp, lerp, sstep } from './gl.js?v=arrival3';
 
 const root = document.documentElement;
@@ -175,6 +175,15 @@ const opening = createOpening({ video: $('#mealVideo'), layer: $('#mealFilm'), i
 
 // Ritual film: plays once on entering the glass scene, resets when the reader leaves, replayable by button.
 const film = $('#film'), vid = $('#filmVideo'), replayBtn = $('#filmReplay');
+// Film and canvas can have different CSS heights on mobile. Observe their display
+// boxes without resizing the GPU or changing the story's stable scroll distances.
+const filmGeometry = { scene: [canvas.clientWidth, canvas.clientHeight], video: [vid.clientWidth, vid.clientHeight] };
+const filmObserver = new ResizeObserver(entries => {
+  for (const entry of entries) {
+    filmGeometry[entry.target === canvas ? 'scene' : 'video'] = [entry.contentRect.width, entry.contentRect.height];
+  }
+});
+filmObserver.observe(canvas); if (vid) filmObserver.observe(vid);
 const filmS = { started: false, ok: true, failed: false, blocked: false, playing: false, done: false, armed: true };
 function tryPlay() {
   if (filmS.failed || filmS.blocked) return;
@@ -201,6 +210,12 @@ function updateFilm(T) {
   if (!film) return;
   const fm = sstep(5.8, 6.1, T);
   const fo = 1 - sstep(7.7, 8.7, T);
+  const lock = 1 - sstep(5.9, 6.01, T);
+  const portal = st.portal;
+  const dx = portal ? (portal[0] * filmGeometry.scene[0] - .62 * filmGeometry.video[0]) * lock : 0;
+  const dy = portal ? (portal[1] * filmGeometry.scene[1] - .52 * filmGeometry.video[1]) * lock : 0;
+  film.style.setProperty('--film-dx', dx.toFixed(2) + 'px');
+  film.style.setProperty('--film-dy', dy.toFixed(2) + 'px');
   film.style.setProperty('--fm', fm.toFixed(3));
   film.style.setProperty('--fo', (fo * Math.min(1, fm * 3)).toFixed(3));
   film.style.setProperty('--fv', fm > 0.002 && fo > 0.002 ? 'visible' : 'hidden');
@@ -286,6 +301,7 @@ function tick(now) {
 
   const time = st.reduced || st.flow ? st.Ts * 5 : st.time;
   const out = st.stage.frame({ T: st.Ts, time, sideAt, layout: st.layout, lens: st.lensV, pointer: st.pointer });
+  st.portal = out.portal;
   applyTone(out.tone, sideAt(st.Ts));
   updateFilm(st.Ts);
   updateRail(st.Ts);

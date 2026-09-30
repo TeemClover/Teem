@@ -331,6 +331,15 @@ export function createStage(canvas) {
     const dl = norm3([cam.tgt[0] - pos[0], cam.tgt[1] - pos[1], cam.tgt[2] - pos[2]]);
     if (Math.abs(dl[1]) > 0.985) lookAt(V, pos, cam.tgt, [0, 0, -1]);
 
+    // Project the actual final tube ring through this frame's camera, not a CSS guess.
+    if (T > 5.5 && T < 6.3) {
+      const end = cl(-0.5 - TUBE.seg * 0.52);
+      const x = V[0]*end[0] + V[4]*end[1] + V[8]*end[2] + V[12];
+      const y = V[1]*end[0] + V[5]*end[1] + V[9]*end[2] + V[13];
+      const z = V[2]*end[0] + V[6]*end[1] + V[10]*end[2] + V[14];
+      state.portal = z < -.25 ? [(1 + (Pm[0]*x + Pm[8]*z)/-z)/2, (1 - (Pm[5]*y + Pm[9]*z)/-z)/2] : null;
+    } else state.portal = null;
+
     const L = lum([(pal.top[0] + pal.bot[0]) / 2, (pal.top[1] + pal.bot[1]) / 2, (pal.top[2] + pal.bot[2]) / 2]);
     state.tone = L; state.bg = [(pal.top[0] + pal.bot[0]) / 2, (pal.top[1] + pal.bot[1]) / 2, (pal.top[2] + pal.bot[2]) / 2];
 

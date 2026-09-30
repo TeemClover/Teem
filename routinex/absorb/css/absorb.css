@@ -205,15 +205,15 @@ ol,ul{list-style:none}
 .linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:4px;font-weight:600;cursor:pointer}
 .dark .beat h2,.dark .beat h3,.dark .lede,.dark .pair,.dark .lanes,.dark .kiwis{text-shadow:0 1px 26px rgba(12,5,6,.65)}
 /* ───────── film ───────── */
-.film{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:var(--fo,0);visibility:var(--fv,hidden)}
+.film{position:fixed;inset:0;height:100lvh;overflow:hidden;z-index:0;pointer-events:none;opacity:var(--fo,0);visibility:var(--fv,hidden)}
 .film{--fb:94%}
-.film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;display:block;background:transparent;
+.film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;display:block;background:transparent;transform:translate(var(--film-dx,0px),var(--film-dy,0px));
   filter:saturate(calc(1 - var(--wash,0) * .22)) brightness(calc(1 + var(--wash,0) * .07));
   -webkit-mask-image:radial-gradient(ellipse 82% 92% at 62% 52%,#000 calc(var(--fm,0) * 74%),transparent calc(var(--fm,0) * 114%)),linear-gradient(to bottom,#000 0,#000 var(--fb),transparent 100%);
   -webkit-mask-composite:source-in;
   mask-image:radial-gradient(ellipse 82% 92% at 62% 52%,#000 calc(var(--fm,0) * 74%),transparent calc(var(--fm,0) * 114%)),linear-gradient(to bottom,#000 0,#000 var(--fb),transparent 100%);
   mask-composite:intersect}
-@media (max-aspect-ratio:1/1),(max-width:820px){.film{--fb:70%}.film video{height:56svh;object-position:60% 50%}}
+@media (max-aspect-ratio:1/1),(max-width:820px){.film{--fb:70%}.film video{height:56%;object-position:60% 50%}}
 .veil{z-index:1}
 
 /* ───────── modes: flow (reduced motion / read toggle / no-js) ───────── */
