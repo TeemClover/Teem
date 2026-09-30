@@ -1,6 +1,6 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createStage } from './stage.js?v=journey3';
+import { createStage } from './stage.js?v=benefits1';
 import { clamp, lerp, sstep } from './gl.js';
 
 const root = document.documentElement;

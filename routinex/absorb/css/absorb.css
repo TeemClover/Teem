@@ -318,3 +318,24 @@ html:not(.js) .beat{overflow:visible}
 @media(max-width:480px){
  .bar{padding-left:12px;padding-right:12px;gap:8px}.bar__brand{gap:6px;font-size:12px;white-space:nowrap}.bar__brand b{display:none}.bar__tools{gap:4px}.bar .chip{padding:7px 9px;font-size:11px;white-space:nowrap}.bar__mark{width:24px;height:26px}
 }
+
+/* A quiet, labelled payoff: one benefit per scroll beat. */
+.benefit .kick{color:var(--gold);letter-spacing:.07em}
+.benefit-map{width:100%;max-width:340px!important;padding-top:6px}
+.benefit-map__scene{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;height:62px;border-bottom:1px solid rgb(var(--fg-rgb) / .18)}
+.benefit-cell{display:block;width:34px;height:42px;border:1px solid rgb(var(--fg-rgb) / .6);border-radius:14px 14px 8px 8px;background:rgb(var(--fg-rgb) / .06);position:relative}
+.benefit-cell::after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;top:17px;left:11px;background:var(--rose);opacity:.65}
+.benefit-dot{display:block;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px #e9b53066}
+.benefit-map--fuel .benefit-dot{transform:translateX(calc(var(--bp,.5) * 30px - 20px));margin-right:12px}
+.benefit-map--fuel .benefit-cell{background:rgb(233 181 48 / calc(.07 + var(--bp,.5) * .2))}
+.benefit-map--barrier .benefit-map__scene{gap:4px}
+.benefit-map--barrier .benefit-cell{border-color:var(--gold)}
+.benefit-map--barrier .benefit-cell+.benefit-cell::before{content:"";position:absolute;width:5px;height:4px;background:var(--gold);left:-5px;top:8px}
+.benefit-map--signal .benefit-cell{border-radius:50%;width:48px;height:48px;border-color:var(--rose)}
+.benefit-map--signal .benefit-cell::after{left:19px;top:19px}
+.benefit-signal{width:100px;height:1px;background:linear-gradient(90deg,var(--gold),var(--rose));transform:scaleX(calc(.35 + var(--bp,.5) * .65));transform-origin:left}
+.benefit-map figcaption{padding-top:9px;font-size:12px;line-height:1.6;display:flex;justify-content:center;gap:10px;color:rgb(var(--fg-rgb) / .8)}
+.flow .benefit .kick,html:not(.js) .benefit .kick{color:#926000}
+.flow .benefit-map,html:not(.js) .benefit-map{--bp:1}
+.benefit--closing .lede{max-width:32em!important}
+@media(max-height:640px){.benefit{gap:10px}.benefit-map__scene{height:48px}.benefit .big.small{font-size:clamp(28px,4vw,48px)}}

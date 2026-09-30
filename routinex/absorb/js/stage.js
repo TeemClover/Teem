@@ -355,11 +355,11 @@ export function createStage(canvas) {
     const hero = w(3.0, 3.2, T) * (1 - w(3.95, 4.1, T));
     const grey = w(3.55, 3.75, T) * (1 - w(3.95, 4.1, T));
     const s0 = w(3.45, 3.75, T) * (1 - w(4.0, 4.25, T));
-    const s1 = w(4.15, 4.45, T) * (1 - w(4.95, 5.2, T));
+    const s1 = w(4.10, 4.24, T) * (1 - w(4.45, 4.65, T));
     const s2 = w(5.05, 5.4, T) * (1 - w(5.9, 6.1, T));
     const inCh5 = T >= 5.0;
-    const strVis = inCh5 ? w(5.0, 5.15, T) * (1 - w(5.8, 5.95, T)) : w(4.05, 4.25, T) * (1 - w(4.85, 5.0, T));
-    const scfaVis = w(4.5, 4.65, T) * (1 - w(4.95, 5.1, T));
+    const strVis = inCh5 ? w(5.0, 5.15, T) * (1 - w(5.8, 5.95, T)) : w(4.05, 4.20, T) * (1 - w(4.40, 4.60, T));
+    const scfaVis = w(4.28, 4.40, T) * (1 - w(4.95, 5.1, T));
     const kiwiVis = w(5.28, 5.4, T) * (1 - w(5.75, 5.9, T));
     const dustVis = 0.9;
     const dustCol = dark > .5 ? [1, .72, .5] : [1, .78, .58];
