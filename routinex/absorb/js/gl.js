@@ -4,7 +4,7 @@ export function getGL(canvas) {
   try {
     return canvas.getContext('webgl2', {
       alpha: false, antialias: false, depth: false, stencil: false,
-      powerPreference: 'high-performance', preserveDrawingBuffer: false,
+      powerPreference: matchMedia('(max-width: 820px)').matches ? 'low-power' : 'default', preserveDrawingBuffer: false,
     });
   } catch (e) { return null; }
 }

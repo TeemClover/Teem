@@ -1,7 +1,8 @@
 // RoutineX · ห้อง A — runtime: native-scroll choreography, stage driver, small interactions.
 // Contract: all copy lives in the DOM. This file only reveals it in sequence and drives the canvas.
-import { createStage } from './stage.js?v=benefits1';
-import { clamp, lerp, sstep } from './gl.js';
+import { createOpening } from './opening.js?v=arrival2';
+import { createStage } from './stage.js?v=arrival2';
+import { clamp, lerp, sstep } from './gl.js?v=arrival2';
 
 const root = document.documentElement;
 const $ = (s, r = document) => r.querySelector(s);
@@ -25,8 +26,16 @@ const st = {
 };
 
 // ───────────────────────── layout / scroll ─────────────────────────
-function measure() {
-  st.vh = innerHeight;
+const viewportProbe = document.createElement('div');
+viewportProbe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;width:0;height:100svh;';
+document.body.append(viewportProbe);
+let measuredWidth = innerWidth;
+function measure(resetViewport = false) {
+  // Stable viewport units keep chapter lengths unchanged as mobile browser bars move.
+  if (!st.viewportH || resetViewport) st.viewportH = viewportProbe.offsetHeight || innerHeight;
+  st.vh = st.viewportH;
+  measuredWidth = innerWidth;
+  root.style.setProperty('--unit-vh', (st.vh / 100) + 'px');
   const sy = scrollY;
   st.layout = mqStack.matches ? 'stack' : 'side';
   const pinH = st.vh;
@@ -136,39 +145,15 @@ function applyTone(lum, side) {
   if (meta && st.metaK !== Math.round(k)) { st.metaK = Math.round(k); meta.content = k > 0.5 ? '#f5efe6' : '#1a0f14'; }
 }
 
-// Opening film: the scroll position is the playhead, never autoplay.
-const mealFilm = $('#mealFilm'), mealVideo = $('#mealVideo');
-const mealState = { loaded: false, failed: false, target: 0, seeking: false };
-function seekMealFrame() {
-  if (!mealVideo || mealState.failed || mealVideo.readyState < 2 || !Number.isFinite(mealVideo.duration) || mealVideo.seeking || mealState.seeking) return;
-  const target = Math.min(mealState.target, Math.max(0, mealVideo.duration - 0.045));
-  if (Math.abs(mealVideo.currentTime - target) < 1 / 30) return;
-  mealState.seeking = true;
-  try { mealVideo.currentTime = target; } catch { mealState.seeking = false; }
-}
-function updateMealFilm(T) {
-  if (!mealFilm || !mealVideo) return;
-  const visible = !st.flow && !st.reduced && T < 1.98;
-  const opacity = visible ? 1 - sstep(1.65, 1.95, T) : 0;
-  mealFilm.style.opacity = opacity.toFixed(3);
-  mealFilm.style.visibility = opacity > .002 ? 'visible' : 'hidden';
-  if (visible && !mealState.loaded && !mealState.failed) {
-    mealState.loaded = true;
-    // A complete small blob supports precise reverse seeking even on static hosts
-    // that do not implement byte-range responses. Poster stays visible during load.
-    fetch('assets/meal-zoom-v3.mp4').then(r => { if (!r.ok) throw new Error('Meal film unavailable'); return r.blob(); })
-      .then(blob => { mealVideo.src = URL.createObjectURL(blob); mealVideo.preload = 'auto'; mealVideo.load(); })
-      .catch(() => { mealState.failed = true; mealVideo.hidden = true; });
-  }
-  const duration = Number.isFinite(mealVideo.duration) ? mealVideo.duration : 6;
-  mealState.target = clamp((T - .13) / 1.47) * Math.max(0, duration - .045);
-  if (visible) seekMealFrame();
-}
-if (mealVideo) {
-  mealVideo.addEventListener('loadeddata', seekMealFrame);
-  mealVideo.addEventListener('seeked', () => { mealState.seeking = false; seekMealFrame(); });
-  mealVideo.addEventListener('error', () => { mealState.failed = true; mealVideo.hidden = true; });
-}
+// Prepare the scroll film while the visitor reads the invitation.
+const opening = createOpening({
+  root, video: $('#mealVideo'), layer: $('#mealFilm'),
+  isReading: () => st.flow || st.reduced,
+  enterStory: (reading) => {
+    if (reading) setFlow(true, true);
+    measure(); seek(0, false); st.Ts = 0; st.dirty = true;
+  },
+});
 
 // Ritual film: plays once on entering the glass scene, resets when the reader leaves, replayable by button.
 const film = $('#film'), vid = $('#filmVideo'), replayBtn = $('#filmReplay');
@@ -222,14 +207,14 @@ replayBtn?.addEventListener('click', () => playFilm(true));
 function initStage() {
   const stage = createStage(canvas);
   if (!stage) { root.classList.add('no-gl'); return null; }
-  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); root.classList.add('no-gl'); });
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); const ref = scrollT(); root.classList.add('no-gl'); st.stage = null; setFlow(true, true); requestAnimationFrame(() => seek(ref, false)); });
   return stage;
 }
 function resizeStage() {
   if (!st.stage) return;
   const cap = st.stage.S.dprCap;
   const dpr = Math.min(devicePixelRatio || 1, cap);
-  st.stage.resize(innerWidth, innerHeight, dpr);
+  st.stage.resize(innerWidth, st.vh, dpr);
   st.dirty = true;
 }
 
@@ -238,6 +223,8 @@ function tick(now) {
   requestAnimationFrame(tick);
   if (document.hidden) { st.hidden = true; st.last = now; return; }
   st.hidden = false;
+  const frameBudget = mqStack.matches ? 1000 / 30 : 1000 / 60;
+  if (st.last && now - st.last < frameBudget - 1) return;
   const dt = Math.min(0.1, (now - (st.last || now)) / 1000); st.last = now;
   const target = scrollT();
   const rate = st.reduced ? 3 : 7.5;
@@ -250,11 +237,14 @@ function tick(now) {
   if (Math.abs(pd[0]) + Math.abs(pd[1]) > 0.001) { st.pointer[0] += pd[0] * (1 - Math.exp(-dt * 3)); st.pointer[1] += pd[1] * (1 - Math.exp(-dt * 3)); st.dirty = true; }
 
   updateBeats(dt);
-  updateMealFilm(st.Ts);
+  opening.update(st.Ts);
+  if (opening.state.open) { st.last = now; return; }
   const idle = !st.reduced && !st.flow;
   if (idle) st.time += dt;
   if (!st.flow && chapters.some((c) => c.beats.some((b) => b.ae != null && b.ae !== (b.o > 0.45 ? 1 : 0)))) st.dirty = true;
-  if (!st.stage) { updateFilm(st.Ts); return; }
+  if (!st.stage || st.flow) { updateFilm(st.Ts); return; }
+  // The opaque opening film does not need a second renderer running behind it.
+  if (st.Ts < 1.62) { applyTone(1, sideAt(st.Ts)); updateFilm(st.Ts); updateRail(st.Ts); return; }
   if (!(idle || moving || st.dirty || st.pointer[0] || st.pointer[1])) return;
   st.dirty = false;
 
@@ -268,9 +258,10 @@ function tick(now) {
   if (idle) {
     acc += dt; accN++;
     if (accN >= 50) {
-      const ms = acc / accN * 1000; acc = 0; accN = 0;
+      const ms = acc / accN * 1000;
+      const slowLimit = mqStack.matches ? 46 : 26; acc = 0; accN = 0;
       const S = st.stage.S;
-      if (ms > 26 && S.q > 0.32) { S.q = Math.max(0.32, S.q - 0.16); if (S.dprCap > 1.1) { S.dprCap = Math.max(1, S.dprCap - 0.25); resizeStage(); } }
+      if (ms > slowLimit && S.q > 0.32) { S.q = Math.max(0.32, S.q - 0.16); if (S.dprCap > 1.1) { S.dprCap = Math.max(1, S.dprCap - 0.25); resizeStage(); } }
       else if (ms < 13 && S.q < S.qMax) S.q = Math.min(S.qMax, S.q + 0.08);
     }
   }
@@ -387,7 +378,18 @@ addEventListener('pointermove', (e) => {
 addEventListener('scroll', () => { st.dirty = true; }, { passive: true });
 let rz = 0;
 let rzT = null;
-addEventListener('resize', () => { if (rzT == null) rzT = st.Ts; cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { measure(); resizeStage(); if (!st.flow) seek(rzT, false); rzT = null; }); });
+addEventListener('resize', () => {
+  // Height-only events on phones are usually browser chrome, not a new layout.
+  // Do not realloc the WebGL surface or scrollTo during an active swipe.
+  if (mqStack.matches && Math.abs(innerWidth - measuredWidth) < 4) return;
+  if (rzT == null) rzT = scrollT();
+  cancelAnimationFrame(rz);
+  rz = requestAnimationFrame(() => {
+    measuredWidth = innerWidth; measure(true); resizeStage();
+    if (!st.flow && !opening.state.open) seek(rzT, false);
+    rzT = null;
+  });
+});
 mqReduce.addEventListener?.('change', () => { st.reduced = mqReduce.matches; if (st.reduced) setFlow(true); });
 document.addEventListener('visibilitychange', () => { st.last = 0; });
 
@@ -396,8 +398,8 @@ function boot() {
   st.stage = initStage();
   if (st.stage) {
     const small = mqStack.matches || Math.min(screen.width, screen.height) < 700;
-    st.stage.S.dprCap = small ? 1.5 : 2;
-    st.stage.S.qMax = 1; st.stage.S.q = small ? 0.66 : 1;
+    st.stage.S.dprCap = small ? 1 : 2;
+    st.stage.S.qMax = small ? 0.66 : 1; st.stage.S.q = small ? 0.55 : 1;
   }
   if (st.reduced) { st.flow = true; root.classList.add('flow'); readBtn.setAttribute('aria-pressed', 'true'); }
   else if (root.dataset.wd) { root.classList.add('js'); delete root.dataset.wd; }
@@ -405,10 +407,11 @@ function boot() {
   measure(); resizeStage();
   if (location.hash && /^#ch\d+$/.test(location.hash)) requestAnimationFrame(() => goChapter(+location.hash.slice(3)));
   root.classList.add('ready');
+  opening.start(!location.hash && scrollY < 100);
   requestAnimationFrame(tick);
   if (document.fonts?.ready) document.fonts.ready.then(() => { measure(); });
   // late layout shifts (images) – re-measure a couple of times
   setTimeout(measure, 600); setTimeout(measure, 2000);
 }
-window.absorb = { seek: (T) => seek(T, false), get T() { return st.Ts; }, state: st };
-try { boot(); } catch (e) { console.error(e); root.classList.remove('js'); root.classList.add('flow'); }
+window.absorb = { seek: (T) => seek(T, false), get T() { return st.Ts; }, state: st, opening: opening.state };
+try { boot(); } catch (e) { console.error(e); root.classList.remove('js'); root.classList.add('flow'); root.classList.remove('arrival-open'); document.querySelectorAll('[inert]').forEach(e => e.inert = false); }

@@ -1,6 +1,6 @@
 // The stage: one WebGL2 canvas that draws the whole journey, driven only by scroll-time T (chapters, in units).
 // T = chapterIndex + progressInsideChapter. Same T → same frame (idle drift aside), forwards or backwards.
-import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js';
+import { getGL, program, persp, lookAt, rng, hex, clamp, lerp, smooth, sstep } from './gl.js?v=arrival2';
 import { SRC, TUN } from './shaders.js?v=journey3';
 
 const STRIDE = 23; // H0(3) H1(3) H2(3) P(4) Q(4) C(3) DIR(3)
@@ -289,7 +289,9 @@ export function createStage(canvas) {
   const state = { tone: 0, bg: [1, 1, 1] };
 
   function resize(w, h, dpr) {
-    W = Math.max(2, Math.floor(w * dpr)); H = Math.max(2, Math.floor(h * dpr));
+    const nextW = Math.max(2, Math.floor(w * dpr)), nextH = Math.max(2, Math.floor(h * dpr));
+    if (nextW === W && nextH === H && S.dpr === dpr) return;
+    W = nextW; H = nextH;
     canvas.width = W; canvas.height = H; S.dpr = dpr;
     gl.viewport(0, 0, W, H);
   }
@@ -347,7 +349,7 @@ export function createStage(canvas) {
     const w = sstep;
     // weights
     // Food appears after video fades out (~T=1.7); mix drives bead→gut trajectory.
-    const m1 = w(1.70, 2.10, T), m2 = w(2.35, 2.90, T);
+    const m1 = w(1.70, 2.10, T), m2 = w(2.05, 2.42, T);
     const foodVis = w(1.65, 1.90, T) * (1 - w(2.75, 3.15, T));
     const plateVis = 0; // Opening plate is the authored meal illustration.
     const wallVis = w(2.55, 2.95, T) * (1 - w(5.85, 6.15, T));
