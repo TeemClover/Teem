@@ -229,3 +229,17 @@ test('provider does not retry failures, rejects incomplete or malformed outputs 
 test('model cannot provide arbitrary order fields, unknown SKUs, quantities or duplicate lines',()=>{
  for(const d of [decision({paid:true}),decision({action:'propose_cart',items:[{sku:'HACK',quantity:1}]}),decision({action:'propose_cart',items:[{sku:'BR',quantity:0}]}),decision({action:'propose_cart',items:[{sku:'BR',quantity:1.5}]}),decision({action:'propose_cart',items:[{sku:'BR',quantity:1},{sku:'BR',quantity:2}]}),decision({action:'propose_cart',items:[{sku:'BR',quantity:1,price:1}]})])assert.throws(()=>validateDecision(d),/AI_INVALID_OUTPUT/);
 });
+
+test('provider distinguishes billing and permission errors without exposing raw diagnostics',async()=>{
+ for(const [code,type,status,want] of [
+  ['credit_balance_exhausted','insufficient_quota',429,'AI_CREDIT_EMPTY'],
+  ['organization_usage_limit_exceeded','insufficient_quota',429,'AI_USAGE_LIMIT'],
+  ['project_spend_limit_exceeded','insufficient_quota',429,'AI_SPEND_LIMIT'],
+  ['insufficient_quota','insufficient_quota',429,'AI_QUOTA'],
+  ['rate_limit_exceeded','rate_limit_error',429,'AI_LIMIT'],
+  ['invalid_api_key','invalid_request_error',401,'AI_AUTH']
+ ]){
+  const provider=createAIProvider({OPENAI_API_KEY:'test-key'},async()=>Response.json({error:{code,type,message:'SECRET RAW PROVIDER MESSAGE'}},{status}));
+  await assert.rejects(()=>provider.respond({message:'test'}),e=>e.code===want&&!e.message.includes('SECRET'));
+ }
+});

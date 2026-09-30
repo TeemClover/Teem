@@ -37,7 +37,14 @@ export function createAIProvider(env,fetchImpl=fetch){
       input:[{role:'user',content:input}],reasoning:{effort:'none'},max_output_tokens:1100,
       text:{format:{type:'json_schema',name:'myclover_sales_reply',strict:true,schema:AI_SCHEMA}}})
     });
-    if(!r.ok)throw new Fault(r.status===429?'AI_LIMIT':'AI_UNAVAILABLE',503);
+    if(!r.ok){
+     // Inspect only a small allowlist of provider error codes. Never surface the
+     // raw response, which may echo request data or credential details.
+     const failure=await r.json().catch(()=>({}));
+     const codes={credit_balance_exhausted:'AI_CREDIT_EMPTY',organization_usage_limit_exceeded:'AI_USAGE_LIMIT',organization_spend_limit_exceeded:'AI_SPEND_LIMIT',project_spend_limit_exceeded:'AI_SPEND_LIMIT',insufficient_quota:'AI_QUOTA'};
+     const code=codes[failure?.error?.code]||(failure?.error?.type==='insufficient_quota'?'AI_QUOTA':r.status===401||r.status===403?'AI_AUTH':r.status===429?'AI_LIMIT':'AI_UNAVAILABLE');
+     throw new Fault(code,503);
+    }
     data=await r.json();
    }catch(e){throw e instanceof Fault?e:new Fault('AI_UNAVAILABLE',503);}
    if(data.status!=='completed')throw new Fault('AI_INVALID_OUTPUT',503);
