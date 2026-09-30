@@ -84,7 +84,7 @@ export function reducer(state,event,order,{now=Date.now(),id=()=>`MD-${randomUUI
   const wantsInfo=/(?:ราคา|เท่าไหร่|เท่าไร|ต่างกัน|เทียบ|ไหม|มั้ย|อะไร|ไหน|วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน|ส่วนผสม|สารสกัด|สรรพคุณ|สั่งยังไง|ซื้อแล้ว|สั่งแล้ว|สั่งไปแล้ว)/.test(value);
   const buying=/^(?:สนใจ)?(?:ขอ)?(?:สั่ง(?:ซื้อ)?|ซื้อ|เอา|รับ|เพิ่ม)/.test(value)&&!wantsInfo;
   if(/^(?:ชุด\s*5\s*ชิ้น|สั่งชุด|สั่งชุด\s*5\s*ชิ้น|สนใจสั่ง\s*mediral\s*ชุดดูแลผิว\s*5\s*ชิ้น)$/.test(value))s.items=Object.fromEntries(Object.keys(PRODUCTS).map(k=>[k,1]));
-  else if(text==='ยืนยันสินค้า'&&Object.keys(s.items).length){s.stage='consent';return reply(`เราขอชื่อ เบอร์โทร และที่อยู่เพื่อรับออเดอร์และจัดส่ง สลิปจะส่งให้ EasySlip ตรวจธุรกรรมเมื่อเปิดบริการ ข้อมูลไม่ใช้สมัครโฆษณาและไม่ส่งให้ AI\nรายละเอียด: ${SITE}/mediral/privacy/\nยินยอมให้ใช้ข้อมูลเพื่อทำรายการนี้ไหมคะ`,['ยินยอมทำรายการ','คุยกับคนดูแล']);}
+  else if(text==='ยืนยันสินค้า'&&Object.keys(s.items).length){s.stage='consent';return reply(`เราขอชื่อ เบอร์โทร และที่อยู่เพื่อรับออเดอร์และจัดส่ง สลิปจะส่งให้ EasySlip ตรวจธุรกรรมเมื่อเปิดบริการ ข้อมูลจัดส่งและสลิปไม่ใช้สมัครโฆษณาและไม่ส่งให้ AI สนทนา\nรายละเอียด: ${SITE}/mediral/privacy/\nยินยอมให้ใช้ข้อมูลเพื่อทำรายการนี้ไหมคะ`,['ยินยอมทำรายการ','คุยกับคนดูแล']);}
   else if(buying&&named.length<=1&&(named.length||s.productFocus&&!/เซรั่ม/.test(value))){
    const sku=named[0]||s.productFocus;
    const qty=Number(value.match(/(\d+)\s*(?:ขวด|ชิ้น|ตลับ|หลอด)/)?.[1]||value.match(/^(?:สนใจ)?(?:ขอ)?(?:สั่ง(?:ซื้อ)?|ซื้อ|เอา|รับ|เพิ่ม)\s*(\d+)/)?.[1]||1);

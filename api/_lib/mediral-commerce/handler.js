@@ -3,13 +3,15 @@ import {BANK,Fault,clean,hmac,same,reducer,quote,inspectSlip,paymentMessage,line
 import {dispatch} from './providers.js';
 import {houseReducer} from './house.js';
 import {attention,queueOwnerAttention} from './attention.js';
+import {createAIProvider,AI_DAILY_LIMIT} from './ai-provider.js';
+import {eligibleForAI,privateText,privateReply,healthHandoff,contextForAI,applyAIDecision,aiUnavailable,confirmAIProposal} from './ai-conversation.js';
 const COOKIE='__Host-mediral-admin';
 function cookieToken(env,now){const expires=String(now+4*3600000);return `${expires}.${hmac('mediral-admin:'+expires,env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'')}`;}
 function authenticated(req,env,now){const value=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='))?.slice(COOKIE.length+1)||'';const [expires]=value.split('.');return /^\d{13}$/.test(expires)&&+expires>now&&+expires<=now+4*3600000&&same(value,cookieToken(env,+expires-4*3600000));}
 function originOK(req){return req.headers.origin===`https://${req.headers.host}`||(!process.env.VERCEL&&/^127\.0\.0\.1:\d+$/.test(req.headers.host||'')&&req.headers.origin===`http://${req.headers.host}`);}
 async function raw(req,max=1024*1024){if(Buffer.isBuffer(req.body)){if(req.body.length>max)throw new Fault('BODY_TOO_LARGE',413);return req.body;}if(typeof req.body==='string'){const b=Buffer.from(req.body);if(b.length>max)throw new Fault('BODY_TOO_LARGE',413);return b;}if(req.body&&typeof req.body==='object')throw new Fault('RAW_BODY_REQUIRED',400);const chunks=[];let size=0;for await(const c of req){const b=Buffer.from(c);size+=b.length;if(size>max)throw new Fault('BODY_TOO_LARGE',413);chunks.push(b);}return Buffer.concat(chunks);}
 function parse(b){try{return JSON.parse(b.toString('utf8'));}catch{throw new Fault('INVALID_JSON');}}
-export function createHandler({store,providers,env=process.env,clock=()=>Date.now()}){
+export function createHandler({store,providers,env=process.env,clock=()=>Date.now(),ai=createAIProvider(env)}){
  const configured=()=>Boolean(env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_SECRET&&(env.MEDIRAL_LINE_BOT_ID||env.MEDIRAL_LINE_BASIC_ID));
  const operatorReady=()=>String(env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY||'').length>=24;
  const botId=()=>env.MEDIRAL_LINE_BOT_ID||providers.botId();
@@ -39,8 +41,26 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
       if(await store.event(event.webhookEventId))continue;
       if(event.timestamp<(c.state.lastEventAt||0)||event.timestamp<clock()-24*3600000){await store.commit(c,{state:c.state,eventId:event.webhookEventId},clock());continue;}
       const order=c.state.orderId?await store.order(c.state.orderId):null;
-      let result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock(),nativeGreeting:env.MEDIRAL_NATIVE_GREETING!=='0'});result.state.lastEventAt=event.timestamp;
-      if(await store.limited('user:'+user,40,60000,clock())){result={state:c.state,order:null,messages:[]};}
+      const text=clean(event.message?.text,1800);
+      let result;
+      if(await store.limited('user:'+user,40,60000,clock()))result={state:c.state,order:null,messages:[]};
+      else if(!c.state.paused&&(!order||['shipped','cancelled'].includes(order.status))&&(result=confirmAIProposal(c.state,text,clock()))){}
+      else if(ai.status().enabled&&eligibleForAI(c.state,event,order)){
+       if(privateText(event.message.text))result=privateReply(c.state);
+       else if((result=healthHandoff(c.state,text))){}
+       else{
+        // Leave room for the model, database commit and LINE reply in this request.
+        if(clock()-now>27000)throw new Fault('REDELIVER_REMAINING',503);
+        try{
+         if(await store.limited('ai-user-minute:'+user,10,60000,clock())||await store.limited('ai-user-day:'+user,20,86400000,clock())||await store.limited('ai-global-day',AI_DAILY_LIMIT,86400000,clock()))throw new Fault('AI_LIMIT',429);
+         const generated=await ai.respond(contextForAI(c.state,text,clock()));
+         result=applyAIDecision(c.state,text,generated,clock());
+         console.info(JSON.stringify({service:'line-ai',status:result.state.aiFailure?'rejected':'completed',model:generated.model,...generated.usage}));
+        }catch(e){result=aiUnavailable(c.state,e.code);console.warn(JSON.stringify({service:'line-ai',status:'unavailable',code:result.state.aiFailure.code}));}
+       }
+      }else result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock(),nativeGreeting:env.MEDIRAL_NATIVE_GREETING!=='0'});
+      result.state.lastEventAt=event.timestamp;
+      if(text==='เริ่มใหม่'||text==='ขอลบข้อมูล'||event.type==='unfollow'){delete result.state.ai;delete result.state.aiProposal;}
       if(result.verifyImage){
        const o=result.order;let checked={ok:false,reason:'PROVIDER_UNAVAILABLE'};
        try{o.receipt=await providers.image(result.verifyImage);const response=await providers.verify(o.receipt,o);checked=inspectSlip(response,o,clock());if(checked.ok&&await store.crossCourseReference(checked.transRef))checked={ok:false,reason:'TRANSACTION_USED_IN_AI_SOURCE'};}
@@ -75,7 +95,23 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
    if(!authenticated(req,env,now))throw new Fault('UNAUTHORIZED',401);
    if(action==='logout'&&req.method==='POST'){res.setHeader('Set-Cookie',`${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);return json({ok:true});}
    await store.ensure();
-   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
+   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),ai:ai.status(),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
+   if(action==='ai-test'&&req.method==='POST'){
+    // Fixed fictional conversation only: no arbitrary proxy, no customer lookup,
+    // no LINE delivery, no checkout and no stored conversation.
+    const input=parse(await raw(req,4096));if(!input||Array.isArray(input)||Object.keys(input).length)throw new Fault('INVALID_TEST_INPUT');
+    if(!ai.status().configured)throw new Fault('AI_NOT_CONFIGURED',503);
+    if(await store.limited('ai-admin-test',5,3600000,now))throw new Fault('AI_LIMIT',429);
+    let state={},inputTokens=0,outputTokens=0;const turns=[];
+    for(const user of ['เซรั่ม','ตื่นมาดูโทรม สีผิวไม่เท่ากัน','ตัวที่แนะนำต่างจากขวดขาวยังไง']){
+     if(await store.limited('ai-global-day',AI_DAILY_LIMIT,86400000,clock()))throw new Fault('AI_LIMIT',429);
+     const r=await ai.respond(contextForAI(state,user,clock()));const answer=applyAIDecision(state,user,r,clock());
+     if(answer.state.aiFailure)throw new Fault('AI_INVALID_OUTPUT',503);
+     state=answer.state;inputTokens+=r.usage.inputTokens;outputTokens+=r.usage.outputTokens;
+     turns.push({user,assistant:answer.messages[0].text});
+    }
+    return json({ok:true,model:ai.status().model,turns,inputTokens,outputTokens});
+   }
    if(action==='retry'&&req.method==='POST'){for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}return json({ok:true});}
    if(action==='list'&&req.method==='GET'){const data=await store.list();return json({ok:true,...data,attention:attention(data)});}
    if(action==='receipt'&&req.method==='GET'){

@@ -1,12 +1,12 @@
 # Mediral LINE commerce — connection and operating guide
 
-Date: 2026-09-30. Branch: `feat/mediral-line-orders`.
+Updated: 2026-09-30. Repository branch: `main`. Deployment and live acceptance must be checked separately from this guide.
 
 ## What is implemented
 
-LINE Messaging API → Vercel `/api/mediral-commerce` → the existing Neon database, with a dedicated `mc_mediral_*` namespace. EasySlip v2 is an optional transaction-verification adapter. No LLM receives names, addresses, phone numbers, slips or payment decisions. Product questions link to the existing Mediral page or hand off to a person.
+LINE Messaging API → Vercel `/api/mediral-commerce` → the existing Neon database, with a dedicated `mc_mediral_*` namespace. EasySlip v2 is an optional transaction-verification adapter. The optional direct OpenAI GPT conversation layer understands product questions and recent context; the deterministic order engine still controls checkout and payment. Checkout fields and receipt images are deliberately excluded from model context. Personal details typed into ordinary product messages are filtered on a best-effort basis, not guaranteed absent.
 
-The bot is **paused by default**. Existing public Mediral motion/copy/assets are unchanged. This is a direct-sale workflow through myClover, not a TikTok affiliate checkout: confirm with the brand who owns stock, packs, ships, handles returns and provides receipts before starting ads. The partner sample price 290 baht is not a wholesale supply agreement and is not used as a retail price.
+The bot is **paused by default in a new environment**; production has been explicitly activated for the shared myClover OA. GPT conversation is separately **disabled by default** until `MEDIRAL_AI_ENABLED=1`. Existing public Mediral motion/copy/assets are unchanged. This is a direct-sale workflow through myClover, not a TikTok affiliate checkout: confirm with the brand who owns stock, packs, ships, handles returns and provides receipts before starting ads. The partner sample price 290 baht is not a wholesale supply agreement and is not used as a retail price.
 
 Customer flow: select five-piece routine or individual items → consent → recipient name → phone → full address/postcode → confirm → staff checks stock and enters a quote → payment details → slip image → preliminary verification / manual review → staff confirms actual bank receipt → packing → tracking number sent to LINE.
 
@@ -25,6 +25,24 @@ The receiving account is reused from the existing AI Sauce page at the owner's r
 ## Operating the shop
 
 Open `/mediral/admin/`, log in with the server-configured admin key. The UI shows the latest 100 orders and handoff conversations. Filters/search apply to those 100; it is not a full historical order search.
+
+## GPT conversation — configure, test, then activate
+
+The conversation provider uses the **OpenAI Responses API**, model `gpt-5.4-mini`. It is a real model call, not a keyword reply. It receives approved product facts, the confirmed LINE merchandise prices, the customer's current product question and up to 8 recent conversation messages from the last 24 hours. That context window is not a promise that every stored record is deleted after 24 hours. The assistant may ask a follow-up, explain product differences or offer the next step; it cannot change prices, declare stock ready, mark a payment received, or send a broadcast.
+
+1. In the Vercel project's **Production** environment, have the owner enter `MEDIRAL_OPENAI_API_KEY` as a server-side secret. `OPENAI_API_KEY` is the supported fallback. Never paste a key into LINE, this document, the public repository or the admin page. A ChatGPT subscription does not supply API credit.
+2. Leave `MEDIRAL_AI_ENABLED` absent or disabled and deploy the saved environment. LINE's existing order flow is independent of the GPT enable flag.
+3. Log into `/mediral/admin/`. The **ลองคุยกับ GPT** card distinguishes missing credentials, configured but inactive, and live enabled. Configuration alone is not evidence of a successful API response.
+4. Press **ทดสอบการตอบจริง**. The authenticated `POST /api/mediral-commerce?action=ai-test` uses an empty JSON body and runs only a fixed synthetic conversation: “เซรั่ม” → “ตื่นมาดูโทรม สีผิวไม่เท่ากัน” → “ตัวที่แนะนำต่างจากขวดขาวยังไง”. It does not read customer conversations, send LINE messages or create orders. It does make billable API requests. Review the actual replies and the input/output token counts. Failures remain visible; they are not presented as a successful model test.
+5. After the sample works, set `MEDIRAL_AI_ENABLED=1`, redeploy, and use the owner's test LINE account to check a natural conversation, a follow-up referring to the previous recommendation, checkout and human handoff. Verify one reply per inbound message. A successful admin sample does not prove the complete LINE path.
+
+Initial limits are 100 model requests per day for the application, 20 per customer per day and 10 per minute, with a 14-second provider timeout. Each request caps output at 1,100 tokens, conversation input at 12,000 characters and approved product knowledge at 30,000 characters. These are request ceilings, not a currency budget; monitor the OpenAI project's usage and billing separately. API errors, exhausted limits or rejected output must use the existing fallback/handoff path, never fabricate a model answer or payment status.
+
+The authenticated status response exposes `ai.configured`, `ai.enabled`, `ai.model` and `ai.dailyLimit` only, never the credential. The synthetic-test errors are `AI_NOT_CONFIGURED`, `AI_UNAVAILABLE`, `AI_LIMIT` and `AI_INVALID_OUTPUT`.
+
+Privacy: `/mediral/privacy/` explains that ordinary product questions can be processed by OpenAI. Recipient fields, images and payment data are handled separately. Do not add full customer records, raw order history or receipt images to the model prompt. Do not claim automatic text filtering removes every personal detail. A person can request human support instead.
+
+## Order actions
 
 - **แจ้งยอดหลังเช็กของ**: enter per-item prices + shipping, confirm physical stock. The server calculates the sum in integer satang. It sends the same AI Sauce bank account and a 24-hour payment window to the customer.
 - **ตรวจเงินเข้าแล้ว**: open the protected receipt, compare with actual bank activity. Confirm exact total, transaction reference and transfer time. Never press this based only on the appearance of a screenshot or a provider green result.
@@ -70,17 +88,17 @@ Official integration references: https://developers.line.biz/en/docs/messaging-a
 
 ## Shared myClover OA — 2026-09-30 update
 
-Verified in the logged-in OA Manager: บ้าน myClover 🍀, basic ID `@140xlsju`, Messaging API enabled, webhook URL empty, webhook switch off, Chat on, greeting on, manual chat during configured hours and auto-response outside hours. No setting has been changed. Review existing greeting/out-of-hours messages before activation to avoid duplicate replies.
+Initial inspection found an empty webhook and native automatic replies. The subsequent activation replaced that state: บ้าน myClover 🍀, basic ID `@140xlsju`, now uses the configured Mediral webhook with redelivery enabled; native automatic replies are inactive, native greeting remains on, and manual chat is selected. Recheck these settings if a reply is missing or duplicated.
 
-`MEDIRAL_SHARED_OA=1` enables the house router. It supports Mediral checkout, an AI Sauce information/human-handoff route, a neutral house menu, multiple coarse interests per customer and explicit topic-specific news preferences. It is **rule-based routing, not an LLM chat integration**. No bulk sending endpoint or automatic campaign scheduler is added.
+`MEDIRAL_SHARED_OA=1` enables the house router. It supports Mediral checkout, an AI Sauce information/human-handoff route, a neutral house menu, multiple coarse interests per customer and explicit topic-specific news preferences. The house/order controls remain rule-based; the separately configured GPT layer handles natural product conversation. Without the GPT key and enable flag, the router alone is not an LLM integration. No bulk sending endpoint or automatic campaign scheduler is added.
 
 People can say “คุยเรื่อง AI” / “คุยเรื่อง Mediral” without losing an unfinished Mediral checkout. Recipient data is not scanned for marketing intent. News subscriptions require “รับข่าวดูแลผิว”, “รับข่าว AI” or “รับข่าวของใช้ในบ้าน”; “หยุดข่าวทั้งหมด” works even during handoff. Unfollow clears news subscriptions. These are internal CRM preferences; they do not create LINE OA Manager chat tags. LINE's Messaging API cannot create chat-tag audiences directly (https://developers.line.biz/en/docs/messaging-api/using-audience/).
 
 Next sales principle: source-specific entry messages, current conversation context, an optional customer-selected interest, and explicit handoff when ambiguous. A generic friend-add event does not reveal the ad or exact product that brought someone here. Add tracked source codes only when supported by an explicit entry link/action; do not infer provenance from generic follows.
 
-Before enabling follow replies, choose a single greeting source (OA Manager or bot). Keep the existing greeting until bot connection is verified. Do not issue credentials, replace webhook or activate broadcasts as part of this read-only OA inspection.
+Keep a single greeting source (OA Manager or bot). The current setup keeps the native greeting and suppresses the bot's follow greeting. Preserve the existing channel credentials and webhook when configuring GPT; the OpenAI key does not require a new LINE channel.
 
-Future AI scope: understand product questions, retrieve approved product facts, suggest an appropriate next step and draft targeted campaigns. Keep funds, stock and price controlled by the order engine. Campaigns should be previewed by segment and require an explicit send action, respect opt-outs, cap frequency, deduplicate against order messages and measure replies/clicks/orders rather than assuming broadcasts are read. No such campaign was sent in this task.
+GPT scope: understand product questions, use approved product facts and suggest an appropriate next step. Funds, stock and price remain controlled by the order engine. Targeted campaigns are a future feature: they should be previewed by segment and require an explicit send action, respect opt-outs, cap frequency, deduplicate against order messages and measure replies/clicks/orders rather than assuming broadcasts are read. No such campaign was sent in this task.
 # LINE storefront update — 2026-09-30
 
 The shared myClover OA has a six-area rich menu: Mediral information, ordering,

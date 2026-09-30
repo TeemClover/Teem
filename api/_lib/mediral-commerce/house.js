@@ -3,7 +3,8 @@ import {reducer as mediral,clean,lineText,SITE,isMediralInquiry} from './domain.
 const TOPICS={mediral:'ดูแลผิว',ai:'AI และการเรียนรู้',home:'ของใช้ในบ้าน'};
 const choices=['คุยเรื่อง Mediral','คุยเรื่อง AI','เลือกข่าวที่สนใจ','คุยกับคนดูแล'];
 const message=text=>lineText(text,choices);
-// Shared-OA routing is explicit and deterministic. An LLM is not connected here.
+// Deterministic checkout, consent and preference commands. When enabled,
+// handler.js sends open conversation to GPT before reaching this fallback.
 // Only coarse, customer-expressed interests are recorded; never inferred conditions.
 export function houseReducer(state,event,order,options={}){
  if(event.message?.text==='ติดต่อทีม')event={...event,message:{...event.message,text:'คุยกับคนดูแล'}};
@@ -27,6 +28,11 @@ export function houseReducer(state,event,order,options={}){
  if(/^(คุยกับคนดูแล|แอดมิน|ขอลบข้อมูล|สถานะออเดอร์)$/.test(text))return mediral(s,event,order,options);
  const explicit={'คุยเรื่อง Mediral':'mediral','คุยเรื่อง AI':'ai'}[text];
  const collecting=['consent','name','phone','address','confirm'].includes(s.stage);
+ // An explicit checkout action owns the current cart even after a conversation
+ // about another topic. Topic selection must not swallow consent or reset actions.
+ if(!explicit&&((text==='ยืนยันสินค้า'&&Object.keys(s.items||{}).length)||text==='เริ่มใหม่')){
+  h.topic='mediral';return mediral(s,event,order,options);
+ }
  // A name/address can contain product words. Never classify it as marketing intent.
  let topic=explicit;
  if(!topic&&!collecting&&event.message?.type==='text'){

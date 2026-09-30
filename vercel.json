@@ -1047,7 +1047,8 @@
       "maxDuration": 60
     },
     "api/mediral-commerce.js": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "includeFiles": "mediral/data/details.json"
     }
   }
 }
