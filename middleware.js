@@ -2,6 +2,7 @@ import { next, rewrite } from '@vercel/functions';
 import { verifyCourseSession } from './api/_lib/course-access.js';
 import { isPrivateShelfPath } from './shelf/route-policy.js';
 import { publicAssetPath, PUBLIC_ASSET_CACHE_HEADERS } from './routing/public-assets.js';
+import { isPublicClassroomFile, PUBLIC_CLASSROOM_HEADERS } from './routing/public-classroom.js';
 
 export const config = {
   // Inspect every path before Vercel can decode it into a static file route.
@@ -49,6 +50,10 @@ export default async function middleware(request) {
     return rewrite(target, { headers: PUBLIC_ASSET_CACHE_HEADERS });
   }
   const lessonPath=normalized.toLowerCase();
+  if (pathname === normalized && ['/dungeon', '/dungeon/', '/dungeon/index.html'].includes(pathname)) {
+    const destination = new URL('/classroom/dungeon/', request.url); destination.search = url.search;
+    return new Response(null, {status: 308, headers: {...PUBLIC_CLASSROOM_HEADERS, Location: destination.toString()}});
+  }
   if (lessonPath === '/learn/classroom' || lessonPath.startsWith('/learn/classroom/')) {
     if(pathname!==normalized||!(normalized==='/learn/classroom'||normalized.startsWith('/learn/classroom/')))return new Response('Not found',{status:404,headers:privateHeaders});
     const destination=new URL('/classroom'+normalized.slice('/learn/classroom'.length),request.url);
@@ -68,7 +73,9 @@ export default async function middleware(request) {
     // Keep the original intent (including from=dungeon) separate from the
     // server-controlled file key. A supplied query must never select a file.
     target.searchParams.set('return', normalized + url.search);
-    return rewrite(target,{headers:privateHeaders});
+    const file = target.searchParams.get('file');
+    const publicFile = isPublicClassroomFile(file.endsWith('/') ? file + 'index.html' : file);
+    return rewrite(target,{headers:publicFile ? PUBLIC_CLASSROOM_HEADERS : privateHeaders});
   }
   const legacySamplePath = lessonPath.replace(/\/+$/, '');
   if (legacySamplePath === '/ai-source/assets/ep01_sample.mp4' || legacySamplePath === '/ai-source/assets/ep01_captions.srt') {

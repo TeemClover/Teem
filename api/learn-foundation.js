@@ -7,6 +7,7 @@ import { verifiedLearnUser } from './_lib/learn-authorization.js';
 import { LearnError } from './_lib/learn-domain.js';
 import { mediaRange } from './_lib/learn-media-handler.js';
 import { safeRelativeReturn } from '../assets/auth-return.js';
+import { isPublicClassroomFile, INDEXED_CLASSROOM_FILES, PUBLIC_CLASSROOM_HEADERS } from '../routing/public-classroom.js';
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
@@ -43,18 +44,25 @@ export function createLearnFoundationHandler({
         res.setHeader('Allow', 'GET, HEAD'); throw new LearnError('METHOD_NOT_ALLOWED', 405);
       }
       const file = foundationFile(req.url);
-      // An anonymous page visit needs only the login redirect. Avoid a cold
-      // database/schema round trip before learning there is no session token.
-      if (!cookieValue(req, 'mc_session')) throw new LearnError('AUTH_REQUIRED', 401);
-      const sql = getSql(); await ensureCoreSchema(sql);
-      // The original free course needs verified email, not paid-course enrollment.
-      await verifyUser(sql, req);
-      // Check authentication before resolving even the existence of a content file.
+      const publicFile = isPublicClassroomFile(file);
+      // Published free lessons never depend on sessions or account storage.
+      // Unpublished files retain the existing verified-account requirement.
+      if (!publicFile) {
+        if (!cookieValue(req, 'mc_session')) throw new LearnError('AUTH_REQUIRED', 401);
+        const sql = getSql(); await ensureCoreSchema(sql);
+        await verifyUser(sql, req);
+      }
+      // Resolve files only after the publication/authentication decision.
       const root = await fs.realpath(filesystemRoot), target = await fs.realpath(path.join(root, file));
       const extension = path.extname(target).toLowerCase();
       if (!target.startsWith(root + path.sep) || !TYPES[extension]) throw new LearnError('NOT_FOUND', 404);
       const info = await fs.stat(target);
       if (!info.isFile()) throw new LearnError('NOT_FOUND', 404);
+      if (publicFile) {
+        for (const key of ['CDN-Cache-Control', 'Vercel-CDN-Cache-Control', 'Vary']) res.removeHeader(key);
+        for (const [key, value] of Object.entries(PUBLIC_CLASSROOM_HEADERS)) res.setHeader(key, value);
+        res.setHeader('X-Robots-Tag', INDEXED_CLASSROOM_FILES.includes(file) ? 'index, follow' : 'noindex, follow');
+      }
       res.setHeader('Content-Type', TYPES[extension]);
       if (req.method === 'HEAD' && extension !== '.html') {
         res.statusCode = 200; res.setHeader('Content-Length', info.size); return res.end();
@@ -69,7 +77,7 @@ export function createLearnFoundationHandler({
         return;
       }
       let body = await fs.readFile(target);
-      if (extension === '.html') {
+      if (extension === '.html' && !publicFile) {
         const destination = file.startsWith('dungeon/') ? '/learn/' : '/ai-source/';
         const label = file.startsWith('dungeon/') ? 'ห้องเรียนของฉัน ↗' : 'ดูคอร์สเต็ม AI ใส่ซอส ↗';
         const html = body.toString('utf8').replaceAll('/learn/classroom/', '/classroom/');

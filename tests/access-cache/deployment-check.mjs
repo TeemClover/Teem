@@ -15,7 +15,7 @@ const publicFiles=[
 ];
 const publicVideos=['/media/home-opening-bg.mp4','/ako/assets/ako-real-eating-onion-hero.m4v'];
 const privateFiles=[
- '/classroom/awaken/notebook/?from=dungeon','/classroom/lv5/vault-data.js',
+ '/classroom/backups/unpublished.html',
  '/course/thedent912/','/course/thedent912/course-content.js',
  '/course/thedent/course.js','/course/thedent912/course.js',
  '/shelf/source/not-public.jpg','/shelf/catalog.json','/api/learn-foundation?file=awaken/notebook/img/nb-01.jpg',
