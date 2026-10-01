@@ -13,7 +13,7 @@ test('real HTTP: published images and aliases deliver bytes/MIME, cache and reva
 
 test('real HTTP: logged-out direct pages/private APIs never return protected content or public-cache policy',async t=>{
   const h=await startSitePreview();t.after(()=>h.server.close());
-  for(const file of ['/classroom/awaken/notebook/?from=dungeon','/classroom/lv5/vault-data.js','/course/thedent912/','/course/thedent912/course-content.js','/shelf/source/private.jpg','/api/learn-foundation?file=awaken/notebook/img/nb-01.jpg','/api/course-content?file=followup-qr.svg']){
+  for(const file of ['/classroom/backups/unpublished.html','/course/thedent912/','/course/thedent912/course-content.js','/shelf/source/private.jpg','/api/learn-foundation?file=awaken/notebook/img/nb-01.jpg','/api/course-content?file=followup-qr.svg']){
     const response=await fetch(h.base+file,{redirect:'manual'});assert.ok([303,307,401,403].includes(response.status),`${file}: ${response.status}`);assert.match(response.headers.get('cache-control'),/private.*no-store/);assert.doesNotMatch(await response.text(),/RESTORE|PRIVATE COURSE FIXTURE/);
     if(file.includes('?from=dungeon'))assert.equal(new URL(response.headers.get('location'),h.base).searchParams.get('return'),file);
   }

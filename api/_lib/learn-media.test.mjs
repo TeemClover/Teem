@@ -298,7 +298,7 @@ async function foundationHarness(t,{denied,enrolled=true,html='<body><a href="/c
   const call=async(file='index.html',method='GET',headers={})=>{const res=new Reply();await handler({method,headers:{cookie:'mc_session=fixture-session',...headers},url:'/api/learn-foundation?file='+encodeURIComponent(file)},res);return res;};
   return {call,events};
 }
-test('free classroom authenticates each direct API HTML/asset/HEAD request before filesystem access',async t=>{
+test('unpublished classroom files still authenticate before filesystem access',async t=>{
   for(const denied of ['AUTH_REQUIRED','EMAIL_VERIFICATION_REQUIRED']){
     const h=await foundationHarness(t,{denied});for(const method of ['GET','HEAD']){const r=await h.call('DATA.md',method);assert.equal(r.statusCode,303);assert.equal(r.headers.location,'/learn/?trial=classroom&return=%2Fclassroom%2FDATA.md');}
     assert.equal(h.events.includes('path'),false);
@@ -308,31 +308,28 @@ test('free classroom authenticates each direct API HTML/asset/HEAD request befor
 test('anonymous foundation navigation preserves the full intent without opening a database connection',async()=>{
   let databaseCalls=0;
   const handler=createLearnFoundationHandler({getSql:()=>{databaseCalls++;throw Error('must not connect');}});
-  const intended='/classroom/awaken/notebook/?from=dungeon&work=one%20two';
+  const intended='/classroom/unpublished/?from=dungeon&work=one%20two';
   for(const cookie of ['', 'mc_session=%ZZ', 'mc_session=a; mc_session=b']){
     const res=new Reply();
-    await handler({method:'GET',headers:{cookie},url:'/api/learn-foundation?'+new URLSearchParams({file:'awaken/notebook/',return:intended})},res);
+    await handler({method:'GET',headers:{cookie},url:'/api/learn-foundation?'+new URLSearchParams({file:'unpublished/',return:intended})},res);
     assert.equal(res.statusCode,303);assert.equal(new URL(res.headers.location,'https://test.invalid').searchParams.get('return'),intended);
     assert.match(res.headers['cache-control'],/private.*no-store/);
   }
   assert.equal(databaseCalls,0);
 });
 test('free classroom keeps canonical links and blocks symlink escapes',async t=>{
-  const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/classroom\/lesson1\.html/);assert.match(r.body,/\/ai-source\//);
-  assert.equal(r.headers['cache-control'],'private, no-store');assert.equal((await h.call('DATA.md')).body,'foundation-data');
+  const h=await foundationHarness(t),r=await h.call();assert.equal(r.statusCode,200);assert.match(r.body,/\/classroom\/lesson1\.html/);
+  assert.equal(r.headers['cache-control'],'public, max-age=0, must-revalidate');assert.equal((await h.call('DATA.md')).body,'foundation-data');
   assert.equal((await h.call('escape.md')).statusCode,404);assert.equal((await h.call('missing.html')).statusCode,404);
 });
-test('Dungeon overlay is outside embedded HTML demos and immediately before the final document body close',async t=>{
+test('public Dungeon HTML is unmodified, with no account overlay or private page lifecycle',async t=>{
   const demo='const demo = `<html><body><h1>Example only</h1></body></html>`;';
   const html=`<!doctype html><html><body><pre id="codePane"></pre><script>${demo}</script><main>Actual Dungeon</main></BODY></html>`;
   const h=await foundationHarness(t,{html});const r=await h.call('dungeon/index.html');
   assert.equal(r.statusCode,200);assert.ok(r.body.includes(demo));
-  const overlayStart=r.body.indexOf('<a href="/learn/"');
-  assert.ok(overlayStart>r.body.indexOf('</script>'));
-  assert.equal((r.body.match(/ห้องเรียนของฉัน ↗/g)||[]).length,1);
-  assert.match(r.body,/<main>Actual Dungeon<\/main><script src="\/assets\/private-page-lifecycle\.js" defer><\/script><a href="\/learn\/"[^>]*>ห้องเรียนของฉัน ↗<\/a><\/BODY><\/html>$/);
-  assert.doesNotMatch(r.body.slice(r.body.indexOf('<script>'),r.body.indexOf('</script>')),/position:fixed/);
-  const free=await h.call('index.html');assert.match(free.body,/<a href="\/ai-source\/"[^>]*>ดูคอร์สเต็ม AI ใส่ซอส ↗<\/a><\/BODY><\/html>$/);
+  assert.equal(r.body,html);
+  assert.equal((await h.call('index.html')).body,html);
+  assert.equal(h.events.includes('auth'),false);
 });
 test('foundation HEAD returns bytes without reading binary/text assets',async t=>{
   const h=await foundationHarness(t),r=await h.call('DATA.md','HEAD');assert.equal(r.statusCode,200);assert.equal(r.body,'');assert.equal(r.headers['content-length'],'15');assert.equal(h.events.includes('read'),false);
@@ -343,7 +340,7 @@ test('old sample aliases go to the free classroom before static asset exemptions
   }
 });
 test('canonical classroom routes always rewrite to the guarded API, including JS and uppercase filenames',async()=>{
-  for(const file of ['index.html','lv5/vault-data.js','MY_SOURCE.md']){
+  for(const file of ['MY_SOURCE.md','backups/unpublished.md']){
     const r=await middleware(new Request('https://www.myclover.com/classroom/'+file));
     const url=new URL(r.headers.get('x-middleware-rewrite'));assert.equal(url.pathname,'/api/learn-foundation');assert.equal(url.searchParams.get('file'),file);assert.match(r.headers.get('cache-control'),/no-store/);
   }

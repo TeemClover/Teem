@@ -30,6 +30,10 @@ function gatePage(pathname, message = '') {
 export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
+  if (['/dungeon', '/dungeon/', '/dungeon/index.html'].includes(url.pathname)) {
+    const destination = new URL('/classroom/dungeon/', request.url); destination.search = url.search;
+    return Response.redirect(destination, 308);
+  }
   // The Pages site uses the repository as its asset tree. Keep local-only
   // Front Door fixtures/reports out of HTTP delivery as on the Vercel host.
   let pathname;

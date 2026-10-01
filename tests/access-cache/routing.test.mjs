@@ -135,11 +135,9 @@ test('legacy shelf redirects carry private cache policy for every session state'
 
 test('private HTML and lesson payloads keep authentication routing and never receive public cache headers',async()=>{
   for (const pathname of [
-    '/classroom/awaken/notebook/?from=dungeon', '/classroom/lv5/vault-data.js',
-    '/classroom/lv4/myclover-growth-blueprint.pdf',
+    '/classroom/backups/unpublished.html',
     '/course/thedent912/', '/course/thedent912/course-content.js',
     '/course/thedent912/course.js', '/course/thedent/course.js',
-    '/classroom/media/lesson3-source-example.mp4',
     '/course/thedent912/opening-data.js', '/course/thedent912/tools.js',
     '/course/thedent912/resources/answer-key.md', '/course/thedent912/downloads/the-dent-course-kit.zip',
   ]) for (const cookie of sessions) {
