@@ -9,6 +9,8 @@
  * The chosen pieces only shape an optional message to paste in LINE. The store's five-piece bundle
  * stays fixed; a partial list never inherits a bundle price or a commission link.
  */
+import {mountCoupon} from './coupon.js';
+import {inquirySource} from './inquiry-source.js';
 import {createCinema} from './cinema.js';
 import {createLetterMotion} from './letter.js';
 import {SHOTS, CHAPTERS, FILMS, score, closingShot, transitionShot, detailHref, toneMark} from './score.js';
@@ -143,6 +145,7 @@ function renderTrust() {
 
 // One order channel, read from data: every LINE action on the page shows the same verified link.
 function renderOrder() {
+  mountCoupon(document.querySelector('[data-coupon]'), state.data.order.coupon);
   const {order, steps} = state.data;
   const verified = order?.status === 'verified' && /^https:\/\//.test(order.url || '');
   $$('[data-slot="line-link"]').forEach(link => {
@@ -235,7 +238,8 @@ function renderBuy() {
 function copyText() {
   const {order, steps} = state.data;
   const chosen = steps.filter(s => state.selection.has(s.id));
-  return chosen.length === steps.length ? order.message_all : `${order.message_some} ${chosen.map(s => s.order_name).join(', ')}`;
+  const message = chosen.length === steps.length ? order.message_all : `${order.message_some} ${chosen.map(s => s.order_name).join(', ')}`;
+  return message + inquirySource(location.search);
 }
 
 async function copyList() {

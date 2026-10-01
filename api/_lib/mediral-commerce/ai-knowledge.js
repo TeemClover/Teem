@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import {RETAIL} from './catalog.js';
+import {retailAt} from './catalog.js';
 
 // Explicitly pick public, reviewed facts. Never load customer state, brand chats,
 // payment credentials, source screenshots, image prompts or older promotion data.
@@ -31,7 +31,8 @@ const products=source.products.filter(product=>['CL','AC','BR','SU','PO'].includ
  ...(product.name_notes?.length?{name_notes:product.name_notes}:{}),
 }));
 
-export function knowledge(){
+export function knowledge(now=Date.now()){
+ const RETAIL=retailAt(now);
  return {
   brand:'บ้าน myClover',
   role:'ผู้แนะนำและขาย Mediral ทาง LINE ของ myClover ไม่ใช่ช่องทางทางการของแบรนด์',
@@ -39,6 +40,9 @@ export function knowledge(){
    source:'ข้อมูลสินค้าและส่วนผสมจาก mediral/data/details.json ซึ่งเรียบเรียงจากสื่อ Mediral; ข้ออ้างของแบรนด์ไม่ใช่ผลทดสอบรายบุคคล',
    url:'https://www.myclover.com/mediral/',
    unit_price_thb:RETAIL.unit/100,
+   regular_price_thb:500,
+   coupon_percent:RETAIL.discountPercent,
+   coupon_valid_through:'2026-10-15 Asia/Bangkok',
    set_price_thb:RETAIL.set/100,
    set_skus:['CL','AC','BR','SU','PO'],
    gifts:[],

@@ -1,9 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {attention,queueOwnerAttention} from '../../api/_lib/mediral-commerce/attention.js';
-import {retailPrice} from '../../api/_lib/mediral-commerce/catalog.js';
+import {retailPrice as priceAt} from '../../api/_lib/mediral-commerce/catalog.js';
 import {createProviders} from '../../api/_lib/mediral-commerce/providers.js';
 import {fixture} from './fixture.mjs';
-test('approved unit/set prices apply to sets and extra pieces',()=>{assert.equal(retailPrice({CL:1}).subtotal,39900);assert.equal(retailPrice({CL:1,AC:1,BR:1,SU:1,PO:1}).subtotal,189900);assert.equal(retailPrice({CL:2,AC:1,BR:1,SU:1,PO:1}).subtotal,229800);});
+const retailPrice=items=>priceAt(items,Date.parse('2026-10-01T10:00:00+07:00'));
+test('approved unit/set prices apply to sets and extra pieces',()=>{assert.equal(retailPrice({CL:1}).subtotal,40000);assert.equal(retailPrice({CL:1,AC:1,BR:1,SU:1,PO:1}).subtotal,200000);assert.equal(retailPrice({CL:2,AC:1,BR:1,SU:1,PO:1}).subtotal,240000);});
 test('quiet for ordinary pending payment, shipped, and blocked users',()=>{assert.deepEqual(attention({orders:[{status:'awaiting_payment'},{status:'shipped'}],handoffs:[{id:'blocked',paused:true,house:{blocked:true}}]}),[]);});
 test('owner notices deduplicate, omit PII and recur only on a new task',async()=>{const f=await fixture();f.env.MEDIRAL_OWNER_LINE_ID='U'+'c'.repeat(32);const o=await f.checkout();assert.equal(await queueOwnerAttention(f.store,f.env,f.now()),1);assert.equal(await queueOwnerAttention(f.store,f.env,f.now()),0);const rows=await f.store.drainRows(f.now());const r=await f.store.claimMessage(rows[0].id,f.now());assert.equal(r.user_id,f.env.MEDIRAL_OWNER_LINE_ID);assert.doesNotMatch(JSON.stringify(r.messages),/0812345678|ถนนตัวอย่าง|ผู้รับ ทดสอบ/);assert.match(r.messages[0].text,/ยืนยันยอด/);assert.equal(attention(await f.store.list())[0].orderId,o.id);});
 test('owner notification remains off without verified recipient configuration',async()=>{const f=await fixture();await f.checkout();assert.equal(await queueOwnerAttention(f.store,f.env,f.now()),0);});

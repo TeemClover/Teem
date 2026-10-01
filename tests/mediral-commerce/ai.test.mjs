@@ -42,7 +42,7 @@ test('model purchase proposal cannot replace cart until explicit confirmation; p
  assert.deepEqual(state.items,{CL:1});
  assert.deepEqual(state.aiProposal.items,{BR:2});
  assert.equal((await f.store.list()).orders.length,0);
- assert.match(f.sent.at(-1).messages[0].text,/798.00/);
+ assert.match(f.sent.at(-1).messages[0].text,/800.00/);
  assert.doesNotMatch(f.sent.at(-1).messages[0].text,/ชิ้นละ 1 บาท/);
  await f.event('ใช้รายการนี้');
  state=await customerState(f);

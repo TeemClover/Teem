@@ -126,7 +126,7 @@ test('each page orders through the one LINE config and returns to its exact chap
     assert.match(html, new RegExp(`href="\\.\\./#step-${id}"`), `${id}: back to its chapter`);
     if (i > 0) assert.match(html, new RegExp(`href="\\.\\./${DETAIL_IDS[i - 1].toLowerCase()}/" rel="prev"`));
     if (i < 4) assert.match(html, new RegExp(`href="\\.\\./${DETAIL_IDS[i + 1].toLowerCase()}/" rel="next"`));
-    assert.match(html, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/);
+    assert.match(html, /แจ้งค่าส่งก่อนชำระเงิน/);
   }
   for (const id of DETAIL_IDS) {
     const nav = render(id).match(/<nav class="mr-route-nav"[\s\S]*?<\/nav>/)[0];

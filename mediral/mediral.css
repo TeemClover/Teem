@@ -805,3 +805,13 @@ body[data-product=PO] .mr-beat__pack .mr-pack{height:44%;margin-bottom:18%}
 .mr-po__signature{position:absolute;top:80svh;left:7%;width:86%;margin:0;text-align:center;color:#163b2b;font:500 clamp(13px,3.6vw,20px)/1.55 var(--sans);text-shadow:0 1px 8px rgba(255,255,244,.85)}
 .mr-po__signature small{display:block;margin-top:4px;font-size:10px;opacity:.8}
 .mr-flow .mr-po__signature{position:static;width:auto;margin:20px 0}
+
+/* October LINE coupon — local review edition. */
+.mr-coupon { margin: 1.4rem 0; padding: clamp(1.1rem, 3vw, 1.8rem); border: 1px solid #c9d5b8; border-radius: 20px; background: #f4f5e8; color: #173e2d; max-width: 38rem; }
+.mr-coupon p { margin: 0; }
+.mr-coupon__eyebrow { font-size: .9rem; color: #566751; }
+.mr-coupon__title { margin-top: .5rem !important; font-size: clamp(1.1rem, 3vw, 1.45rem); }
+.mr-coupon__title strong { white-space: nowrap; }
+.mr-coupon__price { margin: .35rem 0 !important; font-size: 1rem; }
+.mr-coupon__price strong { font-size: clamp(2.4rem, 8vw, 3.3rem); line-height: 1.2; font-weight: 600; }
+.mr-coupon__terms { font-size: .8rem; line-height: 1.65; color: #566751; }

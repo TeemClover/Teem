@@ -1,5 +1,5 @@
 import {createHmac, timingSafeEqual, randomUUID} from 'node:crypto';
-import {retailPrice,RETAIL} from './catalog.js';
+import {retailPrice,retailAt} from './catalog.js';
 export const PRODUCTS = {CL:'มูสโฟมล้างหน้า',AC:'เซรั่มขวดขาว',BR:'เซรั่มขวดเหลืองเขียว',SU:'เซรั่มกันแดด',PO:'แป้งพัฟตลับเขียว'};
 // The owner explicitly selected the existing, public AI Sauce receiving account.
 export const BANK = {code:'004',name:'ธนาคารกสิกรไทย (KBank)',number:'0493864300',owner:'นรินทร์ ลีลาภรณ์'};
@@ -11,7 +11,7 @@ export const money = n => (n/100).toLocaleString('th-TH',{minimumFractionDigits:
 export class Fault extends Error {constructor(code,status=400){super(code);this.code=code;this.status=status;}}
 export function amount(s) {if(!/^\d{1,6}(\.\d{1,2})?$/.test(String(s)))throw new Fault('INVALID_AMOUNT');const [a,b='']=String(s).split('.');return Number(a)*100+Number(b.padEnd(2,'0'));}
 export const lineText = (text,buttons=[]) => ({type:'text',text:text.slice(0,4900),...(buttons.length?{quickReply:{items:buttons.slice(0,13).map(label=>({type:'action',action:{type:'message',label:label.slice(0,20),text:label}}))}}:{})});
-const menu = () => lineText('กดชื่อสินค้าเพื่อดูข้อมูลก่อนสั่งได้เลยค่ะ 🍀\nชิ้นละ 399 บาท · ครบชุด 5 ชิ้น 1,899 บาท\nค่าส่งและของพร้อมส่งจะยืนยันก่อนโอน',['สั่งชุด 5 ชิ้น',...Object.values(PRODUCTS),'คุยกับคนดูแล']);
+const menu = (now) => lineText(`กดชื่อสินค้าเพื่อดูข้อมูลก่อนสั่งได้เลยค่ะ 🍀\nชิ้นละ ${retailAt(now).unit/100} บาท · ครบชุด 5 ชิ้น ${money(retailAt(now).set)} บาท${retailAt(now).discountPercent?' (ใช้คูปองลด 20% แล้ว ถึง 15 ต.ค. 2569)':''}\nค่าส่งและของพร้อมส่งจะยืนยันก่อนโอน`,['สั่งชุด 5 ชิ้น',...Object.values(PRODUCTS),'คุยกับคนดูแล']);
 const normalizeInquiry = text => clean(text,1800).toLowerCase().replace(/เซรั้ม|เซรัม|เซรม|เชรั่ม|เชรั้ม|serum/gi,'เซรั่ม');
 const productPatterns={
  CL:/มูส|โฟม|คลีนเซอร์|(?:อยาก|หา|สนใจ|สั่ง|ซื้อ|เอา)?(?:ตัว)?ล้างหน้า/,
@@ -33,13 +33,13 @@ const sensitiveSkin = /(?:ผิว)?แพ้ง่าย|ระคายเค
 export function isMediralInquiry(text){const value=normalizeInquiry(text);return /mediral|เมดิรัล|เซรั่ม|ดูแลผิว|แพ้|ผื่น|แสบหน้า|ระคายเคือง|ผิวบอบบาง|รักษาสิว|สั่งชุด|ชุด\s*5\s*ชิ้น/.test(value)||Object.values(productPatterns).some(pattern=>pattern.test(value));}
 const purchaseLabels={CL:'สั่งมูสล้างหน้า',AC:'สั่งเซรั่มขวดขาว',BR:'สั่งขวดเหลืองเขียว',SU:'สั่งกันแดด',PO:'สั่งแป้งพัฟ'};
 const focusButtons = sku => [purchaseLabels[sku],'วิธีใช้','ส่วนผสม'];
-function productAnswer(s,sku,kind='intro'){
+function productAnswer(s,sku,kind='intro',now=Date.now()){
  s.productFocus=sku;delete s.inquiry;
  const info=productInfo[sku],link=`${SITE}/mediral/${sku.toLowerCase()}/`;
- if(kind==='price')return lineText(`${PRODUCTS[sku]} ชิ้นละ ${RETAIL.unit/100} บาทค่ะ\nถ้าต้องการสั่ง กดปุ่มด้านล่างได้เลย เราจะยืนยันของและค่าส่งก่อนโอนค่ะ`,focusButtons(sku));
+ if(kind==='price')return lineText(`${PRODUCTS[sku]} ชิ้นละ ${retailAt(now).unit/100} บาทค่ะ\nถ้าต้องการสั่ง กดปุ่มด้านล่างได้เลย เราจะยืนยันของและค่าส่งก่อนโอนค่ะ`,focusButtons(sku));
  if(kind==='use')return lineText(`${info.use}\nดูรายละเอียด: ${link}`,focusButtons(sku));
  if(kind==='ingredients')return lineText(`${PRODUCTS[sku]} ${info.ingredients}\nดูส่วนผสมทั้งหมด: ${link}`,focusButtons(sku));
- return lineText(`${info.lead}\n${info.ingredients}\n\nชิ้นละ ${RETAIL.unit/100} บาท ค่าส่งและของพร้อมส่งยืนยันก่อนโอนค่ะ`,focusButtons(sku));
+ return lineText(`${info.lead}\n${info.ingredients}\n\nชิ้นละ ${retailAt(now).unit/100} บาท ค่าส่งและของพร้อมส่งยืนยันก่อนโอนค่ะ`,focusButtons(sku));
 }
 function serumQuestion(s){s.inquiry='serum';delete s.productFocus;return lineText('เซรั่มบำรุงมี 2 ขวดค่ะ 🍀\nขวดขาว: ดูแลผิวเป็นสิวง่ายและความมัน\nขวดเหลืองเขียว: ดูแลความหมองคล้ำ\n\nอยากเน้นดูแลเรื่องไหนคะ?',['ผิวเป็นสิวง่าย','หน้าหมอง','เทียบเซรั่มสองขวด']);}
 export function cartText(items){return Object.entries(items).map(([id,qty])=>`${PRODUCTS[id]} × ${qty}`).join('\n');}
@@ -72,11 +72,11 @@ export function reducer(state,event,order,{now=Date.now(),id=()=>`MD-${randomUUI
  // Keep classification bounded so actual names and addresses containing product words survive.
  if(collecting&&/^(?:ราคา(?:เท่าไหร่|เท่าไร)?|ส่วนผสม|สารสกัด|วิธีใช้|ใช้ยังไง|ใช้ตอนไหน)(?:คะ|ค่ะ|ครับ|\?)?$/.test(text.replace(/\s/g,''))){
   const sku=s.productFocus||(Object.keys(s.items||{}).length===1?Object.keys(s.items)[0]:null);
-  const info=/ราคา/.test(text)?`รวมสินค้า ${money(retailPrice(s.items||{}).subtotal)} บาท ยังไม่รวมค่าส่งค่ะ`:sku?productAnswer(s,sku,/ส่วนผสม|สารสกัด/.test(text)?'ingredients':'use').text:`ดูส่วนผสมและวิธีใช้แต่ละชิ้นได้ที่ ${SITE}/mediral/`;
+  const info=/ราคา/.test(text)?`รวมสินค้า ${money(retailPrice(s.items||{},now).subtotal)} บาท ยังไม่รวมค่าส่งค่ะ`:sku?productAnswer(s,sku,/ส่วนผสม|สารสกัด/.test(text)?'ingredients':'use',now).text:`ดูส่วนผสมและวิธีใช้แต่ละชิ้นได้ที่ ${SITE}/mediral/`;
   const prompts={consent:'ยินยอมให้ใช้ข้อมูลเพื่อทำรายการนี้ไหมคะ?',name:'ขอชื่อ–นามสกุลผู้รับเพื่อทำรายการต่อค่ะ',phone:'ขอเบอร์โทรผู้รับเพื่อทำรายการต่อค่ะ',address:'ขอที่อยู่จัดส่งพร้อมรหัสไปรษณีย์เพื่อทำรายการต่อค่ะ',confirm:'ข้อมูลเดิมยังอยู่ค่ะ กดส่งรายการให้ร้านเมื่อพร้อม'};
   return reply(`${info}\n\n${prompts[s.stage]}`,s.stage==='consent'?['ยินยอมทำรายการ','คุยกับคนดูแล']:s.stage==='confirm'?['ส่งรายการให้ร้าน','เริ่มใหม่']:['คุยกับคนดูแล']);
  }
- if(text==='เริ่มใหม่'){s.stage='cart';s.items={};delete s.name;delete s.phone;delete s.address;delete s.productFocus;delete s.inquiry;return reply(menu());}
+ if(text==='เริ่มใหม่'){s.stage='cart';s.items={};delete s.name;delete s.phone;delete s.address;delete s.productFocus;delete s.inquiry;return reply(menu(now));}
  if(!s.stage||s.stage==='cart'){
   s.stage='cart';s.items||={};
   const value=normalizeInquiry(text),named=Object.keys(productPatterns).filter(sku=>productPatterns[sku].test(value));
@@ -93,31 +93,32 @@ export function reducer(state,event,order,{now=Date.now(),id=()=>`MD-${randomUUI
    s.items[sku]=(s.items[sku]||0)+qty;s.productFocus=sku;delete s.inquiry;
   }
   else if((/เทียบ|ต่างกัน|ทั้งสอง|สองขวด/.test(value)&&/เซรั่ม/.test(value))||(named.length>1&&named.every(sku=>['AC','BR'].includes(sku))))return reply(serumQuestion(s));
-  else if(s.productFocus&&/^(?:ใช้|ทา)\s*(?:ตัวนี้|อันนี้|ขวดนี้)?\s*(?:ก่อน|หลัง)/.test(value))return reply(productAnswer(s,s.productFocus,'use'));
+  else if(s.productFocus&&/^(?:ใช้|ทา)\s*(?:ตัวนี้|อันนี้|ขวดนี้)?\s*(?:ก่อน|หลัง)/.test(value))return reply(productAnswer(s,s.productFocus,'use',now));
   else if(named.length>1){delete s.productFocus;delete s.inquiry;return reply('คุยได้ทุกชิ้นค่ะ อยากเริ่มดูตัวไหนก่อนคะ?',named.map(sku=>PRODUCTS[sku]));}
-  else if(named.length===1)return reply(productAnswer(s,named[0],/ส่วนผสม|สารสกัด/.test(value)?'ingredients':/วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน/.test(value)?'use':/ราคา|เท่าไหร่|เท่าไร/.test(value)?'price':'intro'));
+  else if(named.length===1)return reply(productAnswer(s,named[0],/ส่วนผสม|สารสกัด/.test(value)?'ingredients':/วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน/.test(value)?'use':/ราคา|เท่าไหร่|เท่าไร/.test(value)?'price':'intro',now));
   else if(/เซรั่ม/.test(value))return reply(serumQuestion(s));
-  else if(s.productFocus&&/ส่วนผสม|สารสกัด|วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน|ราคา|เท่าไหร่|เท่าไร|ดูรายละเอียด/.test(value))return reply(productAnswer(s,s.productFocus,/ส่วนผสม|สารสกัด/.test(value)?'ingredients':/วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน/.test(value)?'use':/ราคา|เท่าไหร่|เท่าไร/.test(value)?'price':'intro'));
+  else if(s.productFocus&&/ส่วนผสม|สารสกัด|วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน|ราคา|เท่าไหร่|เท่าไร|ดูรายละเอียด/.test(value))return reply(productAnswer(s,s.productFocus,/ส่วนผสม|สารสกัด/.test(value)?'ingredients':/วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน/.test(value)?'use':/ราคา|เท่าไหร่|เท่าไร/.test(value)?'price':'intro',now));
   else if(s.productFocus)return reply('อยากรู้ส่วนผสม วิธีใช้ หรือสั่งชิ้นที่คุยกันอยู่คะ?',focusButtons(s.productFocus));
   else if(s.inquiry==='serum')return reply(serumQuestion(s));
-  else return reply(menu());
-  return reply(`เลือกไว้แล้วค่ะ 🍀\n${cartText(s.items)}\nรวมสินค้า ${money(retailPrice(s.items).subtotal)} บาท ยังไม่รวมค่าส่ง\nคนดูแลจะเช็กของและแจ้งยอดก่อนรับเงิน`,['ยืนยันสินค้า','เริ่มใหม่','คุยกับคนดูแล']);
+  else return reply(menu(now));
+  return reply(`เลือกไว้แล้วค่ะ 🍀\n${cartText(s.items)}\nรวมสินค้า ${money(retailPrice(s.items,now).subtotal)} บาท ยังไม่รวมค่าส่ง\nคนดูแลจะเช็กของและแจ้งยอดก่อนรับเงิน`,['ยืนยันสินค้า','เริ่มใหม่','คุยกับคนดูแล']);
  }
  if(s.stage==='consent'){if(text!=='ยินยอมทำรายการ')return reply('กดยินยอมเพื่อเริ่มกรอกข้อมูล หรือคุยกับคนดูแลได้ค่ะ',['ยินยอมทำรายการ','คุยกับคนดูแล']);s.consentAt=now;s.stage='name';return reply('ขอชื่อ–นามสกุลผู้รับค่ะ');}
  if(s.stage==='name'){if(text.length<2||text.length>120)return reply('กรุณาส่งชื่อผู้รับ ความยาวไม่เกิน 120 ตัวอักษรค่ะ');s.name=text;s.stage='phone';return reply('ขอเบอร์โทรผู้รับสำหรับจัดส่งค่ะ');}
  if(s.stage==='phone'){const phone=text.replace(/[\s-]/g,'');if(!/^(?:0\d{8,9}|\+66\d{8,9})$/.test(phone))return reply('กรุณาตรวจเบอร์โทรผู้รับอีกครั้งค่ะ');s.phone=phone;s.stage='address';return reply('ขอที่อยู่จัดส่ง พร้อมตำบล/แขวง อำเภอ/เขต จังหวัด และรหัสไปรษณีย์ 5 หลักค่ะ');}
  if(s.stage==='address'){if(text.length<15||text.length>800||!/(?:^|\D)\d{5}(?:\D|$)/.test(text))return reply('ขอที่อยู่ให้ครบพร้อมรหัสไปรษณีย์ 5 หลักอีกครั้งค่ะ');s.address=text;s.stage='confirm';return reply(`ตรวจข้อมูลก่อนส่งค่ะ\n${cartText(s.items)}\n${s.name}\n${s.phone}\n${s.address}\nยังไม่มีการเรียกเก็บเงิน`,['ส่งรายการให้ร้าน','เริ่มใหม่']);}
  if(s.stage==='confirm'){if(text!=='ส่งรายการให้ร้าน')return reply('กดส่งรายการ หรือเริ่มใหม่เพื่อแก้ข้อมูลค่ะ',['ส่งรายการให้ร้าน','เริ่มใหม่']);o={id:id(),items:s.items,name:s.name,phone:s.phone,address:s.address,consentAt:s.consentAt,status:'awaiting_quote',createdAt:now,history:[{at:now,action:'submitted'}]};s.orderId=o.id;s.stage='ordered';delete s.name;delete s.phone;delete s.address;delete s.items;return reply(`รับรายการ ${o.id} แล้วค่ะ 🍀\nคนดูแลจะเช็กสินค้า ราคา และค่าส่ง แล้วส่งสรุปให้ก่อนโอน`,['สถานะออเดอร์','คุยกับคนดูแล']);}
- s.stage='cart';return reply(menu());
+ s.stage='cart';return reply(menu(now));
 }
 export function quote(order,body,now){
  if(order.status!=='awaiting_quote')throw new Fault('ORDER_NOT_QUOTABLE',409);
  if(body.stockConfirmed!==true)throw new Fault('CONFIRM_STOCK_FIRST');
- const prices={};let subtotal=0;for(const [sku,qty] of Object.entries(order.items)){const p=amount(body.prices?.[sku]);if(p<=0)throw new Fault('INVALID_PRICE');prices[sku]=p;subtotal+=p*qty;}
- const retail=body.useRetailPricing===true?retailPrice(order.items):null;
+ const prices={};let subtotal=0;for(const [sku,qty] of Object.entries(order.items)){const p=order.channel==='web'?order.webPricing.prices[sku]:amount(body.prices?.[sku]);if(p<=0)throw new Fault('INVALID_PRICE');prices[sku]=p;subtotal+=p*qty;}
+ const retail=order.channel==='web'?order.webPricing:body.useRetailPricing===true?retailPrice(order.items,now):null;
+ if(order.channel==='web'&&retail.couponExpiresAt&&now>=retail.couponExpiresAt)throw new Fault('COUPON_EXPIRED',409);
  if(retail)subtotal=retail.subtotal;
  const shipping=amount(body.shipping);if(subtotal+shipping>10000000)throw new Fault('TOTAL_TOO_HIGH');
- return {...order,prices:retail?.prices||prices,discount:retail?.discount||0,subtotal,shipping,total:subtotal+shipping,status:'awaiting_payment',quotedAt:now,expiresAt:now+24*3600000,history:[...order.history,{at:now,action:'quoted'}]};
+ return {...order,prices:retail?.prices||prices,discount:retail?.discount||0,subtotal,shipping,total:subtotal+shipping,status:'awaiting_payment',quotedAt:now,expiresAt:Math.min(now+24*3600000,retail?.couponExpiresAt||Infinity),history:[...order.history,{at:now,action:'quoted'}]};
 }
 export function inspectSlip(result,order,now){
  const fail=reason=>({ok:false,reason});if(result?.success!==true)return fail('PROVIDER_UNAVAILABLE_OR_INVALID');const d=result.data,a=d?.matchedAccount,r=d?.rawSlip;

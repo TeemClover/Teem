@@ -165,6 +165,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
       <p class="mr-detail__headline">${esc(product.headline)}</p>
       ${protection(step)}
       <p class="mr-detail__lead">${esc(product.lead)}</p>
+      <div class="mr-coupon" data-coupon></div>
       <div class="mr-actions">${lineAction(order, order.label_product)}<a class="mr-btn mr-btn--ghost" href="${back}">กลับไปดูรูทีน 5 ชิ้น</a></div>
     </div>
     <figure class="mr-detail__pack">${pack(step, asset)}</figure>
@@ -194,7 +195,7 @@ export function detailHTML({routine, details, id, asset = path => `../${path}`})
   <section class="mr-detail__block mr-detail__order" aria-labelledby="order-title">
     <h2 id="order-title">${esc(order.heading)}</h2>
     <p>${esc(order.how)}</p>
-    <div class="mr-actions">${lineAction(order)}</div>
+    <div class="mr-actions"><a class="mr-btn" href="/mediral/checkout/">สั่งซื้อบนเว็บ</a>${lineAction(order)}</div>
     <p class="mr-order__note">${esc(order.note)}</p>
   </section>
 

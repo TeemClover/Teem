@@ -1,3 +1,4 @@
+import {webCheckout} from './web-checkout.js';
 import {createHash} from 'node:crypto';
 import {BANK,Fault,clean,hmac,same,reducer,quote,inspectSlip,paymentMessage,lineText,amount} from './domain.js';
 import {dispatch} from './providers.js';
@@ -29,6 +30,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
   const json=(value,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(value));};
   const action=new URL(req.url,'https://local.invalid').searchParams.get('action')||'status';const now=clock();
   try{
+   if(action.startsWith('shop-')){if(!operatorReady())throw new Fault('SHOP_NOT_READY',503);return await webCheckout({action,req,res,store,env,now,raw,parse,originOK,json});}
    if(action==='health'&&req.method==='GET')return json({ok:true,service:'mediral-commerce',acceptingOrders:env.MEDIRAL_MODE==='live'&&configured()&&operatorReady()});
    if(action==='webhook'){
     if(req.method!=='POST')throw new Fault('METHOD_NOT_ALLOWED',405);
@@ -128,7 +130,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     res.setHeader('Content-Type',order.receipt.mime);res.setHeader('Content-Disposition','attachment; filename="receipt.'+(order.receipt.mime==='image/png'?'png':'jpg')+'"');res.setHeader('Content-Security-Policy',"default-src 'none'; sandbox");res.statusCode=200;return res.end(Buffer.from(order.receipt.base64,'base64'));
    }
    if(action!=='update'||req.method!=='POST')throw new Fault('METHOD_NOT_ALLOWED',405);
-   const body=parse(await raw(req,12000));const existing=body.id?await store.order(body.id):null;const user=existing?.userId||body.userId;if(!/^U[0-9a-f]{32}$/.test(user||''))throw new Fault('INVALID_CUSTOMER');
+   const body=parse(await raw(req,12000));const existing=body.id?await store.order(body.id):null;const user=existing?.userId||body.userId;if(!/^U[0-9a-f]{32}$/.test(user||'')&&!(existing?.channel==='web'&&/^W[0-9a-f]{32}$/.test(user||'')))throw new Fault('INVALID_CUSTOMER');
    const c=await store.claim(user,now);if(!c)throw new Fault('CUSTOMER_BUSY',409);
    let out;
    try{
@@ -137,7 +139,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     else if(body.command==='pause'){state.paused=true;state.reason='คนดูแลรับช่วง';}
     else{
      if(!order)throw new Fault('NOT_FOUND',404);
-     if(body.command==='quote'){if(env.MEDIRAL_MODE!=='live'||!configured())throw new Fault('LINE_NOT_READY',409);order=quote(order,body,now);state.paused=false;delete state.reason;messages=[paymentMessage(order)];}
+     if(body.command==='quote'){if(env.MEDIRAL_MODE!=='live'||(order.channel!=='web'&&!configured()))throw new Fault('LINE_NOT_READY',409);order=quote(order,body,now);state.paused=false;delete state.reason;messages=[paymentMessage(order)];}
      else if(body.command==='paid'){
       if(!['awaiting_payment','payment_review'].includes(order.status))throw new Fault('ORDER_NOT_PAYABLE',409);
       const ref=clean(body.transRef,120).toUpperCase();const transferred=Date.parse(body.transferredAt);
@@ -149,7 +151,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
      else if(body.command==='cancel'){if(!['awaiting_quote','awaiting_payment'].includes(order.status))throw new Fault('USE_PAYMENT_REVIEW',409);order.status='cancelled';order.history.push({at:now,action:'cancelled'});state.stage='cart';state.paused=false;messages=[lineText(`ยกเลิกรายการ ${order.id} แล้วค่ะ กรุณาอย่าโอนยอดเดิม หากโอนแล้วให้ส่งต่อคนดูแลทันที`,['คุยกับคนดูแล'])];}
      else throw new Fault('UNKNOWN_COMMAND');
     }
-    out=await store.commit(c,{state,order,messages,kind:'push',transfer},clock());
+    out=await store.commit(c,{state,order,messages:order?.channel==='web'?[]:messages,kind:'push',transfer},clock());
    }finally{await store.release(c);}
    if(out)await dispatch(store,providers,out,clock());return json({ok:true,delivery:out?'queued_check_outbox':'none'});
   }catch(e){const duplicate=e?.code==='23505'||String(e?.code).startsWith('SQLITE_CONSTRAINT')||[1555,2067].includes(e?.errcode);const code=duplicate?'TRANSFER_OR_EVENT_ALREADY_USED':e instanceof Fault?e.code:'SERVICE_UNAVAILABLE';return json({ok:false,code},duplicate?409:e instanceof Fault?e.status:503);}

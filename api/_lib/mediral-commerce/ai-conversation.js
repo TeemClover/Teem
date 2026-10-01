@@ -1,5 +1,5 @@
 import {PRODUCTS,clean,lineText,cartText,money,SITE} from './domain.js';
-import {retailPrice,RETAIL} from './catalog.js';
+import {retailPrice,retailAt} from './catalog.js';
 import {validateDecision} from './ai-provider.js';
 
 const CHECKOUT=new Set(['consent','name','phone','address','confirm','ordered']);
@@ -42,9 +42,10 @@ export function aiUnavailable(state,code='AI_UNAVAILABLE'){
  s.aiFailure={at:Date.now(),code:['AI_LIMIT','AI_NOT_CONFIGURED','AI_INVALID_OUTPUT'].includes(code)?code:'AI_UNAVAILABLE'};
  return {state:s,order:null,messages:[lineText('ตอนนี้ผู้ช่วย AI ตอบไม่ได้ชั่วคราวค่ะ ส่งต่อให้คนดูแลช่วยคุยต่อแล้ว ฝากคำถามไว้ในแชทนี้ได้เลยนะคะ')]};
 }
-function allowedReply(text){
+function allowedReply(text,now){
+ const RETAIL=retailAt(now);
  if(privateText(text))return false;
- const prices=new Set([RETAIL.unit/100,RETAIL.set/100,(5*RETAIL.unit-RETAIL.set)/100]);
+ const prices=new Set([RETAIL.regular/100,(RETAIL.regular-RETAIL.unit)/100,RETAIL.unit/100,RETAIL.set/100,(5*RETAIL.unit-RETAIL.set)/100]);
  // Any computed quantity quote must still derive from the public catalog.
  for(let count=1;count<=25;count++)for(let sets=0;sets<=Math.min(5,Math.floor(count/5));sets++)prices.add((sets*RETAIL.set+(count-5*sets)*RETAIL.unit)/100);
  if([...text.matchAll(/([0-9][0-9,]*(?:\.\d+)?)\s*บาท|฿\s*([0-9][0-9,]*(?:\.\d+)?)/g)].some(m=>!prices.has(Number((m[1]||m[2]).replaceAll(',','')))))return false;
@@ -54,7 +55,7 @@ function allowedReply(text){
 }
 export function applyAIDecision(state,text,response,now){
  const d=validateDecision(response.decision),s=structuredClone(state||{});
- if(d.action!=='propose_cart'&&!allowedReply(d.reply))return aiUnavailable(state,'AI_INVALID_OUTPUT');
+ if(d.action!=='propose_cart'&&!allowedReply(d.reply,now))return aiUnavailable(state,'AI_INVALID_OUTPUT');
  s.house||={topic:null,interests:{},subscriptions:{}};s.house.topic=d.topic;
  delete s.aiFailure;
  if(d.focus!=='none')s.productFocus=d.focus;else delete s.productFocus;
@@ -64,7 +65,7 @@ export function applyAIDecision(state,text,response,now){
  if(d.action==='propose_cart'){
   const items=Object.fromEntries(d.items.map(x=>[x.sku,x.quantity]));
   s.aiProposal={items,at:now};
-  reply=`จัดรายการนี้ให้ตรวจดูก่อนนะคะ 🍀\n${cartText(items)}\nรวมสินค้า ${money(retailPrice(items).subtotal)} บาท ยังไม่รวมค่าส่ง\nใช้รายการนี้เพื่อสั่งซื้อต่อไหมคะ?`;
+  reply=`จัดรายการนี้ให้ตรวจดูก่อนนะคะ 🍀\n${cartText(items)}\nรวมสินค้า ${money(retailPrice(items,now).subtotal)} บาท ยังไม่รวมค่าส่ง\nใช้รายการนี้เพื่อสั่งซื้อต่อไหมคะ?`;
   buttons=['ใช้รายการนี้','ไม่ใช้รายการนี้','คุยกับคนดูแล'];
  }else{
   delete s.aiProposal;
@@ -84,7 +85,7 @@ export function confirmAIProposal(state,text,now){
  const s=structuredClone(state||{}),p=s.aiProposal;delete s.aiProposal;
  if(text==='ไม่ใช้รายการนี้')return {state:s,order:null,messages:[lineText('ได้ค่ะ อยากปรับเป็นชิ้นไหนหรือมีอะไรที่อยากรู้เพิ่ม พิมพ์มาได้เลยค่ะ')]};
  if(s.paused||CHECKOUT.has(s.stage)||!p||now-p.at>15*60000)return {state:s,order:null,messages:[lineText('รายการที่เสนอหมดอายุหรือมีรายการอื่นกำลังทำอยู่ค่ะ บอกสินค้าที่ต้องการอีกครั้งได้เลย')]};
- try{retailPrice(p.items);}catch{return aiUnavailable(state,'AI_INVALID_OUTPUT');}
+ try{retailPrice(p.items,now);}catch{return aiUnavailable(state,'AI_INVALID_OUTPUT');}
  s.stage='cart';s.items=p.items;s.house||={interests:{},subscriptions:{}};s.house.topic='mediral';
- return {state:s,order:null,messages:[lineText(`เลือกไว้แล้วค่ะ 🍀\n${cartText(s.items)}\nรวมสินค้า ${money(retailPrice(s.items).subtotal)} บาท ยังไม่รวมค่าส่ง\nกดยืนยันสินค้าเพื่อกรอกข้อมูลจัดส่ง ร้านจะเช็กของและแจ้งยอดก่อนโอน`,['ยืนยันสินค้า','เริ่มใหม่','คุยกับคนดูแล'])]};
+ return {state:s,order:null,messages:[lineText(`เลือกไว้แล้วค่ะ 🍀\n${cartText(s.items)}\nรวมสินค้า ${money(retailPrice(s.items,now).subtotal)} บาท ยังไม่รวมค่าส่ง\nกดยืนยันสินค้าเพื่อกรอกข้อมูลจัดส่ง ร้านจะเช็กของและแจ้งยอดก่อนโอน`,['ยืนยันสินค้า','เริ่มใหม่','คุยกับคนดูแล'])]};
 }

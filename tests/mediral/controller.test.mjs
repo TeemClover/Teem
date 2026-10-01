@@ -9,8 +9,12 @@ import vm from 'node:vm';
 const entry = new URL('../../mediral/js/main.js', import.meta.url);
 const letterModule = await import(new URL('../../mediral/js/letter.js', import.meta.url));
 const scoreModule = await import(new URL('../../mediral/js/score.js', import.meta.url));
+const couponModule = await import(new URL('../../mediral/js/coupon.js', import.meta.url));
+const inquiryModule = await import(new URL('../../mediral/js/inquiry-source.js', import.meta.url));
 const {CHAPTERS, END} = scoreModule;
 const source = readFileSync(entry, 'utf8').replaceAll('import.meta.url', JSON.stringify(entry.href))
+  .replace("import {mountCoupon} from './coupon.js';", 'const {mountCoupon} = globalThis.couponModule;')
+  .replace("import {inquirySource} from './inquiry-source.js';", 'const {inquirySource} = globalThis.inquiryModule;')
   .replace("import {createLetterMotion} from './letter.js';", 'const {createLetterMotion} = globalThis.letterModule;')
   .replace("import {createCinema} from './cinema.js';", 'const {createCinema} = globalThis.cinemaModule;')
   .replace(/import \{([^}]*)\} from '\.\/score\.js';/, 'const {$1} = globalThis.scoreModule;')
@@ -106,6 +110,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     createElement: tag => new Element(tag),
     addEventListener(name, handler) { if (!listeners.has(name)) listeners.set(name, []); listeners.get(name).push(handler); },
     querySelector(selector) {
+      if (selector === '[data-coupon]') return null; // Coupon renderer has its own date-boundary suite.
       const slot = selector.match(/^\[data-slot="([^"]+)"\]$/);
       if (slot) return slots.get(slot[1]) ?? null;
       if (selector === '[data-view]') return view;
@@ -166,7 +171,7 @@ async function fixture({url = 'https://www.myclover.com/mediral/', clock = '2026
     setTimeout(fn, delay) { const id = ++timerId; timers.set(id, {fn, delay}); return id; }, clearTimeout(id) { timers.delete(id); },
     fetch: async () => { await dataReady; if (fetchFails) throw new Error('routine unavailable'); return {ok: true, json: async () => data}; },
     loadFilmModule: async () => ({initLabFilm: filmFactory}),
-    cinemaModule, scoreModule, letterModule,
+    cinemaModule, scoreModule, letterModule, couponModule, inquiryModule,
   });
   const animationFrames = new Map();
   let frameId = 0;
@@ -325,8 +330,8 @@ test('one order channel: the LINE action reads the verified config; an unverifie
   assert.equal(link.rel, 'noopener');
   assert.equal(ui.slots.get('order-title').textContent, routine.order.heading);
   assert.equal(ui.slots.get('order-how').textContent, routine.order.how);
-  assert.match(ui.slots.get('order-how').textContent, /แจ้งราคา ค่าส่ง และวิธีชำระ.*ก่อนยืนยัน/);
-  assert.match(ui.slots.get('order-note').textContent, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
+  assert.match(ui.slots.get('order-how').textContent, /สั่งบนเว็บ.*LINE/);
+  assert.match(ui.slots.get('order-note').textContent, /แจ้งค่าส่งก่อนชำระเงิน/, 'Opening LINE is not an order');
   assert.equal(ui.slots.get('route-close').textContent, routine.route.close, 'The close repeats the route in one short line');
   const off = await fixture({line: false});
   assert.equal(off.slots.get('line-link').hidden, true);

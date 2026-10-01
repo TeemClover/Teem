@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {knowledge,SYSTEM_PROMPT} from '../../api/_lib/mediral-commerce/ai-knowledge.js';
-import {RETAIL} from '../../api/_lib/mediral-commerce/catalog.js';
+import {knowledge as rawKnowledge,SYSTEM_PROMPT} from '../../api/_lib/mediral-commerce/ai-knowledge.js';
+import {retailAt} from '../../api/_lib/mediral-commerce/catalog.js';
 
+const now=Date.parse('2026-10-01T10:00:00+07:00'),RETAIL=retailAt(now),knowledge=()=>rawKnowledge(now);
 const source=JSON.parse(readFileSync(new URL('../../mediral/data/details.json',import.meta.url),'utf8'));
 
 test('AI knowledge includes all source ingredients in their original groups without invented benefits',()=>{
@@ -53,6 +54,6 @@ test('AI knowledge is compact, independent across calls and excludes private or 
  first.mediral.products[0].ingredient_groups[0].items[0].name='corrupted';
  first.mediral.unit_price_thb=1;
  const second=knowledge();
- assert.equal(second.mediral.unit_price_thb,399);
+ assert.equal(second.mediral.unit_price_thb,400);
  assert.equal(second.mediral.products[0].ingredient_groups[0].items[0].name,source.products[0].ingredient_groups[0].items[0].name);
 });

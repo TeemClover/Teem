@@ -2,6 +2,7 @@
  * Mediral — a product's own page. The static page already names the piece, its role and a way
  * back; this fills in the full story and every listed name from the same data as the main page.
  */
+import {mountCoupon} from './coupon.js';
 import {detailHTML} from './detail-view.js';
 import {initDetailMotion} from './detail-motion.js';
 
@@ -19,6 +20,7 @@ async function boot() {
     return res.json();
   }));
   document.getElementById('main').innerHTML = detailHTML({routine, details, id, asset});
+  mountCoupon(document.querySelector('[data-coupon]'), routine.order.coupon);
   // Every call to action on this page reads the one order channel.
   const header = document.querySelector('[data-slot="line-link"]');
   if (header && routine.order?.status === 'verified') Object.assign(header, {href: routine.order.url, textContent: routine.order.label_short});

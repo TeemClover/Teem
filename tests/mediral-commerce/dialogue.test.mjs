@@ -5,7 +5,7 @@ import {reducer} from '../../api/_lib/mediral-commerce/domain.js';
 import {fixture} from './fixture.mjs';
 
 const event=text=>({type:'message',source:{type:'user'},message:{type:'text',text}});
-const say=(state,text,order)=>route(state,event(text),order);
+const say=(state,text,order)=>route(state,event(text),order,{now:Date.parse('2026-10-01T10:00:00+07:00')});
 const reply=result=>result.messages[0]?.text||'';
 
 test('screenshot flow: serum inquiry then dullness selects BR, not a cart or generic menu',()=>{
@@ -39,7 +39,7 @@ test('common serum spelling variants reach the same clarification',()=>{
 test('product follow-up preserves context until explicit purchase; consent still gates PII',()=>{
  let result=say({},'หน้าหมอง');
  result=say(result.state,'ราคาเท่าไหร่');
- assert.match(reply(result),/เหลืองเขียว.*399/);
+ assert.match(reply(result),/เหลืองเขียว.*400/);
  assert.deepEqual(result.state.items,{});
  result=say(result.state,'ส่วนผสม');
  assert.match(reply(result),/mediral\/br\//);
@@ -67,7 +67,7 @@ test('specific product names are inquiry; explicit product button adds requested
  const action=result.messages[0].quickReply.items[0].action.text;
  result=say(result.state,action);
  assert.deepEqual(result.state.items,{AC:1});
- assert.match(reply(result),/399.00/);
+ assert.match(reply(result),/400.00/);
 });
 
 test('questions and mixed concerns do not silently add a product',()=>{
@@ -139,7 +139,7 @@ test('explicit information questions during checkout are answered without record
   assert.equal(result.state.name,undefined);
   assert.equal(result.state.phone,undefined);
   assert.equal(result.state.address,undefined);
-  assert.match(reply(result),/399.00/);
+  assert.match(reply(result),/400.00/);
   result=say(result.state,'ส่วนผสม');
   assert.equal(result.state.stage,stage);
   assert.match(reply(result),/แบร์เบอร์รี่/);
@@ -155,7 +155,7 @@ test('menu says product names show information and offers explicit whole-set pur
  assert.ok(menu.includes('สั่งชุด 5 ชิ้น'));
  result=say(result.state,'สั่งชุด 5 ชิ้น');
  assert.deepEqual(result.state.items,{CL:1,AC:1,BR:1,SU:1,PO:1});
- assert.match(reply(result),/1,899.00/);
+ assert.match(reply(result),/2,000.00/);
 });
 
 test('product-like address content and pending payment retain their protected flows',()=>{

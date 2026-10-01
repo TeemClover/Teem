@@ -285,7 +285,7 @@ test('one way to order: the myClover LINE from one config, no pretend checkout, 
   assert.equal(order.url, 'https://lin.ee/rlSlhzT', 'The myClover house LINE');
   assert.equal(order.status, 'verified');
   assert.equal(order.label, 'แอด LINE สั่งชุดดูแลผิว');
-  assert.match(order.note, /การสั่งซื้อเกิดขึ้นเมื่อยืนยันในแชตเท่านั้น/, 'Opening LINE is not an order');
+  assert.match(order.note, /แจ้งค่าส่งก่อนชำระเงิน/, 'Opening LINE is not an order');
   const code = publicCode();
   const lineUrls = [...new Set([...code.matchAll(/https:\/\/(?:lin\.ee|line\.me)\/[^"'\s)]+/g)].map(m => m[0]))];
   assert.deepEqual(lineUrls, [order.url], 'Every static LINE link equals the config');
