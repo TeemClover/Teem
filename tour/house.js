@@ -48,14 +48,14 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   const root = new THREE.Group();
   const out = {root, hotspots: [], collectibles: new Map(), tickers: [], lights: [], screens: [], smoke: [], steam: [], lazy: new Map(), music: null};
   let area = 'outside'; // which room is being built: pictures load per room, as the visitor gets near
-  const geoCache = new Map(), matCache = new Map();
+  const geoCache = new Map(), matCache = new Map(), solidMaterials = new WeakSet(), decalMaterials = new WeakMap();
   const artUrl = slot => art.has(slot) ? `/tour/art/${art.get(slot)}` : ART[slot].fallback;
 
   /* ---------- helpers ---------- */
   const M = (color, o = {}) => {
     // key by texture uuid: JSON.stringify on a texture would serialise its whole canvas
     const key = color + Object.entries(o).map(([k, v]) => `${k}:${v?.isTexture ? v.uuid : v}`).join(',');
-    if (!matCache.has(key)) matCache.set(key, new THREE.MeshStandardMaterial({color, roughness: 0.72, ...o}));
+    if (!matCache.has(key)) { const material = new THREE.MeshStandardMaterial({color, roughness: 0.72, ...o}); matCache.set(key, material); solidMaterials.add(material); }
     return matCache.get(key);
   };
   const nm = (t, s = 1) => t ? {normalMap: t, normalScale: new THREE.Vector2(s, s)} : {}; // HD-only relief
@@ -85,6 +85,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   const blob = (p, r, [x, y, z], color, detail = 1) => place(new THREE.Mesh(geo('ico', [r, detail]), M(color, {flatShading: !hd, roughness: 0.8})), p, x, y, z);
   // flat decal: pulled toward the camera in depth so it never fights the surface behind it
   const plane = (p, [w, h], [x, y, z], mat, rot) => {
+    // Decal bias must not leak into boxes that share the cached solid material.
+    if (solidMaterials.has(mat)) { if (!decalMaterials.has(mat)) decalMaterials.set(mat, mat.clone()); mat = decalMaterials.get(mat); }
     mat.polygonOffset = true; mat.polygonOffsetFactor = -1; mat.polygonOffsetUnits = -4;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat); m.position.set(x, y, z); if (rot) m.rotation.set(...rot); m.receiveShadow = true; p.add(m); return m;
   };
@@ -128,10 +130,11 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   leafShape.bezierCurveTo(0, 0.88, 0.07, 1.05, 0.26, 1.0);
   leafShape.bezierCurveTo(0.62, 0.92, 0.55, 0.3, 0, 0);
   const leafGeo = new THREE.ExtrudeGeometry(leafShape, {depth: 0.07, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: hd ? 4 : 2, curveSegments: hd ? 24 : 12});
-  leafGeo.translate(0, 0, -0.05);
+  leafGeo.translate(0, 0.1, -0.05); // separate the bevels at the four leaf roots
   out.leafGeo = leafGeo;
   function clover(material, leaves = 4) {
     const g = new THREE.Group();
+    g.add(new THREE.Mesh(geo('sph', [0.12]), material)); // rounded stem junction, no duplicate flat leaf faces
     for (let i = 0; i < leaves; i++) { const l = new THREE.Mesh(leafGeo, material); l.rotation.z = i * Math.PI * 2 / leaves + Math.PI / 4; l.castShadow = true; g.add(l); }
     const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.12, -0.6, 0.05), new THREE.Vector3(0.05, -1.3, 0.1)]);
     g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.05, 8), material));
@@ -176,9 +179,9 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   { // carport on the left, with a glass-railed deck above like the real house
     const cp = group(root, -9.9, 0, 0);
     for (const [x, z] of [[-1.7, 3.1], [-1.7, -3.0]]) cy(cp, [0.14, 0.14, H], [x, 0, z], white);
-    bx(cp, [3.9, 0.22, D + 0.3], [0, H - 0.02, 0.1], white);
+    bx(cp, [3.7, 0.22, D + 0.3], [-0.1, H - 0.02, 0.1], white); // stops at the side wall instead of overlapping the upstairs floor
     bx(cp, [3.9, 0.9, 0.04], [0, H + 0.2, D / 2 + 0.22], railGlass); bx(cp, [0.04, 0.9, D + 0.3], [-1.93, H + 0.2, 0.1], railGlass);
-    bx(cp, [3.94, 0.05, 0.08], [0, H + 1.1, D / 2 + 0.22], frameMat); bx(cp, [0.08, 0.05, D + 0.3], [-1.93, H + 1.1, 0.1], frameMat);
+    bx(cp, [3.94, 0.05, 0.08], [0, H + 1.1, D / 2 + 0.22], frameMat); bx(cp, [0.08, 0.05, D + 0.18], [-1.93, H + 1.1, 0.04], frameMat);
     // the family car
     const car = group(cp, 0, 0, 0.4);
     const paint = M('#f2f2f0', {roughness: 0.25, metalness: 0.4}), tyre = M('#1c1c1c', {roughness: 0.8});
@@ -204,26 +207,28 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const f = new THREE.Mesh(new THREE.BoxGeometry(W, 0.12, D), id === 'kitchen' ? floorMat.tile : floorMat.wood);
     f.position.set(cx, fy - 0.06, 0); f.receiveShadow = true; root.add(f);
     const back = bx(root, [W, H, 0.24], [cx, fy, -D / 2 - 0.12], wallMat[id]); back.castShadow = false;
-    bx(root, [W, 0.14, 0.05], [cx, fy, -D / 2 + 0.025], '#fbf8f1'); // skirting
-    if (id !== 'kitchen') bx(root, [W, 0.9, 0.03], [cx, fy, -D / 2 + 0.015], M('#f3f0e6', {map: tex.plaster})); // wainscot, 1.5 cm behind the skirting face
+    bx(root, [W - 0.1, 0.14, 0.05], [cx + Math.sign(cx) * 0.05, fy, -D / 2 + 0.025], '#fbf8f1'); // skirting
+    if (id !== 'kitchen') bx(root, [W - 0.1, 0.76, 0.03], [cx + Math.sign(cx) * 0.05, fy + 0.14, -D / 2 + 0.015], M('#f3f0e6', {map: tex.plaster})); // ends above the skirting and before the partition
   }
   // floor-2 slab: between the ceiling of floor 1 (y=H) and the floor boxes of floor 2 (bottom F2-0.12)
   const storeySlab = bx(root, [16.4, SLAB - 0.12, D + 0.3], [0, H, 0], white);
   // Slab front is z=D/2+0.15. Keep the fascia front 2 cm ahead of it;
   // coincident faces used to shimmer along the whole storey in exterior views.
-  const storeyEdge = bx(root, [16.4, 0.12, 0.14], [0, H + 0.02, D / 2 + 0.10], grey);
+  const storeyEdge = bx(root, [16.44, 0.12, 0.14], [0, H + 0.02, D / 2 + 0.10], grey);
   out.storey = {slab: storeySlab, edge: storeyEdge};
   // side walls (always visible; they frame the dollhouse), with window decals inside and out
   const sideWindow = canvasMat(256, 256, (c, w, h) => { const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#a9d8ef'); g.addColorStop(1, '#f4e6c3'); c.fillStyle = g; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(60,110,70,.5)'; for (let x = 0; x < w; x += 42) { c.beginPath(); c.arc(x + 20, h - 10, 34, Math.PI, 0); c.fill(); } c.strokeStyle = '#2b2f31'; c.lineWidth = 12; c.strokeRect(6, 6, w - 12, h - 12); c.beginPath(); c.moveTo(w / 2, 0); c.lineTo(w / 2, h); c.stroke(); }, 0.45);
   // right wall: doorways into the stair hall (floor 1 near the front, floor 2 at the back)
   const DOOR1 = [1.5, 2.9], DOOR2 = [-3.25, -1.95], DH = 2.3, ZW = D / 2 + 0.12;
   function sideWall(x, fy, door) {
-    if (!door) return bx(root, [0.24, H, 2 * ZW], [x, fy, 0], white);
+    // Butt against the front facade; overlapping boxes had duplicate exterior faces.
+    const front = D / 2;
+    if (!door) return bx(root, [0.24, H, front + ZW], [x, fy, (front - ZW) / 2], white);
     const [a, b] = door;
-    bx(root, [0.24, H, a + ZW], [x, fy, (a - ZW) / 2], white); bx(root, [0.24, H, ZW - b], [x, fy, (b + ZW) / 2], white);
+    bx(root, [0.24, H, a + ZW], [x, fy, (a - ZW) / 2], white); bx(root, [0.24, H, front - b], [x, fy, (b + front) / 2], white);
     bx(root, [0.24, H - DH, b - a], [x, fy + DH, (a + b) / 2], white);
-    for (const z of [a, b]) bx(root, [0.3, DH, 0.06], [x, fy, z], wood('#8c6242')); // door frame
-    bx(root, [0.3, 0.06, b - a + 0.06], [x, fy + DH, (a + b) / 2], wood('#8c6242'));
+    for (const z of [a, b]) bx(root, [0.3, DH - 0.01, 0.06], [x, fy + 0.01, z], wood('#8c6242')); // door frame
+    bx(root, [0.3, 0.06, b - a - 0.06], [x, fy + DH - 0.03, (a + b) / 2], wood('#8c6242'));
   }
   for (const fy of [0, F2]) {
     sideWall(-8.12, fy); sideWall(8.12, fy, fy ? DOOR2 : DOOR1);
@@ -249,9 +254,11 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   function glazing(parent, fy, [x0, x1, y0, y1], mullions = 2) {
     const w = x1 - x0, h = y1 - y0, cx = (x0 + x1) / 2;
     plane(parent, [w, h], [cx, fy + y0 + h / 2, FZ], glassMat);
-    bx(parent, [w + 0.1, 0.08, 0.3], [cx, fy + y0 - 0.08, FZ], frameMat); bx(parent, [w + 0.1, 0.08, 0.3], [cx, fy + y1, FZ], frameMat);
-    for (const x of [x0, x1]) bx(parent, [0.08, h, 0.3], [x, fy + y0, FZ], frameMat);
-    for (let k = 1; k <= mullions; k++) bx(parent, [0.05, h, 0.12], [x0 + w * k / (mullions + 1), fy + y0, FZ + 0.02], frameMat);
+    // Rails straddle the opening edge: their exposed tops/undersides are 4 cm
+    // clear of the masonry reveal. Jambs meet the rails without overlapping.
+    bx(parent, [w + 0.1, 0.08, 0.3], [cx, fy + y0 - 0.04, FZ], frameMat); bx(parent, [w + 0.1, 0.08, 0.3], [cx, fy + y1 - 0.04, FZ], frameMat);
+    for (const x of [x0, x1]) bx(parent, [0.08, h - 0.08, 0.3], [x, fy + y0 + 0.04, FZ], frameMat);
+    for (let k = 1; k <= mullions; k++) bx(parent, [0.05, h - 0.08, 0.12], [x0 + w * k / (mullions + 1), fy + y0 + 0.04, FZ + 0.02], frameMat);
   }
   const facade = out.facade = group(root);
   frontWall(facade, 0, [[-6.2, -4.8, 0, 2.4], [-3.6, -0.6, 0.35, 2.7], [1.0, 7.0, 0.35, 2.7]]);
@@ -280,15 +287,16 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   bx(upper, [6.6, 0.95, 0.04], [-4.2, F2, FZ + 1.28], railGlass);
   bx(upper, [6.64, 0.05, 0.07], [-4.2, F2 + 0.95, FZ + 1.28], frameMat);
   for (const x of [-7.4, -1.0]) cy(upper, [0.1, 0.1, F2 - 0.14], [x, 0, FZ + 1.1], white); // balcony columns (they rise with it)
-  bx(upper, [16.5, 0.18, 0.4], [0, F2 + H - 0.1, FZ + 0.06], grey); // top band
+  // One continuous fascia across the house and stair hall, with no overlapping join.
+  bx(upper, [STAIR.x1 + 8.3, 0.18, 0.4], [(STAIR.x1 - 8.2) / 2, F2 + H - 0.1, FZ + 0.06], grey);
   stairWall(upper, STAIR.x0, WX[0], H, F2 + H); stairWall(upper, WX[1], STAIR.x1, H, F2 + H); stairWall(upper, WX[0], WX[1], F2 + 2.6, F2 + H);
   stairWall(upper, WX[0], WX[1], H, H + 0.16); glazing(upper, H, [WX[0], WX[1], 0.26, SLAB + 2.6], 1); // no frame shares a face with the lower window
-  bx(upper, [STAIR.x1 - STAIR.x0 + 0.1, 0.18, 0.4], [(STAIR.x0 + STAIR.x1) / 2, F2 + H - 0.1, FZ + 0.06], grey);
 
   /* ================= ROOFS: two hip roofs + solar panels (lift away when inside) ================= */
   const roof = out.roof = group(root);
   const tile = M('#d2683f', {roughness: 0.62, side: THREE.DoubleSide, ...(hd ? {map: tex.canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#d2683f'; c.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 32) { c.fillStyle = 'rgba(80,25,10,.35)'; c.fillRect(0, y, w, 4); for (let x = (y / 32 % 2) * 16; x < w; x += 32) { c.fillStyle = 'rgba(80,25,10,.2)'; c.fillRect(x, y, 2, 32); } } }, {repeat: [1, 1]})} : {})});
   function hipRoof(cx, cz, w, d, h, y) {
+    y += 0.025; // soffit top must not share the wall-cap plane when the roof closes
     const hw = w / 2, hd2 = d / 2, rl = Math.max(0, hw - hd2); // ridge half-length along x
     const A = [cx - hw, y, cz + hd2], B = [cx + hw, y, cz + hd2], C = [cx + hw, y, cz - hd2], Dd = [cx - hw, y, cz - hd2];
     const R1 = [cx - rl, y + h, cz], R2 = [cx + rl, y + h, cz];
@@ -308,7 +316,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   const solar = M('#1f2d4a', {roughness: 0.25, metalness: 0.5, ...(hd ? {map: tex.canvasTex(128, 128, c => { c.fillStyle = '#1f2d4a'; c.fillRect(0, 0, 128, 128); c.strokeStyle = 'rgba(200,220,255,.35)'; c.lineWidth = 2; for (let k = 0; k <= 128; k += 32) { c.beginPath(); c.moveTo(k, 0); c.lineTo(k, 128); c.stroke(); c.beginPath(); c.moveTo(0, k); c.lineTo(128, k); c.stroke(); } })} : {})});
   for (let r = 0; r < 2; r++) for (let k = 0; k < 4; k++) { // panels on the front slope of the right roof, 6 cm above the tiles
     const along = 0.6 + r * 1.15, x = 2.3 + k * 1.1;
-    const pz = -0.2 + (D + 2.0) / 2 - along * Math.cos(right.slope), py = top + 0.12 + along * Math.sin(right.slope) + 0.06;
+    const pz = -0.2 + (D + 2.0) / 2 - along * Math.cos(right.slope), py = top + 0.12 + along * Math.sin(right.slope) + 0.085;
     bx(roof, [1.0, 0.04, 1.05], [x, py, pz], solar, [right.slope, 0, 0]);
   }
 
@@ -318,7 +326,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   {
     const g = room('living');
     const rug = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 2.1, 0.025, 64), new THREE.MeshStandardMaterial({map: tex.rug, roughness: 1}));
-    rug.position.set(0.2, 0.0125, 0.4); rug.receiveShadow = true; g.add(rug);
+    rug.position.set(0.2, 0.0165, 0.4); rug.receiveShadow = true; g.add(rug);
     const sage = fabric('#5b8a6f');
     rb(g, [3.2, 0.42, 1.0], [0.2, 0.08, BW + 0.85], sage, null, 0.1); rb(g, [3.2, 0.8, 0.3], [0.2, 0.36, BW + 0.4], sage, null, 0.12);
     rb(g, [0.3, 0.66, 1.0], [-1.4, 0.08, BW + 0.85], sage, null, 0.12); rb(g, [0.3, 0.66, 1.0], [1.8, 0.08, BW + 0.85], sage, null, 0.12);
@@ -382,7 +390,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     // book corner along the left wall: open shelf, three featured books, armchair, reading lamp
     const bs = group(g, -3.7, 0, -1.3); bs.rotation.y = Math.PI / 2;
     const shelfWood = wood('#8c6242');
-    bx(bs, [3.6, 2.6, 0.05], [0, 0, -0.26], wood('#6b4a30'));
+    bx(bs, [3.6, 2.59, 0.05], [0, 0.01, -0.26], wood('#6b4a30'));
     for (const sx of [-1.8, 1.8]) rb(bs, [0.06, 2.62, 0.52], [sx, 0, 0], shelfWood, null, 0.01);
     rb(bs, [3.62, 0.06, 0.53], [0, 2.58, 0], shelfWood, null, 0.01);
     const N = hd ? 150 : 110, books = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), M('#ffffff', {roughness: 0.6}), N);
@@ -392,8 +400,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
       let x = -1.72;
       while (x < 1.6 && i < N) {
         const w = 0.07 + ((i * 37) % 7) / 60, h = 0.3 + ((i * 13) % 5) / 40, lean = (i % 11 === 0) ? 0.18 : 0;
-        m4.compose(new THREE.Vector3(x + w / 2, 0.14 + s * 0.5 + h / 2, 0.02), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, lean)), new THREE.Vector3(w, h, 0.32));
-        books.setMatrixAt(i, m4); books.setColorAt(i, col.set(bcols[(i * 5 + s) % bcols.length])); x += w + 0.012; i++;
+        const footprint = w * Math.cos(lean) + h * Math.abs(Math.sin(lean)), height = h * Math.cos(lean) + w * Math.abs(Math.sin(lean));
+        if (x + footprint > 1.72) break;
+        m4.compose(new THREE.Vector3(x + footprint / 2, 0.14 + s * 0.5 + height / 2, 0.02), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, lean)), new THREE.Vector3(w, h, 0.32));
+        books.setMatrixAt(i, m4); books.setColorAt(i, col.set(bcols[(i * 5 + s) % bcols.length])); x += footprint + 0.012; i++;
       }
       bx(bs, [3.5, 0.04, 0.48], [0, 0.09 + s * 0.5, 0], wood('#6b4a30'));
     }
@@ -413,7 +423,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     }
     const chair = group(g, -3.0, 0, 2.55); chair.rotation.y = 0.75;
     const mustard = fabric('#d9a441');
-    rb(chair, [0.95, 0.42, 0.85], [0, 0.12, 0], mustard, null, 0.12); rb(chair, [0.95, 0.78, 0.22], [0, 0.4, -0.36], mustard, null, 0.1);
+    rb(chair, [0.76, 0.42, 0.85], [0, 0.12, 0], mustard, null, 0.12); rb(chair, [0.95, 0.78, 0.22], [0, 0.4, -0.36], mustard, null, 0.1);
     rb(chair, [0.2, 0.58, 0.85], [-0.48, 0.12, 0], mustard, null, 0.08); rb(chair, [0.2, 0.58, 0.85], [0.48, 0.12, 0], mustard, null, 0.08);
     for (const [dx, dz] of [[-0.38, -0.33], [0.38, -0.33], [-0.38, 0.33], [0.38, 0.33]]) cy(chair, [0.03, 0.02, 0.14], [dx, 0, dz], '#5a3d28');
     cy(g, [0.02, 0.02, 1.6], [-3.65, 0, 1.55], '#333333');
@@ -565,10 +575,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const hallFloor = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, D), floorMat.wood); hallFloor.position.set(cx, -0.06, 0); hallFloor.receiveShadow = true; g.add(hallFloor);
     const hallWall = M('#f1e6d6', {map: tex.plaster, ...nm(tex.plasterN)});
     bx(g, [w, F2 + H, 0.24], [cx, 0, -D / 2 - 0.12], hallWall).castShadow = false; // back
-    bx(g, [0.24, F2 + H, 2 * ZW], [STAIR.x1 - 0.12, 0, 0], white); // outer side wall, both floors
+    bx(g, [0.24, F2 + H, D], [STAIR.x1 - 0.12, 0, 0], white); // butt joints with front/back walls
     plane(g, [0.24, 0.24], [STAIR.x1 - 0.245, 0.3, 3.0], M('#ffffff'), [0, -Math.PI / 2, 0]); // light switch plate
     // landing at floor 2, in front of the classroom door
-    bx(g, [w, 0.3, 1.5], [cx, F2 - 0.3, -D / 2 + 0.75], floorMat.wood);
+    bx(g, [w - 0.24, 0.3, 1.5], [cx - 0.12, F2 - 0.3, -D / 2 + 0.75], floorMat.wood);
     // 16 floating oak treads + the landing make 17 risers of 20 cm along the outer wall
     const SX0 = 9.85, SX1 = STAIR.x1 - 0.24, zTop = -D / 2 + 1.5, zBot = 2.95, n = 16, run = (zBot - zTop) / n, rise = F2 / 17;
     const oak = wood('#c08a55');
@@ -701,7 +711,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
       rb(mon, [1.6, 0.96, 0.05], [0, 0.26, 0], M('#1b1f1d', {roughness: 0.4}), null, 0.02);
       plane(mon, [1.52, 0.855], [0, 0.74, 0.032], s_.mat);
       plane(mon, [0.8, 0.13], [0, 0.2, 0.034], new THREE.MeshStandardMaterial({map: label(s_.tag, 512, 84, s_.col, '#10201a', 48)})).castShadow = false;
-      cy(mon, [0.03, 0.03, 0.26], [0, 0, 0], M('#1b1f1d')); rb(mon, [0.34, 0.02, 0.2], [0, 0, 0.02], M('#1b1f1d'), null, 0.005);
+      cy(mon, [0.03, 0.03, 0.24], [0, 0.02, 0], M('#1b1f1d')); rb(mon, [0.34, 0.02, 0.2], [0, 0, 0.02], M('#1b1f1d'), null, 0.005);
       hot(mon, s_.id);
     }
     for (const x of [-2.4, 1.9]) {
@@ -756,7 +766,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const wordmark = photo('/tour/art/mediral-wordmark.svg', 62.312 / 14.690);
     wordmark.transparent = true; wordmark.alphaTest = 0.03;
     plane(cabinet, [0.76, 0.76 * 14.690 / 62.312], [0, 0.335, 0.39], wordmark);
-    plane(cabinet, [1.32, 0.11], [0, 0.195, 0.39], new THREE.MeshStandardMaterial({map: label('PARTNER PROJECT', 768, 64, '#173f34', '#eee8db', 40)}));
+    plane(cabinet, [1.32, 0.11], [0, 0.18, 0.39], new THREE.MeshStandardMaterial({map: label('PARTNER PROJECT', 768, 64, '#173f34', '#eee8db', 40)}));
     hot(cabinet, 'mediral');
     // House model on a built-in sideboard at the left wall, leaving the centre open.
     const table = group(g, -3.22, 0, 0.3);
@@ -771,7 +781,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     rb(mh, [0.66, 0.24, 0.36], [0, 0, 0], walls, null, 0.01); rb(mh, [0.66, 0.24, 0.36], [0, 0.25, 0], walls, null, 0.01);
     for (const [x, y, w_] of [[-0.15, 0.04, 0.2], [0.18, 0.05, 0.22], [-0.12, 0.3, 0.3], [0.2, 0.32, 0.14]]) bx(mh, [w_, 0.14, 0.012], [x, y, 0.18], glassD);
     bx(mh, [0.3, 0.012, 0.1], [-0.12, 0.25, 0.23], walls); // balcony
-    for (const x of [-0.17, 0.17]) { const r = new THREE.Mesh(new THREE.ConeGeometry(0.27, 0.16, 4), tile); r.rotation.y = Math.PI / 4; r.scale.set(1, 1, 0.75); place(r, mh, x, 0.57, 0); }
+    for (const x of [-0.17, 0.17]) { const r = new THREE.Mesh(new THREE.ConeGeometry(0.27, 0.16, 4, 1, true), tile); r.rotation.y = Math.PI / 4; r.scale.set(1, 1, 0.75); place(r, mh, x, 0.57, 0); }
     for (let k = 0; k < 3; k++) bx(mh, [0.07, 0.01, 0.06], [0.1 + k * 0.08, 0.6, 0.07], solar, [0.5, 0, 0]);
     bx(mh, [0.24, 0.012, 0.38], [-0.46, 0.24, 0], walls); for (const z of [-0.15, 0.15]) cy(mh, [0.01, 0.01, 0.24], [-0.56, 0, z], walls); // carport
     rb(mh, [0.12, 0.07, 0.22], [-0.46, 0, 0.02], M('#f2f2f0', {roughness: 0.3, metalness: 0.4}), null, 0.02); // the family car
@@ -784,7 +794,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
       cy(chair, [0.27, 0.27, 0.08], [0, 0.44, 0], fabric('#2f5d44'));
       rb(chair, [0.5, 0.6, 0.08], [0, 0.53, 0.25], fabric('#2f5d44'), [0.1, 0, 0], 0.05);
       cy(chair, [0.035, 0.035, 0.44], [0, 0, 0], M('#555555', {metalness: 0.7}));
-      for (let k = 0; k < 5; k++) rb(chair, [0.29, 0.035, 0.045], [Math.cos(k * 1.256) * 0.14, 0.04, Math.sin(k * 1.256) * 0.14], M('#333333'), [0, -k * 1.256, 0], 0.01);
+      cy(chair, [0.07, 0.07, 0.065], [0, 0.02, 0], M('#333333')); // hub joins the separated spokes
+      for (let k = 0; k < 5; k++) rb(chair, [0.22, 0.035, 0.045], [Math.cos(k * 1.256) * 0.17, 0.04, Math.sin(k * 1.256) * 0.17], M('#333333'), [0, -k * 1.256, 0], 0.01);
     }
     rb(g, [1.45, 0.55, 0.04], [-0.25, 2.32, BW + 0.03], M('#ffffff', {map: tex.cork, ...nm(tex.corkN)}), null, 0.01);
     for (let k = 0; k < 3; k++) plane(g, [0.28, 0.24], [-0.69 + k * 0.44, 2.59, BW + 0.06], M(['#fff2ba', '#cbdcc5', '#edcdb9'][k]).clone(), [0, 0, (k - 1) * 0.03]);
