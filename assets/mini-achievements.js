@@ -48,7 +48,7 @@ if (typeof window !== 'undefined') {
   window.MC_MINI_UNLOCK = unlockMini;
   window.MC_MINI_ACHIEVEMENTS = MINI_ACHIEVEMENTS;
   if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
-    import('/assets/dungeon-bridge.js?v=20260811-1').catch(() => {});
+    import('/assets/dungeon-bridge.js?v=20261001-1').catch(() => {});
   }
 }
 
