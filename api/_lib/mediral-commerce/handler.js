@@ -6,14 +6,23 @@ import {attention,queueOwnerAttention} from './attention.js';
 import {createAIProvider,AI_DAILY_LIMIT} from './ai-provider.js';
 import {eligibleForAI,privateText,privateReply,healthHandoff,contextForAI,applyAIDecision,aiUnavailable,confirmAIProposal} from './ai-conversation.js';
 const COOKIE='__Host-mediral-admin';
-function cookieToken(env,now){const expires=String(now+4*3600000);return `${expires}.${hmac('mediral-admin:'+expires,env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'')}`;}
+const adminPassword=env=>env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY||'';
+function sessionKey(env){
+ const password=adminPassword(env);
+ // Keep long-key sessions compatible. A typed short password must not become
+ // the cookie-signing secret: derive that from existing server-only entropy.
+ if(password.length>=24)return password;
+ const secret=env.MEDIRAL_ADMIN_SESSION_SECRET||env.MEDIRAL_LINE_SECRET||'';
+ return password.trim()&&secret.length>=24?hmac('mediral-admin-session:'+password,secret):'';
+}
+function cookieToken(env,now){const expires=String(now+4*3600000);return `${expires}.${hmac('mediral-admin:'+expires,sessionKey(env)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'')}`;}
 function authenticated(req,env,now){const value=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='))?.slice(COOKIE.length+1)||'';const [expires]=value.split('.');return /^\d{13}$/.test(expires)&&+expires>now&&+expires<=now+4*3600000&&same(value,cookieToken(env,+expires-4*3600000));}
 function originOK(req){return req.headers.origin===`https://${req.headers.host}`||(!process.env.VERCEL&&/^127\.0\.0\.1:\d+$/.test(req.headers.host||'')&&req.headers.origin===`http://${req.headers.host}`);}
 async function raw(req,max=1024*1024){if(Buffer.isBuffer(req.body)){if(req.body.length>max)throw new Fault('BODY_TOO_LARGE',413);return req.body;}if(typeof req.body==='string'){const b=Buffer.from(req.body);if(b.length>max)throw new Fault('BODY_TOO_LARGE',413);return b;}if(req.body&&typeof req.body==='object')throw new Fault('RAW_BODY_REQUIRED',400);const chunks=[];let size=0;for await(const c of req){const b=Buffer.from(c);size+=b.length;if(size>max)throw new Fault('BODY_TOO_LARGE',413);chunks.push(b);}return Buffer.concat(chunks);}
 function parse(b){try{return JSON.parse(b.toString('utf8'));}catch{throw new Fault('INVALID_JSON');}}
 export function createHandler({store,providers,env=process.env,clock=()=>Date.now(),ai=createAIProvider(env)}){
  const configured=()=>Boolean(env.MEDIRAL_LINE_ACCESS_TOKEN&&env.MEDIRAL_LINE_SECRET&&(env.MEDIRAL_LINE_BOT_ID||env.MEDIRAL_LINE_BASIC_ID));
- const operatorReady=()=>String(env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY||'').length>=24;
+ const operatorReady=()=>Boolean(adminPassword(env).trim()&&sessionKey(env));
  const botId=()=>env.MEDIRAL_LINE_BOT_ID||providers.botId();
  return async(req,res)=>{
   res.setHeader('Cache-Control','no-store');res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Content-Type-Options','nosniff');
@@ -85,7 +94,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     if(!env.CRON_SECRET||!same(req.headers.authorization,`Bearer ${env.CRON_SECRET}`))throw new Fault('UNAUTHORIZED',401);
     await store.ensure();await queueOwnerAttention(store,env,clock());for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}await store.cleanup(clock());return json({ok:true});
    }
-   const key=env.MEDIRAL_ADMIN_KEY||env.MEET_ADMIN_KEY;if(!key||key.length<24)throw new Fault('ADMIN_NOT_CONFIGURED',503);
+   const key=adminPassword(env);if(!operatorReady())throw new Fault('ADMIN_NOT_CONFIGURED',503);
    if(req.method!=='GET'&&!originOK(req))throw new Fault('INVALID_ORIGIN',403);
    if(action==='login'&&req.method==='POST'){
     const body=parse(await raw(req,4096));await store.ensure();const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0];
