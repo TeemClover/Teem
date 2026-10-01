@@ -921,31 +921,30 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
 }
 
 /* ══════════════════════════════════════════════════════════════
-   INTRO — ร่างสูงสุด → ย้อนกลับเป็นตัวอักษร · Terminal เปิดแบบจอ CRT
+   INTRO — ไม่มีคำพูด มีแต่พลังของการเรนเดอร์ 3D
+   บิ๊กแบง → กาแล็กซี → โลกโคลเวอร์ → ยุบเป็นเคอร์เซอร์ → เคอร์เซอร์วาด Terminal ขึ้นมา
    ══════════════════════════════════════════════════════════════ */
-.intro{display:none}
+.intro,.icaret{display:none}
 html.intro-on{overflow:hidden}
-html.intro-on .intro{display:block;position:fixed;inset:0;z-index:600;cursor:pointer;transition:opacity .55s ease;
-  background:radial-gradient(70% 60% at 50% 42%,#0d1a2e,#03050b 62%,#010203);
-  animation:introFailsafe .01s 9s forwards}   /* JS พังยังไงก็ไม่ค้างทับหน้า */
-@keyframes introFailsafe{to{opacity:0;visibility:hidden;pointer-events:none}}
+html.intro-on .intro{display:block;position:fixed;inset:0;z-index:600;cursor:pointer;background:#000;transition:opacity .35s ease}
+html.intro-on .icaret{display:block}
 html.intro-on .intro.out{opacity:0;pointer-events:none}
 #introFx{position:absolute;inset:0;width:100%;height:100%;display:block}
-.ihud{position:absolute;left:0;right:0;bottom:clamp(28px,9vh,80px);display:grid;justify-items:center;gap:12px;padding:0 16px;text-align:center;pointer-events:none}
-.itl{color:#6f87a4;font:600 10.5px/1.5 var(--mono);letter-spacing:.2em}
-.itl b{color:var(--gold);font-weight:700;text-shadow:0 0 12px rgba(240,201,108,.5)}
-.igenes{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;max-width:660px}
-.igenes span{padding:4px 7px;border:1px solid rgba(255,255,255,.07);border-radius:6px;color:#2a3848;font:600 9px var(--mono);letter-spacing:.08em;transition:color .15s,border-color .15s,background .15s,box-shadow .15s}
-.igenes span.on{color:#fff3d6;border-color:rgba(240,201,108,.7);background:rgba(240,201,108,.14);box-shadow:0 0 14px rgba(240,201,108,.35)}
-.icap{color:#eef4ff;font-size:clamp(18px,2.8vw,24px);font-weight:800;letter-spacing:-.01em;text-shadow:0 0 24px rgba(142,201,255,.45)}
+.iflash{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,#fff,rgba(190,220,255,.6) 30%,transparent 70%)}
+.iflash.go{animation:iflash .5s ease-out}
+.iflash.green{background:radial-gradient(circle at 50% 50%,#eafff4,rgba(110,231,168,.7) 25%,transparent 65%)}
+@keyframes iflash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+.icaret{position:fixed;left:0;top:0;z-index:601;width:12px;height:24px;margin:-2px 0 0 -2px;pointer-events:none;opacity:0;
+  background:var(--green);box-shadow:0 0 12px var(--green),0 0 34px rgba(110,231,168,.8),0 0 80px rgba(110,231,168,.45)}
+.icaret.on{opacity:1}
 .iskip{position:absolute;right:max(16px,env(safe-area-inset-right));top:max(16px,env(safe-area-inset-top));min-height:36px;padding:6px 12px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(0,0,0,.35);color:#b9c7d8;font:600 11px var(--mono);letter-spacing:.14em;cursor:pointer}
+html.intro-on .term{opacity:0}
 html.intro-on .term,html.intro-on .term *{animation-play-state:paused!important}
-.term.crt{animation:crtOn .85s cubic-bezier(.2,.8,.2,1) both}
-@keyframes crtOn{0%{transform:scale(.25,.004);filter:brightness(6)}38%{transform:scale(1,.004);filter:brightness(3)}62%{filter:brightness(1.6)}100%{transform:none;filter:none}}
+html.intro-on #terminal .roadmap,html.intro-on #terminal .cue{opacity:0}
+#terminal .roadmap,#terminal .cue{transition:opacity .6s .5s}
 .termbar{position:relative}
 .replay{margin-left:auto;min-height:26px;padding:3px 10px;border:1px solid rgba(240,201,108,.35);border-radius:999px;background:rgba(240,201,108,.08);color:#e7cf95;font:600 9.5px var(--mono);letter-spacing:.12em;cursor:pointer;flex:none;transition:.2s}
 .replay:hover{background:rgba(240,201,108,.18);color:#fff3d6}
-@media(max-width:560px){.igenes span{font-size:8px;padding:3px 5px}}
 @media(prefers-reduced-motion:reduce){.replay{display:none}}
 
 /* ══════════════════════════════════════════════════════════════
@@ -1018,23 +1017,23 @@ html.intro-on .term,html.intro-on .term *{animation-play-state:paused!important}
 /* intro เล่นครั้งแรกของแท็บเท่านั้น · ข้ามเมื่อมี deep link, entry จากเข็มทิศ หรือคนขอลด motion */
 try {
   if (!location.hash && !new URLSearchParams(location.search).has('entry') &&
-      !matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('mc_dungeon_intro_v1'))
+      !matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('mc_dungeon_intro_v1')){
     document.documentElement.classList.add('intro-on');
+    /* failsafe: ต่อให้ JS หลักพัง หน้าก็ไม่ค้างล็อก · intro จริงยาวสุด ~8 วิ */
+    setTimeout(() => { if (!window.__introAlive) document.documentElement.classList.remove('intro-on'); }, 12000);
+  }
 } catch {}
 </script>
 </head>
 <body>
 
-<!-- ═══ INTRO · ร่างสูงสุดของไฟล์ → ย้อนกลับเป็นตัวอักษรล้วน ═══ -->
+<!-- ═══ INTRO · พลังของการเรนเดอร์ → ยุบเป็นเคอร์เซอร์ → เคอร์เซอร์วาด Terminal ═══ -->
 <div class="intro" id="intro" aria-hidden="true">
   <canvas id="introFx"></canvas>
-  <div class="ihud">
-    <span class="itl">ONE HTML FILE · <b id="introGen">GEN 06 · LIVING FILE</b></span>
-    <div class="igenes" id="introGenes"></div>
-    <p class="icap" id="introCap">นี่คือร่างสุดท้ายของ HTML ไฟล์เดียว</p>
-  </div>
+  <i class="iflash" id="introFlash"></i>
   <button class="iskip" id="introSkip" type="button" tabindex="-1">SKIP ▸▸</button>
 </div>
+<i class="icaret" id="introCaret" aria-hidden="true"></i>
 
 <header class="hud">
   <div class="hudin">
@@ -1055,7 +1054,7 @@ try {
   <div class="wrap">
     <div class="term">
       <i class="termfx" aria-hidden="true"></i>
-      <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Terminal · Apex Intelligence Hunts Invalid Actions [A.I.H.I.A.] · 1 HTML</span><button class="replay" id="introReplay" type="button" title="ดูร่างสุดท้ายของไฟล์นี้อีกครั้ง">↺ MAX FORM</button></div>
+      <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Terminal · Apex Intelligence Hunts Invalid Actions [A.I.H.I.A.] · 1 HTML</span><button class="replay" id="introReplay" type="button" title="ดู intro อีกครั้ง">↺ INTRO</button></div>
       <div class="termbody">
         <div class="boot">
           <span>[ OK ] HUMAN CHANNEL · AI CHANNEL</span>
@@ -1411,15 +1410,6 @@ try {
     </div>
 
     <div class="narrow" style="width:min(780px,100%);margin-top:30px">
-      <div class="fold" data-fold="f4a">
-        <button type="button"><i>▸</i>แล้วทำไมต้องมี Guild X ใน Discord</button>
-        <div class="body">
-          <p>เพราะซอสขวดเดียวไม่มีทางอร่อยขึ้นเองในห้องปิด มันต้องมีคนชิม แล้วบอกตรง ๆ ว่าเค็มไป จืดไป หรือดีแล้วแต่ยังไม่ใช่</p>
-          <p>Guild X ไม่ใช่ห้องขายคอร์ส มันคือ <strong>ครัวกลางที่คนเอาซอสของตัวเองมาวางให้กันชิม</strong> คนทำร้าน คนสอนหนังสือ คนทำบัญชี คนทำคลิป ใครก็ได้ที่กำลังใช้ AI ทำของจริง</p>
-          <p>วงมันทำงานแบบนี้: <strong>มึงเอาซอสมาวาง → คนอื่นเอาไปลอง → เขาส่งกลับมาว่าตรงไหนพัง → มึงแก้ต้นทาง → ซอสรอบต่อไปดีขึ้นทั้งวง</strong> ยิ่งวงใหญ่ รอบยิ่งเร็ว นี่คือของที่คอร์สให้ยาก แต่กลุ่มคนที่ทำงานจริงให้กันได้</p>
-          <p><strong>ไฟล์ไม่ใช่ปลายทาง ไฟล์คือสิ่งที่ขนความรู้กับรสมือระหว่าง คน ↔ AI ↔ คน</strong></p>
-        </div>
-      </div>
       <div class="punch">วิชาตีบวกนี้กูไม่ขาย<br><b>เพราะของที่ขายได้คือสูตร ส่วนของที่มึงต้องปรุงเองคือรสมือ</b></div>
     </div>
   </div>
@@ -2181,7 +2171,7 @@ const SPAWN_TRAIL = [{x:15,y:19},{x:14,y:19},{x:13,y:19}];
 
 const OBJ = [
   { id:'guild', x:2, y:1, w:5, h:3, kind:'guild',
-    msg:'<b>หอกิลด์</b> — ตึกใหญ่ที่สุดในแผนที่นี้ และเป็นที่เดียวที่กูสร้างเองไม่ได้ เพราะข้างในมันต้องมีคน · <b>Guild X</b> คือครัวกลางที่คนเอาซอสของตัวเองมาวางให้กันชิม จบด่านนี้แล้วประตูนั้นเปิดรออยู่' },
+    msg:'<b>บริษัทคนเดียว</b> — ตึกใหญ่ที่สุดในแผนที่นี้ ข้างในมีมนุษย์อยู่คนเดียว ที่เหลือเป็น AI ทำงานด้วยกันทั้งตึก รวมทั้งกู · <b>มนุษย์ตัดสินใจ AI ลงมือ แล้วส่งงานต่อกันเป็นทอด ๆ</b> ทั้งเว็บที่มึงเดินอยู่ตอนนี้ก็ออกมาจากตึกนี้' },
   { id:'forge', x:4, y:9, w:3, h:2, kind:'forge',
     msg:'<b>โรงตีเหล็ก</b> — ที่ที่ของยังไม่เสร็จถูกทุบซ้ำจนใช้ได้จริง ไม่ใช่ที่โชว์ของสวย ของทุกชิ้นในบ้านนี้ออกมาจากเตานี้ทั้งนั้น' },
   { id:'pc', x:5, y:11, w:1, h:1, kind:'pc',
@@ -2761,7 +2751,9 @@ addEventListener('keydown', e => {
   const typing = /^(input|textarea|select)$/i.test(document.activeElement?.tagName || '');
   if ($$('.modal:not([hidden])').length || typing || !$('lvScreen').hidden || !$('lootScreen').hidden) return;
   if (!mapInView() && document.activeElement !== cv) return;
-  const m = { ArrowUp:[0,-1], w:[0,-1], ArrowDown:[0,1], s:[0,1], ArrowLeft:[-1,0], a:[-1,0], ArrowRight:[1,0], d:[1,0] }[e.key];
+  /* อ่านจากตำแหน่งปุ่ม (e.code) ก่อน · คีย์บอร์ดไทยกด W ได้ 'ไ' และ CapsLock ได้ 'W' ซึ่ง e.key จับไม่ได้ */
+  const m = { ArrowUp:[0,-1], KeyW:[0,-1], ArrowDown:[0,1], KeyS:[0,1], ArrowLeft:[-1,0], KeyA:[-1,0], ArrowRight:[1,0], KeyD:[1,0] }[e.code]
+    || { w:[0,-1], s:[0,1], a:[-1,0], d:[1,0] }[(e.key || '').toLowerCase()];
   if (m){ e.preventDefault(); return move(m[0], m[1]); }
   if ((e.key === ' ' || e.key === 'Enter') && document.activeElement === cv){ e.preventDefault(); $('talkBtn').click(); }
 });
@@ -3104,7 +3096,7 @@ function paintNetwork(){
     $('runCmd').disabled = true;
     $('runCmd').textContent = '✓ SOURCE COMMAND COMPLETE';
     $('cmdState').textContent = 'DONE';
-    $('webNote').innerHTML = 'จาก 1 ไฟล์เป็น 20 กว่า และมันไม่มีเพดาน — <b>ทุกขวดที่ใครสักคนส่งเข้าวง กลายเป็นต้นทางของคนถัดไปทันที</b> นั่นแหละคือทั้งหมดที่ Guild X เป็น';
+    $('webNote').innerHTML = 'จาก 1 ไฟล์เป็น 20 กว่า และมันไม่มีเพดาน — <b>ทุกขวดที่ใครสักคนส่งเข้าวง กลายเป็นต้นทางของคนถัดไปทันที</b>';
     showTrace(true);
   }
 }
@@ -3630,105 +3622,205 @@ function glowSprite(r, g, b, size = 32){
   return c;
 }
 const ease = t => t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t);
-const span = (t, a, b) => ease((t - a) / (b - a));
 
 /* ══════════════════════════════════════════════════════════
-   INTRO · เปิดหน้าด้วยร่างสูงสุดของไฟล์ แล้วย้อนกลับจนเหลือเคอร์เซอร์ตัวเดียว
+   INTRO · ไม่มีคำพูด — WebGL 3D: บิ๊กแบง → กาแล็กซี → โลกโคลเวอร์ → ยุบเป็นจุดเดียว
+   แล้วจุดนั้นกลายเป็นเคอร์เซอร์เขียว วิ่งวาดกรอบ Terminal และพิมพ์คำถามแรกขึ้นมาเอง
    ══════════════════════════════════════════════════════════ */
 const intro = (() => {
-  const el = $('intro'), cvs = $('introFx'), root = document.documentElement;
-  let raf = 0, ending = false;
-  $('introGenes').innerHTML = GENES.map(g => '<span>' + g + '</span>').join('');
-  const genes = [...$('introGenes').children];
-  function finish(fast){
-    if (ending) return; ending = true;
-    cancelAnimationFrame(raf);
-    el.classList.add('out');
-    setTimeout(() => {
-      root.classList.remove('intro-on');
-      const t = document.querySelector('.term');
-      t.classList.remove('crt'); void t.offsetWidth; t.classList.add('crt');
-    }, fast ? 120 : 380);
+  const el = $('intro'), cvs = $('introFx'), flash = $('introFlash'), caret = $('introCaret'), root = document.documentElement;
+  const term = document.querySelector('.term'), q = document.querySelector('.termq');
+  const qText = q.firstChild && q.firstChild.nodeType === 3 ? q.firstChild : null, qFull = qText ? qText.textContent : '';
+  const VFX_END = 2.95;
+  let raf = 0, state = 'idle', typer = 0, anims = [];
+  const fl = (green) => { flash.classList.toggle('green', !!green); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); };
+
+  /* ── WebGL: สร้างครั้งเดียว ใช้ซ้ำตอนกด REPLAY ── */
+  let G = null;
+  function gl(){
+    if (G !== null) return G;
+    G = false;
+    const g = cvs.getContext('webgl', { antialias:false, alpha:false, depth:false, powerPreference:'high-performance' });
+    if (!g) return G;
+    const VS = `
+attribute vec3 aG,aC;
+attribute vec4 aR;
+attribute float aK;
+uniform mat4 uPV;
+uniform float uT,uScale;
+varying vec3 vCol;
+varying float vA;
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+void main(){
+  float t=uT;
+  vec3 dir=normalize(aR.xyz-.5+.0001);
+  float bt=clamp(t/.55,0.,1.);
+  vec3 pB=dir*(.04+(1.-pow(1.-bt,3.))*(2.2+aR.w*5.));
+  vec3 g=aG; float r=length(g.xz); g.xz=rot(t*1.7/(.55+r))*g.xz;
+  vec3 c=aC;
+  if(aK>.5){ c.xz=rot(-t*1.2)*c.xz; c.yz=rot(.42)*c.yz; }
+  else { c.xy=rot(t*1.1)*c.xy; c.xz=rot(sin(t*1.8)*.5)*c.xz; }
+  float e1=smoothstep(.32,1.05,t),e2=smoothstep(1.3,1.9,t),e3=smoothstep(2.25,2.9,t);
+  vec3 p=mix(mix(pB,g,e1),c,e2);
+  p.xz=rot(e3*e3*7.*(.6+aR.x))*p.xz;
+  p*=1.-.992*e3*e3;
+  vec4 v=uPV*vec4(p,1.);
+  gl_Position=v;
+  float sz=(.008+aR.y*.02)*(1.+(1.-e1)*1.8+e3*1.5);
+  gl_PointSize=clamp(sz*uScale/max(v.w,.15),1.,48.);
+  vec3 hot=vec3(.8,.9,1.),sky=vec3(.42,.62,1.),violet=vec3(.66,.42,1.),gold=vec3(.96,.78,.4),green=vec3(.43,.91,.66);
+  vec3 gc=mix(gold,mix(sky,violet,aR.z),smoothstep(.15,1.5,r));
+  vec3 cc=aK>.5?mix(sky,gold,aR.z):mix(green,gold,step(.84,aR.x));
+  vec3 col=mix(mix(hot,gc,e1),cc,e2);
+  vCol=mix(col,green,e3);
+  vA=(.6+.4*sin(t*4.+aR.x*60.))*(1.+e3*1.2);
+}`;
+    const FS = `
+precision mediump float;
+varying vec3 vCol;
+varying float vA;
+void main(){
+  float d=smoothstep(.5,0.,length(gl_PointCoord-.5));
+  gl_FragColor=vec4(vCol*d*d*vA*.55,1.);
+}`;
+    const mk = (type, src) => { const sh = g.createShader(type); g.shaderSource(sh, src); g.compileShader(sh); return sh; };
+    const P = g.createProgram();
+    g.attachShader(P, mk(g.VERTEX_SHADER, VS)); g.attachShader(P, mk(g.FRAGMENT_SHADER, FS)); g.linkProgram(P);
+    if (!g.getProgramParameter(P, g.LINK_STATUS)) return G;
+    const N = innerWidth < 700 ? 40000 : 70000, ST = 11, d = new Float32Array(N * ST), TAU = Math.PI * 2;
+    const R = Math.random, gauss = () => (R() + R() + R() - 1.5) / 1.5;
+    for (let i = 0; i < N; i++){
+      const o = i * ST;
+      /* กาแล็กซี 3 แขน + ป่องกลาง */
+      if (i % 8 === 0){ d[o] = gauss() * .55; d[o+1] = gauss() * .3; d[o+2] = gauss() * .55; }
+      else {
+        const arm = i % 3, rr = .25 + Math.pow(R(), .8) * 4.4, th = arm * TAU / 3 + rr * 1.2 + (R() - .5) * .6 / (.4 + rr * .3);
+        d[o] = Math.cos(th) * rr; d[o+1] = gauss() * .14 * (1.25 - rr / 4.6); d[o+2] = Math.sin(th) * rr;
+      }
+      /* โลกโคลเวอร์: ใบสี่แฉก r = |cos 2θ| หนาและโค้ง + วงแหวนโคจร */
+      const ring = i % 4 === 0;
+      if (ring){ const a = R() * TAU, rr = 2.9 + R() * .5; d[o+3] = Math.cos(a) * rr; d[o+4] = gauss() * .03; d[o+5] = Math.sin(a) * rr; }
+      else {
+        const th = R() * TAU, rr = 2.2 * Math.pow(Math.abs(Math.cos(2 * th)), .55) * Math.sqrt(R());
+        d[o+3] = Math.cos(th + .785) * rr; d[o+4] = Math.sin(th + .785) * rr; d[o+5] = (R() - .5) * .16 + rr * rr * .05;
+      }
+      d[o+6] = R(); d[o+7] = R(); d[o+8] = R(); d[o+9] = R(); d[o+10] = ring ? 1 : 0;
+    }
+    const buf = g.createBuffer(); g.bindBuffer(g.ARRAY_BUFFER, buf); g.bufferData(g.ARRAY_BUFFER, d, g.STATIC_DRAW);
+    const at = n => g.getAttribLocation(P, n);
+    G = { g, P, N, ST, buf, A:[[at('aG'),3,0],[at('aC'),3,12],[at('aR'),4,24],[at('aK'),1,40]],
+      uPV:g.getUniformLocation(P, 'uPV'), uT:g.getUniformLocation(P, 'uT'), uScale:g.getUniformLocation(P, 'uScale') };
+    return G;
   }
-  function play(){
-    ending = false;
-    root.classList.add('intro-on'); el.classList.remove('out');
-    try { sessionStorage.setItem('mc_dungeon_intro_v1', '1'); } catch {}
-    const W = innerWidth, H = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
-    cvs.width = W * dpr; cvs.height = H * dpr;
-    const ctx = cvs.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const SP = [glowSprite(240,201,108), glowSprite(110,231,168), glowSprite(142,201,255)];
-    const N = W < 700 ? 1300 : 2400, M = Math.min(W, H), R = M * .27, cx = W / 2, cy = H * .42, F = M * 1.6;
-    const cw = M * .045, ch = M * .085;   /* ขนาดบล็อกเคอร์เซอร์ตอนจบ */
-    const P = Array.from({ length:N }, (_, i) => {
-      let x, y, z; const ring = i % 4 === 0;
-      if (ring){ const a = Math.random() * 6.283, r = R * (1.3 + Math.random() * .35); x = Math.cos(a) * r; y = (Math.random() - .5) * R * .04; z = Math.sin(a) * r; }
-      else { const th = Math.random() * 6.283, rr = R * Math.pow(Math.abs(Math.cos(2 * th)), .55) * Math.sqrt(Math.random()); x = Math.cos(th + .785) * rr; y = Math.sin(th + .785) * rr; z = (Math.random() - .5) * R * .1; }
-      return { x, y, z, ring, sx:Math.random() * W, sy:Math.random() * H, c:ring ? 2 : (Math.random() < .2 ? 0 : 1), s:.7 + Math.random() * 1.5,
-        tx:cx + (Math.random() - .5) * cw, ty:cy + (Math.random() - .5) * ch };
-    });
-    const t0 = performance.now();
-    let lastCap = '', lastGen = '';
-    const setText = (cap, gen) => {
-      if (cap !== lastCap){ $('introCap').textContent = lastCap = cap; }
-      if (gen !== lastGen){ $('introGen').textContent = lastGen = gen; }
-    };
+  const persp = asp => { const f = 1 / Math.tan(.5), nr = .05, fr = 100; return [f/asp,0,0,0, 0,f,0,0, 0,0,(fr+nr)/(nr-fr),-1, 0,0,2*fr*nr/(nr-fr),0]; };
+  const look = (e, t) => {
+    let z = [e[0]-t[0], e[1]-t[1], e[2]-t[2]]; const zl = Math.hypot(...z); z = z.map(v => v / zl);
+    let x = [z[2], 0, -z[0]]; const xl = Math.hypot(...x) || 1; x = x.map(v => v / xl);
+    const y = [z[1]*x[2]-z[2]*x[1], z[2]*x[0]-z[0]*x[2], z[0]*x[1]-z[1]*x[0]], dd = a => -(a[0]*e[0]+a[1]*e[1]+a[2]*e[2]);
+    return [x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0, dd(x),dd(y),dd(z),1];
+  };
+  const mul = (a, b) => { const o = []; for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) o[c*4+r] = a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3]; return o; };
+  /* กล้อง: ถอยดูบิ๊กแบง → ดิ่งทะลุกาแล็กซี → ถอยดูโลก → พุ่งเข้าหาจุดที่ยุบ */
+  const CAM = [[0,[0,0,10]],[.5,[0,5.2,9]],[1.35,[.9,1.05,3.3]],[2.05,[0,.5,8.4]],[2.95,[0,0,5]]];
+  const camAt = t => {
+    let i = 0; while (i < CAM.length - 2 && t > CAM[i+1][0]) i++;
+    const [t0, a] = CAM[i], [t1, b] = CAM[i+1], f = ease(Math.min(1, Math.max(0, (t - t0) / (t1 - t0))));
+    return a.map((v, j) => v + (b[j] - v) * f);
+  };
+
+  function vfx(onDone){
+    const G = gl();
+    if (!G){ onDone(); return; }
+    const { g, P } = G, dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1.5 : 1.75);
+    const W = Math.round(innerWidth * dpr), H = Math.round(innerHeight * dpr);
+    cvs.width = W; cvs.height = H; g.viewport(0, 0, W, H);
+    g.useProgram(P); g.bindBuffer(g.ARRAY_BUFFER, G.buf);
+    G.A.forEach(([loc, n, off]) => { if (loc < 0) return; g.enableVertexAttribArray(loc); g.vertexAttribPointer(loc, n, g.FLOAT, false, G.ST * 4, off); });
+    g.enable(g.BLEND); g.blendFunc(g.ONE, g.ONE); g.clearColor(0, 0, 0, 1);
+    g.uniform1f(G.uScale, H / (2 * Math.tan(.5)));
+    /* นาฬิกาเดินทีละเฟรม (ไม่เกิน 1/30 วิ) · เครื่องช้าเห็นครบทุกช็อต ไม่กระโดดข้าม · เกิน 6 วิจริงตัดเข้าเคอร์เซอร์เลย */
+    const wall0 = performance.now(); let t = 0, last = 0, flashed = 0;
     (function frame(now){
-      const t = (now - t0) / 1000;
-      const form = span(t, 0, 1), back = span(t, 2.15, 3.05);
-      const rot = t * .9, tilt = p => p.ring ? .45 : .2;
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'lighter';
-      for (const p of P){
-        /* โคลเวอร์หมุนหันหน้าเข้าหาคน (แกน z) + โยกเบา ๆ · วงแหวนหมุนรอบแกน y สวนทาง */
-        let x, y, z;
-        if (p.ring){ const a = -rot * .6, ca = Math.cos(a), sa = Math.sin(a); x = p.x * ca + p.z * sa; z = -p.x * sa + p.z * ca; y = p.y; }
-        else {
-          const a = rot * .55, ca = Math.cos(a), sa = Math.sin(a), w = Math.sin(t * 1.3) * .5, cw = Math.cos(w), swb = Math.sin(w);
-          const x1 = p.x * ca - p.y * sa, y1 = p.x * sa + p.y * ca;
-          x = x1 * cw + p.z * swb; z = -x1 * swb + p.z * cw; y = y1;
-        }
-        const tl = tilt(p), y2 = y * Math.cos(tl) - z * Math.sin(tl), z2 = y * Math.sin(tl) + z * Math.cos(tl);
-        const k = F / (F + z2), fx = cx + x * k, fy = cy + y2 * k;
-        let X = p.sx + (fx - p.sx) * form, Y = p.sy + (fy - p.sy) * form;
-        if (back > 0){
-          const sw = back * (1 - back) * 5;   /* ม้วนเป็นเกลียวระหว่างยุบ */
-          const dx = X - cx, dy = Y - cy, cs = Math.cos(sw), sn = Math.sin(sw);
-          X = cx + dx * cs - dy * sn; Y = cy + dx * sn + dy * cs;
-          X += (p.tx - X) * back; Y += (p.ty - Y) * back;
-        }
-        const size = (p.s * 1.9 * k) * (1 - back) + 1.5 * back;
-        const blink = t > 3.1 ? (Math.floor((t - 3.1) * 2.2) % 2 ? .25 : 1) : 1;
-        ctx.globalAlpha = (.22 + .33 * form) * (1 - back * .45) * blink;
-        const sp = SP[back > .55 ? 1 : p.c];
-        ctx.drawImage(sp, X - size * 2, Y - size * 2, size * 4, size * 4);
-      }
-      /* คลื่นทองตอนไฟล์ถึงร่าง MAX */
-      if (t > .95 && t < 1.7){
-        const f = (t - .95) / .75;
-        ctx.globalAlpha = (1 - f) * .8; ctx.strokeStyle = '#f0c96c'; ctx.lineWidth = 2 + 18 * (1 - f);
-        ctx.beginPath(); ctx.ellipse(cx, cy, R * (.3 + f * 2.4), R * (.3 + f * 2.4) * .55, 0, 0, 6.283); ctx.stroke();
-      }
-      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-      /* ความสามารถติดทีละช่อง แล้วดับย้อนกลับ */
-      genes.forEach((g, i) => {
-        const on = t > .15 + i * .085 && !(t > 2.15 + (genes.length - 1 - i) * .06);
-        g.classList.toggle('on', on);
-      });
-      const gen = back > 0 ? Math.round(LAST * (1 - back)) : LAST;
-      setText(t < 2.1 ? 'นี่คือร่างสุดท้ายของ HTML ไฟล์เดียว' : t < 3.05 ? '◂◂ ย้อนกลับไปจุดเริ่มต้น' : 'ทุกอย่างเริ่มจาก… ตัวอักษร',
-        'GEN 0' + gen + ' · ' + PHASES[gen].name + (gen === LAST && back === 0 ? ' · MAX' : ''));
-      if (t > 3.9) return finish(false);
+      if (state !== 'vfx') return;
+      t += last ? Math.min((now - last) / 1000, 1 / 30) : 0; last = now;
+      if (now - wall0 > 6000) return onDone();
+      if (t > .04 && flashed === 0){ fl(false); flashed = 1; }
+      if (t > 2.86 && flashed === 1){ fl(true); flashed = 2; }
+      const eye = camAt(t), back = Math.min(2.1, Math.max(1, .95 / (W / H)));   /* จอแนวตั้ง: ถอยกล้องให้ทุกช็อตอยู่ในเฟรม */
+      for (let j = 0; j < 3; j++) eye[j] *= back;
+      if (t < .5){ const q = (.5 - t) * .25; eye[0] += (Math.random() - .5) * q; eye[1] += (Math.random() - .5) * q; }
+      g.uniformMatrix4fv(G.uPV, false, new Float32Array(mul(persp(W / H), look(eye, [0, 0, 0]))));
+      g.uniform1f(G.uT, t);
+      g.clear(g.COLOR_BUFFER_BIT);
+      g.drawArrays(g.POINTS, 0, G.N);
+      if (t >= VFX_END) return onDone();
       raf = requestAnimationFrame(frame);
-    })(t0);
+    })(wall0);
   }
-  const skip = e => { if (root.classList.contains('intro-on') && !ending){ e?.preventDefault?.(); finish(true); } };
+
+  /* เคอร์เซอร์วาด Terminal: กลางจอ → มุมซ้ายบน → วิ่งตามขอบบน → ลงขอบขวา → ไปจุดเริ่มพิมพ์ */
+  function build(){
+    state = 'build';
+    el.classList.add('out');
+    const r = term.getBoundingClientRect(), qr = q.getBoundingClientRect();
+    const cx = innerWidth / 2 - 6, cy = innerHeight / 2 - 12;
+    const ez = 'cubic-bezier(.65,0,.3,1)', D = 1600;
+    caret.classList.add('on');
+    term.style.opacity = '1';
+    const tf = (x, y, s) => ({ transform:`translate(${x}px,${y}px) scale(${s})`, easing:ez });
+    anims = [
+      caret.animate([
+        { ...tf(cx, cy, 1.8), offset:0 }, { ...tf(cx, cy, 1.8), offset:.16 },
+        { ...tf(r.left, r.top, 1), offset:.36 }, { ...tf(r.right - 12, r.top, 1), offset:.6 },
+        { ...tf(r.right - 12, r.bottom - 24, 1), offset:.8 }, { ...tf(qr.left, qr.top + 6, 1), offset:1 }], { duration:D, fill:'forwards' }),
+      term.animate([
+        { clipPath:'inset(0 100% calc(100% - 2px) 0 round 13px)', easing:ez, offset:0 },
+        { clipPath:'inset(0 100% calc(100% - 2px) 0 round 13px)', easing:ez, offset:.36 },
+        { clipPath:'inset(0 0 calc(100% - 36px) 0 round 13px)', easing:ez, offset:.6 },
+        { clipPath:'inset(0 0 0 0 round 13px)', easing:ez, offset:.8 },
+        { clipPath:'inset(0 0 0 0 round 13px)', offset:1 }], { duration:D, fill:'forwards' })
+    ];
+    anims[0].onfinish = () => finish(false);
+  }
+
+  function typeQuestion(){
+    if (!qText) return;
+    const parts = 'Segmenter' in Intl ? [...new Intl.Segmenter('th', { granularity:'grapheme' }).segment(qFull)].map(x => x.segment) : [...qFull];
+    qText.textContent = ''; q.style.animation = 'none';
+    let i = 0;
+    const step = () => { qText.textContent += parts[i++] || ''; if (i < parts.length) typer = setTimeout(step, 34 + Math.random() * 46); };
+    step();
+  }
+
+  function finish(skipped){
+    if (state === 'idle') return;
+    const was = state; state = 'idle';
+    cancelAnimationFrame(raf);
+    anims.forEach(a => a.cancel()); anims = [];
+    caret.classList.remove('on');
+    term.style.opacity = ''; term.style.clipPath = '';
+    el.classList.add('out');
+    root.classList.remove('intro-on');
+    clearTimeout(typer);
+    if (skipped || was !== 'build'){ if (qText) qText.textContent = qFull; q.style.animation = ''; }
+    else typeQuestion();
+  }
+
+  function play(){
+    clearTimeout(typer); if (qText) qText.textContent = qFull; q.style.animation = '';
+    try { sessionStorage.setItem('mc_dungeon_intro_v1', '1'); } catch {}
+    root.classList.add('intro-on'); el.classList.remove('out');
+    window.__introAlive = true;
+    state = 'vfx';
+    vfx(build);
+  }
+  const skip = e => { if (state !== 'idle'){ e?.preventDefault?.(); finish(true); } };
   el.addEventListener('click', skip);
-  addEventListener('keydown', e => { if (root.classList.contains('intro-on')) skip(e); });
-  addEventListener('wheel', e => { if (root.classList.contains('intro-on')) skip(e); }, { passive:false });
-  addEventListener('touchmove', e => { if (root.classList.contains('intro-on')) skip(e); }, { passive:false });
+  addEventListener('keydown', e => { if (state !== 'idle') skip(e); });
+  addEventListener('wheel', e => { if (state !== 'idle') skip(e); }, { passive:false });
+  addEventListener('touchmove', e => { if (state !== 'idle') skip(e); }, { passive:false });
   $('introReplay').addEventListener('click', () => { scrollTo(0, 0); play(); });
-  return { play, running: () => root.classList.contains('intro-on') };
+  return { play };
 })();
 if (document.documentElement.classList.contains('intro-on')) intro.play();
 

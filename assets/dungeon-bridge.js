@@ -98,7 +98,7 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     ['dungeon-object-kitchen', /ห้องครัว|ทอดไก่|หม้อซอส/],
     ['dungeon-object-shop', /ร้าน|shop/i],
     ['dungeon-object-savepoint', /จุดเซฟ|save point/i],
-    ['dungeon-object-guild', /หอกิลด์|กิลด์|guild/i],
+    ['dungeon-object-guild', /หอกิลด์|กิลด์|guild|บริษัทคนเดียว/i],
     ['dungeon-object-construction', /ก่อสร้าง|เครน|construction/i],
     ['dungeon-object-fishing', /ตกปลา|คันเบ็ด|เบ็ด/],
     ['dungeon-object-sign', /ป้าย/],
