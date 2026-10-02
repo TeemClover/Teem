@@ -27,7 +27,7 @@
 }
 *{box-sizing:border-box}
 html{background:#010604;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;color:var(--ink);background:#010604;font-family:var(--sans);line-height:1.85;overflow-x:hidden}
+body{margin:0;color:var(--ink);background:#010604;font-family:var(--sans);line-height:1.85;overflow-x:hidden;overflow-x:clip}
 button,a,textarea,input{font:inherit;color:inherit}
 button,a{touch-action:manipulation}
 button:focus-visible,a:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
@@ -2008,6 +2008,12 @@ function paintAccept(){
 }
 /* คนเก่าที่กดยอมรับไว้ก่อนมีโหมดนี้ = raw */
 const toneNow = () => S.tone || (S.accepted ? 'raw' : '');
+/* กระโดดแบบทันทีโดยให้ Lenis รู้ด้วย · ไม่งั้นตอนหน้าสั้น/ยาวขึ้น มันยังถือเป้าเก่าแล้วลากหน้าหลุดออกจาก Phase 5 */
+function jumpTo(y){
+  const l = window.cloverMotion?.lenis;
+  if (l) try { l.resize(); l.scrollTo(y, { immediate:true, force:true }); return; } catch {}
+  scrollTo({ top:y, behavior:'instant' });
+}
 function paintTone(){
   const pol = POL(), root = document.documentElement, tg = $('voiceTog'), t = toneNow();
   if (t) root.dataset.voice = t; else delete root.dataset.voice;
@@ -2059,10 +2065,9 @@ $('voiceTog').addEventListener('click', () => {
   S.tone = POL() ? 'raw' : 'polite'; save();
   paintTone(); paintAccept();
   if (S.code === null){ paintCode(); if (S.viewOpen) renderFrame(); }
-  if (a && a.el.isConnected){
-    const d = a.el.getBoundingClientRect().top - a.top;
-    if (Math.abs(d) > 1) scrollTo({ top: scrollY + d, behavior:'instant' });
-  }
+  /* ความสูงหน้าเปลี่ยนเสมอ · กระโดดผ่าน jumpTo ทุกครั้งให้ Lenis วัดใหม่และทิ้งเป้าที่ค้างอยู่ */
+  const d = a && a.el.isConnected ? a.el.getBoundingClientRect().top - a.top : 0;
+  jumpTo(scrollY + (Math.abs(d) > 1 ? d : 0));
   act('dungeon-tone-' + S.tone); beep(POL() ? 620 : 700,.07);
 });
 addEventListener('scroll', () => $('cue').classList.remove('pulse'), { once:true, passive:true });
@@ -3360,7 +3365,7 @@ $('openBtn').addEventListener('click', () => {
 /* พากลับไปกลางฉาก KEY ใน Phase 5 (ช่วงที่ฉากค้างนิ่ง ปุ่มหยิบโผล่) · กระโดดตรง ๆ เพราะ smooth ข้ามระยะไกลช้าและสู้กับ Lenis */
 function goToKey(){
   const d = $('deep'), top = d.getBoundingClientRect().top + scrollY, span = d.offsetHeight - innerHeight;
-  scrollTo({ top: top + span * (4.08 / 5), behavior:'instant' });
+  jumpTo(top + span * (4.08 / 5));
   deepJump();
 }
 $('chest').addEventListener('click', () => S.loot ? openLoot() : $('openBtn').click());
