@@ -9,8 +9,9 @@
 <meta property="og:title" content="บ้านของซิด — เลือกสิ่งที่ใช่ แล้วค่อย ๆ เติบโต">
 <meta property="og:description" content="ข้อเสนอเว็บไซต์จาก myClover · ขอบเขตชัด ราคาเลือกได้ คำนวณตามงานจริง">
 <link rel="icon" href="/asksydscience/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/asksydneyscience/offer/offer.css">
-<script type="module" src="/asksydneyscience/offer/offer.mjs"></script>
+<link rel="stylesheet" href="/asksydscience/offer/offer.css">
+<link rel="stylesheet" href="/asksydscience/offer/care.css">
+<script type="module" src="/asksydscience/offer/offer.mjs"></script>
 </head>
 <body>
 <a href="#main" class="skip">ข้ามไปเนื้อหา</a>
@@ -40,16 +41,16 @@
 <div class="section-heading"><div><p class="eyebrow">01 / CHOOSE YOUR START</p><h2 id="plans-title">เริ่มตรงที่พร้อม</h2></div><p>ทุกชุดเริ่มจากบ้านหลังเดียวกัน<br>เพิ่มเฉพาะสิ่งที่ช่วยให้ซิดทำงานต่อได้</p></div>
 <div id="plan-cards" class="plan-grid" aria-label="ชุดงานเริ่มต้น"><p class="loading-note">กำลังเตรียมตัวเลือกและราคา…</p></div>
 <p class="section-foot">ราคาค่าทำครั้งเดียว ยังไม่รวมภาษีที่ใช้จริงและบริการภายนอก · เลือกชุดใหม่จะคงงานเพิ่มและแผนดูแลที่เลือกไว้</p>
-<noscript><div class="notice"><h3>ตัวเลือกและราคา</h3><p>A เปิดบ้าน 19,900 บาท · B บ้านที่พร้อมจัดกิจกรรม 29,900 บาท · C บ้านที่ทีมดูแลต่อได้ 44,900 บาท</p><p>B เพิ่มระบบรับสมัคร 6,000 บาท และชุดซอส AI 4,000 บาทจาก A ส่วน C เพิ่ม CMS 15,000 บาทจาก B เปิด JavaScript เพื่อปรับรายการ คำนวณ และส่งออกสรุป</p></div></noscript>
+<noscript><div class="notice"><h3>ตัวเลือกและราคา</h3><p>A เปิดบ้าน 19,900 บาท · B บ้านที่พร้อมจัดกิจกรรม 29,900 บาท · C บ้านที่ทีมดูแลต่อได้ 44,900 บาท</p><p>B เพิ่มฟอร์มบนเว็บและจัดเก็บข้อมูลในระบบ 6,000 บาท และชุดซอส AI 4,000 บาทจาก A ส่วน C เพิ่ม CMS 15,000 บาทจาก B เปิด JavaScript เพื่อปรับรายการ คำนวณ และส่งออกสรุป</p></div></noscript>
 </section>
 <section id="configure" class="config-section" aria-labelledby="config-title"><div class="wrap">
-<div class="section-heading"><div><p class="eyebrow">02 / MAKE IT YOURS</p><h2 id="config-title">ประกอบแผนที่ใช่<br><em>เห็นราคาทุกการเลือก</em></h2></div><p>รวมจากเรตราคาเดียวกันทุกรายการ<br>ไม่มีค่าชุดงานซ้อน ไม่มีส่วนลดสมมติ</p></div>
+<div class="section-heading"><div><p class="eyebrow">02 / MAKE IT YOURS</p><h2 id="config-title">ประกอบแผนที่ใช่<br><em>เห็นราคาทุกการเลือก</em></h2></div><p>รวมจากเรตราคาเดียวกันทุกรายการ<br>ไม่มีค่าชุดงานซ้อน · ค่าดูแลพิเศษลด 50% แล้ว</p></div>
 <p id="link-notice" class="notice" role="status" hidden></p>
 <div class="calculator"><div class="config-controls">
 <div class="base-row"><div class="check-mark" aria-hidden="true">✓</div><div><strong>บ้านออนไลน์พร้อมเปิด</strong><p>ขอบเขตพื้นฐานที่รวมในทุกชุด <a href="#scope">ดูสิ่งที่ได้รับ ↓</a></p></div><b id="base-price">19,900 <small>บาท</small></b></div>
 <fieldset class="group"><legend><span>01</span> ระบบที่อยากเพิ่ม</legend><div id="module-options"></div></fieldset>
 <fieldset class="group"><legend><span>02</span> งานเพิ่มจากขอบเขตพื้นฐาน</legend><p class="field-hint">คิดเฉพาะส่วนเพิ่ม ไม่ซ้ำกับ 3 เรื่องและหน้าที่รวมในฐานแล้ว</p><div id="extra-options"></div></fieldset>
-<fieldset class="group"><legend><span>03</span> หลังเปิดบ้าน ให้เราช่วยแค่ไหน</legend><p class="field-hint">เลือก “ดูแลเอง” ได้ ค่ารายเดือนเริ่มหลังส่งมอบ ไม่ใช่ค่าบังคับ</p><div id="care-options" class="care-grid"></div><p class="care-limit">แผนรายเดือนใช้เพดานชั่วโมงหรือจำนวนเนื้อหาที่ถึงก่อน ชั่วโมงไม่ทบเดือน และไม่รวมสร้างฟีเจอร์ใหม่</p></fieldset>
+<fieldset class="group"><legend><span>03</span> หลังเปิดบ้าน ให้เราช่วยแค่ไหน</legend><p class="field-hint">เลือก “ดูแลเอง” ได้ ค่ารายเดือนเริ่มหลังส่งมอบ ไม่ใช่ค่าบังคับ</p><p class="care-special-note"><strong>ค่าดูแลราคาพิเศษ ลด 50% แล้ว</strong><span>ดูแลเบา ๆ: ปกติ 3,000 เหลือ 1,500 บาท/เดือน · ช่วยเติบโตต่อ: ปกติ 7,000 เหลือ 3,500 บาท/เดือน</span><small>ยอดที่เลือกและงบรวมเป็นราคาพิเศษแล้ว ไม่ลดซ้ำ และไม่รวมส่วนลดค่าทำเว็บไซต์</small></p><div id="care-options" class="care-grid"></div><p class="care-limit">แผนรายเดือนใช้เพดานชั่วโมงหรือจำนวนเนื้อหาที่ถึงก่อน ชั่วโมงไม่ทบเดือน และไม่รวมสร้างฟีเจอร์ใหม่</p></fieldset>
 <div class="budget-control"><label for="months">ลองวางงบดูแลหลังส่งมอบ</label><select id="months"><option value="1">1 เดือน</option><option value="3" selected>3 เดือน</option><option value="6">6 เดือน</option><option value="12">12 เดือน</option></select><p>ใช้คำนวณงบเท่านั้น ไม่ใช่ระยะสัญญาขั้นต่ำ</p></div>
 </div>
 <aside id="quote" class="quote-card" aria-labelledby="quote-title" tabindex="-1">
@@ -58,6 +59,7 @@
 <p class="amount-label">ค่าทำครั้งเดียว</p><p class="grand-total"><span id="one-time">29,900</span><small>บาท</small></p>
 <div id="quote-rows" class="quote-rows"></div>
 <div class="monthly-row"><span>ค่าดูแลที่เลือก</span><strong><span id="monthly">0</span> <small>บาท/เดือน</small></strong></div>
+<div id="monthly-promo" class="monthly-promo" hidden><span class="care-badge">ราคาพิเศษ ลด 50% แล้ว</span><p>จากปกติ <del id="monthly-regular"></del></p><small id="monthly-saving"></small></div>
 <p id="care-note" class="small muted">ไม่มีค่าดูแลรายเดือน</p>
 <div class="budget-box"><div><span id="budget-label">งบค่าบริการช่วง 3 เดือน</span><strong><span id="budget">29,900</span> <small>บาท</small></strong></div><p id="budget-formula">ค่าทำ + ค่าดูแล 3 เดือนหลังส่งมอบ</p></div>
 <p class="tax-note">ยอดนี้เป็นค่าบริการของเรา <strong>ยังไม่รวมภาษีที่ใช้จริง</strong> โดเมน hosting CMS และเครื่องมือภายนอก จึงไม่ใช่ต้นทุนทั้งหมด</p>
@@ -83,7 +85,7 @@
 <div class="faq-grid">
 <details><summary>ราคาและเรตมาตรฐานคิดอย่างไร?</summary><p>นี่คือเรตราคาเสนอฉบับ MC-WEB-2026-10-v1 ออกวันที่ 2 ตุลาคม 2026 ราคาแต่ละชุดเท่ากับฐานบวกโมดูลที่เลือก ไม่มีค่าชุดงานเพิ่มซ้ำ ราคายังไม่รวมภาษีที่ใช้จริง ก่อนเริ่มต้องยืนยันขอบเขต ผู้รับเงิน ภาษี คิว และงวดชำระในใบเสนอราคาฉบับจริง</p><p>การเปลี่ยนเรตในอนาคตต้องเปลี่ยนเวอร์ชัน ลิงก์เก่าจะไม่ถูกใช้ยืนยันราคาใหม่โดยเงียบ ๆ</p></details>
 <details><summary>2 รอบแก้ และ 30 วันดูแลบั๊ก หมายถึงอะไร?</summary><p>1 รอบคือข้อแก้รวม 1 ชุดภายในทิศทางและขอบเขตที่อนุมัติ ไม่ใช่เริ่มดีไซน์ใหม่ การแก้บั๊ก 30 วันนับจากส่งมอบ ครอบคลุมงานเดิมที่ทำงานไม่ตรงข้อตกลง ไม่รวมเนื้อหาใหม่ ฟีเจอร์ใหม่ หรือการเปลี่ยนบริการภายนอก</p></details>
-<details><summary>ค่าดูแลรายเดือนบังคับไหม?</summary><p>ไม่บังคับ เริ่มหลังส่งมอบเมื่อเลือกใช้บริการ ยกเลิกรอบถัดไปได้ก่อนต่อรอบ ชั่วโมงไม่ทบเดือน ตอบรับงานภายใน 2 วันทำการ ไม่ใช่รับประกันแก้เสร็จในเวลานั้น เวลาทำการจันทร์–ศุกร์ 10:00–18:00 น. ไม่รวมวันหยุด</p><p>งานเกินขอบเขตแผนดูแล 900 บาท/ชั่วโมง ขั้นต่ำครั้งละ 0.5 ชั่วโมง ต้องอนุมัติก่อนทำ ไม่มีการคิดเพิ่มอัตโนมัติ</p></details>
+<details><summary>ค่าดูแลรายเดือนบังคับไหม?</summary><p>ค่าดูแลทั้ง 2 แผนเป็นราคาพิเศษ ลด 50% แล้ว: แผนดูแลเบา ๆ จาก 3,000 เหลือ 1,500 บาท/เดือน และแผนช่วยเติบโตต่อจาก 7,000 เหลือ 3,500 บาท/เดือน เครื่องคำนวณใช้อัตราพิเศษนี้โดยไม่หักส่วนลดซ้ำ ส่วนค่าทำเว็บไซต์และงานเพิ่มไม่เปลี่ยน</p><p>ไม่บังคับ เริ่มหลังส่งมอบเมื่อเลือกใช้บริการ ยกเลิกรอบถัดไปได้ก่อนต่อรอบ ชั่วโมงไม่ทบเดือน ตอบรับงานภายใน 2 วันทำการ ไม่ใช่รับประกันแก้เสร็จในเวลานั้น เวลาทำการจันทร์–ศุกร์ 10:00–18:00 น. ไม่รวมวันหยุด</p><p>งานเกินขอบเขตแผนดูแล 900 บาท/ชั่วโมง ขั้นต่ำครั้งละ 0.5 ชั่วโมง ต้องอนุมัติก่อนทำ ไม่มีการคิดเพิ่มอัตโนมัติ</p></details>
 <details><summary>ค่าใช้จ่ายภายนอก ใครดูแล?</summary><p>โดเมน hosting CMS และเครื่องมือ AI ชำระกับผู้ให้บริการตามจริงในบัญชีซิด เลือกและยืนยันงบก่อนผูกบริการ หน้านี้ยังไม่ใส่ยอดที่ไม่ทราบเป็น 0 บาท และไม่รับประกันว่าบริการเหล่านี้ใช้ฟรีตลอด</p></details>
 <details><summary>ซิดต้องเตรียมอะไร และงานเริ่มเมื่อไร?</summary><p>ภาพที่อนุญาตใช้ ประวัติและข้อความที่จะเผยแพร่ เนื้อหาเริ่มต้น 3 เรื่อง รายละเอียดเวิร์กช็อป สินค้าที่เลือก และลิงก์ช่องทางจริง กรอบเวลาคำนวณเป็นวันทำการหลังข้อมูลครบและยืนยันคิว หากข้อมูลหรือการอนุมัติล่าช้า ต้องปรับวันส่งมอบร่วมกัน</p></details>
 <details><summary>วันนี้เลือกแผนแล้ว เกิดอะไรขึ้น?</summary><p>คัดลอกสรุปแล้วส่งในช่องทางที่คุยกับพี่ทีม เพื่อยืนยันรายการและออกใบเสนอราคาฉบับจริง การกดปุ่มไม่ใช่ลายเซ็น ไม่จองคิว ไม่ส่งข้อมูล และไม่เรียกเก็บเงิน เครื่องคำนวณไม่เก็บข้อมูลผู้สมัครหรือข้อมูลสุขภาพ</p></details>

@@ -1,1054 +1,165 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
-    {
-      "path": "/api/xty-pet",
-      "schedule": "27 5,11,17,23 * * *"
-    },
-    {
-      "path": "/api/mediral-commerce?action=drain",
-      "schedule": "*/5 * * * *"
-    }
+    {"path": "/api/xty-pet", "schedule": "27 5,11,17,23 * * *"},
+    {"path": "/api/mediral-commerce?action=drain", "schedule": "*/5 * * * *"}
   ],
   "redirects": [
-    {
-      "source": "/hf",
-      "destination": "/hf/",
-      "permanent": false
-    },
-    {
-      "source": "/xvisor",
-      "destination": "/xvisor/",
-      "permanent": true
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "xty.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xty/about/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "xty.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xty/about/",
-      "permanent": false
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "xircle.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xircle/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "xircle.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xircle/",
-      "permanent": false
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "teem.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/resume/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "teem.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/resume/",
-      "permanent": false
-    },
-    {
-      "source": "/teambook",
-      "destination": "https://teambook.me/",
-      "permanent": false
-    },
-    {
-      "source": "/teambook/",
-      "destination": "https://teambook.me/",
-      "permanent": false
-    },
-    {
-      "source": "/airova",
-      "destination": "/airova/",
-      "permanent": false
-    },
-    {
-      "source": "/guild",
-      "destination": "/guild/",
-      "permanent": false
-    },
-    {
-      "source": "/meet",
-      "destination": "/meet/",
-      "permanent": false
-    },
-    {
-      "source": "/meet/admin",
-      "destination": "/meet/admin/",
-      "permanent": false
-    },
-    {
-      "source": "/xvisor",
-      "destination": "/xvisor/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle",
-      "destination": "/xircle/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/start",
-      "destination": "/xircle/start/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/circle",
-      "destination": "/xircle/circle/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/ghost",
-      "destination": "/xircle/ghost/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/routinex",
-      "destination": "/xircle/routinex/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/hardware",
-      "destination": "/xircle/hardware/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/products",
-      "destination": "/xircle/products/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/care",
-      "destination": "/xircle/care/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/opportunity",
-      "destination": "/xircle/opportunity/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/learn",
-      "destination": "/xircle/learn/",
-      "permanent": false
-    },
-    {
-      "source": "/xty",
-      "destination": "/xty/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/new",
-      "destination": "/xty/new/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/join",
-      "destination": "/xty/join/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/p",
-      "destination": "/xty/p/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/about",
-      "destination": "/xty/about/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/about/why",
-      "destination": "/xty/about/why/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/about/how",
-      "destination": "/xty/about/how/",
-      "permanent": false
-    },
-    {
-      "source": "/xty/about/what",
-      "destination": "/xty/about/what/",
-      "permanent": false
-    },
-    {
-      "source": "/profile",
-      "destination": "/profile/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/doc",
-      "destination": "/xircle/doc/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle2",
-      "destination": "/xircle/doc/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle2/",
-      "destination": "/xircle/doc/",
-      "permanent": false
-    },
-    {
-      "source": "/xircle2/:path*",
-      "destination": "/xircle/doc/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/app/:path*",
-      "destination": "/xircle/doc/app/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/habix/:path*",
-      "destination": "/xircle/doc/habix/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/ecosystem/:path*",
-      "destination": "/xircle/doc/ecosystem/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/xvisor/:path*",
-      "destination": "/xircle/doc/xvisor/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/xos/:path*",
-      "destination": "/xircle/doc/xos/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/commerce/:path*",
-      "destination": "/xircle/doc/commerce/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/academy/:path*",
-      "destination": "/xircle/doc/academy/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/source/:path*",
-      "destination": "/xircle/doc/source/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/_shared/experience.css",
-      "destination": "/xircle/doc/_shared/experience.css",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/_shared/story.css",
-      "destination": "/xircle/doc/_shared/story.css",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/_shared/story.js",
-      "destination": "/xircle/doc/_shared/story.js",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/assets/source/:path*",
-      "destination": "/xircle/doc/assets/source/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/assets/generated/:path*",
-      "destination": "/xircle/doc/assets/generated/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xircle/assets/campaign/:path*",
-      "destination": "/xircle/doc/assets/campaign/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/app",
-      "destination": "/xircle/doc/app/",
-      "permanent": false
-    },
-    {
-      "source": "/app/",
-      "destination": "/xircle/doc/app/",
-      "permanent": false
-    },
-    {
-      "source": "/routinex",
-      "destination": "/xircle/routinex/",
-      "permanent": false
-    },
-    {
-      "source": "/routinex/",
-      "destination": "/xircle/routinex/",
-      "permanent": false
-    },
-    {
-      "source": "/habix",
-      "destination": "/xircle/doc/habix/",
-      "permanent": false
-    },
-    {
-      "source": "/habix/",
-      "destination": "/xircle/doc/habix/",
-      "permanent": false
-    },
-    {
-      "source": "/ecosystem",
-      "destination": "/xircle/doc/ecosystem/",
-      "permanent": false
-    },
-    {
-      "source": "/ecosystem/",
-      "destination": "/xircle/doc/ecosystem/",
-      "permanent": false
-    },
-    {
-      "source": "/xos",
-      "destination": "/xircle/doc/xos/",
-      "permanent": false
-    },
-    {
-      "source": "/xos/",
-      "destination": "/xircle/doc/xos/",
-      "permanent": false
-    },
-    {
-      "source": "/commerce",
-      "destination": "/xircle/doc/commerce/",
-      "permanent": false
-    },
-    {
-      "source": "/commerce/",
-      "destination": "/xircle/doc/commerce/",
-      "permanent": false
-    },
-    {
-      "source": "/academy",
-      "destination": "/xircle/doc/academy/",
-      "permanent": false
-    },
-    {
-      "source": "/academy/",
-      "destination": "/xircle/doc/academy/",
-      "permanent": false
-    },
-    {
-      "source": "/kickstart/",
-      "destination": "/kickstarter/",
-      "permanent": true
-    },
-    {
-      "source": "/core7/assets/card-back-core7.png",
-      "destination": "/core7/assets/card-back-core7.webp",
-      "permanent": true
-    },
-    {
-      "source": "/core7/assets/core7-rules-overview.png",
-      "destination": "/core7/assets/core7-rules-overview.webp",
-      "permanent": true
-    },
-    {
-      "source": "/ako",
-      "destination": "/ako/",
-      "permanent": false
-    },
-    {
-      "source": "/homechew",
-      "destination": "/homechew/",
-      "permanent": false
-    },
-    {
-      "source": "/mediral",
-      "destination": "/mediral/",
-      "permanent": false
-    },
-    {
-      "source": "/invite",
-      "destination": "/invite/",
-      "permanent": false
-    },
-    {
-      "source": "/course/course-content.js",
-      "destination": "/course/thedent912/course-content.js",
-      "permanent": false
-    },
-    {
-      "source": "/course/course-resources.js",
-      "destination": "/course/thedent912/course-resources.js",
-      "permanent": false
-    },
-    {
-      "source": "/course/course.js",
-      "destination": "/course/thedent912/course.js",
-      "permanent": false
-    },
-    {
-      "source": "/course/course.css",
-      "destination": "/course/thedent912/course.css",
-      "permanent": false
-    },
-    {
-      "source": "/course/daily-brief.html",
-      "destination": "/course/thedent912/daily-brief.html",
-      "permanent": false
-    },
-    {
-      "source": "/course/resources/:path*",
-      "destination": "/course/thedent912/resources/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/course/downloads/:path*",
-      "destination": "/course/thedent912/downloads/:path*",
-      "permanent": false
-    }
+    {"source": "/asksydneyscience/offer", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
+    {"source": "/asksydneyscience/offer/:path*", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/:path*", "permanent": true},
+    {"source": "/asksydneyscience/offer", "destination": "/asksydscience/offer/", "permanent": true},
+    {"source": "/asksydneyscience/offer/:path*", "destination": "/asksydscience/offer/:path*", "permanent": true},
+    {"source": "/hf", "destination": "/hf/", "permanent": false},
+    {"source": "/xvisor", "destination": "/xvisor/", "permanent": true},
+    {"source": "/", "has": [{"type": "host", "value": "xty.myclover.com"}], "destination": "https://www.myclover.com/xty/about/", "permanent": false},
+    {"source": "/:path*", "has": [{"type": "host", "value": "xty.myclover.com"}], "destination": "https://www.myclover.com/xty/about/", "permanent": false},
+    {"source": "/", "has": [{"type": "host", "value": "xircle.myclover.com"}], "destination": "https://www.myclover.com/xircle/", "permanent": false},
+    {"source": "/:path*", "has": [{"type": "host", "value": "xircle.myclover.com"}], "destination": "https://www.myclover.com/xircle/", "permanent": false},
+    {"source": "/", "has": [{"type": "host", "value": "teem.myclover.com"}], "destination": "https://www.myclover.com/resume/", "permanent": false},
+    {"source": "/:path*", "has": [{"type": "host", "value": "teem.myclover.com"}], "destination": "https://www.myclover.com/resume/", "permanent": false},
+    {"source": "/teambook", "destination": "https://teambook.me/", "permanent": false},
+    {"source": "/teambook/", "destination": "https://teambook.me/", "permanent": false},
+    {"source": "/airova", "destination": "/airova/", "permanent": false},
+    {"source": "/guild", "destination": "/guild/", "permanent": false},
+    {"source": "/meet", "destination": "/meet/", "permanent": false},
+    {"source": "/meet/admin", "destination": "/meet/admin/", "permanent": false},
+    {"source": "/xvisor", "destination": "/xvisor/", "permanent": false},
+    {"source": "/xircle", "destination": "/xircle/", "permanent": false},
+    {"source": "/xircle/start", "destination": "/xircle/start/", "permanent": false},
+    {"source": "/xircle/circle", "destination": "/xircle/circle/", "permanent": false},
+    {"source": "/xircle/ghost", "destination": "/xircle/ghost/", "permanent": false},
+    {"source": "/xircle/routinex", "destination": "/xircle/routinex/", "permanent": false},
+    {"source": "/xircle/hardware", "destination": "/xircle/hardware/", "permanent": false},
+    {"source": "/xircle/products", "destination": "/xircle/products/", "permanent": false},
+    {"source": "/xircle/care", "destination": "/xircle/care/", "permanent": false},
+    {"source": "/xircle/opportunity", "destination": "/xircle/opportunity/", "permanent": false},
+    {"source": "/xircle/learn", "destination": "/xircle/learn/", "permanent": false},
+    {"source": "/xty", "destination": "/xty/", "permanent": false},
+    {"source": "/xty/new", "destination": "/xty/new/", "permanent": false},
+    {"source": "/xty/join", "destination": "/xty/join/", "permanent": false},
+    {"source": "/xty/p", "destination": "/xty/p/", "permanent": false},
+    {"source": "/xty/about", "destination": "/xty/about/", "permanent": false},
+    {"source": "/xty/about/why", "destination": "/xty/about/why/", "permanent": false},
+    {"source": "/xty/about/how", "destination": "/xty/about/how/", "permanent": false},
+    {"source": "/xty/about/what", "destination": "/xty/about/what/", "permanent": false},
+    {"source": "/profile", "destination": "/profile/", "permanent": false},
+    {"source": "/xircle/doc", "destination": "/xircle/doc/", "permanent": false},
+    {"source": "/xircle2", "destination": "/xircle/doc/", "permanent": false},
+    {"source": "/xircle2/", "destination": "/xircle/doc/", "permanent": false},
+    {"source": "/xircle2/:path*", "destination": "/xircle/doc/:path*", "permanent": false},
+    {"source": "/xircle/app/:path*", "destination": "/xircle/doc/app/:path*", "permanent": false},
+    {"source": "/xircle/habix/:path*", "destination": "/xircle/doc/habix/:path*", "permanent": false},
+    {"source": "/xircle/ecosystem/:path*", "destination": "/xircle/doc/ecosystem/:path*", "permanent": false},
+    {"source": "/xircle/xvisor/:path*", "destination": "/xircle/doc/xvisor/:path*", "permanent": false},
+    {"source": "/xircle/xos/:path*", "destination": "/xircle/doc/xos/:path*", "permanent": false},
+    {"source": "/xircle/commerce/:path*", "destination": "/xircle/doc/commerce/:path*", "permanent": false},
+    {"source": "/xircle/academy/:path*", "destination": "/xircle/doc/academy/:path*", "permanent": false},
+    {"source": "/xircle/source/:path*", "destination": "/xircle/doc/source/:path*", "permanent": false},
+    {"source": "/xircle/_shared/experience.css", "destination": "/xircle/doc/_shared/experience.css", "permanent": false},
+    {"source": "/xircle/_shared/story.css", "destination": "/xircle/doc/_shared/story.css", "permanent": false},
+    {"source": "/xircle/_shared/story.js", "destination": "/xircle/doc/_shared/story.js", "permanent": false},
+    {"source": "/xircle/assets/source/:path*", "destination": "/xircle/doc/assets/source/:path*", "permanent": false},
+    {"source": "/xircle/assets/generated/:path*", "destination": "/xircle/doc/assets/generated/:path*", "permanent": false},
+    {"source": "/xircle/assets/campaign/:path*", "destination": "/xircle/doc/assets/campaign/:path*", "permanent": false},
+    {"source": "/app", "destination": "/xircle/doc/app/", "permanent": false},
+    {"source": "/app/", "destination": "/xircle/doc/app/", "permanent": false},
+    {"source": "/routinex", "destination": "/xircle/routinex/", "permanent": false},
+    {"source": "/routinex/", "destination": "/xircle/routinex/", "permanent": false},
+    {"source": "/habix", "destination": "/xircle/doc/habix/", "permanent": false},
+    {"source": "/habix/", "destination": "/xircle/doc/habix/", "permanent": false},
+    {"source": "/ecosystem", "destination": "/xircle/doc/ecosystem/", "permanent": false},
+    {"source": "/ecosystem/", "destination": "/xircle/doc/ecosystem/", "permanent": false},
+    {"source": "/xos", "destination": "/xircle/doc/xos/", "permanent": false},
+    {"source": "/xos/", "destination": "/xircle/doc/xos/", "permanent": false},
+    {"source": "/commerce", "destination": "/xircle/doc/commerce/", "permanent": false},
+    {"source": "/commerce/", "destination": "/xircle/doc/commerce/", "permanent": false},
+    {"source": "/academy", "destination": "/xircle/doc/academy/", "permanent": false},
+    {"source": "/academy/", "destination": "/xircle/doc/academy/", "permanent": false},
+    {"source": "/kickstart/", "destination": "/kickstarter/", "permanent": true},
+    {"source": "/core7/assets/card-back-core7.png", "destination": "/core7/assets/card-back-core7.webp", "permanent": true},
+    {"source": "/core7/assets/core7-rules-overview.png", "destination": "/core7/assets/core7-rules-overview.webp", "permanent": true},
+    {"source": "/ako", "destination": "/ako/", "permanent": false},
+    {"source": "/homechew", "destination": "/homechew/", "permanent": false},
+    {"source": "/mediral", "destination": "/mediral/", "permanent": false},
+    {"source": "/invite", "destination": "/invite/", "permanent": false},
+    {"source": "/course/course-content.js", "destination": "/course/thedent912/course-content.js", "permanent": false},
+    {"source": "/course/course-resources.js", "destination": "/course/thedent912/course-resources.js", "permanent": false},
+    {"source": "/course/course.js", "destination": "/course/thedent912/course.js", "permanent": false},
+    {"source": "/course/course.css", "destination": "/course/thedent912/course.css", "permanent": false},
+    {"source": "/course/daily-brief.html", "destination": "/course/thedent912/daily-brief.html", "permanent": false},
+    {"source": "/course/resources/:path*", "destination": "/course/thedent912/resources/:path*", "permanent": false},
+    {"source": "/course/downloads/:path*", "destination": "/course/thedent912/downloads/:path*", "permanent": false}
   ],
   "headers": [
-    {
-      "source": "/asksydscience/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "asksydscience.myclover.com"
-        }
-      ],
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/course/admin/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store, max-age=0"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
-        }
-      ]
-    },
-    {
-      "source": "/course/review-consent/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store, max-age=0"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
-        }
-      ]
-    },
-    {
-      "source": "/xty/assets/pets/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/xty/assets/avatars/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/core7/assets/(card-back-core7|core7-rules-overview).webp",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "image/webp"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter-distilled.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter-distilled-legacy.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter-v2.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter-failsafe.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/kickstarter/kickstarter-static-story.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/course/thedent/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    },
-    {
-      "source": "/course/thedent912/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "same-origin"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/index.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/admin/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/admin/index.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/source/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/catalog.json",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/README.md",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/shelf/CHANGELOG.md",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "no-store"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
-    {
-      "source": "/course/admin/reviews/reviews.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/course/admin/reviews/reviews.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/course/review-consent/consent.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/course/review-consent/consent.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate"
-        },
-        {
-          "key": "CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        },
-        {
-          "key": "Vercel-CDN-Cache-Control",
-          "value": "public, max-age=3600, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/showcase/house/stat/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store, max-age=0"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/showcase/house/stat/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store, max-age=0"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/showcase/house/receive/",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/showcase/house/receive/:path*",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
-    },
-    {
-      "source": "/mediral/admin/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "private, no-store"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "no-referrer"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
-        }
-      ]
-    }
+    {"source": "/asksydscience/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},
+    {"source": "/:path*", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},
+    {"source": "/course/admin/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store, max-age=0"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}]},
+    {"source": "/course/review-consent/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store, max-age=0"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}]},
+    {"source": "/xty/assets/pets/:path*", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}]},
+    {"source": "/xty/assets/avatars/:path*", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}]},
+    {"source": "/core7/assets/(card-back-core7|core7-rules-overview).webp", "headers": [{"key": "Content-Type", "value": "image/webp"}, {"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}]},
+    {"source": "/kickstarter/", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter.js", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter-distilled.js", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter-distilled-legacy.js", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter-v2.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter-failsafe.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
+    {"source": "/kickstarter/kickstarter-static-story.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}]},
+    {"source": "/course/thedent/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]},
+    {"source": "/course/thedent912/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]},
+    {"source": "/shelf/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Referrer-Policy", "value": "same-origin"}, {"key": "X-Frame-Options", "value": "DENY"}]},
+    {"source": "/shelf/", "headers": [{"key": "Cache-Control", "value": "private, no-store"}]},
+    {"source": "/shelf/index.html", "headers": [{"key": "Cache-Control", "value": "private, no-store"}]},
+    {"source": "/shelf/admin/", "headers": [{"key": "Cache-Control", "value": "private, no-store"}]},
+    {"source": "/shelf/admin/index.html", "headers": [{"key": "Cache-Control", "value": "private, no-store"}]},
+    {"source": "/shelf/source/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "CDN-Cache-Control", "value": "no-store"}, {"key": "Vercel-CDN-Cache-Control", "value": "no-store"}]},
+    {"source": "/shelf/catalog.json", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "CDN-Cache-Control", "value": "no-store"}, {"key": "Vercel-CDN-Cache-Control", "value": "no-store"}]},
+    {"source": "/shelf/README.md", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "CDN-Cache-Control", "value": "no-store"}, {"key": "Vercel-CDN-Cache-Control", "value": "no-store"}]},
+    {"source": "/shelf/CHANGELOG.md", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "CDN-Cache-Control", "value": "no-store"}, {"key": "Vercel-CDN-Cache-Control", "value": "no-store"}]},
+    {"source": "/course/admin/reviews/reviews.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}, {"key": "CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}, {"key": "Vercel-CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}]},
+    {"source": "/course/admin/reviews/reviews.js", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}, {"key": "CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}, {"key": "Vercel-CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}]},
+    {"source": "/course/review-consent/consent.css", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}, {"key": "CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}, {"key": "Vercel-CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}]},
+    {"source": "/course/review-consent/consent.js", "headers": [{"key": "Cache-Control", "value": "public, max-age=300, must-revalidate"}, {"key": "CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}, {"key": "Vercel-CDN-Cache-Control", "value": "public, max-age=3600, must-revalidate"}]},
+    {"source": "/showcase/house/stat/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store, max-age=0"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Frame-Options", "value": "DENY"}, {"key": "X-Content-Type-Options", "value": "nosniff"}]},
+    {"source": "/showcase/house/stat/", "headers": [{"key": "Cache-Control", "value": "private, no-store, max-age=0"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Frame-Options", "value": "DENY"}, {"key": "X-Content-Type-Options", "value": "nosniff"}]},
+    {"source": "/showcase/house/receive/", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "X-Content-Type-Options", "value": "nosniff"}]},
+    {"source": "/showcase/house/receive/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "X-Content-Type-Options", "value": "nosniff"}]},
+    {"source": "/mediral/admin/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Frame-Options", "value": "DENY"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}]}
   ],
   "rewrites": [
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "asksydscience.myclover.com"
-        }
-      ],
-      "destination": "/asksydscience/index.html"
-    },
-    {
-      "source": "/asksydscience/",
-      "destination": "/asksydscience/index.html"
-    },
-    {
-      "source": "/Xircle",
-      "destination": "/xircle/index.html"
-    },
-    {
-      "source": "/Xircle/",
-      "destination": "/xircle/index.html"
-    },
-    {
-      "source": "/XIRCLE",
-      "destination": "/xircle/index.html"
-    },
-    {
-      "source": "/XIRCLE/",
-      "destination": "/xircle/index.html"
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "ako.myclover.com"
-        }
-      ],
-      "destination": "/ako/index.html"
-    },
-    {
-      "source": "/story",
-      "has": [
-        {
-          "type": "host",
-          "value": "ako.myclover.com"
-        }
-      ],
-      "destination": "/ako/story/index.html"
-    },
-    {
-      "source": "/story/",
-      "has": [
-        {
-          "type": "host",
-          "value": "ako.myclover.com"
-        }
-      ],
-      "destination": "/ako/story/index.html"
-    },
-    {
-      "source": "/api/teambook/party/:code/image/:seq",
-      "destination": "/api/teambook-media?code=:code&seq=:seq"
-    },
-    {
-      "source": "/api/teambook/party/:code/cover",
-      "destination": "/api/teambook-media?code=:code&cover=1"
-    },
-    {
-      "source": "/api/teambook/:path*",
-      "destination": "/api/teambook?path=:path*"
-    },
-    {
-      "source": "/api/auth/:path*",
-      "destination": "/api/auth?path=:path*"
-    },
-    {
-      "source": "/api/xty/party/:code/finish",
-      "destination": "/api/xty-party-finish?code=:code"
-    },
-    {
-      "source": "/api/xty/:path*",
-      "destination": "/api/xty?path=:path*"
-    }
+    {"source": "/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/index.html"},
+    {"source": "/demo", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/demo/index.html"},
+    {"source": "/demo/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/demo/index.html"},
+    {"source": "/offer", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/offer/index.html"},
+    {"source": "/offer/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/offer/index.html"},
+    {"source": "/about", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/about/index.html"},
+    {"source": "/about/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/about/index.html"},
+    {"source": "/stories", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/stories/index.html"},
+    {"source": "/stories/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/stories/index.html"},
+    {"source": "/kitchen", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/kitchen/index.html"},
+    {"source": "/kitchen/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/kitchen/index.html"},
+    {"source": "/mindfulness", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/mindfulness/index.html"},
+    {"source": "/mindfulness/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/mindfulness/index.html"},
+    {"source": "/workshop", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/workshop/index.html"},
+    {"source": "/workshop/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/workshop/index.html"},
+    {"source": "/studio", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/studio/index.html"},
+    {"source": "/studio/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/studio/index.html"},
+    {"source": "/:path((?!asksydscience(?:/|$)|asksydneyscience(?:/|$)|api(?:/|$)|_vercel(?:/|$)|\\.well-known(?:/|$)).*)", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/:path*"},
+    {"source": "/asksydscience/", "destination": "/asksydscience/index.html"},
+    {"source": "/Xircle", "destination": "/xircle/index.html"},
+    {"source": "/Xircle/", "destination": "/xircle/index.html"},
+    {"source": "/XIRCLE", "destination": "/xircle/index.html"},
+    {"source": "/XIRCLE/", "destination": "/xircle/index.html"},
+    {"source": "/", "has": [{"type": "host", "value": "ako.myclover.com"}], "destination": "/ako/index.html"},
+    {"source": "/story", "has": [{"type": "host", "value": "ako.myclover.com"}], "destination": "/ako/story/index.html"},
+    {"source": "/story/", "has": [{"type": "host", "value": "ako.myclover.com"}], "destination": "/ako/story/index.html"},
+    {"source": "/api/teambook/party/:code/image/:seq", "destination": "/api/teambook-media?code=:code&seq=:seq"},
+    {"source": "/api/teambook/party/:code/cover", "destination": "/api/teambook-media?code=:code&cover=1"},
+    {"source": "/api/teambook/:path*", "destination": "/api/teambook?path=:path*"},
+    {"source": "/api/auth/:path*", "destination": "/api/auth?path=:path*"},
+    {"source": "/api/xty/party/:code/finish", "destination": "/api/xty-party-finish?code=:code"},
+    {"source": "/api/xty/:path*", "destination": "/api/xty?path=:path*"}
   ],
-  "functions": {
-    "api/course-content.js": {
-      "includeFiles": "course/thedent/**"
-    },
-    "api/shelf.js": {
-      "includeFiles": "shelf/{catalog.json,source/**}"
-    },
-    "api/learn-foundation.js": {
-      "includeFiles": "classroom/**"
-    },
-    "api/learn-media.js": {
-      "maxDuration": 60
-    },
-    "api/mediral-commerce.js": {
-      "maxDuration": 60,
-      "includeFiles": "mediral/data/details.json"
-    }
-  }
+  "functions": {"api/course-content.js": {"includeFiles": "course/thedent/**"}, "api/shelf.js": {"includeFiles": "shelf/{catalog.json,source/**}"}, "api/learn-foundation.js": {"includeFiles": "classroom/**"}, "api/learn-media.js": {"maxDuration": 60}, "api/mediral-commerce.js": {"maxDuration": 60, "includeFiles": "mediral/data/details.json"}}
 }

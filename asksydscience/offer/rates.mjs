@@ -1,9 +1,11 @@
 /** MC-WEB-2026-10-v1: proposed rate card for this offer, not historical approved pricing.
  * All amounts are integer THB service fees, excluding applicable tax / third-party fees.
  * This is the single price source. Packages are module presets, never another surcharge.
+ * Care display revision 2026-10-02: owner confirmed existing monthly prices already include 50% off.
+ * Keep payable prices unchanged; regularPrice is comparison metadata, not another charge.
  */
 export const RATE = Object.freeze({
-  version: 'MC-WEB-2026-10-v1', issued: '2026-10-02', currency: 'THB', status: 'proposal',
+  version: 'MC-WEB-2026-10-v1', issued: '2026-10-02', currency: 'THB', status: 'proposal', revision: '2026-10-02-care50',
   base: { id: 'home', title: 'บ้านออนไลน์พร้อมเปิด', price: 19900, days: 10,
     scope: [
       '6 แบบหน้า: หน้าแรก / คลังเรื่อง / แม่แบบบทความ / เวิร์กช็อป / ของที่ซิดเลือก / เกี่ยวกับซิด',
@@ -37,9 +39,9 @@ export const RATE = Object.freeze({
       scope: 'ประชุม 90 นาที + โครงกิจกรรม 4 สัปดาห์และแบบการบ้าน 1 ชุด + แก้ 1 รอบ ไม่รวมสอนจริง จัดงาน หรือติดตามผู้เรียน' }
   ],
   care: [
-    { id: 'none', title: 'ดูแลเอง', price: 0, scope: 'ไม่มีค่าดูแลรายเดือน ยังได้รับคู่มือส่งมอบและแก้บั๊กจากงานเดิม 30 วัน' },
-    { id: 'light', title: 'ดูแลเบา ๆ', price: 1500, scope: 'สูงสุด 2 ชั่วโมง/เดือน และไม่เกิน 2 เนื้อหา + ตรวจลิงก์/หน้าหลัก 1 ครั้ง ตอบรับงานภายใน 2 วันทำการ' },
-    { id: 'grow', title: 'ช่วยเติบโตต่อ', price: 3500, scope: 'สูงสุด 5 ชั่วโมง/เดือน และไม่เกิน 4 เนื้อหา รวมคุยทบทวน 30 นาที + ตรวจหน้าหลัก ตอบรับงานภายใน 2 วันทำการ' }
+    { id: 'none', title: 'ดูแลเอง', price: 0, regularPrice: 0, discountPercent: 0, scope: 'ไม่มีค่าดูแลรายเดือน ยังได้รับคู่มือส่งมอบและแก้บั๊กจากงานเดิม 30 วัน' },
+    { id: 'light', title: 'ดูแลเบา ๆ', price: 1500, regularPrice: 3000, discountPercent: 50, scope: 'สูงสุด 2 ชั่วโมง/เดือน และไม่เกิน 2 เนื้อหา + ตรวจลิงก์/หน้าหลัก 1 ครั้ง ตอบรับงานภายใน 2 วันทำการ' },
+    { id: 'grow', title: 'ช่วยเติบโตต่อ', price: 3500, regularPrice: 7000, discountPercent: 50, scope: 'สูงสุด 5 ชั่วโมง/เดือน และไม่เกิน 4 เนื้อหา รวมคุยทบทวน 30 นาที + ตรวจหน้าหลัก ตอบรับงานภายใน 2 วันทำการ' }
   ],
   plans: [
     { id: 'a', letter: 'A', title: 'เปิดบ้าน', en: 'A place to begin', modules: [],
@@ -83,7 +85,7 @@ export function quote(input) {
   const first = Math.round(oneTime * 0.5), second = Math.round(oneTime * 0.3);
   const plan = RATE.plans.find(x => x.modules.join('|') === s.modules.join('|'));
   const days = RATE.base.days + modules.reduce((sum, x) => sum + x.days, 0) + RATE.extras.reduce((sum, x) => sum + x.days * s.extras[x.id], 0) + Math.ceil(s.extras.stories / 5);
-  return { state: s, rows, oneTime, monthly: care.price, care, careBudget: care.price * s.months, budget: oneTime + care.price * s.months,
+  return { state: s, rows, oneTime, monthly: care.price, monthlyRegular: care.regularPrice, monthlySaving: care.regularPrice - care.price, care, careBudget: care.price * s.months, budget: oneTime + care.price * s.months,
     installments: [first, second, oneTime - first - second], days,
     planId: plan?.id || 'custom', title: plan ? `${plan.letter} · ${plan.title}` : 'จัดชุดตามที่ซิดเลือก',
     version: RATE.version, excludesTax: true, excludesExternalFees: true };
@@ -107,7 +109,7 @@ export function summaryText(input) {
   const q = quote(input);
   const lines = [ 'ข้อเสนอเว็บไซต์ AskSydScience × myClover', `เรตราคา ${RATE.version} | วันที่ออก ${RATE.issued}`, 'สถานะ: ข้อเสนอเพื่อยืนยันขอบเขต ไม่ใช่ใบแจ้งหนี้หรือการรับงานอัตโนมัติ', '', q.title,
     ...q.rows.map(x => `${x.title}: ${x.quantity} × ${money(x.unitPrice)} = ${money(x.total)} บาท`), '',
-    `ค่าทำครั้งเดียว: ${money(q.oneTime)} บาท`, `ค่าดูแล: ${q.care.title} — ${money(q.monthly)} บาท/เดือน`, `ขอบเขตดูแล: ${q.care.scope}`,
+    `ค่าทำครั้งเดียว: ${money(q.oneTime)} บาท`, `ค่าดูแล: ${q.care.title} — ${money(q.monthly)} บาท/เดือน`, ...(q.monthly ? [`ราคาพิเศษ ลด ${q.care.discountPercent}% แล้ว จากราคาปกติ ${money(q.monthlyRegular)} บาท/เดือน ประหยัด ${money(q.monthlySaving)} บาท/เดือน`, 'ยอดค่าดูแลและงบรวมใช้ราคาพิเศษแล้ว ไม่หักส่วนลดซ้ำ และไม่ลดค่าทำครั้งเดียว'] : []), `ขอบเขตดูแล: ${q.care.scope}`,
     `งบค่าบริการ ${q.state.months} เดือนหลังส่งมอบ: ${money(q.budget)} บาท (ค่าทำ + ค่าดูแล ${q.state.months} เดือน)`,
     'ยังไม่รวมภาษีที่ใช้จริง โดเมน hosting CMS เครื่องมือ AI และค่าใช้จ่ายบุคคลภายนอก ไม่ใช่ยอดรวมต้นทุนทั้งหมด',
     `งวดงาน 50% / 30% / 20%: ${q.installments.map(money).join(' / ')} บาท (เฉพาะค่าทำก่อนภาษี)`,
