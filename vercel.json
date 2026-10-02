@@ -5,6 +5,8 @@
     {"path": "/api/mediral-commerce?action=drain", "schedule": "*/5 * * * *"}
   ],
   "redirects": [
+    {"source": "/asksydneyscience/offer/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
+    {"source": "/asksydneyscience/offer/", "destination": "/asksydscience/offer/", "permanent": true},
     {"source": "/asksydneyscience/offer", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
     {"source": "/asksydneyscience/offer/:path*", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/:path*", "permanent": true},
     {"source": "/asksydneyscience/offer", "destination": "/asksydscience/offer/", "permanent": true},
