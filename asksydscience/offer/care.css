@@ -1,0 +1,12 @@
+/* Care prices are already discounted; visual comparison only. */
+.care-special-note{padding:16px 18px;margin:0 0 18px;border:1px solid #afbe9e;border-radius:10px;background:#f6f8ef;color:#254d39;font-size:14px;line-height:1.9}
+.care-special-note strong,.care-special-note span,.care-special-note small{display:block}
+.care-special-note span{margin-top:5px;color:#354537}
+.care-special-note small{font-size:12px;margin-top:6px;color:#465444}
+.care-promo{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px!important;margin:8px 0!important}
+.care-promo del{font-size:13px;color:#53604e}
+.care-badge{display:inline-block;background:#dfe9cd;border:1px solid #bdcca9;color:#294530;padding:3px 8px;border-radius:5px;font-size:12px;font-weight:600;line-height:1.6}
+.monthly-promo{margin:10px 0 12px;padding:12px;border-radius:8px;background:#f0f4e8;border:1px solid #d1ddc2}
+.monthly-promo p{font-size:13px;margin-top:7px;color:#46543f}
+.monthly-promo small{display:block;font-size:12px;line-height:1.8;color:#46543f;margin-top:5px}
+@media(max-width:650px){.care-special-note{padding:14px}.care-special-note span{font-size:13px}.care-promo{align-items:flex-start}.care-badge{font-size:12px}}

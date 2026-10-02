@@ -62,7 +62,13 @@ function buildCare() {
   RATE.care.forEach(c => {
     const e = node('label', 'care-option'), input = node('input'); input.type = 'radio'; input.name = 'care'; input.id = 'care-' + c.id; input.value = c.id;
     const body = node('div'), title = node('div', 'care-title'), price = node('b', '', money(c.price)); price.append(node('small', '', ' บาท/เดือน'));
-    title.append(node('strong', '', c.title), price); body.append(title, node('p', '', c.scope)); e.append(input, body); $('care-options').append(e); refs.care[c.id] = { e, input };
+    title.append(node('strong', '', c.title), price); body.append(title);
+    if (c.discountPercent) {
+      const promo = node('p', 'care-promo');
+      promo.append(node('span', 'care-badge', 'ราคาพิเศษ ลด ' + c.discountPercent + '% แล้ว'), node('span', '', 'ปกติ '), node('del', '', money(c.regularPrice) + ' บาท/เดือน'));
+      body.append(promo);
+    }
+    body.append(node('p', '', c.scope)); e.append(input, body); $('care-options').append(e); refs.care[c.id] = { e, input };
     input.addEventListener('change', () => { if (input.checked) { state.care = c.id; render(); } });
   });
 }
@@ -77,6 +83,9 @@ function render() {
   $('selected-name').textContent = q.title + extraLabel;
   $('one-time').textContent = $('mobile-total').textContent = money(q.oneTime);
   $('monthly').textContent = money(q.monthly);
+  $('monthly-promo').hidden = !q.monthly;
+  $('monthly-regular').textContent = money(q.monthlyRegular) + ' บาท/เดือน';
+  $('monthly-saving').textContent = 'ประหยัด ' + money(q.monthlySaving) + ' บาท/เดือน · คำนวณราคาพิเศษให้แล้ว ไม่ลดซ้ำ';
   $('care-note').textContent = q.monthly ? q.care.title + ' · เริ่มหลังส่งมอบ ไม่ผูกสัญญาตามจำนวนเดือนที่ทดลองคำนวณ' : 'ดูแลเอง · ไม่มีค่ารายเดือนบังคับ';
   $('quote-rows').replaceChildren(...q.rows.map(x => row(x.title + (x.quantity > 1 ? ' × ' + x.quantity : ''), money(x.total))));
   $('budget-label').textContent = 'งบค่าบริการช่วง ' + state.months + ' เดือน'; $('budget').textContent = money(q.budget);
@@ -104,7 +113,7 @@ async function copy(text, success) {
   }
 }
 function shareUrl() {
-  const u = new URL(location.href); u.search = encodeState(state); u.hash = 'configure'; return u.href;
+  const u = new URL(location.href); u.pathname = u.hostname === 'asksydscience.myclover.com' ? '/offer/' : '/asksydscience/offer/'; u.search = encodeState(state); u.hash = 'configure'; return u.href;
 }
 function downloadSummary() {
   const content = '\ufeff' + summaryText(state), blob = new Blob([content], { type: 'text/plain;charset=utf-8' });

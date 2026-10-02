@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RATE, preset, quote, normalize, encodeState, decodeState, summaryText } from '../../../asksydneyscience/offer/rates.mjs';
+import { RATE, preset, quote, normalize, encodeState, decodeState, summaryText } from '../../../asksydscience/offer/rates.mjs';
 for (const [id, total, days] of [['a',19900,10],['b',29900,14],['c',44900,19]]) test(`preset ${id}: ${total} THB / ${days} working days`,()=>{const q=quote(preset(id));assert.equal(q.oneTime,total);assert.equal(q.days,days);assert.equal(q.monthly,0);assert.equal(q.installments.reduce((a,b)=>a+b),total)});
 test('modules cannot be charged twice',()=>assert.equal(quote({modules:['intake','intake','source','unknown']}).oneTime,29900));
 test('custom core + CMS remains 34900, not full C',()=>{const q=quote({modules:['cms']});assert.equal(q.oneTime,34900);assert.equal(q.planId,'custom')});
