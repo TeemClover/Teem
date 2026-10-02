@@ -1,12 +1,15 @@
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
-import {COUPON_START,COUPON_END,retailPrice} from './catalog.js';
+import {COUPON_END} from './catalog.js';
 import {BANK,Fault,clean,hmac,same} from './domain.js';
 const COOKIE='__Host-mediral-shop';
-const END=COUPON_END,START=COUPON_START;
-export function webPrice(items,now){
+const END=COUPON_END;
+// End of the second following calendar day in Bangkok: 48–72 hours.
+export function webCouponDeadline(start){const day=86400000,offset=7*3600000;return (Math.floor((start+offset)/day)+3)*day-offset;}
+export function webPrice(items,now,deadline=END){
  if(!items||Array.isArray(items)||typeof items!=='object'||!Object.keys(items).length||Object.keys(items).some(k=>!['CL','AC','BR','SU','PO'].includes(k))||Object.values(items).some(n=>!Number.isInteger(n)||n<1||n>5))throw new Fault('INVALID_CART');
- const active=now>=START&&now<END;
- return {...retailPrice(items,now),coupon:active?'WELCOME20':null,couponExpiresAt:active?END:null};
+ const active=now<deadline;
+ const count=Object.values(items).reduce((a,b)=>a+b,0);
+ return {prices:Object.fromEntries(Object.keys(items).map(k=>[k,50000])),subtotal:count*(active?40000:50000),discount:active?count*10000:0,coupon:active?'WELCOME20':null,couponExpiresAt:active?deadline:null};
 }
 export function publicOrder(o,now){
  const expired=o.status==='awaiting_payment'&&now>o.expiresAt;
@@ -33,7 +36,8 @@ export async function webCheckout({action,req,res,store,env,now,raw,parse,origin
  const valid=/^W[0-9a-f]{32}$/.test(user||'')&&/^\d{13}$/.test(expires||'')&&+expires>now&&+expires<=now+30*86400000&&same(sig,hmac('web-shop:'+user+'.'+expires,secret));
  if(action==='shop-session'){
   if(!valid){user='W'+randomBytes(16).toString('hex');expires=String(now+30*86400000);sig=hmac('web-shop:'+user+'.'+expires,secret);res.setHeader('Set-Cookie',`${COOKIE}=${user}.${expires}.${sig}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=2592000`);}
-  return json({ok:true,unit:50000,discountPercent:now>=START&&now<END?20:0,couponExpiresAt:END});
+  const deadline=webCouponDeadline(+expires-30*86400000);
+  return json({ok:true,unit:50000,discountPercent:now<deadline?20:0,couponExpiresAt:deadline,serverNow:now});
  }
  if(!valid)throw new Fault('SHOP_SESSION_REQUIRED',401);
  const body=parse(await raw(req,action==='shop-slip'?4300000:12000));
@@ -43,7 +47,7 @@ export async function webCheckout({action,req,res,store,env,now,raw,parse,origin
   if(action==='shop-create'){
    // A retry in this browser returns the same order, including after a lost response.
    if(!order){
-    const pricing=webPrice(body.items,now),name=clean(body.name,100),phone=clean(body.phone,30).replace(/[\s-]/g,''),address=clean(body.address,700);
+    const pricing=webPrice(body.items,now,webCouponDeadline(+expires-30*86400000)),name=clean(body.name,100),phone=clean(body.phone,30).replace(/[\s-]/g,''),address=clean(body.address,700);
     if(body.consent!==true||name.length<2||!/^0[0-9]{8,9}$/.test(phone)||address.length<15)throw new Fault('CHECK_CUSTOMER_DETAILS');
     if(await store.limited('web-create:'+createHash('sha256').update(ip).digest('hex'),5,3600000,now))throw new Fault('TRY_LATER',429);
     order={id:'MD-'+randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),channel:'web',items:body.items,name,phone,address,consentAt:now,status:'awaiting_quote',createdAt:now,webPricing:pricing,history:[{at:now,action:'submitted_web'}]};
