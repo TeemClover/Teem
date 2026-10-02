@@ -2,3 +2,5 @@
 
 #coupon-clock{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums;display:block;margin:4px 0}#coupon-deadline{font-size:10px;text-align:left;margin:0}.coupon-ticket{align-items:flex-start}
 .quantity input{margin:0;min-width:0}#order .line{margin-top:14px}
+
+#shipping{font-size:clamp(20px,4vw,28px);font-weight:500;padding:16px 0;border-top:1px solid #e3e9dc}#bank{background:#eff5e8;border:1px solid #dbe6ce;border-radius:14px;padding:22px;margin:20px 0}#bank-info{font-size:19px;line-height:1.8;font-variant-numeric:tabular-nums}#deadline{font-size:13px;color:#62745d}#copy-status:empty{display:none}#slip button{width:100%}@media(max-width:680px){#bank{padding:16px}#bank-info{font-size:17px}}

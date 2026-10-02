@@ -1,6 +1,7 @@
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {COUPON_END} from './catalog.js';
-import {BANK,Fault,clean,hmac,same} from './domain.js';
+import {shippingFor} from '../../../mediral/checkout/shipping.js';
+import {BANK,Fault,clean,hmac,same,quote} from './domain.js';
 const COOKIE='__Host-mediral-shop';
 const END=COUPON_END;
 // End of the second following calendar day in Bangkok: 48–72 hours.
@@ -51,6 +52,8 @@ export async function webCheckout({action,req,res,store,env,now,raw,parse,origin
     if(body.consent!==true||name.length<2||!/^0[0-9]{8,9}$/.test(phone)||address.length<15)throw new Fault('CHECK_CUSTOMER_DETAILS');
     if(await store.limited('web-create:'+createHash('sha256').update(ip).digest('hex'),5,3600000,now))throw new Fault('TRY_LATER',429);
     order={id:'MD-'+randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),channel:'web',items:body.items,name,phone,address,consentAt:now,status:'awaiting_quote',createdAt:now,webPricing:pricing,history:[{at:now,action:'submitted_web'}]};
+    // Owner authorized immediate checkout with this shipping rule (2026-10-02).
+    order=quote(order,{stockConfirmed:true,shipping:shippingFor(pricing.subtotal)/100},now);
     await store.commit(c,{state:{orderId:order.id,stage:'ordered'},order},now);
    }
   }else if(action==='shop-slip'){
@@ -63,6 +66,13 @@ export async function webCheckout({action,req,res,store,env,now,raw,parse,origin
    if(order&&!['cancelled','shipped'].includes(order.status))throw new Fault('ORDER_STILL_ACTIVE',409);
    await store.commit(c,{state:{}},now);order=null;
   }else if(action!=='shop-status')throw new Fault('NOT_FOUND',404);
+  // Upgrade unquoted web requests when their customer returns; preserve any
+  // previously issued payment total and all paid/reviewed orders unchanged.
+  if(order?.status==='awaiting_quote'){
+   order.webPricing=webPrice(order.items,now,webCouponDeadline(+expires-30*86400000));
+   order=quote(order,{stockConfirmed:true,shipping:shippingFor(order.webPricing.subtotal)/100},now);
+   await store.commit(c,{state:c.state,order},now);
+  }
   return json({ok:true,order:order?publicOrder(order,now):null});
  }finally{await store.release(c);}
 }
