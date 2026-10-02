@@ -142,10 +142,17 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
      if(body.command==='quote'){if(env.MEDIRAL_MODE!=='live'||(order.channel!=='web'&&!configured()))throw new Fault('LINE_NOT_READY',409);order=quote(order,body,now);state.paused=false;delete state.reason;messages=[paymentMessage(order)];}
      else if(body.command==='paid'){
       if(!['awaiting_payment','payment_review'].includes(order.status))throw new Fault('ORDER_NOT_PAYABLE',409);
-      const ref=clean(body.transRef,120).toUpperCase();const transferred=Date.parse(body.transferredAt);
-      if(body.confirmedReceived!==true||!/^[-A-Z0-9._:/]{6,120}$/.test(ref)||amount(body.amount)!==order.total||!Number.isFinite(transferred)||transferred<order.quotedAt||transferred>order.expiresAt||transferred>now+60000)throw new Fault('CHECK_PAYMENT_DETAILS');
-      if(await store.crossCourseReference(ref))throw new Fault('TRANSFER_ALREADY_USED',409);
-      transfer=ref;order.status='paid';order.payment={transRef:ref,amount:order.total,transferredAt:transferred,verifiedAt:now,method:'staff_bank_confirmation'};state.paused=false;delete state.reason;order.history.push({at:now,action:'paid'});messages=[lineText(`ยืนยันรับชำระ ${order.id} แล้วค่ะ 🍀\nเตรียมจัดสินค้าให้ และจะแจ้งเลขพัสดุในแชทนี้`,['สถานะออเดอร์','คุยกับคนดูแล'])];
+      const manual=body.confirmationMode==='manual';
+      if(body.confirmedReceived!==true||amount(body.amount)!==order.total)throw new Fault('CHECK_PAYMENT_DETAILS');
+      // Manual confirmation records the owner's decision, not an invented bank timestamp/reference.
+      // Retain server-verified slip identifiers and their duplicate checks when available.
+      if(manual&&['TRANSACTION_USED_IN_AI_SOURCE','DUPLICATE_OR_UNKNOWN'].includes(order.paymentCheck?.reason))throw new Fault('TRANSFER_OR_EVENT_ALREADY_USED',409);
+      const checked=manual&&order.paymentCheck?.ok===true?order.paymentCheck:null;
+      const ref=manual?(checked?.transRef||null):clean(body.transRef,120).toUpperCase();
+      const transferred=manual?(checked?.transferredAt??null):Date.parse(body.transferredAt);
+      if((!manual||checked)&&(!/^[-A-Z0-9._:/]{6,120}$/.test(ref||'')||!Number.isFinite(transferred)||transferred<order.quotedAt||transferred>order.expiresAt||transferred>now+60000))throw new Fault('CHECK_PAYMENT_DETAILS');
+      if(ref&&await store.crossCourseReference(ref))throw new Fault('TRANSFER_ALREADY_USED',409);
+      transfer=ref;order.status='paid';order.payment={transRef:ref,amount:order.total,transferredAt:transferred,verifiedAt:now,method:manual?'staff_manual_confirmation':'staff_bank_confirmation'};state.paused=false;delete state.reason;order.history.push({at:now,action:'paid',method:order.payment.method});messages=[lineText(`ยืนยันรับชำระ ${order.id} แล้วค่ะ 🍀\nเตรียมจัดสินค้าให้ และจะแจ้งเลขพัสดุในแชทนี้`,['สถานะออเดอร์','คุยกับคนดูแล'])];
      }else if(body.command==='packing'){if(order.status!=='paid')throw new Fault('STATUS_CONFLICT',409);order.status='packing';order.history.push({at:now,action:'packing'});}
      else if(body.command==='shipped'){if(!['paid','packing'].includes(order.status))throw new Fault('STATUS_CONFLICT',409);const carrier=clean(body.carrier,80),tracking=clean(body.tracking,80);if(!carrier||!/^[-A-Za-z0-9]{5,80}$/.test(tracking))throw new Fault('INVALID_TRACKING');order={...order,status:'shipped',carrier,tracking};order.history.push({at:now,action:'shipped'});state.stage='cart';messages=[lineText(`ส่ง ${order.id} แล้วค่ะ 🍀\n${carrier}\nเลขพัสดุ ${tracking}\nขอบคุณที่ให้ myClover ดูแลค่ะ`,['สถานะออเดอร์','คุยกับคนดูแล'])];}
      else if(body.command==='cancel'){if(!['awaiting_quote','awaiting_payment'].includes(order.status))throw new Fault('USE_PAYMENT_REVIEW',409);order.status='cancelled';order.history.push({at:now,action:'cancelled'});state.stage='cart';state.paused=false;messages=[lineText(`ยกเลิกรายการ ${order.id} แล้วค่ะ กรุณาอย่าโอนยอดเดิม หากโอนแล้วให้ส่งต่อคนดูแลทันที`,['คุยกับคนดูแล'])];}
