@@ -15,6 +15,7 @@ import {RoundedBoxGeometry} from './vendor/RoundedBoxGeometry.js';
 import {FONT, imageTex} from './textures.js';
 import {batchStaticSiblings} from './batching.js';
 import {centeredText} from './labels.js';
+import {miniatureHouse} from './miniature-house.js';
 
 export const H = 3.2, SLAB = 0.2, F2 = H + SLAB, D = 7, W = 8; // wall height, floor-2 level, room depth/width
 export const CLOVER_ROOMS = ['living', 'kitchen', 'classroom', 'office'];
@@ -777,15 +778,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const turn = group(model); out.tickers.push(t => { turn.rotation.y = t * 0.25; });
     cy(turn, [0.6, 0.62, 0.04], [0, 0, 0], M('#f3efe6', {roughness: 0.5}));
     cy(turn, [0.56, 0.56, 0.012], [0, 0.04, 0], M('#5fae6a', {roughness: 0.9})); // lawn
-    const mh = group(turn, 0.06, 0.052, 0), walls = M('#f4f2ec', {roughness: 0.6}), glassD = M('#2d3a44', {roughness: 0.1, metalness: 0.5});
-    rb(mh, [0.66, 0.24, 0.36], [0, 0, 0], walls, null, 0.01); rb(mh, [0.66, 0.24, 0.36], [0, 0.25, 0], walls, null, 0.01);
-    for (const [x, y, w_] of [[-0.15, 0.04, 0.2], [0.18, 0.05, 0.22], [-0.12, 0.3, 0.3], [0.2, 0.32, 0.14]]) bx(mh, [w_, 0.14, 0.012], [x, y, 0.18], glassD);
-    bx(mh, [0.3, 0.012, 0.1], [-0.12, 0.25, 0.23], walls); // balcony
-    for (const x of [-0.17, 0.17]) { const r = new THREE.Mesh(new THREE.ConeGeometry(0.27, 0.16, 4, 1, true), tile); r.rotation.y = Math.PI / 4; r.scale.set(1, 1, 0.75); place(r, mh, x, 0.57, 0); }
-    for (let k = 0; k < 3; k++) bx(mh, [0.07, 0.01, 0.06], [0.1 + k * 0.08, 0.6, 0.07], solar, [0.5, 0, 0]);
-    bx(mh, [0.24, 0.012, 0.38], [-0.46, 0.24, 0], walls); for (const z of [-0.15, 0.15]) cy(mh, [0.01, 0.01, 0.24], [-0.56, 0, z], walls); // carport
-    rb(mh, [0.12, 0.07, 0.22], [-0.46, 0, 0.02], M('#f2f2f0', {roughness: 0.3, metalness: 0.4}), null, 0.02); // the family car
-    for (let k = 0; k < 5; k++) blob(turn, 0.06 + (k % 2) * 0.02, [Math.cos(k * 1.3 + 2) * 0.45, 0.1, Math.sin(k * 1.3 + 2) * 0.45], '#4f9a5c', 1);
+    const miniature = miniatureHouse(); miniature.position.y = 0.064; turn.add(miniature);
+    for (const x of [-0.35, 0.13, 0.34]) blob(turn, 0.045, [x, 0.09, 0.36], '#4f9a5c', 1); // low front planting, clear of the wider reference footprint
     hot(model, 'house3d'); // the model itself, not the whole table: its tap area must not cover the TeamBook
     cy(g, [0.05, 0.045, 0.1], [-3.02, 0.82, BW + 0.67], M('#e9e3d5'));
     // Two working seats, tucked towards the desk; both fronts of the room remain walkable.
