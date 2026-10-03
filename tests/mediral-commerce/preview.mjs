@@ -26,4 +26,4 @@ http.createServer(async(req,res)=>{
   let b=await readFile(file);if(extname(file)==='.html')b=Buffer.from(b.toString().replace('<main>','<main><p class="panel">ระบบทดลองในเครื่อง · ข้อมูลสมมติ · ไม่มีการส่ง LINE หรือรับเงินจริง<br>รหัสเข้าทดลอง: LOCAL-DEMO</p>'));
   res.writeHead(200,{'Content-Type':({'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.png':'image/png','.woff2':'font/woff2','.svg':'image/svg+xml'})[extname(file)]||'application/octet-stream','Cache-Control':'no-store'});res.end(b);
  }catch{res.writeHead(500);res.end('Preview error');}
-}).listen(4184,'127.0.0.1',()=>console.log('Synthetic admin preview: http://127.0.0.1:4184/mediral/checkout/'));
+}).listen(Number(process.env.PORT)||4184,'127.0.0.1',()=>console.log('Synthetic admin preview: http://127.0.0.1:4184/mediral/checkout/'));

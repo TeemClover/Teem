@@ -1,5 +1,6 @@
 import {shippingFor} from './shipping.js';
 import {products} from './products.js';
+import {selectionFromSearch} from './selection.js';
 const $=s=>document.querySelector(s),notice=$('#notice'),form=$('#checkout');
 const names={CL:'มูสล้างหน้า',AC:'เซรั่มขวดขาว',BR:'เซรั่มขวดเหลืองเขียว',SU:'เซรั่มกันแดด',PO:'แป้งพัฟ'};
 const money=n=>(n/100).toLocaleString('th-TH')+' บาท';let catalog,activeOrder,busy=false,clockOffset=0;
@@ -18,7 +19,7 @@ $('#set').onclick=()=>{document.querySelectorAll('[data-sku]').forEach(x=>x.valu
 form.onsubmit=e=>{e.preventDefault();run(async()=>{const d=new FormData(form);const r=await api('create',{items:cart(),name:d.get('name'),phone:d.get('phone'),address:d.get('address'),consent:d.get('consent')==='on'});show(r.order);form.reset();$('#order').scrollIntoView({behavior:'smooth'});});};
 $('#refresh').onclick=()=>run(async()=>show((await api('status')).order));
 $('#slip').onsubmit=e=>{e.preventDefault();run(async()=>{const file=e.target.receipt.files[0];if(!file||file.size>3*1024*1024||!['image/jpeg','image/png'].includes(file.type))throw Error('ใช้ JPG หรือ PNG ไม่เกิน 3 MB');const image=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result.split(',')[1]);r.onerror=reject;r.readAsDataURL(file);});show((await api('slip',{image})).order);e.target.reset();});};
-run(async()=>{catalog=await api('session');clockOffset=(catalog.serverNow||Date.now())-Date.now();update();show((await api('status')).order);});
+run(async()=>{catalog=await api('session');clockOffset=(catalog.serverNow||Date.now())-Date.now();const existing=(await api('status')).order;if(!existing&&!Object.keys(cart()).length){for(const [sku,qty] of Object.entries(selectionFromSearch(location.search)))$('#qty-'+sku).value=String(qty);}update();show(existing);});
 setInterval(()=>{if(catalog)update();},1000);
 
 $('#new-order').onclick=()=>run(async()=>{show((await api('new')).order);update();});

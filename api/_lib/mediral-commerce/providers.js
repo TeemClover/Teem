@@ -4,6 +4,11 @@ export function createProviders(env,fetchImpl=fetch){
  const token=env.MEDIRAL_LINE_ACCESS_TOKEN;
  let identity;
  return {
+  async validateMessages(messages){
+   const r=await fetchImpl('https://api.line.me/v2/bot/message/validate/reply',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({messages}),signal:AbortSignal.timeout(7000),redirect:'error'});
+   if(!r.ok)throw new Fault('LINE_MESSAGE_INVALID',502);
+   return {valid:true};
+  },
   async botId(){
    if(!token||!env.MEDIRAL_LINE_BASIC_ID)throw new Fault('LINE_NOT_CONFIGURED',503);
    if(identity)return identity;

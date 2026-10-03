@@ -1,4 +1,5 @@
 import {webCheckout} from './web-checkout.js';
+import {shopCarousel,productCard,CARD_PRODUCTS} from './shop-cards.js';
 import {createHash} from 'node:crypto';
 import {BANK,Fault,clean,hmac,same,reducer,quote,inspectSlip,paymentMessage,lineText,amount} from './domain.js';
 import {dispatch} from './providers.js';
@@ -70,6 +71,11 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
         }catch(e){result=aiUnavailable(c.state,e.code);console.warn(JSON.stringify({service:'line-ai',status:'unavailable',code:result.state.aiFailure.code}));}
        }
       }else result=(env.MEDIRAL_SHARED_OA==='1'?houseReducer:reducer)(c.state,event,order,{now:clock(),nativeGreeting:env.MEDIRAL_NATIVE_GREETING!=='0'});
+      // Show the relevant product once when focus changes, not after every reply.
+      const focus=result.state.productFocus;
+      if(focus&&focus!==c.state.productFocus&&CARD_PRODUCTS.some(p=>p.sku===focus)&&!result.state.paused&&!result.state.aiProposal&&!order&&!['consent','name','phone','address','confirm','ordered'].includes(result.state.stage)&&result.messages[0]?.type==='text'){
+       result.messages.push({type:'flex',altText:`ดูภาพและรายละเอียด ${focus} · Mediral`,contents:productCard(focus,clock())});
+      }
       result.state.lastEventAt=event.timestamp;
       if(text==='เริ่มใหม่'||text==='ขอลบข้อมูล'||event.type==='unfollow'){delete result.state.ai;delete result.state.aiProposal;}
       if(result.verifyImage){
@@ -104,6 +110,13 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     if(!same(body.key,key))throw new Fault('UNAUTHORIZED',401);res.setHeader('Set-Cookie',`${COOKIE}=${cookieToken(env,now)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=14400`);return json({ok:true});
    }
    if(!authenticated(req,env,now))throw new Fault('UNAUTHORIZED',401);
+   if(action==='cards-preview'&&req.method==='GET')return json({ok:true,messages:[shopCarousel(now)]});
+   if(action==='cards-validate'&&req.method==='POST'){
+    const input=parse(await raw(req,4096));if(!input||Array.isArray(input)||Object.keys(input).length)throw new Fault('INVALID_TEST_INPUT');
+    if(!configured())throw new Fault('LINE_NOT_READY',409);
+    // Validate only: no recipient, reply token, customer data or LINE delivery.
+    return json({ok:true,...await providers.validateMessages([shopCarousel(now)])});
+   }
    if(action==='logout'&&req.method==='POST'){res.setHeader('Set-Cookie',`${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);return json({ok:true});}
    await store.ensure();
    if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),ai:ai.status(),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});

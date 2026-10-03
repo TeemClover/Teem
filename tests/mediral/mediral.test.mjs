@@ -373,8 +373,10 @@ test('internal manifests and unsoftened drafts stay out of git', () => {
   for (const line of ['mediral/assets/evidence/', 'mediral/assets/*.md', 'mediral/assets/*.json', 'mediral/assets/pack/cl-front-ai-draft-hold.webp', 'mediral/assets/pack/su-front.webp']) {
     assert.ok(ignore.includes(line), `.gitignore should list ${line}`);
   }
-  // The one original shipped on purpose is the authorized chat screenshot, pinned by hash above.
-  for (const path of walkFiles(site).filter(p => relative(site, p) !== SCREENSHOT.path)) {
+  // Explicit, format-only PNG exports for LINE (which requires PNG/JPEG).
+  const lineExports=new Set(['cl-clover-front-v2','ac-front','br-front','su-front-web','po-closed'].map(n=>'assets/line/'+n+'.png'));
+  // The authorized chat screenshot is pinned by hash above.
+  for (const path of walkFiles(site).filter(p => relative(site, p) !== SCREENSHOT.path && !lineExports.has(relative(site,p)))) {
     assert.doesNotMatch(relative(site, path), /\.(?:png|psd)$|manifest|prompts|qa-gallery|original|provenance|contact-sheet/i, `${relative(root, path)} is a private working file`);
   }
 });

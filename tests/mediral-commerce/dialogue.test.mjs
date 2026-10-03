@@ -150,9 +150,9 @@ test('explicit information questions during checkout are answered without record
 
 test('menu says product names show information and offers explicit whole-set purchase',()=>{
  let result=say({},'คุยเรื่อง Mediral');
- assert.match(reply(result),/กดชื่อสินค้าเพื่อดูข้อมูลก่อนสั่ง/);
- const menu=result.messages[0].quickReply.items.map(item=>item.action.text);
- assert.ok(menu.includes('สั่งชุด 5 ชิ้น'));
+ assert.equal(result.messages[0].type,'flex');
+ assert.equal(result.messages[0].contents.contents.length,7);
+ assert.match(JSON.stringify(result.messages[0]),/สั่งชุด 5 ชิ้น/);
  result=say(result.state,'สั่งชุด 5 ชิ้น');
  assert.deepEqual(result.state.items,{CL:1,AC:1,BR:1,SU:1,PO:1});
  assert.match(reply(result),/2,000.00/);

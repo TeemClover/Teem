@@ -1,3 +1,4 @@
+import {shopCarousel} from './shop-cards.js';
 import {createHmac, timingSafeEqual, randomUUID} from 'node:crypto';
 import {retailPrice,retailAt} from './catalog.js';
 export const PRODUCTS = {CL:'มูสโฟมล้างหน้า',AC:'เซรั่มขวดขาว',BR:'เซรั่มขวดเหลืองเขียว',SU:'เซรั่มกันแดด',PO:'แป้งพัฟตลับเขียว'};
@@ -11,7 +12,7 @@ export const money = n => (n/100).toLocaleString('th-TH',{minimumFractionDigits:
 export class Fault extends Error {constructor(code,status=400){super(code);this.code=code;this.status=status;}}
 export function amount(s) {if(!/^\d{1,6}(\.\d{1,2})?$/.test(String(s)))throw new Fault('INVALID_AMOUNT');const [a,b='']=String(s).split('.');return Number(a)*100+Number(b.padEnd(2,'0'));}
 export const lineText = (text,buttons=[]) => ({type:'text',text:text.slice(0,4900),...(buttons.length?{quickReply:{items:buttons.slice(0,13).map(label=>({type:'action',action:{type:'message',label:label.slice(0,20),text:label}}))}}:{})});
-const menu = (now) => lineText(`กดชื่อสินค้าเพื่อดูข้อมูลก่อนสั่งได้เลยค่ะ 🍀\nชิ้นละ ${retailAt(now).unit/100} บาท · ครบชุด 5 ชิ้น ${money(retailAt(now).set)} บาท${retailAt(now).discountPercent?' (ใช้คูปองลด 20% แล้ว ถึง 15 ต.ค. 2569)':''}\nค่าส่งและของพร้อมส่งจะยืนยันก่อนโอน`,['สั่งชุด 5 ชิ้น',...Object.values(PRODUCTS),'คุยกับคนดูแล']);
+const menu = shopCarousel;
 const normalizeInquiry = text => clean(text,1800).toLowerCase().replace(/เซรั้ม|เซรัม|เซรม|เชรั่ม|เชรั้ม|serum/gi,'เซรั่ม');
 const productPatterns={
  CL:/มูส|โฟม|คลีนเซอร์|(?:อยาก|หา|สนใจ|สั่ง|ซื้อ|เอา)?(?:ตัว)?ล้างหน้า/,
@@ -79,6 +80,7 @@ export function reducer(state,event,order,{now=Date.now(),id=()=>`MD-${randomUUI
  if(text==='เริ่มใหม่'){s.stage='cart';s.items={};delete s.name;delete s.phone;delete s.address;delete s.productFocus;delete s.inquiry;return reply(menu(now));}
  if(!s.stage||s.stage==='cart'){
   s.stage='cart';s.items||={};
+  if(/^(คุยเรื่อง Mediral|ดูสินค้า Mediral|Mediral|mediral|เมดิรัล)$/.test(text)){delete s.productFocus;delete s.inquiry;return reply(menu(now));}
   const value=normalizeInquiry(text),named=Object.keys(productPatterns).filter(sku=>productPatterns[sku].test(value));
   if(text.match(sensitiveSkin))return reply('ผิวแต่ละคนตอบสนองต่างกันค่ะ ยังรับรองว่าใช้แล้วจะไม่แพ้ไม่ได้\nตรวจส่วนผสมก่อนเลือกใช้ หรือให้คนดูแลช่วยเช็กข้อมูลได้เลยค่ะ',s.productFocus?['ส่วนผสม','คุยกับคนดูแล']:['เซรั่มขวดขาว','เซรั่มขวดเหลืองเขียว','คุยกับคนดูแล']);
   const wantsInfo=/(?:ราคา|เท่าไหร่|เท่าไร|ต่างกัน|เทียบ|ไหม|มั้ย|อะไร|ไหน|วิธีใช้|ใช้ยังไง|ทายังไง|ใช้ตอนไหน|ส่วนผสม|สารสกัด|สรรพคุณ|สั่งยังไง|ซื้อแล้ว|สั่งแล้ว|สั่งไปแล้ว)/.test(value);

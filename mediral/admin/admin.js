@@ -1,3 +1,4 @@
+import {mountCards} from './shop-cards-preview.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const names={CL:'มูสโฟมล้างหน้า',AC:'เซรั่มขวดขาว',BR:'เซรั่มขวดเหลืองเขียว',SU:'เซรั่มกันแดด',PO:'แป้งพัฟ'};
 const status={awaiting_quote:'รอยืนยันสินค้าและแจ้งยอด',awaiting_payment:'รอชำระ',payment_review:'ตรวจสลิป',paid:'รับชำระแล้ว',packing:'กำลังแพ็ก',shipped:'จัดส่งแล้ว',cancelled:'ยกเลิกแล้ว'};
@@ -21,3 +22,5 @@ $('#save').textContent=command==='paid'?'ยืนยันรับเงิน
 if(command==='shipped')fields=field('บริษัทขนส่ง','carrier')+field('เลขพัสดุ','tracking');if(!fields)fields='<p>ตรวจแชทและรายการให้ตรงก่อนยืนยัน</p>';$('#editor-fields').innerHTML=fields;$('#editor').showModal();});
 $('#editor-form').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;$('#save').disabled=true;const f=new FormData(e.target),body={...active,prices:{}};for(const [k,v]of f){if(k.startsWith('price_'))body.prices[k.slice(6)]=v;else body[k]=k==='transferredAt'?v+'+07:00':v;}body.useRetailPricing=f.has('useRetailPricing');body.stockConfirmed=f.has('stockConfirmed');body.confirmedReceived=active.command==='paid'||f.has('confirmedReceived');try{await api('update',body);$('#editor').close();await load();note('บันทึกแล้ว ตรวจแถบการแจ้งลูกค้าว่าข้อความส่งสำเร็จหรือยัง');}catch(err){$('#editor-error').textContent=err.message;}finally{busy=false;$('#save').disabled=false;}});
 $('#close-editor').onclick=()=>$('#editor').close();$('#login-form').onsubmit=async e=>{e.preventDefault();const k=$('#key').value;$('#key').value='';try{await api('login',{key:k});await load();note('');}catch(err){note(err.message);}};$('#refresh').onclick=()=>load().then(()=>note('อัปเดตแล้ว')).catch(e=>note(e.message));$('#retry').onclick=()=>api('retry',{}).then(load).catch(e=>note(e.message));$('#logout').onclick=async()=>{await api('logout',{});location.reload();};$('#filter').onchange=render;$('#search').oninput=render;load().catch(()=>{});
+
+mountCards(api);
