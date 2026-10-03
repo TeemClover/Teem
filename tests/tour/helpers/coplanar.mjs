@@ -27,7 +27,7 @@ function overlapArea(subject, clip) {
  * Same-facing surfaces sharing area and depth can flicker. Touching edges and opposing
  * faces at a butt joint are fine. Transparent hit targets do not contribute pixels.
  */
-export function coplanarOverlaps(root) {
+export function coplanarOverlaps(root, {withinMesh = false} = {}) {
   root.updateMatrixWorld(true);
   const buckets = new Map(), labels = new Map();
   let serial = 0;
@@ -66,7 +66,7 @@ export function coplanarOverlaps(root) {
     faces.sort((a, b) => a.depth - b.depth);
     for (let i = 0; i < faces.length; i++) for (let j = i + 1; j < faces.length && faces[j].depth - faces[i].depth < EPS; j++) {
       const a = faces[i], b = faces[j];
-      if (a.id === b.id || a.min.some((v, k) => Math.min(a.max[k], b.max[k]) - Math.max(v, b.min[k]) < EPS)) continue;
+      if ((!withinMesh && a.id === b.id) || a.min.some((v, k) => Math.min(a.max[k], b.max[k]) - Math.max(v, b.min[k]) < EPS)) continue;
       if (b.tri.some(v => Math.abs(a.normal.dot(v) - a.depth) > EPS)) continue;
       const area = overlapArea(a.uv, b.uv);
       if (area < 1e-7) continue;
