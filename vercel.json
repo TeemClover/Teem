@@ -5,6 +5,8 @@
     {"path": "/api/mediral-commerce?action=drain", "schedule": "*/5 * * * *"}
   ],
   "redirects": [
+    {"source": "/short", "destination": "/short/", "permanent": false},
+    {"source": "/short/story/:id", "destination": "/short/story/:id/", "permanent": false},
     {"source": "/asksydneyscience/offer/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
     {"source": "/asksydneyscience/offer/", "destination": "/asksydscience/offer/", "permanent": true},
     {"source": "/asksydneyscience/offer", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
@@ -100,6 +102,8 @@
     {"source": "/hamburg/branding", "destination": "/hamburg/branding/", "permanent": false}
   ],
   "headers": [
+    {"source": "/short/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Referrer-Policy", "value": "same-origin"}, {"key":"Cache-Control", "value":"public, max-age=0, must-revalidate"}]},
+    {"source":"/short/assets/:path*", "headers":[{"key":"Cache-Control","value":"public, max-age=3600, must-revalidate"}]},
     {"source": "/asksydscience/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},
     {"source": "/:path*", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},
     {"source": "/course/admin/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store, max-age=0"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}]},
@@ -140,6 +144,8 @@
     {"source": "/hamburg/lab/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]}
   ],
   "rewrites": [
+    {"source": "/short/", "destination": "/short/index.html"},
+    {"source": "/short/story/:id/", "destination": "/short/story/:id/index.html"},
     {"source": "/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/index.html"},
     {"source": "/demo", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/demo/index.html"},
     {"source": "/demo/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/demo/index.html"},

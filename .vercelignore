@@ -77,3 +77,10 @@ mediral/assets/pack/su-front.webp
 # LINE commerce local fixtures and setup template are not public assets.
 tests/mediral-commerce/
 .env.mediral.example
+
+# Tontor authoring tools and QA are not public app assets.
+short/*.mjs
+short/README.md
+short/RELEASE.md
+short/assets/prompts.json
+short/assets/og-background-v1.webp
