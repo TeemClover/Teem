@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">โลโก้ทีมม่วนซื่นโปรดักชัน สมมติ</title>
+  <rect width="64" height="64" rx="15" fill="#4b3028"/>
+  <path d="M17 22h30a7 7 0 0 1 7 7v17a7 7 0 0 1-7 7H17a7 7 0 0 1-7-7V29a7 7 0 0 1 7-7Z" fill="#f0bd7e"/>
+  <path d="m28 29 13 8.5L28 46Z" fill="#4b3028"/>
+  <path d="M32 9v5M16 13l4 4m28-4-4 4" stroke="#f0bd7e" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="15" cy="36" r="2" fill="#4b3028"/>
+  <circle cx="49" cy="36" r="2" fill="#4b3028"/>
+</svg>

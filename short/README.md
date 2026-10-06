@@ -13,13 +13,13 @@ Buildless ES modules; no installation or production build required. Preview only
 - Nine movie concepts lead discovery. The Hero opens on a random Thai-focused film without repeating the previous opening when browser storage is available. Native scroll-snap follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Mobile artwork fills the Hero edge to edge with readable text over a gradient; desktop posters retain their proportions.
 - Completed pilot files live in `assets/clips/` and are explicitly enabled through `library.js`. They play through native HTML video with audio, full-screen support, optional script captions, episode navigation and optional autoplay. MP4 files are different clips, not animated posters reused as new finished episodes.
 - Concepts without finished footage retain clearly labeled silent animated posters. Their additional episode counts demonstrate the coin flow.
-- Twelve fictional Thai creator portraits and profile dialogs include biographies, province, disciplines, linked films/novels and browser-local follow state. No audience counts or verification claims are invented.
+- Four compact featured creator cards keep the film catalog in focus: one individual portrait and three original studio logos. Detailed profile dialogs include biographies, province, disciplines, linked films/novels and browser-local follow state. All twelve creator identities remain available for story credits. No audience counts or verification claims are invented.
 - The HR comic has two distinct chapters and five illustrated pages with Thai DOM dialogue. The novel collection has three original complete stories, three substantial distinct chapters each. Reader controls offer paper, sepia and night themes, text sizing, chapter navigation and scroll restoration.
 - Search, format/genre filters, saved stories, reading/viewing progress, coin balance and creator follows persist in this browser. Spending demo coins requires explicit confirmation and never charges real money.
 
 ## Content and provenance
 
-All creator identities, characters, plots and classifications are fictional presentation material. Portraits, covers and comic art were generated with built-in image_gen. Prompts are preserved in `assets/prompts.json` and `assets/art-prompts-v2.json`; authoring manifests are excluded from deployment.
+All creator identities, characters, plots and classifications are fictional presentation material. Portraits, covers and comic art were generated with built-in image_gen; the three team logos are original SVG marks in `assets/creators/logos/`. Prompts are preserved in `assets/prompts.json` and `assets/art-prompts-v2.json`; authoring manifests are excluded from deployment.
 
 `content-library.js` contains original novels, profile copy and production scripts. `media-pilots.js` identifies each downloaded Meta AI / Google Flow clip; `library.js` enables only completed files. Caption tracks are optional authored-script cues with approximate timings, not a certified speech transcript. Generated actors can vary between pilot scenes.
 

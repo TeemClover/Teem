@@ -242,7 +242,7 @@ function openStory(id, episode = 1, autoplay = false) {
   $('#story-title').textContent = story.title;
   $('#story-meta').textContent = `${story.formatLabel} · ${story.episodes} ${story.format==='novel'?'บท':'ตอน'}${!isReading(story)&&!story.pilots?.length?'ในคอนเซปต์':''} · ${story.status} · ${story.age}`;
   $('#story-description').textContent = story.description;
-  $('#story-creator').innerHTML = `<img class="creator-avatar" src="${story.avatarImage}" alt="ภาพครีเอเตอร์สมมติ ${story.creator}" width="34" height="34"><span>${story.creator} / ${story.studio}<small>${story.city} · ครีเอเตอร์สมมติ</small></span>`;
+  $('#story-creator').innerHTML = `<img class="creator-avatar" src="${story.avatarImage}" alt="${story.creatorKind==='team'?'โลโก้ทีม':'ภาพครีเอเตอร์'}สมมติ ${escape(story.creatorKind==='team'?story.studio:story.creator)}" width="34" height="34"><span>${escape(story.creator)} / ${escape(story.studio)}<small>${escape(story.city)} · ${story.creatorKind==='team'?'ทีม':'ครีเอเตอร์'}สมมติ</small></span>`;
   $('#story-provenance').innerHTML=`<details><summary>เบื้องหลังและคำเตือน <span>＋</span></summary><dl><dt>รูปแบบตัวอย่าง</dt><dd>${story.sampleLength} · ภาษาไทย</dd><dt>ใช้ AI ตรงไหน</dt><dd>${story.aiUsage}</dd><dt>สิ่งที่ควรรู้</dt><dd>${story.warnings}</dd><dt>ที่มาของเรื่อง</dt><dd>${story.genres.includes('วรรณคดีรีมิกซ์')?'ตีความวรรณคดีใหม่อย่างอิสระ ไม่ใช่ฉบับดั้งเดิม':'เรื่องสมมติสำหรับทดลองประสบการณ์'}</dd></dl></details>`;
   $('.episode-note').textContent=isComic?'เนื้อหาต้นฉบับสำหรับเดโม · เรื่องและครีเอเตอร์สมมติ':story.pilots?.length?'คลิป AI นำร่องตามบทที่เขียนใหม่ · เรื่องและครีเอเตอร์สมมติ':'จำนวนตอนเป็นคอนเซปต์ · ใช้คลิปภาพเคลื่อนไหวตัวอย่างเพื่อทดลองระบบเหรียญ';
   $('#player-status').textContent = '';

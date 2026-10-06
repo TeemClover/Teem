@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">โลโก้ทีมริมโขง Animation สมมติ</title>
+  <rect width="64" height="64" rx="15" fill="#163e35"/>
+  <path d="M13 47c7 0 11-5 17-5s10 5 17 5h4" fill="none" stroke="#72ab8c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M15 35c0-8 8-12 17-10 9 2 13-1 13-7" fill="none" stroke="#ead092" stroke-width="6" stroke-linecap="round"/>
+  <path d="m37 15 8-7 7 10-9 6Z" fill="#ead092"/>
+  <path d="M15 35c0 4 5 6 10 5" fill="none" stroke="#ead092" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="46" cy="17" r="2.3" fill="#163e35"/>
+</svg>

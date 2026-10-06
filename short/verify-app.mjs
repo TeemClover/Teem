@@ -50,7 +50,7 @@ try{
     try{
       assert.equal(await page.locator('#catalog-grid .story-card').count(),9,'movie-first discovery has nine movies');
       assert.equal(await page.locator('.hc-slide').count(),4,'hero keeps all four slides mounted');
-      assert.equal(await page.locator('.community-card').count(),12,'twelve creator profiles');
+      assert.equal(await page.locator('.community-card').count(),4,'four compact featured creator profiles');
       await assertNoOverflow(page);
       await page.screenshot({path:`${proof}/discover-${width}.png`});
       await page.locator('[data-format="novel"]').click();
@@ -153,9 +153,11 @@ try{
       assert.match(await page.locator('#story-title').textContent(),/ห้องที่ไม่มีเลข/);
       assert.equal(await page.locator('.community-dialog').getAttribute('open'),null,'profile closes before story opens');
       await closeStory(page);await page.reload({waitUntil:'networkidle'});
-      assert.equal(await page.locator('#creator-grid [data-community-follow="ghost"]').getAttribute('aria-pressed'),'true');
-      await page.locator('#creator-grid [data-community-follow="ghost"]').click();
-      assert.equal(await page.locator('#creator-grid [data-community-follow="ghost"]').getAttribute('aria-pressed'),'false');
+      await page.locator('[data-community-creator="ghost"]').click();
+      await page.locator('.community-dialog[open]').waitFor();
+      assert.equal(await page.locator('.community-dialog [data-community-follow="ghost"]').getAttribute('aria-pressed'),'true');
+      await page.locator('.community-dialog [data-community-follow="ghost"]').click();
+      assert.equal(await page.locator('.community-dialog [data-community-follow="ghost"]').getAttribute('aria-pressed'),'false');
       await clean(session);return {portrait,followAndUnfollowPersisted:true,linkedNovelOpens:true};
     }finally{await context.close();}
   });

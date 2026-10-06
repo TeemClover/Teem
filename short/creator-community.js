@@ -15,10 +15,14 @@ function element(tag, className, text) {
   return node;
 }
 
+function isTeam(profile) { return profile.kind === 'team'; }
+function displayName(profile) { return isTeam(profile) ? profile.studio || profile.name : profile.name; }
+
 function portrait(profile, className, eager = false) {
   const img = element('img', className);
   img.src = profile.portrait || profile.image || `./assets/creators/${encodeURIComponent(profile.id)}.webp`;
-  img.alt = `ภาพครีเอเตอร์สมมติ ${profile.name}`;
+  img.alt = isTeam(profile) ? `โลโก้ทีมสมมติ ${displayName(profile)}` : `ภาพครีเอเตอร์สมมติ ${profile.name}`;
+  img.classList.toggle('is-team', isTeam(profile));
   img.width = 512;
   img.height = 512;
   img.loading = eager ? 'eager' : 'lazy';
@@ -67,7 +71,7 @@ export function createCreatorCommunity({root = document, profiles = [], stories 
     button.textContent = followed ? 'ติดตามแล้ว ✓' : '+ ติดตาม';
     button.classList.toggle('is-following', followed);
     button.setAttribute('aria-pressed', String(followed));
-    button.setAttribute('aria-label', `${followed ? 'เลิกติดตาม' : 'ติดตาม'} ${profile.name}`);
+    button.setAttribute('aria-label', `${followed ? 'เลิกติดตาม' : 'ติดตาม'}${isTeam(profile) ? 'ทีม' : ''} ${displayName(profile)}`);
   }
 
   function followButton(profile) {
@@ -86,7 +90,7 @@ export function createCreatorCommunity({root = document, profiles = [], stories 
         if (node.dataset.communityFollow === profile.id) setFollowButton(node, profile);
       });
       const status = dialog.querySelector('[data-follow-status]');
-      if (status && currentProfile?.id === profile.id) status.textContent = following.has(profile.id) ? `ติดตาม ${profile.name} แล้ว` : `เลิกติดตาม ${profile.name} แล้ว`;
+      if (status && currentProfile?.id === profile.id) status.textContent = following.has(profile.id) ? `ติดตาม ${displayName(profile)} แล้ว` : `เลิกติดตาม ${displayName(profile)} แล้ว`;
     });
     return button;
   }
@@ -128,22 +132,24 @@ export function createCreatorCommunity({root = document, profiles = [], stories 
     if (!profile) return;
     trigger = source || ownerDocument.activeElement;
     currentProfile = profile;
+    dialog.dataset.communityKind = isTeam(profile) ? 'team' : 'solo';
+    close.setAttribute('aria-label', isTeam(profile) ? 'ปิดโปรไฟล์ทีมสร้างสรรค์' : 'ปิดโปรไฟล์ครีเอเตอร์');
     dialogBody.replaceChildren();
     const hero = element('div', 'community-profile-hero');
     hero.append(portrait(profile, 'community-profile-portrait', true));
     const intro = element('div', 'community-profile-intro');
-    intro.append(element('p', 'community-eyebrow', 'คนไทย เล่าเรื่องไทย'));
-    const name = element('h2', '', profile.name);
+    intro.append(element('p', 'community-eyebrow', isTeam(profile) ? 'ทีมไทย สร้างเรื่องไทย' : 'คนไทย เล่าเรื่องไทย'));
+    const name = element('h2', '', displayName(profile));
     name.id = `${idPrefix}-name`;
     intro.append(name);
-    if (profile.studio) intro.append(element('p', 'community-studio', profile.studio));
+    if (!isTeam(profile) && profile.studio && profile.studio !== profile.name) intro.append(element('p', 'community-studio', profile.studio));
     if (profile.city) intro.append(element('p', 'community-city', `↗ ${profile.city}`));
     intro.append(tags(profile), followButton(profile));
     hero.append(intro);
     const bio = element('p', 'community-profile-bio', profile.bio);
     const works = element('section', 'community-profile-works');
     works.setAttribute('aria-labelledby', `${idPrefix}-works`);
-    const heading = element('h3', '', 'เรื่องเล่าจากครีเอเตอร์คนนี้');
+    const heading = element('h3', '', isTeam(profile) ? 'เรื่องเล่าจากทีมนี้' : 'เรื่องเล่าจากครีเอเตอร์คนนี้');
     heading.id = `${idPrefix}-works`;
     works.append(heading);
     const list = element('div', 'community-work-list');
@@ -151,7 +157,7 @@ export function createCreatorCommunity({root = document, profiles = [], stories 
     items.forEach(story => list.append(workButton(story)));
     if (!items.length) list.append(element('p', 'community-empty', 'เรื่องใหม่กำลังอยู่ระหว่างการสร้าง'));
     works.append(list);
-    const note = element('p', 'community-demo-note', 'โปรไฟล์และภาพครีเอเตอร์สมมติ สำหรับทดลองประสบการณ์ตอนต่อ');
+    const note = element('p', 'community-demo-note', isTeam(profile) ? 'ชื่อทีมและโลโก้สมมติ สำหรับทดลองประสบการณ์ตอนต่อ' : 'โปรไฟล์และภาพครีเอเตอร์สมมติ สำหรับทดลองประสบการณ์ตอนต่อ');
     const status = element('p', 'sr-only');
     status.dataset.followStatus = '';
     status.setAttribute('role', 'status');
@@ -164,28 +170,23 @@ export function createCreatorCommunity({root = document, profiles = [], stories 
 
   function render() {
     grid.replaceChildren();
-    normalizeProfiles(profiles, stories).forEach(profile => {
-      const card = element('article', 'community-card');
-      const open = element('button', 'community-card-open');
-      open.type = 'button';
-      open.dataset.communityCreator = profile.id;
-      open.setAttribute('aria-label', `เปิดโปรไฟล์ ${profile.name} ${profile.studio || ''}`);
-      open.append(portrait(profile, 'community-card-portrait'));
+    normalizeProfiles(profiles, stories).filter(profile => profile.featured === true).slice(0, 4).forEach(profile => {
+      const card = element('button', 'community-card community-card-open');
+      card.type = 'button';
+      card.dataset.communityCreator = profile.id;
+      card.dataset.communityKind = isTeam(profile) ? 'team' : 'solo';
+      card.setAttribute('aria-label', isTeam(profile) ? `เปิดโปรไฟล์ทีมสร้างสรรค์ ${displayName(profile)}` : `เปิดโปรไฟล์ครีเอเตอร์ ${profile.name}${profile.studio ? ` / ${profile.studio}` : ''}`);
+      card.append(portrait(profile, 'community-card-portrait'));
       const copy = element('span', 'community-card-copy');
-      copy.append(element('strong', 'community-card-name', profile.name));
-      if (profile.studio) copy.append(element('span', 'community-card-studio', profile.studio));
-      if (profile.city) copy.append(element('span', 'community-card-city', profile.city));
-      copy.append(tags(profile));
-      open.append(copy);
-      open.addEventListener('click', () => openProfile(profile.id, open));
-      const bio = element('p', 'community-card-bio', profile.bio);
-      const footer = element('div', 'community-card-footer');
-      const profileLink = element('button', 'community-profile-link', 'ดูเรื่องเล่า ↗');
-      profileLink.type = 'button';
-      profileLink.setAttribute('aria-label', `ดูเรื่องเล่าของ ${profile.name}`);
-      profileLink.addEventListener('click', () => openProfile(profile.id, profileLink));
-      footer.append(profileLink, followButton(profile));
-      card.append(open, bio, footer);
+      copy.append(element('strong', 'community-card-name', displayName(profile)));
+      const details = [!isTeam(profile) && profile.studio, profile.city, profile.disciplines[0]].filter(Boolean).join(' · ');
+      const secondary = element('span', 'community-card-meta', details);
+      secondary.title = details;
+      copy.append(secondary);
+      const arrow = element('span', 'community-card-arrow', '↗');
+      arrow.setAttribute('aria-hidden', 'true');
+      card.append(copy, arrow);
+      card.addEventListener('click', () => openProfile(profile.id, card));
       grid.append(card);
     });
   }

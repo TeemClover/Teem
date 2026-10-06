@@ -126,8 +126,10 @@ try{
       await page.locator('[data-reader-theme="night"]').click();assert.equal(await page.locator('#comic-reader').getAttribute('data-theme'),'night');
       await page.locator('[data-reader-size="1"]').click();assert.equal(await page.locator('#reader-size-value').textContent(),'19');
       await page.locator('[data-episode="2"]').click();assert.match(await page.locator('.reader-heading span').textContent(),/บทที่ 2/);
-      await closeStory(page);await page.locator('#creator-grid [data-community-follow="ghost"]').click();
-      assert.equal(await page.locator('#creator-grid [data-community-follow="ghost"]').getAttribute('aria-pressed'),'true');
+      await closeStory(page);await page.locator('[data-community-creator="ghost"]').click();
+      await page.locator('.community-dialog[open]').waitFor();
+      await page.locator('.community-dialog [data-community-follow="ghost"]').click();
+      assert.equal(await page.locator('.community-dialog [data-community-follow="ghost"]').getAttribute('aria-pressed'),'true');
       await clean(session);return 'Saving, free coins, reader settings/chapter selection and following work when browser storage throws';
     }finally{await context.close();}
   });

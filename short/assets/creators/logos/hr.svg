@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">โลโก้ทีมสิบเศียรคอมิกส์ สมมติ</title>
+  <rect width="64" height="64" rx="15" fill="#233d37"/>
+  <path d="M17 13h30a6 6 0 0 1 6 6v24a6 6 0 0 1-6 6H30L17 56v-7a6 6 0 0 1-6-6V19a6 6 0 0 1 6-6Z" fill="#e6ead7"/>
+  <path d="m32 20 11 18-11 8-11-8Z" fill="#233d37"/>
+  <path d="M32 26v12" stroke="#e6ead7" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="38" r="3" fill="#e6ead7"/>
+  <path d="m16 8 4 5m28-5-4 5" stroke="#dbac78" stroke-width="4" stroke-linecap="round"/>
+</svg>
