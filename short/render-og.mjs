@@ -2,7 +2,7 @@
 import {mkdir} from 'node:fs/promises';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {createPreviewServer} from './preview.mjs';
-import {stories} from './catalog.js';
+import {stories} from './library.js';
 
 const runtime=process.env.SHORT_PLAYWRIGHT||'/Users/Teem/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
 const {chromium}=await import(pathToFileURL(runtime).href);
@@ -33,15 +33,16 @@ const browser=await chromium.launch({executablePath:process.env.SHORT_CHROME||'/
 try{
   const page=await browser.newPage({viewport:{width:1200,height:630},deviceScaleFactor:1});
   await page.route('**/*',route=>route.request().url().startsWith(base)?route.continue():route.abort());
-  for(const story of [null,...stories]){
+  const only=process.argv.slice(2);
+  for(const story of [null,...stories].filter(s=>!only.length||only.includes(s?.id||'tontor'))){
     const name=story?.id||'tontor';
     const title=story?escape(story.posterTitle).replace('\n','<br>'):'เรื่องสั้น ความรู้สึกยาว';
-    const src=story?`${base}/short/assets/${story.id}.webp`:`${base}/short/assets/og-background-v1.webp`;
+    const src=story?`${base}/short/${(story.poster||'assets/'+story.id+'.webp').replace(/^\.\//,'')}`:`${base}/short/assets/og-background-v1.webp`;
     const position=story?(['hr','rain'].includes(story.id)?story.position:'center 18%'):'center';
-    const html=`<!doctype html><html lang="th"><head><meta charset="utf-8"><style>${css}</style></head><body><main class="cover ${story?'story':''}"><img class="background" src="${src}" style="object-position:${escape(position)}"><div class="shade"></div><div class="brand"><img src="${base}/short/assets/mark.svg"><span>ตอนต่อ<i>.</i></span></div>${story?`<div class="slogan">เรื่องสั้น ความรู้สึกยาว</div><div class="eyebrow">${escape(story.formatLabel)} AI ภาษาไทย</div>`:''}<h1>${title}</h1><div class="genres">${story?escape(story.genres.slice(0,3).join(' · ')):'แหล่งรวมละครสั้น แอนิเมชัน<br>และการ์ตูน <strong>AI ภาษาไทย</strong>'}</div>${story?'<span class="stamp">เรื่องตัวอย่าง</span>':'<div class="cta">ดูและอ่านตัวอย่างฟรี ↗</div>'}<div class="footer"><span>MYCLOVER.COM/SHORT</span><span>${story?'ดูและอ่านตัวอย่างฟรี ↗':'เวอร์ชันทดลอง'}</span></div></main></body></html>`;
+    const html=`<!doctype html><html lang="th"><head><meta charset="utf-8"><style>${css}</style></head><body><main class="cover ${story?'story':''}"><img class="background" src="${src}" style="object-position:${escape(position)}"><div class="shade"></div><div class="brand"><img src="${base}/short/assets/mark.svg"><span>ตอนต่อ<i>.</i></span></div>${story?`<div class="slogan">เรื่องสั้น ความรู้สึกยาว</div><div class="eyebrow">${escape(story.formatLabel)} AI ภาษาไทย</div>`:''}<h1>${title}</h1><div class="genres">${story?escape(story.genres.slice(0,3).join(' · ')):'ละครสั้น การ์ตูน และนิยาย<br>จากครีเอเตอร์ไทย <strong>สร้างด้วย AI</strong>'}</div>${story?'<span class="stamp">เรื่องตัวอย่าง</span>':'<div class="cta">ดูและอ่านตัวอย่างฟรี ↗</div>'}<div class="footer"><span>MYCLOVER.COM/SHORT</span><span>${story?'ดูและอ่านตัวอย่างฟรี ↗':'เวอร์ชันทดลอง'}</span></div></main></body></html>`;
     await page.setContent(html,{waitUntil:'networkidle'});
     await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(img=>img.decode()));});
-    await page.screenshot({path:fileURLToPath(new URL(`${name}-v2.jpg`,output)),type:'jpeg',quality:90});
+    await page.screenshot({path:fileURLToPath(new URL(`${name}-${name==='tontor'?'v3':'v2'}.jpg`,output)),type:'jpeg',quality:90});
     console.log(`${name}: 1200 × 630 JPEG share card`);
   }
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}

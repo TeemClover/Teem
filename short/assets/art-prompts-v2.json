@@ -1,0 +1,70 @@
+{
+  "mode": "built-in image_gen",
+  "purpose": "Fictional Thai creator portraits and comic chapter art for TONTOR prototype. None depict real creators.",
+  "creatorContactSheets": [
+    {
+      "id": "creators-a",
+      "prompt": "Use case: photorealistic-natural\nAsset type: fictional Thai creator portrait contact sheet for a premium storytelling web app.\nPrimary request: Create exactly four distinct photorealistic editorial portraits in a perfectly equal 2 by 2 square grid, one person per quadrant. Square overall canvas with the grid boundary exactly at 50 percent width and 50 percent height. No gutters, no borders, no labels, no text. These are entirely fictional adult Thai creators, not celebrities or actual people.\nSubject: Top left: a 29-year-old Thai woman film director with softly wavy shoulder-length dark hair wearing a charcoal overshirt, creative Bangkok editing studio with blurred amber monitor lights. Top right: a 30-year-old Thai man photographer with short black hair, thin dark-frame spectacles and moss linen shirt, cozy Chiang Mai photography studio with blurred greenery. Bottom left: a 27-year-old Thai woman horror writer with short straight bob and a subtle silver earring, midnight navy shirt, moody bookshelf studio in Khon Kaen. Bottom right: a 35-year-old Thai man fantasy artist with slightly longer side-part black hair and natural moustache, ochre work jacket in a handcrafted illustration studio.\nComposition: Each quadrant must be an independent centered head-and-shoulders photograph, looking near the camera. Entire head and hair visible with generous top margin; face centered near the middle, shoulders visible, same portrait scale across all four. No faces near a grid edge. Safe to crop each exact quadrant as a square avatar.\nStyle: Contemporary Thai editorial creator photography, authentic skin texture, flattering warm cinematic window light, softly blurred individual local studio backgrounds, warm charcoal and muted earth tones, polished but natural.\nConstraints: Exactly four adults, one in each of four quadrants, four different identities, no collage overlaps, no extra people, no logos, no names, no watermark, no illustration.",
+      "originalSource": "/Users/Teem/.codex/generated_images/01a112eb-3e60-7de1-bd8d-327de3028ad1/exec-a010361b-3491-469f-9a9c-8455fa661441.png",
+      "cropLayout": "Equal 2x2 grid, row-major",
+      "outputs": [
+        "assets/creators/rain.webp",
+        "assets/creators/north.webp",
+        "assets/creators/ghost.webp",
+        "assets/creators/warrior.webp"
+      ]
+    },
+    {
+      "id": "creators-b",
+      "prompt": "Use case: photorealistic-natural\nAsset type: fictional Thai creator portrait contact sheet for a premium storytelling web app.\nPrimary request: Create exactly four distinct photorealistic editorial portraits in a perfectly equal 2 by 2 square grid, one person per quadrant. Square overall canvas with the grid boundary exactly at 50 percent width and 50 percent height. No gutters, no borders, no labels, no text. These are entirely fictional adult Thai creators, not celebrities or actual people.\nSubject: Top left: a 28-year-old Thai woman comedy writer with a bright relaxed smile, tied-back dark hair, warm terracotta knit blouse in a Nonthaburi creative workspace. Top right: a 34-year-old Thai woman historical filmmaker with long straight dark hair and olive linen shirt, warm wood studio in Ayutthaya. Bottom left: a 31-year-old Thai woman horror filmmaker with a chin-length curly bob, subtle freckles and charcoal T-shirt, dark green studio background in Nakhon Pathom. Bottom right: a 32-year-old Thai man animator with short textured black hair, small round spectacles and teal work shirt, softly lit drawing studio in Nong Khai.\nComposition: Each quadrant must be an independent centered head-and-shoulders photograph, looking near the camera. Entire head and hair visible with generous top margin; face centered near the middle, shoulders visible, same portrait scale across all four. No faces near a grid edge. Safe to crop each exact quadrant as a square avatar.\nStyle: Contemporary Thai editorial creator photography, authentic skin texture, flattering warm cinematic window light, softly blurred individual local studio backgrounds, warm charcoal and muted earth tones, polished but natural.\nConstraints: Exactly four adults, one in each of four quadrants, four different identities, no collage overlaps, no extra people, no logos, no names, no watermark, no illustration.",
+      "originalSource": "/Users/Teem/.codex/generated_images/01a112eb-3e60-7de1-bd8d-327de3028ad1/exec-49a92766-d9c2-4f05-82d3-06932eaa0a9c.png",
+      "cropLayout": "Equal 2x2 grid, row-major",
+      "outputs": [
+        "assets/creators/office.webp",
+        "assets/creators/period.webp",
+        "assets/creators/krasue.webp",
+        "assets/creators/naga.webp"
+      ]
+    },
+    {
+      "id": "creators-c",
+      "prompt": "Use case: photorealistic-natural\nAsset type: fictional Thai creator portrait contact sheet for a premium storytelling web app.\nPrimary request: Create exactly four distinct photorealistic editorial portraits in a perfectly equal 2 by 2 square grid, one person per quadrant. Square overall canvas with the grid boundary exactly at 50 percent width and 50 percent height. No gutters, no borders, no labels, no text. These are entirely fictional adult Thai creators, not celebrities or actual people.\nSubject: Top left: a 33-year-old Thai man comic artist with swept-back black hair, moustache and goatee, dark graphite jacket, warm drawing studio in Bangkok. Top right: a 25-year-old Thai woman animator with a cheerful gentle smile, cropped dark hair and saffron T-shirt, creative Lopburi animation studio. Bottom left: a 29-year-old Thai woman screenwriter and filmmaker with long black hair, confident calm expression and burgundy blouse, warmly lit Suphan Buri workspace. Bottom right: a 38-year-old Thai man comedy creator with close-cut black hair, medium tan skin and laugh lines, navy cotton shirt, softly blurred rural Roi Et home studio.\nComposition: Each quadrant must be an independent centered head-and-shoulders photograph, looking near the camera. Entire head and hair visible with generous top margin; face centered near the middle, shoulders visible, same portrait scale across all four. No faces near a grid edge. Safe to crop each exact quadrant as a square avatar.\nStyle: Contemporary Thai editorial creator photography, authentic skin texture, flattering warm cinematic window light, softly blurred individual local studio backgrounds, warm charcoal and muted earth tones, polished but natural.\nConstraints: Exactly four adults, one in each of four quadrants, four different identities, no collage overlaps, no extra people, no logos, no names, no watermark, no illustration.",
+      "originalSource": "/Users/Teem/.codex/generated_images/01a112eb-3e60-7de1-bd8d-327de3028ad1/exec-e62ca250-60bf-461d-9bbf-33725dde07ec.png",
+      "cropLayout": "Equal 2x2 grid, row-major",
+      "outputs": [
+        "assets/creators/hr.webp",
+        "assets/creators/hanuman.webp",
+        "assets/creators/wanthong.webp",
+        "assets/creators/village.webp"
+      ]
+    }
+  ],
+  "comicPages": [
+    {
+      "id": "hr-expenses-1",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: illustration-story\nAsset type: New readable vertical three-panel Thai workplace comedy comic page for the fictional webtoon 'ทศกัณฐ์ แผนก HR'.\nInput image: supplied hr-page-1.webp is a visual STYLE and CHARACTER DESIGN REFERENCE. Generate an entirely new comic scene, not an edit of its content.\nPrimary request: A polished 2:3 vertical comic page, exactly three broad horizontal illustrated panels stacked top to bottom separated by thin warm-white gutters, matching the reference's detailed hand-inked warm painted Thai comic art.\nScene: Top panel: In the same modern Bangkok office, Hanuman, a white-furred monkey courier with ornate gold headband, bright alert brown eyes and a navy delivery jacket, proudly unloads a huge mound of crumpled paper expense receipts onto Thotsakan's desk. A steaming takeaway coffee cup sits in the foreground. Thotsakan looks stunned. Middle panel: Tight expressive comedic view of Thotsakan examining a tiny receipt with a magnifying glass, his crowned green face filled with disbelief, while Hanuman beams and gestures to a delivery satchel holding coconuts and banana bunches. Bottom panel: Wide office view: Thotsakan's many crowned heads surround his main head, each examining a different blank receipt with a different annoyed reaction; Hanuman innocently stands beside the towering receipt pile, scratching his head. Funny escalating bureaucratic chaos.\nCharacter invariants: Thotsakan is a green-skinned Thai khon demon with ornate golden crown and gold facial tracery, white tusks, charcoal black business suit, white shirt, orange necktie; Hanuman is a white-furred Thai mythological monkey with expressive monkey face and ornate golden headband, modern navy courier jacket. Both are fictional adapted Ramakien comic characters. Preserve reference linework, warm muted colors, believable cozy Bangkok office, expressive funny facial acting.\nText: None. Do not put Thai or English writing in the image. All receipts, computer screens and paper are blank or only innocuous faint lines. No speech balloons. Exact Thai dialogue will be added accessibly in the app outside the image.\nConstraints: Crisp beautiful professional webtoon art, coherent scene progression, no text, no logo, no watermark, no photographs, no gore. Each panel's composition comfortably fits within its panel; keep principal faces fully visible.",
+      "referenceImage": "assets/hr-page-1.webp",
+      "referenceRole": "Character design and visual style only",
+      "originalSource": "/Users/Teem/.codex/generated_images/01a112eb-3e60-7de1-bd8d-327de3028ad1/exec-16f49d04-052a-4605-a21f-dec5ff3130db.png",
+      "output": "assets/comic-v2/hr-expenses-1.webp",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    },
+    {
+      "id": "hr-expenses-2",
+      "mode": "built-in image_gen",
+      "prompt": "Use case: illustration-story\nAsset type: New readable vertical three-panel Thai workplace comedy comic page for the fictional webtoon 'ทศกัณฐ์ แผนก HR'.\nInput image: supplied hr-page-1.webp is a visual STYLE and CHARACTER DESIGN REFERENCE. Generate an entirely new comic scene, not an edit of its content.\nPrimary request: A polished 2:3 vertical comic page, exactly three broad horizontal illustrated panels stacked top to bottom separated by thin warm-white gutters, matching the reference's detailed hand-inked warm painted Thai comic art.\nScene: Top panel: Same modern Bangkok office: white-furred Hanuman in ornate gold headband and navy delivery jacket proudly presents a tiny plastic carrier bag holding just one coffee to a seated green Thotsakan, beside the absurd giant pile of expense receipts. The demon's expression is skeptical, the monkey earnest. Middle panel: Close view of the smiling monkey carefully sharing one small iced-coffee cup amongst several royal green demon faces with multiple colored drinking straws, each crowned demon head leaning forward with mild comic jealousy. The main demon wears charcoal suit and orange tie. Bottom panel: Satisfying warm comedic ending: Thotsakan and Hanuman sit relaxed at a little outdoor Bangkok street coffee stall, each finally holding their own coffee, receipt papers tucked neatly into a small folder, distant office skyline glowing at sunset. Thotsakan laughs and Hanuman grins. End with connection, no villainy.\nCharacter invariants: Thotsakan is a green-skinned Thai khon demon with ornate golden crown and gold facial tracery, white tusks, charcoal black business suit, white shirt, orange necktie; Hanuman is a white-furred Thai mythological monkey with expressive monkey face and ornate golden headband, modern navy courier jacket. Both are fictional adapted Ramakien comic characters. Preserve reference linework, warm muted colors, believable cozy Bangkok office, expressive funny facial acting.\nText: None. Do not put Thai or English writing in the image. All receipts, computer screens and paper are blank or only innocuous faint lines. No speech balloons. Exact Thai dialogue will be added accessibly in the app outside the image.\nConstraints: Crisp beautiful professional webtoon art, coherent scene progression, no text, no logo, no watermark, no photographs, no gore. Each panel's composition comfortably fits within its panel; keep principal faces fully visible.",
+      "referenceImage": "assets/hr-page-1.webp",
+      "referenceRole": "Character design and visual style only",
+      "originalSource": "/Users/Teem/.codex/generated_images/01a112eb-3e60-7de1-bd8d-327de3028ad1/exec-b4e92e3e-06fb-464a-a6d8-6cd1c045cc08.png",
+      "output": "assets/comic-v2/hr-expenses-2.webp",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    }
+  ]
+}

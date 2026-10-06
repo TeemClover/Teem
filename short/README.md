@@ -1,49 +1,40 @@
-# ตอนต่อ — /short prototype
+# ตอนต่อ / TONTOR
 
-Responsive, buildless Thai AI story discovery, viewing and comic-reading prototype in the existing Teem website. Working name: ตอนต่อ / TONTOR.
+Responsive film-first prototype at `https://www.myclover.com/short/`.
+Slogan: **เรื่องสั้น ความรู้สึกยาว**. The fictional Thai creator community includes short films, animation, comics and original novels.
 
-## Preview
+## Local preview
 
-Run `node short/preview.mjs`, then open `http://127.0.0.1:4317/short/`.
-No package installation or build required. The preview server binds to loopback and serves only this prototype and its six existing local Thai/Latin font files.
+`node short/preview.mjs` → `http://127.0.0.1:4317/short/`.
+Buildless ES modules; no installation or production build required. Preview only serves `/short/` and its existing Thai font dependencies, with byte-range support for videos.
 
-Public release target: `https://www.myclover.com/short/` on the existing Vercel `teem` project, production branch `main`. Public availability must be verified after deployment; a local preview or Git push alone does not confirm it.
+## Experience
+
+- Nine movie concepts lead discovery. Native scroll-snap Hero follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Posters retain their proportions on large monitors.
+- Completed pilot files live in `assets/clips/` and are explicitly enabled through `library.js`. They play through native HTML video with audio, full-screen support, optional script captions, episode navigation and optional autoplay. MP4 files are different clips, not animated posters reused as new finished episodes.
+- Concepts without finished footage retain clearly labeled silent animated posters. Their additional episode counts demonstrate the coin flow.
+- Twelve fictional Thai creator portraits and profile dialogs include biographies, province, disciplines, linked films/novels and browser-local follow state. No audience counts or verification claims are invented.
+- The HR comic has two distinct chapters and five illustrated pages with Thai DOM dialogue. The novel collection has three original complete stories, three substantial distinct chapters each. Reader controls offer paper, sepia and night themes, text sizing, chapter navigation and scroll restoration.
+- Search, format/genre filters, saved stories, reading/viewing progress, coin balance and creator follows persist in this browser. Spending demo coins requires explicit confirmation and never charges real money.
+
+## Content and provenance
+
+All creator identities, characters, plots and classifications are fictional presentation material. Portraits, covers and comic art were generated with built-in image_gen. Prompts are preserved in `assets/prompts.json` and `assets/art-prompts-v2.json`; authoring manifests are excluded from deployment.
+
+`content-library.js` contains original novels, profile copy and production scripts. `media-pilots.js` identifies each downloaded Meta AI / Google Flow clip; `library.js` enables only completed files. Caption tracks are optional authored-script cues with approximate timings, not a certified speech transcript. Generated actors can vary between pilot scenes.
+
+No real authentication, payment processing, content-rights moderation, uploads or creator payouts are implemented. The demo is suitable for presenting the product and trying its user flows; browser storage is not a secure wallet or paid-content access system.
 
 ## Sharing
 
-- Homepage brand card: `assets/og/tontor-v2.jpg` (1200 × 630 JPEG), with the prominent original logo, ตอนต่อ — เรื่องสั้น ความรู้สึกยาว, and the explicit description แหล่งรวมละครสั้น แอนิเมชัน และการ์ตูน AI ภาษาไทย.
-- Twelve per-story cards: `assets/og/<story-id>-v2.jpg`. All pages include Open Graph and Twitter large-image metadata directly in HTML, so link scrapers do not need JavaScript. Versioned image URLs refresh image caches; previous cards remain available for existing links.
-- Share URLs use `/short/story/<story-id>/`, with an optional `?episode=<n>`; the legacy `?story=<id>&episode=<n>` links still work.
-- `node short/build-share-pages.mjs` regenerates the twelve static pages from the homepage and catalog. `node short/render-og.mjs` builds all thirteen share cards using generated artwork and exact Thai text rendered with the existing local fonts.
-- OG background generated with the built-in image_gen tool: `assets/og-background-v1.webp`. Complete prompt set, including this composition: `assets/prompts.json`. Authoring files and local QA scripts are excluded from the public deployment by `.vercelignore`.
-
-## Included
-
-- Film-first discovery: nine short films by default, four film-only hero picks (romance, Thai horror, naga fantasy and comedy). Animation and comics remain available through format tabs.
-- Hero supports horizontal touch swipes, mouse dragging, wrapping arrow buttons, direct slide selection and keyboard arrows. Vertical touch scrolling stays native; no automatic rotation interrupts reading. Desktop artwork uses a bounded frame with original poster proportions and a soft backdrop, avoiding portrait-to-banner cropping.
-- Twelve fictional Thai stories across live-action-style dramas, animation and a readable comic. Includes Thai ghosts, naga mythology, literary reinterpretations and village/workplace comedy alongside romance, BL and period drama.
-- Four Thai-theme collections and separate format/genre filters. New concepts: กระสือแถวบ้าน, นาคสายมู, ทศกัณฐ์ แผนก HR, หนุมาน เด็กส่งของ, วันทอง ไม่ขอเลือก and ผู้ใหญ่บ้าน อินฟลูฯ.
-- Featured-story selector, genre filtering, search by title/genre/creator/province, creator-to-story links, empty states.
-- Vertical video player, episode selection, three free episodes, explicit confirmation to spend ten demo coins per later episode.
-- Three-page illustrated HR comic with Thai captions, scroll-position restoration and the same episode-unlock flow.
-- Expandable creator/AI/content provenance, concept age guidance, content warnings, remaining full-series coin price and transparency dialogs. No fake verification badges, ratings or audience counts.
-- Demo coin packs with no checkout, saved stories, resume playback, direct story/episode links.
-- Browser-local persistence, native modal focus handling, keyboard controls, reduced-motion support, mobile bottom navigation.
-
-## Demo boundaries
-
-All titles, people, studios, episode counts, classifications, and plots are fictional Thai-themed sample data. They are not attributed to real Thai filmmakers. Posters and comic pages were produced with the built-in image_gen tool; their complete prompt set is `assets/prompts.json`. Each of the eleven video stories has one silent animated-poster video, reused across its fictional episodes. The comic reuses its three sample pages across demo episodes. No existing film or third-party trailer is included. Age guidance is conceptual and does not claim an official classification.
-
-Assets: `assets/{rain,north,ghost,warrior,office,period,krasue,naga,hanuman,wanthong,village}.webp` and matching `.webm` clips; `assets/hr.webp` and `assets/hr-page-{1,2,3}.webp` for the comic. The generation originals remain outside the repository; optimized project assets are included here. The existing IBM Plex Sans Thai fonts are reused from `../routinex/build/fonts/`. Recreate selected clips with `node short/render-motion.mjs krasue naga hanuman wanthong village` while the preview server is running.
-
-No login, remote analytics, payment gateway, uploads, real wallet, or creator payouts. Stored preferences and progress are local to this browser. Coin limits and access checks are only a demonstration; they are not suitable for paid content protection.
+`node short/build-share-pages.mjs` regenerates 15 static story pages with server-readable Open Graph metadata and direct `/short/story/<id>/?episode=<n>` links. The homepage uses `assets/og/tontor-v3.jpg`; each film and novel has its own 1200×630 JPEG share card with logo, slogan and Thai title. `node short/render-og.mjs <story-id>` renders selected cards with exact Thai type and generated artwork.
 
 ## Verification
 
-`node short/verify-hero.mjs` verifies six viewport widths through 2560px, all four film slides, arrow/keyboard wrapping, mouse drag thresholds, native touch swipes versus vertical scrolling, and selected-film playback. The same `SHORT_BASE_URL` and `SHORT_PROOF_DIR` overrides apply.
+Start a local preview, then run `node short/verify-app.mjs` (default port4321; override `SHORT_BASE_URL`). It checks responsive layouts, full novel chapters, reader preferences/resume, distinct comic images, creator profiles/follows, search/saved stories and native MP4 audio/video decoding.
 
-`node short/verify.mjs` uses the bundled Playwright runtime or `SHORT_PLAYWRIGHT`/`SHORT_CHROME` overrides. It verifies desktop/phone/tablet layout, all eleven playable local clips, search and genres, Thai collections and format filters, favorites, video/comic progress restoration, three comic pages, locked episode confirmation and repeat unlock behavior, remaining coin price, transparency dialogs, coin packs, deep links, malformed or unavailable browser storage, and absence of page errors. Screenshots are written to `/private/tmp/tontor-qa` by default or `SHORT_PROOF_DIR`.
+`node short/verify-carousel.mjs` checks continuous mouse movement, real CDP touch swipes in both directions, native vertical scrolling, settling, keyboard and accessibility at320–2560px.
 
-`SHORT_BASE_URL=https://www.myclover.com node short/verify.mjs` runs the same browser checks against the public website. `SHORT_VERIFY=reading` focuses on reading and sharing; `SHORT_VERIFY=sharing` focuses on metadata, share images and deep links. Screenshots and results remain outside the public repository.
+`node short/verify.mjs` starts an isolated preview and runs app + state/coin/deep-link checks. Override `SHORT_BASE_URL=https://www.myclover.com` to check production. Artifacts stay in `/private/tmp/` or `SHORT_PROOF_DIR`. `SHORT_APP_VERIFY='MP4'` runs only media checks.
 
-All release commits should include only `short/`, its routing rules and development-file exclusions. Preserve unrelated source-shelf work and other pending local changes.
+Release only `short/` and necessary development-file exclusions. Preserve unrelated changes; publish without force-pushing and verify the actual deployment and public website.

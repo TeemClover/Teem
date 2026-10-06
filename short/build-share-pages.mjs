@@ -1,5 +1,5 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
-import {stories} from './catalog.js';
+import {stories} from './library.js';
 
 const template=await readFile(new URL('./index.html',import.meta.url),'utf8');
 const origin='https://www.myclover.com';

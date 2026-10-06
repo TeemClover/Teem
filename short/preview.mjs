@@ -6,7 +6,7 @@ import { join, extname, basename, resolve } from 'node:path';
 
 const root = fileURLToPath(new URL('./', import.meta.url));
 const fontRoot = fileURLToPath(new URL('../routinex/build/fonts/', import.meta.url));
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.webp': 'image/webp', '.webm': 'video/webm', '.jpg':'image/jpeg', '.png':'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json', '.webp': 'image/webp', '.webm': 'video/webm', '.mp4':'video/mp4', '.vtt':'text/vtt; charset=utf-8', '.jpg':'image/jpeg', '.png':'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 export function createPreviewServer() {
   return http.createServer(async (req, res) => {
     try {
@@ -15,7 +15,7 @@ export function createPreviewServer() {
       let path;
       if (pathname.startsWith('/short/')) {
         path = resolve(root, pathname.slice('/short/'.length)+(pathname.endsWith('/')?'index.html':''));
-        if (!path.startsWith(root) || !['.html','.css','.js','.json','.webp','.webm','.jpg','.png','.svg'].includes(extname(path))) throw new Error('not found');
+        if (!path.startsWith(root) || !['.html','.css','.js','.json','.webp','.webm','.mp4','.vtt','.jpg','.png','.svg'].includes(extname(path))) throw new Error('not found');
       } else if (/^\/routinex\/build\/fonts\/ibm-plex-sans-thai-(thai|latin)-(400|600|700)\.woff2$/.test(pathname)) {
         path = join(fontRoot, basename(pathname));
       } else throw new Error('not found');
