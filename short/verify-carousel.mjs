@@ -45,7 +45,14 @@ try {
     const {context, page, errors} = await setup({viewport: {width, height: 1000}, isMobile: width < 760, hasTouch: true, reducedMotion: 'reduce'});
     assert.equal(await page.locator('.hc-slide').count(), 4);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-    assert.equal(await page.locator('.hc-visual img').evaluateAll(images => images.every(image => getComputedStyle(image).objectFit === 'contain')), true);
+    assert.equal(await page.locator('.hc-visual img').evaluateAll((images, mobile) => images.every(image => getComputedStyle(image).objectFit === (mobile ? 'cover' : 'contain')), width < 760), true);
+    if (width < 760) {
+      const frame = await page.locator('.hc-slide').first().evaluate(panel => {
+        const art = panel.querySelector('.hc-visual').getBoundingClientRect(), slide = panel.getBoundingClientRect();
+        return {artWidth:art.width,slideWidth:slide.width,left:art.left-slide.left};
+      });
+      assert.ok(Math.abs(frame.artWidth-frame.slideWidth)<1 && Math.abs(frame.left)<1, 'mobile hero artwork fills the slide edge to edge');
+    }
     await page.locator('[data-hc-index="2"]').click();
     await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
     assert.equal(await page.locator('[data-hc-index="2"]').getAttribute('aria-pressed'), 'true');
@@ -61,7 +68,7 @@ try {
     await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'rain');
     await page.screenshot({path: `${proof}/hero-${width}.png`});
     assert.deepEqual(errors, []);
-    await context.close(); results.push(`${width}px: whole poster framing, no page overflow, dots, keyboard, active accessibility, watch callback`);
+    await context.close(); results.push(`${width}px: ${width < 760 ? 'edge-to-edge mobile artwork' : 'whole desktop poster framing'}, no page overflow, dots, keyboard, active accessibility, watch callback`);
   }
   {
     const {context, page, errors} = await setup({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});

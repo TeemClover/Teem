@@ -10,7 +10,7 @@ Buildless ES modules; no installation or production build required. Preview only
 
 ## Experience
 
-- Nine movie concepts lead discovery. Native scroll-snap Hero follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Posters retain their proportions on large monitors.
+- Nine movie concepts lead discovery. The Hero opens on a random Thai-focused film without repeating the previous opening when browser storage is available. Native scroll-snap follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Mobile artwork fills the Hero edge to edge with readable text over a gradient; desktop posters retain their proportions.
 - Completed pilot files live in `assets/clips/` and are explicitly enabled through `library.js`. They play through native HTML video with audio, full-screen support, optional script captions, episode navigation and optional autoplay. MP4 files are different clips, not animated posters reused as new finished episodes.
 - Concepts without finished footage retain clearly labeled silent animated posters. Their additional episode counts demonstrate the coin flow.
 - Twelve fictional Thai creator portraits and profile dialogs include biographies, province, disciplines, linked films/novels and browser-local follow state. No audience counts or verification claims are invented.

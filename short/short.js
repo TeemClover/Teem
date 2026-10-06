@@ -11,7 +11,7 @@ const playIcon = '<svg viewBox="0 0 20 20"><path d="m6 3 11 7-11 7Z"/></svg>';
 const bookmarkIcon = '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></svg>';
 const lockIcon = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>';
 let state = readState();
-const featuredIds = ['rain', 'krasue', 'warrior', 'village'];
+const featuredIds = chooseFeaturedIds(['krasue', 'warrior', 'village', 'wanthong']);
 let currentView = 'discover', genre = 'ทั้งหมด', format = 'drama', search = '', featured = stories.find(s=>s.id===featuredIds[0]);
 let selectedStory = null, selectedEpisode = 1, pendingEpisode = null, resumeAt = 0;
 let lastWrite = 0, toastTimer, readerRestoring = false, readingStarted = false;
@@ -23,6 +23,18 @@ try { readerPreferences={...readerPreferences,...JSON.parse(localStorage.getItem
 if(!['paper','night','sepia'].includes(readerPreferences.theme))readerPreferences.theme='paper';
 readerPreferences.size=Math.max(15,Math.min(24,Number(readerPreferences.size)||18));
 $('#autoplay-next').checked=autoplayNext;
+
+function chooseFeaturedIds(ids) {
+  const key = 'tontor:hero:last-open';
+  let previous;
+  try { previous = localStorage.getItem(key); } catch {}
+  const choices = ids.filter(id => id !== previous);
+  const first = choices[Math.floor(Math.random() * choices.length)] || ids[0];
+  const start = ids.indexOf(first);
+  try { localStorage.setItem(key, first); } catch {}
+  // Pick once before rendering, so the image and copy stay stable during a visit.
+  return [...ids.slice(start), ...ids.slice(0, start)];
+}
 function applyReaderPreferences(){
   const reader=$('#comic-reader'); reader.dataset.theme=readerPreferences.theme;reader.style.setProperty('--reading-size',`${readerPreferences.size}px`);
   $$('[data-reader-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.readerTheme===readerPreferences.theme)));
