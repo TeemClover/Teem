@@ -22,11 +22,8 @@ try {
   });
   await page.goto((process.env.TOUR_BASE_URL || 'http://127.0.0.1:8766') + '/tour/');
   await page.waitForFunction(() => window.__tour && !document.body.classList.contains('is-loading'));
-  for (const quality of ['sd', 'hd']) {
-    if (quality === 'hd') {
-      await page.click('[data-quality="hd"]');
-      await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'));
-    }
+  for (const quality of ['sd']) {
+
     const pixels = await page.evaluate(() => {
       const cases = [
         ['ยินดีต้อนรับ', [29,107,61], 0, 144],

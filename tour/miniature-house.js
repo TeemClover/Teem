@@ -28,10 +28,6 @@ export function miniatureHouse() {
   block(5.5,9.8,-10.3,-1.6,3.29,6.19,wall,'upper-centre');
   block(9.8,14.1,-10.3,-1.85,3.29,6.19,wall,'upper-east');
   for (const x of [.05,5.2]) block(x-.15,x+.15,-.02,.32,0,2.7,taupe,'carport-column');
-  block(0,5.5,-3.5,.65,-.1,-.015,taupe,'driveway');
-  block(5.5,9.8,-2.05,0,-.12,-.02,trim);
-  block(9.8,14.35,-2.05,-.8,-.08,-.01,trim);
-
   // Two flat faces suggest the window and frame; sub-pixel mullions are omitted.
   function windowAt(x,y,z,w,h,rotation=0) {
     const group = new THREE.Group(); group.position.set(x,y,z); group.rotation.y=rotation; shell.add(group);
@@ -43,20 +39,16 @@ export function miniatureHouse() {
   windowAt(4.35,1.08,-3.44,1.2,2.1); windowAt(2.45,1.38,-3.44,.85,1.85);
   windowAt(2.725,4.48,.06,3.15,2.3); windowAt(7.575,4.515,-1.54,2.55,2.15);
   windowAt(11.825,4.48,-1.79,3.15,2.3);
-  for (const [z,w] of [[-8.525,1.75],[-4.875,3.15]]) windowAt(14.16,1.18,z,w,2.25,Math.PI/2);
-  for (const [z,w] of [[-5.4,1.8],[-3.275,1.25]]) windowAt(14.16,4.69,z,w,1.8,Math.PI/2);
-  for (const [z,w,h,y] of [[-8.55,2.1,1.8,4.69],[-6.3,.7,.6,5.19],[-4.525,.65,.6,5.19],[-2.2,1.6,1.8,4.69]]) windowAt(-.66,y,z,w,h,-Math.PI/2);
-  windowAt(-.66,1.65,-8.9,1.5,1.1,-Math.PI/2);
-  for (const [x,w,h,y] of [[.6,1.6,1.1,1.65],[3.85,2.7,1.15,1.625],[9.875,.55,.6,2],[12.275,2.45,2.25,1.125],[1.7,2.3,1.8,4.69],[10.4,.9,.65,5.215]]) windowAt(x,y,-10.36,w,h,Math.PI);
-  windowAt(7,2.98,-10.36,2.1,5.5,Math.PI); // tall rear stair-hall glazing
+  // Only broad side windows and the distinctive rear stair glazing read at this size.
+  windowAt(14.16,1.3,-5.2,3,2.1,Math.PI/2); windowAt(14.16,4.6,-4.7,2.8,1.9,Math.PI/2);
+  windowAt(-.66,4.6,-3,2.2,1.9,-Math.PI/2);
+  windowAt(7,2.98,-10.36,2.1,5.5,Math.PI);
   // Simple open rails keep both balconies recognizable without transparent glass passes.
   function balcony(x0,x1,back,front) {
     block(x0,x1,back,front,3.16,3.25,trim,'balcony-slab');
-    box([x1-x0,.045,.06],[(x0+x1)/2,4.23,front-.04],frame);
-    for(const x of [x0+.04,(x0+x1)/2,x1-.04]) box([.05,.9,.05],[x,3.75,front-.04],frame);
-    for(const x of [x0+.04,x1-.04]) {
-      box([.06,.045,front-back-.10],[x,4.23,(front+back)/2-.09],frame);
-    }
+    // A flat dark rail replaces the tiny six-piece balustrade.
+    const rail=new THREE.Mesh(new THREE.PlaneGeometry(x1-x0,.08),frame);
+    rail.position.set((x0+x1)/2,4.18,front-.04); shell.add(rail);
   }
   balcony(-.55,5.45,.055,.95); balcony(9.85,14.3,-1.79,-.4);
   // Keep the broad eaves; tiny facade fins are not legible at tabletop scale.
@@ -81,9 +73,6 @@ export function miniatureHouse() {
     }
   }
   hip(-.95,5.85,-10.65,.35,6.45); hip(5.25,14.45,-10.65,-1.25,6.33,true);
-  // White SUV parked beneath the upper west wing, not beside the house.
-  box([1.65,.65,2.9],[2.7,.43,-1.4],trim,'car');box([1.5,.6,1.7],[2.7,1.03,-1.65],glass);
-  box([1.62,.08,1.8],[2.7,1.37,-1.65],trim);
   // One opaque, vertex-coloured draw for the entire exhibit. No tiny shadow casters,
   // transparent balcony passes or separate window draw calls during its rotation.
   shell.updateMatrixWorld(true);

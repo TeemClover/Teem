@@ -123,12 +123,8 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
 .lucky.golden{background:linear-gradient(160deg,#fff8dc,#f3d27a)}
 @media (prefers-reduced-motion:reduce){.lucky-clover,.loader-clover,.scroll-cue i::after{animation:none}}
 
-/* tools: SD/HD + clover counter */
+/* clover counter */
 .tools{display:flex;gap:8px;align-items:center}
-.quality{display:flex;padding:3px;border-radius:999px;background:var(--paper);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(15,35,24,.12)}
-.quality button{border:0;background:transparent;font:800 13px var(--font);letter-spacing:.04em;color:var(--ink-soft);padding:7px 11px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s}
-.quality button[aria-pressed="true"]{background:var(--ink);color:#fff}
-.quality button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 /* things you can pick up in each room */
 .items{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px;padding:0}
