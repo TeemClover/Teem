@@ -1,7 +1,7 @@
 // นุ่มจัง · NOOMJANG — texture-led, light and calm. Copy from brands/noomjang/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { img, crop, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
 
 export const meta = {
@@ -10,6 +10,7 @@ export const meta = {
 };
 
 const logo = `<span class="nj-word">นุ่มจัง</span><span class="nj-en">NOOMJANG</span>`;
+const { img, crop, video } = brandMedia('noomjang');
 const n = config.product.packPieces;
 
 export function render() {
@@ -19,7 +20,7 @@ export function render() {
 
   <section class="nj-hero" id="top" data-section="N01">
     <figure class="nj-hero-photo">
-      ${img('cutaway', { eager: true, sizes: '(min-width: 900px) 56vw, 100vw', pos: '60% 55%' })}
+      ${video({ sizes: '(min-width: 900px) 56vw, 100vw', pos: '52% 58%' })}
       <figcaption>ภาพผ่าให้เห็นเนื้อด้านใน · ${n} ก้อนต่อแพ็ก</figcaption>
     </figure>
     <div class="nj-hero-copy">
@@ -37,13 +38,13 @@ export function render() {
 
   <section class="nj-texture scene" id="texture" data-section="N02">
     <div class="scene-runway" data-scene data-beats="3"><div class="scene-sticky">
-      <div class="nj-frame" role="group" aria-label="จากก้อนเต็ม เห็นเนื้อด้านใน แล้วเป็นจานมื้อที่บ้าน">
-        ${img('whole', { cls: 'nf-whole', sizes: '(min-width: 900px) 60vw, 100vw', pos: '50% 50%', alt: 'แฮมเบิร์กก้อนเต็มราดซอส' })}
-        ${img('plate', { cls: 'nf-plate', sizes: '(min-width: 900px) 60vw, 100vw', pos: '50% 50%', alt: 'ก้อนที่ผ่าให้เห็นเนื้อนุ่มด้านใน จัดเป็นจานกับข้าวและผัก' })}
+      <div class="nj-frame" role="group" aria-label="จากเนื้อด้านในกับซอส แล้วเป็นจานมื้อที่บ้าน">
+        ${img('whole', { cls: 'nf-whole', sizes: '(min-width: 900px) 60vw, 100vw', pos: '50% 50%', alt: 'แฮมเบิร์กกับซอสบนจานสีเขียวอ่อน' })}
+        ${img('plate', { cls: 'nf-plate', sizes: '(min-width: 900px) 60vw, 100vw', pos: '50% 50%', alt: 'ก้อนที่ผ่าให้เห็นเนื้อนุ่มด้านใน พร้อมข้าวเป็นไอเดียเสิร์ฟ' })}
       </div>
       <div class="nj-texture-copy">
         <ol class="beats nj-beats" role="list">
-          <li data-b="0">ก้อนเต็ม</li>
+          <li data-b="0">เนื้อนุ่มด้านใน</li>
           <li data-b="1">เนื้อด้านในกับซอส</li>
           <li data-b="2">มื้อที่บ้าน</li>
         </ol>
@@ -71,9 +72,9 @@ export function render() {
     <h2 class="nj-h2" data-reveal>เก็บมื้อที่อยากกิน <span class="nb">ไว้ที่บ้าน</span></h2>
     <p class="nj-intro" data-reveal>วันที่อยากกินแฮมเบิร์กญี่ปุ่น คุณไม่ต้องเริ่มบดเนื้อหรือทำซอสใหม่ เราปรุงมาให้แล้ว คุณอุ่น จัดจาน และเสิร์ฟกับมื้อที่มี</p>
     <div class="nj-ideas">
-      <article data-reveal>${crop('plate', { cls: 'nj-idea-img', size: '380%', pos: '2% 6%', label: 'ข้าวสวยร้อน ๆ ในถ้วย' })}
+      <article data-reveal>${crop('plate', { cls: 'nj-idea-img', size: '380%', pos: '16% 22%', label: 'ข้าวสวยร้อน ๆ ในถ้วย' })}
         <h3>กับข้าวร้อน ๆ</h3><p>วางแฮมเบิร์ก ราดซอส แล้วกินกับข้าวที่ชอบ</p></article>
-      <article data-reveal>${crop('plate', { cls: 'nj-idea-img', size: '260%', pos: '62% 30%', label: 'ผักสลัดและบรอกโคลีข้างจาน' })}
+      <article data-reveal>${crop('plate', { cls: 'nj-idea-img', size: '260%', pos: '62% 30%', label: 'เนื้อและซอสพร้อมจัดมื้อกับไข่และผัก' })}
         <h3>กับไข่และผัก</h3><p>เพิ่มสิ่งที่มีในครัว จัดเป็นมื้อของคุณ</p></article>
     </div>
     <p class="nj-small">ข้าว ไข่ ผัก และเครื่องเคียงในภาพเป็นไอเดียเสิร์ฟ ไม่รวมในแพ็ก</p>

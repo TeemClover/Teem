@@ -41,12 +41,15 @@ export const facts = {
  * Slots with src null render a designed fallback instead of borrowing an unrelated photo.
  */
 export const media = {
-  plate:   { slot: 'HBG-A01', src: 'assets/hamburg-hero.jpg', small: 'assets/hamburg-hero-900.jpg', w: 1536, h: 1024, status: 'concept',
-             alt: 'แฮมเบิร์กญี่ปุ่น 2 ก้อนราดซอสบนจานเซรามิก ก้อนหนึ่งผ่าครึ่งให้เห็นเนื้อด้านใน มีข้าวและผักเป็นไอเดียเสิร์ฟ' },
-  whole:   { slot: 'HBG-A01', src: 'assets/hamburg-whole.jpg', small: 'assets/hamburg-whole-900.jpg', w: 1536, h: 1024, status: 'concept',
-             alt: 'แฮมเบิร์กญี่ปุ่น 2 ก้อนเต็มราดซอสบนจานเซรามิก' },
-  cutaway: { slot: 'HBG-A02', src: 'assets/hamburg-texture.jpg', small: 'assets/hamburg-texture-900.jpg', w: 1536, h: 1024, status: 'concept',
-             alt: 'ภาพใกล้เนื้อด้านในของแฮมเบิร์กที่ผ่าครึ่ง ซอสสีน้ำตาลเคลือบผิวที่จี่' },
+  ...Object.fromEntries(['homechew', 'tmt', 'noomjang'].flatMap(brand =>
+    ['hero', 'plate', 'whole', 'cutaway'].map(slot => [`${brand}_${slot}`, {
+      src: `assets/${brand}/${slot}.jpg`, w: 1280, h: 720, status: 'concept',
+      alt: brand === 'homechew'
+        ? 'แฮมเบิร์กญี่ปุ่น 2 ก้อนกับซอสบนจานสีงาช้าง โต๊ะไม้และมื้อที่บ้านเป็นไอเดียเสิร์ฟ'
+        : brand === 'tmt'
+          ? 'แฮมเบิร์กญี่ปุ่นกับซอสบนจานดำ เห็นเนื้อด้านในและหน้าจี่ ผ้าสีแดงเข้มเป็นฉากประกอบ'
+          : 'แฮมเบิร์กญี่ปุ่นบนจานสีเขียวอ่อน เห็นเนื้อเนียนนุ่มและซอส แสงธรรมชาติละมุน'
+    }]))),
   grind:   { slot: 'HBG-A03', src: null, status: 'needs-actual' },
   grill:   { slot: 'HBG-A04', src: null, status: 'needs-actual' },
   sauce:   { slot: 'HBG-A05', src: null, status: 'needs-actual' },
@@ -54,6 +57,20 @@ export const media = {
   table:   { slot: 'HBG-A07', src: null, status: 'needs-actual' },
   hands:   { slot: 'HBG-A08', src: null, status: 'needs-actual' }
 };
+
+/** Each brand owns its imagery and video; no food asset is borrowed across booths. */
+export function brandMedia(brand) {
+  return {
+    img: (key, opts) => img(`${brand}_${key}`, opts),
+    crop: (key, opts) => crop(`${brand}_${key}`, opts),
+    video: ({ pos = '50% 50%', sizes = '100vw' } = {}) => `<div class="food-film" data-film>
+      ${img(`${brand}_hero`, { eager: true, sizes, pos })}
+      <video class="food-film-video" muted playsinline loop preload="none"
+        data-video-src="assets/${brand}/food-film.mp4" aria-label="คลิปอาหาร ${esc(brand === 'homechew' ? 'โฮมชิว' : brand === 'tmt' ? 'เชื่อปากกู' : 'นุ่มจัง')}" style="object-position:${pos}"></video>
+      <button type="button" class="film-toggle" data-film-toggle>เล่นคลิป</button>
+    </div>`
+  };
+}
 
 /** Responsive <img> with fixed intrinsic size so layout never jumps. */
 export function img(key, { cls = '', pos = '50% 50%', sizes = '100vw', eager = false, alt } = {}) {

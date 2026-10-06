@@ -3,6 +3,7 @@
 import { record } from '../store.js';
 import { cartButton, stickyBar, mountCommerce, mountSticky } from '../commerce.js';
 import { mountScenes, mountReveals } from '../motion.js';
+import { mountVideos } from '../video.js';
 import { trackSections, whenVisible } from '../track.js';
 import { brands } from './meta.js';
 import { esc, href, facts, conceptNote } from '../ui.js';
@@ -42,6 +43,7 @@ export function mountBrand(root, id) {
     mountSticky(root),
     mountScenes(root),
     mountReveals(root),
+    mountVideos(root),
     trackSections(root, id),
     whenVisible(() => record('brand_view', id))
   ];

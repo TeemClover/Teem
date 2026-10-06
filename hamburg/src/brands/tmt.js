@@ -1,7 +1,7 @@
 // เชื่อปากกู · TMT — big confident type and a first-bite rhythm. Copy from brands/tmt/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { img, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
 
 export const meta = {
@@ -15,6 +15,7 @@ const stamp = (cls = '') => `<div class="tmt-stamp ${cls}" aria-hidden="true">
   <circle cx="100" cy="100" r="94"/><circle cx="100" cy="100" r="58"/>
   <text><textPath href="#tmt-ring" startOffset="0">TRUST MY TASTE · TMT · TRUST MY TASTE · TMT ·</textPath></text></svg>
   <span>กูชิม<br>แล้ว</span></div>`;
+const { img, crop, video } = brandMedia('tmt');
 const n = config.product.packPieces;
 
 export function render() {
@@ -36,7 +37,7 @@ export function render() {
       </div>
     </div>
     <figure class="tmt-hero-photo">
-      ${img('plate', { eager: true, sizes: '(min-width: 900px) 48vw, 100vw', pos: '72% 62%' })}
+      ${video({ sizes: '(min-width: 900px) 48vw, 100vw', pos: '50% 58%' })}
       <figcaption>ไอเดียเสิร์ฟ · เครื่องเคียงไม่รวมในแพ็ก</figcaption>
     </figure>
   </section>
@@ -48,7 +49,7 @@ export function render() {
   <section class="tmt-bite scene" id="first-bite" data-section="T02">
     <div class="scene-runway" data-scene data-beats="3"><div class="scene-sticky">
       <div class="tmt-stage">
-        ${img('whole', { cls: 'tb-whole', sizes: '(min-width: 900px) 62vw, 100vw', pos: '66% 60%', alt: 'แฮมเบิร์ก 2 ก้อนที่จี่และราดซอส ก่อนผ่า' })}
+        ${img('whole', { cls: 'tb-whole', sizes: '(min-width: 900px) 62vw, 100vw', pos: '66% 60%', alt: 'แฮมเบิร์ก 2 ก้อนกับซอสบนจานดำ' })}
         ${img('plate', { cls: 'tb-cut', sizes: '(min-width: 900px) 62vw, 100vw', pos: '66% 60%', alt: 'ก้อนที่ผ่าแล้วเห็นเนื้อด้านใน' })}
         ${img('cutaway', { cls: 'tb-macro', sizes: '(min-width: 900px) 62vw, 100vw', pos: '62% 60%', alt: 'ภาพใกล้เนื้อด้านในกับซอสที่เข้าคำ' })}
         ${stamp('tb-stamp')}

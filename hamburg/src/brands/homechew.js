@@ -1,7 +1,7 @@
 // Homechew — editorial dinner table. Copy from brands/homechew/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { img, crop, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
 
 export const meta = {
@@ -10,6 +10,7 @@ export const meta = {
 };
 
 const logo = `<img class="hc-wordmark" src="assets/homechew-wordmark.svg" width="657" height="123" alt="Homechew"><span class="hc-thai">โฮมชิว</span>`;
+const { img, crop, video } = brandMedia('homechew');
 const n = config.product.packPieces;
 
 export function render() {
@@ -30,7 +31,7 @@ export function render() {
       </div>
     </div>
     <figure class="hc-hero-photo">
-      ${img('plate', { eager: true, sizes: '(min-width: 900px) 56vw, 100vw', pos: '50% 60%' })}
+      ${video({ sizes: '(min-width: 900px) 56vw, 100vw', pos: '50% 64%' })}
       <figcaption>ไอเดียเสิร์ฟ · ข้าว ผัก และเครื่องเคียงไม่รวมในแพ็ก</figcaption>
     </figure>
   </section>
@@ -71,11 +72,11 @@ export function render() {
 
   <section class="hc-table scene" id="table" data-section="H04">
     <div class="scene-runway" data-scene data-beats="3"><div class="scene-sticky">
-      <div class="hc-board" aria-label="ภาพจัดโต๊ะ: จานแฮมเบิร์ก ข้าว ผัก และเนื้อด้านใน" role="group">
+      <div class="hc-board" aria-label="ภาพจัดโต๊ะ: จานแฮมเบิร์ก ข้าว ผัก และซอส" role="group">
         <figure class="hc-piece hc-p-plate">${crop('whole', { size: '150%', pos: '45% 62%', label: 'จานแฮมเบิร์ก 2 ก้อนราดซอส' })}<figcaption>2 ก้อนกับซอส</figcaption></figure>
-        <figure class="hc-piece hc-p-rice">${crop('whole', { size: '430%', pos: '1% 5%', label: 'ข้าวสวยร้อน ๆ ในถ้วยเซรามิก' })}<figcaption>ข้าวร้อน ๆ · ไอเดียเสิร์ฟ</figcaption></figure>
-        <figure class="hc-piece hc-p-greens">${crop('whole', { size: '460%', pos: '99% 12%', label: 'ผักต้มคลุกงาในถ้วยเล็ก' })}<figcaption>ผักที่ชอบ · ไอเดียเสิร์ฟ</figcaption></figure>
-        <figure class="hc-piece hc-p-cut">${crop('cutaway', { size: '170%', pos: '62% 55%', label: 'เนื้อด้านในของแฮมเบิร์กที่ผ่าครึ่ง' })}<figcaption>เนื้อด้านใน</figcaption></figure>
+        <figure class="hc-piece hc-p-rice">${crop('whole', { size: '430%', pos: '58% 30%', label: 'ข้าวสวยร้อน ๆ ในถ้วยเซรามิก' })}<figcaption>ข้าวร้อน ๆ · ไอเดียเสิร์ฟ</figcaption></figure>
+        <figure class="hc-piece hc-p-greens">${crop('whole', { size: '460%', pos: '91% 30%', label: 'ผักในถ้วยข้างจานเป็นไอเดียเสิร์ฟ' })}<figcaption>ผักที่ชอบ · ไอเดียเสิร์ฟ</figcaption></figure>
+        <figure class="hc-piece hc-p-cut">${crop('cutaway', { size: '170%', pos: '62% 55%', label: 'หน้าจี่และซอสของแฮมเบิร์ก' })}<figcaption>หน้าจี่กับซอส</figcaption></figure>
       </div>
       <div class="hc-table-copy">
         <p class="hc-kicker">โต๊ะอาหาร</p>

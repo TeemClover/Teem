@@ -3,7 +3,7 @@ import { config, totalCart } from '../product.js';
 import { boothOrder, selectBooth, getCart, record } from '../store.js';
 import { brands } from '../brands/meta.js';
 import { whenVisible } from '../track.js';
-import { esc, href, img, baht, weight, conceptNote, facts } from '../ui.js';
+import { esc, href, brandMedia, baht, weight, conceptNote, facts } from '../ui.js';
 
 export const meta = {
   title: 'Hamburg Food Fair | แฮมเบิร์กญี่ปุ่นพร้อมซอส 3 บูธ',
@@ -12,9 +12,9 @@ export const meta = {
 
 // Each booth gets its own first image treatment with equal size and quality.
 const boothArt = {
-  homechew: () => img('plate', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '42% 58%' }),
-  tmt: () => img('plate', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '74% 62%' }),
-  noomjang: () => img('cutaway', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '62% 55%' })
+  homechew: () => brandMedia('homechew').img('hero', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '50% 60%' }),
+  tmt: () => brandMedia('tmt').img('hero', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '50% 58%' }),
+  noomjang: () => brandMedia('noomjang').img('hero', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '52% 58%' })
 };
 const boothMark = {
   homechew: `<img class="bm-hc" src="assets/homechew-wordmark.svg" width="657" height="123" alt="Homechew">`,
