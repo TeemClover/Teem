@@ -156,11 +156,11 @@ try{
     }finally{await context.close();}
   });
 
-  await run('fifteen static story deep links have matching OG metadata images and readers',async()=>{
+  await run('sixteen static story deep links have matching OG metadata images and readers',async()=>{
     const session=await setup();const {page,context}=session;
     try{
       const stories=await page.evaluate(async()=>{const {stories}=await import('./library.js');return stories.map(s=>({id:s.id,title:s.title,format:s.format,episodes:s.episodes}));});
-      assert.equal(stories.length,15);const checked=[];
+      assert.equal(stories.length,16);const checked=[];
       for(const story of stories){
         const path=`/short/story/${story.id}/`;
         const response=await context.request.get(base+path,{headers:{'user-agent':'facebookexternalhit/1.1'}});

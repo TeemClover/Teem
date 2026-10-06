@@ -1,6 +1,10 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const play = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg>';
 const information = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg>';
+const pause = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>';
+const replay = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9a8 8 0 1 1-1 7M5 4v5h5"/></svg>';
+const sound = muted => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4Z"/>${muted ? '<path d="m16 9 5 6m0-6-5 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
+const previewDuration = value => Number.isFinite(Number(value)) && Number(value) > 0 ? `<span class="hc-preview-duration">${Math.round(Number(value))} วิ</span>` : '';
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'm14 6-6 6 6 6' : 'm10 6 6 6-6 6'}"/></svg>`;
 let carouselCount = 0;
 
@@ -18,15 +22,17 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   root.removeAttribute('aria-describedby');
   root.removeAttribute('tabindex');
   root.innerHTML = `<div class="hc-track" tabindex="0" aria-label="เลื่อนเลือกละครสั้นเรื่องเด่น" aria-describedby="${instance}-hint">${selected.map((story, index) => {
-    const image = story.heroImage || `./assets/${story.id}.webp`;
+    const trailer = story.heroTrailer?.src ? story.heroTrailer : null;
+    const image = trailer?.poster || story.heroImage || `./assets/${story.id}.webp`;
     const avatar = story.avatarImage ? `<img src="${escape(story.avatarImage)}" alt="" width="36" height="36" loading="lazy" draggable="false">` : escape(story.avatar);
-    return `<article class="hc-slide" data-hc-id="${escape(story.id)}" style="--hc-tint:${escape(story.color || '#64525d')}" role="group" aria-roledescription="สไลด์" aria-label="${index + 1} จาก ${selected.length}: ${escape(story.title)}">
+    return `<article class="hc-slide${trailer ? ' hc-has-preview' : ''}" data-hc-id="${escape(story.id)}" style="--hc-tint:${escape(story.color || '#64525d')}" role="group" aria-roledescription="สไลด์" aria-label="${index + 1} จาก ${selected.length}: ${escape(story.title)}">
       <div class="hc-atmosphere" aria-hidden="true"></div>
-      <div class="hc-visual" aria-hidden="true"><img src="${escape(image)}" alt="" draggable="false" decoding="async" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}></div>
+      <div class="hc-visual" aria-hidden="true"><img src="${escape(image)}" alt="" draggable="false" decoding="async" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>${trailer ? `<video class="hc-preview-video" muted playsinline preload="none" poster="${escape(image)}" disablepictureinpicture disableremoteplayback tabindex="-1"></video>` : ''}</div>
       <div class="hc-shade" aria-hidden="true"></div>
+      ${trailer ? `<div class="hc-preview"><div class="hc-preview-buttons"><button type="button" class="hc-preview-play" data-hc-preview="${index}" aria-label="ดูช็อตเด็ด ${escape(story.title)}" aria-pressed="false">${play}<span class="hc-preview-label">ดูช็อตเด็ด</span>${previewDuration(trailer.duration)}</button><button type="button" class="hc-preview-sound" data-hc-sound="${index}" aria-label="เปิดเสียงช็อตเด็ด ${escape(story.title)}" aria-pressed="false">${sound(true)}</button></div><span class="hc-preview-progress" aria-hidden="true"><span></span></span><p class="hc-preview-status hc-status" role="status" aria-live="polite"></p></div>` : ''}
       <div class="hc-copy">
         <p class="hc-eyebrow"><span class="hc-live-dot"></span>ละครสั้น AI ภาษาไทย <span class="hc-original">TONTOR ORIGINAL</span></p>
-        <p class="hc-kicker">${escape(story.kicker)}</p>
+        <p class="hc-kicker">${escape(trailer?.hook || story.kicker)}</p>
         <${index === 0 ? 'h1' : 'h2'} class="hc-title">${escape(story.posterTitle || story.title).replace(/\n/g, '<br>')}</${index === 0 ? 'h1' : 'h2'}>
         <div class="hc-meta"><span>${escape(story.genres.slice(0, 2).join(' · '))}</span><span class="hc-meta-separator">·</span><span>${escape(story.episodes)} ตอน</span><span class="hc-age">${escape(story.age)}</span></div>
         <p class="hc-description">${escape(story.description)}</p>
@@ -42,8 +48,178 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   const panels = [...root.querySelectorAll('.hc-slide')];
   const dots = [...root.querySelectorAll('.hc-dot')];
   const counter = root.querySelector('.hc-count');
-  const status = root.querySelector('.hc-status');
+  const status = root.querySelector(':scope > .hc-status');
   let active = -1, frame = 0, settleTimer, gesture = null, suppressClickUntil = 0;
+  let heroVisible = false, destroyed = false;
+  const saveData = Boolean(navigator.connection?.saveData);
+  const previews = panels.map((panel, index) => {
+    const video = panel.querySelector('.hc-preview-video');
+    if (!video) return null;
+    // A source is assigned only when this panel is visible and playback is wanted.
+    const preview = {panel, video, index, trailer:selected[index].heroTrailer, button:panel.querySelector('.hc-preview-play'), audio:panel.querySelector('.hc-preview-sound'), progress:panel.querySelector('.hc-preview-progress'), status:panel.querySelector('.hc-preview-status'), source:false, userPaused:false, manualPlay:false, unmuted:false, ended:false, blocked:false, error:false, resumeTime:0, attempt:0, starting:false};
+    video.muted = true;
+    video.volume = .7;
+    video.addEventListener('loadedmetadata', () => {
+      if (!preview.source || !Number.isFinite(video.duration)) return;
+      positionPreview(preview);
+      if (preview.resumeTime > 0) video.currentTime = Math.min(preview.resumeTime, Math.max(0, video.duration - .04));
+    });
+    const showFrame = () => { if (preview.source && video.readyState >= 2) panel.classList.add('has-preview-frame'); };
+    video.addEventListener('loadeddata', showFrame);
+    video.addEventListener('seeked', showFrame);
+    video.addEventListener('playing', () => { showFrame(); updatePreview(preview); });
+    video.addEventListener('pause', () => updatePreview(preview));
+    video.addEventListener('timeupdate', () => {
+      preview.resumeTime = video.currentTime;
+      const duration = Number.isFinite(video.duration) ? video.duration : Number(preview.trailer.duration);
+      preview.progress.style.setProperty('--hc-preview-progress', `${duration > 0 ? Math.min(100, video.currentTime / duration * 100) : 0}%`);
+    });
+    video.addEventListener('ended', () => {
+      preview.ended = true;
+      preview.manualPlay = false;
+      preview.status.textContent = 'ช็อตเด็ดจบแล้ว กดเริ่มดูฟรีเพื่อเปิดคลิปตัวอย่าง';
+      updatePreview(preview);
+    });
+    video.addEventListener('error', () => {
+      if (!preview.source) return;
+      preview.error = true;
+      preview.starting = false;
+      panel.classList.remove('has-preview-frame');
+      preview.status.textContent = 'โหลดช็อตเด็ดไม่สำเร็จ แตะเพื่อลองอีกครั้ง';
+      updatePreview(preview);
+    });
+    return preview;
+  });
+
+  function positionPreview(preview) {
+    if (!preview.video.videoWidth || !preview.video.videoHeight) return;
+    const visual = preview.panel.querySelector('.hc-visual');
+    const art = visual.getBoundingClientRect(), slide = preview.panel.getBoundingClientRect();
+    const ratio = preview.video.videoWidth / preview.video.videoHeight;
+    const width = Math.min(art.width, art.height * ratio), height = width / ratio;
+    visual.style.setProperty('--hc-video-width', `${width}px`);
+    visual.style.setProperty('--hc-video-height', `${height}px`);
+    preview.panel.style.setProperty('--hc-preview-right', `${slide.right - (art.left + (art.width + width) / 2) + 12}px`);
+    preview.panel.style.setProperty('--hc-preview-top', `${art.top - slide.top + 12}px`);
+  }
+
+  function updatePreview(preview) {
+    const playing = !preview.video.paused && !preview.video.ended;
+    const label = preview.error ? 'ลองช็อตเด็ดอีกครั้ง' : preview.ended ? 'ดูอีกครั้ง' : playing ? 'หยุดชั่วคราว' : 'ดูช็อตเด็ด';
+    if (preview.button.dataset.label !== label) {
+      preview.button.dataset.label = label;
+      preview.button.innerHTML = `${playing ? pause : preview.ended ? replay : play}<span class="hc-preview-label">${label}</span>${previewDuration(preview.trailer.duration)}`;
+    }
+    preview.button.setAttribute('aria-label', `${label} ${selected[preview.index].title}`);
+    preview.button.setAttribute('aria-pressed', String(playing));
+    preview.audio.setAttribute('aria-label', `${preview.unmuted ? 'ปิด' : 'เปิด'}เสียงช็อตเด็ด ${selected[preview.index].title}`);
+    preview.audio.setAttribute('aria-pressed', String(preview.unmuted));
+    if (preview.audio.dataset.unmuted !== String(preview.unmuted)) {
+      preview.audio.dataset.unmuted = String(preview.unmuted);
+      preview.audio.innerHTML = sound(!preview.unmuted);
+    }
+    preview.panel.classList.toggle('is-preview-playing', playing);
+  }
+
+  function previewVisible(preview) {
+    return !destroyed && preview.index === active && heroVisible && !document.hidden && !document.querySelector('dialog[open]');
+  }
+
+  function wantsPlayback(preview) {
+    return !preview.userPaused && !preview.ended && !preview.blocked && !preview.error && (preview.manualPlay || (!reducedMotion.matches && !saveData));
+  }
+
+  function pausePreview(preview) {
+    preview.attempt++;
+    preview.starting = false;
+    if (!preview.video.paused) preview.video.pause();
+    updatePreview(preview);
+  }
+
+  function loadPreview(preview) {
+    if (preview.source) return;
+    preview.source = true;
+    preview.video.src = preview.trailer.src;
+    preview.video.load();
+  }
+
+  function unloadPreview(preview) {
+    pausePreview(preview);
+    preview.unmuted = false;
+    preview.video.muted = true;
+    if (preview.source) {
+      preview.resumeTime = preview.video.currentTime || preview.resumeTime;
+      preview.source = false;
+      preview.video.removeAttribute('src');
+      preview.video.load();
+      preview.panel.classList.remove('has-preview-frame');
+    }
+    updatePreview(preview);
+  }
+
+  function playPreview(preview) {
+    if (preview.starting || !preview.video.paused) return;
+    loadPreview(preview);
+    preview.starting = true;
+    const attempt = ++preview.attempt;
+    preview.video.play().then(() => {
+      if (attempt !== preview.attempt) return;
+      if (!previewVisible(preview) || !wantsPlayback(preview)) {
+        preview.video.pause();
+        preview.starting = false;
+        return;
+      }
+      preview.starting = false;
+      updatePreview(preview);
+    }).catch(() => {
+      if (attempt !== preview.attempt) return;
+      preview.starting = false;
+      preview.blocked = true;
+      preview.status.textContent = 'แตะดูช็อตเด็ดเพื่อเริ่มเล่น';
+      updatePreview(preview);
+    });
+  }
+
+  function syncPreviews() {
+    if (destroyed) return;
+    previews.forEach(preview => {
+      if (!preview) return;
+      if (preview.index !== active) { unloadPreview(preview); return; }
+      if (!previewVisible(preview) || !wantsPlayback(preview)) { pausePreview(preview); return; }
+      playPreview(preview);
+    });
+  }
+
+  function togglePreview(index, audioOnly = false) {
+    const preview = previews[index];
+    if (!preview || index !== active) return;
+    if (audioOnly) {
+      preview.unmuted = !preview.unmuted;
+      preview.video.muted = !preview.unmuted;
+    } else if (!preview.video.paused && !preview.video.ended) {
+      preview.userPaused = true;
+      preview.manualPlay = false;
+      pausePreview(preview);
+      return;
+    }
+    if (preview.ended || preview.error) {
+      preview.resumeTime = 0;
+      if (preview.source) preview.video.currentTime = 0;
+      if (preview.error) {
+        preview.source = false;
+        preview.video.removeAttribute('src');
+      }
+    }
+    preview.ended = false;
+    preview.error = false;
+    preview.blocked = false;
+    preview.userPaused = false;
+    preview.manualPlay = true;
+    preview.status.textContent = '';
+    // Explicit audio/play taps retain their user activation for browser playback.
+    if (previewVisible(preview)) playPreview(preview);
+    updatePreview(preview);
+  }
 
   function publish(index) {
     if (index === active) return;
@@ -59,6 +235,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     });
     counter.innerHTML = `${String(index + 1).padStart(2, '0')} <span>/ ${String(selected.length).padStart(2, '0')}</span>`;
     status.textContent = `เรื่องเด่น ${index + 1} จาก ${selected.length}: ${selected[index].title}`;
+    syncPreviews();
     onChange(selected[index]);
   }
 
@@ -96,9 +273,16 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     }
     const button = event.target.closest('button');
     if (!button || !root.contains(button)) return;
-    if (button.hasAttribute('data-hc-index')) moveTo(Number(button.dataset.hcIndex));
+    if (button.hasAttribute('data-hc-preview')) togglePreview(Number(button.dataset.hcPreview));
+    else if (button.hasAttribute('data-hc-sound')) togglePreview(Number(button.dataset.hcSound), true);
+    else if (button.hasAttribute('data-hc-index')) moveTo(Number(button.dataset.hcIndex));
     else if (button.hasAttribute('data-hc-move')) moveTo(nearestIndex() + Number(button.dataset.hcMove));
-    else if (button.hasAttribute('data-hc-open')) onOpen(button.dataset.hcOpen, button.dataset.hcAutoplay === 'true');
+    else if (button.hasAttribute('data-hc-open')) {
+      const autoplay = button.dataset.hcAutoplay === 'true';
+      const trailer = selected.find(story => story.id === button.dataset.hcOpen)?.heroTrailer;
+      const episode = autoplay ? Math.max(1, Math.trunc(Number(trailer?.episode) || 1)) : 1;
+      onOpen(button.dataset.hcOpen, autoplay, episode);
+    }
   }, {capture: true});
 
   root.addEventListener('keydown', event => {
@@ -154,11 +338,35 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
 
   const resize = new ResizeObserver(() => {
     if (active >= 0 && !gesture && track.clientWidth > 0) track.scrollTo({left: active * track.clientWidth, behavior: 'instant'});
+    previews.forEach(preview => preview && positionPreview(preview));
   });
   resize.observe(track);
+  const visibility = previews.some(Boolean) ? new IntersectionObserver(entries => {
+    const entry = entries[0];
+    heroVisible = entry.isIntersecting && entry.intersectionRatio >= .2;
+    syncPreviews();
+  }, {threshold:[0,.2,.5]}) : null;
+  visibility?.observe(root);
+  const modalChanges = previews.some(Boolean) ? new MutationObserver(entries => {
+    if (entries.some(entry => entry.type === 'attributes' || [...entry.addedNodes, ...entry.removedNodes].some(node => node.nodeType === 1 && (node.matches('dialog') || node.querySelector('dialog'))))) syncPreviews();
+  }) : null;
+  modalChanges?.observe(document.body, {subtree:true, attributes:true, attributeFilter:['open'], childList:true});
+  document.addEventListener('visibilitychange', syncPreviews);
+  reducedMotion.addEventListener('change', syncPreviews);
+  const hide = () => previews.forEach(preview => preview && pausePreview(preview));
+  window.addEventListener('pagehide', hide);
+  window.addEventListener('pageshow', syncPreviews);
   publish(0);
   return {
     select(id) { const index = selected.findIndex(story => story.id === id); if (index !== -1) moveTo(index); },
-    destroy() { resize.disconnect(); clearTimeout(settleTimer); cancelAnimationFrame(frame); }
+    destroy() {
+      destroyed = true;
+      resize.disconnect(); visibility?.disconnect(); modalChanges?.disconnect();
+      clearTimeout(settleTimer); cancelAnimationFrame(frame);
+      document.removeEventListener('visibilitychange', syncPreviews);
+      reducedMotion.removeEventListener('change', syncPreviews);
+      window.removeEventListener('pagehide', hide); window.removeEventListener('pageshow', syncPreviews);
+      previews.forEach(preview => preview && unloadPreview(preview));
+    }
   };
 }

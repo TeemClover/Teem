@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "date": "2026-10-07",
+  "title": "สมชาย เกิดใหม่ไปปลูกผัก",
+  "episode": 1,
+  "episodeTitle": "ขอเริ่มใหม่อีกครั้ง",
+  "source": "User-supplied Somchai v002; Thai adaptation of the supplied Japanese chapter, not a claim of an entirely original story.",
+  "delivery": "Ten completed illustrated sheets, forty panels. Episode 1 is free; no fabricated episode 2. Original sheet pixels preserved at 793×1983 with high-quality WebP delivery encoding.",
+  "cover": {
+    "tool": "Built-in image_gen",
+    "reference": "Somchai/page_10.png",
+    "prompt": "Use case: illustration-story. Generate ONE finished beautiful vertical webtoon BOOK COVER, aspect ratio 2:3, for the Thai webtoon สมชาย เกิดใหม่ไปปลูกผัก. The attached comic page is a CHARACTER AND ART STYLE REFERENCE, not an edit target: preserve the same fictional adult Thai man age 25, tousled black hair, lean healthy build, kind slightly mischievous face, indigo Thai mo hom shirt with small golden buttons, loose cropped brown trousers, red-white checked pha khao ma draped over shoulder, bare feet. He confidently rests the SAME wooden-handled right-angle square-bladed hoe against one shoulder, standing at the edge of a vast lush magical forest with misty distant mountains and an unworked patch of earth. Warm golden morning sunlight, hopeful second life after hardship, rich green leaf layers, tiny subtle golden magical light around the hoe. High-quality detailed painted Thai fantasy webtoon illustration matching the reference, clear attractive silhouette and recognizable Thai character. This is key art for an upcoming farming adventure, no other people, creatures, huts, planted gardens, castles or plot events that occur beyond episode 1. Composition: character face upper-middle, full body or three-quarter body in center, scenic natural depth, leave a darker calm LOWER QUARTER for the website's separately rendered title. NO text anywhere, NO lettering, NO comic panels, NO speech bubbles, NO logos, NO fake award marks, NO subtitles, no hospital scene. Cover should look professional at a small thumbnail size, believable correct hands and hoe geometry.",
+    "asset": "assets/somchai.webp",
+    "dimensions": [
+      1024,
+      1536
+    ]
+  },
+  "pages": [
+    {
+      "source": "page_01.png",
+      "sourceSha256": "2939d5f38561e165456bcd618e8de306b3ac2d763222b62db99098124b117c89",
+      "asset": "assets/somchai/page-01.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 488826
+    },
+    {
+      "source": "page_02.png",
+      "sourceSha256": "f3a2219f5bb73674be609f11773450aceab0134fe4adbfe1724de2cf696d1c28",
+      "asset": "assets/somchai/page-02.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 505468
+    },
+    {
+      "source": "page_03.png",
+      "sourceSha256": "68b7084a06f854ea10b8e239fb1cbfa1a2ff3f83b2eb4561d19cd6eedc58ef53",
+      "asset": "assets/somchai/page-03.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 544358
+    },
+    {
+      "source": "page_04.png",
+      "sourceSha256": "3a13a7a0ebe352e4a6991b9479b677e9fcc5679919f1117796a86a0d34e0b0f8",
+      "asset": "assets/somchai/page-04.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 507112
+    },
+    {
+      "source": "page_05.png",
+      "sourceSha256": "0dc33def55fa67a9bdb79dc0a4cc7b06ab46464a369fc061679447940498ca57",
+      "asset": "assets/somchai/page-05.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 526654
+    },
+    {
+      "source": "page_06.png",
+      "sourceSha256": "36296ba1e4220eb04c1d917ffd0a807a616d78d5d707f3a8fe82556242f7f169",
+      "asset": "assets/somchai/page-06.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 580310
+    },
+    {
+      "source": "page_07.png",
+      "sourceSha256": "a1d3568b7fff72a65cba66ea9eb626a114365e0c098200ab081c23287bf642f3",
+      "asset": "assets/somchai/page-07.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 557878
+    },
+    {
+      "source": "page_08.png",
+      "sourceSha256": "4e7a1c8ac2e6fe3774d1bce67399da39b027bd3ef249a412ef2bf1df9751b881",
+      "asset": "assets/somchai/page-08.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 587238
+    },
+    {
+      "source": "page_09.png",
+      "sourceSha256": "70b2b6caa6cb45a43b793cfe6c783cfadcc488751b655a2d167e3fa2b987b450",
+      "asset": "assets/somchai/page-09.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 631122
+    },
+    {
+      "source": "page_10.png",
+      "sourceSha256": "7af92ddb4558d260787b644cb0c4df4f192f5213e2d2ce677d78cd271ff7183f",
+      "asset": "assets/somchai/page-10.webp",
+      "width": 793,
+      "height": 1983,
+      "bytes": 747996
+    }
+  ]
+}

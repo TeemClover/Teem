@@ -166,7 +166,7 @@ try{
     const session=await setup();const {page,context}=session;
     try{
       await page.locator('[data-format="animation"]').click();assert.equal(await page.locator('#catalog-grid .story-card').count(),2);
-      await page.locator('[data-format="all"]').click();assert.equal(await page.locator('#catalog-grid .story-card').count(),15);
+      await page.locator('[data-format="all"]').click();assert.equal(await page.locator('#catalog-grid .story-card').count(),16);
       await page.locator('[data-genre="ผีไทย"]').click();assert.equal(await page.locator('#catalog-grid .story-card').count(),3);
       await page.locator('[data-genre="ทั้งหมด"]').click();
       await page.locator('.search-toggle').click();await page.locator('#search-input').fill('ไปรษณีย์');

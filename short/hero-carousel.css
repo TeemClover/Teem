@@ -6,6 +6,19 @@
 .hc-atmosphere{position:absolute;inset:0;z-index:-3;opacity:.4;pointer-events:none;background:radial-gradient(ellipse at 76% 38%,var(--hc-tint,#674753),transparent 69%)}
 .hc-visual{position:absolute;z-index:-2;inset:24px 36px 76px 45%;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .hc-visual img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;object-position:center;border-radius:12px;filter:drop-shadow(0 14px 38px #0008)}
+.hc-preview-video{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--hc-video-width,100%);height:var(--hc-video-height,100%);object-fit:contain;object-position:center;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.has-preview-frame .hc-preview-video{opacity:1}
+.hc-preview{position:absolute;z-index:2;top:var(--hc-preview-top,24px);right:var(--hc-preview-right,48px);max-width:240px;color:#f7f4ef;pointer-events:auto}
+.hc-preview-buttons{display:flex;gap:4px;padding:3px;background:#121217a6;border:1px solid #ffffff25;border-radius:9px;backdrop-filter:blur(10px)}
+.hc-preview-play,.hc-preview-sound{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:44px;padding:8px 11px;background:transparent;border:0;border-radius:6px;font-size:10px;color:inherit;cursor:pointer;white-space:nowrap}
+.hc-preview-play:hover,.hc-preview-sound:hover{background:#ffffff13}
+.hc-preview-duration{font-size:9px;color:#d2bdb6;padding-left:6px;border-left:1px solid #ffffff25}
+.hc-preview-play svg,.hc-preview-sound svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;flex:none}
+.hc-preview-play:not([aria-pressed="true"]) svg:first-child{fill:currentColor;stroke:none}
+.hc-preview-play[data-label="ดูอีกครั้ง"] svg{fill:none!important;stroke:currentColor!important}
+.hc-preview-sound[aria-pressed="true"]{color:#ffb4a5;background:#ff654f12}
+.hc-preview-progress{display:block;height:2px;overflow:hidden;margin:5px 6px 0;border-radius:2px;background:#ffffff25}
+.hc-preview-progress>span{display:block;height:100%;width:var(--hc-preview-progress,0%);background:#ff8b77;transition:width .2s linear}
 .hc-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,#111113 3%,#111113f2 23%,#111113b3 42%,#11111300 65%),linear-gradient(0deg,#111113 0%,#11111300 22%)}
 .hc-copy{width:min(1280px,calc(100% - 96px));margin-inline:auto;padding:42px 0 92px;position:relative;pointer-events:none}
 .hc-copy button{pointer-events:auto}
@@ -56,11 +69,18 @@
   .hc-atmosphere{inset:0;opacity:.36}
   .hc-visual{inset:0;height:100%;display:block}
   .hc-visual img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:50% 20%;border-radius:0;filter:none}
-  .hc-slide[data-hc-id="krasue"] .hc-visual img{object-position:42% 28%}
-  .hc-slide[data-hc-id="warrior"] .hc-visual img{object-position:60% 18%}
-  .hc-slide[data-hc-id="wanthong"] .hc-visual img{object-position:50% 18%}
-  .hc-slide[data-hc-id="village"] .hc-visual img{object-position:38% 25%}
-  .hc-slide[data-hc-id="rain"] .hc-visual img{object-position:66% 18%}
+  .hc-preview-video{inset:0;transform:none;width:100%;height:100%;object-fit:cover;object-position:50% 20%;border-radius:0}
+  .hc-preview{top:53px;right:20px;max-width:220px}
+  .hc-preview-buttons{padding:0;gap:0;border-radius:8px;background:#11111696}
+  .hc-preview-play{padding-inline:10px;font-size:9px;gap:6px}
+  .hc-preview-duration{font-size:8px;padding-left:5px}
+  .hc-preview-sound{padding:8px;min-width:44px}
+  .hc-preview-progress{margin-top:4px}
+  .hc-slide[data-hc-id="krasue"] .hc-visual :is(img,video){object-position:42% 28%}
+  .hc-slide[data-hc-id="warrior"] .hc-visual :is(img,video){object-position:60% 18%}
+  .hc-slide[data-hc-id="wanthong"] .hc-visual :is(img,video){object-position:50% 18%}
+  .hc-slide[data-hc-id="village"] .hc-visual :is(img,video){object-position:38% 25%}
+  .hc-slide[data-hc-id="rain"] .hc-visual :is(img,video){object-position:66% 18%}
   .hc-shade{background:linear-gradient(180deg,#0a0a0f66 0%,#0a0a0f0a 24%,#11111308 36%,#11111370 52%,#111113d9 73%,#111113fa 92%,#111113 100%)}
   .hc-copy{width:calc(100% - 40px);height:100%;padding:0 0 70px;display:flex;flex-direction:column;justify-content:flex-end}
   .hc-eyebrow{position:absolute;top:18px;left:0;font-size:9px;gap:6px;text-shadow:0 2px 10px #000}
@@ -88,7 +108,7 @@
   .hc-dot.is-active span{width:19px}
   .hc-count{min-width:42px;font-size:8px;letter-spacing:1px}
 }
-@media(max-width:760px) and (max-height:700px){.hc-copy{padding-bottom:66px}.hc-kicker,.hc-creator{display:none}.hc-hero .hc-title{font-size:clamp(34px,6.4svh,44px);margin-bottom:10px}.hc-description{font-size:11px;line-height:1.7;margin:10px 0 13px;-webkit-line-clamp:1}.hc-button{min-height:44px}.hc-slide[data-hc-id="krasue"] .hc-visual img{object-position:42% 100%}.hc-slide[data-hc-id="village"] .hc-visual img{object-position:38% 65%}}
+@media(max-width:760px) and (max-height:700px){.hc-copy{padding-bottom:66px}.hc-kicker,.hc-creator{display:none}.hc-hero .hc-title{font-size:clamp(34px,6.4svh,44px);margin-bottom:10px}.hc-description{font-size:11px;line-height:1.7;margin:10px 0 13px;-webkit-line-clamp:1}.hc-button{min-height:44px}.hc-slide[data-hc-id="krasue"] .hc-visual :is(img,video){object-position:42% 100%}.hc-slide[data-hc-id="village"] .hc-visual :is(img,video){object-position:38% 65%}}
 @media(max-width:760px) and (max-height:600px){.hc-description{display:none}.hc-actions{margin-top:14px}.hc-hero .hc-title{font-size:clamp(32px,6.4svh,38px)}}
 @media(max-width:350px){.hc-copy,.hc-navigation{width:calc(100% - 32px)}.hc-button{padding-inline:14px}.hc-details{min-width:110px}.hc-hint{max-width:73px}.hc-controls{gap:1px}.hc-dot{width:20px}.hc-arrow{width:32px;height:32px}.hc-count{min-width:35px}}
-@media(prefers-reduced-motion:reduce){.hc-track{scroll-behavior:auto}.hc-dot span,.hc-button,.hc-arrow{transition:none}}
+@media(prefers-reduced-motion:reduce){.hc-track{scroll-behavior:auto}.hc-dot span,.hc-button,.hc-arrow,.hc-preview-video,.hc-preview-progress>span{transition:none}}
