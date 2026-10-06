@@ -11,8 +11,8 @@ Public release target: `https://www.myclover.com/short/` on the existing Vercel 
 
 ## Sharing
 
-- Homepage brand card: `assets/og/tontor-v1.jpg` (1200 × 630 JPEG), preserving ตอนต่อ — เรื่องสั้น ความรู้สึกยาว.
-- Twelve per-story cards: `assets/og/<story-id>-v1.jpg`. All pages include Open Graph and Twitter large-image metadata directly in HTML, so link scrapers do not need JavaScript.
+- Homepage brand card: `assets/og/tontor-v2.jpg` (1200 × 630 JPEG), with the prominent original logo, ตอนต่อ — เรื่องสั้น ความรู้สึกยาว, and the explicit description แหล่งรวมละครสั้น แอนิเมชัน และการ์ตูน AI ภาษาไทย.
+- Twelve per-story cards: `assets/og/<story-id>-v2.jpg`. All pages include Open Graph and Twitter large-image metadata directly in HTML, so link scrapers do not need JavaScript. Versioned image URLs refresh image caches; previous cards remain available for existing links.
 - Share URLs use `/short/story/<story-id>/`, with an optional `?episode=<n>`; the legacy `?story=<id>&episode=<n>` links still work.
 - `node short/build-share-pages.mjs` regenerates the twelve static pages from the homepage and catalog. `node short/render-og.mjs` builds all thirteen share cards using generated artwork and exact Thai text rendered with the existing local fonts.
 - OG background generated with the built-in image_gen tool: `assets/og-background-v1.webp`. Complete prompt set, including this composition: `assets/prompts.json`. Authoring files and local QA scripts are excluded from the public deployment by `.vercelignore`.
@@ -40,6 +40,6 @@ No login, remote analytics, payment gateway, uploads, real wallet, or creator pa
 
 `node short/verify.mjs` uses the bundled Playwright runtime or `SHORT_PLAYWRIGHT`/`SHORT_CHROME` overrides. It verifies desktop/phone/tablet layout, all eleven playable local clips, search and genres, Thai collections and format filters, favorites, video/comic progress restoration, three comic pages, locked episode confirmation and repeat unlock behavior, remaining coin price, transparency dialogs, coin packs, deep links, malformed or unavailable browser storage, and absence of page errors. Screenshots are written to `/private/tmp/tontor-qa` by default or `SHORT_PROOF_DIR`.
 
-`SHORT_BASE_URL=https://www.myclover.com node short/verify.mjs` runs the same browser checks against the public website. `SHORT_VERIFY=reading` focuses on reading and sharing. Screenshots and results remain outside the public repository.
+`SHORT_BASE_URL=https://www.myclover.com node short/verify.mjs` runs the same browser checks against the public website. `SHORT_VERIFY=reading` focuses on reading and sharing; `SHORT_VERIFY=sharing` focuses on metadata, share images and deep links. Screenshots and results remain outside the public repository.
 
 All release commits should include only `short/`, its routing rules and development-file exclusions. Preserve unrelated source-shelf work and other pending local changes.

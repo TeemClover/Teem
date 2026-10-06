@@ -6,9 +6,9 @@ const origin='https://www.myclover.com';
 const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 for(const story of stories){
   const url=`${origin}/short/story/${story.id}/`;
-  const image=`${origin}/short/assets/og/${story.id}-v1.jpg`;
+  const image=`${origin}/short/assets/og/${story.id}-v2.jpg`;
   const title=`${story.title} | ตอนต่อ`;
-  const description=`${story.description} · ${story.formatLabel} ภาษาไทย · เรื่องตัวอย่าง`;
+  const description=`${story.description} · ${story.formatLabel} AI ภาษาไทย · เรื่องตัวอย่างที่ตอนต่อ — เรื่องสั้น ความรู้สึกยาว`;
   const tags=[
     `<meta name="description" content="${escape(description)}">`,
     `<title>${escape(title)}</title>`,

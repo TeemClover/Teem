@@ -81,7 +81,7 @@
       "id": "og-background-v1",
       "prompt": "Create a premium Thai entertainment streaming platform Open Graph sharing artwork, exact wide landscape composition roughly 1200:630. Use the supplied fictional film and comic posters as visual references, preserving the characters: green Thai Khon Thotsakan HR office comedy, anime naga delivery rider, romantic Thai woman in red beside Bangkok city at night, Thai krasue village horror, cheeky Thai village livestream comedy. Compose FIVE dramatic slim overlapping vertical poster strips fanning across the RIGHT 62% of the canvas, with Thotsakan prominent in the center-right, warm gold highlights and coral light reflections. Cinematic charcoal-black matte background with subtle fine grain and restrained coral-red glow. LEFT 38% must be clean nearly black NEGATIVE SPACE for later typography, subtle dark gradient blends into poster art. Modern editorial streaming brand feeling, strong colorful characters but elegant composition, crisp faces, vivid Thai cultural details. NO lettering, no words, no logos, no UI buttons, no watermarks. Do not add labels. Final background art only.",
       "asset": "assets/og-background-v1.webp",
-      "outputs": "assets/og/tontor-v1.jpg; story share cards use existing generated posters and code-rendered Thai typography at 1200x630",
+      "outputs": "assets/og/tontor-v1.jpg and tontor-v2.jpg; story share cards use existing generated posters and code-rendered Thai typography at 1200x630. V2 uses the existing SVG logo, larger brand lockup, original slogan and an explicit Thai AI platform description; no new image generation.",
       "mode": "built-in image_gen"
     }
   ]

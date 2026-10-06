@@ -14,6 +14,7 @@ const base = process.env.SHORT_BASE_URL?.replace(/\/$/,'') || `http://127.0.0.1:
 const browser = await chromium.launch({executablePath:process.env.SHORT_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
 const passed=[];
 const readingOnly=process.env.SHORT_VERIFY==='reading';
+const sharingOnly=process.env.SHORT_VERIFY==='sharing';
 const pass = message => { passed.push(message); console.log('PASS '+message); };
 async function open(options={}, init) {
   const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce',...options});
@@ -27,7 +28,7 @@ async function open(options={}, init) {
 }
 const getState=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('tontor:prototype:v1')));
 try {
-  if(!readingOnly){
+  if(!readingOnly&&!sharingOnly){
   {
     const {context,page,errors,missing}=await open();
     assert.equal(await page.locator('.story-card').count(),stories.length);
@@ -125,7 +126,7 @@ try {
     assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);await context.close();pass(`${mode}: browsing and demo unlock remain usable`);
   }
   }
-  for(const viewport of [{width:1440,height:1000},{width:390,height:844},{width:320,height:740}]) {
+  if(!sharingOnly)for(const viewport of [{width:1440,height:1000},{width:390,height:844},{width:320,height:740}]) {
     const {context,page,errors,missing}=await open({viewport});
     await page.locator('[data-world="พญานาค"]').click();assert.equal(await page.locator('.story-card').count(),2);
     await page.getByRole('button',{name:'ทั้งหมด',exact:true}).click();
@@ -157,14 +158,16 @@ try {
     const html=await(await fetch(base+'/short/')).text();
     assert.match(html,/<meta property="og:title" content="ตอนต่อ — เรื่องสั้น ความรู้สึกยาว">/);
     assert.match(html,/<meta name="twitter:card" content="summary_large_image">/);
+    assert.match(html,/<meta property="og:description" content="แหล่งรวมละครสั้น แอนิเมชัน และการ์ตูน AI ภาษาไทย/);
+    assert.ok(html.includes('https://www.myclover.com/short/assets/og/tontor-v2.jpg'));
     for(const story of stories){
       const response=await fetch(`${base}/short/story/${story.id}/`);assert.equal(response.status,200);
       const source=await response.text();assert.ok(source.includes(`<body data-story="${story.id}">`));
       assert.ok(source.includes(`content="${story.title} | ตอนต่อ"`));
-      assert.ok(source.includes(`https://www.myclover.com/short/assets/og/${story.id}-v1.jpg`));
+      assert.ok(source.includes(`https://www.myclover.com/short/assets/og/${story.id}-v2.jpg`));
     }
     const covers=['tontor',...stories.map(story=>story.id)];
-    const dimensions=await page.evaluate(async ids=>Promise.all(ids.map(async id=>{const image=new Image();image.src=`/short/assets/og/${id}-v1.jpg`;await image.decode();return [image.naturalWidth,image.naturalHeight];})),covers);
+    const dimensions=await page.evaluate(async ids=>Promise.all(ids.map(async id=>{const image=new Image();image.src=`/short/assets/og/${id}-v2.jpg`;await image.decode();return [image.naturalWidth,image.naturalHeight];})),covers);
     dimensions.forEach(size=>assert.deepEqual(size,[1200,630]));
     await page.goto(base+'/short/story/hr/?episode=2',{waitUntil:'networkidle'});
     assert.equal(await page.locator('#story-title').textContent(),'ทศกัณฐ์ แผนก HR');assert.equal(await page.locator('#playing-episode').textContent(),'ตอนที่ 2');
@@ -178,5 +181,5 @@ try {
   const routing=JSON.parse(config);assert.ok(routing.redirects.some(r=>r.source==='/short'&&r.destination==='/short/'));assert.ok(routing.rewrites.some(r=>r.source==='/short/'&&r.destination==='/short/index.html'));
   assert.ok(routing.headers.some(r=>r.source==='/short/:path*'&&r.headers.some(h=>h.key==='X-Robots-Tag'&&h.value.includes('noindex'))));
   pass('/short routing configuration and noindex prototype header');
-  await writeFile(proof+(readingOnly?'/results-reading.json':'/results.json'),JSON.stringify({date:'2026-10-07',passed,screenshots:proof},null,2));
+  await writeFile(proof+(sharingOnly?'/results-sharing.json':readingOnly?'/results-reading.json':'/results.json'),JSON.stringify({date:'2026-10-07',passed,screenshots:proof},null,2));
 } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
