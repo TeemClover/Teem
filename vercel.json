@@ -102,6 +102,10 @@
     {"source": "/hamburg/branding", "destination": "/hamburg/branding/", "permanent": false}
   ],
   "headers": [
+    {"source":"/short", "headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"},{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"same-origin"}]},
+    {"source":"/short/", "headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"},{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"same-origin"}]},
+    {"source":"/short/story/:id", "headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"},{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"same-origin"}]},
+    {"source":"/short/story/:id/", "headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow"},{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"same-origin"}]},
     {"source": "/short/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Content-Type-Options", "value": "nosniff"}, {"key": "Referrer-Policy", "value": "same-origin"}, {"key":"Cache-Control", "value":"public, max-age=0, must-revalidate"}]},
     {"source":"/short/assets/:path*", "headers":[{"key":"Cache-Control","value":"public, max-age=3600, must-revalidate"}]},
     {"source": "/asksydscience/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},

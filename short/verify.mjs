@@ -168,7 +168,7 @@ try {
     dimensions.forEach(size=>assert.deepEqual(size,[1200,630]));
     await page.goto(base+'/short/story/hr/?episode=2',{waitUntil:'networkidle'});
     assert.equal(await page.locator('#story-title').textContent(),'ทศกัณฐ์ แผนก HR');assert.equal(await page.locator('#playing-episode').textContent(),'ตอนที่ 2');
-    await page.locator('[data-close="story-dialog"]').click();assert.equal(new URL(page.url()).pathname,'/short/');
+    await page.locator('[data-close="story-dialog"]').click();await page.waitForURL(base+'/short/');assert.equal(new URL(page.url()).pathname,'/short/');
     await page.goto(base+'/short/story/naga/',{waitUntil:'networkidle'});await page.locator('#play-episode').click();await page.waitForFunction(()=>document.querySelector('video').currentTime>.2);
     await context.grantPermissions(['clipboard-read','clipboard-write'],{origin:base});
     await page.locator('#share-story').click();assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),'https://www.myclover.com/short/story/naga/?episode=1');
