@@ -8,7 +8,8 @@ const playIcon = '<svg viewBox="0 0 20 20"><path d="m6 3 11 7-11 7Z"/></svg>';
 const bookmarkIcon = '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></svg>';
 const lockIcon = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>';
 let state = readState();
-let currentView = 'discover', genre = 'ทั้งหมด', format = 'all', search = '', featured = stories.find(s=>s.id==='hr');
+const featuredIds = ['rain', 'krasue', 'warrior', 'village'];
+let currentView = 'discover', genre = 'ทั้งหมด', format = 'drama', search = '', featured = stories.find(s=>s.id===featuredIds[0]);
 let selectedStory = null, selectedEpisode = 1, pendingEpisode = null, resumeAt = 0;
 let lastWrite = 0, toastTimer, readerRestoring = false, readingStarted = false;
 const video = $('#story-video');
@@ -67,7 +68,8 @@ function card(story) {
 
 function renderCatalog() {
   const needle = search.trim().toLocaleLowerCase('th-TH');
-  const filtered = [...stories].sort((a,b)=>Number(['hr','krasue','naga','wanthong','hanuman','village'].includes(b.id))-Number(['hr','krasue','naga','wanthong','hanuman','village'].includes(a.id))).filter(s => (currentView !== 'saved' || state.saved.includes(s.id)) && (format==='all'||s.format===format) && (genre === 'ทั้งหมด' || s.genres.includes(genre)) && (!needle || [s.title, s.creator, s.studio, s.city, s.formatLabel, ...s.genres].join(' ').toLocaleLowerCase('th-TH').includes(needle)));
+  const priority=s=>Number(s.format==='drama')*2+Number(['krasue','wanthong','village'].includes(s.id));
+  const filtered = [...stories].sort((a,b)=>priority(b)-priority(a)).filter(s => (currentView !== 'saved' || state.saved.includes(s.id)) && (format==='all'||s.format===format) && (genre === 'ทั้งหมด' || s.genres.includes(genre)) && (!needle || [s.title, s.creator, s.studio, s.city, s.formatLabel, ...s.genres].join(' ').toLocaleLowerCase('th-TH').includes(needle)));
   $('#catalog-grid').innerHTML = filtered.map(card).join('');
   $('#catalog-count').textContent = `${filtered.length} เรื่อง · คอลเลกชันตัวอย่างไทย`;
   $('#catalog-title').innerHTML = currentView === 'saved' ? 'รายการของฉัน<span class="orange-dot">.</span>' : needle ? 'เรื่องที่กำลังหา<span class="orange-dot">.</span>' : 'เรื่องต่อไปที่อยากให้ดู<span class="orange-dot">.</span>';
@@ -113,9 +115,11 @@ function toggleSave(id) {
 }
 
 function setFeatured(id) {
-  featured = stories.find(s => s.id === id) || stories[0];
-  $('#hero-art').style.backgroundImage = `url('./assets/${featured.id}.webp')`;
-  $('#hero-art').style.backgroundPosition = featured.id === 'hr'?'65% center':featured.id === 'rain' ? 'center 38%' : 'center 42%';
+  featured = stories.find(s => s.id === id && featuredIds.includes(id)) || stories.find(s=>s.id===featuredIds[0]);
+  const src=new URL(`./assets/${featured.id}.webp`,document.baseURI).href;
+  $('#hero-image').src=src;
+  $('#hero-backdrop').style.backgroundImage=`url('${src}')`;
+  $('#hero-art').classList.toggle('wide',featured.id==='rain');
   $('#hero-title').innerHTML = featured.posterTitle.replace('\n', '<br>');
   $('#hero-kicker').textContent = featured.kicker;
   $('#hero-meta').innerHTML = `<span>${featured.formatLabel} · ${featured.genres.slice(0,2).join(' · ')}</span><span class="meta-dot">·</span><span>${featured.episodes} ตอน</span><span class="age-tag">${featured.age}</span>`;
@@ -124,8 +128,63 @@ function setFeatured(id) {
   $('#hero-avatar').textContent = featured.avatar;
   $('#hero-avatar').style.background = featured.color;
   $('#hero-watch').innerHTML=playIcon+(featured.format==='comic'?'เริ่มอ่านฟรี':'เริ่มดูฟรี');
-  $$('[data-hero]').forEach((b, index) => { const active = b.dataset.hero === featured.id; b.classList.toggle('active', active); b.setAttribute('aria-pressed', String(active)); if (active) $('#hero-number').textContent = `0${index + 1} / 04`; });
+  const number=featuredIds.indexOf(featured.id)+1;
+  $$('[data-hero]').forEach(b => { const active = b.dataset.hero === featured.id; b.classList.toggle('active', active); b.setAttribute('aria-pressed', String(active)); });
+  $('#hero-number').textContent=`${String(number).padStart(2,'0')} / ${String(featuredIds.length).padStart(2,'0')}`;
+  $('#hero-announcement').textContent=`เรื่องเด่น ${number} จาก ${featuredIds.length}: ${featured.title}`;
 }
+
+function moveFeatured(direction) {
+  setFeatured(featuredIds[(featuredIds.indexOf(featured.id)+direction+featuredIds.length)%featuredIds.length]);
+}
+
+// Keep vertical scrolling native; claim only a deliberate horizontal gesture.
+const hero=$('.hero');
+let heroGesture=null, suppressHeroClick=false;
+function resetHeroGesture() {
+  hero.classList.remove('dragging');
+  $('#hero-art').style.translate='';
+  $('.hero-content').style.translate='';
+  if(heroGesture&&hero.hasPointerCapture(heroGesture.id))hero.releasePointerCapture(heroGesture.id);
+  heroGesture=null;
+}
+hero.addEventListener('pointerdown',event=>{
+  if(!event.isPrimary||event.button!==0||event.target.closest('button,a,input'))return;
+  heroGesture={id:event.pointerId,x:event.clientX,y:event.clientY,dragging:false};
+});
+hero.addEventListener('pointermove',event=>{
+  if(!heroGesture||event.pointerId!==heroGesture.id)return;
+  const dx=event.clientX-heroGesture.x,dy=event.clientY-heroGesture.y;
+  if(!heroGesture.dragging){
+    if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){resetHeroGesture();return;}
+    if(Math.abs(dx)<12||Math.abs(dx)<Math.abs(dy)*1.25)return;
+    heroGesture.dragging=true;hero.setPointerCapture(event.pointerId);hero.classList.add('dragging');
+  }
+  const offset=Math.max(-110,Math.min(110,dx*.35));
+  $('#hero-art').style.translate=`${offset}px 0`;
+  $('.hero-content').style.translate=`${offset*.2}px 0`;
+});
+hero.addEventListener('pointerup',event=>{
+  if(!heroGesture||event.pointerId!==heroGesture.id)return;
+  const dx=event.clientX-heroGesture.x,dy=event.clientY-heroGesture.y;
+  const deliberate=heroGesture.dragging&&Math.abs(dx)>=Math.min(80,hero.clientWidth*.16)&&Math.abs(dx)>Math.abs(dy)*1.25;
+  suppressHeroClick=heroGesture.dragging;
+  resetHeroGesture();
+  if(deliberate)moveFeatured(dx<0?1:-1);
+  if(suppressHeroClick)setTimeout(()=>{suppressHeroClick=false;},0);
+});
+hero.addEventListener('pointercancel',resetHeroGesture);
+hero.addEventListener('lostpointercapture',event=>{
+  // Touch begins with implicit capture on the child under the finger. Moving
+  // that capture to the hero must not cancel the gesture when the child loses it.
+  if(event.target===hero)resetHeroGesture();
+});
+hero.addEventListener('click',event=>{if(suppressHeroClick){event.preventDefault();event.stopPropagation();}},{capture:true});
+hero.addEventListener('keydown',event=>{
+  if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();moveFeatured(event.key==='ArrowRight'?1:-1);}
+});
+$('#hero-prev').addEventListener('click',()=>moveFeatured(-1));
+$('#hero-next').addEventListener('click',()=>moveFeatured(1));
 
 function setSearchOpen(open) {
   $('#search-panel').hidden = !open;
@@ -341,7 +400,7 @@ $$('[data-trust]').forEach(b=>b.addEventListener('click',()=>{const c=trustCopy[
 const genreNames=['ทั้งหมด','ผีไทย','พญานาค','วรรณคดีรีมิกซ์','ตลกกวน','โรแมนซ์','ดราม่า','สยองขวัญ','วาย','แฟนตาซี','คอมเมดี้','ย้อนยุค'];
 $('.genre-list').innerHTML=genreNames.map(name=>`<button class="genre ${name==='ทั้งหมด'?'active':''}" data-genre="${name}" aria-pressed="${name==='ทั้งหมด'}">${name}</button>`).join('');
 $$('[data-genre]').forEach(b=>b.addEventListener('click',()=>setGenre(b.dataset.genre)));
-setFeatured('hr');renderCatalog(); renderCreators(); renderContinue(); renderBalance();
+setFeatured(featuredIds[0]);renderCatalog(); renderCreators(); renderContinue(); renderBalance();
 const params = new URLSearchParams(location.search);
 const initialStory=params.get('story')||document.body.dataset.story;
 if (storyIds.has(initialStory)) openStory(initialStory, Number(params.get('episode') || 1));

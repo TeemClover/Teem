@@ -21,3 +21,27 @@ dialog{padding:0;color:var(--text);border:1px solid #ffffff1a;background:#19191c
 @media(max-width:760px){.world-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.world-card{height:139px}.world-copy strong{font-size:13px}.world-copy small{font-size:8px;line-height:1.7}.world-number{font-size:22px}.format-list{gap:19px;margin-bottom:16px}.format{font-size:11px;padding:8px 0 11px}.format span{font-size:8px;margin-left:3px}.story-card[data-story-id="hr"] .poster-title{font-size:19px}.story-card[data-story-id="village"] .poster-title{font-size:17px}.trust-strip{margin-top:28px;grid-template-columns:1fr}.trust-strip button{padding:16px 18px}.trust-strip button+button{border-left:0;border-top:1px solid var(--line)}.trust-strip strong{font-size:14px;margin-top:4px}.trust-strip span{font-size:9px}.trust-strip small{font-size:9px}.story-dialog:has(.comic-reader:not([hidden])) .story-layout{grid-template-columns:1fr}.story-dialog:has(.comic-reader:not([hidden])) .player-column{padding:0}.comic-reader{border-radius:0;width:100%;height:55dvh;max-height:55dvh}.comic-page img{max-width:480px;margin:auto}.comic-caption{padding:18px 23px 24px}.comic-caption p{font-size:13px}.reader-heading{padding:23px 23px 19px}.reader-heading strong{font-size:19px}.story-provenance dl{grid-template-columns:80px 1fr}.completion-price{margin-top:14px}}
 @media(max-width:760px){.story-dialog>.dialog-close{position:fixed;z-index:4;background:#111113cc}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Frame vertical posters at their natural proportions instead of zooming them
+   across a desktop banner. The softer backdrop fills the remaining space. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.hero{max-width:1600px;margin-inline:auto;touch-action:pan-y pinch-zoom;user-select:none}
+.hero-backdrop{position:absolute;inset:-30px;z-index:-3;background-size:cover;background-position:center;filter:blur(24px);opacity:.38;pointer-events:none}
+.hero-art{inset:20px 2% 60px 43%;background:none;transition:translate .25s ease;pointer-events:none}
+.hero-art img{width:100%;height:100%;object-fit:contain;object-position:center;max-width:none}
+.hero-art.wide{inset:0}
+.hero-art.wide img{object-position:right center}
+.hero-shade{pointer-events:none;background:linear-gradient(90deg,#111113 0%,#111113ed 24%,#1111139c 42%,transparent 65%),linear-gradient(0deg,#111113,transparent 22%);z-index:-1}
+.hero-content{transition:translate .25s ease}
+.hero.dragging{cursor:grabbing}
+.hero.dragging .hero-art,.hero.dragging .hero-content{transition:none}
+.hero-controls{display:flex;align-items:center;gap:14px}
+.hero-arrow{display:grid;place-items:center;width:44px;height:44px;flex:none;border:1px solid #ffffff30;border-radius:50%;background:#11111366;color:#eee;transition:background .2s}
+.hero-arrow:hover{background:#ff654f30;border-color:#ff654f99}
+.hero-pagination{gap:2px}
+.hero-pagination button,.hero-pagination button.active{width:32px;height:40px;background:none;border-radius:0}
+.hero-pagination button:before{inset:auto;left:50%;top:50%;width:7px;height:7px;transform:translate(-50%,-50%);background:#ffffff50;border-radius:10px}
+.hero-pagination button.active:before{width:24px;background:var(--accent)}
+.hero-pagination>span{margin-left:9px;min-width:54px}
+@media(min-width:761px){.hero-content{padding-top:54px}.hero h1{max-width:560px;font-size:clamp(56px,5vw,76px)}.hero-description{max-width:410px}.hero-bottom{bottom:22px}}
+@media(max-width:760px){.hero-art,.hero-art.wide{inset:0 0 auto;height:370px}.hero-art img{object-position:center top}.hero-art.wide img{object-fit:cover;object-position:70% top}.hero-shade{background:linear-gradient(0deg,#111113 0%,#111113 30%,#111113d9 48%,#11111310 75%,#11111350 100%)}.hero-bottom{align-items:flex-end;gap:12px}.hero-note{max-width:95px;font-size:9px;line-height:1.6}.hero-controls{gap:4px}.hero-arrow{width:40px;height:40px}.hero-pagination button,.hero-pagination button.active{width:23px}.hero-pagination>span{min-width:40px;margin-left:4px;letter-spacing:1px}.hero-content{padding-bottom:85px}}

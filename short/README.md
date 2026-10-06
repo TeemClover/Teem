@@ -19,6 +19,8 @@ Public release target: `https://www.myclover.com/short/` on the existing Vercel 
 
 ## Included
 
+- Film-first discovery: nine short films by default, four film-only hero picks (romance, Thai horror, naga fantasy and comedy). Animation and comics remain available through format tabs.
+- Hero supports horizontal touch swipes, mouse dragging, wrapping arrow buttons, direct slide selection and keyboard arrows. Vertical touch scrolling stays native; no automatic rotation interrupts reading. Desktop artwork uses a bounded frame with original poster proportions and a soft backdrop, avoiding portrait-to-banner cropping.
 - Twelve fictional Thai stories across live-action-style dramas, animation and a readable comic. Includes Thai ghosts, naga mythology, literary reinterpretations and village/workplace comedy alongside romance, BL and period drama.
 - Four Thai-theme collections and separate format/genre filters. New concepts: กระสือแถวบ้าน, นาคสายมู, ทศกัณฐ์ แผนก HR, หนุมาน เด็กส่งของ, วันทอง ไม่ขอเลือก and ผู้ใหญ่บ้าน อินฟลูฯ.
 - Featured-story selector, genre filtering, search by title/genre/creator/province, creator-to-story links, empty states.
@@ -37,6 +39,8 @@ Assets: `assets/{rain,north,ghost,warrior,office,period,krasue,naga,hanuman,want
 No login, remote analytics, payment gateway, uploads, real wallet, or creator payouts. Stored preferences and progress are local to this browser. Coin limits and access checks are only a demonstration; they are not suitable for paid content protection.
 
 ## Verification
+
+`node short/verify-hero.mjs` verifies six viewport widths through 2560px, all four film slides, arrow/keyboard wrapping, mouse drag thresholds, native touch swipes versus vertical scrolling, and selected-film playback. The same `SHORT_BASE_URL` and `SHORT_PROOF_DIR` overrides apply.
 
 `node short/verify.mjs` uses the bundled Playwright runtime or `SHORT_PLAYWRIGHT`/`SHORT_CHROME` overrides. It verifies desktop/phone/tablet layout, all eleven playable local clips, search and genres, Thai collections and format filters, favorites, video/comic progress restoration, three comic pages, locked episode confirmation and repeat unlock behavior, remaining coin price, transparency dialogs, coin packs, deep links, malformed or unavailable browser storage, and absence of page errors. Screenshots are written to `/private/tmp/tontor-qa` by default or `SHORT_PROOF_DIR`.
 

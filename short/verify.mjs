@@ -27,11 +27,12 @@ async function open(options={}, init) {
   return {context,page,errors,missing};
 }
 const getState=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('tontor:prototype:v1')));
+const movieCount=stories.filter(story=>story.format==='drama').length;
 try {
   if(!readingOnly&&!sharingOnly){
   {
     const {context,page,errors,missing}=await open();
-    assert.equal(await page.locator('.story-card').count(),stories.length);
+    assert.equal(await page.locator('.story-card').count(),movieCount);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     assert.equal(await page.locator('.poster-button img').evaluateAll(imgs=>imgs.every(i=>i.complete&&i.naturalWidth>0)),true);
     await page.screenshot({path:proof+'/desktop.png',fullPage:true});
@@ -86,7 +87,7 @@ try {
   for(const viewport of [{width:390,height:844},{width:320,height:740},{width:768,height:1024}]) {
     const {context,page,errors,missing}=await open({viewport,isMobile:viewport.width<760,hasTouch:true});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`no overflow ${viewport.width}`);
-    assert.equal(await page.locator('.story-card').count(),stories.length);
+    assert.equal(await page.locator('.story-card').count(),movieCount);
     await page.screenshot({path:`${proof}/screen-${viewport.width}.png`,fullPage:true});
     if(viewport.width<760){
       await page.locator('.mobile-nav [data-view="saved"]').click();assert.equal(await page.locator('#empty-state').isVisible(),true);
@@ -104,6 +105,7 @@ try {
   }
   {
     const {context,page,errors,missing}=await open();
+    await page.locator('[data-format="all"]').click();
     for(const story of stories.filter(s=>s.format!=='comic')){
       await page.locator(`[data-open="${story.id}"]`).first().click();await page.locator('#play-episode').click();
       await page.waitForFunction(()=>document.querySelector('video').currentTime>.2);
@@ -116,7 +118,7 @@ try {
     const init=mode==='blocked'?()=>{
       Storage.prototype.getItem=function(){throw new Error('blocked');};Storage.prototype.setItem=function(){throw new Error('blocked');};
     }:mode==='malformed'?()=>localStorage.setItem('tontor:prototype:v1','{broken'):()=>localStorage.setItem('tontor:prototype:v1',JSON.stringify({balance:0,saved:[],unlocked:[],progress:{}}));
-    const {context,page,errors,missing}=await open({},init);assert.equal(await page.locator('.story-card').count(),stories.length);
+    const {context,page,errors,missing}=await open({},init);assert.equal(await page.locator('.story-card').count(),movieCount);
     await page.locator('#hero-detail').click();await page.locator('[data-episode="4"]').click();
     if(mode==='empty-wallet'){
       await page.locator('#confirm-unlock').click();assert.equal(await page.locator('#wallet-dialog').isVisible(),true);
