@@ -18,7 +18,7 @@ export const brands = {
     arenaCta: 'เข้าบูธเชื่อปากกู',
     buyCta: 'เลือกชุดไปลอง',
     offers: { single: 'ลองคำแรก', trio: 'กินต่ออีกหน่อย', stock: 'มีไว้ให้อุ่น' },
-    theme: '#F4EFE5'
+    theme: '#B72D26'
   },
   noomjang: {
     id: 'noomjang',
@@ -28,6 +28,6 @@ export const brands = {
     arenaCta: 'เข้าบูธนุ่มจัง',
     buyCta: 'เลือกชุดนุ่มจัง',
     offers: { single: 'ลองนุ่มจัง', trio: 'มีนุ่มจังติดบ้าน', stock: 'เตรียมมื้อนุ่มจัง' },
-    theme: '#F3EFE6'
+    theme: '#E5EEDB'
   }
 };

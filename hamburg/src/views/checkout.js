@@ -2,6 +2,7 @@
 import { brandIds, config, totalCart, orderAdapter } from '../product.js';
 import { getCart, changeCart, record } from '../store.js';
 import { brands } from '../brands/meta.js';
+import { brandLogo } from '../identity.js';
 import { cartLines, summaryRows, replaceCartContent } from '../commerce.js';
 import { esc, href, baht, facts } from '../ui.js';
 
@@ -66,7 +67,7 @@ export function render() {
   return `<div class="page checkout co-${id}" data-brand="${id}">
     <header class="co-head">
       <a class="back-link" data-link href="${href(`/${id}/`)}"><span aria-hidden="true">←</span> กลับบูธ ${esc(b.name)}</a>
-      <p class="co-brand"><strong>${esc(b.name)}</strong> <span>${esc(b.sub)}</span></p>
+      <p class="co-brand">${brandLogo(id)}</p>
     </header>
     <main id="main" class="co-wrap">
       <h1>สรุปชุดที่เลือก</h1>

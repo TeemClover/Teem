@@ -96,7 +96,8 @@
     {"source": "/hamburg/tmt", "destination": "/hamburg/tmt/", "permanent": false},
     {"source": "/hamburg/noomjang", "destination": "/hamburg/noomjang/", "permanent": false},
     {"source": "/hamburg/checkout", "destination": "/hamburg/checkout/", "permanent": false},
-    {"source": "/hamburg/lab", "destination": "/hamburg/lab/", "permanent": false}
+    {"source": "/hamburg/lab", "destination": "/hamburg/lab/", "permanent": false},
+    {"source": "/hamburg/branding", "destination": "/hamburg/branding/", "permanent": false}
   ],
   "headers": [
     {"source": "/asksydscience/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "Cache-Control", "value": "no-store"}]},
@@ -176,7 +177,8 @@
     {"source": "/hamburg/tmt/", "destination": "/hamburg/tmt/index.html"},
     {"source": "/hamburg/noomjang/", "destination": "/hamburg/noomjang/index.html"},
     {"source": "/hamburg/checkout/", "destination": "/hamburg/checkout/index.html"},
-    {"source": "/hamburg/lab/", "destination": "/hamburg/lab/index.html"}
+    {"source": "/hamburg/lab/", "destination": "/hamburg/lab/index.html"},
+    {"source": "/hamburg/branding/", "destination": "/hamburg/branding/index.html"}
   ],
   "functions": {"api/course-content.js": {"includeFiles": "course/thedent/**"}, "api/shelf.js": {"includeFiles": "shelf/{catalog.json,source/**}"}, "api/learn-foundation.js": {"includeFiles": "classroom/**"}, "api/learn-media.js": {"maxDuration": 60}, "api/mediral-commerce.js": {"maxDuration": 60, "includeFiles": "mediral/data/details.json"}}
 }

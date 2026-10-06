@@ -1,15 +1,16 @@
 // Homechew — editorial dinner table. Copy from brands/homechew/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
+import { brandLogo, packPreview } from '../identity.js';
 
 export const meta = {
   title: 'Homechew | โฮมเมดแฮมเบิร์กญี่ปุ่น พร้อมซอส พร้อมอุ่น',
   description: 'มื้อดี ๆ ที่บ้านกับแฮมเบิร์กสไตล์ญี่ปุ่นจากเชฟญี่ปุ่น บดเอง จี่จนสุก พร้อมซอสทำเอง ให้คุณอุ่นและจัดจานได้ง่าย'
 };
 
-const logo = `<img class="hc-wordmark" src="assets/homechew-wordmark.svg" width="657" height="123" alt="Homechew"><span class="hc-thai">โฮมชิว</span>`;
+const logo = brandLogo('homechew');
 const { img, crop, video } = brandMedia('homechew');
 const n = config.product.packPieces;
 
@@ -50,7 +51,7 @@ export function render() {
       <p class="hc-small">ข้าว ไข่ ผัก และเครื่องเคียงในภาพเป็นไอเดียเสิร์ฟ ไม่รวมในแพ็ก</p>
       <a class="text-link" href="#offers">ดูชุดสินค้า →</a>
     </div>
-    <div class="hc-pack-art" data-reveal>${packDiagram()}</div>
+    <div class="hc-pack-art" data-reveal>${packPreview('homechew')}</div>
   </section>
 
   <section class="hc-kitchen" id="kitchen" data-section="H03">

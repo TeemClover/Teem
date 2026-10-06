@@ -8,6 +8,7 @@ const routes = {
   '/tmt/': () => import('./brands/tmt.js'),
   '/noomjang/': () => import('./brands/noomjang.js'),
   '/checkout/': () => import('./views/checkout.js'),
+  '/branding/': () => import('./views/branding.js'),
   '/lab/': () => import('./views/lab.js')
 };
 

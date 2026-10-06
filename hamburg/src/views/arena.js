@@ -2,6 +2,7 @@
 import { config, totalCart } from '../product.js';
 import { boothOrder, selectBooth, getCart, record } from '../store.js';
 import { brands } from '../brands/meta.js';
+import { brandLogo } from '../identity.js';
 import { whenVisible } from '../track.js';
 import { esc, href, brandMedia, baht, weight, conceptNote, facts } from '../ui.js';
 
@@ -16,11 +17,7 @@ const boothArt = {
   tmt: () => brandMedia('tmt').img('hero', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '50% 58%' }),
   noomjang: () => brandMedia('noomjang').img('hero', { sizes: '(min-width: 1000px) 31vw, 100vw', pos: '52% 58%' })
 };
-const boothMark = {
-  homechew: `<img class="bm-hc" src="assets/homechew-wordmark.svg" width="657" height="123" alt="Homechew">`,
-  tmt: `<span class="bm-tmt">เชื่อปากกู</span>`,
-  noomjang: `<span class="bm-nj">นุ่มจัง</span>`
-};
+
 
 export function render() {
   const prices = config.offers.map(o => baht(o.priceBaht)).join(' / ');
@@ -43,7 +40,7 @@ export function render() {
           <a class="booth-link" data-link data-booth="${id}" href="${href(`/${id}/`)}" aria-label="${esc(b.arenaCta)}">
             <figure class="booth-photo">${boothArt[id]()}</figure>
             <div class="booth-body">
-              <h2 class="booth-name">${boothMark[id]}<span class="booth-sub">${esc(b.sub)}</span></h2>
+              <h2 class="booth-name">${brandLogo(id, { full: true })}</h2>
               <p class="booth-line">${esc(b.arenaLine)}</p>
               <span class="booth-cta">${esc(b.arenaCta)} <span aria-hidden="true">→</span></span>
             </div>
@@ -52,6 +49,7 @@ export function render() {
       }).join('')}
     </ul>
 
+    <p class="arena-design-link"><a data-link href="${href('/branding/')}">ดูโลโก้และแพ็กเกจทั้ง 3 แบรนด์ →</a></p>
     <section class="arena-same" aria-labelledby="same-title">
       <h2 id="same-title">ทุกบูธใช้สินค้าและราคาเดียวกัน</h2>
       <p>แฮมเบิร์กสไตล์ญี่ปุ่น ${config.product.packPieces} ก้อนพร้อมซอสต่อแพ็ก · อาหารสุทธิ ${weight()}</p>

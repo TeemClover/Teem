@@ -144,3 +144,5 @@
   .hc-close-photo { aspect-ratio: 4 / 3; }
   .hc-close-copy { margin-top: -40px !important; }
 }
+
+.hc-table { --focus: #F4EEE4; }

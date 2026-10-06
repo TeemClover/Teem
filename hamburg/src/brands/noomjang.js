@@ -1,15 +1,16 @@
 // นุ่มจัง · NOOMJANG — texture-led, light and calm. Copy from brands/noomjang/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
+import { brandLogo, packPreview } from '../identity.js';
 
 export const meta = {
   title: 'นุ่มจัง · NOOMJANG | แฮมเบิร์กญี่ปุ่น พร้อมซอส พร้อมอุ่น',
   description: 'นุ่มแบบญี่ปุ่น อุ่นได้ที่บ้าน แฮมเบิร์กเนียนนุ่มจากเชฟญี่ปุ่น บดเอง จี่จนสุก พร้อมซอสทำเอง เก็บมื้อที่อยากกินไว้ที่บ้าน'
 };
 
-const logo = `<span class="nj-word">นุ่มจัง</span><span class="nj-en">NOOMJANG</span>`;
+const logo = brandLogo('noomjang');
 const { img, crop, video } = brandMedia('noomjang');
 const n = config.product.packPieces;
 
@@ -96,7 +97,7 @@ export function render() {
   </section>
 
   <section class="nj-pack" id="pack" data-section="N06">
-    <div class="nj-pack-art" data-reveal>${packDiagram()}</div>
+    <div class="nj-pack-art" data-reveal>${packPreview('noomjang')}</div>
     <div class="nj-pack-copy" id="reheat" data-reveal>
       <h2 class="nj-h2">มีเนื้อกับซอส <span class="nb">มาให้แล้ว</span></h2>
       <p>1 แพ็กมีแฮมเบิร์ก ${n} ชิ้นพร้อมซอส อาหารสุทธิ ${weight()} ปรุงสุกและแช่แข็งไว้สำหรับอุ่น</p>

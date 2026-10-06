@@ -1,15 +1,16 @@
 // เชื่อปากกู · TMT — big confident type and a first-bite rhythm. Copy from brands/tmt/Content.md.
 import { brandHeader, brandFooter, mountBrand } from './shell.js';
 import { offerCards } from '../commerce.js';
-import { brandMedia, heroFacts, weight, packDiagram, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
+import { brandMedia, heroFacts, weight, reheatSteps, faqList, faqAnswers, icons } from '../ui.js';
 import { config } from '../product.js';
+import { brandLogo, packPreview } from '../identity.js';
 
 export const meta = {
   title: 'เชื่อปากกู · TMT | แฮมเบิร์กญี่ปุ่น พร้อมซอส พร้อมอุ่น',
   description: 'เนียน นุ่ม ถึงรสญี่ปุ่น แฮมเบิร์กจากเชฟญี่ปุ่น บดเอง จี่จนสุก พร้อมซอสทำเอง เราปรุงให้แล้ว คุณแค่อุ่น'
 };
 
-const logo = `<span class="tmt-word">เชื่อปากกู</span><span class="tmt-en">TMT — TRUST MY TASTE</span>`;
+const logo = brandLogo('tmt');
 const stamp = (cls = '') => `<div class="tmt-stamp ${cls}" aria-hidden="true">
   <svg viewBox="0 0 200 200"><defs><path id="tmt-ring" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0"/></defs>
   <circle cx="100" cy="100" r="94"/><circle cx="100" cy="100" r="58"/>
@@ -104,7 +105,7 @@ export function render() {
       </table>
       <a class="text-link" href="#reheat">ดูวิธีอุ่น →</a>
     </div>
-    <div data-reveal>${packDiagram()}</div>
+    <div data-reveal>${packPreview('tmt')}</div>
   </section>
 
   <section class="tmt-reheat" id="reheat" data-section="T06">
