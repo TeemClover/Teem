@@ -26,17 +26,22 @@ async function open(opts, init, block) {
   const ctx = await browser.newContext(opts);
   await ctx.route('**/*', r => r.request().url().startsWith(base) && !(block && block.test(r.request().url())) ? r.continue() : r.abort());
   if (init) await ctx.addInitScript(init);
-  const page = await ctx.newPage(), errors = [];
+  const page = await ctx.newPage(), errors = [], requests = [];
+  page.on('request', r => requests.push(r.url()));
   page.on('pageerror', e => errors.push(e.message));
-  if (block) { await page.goto(base + '/tour/', {waitUntil: 'domcontentloaded'}); return {ctx, page, errors}; }
+  if (block) { await page.goto(base + '/tour/', {waitUntil: 'domcontentloaded'}); return {ctx, page, errors, requests}; }
   await page.goto(base + '/tour/', {waitUntil: 'domcontentloaded'});
   await page.waitForFunction(() => !document.body.classList.contains('is-loading'), null, {timeout: 60000});
-  return {ctx, page, errors};
+  return {ctx, page, errors, requests};
 }
 
 try {
   { // WebGL tour, reduced motion so camera and cards settle immediately
-    const {ctx, page, errors} = await open({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
+    const {ctx, page, errors, requests} = await open({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'}, () => localStorage.setItem('mc:tour:quality','hd'));
+    assert.equal(await page.locator('[data-quality]').count(),0);
+    assert.equal(await page.evaluate(()=>window.__tour.quality()),'sd');
+    assert.equal(await page.evaluate(()=>localStorage.getItem('mc:tour:quality')),null);
+    pass('returning HD visitors enter the light scene without a quality switch');
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
     const seam = await page.evaluate(() => window.__tour.storeySeam());
     assert.ok(seam.frontClearance > 0.005 && seam.overlap > 0, `storey edge must overlap without coplanar faces: ${JSON.stringify(seam)}`);
@@ -206,47 +211,39 @@ try {
     pass('collected clovers persist for this viewer');
     for (const id of ['teambook', 'airova', 'resume', 'teem-photo', 'ako-photo', 'mediral']) assert.equal(await page.evaluate(id => window.__tour.itemState(id).badge, id), 'silver');
 
-    await page.click('[data-quality="hd"]');
-    await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});
-    assert.equal(await page.getAttribute('[data-quality="hd"]', 'aria-pressed'), 'true');
-    assert.equal(await page.evaluate(() => window.__tour.itemState('airova').badge), 'silver');
-    assert.deepEqual(await page.evaluate(() => window.__tour.items().sort()), await page.$$eval('[data-item]', as => as.map(a => a.dataset.item).sort()));
-    await page.evaluate(() => { const s = document.getElementById('kitchen'); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); });
-    await page.waitForTimeout(2500); await page.screenshot({path: `${out}/desktop-hd-kitchen.png`});
-    pass('SD/HD toggle rebuilds the house in HD');
-    const hdSeam = await page.evaluate(() => window.__tour.storeySeam());
-    assert.ok(hdSeam.frontClearance > 0.005 && hdSeam.overlap > 0);
-    pass('the upper-storey fascia has depth clearance in SD and HD, without an exposed gap');
-    const sdMemory = [];
-    for (const mode of ['sd', 'hd', 'sd', 'hd', 'sd']) {
-      await page.click(`[data-quality="${mode}"]`);
-      await page.waitForFunction(mode => window.__tour.quality() === mode && !document.body.classList.contains('is-loading') && !window.__tour.stats().building, mode, {timeout: 60000});
-      await page.waitForTimeout(500);
-      assert.equal(await page.locator('[data-quality]:disabled').count(), 0);
-      if (mode === 'sd') sdMemory.push(await page.evaluate(() => window.__tour.stats()));
+    assert.equal(await page.locator('[data-quality]').count(),0);
+    const memory=[];
+    for(let lap=0;lap<3;lap++) {
+      for(const id of ['living','kitchen','classroom','office']) {
+        await page.evaluate(id=>{const s=document.getElementById(id);scrollTo(0,s.offsetTop+s.offsetHeight/2-innerHeight/2)},id);
+        await page.waitForTimeout(450);
+      }
+      await page.waitForTimeout(800);memory.push(await page.evaluate(()=>window.__tour.stats()));
     }
-    assert.ok(sdMemory.at(-1).textures <= sdMemory[0].textures + 2, JSON.stringify(sdMemory));
-    assert.ok(sdMemory.at(-1).geometries <= sdMemory[0].geometries + 2, JSON.stringify(sdMemory));
-    assert.ok(sdMemory.at(-1).programs <= sdMemory[0].programs + 1, JSON.stringify(sdMemory));
-    assert.ok(sdMemory[0].batchedMeshes > 100);
-    pass('repeated SD/HD rebuilds release textures and geometry; static objects are batched');
+    assert.ok(memory.at(-1).geometries<=memory[0].geometries+2,JSON.stringify(memory));
+    assert.ok(memory.at(-1).textures<=memory[0].textures+2,JSON.stringify(memory));
+    assert.ok(memory[0].batchedMeshes>100);
+    assert.ok(memory.every(m=>!m.ao&&!m.bloom&&m.pixelRatio<=1.25));
+    assert.ok(!requests.some(url=>/postprocessing|GTAOPass|UnrealBloom/.test(url)));
+    await page.screenshot({path:`${out}/desktop-light-office.png`});
+    pass('repeat room visits keep geometry stable and never load HD effects');
     assert.deepEqual(errors, []);
     await ctx.close();
   }
-  { // Real WebGL phone framing and HD path (not just the fallback).
-    const {ctx, page, errors} = await open({viewport: {width: 393, height: 852}, screen: {width: 393, height: 852}, deviceScaleFactor: 3, isMobile: true, hasTouch: true, reducedMotion: 'reduce'});
+  { // Real WebGL phone framing with a legacy HD preference.
+    const {ctx, page, errors} = await open({viewport: {width: 393, height: 852}, screen: {width: 393, height: 852}, deviceScaleFactor: 3, isMobile: true, hasTouch: true, reducedMotion: 'reduce'}, () => localStorage.setItem('mc:tour:quality','hd'));
     assert.equal(await page.evaluate(() => document.body.classList.contains('no-webgl')), false);
-    await page.click('[data-quality="hd"]');
-    await page.waitForFunction(() => window.__tour.quality() === 'hd' && !document.body.classList.contains('is-loading'), null, {timeout: 60000});
+    assert.equal(await page.evaluate(()=>window.__tour.quality()),'sd');
+    assert.equal(await page.locator('[data-quality]').count(),0);
     for (const id of ['living', 'kitchen', 'classroom', 'office']) {
       await page.evaluate(id => { const s = document.getElementById(id); scrollTo(0, s.offsetTop + s.offsetHeight / 2 - innerHeight / 2); }, id);
       await page.waitForTimeout(800);
-      await page.screenshot({path: `${out}/phone-hd-${id}.png`});
+      await page.screenshot({path: `${out}/phone-light-${id}.png`});
     }
     const buffer = await page.$eval('#stage', c => c.width * c.height);
-    assert.ok(buffer <= 1_300_000);
+    assert.ok(buffer <= 1_000_000);
     assert.deepEqual(errors, []);
-    pass('phone WebGL HD loads all rooms within its pixel budget');
+    pass('phone light scene loads all rooms within its pixel budget');
     await ctx.close();
   }
   { // No WebGL: the story and links still work

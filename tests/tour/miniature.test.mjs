@@ -23,7 +23,7 @@ test('the exhibit follows the reference facade setbacks and leaves an open carpo
   assert.ok(size.x<1 && size.z<.75 && size.y<.5,'the model fits its existing tabletop plinth');
   let triangles=0,textureMaps=0,meshes=0;
   model.traverse(mesh=>{if(!mesh.isMesh)return;meshes++;assert.equal(mesh.castShadow,false);assert.equal(mesh.receiveShadow,false);assert.equal(mesh.material.transparent,false);triangles+=(mesh.geometry.index?.count??mesh.geometry.attributes.position.count)/3;if(mesh.material.map)textureMaps++;});
-  assert.ok(triangles<600,`miniature stays inexpensive: ${triangles} triangles`);
+  assert.ok(triangles<300,`miniature stays inexpensive: ${triangles} triangles`);
   assert.equal(meshes,1,'one mesh and one material keep the exhibit to one draw call');
   assert.deepEqual(coplanarOverlaps(model,{withinMesh:true}),[],'combined geometry must retain surface clearance');
   assert.equal(textureMaps,0,'the exhibit does not download the full viewer texture set');
