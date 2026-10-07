@@ -95,10 +95,12 @@ try{
     const session=await setup(390);const {page,context}=session;
     try{
       await page.locator('[data-shelf-open="novel-ghost"]').click();
+      await page.locator('#reader-settings').click();
       await page.locator('[data-reader-theme="night"]').click();
       await page.locator('[data-reader-size="1"]').click();
       assert.equal(await page.locator('#reader-size-value').textContent(),'19');
       assert.equal(await page.locator('#comic-reader').getAttribute('data-theme'),'night');
+      await page.locator('#reader-episodes').click();
       await page.locator('[data-episode="2"]').click();
       await page.waitForFunction(()=>document.querySelector('.reader-heading span').textContent.startsWith('บทที่ 2'));
       await page.locator('#comic-reader').evaluate(reader=>reader.scrollTop=760);

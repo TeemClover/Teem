@@ -46,3 +46,5 @@ Start a local preview, then run `node short/verify-app.mjs` (default port4321; o
 `node short/verify.mjs` starts an isolated preview and runs app + state/coin/deep-link checks. Override `SHORT_BASE_URL=https://www.myclover.com` to check production. Artifacts stay in `/private/tmp/` or `SHORT_PROOF_DIR`. `SHORT_APP_VERIFY='MP4'` runs only media checks.
 
 Release only `short/` and necessary development-file exclusions. Preserve unrelated changes; publish without force-pushing and verify the actual deployment and public website.
+
+The clean app shell places the story catalogue immediately after the hero and resume shelf. Copy is reduced to one title, concise metadata and contextual actions. Story summaries, creator credits and pricing details open on demand. Mobile readers fill the viewport and use the existing episode grid in a bottom drawer; desktop readers keep a compact chapter sidebar, with a drawer available in expanded mode. Font and paper settings are available through one button for text readers, while image-only webtoons show chapter selection. `verify-shell.mjs` checks responsive structure, drawer dismissal/focus and reader settings across 320–2560px.
