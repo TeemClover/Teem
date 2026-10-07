@@ -129,7 +129,7 @@ function renderCatalog() {
 function renderShelves() {
   const pilots=stories.filter(s=>s.pilots?.length);
   $('#pilot-grid').innerHTML=pilots.map(s=>`<button class="pilot-card" data-shelf-open="${s.id}"><span class="pilot-art"><img src="${s.heroImage||s.poster}" alt="ฉากตัวอย่าง ${escape(s.title)}" loading="lazy"><span class="pilot-play">${playIcon}</span><span class="pilot-duration">${s.pilots.length} คลิป · ${s.pilots[0].duration.toFixed(0)} วิ</span></span><span class="pilot-copy"><small>AI PILOT · ภาษาไทย</small><strong>${escape(s.title)}</strong><span>${escape(s.kicker)}</span></span></button>`).join('');
-  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<button class="reading-card" data-shelf-open="${s.id}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy"><span><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><strong>${escape(s.title)}</strong><p>${escape(s.kicker)}</p><span class="reading-by">${escape(s.creator)} / ${escape(s.studio)}</span><b>${s.id==='somchai'?'ตอน 2 มาแล้ว · อ่านฟรี':'เริ่มอ่านฟรี'} ↗</b></span></button>`).join('');
+  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<button class="reading-card" data-shelf-open="${s.id}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy"><span><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><strong>${escape(s.title)}</strong><p>${escape(s.kicker)}</p><span class="reading-by">${escape(s.creator)} / ${escape(s.studio)}</span><b>${s.shelfCta || 'เริ่มอ่านฟรี'} ↗</b></span></button>`).join('');
 }
 function renderContinue() {
   const entries = stories.filter(s => state.progress[s.id]).sort((a, b) => state.progress[b.id].updated - state.progress[a.id].updated).slice(0, 3);
@@ -179,9 +179,12 @@ function renderSaveButton() {
 function renderEpisodes() {
   if (!selectedStory) return;
   const unit=selectedStory.format==='novel'?'บท':'ตอน';
+  $('#episode-grid').classList.toggle('episode-cover-grid', Boolean(selectedStory.episodeCards));
   $('#episode-grid').innerHTML = Array.from({ length: selectedStory.episodes }, (_, i) => {
     const ep = i + 1, locked = !canWatch(selectedStory, ep);
     const name = selectedStory.episodeNames[i] || 'เรื่องราวยังดำเนินต่อ';
+    const access = locked ? '10 เหรียญ' : ep <= 3 ? 'อ่านฟรี' : 'ปลดล็อกแล้ว';
+    if (selectedStory.episodeCards?.[i]) return `<button class="episode-button episode-cover-card ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${escape(name)} · ${access}" aria-pressed="${ep === selectedEpisode}"><img src="${selectedStory.episodeCards[i]}" alt="" width="397" height="993" loading="lazy"><span class="episode-card-number">ตอน ${ep}</span><strong>${escape(name)}</strong><span class="episode-access">${locked ? lockIcon : ''}${access}</span></button>`;
     return `<button class="episode-button ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${name}${locked ? ' · ปลดล็อก 10 เหรียญทดลอง' : ep <= 3 ? ' · ฟรี' : ' · ปลดล็อกแล้ว'}" aria-pressed="${ep === selectedEpisode}">${locked ? lockIcon : ''}<span>${ep}</span>${ep <= 3 ? '<span class="free-label">ฟรี</span>' : ''}</button>`;
   }).join('');
   $('#playing-episode').textContent = `${unit}ที่ ${selectedEpisode}`;
@@ -191,7 +194,7 @@ function renderEpisodes() {
   $('.episodes-heading>span').textContent=selectedStory.episodes<=3?'ทุกตอนตัวอย่างอ่าน / ดูฟรี':'3 ตอนแรกฟรี · ถัดไป 10 เหรียญทดลอง';
   $('#play-episode').textContent = canWatch(selectedStory, selectedEpisode) ? `${isReading(selectedStory)?'อ่าน':'ดู'}${unit}ที่ ${selectedEpisode}${selectedEpisode <= 3 ? ' ฟรี' : ''}` : `ปลดล็อกตอนที่ ${selectedEpisode}`;
   const remaining=Array.from({length:selectedStory.episodes},(_,i)=>i+1).filter(ep=>!canWatch(selectedStory,ep)).length;
-  $('#completion-price').innerHTML=remaining?`<span>3 ตอนแรกฟรี · ถัดไปตอนละ 10 เหรียญทดลอง</span><strong>ดูหรืออ่านครบอีก ${remaining*10} เหรียญ</strong>`:`<span>${isReading(selectedStory)?'อ่าน':'ดู'}ตัวอย่างได้ทุกตอน</span><strong>ฟรี ${selectedStory.episodes} ${selectedStory.format==='novel'?'บท':'ตอน'} · ไม่ต้องใช้เหรียญ</strong>`;
+  $('#completion-price').innerHTML=remaining?`<span>3 ตอนแรกฟรี · ถัดไปตอนละ 10 เหรียญทดลอง</span><strong>ดูหรืออ่านครบอีก ${remaining*10} เหรียญ</strong>`:`<span>${isReading(selectedStory)?'อ่าน':'ดู'}ตัวอย่างได้ทุกตอน</span><strong>${selectedStory.episodes<=3?'ฟรีทุกตอน':'ปลดล็อกครบแล้ว'} · อ่านหรือดูซ้ำได้</strong>`;
 }
 
 function storyURL() {
@@ -202,10 +205,10 @@ function storyURL() {
 
 function updateURL() { if (selectedStory) history.replaceState(null, '', storyURL()); }
 
-function comicPage(page, index) {
+function comicPage(page, index, total) {
   const image = `<img src="./assets/${page.image}.webp" width="${page.width || 640}" height="${page.height || 960}" alt="หน้าการ์ตูน ${index + 1}: ${escape(page.title)}"${page.embeddedText ? ` loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async"` : ''}>`;
   if (!page.embeddedText) return `<article class="comic-page">${image}<div class="comic-caption"><span>๐${index + 1}</span><h3>${escape(page.title)}</h3><p>${escape(page.caption)}</p></div></article>`;
-  return `<article class="comic-page webtoon-page" aria-label="ภาพที่ ${index + 1} จาก 10">${image}<details class="webtoon-transcript"><summary>อ่านข้อความ · ภาพที่ ${index + 1}</summary>${page.transcript.map(panel => `<section><h3>ช่อง ${panel.panel}</h3>${panel.lines.map(line => `<p>${escape(line)}</p>`).join('')}</section>`).join('')}</details></article>`;
+  return `<article class="comic-page webtoon-page" aria-label="ภาพที่ ${index + 1} จาก ${total}">${image}</article>`;
 }
 
 function renderReader() {
@@ -219,7 +222,7 @@ function renderReader() {
   $('#comic-reader').classList.toggle('webtoon-reader',Boolean(pages[0]?.embeddedText));
   expandReader.hidden = !pages[0]?.embeddedText;
   $('#comic-reader').setAttribute('aria-label',`อ่าน${novel?'นิยาย':'การ์ตูน'} ${selectedStory.title}`);
-  $('#comic-reader').innerHTML=heading+(novel?`<article class="novel-body">${chapter.body.map(p=>`<p>${escape(p)}</p>`).join('')}</article>`:pages.map(comicPage).join(''))+`<div class="reader-end">${selectedStory.ongoing?`จบตอน ${selectedEpisode} ✦`:selectedEpisode===selectedStory.episodes?'จบเรื่องแล้ว ✦':'จบ'+(novel?'บท':'ตอน')+'นี้แล้ว ✦'}<small>${selectedStory.ongoing?'ไว้เจอกันตอนต่อไป':selectedEpisode===selectedStory.episodes?'ขอบคุณที่ให้เรื่องเล่าไทยอยู่ในวันของคุณ':'เรื่องราวยังรออยู่หน้าถัดไป'}</small>${selectedEpisode<selectedStory.episodes?`<button class="reader-next" data-read-next>อ่าน${novel?'บท':'ตอน'}ที่ ${selectedEpisode+1} →</button>`:'<button class="reader-next" data-reader-finish>กลับไปค้นพบเรื่องใหม่ →</button>'}</div>`;
+  $('#comic-reader').innerHTML=heading+(novel?`<article class="novel-body">${chapter.body.map(p=>`<p>${escape(p)}</p>`).join('')}</article>`:(selectedStory.episodeCovers?.[selectedEpisode-1]?`<article class="comic-cover"><img src="${selectedStory.episodeCovers[selectedEpisode-1]}" alt="ปกตอนที่ ${selectedEpisode}: ${escape(title)}" width="793" height="1983" decoding="async"></article>`:'')+pages.map((page,index)=>comicPage(page,index,pages.length)).join(''))+`<div class="reader-end">${selectedStory.ongoing?`จบตอน ${selectedEpisode} ✦`:selectedEpisode===selectedStory.episodes?'จบเรื่องแล้ว ✦':'จบ'+(novel?'บท':'ตอน')+'นี้แล้ว ✦'}<small>${selectedStory.ongoing?'ไว้เจอกันตอนต่อไป':selectedEpisode===selectedStory.episodes?'ขอบคุณที่ให้เรื่องเล่าไทยอยู่ในวันของคุณ':'เรื่องราวยังรออยู่หน้าถัดไป'}</small>${selectedEpisode<selectedStory.episodes?`<button class="reader-next" data-read-next>อ่าน${novel?'บท':'ตอน'}ที่ ${selectedEpisode+1} →</button>`:'<button class="reader-next" data-reader-finish>กลับไปค้นพบเรื่องใหม่ →</button>'}</div>`;
   applyReaderPreferences();$('#comic-reader').scrollTop=0;
   const id=selectedStory.id,ep=selectedEpisode,position=resumeAt;
   const relativePosition=selectedStory.id==='somchai'&&state.progress[id]?.duration>0?position/state.progress[id].duration:null;
@@ -269,6 +272,11 @@ function openStory(id, episode = 1, autoplay = false) {
   else loadEpisodeMedia();
   $('.story-copy .section-kicker').textContent=story.id==='somchai'?'TONTOR · THAI WEBTOON':'TONTOR · THAI AI ORIGINAL';
   $('#story-title').textContent = story.title;
+  let logo = $('#story-series-logo');
+  if (!logo) { logo = document.createElement('img'); logo.id='story-series-logo'; logo.alt=''; logo.width=420; logo.height=140; $('#story-title').before(logo); }
+  logo.hidden = !story.seriesLogo;
+  if (story.seriesLogo) logo.src=story.seriesLogo; else logo.removeAttribute('src');
+  $('#story-title').classList.toggle('story-title-with-logo', Boolean(story.seriesLogo));
   $('#story-meta').textContent = `${story.formatLabel} · ${story.episodes} ${story.format==='novel'?'บท':'ตอน'}${!isReading(story)&&!story.pilots?.length?'ในคอนเซปต์':''} · ${story.status} · ${story.age}`;
   $('#story-description').textContent = story.description;
   $('#story-creator').innerHTML = `<img class="creator-avatar" src="${story.avatarImage}" alt="${story.creatorKind==='team'?'โลโก้ทีม':'ภาพครีเอเตอร์'}สมมติ ${escape(story.creatorKind==='team'?story.studio:story.creator)}" width="34" height="34"><span>${escape(story.creator)} / ${escape(story.studio)}<small>${escape(story.city)} · ${story.creatorKind==='team'?'ทีม':'ครีเอเตอร์'}สมมติ</small></span>`;
@@ -304,7 +312,10 @@ function requestEpisode(episode) {
   if (canWatch(selectedStory, episode)) { selectEpisode(episode); return; }
   video.pause();
   pendingEpisode = { id: selectedStory.id, episode };
-  $('#unlock-description').textContent = `${selectedStory.title} · ตอนที่ ${episode}`;
+  $('#unlock-title').textContent = isReading(selectedStory) ? 'อ่านตอนต่อไป' : 'ดูตอนต่อไป';
+  $('#unlock-description').textContent = `${selectedStory.title} · ตอนที่ ${episode} ${selectedStory.episodeNames[episode-1] || ''} · อ่านซ้ำได้หลังปลดล็อก`;
+  $('#unlock-cover').hidden = !selectedStory.episodeCards?.[episode-1];
+  if (selectedStory.episodeCards?.[episode-1]) $('#unlock-cover').src = selectedStory.episodeCards[episode-1];
   $('#confirm-unlock').textContent = state.balance >= 10 ? 'ปลดล็อกด้วย 10 เหรียญทดลอง' : 'รับเหรียญทดลองเพิ่ม';
   $('#unlock-dialog').showModal();
 }

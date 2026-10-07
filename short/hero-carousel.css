@@ -110,3 +110,7 @@
 .hc-slide[data-hc-id="somchai"] .hc-original{border-color:#b3dfaa66;color:#d3e8bf;letter-spacing:.2px;background:#264b3933}
 @media(min-width:761px){.hc-slide[data-hc-id="somchai"] .hc-visual img{object-position:right top}}
 @media(max-width:760px){.hc-slide[data-hc-id="somchai"] .hc-visual img{object-position:50% 15%}.hc-slide[data-hc-id="somchai"] .hc-title-line:last-child{font-size:.7em;letter-spacing:-.8px;line-height:1.5}}
+
+/* Use the supplied series wordmark without changing the carousel's gesture layout. */
+.hc-title .hc-series-logo{width:min(420px,100%);height:auto;display:block;filter:drop-shadow(0 3px 12px #0008)}
+@media(max-width:760px){.hc-title .hc-series-logo{width:min(310px,90%)}}

@@ -34,7 +34,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
       <div class="hc-copy">
         <p class="hc-eyebrow"><span class="hc-live-dot"></span>${reading ? escape(story.formatLabel) + ' ภาษาไทย' : 'ละครสั้น AI ภาษาไทย'} <span class="hc-original">${escape(story.heroBadge || (reading ? 'TONTOR WEBTOON' : 'TONTOR ORIGINAL'))}</span></p>
         <p class="hc-kicker">${escape(trailer?.hook || story.heroKicker || story.kicker)}</p>
-        <${index === 0 ? 'h1' : 'h2'} class="hc-title">${escape(story.posterTitle || story.title).split('\n').map(line => `<span class="hc-title-line">${line}</span>`).join('')}</${index === 0 ? 'h1' : 'h2'}>
+        <${index === 0 ? 'h1' : 'h2'} class="hc-title">${story.seriesLogo ? `<img class="hc-series-logo" src="${escape(story.seriesLogo)}" alt="${escape(story.title)}" width="420" height="140" draggable="false">` : escape(story.posterTitle || story.title).split('\n').map(line => `<span class="hc-title-line">${line}</span>`).join('')}</${index === 0 ? 'h1' : 'h2'}>
         <div class="hc-meta"><span>${escape(story.genres.slice(0, 2).join(' · '))}</span><span class="hc-meta-separator">·</span><span>${escape(story.episodes)} ตอน</span><span class="hc-age">${escape(story.age)}</span></div>
         <p class="hc-description">${escape(story.heroDescription || story.description)}</p>
         <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${reading ? book : play}${escape(story.heroCta || (reading ? 'เริ่มอ่านฟรี' : trailer ? 'ดูตัวอย่าง' : 'ดูคอนเซปต์'))}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>

@@ -1,109 +1,25 @@
 import assert from 'node:assert/strict';
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {createPreviewServer} from './preview.mjs';
-import {somchaiWebtoon} from './somchai-webtoon.js';
-
-const {chromium} = await import(pathToFileURL(process.env.SHORT_PLAYWRIGHT || '/Users/Teem/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
-const server = process.env.SHORT_BASE_URL ? null : createPreviewServer();
-if (server) await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const base = (process.env.SHORT_BASE_URL || `http://127.0.0.1:${server.address().port}`).replace(/\/$/, '');
-const proof = process.env.SHORT_PROOF_DIR || '/private/tmp/tontor-somchai-episode2-qa';
-await mkdir(proof, {recursive:true});
-const browser = await chromium.launch({executablePath:process.env.SHORT_CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
-const results = [], key = 'tontor:prototype:v1';
-async function run(name, task) {
-  try { await task(); results.push({name,status:'pass'}); console.log('PASS '+name); }
-  catch (error) { results.push({name,status:'fail',message:error.message,stack:error.stack}); console.log('FAIL '+name+': '+error.message); }
-  await writeFile(proof+'/results.json', JSON.stringify({base,results},null,2));
-}
-async function checkGeometry(page) {
-  for (const selector of ['html','#story-dialog','#reader-toolbar','#comic-reader']) {
-    assert.ok(await page.locator(selector).evaluate(e=>e.scrollWidth<=e.clientWidth+2), selector+' overflows');
-  }
-}
-try {
-  assert.equal(somchaiWebtoon.episodes,2);
-  assert.equal(somchaiWebtoon.comicChapters.length,2);
-  assert.deepEqual(somchaiWebtoon.comicChapters.map(p=>p.length),[10,10]);
-  assert.deepEqual(somchaiWebtoon.comicChapters.map(p=>p.flatMap(e=>e.transcript).length),[40,40]);
-  for (const width of [320,390,992,1440]) await run(`fifth hero and free episode 2 ${width}px`, async()=>{
-    const context = await browser.newContext({viewport:{width,height:width<760?844:1000},isMobile:width<760,hasTouch:width<760,reducedMotion:'reduce'});
-    try {
-      await context.addInitScript(key=>localStorage.setItem(key,JSON.stringify({balance:0,saved:[],unlocked:[],progress:{}})),key);
-      const page=await context.newPage(), errors=[], missing=[];
-      page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)missing.push(r.url());});
-      await page.goto(base+'/short/',{waitUntil:'networkidle'});
-      const ids=await page.locator('.hc-slide').evaluateAll(p=>p.map(e=>e.dataset.hcId));
-      assert.equal(new Set(ids).size,5);assert.ok(ids.includes('somchai'));
-      assert.equal(await page.locator('.community-card').count(),4);
-      await page.locator(`[data-hc-index="${ids.indexOf('somchai')}"]`).click();
-      await page.waitForFunction(()=>document.querySelector('.hc-hero').dataset.hcActive==='somchai');
-      const hero=page.locator('[data-hc-id="somchai"]');
-      const art=await hero.locator('.hc-visual img').evaluate(async e=>{await e.decode();const r=e.getBoundingClientRect();return {src:e.currentSrc,ratio:e.naturalWidth/e.naturalHeight,width:r.width};});
-      assert.match(art.src,width<760?/somchai-portrait-v1/:/somchai-wide-v1/);
-      assert.ok(Math.abs(art.width-width)<1);assert.ok(width<760?art.ratio<.6:art.ratio>2);
-      assert.match(await hero.locator('.hc-eyebrow').textContent(),/เว็บตูน ภาษาไทย.*ตอน 2 มาแล้ว/);
-      assert.equal(await hero.locator('video').count(),0);
-      assert.ok(await hero.locator('.hc-title').evaluate(e=>e.scrollWidth<=e.clientWidth+1));
-      await page.screenshot({path:proof+`/hero-somchai-${width}.png`});
-      await hero.locator('.hc-watch').click();
-      assert.match(page.url(),/somchai\/\?episode=2/);
-      assert.match(await page.locator('.reader-heading strong').textContent(),/วันแรก ต้องรอด/);
-      assert.equal(await page.locator('#episode-grid button').count(),2);
-      assert.equal(await page.locator('#episode-grid .locked').count(),0);
-      assert.equal(await page.locator('#comic-reader img').count(),10);
-      assert.equal(await page.locator('.webtoon-transcript section').count(),40);
-      assert.equal(await page.locator('#story-video').getAttribute('src'),null);
-      await checkGeometry(page);
-      await page.screenshot({path:proof+`/episode2-${width}.png`});
-      await page.locator('#reader-expand').click();
-      assert.equal(await page.locator('#reader-expand').getAttribute('aria-pressed'),'true');
-      for (const img of await page.locator('.webtoon-page img').all()) {
-        await img.evaluate(e=>e.scrollIntoView({block:'start'}));
-        await img.evaluate(async e=>{await e.decode();if(e.naturalWidth!==793||e.naturalHeight!==1983)throw Error('Sheet dimensions changed');});
-      }
-      assert.match(await page.locator('.webtoon-transcript').last().textContent(),/ตั้งสองดวง/);
-      assert.equal(await page.locator('[data-read-next]').count(),0);
-      assert.equal(await page.locator('#unlock-dialog[open]').count(),0);
-      assert.equal(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).balance,key),0);
-      await checkGeometry(page);
-      // The same free reader switches backward and advances from the actual first chapter.
-      await page.locator('#reader-expand').click();
-      await page.locator('[data-episode="1"]').click();
-      assert.match(await page.locator('.reader-heading strong').textContent(),/ขอเริ่มใหม่อีกครั้ง/);
-      assert.match(await page.locator('.webtoon-page img').first().getAttribute('src'),/somchai\/page-01/);
-      await page.locator('[data-read-next]').click();
-      assert.match(await page.locator('.webtoon-page img').first().getAttribute('src'),/episode-02\/page-01/);
-      await page.locator('.webtoon-page img').first().evaluate(async e=>await e.decode());
-      await page.locator('#reader-expand').click();
-      await page.locator('#comic-reader').evaluate(e=>e.scrollTop=(e.scrollHeight-e.clientHeight)*.36);
-      await page.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).progress.somchai?.episode===2&&JSON.parse(localStorage.getItem(key)).progress.somchai?.time>0,key);
-      await page.locator('[data-close="story-dialog"]').click();
-      const state=await context.storageState();
-      const resumed=await browser.newContext({viewport:{width,height:width<760?844:1000},storageState:state});
-      try {
-        const p=await resumed.newPage();await p.goto(base+'/short/story/somchai/?episode=2',{waitUntil:'networkidle'});
-        await p.waitForFunction(()=>document.querySelector('#comic-reader').scrollTop>0);
-        const ratio=await p.locator('#comic-reader').evaluate(e=>e.scrollTop/(e.scrollHeight-e.clientHeight));
-        assert.ok(Math.abs(ratio-.36)<.02,'Episode 2 relative scroll resumes: '+ratio);
-      } finally {await resumed.close();}
-      assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);
-    } finally {await context.close();}
-  });
-  await run('direct episode 2 link and updated share metadata',async()=>{
-    const context=await browser.newContext({viewport:{width:390,height:844}});
-    try {
-      const page=await context.newPage();await page.goto(base+'/short/story/somchai/?episode=2',{waitUntil:'networkidle'});
-      assert.equal(await page.locator('[data-episode="2"]').getAttribute('aria-pressed'),'true');
-      assert.match(await page.locator('.reader-heading strong').textContent(),/วันแรก ต้องรอด/);
-      const html=await (await page.request.get(base+'/short/story/somchai/')).text();
-      assert.match(html,/og:image[^>]+somchai-v3/);assert.match(html,/og:description[^>]+วันแรก ต้องรอด/);
-      const og=await page.request.get(base+'/short/assets/og/somchai-v3.jpg');
-      assert.equal(og.status(),200);assert.ok((await og.body()).length>40000);
-      await page.setContent(`<img src="${base}/short/assets/og/somchai-v3.jpg">`);
-      assert.deepEqual(await page.locator('img').evaluate(async e=>{await e.decode();return [e.naturalWidth,e.naturalHeight];}),[1200,630]);
-    } finally {await context.close();}
-  });
-} finally {await browser.close();if(server)await new Promise(resolve=>server.close(resolve));}
+import {somchaiWebtoon as story} from './somchai-webtoon.js';
+const {chromium}=await import(pathToFileURL(process.env.SHORT_PLAYWRIGHT||'/Users/Teem/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs').href);
+const server=process.env.SHORT_BASE_URL?null:createPreviewServer();if(server)await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const base=(process.env.SHORT_BASE_URL||`http://127.0.0.1:${server.address().port}`).replace(/\/$/,'');
+const proof=process.env.SHORT_PROOF_DIR||'/private/tmp/tontor-somchai-v001-qa';await mkdir(proof,{recursive:true});
+const browser=await chromium.launch({executablePath:process.env.SHORT_CHROME||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const key='tontor:prototype:v1',results=[];
+async function run(name,task){try{await task();results.push({name,status:'pass'});console.log('PASS '+name);}catch(e){results.push({name,status:'fail',message:e.message,stack:e.stack});console.log('FAIL '+name+': '+e.message);}await writeFile(proof+'/results.json',JSON.stringify({base,results},null,2));}
+async function account(width,balance=70){const c=await browser.newContext({viewport:{width,height:width<760?844:1000},isMobile:width<760,hasTouch:width<760,reducedMotion:'reduce'});await c.addInitScript(({key,balance})=>!localStorage.getItem(key)&&localStorage.setItem(key,JSON.stringify({balance,saved:[],unlocked:[],progress:{}})),{key,balance});return c;}
+const state=page=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);
+async function geometry(p){for(const s of ['html','#story-dialog','#comic-reader','#reader-toolbar'])assert.ok(await p.locator(s).evaluate(e=>e.scrollWidth<=e.clientWidth+2),s+' overflow');}
+async function readChapter(p,ep,full=false){assert.match(await p.locator('.reader-heading strong').textContent(),new RegExp(story.episodeNames[ep-1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));assert.equal(await p.locator('.webtoon-page').count(),story.comicChapters[ep-1].length);assert.equal(await p.locator('.comic-cover').count(),1);assert.equal(await p.locator('.webtoon-transcript').count(),0);assert.equal(await p.locator('#comic-reader details').count(),0);assert.match(await p.locator('.comic-cover img').getAttribute('src'),new RegExp(`episode-${String(ep).padStart(2,'0')}\\.webp`));const imgs=full?await p.locator('#comic-reader img').all():[p.locator('.comic-cover img'),p.locator('.webtoon-page img').first()];for(const img of imgs){await img.evaluate(e=>e.scrollIntoView({block:'start'}));assert.ok(await img.evaluate(async e=>{await e.decode();return e.naturalWidth>700&&e.naturalHeight>1500;}));}await geometry(p);}
+try{
+ await run('108 original pages, 10 covers and supplied wordmark',async()=>{assert.equal(story.episodes,10);assert.equal(story.comicChapters.flat().length,108);assert.equal(story.episodeCovers.length,10);assert.equal(story.episodeCards.length,10);const receipt=JSON.parse(await readFile(new URL('./docs/somchai-v001.json',import.meta.url)));for(const f of receipt.files){const b=await readFile(new URL('./assets/somchai/v001/'+f.file,import.meta.url));assert.equal(createHash('sha256').update(b).digest('hex'),f.sha256,f.file);}});
+ for(const width of [320,390,992,1440])await run(`responsive hero, episode covers and free reading ${width}`,async()=>{const c=await account(width,0);try{const p=await c.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(base+'/short/',{waitUntil:'networkidle'});const ids=await p.locator('.hc-slide').evaluateAll(es=>es.map(e=>e.dataset.hcId));assert.equal(ids.length,5);assert.equal(await p.locator('.community-card').count(),4);await p.locator(`[data-hc-index="${ids.indexOf('somchai')}"]`).click();await p.waitForFunction(()=>document.querySelector('.hc-hero').dataset.hcActive==='somchai');const h=p.locator('[data-hc-id="somchai"]');assert.match(await h.locator('.hc-eyebrow').textContent(),/10 ตอนพร้อมอ่าน/);await h.locator('.hc-series-logo').evaluate(e=>e.decode());await h.locator('.hc-visual img').evaluate(e=>e.decode());assert.equal(await h.locator('video').count(),0);await p.screenshot({path:proof+`/hero-${width}.png`});await h.locator('.hc-watch').click();assert.match(p.url(),/episode=1/);assert.equal(await p.locator('.episode-cover-card').count(),10);assert.equal(await p.locator('.episode-cover-card.locked').count(),7);await p.locator('#story-series-logo').evaluate(e=>e.decode());await readChapter(p,1);await p.locator('#comic-reader').evaluate(e=>e.scrollTop=0);await p.screenshot({path:proof+`/episode-covers-${width}.png`});for(const ep of [2,3]){await p.locator(`[data-episode="${ep}"]`).click();await readChapter(p,ep);}assert.equal((await state(p)).balance,0);assert.equal(await p.locator('#unlock-dialog[open]').count(),0);await p.locator('[data-read-next]').click();assert.equal(await p.locator('#unlock-dialog[open]').count(),1);assert.match(await p.locator('#unlock-description').textContent(),/ตอนที่ 4/);assert.match(await p.locator('#confirm-unlock').textContent(),/รับเหรียญทดลองเพิ่ม/);assert.match(await p.locator('.reader-heading strong').textContent(),/มื้อแรก/);assert.deepEqual(errors,[]);}finally{await c.close();}});
+ await run('all ten chapters, each paid unlock deducts once and persists',async()=>{const c=await account(390,70);try{const p=await c.newPage(),errors=[],missing=[];p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400)missing.push(r.url());});await p.goto(base+'/short/story/somchai/?episode=1',{waitUntil:'networkidle'});for(let ep=1;ep<=10;ep++){if(ep>1)await p.locator(`[data-episode="${ep}"]`).click();if(ep>3){assert.equal(await p.locator('#unlock-dialog[open]').count(),1);assert.match(await p.locator('#unlock-cover').getAttribute('src'),new RegExp(`episode-${String(ep).padStart(2,'0')}-card`));const before=await state(p);assert.equal(before.balance,70-(ep-4)*10);await p.locator('#confirm-unlock').click();assert.equal((await state(p)).balance,before.balance-10);}await readChapter(p,ep,true);assert.match(p.url(),new RegExp(`episode=${ep}$`));}assert.equal((await state(p)).balance,0);assert.equal((await state(p)).unlocked.length,7);assert.equal(await p.locator('[data-read-next]').count(),0);assert.equal(await p.locator('[data-reader-finish]').count(),1);assert.match(await p.locator('#completion-price').textContent(),/ปลดล็อกครบแล้ว/);await p.reload({waitUntil:'networkidle'});await readChapter(p,10);for(const ep of [7,4,10]){await p.locator(`[data-episode="${ep}"]`).click();assert.equal(await p.locator('#unlock-dialog[open]').count(),0);assert.equal((await state(p)).balance,0);await readChapter(p,ep);}await p.locator('.webtoon-page img').first().evaluate(e=>e.decode());await p.locator('#reader-expand').click();await p.locator('#comic-reader').evaluate(e=>e.scrollTop=(e.scrollHeight-e.clientHeight)*.36);await p.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).progress.somchai?.episode===10&&JSON.parse(localStorage.getItem(key)).progress.somchai?.time>0,key);await p.locator('[data-close="story-dialog"]').click();await p.goto(base+'/short/story/somchai/?episode=10',{waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelector('#comic-reader').scrollTop>0);const fraction=await p.locator('#comic-reader').evaluate(e=>e.scrollTop/(e.scrollHeight-e.clientHeight));assert.ok(Math.abs(fraction-.36)<.03,'resume '+fraction);assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);}finally{await c.close();}});
+ await run('paid direct link, cancel, insufficient coins and free wallet credit',async()=>{const c=await account(390,9);try{const p=await c.newPage();await p.goto(base+'/short/story/somchai/?episode=7',{waitUntil:'networkidle'});assert.equal(await p.locator('#unlock-dialog[open]').count(),1);assert.equal((await state(p)).balance,9);assert.match(await p.locator('.webtoon-page img').first().getAttribute('src'),/episodes\/01\/pages/);await p.locator('[data-close="unlock-dialog"]').click();assert.equal((await state(p)).unlocked.length,0);await p.locator('[data-episode="7"]').click();await p.locator('#confirm-unlock').click();assert.equal(await p.locator('#wallet-dialog[open]').count(),1);await p.locator('[data-pack]').first().click();const before=(await state(p)).balance;assert.ok(before>10);await p.locator('[data-episode="7"]').click();await p.locator('#confirm-unlock').click();assert.equal((await state(p)).balance,before-10);await readChapter(p,7);await p.screenshot({path:proof+'/unlocked-episode7-mobile.png'});}finally{await c.close();}});
+ await run('new social card and static metadata',async()=>{const c=await browser.newContext();try{const p=await c.newPage();const html=await(await p.request.get(base+'/short/story/somchai/')).text();assert.match(html,/og:image[^>]+somchai-v4/);assert.match(html,/og:description[^>]+อ่านฟรีตอน 1–3/);await p.setContent(`<img src="${base}/short/assets/og/somchai-v4.jpg">`);assert.deepEqual(await p.locator('img').evaluate(async e=>{await e.decode();return[e.naturalWidth,e.naturalHeight]}),[1200,630]);}finally{await c.close();}});
+}finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
 if(results.some(r=>r.status==='fail'))process.exitCode=1;

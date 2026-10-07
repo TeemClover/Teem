@@ -1,0 +1,665 @@
+{
+  "version": "v001",
+  "episodes": 10,
+  "storyPages": 108,
+  "covers": 10,
+  "source": "User-supplied Somchai/v001 web package",
+  "delivery": "Original supplied WebP assets copied byte-for-byte; captions and dialogue extracted from supplied storyboards.",
+  "files": [
+    {
+      "file": "assets/covers/episode-01.webp",
+      "sha256": "81596079abd1e52ad19d82a8a2e017c8247a25b945ac2144df4a340416a0495b",
+      "bytes": 625976
+    },
+    {
+      "file": "assets/covers/episode-01-card.webp",
+      "sha256": "340d90bcc637371c53623d7d07ac1e03c1f88822f3d17ed4d4e77e2811394f6b",
+      "bytes": 192274
+    },
+    {
+      "file": "episodes/01/pages/001.webp",
+      "sha256": "72a74612f8c5505408c250383cf3465d6979e0e57e65df41a58d57130ff47b28",
+      "bytes": 432376
+    },
+    {
+      "file": "episodes/01/pages/002.webp",
+      "sha256": "b63d5ff3c304b5e1406b7b536871c7e6b46063f33b1b04c01c56f810907aa131",
+      "bytes": 409368
+    },
+    {
+      "file": "episodes/01/pages/003.webp",
+      "sha256": "ff0bc7f11b0730ff91a430809f797a20fc2769ffd701b5dcfef8e5ca180c32d2",
+      "bytes": 484074
+    },
+    {
+      "file": "episodes/01/pages/004.webp",
+      "sha256": "0760b01e9166d17878b058240e70665b8541749c0a91227392cf28659b05c933",
+      "bytes": 540276
+    },
+    {
+      "file": "episodes/01/pages/005.webp",
+      "sha256": "3bb7452516ee34ce36d7e3744f00b41a79e1da4af4bb140a46de62e831724b52",
+      "bytes": 483002
+    },
+    {
+      "file": "episodes/01/pages/006.webp",
+      "sha256": "b1402db36203aa73af9befec1cbacd874a53be6e7c7c31c64cef23552318df1b",
+      "bytes": 514702
+    },
+    {
+      "file": "episodes/01/pages/007.webp",
+      "sha256": "9973ed6eb2ed38cbffc483f504c5d60991cff7ed5f58404af3c6b219874ff008",
+      "bytes": 559352
+    },
+    {
+      "file": "episodes/01/pages/008.webp",
+      "sha256": "70092ca0c02c50eb0383750e16e50897f800ffc608259a2d3c59edc30e61611d",
+      "bytes": 551708
+    },
+    {
+      "file": "episodes/01/pages/009.webp",
+      "sha256": "7ef6793b4d2e3af72d4ece2f116d9edb25a76c6a1f1a7552d5408d025e0498f3",
+      "bytes": 561372
+    },
+    {
+      "file": "episodes/01/pages/010.webp",
+      "sha256": "007a8f819e3437c412dee934c680a9820185322a2fff75911a3921e75bf4e073",
+      "bytes": 594128
+    },
+    {
+      "file": "episodes/01/pages/011.webp",
+      "sha256": "849ac8ef07bd71a230cc8893f46a7507eadee4985f225ace39b7e5c05530b3f4",
+      "bytes": 687168
+    },
+    {
+      "file": "assets/covers/episode-02.webp",
+      "sha256": "d88f20bcb13445b52225ec9b265285e437abcaa16aab6914d004f0e2b0232e86",
+      "bytes": 726212
+    },
+    {
+      "file": "assets/covers/episode-02-card.webp",
+      "sha256": "b055f347e4d7c7ddc5451b96a875434d4e372e27f513b5ba6c6a789aa3d0d033",
+      "bytes": 208790
+    },
+    {
+      "file": "episodes/02/pages/001.webp",
+      "sha256": "c754884a154ba654596e61f040bb4fabe24c375fdc9206cfa1954295fb704014",
+      "bytes": 687530
+    },
+    {
+      "file": "episodes/02/pages/002.webp",
+      "sha256": "ac9f1f734d5cde580ba8cd1b68dad51aadfe868cf28ccbd1343843873313ab5b",
+      "bytes": 748692
+    },
+    {
+      "file": "episodes/02/pages/003.webp",
+      "sha256": "c60f24517d4c6774bd02feda08b9eb3d6f72619ac519b823ccb2e3954b2175cb",
+      "bytes": 720824
+    },
+    {
+      "file": "episodes/02/pages/004.webp",
+      "sha256": "4c4a2a06fc0812171d53d45ab24e922fd2ad54018df90c73a997f26e845a6100",
+      "bytes": 680608
+    },
+    {
+      "file": "episodes/02/pages/005.webp",
+      "sha256": "c84a60ac6aab5b188b94eeaf8e3ada4ce1a1c4a26303de0c5c5505b74859cf12",
+      "bytes": 708088
+    },
+    {
+      "file": "episodes/02/pages/006.webp",
+      "sha256": "bb7da52cb7a11a13fe9e7f9b29e2957b564f50c4f5081b2896b85aba0f85507e",
+      "bytes": 638776
+    },
+    {
+      "file": "episodes/02/pages/007.webp",
+      "sha256": "3ac555be6fdce4daf630dae3e1b807c36e815aff9114c4c6456391efa4fbfd33",
+      "bytes": 702868
+    },
+    {
+      "file": "episodes/02/pages/008.webp",
+      "sha256": "852f25b17718f5c626e57568ff227b9028931761fde0a473db00091b3d06b5de",
+      "bytes": 553816
+    },
+    {
+      "file": "episodes/02/pages/009.webp",
+      "sha256": "7a3185795433facc00497174961d8d615a7d551403393f72d39d6234b7d5a51a",
+      "bytes": 567956
+    },
+    {
+      "file": "episodes/02/pages/010.webp",
+      "sha256": "92555e3c2dc9eef2381048b62ffd1fdfe956b72fdd12e1a4b9d0f0ed633a6822",
+      "bytes": 656704
+    },
+    {
+      "file": "assets/covers/episode-03.webp",
+      "sha256": "6c4a41d0a0682159bad0e149284d272bdad3f88cf6f7a09248dee9b4984a5cad",
+      "bytes": 614586
+    },
+    {
+      "file": "assets/covers/episode-03-card.webp",
+      "sha256": "dd444f313b4a2783e1d72d97e67af4027492d6aea6a5ea5c5b868d1915f7f51a",
+      "bytes": 198562
+    },
+    {
+      "file": "episodes/03/pages/001.webp",
+      "sha256": "7f44d2f53542fb09784b500a713a004d47d5786e3f52162f8e0c8de376d5a141",
+      "bytes": 621832
+    },
+    {
+      "file": "episodes/03/pages/002.webp",
+      "sha256": "a7c9993d6b35b9c974646ff710dca19c7e2e1f1dc20f56fe2abae17982cf15bb",
+      "bytes": 661264
+    },
+    {
+      "file": "episodes/03/pages/003.webp",
+      "sha256": "c87de6e17bd3a0cea6856360748c793536e2d8d048635e26d00fcd9cb6c911e4",
+      "bytes": 711886
+    },
+    {
+      "file": "episodes/03/pages/004.webp",
+      "sha256": "edcd54769ed64a801251691ee0c33f3d7fe4d0e0b66b4c3e8a2c808e7eda621d",
+      "bytes": 718766
+    },
+    {
+      "file": "episodes/03/pages/005.webp",
+      "sha256": "dc7bff6e40e0a020705d1ac0467d78ba29712f4dbc85187294604961ab038d08",
+      "bytes": 839946
+    },
+    {
+      "file": "episodes/03/pages/006.webp",
+      "sha256": "d03f5ccdf011015523d274013866ea62564d3534024a0c10bf1aa8d0f1862ec9",
+      "bytes": 690548
+    },
+    {
+      "file": "episodes/03/pages/007.webp",
+      "sha256": "0fdaad5654daa3eac08e78ca4846f329a4214da9de8ff03ed2381f65a596571a",
+      "bytes": 776818
+    },
+    {
+      "file": "episodes/03/pages/008.webp",
+      "sha256": "528ff1b15f86e716387a4f22eefd3c17d1bf51e0c053d6e23b836b0b0ff782f8",
+      "bytes": 727760
+    },
+    {
+      "file": "episodes/03/pages/009.webp",
+      "sha256": "1ddf4a5bfed6e9fb75de09d2b3951637a0a6e944f43711a2acdd94a59bedcecc",
+      "bytes": 599542
+    },
+    {
+      "file": "episodes/03/pages/010.webp",
+      "sha256": "f4a58bf84c19efda2ef314430a36c5e86203f155a7ac3ea3dcaf649f56a298cb",
+      "bytes": 569586
+    },
+    {
+      "file": "episodes/03/pages/011.webp",
+      "sha256": "38b6eff985d3373693c218240c1dc97cc7e8e354e9e1fe8573e35728f05499bd",
+      "bytes": 702718
+    },
+    {
+      "file": "assets/covers/episode-04.webp",
+      "sha256": "370f019ab8dde9cde438251a8bce9c268b0681b9a3d1e27e68717ecf79625d20",
+      "bytes": 630842
+    },
+    {
+      "file": "assets/covers/episode-04-card.webp",
+      "sha256": "884430f5bcb2396646255792087ffbc250f292d30aac126f1000d9d1922889c5",
+      "bytes": 202546
+    },
+    {
+      "file": "episodes/04/pages/001.webp",
+      "sha256": "6c1a28ec2c821c4c9db6bcdd2face4253d83d8f0ab6a84ce472f754eaed1f240",
+      "bytes": 733388
+    },
+    {
+      "file": "episodes/04/pages/002.webp",
+      "sha256": "8899df0f874139cd3ae4b36b4b1935f979b3b1465a58023b14c0b5f09a784bc7",
+      "bytes": 745124
+    },
+    {
+      "file": "episodes/04/pages/003.webp",
+      "sha256": "146cdbda0a51c6eb8f80cea004cbb9ebfd5d53fb83d0c7329f2005131d110608",
+      "bytes": 727874
+    },
+    {
+      "file": "episodes/04/pages/004.webp",
+      "sha256": "6eb6702204193dcc801ef5f6767185b7e61941ca68f2b825445ab59da09c95a0",
+      "bytes": 728660
+    },
+    {
+      "file": "episodes/04/pages/005.webp",
+      "sha256": "b9b5ff5808a00eb139e8650bb35b3cff3a49a7f214ae6abcb6e7d7322c2cc722",
+      "bytes": 655834
+    },
+    {
+      "file": "episodes/04/pages/006.webp",
+      "sha256": "41ffefd8c1771362d6d916bcfa5891b72c4a7f9691088dd4d4f1f45eea9a2bf4",
+      "bytes": 741478
+    },
+    {
+      "file": "episodes/04/pages/007.webp",
+      "sha256": "cc96c66e711a8d44353d9aa82293147dfe4170c086dcd12f42091907a1802b8b",
+      "bytes": 649846
+    },
+    {
+      "file": "episodes/04/pages/008.webp",
+      "sha256": "81a7a1e4ff6c9d5c81e74f25d7b84050cbe26df027364597e5c605de3633ce44",
+      "bytes": 628296
+    },
+    {
+      "file": "episodes/04/pages/009.webp",
+      "sha256": "9da975752fd5f872c28cad8187c85be52f3b484ce6e6df7bdfcb3574f370d14d",
+      "bytes": 566832
+    },
+    {
+      "file": "episodes/04/pages/010.webp",
+      "sha256": "863222344cd16f19cb83b86e55c31cd8caf784ab138c6afc2495c9083b0ec501",
+      "bytes": 771476
+    },
+    {
+      "file": "assets/covers/episode-05.webp",
+      "sha256": "56329a401a5d303feb22474cdf105ae2f9a9dd11c096a3ac417198d0b52ebff7",
+      "bytes": 710424
+    },
+    {
+      "file": "assets/covers/episode-05-card.webp",
+      "sha256": "6c1e862cd5b7b2d08cac89b9b7de359f5453a0f20e2ab9713ccc38e539021c94",
+      "bytes": 221294
+    },
+    {
+      "file": "episodes/05/pages/001.webp",
+      "sha256": "660687a381ab5f0d0353607338bd50300e8f999bf3a4bdf7635c5c373443b0a7",
+      "bytes": 602830
+    },
+    {
+      "file": "episodes/05/pages/002.webp",
+      "sha256": "0c19066856ae066a66a1d3a5df1c261c0faf021ece72ee86354f51a1b4de58b2",
+      "bytes": 668524
+    },
+    {
+      "file": "episodes/05/pages/003.webp",
+      "sha256": "e02c3ff73e935e2f10fb1ba78e68a98bf74ff3374d8e61e7576aeca59d2d3052",
+      "bytes": 674962
+    },
+    {
+      "file": "episodes/05/pages/004.webp",
+      "sha256": "53466f40024c9278d2a8ff0557c43906433af587ee379f4c634d1700eaacaf83",
+      "bytes": 741926
+    },
+    {
+      "file": "episodes/05/pages/005.webp",
+      "sha256": "06f1aeb10be9104f30cdf11a2733563e587fae5200296fdf54942cda2b34bfe3",
+      "bytes": 432450
+    },
+    {
+      "file": "episodes/05/pages/006.webp",
+      "sha256": "831f073b4e3651e1a9d8ee9287687a425af5ee90caa2d444debeaab74949615d",
+      "bytes": 805474
+    },
+    {
+      "file": "episodes/05/pages/007.webp",
+      "sha256": "9e14f84daad7836ba9c25f4d11ee1b5e2a1b0c03cf6f56c2fb6cac947e10a6b4",
+      "bytes": 748204
+    },
+    {
+      "file": "episodes/05/pages/008.webp",
+      "sha256": "5d33e0cf5bf4d8d3851b833bad9f241acf882c78ad1f321722e8c2bc6dd6b0ea",
+      "bytes": 742600
+    },
+    {
+      "file": "episodes/05/pages/009.webp",
+      "sha256": "e2eec0bf37506007bda1ffe0d4d0a2491412e8551cc1231e9d0e597ae20fbb36",
+      "bytes": 705572
+    },
+    {
+      "file": "episodes/05/pages/010.webp",
+      "sha256": "8a0e672f2fc7d380aa6793a3d39ff10898f48789219598793e6c7c1f87a18a53",
+      "bytes": 690382
+    },
+    {
+      "file": "episodes/05/pages/011.webp",
+      "sha256": "21e671f6756e269b2015a569cc2ec5ccdaa7926c0fc608d6e249821df64f4d50",
+      "bytes": 713140
+    },
+    {
+      "file": "assets/covers/episode-06.webp",
+      "sha256": "2c8c2c8d4d646491b419d7da2d43f2ce988b54e35b900112ce06104db46f7cc1",
+      "bytes": 743860
+    },
+    {
+      "file": "assets/covers/episode-06-card.webp",
+      "sha256": "84c3b16338fb9c66e4969f35f50d75cb336ac790d31734965b66711145e59793",
+      "bytes": 224824
+    },
+    {
+      "file": "episodes/06/pages/001.webp",
+      "sha256": "64cd4f2fdce0e4b27af6a9808a9475c85a923f5af1b4db71608857a487e4026b",
+      "bytes": 687402
+    },
+    {
+      "file": "episodes/06/pages/002.webp",
+      "sha256": "5fb4e4c7ec7b0178e28784c1c1706f34ed4c202b3178bd3af355a2f8c60af4a2",
+      "bytes": 659312
+    },
+    {
+      "file": "episodes/06/pages/003.webp",
+      "sha256": "321387fd64c4e0d3fcdbdb35e5bae97cdf782ce1514911d85c9d7ac6ec8dd172",
+      "bytes": 682660
+    },
+    {
+      "file": "episodes/06/pages/004.webp",
+      "sha256": "e4f38cbc61cb291574fea89948051ed4d09bf492968be48a6f1ac544c1965dc5",
+      "bytes": 735538
+    },
+    {
+      "file": "episodes/06/pages/005.webp",
+      "sha256": "74f406826eca363766b867c6782c1bed2a09dab24ee5717d47eec24f4f5fa83e",
+      "bytes": 808986
+    },
+    {
+      "file": "episodes/06/pages/006.webp",
+      "sha256": "fb9ce1e48adc8139d4509eefebebe9a055e43851536cd7900b4f552dcc489074",
+      "bytes": 741516
+    },
+    {
+      "file": "episodes/06/pages/007.webp",
+      "sha256": "7fb2f2e8ae34d3b82e98ecae71c52473d345e7f4adae1dc3f8f817656995c46a",
+      "bytes": 671854
+    },
+    {
+      "file": "episodes/06/pages/008.webp",
+      "sha256": "5b945569afa5df72f80b77fe46d3b2fa7c9efee0cc25e42e9db06586e2767c26",
+      "bytes": 707872
+    },
+    {
+      "file": "episodes/06/pages/009.webp",
+      "sha256": "14a33539d53e93820f1ca8af0edb65a110eb9a916dddb4de232a206f9438690d",
+      "bytes": 780546
+    },
+    {
+      "file": "episodes/06/pages/010.webp",
+      "sha256": "780d52513d8a2097a4525e0b20fa90df535a3b9ae4b0988b5a5a8e197b8e54e7",
+      "bytes": 734714
+    },
+    {
+      "file": "episodes/06/pages/011.webp",
+      "sha256": "e147cd53f51a2e800ee29c44131ab4acdadc2a198214a49ec145aa95b7ec9db0",
+      "bytes": 701314
+    },
+    {
+      "file": "assets/covers/episode-07.webp",
+      "sha256": "d35d2f239f67fb761db6f0b0a36a6d87e0f9819f60f136afe0765d6f9068f78b",
+      "bytes": 611200
+    },
+    {
+      "file": "assets/covers/episode-07-card.webp",
+      "sha256": "e56a3f4bda906edd3d28dd7fe3853534dad47e3a2dcbf64446bd07cdfdbb9d4f",
+      "bytes": 180448
+    },
+    {
+      "file": "episodes/07/pages/001.webp",
+      "sha256": "ff8d9ee88e1af19770f4505c99b60d32f6bea00132cc9bb31f13a9fd2ad66e24",
+      "bytes": 700534
+    },
+    {
+      "file": "episodes/07/pages/002.webp",
+      "sha256": "9df45c7f3848953f3b159e9f6f2140205a639243c6fc8fa601bfc0efd8652375",
+      "bytes": 699638
+    },
+    {
+      "file": "episodes/07/pages/003.webp",
+      "sha256": "008653112c78f57ba5ba6bac2fdd6b12a2fe54ad674b440609b99ecd91f763a3",
+      "bytes": 789380
+    },
+    {
+      "file": "episodes/07/pages/004.webp",
+      "sha256": "fe851f6bbb91672921ceae67541e7d409a42cdee672711f65018592e286e6b94",
+      "bytes": 721902
+    },
+    {
+      "file": "episodes/07/pages/005.webp",
+      "sha256": "64021787d10dfaa93abee3a2aaa00c83dd519a361845372337c36e1f5f7c9f46",
+      "bytes": 746002
+    },
+    {
+      "file": "episodes/07/pages/006.webp",
+      "sha256": "3aae342d2c092a6f5875167b953b9b9ae5d58ce59f4a26b86366f58189248e7d",
+      "bytes": 793372
+    },
+    {
+      "file": "episodes/07/pages/007.webp",
+      "sha256": "b5aff09c42a54d864752280441de2556c4f33cc940214787f36d49759fc6fd56",
+      "bytes": 608176
+    },
+    {
+      "file": "episodes/07/pages/008.webp",
+      "sha256": "083b513bf7a9a24e8b036c2d518f555b4761c60aacc3626d663eebe4d656b084",
+      "bytes": 664846
+    },
+    {
+      "file": "episodes/07/pages/009.webp",
+      "sha256": "da39875420b029c951ac518e24beb2dce67af294695aa7dde4d9382bff24229b",
+      "bytes": 558784
+    },
+    {
+      "file": "episodes/07/pages/010.webp",
+      "sha256": "f5cfa386978fc8e3c98c0df2ad149b51d42eac70bc56b49f73555c7dbb56117b",
+      "bytes": 596402
+    },
+    {
+      "file": "episodes/07/pages/011.webp",
+      "sha256": "5333233523f132ecd89d479f38496b776ebfc3419c31f0866d0d0eb2de691ef1",
+      "bytes": 701252
+    },
+    {
+      "file": "assets/covers/episode-08.webp",
+      "sha256": "80c90c2cb979ea5aea721738e07f21bd46bcf2bd646c226dd4bea581c1f9718a",
+      "bytes": 653934
+    },
+    {
+      "file": "assets/covers/episode-08-card.webp",
+      "sha256": "ed6ce605a0cb67f2a8130cf129db8430b8be13bcd36fa86e760def604821aea8",
+      "bytes": 199358
+    },
+    {
+      "file": "episodes/08/pages/001.webp",
+      "sha256": "a6ba1d655d50ee864759a14f2d2fa822bd8aafb3c8190e464bce2f3e8756d261",
+      "bytes": 558766
+    },
+    {
+      "file": "episodes/08/pages/002.webp",
+      "sha256": "d8dec7143021f2578ba13a33a824f45b67d61cd85939dde3069bdaaf15d7f34b",
+      "bytes": 619862
+    },
+    {
+      "file": "episodes/08/pages/003.webp",
+      "sha256": "99ad390b9fcab22716ed45b94b51f0960d7d89c4a761fa617893e5a84db564e2",
+      "bytes": 628344
+    },
+    {
+      "file": "episodes/08/pages/004.webp",
+      "sha256": "decd9bdf58f48effba1dac1ecd3e9a886f37bbdb19d4459ec9a8aeca4ab56be5",
+      "bytes": 667670
+    },
+    {
+      "file": "episodes/08/pages/005.webp",
+      "sha256": "eed1b10e9352fb6364df0a9efb3000572aa29b89ac5c1dc77157572cc02b0401",
+      "bytes": 715340
+    },
+    {
+      "file": "episodes/08/pages/006.webp",
+      "sha256": "02647f62eef3df4704e95b712494905b4b04be17a51353efb98c2591b883f2f2",
+      "bytes": 652186
+    },
+    {
+      "file": "episodes/08/pages/007.webp",
+      "sha256": "dc96e98a6000d364cb0f194bcea8d44e0d6f070afc385a09a0d50ad94a550cae",
+      "bytes": 720914
+    },
+    {
+      "file": "episodes/08/pages/008.webp",
+      "sha256": "c24d3d981a3a0a627f7c6d88014fbbe737c480ebf1beac2604f6a43ba5704bd6",
+      "bytes": 647196
+    },
+    {
+      "file": "episodes/08/pages/009.webp",
+      "sha256": "67643e6d10313414861a6bd7c7c36abf66037711c63f4b63ee815056346002fe",
+      "bytes": 748150
+    },
+    {
+      "file": "episodes/08/pages/010.webp",
+      "sha256": "c165dffca6f9793a280437da495841578699cecd505f5845f467fb1122b7eee0",
+      "bytes": 676104
+    },
+    {
+      "file": "episodes/08/pages/011.webp",
+      "sha256": "9ef9d5a9b7e8c6843f83c893d6200a862ea1a2d23ec32abca50a7dabc0ea4945",
+      "bytes": 742366
+    },
+    {
+      "file": "episodes/08/pages/012.webp",
+      "sha256": "ed95672fd98c6c18ea7f7ef5652cfde4e718904df90c6090af696e3810c8953f",
+      "bytes": 692924
+    },
+    {
+      "file": "assets/covers/episode-09.webp",
+      "sha256": "608f56fcbeeb2797e42e9cfb47eb60a637cfc3accc9989dc5aa104ef40a9b577",
+      "bytes": 635446
+    },
+    {
+      "file": "assets/covers/episode-09-card.webp",
+      "sha256": "399467aee914771f9621b079f1cfd035d8373d75e415a4078dc5e96250662929",
+      "bytes": 199366
+    },
+    {
+      "file": "episodes/09/pages/001.webp",
+      "sha256": "07073f5bed71bfda266514c403208c7838d2ec944f554ac2e5fda3709dfdd80b",
+      "bytes": 739990
+    },
+    {
+      "file": "episodes/09/pages/002.webp",
+      "sha256": "f3d1591e2abdd3d082db9348be640beb81dea91b20105a2023afe9a6b1bf076e",
+      "bytes": 595408
+    },
+    {
+      "file": "episodes/09/pages/003.webp",
+      "sha256": "7468331cdabcae618481cb4899755434cc3545b51d82f3f28ac526e9154c9530",
+      "bytes": 646362
+    },
+    {
+      "file": "episodes/09/pages/004.webp",
+      "sha256": "d14c6ab7f250b5165ab4492385320977774fcfa4160ae837141f433e348b3ca8",
+      "bytes": 647664
+    },
+    {
+      "file": "episodes/09/pages/005.webp",
+      "sha256": "8ae710950a28ac6c00736c2979a20cf7543ce72b16ee586f438a457e693b87cc",
+      "bytes": 628842
+    },
+    {
+      "file": "episodes/09/pages/006.webp",
+      "sha256": "8b70b99d17f9737954e58863fc97d922d8a3eea9be90d5f2383f6ea3616a9fa9",
+      "bytes": 753278
+    },
+    {
+      "file": "episodes/09/pages/007.webp",
+      "sha256": "8b58f5abaeb92ee7c5644cddd3776520cdede3043232592c40f1a7d1d7c8fde0",
+      "bytes": 689102
+    },
+    {
+      "file": "episodes/09/pages/008.webp",
+      "sha256": "1e839878d34e653c08a181f94b015347e9c47bc1622966ec9200dbc22967e3ed",
+      "bytes": 656028
+    },
+    {
+      "file": "episodes/09/pages/009.webp",
+      "sha256": "484615468c6497fc1b93cacee5affe82a9b21b7953f5351a4df2eb4526b93c2d",
+      "bytes": 681736
+    },
+    {
+      "file": "episodes/09/pages/010.webp",
+      "sha256": "32b2a67cc832b1f78b615a9ec265cb7ae19eb176382d34125d8ccd94af0e4c64",
+      "bytes": 748502
+    },
+    {
+      "file": "assets/covers/episode-10.webp",
+      "sha256": "088ad035e34e1120c51dfe5720afcb551831b7ed35e0278feddd3740a63e53bc",
+      "bytes": 694560
+    },
+    {
+      "file": "assets/covers/episode-10-card.webp",
+      "sha256": "bca3ccd0e96323f720e00fef90b3cf635bb38b2cc8e9a7ea629d6d7356ea826e",
+      "bytes": 210716
+    },
+    {
+      "file": "episodes/10/pages/001.webp",
+      "sha256": "a09c7b4baef3425648daeb85cc3436127699f9e395d12671b22c5c0b3c3badf2",
+      "bytes": 603236
+    },
+    {
+      "file": "episodes/10/pages/002.webp",
+      "sha256": "10da59f380453df148e3a67de5f392385f08c0fa460825ecb3e8d7a373425451",
+      "bytes": 626648
+    },
+    {
+      "file": "episodes/10/pages/003.webp",
+      "sha256": "bfe41a0133723f8b29cc77fb53e3f20415655b94e8249c7dfa9d82f91d16dee8",
+      "bytes": 719464
+    },
+    {
+      "file": "episodes/10/pages/004.webp",
+      "sha256": "a828149ed02e84ec4842d03bf4a5d2ce9218be54c674c7d2eaf7218eb304fad4",
+      "bytes": 761740
+    },
+    {
+      "file": "episodes/10/pages/005.webp",
+      "sha256": "4635a35bd37302cfab4a1a8a7eadeb42d1a889a1ca37bb817de10d2eb6e4a5b6",
+      "bytes": 680192
+    },
+    {
+      "file": "episodes/10/pages/006.webp",
+      "sha256": "40278d50c7aac33e917f6b073a8645a14db9987707f11f93b8517219e4c36790",
+      "bytes": 690510
+    },
+    {
+      "file": "episodes/10/pages/007.webp",
+      "sha256": "7d0448424dce0229cfc48e508abdff8938898f25794258f665eb82566cd12904",
+      "bytes": 720478
+    },
+    {
+      "file": "episodes/10/pages/008.webp",
+      "sha256": "a69ae6ea1c887cfafb9b2ebc474b31f4f5523566ad9728b798de564d5d8954fd",
+      "bytes": 645896
+    },
+    {
+      "file": "episodes/10/pages/009.webp",
+      "sha256": "79674e7b27541c7380e1f5be837924b9e5f32290e7ddbc47dbb0dd0097176a28",
+      "bytes": 691102
+    },
+    {
+      "file": "episodes/10/pages/010.webp",
+      "sha256": "a8a26d72f2142c3abf110a544664bfe2b73e559ae441990b03d5cb3ec924b47b",
+      "bytes": 685326
+    },
+    {
+      "file": "episodes/10/pages/011.webp",
+      "sha256": "d71cafb1b59fe9353794fc1d2cb3e5469dbd11665f9e3f9d4221c5818a5a9ffa",
+      "bytes": 723468
+    },
+    {
+      "file": "assets/brand/logo-420.webp",
+      "sha256": "3ec108a0dc03cd3155066088b0b02835dce62dbe507247c8183c02b96362a4ba",
+      "bytes": 78036
+    },
+    {
+      "file": "assets/brand/logo-1200.webp",
+      "sha256": "d6847db6e668872ad97b0d860a7bfde26daf9b10419d6cc263fd8d74cdc1e717",
+      "bytes": 475054
+    },
+    {
+      "file": "assets/covers/art/episode-01.webp",
+      "sha256": "821fd3ac0063aff218875d7e4263905d14c288a1b2b1dce8da223d6f021101b0",
+      "bytes": 523800
+    }
+  ]
+}
