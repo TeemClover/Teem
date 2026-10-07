@@ -10,8 +10,8 @@ Buildless ES modules; no installation or production build required. Preview only
 
 ## Experience
 
-- Nine movie concepts lead discovery. The Hero opens on a random Thai-focused film without repeating the previous opening when browser storage is available. Native scroll-snap follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Mobile artwork fills the Hero edge to edge with readable text over a gradient; desktop posters retain their proportions.
-- Downloaded highlights in `hero-trailers.js` play muted only on the active, visible Hero slide. Users can pause, replay or enable sound; opening a dialog, hiding the tab or leaving the Hero pauses playback. Inactive sources are unloaded. Reduced-motion and data-saving preferences require an explicit play action. The watch button opens that same actual clip in the native player.
+- Nine movie concepts lead discovery. The Hero opens on a random Thai-focused film without repeating the previous opening when browser storage is available. Native scroll-snap follows touch with momentum; mouse drag, arrows, dots and keyboard also work. All panels remain mounted. Mobile artwork fills the Hero edge to edge with readable text over a gradient; desktop uses four separately generated 21:9 cinematic compositions edge to edge. Clicking a preview opens a vertical native player.
+- Completed highlights play muted only on the active, visible mobile Hero slide, using two icon buttons for play/pause and sound. Desktop keeps the landscape key art and never preloads a background video. The village Hero reuses its actual Meta pilot at episode 1 without duplicating the library episode. Users can replay through the same play button; opening a dialog, hiding the tab or leaving the Hero pauses playback. Inactive sources are unloaded. Reduced-motion and data-saving preferences require an explicit play action. The watch button opens that same actual clip in the native player.
 - Completed pilot files live in `assets/clips/` and are explicitly enabled through `library.js`. They play through native HTML video with audio, full-screen support, optional script captions, episode navigation and optional autoplay. MP4 files are different clips, not animated posters reused as new finished episodes.
 - Concepts without finished footage retain clearly labeled silent animated posters. Their additional episode counts demonstrate the coin flow.
 - Four compact featured creator cards keep the film catalog in focus: one individual portrait and three original studio logos. Detailed profile dialogs include biographies, province, disciplines, linked films/novels and browser-local follow state. All twelve creator identities remain available for story credits. No audience counts or verification claims are invented.
@@ -27,6 +27,8 @@ Creator identities and classifications are fictional presentation material. Most
 
 `docs/hero-highlights.json` preserves the four original cliffhanger scripts and completed-media provenance. The first completed highlight is the eight-second Nakhon Naga scene from Google Flow / Veo 3.1 Fast. Reference PNGs are authoring inputs and are excluded from deployment; the optimized MP4 and extracted WebP poster ship with the app. Planned highlights are not enabled before their actual files are available.
 
+`docs/hero-wide-v1.json` records prompts for the four new desktop compositions. On 2026-10-07, another Meta video attempt returned quota exhausted and Flow displayed insufficient credits; Krasue and Wanthong remain labeled concepts instead of being presented as completed live-action footage.
+
 No real authentication, payment processing, content-rights moderation, uploads or creator payouts are implemented. The demo is suitable for presenting the product and trying its user flows; browser storage is not a secure wallet or paid-content access system.
 
 ## Sharing
@@ -36,6 +38,8 @@ No real authentication, payment processing, content-rights moderation, uploads o
 ## Verification
 
 Start a local preview, then run `node short/verify-app.mjs` (default port4321; override `SHORT_BASE_URL`). It checks responsive layouts, full novel chapters, reader preferences/resume, distinct comic images, creator profiles/follows, search/saved stories and native MP4 audio/video decoding.
+
+`node short/verify-hero-media.mjs` starts an isolated preview and checks all four desktop landscape sources, full-width framing at 992–2560px, vertical player opening, the two real mobile previews and their two-button controls, breakpoint video unloading, and reduced-motion manual playback. Set `SHORT_BASE_URL` to check production.
 
 `node short/verify-carousel.mjs` checks continuous mouse movement, real CDP touch swipes in both directions, native vertical scrolling, settling, keyboard and accessibility at320–2560px.
 

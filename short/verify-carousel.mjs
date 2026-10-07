@@ -23,9 +23,9 @@ async function setup(options) {
     document.body.innerHTML = '<section class="hero" id="test-hero"></section><div style="height:1200px;background:#111113"></div>';
     const link = document.createElement('link'); link.rel = 'stylesheet'; link.href = './hero-carousel.css';
     const loaded = new Promise(resolve => link.onload = resolve); document.head.append(link); await loaded;
-    const [{createHeroCarousel}, {stories}] = await Promise.all([import('./hero-carousel.js'), import('./catalog.js')]);
+    const [{createHeroCarousel}, {stories}] = await Promise.all([import('./hero-carousel.js'), import('./library.js')]);
     window.heroChanges = []; window.heroOpens = [];
-    window.carousel = createHeroCarousel({root: document.querySelector('#test-hero'), stories, ids: ['rain','krasue','warrior','village'], onChange: story => window.heroChanges.push(story.id), onOpen: (id, autoplay) => window.heroOpens.push({id, autoplay})});
+    window.carousel = createHeroCarousel({root: document.querySelector('#test-hero'), stories, ids: ['krasue','warrior','village','wanthong'], onChange: story => window.heroChanges.push(story.id), onOpen: (id, autoplay) => window.heroOpens.push({id, autoplay})});
     await document.fonts.ready;
   });
   return {context, page, errors};
@@ -45,7 +45,7 @@ try {
     const {context, page, errors} = await setup({viewport: {width, height: 1000}, isMobile: width < 760, hasTouch: true, reducedMotion: 'reduce'});
     assert.equal(await page.locator('.hc-slide').count(), 4);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-    assert.equal(await page.locator('.hc-visual img').evaluateAll((images, mobile) => images.every(image => getComputedStyle(image).objectFit === (mobile ? 'cover' : 'contain')), width < 760), true);
+    assert.equal(await page.locator('.hc-visual img').evaluateAll((images, mobile) => images.every(image => getComputedStyle(image).objectFit === 'cover'), width < 760), true);
     if (width < 760) {
       const frame = await page.locator('.hc-slide').first().evaluate(panel => {
         const art = panel.querySelector('.hc-visual').getBoundingClientRect(), slide = panel.getBoundingClientRect();
@@ -54,36 +54,36 @@ try {
       assert.ok(Math.abs(frame.artWidth-frame.slideWidth)<1 && Math.abs(frame.left)<1, 'mobile hero artwork fills the slide edge to edge');
     }
     await page.locator('[data-hc-index="2"]').click();
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'village');
     assert.equal(await page.locator('[data-hc-index="2"]').getAttribute('aria-pressed'), 'true');
     assert.equal(await page.locator('.hc-slide:not([inert])').count(), 1);
-    await page.locator('[data-hc-id="warrior"] .hc-watch').click();
-    assert.deepEqual(await page.evaluate(() => window.heroOpens), [{id: 'warrior', autoplay: true}]);
+    await page.locator('[data-hc-id="village"] .hc-watch').click();
+    assert.deepEqual(await page.evaluate(() => window.heroOpens), [{id: 'village', autoplay: true}]);
     await page.locator('.hc-track').focus(); await page.keyboard.press('Home');
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'rain');
-    await page.keyboard.press('ArrowRight');
     await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'krasue');
-    assert.match(await page.locator('.hc-status').textContent(), /กระสือแถวบ้าน/);
-    await page.evaluate(() => window.carousel.select('rain'));
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'rain');
+    await page.keyboard.press('ArrowRight');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
+    assert.match(await page.locator('.hc-hero > .hc-status').textContent(), /นาคานคร/);
+    await page.evaluate(() => window.carousel.select('krasue'));
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'krasue');
     await page.screenshot({path: `${proof}/hero-${width}.png`});
     assert.deepEqual(errors, []);
-    await context.close(); results.push(`${width}px: ${width < 760 ? 'edge-to-edge mobile artwork' : 'whole desktop poster framing'}, no page overflow, dots, keyboard, active accessibility, watch callback`);
+    await context.close(); results.push(`${width}px: ${width < 760 ? 'edge-to-edge mobile artwork' : 'full-width desktop landscape artwork'}, no page overflow, dots, keyboard, active accessibility, watch callback`);
   }
   {
     const {context, page, errors} = await setup({viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true});
     const session = await context.newCDPSession(page);
     const points = Array.from({length: 16}, (_, index) => [335 - index * 18, 180]);
     await swipe(session, points);
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'krasue');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
     await page.waitForFunction(() => Math.abs(document.querySelector('.hc-track').scrollLeft - document.querySelector('.hc-track').clientWidth) < 2);
     assert.equal(await page.locator('.hc-slide').count(), 4, 'slides remain mounted across native swipes');
     await swipe(session, Array.from({length: 12}, (_, index) => [195, 265 - index * 14]));
     await page.waitForFunction(() => scrollY > 80);
-    assert.equal(await page.locator('#test-hero').getAttribute('data-hc-active'), 'krasue', 'vertical page gestures do not switch stories');
+    assert.equal(await page.locator('#test-hero').getAttribute('data-hc-active'), 'warrior', 'vertical page gestures do not switch stories');
     await page.evaluate(() => scrollTo(0,0));
     await swipe(session, Array.from({length: 16}, (_, index) => [65 + index * 18, 180]));
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'rain');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'krasue');
     await page.waitForFunction(() => document.querySelector('.hc-track').scrollLeft < 2);
     assert.deepEqual(errors, []);
     await context.close(); results.push('native mobile touch: left/right momentum swipes settle precisely; vertical gestures scroll page without changing stories');
@@ -94,10 +94,10 @@ try {
     await page.mouse.move(620,225,{steps:15});
     assert.ok(await page.locator('.hc-track').evaluate(track => track.scrollLeft > 300), 'mouse drag follows the pointer continuously');
     await page.mouse.up();
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'krasue');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
     await page.waitForFunction(() => Math.abs(document.querySelector('.hc-track').scrollLeft - document.querySelector('.hc-track').clientWidth) < 2);
     await page.locator('[data-hc-move="1"]').click();
-    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
+    await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'village');
     assert.deepEqual(errors, []);
     await context.close(); results.push('desktop mouse: continuous dragging, intentional release snapping and next arrow');
   }

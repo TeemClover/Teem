@@ -2,9 +2,7 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({'
 const play = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg>';
 const information = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg>';
 const pause = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>';
-const replay = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9a8 8 0 1 1-1 7M5 4v5h5"/></svg>';
 const sound = muted => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4Z"/>${muted ? '<path d="m16 9 5 6m0-6-5 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
-const previewDuration = value => Number.isFinite(Number(value)) && Number(value) > 0 ? `<span class="hc-preview-duration">${Math.round(Number(value))} วิ</span>` : '';
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'm14 6-6 6 6 6' : 'm10 6 6 6-6 6'}"/></svg>`;
 let carouselCount = 0;
 
@@ -15,6 +13,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   if (!selected.length) throw new TypeError('At least one featured story is required');
   const instance = `hc-${++carouselCount}`;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileViewport = matchMedia('(max-width: 760px)');
   root.classList.add('hc-hero');
   root.setAttribute('role', 'region');
   root.setAttribute('aria-roledescription', 'carousel');
@@ -27,16 +26,16 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     const avatar = story.avatarImage ? `<img src="${escape(story.avatarImage)}" alt="" width="36" height="36" loading="lazy" draggable="false">` : escape(story.avatar);
     return `<article class="hc-slide${trailer ? ' hc-has-preview' : ''}" data-hc-id="${escape(story.id)}" style="--hc-tint:${escape(story.color || '#64525d')}" role="group" aria-roledescription="สไลด์" aria-label="${index + 1} จาก ${selected.length}: ${escape(story.title)}">
       <div class="hc-atmosphere" aria-hidden="true"></div>
-      <div class="hc-visual" aria-hidden="true"><img src="${escape(image)}" alt="" draggable="false" decoding="async" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>${trailer ? `<video class="hc-preview-video" muted playsinline preload="none" poster="${escape(image)}" disablepictureinpicture disableremoteplayback tabindex="-1"></video>` : ''}</div>
+      <div class="hc-visual" aria-hidden="true"><picture>${story.heroLandscape ? `<source media="(min-width: 761px)" srcset="${escape(story.heroLandscape)}">` : ''}<img src="${escape(image)}" alt="" draggable="false" decoding="async" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}></picture>${trailer ? `<video class="hc-preview-video" muted playsinline preload="none" poster="${escape(image)}" disablepictureinpicture disableremoteplayback tabindex="-1"></video>` : ''}</div>
       <div class="hc-shade" aria-hidden="true"></div>
-      ${trailer ? `<div class="hc-preview"><div class="hc-preview-buttons"><button type="button" class="hc-preview-play" data-hc-preview="${index}" aria-label="ดูช็อตเด็ด ${escape(story.title)}" aria-pressed="false">${play}<span class="hc-preview-label">ดูช็อตเด็ด</span>${previewDuration(trailer.duration)}</button><button type="button" class="hc-preview-sound" data-hc-sound="${index}" aria-label="เปิดเสียงช็อตเด็ด ${escape(story.title)}" aria-pressed="false">${sound(true)}</button></div><span class="hc-preview-progress" aria-hidden="true"><span></span></span><p class="hc-preview-status hc-status" role="status" aria-live="polite"></p></div>` : ''}
+      ${trailer ? `<div class="hc-preview"><div class="hc-preview-buttons"><button type="button" class="hc-preview-play" data-hc-preview="${index}" aria-label="เล่นตัวอย่าง ${escape(story.title)}" aria-pressed="false">${play}</button><button type="button" class="hc-preview-sound" data-hc-sound="${index}" aria-label="เปิดเสียงตัวอย่าง ${escape(story.title)}" aria-pressed="false">${sound(true)}</button></div><p class="hc-preview-status hc-status" role="status" aria-live="polite"></p></div>` : ''}
       <div class="hc-copy">
         <p class="hc-eyebrow"><span class="hc-live-dot"></span>ละครสั้น AI ภาษาไทย <span class="hc-original">TONTOR ORIGINAL</span></p>
         <p class="hc-kicker">${escape(trailer?.hook || story.kicker)}</p>
         <${index === 0 ? 'h1' : 'h2'} class="hc-title">${escape(story.posterTitle || story.title).replace(/\n/g, '<br>')}</${index === 0 ? 'h1' : 'h2'}>
         <div class="hc-meta"><span>${escape(story.genres.slice(0, 2).join(' · '))}</span><span class="hc-meta-separator">·</span><span>${escape(story.episodes)} ตอน</span><span class="hc-age">${escape(story.age)}</span></div>
         <p class="hc-description">${escape(story.description)}</p>
-        <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${play}${story.format === 'comic' || story.format === 'novel' ? 'เริ่มอ่านฟรี' : 'เริ่มดูฟรี'}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>
+        <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${play}${story.format === 'comic' || story.format === 'novel' ? 'เริ่มอ่านฟรี' : trailer ? 'ดูตัวอย่าง' : 'ดูคอนเซปต์'}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>
         <div class="hc-creator"><span class="hc-avatar" style="--hc-avatar-color:${escape(story.color || '#5d494b')}">${avatar}</span><span class="hc-creator-copy"><span>เรื่องเล่าจากครีเอเตอร์ไทย</span><strong>${escape(story.creator)} <span>/ ${escape(story.studio)}</span></strong></span></div>
       </div>
     </article>`;
@@ -56,12 +55,11 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     const video = panel.querySelector('.hc-preview-video');
     if (!video) return null;
     // A source is assigned only when this panel is visible and playback is wanted.
-    const preview = {panel, video, index, trailer:selected[index].heroTrailer, button:panel.querySelector('.hc-preview-play'), audio:panel.querySelector('.hc-preview-sound'), progress:panel.querySelector('.hc-preview-progress'), status:panel.querySelector('.hc-preview-status'), source:false, userPaused:false, manualPlay:false, unmuted:false, ended:false, blocked:false, error:false, resumeTime:0, attempt:0, starting:false};
+    const preview = {panel, video, index, trailer:selected[index].heroTrailer, button:panel.querySelector('.hc-preview-play'), audio:panel.querySelector('.hc-preview-sound'), status:panel.querySelector('.hc-preview-status'), source:false, userPaused:false, manualPlay:false, unmuted:false, ended:false, blocked:false, error:false, resumeTime:0, attempt:0, starting:false};
     video.muted = true;
     video.volume = .7;
     video.addEventListener('loadedmetadata', () => {
       if (!preview.source || !Number.isFinite(video.duration)) return;
-      positionPreview(preview);
       if (preview.resumeTime > 0) video.currentTime = Math.min(preview.resumeTime, Math.max(0, video.duration - .04));
     });
     const showFrame = () => { if (preview.source && video.readyState >= 2) panel.classList.add('has-preview-frame'); };
@@ -71,13 +69,11 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     video.addEventListener('pause', () => updatePreview(preview));
     video.addEventListener('timeupdate', () => {
       preview.resumeTime = video.currentTime;
-      const duration = Number.isFinite(video.duration) ? video.duration : Number(preview.trailer.duration);
-      preview.progress.style.setProperty('--hc-preview-progress', `${duration > 0 ? Math.min(100, video.currentTime / duration * 100) : 0}%`);
     });
     video.addEventListener('ended', () => {
       preview.ended = true;
       preview.manualPlay = false;
-      preview.status.textContent = 'ช็อตเด็ดจบแล้ว กดเริ่มดูฟรีเพื่อเปิดคลิปตัวอย่าง';
+      preview.status.textContent = 'ตัวอย่างจบแล้ว กดเล่นเพื่อดูอีกครั้ง';
       updatePreview(preview);
     });
     video.addEventListener('error', () => {
@@ -91,24 +87,12 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     return preview;
   });
 
-  function positionPreview(preview) {
-    if (!preview.video.videoWidth || !preview.video.videoHeight) return;
-    const visual = preview.panel.querySelector('.hc-visual');
-    const art = visual.getBoundingClientRect(), slide = preview.panel.getBoundingClientRect();
-    const ratio = preview.video.videoWidth / preview.video.videoHeight;
-    const width = Math.min(art.width, art.height * ratio), height = width / ratio;
-    visual.style.setProperty('--hc-video-width', `${width}px`);
-    visual.style.setProperty('--hc-video-height', `${height}px`);
-    preview.panel.style.setProperty('--hc-preview-right', `${slide.right - (art.left + (art.width + width) / 2) + 12}px`);
-    preview.panel.style.setProperty('--hc-preview-top', `${art.top - slide.top + 12}px`);
-  }
-
   function updatePreview(preview) {
     const playing = !preview.video.paused && !preview.video.ended;
-    const label = preview.error ? 'ลองช็อตเด็ดอีกครั้ง' : preview.ended ? 'ดูอีกครั้ง' : playing ? 'หยุดชั่วคราว' : 'ดูช็อตเด็ด';
+    const label = preview.error ? 'ลองเล่นอีกครั้ง' : preview.ended ? 'เล่นอีกครั้ง' : playing ? 'หยุดชั่วคราว' : 'เล่นตัวอย่าง';
     if (preview.button.dataset.label !== label) {
       preview.button.dataset.label = label;
-      preview.button.innerHTML = `${playing ? pause : preview.ended ? replay : play}<span class="hc-preview-label">${label}</span>${previewDuration(preview.trailer.duration)}`;
+      preview.button.innerHTML = playing ? pause : play;
     }
     preview.button.setAttribute('aria-label', `${label} ${selected[preview.index].title}`);
     preview.button.setAttribute('aria-pressed', String(playing));
@@ -122,7 +106,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   }
 
   function previewVisible(preview) {
-    return !destroyed && preview.index === active && heroVisible && !document.hidden && !document.querySelector('dialog[open]');
+    return !destroyed && mobileViewport.matches && preview.index === active && heroVisible && !document.hidden && !document.querySelector('dialog[open]');
   }
 
   function wantsPlayback(preview) {
@@ -184,7 +168,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     if (destroyed) return;
     previews.forEach(preview => {
       if (!preview) return;
-      if (preview.index !== active) { unloadPreview(preview); return; }
+      if (!mobileViewport.matches || preview.index !== active) { unloadPreview(preview); return; }
       if (!previewVisible(preview) || !wantsPlayback(preview)) { pausePreview(preview); return; }
       playPreview(preview);
     });
@@ -196,7 +180,10 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     if (audioOnly) {
       preview.unmuted = !preview.unmuted;
       preview.video.muted = !preview.unmuted;
-    } else if (!preview.video.paused && !preview.video.ended) {
+      updatePreview(preview);
+      return;
+    }
+    if (!preview.video.paused && !preview.video.ended) {
       preview.userPaused = true;
       preview.manualPlay = false;
       pausePreview(preview);
@@ -338,7 +325,6 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
 
   const resize = new ResizeObserver(() => {
     if (active >= 0 && !gesture && track.clientWidth > 0) track.scrollTo({left: active * track.clientWidth, behavior: 'instant'});
-    previews.forEach(preview => preview && positionPreview(preview));
   });
   resize.observe(track);
   const visibility = previews.some(Boolean) ? new IntersectionObserver(entries => {
@@ -353,6 +339,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   modalChanges?.observe(document.body, {subtree:true, attributes:true, attributeFilter:['open'], childList:true});
   document.addEventListener('visibilitychange', syncPreviews);
   reducedMotion.addEventListener('change', syncPreviews);
+  mobileViewport.addEventListener('change', syncPreviews);
   const hide = () => previews.forEach(preview => preview && pausePreview(preview));
   window.addEventListener('pagehide', hide);
   window.addEventListener('pageshow', syncPreviews);
@@ -365,6 +352,7 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
       clearTimeout(settleTimer); cancelAnimationFrame(frame);
       document.removeEventListener('visibilitychange', syncPreviews);
       reducedMotion.removeEventListener('change', syncPreviews);
+      mobileViewport.removeEventListener('change', syncPreviews);
       window.removeEventListener('pagehide', hide); window.removeEventListener('pageshow', syncPreviews);
       previews.forEach(preview => preview && unloadPreview(preview));
     }

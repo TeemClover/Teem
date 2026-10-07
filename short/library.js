@@ -16,8 +16,8 @@ export const availablePilots = [...new Set(['rain', 'village', 'naga', ...Object
 export const stories = concepts.map(story => {
   const originalPilots = pilotEpisodes[story.id] || [];
   const trailer = heroTrailers[story.id];
-  const heroTrailer = trailer ? {...trailer, episode:originalPilots.length + 1} : null;
-  const pilots = heroTrailer ? [...originalPilots, heroTrailer] : originalPilots;
+  const heroTrailer = trailer ? {...trailer, episode:originalPilots.length + 1} : story.id === 'village' && originalPilots[0] ? {...originalPilots[0], episode:1, hook:story.kicker} : null;
+  const pilots = trailer ? [...originalPilots, heroTrailer] : originalPilots;
   const extra = story.id === 'hr' ? {
     episodes: 2, status: '2 ตอนอ่านได้', episodeNames: ['ลางานไปบุกกรุงลงกา', 'ใบเสร็จแห่งกรุงลงกา'],
     comicChapters: [story.comicPages, [
@@ -27,6 +27,7 @@ export const stories = concepts.map(story => {
   } : {};
   return {...story, ...extra, ...creatorCredit(story.id), poster:`./assets/${story.id}.webp`, creatorId:story.id, pilots,
     ...(pilots?.length ? {episodes:pilots.length, episodeNames:pilots.map(p=>p.title), status:'คลิปนำร่อง', badge:'เล่นวิดีโอจริง', aiUsage:`ภาพและคลิปสร้างด้วย ${[...new Set(pilots.map(p=>p.provider))].join(' / ')} · บทไทยต้นฉบับ`, sampleLength:`${pilots.length} คลิปนำร่อง`, heroImage:pilots[0].poster} : {}),
+    ...(['krasue','warrior','village','wanthong'].includes(story.id) ? {heroLandscape:`./assets/hero/${story.id}-wide-v1.webp`} : {}),
     ...(heroTrailer ? {heroTrailer} : {})};
 });
 stories.push(somchaiWebtoon);
