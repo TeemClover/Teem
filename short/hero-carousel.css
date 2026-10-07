@@ -102,3 +102,11 @@
 @media(max-width:760px) and (max-height:700px){.hc-copy{padding-bottom:66px}.hc-kicker,.hc-creator{display:none}.hc-hero .hc-title{font-size:clamp(34px,6.4svh,44px);margin-bottom:10px}.hc-description{font-size:11px;line-height:1.7;margin:10px 0 13px;-webkit-line-clamp:1}.hc-button{min-height:44px}.hc-slide[data-hc-id="krasue"] .hc-visual :is(img,video){object-position:42% 100%}.hc-slide[data-hc-id="village"] .hc-visual :is(img,video){object-position:38% 65%}}
 @media(max-width:760px) and (max-height:600px){.hc-description{display:none}.hc-actions{margin-top:14px}.hc-hero .hc-title{font-size:clamp(32px,6.4svh,38px)}}
 @media(max-width:350px){.hc-copy,.hc-navigation{width:calc(100% - 32px)}.hc-button{padding-inline:14px}.hc-details{min-width:110px}.hc-hint{max-width:73px}.hc-controls{gap:1px}.hc-dot{width:20px}.hc-arrow{width:32px;height:32px}.hc-count{min-width:35px}}
+
+/* Somchai keeps the series name readable while the illustration leads the campaign. */
+.hc-title-line{display:block}
+.hc-slide[data-hc-id="somchai"] .hc-title-line:last-child{font-size:.65em;letter-spacing:-1.2px;line-height:1.5}
+.hc-slide[data-hc-id="somchai"] .hc-watch svg{fill:none;stroke:currentColor;stroke-width:1.7}
+.hc-slide[data-hc-id="somchai"] .hc-original{border-color:#b3dfaa66;color:#d3e8bf;letter-spacing:.2px;background:#264b3933}
+@media(min-width:761px){.hc-slide[data-hc-id="somchai"] .hc-visual img{object-position:right top}}
+@media(max-width:760px){.hc-slide[data-hc-id="somchai"] .hc-visual img{object-position:50% 15%}.hc-slide[data-hc-id="somchai"] .hc-title-line:last-child{font-size:.7em;letter-spacing:-.8px;line-height:1.5}}

@@ -18,14 +18,14 @@ async function setup(width,height=1000,options={}){
  const page=await context.newPage();const errors=[],missing=[],videos=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)missing.push(r.url());});page.on('request',r=>{if(r.url().endsWith('.mp4'))videos.push(r.url());});
  await page.goto(base+'/short/',{waitUntil:'networkidle'});await page.locator('.hc-slide').first().waitFor();
- const ids=await page.locator('.hc-slide').evaluateAll(p=>p.map(e=>e.dataset.hcId));assert.equal(new Set(ids).size,4);
+ const ids=await page.locator('.hc-slide').evaluateAll(p=>p.map(e=>e.dataset.hcId));assert.equal(new Set(ids).size,5);
  return {page,context,ids,errors,missing,videos};
 }
 async function choose(s,id){const index=s.ids.indexOf(id);await s.page.locator(`[data-hc-index="${index}"]`).click();await s.page.waitForFunction(({id,index})=>{let h=document.querySelector('.hc-hero'),t=h.querySelector('.hc-track');return h.dataset.hcActive===id&&Math.abs(t.scrollLeft-index*t.clientWidth)<1;},{id,index});}
 async function clean(s){assert.deepEqual(s.errors,[]);assert.deepEqual(s.missing,[]);assert.ok(await s.page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
 async function playing(s,id){await s.page.waitForFunction(id=>{let v=document.querySelector(`[data-hc-id="${id}"] .hc-preview-video`);return v?.readyState>=2&&!v.paused&&v.currentTime>.15;},id);}
 try{
-for(const width of [992,1440,2560])await run(`four full-width desktop compositions ${width}`,async()=>{
+for(const width of [992,1440,2560])await run(`five full-width desktop compositions ${width}`,async()=>{
  const s=await setup(width);try{
  const art=[];
  for(const id of s.ids){await choose(s,id);const frame=await s.page.locator(`[data-hc-id="${id}"] .hc-visual img`).evaluate(async img=>{await img.decode();let r=img.getBoundingClientRect();return {src:img.currentSrc,width:img.naturalWidth,height:img.naturalHeight,left:r.left,right:r.right,viewport:innerWidth};});assert.match(frame.src,new RegExp(id+'-wide-v1.webp'));assert.ok(frame.width/frame.height>2);assert.ok(Math.abs(frame.left)<1&&Math.abs(frame.right-frame.viewport)<1);art.push(frame);await s.page.screenshot({path:proof+`/desktop-${width}-${id}.png`});}

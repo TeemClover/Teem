@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "episode": 2,
+  "episodeTitle": "วันแรก ต้องรอด",
+  "source": "User-completed Thai webtoon adaptation, supplied as episode_02/v001. Imported without rewriting scenes or lettering.",
+  "free": true,
+  "pages": [
+    {
+      "source": "page_01.png",
+      "sourceSha256": "0b91494f3273553570749069abdeb8ae7d68a54bbf1d5b5701f424c082c28702",
+      "asset": "assets/somchai/episode-02/page-01.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 729424
+    },
+    {
+      "source": "page_02.png",
+      "sourceSha256": "d6e9f23d65ecf4bada82c7852a3b6fd68fd7e0939514b0e60e817bdc77b7c8ef",
+      "asset": "assets/somchai/episode-02/page-02.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 778176
+    },
+    {
+      "source": "page_03.png",
+      "sourceSha256": "55f801503fb5a0ca6e442362532ec2e50ba0172fbaddb4bab9f1bfcb36bf4032",
+      "asset": "assets/somchai/episode-02/page-03.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 756616
+    },
+    {
+      "source": "page_04.png",
+      "sourceSha256": "956abf503448efe553ea743543d6c2fc91275d750217cec5bd7c6b366bd2ffc5",
+      "asset": "assets/somchai/episode-02/page-04.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 725402
+    },
+    {
+      "source": "page_05.png",
+      "sourceSha256": "09203f647890e7688bf2a80acb02d764e224d427c6e545cdb1f9ab6606bff603",
+      "asset": "assets/somchai/episode-02/page-05.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 756184
+    },
+    {
+      "source": "page_06.png",
+      "sourceSha256": "950aaa3f9d66efe59171e5b8933963e26002883c41bb082d0abc4d2fbe64d7df",
+      "asset": "assets/somchai/episode-02/page-06.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 684080
+    },
+    {
+      "source": "page_07.png",
+      "sourceSha256": "610886870ceaaaf0edb6e10fdd5098d4dcc555ad2358bf38eacf582d0a907b57",
+      "asset": "assets/somchai/episode-02/page-07.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 733942
+    },
+    {
+      "source": "page_08.png",
+      "sourceSha256": "384a59097ab70d3f67b13793aa0bc5eab3d20081223c84336a6cc15ed097dccf",
+      "asset": "assets/somchai/episode-02/page-08.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 575346
+    },
+    {
+      "source": "page_09.png",
+      "sourceSha256": "b348f6f238a0352a1f5a76a022f3191cb5e76feaecd13a13b8dcff667cbdbd41",
+      "asset": "assets/somchai/episode-02/page-09.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 580274
+    },
+    {
+      "source": "page_10.png",
+      "sourceSha256": "3e8bba460b627bfb64e58373449167dfa6a06796b8212e2643fc89d07b0f9234",
+      "asset": "assets/somchai/episode-02/page-10.webp",
+      "dimensions": [
+        793,
+        1983
+      ],
+      "bytes": 668772
+    }
+  ]
+}

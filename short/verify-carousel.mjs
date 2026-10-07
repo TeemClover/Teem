@@ -25,7 +25,7 @@ async function setup(options) {
     const loaded = new Promise(resolve => link.onload = resolve); document.head.append(link); await loaded;
     const [{createHeroCarousel}, {stories}] = await Promise.all([import('./hero-carousel.js'), import('./library.js')]);
     window.heroChanges = []; window.heroOpens = [];
-    window.carousel = createHeroCarousel({root: document.querySelector('#test-hero'), stories, ids: ['krasue','warrior','village','wanthong'], onChange: story => window.heroChanges.push(story.id), onOpen: (id, autoplay) => window.heroOpens.push({id, autoplay})});
+    window.carousel = createHeroCarousel({root: document.querySelector('#test-hero'), stories, ids: ['krasue','warrior','village','wanthong','somchai'], onChange: story => window.heroChanges.push(story.id), onOpen: (id, autoplay) => window.heroOpens.push({id, autoplay})});
     await document.fonts.ready;
   });
   return {context, page, errors};
@@ -43,7 +43,7 @@ async function swipe(session, points) {
 try {
   for (const width of [320, 390, 768, 1440, 2560]) {
     const {context, page, errors} = await setup({viewport: {width, height: 1000}, isMobile: width < 760, hasTouch: true, reducedMotion: 'reduce'});
-    assert.equal(await page.locator('.hc-slide').count(), 4);
+    assert.equal(await page.locator('.hc-slide').count(), 5);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     assert.equal(await page.locator('.hc-visual img').evaluateAll((images, mobile) => images.every(image => getComputedStyle(image).objectFit === 'cover'), width < 760), true);
     if (width < 760) {
@@ -77,7 +77,7 @@ try {
     await swipe(session, points);
     await page.waitForFunction(() => document.querySelector('#test-hero').dataset.hcActive === 'warrior');
     await page.waitForFunction(() => Math.abs(document.querySelector('.hc-track').scrollLeft - document.querySelector('.hc-track').clientWidth) < 2);
-    assert.equal(await page.locator('.hc-slide').count(), 4, 'slides remain mounted across native swipes');
+    assert.equal(await page.locator('.hc-slide').count(), 5, 'slides remain mounted across native swipes');
     await swipe(session, Array.from({length: 12}, (_, index) => [195, 265 - index * 14]));
     await page.waitForFunction(() => scrollY > 80);
     assert.equal(await page.locator('#test-hero').getAttribute('data-hc-active'), 'warrior', 'vertical page gestures do not switch stories');

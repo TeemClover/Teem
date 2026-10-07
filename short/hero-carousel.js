@@ -1,6 +1,7 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const play = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg>';
 const information = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg>';
+const book = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v15M12 6C8 3 4 4 3 5v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-1-1-5-2-9 1Z"/></svg>';
 const pause = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>';
 const sound = muted => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4Z"/>${muted ? '<path d="m16 9 5 6m0-6-5 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
 const arrow = direction => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${direction < 0 ? 'm14 6-6 6 6 6' : 'm10 6 6 6-6 6'}"/></svg>`;
@@ -17,11 +18,12 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
   root.classList.add('hc-hero');
   root.setAttribute('role', 'region');
   root.setAttribute('aria-roledescription', 'carousel');
-  root.setAttribute('aria-label', 'ละครสั้น AI เรื่องเด่น');
+  root.setAttribute('aria-label', 'เรื่องเด่นจากครีเอเตอร์ไทย');
   root.removeAttribute('aria-describedby');
   root.removeAttribute('tabindex');
-  root.innerHTML = `<div class="hc-track" tabindex="0" aria-label="เลื่อนเลือกละครสั้นเรื่องเด่น" aria-describedby="${instance}-hint">${selected.map((story, index) => {
+  root.innerHTML = `<div class="hc-track" tabindex="0" aria-label="เลื่อนเลือกเรื่องเด่น" aria-describedby="${instance}-hint">${selected.map((story, index) => {
     const trailer = story.heroTrailer?.src ? story.heroTrailer : null;
+    const reading = story.format === 'comic' || story.format === 'novel';
     const image = trailer?.poster || story.heroImage || `./assets/${story.id}.webp`;
     const avatar = story.avatarImage ? `<img src="${escape(story.avatarImage)}" alt="" width="36" height="36" loading="lazy" draggable="false">` : escape(story.avatar);
     return `<article class="hc-slide${trailer ? ' hc-has-preview' : ''}" data-hc-id="${escape(story.id)}" style="--hc-tint:${escape(story.color || '#64525d')}" role="group" aria-roledescription="สไลด์" aria-label="${index + 1} จาก ${selected.length}: ${escape(story.title)}">
@@ -30,12 +32,12 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
       <div class="hc-shade" aria-hidden="true"></div>
       ${trailer ? `<div class="hc-preview"><div class="hc-preview-buttons"><button type="button" class="hc-preview-play" data-hc-preview="${index}" aria-label="เล่นตัวอย่าง ${escape(story.title)}" aria-pressed="false">${play}</button><button type="button" class="hc-preview-sound" data-hc-sound="${index}" aria-label="เปิดเสียงตัวอย่าง ${escape(story.title)}" aria-pressed="false">${sound(true)}</button></div><p class="hc-preview-status hc-status" role="status" aria-live="polite"></p></div>` : ''}
       <div class="hc-copy">
-        <p class="hc-eyebrow"><span class="hc-live-dot"></span>ละครสั้น AI ภาษาไทย <span class="hc-original">TONTOR ORIGINAL</span></p>
-        <p class="hc-kicker">${escape(trailer?.hook || story.kicker)}</p>
-        <${index === 0 ? 'h1' : 'h2'} class="hc-title">${escape(story.posterTitle || story.title).replace(/\n/g, '<br>')}</${index === 0 ? 'h1' : 'h2'}>
+        <p class="hc-eyebrow"><span class="hc-live-dot"></span>${reading ? escape(story.formatLabel) + ' ภาษาไทย' : 'ละครสั้น AI ภาษาไทย'} <span class="hc-original">${escape(story.heroBadge || (reading ? 'TONTOR WEBTOON' : 'TONTOR ORIGINAL'))}</span></p>
+        <p class="hc-kicker">${escape(trailer?.hook || story.heroKicker || story.kicker)}</p>
+        <${index === 0 ? 'h1' : 'h2'} class="hc-title">${escape(story.posterTitle || story.title).split('\n').map(line => `<span class="hc-title-line">${line}</span>`).join('')}</${index === 0 ? 'h1' : 'h2'}>
         <div class="hc-meta"><span>${escape(story.genres.slice(0, 2).join(' · '))}</span><span class="hc-meta-separator">·</span><span>${escape(story.episodes)} ตอน</span><span class="hc-age">${escape(story.age)}</span></div>
-        <p class="hc-description">${escape(story.description)}</p>
-        <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${play}${story.format === 'comic' || story.format === 'novel' ? 'เริ่มอ่านฟรี' : trailer ? 'ดูตัวอย่าง' : 'ดูคอนเซปต์'}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>
+        <p class="hc-description">${escape(story.heroDescription || story.description)}</p>
+        <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${reading ? book : play}${escape(story.heroCta || (reading ? 'เริ่มอ่านฟรี' : trailer ? 'ดูตัวอย่าง' : 'ดูคอนเซปต์'))}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>
         <div class="hc-creator"><span class="hc-avatar" style="--hc-avatar-color:${escape(story.color || '#5d494b')}">${avatar}</span><span class="hc-creator-copy"><span>เรื่องเล่าจากครีเอเตอร์ไทย</span><strong>${escape(story.creator)} <span>/ ${escape(story.studio)}</span></strong></span></div>
       </div>
     </article>`;
@@ -266,8 +268,8 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
     else if (button.hasAttribute('data-hc-move')) moveTo(nearestIndex() + Number(button.dataset.hcMove));
     else if (button.hasAttribute('data-hc-open')) {
       const autoplay = button.dataset.hcAutoplay === 'true';
-      const trailer = selected.find(story => story.id === button.dataset.hcOpen)?.heroTrailer;
-      const episode = autoplay ? Math.max(1, Math.trunc(Number(trailer?.episode) || 1)) : 1;
+      const story = selected.find(story => story.id === button.dataset.hcOpen);
+      const episode = autoplay ? Math.max(1, Math.trunc(Number(story?.heroEpisode || story?.heroTrailer?.episode) || 1)) : 1;
       onOpen(button.dataset.hcOpen, autoplay, episode);
     }
   }, {capture: true});

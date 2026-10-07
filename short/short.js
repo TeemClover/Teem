@@ -11,10 +11,10 @@ const playIcon = '<svg viewBox="0 0 20 20"><path d="m6 3 11 7-11 7Z"/></svg>';
 const bookmarkIcon = '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></svg>';
 const lockIcon = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>';
 let state = readState();
-const featuredIds = chooseFeaturedIds(['krasue', 'warrior', 'village', 'wanthong']);
+const featuredIds = chooseFeaturedIds(['krasue', 'warrior', 'village', 'wanthong', 'somchai']);
 let currentView = 'discover', genre = 'ทั้งหมด', format = 'drama', search = '', featured = stories.find(s=>s.id===featuredIds[0]);
 let selectedStory = null, selectedEpisode = 1, pendingEpisode = null, resumeAt = 0;
-let lastWrite = 0, toastTimer, readerRestoring = false, readingStarted = false;
+let lastWrite = 0, toastTimer, readerSaveTimer, readerRestoring = false, readingStarted = false;
 const video = $('#story-video');
 const isReading = story => ['comic','novel'].includes(story?.format);
 const expandReader = document.createElement('button');
@@ -129,7 +129,7 @@ function renderCatalog() {
 function renderShelves() {
   const pilots=stories.filter(s=>s.pilots?.length);
   $('#pilot-grid').innerHTML=pilots.map(s=>`<button class="pilot-card" data-shelf-open="${s.id}"><span class="pilot-art"><img src="${s.heroImage||s.poster}" alt="ฉากตัวอย่าง ${escape(s.title)}" loading="lazy"><span class="pilot-play">${playIcon}</span><span class="pilot-duration">${s.pilots.length} คลิป · ${s.pilots[0].duration.toFixed(0)} วิ</span></span><span class="pilot-copy"><small>AI PILOT · ภาษาไทย</small><strong>${escape(s.title)}</strong><span>${escape(s.kicker)}</span></span></button>`).join('');
-  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<button class="reading-card" data-shelf-open="${s.id}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy"><span><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><strong>${escape(s.title)}</strong><p>${escape(s.kicker)}</p><span class="reading-by">${escape(s.creator)} / ${escape(s.studio)}</span><b>${s.id==='somchai'?'อ่านตอน 1 ฟรี':'เริ่มอ่านฟรี'} ↗</b></span></button>`).join('');
+  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<button class="reading-card" data-shelf-open="${s.id}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy"><span><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><strong>${escape(s.title)}</strong><p>${escape(s.kicker)}</p><span class="reading-by">${escape(s.creator)} / ${escape(s.studio)}</span><b>${s.id==='somchai'?'ตอน 2 มาแล้ว · อ่านฟรี':'เริ่มอ่านฟรี'} ↗</b></span></button>`).join('');
 }
 function renderContinue() {
   const entries = stories.filter(s => state.progress[s.id]).sort((a, b) => state.progress[b.id].updated - state.progress[a.id].updated).slice(0, 3);
@@ -385,7 +385,10 @@ video.addEventListener('ended', () => {
 video.addEventListener('error', () => { if (selectedStory) $('#player-status').textContent = 'โหลดคลิปไม่สำเร็จ ลองเปิดเรื่องอีกครั้ง'; });
 document.addEventListener('visibilitychange', () => { if (document.hidden) { saveProgress(); video.pause(); } });
 window.addEventListener('pagehide', saveProgress);
-$('#comic-reader').addEventListener('scroll',()=>{if(Date.now()-lastWrite>500){saveReading();lastWrite=Date.now();}});
+$('#comic-reader').addEventListener('scroll',()=>{
+  clearTimeout(readerSaveTimer);
+  readerSaveTimer=setTimeout(()=>saveReading(),150);
+});
 const trustCopy={creators:{title:'คนเล่าเรื่องก็มีเรื่องเล่า',body:'หน้าเรื่องบอกชื่อผู้สร้าง สตูดิโอ จังหวัด และวิธีใช้ AI ให้เปิดอ่านได้ ขณะนี้ทุกตัวตนเป็นครีเอเตอร์สมมติ ยังไม่มีการตรวจยืนยันบุคคลจริง',items:['ระบุเครดิตบท ภาพ เสียง และการตัดต่อก่อนรับเรื่องจริง','บอกการใช้ AI ตามที่ผู้สร้างแจ้ง พร้อมหลักฐานเมื่อจำเป็น','แสดงชื่อครีเอเตอร์จริงเมื่อเจ้าตัวยินยอมเผยแพร่']},pricing:{title:'อยากดูต่อ ก็รู้ราคาก่อน',body:'3 ตอนแรกฟรี หลังจากนั้นตอนละ 10 เหรียญทดลอง หน้าเรื่องแสดงเหรียญที่ต้องใช้เพื่อปลดล็อกตอนที่เหลือ และตอนที่ปลดล็อกแล้วดูหรืออ่านซ้ำได้',items:['กดยืนยันก่อนหักเหรียญทุกครั้ง','เติมเหรียญใน prototype ได้ฟรี ไม่มีหน้ารับชำระเงิน','ราคาเงินจริงและเงื่อนไขคืนเงินยังไม่ได้กำหนด']},content:{title:'รู้ก่อนเริ่ม เลือกดูได้สบายใจ',body:'หน้าเรื่องแสดงรูปแบบ สถานะ จำนวนตอนในคอนเซปต์ และคำเตือนเนื้อหา วรรณคดีรีมิกซ์ระบุว่าเป็นการตีความใหม่อย่างอิสระ',items:['อายุที่แสดงเป็นแนวทางสมมติ ไม่ใช่เรตที่ผ่านการรับรอง','ยังไม่มีเรื่องจริงที่ผ่านการตรวจสิทธิ์หรือบรรณาธิการ','ก่อนเปิดจริงต้องตรวจสิทธิ์และความพร้อมของตอนที่ขาย']}};
 $$('[data-trust]').forEach(b=>b.addEventListener('click',()=>{const c=trustCopy[b.dataset.trust];$('#trust-title').textContent=c.title;$('#trust-body').innerHTML=`<p>${c.body}</p><ul>${c.items.map(item=>`<li>${item}</li>`).join('')}</ul>`;$('#trust-dialog').showModal();}));
 const genreNames=['ทั้งหมด','ผีไทย','พญานาค','วรรณคดีรีมิกซ์','ตลกกวน','โรแมนซ์','ดราม่า','สยองขวัญ','วาย','แฟนตาซี','คอมเมดี้','ย้อนยุค'];

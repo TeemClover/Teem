@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "tool": "built-in image_gen",
+  "episode": 2,
+  "referenceRoles": [
+    "Existing Somchai cover: character and painted style",
+    "Episode 2 page 10: setting and two-moon scene"
+  ],
+  "assets": [
+    {
+      "kind": "wide",
+      "asset": "assets/hero/somchai-wide-v1.webp",
+      "prompt": "Use case: illustration-story. Create polished promotional key art for Thai fantasy webtoon สมชาย เกิดใหม่ไปปลูกผัก, episode 2 วันแรก ต้องรอด. Input 1 is character and painted webtoon style reference, input 2 is episode story scene reference, NOT an edit target. Preserve this same fictional young adult Thai man age25 with tousled curly black hair, indigo mo-hom shirt gold buttons, brown cropped trousers, muted red-white checked pha-khao-ma on LEFT shoulder, barefoot, lean build. Scene: first night surviving alone in another world, massive hollow forest tree with one doorway and no windows, dense deep emerald woodland, TWO moons (one pale warm smaller moon, one luminous cool larger moon). Character sits at hollow-tree entrance holding his simple wooden-handled farming hoe, looking upward in wonder, readable attractive face lit by cool moonlight, compelling hopeful mystery rather than horror. Detailed painted webtoon illustration, cinematic premium streaming key art, deep blue and jade with warm skin contrast, rich forest depth, subtle luminous mist. No new characters, monsters, modern items, fire, planted garden, buildings or later-story plot. Correct hands and simple recognizable right-angle flat hoe blade. No text, no logos, no subtitles, no comic panels, no watermarks, no speech bubbles. Deliver ultrawide LANDSCAPE 21:9. Composition specifically for desktop full-bleed hero: left 38% quiet dark forest depth for website copy overlay. Character sits in right third at x72%, recognizable face around x70% y40%, keep head fully below y20%; moons in upper right between x78% and94%, y20%–35%. Hollow tree right and foreground soil lower edge. Character should be large enough to recognize even at smaller desktop sizes. Hero safe crop excludes bottom 15%; keep face and BOTH moons well inside upper 80%."
+    },
+    {
+      "kind": "portrait",
+      "asset": "assets/hero/somchai-portrait-v1.webp",
+      "prompt": "Use case: illustration-story. Create polished promotional key art for Thai fantasy webtoon สมชาย เกิดใหม่ไปปลูกผัก, episode 2 วันแรก ต้องรอด. Input 1 is character and painted webtoon style reference, input 2 is episode story scene reference, NOT an edit target. Preserve this same fictional young adult Thai man age25 with tousled curly black hair, indigo mo-hom shirt gold buttons, brown cropped trousers, muted red-white checked pha-khao-ma on LEFT shoulder, barefoot, lean build. Scene: first night surviving alone in another world, massive hollow forest tree with one doorway and no windows, dense deep emerald woodland, TWO moons (one pale warm smaller moon, one luminous cool larger moon). Character sits at hollow-tree entrance holding his simple wooden-handled farming hoe, looking upward in wonder, readable attractive face lit by cool moonlight, compelling hopeful mystery rather than horror. Detailed painted webtoon illustration, cinematic premium streaming key art, deep blue and jade with warm skin contrast, rich forest depth, subtle luminous mist. No new characters, monsters, modern items, fire, planted garden, buildings or later-story plot. Correct hands and simple recognizable right-angle flat hoe blade. No text, no logos, no subtitles, no comic panels, no watermarks, no speech bubbles. Deliver vertical PORTRAIT 9:16. Composition specifically for full-bleed mobile Hero: character centered, head around x50% y35%, both moons clearly visible in upper fifth, hollow tree framing sides. Character upper-middle torso prominently visible. Lower 40% darker calm forest floor for website title and CTA overlay. Keep face and both moons inside upper half; no bright or complex elements behind bottom text."
+    }
+  ]
+}

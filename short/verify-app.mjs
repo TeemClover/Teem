@@ -49,7 +49,7 @@ try{
     const session=await setup(width);const {page,context}=session;
     try{
       assert.equal(await page.locator('#catalog-grid .story-card').count(),9,'movie-first discovery has nine movies');
-      assert.equal(await page.locator('.hc-slide').count(),4,'hero keeps all four slides mounted');
+      assert.equal(await page.locator('.hc-slide').count(),5,'hero keeps all five slides mounted');
       assert.equal(await page.locator('.community-card').count(),4,'four compact featured creator profiles');
       await assertNoOverflow(page);
       await page.screenshot({path:`${proof}/discover-${width}.png`});
