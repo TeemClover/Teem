@@ -123,6 +123,7 @@ try{
     try{
       await page.locator('[data-format="comic"]').click();
       await page.locator('[data-open="hr"]').first().click();
+      await page.locator('#play-episode').click();
       assert.equal(await page.locator('#episode-grid button').count(),2);
       const chapters=[];
       for(const episode of [1,2]){
@@ -152,7 +153,7 @@ try{
       await page.screenshot({path:proof+'/creator-profile.png'});
       await page.locator('.community-dialog [data-community-work="novel-ghost"]').click();
       await page.locator('.novel-body p').first().waitFor();
-      assert.match(await page.locator('#story-title').textContent(),/ห้องที่ไม่มีเลข/);
+      assert.match(await page.locator('#story-title').textContent(),/ห้องสุดท้าย/);
       assert.equal(await page.locator('.community-dialog').getAttribute('open'),null,'profile closes before story opens');
       await closeStory(page);await page.reload({waitUntil:'networkidle'});
       await page.locator('[data-community-creator="ghost"]').click();

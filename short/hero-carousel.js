@@ -36,9 +36,9 @@ export function createHeroCarousel({root, stories, ids, onOpen = () => {}, onCha
         <p class="hc-kicker" hidden>${escape(trailer?.hook || story.heroKicker || story.kicker)}</p>
         <${index === 0 ? 'h1' : 'h2'} class="hc-title">${story.seriesLogo ? `<img class="hc-series-logo" src="${escape(story.seriesLogo)}" alt="${escape(story.title)}" width="420" height="140" draggable="false">` : escape(story.posterTitle || story.title).split('\n').map(line => `<span class="hc-title-line">${line}</span>`).join('')}</${index === 0 ? 'h1' : 'h2'}>
         <div class="hc-meta"><span>${escape(story.genres.slice(0, 2).join(' · '))}</span><span class="hc-meta-separator">·</span><span>${escape(story.episodes)} ตอน</span><span class="hc-age">${escape(story.age)}</span></div>
-        <p class="hc-description">${escape(story.heroDescription || story.description)}</p>
+        <p class="hc-description">${escape(story.heroDescription || story.summary || story.description)}</p>
         <div class="hc-actions"><button class="hc-button hc-watch" data-hc-open="${escape(story.id)}" data-hc-autoplay="true">${reading ? book : play}${escape(story.heroCta || (reading ? 'เริ่มอ่านฟรี' : trailer ? 'ดูตัวอย่าง' : 'ดูคอนเซปต์'))}</button><button class="hc-button hc-details" data-hc-open="${escape(story.id)}">${information}รายละเอียด</button></div>
-        <div class="hc-creator"><span class="hc-avatar" style="--hc-avatar-color:${escape(story.color || '#5d494b')}">${avatar}</span><span class="hc-creator-copy"><strong>${escape(story.creatorKind === 'team' ? story.studio : story.creator)}</strong></span></div>
+        <button class="hc-creator" data-creator="${escape(story.creatorId)}" aria-label="ดูครีเอเตอร์ ${escape(story.creatorKind === 'team' ? story.studio : story.creator)}"><span class="hc-avatar" style="--hc-avatar-color:${escape(story.color || '#5d494b')}">${avatar}</span><span class="hc-creator-copy"><strong>${escape(story.creatorKind === 'team' ? story.studio : story.creator)}</strong>${story.creatorKind==='team'?'':`<small>${escape(story.studio)}</small>`}</span><span class="hc-creator-arrow" aria-hidden="true">›</span></button>
       </div>
     </article>`;
   }).join('')}</div>

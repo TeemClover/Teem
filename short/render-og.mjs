@@ -28,7 +28,7 @@ h1{position:absolute;left:60px;top:219px;margin:0;font-size:44px;line-height:1.4
 .story .background{left:44%;width:56%;object-fit:cover}.story .shade{background:linear-gradient(90deg,#111113 0%,#111113 32%,#111113d9 44%,transparent 68%),linear-gradient(0deg,#111113cf,transparent 30%)}
 .story.share-wide .background{left:0;width:100%}.story.share-wide .stamp{top:auto;right:auto;left:64px;bottom:103px;border-color:#ff654f66;background:#ff654f18;color:#ffb8a9}.story .brand{top:36px;font-size:64px;gap:17px;letter-spacing:-2px}.story .brand img{width:54px;height:61px}.slogan{position:absolute;left:64px;top:124px;font-size:24px;color:#f4f2ed}
 .story h1{top:235px;max-width:625px;font-size:62px;line-height:1.3}.story .genres{font-size:23px;top:426px;color:#ded4d0}.story .footer{font-size:16px}.stamp{position:absolute;right:48px;top:49px;font-size:15px;background:#111d;padding:8px 12px;border:1px solid #ffffff38;border-radius:5px;color:#eee5df}
-.series-wordmark{width:460px;height:auto;display:block}
+.series-wordmark{width:460px;height:auto;max-height:180px;object-fit:contain;object-position:left top;display:block}
 `;
 const browser=await chromium.launch({executablePath:process.env.SHORT_CHROME||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
 try{

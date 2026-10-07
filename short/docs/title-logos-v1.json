@@ -1,0 +1,223 @@
+{
+  "method": "Deterministic Thai typography and original vector ornament, transparent WebP exports",
+  "fonts": [
+    "IBM Plex Sans Thai Bold",
+    "Sriracha Regular"
+  ],
+  "version": 1,
+  "designs": {
+    "rain": {
+      "lines": [
+        "คืนที่เรา",
+        "ไม่รู้จัก"
+      ],
+      "font": "Hand",
+      "sizes": [
+        122,
+        171
+      ],
+      "ink": [
+        "#f8e7e6",
+        "#efb8bc"
+      ],
+      "accent": "#dc8c9b",
+      "style": "romance",
+      "motif": "Rain strokes and a hand-drawn heart; pale rose calligraphy"
+    },
+    "north": {
+      "lines": [
+        "ฝากรัก",
+        "ไว้ที่เหนือ"
+      ],
+      "font": "Hand",
+      "sizes": [
+        139,
+        156
+      ],
+      "ink": [
+        "#f7ddbc",
+        "#fff3e1"
+      ],
+      "accent": "#e5aa79",
+      "style": "warm",
+      "motif": "Mountain horizon and sun marks; warm handwritten romance"
+    },
+    "ghost": {
+      "lines": [
+        "ห้อง",
+        "สุดท้าย"
+      ],
+      "font": "Plex",
+      "sizes": [
+        156,
+        183
+      ],
+      "ink": [
+        "#d1d4c8",
+        "#d85750"
+      ],
+      "accent": "#9d443f",
+      "style": "haunt",
+      "motif": "An open doorway, off-register crimson type and scratch lines"
+    },
+    "warrior": {
+      "lines": [
+        "นาคานคร"
+      ],
+      "font": "Hand",
+      "sizes": [
+        199
+      ],
+      "ink": [
+        "#f2dea3"
+      ],
+      "accent": "#b8d8be",
+      "style": "myth",
+      "motif": "A coiled naga crest, layered jade-and-gold lettering and river curves"
+    },
+    "office": {
+      "lines": [
+        "ออฟฟิศนี้",
+        "มีรัก"
+      ],
+      "font": "Plex",
+      "sizes": [
+        122,
+        181
+      ],
+      "ink": [
+        "#ffe9ed",
+        "#ffb6c9"
+      ],
+      "accent": "#de9cab",
+      "style": "office",
+      "motif": "A heart briefcase with pink underlines; contemporary office romance"
+    },
+    "period": {
+      "lines": [
+        "บุพเพ",
+        "อีกครา"
+      ],
+      "font": "Hand",
+      "sizes": [
+        173,
+        170
+      ],
+      "ink": [
+        "#ffe6ac",
+        "#ebc984"
+      ],
+      "accent": "#d9bd75",
+      "style": "period",
+      "motif": "Thai floral flourishes and gold period lettering"
+    },
+    "krasue": {
+      "lines": [
+        "กระสือ",
+        "แถวบ้าน"
+      ],
+      "font": "Hand",
+      "sizes": [
+        202,
+        119
+      ],
+      "ink": [
+        "#f06e5b",
+        "#f1e6d6"
+      ],
+      "accent": "#b75348",
+      "style": "horror",
+      "motif": "Crimson brush-like lettering, dripping tails and a ghost silhouette"
+    },
+    "naga": {
+      "lines": [
+        "นาค",
+        "สายมู"
+      ],
+      "font": "Plex",
+      "sizes": [
+        185,
+        156
+      ],
+      "ink": [
+        "#d8efaa",
+        "#ffe1a4"
+      ],
+      "accent": "#cba060",
+      "style": "comic",
+      "motif": "Naga charm and sparkle, mint lettering with orange comic shadow"
+    },
+    "hr": {
+      "lines": [
+        "ทศกัณฐ์",
+        "แผนก HR"
+      ],
+      "font": "Plex",
+      "sizes": [
+        153,
+        125
+      ],
+      "ink": [
+        "#e4eee0",
+        "#b4debf"
+      ],
+      "accent": "#c68c66",
+      "style": "corporate",
+      "motif": "An approval slip, stamp rules and a mint HR label"
+    },
+    "hanuman": {
+      "lines": [
+        "หนุมาน",
+        "เด็กส่งของ"
+      ],
+      "font": "Plex",
+      "sizes": [
+        179,
+        120
+      ],
+      "ink": [
+        "#fff2cd",
+        "#f0aa69"
+      ],
+      "accent": "#d9a26d",
+      "style": "speed",
+      "motif": "Express parcel, speed lines and offset orange comic lettering"
+    },
+    "wanthong": {
+      "lines": [
+        "วันทอง",
+        "ไม่ขอเลือก"
+      ],
+      "font": "Plex",
+      "sizes": [
+        179,
+        104
+      ],
+      "ink": [
+        "#f1d49a",
+        "#f5ebe0"
+      ],
+      "accent": "#cbaa70",
+      "style": "modern",
+      "motif": "An independent crown, strong gold title and editorial underline"
+    },
+    "village": {
+      "lines": [
+        "ผู้ใหญ่บ้าน",
+        "อินฟลูฯ"
+      ],
+      "font": "Hand",
+      "sizes": [
+        135,
+        192
+      ],
+      "ink": [
+        "#ffedb2",
+        "#ffd269"
+      ],
+      "accent": "#f2b76c",
+      "style": "fun",
+      "motif": "A live chat/play icon, loud comic offset lettering and laughing rays"
+    }
+  }
+}

@@ -3,6 +3,7 @@ import {creatorProfiles, novels} from './content-library.js';
 import {pilotEpisodes} from './media-pilots.js';
 import {heroTrailers} from './hero-trailers.js';
 import {somchaiWebtoon} from './somchai-webtoon.js';
+import {seriesVersions, summaries} from './story-identity.js';
 
 function creatorCredit(id) {
   const profile = creatorProfiles.find(creator => creator.id === id);
@@ -34,4 +35,20 @@ stories.push(somchaiWebtoon);
 for (const novel of novels) {
   const creator = concepts.find(s=>s.id===novel.creatorId);
   stories.push({...creator, ...novel, ...creatorCredit(novel.creatorId), poster:`./${novel.cover}`, episodes:novel.chapters.length, episodeNames:novel.chapters.map(c=>c.title), badge:'อ่านจบใน 3 บท', position:'center', sampleLength:'เรื่องสั้นต้นฉบับ · 3 บท', pilots:[]});
+}
+for (const story of stories) {
+  const group = seriesVersions.find(ids => ids.includes(story.id));
+  const primary = group ? stories.find(s => s.id === group[0]) : story;
+  story.seriesId = primary.id;
+  story.summary = summaries[story.id] || story.heroDescription || story.description;
+  story.versionIds = group || [story.id];
+  if (group) {
+    story.title = primary.title;
+    story.posterTitle = primary.posterTitle;
+    story.versionNote = 'สองเวอร์ชันในชื่อเดียวกัน เล่าคนละมุมด้วยพล็อตและเนื้อหาเฉพาะของแต่ละรูปแบบ';
+  }
+  if (story.id !== 'somchai') {
+    story.seriesLogo = `./assets/titles/${primary.id}/logo-420-v1.webp`;
+    story.shareVersion = 'v3';
+  }
 }

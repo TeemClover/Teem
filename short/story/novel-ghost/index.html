@@ -8,25 +8,25 @@
   <base href="/short/">
   <!-- SHARE_META_START -->
   <meta name="description" content="ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้ · นิยาย AI ภาษาไทย · เรื่องตัวอย่างที่ตอนต่อ — เรื่องสั้น ความรู้สึกยาว">
-  <title>ห้องที่ไม่มีเลข | ตอนต่อ</title>
+  <title>ห้องสุดท้าย | ตอนต่อ</title>
   <link rel="canonical" href="https://www.myclover.com/short/story/novel-ghost/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ตอนต่อ">
   <meta property="og:locale" content="th_TH">
-  <meta property="og:title" content="ห้องที่ไม่มีเลข | ตอนต่อ">
+  <meta property="og:title" content="ห้องสุดท้าย | ตอนต่อ">
   <meta property="og:description" content="ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้ · นิยาย AI ภาษาไทย · เรื่องตัวอย่างที่ตอนต่อ — เรื่องสั้น ความรู้สึกยาว">
   <meta property="og:url" content="https://www.myclover.com/short/story/novel-ghost/">
-  <meta property="og:image" content="https://www.myclover.com/short/assets/og/novel-ghost-v2.jpg">
-  <meta property="og:image:secure_url" content="https://www.myclover.com/short/assets/og/novel-ghost-v2.jpg">
+  <meta property="og:image" content="https://www.myclover.com/short/assets/og/novel-ghost-v3.jpg">
+  <meta property="og:image:secure_url" content="https://www.myclover.com/short/assets/og/novel-ghost-v3.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="ห้องที่ไม่มีเลข — เรื่องตัวอย่างที่ตอนต่อ">
+  <meta property="og:image:alt" content="ห้องสุดท้าย — เรื่องตัวอย่างที่ตอนต่อ">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ห้องที่ไม่มีเลข | ตอนต่อ">
+  <meta name="twitter:title" content="ห้องสุดท้าย | ตอนต่อ">
   <meta name="twitter:description" content="ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้ · นิยาย AI ภาษาไทย · เรื่องตัวอย่างที่ตอนต่อ — เรื่องสั้น ความรู้สึกยาว">
-  <meta name="twitter:image" content="https://www.myclover.com/short/assets/og/novel-ghost-v2.jpg">
-  <meta name="twitter:image:alt" content="ห้องที่ไม่มีเลข — ตอนต่อ">
+  <meta name="twitter:image" content="https://www.myclover.com/short/assets/og/novel-ghost-v3.jpg">
+  <meta name="twitter:image:alt" content="ห้องสุดท้าย — ตอนต่อ">
   <!-- SHARE_META_END -->
   <link rel="icon" href="./assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./short.css">
@@ -105,9 +105,12 @@
       <div class="story-copy" id="story-panel">
         <button id="reader-panel-close" class="icon-button" aria-label="ปิดเลือกตอน">×</button>
         <p class="section-kicker" hidden></p><h2 id="story-title"></h2><p class="story-meta" id="story-meta"></p>
+        <div id="story-versions" class="story-versions" aria-label="เวอร์ชันของเรื่อง" hidden></div>
+        <p class="story-description" id="story-description"></p>
+        <details id="story-about" class="story-about"><summary><span class="story-about-label">อ่านเพิ่มเติม</span><span class="story-about-mark" aria-hidden="true">＋</span></summary><p id="story-full-description" class="story-full-description"></p><p id="story-version-note" class="story-version-note" hidden></p><div id="story-provenance" class="story-provenance"></div><div id="completion-price" class="completion-price"></div><p class="episode-note"></p></details>
+        <button id="story-creator" class="story-creator" aria-label="ดูครีเอเตอร์"></button>
         <div class="story-buttons"><button class="button primary" id="play-episode">เริ่มดู</button><button class="icon-button save-button" id="save-story" aria-label="เก็บในรายการ" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></svg></button><button class="icon-button" id="share-story" aria-label="แชร์เรื่อง"><svg viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M5 13v8h14v-8"/></svg></button></div>
         <div class="episodes-heading"><h3>เลือกตอน</h3><span>3 ตอนแรกฟรี</span></div><div class="episode-grid" id="episode-grid"></div>
-        <details id="story-about" class="story-about"><summary>เรื่องย่อและข้อมูล <span aria-hidden="true">＋</span></summary><p class="story-description" id="story-description"></p><div id="story-creator" class="story-creator"></div><div id="story-provenance" class="story-provenance"></div><div id="completion-price" class="completion-price"></div><p class="episode-note"></p></details>
       </div>
     </div>
   </dialog>
@@ -115,6 +118,6 @@
   <dialog id="unlock-dialog" class="small-dialog" aria-labelledby="unlock-title"><button class="dialog-close icon-button" data-close="unlock-dialog" aria-label="ยกเลิกปลดล็อก">×</button><div class="wallet-emblem">✦</div><h2 id="unlock-title">ดูตอนต่อไป</h2><img id="unlock-cover" class="unlock-cover" alt="ปกตอนที่ต้องการปลดล็อก" width="397" height="993" hidden><p id="unlock-description"></p><p class="muted">ยอดคงเหลือ <span data-balance>120</span> เหรียญ</p><button class="button primary full-width" id="confirm-unlock">ปลดล็อกด้วย 10 เหรียญทดลอง</button><p class="wallet-disclaimer">เหรียญทดลอง · ปลดล็อกแล้วอ่านหรือดูซ้ำได้</p></dialog>
   <dialog id="trust-dialog" class="small-dialog trust-dialog" aria-labelledby="trust-title"><button class="dialog-close icon-button" data-close="trust-dialog" aria-label="ปิดข้อมูล">×</button><h2 id="trust-title"></h2><div id="trust-body"></div><p class="wallet-disclaimer">เรื่องและครีเอเตอร์สมมติ · ไม่มีการชำระเงินจริง</p></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <noscript><div class="noscript"><strong>ห้องที่ไม่มีเลข</strong> — ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้<br>เปิด JavaScript เพื่อเลือกเรื่องและลองดูคลิป prototype</div></noscript>
+  <noscript><div class="noscript"><strong>ห้องสุดท้าย</strong> — ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้<br>เปิด JavaScript เพื่อเลือกเรื่องและลองดูคลิป prototype</div></noscript>
 </body>
 </html>

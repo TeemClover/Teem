@@ -104,17 +104,17 @@ function card(story) {
     <button class="poster-button" data-open="${story.id}" aria-label="${isReading(story)?'อ่าน':'ดูรายละเอียด'} ${story.title}">
       <img src="${story.poster}" width="400" height="600" loading="lazy" alt="ภาพปก AI เรื่องตัวอย่าง ${story.title}" style="object-position:${story.position}">
       <span class="poster-shade"></span><span class="poster-badge ${story.id === 'rain' ? 'featured' : ''}">${story.badge}</span>
-      <span class="poster-hover">${isReading(story)?'<span>อ่าน</span>':playIcon}</span><span class="poster-title">${story.posterTitle.replace('\n', '<br>')}</span>
+      <span class="poster-hover">${isReading(story)?'<span>อ่าน</span>':playIcon}</span><span class="poster-title">${story.seriesLogo?`<img class="poster-wordmark" src="${story.seriesLogo}" alt="${escape(story.title)}" loading="lazy">`:escape(story.posterTitle).replace('\n', '<br>')}</span>
       <span class="poster-foot"><span>${story.formatLabel} · TH</span><span>${story.episodes} ${story.format==='novel'?'บท':'ตอน'}</span></span>
     </button>
-    <div class="card-info"><button class="card-title" data-open="${story.id}">${story.title}</button><p class="card-meta">${story.genres.slice(0,2).join(' · ')}</p><p class="card-creator"><img class="card-avatar" src="${story.avatarImage}" alt="" width="20" height="20" loading="lazy">${story.creatorKind==='team'?story.studio:story.creator}</p><button class="icon-button card-save" data-save="${story.id}" aria-label="${saved ? 'นำออกจาก' : 'เก็บใน'}รายการของฉัน: ${story.title}" aria-pressed="${saved}">${bookmarkIcon}</button></div>
+    <div class="card-info"><button class="card-title" data-open="${story.id}">${escape(story.title)}</button><p class="card-meta">${story.genres.slice(0,2).join(' · ')}</p><button class="card-synopsis" data-open="${story.id}" aria-label="เรื่องย่อ ${escape(story.title)} อ่านเพิ่มเติม"><span>${escape(story.summary)}</span><small>เพิ่มเติม ↗</small></button><button class="card-creator" data-creator="${story.creatorId}" aria-label="ดูครีเอเตอร์ ${escape(story.creatorKind==='team'?story.studio:story.creator)}"><img class="card-avatar" src="${story.avatarImage}" alt="" width="20" height="20" loading="lazy">${escape(story.creatorKind==='team'?story.studio:story.creator)}</button><button class="icon-button card-save" data-save="${story.id}" aria-label="${saved ? 'นำออกจาก' : 'เก็บใน'}รายการของฉัน: ${story.title}" aria-pressed="${saved}">${bookmarkIcon}</button></div>
   </article>`;
 }
 
 function renderCatalog() {
   const needle = search.trim().toLocaleLowerCase('th-TH');
   const priority=s=>Number(s.format==='drama')*10+Number(Boolean(s.pilots?.length))*5+Number(['krasue','wanthong','village'].includes(s.id));
-  const filtered = [...stories].sort((a,b)=>priority(b)-priority(a)).filter(s => (currentView !== 'saved' || state.saved.includes(s.id)) && (format==='all'||s.format===format) && (genre === 'ทั้งหมด' || s.genres.includes(genre)) && (!needle || [s.title, s.creator, s.studio, s.city, s.formatLabel, ...s.genres].join(' ').toLocaleLowerCase('th-TH').includes(needle)));
+  const filtered = [...stories].sort((a,b)=>priority(b)-priority(a)).filter(s => (currentView !== 'saved' || state.saved.includes(s.id)) && (format==='all'||s.format===format) && (genre === 'ทั้งหมด' || s.genres.includes(genre)) && (!needle || [s.title, s.summary, s.description, s.creator, s.studio, s.city, s.formatLabel, ...s.genres].join(' ').toLocaleLowerCase('th-TH').includes(needle)));
   $('#catalog-grid').innerHTML = filtered.map(card).join('');
   $('#catalog-count').textContent = `${filtered.length} เรื่อง`;
   $('#catalog-title').innerHTML = currentView === 'saved' ? 'รายการของฉัน<span class="orange-dot">.</span>' : needle ? 'ผลการค้นหา<span class="orange-dot">.</span>' : 'เลือกเรื่องดู<span class="orange-dot">.</span>';
@@ -129,7 +129,7 @@ function renderCatalog() {
 function renderShelves() {
   const pilots=stories.filter(s=>s.pilots?.length);
   $('#pilot-grid').innerHTML=pilots.map(s=>`<button class="pilot-card" data-shelf-open="${s.id}"><span class="pilot-art"><img src="${s.heroImage||s.poster}" alt="ฉากตัวอย่าง ${escape(s.title)}" loading="lazy"><span class="pilot-play">${playIcon}</span><span class="pilot-duration">${s.pilots[0].duration.toFixed(0)} วิ</span></span><span class="pilot-copy"><small>คลิปตัวอย่าง</small><strong>${escape(s.title)}</strong><span>${escape(s.kicker)}</span></span></button>`).join('');
-  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<button class="reading-card" data-shelf-open="${s.id}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy"><span><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><strong>${escape(s.title)}</strong><span class="reading-by">${escape(s.creatorKind==='team'?s.studio:s.creator)}</span><b>${'เริ่มอ่านฟรี'} ↗</b></span></button>`).join('');
+  $('#reading-grid').innerHTML=stories.filter(isReading).sort((a,b)=>Number(b.id==='somchai')-Number(a.id==='somchai')).map(s=>`<article class="reading-card"><button class="reading-cover" data-shelf-open="${s.id}" aria-label="เริ่มอ่าน ${escape(s.title)}"><img src="${s.poster}" alt="ปก ${escape(s.title)}" loading="lazy">${s.seriesLogo?`<img class="reading-cover-logo" src="${s.seriesLogo}" alt="" loading="lazy">`:''}</button><div class="reading-copy"><small>${s.formatLabel} · ${s.episodes} ${s.format==='novel'?'บท':'ตอน'}</small><button class="reading-title" data-story-details="${s.id}"><strong>${escape(s.title)}</strong></button><button class="reading-synopsis" data-story-details="${s.id}" aria-label="เรื่องย่อ ${escape(s.title)} อ่านเพิ่มเติม"><span>${escape(s.summary)}</span><small>เพิ่มเติม ↗</small></button><button class="reading-by" data-creator="${s.creatorId}">${escape(s.creatorKind==='team'?s.studio:s.creator)}</button><button class="reading-start" data-read-start="${s.id}">เริ่มอ่านฟรี ↗</button></div></article>`).join('');
 }
 function renderContinue() {
   const entries = stories.filter(s => state.progress[s.id]).sort((a, b) => state.progress[b.id].updated - state.progress[a.id].updated).slice(0, 3);
@@ -307,8 +307,15 @@ function openStory(id, episode = 1, autoplay = false) {
   if (story.seriesLogo) logo.src=story.seriesLogo; else logo.removeAttribute('src');
   $('#story-title').classList.toggle('story-title-with-logo', Boolean(story.seriesLogo));
   $('#story-meta').textContent = `${story.formatLabel} · ${story.episodes} ${story.format==='novel'?'บท':'ตอน'}${!isReading(story)&&!story.pilots?.length?'ในคอนเซปต์':''} · ${story.age}`;
-  $('#story-description').textContent = story.description;
-  $('#story-creator').innerHTML = `<img class="creator-avatar" src="${story.avatarImage}" alt="${story.creatorKind==='team'?'โลโก้ทีม':'ภาพครีเอเตอร์'}สมมติ ${escape(story.creatorKind==='team'?story.studio:story.creator)}" width="34" height="34"><span>${escape(story.creatorKind==='team'?story.studio:story.creator)}<small>${escape(story.city)} · ${story.creatorKind==='team'?'ทีม':'ครีเอเตอร์'}สมมติ</small></span>`;
+  $('#story-description').textContent = story.summary;
+  $('#story-full-description').textContent = story.description;
+  $('#story-version-note').hidden = !story.versionNote;
+  $('#story-version-note').textContent = story.versionNote || '';
+  $('#story-versions').hidden = story.versionIds.length < 2;
+  $('#story-versions').innerHTML = story.versionIds.length < 2 ? '' : story.versionIds.map(id=>{const version=stories.find(s=>s.id===id);return `<button data-story-version="${id}" aria-pressed="${id===story.id}">${version.formatLabel}</button>`;}).join('');
+  $('#story-creator').dataset.creator=story.creatorId;
+  $('#story-creator').setAttribute('aria-label',`ดูครีเอเตอร์ ${story.creatorKind==='team'?story.studio:story.creator}`);
+  $('#story-creator').innerHTML = `<img class="creator-avatar" src="${story.avatarImage}" alt="" width="34" height="34"><span><small>โดย</small>${escape(story.creatorKind==='team'?story.studio:story.creator)}${story.creatorKind==='team'?'':`<small>${escape(story.studio)}</small>`}</span><span class="creator-more" aria-hidden="true">›</span>`;
   $('#story-provenance').innerHTML=`<details><summary>เบื้องหลังและคำเตือน <span>＋</span></summary><dl><dt>รูปแบบตัวอย่าง</dt><dd>${story.sampleLength} · ภาษาไทย</dd><dt>ใช้ AI ตรงไหน</dt><dd>${story.aiUsage}</dd><dt>สิ่งที่ควรรู้</dt><dd>${story.warnings}</dd><dt>ที่มาของเรื่อง</dt><dd>${escape(story.provenance || (story.genres.includes('วรรณคดีรีมิกซ์')?'ตีความวรรณคดีใหม่อย่างอิสระ ไม่ใช่ฉบับดั้งเดิม':'เรื่องสมมติสำหรับทดลองประสบการณ์'))}</dd></dl></details>`;
   $('.episode-note').textContent=isComic?(story.readerNote || 'เนื้อหาต้นฉบับสำหรับเดโม · เรื่องและครีเอเตอร์สมมติ'):story.pilots?.length?'คลิป AI นำร่องตามบทที่เขียนใหม่ · เรื่องและครีเอเตอร์สมมติ':'จำนวนตอนเป็นคอนเซปต์ · ใช้คลิปภาพเคลื่อนไหวตัวอย่างเพื่อทดลองระบบเหรียญ';
   $('#player-status').textContent = '';
@@ -361,7 +368,7 @@ function showWallet() { renderBalance(); if (!$('#wallet-dialog').open) $('#wall
 
 $('#catalog-grid').addEventListener('click', e => {
   const open = e.target.closest('[data-open]'), save = e.target.closest('[data-save]');
-  if (open) openStory(open.dataset.open);
+  if (open) showStoryDetails(open.dataset.open);
   if (save) { const id = save.dataset.save; toggleSave(id); $(`[data-save="${id}"]`)?.focus({ preventScroll: true }); }
 });
 $('#continue-grid').addEventListener('click', e => { const b = e.target.closest('[data-resume]'); if (b) openStory(b.dataset.resume, state.progress[b.dataset.resume].episode, true); });
@@ -434,8 +441,20 @@ $$('[data-trust]').forEach(b=>b.addEventListener('click',()=>{const c=trustCopy[
 const genreNames=['ทั้งหมด','ผีไทย','พญานาค','วรรณคดีรีมิกซ์','ตลกกวน','โรแมนซ์','ดราม่า','สยองขวัญ','วาย','แฟนตาซี','คอมเมดี้','ย้อนยุค'];
 $('.genre-list').innerHTML=genreNames.map(name=>`<button class="genre ${name==='ทั้งหมด'?'active':''}" data-genre="${name}" aria-pressed="${name==='ทั้งหมด'}">${name}</button>`).join('');
 $$('[data-genre]').forEach(b=>b.addEventListener('click',()=>setGenre(b.dataset.genre)));
-const carousel=createHeroCarousel({root:$('.hero'),stories,ids:featuredIds,onOpen:(id,autoplay,episode=1)=>openStory(id,episode,autoplay),onChange:story=>{featured=story;}});
-const community=createCreatorCommunity({root:document,profiles:creatorProfiles,stories,onOpenStory:id=>openStory(id)});
+const carousel=createHeroCarousel({root:$('.hero'),stories,ids:featuredIds,onOpen:(id,autoplay,episode=1)=>{openStory(id,episode,autoplay);if(!autoplay&&isReading(selectedStory)&&matchMedia('(max-width:760px)').matches)setReaderPanel(true);},onChange:story=>{featured=story;}});
+const somchai=stories.find(s=>s.id==='somchai');
+const community=createCreatorCommunity({root:document,profiles:[...creatorProfiles,{id:'somchai',name:somchai.creator,studio:somchai.studio,kind:'team',portrait:somchai.avatarImage,city:somchai.city,disciplines:['การ์ตูน','แฟนตาซี'],works:['somchai'],bio:'เล่าเรื่องสมชายกับชีวิตใหม่ในต่างโลก ผ่านการ์ตูนภาษาไทยที่อ่านต่อเนื่องได้ทีละตอน'}],stories,onOpenStory:id=>openStory(id)});
+function showStoryDetails(id){openStory(id);if(isReading(selectedStory)&&matchMedia('(max-width:760px)').matches)setReaderPanel(true);}
+document.addEventListener('click',e=>{
+  const creator=e.target.closest('[data-creator]');
+  if(creator){video.pause();community.openProfile(creator.dataset.creator,creator);return;}
+  const start=e.target.closest('[data-read-start]');
+  if(start){openStory(start.dataset.readStart,1,true);return;}
+  const details=e.target.closest('[data-story-details]');
+  if(details){showStoryDetails(details.dataset.storyDetails);return;}
+  const version=e.target.closest('[data-story-version]');
+  if(version&&version.dataset.storyVersion!==selectedStory?.id){const id=version.dataset.storyVersion;openStory(id,state.progress[id]?.episode||1);}
+});
 renderCatalog();renderShelves();renderContinue();renderBalance();applyReaderPreferences();
 $$('[data-shelf-open]').forEach(b=>b.addEventListener('click',()=>openStory(b.dataset.shelfOpen,1,true)));
 $('#previous-episode').addEventListener('click',()=>requestEpisode(selectedEpisode-1));

@@ -17,7 +17,7 @@ export const creatorProfiles = [
 
 export const novels = [
   {
-    id:'novel-ghost',title:'ห้องที่ไม่มีเลข',posterTitle:'ห้องที่\nไม่มีเลข',format:'novel',formatLabel:'นิยาย',creatorId:'ghost',cover:'assets/ghost.webp',genres:['ผีไทย','ลึกลับ','ดราม่า'],age:'16+',status:'เรื่องสั้นจบใน 3 บท',
+    id:'novel-ghost',title:'ห้องสุดท้าย',posterTitle:'ห้อง\nสุดท้าย',format:'novel',formatLabel:'นิยาย',creatorId:'ghost',cover:'assets/ghost.webp',genres:['ผีไทย','ลึกลับ','ดราม่า'],age:'16+',status:'เรื่องสั้นจบใน 3 บท',
     kicker:'ค่าเช่าถูกมาก… ถ้ายอมจ่ายด้วยความทรงจำ',description:'ลินกลับบ้านเช่าเก่าเพื่อเก็บของแม่ แต่พบผู้เช่าที่ไม่มีชื่อในทะเบียน และสัญญาเช่าที่ลบคนหนึ่งออกจากความทรงจำของทุกคนได้',warnings:'บรรยากาศหลอน การสูญเสีย และความทรงจำของครอบครัว',aiUsage:'นิยายต้นฉบับเขียนสำหรับตัวอย่างแพลตฟอร์ม · ภาพปกสร้างด้วย AI',
     chapters:[
       {id:'novel-ghost-1',title:'ค่าเช่ารวมค่าลืม',readingMinutes:3,body:[
@@ -59,7 +59,7 @@ export const novels = [
     ]
   },
   {
-    id:'novel-naga',title:'ไปรษณีย์ใต้แม่น้ำโขง',posterTitle:'ไปรษณีย์\nใต้แม่น้ำโขง',format:'novel',formatLabel:'นิยาย',creatorId:'warrior',cover:'assets/warrior.webp',genres:['พญานาค','แฟนตาซี','อบอุ่นหัวใจ'],age:'13+',status:'เรื่องสั้นจบใน 3 บท',
+    id:'novel-naga',title:'นาคานคร',posterTitle:'นาคา\nนคร',format:'novel',formatLabel:'นิยาย',creatorId:'warrior',cover:'assets/warrior.webp',genres:['พญานาค','แฟนตาซี','อบอุ่นหัวใจ'],age:'13+',status:'เรื่องสั้นจบใน 3 บท',
     kicker:'บางจดหมายใช้เวลาทั้งชีวิต… กว่าจะถึงคนรับ',description:'พนักงานไปรษณีย์ริมโขงได้รับซองจากพ่อที่หายไปสิบปี ที่อยู่ผู้ส่งเป็นนครใต้น้ำ และค่าส่งคือคำสัญญาที่เธอไม่เคยให้',warnings:'แฟนตาซีจากจินตนาการเกี่ยวกับพญานาค ไม่ใช่การอ้างข้อเท็จจริงด้านความเชื่อ',aiUsage:'นิยายต้นฉบับเขียนสำหรับตัวอย่างแพลตฟอร์ม · ภาพปกสร้างด้วย AI',
     chapters:[
       {id:'novel-naga-1',title:'ผู้ส่งอยู่ใต้ระดับน้ำ',readingMinutes:3,body:[
@@ -101,7 +101,7 @@ export const novels = [
     ]
   },
   {
-    id:'novel-wanthong',title:'วันทองเขียนตอนจบเอง',posterTitle:'วันทองเขียน\nตอนจบเอง',format:'novel',formatLabel:'นิยาย',creatorId:'wanthong',cover:'assets/wanthong.webp',genres:['วรรณคดีรีมิกซ์','ดราม่า','ร่วมสมัย'],age:'16+',status:'เรื่องสั้นจบใน 3 บท',
+    id:'novel-wanthong',title:'วันทอง ไม่ขอเลือก',posterTitle:'วันทอง\nไม่ขอเลือก',format:'novel',formatLabel:'นิยาย',creatorId:'wanthong',cover:'assets/wanthong.webp',genres:['วรรณคดีรีมิกซ์','ดราม่า','ร่วมสมัย'],age:'16+',status:'เรื่องสั้นจบใน 3 บท',
     kicker:'ถ้าบทเดิมไม่มีทางออก… ก็ไม่ต้องเล่นตามบท',description:'วันทอง ผู้เขียนบทละครถูกเรียกไปเลือกตอนจบระหว่างผู้ชายสองคน แต่พบว่าต้นฉบับเล่มเก่าจะเปลี่ยนชีวิตจริงตามทุกประโยคที่เธอเขียน',warnings:'แรงกดดันในความสัมพันธ์และการทำงาน ตีความตัวละครวรรณคดีอย่างอิสระ',aiUsage:'นิยายต้นฉบับเขียนสำหรับตัวอย่างแพลตฟอร์ม · ภาพปกสร้างด้วย AI',
     chapters:[
       {id:'novel-wanthong-1',title:'ทั้งสองตัวเลือกผิด',readingMinutes:3,body:[

@@ -123,8 +123,10 @@ try{
       await page.locator('[data-save="north"]').click();assert.equal(await page.locator('[data-save="north"]').getAttribute('aria-pressed'),'true');
       await page.locator('.wallet-button').click();await page.locator('[data-pack="50"]').click();assert.equal(await balance(page),170);
       await page.locator('[data-shelf-open="novel-ghost"]').click();
+      await page.locator('#reader-settings').click();
       await page.locator('[data-reader-theme="night"]').click();assert.equal(await page.locator('#comic-reader').getAttribute('data-theme'),'night');
       await page.locator('[data-reader-size="1"]').click();assert.equal(await page.locator('#reader-size-value').textContent(),'19');
+      await page.locator('#reader-episodes').click();
       await page.locator('[data-episode="2"]').click();assert.match(await page.locator('.reader-heading span').textContent(),/บทที่ 2/);
       await closeStory(page);await page.locator('[data-community-creator="ghost"]').click();
       await page.locator('.community-dialog[open]').waitFor();
