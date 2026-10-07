@@ -29,6 +29,7 @@ try{
    for(const [filmId,novelId] of seriesVersions){const film=stories.find(s=>s.id===filmId),novel=stories.find(s=>s.id===novelId);
     assert.equal(novel.title,film.title);assert.equal(novel.seriesLogo,film.seriesLogo);assert.notEqual(novel.description,film.description);
     await p.goto(base+`/short/story/${filmId}/?episode=1`,{waitUntil:'networkidle'});
+    assert.equal(await p.locator('#reader-panel-close').isVisible(),false);
     assert.equal(await p.locator('#story-description').textContent(),film.summary);
     assert.equal(await p.locator('#story-creator').isVisible(),true);
     assert.equal(await p.locator('#story-full-description').isVisible(),false);

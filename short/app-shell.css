@@ -1,5 +1,6 @@
 /* Quiet browse hierarchy and a reading surface with on-demand controls. */
 /* Series art, brief editorial copy and visible, expandable creator credits. */
+#reader-panel-close{display:none}
 .poster-title .poster-wordmark{position:static;inset:auto;display:block;width:100%;height:auto;max-height:125px;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 2px 5px #000b)}
 .card-synopsis,.reading-synopsis{display:block;text-align:left;width:100%;margin:7px 0 10px;color:#b4abb6;font-size:11px;line-height:1.75}
 .card-synopsis>span,.reading-synopsis>span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
