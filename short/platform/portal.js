@@ -5,7 +5,7 @@ import {stories} from '../library.js';
 import {demo} from './demo.js';
 const $=s=>document.querySelector(s),admin=document.body.dataset.portal==='admin',number=n=>Number(n||0).toLocaleString('th-TH'),money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 let works=[],selected=null,filter='pending',report=null,c,urls=[];
-function notify(message){$('#status').textContent=message;clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('#status').textContent='',5000)}
+function notify(message){(document.querySelector('dialog[open]')||document.body).append($('#status'));$('#status').textContent=message;clearTimeout(notify.timer);notify.timer=setTimeout(()=>$('#status').textContent='',5000)}
 async function busy(button,fn){button.disabled=true;try{await fn()}catch(e){notify(e.message)}finally{button.disabled=false}}
 function name(id){return stories.find(s=>s.id===id)?.title||works.find(w=>w.id===id)?.title||id}
 function status(s){return {pending:'รอตรวจ',published:'เผยแพร่แล้ว',rejected:'ให้แก้ไข'}[s]||s}
