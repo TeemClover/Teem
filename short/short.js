@@ -2,6 +2,7 @@ import { stories } from './library.js';
 import { creatorProfiles } from './content-library.js';
 import { createHeroCarousel } from './hero-carousel.js';
 import { createCreatorCommunity } from './creator-community.js';
+import { shareLink } from './sharing.js';
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -89,9 +90,12 @@ function persist() {
 
 function toast(message) {
   clearTimeout(toastTimer);
-  $('#toast').textContent = message;
-  $('#toast').hidden = false;
-  toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 3500);
+  const node = $('#toast');
+  // Keep feedback above the active modal rather than underneath its backdrop.
+  ($$('dialog[open]').at(-1) || document.body).append(node);
+  node.textContent = message;
+  node.hidden = false;
+  toastTimer = setTimeout(() => { node.hidden = true; }, 3500);
 }
 
 function renderBalance() {
@@ -389,10 +393,37 @@ $('#search-input').addEventListener('input', e => {
 $('#search-input').addEventListener('keydown', e => { if (e.key === 'Escape') setSearchOpen(false); if (e.key === 'Enter') { setSearchOpen(false); $('#catalog').scrollIntoView({ behavior: 'smooth' }); } });
 $('#reset-filters').addEventListener('click', () => { search = ''; genre = 'ทั้งหมด';format='all'; $('#search-input').value = ''; setView('discover', false); renderCatalog(); });
 $('#save-story').addEventListener('click', () => { if (selectedStory) toggleSave(selectedStory.id); });
-$('#share-story').addEventListener('click', async () => {
-  const sharedURL=new URL(storyURL().pathname+storyURL().search,'https://www.myclover.com');
-  try { await navigator.clipboard.writeText(sharedURL.href); toast('คัดลอกลิงก์เรื่องแล้ว'); }
-  catch { toast('แชร์ได้จากลิงก์ในแถบที่อยู่ของเบราว์เซอร์'); }
+let sharing = false;
+document.addEventListener('click', async event => {
+  const trigger = event.target.closest('[data-share-story]');
+  if (!trigger || !selectedStory || sharing) return;
+  const canonical = document.querySelector('link[rel="canonical"]')?.href || location.href;
+  const url = new URL(storyURL().pathname + storyURL().search, canonical);
+  const action = isReading(selectedStory) ? 'อ่าน' : 'ดู';
+  const unit = selectedStory.format === 'novel' ? 'บท' : 'ตอน';
+  const offer = selectedStory.episodes <= 3 ? `${action}ฟรี` : '3 ตอนแรกฟรี';
+  const data = {title: `${selectedStory.title} | ตอนต่อ`,
+    text: `มา${action} ${selectedStory.title} ${unit}ที่ ${selectedEpisode} ด้วยกัน · ${offer}ที่ตอนต่อ`, url: url.href};
+  sharing = true; trigger.disabled = true;
+  try {
+    const result = await shareLink(data);
+    if (result === 'copied') toast('คัดลอกลิงก์แล้ว ส่งให้เพื่อนได้เลย');
+    if (result === 'manual') {
+      $('#share-link-title').textContent = `ชวนเพื่อน${action}ด้วยกัน`;
+      $('#share-link-input').value = data.url;
+      $('#share-link-dialog').showModal();
+      $('#share-link-input').focus(); $('#share-link-input').select();
+    }
+  } finally { sharing = false; trigger.disabled = false; }
+});
+$('#copy-share-link').addEventListener('click', async () => {
+  const input = $('#share-link-input');
+  const result = await shareLink({url: input.value}, {preferNative: false});
+  if (result === 'copied') {
+    $('#share-link-dialog').close(); toast('คัดลอกลิงก์แล้ว ส่งให้เพื่อนได้เลย');
+  } else {
+    input.focus(); input.select(); toast('เลือกลิงก์แล้ว กดคัดลอกเพื่อส่งให้เพื่อน');
+  }
 });
 $('#episode-grid').addEventListener('click', e => { const b = e.target.closest('[data-episode]'); if (b) requestEpisode(Number(b.dataset.episode)); });
 $('#play-episode').addEventListener('click', () => { if (!selectedStory) return; if (canWatch(selectedStory, selectedEpisode)) playVideo(); else requestEpisode(selectedEpisode); });
