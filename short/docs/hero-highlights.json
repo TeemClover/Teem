@@ -203,6 +203,46 @@
       "durationSeconds": 8,
       "generationDate": "2026-10-07",
       "review": "Decoded native video and audio. Visual frames reviewed; no literal speech transcript is certified and no caption track is attached. The generated heroine turns toward the naga before the cut; the encounter remains unresolved."
+    },
+    "krasue": {
+      "provider": "Google Flow",
+      "model": "Veo 3.1 Lite",
+      "credits": 10,
+      "sourceFirstFrame": "assets/clips/hero-krasue-frame.png",
+      "asset": "assets/clips/hero-krasue-1.mp4",
+      "portraitDimensions": [
+        720,
+        1280
+      ],
+      "durationSeconds": 8,
+      "generationDate": "2026-10-08",
+      "projectMediaId": "01bc8bd6-a89d-41ea-9401-62d85264808d",
+      "sha256": "f34b920acbd25475c672079cf7390000a571589b6623f23a7951c93ef82573aa",
+      "review": "Downloaded original MP4; native browser decode, playback, multiple motion frames visually reviewed. No certified speech transcript or caption track. The heroine meets a long-haired woman outside the doorway, rather than the initially scripted doorway-behind reveal."
+    },
+    "wanthong": {
+      "provider": "Google Flow",
+      "model": "Veo 3.1 Lite",
+      "credits": 10,
+      "sourceFirstFrame": "assets/clips/hero-wanthong-frame.png",
+      "asset": "assets/clips/hero-wanthong-1.mp4",
+      "portraitDimensions": [
+        720,
+        1280
+      ],
+      "durationSeconds": 8,
+      "generationDate": "2026-10-08",
+      "projectMediaId": "3bb57704-637a-4a0e-801c-345606a9158e",
+      "sha256": "e95843054f6fdf0de03128b4521a99b66f57d296d61e10f968b89f440a9ade98",
+      "review": "Downloaded original MP4; native browser decode, playback, multiple motion frames visually reviewed. No certified speech transcript or caption track. The heroine takes the CEO chair and the two men straighten their folders."
     }
-  }
+  },
+  "attempts": [
+    {
+      "provider": "Meta AI",
+      "date": "2026-10-08",
+      "story": "krasue",
+      "result": "daily media quota exhausted; no clip returned; generation completed in Google Flow instead"
+    }
+  ]
 }

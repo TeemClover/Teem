@@ -40,7 +40,7 @@ for(const width of [992,1440,2560])await run(`five full-width desktop compositio
 });
 for(const {width,height} of [{width:320,height:568},{width:390,height:844}])await run(`two-button real mobile previews ${width}x${height}`,async()=>{
  const s=await setup(width,height);try{
- for(const id of ['warrior','village']){
+ for(const id of ['krasue','warrior','village','wanthong']){
  await choose(s,id);await playing(s,id);
  const panel=s.page.locator(`[data-hc-id="${id}"]`),v=panel.locator('.hc-preview-video');
  assert.equal(await panel.locator('.hc-preview-buttons button').count(),2);
@@ -56,11 +56,11 @@ for(const {width,height} of [{width:320,height:568},{width:390,height:844}])awai
  await panel.locator('.hc-preview-sound').click();assert.equal(await v.evaluate(e=>e.muted),false);
  await panel.locator('.hc-preview-sound').click();assert.equal(await v.evaluate(e=>e.muted),true);
  await s.page.screenshot({path:proof+`/mobile-${width}-${id}.png`});
- await panel.locator('.hc-watch').click();assert.match(await s.page.locator('#story-video').getAttribute('src'),id==='warrior'?/hero-warrior-1.mp4/:/village-1.mp4/);
+ await panel.locator('.hc-watch').click();assert.match(await s.page.locator('#story-video').getAttribute('src'),id==='village'?/village-1.mp4/:new RegExp('hero-'+id+'-1.mp4'));
  assert.equal(await v.evaluate(e=>e.paused),true,'modal pauses background');await s.page.locator('[data-close="story-dialog"]').click();await playing(s,id);
  }
- await choose(s,'krasue');assert.ok(await s.page.locator('.hc-preview-video').evaluateAll(v=>v.every(e=>!e.getAttribute('src')&&e.paused&&e.muted)));
- await clean(s);return 'Both native videos play; play/pause and sound work; inactive and modal audio stop; no textual HUD.';
+ await choose(s,'somchai');assert.ok(await s.page.locator('.hc-preview-video').evaluateAll(v=>v.every(e=>!e.getAttribute('src')&&e.paused&&e.muted)));
+ await clean(s);return 'All four native videos play; play/pause and sound work; inactive and modal audio stop; no textual HUD.';
  }finally{await s.context.close();}
 });
 await run('responsive resize unloads video and restores landscape key art',async()=>{

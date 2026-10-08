@@ -12,6 +12,7 @@ export function createPreviewServer() {
     try {
       const pathname = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
       if (pathname === '/' || pathname === '/short') { res.writeHead(302, { location: '/short/' }); res.end(); return; }
+      if(pathname==='/api/torntor'){res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({mode:'demo',ready:false,payments:false,auth:null,daily:20,timezone:'Asia/Bangkok'}));return;}
       let path;
       if (pathname.startsWith('/short/')) {
         path = resolve(root, pathname.slice('/short/'.length)+(pathname.endsWith('/')?'index.html':''));

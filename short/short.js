@@ -3,6 +3,10 @@ import { creatorProfiles } from './content-library.js';
 import { createHeroCarousel } from './hero-carousel.js';
 import { createCreatorCommunity } from './creator-community.js';
 import { shareLink } from './sharing.js';
+import { call as platformCall, config as platformConfig } from './platform/client.js';
+import { setupWallet, openCheckout, readable } from './platform/wallet.js';
+import { startView, stopView, flush as flushViews } from './platform/view-tracker.js';
+import { mountPublished } from './platform/published.js';
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -12,7 +16,7 @@ const playIcon = '<svg viewBox="0 0 20 20"><path d="m6 3 11 7-11 7Z"/></svg>';
 const bookmarkIcon = '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4Z"/></svg>';
 const lockIcon = '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>';
 let state = readState();
-const featuredIds = chooseFeaturedIds(['krasue', 'warrior', 'village', 'wanthong', 'somchai']);
+const featuredIds = ['somchai', 'krasue', 'warrior', 'village', 'wanthong'];
 let currentView = 'discover', genre = 'ทั้งหมด', format = 'drama', search = '', featured = stories.find(s=>s.id===featuredIds[0]);
 let selectedStory = null, selectedEpisode = 1, pendingEpisode = null, resumeAt = 0;
 let lastWrite = 0, toastTimer, readerSaveTimer, readerRestoring = false, readingStarted = false;
@@ -41,17 +45,6 @@ if(!['paper','night','sepia'].includes(readerPreferences.theme))readerPreference
 readerPreferences.size=Math.max(15,Math.min(24,Number(readerPreferences.size)||18));
 $('#autoplay-next').checked=autoplayNext;
 
-function chooseFeaturedIds(ids) {
-  const key = 'tontor:hero:last-open';
-  let previous;
-  try { previous = localStorage.getItem(key); } catch {}
-  const choices = ids.filter(id => id !== previous);
-  const first = choices[Math.floor(Math.random() * choices.length)] || ids[0];
-  const start = ids.indexOf(first);
-  try { localStorage.setItem(key, first); } catch {}
-  // Pick once before rendering, so the image and copy stay stable during a visit.
-  return [...ids.slice(start), ...ids.slice(0, start)];
-}
 function applyReaderPreferences(){
   const reader=$('#comic-reader'); reader.dataset.theme=readerPreferences.theme;reader.style.setProperty('--reading-size',`${readerPreferences.size}px`);
   $$('[data-reader-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.readerTheme===readerPreferences.theme)));
@@ -327,7 +320,7 @@ function openStory(id, episode = 1, autoplay = false) {
   $('#player-status').textContent = '';
   renderSaveButton(); renderEpisodes();
   if (!$('#story-dialog').open) $('#story-dialog').showModal();
-  updateURL();
+  updateURL(); startView(story,selectedEpisode);
   if (requestedEpisode !== selectedEpisode) requestEpisode(requestedEpisode);
   else if (autoplay) playVideo();
 }
@@ -342,7 +335,7 @@ function playVideo() {
 
 function selectEpisode(episode) {
   saveProgress(); video.pause();
-  selectedEpisode = episode; resumeAt = 0;
+  selectedEpisode = episode; resumeAt = 0; startView(selectedStory,episode);
   if(isReading(selectedStory)){renderReader();renderEpisodes();updateURL();playVideo();return;}
   loadEpisodeMedia();
   $('#player-status').textContent = '';
@@ -435,29 +428,30 @@ $$('dialog').forEach(dialog => dialog.addEventListener('click', e => {
 }));
 $('#story-dialog').addEventListener('cancel',saveProgress);
 $('#story-dialog').addEventListener('close', () => {
-  saveProgress(); video.pause(); renderContinue();
+  saveProgress(); stopView(); video.pause(); renderContinue();
   history.replaceState(null, '', new URL('/short/',location.origin));
   selectedStory = null; pendingEpisode = null;
 });
 $('#unlock-dialog').addEventListener('close', () => { pendingEpisode = null; });
-$('#confirm-unlock').addEventListener('click', () => {
-  const pending = pendingEpisode;
-  if (!pending || selectedStory?.id !== pending.id) return;
-  if (state.balance < 10) { $('#unlock-dialog').close(); showWallet(); return; }
-  const key = `${pending.id}:${pending.episode}`;
-  if (!state.unlocked.includes(key)) { state.balance -= 10; state.unlocked.push(key); persist(); }
-  pendingEpisode = null; renderBalance(); $('#unlock-dialog').close(); selectEpisode(pending.episode);
-  toast(`ปลดล็อกตอนที่ ${pending.episode} แล้ว · ใช้ 10 เหรียญทดลอง`);
+let platformReady = false;
+function applyWallet(w) { state.balance=w.balance;state.unlocked=w.unlocked.filter(key=>{const [id,ep]=key.split(':');return storyIds.has(id)&&Number(ep)>3});persist();renderBalance(); }
+window.addEventListener('torntor:wallet',e=>applyWallet(e.detail));
+window.addEventListener('torntor:update',()=>{if(platformReady)platformCall('wallet').then(applyWallet).catch(()=>{})});
+window.addEventListener('storage',e=>{if(platformReady&&e.key==='torntor:platform:demo:v1')platformCall('wallet').then(applyWallet).catch(()=>{})});
+$('#confirm-unlock').addEventListener('click', async () => {
+  const pending=pendingEpisode, button=$('#confirm-unlock');
+  if(!pending||selectedStory?.id!==pending.id||!platformReady)return;
+  if(state.balance<10){$('#unlock-dialog').close();showWallet();return;}
+  button.disabled=true;
+  try{applyWallet(await platformCall('unlock',pending.id,pending.episode));pendingEpisode=null;$('#unlock-dialog').close();selectEpisode(pending.episode);toast(`ปลดล็อกตอนที่ ${pending.episode} แล้ว`)}catch(e){toast(readable(e.message))}finally{button.disabled=false;}
 });
-$$('[data-pack]').forEach(b => b.addEventListener('click', () => {
-  const count = Number(b.dataset.pack);
-  state.balance = Math.min(99990, state.balance + count); persist(); renderBalance();
-  $('#wallet-dialog').close(); toast(`ได้รับ ${count} เหรียญทดลอง · ไม่มีการชำระเงิน`);
-}));
+$$('[data-pack]').forEach(b=>{b.disabled=true;b.addEventListener('click',()=>{if(platformReady)openCheckout(b.dataset.pack)})});
+setupWallet(applyWallet,toast).then(()=>{platformReady=true;$$('[data-pack]').forEach(b=>b.disabled=false);mountPublished(toast);}).catch(e=>toast(readable(e.message)));
 video.addEventListener('loadedmetadata', () => { if (resumeAt && Number.isFinite(video.duration)) video.currentTime = Math.min(resumeAt, Math.max(0, video.duration - .5)); resumeAt = 0; });
 video.addEventListener('timeupdate', () => { if (Date.now() - lastWrite > 1000) { saveProgress(); lastWrite = Date.now(); } });
 video.addEventListener('pause', saveProgress);
 video.addEventListener('ended', () => {
+  flushViews();
   saveProgress(); renderContinue();
   if(autoplayNext&&selectedStory?.pilots?.length&&selectedEpisode<selectedStory.episodes){requestEpisode(selectedEpisode+1);return;}
   $('#player-status').textContent = selectedEpisode < selectedStory?.episodes ? `จบตอนแล้ว · กดตอนถัดไปเพื่อดูต่อ` : 'ดูจบแล้ว · เก็บเรื่องไว้หรือค้นพบเรื่องใหม่';

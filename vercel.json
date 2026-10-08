@@ -5,6 +5,8 @@
     {"path": "/api/mediral-commerce?action=drain", "schedule": "*/5 * * * *"}
   ],
   "redirects": [
+    {"source":"/short/studio","destination":"/short/studio/","permanent":false},
+    {"source":"/short/admin","destination":"/short/admin/","permanent":false},
     {"source": "/short", "destination": "/short/", "permanent": false},
     {"source": "/short/story/:id", "destination": "/short/story/:id/", "permanent": false},
     {"source": "/asksydneyscience/offer/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/offer/", "permanent": true},
@@ -148,6 +150,8 @@
     {"source": "/hamburg/lab/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]}
   ],
   "rewrites": [
+    {"source":"/short/studio/","destination":"/short/studio/index.html"},
+    {"source":"/short/admin/","destination":"/short/admin/index.html"},
     {"source": "/short/", "destination": "/short/index.html"},
     {"source": "/short/story/:id/", "destination": "/short/story/:id/index.html"},
     {"source": "/", "has": [{"type": "host", "value": "asksydscience.myclover.com"}], "destination": "/asksydscience/index.html"},
