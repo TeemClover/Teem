@@ -1,5 +1,6 @@
-// User-supplied Somchai v001: 10 episode covers and 108 complete Thai webtoon pages.
-const chapters = [
+import {somchaiNewEpisodes} from './somchai-episodes-11-20.js';
+// Preserve the original v001 episodes 1–10; append selected v002 episodes 11–20.
+const originalChapters = [
   [
     {
       "image": "somchai/v001/episodes/01/pages/001",
@@ -3832,6 +3833,7 @@ const chapters = [
   ]
 ];
 
+const chapters = [...originalChapters, ...somchaiNewEpisodes.map(episode => episode.pages)];
 export const somchaiWebtoon = {
   "id": "somchai",
   "title": "สมชาย เกิดใหม่ไปปลูกผัก",
@@ -3854,7 +3856,7 @@ export const somchaiWebtoon = {
   "color": "#64824b",
   "poster": "./assets/somchai/v001/assets/covers/art/episode-01.webp",
   "position": "center 28%",
-  "episodes": 10,
+  "episodes": 20,
   "episodeNames": [
     "ขอเริ่มใหม่อีกครั้ง",
     "วันแรก ต้องรอด",
@@ -3865,7 +3867,8 @@ export const somchaiWebtoon = {
     "โรงเก็บของกลายเป็นห้องคลอด",
     "บ้านนี้มีหกตัวแล้ว",
     "ชื่อหมา…เมียเป็นคนเลือก",
-    "หมา…จริงเหรอ?"
+    "หมา…จริงเหรอ?",
+    ...somchaiNewEpisodes.map(episode => episode.title)
   ],
   "episodeSummaries": [
     "สมชายทำงานหนักจนป่วยและจากไปทั้งที่ยังไม่ได้ใช้ชีวิต เทพเจ้ามอบโอกาสเริ่มใหม่ พร้อมร่างกายแข็งแรงและเครื่องมือวิเศษ",
@@ -3877,7 +3880,8 @@ export const somchaiWebtoon = {
     "โรงเก็บของที่เพิ่งสร้างเสร็จมีผู้จับจองก่อนเจ้าของ และกำลังจะกลายเป็นห้องคลอด",
     "ลูกหมาสี่ตัวทำให้บ้านคึกคักขึ้น สมชายจัดพื้นที่ใหม่ให้ทุกชีวิตอยู่ร่วมกันได้",
     "ตั้งชื่อให้ครอบครัวขนดำทั้งหกดูเหมือนง่าย แต่พ่อหมากับแม่หมามีความเห็นไม่ตรงกัน",
-    "สมชายพบความลับของครอบครัวขนดำ ขณะสวนเริ่มให้ผลผลิต และชีวิตกลางป่าค่อย ๆ กลายเป็นบ้าน"
+    "สมชายพบความลับของครอบครัวขนดำ ขณะสวนเริ่มให้ผลผลิต และชีวิตกลางป่าค่อย ๆ กลายเป็นบ้าน",
+    ...somchaiNewEpisodes.map(episode => episode.summary)
   ],
   "episodeCovers": [
     "./assets/somchai/v001/assets/covers/episode-01.webp",
@@ -3889,7 +3893,8 @@ export const somchaiWebtoon = {
     "./assets/somchai/v001/assets/covers/episode-07.webp",
     "./assets/somchai/v001/assets/covers/episode-08.webp",
     "./assets/somchai/v001/assets/covers/episode-09.webp",
-    "./assets/somchai/v001/assets/covers/episode-10.webp"
+    "./assets/somchai/v001/assets/covers/episode-10.webp",
+    ...somchaiNewEpisodes.map(episode => episode.cover)
   ],
   "episodeCards": [
     "./assets/somchai/v001/assets/covers/episode-01-card.webp",
@@ -3901,35 +3906,38 @@ export const somchaiWebtoon = {
     "./assets/somchai/v001/assets/covers/episode-07-card.webp",
     "./assets/somchai/v001/assets/covers/episode-08-card.webp",
     "./assets/somchai/v001/assets/covers/episode-09-card.webp",
-    "./assets/somchai/v001/assets/covers/episode-10-card.webp"
+    "./assets/somchai/v001/assets/covers/episode-10-card.webp",
+    ...somchaiNewEpisodes.map(episode => episode.card)
   ],
+  episodeCoverSizes: [...Array(10).fill(null), ...somchaiNewEpisodes.map(episode => episode.coverSize)],
+  episodeCardSizes: [...Array(10).fill(null), ...somchaiNewEpisodes.map(episode => episode.cardSize)],
   "seriesLogo": "./assets/somchai/v001/assets/brand/logo-420.webp",
-  "status": "พร้อมอ่าน 10 ตอน",
+  "status": "พร้อมอ่าน 20 ตอน",
   "badge": "อ่านฟรี 3 ตอน",
   "age": "13+",
   "kicker": "ชีวิตแรกมีแต่งาน ชีวิตใหม่ขอมีสวน",
   "description": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน",
-  "sampleLength": "10 ตอน · 108 หน้าเนื้อหา",
+  "sampleLength": "20 ตอน · 223 หน้าเนื้อหา",
   "aiUsage": "ภาพและปกสร้างด้วย AI · เว็บตูนภาษาไทยดัดแปลงจากบทที่นำมาเรียบเรียง",
   "warnings": "มีฉากการเจ็บป่วยและเสียชีวิตในช่วงต้น ก่อนเริ่มชีวิตใหม่",
-  "provenance": "เว็บตูนภาษาไทยดัดแปลง · แพ็กฉบับ v001 ตอน 1–10",
-  "readerNote": "ตอน 1–3 อ่านฟรี · ตอน 4–10 ปลดล็อกตอนละ 10 เหรียญทดลอง",
+  "provenance": "เว็บตูนภาษาไทยดัดแปลง · ตอน 1–10 ฉบับ v001 · ตอน 11–20 ฉบับ v002",
+  "readerNote": "ตอน 1–3 อ่านฟรี · ตอน 4–20 ปลดล็อกตอนละ 10 เหรียญทดลอง",
   "ongoing": true,
   "pilots": [],
   "heroLandscape": "./assets/hero/somchai-wide-v1.webp",
   "heroImage": "./assets/hero/somchai-portrait-v1.webp",
   "heroEpisode": 1,
   "heroCta": "อ่านฟรี 3 ตอน",
-  "heroBadge": "10 ตอนพร้อมอ่าน",
+  "heroBadge": "20 ตอนพร้อมอ่าน",
   "heroKicker": "ชีวิตแรกมีแต่งาน ชีวิตใหม่ขอมีสวน",
   "heroDescription": "ขอแค่ชีวิตเงียบ ๆ กับจอบวิเศษหนึ่งด้าม แต่สวนในป่าต่างโลกกลับมีแขกที่ไม่ได้เชิญ… และพวกมันอาจไม่ใช่หมาธรรมดา",
-  "shelfCta": "10 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
-  "shareVersion": "v4",
+  "shelfCta": "20 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
+  "shareVersion": "v5",
   "shareImage": "./assets/hero/somchai-wide-v1.webp",
   "shareLayout": "wide",
   "sharePosition": "right center",
-  "shareBadge": "10 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
-  "shareDescription": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน · อ่านฟรีตอน 1–3 ตอน 4–10 ปลดล็อกตอนละ 10 เหรียญทดลอง",
+  "shareBadge": "20 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
+  "shareDescription": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน · พร้อมอ่าน 20 ตอน · อ่านฟรีตอน 1–3 ตอน 4–20 ปลดล็อกตอนละ 10 เหรียญทดลอง",
   comicPages: chapters[0],
   comicChapters: chapters
 };
