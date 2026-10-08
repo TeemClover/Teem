@@ -5,7 +5,7 @@ import { createCreatorCommunity } from './creator-community.js';
 import { shareLink } from './sharing.js';
 import { call as platformCall, config as platformConfig } from './platform/client.js';
 import { setupWallet, openCheckout, readable } from './platform/wallet.js';
-import { startView, stopView, flush as flushViews } from './platform/view-tracker.js';
+import { startView, stopView, finishView } from './platform/view-tracker.js';
 import { mountPublished } from './platform/published.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -451,7 +451,7 @@ video.addEventListener('loadedmetadata', () => { if (resumeAt && Number.isFinite
 video.addEventListener('timeupdate', () => { if (Date.now() - lastWrite > 1000) { saveProgress(); lastWrite = Date.now(); } });
 video.addEventListener('pause', saveProgress);
 video.addEventListener('ended', () => {
-  flushViews();
+  finishView();
   saveProgress(); renderContinue();
   if(autoplayNext&&selectedStory?.pilots?.length&&selectedEpisode<selectedStory.episodes){requestEpisode(selectedEpisode+1);return;}
   $('#player-status').textContent = selectedEpisode < selectedStory?.episodes ? `จบตอนแล้ว · กดตอนถัดไปเพื่อดูต่อ` : 'ดูจบแล้ว · เก็บเรื่องไว้หรือค้นพบเรื่องใหม่';
