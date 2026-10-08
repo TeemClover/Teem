@@ -1,5 +1,7 @@
-import {somchaiNewEpisodes} from './somchai-episodes-11-20.js';
-// Preserve the original v001 episodes 1–10; append selected v002 episodes 11–20.
+import {somchaiNewEpisodes as episodes11to20} from './somchai-episodes-11-20.js';
+import {somchaiEpisodes21to30} from './somchai-episodes-21-30.js';
+const somchaiNewEpisodes = [...episodes11to20, ...somchaiEpisodes21to30];
+// Preserve episodes 1–20 and append the supplied episodes 21–30.
 const originalChapters = [
   [
     {
@@ -3856,7 +3858,7 @@ export const somchaiWebtoon = {
   "color": "#64824b",
   "poster": "./assets/somchai/v001/assets/covers/art/episode-01.webp",
   "position": "center 28%",
-  "episodes": 20,
+  "episodes": 30,
   "episodeNames": [
     "ขอเริ่มใหม่อีกครั้ง",
     "วันแรก ต้องรอด",
@@ -3912,32 +3914,32 @@ export const somchaiWebtoon = {
   episodeCoverSizes: [...Array(10).fill(null), ...somchaiNewEpisodes.map(episode => episode.coverSize)],
   episodeCardSizes: [...Array(10).fill(null), ...somchaiNewEpisodes.map(episode => episode.cardSize)],
   "seriesLogo": "./assets/somchai/v001/assets/brand/logo-420.webp",
-  "status": "พร้อมอ่าน 20 ตอน",
+  "status": "พร้อมอ่าน 30 ตอน",
   "badge": "อ่านฟรี 3 ตอน",
   "age": "13+",
   "kicker": "ชีวิตแรกมีแต่งาน ชีวิตใหม่ขอมีสวน",
   "description": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน",
-  "sampleLength": "20 ตอน · 223 หน้าเนื้อหา",
+  "sampleLength": "30 ตอน · 333 หน้าเนื้อหา",
   "aiUsage": "ภาพและปกสร้างด้วย AI · เว็บตูนภาษาไทยดัดแปลงจากบทที่นำมาเรียบเรียง",
   "warnings": "มีฉากการเจ็บป่วยและเสียชีวิตในช่วงต้น ก่อนเริ่มชีวิตใหม่",
-  "provenance": "เว็บตูนภาษาไทยดัดแปลง · ตอน 1–10 ฉบับ v001 · ตอน 11–20 ฉบับ v002",
-  "readerNote": "ตอน 1–3 อ่านฟรี · ตอน 4–20 ปลดล็อกตอนละ 10 เหรียญทดลอง",
+  "provenance": "เว็บตูนภาษาไทยดัดแปลง · ตอน 1–10 ฉบับ v001 · ตอน 11–20 ฉบับ v002 · ตอน 21–30 ภาพ v003 / บท v004",
+  "readerNote": "ตอน 1–3 อ่านฟรี · ตอน 4–30 ปลดล็อกตอนละ 10 เหรียญทดลอง",
   "ongoing": true,
   "pilots": [],
   "heroLandscape": "./assets/hero/somchai-wide-v1.webp",
   "heroImage": "./assets/hero/somchai-portrait-v1.webp",
   "heroEpisode": 1,
   "heroCta": "อ่านฟรี 3 ตอน",
-  "heroBadge": "20 ตอนพร้อมอ่าน",
+  "heroBadge": "30 ตอนพร้อมอ่าน",
   "heroKicker": "ชีวิตแรกมีแต่งาน ชีวิตใหม่ขอมีสวน",
   "heroDescription": "ขอแค่ชีวิตเงียบ ๆ กับจอบวิเศษหนึ่งด้าม แต่สวนในป่าต่างโลกกลับมีแขกที่ไม่ได้เชิญ… และพวกมันอาจไม่ใช่หมาธรรมดา",
-  "shelfCta": "20 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
-  "shareVersion": "v5",
+  "shelfCta": "30 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
+  "shareVersion": "v6",
   "shareImage": "./assets/hero/somchai-wide-v1.webp",
   "shareLayout": "wide",
   "sharePosition": "right center",
-  "shareBadge": "20 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
-  "shareDescription": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน · พร้อมอ่าน 20 ตอน · อ่านฟรีตอน 1–3 ตอน 4–20 ปลดล็อกตอนละ 10 เหรียญทดลอง",
+  "shareBadge": "30 ตอนพร้อมอ่าน · ฟรี 3 ตอนแรก",
+  "shareDescription": "สมชายทุ่มชีวิตให้การเรียนและการทำงาน จนถูกใช้งานหนัก ป่วย และจากไปโดยยังไม่ทันได้ใช้ชีวิต เมื่อเทพเจ้ามอบโอกาสเริ่มใหม่ในต่างโลก เขาจึงขอเพียงร่างกายแข็งแรง ที่เงียบสงบ และชีวิตเกษตรกร แต่ป่าที่ไม่มีใครกลับค่อย ๆ เต็มไปด้วยเรื่องชวนปวดหัวและความผูกพัน · พร้อมอ่าน 30 ตอน · อ่านฟรีตอน 1–3 ตอน 4–30 ปลดล็อกตอนละ 10 เหรียญทดลอง",
   comicPages: chapters[0],
   comicChapters: chapters
 };

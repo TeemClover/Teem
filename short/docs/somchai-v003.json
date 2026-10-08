@@ -1,0 +1,924 @@
+{
+  "source": "Somchai/somchai_episodes_21_30",
+  "artworkVersion": "v003",
+  "textVersion": "v004",
+  "imported": "2026-10-08",
+  "episodes": 10,
+  "storyPages": 110,
+  "covers": 10,
+  "cards": 10,
+  "webpBytes": 100043552,
+  "conversion": "Already WebP; verified against source manifest and copied without recompression",
+  "files": [
+    {
+      "file": "assets/covers/episode-21.webp",
+      "sha256": "ef81312b0ff6a26a35f305e721e436f1b1bce6bf19b5baae43ceca670e222c2c",
+      "bytes": 848038,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-21-card.webp",
+      "sha256": "3f509d5fcda64c510eba4a8a58b56427373b2f3c446b1446fd440b14d707a492",
+      "bytes": 264602,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/21/pages/001.webp",
+      "sha256": "28fce68845307e152a33bec252f3f53097aa762adc1c78dd9c05031d81a313ba",
+      "bytes": 931806,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/002.webp",
+      "sha256": "2202e7de9d7789911d8d3e80d05d0b2643c037d64b7759c95a43763dcbf2d240",
+      "bytes": 840828,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/003.webp",
+      "sha256": "8601e97e828eb6dd521f3947d89a29d3bc4144f7c0afbfe98382955303bc2ca7",
+      "bytes": 958114,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/004.webp",
+      "sha256": "48b1c1a9e8452aa1434d1d8163d75e7b8f3cbd19a9c78a7d443332e83448278a",
+      "bytes": 891654,
+      "width": 793,
+      "height": 1981
+    },
+    {
+      "file": "episodes/21/pages/005.webp",
+      "sha256": "deac86314cc654124542e88ff1bba27539ba4964b70b4b8c1b8cc1f5f95241d7",
+      "bytes": 847060,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/21/pages/006.webp",
+      "sha256": "d7e99277c4755fc8595ed07def8773b2e540b3ce32eceffbbdda947c7f915607",
+      "bytes": 821072,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/007.webp",
+      "sha256": "f42c7f6bae9dcabba6312af1d5ccd84646ea755339bdf0229cf0f74490f0efd2",
+      "bytes": 868782,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/008.webp",
+      "sha256": "a863be5cb9479b7ee19e3e6a5ba7bdde0922a5a65a4973b781d0f1b22ce237c2",
+      "bytes": 865450,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/009.webp",
+      "sha256": "3da13169e5ea0febbcea244ea86972e428ba698f56e0b52726a14e7b131c61f5",
+      "bytes": 833710,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/010.webp",
+      "sha256": "fd5cb96c0ac5bba97f01e4eabac79819657d669cb12c1c4bd3bc6ea69fe16d40",
+      "bytes": 864040,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/21/pages/011.webp",
+      "sha256": "4381da7f57acb52c284611e6e55bd31e8f571f3836dc1c9de0bc16298b22d500",
+      "bytes": 945654,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-22.webp",
+      "sha256": "895f4e9f3e7d1a4bd7ac0b2757e9d9cb45d58aebd0572a390ba6e956309d0189",
+      "bytes": 834602,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-22-card.webp",
+      "sha256": "ef2f56292283fdc645450e3997c11fc904d4f7a6e21f1002949a66bbdc52bea5",
+      "bytes": 256778,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/22/pages/001.webp",
+      "sha256": "899adbc4246259e1f99ef23ec931c357c700761cb0720cbcbf2871de169b2ee4",
+      "bytes": 883676,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/002.webp",
+      "sha256": "a3e44e43a13f8bdf18ee71b9971f8d234bd95c89f28d0aa840b59eeb1d040d13",
+      "bytes": 854060,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/003.webp",
+      "sha256": "852b29f33aa8530b6347196cc875b58ac65d74f24f06fc216145441ef10f13b9",
+      "bytes": 841080,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/004.webp",
+      "sha256": "c54cbe4f926662203f791c055f7ab198a5588f19a191617aa10a37c21d35eab2",
+      "bytes": 827044,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/005.webp",
+      "sha256": "88ee1e76425ddac15028f30f103d4259d81890f972650e6c170516bbeb689fff",
+      "bytes": 836272,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/006.webp",
+      "sha256": "931a393486142fac90be96965dbea98070f37b74a7d5a3bf80c1da20d099ade5",
+      "bytes": 824696,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/007.webp",
+      "sha256": "9383e747f77a6b5fd6e5c62153af6c93f81a13d35e8cfc664e081bc58adcf9e8",
+      "bytes": 720782,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/008.webp",
+      "sha256": "a62988514386141c3c44880a1c73f8780ef39a79c8621ade4efed461fbc69c6f",
+      "bytes": 810058,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/009.webp",
+      "sha256": "71d043d49f57a5f35eb80c292439d49689a225db18d8ab19689bda7561950318",
+      "bytes": 800550,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/010.webp",
+      "sha256": "6b324d66887c375c0e61a65593bf134c0d8dee416a7bf22ab290431f17827214",
+      "bytes": 792942,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/22/pages/011.webp",
+      "sha256": "96522b60518b99524383d87133f83866f62990ed4868db644a3dbad1cc5ccb7b",
+      "bytes": 804616,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-23.webp",
+      "sha256": "286599fccbf85c0e82c1f092760e8d99a49aba5ca6a6270dccc8f7af3aea5935",
+      "bytes": 738188,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-23-card.webp",
+      "sha256": "d34843be4b80212b11a4196727ff41daf5ce23d344c306370f10b1599329042d",
+      "bytes": 246640,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/23/pages/001.webp",
+      "sha256": "36c822b8f59c36022fcffdac356b57c39c58bdd314d59105a37a3c6674713a20",
+      "bytes": 773478,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/23/pages/002.webp",
+      "sha256": "1f8c858a5817ae90f69e16c35d9b9d710ad14d520811f4366dc363bfb50ef566",
+      "bytes": 857674,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/003.webp",
+      "sha256": "0c1c92df86422f7ba6848626bd968ba86d0a8e5c3c843e7f3777d2ee85df0edc",
+      "bytes": 842218,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/004.webp",
+      "sha256": "ea5592d6b320eab0ca09589fb4e4f13471c0ab6fc99610d15ce86c1dae247ecf",
+      "bytes": 604854,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/005.webp",
+      "sha256": "2190dfd5024c648643d65c2b0b94337ee7d5619b3cfeef19c3dadac866e17f3e",
+      "bytes": 766522,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/006.webp",
+      "sha256": "0da7f0bae127583d1cbfdd729b661c848ac29b24fa15f2b383f8734c6954a752",
+      "bytes": 787204,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/007.webp",
+      "sha256": "4a2572f72b3e03c3b6485d5cbb212aae1acecfd810ef335310ab689dc286be60",
+      "bytes": 750050,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/008.webp",
+      "sha256": "b55a00264c0748d86e290dedbf689df173a7b8620ef170d4157f7cbe93f12f01",
+      "bytes": 736402,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/009.webp",
+      "sha256": "4e137dd047a392232a902fc47ba5ea05df9753107de1ce665ffc9cdc5a10966f",
+      "bytes": 711448,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/010.webp",
+      "sha256": "92958c1af352d7961d254e0c1ad34d85d8de1b2cf21d233584051c529ad0f247",
+      "bytes": 751478,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/23/pages/011.webp",
+      "sha256": "5f2ffa7e61f66725f47892068b154d5e4117fa5067252fc29af35326107ae9cf",
+      "bytes": 809668,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-24.webp",
+      "sha256": "dea3eb2bdf4da7c020665c5eb4095c685d13065cb34f01a7536f5dfa5f9dbb0c",
+      "bytes": 765688,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-24-card.webp",
+      "sha256": "bd6b2cb7c2508493af7dcf65d8a933146cc13e4b09f9f437fd4323465bda7ab1",
+      "bytes": 241466,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/24/pages/001.webp",
+      "sha256": "79f2496048fd21ac5d18676de630965612eca251f05d79cfa03497a754059658",
+      "bytes": 862812,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/002.webp",
+      "sha256": "1a8d3ab18f9fe9dd7277d34ae943baf67d27884d0a438f3112edb8343bd0341e",
+      "bytes": 735390,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/003.webp",
+      "sha256": "035a306ab8feba8c1eb3ac61af6d31a5358800f0f1f8c10a256eb208fab4a287",
+      "bytes": 861120,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/004.webp",
+      "sha256": "e2747df75bb6fafe3a2f7100045022a7a1c92f99130e083757852d5e50f9ea64",
+      "bytes": 803890,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/005.webp",
+      "sha256": "90e728d4ce8c487c87a2b71776efa94e3a006d458368b664f4fcf02d4dc1cd9a",
+      "bytes": 856654,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/006.webp",
+      "sha256": "163367f9516d14f3f850193ed8a02b5898b67fbeadc71041f629649e42ca3670",
+      "bytes": 888458,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/007.webp",
+      "sha256": "a91957ee2536353d69961d801f47e9081805dcec5cbd06528afd19ceee29bf76",
+      "bytes": 812284,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/008.webp",
+      "sha256": "0df364353435b2e225dabf85aad82398183d7014c8ca50891555338ced71dda5",
+      "bytes": 842272,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/009.webp",
+      "sha256": "54848a94a275d4efac03b3062c73320b51909e267c1bb63600b17b532ef4f3e0",
+      "bytes": 786212,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/010.webp",
+      "sha256": "f5c688184ebff7354651d584bd09f9164f7cd9fe4d761f42875622e7a13ee072",
+      "bytes": 709188,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/24/pages/011.webp",
+      "sha256": "5453423c8fc44a714f2001c1ff821f5ad2921888c0762c4aef837c4998d2f0c3",
+      "bytes": 870720,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-25.webp",
+      "sha256": "a96febbcaf7dbd66ad421253c8baae8769dbdcf284af3ac6b1e8b6728e4f9fe8",
+      "bytes": 771900,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-25-card.webp",
+      "sha256": "56446b952e7b0cedfeed9847c76a76411e81c2c911d505eb3e198618dff771d1",
+      "bytes": 242808,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/25/pages/001.webp",
+      "sha256": "9fa9037d845127e55545a670eb4c1f858a7687368abc26e4418c59c3ad7d8e38",
+      "bytes": 864788,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/002.webp",
+      "sha256": "bafa7c05525bde9e6cb6740c69b3f2a59d00bac9d22fd28e22988db5fbfc0980",
+      "bytes": 828926,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/003.webp",
+      "sha256": "44d1b6734806e40eabc556d21aed8f76867f24b01b2cf8421553696aa28a33f7",
+      "bytes": 855056,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/004.webp",
+      "sha256": "9edb915f6bc463acf92940023b102d78ff1e9d8a49fc6cfefd325090f86bc152",
+      "bytes": 833310,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/005.webp",
+      "sha256": "0cedeac900269add99b7874b5a10510de61763f3284b7786c7f780c835a2bf5b",
+      "bytes": 663840,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/006.webp",
+      "sha256": "8d9ce5be8185657ded29e79e3aa135c58ce57a3eae7a47f0a2faa4f57482b6b3",
+      "bytes": 794104,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/007.webp",
+      "sha256": "b4ba23babcad98cb6dc90973f17571728699fc8033c8dde9366fc6b21bec1fa5",
+      "bytes": 850048,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/25/pages/008.webp",
+      "sha256": "221a7ad0e1ae25538886232925bfdcd91bcb55c34ddb8a448a3e00bc805c17a7",
+      "bytes": 822338,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/009.webp",
+      "sha256": "f8eab36baf98b5a4f512a624493f1a3fe7b2c2975bde6c0ad4997a677742af86",
+      "bytes": 768050,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/010.webp",
+      "sha256": "0307fe9cf9f7c0717b28bd004ce20c56b01f1bb262b9e455ed46e16430ef9e59",
+      "bytes": 810006,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/25/pages/011.webp",
+      "sha256": "eccfd590971fb1fa9cbef7fe50549447e445cbc4946144d99ada0b431deb655a",
+      "bytes": 851428,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-26.webp",
+      "sha256": "33dc07103c9269d87945a7730bd20e2a63bd5f782cacda4d93036ff7bca26a32",
+      "bytes": 810376,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-26-card.webp",
+      "sha256": "d4f1e29255ebf8a207d7eb63029e81e2fcbb8ce28fecb7e0a60e367ee1e09ccf",
+      "bytes": 248548,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/26/pages/001.webp",
+      "sha256": "90c982ff4acec53899d5d3b9d67447509e3b8ef96402f695665ec753f58a3e8d",
+      "bytes": 852360,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/002.webp",
+      "sha256": "56833509996d2e7ae3d2e048ad1e39b4b8ccf6511028babe2af7e90242fa485f",
+      "bytes": 785932,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/26/pages/003.webp",
+      "sha256": "480d781f95aa399180712f070fabe8a6936b4f506d7f30c2c9d7f1a9b9be6ccc",
+      "bytes": 842130,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/004.webp",
+      "sha256": "53230169b3f5efd96fc5bb868b1a9c7c5ba7f966cff956ffa7411145730621b9",
+      "bytes": 715436,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/005.webp",
+      "sha256": "86aeda33ed6a018e94a137f71e39f59e60d6f9873290998aebbf2f92d23a4a82",
+      "bytes": 767334,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/006.webp",
+      "sha256": "8507d52564a5c9f4bff638056413302fb59e452b4471381874f9d683f3b3b1bd",
+      "bytes": 780542,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/007.webp",
+      "sha256": "1f3f640227983177547f808c4232593ee9c54011f6b16bec6120be53fb11a04a",
+      "bytes": 757012,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/008.webp",
+      "sha256": "4843413bdddf8f7f2e9f87e37f3765a684e8b7ff9182599915bf1e826e1515a9",
+      "bytes": 827258,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/26/pages/009.webp",
+      "sha256": "f17a1504dec968f16b076a074d82deebba8e5f78486c1e89c1e782d89e7c0641",
+      "bytes": 738524,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/26/pages/010.webp",
+      "sha256": "0e544cd82f21d0d5d618c74ef996914958d1cf25c107fd438e0992b94e3ac59e",
+      "bytes": 686368,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-27.webp",
+      "sha256": "da2d9115ce28ab27d53d52f2e803f3c9834038896d7dbf7cbd9b67655ebb3c58",
+      "bytes": 781748,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-27-card.webp",
+      "sha256": "3de77376ad7efcd34974880b50800a17e59195ab6743f8e4a819ef8c03b802be",
+      "bytes": 245052,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/27/pages/001.webp",
+      "sha256": "1de1048ff92adb9b51f229186d6d5db409013fcd368f54fd5993493f45912834",
+      "bytes": 799478,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/002.webp",
+      "sha256": "db7d0d8de033c7f074c464dc7e235b577c092b54b2124aceaf1949a3275c7233",
+      "bytes": 734634,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/003.webp",
+      "sha256": "ee76028f8d5260192192ce7c952ddfc46c210bba87ff66a40c9c748935ab8989",
+      "bytes": 793296,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/004.webp",
+      "sha256": "83aed221f5999058d6492e7c782369409337b1202c336e3109a5845d37792960",
+      "bytes": 861154,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/005.webp",
+      "sha256": "2a19a1e20422da58d7bfc1534d40844061327af16be8fa4b60da6c7e1ed5cbc7",
+      "bytes": 792246,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/006.webp",
+      "sha256": "2f27bd4ceb9045d8c6d4593e30c95cecdfffc55aea0756652d769f18ff963cf0",
+      "bytes": 768924,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/007.webp",
+      "sha256": "e71767cd7193219da8ce213acf4414c4e9a4dca996457701e22bb5ebfe15077d",
+      "bytes": 839630,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/27/pages/008.webp",
+      "sha256": "222f42c01e82e96881ea05d0cc63c16b13dad66866c4fec0047b73ebc1a76cd7",
+      "bytes": 911816,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-28.webp",
+      "sha256": "54ffec36e3dd139daa298ca75a4dd4491ebb707018c4cfe346b193729996a46e",
+      "bytes": 817074,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-28-card.webp",
+      "sha256": "9b26dbd37c307ff1a2a811644011c45ff2d44ec31ff44d3802add155ce2ea2e7",
+      "bytes": 246300,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/28/pages/001.webp",
+      "sha256": "3c6e20cc0e484471b961fb353e0dae0ea8fd68c72a55b796d6bcbc9a7b049e53",
+      "bytes": 794028,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/002.webp",
+      "sha256": "c5bd2278ab2eebfd367df1debb14d9237311ff92d49c948b744c437f3f03d68b",
+      "bytes": 834084,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/003.webp",
+      "sha256": "957860377cc920cbf9a3d19be5625ccc40650d9bb92606757c53874e5ebf9b4f",
+      "bytes": 834036,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/004.webp",
+      "sha256": "0466bd4ac701b61a0bfb81e7671b17bad35d80a8f067e82e04997689be6a05c2",
+      "bytes": 930860,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/005.webp",
+      "sha256": "46eefc272ca9bc91cbcb1c8870f7ee05fd71d8a3ee7912327b72a08b096ea2c3",
+      "bytes": 883156,
+      "width": 793,
+      "height": 1981
+    },
+    {
+      "file": "episodes/28/pages/006.webp",
+      "sha256": "4cb62bfe76e2b2424419a65fed3c73c163fecd44f666261f009fee10fd0931d0",
+      "bytes": 905554,
+      "width": 793,
+      "height": 1981
+    },
+    {
+      "file": "episodes/28/pages/007.webp",
+      "sha256": "703fb6417cb89c5b0636acd24e62620540f7d71f7507e3c5a427489cbf8acf6b",
+      "bytes": 823420,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/008.webp",
+      "sha256": "e87cbf097803bb9c7bbac2c894e640b145dc7b959609f51adbe34f8a6167e4f1",
+      "bytes": 839492,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/009.webp",
+      "sha256": "36dc0406f958cd12a1c9bc02b7f8aad18f4b14d91c0c029aca83b0b18530cccc",
+      "bytes": 737724,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/010.webp",
+      "sha256": "4d4484b2fdd4ded8f192571194ed5cccd89ccada334ffb9a2aa80b822a5d21f4",
+      "bytes": 802228,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/011.webp",
+      "sha256": "430e386fbd5972670de09425189b80ef3f9800a72f3c3c7cd23de70f9c8ce375",
+      "bytes": 858798,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/012.webp",
+      "sha256": "ef768e5a9c36ed1ec510e0e07e5a52d6319eed90c3ef84b82ce6b434d326cd13",
+      "bytes": 747128,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/28/pages/013.webp",
+      "sha256": "3f55226b9e603792efe82843a7da7d67608b1c735fbaa72b814fd179a28ede66",
+      "bytes": 938370,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-29.webp",
+      "sha256": "6377bfae6e14c1cdefe20bce12503c7774e966e5c1b813896881c1eb9dba7609",
+      "bytes": 861784,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-29-card.webp",
+      "sha256": "9b6f030c407f71c50b4b11473fc533e5e1aaf6009768bcd8fd75e793cfeba021",
+      "bytes": 252394,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/29/pages/001.webp",
+      "sha256": "cc8404fc9c3d3afffe09dd057c39a76d5f299d816578de04929143b88a727066",
+      "bytes": 819204,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/002.webp",
+      "sha256": "9867c2bfeb09d86492eeed588861f0dd38e98e4cd52286838410dbf20045d5bb",
+      "bytes": 816690,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/003.webp",
+      "sha256": "adb49e3c01a5a2a074364703b1c20c580a3a0c134f163f5c06324585ef869d7c",
+      "bytes": 863628,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/004.webp",
+      "sha256": "c889e9e97eb169f897f7b42a3dc9afed8081afd8081d1ad121338257aca9ea64",
+      "bytes": 902538,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/005.webp",
+      "sha256": "8c9f34623b8342e4f8517244d0083b01e998f2ef0ff12dd57cea8c6c229b677c",
+      "bytes": 752920,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/006.webp",
+      "sha256": "57fe51587bd727116dc3bc280b4d1f12712dc9cf356f4c336be9b315732d99fd",
+      "bytes": 853438,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/007.webp",
+      "sha256": "5aff8bba739320a9ff494a59d5a64e31adaae4171ee575ed66215907224eea4a",
+      "bytes": 881150,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/008.webp",
+      "sha256": "6b9db70805ffed6d70cd11ca2697457839beb8a9938ad6c9d4a52b44e27a3b4d",
+      "bytes": 850580,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/009.webp",
+      "sha256": "701f610231624d5d0ddf15ba4736747e33c2199325d83b9ae479f24c2d622fba",
+      "bytes": 872802,
+      "width": 793,
+      "height": 1984
+    },
+    {
+      "file": "episodes/29/pages/010.webp",
+      "sha256": "8775266adfb484ca8f1beaa0c33f7aada32e12ade96431e85b54aed0c3902d02",
+      "bytes": 889266,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/011.webp",
+      "sha256": "9e512abc870ee87854f6f82685cf1f16109c79834c37c9a727e9ca6370366c2b",
+      "bytes": 831696,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/29/pages/012.webp",
+      "sha256": "775765a310922faec0b525ddf08a01ae20f91b8c6a13038e7563c8207c8e4c87",
+      "bytes": 900404,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-30.webp",
+      "sha256": "7a77fa4c8f2a82aa642ac37b48dc301657ffb280074a23a05ebe86b68bafe737",
+      "bytes": 708302,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "assets/covers/episode-30-card.webp",
+      "sha256": "88567fff7aec68dc7f13bd3c56a4d8a0bae6da71bbf05331ebcef722ba5acc6b",
+      "bytes": 243800,
+      "width": 400,
+      "height": 1000
+    },
+    {
+      "file": "episodes/30/pages/001.webp",
+      "sha256": "d482b36ad1bbeb09eee724b2b603121e0a8e3294bd029468b55f2b550b8d46f4",
+      "bytes": 897218,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/002.webp",
+      "sha256": "a854d532d5af9fa6426ebd9d57507af1d605d26d279f219c69a26e486e59c1bc",
+      "bytes": 869218,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/003.webp",
+      "sha256": "6e965185900bc7e11f2397f13065bbf5fa832ba8a765bfab88e15ad67c484eb3",
+      "bytes": 874374,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/004.webp",
+      "sha256": "4f3fecfcc9b7614151821f663d8d2cd773f9cf4705f87750b8fc2a78aca61614",
+      "bytes": 809164,
+      "width": 793,
+      "height": 1981
+    },
+    {
+      "file": "episodes/30/pages/005.webp",
+      "sha256": "bfc7ead38d67550fa90a27b9fd1c7c5a585fda81ac20eec6c8232190b00dd779",
+      "bytes": 836702,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/006.webp",
+      "sha256": "e32935aeee1da731ce185715952738dcb1c23d1d989fade83dfc4493779c25f6",
+      "bytes": 690506,
+      "width": 793,
+      "height": 1981
+    },
+    {
+      "file": "episodes/30/pages/007.webp",
+      "sha256": "e5adba41a0d50ce4a58dbeb968a2082b5e1f545f8575f35e5d32991cc87d3d4a",
+      "bytes": 857794,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/008.webp",
+      "sha256": "4f329cba5b1e6740d76496fcffd34961bb9eaa8a3648762a5238d05a392d4862",
+      "bytes": 520876,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/009.webp",
+      "sha256": "0cb01046d1719d877b229ec37ad6c97b484cc9c6fcf6c7971a52323741d9e995",
+      "bytes": 731598,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/010.webp",
+      "sha256": "d710dcd7ce686208dec28216fd8002608b5ff022657e880dc0845bebbc5c8f96",
+      "bytes": 655928,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/011.webp",
+      "sha256": "ff0fe8251ab0a51b552cc2b4e2cb951a0db039090deef20623a1b1e76dc78698",
+      "bytes": 619090,
+      "width": 793,
+      "height": 1983
+    },
+    {
+      "file": "episodes/30/pages/012.webp",
+      "sha256": "277da35a6708084cd41d9e38b8767fce6988666888864eeb25a8d6ffdbec0b67",
+      "bytes": 811892,
+      "width": 793,
+      "height": 1983
+    }
+  ]
+}

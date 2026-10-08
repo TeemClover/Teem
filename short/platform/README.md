@@ -30,3 +30,27 @@ Demo purchases are not cash. Gross topups are different from revenue earned by c
 `node --test --experimental-test-module-mocks short/platform/verify-api.test.mjs` checks authentication, role separation, creator ownership and origin protection. `node --test short/platform/verify-platform.test.mjs` checks Thai midnight boundaries, charge validation, activation gates, media limits and the actual SQL functions in PGlite. Supply `TORNTOR_PGLITE` pointing to an installed `@electric-sql/pglite` module. `node short/verify-platform.mjs` exercises real trailers, daily/repeated claims, three checkout simulations, Creator upload/rejection/approval/public reading, safe text rendering, metrics and 320/390/1440 layouts. `SHORT_BASE_URL` targets an existing preview/live demo. All generated upload fixtures remain isolated to the test browser.
 
 Integration functions are implemented and SQL-tested locally, but no merchant keys, Torntor database, Auth or private storage were configured at this release. A real provider transaction and deployed SQL/auth/storage flow must pass before launch.
+
+### Somchai reading report (2026-10-08)
+
+Episodes 21–30 extend the catalogue to 30 episodes / 333 story pages. The new
+110 pages and 10 covers use the supplied WebP files, verified against their
+source SHA-256 manifest; the import receipt is `../docs/somchai-v003.json`.
+Episodes 1–3 remain free; every episode from 4–30 costs 10 coins.
+
+Open `/short/admin/?story=somchai` for episode titles, qualified reading sessions,
+unique readers per episode, end-of-chapter rate, minutes spent reading, unlocks,
+and separate paid / free coins. The story filter shows all 30 chapters, including
+zero rows, and CSV exports the same filtered rows. Summary cards remain platform
+wide. Completion means reaching the bottom of the reader, not proof that every
+word was read. A session is counted once; revisiting creates a new session.
+Coin prompts, other modal dialogs, mobile chapter drawers, and hidden tabs do not
+add reading time. Creator reports keep the existing ownership restrictions.
+
+Production is still in **device-local demo mode** until the dedicated database
+and authentication are connected. Demo unique readers represent this device,
+not platform-wide people. No reading figures were invented or seeded.
+
+QA: `node short/verify-somchai.mjs` and `node short/verify-reading-stats.mjs`.
+Set `SHORT_BASE_URL` for live verification and `SHORT_PROOF_DIR` for screenshots
+and CSV evidence. These tests use isolated browser state and simulated coins.
