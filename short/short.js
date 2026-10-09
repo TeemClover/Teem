@@ -1,3 +1,4 @@
+import {freeEpisodeCount} from './platform/rules.js';
 import { stories } from './library.js';
 import { creatorProfiles } from './content-library.js';
 import { createHeroCarousel } from './hero-carousel.js';
@@ -64,12 +65,13 @@ function readState() {
       if (typeof key !== 'string') return false;
       const [id, ep] = key.split(':');
       const story = stories.find(s => s.id === id);
-      return story && Number.isInteger(Number(ep)) && Number(ep) > 3 && Number(ep) <= story.episodes;
+      return story && Number.isInteger(Number(ep)) && Number(ep) > freeEpisodeCount(story) && Number(ep) <= story.episodes;
     }))];
+    clean.contentEditions = Object.fromEntries(stories.filter(s=>raw.contentEditions?.[s.id]===s.edition&&s.edition).map(s=>[s.id,s.edition]));
     for (const story of stories) {
       const p = raw.progress?.[story.id];
       if (!p || !Number.isInteger(p.episode) || p.episode < 1 || p.episode > story.episodes) continue;
-      if (p.episode > 3 && !clean.unlocked.includes(`${story.id}:${p.episode}`)) continue;
+      if (p.episode > freeEpisodeCount(story) && !clean.unlocked.includes(`${story.id}:${p.episode}`)) continue;
       clean.progress[story.id] = { episode: p.episode, time: Number.isFinite(p.time) ? Math.max(0, p.time) : 0, duration: Number.isFinite(p.duration) ? Math.max(0, p.duration) : 0, updated: Number.isFinite(p.updated) ? p.updated : 0, complete: p.complete === true };
     }
   } catch { /* Browser storage may be unavailable; this demo also works in memory. */ }
@@ -186,7 +188,7 @@ $('#story-dialog').addEventListener('keydown',e=>{
   }
 });
 
-function canWatch(story, episode) { return episode <= 3 || state.unlocked.includes(`${story.id}:${episode}`); }
+function canWatch(story, episode) { return episode <= freeEpisodeCount(story) || state.unlocked.includes(`${story.id}:${episode}`); }
 
 function renderSaveButton() {
   if (!selectedStory) return;
@@ -202,21 +204,22 @@ function renderEpisodes() {
   $('#episode-grid').innerHTML = Array.from({ length: selectedStory.episodes }, (_, i) => {
     const ep = i + 1, locked = !canWatch(selectedStory, ep);
     const name = selectedStory.episodeNames[i] || 'เรื่องราวยังดำเนินต่อ';
-    const cardSize = selectedStory.episodeCardSizes?.[i] || {width:397, height:993};
-    const access = locked ? '10 เหรียญ' : ep <= 3 ? 'อ่านฟรี' : 'ปลดล็อกแล้ว';
-    if (selectedStory.episodeCards?.[i]) return `<button class="episode-button episode-cover-card ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${escape(name)} · ${access}" aria-pressed="${ep === selectedEpisode}"><img src="${selectedStory.episodeCards[i]}" alt="" width="${cardSize.width}" height="${cardSize.height}" loading="${i<3?'eager':'lazy'}"><span class="episode-card-number">ตอน ${ep}</span><strong>${escape(name)}</strong><span class="episode-access">${locked ? lockIcon : ''}${access}</span></button>`;
-    return `<button class="episode-button ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${name}${locked ? ' · ปลดล็อก 10 เหรียญทดลอง' : ep <= 3 ? ' · ฟรี' : ' · ปลดล็อกแล้ว'}" aria-pressed="${ep === selectedEpisode}">${locked ? lockIcon : ''}<span>${ep}</span>${ep <= 3 ? '<span class="free-label">ฟรี</span>' : ''}</button>`;
+    const cardSize = (selectedStory.episodeThumbSizes||selectedStory.episodeCardSizes)?.[i] || {width:397, height:993};
+    const access = locked ? '10 เหรียญ' : ep <= freeEpisodeCount(selectedStory) ? 'อ่านฟรี' : 'ปลดล็อกแล้ว';
+    if (selectedStory.episodeCards?.[i]) return `<button class="episode-button episode-cover-card ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${escape(name)} · ${access}" aria-pressed="${ep === selectedEpisode}"><img src="${(selectedStory.episodeThumbs||selectedStory.episodeCards)[i]}" alt="" width="${cardSize.width}" height="${cardSize.height}" loading="${i<3?'eager':'lazy'}"><span class="episode-card-number">ตอน ${ep}</span><strong>${escape(name)}</strong><span class="episode-access">${locked ? lockIcon : ''}${access}</span></button>`;
+    return `<button class="episode-button ${locked ? 'locked' : ''} ${ep === selectedEpisode ? 'active' : ''}" data-episode="${ep}" aria-label="${unit}ที่ ${ep}: ${name}${locked ? ' · ปลดล็อก 10 เหรียญทดลอง' : ep <= freeEpisodeCount(selectedStory) ? ' · ฟรี' : ' · ปลดล็อกแล้ว'}" aria-pressed="${ep === selectedEpisode}">${locked ? lockIcon : ''}<span>${ep}</span>${ep <= freeEpisodeCount(selectedStory) ? '<span class="free-label">ฟรี</span>' : ''}</button>`;
   }).join('');
+  let all=$('#reader-all-episodes');if(!all){all=document.createElement('a');all.id='reader-all-episodes';all.className='reader-all-episodes';$('.episodes-heading').after(all)}all.hidden=!selectedStory.episodeCatalog;all.href=selectedStory.episodeCatalog||'#';all.textContent='ดูปกใหญ่ · ทุกตอน ↗';
   $('#reader-episodes').textContent = `${unit} ${selectedEpisode} / ${selectedStory.episodes} ▾`;
   $('#reader-episodes').setAttribute('aria-label',`เลือก${unit} · ${unit} ${selectedEpisode} จาก ${selectedStory.episodes}`);
   $('#playing-episode').textContent = `${unit}ที่ ${selectedEpisode}`;
   $('#episode-title').textContent=selectedStory.episodeNames[selectedEpisode-1]||'ตอนตัวอย่าง';
   $('#previous-episode').disabled=selectedEpisode<=1; $('#next-episode').disabled=selectedEpisode>=selectedStory.episodes;
   $('.episodes-heading h3').textContent=selectedStory.format==='novel'?'เลือกบท':'เลือกตอน';
-  $('.episodes-heading>span').textContent=selectedStory.episodes<=3?'ฟรีทุกตอน':'ฟรี 3 ตอนแรก';
-  $('#play-episode').textContent = canWatch(selectedStory, selectedEpisode) ? isReading(selectedStory) ? 'อ่านต่อ' : `ดู${unit} ${selectedEpisode}${selectedEpisode <= 3 ? ' ฟรี' : ''}` : `ปลดล็อก${unit} ${selectedEpisode}`;
+  $('.episodes-heading>span').textContent=selectedStory.episodes<=freeEpisodeCount(selectedStory)?'ฟรีทุกตอน':`ฟรี ${freeEpisodeCount(selectedStory)} ตอนแรก`;
+  $('#play-episode').textContent = canWatch(selectedStory, selectedEpisode) ? isReading(selectedStory) ? 'อ่านต่อ' : `ดู${unit} ${selectedEpisode}${selectedEpisode <= freeEpisodeCount(selectedStory) ? ' ฟรี' : ''}` : `ปลดล็อก${unit} ${selectedEpisode}`;
   const remaining=Array.from({length:selectedStory.episodes},(_,i)=>i+1).filter(ep=>!canWatch(selectedStory,ep)).length;
-  $('#completion-price').innerHTML=remaining?`<span>3 ตอนแรกฟรี · ถัดไปตอนละ 10 เหรียญทดลอง</span><strong>ดูหรืออ่านครบอีก ${remaining*10} เหรียญ</strong>`:`<span>${isReading(selectedStory)?'อ่าน':'ดู'}ตัวอย่างได้ทุกตอน</span><strong>${selectedStory.episodes<=3?'ฟรีทุกตอน':'ปลดล็อกครบแล้ว'} · อ่านหรือดูซ้ำได้</strong>`;
+  $('#completion-price').innerHTML=remaining?`<span>${freeEpisodeCount(selectedStory)} ตอนแรกฟรี · ถัดไปตอนละ 10 เหรียญทดลอง</span><strong>ดูหรืออ่านครบอีก ${remaining*10} เหรียญ</strong>`:`<span>${isReading(selectedStory)?'อ่าน':'ดู'}ตัวอย่างได้ทุกตอน</span><strong>${selectedStory.episodes<=freeEpisodeCount(selectedStory)?'ฟรีทุกตอน':'ปลดล็อกครบแล้ว'} · อ่านหรือดูซ้ำได้</strong>`;
 }
 
 function storyURL() {
@@ -292,6 +295,7 @@ function openStory(id, episode = 1, autoplay = false) {
   selectedEpisode = Number.isInteger(episode) && episode >= 1 && episode <= story.episodes ? episode : 1;
   const requestedEpisode = selectedEpisode;
   if (!canWatch(story, selectedEpisode)) selectedEpisode = 1;
+  if(story.edition&&state.contentEditions?.[id]!==story.edition){delete state.progress[id];state.contentEditions={...state.contentEditions,[id]:story.edition};persist();}
   const progress = state.progress[id];
   resumeAt = progress && progress.episode === selectedEpisode && !progress.complete ? progress.time : 0;
   const isComic=isReading(story);
@@ -394,7 +398,7 @@ document.addEventListener('click', async event => {
   const url = new URL(storyURL().pathname + storyURL().search, canonical);
   const action = isReading(selectedStory) ? 'อ่าน' : 'ดู';
   const unit = selectedStory.format === 'novel' ? 'บท' : 'ตอน';
-  const offer = selectedStory.episodes <= 3 ? `${action}ฟรี` : '3 ตอนแรกฟรี';
+  const offer = selectedStory.episodes <= freeEpisodeCount(selectedStory) ? `${action}ฟรี` : `${freeEpisodeCount(selectedStory)} ตอนแรกฟรี`;
   const data = {title: `${selectedStory.title} | ตอนต่อ`,
     text: `มา${action} ${selectedStory.title} ${unit}ที่ ${selectedEpisode} ด้วยกัน · ${offer}ที่ตอนต่อ`, url: url.href};
   sharing = true; trigger.disabled = true;
@@ -463,7 +467,7 @@ $('#comic-reader').addEventListener('scroll',()=>{
   clearTimeout(readerSaveTimer);
   readerSaveTimer=setTimeout(()=>saveReading(),150);
 });
-const trustCopy={creators:{title:'คนเล่าเรื่องก็มีเรื่องเล่า',body:'หน้าเรื่องบอกชื่อผู้สร้าง สตูดิโอ จังหวัด และวิธีใช้ AI ให้เปิดอ่านได้ ขณะนี้ทุกตัวตนเป็นครีเอเตอร์สมมติ ยังไม่มีการตรวจยืนยันบุคคลจริง',items:['ระบุเครดิตบท ภาพ เสียง และการตัดต่อก่อนรับเรื่องจริง','บอกการใช้ AI ตามที่ผู้สร้างแจ้ง พร้อมหลักฐานเมื่อจำเป็น','แสดงชื่อครีเอเตอร์จริงเมื่อเจ้าตัวยินยอมเผยแพร่']},pricing:{title:'อยากดูต่อ ก็รู้ราคาก่อน',body:'3 ตอนแรกฟรี หลังจากนั้นตอนละ 10 เหรียญทดลอง หน้าเรื่องแสดงเหรียญที่ต้องใช้เพื่อปลดล็อกตอนที่เหลือ และตอนที่ปลดล็อกแล้วดูหรืออ่านซ้ำได้',items:['กดยืนยันก่อนหักเหรียญทุกครั้ง','เติมเหรียญใน prototype ได้ฟรี ไม่มีหน้ารับชำระเงิน','ราคาเงินจริงและเงื่อนไขคืนเงินยังไม่ได้กำหนด']},content:{title:'รู้ก่อนเริ่ม เลือกดูได้สบายใจ',body:'หน้าเรื่องแสดงรูปแบบ สถานะ จำนวนตอนในคอนเซปต์ และคำเตือนเนื้อหา วรรณคดีรีมิกซ์ระบุว่าเป็นการตีความใหม่อย่างอิสระ',items:['อายุที่แสดงเป็นแนวทางสมมติ ไม่ใช่เรตที่ผ่านการรับรอง','ยังไม่มีเรื่องจริงที่ผ่านการตรวจสิทธิ์หรือบรรณาธิการ','ก่อนเปิดจริงต้องตรวจสิทธิ์และความพร้อมของตอนที่ขาย']}};
+const trustCopy={creators:{title:'คนเล่าเรื่องก็มีเรื่องเล่า',body:'หน้าเรื่องบอกชื่อผู้สร้าง สตูดิโอ จังหวัด และวิธีใช้ AI ให้เปิดอ่านได้ ขณะนี้ทุกตัวตนเป็นครีเอเตอร์สมมติ ยังไม่มีการตรวจยืนยันบุคคลจริง',items:['ระบุเครดิตบท ภาพ เสียง และการตัดต่อก่อนรับเรื่องจริง','บอกการใช้ AI ตามที่ผู้สร้างแจ้ง พร้อมหลักฐานเมื่อจำเป็น','แสดงชื่อครีเอเตอร์จริงเมื่อเจ้าตัวยินยอมเผยแพร่']},pricing:{title:'อยากดูต่อ ก็รู้ราคาก่อน',body:'แต่ละเรื่องแสดงจำนวนตอนฟรีชัดเจน สมชายอ่านฟรี 5 ตอนแรก ตอนถัดไปตอนละ 10 เหรียญทดลอง หน้าเรื่องแสดงเหรียญที่ต้องใช้เพื่อปลดล็อกตอนที่เหลือ และตอนที่ปลดล็อกแล้วดูหรืออ่านซ้ำได้',items:['กดยืนยันก่อนหักเหรียญทุกครั้ง','เติมเหรียญใน prototype ได้ฟรี ไม่มีหน้ารับชำระเงิน','ราคาเงินจริงและเงื่อนไขคืนเงินยังไม่ได้กำหนด']},content:{title:'รู้ก่อนเริ่ม เลือกดูได้สบายใจ',body:'หน้าเรื่องแสดงรูปแบบ สถานะ จำนวนตอนในคอนเซปต์ และคำเตือนเนื้อหา วรรณคดีรีมิกซ์ระบุว่าเป็นการตีความใหม่อย่างอิสระ',items:['อายุที่แสดงเป็นแนวทางสมมติ ไม่ใช่เรตที่ผ่านการรับรอง','ยังไม่มีเรื่องจริงที่ผ่านการตรวจสิทธิ์หรือบรรณาธิการ','ก่อนเปิดจริงต้องตรวจสิทธิ์และความพร้อมของตอนที่ขาย']}};
 $$('[data-trust]').forEach(b=>b.addEventListener('click',()=>{const c=trustCopy[b.dataset.trust];$('#trust-title').textContent=c.title;$('#trust-body').innerHTML=`<p>${c.body}</p><ul>${c.items.map(item=>`<li>${item}</li>`).join('')}</ul>`;$('#trust-dialog').showModal();}));
 const genreNames=['ทั้งหมด','ผีไทย','พญานาค','วรรณคดีรีมิกซ์','ตลกกวน','โรแมนซ์','ดราม่า','สยองขวัญ','วาย','แฟนตาซี','คอมเมดี้','ย้อนยุค'];
 $('.genre-list').innerHTML=genreNames.map(name=>`<button class="genre ${name==='ทั้งหมด'?'active':''}" data-genre="${name}" aria-pressed="${name==='ทั้งหมด'}">${name}</button>`).join('');

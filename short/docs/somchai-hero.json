@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-09",
+  "edition": "100-v002",
+  "source": "Somchai/somchai-01-100-v002/assets/covers/episode-01.webp",
+  "sourceSha256": "81596079abd1e52ad19d82a8a2e017c8247a25b945ac2144df4a340416a0495b",
+  "method": "Crop supplied cover below title lettering, resize for responsive hero; separate established wordmark retained",
+  "assets": [
+    "assets/somchai/brand/hero-wide.webp",
+    "assets/somchai/brand/hero-portrait.webp"
+  ]
+}

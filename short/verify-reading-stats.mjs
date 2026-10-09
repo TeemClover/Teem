@@ -27,19 +27,19 @@ try{
    await p.waitForFunction(key=>JSON.parse(localStorage.getItem(key)).events[0]?.complete===true,key);
    ev=await p.evaluate(key=>JSON.parse(localStorage.getItem(key)).events,key);assert.equal(ev.length,1,'one session recorded once');
    await p.goto(base+'/short/admin/?story=somchai',{waitUntil:'networkidle'});
-   await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===30);
+   await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===100);
    const row=p.locator('[data-stat-episode="21"]');assert.match(await row.textContent(),/ขยายแปลงเพาะปลูก/);
    assert.equal(await row.locator('td').nth(1).textContent(),'1');assert.equal(await row.locator('td').nth(2).textContent(),'1');assert.equal(await row.locator('td').nth(3).textContent(),'100%');assert.equal(await row.locator('td').nth(5).textContent(),'1');assert.equal(await row.locator('td').nth(7).textContent(),'10');
    assert.equal(await p.locator('[data-stat-episode="30"] td').nth(1).textContent(),'0');assert.equal(await p.locator('#stats-views-label').textContent(),'ยอดอ่าน');
-   const [d]=await Promise.all([p.waitForEvent('download',{timeout:10000}),p.locator('#export').click()]).catch(async e=>{await p.screenshot({path:proof+'/csv-error.png'});throw Error(e.message+'; browser errors: '+JSON.stringify(errors))});await d.saveAs(proof+'/somchai-30-stats.csv');
-   const csv=await(await import('node:fs/promises')).readFile(proof+'/somchai-30-stats.csv','utf8');assert.equal(csv.trim().split('\n').length,31);assert.match(csv,/หมากฮอสกับหมากรุกไทย/);
+   const [d]=await Promise.all([p.waitForEvent('download',{timeout:10000}),p.locator('#export').click()]).catch(async e=>{await p.screenshot({path:proof+'/csv-error.png'});throw Error(e.message+'; browser errors: '+JSON.stringify(errors))});await d.saveAs(proof+'/somchai-100-stats.csv');
+   const csv=await(await import('node:fs/promises')).readFile(proof+'/somchai-100-stats.csv','utf8');assert.equal(csv.trim().split('\n').length,101);assert.match(csv,/จอมมารบ่นในใจ ช่วงหลัง/);
    await p.screenshot({path:proof+'/somchai-stats-mobile.png',fullPage:true});
-   await p.reload({waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===30);assert.equal(await p.locator('[data-stat-episode="21"] td').nth(1).textContent(),'1');
+   await p.reload({waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===100);assert.equal(await p.locator('[data-stat-episode="21"] td').nth(1).textContent(),'1');
    assert.deepEqual(errors,[]);
   }finally{await c.close()}
  });
  for(const width of [320,1440])await run('empty chapters and stats filter responsive '+width,async()=>{
-  const c=await browser.newContext({viewport:{width,height:1000}});try{const p=await c.newPage();await p.goto(base+'/short/admin/?story=somchai',{waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===30);assert.ok(await p.locator('html').evaluate(e=>e.scrollWidth<=e.clientWidth+1));assert.equal(await p.locator('[data-stat-episode="21"] td').nth(1).textContent(),'0');await p.screenshot({path:proof+`/somchai-stats-${width}.png`,fullPage:true});await p.locator('#stats-story').selectOption('');assert.equal(await p.locator('#episode-stats tr').count(),1);assert.match(await p.locator('#episode-stats').textContent(),/ยังไม่มียอด/);await p.goto(base+'/short/studio/',{waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelector('#mode').textContent.includes('โหมดทดลอง'));assert.equal(await p.locator('#stats-story option[value="somchai"]').count(),0,'Creator must not see unowned catalogue');}finally{await c.close()}
+  const c=await browser.newContext({viewport:{width,height:1000}});try{const p=await c.newPage();await p.goto(base+'/short/admin/?story=somchai',{waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelectorAll('#episode-stats tr').length===100);assert.ok(await p.locator('html').evaluate(e=>e.scrollWidth<=e.clientWidth+1));assert.equal(await p.locator('[data-stat-episode="21"] td').nth(1).textContent(),'0');await p.screenshot({path:proof+`/somchai-stats-${width}.png`,fullPage:true});await p.locator('#stats-story').selectOption('');assert.equal(await p.locator('#episode-stats tr').count(),1);assert.match(await p.locator('#episode-stats').textContent(),/ยังไม่มียอด/);await p.goto(base+'/short/studio/',{waitUntil:'networkidle'});await p.waitForFunction(()=>document.querySelector('#mode').textContent.includes('โหมดทดลอง'));assert.equal(await p.locator('#stats-story option[value="somchai"]').count(),0,'Creator must not see unowned catalogue');}finally{await c.close()}
  });
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));await writeFile(proof+'/results.json',JSON.stringify({base,results},null,2))}
 if(results.some(r=>r.status==='fail'))process.exitCode=1;

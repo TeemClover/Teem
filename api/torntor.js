@@ -1,3 +1,4 @@
+import {episodeCost} from '../short/platform/rules.js';
 import {randomUUID,randomBytes,createHash} from 'node:crypto';
 import {neon} from '@neondatabase/serverless';
 import {stories} from '../short/library.js';
@@ -18,7 +19,7 @@ async function visitor(sql,req,res){
 }
 function role(u,required){if(u.role!=='admin'&&u.role!==required)throw Object.assign(Error('ACCESS_DENIED'),{status:403});}
 async function wallet(sql,u){const profile=(await sql.query('SELECT free,paid FROM tt_users WHERE id=$1',[u.id]))[0];const unlocked=await sql.query('SELECT story,episode FROM tt_unlocks WHERE user_id=$1',[u.id]);const daily=await sql.query("SELECT 1 FROM tt_daily WHERE user_id=$1 AND day=(now() AT TIME ZONE 'Asia/Bangkok')::date",[u.id]);return {...profile,balance:Number(profile.free)+Number(profile.paid),free:Number(profile.free),paid:Number(profile.paid),unlocked:unlocked.map(x=>`${x.story}:${x.episode}`),claimed:daily.length>0,mode:mode()};}
-async function episode(sql,id,ep){if(known.has(id)){const story=known.get(id);if(!Number.isInteger(ep)||ep<1||ep>story.episodes)throw Error('INVALID_EPISODE');return {price:ep<=3?0:10,format:story.format};}const w=(await sql.query("SELECT * FROM tt_works WHERE id=$1 AND episode=$2 AND status='published'",[id,ep]))[0];if(!w)throw Error('NOT_PUBLISHED');return w;}
+async function episode(sql,id,ep){if(known.has(id)){const story=known.get(id);if(!Number.isInteger(ep)||ep<1||ep>story.episodes)throw Error('INVALID_EPISODE');return {price:episodeCost(story,ep),format:story.format};}const w=(await sql.query("SELECT * FROM tt_works WHERE id=$1 AND episode=$2 AND status='published'",[id,ep]))[0];if(!w)throw Error('NOT_PUBLISHED');return w;}
 async function listWorks(sql,u,published=false){const rows=await sql.query(published?"SELECT * FROM tt_works WHERE status='published' ORDER BY created DESC LIMIT 100":u.role==='admin'?'SELECT * FROM tt_works ORDER BY created DESC LIMIT 100':'SELECT * FROM tt_works WHERE owner=$1 ORDER BY created DESC LIMIT 100',published||u.role==='admin'?[]:[u.id]);for(const row of rows){const assets=await sql.query('SELECT id,type,size,role FROM tt_assets WHERE work=$1 ORDER BY created,id',[row.id]);row.cover=assets.find(a=>a.role==='cover');row.files=assets.filter(a=>a.role==='page');}return {works:rows};}
 async function handle(sql,req,res,action,b){
  if(action==='published')return listWorks(sql,null,true);

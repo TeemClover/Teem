@@ -17,7 +17,7 @@
 .hc-preview-sound[aria-pressed="true"]{color:#ffb4a5;background:#ff654f12}
 .hc-shade{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,#111113 3%,#111113f2 23%,#111113b3 42%,#11111300 65%),linear-gradient(0deg,#111113 0%,#11111300 22%)}
 .hc-copy{width:min(1280px,calc(100% - 96px));margin-inline:auto;padding:42px 0 92px;position:relative;pointer-events:none}
-.hc-copy button{pointer-events:auto}
+.hc-copy :is(button,a){pointer-events:auto}
 .hc-eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.7;color:#e8e0dc;letter-spacing:.1px}
 .hc-live-dot{flex:none;width:6px;height:6px;border-radius:50%;background:#ff654f;box-shadow:0 0 14px #ff654f55}
 .hc-original{display:inline-flex;margin-left:3px;padding:2px 7px;border:1px solid #ffffff2b;border-radius:4px;font-size:8px;letter-spacing:1.2px;font-weight:600;color:#c8c1c0}

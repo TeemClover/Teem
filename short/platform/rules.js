@@ -12,3 +12,6 @@ export function validateSubmission(input){
 }
 export function qualifiedView(seconds,complete,format){return seconds >= (format==='drama'?3:10) || (complete && seconds>=3);}
 export function chargeMatches(charge,order,live){return charge.id===order.charge_id&&charge.metadata?.torntor_order===order.id&&charge.metadata?.torntor_user===order.user_id&&charge.amount===Number(order.amount)&&String(charge.currency).toLowerCase()==='thb'&&charge.livemode===live&&charge.status==='successful'&&charge.paid===true&&!charge.refunded&&Number(charge.refunded_amount||0)===0;}
+
+export const freeEpisodeCount=story=>Math.min(story.episodes,story.freeEpisodes??3);
+export const episodeCost=(story,episode)=>episode<=freeEpisodeCount(story)?0:(story.episodePrice??10);

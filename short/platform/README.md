@@ -31,26 +31,41 @@ Demo purchases are not cash. Gross topups are different from revenue earned by c
 
 Integration functions are implemented and SQL-tested locally, but no merchant keys, Torntor database, Auth or private storage were configured at this release. A real provider transaction and deployed SQL/auth/storage flow must pass before launch.
 
-### Somchai reading report (2026-10-08)
+### Somchai 100-episode replacement (2026-10-09)
 
-Episodes 21–30 extend the catalogue to 30 episodes / 333 story pages. The new
-110 pages and 10 covers use the supplied WebP files, verified against their
-source SHA-256 manifest; the import receipt is `../docs/somchai-v003.json`.
-Episodes 1–3 remain free; every episode from 4–30 costs 10 coins.
+The canonical content is now the user-supplied `Somchai/somchai-01-100-v002`:
+100 chapters / 1,339 story pages. Retired v001/v002/v003 episode files and their
+import modules are removed from the public site; source originals in `/Somchai`
+are unchanged. The separate series wordmark keeps the established identity.
 
-Open `/short/admin/?story=somchai` for episode titles, qualified reading sessions,
-unique readers per episode, end-of-chapter rate, minutes spent reading, unlocks,
-and separate paid / free coins. The story filter shows all 30 chapters, including
-zero rows, and CSV exports the same filtered rows. Summary cards remain platform
-wide. Completion means reaching the bottom of the reader, not proof that every
-word was read. A session is counted once; revisiting creates a new session.
-Coin prompts, other modal dialogs, mobile chapter drawers, and hidden tabs do not
-add reading time. Creator reports keep the existing ownership restrictions.
+`short/import-somchai-100.py` creates 720px reading images (quality 82), 360px
+catalogue covers (quality 80), and 200px quick-picker thumbnails (quality 78).
+Source/output SHA-256, sizes and compression totals are recorded in
+`../docs/somchai-100-v002.json`. Images load lazily with explicit dimensions.
 
-Production is still in **device-local demo mode** until the dedicated database
-and authentication are connected. Demo unique readers represent this device,
-not platform-wide people. No reading figures were invented or seeded.
+`/short/story/somchai/episodes/` provides large full-cover cards, 20-chapter
+ranges, all chapters, title/number search and a resume link. The inline picker
+remains and is bigger, with a link to the full catalogue. Hero and OG use art
+from the replacement release. Existing purchases stay unlocked; old scroll
+positions reset once when the content edition changes, then new progress is
+preserved across reloads.
 
-QA: `node short/verify-somchai.mjs` and `node short/verify-reading-stats.mjs`.
-Set `SHORT_BASE_URL` for live verification and `SHORT_PROOF_DIR` for screenshots
-and CSV evidence. These tests use isolated browser state and simulated coins.
+Somchai episodes 1–5 are free; 6–100 cost 10 coins. `freeEpisodeCount` and
+`episodeCost` in `rules.js` drive the reader, demo wallet, catalogue, share copy
+and server catalogue price. Other stories retain their own free-episode rules.
+Server tests check chapters 4/5/6/100 and reject 101.
+
+Admin `/short/admin/?story=somchai` shows all 100 chapter rows and exports the
+same rows to CSV. Reading sessions, unique readers, bottom-of-chapter rate,
+minutes, unlocks and paid/free coin use remain separate. Summary cards are
+platform-wide. Completion means reaching the bottom, not proof every word was
+read. Covered readers and hidden tabs do not add time.
+
+The deployed service is still device-local demo mode until the dedicated
+database and authentication are connected. Demo unique readers represent this
+device, not platform-wide people. No statistics are invented or seeded.
+
+QA: `node short/verify-somchai.mjs`, `node short/verify-reading-stats.mjs`,
+`node short/verify-share.mjs` and `node --test --experimental-test-module-mocks
+short/platform/verify-api.test.mjs`. `SHORT_BASE_URL` selects live verification;
+local checks walk every chapter, and live checks sample release boundaries.
