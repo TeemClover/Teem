@@ -58,5 +58,10 @@ test('the house holds still while the loading intro opens onto it, and no longer
   assert.match(tour, /renderer\.setSize\(w, h, false\); heldAt\.redraw = true;/, 'a resize empties the canvas, so it is drawn again even while held');
   assert.match(intro, /window\.__introOpening = true;/);
   assert.match(intro, /classList\.add\('gone'\);[^\n]*window\.__introOpening = false;/);
-  assert.match(css, /\.intro-veil\{[^}]*will-change:transform,opacity\}/);
+  // the sheet is drawn per frame on a canvas; a CSS-stretched layer vanished on large screens once it passed the browser's size limit
+  assert.match(intro, /const veil = document\.createElement\('canvas'\)/);
+  assert.match(intro, /getContext\('2d', \{willReadFrequently: true\}\)/, 'CPU-backed: the GPU path stalled on the large curved path');
+  assert.match(intro, /erase\(reach \*\* e, e \* 0\.3\); veil\.style\.opacity =/, 'each frame erases a larger clover; the fade is the element\'s opacity');
+  assert.doesNotMatch(css, /intro-iris|\.intro-veil\{[^}]*will-change/);
+  assert.match(intro, /setTimeout\(end, calm \? 500 : 1500\)/, 'ends by itself when a hidden tab sends no frames');
 });

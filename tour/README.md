@@ -63,8 +63,11 @@ frame before each heavy step so the next storey is already on its way. The intro
 for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. While the
 clover opens (about a second) `tour.js` holds the 3D picture and `textures.js` holds its picture uploads, because
 the opening is drawn by the GPU as well and a moving scene under it stuttered on large
-screens; scrolling ends the hold at once. The sheet with the clover-shaped opening is painted
-once (`will-change`) and only stretched. Reduced motion
+screens; scrolling ends the hold at once. The sheet with the clover-shaped opening is a
+canvas painted once; during the opening `intro.js` erases a larger clover from it each frame,
+growing by the same proportion each moment. (As one CSS-stretched layer it vanished on large
+screens, because browsers drop a layer that passes their size limit. Of the per-frame ways to
+draw it, only a CPU-backed canvas of bounded size held 60 fps on a 5K display.) Reduced motion
 keeps the stages and the words, without movement, and fades out.
 
 **Loading order:** the Google Fonts stylesheet does not block the first paint

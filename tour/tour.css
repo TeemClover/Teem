@@ -115,8 +115,8 @@ body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
 .loader.intro-on{background:none}
 .loader.out{pointer-events:none}
 .loader.gone{display:none}
-/* will-change: the sheet is painted once and the GPU only stretches it; repainting a screen-sized mask at each new scale stuttered on large displays */
-.intro-veil{position:absolute;inset:0;width:100%;height:100%;will-change:transform,opacity}
+/* .intro-veil is the sheet as an earlier intro.js built it; a cached copy of that file still needs it placed. Today's sheet is a canvas placed by intro.js. */
+.intro-veil{position:absolute;inset:0;width:100%;height:100%}
 .intro-core{position:relative;flex:none;width:var(--S);height:var(--S);font-size:calc(var(--S) / 28)}
 .intro-core>*{position:absolute}
 .intro-clover,.intro-leaf,.intro-gold{inset:0;width:100%;height:100%;overflow:visible}
@@ -172,8 +172,6 @@ body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
 /* the way out: the clover that held the plot lets go, and its shape widens until the whole screen is the house */
 .out .intro-core>*,.out .intro-text{opacity:0;transition:opacity .22s;animation:none}
 .out .intro-core>.intro-clover,.out .intro-core>.intro-leaf,.out .intro-core>.intro-gold{transform:scale(1.2);transition:transform .45s ease-out,opacity .3s}
-.out .intro-veil{animation:intro-iris .8s .1s cubic-bezier(.55,0,.9,.35) both}
-@keyframes intro-iris{0%{transform:scale(1) rotate(0deg);opacity:1}55%{opacity:1}100%{transform:scale(var(--k,12)) rotate(20deg);opacity:0}}
 @keyframes intro-breathe{to{transform:scale(1.035)}}
 @keyframes intro-pulse{from{opacity:.55;transform:scale(.94)}to{opacity:1;transform:scale(1.04)}}
 @keyframes intro-spark{0%{transform:translateY(0) scale(.4);opacity:0}18%{opacity:.9}100%{transform:translateY(-4.2em) scale(1);opacity:0}}
@@ -186,9 +184,8 @@ body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
   .intro-spark,.intro-house .intro-scan,.intro-orbit{display:none}
   .intro-leaf,.intro-house i,.intro-house .h-roof{transform:none;transition:opacity .2s}
   .out .intro-core>.intro-clover,.out .intro-core>.intro-leaf,.out .intro-core>.intro-gold{transform:none}
-  .out .intro-veil{animation:intro-fade .25s both}
 }
-@keyframes intro-fade{to{opacity:0}}
+
 
 .tip{position:fixed;z-index:25;left:0;top:0;margin:0;padding:6px 12px;border-radius:12px;background:rgba(20,40,29,.9);color:#fff;font-size:14px;font-weight:600;pointer-events:none;white-space:nowrap;transform:translate(-50%,calc(-100% - 14px))}
 
