@@ -76,3 +76,13 @@ test('all configured house art resolves, including the instructor and current pr
     assert.ok(await exists(path));
   }
 });
+
+test('the kitchen wall dishes are pictures, and the prize card points to the odd computer without a link', async () => {
+  assert.doesNotMatch(html, /data-item="dish-/);
+  assert.doesNotMatch(html, /<details class="more-items">\s*<summary>[^<]*ครัว/);
+  const house = await readFile(root + 'tour/house.js', 'utf8'), tour = await readFile(root + 'tour/tour.js', 'utf8'), css = await readFile(root + 'tour/tour.css', 'utf8');
+  assert.doesNotMatch(house, /hot\(f, id\)|'dish-/);
+  assert.match(tour, /const PRIZE = 'dungeon';/);
+  assert.match(html.split('data-scene="classroom"')[1].split('</section>')[0], /data-item="dungeon"/, 'the prize is a computer in the classroom');
+  assert.match(css, /\.lucky\.golden \.actions a,\.lucky\.golden #lucky-again\{display:none\}/);
+});

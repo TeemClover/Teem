@@ -26,7 +26,7 @@ Tapping one makes it float toward you and a panel offers its page.
 | Room | Objects → destination |
 |---|---|
 | Living room | compass on the map → `/compass/` (the old homepage) · AI ใส่ซอส book → `/book/ai-sauce/` · CORE7 cards → `/core7/` · Main Quest box → `/hall.html` · Forge → `/forge/` · Walkthrough → `/walkthrough/` · Teem's photo → `/resume/` · record player → plays the house music |
-| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
+| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes on the wall (pictures only, no links) · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
 | Office | three screens on one rear worktop: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova → `/airova/` · TeamBook in the front-left planning nook → `/teambook/` · house model on the left sideboard → `/showcase/house/` · Mediral cabinet by the right wall → `/mediral/` |
@@ -135,7 +135,10 @@ shadow-map texels in light space, so shadow edges do not shimmer while scrolling
 
 **Lucky quest:** one four-leaf clover hides in each of the four rooms.
 Tap it in 3D, or use the room card's hint button (press once for the hint, again to collect;
-keyboard accessible). Four clovers open a lucky card that invites the visitor to talk to us.
+keyboard accessible). Four clovers open a prize card. It carries no link: it only says to go
+up to the computer room and open the machine that is unlike the others. That machine is the
+Dungeon laptop (`PRIZE` in `tour.js`); once all four are found its panel reads "รางวัลของคุณ"
+and its button "รับรางวัล". The prize itself is whatever that item links to.
 Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), never sent anywhere.
 
 ## Rules this page keeps
