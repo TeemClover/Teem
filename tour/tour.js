@@ -45,15 +45,17 @@ const STORE_KEY = 'mc:tour:clovers:v1';
 const found = new Set();
 try { for (const id of JSON.parse(store.get(STORE_KEY, '[]'))) if (CLOVER_ROOMS.includes(id)) found.add(id); } catch {}
 const LUCKY = [
-  'ใบที่สี่ของโคลเวอร์คือ “โชค”',
-  'โชคดีมักมากับบทสนทนาเล็ก ๆ',
-  'บ้านหลังนี้รอคุณอยู่',
-  'ความอยากรู้พาคุณมาถึงที่นี่',
-  'เรื่องดี ๆ เริ่มจากปุ่มเล็ก ๆ ปุ่มเดียว',
+  'ใบที่สี่ของโคลเวอร์คือ “โชค” อีกสามใบคือความหวัง ความเชื่อ และความรัก วันนี้คุณถือครบทั้งสี่',
+  'คนที่หาโคลเวอร์เจอ คือคนที่ยอมมองให้ช้าลงอีกนิด และนั่นคือพรสวรรค์',
+  'โชคดีมักมาในรูปบทสนทนาเล็ก ๆ ลองทักเรามาสักประโยค',
+  'สิ่งที่คุณอยากเรียน อาจเป็นสิ่งที่เรากำลังอยากสอนพอดี',
+  'บ้านหลังนี้ตั้งใจทำไว้รอใครสักคน วันนี้คนนั้นคือคุณ',
+  'เรื่องดี ๆ ครั้งต่อไปของคุณ อาจเริ่มจากการกดปุ่มเล็ก ๆ ปุ่มเดียว',
+  'คุณไม่ได้มาถึงที่นี่โดยบังเอิญ ความอยากรู้พาคุณมา',
 ];
-// Four clovers earn a prize: the classroom computer that is unlike the other three. Anyone can open it; the
-// card for a finished hunt says it is theirs and its button walks them to that room from anywhere in the
-// house. Opening the computer is still theirs to do.
+// Four clovers earn a prize: the classroom computer that is unlike the other three. Anyone can open it, and it
+// looks the same to everyone. A finished hunt adds one line to the lucky card saying where the prize is, and
+// a button that walks there from anywhere in the house; opening the computer is still the visitor's own step.
 const PRIZE = 'dungeon';
 const allFound = () => found.size === CLOVER_ROOMS.length;
 function goToPrize() {
@@ -67,15 +69,16 @@ let lastLucky = -1;
 const drawLucky = () => { let i; do { i = Math.floor(Math.random() * LUCKY.length); } while (i === lastLucky); lastLucky = i; return LUCKY[i]; };
 function openLucky() {
   const dlg = $('#lucky'), all = allFound();
-  dlg.classList.toggle('golden', all); // golden: only the way to the prize, no links (tour.css)
+  dlg.classList.toggle('golden', all); // golden: the way to the prize takes the place of the link (tour.css)
   $('#lucky-kicker').textContent = all ? 'ครบ 4 ใบแล้ว 🍀' : `เจอแล้ว ${found.size}/4 ใบ`;
   $('#lucky-title').textContent = all ? 'คุณได้รางวัล' : 'วันนี้คุณโชคดี';
-  $('#lucky-message').textContent = all ? 'ขึ้นไปห้องคอมชั้น 2 เปิดเครื่องที่ไม่เหมือนใคร' : drawLucky();
-  $('#lucky-close').textContent = all ? 'พาไปรับรางวัล' : 'เก็บไว้ในใจ';
+  $('#lucky-message').textContent = drawLucky(); // always a line to keep; "สุ่มอีกใบ" draws another
+  for (const part of [$('#lucky-prize'), $('#lucky-go')]) if (part) part.style.display = all ? '' : 'none'; // inline, so no cached stylesheet can show them early
+  $('#lucky-close').textContent = 'เก็บไว้ในใจ';
   if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
 }
 $('#open-lucky')?.addEventListener('click', openLucky);
-$('#lucky-close')?.addEventListener('click', () => { if ($('#lucky').classList.contains('golden')) goToPrize(); });
+$('#lucky-go')?.addEventListener('click', goToPrize);
 $('#lucky-again')?.addEventListener('click', () => { $('#lucky-message').textContent = drawLucky(); });
 const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องทำงาน'})[id] || 'บ้าน';
 
@@ -177,11 +180,9 @@ function openInspect(id) {
   const a = itemLink(id); if (!a) return;
   markOpened(id);
   const panel = $('#inspect');
-  const prize = id === PRIZE && allFound();
-  $('#inspect-room').textContent = prize ? '🎁 รางวัลของคุณ' : a.closest('section')?.querySelector('.eyebrow')?.textContent.replace(/^\d+\s*/, '') || 'บ้าน myClover';
+  $('#inspect-room').textContent = a.closest('section')?.querySelector('.eyebrow')?.textContent.replace(/^\d+\s*/, '') || 'บ้าน myClover';
   $('#inspect-title').textContent = a.textContent.replace('→', '').trim();
-  $('#inspect-desc').textContent = prize ? 'ครบ 4 ใบแล้ว เครื่องนี้เป็นของคุณ' : a.dataset.desc || '';
-  $('#inspect-go-label').textContent = prize ? 'รับรางวัล' : 'เปิดในแท็บใหม่';
+  $('#inspect-desc').textContent = a.dataset.desc || '';
   $('#inspect-go').href = a.getAttribute('href');
   panel.hidden = false; requestAnimationFrame(() => panel.classList.add('open'));
   if (inspecting && inspecting !== id) scene3d.drop?.(inspecting);
