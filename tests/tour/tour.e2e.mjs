@@ -200,8 +200,9 @@ try {
     }
     assert.equal(await page.textContent('#clover-count .count-text'), '4/4');
     await page.waitForSelector('#lucky[open]');
-    assert.match(await page.textContent('#lucky-title'), /คนโชคดี/);
-    assert.equal(await page.getAttribute('#lucky a.btn.primary', 'href'), '/meet/');
+    assert.match(await page.textContent('#lucky-title'), /รางวัล/);
+    assert.match(await page.textContent('#lucky-message'), /ห้องคอมชั้น 2/);
+    assert.equal(await page.locator('#lucky a:visible').count(), 0, 'the prize card points the way without a link');
     await page.screenshot({path: `${out}/desktop-lucky.png`});
     pass('keyboard-accessible clover quest reaches the lucky card');
 

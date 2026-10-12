@@ -498,11 +498,11 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     rb(g, [2.6, 0.7, 0.4], [-2.3, 1.9, BW + 0.22], M('#7fae95', {roughness: 0.5}), null, 0.02);
     rb(g, [2.4, 0.04, 0.3], [0.6, 2.35, BW + 0.17], wood('#8c6242'), null, 0.01);
     for (let k = 0; k < 6; k++) { cy(g, [0.08, 0.08, 0.2], [-0.35 + k * 0.38, 2.39, BW + 0.17], M(['#f2c14e', '#e37c5b', '#9ccf7a'][k % 3], {transparent: true, opacity: 0.85, roughness: 0.15})); cy(g, [0.085, 0.085, 0.04], [-0.35 + k * 0.38, 2.59, BW + 0.17], wood('#8c6242')); }
-    [['dish-chicken', 'chicken-egg-bowl'], ['dish-soup', 'mushroom-egg-soup'], ['dish-tofu', 'tofu-tomato-cool']].forEach(([id, slug], k) => {
+    // three of Ako's dishes, framed: pictures only (as links they made the kitchen too busy)
+    ['chicken-egg-bowl', 'mushroom-egg-soup', 'tofu-tomato-cool'].forEach((slug, k) => {
       const f = group(g, -0.55 + k * 1.05, 1.2, BW + 0.035);
       rb(f, [0.92, 0.66, 0.04], [0, 0, 0], M('#fbf6ec'), null, 0.01);
       plane(f, [0.84, 0.56], [0, 0.33, 0.03], photo(`/ako/kitchen/art/${slug}-v1-mobile.webp`, 0.84 / 0.56, false, '#e8c9a0'));
-      hot(f, id);
     });
     rb(g, [1.1, 2.2, 0.8], [2.9, 0, BW + 0.5], M('#dfe5e2', {metalness: 0.45, roughness: 0.3}), null, 0.05);
     cy(g, [0.02, 0.02, 0.6], [2.42, 1.1, BW + 0.92], M('#bbbbbb', {metalness: 0.9, roughness: 0.2}));

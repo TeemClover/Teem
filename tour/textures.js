@@ -198,15 +198,14 @@ async function bitmapTexture(url) {
 }
 const elementTexture = url => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
 const uploads = [], onGpu = new WeakSet();
-let pumping = false;
-function pump() {
+// tour.js calls this once per frame it draws, so pictures wait whenever the house itself is waiting
+export function sendPictures() {
   let fresh = 0;
   while (uploads.length && !(fresh && !onGpu.has(uploads[0].texture.source))) {
     const job = uploads.shift();
     if (!onGpu.has(job.texture.source)) { fresh++; onGpu.add(job.texture.source); }
     job.run();
   }
-  if (uploads.length) requestAnimationFrame(pump); else pumping = false;
 }
 export function imageTex(url, material, renderer, aspect = 0) {
   let disposed = false, owned = null;
@@ -240,6 +239,5 @@ export function imageTex(url, material, renderer, aspect = 0) {
   }
   return imageCache.get(url).then(base => base && new Promise(done => {
     uploads.push({texture: base, run: () => { apply(base); done(); }});
-    if (!pumping) { pumping = true; requestAnimationFrame(pump); }
   }));
 }

@@ -10,7 +10,7 @@ import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
 import {createGovernor, updateGovernor, pixelRatio} from './quality.js';
-import {makeTextures, FONT} from './textures.js';
+import {makeTextures, sendPictures, FONT} from './textures.js';
 import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -43,25 +43,37 @@ const STORE_KEY = 'mc:tour:clovers:v1';
 const found = new Set();
 try { for (const id of JSON.parse(store.get(STORE_KEY, '[]'))) if (CLOVER_ROOMS.includes(id)) found.add(id); } catch {}
 const LUCKY = [
-  'ใบที่สี่ของโคลเวอร์คือ “โชค” อีกสามใบคือความหวัง ความเชื่อ และความรัก วันนี้คุณถือครบทั้งสี่',
-  'คนที่หาโคลเวอร์เจอ คือคนที่ยอมมองให้ช้าลงอีกนิด และนั่นคือพรสวรรค์',
-  'โชคดีมักมาในรูปบทสนทนาเล็ก ๆ ลองทักเรามาสักประโยค',
-  'สิ่งที่คุณอยากเรียน อาจเป็นสิ่งที่เรากำลังอยากสอนพอดี',
-  'บ้านหลังนี้ตั้งใจทำไว้รอใครสักคน วันนี้คนนั้นคือคุณ',
-  'เรื่องดี ๆ ครั้งต่อไปของคุณ อาจเริ่มจากการกดปุ่มเล็ก ๆ ปุ่มเดียว',
-  'คุณไม่ได้มาถึงที่นี่โดยบังเอิญ ความอยากรู้พาคุณมา',
+  'ใบที่สี่ของโคลเวอร์คือ “โชค”',
+  'โชคดีมักมากับบทสนทนาเล็ก ๆ',
+  'บ้านหลังนี้รอคุณอยู่',
+  'ความอยากรู้พาคุณมาถึงที่นี่',
+  'เรื่องดี ๆ เริ่มจากปุ่มเล็ก ๆ ปุ่มเดียว',
 ];
+// Four clovers earn a prize: the classroom computer that is unlike the other three. Anyone can open it; the
+// card for a finished hunt says it is theirs and its button walks them to that room from anywhere in the
+// house. Opening the computer is still theirs to do.
+const PRIZE = 'dungeon';
+const allFound = () => found.size === CLOVER_ROOMS.length;
+function goToPrize() {
+  const room = itemLink(PRIZE)?.closest('section'); if (!room) return;
+  const top = room.offsetTop + room.offsetHeight / 2 - innerHeight / 2; // where the camera rests on that room
+  if (lenis) lenis.scrollTo(top, {duration: 1.8}); else scrollTo({top, behavior: reduced ? 'auto' : 'smooth'});
+  scene3d.glow?.(PRIZE, true); setTimeout(() => scene3d.glow?.(PRIZE, false), 9000);
+  setTimeout(() => showTip('แตะคอมเครื่องที่ไม่เหมือนใคร 🎁', innerWidth / 2, 90, 5000), reduced ? 0 : 1900);
+}
 let lastLucky = -1;
 const drawLucky = () => { let i; do { i = Math.floor(Math.random() * LUCKY.length); } while (i === lastLucky); lastLucky = i; return LUCKY[i]; };
 function openLucky() {
-  const dlg = $('#lucky'), all = found.size === CLOVER_ROOMS.length;
-  dlg.classList.toggle('golden', all);
-  $('#lucky-kicker').textContent = all ? 'คุณเจอโคลเวอร์ครบสี่ใบ' : `โคลเวอร์ที่เจอ ${found.size}/4 ใบ`;
-  $('#lucky-title').textContent = all ? 'คุณคือคนโชคดีของบ้านนี้' : 'วันนี้คุณโชคดี';
-  $('#lucky-message').textContent = drawLucky();
+  const dlg = $('#lucky'), all = allFound();
+  dlg.classList.toggle('golden', all); // golden: only the way to the prize, no links (tour.css)
+  $('#lucky-kicker').textContent = all ? 'ครบ 4 ใบแล้ว 🍀' : `เจอแล้ว ${found.size}/4 ใบ`;
+  $('#lucky-title').textContent = all ? 'คุณได้รางวัล' : 'วันนี้คุณโชคดี';
+  $('#lucky-message').textContent = all ? 'ขึ้นไปห้องคอมชั้น 2 เปิดเครื่องที่ไม่เหมือนใคร' : drawLucky();
+  $('#lucky-close').textContent = all ? 'พาไปรับรางวัล' : 'เก็บไว้ในใจ';
   if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
 }
 $('#open-lucky')?.addEventListener('click', openLucky);
+$('#lucky-close')?.addEventListener('click', () => { if ($('#lucky').classList.contains('golden')) goToPrize(); });
 $('#lucky-again')?.addEventListener('click', () => { $('#lucky-message').textContent = drawLucky(); });
 const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องทำงาน'})[id] || 'บ้าน';
 
@@ -70,12 +82,12 @@ function renderCount(pop) {
   $$('.leaves g', btn).forEach((leaf, i) => leaf.classList.toggle('on', i < found.size));
   $('.count-text', btn).textContent = `${found.size}/4`;
   btn.setAttribute('aria-label', `โคลเวอร์ที่เก็บได้ ${found.size} จาก 4 ใบ`);
-  btn.classList.toggle('complete', found.size === CLOVER_ROOMS.length);
+  btn.classList.toggle('complete', allFound());
   if (pop) { btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop'); }
   for (const b of $$('[data-find]')) if (found.has(b.dataset.find)) { b.classList.add('found'); b.textContent = '🍀 เก็บใบนี้แล้ว'; }
 }
 $('#clover-count')?.addEventListener('click', () => {
-  if (found.size === CLOVER_ROOMS.length) return openLucky();
+  if (allFound()) return openLucky();
   const next = CLOVER_ROOMS.find(r => !found.has(r));
   showTip(`เหลืออีก ${4 - found.size} ใบ ลองดูใน${roomName(next)}`, innerWidth / 2, 90, 2600);
 });
@@ -95,7 +107,7 @@ function collect(id, fromScene) {
   if (!CLOVER_ROOMS.includes(id) || found.has(id)) return;
   found.add(id); store.set(STORE_KEY, JSON.stringify([...found])); renderCount(true);
   if (!fromScene) scene3d.collect?.(id);
-  if (found.size === CLOVER_ROOMS.length) setTimeout(openLucky, reduced ? 0 : 900);
+  if (allFound()) setTimeout(openLucky, reduced ? 0 : 900);
 }
 for (const b of $$('[data-find]')) b.addEventListener('click', () => { // accessible path: hint first, then collect
   const id = b.dataset.find; if (found.has(id)) return;
@@ -163,9 +175,11 @@ function openInspect(id) {
   const a = itemLink(id); if (!a) return;
   markOpened(id);
   const panel = $('#inspect');
-  $('#inspect-room').textContent = a.closest('section')?.querySelector('.eyebrow')?.textContent.replace(/^\d+\s*/, '') || 'บ้าน myClover';
+  const prize = id === PRIZE && allFound();
+  $('#inspect-room').textContent = prize ? '🎁 รางวัลของคุณ' : a.closest('section')?.querySelector('.eyebrow')?.textContent.replace(/^\d+\s*/, '') || 'บ้าน myClover';
   $('#inspect-title').textContent = a.textContent.replace('→', '').trim();
-  $('#inspect-desc').textContent = a.dataset.desc || '';
+  $('#inspect-desc').textContent = prize ? 'ครบ 4 ใบแล้ว เครื่องนี้เป็นของคุณ' : a.dataset.desc || '';
+  $('#inspect-go-label').textContent = prize ? 'รับรางวัล' : 'เปิดในแท็บใหม่';
   $('#inspect-go').href = a.getAttribute('href');
   panel.hidden = false; requestAnimationFrame(() => panel.classList.add('open'));
   if (inspecting && inspecting !== id) scene3d.drop?.(inspecting);
@@ -464,12 +478,17 @@ async function boot() {
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
   let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1, porchY = 0;
-  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()};
+  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()}, heldAt = {on: false, y: 0, time: 0};
   const frameStats = {calls: 0, triangles: 0};
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
   function frame() {
     if (!running) return;
+    // While the loading intro opens onto the house, the picture behind it is held. The opening is drawn by the GPU
+    // too, and on a large screen a moving 3D scene underneath made it stutter. Scrolling ends the hold at once.
+    if (!first && window.__introOpening && scrollY === heldAt.y && performance.now() - heldAt.time < 2000) { heldAt.on = true; requestAnimationFrame(frame); return; }
+    if (heldAt.on) { heldAt.on = false; clock.getDelta(); } // the pause is not a slow frame
+    sendPictures();
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05), t = clock.elapsedTime, still = reduced;
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
 
@@ -600,7 +619,7 @@ async function boot() {
     renderer.info.reset();
     renderer.render(scene, camera);
     frameStats.calls = renderer.info.render.calls; frameStats.triangles = renderer.info.render.triangles;
-    if (first) { first = false; finishLoading(); } else governor(rawDt);
+    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
 

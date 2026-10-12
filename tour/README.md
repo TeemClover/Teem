@@ -26,7 +26,7 @@ Tapping one makes it float toward you and a panel offers its page.
 | Room | Objects → destination |
 |---|---|
 | Living room | compass on the map → `/compass/` (the old homepage) · AI ใส่ซอส book → `/book/ai-sauce/` · CORE7 cards → `/core7/` · Main Quest box → `/hall.html` · Forge → `/forge/` · Walkthrough → `/walkthrough/` · Teem's photo → `/resume/` · record player → plays the house music |
-| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
+| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes on the wall (pictures only, no links) · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
 | Office | three screens on one rear worktop: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova → `/airova/` · TeamBook in the front-left planning nook → `/teambook/` · house model on the left sideboard → `/showcase/house/` · Mediral cabinet by the right wall → `/mediral/` |
@@ -60,7 +60,11 @@ line under it counts the engine files as they arrive. The status line cycles thr
 real house. Everything that moves is `transform`/`opacity` only (`tests/tour/intro.test.mjs`
 checks the keyframes), because building the house occupies the main thread; `tour.js` yields one
 frame before each heavy step so the next storey is already on its way. The intro never waits
-for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. Reduced motion
+for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. While the
+clover opens (about a second) `tour.js` holds the 3D picture and its picture uploads, because
+the opening is drawn by the GPU as well and a moving scene under it stuttered on large
+screens; scrolling ends the hold at once. The sheet with the clover-shaped opening is painted
+once (`will-change`) and only stretched. Reduced motion
 keeps the stages and the words, without movement, and fades out.
 
 **Loading order:** the Google Fonts stylesheet does not block the first paint
@@ -131,7 +135,11 @@ shadow-map texels in light space, so shadow edges do not shimmer while scrolling
 
 **Lucky quest:** one four-leaf clover hides in each of the four rooms.
 Tap it in 3D, or use the room card's hint button (press once for the hint, again to collect;
-keyboard accessible). Four clovers open a lucky card that invites the visitor to talk to us.
+keyboard accessible). Four clovers open a prize card: the prize is the computer upstairs that
+is unlike the others, the Dungeon laptop (`PRIZE` in `tour.js`). Anyone can open that
+computer; finishing the hunt is what tells you it is yours. The card's button scrolls to the
+classroom from anywhere in the house and the visitor opens the computer themselves; once all
+four are found its panel reads "รางวัลของคุณ" and its button "รับรางวัล".
 Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), never sent anywhere.
 
 ## Rules this page keeps
