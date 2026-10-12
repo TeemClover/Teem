@@ -198,15 +198,24 @@ async function bitmapTexture(url) {
 }
 const elementTexture = url => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
 const uploads = [], onGpu = new WeakSet();
-// tour.js calls this once per frame it draws, so pictures wait whenever the house itself is waiting
-export function sendPictures() {
-  let fresh = 0;
-  while (uploads.length && !(fresh && !onGpu.has(uploads[0].texture.source))) {
-    const job = uploads.shift();
-    if (!onGpu.has(job.texture.source)) { fresh++; onGpu.add(job.texture.source); }
-    job.run();
+let pumping = false;
+// One new picture per frame, and none while the loading intro opens onto the house (intro.js raises the flag).
+// The queue runs itself and asks nothing of tour.js: the two files are fetched separately, and a browser that
+// holds one release of one beside another release of the other must still get a working house. On 2026-10-12
+// tour.js imported a new name from here; next to a cached older copy of this file the whole module graph
+// failed to link and the house never appeared.
+function pump() {
+  if (!globalThis.__introOpening) {
+    let fresh = 0;
+    while (uploads.length && !(fresh && !onGpu.has(uploads[0].texture.source))) {
+      const job = uploads.shift();
+      if (!onGpu.has(job.texture.source)) { fresh++; onGpu.add(job.texture.source); }
+      try { job.run(); } catch (err) { console.error(err); } // one bad picture must not stop the rest
+    }
   }
+  if (uploads.length) requestAnimationFrame(pump); else pumping = false;
 }
+export function sendPictures() {} // that release of tour.js still imports and calls this; keep the name until no cache can hold it
 export function imageTex(url, material, renderer, aspect = 0) {
   let disposed = false, owned = null;
   material.addEventListener('dispose', () => { disposed = true; owned?.dispose(); });
@@ -239,5 +248,6 @@ export function imageTex(url, material, renderer, aspect = 0) {
   }
   return imageCache.get(url).then(base => base && new Promise(done => {
     uploads.push({texture: base, run: () => { apply(base); done(); }});
+    if (!pumping) { pumping = true; requestAnimationFrame(pump); }
   }));
 }
