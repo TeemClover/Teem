@@ -106,10 +106,88 @@ main{position:relative;z-index:5}
 .foot{position:relative;z-index:5;text-align:center;padding:24px 16px 40px;font-size:13px;color:rgba(255,255,255,.75)}
 .foot a{color:#fff}
 
-.loader{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#cfe6dc;font-weight:600;transition:opacity .8s,visibility .8s}
-.loader-clover{width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--clover) 0 25%,#7cc59a 0 50%,var(--clover) 0 75%,#7cc59a 0);animation:spin 1.4s linear infinite;mask:radial-gradient(circle,transparent 30%,#000 32%);-webkit-mask:radial-gradient(circle,transparent 30%,#000 32%)}
+/* ----- loading intro: a four-leaf clover is the plot, the house goes up on it, then the clover opens onto the real house.
+   Everything that moves here is transform/opacity only, so it keeps moving while the 3D build occupies the main thread.
+   Markup beyond the clover and the first line of text is added by intro.js; without it this is a plain fading loader. ----- */
+.loader{--S:min(280px,62vw,44vh);position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
+  background:radial-gradient(circle at 50% 50%,#1d3d2c,#0c1a13 70%);color:#eaf6ee;font-weight:600;text-align:center;transition:opacity .8s,visibility .8s}
+body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
+.loader.intro-on{background:none}
+.loader.out{pointer-events:none}
+.loader.gone{display:none}
+.intro-veil{position:absolute;inset:0;width:100%;height:100%}
+.intro-core{position:relative;flex:none;width:var(--S);height:var(--S);font-size:calc(var(--S) / 28)}
+.intro-core>*{position:absolute}
+.intro-clover,.intro-leaf,.intro-gold{inset:0;width:100%;height:100%;overflow:visible}
+.intro-clover .edge{fill:none;stroke:rgba(159,240,192,.75);stroke-width:1.6;stroke-linejoin:round}
+.intro-clover .fill{fill:#143424}
+.intro-clover{animation:intro-breathe 2.8s ease-in-out infinite alternate}
+.intro-leaf{opacity:0;transform:scale(.8);transition:opacity .45s,transform .7s var(--out)}
+.intro-leaf path{fill:#35ad68}
+.s1 .l1,.s2 .l2,.s3 .l3,.s4 .l4{opacity:1;transform:none}
+.intro-gold{opacity:0;transition:opacity .3s}
+.intro-gold path{fill:var(--gold)}
+.lit .intro-gold{opacity:1}
+.intro-halo{inset:-32%;border-radius:50%;background:radial-gradient(circle,rgba(70,200,130,.34),transparent 62%);animation:intro-pulse 2.8s ease-in-out infinite alternate}
+.intro-halo::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(233,185,73,.5),transparent 62%);opacity:0;transition:opacity .3s}
+.lit .intro-halo::after{opacity:1}
+.intro-ring{inset:-11%;width:122%;height:122%;animation:spin 26s linear infinite}
+.intro-ring circle{fill:none;stroke:rgba(159,240,192,.38);stroke-width:.5;stroke-dasharray:.6 4.4}
+.intro-orbit{inset:-11%;width:122%;height:122%;animation:spin 2.4s linear infinite}
+.intro-orbit circle{fill:none;stroke:var(--gold);stroke-width:1.1;stroke-linecap:round;stroke-dasharray:20 290}
+.lit .intro-orbit,.lit .intro-scan{opacity:0;transition:opacity .2s}
+.intro-spark{width:.42em;height:.42em;border-radius:50%;background:#a6f2c6;box-shadow:0 0 .7em #7cf0b0;opacity:0;animation:intro-spark 4s linear infinite}
+.intro-spark.gold{background:#ffe39a;box-shadow:0 0 .7em var(--gold)}
+
+.intro-house{left:50%;top:50%;width:15em;height:10.4em;margin:-5.6em 0 0 -8.4em;font-size:1.3em}
+.intro-house i{position:absolute;display:block;opacity:0;transform:translateY(.9em) scaleY(.15);transform-origin:50% 100%;transition:transform .6s var(--out),opacity .25s}
+.intro-house .h-plan{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:rgba(166,242,198,.5);stroke-width:.8;stroke-dasharray:2.4 2.4;transition:opacity .4s}
+.s3 .h-plan{opacity:0}
+.intro-house .h-base{left:0;right:0;bottom:0;height:.3em;border-radius:.15em;background:linear-gradient(90deg,transparent,#a6f2c6 18%,#a6f2c6 82%,transparent);transform:scaleX(0);transform-origin:50% 50%}
+.intro-on .h-base{opacity:1;transform:none}
+.h-port{left:.5em;bottom:.3em;width:3.7em;height:2.5em;border:solid #d9d2c3;border-width:.3em .16em 0;border-top-color:#e8833a}
+.h-f1,.h-f2{border-radius:.12em;box-shadow:0 0 0 .06em rgba(166,242,198,.75),0 0 1.3em rgba(124,240,176,.35)}
+.h-f1,.h-lit1{left:4em;bottom:.3em;width:10.4em;height:3.7em}
+.h-f2,.h-lit2{left:4.6em;bottom:4.3em;width:9.2em;height:3.2em}
+.h-f1{background:linear-gradient(#20362c,#20362c) .8em .7em/3.6em 2.4em no-repeat,linear-gradient(#20362c,#20362c) 6em .7em/3.6em 2.4em no-repeat,linear-gradient(#fffdf6,#e9dfca)}
+.h-f2{background:linear-gradient(#20362c,#20362c) .9em .7em/3em 1.8em no-repeat,linear-gradient(#20362c,#20362c) 5.3em .7em/3em 1.8em no-repeat,linear-gradient(#fffdf6,#efe7d6)}
+.h-eave{left:3.6em;bottom:3.9em;width:11.2em;height:.5em;border-radius:.1em;background:#e8833a}
+.intro-house .h-roof{left:3.9em;bottom:7.4em;width:10.6em;height:2.1em;background:linear-gradient(#f6a257,#d96f2b);clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);transform:translateY(-2.6em);transition:transform .55s cubic-bezier(.3,1.5,.5,1),opacity .2s}
+.intro-house .h-lit1,.intro-house .h-lit2{transform:none;transition:opacity .35s}
+.h-lit1{background:linear-gradient(#ffe7a3,#ffc861) .8em .7em/3.6em 2.4em no-repeat,linear-gradient(#ffe7a3,#ffc861) 6em .7em/3.6em 2.4em no-repeat}
+.h-lit2{background:linear-gradient(#ffe7a3,#ffc861) .9em .7em/3em 1.8em no-repeat,linear-gradient(#ffe7a3,#ffc861) 5.3em .7em/3em 1.8em no-repeat}
+.s1 .h-port,.s1 .h-f1,.s2 .h-eave,.s2 .h-f2,.s3 .h-roof,.lit .h-lit1,.lit .h-lit2{opacity:1;transform:none}
+.s2 .h-f2{transition-delay:.07s}.s3 .h-roof{transition-delay:.12s}
+.intro-house .intro-scan{left:-4%;right:-4%;bottom:0;height:.16em;opacity:.9;transform:none;background:linear-gradient(90deg,transparent,#c9ffe0,transparent);box-shadow:0 0 .9em #7cf0b0;animation:intro-scan 2.2s ease-in-out infinite alternate}
+
+.intro-text{position:relative;margin-top:calc(var(--S) * .11 + 6px);width:min(340px,calc(100vw - 40px));animation:intro-in .4s .3s both}
+.intro-msg{margin:0;min-height:1.5em;font:600 17px/1.5 var(--font)}
+.intro-tip{margin:6px 0 0;min-height:3em;font:400 13.5px/1.5 var(--font);color:rgba(234,246,238,.72)}
+.intro-msg span,.intro-tip span{display:inline-block}
+.intro-msg .tick,.intro-tip .tick{animation:intro-in .35s both}
+.intro-bar{display:block;height:2px;margin:12px auto 0;width:min(180px,56%);border-radius:2px;background:rgba(166,242,198,.2);overflow:hidden}
+.intro-bar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#7cc59a,var(--gold));transform:scaleX(0);transform-origin:0 50%;transition:transform .7s var(--out)}
+
+/* the way out: the clover that held the plot lets go, and its shape widens until the whole screen is the house */
+.out .intro-core>*,.out .intro-text{opacity:0;transition:opacity .22s;animation:none}
+.out .intro-core>.intro-clover,.out .intro-core>.intro-leaf,.out .intro-core>.intro-gold{transform:scale(1.2);transition:transform .45s ease-out,opacity .3s}
+.out .intro-veil{animation:intro-iris .8s .1s cubic-bezier(.55,0,.9,.35) both}
+@keyframes intro-iris{0%{transform:scale(1) rotate(0deg);opacity:1}55%{opacity:1}100%{transform:scale(var(--k,12)) rotate(20deg);opacity:0}}
+@keyframes intro-breathe{to{transform:scale(1.035)}}
+@keyframes intro-pulse{from{opacity:.55;transform:scale(.94)}to{opacity:1;transform:scale(1.04)}}
+@keyframes intro-spark{0%{transform:translateY(0) scale(.4);opacity:0}18%{opacity:.9}100%{transform:translateY(-4.2em) scale(1);opacity:0}}
+@keyframes intro-scan{to{transform:translateY(-9.6em)}}
+@keyframes intro-in{from{opacity:0;transform:translateY(6px)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-body:not(.is-loading) .loader{opacity:0;visibility:hidden}
+@media (max-height:460px){.intro-tip{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .intro-clover,.intro-halo,.intro-ring,.intro-orbit,.intro-text,.intro-msg .tick,.intro-tip .tick{animation:none}
+  .intro-spark,.intro-house .intro-scan,.intro-orbit{display:none}
+  .intro-leaf,.intro-house i,.intro-house .h-roof{transform:none;transition:opacity .2s}
+  .out .intro-core>.intro-clover,.out .intro-core>.intro-leaf,.out .intro-core>.intro-gold{transform:none}
+  .out .intro-veil{animation:intro-fade .25s both}
+}
+@keyframes intro-fade{to{opacity:0}}
 
 .tip{position:fixed;z-index:25;left:0;top:0;margin:0;padding:6px 12px;border-radius:12px;background:rgba(20,40,29,.9);color:#fff;font-size:14px;font-weight:600;pointer-events:none;white-space:nowrap;transform:translate(-50%,calc(-100% - 14px))}
 
@@ -121,7 +199,7 @@ body:not(.is-loading) .loader{opacity:0;visibility:hidden}
 .lucky .actions{justify-content:center}
 .lucky-clover{display:block;width:76px;height:76px;margin:0 auto 10px;fill:var(--clover);animation:spin 14s linear infinite}
 .lucky.golden{background:linear-gradient(160deg,#fff8dc,#f3d27a)}
-@media (prefers-reduced-motion:reduce){.lucky-clover,.loader-clover,.scroll-cue i::after{animation:none}}
+@media (prefers-reduced-motion:reduce){.lucky-clover,.scroll-cue i::after{animation:none}}
 
 /* clover counter */
 .tools{display:flex;gap:8px;align-items:center}

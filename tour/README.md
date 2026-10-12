@@ -3,8 +3,8 @@
 A scroll-driven 3D walk through the myClover house. Each scroll section moves the camera to a
 room; each room sends the visitor to a real part of the site.
 
-Files: `tour.js` (runtime: scroll, camera, picking, quest, quality, music), `house.js` (the house
-and its rooms), `textures.js` (procedural canvas textures + cropped image textures),
+Files: `tour.js` (runtime: scroll, camera, picking, quest, quality, music), `intro.js` (the
+loading intro), `house.js` (the house and its rooms), `textures.js` (procedural canvas textures + cropped image textures),
 `art/` (purpose-made pictures, WebP), `IMAGE-PROMPTS.md` (what they were generated from).
 
 The house is our real two-storey home from `/showcase/house/` (outside only: two orange hip
@@ -26,7 +26,7 @@ Tapping one makes it float toward you and a panel offers its page.
 | Room | Objects → destination |
 |---|---|
 | Living room | compass on the map → `/compass/` (the old homepage) · AI ใส่ซอส book → `/book/ai-sauce/` · CORE7 cards → `/core7/` · Main Quest box → `/hall.html` · Forge → `/forge/` · Walkthrough → `/walkthrough/` · Teem's photo → `/resume/` · record player → plays the house music |
-| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
+| Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes → their recipes · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
 | Office | three screens on one rear worktop: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova → `/airova/` · TeamBook in the front-left planning nook → `/teambook/` · house model on the left sideboard → `/showcase/house/` · Mediral cabinet by the right wall → `/mediral/` |
@@ -49,6 +49,45 @@ Picking follows the first surface the ray meets, so walls, floors and furniture 
 centripetal Catmull-Rom spline through every shot with a quint ease between rooms and a
 critically damped spring (no overshoot), plus a slow breath while resting. Cards lift in, their
 headline rises out of a mask, and chips follow one by one. Reduced motion turns all of it off.
+
+**Loading intro:** while the house is prepared, a four-leaf clover is the plot of land and a
+small house goes up on it: blueprint, ground floor, upper floor, orange roof, lights on. Each
+step is a real milestone reported by `tour.js` through `window.__intro(stage)` (1 engine running,
+2 fonts and art list ready, 3 house built, 4 shaders compiled), one leaf lights per step, and the
+line under it counts the engine files as they arrive. The status line cycles through what is
+"being built" and a second line rotates tips about the house (both lists are at the top of
+`intro.js`). When the first frame is drawn the clover turns gold and its shape widens into the
+real house. Everything that moves is `transform`/`opacity` only (`tests/tour/intro.test.mjs`
+checks the keyframes), because building the house occupies the main thread; `tour.js` yields one
+frame before each heavy step so the next storey is already on its way. The intro never waits
+for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. Reduced motion
+keeps the stages and the words, without movement, and fades out.
+
+**Loading order:** the Google Fonts stylesheet does not block the first paint
+(`media="print"` until loaded; `tour.js` waits for its faces before drawing canvas labels), and
+every module in the house's import graph has a `modulepreload` link, so they download together
+instead of one import level at a time. Adding an import means adding its link in both
+`/index.html` and `/tour/index.html`; the test fails until the list matches.
+
+**Smooth walk:** three things used to cost frames between the garden and the rooms, and each has
+a guard in `tests/tour/smooth.test.mjs`.
+- *Lights never change in number.* three.js compiles lit shaders for an exact light count, and
+  the porch lamp used to vanish with the facade, recompiling every material in view at the
+  door. All lamps now hang on the house root (`lampLight`); `tour.js` moves the porch lamp with
+  the facade and dims it instead of hiding it.
+- *Pictures never decode or upload inside a frame that shows them.* `imageTex` decodes with
+  `createImageBitmap` off the main thread (falling back to `<img>` where its options are not
+  honoured, and for SVG), caps the long side at 1024 px, and sends one new picture per frame to
+  the GPU with `renderer.initTexture` before the material uses it.
+- *What cannot be seen is not drawn.* While the facade and door are closed (the garden and the
+  dusk ending) the four rooms in `house.areas` are hidden, which is well over half of the draw
+  calls (the stair hall stays: its own floor and walls show from the garden). Inside they are all shown: the open dollhouse shows a little of every
+  neighbour, above and beside. A far overview is rendered once behind the loader so every
+  buffer and texture is on the GPU before the walk begins.
+
+The shadow map (desktop only) is redrawn at 24 Hz only while something that casts a shadow
+moves; a camera gliding past still furniture redraws it when the view nears the edge of what
+the map covers, and otherwise four times a second.
 
 **Music:** the myClover Instrument (the Clover Song instrumental, `/assets/audio/clover-song.mp3`,
 `preload="none"`) plays only when someone presses the music button or taps the record player.
@@ -107,7 +146,7 @@ Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), neve
   pointed at the vendored module.
 - **Graceful degradation.** The HTML is readable before any 3D. No WebGL or a boot error →
   `no-webgl` class, gradient backdrop, the full story still works. If the module itself can't
-  load (blocked, offline), an inline guard lifts the loader after 6 s and shows every card
+  load (blocked, offline), an inline guard ends the loading intro after 6 s and shows every card
   (`html.static`); `<noscript>` does the same without JavaScript. `prefers-reduced-motion` → camera cuts instead of glides, no
   ambient motion.
 - **Budget.** SD: pixel ratio 1.25 phones / 1.5 desktop, shadows off on phones; HD as above.
