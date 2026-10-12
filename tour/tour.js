@@ -10,7 +10,7 @@ import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
 import {createGovernor, updateGovernor, pixelRatio} from './quality.js';
-import {makeTextures, sendPictures, FONT} from './textures.js';
+import {makeTextures, FONT} from './textures.js';
 import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -27,6 +27,8 @@ let reduced = reduceQuery.matches;
 reduceQuery.addEventListener?.('change', e => { reduced = e.matches; document.body.classList.toggle('reduced', reduced); });
 document.body.classList.toggle('reduced', reduced);
 document.documentElement.classList.add('js-ready'); // the inline boot guard in index.html stops waiting
+// If this module was only slow, the guard has already declared the house lost. Take that back: slow is not broken.
+document.documentElement.classList.remove('static'); document.body.classList.remove('no-webgl');
 // the loading intro (intro.js) puts up one storey per stage; before each heavy step the page gets one frame to show it
 const intro = n => { try { window.__intro?.(n); } catch {} };
 const paint = () => document.hidden ? Promise.resolve() : new Promise(r => { requestAnimationFrame(() => setTimeout(r)); setTimeout(r, 80); });
@@ -371,7 +373,7 @@ async function boot() {
     if (!force && w === lastW && (Math.abs(h - lastH) < 1 || (touch && Math.abs(h - lastH) < 160))) { measure(); return; }
     lastW = w; lastH = h;
     renderer.setPixelRatio(maxRatio());
-    renderer.setSize(w, h, false);
+    renderer.setSize(w, h, false); heldAt.redraw = true; // resizing empties the canvas: draw again even while the picture is held
     const aspect = w / h;
     camera.aspect = aspect;
     camera.fov = aspect >= 1 ? 45 : Math.min(80, 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(30)) / aspect) * 180 / Math.PI);
@@ -478,7 +480,7 @@ async function boot() {
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
   let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1, porchY = 0;
-  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()}, heldAt = {on: false, y: 0, time: 0};
+  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()}, heldAt = {on: false, redraw: false, y: 0, time: 0};
   const frameStats = {calls: 0, triangles: 0};
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
@@ -486,9 +488,9 @@ async function boot() {
     if (!running) return;
     // While the loading intro opens onto the house, the picture behind it is held. The opening is drawn by the GPU
     // too, and on a large screen a moving 3D scene underneath made it stutter. Scrolling ends the hold at once.
-    if (!first && window.__introOpening && scrollY === heldAt.y && performance.now() - heldAt.time < 2000) { heldAt.on = true; requestAnimationFrame(frame); return; }
+    if (!first && window.__introOpening && !heldAt.redraw && scrollY === heldAt.y && performance.now() - heldAt.time < 2000) { heldAt.on = true; requestAnimationFrame(frame); return; }
     if (heldAt.on) { heldAt.on = false; clock.getDelta(); } // the pause is not a slow frame
-    sendPictures();
+    heldAt.redraw = false;
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05), t = clock.elapsedTime, still = reduced;
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
 

@@ -61,7 +61,7 @@ real house. Everything that moves is `transform`/`opacity` only (`tests/tour/int
 checks the keyframes), because building the house occupies the main thread; `tour.js` yields one
 frame before each heavy step so the next storey is already on its way. The intro never waits
 for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. While the
-clover opens (about a second) `tour.js` holds the 3D picture and its picture uploads, because
+clover opens (about a second) `tour.js` holds the 3D picture and `textures.js` holds its picture uploads, because
 the opening is drawn by the GPU as well and a moving scene under it stuttered on large
 screens; scrolling ends the hold at once. The sheet with the clover-shaped opening is painted
 once (`will-change`) and only stretched. Reduced motion
@@ -157,6 +157,12 @@ Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), neve
   load (blocked, offline), an inline guard ends the loading intro after 6 s and shows every card
   (`html.static`); `<noscript>` does the same without JavaScript. `prefers-reduced-motion` → camera cuts instead of glides, no
   ambient motion.
+- **Files of different releases must work together.** The page and each module are fetched
+  separately, so a visitor can hold a cached copy of one beside a fresh copy of another. Do
+  not import a new name across `tour/` files, or rely on a new field of another file, in the
+  same release that adds it: that pairing fails to link and the house never loads. Add the
+  name first, use it a release later, or keep the two halves independent as the picture
+  queue is.
 - **Budget.** SD: pixel ratio 1.25 phones / 1.5 desktop, shadows off on phones; HD as above.
   Rendering pauses on hidden tabs. All geometry is procedural; no model downloads.
 
