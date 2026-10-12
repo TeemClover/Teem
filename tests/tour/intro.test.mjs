@@ -53,6 +53,6 @@ test('the loading intro paints from the page and tour.css alone, and runs before
 test('what moves while the house is being built is transform and opacity only', async () => {
   const css = await read('tour/tour.css');
   const frames = [...css.matchAll(/@keyframes (intro-[\w-]+)\{((?:[^{}]*\{[^{}]*\})+)\}/g)];
-  assert.ok(frames.length >= 6, 'found the intro keyframes');
+  assert.ok(frames.length >= 5, 'found the intro keyframes');
   for (const [, name, body] of frames) for (const [, prop] of body.matchAll(/[{;]\s*([a-z-]+)\s*:/g)) assert.ok(['transform', 'opacity'].includes(prop), `${name} animates ${prop}`);
 });

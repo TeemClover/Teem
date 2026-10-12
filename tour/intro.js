@@ -47,25 +47,39 @@
   text.insertAdjacentHTML('beforeend', '<p class="intro-tip"><span></span></p><span class="intro-bar"><i></i></span>');
   const tip = text.querySelector('.intro-tip span'), bar = text.querySelector('.intro-bar i');
 
-  // the backdrop becomes a sheet with a clover-shaped opening; the clover drawn on top fills it until the end
-  loader.insertAdjacentHTML('afterbegin', '<svg class="intro-veil" aria-hidden="true"><defs><radialGradient id="intro-bg" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1d3d2c"/><stop offset=".7" stop-color="#0c1a13"/></radialGradient>'
-    + `<mask id="intro-hole" maskUnits="userSpaceOnUse"><rect fill="#fff"/><g>${[0, 1, 2, 3].map(i => leaf(i, ' fill="#000"')).join('')}</g></mask></defs><rect fill="url(#intro-bg)" mask="url(#intro-hole)"/></svg>`);
-  const veil = loader.firstElementChild, grad = veil.querySelector('radialGradient'), hole = veil.querySelector('mask g');
-  let fitted = '';
+  // The backdrop becomes a sheet with a clover-shaped opening; the clover drawn on top fills it until the end.
+  // The sheet is a canvas: painted once, and during the opening each frame only erases a larger clover from it.
+  // It used to be one screen-sized layer that CSS stretched 16 to 27 times; browsers drop a layer that passes
+  // their size limit, so on a large screen the sheet vanished the moment it began to grow. Measured in Chrome on
+  // a 5K display, of the ways to draw it per frame only this one holds 60 frames a second: a CPU-backed canvas
+  // (that is what willReadFrequently selects; on the GPU path the big curved path stalled frames) at a bounded size.
+  // Its own class and inline placement: a cached tour.css from the release that stretched `.intro-veil` must not touch it.
+  const veil = document.createElement('canvas'); veil.className = 'intro-sheet'; veil.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+  veil.setAttribute('aria-hidden', 'true'); loader.prepend(veil);
+  const pen = veil.getContext('2d', {willReadFrequently: true}), leafPath = new Path2D(LEAF);
+  let fitted = '', box = null;
   function fit() {
     const L = loader.getBoundingClientRect(), C = core.getBoundingClientRect();
     const w = L.width, h = L.height, cx = C.left - L.left + C.width / 2, cy = C.top - L.top + C.height / 2, unit = C.width / 80 * 0.985;
-    // writing the same numbers again would repaint the whole sheet, on a large screen right as it starts to move
     const now = [w, h, cx, cy, unit].map(v => v.toFixed(1)).join();
-    if (now === fitted) return;
+    if (now === fitted || !w || !h) return;
     fitted = now;
-    for (const r of veil.querySelectorAll('rect')) { r.setAttribute('width', w); r.setAttribute('height', h); }
-    const mask = veil.querySelector('mask'); mask.setAttribute('width', w); mask.setAttribute('height', h); mask.setAttribute('x', 0); mask.setAttribute('y', 0);
-    grad.setAttribute('cx', w / 2); grad.setAttribute('cy', h / 2); grad.setAttribute('r', Math.hypot(w, h) / 2);
-    hole.setAttribute('transform', `translate(${cx} ${cy}) scale(${unit}) translate(-50 -50)`);
-    veil.style.transformOrigin = `${cx}px ${cy}px`;
-    // far enough that the leaves pass the farthest corner; the gaps between leaves fade with the sheet
-    veil.style.setProperty('--k', (2.4 * Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy)) / (C.width * 0.45)).toFixed(2));
+    const ratio = Math.min(devicePixelRatio || 1, Math.sqrt(2e6 / (w * h)));
+    veil.width = Math.round(w * ratio); veil.height = Math.round(h * ratio);
+    // reach: how many times its size the opening must grow for the leaves to pass the farthest corner
+    box = {cx, cy, unit, ratio, reach: 1.7 * Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy)) / (C.width * 0.45)};
+    const shade = pen.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.hypot(w, h) / 2);
+    shade.addColorStop(0, '#1d3d2c'); shade.addColorStop(0.7, '#0c1a13'); shade.addColorStop(1, '#0c1a13');
+    pen.setTransform(ratio, 0, 0, ratio, 0, 0); pen.globalCompositeOperation = 'source-over'; pen.fillStyle = shade; pen.fillRect(0, 0, w, h);
+    pen.globalCompositeOperation = 'destination-out'; pen.fillStyle = '#000';
+    erase(1, 0);
+  }
+  // cut a clover `grow` times the plot's size out of the sheet (it only ever grows, so nothing has to be repainted)
+  function erase(grow, turn) {
+    if (!box) return;
+    const {cx, cy, unit, ratio} = box;
+    pen.setTransform(ratio, 0, 0, ratio, 0, 0); pen.translate(cx, cy); pen.rotate(turn); pen.scale(unit * grow, unit * grow);
+    for (let i = 0; i < 4; i++) { pen.save(); pen.rotate(i * Math.PI / 2); pen.translate(-50, -50); pen.fill(leafPath); pen.restore(); }
   }
   fit(); addEventListener('resize', fit);
   loader.classList.add('intro-on');
@@ -106,7 +120,19 @@
     loader.classList.add('lit'); say(msg, 'ถึงบ้านแล้ว ยินดีต้อนรับ');
     setTimeout(() => {
       fit(); loader.classList.add('out');
-      setTimeout(() => { loader.classList.add('gone'); removeEventListener('resize', fit); window.__introOpening = false; }, calm ? 320 : 980);
+      let over = false;
+      const end = () => { if (over) return; over = true; loader.classList.add('gone'); removeEventListener('resize', fit); window.__introOpening = false; };
+      setTimeout(end, calm ? 500 : 1500); // a hidden tab stops sending frames; do not wait for them
+      // The opening grows by the same proportion each moment (reach ** e), which the eye reads as a steady zoom on
+      // any screen size, with a slight ease at the start and a little turn. The sheet thins over the last third.
+      const reach = box ? box.reach : 1, from = performance.now() + (calm ? 0 : 90), span = calm ? 250 : 850;
+      requestAnimationFrame(function open(now) {
+        if (over) return;
+        const t = Math.min(1, Math.max(0, (now - from) / span)), e = t * t * (3 - 2 * t) * 0.35 + t * 0.65;
+        if (calm) veil.style.opacity = 1 - t;
+        else { erase(reach ** e, e * 0.3); veil.style.opacity = t < 0.68 ? 1 : 1 - (t - 0.68) / 0.32; }
+        if (t < 1) requestAnimationFrame(open); else end();
+      });
     }, calm ? 0 : 320);
   }
   const watch = new MutationObserver(() => { if (!document.body.classList.contains('is-loading')) finish(); });
