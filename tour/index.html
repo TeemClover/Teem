@@ -19,12 +19,25 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Kanit:wght@300;500;600;700&display=swap" rel="stylesheet">
+<!-- the fonts never hold up the first paint: the loading intro draws from this page and tour.css alone -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Kanit:wght@300;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Kanit:wght@300;500;600;700&display=swap" media="print" onload="this.media='all'" data-fonts>
+<!-- every module the house imports, so they arrive together instead of one import level at a time (tests/tour/intro.test.mjs keeps this list complete) -->
 <link rel="modulepreload" href="/tour/vendor/three.core.min.js">
 <link rel="modulepreload" href="/tour/vendor/three.module.min.js">
+<link rel="modulepreload" href="/tour/vendor/RoomEnvironment.js">
+<link rel="modulepreload" href="/tour/vendor/RoundedBoxGeometry.js">
+<link rel="modulepreload" href="/tour/vendor/lenis.mjs">
+<link rel="modulepreload" href="/tour/quality.js">
+<link rel="modulepreload" href="/tour/textures.js">
+<link rel="modulepreload" href="/tour/batching.js">
+<link rel="modulepreload" href="/tour/labels.js">
+<link rel="modulepreload" href="/tour/miniature-house.js">
+<link rel="modulepreload" href="/tour/house.js">
 <link rel="stylesheet" href="/tour/tour.css">
 <script>document.documentElement.classList.add('js')</script>
-<noscript><style>.loader{display:none}.card{opacity:1!important;transform:none!important}.stage{display:none}.stage-fallback{display:block}</style></noscript>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Kanit:wght@300;500;600;700&display=swap"><style>.loader{display:none}.card{opacity:1!important;transform:none!important}.stage{display:none}.stage-fallback{display:block}</style></noscript>
+<script src="/tour/intro.js" defer></script>
 <script type="module" src="/tour/tour.js"></script>
 <script type="module" src="/assets/my-learning-entry.js"></script>
 <!-- clover-motion -->
@@ -66,7 +79,10 @@
   <span class="music-lbl"><span class="music-state">เปิดเพลงประจำบ้าน</span><small>myClover Instrument · Clover Song ฉบับบรรเลง</small></span>
 </button>
 
-<div id="loader" class="loader" aria-hidden="true"><span class="loader-clover"></span><span id="loader-text">กำลังเปิดไฟในบ้าน…</span></div>
+<div id="loader" class="loader" aria-hidden="true">
+  <div class="intro-core"><svg class="intro-clover" viewBox="10 10 80 80" aria-hidden="true"><defs><path id="intro-leaf" d="M50 50C40 44 30 36 30 26c0-7 5-12 11-12 4 0 7 2 9 6 2-4 5-6 9-6 6 0 11 5 11 12 0 10-10 18-20 24z"/></defs><g class="edge"><use href="#intro-leaf" transform="rotate(0 50 50)"/><use href="#intro-leaf" transform="rotate(90 50 50)"/><use href="#intro-leaf" transform="rotate(180 50 50)"/><use href="#intro-leaf" transform="rotate(270 50 50)"/></g><g class="fill"><use href="#intro-leaf" transform="rotate(0 50 50)"/><use href="#intro-leaf" transform="rotate(90 50 50)"/><use href="#intro-leaf" transform="rotate(180 50 50)"/><use href="#intro-leaf" transform="rotate(270 50 50)"/></g></svg></div>
+  <div class="intro-text"><p class="intro-msg"><span id="loader-text">กำลังปรับหน้าดิน…</span></p></div>
+</div>
 <p id="tip" class="tip" role="status" hidden></p>
 
 <aside id="inspect" class="inspect" aria-live="polite" hidden>
@@ -124,10 +140,11 @@
     <article class="card">
       <p class="eyebrow"><b>02</b> ห้องครัว · ชั้น 1</p>
       <h2>ครัวเอโกะ อาหารจานโปรดรออยู่</h2>
-      <p>หยิบชามสลัดเพื่อเข้าครัวเอโกะ บนเตามีซอสเคี่ยวอยู่ ข้างตู้เย็นมีตาชั่ง ส่วนหุ่นกายวิภาคริมกำแพงซ้ายจะพาไปเรียนรู้เรื่องสารอาหารและร่างกาย</p>
+      <p>หยิบชามสลัดเพื่อเข้าครัวเอโกะ บนเตามีซอสเคี่ยวอยู่ จานแฮมเบิร์กร้อน ๆ บนเคาน์เตอร์พาไป Food Fair ข้างตู้เย็นมีตาชั่ง ส่วนหุ่นกายวิภาคริมกำแพงซ้ายจะพาไปเรียนรู้เรื่องสารอาหารและร่างกาย</p>
       <div class="actions"><a class="btn primary" data-primary data-item="ako-kitchen" href="/ako/kitchen/" data-desc="สลัด โบวล์ และน้ำสลัดที่ทำตามได้จริงในครัวบ้าน ๆ" target="_blank" rel="noopener noreferrer">เข้าครัวเอโกะ <span aria-hidden="true">→</span></a></div>
       <ul class="items">
         <li><a data-item="homechew" href="/homechew/" data-desc="Homechew โฮมชูว ซอสที่ปรุงจากครัวบ้านเรา น้ำจิ้ม 3 รส หาดใหญ่ มหาชัย เชียงคาน เคี่ยวให้แล้ว คุณแค่เท" target="_blank" rel="noopener noreferrer">🍲 Homechew ซอสจากครัวบ้านเรา</a></li>
+        <li><a data-item="hamburg" href="/hamburg/" data-desc="Hamburg Food Fair แฮมเบิร์กญี่ปุ่นพร้อมซอส 3 บูธ เดินดูทีละบูธ แล้วเลือกมื้อที่อยากกิน" target="_blank" rel="noopener noreferrer">🏮 Hamburg Food Fair</a></li>
         <li><a data-item="xircle" href="/xircle/" data-desc="XIRCLE Scale ตาชั่งที่บอกสิ่งที่ร่างกายตอบ ลองเห็นหนึ่งวันของคุณในมุมใหม่" target="_blank" rel="noopener noreferrer">⚖️ XIRCLE Scale</a></li>
         <li><a data-item="absorb" href="/routinex/absorb/" data-desc="อาหารหนึ่งมื้อเดินทางไปไหน? เรียนรู้เรื่องสารอาหาร การย่อย การดูดซึม และร่างกายกับ Absorb · RoutineX" target="_blank" rel="noopener noreferrer">หุ่นกายวิภาค · สารอาหารและร่างกาย</a></li>
       </ul>

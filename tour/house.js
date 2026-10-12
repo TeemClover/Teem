@@ -47,7 +47,7 @@ const blank = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
 
 export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set(), art = new Map()}) {
   const root = new THREE.Group();
-  const out = {root, hotspots: [], collectibles: new Map(), tickers: [], lights: [], screens: [], smoke: [], steam: [], lazy: new Map(), music: null};
+  const out = {root, hotspots: [], collectibles: new Map(), tickers: [], lights: [], screens: [], smoke: [], steam: [], lazy: new Map(), areas: new Map(), music: null};
   let area = 'outside'; // which room is being built: pictures load per room, as the visitor gets near
   const geoCache = new Map(), matCache = new Map(), solidMaterials = new WeakSet(), decalMaterials = new WeakMap();
   const artUrl = slot => art.has(slot) ? `/tour/art/${art.get(slot)}` : ART[slot].fallback;
@@ -105,7 +105,12 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     const leaves = ['#3f8a50', '#4f9a5c', '#62b06c'];
     for (let i = 0; i < (hd ? 9 : 5); i++) { const a = i * 2.39; blob(p, (0.2 + (i % 3) * 0.05) * s, [x + Math.cos(a) * 0.16 * s, (0.62 + (i % 4) * 0.15) * s, z + Math.sin(a) * 0.16 * s], leaves[i % 3], hd ? 1 : 0); }
   }
-  function lampLight(p, x, y, z, intensity = 6, dist = 7) { const l = new THREE.PointLight('#ffd9a0', 0, dist, 1.7); l.position.set(x, y, z); l.userData.max = intensity; p.add(l); out.lights.push(l); return l; }
+  // Lamps hang on the root, not inside the room or facade they light: three.js compiles its lit shaders for an exact
+  // number of lights, so a lamp that vanished with a hidden group recompiled every material in view, mid-walk.
+  function lampLight(p, x, y, z, intensity = 6, dist = 7) {
+    const l = new THREE.PointLight('#ffd9a0', 0, dist, 1.7); p.updateWorldMatrix(true, false);
+    l.position.copy(root.worldToLocal(p.localToWorld(new THREE.Vector3(x, y, z)))); l.userData.max = intensity; root.add(l); out.lights.push(l); return l;
+  }
   function label(text, w = 512, h = 128, bg = '#14281d', fg = '#fbf6ec', size = 56) {
     return tex.canvasTex(w, h, (c) => {
       c.fillStyle = bg; c.fillRect(0, 0, w, h); c.fillStyle = fg; c.font = `700 ${size}px ${FONT}`;
@@ -280,7 +285,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   for (const dx of [-0.55, 0.55]) cy(sign, [0.008, 0.008, 0.02], [dx, 0.34, 0], brass);
   for (const dx of [-0.95, 0.95]) { const l = cy(facade, [0.09, 0.11, 0.3], [-5.5 + dx, 2.0, FZ + 0.18], M('#fff1cf', {emissive: '#ffcf7a', emissiveIntensity: 1.2})); l.castShadow = false; }
   rb(facade, [2.2, 0.12, 0.9], [-5.5, -0.06, FZ + 0.55], grey, null, 0.02); // front step
-  lampLight(facade, -5.5, 2.3, 4.8, 5, 6);
+  out.porch = lampLight(facade, -5.5, 2.3, 4.8, 5, 6); // tour.js keeps it level with the facade as that sinks
   const upper = out.upper = group(root);
   frontWall(upper, F2, [[-7.2, -1.2, 0.2, 2.75], [1.4, 3.8, 0.9, 2.5], [4.6, 7.0, 0.9, 2.5]]);
   glazing(upper, F2, [-7.2, -1.2, 0.2, 2.75], 3); glazing(upper, F2, [1.4, 3.8, 0.9, 2.5], 1); glazing(upper, F2, [4.6, 7.0, 0.9, 2.5], 1);
@@ -322,7 +327,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   }
 
   /* ================= LIVING ROOM (floor 1, left): book corner, game table, lounge ================= */
-  const room = id => { area = id; return group(root, ROOMS[id][0], ROOMS[id][1], 0); };
+  // out.areas: what each room is made of, so the walk can leave out the rooms that cannot be seen from where it is
+  const room = id => { area = id; const g = group(root, ROOMS[id][0], ROOMS[id][1], 0); out.areas.set(id, [g]); return g; };
   const BW = -D / 2; // back wall face (room local z)
   {
     const g = room('living');
@@ -348,10 +354,10 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     for (const [dx, dz] of [[-0.95, -0.58], [0.95, -0.58], [-0.95, 0.58], [0.95, 0.58]]) cy(g, [0.05, 0.04, 0.42], [0.2 + dx, 0, 0.45 + dz], '#6d4a30');
     const compass = group(g, -0.3, 0.52, 0.55);
     plane(compass, [0.84, 0.63], [0, 0.006, 0], artMat('table-map', false, '#e8dcc0'), [-Math.PI / 2, 0, 0.12]);
-    const cbody = new THREE.MeshStandardMaterial({transparent: true, alphaTest: 0.2, roughness: 0.35, metalness: 0.2, color: '#c9b27a'});
+    const cbody = new THREE.MeshStandardMaterial({map: blank, transparent: true, alphaTest: 0.2, roughness: 0.35, metalness: 0.2, color: '#c9b27a'}); // a map from the start: adding one later is a new shader
     imageTex('/frontdoor/art/compass-body-mobile.webp', cbody, renderer, 1);
     plane(compass, [0.42, 0.42], [0.05, 0.035, 0.02], cbody, [-Math.PI / 2, 0, 0]).castShadow = true;
-    const needleMat = new THREE.MeshStandardMaterial({transparent: true, alphaTest: 0.2, color: '#ffffff'}); imageTex('/frontdoor/art/compass-needle.webp', needleMat, renderer, 1);
+    const needleMat = new THREE.MeshStandardMaterial({map: blank, transparent: true, alphaTest: 0.2, color: '#ffffff'}); imageTex('/frontdoor/art/compass-needle.webp', needleMat, renderer, 1);
     const needle = plane(compass, [0.3, 0.3], [0.05, 0.05, 0.02], needleMat, [-Math.PI / 2, 0, 0]);
     needle.userData.dynamic = true; out.tickers.push(t => { needle.rotation.z = Math.sin(t * 0.9) * 0.35 + Math.sin(t * 2.3) * 0.08; });
     hot(compass, 'compass');
@@ -546,6 +552,20 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     }), transparent: true, depthWrite: false});
     plane(rbk, [0.54, 0.101], [0, 0.37, 0.039], recipeTitle);
     hot(rbk, 'ako');
+    // Hamburg Food Fair on the island (→ /hamburg/): a Japanese hamburg steak on its hot plate, behind it the fair's table sign
+    const fair = group(g, 0.3, 0.94, 0.86); fair.rotation.y = 0.1;
+    rb(fair, [0.5, 0.03, 0.32], [0, 0, 0], wood('#8c6242'), null, 0.012);
+    cy(fair, [0.16, 0.15, 0.028], [-0.03, 0.03, 0.02], M('#1f2320', {roughness: 0.45, metalness: 0.4})).scale.x = 1.3;
+    sp(fair, 0.1, [-0.07, 0.098, 0.02], M('#5b2e1b', {roughness: 0.62})).scale.set(1.2, 0.55, 0.95);
+    sp(fair, 0.08, [-0.07, 0.135, 0.02], M('#3a1508', {roughness: 0.14})).scale.set(1.15, 0.3, 0.9); // demi-glace
+    sp(fair, 0.05, [-0.05, 0.158, 0.03], ceramic).scale.set(1, 0.2, 0.9); // a fried egg on top
+    sp(fair, 0.022, [-0.045, 0.168, 0.03], M('#f6b93b', {roughness: 0.3}));
+    blob(fair, 0.045, [0.11, 0.098, -0.03], '#4f9a5c', 1);
+    cy(fair, [0.02, 0.02, 0.08], [0.11, 0.038, 0.07], M('#f08a3c', {roughness: 0.5})).rotation.z = Math.PI / 2;
+    const fairSign = group(fair, 0.02, 0.03, -0.13); fairSign.rotation.x = -0.18;
+    rb(fairSign, [0.4, 0.15, 0.02], [0, 0, 0], M('#4a2b20'), null, 0.008);
+    plane(fairSign, [0.37, 0.12], [0, 0.075, 0.012], new THREE.MeshBasicMaterial({map: label('FOOD FAIR', 512, 166, '#4a2b20', '#f6efe3', 68)}));
+    hot(fair, 'hamburg');
     rb(g, [0.6, 0.04, 0.34], [1.0, 0.94, 0.7], wood('#c79a63'), null, 0.02);
     sp(g, 0.1, [1.0, 1.04, 0.7], M('#d99a4e', {roughness: 0.7})).scale.set(2.6, 0.8, 0.9);
     cy(g, [0.26, 0.16, 0.1], [1.0, 0.94, 0.1], M('#2f5d44', {roughness: 0.4}));
@@ -573,6 +593,7 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   {
     area = 'stairs';
     const cx = (STAIR.x0 + STAIR.x1) / 2, w = STAIR.x1 - STAIR.x0, g = group(root, 0, 0, 0);
+    // not in out.areas: this group holds the hall's own floor and walls, and their edges show from the garden
     const hallFloor = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, D), floorMat.wood); hallFloor.position.set(cx, -0.06, 0); hallFloor.receiveShadow = true; g.add(hallFloor);
     const hallWall = M('#f1e6d6', {map: tex.plaster, ...nm(tex.plasterN)});
     bx(g, [w, F2 + H, 0.24], [cx, 0, -D / 2 - 0.12], hallWall).castShadow = false; // back
@@ -820,7 +841,8 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     c.add(new THREE.Mesh(new THREE.SphereGeometry(2.3, 12, 8), new THREE.MeshBasicMaterial({transparent: true, opacity: 0, depthWrite: false}))); // finger-sized hit area
     c.traverse(o => { o.userData.collect = id; });
     c.userData = {id, collect: id, base: at.clone(), hint: 0, gone: 0};
-    c.visible = !found.has(id); root.add(c); out.collectibles.set(id, c);
+    c.visible = !found.has(id); out.collectibles.set(id, c);
+    const holder = group(root); holder.add(c); out.areas.get(id).push(holder); // the clover's own `visible` means "not collected yet"
   }
 
   /* ---------- hint beacons above every interactive object ---------- */

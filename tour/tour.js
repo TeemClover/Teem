@@ -27,6 +27,10 @@ let reduced = reduceQuery.matches;
 reduceQuery.addEventListener?.('change', e => { reduced = e.matches; document.body.classList.toggle('reduced', reduced); });
 document.body.classList.toggle('reduced', reduced);
 document.documentElement.classList.add('js-ready'); // the inline boot guard in index.html stops waiting
+// the loading intro (intro.js) puts up one storey per stage; before each heavy step the page gets one frame to show it
+const intro = n => { try { window.__intro?.(n); } catch {} };
+const paint = () => document.hidden ? Promise.resolve() : new Promise(r => { requestAnimationFrame(() => setTimeout(r)); setTimeout(r, 80); });
+intro(1);
 
 /* ---------- smooth scrolling (mouse and trackpad; touch keeps the phone's own scroll) ---------- */
 let lenis = null;
@@ -265,11 +269,20 @@ async function boot() {
     sun.shadow.mapSize.set(1024, 1024);
     tex = makeTextures(renderer, false);
     house = buildHouse({renderer, hd: false, tex, found, mobile, opened, art});
-    scene.add(house.root);
+    scene.add(house.root); porchY = house.porch.position.y;
+    intro(3); await paint();
     loadRoomsNear(progress());
     shadowSpan = 0; sizeCanvas(true);
     renderer.shadowMap.needsUpdate = true;
     try { await renderer.compileAsync(scene, camera); } catch {}
+    intro(4); await paint();
+    // One look at the whole place from far off, still behind the loader: every buffer and texture reaches the GPU
+    // now, so nothing has to be sent the first time it comes into view (on a phone the opening shot misses a lot).
+    const overview = new THREE.PerspectiveCamera(60, camera.aspect, 1, 500); overview.position.set(1, 8, 70); overview.lookAt(1, 5, 0);
+    // the shadow pass has shaders of its own (cut-out pictures), so for this one render the sun's map covers the whole house too
+    sun.position.copy(sunOffset); sun.target.position.set(0, 0, 0); sun.target.updateMatrixWorld();
+    Object.assign(sun.shadow.camera, {left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 80}); sun.shadow.camera.updateProjectionMatrix();
+    renderer.render(scene, overview);
     targetFor(progress(), camera.aspect < 1);
     camera.position.copy(wantPos); camera.lookAt(wantLook);
     renderer.render(scene, camera);
@@ -362,6 +375,17 @@ async function boot() {
     for (const id of want) if (!loadedRooms.has(id)) { loadedRooms.add(id); for (const load of house.lazy.get(id) || []) load(); }
   }
 
+  /* ----- the rooms are drawn (and cast shadows) only while the house is open -----
+     From the garden the closed facade and door hide every room, which is two thirds of everything in the scene.
+     Once the door moves or the facade starts to sink they are all back: the open dollhouse shows a little of each
+     neighbour. They stay a moment after it closes again, because the camera trails the scroll. */
+  let roomsOpenAt = -9, roomsShown = true;
+  function showRooms(open, t) {
+    if (open) roomsOpenAt = t;
+    const on = t - roomsOpenAt < 1.2;
+    if (on !== roomsShown) { roomsShown = on; for (const parts of house.areas.values()) for (const part of parts) part.visible = on; }
+  }
+
   /* ----- picking: the first thing the ray meets wins, so walls and furniture block what is behind them ----- */
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), mouse = {x: 0, y: 0, tx: 0, ty: 0};
   let hovered = null, downAt = null, currentScene = '';
@@ -439,7 +463,8 @@ async function boot() {
 
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
-  let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1;
+  let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1, porchY = 0;
+  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()};
   const frameStats = {calls: 0, triangles: 0};
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
@@ -486,6 +511,8 @@ async function boot() {
     starMat.opacity = dusk * 0.9;
     const lampsOn = Math.max(inside * 0.8, dusk);
     for (const l of house.lights) l.intensity = lampsOn * l.userData.max;
+    house.porch.position.y = porchY + house.facade.position.y; if (!house.facade.visible) house.porch.intensity = 0;
+    if (!first) showRooms(inside > 0 || doorOpen * (1 - dusk) > 0.001, t);
     house.glassMat.emissiveIntensity = dusk * 1.6;
     house.cloverLight.intensity = (1 - inside) * (4 + dusk * 18);
     house.heroMat.emissiveIntensity = 0.35 + dusk * 0.9;
@@ -559,10 +586,16 @@ async function boot() {
       if (b.life > 1.4) { scene.remove(b.pts); b.pts.geometry.dispose(); b.pts.material.dispose(); bursts.splice(i, 1); }
     }
 
-    // Shadow geometry changes much more slowly than the camera. Never redraw it in every
-    // frame; refresh at 24 Hz during motion, once when reduced motion rests.
-    if (first || ((p !== lastShadowProgress || !still || bursts.length || inspecting || hovered) && t - lastShadow >= 1 / 24)) {
+    // The shadow map is a second drawing of the whole scene, so it is redrawn only when it would come out
+    // different: at 24 Hz while something that casts a shadow moves (the facade and roof, the door, the big
+    // clover, an object in hand), at once when the view nears the edge of what the map covers, and otherwise
+    // a few times a second for the small things that turn. A camera gliding past still furniture needs none.
+    const casting = inside !== shadowAt.inside || doorOpen !== shadowAt.door || bursts.length || inspecting || hovered || glowing.size;
+    const wait = still ? (p !== lastShadowProgress || casting ? 1 / 24 : Infinity)
+      : casting || hc.visible ? 1 / 24 : snapCenter.distanceTo(shadowAt.center) > shadowSpan * 0.25 ? 0 : 1 / 4;
+    if (first || t - lastShadow >= wait) {
       renderer.shadowMap.needsUpdate = true; lastShadow = t; lastShadowProgress = p;
+      shadowAt.inside = inside; shadowAt.door = doorOpen; shadowAt.center.copy(snapCenter);
     }
     renderer.info.reset();
     renderer.render(scene, camera);
@@ -571,14 +604,21 @@ async function boot() {
     requestAnimationFrame(frame);
   }
 
-  // canvas labels in the house use the page font: wait for it (briefly) before drawing them
-  try { await Promise.race([Promise.all([500, 600, 700, 800].map(weight => document.fonts.load(`${weight} 48px ${FONT.split(',')[0]}`, 'ยินดีต้อนรับ ครัวเอโกะ Resume'))), new Promise(r => setTimeout(r, 1500))]); } catch {}
-  // purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images
+  // purpose-made art (IMAGE-PROMPTS.md): slots listed here replace borrowed images; asked for while the fonts load
   const art = new Map();
-  try {
-    const r = await fetch('/tour/art/manifest.json', {cache: 'no-cache'});
-    if (r.ok) for (const [slot, file] of Object.entries((await r.json()).slots || {})) if (/^[\w.-]+\.(webp|jpe?g|png)$/.test(file)) art.set(slot, file);
-  } catch {}
+  const artReady = (async () => {
+    try {
+      const r = await fetch('/tour/art/manifest.json', {cache: 'no-cache'});
+      if (r.ok) for (const [slot, file] of Object.entries((await r.json()).slots || {})) if (/^[\w.-]+\.(webp|jpe?g|png)$/.test(file)) art.set(slot, file);
+    } catch {}
+  })();
+  // canvas labels in the house use the page font: wait for it (briefly) before drawing them. The font
+  // stylesheet no longer blocks the page, so its faces may not be known yet when this module starts.
+  const fontCss = $('link[data-fonts]');
+  const fontFaces = !fontCss || fontCss.sheet ? Promise.resolve() : new Promise(r => { fontCss.addEventListener('load', r, {once: true}); fontCss.addEventListener('error', r, {once: true}); });
+  try { await Promise.race([fontFaces.then(() => Promise.all([500, 600, 700, 800].map(weight => document.fonts.load(`${weight} 48px ${FONT.split(',')[0]}`, 'ยินดีต้อนรับ ครัวเอโกะ Resume')))), new Promise(r => setTimeout(r, 1500))]); } catch {}
+  await artReady;
+  intro(2); await paint();
   measure();
   await build();
   targetFor(progress(), camera.aspect < 1); camPos.copy(wantPos); camLook.copy(wantLook);
@@ -587,7 +627,7 @@ async function boot() {
   // read-only test hook: progress, scene order, quality, and where things sit on screen
   window.__tour = {
     progress, order, found, quality: () => 'sd', items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
-    level: () => gov.level, music: () => musicOn,
+    level: () => gov.level, music: () => musicOn, roomsShown: () => roomsShown,
     itemState: id => { const h = hotById(id); return h ? {opened: opened.has(id), badge: h.opened ? 'silver' : 'gold', opacity: h.beacon?.material.opacity} : null; },
     storeySeam: () => {
       const slab = new THREE.Box3().setFromObject(house.storey.slab), edge = new THREE.Box3().setFromObject(house.storey.edge);

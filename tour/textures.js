@@ -170,11 +170,49 @@ export function makeTextures(renderer, hd) {
  */
 const loader = new THREE.TextureLoader();
 const imageCache = new Map();
+
+/* Pictures must never cost a frame. An <img> handed to WebGL is decoded on the main thread at the moment
+   it is first drawn, and several arriving together froze the walk for a fifth of a second. So each picture
+   is decoded off the main thread, capped at MAX_SIDE (frames in the house are a few hundred pixels on
+   screen), and sent to the GPU from a queue: one new picture per frame. */
+const MAX_SIDE = 1024;
+const BITMAP = {imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none'};
+let bitmapSupport = null;
+// some browsers accept the options and ignore them: decode a red-over-blue image and see which colour is on top
+const canBitmap = () => bitmapSupport ??= (async () => {
+  try {
+    const c = document.createElement('canvas'); c.width = 1; c.height = 2;
+    const x = c.getContext('2d'); x.fillStyle = '#f00'; x.fillRect(0, 0, 1, 1); x.fillStyle = '#00f'; x.fillRect(0, 1, 1, 1);
+    const bmp = await createImageBitmap(await new Promise(r => c.toBlob(r)), BITMAP);
+    x.clearRect(0, 0, 1, 2); x.drawImage(bmp, 0, 0);
+    return x.getImageData(0, 0, 1, 1).data[2] > 200;
+  } catch { return false; }
+})();
+async function bitmapTexture(url) {
+  const r = await fetch(url); if (!r.ok) throw new Error(url);
+  let bmp = await createImageBitmap(await r.blob(), BITMAP);
+  const k = MAX_SIDE / Math.max(bmp.width, bmp.height);
+  if (k < 1) { const big = bmp; bmp = await createImageBitmap(big, {resizeWidth: Math.round(big.width * k), resizeHeight: Math.round(big.height * k), resizeQuality: 'high'}); big.close(); }
+  const t = new THREE.Texture(bmp); t.flipY = false; t.needsUpdate = true; // already flipped while decoding
+  return t;
+}
+const elementTexture = url => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
+const uploads = [], onGpu = new WeakSet();
+let pumping = false;
+function pump() {
+  let fresh = 0;
+  while (uploads.length && !(fresh && !onGpu.has(uploads[0].texture.source))) {
+    const job = uploads.shift();
+    if (!onGpu.has(job.texture.source)) { fresh++; onGpu.add(job.texture.source); }
+    job.run();
+  }
+  if (uploads.length) requestAnimationFrame(pump); else pumping = false;
+}
 export function imageTex(url, material, renderer, aspect = 0) {
   let disposed = false, owned = null;
   material.addEventListener('dispose', () => { disposed = true; owned?.dispose(); });
   const apply = base => {
-    if (disposed) return; // an SD/HD rebuild may finish while the download is still pending
+    if (disposed) return; // a rebuild may finish while the download is still pending
     let t = base;
     if (aspect && base.image?.width) {
       const ia = base.image.width / base.image.height;
@@ -184,19 +222,24 @@ export function imageTex(url, material, renderer, aspect = 0) {
       t.needsUpdate = true;
       owned = t;
     }
+    renderer.initTexture?.(t); // send it now, from the queue, not in the middle of whichever frame first shows it
     material.map = t; material.color.set('#ffffff');
     if (material.userData.glow) { material.emissiveMap = t; material.emissiveIntensity = material.userData.glow; } // screens light up once their picture arrives
     material.needsUpdate = true;
   };
   if (!imageCache.has(url)) {
-    const pending = new Promise(resolve => {
-      loader.load(url, t => {
+    const pending = (async () => {
+      try {
+        const t = /\.svg$/i.test(url) || !await canBitmap() ? await elementTexture(url) : await bitmapTexture(url).catch(() => elementTexture(url));
         t.colorSpace = THREE.SRGBColorSpace;
         t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-        resolve(t);
-      }, undefined, () => { imageCache.delete(url); resolve(null); });
-    });
+        return t;
+      } catch { imageCache.delete(url); return null; }
+    })();
     imageCache.set(url, pending);
   }
-  return imageCache.get(url).then(base => { if (base) apply(base); });
+  return imageCache.get(url).then(base => base && new Promise(done => {
+    uploads.push({texture: base, run: () => { apply(base); done(); }});
+    if (!pumping) { pumping = true; requestAnimationFrame(pump); }
+  }));
 }
