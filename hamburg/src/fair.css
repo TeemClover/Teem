@@ -1,0 +1,365 @@
+/* Hamburg Food Fair entrance — an evening fair: lit gate, a lane of three equal stalls, a price
+   board. The fair's own palette (night indigo + warm bulb light) belongs to no brand; each stall
+   only borrows its brand colors for the awning, posts and button. */
+
+.fair {
+  --night: #15172F;
+  --night-2: #23244A;
+  --dusk: #3B2C50;
+  --ground: #241E31;
+  --bulb: #FFD98A;
+  --glow: rgba(255, 196, 104, .55);
+  --paper: #FFF6E8;
+  --paper-2: #F3E7D3;
+  --ink: #1C1A2B;
+  --ink-2: #3F3A4E;
+  --on-night: #FFF6E8;
+  --on-night-2: #D9D2E6;
+  --rule: #E0D2BC;
+  --font-body: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, sans-serif;
+  --font-head: var(--font-body);
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--night) 0, var(--night-2) 300px, var(--dusk) 620px, var(--ground) 1100px);
+  color: var(--on-night);
+  overflow-x: clip;
+}
+body:has(.fair) { background: #15172F; }
+.fair-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.fair main > section { padding: 0; }
+.fair main > section > * { max-width: none; margin-left: 0; margin-right: 0; }
+.fair-small { font-size: .85rem; color: var(--on-night-2); }
+
+/* ---------- Gate ---------- */
+.fair-gate { position: relative; text-align: center; padding: 62px var(--gutter) 18px; --focus: #FFE3A3; }
+.fair-gate::before { /* a few far stars */
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .7;
+  background:
+    radial-gradient(1.5px 1.5px at 12% 34%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 27% 58%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 71% 42%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 66%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 30%, #fff 50%, transparent 51%);
+}
+.fair-lights { position: absolute; left: 0; right: 0; top: 0; height: 70px; }
+.fair-lights svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fair-lights path { fill: none; stroke: #0B0C1C; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.fair-bulb {
+  position: absolute; width: 11px; height: 14px; margin: 0 0 0 -5.5px; border-radius: 50% 50% 50% 50% / 42% 42% 58% 58%;
+  background: var(--bulb); box-shadow: 0 0 10px 3px var(--glow), 0 0 26px 8px rgba(255, 196, 104, .22);
+  animation: fair-twinkle 3.2s ease-in-out var(--d, 0s) infinite;
+}
+.fair-bulb::before { content: ''; position: absolute; left: 3px; top: -4px; width: 5px; height: 5px; border-radius: 1px; background: #0B0C1C; }
+@keyframes fair-twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .62; } }
+
+.fair-arch {
+  position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 0; margin: 0 auto 12px; line-height: 1.35;
+  padding: 14px 44px 10px; background: var(--paper); color: var(--ink);
+  border-radius: 140px 140px 14px 14px; border: 7px dotted var(--bulb);
+  box-shadow: 0 0 0 5px var(--night), 0 0 34px 6px var(--glow);
+}
+.fair-arch-en { font-weight: 700; font-size: clamp(1.05rem, 2.2vw, 1.5rem); letter-spacing: .2em; text-transform: uppercase; padding-left: .2em; }
+.fair-arch-th { font-weight: 600; font-size: 1rem; color: #7A4B12; }
+.fair-h1 { margin: 0 0 .2em; font-size: clamp(2.2rem, 4.6vw, 3.3rem); font-weight: 700; line-height: 1.2; letter-spacing: -.01em; text-shadow: 0 2px 24px rgba(21, 23, 47, .8); }
+.fair-sub { margin: 0 auto .25em; max-width: 44ch; line-height: 1.5; text-wrap: balance; font-size: clamp(1.125rem, 1.8vw, 1.3rem); }
+.fair-invite { margin: 0; line-height: 1.5; color: var(--on-night-2); }
+
+/* Signpost: jump to any stall from the first screen (phones only; desktop shows all three). */
+.fair-signpost { display: none; }
+
+/* ---------- Lane of stalls ---------- */
+.fair main > .fair-lane { position: relative; padding: 8px var(--gutter) 84px; }
+.fair-lane::after { /* warm pools of light on the ground */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 150px; pointer-events: none;
+  background: radial-gradient(60% 90px at 50% 100%, rgba(255, 196, 104, .2), transparent 70%);
+}
+.stalls { list-style: none; margin: 0 auto; padding: 0; max-width: 1240px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); align-items: stretch; }
+.stall { position: relative; isolation: isolate; display: flex; flex-direction: column; color: var(--ink); transition: transform .25s ease; }
+.stall::after { /* shadow under the stall */
+  content: ''; position: absolute; left: 6%; right: 6%; bottom: -16px; height: 22px; border-radius: 50%; background: rgba(8, 8, 20, .55); filter: blur(8px); z-index: -1;
+}
+.stall-homechew { --a: #6A4030; --b: #F4EEE4; --cta: #6A4030; }
+.stall-tmt { --a: #B72D26; --b: #FFF6E8; --cta: #B72D26; }
+.stall-noomjang { --a: #355A49; --b: #E5EEDB; --cta: #355A49; }
+
+/* Striped canopy with a scalloped valance, drawn with gradients so it scales with the stall. */
+.stall-awning {
+  position: relative; z-index: 2; height: 78px; margin: 0 -10px; border-radius: 10px 10px 0 0;
+  background:
+    linear-gradient(180deg, rgba(10, 8, 20, .34), rgba(10, 8, 20, 0) 58%) 0 0 / 100% 60px no-repeat,
+    radial-gradient(circle at 16px 0, var(--a) 15.5px, transparent 16.5px) 0 60px / 64px 18px repeat-x,
+    radial-gradient(circle at 16px 0, var(--b) 15.5px, transparent 16.5px) 32px 60px / 64px 18px repeat-x,
+    repeating-linear-gradient(90deg, var(--a) 0 32px, var(--b) 32px 64px) 0 0 / 100% 60px no-repeat;
+  filter: drop-shadow(0 10px 10px rgba(8, 8, 20, .45));
+  transition: transform .25s ease;
+}
+.stall-body {
+  position: relative; flex: 1; display: flex; flex-direction: column; margin-top: -18px; padding-top: 30px;
+  background: var(--paper); border-left: 8px solid var(--a); border-right: 8px solid var(--a); border-bottom: 14px solid var(--a);
+  border-radius: 0 0 6px 6px;
+}
+.stall-body::before { /* lamp light falling from under the canopy */
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 140px; pointer-events: none;
+  background: radial-gradient(70% 110px at 50% 0, rgba(255, 205, 120, .5), transparent 72%);
+}
+
+/* Hanging sign with the brand logo — same board size for every stall */
+.stall-sign {
+  position: relative; display: grid; place-items: center; height: 92px; margin: 6px 16px 12px; padding: 8px 14px;
+  background: #FFFDF8; border: 2px solid var(--a); border-radius: 10px; box-shadow: 0 6px 0 -2px rgba(28, 26, 43, .16);
+}
+.stall-sign::before, .stall-sign::after { content: ''; position: absolute; top: -18px; width: 2px; height: 18px; background: var(--ink-2); }
+.stall-sign::before { left: 22%; }
+.stall-sign::after { right: 22%; }
+.stall-sign .identity-logo { width: auto; height: 72px; max-width: 100%; }
+.stall-sign .identity-homechew { justify-content: center; gap: 12px; }
+.stall-sign .hc-approved-mark { width: 62px; height: auto; }
+.stall-sign .hc-approved-name .hc-wordmark { width: min(180px, 100%); height: auto; }
+.stall-sign .hc-thai { font-size: 14px; }
+
+/* Display window with the food, and a shared hanging price tag */
+.stall-window { position: relative; margin: 0 14px; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #2a1c15; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25); }
+.stall-window img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.stall-window::after { content: ''; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 14px 22px -12px rgba(255, 214, 140, .55), inset 0 -30px 30px -24px rgba(10, 8, 20, .55); }
+.stall-tag {
+  position: absolute; left: 10px; top: 10px; z-index: 1; display: grid; gap: 0; padding: 5px 12px 6px 24px;
+  background: var(--paper); color: var(--ink); border-radius: 6px; transform: rotate(-3deg); transform-origin: left top;
+  box-shadow: 0 6px 14px rgba(10, 8, 20, .4); font-size: .78rem; line-height: 1.3;
+}
+.stall-tag::before { content: ''; position: absolute; left: 9px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--ink); opacity: .75; }
+.stall-tag strong { font-size: 1.02rem; font-weight: 700; }
+
+/* Counter: one line about the booth and the way in */
+.stall-counter { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 14px 18px 18px; }
+.stall-line { flex: 1; margin: 0; font-size: 1em; line-height: 1.6; color: var(--ink); }
+.stall-cta {
+  display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 12px 18px;
+  background: var(--cta); color: #fff; border-radius: 8px; font-weight: 700; font-size: 1em; text-decoration: none; white-space: nowrap;
+  box-shadow: 0 5px 0 -1px rgba(28, 26, 43, .32); transition: box-shadow .15s ease, background-color .15s ease;
+}
+/* The whole stall is the target; the link itself stays a real, labelled control.
+   Never put transform or filter on .stall-cta: either makes it the containing block and shrinks this area. */
+.stall-cta::after { content: ''; position: absolute; inset: -60px -18px -14px; z-index: 3; }
+.stall:hover, .stall:focus-within { transform: translateY(-4px); }
+.stall:hover .stall-awning, .stall:focus-within .stall-awning { transform: translateY(-3px); }
+.stall:hover .stall-window img, .stall:focus-within .stall-window img { transform: scale(1.05); }
+.stall:hover .stall-cta, .stall:focus-within .stall-cta { background: color-mix(in srgb, var(--cta) 88%, #fff); box-shadow: 0 7px 0 -1px rgba(28, 26, 43, .32); }
+.stall-cta:focus-visible { outline-offset: 4px; }
+
+/* Walking up to a stall switches its lights on (JS adds .is-walk only when motion is allowed). */
+.fair.is-walk .stall { filter: brightness(.6) saturate(.75); }
+.fair.is-walk .stall.is-lit { filter: none; animation: fair-light-on .8s ease calc(var(--i) * .16s) backwards; }
+@keyframes fair-light-on { from { filter: brightness(.6) saturate(.75); } to { filter: brightness(1) saturate(1); } }
+
+/* ---------- Price board ---------- */
+.fair main > .fair-board { padding: 20px var(--gutter) 56px; display: grid; justify-items: center; }
+.board {
+  position: relative; width: min(100%, 560px); padding: 26px clamp(20px, 4vw, 36px) 24px; text-align: center;
+  background: var(--paper); color: var(--ink); border-radius: 12px 12px 4px 4px; border-top: 12px solid #C9892E;
+  box-shadow: 0 0 40px rgba(255, 196, 104, .16), 0 18px 30px -18px rgba(8, 8, 20, .8);
+}
+.board::before, .board::after { /* A-frame legs */
+  content: ''; position: absolute; bottom: -26px; width: 10px; height: 30px; background: #6E4A1C; border-radius: 0 0 3px 3px;
+}
+.board::before { left: 14%; transform: rotate(6deg); }
+.board::after { right: 14%; transform: rotate(-6deg); }
+.board-kicker { margin: 0 0 6px; font-size: .82rem; font-weight: 700; letter-spacing: .12em; color: #7A4B12; }
+.board h2 { margin: 0 0 .4em; font-size: clamp(1.25rem, 2.4vw, 1.6rem); }
+.board-what { margin: 0 0 16px; color: var(--ink-2); }
+.board-prices { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.board-prices li { display: grid; gap: 2px; padding: 12px 6px; background: var(--paper-2); border-radius: 8px; }
+.board-prices span { font-size: .9rem; color: var(--ink-2); }
+.board-prices strong { font-size: 1.25rem; white-space: nowrap; }
+.board-note { margin: 0; font-size: .9rem; color: var(--ink-2); }
+
+/* ---------- Saved carts ---------- */
+.fair main > .fair-bag { margin: 0 auto; padding: 8px var(--gutter) 40px; max-width: 640px; --focus: #FFE3A3; }
+.fair-bag h2 { font-size: 1.15rem; margin-bottom: .5em; }
+.fair-bag ul { list-style: none; margin: 0 0 10px; padding: 0; border-top: 1px solid rgba(255, 246, 232, .25); }
+.fair-bag li { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 0; border-bottom: 1px solid rgba(255, 246, 232, .25); }
+.fair-bag a { font-weight: 600; color: var(--bulb); }
+
+/* ---------- Footer ---------- */
+.fair-foot { text-align: center; padding: 28px var(--gutter) 56px; font-size: .92rem; color: var(--on-night-2); border-top: 1px solid rgba(255, 246, 232, .14); --focus: #FFE3A3; }
+.fair-foot p { margin: 0 0 6px; }
+.fair-design-link { font-size: 1rem; margin-bottom: 14px !important; }
+.fair-design-link a { color: var(--bulb); font-weight: 600; }
+
+/* ---------- Narrow screens: walk down the lane one stall at a time ---------- */
+@media (max-width: 759px) {
+  .fair-gate { padding-top: 70px; padding-bottom: 20px; }
+  .fair-arch { padding: 14px 30px 10px; margin-bottom: 16px; border-width: 6px; }
+  .fair-arch-th { font-size: .95rem; }
+  .fair-h1 { font-size: clamp(2rem, 9.4vw, 2.6rem); }
+  .fair-invite { font-size: .95em; }
+  .fair-signpost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px auto 0; max-width: 460px; }
+  .fair-signpost a {
+    display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 46px; padding: 6px 4px;
+    background: var(--paper); color: var(--ink); border-radius: 6px 6px 6px 6px; font-weight: 700; font-size: .92rem; text-decoration: none; white-space: nowrap;
+    box-shadow: 0 4px 0 -1px #C9892E;
+  }
+  .fair main > .fair-lane { padding-top: 22px; padding-bottom: 64px; }
+  .stalls { grid-template-columns: 1fr; max-width: 440px; gap: 58px; }
+  .stall + .stall::before { /* footpath to the next stall */
+    content: ''; position: absolute; left: 50%; top: -52px; height: 30px; border-left: 3px dotted rgba(255, 217, 138, .7);
+  }
+  .stall-awning { margin: 0 -6px; }
+  .stall-window { aspect-ratio: 16 / 10; }
+  .board-prices strong { font-size: 1.1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fair-bulb, .fair.is-walk .stall.is-lit { animation: none !important; }
+  .fair:not(.is-3d) .stall, .fair:not(.is-3d) .stall-awning, .fair:not(.is-3d) .stall-window img { transition: none !important; transform: none !important; }
+}
+
+/* ---------- Parts that only exist in the 3D plaza ---------- */
+.stall-wall, .stall-fascia, .stall-valance, .fair-ground, .fair-string, .fair-backdrop, .fair-fade, .fair-hud { display: none; }
+.fair-mode { margin: 18px 0 0; text-align: center; }
+.fair-mode button {
+  min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1.5px solid rgba(255, 246, 232, .5); background: rgba(21, 23, 47, .5);
+  color: var(--on-night); font: 600 .92rem/1.2 var(--font-body); cursor: pointer;
+}
+.fair-lane { --focus: #FFE3A3; }
+.fair-lane .stall { --focus: #1F5FBF; }
+
+/* =====================================================================
+   3D plaza (.fair.is-3d). Geometry mirrors the constants G in views/arena.js:
+   horizon 390px, perspective = arc radius = 780px, booths 26deg apart.
+   Rules of this scene: nothing between .fair-world and a booth face may use
+   overflow, filter, opacity, clip-path or isolation — they flatten 3D.
+   ===================================================================== */
+.fair.is-3d .fair-gate { position: relative; z-index: 3; pointer-events: none; transition: opacity .4s ease, visibility .4s ease; }
+.fair.is-3d .fair-gate a { pointer-events: auto; }
+.fair.is-3d.is-focus .fair-gate, .fair.is-3d.is-entering .fair-gate { opacity: 0; visibility: hidden; }
+.fair.is-3d main > .fair-lane { padding: 0 0 28px; margin-top: calc(var(--gate-h, 320px) * -1); }
+.fair.is-3d .fair-lane::after { display: none; }
+
+.fair.is-3d .fair-stage {
+  position: relative; height: 760px; overflow: hidden; background: var(--night);
+  touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.fair.is-3d .fair-stage.is-dragging { cursor: grabbing; }
+
+/* Sky above the horizon, dark ground below it. The element is twice the stage height with the
+   horizon at its middle, and slides so the horizon follows the camera framing. */
+.fair.is-3d .fair-backdrop {
+  display: block; position: absolute; left: 0; right: 0; top: 0; height: 200%; pointer-events: none;
+  background:
+    radial-gradient(1.5px 1.5px at 14% 31%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 31% 38%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 68% 34%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 86% 41%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 27%, #fff 50%, transparent 51%),
+    linear-gradient(180deg, #15172F 0, #15172F 26%, #23244A 40%, #3B2C50 47%, #6A4458 49.6%, #8A5A52 50%, #251E33 50%, #1B1627 60%, #15121F 100%);
+}
+
+.fair.is-3d .fair-view {
+  position: absolute; left: 50%; top: 0; width: 1160px; height: 720px; margin-left: -580px;
+  perspective: 780px; perspective-origin: 50% 390px; transform-origin: 50% 390px;
+}
+.fair.is-3d .fair-world {
+  position: absolute; inset: 0; transform-style: preserve-3d; transform-origin: 50% 390px; will-change: transform;
+}
+/* Camera moves ease only once the first frame is drawn (.is-ready), never on load. */
+.fair.is-3d.is-ready .fair-view, .fair.is-3d.is-ready .fair-world, .fair.is-3d.is-ready .fair-backdrop, .fair.is-3d.is-ready .fair-world .stall { transition: transform .95s cubic-bezier(.22, .7, .2, 1); }
+.fair.is-3d.is-ready .fair-stage.is-leaning .fair-world { transition-duration: .35s; transition-timing-function: ease-out; }
+.fair.is-3d.is-ready .fair-stage.is-dragging .fair-world { transition: none; }
+.fair.is-3d.is-ready.is-entering .fair-view, .fair.is-3d.is-ready.is-entering .fair-world { transition-duration: .45s; transition-timing-function: ease-in; }
+
+/* Paved ground: a plane lying flat, 250px below eye level, from just in front of the visitor to the far distance. */
+.fair.is-3d .fair-ground {
+  display: block; position: absolute; left: 50%; top: 390px; width: 5200px; height: 2700px; margin-left: -2600px;
+  transform-origin: 50% 0; transform: translate3d(0, 250px, -3000px) rotateX(90deg);
+  background:
+    linear-gradient(180deg, #251E33 0, rgba(37, 30, 51, 0) 46%),
+    radial-gradient(1100px 900px at 50% 82%, rgba(255, 196, 104, .2), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(255, 246, 232, .07) 0 3px, transparent 3px 170px),
+    repeating-linear-gradient(0deg, rgba(255, 246, 232, .07) 0 3px, transparent 3px 170px),
+    #33293F;
+}
+
+/* Two runs of string lights hung across the plaza at different depths */
+.fair.is-3d .fair-string { display: block; position: absolute; left: 50%; right: auto; top: 390px; width: 2600px; height: 70px; margin-left: -1300px; pointer-events: none; }
+.fair.is-3d .fair-string.s1 { transform: translate3d(0, -372px, -430px); }
+.fair.is-3d .fair-string.s2 { transform: translate3d(0, -470px, -1180px); }
+.fair.is-3d .fair-string .fair-bulb { width: 13px; height: 17px; margin-left: -6.5px; }
+
+/* Booths: each stands on the arc, facing the centre of the plaza */
+.fair.is-3d .stalls { position: absolute; inset: 0; display: block; max-width: none; margin: 0; transform-style: preserve-3d; }
+.fair.is-3d .stall, .fair.is-3d .stall:hover, .fair.is-3d .stall:focus-within {
+  position: absolute; left: 50%; top: 390px; width: 320px; height: 490px; margin: -240px 0 0 -160px;
+  isolation: auto; filter: none; animation: none; transition: none; cursor: pointer;
+  transform-style: preserve-3d; transform-origin: 50% 100%;
+  /* --sx/--sy (set by the camera) cancel wide-angle stretch so every booth is drawn the same size */
+  transform: rotateY(var(--th)) translateZ(-780px) scale3d(var(--sx, 1), var(--sy, 1), 1);
+}
+.fair.is-3d .stall + .stall::before { display: none; }
+.fair.is-3d .stall::after { /* lamp light spilling onto the ground in front of the booth */
+  left: -110px; right: -110px; top: 100%; bottom: auto; height: 380px; border-radius: 0; filter: none; z-index: auto;
+  transform-origin: 50% 0; transform: rotateX(90deg);
+  background: radial-gradient(50% 78% at 50% 0, rgba(255, 200, 112, .5), rgba(255, 200, 112, 0) 72%);
+}
+.fair.is-3d .stall-wall {
+  display: block; position: absolute; top: -36px; width: 210px; height: calc(100% + 36px);
+  background: linear-gradient(180deg, rgba(10, 8, 20, .2), rgba(10, 8, 20, .55)), repeating-linear-gradient(90deg, var(--a) 0 30px, color-mix(in srgb, var(--a) 82%, #000) 30px 34px);
+}
+.fair.is-3d .stall-wall.l { left: 0; transform-origin: 0 50%; transform: rotateY(90deg); }
+.fair.is-3d .stall-wall.r { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); }
+.fair.is-3d .stall-fascia { display: block; position: absolute; left: 0; right: 0; top: -36px; height: 37px; background: linear-gradient(180deg, rgba(10, 8, 20, .35), rgba(10, 8, 20, .1)), var(--a); }
+/* Canopy: hinged at the top edge and tilted 35deg toward the visitor */
+.fair.is-3d .stall-awning, .fair.is-3d .stall:hover .stall-awning, .fair.is-3d .stall:focus-within .stall-awning {
+  position: absolute; left: -22px; right: -22px; top: -36px; height: 130px; margin: 0; border-radius: 0; filter: none; z-index: auto;
+  transform-origin: 50% 0; transform: rotateX(35deg); transition: none;
+  background: linear-gradient(180deg, rgba(10, 8, 20, .34), rgba(10, 8, 20, 0) 75%), repeating-linear-gradient(90deg, var(--a) 0 32px, var(--b) 32px 64px);
+}
+.fair.is-3d .stall-valance { /* scalloped edge hanging from the canopy's front lip: 130*cos35 down, 130*sin35 out */
+  display: block; position: absolute; left: -22px; right: -22px; top: 70px; height: 20px; transform: translateZ(74.6px);
+  background:
+    radial-gradient(circle at 16px 0, var(--a) 15.5px, transparent 16.5px) 0 0 / 64px 20px repeat-x,
+    radial-gradient(circle at 16px 0, var(--b) 15.5px, transparent 16.5px) 32px 0 / 64px 20px repeat-x;
+}
+.fair.is-3d .stall-body { margin-top: 0; padding-top: 60px; transform-style: preserve-3d; }
+.fair.is-3d .stall-sign { height: 80px; margin: 4px 16px 10px; transform: translateZ(26px); transition: transform .25s ease; box-shadow: 0 10px 14px -6px rgba(28, 26, 43, .45); }
+.fair.is-3d .stall:hover .stall-sign, .fair.is-3d .stall.is-focus .stall-sign { transform: translateZ(44px); }
+.fair.is-3d .stall-sign::before, .fair.is-3d .stall-sign::after { display: none; } /* hooks would poke through the tilted canopy */
+.fair.is-3d .stall-sign .identity-logo { height: 62px; }
+.fair.is-3d .stall-sign .hc-approved-mark { width: 52px; }
+.fair.is-3d .stall-window { aspect-ratio: 16 / 9; }
+.fair.is-3d .stall:hover .stall-window img, .fair.is-3d .stall:focus-within .stall-window img { transform: none; }
+/* Counter juts out 46px in front of the window, with a visible top surface */
+.fair.is-3d .stall-counter { position: relative; background: var(--paper); transform: translateZ(46px); transform-style: preserve-3d; padding: 12px 16px 16px; gap: 10px; box-shadow: 0 0 0 1px rgba(28, 26, 43, .06); }
+.fair.is-3d .stall-counter::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 46px; transform-origin: 50% 0; transform: rotateX(-90deg); background: linear-gradient(180deg, #E9DBC3, var(--paper-2)); }
+.fair.is-3d .stall-cta::after { display: none; }
+.fair.is-3d .stall-cta { min-height: 50px; }
+.fair.is-3d .stall.is-focus .stall-cta { box-shadow: 0 5px 0 -1px rgba(28, 26, 43, .32), 0 0 0 4px rgba(255, 217, 138, .75); }
+
+/* Walk-in: the frame washes to the booth's own light as the router follows the link */
+.fair.is-3d .fair-fade { display: block; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: var(--night); opacity: 0; transition: opacity .42s ease-in; }
+.fair.is-3d.is-entering .fair-fade { opacity: 1; }
+
+/* Camera controls and hint, laid over the stage */
+.fair.is-3d .fair-hud { display: block; position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.fair-cam { position: absolute; left: 0; right: 0; top: 10px; display: flex; justify-content: center; gap: 10px; opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }
+.fair.is-3d.is-focus .fair-cam { opacity: 1; visibility: visible; }
+.fair.is-3d.is-entering .fair-cam { opacity: 0; visibility: hidden; }
+.fair-cam button {
+  pointer-events: auto; min-width: 48px; min-height: 48px; padding: 8px 18px; border-radius: 999px; border: 2px solid var(--bulb);
+  background: rgba(21, 23, 47, .86); color: var(--on-night); font: 700 1rem/1 var(--font-body); cursor: pointer;
+}
+.fair-cam button[disabled] { opacity: .35; cursor: default; }
+.fair-hint {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); margin: 0; padding: 7px 16px; border-radius: 999px;
+  background: rgba(21, 23, 47, .78); color: var(--on-night); font-size: .88rem; white-space: nowrap; transition: opacity .4s ease;
+}
+.fair.has-walked .fair-hint { opacity: 0; }
+
+@media (min-width: 760px) {
+  .fair.is-3d .fair-signpost { display: none; }
+}
+@media (max-width: 759px) {
+  .fair.is-3d .fair-gate { padding-bottom: 12px; }
+  .fair-hint { font-size: .8rem; bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fair.is-3d .fair-view, .fair.is-3d .fair-world, .fair.is-3d .fair-backdrop, .fair.is-3d .stall, .fair.is-3d .stall-sign { transition: none !important; }
+}

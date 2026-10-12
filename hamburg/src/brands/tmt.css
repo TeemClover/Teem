@@ -66,28 +66,46 @@
 .tmt-band { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; padding: 18px var(--gutter); background: var(--charcoal); color: var(--ivory); font: 700 clamp(1rem, 2.2vw, 1.5rem)/1.2 var(--font-head); }
 .tmt-band i { width: 10px; height: 10px; background: var(--red); transform: rotate(45deg); }
 
-/* T02 signature: first bite (charcoal stage, red stamp) */
-.brand-tmt main > section.tmt-bite { padding: 0 0 clamp(64px, 8vw, 104px); background: #141110; color: var(--ivory); }
+/* T02 signature: first bite — a full-bleed cinematic stage while scrolling.
+   Live: photo fills the sticky frame, words sit large over a charcoal fade, a red bar tracks progress
+   and the red stamp lands at the end. Static/reduced motion: framed photo with copy beside it. */
+.brand-tmt main > section.tmt-bite { padding: 0 0 clamp(64px, 8vw, 104px); background: var(--charcoal); color: var(--ivory); }
 .tmt-bite .scene-runway { max-width: none; }
 .tmt-bite .scene-sticky { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; padding: 24px var(--gutter); max-width: 1400px; margin: 0 auto; }
-.tmt-stage { position: relative; aspect-ratio: 3 / 2; width: 100%; max-height: calc(100svh - var(--head-h) - 48px); overflow: hidden; background: #2a1c15; border-top: 8px solid var(--red); }
-.tmt-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1); transform-origin: 50% 50%; }
-.tb-cut { --l1: clamp(0, calc((var(--p) - .18) / .32), 1); opacity: var(--l1); }
-.tb-macro { --l2: clamp(0, calc((var(--p) - .6) / .22), 1); opacity: var(--l2); transform: scale(calc(1.08 - var(--l2) * .08)) !important; transform-origin: 60% 55% !important; }
-.tmt-stamp { position: absolute; width: clamp(120px, 22%, 190px); aspect-ratio: 1; right: 5%; top: 7%; color: var(--ivory); display: grid; place-items: center; transform: rotate(-8deg); transition: opacity .45s ease, transform .55s cubic-bezier(.2, 1.4, .4, 1); }
+.tmt-stage { position: relative; aspect-ratio: 3 / 2; width: 100%; overflow: hidden; background: #2a1c15; border-top: 8px solid var(--red); }
+.tmt-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tb-cut { --l1: clamp(0, calc((var(--p) - .26) / .2), 1); opacity: var(--l1); }
+.tb-macro { --l2: clamp(0, calc((var(--p) - .6) / .2), 1); opacity: var(--l2); }
+.tmt-stamp { position: absolute; z-index: 3; width: clamp(120px, 22%, 190px); aspect-ratio: 1; right: 5%; top: 7%; color: var(--ivory); display: grid; place-items: center; transform: rotate(-8deg); transition: opacity .45s ease, transform .55s cubic-bezier(.2, 1.4, .4, 1); }
 .tmt-stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .tmt-stamp circle { fill: none; stroke: currentColor; stroke-width: 3; }
 .tmt-stamp circle:first-of-type { fill: var(--red); stroke-width: 0; }
 .tmt-stamp text { font: 700 13px/1 var(--font-body); letter-spacing: .14em; fill: currentColor; }
-.tmt-stamp span { position: relative; font: 800 clamp(1.1rem, 2.6vw, 1.7rem)/1.05 var(--font-head); text-align: center; }
+.tmt-stamp span { position: relative; font: 800 clamp(1.1rem, 2.6vw, 1.9rem)/1.05 var(--font-head); text-align: center; }
 .scene-runway.is-live:not(.is-end) .tb-stamp { opacity: 0; transform: scale(1.7) rotate(-24deg); }
 .tmt-bite-copy { min-width: 0; }
-.tmt-beats li { font: 800 clamp(2rem, 4.4vw, 3.6rem)/1.15 var(--font-head); letter-spacing: -.015em; }
+.tmt-beats { counter-reset: tb; }
+.tmt-beats li { counter-increment: tb; display: flex; align-items: baseline; gap: .35em; font: 800 clamp(2rem, 4.4vw, 3.6rem)/1.15 var(--font-head); letter-spacing: -.015em; }
+.tmt-beats li::before { content: '0' counter(tb); font-size: .38em; color: var(--red); letter-spacing: .04em; transform: translateY(-.9em); }
 .tmt-bite .tmt-h2 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); color: #F39C91; margin-top: 18px; }
 .tmt-bite .scene-tail { color: #E9E1D3; }
 .tmt-sign { font: 800 1.6rem/1.2 var(--font-head); color: var(--ivory); }
 .tmt-sign::before { content: ''; display: block; width: 56px; height: 8px; margin: 0 auto 14px; background: var(--red); }
 .btn-light { background: var(--red); color: var(--ivory); border-color: var(--red); }
+
+/* Live scene: the photo becomes the whole frame. */
+.tmt-bite .scene-runway.is-live .scene-sticky { display: block; max-width: none; padding: 0; position: sticky; }
+.tmt-bite .scene-runway.is-live .tmt-stage { position: absolute; inset: 0; aspect-ratio: auto; border-top: 0; }
+.tmt-bite .scene-runway.is-live .tmt-stage img { transform: scale(calc(1.12 - var(--p) * .12)); transform-origin: 62% 55%; }
+.tmt-bite .scene-runway.is-live .tmt-stage::after {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(90deg, rgba(24, 23, 20, .94) 0%, rgba(24, 23, 20, .72) 30%, rgba(24, 23, 20, 0) 62%),
+              linear-gradient(0deg, rgba(24, 23, 20, .6) 0%, rgba(24, 23, 20, 0) 30%);
+}
+.tmt-bite .scene-runway.is-live .scene-sticky::after { content: ''; position: absolute; left: 0; bottom: 0; z-index: 4; height: 8px; width: calc(var(--p) * 100%); background: var(--red); }
+.tmt-bite .scene-runway.is-live .tmt-bite-copy { position: absolute; z-index: 3; left: max(var(--gutter), calc((100% - 1400px) / 2)); bottom: clamp(48px, 10vh, 120px); max-width: min(560px, 44%); }
+.tmt-bite .scene-runway.is-live .tmt-beats li { font-size: clamp(2.6rem, 5.6vw, 5rem); }
+.tmt-bite .scene-runway.is-live .tmt-stamp { width: clamp(150px, 16vw, 230px); right: 7%; top: 12%; }
 
 /* T03 proof — ivory reading block, red index numbers */
 .tmt-proof h2 { max-width: 18ch; }
@@ -162,11 +180,20 @@
   .tmt-hero .cta-row { order: 7; margin-bottom: 20px; }
   .tmt-lead { order: 8; margin: 0 !important; }
   .tmt-bite .scene-sticky { grid-template-columns: 1fr; padding: 0 0 16px; gap: 16px; align-content: start; }
-  .tmt-stage { aspect-ratio: 4 / 3; max-height: 50svh; }
+  .tmt-stage { aspect-ratio: 4 / 3; }
   .tmt-bite-copy { padding: 0 var(--gutter); }
   .tmt-beats li { font-size: clamp(1.7rem, 8vw, 2.4rem); }
   .tmt-bite .tmt-h2 { margin-top: 8px; }
   .tmt-stamp { width: 110px; }
+  /* Live on phones: photo fills the frame, words sit on a fade from the bottom. */
+  .tmt-bite .scene-runway.is-live .tmt-stage::after { background: linear-gradient(0deg, rgba(24, 23, 20, .95) 0%, rgba(24, 23, 20, .78) 34%, rgba(24, 23, 20, 0) 62%); }
+  .tmt-bite .scene-runway.is-live .tmt-stage img { object-position: 58% 52% !important; }
+  .tmt-bite .scene-runway.is-live .tmt-bite-copy { left: 0; right: 0; bottom: 28px; max-width: none; padding: 0 var(--gutter); }
+  .tmt-bite .scene-runway.is-live .tmt-beats li { font-size: clamp(2rem, 10vw, 2.8rem); }
+  .tmt-bite .scene-runway.is-live .tmt-stamp { width: 120px; right: 16px; top: 16px; }
+  /* Keep the words and the red progress bar clear of the mobile sticky buy bar. */
+  body.has-sticky .tmt-bite .scene-runway.is-live .tmt-bite-copy { bottom: calc(100px + env(safe-area-inset-bottom)); }
+  body.has-sticky .tmt-bite .scene-runway.is-live .scene-sticky::after { bottom: calc(76px + env(safe-area-inset-bottom)); }
   .brand-tmt main > section.tmt-sauce, .brand-tmt main > section.tmt-pack { grid-template-columns: 1fr; }
   .tmt-sauce-photo { min-height: 0; aspect-ratio: 4 / 3; border-right: 0; border-bottom: 10px solid var(--charcoal); }
 }

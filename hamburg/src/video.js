@@ -1,5 +1,6 @@
 // Only the mounted booth loads a clip. Poster remains usable on slow networks,
-// autoplay rejection, reduced motion and data saving. User controls are always real buttons.
+// autoplay rejection, reduced motion and data saving. Tapping the clip pauses or resumes it; the
+// real button stays in the DOM for keyboard and screen-reader users and shows only on keyboard focus.
 export function mountVideos(root) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const saveData = navigator.connection?.saveData;
@@ -53,7 +54,7 @@ export function mountVideos(root) {
       else { film.userPaused = true; pause(film); }
     };
     film.onError = () => { film.failed = true; pause(film); film.el.classList.remove('has-started'); film.button.hidden = true; };
-    film.button.addEventListener('click', film.onClick);
+    film.el.addEventListener('click', film.onClick); // the button's click bubbles here too
     film.video.addEventListener('error', film.onError);
     io.observe(film.el);
   }
@@ -66,7 +67,7 @@ export function mountVideos(root) {
     for (const film of films) {
       film.disposed = true;
       pause(film);
-      film.button.removeEventListener('click', film.onClick);
+      film.el.removeEventListener('click', film.onClick);
       film.video.removeEventListener('error', film.onError);
       film.video.removeAttribute('src');
       film.video.load();

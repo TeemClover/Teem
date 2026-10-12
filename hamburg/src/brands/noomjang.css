@@ -58,24 +58,33 @@
 .nj-facts { font-weight: 600; margin-bottom: 24px !important; padding-left: 20px; position: relative; line-height: 1.6; }
 .nj-facts::before { content: ''; position: absolute; left: 0; top: .62em; width: 10px; height: 10px; border-radius: 50%; background: var(--apricot); box-shadow: 0 0 0 2px var(--green); }
 
-/* N02 signature: inside the soft bite, on a deep green tray */
-.brand-noomjang main > section.nj-texture { padding: 0 0 clamp(64px, 8vw, 104px); background: var(--green); color: var(--on-green); }
+/* N02 signature: inside the soft bite — a large soft tray on sage. The photo eases out from the
+   tender inside to the meal at home; the three beats are tactile pills that fill green as you scroll.
+   Static/reduced motion shows the finished home plate. */
+.brand-noomjang main > section.nj-texture { padding: clamp(24px, 4vw, 48px) 0 clamp(64px, 8vw, 104px); background: var(--sage-2); color: var(--ink); }
 .nj-texture .scene-runway { max-width: none; }
-.nj-texture .scene-sticky { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; padding: 24px var(--gutter); max-width: 1400px; margin: 0 auto; }
+.nj-texture .scene-sticky { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 72px); align-items: center; align-content: center; padding: 24px var(--gutter); max-width: 1400px; margin: 0 auto; }
 .nj-frame {
-  --e: clamp(0, calc((var(--p) - .6) / .3), 1);
-  --c: clamp(0, calc((var(--p) - .22) / .26), 1);
-  position: relative; aspect-ratio: 3 / 2; width: 100%; max-height: calc(100svh - var(--head-h) - 48px); overflow: hidden;
-  clip-path: inset(calc((1 - var(--e)) * 10%) calc((1 - var(--e)) * 22%) round calc(240px - var(--e) * 200px));
-  background: var(--green-deep);
+  --c: clamp(0, calc((var(--p) - .3) / .3), 1);
+  position: relative; aspect-ratio: 4 / 3; width: 100%; max-height: calc(100svh - var(--head-h) - 64px); overflow: hidden;
+  border-radius: var(--tray) var(--tray) var(--tray) 120px;
+  border: 10px solid var(--surface);
+  box-shadow: 0 40px 70px -40px rgba(36, 64, 47, .6), 0 0 0 1px var(--rule);
+  background: var(--sage);
 }
-.nj-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(calc(1.25 - var(--e) * .25)); transform-origin: 55% 65%; }
-.nf-plate { opacity: var(--c); }
-.nj-texture .nj-h2 { color: var(--on-green); }
-.nj-texture .scene-tail .btn { background: var(--apricot); color: var(--green-deep); border-color: var(--apricot); box-shadow: 0 6px 0 -1px #C98A5E; }
-.nj-beats { counter-reset: n; }
-.nj-beats li { counter-increment: n; font: 500 clamp(1.3rem, 2.4vw, 1.9rem)/1.4 var(--font-head); padding: 8px 0 8px 48px; position: relative; }
-.nj-beats li::before { content: counter(n); position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; background: var(--apricot); color: var(--green-deep); font: 600 1rem/34px var(--font-body); text-align: center; }
+.nj-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.nf-whole { transform: scale(calc(1.12 - var(--p) * .12)); transform-origin: 50% 55%; }
+.nf-plate { opacity: var(--c); transform: scale(calc(1.18 - var(--c) * .18)); transform-origin: 66% 62%; }
+.nj-texture-copy { min-width: 0; }
+.nj-texture .nj-h2 { color: var(--green-deep); font-size: clamp(2rem, 3.6vw, 3rem); margin-top: 20px; }
+.nj-texture .scene-tail .btn { box-shadow: 0 6px 0 -1px var(--green-deep); }
+.nj-beats { counter-reset: n; display: grid; gap: 10px; }
+.nj-beats li { counter-increment: n; display: flex; align-items: center; gap: 14px; padding: 10px 22px 10px 10px; border-radius: 999px; background: var(--surface); color: var(--ink-2); font: 500 clamp(1.2rem, 2vw, 1.6rem)/1.3 var(--font-head); box-shadow: 0 2px 0 var(--rule); transition: background-color .35s ease, color .35s ease, opacity .3s ease; }
+.nj-beats li::before { content: counter(n); flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--apricot); color: var(--green-deep); font: 600 1rem/38px var(--font-body); text-align: center; }
+.scene-runway.is-live .nj-beats li { opacity: 1; }
+.scene-runway[data-beat="0"] .nj-beats li[data-b="0"],
+.scene-runway[data-beat="1"] .nj-beats li[data-b="1"],
+.scene-runway[data-beat="2"] .nj-beats li[data-b="2"] { background: var(--green); color: var(--on-green); box-shadow: 0 4px 0 var(--green-deep); }
 
 /* N03 sauce */
 .brand-noomjang main > section.nj-sauce { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 5vw, 80px); align-items: center; max-width: var(--max); margin: 0 auto; }
@@ -147,9 +156,13 @@
   .nj-hero-photo figcaption { right: 12px; bottom: 12px; font-size: .72rem; max-width: calc(100% - 96px); }
   .nj-h1 { font-size: clamp(2.2rem, 10vw, 3rem); }
   .nj-lead { font-size: 1em; }
-  .nj-texture .scene-sticky { grid-template-columns: 1fr; padding: 16px; gap: 16px; align-content: center; }
-  .nj-frame { aspect-ratio: 4 / 3; max-height: 50svh; }
-  .nj-beats li { font-size: 1.15rem; padding-top: 4px; padding-bottom: 4px; }
+  .nj-texture .scene-sticky { grid-template-columns: 1fr; padding: 12px 16px; gap: 14px; align-content: center; }
+  .nj-frame { aspect-ratio: 4 / 3; max-height: 46svh; border-width: 6px; border-radius: var(--tray) var(--tray) var(--tray) 72px; }
+  .nj-beats { gap: 8px; }
+  .nj-beats li { font-size: 1.1rem; padding: 6px 16px 6px 6px; gap: 10px; }
+  .nj-beats li::before { width: 32px; height: 32px; line-height: 32px; }
+  .nj-texture .nj-h2 { font-size: 1.6rem; margin-top: 12px; }
+  body.has-sticky .nj-texture .scene-runway.is-live .scene-sticky { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
   .brand-noomjang main > section.nj-sauce, .brand-noomjang main > section.nj-pack { grid-template-columns: 1fr; }
   .nj-sauce-photo { border-radius: 96px var(--tray) var(--tray) var(--tray); }
   .brand-noomjang main > section.nj-home, .brand-noomjang main > section.nj-craft { margin-left: 12px; margin-right: 12px; }
@@ -163,4 +176,4 @@
   .nj-hero .cta-row .btn { padding:12px 14px; white-space:nowrap; }
 }
 
-.nj-texture, .nj-craft { --focus: #F0B991; }
+.nj-craft { --focus: #F0B991; }
