@@ -60,7 +60,11 @@ line under it counts the engine files as they arrive. The status line cycles thr
 real house. Everything that moves is `transform`/`opacity` only (`tests/tour/intro.test.mjs`
 checks the keyframes), because building the house occupies the main thread; `tour.js` yields one
 frame before each heavy step so the next storey is already on its way. The intro never waits
-for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. Reduced motion
+for itself: it ends when `is-loading` leaves `<body>`, whichever path removed it. While the
+clover opens (about a second) `tour.js` holds the 3D picture and its picture uploads, because
+the opening is drawn by the GPU as well and a moving scene under it stuttered on large
+screens; scrolling ends the hold at once. The sheet with the clover-shaped opening is painted
+once (`will-change`) and only stretched. Reduced motion
 keeps the stages and the words, without movement, and fades out.
 
 **Loading order:** the Google Fonts stylesheet does not block the first paint

@@ -52,9 +52,14 @@
   loader.insertAdjacentHTML('afterbegin', '<svg class="intro-veil" aria-hidden="true"><defs><radialGradient id="intro-bg" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1d3d2c"/><stop offset=".7" stop-color="#0c1a13"/></radialGradient>'
     + `<mask id="intro-hole" maskUnits="userSpaceOnUse"><rect fill="#fff"/><g>${[0, 1, 2, 3].map(i => leaf(i, ' fill="#000"')).join('')}</g></mask></defs><rect fill="url(#intro-bg)" mask="url(#intro-hole)"/></svg>`);
   const veil = loader.firstElementChild, grad = veil.querySelector('radialGradient'), hole = veil.querySelector('mask g');
+  let fitted = '';
   function fit() {
     const L = loader.getBoundingClientRect(), C = core.getBoundingClientRect();
     const w = L.width, h = L.height, cx = C.left - L.left + C.width / 2, cy = C.top - L.top + C.height / 2, unit = C.width / 80 * 0.985;
+    // writing the same numbers again would repaint the whole sheet, on a large screen right as it starts to move
+    const now = [w, h, cx, cy, unit].map(v => v.toFixed(1)).join();
+    if (now === fitted) return;
+    fitted = now;
     for (const r of veil.querySelectorAll('rect')) { r.setAttribute('width', w); r.setAttribute('height', h); }
     const mask = veil.querySelector('mask'); mask.setAttribute('width', w); mask.setAttribute('height', h); mask.setAttribute('x', 0); mask.setAttribute('y', 0);
     grad.setAttribute('cx', w / 2); grad.setAttribute('cy', h / 2); grad.setAttribute('r', Math.hypot(w, h) / 2);
@@ -97,11 +102,12 @@
   function finish() {
     if (done) return;
     setStage(4); done = true;
+    window.__introOpening = true; // tour.js holds the picture behind the opening until it is over
     clearInterval(lines); clearInterval(tips); watch.disconnect();
     loader.classList.add('lit'); say(msg, 'ถึงบ้านแล้ว ยินดีต้อนรับ');
     setTimeout(() => {
       fit(); loader.classList.add('out');
-      setTimeout(() => { loader.classList.add('gone'); removeEventListener('resize', fit); }, calm ? 320 : 980);
+      setTimeout(() => { loader.classList.add('gone'); removeEventListener('resize', fit); window.__introOpening = false; }, calm ? 320 : 980);
     }, calm ? 0 : 320);
   }
   const watch = new MutationObserver(() => { if (!document.body.classList.contains('is-loading')) finish(); });

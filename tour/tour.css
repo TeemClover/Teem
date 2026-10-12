@@ -115,7 +115,8 @@ body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
 .loader.intro-on{background:none}
 .loader.out{pointer-events:none}
 .loader.gone{display:none}
-.intro-veil{position:absolute;inset:0;width:100%;height:100%}
+/* will-change: the sheet is painted once and the GPU only stretches it; repainting a screen-sized mask at each new scale stuttered on large displays */
+.intro-veil{position:absolute;inset:0;width:100%;height:100%;will-change:transform,opacity}
 .intro-core{position:relative;flex:none;width:var(--S);height:var(--S);font-size:calc(var(--S) / 28)}
 .intro-core>*{position:absolute}
 .intro-clover,.intro-leaf,.intro-gold{inset:0;width:100%;height:100%;overflow:visible}

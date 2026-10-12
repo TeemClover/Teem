@@ -10,7 +10,7 @@ import * as THREE from './vendor/three.module.min.js';
 import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
 import {createGovernor, updateGovernor, pixelRatio} from './quality.js';
-import {makeTextures, FONT} from './textures.js';
+import {makeTextures, sendPictures, FONT} from './textures.js';
 import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -464,12 +464,17 @@ async function boot() {
   /* ----- render loop ----- */
   const clock = new THREE.Clock(), tmp = new THREE.Vector3(), camDir = new THREE.Vector3(), towardCam = new THREE.Vector3();
   let first = true, running = true, lastShadow = -Infinity, lastShadowProgress = -1, porchY = 0;
-  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()};
+  const shadowAt = {inside: -1, door: -1, center: new THREE.Vector3()}, heldAt = {on: false, y: 0, time: 0};
   const frameStats = {calls: 0, triangles: 0};
   document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) { clock.getDelta(); requestAnimationFrame(frame); } });
 
   function frame() {
     if (!running) return;
+    // While the loading intro opens onto the house, the picture behind it is held. The opening is drawn by the GPU
+    // too, and on a large screen a moving 3D scene underneath made it stutter. Scrolling ends the hold at once.
+    if (!first && window.__introOpening && scrollY === heldAt.y && performance.now() - heldAt.time < 2000) { heldAt.on = true; requestAnimationFrame(frame); return; }
+    if (heldAt.on) { heldAt.on = false; clock.getDelta(); } // the pause is not a slow frame
+    sendPictures();
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05), t = clock.elapsedTime, still = reduced;
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
 
@@ -600,7 +605,7 @@ async function boot() {
     renderer.info.reset();
     renderer.render(scene, camera);
     frameStats.calls = renderer.info.render.calls; frameStats.triangles = renderer.info.render.triangles;
-    if (first) { first = false; finishLoading(); } else governor(rawDt);
+    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
 

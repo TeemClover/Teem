@@ -38,5 +38,14 @@ test('pictures are decoded off the main thread and reach the GPU one per frame',
   const src = await readFile(root + 'tour/textures.js', 'utf8');
   assert.match(src, /createImageBitmap\(await r\.blob\(\), BITMAP\)/);
   assert.match(src, /renderer\.initTexture\?\.\(t\)/);
-  assert.match(src, /if \(uploads\.length\) requestAnimationFrame\(pump\)/);
+  assert.match(src, /export function sendPictures\(\)/);
+  assert.match(await readFile(root + 'tour/tour.js', 'utf8'), /sendPictures\(\);\n\s+const rawDt = clock\.getDelta\(\)/, 'sent from the frame loop, so they wait when it does');
+});
+
+test('the house holds still while the loading intro opens onto it, and no longer than that', async () => {
+  const tour = await readFile(root + 'tour/tour.js', 'utf8'), intro = await readFile(root + 'tour/intro.js', 'utf8'), css = await readFile(root + 'tour/tour.css', 'utf8');
+  assert.match(tour, /window\.__introOpening && scrollY === heldAt\.y && performance\.now\(\) - heldAt\.time < 2000/);
+  assert.match(intro, /window\.__introOpening = true;/);
+  assert.match(intro, /classList\.add\('gone'\);[^\n]*window\.__introOpening = false;/);
+  assert.match(css, /\.intro-veil\{[^}]*will-change:transform,opacity\}/);
 });
