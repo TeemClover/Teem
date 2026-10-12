@@ -195,7 +195,8 @@ body:not(.is-loading) .loader:not(.intro-on){opacity:0;visibility:hidden}
 .lucky h2{font:800 28px/1.3 var(--display);margin:4px 0 12px}
 .lucky-message{font-size:19px;line-height:1.6;margin:0 0 8px;min-height:3.2em}
 .lucky .actions{justify-content:center}
-.lucky.golden .actions a,.lucky.golden #lucky-again{display:none}
+.lucky.golden .actions a{display:none}
+.lucky-prize{margin:0 0 10px;font-weight:700;color:var(--clover-deep)}
 .lucky-clover{display:block;width:76px;height:76px;margin:0 auto 10px;fill:var(--clover);animation:spin 14s linear infinite}
 .lucky.golden{background:linear-gradient(160deg,#fff8dc,#f3d27a)}
 @media (prefers-reduced-motion:reduce){.lucky-clover,.scroll-cue i::after{animation:none}}

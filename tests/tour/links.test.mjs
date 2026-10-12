@@ -83,7 +83,10 @@ test('the kitchen wall dishes are pictures, and the prize card points to the odd
   const house = await readFile(root + 'tour/house.js', 'utf8'), tour = await readFile(root + 'tour/tour.js', 'utf8'), css = await readFile(root + 'tour/tour.css', 'utf8');
   assert.doesNotMatch(house, /hot\(f, id\)|'dish-/);
   assert.match(tour, /const PRIZE = 'dungeon';/);
-  assert.match(tour, /classList\.contains\('golden'\)\) goToPrize\(\)/, 'the prize card walks the visitor to the computer room');
+  assert.match(tour, /\$\('#lucky-go'\)\?\.addEventListener\('click', goToPrize\)/, 'the prize card walks the visitor to the computer room');
+  assert.match(tour, /\$\('#lucky-message'\)\.textContent = drawLucky\(\);/, 'with or without the prize, the card carries a line to keep');
+  assert.match(html, /id="lucky-prize" class="lucky-prize" style="display:none">[^<]*คอมชั้น 2/);
+  assert.doesNotMatch(tour, /รางวัลของคุณ|รับรางวัล'/, 'the prize computer reads the same for everyone');
   assert.match(html.split('data-scene="classroom"')[1].split('</section>')[0], /data-item="dungeon"/, 'the prize is a computer in the classroom');
-  assert.match(css, /\.lucky\.golden \.actions a,\.lucky\.golden #lucky-again\{display:none\}/);
+  assert.match(css, /\.lucky\.golden \.actions a\{display:none\}/);
 });
