@@ -49,10 +49,18 @@ const LUCKY = [
   'ความอยากรู้พาคุณมาถึงที่นี่',
   'เรื่องดี ๆ เริ่มจากปุ่มเล็ก ๆ ปุ่มเดียว',
 ];
-// Four clovers earn a prize, and the card only says where it is: the classroom computer that is unlike the
-// other three. No link on purpose; walking up and opening it is the last step of the hunt.
+// Four clovers earn a prize: the classroom computer that is unlike the other three. Anyone can open it; the
+// card for a finished hunt says it is theirs and its button walks them to that room from anywhere in the
+// house. Opening the computer is still theirs to do.
 const PRIZE = 'dungeon';
 const allFound = () => found.size === CLOVER_ROOMS.length;
+function goToPrize() {
+  const room = itemLink(PRIZE)?.closest('section'); if (!room) return;
+  const top = room.offsetTop + room.offsetHeight / 2 - innerHeight / 2; // where the camera rests on that room
+  if (lenis) lenis.scrollTo(top, {duration: 1.8}); else scrollTo({top, behavior: reduced ? 'auto' : 'smooth'});
+  scene3d.glow?.(PRIZE, true); setTimeout(() => scene3d.glow?.(PRIZE, false), 9000);
+  setTimeout(() => showTip('แตะคอมเครื่องที่ไม่เหมือนใคร 🎁', innerWidth / 2, 90, 5000), reduced ? 0 : 1900);
+}
 let lastLucky = -1;
 const drawLucky = () => { let i; do { i = Math.floor(Math.random() * LUCKY.length); } while (i === lastLucky); lastLucky = i; return LUCKY[i]; };
 function openLucky() {
@@ -61,10 +69,11 @@ function openLucky() {
   $('#lucky-kicker').textContent = all ? 'ครบ 4 ใบแล้ว 🍀' : `เจอแล้ว ${found.size}/4 ใบ`;
   $('#lucky-title').textContent = all ? 'คุณได้รางวัล' : 'วันนี้คุณโชคดี';
   $('#lucky-message').textContent = all ? 'ขึ้นไปห้องคอมชั้น 2 เปิดเครื่องที่ไม่เหมือนใคร' : drawLucky();
-  $('#lucky-close').textContent = all ? 'ไปหาเลย' : 'เก็บไว้ในใจ';
+  $('#lucky-close').textContent = all ? 'พาไปรับรางวัล' : 'เก็บไว้ในใจ';
   if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute('open', '');
 }
 $('#open-lucky')?.addEventListener('click', openLucky);
+$('#lucky-close')?.addEventListener('click', () => { if ($('#lucky').classList.contains('golden')) goToPrize(); });
 $('#lucky-again')?.addEventListener('click', () => { $('#lucky-message').textContent = drawLucky(); });
 const roomName = id => ({living: 'ห้องนั่งเล่น', kitchen: 'ห้องครัว', classroom: 'ห้องเรียน', office: 'ห้องทำงาน'})[id] || 'บ้าน';
 

@@ -135,10 +135,11 @@ shadow-map texels in light space, so shadow edges do not shimmer while scrolling
 
 **Lucky quest:** one four-leaf clover hides in each of the four rooms.
 Tap it in 3D, or use the room card's hint button (press once for the hint, again to collect;
-keyboard accessible). Four clovers open a prize card. It carries no link: it only says to go
-up to the computer room and open the machine that is unlike the others. That machine is the
-Dungeon laptop (`PRIZE` in `tour.js`); once all four are found its panel reads "รางวัลของคุณ"
-and its button "รับรางวัล". The prize itself is whatever that item links to.
+keyboard accessible). Four clovers open a prize card: the prize is the computer upstairs that
+is unlike the others, the Dungeon laptop (`PRIZE` in `tour.js`). Anyone can open that
+computer; finishing the hunt is what tells you it is yours. The card's button scrolls to the
+classroom from anywhere in the house and the visitor opens the computer themselves; once all
+four are found its panel reads "รางวัลของคุณ" and its button "รับรางวัล".
 Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), never sent anywhere.
 
 ## Rules this page keeps
