@@ -4,6 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111a16">
+  <script>
+    // Choose the layout before the first paint, including on a cold connection.
+    document.documentElement.classList.add(matchMedia('(prefers-reduced-motion: reduce)').matches?'static-mode':'pending-3d');
+    addEventListener('error',event=>{
+      if(event.target.id==='clover-app'){
+        document.documentElement.classList.remove('pending-3d');
+        document.documentElement.classList.add('static-mode','script-unavailable');
+        const status=document.querySelector('#form-status');
+        if(status)status.textContent='โหลดแบบตอบรับไม่สำเร็จ ลองรีเฟรชหน้านี้อีกครั้งนะ';
+      }
+    },true);
+  </script>
+  <style>.pending-3d .chapter-image,.pending-3d .still-memories{display:none}</style>
   <link rel="canonical" href="https://www.myclover.com/clover20/">
   <meta name="description" content="20 ปีแห่งความหวังดีที่ส่งต่อกัน กลับมาพบเพื่อนเก่า กินข้าว ฟังเพลง และเล่าเรื่องชีวิตให้กันฟัง · 20 ตุลาคม 2026 เวลา 18:00 น.">
   <meta property="og:type" content="website">
@@ -26,8 +39,8 @@
   <title>Clover 20 — กลับบ้านมาเจอกัน</title>
   <link rel="icon" type="image/png" href="./assets/clover-logo.png">
   <link rel="preload" href="./assets/fonts/Kanit-Light.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./style.css?v=20261016-iphone1">
+  <script id="clover-app" type="module" src="./app.js?v=20261016-iphone1"></script>
 </head>
 <body>
   <a class="skip-link" href="#invitation">ไปยังรายละเอียดและลงทะเบียน</a>
@@ -36,7 +49,7 @@
   <header class="header">
     <a class="brand" href="#beginning" aria-label="Clover 20 กลับสู่จุดเริ่มต้น"><img src="./assets/clover-logo.png" width="38" height="41" alt=""><span>CLOVER GROUP<span class="brand-sub">20 YEARS TOGETHER</span></span></a>
     <div class="header-actions">
-      <a class="header-rsvp" href="#invitation">กลับมาเจอกัน <span aria-hidden="true">↗</span></a>
+      <a class="header-rsvp" href="#invitation">กลับมาเจอกัน <span aria-hidden="true"><svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
     </div>
   </header>
   <main>
@@ -46,9 +59,9 @@
           <p class="eyebrow">CLOVER / 20 YEARS OF GIVING</p>
           <h1>โชคดี<br>ที่เราเคย<br><em>ได้เจอกัน</em></h1>
           <p class="chapter-description">20 ปีแห่งความหวังดีที่ส่งต่อกัน<br>ขอบคุณทุกการพบเจอ ที่ทำให้เราเติบโต</p>
+          <a class="scroll-invitation" href="#a-table"><span class="scroll-line" aria-hidden="true"></span>เลื่อนลง แล้วค่อย ๆ นึกถึงวันนั้น <span aria-hidden="true">↓</span></a>
         </div>
         <img class="chapter-image" src="./assets/photos/together.webp" alt="เพื่อน Clover ยิ้มและโบกมือด้วยกัน" width="1440" height="809">
-        <a class="scroll-invitation" href="#a-table"><span class="scroll-line" aria-hidden="true"></span>เลื่อนลง แล้วค่อย ๆ นึกถึงวันนั้น <span aria-hidden="true">↓</span></a>
       </section>
       <section class="chapter" id="a-table" data-scene="1" data-label="โต๊ะตัวแรก">
         <div class="chapter-copy">
@@ -140,7 +153,7 @@
             <p class="form-note">ชื่อและข้อความนี้ใช้สำหรับการร่วมงานครั้งนี้</p>
             <div class="honey" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
             <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-            <button class="submit" type="submit"><span>แล้วเจอกัน</span><span aria-hidden="true">↗</span></button>
+            <button class="submit" type="submit" disabled><span>แล้วเจอกัน</span><span aria-hidden="true">↗</span></button>
           </form>
           <div class="rsvp-success" id="rsvp-success" hidden tabindex="-1"><img class="success-logo" src="./assets/clover-logo.png" alt="" width="58" height="62"><h3>ดีใจที่จะได้เจอกัน</h3><p>เราได้รับการตอบรับแล้ว<br>แล้วพบกันวันที่ 20 ตุลาคมนะ</p><a href="./clover20.ics" download="Clover-Welcome-Home.ics">เก็บวันของเราไว้ในปฏิทิน ↗</a></div>
         </div>

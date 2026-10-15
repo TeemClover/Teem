@@ -110,7 +110,8 @@ async function setEnhanced() {
     measure();
     restoreInitialAnchor();
     cancelAnimationFrame(frame);
-    frame=requestAnimationFrame(update);
+    // Set the caption and render in the same task as the layout switch.
+    update(performance.now());
   } catch(error) {
     console.warn('The memory journey is available in still-image mode.',error);
     setStatic();
@@ -156,3 +157,4 @@ form.addEventListener('submit',async e=>{
     status.textContent=error.name==='AbortError'?'การเชื่อมต่อใช้เวลานาน ลองส่งอีกครั้งได้ ข้อมูลที่กรอกยังอยู่ครบ':error.message==='Failed to fetch'?'เชื่อมต่อไม่ได้ในขณะนี้ ลองอีกครั้งเมื่ออินเทอร์เน็ตพร้อมนะ':error.message;
   }finally{clearTimeout(timeout);submit.disabled=false;submit.firstElementChild.textContent='แล้วเจอกัน';}
 });
+form.querySelector('button[type="submit"]').disabled=false;
