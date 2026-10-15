@@ -8,7 +8,7 @@ export const addDays = (s,n) => new Date(Date.parse(s)+n*DAY).toISOString().slic
 export const daysBetween = (a,b) => Math.round((Date.parse(b)-Date.parse(a))/DAY);
 export const todayBangkok = (now=new Date()) => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
 export function blankState(initialStart='') {
-  return {cycleLength:28,periodLength:5,periods:initialStart?[{start:initialStart,end:null}]:[],notes:{},notifications:{enabled:false,hour:8,detail:false},revision:0};
+  return {cycleLength:28,periodLength:5,periods:initialStart?[{start:initialStart,end:null}]:[],notes:{},revision:0};
 }
 export function validateState(value,today=todayBangkok()) {
   const bad=()=>{throw Object.assign(new Error('ข้อมูลไม่ถูกต้อง กรุณาตรวจวันที่และค่าที่บันทึก'),{status:400});};
@@ -27,9 +27,7 @@ export function validateState(value,today=todayBangkok()) {
     if(!validDate(date)||date>today||!n||typeof n.text!=='string'||n.text.length>1000||!['none','light','medium','heavy'].includes(n.flow)||!Number.isInteger(n.pain)||n.pain<0||n.pain>3)bad();
     notes[date]={text:n.text,flow:n.flow,pain:n.pain};
   }
-  const n=value.notifications;
-  if(!n||typeof n.enabled!=='boolean'||typeof n.detail!=='boolean'||!Number.isInteger(n.hour)||n.hour<0||n.hour>23)bad();
-  return {cycleLength:value.cycleLength,periodLength:value.periodLength,periods,notes,notifications:{enabled:n.enabled,hour:n.hour,detail:n.detail},revision:value.revision};
+  return {cycleLength:value.cycleLength,periodLength:value.periodLength,periods,notes,revision:value.revision};
 }
 export function estimate(state,date=todayBangkok()) {
   const periods=[...state.periods].sort((a,b)=>a.start.localeCompare(b.start));
@@ -60,18 +58,4 @@ export function calendarDay(state,date,today=todayBangkok()) {
     if(daysBetween(start,date)<state.periodLength)return {...result,kind:'predicted',label:'ประจำเดือนรอบถัดไป (คาดการณ์)',estimated:true};
   }
   return result;
-}
-export function reminders(state,date) {
-  if(!state.notifications.enabled||!state.periods.length)return [];
-  const e=estimate(state,date),out=[];
-  const push=(type,text)=>out.push({key:`${e.start}:${type}:${date}`,type,text});
-  if(e.regular){
-    if(date===addDays(e.fertileStart,-1))push('fertile-soon','พรุ่งนี้เข้าสู่ช่วงที่โอกาสตั้งครรภ์สูงขึ้นตามปฏิทิน');
-    if(date===e.fertileStart)push('fertile','เริ่มช่วงที่โอกาสตั้งครรภ์สูงขึ้นตามปฏิทิน');
-    if(date===addDays(e.ovulation,-2))push('ovulation','เข้าสู่ช่วงประมาณการไข่ตก (±2 วัน) ไม่ใช่การยืนยันไข่ตก');
-  }
-  const remaining=daysBetween(date,e.next);
-  if([3,1,0].includes(remaining))push('period',remaining?`ประจำเดือนอาจมาในอีก ${remaining} วัน`:'วันนี้เป็นวันที่คาดว่าประจำเดือนจะมา');
-  if(remaining===-3)push('late','เลยวันคาดการณ์มา 3 วันแล้ว หากมาแล้วให้บันทึกรอบใหม่');
-  return out;
 }

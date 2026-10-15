@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {blankState,validateState,estimate,calendarDay,reminders,addDays,todayBangkok,validDate} from '../../eggcycle/cycle.js';
+import {blankState,validateState,estimate,calendarDay,addDays,todayBangkok,validDate} from '../../eggcycle/cycle.js';
 const start='2025-02-03';
 test('28-day arithmetic: day 14, days 8–19, next period and ±2 estimate',()=>{
   const s=blankState(start),e=estimate(s,start);
@@ -23,7 +23,6 @@ test('rejects future, duplicate and overlapping records; strips unknown fields',
   const s=blankState(start);assert.deepEqual(validateState({...s,secret:'ignored'},'2025-02-28'),s);
   for(const changed of [{...s,periods:[{start:'2025-03-01',end:null}]},{...s,cycleLength:0},{...s,periods:[...s.periods,...s.periods]},{...s,periods:[{start,end:'2025-02-10'},{start:'2025-02-09',end:null}]}])assert.throws(()=>validateState(changed,'2025-02-28'));
 });
-test('reminders are opt in, dated from actual start, with no safe-day messages',()=>{
-  const s=blankState(start);assert.equal(reminders(s,'2025-02-09').length,0);s.notifications.enabled=true;
-  assert.equal(reminders(s,'2025-02-09')[0].type,'fertile-soon');assert.equal(reminders(s,'2025-02-14')[0].type,'ovulation');assert.equal(reminders(s,'2025-02-28')[0].type,'period');assert.equal(reminders(s,'2025-03-06')[0].type,'late');assert.equal(reminders(s,'2025-04-03').length,0);
+test('legacy notification settings are ignored when validating existing records',()=>{
+  const s=blankState(start);assert.deepEqual(validateState({...s,notifications:{enabled:true,hour:8,detail:true}},'2025-02-28'),s);
 });

@@ -5,26 +5,24 @@ Private mobile web app at `/eggcycle/`, installable on the home screen. Reuses t
 ## Run and verify
 
 ```sh
-node --test --experimental-test-module-mocks tests/eggcycle/*.test.mjs
+node --test tests/eggcycle/*.test.mjs
 node tests/eggcycle/preview.mjs
 ```
 
-Preview: `http://127.0.0.1:4197/eggcycle/`, password `LOCAL-DEMO`. Loopback only, memory storage, no actual Telegram calls. Real server requires the existing root package dependencies.
+Preview: `http://127.0.0.1:4197/eggcycle/`, password `LOCAL-DEMO`. Loopback only, memory storage, no external calls. Real server requires the existing root package dependencies.
 
 ## Production environment
 
-Reuse `DATABASE_URL` and `CRON_SECRET`. Password precedence: `EGGCYCLE_ADMIN_KEY`, `BACKOFFICE_ADMIN_KEY`, `MEDIRAL_ADMIN_KEY`, `MEET_ADMIN_KEY`. The first configured key wins; there is no built-in fallback password. Eggcycle uses its own signed HttpOnly, Secure, SameSite=Strict session scoped to its API, lasting 30 days. Changing the chosen password invalidates sessions. Logout clears this browser's cookie; it does not revoke a copied cookie on another device.
-
-Telegram precedence: dedicated `EGGCYCLE_TELEGRAM_BOT_TOKEN` / `EGGCYCLE_TELEGRAM_CHAT_ID`, then existing `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`. Set `EGGCYCLE_APP_URL` to the HTTPS production URL if different from `https://www.myclover.com/eggcycle/`. Existing recipient configuration is retained, but sending and notification controls are currently paused. Saved notification preferences are not erased and content defaults generic. No webhook is needed and the existing bot's webhook is never changed. Previews cannot send to Telegram.
+Reuse `DATABASE_URL`. Password precedence: `EGGCYCLE_ADMIN_KEY`, `BACKOFFICE_ADMIN_KEY`, `MEDIRAL_ADMIN_KEY`, `MEET_ADMIN_KEY`. The first configured key wins; there is no built-in fallback password. Eggcycle uses its own signed HttpOnly, Secure, SameSite=Strict session scoped to its API, lasting 30 days. Changing the chosen password invalidates sessions. Logout clears this browser's cookie; it does not revoke a copied cookie on another device.
 
 Optional `EGGCYCLE_INITIAL_PERIOD_START` is an ISO date for the first stored record. Set privately in the deployment environment; never commit personal dates. It only applies if the state row does not exist. Alternatively use the first-run form (defaults to yesterday in Bangkok). Default cycle 28 days, duration 5 days; both editable. Dates and notes remain in private database rows, never source files.
 
-Automatic Telegram reminders and the manual test-send endpoint are paused for resource conservation (2026-10-15). There is no Eggcycle cron. The old cron endpoint returns a disabled result before accessing storage, even with valid scheduler credentials and an enabled saved preference. Saved notification settings and delivery history are preserved; viewing, editing and exporting the private calendar still work. Re-enabling requires an explicit reviewed code/config deployment; do not create an external scheduler as a workaround.
+The app is opened manually. Eggcycle has no scheduled checks, Telegram integration, test-message action or notification delivery. Existing `/meet` Telegram credentials are unchanged and are not read by Eggcycle. Old notification settings in stored records are ignored and stripped on the next save.
 
-The three namespaced tables are created additively by `api/_lib/eggcycle/store.js`: state, login rate limits, notification delivery records. No existing app tables are altered. State writes compare revisions to prevent silent overwrites across devices. Private API responses are no-store. The database is the source of truth; it needs the same backup protection as other private app records. Generic app assets contain no personal data.
+Two namespaced tables are created additively by `api/_lib/eggcycle/store.js`: state and login rate limits. No existing app tables are altered. Any delivery table from an earlier version is left intact but unused. State writes compare revisions to prevent silent overwrites across devices. Private API responses are no-store. Dates and notes remain in the existing database; removing notifications does not reset records.
 
 ## Calendar interpretation
 
 Period start/end records are actual observations. Unrecorded period duration, next period and ovulation are estimates. Day 1 is the period start; next start is start + configured cycle length; ovulation point is cycle day (length − 14), shown with a ±2-day illustration, not a confidence interval or proven personal error bound. For configured 26–32-day cycles with recent recorded intervals in that range, days 8–19 are marked higher pregnancy likelihood following the CDC Standard Days calendar window. Other days are labelled lower likelihood but still possible, never safe to have unprotected sex. Out-of-range cycles and overdue unconfirmed cycles do not receive lower-likelihood labels. Future expected periods use dotted outlines; the app never silently records a new cycle.
 
-Sources: [CDC Standard Days Method](https://www.cdc.gov/contraception/hcp/usspr/standard-days-method.html), [NHS natural family planning](https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/), [Telegram Bot API](https://core.telegram.org/bots/api#sendmessage), [Vercel cron management](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
+Sources: [CDC Standard Days Method](https://www.cdc.gov/contraception/hcp/usspr/standard-days-method.html), [NHS natural family planning](https://www.nhs.uk/contraception/methods-of-contraception/natural-family-planning/).

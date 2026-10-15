@@ -1,4 +1,4 @@
-import {blankState,addDays,todayBangkok,daysBetween,estimate,calendarDay} from './cycle.js';
+import {addDays,todayBangkok,daysBetween,estimate,calendarDay} from './cycle.js';
 const $=id=>document.getElementById(id);
 let state,meta,today=todayBangkok(),selected=today,month=today.slice(0,7),toastTimer;
 const fmt=(d,year=false)=>new Intl.DateTimeFormat('th-TH',{day:'numeric',month:'short',...(year?{year:'numeric'}:{}),timeZone:'UTC'}).format(new Date(d));
@@ -11,7 +11,7 @@ async function api(action,data){
 }
 function lock(){state=null;meta=null;$('app').hidden=true;$('login').hidden=false;$('log-dialog').close();$('password').value='';for(const id of ['history-list','history-summary','calendar','selected-day'])$(id).replaceChildren();$('log-note').value='';}
 async function unlock(){meta=await api('state');state=meta.state;today=meta.today;selected=today;month=today.slice(0,7);$('login').hidden=true;$('app').hidden=false;render();}
-function controlsBusy(form,busy){for(const b of form.querySelectorAll('button'))b.disabled=busy||(b.id==='test-telegram'&&!meta?.notificationsScheduled);}
+function controlsBusy(form,busy){for(const b of form.querySelectorAll('button'))b.disabled=busy;}
 async function commit(next){
   try{const result=await api('save',next);state=result.state;render();}
   catch(e){if(e.status===409){await unlock();toast('มีการแก้ไขจากอีกเครื่อง โหลดข้อมูลล่าสุดแล้ว กรุณาบันทึกอีกครั้ง');}throw e;}
@@ -66,11 +66,7 @@ function renderHistory(){
   for(const [date,n] of notes){const card=document.createElement('article');card.className='card history-item';const h=document.createElement('h2');h.textContent=fmt(date,true);const p=document.createElement('p');p.textContent=`ปวด ${n.pain}/3 · ${n.text||'บันทึกอาการ'}`;const b=document.createElement('button');b.className='text-button';b.textContent='แก้ไขบันทึก';b.onclick=()=>openLog(date);card.append(h,p,b);list.append(card);}
 }
 function renderSettings(){
-  $('cycle-length').value=state.cycleLength;$('period-length').value=state.periodLength;$('notify-enabled').checked=state.notifications.enabled;$('notify-hour').value=state.notifications.hour;$('notify-detail').checked=state.notifications.detail;
-  for(const id of ['notify-enabled','notify-hour','notify-detail'])$(id).disabled=!meta.notificationsScheduled;
-  $('telegram-status').textContent=!meta.notificationsScheduled?'พักการแจ้งเตือนทั้งหมดเพื่อประหยัดทรัพยากร · เก็บค่าที่เคยตั้งไว้ให้แล้ว':meta.telegramConfigured?'เชื่อมค่าบอตจากระบบแล้ว · กดทดสอบเพื่อตรวจการส่งจริง':'ยังไม่พบค่าบอตและห้องปลายทางในระบบ กรุณาตั้งค่า env ก่อน';
-  $('test-telegram').disabled=!meta.notificationsScheduled||!meta.telegramConfigured;
-  const d=meta.delivery;$('delivery-status').textContent=d?.status==='sent'?`ส่งสำเร็จล่าสุด: ${new Intl.DateTimeFormat('th-TH',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Bangkok'}).format(new Date(d.sent_at))}`:d?.error_code?'การส่งล่าสุดไม่สำเร็จ · ขณะนี้หยุดการส่งซ้ำแล้ว':'ยังไม่มีประวัติส่งแจ้งเตือน';
+  $('cycle-length').value=state.cycleLength;$('period-length').value=state.periodLength;
 }
 let editingStart=null;
 function openLog(date){
@@ -100,9 +96,7 @@ $('log-form').onsubmit=async e=>{
   }catch(e){$('log-error').textContent=e.message;}finally{controlsBusy(e.target,false);}
 };
 $('delete-note').onclick=async()=>{if(!confirm('ลบอาการและข้อความของวันนี้? วันที่เริ่มและสิ้นสุดรอบยังคงอยู่'))return;try{const next=clone();delete next.notes[$('log-date').value];await commit(next);$('log-dialog').close();toast('ลบบันทึกอาการแล้ว');}catch(e){toast(e.message);}};
-$('settings-form').onsubmit=async e=>{e.preventDefault();controlsBusy(e.target,true);try{const next=clone();next.cycleLength=Number($('cycle-length').value);next.periodLength=Number($('period-length').value);next.notifications={enabled:$('notify-enabled').checked,hour:Number($('notify-hour').value),detail:$('notify-detail').checked};if(!meta.notificationsScheduled)next.notifications=structuredClone(state.notifications);if(meta.notificationsScheduled&&next.notifications.enabled&&!meta.telegramConfigured)throw new Error('กรุณาตั้งค่า Telegram ในระบบก่อนเปิดแจ้งเตือน');await commit(next);toast('บันทึกการตั้งค่าแล้ว');}catch(e){toast(e.message);}finally{controlsBusy(e.target,false);}};
-$('test-telegram').onclick=async()=>{const b=$('test-telegram');b.disabled=true;try{await api('test',{});toast('ส่งข้อความทดสอบเข้า Telegram แล้ว');}catch(e){toast(e.message);}finally{b.disabled=false;}};
-for(let h=0;h<24;h++){const o=document.createElement('option');o.value=h;o.textContent=`${String(h).padStart(2,'0')}:00 น.`;$('notify-hour').append(o);}
+$('settings-form').onsubmit=async e=>{e.preventDefault();controlsBusy(e.target,true);try{const next=clone();next.cycleLength=Number($('cycle-length').value);next.periodLength=Number($('period-length').value);await commit(next);toast('บันทึกการตั้งค่าแล้ว');}catch(e){toast(e.message);}finally{controlsBusy(e.target,false);}};
 function shiftMonth(n){const d=new Date(month+'-01');d.setUTCMonth(d.getUTCMonth()+n);month=d.toISOString().slice(0,7);renderCalendar();}
 $('prev-month').onclick=()=>shiftMonth(-1);$('next-month').onclick=()=>shiftMonth(1);$('calendar-today').onclick=()=>{month=today.slice(0,7);selected=today;renderCalendar();};
 for(const b of document.querySelectorAll('[data-view]'))b.onclick=()=>{for(const name of ['home','history','settings'])$(name+'-view').hidden=name!==b.dataset.view;for(const x of document.querySelectorAll('[data-view]'))x.classList.toggle('active',x===b);scrollTo({top:0,behavior:'instant'});};
