@@ -49,3 +49,11 @@ The opening is a GPU-animated field of four heart-shaped leaves, with the title 
 ## Revision 3
 
 The opening now moves through 1 → 2 → 4 → 8 peer circles in three dimensions, with an actual camera pullback and a final particle Clover. The archive expands from 14 to 45 photographs. Chapter photographs reveal in staggered scroll intervals, with a separate stream of softer memories that appear and disappear as the visitor continues or reverses the journey.
+
+## Link preview
+
+The opening now reads “20 ปีแห่งความหวังดีที่ส่งต่อกัน / ขอบคุณทุกการพบเจอ ที่ทำให้เราเติบโต”.
+
+The approved 20th-anniversary poster is retained as `assets/clover20-poster.jpg`. `assets/clover20-share-v1.jpg` is a 1200 × 1200 JPEG that reframes its original numeral and photographs with the official symbol and clear invitation text. It remains recognizable at a small square chat-thumbnail size. Recreate it with `node tools/clover20/prepare-share.cjs` and `sharp` available in the tool environment. No faces were generated or reconstructed.
+
+The initial HTML includes the title, description, image URL, type, dimensions and alternative text; no JavaScript is required for crawlers. The image uses the public repository's immutable asset commit, so deleting a development branch or preview deployment cannot break the image URL. The website itself still needs a public URL that crawlers can read without logging in. A Vercel-protected preview cannot produce a LINE link preview until the page is publicly published. LINE rendering has not been verified inside the native LINE app. See [LINE's URL-preview documentation](https://developers.line.biz/en/faq/#how-are-the-url-previews-generated).
