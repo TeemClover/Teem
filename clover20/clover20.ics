@@ -1,0 +1,19 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Clover//Welcome Home 20//TH
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:clover-welcome-home-20261020@myclover.com
+DTSTAMP:20261016T000000Z
+DTSTART:20261020T110000Z
+DTEND:20261020T170000Z
+SUMMARY:Clover 20 — Welcome Home กลับบ้านมาเจอ
+ กัน
+DESCRIPTION:เปิดบ้านต้อนรับ 18:00 น. เ
+ ริ่มกิจกรรม 18:30 น.\nสถานที่จะ
+ แจ้งให้ทราบภายหลัง\nกลับม
+ ากินข้าว ฟังเพลง และเล่าเ
+ รื่องชีวิตให้กันฟัง
+STATUS:TENTATIVE
+END:VEVENT
+END:VCALENDAR

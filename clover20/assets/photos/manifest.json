@@ -1,0 +1,163 @@
+[
+  {
+    "id": "table",
+    "src": "./assets/photos/table.webp",
+    "caption": "ความโชคดีเริ่มจากบทสนทนา",
+    "width": 1440,
+    "height": 736,
+    "source": "Screenshot 2026-10-15 at 18.12.39.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1760
+    ]
+  },
+  {
+    "id": "hands",
+    "src": "./assets/photos/hands.webp",
+    "caption": "ส่งต่อความหวังดี",
+    "width": 1440,
+    "height": 781,
+    "source": "Screenshot 2026-10-15 at 18.12.34.jpg",
+    "crop": [
+      200,
+      80,
+      3244,
+      1760
+    ]
+  },
+  {
+    "id": "book",
+    "src": "./assets/photos/book.webp",
+    "caption": "สิ่งที่เราได้เรียนรู้",
+    "width": 1440,
+    "height": 736,
+    "source": "Screenshot 2026-10-15 at 18.12.17.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1760
+    ]
+  },
+  {
+    "id": "meeting",
+    "src": "./assets/photos/meeting.webp",
+    "caption": "ได้รู้จักคนที่พร้อมเติบโตไปด้วยกัน",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.29.14.jpg",
+    "crop": null
+  },
+  {
+    "id": "stage",
+    "src": "./assets/photos/stage.webp",
+    "caption": "จากห้องเล็ก ๆ สู่เวทีที่เราเคยยืนด้วยกัน",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.11.16.jpg",
+    "crop": null
+  },
+  {
+    "id": "hall-empty",
+    "src": "./assets/photos/hall-empty.webp",
+    "caption": "เก้าอี้ที่เคยว่างเปล่า",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.18.24.jpg",
+    "crop": null
+  },
+  {
+    "id": "hall",
+    "src": "./assets/photos/hall.webp",
+    "caption": "วันที่ฮอลใหญ่เต็มไปด้วยความหวัง",
+    "width": 1440,
+    "height": 852,
+    "source": "Screenshot 2026-10-15 at 18.18.33.jpg",
+    "crop": [
+      420,
+      0,
+      3024,
+      1790
+    ]
+  },
+  {
+    "id": "crowd",
+    "src": "./assets/photos/crowd.webp",
+    "caption": "ความทรงจำของผู้คนมากมาย",
+    "width": 1440,
+    "height": 682,
+    "source": "Screenshot 2026-10-15 at 18.17.41.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1630
+    ]
+  },
+  {
+    "id": "together",
+    "src": "./assets/photos/together.webp",
+    "caption": "รอยยิ้มที่ยังจำได้",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.11.07.jpg",
+    "crop": null
+  },
+  {
+    "id": "travel",
+    "src": "./assets/photos/travel.webp",
+    "caption": "โลกกว้างที่เราเคยออกไปเห็นด้วยกัน",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.26.33.jpg",
+    "crop": null
+  },
+  {
+    "id": "bridge",
+    "src": "./assets/photos/bridge.webp",
+    "caption": "เส้นทางที่มีเพื่อนร่วมเดิน",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.25.49.jpg",
+    "crop": null
+  },
+  {
+    "id": "friends",
+    "src": "./assets/photos/friends.webp",
+    "caption": "เติบโตไปในเส้นทางของตัวเอง",
+    "width": 1440,
+    "height": 648,
+    "source": "Screenshot 2026-10-15 at 18.16.29.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1550
+    ]
+  },
+  {
+    "id": "celebrate",
+    "src": "./assets/photos/celebrate.webp",
+    "caption": "ความสุขเล็ก ๆ ที่เราเคยแบ่งปัน",
+    "width": 1440,
+    "height": 809,
+    "source": "Screenshot 2026-10-15 at 18.29.25.jpg",
+    "crop": null
+  },
+  {
+    "id": "home",
+    "src": "./assets/photos/home.webp",
+    "caption": "กลับมาพบกันอีกครั้ง",
+    "width": 1440,
+    "height": 772,
+    "source": "Screenshot 2026-10-15 at 18.30.19.jpg",
+    "crop": [
+      0,
+      0,
+      3300,
+      1770
+    ]
+  }
+]
