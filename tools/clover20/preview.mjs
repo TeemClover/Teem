@@ -10,7 +10,7 @@ const port=Number(process.env.CLOVER20_PREVIEW_PORT||4178);
 const storePath=process.env.CLOVER20_PREVIEW_STORE||`/private/tmp/clover20-preview-${process.pid}/rsvp.json`;
 const store=createFileStore(storePath);
 const handler=createRegistrationHandler({getStore:async()=>store});
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.webp':'image/webp','.ttf':'font/ttf','.ics':'text/calendar; charset=utf-8'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.ttf':'font/ttf','.ics':'text/calendar; charset=utf-8'};
 const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');

@@ -1,6 +1,7 @@
 import * as T from './vendor/three.module.min.js';
 import { RoomEnvironment } from './vendor/RoomEnvironment.js';
 import { RoundedBoxGeometry } from './vendor/RoundedBoxGeometry.js';
+import { createCloverParticles } from './clover-particles.js';
 
 const GOLD=0xd9b678, GREEN=0x6f8656, DARK=0x15231c, CREAM=0xe6dfc4;
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -12,7 +13,7 @@ const metal=(color=GOLD,roughness=.28)=>new T.MeshStandardMaterial({color,metaln
 const matte=(color=DARK)=>new T.MeshStandardMaterial({color,roughness:.76,metalness:.12});
 function mesh(geometry,material,parent,x=0,y=0,z=0){const m=new T.Mesh(geometry,material);m.position.set(x,y,z);parent.add(m);return m;}
 
-export async function createWorld(container,onPhoto) {
+export async function createWorld(container) {
   const renderer=new T.WebGLRenderer({alpha:false,antialias:true,powerPreference:'high-performance'});
   renderer.setClearColor(0x111a16,1);
   renderer.outputColorSpace=T.SRGBColorSpace;
@@ -32,7 +33,8 @@ export async function createWorld(container,onPhoto) {
   const rim=new T.DirectionalLight(0x92b993,3.5);rim.position.set(5,4,-4);scene.add(rim);
   const warm=new T.PointLight(0xefbd6b,65,25,2);warm.position.set(2,3,3);scene.add(warm);
 
-  const loader=new T.TextureLoader(),textureCache=new Map(),photoMeshes=[];
+  const loader=new T.TextureLoader(),textureCache=new Map();
+  let photoPhase=0;
   const photoInfo=await fetch('./assets/photos/manifest.json').then(r=>r.json());
   const info=new Map(photoInfo.map(p=>[p.id,p]));
   // Load the opening first; remaining photographs arrive without blocking entry.
@@ -47,9 +49,9 @@ export async function createWorld(container,onPhoto) {
     const p=info.get(id),height=width*p.height/p.width;
     const frame=new T.Group();frame.position.set(x,y,z);frame.rotation.y=rotation;
     mesh(box(width+.09,height+.09,.065,.035),metal(GOLD,.4),frame,0,0,-.045);
-    const image=mesh(new T.PlaneGeometry(width,height),new T.MeshBasicMaterial({map:texture(id),toneMapped:false,fog:false}),frame,0,0,.005);
-    image.userData.photoId=id;photoMeshes.push(image);parent.add(frame);
-    frame.userData.base=frame.position.clone();frame.userData.phase=photoMeshes.length*1.5;
+    mesh(new T.PlaneGeometry(width,height),new T.MeshBasicMaterial({map:texture(id),toneMapped:false,fog:false}),frame,0,0,.005);
+    parent.add(frame);
+    frame.userData.base=frame.position.clone();frame.userData.phase=++photoPhase*1.5;
     return frame;
   }
   function gradientTexture(inner='rgba(219,181,108,.22)',outer='rgba(219,181,108,0)'){
@@ -65,7 +67,7 @@ export async function createWorld(container,onPhoto) {
   function glow(parent,scale=8,x=0,y=0,z=-2){
     return mesh(new T.PlaneGeometry(scale,scale),new T.MeshBasicMaterial({map:glowTexture,transparent:true,depthWrite:false,blending:T.AdditiveBlending}),parent,x,y,z);
   }
-  function chair(parent,x,z,rotation=0,scale=1){
+  function chair(parent,x,z,rotation=Math.atan2(-x,-z),scale=1){
     const g=new T.Group();g.position.set(x,-1,z);g.rotation.y=rotation;g.scale.setScalar(scale);parent.add(g);
     const upholstery=matte(0x41523c),brass=metal(0xa18c57,.45);
     mesh(box(.72,.14,.72,.1),upholstery,g,0,.65,0);
@@ -89,7 +91,7 @@ export async function createWorld(container,onPhoto) {
     mesh(new T.CylinderGeometry(.75,.8,.07,48),metal(0x76694a,.4),group,0,-.98,0);
     cup(group,-.65,.1);cup(group,.65,-.3);cup(group,.15,.7);
     const book=mesh(box(.58,.06,.76,.025),matte(0x87905f),group,.25,.15,-.45);book.rotation.y=.28;
-    if(withChairs){chair(group,-1.8,.45,-1.3);chair(group,1.55,.85,1.1);chair(group,.1,-1.9,3.1);}
+    if(withChairs){chair(group,-1.8,.45);chair(group,1.55,.85);chair(group,.1,-1.9);}
     return group;
   }
   const groups=[];
@@ -99,19 +101,16 @@ export async function createWorld(container,onPhoto) {
     groups.push(g);return g;
   }
 
-  // 00 — A sculptural circle. Photographs are the substance inside the symbol.
-  const opening=new T.Group(),sculpture=new T.Group();opening.add(sculpture);
-  const arcColors=[GOLD,0xa1b877,0xc5a16a,0x758c58];
-  for(let i=0;i<4;i++){
-    const arc=mesh(new T.TorusGeometry(2.25,.23,20,64,Math.PI/2-.09),metal(arcColors[i],.23),sculpture);
-    arc.rotation.z=i*Math.PI/2+.04;
-  }
-  const orbit=mesh(new T.TorusGeometry(2.75,.012,6,100),metal(0xd9c797,.42),sculpture);orbit.rotation.x=.35;orbit.rotation.y=-.35;
-  sculpture.rotation.set(.12,-.45,-.24);sculpture.position.set(.2,.65,0);
-  const ot=table(opening);ot.scale.setScalar(.6);ot.position.set(.1,-.5,.8);
-  const openingPhotos=[photo('together',2.25,opening,-1.8,1.8,.1,-.2),photo('travel',1.85,opening,2.15,-.4,1.3,-.28),photo('table',1.5,opening,1.8,2.6,-.6,-.4)];
-  glow(opening,10,0,1,-2);floor(opening);
-  opening.userData.animate=(t)=>{sculpture.rotation.y=-.45+Math.sin(t*.16)*.1;openingPhotos.forEach(p=>floatPhoto(p,t));};
+  // 00 — Scattered light finds four leaves, then carries its warmth onward.
+  const opening=new T.Group(),clover=createCloverParticles(innerWidth<=900?3800:6200);
+  opening.add(clover.points);clover.points.scale.setScalar(1.12);
+  glow(opening,9,0,.6,-2);
+  let introBornAt;
+  opening.userData.animate=(t,local)=>{
+    if(introBornAt===undefined&&t>0)introBornAt=t;
+    clover.points.rotation.y=Math.sin(t*.12)*.09;
+    clover.update({time:t,assembly:clamp((t-(introBornAt??t))/3.2)*1.2,departure:ease(.58,1,local),height,dpr});
+  };
   register(opening);
 
   // 01 — One round table, three chairs, one small possibility.
@@ -132,22 +131,23 @@ export async function createWorld(container,onPhoto) {
 
   // 03 — A quiet desk and a page which turns with your scroll.
   const learning=new T.Group();
-  mesh(new T.CylinderGeometry(2.65,2.65,.1,64),new T.MeshStandardMaterial({color:0x5a4d32,roughness:.53,metalness:.3}),learning,0,-.65,0);
-  const bookGroup=new T.Group();learning.add(bookGroup);bookGroup.position.set(0,-.38,.25);bookGroup.rotation.y=-.28;
+  mesh(new T.CylinderGeometry(3,3,.1,64),new T.MeshStandardMaterial({color:0x5a4d32,roughness:.53,metalness:.3}),learning,0,-.65,0);
+  const bookGroup=new T.Group();learning.add(bookGroup);bookGroup.position.set(.45,-.38,.45);bookGroup.rotation.y=-.16;
   mesh(box(3.5,.08,2.4,.03),matte(0x74825a),bookGroup,0,0,0);
-  mesh(box(3.3,.25,2.27,.02),matte(CREAM),bookGroup,0,.16,0);
+  mesh(box(1.6,.25,2.27,.02),matte(CREAM),bookGroup,-.83,.16,0);
+  mesh(box(1.6,.25,2.27,.02),matte(CREAM),bookGroup,.83,.16,0);
   for(let i=0;i<8;i++)mesh(new T.BoxGeometry(3.3,.008,2.28),matte(0x9e987c),bookGroup,0,.05+i*.03,0);
-  const pagePivot=new T.Group();pagePivot.position.set(-1.63,.32,0);bookGroup.add(pagePivot);
-  mesh(new T.BoxGeometry(3.27,.012,2.25),matte(0xf2ecd4),pagePivot,1.635,0,0);
-  for(let i=0;i<9;i++)mesh(new T.PlaneGeometry(2.2,.013),matte(0xa39e83),pagePivot,1.65,.009,-.8+i*.16).rotation.x=-Math.PI/2;
-  const lamp=new T.Group();lamp.position.set(-1.9,-.6,-.7);learning.add(lamp);
+  const pagePivot=new T.Group();pagePivot.position.set(0,.32,0);bookGroup.add(pagePivot);
+  mesh(new T.BoxGeometry(1.59,.012,2.25),matte(0xf2ecd4),pagePivot,.795,0,0);
+  for(let i=0;i<9;i++)mesh(new T.PlaneGeometry(1.1,.013),matte(0xa39e83),pagePivot,.795,.009,-.8+i*.16).rotation.x=-Math.PI/2;
+  const lamp=new T.Group();lamp.position.set(-2.3,-.6,-1.2);learning.add(lamp);
   mesh(new T.CylinderGeometry(.37,.4,.08,24),metal(),lamp,0,0,0);
   mesh(new T.CylinderGeometry(.035,.035,2.3,12),metal(),lamp,0,1.15,0);
-  mesh(new T.ConeGeometry(.66,.4,32,1,true),metal(),lamp,.1,2.15,0);
+  mesh(new T.ConeGeometry(.5,.4,32,1,true),metal(),lamp,.1,2.15,0);
   const lampLight=new T.PointLight(0xffd18e,10,6);lampLight.position.set(.1,1.9,0);lamp.add(lampLight);
-  const learnPhoto=photo('book',2.4,learning,1.25,1.5,-.8,-.2);
+  const learnPhoto=photo('book',2.1,learning,1.5,2.6,-1.5,-.2);
   floor(learning);glow(learning,7,-1,1);
-  learning.userData.animate=(t,local)=>{pagePivot.rotation.z=mix(.025,2.8,ease(.05,.9,local));floatPhoto(learnPhoto,t);};register(learning);
+  learning.userData.animate=(t,local)=>{pagePivot.rotation.z=mix(.025,Math.PI-.025,ease(.05,.9,local));floatPhoto(learnPhoto,t);};register(learning);
 
   // 04 — Ten thousand seats, batched into a handful of draw calls.
   const hall=new T.Group(),seatsGroup=new T.Group();hall.add(seatsGroup);
@@ -245,9 +245,9 @@ export async function createWorld(container,onPhoto) {
     {p:[3,15,30],t:[0,5,-8]}, {p:[.3,2.7,13.5],t:[0,1.8,0]},
     {p:[0,3,16],t:[0,2.1,0]}, {p:[.4,3.2,13],t:[0,2.1,0]},
   ];
-  const pointer=new T.Vector2(),pointerTarget=new T.Vector2(),raycaster=new T.Raycaster();
+  const pointer=new T.Vector2(),pointerTarget=new T.Vector2();
   let small=innerWidth<=900,width=innerWidth,height=innerHeight,clockTime=0,currentProgress=0,currentLocal=0;
-  let dpr=Math.min(devicePixelRatio,small?1.5:1.75),pointerDown;
+  let dpr=Math.min(devicePixelRatio,small?1.5:1.75);
   const eye=new T.Vector3(),aim=new T.Vector3();
   function resize(){
     small=innerWidth<=900;width=innerWidth;height=innerHeight;
@@ -255,20 +255,13 @@ export async function createWorld(container,onPhoto) {
   }
   resize();
   container.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')pointerTarget.set((e.clientX/width-.5)*2,(e.clientY/height-.5)*2);});
-  // Listen on window because the story's transparent layout sits over the canvas.
-  window.addEventListener('pointerdown',e=>{pointerDown={x:e.clientX,y:e.clientY};},{passive:true});
-  window.addEventListener('pointerup',e=>{
-    if(!pointerDown||!document.documentElement.classList.contains('enhanced')||e.target.closest('a,button,input,textarea,summary,dialog')||Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y)>8)return;
-    const ndc=new T.Vector2(e.clientX/width*2-1,-e.clientY/height*2+1);raycaster.setFromCamera(ndc,camera);
-    const hits=raycaster.intersectObjects(photoMeshes.filter(m=>m.visible&&m.parent.parent.visible),false);
-    if(hits.length)onPhoto(hits[0].object.userData.photoId);
-  },{passive:true});
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();window.dispatchEvent(new CustomEvent('clover-context-lost'));});
   function opacity(g,weight){
     if(Math.abs((g.userData.weight??-1)-weight)<.001)return;
     g.userData.weight=weight;
     g.userData.materials.forEach(m=>{
       m.opacity=m.userData.baseOpacity*weight;
+      if(m.uniforms?.uOpacity)m.uniforms.uOpacity.value=m.opacity;
       m.transparent=m.userData.baseTransparent||weight<.99;
       m.depthWrite=m.userData.baseDepth&&weight>.95;
     });

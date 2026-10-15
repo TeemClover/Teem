@@ -6,15 +6,11 @@ const invitation = document.querySelector('#invitation');
 const motionButton = document.querySelector('#motion-toggle');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 if(!motionPreference.matches)root.classList.add('pending-3d');
-const index = document.querySelector('#chapter-index');
-const label = document.querySelector('#chapter-label');
 const progressBar = document.querySelector('#journey-progress');
 let engine, enhanced = false, frame, active = 0, bounds = [], lastY = -1, resizeTimer;
 let initialAnchorHandled=false;
-let photos = [];
 const clamp = (n, min = 0, max = 1) => Math.max(min, Math.min(max, n));
 const smooth = (a, b, n) => { const t = clamp((n-a)/(b-a)); return t*t*(3-2*t); };
-const album = document.querySelector('#album');
 
 function restoreInitialAnchor(){
   if(initialAnchorHandled)return;
@@ -57,12 +53,10 @@ function update(time) {
         const scrollLink=el.querySelector('.scroll-invitation');
         if(scrollLink){scrollLink.inert=opacity<.4;scrollLink.setAttribute('aria-hidden',opacity<.4?'true':'false');}
       });
-      index.textContent = String(active).padStart(2,'0');
-      label.textContent = chapters[active].dataset.label;
       progressBar.style.width = `${clamp(y/(journey.offsetHeight-innerHeight))*100}%`;
       lastY = y;
     }
-    if (!atInvitation && !document.hidden && !album.open) engine?.update(position, local, time*.001);
+    if (!atInvitation && !document.hidden) engine?.update(position, local, time*.001);
   }
   if (enhanced && !document.hidden) frame=requestAnimationFrame(update);
 }
@@ -74,6 +68,7 @@ function setStatic() {
   root.classList.add('static-mode');
   motionButton.setAttribute('aria-pressed','false');
   motionButton.setAttribute('aria-label','เปิดภาพเคลื่อนไหว 3 มิติ');
+  motionButton.textContent='เปิดภาพเคลื่อนไหว';
   chapters.forEach(el => {el.querySelector('.chapter-copy').inert=false;el.querySelector('.chapter-copy').removeAttribute('aria-hidden');const a=el.querySelector('.scroll-invitation');if(a){a.inert=false;a.removeAttribute('aria-hidden');}});
   engine?.pause();
   measure();
@@ -84,7 +79,7 @@ async function setEnhanced() {
   try {
     if (!engine) {
       const {createWorld} = await import('./world.js');
-      engine=await createWorld(document.querySelector('#world'), photoId=>openAlbum(photoId));
+      engine=await createWorld(document.querySelector('#world'));
     }
     enhanced=true;
     root.classList.add('enhanced');
@@ -92,6 +87,7 @@ async function setEnhanced() {
     root.classList.remove('static-mode');
     motionButton.setAttribute('aria-pressed','true');
     motionButton.setAttribute('aria-label','ปิดภาพเคลื่อนไหว 3 มิติ');
+    motionButton.textContent='ลดการเคลื่อนไหว';
     measure();
     restoreInitialAnchor();
     cancelAnimationFrame(frame);
@@ -116,36 +112,6 @@ document.addEventListener('visibilitychange',()=>{if(enhanced){cancelAnimationFr
 document.querySelector('.programme').open=innerWidth>=1100;
 if(motionPreference.matches)setStatic();else setEnhanced();
 
-// The same source photographs are available at full width, outside the 3D view.
-const photosReady=fetch('./assets/photos/manifest.json').then(r=>{if(!r.ok)throw Error('Photo manifest unavailable');return r.json();}).then(data=>{photos=data;}).catch(()=>{
-  photos=[{id:'table',src:'./assets/photos/table.webp',caption:'ความโชคดีเริ่มจากบทสนทนา'}];
-});
-let currentPhoto=0, albumReturnFocus;
-function displayPhoto() {
-  const photo=photos[currentPhoto];
-  const image=document.querySelector('#album-image');
-  image.src=photo.src;image.alt=photo.caption;
-  document.querySelector('#album-caption').textContent=photo.caption;
-  document.querySelector('#photo-index').textContent=`${String(currentPhoto+1).padStart(2,'0')} / ${String(photos.length).padStart(2,'0')}`;
-}
-async function openAlbum(id='table') {
-  await photosReady;
-  currentPhoto=Math.max(0,photos.findIndex(p=>p.id===id));
-  displayPhoto();
-  albumReturnFocus=document.activeElement;
-  if(!album.open)album.showModal();
-  document.body.style.overflow='hidden';
-}
-document.querySelectorAll('[data-album]').forEach(b=>b.addEventListener('click',()=>openAlbum()));
-document.querySelectorAll('[data-photo]').forEach(b=>b.addEventListener('click',()=>openAlbum(b.dataset.photo)));
-document.querySelector('.close-album').addEventListener('click',()=>album.close());
-album.addEventListener('close',()=>{document.body.style.overflow='';albumReturnFocus?.focus({preventScroll:true});});
-album.addEventListener('click',e=>{if(e.target===album){const r=album.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)album.close();}});
-function changePhoto(direction){currentPhoto=(currentPhoto+direction+photos.length)%photos.length;displayPhoto();}
-document.querySelector('#previous-photo').addEventListener('click',()=>changePhoto(-1));
-document.querySelector('#next-photo').addEventListener('click',()=>changePhoto(1));
-album.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();changePhoto(-1);}if(e.key==='ArrowRight'){e.preventDefault();changePhoto(1);}});
-
 const form=document.querySelector('#rsvp-form');
 const status=document.querySelector('#form-status');
 let requestId;
@@ -157,7 +123,7 @@ form.addEventListener('submit',async e=>{
   if(submit.disabled)return;
   const data=new FormData(form);
   requestId ||= crypto.randomUUID();
-  const payload={name:String(data.get('name')).trim(),contact:String(data.get('contact')).trim(),message:String(data.get('message')).trim(),consent:data.get('consent')==='on',website:String(data.get('website')||''),requestId};
+  const payload={name:String(data.get('name')).trim(),message:String(data.get('message')).trim(),website:String(data.get('website')||''),requestId};
   submit.disabled=true;submit.firstElementChild.textContent='กำลังส่งคำตอบรับ…';status.textContent='';
   const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
   try{
@@ -165,10 +131,9 @@ form.addEventListener('submit',async e=>{
     const result=await response.json();
     if(!response.ok||!result.ok)throw Error(result.message||'ยังส่งคำตอบรับไม่ได้ ลองอีกครั้งนะ');
     form.hidden=true;document.querySelector('.rsvp-intro').hidden=true;
-    document.querySelector('#receipt').textContent=`หมายเลขตอบรับ ${result.reference}`;
     const success=document.querySelector('#rsvp-success');success.hidden=false;success.focus({preventScroll:true});
     form.reset();
   }catch(error){
     status.textContent=error.name==='AbortError'?'การเชื่อมต่อใช้เวลานาน ลองส่งอีกครั้งได้ ข้อมูลที่กรอกยังอยู่ครบ':error.message==='Failed to fetch'?'เชื่อมต่อไม่ได้ในขณะนี้ ลองอีกครั้งเมื่ออินเทอร์เน็ตพร้อมนะ':error.message;
-  }finally{clearTimeout(timeout);submit.disabled=false;submit.firstElementChild.textContent='ฉันจะกลับไปเจอเพื่อน ๆ';}
+  }finally{clearTimeout(timeout);submit.disabled=false;submit.firstElementChild.textContent='แล้วเจอกัน';}
 });

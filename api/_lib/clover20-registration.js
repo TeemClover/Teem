@@ -1,12 +1,11 @@
 import { createHash, randomUUID } from 'node:crypto';
 
-const SCHEMA=`CREATE TABLE IF NOT EXISTS mc_clover20_rsvp (
+const SCHEMA=`CREATE TABLE IF NOT EXISTS mc_clover20_replies (
   request_id UUID PRIMARY KEY,
   reference TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
-  contact TEXT NOT NULL,
   message TEXT NOT NULL DEFAULT '',
-  consent_version TEXT NOT NULL,
+  notice_version TEXT NOT NULL,
   payload_hash TEXT NOT NULL,
   ip_hash TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -16,14 +15,12 @@ const digest=value=>createHash('sha256').update(value).digest('hex');
 
 export function validateRegistration(body) {
   if(!body||typeof body!=='object'||Array.isArray(body))return {error:'ข้อมูลคำตอบรับไม่ถูกต้อง'};
-  const name=clean(body.name),contact=clean(body.contact),message=clean(body.message);
-  if(name.length<2||name.length>100)return {error:'กรอกชื่อระหว่าง 2–100 ตัวอักษรนะ'};
-  if(contact.length<3||contact.length>150)return {error:'กรอกช่องทางที่เราติดต่อคุณได้อีกครั้งนะ'};
+  const name=clean(body.name),message=clean(body.message);
+  if(!name||name.length>100)return {error:'กรอกชื่อที่เราใช้เรียกคุณ ไม่เกิน 100 ตัวอักษรนะ'};
   if(message.length>500)return {error:'ฝากเรื่องเล่าได้ไม่เกิน 500 ตัวอักษรนะ'};
-  if(body.consent!==true)return {error:'กรุณายินยอมให้ผู้จัดใช้ข้อมูลเพื่อประสานงานครั้งนี้'};
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.requestId||''))return {error:'กรุณาโหลดหน้าใหม่แล้วลองตอบรับอีกครั้ง'};
   if(clean(body.website))return {error:'ยังส่งคำตอบรับไม่ได้ ลองอีกครั้งนะ'};
-  return {value:{name,contact,message,requestId:body.requestId,consentVersion:'clover20-event-contact-v1',payloadHash:digest(JSON.stringify([name,contact,message]))}};
+  return {value:{name,message,requestId:body.requestId,noticeVersion:'clover20-name-story-v1',payloadHash:digest(JSON.stringify([name,message]))}};
 }
 
 export function createRegistrationHandler({getStore, salt='local-preview'}) {
@@ -70,12 +67,12 @@ export function createSqlStore(sql) {
     // Idempotent retries return the already-committed reference, even at the limit.
     const results=await sql.transaction(tx=>[
       tx.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))',[record.ipHash]),
-      tx.query(`INSERT INTO mc_clover20_rsvp (request_id,reference,name,contact,message,consent_version,payload_hash,ip_hash)
-        SELECT $1,$2,$3,$4,$5,$6,$7,$8
-        WHERE (SELECT COUNT(*) FROM mc_clover20_rsvp WHERE ip_hash=$8 AND created_at>NOW()-INTERVAL '1 hour')<60
+      tx.query(`INSERT INTO mc_clover20_replies (request_id,reference,name,message,notice_version,payload_hash,ip_hash)
+        SELECT $1,$2,$3,$4,$5,$6,$7
+        WHERE (SELECT COUNT(*) FROM mc_clover20_replies WHERE ip_hash=$7 AND created_at>NOW()-INTERVAL '1 hour')<60
         ON CONFLICT (request_id) DO NOTHING
-        RETURNING reference`,[record.requestId,record.reference,record.name,record.contact,record.message,record.consentVersion,record.payloadHash,record.ipHash]),
-      tx.query('SELECT reference,payload_hash FROM mc_clover20_rsvp WHERE request_id=$1',[record.requestId]),
+        RETURNING reference`,[record.requestId,record.reference,record.name,record.message,record.noticeVersion,record.payloadHash,record.ipHash]),
+      tx.query('SELECT reference,payload_hash FROM mc_clover20_replies WHERE request_id=$1',[record.requestId]),
     ]);
     const existing=results[2][0];
     if(existing&&existing.payload_hash!==record.payloadHash)return {conflict:true};
