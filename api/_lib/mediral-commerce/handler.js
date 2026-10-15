@@ -119,7 +119,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
    }
    if(action==='logout'&&req.method==='POST'){res.setHeader('Set-Cookie',`${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`);return json({ok:true});}
    await store.ensure();
-   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:Boolean(env.CRON_SECRET),ai:ai.status(),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
+   if(action==='status'&&req.method==='GET')return json({ok:true,mode:env.MEDIRAL_MODE||'paused',lineConfigured:configured(),slipConfigured:Boolean(env.MEDIRAL_EASYSLIP_KEY),retryConfigured:false,manualRetryAvailable:true,ownerAlertsScheduled:false,cleanupScheduled:false,ai:ai.status(),bank:{...BANK,number:'••••••'+BANK.number.slice(-4)},outbox:await store.queueStatus()});
    if(action==='ai-test'&&req.method==='POST'){
     // Fixed fictional conversation only: no arbitrary proxy, no customer lookup,
     // no LINE delivery, no checkout and no stored conversation.
