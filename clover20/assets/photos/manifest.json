@@ -11,7 +11,8 @@
       0,
       3444,
       1760
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "hands",
@@ -25,7 +26,8 @@
       80,
       3244,
       1760
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "book",
@@ -39,7 +41,8 @@
       0,
       3444,
       1760
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "meeting",
@@ -48,7 +51,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.29.14.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "stage",
@@ -57,7 +61,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.11.16.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "hall-empty",
@@ -66,7 +71,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.18.24.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "hall",
@@ -80,7 +86,8 @@
       0,
       3024,
       1790
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "crowd",
@@ -94,7 +101,8 @@
       0,
       3444,
       1630
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "together",
@@ -103,7 +111,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.11.07.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "travel",
@@ -112,7 +121,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.26.33.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "bridge",
@@ -121,7 +131,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.25.49.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "friends",
@@ -135,7 +146,8 @@
       0,
       3444,
       1550
-    ]
+    ],
+    "role": "chapter"
   },
   {
     "id": "celebrate",
@@ -144,7 +156,8 @@
     "width": 1440,
     "height": 809,
     "source": "Screenshot 2026-10-15 at 18.29.25.jpg",
-    "crop": null
+    "crop": null,
+    "role": "chapter"
   },
   {
     "id": "home",
@@ -158,6 +171,367 @@
       0,
       3300,
       1770
-    ]
+    ],
+    "role": "chapter"
+  },
+  {
+    "id": "anniversary-blue",
+    "src": "./assets/photos/anniversary-blue.webp",
+    "caption": "เคยฉลองวันสำคัญด้วยกัน",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.10.31.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "anniversary-six",
+    "src": "./assets/photos/anniversary-six.webp",
+    "caption": "อีกหนึ่งปีที่มีเพื่อนอยู่ข้าง ๆ",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.10.52.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "anniversary-seven",
+    "src": "./assets/photos/anniversary-seven.webp",
+    "caption": "วันเวลาที่เราได้เติบโตมาด้วยกัน",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.10.58.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "first-friends",
+    "src": "./assets/photos/first-friends.webp",
+    "caption": "คนที่ได้รู้จักในวันนั้น",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.11.02.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "stage-blue",
+    "src": "./assets/photos/stage-blue.webp",
+    "caption": "รอยยิ้มบนเวทีเดียวกัน",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.11.21.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "stage-wide",
+    "src": "./assets/photos/stage-wide.webp",
+    "caption": "ช่วงเวลาที่เรายืนอยู่ด้วยกัน",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.11.27.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "hall-lights",
+    "src": "./assets/photos/hall-lights.webp",
+    "caption": "แสงไฟและผู้คนในความทรงจำ",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.11.34.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "red-carpet",
+    "src": "./assets/photos/red-carpet.webp",
+    "caption": "วันที่เราได้พบคนอีกมากมาย",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.11.52.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "a-small-book",
+    "src": "./assets/photos/a-small-book.webp",
+    "caption": "หนังสือเล่มหนึ่งที่เปิดโลกให้เรา",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.12.06.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "a-shared-moment",
+    "src": "./assets/photos/a-shared-moment.webp",
+    "caption": "อยากเก็บช่วงเวลานี้ไว้",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.12.45.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "on-stage",
+    "src": "./assets/photos/on-stage.webp",
+    "caption": "ความกล้าที่ได้รับจากกันและกัน",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.12.57.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "learning-days",
+    "src": "./assets/photos/learning-days.webp",
+    "caption": "สิ่งที่ได้เรียนรู้ยังเดินทางไปกับเรา",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.13.38.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "old-friends",
+    "src": "./assets/photos/old-friends.webp",
+    "caption": "เพื่อนร่วมทางในวันวาน",
+    "width": 960,
+    "height": 404,
+    "source": "Screenshot 2026-10-15 at 18.13.57.jpg",
+    "crop": [
+      0,
+      300,
+      3444,
+      1450
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "gala-friends",
+    "src": "./assets/photos/gala-friends.webp",
+    "caption": "ยังจำรอยยิ้มเหล่านี้ได้",
+    "width": 960,
+    "height": 348,
+    "source": "Screenshot 2026-10-15 at 18.14.18.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1250
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "white-shirts",
+    "src": "./assets/photos/white-shirts.webp",
+    "caption": "วันธรรมดาที่กลายเป็นความทรงจำ",
+    "width": 960,
+    "height": 460,
+    "source": "Screenshot 2026-10-15 at 18.16.09.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1650
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "family-time",
+    "src": "./assets/photos/family-time.webp",
+    "caption": "ความอบอุ่นที่เราเคยมีให้กัน",
+    "width": 960,
+    "height": 454,
+    "source": "Screenshot 2026-10-15 at 18.17.20.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1630
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "clover-crowd",
+    "src": "./assets/photos/clover-crowd.webp",
+    "caption": "ความหวังดีของคนมากมาย",
+    "width": 960,
+    "height": 452,
+    "source": "Screenshot 2026-10-15 at 18.17.30.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1620
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "impact-arrival",
+    "src": "./assets/photos/impact-arrival.webp",
+    "caption": "ก่อนประตูฮอลจะเปิด",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.18.14.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "banquet",
+    "src": "./assets/photos/banquet.webp",
+    "caption": "อีกค่ำคืนที่ยังอยู่ในใจ",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.19.12.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "on-the-road",
+    "src": "./assets/photos/on-the-road.webp",
+    "caption": "ออกไปเห็นโลกใบเดิมในมุมใหม่",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.26.07.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "cooking-together",
+    "src": "./assets/photos/cooking-together.webp",
+    "caption": "ความสุขระหว่างทาง",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.26.45.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "congratulations",
+    "src": "./assets/photos/congratulations.webp",
+    "caption": "ยินดีกับทุกก้าวของเพื่อน",
+    "width": 960,
+    "height": 429,
+    "source": "Screenshot 2026-10-15 at 18.27.36.jpg",
+    "crop": [
+      0,
+      250,
+      3400,
+      1520
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "many-smiles",
+    "src": "./assets/photos/many-smiles.webp",
+    "caption": "ได้เจอรอยยิ้มอีกมากมาย",
+    "width": 960,
+    "height": 438,
+    "source": "Screenshot 2026-10-15 at 18.28.08.jpg",
+    "crop": [
+      0,
+      0,
+      3444,
+      1570
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "purple-reunion",
+    "src": "./assets/photos/purple-reunion.webp",
+    "caption": "ความทรงจำที่มีสีสัน",
+    "width": 960,
+    "height": 484,
+    "source": "Screenshot 2026-10-15 at 18.28.12.jpg",
+    "crop": [
+      0,
+      150,
+      3310,
+      1670
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "giving-back",
+    "src": "./assets/photos/giving-back.webp",
+    "caption": "ส่งต่อสิ่งดี ๆ ให้คนรอบตัว",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.29.04.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "listening-together",
+    "src": "./assets/photos/listening-together.webp",
+    "caption": "ความคิดดี ๆ ที่เราเคยรับฟัง",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.29.21.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "candlelight",
+    "src": "./assets/photos/candlelight.webp",
+    "caption": "บางช่วงเวลาไม่ต้องมีคำพูด",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.29.54.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "dinner-friends",
+    "src": "./assets/photos/dinner-friends.webp",
+    "caption": "เรื่องเล่ารอบโต๊ะอาหาร",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.30.00.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "pool-memories",
+    "src": "./assets/photos/pool-memories.webp",
+    "caption": "เสียงหัวเราะที่ยังจำได้",
+    "width": 960,
+    "height": 539,
+    "source": "Screenshot 2026-10-15 at 18.30.06.jpg",
+    "crop": null,
+    "role": "memory"
+  },
+  {
+    "id": "steps-together",
+    "src": "./assets/photos/steps-together.webp",
+    "caption": "ทุกก้าวเคยมีคนเดินไปด้วยกัน",
+    "width": 960,
+    "height": 321,
+    "source": "Screenshot 2026-10-15 at 18.30.14.jpg",
+    "crop": [
+      0,
+      610,
+      3444,
+      1150
+    ],
+    "role": "memory"
+  },
+  {
+    "id": "one-more-photo",
+    "src": "./assets/photos/one-more-photo.webp",
+    "caption": "ถ่ายรูปด้วยกันอีกสักครั้ง",
+    "width": 960,
+    "height": 515,
+    "source": "Screenshot 2026-10-15 at 18.30.22.jpg",
+    "crop": [
+      0,
+      0,
+      3300,
+      1770
+    ],
+    "role": "memory"
   }
 ]

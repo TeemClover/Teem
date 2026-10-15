@@ -27,3 +27,4 @@ html{overflow-anchor:none}.world{z-index:0}main{position:relative;z-index:1}.enh
 @media(max-width:360px){.brand{font-size:12px}.brand img{width:28px;height:30px}.footer>.footer-logo{width:135px}.footer-note p{font-size:8px}}
 @media(max-height:650px) and (max-width:900px){.hero h1{font-size:35px;line-height:1.15}.hero .chapter-description{font-size:11px;line-height:1.7}.enhanced .hero .chapter-copy{top:88px}.enhanced .scroll-invitation{top:48svh}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+.still-memories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin-top:12px;align-items:center}.still-memories img{width:100%;height:auto;display:block;opacity:.8}.enhanced .still-memories{display:none}

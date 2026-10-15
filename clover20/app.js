@@ -9,6 +9,7 @@ if(!motionPreference.matches)root.classList.add('pending-3d');
 const progressBar = document.querySelector('#journey-progress');
 let engine, enhanced = false, frame, active = 0, bounds = [], lastY = -1, resizeTimer;
 let initialAnchorHandled=false;
+let stillMemories;
 const clamp = (n, min = 0, max = 1) => Math.max(min, Math.min(max, n));
 const smooth = (a, b, n) => { const t = clamp((n-a)/(b-a)); return t*t*(3-2*t); };
 
@@ -56,7 +57,7 @@ function update(time) {
       progressBar.style.width = `${clamp(y/(journey.offsetHeight-innerHeight))*100}%`;
       lastY = y;
     }
-    if (!atInvitation && !document.hidden) engine?.update(position, local, time*.001);
+    if (!atInvitation && !document.hidden) engine?.update(position, local, time*.001,i+local);
   }
   if (enhanced && !document.hidden) frame=requestAnimationFrame(update);
 }
@@ -73,6 +74,24 @@ function setStatic() {
   engine?.pause();
   measure();
   restoreInitialAnchor();
+  addStillMemories();
+}
+async function addStillMemories(){
+  if(stillMemories)return stillMemories;
+  stillMemories=(async()=>{
+    const [{memoryOrder},photos]=await Promise.all([import('./memory-order.js'),fetch('./assets/photos/manifest.json').then(r=>r.json())]);
+    const info=new Map(photos.map(p=>[p.id,p]));
+    const before=scrollY;
+    memoryOrder.forEach((id,i)=>{
+      const chapter=chapters[Math.min(7,1+Math.floor(i*7/memoryOrder.length))];
+      let strip=chapter.querySelector('.still-memories');
+      if(!strip){strip=document.createElement('div');strip.className='still-memories';chapter.append(strip);}
+      const p=info.get(id),img=document.createElement('img');
+      img.src=p.src;img.alt=p.caption;img.width=p.width;img.height=p.height;img.loading='lazy';img.decoding='async';strip.append(img);
+    });
+    if(!enhanced){measure();if(scrollY===before&&location.hash){initialAnchorHandled=false;restoreInitialAnchor();}}
+  })().catch(()=>{stillMemories=undefined;});
+  return stillMemories;
 }
 async function setEnhanced() {
   motionButton.disabled=true;

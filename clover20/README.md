@@ -10,9 +10,11 @@ The preview requires Node 20+ and no installation. Its RSVP adapter writes real 
 
 ## Experience
 
-Eight connected scenes: a four-leaf Clover assembled from particles, one table, meeting rooms, quiet learning, a 10,000-seat hall, shared travel, independent paths, and a return to the table. Scroll controls the camera, the turning page, the hall filling, and the circles moving outward. Actual archival photographs remain intact as image planes, and stay within the story without zoom controls or a photo dialog.
+Eight connected scenes: peer circles of light becoming a four-leaf Clover, one table, meeting rooms, quiet learning, a 10,000-seat hall, shared travel, independent paths, and a return to the table. The opening shows 1, 2, 4, then 8 circles before thousands of particles gather into four leaves over 8.5 seconds. It never blocks scrolling. Scroll controls the camera, the turning page, the hall filling, and the circles moving outward. Actual archival photographs remain intact as image planes, and stay within the story without zoom controls or a photo dialog.
 
-The two supplied official PNG logos are used unchanged: the symbol in the header and the complete wordmark in the footer. The mobile camera and composition differ from desktop. Photos keep their aspect ratios. No third-party CDN, analytics, autoplay audio, or generated faces. All photographs are local WebP files; the entire frontend is approximately 2.7 MB before HTTP compression. Three.js r180 is vendored with its MIT license. Kanit is self-hosted.
+The two supplied official PNG logos are used unchanged: the symbol in the header and the complete wordmark in the footer. The mobile camera and composition differ from desktop. Photos keep their aspect ratios. No third-party CDN, analytics, autoplay audio, or generated faces. The 45 local WebP photographs total approximately 2.4 MB. Three.js r180 is vendored with its MIT license. Kanit is self-hosted.
+
+Thirty-two additional memory planes fade in and drift upward throughout the scroll, behind the chapter photographs and objects. Perspective, small tilts, depth and restrained softness create a layered journey. Secondary textures load only near the current scroll position, and distant textures are released to bound GPU memory. The still-image version includes these memories as noninteractive photographs with descriptive alternative text. The sequence follows experiences; it does not assign unverified years to the footage.
 
 The hall uses 10,000 instances per seat component, simple geometry and GPU-controlled filling. The renderer caps pixel density and lowers it after sustained slow frames. Rendering pauses off the journey and in a hidden tab. Reduced-motion preferences, missing WebGL2, or context loss switch to a readable photo-and-text version. The motion control also lets a visitor choose the still-image version.
 
@@ -34,7 +36,7 @@ The frontend and local RSVP have also been exercised in a browser at phone and d
 
 ## Photographs and edits
 
-`assets/photos/manifest.json` maps the 14 photos back to the supplied video screenshots. Crops remove subtitles, video controls and excluded signage. Only restrained exposure, saturation and sharpness adjustments were used; people were not reconstructed. The hall photograph is a historical image and does not announce this reunion's venue.
+`assets/photos/manifest.json` maps the 45 photos back to the supplied video screenshots. Crops remove subtitles, video controls and excluded signage. Only restrained exposure, saturation and sharpness adjustments were used; people were not reconstructed. Secondary images are 960 pixels wide and retain the softness of the source video. The hall photograph is a historical image and does not announce this reunion's venue.
 
 To recreate the optimized photographs, install `sharp` in your tool environment and run `node tools/clover20/prepare-assets.cjs /absolute/path/to/the/original/screenshots`. Prepared assets are already checked in; this is unnecessary for preview or deployment.
 
@@ -43,3 +45,7 @@ The existing `/invite/` redirect and all other routes are preserved. This experi
 ## Revision 2
 
 The opening is a GPU-animated field of four heart-shaped leaves, with the title “โชคดีที่เราเคยได้เจอกัน”. Seating rotations now face the centre of each table. The turning book page is half the book width, pivots at the spine, and stays clear of the lamp for the full turn. Gallery buttons, photo raycasting, chapter counters, contact fields, checkbox consent and visitor receipt numbers were removed to keep the invitation minimal.
+
+## Revision 3
+
+The opening now moves through 1 → 2 → 4 → 8 peer circles in three dimensions, with an actual camera pullback and a final particle Clover. The archive expands from 14 to 45 photographs. Chapter photographs reveal in staggered scroll intervals, with a separate stream of softer memories that appear and disappear as the visitor continues or reverses the journey.

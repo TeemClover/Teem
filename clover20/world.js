@@ -2,6 +2,7 @@ import * as T from './vendor/three.module.min.js';
 import { RoomEnvironment } from './vendor/RoomEnvironment.js';
 import { RoundedBoxGeometry } from './vendor/RoundedBoxGeometry.js';
 import { createCloverParticles } from './clover-particles.js';
+import { createMemoryRiver } from './memory-river.js';
 
 const GOLD=0xd9b678, GREEN=0x6f8656, DARK=0x15231c, CREAM=0xe6dfc4;
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
@@ -51,7 +52,7 @@ export async function createWorld(container) {
     mesh(box(width+.09,height+.09,.065,.035),metal(GOLD,.4),frame,0,0,-.045);
     mesh(new T.PlaneGeometry(width,height),new T.MeshBasicMaterial({map:texture(id),toneMapped:false,fog:false}),frame,0,0,.005);
     parent.add(frame);
-    frame.userData.base=frame.position.clone();frame.userData.phase=++photoPhase*1.5;
+    frame.userData.base=frame.position.clone();frame.userData.phase=++photoPhase*1.5;frame.userData.photoId=id;
     return frame;
   }
   function gradientTexture(inner='rgba(219,181,108,.22)',outer='rgba(219,181,108,0)'){
@@ -96,8 +97,8 @@ export async function createWorld(container) {
   }
   const groups=[];
   function register(g){
-    scene.add(g);g.userData.materials=[];const seen=new Set();
-    g.traverse(o=>{if(o.material){for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(!seen.has(m)){seen.add(m);m.userData.baseOpacity=m.opacity;m.userData.baseTransparent=m.transparent;m.userData.baseDepth=m.depthWrite;g.userData.materials.push(m);}}});
+    scene.add(g);g.userData.materials=[];g.userData.photos=[];const seen=new Set();
+    g.traverse(o=>{if(o.userData.photoId)g.userData.photos.push(o);if(o.material){for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(!seen.has(m)){seen.add(m);m.userData.baseOpacity=m.opacity;m.userData.baseTransparent=m.transparent;m.userData.baseDepth=m.depthWrite;g.userData.materials.push(m);}}});
     groups.push(g);return g;
   }
 
@@ -108,8 +109,10 @@ export async function createWorld(container) {
   let introBornAt;
   opening.userData.animate=(t,local)=>{
     if(introBornAt===undefined&&t>0)introBornAt=t;
+    const introSeconds=t-(introBornAt??t);
+    clover.points.scale.setScalar(innerWidth<=900?mix(.95,1.12,ease(6.05,8.5,introSeconds)):1.12);
     clover.points.rotation.y=Math.sin(t*.12)*.09;
-    clover.update({time:t,assembly:clamp((t-(introBornAt??t))/3.2)*1.2,departure:ease(.58,1,local),height,dpr});
+    clover.update({time:t,introSeconds,departure:ease(.58,1,local),height,dpr});
   };
   register(opening);
 
@@ -232,6 +235,7 @@ export async function createWorld(container) {
   for(let i=0;i<240;i++){dustPositions[i*3]=(rand()-.5)*35;dustPositions[i*3+1]=(rand()-.5)*22;dustPositions[i*3+2]=(rand()-.5)*30;}
   const dustGeo=new T.BufferGeometry();dustGeo.setAttribute('position',new T.BufferAttribute(dustPositions,3));
   const dust=new T.Points(dustGeo,new T.PointsMaterial({color:0xb8aa75,size:.025,transparent:true,opacity:.55,depthWrite:false,sizeAttenuation:true}));scene.add(dust);
+  const memories=createMemoryRiver(scene,info,Math.min(2,renderer.capabilities.getMaxAnisotropy()));
 
   const desktopCamera=[
     {p:[-.7,3.5,13.5],t:[0,.5,0]}, {p:[1.7,3.7,12],t:[0,.5,0]},
@@ -267,12 +271,13 @@ export async function createWorld(container) {
     });
   }
   let lastTime=0,slowFrames=0,frames=0;
-  function update(progress,local,t){
+  function update(progress,local,t,journeyPhase=progress+local){
     clockTime=t;currentProgress=progress;currentLocal=local;
     pointer.lerp(pointerTarget,.035);
     const a=Math.floor(progress),b=Math.min(7,a+1),f=progress-a,cameras=small?mobileCamera:desktopCamera;
     eye.fromArray(cameras[a].p).lerp(V(...cameras[b].p),f);
     aim.fromArray(cameras[a].t).lerp(V(...cameras[b].t),f);
+    if(a===0)eye.z+=mix(-1.4,.3,ease(1,8.5,t-(introBornAt??t)))*(1-f);
     if(a===4){
       const push=ease(.08,.74,local)*(1-f);
       eye.z-=push*(small?12:10);eye.y-=push*(small?3:3.5);eye.x-=push*2;
@@ -291,8 +296,16 @@ export async function createWorld(container) {
       g.scale.setScalar(scale*(.93+.07*weight));
       // On a phone the scene sits below the text; the hall keeps its true width.
       g.position.set(sceneOffset+(i-progress)*3,small?(i===4?-7.5:-1.5):0,0);
-      opacity(g,weight);g.userData.animate?.(t,i===a?local:0);
+      const chapterLocal=i===a?local:0;
+      opacity(g,weight);g.userData.animate?.(t,chapterLocal);
+      g.userData.photos.forEach((p,n)=>{
+        const start=(i===4?.18:.02)+n*.14;
+        const arrival=ease(start,start+.19,chapterLocal);
+        p.position.y-=.3*(1-arrival);
+        p.traverse(o=>{if(o.material){o.material.opacity=o.material.userData.baseOpacity*weight*arrival;o.material.transparent=true;o.material.depthWrite=false;}});
+      });
     }
+    memories.update(journeyPhase,camera,small,t);
     dust.rotation.y=t*.006;dust.rotation.z=Math.sin(t*.03)*.04;
     warm.intensity=progress>3.5&&progress<4.5?90:65;
     renderer.render(scene,camera);
@@ -303,5 +316,5 @@ export async function createWorld(container) {
   }
   update(0,0,0);
   // A public diagnostic contains no visitor data and is useful for visual QA.
-  return {update,resize,pause:()=>{},get stats(){return {drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,progress:currentProgress,local:currentLocal,dpr};}};
+  return {update,resize,pause:()=>{},get stats(){return {drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,progress:currentProgress,local:currentLocal,dpr,memories:memories.stats};}};
 }
