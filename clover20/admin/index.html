@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#15271f">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>เพื่อนที่กำลังกลับมาเจอกัน — Clover 20</title>
+  <link rel="icon" href="../assets/clover-logo.png" type="image/png">
+  <link rel="preload" href="../assets/fonts/Kanit-Light.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./admin.css?v=20261016-1">
+  <script type="module" src="./admin.js?v=20261016-1"></script>
+</head>
+<body>
+  <header class="header wrap">
+    <a class="brand" href="../" aria-label="เปิดบัตรเชิญ Clover 20"><img src="../assets/clover-logo.png" width="36" height="39" alt=""><span>CLOVER GROUP<small>20 YEARS TOGETHER</small></span></a>
+    <a class="invite-link" href="../">ดูบัตรเชิญ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
+  </header>
+  <main class="wrap">
+    <section class="overview" aria-labelledby="page-title">
+      <div class="intro">
+        <p class="eyebrow"><span></span> THE HOMECOMING / 20 OCT 2026</p>
+        <h1 id="page-title">เพื่อนที่กำลัง<br><em>กลับมาเจอกัน</em></h1>
+        <p class="intro-note">ทุกชื่อคือคนที่เราคิดถึง<br>ทุกข้อความคือเรื่องราวที่อยากฟังอีกครั้ง</p>
+      </div>
+      <div class="summary" aria-label="ภาพรวมคำตอบรับ">
+        <div class="total-card">
+          <div class="card-top"><span>ตอบรับร่วมงานแล้ว</span><span class="live-dot" aria-hidden="true"></span></div>
+          <p class="total"><strong id="total">—</strong><span>คำตอบรับ</span></p>
+          <div class="card-bottom"><span>WELCOME HOME</span><span>20 / CLOVER</span></div>
+          <div class="leaf-art" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="story-stat"><span class="story-icon" aria-hidden="true">“</span><p><strong id="stories">—</strong> เรื่องราว<small>ที่เพื่อนฝากไว้ก่อนพบกัน</small></p><span class="small-flower" aria-hidden="true">✳</span></div>
+      </div>
+    </section>
+    <section class="friends" aria-labelledby="friends-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">A LITTLE CLOSER TO REUNION</p><h2 id="friends-title">รายชื่อและเรื่องเล่า</h2></div>
+        <button class="export" id="export" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg><span>ดาวน์โหลดทั้งหมด · CSV</span></button>
+      </div>
+      <div class="toolbar">
+        <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="sr-only">ค้นหาชื่อหรือข้อความ</span><input id="search" type="search" placeholder="ค้นหาชื่อ หรือเรื่องที่เพื่อนฝากไว้" maxlength="100" autocomplete="off"></label>
+        <div class="filters" aria-label="กรองคำตอบรับ"><button type="button" data-filter="all" aria-pressed="true">ทั้งหมด</button><button type="button" data-filter="stories" aria-pressed="false">มีข้อความฝากไว้</button></div>
+      </div>
+      <div class="list-meta"><p id="result-status" role="status" aria-live="polite">กำลังเปิดรายชื่อเพื่อน…</p><button id="refresh" type="button" aria-label="อัปเดตข้อมูลล่าสุด"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M18.5 7A7 7 0 0 0 6 6l-2 6m2 5a7 7 0 0 0 12 1l2-6"/></svg><span>อัปเดต</span></button></div>
+      <p class="error" id="error" role="alert" hidden></p>
+      <div class="guest-grid" id="guest-grid" aria-busy="true"></div>
+      <div class="empty" id="empty" hidden><span aria-hidden="true">✳</span><h3 id="empty-title">รอเพื่อนคนแรกกลับบ้าน</h3><p id="empty-copy">เมื่อมีคนตอบรับ ชื่อและเรื่องราวจะมาอยู่ตรงนี้</p></div>
+      <button class="load-more" id="load-more" type="button" hidden>ดูเพื่อนเพิ่มเติม <span aria-hidden="true">↓</span></button>
+      <p class="updated" id="updated"></p>
+      <noscript><p class="error">เปิด JavaScript เพื่อดูรายชื่อและดาวน์โหลดคำตอบรับนะ</p></noscript>
+    </section>
+  </main>
+  <footer class="footer wrap"><img src="../assets/clover-wordmark.png" width="180" alt="Clover Group — Anywhere We Can Grow"><p>โชคดี ที่เราเคยได้เจอกัน<br><span>20 ปีแห่งความหวังดีที่ส่งต่อกัน</span></p></footer>
+</body>
+</html>

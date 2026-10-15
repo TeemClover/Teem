@@ -3,6 +3,7 @@ import {readFile,stat} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRegistrationHandler} from '../../api/_lib/clover20-registration.js';
+import {createGuestsHandler} from '../../api/_lib/clover20-guests.js';
 import {createFileStore} from './preview-store.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
@@ -10,15 +11,16 @@ const port=Number(process.env.CLOVER20_PREVIEW_PORT||4178);
 const storePath=process.env.CLOVER20_PREVIEW_STORE||`/private/tmp/clover20-preview-${process.pid}/rsvp.json`;
 const store=createFileStore(storePath);
 const handler=createRegistrationHandler({getStore:async()=>store});
+const guestsHandler=createGuestsHandler({getStore:async()=>store});
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.ttf':'font/ttf','.ics':'text/calendar; charset=utf-8'};
 const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');
-    if(url.pathname==='/api/clover20-rsvp'){
+    if(url.pathname==='/api/clover20-rsvp'||url.pathname==='/api/clover20-guests'){
       let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){res.writeHead(413);res.end('{}');return;}}
       req.body=body;
-      res.status=code=>{res.statusCode=code;return res;};res.json=data=>res.end(JSON.stringify(data));
-      await handler(req,res);return;
+      res.status=code=>{res.statusCode=code;return res;};res.json=data=>res.end(JSON.stringify(data));res.send=data=>res.end(data);
+      await (url.pathname==='/api/clover20-rsvp'?handler:guestsHandler)(req,res);return;
     }
     if(url.pathname==='/'||url.pathname==='/clover20'){res.writeHead(302,{Location:'/clover20/'});res.end();return;}
     if(!url.pathname.startsWith('/clover20/')){res.writeHead(404);res.end('Not found');return;}

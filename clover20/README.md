@@ -22,7 +22,7 @@ The hall uses 10,000 instances per seat component, simple geometry and GPU-contr
 
 `POST /api/clover20-rsvp` uses the existing repository dependency `@neondatabase/serverless`. Configure `DATABASE_URL` or `POSTGRES_URL` in the **intended deployment environment**; optionally set a stable private `CLOVER20_RATE_SALT`. No database credentials enter frontend assets.
 
-The form has only a name and an optional story. It does not collect contact details or require a consent checkbox. The first accepted request initializes the dedicated `mc_clover20_replies` table. Records include name, optional message, privacy-notice version, creation time, payload hash, hashed source IP, and a receipt. This separate table can coexist with the earlier unshipped RSVP schema without changing previous records. There is no public list/read endpoint. Retrieve the guest list through the database's authorized administration tools. Do not export personal records into this public repository.
+The form has only a name and an optional story. It does not collect contact details or require a consent checkbox. The first accepted request initializes the dedicated `mc_clover20_replies` table. Records include name, optional message, privacy-notice version, creation time, payload hash, hashed source IP, and a receipt. This separate table can coexist with the earlier unshipped RSVP schema without changing previous records. Do not export personal records into this public repository.
 
 Writes are committed before the client receives acceptance. Idempotent retries reuse the same receipt; changed data with the same request ID is rejected. An unavailable database returns 503 and the page retains the form. Same-origin checks, an input limit, a honeypot, and a database-backed submission limit are included. No email or LINE message is sent automatically.
 
@@ -31,6 +31,16 @@ Before sending invitations, confirm the venue, verify the target environment's d
 ## Checks
 
 Run `node --test tests/clover20/registration.test.mjs`. The checks cover durable writes, concurrent idempotent retries, changed-payload conflicts, name and input validation, origin and method boundaries, storage failure, and durable rate limiting.
+
+## Guest dashboard
+
+`https://www.myclover.com/clover20/admin/` is a mobile-first, read-only card dashboard showing the number of responses, names, stories, and Bangkok submission times. It has search, a stories-only filter, refresh, and cursor pagination. The total is a count of submitted responses; repeated names are not automatically merged.
+
+At the owner's explicit request, this page and `GET /api/clover20-guests` require **no login**. Anyone with the link can view the names and stories and download all responses as CSV. There is no edit or delete action, no navigation link from the invitation, and no public credentials. `noindex`/`noarchive` and no-store headers reduce indexing and caching; they are not access control. Only names, messages, submission times, aggregate counts, and a pagination cursor leave the API; IP hashes, request IDs, payload hashes, and notice metadata are omitted.
+
+The CSV export (`?format=csv`) includes all responses regardless of the current search/filter, with a UTF-8 BOM for Thai text, quoted fields, CRLF records, Bangkok dates, and spreadsheet-formula escaping. The read adapter uses the same deployment database as registration, performs only SELECTs, and does not initialize or migrate tables. Local preview reads the same private temporary file used by its form adapter, never production records.
+
+Run `node --test tests/clover20/*.test.mjs` to check registration and dashboard contracts, paging/filtering, CSV escaping, and unavailable storage behavior.
 
 The frontend and local RSVP have also been exercised in a browser at phone and desktop widths. QA screenshots and local test records stay outside this checkout.
 
