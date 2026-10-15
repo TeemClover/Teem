@@ -40,7 +40,7 @@ The frontend and local RSVP have also been exercised in a browser at phone and d
 
 To recreate the optimized photographs, install `sharp` in your tool environment and run `node tools/clover20/prepare-assets.cjs /absolute/path/to/the/original/screenshots`. Prepared assets are already checked in; this is unnecessary for preview or deployment.
 
-The existing `/invite/` redirect and all other routes are preserved. This experience has its own `/clover20/` route. This work was prepared on an isolated branch from the fetched remote main branch; deployment is a separate action.
+The existing `/invite/` redirect and all other routes are preserved. This experience has its own `/clover20/` route. The public invitation URL approved for publication is `https://www.myclover.com/clover20/`; production is released through the repository's `main` branch and its existing Vercel Git integration.
 
 ## Revision 2
 
@@ -56,4 +56,4 @@ The opening now reads “20 ปีแห่งความหวังดีท�
 
 The approved 20th-anniversary poster is retained as `assets/clover20-poster.jpg`. `assets/clover20-share-v1.jpg` is a 1200 × 1200 JPEG that reframes its original numeral and photographs with the official symbol and clear invitation text. It remains recognizable at a small square chat-thumbnail size. Recreate it with `node tools/clover20/prepare-share.cjs` and `sharp` available in the tool environment. No faces were generated or reconstructed.
 
-The initial HTML includes the title, description, image URL, type, dimensions and alternative text; no JavaScript is required for crawlers. The image uses the public repository's immutable asset commit, so deleting a development branch or preview deployment cannot break the image URL. The website itself still needs a public URL that crawlers can read without logging in. A Vercel-protected preview cannot produce a LINE link preview until the page is publicly published. LINE rendering has not been verified inside the native LINE app. See [LINE's URL-preview documentation](https://developers.line.biz/en/faq/#how-are-the-url-previews-generated).
+The initial HTML includes the title, description, canonical public URL, image URL, type, dimensions and alternative text; no JavaScript is required for crawlers. The page and JPEG share the approved `www.myclover.com` domain. A Vercel-protected preview still requires authentication; use the public invitation URL when sharing. LINE rendering has not been verified inside the native LINE app. See [LINE's URL-preview documentation](https://developers.line.biz/en/faq/#how-are-the-url-previews-generated).
