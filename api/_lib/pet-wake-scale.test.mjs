@@ -73,6 +73,9 @@ function fakeSql() {
   };
 }
 
+// Exercise the retained scheduler algorithm in isolation; production stays disabled.
+mock.module('./scheduled-notifications.js', {namedExports:{SCHEDULED_NOTIFICATIONS_ENABLED:true}});
+
 mock.module('./core.js', {
   namedExports: {
     database: fakeSql,

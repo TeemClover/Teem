@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { SCHEDULED_NOTIFICATIONS_ENABLED } from '../api/_lib/scheduled-notifications.js';
 
 function must(path, pattern, reason) {
   if (!existsSync(path)) throw new Error(`${path}: missing (${reason})`);
@@ -27,5 +28,6 @@ mustNot('api/_lib/xty-party-finish.js', /from ['"]\.\.\/\[\.\.\.path\]\.js['"]/,
 const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
 if (config.outputDirectory !== 'dist') throw new Error('vercel.json: TeamBook must publish dist at project root');
 if (!config.rewrites?.some(item => item.source === '/api/teambook/:path*')) throw new Error('vercel.json: missing canonical TeamBook API rewrite');
-if (!config.crons?.some(item => ['/api/teambook-pet', '/api/teambook-pet-compat'].includes(item.path))) throw new Error('vercel.json: PET cron is not wired inside TeamBook project');
+const petCron = config.crons?.some(item => ['/api/teambook-pet', '/api/teambook-pet-compat'].includes(item.path));
+if (Boolean(petCron) !== SCHEDULED_NOTIFICATIONS_ENABLED) throw new Error('vercel.json: PET schedule must match the resource-conservation switch');
 console.log('TeamBook runtime wiring OK.');

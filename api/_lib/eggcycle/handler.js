@@ -1,3 +1,4 @@
+import {SCHEDULED_NOTIFICATIONS_ENABLED} from '../scheduled-notifications.js';
 import {createHash,createHmac,randomBytes,timingSafeEqual} from 'node:crypto';
 import {blankState,validateState,todayBangkok,reminders} from '../../../eggcycle/cycle.js';
 const COOKIE='eggcycle_session',TTL=30*86400;
@@ -32,6 +33,7 @@ export function createHandler({store,env=process.env,clock=()=>new Date(),fetchI
         if(req.method!=='GET')return json({error:'METHOD_NOT_ALLOWED'},405);
         if(!env.CRON_SECRET)return json({error:'CRON_NOT_CONFIGURED'},503);
         if(!equal(req.headers.authorization||'',`Bearer ${env.CRON_SECRET}`))return json({error:'UNAUTHORIZED'},401);
+        if(!SCHEDULED_NOTIFICATIONS_ENABLED)return json({ok:true,skipped:'scheduled_notifications_disabled',sent:0});
         // Previews must never send health reminders to the production recipient.
         if(env.VERCEL_ENV&&env.VERCEL_ENV!=='production')return json({ok:true,skipped:'preview'});
         const state=await store.load();
@@ -67,9 +69,10 @@ export function createHandler({store,env=process.env,clock=()=>new Date(),fetchI
       }
       if(!authed)return json({error:'กรุณาเข้าสู่ระบบ'},401);
       if(action==='logout'&&req.method==='POST'){setCookie(res,'',0,secure);return json({ok:true});}
-      if(action==='state'&&req.method==='GET')return json({state:await store.load(),telegramConfigured:Boolean(telegramConfig(env).token&&telegramConfig(env).chat),delivery:await store.status(),today:todayBangkok(now)});
+      if(action==='state'&&req.method==='GET')return json({state:await store.load(),telegramConfigured:Boolean(telegramConfig(env).token&&telegramConfig(env).chat),notificationsScheduled:SCHEDULED_NOTIFICATIONS_ENABLED,delivery:await store.status(),today:todayBangkok(now)});
       if(action==='save'&&req.method==='POST')return json({state:await store.save(validateState(body,todayBangkok(now)))});
       if(action==='test'&&req.method==='POST'){
+        if(!SCHEDULED_NOTIFICATIONS_ENABLED)return json({error:'พักการส่งแจ้งเตือนเพื่อประหยัดทรัพยากร'},409);
         if(env.VERCEL_ENV&&env.VERCEL_ENV!=='production')return json({error:'ทดสอบส่งได้เฉพาะระบบจริง เพื่อป้องกันข้อความจาก preview'},409);
         if(await store.limited('test',ms,3,60000))return json({error:'กรุณารอ 1 นาทีก่อนทดสอบอีกครั้ง'},429);
         await sendTelegram(env,'🌷 Eggcycle เชื่อมต่อแล้ว\nแตะปุ่มด้านล่างเพื่อเปิดปฏิทินส่วนตัว',fetchImpl);return json({ok:true});

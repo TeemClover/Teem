@@ -1,3 +1,4 @@
+import {SCHEDULED_NOTIFICATIONS_ENABLED} from '../scheduled-notifications.js';
 import {webCheckout} from './web-checkout.js';
 import {shopCarousel,productCard,CARD_PRODUCTS} from './shop-cards.js';
 import {createHash} from 'node:crypto';
@@ -100,6 +101,7 @@ export function createHandler({store,providers,env=process.env,clock=()=>Date.no
     if(!configured())return json({ok:true,skipped:'not_connected'});
     if(!['GET','POST'].includes(req.method))throw new Fault('METHOD_NOT_ALLOWED',405);
     if(!env.CRON_SECRET||!same(req.headers.authorization,`Bearer ${env.CRON_SECRET}`))throw new Fault('UNAUTHORIZED',401);
+    if(!SCHEDULED_NOTIFICATIONS_ENABLED)return json({ok:true,skipped:'scheduled_notifications_disabled'});
     await store.ensure();await queueOwnerAttention(store,env,clock());for(const row of await store.drainRows(now)){if(clock()-now>45000)break;await dispatch(store,providers,row.id,clock());}await store.cleanup(clock());return json({ok:true});
    }
    const key=adminPassword(env);if(!operatorReady())throw new Fault('ADMIN_NOT_CONFIGURED',503);

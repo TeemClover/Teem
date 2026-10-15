@@ -121,4 +121,4 @@ document.addEventListener('keydown', event => {
   captureComposer();
 }, true);
 
-setTimeout(() => { void introduceCollectibleWhiteCat(); }, 650);
+// Automatic intro is paused; explicit addressed messages still use poke().

@@ -138,5 +138,5 @@ document.addEventListener('keydown', event => {
   captureComposer();
 }, true);
 
-setTimeout(() => { void catchUpFirstScheduledWake(); }, 420);
-setTimeout(() => { void introduceCollectibleWhiteCat(); }, 650);
+// Automatic scheduled-wake catchup is paused for resource conservation.
+// Automatic intro is paused; explicit addressed messages still use poke().

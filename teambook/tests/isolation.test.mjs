@@ -76,7 +76,7 @@ test('deployment root exposes TeamBook routes without a folder prefix', () => {
   const projectConfig = JSON.parse(readFileSync(join(ROOT, '../vercel.json'), 'utf8'));
   assert.ok(config.redirects.some(item => item.source === '/teambook/:path*' && item.destination === '/:path*'));
   assert.ok(config.rewrites.some(item => item.source === '/api/teambook/:path*'));
-  assert.ok(config.crons.some(item => item.path === '/api/teambook-pet'));
+  assert.deepEqual(config.crons, []);
 });
 
 test('runtime source has no CORE7 or legacy data boundary', () => {

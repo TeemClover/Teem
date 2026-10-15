@@ -1,9 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    {"path":"/api/eggcycle?action=cron","schedule":"0 * * * *"},
-    {"path": "/api/xty-pet", "schedule": "27 5,11,17,23 * * *"}
-  ],
+  "crons": [],
   "redirects": [
     {"source":"/short/studio","destination":"/short/studio/","permanent":false},
     {"source":"/short/admin","destination":"/short/admin/","permanent":false},

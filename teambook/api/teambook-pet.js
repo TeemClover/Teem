@@ -1,3 +1,4 @@
+import { SCHEDULED_NOTIFICATIONS_ENABLED } from './_lib/scheduled-notifications.js';
 import {
   currentUser, database, ensureSchema, sameOrigin, sendJson, sha256,
 } from './_lib/core.js';
@@ -384,16 +385,24 @@ export default async function handler(req, res) {
     if (req.method !== 'GET' && req.method !== 'POST') {
       return sendJson(res, { ok: false, error: 'METHOD_NOT_ALLOWED' }, 405);
     }
-    const sql = database(); await ensureSchema(sql);
-
-    if (req.method === 'POST' && req.body?.mode === 'direct') return directReply(req, res, sql);
-    if (req.method === 'POST' && req.body?.mode === 'white_cat_intro') return whiteCatIntro(req, res, sql);
-    if (req.method === 'POST' && req.body?.mode === 'first_wake_catchup') return firstWakeCatchup(req, res, sql);
+    const mode = req.method === 'POST' ? req.body?.mode : '';
+    if (['direct', 'white_cat_intro', 'first_wake_catchup'].includes(mode)) {
+      if (mode !== 'direct' && !SCHEDULED_NOTIFICATIONS_ENABLED) return sendJson(res, { ok: true, skipped: 'scheduled_notifications_disabled' });
+      if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
+      if (!/^\d{5}$/.test(String(req.body?.code || '').trim())) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
+      const sql = database(); await ensureSchema(sql);
+      if (mode === 'direct') return directReply(req, res, sql);
+      if (mode === 'white_cat_intro') return whiteCatIntro(req, res, sql);
+      if (mode === 'first_wake_catchup') return firstWakeCatchup(req, res, sql);
+    }
 
     if (!process.env.CRON_SECRET) return sendJson(res, { ok: false, error: 'CRON_SECRET_NOT_CONFIGURED' }, 503);
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
       return sendJson(res, { ok: false, error: 'UNAUTHORIZED' }, 401);
     }
+
+    if (!SCHEDULED_NOTIFICATIONS_ENABLED) return sendJson(res, { ok: true, skipped: 'scheduled_notifications_disabled' });
+    const sql = database(); await ensureSchema(sql);
 
     const force = ['1', 'true', 'yes'].includes(String(req.query?.force || '').toLowerCase());
     const tuning = wakeTuning();

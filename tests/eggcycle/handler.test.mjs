@@ -1,6 +1,8 @@
-import test from 'node:test';
+import test,{mock} from 'node:test';
 import assert from 'node:assert/strict';
-import {createHandler,passwordFor} from '../../api/_lib/eggcycle/handler.js';
+// Retained delivery algorithm is tested only behind a mocked opt-in; production is paused.
+mock.module('../../api/_lib/scheduled-notifications.js',{namedExports:{SCHEDULED_NOTIFICATIONS_ENABLED:true}});
+const {createHandler,passwordFor}=await import('../../api/_lib/eggcycle/handler.js');
 import {blankState} from '../../eggcycle/cycle.js';
 import {call,memoryStore} from './fixture.mjs';
 const env={BACKOFFICE_ADMIN_KEY:'test-only-secret',CRON_SECRET:'cron-secret',TELEGRAM_BOT_TOKEN:'fake-token',TELEGRAM_CHAT_ID:'private-room'};

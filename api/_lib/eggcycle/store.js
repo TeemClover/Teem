@@ -10,6 +10,13 @@ export async function ensureSchema(sql){
   if(!ready.has(sql))ready.set(sql,(async()=>{for(const q of SCHEMA)await sql.query(q);})().catch(e=>{ready.delete(sql);throw e;}));
   return ready.get(sql);
 }
+export function lazyStore(getDatabase,env=process.env){
+  let pending;
+  return new Proxy({}, {get:(_,key)=>(...args)=>{
+    pending ||= (async()=>{const sql=getDatabase();await ensureSchema(sql);return sqlStore(sql,env);})().catch(e=>{pending=null;throw e;});
+    return pending.then(store=>store[key](...args));
+  }});
+}
 export function sqlStore(sql,env=process.env){return {
   async load(){
     const initial=validDate(env.EGGCYCLE_INITIAL_PERIOD_START)?env.EGGCYCLE_INITIAL_PERIOD_START:'';

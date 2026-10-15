@@ -8,11 +8,9 @@ import {
 const root = new URL('../../', import.meta.url);
 const text = path => readFileSync(new URL(path, root), 'utf8');
 
-test('Vercel schedules the XTY living pet worker at all four Bangkok :27 wake slots', () => {
+test('Vercel scheduled notification workers stay paused for resource conservation', () => {
   const config = JSON.parse(text('vercel.json'));
-  const petCron = (config.crons || []).find(entry => entry.path === '/api/xty-pet');
-  assert.ok(petCron, 'vercel.json must invoke /api/xty-pet');
-  assert.equal(petCron.schedule, '27 5,11,17,23 * * *');
+  assert.deepEqual(config.crons, []);
 });
 
 test('GitHub manual wake runs the real due-room scheduler and does not duplicate the automatic cron', () => {
