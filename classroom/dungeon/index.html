@@ -356,10 +356,6 @@ html[data-voice="raw"] .tp{display:none!important}
 .rowbtns{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 .gatehelp{max-width:620px;margin:18px auto 0;border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px;text-align:left;background:rgba(255,255,255,.03);color:#c8d5ce;font-size:14.5px;line-height:1.85}
 .gatehelp b{color:var(--gold)}
-.exitnav{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:640px;margin:30px auto 0}
-.exitnav a{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.03);color:#d3ded8;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}
-.exitnav a:hover{border-color:rgba(240,201,108,.5);background:rgba(240,201,108,.09);color:#ffeab4}
-.exitnav em{font-style:normal;font-size:22px;line-height:1}
 footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 
 /* ── modal shell ─────────────────────────────────────────── */
@@ -582,7 +578,6 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .fsay,.tlsay,.lvtext{font-size:16px}
   .trace{font-size:14px}
   .stagenote{font-size:14px}
-  .exitnav a{font-size:14.5px}
 }
 @media(max-width:560px){
   #p1,#p2,#p3,#p4,#vault{padding-top:58px;padding-bottom:66px}
@@ -607,7 +602,6 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .rpgbtns{flex:1}
   .rpgbtns .btn{flex:1}
   .statrow{grid-template-columns:72px 1fr 68px;gap:8px}
-  .exitnav{grid-template-columns:repeat(2,1fr)}
   .mbox{padding:13px}
 }
 /* ══════════════════════════════════════════════════════════════
@@ -910,22 +904,6 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
 .chestwrap:has(.chest.open) .relics span.got{box-shadow:0 0 26px rgba(255,215,110,.8),inset 0 0 12px rgba(255,236,190,.4)}
 .chestwrap:has(.chest.broke) .relics span{filter:grayscale(1) brightness(.45);box-shadow:none;animation-duration:40s}
 
-/* NEXT EVOLUTION · ทางออกหลักของด่าน → /ai-source/ */
-.evo-cta{position:relative;isolation:isolate;display:grid;gap:8px;justify-items:center;max-width:640px;margin:34px auto 0;padding:26px clamp(18px,4vw,34px) 24px;
-  border-radius:22px;overflow:hidden;text-decoration:none;color:#f3f7ff;text-align:center;
-  box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 60px rgba(240,201,108,.14);transition:transform .25s,box-shadow .25s}
-.evo-cta::before{content:"";position:absolute;inset:-60%;z-index:-2;background:conic-gradient(from 0deg,#6ee7a8,#8ec9ff,#f0c96c,#ff9b85,#6ee7a8);animation:spin 6s linear infinite}
-.evo-cta::after{content:"";position:absolute;inset:1.5px;z-index:-1;border-radius:20.5px;
-  background:radial-gradient(120% 90% at 50% 0%,rgba(240,201,108,.16),transparent 60%),radial-gradient(90% 80% at 50% 120%,rgba(142,201,255,.14),transparent 60%),linear-gradient(180deg,#0c1220,#06080f)}
-.evo-cta .ek{color:var(--sky);font:700 10.5px/1.5 var(--mono);letter-spacing:.18em}
-.evo-cta b{display:block;color:#fff4dc;font-size:clamp(22px,3.6vw,30px);line-height:1.35;font-weight:800;letter-spacing:-.02em;text-shadow:0 0 28px rgba(240,201,108,.4);text-wrap:balance}
-.evo-cta .es{max-width:52ch;color:#c9d6e6;font-size:15.5px;line-height:1.8}
-.evo-cta .es strong{color:#fff}
-.evo-cta .ego{margin-top:8px;padding:12px 22px;border-radius:12px;font-style:normal;font-weight:800;font-size:15px;color:#1a1306;
-  background:linear-gradient(180deg,#ffe7a8,#f0c96c 55%,#d9a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 30px rgba(240,201,108,.35);transition:transform .2s}
-.evo-cta:hover{transform:translateY(-3px);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 80px rgba(240,201,108,.24)}
-.evo-cta:hover .ego{transform:translateX(3px)}
-.evo-cta:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 
 @media(max-width:560px){
   .chestwrap{min-height:360px}
@@ -934,11 +912,91 @@ section:not(#p1) .eyebrow::before{content:"";width:6px;height:6px;border-radius:
   .chestglow{width:300px;height:300px}
   .relics{width:304px;height:240px;margin:-120px 0 0 -152px}
   .relics span{width:32px;height:32px;font-size:15px;offset-path:path("M152,171 A152,38 0 0,0 152,95 A152,38 0 0,0 152,171")}
-  .evo-cta .es{font-size:15px}
 }
 @media(prefers-reduced-motion:reduce){
-  .halo,.halo i,.chestglow i,.evo-cta::before,#vault::after{animation:none!important}
+  .halo,.halo i,.chestglow i,#vault::after{animation:none!important}
   .relics span{animation:none!important;offset-distance:calc(var(--o,0) * 1%)}
+}
+
+/* ══ 3 ทางไปต่อ · DIY / DWY / DFY ══════════════════════════════
+   DWY (นัดคุยกัน) คือทางที่อยากให้เลือก: ลงมาเป็นใบสุดท้าย ตรงกลาง มีแสง ระเบิดวงทอง และหายใจต่อ
+   ไม่มี JS = ไม่มีคลาส arm → การ์ดโชว์ครบในสภาพสุดท้ายทันที */
+.paths{position:relative;max-width:1000px;margin:48px auto 0;text-align:center}
+.paths .pk{display:inline-block;color:var(--sky);font:700 10.5px/1.5 var(--mono);letter-spacing:.2em}
+.paths h3{margin:10px 0 6px;color:#fff4dc;font-size:clamp(25px,4vw,36px);line-height:1.3;font-weight:800;letter-spacing:-.025em;text-shadow:0 0 34px rgba(240,201,108,.35);text-wrap:balance}
+.paths .psub{margin:0;color:#9fb1c6;font-size:15.5px}
+.pgrid{position:relative;isolation:isolate;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:16px;align-items:stretch;margin-top:30px}
+.pgrid::before{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:min(620px,90%);height:150%;translate:-50% -50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(240,201,108,.26),rgba(240,201,108,.08) 55%,transparent)}
+.path{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:22px 20px 20px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));color:#e7eef8;text-align:left;text-decoration:none;
+  transition:transform .25s,border-color .25s,background .25s}
+.path:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.3);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.path:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.path .pi{font-size:26px;line-height:1}
+.path .pt{font:700 10.5px/1.5 var(--mono);letter-spacing:.16em;color:var(--sky)}
+.path b{color:#fff;font-size:23px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+.path p{margin:0;color:#b8c5d5;font-size:14.5px;line-height:1.75}
+.path p strong{color:#fff}
+.path .pgo{margin-top:auto;padding-top:12px;font-style:normal;font-weight:800;font-size:14.5px;color:#e7eef8;transition:translate .2s}
+.path:hover .pgo{translate:3px 0}
+.path.diy .pt{color:var(--green)}
+.path.dfy .pt{color:#3fdc86}
+.path.dfy .pgo{color:#7ef0ad}
+/* DWY · ทางหลัก */
+.path.dwy{padding:30px 24px 24px;border:0;gap:9px;box-shadow:0 26px 80px rgba(0,0,0,.55),0 0 70px rgba(240,201,108,.2)}
+.path.dwy::before{content:"";position:absolute;inset:-60%;z-index:-2;background:conic-gradient(from 0deg,#f0c96c,#ffe7a8,#ff9b85,#8ec9ff,#f0c96c);animation:spin 5s linear infinite}
+.path.dwy::after{content:"";position:absolute;inset:2px;z-index:-1;border-radius:18px;
+  background:radial-gradient(120% 80% at 50% 0%,rgba(240,201,108,.22),transparent 60%),linear-gradient(180deg,#14110a,#07080d)}
+.path.dwy:hover{background:none;transform:translateY(-5px)}
+.path.dwy .pt{color:var(--gold)}
+.path.dwy b{font-size:29px;color:#fff4dc;text-shadow:0 0 26px rgba(240,201,108,.45)}
+.path.dwy p{color:#d9d2c0;font-size:15px}
+.path.dwy .pgo{position:relative;overflow:hidden;align-self:stretch;margin-top:auto;padding:13px 18px;border-radius:12px;text-align:center;color:#1a1306;font-size:15.5px;
+  background:linear-gradient(180deg,#ffe7a8,#f0c96c 55%,#d9a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 12px 34px rgba(240,201,108,.4)}
+.path.dwy .pgo::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);animation:pShine 3.6s ease-in-out 2.4s infinite}
+.path.dwy:hover .pgo{translate:0 0}
+.pbadge{position:absolute;top:14px;right:14px;padding:4px 10px;border-radius:999px;background:var(--gold);color:#1a1306;font:800 11px/1.3 var(--sans);box-shadow:0 0 18px rgba(240,201,108,.6)}
+.pburst{position:absolute;inset:0;z-index:3;border-radius:20px;border:2px solid #ffe7a8;opacity:0;pointer-events:none}
+@keyframes pShine{0%,60%{left:-60%}100%{left:130%}}
+/* entrance · JS ใส่ arm ก่อน แล้วใส่ go ตอนเลื่อนถึง */
+.paths.arm .pk,.paths.arm h3,.paths.arm .psub,.paths.arm .path,.paths.arm .pbadge,.paths.arm .pgrid::before{opacity:0}
+.paths.go .pk{animation:pFade .6s ease both}
+.paths.go h3{animation:pRise .8s cubic-bezier(.2,.8,.2,1) .1s both}
+.paths.go .psub{animation:pFade .7s ease .3s both}
+/* การ์ดเล่นแยก (go2) ตอน DWY โผล่ครึ่งใบ · ไม่งั้นมันลงมาตอนอยู่ใต้ขอบจอ แล้วไม่มีใครเห็น */
+.paths.go2 .path.diy{animation:pRise .75s cubic-bezier(.2,.8,.2,1) .1s both}
+.paths.go2 .path.dfy{animation:pRise .75s cubic-bezier(.2,.8,.2,1) .25s both}
+.paths.go2 .path.dwy{animation:pHero 1.15s cubic-bezier(.2,.9,.25,1.05) .6s both,pBreathe 3.4s ease-in-out 2.2s infinite}
+.paths.go2 .pgrid::before{animation:pSpot 1.6s ease .75s both}
+.paths.go2 .pburst{animation:pBurst 1.1s ease-out 1.1s both}
+.paths.go2 .pbadge{animation:pPop .55s cubic-bezier(.3,1.6,.5,1) 1.5s both}
+@keyframes pFade{from{opacity:0}to{opacity:1}}
+@keyframes pRise{from{opacity:0;translate:0 34px;filter:blur(6px)}to{opacity:1;translate:0 0;filter:none}}
+@keyframes pHero{0%{opacity:0;translate:0 -30px;scale:1.2;filter:blur(12px) brightness(2.2)}55%{opacity:1;translate:0 4px;scale:.97;filter:none}100%{opacity:1;translate:0 0;scale:1}}
+@keyframes pBreathe{0%,100%{box-shadow:0 26px 80px rgba(0,0,0,.55),0 0 70px rgba(240,201,108,.2)}50%{box-shadow:0 26px 80px rgba(0,0,0,.55),0 0 110px rgba(240,201,108,.45)}}
+@keyframes pSpot{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+@keyframes pBurst{0%{opacity:.95;scale:.94}100%{opacity:0;scale:1.22}}
+@keyframes pPop{from{opacity:0;scale:.3}to{opacity:1;scale:1}}
+@media(max-width:760px){
+  .pgrid{grid-template-columns:1fr;gap:12px}
+  .path.dwy{order:-1}
+  .pgrid::before{top:24%;height:70%}
+  .path:not(.dwy){display:grid;grid-template-columns:auto 1fr;column-gap:12px;row-gap:3px;padding:16px}
+  .path:not(.dwy) .pi{grid-row:span 4;align-self:start;font-size:24px}
+  .path:not(.dwy) b{font-size:19px}
+  .path:not(.dwy) .pgo{padding-top:4px}
+  /* จอแคบ DWY อยู่บนสุด ต้องลงก่อนใบอื่น */
+  .paths.go2 .path.dwy{animation-delay:.1s,1.6s}
+  .paths.go2 .pgrid::before{animation-delay:.2s}
+  .paths.go2 .pburst{animation-delay:.55s}
+  .paths.go2 .pbadge{animation-delay:.9s}
+  .paths.go2 .path.diy{animation-delay:.7s}
+  .paths.go2 .path.dfy{animation-delay:.85s}
+}
+@media(prefers-reduced-motion:reduce){
+  .paths.arm .pk,.paths.arm h3,.paths.arm .psub,.paths.arm .path,.paths.arm .pbadge,.paths.arm .pgrid::before{opacity:1}
+  .paths .path,.paths .pgrid::before,.paths .pbadge,.paths .pburst,.paths .pk,.paths h3,.paths .psub,.path.dwy::before,.path.dwy .pgo::after{animation:none!important}
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1564,20 +1622,35 @@ try {
     </div>
     <div class="gatehelp" id="gateHelp" hidden></div>
 
-    <a class="evo-cta" href="/ai-source/">
-      <span class="ek">NEXT EVOLUTION · GEN 07</span>
-      <b>อยากสร้างบ้านออนไลน์ในฝันของ<span class="vr">มึง</span><span class="vp">คุณ</span>เองไหม</b>
-      <span class="es">เรียนคอร์ส <strong>AI ใส่ซอส</strong> เพื่อรู้วิธีสร้างเว็บแบบที่<span class="vr">มึง</span><span class="vp">คุณ</span>เพิ่งเดินผ่านมาทั้งหลัง — จากตัวอักษรบรรทัดแรก จนเป็นโลกที่คนอื่นเดินเข้ามาอยู่ได้</span>
-      <i class="ego">ดูคอร์ส AI ใส่ซอส →</i>
-    </a>
-
-    <nav class="exitnav" aria-label="ทางออกจากด่าน">
-      <a href="/card/"><em>💠</em>จุดเซฟ</a>
-      <a href="/collection/"><em>🎒</em>กระเป๋า</a>
-      <a href="/classroom/"><em>📚</em>ห้องเรียน</a>
-      <a href="/hall.html#quest"><em>🧭</em>เข็มทิศ</a>
-      <a href="/"><em>🏠</em>กลับบ้าน</a>
-      <a href="/resume/"><em>🧑‍💻</em>เครดิตผู้สร้าง</a>
+    <nav class="paths" id="paths" aria-labelledby="pathsTitle">
+      <span class="pk">NEXT EVOLUTION · GEN 07</span>
+      <h3 id="pathsTitle">ไฟล์นี้วิวัฒนาการสุดทางแล้ว<br><span class="vr">ทีนี้ตามึง</span><span class="vp">ต่อไปเป็นตาของคุณ</span></h3>
+      <p class="psub"><span class="vr">เลือกมาทางเดียว · บ้านออนไลน์ในฝันของมึงสร้างได้ 3 แบบ</span><span class="vp">บ้านออนไลน์ในฝันของคุณ สร้างได้ 3 แบบ</span></p>
+      <div class="pgrid">
+        <a class="path diy" href="/ai-source/" data-path="diy">
+          <span class="pi" aria-hidden="true">🛠️</span>
+          <span class="pt">DIY · DO IT YOURSELF</span>
+          <b>ทำเอง</b>
+          <p><span class="vr">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเว็บแบบที่มึงเพิ่งเดินผ่านมา ด้วยมือมึงเอง ทีละบท</span><span class="vp">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเองทีละบท</span></p>
+          <i class="pgo">ไปบทเรียน →</i>
+        </a>
+        <a class="path dwy" href="/meet/" data-path="dwy">
+          <span class="pburst" aria-hidden="true"></span>
+          <span class="pbadge">แนะนำ</span>
+          <span class="pi" aria-hidden="true">🤝</span>
+          <span class="pt">DWY · DO WITH YOU</span>
+          <b>ทำด้วยกัน</b>
+          <p><span class="vr">นัดคุยออนไลน์กับทีม เอาเรื่องของมึงมาวางบนโต๊ะ แล้วออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span><span class="vp">นัดคุยออนไลน์กับทีม เอาเรื่องของคุณมาออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span></p>
+          <i class="pgo">นัดคุยกัน →</i>
+        </a>
+        <a class="path dfy" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer" data-path="dfy">
+          <span class="pi" aria-hidden="true">🚀</span>
+          <span class="pt">DFY · DO FOR YOU</span>
+          <b>จ้างทำให้</b>
+          <p><span class="vr">ไม่มีเวลาทำเอง? แอดไลน์ แล้วทักมาบอกเลยว่าอยากจ้างทำอะไร</span><span class="vp">แอดไลน์ แล้วทักมาบอกว่าอยากจ้างทำอะไร</span></p>
+          <i class="pgo">แอดไลน์ teemclover →</i>
+        </a>
+      </div>
     </nav>
   </div>
 </section>
@@ -4140,6 +4213,22 @@ const dfx = (() => {
    BOOT
    ══════════════════════════════════════════════════════════ */
 paintTone(); paintAccept();
+/* 3 ทางท้ายด่าน · ใส่ arm ก่อนแล้วค่อยเล่นตอนเลื่อนถึง (ไม่มี JS/IO = โชว์ครบเลย) */
+{
+  const box = $('paths');
+  $$('#paths [data-path]').forEach(a => a.addEventListener('click', () => act('dungeon-exit-' + a.dataset.path)));
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    box.classList.add('arm');
+    /* หัวข้อขึ้นตอนเลื่อนถึง · การ์ดรอจน DWY โผล่ครึ่งใบ แล้วค่อยลงให้เห็นเต็มตา */
+    const head = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting){ box.classList.add('go'); head.disconnect(); }
+    }), { rootMargin:'0px 0px -12% 0px' });
+    const cards = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting){ box.classList.add('go', 'go2'); cards.disconnect(); act('dungeon-exit-seen'); }
+    }), { threshold:.5 });
+    head.observe(box); cards.observe(box.querySelector('.path.dwy'));
+  }
+}
 paintVoice();
 paintStyleChips(); paintCode(); paintLab();
 if (S.viewOpen) renderFrame();
