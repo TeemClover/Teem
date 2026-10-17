@@ -2549,7 +2549,10 @@ function boot(){
   target.setAttribute('data-cl-target','');
   if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');
   target.focus({preventScroll:true});
-  target.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});
+  // The site's smooth-scroll layer (Lenis) would override native smooth scrolling.
+  const lenis=window.cloverMotion?.lenis;
+  if(lenis)lenis.scrollTo(target,{offset:-140,duration:1.1,immediate:reduceMotion()});
+  else target.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});
  }
  // The tracker follows the mission on screen; only explicit actions change the saved resume step.
  let spy=null;
