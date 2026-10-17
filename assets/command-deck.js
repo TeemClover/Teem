@@ -274,6 +274,9 @@ const MAX=3;
 const $=id=>document.getElementById(id);
 const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reduce=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+// The site's smooth-scroll layer (Lenis) owns the scroll position when present; native smooth
+// scrolling would be overridden by it, so route jumps through it.
+function scrollToEl(el){if(!el)return;const lenis=window.cloverMotion?.lenis;if(lenis){lenis.scrollTo(el,{offset:-136,duration:1.1,immediate:reduce()});return;}el.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});}
 let state={wok:[],options:{},fields:{},sauce:true,thai:true,cat:'all',packIds:null,platform:'claude'};
 function load(){try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.wok))state={...state,...saved,wok:saved.wok.filter(id=>byId[id]).slice(0,MAX)};if(state.agent&&!PERSONAS[state.agent.persona])state.agent=null;}catch{}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}}
@@ -364,7 +367,7 @@ function remove(id){state.wok=state.wok.filter(x=>x!==id);save();renderWok();}
 function loadPreset(id,options,field){
  if(!byId[id])return;
  state.wok=[id];state.options[id]={...(state.options[id]||{}),...options};if(field!==undefined)state.fields[id]=field;save();renderWok();
- $('forge')?.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});
+ scrollToEl($('forge'));
  toast(byId[id].icon+' โหลด /'+id+' ลงกระทะแล้ว');
 }
 /* ═══ Smart search ═══ */
@@ -460,7 +463,7 @@ function paintPackCount(){
 }
 function choosePersona(id,scroll){
  if(!PERSONAS[id])return;const a=agentState();a.persona=id;state.packIds=null;save();renderPack();
- if(scroll)$('agent')?.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});
+ if(scroll)scrollToEl($('agent'));
  toast(PERSONAS[id].icon+' เลือก Agent “'+PERSONAS[id].role+'” แล้ว — ปรับชื่อ ทักษะ และกฎได้เลย');
 }
 /* ═══ Events ═══ */
@@ -475,7 +478,7 @@ function bind(){
   const dice=t.closest('[data-dice]');if(dice){const c=byId[dice.dataset.dice];const pool=c.field.ex.filter(x=>x!==state.fields[c.id]);const pick=pool[Math.floor(Math.random()*pool.length)]||c.field.ex[0];state.fields[c.id]=pick;save();const input=document.querySelector('[data-field="'+c.id+'"]');if(input)input.value=pick;renderOutput();return;}
   const ship=t.closest('[data-ship]');if(ship){
    const text=buildPrompt(selection(),state);
-   if(!text){event.preventDefault();toast('ใส่คำสั่งลงกระทะก่อนนะ');$('deck')?.scrollIntoView({behavior:reduce()?'auto':'smooth'});return;}
+   if(!text){event.preventDefault();toast('ใส่คำสั่งลงกระทะก่อนนะ');scrollToEl($('deck'));return;}
    const ok=await copy(text);const where=ship.dataset.ship;
    toast(ok?(where==='copy'?'📋 คัดลอกแล้ว — ไปวางในแชต AI ได้เลย':'📋 คัดลอกแล้ว — วางในแชต '+where+' (กด วาง/⌘V)'):'คัดลอกไม่สำเร็จ — กดค้างที่กล่อง Prompt แล้วเลือกคัดลอก');
    ship.dataset.done='true';setTimeout(()=>{ship.dataset.done='false';},1600);
@@ -486,14 +489,14 @@ function bind(){
   const remix=t.closest('[data-remix]');if(remix){const item=REMIX.find(r=>r.id===remix.dataset.remix);const ok=await copy(item.text);remix.dataset.done='true';setTimeout(()=>{remix.dataset.done='false';},1400);toast(ok?item.icon+' คัดลอก “'+item.name+'” แล้ว — วางต่อในแชตเดิม':'คัดลอกไม่สำเร็จ');return;}
   const preset=t.closest('[data-preset]');if(preset){try{const p=JSON.parse(preset.dataset.preset);loadPreset(p.id,p.options||{},p.field);}catch{}return;}
   const plat=t.closest('[data-platform]');if(plat){state.platform=plat.dataset.platform;save();renderPack();return;}
-  const show=t.closest('[data-show]');if(show){const name=show.dataset.show;show.parentElement.querySelectorAll('[data-show]').forEach(b=>b.setAttribute('aria-selected',String(b===show)));document.querySelectorAll('.sc-panel').forEach(panel=>{panel.hidden=panel.dataset.panel!==name;});return;}
+  const tab=t.closest('[data-sc-tab]');if(tab){const name=tab.dataset.scTab;tab.parentElement.querySelectorAll('[data-sc-tab]').forEach(b=>b.setAttribute('aria-selected',String(b===tab)));document.querySelectorAll('.sc-panel').forEach(panel=>{panel.hidden=panel.dataset.panel!==name;});return;}
   const persona=t.closest('[data-persona]');if(persona){choosePersona(persona.dataset.persona,false);return;}
   const agentGo=t.closest('[data-agent]');if(agentGo){choosePersona(agentGo.dataset.agent,true);return;}
   const tone=t.closest('[data-tone]');if(tone){agentState().tone=tone.dataset.tone;save();tone.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===tone)));paintPackCount();return;}
   if(t.closest('#packAll')){document.querySelectorAll('[data-pack]').forEach(cb=>{cb.checked=true;});state.packIds=packIds();save();paintPackCount();return;}
   if(t.closest('#packMine')){const mine=new Set(state.wok);if(!mine.size){toast('ยังไม่มีคำสั่งในกระทะ — เลือกทั้งหมดไว้ให้ก่อน');return;}document.querySelectorAll('[data-pack]').forEach(cb=>{cb.checked=mine.has(cb.dataset.pack);});state.packIds=packIds();save();paintPackCount();return;}
   const packCopy=t.closest('[data-pack-copy]');if(packCopy){const ids=packIds();if(!ids.length){event.preventDefault();toast('เลือกอย่างน้อย 1 คำสั่ง');return;}const ok=await copy(buildAgent(agentConfig()));toast(ok?'🤖 คัดลอก Agent พร้อม '+ids.length+' ทักษะแล้ว — ไปวางตามขั้นตอน':'คัดลอกไม่สำเร็จ');return;}
-  if(t.closest('#dockGo')){$('forge')?.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});return;}
+  if(t.closest('#dockGo')){scrollToEl($('forge'));return;}
   if(t.closest('#wokClear')){state.wok=[];save();renderWok();return;}
  });
  document.addEventListener('input',event=>{
