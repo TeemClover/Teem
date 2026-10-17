@@ -17,7 +17,7 @@ const NAV = {
   },
   '/classroom/notebooklm.html': {
     prev: { href: 'clip-ai.html', text: '← บท 3 · เอาซอสไปทำจานจริง' },
-    next: { href: 'prompts.html', text: 'บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส →' },
+    next: { href: 'prompts.html', text: 'บท 5 · หยิบคำสั่งลัด ปรุงงานทันที →' },
   },
 };
 

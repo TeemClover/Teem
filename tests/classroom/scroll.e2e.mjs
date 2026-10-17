@@ -31,16 +31,16 @@ async function idle(page, label) {
   const changes = await page.evaluate(() => new Promise(resolve => {
     let count = 0;
     const observer = new MutationObserver(records => { count += records.length; });
-    observer.observe(document.getElementById('results'), { subtree:true, childList:true, attributes:true });
+    for (const id of ['deckCards', 'wokItems', 'forgeOut']) observer.observe(document.getElementById(id), { subtree:true, childList:true, attributes:true, characterData:true });
     setTimeout(() => { observer.disconnect(); resolve(count); }, 500);
   }));
-  assert.equal(changes, 0, `${label}: prompt cards must stop mutating while idle (got ${changes} changes in 500 ms)`);
+  assert.equal(changes, 0, `${label}: command deck must stop mutating while idle (got ${changes} changes in 500 ms)`);
 }
 
 try {
   // These pages embed assets to work independently; fixing only an asset leaves production broken.
   const html = await readFile(path.join(root, 'classroom/prompts.html'), 'utf8');
-  for (const name of ['prompts-season.js', 'prompts-plain-language.js']) {
+  for (const name of ['command-deck.js', 'course-learning-journey.js']) {
     const embedded = html.match(new RegExp(`<script[^>]*data-self-contained="${name.replaceAll('.', '\\.')}"[^>]*>([\\s\\S]*?)<\\/script>`));
     assert.ok(embedded, `Missing embedded ${name}`);
     assert.equal(embedded[1].trim(), (await readFile(path.join(root, 'assets', name), 'utf8')).trim());
@@ -72,56 +72,79 @@ try {
     await page.waitForTimeout(300);
     assert.ok(await page.evaluate(() => scrollY > 0));
     await page.locator('a.lesson[data-item="prompts"]').click();
-    await page.locator('#results .pc').first().waitFor();
+    await page.locator('#deckCards .dc').first().waitFor();
     await page.waitForTimeout(1600);
-    await idle(page, `${width}px initial cards`);
-    await page.locator('#showAll').click();
-    assert.equal(await page.locator('#results .pc').count(), 44);
-    await idle(page, `${width}px all 44 cards`);
-    for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, 700); await page.waitForTimeout(100); }
-    assert.ok(await page.evaluate(() => scrollY > 1000));
-    const card = page.locator('#results .pc').first();
-    await card.locator('[data-act="use"]').click();
-    await page.waitForFunction(() => document.querySelector('#results .pc.open'));
-    assert.match(await card.locator('[data-act="use"]').innerText(), /กำลังปรับแต่ง/);
-    const input = card.locator('.drawer [data-k]').first();
-    await input.fill('CLASSROOM_SCROLL_REGRESSION');
-    await page.waitForFunction(() => document.querySelector('#results .pc.open [data-prev]')?.textContent.includes('CLASSROOM_SCROLL_REGRESSION'));
-    await idle(page, `${width}px customized drawer`);
-    await card.locator('[data-act="anatomy"]').click();
-    await page.waitForFunction(() => document.querySelector('#results .pc.open [data-prev]')?.dataset.anat === '1');
-    await card.locator('[data-act="anatomy"]').click();
-    await idle(page, `${width}px after anatomy toggle`);
-    assert.match(await card.locator('[data-act="anatomy"]').innerText(), /ดูส่วนผสม/);
-    await card.locator('[data-act="copyFilled"]').click();
+    assert.equal(await page.locator('#deckCards .dc').count(), 28);
+    await idle(page, `${width}px initial deck`);
+    // Category filter, then back to everything.
+    await page.locator('#deckCats [data-cat="video"]').click();
+    assert.equal(await page.locator('#deckCards .dc').count(), 5);
+    assert.equal(await page.locator('#deckCards .dc[data-id="brushstory"]').count(), 1);
+    await page.locator('#deckCats [data-cat="all"]').click();
+    assert.equal(await page.locator('#deckCards .dc').count(), 28);
+    // Drag a card with the pointer and drop it on the floating wok dock.
+    const card = page.locator('#deckCards .dc[data-id="foodangle"]');
+    await card.scrollIntoViewIfNeeded();
+    const box = await card.locator('.dc-name').boundingBox();
+    await page.mouse.move(box.x + 10, box.y + 5);
+    await page.mouse.down();
+    for (let i = 1; i <= 10; i++) await page.mouse.move(box.x + 10 + i * 3, box.y + 5 + i * ((800 - box.y) / 10));
+    await page.locator('#dock[data-show="true"]').waitFor();
+    const dock = await page.locator('#dock').boundingBox();
+    await page.mouse.move(dock.x + dock.width / 2, dock.y + dock.height / 2);
+    await page.mouse.up();
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('mc_command_deck_v1')).wok.includes('foodangle'));
+    assert.equal(await card.getAttribute('data-in'), 'true');
+    // Tap to add a second command (combo), then style it with one tap.
+    await page.locator('#deckCards .dc[data-id="caption"] .dc-add').click();
+    await page.waitForFunction(() => document.querySelectorAll('#wokItems .wi').length === 2);
+    await page.locator('[data-opt="foodangle|angle|top"]').click();
+    assert.equal(await page.locator('[data-opt="foodangle|angle|top"]').getAttribute('aria-pressed'), 'true');
+    await page.locator('[data-field="foodangle"]').fill('CLASSROOM_SCROLL_REGRESSION');
+    await page.waitForFunction(() => document.getElementById('forgeOut').textContent.includes('CLASSROOM_SCROLL_REGRESSION'));
+    assert.match(await page.locator('#forgeOut').innerText(), /top-down flat lay/);
+    assert.match(await page.locator('#forgeOut').innerText(), /Do these in order/);
+    assert.match(await page.locator('#shortCmd').innerText(), /\/foodangle ท็อปวิว — CLASSROOM_SCROLL_REGRESSION/);
+    await idle(page, `${width}px styled combo`);
+    // A fourth command is refused once the wok holds three.
+    await page.locator('#deckCards .dc[data-id="reel"] .dc-add').click();
+    await page.locator('#deckCards .dc[data-id="hook"] .dc-add').click();
+    assert.equal(await page.locator('#wokItems .wi').count(), 3);
+    await page.locator('[data-remove="reel"]').click();
+    assert.equal(await page.locator('#wokItems .wi').count(), 2);
+    // Copy success and failure.
+    await page.locator('[data-ship="copy"]').click();
     await page.waitForFunction(() => window.__copied.length === 1);
-    assert.match(await page.evaluate(() => window.__copied[0]), /CLASSROOM_SCROLL_REGRESSION/);
-    assert.match(await card.locator('[data-act="copyFilled"]').innerText(), /คัดลอกแล้ว/);
-    await page.waitForTimeout(1800);
-    await idle(page, `${width}px after copy reset`);
-    await card.locator('[data-act="raw"]').click();
-    await page.waitForFunction(() => window.__copied.length === 2);
-    assert.match(await card.locator('[data-act="raw"]').innerText(), /คัดลอกแล้ว/);
+    const copied = await page.evaluate(() => window.__copied[0]);
+    assert.match(copied, /CLASSROOM_SCROLL_REGRESSION/);
+    assert.doesNotMatch(copied, /[⟦⟧⟪⟫]/, 'highlight markers never reach the clipboard');
     await page.waitForTimeout(1800);
     await page.evaluate(() => { window.__denyCopy = true; });
-    await card.locator('[data-act="raw"]').click();
-    await page.waitForTimeout(100);
-    assert.doesNotMatch(await card.locator('[data-act="raw"]').innerText(), /คัดลอกแล้ว/);
-    assert.equal(await page.evaluate(() => window.__copied.length), 2);
-    await idle(page, `${width}px denied clipboard`);
-    await page.keyboard.press('Escape');
-    await idle(page, `${width}px closed drawer`);
-    assert.equal(await page.locator('#results .pc.open').count(), 0);
-    assert.match(await card.locator('[data-act="use"]').innerText(), /ปรับแต่งก่อนใช้/);
-    await page.locator('#q').fill('zzzz-no-matching-prompt-12345');
-    await page.waitForFunction(() => document.querySelectorAll('#results .pc').length === 0);
-    await page.locator('#showAll').click();
-    await page.waitForFunction(() => document.querySelectorAll('#results .pc').length === 44);
-    await idle(page, `${width}px rerendered cards`);
+    await page.locator('[data-ship="copy"]').click();
+    await page.waitForTimeout(150);
+    assert.equal(await page.evaluate(() => window.__copied.length), 1);
+    assert.match(await page.locator('#toast').innerText(), /คัดลอกไม่สำเร็จ/);
+    await page.evaluate(() => { window.__denyCopy = false; });
+    await page.waitForTimeout(1800);
+    await idle(page, `${width}px after copy`);
+    // Smart search suggests and adds on Enter; remix chips copy follow-up commands.
+    await page.locator('#deckQ').fill('อยากลองชุดใหม่ไปงานแต่ง');
+    await page.waitForFunction(() => document.querySelector('#deckSuggest .sg[data-add="outfit"]'));
+    await page.locator('#deckQ').press('Enter');
+    await page.waitForFunction(() => document.querySelector('#wokItems .wi[data-id="outfit"]'));
+    await page.locator('[data-remix="fix"]').click();
+    await page.waitForFunction(() => window.__copied.length === 2);
+    assert.match(await page.evaluate(() => window.__copied[1]), /Change only this/);
+    // The draft survives a reload.
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('#wokItems .wi').first().waitFor();
+    assert.equal(await page.locator('[data-field="foodangle"]').inputValue(), 'CLASSROOM_SCROLL_REGRESSION');
+    assert.equal(await page.locator('#wokItems .wi').count(), 3);
+    await idle(page, `${width}px restored wok`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-    await page.locator('#results').scrollIntoViewIfNeeded();
+    await page.locator('#forge').scrollIntoViewIfNeeded();
     await page.screenshot({path:path.join(output, `lesson5-${width}.png`)});
-    pass(`${width}px: enter from classroom, scroll 44 cards, customize, copy success/failure, search, rerender, zero idle mutations`);
+    pass(`${width}px: enter from classroom, filter 28 commands, drag-drop + tap combo, styles, copy success/failure, smart search, remix, reload, zero idle mutations`);
     await context.close();
   }
   assert.deepEqual(report.errors, []);
