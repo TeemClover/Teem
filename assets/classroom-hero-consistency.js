@@ -18,7 +18,7 @@ const HERO_COPY = {
   },
   'learn:prompts': {
     label: 'บทที่ 5 · Season',
-    title: 'เลือกงาน แล้วตักผงไปใช้กับซอส'
+    title: 'หยิบคำสั่งลัด ปรุงงานทันที'
   },
   'learn:first-web': {
     label: 'บทที่ 6 · Serve',

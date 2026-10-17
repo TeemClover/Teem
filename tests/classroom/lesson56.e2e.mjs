@@ -1,4 +1,4 @@
-/** Lesson 5 drafts and Lesson 6 secret-stage / offline-output regression. */
+/** Lesson 5 command drafts and Lesson 6 secret-stage / offline-output regression. */
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {readFile,stat,writeFile,mkdir,mkdtemp} from 'node:fs/promises';
@@ -49,35 +49,33 @@ async function showSignal(page){await page.locator('#glitchTrigger').evaluate(el
 try{
   for(const width of [390,1440]){
     const page=await makePage('prompts',{width});
-    await page.locator('[data-prompt-pick="reply"]').click();
-    const card=page.locator('#results .pc[data-id="reply"]');
-    const input=card.locator('[data-k]').first();
+    await page.locator('#deckCards .dc[data-id="reply"] .dc-add').click();
+    const input=page.locator('[data-field="reply"]');
     await input.fill('เก็บร่างนี้ไว้ QA');
-    await page.keyboard.press('Escape');
-    await card.locator('[data-act="use"]').click();
-    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA');
-    await page.locator('[data-prompt-pick="meeting"]').click();
-    await page.locator('#results .pc[data-id="meeting"] [data-k]').first().fill('ร่างประชุม QA');
-    await page.locator('[data-prompt-pick="reply"]').click();
-    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA');
-    await page.locator('#q').fill('zzzz-no-matching-prompt-12345');
-    await page.waitForFunction(()=>document.querySelectorAll('#results .pc').length===0);
-    await page.locator('[data-prompt-pick="reply"]').click();
-    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA');
+    await page.locator('[data-remove="reply"]').click();
+    assert.equal(await page.locator('#wokItems .wi').count(),0);
+    await page.locator('#deckCards .dc[data-id="meeting"] .dc-add').click();
+    await page.locator('[data-field="meeting"]').fill('ร่างประชุม QA');
+    await page.locator('#deckCards .dc[data-id="reply"] .dc-add').click();
+    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA','each command keeps its own draft');
+    await page.locator('#deckQ').fill('zzzz-no-matching-command-12345');
+    await page.waitForFunction(()=>document.querySelectorAll('#deckSuggest .sg').length===0);
+    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA','search never touches the wok');
     await page.reload({waitUntil:'domcontentloaded'});await page.waitForTimeout(1400);
-    await page.locator('[data-prompt-pick="reply"]').click();
-    assert.equal(await input.inputValue(),'เก็บร่างนี้ไว้ QA');
-    await card.locator('[data-act="clear"]').click();
-    assert.equal(await input.inputValue(),'');
-    await page.keyboard.press('Escape');await card.locator('[data-act="use"]').click();
-    assert.equal(await input.inputValue(),'');
-    await page.locator('[data-prompt-pick="meeting"]').click();
-    assert.equal(await page.locator('#results .pc[data-id="meeting"] [data-k]').first().inputValue(),'ร่างประชุม QA');
-    await page.locator('#promptExample summary').click();
-    assert.match(await page.locator('#promptExample').innerText(),/วันส่ง.*วันรับ/s);
-    await page.locator('#promptPractice').screenshot({path:path.join(output,`lesson5-practice-${width}.png`)});
+    assert.equal(await page.locator('[data-field="reply"]').inputValue(),'เก็บร่างนี้ไว้ QA');
+    assert.equal(await page.locator('[data-field="meeting"]').inputValue(),'ร่างประชุม QA');
+    await page.locator('#wokClear').click();
+    assert.equal(await page.locator('#wokItems .wi').count(),0);
+    await page.locator('#deckCards .dc[data-id="meeting"] .dc-add').click();
+    assert.equal(await page.locator('[data-field="meeting"]').inputValue(),'ร่างประชุม QA','clearing the wok keeps drafts');
+    await page.locator('#deckExample [data-preset]').click();
+    await page.waitForFunction(()=>document.querySelector('#wokItems .wi[data-id="brushstory"]')&&document.querySelectorAll('#wokItems .wi').length===1);
+    assert.match(await page.locator('#forgeOut').innerText(),/Chinese brush strokes[\s\S]*Thai culture[\s\S]*Story will be about/);
+    await page.locator('[data-opt="brushstory|art|mural"]').click();
+    assert.match(await page.locator('#forgeOut').innerText(),/Thai temple mural/);
+    await page.locator('#forge').screenshot({path:path.join(output,`lesson5-forge-${width}.png`)});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-    pass(`${width}px L5 draft persists close/reopen, another recipe, search and reload; reset clears only current recipe; curated choices/example usable`);
+    pass(`${width}px L5 per-command drafts persist remove/re-add, search and reload; clearing the wok keeps drafts; the video example loads and restyles`);
     await page.context().close();
   }
   for(const prior of ['', 'free-ai,image-ai']){
