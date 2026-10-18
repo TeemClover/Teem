@@ -25,11 +25,13 @@ function fit(ctx,text,font,weight,size,maxW){ctx.font=`${weight} ${size}px ${fon
 function say(ctx,text,x,y,{size=64,font=THAI,weight=800,color='#111',align='center',alpha=1,shadow=null,stroke=null,dy=0,scale=1,rot=0,spacing=0,maxW=SAFE}={}){
  if(alpha<=0)return;
  ctx.save();size=fit(ctx,text,font,weight,size,maxW/Math.max(scale,0.01));ctx.globalAlpha*=alpha;ctx.translate(x,y+dy);if(rot)ctx.rotate(rot);if(scale!==1)ctx.scale(scale,scale);
- ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';
- if('letterSpacing' in ctx&&spacing)ctx.letterSpacing=spacing+'px';
+ ctx.font=`${weight} ${size}px ${font}`;ctx.textBaseline='middle';
+ // Align by measuring and drawing left-aligned: iPhone Safari can place textAlign:'center' as if it were left,
+ // and any letterSpacing (even 0px) makes it worse, so Thai text is never letter-spaced here.
+ ctx.textAlign='left';const w=ctx.measureText(text).width,ox=align==='center'?-w/2:align==='right'?-w:0;
  if(shadow){ctx.shadowColor=shadow.color;ctx.shadowBlur=shadow.blur||0;ctx.shadowOffsetX=shadow.x||0;ctx.shadowOffsetY=shadow.y||0;}
- if(stroke){ctx.lineWidth=stroke.width;ctx.strokeStyle=stroke.color;ctx.lineJoin='round';ctx.strokeText(text,0,0);}
- ctx.fillStyle=color;ctx.fillText(text,0,0);ctx.restore();
+ if(stroke){ctx.lineWidth=stroke.width;ctx.strokeStyle=stroke.color;ctx.lineJoin='round';ctx.strokeText(text,ox,0);}
+ ctx.fillStyle=color;ctx.fillText(text,ox,0);ctx.restore();
 }
 function plateRect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);}
 // One story line with an optional plate sized to the fitted text, so every style stays readable.
@@ -296,13 +298,15 @@ function setText(el,v){if(el&&el.textContent!==v)el.textContent=v;}
 /* Optional Thai narration (speechSynthesis). It plays live only; recordings keep the music track. */
 function thaiVoice(){try{return speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang))||null;}catch{return null;}}
 function voiceAvailable(){return typeof speechSynthesis!=='undefined'&&!!thaiVoice();}
-function narrate(t){
+// force: speak the current line now. Called from the tap that turns the voice on, because iPhone only lets
+// speech start inside a user gesture; after that first line, later lines may start from the frame loop.
+function narrate(t,force){
  if(!theater?.voice)return;
  const clip=theater.clip,loopT=((t%LOOP)+LOOP)%LOOP;
- const line=clip.id==='kinetic'?(loopT<0.2?0:-1):Math.min(2,Math.floor(loopT/LINE));
- if(line<0||line===theater.lastLine)return;theater.lastLine=line;
- if(clip.id==='kinetic'&&loopT>=0.2)return;
- try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(clip.id==='kinetic'?'ใครเจอเรา คนนั้นโชคดี':clip.story[line].replace(/LEVEL\s*\d*:?|LEVEL UP!/g,''));const v=thaiVoice();if(v)u.voice=v;u.lang='th-TH';u.rate=0.95;u.volume=1;speechSynthesis.speak(u);}catch{}
+ const line=clip.id==='kinetic'?((loopT<0.2||force)?0:-1):Math.min(2,Math.floor(loopT/LINE));
+ if(line<0||(line===theater.lastLine&&!force))return;theater.lastLine=line;
+ // Cancel only when something is playing: Safari drops an utterance queued right after cancel().
+ try{if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(clip.id==='kinetic'?'ใครเจอเรา คนนั้นโชคดี':clip.story[line].replace(/LEVEL\s*\d*:?|LEVEL UP!/g,''));const v=thaiVoice();if(v)u.voice=v;u.lang='th-TH';u.rate=0.95;u.volume=1;speechSynthesis.speak(u);}catch{}
 }
 function stopVoice(){try{speechSynthesis.cancel();}catch{}}
 function paintTheaterButtons(){
@@ -342,7 +346,7 @@ function record(){
  theater.recorder=recorder;theater.playing=true;theater.t0=performance.now();recorder.start(250);paintTheaterButtons();
  setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
 }
-function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();paintTheaterButtons();}
+function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();else{try{speechSynthesis.resume();}catch{}narrate(theater.playing?(performance.now()-theater.t0)/1000:(theater.pausedAt||0),true);}paintTheaterButtons();}
 const VO_NOTE='mc_reel_voice_note_v1';
 function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
 function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
