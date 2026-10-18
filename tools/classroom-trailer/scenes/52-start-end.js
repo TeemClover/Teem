@@ -165,7 +165,7 @@ function subTwoTone(ctx,s,o){
  const ks=E.outCubic((T-o.in-.05)/.3),kout=clamp((o.out-T)/.3);const a=Math.min(ks,E.inOutSine(kout))*.88;if(a<=0)return;
  const subSize=s.type.sub,maxW=s.w*(s.portrait?.88:.80)*.88,font=H.FONT.round;
  ctx.save();
- const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;if('letterSpacing' in ctx)ctx.letterSpacing='0px';
+ const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;
  ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.globalAlpha*=a;
  const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8+H.midOffset(ctx);
  H.fillAccent(ctx,o.text,s.w/2-total/2,y,o.gold,PAL.cream,PAL.hot);
@@ -173,7 +173,7 @@ function subTwoTone(ctx,s,o){
 }
 
 /* ── s12 · START ────────────────────────────────────────── */
-const L12={text:'ไปเริ่มบท 1 กันเลย',sub:'ฟรี ไม่ต้องสมัคร เริ่มได้ทันที',in:52.15,out:55.9};
+const L12={text:'เรียนจบ คุณก็ทำได้',sub:'วิดีโอนี้ กับเว็บนี้ สร้างจากสิ่งที่คุณจะได้เรียน',in:52.15,out:55.9};
 // Orbit phase in revolutions: 3 rev/s at 52 easing to 0.5 rev/s by 53, then a spiral-in kick from 55.5.
 function orbitRev(T,red=1){const t=T-52;if(t<1)return .5*t+red*2.5*(1-Math.pow(1-t,3))/3;return .5*t+red*2.5/3;}
 const COINS=[1,2,3,4,5].map(i=>LESSONS[i]);
@@ -254,7 +254,7 @@ TR.defineScene({id:'s12_start',start:52,end:56,draw(ctx,s){
   H.glow(ctx,tri.x,tri.y,G.size*2.2,PAL.hot,.5*(1-clamp((T-tap)/.4)));
   H.burst(ctx,T,tap,{x:tri.x,y:tri.y,count:40,speed:u*48,life:.65,size:u*.45,colors:[PAL.hot,PAL.gold,PAL.cream],shape:'line',seed:5550});
  }
- H.caption(ctx,s,{text:L12.text,sub:L12.sub,in:L12.in,out:L12.out,accent:'บท 1',subColor:'rgba(0,0,0,0)'});
+ H.caption(ctx,s,{text:L12.text,sub:L12.sub,in:L12.in,out:L12.out,accent:'คุณก็ทำได้',subColor:'rgba(0,0,0,0)'});
  ctx.save();
  ctx.translate(G.cx,G.hy);ctx.scale(pScale,pScale);ctx.translate(-G.cx,-G.hy);
  if(capA>0&&draw>0){
@@ -275,7 +275,7 @@ TR.defineScene({id:'s12_start',start:52,end:56,draw(ctx,s){
   ctx.restore();
  }
  ctx.restore();
- subTwoTone(ctx,s,{text:L12.sub,gold:'ฟรี',in:L12.in,out:L12.out,y:s.h*(s.portrait?.76:.87)});
+ subTwoTone(ctx,s,{text:L12.sub,gold:'สิ่งที่คุณจะได้เรียน',in:L12.in,out:L12.out,y:s.h*(s.portrait?.76:.87)});
  // cursor glides in from lower right at 55.0, taps at 55.5, leaves with the caption
  if(T>=55&&T<55.9){
   const k=E.outCubic((T-55)/.4),tx=tri.x+G.size*.12,ty=tri.y+G.size*.1;
@@ -301,7 +301,7 @@ function star(ctx,x,y,r,color,alpha){
 }
 
 /* ── s13 · END CARD ─────────────────────────────────────── */
-const L13={text:'ซอสขวดแรกรออยู่ในบท 1',sub:'myClover · ใครเจอเรา คนนั้นโชคดี',in:56.15,out:60};
+const L13={text:'โชคดีที่เราได้เจอกัน',sub:'บทที่ 1 รอคุณอยู่ · ฟรี ไม่ต้องสมัคร',in:56.15,out:60};
 // Motion clock: real time until 59.5, then eases to a full stop (velocity (1-x)^2 over 0.5 s).
 function motionT(T){if(T<59.5)return T;const x=clamp((T-59.5)/.5);return 59.5+.5*(1-Math.pow(1-x,3))/3;}
 // Heart-shaped leaf pointing up (-y), tip at distance `off` from the centre, length L.
@@ -383,6 +383,6 @@ TR.defineScene({id:'s13_endcard',start:56,end:60,draw(ctx,s){
  {const r=H.rng(5656);for(let i=0;i<10;i++){const a=r()*TAU,d=R*(1.3+r()*1.1),ph=r()*TAU,x=cx+Math.cos(a)*d*1.4,y=cy+Math.sin(a)*d*.8;const tw=Math.max(0,Math.sin(Te*1.6+ph));if(tw<.05)continue;star(ctx,x,y,u*(.7+r()*.6)*tw,PAL.hot,.7*tw*haloK);}}
  H.vignette(ctx,s,.55);
  // text sits higher so the bottom stays clear for the HTML end-card buttons
- H.caption(ctx,s,{text:L13.text,sub:L13.sub,in:L13.in,out:L13.out,accent:'ซอสขวดแรก',hy:s.portrait?.50:.58,sy:s.portrait?.56:.66});
+ H.caption(ctx,s,{text:L13.text,sub:L13.sub,in:L13.in,out:L13.out,accent:'โชคดี',hy:s.portrait?.50:.58,sy:s.portrait?.56:.66});
 }});
 })();

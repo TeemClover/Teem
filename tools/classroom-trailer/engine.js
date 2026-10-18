@@ -55,7 +55,8 @@ const THAI_RE=/[฀-๿]/;
 const midCache=new Map();
 function midOffset(ctx){const f=ctx.font;let v=midCache.get(f);if(v==null){const b=ctx.textBaseline;ctx.textBaseline='alphabetic';const m=ctx.measureText('กขคงจบปผนม');v=(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2;ctx.textBaseline=b;if(!isFinite(v)||v<=0)v=parseFloat(f.match(/(\d+(?:\.\d+)?)px/)?.[1]||16)*.32;midCache.set(f,v);}return v;}
 TR.resetTextMetrics=()=>midCache.clear();
-function noSpacing(ctx){if('letterSpacing' in ctx)ctx.letterSpacing='0px';}
+// Never assign ctx.letterSpacing: on Safari even '0px' can break centred text and gradient fills.
+function noSpacing(){}
 // Draws str left-aligned on an alphabetic baseline at (x,y), with `accent` recoloured in place.
 function fillAccent(ctx,str,x,y,accent,base,acc){
  ctx.fillStyle=base;ctx.fillText(str,x,y);
@@ -70,18 +71,19 @@ function text(ctx,str,x,y,o={}){
  const fam=o.family||'head',font=o.font||FONT[fam]||FONT.head,weight=o.weight||WEIGHT[fam]||800;
  let size=o.size||48;const maxW=o.maxW||Infinity;
  ctx.save();
- if('letterSpacing' in ctx)ctx.letterSpacing=(o.spacing&&!THAI_RE.test(str)?o.spacing:0)+'px';
  size=fit(ctx,str,font,weight,size,maxW);
- ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=o.align||'center';
+ ctx.font=`${weight} ${size}px ${font}`;
+ // Align by measuring and drawing left-aligned; Safari can misplace textAlign:'center' for mixed scripts.
+ const align=o.align||'center',tw0=ctx.measureText(str).width,ax=align==='center'?-tw0/2:align==='right'?-tw0:0;ctx.textAlign='left';
  const mid=!o.baseline||o.baseline==='middle';ctx.textBaseline=mid?'alphabetic':o.baseline;const dy=mid?midOffset(ctx):0;
  ctx.globalAlpha*=o.alpha??1;
  ctx.translate(x,y);if(o.rot)ctx.rotate(o.rot);if(o.scale&&o.scale!==1)ctx.scale(o.scale,o.scale);
  if(o.glow){ctx.shadowColor=o.glow;ctx.shadowBlur=o.glowBlur??size*.45;}
  if(o.shadow){ctx.shadowColor=o.shadow;ctx.shadowBlur=o.shadowBlur??size*.25;ctx.shadowOffsetY=o.shadowY??size*.08;}
- if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,0,dy);}
+ if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,ax,dy);}
  if(o.gradient){const g=ctx.createLinearGradient(0,-size*.6,0,size*.6);o.gradient.forEach((c,i)=>g.addColorStop(i/(o.gradient.length-1),c));ctx.fillStyle=g;}else ctx.fillStyle=o.color||PAL.cream;
- ctx.fillText(str,0,dy);
- const w=ctx.measureText(str).width;ctx.restore();return {w,size};
+ ctx.fillText(str,ax,dy);
+ const w=tw0;ctx.restore();return {w,size};
 }
 // Emoji are rendered once into 160 px sprites and drawn as images (consistent colour, cheap per frame).
 const sprites=new Map();
@@ -194,7 +196,9 @@ function Synth(ac){
  const verb=ac.createConvolver();const len=Math.floor(ac.sampleRate*2.8),ir=ac.createBuffer(2,len,ac.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4);}verb.buffer=ir;
  const send=ac.createGain();send.gain.value=.28;
  const bus=ac.createGain();bus.connect(master);bus.connect(send);send.connect(verb);verb.connect(master);
- master.connect(comp);comp.connect(ac.destination);
+ // Music runs through a duck gain so it can dip under the voice-over; the voice joins after it, before the limiter.
+ const duck=ac.createGain(),voGain=ac.createGain();voGain.gain.value=1;
+ master.connect(duck);duck.connect(comp);voGain.connect(comp);comp.connect(ac.destination);
  const live=new Set();
  const track=node=>{live.add(node);node.onended=()=>live.delete(node);return node;};
  const noiseBuf=(()=>{const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b;})();
@@ -227,7 +231,7 @@ function Synth(ac){
   type(t,v=.08){noise(t,{dur:.02,vol:v,type:'bandpass',from:2600,q:2});},
   coin(t,v=.12){osc(t,83,{type:'square',d:.07,vol:v});osc(t+.07,88,{type:'square',d:.3,vol:v});},
  };
- return {ac,master,bus,I,hz,osc,noise,stopAll(){for(const n of live){try{n.stop();}catch{}}live.clear();},setMute(m){master.gain.setTargetAtTime(m?0:0.9,ac.currentTime,.03);}};
+ return {ac,master,bus,duck,voGain,track,I,hz,osc,noise,stopAll(){for(const n of live){try{n.stop();}catch{}}live.clear();duck.gain.cancelScheduledValues(0);duck.gain.value=1;},setMute(m){master.gain.setTargetAtTime(m?0:0.9,ac.currentTime,.03);voGain.gain.setTargetAtTime(m?0:1,ac.currentTime,.03);}};
 }
 // The score is a list of timed events (seconds from the trailer start); scenes may add their own SFX.
 TR.score=[];
@@ -262,7 +266,21 @@ class Player{
   // Never let a slow or blocked audio unlock hold the picture: wait at most 250 ms, then play anyway.
   if(this.syn){if(this.syn.ac.state!=='running')await Promise.race([this.syn.ac.resume().catch(()=>{}),new Promise(r=>setTimeout(r,250))]);if(token!==this.token)return;this.syn.stopAll();this.base=this.syn.ac.currentTime+.06-target;this.cueIndex=TR.score.findIndex(c=>c.t>=target-1e-6);if(this.cueIndex<0)this.cueIndex=TR.score.length;}
   this.T=target;this.perfBase=performance.now()-target*1000;
-  this.playing=true;this.emit('state','playing');this.raf=requestAnimationFrame(this.loop);
+  this.playing=true;this.startVo();this.emit('state','playing');this.raf=requestAnimationFrame(this.loop);
+ }
+ // Voice-over: one recorded track, fetched on the first play and kept in sync with the audio clock.
+ loadVo(){if(this.voPromise||!TR.voUrl||!this.syn)return;const ac=this.syn.ac;
+  this.voPromise=fetch(TR.voUrl).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();}).then(b=>new Promise((ok,no)=>{const p=ac.decodeAudioData(b,ok,no);if(p&&p.catch)p.catch(no);})).then(buf=>{this.voBuf=buf;if(this.playing)this.startVo();}).catch(()=>{});}
+ startVo(){const syn=this.syn;if(!syn)return;if(!this.voBuf){this.loadVo();return;}if(syn.ac.state!=='running')return;
+  const ac=syn.ac,at=Math.max(ac.currentTime+.02,this.base+this.now()),off=at-this.base;
+  try{this.voSrc?.stop();}catch{}
+  if(off<this.voBuf.duration-.05){const src=syn.track(ac.createBufferSource());src.buffer=this.voBuf;src.connect(syn.voGain);src.start(at,Math.max(0,off));this.voSrc=src;}
+  // Duck the music about 6 dB while each line is spoken.
+  const g=syn.duck.gain;g.cancelScheduledValues(0);g.setValueAtTime(1,ac.currentTime);
+  const segs=[];for(const [a,b] of TR.voSegments||[]){const l=segs[segs.length-1];if(l&&a-l[1]<.8)l[1]=b;else segs.push([a,b]);}
+  for(const [a,b] of segs){if(b<=off)continue;const ta=this.base+a,tb=this.base+b;
+   if(a>off+.2){g.setValueAtTime(1,ta-.2);g.linearRampToValueAtTime(.5,ta);}else g.setValueAtTime(.5,ac.currentTime+.01);
+   g.setValueAtTime(.5,tb+.1);g.linearRampToValueAtTime(1,tb+.5);}
  }
  pause(){this.token++;if(!this.playing)return;this.T=this.now();this.playing=false;cancelAnimationFrame(this.raf);if(this.syn){this.syn.stopAll();}this.emit('state','paused');this.draw();}
  toggle(){this.playing?this.pause():this.play();}

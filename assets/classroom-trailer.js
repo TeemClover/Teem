@@ -58,7 +58,8 @@ const THAI_RE=/[฀-๿]/;
 const midCache=new Map();
 function midOffset(ctx){const f=ctx.font;let v=midCache.get(f);if(v==null){const b=ctx.textBaseline;ctx.textBaseline='alphabetic';const m=ctx.measureText('กขคงจบปผนม');v=(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2;ctx.textBaseline=b;if(!isFinite(v)||v<=0)v=parseFloat(f.match(/(\d+(?:\.\d+)?)px/)?.[1]||16)*.32;midCache.set(f,v);}return v;}
 TR.resetTextMetrics=()=>midCache.clear();
-function noSpacing(ctx){if('letterSpacing' in ctx)ctx.letterSpacing='0px';}
+// Never assign ctx.letterSpacing: on Safari even '0px' can break centred text and gradient fills.
+function noSpacing(){}
 // Draws str left-aligned on an alphabetic baseline at (x,y), with `accent` recoloured in place.
 function fillAccent(ctx,str,x,y,accent,base,acc){
  ctx.fillStyle=base;ctx.fillText(str,x,y);
@@ -73,18 +74,19 @@ function text(ctx,str,x,y,o={}){
  const fam=o.family||'head',font=o.font||FONT[fam]||FONT.head,weight=o.weight||WEIGHT[fam]||800;
  let size=o.size||48;const maxW=o.maxW||Infinity;
  ctx.save();
- if('letterSpacing' in ctx)ctx.letterSpacing=(o.spacing&&!THAI_RE.test(str)?o.spacing:0)+'px';
  size=fit(ctx,str,font,weight,size,maxW);
- ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=o.align||'center';
+ ctx.font=`${weight} ${size}px ${font}`;
+ // Align by measuring and drawing left-aligned; Safari can misplace textAlign:'center' for mixed scripts.
+ const align=o.align||'center',tw0=ctx.measureText(str).width,ax=align==='center'?-tw0/2:align==='right'?-tw0:0;ctx.textAlign='left';
  const mid=!o.baseline||o.baseline==='middle';ctx.textBaseline=mid?'alphabetic':o.baseline;const dy=mid?midOffset(ctx):0;
  ctx.globalAlpha*=o.alpha??1;
  ctx.translate(x,y);if(o.rot)ctx.rotate(o.rot);if(o.scale&&o.scale!==1)ctx.scale(o.scale,o.scale);
  if(o.glow){ctx.shadowColor=o.glow;ctx.shadowBlur=o.glowBlur??size*.45;}
  if(o.shadow){ctx.shadowColor=o.shadow;ctx.shadowBlur=o.shadowBlur??size*.25;ctx.shadowOffsetY=o.shadowY??size*.08;}
- if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,0,dy);}
+ if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,ax,dy);}
  if(o.gradient){const g=ctx.createLinearGradient(0,-size*.6,0,size*.6);o.gradient.forEach((c,i)=>g.addColorStop(i/(o.gradient.length-1),c));ctx.fillStyle=g;}else ctx.fillStyle=o.color||PAL.cream;
- ctx.fillText(str,0,dy);
- const w=ctx.measureText(str).width;ctx.restore();return {w,size};
+ ctx.fillText(str,ax,dy);
+ const w=tw0;ctx.restore();return {w,size};
 }
 // Emoji are rendered once into 160 px sprites and drawn as images (consistent colour, cheap per frame).
 const sprites=new Map();
@@ -197,7 +199,9 @@ function Synth(ac){
  const verb=ac.createConvolver();const len=Math.floor(ac.sampleRate*2.8),ir=ac.createBuffer(2,len,ac.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4);}verb.buffer=ir;
  const send=ac.createGain();send.gain.value=.28;
  const bus=ac.createGain();bus.connect(master);bus.connect(send);send.connect(verb);verb.connect(master);
- master.connect(comp);comp.connect(ac.destination);
+ // Music runs through a duck gain so it can dip under the voice-over; the voice joins after it, before the limiter.
+ const duck=ac.createGain(),voGain=ac.createGain();voGain.gain.value=1;
+ master.connect(duck);duck.connect(comp);voGain.connect(comp);comp.connect(ac.destination);
  const live=new Set();
  const track=node=>{live.add(node);node.onended=()=>live.delete(node);return node;};
  const noiseBuf=(()=>{const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b;})();
@@ -230,7 +234,7 @@ function Synth(ac){
   type(t,v=.08){noise(t,{dur:.02,vol:v,type:'bandpass',from:2600,q:2});},
   coin(t,v=.12){osc(t,83,{type:'square',d:.07,vol:v});osc(t+.07,88,{type:'square',d:.3,vol:v});},
  };
- return {ac,master,bus,I,hz,osc,noise,stopAll(){for(const n of live){try{n.stop();}catch{}}live.clear();},setMute(m){master.gain.setTargetAtTime(m?0:0.9,ac.currentTime,.03);}};
+ return {ac,master,bus,duck,voGain,track,I,hz,osc,noise,stopAll(){for(const n of live){try{n.stop();}catch{}}live.clear();duck.gain.cancelScheduledValues(0);duck.gain.value=1;},setMute(m){master.gain.setTargetAtTime(m?0:0.9,ac.currentTime,.03);voGain.gain.setTargetAtTime(m?0:1,ac.currentTime,.03);}};
 }
 // The score is a list of timed events (seconds from the trailer start); scenes may add their own SFX.
 TR.score=[];
@@ -265,7 +269,21 @@ class Player{
   // Never let a slow or blocked audio unlock hold the picture: wait at most 250 ms, then play anyway.
   if(this.syn){if(this.syn.ac.state!=='running')await Promise.race([this.syn.ac.resume().catch(()=>{}),new Promise(r=>setTimeout(r,250))]);if(token!==this.token)return;this.syn.stopAll();this.base=this.syn.ac.currentTime+.06-target;this.cueIndex=TR.score.findIndex(c=>c.t>=target-1e-6);if(this.cueIndex<0)this.cueIndex=TR.score.length;}
   this.T=target;this.perfBase=performance.now()-target*1000;
-  this.playing=true;this.emit('state','playing');this.raf=requestAnimationFrame(this.loop);
+  this.playing=true;this.startVo();this.emit('state','playing');this.raf=requestAnimationFrame(this.loop);
+ }
+ // Voice-over: one recorded track, fetched on the first play and kept in sync with the audio clock.
+ loadVo(){if(this.voPromise||!TR.voUrl||!this.syn)return;const ac=this.syn.ac;
+  this.voPromise=fetch(TR.voUrl).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();}).then(b=>new Promise((ok,no)=>{const p=ac.decodeAudioData(b,ok,no);if(p&&p.catch)p.catch(no);})).then(buf=>{this.voBuf=buf;if(this.playing)this.startVo();}).catch(()=>{});}
+ startVo(){const syn=this.syn;if(!syn)return;if(!this.voBuf){this.loadVo();return;}if(syn.ac.state!=='running')return;
+  const ac=syn.ac,at=Math.max(ac.currentTime+.02,this.base+this.now()),off=at-this.base;
+  try{this.voSrc?.stop();}catch{}
+  if(off<this.voBuf.duration-.05){const src=syn.track(ac.createBufferSource());src.buffer=this.voBuf;src.connect(syn.voGain);src.start(at,Math.max(0,off));this.voSrc=src;}
+  // Duck the music about 6 dB while each line is spoken.
+  const g=syn.duck.gain;g.cancelScheduledValues(0);g.setValueAtTime(1,ac.currentTime);
+  const segs=[];for(const [a,b] of TR.voSegments||[]){const l=segs[segs.length-1];if(l&&a-l[1]<.8)l[1]=b;else segs.push([a,b]);}
+  for(const [a,b] of segs){if(b<=off)continue;const ta=this.base+a,tb=this.base+b;
+   if(a>off+.2){g.setValueAtTime(1,ta-.2);g.linearRampToValueAtTime(.5,ta);}else g.setValueAtTime(.5,ac.currentTime+.01);
+   g.setValueAtTime(.5,tb+.1);g.linearRampToValueAtTime(1,tb+.5);}
  }
  pause(){this.token++;if(!this.playing)return;this.T=this.now();this.playing=false;cancelAnimationFrame(this.raf);if(this.syn){this.syn.stopAll();}this.emit('state','paused');this.draw();}
  toggle(){this.playing?this.pause():this.play();}
@@ -372,9 +390,12 @@ const TR=window.MC_TRAILER;
 TR.poster=8.6;
 TR.copy={"play": "▶ ดูตัวอย่าง (มีเสียง)", "endHeadline": "ซอสขวดแรกของคุณ รออยู่ในบท 1", "primaryCta": "เริ่มบท 1 เลย · ฟรี ไม่ต้องสมัคร", "secondaryCta": "↻ ดูอีกครั้ง"};
 TR.popupCopy={"kicker": "ก่อนเริ่มบท 1 · 60 วินาที", "title": "6 บท 6 ของจริง · 1 ความลับ", "sub": "ดูให้จบแล้วจะรู้ว่าแต่ละบทได้อะไรกลับไป และอะไรรออยู่หลังบทสุดท้าย 🔒 เปิดเสียงด้วยนะ", "play": "▶ ดูเลย (เปิดเสียง)", "skip": "ข้าม ไปเริ่มเรียน"};
-TR.headerCopy={"label": "ตัวอย่างคอร์ส · 60 วินาที", "play": "▶ ดูตัวอย่าง (มีเสียง)", "note": "6 บท 6 ของจริง กับความลับหลังบทที่ 6 · ดูซ้ำได้ทุกเมื่อ"};
+TR.headerCopy={"label": "ตัวอย่างคอร์ส · 60 วินาที", "play": "▶ ดูตัวอย่าง (มีเสียง)", "note": "วิดีโอนี้ทำด้วยโค้ดทั้งหมด · เรียนจบคุณก็ทำได้"};
 TR.chapters=[{"t": 0, "icon": "⏳", "label": "เปิดเรื่อง"}, {"t": 7, "icon": "✨", "label": "AI ใส่ซอส"}, {"t": 10, "icon": "🫙", "label": "บท 1"}, {"t": 14, "icon": "🥄", "label": "บท 2"}, {"t": 18, "icon": "🍳", "label": "บท 3"}, {"t": 22, "icon": "🍱", "label": "บท 4"}, {"t": 26, "icon": "🧂", "label": "บท 5"}, {"t": 30, "icon": "🍽️", "label": "บท 6"}, {"t": 34, "icon": "💛", "label": "ชีวิตที่ดีขึ้น"}, {"t": 44.5, "icon": "🔒", "label": "ความลับ"}, {"t": 52, "icon": "🚀", "label": "เริ่มบท 1"}];
-TR.transcript=["เล่าตัวเองซ้ำอีกแล้ว? — แชตใหม่ทีไร AI ก็ลืมเราทุกที", "ถ้ามีซอสที่รู้ใจคุณ… — ซอส = ไฟล์ Source .md ที่เป็นคุณ", "AI ใส่ซอส — 6 บท 6 ภารกิจ ได้ของจริงทุกบท", "ซอสขวดแรก ของคุณเอง — บท 1 · ได้ไฟล์ .md พกไปทั้งคอร์ส", "รู้ทันที AI เข้าใจไหม — บท 2 · ช้อนชิมภาพ ไม่ตรงแก้ที่ซอส", "คลิป 10 วิ ไม่ต้องถ่าย — บท 3 · ซอส+ภาพ ผัดเป็นคลิปแนวตั้ง", "ซอสเดียว ได้หลายเมนู — บท 4 · สไลด์ เสียง FAQ คู่มือ ภาพ", "AI Agent ที่รู้ใจคุณ — บท 5 · /foodangle + คลิปมีเพลง", "มีเว็บของคุณเองแล้ว — บท 6 · ไฟล์ HTML ใครก็เปิดใช้ได้", "ได้เวลาคืนมา — เลิกเล่าตัวเองซ้ำ งานเสร็จไวขึ้น", "ความสุขกลับมา — มีเวลาให้คนที่รัก สนุกกับการสร้าง", "ความเคารพตามมา — มีผลงานจริงให้คนเห็น ว่าคุณทำได้", "ครบ 6 บท… ยังไม่จบ — มีด่านลับ ที่ไม่อยู่ในสารบัญ", "ข้างในคืออะไร… ไม่บอก — ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้", "ไปเริ่มบท 1 กันเลย — ฟรี ไม่ต้องสมัคร เริ่มได้ทันที", "ซอสขวดแรกรออยู่ในบท 1 — myClover · ใครเจอเรา คนนั้นโชคดี"];
+TR.transcript=["เปิดแชตใหม่ทีไร… ต้องเล่าเรื่องตัวเองใหม่ทุกที", "ถ้ามี “Source” ที่รู้ใจคุณล่ะ… ไฟล์เดียว ที่เป็นตัวคุณ", "AI ใส่ซอส! หกภารกิจ ได้ของจริงทุกบท", "บทหนึ่ง ทำซอสขวดแรกของคุณเอง พกไปได้ทั้งคอร์ส", "บทสอง ชิมด้วยภาพเดียว รู้เลยว่า AI เข้าใจคุณไหม", "บทสาม ซอสกับภาพ ผัดเป็นคลิปสิบวิ ไม่ต้องถ่ายเอง", "บทสี่ ซอสขวดเดียว แตกเป็นสไลด์ เสียง คู่มือ", "บทห้า มีผู้ช่วย AI ที่รู้ใจ สั่งงานด้วยคำสั่งลัด", "บทหก เสิร์ฟเป็นเว็บของคุณเอง ใครก็เปิดดูได้", "แล้วคุณจะได้เวลาคืนมา", "ได้ทำสิ่งที่รัก… กับคนที่รัก", "และคนรอบตัว… จะเห็นฝีมือคุณ", "เรียนครบหกบท… ยังไม่จบนะ", "ข้างในมีอะไร… ไปเห็นเองดีกว่า", "วิดีโอนี้ กับเว็บนี้… เรียนจบ คุณก็ทำได้", "โชคดีที่เราได้เจอกัน… บทที่หนึ่งรอคุณอยู่"];
+// Voice-over track and when each line is spoken (seconds), used to dip the music under the voice.
+TR.voUrl='/assets/classroom-trailer-vo.m4a?v=20261018';
+TR.voSegments=[[0.05, 3.63], [3.7, 6.88], [7.2, 10.0], [10.15, 13.81], [14.0, 18.06], [18.12, 22.0], [22.15, 25.79], [26.15, 29.73], [30.15, 33.61], [34.4, 36.14], [37.8, 39.54], [41.3, 43.32], [45.0, 47.18], [48.4, 50.64], [52.3, 55.58], [56.4, 58.96]];
 })();
 
 /* ── hud.js ── */
@@ -1094,7 +1115,7 @@ TR.defineScene({id:'s01_grind',start:0,end:3.5,draw(ctx,s){
  }
  // fade up from black
  if(T<.2){ctx.fillStyle=`rgba(0,0,0,${1-E.outCubic(T/.2)})`;ctx.fillRect(0,0,s.w,s.h);}
- H.caption(ctx,s,{text:'เล่าตัวเองซ้ำอีกแล้ว?',accent:'ซ้ำ',sub:'แชตใหม่ทีไร AI ก็ลืมเราทุกที',in:.2,out:3.4});
+ H.caption(ctx,s,{text:'เล่าเรื่องตัวเองซ้ำอีกแล้ว?',accent:'ซ้ำ',sub:'เปิดแชตใหม่ทีไร… ต้องเล่าใหม่ทุกที',in:.2,out:3.4});
 }});
 
 /* ── s02 DROP ────────────────────────────────────────────── */
@@ -1338,8 +1359,8 @@ TR.defineScene({id:'s02_drop',start:3.5,end:7,draw(ctx,s){
  const vk=E.outCubic((T-3.5)/.6);
  vig(ctx,s,lerp(.12,.38,vk),lerp(.92,.6,vk)+.15*E.inCubic((T-6.3)/.7));
  // caption: ซอส in the headline and "Source .md" in the sub in hot gold
- const sub='ซอส = ไฟล์ Source .md ที่เป็นคุณ',inT=3.6,outT=6.85;
- H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subAccent:'Source .md',in:inT,out:outT});
+ const sub='ไฟล์เดียว ที่เป็นตัวคุณ · Source .md',inT=3.6,outT=6.85;
+ H.caption(ctx,s,{text:'ถ้ามี Source ที่รู้ใจคุณ…',accent:'Source',sub,subAccent:'ไฟล์เดียว',in:inT,out:outT});
 }});
 })();
 
@@ -1419,12 +1440,11 @@ function drawTitle(ctx,s,g,m,T){
  const {size,W}=m,font=H.FONT.head;
  ctx.save();ctx.translate(g.tx,g.ty-(1-kout)*8);ctx.scale(sc,sc);ctx.globalAlpha=alpha;
  eglow(ctx,0,0,W*.66,size*.95,PAL.gold,.32+.3*Math.max(0,1-t/.5)+.06*Math.sin(T*5.2));
- ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.translate(0,H.midOffset(ctx));
- ctx.fillStyle='#3d2906';ctx.fillText(TITLE,0,size*.085);
- ctx.fillStyle='#8a6420';ctx.fillText(TITLE,0,size*.045);
- const gr=ctx.createLinearGradient(0,-size*.5,0,size*.42);gr.addColorStop(0,'#fffaf0');gr.addColorStop(.4,PAL.cream);gr.addColorStop(.66,PAL.hot);gr.addColorStop(1,'#d9a648');
- ctx.fillStyle=gr;ctx.fillText(TITLE,0,0);
- for(const [s0,dur] of [[7.32,.5],[8.62,.6],[9.3,.5]]){const k=(T-s0)/dur;if(k>0&&k<1){const x=lerp(-W*.8,W*.8,E.inOutSine(k));const sg=ctx.createLinearGradient(x-size*.7,-size*.3,x+size*.7,size*.3);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,250,230,.8)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=sg;ctx.fillText(TITLE,0,0);ctx.restore();}}
+ ctx.font=`800 ${size}px ${font}`;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.translate(-ctx.measureText(TITLE).width/2,H.midOffset(ctx));
+ // One colour for the whole word (Latin caps and Thai alike); depth comes from a soft shadow, not offset copies.
+ ctx.save();ctx.shadowColor='rgba(20,12,2,.55)';ctx.shadowBlur=size*.08;ctx.shadowOffsetY=size*.05;ctx.fillStyle=PAL.hot;ctx.fillText(TITLE,0,0);ctx.restore();
+ ctx.fillStyle=PAL.hot;ctx.fillText(TITLE,0,0);
+ for(const [s0,dur] of [[7.32,.5],[8.62,.6],[9.3,.5]]){const k=(T-s0)/dur;if(k>0&&k<1){const x=W/2+lerp(-W*.8,W*.8,E.inOutSine(k));const sg=ctx.createLinearGradient(x-size*.7,-size*.3,x+size*.7,size*.3);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,250,230,.8)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=sg;ctx.fillText(TITLE,0,0);ctx.restore();}}
  if(t<.12&&!s.reduced){const k=1-t/.12;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=alpha*.6*k;ctx.fillStyle=PAL.gold;ctx.fillText(TITLE,-size*.1*k,-size*.02*k);ctx.fillStyle=PAL.cream;ctx.fillText(TITLE,size*.1*k,size*.03*k);ctx.restore();}
  ctx.restore();
  // sauce drip from the base of ซ (fixed to the title position, never moves a letter)
@@ -2692,7 +2712,7 @@ TR.defineScene({id:'s08_season',start:26,end:30,draw(ctx,s){
  const sp=shakerAt(G,T),sx=G.hx+(sp.x+cam.front-G.hx)*push+ox,sy=G.hy+(sp.y-G.hy)*push+oy;
  lootFlight(ctx,s,T,sx,sy,4,'🧂',28.78,29,G.K);
  if(T>=29&&T<29.7){const hp=TR.hudRect(s,7);H.glow(ctx,hp.x,hp.y+hp.size*.1,hp.size*1.3,PAL.hot,.55*(1-k01(T,29,29.7)));}
- H.caption(ctx,s,{text:'AI Agent ที่รู้ใจคุณ',sub:'บท 5 · /foodangle + คลิปมีเพลง',in:26.15,out:29.9,accent:'รู้ใจคุณ',layout:'column',chip:'🧂'});
+ H.caption(ctx,s,{text:'ผู้ช่วย AI ที่รู้ใจคุณ',sub:'บท 5 · คำสั่งลัด + Agent ของคุณเอง',in:26.15,out:29.9,accent:'รู้ใจคุณ',layout:'column',chip:'🧂'});
 }});
 })();
 
@@ -3117,8 +3137,8 @@ TR.defineScene({id:'s10_life',start:34,end:44.5,draw(ctx,s){
  if(T>=44.3){const k=k01(T,44.3,44.5);H.glow(ctx,L.cx,focusY,u*(4-3*k),PAL.hot,Math.sin(Math.PI*k));}
  // TEXT
  H.caption(ctx,s,{text:'ได้เวลาคืนมา',sub:'เลิกเล่าตัวเองซ้ำ งานเสร็จไวขึ้น',in:34.15,out:37.45,accent:'เวลา'});
- H.caption(ctx,s,{text:'ความสุขกลับมา',sub:'มีเวลาให้คนที่รัก สนุกกับการสร้าง',in:37.6,out:40.95,accent:'ความสุข'});
- H.caption(ctx,s,{text:'ความเคารพตามมา',sub:'มีผลงานจริงให้คนเห็น ว่าคุณทำได้',in:41.1,out:44.35,accent:'ความเคารพ'});
+ H.caption(ctx,s,{text:'ความสุขกลับมา',sub:'ได้ทำสิ่งที่รัก กับคนที่รัก',in:37.6,out:40.95,accent:'ความสุข'});
+ H.caption(ctx,s,{text:'คนเห็นฝีมือคุณ',sub:'มีผลงานจริงให้คนเห็น ว่าคุณทำได้',in:41.1,out:44.35,accent:'ฝีมือ'});
 }});
 })();
 
@@ -3543,7 +3563,7 @@ TR.defineScene({id:'s11_secret',start:S0,end:52,draw(ctx,s){
  // headline's wipe band would shave the chip ring. 9:16 keeps the 🔒 chip (it fits there).
  const whisper=o=>{ctx.save();H.caption(ctx,s,Object.assign({layout:'column',chip:s.portrait?'🔒':null,color:'rgba(244,236,216,.92)',glow:'rgba(242,160,123,.4)'},o));ctx.restore();};
  whisper({text:'ครบ 6 บท… ยังไม่จบ',sub:'มีด่านลับ ที่ไม่อยู่ในสารบัญ',in:44.8,out:48.15,accent:'ยังไม่จบ'});
- whisper({text:'ข้างในคืออะไร… ไม่บอก',sub:'ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้',in:48.25,out:51.5,accent:'ไม่บอก'});
+ whisper({text:'ข้างในมีอะไร… ไปเห็นเอง',sub:'ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้',in:48.25,out:51.5,accent:'ไม่บอก'});
 }});
 })();
 
@@ -3715,7 +3735,7 @@ function subTwoTone(ctx,s,o){
  const ks=E.outCubic((T-o.in-.05)/.3),kout=clamp((o.out-T)/.3);const a=Math.min(ks,E.inOutSine(kout))*.88;if(a<=0)return;
  const subSize=s.type.sub,maxW=s.w*(s.portrait?.88:.80)*.88,font=H.FONT.round;
  ctx.save();
- const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;if('letterSpacing' in ctx)ctx.letterSpacing='0px';
+ const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;
  ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.globalAlpha*=a;
  const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8+H.midOffset(ctx);
  H.fillAccent(ctx,o.text,s.w/2-total/2,y,o.gold,PAL.cream,PAL.hot);
@@ -3723,7 +3743,7 @@ function subTwoTone(ctx,s,o){
 }
 
 /* ── s12 · START ────────────────────────────────────────── */
-const L12={text:'ไปเริ่มบท 1 กันเลย',sub:'ฟรี ไม่ต้องสมัคร เริ่มได้ทันที',in:52.15,out:55.9};
+const L12={text:'เรียนจบ คุณก็ทำได้',sub:'วิดีโอนี้ กับเว็บนี้ สร้างจากสิ่งที่คุณจะได้เรียน',in:52.15,out:55.9};
 // Orbit phase in revolutions: 3 rev/s at 52 easing to 0.5 rev/s by 53, then a spiral-in kick from 55.5.
 function orbitRev(T,red=1){const t=T-52;if(t<1)return .5*t+red*2.5*(1-Math.pow(1-t,3))/3;return .5*t+red*2.5/3;}
 const COINS=[1,2,3,4,5].map(i=>LESSONS[i]);
@@ -3804,7 +3824,7 @@ TR.defineScene({id:'s12_start',start:52,end:56,draw(ctx,s){
   H.glow(ctx,tri.x,tri.y,G.size*2.2,PAL.hot,.5*(1-clamp((T-tap)/.4)));
   H.burst(ctx,T,tap,{x:tri.x,y:tri.y,count:40,speed:u*48,life:.65,size:u*.45,colors:[PAL.hot,PAL.gold,PAL.cream],shape:'line',seed:5550});
  }
- H.caption(ctx,s,{text:L12.text,sub:L12.sub,in:L12.in,out:L12.out,accent:'บท 1',subColor:'rgba(0,0,0,0)'});
+ H.caption(ctx,s,{text:L12.text,sub:L12.sub,in:L12.in,out:L12.out,accent:'คุณก็ทำได้',subColor:'rgba(0,0,0,0)'});
  ctx.save();
  ctx.translate(G.cx,G.hy);ctx.scale(pScale,pScale);ctx.translate(-G.cx,-G.hy);
  if(capA>0&&draw>0){
@@ -3825,7 +3845,7 @@ TR.defineScene({id:'s12_start',start:52,end:56,draw(ctx,s){
   ctx.restore();
  }
  ctx.restore();
- subTwoTone(ctx,s,{text:L12.sub,gold:'ฟรี',in:L12.in,out:L12.out,y:s.h*(s.portrait?.76:.87)});
+ subTwoTone(ctx,s,{text:L12.sub,gold:'สิ่งที่คุณจะได้เรียน',in:L12.in,out:L12.out,y:s.h*(s.portrait?.76:.87)});
  // cursor glides in from lower right at 55.0, taps at 55.5, leaves with the caption
  if(T>=55&&T<55.9){
   const k=E.outCubic((T-55)/.4),tx=tri.x+G.size*.12,ty=tri.y+G.size*.1;
@@ -3851,7 +3871,7 @@ function star(ctx,x,y,r,color,alpha){
 }
 
 /* ── s13 · END CARD ─────────────────────────────────────── */
-const L13={text:'ซอสขวดแรกรออยู่ในบท 1',sub:'myClover · ใครเจอเรา คนนั้นโชคดี',in:56.15,out:60};
+const L13={text:'โชคดีที่เราได้เจอกัน',sub:'บทที่ 1 รอคุณอยู่ · ฟรี ไม่ต้องสมัคร',in:56.15,out:60};
 // Motion clock: real time until 59.5, then eases to a full stop (velocity (1-x)^2 over 0.5 s).
 function motionT(T){if(T<59.5)return T;const x=clamp((T-59.5)/.5);return 59.5+.5*(1-Math.pow(1-x,3))/3;}
 // Heart-shaped leaf pointing up (-y), tip at distance `off` from the centre, length L.
@@ -3933,7 +3953,7 @@ TR.defineScene({id:'s13_endcard',start:56,end:60,draw(ctx,s){
  {const r=H.rng(5656);for(let i=0;i<10;i++){const a=r()*TAU,d=R*(1.3+r()*1.1),ph=r()*TAU,x=cx+Math.cos(a)*d*1.4,y=cy+Math.sin(a)*d*.8;const tw=Math.max(0,Math.sin(Te*1.6+ph));if(tw<.05)continue;star(ctx,x,y,u*(.7+r()*.6)*tw,PAL.hot,.7*tw*haloK);}}
  H.vignette(ctx,s,.55);
  // text sits higher so the bottom stays clear for the HTML end-card buttons
- H.caption(ctx,s,{text:L13.text,sub:L13.sub,in:L13.in,out:L13.out,accent:'ซอสขวดแรก',hy:s.portrait?.50:.58,sy:s.portrait?.56:.66});
+ H.caption(ctx,s,{text:L13.text,sub:L13.sub,in:L13.in,out:L13.out,accent:'โชคดี',hy:s.portrait?.50:.58,sy:s.portrait?.56:.66});
 }});
 })();
 

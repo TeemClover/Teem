@@ -73,12 +73,11 @@ function drawTitle(ctx,s,g,m,T){
  const {size,W}=m,font=H.FONT.head;
  ctx.save();ctx.translate(g.tx,g.ty-(1-kout)*8);ctx.scale(sc,sc);ctx.globalAlpha=alpha;
  eglow(ctx,0,0,W*.66,size*.95,PAL.gold,.32+.3*Math.max(0,1-t/.5)+.06*Math.sin(T*5.2));
- ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.translate(0,H.midOffset(ctx));
- ctx.fillStyle='#3d2906';ctx.fillText(TITLE,0,size*.085);
- ctx.fillStyle='#8a6420';ctx.fillText(TITLE,0,size*.045);
- const gr=ctx.createLinearGradient(0,-size*.5,0,size*.42);gr.addColorStop(0,'#fffaf0');gr.addColorStop(.4,PAL.cream);gr.addColorStop(.66,PAL.hot);gr.addColorStop(1,'#d9a648');
- ctx.fillStyle=gr;ctx.fillText(TITLE,0,0);
- for(const [s0,dur] of [[7.32,.5],[8.62,.6],[9.3,.5]]){const k=(T-s0)/dur;if(k>0&&k<1){const x=lerp(-W*.8,W*.8,E.inOutSine(k));const sg=ctx.createLinearGradient(x-size*.7,-size*.3,x+size*.7,size*.3);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,250,230,.8)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=sg;ctx.fillText(TITLE,0,0);ctx.restore();}}
+ ctx.font=`800 ${size}px ${font}`;ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.translate(-ctx.measureText(TITLE).width/2,H.midOffset(ctx));
+ // One colour for the whole word (Latin caps and Thai alike); depth comes from a soft shadow, not offset copies.
+ ctx.save();ctx.shadowColor='rgba(20,12,2,.55)';ctx.shadowBlur=size*.08;ctx.shadowOffsetY=size*.05;ctx.fillStyle=PAL.hot;ctx.fillText(TITLE,0,0);ctx.restore();
+ ctx.fillStyle=PAL.hot;ctx.fillText(TITLE,0,0);
+ for(const [s0,dur] of [[7.32,.5],[8.62,.6],[9.3,.5]]){const k=(T-s0)/dur;if(k>0&&k<1){const x=W/2+lerp(-W*.8,W*.8,E.inOutSine(k));const sg=ctx.createLinearGradient(x-size*.7,-size*.3,x+size*.7,size*.3);sg.addColorStop(0,'rgba(255,255,255,0)');sg.addColorStop(.5,'rgba(255,250,230,.8)');sg.addColorStop(1,'rgba(255,255,255,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=sg;ctx.fillText(TITLE,0,0);ctx.restore();}}
  if(t<.12&&!s.reduced){const k=1-t/.12;ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=alpha*.6*k;ctx.fillStyle=PAL.gold;ctx.fillText(TITLE,-size*.1*k,-size*.02*k);ctx.fillStyle=PAL.cream;ctx.fillText(TITLE,size*.1*k,size*.03*k);ctx.restore();}
  ctx.restore();
  // sauce drip from the base of ซ (fixed to the title position, never moves a letter)

@@ -229,7 +229,7 @@ TR.defineScene({id:'s01_grind',start:0,end:3.5,draw(ctx,s){
  }
  // fade up from black
  if(T<.2){ctx.fillStyle=`rgba(0,0,0,${1-E.outCubic(T/.2)})`;ctx.fillRect(0,0,s.w,s.h);}
- H.caption(ctx,s,{text:'เล่าตัวเองซ้ำอีกแล้ว?',accent:'ซ้ำ',sub:'แชตใหม่ทีไร AI ก็ลืมเราทุกที',in:.2,out:3.4});
+ H.caption(ctx,s,{text:'เล่าเรื่องตัวเองซ้ำอีกแล้ว?',accent:'ซ้ำ',sub:'เปิดแชตใหม่ทีไร… ต้องเล่าใหม่ทุกที',in:.2,out:3.4});
 }});
 
 /* ── s02 DROP ────────────────────────────────────────────── */
@@ -473,7 +473,7 @@ TR.defineScene({id:'s02_drop',start:3.5,end:7,draw(ctx,s){
  const vk=E.outCubic((T-3.5)/.6);
  vig(ctx,s,lerp(.12,.38,vk),lerp(.92,.6,vk)+.15*E.inCubic((T-6.3)/.7));
  // caption: ซอส in the headline and "Source .md" in the sub in hot gold
- const sub='ซอส = ไฟล์ Source .md ที่เป็นคุณ',inT=3.6,outT=6.85;
- H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subAccent:'Source .md',in:inT,out:outT});
+ const sub='ไฟล์เดียว ที่เป็นตัวคุณ · Source .md',inT=3.6,outT=6.85;
+ H.caption(ctx,s,{text:'ถ้ามี Source ที่รู้ใจคุณ…',accent:'Source',sub,subAccent:'ไฟล์เดียว',in:inT,out:outT});
 }});
 })();

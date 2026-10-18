@@ -418,6 +418,6 @@ TR.defineScene({id:'s11_secret',start:S0,end:52,draw(ctx,s){
  // headline's wipe band would shave the chip ring. 9:16 keeps the 🔒 chip (it fits there).
  const whisper=o=>{ctx.save();H.caption(ctx,s,Object.assign({layout:'column',chip:s.portrait?'🔒':null,color:'rgba(244,236,216,.92)',glow:'rgba(242,160,123,.4)'},o));ctx.restore();};
  whisper({text:'ครบ 6 บท… ยังไม่จบ',sub:'มีด่านลับ ที่ไม่อยู่ในสารบัญ',in:44.8,out:48.15,accent:'ยังไม่จบ'});
- whisper({text:'ข้างในคืออะไร… ไม่บอก',sub:'ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้',in:48.25,out:51.5,accent:'ไม่บอก'});
+ whisper({text:'ข้างในมีอะไร… ไปเห็นเอง',sub:'ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้',in:48.25,out:51.5,accent:'ไม่บอก'});
 }});
 })();

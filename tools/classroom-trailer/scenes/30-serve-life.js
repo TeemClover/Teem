@@ -418,7 +418,7 @@ TR.defineScene({id:'s10_life',start:34,end:44.5,draw(ctx,s){
  if(T>=44.3){const k=k01(T,44.3,44.5);H.glow(ctx,L.cx,focusY,u*(4-3*k),PAL.hot,Math.sin(Math.PI*k));}
  // TEXT
  H.caption(ctx,s,{text:'ได้เวลาคืนมา',sub:'เลิกเล่าตัวเองซ้ำ งานเสร็จไวขึ้น',in:34.15,out:37.45,accent:'เวลา'});
- H.caption(ctx,s,{text:'ความสุขกลับมา',sub:'มีเวลาให้คนที่รัก สนุกกับการสร้าง',in:37.6,out:40.95,accent:'ความสุข'});
- H.caption(ctx,s,{text:'ความเคารพตามมา',sub:'มีผลงานจริงให้คนเห็น ว่าคุณทำได้',in:41.1,out:44.35,accent:'ความเคารพ'});
+ H.caption(ctx,s,{text:'ความสุขกลับมา',sub:'ได้ทำสิ่งที่รัก กับคนที่รัก',in:37.6,out:40.95,accent:'ความสุข'});
+ H.caption(ctx,s,{text:'คนเห็นฝีมือคุณ',sub:'มีผลงานจริงให้คนเห็น ว่าคุณทำได้',in:41.1,out:44.35,accent:'ฝีมือ'});
 }});
 })();

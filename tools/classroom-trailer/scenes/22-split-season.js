@@ -455,6 +455,6 @@ TR.defineScene({id:'s08_season',start:26,end:30,draw(ctx,s){
  const sp=shakerAt(G,T),sx=G.hx+(sp.x+cam.front-G.hx)*push+ox,sy=G.hy+(sp.y-G.hy)*push+oy;
  lootFlight(ctx,s,T,sx,sy,4,'🧂',28.78,29,G.K);
  if(T>=29&&T<29.7){const hp=TR.hudRect(s,7);H.glow(ctx,hp.x,hp.y+hp.size*.1,hp.size*1.3,PAL.hot,.55*(1-k01(T,29,29.7)));}
- H.caption(ctx,s,{text:'AI Agent ที่รู้ใจคุณ',sub:'บท 5 · /foodangle + คลิปมีเพลง',in:26.15,out:29.9,accent:'รู้ใจคุณ',layout:'column',chip:'🧂'});
+ H.caption(ctx,s,{text:'ผู้ช่วย AI ที่รู้ใจคุณ',sub:'บท 5 · คำสั่งลัด + Agent ของคุณเอง',in:26.15,out:29.9,accent:'รู้ใจคุณ',layout:'column',chip:'🧂'});
 }});
 })();
