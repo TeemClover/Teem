@@ -309,7 +309,7 @@ function buildUI(host,copy){
  host.classList.add('trx');
  host.innerHTML=`<div class="trx-stage"><canvas class="trx-canvas" aria-hidden="true"></canvas>
  <button type="button" class="trx-big" aria-label="${copy.play}"><span class="trx-big-ico" aria-hidden="true">▶</span><span class="trx-big-tx">${copy.play}</span></button>
- <div class="trx-end" hidden><p class="trx-end-h">${copy.endHeadline}</p><div class="trx-end-row"><a class="trx-cta" href="/classroom/free-ai.html">${copy.primaryCta}</a><button type="button" class="trx-replay">${copy.secondaryCta}</button></div></div>
+ <div class="trx-end" hidden><p class="trx-end-h">${copy.endHeadline}</p><div class="trx-end-row"><a class="trx-cta" href="${copy.ctaHref||'/classroom/free-ai.html'}">${copy.primaryCta}</a><button type="button" class="trx-replay">${copy.secondaryCta}</button></div></div>
  <div class="trx-bar"><button type="button" class="trx-pp" aria-label="เล่น">▶</button><div class="trx-track" role="slider" tabindex="0" aria-label="ตำแหน่งวิดีโอ" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0"><i class="trx-fill"></i><span class="trx-chaps"></span></div><span class="trx-time">0:00</span><button type="button" class="trx-mute" aria-label="ปิดเสียง">🔊</button><button type="button" class="trx-fs" aria-label="เต็มจอ">⛶</button></div></div>
  <p class="trx-sr">${(TR.transcript||[]).map(l=>l.replace(/[<>&]/g,'')).join(' · ')}</p>`;
  const q=sel=>host.querySelector(sel);

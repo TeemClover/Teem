@@ -48,8 +48,8 @@ test('plain Thai intents find the right command', () => {
 });
 
 test('every command builds a complete prompt with no placeholders left from code', () => {
-  assert.equal(deck.COMMANDS.length, 28);
-  assert.equal(new Set(deck.COMMANDS.map(command => command.id)).size, 28);
+  assert.equal(deck.COMMANDS.length, 29);
+  assert.equal(new Set(deck.COMMANDS.map(command => command.id)).size, 29);
   for (const command of deck.COMMANDS) {
     const prompt = deck.buildPrompt([{ id: command.id, options: {}, field: '' }], {});
     assert.ok(prompt.length > 120, command.id);

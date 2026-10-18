@@ -312,7 +312,7 @@ function buildUI(host,copy){
  host.classList.add('trx');
  host.innerHTML=`<div class="trx-stage"><canvas class="trx-canvas" aria-hidden="true"></canvas>
  <button type="button" class="trx-big" aria-label="${copy.play}"><span class="trx-big-ico" aria-hidden="true">▶</span><span class="trx-big-tx">${copy.play}</span></button>
- <div class="trx-end" hidden><p class="trx-end-h">${copy.endHeadline}</p><div class="trx-end-row"><a class="trx-cta" href="/classroom/free-ai.html">${copy.primaryCta}</a><button type="button" class="trx-replay">${copy.secondaryCta}</button></div></div>
+ <div class="trx-end" hidden><p class="trx-end-h">${copy.endHeadline}</p><div class="trx-end-row"><a class="trx-cta" href="${copy.ctaHref||'/classroom/free-ai.html'}">${copy.primaryCta}</a><button type="button" class="trx-replay">${copy.secondaryCta}</button></div></div>
  <div class="trx-bar"><button type="button" class="trx-pp" aria-label="เล่น">▶</button><div class="trx-track" role="slider" tabindex="0" aria-label="ตำแหน่งวิดีโอ" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0"><i class="trx-fill"></i><span class="trx-chaps"></span></div><span class="trx-time">0:00</span><button type="button" class="trx-mute" aria-label="ปิดเสียง">🔊</button><button type="button" class="trx-fs" aria-label="เต็มจอ">⛶</button></div></div>
  <p class="trx-sr">${(TR.transcript||[]).map(l=>l.replace(/[<>&]/g,'')).join(' · ')}</p>`;
  const q=sel=>host.querySelector(sel);
@@ -3968,18 +3968,21 @@ function start(){
  const host=document.getElementById('classroomTrailer');
  let header=null;
  const pop=document.getElementById('trailerPop');
- const popCopy={play:(TR.popupCopy&&TR.popupCopy.play)||undefined};
+ // A page can override the end card from the host: data-end-headline, data-cta, data-cta-href.
+ const d=host?host.dataset:{},endCopy={};if(d.endHeadline)endCopy.endHeadline=d.endHeadline;if(d.cta)endCopy.primaryCta=d.cta;if(d.ctaHref)endCopy.ctaHref=d.ctaHref;
+ const popCopy=Object.assign({play:(TR.popupCopy&&TR.popupCopy.play)||undefined},endCopy);
  // On phones the header box is too small for the captions, so play opens the full-screen portrait player.
  const small=()=>innerWidth<640&&!!pop;
  const openFull=from=>{TR.openPopup(pop,{poster:TR.poster,copy:popCopy,autoplay:true,from:from||0,onClose:()=>{host?._player?.draw();}});return true;};
- if(host&&!host._player)header=TR.mount(host,{poster:TR.poster,copy:{play:(TR.headerCopy&&TR.headerCopy.play)||undefined},intercept:()=>small()&&openFull(),onFullscreen:from=>openFull(from),preferDialog:small});
+ if(host&&!host._player)header=TR.mount(host,{poster:TR.poster,copy:Object.assign({play:(TR.headerCopy&&TR.headerCopy.play)||undefined},endCopy),intercept:()=>small()&&openFull(),onFullscreen:from=>openFull(from),preferDialog:small});
  document.querySelectorAll('[data-trailer-play]').forEach(btn=>btn.addEventListener('click',e=>{
   e.preventDefault();if(small()){openFull();return;}if(!host||!header)return;
   const lenis=window.cloverMotion?.lenis;
   if(lenis)lenis.scrollTo(host,{offset:-80,duration:.9});else host.scrollIntoView({behavior:'smooth',block:'center'});
   header.play(0);
  }));
- if(!pop)return;
+ // data-auto="off" keeps the dialog for phone playback only, with no first-visit popup.
+ if(!pop||pop.dataset.auto==='off')return;
  const q=new URLSearchParams(location.search);
  if(q.get('trailer')==='0')return;
  if(q.get('trailer')==='1')TR.writeState({played:false,dismissed:0});

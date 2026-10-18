@@ -5,7 +5,17 @@
 (function(){
 'use strict';
 const RATIO={k:'ratio',label:'สัดส่วน',choices:[['9x16','9:16 แนวตั้ง','a vertical 9:16 frame'],['4x5','4:5 ฟีด','a 4:5 portrait frame'],['1x1','1:1 จัตุรัส','a square 1:1 frame'],['16x9','16:9 แนวนอน','a horizontal 16:9 frame']]};
-const LENGTH={k:'len',label:'ความยาว',choices:[['15','15 วิ','15'],['30','30 วิ','30'],['60','60 วิ','60']]};
+const LENGTH={k:'len',label:'ความยาว',choices:[['15','15 วิ','15'],['30','30 วิ','30'],['60','60 วิ','60'],['90','90 วิ','90']]};
+// Production level for code-made video: the premium tiers spell out what makes motion look expensive.
+const POLISH={k:'polish',label:'ระดับงาน',def:'premium',choices:[
+ ['std','มาตรฐาน','Keep it simple and clean.'],
+ ['premium','พรีเมียม','Make it look premium: a clear arc (hook in the first 2 seconds, build, payoff, ending card); eased motion everywhere (no linear moves, a little overshoot on reveals); 3+ depth layers with parallax; soft light (glow, light rays, vignette, fine film grain); a 5-colour palette used consistently; transitions that land on the music cuts; 60 fps from a time-based timeline (requestAnimationFrame, never frame counting).'],
+ ['cinema','ซีเนมาติก','Make it cinematic, like a premium brand trailer: a 3-act arc (problem, reveal with a logo/title moment, payoff) plus an ending card with a call-to-action; every scene has one signature visual and one idea; eased motion with anticipation and overshoot; 3–5 depth layers with parallax and camera drift; volumetric light rays, bloom-like glow, vignette, film grain and particles; a 5-colour palette pulled from my brand; match-cut transitions locked to the beat; a scrub bar with chapters; 60 fps from one master clock (the audio clock while sound plays) so picture and music never drift.']]};
+// Shared text, story and voice rules for every code-made video prompt.
+const STORY_FROM_SAUCE='If the story/text above is empty or still a placeholder, build it from my Source (.md) if I attached one: who I am, what I do, and one moment worth telling. If both exist, mix them: my words lead, the Source supplies facts and tone.';
+const TEXT_SAFE='Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; draw emoji into a sprite and centre it by its visible pixels. Recompute on resize.';
+const QA_SAFE='Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text, no console errors, smooth 60 fps.';
+const VOICE_OWN='Voice-over: do not use synthetic text-to-speech. Write a short Thai voice-over script with a time for each line; I will record it myself on my phone as one file with a pause between lines. Add an optional "load my voice file" input: split it on the pauses, place each line on its scene, and duck the music about 6 dB under the voice.';
 const CATS=[
  {id:'all',icon:'✨',name:'ทั้งหมด'},
  {id:'image',icon:'📸',name:'ภาพ',color:'#d9733b'},
@@ -60,30 +70,58 @@ const COMMANDS=[
   opts:[{k:'art',label:'Art direction',choices:[['brush','พู่กันจีน','Chinese brush strokes (sumi ink, dry-brush texture, rice-paper grain)'],['mural','จิตรกรรมไทย','Thai temple mural painting (gold leaf, red ochre, deep green, flowing kanok lines)'],['ukiyo','ภาพพิมพ์ญี่ปุ่น','Japanese ukiyo-e woodblock prints (bold outlines, flat colour, wave patterns)'],['paper','กระดาษตัดซ้อนชั้น','layered paper cut-out with soft drop shadows'],['neon','นีออนซินธ์เวฟ','neon synthwave (glowing lines, grid horizon, magenta and cyan)'],['water','สีน้ำ','loose watercolour washes bleeding on textured paper'],['pixel','พิกเซลอาร์ต','retro 16-bit pixel art (chunky pixels, limited palette, game-style text boxes)']]},
    {k:'culture',label:'องค์ประกอบ',choices:[['thai','วัฒนธรรมไทย','Thai culture (temples, lotus, longtail boats, street food, elephants, Thai patterns)'],['japan','ญี่ปุ่น','Japanese culture (torii gates, sakura, lanterns, waves)'],['china','จีน','Chinese culture (lanterns, mountains, dragons, tea)'],['korea','เกาหลี','Korean culture (hanok roofs, hanbok, palace gardens)'],['global','สากลร่วมสมัย','a contemporary global city']]},
    {k:'type',label:'ตัวอักษร',choices:[['modern','Modern Bold','modern bold sans-serif kinetic TYPOGRAPHY'],['serif','Elegant Serif','elegant high-contrast serif TYPOGRAPHY'],['hand','ลายมือ','hand-lettered brush TYPOGRAPHY'],['brutal','Brutalist','raw brutalist TYPOGRAPHY with huge letters']]},
-   {...LENGTH,def:'30'},{...RATIO,def:'9x16'}],
-  field:{label:'เรื่องที่อยากเล่า',ph:'ใส่เรื่องที่อยากทำตรงนี้',multi:true,ex:['วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน','การเดินทางของใบชาจากดอยถึงแก้วของคุณ','ตำนานแม่โพสพกับข้าวหอมมะลิ','เด็กหญิงริมโขงที่อยากเป็นนักบินอวกาศ']},
+   {...LENGTH,def:'30'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'เรื่องที่อยากเล่า (เว้นว่างได้ ใช้เรื่องจากซอส)',ph:'ใส่เรื่องของคุณ หรือเว้นว่างให้ AI หยิบจากซอส',multi:true,ex:['วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน','การเดินทางของใบชาจากดอยถึงแก้วของคุณ','ตำนานแม่โพสพกับข้าวหอมมะลิ','เด็กหญิงริมโขงที่อยากเป็นนักบินอวกาศ']},
   build:(o,f)=>`Create JavaScript animation with music (and downloadable to mp4) using ${o.art} as key main art direction but make elements according to ${o.culture} plus ${o.type} style to tell the story.
 
-Story will be about, "${F(f,'ใส่เรื่องที่อยากทำตรงนี้')}"
+Story will be about, "${F(f,'ใส่เรื่องของคุณตรงนี้ — หรือเว้นว่างให้ใช้เรื่องจากซอส')}"
+${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
 
 Requirements:
 - One self-contained HTML file (Canvas + JavaScript), about ${o.len} seconds, ${o.ratio}.
 - Split the story into 4–6 scenes with smooth transitions; each scene has one short Thai line that animates in with the typography style.
-- Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files) and fade it out at the end.
+- Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files): a tempo grid, cues locked to the scene cuts, a master compressor, peaks below −1 dBFS, and a fade at the end.
+- ${VOICE_OWN}
 - Controls: Play / Replay, plus a "Download video" button that records the canvas and audio with MediaRecorder (MP4 when the browser supports it, otherwise WebM) and saves the file.
 - Fonts only from Google Fonts; no other external assets.
-- Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; centre emoji by their visible shape. Recompute on resize.
-- Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text.`,
+- ${TEXT_SAFE}
+- ${QA_SAFE}`,
   pack:'Create a self-contained HTML/JS animation with Web Audio music and a MediaRecorder "Download video" button (MP4 if supported, else WebM) telling the story after the command (default: Chinese brush strokes + Thai culture elements + modern typography, 30s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
+ {id:'trailer',cat:'video',icon:'🎞️',name:'วิดีโอเปิดตัวแบบคอร์สนี้',desc:'ตัวอย่างหนังของแบรนด์หรือคอร์สคุณ 60 วิ ทำด้วยโค้ดทั้งไฟล์ แบบเดียวกับวิดีโอเปิดคอร์ส AI ใส่ซอส',need:'sauce',tools:'Claude Opus 5.5 · Ultracode',hot:true,keys:'วิดีโอเปิดตัว ตัวอย่าง trailer teaser promo แนะนำคอร์ส แนะนำร้าน แบรนด์ เปิดตัวสินค้า วิดีโอโปรโมท',
+  opts:[{k:'what',label:'เปิดตัวอะไร',choices:[['course','คอร์ส / คลาส','my course or class'],['brand','แบรนด์ / ร้าน','my brand or shop'],['product','สินค้าใหม่','a new product'],['me','ตัวฉัน / พอร์ต','me and my portfolio']]},
+   {k:'mood',label:'อารมณ์',choices:[['warm','อบอุ่น สนุก','warm, playful and hopeful'],['epic','ยิ่งใหญ่ เกม','epic, like a game trailer with quests and loot'],['lux','หรู มินิมอล','luxury minimal, slow and confident']]},
+   {...LENGTH,def:'60'}],
+  field:{label:'อยากให้คนดูรู้สึกหรือทำอะไรตอนจบ (เว้นว่างได้)',ph:'เช่น อยากให้กดเริ่มบทเรียนแรก · แวะมาที่ร้าน',ex:['อยากให้กดเริ่มบทเรียนแรก','อยากให้ทักมาสั่งของ','อยากให้จำชื่อร้านได้']},
+  build:(o,f)=>`Build a ${o.len}-second launch trailer for ${o.what} as ONE self-contained HTML file: everything drawn with Canvas 2D + JavaScript, music composed with the Web Audio API, no video, image or audio files. Mood: ${o.mood}. Use my attached Source as the only truth for names, promises, numbers and tone.
+Ending goal: ${F(f,'pick the single most useful action from my Source')}
+
+1. Plan first: write a storyboard table (time, scene, the one visual idea, Thai on-screen headline + sub line, Thai voice-over line, music cue), then build it.
+2. Story arc: hook on a real pain in the first 3 seconds → reveal the title/logo with a hit on the beat → one beat (about 4 s) per key feature, each with a signature visual and an icon/"loot" → the life it gives (time back, doing what you love, people seeing your work) → a teaser of what is hidden → warm ending card with one call-to-action button.
+3. Look: cinematic and premium — 3–5 depth layers with parallax and slow camera drift, volumetric light rays, glow, vignette, fine film grain, particles; a 5-colour palette from my brand; eased motion with anticipation and overshoot; transitions locked to the beat. Each scene works in BOTH 16:9 and 9:16 with its own layout (compute everything from the frame size).
+4. ${TEXT_SAFE}
+5. Music: an original score on a tempo grid (about 100 BPM) with cues placed on the scene cuts, a key change at the payoff, reverb send and a master compressor, peaks below −1 dBFS.
+6. ${VOICE_OWN}
+7. Player: poster frame, big play button, pause, seek bar with chapter marks, mute, fullscreen (on iPhone open a full-screen dialog instead, since it has no element fullscreen), replay, an end card with the CTA; one master clock (the audio clock while sound plays) so picture, music and voice never drift; honour prefers-reduced-motion.
+8. Export: a "Download video" button that records 1080p at 60 fps with MediaRecorder (MP4 when supported, otherwise WebM), music and voice included.
+9. ${QA_SAFE} Also check the frame at every scene change, fix anything off, and only then hand over the file.`,
+  pack:'Build a 60s code-only launch trailer (Canvas + Web Audio, one HTML file) for the brand in my Source: storyboard first, hook → title → feature beats → payoff → CTA, cinematic layers/light, both 16:9 and 9:16, Thai text inside a 6% safe area, my own recorded voice (no TTS) with music ducking, full player and MP4/WebM download.'},
  {id:'kinetic',cat:'video',icon:'🔠',name:'คลิปตัวหนังสือเด้ง',desc:'ข้อความเดียว กลายเป็นคลิป Kinetic Typography ตามจังหวะเพลง',need:'text',tools:'Claude · ChatGPT',keys:'คลิป ตัวหนังสือ คำคม ข้อความ typography คลิปข้อความ เพลง จังหวะ quote',
-  opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'}],
-  field:{label:'ข้อความที่อยากให้เด้ง',ph:'เช่น ใครเจอเรา คนนั้นโชคดี',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
-  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน]')}". Animate word by word in sync with an original beat made with the Web Audio API. Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support. Text layout: keep every line inside a 6% safe area and centred in both 9:16 and 16:9 — measure with ctx.measureText, shrink or wrap until it fits, centre by drawing left-aligned at centre − width / 2, never set ctx.letterSpacing on Thai, leave room for Thai vowels and tone marks, recompute on resize, and check every scene in both ratios for clipped text before finishing.`,
+  opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'ข้อความที่อยากให้เด้ง (เว้นว่างได้ ใช้ประโยคจากซอส)',ph:'ใส่ข้อความของคุณ หรือเว้นว่างให้ AI เลือกจากซอส',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
+  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน — หรือเว้นว่างให้เลือกจากซอส]')}". ${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
+
+Animate word by word in sync with an original beat made with the Web Audio API (tempo grid, accents on key words, master compressor, peaks below −1 dBFS). Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support.
+${TEXT_SAFE}
+${QA_SAFE}`,
   pack:'Make a kinetic-typography HTML/JS clip of the Thai text after the command, synced to a Web Audio beat, with a MediaRecorder download button (default pop, 15s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
  {id:'reel',cat:'video',icon:'📱',name:'สคริปต์ Reels / TikTok',desc:'ได้ฮุค 3 วิ ช็อตลิสต์ แคปชันบนจอ และเสียงพากย์ พร้อมถ่ายหรือทำด้วย AI',need:'text',keys:'คลิป วิดีโอ reels tiktok คลิปสั้น สคริปต์ ถ่ายคลิป ช็อต วิดีโอสั้น shorts',
   opts:[{k:'tone',label:'โทน',choices:[['fun','สนุกเป็นกันเอง','fun and friendly'],['teach','สอนเข้าใจง่าย','clear and educational'],['story','เล่าเรื่องซึ้ง','heartfelt storytelling'],['sell','ขายตรงประเด็น','direct and persuasive']]},{...LENGTH,def:'30'}],
   field:{label:'คลิปนี้เกี่ยวกับอะไร',ph:'เช่น 3 เมนูใหม่ของร้านเดือนนี้',ex:['3 เมนูใหม่ของร้านเดือนนี้','เบื้องหลังการทำเทียนหอม 1 ชิ้น','ทริคใช้ AI ทำงานเร็วขึ้น 2 เท่า']},
-  build:(o,f)=>`Plan a ${o.len}-second vertical (9:16) short video about "${F(f,'[หัวข้อของฉัน]')}". Tone: ${o.tone}. Give me: 3 options for a 2-second hook; a scene-by-scene table (time, what we see, Thai on-screen text, Thai voice-over); a closing call-to-action; 5 hashtags. Keep it shootable with a phone or makeable with AI images. Write everything for the viewer in Thai.`,
+  build:(o,f)=>`Plan a ${o.len}-second vertical (9:16) short video about "${F(f,'[หัวข้อของฉัน]')}". Tone: ${o.tone}. Give me: 3 options for a 2-second hook; a scene-by-scene table (time, what we see, Thai on-screen text, Thai voice-over I will record myself); a closing call-to-action; 5 hashtags. Base names, facts and tone on my Source (.md) if I attached one. Keep it shootable with a phone or makeable with AI images. Write everything for the viewer in Thai.`,
   pack:'Plan a 9:16 short video about the topic after the command: 3 hooks, scene table (time, visual, Thai text, Thai VO), CTA, 5 hashtags (default 30s, fun tone).'},
  {id:'img2vid',cat:'video',icon:'🎞️',name:'ทำภาพให้ขยับ',desc:'แนบภาพนิ่ง ได้ Prompt สั่งภาพขยับสำหรับ Veo, Kling, Sora หรือ Higgsfield',need:'photo',keys:'ภาพขยับ ภาพเคลื่อนไหว image to video veo kling sora higgsfield กล้อง เคลื่อนกล้อง',
   opts:[{k:'cam',label:'กล้อง',choices:[['push','ซูมเข้าช้า ๆ','a slow push-in'],['orbit','หมุนรอบ','a gentle orbit around the subject'],['hand','ถือกล้องด้วยมือ','subtle handheld movement'],['drone','โดรนถอยออก','a drone pull-back that reveals the scene'],['parallax','พารัลแลกซ์','a soft parallax slide']]},

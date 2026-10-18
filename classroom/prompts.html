@@ -352,6 +352,131 @@ button{cursor:pointer}
 .th-use{background:linear-gradient(180deg,#f2dc9d,#d9b765);border-color:#f2dc9d;color:#1c2f22}
 .th-prompt{margin:4px 0 0;padding:12px 14px;border-radius:14px;background:#06150d;border:1px solid #23412f;font-family:var(--mono);font-size:12px;line-height:1.65;color:#cfe0d4;white-space:pre-wrap;max-height:220px;overflow:auto}
 .th-prompt b{color:#ffe3a1;font-weight:700}
+.th-box{position:relative}
+/* Course trailer player (same styles as /classroom) */
+.trx{position:relative}
+.trx-stage{position:relative;overflow:hidden;border-radius:22px;background:#000;aspect-ratio:16/9;box-shadow:0 30px 70px -40px rgba(10,40,24,.9);isolation:isolate}
+.trx-stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
+.trx-canvas{display:block;width:100%;height:100%;cursor:pointer}
+.trx-big{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.05),rgba(0,0,0,.45));color:#fff;cursor:pointer;font:inherit}
+.trx-big-ico{display:grid;place-items:center;width:86px;height:86px;border-radius:50%;background:linear-gradient(160deg,#f2dc9d,#d9b765);color:#163321;font-size:30px;padding-left:6px;box-shadow:0 0 0 10px rgba(226,194,122,.22),0 20px 40px -14px #000;animation:trxPulse 2.2s ease-in-out infinite}
+.trx-big-tx{padding:8px 16px;border-radius:999px;background:rgba(6,20,12,.72);border:1px solid rgba(226,194,122,.5);font-size:15px;font-weight:800;letter-spacing:.01em}
+.trx-big:hover .trx-big-ico{transform:scale(1.06)}
+@keyframes trxPulse{0%,100%{box-shadow:0 0 0 8px rgba(226,194,122,.22),0 20px 40px -14px #000}50%{box-shadow:0 0 0 18px rgba(226,194,122,.08),0 20px 40px -14px #000}}
+.trx-bar{position:absolute;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:14px;background:rgba(5,14,9,.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.trx[data-state="paused"] .trx-bar,.trx[data-state="ended"] .trx-bar,.trx-stage:hover .trx-bar,.trx-stage:focus-within .trx-bar{opacity:1;transform:none}
+ .trx-chaps em{display:none}
+.trx[data-state="idle"] .trx-bar{display:none}
+.trx-bar button{display:grid;place-items:center;min-width:38px;height:36px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:15px;cursor:pointer}
+.trx-bar button:hover{background:rgba(255,255,255,.12)}
+.trx-track{position:relative;flex:1;height:22px;cursor:pointer;touch-action:none}
+.trx-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.22)}
+.trx-fill{position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:linear-gradient(90deg,#9fd3a6,#e2c27a);transform-origin:left;transform:scaleX(0)}
+.trx-chaps b{position:absolute;top:0;width:2px;height:22px;transform:translateX(-1px)}
+.trx-chaps em{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-style:normal;font-size:12px;opacity:.85}
+.trx-time{font:700 12px/1 ui-monospace,Menlo,monospace;min-width:34px;text-align:right;color:#dfe9e2}
+.trx-end{position:absolute;inset:auto 0 0 0;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 16px 64px;background:linear-gradient(transparent,rgba(4,14,8,.86) 40%)}
+.trx-end[hidden]{display:none}
+.trx-end-h{margin:0;color:#fff;font-size:clamp(17px,2.4vw,24px);font-weight:900;text-align:center}
+.trx-end-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.trx-cta{display:inline-flex;align-items:center;min-height:48px;padding:12px 22px;border-radius:14px;background:linear-gradient(180deg,#f2dc9d,#d9b765);color:#163321;font-weight:900;font-size:16px;box-shadow:0 14px 30px -14px #e2c27a}
+.trx-replay{min-height:48px;padding:12px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.trx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.trx-pop{width:min(1120px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;padding:0;border:0;border-radius:26px;background:#05120b;color:#eef3ec;box-shadow:0 40px 100px -30px #000;overflow:hidden}
+.trx-pop[open]{display:flex;flex-direction:column}
+.trx-pop::backdrop{background:rgba(3,10,6,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.trx-pop-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px 12px}
+.trx-pop-head small{display:block;font-size:11px;font-weight:900;letter-spacing:.16em;color:#e2c27a}
+.trx-pop-head h2{margin:2px 0 0;font-size:clamp(18px,2.4vw,24px);line-height:1.35;color:#fff}
+.trx-pop-head p{margin:2px 0 0;font-size:13.5px;color:#b9cbbf}
+.trx-skip{flex:none;min-height:42px;padding:8px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#dfe9e2;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.trx-skip:hover{background:rgba(255,255,255,.08)}
+.trx-pop .trx-host{flex:1;min-height:0;padding:0 14px 14px}
+.trx-pop .trx-stage{border-radius:18px}
+.trx-pop.trx-done .trx-skip{border-color:#e2c27a;color:#e2c27a}
+html.trx-locked{overflow:hidden}
+@media(max-width:700px){
+ .trailer{margin-top:14px}
+ .trx-stage{border-radius:16px}
+ .trx-big-ico{width:64px;height:64px;font-size:24px}.trx-big-tx{font-size:13px}
+ .trx-pop{width:100vw;height:100dvh;max-height:100dvh;max-width:100vw;border-radius:0}
+ .trx-pop-head{padding:12px 14px 8px}.trx-pop-head p{display:none}
+ .trx-pop .trx-host{padding:0 8px 10px;display:flex}
+ .trx-pop .trx{flex:1;display:flex}
+ .trx-pop .trx-stage{flex:1;aspect-ratio:auto;height:100%}
+ .trx-bar{opacity:1;transform:none}
+ .trx-end{padding-bottom:70px}
+}
+@media(prefers-reduced-motion:reduce){.trx-big-ico{animation:none}.trx-bar{transition:none}}
+/* Lesson 5: choose a path, the quality formula, and the course trailer */
+.paths{padding:24px;border-radius:26px;background:radial-gradient(90% 70% at 100% 0,#e3f1e7 0,transparent 60%),#fff;border:1px solid var(--line)}
+.path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.path{position:relative;display:flex;flex-direction:column;gap:4px;min-height:132px;padding:14px 14px 12px;border-radius:18px;border:1.5px solid #e2e8e3;background:#fbfdfb;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),border-color .2s,box-shadow .2s}
+.path:hover{transform:translateY(-3px);border-color:var(--green);box-shadow:0 14px 26px -18px var(--deep)}
+.path>span{font-size:28px;line-height:1.1}
+.path b{font-size:15.5px;line-height:1.35}
+.path small{font-size:12.5px;line-height:1.5;color:var(--muted)}
+.path em{margin-top:auto;font-style:normal;font-size:11.5px;font-weight:850;color:var(--gold-ink)}
+.path[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.path[aria-pressed="true"] small{color:#b9cbbf}.path[aria-pressed="true"] em{color:#ffe3a1}
+.path[data-done="true"]::after{content:"✓ จบแล้ว";position:absolute;top:10px;right:10px;padding:1px 8px;border-radius:999px;background:#e2c27a;color:#1c2f22;font-size:10.5px;font-weight:900}
+.path-now{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:14px;background:#f2f7f3;font-size:14px}
+.path-now[hidden]{display:none}
+.path-now ol{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.path-now li{padding:3px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12.5px}
+.path-now li a{color:var(--green);font-weight:800;text-decoration:none}
+.path-progress{margin-top:10px;font-size:13px;color:var(--muted)}
+.power{margin-top:14px;padding:22px;border-radius:26px;background:radial-gradient(80% 90% at 0 0,#1f5a3a 0,transparent 60%),linear-gradient(160deg,#0f3220,#081a10);color:#e9f1ec}
+.power .sec-k{color:#e2c27a}
+.power h2{color:#fff}
+.power-eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 4px;font-size:clamp(17px,2.6vw,22px);font-weight:900}
+.power-eq span{padding:4px 12px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(226,194,122,.35)}
+.power-eq i{font-style:normal;color:#e2c27a}
+.power-rows{display:grid;gap:10px;margin-top:14px}
+.power-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center}
+.power-row>b{font-size:14px}
+.power-opts{display:flex;flex-wrap:wrap;gap:6px}
+.power-opts button{min-height:38px;padding:6px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#dbe7df;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.power-opts button[aria-pressed="true"]{background:linear-gradient(180deg,#f6dc9a,#d9a648);border-color:transparent;color:#2b1d05}
+.power-out{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;margin-top:16px;padding:14px;border-radius:18px;background:rgba(0,0,0,.25)}
+.power-rank{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#e2c27a;color:#1c2f22;font-size:30px;font-weight:950;transition:transform .3s cubic-bezier(.2,.9,.3,1.5)}
+.power-rank.pop{transform:scale(1.15) rotate(-4deg)}
+.power-bar{height:10px;border-radius:10px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0}
+.power-bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#9fd8b4,#e2c27a,#ffb36b);transition:width .45s cubic-bezier(.2,.9,.3,1.1)}
+.power-out p{margin:0;font-size:13.5px;color:#cfe0d4}
+.power-out strong{color:#fff}
+.power-tip{margin-top:10px;font-size:13px;color:#b9cbbf}
+.lesson-trailer{padding:24px;border-radius:26px;background:radial-gradient(80% 60% at 100% 0,#1f5a3a 0,transparent 60%),#0b2619;color:#e9f1ec}
+.lesson-trailer .sec-k{color:#e2c27a}.lesson-trailer h2{color:#fff}.lesson-trailer .sec-lead{color:#b9cbbf}
+.lesson-trailer .trx{margin-top:14px}
+.lesson-trailer .trx-stage{box-shadow:0 26px 60px -30px #000,0 0 0 1px rgba(226,194,122,.28)}
+.tp-box{margin-top:16px;padding:16px;border-radius:18px;background:#06150d;border:1px solid #23412f}
+.tp-box small{font-size:11px;font-weight:850;letter-spacing:.1em;color:#e2c27a}
+.tp-box pre{margin-top:6px;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:#cfe0d4;max-height:210px;overflow:auto}
+.tp-badge{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.tp-badge span{padding:3px 10px;border-radius:999px;background:rgba(226,194,122,.14);border:1px solid rgba(226,194,122,.4);font-size:12.5px;font-weight:800;color:#ffe3a1}
+.tp-warn{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,179,107,.1);border:1px solid rgba(255,179,107,.35);font-size:13px;line-height:1.65;color:#f3dcc4}
+.tp-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tp-row .copy-all{flex:1 1 220px;margin-top:0;background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05}
+.tp-row .ex-go{flex:1 1 200px}
+.paths-again{padding:18px 20px;border-radius:22px;background:#fff;border:1px dashed #c9d6cc}
+.paths-again h3{margin:0 0 6px;font-size:18px}
+.paths-again .chips{display:flex;flex-wrap:wrap;gap:8px}
+.paths-again .chips button{min-height:40px;padding:6px 12px;border-radius:12px;border:1px solid var(--line);background:#f8faf8;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.paths-again .chips button[data-done="true"]{background:#fdf6e3;border-color:#e2c27a}
+@media(max-width:820px){.path-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.power-row{grid-template-columns:1fr;gap:4px}}
+@media(max-width:420px){.paths,.lesson-trailer{padding:18px 14px}.path{min-height:118px;padding:12px}.path b{font-size:14.5px}}
+
+.vo-note{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:16px;border-radius:inherit;background:rgba(3,10,6,.82);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.vo-note[hidden]{display:none}
+.vo-card{max-width:440px;max-height:100%;overflow:auto;padding:20px;border-radius:18px;background:#0d2318;border:1px solid #3c5a46;color:#dbe7df;font-size:14px;line-height:1.7}
+.vo-card small{font-size:11px;font-weight:900;letter-spacing:.14em;color:#e2c27a}
+.vo-card h3{margin:4px 0 8px;font-size:17px;color:#fff}
+.vo-card ol{margin:8px 0;padding-left:20px}
+.vo-card .vo-tip{font-size:13px;color:#b9cbbf}.vo-card a{color:#ffe3a1}
+.vo-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.vo-row button{flex:1 1 140px;min-height:44px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;border:1px solid #3c5a46;background:transparent;color:#dbe7df}
+.vo-row #reelVoOk{background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05;border:0}
 .th-note{font-size:12px!important;color:#7f978a!important;margin-top:auto}
 .th-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:22px}
 /* ── Agent builder ─────────────────────── */
@@ -492,8 +617,38 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120p
   <span class="lv">บทที่ 5 · Season</span>
   <h1>หยิบคำสั่งลัด ปรุงงานทันที</h1>
   <p>ซอสเก็บความจริงของคุณไว้แล้ว บทนี้คือ “ผงปรุงสำเร็จรูป” — คำสั่งสั้น ๆ ที่หยิบ ลาก วาง แล้วแตะเลือกสไตล์ ได้ Prompt ระดับมือโปรพร้อมส่งให้ Claude, ChatGPT หรือ Gemini ทำงานทันที ไม่ต้องพิมพ์ยาว ไม่ต้องคิดเยอะ</p>
-  <div class="meta"><span>🧂 28 คำสั่งลัด</span><span>🖐️ ลาก-วาง · แตะเลือก</span><span>🎬 คลิปจากโค้ด 8 สไตล์</span><span>🤖 ปั้น Agent ของคุณเอง</span><span>💸 ฟรี</span></div>
+  <div class="meta"><span>🗺️ จบได้ 6 เส้นทาง</span><span>🧂 29 คำสั่งลัด</span><span>🖐️ ลาก-วาง · แตะเลือก</span><span>🎬 คลิปจากโค้ด 8 สไตล์</span><span>🤖 ปั้น Agent ของคุณเอง</span><span>💸 ฟรี</span></div>
 </header>
+
+<section class="sec paths" id="paths" aria-labelledby="pathsTitle">
+  <span class="sec-k">🗺️ เลือกเส้นทาง</span>
+  <h2 id="pathsTitle">วันนี้อยากสร้างอะไร? บทนี้จบได้หลายแบบ</h2>
+  <p class="sec-lead">เลือกมา 1 อย่าง เดี๋ยวเราพาเดินเฉพาะทางนั้น: ดูตัวอย่าง → หยิบคำสั่ง → ส่งให้ AI → ชิมแล้วปรับ จบแล้วค่อยกลับมาเลือกทางใหม่ เก็บครบทุกเส้นได้</p>
+  <div class="path-grid" id="pathGrid">
+    <button type="button" class="path" data-path="video" aria-pressed="false"><span aria-hidden="true">🎬</span><b>คลิป & วิดีโอ</b><small>คลิปเล่าเรื่องพร้อมเพลง หรือวิดีโอเปิดตัวแบบคอร์สนี้</small><em>จบด้วย: ไฟล์วิดีโอของคุณ</em></button>
+    <button type="button" class="path" data-path="image" aria-pressed="false"><span aria-hidden="true">📸</span><b>ภาพสวยจากรูปเดิม</b><small>รูปอาหาร สินค้า โปรไฟล์ ให้ดูแพงขึ้น</small><em>จบด้วย: ภาพพร้อมโพสต์</em></button>
+    <button type="button" class="path" data-path="write" aria-pressed="false"><span aria-hidden="true">✍️</span><b>โพสต์ & ขายของ</b><small>แคปชัน ฮุค โปรโมชัน ตอบลูกค้า</small><em>จบด้วย: โพสต์ที่กดลงได้เลย</em></button>
+    <button type="button" class="path" data-path="work" aria-pressed="false"><span aria-hidden="true">📄</span><b>เอกสาร & สรุปงาน</b><small>สไลด์ คู่มือ แผนคอนเทนต์ สรุปประชุม</small><em>จบด้วย: เอกสารใช้งานจริง</em></button>
+    <button type="button" class="path" data-path="build" aria-pressed="false"><span aria-hidden="true">🌐</span><b>เว็บ & แอป</b><small>หน้าเว็บ แลนดิ้ง เครื่องมือเล็ก ๆ ของคุณ</small><em>จบด้วย: ไฟล์เว็บเปิดได้จริง</em></button>
+    <button type="button" class="path" data-path="agent" aria-pressed="false"><span aria-hidden="true">🤖</span><b>Agent ประจำตัว</b><small>ผู้ช่วย AI ที่รู้จักซอสคุณ เรียกใช้ได้ทุกวัน</small><em>จบด้วย: ผู้ช่วยของคุณเอง</em></button>
+  </div>
+  <div class="path-now" id="pathNow" aria-live="polite" hidden></div>
+  <p class="path-progress" id="pathProgress"></p>
+</section>
+
+<section class="sec power" id="power" aria-labelledby="powerTitle">
+  <span class="sec-k">⚔️ ค่าพลังของงาน</span>
+  <h2 id="powerTitle">งานจะออกมาดีแค่ไหน ขึ้นกับ 3 ค่านี้ คูณกัน</h2>
+  <div class="power-eq" aria-label="คุณภาพงาน เท่ากับ ซอส คูณ โมเดล AI คูณ Effort"><span>คุณภาพงาน</span><i>=</i><span>🫙 ซอส</span><i>×</i><span>🧠 โมเดล AI</span><i>×</i><span>⚡ Effort</span></div>
+  <p class="sec-lead" style="color:#b9cbbf">เพราะเป็น “คูณ” ไม่ใช่ “บวก” — ตัวไหนเป็น 0 งานก็เป็น 0 ลองกดเลือกแบบที่คุณใช้อยู่ แล้วดูแรงก์ของงาน</p>
+  <div class="power-rows" id="powerRows">
+    <div class="power-row"><b>🫙 ซอส</b><div class="power-opts" data-stat="sauce"><button type="button" data-v="0">ไม่มีซอส</button><button type="button" data-v="1">เล่าคร่าว ๆ</button><button type="button" data-v="2">ซอสจากบท 1</button><button type="button" data-v="3">ซอสปรุงเต็ม + ตัวอย่างงาน</button></div></div>
+    <div class="power-row"><b>🧠 โมเดล AI</b><div class="power-opts" data-stat="model"><button type="button" data-v="1">รุ่นเล็ก / ฟรี</button><button type="button" data-v="2">รุ่นกลาง</button><button type="button" data-v="3">รุ่นท็อป (Claude Opus 5.5)</button></div></div>
+    <div class="power-row"><b>⚡ Effort</b><div class="power-opts" data-stat="effort"><button type="button" data-v="1">ตอบเร็ว</button><button type="button" data-v="2">คิดละเอียด (High)</button><button type="button" data-v="3">เต็มพลัง (Max / Ultracode)</button></div></div>
+  </div>
+  <div class="power-out" aria-live="polite"><div class="power-rank" id="powerRank">B</div><div><strong id="powerScore">8 / 27</strong><div class="power-bar"><i id="powerBar"></i></div><p id="powerLine"></p></div></div>
+  <p class="power-tip">💡 อยากได้งานสวยขึ้น ให้อัปค่าที่ต่ำสุดก่อน เพราะตัวที่อ่อนสุดฉุดทั้งหมด · วิดีโอเปิดคอร์สด้านล่างทำด้วย ซอสเต็ม × Claude Opus 5.5 × Ultracode = แรงก์ S</p>
+</section>
 
 <section class="sec deck" id="deck" aria-labelledby="deckTitle">
   <span class="sec-k">🧂 ชั้นคำสั่งลัด</span>
@@ -598,6 +753,32 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
   <p class="sc-cta">✨ ทั้งหมดนี้เริ่มจาก <b>ซอส .md ขวดเดียว</b> + คำสั่งลัด 1 คำ — <a href="#deck">กลับไปหยิบคำสั่ง</a> แล้วลองทำของคุณเองตอนนี้เลย</p>
 </section>
 
+<section class="sec lesson-trailer" id="lessonTrailer" aria-labelledby="ltTitle">
+  <span class="sec-k">🎬 วิดีโอเปิดคอร์ส · ทำด้วยโค้ดทั้งหมด</span>
+  <h2 id="ltTitle">อยากได้วิดีโอแบบนี้? เอา prompt ไปเลย</h2>
+  <p class="sec-lead">60 วินาทีนี้ไม่มีไฟล์วิดีโอสักไฟล์ ภาพวาดด้วย Canvas เพลงแต่งด้วยโค้ด เสียงพากย์อัดเองจากมือถือ กดดูซ้ำได้ทุกเมื่อ แล้วเอา prompt ด้านล่างไปทำของคุณ</p>
+  <section id="classroomTrailer" class="trx" aria-label="วิดีโอเปิดคอร์ส 60 วินาที" tabindex="-1" data-end-headline="อยากทำแบบนี้? prompt อยู่ด้านล่าง" data-cta="ก๊อป prompt วิดีโอนี้ ↓" data-cta-href="#trailerPrompt"></section>
+  <div class="tp-box" id="trailerPrompt">
+    <small>PROMPT วิดีโอเปิดตัว · คำสั่ง /trailer</small>
+    <pre>Build a 60-second launch trailer for <b>my course / brand</b> as ONE self-contained HTML file: everything drawn with Canvas 2D + JavaScript, music composed with the Web Audio API…
+
+1. Plan first: storyboard table (time, scene, Thai headline, voice-over line, music cue)
+2. Story arc: hook → title → feature beats → the life it gives → teaser → CTA
+3. Look: cinematic layers, light rays, glow, film grain, both 16:9 and 9:16
+4. Thai text inside a 6% safe area, measured and centred
+5–9. Music on a tempo grid · <b>my own recorded voice</b> with ducking · full player · MP4/WebM download · QA every scene
+
+<i>(ฉบับเต็ม 9 ข้อ ติดไปให้ตอนกดก๊อป)</i></pre>
+    <div class="tp-badge"><span>🫙 ซอสเต็ม</span><span>🧠 Claude Opus 5.5</span><span>⚡ Ultracode</span></div>
+    <p class="tp-warn">⚠️ <b>หมายเหตุ:</b> วิดีโอนี้ทำด้วย <b>Claude Opus 5.5 แบบ Ultracode</b> prompt นี้หนักและใช้เครดิตเยอะ ถ้าใช้รุ่นเล็กหรือ Effort ต่ำ จะได้งานเรียบง่ายลง แนบซอสให้ครบก่อนส่งทุกครั้ง · เสียงพากย์ให้อัดเองจากมือถือ ไฟล์เดียว เว้นจังหวะระหว่างประโยค ไม่แนะนำเสียงสังเคราะห์</p>
+    <div class="tp-row"><button type="button" class="copy-all" data-copy-prompt='{"id":"trailer"}'>📋 ก๊อป prompt ทั้งหมด</button><button type="button" class="ex-go" data-preset='{"id":"trailer"}'>🍳 โหลดลงกระทะ ปรับเอง →</button></div>
+  </div>
+</section>
+<dialog class="trx-pop" id="trailerPop" data-cm="off" data-auto="off" aria-labelledby="trxPopTitle">
+  <div class="trx-pop-head"><div><small>วิดีโอเปิดคอร์ส · 60 วินาที</small><h2 id="trxPopTitle">ทำด้วยโค้ดทั้งหมด</h2><p>prompt อยู่ใต้วิดีโอ</p></div><button type="button" class="trx-skip">ปิด ✕</button></div>
+  <div class="trx-host"></div>
+</dialog>
+
 <dialog class="theater" id="reelTheater" aria-labelledby="reelTitle">
   <div class="th-box">
     <canvas id="reelBig" width="540" height="960" aria-label="คลิปแอนิเมชันที่สร้างจากโค้ด"></canvas>
@@ -606,12 +787,20 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
       <h3 id="reelTitle">สไตล์</h3>
       <p id="reelSub"></p>
       <pre class="th-prompt" id="reelPrompt"></pre>
-      <button type="button" class="copy-all th-copy" id="reelCopy">📋 ก๊อป prompt ทั้งหมด (พร้อมกติกาตัวหนังสือไม่ตกขอบ)</button>
-      <div class="th-actions"><button type="button" id="reelToggle">⏸ หยุด</button><button type="button" id="reelSound">🎵 เปิดเพลง</button><button type="button" id="reelVoice" hidden>🗣️ เสียงพากย์ไทย</button><button type="button" id="reelRecord">⬇ อัดเป็นวิดีโอ</button></div>
+      <button type="button" class="copy-all th-copy" id="reelCopy">📋 ก๊อป prompt สไตล์นี้ (ใส่เรื่องของคุณเอง)</button>
+      <div class="th-actions"><button type="button" id="reelToggle">⏸ หยุด</button><button type="button" id="reelSound">🎵 เปิดเพลง</button><button type="button" id="reelVoice" hidden>🗣️ ลองเสียงพากย์ (สังเคราะห์)</button><button type="button" id="reelRecord">⬇ อัดเป็นวิดีโอ</button></div>
       <button type="button" class="th-use" id="reelUse">🖌️ ใช้สไตล์นี้กับเรื่องของฉัน</button>
-      <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์ไทยมาจากเครื่องของคุณ จึงได้ยินเฉพาะตอนเล่นในหน้านี้ · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
+      <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์เป็นเสียงสังเคราะห์จากเครื่องคุณ (ปิดไว้ก่อน) ได้ยินเฉพาะตอนเล่นในหน้านี้ งานจริงแนะนำอัดเสียงตัวเอง · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
     </div>
     <button type="button" class="th-close" id="reelClose" aria-label="ปิด">×</button>
+    <div class="vo-note" id="reelVoNote" role="alertdialog" aria-labelledby="reelVoNoteTitle" hidden><div class="vo-card">
+      <small>หมายเหตุก่อนฟัง</small>
+      <h3 id="reelVoNoteTitle">🗣️ เสียงนี้เป็นเสียงสังเคราะห์จากเครื่องคุณ</h3>
+      <p>เปิดไว้ให้เห็นภาพเฉย ๆ ฟังออกว่าปลอม <b>งานจริงไม่แนะนำให้ใช้</b> วิดีโอเปิดคอร์สของเราใช้วิธีนี้แทน:</p>
+      <ol><li>อัดเสียงตัวเองด้วยมือถือ ไฟล์เดียวจบ เว้นจังหวะระหว่างประโยค</li><li>ส่งไฟล์เสียงพร้อมบทให้ AI ตัดเป็นท่อน วางให้ตรงฉาก</li><li>ให้เพลงเบาลงตอนมีเสียงพูด</li></ol>
+      <p class="vo-tip">เสียงจริงของคุณ อบอุ่นกว่าเสียง AI ทุกตัว ดูตัวอย่างได้ที่ <a href="#lessonTrailer">วิดีโอเปิดคอร์ส ↓</a></p>
+      <div class="vo-row"><button type="button" id="reelVoOk">เข้าใจแล้ว ลองฟัง</button><button type="button" id="reelVoNo">ไม่เปิดดีกว่า</button></div>
+    </div></div>
   </div>
 </dialog>
 
@@ -692,6 +881,12 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
   </div>
 </section>
 
+<section class="sec paths-again" id="pathsAgain" aria-labelledby="againTitle">
+  <h3 id="againTitle">🗺️ จบเส้นทางนี้แล้ว? บทนี้ยังจบได้อีกหลายแบบ</h3>
+  <p class="sec-lead" style="margin-bottom:10px">กลับมาเลือกทางใหม่ หรือทำทางเดิมซ้ำกับงานชิ้นใหม่ ยิ่งทำซ้ำ ซอสยิ่งเข้มข้น</p>
+  <div class="chips" id="againChips"></div>
+</section>
+
 <section class="main-course-tease"><small>NEXT · บทที่ 6 · SERVE</small><h3>ครัวพร้อมแล้ว — ต่อไปคือ Main Course</h3><p>5 บทที่ผ่านมาเราเตรียมวัตถุดิบ ชิมซอส ทำจานต้นแบบ แตกหลายเมนู และมีผงปรุงคำสั่งลัดแล้ว บทถัดไปจะรวมทุกอย่างเป็นเว็บที่เปิดให้คนอื่นใช้ได้จริง — ลองคำสั่ง <code>/onepage</code> เป็นการวอร์มอัปก่อนก็ได้</p></section>
 
 <div class="nextrow">
@@ -714,7 +909,17 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
 (function(){
 'use strict';
 const RATIO={k:'ratio',label:'สัดส่วน',choices:[['9x16','9:16 แนวตั้ง','a vertical 9:16 frame'],['4x5','4:5 ฟีด','a 4:5 portrait frame'],['1x1','1:1 จัตุรัส','a square 1:1 frame'],['16x9','16:9 แนวนอน','a horizontal 16:9 frame']]};
-const LENGTH={k:'len',label:'ความยาว',choices:[['15','15 วิ','15'],['30','30 วิ','30'],['60','60 วิ','60']]};
+const LENGTH={k:'len',label:'ความยาว',choices:[['15','15 วิ','15'],['30','30 วิ','30'],['60','60 วิ','60'],['90','90 วิ','90']]};
+// Production level for code-made video: the premium tiers spell out what makes motion look expensive.
+const POLISH={k:'polish',label:'ระดับงาน',def:'premium',choices:[
+ ['std','มาตรฐาน','Keep it simple and clean.'],
+ ['premium','พรีเมียม','Make it look premium: a clear arc (hook in the first 2 seconds, build, payoff, ending card); eased motion everywhere (no linear moves, a little overshoot on reveals); 3+ depth layers with parallax; soft light (glow, light rays, vignette, fine film grain); a 5-colour palette used consistently; transitions that land on the music cuts; 60 fps from a time-based timeline (requestAnimationFrame, never frame counting).'],
+ ['cinema','ซีเนมาติก','Make it cinematic, like a premium brand trailer: a 3-act arc (problem, reveal with a logo/title moment, payoff) plus an ending card with a call-to-action; every scene has one signature visual and one idea; eased motion with anticipation and overshoot; 3–5 depth layers with parallax and camera drift; volumetric light rays, bloom-like glow, vignette, film grain and particles; a 5-colour palette pulled from my brand; match-cut transitions locked to the beat; a scrub bar with chapters; 60 fps from one master clock (the audio clock while sound plays) so picture and music never drift.']]};
+// Shared text, story and voice rules for every code-made video prompt.
+const STORY_FROM_SAUCE='If the story/text above is empty or still a placeholder, build it from my Source (.md) if I attached one: who I am, what I do, and one moment worth telling. If both exist, mix them: my words lead, the Source supplies facts and tone.';
+const TEXT_SAFE='Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; draw emoji into a sprite and centre it by its visible pixels. Recompute on resize.';
+const QA_SAFE='Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text, no console errors, smooth 60 fps.';
+const VOICE_OWN='Voice-over: do not use synthetic text-to-speech. Write a short Thai voice-over script with a time for each line; I will record it myself on my phone as one file with a pause between lines. Add an optional "load my voice file" input: split it on the pauses, place each line on its scene, and duck the music about 6 dB under the voice.';
 const CATS=[
  {id:'all',icon:'✨',name:'ทั้งหมด'},
  {id:'image',icon:'📸',name:'ภาพ',color:'#d9733b'},
@@ -769,30 +974,58 @@ const COMMANDS=[
   opts:[{k:'art',label:'Art direction',choices:[['brush','พู่กันจีน','Chinese brush strokes (sumi ink, dry-brush texture, rice-paper grain)'],['mural','จิตรกรรมไทย','Thai temple mural painting (gold leaf, red ochre, deep green, flowing kanok lines)'],['ukiyo','ภาพพิมพ์ญี่ปุ่น','Japanese ukiyo-e woodblock prints (bold outlines, flat colour, wave patterns)'],['paper','กระดาษตัดซ้อนชั้น','layered paper cut-out with soft drop shadows'],['neon','นีออนซินธ์เวฟ','neon synthwave (glowing lines, grid horizon, magenta and cyan)'],['water','สีน้ำ','loose watercolour washes bleeding on textured paper'],['pixel','พิกเซลอาร์ต','retro 16-bit pixel art (chunky pixels, limited palette, game-style text boxes)']]},
    {k:'culture',label:'องค์ประกอบ',choices:[['thai','วัฒนธรรมไทย','Thai culture (temples, lotus, longtail boats, street food, elephants, Thai patterns)'],['japan','ญี่ปุ่น','Japanese culture (torii gates, sakura, lanterns, waves)'],['china','จีน','Chinese culture (lanterns, mountains, dragons, tea)'],['korea','เกาหลี','Korean culture (hanok roofs, hanbok, palace gardens)'],['global','สากลร่วมสมัย','a contemporary global city']]},
    {k:'type',label:'ตัวอักษร',choices:[['modern','Modern Bold','modern bold sans-serif kinetic TYPOGRAPHY'],['serif','Elegant Serif','elegant high-contrast serif TYPOGRAPHY'],['hand','ลายมือ','hand-lettered brush TYPOGRAPHY'],['brutal','Brutalist','raw brutalist TYPOGRAPHY with huge letters']]},
-   {...LENGTH,def:'30'},{...RATIO,def:'9x16'}],
-  field:{label:'เรื่องที่อยากเล่า',ph:'ใส่เรื่องที่อยากทำตรงนี้',multi:true,ex:['วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน','การเดินทางของใบชาจากดอยถึงแก้วของคุณ','ตำนานแม่โพสพกับข้าวหอมมะลิ','เด็กหญิงริมโขงที่อยากเป็นนักบินอวกาศ']},
+   {...LENGTH,def:'30'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'เรื่องที่อยากเล่า (เว้นว่างได้ ใช้เรื่องจากซอส)',ph:'ใส่เรื่องของคุณ หรือเว้นว่างให้ AI หยิบจากซอส',multi:true,ex:['วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน','การเดินทางของใบชาจากดอยถึงแก้วของคุณ','ตำนานแม่โพสพกับข้าวหอมมะลิ','เด็กหญิงริมโขงที่อยากเป็นนักบินอวกาศ']},
   build:(o,f)=>`Create JavaScript animation with music (and downloadable to mp4) using ${o.art} as key main art direction but make elements according to ${o.culture} plus ${o.type} style to tell the story.
 
-Story will be about, "${F(f,'ใส่เรื่องที่อยากทำตรงนี้')}"
+Story will be about, "${F(f,'ใส่เรื่องของคุณตรงนี้ — หรือเว้นว่างให้ใช้เรื่องจากซอส')}"
+${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
 
 Requirements:
 - One self-contained HTML file (Canvas + JavaScript), about ${o.len} seconds, ${o.ratio}.
 - Split the story into 4–6 scenes with smooth transitions; each scene has one short Thai line that animates in with the typography style.
-- Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files) and fade it out at the end.
+- Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files): a tempo grid, cues locked to the scene cuts, a master compressor, peaks below −1 dBFS, and a fade at the end.
+- ${VOICE_OWN}
 - Controls: Play / Replay, plus a "Download video" button that records the canvas and audio with MediaRecorder (MP4 when the browser supports it, otherwise WebM) and saves the file.
 - Fonts only from Google Fonts; no other external assets.
-- Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; centre emoji by their visible shape. Recompute on resize.
-- Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text.`,
+- ${TEXT_SAFE}
+- ${QA_SAFE}`,
   pack:'Create a self-contained HTML/JS animation with Web Audio music and a MediaRecorder "Download video" button (MP4 if supported, else WebM) telling the story after the command (default: Chinese brush strokes + Thai culture elements + modern typography, 30s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
+ {id:'trailer',cat:'video',icon:'🎞️',name:'วิดีโอเปิดตัวแบบคอร์สนี้',desc:'ตัวอย่างหนังของแบรนด์หรือคอร์สคุณ 60 วิ ทำด้วยโค้ดทั้งไฟล์ แบบเดียวกับวิดีโอเปิดคอร์ส AI ใส่ซอส',need:'sauce',tools:'Claude Opus 5.5 · Ultracode',hot:true,keys:'วิดีโอเปิดตัว ตัวอย่าง trailer teaser promo แนะนำคอร์ส แนะนำร้าน แบรนด์ เปิดตัวสินค้า วิดีโอโปรโมท',
+  opts:[{k:'what',label:'เปิดตัวอะไร',choices:[['course','คอร์ส / คลาส','my course or class'],['brand','แบรนด์ / ร้าน','my brand or shop'],['product','สินค้าใหม่','a new product'],['me','ตัวฉัน / พอร์ต','me and my portfolio']]},
+   {k:'mood',label:'อารมณ์',choices:[['warm','อบอุ่น สนุก','warm, playful and hopeful'],['epic','ยิ่งใหญ่ เกม','epic, like a game trailer with quests and loot'],['lux','หรู มินิมอล','luxury minimal, slow and confident']]},
+   {...LENGTH,def:'60'}],
+  field:{label:'อยากให้คนดูรู้สึกหรือทำอะไรตอนจบ (เว้นว่างได้)',ph:'เช่น อยากให้กดเริ่มบทเรียนแรก · แวะมาที่ร้าน',ex:['อยากให้กดเริ่มบทเรียนแรก','อยากให้ทักมาสั่งของ','อยากให้จำชื่อร้านได้']},
+  build:(o,f)=>`Build a ${o.len}-second launch trailer for ${o.what} as ONE self-contained HTML file: everything drawn with Canvas 2D + JavaScript, music composed with the Web Audio API, no video, image or audio files. Mood: ${o.mood}. Use my attached Source as the only truth for names, promises, numbers and tone.
+Ending goal: ${F(f,'pick the single most useful action from my Source')}
+
+1. Plan first: write a storyboard table (time, scene, the one visual idea, Thai on-screen headline + sub line, Thai voice-over line, music cue), then build it.
+2. Story arc: hook on a real pain in the first 3 seconds → reveal the title/logo with a hit on the beat → one beat (about 4 s) per key feature, each with a signature visual and an icon/"loot" → the life it gives (time back, doing what you love, people seeing your work) → a teaser of what is hidden → warm ending card with one call-to-action button.
+3. Look: cinematic and premium — 3–5 depth layers with parallax and slow camera drift, volumetric light rays, glow, vignette, fine film grain, particles; a 5-colour palette from my brand; eased motion with anticipation and overshoot; transitions locked to the beat. Each scene works in BOTH 16:9 and 9:16 with its own layout (compute everything from the frame size).
+4. ${TEXT_SAFE}
+5. Music: an original score on a tempo grid (about 100 BPM) with cues placed on the scene cuts, a key change at the payoff, reverb send and a master compressor, peaks below −1 dBFS.
+6. ${VOICE_OWN}
+7. Player: poster frame, big play button, pause, seek bar with chapter marks, mute, fullscreen (on iPhone open a full-screen dialog instead, since it has no element fullscreen), replay, an end card with the CTA; one master clock (the audio clock while sound plays) so picture, music and voice never drift; honour prefers-reduced-motion.
+8. Export: a "Download video" button that records 1080p at 60 fps with MediaRecorder (MP4 when supported, otherwise WebM), music and voice included.
+9. ${QA_SAFE} Also check the frame at every scene change, fix anything off, and only then hand over the file.`,
+  pack:'Build a 60s code-only launch trailer (Canvas + Web Audio, one HTML file) for the brand in my Source: storyboard first, hook → title → feature beats → payoff → CTA, cinematic layers/light, both 16:9 and 9:16, Thai text inside a 6% safe area, my own recorded voice (no TTS) with music ducking, full player and MP4/WebM download.'},
  {id:'kinetic',cat:'video',icon:'🔠',name:'คลิปตัวหนังสือเด้ง',desc:'ข้อความเดียว กลายเป็นคลิป Kinetic Typography ตามจังหวะเพลง',need:'text',tools:'Claude · ChatGPT',keys:'คลิป ตัวหนังสือ คำคม ข้อความ typography คลิปข้อความ เพลง จังหวะ quote',
-  opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'}],
-  field:{label:'ข้อความที่อยากให้เด้ง',ph:'เช่น ใครเจอเรา คนนั้นโชคดี',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
-  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน]')}". Animate word by word in sync with an original beat made with the Web Audio API. Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support. Text layout: keep every line inside a 6% safe area and centred in both 9:16 and 16:9 — measure with ctx.measureText, shrink or wrap until it fits, centre by drawing left-aligned at centre − width / 2, never set ctx.letterSpacing on Thai, leave room for Thai vowels and tone marks, recompute on resize, and check every scene in both ratios for clipped text before finishing.`,
+  opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'ข้อความที่อยากให้เด้ง (เว้นว่างได้ ใช้ประโยคจากซอส)',ph:'ใส่ข้อความของคุณ หรือเว้นว่างให้ AI เลือกจากซอส',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
+  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน — หรือเว้นว่างให้เลือกจากซอส]')}". ${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
+
+Animate word by word in sync with an original beat made with the Web Audio API (tempo grid, accents on key words, master compressor, peaks below −1 dBFS). Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support.
+${TEXT_SAFE}
+${QA_SAFE}`,
   pack:'Make a kinetic-typography HTML/JS clip of the Thai text after the command, synced to a Web Audio beat, with a MediaRecorder download button (default pop, 15s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
  {id:'reel',cat:'video',icon:'📱',name:'สคริปต์ Reels / TikTok',desc:'ได้ฮุค 3 วิ ช็อตลิสต์ แคปชันบนจอ และเสียงพากย์ พร้อมถ่ายหรือทำด้วย AI',need:'text',keys:'คลิป วิดีโอ reels tiktok คลิปสั้น สคริปต์ ถ่ายคลิป ช็อต วิดีโอสั้น shorts',
   opts:[{k:'tone',label:'โทน',choices:[['fun','สนุกเป็นกันเอง','fun and friendly'],['teach','สอนเข้าใจง่าย','clear and educational'],['story','เล่าเรื่องซึ้ง','heartfelt storytelling'],['sell','ขายตรงประเด็น','direct and persuasive']]},{...LENGTH,def:'30'}],
   field:{label:'คลิปนี้เกี่ยวกับอะไร',ph:'เช่น 3 เมนูใหม่ของร้านเดือนนี้',ex:['3 เมนูใหม่ของร้านเดือนนี้','เบื้องหลังการทำเทียนหอม 1 ชิ้น','ทริคใช้ AI ทำงานเร็วขึ้น 2 เท่า']},
-  build:(o,f)=>`Plan a ${o.len}-second vertical (9:16) short video about "${F(f,'[หัวข้อของฉัน]')}". Tone: ${o.tone}. Give me: 3 options for a 2-second hook; a scene-by-scene table (time, what we see, Thai on-screen text, Thai voice-over); a closing call-to-action; 5 hashtags. Keep it shootable with a phone or makeable with AI images. Write everything for the viewer in Thai.`,
+  build:(o,f)=>`Plan a ${o.len}-second vertical (9:16) short video about "${F(f,'[หัวข้อของฉัน]')}". Tone: ${o.tone}. Give me: 3 options for a 2-second hook; a scene-by-scene table (time, what we see, Thai on-screen text, Thai voice-over I will record myself); a closing call-to-action; 5 hashtags. Base names, facts and tone on my Source (.md) if I attached one. Keep it shootable with a phone or makeable with AI images. Write everything for the viewer in Thai.`,
   pack:'Plan a 9:16 short video about the topic after the command: 3 hooks, scene table (time, visual, Thai text, Thai VO), CTA, 5 hashtags (default 30s, fun tone).'},
  {id:'img2vid',cat:'video',icon:'🎞️',name:'ทำภาพให้ขยับ',desc:'แนบภาพนิ่ง ได้ Prompt สั่งภาพขยับสำหรับ Veo, Kling, Sora หรือ Higgsfield',need:'photo',keys:'ภาพขยับ ภาพเคลื่อนไหว image to video veo kling sora higgsfield กล้อง เคลื่อนกล้อง',
   opts:[{k:'cam',label:'กล้อง',choices:[['push','ซูมเข้าช้า ๆ','a slow push-in'],['orbit','หมุนรอบ','a gentle orbit around the subject'],['hand','ถือกล้องด้วยมือ','subtle handheld movement'],['drone','โดรนถอยออก','a drone pull-back that reveals the scene'],['parallax','พารัลแลกซ์','a soft parallax slide']]},
@@ -1529,8 +1762,9 @@ function openTheater(id){
  theater={clip,ctx,canvas,t0:performance.now(),raf:0,audio:null,music:null,recorder:null,playing:true};
  setText($('reelTitle'),clip.name);setText($('reelSub'),clip.en+' · สร้างจากโค้ดทั้งหมด');
  const use=$('reelUse');if(use){use.dataset.command=clip.command;use.dataset.art=clip.art||'';use.textContent=clip.art?'🖌️ ใช้สไตล์นี้กับเรื่องของฉัน':'🔠 ใช้คำสั่งนี้กับข้อความของฉัน';}
- const box=$('reelPrompt');if(box){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===clip.command);const opt=command?.opts?.find(o=>o.k===(clip.art?'art':'look'));const choice=opt?.choices.find(c=>c[0]===clip.art)||opt?.choices[0];const esc=v=>String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));box.innerHTML=clip.art&&choice?'/brushstory '+esc(choice[1])+'\n\nCreate JavaScript animation with music (and downloadable to mp4) using <b>'+esc(choice[2])+'</b> as key main art direction…\n\nStory will be about, "<b>'+esc(clip.story.join(' · '))+'</b>"':'/kinetic\n\nCreate a kinetic typography video… Text: "<b>'+esc(clip.story.join(' '))+'</b>"';}
- theater.voice=voiceAvailable();theater.lastLine=-1;
+ const box=$('reelPrompt');if(box){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===clip.command);const opt=command?.opts?.find(o=>o.k===(clip.art?'art':'look'));const choice=opt?.choices.find(c=>c[0]===clip.art)||opt?.choices[0];const esc=v=>String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));box.innerHTML=clip.art&&choice?'/brushstory '+esc(choice[1])+'\n\nCreate JavaScript animation with music (and downloadable to mp4) using <b>'+esc(choice[2])+'</b> as key main art direction…\n\nStory will be about, "<b>ใส่เรื่องของคุณ — หรือเว้นว่างให้ใช้เรื่องจากซอส</b>"\n\nQuality: premium… (+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)':'/kinetic\n\nCreate a kinetic typography video… Text: "<b>ใส่ข้อความของคุณ — หรือเว้นว่างให้เลือกจากซอส</b>"\n\n(+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)';}
+ // The device voice is synthetic, so narration starts off; the learner opts in (with a one-time note).
+ theater.voice=false;theater.lastLine=-1;
  startMusic();
  paintTheaterButtons();
  if(typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');
@@ -1554,7 +1788,7 @@ function paintTheaterButtons(){
  if(!theater)return;
  setText($('reelToggle'),theater.playing?'⏸ หยุด':'▶ เล่น');
  setText($('reelSound'),theater.music?'🔇 ปิดเพลง':'🎵 เปิดเพลง');
- const voice=$('reelVoice');if(voice){voice.hidden=!voiceAvailable();setText(voice,theater.voice?'🤫 ปิดเสียงพากย์':'🗣️ เสียงพากย์ไทย');}
+ const voice=$('reelVoice');if(voice){voice.hidden=!voiceAvailable();setText(voice,theater.voice?'🤫 ปิดเสียงพากย์':'🗣️ ลองเสียงพากย์ (สังเคราะห์)');}
  const rec=$('reelRecord');if(rec){rec.disabled=!!theater.recorder||typeof MediaRecorder==='undefined'||!theater.canvas.captureStream;setText(rec,theater.recorder?'⏺ กำลังอัด…':'⬇ อัดเป็นวิดีโอ ('+LOOP+' วิ)');}
 }
 function audioContext(){if(!theater.audio){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;theater.audio=new AC();}if(theater.audio.state==='suspended')theater.audio.resume();return theater.audio;}
@@ -1587,6 +1821,11 @@ function record(){
  theater.recorder=recorder;theater.playing=true;theater.t0=performance.now();recorder.start(250);paintTheaterButtons();
  setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
 }
+function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();paintTheaterButtons();}
+const VO_NOTE='mc_reel_voice_note_v1';
+function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
+function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
+function showVoiceNote(on){const note=$('reelVoNote');if(!note)return;note.hidden=!on;if(on)$('reelVoOk')?.focus({preventScroll:true});}
 function toast(message){const el=$('toast');if(!el)return;el.textContent=message;el.classList.add('on');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('on'),2600);}
 function bindTheater(){
  const dlg=$('reelTheater');if(!dlg)return;
@@ -1597,7 +1836,9 @@ function bindTheater(){
   if(!theater)return;
   if(t.closest('#reelToggle')){theater.playing=!theater.playing;if(theater.playing)theater.t0=performance.now()-((theater.pausedAt||0)*1000);else theater.pausedAt=(performance.now()-theater.t0)/1000;if(!theater.playing){stopMusic();stopVoice();}else startMusic();theater.lastLine=-1;paintTheaterButtons();return;}
   if(t.closest('#reelSound')){if(theater.music)stopMusic();else startMusic();paintTheaterButtons();return;}
-  if(t.closest('#reelVoice')){theater.voiceTouched=true;theater.voice=!theater.voice;theater.lastLine=-1;if(!theater.voice)stopVoice();paintTheaterButtons();return;}
+  if(t.closest('#reelVoice')){if(!theater.voice&&!voiceNoteSeen()){showVoiceNote(true);return;}setVoice(!theater.voice);return;}
+  if(t.closest('#reelVoOk')){markVoiceNote();showVoiceNote(false);setVoice(true);return;}
+  if(t.closest('#reelVoNo')){markVoiceNote();showVoiceNote(false);return;}
   if(t.closest('#reelRecord')){record();return;}
   const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
  });
@@ -1607,9 +1848,9 @@ function fullPrompt(id,options,field){const deck=window.MC_DECK;const command=de
 async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch{}try{const a=document.createElement('textarea');a.value=text;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch{return false;}}
 async function copyAll(button,text){if(!text)return;const ok=await copyText(text);const label=button.dataset.label||(button.dataset.label=button.textContent);button.textContent=ok?'✓ ก๊อปแล้ว ไปวางใน Claude / ChatGPT ได้เลย':'ก๊อปไม่ได้ ลองกดค้างที่ข้อความแทน';toast(ok?'ก๊อป prompt ทั้งหมดแล้ว':'ก๊อปไม่ได้');clearTimeout(button._t);button._t=setTimeout(()=>{button.textContent=label;},2400);}
 function bindCopy(){document.addEventListener('click',e=>{const b=e.target.closest?.('[data-copy-prompt],#reelCopy');if(!b)return;
- if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},clip.story.join(clip.art?' · ':' ')));return;}
+ if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},''));return;}
  try{const d=JSON.parse(b.dataset.copyPrompt);copyAll(b,fullPrompt(d.id,d.options,d.field));}catch{}});}
-function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
+function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;paintTheaterButtons();};}catch{}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
 </script>
@@ -2299,6 +2540,71 @@ function start(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
 </script>
+<script>
+/* Lesson 5 paths: pick what to make, walk only that route, mark it done when a prompt is copied.
+   Also the Sauce × Model × Effort power card, and the course trailer's end button. */
+(function(){
+'use strict';
+const KEY='mc_l5_paths_v1',PKEY='mc_l5_power_v1',$=id=>document.getElementById(id);
+const PATHS={
+ video:{name:'🎬 คลิป & วิดีโอ',cat:'video',tab:'video',steps:[['ดูคลิปตัวอย่าง','#deckExample'],['วิดีโอเปิดคอร์ส + prompt','#lessonTrailer'],['หยิบคำสั่งวิดีโอ','#deck'],['ชิมแล้วปรับ','#promptCheck']]},
+ image:{name:'📸 ภาพสวยจากรูปเดิม',cat:'image',tab:'image',steps:[['ดูภาพตัวอย่าง','#deckExample'],['หยิบคำสั่งภาพ','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
+ write:{name:'✍️ โพสต์ & ขายของ',cat:'write',steps:[['หยิบคำสั่งโพสต์','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
+ work:{name:'📄 เอกสาร & สรุปงาน',cat:'work',tab:'docs',steps:[['ดูเอกสารตัวอย่าง','#deckExample'],['หยิบคำสั่งงาน','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
+ build:{name:'🌐 เว็บ & แอป',cat:'build',tab:'docs',steps:[['หยิบคำสั่งเว็บ','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
+ agent:{name:'🤖 Agent ประจำตัว',tab:'agent',steps:[['ดู Agent ตัวอย่าง','#deckExample'],['ปั้น Agent ของคุณ','#agent'],['ลองสั่งงาน','#promptCheck']]}
+};
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch{return d;}};
+const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+let st=read(KEY,{active:null,done:[]});if(!Array.isArray(st.done))st.done=[];
+function jump(sel){const el=document.querySelector(sel);if(!el)return;const lenis=window.cloverMotion?.lenis;if(lenis)lenis.scrollTo(el,{offset:-90,duration:.9});else el.scrollIntoView({behavior:'smooth',block:'start'});}
+function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2800);}
+function paint(){
+ document.querySelectorAll('[data-path]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.path===st.active));b.dataset.done=String(st.done.includes(b.dataset.path));});
+ const now=$('pathNow'),p=PATHS[st.active];
+ if(now){now.hidden=!p;if(p)now.innerHTML='<b>กำลังเดิน: '+p.name+'</b><ol>'+p.steps.map((x,i)=>'<li>'+(i+1)+'. <a href="'+x[1]+'" data-jump="'+x[1]+'">'+x[0]+'</a></li>').join('')+'</ol>';}
+ const n=st.done.length,total=Object.keys(PATHS).length,pr=$('pathProgress');
+ if(pr)pr.textContent=n?'🏅 เก็บแล้ว '+n+' / '+total+' เส้นทาง'+(n===total?' — ครบทุกเส้น เก่งมาก!':' · ทางที่เหลือรอคุณอยู่'):'ยังไม่ได้เริ่ม เลือกได้ 1 ทาง เปลี่ยนใจได้ตลอด';
+ const chips=$('againChips');if(chips)chips.innerHTML=Object.entries(PATHS).map(([k,v])=>'<button type="button" data-path-go="'+k+'" data-done="'+st.done.includes(k)+'">'+(st.done.includes(k)?'✓ ':'')+v.name+'</button>').join('');
+}
+function choose(key,go){
+ const p=PATHS[key];if(!p)return;st.active=key;write(KEY,st);paint();
+ if(p.cat)document.querySelector('#deckCats [data-cat="'+p.cat+'"]')?.click();
+ if(p.tab)document.querySelector('[data-sc-tab="'+p.tab+'"]')?.click();
+ if(go)jump(p.steps[0][1]);
+}
+function finish(){if(!st.active||st.done.includes(st.active))return;st.done.push(st.active);write(KEY,st);paint();toast('✓ เส้นทาง '+PATHS[st.active].name+' สำเร็จ! เลือกทางใหม่ได้ท้ายหน้า');}
+document.addEventListener('click',e=>{
+ const t=e.target;if(!t.closest)return;
+ const path=t.closest('[data-path]');if(path){choose(path.dataset.path,true);return;}
+ const again=t.closest('[data-path-go]');if(again){choose(again.dataset.pathGo,true);return;}
+ const j=t.closest('[data-jump]');if(j){e.preventDefault();jump(j.dataset.jump);return;}
+ // Copying or sending a prompt counts as finishing the active route.
+ if(t.closest('[data-ship],#shortCopy,.copy-all,#reelCopy')||(st.active==='agent'&&t.closest('#agent button')&&/คัดลอก|ก๊อป|copy/i.test(t.textContent||'')))setTimeout(finish,400);
+ // The voice note links to the course trailer: dismiss the note and the clip player before scrolling.
+ const vo=t.closest('#reelVoNote a');if(vo){e.preventDefault();$('reelVoNo')?.click();$('reelClose')?.click();setTimeout(()=>jump('#lessonTrailer'),120);return;}
+ // The trailer's end button points at its prompt; close the phone dialog first.
+ const cta=t.closest('#trailerPop .trx-cta');if(cta){e.preventDefault();$('trailerPop')?.querySelector('.trx-skip')?.click();setTimeout(()=>jump('#trailerPrompt'),120);}
+});
+// Power card: work quality = sauce × model × effort.
+const RANKS=[[0,'0','ไม่มีซอส = 0 · AI ต้องเดาเรื่องคุณเอง ต่อให้โมเดลแพงแค่ไหนก็ได้งานกลาง ๆ ที่ไม่ใช่คุณ'],[3,'C','พอใช้ ได้งานทั่วไป'],[8,'B','ดี ใช้งานได้จริง'],[18,'A','สวย ตรงตัวคุณ ใกล้ระดับมือโปร'],[27,'S','ระดับวิดีโอเปิดคอร์ส งานแพง ตรงตัวคุณเต็ม ๆ']];
+const NAMES={sauce:'🫙 ซอส',model:'🧠 โมเดล AI',effort:'⚡ Effort'},MAX={sauce:3,model:3,effort:3};
+let pw=Object.assign({sauce:2,model:2,effort:2},read(PKEY,{}));
+function paintPower(bump){
+ document.querySelectorAll('.power-opts').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===pw[g.dataset.stat]))));
+ const score=pw.sauce*pw.model*pw.effort,r=RANKS.find(x=>score<=x[0])||RANKS[RANKS.length-1];
+ const weak=Object.keys(MAX).sort((a,b)=>pw[a]/MAX[a]-pw[b]/MAX[b])[0];
+ const rank=$('powerRank');if(rank){rank.textContent=r[1];if(bump){rank.classList.remove('pop');void rank.offsetWidth;rank.classList.add('pop');setTimeout(()=>rank.classList.remove('pop'),300);}}
+ if($('powerScore'))$('powerScore').textContent='พลังงาน '+score+' / 27';
+ if($('powerBar'))$('powerBar').style.width=(score/27*100)+'%';
+ if($('powerLine'))$('powerLine').textContent=r[2]+(score<27?' · อัปตัวนี้ก่อน: '+NAMES[weak]:'');
+}
+$('powerRows')?.addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b)return;pw[b.closest('.power-opts').dataset.stat]=+b.dataset.v;write(PKEY,pw);paintPower(true);});
+function start(){paint();paintPower(false);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+<script defer src="/assets/classroom-trailer.js?v=20261019a"></script>
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>

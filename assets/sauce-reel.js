@@ -283,8 +283,9 @@ function openTheater(id){
  theater={clip,ctx,canvas,t0:performance.now(),raf:0,audio:null,music:null,recorder:null,playing:true};
  setText($('reelTitle'),clip.name);setText($('reelSub'),clip.en+' · สร้างจากโค้ดทั้งหมด');
  const use=$('reelUse');if(use){use.dataset.command=clip.command;use.dataset.art=clip.art||'';use.textContent=clip.art?'🖌️ ใช้สไตล์นี้กับเรื่องของฉัน':'🔠 ใช้คำสั่งนี้กับข้อความของฉัน';}
- const box=$('reelPrompt');if(box){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===clip.command);const opt=command?.opts?.find(o=>o.k===(clip.art?'art':'look'));const choice=opt?.choices.find(c=>c[0]===clip.art)||opt?.choices[0];const esc=v=>String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));box.innerHTML=clip.art&&choice?'/brushstory '+esc(choice[1])+'\n\nCreate JavaScript animation with music (and downloadable to mp4) using <b>'+esc(choice[2])+'</b> as key main art direction…\n\nStory will be about, "<b>'+esc(clip.story.join(' · '))+'</b>"':'/kinetic\n\nCreate a kinetic typography video… Text: "<b>'+esc(clip.story.join(' '))+'</b>"';}
- theater.voice=voiceAvailable();theater.lastLine=-1;
+ const box=$('reelPrompt');if(box){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===clip.command);const opt=command?.opts?.find(o=>o.k===(clip.art?'art':'look'));const choice=opt?.choices.find(c=>c[0]===clip.art)||opt?.choices[0];const esc=v=>String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));box.innerHTML=clip.art&&choice?'/brushstory '+esc(choice[1])+'\n\nCreate JavaScript animation with music (and downloadable to mp4) using <b>'+esc(choice[2])+'</b> as key main art direction…\n\nStory will be about, "<b>ใส่เรื่องของคุณ — หรือเว้นว่างให้ใช้เรื่องจากซอส</b>"\n\nQuality: premium… (+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)':'/kinetic\n\nCreate a kinetic typography video… Text: "<b>ใส่ข้อความของคุณ — หรือเว้นว่างให้เลือกจากซอส</b>"\n\n(+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)';}
+ // The device voice is synthetic, so narration starts off; the learner opts in (with a one-time note).
+ theater.voice=false;theater.lastLine=-1;
  startMusic();
  paintTheaterButtons();
  if(typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');
@@ -308,7 +309,7 @@ function paintTheaterButtons(){
  if(!theater)return;
  setText($('reelToggle'),theater.playing?'⏸ หยุด':'▶ เล่น');
  setText($('reelSound'),theater.music?'🔇 ปิดเพลง':'🎵 เปิดเพลง');
- const voice=$('reelVoice');if(voice){voice.hidden=!voiceAvailable();setText(voice,theater.voice?'🤫 ปิดเสียงพากย์':'🗣️ เสียงพากย์ไทย');}
+ const voice=$('reelVoice');if(voice){voice.hidden=!voiceAvailable();setText(voice,theater.voice?'🤫 ปิดเสียงพากย์':'🗣️ ลองเสียงพากย์ (สังเคราะห์)');}
  const rec=$('reelRecord');if(rec){rec.disabled=!!theater.recorder||typeof MediaRecorder==='undefined'||!theater.canvas.captureStream;setText(rec,theater.recorder?'⏺ กำลังอัด…':'⬇ อัดเป็นวิดีโอ ('+LOOP+' วิ)');}
 }
 function audioContext(){if(!theater.audio){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;theater.audio=new AC();}if(theater.audio.state==='suspended')theater.audio.resume();return theater.audio;}
@@ -341,6 +342,11 @@ function record(){
  theater.recorder=recorder;theater.playing=true;theater.t0=performance.now();recorder.start(250);paintTheaterButtons();
  setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
 }
+function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();paintTheaterButtons();}
+const VO_NOTE='mc_reel_voice_note_v1';
+function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
+function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
+function showVoiceNote(on){const note=$('reelVoNote');if(!note)return;note.hidden=!on;if(on)$('reelVoOk')?.focus({preventScroll:true});}
 function toast(message){const el=$('toast');if(!el)return;el.textContent=message;el.classList.add('on');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('on'),2600);}
 function bindTheater(){
  const dlg=$('reelTheater');if(!dlg)return;
@@ -351,7 +357,9 @@ function bindTheater(){
   if(!theater)return;
   if(t.closest('#reelToggle')){theater.playing=!theater.playing;if(theater.playing)theater.t0=performance.now()-((theater.pausedAt||0)*1000);else theater.pausedAt=(performance.now()-theater.t0)/1000;if(!theater.playing){stopMusic();stopVoice();}else startMusic();theater.lastLine=-1;paintTheaterButtons();return;}
   if(t.closest('#reelSound')){if(theater.music)stopMusic();else startMusic();paintTheaterButtons();return;}
-  if(t.closest('#reelVoice')){theater.voiceTouched=true;theater.voice=!theater.voice;theater.lastLine=-1;if(!theater.voice)stopVoice();paintTheaterButtons();return;}
+  if(t.closest('#reelVoice')){if(!theater.voice&&!voiceNoteSeen()){showVoiceNote(true);return;}setVoice(!theater.voice);return;}
+  if(t.closest('#reelVoOk')){markVoiceNote();showVoiceNote(false);setVoice(true);return;}
+  if(t.closest('#reelVoNo')){markVoiceNote();showVoiceNote(false);return;}
   if(t.closest('#reelRecord')){record();return;}
   const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
  });
@@ -361,8 +369,8 @@ function fullPrompt(id,options,field){const deck=window.MC_DECK;const command=de
 async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch{}try{const a=document.createElement('textarea');a.value=text;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch{return false;}}
 async function copyAll(button,text){if(!text)return;const ok=await copyText(text);const label=button.dataset.label||(button.dataset.label=button.textContent);button.textContent=ok?'✓ ก๊อปแล้ว ไปวางใน Claude / ChatGPT ได้เลย':'ก๊อปไม่ได้ ลองกดค้างที่ข้อความแทน';toast(ok?'ก๊อป prompt ทั้งหมดแล้ว':'ก๊อปไม่ได้');clearTimeout(button._t);button._t=setTimeout(()=>{button.textContent=label;},2400);}
 function bindCopy(){document.addEventListener('click',e=>{const b=e.target.closest?.('[data-copy-prompt],#reelCopy');if(!b)return;
- if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},clip.story.join(clip.art?' · ':' ')));return;}
+ if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},''));return;}
  try{const d=JSON.parse(b.dataset.copyPrompt);copyAll(b,fullPrompt(d.id,d.options,d.field));}catch{}});}
-function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
+function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;paintTheaterButtons();};}catch{}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
