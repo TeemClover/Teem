@@ -2,7 +2,8 @@
 // become public merely because they are added under /classroom/.
 export const INDEXED_CLASSROOM_FILES = [
   'index.html', 'lesson-0.html', 'free-ai.html', 'image-ai.html', 'clip-ai.html',
-  'notebooklm.html', 'prompts.html', 'first-web.html', 'full-lessons.html',
+  'notebooklm.html', 'prompts.html', 'season-commands.html', 'season-video.html', 'season-agent.html',
+  'first-web.html', 'full-lessons.html',
   'sauce-cup/index.html', 'dungeon/index.html', 'awaken/index.html',
   'awaken/notebook/index.html',
 ];
