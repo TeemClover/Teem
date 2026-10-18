@@ -356,6 +356,13 @@ function bindTheater(){
   const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
  });
 }
-function mount(){mountCards();bindTheater();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
+// Copy-all: the full prompt (requirements + text-safety rules), exactly what the deck would copy.
+function fullPrompt(id,options,field){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===id);if(!command)return '';return deck.buildPrompt([{id,options:{...deck.defaults(command),...(options||{})},field:field||''}]);}
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch{}try{const a=document.createElement('textarea');a.value=text;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch{return false;}}
+async function copyAll(button,text){if(!text)return;const ok=await copyText(text);const label=button.dataset.label||(button.dataset.label=button.textContent);button.textContent=ok?'✓ ก๊อปแล้ว ไปวางใน Claude / ChatGPT ได้เลย':'ก๊อปไม่ได้ ลองกดค้างที่ข้อความแทน';toast(ok?'ก๊อป prompt ทั้งหมดแล้ว':'ก๊อปไม่ได้');clearTimeout(button._t);button._t=setTimeout(()=>{button.textContent=label;},2400);}
+function bindCopy(){document.addEventListener('click',e=>{const b=e.target.closest?.('[data-copy-prompt],#reelCopy');if(!b)return;
+ if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},clip.story.join(clip.art?' · ':' ')));return;}
+ try{const d=JSON.parse(b.dataset.copyPrompt);copyAll(b,fullPrompt(d.id,d.options,d.field));}catch{}});}
+function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();

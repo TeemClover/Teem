@@ -278,6 +278,10 @@ button{cursor:pointer}
 .prompt-origin small{font-size:11px;font-weight:850;letter-spacing:.1em;color:var(--gold-ink)}
 .prompt-origin pre{margin-top:6px;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:#33443a}
 .prompt-origin pre b{color:#a0372b}
+.prompt-origin pre i{font-style:normal;color:#6b7a70;font-family:var(--body,inherit)}
+.copy-all{margin-top:10px;width:100%;padding:11px 14px;border-radius:12px;border:0;background:#0b2619;color:#ffe3a1;font-weight:850;font-size:14px;cursor:pointer}
+.copy-all:hover{background:#123a26}
+.th-copy{margin-top:8px;font-size:13px}
 .ex-go{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 16px;border-radius:13px;border:0;background:var(--deep);color:#fff;font-size:14px;font-weight:800}
 .ex-go:hover{background:#163b28}
 .ig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
@@ -464,7 +468,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120p
  .doc-view{height:160px;padding:12px}.doc footer b{display:none}
  .ag-personas{grid-template-columns:repeat(2,minmax(0,1fr))}
  .th-side h3{font-size:20px}.th-note{display:none}
- .theater canvas{height:min(50dvh,500px)}.th-side small{display:none}.th-side>p{display:none}.th-actions{order:3;margin-top:0}.th-actions button{flex:1 1 40%;font-size:12.5px;padding:8px 6px}.th-use{order:4}.th-prompt{order:5;max-height:150px;font-size:11px}
+ .theater canvas{height:min(50dvh,500px)}.th-side small{display:none}.th-side>p{display:none}.th-actions{order:3;margin-top:0}.th-actions button{flex:1 1 40%;font-size:12.5px;padding:8px 6px}.th-use{order:4}.th-copy{order:5;margin-top:0}.th-prompt{order:6;max-height:150px;font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.dc,.wi,.wok.sizzle,.sc-panel,.chat p,.ag-card::before{animation:none}.dc,.dock,.seg button,#toast{transition:none}}
 </style>
@@ -547,7 +551,10 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120p
       <div><small>PROMPT ต้นฉบับ · ใช้ได้ทั้ง Claude และ ChatGPT</small>
       <pre>Create JavaScript animation with music (and downloadable to mp4) using <b>Chinese Brush strokes</b> as key main art direction but make elements according to <b>Thai culture</b> plus <b>modern TYPOGRAPHY</b> style to tell the story.
 
-Story will be about, "<b>ใส่เรื่องที่อยากทำตรงนี้</b>"</pre></div>
+Story will be about, "<b>ใส่เรื่องที่อยากทำตรงนี้</b>"
+
+<i>+ ข้อกำหนดไฟล์ เพลง ปุ่มดาวน์โหลด และกติกาให้ตัวหนังสือไทยอยู่กลางจอ ไม่ตกขอบ (ติดไปให้ตอนกดก๊อป)</i></pre>
+      <button type="button" class="copy-all" data-copy-prompt='{"id":"brushstory","options":{"art":"brush","culture":"thai","type":"modern"}}'>📋 ก๊อป prompt ทั้งหมด</button></div>
       <button type="button" class="ex-go" data-preset='{"id":"brushstory","options":{"art":"brush","culture":"thai","type":"modern"},"field":"วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน"}'>🖌️ โหลดลงกระทะ แล้วเปลี่ยนสไตล์เอง →</button>
     </div>
   </div>
@@ -599,6 +606,7 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
       <h3 id="reelTitle">สไตล์</h3>
       <p id="reelSub"></p>
       <pre class="th-prompt" id="reelPrompt"></pre>
+      <button type="button" class="copy-all th-copy" id="reelCopy">📋 ก๊อป prompt ทั้งหมด (พร้อมกติกาตัวหนังสือไม่ตกขอบ)</button>
       <div class="th-actions"><button type="button" id="reelToggle">⏸ หยุด</button><button type="button" id="reelSound">🎵 เปิดเพลง</button><button type="button" id="reelVoice" hidden>🗣️ เสียงพากย์ไทย</button><button type="button" id="reelRecord">⬇ อัดเป็นวิดีโอ</button></div>
       <button type="button" class="th-use" id="reelUse">🖌️ ใช้สไตล์นี้กับเรื่องของฉัน</button>
       <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์ไทยมาจากเครื่องของคุณ จึงได้ยินเฉพาะตอนเล่นในหน้านี้ · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
@@ -772,13 +780,15 @@ Requirements:
 - Split the story into 4–6 scenes with smooth transitions; each scene has one short Thai line that animates in with the typography style.
 - Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files) and fade it out at the end.
 - Controls: Play / Replay, plus a "Download video" button that records the canvas and audio with MediaRecorder (MP4 when the browser supports it, otherwise WebM) and saves the file.
-- Fonts only from Google Fonts; no other external assets.`,
-  pack:'Create a self-contained HTML/JS animation with Web Audio music and a MediaRecorder "Download video" button (MP4 if supported, else WebM) telling the story after the command (default: Chinese brush strokes + Thai culture elements + modern typography, 30s, 9:16).'},
+- Fonts only from Google Fonts; no other external assets.
+- Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; centre emoji by their visible shape. Recompute on resize.
+- Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text.`,
+  pack:'Create a self-contained HTML/JS animation with Web Audio music and a MediaRecorder "Download video" button (MP4 if supported, else WebM) telling the story after the command (default: Chinese brush strokes + Thai culture elements + modern typography, 30s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
  {id:'kinetic',cat:'video',icon:'🔠',name:'คลิปตัวหนังสือเด้ง',desc:'ข้อความเดียว กลายเป็นคลิป Kinetic Typography ตามจังหวะเพลง',need:'text',tools:'Claude · ChatGPT',keys:'คลิป ตัวหนังสือ คำคม ข้อความ typography คลิปข้อความ เพลง จังหวะ quote',
   opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'}],
   field:{label:'ข้อความที่อยากให้เด้ง',ph:'เช่น ใครเจอเรา คนนั้นโชคดี',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
-  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน]')}". Animate word by word in sync with an original beat made with the Web Audio API. Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support.`,
-  pack:'Make a kinetic-typography HTML/JS clip of the Thai text after the command, synced to a Web Audio beat, with a MediaRecorder download button (default pop, 15s, 9:16).'},
+  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน]')}". Animate word by word in sync with an original beat made with the Web Audio API. Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support. Text layout: keep every line inside a 6% safe area and centred in both 9:16 and 16:9 — measure with ctx.measureText, shrink or wrap until it fits, centre by drawing left-aligned at centre − width / 2, never set ctx.letterSpacing on Thai, leave room for Thai vowels and tone marks, recompute on resize, and check every scene in both ratios for clipped text before finishing.`,
+  pack:'Make a kinetic-typography HTML/JS clip of the Thai text after the command, synced to a Web Audio beat, with a MediaRecorder download button (default pop, 15s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
  {id:'reel',cat:'video',icon:'📱',name:'สคริปต์ Reels / TikTok',desc:'ได้ฮุค 3 วิ ช็อตลิสต์ แคปชันบนจอ และเสียงพากย์ พร้อมถ่ายหรือทำด้วย AI',need:'text',keys:'คลิป วิดีโอ reels tiktok คลิปสั้น สคริปต์ ถ่ายคลิป ช็อต วิดีโอสั้น shorts',
   opts:[{k:'tone',label:'โทน',choices:[['fun','สนุกเป็นกันเอง','fun and friendly'],['teach','สอนเข้าใจง่าย','clear and educational'],['story','เล่าเรื่องซึ้ง','heartfelt storytelling'],['sell','ขายตรงประเด็น','direct and persuasive']]},{...LENGTH,def:'30'}],
   field:{label:'คลิปนี้เกี่ยวกับอะไร',ph:'เช่น 3 เมนูใหม่ของร้านเดือนนี้',ex:['3 เมนูใหม่ของร้านเดือนนี้','เบื้องหลังการทำเทียนหอม 1 ชิ้น','ทริคใช้ AI ทำงานเร็วขึ้น 2 เท่า']},
@@ -1592,7 +1602,14 @@ function bindTheater(){
   const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
  });
 }
-function mount(){mountCards();bindTheater();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
+// Copy-all: the full prompt (requirements + text-safety rules), exactly what the deck would copy.
+function fullPrompt(id,options,field){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===id);if(!command)return '';return deck.buildPrompt([{id,options:{...deck.defaults(command),...(options||{})},field:field||''}]);}
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch{}try{const a=document.createElement('textarea');a.value=text;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch{return false;}}
+async function copyAll(button,text){if(!text)return;const ok=await copyText(text);const label=button.dataset.label||(button.dataset.label=button.textContent);button.textContent=ok?'✓ ก๊อปแล้ว ไปวางใน Claude / ChatGPT ได้เลย':'ก๊อปไม่ได้ ลองกดค้างที่ข้อความแทน';toast(ok?'ก๊อป prompt ทั้งหมดแล้ว':'ก๊อปไม่ได้');clearTimeout(button._t);button._t=setTimeout(()=>{button.textContent=label;},2400);}
+function bindCopy(){document.addEventListener('click',e=>{const b=e.target.closest?.('[data-copy-prompt],#reelCopy');if(!b)return;
+ if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},clip.story.join(clip.art?' · ':' ')));return;}
+ try{const d=JSON.parse(b.dataset.copyPrompt);copyAll(b,fullPrompt(d.id,d.options,d.field));}catch{}});}
+function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;if(!theater.voiceTouched)theater.voice=voiceAvailable();paintTheaterButtons();};}catch{}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
 </script>
