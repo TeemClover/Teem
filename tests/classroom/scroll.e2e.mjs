@@ -39,8 +39,8 @@ async function idle(page, label) {
 
 try {
   // These pages embed assets to work independently; fixing only an asset leaves production broken.
-  const html = await readFile(path.join(root, 'classroom/prompts.html'), 'utf8');
-  for (const name of ['command-deck.js', 'course-learning-journey.js']) {
+  for (const [file, name] of [['season-commands.html', 'command-deck.js'], ['prompts.html', 'course-learning-journey.js']]) {
+    const html = await readFile(path.join(root, 'classroom', file), 'utf8');
     const embedded = html.match(new RegExp(`<script[^>]*data-self-contained="${name.replaceAll('.', '\\.')}"[^>]*>([\\s\\S]*?)<\\/script>`));
     assert.ok(embedded, `Missing embedded ${name}`);
     assert.equal(embedded[1].trim(), (await readFile(path.join(root, 'assets', name), 'utf8')).trim());
@@ -73,6 +73,9 @@ try {
     await page.waitForTimeout(300);
     assert.ok(await page.evaluate(() => scrollY > 0));
     await page.locator('a.lesson[data-item="prompts"]').click();
+    // Lesson 5 opens on its hub; the command deck is part 5.1.
+    await page.locator('#route1').waitFor();
+    await page.goto(new URL('season-commands.html', page.url()).href);
     await page.locator('#deckCards .dc').first().waitFor();
     await page.waitForTimeout(1600);
     assert.equal(await page.locator('#deckCards .dc').count(), 29);

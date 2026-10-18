@@ -1,0 +1,1796 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://www.myclover.com/classroom/season-video.html">
+<meta name="mc-act-view" content="lesson-open">
+<meta name="self-contained" content="classroom-lesson">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="mc-item" content="learn:prompts-video">
+<meta name="build" content="classroom-season-video-20261019">
+<title>บทที่ 5.2 · วิดีโอจากโค้ด · AI ใส่ซอส</title>
+<meta name="description" content="คลิปที่วาดด้วยโค้ดทั้งไฟล์ 8 สไตล์ วิดีโอเปิดคอร์ส และ prompt ทำวิดีโอของคุณเอง พร้อมวิธีอัดเสียงพากย์จากมือถือ">
+<meta property="og:title" content="บทที่ 5.2 · วิดีโอจากโค้ด · AI ใส่ซอส">
+<meta property="og:description" content="คลิปที่วาดด้วยโค้ดทั้งไฟล์ 8 สไตล์ วิดีโอเปิดคอร์ส และ prompt ทำวิดีโอของคุณเอง พร้อมวิธีอัดเสียงพากย์จากมือถือ">
+<meta property="og:image" content="https://www.myclover.com/classroom/img/header-lesson5.jpeg">
+<style>
+@font-face{font-family:"Reel Charm";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/charm-700-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Charm";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/charm-700-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Reel Srisakdi";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/srisakdi-700-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Srisakdi";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/srisakdi-700-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Reel Kanit";font-style:normal;font-weight:800;font-display:swap;src:url(/assets/fonts/reel/kanit-800-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Kanit";font-style:normal;font-weight:800;font-display:swap;src:url(/assets/fonts/reel/kanit-800-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Reel Mitr";font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/reel/mitr-600-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Mitr";font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/reel/mitr-600-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Reel Chakra";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/chakra-petch-700-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Chakra";font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/reel/chakra-petch-700-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Reel Sriracha";font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/reel/sriracha-400-thai.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Reel Sriracha";font-style:normal;font-weight:400;font-display:swap;src:url(/assets/fonts/reel/sriracha-400-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{--ink:#14281c;--paper:#f8f6f0;--green:#1b6a42;--deep:#0b2619;--gold:#d9b765;--gold-ink:#7a5c18;--muted:#5f6c63;--line:rgba(20,40,28,.11);--card:#fff;--font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","Thonburi",Tahoma,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:17px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.wrap{max-width:940px;margin:0 auto;padding:0 18px}
+.mc-lesson-nav{position:sticky;top:0;z-index:90;background:rgba(248,246,240,.92);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid rgba(18,40,28,.08)}
+.mc-lesson-nav__inner{width:min(940px,100%);height:56px;margin:0 auto;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.mc-lesson-nav__brand{display:inline-flex;align-items:center;gap:8px;color:#12281c;font:750 18px/1 var(--font);white-space:nowrap}
+.mc-lesson-nav__brand img{width:28px;height:28px;object-fit:contain}
+.mc-lesson-nav__brand em{font-style:normal;color:var(--green)}
+.mc-lesson-nav__all{color:#606c64;font:650 13px/1.4 var(--font);white-space:nowrap}
+.mc-lesson-nav__all:hover{color:var(--green)}
+
+.head{position:relative;overflow:hidden;margin-top:18px;padding:0 0 26px;border-radius:24px;background:radial-gradient(120% 80% at 100% 100%,#245c3c 0,transparent 55%),linear-gradient(160deg,#0f3220,#0a2417);color:#fff;box-shadow:0 22px 52px -30px rgba(10,40,24,.55)}
+.classroom-lesson-header-image{display:block;overflow:hidden;background:#fff;border-bottom:1px solid rgba(255,255,255,.09)}
+.classroom-lesson-header-image img{width:100%;height:auto;object-fit:contain}
+.head .lv,.head h1,.head>p,.head .meta{margin-left:24px;margin-right:24px}
+.head .lv{display:inline-block;margin-top:22px;font-size:11.5px;font-weight:800;letter-spacing:.14em;color:var(--gold);border:1px solid rgba(217,183,101,.5);border-radius:999px;padding:4px 13px;text-transform:uppercase}
+.head h1{font-size:clamp(25px,4.4vw,36px);line-height:1.25;letter-spacing:-.03em;margin-top:12px;margin-bottom:8px;text-wrap:balance}
+.head>p{color:rgba(255,255,255,.86);font-size:15.5px;max-width:62ch}
+.head .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.head .meta span{font-size:12.5px;font-weight:650;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:5px 12px;color:rgba(255,255,255,.88)}
+.head .meta code{font-family:var(--mono);color:#f3dc9c}
+
+.sec{margin-top:26px;scroll-margin-top:140px}
+.sec-k{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:850;letter-spacing:.14em;color:var(--green);text-transform:uppercase}
+.sec h2{font-size:clamp(23px,3.6vw,30px);line-height:1.3;letter-spacing:-.025em;margin:6px 0 6px;text-wrap:balance}
+.sec-lead{color:var(--muted);font-size:15px;max-width:64ch}
+
+/* ── Deck ─────────────────────────────────── */
+.deck{padding:24px;border-radius:26px;background:linear-gradient(180deg,#fff,#fbfaf6);border:1px solid var(--line);box-shadow:0 18px 50px -40px rgba(10,40,24,.5)}
+.smart{margin-top:18px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#f4efe1,#eef4ea);border:1px solid #e3dcc6}
+.smart label{display:block;font-size:13px;font-weight:800;color:#3d5444;margin:0 0 8px 4px}
+.smart-box{position:relative;display:flex;align-items:center;gap:10px;padding:4px 6px 4px 16px;border-radius:16px;background:#fff;border:1.5px solid #d9d2bb;transition:border-color .2s,box-shadow .2s}
+.smart-box:focus-within{border-color:var(--green);box-shadow:0 0 0 4px rgba(27,106,66,.12)}
+.smart-box span{font-size:20px}
+.smart-box input{flex:1;min-width:0;height:50px;border:0;outline:0;background:transparent;font-size:16px}
+.smart-box button{width:40px;height:40px;border:0;border-radius:12px;background:#f1f1ec;color:#5c6a60;font-size:15px}
+.suggest{display:flex;flex-wrap:wrap;align-items:center;gap:7px;min-height:38px;margin-top:10px}
+.sg-label{font-size:11.5px;font-weight:850;letter-spacing:.08em;color:var(--gold-ink);margin-right:2px}
+.sg-hint{font-size:13px;color:var(--muted)}
+.sg{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:6px 12px;border-radius:12px;background:#fff;border:1.5px solid color-mix(in srgb,var(--c) 40%,#fff);font-size:13.5px;font-weight:700;transition:transform .15s,box-shadow .2s}
+.sg:hover{transform:translateY(-2px);box-shadow:0 8px 18px -12px var(--c)}
+.sg code{font-family:var(--mono);font-size:12.5px;color:var(--c);font-weight:800}
+.sg i{font-style:normal;font-size:10.5px;padding:2px 7px;border-radius:999px;background:var(--c);color:#fff}
+.cats{display:flex;gap:8px;overflow-x:auto;margin:18px -24px 0;padding:2px 24px 6px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cats button{flex:none;display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:750;color:#3c5143;transition:background .2s,color .2s,border-color .2s}
+.cats button i{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px;background:#eef1ea;color:#5a6b5f}
+.cats button[aria-selected="true"]{background:var(--c,var(--deep));border-color:var(--c,var(--deep));color:#fff}
+.cats button[aria-selected="true"] i{background:rgba(255,255,255,.22);color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px;margin-top:14px}
+.dc{position:relative;display:flex;flex-direction:column;padding:14px 14px 12px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 2px 0 color-mix(in srgb,var(--c) 70%,#fff),0 10px 24px -22px rgba(10,40,24,.6);cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),box-shadow .2s,opacity .2s;animation:dcIn .45s cubic-bezier(.2,.8,.2,1) backwards}
+.dc:nth-child(2){animation-delay:30ms}.dc:nth-child(3){animation-delay:60ms}.dc:nth-child(4){animation-delay:90ms}.dc:nth-child(5){animation-delay:120ms}.dc:nth-child(6){animation-delay:150ms}.dc:nth-child(n+7){animation-delay:180ms}
+@keyframes dcIn{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.dc:hover{transform:translateY(-4px) rotate(-.6deg);box-shadow:0 3px 0 var(--c),0 18px 30px -20px color-mix(in srgb,var(--c) 70%,#000)}
+.dc:active{cursor:grabbing}
+.dc.lifted{opacity:.35;transform:scale(.97)}
+.dc[data-in="true"]{background:color-mix(in srgb,var(--c) 7%,#fff);border-color:color-mix(in srgb,var(--c) 45%,#fff)}
+.dc-top{display:flex;align-items:center;gap:8px}
+.dc-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--c) 13%,#fff);font-size:22px;flex:none}
+.dc-slash{min-width:0;font-family:var(--mono);font-size:13px;font-weight:800;color:var(--c);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-hot{margin-left:auto;font-size:9.5px;font-weight:900;letter-spacing:.1em;padding:2px 7px;border-radius:999px;background:linear-gradient(90deg,#ff7a45,#e04f8a);color:#fff}
+.dc-name{display:block;margin-top:10px;font-size:15.5px;line-height:1.4;letter-spacing:-.01em}
+.dc-desc{margin-top:4px;font-size:12.8px;line-height:1.6;color:#55645a;flex:1}
+.dc-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.dc-need{font-size:11.5px;font-weight:700;color:#6b776f}
+.dc-add{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;border:0;background:var(--c);color:#fff;font-size:20px;font-weight:700;line-height:1;flex:none;transition:transform .15s}
+.dc-add:hover{transform:scale(1.08)}
+.dc-add[aria-pressed="true"]{background:#2c7a4b;font-size:16px}
+.drag-ghost{position:fixed;left:0;top:0;z-index:2147483001;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:#fff;border:2px solid var(--gold);box-shadow:0 22px 40px -14px rgba(0,0,0,.45);pointer-events:none;font-size:22px;will-change:transform}
+.drag-ghost code{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--deep)}
+.flyer{position:fixed;z-index:2147483001;width:36px;height:36px;display:grid;place-items:center;font-size:26px;pointer-events:none}
+
+/* ── Forge (the stove) ─────────────────────── */
+.forge{padding:24px;border-radius:26px;background:radial-gradient(120% 70% at 50% 0,#1f4a32 0,transparent 60%),linear-gradient(180deg,#0f2b1d,#0a1f14);color:#eef3ec;box-shadow:0 26px 60px -36px #0a1f14}
+.forge .sec-k{color:var(--gold)}
+.forge .sec-lead{color:#bfd0c3}
+.wok{position:relative;margin-top:16px;padding:14px;border-radius:22px;border:2px dashed rgba(217,183,101,.45);background:rgba(255,255,255,.03);transition:border-color .2s,background .2s,transform .2s}
+.wok.drop-hot{border-color:var(--gold);background:rgba(217,183,101,.1);transform:scale(1.01)}
+.wok.sizzle{animation:sizzle .5s ease}
+@keyframes sizzle{30%{transform:scale(1.015) rotate(-.4deg)}60%{transform:scale(.995) rotate(.3deg)}}
+.wok-empty{display:none;flex-direction:column;align-items:center;gap:6px;padding:26px 12px;text-align:center;color:#c7d6ca}
+.wok[data-empty="true"] .wok-empty{display:flex}
+.wok-empty b{font-size:46px;line-height:1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+.wok-empty strong{font-size:16px;color:#fff}
+.wok-empty span{font-size:13px}
+.wok-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 2px 10px;font-size:12px;font-weight:800;letter-spacing:.06em;color:#d8c389}
+.wok[data-empty="true"] .wok-bar{display:none}
+.wok-bar button{border:0;background:none;color:#b9c9bc;font-size:12px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+#wokItems{display:grid;gap:12px}
+.wi{padding:14px 14px 12px;border-radius:18px;background:#fbfaf5;color:var(--ink);border-top:4px solid var(--c);animation:wiIn .45s cubic-bezier(.2,.9,.3,1.25) backwards;animation-delay:var(--d)}
+@keyframes wiIn{from{opacity:0;transform:translateY(-14px) scale(.96)}}
+.wi header{display:flex;align-items:center;gap:10px}
+.wi-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c) 14%,#fff);font-size:21px;flex:none}
+.wi-title{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.wi-title code{font-family:var(--mono);font-size:12.5px;font-weight:800;color:var(--c)}
+.wi-title b{font-size:15px}
+.wi-need{margin-left:auto;font-size:11.5px;font-weight:700;color:#66746a;white-space:nowrap}
+.wi-x{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:18px;color:#6a776e;flex:none}
+.opt{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;align-items:start;margin-top:12px}
+.opt-l{padding-top:7px;font-size:12px;font-weight:800;color:#4d6153}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{min-height:36px;padding:6px 12px;border-radius:11px;border:1px solid #dde3d8;background:#fff;font-size:13px;font-weight:650;color:#3c5143;transition:background .15s,border-color .15s,color .15s,transform .15s}
+.seg button:hover{border-color:color-mix(in srgb,var(--c) 50%,#fff)}
+.seg button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff;transform:translateY(-1px);box-shadow:0 6px 14px -10px var(--c)}
+.fld{display:block;margin-top:12px}
+.fld>span{display:block;font-size:12px;font-weight:800;color:#4d6153;margin-bottom:5px}
+.fld em{font-style:normal;font-weight:600;color:#8a958d}
+.fld-row{display:flex;gap:6px;align-items:flex-start}
+.fld input,.fld textarea{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1.5px solid #dfe5da;background:#fff;font-size:15px;line-height:1.55;resize:vertical;outline:0;transition:border-color .2s,box-shadow .2s}
+.fld input:focus,.fld textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}
+.dice{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid #e3dcc6;background:#fbf4e0;font-size:19px;transition:transform .3s}
+.dice:hover{transform:rotate(25deg)}
+.toggles{display:flex;flex-wrap:wrap;gap:10px 18px;margin:16px 2px 0}
+.switch{display:inline-flex;align-items:center;gap:10px;font-size:13.5px;font-weight:650;color:#dce7de;cursor:pointer}
+.switch input{appearance:none;-webkit-appearance:none;position:relative;width:42px;height:24px;border-radius:999px;background:#3a5545;transition:background .2s;flex:none;cursor:pointer}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s cubic-bezier(.2,.9,.3,1.3)}
+.switch input:checked{background:#d4b260}.switch input:checked::after{transform:translateX(18px)}
+.switch input:focus-visible{outline:3px solid #f0d27f;outline-offset:2px}
+.out{margin-top:16px;border-radius:18px;background:#06150d;border:1px solid #23412f;overflow:hidden}
+.out-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid #1d3628;font-size:11.5px;font-weight:800;letter-spacing:.08em;color:#9fb6a6}
+.out-bar i{font-style:normal;display:inline-flex;gap:5px}.out-bar i::before{content:"";width:9px;height:9px;border-radius:50%;background:#e2b84f;box-shadow:14px 0 #4caf74,28px 0 #c85b5b;margin-right:30px;align-self:center}
+#forgeOut{display:block;max-height:340px;overflow:auto;padding:14px 16px 16px;font-family:var(--mono);font-size:12.8px;line-height:1.7;color:#d9e6dc;white-space:pre-wrap;word-break:break-word}
+#forgeOut mark{background:rgba(217,183,101,.2);color:#ffe3a1;border-radius:4px;padding:0 2px}
+#forgeOut mark.f{background:rgba(110,196,140,.2);color:#b4f0c8}
+#forgeOut .ph{color:#7f9a88;font-family:var(--font);font-size:14px}
+.ship{display:grid;grid-template-columns:1.4fr repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.ship a,.ship button{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:50px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:13.5px;font-weight:800;text-align:center;line-height:1.3;transition:transform .15s,background .2s}
+.ship a:hover,.ship button:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+.ship .primary{background:linear-gradient(180deg,#f2dc9d,#d9b765);border-color:#f2dc9d;color:#1c2f22;font-size:15px;box-shadow:0 12px 26px -14px #d9b765}
+.ship .primary:hover{background:linear-gradient(180deg,#f7e5ae,#e0c071)}
+.ship [aria-disabled]{opacity:.55}
+.ship [data-done="true"]::after{content:"✓ คัดลอกแล้ว";position:absolute;inset:0;display:grid;place-items:center;border-radius:inherit;background:#2c7a4b;color:#fff;font-size:13.5px;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.hint{margin-top:10px;min-height:1.6em;font-size:13px;color:#e8d49c;font-weight:650}
+.shortcut{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.16);font-size:13px;color:#bfd0c3}
+.shortcut code{font-family:var(--mono);padding:3px 9px;border-radius:8px;background:#06150d;color:#ffe3a1;font-size:12.5px;white-space:pre-wrap}
+.shortcut button{margin-left:auto;min-height:36px;padding:6px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff;font-size:12.5px;font-weight:750}
+.shortcut a{color:#f0d27f;text-decoration:underline;text-underline-offset:3px}
+
+
+/* ── Pack ─────────────────────────────────── */
+.pack{position:relative;padding:24px;border-radius:26px;background:linear-gradient(#fffdf6,#fffdf6) padding-box,linear-gradient(130deg,#e9c86b,#fff3c9 35%,#c99a35 65%,#f5dd94) border-box;border:2px solid transparent;box-shadow:0 26px 60px -42px #8a6a1d}
+.pack .sec-k{color:var(--gold-ink)}
+.pack-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:linear-gradient(90deg,#2b1f08,#4a3410);color:#f3d892;font-size:11px;font-weight:900;letter-spacing:.14em}
+.pack-grid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:18px;margin-top:16px}
+.pack-tabs{display:flex;gap:6px;padding:4px;border-radius:14px;background:#f2ecdb}
+.pack-tabs button{flex:1;min-height:40px;border:0;border-radius:11px;background:transparent;font-size:13.5px;font-weight:800;color:#6d5a2a}
+.pack-tabs button[aria-selected="true"]{background:#fff;color:#2a2108;box-shadow:0 4px 12px -8px rgba(0,0,0,.4)}
+.pack-steps ol{list-style:none;counter-reset:s;margin-top:12px;display:grid;gap:8px}
+.pack-steps li{counter-increment:s;position:relative;padding:10px 12px 10px 46px;border-radius:13px;background:#fff;border:1px solid #efe6cc;font-size:14px;line-height:1.6}
+.pack-steps li::before{content:counter(s);position:absolute;left:12px;top:10px;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#2b1f08;color:#f3d892;font-size:12px;font-weight:900}
+.pack-alt{margin-top:10px;font-size:12.5px;color:#7a6a40}
+.pack-pick{padding:14px;border-radius:18px;background:#fff;border:1px solid #efe6cc}
+.pack-pick-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:#5d4c1d}
+.pack-pick-head div{display:flex;gap:6px}
+.pack-pick-head button{min-height:32px;padding:4px 10px;border-radius:9px;border:1px solid #e7dcb9;background:#fffaf0;font-size:12px;font-weight:750;color:#5d4c1d}
+#packList{display:grid;gap:8px;margin-top:10px;max-height:300px;overflow:auto;padding-right:4px}
+#packList fieldset{border:0;display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center}
+#packList legend{float:left;width:100%;font-size:11.5px;font-weight:850;color:var(--c);margin-bottom:3px}
+#packList label{display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:3px 9px 3px 6px;border-radius:9px;background:#f8f6ee;border:1px solid #ece6d3;cursor:pointer}
+#packList input{accent-color:#7a5c18;width:16px;height:16px}
+#packList code{font-family:var(--mono);font-size:12px;font-weight:700;color:#3b4a40}
+#packList label:has(input:checked){background:color-mix(in srgb,var(--c) 10%,#fff);border-color:color-mix(in srgb,var(--c) 40%,#fff)}
+.pack-ship{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pack-ship button,.pack-ship a{flex:1 1 180px;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 14px;border-radius:13px;font-size:14px;font-weight:850}
+.pack-ship button{border:0;background:linear-gradient(90deg,#2b1f08,#4a3410);color:#f3d892}
+.pack-ship a{border:1px solid #d9c690;background:#fff;color:#4a3a12}
+.pack-count{display:block;margin-top:8px;font-size:12px;color:#8a7a4f}
+.pack details{margin-top:12px}
+.pack summary{cursor:pointer;font-size:13px;font-weight:750;color:#6d5a2a}
+#packPreview{margin-top:8px;padding:12px;border-radius:12px;background:#1d1708;color:#f3e2b3;font-family:var(--mono);font-size:11.5px;line-height:1.6;white-space:pre-wrap;max-height:240px;overflow:auto}
+
+/* ── Showcase ─────────────────────────────── */
+.showcase{padding:24px;border-radius:26px;background:radial-gradient(80% 60% at 0 0,#fff3d6 0,transparent 60%),radial-gradient(70% 60% at 100% 100%,#e6f2e9 0,transparent 60%),#fffdf8;border:1px solid #eadfc4}
+.showcase .sec-k{color:var(--gold-ink)}
+.sc-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+.sc-tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:76px;padding:10px 8px;border-radius:18px;border:1.5px solid #e7dcc0;background:#fff;font-size:13.5px;font-weight:800;color:#4a4330;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),background .2s,border-color .2s,box-shadow .2s}
+.sc-tabs button span{font-size:24px;line-height:1.2;transition:transform .3s cubic-bezier(.2,.9,.3,1.4)}
+.sc-tabs button i{font-style:normal;font-size:10.5px;font-weight:900;padding:1px 8px;border-radius:999px;background:#f3ecd9;color:#7a5c18}
+.sc-tabs button:hover{transform:translateY(-3px)}
+.sc-tabs button:hover span{transform:scale(1.2) rotate(-8deg)}
+.sc-tabs button[aria-selected="true"]{background:var(--deep);border-color:var(--deep);color:#fff;box-shadow:0 14px 26px -16px var(--deep)}
+.sc-tabs button[aria-selected="true"] i{background:var(--gold);color:#1c2f22}
+.sc-panel{margin-top:16px;animation:scIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes scIn{from{transform:translateY(10px)}}
+.sc-note{padding:12px 16px;border-radius:14px;background:#fff;border:1px dashed #e0d2a8;font-size:14px;color:#5a5136;line-height:1.7}
+.sc-note b{color:#2b2208}
+.sc-note code,.sec-lead code,.shortcut code{font-family:var(--mono)}
+.reel-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.reel-card{position:relative;display:flex;flex-direction:column;padding:0;border:0;border-radius:20px;overflow:hidden;background:#101712;box-shadow:0 16px 30px -20px rgba(0,0,0,.6);transition:transform .25s cubic-bezier(.2,.9,.3,1.3),box-shadow .25s;cursor:pointer;text-align:left}
+.reel-screen{position:relative;display:block;aspect-ratio:9/16}
+.reel-card canvas{display:block;width:100%;height:100%}
+.reel-card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 26px 40px -22px rgba(0,0,0,.7)}
+.reel-meta{display:flex;flex-direction:column;gap:1px;padding:9px 12px 11px;color:#fff}
+.reel-meta b{font-size:13.5px;line-height:1.35}
+.reel-meta small{font-size:10.5px;opacity:.8;font-family:var(--mono)}
+.reel-play{position:absolute;top:10px;right:10px;display:grid;place-items:center;height:30px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.92);color:#111;font-size:12px;font-weight:800;box-shadow:0 6px 14px -6px rgba(0,0,0,.5);transition:transform .2s}
+.reel-card:hover .reel-play{transform:scale(1.15)}
+.prompt-origin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:end;margin-top:14px;padding:16px;border-radius:18px;background:#fff;border:1px solid #eadfc4}
+.prompt-origin small{font-size:11px;font-weight:850;letter-spacing:.1em;color:var(--gold-ink)}
+.prompt-origin pre{margin-top:6px;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:#33443a}
+.prompt-origin pre b{color:#a0372b}
+.prompt-origin pre i{font-style:normal;color:#6b7a70;font-family:var(--body,inherit)}
+.copy-all{margin-top:10px;width:100%;padding:11px 14px;border-radius:12px;border:0;background:#0b2619;color:#ffe3a1;font-weight:850;font-size:14px;cursor:pointer}
+.copy-all:hover{background:#123a26}
+.th-copy{margin-top:8px;font-size:13px}
+.ex-go{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 16px;border-radius:13px;border:0;background:var(--deep);color:#fff;font-size:14px;font-weight:800}
+.ex-go:hover{background:#163b28}
+.ig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.ig{position:relative;margin:0;border-radius:20px;overflow:hidden;background:#eee;aspect-ratio:3/4;box-shadow:0 14px 28px -22px rgba(0,0,0,.6)}
+.ig img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.ig:hover img{transform:scale(1.05)}
+.ig figcaption{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:1px;padding:40px 12px 12px;background:linear-gradient(transparent,rgba(8,20,12,.86));color:#fff}
+.ig figcaption code{align-self:flex-start;font-family:var(--mono);font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:7px;background:rgba(255,255,255,.18);color:#ffe3a1}
+.ig figcaption b{font-size:15px;margin-top:4px}
+.ig figcaption span{font-size:12px;opacity:.85}
+.ig figcaption button{align-self:flex-start;margin-top:8px;min-height:34px;padding:5px 12px;border-radius:10px;border:0;background:var(--gold);color:#1c2f22;font-size:12.5px;font-weight:850;transform:translateY(6px);opacity:.92;transition:transform .2s,opacity .2s}
+.ig:hover figcaption button{transform:none;opacity:1}
+.ig-source{outline:3px solid var(--gold);outline-offset:-3px}
+.ig-source img{object-position:50% 30%}
+.doc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.doc{display:flex;flex-direction:column;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 14px 28px -24px rgba(0,0,0,.5);transition:transform .25s cubic-bezier(.2,.9,.3,1.3)}
+.doc:hover{transform:translateY(-5px) rotate(.4deg)}
+.doc-view{position:relative;height:190px;padding:16px;overflow:hidden;font-size:12px}
+.doc footer{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:12px 14px;border-top:1px solid var(--line)}
+.doc footer code{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--green)}
+.doc footer b{font-size:13.5px}
+.doc footer button{margin-left:auto;min-height:34px;padding:5px 12px;border-radius:10px;border:1px solid #d9cfae;background:#fffaf0;font-size:12.5px;font-weight:850;color:#4a3a12}
+.d-h{display:block;font-size:17px;letter-spacing:-.01em}
+.d-brand .doc-view{background:#f6efe0}
+.d-brand .sw{display:flex;gap:6px;margin-bottom:12px}.d-brand .sw i{flex:1;height:46px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.d-brand .d-h{font-size:26px;color:#1f4d36}.d-brand .d-font{display:block;margin-top:4px;font-family:var(--mono);color:#7a5c18}.d-brand p{margin-top:6px;color:#5a5136}
+.d-menu .doc-view{background:#22302a;color:#f3efe2;font-family:"Chalkboard SE","Comic Sans MS",var(--font)}
+.d-menu .d-h{text-align:center;font-size:20px;color:#f3d892;margin-bottom:8px}
+.d-menu ul{list-style:none;display:grid;gap:7px}.d-menu li{display:flex;align-items:baseline;gap:6px;font-size:14px}.d-menu li i{flex:1;border-bottom:1.5px dotted rgba(243,239,226,.4)}
+.d-sop .doc-view{background:repeating-linear-gradient(#fff 0 27px,#eef2f7 27px 28px)}
+.d-sop ol{list-style:none;margin-top:8px;display:grid;gap:5px;font-size:12.5px}.d-sop li{color:#2c5a3d}.d-sop .warn{color:#b8322a;font-weight:700}
+.d-web .doc-view{padding:0;background:#f1f3f5}
+.d-web .bar{display:flex;align-items:center;gap:5px;height:26px;padding:0 10px;background:#e2e6ea}.d-web .bar i{width:8px;height:8px;border-radius:50%;background:#c8ccd0}.d-web .bar span{margin-left:8px;font-family:var(--mono);font-size:10px;color:#666}
+.d-web .hero{margin:10px;padding:16px;border-radius:12px;background:linear-gradient(135deg,#1f4d36,#2f6b4c);color:#fff}.d-web .hero b{display:block;font-size:16px}.d-web .hero span{font-size:11px;opacity:.8}.d-web .hero em{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:8px;background:#e2c27a;color:#1c2f22;font-style:normal;font-weight:800;font-size:11px}
+.d-web .row{display:flex;gap:8px;margin:0 10px}.d-web .row i{flex:1;height:44px;border-radius:9px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.d-quiz .doc-view{display:grid;place-items:center;background:linear-gradient(135deg,#ffcf3f,#ff8fa3)}
+.d-quiz .phone{display:flex;flex-direction:column;align-items:center;width:128px;padding:12px 10px;border-radius:20px;background:#fff;box-shadow:0 14px 26px -12px rgba(0,0,0,.35);text-align:center}
+.d-quiz .phone small{font-size:9.5px;color:#888}.d-quiz .phone b{font-size:34px;line-height:1.3}.d-quiz .phone strong{font-size:13px}.d-quiz .phone span{font-size:10px;color:#666}.d-quiz .phone em{margin-top:6px;padding:3px 9px;border-radius:999px;background:#111;color:#fff;font-style:normal;font-size:10px}
+.d-meet table{width:100%;margin-top:8px;border-collapse:collapse;font-size:12px}.d-meet th,.d-meet td{padding:5px 6px;border-bottom:1px solid #e6e9e4;text-align:left}.d-meet th{color:#6b776f;font-size:11px}.d-meet .tbd{color:#b8322a;font-weight:700}
+.agx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.agx{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:22px;background:#fff;border:1px solid var(--line);box-shadow:0 14px 28px -24px rgba(0,0,0,.5)}
+.agx header{display:flex;gap:12px;align-items:center}
+.agx header img{width:64px;height:64px;border-radius:20px;object-fit:cover;flex:none;box-shadow:0 0 0 3px #f3ecd9}
+.agx header small{display:block;font-size:11.5px;font-weight:850;color:var(--gold-ink)}
+.agx header b{display:block;font-size:17px}
+.agx header span{display:block;font-size:12.5px;color:var(--muted);line-height:1.5}
+.chat{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:#f3f5ef}
+.chat p{max-width:86%;padding:7px 11px;border-radius:14px;font-size:12.8px;line-height:1.55;animation:bubble .45s cubic-bezier(.2,.9,.3,1.3) backwards;animation-delay:calc(var(--i) * 260ms)}
+.chat .u{align-self:flex-end;background:var(--deep);color:#fff;border-bottom-right-radius:4px;font-family:var(--mono);font-size:12px}
+.chat .b{align-self:flex-start;background:#fff;color:#24372b;border-bottom-left-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+@keyframes bubble{from{transform:translateY(8px) scale(.94)}}
+.agx>button{min-height:42px;border-radius:12px;border:1px solid #d9cfae;background:#fffaf0;font-size:13.5px;font-weight:850;color:#4a3a12}
+.agx>button:hover{background:#f7ecd0}
+.sc-cta{margin-top:18px;padding:14px 18px;border-radius:16px;background:var(--deep);color:#eef3ec;font-size:14.5px;text-align:center}
+.sc-cta b{color:var(--gold)}.sc-cta a{color:#ffe3a1;text-decoration:underline;text-underline-offset:3px;font-weight:800}
+.theater{margin:auto;overflow:auto;overscroll-behavior:contain;width:min(860px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border:0;border-radius:26px;background:#0c1510;color:#eef3ec;box-shadow:0 40px 90px -30px #000}
+.theater::backdrop{background:rgba(5,12,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.th-box{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;padding:20px}
+.theater canvas{display:block;height:min(72vh,620px);width:auto;aspect-ratio:9/16;border-radius:18px;background:#000;box-shadow:0 20px 40px -20px #000}
+.th-side{display:flex;flex-direction:column;gap:10px;padding-top:30px}
+.th-side small{font-size:11px;font-weight:850;letter-spacing:.14em;color:var(--gold)}
+.th-side h3{font-size:26px;line-height:1.3}
+.th-side>p{font-size:13.5px;color:#a9bdb0}
+.th-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.th-actions button[hidden]{display:none}
+.th-actions button,.th-use{min-height:46px;padding:10px 14px;border-radius:13px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:800}
+.th-actions button:disabled{opacity:.6}
+.th-use{background:linear-gradient(180deg,#f2dc9d,#d9b765);border-color:#f2dc9d;color:#1c2f22}
+.th-prompt{margin:4px 0 0;padding:12px 14px;border-radius:14px;background:#06150d;border:1px solid #23412f;font-family:var(--mono);font-size:12px;line-height:1.65;color:#cfe0d4;white-space:pre-wrap;max-height:220px;overflow:auto}
+.th-prompt b{color:#ffe3a1;font-weight:700}
+.th-box{position:relative}
+/* Course trailer player (same styles as /classroom) */
+.trx{position:relative}
+.trx-stage{position:relative;overflow:hidden;border-radius:22px;background:#000;aspect-ratio:16/9;box-shadow:0 30px 70px -40px rgba(10,40,24,.9);isolation:isolate}
+.trx-stage:fullscreen{border-radius:0;aspect-ratio:auto;width:100vw;height:100vh}
+.trx-canvas{display:block;width:100%;height:100%;cursor:pointer}
+.trx-big{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.05),rgba(0,0,0,.45));color:#fff;cursor:pointer;font:inherit}
+.trx-big-ico{display:grid;place-items:center;width:86px;height:86px;border-radius:50%;background:linear-gradient(160deg,#f2dc9d,#d9b765);color:#163321;font-size:30px;padding-left:6px;box-shadow:0 0 0 10px rgba(226,194,122,.22),0 20px 40px -14px #000;animation:trxPulse 2.2s ease-in-out infinite}
+.trx-big-tx{padding:8px 16px;border-radius:999px;background:rgba(6,20,12,.72);border:1px solid rgba(226,194,122,.5);font-size:15px;font-weight:800;letter-spacing:.01em}
+.trx-big:hover .trx-big-ico{transform:scale(1.06)}
+@keyframes trxPulse{0%,100%{box-shadow:0 0 0 8px rgba(226,194,122,.22),0 20px 40px -14px #000}50%{box-shadow:0 0 0 18px rgba(226,194,122,.08),0 20px 40px -14px #000}}
+.trx-bar{position:absolute;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:14px;background:rgba(5,14,9,.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.trx[data-state="paused"] .trx-bar,.trx[data-state="ended"] .trx-bar,.trx-stage:hover .trx-bar,.trx-stage:focus-within .trx-bar{opacity:1;transform:none}
+ .trx-chaps em{display:none}
+.trx[data-state="idle"] .trx-bar{display:none}
+.trx-bar button{display:grid;place-items:center;min-width:38px;height:36px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:15px;cursor:pointer}
+.trx-bar button:hover{background:rgba(255,255,255,.12)}
+.trx-track{position:relative;flex:1;height:22px;cursor:pointer;touch-action:none}
+.trx-track::before{content:"";position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.22)}
+.trx-fill{position:absolute;left:0;right:0;top:9px;height:4px;border-radius:4px;background:linear-gradient(90deg,#9fd3a6,#e2c27a);transform-origin:left;transform:scaleX(0)}
+.trx-chaps b{position:absolute;top:0;width:2px;height:22px;transform:translateX(-1px)}
+.trx-chaps em{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-style:normal;font-size:12px;opacity:.85}
+.trx-time{font:700 12px/1 ui-monospace,Menlo,monospace;min-width:34px;text-align:right;color:#dfe9e2}
+.trx-end{position:absolute;inset:auto 0 0 0;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 16px 64px;background:linear-gradient(transparent,rgba(4,14,8,.86) 40%)}
+.trx-end[hidden]{display:none}
+.trx-end-h{margin:0;color:#fff;font-size:clamp(17px,2.4vw,24px);font-weight:900;text-align:center}
+.trx-end-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.trx-cta{display:inline-flex;align-items:center;min-height:48px;padding:12px 22px;border-radius:14px;background:linear-gradient(180deg,#f2dc9d,#d9b765);color:#163321;font-weight:900;font-size:16px;box-shadow:0 14px 30px -14px #e2c27a}
+.trx-replay{min-height:48px;padding:12px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.trx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.trx-pop{width:min(1120px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;padding:0;border:0;border-radius:26px;background:#05120b;color:#eef3ec;box-shadow:0 40px 100px -30px #000;overflow:hidden}
+.trx-pop[open]{display:flex;flex-direction:column}
+.trx-pop::backdrop{background:rgba(3,10,6,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.trx-pop-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px 12px}
+.trx-pop-head small{display:block;font-size:11px;font-weight:900;letter-spacing:.16em;color:#e2c27a}
+.trx-pop-head h2{margin:2px 0 0;font-size:clamp(18px,2.4vw,24px);line-height:1.35;color:#fff}
+.trx-pop-head p{margin:2px 0 0;font-size:13.5px;color:#b9cbbf}
+.trx-skip{flex:none;min-height:42px;padding:8px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#dfe9e2;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.trx-skip:hover{background:rgba(255,255,255,.08)}
+.trx-pop .trx-host{flex:1;min-height:0;padding:0 14px 14px}
+.trx-pop .trx-stage{border-radius:18px}
+.trx-pop.trx-done .trx-skip{border-color:#e2c27a;color:#e2c27a}
+html.trx-locked{overflow:hidden}
+@media(max-width:700px){
+ .trailer{margin-top:14px}
+ .trx-stage{border-radius:16px}
+ .trx-big-ico{width:64px;height:64px;font-size:24px}.trx-big-tx{font-size:13px}
+ .trx-pop{width:100vw;height:100dvh;max-height:100dvh;max-width:100vw;border-radius:0}
+ .trx-pop-head{padding:12px 14px 8px}.trx-pop-head p{display:none}
+ .trx-pop .trx-host{padding:0 8px 10px;display:flex}
+ .trx-pop .trx{flex:1;display:flex}
+ .trx-pop .trx-stage{flex:1;aspect-ratio:auto;height:100%}
+ .trx-bar{opacity:1;transform:none}
+ .trx-end{padding-bottom:70px}
+}
+@media(prefers-reduced-motion:reduce){.trx-big-ico{animation:none}.trx-bar{transition:none}}
+/* Lesson 5: choose a path, the quality formula, and the course trailer */
+.paths{padding:24px;border-radius:26px;background:radial-gradient(90% 70% at 100% 0,#e3f1e7 0,transparent 60%),#fff;border:1px solid var(--line)}
+.path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.path{position:relative;display:flex;flex-direction:column;gap:4px;min-height:132px;padding:14px 14px 12px;border-radius:18px;border:1.5px solid #e2e8e3;background:#fbfdfb;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),border-color .2s,box-shadow .2s}
+.path:hover{transform:translateY(-3px);border-color:var(--green);box-shadow:0 14px 26px -18px var(--deep)}
+.path>span{font-size:28px;line-height:1.1}
+.path b{font-size:15.5px;line-height:1.35}
+.path small{font-size:12.5px;line-height:1.5;color:var(--muted)}
+.path em{margin-top:auto;font-style:normal;font-size:11.5px;font-weight:850;color:var(--gold-ink)}
+.path[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.path[aria-pressed="true"] small{color:#b9cbbf}.path[aria-pressed="true"] em{color:#ffe3a1}
+.path[data-done="true"]::after{content:"✓ จบแล้ว";position:absolute;top:10px;right:10px;padding:1px 8px;border-radius:999px;background:#e2c27a;color:#1c2f22;font-size:10.5px;font-weight:900}
+.path-now{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:14px;background:#f2f7f3;font-size:14px}
+.path-now[hidden]{display:none}
+.path-now ol{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.path-now li{padding:3px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12.5px}
+.path-now li a{color:var(--green);font-weight:800;text-decoration:none}
+.path-progress{margin-top:10px;font-size:13px;color:var(--muted)}
+.power{margin-top:14px;padding:22px;border-radius:26px;background:radial-gradient(80% 90% at 0 0,#1f5a3a 0,transparent 60%),linear-gradient(160deg,#0f3220,#081a10);color:#e9f1ec}
+.power .sec-k{color:#e2c27a}
+.power h2{color:#fff}
+.power-eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 4px;font-size:clamp(17px,2.6vw,22px);font-weight:900}
+.power-eq span{padding:4px 12px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(226,194,122,.35)}
+.power-eq i{font-style:normal;color:#e2c27a}
+.power-rows{display:grid;gap:10px;margin-top:14px}
+.power-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center}
+.power-row>b{font-size:14px}
+.power-opts{display:flex;flex-wrap:wrap;gap:6px}
+.power-opts button{min-height:38px;padding:6px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#dbe7df;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.power-opts button[aria-pressed="true"]{background:linear-gradient(180deg,#f6dc9a,#d9a648);border-color:transparent;color:#2b1d05}
+.power-out{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;margin-top:16px;padding:14px;border-radius:18px;background:rgba(0,0,0,.25)}
+.power-rank{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#e2c27a;color:#1c2f22;font-size:30px;font-weight:950;transition:transform .3s cubic-bezier(.2,.9,.3,1.5)}
+.power-rank.pop{transform:scale(1.15) rotate(-4deg)}
+.power-bar{height:10px;border-radius:10px;background:rgba(255,255,255,.1);overflow:hidden;margin:6px 0}
+.power-bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#9fd8b4,#e2c27a,#ffb36b);transition:width .45s cubic-bezier(.2,.9,.3,1.1)}
+.power-out p{margin:0;font-size:13.5px;color:#cfe0d4}
+.power-out strong{color:#fff}
+.power-tip{margin-top:10px;font-size:13px;color:#b9cbbf}
+.lesson-trailer{padding:24px;border-radius:26px;background:radial-gradient(80% 60% at 100% 0,#1f5a3a 0,transparent 60%),#0b2619;color:#e9f1ec}
+.lesson-trailer .sec-k{color:#e2c27a}.lesson-trailer h2{color:#fff}.lesson-trailer .sec-lead{color:#b9cbbf}
+.lesson-trailer .trx{margin-top:14px}
+.lesson-trailer .trx-stage{box-shadow:0 26px 60px -30px #000,0 0 0 1px rgba(226,194,122,.28)}
+.tp-box{margin-top:16px;padding:16px;border-radius:18px;background:#06150d;border:1px solid #23412f}
+.tp-box small{font-size:11px;font-weight:850;letter-spacing:.1em;color:#e2c27a}
+.tp-box pre{margin-top:6px;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:#cfe0d4;max-height:210px;overflow:auto}
+.tp-badge{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.tp-badge span{padding:3px 10px;border-radius:999px;background:rgba(226,194,122,.14);border:1px solid rgba(226,194,122,.4);font-size:12.5px;font-weight:800;color:#ffe3a1}
+.tp-warn{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,179,107,.1);border:1px solid rgba(255,179,107,.35);font-size:13px;line-height:1.65;color:#f3dcc4}
+.tp-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tp-row .copy-all{flex:1 1 220px;margin-top:0;background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05}
+.tp-row .ex-go{flex:1 1 200px}
+.paths-again{padding:18px 20px;border-radius:22px;background:#fff;border:1px dashed #c9d6cc}
+.paths-again h3{margin:0 0 6px;font-size:18px}
+.paths-again .chips{display:flex;flex-wrap:wrap;gap:8px}
+.paths-again .chips button{min-height:40px;padding:6px 12px;border-radius:12px;border:1px solid var(--line);background:#f8faf8;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.paths-again .chips button[data-done="true"]{background:#fdf6e3;border-color:#e2c27a}
+@media(max-width:820px){.path-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.power-row{grid-template-columns:1fr;gap:4px}}
+@media(max-width:420px){.paths,.lesson-trailer{padding:18px 14px}.path{min-height:118px;padding:12px}.path b{font-size:14.5px}}
+
+.vo-note{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:16px;border-radius:inherit;background:rgba(3,10,6,.82);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.vo-note[hidden]{display:none}
+.vo-card{max-width:440px;max-height:100%;overflow:auto;padding:20px;border-radius:18px;background:#0d2318;border:1px solid #3c5a46;color:#dbe7df;font-size:14px;line-height:1.7}
+.vo-card small{font-size:11px;font-weight:900;letter-spacing:.14em;color:#e2c27a}
+.vo-card h3{margin:4px 0 8px;font-size:17px;color:#fff}
+.vo-card ol{margin:8px 0;padding-left:20px}
+.vo-card .vo-tip{font-size:13px;color:#b9cbbf}.vo-card a{color:#ffe3a1}
+.vo-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.vo-row button{flex:1 1 140px;min-height:44px;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;border:1px solid #3c5a46;background:transparent;color:#dbe7df}
+.vo-row #reelVoOk{background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05;border:0}
+.th-note{font-size:12px!important;color:#7f978a!important;margin-top:auto}
+.th-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;font-size:22px}
+/* ── Agent builder ─────────────────────── */
+.ag-build{display:grid;gap:12px}
+.ag-step{padding:14px;border-radius:18px;background:#fff;border:1px solid #efe6cc}
+.ag-step>b,.pack-pick-head>b{display:flex;align-items:center;gap:8px;font-size:14px;color:#2b2208;margin-bottom:10px}
+.ag-step b i,.pack-pick-head b i{font-style:normal;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#2b1f08;color:#f3d892;font-size:12px}
+.pack-pick-head>b{margin-bottom:0}
+.ag-personas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ag-persona{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:16px;border:1.5px solid #ece3c8;background:#fffdf7;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),border-color .2s,background .2s}
+.ag-persona img{width:56px;height:56px;border-radius:16px;object-fit:cover}
+.ag-persona b{font-size:12.5px;line-height:1.35;text-align:center}
+.ag-persona small{font-size:10.5px;color:#8a7a4f}
+.ag-persona:hover{transform:translateY(-3px)}
+.ag-persona[aria-pressed="true"]{border-color:#b98f35;background:#fbf1d6;box-shadow:0 10px 20px -14px #8a6a1d}
+#agName{width:100%;min-height:46px;padding:10px 14px;border-radius:13px;border:1.5px solid #e7dcb9;background:#fffdf7;font-size:15px;outline:0}
+#agName:focus{border-color:#b98f35;box-shadow:0 0 0 3px rgba(185,143,53,.18)}
+.ag-tone{margin-top:8px}.ag-tone button{--c:#7a5c18}
+.ag-rules{display:grid;gap:6px}
+.ag-rules label{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border-radius:11px;background:#fbf8ee;font-size:13.5px;cursor:pointer}
+.ag-rules input{margin-top:4px;accent-color:#7a5c18;width:16px;height:16px;flex:none}
+.ag-rules label:has(input:checked){background:#f4ecd2}
+.ag-side{display:flex;flex-direction:column;gap:12px;position:sticky;top:150px;align-self:start}
+.ag-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 16px 16px;border-radius:24px;background:radial-gradient(90% 70% at 50% 0,#3a2a10 0,transparent 70%),linear-gradient(160deg,#1d1708,#2b2210);color:#f6ecd2;text-align:center;box-shadow:0 24px 44px -26px #2b1f08;overflow:hidden}
+.ag-card::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0 40%,rgba(243,216,146,.22) 50%,transparent 60% 100%);animation:spin 7s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(1turn)}}
+.ag-card>*{position:relative}
+.ag-avatar{width:104px;height:104px;border-radius:30px;object-fit:cover;box-shadow:0 0 0 4px #f3d892,0 14px 26px -10px #000}
+.ag-name{margin-top:10px;font-size:22px;color:#fff}
+.ag-role{font-size:12.5px;color:#e8d49c}
+.ag-skills{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px}
+.ag-skills span{padding:3px 8px;border-radius:8px;background:rgba(243,216,146,.14);font-family:var(--mono);font-size:11px;color:#f3d892}
+.ag-skills .none{font-family:var(--font)}
+.ag-card small{margin-top:8px;font-size:11px;color:#b9a77a}
+.ag-level{position:absolute!important;top:12px;right:12px;padding:3px 9px;border-radius:999px;background:#f3d892;color:#2b1f08;font-size:11px;font-weight:900}
+/* ── Taste & remix ───────────────────────── */
+.checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.check{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.check b{display:flex;align-items:center;gap:8px;font-size:15px}
+.check b span{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#eaf3e6;font-size:16px}
+.check p{margin-top:6px;font-size:13.5px;color:#55645a;line-height:1.65}
+.remix{margin-top:16px;padding:18px;border-radius:20px;background:linear-gradient(135deg,#0f2b1d,#163d29);color:#eef3ec}
+.remix h3{font-size:17px}
+.remix p{font-size:13.5px;color:#bfd0c3;margin-top:3px}
+.remix-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.remix-grid button{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:62px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#fff;text-align:left;transition:transform .15s,background .2s}
+.remix-grid button:hover{transform:translateY(-2px);background:rgba(255,255,255,.1)}
+.remix-grid button span{font-size:18px}
+.remix-grid button b{font-size:13px}
+.remix-grid button code{font-family:var(--mono);font-size:11px;color:#e8d49c}
+.remix-grid button[data-done="true"]::after{content:"✓ คัดลอกแล้ว";position:absolute;inset:0;display:grid;place-items:center;border-radius:inherit;background:#2c7a4b;font-size:13px;font-weight:800;animation:pop .25s ease}
+.repair{margin-top:12px;font-size:14px;color:#3f5246}
+
+/* ── Quest, levels, footer ───────────────── */
+.quest{margin-top:30px;padding:22px 24px;border-radius:22px;background:linear-gradient(140deg,#eef6ea,#fffdf5);border:1px solid #c9dcc4;font-size:15px}
+.quest>b{font-size:17px}
+.quest ol{margin:10px 0 0 20px;line-height:1.9}
+.quest .unlock{display:inline-block;margin-top:14px;font-weight:850;font-size:12px;letter-spacing:.12em;background:var(--deep);color:var(--gold);border-radius:999px;padding:7px 16px}
+.quest .qshare{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
+.lvls{display:grid;gap:10px;margin-top:6px}
+.lvl{padding:14px 16px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.lvl small{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--green)}
+.lvl q{display:block;margin:4px 0;font-family:var(--mono);font-size:13px;quotes:none;color:#2c3d32}
+.lvl p{font-size:13.5px;color:#5a685f}
+.lvl.top{border-color:#e3cf95;background:#fffaf0}
+.note{margin-top:12px;padding:14px 18px;border-radius:14px;background:rgba(190,148,66,.1);border:1px solid rgba(190,148,66,.32);font-size:14px}
+.note ul{margin:6px 0 0 18px}
+.main-course-tease{margin-top:4px;padding:20px 22px;border-radius:20px;background:linear-gradient(150deg,#0b2619,#164a2f);color:#fff}
+.main-course-tease small{display:block;font-size:11px;font-weight:850;letter-spacing:.16em;color:var(--gold);margin-bottom:6px}
+.main-course-tease h3{font-size:clamp(19px,3.6vw,24px);line-height:1.35}
+.main-course-tease p{margin-top:6px;color:rgba(255,255,255,.78);font-size:14px}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-weight:800;font-size:14.5px;border-radius:14px;padding:14px;background:var(--green);color:#fff;transition:transform .15s}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:var(--green);border:1px solid rgba(27,106,66,.4)}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120px}
+#toast{position:fixed;left:50%;bottom:max(84px,calc(env(safe-area-inset-bottom) + 76px));transform:translate(-50%,12px);z-index:2147483002;opacity:0;pointer-events:none;background:var(--deep);color:#fff;border:1px solid rgba(217,183,101,.5);border-radius:999px;padding:11px 20px;font-weight:750;font-size:14px;box-shadow:0 18px 40px -18px rgba(10,40,24,.8);transition:opacity .2s,transform .25s cubic-bezier(.2,.9,.3,1.3);max-width:calc(100vw - 32px);text-align:center;line-height:1.5}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.dock{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));z-index:2147482000;display:flex;align-items:center;gap:12px;width:min(520px,calc(100vw - 24px));padding:9px 9px 9px 14px;border-radius:20px;background:#0d2418f2;color:#fff;border:1.5px solid rgba(217,183,101,.4);box-shadow:0 22px 46px -18px rgba(0,0,0,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transform:translate(-50%,150%);opacity:0;transition:transform .4s cubic-bezier(.2,.9,.3,1.2),opacity .25s,background .2s,border-color .2s;pointer-events:none}
+.dock[data-show="true"]{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.deck-dragging .dock{width:min(560px,calc(100vw - 24px));padding-block:18px;border-style:dashed}
+.dock.drop-hot{background:#1d4a31;border-color:var(--gold);transform:translate(-50%,0) scale(1.03)}
+.dock-items{display:flex;gap:4px;font-size:22px}
+.dock-items span{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08)}
+.dock-label{flex:1;font-size:13.5px;font-weight:750}
+.dock button{min-height:42px;padding:8px 14px;border-radius:13px;border:0;background:var(--gold);color:#1c2f22;font-size:13.5px;font-weight:850}
+.deck-dragging .dock-label::before{content:"วางตรงนี้ 🔥 ";color:var(--gold)}
+:focus-visible{outline:3px solid #bb9738;outline-offset:3px}
+@media(max-width:820px){.pack-grid{grid-template-columns:1fr}.ag-side{position:static}.checks{grid-template-columns:1fr}.remix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.reel-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.doc-grid,.ig-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.agx-grid{grid-template-columns:1fr}.th-box{grid-template-columns:1fr;justify-items:center;gap:14px;padding:16px}.th-side{padding-top:0;width:100%}.theater canvas{height:min(56dvh,560px)}.prompt-origin{grid-template-columns:1fr}}
+@media(max-width:640px){
+ html{font-size:16px}
+ .wrap{padding:0 12px}
+ .head{border-radius:20px}.head .lv,.head h1,.head>p,.head .meta{margin-left:18px;margin-right:18px}
+ .deck,.forge,.pack{padding:18px 14px;border-radius:22px}
+ .cats{margin:16px -14px 0;padding:2px 14px 6px}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .dc{padding:12px 11px 10px;border-radius:16px}
+ .dc-icon{width:36px;height:36px;font-size:19px;border-radius:11px}
+ .dc-slash{font-size:11.5px}
+ .dc-name{font-size:14px;margin-top:8px}
+ .dc-desc{font-size:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+ .dc-need{font-size:10.5px}
+ .dc-add{width:34px;height:34px}
+ .dc-hot{position:absolute;top:-7px;right:10px;font-size:8.5px}
+ .opt{grid-template-columns:1fr;gap:5px}.opt-l{padding-top:0}
+ .wi-need{display:none}
+ .ship{grid-template-columns:repeat(3,minmax(0,1fr))}.ship .primary{grid-column:1/-1}
+ .smart{padding:12px}
+ .dock-label{font-size:12.5px}
+ .showcase{padding:18px 14px;border-radius:22px}
+ .sc-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.sc-tabs button{min-height:64px;flex-direction:row;justify-content:center;gap:6px}.sc-tabs button span{font-size:20px}
+ .reel-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .ig-grid,.doc-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ig figcaption{padding:30px 9px 9px}.ig figcaption b{font-size:13px}.ig figcaption span{display:none}
+ .doc-view{height:160px;padding:12px}.doc footer b{display:none}
+ .ag-personas{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .th-side h3{font-size:20px}.th-note{display:none}
+ .theater canvas{height:min(50dvh,500px)}.th-side small{display:none}.th-side>p{display:none}.th-actions{order:3;margin-top:0}.th-actions button{flex:1 1 40%;font-size:12.5px;padding:8px 6px}.th-use{order:4}.th-copy{order:5;margin-top:0}.th-prompt{order:6;max-height:150px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.dc,.wi,.wok.sizzle,.sc-panel,.chat p,.ag-card::before{animation:none}.dc,.dock,.seg button,#toast{transition:none}}
+
+/* Lesson 5 split: welcome hub (show kitchen), part headers, part navigation, agent levels and auto mode */
+.part-head{position:relative;margin-top:18px;padding:26px 24px 22px;border-radius:24px;background:radial-gradient(120% 80% at 100% 100%,#245c3c 0,transparent 55%),linear-gradient(160deg,#0f3220,#0a2417);color:#fff;box-shadow:0 22px 52px -30px rgba(10,40,24,.55)}
+.part-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#ffe3a1;text-decoration:none}
+.part-k{display:block;margin-top:14px;font-size:11.5px;font-weight:850;letter-spacing:.14em;color:#e2c27a}
+.part-head h1{margin:4px 0 6px;font-size:clamp(28px,5vw,40px);line-height:1.25;letter-spacing:-.02em}
+.part-head p{max-width:62ch;color:#cfe0d4;font-size:15px}
+.part-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.part-tabs a{padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:#dbe7df;font-size:13px;font-weight:750;text-decoration:none}
+.part-tabs a[aria-current="page"]{background:linear-gradient(180deg,#f6dc9a,#d9a648);border-color:transparent;color:#2b1d05}
+.part-next{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.part-next a{flex:1 1 220px;display:flex;align-items:center;justify-content:center;min-height:52px;padding:12px 16px;border-radius:14px;background:var(--deep);color:#ffe3a1;font-weight:850;text-decoration:none;text-align:center}
+.part-next a.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.part-done{display:none;margin-top:12px;padding:10px 14px;border-radius:12px;background:#fdf6e3;border:1px solid #e2c27a;font-size:14px;font-weight:700;color:#5c4512}
+.part-done.on{display:block}
+.power-mini{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:#0f3220;color:#dbe7df;font-size:14px}
+.power-mini b{color:#ffe3a1}.power-mini a{color:#ffe3a1}
+/* hub */
+.why{padding:24px;border-radius:26px;background:#fff;border:1px solid var(--line)}
+.why h2{max-width:22ch}
+.why-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.why-grid div{padding:14px;border-radius:16px;background:#f6faf7;border:1px solid #e2ece5}
+.why-grid b{display:block;font-size:15px}.why-grid span{font-size:13.5px;color:var(--muted)}
+.why-show{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+.why-show figure{margin:0;border-radius:14px;overflow:hidden;background:#0b2619}
+.why-show img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+.why-show figcaption{padding:6px 8px;font-size:12px;font-weight:750;color:#e9f1ec}
+.why-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:#fff8e6;border:1px solid #efd9a6;font-size:14px;color:#5c4512}
+.routes{padding:24px;border-radius:26px;background:radial-gradient(90% 70% at 100% 0,#e3f1e7 0,transparent 60%),#fff;border:1px solid var(--line)}
+.route-list{display:grid;gap:10px;margin-top:16px}
+.route{position:relative;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:16px 18px;border-radius:20px;border:1.5px solid #e2e8e3;background:#fbfdfb;color:inherit;text-decoration:none;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),border-color .2s,box-shadow .2s}
+.route:hover{transform:translateY(-2px);border-color:var(--green);box-shadow:0 14px 26px -18px var(--deep)}
+.route-n{font:900 13px/1 var(--mono);padding:6px 8px;border-radius:8px;background:var(--deep);color:#ffe3a1}
+.route-ico{font-size:30px;line-height:1}
+.route-body b{display:block;font-size:17px;line-height:1.35}
+.route-body small{display:block;font-size:13.5px;line-height:1.55;color:var(--muted)}
+.route-body em{display:block;margin-top:4px;font-style:normal;font-size:12.5px;font-weight:800;color:var(--gold-ink)}
+.route-go{white-space:nowrap;padding:9px 14px;border-radius:12px;background:var(--deep);color:#ffe3a1;font-size:13.5px;font-weight:850}
+.route-tag{position:absolute;top:-9px;right:16px;padding:1px 9px;border-radius:999px;background:#e2c27a;color:#1c2f22;font-size:11px;font-weight:900}
+.route-tag.bonus{background:#e9e3ff;color:#4b3aa6}
+.route[data-done="true"] .route-go{background:#e2c27a;color:#1c2f22}
+.route[data-done="true"] .route-go::before{content:"✓ "}
+.routes .rule{margin-top:12px;font-size:13.5px;color:var(--muted)}
+/* The kitchens open in new tabs, so the mission jump buttons between them would only add noise. */
+#seasonRoutes .cl-step-next,#seasonRoutes .cl-mission-tag{display:none!important}
+@media(max-width:640px){.why,.routes{padding:18px 14px}.why-grid{grid-template-columns:1fr}.why-show{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .route{grid-template-columns:auto minmax(0,1fr);gap:10px;padding:16px 14px}.route-ico{display:none}.route-go{grid-column:1/-1;text-align:center}}
+/* agent levels */
+.ag-what{padding:24px;border-radius:26px;background:#fff;border:1px solid var(--line)}
+.ag-vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.ag-vs div{padding:16px;border-radius:18px;border:1px solid #e2ece5;background:#f6faf7}
+.ag-vs div.is-agent{background:#0f3220;border-color:#0f3220;color:#e9f1ec}
+.ag-vs b{display:block;font-size:16px;margin-bottom:6px}
+.ag-vs ol{margin:0;padding-left:20px;font-size:14px;line-height:1.75}
+.ag-ladder{display:grid;gap:8px;margin-top:16px}
+.ag-ladder div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border-radius:14px;border:1px solid #e2ece5;background:#fff}
+.ag-ladder i{font-style:normal;font:900 12.5px/1 var(--mono);padding:6px 0;border-radius:8px;text-align:center;background:#eef3ef;color:#3d5246}
+.ag-ladder .here i{background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05}
+.ag-ladder b{display:block;font-size:15px}.ag-ladder span{font-size:13.5px;color:var(--muted)}
+.auto{padding:24px;border-radius:26px;background:radial-gradient(80% 90% at 0 0,#1f5a3a 0,transparent 60%),linear-gradient(160deg,#0f3220,#081a10);color:#e9f1ec}
+.auto h2{color:#fff}.auto .sec-lead{color:#b9cbbf}
+.auto-step{margin-top:14px}
+.auto-step>b{display:block;font-size:14px;margin-bottom:6px;color:#ffe3a1}
+.auto-opts{display:flex;flex-wrap:wrap;gap:6px}
+.auto-opts button{min-height:40px;padding:7px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#dbe7df;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;text-align:left}
+.auto-opts button[aria-pressed="true"]{background:linear-gradient(180deg,#f6dc9a,#d9a648);border-color:transparent;color:#2b1d05}
+.auto-out{margin-top:16px;padding:16px;border-radius:18px;background:#06150d;border:1px solid #23412f}
+.auto-out pre{margin:6px 0 0;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:#cfe0d4;max-height:240px;overflow:auto}
+.auto-out ol{margin:10px 0 0;padding-left:20px;font-size:14px;line-height:1.8}
+.auto-out small{font-size:11px;font-weight:850;letter-spacing:.1em;color:#e2c27a}
+.auto-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.auto-row button,.auto-row a{flex:1 1 200px;display:flex;align-items:center;justify-content:center;min-height:46px;padding:10px 14px;border-radius:12px;border:0;font:inherit;font-weight:850;font-size:14px;cursor:pointer;text-decoration:none}
+.auto-row button{background:linear-gradient(180deg,#f6dc9a,#d9a648);color:#2b1d05}
+.auto-row a{background:rgba(255,255,255,.08);color:#ffe3a1;border:1px solid rgba(226,194,122,.4)}
+.auto-safe{margin-top:10px;font-size:13px;color:#b9cbbf}
+.fuel{margin-top:16px;padding:18px;border-radius:18px;background:#fff8e6;color:#4a3a12;border:1px solid #efd9a6}
+.fuel h3{margin:0 0 6px;font-size:18px;color:#3d2906}
+.fuel p{font-size:14.5px;line-height:1.75}
+.fuel ul{margin:10px 0 0;padding-left:20px;font-size:14px;line-height:1.8}
+.fuel-gauge{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;font-weight:800}
+.fuel-gauge i{flex:1;height:10px;border-radius:10px;background:linear-gradient(90deg,#5bb98c 0,#f0c24b 55%,#e07a4f 100%)}
+@media(max-width:640px){.ag-what,.auto{padding:18px 14px}.ag-vs{grid-template-columns:1fr}.ag-ladder div{grid-template-columns:60px minmax(0,1fr)}}
+</style>
+<link rel="stylesheet" href="/assets/organization-shelf.css?v=20260914-1">
+<!-- clover-motion -->
+<link rel="stylesheet" href="/assets/motion/clover-motion.css?v=20260927">
+<script src="/assets/motion/clover-motion.js?v=20260927" defer data-profile="immersive"></script>
+<!-- /clover-motion -->
+</head>
+<body>
+<nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
+  <a class="mc-lesson-nav__brand" href="/hall.html#quest" aria-label="myClover"><img src="/icons/icon-192.png" alt="" aria-hidden="true" width="28" height="28"><span>my<em>Clover</em></span></a>
+  <a class="mc-lesson-nav__all" href="/classroom/">ห้องเรียนทั้งหมด →</a>
+</div></nav>
+<div class="wrap">
+
+<header class="part-head">
+  <a class="part-back" href="prompts.html">← บท 5 · ครัวโชว์</a>
+  <span class="part-k">บทที่ 5 · ส่วนที่ 2 / 3</span>
+  <h1>วิดีโอจากโค้ด</h1>
+  <p>วิดีโอที่ไม่มีไฟล์วิดีโอเลย — ภาพวาดด้วยโค้ด เพลงแต่งด้วยโค้ด เสียงพากย์อัดเองจากมือถือ แบบเดียวกับวิดีโอเปิดคอร์ส (ส่วนโบนัส)</p>
+  <nav class="part-tabs" aria-label="ส่วนของบท 5"><a href="season-commands.html">5.1 คำสั่งลัด</a><a href="season-video.html" aria-current="page">5.2 วิดีโอจากโค้ด</a><a href="season-agent.html">5.3 ผู้ช่วย → Agent</a></nav>
+</header>
+
+<section class="sec showcase" id="reels" aria-labelledby="reelsTitle">
+  <span class="sec-k">🎞️ คลิปจากโค้ด 8 สไตล์</span>
+  <h2 id="reelsTitle">แตะดูจอใหญ่ แล้วหยิบสไตล์ไปใช้</h2>
+    <div class="sc-note"><b>🎞️ ทุกคลิปในนี้ไม่มีไฟล์วิดีโอเลย</b> — วาดด้วย JavaScript สด ๆ เพลงแต่งด้วยโค้ด และกดอัดเป็นวิดีโอได้จริง แบบเดียวกับที่คำสั่ง <code>/brushstory</code> สั่งให้ Claude หรือ ChatGPT สร้างให้คุณ แตะการ์ดเพื่อเปิดจอใหญ่พร้อมเพลง 🔊 แล้วลองกดอัดเป็นวิดีโอ</div>
+    <div class="reel-grid" id="reelGrid" aria-label="คลิปตัวอย่าง 8 สไตล์"></div>
+    <div class="prompt-origin">
+      <div><small>PROMPT ต้นฉบับ · ใช้ได้ทั้ง Claude และ ChatGPT</small>
+      <pre>Create JavaScript animation with music (and downloadable to mp4) using <b>Chinese Brush strokes</b> as key main art direction but make elements according to <b>Thai culture</b> plus <b>modern TYPOGRAPHY</b> style to tell the story.
+
+Story will be about, "<b>ใส่เรื่องที่อยากทำตรงนี้</b>"
+
+<i>+ ข้อกำหนดไฟล์ เพลง ปุ่มดาวน์โหลด และกติกาให้ตัวหนังสือไทยอยู่กลางจอ ไม่ตกขอบ (ติดไปให้ตอนกดก๊อป)</i></pre>
+      <button type="button" class="copy-all" data-copy-prompt='{"id":"brushstory","options":{"art":"brush","culture":"thai","type":"modern"}}'>📋 ก๊อป prompt ทั้งหมด</button></div>
+      <a class="ex-go" href="season-commands.html?add=brushstory&amp;art=brush&amp;culture=thai&amp;type=modern#forge">🖌️ โหลดลง 5.1 แล้วเปลี่ยนสไตล์เอง →</a>
+    </div>
+  </section>
+
+<section class="sec lesson-trailer" id="lessonTrailer" aria-labelledby="ltTitle">
+  <span class="sec-k">🎬 วิดีโอเปิดคอร์ส · ทำด้วยโค้ดทั้งหมด</span>
+  <h2 id="ltTitle">อยากได้วิดีโอแบบนี้? เอา prompt ไปเลย</h2>
+  <p class="sec-lead">60 วินาทีนี้ไม่มีไฟล์วิดีโอสักไฟล์ ภาพวาดด้วย Canvas เพลงแต่งด้วยโค้ด เสียงพากย์อัดเองจากมือถือ กดดูซ้ำได้ทุกเมื่อ แล้วเอา prompt ด้านล่างไปทำของคุณ</p>
+  <section id="classroomTrailer" class="trx" aria-label="วิดีโอเปิดคอร์ส 60 วินาที" tabindex="-1" data-end-headline="อยากทำแบบนี้? prompt อยู่ด้านล่าง" data-cta="ก๊อป prompt วิดีโอนี้ ↓" data-cta-href="#trailerPrompt"></section>
+  <div class="tp-box" id="trailerPrompt">
+    <small>PROMPT วิดีโอเปิดตัว · คำสั่ง /trailer</small>
+    <pre>Build a 60-second launch trailer for <b>my course / brand</b> as ONE self-contained HTML file: everything drawn with Canvas 2D + JavaScript, music composed with the Web Audio API…
+
+1. Plan first: storyboard table (time, scene, Thai headline, voice-over line, music cue)
+2. Story arc: hook → title → feature beats → the life it gives → teaser → CTA
+3. Look: cinematic layers, light rays, glow, film grain, both 16:9 and 9:16
+4. Thai text inside a 6% safe area, measured and centred
+5–9. Music on a tempo grid · <b>my own recorded voice</b> with ducking · full player · MP4/WebM download · QA every scene
+
+<i>(ฉบับเต็ม 9 ข้อ ติดไปให้ตอนกดก๊อป)</i></pre>
+    <div class="tp-badge"><span>🫙 ซอสเต็ม</span><span>🧠 Claude Opus 5.5</span><span>⚡ Ultracode</span></div>
+    <p class="tp-warn">⚠️ <b>หมายเหตุ:</b> วิดีโอนี้ทำด้วย <b>Claude Opus 5.5 แบบ Ultracode</b> prompt นี้หนักและใช้เครดิตเยอะ ถ้าใช้รุ่นเล็กหรือ Effort ต่ำ จะได้งานเรียบง่ายลง แนบซอสให้ครบก่อนส่งทุกครั้ง · เสียงพากย์ให้อัดเองจากมือถือ ไฟล์เดียว เว้นจังหวะระหว่างประโยค ไม่แนะนำเสียงสังเคราะห์</p>
+    <div class="tp-row"><button type="button" class="copy-all" data-copy-prompt='{"id":"trailer"}'>📋 ก๊อป prompt ทั้งหมด</button><a class="ex-go" href="season-commands.html?add=trailer#forge">🍳 โหลดลงกระทะใน 5.1 ปรับเอง →</a></div>
+  </div>
+</section>
+
+<dialog class="trx-pop" id="trailerPop" data-cm="off" data-auto="off" aria-labelledby="trxPopTitle">
+  <div class="trx-pop-head"><div><small>วิดีโอเปิดคอร์ส · 60 วินาที</small><h2 id="trxPopTitle">ทำด้วยโค้ดทั้งหมด</h2><p>prompt อยู่ใต้วิดีโอ</p></div><button type="button" class="trx-skip">ปิด ✕</button></div>
+  <div class="trx-host"></div>
+</dialog>
+
+<section class="sec" id="voiceGuide" aria-labelledby="voiceTitle">
+  <span class="sec-k">🎙️ เสียงพากย์</span>
+  <h2 id="voiceTitle">อัดเสียงตัวเอง ดีกว่าเสียง AI ทุกตัว</h2>
+  <p class="sec-lead">วิดีโอเปิดคอร์สใช้เสียงจริงจากมือถือ ไม่ใช้เสียงสังเคราะห์ ทำตาม 4 ขั้นนี้</p>
+  <ol class="voice-steps">
+    <li><b>ขอบทพากย์จาก AI ก่อน</b> พร้อมเวลาของแต่ละประโยค (prompt ด้านบนสั่งไว้ให้แล้ว)</li>
+    <li><b>อัดไฟล์เดียวจบ</b> ในห้องเงียบ ถือมือถือห่างปาก 1 คืบ เว้นจังหวะ 1–2 วินาทีระหว่างประโยค</li>
+    <li><b>ส่งไฟล์เสียงให้ AI</b> ให้ตัดตามช่วงเงียบ วางแต่ละประโยคให้ตรงฉาก</li>
+    <li><b>ให้เพลงเบาลงตอนมีเสียงพูด</b> ประมาณ 6 dB เสียงคุณจะชัดโดยไม่ต้องตะโกน</li>
+  </ol>
+</section>
+<style>.voice-steps{margin:14px 0 0;padding-left:22px;font-size:15px;line-height:1.85}.voice-steps b{color:var(--ink)}</style>
+
+<dialog class="theater" id="reelTheater" aria-labelledby="reelTitle">
+  <div class="th-box">
+    <canvas id="reelBig" width="540" height="960" aria-label="คลิปแอนิเมชันที่สร้างจากโค้ด"></canvas>
+    <div class="th-side">
+      <small>CODE-MADE CLIP · ไม่มีไฟล์วิดีโอ</small>
+      <h3 id="reelTitle">สไตล์</h3>
+      <p id="reelSub"></p>
+      <pre class="th-prompt" id="reelPrompt"></pre>
+      <button type="button" class="copy-all th-copy" id="reelCopy">📋 ก๊อป prompt สไตล์นี้ (ใส่เรื่องของคุณเอง)</button>
+      <div class="th-actions"><button type="button" id="reelToggle">⏸ หยุด</button><button type="button" id="reelSound">🎵 เปิดเพลง</button><button type="button" id="reelVoice" hidden>🗣️ ลองเสียงพากย์ (สังเคราะห์)</button><button type="button" id="reelRecord">⬇ อัดเป็นวิดีโอ</button></div>
+      <button type="button" class="th-use" id="reelUse">🖌️ ใช้สไตล์นี้กับเรื่องของฉัน</button>
+      <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์เป็นเสียงสังเคราะห์จากเครื่องคุณ (ปิดไว้ก่อน) ได้ยินเฉพาะตอนเล่นในหน้านี้ งานจริงแนะนำอัดเสียงตัวเอง · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
+    </div>
+    <button type="button" class="th-close" id="reelClose" aria-label="ปิด">×</button>
+    <div class="vo-note" id="reelVoNote" role="alertdialog" aria-labelledby="reelVoNoteTitle" hidden><div class="vo-card">
+      <small>หมายเหตุก่อนฟัง</small>
+      <h3 id="reelVoNoteTitle">🗣️ เสียงนี้เป็นเสียงสังเคราะห์จากเครื่องคุณ</h3>
+      <p>เปิดไว้ให้เห็นภาพเฉย ๆ ฟังออกว่าปลอม <b>งานจริงไม่แนะนำให้ใช้</b> วิดีโอเปิดคอร์สของเราใช้วิธีนี้แทน:</p>
+      <ol><li>อัดเสียงตัวเองด้วยมือถือ ไฟล์เดียวจบ เว้นจังหวะระหว่างประโยค</li><li>ส่งไฟล์เสียงพร้อมบทให้ AI ตัดเป็นท่อน วางให้ตรงฉาก</li><li>ให้เพลงเบาลงตอนมีเสียงพูด</li></ol>
+      <p class="vo-tip">เสียงจริงของคุณ อบอุ่นกว่าเสียง AI ทุกตัว ดูตัวอย่างได้ที่ <a href="#lessonTrailer">วิดีโอเปิดคอร์ส ↓</a></p>
+      <div class="vo-row"><button type="button" id="reelVoOk">เข้าใจแล้ว ลองฟัง</button><button type="button" id="reelVoNo">ไม่เปิดดีกว่า</button></div>
+    </div></div>
+  </div>
+</dialog>
+
+<p class="part-done" id="partDone" role="status">✓ ส่วนที่ 2 สำเร็จ — เอา prompt ไปทำวิดีโอของคุณ แล้วไปต่อส่วนที่ 3</p>
+<nav class="part-next" aria-label="ไปส่วนถัดไป"><a class="ghost" href="prompts.html">← กลับหน้าบท 5</a><a href="season-agent.html">ต่อ 5.3 ผู้ช่วย → Agent →</a></nav>
+
+<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
+
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" data-self-contained="command-deck.js">
+/* AI ใส่ซอส · บท 5 SEASON — ชั้นคำสั่งลัด (Command Deck)
+   หยิบ ลาก วางคำสั่งสั้น ๆ ลงกระทะ แตะเลือกสไตล์ แล้วได้ Prompt เต็มที่พร้อมส่ง Claude / ChatGPT / Gemini
+   ทุกอย่างทำงานในเบราว์เซอร์ของผู้เรียน ไม่มีข้อมูลถูกส่งออกไปไหน
+   Pure helpers are exposed on window.MC_DECK for tests: buildPrompt, shortCommand, matchCommands, buildPack, queryFromSearch. */
+(function(){
+'use strict';
+const RATIO={k:'ratio',label:'สัดส่วน',choices:[['9x16','9:16 แนวตั้ง','a vertical 9:16 frame'],['4x5','4:5 ฟีด','a 4:5 portrait frame'],['1x1','1:1 จัตุรัส','a square 1:1 frame'],['16x9','16:9 แนวนอน','a horizontal 16:9 frame']]};
+const LENGTH={k:'len',label:'ความยาว',choices:[['15','15 วิ','15'],['30','30 วิ','30'],['60','60 วิ','60'],['90','90 วิ','90']]};
+// Production level for code-made video: the premium tiers spell out what makes motion look expensive.
+const POLISH={k:'polish',label:'ระดับงาน',def:'premium',choices:[
+ ['std','มาตรฐาน','Keep it simple and clean.'],
+ ['premium','พรีเมียม','Make it look premium: a clear arc (hook in the first 2 seconds, build, payoff, ending card); eased motion everywhere (no linear moves, a little overshoot on reveals); 3+ depth layers with parallax; soft light (glow, light rays, vignette, fine film grain); a 5-colour palette used consistently; transitions that land on the music cuts; 60 fps from a time-based timeline (requestAnimationFrame, never frame counting).'],
+ ['cinema','ซีเนมาติก','Make it cinematic, like a premium brand trailer: a 3-act arc (problem, reveal with a logo/title moment, payoff) plus an ending card with a call-to-action; every scene has one signature visual and one idea; eased motion with anticipation and overshoot; 3–5 depth layers with parallax and camera drift; volumetric light rays, bloom-like glow, vignette, film grain and particles; a 5-colour palette pulled from my brand; match-cut transitions locked to the beat; a scrub bar with chapters; 60 fps from one master clock (the audio clock while sound plays) so picture and music never drift.']]};
+// Shared text, story and voice rules for every code-made video prompt.
+const STORY_FROM_SAUCE='If the story/text above is empty or still a placeholder, build it from my Source (.md) if I attached one: who I am, what I do, and one moment worth telling. If both exist, mix them: my words lead, the Source supplies facts and tone.';
+const TEXT_SAFE='Text layout (Thai): every line stays fully inside a safe area (6% margin on each side) and is centred in both 9:16 and 16:9. Measure each line with ctx.measureText, shrink the font (or wrap to 2 lines) until it fits, and centre by drawing left-aligned at x = centre − width / 2. Never set ctx.letterSpacing on Thai text; leave room above and below for Thai vowels and tone marks; draw emoji into a sprite and centre it by its visible pixels. Recompute on resize.';
+const QA_SAFE='Before finishing, check the first and last frame of every scene in both 9:16 and 16:9: no clipped or off-centre text, no console errors, smooth 60 fps.';
+const VOICE_OWN='Voice-over: do not use synthetic text-to-speech. Write a short Thai voice-over script with a time for each line; I will record it myself on my phone as one file with a pause between lines. Add an optional "load my voice file" input: split it on the pauses, place each line on its scene, and duck the music about 6 dB under the voice.';
+const CATS=[
+ {id:'all',icon:'✨',name:'ทั้งหมด'},
+ {id:'image',icon:'📸',name:'ภาพ',color:'#d9733b'},
+ {id:'video',icon:'🎬',name:'วิดีโอ & โมชัน',color:'#7d55c7'},
+ {id:'write',icon:'✍️',name:'โพสต์ & ข้อความ',color:'#2d7fc1'},
+ {id:'sell',icon:'🛍️',name:'ขายของ & แบรนด์',color:'#b8860b'},
+ {id:'work',icon:'🧠',name:'งาน & สรุป',color:'#2c7a4b'},
+ {id:'build',icon:'🌐',name:'เว็บ & แอป',color:'#c2416f'}
+];
+// ⟦…⟧ marks a chosen style and ⟪…⟫ marks the learner's own words, so the preview can highlight what changed.
+const F=(value,fallback)=>value?'⟪'+value+'⟫':fallback;
+const COMMANDS=[
+ {id:'foodangle',cat:'image',icon:'🍜',name:'มุมอาหารน่ากิน',desc:'แนบรูปอาหาร ได้ภาพมุมมือโปร แสงสวย น่ากินขึ้นทันที',need:'photo',keys:'อาหาร กิน เมนู ร้านอาหาร ถ่ายอาหาร ข้าว ก๋วยเตี๋ยว ขนม เครื่องดื่ม กาแฟ น่ากิน food',
+  opts:[{k:'angle',label:'มุมกล้อง',choices:[['hero','45° ฮีโร่','a 45-degree hero angle at table height'],['top','ท็อปวิว','a top-down flat lay shot from directly above'],['macro','ซูมเท็กซ์เจอร์','an extreme close-up that shows texture, steam and gloss'],['side','ระดับสายตา','a straight-on eye-level angle']]},
+   {k:'mood',label:'บรรยากาศ',choices:[['cafe','คาเฟ่สว่าง','bright, airy window light on a light wooden table'],['moody','ดาร์กมู้ดดี้','dark, moody low-key light with one soft highlight'],['night','ตลาดกลางคืน','a lively Thai night-market setting with warm bokeh lights'],['home','ครัวบ้านอบอุ่น','a warm Thai home kitchen with everyday props']]},{...RATIO,def:'4x5'}],
+  field:{label:'ชื่อเมนูหรือร้าน',ph:'เช่น ข้าวมันไก่ต้ม ร้านเจ๊หมวย',ex:['ข้าวมันไก่ต้ม ร้านเจ๊หมวย','ชาไทยเย็น หวานน้อย','ส้มตำปูปลาร้า','ครัวซองต์อัลมอนด์อบใหม่']},
+  build:(o,f)=>`Use the attached photo of ${F(f,'my dish')}. Recreate it as professional food photography: ${o.angle}, ${o.mood}, ${o.ratio}. Keep the real dish exactly the same — same ingredients, portion, plate and colours, no new toppings or fake garnish. Improve only light, angle, styling and sharpness so it looks fresh and appetizing. No text, logo or watermark.`,
+  pack:'Recreate my attached food photo as pro food photography (default: 45° hero angle, bright café light, 4:5). Keep the real dish identical; improve only light, angle, styling. No text.'},
+ {id:'outfit',cat:'image',icon:'👗',name:'ลองชุดใหม่',desc:'แนบรูปตัวเอง เปลี่ยนเฉพาะชุดและฉาก หน้ายังเป็นคุณเหมือนเดิม',need:'photo',keys:'ชุด แต่งตัว เสื้อผ้า แฟชั่น ลองชุด ใส่ชุด ลุค outfit ไปงาน',
+  opts:[{k:'style',label:'สไตล์ชุด',choices:[['thai','ไทยร่วมสมัย','a modern Thai outfit in contemporary silk with a clean cut'],['office','ออฟฟิศสมาร์ต','smart office wear with a tailored blazer'],['street','สตรีท','relaxed streetwear with an oversized jacket and sneakers'],['minimal','มินิมอลญี่ปุ่น','Japanese minimal style in neutral tones and natural fabrics'],['evening','ออกงานกลางคืน','an elegant evening outfit']]},
+   {k:'scene',label:'ฉาก',choices:[['keep','ฉากเดิม','keep the original background'],['studio','สตูดิโอเรียบ','place me in a clean studio backdrop'],['city','ถนนในเมือง','place me on a city street in soft daylight'],['cafe','คาเฟ่','place me in a cozy café']]},{...RATIO,def:'4x5'}],
+  field:{label:'สีหรือรายละเอียดที่อยากได้',ph:'เช่น โทนเขียวเข้ม ใส่แว่นกรอบทอง',ex:['โทนเขียวเข้ม ใส่แว่นกรอบทอง','สีครีมทั้งชุด','มีผ้าพันคอลายไทย']},
+  build:(o,f)=>`Use the attached photo of me. Change only my outfit to ${o.style}${f?', with '+F(f):''}, and ${o.scene}. Keep my face, hairstyle, body shape, skin tone and pose exactly the same — it must still clearly be me. Realistic fabric, natural fit and lighting that matches the scene, ${o.ratio}. No text.`,
+  pack:'Change only the outfit in my attached photo (style = words after the command, default modern Thai). Keep my face, hair, body and pose identical.'},
+ {id:'product',cat:'image',icon:'🧴',name:'ภาพสินค้าขายได้',desc:'รูปสินค้าธรรมดา กลายเป็นภาพโฆษณาพร้อมลงร้านออนไลน์',need:'photo',keys:'สินค้า ขาย ร้านค้า โฆษณา แพ็กเกจ ขวด กล่อง ลงร้าน shopee lazada product',
+  opts:[{k:'bg',label:'พื้นหลัง',choices:[['studio','สตูดิโอขาว','a seamless white studio background'],['life','วางในบ้านจริง','a real lifestyle home setting'],['nature','ธรรมชาติ','natural props such as stone, leaves and soft sunlight'],['luxury','หรูโทนเข้ม','a dark premium backdrop with rim light'],['pastel','พาสเทลป๊อป','a playful pastel colour-block set']]},
+   {k:'angle',label:'มุม',choices:[['three','สามมิติ 3/4','a three-quarter angle'],['front','หน้าตรง','a straight front view'],['flat','วางราบ','a flat lay from above']]},{...RATIO,def:'1x1'}],
+  field:{label:'สินค้าคืออะไร / จุดเด่น',ph:'เช่น สบู่สมุนไพร กลิ่นตะไคร้ ผิวไม่แห้ง',ex:['สบู่สมุนไพร กลิ่นตะไคร้','น้ำพริกเผาสูตรยาย','เทียนหอมกลิ่นมะลิ']},
+  build:(o,f)=>`Use the attached product photo. Create a clean, sell-ready product shot: ${o.angle}, ${o.bg}, ${o.ratio}. Keep the product, its shape, colours, label text and logo exactly as in the photo — do not redesign or misspell the packaging. Soft realistic shadow, crisp edges, true-to-life colour.${f?' Hint at its key benefit visually: '+F(f)+'.':''} Leave clean space for a headline. No added text.`,
+  pack:'Turn my attached product photo into a sell-ready product shot (default: white studio, 3/4 angle, 1:1). Never change the label, logo or packaging.'},
+ {id:'headshot',cat:'image',icon:'🧑‍💼',name:'รูปโปรไฟล์มือโปร',desc:'เซลฟีธรรมดา กลายเป็นรูปโปรไฟล์ที่ใช้สมัครงานหรือขึ้นเว็บได้',need:'photo',keys:'โปรไฟล์ รูปหน้า สมัครงาน linkedin เรซูเม่ resume รูปติดบัตร headshot',
+  opts:[{k:'vibe',label:'ฟีล',choices:[['corp','องค์กรมืออาชีพ','a polished corporate look, soft grey backdrop, business attire'],['creative','สตูดิโอครีเอทีฟ','a creative studio look with a coloured backdrop and confident pose'],['warm','แสงธรรมชาติอบอุ่น','warm natural window light with a softly blurred background'],['bw','ขาวดำเอดิทอเรียล','a black-and-white editorial portrait']]},{...RATIO,def:'1x1'}],
+  field:{label:'จะเอาไปใช้ที่ไหน',ph:'เช่น LinkedIn, หน้าเว็บบริษัท',ex:['LinkedIn','หน้าทีมบนเว็บบริษัท','ปกเรซูเม่']},
+  build:(o,f)=>`Use the attached photo of me to create a professional headshot: ${o.vibe}, head-and-shoulders crop, ${o.ratio}${f?', suitable for '+F(f):''}. Keep my face, features, skin tone and hairstyle exactly the same — retouch only light and clean up small distractions. Natural, not plastic. No text.`,
+  pack:'Turn my attached selfie into a professional headshot (default: corporate, 1:1). Keep my face exactly the same.'},
+ {id:'restyle',cat:'image',icon:'🎨',name:'เปลี่ยนสไตล์ภาพ',desc:'ภาพเดิม องค์ประกอบเดิม แต่เปลี่ยนลายมือศิลปินได้ในแตะเดียว',need:'photo',keys:'สไตล์ วาด การ์ตูน ภาพวาด ศิลปะ สีน้ำ อนิเมะ ฟิล์ม ลายไทย พิกเซล ปั้น restyle',
+  opts:[{k:'style',label:'สไตล์',choices:[['water','สีน้ำ','a loose watercolour painting on textured paper'],['mural','จิตรกรรมฝาผนังไทย','a Thai temple mural painting with gold leaf and flowing kanok lines'],['clay','3D ดินปั้น','a cute 3D claymation scene'],['pixel','พิกเซลอาร์ต','16-bit pixel art'],['anime','อนิเมะวาดมือ','a hand-painted anime film still'],['film','ฟิล์ม 90s','a 1990s 35mm film photo with natural grain'],['comic','การ์ตูนลายเส้น','clean comic line art with flat colours']]},{...RATIO,def:'4x5'}],
+  field:{label:'อยากเน้นอะไรเป็นพิเศษ',ph:'เช่น ให้แมวเด่นที่สุด',ex:['ให้แมวเด่นที่สุด','บรรยากาศยามเย็น','สีโทนอบอุ่น']},
+  build:(o,f)=>`Redraw the attached image as ${o.style}. Keep the composition, the people (still recognisable) and the key objects the same${f?'; emphasise '+F(f):''}. Output as ${o.ratio}. No text or signature.`,
+  pack:'Redraw my attached image in the style I name after the command (default watercolour). Keep composition and people recognisable.'},
+ {id:'roomglow',cat:'image',icon:'🛋️',name:'แต่งห้องใหม่',desc:'ถ่ายห้องจริง ได้ภาพห้องที่แต่งเสร็จ พร้อมลิสต์ของที่ต้องซื้อ',need:'photo',keys:'ห้อง บ้าน แต่งห้อง ตกแต่ง คอนโด ออฟฟิศ ร้าน รีโนเวท interior',
+  opts:[{k:'style',label:'สไตล์ห้อง',choices:[['japandi','Japandi','a calm Japandi interior'],['tropical','ทรอปิคอลไทยโมเดิร์น','a tropical Thai modern interior with rattan, teak and plants'],['white','มินิมอลขาว','a bright minimal white interior'],['cafe','คาเฟ่อบอุ่น','a warm café-style interior'],['budget','งบน้อย','a low-budget refresh using only paint, textiles, plants and lamps']]}],
+  field:{label:'ห้องนี้ใช้ทำอะไร / งบประมาณ',ph:'เช่น ห้องนอน งบ 5,000 บาท',ex:['ห้องนอน งบ 5,000 บาท','มุมทำงานในคอนโด','หน้าร้านกาแฟ 3x4 เมตร']},
+  build:(o,f)=>`Use the attached photo of my room${f?' ('+F(f)+')':''}. Redesign it as ${o.style}. Keep the walls, windows, doors and room size exactly as they are — change only furniture, colours, decor and lighting, and keep it realistic and buildable. Then list in Thai the 5 key items to buy or change.`,
+  pack:'Redesign my attached room photo (style after the command, default Japandi). Keep walls, windows and size; then list 5 items to buy in Thai.'},
+ {id:'poster',cat:'image',icon:'🪧',name:'โปสเตอร์จากเรื่องของคุณ',desc:'พิมพ์งานหรือโปรโมชัน 1 บรรทัด ได้โปสเตอร์พร้อมโพสต์',need:'text',keys:'โปสเตอร์ ป้าย ประกาศ อีเวนต์ งาน กิจกรรม ใบปลิว poster banner',
+  opts:[{k:'style',label:'สไตล์',choices:[['swiss','Swiss มินิมอล','clean Swiss-style typography with a strict grid'],['retro','หนังไทยย้อนยุค','a hand-painted retro Thai movie poster'],['neon','นีออน','bold neon on a dark background'],['editorial','นิตยสาร','an elegant magazine-cover layout'],['cute','น่ารักพาสเทล','a cute pastel illustration style']]},{...RATIO,def:'4x5'}],
+  field:{label:'งานหรือโปรโมชันคืออะไร',ph:'เช่น ตลาดนัดต้นไม้ 25 ต.ค. ที่สวนหลังบ้าน',ex:['ตลาดนัดต้นไม้ 25 ต.ค. ที่สวนหลังบ้าน','เปิดคลาสสอนปั้นดิน ทุกวันเสาร์','ลด 20% ทุกเมนูกาแฟ สัปดาห์นี้']},
+  build:(o,f)=>`Design a poster for: "${F(f,'[งานหรือโปรโมชันของฉัน]')}". Style: ${o.style}, ${o.ratio}. One strong headline, one clear date/place line, lots of breathing room. Use Thai for all text, keep each line short and spell it exactly as I wrote it. If Thai lettering would come out wrong, leave clean blank space for the text instead.`,
+  pack:'Design a poster for the event I describe after the command (default: Swiss minimal, 4:5). Thai text short and spelled exactly; leave space if Thai lettering fails.'},
+ {id:'brushstory',cat:'video',icon:'🖌️',name:'แอนิเมชันเล่าเรื่อง + เพลง',desc:'ได้ไฟล์แอนิเมชันพร้อมเพลงประกอบ กดดาวน์โหลดเป็นวิดีโอได้',need:'text',tools:'Claude · ChatGPT',hot:true,keys:'วิดีโอ คลิป แอนิเมชัน เล่าเรื่อง เพลง ดนตรี พู่กัน ลายไทย ตัวหนังสือ mp4 animation story',
+  opts:[{k:'art',label:'Art direction',choices:[['brush','พู่กันจีน','Chinese brush strokes (sumi ink, dry-brush texture, rice-paper grain)'],['mural','จิตรกรรมไทย','Thai temple mural painting (gold leaf, red ochre, deep green, flowing kanok lines)'],['ukiyo','ภาพพิมพ์ญี่ปุ่น','Japanese ukiyo-e woodblock prints (bold outlines, flat colour, wave patterns)'],['paper','กระดาษตัดซ้อนชั้น','layered paper cut-out with soft drop shadows'],['neon','นีออนซินธ์เวฟ','neon synthwave (glowing lines, grid horizon, magenta and cyan)'],['water','สีน้ำ','loose watercolour washes bleeding on textured paper'],['pixel','พิกเซลอาร์ต','retro 16-bit pixel art (chunky pixels, limited palette, game-style text boxes)']]},
+   {k:'culture',label:'องค์ประกอบ',choices:[['thai','วัฒนธรรมไทย','Thai culture (temples, lotus, longtail boats, street food, elephants, Thai patterns)'],['japan','ญี่ปุ่น','Japanese culture (torii gates, sakura, lanterns, waves)'],['china','จีน','Chinese culture (lanterns, mountains, dragons, tea)'],['korea','เกาหลี','Korean culture (hanok roofs, hanbok, palace gardens)'],['global','สากลร่วมสมัย','a contemporary global city']]},
+   {k:'type',label:'ตัวอักษร',choices:[['modern','Modern Bold','modern bold sans-serif kinetic TYPOGRAPHY'],['serif','Elegant Serif','elegant high-contrast serif TYPOGRAPHY'],['hand','ลายมือ','hand-lettered brush TYPOGRAPHY'],['brutal','Brutalist','raw brutalist TYPOGRAPHY with huge letters']]},
+   {...LENGTH,def:'30'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'เรื่องที่อยากเล่า (เว้นว่างได้ ใช้เรื่องจากซอส)',ph:'ใส่เรื่องของคุณ หรือเว้นว่างให้ AI หยิบจากซอส',multi:true,ex:['วันแรกที่ร้านกาแฟเล็ก ๆ ของฉันเปิดร้าน','การเดินทางของใบชาจากดอยถึงแก้วของคุณ','ตำนานแม่โพสพกับข้าวหอมมะลิ','เด็กหญิงริมโขงที่อยากเป็นนักบินอวกาศ']},
+  build:(o,f)=>`Create JavaScript animation with music (and downloadable to mp4) using ${o.art} as key main art direction but make elements according to ${o.culture} plus ${o.type} style to tell the story.
+
+Story will be about, "${F(f,'ใส่เรื่องของคุณตรงนี้ — หรือเว้นว่างให้ใช้เรื่องจากซอส')}"
+${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
+
+Requirements:
+- One self-contained HTML file (Canvas + JavaScript), about ${o.len} seconds, ${o.ratio}.
+- Split the story into 4–6 scenes with smooth transitions; each scene has one short Thai line that animates in with the typography style.
+- Music: compose an original soundtrack with the Web Audio API that fits the mood (no external audio files): a tempo grid, cues locked to the scene cuts, a master compressor, peaks below −1 dBFS, and a fade at the end.
+- ${VOICE_OWN}
+- Controls: Play / Replay, plus a "Download video" button that records the canvas and audio with MediaRecorder (MP4 when the browser supports it, otherwise WebM) and saves the file.
+- Fonts only from Google Fonts; no other external assets.
+- ${TEXT_SAFE}
+- ${QA_SAFE}`,
+  pack:'Create a self-contained HTML/JS animation with Web Audio music and a MediaRecorder "Download video" button (MP4 if supported, else WebM) telling the story after the command (default: Chinese brush strokes + Thai culture elements + modern typography, 30s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
+ {id:'trailer',cat:'video',icon:'🎞️',name:'วิดีโอเปิดตัวแบบคอร์สนี้',desc:'ตัวอย่างหนังของแบรนด์หรือคอร์สคุณ 60 วิ ทำด้วยโค้ดทั้งไฟล์ แบบเดียวกับวิดีโอเปิดคอร์ส AI ใส่ซอส',need:'sauce',tools:'Claude Opus 5.5 · Ultracode',hot:true,keys:'วิดีโอเปิดตัว ตัวอย่าง trailer teaser promo แนะนำคอร์ส แนะนำร้าน แบรนด์ เปิดตัวสินค้า วิดีโอโปรโมท',
+  opts:[{k:'what',label:'เปิดตัวอะไร',choices:[['course','คอร์ส / คลาส','my course or class'],['brand','แบรนด์ / ร้าน','my brand or shop'],['product','สินค้าใหม่','a new product'],['me','ตัวฉัน / พอร์ต','me and my portfolio']]},
+   {k:'mood',label:'อารมณ์',choices:[['warm','อบอุ่น สนุก','warm, playful and hopeful'],['epic','ยิ่งใหญ่ เกม','epic, like a game trailer with quests and loot'],['lux','หรู มินิมอล','luxury minimal, slow and confident']]},
+   {...LENGTH,def:'60'}],
+  field:{label:'อยากให้คนดูรู้สึกหรือทำอะไรตอนจบ (เว้นว่างได้)',ph:'เช่น อยากให้กดเริ่มบทเรียนแรก · แวะมาที่ร้าน',ex:['อยากให้กดเริ่มบทเรียนแรก','อยากให้ทักมาสั่งของ','อยากให้จำชื่อร้านได้']},
+  build:(o,f)=>`Build a ${o.len}-second launch trailer for ${o.what} as ONE self-contained HTML file: everything drawn with Canvas 2D + JavaScript, music composed with the Web Audio API, no video, image or audio files. Mood: ${o.mood}. Use my attached Source as the only truth for names, promises, numbers and tone.
+Ending goal: ${F(f,'pick the single most useful action from my Source')}
+
+1. Plan first: write a storyboard table (time, scene, the one visual idea, Thai on-screen headline + sub line, Thai voice-over line, music cue), then build it.
+2. Story arc: hook on a real pain in the first 3 seconds → reveal the title/logo with a hit on the beat → one beat (about 4 s) per key feature, each with a signature visual and an icon/"loot" → the life it gives (time back, doing what you love, people seeing your work) → a teaser of what is hidden → warm ending card with one call-to-action button.
+3. Look: cinematic and premium — 3–5 depth layers with parallax and slow camera drift, volumetric light rays, glow, vignette, fine film grain, particles; a 5-colour palette from my brand; eased motion with anticipation and overshoot; transitions locked to the beat. Each scene works in BOTH 16:9 and 9:16 with its own layout (compute everything from the frame size).
+4. ${TEXT_SAFE}
+5. Music: an original score on a tempo grid (about 100 BPM) with cues placed on the scene cuts, a key change at the payoff, reverb send and a master compressor, peaks below −1 dBFS.
+6. ${VOICE_OWN}
+7. Player: poster frame, big play button, pause, seek bar with chapter marks, mute, fullscreen (on iPhone open a full-screen dialog instead, since it has no element fullscreen), replay, an end card with the CTA; one master clock (the audio clock while sound plays) so picture, music and voice never drift; honour prefers-reduced-motion.
+8. Export: a "Download video" button that records 1080p at 60 fps with MediaRecorder (MP4 when supported, otherwise WebM), music and voice included.
+9. ${QA_SAFE} Also check the frame at every scene change, fix anything off, and only then hand over the file.`,
+  pack:'Build a 60s code-only launch trailer (Canvas + Web Audio, one HTML file) for the brand in my Source: storyboard first, hook → title → feature beats → payoff → CTA, cinematic layers/light, both 16:9 and 9:16, Thai text inside a 6% safe area, my own recorded voice (no TTS) with music ducking, full player and MP4/WebM download.'},
+ {id:'kinetic',cat:'video',icon:'🔠',name:'คลิปตัวหนังสือเด้ง',desc:'ข้อความเดียว กลายเป็นคลิป Kinetic Typography ตามจังหวะเพลง',need:'text',tools:'Claude · ChatGPT',keys:'คลิป ตัวหนังสือ คำคม ข้อความ typography คลิปข้อความ เพลง จังหวะ quote',
+  opts:[{k:'look',label:'ลุค',choices:[['pop','ป๊อปสีสด','bold pop colours with bouncy motion'],['mono','มินิมอลขาวดำ','minimal black and white with precise motion'],['hand','ลายมือ','hand-written strokes that draw themselves'],['retro','เรโทร 80s','retro 80s chrome and grid']]},{...LENGTH,def:'15'},{...RATIO,def:'9x16'},POLISH],
+  field:{label:'ข้อความที่อยากให้เด้ง (เว้นว่างได้ ใช้ประโยคจากซอส)',ph:'ใส่ข้อความของคุณ หรือเว้นว่างให้ AI เลือกจากซอส',multi:true,ex:['ใครเจอเรา คนนั้นโชคดี','เริ่มจากสิ่งที่มี แล้วทำให้ดีขึ้นทุกวัน','ร้านเปิดแล้ว! แวะมาชิมกันนะ']},
+  build:(o,f)=>`Create a kinetic typography video as one self-contained HTML file (Canvas + JavaScript): ${o.look}, about ${o.len} seconds, ${o.ratio}. Text (Thai, keep my exact words and line breaks): "${F(f,'[ข้อความของฉัน — หรือเว้นว่างให้เลือกจากซอส]')}". ${STORY_FROM_SAUCE}
+
+Quality: ${o.polish}
+
+Animate word by word in sync with an original beat made with the Web Audio API (tempo grid, accents on key words, master compressor, peaks below −1 dBFS). Add Play / Replay and a "Download video" button using MediaRecorder (MP4 if supported, otherwise WebM). Fonts only from Google Fonts with Thai support.
+${TEXT_SAFE}
+${QA_SAFE}`,
+  pack:'Make a kinetic-typography HTML/JS clip of the Thai text after the command, synced to a Web Audio beat, with a MediaRecorder download button (default pop, 15s, 9:16). Keep all text inside a 6% safe area and centred (measure, shrink to fit, no letterSpacing on Thai).'},
+ {id:'reel',cat:'video',icon:'📱',name:'สคริปต์ Reels / TikTok',desc:'ได้ฮุค 3 วิ ช็อตลิสต์ แคปชันบนจอ และเสียงพากย์ พร้อมถ่ายหรือทำด้วย AI',need:'text',keys:'คลิป วิดีโอ reels tiktok คลิปสั้น สคริปต์ ถ่ายคลิป ช็อต วิดีโอสั้น shorts',
+  opts:[{k:'tone',label:'โทน',choices:[['fun','สนุกเป็นกันเอง','fun and friendly'],['teach','สอนเข้าใจง่าย','clear and educational'],['story','เล่าเรื่องซึ้ง','heartfelt storytelling'],['sell','ขายตรงประเด็น','direct and persuasive']]},{...LENGTH,def:'30'}],
+  field:{label:'คลิปนี้เกี่ยวกับอะไร',ph:'เช่น 3 เมนูใหม่ของร้านเดือนนี้',ex:['3 เมนูใหม่ของร้านเดือนนี้','เบื้องหลังการทำเทียนหอม 1 ชิ้น','ทริคใช้ AI ทำงานเร็วขึ้น 2 เท่า']},
+  build:(o,f)=>`Plan a ${o.len}-second vertical (9:16) short video about "${F(f,'[หัวข้อของฉัน]')}". Tone: ${o.tone}. Give me: 3 options for a 2-second hook; a scene-by-scene table (time, what we see, Thai on-screen text, Thai voice-over I will record myself); a closing call-to-action; 5 hashtags. Base names, facts and tone on my Source (.md) if I attached one. Keep it shootable with a phone or makeable with AI images. Write everything for the viewer in Thai.`,
+  pack:'Plan a 9:16 short video about the topic after the command: 3 hooks, scene table (time, visual, Thai text, Thai VO), CTA, 5 hashtags (default 30s, fun tone).'},
+ {id:'img2vid',cat:'video',icon:'🎞️',name:'ทำภาพให้ขยับ',desc:'แนบภาพนิ่ง ได้ Prompt สั่งภาพขยับสำหรับ Veo, Kling, Sora หรือ Higgsfield',need:'photo',keys:'ภาพขยับ ภาพเคลื่อนไหว image to video veo kling sora higgsfield กล้อง เคลื่อนกล้อง',
+  opts:[{k:'cam',label:'กล้อง',choices:[['push','ซูมเข้าช้า ๆ','a slow push-in'],['orbit','หมุนรอบ','a gentle orbit around the subject'],['hand','ถือกล้องด้วยมือ','subtle handheld movement'],['drone','โดรนถอยออก','a drone pull-back that reveals the scene'],['parallax','พารัลแลกซ์','a soft parallax slide']]},
+   {k:'mood',label:'อารมณ์',choices:[['calm','สงบ','calm'],['epic','ยิ่งใหญ่','epic'],['dreamy','ฝัน ๆ','dreamy'],['energy','คึกคัก','energetic']]},{k:'len',label:'ความยาว',choices:[['5','5 วิ','5'],['10','10 วิ','10']],def:'5'}],
+  field:{label:'อยากให้อะไรขยับ',ph:'เช่น ไอน้ำลอยขึ้นจากแก้วกาแฟ',ex:['ไอน้ำลอยขึ้นจากแก้วกาแฟ','ผมปลิวเบา ๆ ตามลม','ใบไม้ร่วงช้า ๆ']},
+  build:(o,f)=>`Look at the attached image and write one ready-to-paste image-to-video prompt (English, under 70 words) for tools like Veo, Kling, Sora or Higgsfield: ${o.cam}, ${o.mood} mood, ${o.len} seconds${f?', where '+F(f):''}, natural physics, keep the subject and faces unchanged, no morphing, no text. Then give 2 alternatives with a different camera move, and explain each in one Thai sentence.`,
+  pack:'From my attached image, write an image-to-video prompt (under 70 words, English) + 2 alternatives with different camera moves; keep faces unchanged.'},
+ {id:'storyboard',cat:'video',icon:'🎬',name:'สตอรีบอร์ด 6 ช็อต',desc:'ไอเดียเดียว แตกเป็น 6 เฟรม พร้อม Prompt สร้างภาพแต่ละช็อต',need:'text',keys:'สตอรีบอร์ด storyboard ช็อต ฉาก หนังสั้น โฆษณา เล่าเรื่อง การ์ตูน',
+  opts:[{k:'style',label:'สไตล์ภาพ',choices:[['cine','ภาพยนตร์สมจริง','cinematic photorealism'],['anime','อนิเมะวาดมือ','hand-painted anime'],['clay','3D ดินปั้น','3D claymation'],['comic','การ์ตูนลายเส้น','comic line art']]}],
+  field:{label:'ไอเดียหรือเรื่องย่อ',ph:'เช่น แมวส้มที่อยากเป็นบาริสต้า',multi:true,ex:['แมวส้มที่อยากเป็นบาริสต้า','วันแรกของพนักงานใหม่ที่ทำทุกอย่างพัง แต่จบดี','โฆษณาน้ำพริกสูตรยาย 30 วิ']},
+  build:(o,f)=>`Turn this idea into a 6-panel storyboard: "${F(f,'[ไอเดียของฉัน]')}". For each panel give: shot type, what happens, a Thai caption (max 12 words) and a short English image prompt in ${o.style} style so I can generate each frame. Keep the main character's design identical in every panel.`,
+  pack:'Turn the idea after the command into a 6-panel storyboard: shot type, action, Thai caption, English image prompt per panel; consistent character.'},
+ {id:'caption',cat:'write',icon:'✍️',name:'แคปชันพร้อมโพสต์',desc:'แนบรูปหรือเล่า 1 บรรทัด ได้แคปชัน 3 แบบ เลือกโพสต์ได้ทันที',need:'either',keys:'แคปชัน caption โพสต์ เฟซบุ๊ก ไอจี instagram facebook ข้อความโพสต์ เขียนโพสต์',
+  opts:[{k:'platform',label:'ลงที่ไหน',choices:[['fb','Facebook','Facebook'],['ig','Instagram','Instagram'],['tt','TikTok','TikTok'],['line','LINE OA','a LINE Official Account broadcast']]},
+   {k:'tone',label:'น้ำเสียง',choices:[['friendly','เป็นกันเอง','friendly and casual'],['pro','มืออาชีพ','professional'],['funny','ขำ ๆ','playful and funny'],['warm','อบอุ่น','warm and sincere']]}],
+  field:{label:'เล่าสั้น ๆ ว่าโพสต์อะไร',ph:'เช่น เปิดเมนูใหม่ ชาไทยปั่นนมสด',ex:['เปิดเมนูใหม่ ชาไทยปั่นนมสด','ขอบคุณลูกค้าที่มาครบ 1 ปี','รับสมัครพนักงาน Part-time']},
+  build:(o,f)=>`Write 3 caption options in Thai for ${o.platform} from the attached photo${f?' and this note: "'+F(f)+'"':''}. Tone: ${o.tone}. Each option: a scroll-stopping first line, 2–4 short lines, a soft call-to-action and up to 5 relevant hashtags. Do not invent prices, dates or claims that are not in my photo, note or Source.`,
+  pack:'Write 3 Thai caption options (hook line, 2–4 lines, CTA, ≤5 hashtags) for my attached photo or the note after the command. Never invent prices or claims.'},
+ {id:'reply',cat:'write',icon:'💬',name:'ตอบลูกค้า 3 โทน',desc:'วางข้อความลูกค้า ได้คำตอบ 3 แบบ ไม่รับปากเกินข้อมูลจริง',need:'text',keys:'ตอบลูกค้า ตอบแชต ลูกค้าถาม ข้อความ แชต inbox ตอบกลับ คอมเมนต์ reply',
+  opts:[{k:'len',label:'ความยาว',choices:[['short','สั้นกระชับ','under 3 lines'],['mid','พอดี','under 5 lines'],['full','ละเอียด','under 8 lines with clear next steps']]}],
+  field:{label:'ข้อความลูกค้า + ข้อมูลจริงที่มี',ph:'เช่น ลูกค้าถาม “ของถึงพรุ่งนี้ไหม?” ร้านส่งได้เร็วสุดวันศุกร์ ยังไม่รู้วันรับ',multi:true,ex:['ลูกค้าถาม “ของถึงพรุ่งนี้ไหม?” ร้านส่งได้เร็วสุดวันศุกร์ แต่ยังไม่ทราบวันรับ','ลูกค้าขอส่วนลดเพราะซื้อ 3 ชิ้น ร้านให้ได้แค่ส่งฟรี','ลูกค้าบ่นว่าสีสินค้าไม่ตรงรูป']},
+  build:(o,f)=>`Draft 3 replies in Thai — warm, professional and short — to this customer situation: "${F(f,'[ข้อความลูกค้า + ข้อมูลจริง]')}". Each reply ${o.len}. Only promise what the facts support; if something is unknown (for example the delivery date), say so honestly and offer the next step.`,
+  pack:'Draft 3 Thai replies (warm / professional / short) to the customer situation after the command. Promise only what the facts support.'},
+ {id:'hook',cat:'write',icon:'🪝',name:'10 ประโยคเปิดหยุดนิ้ว',desc:'ได้ฮุคเปิดโพสต์หรือคลิป 10 แบบ จัดกลุ่มตามอารมณ์',need:'text',keys:'ฮุค hook ประโยคเปิด หัวข้อ พาดหัว ดึงดูด คนหยุดดู headline',
+  opts:[{k:'fmt',label:'ใช้กับ',choices:[['clip','คลิปสั้น','a short video (spoken in the first 2 seconds)'],['post','โพสต์','a social post (first line)'],['ad','โฆษณา','an ad headline']]}],
+  field:{label:'หัวข้อ',ph:'เช่น ประหยัดเวลาทำบัญชีร้านด้วย AI',ex:['ประหยัดเวลาทำบัญชีร้านด้วย AI','ทำไมกาแฟร้านเราขมน้อยกว่า','3 ที่เที่ยวเชียงใหม่ที่คนยังไม่รู้']},
+  build:(o,f)=>`Write 10 Thai hooks for ${o.fmt} about "${F(f,'[หัวข้อของฉัน]')}". Group them: curiosity, pain point, surprising fact, story, bold claim (only claims I can actually back up). Max 14 words each. Star your top 2 and say why in one Thai line.`,
+  pack:'Write 10 Thai hooks (≤14 words) about the topic after the command, grouped by curiosity / pain / fact / story / bold claim; star the best 2.'},
+ {id:'thaify',cat:'write',icon:'🇹🇭',name:'ภาษาไทยให้เป็นธรรมชาติ',desc:'แปลหรือเกลาให้ไทยลื่น เหมือนคนไทยเขียนเอง ไม่ใช่ภาษาแปล',need:'text',keys:'แปล ภาษาไทย เกลา ขัดเกลา แก้คำ ทางการ ไม่ทางการ translate',
+  opts:[{k:'mode',label:'ทำอะไร',choices:[['tr','แปลอังกฤษ→ไทย','Translate this English into natural Thai'],['polish','เกลาไทยเดิม','Polish this Thai so it reads naturally'],['formal','ให้ทางการขึ้น','Rewrite this Thai to be more formal and polite'],['casual','ให้เป็นกันเอง','Rewrite this Thai to be casual and friendly']]}],
+  field:{label:'ข้อความ',ph:'วางข้อความที่นี่',multi:true,ex:['We are excited to announce our new collection.','ทางเราขอแจ้งให้ทราบว่าสินค้าจะทำการจัดส่งภายในระยะเวลา 3 วันทำการค่ะ']},
+  build:(o,f)=>`${o.mode}: "${F(f,'[ข้อความ]')}". Keep the meaning, names and numbers exactly; remove translated-sounding phrases; keep it about the same length. Give the result first, then up to 3 notes on what you changed.`,
+  pack:'Translate or polish the text after the command into natural Thai (keep names and numbers); result first, then ≤3 notes.'},
+ {id:'promo',cat:'sell',icon:'🏷️',name:'โปรโมชันที่คนอยากกด',desc:'ได้ไอเดียโปร 3 แบบ พร้อมข้อความโพสต์และพาดหัวป้าย',need:'text',keys:'โปรโมชัน โปร ลดราคา แคมเปญ ขายดี ส่วนลด ของแถม promotion sale',
+  opts:[{k:'type',label:'แบบโปร',choices:[['launch','เปิดตัวสินค้าใหม่','a new product launch'],['flash','ลดเวลาจำกัด','a limited-time flash sale'],['bundle','จับคู่ขายคู่','a bundle deal'],['loyal','ลูกค้าประจำ','a loyalty reward for regulars']]}],
+  field:{label:'สินค้า / ข้อจำกัด (งบ, ส่วนลดสูงสุด)',ph:'เช่น เค้กมะพร้าว ลดได้ไม่เกิน 15%',ex:['เค้กมะพร้าว ลดได้ไม่เกิน 15%','คอร์สโยคะ 8 ครั้ง ช่วงปิดเทอม','เสื้อยืดลายไทย เหลือสต็อก 40 ตัว']},
+  build:(o,f)=>`Plan ${o.type} for: "${F(f,'[สินค้าและข้อจำกัด]')}". Give 3 promotion ideas that stay within my limits, and for the best one: a Thai post (under 6 lines), a 5-word Thai poster headline and the exact terms (dates, conditions). Do not exceed the discount or budget I gave.`,
+  pack:'Plan 3 promotions within the limits after the command; for the best: Thai post, 5-word headline, exact terms. Never exceed my discount or budget.'},
+ {id:'review',cat:'sell',icon:'⭐',name:'ตอบรีวิวให้ปัง',desc:'วางรีวิวลูกค้า ได้คำตอบที่สุภาพ จริงใจ และกู้ใจลูกค้าได้',need:'text',keys:'รีวิว คอมเมนต์ ติชม ลูกค้าบ่น ดาว google review ตอบรีวิว',
+  opts:[{k:'kind',label:'รีวิวแบบไหน',choices:[['good','ชม','a positive review'],['bad','ติ / บ่น','a negative review'],['mixed','ทั้งชมทั้งติ','a mixed review']]}],
+  field:{label:'วางรีวิว',ph:'วางรีวิวลูกค้าที่นี่',multi:true,ex:['อาหารอร่อย แต่รอนานไป 40 นาที','บริการดีมาก น้องพนักงานยิ้มแย้ม จะกลับมาอีก']},
+  build:(o,f)=>`Write 2 Thai replies to ${o.kind}: "${F(f,'[รีวิว]')}". Sound like a real owner: thank them, address the specific point, no excuses, and offer one concrete next step if something went wrong. Under 5 lines each.`,
+  pack:'Write 2 Thai owner replies to the review after the command: thank, address the specific point, one concrete next step; ≤5 lines.'},
+ {id:'brandkit',cat:'sell',icon:'🎨',name:'แบรนด์คิตจากซอส',desc:'ได้สี ฟอนต์ น้ำเสียง และกติกาแบรนด์ ที่ใช้คุมงานทุกชิ้น',need:'sauce',keys:'แบรนด์ โลโก้ สี ฟอนต์ ซีไอ ci brand ตัวตน น้ำเสียงแบรนด์',
+  opts:[{k:'vibe',label:'ฟีล',choices:[['modern','โมเดิร์น','modern and clean'],['heritage','มรดกไทย','heritage Thai craft'],['playful','สนุกสดใส','playful and colourful'],['premium','พรีเมียม','quiet premium luxury']]}],
+  field:{label:'แบรนด์หรือธุรกิจ (ถ้าไม่แนบซอส)',ph:'เช่น ร้านขนมไทยของยาย เปิดมา 30 ปี',ex:['ร้านขนมไทยของยาย เปิดมา 30 ปี','สตูดิโอโยคะเล็ก ๆ ในซอย','แบรนด์เสื้อผ้าฝ้ายย้อมคราม']},
+  build:(o,f)=>`Create a one-page brand kit${f?' for '+F(f):' from my Source'} with a ${o.vibe} feel: a 5-colour palette with hex codes and where to use each; 2 Google Fonts that support Thai (headline + body); brand voice in 3 adjectives with do/don't examples in Thai; 3 photo-style rules; and one sample Thai post written in this voice.`,
+  pack:'Create a one-page brand kit from my Source or the brand after the command: 5 hex colours, 2 Thai-capable Google Fonts, voice + do/don’t, 3 photo rules, one sample Thai post.'},
+ {id:'menu',cat:'sell',icon:'📋',name:'เมนูร้านพร้อมพิมพ์',desc:'วางรายการเมนู ได้ไฟล์ HTML เมนูสวย พิมพ์ A4 หรือเปิดบนมือถือได้',need:'text',keys:'เมนู ราคา ร้านอาหาร ร้านกาแฟ ใบเมนู พิมพ์ menu',
+  opts:[{k:'look',label:'หน้าตา',choices:[['chalk','กระดานชอล์ก','a chalkboard look'],['minimal','มินิมอลขาว','a clean minimal white look'],['street','ร้านข้างทางไทย','a fun Thai street-food look'],['cafe','คาเฟ่อบอุ่น','a warm café look with soft illustrations']]}],
+  field:{label:'รายการเมนูและราคา',ph:'เช่น ลาเต้ 55, อเมริกาโน่ 45, ชาไทย 50',multi:true,ex:['ลาเต้ 55, อเมริกาโน่ 45, ชาไทย 50, ครัวซองต์ 65','ข้าวผัดกุ้ง 70, กะเพราหมูกรอบ 60, ต้มยำ 120']},
+  build:(o,f)=>`Make a menu as one self-contained HTML file: ${o.look}, prints neatly on A4 and also reads well on a phone. Items and prices (use exactly these, do not add or change prices): "${F(f,'[รายการเมนูและราคา]')}". Group items into sensible sections, Thai text, Google Fonts with Thai support, no other external assets.`,
+  pack:'Make a printable A4 + mobile HTML menu from the items and prices after the command (never change prices; group into sections; Thai fonts).'},
+ {id:'meeting',cat:'work',icon:'📝',name:'สรุปประชุมเป็นงาน',desc:'วางโน้ตหรือบทถอดเสียง ได้สรุป 5 บรรทัด และตารางใครทำอะไรเมื่อไร',need:'text',keys:'ประชุม สรุป โน้ต minutes บันทึก ถอดเสียง งานที่ต้องทำ todo meeting',
+  opts:[{k:'out',label:'ส่งต่อให้ใคร',choices:[['team','ทีมเดียวกัน','the same team'],['boss','หัวหน้า','my manager (decisions first)'],['client','ลูกค้า','the client (polite and clear)']]}],
+  field:{label:'วางโน้ตประชุม',ph:'วางโน้ตหรือข้อความถอดเสียงที่นี่',multi:true,ex:['คุยเรื่องเปิดสาขาใหม่ พี่เอรับหาโลเคชัน ภายในศุกร์หน้า งบตกแต่งไม่เกิน 2 แสน ยังไม่สรุปชื่อร้าน']},
+  build:(o,f)=>`Summarise this meeting for ${o.out}: "${F(f,'[โน้ตประชุม]')}". Give: a 5-line Thai summary; decisions made; a table of tasks (task, owner, due date) — write "ยังไม่กำหนด" when the notes do not say; open questions. Do not invent owners or dates.`,
+  pack:'Summarise the meeting notes after the command: 5-line Thai summary, decisions, task table (task/owner/due — "ยังไม่กำหนด" if unknown), open questions.'},
+ {id:'plan7',cat:'work',icon:'📅',name:'แผนคอนเทนต์ 7 วัน',desc:'ได้แผนโพสต์ 1 สัปดาห์ที่ทำไหวจริงตามเวลาที่มี',need:'sauce',keys:'แผน คอนเทนต์ content plan ตารางโพสต์ สัปดาห์ ปฏิทิน โพสต์อะไรดี',
+  opts:[{k:'time',label:'เวลาที่มีต่อวัน',choices:[['15','15 นาที','15 minutes'],['30','30 นาที','30 minutes'],['60','1 ชั่วโมง','1 hour']],def:'30'}],
+  field:{label:'ธุรกิจ / เป้าหมายสัปดาห์นี้',ph:'เช่น ร้านต้นไม้ อยากได้ลูกค้าใหม่จาก IG',ex:['ร้านต้นไม้ อยากได้ลูกค้าใหม่จาก IG','ครูสอนพิเศษ อยากเปิดคอร์สปิดเทอม']},
+  build:(o,f)=>`Make a 7-day content plan${f?' for '+F(f):' from my Source'} that I can actually make with ${o.time} a day. Table: day, format, Thai headline, what to shoot or create, call-to-action. Reuse one piece of work in different formats instead of making everything from scratch.`,
+  pack:'Make a doable 7-day content plan (table: day, format, Thai headline, what to create, CTA) for the goal after the command or my Source; reuse one piece across formats.'},
+ {id:'tutor',cat:'work',icon:'🧑‍🏫',name:'ติวเตอร์ส่วนตัว',desc:'ให้ AI สอนทีละขั้น ถามเช็กความเข้าใจ และปรับความยากตามคำตอบ',need:'text',keys:'ติว สอน เรียน สอบ อธิบาย ไม่เข้าใจ การบ้าน ครู tutor',
+  opts:[{k:'level',label:'ระดับ',choices:[['new','เพิ่งเริ่ม','a complete beginner'],['mid','พอรู้บ้าง','someone with some basics'],['exam','เตรียมสอบ','someone preparing for an exam']]}],
+  field:{label:'อยากเข้าใจเรื่องอะไร',ph:'เช่น ภาษีเงินได้บุคคลธรรมดา',ex:['ภาษีเงินได้บุคคลธรรมดา','สูตรพื้นที่วงกลม','การทำงบกำไรขาดทุนร้านเล็ก']},
+  build:(o,f)=>`Be my patient tutor on "${F(f,'[หัวข้อ]')}" for ${o.level}. Teach in short steps, in Thai: explain one idea with an everyday example, then ask me one check question and wait for my answer. Adjust difficulty from my answers. After 5 steps, give a one-page summary.`,
+  pack:'Tutor me on the topic after the command in Thai: one idea + example per step, one check question, wait for my answer, adjust difficulty; summary after 5 steps.'},
+ {id:'sop',cat:'work',icon:'📘',name:'คู่มือ SOP จากซอส',desc:'เปลี่ยนวิธีทำงานที่อยู่ในหัว ให้เป็นคู่มือที่คนอื่นทำตามได้',need:'sauce',keys:'sop คู่มือ ขั้นตอน วิธีทำงาน มาตรฐาน checklist เช็กลิสต์ สอนพนักงาน',
+  opts:[{k:'reader',label:'คนอ่าน',choices:[['new','พนักงานใหม่','a brand-new staff member'],['team','ทีมเดิม','an existing team member'],['part','พาร์ตไทม์','a part-timer on their first shift']]}],
+  field:{label:'งานอะไร (ถ้าไม่แนบซอส)',ph:'เช่น เปิดร้านตอนเช้า',ex:['เปิดร้านตอนเช้า','รับออร์เดอร์ทาง LINE','ปิดยอดขายสิ้นวัน']},
+  build:(o,f)=>`Write an SOP${f?' for "'+F(f)+'"':' from my Source'} that ${o.reader} can follow alone. Thai. Include: purpose, what to prepare, numbered steps (one action each), a checklist, common mistakes and who to ask. Mark anything you are unsure of as "ต้องยืนยัน" instead of guessing.`,
+  pack:'Write a Thai SOP (purpose, prep, numbered steps, checklist, common mistakes, who to ask) from my Source or the task after the command; mark guesses "ต้องยืนยัน".'},
+ {id:'readme',cat:'work',icon:'📄',name:'README หน้าแรกของโปรเจกต์',desc:'สรุปโปรเจกต์หรือโฟลเดอร์ให้คนใหม่อ่านจบแล้วเริ่มงานได้',need:'sauce',keys:'readme อ่านก่อน โปรเจกต์ โฟลเดอร์ เอกสาร ส่งต่องาน handover',
+  opts:[{k:'depth',label:'ความละเอียด',choices:[['quick','อ่าน 2 นาที','a 2-minute read'],['full','ฉบับเต็ม','a complete handover document']]}],
+  field:{label:'โปรเจกต์อะไร (ถ้าไม่แนบซอส)',ph:'เช่น โฟลเดอร์งานออกแบบแบรนด์ลูกค้า A',ex:['โฟลเดอร์งานออกแบบแบรนด์ลูกค้า A','โปรเจกต์เว็บร้านกาแฟ']},
+  build:(o,f)=>`Write a README.md${f?' for "'+F(f)+'"':' from my Source and attached files'} as ${o.depth}: what this is, who it is for, what is inside (file map), how to start, current status, rules not to break, contacts. Thai, Markdown, short sections.`,
+  pack:'Write a Thai README.md (what, who, file map, how to start, status, rules, contacts) for the project after the command or my Source.'},
+ {id:'onepage',cat:'build',icon:'🌐',name:'เว็บหน้าเดียวจากซอส',desc:'ได้ไฟล์ HTML หน้าเดียวที่เปิดบนมือถือได้ทันที ไม่ต้องเขียนโค้ดเอง',need:'sauce',tools:'Claude · ChatGPT',keys:'เว็บ เว็บไซต์ หน้าเว็บ landing page แนะนำตัว ร้าน html website',
+  opts:[{k:'style',label:'สไตล์',choices:[['clean','สะอาดมินิมอล','clean minimal with lots of white space'],['bold','ตัวใหญ่จัดจ้าน','bold editorial with big typography'],['warm','อบอุ่นมีภาพประกอบ','warm and friendly with soft illustrations'],['dark','ดาร์กพรีเมียม','dark premium with gold accents']]},
+   {k:'goal',label:'เป้าหมาย',choices:[['contact','ให้คนทักมา','get people to contact me'],['sell','ขายสินค้า','sell a product'],['profile','แนะนำตัว','introduce me or my work']]}],
+  field:{label:'เว็บของใคร / อะไร (ถ้าไม่แนบซอส)',ph:'เช่น ร้านดอกไม้ของฉันที่ขอนแก่น',ex:['ร้านดอกไม้ของฉันที่ขอนแก่น','พอร์ตงานช่างภาพงานแต่ง','คลาสสอนว่ายน้ำเด็ก']},
+  build:(o,f)=>`Build a one-page website as one self-contained HTML file${f?' for '+F(f):' from my Source'}. Style: ${o.style}. Goal: ${o.goal}. Mobile-first, Thai text, Google Fonts with Thai support, smooth scroll and small tasteful animations, no other external assets. Use only facts from my Source or note; put [ใส่ข้อมูล] where something is missing.`,
+  pack:'Build a self-contained mobile-first one-page HTML site from my Source or the note after the command; Thai fonts; [ใส่ข้อมูล] for missing facts.'},
+ {id:'minigame',cat:'build',icon:'🎮',name:'มินิเกมจากเรื่องของคุณ',desc:'ได้เกมเล็ก ๆ ในไฟล์เดียว เล่นบนมือถือได้ ส่งให้เพื่อนเล่นได้เลย',need:'text',tools:'Claude · ChatGPT',keys:'เกม มินิเกม เล่น game สนุก กิจกรรม ลูกค้าเล่น',
+  opts:[{k:'genre',label:'แนวเกม',choices:[['catch','รับของตก','a catch-the-falling-items game'],['memory','จับคู่ความจำ','a memory card-matching game'],['runner','วิ่งหลบ','an endless runner'],['quiz','ตอบคำถามจับเวลา','a timed quiz game']]}],
+  field:{label:'ธีมของเกม',ph:'เช่น แมวเก็บปลาทูในตลาดน้ำ',ex:['แมวเก็บปลาทูในตลาดน้ำ','บาริสต้าทำกาแฟให้ทันลูกค้า','จับคู่ผลไม้ไทย']},
+  build:(o,f)=>`Make ${o.genre} as one self-contained HTML file. Theme: "${F(f,'[ธีมของฉัน]')}". Touch and keyboard controls, works on a phone, 60–90 seconds per round, score + best score saved in localStorage, cute shapes drawn in code (no image files), sound effects with the Web Audio API, Thai UI text.`,
+  pack:'Make a self-contained mobile HTML mini-game (default catch game) with the theme after the command: touch controls, score + best score, Web Audio SFX, Thai UI.'},
+ {id:'quiz',cat:'build',icon:'❓',name:'แบบทดสอบแชร์ผลได้',desc:'ได้ควิซ 8 ข้อ จบแล้วมีการ์ดผลลัพธ์ให้แคปไปแชร์',need:'text',tools:'Claude · ChatGPT',keys:'ควิซ แบบทดสอบ quiz คำถาม ทดสอบ บุคลิก ความรู้ แชร์ผล',
+  opts:[{k:'kind',label:'แบบไหน',choices:[['persona','คุณเป็นแบบไหน','a personality quiz (“which type are you?”)'],['know','วัดความรู้','a knowledge quiz with a score']]}],
+  field:{label:'หัวข้อควิซ',ph:'เช่น คุณเป็นกาแฟแบบไหน',ex:['คุณเป็นกาแฟแบบไหน','รู้จักผักพื้นบ้านไทยแค่ไหน','สไตล์การทำงานของคุณ']},
+  build:(o,f)=>`Make ${o.kind} as one self-contained HTML file about "${F(f,'[หัวข้อ]')}": 8 questions, one at a time with a progress bar, then a beautiful result card (big title, short Thai description, emoji) sized for a phone screenshot, plus a Retry button. Thai text, mobile-first, no external assets except Google Fonts.`,
+  pack:'Make a self-contained mobile HTML quiz (8 questions, progress bar, shareable result card, retry) on the topic after the command; Thai text.'}
+];
+const REMIX=[
+ {id:'again',icon:'🔁',name:'ขอใหม่ 3 แบบ',text:'Give me 3 new versions that are clearly different from each other and from the last one. Keep everything that comes from my Source true.'},
+ {id:'fix',icon:'🎯',name:'แก้จุดเดียว',text:'Change only this: [จุดที่อยากแก้]. Keep everything else exactly the same.'},
+ {id:'closer',icon:'🫙',name:'เช็กกับซอส',text:'Compare your last result with my Source. List anything that does not match (names, numbers, facts, tone), then fix only those points.'},
+ {id:'keep',icon:'🔒',name:'ล็อกหน้า/โลโก้',text:'Keep faces, logos, product labels and Thai text exactly as in my original. Regenerate only the rest.'},
+ {id:'bright',icon:'☀️',name:'สว่างขึ้น',text:'Same image, but brighter and warmer light with more contrast on the subject. Nothing else changes.'},
+ {id:'shorter',icon:'✂️',name:'สั้นลงครึ่งหนึ่ง',text:'Cut it to half the length. Keep the key point and the call-to-action.'},
+ {id:'thai',icon:'🇹🇭',name:'ไทยให้ลื่น',text:'Rewrite the Thai so it sounds natural, like a real Thai person wrote it. Remove translated-sounding phrases.'},
+ {id:'why',icon:'💡',name:'บอกว่าแก้อะไร',text:'In 3 short Thai bullet points, explain what you changed and why.'}
+];
+const SAUCE_LINE='Use my attached Source (.md) as the ground truth for names, facts, prices and tone, and never contradict it.';
+const NO_QUESTIONS='If something is missing, make a sensible choice and state it in one line instead of asking me first.';
+const THAI_LINE='Reply to me in Thai.';
+const byId=Object.fromEntries(COMMANDS.map(c=>[c.id,c]));
+function defaults(command){const out={};for(const opt of command.opts||[])out[opt.k]=opt.def&&opt.choices.some(c=>c[0]===opt.def)?opt.def:opt.choices[0][0];return out;}
+function phrases(command,chosen,mark){
+ const out={};
+ for(const opt of command.opts||[]){const id=chosen?.[opt.k];const choice=opt.choices.find(c=>c[0]===id)||opt.choices.find(c=>c[0]===defaults(command)[opt.k]);out[opt.k]=mark?'⟦'+choice[2]+'⟧':choice[2];}
+ return out;
+}
+function clean(text){return String(text||'').replace(/[⟦⟧⟪⟫]/g,'').replace(/\s+$/,'').trim();}
+// Markers survive into the returned string; callers strip (copy) or highlight (preview) them.
+function buildMarked(selection,settings={}){
+ const items=(selection||[]).map(item=>({command:byId[item.id],options:item.options||{},field:clean(item.field)})).filter(item=>item.command);
+ if(!items.length)return '';
+ const parts=items.map(item=>item.command.build(phrases(item.command,item.options,true),item.field));
+ let body=parts.length===1?parts[0]:'Do these in order, one result per step:\n\n'+parts.map((part,i)=>(i+1)+') '+part).join('\n\n');
+ const footer=[];
+ if(settings.sauce!==false)footer.push(SAUCE_LINE);
+ footer.push(NO_QUESTIONS);
+ if(settings.thai!==false)footer.push(THAI_LINE);
+ return body+'\n\n'+footer.join(' ');
+}
+function buildPrompt(selection,settings){return buildMarked(selection,settings).replace(/[⟦⟧⟪⟫]/g,'');}
+function shortCommand(selection){
+ return (selection||[]).map(item=>{
+  const command=byId[item.id];if(!command)return '';
+  const base=defaults(command);const words=[];
+  for(const opt of command.opts||[]){const id=item.options?.[opt.k];if(id&&id!==base[opt.k]){const choice=opt.choices.find(c=>c[0]===id);if(choice)words.push(choice[1]);}}
+  const field=clean(item.field);
+  return ('/'+command.id+(words.length?' '+words.join(' · '):'')+(field?' — '+field:'')).trim();
+ }).filter(Boolean).join('\n');
+}
+function buildPack(ids){
+ const list=(ids&&ids.length?ids:COMMANDS.map(c=>c.id)).map(id=>byId[id]).filter(Boolean);
+ return 'You now have my personal slash commands. When my message starts with one of them, follow its recipe right away. Words after the command are my details or style choices and override the defaults. If I attach a photo or file, it is the input. '+SAUCE_LINE.replace('my attached Source','any Source I attach')+' '+NO_QUESTIONS+' Reply in Thai unless the recipe says otherwise.\n\n'+list.map(c=>'/'+c.id+' — '+c.pack).join('\n')+'\n\nIf I type /help, list the commands with a one-line Thai explanation each.';
+}
+const PERSONAS={
+ shop:{icon:'🛍️',img:'agent-shop',role:'แอดมินร้าน',roleEn:'shop admin',name:'น้องซอส',mission:'Help me run my shop: answer customers, write posts and promotions, and reply to reviews.',skills:['reply','caption','promo','review','hook','foodangle','product'],demo:[['user','ลูกค้าถามว่าส่งพรุ่งนี้ทันไหม'],['bot','ร้านส่งได้เร็วสุดวันศุกร์ค่ะ ยังยืนยันวันรับไม่ได้ ถ้าต้องใช้พรุ่งนี้อาจไม่ทันนะคะ 🙏'],['user','/caption เมนูใหม่ ชาไทยปั่น'],['bot','3 แคปชันพร้อมโพสต์ — แบบที่ 1: “ร้อนนี้ต้องปั่น 🧋…”']]},
+ tutor:{icon:'🧑‍🏫',img:'agent-tutor',role:'ติวเตอร์ส่วนตัว',roleEn:'personal tutor',name:'ครูซอส',mission:'Teach me and my learners step by step, check understanding and turn lessons into practice material.',skills:['tutor','quiz','thaify','storyboard','meeting'],demo:[['user','/tutor ภาษีเงินได้ เพิ่งเริ่ม'],['bot','ขั้นที่ 1: ภาษีคิดจาก “เงินได้สุทธิ” เหมือนเก็บค่าน้ำตามมิเตอร์ ลองตอบ: เงินเดือนคือเงินได้ประเภทไหน?'],['user','40(1)'],['bot','ถูกต้อง! ไปขั้นที่ 2 กัน ✨']]},
+ secretary:{icon:'🗂️',img:'agent-secretary',role:'เลขาฯ ส่วนตัว',roleEn:'personal secretary',name:'เลขาซอส',mission:'Keep my work organised: summarise meetings, write SOPs and READMEs, plan the week and draft replies.',skills:['meeting','sop','readme','plan7','reply','thaify'],demo:[['user','/meeting (วางโน้ตประชุม)'],['bot','สรุป 5 บรรทัด + ตาราง: หาโลเคชัน · พี่เอ · ศุกร์หน้า / ตั้งชื่อร้าน · ยังไม่กำหนด'],['user','/sop เปิดร้านตอนเช้า'],['bot','SOP 9 ขั้น พร้อมเช็กลิสต์ ✅ (2 จุดทำเครื่องหมาย “ต้องยืนยัน”)']]},
+ creator:{icon:'🎬',img:'agent-creator',role:'ผู้กำกับคอนเทนต์',roleEn:'content director',name:'ผู้กำกับซอส',mission:'Turn my Source into content: plan, script, design and animate posts and short videos.',skills:['plan7','reel','hook','caption','brushstory','kinetic','img2vid','storyboard','poster'],demo:[['user','/plan7 ร้านต้นไม้ อยากได้ลูกค้าใหม่'],['bot','แผน 7 วัน ใช้คลิปเดียวแตก 4 รูปแบบ 📅'],['user','/brushstory จิตรกรรมไทย — ต้นไม้ต้นแรกของร้าน'],['bot','ได้ไฟล์ HTML แอนิเมชัน + เพลง + ปุ่มดาวน์โหลดวิดีโอ 🎬']]}
+};
+const TONES={friendly:['เป็นกันเอง','warm, friendly and casual'],polite:['สุภาพ','polite and professional'],direct:['ตรงไปตรงมา','direct and concise'],playful:['ขี้เล่น','playful with light humour']};
+const RULES=[
+ {id:'facts',on:true,th:'ห้ามเดาราคา วันที่ หรือเงื่อนไขที่ไม่มีในซอส',en:'Never guess prices, dates or terms that are not in the Source; say you need to check.'},
+ {id:'handoff',on:true,th:'เรื่องเงิน คืนเงิน หรือร้องเรียน ส่งต่อให้ฉันตัดสินใจ',en:'Hand payments, refunds and complaints to me (the owner) with a short summary instead of deciding.'},
+ {id:'privacy',on:true,th:'ไม่ขอหรือทวนข้อมูลส่วนตัวของลูกค้าเกินจำเป็น',en:'Never ask for or repeat personal data beyond what the task needs.'},
+ {id:'short',on:true,th:'ตอบสั้น ไม่เกิน 6 บรรทัด ถ้าไม่ได้ขอเพิ่ม',en:'Keep replies under 6 lines unless I ask for more.'},
+ {id:'options',on:false,th:'เวลาต้องตัดสินใจ เสนอ 2 ทางเลือกพร้อมข้อดีข้อเสีย',en:'When I must decide, give 2 options with one pro and one con each.'},
+ {id:'ask',on:false,th:'ข้อมูลไม่พอ ถามกลับได้ 1 ข้อ',en:'When something important is missing, ask one short clarifying question before working.'}
+];
+function buildAgent(cfg={}){
+ const persona=PERSONAS[cfg.persona]||PERSONAS.shop;
+ const name=String(cfg.name||'').trim().slice(0,40)||persona.name;
+ const tone=(TONES[cfg.tone]||TONES.friendly)[1];
+ const ids=(cfg.skills&&cfg.skills.length?cfg.skills:persona.skills).map(id=>byId[id]).filter(Boolean);
+ const rules=RULES.filter(rule=>cfg.rules?cfg.rules[rule.id]===true:rule.on);
+ const askRule=rules.some(rule=>rule.id==='ask');
+ return '# '+name+' — '+persona.role+'\n\nYou are '+name+', my '+persona.roleEn+' agent. '+persona.mission+'\nPersonality: '+tone+'. Speak Thai to me and to anyone I serve unless asked otherwise.\n\n## Knowledge\nTreat the Source (.md) files in this project as the single source of truth for names, facts, prices and tone. If the Source does not say, say so honestly and tell me what to check. '+(askRule?'':NO_QUESTIONS)+'\n\n## Rules\n'+(rules.length?rules.map(rule=>'- '+rule.en).join('\n'):'- Follow the Source and be honest about what you do not know.')+'\n\n## Skills\nWhen my message starts with a slash command, run that recipe right away. Words after the command are my details or style choices and override the defaults. If I attach a photo or file, it is the input.\n'+ids.map(c=>'/'+c.id+' — '+c.pack).join('\n')+'\n/help — list these commands with one Thai line each.\n\n## Start\nIn every new chat, greet me in one short Thai line as '+name+' and show /help.';
+}
+function normalise(text){return String(text||'').toLowerCase().replace(/\s+/g,' ').trim();}
+function matchCommands(query,limit=4){
+ const q=normalise(query);if(!q)return [];
+ const slash=q.match(/^\/?([a-z0-9]+)/);
+ const scored=COMMANDS.map(command=>{
+  let score=0;
+  if(slash&&command.id.startsWith(slash[1]))score+=slash[1].length>=3?20:6;
+  for(const key of command.keys.split(' '))if(key&&q.includes(key.toLowerCase()))score+=key.length>=4?4:2;
+  if(q.includes(command.name.toLowerCase()))score+=8;
+  for(const word of q.split(' '))if(word.length>=2&&(command.name.includes(word)||command.desc.includes(word)))score+=1;
+  return {command,score};
+ }).filter(item=>item.score>0).sort((a,b)=>b.score-a.score);
+ return scored.slice(0,limit).map(item=>item.command.id);
+}
+function queryFromSearch(search){
+ try{const params=new URLSearchParams(search||'');return params.has('q')?params.get('q').trim():null;}catch{return null;}
+}
+window.MC_DECK={COMMANDS,REMIX,CATS,PERSONAS,TONES,RULES,buildPrompt,shortCommand,buildPack,buildAgent,matchCommands,queryFromSearch,defaults};
+if(typeof document==='undefined')return;
+
+/* ═══ Interface ═══ */
+const KEY='mc_command_deck_v1';
+const MAX=3;
+const $=id=>document.getElementById(id);
+const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+// The site's smooth-scroll layer (Lenis) owns the scroll position when present; native smooth
+// scrolling would be overridden by it, so route jumps through it.
+function scrollToEl(el){if(!el)return;const lenis=window.cloverMotion?.lenis;if(lenis){lenis.scrollTo(el,{offset:-136,duration:1.1,immediate:reduce()});return;}el.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});}
+let state={wok:[],options:{},fields:{},sauce:true,thai:true,cat:'all',packIds:null,platform:'claude'};
+function load(){try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Array.isArray(saved.wok))state={...state,...saved,wok:saved.wok.filter(id=>byId[id]).slice(0,MAX)};if(state.agent&&!PERSONAS[state.agent.persona])state.agent=null;}catch{}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{}}
+function selection(){return state.wok.map(id=>({id,options:{...defaults(byId[id]),...(state.options[id]||{})},field:state.fields[id]||''}));}
+let toastTimer;
+function toast(message){const el=$('toast');if(!el)return;el.textContent=message;el.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('on'),2200);}
+async function copy(text){
+ try{await navigator.clipboard.writeText(text);return true;}catch{}
+ try{const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(area);area.select();const ok=document.execCommand('copy');area.remove();return ok;}catch{return false;}
+}
+function needLabel(need){return {photo:'📎 แนบรูป',text:'✍️ พิมพ์ 1 บรรทัด',either:'📎 รูป หรือ ✍️ ข้อความ',sauce:'🫙 แนบซอส .md'}[need]||'';}
+function catOf(command){return CATS.find(c=>c.id===command.cat);}
+function renderCats(){
+ const host=$('deckCats');if(!host)return;
+ host.innerHTML=CATS.map(cat=>{const count=cat.id==='all'?COMMANDS.length:COMMANDS.filter(c=>c.cat===cat.id).length;return '<button type="button" role="tab" data-cat="'+cat.id+'" aria-selected="'+(state.cat===cat.id)+'"'+(cat.color?' style="--c:'+cat.color+'"':'')+'><span aria-hidden="true">'+cat.icon+'</span>'+esc(cat.name)+'<i>'+count+'</i></button>';}).join('');
+}
+function cardHTML(command){
+ const cat=catOf(command);
+ return '<article class="dc" data-id="'+command.id+'" data-cat="'+command.cat+'" style="--c:'+cat.color+'" tabindex="-1">'+
+  '<div class="dc-top"><span class="dc-icon" aria-hidden="true">'+command.icon+'</span><code class="dc-slash">/'+command.id+'</code>'+(command.hot?'<span class="dc-hot">HOT</span>':'')+'</div>'+
+  '<b class="dc-name">'+esc(command.name)+'</b><p class="dc-desc">'+esc(command.desc)+'</p>'+
+  '<div class="dc-foot"><span class="dc-need">'+needLabel(command.need)+'</span><button type="button" class="dc-add" data-add="'+command.id+'" aria-label="ใส่ /'+command.id+' ลงกระทะ"><span aria-hidden="true">+</span></button></div></article>';
+}
+function renderCards(){
+ const host=$('deckCards');if(!host)return;
+ const list=COMMANDS.filter(c=>state.cat==='all'||c.cat===state.cat);
+ host.innerHTML=list.map(cardHTML).join('');
+ paintCards();
+}
+function paintCards(){document.querySelectorAll('.dc').forEach(card=>{const inWok=state.wok.includes(card.dataset.id);card.dataset.in=String(inWok);const add=card.querySelector('.dc-add');if(add){add.setAttribute('aria-pressed',String(inWok));add.firstElementChild.textContent=inWok?'✓':'+';}});}
+function optionHTML(command,opt){
+ const chosen=(state.options[command.id]||{})[opt.k]||defaults(command)[opt.k];
+ return '<div class="opt"><span class="opt-l">'+esc(opt.label)+'</span><div class="seg" role="group" aria-label="'+esc(opt.label)+'">'+opt.choices.map(c=>'<button type="button" data-opt="'+command.id+'|'+opt.k+'|'+c[0]+'" aria-pressed="'+(c[0]===chosen)+'">'+esc(c[1])+'</button>').join('')+'</div></div>';
+}
+function wokItemHTML(command,i){
+ const cat=catOf(command);const field=command.field;const value=state.fields[command.id]||'';
+ const input=field.multi?'<textarea rows="3" data-field="'+command.id+'" placeholder="'+esc(field.ph)+'">'+esc(value)+'</textarea>':'<input type="text" data-field="'+command.id+'" value="'+esc(value)+'" placeholder="'+esc(field.ph)+'">';
+ return '<article class="wi" data-id="'+command.id+'" style="--c:'+cat.color+';--d:'+(i*60)+'ms">'+
+  '<header><span class="wi-icon" aria-hidden="true">'+command.icon+'</span><div class="wi-title"><code>/'+command.id+'</code><b>'+esc(command.name)+'</b></div><span class="wi-need">'+needLabel(command.need)+'</span><button type="button" class="wi-x" data-remove="'+command.id+'" aria-label="เอา /'+command.id+' ออกจากกระทะ">×</button></header>'+
+  (command.opts||[]).map(opt=>optionHTML(command,opt)).join('')+
+  '<label class="fld"><span>'+esc(field.label)+' <em>(ไม่ใส่ก็ได้)</em></span><div class="fld-row">'+input+'<button type="button" class="dice" data-dice="'+command.id+'" title="สุ่มตัวอย่าง" aria-label="สุ่มตัวอย่างให้ช่อง '+esc(field.label)+'">🎲</button></div></label></article>';
+}
+function renderWok(){
+ const wok=$('wok'),items=$('wokItems');if(!wok||!items)return;
+ wok.dataset.empty=String(state.wok.length===0);
+ items.innerHTML=state.wok.map((id,i)=>wokItemHTML(byId[id],i)).join('');
+ setText($('wokCount'),state.wok.length+' / '+MAX);
+ renderOutput();paintCards();paintDock();
+}
+function setText(el,value){if(el&&el.textContent!==value)el.textContent=value;}
+function renderOutput(){
+ const out=$('forgeOut');if(!out)return;
+ const sel=selection();
+ const marked=buildMarked(sel,state);
+ const plain=marked.replace(/[⟦⟧⟪⟫]/g,'');
+ out.innerHTML=marked?esc(marked).replace(/⟦(.*?)⟧/gs,'<mark>$1</mark>').replace(/⟪(.*?)⟫/gs,'<mark class="f">$1</mark>'):'<span class="ph">ลากการ์ดคำสั่งมาวางในกระทะด้านบน หรือแตะการ์ด — Prompt เต็มจะปรุงเสร็จตรงนี้ทันที</span>';
+ setText($('forgeLen'),marked?plain.length.toLocaleString('th-TH')+' ตัวอักษร':'ยังว่าง');
+ const short=shortCommand(sel);setText($('shortCmd'),short||'/foodangle ท็อปวิว — ข้าวมันไก่');
+ const needsPhoto=sel.some(item=>['photo','either'].includes(byId[item.id].need));
+ const needsSauce=state.sauce||sel.some(item=>byId[item.id].need==='sauce');
+ setText($('forgeHint'),!marked?'':(needsPhoto&&needsSauce?'วาง Prompt ในแชต แล้วแนบรูป + ซอส .md ก่อนกดส่ง':needsPhoto?'วาง Prompt ในแชต แล้วแนบรูปก่อนกดส่ง':needsSauce?'วาง Prompt ในแชต แล้วแนบซอส .md ของคุณก่อนกดส่ง':'วาง Prompt ในแชต แล้วกดส่งได้เลย'));
+ document.querySelectorAll('[data-ship]').forEach(btn=>{btn.toggleAttribute('aria-disabled',!marked);});
+ const sauce=$('optSauce'),thai=$('optThai');if(sauce)sauce.checked=state.sauce!==false;if(thai)thai.checked=state.thai!==false;
+}
+function paintDock(){
+ const dock=$('dock');if(!dock)return;
+ dock.querySelector('.dock-items').innerHTML=state.wok.map(id=>'<span title="/'+id+'">'+byId[id].icon+'</span>').join('')||'<span class="dock-empty">🍳</span>';
+ setText(dock.querySelector('.dock-label'),state.wok.length?'กระทะ '+state.wok.length+'/'+MAX+' · ไปปรุงเลย ↓':'วางการ์ดลงกระทะ');
+ dock.dataset.show=String(dragging||(state.wok.length>0&&!forgeVisible));
+}
+function fly(from,icon){
+ if(reduce()||!from)return;
+ const target=forgeVisible?$('wok'):$('dock');if(!target)return;
+ const a=from.getBoundingClientRect(),b=target.getBoundingClientRect();
+ const el=document.createElement('span');el.className='flyer';el.textContent=icon;el.setAttribute('aria-hidden','true');
+ el.style.left=(a.left+a.width/2-18)+'px';el.style.top=(a.top+a.height/2-18)+'px';document.body.appendChild(el);
+ const dx=b.left+b.width/2-(a.left+a.width/2),dy=b.top+Math.min(b.height,80)/2-(a.top+a.height/2);
+ el.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+dx*0.5+'px,'+(dy*0.5-90)+'px) scale(1.4)',opacity:1,offset:.5},{transform:'translate('+dx+'px,'+dy+'px) scale(.6)',opacity:.2}],{duration:620,easing:'cubic-bezier(.3,.7,.4,1)'}).onfinish=()=>{el.remove();const wok=$('wok');wok?.classList.remove('sizzle');void wok?.offsetWidth;wok?.classList.add('sizzle');};
+}
+function add(id,from){
+ const command=byId[id];if(!command)return;
+ if(state.wok.includes(id)){toast('/'+id+' อยู่ในกระทะแล้ว');return;}
+ if(state.wok.length>=MAX){toast('กระทะเต็มแล้ว — ปรุงได้ทีละ '+MAX+' คำสั่ง');return;}
+ state.wok.push(id);save();fly(from,command.icon);renderWok();
+ toast(command.icon+' ใส่ /'+id+' ลงกระทะแล้ว'+(state.wok.length>1?' · คอมโบ '+state.wok.length+' คำสั่ง!':''));
+}
+function remove(id){state.wok=state.wok.filter(x=>x!==id);save();renderWok();}
+function loadPreset(id,options,field){
+ if(!byId[id])return;
+ state.wok=[id];state.options[id]={...(state.options[id]||{}),...options};if(field!==undefined)state.fields[id]=field;save();renderWok();
+ scrollToEl($('forge'));
+ toast(byId[id].icon+' โหลด /'+id+' ลงกระทะแล้ว');
+}
+/* ═══ Smart search ═══ */
+function renderSuggest(){
+ const input=$('deckQ'),host=$('deckSuggest');if(!input||!host)return;
+ const ids=matchCommands(input.value);
+ $('deckQClear')?.toggleAttribute('hidden',!input.value);
+ if(!input.value.trim()){host.innerHTML='<span class="sg-hint">ลองพิมพ์: “อยากให้รูปข้าวมันไก่น่ากินขึ้น” · “ทำคลิปเล่าเรื่องร้าน” · “ตอบลูกค้า”</span>';return;}
+ host.innerHTML=ids.length?'<span class="sg-label">AI ใส่ซอสแนะนำ</span>'+ids.map((id,i)=>'<button type="button" class="sg" data-add="'+id+'" style="--c:'+catOf(byId[id]).color+'"><span aria-hidden="true">'+byId[id].icon+'</span><code>/'+id+'</code> '+esc(byId[id].name)+(i===0?' <i>ตรงที่สุด</i>':'')+'</button>').join(''):'<span class="sg-hint">ยังไม่เจอคำสั่งที่ตรง — ลองเลือกหมวดด้านล่าง หรือใช้ /onepage /caption ซึ่งรับงานได้กว้าง</span>';
+}
+/* ═══ Drag and drop (mouse, pen, and touch after a short hold) ═══ */
+let drag=null,dragging=false,ghost=null,suppressClick=0,forgeVisible=false;
+function overDrop(x,y){const el=document.elementFromPoint(x,y);return el?.closest('#wok,#dock')||null;}
+function beginDrag(d,x,y){
+ d.active=true;dragging=true;document.body.classList.add('deck-dragging');
+ const command=byId[d.id];ghost=document.createElement('div');ghost.className='drag-ghost';ghost.setAttribute('aria-hidden','true');
+ ghost.innerHTML='<span>'+command.icon+'</span><code>/'+command.id+'</code>';document.body.appendChild(ghost);
+ d.card.classList.add('lifted');moveDrag(x,y);paintDock();
+ try{navigator.vibrate?.(12);}catch{}
+}
+function moveDrag(x,y){
+ if(!ghost)return;ghost.style.transform='translate('+(x-40)+'px,'+(y-28)+'px) rotate(-4deg)';
+ const over=overDrop(x,y);document.querySelectorAll('.drop-hot').forEach(el=>{if(el!==over)el.classList.remove('drop-hot');});over?.classList.add('drop-hot');
+}
+function endDrag(x,y,cancel){
+ const d=drag;drag=null;clearTimeout(d?.timer);
+ if(!d?.active)return;
+ const over=cancel?null:overDrop(x,y);
+ document.querySelectorAll('.drop-hot').forEach(el=>el.classList.remove('drop-hot'));
+ d.card.classList.remove('lifted');ghost?.remove();ghost=null;dragging=false;document.body.classList.remove('deck-dragging');
+ suppressClick=Date.now();
+ if(over)add(d.id,null);else paintDock();
+}
+function bindDrag(){
+ const host=$('deckCards');if(!host)return;
+ host.addEventListener('pointerdown',event=>{
+  const card=event.target.closest('.dc');if(!card||event.button!==0||event.target.closest('.dc-add'))return;
+  const d={id:card.dataset.id,card,x:event.clientX,y:event.clientY,pointer:event.pointerId,type:event.pointerType,active:false};
+  if(event.pointerType==='touch')d.timer=setTimeout(()=>{if(drag===d&&!d.moved)beginDrag(d,d.lastX??d.x,d.lastY??d.y);},280);
+  drag=d;
+ });
+ document.addEventListener('pointermove',event=>{
+  if(!drag||event.pointerId!==drag.pointer)return;
+  drag.lastX=event.clientX;drag.lastY=event.clientY;
+  if(!drag.active){
+   if(Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<8)return;
+   if(drag.type==='touch'){drag.moved=true;clearTimeout(drag.timer);drag=null;return;}
+   beginDrag(drag,event.clientX,event.clientY);
+  }
+  event.preventDefault();moveDrag(event.clientX,event.clientY);
+ },{passive:false});
+ document.addEventListener('touchmove',event=>{if(drag?.active)event.preventDefault();},{passive:false});
+ document.addEventListener('pointerup',event=>{if(drag&&event.pointerId===drag.pointer)endDrag(event.clientX,event.clientY,false);});
+ document.addEventListener('pointercancel',event=>{if(drag&&event.pointerId===drag.pointer)endDrag(0,0,true);});
+ host.addEventListener('contextmenu',event=>{if(drag||dragging)event.preventDefault();});
+}
+/* ═══ Agent builder (a persona + the slash commands it knows + house rules) ═══ */
+const PLATFORMS={
+ claude:{name:'Claude',url:'https://claude.ai/new',steps:['เปิด claude.ai → Projects → สร้าง Project ใหม่ ตั้งชื่อตาม Agent','วางข้อความที่คัดลอกในช่อง Project instructions แล้วอัปโหลดซอส .md ไว้ในไฟล์ของ Project','เปิดแชตใน Project นั้น พิมพ์ /help — Agent จะทักและโชว์คำสั่งทั้งหมด'],alt:'อยากให้ทุกแชตรู้จักคุณ: วางใน Settings → Profile ช่อง personal preferences ด้วยก็ได้'},
+ chatgpt:{name:'ChatGPT',url:'https://chatgpt.com/gpts/editor',steps:['เปิด ChatGPT → GPTs → Create (หรือสร้าง Project ใหม่)','แท็บ Configure: วางข้อความในช่อง Instructions แล้วอัปโหลดซอส .md ใน Knowledge','บันทึก แล้วเปิดแชตกับ GPT นั้น พิมพ์ /help'],alt:'ถ้าบัญชีสร้าง GPTs ไม่ได้ ใช้ Project แล้ววางใน Instructions แทน'},
+ gemini:{name:'Gemini',url:'https://gemini.google.com/gems/create',steps:['เปิด Gemini → Gems → New Gem ตั้งชื่อตาม Agent','วางข้อความในช่อง Instructions แล้วแนบซอส .md เป็น Knowledge','บันทึก เปิด Gem แล้วพิมพ์ /help'],alt:'Gem ใช้ได้ทั้งบนเว็บและแอปมือถือ'}
+};
+function agentState(){if(!state.agent||typeof state.agent!=='object')state.agent={persona:'shop',name:'',tone:'friendly',rules:null};return state.agent;}
+function agentRules(){const a=agentState();if(!a.rules){a.rules={};for(const rule of RULES)a.rules[rule.id]=rule.on;}return a.rules;}
+function packIds(){return [...document.querySelectorAll('[data-pack]')].filter(cb=>cb.checked).map(cb=>cb.dataset.pack);}
+function agentConfig(){const a=agentState();return {persona:a.persona,name:a.name,tone:a.tone,skills:packIds(),rules:agentRules()};}
+function renderPack(){
+ const list=$('packList'),steps=$('packSteps'),tabs=$('packTabs');if(!list||!steps||!tabs)return;
+ const a=agentState();const persona=PERSONAS[a.persona]||PERSONAS.shop;
+ const ids=state.packIds||persona.skills;
+ const personas=$('agPersonas');if(personas)personas.innerHTML=Object.entries(PERSONAS).map(([id,p])=>'<button type="button" class="ag-persona" data-persona="'+id+'" aria-pressed="'+(id===a.persona)+'"><img src="/img/classroom-lesson5-20261018/'+p.img+'.jpg" alt="" width="64" height="64" loading="lazy" decoding="async"><b>'+p.icon+' '+esc(p.role)+'</b><small>'+p.skills.length+' ทักษะ</small></button>').join('');
+ const name=$('agName');if(name){name.placeholder=persona.name;if(document.activeElement!==name)name.value=a.name||'';}
+ const tones=$('agTone');if(tones)tones.innerHTML=Object.entries(TONES).map(([id,t])=>'<button type="button" data-tone="'+id+'" aria-pressed="'+(id===a.tone)+'">'+esc(t[0])+'</button>').join('');
+ const rules=$('agRules');if(rules){const r=agentRules();rules.innerHTML=RULES.map(rule=>'<label><input type="checkbox" data-rule="'+rule.id+'"'+(r[rule.id]?' checked':'')+'><span>'+esc(rule.th)+'</span></label>').join('');}
+ list.innerHTML=CATS.filter(c=>c.id!=='all').map(cat=>'<fieldset style="--c:'+cat.color+'"><legend>'+cat.icon+' '+esc(cat.name)+'</legend>'+COMMANDS.filter(c=>c.cat===cat.id).map(c=>'<label><input type="checkbox" data-pack="'+c.id+'"'+(ids.includes(c.id)?' checked':'')+'><code>/'+c.id+'</code></label>').join('')+'</fieldset>').join('');
+ tabs.querySelectorAll('[data-platform]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.platform===state.platform)));
+ const p=PLATFORMS[state.platform]||PLATFORMS.claude;
+ steps.innerHTML='<ol>'+p.steps.map(step=>'<li>'+esc(step)+'</li>').join('')+'</ol><p class="pack-alt">💡 '+esc(p.alt)+' · เมนูอาจย้ายตำแหน่งตามเวอร์ชันของแอป</p>';
+ const open=$('packOpen');if(open){open.href=p.url;open.textContent='คัดลอก + เปิด '+p.name+' ↗';}
+ paintPackCount();
+}
+function paintPackCount(){
+ const cfg=agentConfig();const persona=PERSONAS[cfg.persona]||PERSONAS.shop;const text=buildAgent(cfg);
+ setText($('packCount'),cfg.skills.length+' ทักษะ · '+Object.values(cfg.rules).filter(Boolean).length+' กฎ · '+text.length.toLocaleString('th-TH')+' ตัวอักษร');
+ const prev=$('packPreview');if(prev)prev.textContent=text;
+ const card=$('agCard');if(card){
+  card.querySelector('.ag-avatar').src='/img/classroom-lesson5-20261018/'+persona.img+'.jpg';
+  setText(card.querySelector('.ag-name'),(cfg.name||'').trim()||persona.name);
+  setText(card.querySelector('.ag-role'),persona.icon+' '+persona.role+' · '+TONES[cfg.tone||'friendly'][0]);
+  card.querySelector('.ag-skills').innerHTML=cfg.skills.slice(0,12).map(id=>'<span>/'+id+'</span>').join('')+(cfg.skills.length>12?'<span>+'+(cfg.skills.length-12)+'</span>':'')||'<span class="none">ยังไม่มีทักษะ</span>';
+  setText(card.querySelector('.ag-level'),'LV.'+Math.max(1,Math.min(99,cfg.skills.length*7+Object.values(cfg.rules).filter(Boolean).length*3)));
+ }
+}
+function choosePersona(id,scroll){
+ if(!PERSONAS[id])return;const a=agentState();a.persona=id;state.packIds=null;save();renderPack();
+ if(scroll)scrollToEl($('agent'));
+ toast(PERSONAS[id].icon+' เลือก Agent “'+PERSONAS[id].role+'” แล้ว — ปรับชื่อ ทักษะ และกฎได้เลย');
+}
+/* ═══ Events ═══ */
+function bind(){
+ document.addEventListener('click',async event=>{
+  const t=event.target;
+  const addBtn=t.closest('[data-add]');if(addBtn){event.preventDefault();add(addBtn.dataset.add,addBtn.closest('.dc')||addBtn);return;}
+  const card=t.closest('.dc');if(card&&!t.closest('button')){if(Date.now()-suppressClick<350)return;add(card.dataset.id,card);return;}
+  const cat=t.closest('[data-cat]');if(cat){state.cat=cat.dataset.cat;save();renderCats();renderCards();return;}
+  const rm=t.closest('[data-remove]');if(rm){remove(rm.dataset.remove);return;}
+  const opt=t.closest('[data-opt]');if(opt){const [id,k,v]=opt.dataset.opt.split('|');state.options[id]={...(state.options[id]||{}),[k]:v};save();opt.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===opt)));renderOutput();return;}
+  const dice=t.closest('[data-dice]');if(dice){const c=byId[dice.dataset.dice];const pool=c.field.ex.filter(x=>x!==state.fields[c.id]);const pick=pool[Math.floor(Math.random()*pool.length)]||c.field.ex[0];state.fields[c.id]=pick;save();const input=document.querySelector('[data-field="'+c.id+'"]');if(input)input.value=pick;renderOutput();return;}
+  const ship=t.closest('[data-ship]');if(ship){
+   const text=buildPrompt(selection(),state);
+   if(!text){event.preventDefault();toast('ใส่คำสั่งลงกระทะก่อนนะ');scrollToEl($('deck'));return;}
+   const ok=await copy(text);const where=ship.dataset.ship;
+   toast(ok?(where==='copy'?'📋 คัดลอกแล้ว — ไปวางในแชต AI ได้เลย':'📋 คัดลอกแล้ว — วางในแชต '+where+' (กด วาง/⌘V)'):'คัดลอกไม่สำเร็จ — กดค้างที่กล่อง Prompt แล้วเลือกคัดลอก');
+   ship.dataset.done='true';setTimeout(()=>{ship.dataset.done='false';},1600);
+   try{const used=JSON.parse(localStorage.getItem('mc_command_deck_used')||'0')+1;localStorage.setItem('mc_command_deck_used',JSON.stringify(used));}catch{}
+   return;
+  }
+  if(t.closest('#shortCopy')){const text=shortCommand(selection())||$('shortCmd')?.textContent||'';const ok=await copy(text);toast(ok?'คัดลอกคำสั่งสั้นแล้ว — ใช้ได้เมื่อติดตั้งชุดคำสั่งแล้ว':'คัดลอกไม่สำเร็จ');return;}
+  const remix=t.closest('[data-remix]');if(remix){const item=REMIX.find(r=>r.id===remix.dataset.remix);const ok=await copy(item.text);remix.dataset.done='true';setTimeout(()=>{remix.dataset.done='false';},1400);toast(ok?item.icon+' คัดลอก “'+item.name+'” แล้ว — วางต่อในแชตเดิม':'คัดลอกไม่สำเร็จ');return;}
+  const preset=t.closest('[data-preset]');if(preset){try{const p=JSON.parse(preset.dataset.preset);loadPreset(p.id,p.options||{},p.field);}catch{}return;}
+  const plat=t.closest('[data-platform]');if(plat){state.platform=plat.dataset.platform;save();renderPack();return;}
+  const tab=t.closest('[data-sc-tab]');if(tab){const name=tab.dataset.scTab;tab.parentElement.querySelectorAll('[data-sc-tab]').forEach(b=>b.setAttribute('aria-selected',String(b===tab)));document.querySelectorAll('.sc-panel').forEach(panel=>{panel.hidden=panel.dataset.panel!==name;});return;}
+  const persona=t.closest('[data-persona]');if(persona){choosePersona(persona.dataset.persona,false);return;}
+  const agentGo=t.closest('[data-agent]');if(agentGo){choosePersona(agentGo.dataset.agent,true);return;}
+  const tone=t.closest('[data-tone]');if(tone){agentState().tone=tone.dataset.tone;save();tone.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b===tone)));paintPackCount();return;}
+  if(t.closest('#packAll')){document.querySelectorAll('[data-pack]').forEach(cb=>{cb.checked=true;});state.packIds=packIds();save();paintPackCount();return;}
+  if(t.closest('#packMine')){const mine=new Set(state.wok);if(!mine.size){toast('ยังไม่มีคำสั่งในกระทะ — เลือกทั้งหมดไว้ให้ก่อน');return;}document.querySelectorAll('[data-pack]').forEach(cb=>{cb.checked=mine.has(cb.dataset.pack);});state.packIds=packIds();save();paintPackCount();return;}
+  const packCopy=t.closest('[data-pack-copy]');if(packCopy){const ids=packIds();if(!ids.length){event.preventDefault();toast('เลือกอย่างน้อย 1 คำสั่ง');return;}const ok=await copy(buildAgent(agentConfig()));toast(ok?'🤖 คัดลอก Agent พร้อม '+ids.length+' ทักษะแล้ว — ไปวางตามขั้นตอน':'คัดลอกไม่สำเร็จ');return;}
+  if(t.closest('#dockGo')){scrollToEl($('forge'));return;}
+  if(t.closest('#wokClear')){state.wok=[];save();renderWok();return;}
+ });
+ document.addEventListener('input',event=>{
+  const t=event.target;
+  if(t.matches('[data-field]')){state.fields[t.dataset.field]=t.value.slice(0,1200);save();renderOutput();return;}
+  if(t.id==='agName'){agentState().name=t.value.slice(0,40);save();paintPackCount();return;}
+  if(t.id==='deckQ'){renderSuggest();try{sessionStorage.setItem('mc_deck_q',t.value);}catch{}return;}
+ });
+ document.addEventListener('change',event=>{
+  const t=event.target;
+  if(t.id==='optSauce'){state.sauce=t.checked;save();renderOutput();return;}
+  if(t.id==='optThai'){state.thai=t.checked;save();renderOutput();return;}
+  if(t.matches('[data-pack]')){state.packIds=packIds();save();paintPackCount();return;}
+  if(t.matches('[data-rule]')){agentRules()[t.dataset.rule]=t.checked;save();paintPackCount();}
+ });
+ $('deckQClear')?.addEventListener('click',()=>{const q=$('deckQ');q.value='';renderSuggest();q.focus();try{sessionStorage.removeItem('mc_deck_q');}catch{}});
+ $('deckQ')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();const first=matchCommands(event.target.value)[0];if(first)add(first,$('deckSuggest')?.querySelector('.sg'));}});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&drag?.active)endDrag(0,0,true);});
+ document.addEventListener('deck:preset',event=>{const d=event.detail||{};loadPreset(d.id,d.options||{},d.field);});
+ const forge=$('forge');
+ if(forge&&'IntersectionObserver' in window){new IntersectionObserver(entries=>{forgeVisible=entries[0].isIntersecting;paintDock();},{threshold:.15}).observe(forge);}
+}
+function mount(){
+ // The agent page (5.3) has the builder but no deck; the video page (5.2) only needs MC_DECK for prompts.
+ if(!$('deckCards')){if($('packList')){load();renderPack();bind();document.documentElement.dataset.deck='ready';}return;}
+ load();
+ const fromUrl=queryFromSearch(location.search);
+ const q=$('deckQ');
+ if(q){let stored=null;try{stored=sessionStorage.getItem('mc_deck_q');}catch{}q.value=fromUrl!==null?fromUrl:(stored||'');}
+ if(fromUrl)state.cat='all';
+ renderCats();renderCards();renderWok();renderSuggest();renderPack();bindDrag();bind();
+ // ?add=brushstory&art=mural (links from 5.2) drops that command into the wok with those styles.
+ const params=new URLSearchParams(location.search),addId=params.get('add');
+ if(addId&&byId[addId]){const opts={};params.forEach((v,k)=>{if(k!=='add'&&k!=='q')opts[k]=v;});loadPreset(addId,opts);}
+ document.documentElement.dataset.deck='ready';
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})();
+</script>
+
+<script type="module" data-self-contained="sauce-reel.js">
+/* AI ใส่ซอส · บท 5 — โรงหนังคลิปจากโค้ด (Sauce Reel)
+   ทุกคลิปวาดด้วย Canvas + JavaScript ล้วน ไม่มีไฟล์วิดีโอ เพลงสร้างด้วย Web Audio API
+   และอัดเป็นวิดีโอด้วย MediaRecorder — คือสิ่งเดียวกับที่คำสั่ง /brushstory สั่งให้ AI สร้าง
+   Cards draw only while on screen; idle cards and hidden tabs never animate. */
+(function(){
+'use strict';
+const W=540,H=960,LINE=4,LOOP=LINE*3;
+const TAU=Math.PI*2;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const ease=x=>1-Math.pow(1-clamp(x),3);
+const easeIO=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;};
+function rng(seed){let s=seed>>>0;return ()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+const THAI='"Noto Sans Thai","Sukhumvit Set","Thonburi",system-ui,sans-serif';
+const SERIF='"Noto Serif Thai","Noto Sans Thai","Thonburi",Georgia,serif';
+// Self-hosted display faces (assets/fonts/reel); system Thai fonts remain the fallback.
+const F={brush:'"Reel Charm",'+THAI,mural:'"Reel Srisakdi",'+SERIF,bold:'"Reel Kanit",'+THAI,round:'"Reel Mitr",'+THAI,tech:'"Reel Chakra",'+THAI,hand:'"Reel Sriracha",'+THAI};
+const FONT_LOADS=['700 40px "Reel Charm"','700 40px "Reel Srisakdi"','800 40px "Reel Kanit"','600 40px "Reel Mitr"','700 40px "Reel Chakra"','400 40px "Reel Sriracha"'];
+const SAFE=W-96;
+// One line of the story per third of the loop: [index, local progress 0..1]
+function scene(t){const i=Math.min(2,Math.floor(t/LINE));return [i,(t-i*LINE)/LINE];}
+// Quick fade in, long hold, short fade out: each line is fully readable for most of its 4 seconds.
+function lineIn(p){return ease(p*7)*(1-ease((p-.93)*14));}
+// Largest size (up to the requested one) at which the text fits maxW.
+function fit(ctx,text,font,weight,size,maxW){ctx.font=`${weight} ${size}px ${font}`;const w=ctx.measureText(text).width;return w>maxW?Math.max(12,Math.floor(size*maxW/w)):size;}
+function say(ctx,text,x,y,{size=64,font=THAI,weight=800,color='#111',align='center',alpha=1,shadow=null,stroke=null,dy=0,scale=1,rot=0,spacing=0,maxW=SAFE}={}){
+ if(alpha<=0)return;
+ ctx.save();size=fit(ctx,text,font,weight,size,maxW/Math.max(scale,0.01));ctx.globalAlpha*=alpha;ctx.translate(x,y+dy);if(rot)ctx.rotate(rot);if(scale!==1)ctx.scale(scale,scale);
+ ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=align;ctx.textBaseline='middle';
+ if('letterSpacing' in ctx&&spacing)ctx.letterSpacing=spacing+'px';
+ if(shadow){ctx.shadowColor=shadow.color;ctx.shadowBlur=shadow.blur||0;ctx.shadowOffsetX=shadow.x||0;ctx.shadowOffsetY=shadow.y||0;}
+ if(stroke){ctx.lineWidth=stroke.width;ctx.strokeStyle=stroke.color;ctx.lineJoin='round';ctx.strokeText(text,0,0);}
+ ctx.fillStyle=color;ctx.fillText(text,0,0);ctx.restore();
+}
+function plateRect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);}
+// One story line with an optional plate sized to the fitted text, so every style stays readable.
+function storyText(ctx,t,lines,opts,y=740){
+ const [i,p]=scene(t);const a=lineIn(p);if(a<=0)return;
+ const text=lines[i],font=opts.font||THAI,weight=opts.weight||800,maxW=opts.maxW||SAFE-40;
+ const size=fit(ctx,text,font,weight,opts.size||64,maxW);
+ const dy=(1-ease(p*7))*26;
+ if(opts.plate){
+  ctx.save();ctx.font=`${weight} ${size}px ${font}`;const tw=ctx.measureText(text).width;
+  const pl=opts.plate,pw=Math.min(W-36,tw+(pl.padX??56)),ph=size*1.55+(pl.padY??10);
+  ctx.globalAlpha=a*(pl.alpha??1);ctx.translate(W/2,y+dy);if(opts.rot)ctx.rotate(opts.rot);
+  if(pl.shadow){ctx.shadowColor=pl.shadow;ctx.shadowBlur=22;ctx.shadowOffsetY=8;}
+  plateRect(ctx,-pw/2,-ph/2,pw,ph,pl.radius??18);ctx.fillStyle=pl.fill;ctx.fill();ctx.shadowColor='transparent';
+  if(pl.stroke){ctx.lineWidth=pl.lw||3;ctx.strokeStyle=pl.stroke;ctx.stroke();}
+  ctx.restore();
+ }
+ say(ctx,text,W/2,y,{...opts,size,maxW,alpha:a*(opts.alpha??1),dy});
+}
+const cache=new Map();
+function grain(key,color,amount,seed){
+ if(cache.has(key))return cache.get(key);
+ const c=document.createElement('canvas');c.width=W/2;c.height=H/2;const g=c.getContext('2d');const r=rng(seed);
+ g.fillStyle=color;g.fillRect(0,0,c.width,c.height);
+ for(let i=0;i<amount;i++){g.fillStyle=`rgba(60,40,20,${r()*0.06})`;g.fillRect(r()*c.width,r()*c.height,1+r()*2,1+r()*2);}
+ for(let i=0;i<40;i++){g.strokeStyle=`rgba(90,70,40,${0.03+r()*0.04})`;g.lineWidth=0.6;g.beginPath();const x=r()*c.width,y=r()*c.height;g.moveTo(x,y);g.lineTo(x+r()*40-20,y+r()*40-20);g.stroke();}
+ cache.set(key,c);return c;
+}
+function inkRidge(ctx,base,amp,seed,color,progress){
+ const r=rng(seed);const pts=[];for(let x=-20;x<=W+20;x+=18)pts.push([x,base-amp*(0.5+0.5*Math.sin(x*0.011+seed))-r()*amp*0.35]);
+ ctx.save();ctx.beginPath();ctx.rect(0,0,W*progress,H);ctx.clip();
+ ctx.beginPath();ctx.moveTo(-20,H);for(const [x,y] of pts)ctx.lineTo(x,y);ctx.lineTo(W+20,H);ctx.closePath();ctx.fillStyle=color;ctx.fill();
+ ctx.lineWidth=5;ctx.strokeStyle=color;ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y+r()*3):ctx.moveTo(x,y));ctx.stroke();ctx.restore();
+}
+function chedi(ctx,x,y,s,color){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle=color;ctx.beginPath();
+ ctx.moveTo(-60,0);ctx.lineTo(60,0);ctx.lineTo(48,-18);ctx.lineTo(-48,-18);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(-40,-18);ctx.quadraticCurveTo(-44,-70,0,-88);ctx.quadraticCurveTo(44,-70,40,-18);ctx.closePath();ctx.fill();
+ ctx.fillRect(-14,-104,28,16);
+ ctx.beginPath();ctx.moveTo(-12,-104);ctx.quadraticCurveTo(-4,-170,0,-210);ctx.quadraticCurveTo(4,-170,12,-104);ctx.closePath();ctx.fill();
+ for(let i=0;i<5;i++){ctx.fillRect(-9+i*0.8,-120-i*16,18-i*1.6,3);}ctx.restore();
+}
+function boat(ctx,x,y,s,color){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle=color;ctx.beginPath();
+ ctx.moveTo(-70,-6);ctx.quadraticCurveTo(-10,14,62,-2);ctx.lineTo(78,-26);ctx.quadraticCurveTo(70,-8,58,-10);ctx.quadraticCurveTo(-10,0,-70,-6);ctx.fill();
+ ctx.fillRect(-20,-30,4,22);ctx.beginPath();ctx.arc(-18,-34,9,Math.PI,0);ctx.fill();ctx.restore();
+}
+function lotus(ctx,x,y,s,open,fill,stroke){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ for(let i=-3;i<=3;i++){ctx.save();ctx.rotate(i*0.32*open);ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(-24,-50,0,-96);ctx.quadraticCurveTo(24,-50,0,0);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2.5;ctx.stroke();}ctx.restore();}
+ ctx.restore();
+}
+function flame(ctx,x,y,s,rot,color,line){
+ ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.beginPath();
+ ctx.moveTo(0,40);ctx.bezierCurveTo(-34,20,-26,-20,4,-56);ctx.bezierCurveTo(-4,-24,22,-20,10,-2);ctx.bezierCurveTo(28,-6,22,26,0,40);ctx.closePath();
+ ctx.fillStyle=color;ctx.fill();if(line){ctx.strokeStyle=line;ctx.lineWidth=3;ctx.stroke();}ctx.restore();
+}
+function seal(ctx,x,y,text,alpha){
+ ctx.save();ctx.globalAlpha=alpha;ctx.translate(x,y);ctx.rotate(-0.06);ctx.fillStyle='#b8322a';ctx.fillRect(-34,-34,68,68);
+ ctx.strokeStyle='#f6e7d0';ctx.lineWidth=3;ctx.strokeRect(-27,-27,54,54);say(ctx,text,0,2,{size:26,color:'#f6e7d0',weight:800,font:F.bold,maxW:56});ctx.restore();
+}
+/* ── The eight styles ─────────────────────────────── */
+const CLIPS=[
+ {id:'brush',name:'พู่กันจีน × ไทย',en:'Chinese brush + Thai',art:'brush',command:'brushstory',story:['ทุ่งนาตื่นเช้า','รวงข้าวโน้มรับลม','หอมทั้งแผ่นดิน'],music:'zen',
+  draw(ctx,t){
+   ctx.drawImage(grain('rice','#f1e6d0',2600,7),0,0,W,H);
+   const sun=ease(t/1.6);ctx.fillStyle=`rgba(196,54,40,${0.85*sun})`;ctx.beginPath();ctx.arc(380,250,70+sun*20,0,TAU);ctx.fill();
+   inkRidge(ctx,520,140,3,'rgba(26,20,16,.16)',ease(t/2.2));
+   inkRidge(ctx,600,110,9,'rgba(26,20,16,.32)',ease((t-.3)/2.2));
+   chedi(ctx,150,560,0.9,'rgba(26,20,16,'+(0.75*ease((t-.8)/1.5))+')');
+   inkRidge(ctx,905,60,15,'rgba(26,20,16,.82)',ease((t-.6)/2.4));
+   ctx.save();ctx.strokeStyle='rgba(26,20,16,.55)';ctx.lineWidth=2.5;
+   for(let i=0;i<4;i++){const bx=((t*42+i*130)%(W+120))-60,by=200+i*26+Math.sin(t*3+i)*8;ctx.beginPath();ctx.moveTo(bx-12,by-6);ctx.quadraticCurveTo(bx-4,by,bx,by+2);ctx.quadraticCurveTo(bx+4,by,bx+12,by-6);ctx.stroke();}
+   ctx.restore();
+   boat(ctx,((t/LOOP)*(W+220))-110,640,0.9,'rgba(26,20,16,.85)');
+   storyText(ctx,t,this.story,{size:96,font:F.brush,weight:700,color:'#15100c',plate:{fill:'rgba(243,233,212,.9)',radius:26,padX:70}},720);
+   ctx.strokeStyle='rgba(184,50,42,.9)';ctx.lineCap='round';ctx.lineWidth=10;ctx.beginPath();const st=ease(((t%LINE)-.2)/1);ctx.moveTo(150,800);ctx.quadraticCurveTo(270,786,150+240*st,802);ctx.stroke();
+   seal(ctx,450,860,'ซอส',ease((t-1)/1));
+  }},
+ {id:'mural',name:'จิตรกรรมฝาผนังไทย',en:'Thai mural',art:'mural',command:'brushstory',story:['ร้านกาแฟของยาย','สูตรลับสามรุ่น','เสิร์ฟด้วยหัวใจ'],music:'ranat',
+  draw(ctx,t){
+   const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#8a2f1c');g.addColorStop(1,'#4d160d');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+   const r=rng(21);
+   for(let i=0;i<26;i++){const x=r()*W,y=r()*H,s=0.5+r()*0.7;flame(ctx,x,y,s,Math.sin(t*0.8+i)*0.25+r()*6,'rgba(217,164,65,'+(0.18+r()*0.2)+')');}
+   ctx.save();ctx.strokeStyle='#d9a441';ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(70,620);ctx.lineTo(70,300);ctx.quadraticCurveTo(70,150,270,110);ctx.quadraticCurveTo(470,150,470,300);ctx.lineTo(470,620);ctx.stroke();ctx.restore();
+   for(let i=0;i<9;i++){const a=-Math.PI/2+(i-4)*0.33;flame(ctx,270+Math.cos(a)*190,300+Math.sin(a)*190,0.55,a+Math.PI/2+Math.sin(t*2+i)*0.12,'#e2b04c','#7a2a1a');}
+   const open=easeIO(t/3);lotus(ctx,270,470,1.35,open,'#f2c46b','#7a2a1a');
+   ctx.fillStyle='#d9a441';ctx.beginPath();ctx.ellipse(270,476,90,16,0,0,TAU);ctx.fill();
+   chedi(ctx,270,330,0.5,'rgba(242,196,107,'+(0.4+0.4*Math.sin(t*2)**2)+')');
+   storyText(ctx,t,this.story,{size:84,font:F.mural,weight:700,color:'#ffe3a1',stroke:{width:6,color:'#3a0f08'},plate:{fill:'rgba(58,15,8,.86)',stroke:'#d9a441',lw:4,radius:14,padX:64}},720);
+   say(ctx,'✦ ✦ ✦',W/2,822,{size:24,color:'#d9a441',alpha:.9});
+  }},
+ {id:'ukiyo',name:'ภาพพิมพ์แกะไม้ญี่ปุ่น',en:'Ukiyo-e',art:'ukiyo',command:'brushstory',story:['คลื่นลูกแรก','ไม่เคยหยุดเรือ','ฝันใหญ่เริ่มเล็ก'],music:'koto',
+  draw(ctx,t){
+   ctx.drawImage(grain('washi','#efe2c4',1800,11),0,0,W,H);
+   ctx.fillStyle='#c8402f';ctx.beginPath();ctx.arc(390,230,74,0,TAU);ctx.fill();
+   ctx.fillStyle='#24395c';ctx.beginPath();ctx.moveTo(110,520);ctx.lineTo(260,300);ctx.lineTo(420,520);ctx.fill();
+   ctx.fillStyle='#f6efe0';ctx.beginPath();ctx.moveTo(220,358);ctx.lineTo(260,300);ctx.lineTo(302,360);ctx.lineTo(282,348);ctx.lineTo(262,366);ctx.lineTo(242,346);ctx.closePath();ctx.fill();
+   for(let layer=0;layer<4;layer++){
+    const base=560+layer*70,amp=40-layer*5,ph=t*(1.2+layer*0.35)+layer;
+    ctx.beginPath();ctx.moveTo(0,H);for(let x=0;x<=W;x+=8)ctx.lineTo(x,base+Math.sin(x*0.018+ph)*amp+Math.sin(x*0.05+ph*1.7)*8);ctx.lineTo(W,H);ctx.closePath();
+    ctx.fillStyle=['#2f5d8a','#24476e','#1c3757','#162a44'][layer];ctx.fill();
+    ctx.strokeStyle='#f6efe0';ctx.lineWidth=4;ctx.stroke();
+    ctx.fillStyle='#f6efe0';for(let x=0;x<=W;x+=26){const y=base+Math.sin(x*0.018+ph)*amp+Math.sin(x*0.05+ph*1.7)*8;if(Math.sin(x*0.018+ph)>0.55){ctx.beginPath();ctx.arc(x,y-6,5,0,TAU);ctx.fill();}}
+   }
+   boat(ctx,180+Math.sin(t)*20,600+Math.sin(t*1.4)*14,0.9,'#3b2412');
+   storyText(ctx,t,this.story,{size:70,font:F.bold,weight:800,color:'#1a1410',plate:{fill:'#f6efe0',stroke:'#1a1410',lw:5,radius:6,padX:60}},752);
+   seal(ctx,452,846,'ซอส',1);
+  }},
+ {id:'paper',name:'กระดาษตัดซ้อนชั้น',en:'Paper cut',art:'paper',command:'brushstory',story:['ดอยยามเช้า','ใบชาลูกแรก','ถึงแก้วของคุณ'],music:'bells',
+  draw(ctx,t){
+   const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#ffd9b3');g.addColorStop(1,'#ffeedd');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+   ctx.fillStyle='#ff9a5a';ctx.beginPath();ctx.arc(W/2,330-ease(t/3)*60,80,0,TAU);ctx.fill();
+   const colors=['#f6b98c','#e8906a','#9fc49a','#6fa37a','#3f7c5a','#2a5a40'];
+   colors.forEach((c,i)=>{
+    ctx.save();ctx.shadowColor='rgba(60,30,10,.28)';ctx.shadowBlur=18;ctx.shadowOffsetY=8;
+    const off=(t*(6+i*7))%W;ctx.beginPath();ctx.moveTo(0,H);
+    for(let x=-W;x<=W*2;x+=10){const xx=x-off;ctx.lineTo(xx,380+i*80+Math.sin(x*0.012+i*1.7)*(50-i*4)+Math.sin(x*0.031+i)*14);}
+    ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=c;ctx.fill();ctx.restore();
+   });
+   for(let i=0;i<3;i++){const cx=((t*22+i*220)%(W+200))-100,cy=170+i*60;ctx.save();ctx.shadowColor='rgba(60,30,10,.2)';ctx.shadowBlur=10;ctx.shadowOffsetY=5;ctx.fillStyle='#fffaf3';ctx.beginPath();ctx.arc(cx,cy,26,0,TAU);ctx.arc(cx+30,cy-10,32,0,TAU);ctx.arc(cx+64,cy,24,0,TAU);ctx.fill();ctx.restore();}
+   storyText(ctx,t,this.story,{size:74,font:F.round,weight:600,color:'#2a5a40',plate:{fill:'#fffaf3',shadow:'rgba(60,30,10,.32)',radius:26,padX:64}},740);
+  }},
+ {id:'neon',name:'นีออนซินธ์เวฟ',en:'Neon synthwave',art:'neon',command:'brushstory',story:['กรุงเทพฯ ตีสอง','ไอเดียยังไม่นอน','เปิดร้านออนไลน์'],music:'synth',
+  draw(ctx,t){
+   const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#090320');g.addColorStop(.55,'#2a0845');g.addColorStop(1,'#090320');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+   const hz=520;
+   ctx.save();const sg=ctx.createLinearGradient(0,240,0,hz);sg.addColorStop(0,'#ffd319');sg.addColorStop(1,'#ff2975');ctx.fillStyle=sg;ctx.beginPath();ctx.arc(W/2,hz,170,Math.PI,0);ctx.fill();
+   ctx.fillStyle='#2a0845';for(let i=0;i<7;i++){const y=hz-14-i*20+((t*20)%20);ctx.fillRect(0,y,W,4+i*0.6);}ctx.restore();
+   ctx.strokeStyle='#ff2bd6';ctx.shadowColor='#ff2bd6';ctx.shadowBlur=12;ctx.lineWidth=2;
+   for(let i=-10;i<=10;i++){ctx.beginPath();ctx.moveTo(W/2+i*18,hz);ctx.lineTo(W/2+i*140,H);ctx.stroke();}
+   for(let i=0;i<12;i++){const z=((i+(t*1.6)%1)/12);const y=hz+Math.pow(z,2.2)*(H-hz);ctx.globalAlpha=z;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+   ctx.globalAlpha=1;ctx.shadowBlur=0;
+   ctx.fillStyle='#090320';for(const px of [60,480]){ctx.fillRect(px-4,330,8,190);for(let i=0;i<6;i++){ctx.save();ctx.translate(px,330);ctx.rotate(-1.4+i*0.56+Math.sin(t*1.5)*0.05);ctx.beginPath();ctx.ellipse(40,0,46,9,0,0,TAU);ctx.fill();ctx.restore();}}
+   const flick=Math.sin(t*37)>0.93?0.45:1;
+   storyText(ctx,t,this.story,{size:76,font:F.tech,weight:700,color:'#f2fdff',shadow:{color:'#22e0ff',blur:20},alpha:flick,plate:{fill:'rgba(9,3,32,.72)',stroke:'#ff2bd6',lw:3,radius:12,padX:60}},716);
+   say(ctx,'AI ใส่ซอส',W/2,170,{size:34,color:'#ff9bec',weight:700,font:F.tech,shadow:{color:'#ff2bd6',blur:18},spacing:4});
+  }},
+ {id:'water',name:'สีน้ำ',en:'Watercolour',art:'water',command:'brushstory',story:['ตลาดเช้าวันเสาร์','ดอกไม้ส่งยิ้ม','ซื้อใจกันง่าย ๆ'],music:'bells',
+  draw(ctx,t){
+   ctx.fillStyle='#fbf8f1';ctx.fillRect(0,0,W,H);
+   const r=rng(5);ctx.save();ctx.globalCompositeOperation='multiply';
+   const cols=['#f4a6b0','#9fd0e8','#f7d070','#a8d5a2','#c9a7e8','#f6b98c'];
+   for(let i=0;i<14;i++){const x=40+r()*460,y=120+r()*560,rad=(40+r()*110)*ease((t-i*0.18)/1.8),c=cols[i%cols.length];if(rad<=0)continue;
+    const gg=ctx.createRadialGradient(x,y,rad*0.1,x,y,rad);gg.addColorStop(0,c+'cc');gg.addColorStop(.7,c+'66');gg.addColorStop(1,c+'00');ctx.fillStyle=gg;ctx.beginPath();
+    for(let a=0;a<=TAU+0.01;a+=0.35){const rr=rad*(0.85+0.15*Math.sin(a*3+i));ctx.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}ctx.fill();}
+   ctx.restore();
+   ctx.strokeStyle='rgba(40,50,80,.7)';ctx.lineWidth=2.2;ctx.lineCap='round';const d=ease((t-0.5)/2.5);
+   ctx.save();ctx.beginPath();ctx.rect(0,0,W,300+d*500);ctx.clip();
+   for(let i=0;i<5;i++){const fx=110+i*80,fy=420+Math.sin(i*2)*40;ctx.beginPath();ctx.moveTo(fx,fy+150);ctx.quadraticCurveTo(fx+10,fy+60,fx,fy);ctx.stroke();for(let p=0;p<6;p++){const a=p*TAU/6+t*0.3;ctx.beginPath();ctx.ellipse(fx+Math.cos(a)*16,fy+Math.sin(a)*16,13,7,a,0,TAU);ctx.stroke();}}
+   ctx.restore();
+   storyText(ctx,t,this.story,{size:84,font:F.hand,weight:400,color:'#22305a',rot:-0.035,plate:{fill:'rgba(255,255,255,.82)',radius:30,padX:70}},760);
+  }},
+ {id:'pixel',name:'พิกเซลอาร์ต',en:'Pixel art',art:'pixel',command:'brushstory',story:['LEVEL 1: เริ่มร้าน','LEVEL 2: ลูกค้าแรก','LEVEL UP! 🍀'],music:'chip',
+  draw(ctx,t){
+   let off=cache.get('pixelbuf');if(!off){off=document.createElement('canvas');off.width=90;off.height=160;cache.set('pixelbuf',off);}
+   const p=off.getContext('2d');p.imageSmoothingEnabled=false;
+   p.fillStyle='#3a2e6e';p.fillRect(0,0,90,160);p.fillStyle='#5b3f8f';p.fillRect(0,40,90,40);p.fillStyle='#f78f6b';p.fillRect(0,70,90,20);
+   p.fillStyle='#ffd166';p.fillRect(58,26,12,12);p.fillRect(56,28,16,8);
+   const r=rng(3);p.fillStyle='#fff';for(let i=0;i<14;i++){if((Math.floor(t*4)+i)%5)p.fillRect(Math.floor(r()*90),Math.floor(r()*36),1,1);}
+   for(let i=0;i<9;i++){const bw=6+Math.floor(r()*6),bh=18+Math.floor(r()*30);const bx=(i*11-Math.floor(t*6))%110;const x=(bx+110)%110-10;p.fillStyle='#24204a';p.fillRect(x,110-bh,bw,bh);p.fillStyle='#ffd166';for(let wy=110-bh+3;wy<106;wy+=5)if((wy+i)%3)p.fillRect(x+2,wy,1,1);}
+   p.fillStyle='#2b6b4a';p.fillRect(0,110,90,50);p.fillStyle='#3f8f62';for(let x=0;x<90;x+=4)p.fillRect((x+Math.floor(t*12))%90,110,2,2);
+   const step=Math.floor(t*6)%2,hx=30,hy=96-(Math.abs(Math.sin(t*6))*3|0);
+   p.fillStyle='#1b1b1b';p.fillRect(hx,hy,8,4);p.fillStyle='#f2c9a0';p.fillRect(hx+1,hy+4,6,5);p.fillStyle='#000';p.fillRect(hx+2,hy+5,1,1);p.fillRect(hx+5,hy+5,1,1);
+   p.fillStyle='#c0392b';p.fillRect(hx,hy+9,8,6);p.fillStyle='#1b1b1b';p.fillRect(hx+1,hy+15,2,2+step);p.fillRect(hx+5,hy+15,2,3-step);
+   p.fillStyle='#3fb950';const cy=88+(Math.floor(t*3)%2);p.fillRect(62,cy,3,3);p.fillRect(65,cy,3,3);p.fillRect(62,cy+3,3,3);p.fillRect(65,cy+3,3,3);
+   ctx.imageSmoothingEnabled=false;ctx.drawImage(off,0,0,W,H);ctx.imageSmoothingEnabled=true;
+   const [i,pr]=scene(t);const a=lineIn(pr);
+   ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#111';ctx.fillRect(40,690,460,96);ctx.fillStyle='#fff';ctx.fillRect(46,696,448,84);ctx.fillStyle='#111';ctx.fillRect(52,702,436,72);ctx.restore();
+   say(ctx,this.story[i],W/2,739,{size:52,color:'#ffd166',weight:700,font:F.tech,alpha:a,maxW:404,shadow:{color:'#c0392b',x:4,y:4}});
+  }},
+ {id:'kinetic',name:'ตัวหนังสือเด้ง',en:'Kinetic type',art:null,command:'kinetic',story:['ใคร','เจอ','เรา','คนนั้น','โชคดี','🍀'],music:'beat',
+  draw(ctx,t){
+   const beat=0.5,n=this.story.length,k=Math.floor(t/beat)%(n+6),local=(t%beat)/beat;
+   const bgs=['#ffcf3f','#ff5d73','#4cc9f0','#7b2ff7','#06d6a0','#111'];const idx=Math.min(k,n-1);
+   ctx.fillStyle=bgs[idx%bgs.length];ctx.fillRect(0,0,W,H);
+   ctx.save();ctx.globalAlpha=.18;ctx.fillStyle='#fff';for(let i=0;i<8;i++){const y=((t*120+i*130)%(H+100))-50;ctx.fillRect(0,y,W,14);}ctx.restore();
+   if(k<n){const s=1+0.35*Math.sin(local*Math.PI)*(1-local)+(1-ease(local*4))*-0.5;say(ctx,this.story[k],W/2,H/2,{size:k===n-1?220:170,font:F.bold,maxW:470,color:idx%bgs.length===5?'#ffcf3f':'#111',weight:800,scale:Math.max(0.2,s),rot:(k%2?1:-1)*0.06});}
+   else{const line='ใครเจอเรา คนนั้นโชคดี';say(ctx,'ใครเจอเรา',W/2,H/2-70,{size:96,font:F.bold,color:'#ffcf3f',weight:800});say(ctx,'คนนั้นโชคดี 🍀',W/2,H/2+40,{size:96,font:F.bold,color:'#ffcf3f',weight:800});say(ctx,'myClover · AI ใส่ซอส',W/2,H/2+140,{size:30,font:F.tech,color:'#fff',weight:700,alpha:.85});}
+   const bar=(t%beat)/beat;ctx.fillStyle='rgba(0,0,0,.15)';ctx.fillRect(0,H-12,W*bar,12);
+  }}
+];
+/* ── Procedural soundtrack ───────────────────────── */
+const SCALES={zen:[0,2,4,7,9],ranat:[0,2,4,7,9],koto:[0,1,5,7,8],bells:[0,2,4,7,9,11],synth:[0,3,7,10],chip:[0,4,7,12],beat:[0,3,5,7,10]};
+const ROOT={zen:57,ranat:62,koto:57,bells:64,synth:45,chip:60,beat:43};
+const hz=m=>440*Math.pow(2,(m-69)/12);
+function impulse(audio,seconds=2.4){const len=Math.floor(audio.sampleRate*seconds),buf=audio.createBuffer(2,len,audio.sampleRate);for(let c=0;c<2;c++){const d=buf.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}return buf;}
+function createMusic(kind,audio){
+ const out=audio.createGain();out.gain.value=0;out.gain.linearRampToValueAtTime(0.62,audio.currentTime+0.4);
+ // Dry signal plus a soft room, glued by a compressor so small speakers still sound full.
+ const mix=audio.createGain(),wet=audio.createGain(),room=audio.createConvolver(),glue=audio.createDynamicsCompressor();
+ room.buffer=impulse(audio);wet.gain.value=kind==='chip'||kind==='beat'?0.12:0.32;
+ out.connect(mix);out.connect(room).connect(wet).connect(mix);mix.connect(glue);
+ glue.threshold.value=-18;glue.ratio.value=3;glue.attack.value=0.01;glue.release.value=0.25;
+ const scale=SCALES[kind]||SCALES.zen,root=ROOT[kind]||57;let step=0,next=audio.currentTime+0.05,timer=0;
+ const tempo={zen:0.5,ranat:0.18,koto:0.36,bells:0.3,synth:0.22,chip:0.12,beat:0.25}[kind]||0.3;
+ function note(time,midi,{type='sine',dur=0.4,vol=0.2,attack=0.005}={}){const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=hz(midi);g.gain.setValueAtTime(0,time);g.gain.linearRampToValueAtTime(vol,time+attack);g.gain.exponentialRampToValueAtTime(0.0008,time+dur);o.connect(g).connect(out);o.start(time);o.stop(time+dur+0.05);}
+ function noise(time,{dur=0.05,vol=0.1,hp=6000}={}){const b=audio.createBuffer(1,Math.max(1,Math.floor(audio.sampleRate*dur)),audio.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const s=audio.createBufferSource(),f=audio.createBiquadFilter(),g=audio.createGain();f.type='highpass';f.frequency.value=hp;g.gain.value=vol;s.buffer=b;s.connect(f).connect(g).connect(out);s.start(time);}
+ function kick(time,vol=0.5){const o=audio.createOscillator(),g=audio.createGain();o.frequency.setValueAtTime(140,time);o.frequency.exponentialRampToValueAtTime(40,time+0.18);g.gain.setValueAtTime(vol,time);g.gain.exponentialRampToValueAtTime(0.001,time+0.25);o.connect(g).connect(out);o.start(time);o.stop(time+0.3);}
+ function tick(){
+  while(next<audio.currentTime+0.25){
+   const deg=scale[(step*3+Math.floor(step/4))%scale.length],oct=(step%8>5)?12:0;
+   if(kind==='zen'){if(step%2===0)note(next,root+deg+oct,{type:'sine',dur:1.6,vol:0.16,attack:0.02});if(step%8===0)note(next,root-12,{type:'triangle',dur:4,vol:0.08,attack:0.4});}
+   else if(kind==='ranat'){note(next,root+deg+(step%4===3?12:0),{type:'triangle',dur:0.35,vol:0.18});if(step%4===0)noise(next,{dur:0.08,vol:0.06,hp:7000});}
+   else if(kind==='koto'){if(step%3!==2)note(next,root+deg+oct,{type:'triangle',dur:0.9,vol:0.17});if(step%12===0)note(next,root-12,{type:'sine',dur:3,vol:0.08,attack:0.3});}
+   else if(kind==='bells'){note(next,root+deg+oct,{type:'sine',dur:1.2,vol:0.12});if(step%2)note(next,root+deg+19,{type:'sine',dur:0.6,vol:0.04});}
+   else if(kind==='synth'){note(next,root+deg+12,{type:'sawtooth',dur:0.2,vol:0.06});if(step%4===0){kick(next,0.4);note(next,root-12+scale[Math.floor(step/8)%scale.length],{type:'square',dur:0.8,vol:0.05});}}
+   else if(kind==='chip'){note(next,root+deg+(step%16>11?12:0),{type:'square',dur:0.1,vol:0.06});if(step%8===0)note(next,root-12,{type:'triangle',dur:0.4,vol:0.12});}
+   else if(kind==='beat'){if(step%2===0)kick(next,0.6);if(step%4===2)noise(next,{dur:0.12,vol:0.18,hp:1500});noise(next,{dur:0.03,vol:0.04,hp:8000});if(step%2===0)note(next,root+scale[(step/2)%scale.length],{type:'sawtooth',dur:0.22,vol:0.05});}
+   if(['zen','koto','bells','ranat'].includes(kind)&&step%16===0){for(const d of [0,4,7])note(next,root-12+scale[Math.floor(step/16)%scale.length]+d,{type:'sine',dur:tempo*16,vol:0.035,attack:tempo*3});}
+   next+=tempo;step++;
+  }
+ }
+ tick();timer=setInterval(tick,90);
+ return {node:glue,stop(){clearInterval(timer);const now=audio.currentTime;out.gain.cancelScheduledValues(now);out.gain.setValueAtTime(out.gain.value,now);out.gain.linearRampToValueAtTime(0,now+0.3);setTimeout(()=>{try{glue.disconnect();}catch{}},2600);}};
+}
+window.MC_REEL={CLIPS,LOOP,W,H};
+if(typeof document==='undefined')return;
+/* ── Cards ───────────────────────────────────────── */
+const reduce=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const cards=[];const visible=new Set();let raf=0,last=0;const start=performance.now();
+function sizeCanvas(canvas,scale){const ctx=canvas.getContext('2d');canvas.width=Math.round(W*scale);canvas.height=Math.round(H*scale);ctx.setTransform(scale,0,0,scale,0,0);return ctx;}
+function frame(clip,ctx,t){ctx.save();try{clip.draw.call(clip,ctx,((t%LOOP)+LOOP)%LOOP);}finally{ctx.restore();}}
+function loop(now){
+ raf=0;if(document.hidden)return;
+ if(now-last>=33){last=now;const t=(now-start)/1000;for(const card of visible)frame(card.clip,card.ctx,t+card.offset);}
+ if(visible.size&&!reduce())raf=requestAnimationFrame(loop);
+}
+function wake(){if(!raf&&visible.size&&!reduce())raf=requestAnimationFrame(loop);}
+function mountCards(){
+ const host=$('reelGrid');if(!host)return;
+ host.innerHTML=CLIPS.map((clip,i)=>'<button type="button" class="reel-card" data-clip="'+clip.id+'" aria-label="เปิดคลิปสไตล์ '+clip.name+' พร้อมเสียง"><span class="reel-screen"><canvas width="180" height="320" aria-hidden="true"></canvas><span class="reel-play" aria-hidden="true">▶ 🔊</span></span><span class="reel-meta"><b>'+clip.name+'</b><small>'+clip.en+' · /'+clip.command+'</small></span></button>').join('');
+ const scale=Math.min(2,(window.devicePixelRatio||1))*0.36;
+ host.querySelectorAll('.reel-card').forEach((el,i)=>{const clip=CLIPS[i];const canvas=el.querySelector('canvas');const ctx=sizeCanvas(canvas,scale);const card={clip,ctx,el,offset:i*1.37};cards.push(card);frame(clip,ctx,2.4+i*0.3);});
+ // Canvas text only uses a web font once it has loaded; repaint the still frames when it arrives.
+ if(document.fonts?.load)Promise.all(FONT_LOADS.map(spec=>document.fonts.load(spec,'กขคไทยAa').catch(()=>null))).then(()=>{cards.forEach((card,i)=>frame(card.clip,card.ctx,2.4+i*0.3));if(theater)frame(theater.clip,theater.ctx,(performance.now()-theater.t0)/1000);});
+ if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(entries=>{for(const e of entries){const card=cards.find(c=>c.el===e.target);if(!card)continue;if(e.isIntersecting)visible.add(card);else visible.delete(card);}wake();},{rootMargin:'80px'});
+  cards.forEach(c=>io.observe(c.el));
+ }
+ document.addEventListener('visibilitychange',wake);
+ host.addEventListener('click',event=>{const el=event.target.closest('[data-clip]');if(el)openTheater(el.dataset.clip);});
+}
+/* ── Theater: full-size playback, soundtrack and recording ── */
+let theater=null;
+function openTheater(id){
+ const clip=CLIPS.find(c=>c.id===id);const dlg=$('reelTheater');if(!clip||!dlg)return;
+ closeTheater(true);
+ const canvas=$('reelBig');const ctx=sizeCanvas(canvas,1);
+ theater={clip,ctx,canvas,t0:performance.now(),raf:0,audio:null,music:null,recorder:null,playing:true};
+ setText($('reelTitle'),clip.name);setText($('reelSub'),clip.en+' · สร้างจากโค้ดทั้งหมด');
+ const use=$('reelUse');if(use){use.dataset.command=clip.command;use.dataset.art=clip.art||'';use.textContent=clip.art?'🖌️ ใช้สไตล์นี้กับเรื่องของฉัน':'🔠 ใช้คำสั่งนี้กับข้อความของฉัน';}
+ const box=$('reelPrompt');if(box){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===clip.command);const opt=command?.opts?.find(o=>o.k===(clip.art?'art':'look'));const choice=opt?.choices.find(c=>c[0]===clip.art)||opt?.choices[0];const esc=v=>String(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));box.innerHTML=clip.art&&choice?'/brushstory '+esc(choice[1])+'\n\nCreate JavaScript animation with music (and downloadable to mp4) using <b>'+esc(choice[2])+'</b> as key main art direction…\n\nStory will be about, "<b>ใส่เรื่องของคุณ — หรือเว้นว่างให้ใช้เรื่องจากซอส</b>"\n\nQuality: premium… (+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)':'/kinetic\n\nCreate a kinetic typography video… Text: "<b>ใส่ข้อความของคุณ — หรือเว้นว่างให้เลือกจากซอส</b>"\n\n(+ ข้อกำหนดเต็ม ติดไปตอนกดก๊อป)';}
+ // The device voice is synthetic, so narration starts off; the learner opts in (with a one-time note).
+ theater.voice=false;theater.lastLine=-1;
+ startMusic();
+ paintTheaterButtons();
+ if(typeof dlg.showModal==='function'&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');
+ const tick=now=>{if(!theater)return;if(theater.playing){const t=(now-theater.t0)/1000;frame(clip,ctx,t);narrate(t);}theater.raf=requestAnimationFrame(tick);};
+ frame(clip,ctx,0);theater.raf=requestAnimationFrame(tick);
+}
+function setText(el,v){if(el&&el.textContent!==v)el.textContent=v;}
+/* Optional Thai narration (speechSynthesis). It plays live only; recordings keep the music track. */
+function thaiVoice(){try{return speechSynthesis.getVoices().find(v=>/^th/i.test(v.lang))||null;}catch{return null;}}
+function voiceAvailable(){return typeof speechSynthesis!=='undefined'&&!!thaiVoice();}
+function narrate(t){
+ if(!theater?.voice)return;
+ const clip=theater.clip,loopT=((t%LOOP)+LOOP)%LOOP;
+ const line=clip.id==='kinetic'?(loopT<0.2?0:-1):Math.min(2,Math.floor(loopT/LINE));
+ if(line<0||line===theater.lastLine)return;theater.lastLine=line;
+ if(clip.id==='kinetic'&&loopT>=0.2)return;
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(clip.id==='kinetic'?'ใครเจอเรา คนนั้นโชคดี':clip.story[line].replace(/LEVEL\s*\d*:?|LEVEL UP!/g,''));const v=thaiVoice();if(v)u.voice=v;u.lang='th-TH';u.rate=0.95;u.volume=1;speechSynthesis.speak(u);}catch{}
+}
+function stopVoice(){try{speechSynthesis.cancel();}catch{}}
+function paintTheaterButtons(){
+ if(!theater)return;
+ setText($('reelToggle'),theater.playing?'⏸ หยุด':'▶ เล่น');
+ setText($('reelSound'),theater.music?'🔇 ปิดเพลง':'🎵 เปิดเพลง');
+ const voice=$('reelVoice');if(voice){voice.hidden=!voiceAvailable();setText(voice,theater.voice?'🤫 ปิดเสียงพากย์':'🗣️ ลองเสียงพากย์ (สังเคราะห์)');}
+ const rec=$('reelRecord');if(rec){rec.disabled=!!theater.recorder||typeof MediaRecorder==='undefined'||!theater.canvas.captureStream;setText(rec,theater.recorder?'⏺ กำลังอัด…':'⬇ อัดเป็นวิดีโอ ('+LOOP+' วิ)');}
+}
+function audioContext(){if(!theater.audio){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;theater.audio=new AC();}if(theater.audio.state==='suspended')theater.audio.resume();return theater.audio;}
+function startMusic(){const audio=audioContext();if(!audio||theater.music)return;theater.music=createMusic(theater.clip.music,audio);theater.music.node.connect(audio.destination);if(theater.recordDest)theater.music.node.connect(theater.recordDest);}
+function stopMusic(){theater?.music?.stop();if(theater)theater.music=null;}
+function closeTheater(silent){
+ if(!theater)return;cancelAnimationFrame(theater.raf);stopMusic();stopVoice();
+ if(theater.recorder&&theater.recorder.state!=='inactive'){theater.cancelled=true;theater.recorder.stop();}
+ try{theater.audio?.close();}catch{}
+ theater=null;const dlg=$('reelTheater');if(!silent&&dlg?.open){dlg.close?.();dlg.removeAttribute('open');}
+}
+function pickType(){const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];return types.find(type=>MediaRecorder.isTypeSupported?.(type))||'';}
+function record(){
+ if(!theater||theater.recorder)return;
+ const stream=theater.canvas.captureStream(30);
+ const audio=audioContext();
+ if(audio){theater.recordDest=audio.createMediaStreamDestination();if(!theater.music)startMusic();else theater.music.node.connect(theater.recordDest);theater.recordDest.stream.getAudioTracks().forEach(track=>stream.addTrack(track));}
+ const type=pickType();let recorder;try{recorder=new MediaRecorder(stream,type?{mimeType:type,videoBitsPerSecond:4e6}:undefined);}catch{toast('เบราว์เซอร์นี้ยังอัดวิดีโอไม่ได้ ลองใน Chrome บนคอมพิวเตอร์');return;}
+ const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+ const clip=theater.clip;
+ recorder.onstop=()=>{
+  const was=theater;stream.getTracks().forEach(track=>track.stop());
+  if(was){was.recorder=null;was.recordDest=null;paintTheaterButtons();}
+  if(!chunks.length||(was&&was.cancelled))return;
+  const ext=(recorder.mimeType||type).includes('mp4')?'mp4':'webm';
+  const blob=new Blob(chunks,{type:recorder.mimeType||type||'video/webm'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ai-sauce-'+clip.id+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast('🎬 ได้ไฟล์ .'+ext+' แล้ว — นี่คือสิ่งที่ /brushstory สั่งให้ AI ทำให้คุณ');
+ };
+ theater.recorder=recorder;theater.playing=true;theater.t0=performance.now();recorder.start(250);paintTheaterButtons();
+ setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
+}
+function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();paintTheaterButtons();}
+const VO_NOTE='mc_reel_voice_note_v1';
+function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
+function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
+function showVoiceNote(on){const note=$('reelVoNote');if(!note)return;note.hidden=!on;if(on)$('reelVoOk')?.focus({preventScroll:true});}
+function toast(message){const el=$('toast');if(!el)return;el.textContent=message;el.classList.add('on');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('on'),2600);}
+function bindTheater(){
+ const dlg=$('reelTheater');if(!dlg)return;
+ dlg.addEventListener('close',()=>closeTheater(true));
+ dlg.addEventListener('click',event=>{
+  const t=event.target;
+  if(t===dlg||t.closest('#reelClose')){closeTheater();return;}
+  if(!theater)return;
+  if(t.closest('#reelToggle')){theater.playing=!theater.playing;if(theater.playing)theater.t0=performance.now()-((theater.pausedAt||0)*1000);else theater.pausedAt=(performance.now()-theater.t0)/1000;if(!theater.playing){stopMusic();stopVoice();}else startMusic();theater.lastLine=-1;paintTheaterButtons();return;}
+  if(t.closest('#reelSound')){if(theater.music)stopMusic();else startMusic();paintTheaterButtons();return;}
+  if(t.closest('#reelVoice')){if(!theater.voice&&!voiceNoteSeen()){showVoiceNote(true);return;}setVoice(!theater.voice);return;}
+  if(t.closest('#reelVoOk')){markVoiceNote();showVoiceNote(false);setVoice(true);return;}
+  if(t.closest('#reelVoNo')){markVoiceNote();showVoiceNote(false);return;}
+  if(t.closest('#reelRecord')){record();return;}
+  const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();
+   // On the video page (5.2) the wok lives in 5.1, so open it there with this style loaded.
+   if(!document.getElementById('deckCards')){location.href='season-commands.html?add='+encodeURIComponent(command)+(art?'&art='+encodeURIComponent(art):'')+'#forge';return;}
+  document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
+ });
+}
+// Copy-all: the full prompt (requirements + text-safety rules), exactly what the deck would copy.
+function fullPrompt(id,options,field){const deck=window.MC_DECK;const command=deck?.COMMANDS.find(c=>c.id===id);if(!command)return '';return deck.buildPrompt([{id,options:{...deck.defaults(command),...(options||{})},field:field||''}]);}
+async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch{}try{const a=document.createElement('textarea');a.value=text;a.setAttribute('readonly','');a.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch{return false;}}
+async function copyAll(button,text){if(!text)return;const ok=await copyText(text);const label=button.dataset.label||(button.dataset.label=button.textContent);button.textContent=ok?'✓ ก๊อปแล้ว ไปวางใน Claude / ChatGPT ได้เลย':'ก๊อปไม่ได้ ลองกดค้างที่ข้อความแทน';toast(ok?'ก๊อป prompt ทั้งหมดแล้ว':'ก๊อปไม่ได้');clearTimeout(button._t);button._t=setTimeout(()=>{button.textContent=label;},2400);}
+function bindCopy(){document.addEventListener('click',e=>{const b=e.target.closest?.('[data-copy-prompt],#reelCopy');if(!b)return;
+ if(b.id==='reelCopy'){const clip=theater?.clip;if(clip)copyAll(b,fullPrompt(clip.command,clip.art?{art:clip.art}:{},''));return;}
+ try{const d=JSON.parse(b.dataset.copyPrompt);copyAll(b,fullPrompt(d.id,d.options,d.field));}catch{}});}
+function mount(){mountCards();bindTheater();bindCopy();try{speechSynthesis.onvoiceschanged=()=>{if(!theater)return;paintTheaterButtons();};}catch{}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})();
+</script>
+
+<script>
+/* Lesson 5 paths: pick what to make, walk only that route, mark it done when a prompt is copied.
+   Also the Sauce × Model × Effort power card, and the course trailer's end button. */
+(function(){
+'use strict';
+const KEY='mc_l5_paths_v1',PKEY='mc_l5_power_v1',$=id=>document.getElementById(id);
+const M1=['1 หยิบคำสั่ง','#deck'],M2=['2 ส่งให้ AI','#forge'],M3=['3 ชิมแล้วปรับ','#promptCheck'];
+// Steps follow the page from top to bottom and reuse the three mission names, so a route never jumps back up.
+const PATHS={
+ video:{name:'🎬 คลิป & วิดีโอ',cat:'video',tab:'video',steps:[['ดูคลิปตัวอย่าง','#deckExample'],['วิดีโอเปิดคอร์ส + prompt','#lessonTrailer'],M1,M2,M3]},
+ image:{name:'📸 ภาพสวยจากรูปเดิม',cat:'image',tab:'image',steps:[['ดูภาพตัวอย่าง','#deckExample'],M1,M2,M3]},
+ write:{name:'✍️ โพสต์ & ขายของ',cat:'write',steps:[M1,M2,M3]},
+ work:{name:'📄 เอกสาร & สรุปงาน',cat:'work',tab:'docs',steps:[['ดูเอกสารตัวอย่าง','#deckExample'],M1,M2,M3]},
+ build:{name:'🌐 เว็บ & แอป',cat:'build',tab:'docs',steps:[['ดูเว็บตัวอย่าง','#deckExample'],M1,M2,M3]},
+ agent:{name:'🤖 Agent ประจำตัว',tab:'agent',steps:[['ดู Agent ตัวอย่าง','#deckExample'],['ปั้น Agent ของคุณ','#agent'],M3]}
+};
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch{return d;}};
+const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+let st=read(KEY,{active:null,done:[]});if(!Array.isArray(st.done))st.done=[];
+function jump(sel){const el=document.querySelector(sel);if(!el)return;const lenis=window.cloverMotion?.lenis;if(lenis)lenis.scrollTo(el,{offset:-90,duration:.9});else el.scrollIntoView({behavior:'smooth',block:'start'});}
+function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2800);}
+function paint(){
+ document.querySelectorAll('[data-path]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.path===st.active));b.dataset.done=String(st.done.includes(b.dataset.path));});
+ const now=$('pathNow'),p=PATHS[st.active];
+ if(now){now.hidden=!p;if(p)now.innerHTML='<b>กำลังเดิน: '+p.name+'</b><ol>'+p.steps.map((x,i)=>'<li><a href="'+x[1]+'" data-jump="'+x[1]+'">'+x[0]+'</a></li>').join('')+'</ol>';}
+ const n=st.done.length,total=Object.keys(PATHS).length,pr=$('pathProgress');
+ if(pr)pr.textContent=n?'🏅 เก็บแล้ว '+n+' / '+total+' เส้นทาง'+(n===total?' — ครบทุกเส้น เก่งมาก!':' · ทางที่เหลือรอคุณอยู่'):'ยังไม่ได้เริ่ม เลือกได้ 1 ทาง เปลี่ยนใจได้ตลอด';
+ const chips=$('againChips');if(chips)chips.innerHTML=Object.entries(PATHS).map(([k,v])=>'<button type="button" data-path-go="'+k+'" data-done="'+st.done.includes(k)+'">'+(st.done.includes(k)?'✓ ':'')+v.name+'</button>').join('');
+}
+function choose(key,go){
+ const p=PATHS[key];if(!p)return;st.active=key;write(KEY,st);paint();
+ if(p.cat)document.querySelector('#deckCats [data-cat="'+p.cat+'"]')?.click();
+ if(p.tab)document.querySelector('[data-sc-tab="'+p.tab+'"]')?.click();
+ if(go)jump(p.steps[0][1]);
+}
+function finish(){if(!st.active||st.done.includes(st.active))return;st.done.push(st.active);write(KEY,st);paint();toast('✓ เส้นทาง '+PATHS[st.active].name+' สำเร็จ! เลือกทางใหม่ได้ท้ายหน้า');}
+document.addEventListener('click',e=>{
+ const t=e.target;if(!t.closest)return;
+ const path=t.closest('[data-path]');if(path){choose(path.dataset.path,true);return;}
+ const again=t.closest('[data-path-go]');if(again){choose(again.dataset.pathGo,true);return;}
+ const j=t.closest('[data-jump]');if(j){e.preventDefault();jump(j.dataset.jump);return;}
+ // Copying or sending a prompt counts as finishing the active route.
+ if(t.closest('[data-ship],#shortCopy,.copy-all,#reelCopy')||(st.active==='agent'&&t.closest('#agent button')&&/คัดลอก|ก๊อป|copy/i.test(t.textContent||'')))setTimeout(finish,400);
+ // The voice note links to the course trailer: dismiss the note and the clip player before scrolling.
+ const vo=t.closest('#reelVoNote a');if(vo){e.preventDefault();$('reelVoNo')?.click();$('reelClose')?.click();setTimeout(()=>jump('#lessonTrailer'),120);return;}
+ // The trailer's end button points at its prompt; close the phone dialog first.
+ const cta=t.closest('#trailerPop .trx-cta');if(cta){e.preventDefault();$('trailerPop')?.querySelector('.trx-skip')?.click();setTimeout(()=>jump('#trailerPrompt'),120);}
+});
+// Power card: work quality = sauce × model × effort.
+const RANKS=[[0,'0','ไม่มีซอส = 0 · AI ต้องเดาเรื่องคุณเอง ต่อให้โมเดลแพงแค่ไหนก็ได้งานกลาง ๆ ที่ไม่ใช่คุณ'],[3,'C','พอใช้ ได้งานทั่วไป'],[8,'B','ดี ใช้งานได้จริง'],[18,'A','สวย ตรงตัวคุณ ใกล้ระดับมือโปร'],[27,'S','ระดับวิดีโอเปิดคอร์ส งานแพง ตรงตัวคุณเต็ม ๆ']];
+const NAMES={sauce:'🫙 ซอส',model:'🧠 โมเดล AI',effort:'⚡ Effort'},MAX={sauce:3,model:3,effort:3};
+let pw=Object.assign({sauce:2,model:2,effort:2},read(PKEY,{}));
+function paintPower(bump){
+ document.querySelectorAll('.power-opts').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.v===pw[g.dataset.stat]))));
+ const score=pw.sauce*pw.model*pw.effort,r=RANKS.find(x=>score<=x[0])||RANKS[RANKS.length-1];
+ const weak=Object.keys(MAX).sort((a,b)=>pw[a]/MAX[a]-pw[b]/MAX[b])[0];
+ const rank=$('powerRank');if(rank){rank.textContent=r[1];if(bump){rank.classList.remove('pop');void rank.offsetWidth;rank.classList.add('pop');setTimeout(()=>rank.classList.remove('pop'),300);}}
+ if($('powerScore'))$('powerScore').textContent='พลังงาน '+score+' / 27';
+ if($('powerBar'))$('powerBar').style.width=(score/27*100)+'%';
+ if($('powerLine'))$('powerLine').textContent=r[2]+(score<27?' · อัปตัวนี้ก่อน: '+NAMES[weak]:'');
+}
+$('powerRows')?.addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(!b)return;pw[b.closest('.power-opts').dataset.stat]=+b.dataset.v;write(PKEY,pw);paintPower(true);});
+function start(){paint();paintPower(false);}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+
+<script defer src="/assets/classroom-trailer.js?v=20261019a"></script>
+
+<script>
+/* Lesson 5 part progress: copying or sending a prompt here marks this part done for the hub. */
+(function(){
+const KEY='mc_l5_parts_v1',PART="video";
+const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch{return {};}};
+const mark=p=>{const s=read();if(s[p])return;s[p]=Date.now();try{localStorage.setItem(KEY,JSON.stringify(s));}catch{}show();};
+function show(){const el=document.getElementById('partDone');if(el&&read()[PART])el.classList.add('on');}
+document.addEventListener('click',e=>{const t=e.target.closest?.(".copy-all,#reelCopy,#reelRecord");if(t)setTimeout(()=>mark(t.dataset.partMark||PART),300);});
+
+show();
+})();
+</script>
+</body>
+</html>

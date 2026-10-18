@@ -361,7 +361,10 @@ function bindTheater(){
   if(t.closest('#reelVoOk')){markVoiceNote();showVoiceNote(false);setVoice(true);return;}
   if(t.closest('#reelVoNo')){markVoiceNote();showVoiceNote(false);return;}
   if(t.closest('#reelRecord')){record();return;}
-  const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
+  const use=t.closest('#reelUse');if(use){const command=use.dataset.command,art=use.dataset.art;closeTheater();
+   // On the video page (5.2) the wok lives in 5.1, so open it there with this style loaded.
+   if(!document.getElementById('deckCards')){location.href='season-commands.html?add='+encodeURIComponent(command)+(art?'&art='+encodeURIComponent(art):'')+'#forge';return;}
+  document.dispatchEvent(new CustomEvent('deck:preset',{detail:{id:command,options:art?{art}:{},}}));}
  });
 }
 // Copy-all: the full prompt (requirements + text-safety rules), exactly what the deck would copy.

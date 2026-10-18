@@ -3,15 +3,15 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
-// Shelf cards link into lesson 5 with ?q=SOP / ?q=README. The lesson's command deck
+// Shelf cards link into lesson 5 with ?q=SOP / ?q=README; the hub forwards them to 5.1, whose command deck
 // reads that query and suggests matching commands. Test the shipped (embedded) copy.
-const html = await readFile(new URL('../../classroom/prompts.html', import.meta.url), 'utf8');
+const html = await readFile(new URL('../../classroom/season-commands.html', import.meta.url), 'utf8');
 const source = await readFile(new URL('../../assets/command-deck.js', import.meta.url), 'utf8');
 const embedded = html.match(/<script[^>]*data-self-contained="command-deck\.js"[^>]*>([\s\S]*?)<\/script>/)?.[1];
 assert.ok(embedded, 'Lesson 5 must embed the command deck');
 
 const context = vm.createContext({ window: {}, URLSearchParams });
-vm.runInContext(embedded, context, { filename: 'classroom/prompts.html:command-deck' });
+vm.runInContext(embedded, context, { filename: 'classroom/season-commands.html:command-deck' });
 const deck = context.window.MC_DECK;
 
 test('the embedded deck matches its source asset', () => {
@@ -101,7 +101,8 @@ test('an Agent without choices falls back to the persona defaults', () => {
 });
 
 test('every code-made clip maps to a real command and art style', async () => {
-  const reelHtml = html.match(/<script[^>]*data-self-contained="sauce-reel\.js"[^>]*>([\s\S]*?)<\/script>/)?.[1];
+  const videoPage = await readFile(new URL('../../classroom/season-video.html', import.meta.url), 'utf8');
+  const reelHtml = videoPage.match(/<script[^>]*data-self-contained="sauce-reel\.js"[^>]*>([\s\S]*?)<\/script>/)?.[1];
   assert.equal(reelHtml?.trim(), (await readFile(new URL('../../assets/sauce-reel.js', import.meta.url), 'utf8')).trim());
   const reelContext = vm.createContext({ window: {} });
   vm.runInContext(reelHtml, reelContext);

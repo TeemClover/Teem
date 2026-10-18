@@ -1869,7 +1869,7 @@ const LESSONS=[
  {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'ชิมด้วยภาพ',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
  {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'คลิปจากซอส',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
  {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'ซอสเดียวหลายเมนู',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
- {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'คำสั่งลัด + Agent',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
+ {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'คำสั่งลัด + Agent',outcome:'ครัวโชว์ก่อนเสิร์ฟ: ยกงานขึ้นระดับพร้อมส่งต่อในธุรกิจ',need:'ซอสของคุณ + งานที่อยากยกระดับ',start:'เลือกครัวของฉัน',work:'#seasonRoutes',example:'#seasonWhy',check:'#seasonRoutes',finish:'.quest',native:null,legacy:null,artifact:'ฉันได้งานจริงจาก 5.1 คำสั่งลัดแล้ว',review:'ฉันติดตั้งผู้ช่วย AI ที่รู้จักซอส (5.3 LV.1) แล้ว'},
  {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เว็บของคุณเอง',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
 ];
 const WORKFLOWS={
@@ -1890,9 +1890,9 @@ const WORKFLOWS={
   {target:'#lesson4FirstOutput',label:'สร้างผลงาน'},
   {target:'#multiplyBoard',label:'เทียบข้อเท็จจริง'}],
  'prompts':[
-  {target:'#paths',label:'เลือกทาง หยิบคำสั่ง',after:'#deck'},
-  {target:'#forge',label:'ปรุงแล้วส่ง AI'},
-  {target:'#promptCheck',label:'ชิมแล้วสั่งปรับ'}],
+  {target:'#route1',label:'5.1 คำสั่งลัด'},
+  {target:'#route2',label:'5.2 วิดีโอ (โบนัส)'},
+  {target:'#route3',label:'5.3 ผู้ช่วย → Agent'}],
  'first-web':[
   {target:'#resumeStarter',label:'แนบซอสแล้วสั่ง',after:'#resumeStarter .prompt-card'},
   {target:'#lesson6Save',label:'บันทึกและเปิด'},
@@ -2052,7 +2052,6 @@ function condenseExplanations(){
   const magic=q('.magic');group(magic?.previousElementSibling,magic?.nextElementSibling,'อ่านเพิ่ม: เครื่องมือแตกผลงาน','cl-notebook-tools');
   const flow=q('.flow');fold([flow?.previousElementSibling,flow],'อ่านเพิ่ม: วงจรการทำงาน','cl-notebook-flow');
  }else if(slug==='prompts'){
-  fold([q('#promptLevels')],'อ่านเพิ่ม: Prompt 3 ระดับ และทำไมคำสั่งลัดถึงเวิร์ก','cl-prompt-theory');
   fold([q('.main-course-tease')],'อ่านก่อนต่อบท 6','cl-prompt-next');
  }else if(slug==='first-web'){
   group('#serveTldr','main > .block:has(.house)','อ่านเพิ่ม: HTML ทำอะไรได้บ้าง','cl-html-theory');

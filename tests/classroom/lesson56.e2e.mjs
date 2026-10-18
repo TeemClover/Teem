@@ -48,7 +48,7 @@ async function makePage(slug,{prior='',reduced=false,width=390}={}){
 async function showSignal(page){await page.locator('#glitchTrigger').evaluate(el=>el.scrollIntoView({block:'center'}));await page.locator('#lesson6Signal').waitFor({state:'visible'})}
 try{
   for(const width of [390,1440]){
-    const page=await makePage('prompts',{width});
+    const page=await makePage('season-commands',{width});
     await page.locator('#deckCards .dc[data-id="reply"] .dc-add').click();
     const input=page.locator('[data-field="reply"]');
     await input.fill('เก็บร่างนี้ไว้ QA');
@@ -68,7 +68,8 @@ try{
     assert.equal(await page.locator('#wokItems .wi').count(),0);
     await page.locator('#deckCards .dc[data-id="meeting"] .dc-add').click();
     assert.equal(await page.locator('[data-field="meeting"]').inputValue(),'ร่างประชุม QA','clearing the wok keeps drafts');
-    await page.locator('#deckExample [data-preset]').click();
+    // The video page (5.2) sends its example into 5.1 with ?add=…
+    await page.goto(new URL('season-commands.html?add=brushstory&art=brush&culture=thai&type=modern#forge', page.url()).href);
     await page.waitForFunction(()=>document.querySelector('#wokItems .wi[data-id="brushstory"]')&&document.querySelectorAll('#wokItems .wi').length===1);
     assert.match(await page.locator('#forgeOut').innerText(),/Chinese brush strokes[\s\S]*Thai culture[\s\S]*Story will be about/);
     await page.locator('[data-opt="brushstory|art|mural"]').click();

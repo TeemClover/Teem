@@ -560,13 +560,17 @@ function bind(){
  if(forge&&'IntersectionObserver' in window){new IntersectionObserver(entries=>{forgeVisible=entries[0].isIntersecting;paintDock();},{threshold:.15}).observe(forge);}
 }
 function mount(){
- if(!$('deckCards'))return;
+ // The agent page (5.3) has the builder but no deck; the video page (5.2) only needs MC_DECK for prompts.
+ if(!$('deckCards')){if($('packList')){load();renderPack();bind();document.documentElement.dataset.deck='ready';}return;}
  load();
  const fromUrl=queryFromSearch(location.search);
  const q=$('deckQ');
  if(q){let stored=null;try{stored=sessionStorage.getItem('mc_deck_q');}catch{}q.value=fromUrl!==null?fromUrl:(stored||'');}
  if(fromUrl)state.cat='all';
  renderCats();renderCards();renderWok();renderSuggest();renderPack();bindDrag();bind();
+ // ?add=brushstory&art=mural (links from 5.2) drops that command into the wok with those styles.
+ const params=new URLSearchParams(location.search),addId=params.get('add');
+ if(addId&&byId[addId]){const opts={};params.forEach((v,k)=>{if(k!=='add'&&k!=='q')opts[k]=v;});loadPreset(addId,opts);}
  document.documentElement.dataset.deck='ready';
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
