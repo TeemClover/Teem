@@ -1,0 +1,766 @@
+{
+ "title": "AI ใส่ซอส · ตัวอย่างคอร์ส 60 วินาที (Final Cut)",
+ "logline": "คนที่ต้องเล่าตัวเองให้ AI ฟังใหม่ทุกแชตจนหมดวัน ได้เห็นหยดซอสสีทองหยดเดียวเปลี่ยนโลกสีเทาให้กลับมามีสี ชื่อเรื่องระเบิดขึ้นที่วินาทีที่ 7 จากนั้น 6 บทพุ่งผ่านเป็น 6 ของจริง แต่ละชิ้นกลายเป็นวัตถุดิบของบทถัดไป: ซอส .md ขวดแรก → ช้อนชิมภาพ → คลิปสั้น → ปิ่นโตหลายเมนู → Agent กับคำสั่งลัด → เว็บของตัวเอง ทั้งหมดนี้แลกกลับมาเป็นเวลา ความสุข และความเคารพ แล้วไปหยุดที่ประตูหินบานหนึ่งที่ไม่มีในสารบัญ รางวัลทั้ง 6 ชิ้นเสียบเข้าเบ้าจนเต็ม มีแสงลอดออกมาจากรูกุญแจ แต่ประตูไม่ยอมเปิด แล้วตัดเข้า drop สุดท้าย: ไปเริ่มบท 1 กันเลย ฟรี ไม่ต้องสมัคร",
+ "scenes": [
+  {
+   "id": "s01_grind",
+   "start": 0,
+   "end": 3.5,
+   "purpose": "Hook on a pain every viewer knows: re-explaining yourself to AI in every new chat until the day is gone. Plants the clock and the chat grid that pay off later as 'time back'.",
+   "lines": [
+    {
+     "text": "เล่าตัวเองซ้ำอีกแล้ว?",
+     "sub": "แชตใหม่ทีไร AI ก็ลืมเราทุกที",
+     "in": 0.2,
+     "out": 3.4
+    }
+   ],
+   "visual": "GLOBAL SPEC (applies to every scene). CLOCK: render(t) is a pure function of t = audioCtx.currentTime − t0, falling back to performance.now() when muted or blocked. frame = round(t×60). Every particle system is seeded per scene, so replay and seek are deterministic. STAGE: logical 1920×1080 when the player box is wider than it is tall, otherwise 1080×1920. u = min(W,H)/100. DPR is capped at 2. On phones (<640 px wide), the header ▶ opens the full-screen 9:16 popup player instead of a tiny inline 16:9 player, so text never drops below about 15 px. THREE LAYERS: (1) WORLD takes every push, shake, whip, smear and flash. (2) HUD (the top rail) never shakes and only dims. (3) TEXT never shakes, never scales with the camera and is never blurred while readable. PALETTE: green #0b2619, deep #06170f, void #04100a, gold #e2c27a, hot gold #f6dc9a, cream #f4ecd8, clover leaf #1f5a3a. Restricted colours: ember #e07a4f for heat only, mint #7fd6a4 for ✓ only, dawn-rose #f2a07b for the secret only, and pain slate #1b2420 / #2a3530 / #8e9a95 for s01 only. FONTS: system Thai stack 'Sukhumvit Set','Thonburi','Noto Sans Thai','Leelawadee UI',sans-serif, with no webfont and therefore no load race. Emoji are pre-rendered once into offscreen sprites ('Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji') and drawn as images. TEXT: the headline is weight 800 cream, with its key word in hot gold. The sub is weight 500, cream at 88%. Sizes are 7u headline / 4u sub in 16:9 and 7.4u headline / 4.4u sub in 9:16. Auto-fit with measureText to 88% of the text column; never wrap and never go below 85% of the nominal size. Every text block sits on a soft radial scrim, rgba(6,23,15,.62). The default block in 16:9 is centred, with the headline baseline at 79%H and the sub at 87%H. In 9:16 it is centred, with the headline at 70%H and the sub at 76%H, 6%W gutters, and nothing in the bottom 10%. ENTRANCE (0.35 s, starting at 'in'): alpha 0→1, a 16 px rise and an upward mask wipe. The sub starts 0.05 s later and is complete by in+0.35. EXIT (0.3 s, FINISHING at 'out'): alpha 1→0 plus an 8 px drift. The next line never starts before the previous 'out', so no more than 2 lines are on screen at once. No ctx.filter blur anywhere (Safari); soft looks use pre-blurred sprites. ICON MARKS (✓ ✗ ▶ / ♪ ↻ ? and the Markdown mark) are vector strokes at icon size, never words. There are no other words or numerals on screen. HUD (born 8.0, live 10.0–34.0): six rounded slots, a gap, then a 7th slot half-buried in drifting fog with a faint padlock silhouette (the secret seed). A 2 px gold XP line runs under the slots, and a chef-hat icon at the right end gains up to 5 pips. 16:9: centred at y6%H, 42%W wide. 9:16: y5%H, 84%W wide. PERFORMANCE: glows come from pre-rendered radial sprites with 'lighter' compositing, with no per-particle shadowBlur. Keep live particles at 700 or fewer, desaturate by palette lerp (not filters), and do colour reveals by drawing the world twice under a circular clip. SAFETY: full-screen flashes happen only at 7.0 and 52.0 (≤0.15 s, ≤60% peak), plus a slow warm wash at 34.0 that rises over 0.5 s. Every other light hit is local (≤35% of the frame radius), and nothing pulses faster than 3 Hz. Under prefers-reduced-motion, shake and whips drop to 30% and flashes become 0.3 s fades. | SCENE: a dim desk at night, all in slate. 16:9: one chat window, 46%W×62%H with 2u radius, centred at x40% y42%, with a '+' new-chat button at its top left. User bubbles on the right are grey-cream pills filled with abstract text bars and no letters. Every user bubble has the SAME bar pattern (the same self-introduction pasted again), each with a tiny ↻ mark. AI replies on the left are tiny empty bubbles, each holding one stroked '?'. A slate wall clock (circle plus 12 ticks) sits top right of the window. A window strip behind the desk drifts from warm morning cream to cold night navy: a whole day passes. The pull-back reveals that this chat is one of 24 identical chats in a 6×4 grid, all typing the same bubble. 9:16: the window is 88%W×48%H at 10–58%H, with the clock centred above it at y6%. The pull-back grid is 3×8 phone-shaped chats filling the frame behind the text scrim.",
+   "motion": "0.0–0.2: fade up from black. 0.0: the first user bubble pops (scale .6→1, easeOutBack 0.2 s). From 0.0 to 1.0 a new identical bubble arrives every 0.25 s (8ths); from 1.0 to 2.0 one arrives every 0.125 s (16ths). The chat scrolls up with a small overshoot, with a 3-frame smear from 1.5. 1.0: the '+' button depresses, the window wipes clean left→right in 0.15 s, and the SAME first bubble starts again (a visible loop of pain). 0.0–2.0: WORLD push 1.00→1.08 with 0.4u handheld drift. 0.0–2.5: the window strip runs from morning to night; from 0.5 the clock's minute hand jumps one hour per beat. 2.0–2.5: pull-back 1.08→0.34 (easeInOutCubic, 3-frame smear) reveals the 24-chat grid, every window still typing, with desaturation going from 40% to 80%. 2.5–3.0: the grid types faster and the vignette tightens. 3.0: HARD FREEZE. All world motion stops, the vignette closes to 55% and the grid dims 30%. 3.0–3.5: a single gold droplet (teardrop, 3u hot-gold glow sprite, thin trail) falls from top centre (easeInQuad) and touches frame centre exactly at 3.5. The text block holds perfectly still through the freeze and exits 3.1–3.4.",
+   "sfx": [
+    {
+     "t": 0,
+     "type": "click",
+     "note": "soft bubble-pop blip for every bubble, on 8ths then on 16ths from 1.0, pitch stepping up each beat"
+    },
+    {
+     "t": 0,
+     "type": "tick",
+     "note": "dry woodblock clock tick on every beat, doubling to 8ths from 2.0, slightly detuned"
+    },
+    {
+     "t": 1,
+     "type": "whoosh",
+     "note": "short wipe as the window resets to a new chat"
+    },
+    {
+     "t": 1,
+     "type": "heartbeat",
+     "note": "low two-thump, quiet"
+    },
+    {
+     "t": 2,
+     "type": "riser",
+     "note": "filtered-noise riser 2.0→3.0 under a low air whoosh for the pull-back"
+    },
+    {
+     "t": 3,
+     "type": "silence",
+     "note": "everything cut dead; only a thin high ring (sine D6, −30 dB) hangs while the droplet falls"
+    }
+   ]
+  },
+  {
+   "id": "s02_drop",
+   "start": 3.5,
+   "end": 7,
+   "purpose": "The turn: one drop of sauce brings the colour back and decodes the metaphor (ซอส = your Source .md file). The old explanations become the sauce.",
+   "lines": [
+    {
+     "text": "ถ้ามีซอสที่รู้ใจคุณ…",
+     "sub": "ซอส = ไฟล์ Source .md ที่เป็นคุณ",
+     "in": 3.6,
+     "out": 6.85
+    }
+   ],
+   "visual": "The droplet lands at frame centre. A gold shockwave ring and a radial colour reveal turn the frozen slate world into brand green #0b2619 from the centre outwards: the world is drawn twice, slate outside and green inside a growing circular clip. Every chat bubble in the grid peels off and is pulled into a spiral vortex toward the centre, bursting into gold sparks as it arrives. In the eye of the vortex is a vector glass jar (not an emoji): a rounded body 16u tall, a translucent cream glass stroke with an edge highlight, a cork, and a cream label with a small gold clover. The gold sauce inside has a sine-wave surface and rising bubbles. Behind it are 12 slow-turning additive gold rays at 8% alpha and a soft bloom sprite. In the text, ซอส in the headline and 'Source .md' in the sub render in hot gold. 16:9: jar at x50% y40%, vortex radius 60%W, text block lower centre (79/87%H). 9:16: jar at x50% y34% and 22u tall, vortex radius 70%W, text block at 70/76%H.",
+   "motion": "3.5: the shockwave ring grows from 0 to 150% of the diagonal over 0.6 s (easeOutCubic, 0.6u gold stroke, fading), the colour reveal rides it and the world unfreezes. 3.5–6.0: about 140 bubbles spiral inward, with angular speed ramping from 0.5 to 3 rev/s and the radius shrinking (easeInCubic). Each bubble bursts into 6–10 gold sparks at the jar (≤600 live). 4.0: the jar draws itself on as a stroke (0.35 s), then the glass fill fades in. 4.5, 5.0, 5.5 and 6.0: the liquid steps up (0→85%) with a slosh wobble. 5.0: the rays fade in. 6.0–6.5: WORLD push 1.0→1.22 toward the jar while the rays lengthen. 6.5–7.0: TIME-FREEZE. World motion slows to 10% speed so the sparks hang in the air, a local glow swells around the cork (radius ≤30% of the frame, never full-screen) and the cork trembles 2 px. The text exits 6.55–6.85, inside the breath.",
+   "sfx": [
+    {
+     "t": 3.5,
+     "type": "drop",
+     "note": "deep droplet plip with long reverb, the first real sound after the hush"
+    },
+    {
+     "t": 3.5,
+     "type": "shimmer",
+     "note": "Dadd9 bell bloom as the colour floods back"
+    },
+    {
+     "t": 4,
+     "type": "sparkle",
+     "note": "absorbed sparks: a pitched pluck arpeggio rising one note per beat until 6.0"
+    },
+    {
+     "t": 5,
+     "type": "riser",
+     "note": "1.5 s riser to 6.5, with a snare roll going from 8ths (5.5) to 16ths (6.0)"
+    },
+    {
+     "t": 6,
+     "type": "whoosh",
+     "note": "suction whoosh pulling into the jar"
+    },
+    {
+     "t": 6.5,
+     "type": "reverse",
+     "note": "band drops out; a reverse cymbal swells alone into 7.0"
+    }
+   ]
+  },
+  {
+   "id": "s03_title",
+   "start": 7,
+   "end": 10,
+   "purpose": "Title drop at 7 s: name the course and promise six missions with something real from each. Plant the secret early: a fogged 7th slot with a padlock that glints once.",
+   "lines": [
+    {
+     "text": "AI ใส่ซอส",
+     "sub": "6 บท 6 ภารกิจ ได้ของจริงทุกบท",
+     "in": 7,
+     "out": 10.1
+    }
+   ],
+   "visual": "The jar bursts open into a 320-particle gold burst and a ring of sauce droplets (teardrops under gravity). The title 'AI ใส่ซอส' is hero size: cream with an inner gold gradient and a 1u gold outer glow sprite. From 7.5 a gold sauce drip grows from the base of 'ซ'; it is drawn at the title's fixed position and never moves a letter. Behind the title, 60 radial gold speed lines at 10% alpha. Six lesson coins (5u dark-green discs with gold rims and emoji sprites 🫙 🥄 🍳 🍱 🧂 🍽️) orbit on an ellipse that is drawn BEHIND the text scrim. Coins dim to 30% while they pass behind the text block, so a coin never covers a letter. The HUD is born at 8.0: six empty slots, a 7th slot beyond them half-hidden in drifting fog with a faint padlock silhouette, the XP line and a chef hat with 0 pips. No words. 16:9: title 15u centred at y44%, sub at y57%, orbit ellipse 72%W×34%H. 9:16: title 13u wide centred at y40%, sub at y47%, orbit ellipse 84%W×24%H centred at y42%, so the coins pass above and below the text block.",
+   "motion": "7.0: FLASH 1 of 2, lasting 0.15 s with a 60% cream-gold peak and decaying. The title's entrance is a slam from scale 2.2 to 1.0 (easeOutBack 0.3 s); gold/cream channel-split edges appear only in its first 0.12 s. WORLD shake 12 px, decaying over 0.35 s, with TEXT excluded. 7.0–7.75: the burst particles fly out with drag and gravity. 7.5: the six coins pop onto the ellipse 0.125 s apart and orbit once per 3.5 s; the sauce drip grows over 0.8 s. 7.0–9.5: slow WORLD push 1.00→1.06 while the speed lines rotate. 8.0: the HUD slides down from the top edge (0.3 s, easeOutCubic). 9.0: the padlock in the fog glints ONCE, a single soft local pulse of 0.3 s: the first hint of the secret. 9.5: the 🥄 🍳 🍱 🧂 🍽️ coins snap into a row and fly up into slots 2–6 as dim ghosts (still to be earned), slot 1 shows a dim outline, and the 🫙 coin breaks out of the orbit and flies at the lens. 9.5–10.0: the world whips left with motion blur and 24 speed lines. The text exits 9.8–10.1 on its own layer.",
+   "sfx": [
+    {
+     "t": 7,
+     "type": "boom",
+     "note": "DROP 1: trailer boom (sub sine diving 110→40 Hz, 1.5 s tail) + crash + brass/choir stab D–A–D′"
+    },
+    {
+     "t": 7,
+     "type": "sparkle",
+     "note": "glitter tail on the burst"
+    },
+    {
+     "t": 7.5,
+     "type": "click",
+     "note": "six quick coin pings on 16ths as the coins pop into orbit"
+    },
+    {
+     "t": 8,
+     "type": "impact",
+     "note": "kick enters on every beat, plus a brass stab accent on Bm as the HUD lands"
+    },
+    {
+     "t": 9,
+     "type": "heartbeat",
+     "note": "a single low heartbeat under the padlock glint"
+    },
+    {
+     "t": 9,
+     "type": "riser",
+     "note": "1-bar riser into Lesson 1, snare fill 9.5→10.0"
+    },
+    {
+     "t": 9.5,
+     "type": "whoosh",
+     "note": "🫙 flies into the lens; the cut lands on 10.0"
+    }
+   ]
+  },
+  {
+   "id": "s04_source",
+   "start": 10,
+   "end": 14,
+   "purpose": "Lesson 1 SOURCE 🫙. What you get: your first bottle of sauce, a Source .md built from your story, your files or an old chat, that you carry through the whole course.",
+   "lines": [
+    {
+     "text": "ซอสขวดแรก ของคุณเอง",
+     "sub": "บท 1 · ได้ไฟล์ .md พกไปทั้งคอร์ส",
+     "in": 10.15,
+     "out": 13.9
+    }
+   ],
+   "visual": "LESSON TEMPLATE (s04–s09). Each lesson is 4.0 s, exactly 2 bars. 16:9: the hero diorama fills the left 56% (centre x30% y52%). Behind it sits a faint hex emblem holding the lesson emoji at 10% alpha (this replaces giant numerals: no extra glyphs). The text column is on the right, left-aligned from x58% to x95%W, with the headline baseline at 47%H and the sub at 56%H. A round gold-rim icon chip (1.3× the headline height, holding the lesson emoji sprite) sits inline left of the headline. 9:16: the hero is centred in 12–60%H (centre y36%) with the emblem behind it, and the text block is centred at 70/76%H with the chip inline. The active HUD slot breathes gold during the beat. Each lesson's output whips out and arrives in the next lesson as its ingredient, so the six lessons read as one recipe. LESSON 1 HERO: three inputs fly toward the vector jar: a stack of speech bubbles (your story), a paper file with a folded corner and paperclip (attached files), and an old grey chat window with a gold thread being pulled out of it (extract from an old chat). All three pour through a gold funnel into the jar. The jar pushes up a cream Markdown card showing the Markdown mark (an M and a down-arrow drawn as vector strokes, an icon, not text) and six abstract bars that type themselves in. The card rolls around the jar as its label, and a gold wax seal with a clover stamps it: the first bottle of sauce. 16:9: bubbles arrive from the left edge, the file from the top and the old chat from bottom-left. 9:16: they arrive from the left, top and right, and the jar sits at x50% y38%.",
+   "motion": "10.0: whip-in. The world slides 30% (from the right in 16:9, from the bottom in 9:16) with 6-frame motion blur and 24 speed lines, settling with easeOutExpo over 0.25 s. The 🫙 emblem slams (scale 0→1.15→1, 0.3 s) with a LOCAL burst of 30 gold shards (≤25% radius) and a 6 px WORLD shake, and slot 1 pulses. 10.5, 11.0 and 11.5: the bubbles, then the file, then the old chat land in the funnel. Each lands with squash-and-stretch and raises the liquid 25%. 12.0: the Markdown card slides up out of the jar and its bars type in on 16ths (12.0–12.375). 12.5: the card rolls into the label and the seal stamps (scale 1.6→1, 6 px WORLD shake for 0.15 s, a ring of 40 sparks). 13.0: LOOT. The sealed jar card-flips (scaleX = cos) with 12 local rays, then a copy shrinks and arcs into HUD slot 1. The slot fills with 🫙, the XP line goes 0→1/6 with overshoot and the hat gains pip 1. 13.5–14.0: whip-out to the left, carrying the jar into Lesson 2.",
+   "sfx": [
+    {
+     "t": 10,
+     "type": "impact",
+     "note": "crash + impact + brass stab on D; the quest groove starts"
+    },
+    {
+     "t": 10,
+     "type": "whoosh",
+     "note": "whip-in"
+    },
+    {
+     "t": 10.5,
+     "type": "click",
+     "note": "bubbles land + pluck D"
+    },
+    {
+     "t": 11,
+     "type": "click",
+     "note": "file lands + pluck F#"
+    },
+    {
+     "t": 11.5,
+     "type": "click",
+     "note": "old chat lands + pluck A, liquid shimmer"
+    },
+    {
+     "t": 12,
+     "type": "shimmer",
+     "note": "Markdown card rises, bars type on 16th ticks"
+    },
+    {
+     "t": 12.5,
+     "type": "impact",
+     "note": "wax-seal stamp thud"
+    },
+    {
+     "t": 13,
+     "type": "sparkle",
+     "note": "LOOT: 4-note level-up jingle, top note D5, plus XP ding"
+    },
+    {
+     "t": 13.5,
+     "type": "whoosh",
+     "note": "whip-out, landing on 14.0"
+    }
+   ]
+  },
+  {
+   "id": "s05_taste",
+   "start": 14,
+   "end": 18,
+   "purpose": "Lesson 2 TASTE 🥄. What you get: a tasting spoon. One image made from your Source shows right away whether AI understood you, and you fix it at the source.",
+   "lines": [
+    {
+     "text": "รู้ทันที AI เข้าใจไหม",
+     "sub": "บท 2 · ช้อนชิมภาพ ไม่ตรงแก้ที่ซอส",
+     "in": 14.15,
+     "out": 17.9
+    }
+   ],
+   "visual": "Lesson template, 🥄 emblem. The sealed jar from L1 slides in low in the hero area. A big polished vector spoon (gold bowl, long cream handle) dips into it. A drop falls onto an empty cream picture frame (4:3) and blooms into an image made of shapes: a sun disc, two rolling hills, a small cream figure and a clover. The first taste is OFF. It is drawn at 1/8 resolution and scaled up with image smoothing off (chunky pixels), in a purple-grey palette, with the figure upside down and a 3 px jitter inside the frame only. A muted-coral ring with a stroked ✗ pulses once beside it. Then the fix happens at the source: a gold pulse runs from the frame back down the spoon into the jar, the jar label glows and one abstract bar on it rewrites itself. The image snaps crisp in brand green and gold, and a mint ✓ draws onto the frame corner. 16:9: frame 34%W at x30% y44%, jar small at x14% y72%. 9:16: frame 70%W at x50% y30%, jar below it at y52%, stacked vertically within 14–60%H.",
+   "motion": "14.0: whip-in and 🥄 emblem slam with a local burst; slot 2 pulses. 14.5: the spoon dips on an arc (rotate −25°→0, easeInOut 0.3 s) and lifts. 15.0: the drop falls onto the frame and the image paints in with a radial wipe from the drop point (0.4 s), arriving OFF. 15.5: the OFF state: 3 px jitter inside the frame, the coral ✗ ring pulses once (scale only) and the spoon gives a small 'hmm' wobble. 16.0: the gold pulse travels down the spoon into the jar in 0.25 s; the label glows and one bar rewrites with a wipe. 16.5: SNAP. Pixel size goes 8→1 in 0.15 s, the palette corrects, the ✓ draws on (0.25 s) and 30 local sparkles fire. 17.0: LOOT. The spoon card-flips with local rays and the frame shrinks into HUD slot 2, which fills with 🥄; XP 2/6, hat pip 2. 17.5–18.0: whip-out carrying the corrected image card.",
+   "sfx": [
+    {
+     "t": 14,
+     "type": "impact",
+     "note": "crash + impact + brass stab on E"
+    },
+    {
+     "t": 14,
+     "type": "whoosh",
+     "note": "whip-in"
+    },
+    {
+     "t": 14.5,
+     "type": "drop",
+     "note": "spoon-drip plink on glass"
+    },
+    {
+     "t": 15,
+     "type": "shimmer",
+     "note": "image paints in"
+    },
+    {
+     "t": 15.5,
+     "type": "reverse",
+     "note": "0.25 s tape-stop: the wrong taste"
+    },
+    {
+     "t": 16,
+     "type": "whoosh",
+     "note": "pulse runs back to the jar; a typewriter tick as the bar rewrites"
+    },
+    {
+     "t": 16.5,
+     "type": "impact",
+     "note": "tight snap into focus + ✓ chime"
+    },
+    {
+     "t": 17,
+     "type": "sparkle",
+     "note": "LOOT jingle, top note E5, plus XP ding"
+    },
+    {
+     "t": 17.5,
+     "type": "whoosh",
+     "note": "whip-out, landing on 18.0"
+    }
+   ]
+  },
+  {
+   "id": "s06_cook",
+   "start": 18,
+   "end": 22,
+   "purpose": "Lesson 3 COOK 🍳. What you get: a short-clip pan. Source plus the image becomes a 10-second vertical video, and you never film anything yourself.",
+   "lines": [
+    {
+     "text": "คลิป 10 วิ ไม่ต้องถ่าย",
+     "sub": "บท 3 · ซอส+ภาพ ผัดเป็นคลิปแนวตั้ง",
+     "in": 18.15,
+     "out": 21.9
+    }
+   ],
+   "visual": "Lesson template, 🍳 emblem. A wide wok (dark ellipse, gold rim, handle toward bottom-left) sits over bezier flame tongues in an ember→gold gradient (additive), with heat shimmer drawn as sine-distorted lines. The jar pours a ribbon of gold sauce in, and the corrected image card from L2 drops into the pan. The pan tosses it, and the card somersaults and lands as a vertical 9:16 phone frame that is PLAYING: its ▶ morphs into pause bars. Inside is a parallax loop: the sun drifts, the hills slide at two speeds and the figure walks. A 10-segment progress bar fills along its bottom (the 10-second clip, with no numerals). Beside the phone, a small camera icon is struck through by a gold slash (no filming needed). Film-sprocket speed streaks circle the phone. 16:9: wok at x30% y68%, the phone 16%W wide rising to x30% y40%. 9:16: wok at y54%, the phone 34%W wide rising to y28%: a phone inside a phone.",
+   "motion": "18.0: whip-in and 🍳 emblem slam. The wok lands with a flame flare (3× particles, local) and a 6 px shake; slot 3 pulses. 18.5: the sauce ribbon pours (a bezier stroke growing over 0.3 s) and the image card drops in with 60 ember sizzle sparks. 19.0: TOSS. The card launches with 0→360° rotation over 0.5 s and the camera tilts up 4% to follow. 19.5: it lands as the phone frame (squash 1.15/0.85→1), ▶ pulses once and turns into pause bars, and the parallax loop starts. 19.5–20.75: the 10 progress segments fill one per 16th (0.125 s). 20.5: the gold slash strikes through the camera icon (stroke 0.2 s). 21.0: LOOT. The pan card-flips with local rays and the phone shrinks into slot 3, which fills with 🍳; XP 3/6, hat pip 3. 21.5–22.0: whip-out carrying the clip.",
+   "sfx": [
+    {
+     "t": 18,
+     "type": "impact",
+     "note": "crash + impact + brass stab on F#m; 16th closed hats and a bass octave join"
+    },
+    {
+     "t": 18,
+     "type": "whoosh",
+     "note": "whip-in + band-passed sizzle burst"
+    },
+    {
+     "t": 18.5,
+     "type": "drop",
+     "note": "sauce pours, then the card hits the pan with a sizzle"
+    },
+    {
+     "t": 19,
+     "type": "whoosh",
+     "note": "toss swish upward"
+    },
+    {
+     "t": 19.5,
+     "type": "impact",
+     "note": "landing thump + play click"
+    },
+    {
+     "t": 19.5,
+     "type": "tick",
+     "note": "ten hi-hat-like progress ticks on exact 16ths, 19.5–20.625"
+    },
+    {
+     "t": 20.5,
+     "type": "click",
+     "note": "slash through the camera icon"
+    },
+    {
+     "t": 21,
+     "type": "sparkle",
+     "note": "LOOT jingle, top note F#5, plus XP ding"
+    },
+    {
+     "t": 21.5,
+     "type": "whoosh",
+     "note": "whip-out, landing on 22.0"
+    }
+   ]
+  },
+  {
+   "id": "s07_split",
+   "start": 22,
+   "end": 26,
+   "purpose": "Lesson 4 SPLIT 🍱. What you get: a ปิ่นโต of many menus. One Source becomes slides, audio, FAQ, a handbook and images.",
+   "lines": [
+    {
+     "text": "ซอสเดียว ได้หลายเมนู",
+     "sub": "บท 4 · สไลด์ เสียง FAQ คู่มือ ภาพ",
+     "in": 22.15,
+     "out": 25.9
+    }
+   ],
+   "visual": "Lesson template, 🍱 emblem. A single gold beam shoots from the jar into a hexagonal glass prism and fans out into 5 beams (additive gradients). Each beam lands on a tier of a ปิ่นโต (stacked rounded tins, cream with gold bands and a carry handle). The tiers spring apart and five dish tiles (7u cream rounded tiles with emoji sprites) shoot out along a fan arc: 📊 slides, 🎧 audio (its tile carries a live 5-bar waveform bouncing to the kick), ❓ FAQ, 📘 handbook and 🖼️ images. A thin gold thread connects every tile back to the single jar: one source, many menus. 16:9: prism at x20% y38%, ปิ่นโต at x30% y66%. The arc opens up and to the left inside the left 56%, so no tile enters the text column. 9:16: prism at y16%, ปิ่นโต at y50%, tiles fanning as a semicircle above it between 14% and 58%H.",
+   "motion": "22.0: whip-in and 🍱 emblem slam with a local burst; slot 4 pulses. 22.5: the beam fires into the prism and fans into 5 beams (a 0.3 s sweep). 23.0: the beams strike, the tiers spring apart (spring k=180, damping 14), and the five tiles shoot out along their arcs one per 8th (23.0, 23.25, 23.5, 23.75, 24.0), each with easeOutBack and an 18-spark puff. 24.0: the gold threads draw back to the jar (stroke-dash 0.25 s), and from then light pulses travel from the jar along the threads on every beat while the tiles bob on the kick. 22.5–25.5: a small camera orbit (±40px parallax). 25.0: LOOT. The ปิ่นโต card-flips, the tiles fold back, and the bento compresses and docks into slot 4, which fills with 🍱; XP 4/6, hat pip 4. 25.5–26.0: whip-out.",
+   "sfx": [
+    {
+     "t": 22,
+     "type": "impact",
+     "note": "crash + impact + brass stab on G; a string ostinato enters"
+    },
+    {
+     "t": 22,
+     "type": "whoosh",
+     "note": "whip-in"
+    },
+    {
+     "t": 22.5,
+     "type": "shimmer",
+     "note": "beam through the prism, glassy fan-out"
+    },
+    {
+     "t": 23,
+     "type": "click",
+     "note": "five tile pops on 8ths 23.0–24.0, pentatonic plucks rising to the top of the scale"
+    },
+    {
+     "t": 24,
+     "type": "shimmer",
+     "note": "threads draw back to the one jar, soft pulse on each beat"
+    },
+    {
+     "t": 25,
+     "type": "sparkle",
+     "note": "LOOT jingle, top note G5, plus XP ding"
+    },
+    {
+     "t": 25.5,
+     "type": "whoosh",
+     "note": "whip-out, landing on 26.0"
+    }
+   ]
+  },
+  {
+   "id": "s08_season",
+   "start": 26,
+   "end": 30,
+   "purpose": "Lesson 5 SEASON 🧂. What you get: seasoning shortcuts. Drag-and-drop slash commands like /foodangle, code-made videos with music, and your own AI Agent that knows your Source.",
+   "lines": [
+    {
+     "text": "AI Agent ที่รู้ใจคุณ",
+     "sub": "บท 5 · /foodangle + คลิปมีเพลง",
+     "in": 26.15,
+     "out": 29.9
+    }
+   ],
+   "visual": "Lesson template, 🧂 emblem. A vector salt shaker (cream body, gold cap) swings and sprinkles gold seasoning, which condenses into three command chips. The chips are dark-green pills with gold strokes, each showing a stroked '/' mark plus an icon sprite: 📸 for /foodangle, 👗 for /outfit, 🖌️ for /brushstory. No words. A white cursor arrow drags each chip onto the jar. Each drop releases a tiny film strip carrying ♪ marks (a code-made video with music) that orbits the jar with depth parallax (scale 0.7–1.1). Then the jar's glow condenses into the AI Agent: a glossy green orb head with two cream eye dots, a tiny chef hat and a small glowing jar in its chest (it knows your sauce). It looks at the viewer, then glances toward the headline. 16:9: shaker at x42% y20%, jar at x26% y64%, agent at x30% y36%. 9:16: shaker at y14%, chips arriving from the left and right edges, jar at y48%, agent at y24%.",
+   "motion": "26.0: whip-in and 🧂 emblem slam with a local burst; slot 5 pulses. 26.0–28.0: the shaker swings ±15° on every beat, sprinkling 20 particles each time. 26.5, 27.0 and 27.5: the cursor drags one chip along a quick arc (0.3 s, easeInOutCubic, with a floating shadow) and drops it. The jar bounces 6%, the chip dissolves into sparks and a ♪ film strip pops out into orbit. 28.0: the jar glow rises and 80 particles collapse radially into the agent orb, which settles with a scale overshoot. 28.5: its eyes blink (scaleY 1→0→1) and it nods once toward the text. 29.0: LOOT. The shaker card-flips, the orb docks into slot 5, the slot fills with 🧂, XP reaches 5/6 and the hat brim glows hot. 29.5–30.0: whip-out.",
+   "sfx": [
+    {
+     "t": 26,
+     "type": "impact",
+     "note": "crash + impact + brass stab on A; the lead arp takes the front"
+    },
+    {
+     "t": 26,
+     "type": "whoosh",
+     "note": "whip-in + shaker rattle on each beat"
+    },
+    {
+     "t": 26.5,
+     "type": "click",
+     "note": "chip 1 snaps in, then the two-note ♪ synth motif"
+    },
+    {
+     "t": 27,
+     "type": "click",
+     "note": "chip 2 snaps in + ♪ motif"
+    },
+    {
+     "t": 27.5,
+     "type": "click",
+     "note": "chip 3 snaps in + ♪ motif"
+    },
+    {
+     "t": 28,
+     "type": "shimmer",
+     "note": "agent awakens: particle suck-in + soft friendly blip"
+    },
+    {
+     "t": 29,
+     "type": "sparkle",
+     "note": "LOOT jingle, top note A5, plus XP ding"
+    },
+    {
+     "t": 29.5,
+     "type": "whoosh",
+     "note": "whip-out, landing on 30.0"
+    }
+   ]
+  },
+  {
+   "id": "s09_serve",
+   "start": 30,
+   "end": 34,
+   "purpose": "Lesson 6 SERVE 🍽️. What you get: your own website as an HTML file that other people can open and use. All six rewards are collected and the XP bar overloads.",
+   "lines": [
+    {
+     "text": "มีเว็บของคุณเองแล้ว",
+     "sub": "บท 6 · ไฟล์ HTML ใครก็เปิดใช้ได้",
+     "in": 30.15,
+     "out": 33.9
+    }
+   ],
+   "visual": "Lesson template, 🍽️ emblem. A cream plate with a gold rim slides in under a silver-cream cloche. The cloche lifts, letting out local light rays and steam. Underneath, a browser window assembles from pieces: a title bar with three dots, an address-bar pill (no letters), a hero block showing the hills image from L2, a grid of four cards (abstract bars) and a gold button. A cursor clicks the button and the window copies itself outward into 8 small device frames (phones, laptops, a tablet) scattered in depth: other people opening your page. Each one lights up gold with a tiny heart particle. Then the XP OVERLOAD: the HUD rail scales to 1.15, all six slots are full, and the XP bar glows and vibrates while the rest of the frame dims to 40%. The chef hat's five pips light one by one, shown as icons only with no rank names. 16:9: plate at x30% y62%, browser 34%W at x30% y42%, devices scattered inside the left 56%. 9:16: browser 80%W at y30%, devices scattered between 12% and 60%H.",
+   "motion": "30.0: whip-in and 🍽️ emblem slam with a local burst; the plate slides in (easeOutExpo, 2-frame skid) and slot 6 pulses. 30.5: the cloche lifts (y −14u, rotate 8°, 0.35 s) and 10 local rays and 3 steam wisps escape. 31.0–31.5: the browser pieces fly in from four sides and snap together one per 16th. 31.5: the cursor clicks the gold button, the window pulses and 8 clones launch outward along depth paths (scale .2→.45 with parallax). The clones light up in two groups, at 31.5 and 32.0, with heart particles. 32.5: LOOT. The plate card-flips, slot 6 fills with 🍽️ and the XP line hits FULL. 33.0: OVERLOAD. The rail scales to 1.15 and vibrates 2 px (HUD layer only, never the text), the world dims to 40%, and the five hat pips light one per 16th (33.0–33.5) while a gold ripple runs across the rail. 33.5–34.0: everything, the HUD included, implodes into a single warm point of light at frame centre (easeInExpo). The text exits 33.6–33.9.",
+   "sfx": [
+    {
+     "t": 30,
+     "type": "impact",
+     "note": "crash + impact + brass stab on Bm; a choir pad enters"
+    },
+    {
+     "t": 30,
+     "type": "whoosh",
+     "note": "whip-in + plate skid"
+    },
+    {
+     "t": 30.5,
+     "type": "shimmer",
+     "note": "cloche lifts and light spills out"
+    },
+    {
+     "t": 31,
+     "type": "click",
+     "note": "page blocks snap together on 16ths"
+    },
+    {
+     "t": 31.5,
+     "type": "click",
+     "note": "cursor click on the gold button; devices light with soft pops at 31.5 and 32.0"
+    },
+    {
+     "t": 32.5,
+     "type": "sparkle",
+     "note": "LOOT jingle, top note B5 (the highest yet); XP full"
+    },
+    {
+     "t": 33,
+     "type": "riser",
+     "note": "overload: five rank-up ticks on 16ths 33.0–33.5 plus a double-time snare fill 33.0→34.0"
+    },
+    {
+     "t": 33.5,
+     "type": "reverse",
+     "note": "reverse swell sucking into the implosion, landing on 34.0"
+    }
+   ]
+  },
+  {
+   "id": "s10_life",
+   "start": 34,
+   "end": 44.5,
+   "purpose": "Emotional payoff: what the six lessons give back to your life. Time, then happiness, then respect. All felt, nothing measured, and calling back to the opening clock and chat grid.",
+   "lines": [
+    {
+     "text": "ได้เวลาคืนมา",
+     "sub": "เลิกเล่าตัวเองซ้ำ งานเสร็จไวขึ้น",
+     "in": 34.15,
+     "out": 37.45
+    },
+    {
+     "text": "ความสุขกลับมา",
+     "sub": "มีเวลาให้คนที่รัก สนุกกับการสร้าง",
+     "in": 37.6,
+     "out": 40.95
+    },
+    {
+     "text": "ความเคารพตามมา",
+     "sub": "มีผลงานจริงให้คนเห็น ว่าคุณทำได้",
+     "in": 41.1,
+     "out": 44.35
+    }
+   ],
+   "visual": "Centred and warm. The HUD is gone, because this part is about life, not the course. The key words เวลา / ความสุข / ความเคารพ render in hot gold. TIME: the wall clock from s01 returns, now gold on green and 24u wide. The faint grey 24-chat grid from s01 reappears behind it and dissolves into gold dust that streams back into the clock. The hands spin backwards and lock, and the freed time rises as 12 gold glass rings. HAPPINESS: each ring pops into something people love (☕ 🎸 🌿 🏠 🐶 🎨 sprites, 6u, on soft cream halos), and they all bob to the beat. A simple cream figure (circle head, capsule body) fades in at the centre and raises its arms, under a 12% gold wash with drifting bokeh. RESPECT: everything dims except a warm spotlight cone falling on the figure, who now holds the 🍽️ plate with the glowing mini website from L6. A gold laurel draws itself around the plate. An arc of 14 audience silhouettes (circle head plus shoulders) turns toward the figure one by one, each outline turning gold, while 👏 sparks rise gently. 16:9: hero at x50% y38%, audience arc at 60–70%H, text block lower centre (79/87%H). 9:16: hero at y32%, audience arc at 54–62%H, text block at 70/76%H.",
+   "motion": "34.0: the point of light blooms into a warm gold wash rising to 35% over 0.5 s; this is the slow wash, not a flash. The key lifts. The clock scales in 0.6→1 (easeOutBack). 34.0–35.5: the hands spin backwards 12 turns (easeOutQuart) while the grey grid breaks into dust that flows into the clock along curved particle paths. 35.5: the hands lock with a small bounce. 35.5–37.5: the 12 rings detach and float up in three parallax depth layers. 37.5: the clock fades and one ring pops per beat (37.5, 38.0, 38.5, 39.0, 39.5, 40.0) into the six loves (scale 0→1.1→1, 10 sparks each). 38.0–38.75: the figure fades in and its arms rise (easeInOutSine). 38.0–41.0: everything bobs 2% on the kick (scale only, never brightness). 41.0: everything except the spotlight dims to 35% over 0.4 s and the plate starts glowing. 41.5: the laurel draws itself (stroke-dash 0.6 s). 41.5–43.25: the audience turns gold, one silhouette per 16th. 42.0–44.0: 👏 sparks rise and a slow WORLD push goes 1.0→1.12 toward the figure. 44.0–44.5: the spotlight irises down to a pinpoint and goes dark.",
+   "sfx": [
+    {
+     "t": 34,
+     "type": "boom",
+     "note": "key-lift hit into E major, warm and wide, not harsh"
+    },
+    {
+     "t": 34,
+     "type": "reverse",
+     "note": "rewinding clock: reversed ticks over 1.5 s"
+    },
+    {
+     "t": 35.5,
+     "type": "click",
+     "note": "clock hands lock"
+    },
+    {
+     "t": 35.5,
+     "type": "shimmer",
+     "note": "time released as the rings float up"
+    },
+    {
+     "t": 37.5,
+     "type": "sparkle",
+     "note": "a ring pops on each beat 37.5–40.0, warm pentatonic; choir 'aah' enters"
+    },
+    {
+     "t": 41,
+     "type": "impact",
+     "note": "soft, low, warm stage-light thunk on the half-time snare"
+    },
+    {
+     "t": 41.5,
+     "type": "shimmer",
+     "note": "applause-like filtered-noise swell 41.5–43.5, plus a laurel chime"
+    },
+    {
+     "t": 44,
+     "type": "whoosh",
+     "note": "iris closes; low-pass sweep down"
+    }
+   ]
+  },
+  {
+   "id": "s11_secret",
+   "start": 44.5,
+   "end": 52,
+   "purpose": "Suspense: finishing all six lessons unlocks a hidden stage that is not in the table of contents, rewarded with the 🌅 ผู้ตื่นรู้ badge. The six rewards become the keys, but the door never opens: named, never shown.",
+   "lines": [
+    {
+     "text": "ครบ 6 บท… ยังไม่จบ",
+     "sub": "มีด่านลับ ที่ไม่อยู่ในสารบัญ",
+     "in": 44.8,
+     "out": 48.15
+    },
+    {
+     "text": "ข้างในคืออะไร… ไม่บอก",
+     "sub": "ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้",
+     "in": 48.25,
+     "out": 51.5
+    }
+   ],
+   "visual": "Near-black void #04100a with a 70% vignette, three slow parallax fog bands (pre-blurred blob sprites) and dust motes. A table-of-contents card (dark rounded card, six rows, each a lesson icon plus an abstract bar, no words) has every row checked. Then a 7th row appears BELOW the card, OUTSIDE its border: a scrambled-noise bar that never comes into focus, plus a 🔒. It is the same padlock that glinted in the HUD fog at 9.0. The camera dives into that row and it becomes a massive stone door: dark slate with gold-edged carvings and a hexagonal ring of 6 empty sockets around a keyhole, with the padlock hanging at the keyhole. Each reward that locks into a socket spreads branching gold veins across the stone. The keyhole then leaks warm dawn-rose→gold rays full of floating dust, kept local (≤35% of the frame radius, ≤60% luminance). Through the keyhole, behind frosted glass, only the silhouette of a round badge with a glinting rim is visible, never its face. The door NEVER opens. The text uses the lesson-template positions with a whisper style (wider letter-spacing, cream at 90%, thin glow). 16:9: card 26%W×56%H at x30%, then the door at 80%H centred at x30%; text column on the right (x58%, 47/56%H). 9:16: card 70%W×40%H at 10–50%H, then the door spanning 6–60%H; text block at 70/76%H.",
+   "motion": "44.5–45.0: the card fades up from the dark and its rows slide in staggered. 45.0–46.25: six ✓ draw in sequence on 8ths, each row glowing gold as it is checked. 46.5: the 7th row materialises outside the border. Its alpha drifts between 0.2 and 0.6 on smooth noise at ≤1 Hz (no strobe), drawn from a pre-blurred sprite. 47.0–48.0: the camera dives into row 7 (zoom 1→6, easeInCubic), the card slides out of frame, and the row dissolves into the door. 48.0, 48.5, 49.0, 49.5, 50.0 and 50.5: the six reward icons 🫙 🥄 🍳 🍱 🧂 🍽️ fly in from the frame edges with trails and lock into the sockets one per beat, each spreading branching gold veins (0.4 s line growth). 50.5: the keyhole ignites, its rays lengthen and the dust thickens. 51.0: the padlock jolts (3° wobble, 4 px), as if something on the other side is trying the door, and the frosted badge silhouette is glimpsed through the keyhole for 0.5 s. 51.5: HARD CUT to pure black, and nothing moves until 52.0. The second line exits 51.2–51.5, just before the cut.",
+   "sfx": [
+    {
+     "t": 44.5,
+     "type": "silence",
+     "note": "drums and band out; only a low E drone with a faint F cluster (−18 dB) and a distant choir"
+    },
+    {
+     "t": 44.5,
+     "type": "heartbeat",
+     "note": "lub-dub every 1.0 s from 44.5 to 47.5"
+    },
+    {
+     "t": 45,
+     "type": "tick",
+     "note": "six soft check ticks on 8ths, 45.0–46.25"
+    },
+    {
+     "t": 46.5,
+     "type": "reverse",
+     "note": "eerie reversed whisper swell as row 7 appears"
+    },
+    {
+     "t": 47,
+     "type": "whoosh",
+     "note": "dive into row 7"
+    },
+    {
+     "t": 47,
+     "type": "riser",
+     "note": "long Shepard-tone riser 47.0→51.5"
+    },
+    {
+     "t": 48,
+     "type": "click",
+     "note": "socket 1 glass clink; sockets at 48.5, 49.0, 49.5 and 50.0 each sound a semitone higher, and the heartbeat doubles to every 0.5 s until 51.0"
+    },
+    {
+     "t": 50.5,
+     "type": "shimmer",
+     "note": "socket 6 locks; the keyhole ignites with a faint bell from behind the door"
+    },
+    {
+     "t": 51,
+     "type": "click",
+     "note": "hard padlock rattle"
+    },
+    {
+     "t": 51.5,
+     "type": "silence",
+     "note": "absolute silence and black for 0.5 s"
+    }
+   ]
+  },
+  {
+   "id": "s12_start",
+   "start": 52,
+   "end": 56,
+   "purpose": "Final drop and call to action: start Lesson 1 now, free and with no sign-up. An on-screen tap shows the exact next move.",
+   "lines": [
+    {
+     "text": "ไปเริ่มบท 1 กันเลย",
+     "sub": "ฟรี ไม่ต้องสมัคร เริ่มได้ทันที",
+     "in": 52.15,
+     "out": 55.9
+    }
+   ],
+   "visual": "The brand-green world bursts back on a hard cut from black. There is no dawn imagery and no camera move through the door, so it never reads as what lies behind the door. At the centre, the glowing vector jar stands on a low gold pedestal. The five reward coins (🥄 🍳 🍱 🧂 🍽️) and the agent orb orbit it on a tilted ellipse in pseudo-3D (scale and alpha by depth). Sixteen god rays rotate behind. Confetti fountains of gold squares and small clover leaves (≤400) rise. A gold capsule outline draws around the headline like a button (a graphic under the text), with a small ▶ at its right end. 'ฟรี' in the sub is gold. 16:9: jar 24u at x50% y38%, confetti from both bottom corners, text block lower centre (79/87%H) inside the capsule. 9:16: jar 30u at y34%, confetti from the bottom edge, text block at 70/76%H.",
+   "motion": "52.0: FLASH 2 of 2 (0.15 s, ≤60% peak). The jar slams in from scale 2.5→1 (easeOutBack) and the WORLD shakes 12 px for 0.3 s, decaying; the text never shakes. 52.0–53.0: the coins whip into orbit at 3 rev/s and ease to 0.5 rev/s. Confetti fountains fire at 52.0 and 54.0, and the rays turn at 8°/s. 52.5: the capsule outline draws around the headline (stroke-dash 0.3 s). After that, the ▶ pulses scale 1→1.06 on every beat (scale only, no brightness change). 53.0–55.0: the jar's liquid sloshes on the kick. 55.0: a cursor arrow glides in from lower right (easeOutCubic 0.4 s). 55.5: the cursor taps the capsule. It presses to 0.94 for 0.1 s and releases, with a ripple ring and 40 local sparks, mirroring the real HTML button. 55.5–56.0: the coins spiral into the jar (easeInCubic). The text exits 55.6–55.9.",
+   "sfx": [
+    {
+     "t": 52,
+     "type": "boom",
+     "note": "DROP 2, the biggest hit of the film: sub-drop + crash, the full band returns in E major with the stab motif E–B–E′"
+    },
+    {
+     "t": 52,
+     "type": "impact",
+     "note": "jar slam"
+    },
+    {
+     "t": 52.5,
+     "type": "shimmer",
+     "note": "capsule outline draws"
+    },
+    {
+     "t": 54,
+     "type": "sparkle",
+     "note": "second confetti burst"
+    },
+    {
+     "t": 55,
+     "type": "whoosh",
+     "note": "soft glide as the cursor enters"
+    },
+    {
+     "t": 55.5,
+     "type": "click",
+     "note": "START tap: a satisfying click + ripple"
+    },
+    {
+     "t": 55.5,
+     "type": "whoosh",
+     "note": "coins spiral into the jar"
+    }
+   ]
+  },
+  {
+   "id": "s13_endcard",
+   "start": 56,
+   "end": 60,
+   "purpose": "Brand lock and warm close: Lesson 1 is waiting, and the myClover slogan. The final frame holds so the HTML end card can take over seamlessly.",
+   "lines": [
+    {
+     "text": "ซอสขวดแรกรออยู่ในบท 1",
+     "sub": "myClover · ใครเจอเรา คนนั้นโชคดี",
+     "in": 56.15,
+     "out": 60
+    }
+   ],
+   "visual": "The jar morphs into the myClover clover: four heart-shaped leaves (#1f5a3a fill, gold rims, inner glow), a short stem and a small glowing jar at its heart, inside a soft gold halo. The six reward icons orbit it small and slow, the rays slow down and gold dust drifts at half speed. The mood is calm and premium. The text sits higher than usual so the bottom stays clear for the HTML end-card buttons. 16:9: clover r=12u at x50% y30%, headline baseline 58%H, sub 66%H, bottom 22% kept empty. 9:16: clover r=20u at y26%, headline 50%H, sub 56%H, bottom 32% kept empty.",
+   "motion": "56.0: the four leaves unfold from the jar's silhouette one per 8th (56.0, 56.25, 56.5, 56.75) with overshoot, the clover makes one 360° turn (0.75 s) and a ring of 30 sparks fires. 57.0–59.5: the clover breathes (scale 1↔1.03 over 2 s), the dust slows and the rays fade to 50%. 58.0: a gold specular band sweeps across the clover (0.6 s). 59.5–60.0: all motion eases to rest and the final frame holds. The text fades 59.7–60.0 while the HTML end card ('ซอสขวดแรกของคุณ รออยู่ในบท 1' + buttons) fades in over the held frame.",
+   "sfx": [
+    {
+     "t": 56,
+     "type": "impact",
+     "note": "clover locks: Eadd9 chord hit + bell; drums stop"
+    },
+    {
+     "t": 56,
+     "type": "sparkle",
+     "note": "leaf-unfold sparkles on 8ths"
+    },
+    {
+     "t": 58,
+     "type": "shimmer",
+     "note": "specular sweep + final pad bloom"
+    },
+    {
+     "t": 59.5,
+     "type": "drop",
+     "note": "last low E pluck ringing out, fully decayed to silence by 60.0"
+    }
+   ]
+  }
+ ],
+ "music": "**Tempo and grid**\n- 120 BPM in 4/4: a beat is 0.5 s, an 8th is 0.25 s, a 16th is 0.125 s and a bar is 2.0 s.\n- Every tick train uses only these subdivisions. There are no 0.15 s runs.\n\n**Engine and clock**\n- All audio is procedural WebAudio, scheduled on the same clock as the canvas. t = audioCtx.currentTime − t0 drives render(t), and frame = round(t×60).\n- Audio starts only when the viewer presses Play, which unlocks the AudioContext.\n- Master bus:\n  - the kick sidechain-ducks the pads;\n  - music ducks −3 dB under every impact and boom;\n  - a limiter sits at −1 dBFS;\n  - the target is about −14 LUFS.\n- Mute silences the sound only; the picture keeps playing.\n\n**Key journey:** D minor (pain) → D major (the sauce) → whole-tone lift to E major (life) → E minor colour (secret) → E major (finale).\n\n**Sections**\n\n**0.0–3.0 GRIND** (D minor, energy 2→4)\n- No drums.\n- Dry woodblock tick on every beat, moving to 8ths from 2.0.\n- Bubble blips on 8ths, then 16ths from 1.0, pitch stepping up each beat.\n- Low D drone: sine at 73.4 Hz plus a partner detuned 0.7 Hz.\n- Muffled Dm pad, low-passed at 400 Hz.\n- Heartbeat and reset whoosh at 1.0.\n- Noise riser 2.0→3.0.\n\n**3.0–3.5 HUSH:** everything cuts except a thin high ring (sine D6 at −30 dB) while the droplet falls.\n\n**3.5–6.5 TURN** (D major, energy 4→7)\n- At 3.5, a plip with long reverb, plus a Dadd9 bell bloom.\n- Pad low-pass sweeps from 400 Hz to 6 kHz.\n- 16th pluck arpeggio D–F#–A–E from 4.0, its top note rising each beat.\n- Kick on every beat from 5.0.\n- Snare roll: 8ths from 5.5, 16ths from 6.0.\n- Riser 5.0→6.5.\n\n**6.5–7.0 BREATH:** band out; only a reverse cymbal swells into 7.0.\n\n**7.0–10.0 DROP 1 / TITLE** (energy 9)\n- Trailer boom (sub sine 110→40 Hz, 1.5 s tail), crash, and a brass/choir stab D–A–D′.\n- Held chords: D at 7.0, Bm at 8.0, G at 9.0.\n- Kick on every beat from 8.0.\n- One heartbeat at 9.0, under the padlock glint.\n- Riser 9.0→10.0, with a snare fill 9.5→10.0.\n\n**10.0–34.0 QUEST RUN** (D major, 12 bars, energy 7→9)\n- Groove: four-on-the-floor kick, open hat on the offbeats, clap on 2 and 4, and an 8th-note plucked bass.\n- Each lesson is exactly 2 bars.\n  - The first bar's root climbs one scale step per lesson: L1 D, L2 Em, L3 F#m, L4 G, L5 A, L6 Bm.\n  - The second bar sits on A (dominant pull), except in L6, where it is B7, the V of E, setting up the key lift.\n- Every lesson downbeat (10, 14, 18, 22, 26, 30) gets crash + impact + a brass stab on the climbing root.\n- Every loot moment (13.0, 17.0, 21.0, 25.0, 29.0, 32.5) gets a 4-note level-up jingle. Its top note climbs D5 → E5 → F#5 → G5 → A5 → B5, so progress is audible.\n- Layers build lesson by lesson:\n  - L3 adds 16th closed hats and a bass octave.\n  - L4 adds a string ostinato.\n  - L5 adds a lead arp and the two-note ♪ motif.\n  - L6 adds a choir pad.\n- Ear candy:\n  - L1: plucks D–F#–A at 10.5, 11.0 and 11.5.\n  - L2: a 0.25 s tape-stop at 15.5, then a rising snap at 16.5.\n  - L3: a sizzle at 18.0 and 18.5, then ten 16th-note progress ticks 19.5–20.625.\n  - L4: five pentatonic pops on 8ths, 23.0–24.0.\n  - L5: chip snaps at 26.5, 27.0 and 27.5.\n  - L6: 16th snaps 31.0–31.5, rank-up ticks on 16ths 33.0–33.5, a double-time snare fill 33.0–34.0 and a reverse swell into 34.0.\n\n**34.0–44.5 LIFE** (lift to E major, energy 9)\n- Half-time feel: kick on beat 1, big snare on beat 3.\n- Warm boom at 34.0.\n- Chords:\n  - E at 34.0;\n  - B at 36.0;\n  - C#m pushed onto 37.5, anticipating bar 38 so it lands with the happiness hit;\n  - A at 40.0;\n  - E/G# at 41.0, so the respect hit lands on the half-time snare;\n  - A at 42.0;\n  - Bsus at 43.0.\n- Reversed clock ticks 34.0–35.5.\n- Ring pops on each beat 37.5–40.0, in a warm pentatonic.\n- A choir 'aah' (stacked detuned sines through a formant band-pass) from 37.5.\n- Peak at 41.0: a soft stage thunk, then an applause-like filtered-noise swell 41.5–43.5.\n- 44.0–44.5: low-pass sweep down as the iris closes.\n\n**44.5–51.5 SECRET** (E minor colour, energy 2→7)\n- Drums out.\n- Low E drone with a faint F cluster at −18 dB, and a distant choir.\n- Heartbeat every 1.0 s from 44.5 to 47.5, then every 0.5 s from 48.0 to 51.0.\n- Check ticks on 8ths, 45.0–46.25.\n- Reversed whisper swell at 46.5.\n- Dive whoosh at 47.0, plus a Shepard-tone riser 47.0→51.5.\n- Six glass socket clinks 48.0–50.5, each a semitone higher.\n- Keyhole bell at 50.5; padlock rattle at 51.0.\n\n**51.5–52.0 SILENCE:** absolute, over black.\n\n**52.0–56.0 DROP 2 / FINALE** (E major, energy 10)\n- The biggest boom and crash of the film; the full band returns.\n- Stab motif E–B–E′.\n- Chords change every second: E at 52, C#m at 53, A at 54, B at 55 under the START tap.\n- Confetti sparkles at 52.0 and 54.0.\n- Click + whoosh at 55.5.\n\n**56.0–60.0 OUTRO** (energy 6→0)\n- At 56.0, a clover impact and bell on Eadd9, and the drums stop.\n- The arp slows: 16ths, then 8ths, then quarters.\n- Shimmer pad bloom at 58.0.\n- A last low E pluck at 59.5.\n- Everything is below −60 dB by 59.9 and the film ends in silence at 60.0.\n\n**Energy curve**\n| Time (s) | Energy |\n|---|---|\n| 0–3 | 2→4 |\n| 3–3.5 | hush |\n| 3.5–6.5 | 4→7 |\n| 6.5–7 | breath |\n| 7–10 | 9 |\n| 10–34 | 7→9 |\n| 34–44.5 | 9 |\n| 44.5–51.5 | 2→7 |\n| 51.5–52 | 0 |\n| 52–56 | 10 |\n| 56–60 | 6→0 |\n\n**Light safety:**\n- Only two full-screen flashes, at 7.0 and 52.0 (each ≤0.15 s, ≤60% peak).\n- The 34.0 wash rises slowly over 0.5 s.\n- Every lesson cut and the secret flare are local.\n- Nothing strobes.",
+ "endCard": {
+  "headline": "ซอสขวดแรกของคุณ รออยู่ในบท 1",
+  "primaryCta": "เริ่มบท 1 เลย · ฟรี ไม่ต้องสมัคร",
+  "secondaryCta": "↻ ดูอีกครั้ง"
+ },
+ "popup": {
+  "kicker": "ก่อนเริ่มบท 1 · 60 วินาที",
+  "title": "6 บท 6 ของจริง · 1 ความลับ",
+  "sub": "ดูให้จบแล้วจะรู้ว่าแต่ละบทได้อะไรกลับไป และอะไรรออยู่หลังบทสุดท้าย 🔒 เปิดเสียงด้วยนะ",
+  "play": "▶ ดูเลย (เปิดเสียง)",
+  "skip": "ข้าม ไปเริ่มเรียน"
+ },
+ "header": {
+  "label": "ตัวอย่างคอร์ส · 60 วินาที",
+  "play": "▶ ดูตัวอย่าง (มีเสียง)",
+  "note": "6 บท 6 ของจริง กับความลับหลังบทที่ 6 · ดูซ้ำได้ทุกเมื่อ"
+ }
+}

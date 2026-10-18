@@ -14,6 +14,8 @@ try {
  for(const width of [390,1440]) {
   const context=await browser.newContext({viewport:{width,height:width===390?844:1000},reducedMotion:'reduce'});
   await context.route('**/*',r=>new URL(r.request().url()).origin===origin?r.continue():r.abort());
+  // These checks cover the course page itself; the first-visit trailer popup has its own test.
+  await context.addInitScript(()=>localStorage.setItem('mc_classroom_trailer_v1',JSON.stringify({played:true})));
   const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(`${origin}/classroom/`,{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.querySelector('#courseStart')?.offsetHeight>0);

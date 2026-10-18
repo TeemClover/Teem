@@ -60,6 +60,7 @@ try {
         window.__copied.push(text);
       }}, configurable:true });
       document.execCommand = () => false;
+      localStorage.setItem('mc_classroom_trailer_v1', JSON.stringify({ played: true }));
     });
     const page = await context.newPage();
     page.setDefaultTimeout(7000);

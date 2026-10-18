@@ -163,6 +163,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/assets/boss-invite.js",
   "/assets/classroom-hero-consistency.js",
   "/assets/classroom-render.js",
+  "/assets/classroom-trailer.js",
   "/assets/collection-achievement-polish.js",
   "/assets/collection-dungeon-patch.js",
   "/assets/comic-bottom-next.js",
