@@ -51,10 +51,10 @@ window.MC_CLASSROOM_RENDER={
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:clip-ai">
 <meta name="theme-color" content="#0a2818">
-<title>บทที่ 3 · Cook — เอาซอสไปทำจานจริง · AI ใส่ซอส</title>
+<title>บทที่ 3 · Cook — คลิปจากซอส · AI ใส่ซอส</title>
 <meta name="description" content="เปลี่ยนซอสจากบทที่ 1 เป็นคลิปสั้นไม่เกิน 10 วินาที เลือกถ่ายเองหรือสร้างภาพเคลื่อนไหวด้วย AI แล้วเติมเสียงของคุณเป็น Final Human Touch">
 <meta property="og:type" content="article">
-<meta property="og:title" content="บทที่ 3 · Cook — เอาซอสไปทำจานจริง · AI ใส่ซอส">
+<meta property="og:title" content="บทที่ 3 · Cook — คลิปจากซอส · AI ใส่ซอส">
 <meta property="og:description" content="งานยังไม่เกิด จนกว่าจะออกจากแชตไปทำให้คนจริงรู้สึก เข้าใจ หรือทำอะไรบางอย่าง">
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--red:170 66 48;--cream:255 252 243;--blue:49 88 139;--orange:190 101 51}
@@ -271,7 +271,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   </figure>
 
 <span class="lv">บทที่ 3 · Cook</span>
-  <h1 class="disp">เอาซอสไปทำจานจริง</h1>
+  <h1 class="disp">คลิปจากซอส</h1>
   <p class="lead">งานยังไม่เกิด จนกว่าจะออกจากแชตไปทำให้คนจริงรู้สึก เข้าใจ หรือทำอะไรบางอย่าง บทนี้เราจะเปลี่ยนซอสขวดเดิมให้เป็นคลิปไม่เกิน 10 วินาที — ถ่ายเองก็ได้ เจนภาพเคลื่อนไหวก็ได้ แต่ขอให้เหลือเสียงของคุณอยู่ในจาน</p>
   <div class="meta"><span>⏱️ คลิปไม่เกิน 10 วินาที</span><span>🧴 ใช้ซอสจากบท 1</span><span>🎬 ถ่ายเองหรือเจน AI</span><span>🎙️ Final Human Touch</span></div>
 
@@ -550,7 +550,7 @@ C. สุภาพแต่จัดจ้าน
 </section>
 
 <div class="nextrow">
-  <a class="nx ghost" href="image-ai.html">← กลับบทที่ 2 · ชิมซอสก่อนเติม</a>
+  <a class="nx ghost" href="image-ai.html">← กลับบทที่ 2 · ชิมด้วยภาพ</a>
   <a class="nx" href="notebooklm.html">ไปบทที่ 4 · แตกซอสเป็นหลายเมนู →</a>
 </div>
 
@@ -614,27 +614,27 @@ document.querySelectorAll('.prompt').forEach(function(el){
 const HERO_COPY = {
   'learn:free-ai': {
     label: 'บทที่ 1 · Source',
-    title: 'เริ่มจากการปรุงซอส'
+    title: 'ซอส .md ขวดแรก'
   },
   'learn:image-ai': {
     label: 'บทที่ 2 · Taste',
-    title: 'ชิมซอสก่อนเติม'
+    title: 'ชิมด้วยภาพ'
   },
   'learn:clip-ai': {
     label: 'บทที่ 3 · Cook',
-    title: 'เอาซอสไปทำจานจริง'
+    title: 'คลิปจากซอส'
   },
   'learn:notebooklm': {
     label: 'บทที่ 4 · Split',
-    title: 'ซอสขวดเดียว แตกได้หลายเมนู'
+    title: 'ซอสเดียวหลายเมนู'
   },
   'learn:prompts': {
     label: 'บทที่ 5 · Season',
-    title: 'หยิบคำสั่งลัด ปรุงงานทันที'
+    title: 'คำสั่งลัด + Agent'
   },
   'learn:first-web': {
     label: 'บทที่ 6 · Serve',
-    title: 'เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'
+    title: 'เว็บของคุณเอง'
   }
 };
 
@@ -672,19 +672,19 @@ else startHeroConsistency();
 const NAV = {
   '/classroom/free-ai.html': {
     prev: { href: 'lesson-0.html', text: '← บท 0 · เลือกเครื่องครัว และเปิดเตา' },
-    next: { href: 'image-ai.html', text: 'บท 2 · ชิมซอสก่อนเติม →' },
+    next: { href: 'image-ai.html', text: 'บท 2 · ชิมด้วยภาพ →' },
   },
   '/classroom/image-ai.html': {
-    prev: { href: 'free-ai.html', text: '← บท 1 · เริ่มจากการปรุงซอส' },
-    next: { href: 'clip-ai.html', text: 'บท 3 · เอาซอสไปทำจานจริง →' },
+    prev: { href: 'free-ai.html', text: '← บท 1 · ซอส .md ขวดแรก' },
+    next: { href: 'clip-ai.html', text: 'บท 3 · คลิปจากซอส →' },
   },
   '/classroom/clip-ai.html': {
-    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมซอสก่อนเติม' },
-    next: { href: 'notebooklm.html', text: 'บท 4 · ซอสขวดเดียว แตกได้หลายเมนู →' },
+    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมด้วยภาพ' },
+    next: { href: 'notebooklm.html', text: 'บท 4 · ซอสเดียวหลายเมนู →' },
   },
   '/classroom/notebooklm.html': {
-    prev: { href: 'clip-ai.html', text: '← บท 3 · เอาซอสไปทำจานจริง' },
-    next: { href: 'prompts.html', text: 'บท 5 · หยิบคำสั่งลัด ปรุงงานทันที →' },
+    prev: { href: 'clip-ai.html', text: '← บท 3 · คลิปจากซอส' },
+    next: { href: 'prompts.html', text: 'บท 5 · คำสั่งลัด + Agent →' },
   },
 };
 
@@ -1550,7 +1550,7 @@ function injectStyle(){
 }
 
 function patchTop(){
-  document.title='บทที่ 3 · Cook · เอาซอสไปทำจานจริง · AI ใส่ซอส';
+  document.title='บทที่ 3 · Cook · คลิปจากซอส · AI ใส่ซอส';
   const description=document.querySelector('meta[name="description"]');
   if(description)description.content='ใช้ซอส .md และภาพจากบท 2 ทำซอสวิดีโอ แล้วสร้างวิดีโอแนวตั้ง 9:16 ความยาว 10 วินาทีโดยไม่ต้องถ่ายหรือเขียนบท';
   const head=document.querySelector('.head');
@@ -1578,7 +1578,7 @@ function buildFastTrack(){
     fast.innerHTML=`
       <div class="video-fast__intro"><b>เป้าหมายเดียวของบทนี้: กดสร้างแล้วได้วิดีโอ 1 ชิ้น</b><p>ซอสที่ดีต้องบอกบริบทและวิธีทำงานแทนเราได้ จึงไม่ต้องแบกคำอธิบายยาว ๆ ไปไว้ในคำสั่งสุดท้าย</p></div>
       <div class="video-fast__why"><div><b>ไม่ต้องถ่าย</b><p>ใช้ภาพจากบท 2 เป็นวัตถุดิบทางภาพได้เลย</p></div><div><b>ไม่ต้องเขียนบท</b><p>เรื่องราวและลำดับ 10 วินาทีอยู่ในซอสวิดีโอ</p></div><div><b>ไม่ต้องจำ Prompt</b><p>คำสั่งสุดท้ายมีเพียงหนึ่งบรรทัด</p></div></div>
-      <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
+      <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">จังหวะเดิมจากบท 2 — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
       <section class="video-ready" id="lesson3Ready" aria-labelledby="lesson3ReadyTitle">
         <h2 id="lesson3ReadyTitle">ก่อนกดสร้าง เตรียม 2 ไฟล์และเช็กเครื่องมือ</h2>
         <ul><li><b>ซอสแม่ .md จากบท 1</b> ที่ตรวจแล้วว่าเป็นเรื่องของคุณ</li><li><b>ภาพจากบท 2</b> เก็บไว้ในเครื่องเพื่อแนบในขั้น 2</li><li><b>เครื่องมือที่สร้างวิดีโอจากภาพได้</b> และอ่านไฟล์หรือข้อความซอสได้</li></ul>
@@ -1703,12 +1703,12 @@ window.__LESSON3_VIDEO_EXAMPLE__ = "/classroom/media/lesson3-source-example.mp4"
 'use strict';
 const KEY='mc_course_journey_v1';
 const LESSONS=[
- {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
- {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
- {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
- {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
- {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'หยิบคำสั่งลัด ปรุงงานทันที',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
- {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+ {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ซอส .md ขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'ชิมด้วยภาพ',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'คลิปจากซอส',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'ซอสเดียวหลายเมนู',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'คำสั่งลัด + Agent',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
+ {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เว็บของคุณเอง',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
 ];
 const WORKFLOWS={
  'free-ai':[
@@ -1724,17 +1724,17 @@ const WORKFLOWS={
   {target:'.video-step:nth-child(2)',id:'lesson3Create',label:'สร้างวิดีโอ'},
   {target:'#lesson3VideoCheck',label:'ลองเล่นและตรวจ',after:'#lesson3Repair'}],
  'notebooklm':[
-  {target:'#source',label:'เลือกซอส',after:'.source-options + .note'},
+  {target:'#source',label:'เลือกซอส',after:'.source-options + .note + .note'},
   {target:'#lesson4FirstOutput',label:'สร้างผลงาน'},
   {target:'#multiplyBoard',label:'เทียบข้อเท็จจริง'}],
  'prompts':[
-  {target:'#deck',label:'หยิบคำสั่ง'},
+  {target:'#paths',label:'เลือกทาง หยิบคำสั่ง',after:'#deck'},
   {target:'#forge',label:'ปรุงแล้วส่ง AI'},
   {target:'#promptCheck',label:'ชิมแล้วสั่งปรับ'}],
  'first-web':[
   {target:'#resumeStarter',label:'แนบซอสแล้วสั่ง',after:'#resumeStarter .prompt-card'},
-  {target:'#resumeDeviceGuide',label:'บันทึกและเปิด'},
-  {target:'#cl-completion',label:'ตรวจหน้าเว็บ'}]
+  {target:'#lesson6Save',label:'บันทึกและเปิด'},
+  {target:'#lesson6Check',label:'ตรวจหน้าเว็บ'}]
 };
 // XP is derived from saved work, never stored, so it cannot drift from what the learner confirmed.
 const STEP_XP=100,FINISH_XP=200;
@@ -1940,7 +1940,8 @@ function boot(){
  const trophy=document.createElement('span');trophy.className='cl-trophy';trophy.setAttribute('aria-hidden','true');trophy.textContent='🏆';steps.appendChild(trophy);
  const meter=document.createElement('span');meter.className='cl-meter';meter.setAttribute('aria-hidden','true');meter.innerHTML='<i></i><i></i><i></i><i></i>';steps.appendChild(meter);
  launch.querySelector('.cl-start').href=targets[0];
- hero.before(rail,launch,steps);
+ // A page can put its own first block above the header (data-cl-top); the mission card still leads.
+ (document.querySelector('[data-cl-top]')||hero).before(rail,launch,steps);
  // A small heading marks each mission, unless inserting a sibling would shift a positional selector or grid.
  const tags=[];
  workflow.forEach((step,i)=>{
@@ -2063,5 +2064,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script defer src="/assets/lesson-hero-art.js?v=20261019a"></script>
 </body>
 </html>

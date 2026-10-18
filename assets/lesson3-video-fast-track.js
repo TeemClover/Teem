@@ -205,7 +205,7 @@ function injectStyle(){
 }
 
 function patchTop(){
-  document.title='บทที่ 3 · Cook · เอาซอสไปทำจานจริง · AI ใส่ซอส';
+  document.title='บทที่ 3 · Cook · คลิปจากซอส · AI ใส่ซอส';
   const description=document.querySelector('meta[name="description"]');
   if(description)description.content='ใช้ซอส .md และภาพจากบท 2 ทำซอสวิดีโอ แล้วสร้างวิดีโอแนวตั้ง 9:16 ความยาว 10 วินาทีโดยไม่ต้องถ่ายหรือเขียนบท';
   const head=document.querySelector('.head');
@@ -233,7 +233,7 @@ function buildFastTrack(){
     fast.innerHTML=`
       <div class="video-fast__intro"><b>เป้าหมายเดียวของบทนี้: กดสร้างแล้วได้วิดีโอ 1 ชิ้น</b><p>ซอสที่ดีต้องบอกบริบทและวิธีทำงานแทนเราได้ จึงไม่ต้องแบกคำอธิบายยาว ๆ ไปไว้ในคำสั่งสุดท้าย</p></div>
       <div class="video-fast__why"><div><b>ไม่ต้องถ่าย</b><p>ใช้ภาพจากบท 2 เป็นวัตถุดิบทางภาพได้เลย</p></div><div><b>ไม่ต้องเขียนบท</b><p>เรื่องราวและลำดับ 10 วินาทีอยู่ในซอสวิดีโอ</p></div><div><b>ไม่ต้องจำ Prompt</b><p>คำสั่งสุดท้ายมีเพียงหนึ่งบรรทัด</p></div></div>
-      <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
+      <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">จังหวะเดิมจากบท 2 — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
       <section class="video-ready" id="lesson3Ready" aria-labelledby="lesson3ReadyTitle">
         <h2 id="lesson3ReadyTitle">ก่อนกดสร้าง เตรียม 2 ไฟล์และเช็กเครื่องมือ</h2>
         <ul><li><b>ซอสแม่ .md จากบท 1</b> ที่ตรวจแล้วว่าเป็นเรื่องของคุณ</li><li><b>ภาพจากบท 2</b> เก็บไว้ในเครื่องเพื่อแนบในขั้น 2</li><li><b>เครื่องมือที่สร้างวิดีโอจากภาพได้</b> และอ่านไฟล์หรือข้อความซอสได้</li></ul>

@@ -7,12 +7,12 @@
 'use strict';
 
 const CARD_TITLES = {
-  'free-ai.html': 'ซอส · เริ่มจากการปรุงซอส',
-  'image-ai.html': 'เทส · ชิมซอสก่อนเติม',
-  'clip-ai.html': 'ผัด · เอาซอสไปทำจานจริง',
-  'notebooklm.html': 'แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู',
-  'prompts.html': 'ปรุง · หยิบคำสั่งลัด ปรุงงานทันที',
-  'first-web.html': 'เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต',
+  'free-ai.html': 'ซอส · ซอส .md ขวดแรก',
+  'image-ai.html': 'เทส · ชิมด้วยภาพ',
+  'clip-ai.html': 'ผัด · คลิปจากซอส',
+  'notebooklm.html': 'แบ่ง · ซอสเดียวหลายเมนู',
+  'prompts.html': 'ปรุง · คำสั่งลัด + Agent',
+  'first-web.html': 'เสิร์ฟ · เว็บของคุณเอง',
 };
 
 const FLOW = ['SOURCE','TASTE','COOK','SPLIT','SEASON','SERVE'];

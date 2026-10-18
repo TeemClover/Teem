@@ -2,27 +2,27 @@
 const HERO_COPY = {
   'learn:free-ai': {
     label: 'บทที่ 1 · Source',
-    title: 'เริ่มจากการปรุงซอส'
+    title: 'ซอส .md ขวดแรก'
   },
   'learn:image-ai': {
     label: 'บทที่ 2 · Taste',
-    title: 'ชิมซอสก่อนเติม'
+    title: 'ชิมด้วยภาพ'
   },
   'learn:clip-ai': {
     label: 'บทที่ 3 · Cook',
-    title: 'เอาซอสไปทำจานจริง'
+    title: 'คลิปจากซอส'
   },
   'learn:notebooklm': {
     label: 'บทที่ 4 · Split',
-    title: 'ซอสขวดเดียว แตกได้หลายเมนู'
+    title: 'ซอสเดียวหลายเมนู'
   },
   'learn:prompts': {
     label: 'บทที่ 5 · Season',
-    title: 'หยิบคำสั่งลัด ปรุงงานทันที'
+    title: 'คำสั่งลัด + Agent'
   },
   'learn:first-web': {
     label: 'บทที่ 6 · Serve',
-    title: 'เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'
+    title: 'เว็บของคุณเอง'
   }
 };
 

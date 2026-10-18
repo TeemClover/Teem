@@ -207,6 +207,7 @@ export const PUBLIC_ASSET_INVENTORY = Object.freeze([
   "/assets/hall-core.js",
   "/assets/hall-shell.css",
   "/assets/house-case-study-v1.css",
+  "/assets/lesson-hero-art.js",
   "/assets/lesson-one-subquests.js",
   "/assets/lesson1-downloadable-md.js",
   "/assets/lesson1-polite-language.js",

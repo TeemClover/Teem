@@ -15,7 +15,7 @@ function patchClassroomCard() {
   const copy = card.querySelector('.lsbody > p');
   const emoji = card.querySelector('.lsemo');
   if (level) level.innerHTML = 'บทที่ 6 · Serve <em>🥩 เมนคอร์ส</em>';
-  if (title) title.textContent = 'เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต';
+  if (title) title.textContent = 'เสิร์ฟ · เว็บของคุณเอง';
   if (copy) copy.textContent = 'เปลี่ยน Source เป็นไฟล์เดียวที่รวมบทความ ภาพ วิดีโอ เสียง เกม และระบบโต้ตอบ เปิดในเครื่อง ส่งต่อ หรือ Publish ที่ URL เดิมได้';
   if (emoji) emoji.textContent = '🥩';
 
@@ -38,8 +38,8 @@ function patchLessonFiveExit() {
   if (!/^\/classroom\/prompts\.html$/.test(location.pathname)) return;
   const link = document.querySelector('a[href="first-web.html"], a[href="./first-web.html"]');
   if (!link) return;
-  link.textContent = 'บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต →';
-  link.setAttribute('aria-label', 'บท 6 เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต');
+  link.textContent = 'บท 6 · เว็บของคุณเอง →';
+  link.setAttribute('aria-label', 'บท 6 เว็บของคุณเอง');
 }
 
 function patchLessonSixDungeon() {

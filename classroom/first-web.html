@@ -51,10 +51,10 @@ window.MC_CLASSROOM_RENDER={
 <meta name="self-contained" content="classroom-lesson">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071a10">
-<title>บทที่ 6 · Serve — เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต · AI ใส่ซอส</title>
+<title>บทที่ 6 · Serve — เว็บของคุณเอง · AI ใส่ซอส</title>
 <meta name="description" content="ใช้ซอสสร้าง HTML ไฟล์เดียวที่รวมบทความ ภาพ วิดีโอ เสียง เกม และระบบโต้ตอบ เปิดในคอม ส่งต่อ หรือเผยแพร่ให้ทั้งโลกเข้าถึงได้">
 <meta property="og:type" content="article">
-<meta property="og:title" content="บทที่ 6 · Serve — เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต">
+<meta property="og:title" content="บทที่ 6 · Serve — เว็บของคุณเอง">
 <meta property="og:description" content="ถ้าคุณใช้ซอสเป็น คุณสร้างไฟล์ที่เปิดได้ทุกเครื่อง อัปเดตที่อยู่เดิม และเติบโตจากหน้าเดียวเป็นบ้านทั้งหลังได้">
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:7 26 16;--gold:190 148 66;--muted:96 108 100;--red:189 49 44;--cream:255 251 239;--blue:54 93 143}
@@ -195,7 +195,7 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 
   <div class="lesson6-hero-copy">
     <span class="lv">บทที่ 6 · Serve</span>
-    <h1 class="disp">เปลี่ยนซอสเป็น<br>HTML ไฟล์มีชีวิต</h1>
+    <h1 class="disp">เว็บของคุณเอง</h1>
     <p class="lead">นี่ไม่ใช่คลาสสำหรับคนอยากทำเว็บไซต์ แต่คือคลาสสำหรับคนที่อยาก <strong>เสิร์ฟความคิดให้คนอื่นเปิด ใช้ และเดินต่อได้จริง</strong></p>
     <div class="meta"><span>🥩 เมนคอร์ส</span><span>📄 ไฟล์เดียว</span><span>📱 เปิดได้บนโทรศัพท์</span><span>🌍 ส่งให้ 1 คนหรือทั้งโลก</span></div>
   </div>
@@ -331,6 +331,51 @@ html,body{min-height:100%}body{overflow-y:auto!important}
       </div>
     </details>
   </section>
+<section class="block" id="lesson6Save">
+  <div class="section-head"><div><h2>ทำเสร็จแล้วเก็บไว้ในคอม</h2><p>ยังไม่ต้องมี Hosting ก็ถือผลงานจริงได้</p></div></div>
+  <div class="steps">
+    <article class="step"><span class="n">1</span><div><b>ขอให้ AI ส่งโค้ดทั้งหมดในกล่องเดียว</b><p>ตรวจว่าขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และจบด้วย <code>&lt;/html&gt;</code> ห้ามเอาคำอธิบายนอกโค้ดติดมาด้วย</p></div></article>
+    <article class="step"><span class="n">2</span><div><b>เปิดโปรแกรม Text Editor ธรรมดา</b><p>วางโค้ด แล้ว Save As ชื่อ <code>index.html</code> เลือก UTF-8 ถ้ามีตัวเลือก อย่าให้โปรแกรมแอบเติม <code>.txt</code> ต่อท้าย</p></div></article>
+    <article class="step"><span class="n">3</span><div><b>ดับเบิลคลิกไฟล์</b><p>เบราว์เซอร์จะเปิดให้ทันที แม้ยังไม่ได้เอาขึ้นอินเทอร์เน็ต คุณจึงทดสอบ แก้ และพกไฟล์นี้ไปเปิดเครื่องอื่นได้</p></div></article>
+    <article class="step"><span class="n">4</span><div><b>แก้ซอสก่อน แล้วค่อยให้ AI แก้หน้า</b><p>ถ้าข้อมูลผิด อย่าซ่อมเฉพาะสีหรือประโยคปลายทาง แก้ซอสต้นฉบับ แล้วสั่งให้สร้าง Version ใหม่จากซอสที่ถูกต้อง</p></div></article>
+  </div>
+  <details class="rescue">
+    <summary>⚠️ ถ้าโค้ดขาดกลางคัน — AI พลาดได้ และนี่คือทางถอย</summary>
+    <div class="rescue__body">
+      <p><b>อาการ:</b> โค้ดหยุดกลางบรรทัด หรือไม่มี <code>&lt;/html&gt;</code> ปิดท้าย บันทึกไปแล้วเปิดมาหน้าเพี้ยนหรือว่างเปล่า</p>
+      <div class="rescue__why">ไม่ใช่ความผิดคุณ และไม่ได้แปลว่าซอสไม่ดี — AI ทุกตัวมีเพดานความยาวของคำตอบหนึ่งครั้ง หน้าเว็บไฟล์เดียวที่มีทั้ง HTML, CSS และ JavaScript มักยาวเกินเพดานของรุ่นฟรี นี่คือข้อจำกัดของเครื่องมือ ไม่ใช่สัญญาณว่าให้เลิก</div>
+      <div class="rescue__ways">
+        <div class="rescue__way">
+          <b>ทาง 1 · สั่งให้เขียนต่อ (ลองอันนี้ก่อน)</b>
+          <p>อย่าสั่งว่า “ส่งใหม่ทั้งหมด” เพราะจะโดนตัดที่เดิม ให้สั่งต่อจากจุดที่ค้าง แล้วเอาโค้ดที่ได้ไปต่อท้ายในไฟล์เดิมของคุณเอง</p>
+          <div class="prompt-card"><span class="prompt-copy" id="rescuePrompt">เขียนต่อจากบรรทัดสุดท้ายที่ค้างไว้ทันที ห้ามเริ่มใหม่ ห้ามสรุป และห้ามใส่คำอธิบายใด ๆ ส่งเฉพาะโค้ดส่วนที่เหลือจนจบไฟล์</span><button class="copy-smart" type="button" data-copy-target="rescuePrompt" aria-label="คัดลอกคำสั่งให้เขียนต่อ">คัดลอก</button></div>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 2 · สั่งแบ่งส่งตั้งแต่แรก</b>
+          <p>ถ้าขาดซ้ำหลายรอบ ให้บอกว่า “แบ่งส่งเป็น 3 ครั้ง ครั้งละส่วน ส่งครั้งที่ 1 ก่อน แล้วรอฉันบอกว่าต่อ” จากนั้นต่อโค้ดเรียงกันในไฟล์เดียว</p>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 3 · ขอฉบับสั้นลงก่อน</b>
+          <p>บอกว่า “ทำฉบับสั้นลง ตัด section ที่ซอสมีข้อมูลน้อยที่สุดออกก่อน” ได้หน้าที่เปิดได้จริงก่อน แล้วค่อยขอเพิ่มทีละส่วนทีหลัง</p>
+        </div>
+      </div>
+      <p class="rescue__check">เช็กทุกครั้งก่อนบันทึก: ไฟล์ต้องขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และบรรทัดสุดท้ายต้องเป็น <code>&lt;/html&gt;</code></p>
+    </div>
+  </details>
+  <p class="small-note">ใช้ไฟล์ <code>index.html</code> ที่ AI สร้างจากซอสของคุณเป็นผลงานจริง ส่วนปุ่มดูตัวอย่าง Smart Resume อยู่ใน 3 Step ด้านบน</p>
+</section>
+
+<section class="block" id="lesson6Check" aria-labelledby="lesson6CheckTitle">
+  <div class="section-head"><div><h2 id="lesson6CheckTitle">ตรวจหน้าเว็บก่อนส่ง</h2><p>เปิดไฟล์ของคุณ แล้วไล่ดู 5 ข้อนี้ ผ่านครบค่อยส่งต่อ</p></div></div>
+  <div class="steps">
+    <article class="step"><span class="n">1</span><div><b>ชื่อ ปี และตัวเลขตรงกับซอส</b><p>ไม่มีผลงาน ตำแหน่ง หรือประวัติที่ AI แต่งเพิ่มเอง</p></div></article>
+    <article class="step"><span class="n">2</span><div><b>ทุกปุ่มและลิงก์กดได้จริง</b><p>สลับ WORK / LIFE ได้ ลิงก์พาไปถูกที่</p></div></article>
+    <article class="step"><span class="n">3</span><div><b>เปิดบนมือถือแล้วอ่านง่าย</b><p>ตัวหนังสือไม่ล้นจอ ไม่ต้องซูม รูปไม่แตก</p></div></article>
+    <article class="step"><span class="n">4</span><div><b>ไม่มีข้อมูลลับ</b><p>เบอร์โทร ที่อยู่บ้าน เลขบัตร หรือข้อมูลลูกค้า ต้องไม่อยู่ในไฟล์</p></div></article>
+    <article class="step"><span class="n">5</span><div><b>ผิดตรงไหน แก้ที่ซอสก่อน</b><p>แล้วสั่งให้ AI สร้างหน้าใหม่จากซอสที่แก้ หน้าเว็บกับซอสจะได้ตรงกันเสมอ</p></div></article>
+  </div>
+</section>
+
 
   <style id="lesson6-starter-style">
   .resume-starter{margin:20px 0 26px;padding:22px;border:1px solid rgb(27 106 66/.24);border-radius:18px;background:linear-gradient(135deg,#fff,rgb(27 106 66/.045))}
@@ -344,7 +389,7 @@ html,body{min-height:100%}body{overflow-y:auto!important}
   @media(max-width:560px){.resume-starter{padding:17px}.resume-starter .smart-actions{display:grid}.resume-starter .btn{justify-content:center}}
   </style>
 
-  <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
+  <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">จังหวะเดิมจากบท 2 — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
       <div class="smart-steps">
     <article class="smart-step">
       <span class="step-no">1</span>
@@ -475,39 +520,7 @@ Checklist ว่า Source มีข้อมูลพอสร้างเว�
   </div>
 </section>
 
-<section class="block">
-  <div class="section-head"><div><h2>ทำเสร็จแล้วเก็บไว้ในคอม</h2><p>ยังไม่ต้องมี Hosting ก็ถือผลงานจริงได้</p></div></div>
-  <div class="steps">
-    <article class="step"><span class="n">1</span><div><b>ขอให้ AI ส่งโค้ดทั้งหมดในกล่องเดียว</b><p>ตรวจว่าขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และจบด้วย <code>&lt;/html&gt;</code> ห้ามเอาคำอธิบายนอกโค้ดติดมาด้วย</p></div></article>
-    <article class="step"><span class="n">2</span><div><b>เปิดโปรแกรม Text Editor ธรรมดา</b><p>วางโค้ด แล้ว Save As ชื่อ <code>index.html</code> เลือก UTF-8 ถ้ามีตัวเลือก อย่าให้โปรแกรมแอบเติม <code>.txt</code> ต่อท้าย</p></div></article>
-    <article class="step"><span class="n">3</span><div><b>ดับเบิลคลิกไฟล์</b><p>เบราว์เซอร์จะเปิดให้ทันที แม้ยังไม่ได้เอาขึ้นอินเทอร์เน็ต คุณจึงทดสอบ แก้ และพกไฟล์นี้ไปเปิดเครื่องอื่นได้</p></div></article>
-    <article class="step"><span class="n">4</span><div><b>แก้ซอสก่อน แล้วค่อยให้ AI แก้หน้า</b><p>ถ้าข้อมูลผิด อย่าซ่อมเฉพาะสีหรือประโยคปลายทาง แก้ซอสต้นฉบับ แล้วสั่งให้สร้าง Version ใหม่จากซอสที่ถูกต้อง</p></div></article>
-  </div>
-  <details class="rescue">
-    <summary>⚠️ ถ้าโค้ดขาดกลางคัน — AI พลาดได้ และนี่คือทางถอย</summary>
-    <div class="rescue__body">
-      <p><b>อาการ:</b> โค้ดหยุดกลางบรรทัด หรือไม่มี <code>&lt;/html&gt;</code> ปิดท้าย บันทึกไปแล้วเปิดมาหน้าเพี้ยนหรือว่างเปล่า</p>
-      <div class="rescue__why">ไม่ใช่ความผิดคุณ และไม่ได้แปลว่าซอสไม่ดี — AI ทุกตัวมีเพดานความยาวของคำตอบหนึ่งครั้ง หน้าเว็บไฟล์เดียวที่มีทั้ง HTML, CSS และ JavaScript มักยาวเกินเพดานของรุ่นฟรี นี่คือข้อจำกัดของเครื่องมือ ไม่ใช่สัญญาณว่าให้เลิก</div>
-      <div class="rescue__ways">
-        <div class="rescue__way">
-          <b>ทาง 1 · สั่งให้เขียนต่อ (ลองอันนี้ก่อน)</b>
-          <p>อย่าสั่งว่า “ส่งใหม่ทั้งหมด” เพราะจะโดนตัดที่เดิม ให้สั่งต่อจากจุดที่ค้าง แล้วเอาโค้ดที่ได้ไปต่อท้ายในไฟล์เดิมของคุณเอง</p>
-          <div class="prompt-card"><span class="prompt-copy" id="rescuePrompt">เขียนต่อจากบรรทัดสุดท้ายที่ค้างไว้ทันที ห้ามเริ่มใหม่ ห้ามสรุป และห้ามใส่คำอธิบายใด ๆ ส่งเฉพาะโค้ดส่วนที่เหลือจนจบไฟล์</span><button class="copy-smart" type="button" data-copy-target="rescuePrompt" aria-label="คัดลอกคำสั่งให้เขียนต่อ">คัดลอก</button></div>
-        </div>
-        <div class="rescue__way">
-          <b>ทาง 2 · สั่งแบ่งส่งตั้งแต่แรก</b>
-          <p>ถ้าขาดซ้ำหลายรอบ ให้บอกว่า “แบ่งส่งเป็น 3 ครั้ง ครั้งละส่วน ส่งครั้งที่ 1 ก่อน แล้วรอฉันบอกว่าต่อ” จากนั้นต่อโค้ดเรียงกันในไฟล์เดียว</p>
-        </div>
-        <div class="rescue__way">
-          <b>ทาง 3 · ขอฉบับสั้นลงก่อน</b>
-          <p>บอกว่า “ทำฉบับสั้นลง ตัด section ที่ซอสมีข้อมูลน้อยที่สุดออกก่อน” ได้หน้าที่เปิดได้จริงก่อน แล้วค่อยขอเพิ่มทีละส่วนทีหลัง</p>
-        </div>
-      </div>
-      <p class="rescue__check">เช็กทุกครั้งก่อนบันทึก: ไฟล์ต้องขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และบรรทัดสุดท้ายต้องเป็น <code>&lt;/html&gt;</code></p>
-    </div>
-  </details>
-  <p class="small-note">ใช้ไฟล์ <code>index.html</code> ที่ AI สร้างจากซอสของคุณเป็นผลงานจริง ส่วนปุ่มดูตัวอย่าง Smart Resume อยู่ใน 3 Step ด้านบน</p>
-</section>
+
 
 <section class="block">
   <div class="section-head"><div><h2>ส่งต่อโดยยังไม่เอาขึ้นเว็บ</h2><p>ไฟล์เดียวก็เดินทางได้แล้ว</p></div></div>
@@ -563,7 +576,7 @@ Checklist ว่า Source มีข้อมูลพอสร้างเว�
 </section>
 <section class="boss-lock" id="bossLock" hidden><h2>ประตูปรากฏแล้ว แต่ยังเปิดไม่ได้</h2><p>เก็บบทเรียนให้ครบ 3 บทก่อน แล้วประตูนี้จะจำว่ามึงเคยมาถึงตรงนี้ ไม่ต้องเรียนครบทั้ง 6 ก็เข้าได้</p><a class="btn alt" style="margin-top:14px" href="./">กลับไปเก็บบทที่เหลือ</a></section>
 
-<div class="nextrow"><a class="nx ghost" href="prompts.html">← บท 5 · หยิบคำสั่งลัด ปรุงงานทันที</a><a class="nx" href="./">ห้องเรียนทั้งหมด</a></div>
+<div class="nextrow"><a class="nx ghost" href="prompts.html">← บท 5 · คำสั่งลัด + Agent</a><a class="nx" href="./">ห้องเรียนทั้งหมด</a></div>
 <aside class="org-shelf-door" aria-label="สูตรซอสสำหรับองค์กร"><div><span class="org-shelf-kicker">FOR YOUR TEAM · ORGANIZATION STARTER</span><h2>ห่อซอสและงานให้คนอื่นใช้ต่อ</h2><p>มีรายการไฟล์ รุ่นที่ใช้ วิธีเปิด และเรื่องค้าง พร้อมรับ Feedback กลับมาแก้<br>ดูฉลากก่อนได้ · ทักหาทีมเพื่อขอกุญแจเปิดซอส</p></div><a href="/shelf/#source-org-handoff">ไปเลือกสูตรบนชั้น ↗</a></aside>
 <footer>AI ใส่ซอส · SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE · แต่ประตูข้างหน้ายังไม่ยอมให้เรียกว่าจบ 🍀</footer>
 </main>
@@ -1042,27 +1055,27 @@ else boot();
 const HERO_COPY = {
   'learn:free-ai': {
     label: 'บทที่ 1 · Source',
-    title: 'เริ่มจากการปรุงซอส'
+    title: 'ซอส .md ขวดแรก'
   },
   'learn:image-ai': {
     label: 'บทที่ 2 · Taste',
-    title: 'ชิมซอสก่อนเติม'
+    title: 'ชิมด้วยภาพ'
   },
   'learn:clip-ai': {
     label: 'บทที่ 3 · Cook',
-    title: 'เอาซอสไปทำจานจริง'
+    title: 'คลิปจากซอส'
   },
   'learn:notebooklm': {
     label: 'บทที่ 4 · Split',
-    title: 'ซอสขวดเดียว แตกได้หลายเมนู'
+    title: 'ซอสเดียวหลายเมนู'
   },
   'learn:prompts': {
     label: 'บทที่ 5 · Season',
-    title: 'หยิบคำสั่งลัด ปรุงงานทันที'
+    title: 'คำสั่งลัด + Agent'
   },
   'learn:first-web': {
     label: 'บทที่ 6 · Serve',
-    title: 'เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'
+    title: 'เว็บของคุณเอง'
   }
 };
 
@@ -1729,12 +1742,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 'use strict';
 const KEY='mc_course_journey_v1';
 const LESSONS=[
- {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
- {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
- {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
- {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
- {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'หยิบคำสั่งลัด ปรุงงานทันที',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
- {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+ {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ซอส .md ขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'ชิมด้วยภาพ',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'คลิปจากซอส',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'ซอสเดียวหลายเมนู',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'คำสั่งลัด + Agent',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
+ {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เว็บของคุณเอง',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
 ];
 const WORKFLOWS={
  'free-ai':[
@@ -1750,17 +1763,17 @@ const WORKFLOWS={
   {target:'.video-step:nth-child(2)',id:'lesson3Create',label:'สร้างวิดีโอ'},
   {target:'#lesson3VideoCheck',label:'ลองเล่นและตรวจ',after:'#lesson3Repair'}],
  'notebooklm':[
-  {target:'#source',label:'เลือกซอส',after:'.source-options + .note'},
+  {target:'#source',label:'เลือกซอส',after:'.source-options + .note + .note'},
   {target:'#lesson4FirstOutput',label:'สร้างผลงาน'},
   {target:'#multiplyBoard',label:'เทียบข้อเท็จจริง'}],
  'prompts':[
-  {target:'#deck',label:'หยิบคำสั่ง'},
+  {target:'#paths',label:'เลือกทาง หยิบคำสั่ง',after:'#deck'},
   {target:'#forge',label:'ปรุงแล้วส่ง AI'},
   {target:'#promptCheck',label:'ชิมแล้วสั่งปรับ'}],
  'first-web':[
   {target:'#resumeStarter',label:'แนบซอสแล้วสั่ง',after:'#resumeStarter .prompt-card'},
-  {target:'#resumeDeviceGuide',label:'บันทึกและเปิด'},
-  {target:'#cl-completion',label:'ตรวจหน้าเว็บ'}]
+  {target:'#lesson6Save',label:'บันทึกและเปิด'},
+  {target:'#lesson6Check',label:'ตรวจหน้าเว็บ'}]
 };
 // XP is derived from saved work, never stored, so it cannot drift from what the learner confirmed.
 const STEP_XP=100,FINISH_XP=200;
@@ -1966,7 +1979,8 @@ function boot(){
  const trophy=document.createElement('span');trophy.className='cl-trophy';trophy.setAttribute('aria-hidden','true');trophy.textContent='🏆';steps.appendChild(trophy);
  const meter=document.createElement('span');meter.className='cl-meter';meter.setAttribute('aria-hidden','true');meter.innerHTML='<i></i><i></i><i></i><i></i>';steps.appendChild(meter);
  launch.querySelector('.cl-start').href=targets[0];
- hero.before(rail,launch,steps);
+ // A page can put its own first block above the header (data-cl-top); the mission card still leads.
+ (document.querySelector('[data-cl-top]')||hero).before(rail,launch,steps);
  // A small heading marks each mission, unless inserting a sibling would shift a positional selector or grid.
  const tags=[];
  workflow.forEach((step,i)=>{
@@ -2089,5 +2103,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script defer src="/assets/lesson-hero-art.js?v=20261019a"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@ function on(id){return ST[id]===true}
 var FORGE=['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further'];
 var FORGE_NAME=['ทุกคนมีสิทธิ์ลงเล่น','ไอเท็มชิ้นแรก','ของที่กลับมาพร้อมรอยใช้','สิ่งที่เดินทางแทนเรา','จากคำตอบสู่ระบบ','สำหรับคนที่มาทีหลัง','เวลาที่ได้คืนมา'];
 var LEARN=['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web'];
-var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · หยิบคำสั่งลัด ปรุงงานทันที','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];
+var LEARN_NAME=['ซอส · ซอส .md ขวดแรก','เทส · ชิมด้วยภาพ','ผัด · คลิปจากซอส','แบ่ง · ซอสเดียวหลายเมนู','ปรุง · คำสั่งลัด + Agent','เสิร์ฟ · เว็บของคุณเอง'];
 var LEARN_IMAGE=['../img/classroom-kitchen-20260812-1445/lv1-source.webp','../img/classroom-kitchen-20260812-1445/lv2-taste.webp','../img/classroom-kitchen-20260812-1445/lv3-cook.webp','../img/classroom-kitchen-20260812-1445/lv4-split.webp','../img/classroom-kitchen-20260812-1445/lv5-season.webp','../img/classroom-kitchen-20260812-1445/lv6-serve-steak.webp'];
 function raw(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function list(k){return raw(k,'').split(',').filter(Boolean)}

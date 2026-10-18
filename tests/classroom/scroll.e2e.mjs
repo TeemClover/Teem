@@ -75,14 +75,14 @@ try {
     await page.locator('a.lesson[data-item="prompts"]').click();
     await page.locator('#deckCards .dc').first().waitFor();
     await page.waitForTimeout(1600);
-    assert.equal(await page.locator('#deckCards .dc').count(), 28);
+    assert.equal(await page.locator('#deckCards .dc').count(), 29);
     await idle(page, `${width}px initial deck`);
     // Category filter, then back to everything.
     await page.locator('#deckCats [data-cat="video"]').click();
-    assert.equal(await page.locator('#deckCards .dc').count(), 5);
+    assert.equal(await page.locator('#deckCards .dc').count(), 6);
     assert.equal(await page.locator('#deckCards .dc[data-id="brushstory"]').count(), 1);
     await page.locator('#deckCats [data-cat="all"]').click();
-    assert.equal(await page.locator('#deckCards .dc').count(), 28);
+    assert.equal(await page.locator('#deckCards .dc').count(), 29);
     // Drag a card with the pointer and drop it on the floating wok dock.
     const card = page.locator('#deckCards .dc[data-id="foodangle"]');
     await card.scrollIntoViewIfNeeded();
@@ -145,7 +145,7 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await page.locator('#forge').scrollIntoViewIfNeeded();
     await page.screenshot({path:path.join(output, `lesson5-${width}.png`)});
-    pass(`${width}px: enter from classroom, filter 28 commands, drag-drop + tap combo, styles, copy success/failure, smart search, remix, reload, zero idle mutations`);
+    pass(`${width}px: enter from classroom, filter 29 commands, drag-drop + tap combo, styles, copy success/failure, smart search, remix, reload, zero idle mutations`);
     await context.close();
   }
   assert.deepEqual(report.errors, []);

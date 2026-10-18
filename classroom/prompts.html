@@ -51,9 +51,9 @@ window.MC_CLASSROOM_RENDER={
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="mc-item" content="learn:prompts">
 <meta name="build" content="classroom-command-deck-20261018">
-<title>บทที่ 5 · Season · หยิบคำสั่งลัด ปรุงงานทันที · AI ใส่ซอส</title>
+<title>บทที่ 5 · Season · คำสั่งลัด + Agent · AI ใส่ซอส</title>
 <meta name="description" content="ชั้นคำสั่งลัดของ AI ใส่ซอส — ลาก-วางคำสั่งสั้น ๆ อย่าง /foodangle /outfit /brushstory แตะเลือกสไตล์ แล้วได้ Prompt เต็มพร้อมส่ง Claude, ChatGPT หรือ Gemini ทันที ไม่ต้องพิมพ์ยาว">
-<meta property="og:title" content="บทที่ 5 · หยิบคำสั่งลัด ปรุงงานทันที · AI ใส่ซอส">
+<meta property="og:title" content="บทที่ 5 · คำสั่งลัด + Agent · AI ใส่ซอส">
 <meta property="og:description" content="ลาก-วางคำสั่งลัด /foodangle /outfit /brushstory แตะเลือกสไตล์ แล้วส่งให้ AI ทำงานทันที">
 <meta property="og:image" content="https://www.myclover.com/classroom/img/header-lesson5.jpeg">
 <style>
@@ -610,20 +610,10 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120p
 </div></nav>
 <div class="wrap">
 
-<header class="head">
-  <figure class="classroom-lesson-header-image">
-    <img src="/classroom/img/header-lesson5.webp" width="1024" height="1024" alt="ภาพหัวบท 5 · AI ใส่ซอส — เลือกงาน หยิบผงปรุง แล้วปรุงให้ตรงงาน" loading="eager" decoding="async" fetchpriority="high">
-  </figure>
-  <span class="lv">บทที่ 5 · Season</span>
-  <h1>หยิบคำสั่งลัด ปรุงงานทันที</h1>
-  <p>ซอสเก็บความจริงของคุณไว้แล้ว บทนี้คือ “ผงปรุงสำเร็จรูป” — คำสั่งสั้น ๆ ที่หยิบ ลาก วาง แล้วแตะเลือกสไตล์ ได้ Prompt ระดับมือโปรพร้อมส่งให้ Claude, ChatGPT หรือ Gemini ทำงานทันที ไม่ต้องพิมพ์ยาว ไม่ต้องคิดเยอะ</p>
-  <div class="meta"><span>🗺️ จบได้ 6 เส้นทาง</span><span>🧂 29 คำสั่งลัด</span><span>🖐️ ลาก-วาง · แตะเลือก</span><span>🎬 คลิปจากโค้ด 8 สไตล์</span><span>🤖 ปั้น Agent ของคุณเอง</span><span>💸 ฟรี</span></div>
-</header>
-
-<section class="sec paths" id="paths" aria-labelledby="pathsTitle">
+<section class="sec paths" id="paths" aria-labelledby="pathsTitle" data-cl-top>
   <span class="sec-k">🗺️ เลือกเส้นทาง</span>
   <h2 id="pathsTitle">วันนี้อยากสร้างอะไร? บทนี้จบได้หลายแบบ</h2>
-  <p class="sec-lead">เลือกมา 1 อย่าง เดี๋ยวเราพาเดินเฉพาะทางนั้น: ดูตัวอย่าง → หยิบคำสั่ง → ส่งให้ AI → ชิมแล้วปรับ จบแล้วค่อยกลับมาเลือกทางใหม่ เก็บครบทุกเส้นได้</p>
+  <p class="sec-lead">เลือก 1 อย่าง เดี๋ยวพาเดินเฉพาะทางนั้น ดูตัวอย่าง → หยิบคำสั่ง → ส่งให้ AI → ชิมแล้วปรับ จบแล้วกลับมาเลือกทางใหม่ได้</p>
   <div class="path-grid" id="pathGrid">
     <button type="button" class="path" data-path="video" aria-pressed="false"><span aria-hidden="true">🎬</span><b>คลิป & วิดีโอ</b><small>คลิปเล่าเรื่องพร้อมเพลง หรือวิดีโอเปิดตัวแบบคอร์สนี้</small><em>จบด้วย: ไฟล์วิดีโอของคุณ</em></button>
     <button type="button" class="path" data-path="image" aria-pressed="false"><span aria-hidden="true">📸</span><b>ภาพสวยจากรูปเดิม</b><small>รูปอาหาร สินค้า โปรไฟล์ ให้ดูแพงขึ้น</small><em>จบด้วย: ภาพพร้อมโพสต์</em></button>
@@ -636,57 +626,15 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:34px 0 120p
   <p class="path-progress" id="pathProgress"></p>
 </section>
 
-<section class="sec power" id="power" aria-labelledby="powerTitle">
-  <span class="sec-k">⚔️ ค่าพลังของงาน</span>
-  <h2 id="powerTitle">งานจะออกมาดีแค่ไหน ขึ้นกับ 3 ค่านี้ คูณกัน</h2>
-  <div class="power-eq" aria-label="คุณภาพงาน เท่ากับ ซอส คูณ โมเดล AI คูณ Effort"><span>คุณภาพงาน</span><i>=</i><span>🫙 ซอส</span><i>×</i><span>🧠 โมเดล AI</span><i>×</i><span>⚡ Effort</span></div>
-  <p class="sec-lead" style="color:#b9cbbf">เพราะเป็น “คูณ” ไม่ใช่ “บวก” — ตัวไหนเป็น 0 งานก็เป็น 0 ลองกดเลือกแบบที่คุณใช้อยู่ แล้วดูแรงก์ของงาน</p>
-  <div class="power-rows" id="powerRows">
-    <div class="power-row"><b>🫙 ซอส</b><div class="power-opts" data-stat="sauce"><button type="button" data-v="0">ไม่มีซอส</button><button type="button" data-v="1">เล่าคร่าว ๆ</button><button type="button" data-v="2">ซอสจากบท 1</button><button type="button" data-v="3">ซอสปรุงเต็ม + ตัวอย่างงาน</button></div></div>
-    <div class="power-row"><b>🧠 โมเดล AI</b><div class="power-opts" data-stat="model"><button type="button" data-v="1">รุ่นเล็ก / ฟรี</button><button type="button" data-v="2">รุ่นกลาง</button><button type="button" data-v="3">รุ่นท็อป (Claude Opus 5.5)</button></div></div>
-    <div class="power-row"><b>⚡ Effort</b><div class="power-opts" data-stat="effort"><button type="button" data-v="1">ตอบเร็ว</button><button type="button" data-v="2">คิดละเอียด (High)</button><button type="button" data-v="3">เต็มพลัง (Max / Ultracode)</button></div></div>
-  </div>
-  <div class="power-out" aria-live="polite"><div class="power-rank" id="powerRank">B</div><div><strong id="powerScore">8 / 27</strong><div class="power-bar"><i id="powerBar"></i></div><p id="powerLine"></p></div></div>
-  <p class="power-tip">💡 อยากได้งานสวยขึ้น ให้อัปค่าที่ต่ำสุดก่อน เพราะตัวที่อ่อนสุดฉุดทั้งหมด · วิดีโอเปิดคอร์สด้านล่างทำด้วย ซอสเต็ม × Claude Opus 5.5 × Ultracode = แรงก์ S</p>
-</section>
-
-<section class="sec deck" id="deck" aria-labelledby="deckTitle">
-  <span class="sec-k">🧂 ชั้นคำสั่งลัด</span>
-  <h2 id="deckTitle">หยิบคำสั่งที่ใช่ ลากลงกระทะ</h2>
-  <p class="sec-lead">ลากการ์ดไปวางในกระทะ (บนมือถือ: แตะการ์ด หรือกดค้างแล้วลาก) ใส่ได้สูงสุด 3 คำสั่งเพื่อทำคอมโบ เช่น <code>/foodangle</code> + <code>/caption</code> = ภาพสวยพร้อมแคปชันในข้อความเดียว</p>
-  <div class="smart">
-    <label for="deckQ">🔮 บอกสั้น ๆ ว่าวันนี้อยากทำอะไร เดี๋ยวเราหยิบคำสั่งให้</label>
-    <div class="smart-box"><span aria-hidden="true">✨</span><input type="search" id="deckQ" autocomplete="off" enterkeyhint="go" placeholder="เช่น อยากให้รูปอาหารน่ากินขึ้น · ทำคลิปเล่าเรื่องร้าน"><button type="button" id="deckQClear" aria-label="ล้างคำค้น" hidden>✕</button></div>
-    <div class="suggest" id="deckSuggest" aria-live="polite"></div>
-  </div>
-  <div class="cats" id="deckCats" role="tablist" aria-label="หมวดคำสั่ง"></div>
-  <div class="cards" id="deckCards" aria-label="การ์ดคำสั่งลัด"></div>
-  <noscript><p class="note">🍀 ชั้นคำสั่งลัดต้องเปิดจาวาสคริปต์ก่อน ถ้าเปิดจากในแอป (เช่น LINE) ให้กดเมนูมุมขวาบนแล้วเลือก “เปิดในเบราว์เซอร์”</p></noscript>
-</section>
-
-<section class="sec forge" id="forge" aria-labelledby="forgeTitle">
-  <span class="sec-k">🔥 กระทะปรุง</span>
-  <h2 id="forgeTitle">แตะเลือกสไตล์ แล้วส่งให้ AI</h2>
-  <p class="sec-lead">ทุกครั้งที่แตะ Prompt ด้านล่างจะปรุงใหม่ทันที — สีทองคือสไตล์ที่คุณเลือก สีเขียวคือเรื่องของคุณเอง ไม่ต้องกรอกครบทุกช่องก็ใช้ได้</p>
-  <div class="wok" id="wok" data-empty="true">
-    <div class="wok-empty"><b aria-hidden="true">🍳</b><strong>ลากการ์ดมาวางตรงนี้</strong><span>หรือแตะการ์ดในชั้นด้านบน · ลองเริ่มจาก <button type="button" class="sg" data-add="brushstory" style="--c:#7d55c7"><span aria-hidden="true">🖌️</span><code>/brushstory</code></button></span></div>
-    <div class="wok-bar"><span>ในกระทะ <b id="wokCount">0 / 3</b></span><button type="button" id="wokClear">ล้างกระทะ</button></div>
-    <div id="wokItems"></div>
-  </div>
-  <div class="toggles">
-    <label class="switch"><input type="checkbox" id="optSauce" checked> 🫙 ใช้ซอส .md ของฉันเป็นข้อเท็จจริง</label>
-    <label class="switch"><input type="checkbox" id="optThai" checked> 🇹🇭 ให้ AI ตอบเป็นภาษาไทย</label>
-  </div>
-  <div class="out" aria-live="polite"><div class="out-bar"><i aria-hidden="true"></i><span>PROMPT ที่ปรุงเสร็จ · <span id="forgeLen">ยังว่าง</span></span></div><pre id="forgeOut" tabindex="0"></pre></div>
-  <div class="ship">
-    <button type="button" class="primary" data-ship="copy">📋 คัดลอก Prompt</button>
-    <a href="https://claude.ai/new" target="_blank" rel="noopener" data-ship="Claude">คัดลอก + Claude ↗</a>
-    <a href="https://chatgpt.com/" target="_blank" rel="noopener" data-ship="ChatGPT">คัดลอก + ChatGPT ↗</a>
-    <a href="https://gemini.google.com/app" target="_blank" rel="noopener" data-ship="Gemini">คัดลอก + Gemini ↗</a>
-  </div>
-  <p class="hint" id="forgeHint" aria-live="polite"></p>
-  <p class="shortcut">⚡ ติดตั้งชุดคำสั่งแล้ว พิมพ์แค่ <code id="shortCmd">/foodangle ท็อปวิว — ข้าวมันไก่</code> <button type="button" id="shortCopy">คัดลอกคำสั่งสั้น</button> <a href="#agent">ยังไม่มี Agent? →</a></p>
-</section>
+<header class="head">
+  <figure class="classroom-lesson-header-image">
+    <img src="/classroom/img/header-lesson5.webp" width="1024" height="1024" alt="ภาพหัวบท 5 · AI ใส่ซอส — เลือกงาน หยิบผงปรุง แล้วปรุงให้ตรงงาน" loading="eager" decoding="async" fetchpriority="high">
+  </figure>
+  <span class="lv">บทที่ 5 · Season</span>
+  <h1>คำสั่งลัด + Agent</h1>
+  <p>ซอสเก็บความจริงของคุณไว้แล้ว บทนี้คือ “ผงปรุงสำเร็จรูป” — คำสั่งสั้น ๆ ที่หยิบ ลาก วาง แล้วแตะเลือกสไตล์ ได้ Prompt ระดับมือโปรพร้อมส่งให้ Claude, ChatGPT หรือ Gemini ทำงานทันที ไม่ต้องพิมพ์ยาว ไม่ต้องคิดเยอะ</p>
+  <div class="meta"><span>🗺️ จบได้ 6 เส้นทาง</span><span>🧂 29 คำสั่งลัด</span><span>🖐️ ลาก-วาง · แตะเลือก</span><span>🎬 คลิปจากโค้ด 8 สไตล์</span><span>🤖 ปั้น Agent ของคุณเอง</span><span>💸 ฟรี</span></div>
+</header>
 
 <section class="sec showcase" id="deckExample" aria-labelledby="showTitle">
   <span class="sec-k">🏆 ซอสขวดเดียว ไปได้ไกลแค่ไหน</span>
@@ -778,6 +726,58 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
   <div class="trx-pop-head"><div><small>วิดีโอเปิดคอร์ส · 60 วินาที</small><h2 id="trxPopTitle">ทำด้วยโค้ดทั้งหมด</h2><p>prompt อยู่ใต้วิดีโอ</p></div><button type="button" class="trx-skip">ปิด ✕</button></div>
   <div class="trx-host"></div>
 </dialog>
+
+<section class="sec deck" id="deck" aria-labelledby="deckTitle">
+  <span class="sec-k">🧂 ชั้นคำสั่งลัด</span>
+  <h2 id="deckTitle">หยิบคำสั่งที่ใช่ ลากลงกระทะ</h2>
+  <p class="sec-lead">ลากการ์ดไปวางในกระทะ (บนมือถือ: แตะการ์ด หรือกดค้างแล้วลาก) ใส่ได้สูงสุด 3 คำสั่งเพื่อทำคอมโบ เช่น <code>/foodangle</code> + <code>/caption</code> = ภาพสวยพร้อมแคปชันในข้อความเดียว</p>
+  <div class="smart">
+    <label for="deckQ">🔮 บอกสั้น ๆ ว่าวันนี้อยากทำอะไร เดี๋ยวเราหยิบคำสั่งให้</label>
+    <div class="smart-box"><span aria-hidden="true">✨</span><input type="search" id="deckQ" autocomplete="off" enterkeyhint="go" placeholder="เช่น อยากให้รูปอาหารน่ากินขึ้น · ทำคลิปเล่าเรื่องร้าน"><button type="button" id="deckQClear" aria-label="ล้างคำค้น" hidden>✕</button></div>
+    <div class="suggest" id="deckSuggest" aria-live="polite"></div>
+  </div>
+  <div class="cats" id="deckCats" role="tablist" aria-label="หมวดคำสั่ง"></div>
+  <div class="cards" id="deckCards" aria-label="การ์ดคำสั่งลัด"></div>
+  <noscript><p class="note">🍀 ชั้นคำสั่งลัดต้องเปิดจาวาสคริปต์ก่อน ถ้าเปิดจากในแอป (เช่น LINE) ให้กดเมนูมุมขวาบนแล้วเลือก “เปิดในเบราว์เซอร์”</p></noscript>
+</section>
+
+<section class="sec power" id="power" aria-labelledby="powerTitle">
+  <span class="sec-k">⚔️ ค่าพลังของงาน</span>
+  <h2 id="powerTitle">งานจะออกมาดีแค่ไหน ขึ้นกับ 3 ค่านี้ คูณกัน</h2>
+  <div class="power-eq" aria-label="คุณภาพงาน เท่ากับ ซอส คูณ โมเดล AI คูณ Effort"><span>คุณภาพงาน</span><i>=</i><span>🫙 ซอส</span><i>×</i><span>🧠 โมเดล AI</span><i>×</i><span>⚡ Effort</span></div>
+  <p class="sec-lead" style="color:#b9cbbf">เพราะเป็น “คูณ” ไม่ใช่ “บวก” — ตัวไหนเป็น 0 งานก็เป็น 0 ลองกดเลือกแบบที่คุณใช้อยู่ แล้วดูแรงก์ของงาน</p>
+  <div class="power-rows" id="powerRows">
+    <div class="power-row"><b>🫙 ซอส</b><div class="power-opts" data-stat="sauce"><button type="button" data-v="0">ไม่มีซอส</button><button type="button" data-v="1">เล่าคร่าว ๆ</button><button type="button" data-v="2">ซอสจากบท 1</button><button type="button" data-v="3">ซอสปรุงเต็ม + ตัวอย่างงาน</button></div></div>
+    <div class="power-row"><b>🧠 โมเดล AI</b><div class="power-opts" data-stat="model"><button type="button" data-v="1">รุ่นเล็ก / ฟรี</button><button type="button" data-v="2">รุ่นกลาง</button><button type="button" data-v="3">รุ่นท็อป (Claude Opus 5.5)</button></div></div>
+    <div class="power-row"><b>⚡ Effort</b><div class="power-opts" data-stat="effort"><button type="button" data-v="1">ตอบเร็ว</button><button type="button" data-v="2">คิดละเอียด (High)</button><button type="button" data-v="3">เต็มพลัง (Max / Ultracode)</button></div></div>
+  </div>
+  <div class="power-out" aria-live="polite"><div class="power-rank" id="powerRank">B</div><div><strong id="powerScore">8 / 27</strong><div class="power-bar"><i id="powerBar"></i></div><p id="powerLine"></p></div></div>
+  <p class="power-tip">💡 อยากได้งานสวยขึ้น ให้อัปค่าที่ต่ำสุดก่อน เพราะตัวที่อ่อนสุดฉุดทั้งหมด · วิดีโอเปิดคอร์สด้านล่างทำด้วย ซอสเต็ม × Claude Opus 5.5 × Ultracode = แรงก์ S</p>
+</section>
+
+<section class="sec forge" id="forge" aria-labelledby="forgeTitle">
+  <span class="sec-k">🔥 กระทะปรุง</span>
+  <h2 id="forgeTitle">แตะเลือกสไตล์ แล้วส่งให้ AI</h2>
+  <p class="sec-lead">ทุกครั้งที่แตะ Prompt ด้านล่างจะปรุงใหม่ทันที — สีทองคือสไตล์ที่คุณเลือก สีเขียวคือเรื่องของคุณเอง ไม่ต้องกรอกครบทุกช่องก็ใช้ได้</p>
+  <div class="wok" id="wok" data-empty="true">
+    <div class="wok-empty"><b aria-hidden="true">🍳</b><strong>ลากการ์ดมาวางตรงนี้</strong><span>หรือแตะการ์ดในชั้นด้านบน · ลองเริ่มจาก <button type="button" class="sg" data-add="brushstory" style="--c:#7d55c7"><span aria-hidden="true">🖌️</span><code>/brushstory</code></button></span></div>
+    <div class="wok-bar"><span>ในกระทะ <b id="wokCount">0 / 3</b></span><button type="button" id="wokClear">ล้างกระทะ</button></div>
+    <div id="wokItems"></div>
+  </div>
+  <div class="toggles">
+    <label class="switch"><input type="checkbox" id="optSauce" checked> 🫙 ใช้ซอส .md ของฉันเป็นข้อเท็จจริง</label>
+    <label class="switch"><input type="checkbox" id="optThai" checked> 🇹🇭 ให้ AI ตอบเป็นภาษาไทย</label>
+  </div>
+  <div class="out" aria-live="polite"><div class="out-bar"><i aria-hidden="true"></i><span>PROMPT ที่ปรุงเสร็จ · <span id="forgeLen">ยังว่าง</span></span></div><pre id="forgeOut" tabindex="0"></pre></div>
+  <div class="ship">
+    <button type="button" class="primary" data-ship="copy">📋 คัดลอก Prompt</button>
+    <a href="https://claude.ai/new" target="_blank" rel="noopener" data-ship="Claude">คัดลอก + Claude ↗</a>
+    <a href="https://chatgpt.com/" target="_blank" rel="noopener" data-ship="ChatGPT">คัดลอก + ChatGPT ↗</a>
+    <a href="https://gemini.google.com/app" target="_blank" rel="noopener" data-ship="Gemini">คัดลอก + Gemini ↗</a>
+  </div>
+  <p class="hint" id="forgeHint" aria-live="polite"></p>
+  <p class="shortcut">⚡ ติดตั้งชุดคำสั่งแล้ว พิมพ์แค่ <code id="shortCmd">/foodangle ท็อปวิว — ข้าวมันไก่</code> <button type="button" id="shortCopy">คัดลอกคำสั่งสั้น</button> <a href="#agent">ยังไม่มี Agent? →</a></p>
+</section>
 
 <dialog class="theater" id="reelTheater" aria-labelledby="reelTitle">
   <div class="th-box">
@@ -890,8 +890,8 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
 <section class="main-course-tease"><small>NEXT · บทที่ 6 · SERVE</small><h3>ครัวพร้อมแล้ว — ต่อไปคือ Main Course</h3><p>5 บทที่ผ่านมาเราเตรียมวัตถุดิบ ชิมซอส ทำจานต้นแบบ แตกหลายเมนู และมีผงปรุงคำสั่งลัดแล้ว บทถัดไปจะรวมทุกอย่างเป็นเว็บที่เปิดให้คนอื่นใช้ได้จริง — ลองคำสั่ง <code>/onepage</code> เป็นการวอร์มอัปก่อนก็ได้</p></section>
 
 <div class="nextrow">
-  <a class="nx ghost" href="notebooklm.html">← บท 4 · ซอสขวดเดียว แตกได้หลายเมนู</a>
-  <a class="nx" href="first-web.html">บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต →</a>
+  <a class="nx ghost" href="notebooklm.html">← บท 4 · ซอสเดียวหลายเมนู</a>
+  <a class="nx" href="first-web.html">บท 6 · เว็บของคุณเอง →</a>
 </div>
 
 <aside class="org-shelf-door" aria-label="สูตรซอสสำหรับองค์กร"><div><span class="org-shelf-kicker">FOR YOUR TEAM · ORGANIZATION STARTER</span><h2>ทำชุดคำสั่งลัดประจำทีม</h2><p>รวมคำสั่งที่ทีมใช้ซ้ำ คนทำ และจุดตรวจ ให้ทุกคนเริ่มงานจากมาตรฐานเดียวกัน<br>ดูฉลากก่อนได้ · ทักหาทีมเพื่อขอกุญแจเปิดซอส</p></div><a href="/shelf/#source-org-team-workflow">ไปเลือกสูตรบนชั้น ↗</a></aside>
@@ -1859,27 +1859,27 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 const HERO_COPY = {
   'learn:free-ai': {
     label: 'บทที่ 1 · Source',
-    title: 'เริ่มจากการปรุงซอส'
+    title: 'ซอส .md ขวดแรก'
   },
   'learn:image-ai': {
     label: 'บทที่ 2 · Taste',
-    title: 'ชิมซอสก่อนเติม'
+    title: 'ชิมด้วยภาพ'
   },
   'learn:clip-ai': {
     label: 'บทที่ 3 · Cook',
-    title: 'เอาซอสไปทำจานจริง'
+    title: 'คลิปจากซอส'
   },
   'learn:notebooklm': {
     label: 'บทที่ 4 · Split',
-    title: 'ซอสขวดเดียว แตกได้หลายเมนู'
+    title: 'ซอสเดียวหลายเมนู'
   },
   'learn:prompts': {
     label: 'บทที่ 5 · Season',
-    title: 'หยิบคำสั่งลัด ปรุงงานทันที'
+    title: 'คำสั่งลัด + Agent'
   },
   'learn:first-web': {
     label: 'บทที่ 6 · Serve',
-    title: 'เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'
+    title: 'เว็บของคุณเอง'
   }
 };
 
@@ -2183,12 +2183,12 @@ else apply();
 'use strict';
 const KEY='mc_course_journey_v1';
 const LESSONS=[
- {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ทำซอสขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
- {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'สร้างภาพ แล้วชิมให้ตรงเรื่อง',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
- {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'ทำภาพให้กลายเป็นคลิป',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
- {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'เรื่องเดียว เล่าได้หลายแบบ',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
- {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'หยิบคำสั่งลัด ปรุงงานทันที',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
- {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เสิร์ฟเว็บแรกของคุณ',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
+ {id:'free-ai',name:'SOURCE',icon:'🫙',loot:'ซอส .md ขวดแรก',title:'ซอส .md ขวดแรก',outcome:'ได้ไฟล์ .md ที่พกไปใช้ต่อได้ทั้งคอร์ส',need:'เรื่องที่จะเล่า ไฟล์ที่มี หรือแชตเก่า',start:'เริ่มทำซอสของฉัน',work:'#lesson1Work',example:'#lesson1Example',check:'#lesson1Check',finish:'#lesson1Complete',native:'#finishLesson',legacy:'mc-sauce-lesson-1-complete',artifact:'ฉันมีซอส .md ที่เปิดอ่านได้แล้ว',review:'ตรวจข้อเท็จจริงและสิ่งที่ห้ามเปลี่ยนแล้ว'},
+ {id:'image-ai',name:'TASTE',icon:'🥄',loot:'ช้อนชิมภาพ',title:'ชิมด้วยภาพ',outcome:'ได้ภาพ 1 ภาพ พร้อมรู้ว่าจะเก็บหรือแก้อะไร',need:'ซอสจากบท 1 · รูปจริงเป็นทางเลือก',start:'เริ่มสร้างภาพของฉัน',work:'#lesson2Work',example:'#lesson2Examples',check:'#lesson2Taste',finish:'#lesson2Complete',native:'#finishLesson',legacy:'mc-image-ai-complete',artifact:'ฉันเก็บภาพที่สร้างจากซอสไว้แล้ว',review:'เทียบภาพกับซอส และแก้หรือยืนยันว่าตรงแล้ว'},
+ {id:'clip-ai',name:'COOK',icon:'🍳',loot:'กระทะคลิปสั้น',title:'คลิปจากซอส',outcome:'ได้คลิปสั้นที่เล่นได้จริงจากเรื่องของคุณ',need:'ซอส .md + ภาพจากบท 2 + เครื่องมือสร้างวิดีโอ',start:'เริ่มทำคลิปของฉัน',work:'#lesson3VideoFast',example:'#lesson3VideoExample',check:'#lesson3VideoCheck',finish:'#lesson3Complete',native:'#finishLesson',legacy:'mc-clip-ai-complete',artifact:'ฉันมีคลิปที่เปิดเล่นได้จริงแล้ว',review:'ตรวจเรื่องราว ภาพ และรูปแบบกับซอสแล้ว'},
+ {id:'notebooklm',name:'SPLIT',icon:'🍱',loot:'ปิ่นโตหลายเมนู',title:'ซอสเดียวหลายเมนู',outcome:'เริ่มจากผลงานแรก แล้วแตกเป็นอีก 2 รูปแบบ',need:'ใช้ซอสเรื่องเดิม · มีตัวอย่างให้ลอง',start:'เลือกผลงานแรกของฉัน',work:'#source',example:'#lesson4Examples',check:'#lesson4Practice',finish:'#lesson4Complete',native:'#finish',legacy:'mc-notebooklm-complete',artifact:'ฉันได้ผลงาน 3 รูปแบบจากซอสเดียวกัน',review:'เทียบชื่อ ตัวเลข และข้อเท็จจริงให้ตรงกันแล้ว'},
+ {id:'prompts',name:'SEASON',icon:'🧂',loot:'ผงปรุงคำสั่งลัด',title:'คำสั่งลัด + Agent',outcome:'ได้งานจริง 1 ชิ้นจากการหยิบ-วางคำสั่ง และชุดคำสั่งลัดที่ใช้ซ้ำได้',need:'ซอสของคุณ + รูปหรือเรื่องที่อยากปรับ',start:'เปิดชั้นคำสั่งลัด',work:'#deck',example:'#deckExample',check:'#promptCheck',finish:'.quest',native:null,legacy:null,artifact:'ฉันใช้คำสั่งลัดกับงานจริงจนได้ผลงานแล้ว',review:'ชิมผลงานเทียบกับซอส แล้วสั่งปรับจนพอใจ'},
+ {id:'first-web',name:'SERVE',icon:'🍽️',loot:'จานเสิร์ฟ HTML',title:'เว็บของคุณเอง',outcome:'ได้ไฟล์ HTML ที่เปิดดูและลองใช้งานได้จริง',need:'ซอสเรื่องเดิม · เริ่มจากเว็บฉบับเล็กได้',start:'เริ่มสร้างเว็บของฉัน',work:'#resumeStarter',example:'#resumeStarter',check:'#resumeDeviceGuide',finish:'#courseEnd',native:'#finishBtn',legacy:null,artifact:'ฉันเปิดและลองใช้ไฟล์ HTML ของตัวเองแล้ว',review:'ตรวจข้อมูลและปุ่มที่สำคัญก่อนส่งต่อแล้ว'}
 ];
 const WORKFLOWS={
  'free-ai':[
@@ -2204,17 +2204,17 @@ const WORKFLOWS={
   {target:'.video-step:nth-child(2)',id:'lesson3Create',label:'สร้างวิดีโอ'},
   {target:'#lesson3VideoCheck',label:'ลองเล่นและตรวจ',after:'#lesson3Repair'}],
  'notebooklm':[
-  {target:'#source',label:'เลือกซอส',after:'.source-options + .note'},
+  {target:'#source',label:'เลือกซอส',after:'.source-options + .note + .note'},
   {target:'#lesson4FirstOutput',label:'สร้างผลงาน'},
   {target:'#multiplyBoard',label:'เทียบข้อเท็จจริง'}],
  'prompts':[
-  {target:'#deck',label:'หยิบคำสั่ง'},
+  {target:'#paths',label:'เลือกทาง หยิบคำสั่ง',after:'#deck'},
   {target:'#forge',label:'ปรุงแล้วส่ง AI'},
   {target:'#promptCheck',label:'ชิมแล้วสั่งปรับ'}],
  'first-web':[
   {target:'#resumeStarter',label:'แนบซอสแล้วสั่ง',after:'#resumeStarter .prompt-card'},
-  {target:'#resumeDeviceGuide',label:'บันทึกและเปิด'},
-  {target:'#cl-completion',label:'ตรวจหน้าเว็บ'}]
+  {target:'#lesson6Save',label:'บันทึกและเปิด'},
+  {target:'#lesson6Check',label:'ตรวจหน้าเว็บ'}]
 };
 // XP is derived from saved work, never stored, so it cannot drift from what the learner confirmed.
 const STEP_XP=100,FINISH_XP=200;
@@ -2420,7 +2420,8 @@ function boot(){
  const trophy=document.createElement('span');trophy.className='cl-trophy';trophy.setAttribute('aria-hidden','true');trophy.textContent='🏆';steps.appendChild(trophy);
  const meter=document.createElement('span');meter.className='cl-meter';meter.setAttribute('aria-hidden','true');meter.innerHTML='<i></i><i></i><i></i><i></i>';steps.appendChild(meter);
  launch.querySelector('.cl-start').href=targets[0];
- hero.before(rail,launch,steps);
+ // A page can put its own first block above the header (data-cl-top); the mission card still leads.
+ (document.querySelector('[data-cl-top]')||hero).before(rail,launch,steps);
  // A small heading marks each mission, unless inserting a sibling would shift a positional selector or grid.
  const tags=[];
  workflow.forEach((step,i)=>{
@@ -2546,13 +2547,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
 'use strict';
 const KEY='mc_l5_paths_v1',PKEY='mc_l5_power_v1',$=id=>document.getElementById(id);
+const M1=['1 หยิบคำสั่ง','#deck'],M2=['2 ส่งให้ AI','#forge'],M3=['3 ชิมแล้วปรับ','#promptCheck'];
+// Steps follow the page from top to bottom and reuse the three mission names, so a route never jumps back up.
 const PATHS={
- video:{name:'🎬 คลิป & วิดีโอ',cat:'video',tab:'video',steps:[['ดูคลิปตัวอย่าง','#deckExample'],['วิดีโอเปิดคอร์ส + prompt','#lessonTrailer'],['หยิบคำสั่งวิดีโอ','#deck'],['ชิมแล้วปรับ','#promptCheck']]},
- image:{name:'📸 ภาพสวยจากรูปเดิม',cat:'image',tab:'image',steps:[['ดูภาพตัวอย่าง','#deckExample'],['หยิบคำสั่งภาพ','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
- write:{name:'✍️ โพสต์ & ขายของ',cat:'write',steps:[['หยิบคำสั่งโพสต์','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
- work:{name:'📄 เอกสาร & สรุปงาน',cat:'work',tab:'docs',steps:[['ดูเอกสารตัวอย่าง','#deckExample'],['หยิบคำสั่งงาน','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
- build:{name:'🌐 เว็บ & แอป',cat:'build',tab:'docs',steps:[['หยิบคำสั่งเว็บ','#deck'],['ส่งให้ AI','#forge'],['ชิมแล้วปรับ','#promptCheck']]},
- agent:{name:'🤖 Agent ประจำตัว',tab:'agent',steps:[['ดู Agent ตัวอย่าง','#deckExample'],['ปั้น Agent ของคุณ','#agent'],['ลองสั่งงาน','#promptCheck']]}
+ video:{name:'🎬 คลิป & วิดีโอ',cat:'video',tab:'video',steps:[['ดูคลิปตัวอย่าง','#deckExample'],['วิดีโอเปิดคอร์ส + prompt','#lessonTrailer'],M1,M2,M3]},
+ image:{name:'📸 ภาพสวยจากรูปเดิม',cat:'image',tab:'image',steps:[['ดูภาพตัวอย่าง','#deckExample'],M1,M2,M3]},
+ write:{name:'✍️ โพสต์ & ขายของ',cat:'write',steps:[M1,M2,M3]},
+ work:{name:'📄 เอกสาร & สรุปงาน',cat:'work',tab:'docs',steps:[['ดูเอกสารตัวอย่าง','#deckExample'],M1,M2,M3]},
+ build:{name:'🌐 เว็บ & แอป',cat:'build',tab:'docs',steps:[['ดูเว็บตัวอย่าง','#deckExample'],M1,M2,M3]},
+ agent:{name:'🤖 Agent ประจำตัว',tab:'agent',steps:[['ดู Agent ตัวอย่าง','#deckExample'],['ปั้น Agent ของคุณ','#agent'],M3]}
 };
 const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch{return d;}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
@@ -2562,7 +2565,7 @@ function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.clas
 function paint(){
  document.querySelectorAll('[data-path]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.path===st.active));b.dataset.done=String(st.done.includes(b.dataset.path));});
  const now=$('pathNow'),p=PATHS[st.active];
- if(now){now.hidden=!p;if(p)now.innerHTML='<b>กำลังเดิน: '+p.name+'</b><ol>'+p.steps.map((x,i)=>'<li>'+(i+1)+'. <a href="'+x[1]+'" data-jump="'+x[1]+'">'+x[0]+'</a></li>').join('')+'</ol>';}
+ if(now){now.hidden=!p;if(p)now.innerHTML='<b>กำลังเดิน: '+p.name+'</b><ol>'+p.steps.map((x,i)=>'<li><a href="'+x[1]+'" data-jump="'+x[1]+'">'+x[0]+'</a></li>').join('')+'</ol>';}
  const n=st.done.length,total=Object.keys(PATHS).length,pr=$('pathProgress');
  if(pr)pr.textContent=n?'🏅 เก็บแล้ว '+n+' / '+total+' เส้นทาง'+(n===total?' — ครบทุกเส้น เก่งมาก!':' · ทางที่เหลือรอคุณอยู่'):'ยังไม่ได้เริ่ม เลือกได้ 1 ทาง เปลี่ยนใจได้ตลอด';
  const chips=$('againChips');if(chips)chips.innerHTML=Object.entries(PATHS).map(([k,v])=>'<button type="button" data-path-go="'+k+'" data-done="'+st.done.includes(k)+'">'+(st.done.includes(k)?'✓ ':'')+v.name+'</button>').join('');
@@ -2608,5 +2611,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script defer src="../assets/quest.js"></script>
 <script defer src="../assets/boss-invite.js"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
+<script defer src="/assets/lesson-hero-art.js?v=20261019a"></script>
 </body>
 </html>

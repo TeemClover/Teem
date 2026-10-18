@@ -228,8 +228,8 @@ function rewriteReviewAndNext(){
       nextrow.parentNode.insertBefore(existing,nextrow);
     }
     var links=nextrow.querySelectorAll('a');
-    if(links[0])links[0].textContent='← บท 4 · ซอสขวดเดียว แตกได้หลายเมนู';
-    if(links[1])links[1].textContent='บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต →';
+    if(links[0])links[0].textContent='← บท 4 · ซอสเดียวหลายเมนู';
+    if(links[1])links[1].textContent='บท 6 · เว็บของคุณเอง →';
   }
 }
 

@@ -5,19 +5,19 @@
 const NAV = {
   '/classroom/free-ai.html': {
     prev: { href: 'lesson-0.html', text: '← บท 0 · เลือกเครื่องครัว และเปิดเตา' },
-    next: { href: 'image-ai.html', text: 'บท 2 · ชิมซอสก่อนเติม →' },
+    next: { href: 'image-ai.html', text: 'บท 2 · ชิมด้วยภาพ →' },
   },
   '/classroom/image-ai.html': {
-    prev: { href: 'free-ai.html', text: '← บท 1 · เริ่มจากการปรุงซอส' },
-    next: { href: 'clip-ai.html', text: 'บท 3 · เอาซอสไปทำจานจริง →' },
+    prev: { href: 'free-ai.html', text: '← บท 1 · ซอส .md ขวดแรก' },
+    next: { href: 'clip-ai.html', text: 'บท 3 · คลิปจากซอส →' },
   },
   '/classroom/clip-ai.html': {
-    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมซอสก่อนเติม' },
-    next: { href: 'notebooklm.html', text: 'บท 4 · ซอสขวดเดียว แตกได้หลายเมนู →' },
+    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมด้วยภาพ' },
+    next: { href: 'notebooklm.html', text: 'บท 4 · ซอสเดียวหลายเมนู →' },
   },
   '/classroom/notebooklm.html': {
-    prev: { href: 'clip-ai.html', text: '← บท 3 · เอาซอสไปทำจานจริง' },
-    next: { href: 'prompts.html', text: 'บท 5 · หยิบคำสั่งลัด ปรุงงานทันที →' },
+    prev: { href: 'clip-ai.html', text: '← บท 3 · คลิปจากซอส' },
+    next: { href: 'prompts.html', text: 'บท 5 · คำสั่งลัด + Agent →' },
   },
 };
 
