@@ -51,27 +51,55 @@ const FONT={head:'"Reel Kanit",'+THAI,round:'"Reel Mitr",'+THAI,tech:'"Reel Chak
 const WEIGHT={head:800,round:600,tech:700,script:700,hand:400};
 TR.FONT_LOADS=['800 40px "Reel Kanit"','600 40px "Reel Mitr"','700 40px "Reel Chakra"','700 40px "Reel Charm"','400 40px "Reel Sriracha"'];
 
+// Thai-safe text: never letter-space Thai (it detaches vowels and tone marks from their letters, worst
+// on Safari/iPhone), centre lines on the Thai consonant body instead of the browser's own 'middle'
+// (which differs between engines), and colour a key word by clipping one fully shaped line.
+const THAI_RE=/[฀-๿]/;
+const midCache=new Map();
+function midOffset(ctx){const f=ctx.font;let v=midCache.get(f);if(v==null){const b=ctx.textBaseline;ctx.textBaseline='alphabetic';const m=ctx.measureText('กขคงจบปผนม');v=(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2;ctx.textBaseline=b;if(!isFinite(v)||v<=0)v=parseFloat(f.match(/(\d+(?:\.\d+)?)px/)?.[1]||16)*.32;midCache.set(f,v);}return v;}
+TR.resetTextMetrics=()=>midCache.clear();
+function noSpacing(ctx){if('letterSpacing' in ctx)ctx.letterSpacing='0px';}
+// Draws str left-aligned on an alphabetic baseline at (x,y), with `accent` recoloured in place.
+function fillAccent(ctx,str,x,y,accent,base,acc){
+ ctx.fillStyle=base;ctx.fillText(str,x,y);
+ const i=accent?str.indexOf(accent):-1;if(i<0)return;
+ const x0=x+ctx.measureText(str.slice(0,i)).width,x1=x+ctx.measureText(str.slice(0,i+accent.length)).width;
+ const size=parseFloat(ctx.font.match(/(\d+(?:\.\d+)?)px/)?.[1]||20);
+ ctx.save();ctx.beginPath();ctx.rect(x0-.5,y-size*1.6,x1-x0+1,size*2.4);ctx.clip();ctx.fillStyle=acc;ctx.shadowColor='transparent';ctx.fillText(str,x,y);ctx.restore();
+}
 function fit(ctx,str,font,weight,size,maxW){ctx.font=`${weight} ${size}px ${font}`;const w=ctx.measureText(str).width;return w>maxW&&w>0?Math.max(8,Math.floor(size*maxW/w)):size;}
 // Draws text; size shrinks to fit maxW. Returns {w,size}.
 function text(ctx,str,x,y,o={}){
  const fam=o.family||'head',font=o.font||FONT[fam]||FONT.head,weight=o.weight||WEIGHT[fam]||800;
  let size=o.size||48;const maxW=o.maxW||Infinity;
  ctx.save();
- if('letterSpacing' in ctx)ctx.letterSpacing=(o.spacing||0)+'px';
+ if('letterSpacing' in ctx)ctx.letterSpacing=(o.spacing&&!THAI_RE.test(str)?o.spacing:0)+'px';
  size=fit(ctx,str,font,weight,size,maxW);
- ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=o.align||'center';ctx.textBaseline=o.baseline||'middle';
+ ctx.font=`${weight} ${size}px ${font}`;ctx.textAlign=o.align||'center';
+ const mid=!o.baseline||o.baseline==='middle';ctx.textBaseline=mid?'alphabetic':o.baseline;const dy=mid?midOffset(ctx):0;
  ctx.globalAlpha*=o.alpha??1;
  ctx.translate(x,y);if(o.rot)ctx.rotate(o.rot);if(o.scale&&o.scale!==1)ctx.scale(o.scale,o.scale);
  if(o.glow){ctx.shadowColor=o.glow;ctx.shadowBlur=o.glowBlur??size*.45;}
  if(o.shadow){ctx.shadowColor=o.shadow;ctx.shadowBlur=o.shadowBlur??size*.25;ctx.shadowOffsetY=o.shadowY??size*.08;}
- if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,0,0);}
+ if(o.stroke){ctx.lineJoin='round';ctx.lineWidth=o.strokeWidth||size*.12;ctx.strokeStyle=o.stroke;ctx.strokeText(str,0,dy);}
  if(o.gradient){const g=ctx.createLinearGradient(0,-size*.6,0,size*.6);o.gradient.forEach((c,i)=>g.addColorStop(i/(o.gradient.length-1),c));ctx.fillStyle=g;}else ctx.fillStyle=o.color||PAL.cream;
- ctx.fillText(str,0,0);
+ ctx.fillText(str,0,dy);
  const w=ctx.measureText(str).width;ctx.restore();return {w,size};
 }
 // Emoji are rendered once into 160 px sprites and drawn as images (consistent colour, cheap per frame).
 const sprites=new Map();
-function emojiSprite(ch){let c=sprites.get(ch);if(c)return c;c=document.createElement('canvas');c.width=c.height=160;const g=c.getContext('2d');g.font=`128px ${FONT.emoji}`;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,80,86);sprites.set(ch,c);return c;}
+// Emoji glyphs are not centred the same way in every font (🍽️ sits off to one side in Apple Color Emoji),
+// so each sprite is re-centred on the bounding box of its actual pixels and scaled to a common size.
+function emojiSprite(ch){
+ let c=sprites.get(ch);if(c)return c;
+ const raw=document.createElement('canvas');raw.width=raw.height=224;const r=raw.getContext('2d',{willReadFrequently:true});
+ r.font=`128px ${FONT.emoji}`;r.textAlign='center';r.textBaseline='middle';r.fillText(ch,112,112);
+ c=document.createElement('canvas');c.width=c.height=160;const g=c.getContext('2d');
+ let box=null;try{const d=r.getImageData(0,0,224,224).data;let x0=224,y0=224,x1=-1,y1=-1;for(let y=0;y<224;y++)for(let x=0;x<224;x++)if(d[(y*224+x)*4+3]>24){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}if(x1>=x0)box={x0,y0,w:x1-x0+1,h:y1-y0+1};}catch{}
+ if(box){const k=Math.min(1.12,128/Math.max(box.w,box.h));const w=box.w*k,h=box.h*k;g.drawImage(raw,box.x0,box.y0,box.w,box.h,80-w/2,80-h/2,w,h);}
+ else{g.font=`128px ${FONT.emoji}`;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,80,86);}
+ sprites.set(ch,c);return c;
+}
 function emoji(ctx,ch,x,y,size,o={}){if(size<=0)return;ctx.save();ctx.globalAlpha*=o.alpha??1;ctx.translate(x,y);if(o.rot)ctx.rotate(o.rot);if(o.scale)ctx.scale(o.scale,o.scale);if(o.glow)glow(ctx,0,0,size*.9,o.glow,.6);const k=size/128*1.25;ctx.drawImage(emojiSprite(ch),-80*k,-80*k,160*k,160*k);ctx.restore();}
 function rr(ctx,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function card(ctx,x,y,w,h,o={}){ctx.save();ctx.globalAlpha*=o.alpha??1;if(o.shadow){ctx.shadowColor=o.shadow;ctx.shadowBlur=o.blur??24;ctx.shadowOffsetY=o.offY??10;}rr(ctx,x,y,w,h,o.r??16);ctx.fillStyle=o.fill||PAL.cream;ctx.fill();ctx.shadowColor='transparent';if(o.stroke){ctx.lineWidth=o.lw||2;ctx.strokeStyle=o.stroke;ctx.stroke();}ctx.restore();}
@@ -102,30 +130,33 @@ function caption(ctx,s,o){
  const kin=E.outCubic((T-o.in)/.35),kout=clamp((o.out-T)/.3),alpha=Math.min(kin,E.inOutSine(kout));if(alpha<=0)return;
  const col=(o.layout==='column')&&!s.portrait;
  const head=o.size||s.type.head,subSize=o.subSize||s.type.sub;
- let x,hy,sy,align,maxW;
- if(col){x=s.w*.58;align='left';maxW=s.w*.37;hy=s.h*(o.hy??.47);sy=s.h*(o.sy??.56);}
- else{x=s.w/2;align='center';maxW=s.w*(s.portrait?.88:.80)*.88;hy=s.h*(o.hy??(s.portrait?.70:.79));sy=s.h*(o.sy??(s.portrait?.76:.87));}
+ let x,hy,sy,maxW;
+ // The column always keeps a real right margin, so small players never push text to the edge.
+ if(col){x=s.w*.57;maxW=s.w-Math.max(s.w*.06,s.u*7)-x;hy=s.h*(o.hy??.47);sy=s.h*(o.sy??.56);}
+ else{x=s.w/2;maxW=s.w*(s.portrait?.88:.80)*.88;hy=s.h*(o.hy??(s.portrait?.70:.79));sy=s.h*(o.sy??(s.portrait?.76:.87));}
  const chip=o.chip?head*1.3:0,gap=chip?head*.35:0;
- ctx.save();
- const fam='head',font=FONT.head,weight=800;
- let size=fit(ctx,o.text,font,weight,head,maxW-chip-gap);
- ctx.font=`${weight} ${size}px ${font}`;const tw=ctx.measureText(o.text).width;
- const blockW=Math.max(tw+chip+gap,o.sub?(()=>{ctx.font=`600 ${subSize}px ${FONT.round}`;return Math.min(maxW,ctx.measureText(o.sub).width);})():0);
- // soft scrim behind the block
- if(o.scrim!==false){const cx=col?x+blockW/2:x,cy=(hy+(o.sub?sy:hy))/2,rx=blockW*.62+s.u*6,ry=(o.sub?(sy-hy):0)/2+head*1.1;ctx.save();ctx.globalAlpha=alpha;ctx.translate(cx,cy);ctx.scale(1,ry/rx);const g=ctx.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,'rgba(6,23,15,.62)');g.addColorStop(.7,'rgba(6,23,15,.38)');g.addColorStop(1,'rgba(6,23,15,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,TAU);ctx.fill();ctx.restore();}
- const rise=(1-kin)*16+(1-kout)*-8;
- // headline with upward mask wipe
+ ctx.save();noSpacing(ctx);
+ const font=FONT.head,weight=800;
+ const size=fit(ctx,o.text,font,weight,head,maxW-chip-gap);
+ ctx.font=`${weight} ${size}px ${font}`;const tw=ctx.measureText(o.text).width,hOff=midOffset(ctx);
+ let subFit=subSize,subW=0;
+ if(o.sub){subFit=fit(ctx,o.sub,FONT.round,600,subSize,col?maxW-chip-gap:maxW);ctx.font=`600 ${subFit}px ${FONT.round}`;subW=ctx.measureText(o.sub).width;}
+ // Column layout: chip hangs left, headline and sub share one text edge. Centred layout: each line centred.
+ const textX=col?x+chip+gap:x-(tw+chip+gap)/2+chip+gap;
+ const blockL=col?x:Math.min(x-(tw+chip+gap)/2,x-subW/2),blockR=col?textX+Math.max(tw,subW):Math.max(x+(tw+chip+gap)/2,x+subW/2);
+ if(o.scrim!==false){const cx=(blockL+blockR)/2,cy=(hy+(o.sub?sy:hy))/2,rx=(blockR-blockL)*.62+s.u*6,ry=(o.sub?(sy-hy):0)/2+head*1.1;ctx.save();ctx.globalAlpha=alpha;ctx.translate(cx,cy);ctx.scale(1,ry/rx);const g=ctx.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,'rgba(6,23,15,.62)');g.addColorStop(.7,'rgba(6,23,15,.38)');g.addColorStop(1,'rgba(6,23,15,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,TAU);ctx.fill();ctx.restore();}
+ const rise=(1-kin)*16-(1-kout)*8;
+ if(chip){const cx=textX-gap-chip/2,cy=hy+rise;ctx.save();ctx.globalAlpha=alpha;ctx.beginPath();ctx.arc(cx,cy,chip/2,0,TAU);ctx.fillStyle=PAL.green;ctx.fill();ctx.lineWidth=Math.max(1.5,chip*.07);ctx.strokeStyle=PAL.gold;ctx.stroke();emoji(ctx,o.chip,cx,cy,chip*.58);ctx.restore();}
+ // headline: upward mask wipe; the band is tall enough for Thai marks above and below the line
  ctx.save();ctx.globalAlpha=alpha;
- const band=size*1.6;ctx.beginPath();ctx.rect(0,hy-band/2+(1-kin)*band*.6,s.w,band);ctx.clip();
- let left=col?x:x-(tw+chip+gap)/2;
- if(chip){const cx=left+chip/2,cy=hy+rise;ctx.save();ctx.beginPath();ctx.arc(cx,cy,chip/2,0,TAU);ctx.fillStyle=PAL.green;ctx.fill();ctx.lineWidth=Math.max(1.5,chip*.07);ctx.strokeStyle=PAL.gold;ctx.stroke();ctx.restore();emoji(ctx,o.chip,cx,cy,chip*.58);left+=chip+gap;}
- ctx.font=`${weight} ${size}px ${font}`;ctx.textBaseline='middle';ctx.textAlign='left';
- const parts=o.accent&&o.text.includes(o.accent)?(()=>{const i=o.text.indexOf(o.accent);return [[o.text.slice(0,i),o.color||PAL.cream],[o.accent,PAL.hot],[o.text.slice(i+o.accent.length),o.color||PAL.cream]];})():[[o.text,o.color||PAL.cream]];
+ const band=size*2.6;ctx.beginPath();ctx.rect(0,hy-band/2+(1-kin)*band*.55,s.w,band);ctx.clip();
+ ctx.font=`${weight} ${size}px ${font}`;ctx.textBaseline='alphabetic';ctx.textAlign='left';
  if(o.glow){ctx.shadowColor=o.glow;ctx.shadowBlur=size*.35;}
- let px=left;for(const [str,c] of parts){if(!str)continue;ctx.fillStyle=c;ctx.fillText(str,px,hy+rise);px+=ctx.measureText(str).width;}
+ fillAccent(ctx,o.text,textX,hy+rise+hOff,o.accent,o.color||PAL.cream,PAL.hot);
  ctx.restore();
  if(o.sub){const ks=E.outCubic((T-o.in-.05)/.3);const subA=Math.min(ks,E.inOutSine(kout))*.88;
-  text(ctx,o.sub,col?x:x,sy+(1-ks)*16-(1-kout)*8,{size:subSize,family:'round',maxW,color:o.subColor||PAL.cream,alpha:subA,align:col?'left':'center'});}
+  if(subA>0){ctx.save();ctx.globalAlpha=subA;ctx.font=`600 ${subFit}px ${FONT.round}`;ctx.textBaseline='alphabetic';ctx.textAlign='left';
+   const sx=col?textX:x-subW/2;fillAccent(ctx,o.sub,sx,sy+(1-ks)*16-(1-kout)*8+midOffset(ctx),o.subAccent,o.subColor||PAL.cream,PAL.hot);ctx.restore();}}
  ctx.restore();
 }
 function jar(ctx,x,y,size,fill,o={}){
@@ -141,7 +172,7 @@ function phone(ctx,x,y,w,h,o={}){card(ctx,x,y,w,h,{fill:o.frame||'#111',r:w*.14,
 function chatBubble(ctx,x,y,w,str,o={}){const size=o.size||16,h=size*2.1;card(ctx,x,y,w,h,{fill:o.fill||'#ffffff',r:h*.45,alpha:o.alpha,shadow:o.shadow});text(ctx,str,x+w/2,y+h/2,{size,family:o.family||'round',color:o.color||PAL.ink,maxW:w-size,alpha:o.alpha});}
 function grainCanvas(){if(TR._grain)return TR._grain;const c=document.createElement('canvas');c.width=c.height=192;const g=c.getContext('2d');const img=g.createImageData(192,192);const r=rng(99);for(let i=0;i<img.data.length;i+=4){const v=r()*255;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=18;}g.putImageData(img,0,0);TR._grain=c;return c;}
 function grain(ctx,s,alpha=1){const c=grainCanvas();ctx.save();ctx.globalAlpha=alpha;const p=ctx.createPattern(c,'repeat');const ox=(Math.floor(s.T*24)*53)%192,oy=(Math.floor(s.T*24)*97)%192;ctx.translate(-ox,-oy);ctx.fillStyle=p;ctx.fillRect(ox,oy,s.w,s.h);ctx.restore();}
-TR.H={TAU,clamp,lerp,E,env,rng,hexA,PAL,LESSONS,FONT,WEIGHT,fit,text,emoji,rr,card,bg,radial,glow,rays,burst,dust,speedLines,shake,flash,vignette,caption,jar,browserWin,phone,chatBubble,grain};
+TR.H={TAU,clamp,lerp,E,env,rng,hexA,PAL,LESSONS,FONT,WEIGHT,fit,midOffset,fillAccent,noSpacing,THAI_RE,text,emoji,rr,card,bg,radial,glow,rays,burst,dust,speedLines,shake,flash,vignette,caption,jar,browserWin,phone,chatBubble,grain};
 
 /* ── Frame rendering ─────────────────────────────────────── */
 function stageInfo(w,h,T,reduced){
@@ -210,6 +241,7 @@ function playCue(syn,c,at){const args=c.args||[];const custom=TR.instruments[c.t
 const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 function fontsReady(){if(!document.fonts?.load)return Promise.resolve();return Promise.race([Promise.all(TR.FONT_LOADS.map(f=>document.fonts.load(f,'กขคไทยAa').catch(()=>null))),new Promise(r=>setTimeout(r,1800))]);}
 TR.fontsReady=fontsReady;
+if(document.fonts){document.fonts.addEventListener?.('loadingdone',()=>midCache.clear());fontsReady().then(()=>midCache.clear());}
 class Player{
  constructor(canvas,o={}){
   this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.o=o;this.T=o.poster??10.5;this.playing=false;this.muted=false;this.ended=false;
@@ -281,34 +313,54 @@ TR.mount=function(host,o={}){
  player.on('time',T=>{const pct=Math.round(T/DURATION*1000)/10;if(pct!==lastPct){lastPct=pct;fill.style.transform=`scaleX(${T/DURATION})`;time.textContent=fmt(T);track.setAttribute('aria-valuenow',String(Math.floor(T)));}});
  player.on('state',st=>{setState(st);if(st==='playing'){writeState({played:true,lastPlay:1});o.onPlay?.();}if(st==='ended'){writeState({completed:true});o.onEnd?.();q('.trx-cta')?.focus({preventScroll:true});}});
  player.on('mute',m=>{mute.textContent=m?'🔇':'🔊';mute.setAttribute('aria-label',m?'เปิดเสียง':'ปิดเสียง');});
- big.addEventListener('click',()=>player.play(0));
- pp.addEventListener('click',()=>{if(host.dataset.state==='idle')player.play(0);else player.toggle();});
+ // o.intercept lets the page send a play request elsewhere (phones open the full-screen player).
+ big.addEventListener('click',()=>{if(o.intercept&&o.intercept())return;player.play(0);});
+ pp.addEventListener('click',()=>{if(host.dataset.state==='idle'){if(o.intercept&&o.intercept())return;player.play(0);}else player.toggle();});
  q('.trx-replay').addEventListener('click',()=>player.play(0));
  mute.addEventListener('click',()=>player.setMuted(!player.muted));
  canvas.addEventListener('click',()=>{if(host.dataset.state!=='idle'&&host.dataset.state!=='ended')player.toggle();});
  const seekAt=x=>{const r=track.getBoundingClientRect();player.seek(clamp((x-r.left)/r.width)*DURATION);if(host.dataset.state==='idle'){player.play();}};
  track.addEventListener('pointerdown',e=>{seekAt(e.clientX);const mv=ev=>seekAt(ev.clientX);const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);};addEventListener('pointermove',mv);addEventListener('pointerup',up);});
  track.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){player.seek(player.T+5);e.preventDefault();}if(e.key==='ArrowLeft'){player.seek(player.T-5);e.preventDefault();}});
- fs.addEventListener('click',()=>{const el=host.querySelector('.trx-stage');if(document.fullscreenElement)document.exitFullscreen?.();else (el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);});
+ // iPhone Safari has no element fullscreen, so the button either uses the page's own full-screen
+ // player (o.onFullscreen) or is hidden where neither is available (e.g. already inside that player).
+ const canFs=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
+ if(!canFs&&!o.onFullscreen)fs.hidden=true;
+ fs.addEventListener('click',()=>{
+  if(o.onFullscreen&&(!canFs||(o.preferDialog&&o.preferDialog()))){const T=player.T;player.pause();o.onFullscreen(T);return;}
+  const el=host.querySelector('.trx-stage');
+  if(document.fullscreenElement||document.webkitFullscreenElement)(document.exitFullscreen||document.webkitExitFullscreen)?.call(document);
+  else (el.requestFullscreen||el.webkitRequestFullscreen)?.call(el);
+ });
  host.addEventListener('keydown',e=>{if(e.key===' '&&e.target===host){e.preventDefault();player.toggle();}});
  if('IntersectionObserver' in window){new IntersectionObserver(es=>{for(const en of es)if(!en.isIntersecting&&player.playing&&!o.keepPlaying)player.pause();},{threshold:.15}).observe(host);}
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&player.playing)player.pause();});
  host._player=player;return player;
 };
+// Opens the trailer dialog. TR.popup applies the first-visit rule; TR.openPopup always opens (e.g. a phone
+// tapping the header player), and o.autoplay starts it straight away (the tap is the user gesture).
+TR.openPopup=function(dialog,o={}){
+ const host=dialog.querySelector('.trx-host');
+ if(!dialog._trx){
+  const close=how=>{if(how==='skip'&&!readState().played)writeState({dismissed:(readState().dismissed||0)+1});host._player?.pause();dialog.close?.();dialog.removeAttribute('open');document.documentElement.classList.remove('trx-locked');dialog._trx.onClose?.();};
+  dialog.querySelector('.trx-skip')?.addEventListener('click',()=>close('skip'));
+  dialog.addEventListener('cancel',e=>{e.preventDefault();close('skip');});
+  dialog.addEventListener('click',e=>{if(e.target===dialog)close('skip');});
+  dialog._trx={};
+ }
+ dialog._trx.onClose=o.onClose;
+ if(!dialog.open){if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');}
+ document.documentElement.classList.add('trx-locked');
+ let player=host.querySelector('.trx')?._player||host._player;
+ if(!player){player=TR.mount(host,{keepPlaying:true,poster:o.poster,copy:o.copy,onEnd:()=>{dialog.classList.add('trx-done');}});dialog.querySelector('.trx-cta')?.addEventListener('click',()=>writeState({completed:true}));}
+ else player.resize();
+ if(o.autoplay)player.play(o.from||0);
+ return player;
+};
 TR.popup=function(dialog,o={}){
  const st=readState();
  if(st.played||(st.dismissed||0)>=2)return false;
- const host=dialog.querySelector('.trx-host');
- let player=null;
- const close=how=>{if(how==='skip'&&!readState().played)writeState({dismissed:(readState().dismissed||0)+1});player?.pause();dialog.close?.();dialog.removeAttribute('open');document.documentElement.classList.remove('trx-locked');o.onClose?.();};
- dialog.querySelector('.trx-skip')?.addEventListener('click',()=>close('skip'));
- dialog.addEventListener('cancel',e=>{e.preventDefault();close('skip');});
- dialog.addEventListener('click',e=>{if(e.target===dialog)close('skip');});
- if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
- document.documentElement.classList.add('trx-locked');
- player=TR.mount(host,{keepPlaying:true,poster:o.poster,copy:o.copy,onEnd:()=>{dialog.classList.add('trx-done');}});
- dialog.querySelector('.trx-cta')?.addEventListener('click',()=>writeState({completed:true}));
- return player;
+ return TR.openPopup(dialog,o);
 };
 })();
 
@@ -1287,17 +1339,7 @@ TR.defineScene({id:'s02_drop',start:3.5,end:7,draw(ctx,s){
  vig(ctx,s,lerp(.12,.38,vk),lerp(.92,.6,vk)+.15*E.inCubic((T-6.3)/.7));
  // caption: ซอส in the headline and "Source .md" in the sub in hot gold
  const sub='ซอส = ไฟล์ Source .md ที่เป็นคุณ',inT=3.6,outT=6.85;
- H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subColor:'rgba(0,0,0,0)',in:inT,out:outT});
- if(T>=inT&&T<=outT){
-  const ks=E.outCubic((T-inT-.05)/.3),ko=clamp((outT-T)/.3),a=Math.min(ks,E.inOutSine(ko))*.88;
-  if(a>0){
-   const maxW=s.w*(s.portrait?.88:.80)*.88,size=H.fit(ctx,sub,H.FONT.round,600,s.type.sub,maxW),sy=s.h*(s.portrait?.76:.87)+(1-ks)*16-(1-ko)*8;
-   ctx.save();if('letterSpacing' in ctx)ctx.letterSpacing='0px';ctx.font=`600 ${size}px ${H.FONT.round}`;ctx.textBaseline='middle';ctx.textAlign='left';ctx.globalAlpha=a;
-   const acc='Source .md',i=sub.indexOf(acc),parts=[[sub.slice(0,i),PAL.cream],[acc,PAL.hot],[sub.slice(i+acc.length),PAL.cream]];
-   let x=s.w/2-ctx.measureText(sub).width/2;for(const [str,c] of parts){ctx.fillStyle=c;ctx.fillText(str,x,sy);x+=ctx.measureText(str).width;}
-   ctx.restore();
-  }
- }
+ H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subAccent:'Source .md',in:inT,out:outT});
 }});
 })();
 
@@ -1377,7 +1419,7 @@ function drawTitle(ctx,s,g,m,T){
  const {size,W}=m,font=H.FONT.head;
  ctx.save();ctx.translate(g.tx,g.ty-(1-kout)*8);ctx.scale(sc,sc);ctx.globalAlpha=alpha;
  eglow(ctx,0,0,W*.66,size*.95,PAL.gold,.32+.3*Math.max(0,1-t/.5)+.06*Math.sin(T*5.2));
- ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.translate(0,H.midOffset(ctx));
  ctx.fillStyle='#3d2906';ctx.fillText(TITLE,0,size*.085);
  ctx.fillStyle='#8a6420';ctx.fillText(TITLE,0,size*.045);
  const gr=ctx.createLinearGradient(0,-size*.5,0,size*.42);gr.addColorStop(0,'#fffaf0');gr.addColorStop(.4,PAL.cream);gr.addColorStop(.66,PAL.hot);gr.addColorStop(1,'#d9a648');
@@ -1396,9 +1438,8 @@ function drawSub(ctx,s,g,m,T){
  const ki=E.outCubic(clamp((T-T_IN-.05)/.3)),kout=clamp((T_OUT-T)/.3),a=Math.min(ki,E.inOutSine(kout))*.94;if(a<=0)return;
  const y=g.subY+(1-ki)*16-(1-kout)*8,size=m.subSize;
  ctx.save();ctx.globalAlpha=a;const band=size*1.8;ctx.beginPath();ctx.rect(0,y-band/2+(1-ki)*band*.6,s.w,band);ctx.clip();
- ctx.font=`600 ${size}px ${H.FONT.round}`;ctx.textBaseline='middle';ctx.textAlign='left';
- const i=SUB.indexOf(SUB_ACC);let x=g.tx-m.SW/2;
- for(const [p,c] of [[SUB.slice(0,i),PAL.cream],[SUB_ACC,PAL.hot],[SUB.slice(i+SUB_ACC.length),PAL.cream]]){if(!p)continue;ctx.fillStyle=c;ctx.fillText(p,x,y);x+=ctx.measureText(p).width;}
+ ctx.font=`600 ${size}px ${H.FONT.round}`;H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.textAlign='left';
+ const sw=ctx.measureText(SUB).width;H.fillAccent(ctx,SUB,g.tx-sw/2,y+H.midOffset(ctx),SUB_ACC,PAL.cream,PAL.hot);
  ctx.restore();
 }
 function drawTextBlock(ctx,s,T){
@@ -3500,7 +3541,7 @@ TR.defineScene({id:'s11_secret',start:S0,end:52,draw(ctx,s){
  // TEXT — whisper style, never moves with the camera
  // 16:9: no chip — in the 37%W column it would force the headline below the 85% size floor and the
  // headline's wipe band would shave the chip ring. 9:16 keeps the 🔒 chip (it fits there).
- const whisper=o=>{ctx.save();if('letterSpacing' in ctx)ctx.letterSpacing=(s.u*.16).toFixed(1)+'px';H.caption(ctx,s,Object.assign({layout:'column',chip:s.portrait?'🔒':null,color:'rgba(244,236,216,.92)',glow:'rgba(242,160,123,.4)'},o));ctx.restore();};
+ const whisper=o=>{ctx.save();H.caption(ctx,s,Object.assign({layout:'column',chip:s.portrait?'🔒':null,color:'rgba(244,236,216,.92)',glow:'rgba(242,160,123,.4)'},o));ctx.restore();};
  whisper({text:'ครบ 6 บท… ยังไม่จบ',sub:'มีด่านลับ ที่ไม่อยู่ในสารบัญ',in:44.8,out:48.15,accent:'ยังไม่จบ'});
  whisper({text:'ข้างในคืออะไร… ไม่บอก',sub:'ไปให้ถึง แล้วรับตรา 🌅 ผู้ตื่นรู้',in:48.25,out:51.5,accent:'ไม่บอก'});
 }});
@@ -3675,11 +3716,9 @@ function subTwoTone(ctx,s,o){
  const subSize=s.type.sub,maxW=s.w*(s.portrait?.88:.80)*.88,font=H.FONT.round;
  ctx.save();
  const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;if('letterSpacing' in ctx)ctx.letterSpacing='0px';
- ctx.textBaseline='middle';ctx.textAlign='left';ctx.globalAlpha*=a;
- const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8;
- const i=o.text.indexOf(o.gold);
- const parts=i<0?[[o.text,PAL.cream]]:[[o.text.slice(0,i),PAL.cream],[o.gold,PAL.hot],[o.text.slice(i+o.gold.length),PAL.cream]];
- let x=s.w/2-total/2;for(const [str,c] of parts){if(!str)continue;ctx.fillStyle=c;ctx.fillText(str,x,y);x+=ctx.measureText(str).width;}
+ ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.globalAlpha*=a;
+ const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8+H.midOffset(ctx);
+ H.fillAccent(ctx,o.text,s.w/2-total/2,y,o.gold,PAL.cream,PAL.hot);
  ctx.restore();
 }
 
@@ -3908,14 +3947,19 @@ const TR=window.MC_TRAILER;if(!TR)return;
 function start(){
  const host=document.getElementById('classroomTrailer');
  let header=null;
- if(host&&!host._player)header=TR.mount(host,{poster:TR.poster,copy:{play:(TR.headerCopy&&TR.headerCopy.play)||undefined}});
+ const pop=document.getElementById('trailerPop');
+ const popCopy={play:(TR.popupCopy&&TR.popupCopy.play)||undefined};
+ // On phones the header box is too small for the captions, so play opens the full-screen portrait player.
+ const small=()=>innerWidth<640&&!!pop;
+ const openFull=from=>{TR.openPopup(pop,{poster:TR.poster,copy:popCopy,autoplay:true,from:from||0,onClose:()=>{host?._player?.draw();}});return true;};
+ if(host&&!host._player)header=TR.mount(host,{poster:TR.poster,copy:{play:(TR.headerCopy&&TR.headerCopy.play)||undefined},intercept:()=>small()&&openFull(),onFullscreen:from=>openFull(from),preferDialog:small});
  document.querySelectorAll('[data-trailer-play]').forEach(btn=>btn.addEventListener('click',e=>{
-  e.preventDefault();if(!host||!header)return;
+  e.preventDefault();if(small()){openFull();return;}if(!host||!header)return;
   const lenis=window.cloverMotion?.lenis;
   if(lenis)lenis.scrollTo(host,{offset:-80,duration:.9});else host.scrollIntoView({behavior:'smooth',block:'center'});
   header.play(0);
  }));
- const pop=document.getElementById('trailerPop');if(!pop)return;
+ if(!pop)return;
  const q=new URLSearchParams(location.search);
  if(q.get('trailer')==='0')return;
  if(q.get('trailer')==='1')TR.writeState({played:false,dismissed:0});
@@ -3924,7 +3968,7 @@ function start(){
  const st=TR.readState();
  if(st.played||(st.dismissed||0)>=2)return;
  // Let the page paint first so the course is visible behind the dialog.
- setTimeout(()=>{if(document.querySelector('dialog[open]:not(#trailerPop)'))return;TR.popup(pop,{poster:TR.poster,copy:{play:(TR.popupCopy&&TR.popupCopy.play)||undefined},onClose:()=>{host?._player?.draw();}});},450);
+ setTimeout(()=>{if(document.querySelector('dialog[open]:not(#trailerPop)'))return;TR.popup(pop,{poster:TR.poster,copy:popCopy,onClose:()=>{host?._player?.draw();}});},450);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

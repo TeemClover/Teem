@@ -166,11 +166,9 @@ function subTwoTone(ctx,s,o){
  const subSize=s.type.sub,maxW=s.w*(s.portrait?.88:.80)*.88,font=H.FONT.round;
  ctx.save();
  const size=H.fit(ctx,o.text,font,600,subSize,maxW);ctx.font=`600 ${size}px ${font}`;if('letterSpacing' in ctx)ctx.letterSpacing='0px';
- ctx.textBaseline='middle';ctx.textAlign='left';ctx.globalAlpha*=a;
- const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8;
- const i=o.text.indexOf(o.gold);
- const parts=i<0?[[o.text,PAL.cream]]:[[o.text.slice(0,i),PAL.cream],[o.gold,PAL.hot],[o.text.slice(i+o.gold.length),PAL.cream]];
- let x=s.w/2-total/2;for(const [str,c] of parts){if(!str)continue;ctx.fillStyle=c;ctx.fillText(str,x,y);x+=ctx.measureText(str).width;}
+ ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.globalAlpha*=a;
+ const total=ctx.measureText(o.text).width,y=o.y+(1-ks)*16-(1-kout)*8+H.midOffset(ctx);
+ H.fillAccent(ctx,o.text,s.w/2-total/2,y,o.gold,PAL.cream,PAL.hot);
  ctx.restore();
 }
 

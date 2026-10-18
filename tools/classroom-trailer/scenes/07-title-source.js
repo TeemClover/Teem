@@ -73,7 +73,7 @@ function drawTitle(ctx,s,g,m,T){
  const {size,W}=m,font=H.FONT.head;
  ctx.save();ctx.translate(g.tx,g.ty-(1-kout)*8);ctx.scale(sc,sc);ctx.globalAlpha=alpha;
  eglow(ctx,0,0,W*.66,size*.95,PAL.gold,.32+.3*Math.max(0,1-t/.5)+.06*Math.sin(T*5.2));
- ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font=`800 ${size}px ${font}`;ctx.textAlign='center';H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.translate(0,H.midOffset(ctx));
  ctx.fillStyle='#3d2906';ctx.fillText(TITLE,0,size*.085);
  ctx.fillStyle='#8a6420';ctx.fillText(TITLE,0,size*.045);
  const gr=ctx.createLinearGradient(0,-size*.5,0,size*.42);gr.addColorStop(0,'#fffaf0');gr.addColorStop(.4,PAL.cream);gr.addColorStop(.66,PAL.hot);gr.addColorStop(1,'#d9a648');
@@ -92,9 +92,8 @@ function drawSub(ctx,s,g,m,T){
  const ki=E.outCubic(clamp((T-T_IN-.05)/.3)),kout=clamp((T_OUT-T)/.3),a=Math.min(ki,E.inOutSine(kout))*.94;if(a<=0)return;
  const y=g.subY+(1-ki)*16-(1-kout)*8,size=m.subSize;
  ctx.save();ctx.globalAlpha=a;const band=size*1.8;ctx.beginPath();ctx.rect(0,y-band/2+(1-ki)*band*.6,s.w,band);ctx.clip();
- ctx.font=`600 ${size}px ${H.FONT.round}`;ctx.textBaseline='middle';ctx.textAlign='left';
- const i=SUB.indexOf(SUB_ACC);let x=g.tx-m.SW/2;
- for(const [p,c] of [[SUB.slice(0,i),PAL.cream],[SUB_ACC,PAL.hot],[SUB.slice(i+SUB_ACC.length),PAL.cream]]){if(!p)continue;ctx.fillStyle=c;ctx.fillText(p,x,y);x+=ctx.measureText(p).width;}
+ ctx.font=`600 ${size}px ${H.FONT.round}`;H.noSpacing(ctx);ctx.textBaseline='alphabetic';ctx.textAlign='left';
+ const sw=ctx.measureText(SUB).width;H.fillAccent(ctx,SUB,g.tx-sw/2,y+H.midOffset(ctx),SUB_ACC,PAL.cream,PAL.hot);
  ctx.restore();
 }
 function drawTextBlock(ctx,s,T){

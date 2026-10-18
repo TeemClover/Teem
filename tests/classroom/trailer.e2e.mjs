@@ -52,8 +52,10 @@ try {
     await page.reload({waitUntil: 'domcontentloaded'}); await page.waitForTimeout(900);
     assert.equal(await pop.isVisible(), false, 'no popup after the trailer was played');
     await page.locator('[data-trailer-play]').click();
-    await page.waitForFunction(() => document.querySelector('#classroomTrailer')?.dataset.state === 'playing');
-    assert.ok(await page.locator('#courseStart').isVisible());
+    // Phones replay in the full-screen portrait player; wider screens play in the header.
+    if (width < 640) await page.waitForFunction(() => document.querySelector('#trailerPop')?.open && document.querySelector('#trailerPop .trx')?.dataset.state === 'playing');
+    else await page.waitForFunction(() => document.querySelector('#classroomTrailer')?.dataset.state === 'playing');
+    if (width >= 640) assert.ok(await page.locator('#courseStart').isVisible());
     pass(`${width}px: first-visit popup plays, remembers, and the header player replays on demand`);
     await c.close();
   }

@@ -474,16 +474,6 @@ TR.defineScene({id:'s02_drop',start:3.5,end:7,draw(ctx,s){
  vig(ctx,s,lerp(.12,.38,vk),lerp(.92,.6,vk)+.15*E.inCubic((T-6.3)/.7));
  // caption: ซอส in the headline and "Source .md" in the sub in hot gold
  const sub='ซอส = ไฟล์ Source .md ที่เป็นคุณ',inT=3.6,outT=6.85;
- H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subColor:'rgba(0,0,0,0)',in:inT,out:outT});
- if(T>=inT&&T<=outT){
-  const ks=E.outCubic((T-inT-.05)/.3),ko=clamp((outT-T)/.3),a=Math.min(ks,E.inOutSine(ko))*.88;
-  if(a>0){
-   const maxW=s.w*(s.portrait?.88:.80)*.88,size=H.fit(ctx,sub,H.FONT.round,600,s.type.sub,maxW),sy=s.h*(s.portrait?.76:.87)+(1-ks)*16-(1-ko)*8;
-   ctx.save();if('letterSpacing' in ctx)ctx.letterSpacing='0px';ctx.font=`600 ${size}px ${H.FONT.round}`;ctx.textBaseline='middle';ctx.textAlign='left';ctx.globalAlpha=a;
-   const acc='Source .md',i=sub.indexOf(acc),parts=[[sub.slice(0,i),PAL.cream],[acc,PAL.hot],[sub.slice(i+acc.length),PAL.cream]];
-   let x=s.w/2-ctx.measureText(sub).width/2;for(const [str,c] of parts){ctx.fillStyle=c;ctx.fillText(str,x,sy);x+=ctx.measureText(str).width;}
-   ctx.restore();
-  }
- }
+ H.caption(ctx,s,{text:'ถ้ามีซอสที่รู้ใจคุณ…',accent:'ซอส',sub,subAccent:'Source .md',in:inT,out:outT});
 }});
 })();
