@@ -726,13 +726,14 @@ Story will be about, "<b>ใส่เรื่องที่อยากทำ�
       <button type="button" class="copy-all th-copy" id="reelCopy">📋 ก๊อป prompt สไตล์นี้ (ใส่เรื่องของคุณเอง)</button>
       <div class="th-actions"><button type="button" id="reelToggle">⏸ หยุด</button><button type="button" id="reelSound">🎵 เปิดเพลง</button><button type="button" id="reelVoice" hidden>🗣️ ลองเสียงพากย์ (สังเคราะห์)</button><button type="button" id="reelRecord">⬇ อัดเป็นวิดีโอ</button></div>
       <button type="button" class="th-use" id="reelUse">🖌️ ใช้สไตล์นี้กับเรื่องของฉัน</button>
-      <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์เป็นเสียงสังเคราะห์จากเครื่องคุณ (ปิดไว้ก่อน) ได้ยินเฉพาะตอนเล่นในหน้านี้ งานจริงแนะนำอัดเสียงตัวเอง · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
+      <p class="th-note">เพลงแต่งด้วยโค้ดและติดไปในไฟล์ที่อัด ส่วนเสียงพากย์คือเครื่องของคุณอ่านข้อความออกเสียงเอง (ปิดไว้ก่อน) แต่ละเครื่องเสียงไม่เหมือนกัน และไม่ติดไปในไฟล์ที่อัด · ได้ไฟล์ MP4 เมื่อเบราว์เซอร์รองรับ ไม่งั้นเป็น WebM ซึ่งอัปขึ้น TikTok, Reels และ LINE ได้</p>
     </div>
     <button type="button" class="th-close" id="reelClose" aria-label="ปิด">×</button>
     <div class="vo-note" id="reelVoNote" role="alertdialog" aria-labelledby="reelVoNoteTitle" hidden><div class="vo-card">
       <small>หมายเหตุก่อนฟัง</small>
-      <h3 id="reelVoNoteTitle">🗣️ เสียงนี้เป็นเสียงสังเคราะห์จากเครื่องคุณ</h3>
-      <p>เปิดไว้ให้เห็นภาพเฉย ๆ ฟังออกว่าปลอม <b>งานจริงไม่แนะนำให้ใช้</b> วิดีโอเปิดคอร์สของเราใช้วิธีนี้แทน:</p>
+      <h3 id="reelVoNoteTitle">🗣️ เสียงนี้ไม่ใช่คลิปเสียงในวิดีโอ</h3>
+      <p>แต่เป็นคอมพิวเตอร์หรือมือถือของคุณเอง อ่านข้อความจาก Source Code ออกเสียงสด ๆ แต่ละเครื่องจึงให้เสียงต่างกัน และเสียงนี้ไม่ติดไปตอนอัดเป็นวิดีโอ</p>
+      <p>ฟังออกว่าเป็นเสียงหุ่นยนต์ <b>งานจริงไม่แนะนำให้ใช้</b> วิดีโอเปิดคอร์สของเราใช้วิธีนี้แทน:</p>
       <ol><li>อัดเสียงตัวเองด้วยมือถือ ไฟล์เดียวจบ เว้นจังหวะระหว่างประโยค</li><li>ส่งไฟล์เสียงพร้อมบทให้ AI ตัดเป็นท่อน วางให้ตรงฉาก</li><li>ให้เพลงเบาลงตอนมีเสียงพูด</li></ol>
       <p class="vo-tip">เสียงจริงของคุณ อบอุ่นกว่าเสียง AI ทุกตัว ดูตัวอย่างได้ที่ <a href="#lessonTrailer">วิดีโอเปิดคอร์ส ↓</a></p>
       <div class="vo-row"><button type="button" id="reelVoOk">เข้าใจแล้ว ลองฟัง</button><button type="button" id="reelVoNo">ไม่เปิดดีกว่า</button></div>
@@ -1679,7 +1680,8 @@ function record(){
  setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
 }
 function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();else{try{speechSynthesis.resume();}catch{}narrate(theater.playing?(performance.now()-theater.t0)/1000:(theater.pausedAt||0),true);}paintTheaterButtons();}
-const VO_NOTE='mc_reel_voice_note_v1';
+// v2: the note now explains the voice is the device reading the code, so everyone sees it once more.
+const VO_NOTE='mc_reel_voice_note_v2';
 function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
 function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
 function showVoiceNote(on){const note=$('reelVoNote');if(!note)return;note.hidden=!on;if(on)$('reelVoOk')?.focus({preventScroll:true});}

@@ -347,7 +347,8 @@ function record(){
  setTimeout(()=>{if(recorder.state!=='inactive')recorder.stop();},LOOP*1000+150);
 }
 function setVoice(on){theater.voiceTouched=true;theater.voice=on;theater.lastLine=-1;if(!on)stopVoice();else{try{speechSynthesis.resume();}catch{}narrate(theater.playing?(performance.now()-theater.t0)/1000:(theater.pausedAt||0),true);}paintTheaterButtons();}
-const VO_NOTE='mc_reel_voice_note_v1';
+// v2: the note now explains the voice is the device reading the code, so everyone sees it once more.
+const VO_NOTE='mc_reel_voice_note_v2';
 function voiceNoteSeen(){try{return localStorage.getItem(VO_NOTE)==='1';}catch{return false;}}
 function markVoiceNote(){try{localStorage.setItem(VO_NOTE,'1');}catch{}}
 function showVoiceNote(on){const note=$('reelVoNote');if(!note)return;note.hidden=!on;if(on)$('reelVoOk')?.focus({preventScroll:true});}
