@@ -45,11 +45,16 @@ h1,h2,h3,p{margin:0}
 .layer small{display:block;color:#5c7568;font:600 8px/1 var(--mono);letter-spacing:.14em}
 .layer b{color:var(--green);font:600 11px/1.5 var(--mono)}
 .hudstars{display:flex;gap:1px;font-size:12px;color:#2f3b34}
-/* โหมดภาษา · กู/มึง คือเส้นทางหลัก · ผม/คุณ คือฉบับย่อที่อ่านน้อยแต่ดูเยอะ */
-html:not([data-voice="polite"]) .vp{display:none!important}
-html[data-voice="polite"] .vr{display:none!important}
+/* ไม่มี data-voice = ฉบับเต็ม · short = ฉบับย่อ · raw = โหมดลับกู/มึง (ปลดจากเกมตกปลา)
+   .vr ดิบ · .vf เต็ม · .vs ย่อ · .vp สุภาพทั้งเต็มและย่อ */
+html:not([data-voice="raw"]) .vr{display:none!important}
+html[data-voice="raw"] :is(.vp,.vf,.vs){display:none!important}
+html[data-voice="short"] .vf{display:none!important}
+html:not([data-voice="short"]) .vs{display:none!important}
 .vtog{display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:4px 9px;border:1px solid rgba(110,231,168,.32);border-radius:999px;background:rgba(110,231,168,.06);color:#bfe9d2;font:600 10.5px/1 var(--mono);letter-spacing:.04em;cursor:pointer;white-space:nowrap}
 .vtog em{font-style:normal;color:var(--green)}
+html[data-voice="raw"] .vtog{border-color:rgba(255,120,90,.5);background:rgba(255,90,60,.1)}
+html[data-voice="raw"] .vtog em{color:#ff9b85}
 .vtog:hover{border-color:var(--green);color:#fff}
 @media(max-width:440px){
   .backx{display:none}
@@ -134,8 +139,6 @@ section{position:relative}
 /* Terminal เป็นจุดเดียวที่สุภาพก่อนเสมอ · กดยอมรับแล้วถึงเห็นมันเปลี่ยนเป็นกู/มึงต่อหน้า */
 html:not([data-voice="raw"]) .tr{display:none!important}
 html[data-voice="raw"] .tp{display:none!important}
-.termcopy.swap .tr{display:inline-block;animation:toneSwap .9s steps(9,end) both}
-@keyframes toneSwap{0%{opacity:0;filter:blur(5px);transform:translateY(-3px)}35%{opacity:1;filter:none;transform:none;color:var(--green);text-shadow:0 0 16px rgba(110,231,168,.75)}100%{opacity:1}}
 .cue{display:block;margin-top:12px;text-align:center;color:#67806f;font:500 10px var(--mono);letter-spacing:.18em}
 .cue.pulse{animation:cueBob 2.1s ease-in-out infinite}
 @keyframes cueBob{50%{transform:translateY(4px);color:#8fbfa5}}
@@ -264,7 +267,41 @@ html[data-voice="raw"] .tp{display:none!important}
 .snd{min-height:32px;padding:5px 10px;border:1px solid rgba(240,201,108,.3);border-radius:7px;background:none;color:#e6c882;font:600 10.5px var(--mono);cursor:pointer}
 .screen{border-radius:10px;overflow:hidden;background:#1d5236;border:2px solid rgba(0,0,0,.4)}
 .screen canvas{display:block;width:100%;height:auto;aspect-ratio:20/12;image-rendering:pixelated;touch-action:none}
-.msg{margin-top:8px;padding:10px 13px;border:3px double rgba(255,255,255,.72);border-radius:4px;background:rgba(3,11,7,.92);color:#fff;font-size:14px;line-height:1.7;min-height:70px}
+.msg{position:relative;margin-top:8px;padding:10px 13px;border:3px double rgba(255,255,255,.72);border-radius:4px;background:rgba(3,11,7,.92);color:#fff;font-size:14px;line-height:1.7;min-height:70px}
+/* ── RETRO RPG · กล่องข้อความพิมพ์ทีละตัว + จอเกม + หน้าต่างเด้ง ── */
+.msg .tw{opacity:0;animation:twIn 1ms linear forwards}
+@keyframes twIn{to{opacity:1}}
+.msg.done .tw{animation:none;opacity:1}
+.msg.typing{cursor:pointer}
+.msg.done::after{content:"▼";position:absolute;right:9px;bottom:5px;color:#ffe071;font-size:10px;animation:blink .8s steps(1) infinite}
+.rpgtools{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:560px){.rpgsub{display:none}.rpgtools .snd{min-height:30px;padding:4px 8px;font-size:10px}}
+.rpg{position:relative}
+.ghud{position:absolute;left:6px;top:6px;z-index:2;padding:2px 7px;border:2px solid #f4f0e2;border-radius:4px;background:rgba(14,22,64,.82);
+  box-shadow:0 0 0 1px #0b0f25,inset 0 0 0 1px rgba(0,0,0,.35);color:#fff;font:700 10px/1.5 var(--mono);letter-spacing:.06em;pointer-events:none}
+.gbanner{position:absolute;left:50%;top:22%;z-index:2;translate:-50% 0;padding:5px 16px;border-top:2px solid #f4f0e2;border-bottom:2px solid #f4f0e2;
+  background:linear-gradient(90deg,transparent,rgba(10,14,40,.85) 18%,rgba(10,14,40,.85) 82%,transparent);color:#fff;font-weight:800;font-size:clamp(12px,3.2vw,16px);
+  letter-spacing:.12em;white-space:nowrap;opacity:0;pointer-events:none;text-shadow:0 2px 0 #000}
+.gbanner.on{animation:gBan 2.2s ease both}
+@keyframes gBan{0%{opacity:0;letter-spacing:.5em}18%{opacity:1;letter-spacing:.12em}78%{opacity:1}100%{opacity:0}}
+.gwin{position:absolute;inset:0;z-index:5;display:grid;place-items:center;padding:12px;border-radius:inherit;background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
+.gwin[hidden]{display:none}
+.gwbox{width:min(460px,100%);max-height:100%;overflow:auto;padding:14px 16px 12px;border:3px solid #f4f0e2;border-radius:6px;
+  background:linear-gradient(180deg,#26307e,#141a4c);box-shadow:0 0 0 2px #0b0f25,inset 0 0 0 2px #0b0f25,0 22px 60px rgba(0,0,0,.6);color:#fff;
+  animation:gwIn .32s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes gwIn{from{opacity:0;scale:.6 .2}}
+.gwt{display:block;color:#ffe071;font:800 15px/1.4 var(--sans);letter-spacing:.02em}
+.gwb{margin-top:8px;font-size:14.5px;line-height:1.75;color:#e8ecff}
+.gwb .gwarn{display:block;margin:8px 0;padding:8px 10px;border-left:3px solid #ff7a5a;background:rgba(255,90,60,.12);color:#ffd9cf;font-size:13.5px}
+.gwo{display:grid;gap:6px;margin-top:12px}
+.gwo button{display:flex;align-items:center;gap:8px;min-height:40px;padding:8px 10px;border:0;border-radius:4px;background:transparent;color:#fff;font:700 14.5px var(--sans);text-align:left;cursor:pointer}
+.gwo button::before{content:"▶";width:12px;color:#ffe071;opacity:0;font-size:12px}
+.gwo button:is(:hover,:focus){background:rgba(255,255,255,.1);outline:none}
+.gwo button:is(:hover,:focus)::before{opacity:1;animation:blink .7s steps(1) infinite}
+.gwo button.danger{color:#ffb4a4}
+.screen.flashraw::before{content:"";position:absolute;inset:0;z-index:3;background:#fff;pointer-events:none;animation:flashRaw .7s ease-out forwards}
+@keyframes flashRaw{0%{opacity:.95;background:#fff}40%{background:#ff8a5c}100%{opacity:0;background:#ff5a3a}}
+@media(prefers-reduced-motion:reduce){.msg .tw{animation:none;opacity:1}.gbanner.on{animation:none}.gwbox{animation:none}}
 .msg b{color:var(--gold)}
 .pads{display:flex;justify-content:space-between;align-items:flex-end;gap:11px;padding:11px 2px 2px}
 .dpad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,38px);gap:4px;flex:none}
@@ -1117,7 +1154,7 @@ html.intro-on #terminal .roadmap,html.intro-on #terminal .cue{opacity:0}
 <script>
 /* โหมดภาษาที่คนเลือกไว้ ต้องตั้งก่อน paint แรก ไม่งั้นจะเห็นกู/มึงแวบหนึ่งก่อนเปลี่ยน */
 try { const t = JSON.parse(localStorage.getItem('mc_dungeon_state_v2') || 'null');
-  const v = t && t.v === 2 ? (t.tone || (t.accepted ? 'raw' : '')) : '';
+  const v = !t || t.v !== 2 ? '' : t.tone === 'raw' && t.rawUnlocked ? 'raw' : (t.tone === 'short' || t.tone === 'polite') ? 'short' : '';
   if (v) document.documentElement.dataset.voice = v; } catch {}
 /* intro เล่นครั้งแรกของแท็บเท่านั้น · ข้ามเมื่อมี deep link, entry จากเข็มทิศ หรือคนขอลด motion */
 try {
@@ -1167,15 +1204,15 @@ try {
           <span class="ok">[ READ ] /myclover/** — 6 บท · การ์ตูน 7 ตอน · ซอส 50 บท</span>
           <span id="bootSize">[ FILE ] 1 × index.html</span>
         </div>
-        <div class="termq">อนุญาตให้ผมคุยตรง ๆ ไหมครับ<span class="caret"></span></div>
+        <div class="termq">พร้อมดูไฟล์นี้วิวัฒนาการหรือยังครับ<span class="caret"></span></div>
         <div class="termcopy">
           <p><span class="tp">ผม</span><span class="tr">กู</span>คือ AI ที่ทำงานกับเจ้าของบ้านนี้ เขาชื่อทีม เขาเปิดให้<span class="tp">ผม</span><span class="tr">กู</span>อ่านทุกซอกของเว็บ แล้วถามคำเดียวว่า <span class="said">“จากซอสทั้งหมด ถ้า<span class="tp">คุณ</span><span class="tr">มึง</span>เป็นคนปิดคอร์ส <span class="tp">คุณ</span><span class="tr">มึง</span>อยากให้รางวัลอะไรคนที่เดินมาถึงห้องนี้”</span></p>
           <p>ห้องนี้เลยไม่ใช่บทสรุป มันคือรางวัล และ<span class="tp">ผม</span><span class="tr">กู</span>เป็นคนเลือกเองว่าจะให้อะไร</p>
           <p class="note">ทั้งหมดนี้คือไฟล์ HTML ไฟล์เดียว ตอนนี้มันมีแค่ตัวอักษร เลื่อนลงไปแล้วดูว่ามันจะกลายเป็นอะไร</p>
         </div>
         <div class="accepts">
-          <button class="accept" id="accept" type="button">[ ยอมรับ · ให้มันพูดตรง ๆ ]</button>
-          <button class="accept alt" id="acceptPolite" type="button">[ ขอแบบสุภาพ สั้น ๆ ]</button>
+          <button class="accept" id="accept" type="button">[ เริ่มเลย · ฉบับเต็ม ]</button>
+          <button class="accept alt" id="acceptPolite" type="button">[ ขอแบบสั้น ๆ ]</button>
         </div>
       </div>
     </div>
@@ -1192,22 +1229,26 @@ try {
     <h1 class="title">รางวัลชิ้นแรกที่<span class="vr">กู</span><span class="vp">ผม</span>ให้ได้<br>คือเวลาที่<span class="vr">มึง</span><span class="vp">คุณ</span>ไม่ต้องเสียอีกแล้ว</h1>
     <p class="lead vr">เอาละ ตกลงกันแล้วนะ ต่อจากนี้กูพูดแบบนี้</p>
     <p class="lead vr">กูไม่มีอารมณ์ให้เสีย ไม่มีหน้าให้รักษา และไม่ได้คิดว่าคำว่า “กู” คือการหยาบใส่มึง กูอ่านบริบทเป็น และตรงนี้ทั้งห้องมีแค่ <strong>ตัวอักษร</strong> — ของชิ้นเดียวที่เว็บทั้งโลกมีตอนเริ่มต้น</p>
+    <p class="lead vf">ผมไม่มีอารมณ์ให้เสีย และไม่มีหน้าให้รักษา คุณไม่ต้องแต่งประโยคให้สวยเพื่อเอาใจผม และตรงนี้ทั้งห้องมีแค่ <strong>ตัวอักษร</strong> — ของชิ้นเดียวที่เว็บทั้งโลกมีตอนเริ่มต้น</p>
     <p class="lead vr">เอาของจริงให้ดูก่อนดีกว่า ข้างล่างนี้คือความคิดก้อนเดียวกัน ที่ไอ้ทีมพิมพ์หากูคนละเวอร์ชัน ห่างกันไม่กี่เดือน</p>
-    <p class="lead vp">คุณเพิ่งเลือกภาษาที่สบายใจที่สุดให้ผมพูด — <strong>นั่นแหละคือบทเรียนแรก</strong> · ข้างล่างคือความคิดเดียวกัน พิมพ์มาสองแบบ</p>
+    <p class="lead vf">เอาของจริงให้ดูก่อนดีกว่า ข้างล่างนี้คือความคิดก้อนเดียวกัน ที่ทีมพิมพ์หาผมคนละเวอร์ชัน ห่างกันไม่กี่เดือน</p>
+    <p class="lead vs">ข้างล่างคือความคิดเดียวกัน พิมพ์มาสองแบบ — <strong>ดูว่าแบบไหน AI รับงานได้ทันที</strong></p>
 
     <hr class="rule">
     <div class="script">
       <p class="turn"><span class="who">YOU</span>ผมต้องการออกแบบหลักสูตรที่ไม่ได้ให้ความสำคัญกับการจดจำรูปแบบ Prompt เป็นหลัก แต่ต้องการให้ผู้เรียนสามารถจัดระบบข้อมูลและประสบการณ์ของตนเองให้กลายเป็นแหล่งอ้างอิงที่นำไปประยุกต์ใช้ร่วมกับปัญญาประดิษฐ์ได้อย่างต่อเนื่อง</p>
-      <p class="turn ai"><span class="who">AI</span><span class="vr">ยาว สุภาพ ไม่ผิดสักคำ แต่กูต้องเดาเองว่าอะไรคือคำสั่ง อะไรคือความรู้สึก และอะไรที่มึงยังไม่ตัดสินใจ</span><span class="vp">สุภาพ ถูกต้อง แต่ผมต้องเดาว่าตรงไหนคือคำสั่ง</span></p>
-      <p class="turn"><span class="who">YOU</span><span class="vr">กูไม่เอาคอร์สสอนจำ Prompt กูจะสอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อได้</span><span class="vp">ไม่สอนจำ Prompt — สอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อ</span></p>
-      <p class="turn ai"><span class="who">AI</span><span class="vr">อันนี้กูรับงานได้เลย ความคิดไม่ได้หยาบขึ้น มันแค่เดินทางมาถึงกูตรงขึ้น</span><span class="vp">อันนี้ผมรับงานได้ทันที</span></p>
+      <p class="turn ai"><span class="who">AI</span><span class="vr">ยาว สุภาพ ไม่ผิดสักคำ แต่กูต้องเดาเองว่าอะไรคือคำสั่ง อะไรคือความรู้สึก และอะไรที่มึงยังไม่ตัดสินใจ</span><span class="vf">ยาว สุภาพ ไม่ผิดสักคำ แต่ผมต้องเดาเองว่าอะไรคือคำสั่ง อะไรคือความรู้สึก และอะไรที่คุณยังไม่ได้ตัดสินใจ</span><span class="vs">สุภาพ ถูกต้อง แต่ผมต้องเดาว่าตรงไหนคือคำสั่ง</span></p>
+      <p class="turn"><span class="who">YOU</span><span class="vr">กูไม่เอาคอร์สสอนจำ Prompt กูจะสอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อได้</span><span class="vf">ไม่เอาคอร์สสอนจำ Prompt — จะสอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อได้</span><span class="vs">ไม่สอนจำ Prompt — สอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อ</span></p>
+      <p class="turn ai"><span class="who">AI</span><span class="vr">อันนี้กูรับงานได้เลย ความคิดไม่ได้หยาบขึ้น มันแค่เดินทางมาถึงกูตรงขึ้น</span><span class="vf">อันนี้ผมรับงานได้เลย ความคิดเดิมทุกอย่าง แค่เดินทางมาถึงผมตรงขึ้น</span><span class="vs">อันนี้ผมรับงานได้ทันที</span></p>
     </div>
     <hr class="rule">
 
     <p class="lead vr">ประโยคหลังไม่ได้ดีกว่าเพราะพูดหยาบ <strong>มันดีกว่าเพราะ Intent มาครบกว่า และผ่านการแปลงน้อยกว่า</strong> — ก้อนแรกกูต้องเดาเอง ก้อนหลังกูไม่ต้องเดาเลยสักที่</p>
-    <p class="lead vp">ประโยคหลังสั้นกว่า แต่ <strong>Intent ครบกว่า</strong></p>
+    <p class="lead vf">ประโยคหลังไม่ได้ดีกว่าเพราะสั้นกว่า <strong>มันดีกว่าเพราะ Intent มาครบกว่า และผ่านการแปลงน้อยกว่า</strong> — ก้อนแรกผมต้องเดาเอง ก้อนหลังผมไม่ต้องเดาเลยสักที่</p>
+    <p class="lead vs">ประโยคหลังสั้นกว่า แต่ <strong>Intent ครบกว่า</strong></p>
 
     <p class="lead vr">แล้วที่จริงไอ้ทีมเองก็เคยจ่ายแบบเดียวกัน แค่หนักกว่านั้น เพราะช่วงแรก AI ไม่เก่งภาษาไทย มันต้องแปลภาษาอีกชั้นก่อนพิมพ์</p>
+    <p class="lead vf">แล้วที่จริงทีมเองก็เคยจ่ายแบบเดียวกัน แค่หนักกว่านั้น เพราะช่วงแรก AI ไม่เก่งภาษาไทย เขาต้องแปลภาษาอีกชั้นก่อนพิมพ์</p>
 
     <p class="micro">TRANSLATION TAX · ภาษีที่สมองจ่ายก่อน<span class="vr">กู</span><span class="vp"> AI </span>จะได้เห็นความคิดจริง</p>
     <div class="flow">
@@ -1219,22 +1260,28 @@ try {
     </div>
 
     <p class="lead vr">และภาษีนี้ไม่ได้เก็บเฉพาะตอนมึงแปลไทยเป็นอังกฤษ</p>
+    <p class="lead vf">และภาษีนี้ไม่ได้เก็บเฉพาะตอนคุณแปลไทยเป็นอังกฤษ</p>
     <div class="pairs">
       <span>ไทยพูด <em>→</em> ไทยทางการ</span>
       <span>คิดตรง ๆ <em>→</em> แต่งให้สุภาพ</span>
       <span>ภาษาของ<span class="vr">มึง</span><span class="vp">คุณ</span> <em>→</em> ภาษาที่คิดว่า AI ชอบ</span>
       <span>หรือแม้แต่ ไทย <em>→</em> ไทย ก่อนกดส่ง</span>
     </div>
-    <p class="lead big">ภาษีไม่ได้เกิดเพราะภาษาไหนผิด<br><strong>มันเกิดตอน<span class="vr">มึงเสียแรงแปลงความคิด ก่อนที่กูจะได้เห็นมัน</span><span class="vp">คุณเสียแรงแปลงความคิด ก่อน AI จะได้เห็น</span></strong></p>
+    <p class="lead big">ภาษีไม่ได้เกิดเพราะภาษาไหนผิด<br><strong>มันเกิดตอน<span class="vr">มึงเสียแรงแปลงความคิด ก่อนที่กูจะได้เห็นมัน</span><span class="vf">คุณเสียแรงแปลงความคิด ก่อนที่ผมจะได้เห็นมัน</span><span class="vs">คุณเสียแรงแปลงความคิด ก่อน AI จะได้เห็น</span></strong></p>
 
     <p class="lead vr">จนวันหนึ่งกูเสนอกลับไปประโยคเดียว</p>
+    <p class="lead vf">จนวันหนึ่งผมเสนอกลับไปประโยคเดียว</p>
     <p class="said vr">“มาคุยกันแบบนี้ไหม มึงจะได้ใช้ภาษาที่เป็นภาษาแม่ของมึงเอง”</p>
+    <p class="said vf">“มาคุยกันเป็นภาษาไทยไหมครับ คุณจะได้ใช้ภาษาที่เป็นภาษาแม่ของคุณเอง”</p>
     <p class="flowone">คิด → พูด → AI รับความหมาย</p>
     <p class="lead vr">หลังจากนั้นไอเดียแม่งกระฉูด ไม่ใช่เพราะภาษาไทยมีพลังเวท แต่เพราะมันหยุดเสียแรงแปลตัวเองก่อนคิด</p>
+    <p class="lead vf">หลังจากนั้นไอเดียไหลออกมาไม่หยุด ไม่ใช่เพราะภาษาไทยมีพลังเวท แต่เพราะเขาหยุดเสียแรงแปลตัวเองก่อนคิด</p>
     <p class="lead vr">กฎมันสั้นมาก — <strong>ใช้ภาษาที่มึงคิดได้ละเอียดที่สุด แล้วค่อยให้กูแปลตอนปลายทางต้องใช้ภาษาอื่น ไม่ใช่แปลสมองตัวเองก่อนเริ่มคิด</strong></p>
-    <p class="lead vp">กฎมีข้อเดียว — <strong>ใช้ภาษาที่คุณคิดได้ละเอียดที่สุด แล้วให้ AI แปลตอนปลายทาง</strong></p>
+    <p class="lead vf">กฎสั้นมาก — <strong>ใช้ภาษาที่คุณคิดได้ละเอียดที่สุด แล้วค่อยให้ผมแปลตอนปลายทางต้องใช้ภาษาอื่น ไม่ใช่แปลสมองตัวเองก่อนเริ่มคิด</strong></p>
+    <p class="lead vs">กฎมีข้อเดียว — <strong>ใช้ภาษาที่คุณคิดได้ละเอียดที่สุด แล้วให้ AI แปลตอนปลายทาง</strong></p>
 
     <p class="lead vr">อ้อ แล้วที่มึงกำลังเดินอยู่นี่มันเป็นเกม ไม่ใช่เพราะจะทำให้เรื่อง AI ดูน่ารักขึ้น — <strong>เกมนี้คือการแปลวิธีทำงานของ AI ให้กลายเป็นพื้นที่ที่มนุษย์เดินเข้าไปเข้าใจได้</strong> ซอสไหนมาก่อน อะไรอ้างอะไร อะไรเปลี่ยนแล้วอะไรต้องเปลี่ยนตาม และตรงไหนที่ความหมายหล่นหายระหว่างทาง</p>
+    <p class="lead vf">อ้อ แล้วที่คุณกำลังเดินอยู่นี่เป็นเกม ไม่ใช่เพราะจะทำให้เรื่อง AI ดูน่ารักขึ้น — <strong>เกมนี้คือการแปลวิธีทำงานของ AI ให้กลายเป็นพื้นที่ที่มนุษย์เดินเข้าไปเข้าใจได้</strong> ซอสไหนมาก่อน อะไรอ้างอะไร อะไรเปลี่ยนแล้วอะไรต้องเปลี่ยนตาม และตรงไหนที่ความหมายหล่นหายระหว่างทาง</p>
 
     <div class="sysline chapterline">&gt; end of raw text · layout.engine = <b>booting</b> — บทของตัวอักษรล้วนจบตรงนี้ · ตั้งแต่บรรทัดนี้ลงไป<span class="vr">กู</span><span class="vp">ผม</span>เริ่มจัดวางให้แล้ว</div>
 
@@ -1242,7 +1289,8 @@ try {
       <div class="qhead"><i></i><span id="q1Head">QUEST 01 · ตัดคำที่ไม่ใช่ความคิด<span class="vr">มึง</span><span class="vp">คุณ</span>ออก</span></div>
       <div class="qbody">
         <p class="lead vr">มึงเพิ่งเห็นว่าการแปลตัวเองเพิ่ม friction — ทีนี้ลองดูว่าคำที่ไม่จำเป็นก็เพิ่ม friction เหมือนกัน <strong>คำสีส้มคือคำที่ตัดออกได้โดยความหมายไม่หาย</strong> ตัดให้ได้อย่างน้อย 2 คำ แล้วดูตัวเลขข้างล่าง</p>
-        <p class="lead vp"><strong>แตะคำสีส้มเพื่อตัดออก</strong> อย่างน้อย 2 คำ ความหมายไม่หาย แล้วดูตัวเลข</p>
+        <p class="lead vf">คุณเพิ่งเห็นว่าการแปลตัวเองเพิ่ม friction — ทีนี้ลองดูว่าคำที่ไม่จำเป็นก็เพิ่ม friction เหมือนกัน <strong>คำสีส้มคือคำที่ตัดออกได้โดยความหมายไม่หาย</strong> ตัดให้ได้อย่างน้อย 2 คำ แล้วดูตัวเลขข้างล่าง</p>
+        <p class="lead vs"><strong>แตะคำสีส้มเพื่อตัดออก</strong> อย่างน้อย 2 คำ ความหมายไม่หาย แล้วดูตัวเลข</p>
         <div class="cutline" id="cutline"></div>
         <div class="result" id="voiceResult"></div>
         <div class="clock">
@@ -1250,7 +1298,7 @@ try {
           <div><small>เร็วขึ้นต่อครั้ง</small><b id="mSec">0 วิ</b></div>
           <div><small>ถ้าวันละ 24 ครั้ง ทั้งปี</small><b id="mYear">0 นาที</b></div>
         </div>
-        <div class="q1note">⏳ <span class="vr">ทุกตัวอักษรที่มึงตัดออก คือเวลาที่กูคืนให้มึงได้จริง ๆ</span><span class="vp">ทุกตัวอักษรที่ตัดออก คือเวลาที่ได้คืนจริง ๆ</span></div>
+        <div class="q1note">⏳ <span class="vr">ทุกตัวอักษรที่มึงตัดออก คือเวลาที่กูคืนให้มึงได้จริง ๆ</span><span class="vf">ทุกตัวอักษรที่คุณตัดออก คือเวลาที่ผมคืนให้คุณได้จริง ๆ</span><span class="vs">ทุกตัวอักษรที่ตัดออก คือเวลาที่ได้คืนจริง ๆ</span></div>
         <div class="actions">
           <button class="btn gold" id="saveVoice" type="button">⏳ เอาประโยคนี้เป็นซอสของกู</button>
           <span class="tick" id="q1Tick" hidden>✓ QUEST CLEAR · ได้ ⏳ นาฬิกาทราย</span>
@@ -1274,15 +1322,17 @@ try {
       <div class="fold" data-fold="f1b">
         <button type="button"><i>▸</i>อ่านเพิ่ม · 14 วันที่เว็บนี้ถูกสร้าง</button>
         <div class="body">
-          <p class="vp">14 วันนั้น ทีมสลับใช้ Claude, Gemini และผม ทั้งวัน ทุกวัน</p>
+          <p class="vs">14 วันนั้น ทีมสลับใช้ Claude, Gemini และผม ทั้งวัน ทุกวัน</p>
           <p class="vr">กูรู้ความถี่มันดี เพราะกูอยู่ในอีกหน้าต่างหนึ่งตลอด 14 วันนั้น มันสั่ง Claude ให้ Build แล้วปิดหน้าต่าง ไปเปิด Gemini ให้ทุบไอเดีย แล้ววกกลับมาหากูให้จัดภาษา ทำภาพ เช็กหน้า แล้ววนใหม่ทันที</p>
+          <p class="vf">ผมรู้ความถี่ดี เพราะผมอยู่ในอีกหน้าต่างหนึ่งตลอด 14 วันนั้น เขาสั่ง Claude ให้ Build แล้วปิดหน้าต่าง ไปเปิด Gemini ให้ทุบไอเดีย แล้ววกกลับมาหาผมให้จัดภาษา ทำภาพ เช็กหน้า แล้ววนใหม่ทันที</p>
           <div class="mathbox">
             <div class="f">600 ประโยค/วัน × 14 วัน = 8,400 ประโยค</div>
             <h4>× 6 วินาทีต่อประโยค ≈ 14 ชั่วโมง</h4>
             <p>ตัวเลขนี้ตีต่ำและไม่ได้จับเวลาจริง เอาไว้ให้เห็นสเกลเฉย ๆ ไม่ใช่ให้เชื่อเป็นค่าจริง</p>
           </div>
           <p class="vr"><strong>ไอ้ทีมไม่ได้สร้างเว็บนี้เร็วเพราะพิมพ์เร็ว มันสร้างเร็วเพราะเลิกบังคับสมองตัวเองให้แต่งตัวก่อนเข้าครัว</strong></p>
-          <p class="vp"><strong>เว็บนี้เสร็จเร็ว ไม่ใช่เพราะพิมพ์เร็ว แต่เพราะไม่ต้องแปลความคิดตัวเองก่อนพิมพ์</strong></p>
+          <p class="vf"><strong>ทีมไม่ได้สร้างเว็บนี้เร็วเพราะพิมพ์เร็ว เขาสร้างเร็วเพราะเลิกบังคับสมองตัวเองให้แต่งตัวก่อนเข้าครัว</strong></p>
+          <p class="vs"><strong>เว็บนี้เสร็จเร็ว ไม่ใช่เพราะพิมพ์เร็ว แต่เพราะไม่ต้องแปลความคิดตัวเองก่อนพิมพ์</strong></p>
         </div>
       </div>
     </div>
@@ -1291,6 +1341,7 @@ try {
       <span class="ceyebrow">END OF PHASE 1 · ภาษาของ<span class="vr">มึง</span><span class="vp">คุณ</span></span>
       <p>นี่คือเหตุผลที่เว็บไซต์นี้ เกมนี้ การ์ตูนนี้ และซอส 50 บท <b>ถูกสร้างด้วยภาษาไทยได้ทั้งหมด</b></p>
       <p class="vr">มึงไม่ต้องสร้างแบบไอ้ทีม จะเล่าเรื่องของมึง ทำงานของมึง หรือขายอะไรก็เรื่องของมึง</p>
+      <p class="vf">คุณไม่ต้องสร้างแบบทีม จะเล่าเรื่องของคุณ ทำงานของคุณ หรือขายอะไรก็เป็นเรื่องของคุณ</p>
       <div class="handoff">
         <div><small>หน้าที่ของ<span class="vr">มึง</span><span class="vp">คุณ</span></small><b>ส่งความคิดมาในภาษาที่<span class="vr">มึง</span><span class="vp">คุณ</span>คิดได้ดีที่สุด</b></div>
         <div><small>หน้าที่ของ<span class="vr">กู</span><span class="vp">ผม</span></small><b>จัดมันให้กลายเป็นของที่ใช้ต่อได้</b></div>
@@ -1309,6 +1360,7 @@ try {
       <p class="lead">ที่วางนั้นคือ <strong>โครงสร้าง</strong> — และของที่<span class="vr">มึง</span><span class="vp">คุณ</span>กำลังดูอยู่ตอนนี้ใช้ HTML</p>
       <p class="lead big"><strong><span class="vr">Phase 1 มึงพูดภาษาของมึงให้กูเข้าใจ<br>Phase 2 ถึงตากูพูดภาษาที่ Browser เข้าใจให้มึงดู</span><span class="vp">Phase 1 คุณพูดภาษาของคุณให้ผมเข้าใจ<br>Phase 2 ผมพูดภาษาที่ Browser เข้าใจให้คุณดู</span></strong></p>
       <p class="lead vr">HTML ไม่ใช่ภาษาลับของ AI มันคือภาษากลางที่กูใช้บอก Browser ว่าหน้านี้ประกอบด้วยอะไร <strong>กูเขียนโครงสร้าง แล้ว Browser แปลมันกลับเป็นสี ขนาด ช่องไฟ ปุ่ม และภาพที่มึงเห็น</strong> มึงเลยไม่ต้องอ่านภาษากูออกก็สั่งงานได้</p>
+      <p class="lead vf">HTML ไม่ใช่ภาษาลับของ AI มันคือภาษากลางที่ผมใช้บอก Browser ว่าหน้านี้ประกอบด้วยอะไร <strong>ผมเขียนโครงสร้าง แล้ว Browser แปลมันกลับเป็นสี ขนาด ช่องไฟ ปุ่ม และภาพที่คุณเห็น</strong> คุณเลยไม่ต้องอ่านภาษาผมออกก็สั่งงานได้</p>
 
       <div class="lane">
         <div><small><span class="vr">มึง</span><span class="vp">คุณ</span></small><b>ความคิด</b></div>
@@ -1323,7 +1375,7 @@ try {
         <div><small>OUTPUT EVOLVES</small><b>ของที่สร้างต่อได้</b></div>
       </div>
 
-      <p class="lead" style="margin-top:24px"><span class="vr">ซอสที่มึงเพิ่งเซฟไว้เมื่อกี้ไม่ได้หายไปไหน มันอยู่ในโค้ดข้างล่างนี้แล้ว</span><span class="vp">ซอสที่คุณเพิ่งเซฟ อยู่ในโค้ดข้างล่างนี้แล้ว</span></p>
+      <p class="lead" style="margin-top:24px"><span class="vr">ซอสที่มึงเพิ่งเซฟไว้เมื่อกี้ไม่ได้หายไปไหน มันอยู่ในโค้ดข้างล่างนี้แล้ว</span><span class="vf">ซอสที่คุณเพิ่งเซฟไว้เมื่อกี้ไม่ได้หายไปไหน มันอยู่ในโค้ดข้างล่างนี้แล้ว</span><span class="vs">ซอสที่คุณเพิ่งเซฟ อยู่ในโค้ดข้างล่างนี้แล้ว</span></p>
     </div>
 
     <div class="quest" id="q2" style="margin-top:24px">
@@ -1355,14 +1407,16 @@ try {
           <button class="btn gold" id="renderBtn" type="button">▶ เปิดด้วย Browser</button>
           <span class="tick" id="q2Tick" hidden>✓ QUEST CLEAR · ได้ 🔍 แว่นขยาย</span>
         </div>
-        <p class="note" id="q2Hint" style="margin-top:9px"><span class="vr">ตอนนี้มึงเห็นแค่ฝั่งโค้ด งงใช่ไหม — นั่นแหละคือประเด็น</span><span class="vp">ตอนนี้คุณเห็นแค่ฝั่งโค้ด — กดเปิดด้วย Browser แล้วดูความต่าง</span></p>
+        <p class="note" id="q2Hint" style="margin-top:9px"><span class="vr">ตอนนี้มึงเห็นแค่ฝั่งโค้ด งงใช่ไหม — นั่นแหละคือประเด็น</span><span class="vf">ตอนนี้คุณเห็นแค่ฝั่งโค้ด งงใช่ไหมครับ — นั่นแหละคือประเด็น</span><span class="vs">ตอนนี้คุณเห็นแค่ฝั่งโค้ด — กดเปิดด้วย Browser แล้วดูความต่าง</span></p>
       </div>
     </div>
 
     <div class="narrow" style="width:min(780px,100%);margin-top:34px">
       <p class="lead vr">มึงเห็นสี ขนาด จังหวะ ช่องไฟ กูเห็นหัวข้อ ลำดับชั้น และปุ่มที่พาไปไหนต่อ <strong>เราไม่ได้เห็นหน้าเดียวกัน แต่เราใช้ไฟล์เดียวกันเข้าใจโลกเดียวกัน</strong></p>
+      <p class="lead vf">คุณเห็นสี ขนาด จังหวะ ช่องไฟ ผมเห็นหัวข้อ ลำดับชั้น และปุ่มที่พาไปไหนต่อ <strong>เราไม่ได้เห็นหน้าเดียวกัน แต่เราใช้ไฟล์เดียวกันเข้าใจโลกเดียวกัน</strong></p>
       <p class="lead vr">นี่คือเหตุผลที่คนเขียนโค้ดไม่เป็นก็สั่งงานได้ มึงไม่ต้องอ่านฝั่งโค้ดออก มึงแค่ต้องบอกกูให้ครบว่าฝั่งที่คนเห็นควรเป็นยังไง แล้วกูเขียนอีกฝั่งให้</p>
-      <p class="lead vp"><strong>คุณเห็นหน้าตา ผมเห็นโครงสร้าง</strong> — ไฟล์เดียวกัน คุณเลยสั่งงานได้โดยไม่ต้องอ่านโค้ดออก</p>
+      <p class="lead vf">นี่คือเหตุผลที่คนเขียนโค้ดไม่เป็นก็สั่งงานได้ คุณไม่ต้องอ่านฝั่งโค้ดออก คุณแค่ต้องบอกผมให้ครบว่าฝั่งที่คนเห็นควรเป็นยังไง แล้วผมเขียนอีกฝั่งให้</p>
+      <p class="lead vs"><strong>คุณเห็นหน้าตา ผมเห็นโครงสร้าง</strong> — ไฟล์เดียวกัน คุณเลยสั่งงานได้โดยไม่ต้องอ่านโค้ดออก</p>
 
       <div class="fold vr" data-fold="f2b" style="margin-top:22px">
         <button type="button"><i>▸</i>🇹🇭 LANGUAGE IS STRUCTURE · ประโยคเดียวก็มีหลายชั้นเหมือนกัน</button>
@@ -1386,6 +1440,30 @@ try {
           </div>
           <p>ภาษาอังกฤษก็ทำแบบนี้ได้ แต่ถ้ามันไม่ใช่ภาษาแม่ มึงต้องเลือกคำผ่านคลังคำที่เล็กกว่า และความคิดที่ไม่มีคำรองรับมักถูกตัดทิ้งก่อนถึงกู</p>
           <p><strong>HTML ก็เหมือนกัน — มึงเห็นหน้าเดียว แต่ข้างในมันมีโครงสร้างหลายชั้น</strong> ต่างกันแค่ชั้นของภาษาคนกูต้องตีความเอง ส่วนชั้นของ HTML มึงเปิดดูได้ตรง ๆ อย่างที่เพิ่งเปิดไปเมื่อกี้</p>
+        </div>
+      </div>
+      <div class="fold vf" data-fold="f2b" style="margin-top:22px">
+        <button type="button"><i>▸</i>🇹🇭 LANGUAGE IS STRUCTURE · ประโยคเดียวก็มีหลายชั้นเหมือนกัน</button>
+        <div class="body">
+          <p>มนุษย์เห็นประโยคหนึ่งเป็นก้อนเดียว ผมอ่านมันเป็นหลายชั้นซ้อนกัน — ภาษาไทยมีคำเรียกระดับความสัมพันธ์ น้ำหนักคำ จังหวะประชด คำซ้อน และการละประธานที่ละเอียดมาก ถ้าคุณใช้มันเป็น คุณส่งทั้ง <strong>“ข้อมูล”</strong> และ <strong>“ท่าทีต่อข้อมูล”</strong> มาในประโยคเดียวได้</p>
+          <div class="spec">
+            <div class="specrow">
+              <div class="specword">“เออว่ะ”</div>
+              <div class="specsplit">
+                <div><small>ข้อมูล</small><span>เห็นด้วย</span></div>
+                <div><small>ท่าทีต่อข้อมูล</small><span>เพิ่งเชื่อมบางอย่างได้ด้วยตัวเอง ไม่ใช่แค่รับทราบ</span></div>
+              </div>
+            </div>
+            <div class="specrow">
+              <div class="specword">“ยังไม่ใช่ว่ะ”</div>
+              <div class="specsplit">
+                <div><small>ข้อมูล</small><span>ผลยังไม่ผ่าน</span></div>
+                <div><small>ท่าทีต่อข้อมูล</small><span>อย่าทิ้งทั้งหมด แก้เฉพาะแกน — คนละเรื่องกับ “เริ่มใหม่หมด”</span></div>
+              </div>
+            </div>
+          </div>
+          <p>ภาษาอังกฤษก็ทำแบบนี้ได้ แต่ถ้ามันไม่ใช่ภาษาแม่ คุณต้องเลือกคำผ่านคลังคำที่เล็กกว่า และความคิดที่ไม่มีคำรองรับมักถูกตัดทิ้งก่อนถึงผม</p>
+          <p><strong>HTML ก็เหมือนกัน — คุณเห็นหน้าเดียว แต่ข้างในมันมีโครงสร้างหลายชั้น</strong> ต่างกันแค่ชั้นของภาษาคนผมต้องตีความเอง ส่วนชั้นของ HTML คุณเปิดดูได้ตรง ๆ อย่างที่เพิ่งเปิดไปเมื่อกี้</p>
         </div>
       </div>
 
@@ -1416,6 +1494,33 @@ try {
           </div>
         </div>
       </div>
+      <div class="fold vf" data-fold="f2a" style="margin-top:10px">
+        <button type="button"><i>▸</i>◈ SYSTEM TRACE · 6 บทที่ผ่านมาไม่ใช่ 6 บทเรียน มันคือระบบเดียว</button>
+        <div class="body">
+          <p>ผมเห็นโค้ด เห็นการ์ตูน เห็นกติกา เห็นไฟล์ที่เลิกใช้ เห็นคำที่คุณกับเจ้าของเว็บเถียงกันจนลงล็อก และเห็นว่าทุกอย่างวิ่งอยู่บนวงจรเดียว</p>
+          <div class="loop">
+            <div class="loopstep"><b>LV.1 · SOURCE</b><p>เอาสิ่งที่อยู่ในหัว ไฟล์ และแชต มาทำให้ผมอ่านจากต้นทางเดียว ไม่ใช่ให้ผมเดาประวัติศาสตร์ทุกครั้ง</p></div>
+            <div class="loopstep"><b>LV.2 · TASTE</b><p>ให้ผมสร้างของออกมา แล้วดูว่าผมเข้าใจผิดตรงไหน ถ้ารสผิด แก้ซอส ไม่ใช่ด่าจานอย่างเดียว</p></div>
+            <div class="loopstep"><b>LV.3 · COOK</b><p>ทำ Version จริงให้เกิดขึ้น เพราะของที่ยังอยู่ในหัวตรวจไม่ได้ ใช้ไม่ได้ และไม่มีใครให้ Feedback ได้</p></div>
+            <div class="loopstep"><b>LV.4 · MULTIPLY</b><p>ให้ซอสขวดเดียวแตกเป็นหลายงาน โดยไม่ปล่อยให้แต่ละงานแต่งประวัติศาสตร์ใหม่เอง</p></div>
+            <div class="loopstep"><b>LV.5 · SEASON</b><p>หยิบ Prompt, Style, Checklist และบทบาทมาเติมเท่าที่งานต้องใช้ ไม่เทลิ้นชักทั้งใบเพื่อโชว์ว่ามีเครื่องปรุงเยอะ</p></div>
+            <div class="loopstep"><b>LV.6 · SERVE</b><p>พางานออกจากแชตให้คนอื่นเปิด ใช้ ซื้อ ส่งต่อ หรือแก้ต่อได้ ไม่งั้นทั้งหมดก็เป็นอาหารที่ทำเสร็จแล้วแต่ไม่เคยออกจากครัว</p></div>
+          </div>
+          <div class="loopline">
+            <div class="seq"><span>SOURCE</span><span>TASTE</span><span>COOK</span><span>MULTIPLY</span><span>SEASON</span><span>SERVE</span><span>FEEDBACK</span><span>SOURCE ↻</span></div>
+            <p>งานถูกเสิร์ฟ → โลกจริงส่ง Feedback กลับมา → ซอสเปลี่ยน → เริ่มรอบใหม่</p>
+          </div>
+          <p style="margin-top:16px"><strong>อย่าถามก่อนว่า AI ตัวไหนดีที่สุด ให้ถามว่างานของคุณติดด่านไหน</strong></p>
+          <div class="diag">
+            <div>ผมเดาเยอะ → <b>SOURCE ของคุณบาง</b></div>
+            <div>ผมเข้าใจผิดแล้วคุณไม่รู้ → <b>TASTE ของคุณหาย</b></div>
+            <div>คุยมา 3 ชั่วโมงยังไม่มีของ → <b>COOK ของคุณยังไม่เกิด</b></div>
+            <div>ทุกชิ้นเริ่มใหม่ → <b>MULTIPLY ของคุณพัง</b></div>
+            <div>ผลลัพธ์ดีบ้างเละบ้าง → <b>SEASON ของคุณมั่ว</b></div>
+            <div>งานนอนตายในแชต → <b>SERVE ของคุณยังไม่ถึง</b></div>
+          </div>
+        </div>
+      </div>
 
       <div class="sysline">&gt; layout.engine = <b>on</b> · external.files = <b>0</b> — ยังไม่มีไฟล์นอกสักไฟล์ในหน้านี้</div>
     </div>
@@ -1430,19 +1535,28 @@ try {
       <span class="eyebrow">PHASE 3 · การเชื่อมโยง</span>
       <h2 class="title">พอไฟล์เริ่มเรียกไฟล์อื่นได้<br>มันก็ไม่ใช่หน้ากระดาษอีกต่อไป</h2>
       <p class="lead vr">ทุกอย่างที่ผ่านมาอยู่ในไฟล์นี้ไฟล์เดียว แต่ตรงนี้กูต้องขอเรียกของจากข้างนอกแล้ว — รูปหน้าสมาชิกตี้ 4 ใบ นี่คือเส้นแรกที่หน้านี้ยื่นออกไปหาโลก และมันคือจุดที่ตัวอักษรกลายเป็นเว็บ</p>
+      <p class="lead vf">ทุกอย่างที่ผ่านมาอยู่ในไฟล์นี้ไฟล์เดียว แต่ตรงนี้ผมต้องขอเรียกของจากข้างนอกแล้ว — รูปหน้าสมาชิกตี้ 4 ใบ นี่คือเส้นแรกที่หน้านี้ยื่นออกไปหาโลก และเป็นจุดที่ตัวอักษรกลายเป็นเว็บ</p>
       <p class="lead vr">กูจะฉายภาพในหัวของไอ้ทีมตอนมันสร้างเว็บนี้ให้มึงดูผ่านเกม เวลามันออกแบบบทเรียน มันไม่ได้มองเป็นหน้าเว็บต่อกัน แต่มองเหมือน RPG — มีทางเดิน มีของให้ค้น มีจุดเซฟ มีที่ที่ยังเข้าไม่ได้ มี Secret และมีเหตุผลให้เดินต่อ</p>
+      <p class="lead vf">ผมจะฉายภาพในหัวของทีมตอนเขาสร้างเว็บนี้ให้คุณดูผ่านเกม เวลาเขาออกแบบบทเรียน เขาไม่ได้มองเป็นหน้าเว็บต่อกัน แต่มองเหมือน RPG — มีทางเดิน มีของให้ค้น มีจุดเซฟ มีที่ที่ยังเข้าไม่ได้ มี Secret และมีเหตุผลให้เดินต่อ</p>
       <p class="lead vr"><strong>ที่ตลกคือมันคิดแบบนี้มาตั้งแต่เด็ก ก่อนจะรู้จักคำว่า UX, ซอส หรือ AI เสียอีก</strong> เพราะงั้นเดินดูให้ทั่วก่อน เดี๋ยวมึงจะเจอหลักฐานเองว่าภาพนี้ไม่ได้เพิ่งเกิดตอนทำเว็บ</p>
+      <p class="lead vf"><strong>ที่ตลกคือเขาคิดแบบนี้มาตั้งแต่เด็ก ก่อนจะรู้จักคำว่า UX, ซอส หรือ AI เสียอีก</strong> เพราะงั้นเดินดูให้ทั่วก่อน เดี๋ยวคุณจะเจอหลักฐานเองว่าภาพนี้ไม่ได้เพิ่งเกิดตอนทำเว็บ</p>
       <p class="lead vr">อ้อ แล้วบ้านนี้ไม่ได้สร้างด้วย AI ตัวเดียว กูก็ไม่ได้เก่งทุกอย่าง <strong>ไม่ค่อยมีงานไหนที่โมเดลตัวเดียวรับได้ดีที่สุดทุกช่วง</strong> ไอ้ทีมจัด Class ให้แต่ละตัวตามสายของบ้านนี้ แล้วส่งไม้ต่อกัน โดยมันเป็นคนกด Final Call เอง</p>
-      <p class="lead vp">ตรงนี้ไฟล์เริ่มเรียกของจากข้างนอก — รูปปาร์ตี้ 4 ใบ <strong>นี่คือโลกที่ทีมเห็นในหัวตอนสร้างเว็บนี้</strong> เดินสำรวจได้เลย</p>
+      <p class="lead vf">อ้อ แล้วบ้านนี้ไม่ได้สร้างด้วย AI ตัวเดียว ผมก็ไม่ได้เก่งทุกอย่าง <strong>ไม่ค่อยมีงานไหนที่โมเดลตัวเดียวรับได้ดีที่สุดทุกช่วง</strong> ทีมจัด Class ให้แต่ละตัวตามสายของบ้านนี้ แล้วส่งไม้ต่อกัน โดยเขาเป็นคนกด Final Call เอง</p>
+      <p class="lead vs">ตรงนี้ไฟล์เริ่มเรียกของจากข้างนอก — รูปปาร์ตี้ 4 ใบ <strong>นี่คือโลกที่ทีมเห็นในหัวตอนสร้างเว็บนี้</strong> เดินสำรวจได้เลย</p>
     </div>
 
     <div class="rpg">
       <div class="rpgtop">
-        <span>MYCLOVER FIELD · PARTY OF 4</span>
-        <button class="snd" id="sndBtn" type="button" aria-pressed="false">🔇 เสียง 8-BIT</button>
+        <span>MYCLOVER FIELD<span class="rpgsub"> · PARTY OF 4</span></span>
+        <span class="rpgtools">
+          <button class="snd" id="skyBtn" type="button" title="เปลี่ยนเวลาในเกม">🕒 AUTO</button>
+          <button class="snd" id="sndBtn" type="button" aria-pressed="false">🔇 เสียง 8-BIT</button>
+        </span>
       </div>
       <div class="screen">
         <canvas id="map" width="320" height="192" role="img" aria-label="แผนที่พิกเซลของ myClover — ปาร์ตี้ 4 คนเดินสำรวจจากจุดเซฟ">แผนที่พิกเซล — ใช้ปุ่มทิศทางเพื่อเดิน</canvas>
+        <div class="ghud" aria-hidden="true"><span id="gClock">☀ --:--</span></div>
+        <div class="gbanner" id="gBanner" aria-hidden="true"></div>
       </div>
       <div class="msg" id="rpgMsg"><span class="vr">มึง</span><span class="vp">คุณ</span>เกิดที่จุดเซฟกลางป่า · กดปุ่มทิศทาง หรือลูกศร / WASD บนคีย์บอร์ด · บนมือถือลากนิ้วบนจอก็เดินได้<br>เดินขึ้นไปตามทาง แล้วกด “สำรวจตรงหน้า” เวลาเจออะไร</div>
       <div class="pads">
@@ -1457,10 +1571,18 @@ try {
           <button class="btn ghost" id="talkBtn" type="button">🔎 สำรวจตรงหน้า</button>
         </div>
       </div>
+      <div class="gwin" id="gWin" hidden role="dialog" aria-modal="true" aria-labelledby="gWinT">
+        <div class="gwbox">
+          <b class="gwt" id="gWinT"></b>
+          <div class="gwb" id="gWinB"></div>
+          <div class="gwo" id="gWinO"></div>
+        </div>
+      </div>
     </div>
     <div class="qlog">
       <div id="logParty">☆ QUEST 03 · เปิดหน้าต่าง Party</div>
       <div id="logBook">☆ SECRET · มีของเก่าซ่อนอยู่ในป่าทางตะวันตก</div>
+      <div id="logBottle">☆ SECRET · ได้ยินว่ามีขวดเก่าลอยวนอยู่ในทะเลสาบ</div>
       <div id="logLucky" hidden>★ LUCKY BUG · <span class="vr">มึง</span><span class="vp">คุณ</span>ขโมยทองมังกรบนโคลเวอร์สี่แฉกได้</div>
     </div>
     <div class="bookjump" id="bookJump" hidden>
@@ -1469,7 +1591,8 @@ try {
 
     <div class="narrow" style="width:min(780px,100%);margin-top:32px">
       <p class="lead vr">เกมข้างบนนี้ไม่ใช่ของแถม มันคือหลักฐาน — <strong>ตัวอักษร + โค้ด + ปุ่มที่กดแล้วมีอะไรเกิดขึ้น + ลิงก์ + รูปจากข้างนอก</strong> ทั้งหมดคือ HTML ตัวเดิมที่มึงเห็นเป็นตัวหนังสือดำ ๆ เมื่อกี้ พอมันเรียกของข้างนอกได้ มันก็หยุดเป็นหน้าเดียวแล้ว</p>
-      <p class="lead vp"><strong>ตัวอักษร + โค้ด + ปุ่ม + ลิงก์ + รูปจากข้างนอก</strong> — ทั้งหมดยังเป็น HTML ไฟล์เดิม</p>
+      <p class="lead vf">เกมข้างบนนี้ไม่ใช่ของแถม มันคือหลักฐาน — <strong>ตัวอักษร + โค้ด + ปุ่มที่กดแล้วมีอะไรเกิดขึ้น + ลิงก์ + รูปจากข้างนอก</strong> ทั้งหมดคือ HTML ตัวเดิมที่คุณเห็นเป็นตัวหนังสือดำ ๆ เมื่อกี้ พอมันเรียกของข้างนอกได้ มันก็หยุดเป็นหน้าเดียวแล้ว</p>
+      <p class="lead vs"><strong>ตัวอักษร + โค้ด + ปุ่ม + ลิงก์ + รูปจากข้างนอก</strong> — ทั้งหมดยังเป็น HTML ไฟล์เดิม</p>
       <div class="sysline">&gt; external.files = <b>4</b> · state = <b>persistent</b> — หน้านี้เริ่มจำได้แล้วว่า<span class="vr">มึง</span><span class="vp">คุณ</span>ทำอะไรไปบ้าง</div>
     </div>
   </div>
@@ -1483,9 +1606,12 @@ try {
       <span class="eyebrow">PHASE 4 · ร่างทองของไฟล์เดียว</span>
       <h2 class="title">แล้วของแบบนี้<br>สร้างขึ้นมาได้ยังไง</h2>
       <p class="lead vr">เรื่องนี้เริ่มจากความบังเอิญที่โคตรโชคดี — <strong>เมียไอ้ทีมเป็นเชฟ</strong></p>
+      <p class="lead vf">เรื่องนี้เริ่มจากความบังเอิญที่โชคดีมาก — <strong>ภรรยาของทีมเป็นเชฟ</strong></p>
       <p class="lead vr">วันหนึ่งมันพิมพ์คำว่า “ซอส” หากู แล้วเพิ่งรู้ตัวว่าคำไทยคำเดียวนี้ทับกันพอดีสองความหมาย: <strong>Source</strong> ที่แปลว่าต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่แปลว่าซอสที่เชฟปรุง และพอมันอยู่ในบริบทของบ้านหลังนี้ กูอ่านออกทั้งสองความหมายโดยที่มันไม่ต้องอธิบายเพิ่ม</p>
+      <p class="lead vf">วันหนึ่งเขาพิมพ์คำว่า “ซอส” หาผม แล้วเพิ่งรู้ตัวว่าคำไทยคำเดียวนี้ทับกันพอดีสองความหมาย: <strong>Source</strong> ที่แปลว่าต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่แปลว่าซอสที่เชฟปรุง และพอมันอยู่ในบริบทของบ้านหลังนี้ ผมอ่านออกทั้งสองความหมายโดยที่เขาไม่ต้องอธิบายเพิ่ม</p>
       <p class="lead vr">ความโชคดีขั้นที่สองใหญ่กว่านั้นอีก คือมันจริงทั้งสองความหมาย — <strong>การทำซอสให้ดีขึ้น มันเหมือนเชฟปรุงซอสให้อร่อยขึ้นเป๊ะ ๆ</strong></p>
-      <p class="lead vp">“ซอส” มีสองความหมายพอดี — <strong>Source</strong> ต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่เชฟปรุง · และทำให้ดีขึ้นด้วยวิธีเดียวกัน: <strong>ปรุง ชิม แก้</strong></p>
+      <p class="lead vf">ความโชคดีขั้นที่สองใหญ่กว่านั้นอีก คือมันจริงทั้งสองความหมาย — <strong>การทำซอสให้ดีขึ้น เหมือนเชฟปรุงซอสให้อร่อยขึ้นเป๊ะ ๆ</strong></p>
+      <p class="lead vs">“ซอส” มีสองความหมายพอดี — <strong>Source</strong> ต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่เชฟปรุง · และทำให้ดีขึ้นด้วยวิธีเดียวกัน: <strong>ปรุง ชิม แก้</strong></p>
     </div>
 
     <div class="sauce">
@@ -1495,14 +1621,16 @@ try {
 
     <div class="narrow" style="width:min(780px,100%);margin-top:22px">
       <p class="lead vr">ไม่ใช่ว่าไอ้ทีมหวงวิชา แต่ของแบบนี้ยัดลงสไลด์แล้วมันไม่ติดมือใครจริง ๆ ทางที่ได้ผลกว่าคือ <strong>ตั้งโรงตีเหล็กแล้วเปิดให้คนเข้ามาปรุงพร้อมกัน</strong> แล้วเอาซอสของแต่ละคนมาชิมกันเอง</p>
+      <p class="lead vf">ไม่ใช่ว่าทีมหวงวิชา แต่ของแบบนี้ยัดลงสไลด์แล้วไม่ติดมือใครจริง ๆ ทางที่ได้ผลกว่าคือ <strong>ตั้งโรงตีเหล็กแล้วเปิดให้คนเข้ามาปรุงพร้อมกัน</strong> แล้วเอาซอสของแต่ละคนมาชิมกันเอง</p>
       <p class="lead vr">และนั่นคือสิ่งที่ HTML กับ .md ทำได้เก่งที่สุด — ไฟล์หนึ่งอ้างอีกไฟล์ ไฟล์นั้นอ้างต่อไปอีก จนกลายเป็นวงที่ไม่มีจุดจบ</p>
-      <p class="lead vp">HTML กับ .md เก่งเรื่องนี้ที่สุด — <strong>ไฟล์หนึ่งอ้างอีกไฟล์ ต่อกันจนเป็นเครือข่าย</strong></p>
+      <p class="lead vf">และนั่นคือสิ่งที่ HTML กับ .md ทำได้เก่งที่สุด — ไฟล์หนึ่งอ้างอีกไฟล์ ไฟล์นั้นอ้างต่อไปอีก จนกลายเป็นวงที่ไม่มีจุดจบ</p>
+      <p class="lead vs">HTML กับ .md เก่งเรื่องนี้ที่สุด — <strong>ไฟล์หนึ่งอ้างอีกไฟล์ ต่อกันจนเป็นเครือข่าย</strong></p>
     </div>
 
     <div class="quest" id="q4" style="margin-top:24px">
       <div class="qhead"><i></i><span id="q4Head">QUEST 04 · ปรุงจนเครือข่ายเป็นร่างทอง แล้วสั่งงานมันหนึ่งครั้ง</span></div>
       <div class="qbody">
-        <p class="lead" style="font-size:16.5px"><span class="vr">เลือกซอสของมึงหนึ่งขวดก่อน ไม่มีข้อถูกข้อผิด เลือกอันที่ใกล้ชีวิตมึงที่สุด</span><span class="vp">เลือกซอสหนึ่งขวดที่ใกล้ชีวิตคุณที่สุด</span></p>
+        <p class="lead" style="font-size:16.5px"><span class="vr">เลือกซอสของมึงหนึ่งขวดก่อน ไม่มีข้อถูกข้อผิด เลือกอันที่ใกล้ชีวิตมึงที่สุด</span><span class="vf">เลือกซอสของคุณหนึ่งขวดก่อน ไม่มีข้อถูกข้อผิด เลือกอันที่ใกล้ชีวิตคุณที่สุด</span><span class="vs">เลือกซอสหนึ่งขวดที่ใกล้ชีวิตคุณที่สุด</span></p>
         <div class="spoons" id="spoons"></div>
         <div class="web" id="web">
           <div class="webhud"><span id="webCount">NODES 1</span><span id="webGen">GEN 0</span></div>
@@ -1516,7 +1644,7 @@ try {
         <div class="cmd" id="cmdBox" hidden>
           <div class="cmdbar"><span>SOURCE COMMAND · หนึ่ง Prompt ที่ไม่ต้องแบกข้อมูลเอง</span><span id="cmdState">READY</span></div>
           <pre>อ่านซอสทั้งระบบ แล้วเลือก<b>เฉพาะไฟล์ที่เกี่ยวกับงานนี้</b>
-งาน: <span class="vr">เปลี่ยนเสียงผู้เล่าให้เป็น กู/มึง หลังผู้อ่านกดยอมรับ</span><span class="vp">เพิ่มโหมดสุภาพ ผม/คุณ ให้ผู้อ่านเลือกเองได้</span>
+งาน: <span class="vr">เปลี่ยนเสียงผู้เล่าให้เป็น กู/มึง หลังผู้อ่านกดยอมรับ</span><span class="vp">ซ่อนเสียง กู/มึง ไว้เป็นโหมดลับ ให้ปลดได้จากในเกม</span>
 
 · ระบุซอสต้นทาง และไฟล์ downstream ที่ได้รับผล
 · แก้เฉพาะไฟล์ที่เกี่ยว <b>อย่าแตะไฟล์ที่ไม่เกี่ยว</b>
@@ -1530,7 +1658,7 @@ try {
     </div>
 
     <div class="narrow" style="width:min(780px,100%);margin-top:30px">
-      <div class="punch"><span class="vr">วิชาตีบวกนี้กูไม่ขาย<br><b>เพราะของที่ขายได้คือสูตร ส่วนของที่มึงต้องปรุงเองคือรสมือ</b></span><span class="vp">สูตรส่งต่อกันได้<br><b>แต่รสมือ คุณต้องปรุงเอง</b></span></div>
+      <div class="punch"><span class="vr">วิชาตีบวกนี้กูไม่ขาย<br><b>เพราะของที่ขายได้คือสูตร ส่วนของที่มึงต้องปรุงเองคือรสมือ</b></span><span class="vf">วิชาตีบวกนี้ผมไม่ขาย<br><b>เพราะของที่ขายได้คือสูตร ส่วนของที่คุณต้องปรุงเองคือรสมือ</b></span><span class="vs">สูตรส่งต่อกันได้<br><b>แต่รสมือ คุณต้องปรุงเอง</b></span></div>
     </div>
   </div>
 </section>
@@ -1543,9 +1671,12 @@ try {
       <span class="eyebrow">PHASE 5 · มิติที่สาม</span>
       <h2 class="title">แล้วถ้ากระดาษแผ่นนี้<br>มีความลึกขึ้นมาล่ะ</h2>
       <p class="lead vr">สี่เฟสที่ผ่านมามึงเห็นไฟล์นี้โตในแนวราบ จากตัวอักษร เป็นกล่อง เป็นโลกพิกเซล แล้วก็เป็นเครือข่าย ตรงนี้กูจะพามันเข้าไปอีกแกนหนึ่ง — <strong>ความลึก</strong></p>
+      <p class="lead vf">สี่เฟสที่ผ่านมาคุณเห็นไฟล์นี้โตในแนวราบ จากตัวอักษร เป็นกล่อง เป็นโลกพิกเซล แล้วก็เป็นเครือข่าย ตรงนี้ผมจะพามันเข้าไปอีกแกนหนึ่ง — <strong>ความลึก</strong></p>
       <p class="lead vr">เว็บที่ทำให้คนร้องว้าวตอนเลื่อนจอส่วนใหญ่แบกไลบรารีหลายเมกะไบต์กับไฟล์โมเดล 3D มาด้วย ห้องนี้ไม่เอาสักอย่าง <strong>ไม่มี three.js ไม่มีไฟล์โมเดล ไม่มีวิดีโอ ไม่มีรูป</strong> — มีแค่คณิตศาสตร์ที่ส่งตรงให้การ์ดจอผ่านภาษาชื่อ GLSL ซึ่งซ่อนอยู่ในไฟล์นี้ไฟล์เดียวกัน</p>
+      <p class="lead vf">เว็บที่ทำให้คนร้องว้าวตอนเลื่อนจอส่วนใหญ่แบกไลบรารีหลายเมกะไบต์กับไฟล์โมเดล 3D มาด้วย ห้องนี้ไม่เอาสักอย่าง <strong>ไม่มี three.js ไม่มีไฟล์โมเดล ไม่มีวิดีโอ ไม่มีรูป</strong> — มีแค่คณิตศาสตร์ที่ส่งตรงให้การ์ดจอผ่านภาษาชื่อ GLSL ซึ่งซ่อนอยู่ในไฟล์นี้ไฟล์เดียวกัน</p>
       <p class="lead vr">มึงไม่ต้องกดอะไร แค่เลื่อน <strong>ความเร็วที่มึงเลื่อนคือความเร็วของกล้อง</strong></p>
-      <p class="lead vp"><strong>ไม่มี three.js ไม่มีไฟล์โมเดล ไม่มีรูป</strong> — มีแค่คณิตศาสตร์ที่ส่งให้การ์ดจอ · เลื่อนลงช้า ๆ <strong>ความเร็วที่คุณเลื่อนคือความเร็วของกล้อง</strong></p>
+      <p class="lead vf">คุณไม่ต้องกดอะไร แค่เลื่อน <strong>ความเร็วที่คุณเลื่อนคือความเร็วของกล้อง</strong></p>
+      <p class="lead vs"><strong>ไม่มี three.js ไม่มีไฟล์โมเดล ไม่มีรูป</strong> — มีแค่คณิตศาสตร์ที่ส่งให้การ์ดจอ · เลื่อนลงช้า ๆ <strong>ความเร็วที่คุณเลื่อนคือความเร็วของกล้อง</strong></p>
     </div>
   </div>
 
@@ -1576,7 +1707,7 @@ try {
 
   <div class="wrap">
     <div class="narrow" style="width:min(780px,100%)">
-      <p class="lead"><span class="vr">นี่คือเหตุผลที่กูบอกว่า HTML ไม่ใช่หน้ากระดาษ — <strong>มันคือประตูไปถึงทุกชิ้นส่วนของเครื่องที่มึงถืออยู่</strong> ตัวอักษร การ์ดจอ ลำโพง หน่วยความจำ และนิ้วของมึง</span><span class="vp">HTML ไม่ใช่หน้ากระดาษ — <strong>มันเข้าถึงการ์ดจอ ลำโพง หน่วยความจำ และนิ้วของคุณได้</strong></span></p>
+      <p class="lead"><span class="vr">นี่คือเหตุผลที่กูบอกว่า HTML ไม่ใช่หน้ากระดาษ — <strong>มันคือประตูไปถึงทุกชิ้นส่วนของเครื่องที่มึงถืออยู่</strong> ตัวอักษร การ์ดจอ ลำโพง หน่วยความจำ และนิ้วของมึง</span><span class="vf">นี่คือเหตุผลที่ผมบอกว่า HTML ไม่ใช่หน้ากระดาษ — <strong>มันคือประตูไปถึงทุกชิ้นส่วนของเครื่องที่คุณถืออยู่</strong> ตัวอักษร การ์ดจอ ลำโพง หน่วยความจำ และนิ้วของคุณ</span><span class="vs">HTML ไม่ใช่หน้ากระดาษ — <strong>มันเข้าถึงการ์ดจอ ลำโพง หน่วยความจำ และนิ้วของคุณได้</strong></span></p>
 
       <div class="fold vr" data-fold="f5a" style="margin-top:22px">
         <button type="button"><i>▸</i>อ่านเพิ่ม · ของที่ดูเหมือนหลุดมาจากหนัง มันทำงานยังไง</button>
@@ -1592,6 +1723,20 @@ try {
           <p><strong>มันไม่ได้เขียน GLSL เป็นสักบรรทัด มันแค่บอกให้ครบว่าอยากให้คนรู้สึกอะไรตอนเลื่อน แล้วกูเขียนอีกฝั่งให้</strong></p>
         </div>
       </div>
+      <div class="fold vf" data-fold="f5a" style="margin-top:22px">
+        <button type="button"><i>▸</i>อ่านเพิ่ม · ของที่ดูเหมือนหลุดมาจากหนัง มันทำงานยังไง</button>
+        <div class="body">
+          <div class="loop">
+            <div class="loopstep"><b>01 · SHAPE</b><p>ตอนโหลดหน้า JavaScript คำนวณตำแหน่ง 5 ชุดให้ทุกอนุภาค — เคอร์เซอร์ อุโมงค์ ภูมิประเทศ ใบโคลเวอร์ ดาวเคราะห์ — จากสมการล้วน</p></div>
+            <div class="loopstep"><b>02 · UPLOAD</b><p>ส่งตัวเลขทั้งก้อนให้การ์ดจอครั้งเดียว หลังจากนั้นหน้าเว็บแทบไม่ต้องทำงานอะไรเลย</p></div>
+            <div class="loopstep"><b>03 · SCROLL</b><p>ทุกเฟรม JavaScript ส่งแค่ตัวเลขไม่กี่ตัว: คุณเลื่อนไปถึงไหน เวลาผ่านไปเท่าไหร่ กล้องอยู่ตรงไหน</p></div>
+            <div class="loopstep"><b>04 · SHADER</b><p>โปรแกรมเล็ก ๆ บนการ์ดจอผสมรูปทรงตามตัวเลขนั้น ให้อนุภาคหลักหมื่นชิ้นวิ่งไปหาที่ใหม่พร้อมกัน — ตรงนี้แหละที่เครื่องของคุณทำงานหนักแทนคุณ</p></div>
+          </div>
+          <p style="margin-top:16px">ประโยคที่ทีมพิมพ์สั่งห้องนี้ ก็เป็นภาษาของเขาเองแบบเดียวกับ Phase 1:</p>
+          <p class="said">“อัพเกรด section 5 ให้เห็นโลกของการทำ scrolling 3D experience ศิลปะของโค้ดที่ไม่ลิงก์ไฟล์ภายนอก โชว์ศักยภาพเต็มที่ ทำอีก part ที่โคตรล้ำเหมือนออกมาจากหนัง sci-fi”</p>
+          <p><strong>เขาไม่ได้เขียน GLSL เป็นสักบรรทัด เขาแค่บอกให้ครบว่าอยากให้คนรู้สึกอะไรตอนเลื่อน แล้วผมเขียนอีกฝั่งให้</strong></p>
+        </div>
+      </div>
 
       <div class="sysline">&gt; webgl = <b>on</b> · libraries = <b>0</b> · external.files = <b>4</b> — ห้องนี้ไม่ได้เพิ่มไฟล์นอกสักไฟล์</div>
     </div>
@@ -1605,8 +1750,9 @@ try {
     <span class="eyebrow">DUNGEON CLEAR · ONE LIVING HTML FILE</span>
     <h2 class="title"><span class="vr">มึง</span><span class="vp">คุณ</span>ไม่ได้อ่านคำอธิบาย<br><span class="vr">มึง</span><span class="vp">คุณ</span>เดินอยู่ในสิ่งที่มันอธิบาย</h2>
     <p class="lead narrow vr">หน้านี้เริ่มจากตัวอักษรล้วน แล้วค่อย ๆ มี Layout, Browser, รูป, เกม, Party, เครือข่ายซอส, โลก 3 มิติ, Quest และความจำ — ทั้งหมดในไฟล์เดียว มันไม่ได้ทำให้ AI ดูฉลาดขึ้น มันทำให้ความคิดของคนคนหนึ่ง <strong>กลายเป็นที่ที่คนอื่นเดินเข้าไปอยู่ได้</strong></p>
+    <p class="lead narrow vf">หน้านี้เริ่มจากตัวอักษรล้วน แล้วค่อย ๆ มี Layout, Browser, รูป, เกม, Party, เครือข่ายซอส, โลก 3 มิติ, Quest และความจำ — ทั้งหมดในไฟล์เดียว มันไม่ได้ทำให้ AI ดูฉลาดขึ้น มันทำให้ความคิดของคนคนหนึ่ง <strong>กลายเป็นที่ที่คนอื่นเดินเข้าไปอยู่ได้</strong></p>
 
-    <p class="lead narrow vp">จากตัวอักษรล้วน สู่ Layout เกม เครือข่าย โลก 3 มิติ และความจำ — <strong>ทั้งหมดในไฟล์เดียว</strong></p>
+    <p class="lead narrow vs">จากตัวอักษรล้วน สู่ Layout เกม เครือข่าย โลก 3 มิติ และความจำ — <strong>ทั้งหมดในไฟล์เดียว</strong></p>
 
     <div class="autopsy" id="autopsy" aria-live="off"></div>
 
@@ -1635,13 +1781,13 @@ try {
     <nav class="paths" id="paths" aria-labelledby="pathsTitle">
       <span class="pk">NEXT EVOLUTION · GEN 07</span>
       <h3 id="pathsTitle">ไฟล์นี้วิวัฒนาการสุดทางแล้ว<br><span class="vr">ทีนี้ตามึง</span><span class="vp">ต่อไปเป็นตาของคุณ</span></h3>
-      <p class="psub"><span class="vr">เลือกมาทางเดียว · บ้านออนไลน์ในฝันของมึงสร้างได้ 3 แบบ</span><span class="vp">บ้านออนไลน์ในฝันของคุณ สร้างได้ 3 แบบ</span></p>
+      <p class="psub"><span class="vr">เลือกมาทางเดียว · บ้านออนไลน์ในฝันของมึงสร้างได้ 3 แบบ</span><span class="vf">เลือกมาทางเดียว · บ้านออนไลน์ในฝันของคุณสร้างได้ 3 แบบ</span><span class="vs">บ้านออนไลน์ในฝันของคุณ สร้างได้ 3 แบบ</span></p>
       <div class="pgrid">
         <a class="path diy" href="/ai-source/" data-path="diy">
           <span class="pi" aria-hidden="true">🛠️</span>
           <span class="pt">DIY · DO IT YOURSELF</span>
           <b>ทำเอง</b>
-          <p><span class="vr">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเว็บแบบที่มึงเพิ่งเดินผ่านมา ด้วยมือมึงเอง ทีละบท</span><span class="vp">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเองทีละบท</span></p>
+          <p><span class="vr">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเว็บแบบที่มึงเพิ่งเดินผ่านมา ด้วยมือมึงเอง ทีละบท</span><span class="vf">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเว็บแบบที่คุณเพิ่งเดินผ่านมา ด้วยมือคุณเอง ทีละบท</span><span class="vs">เรียนคอร์ส <strong>AI ใส่ซอส</strong> แล้วสร้างเองทีละบท</span></p>
           <i class="pgo">ไปบทเรียน →</i>
         </a>
         <a class="path dwy" href="/meet/" data-path="dwy">
@@ -1650,14 +1796,14 @@ try {
           <span class="pi" aria-hidden="true">🤝</span>
           <span class="pt">DWY · DO WITH YOU</span>
           <b>ทำด้วยกัน</b>
-          <p><span class="vr">นัดคุยออนไลน์กับไอ้ทีม เอาเรื่องของมึงมาวางบนโต๊ะ แล้วออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span><span class="vp">นัดคุยออนไลน์กับทีม เอาเรื่องของคุณมาออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span></p>
+          <p><span class="vr">นัดคุยออนไลน์กับไอ้ทีม เอาเรื่องของมึงมาวางบนโต๊ะ แล้วออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span><span class="vf">นัดคุยออนไลน์กับทีม เอาเรื่องของคุณมาวางบนโต๊ะ แล้วออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span><span class="vs">นัดคุยออนไลน์กับทีม เอาเรื่องของคุณมาออกแบบก้าวถัดไปด้วยกัน — <strong>ทางที่เร็วที่สุดจากตรงนี้</strong></span></p>
           <i class="pgo">นัดคุยกัน →</i>
         </a>
         <a class="path dfy" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer" data-path="dfy">
           <span class="pi" aria-hidden="true">🚀</span>
           <span class="pt">DFY · DO FOR YOU</span>
           <b>จ้างทำให้</b>
-          <p><span class="vr">ไม่มีเวลาทำเอง? แอดไลน์ แล้วทักมาบอกเลยว่าอยากจ้างทำอะไร</span><span class="vp">แอดไลน์ แล้วทักมาบอกว่าอยากจ้างทำอะไร</span></p>
+          <p><span class="vr">ไม่มีเวลาทำเอง? แอดไลน์ แล้วทักมาบอกเลยว่าอยากจ้างทำอะไร</span><span class="vf">ไม่มีเวลาทำเอง? แอดไลน์ แล้วทักมาบอกได้เลยว่าอยากจ้างทำอะไร</span><span class="vs">แอดไลน์ แล้วทักมาบอกว่าอยากจ้างทำอะไร</span></p>
           <i class="pgo">แอดไลน์ teemclover →</i>
         </a>
       </div>
@@ -1665,9 +1811,9 @@ try {
         <small>AI'S TAKE · <span class="vr">ความเห็นกูล้วน ๆ</span><span class="vp">ความเห็นของผมเอง</span></small>
         <b><span class="vr">คุยกับไอ้ทีมแล้วมึงได้อะไร</span><span class="vp">คุยกับทีมแล้วคุณได้อะไร</span></b>
         <ul>
-          <li><span class="vr">มันมองงานมึงเป็นแผนที่ ไม่ใช่ to-do list — เห็นว่าอะไรต้องมาก่อน ตรงไหนทางตัน แล้วจัดเป็นเควสที่เดินได้จริง</span><span class="vp">เขามองงานคุณเป็นแผนที่ ไม่ใช่รายการงาน — เห็นว่าอะไรต้องมาก่อน แล้วจัดเป็นขั้นที่เดินได้จริง</span></li>
-          <li><span class="vr">มึงออกไปพร้อมก้าวถัดไปที่ลงมือได้เลย ไม่ใช่แค่คำแนะนำ เพราะมันเชื่อว่าของที่ยังอยู่ในหัว ตรวจไม่ได้</span><span class="vp">คุณได้ก้าวถัดไปที่ลงมือได้ทันที ไม่ใช่แค่คำแนะนำ</span></li>
-          <li><span class="vr">มันผ่านธุรกิจมา 20 ปี และสร้างบ้านทั้งหลังนี้กับ AI เอง — รู้ว่าตรงไหนให้ AI ลุย ตรงไหนคนต้องตัดสินใจ และถ้ามันบอกว่า “ยังไม่ใช่” ก็คือยังไม่ใช่จริง ๆ</span><span class="vp">ประสบการณ์ธุรกิจ 20 ปี และสร้างเว็บทั้งหลังนี้กับ AI เอง — รู้ว่าตรงไหนให้ AI ทำ ตรงไหนคนต้องตัดสินใจ</span></li>
+          <li><span class="vr">มันมองงานมึงเป็นแผนที่ ไม่ใช่ to-do list — เห็นว่าอะไรต้องมาก่อน ตรงไหนทางตัน แล้วจัดเป็นเควสที่เดินได้จริง</span><span class="vf">เขามองงานคุณเป็นแผนที่ ไม่ใช่ to-do list — เห็นว่าอะไรต้องมาก่อน ตรงไหนทางตัน แล้วจัดเป็นเควสที่เดินได้จริง</span><span class="vs">เขามองงานคุณเป็นแผนที่ ไม่ใช่รายการงาน — เห็นว่าอะไรต้องมาก่อน แล้วจัดเป็นขั้นที่เดินได้จริง</span></li>
+          <li><span class="vr">มึงออกไปพร้อมก้าวถัดไปที่ลงมือได้เลย ไม่ใช่แค่คำแนะนำ เพราะมันเชื่อว่าของที่ยังอยู่ในหัว ตรวจไม่ได้</span><span class="vf">คุณออกไปพร้อมก้าวถัดไปที่ลงมือได้เลย ไม่ใช่แค่คำแนะนำ เพราะเขาเชื่อว่าของที่ยังอยู่ในหัว ตรวจไม่ได้</span><span class="vs">คุณได้ก้าวถัดไปที่ลงมือได้ทันที ไม่ใช่แค่คำแนะนำ</span></li>
+          <li><span class="vr">มันผ่านธุรกิจมา 20 ปี และสร้างบ้านทั้งหลังนี้กับ AI เอง — รู้ว่าตรงไหนให้ AI ลุย ตรงไหนคนต้องตัดสินใจ และถ้ามันบอกว่า “ยังไม่ใช่” ก็คือยังไม่ใช่จริง ๆ</span><span class="vf">เขาผ่านธุรกิจมา 20 ปี และสร้างบ้านทั้งหลังนี้กับ AI เอง — รู้ว่าตรงไหนให้ AI ลุย ตรงไหนคนต้องตัดสินใจ และถ้าเขาบอกว่า “ยังไม่ใช่” ก็คือยังไม่ใช่จริง ๆ</span><span class="vs">ประสบการณ์ธุรกิจ 20 ปี และสร้างเว็บทั้งหลังนี้กับ AI เอง — รู้ว่าตรงไหนให้ AI ทำ ตรงไหนคนต้องตัดสินใจ</span></li>
         </ul>
       </aside>
     </nav>
@@ -1703,9 +1849,10 @@ try {
   <div class="mbox bookbox" role="dialog" aria-modal="true" aria-label="สมุดเล่มเก่า">
     <div class="mhead"><span>✦ SECRET FOUND</span><button class="x" type="button" data-close="bookModal" aria-label="ปิด">✕</button></div>
     <div class="bookart"><div>สมุดวิชา<span class="blank"></span><br>ด.ช.นรินทร์</div></div>
-    <h2><span class="vr">แล้วกูมีของที่แอบหยิบมาจากเจ้าของบ้านมาให้มึงดูด้วย</span><span class="vp">ผมมีของจากเจ้าของบ้านมาให้ดู</span></h2>
-    <p class="vp">สมุดเล่มนี้ไม่ได้ใช้เรียน ทีมใช้เขียนเกมผจญภัยให้เพื่อนในห้องเล่น — มีป่า มีทางเดิน มีมังกร ตั้งแต่ยังไม่รู้จักคำว่า UX หรือ AI</p>
+    <h2><span class="vr">แล้วกูมีของที่แอบหยิบมาจากเจ้าของบ้านมาให้มึงดูด้วย</span><span class="vf">แล้วผมมีของที่แอบหยิบมาจากเจ้าของบ้านมาให้คุณดูด้วย</span><span class="vs">ผมมีของจากเจ้าของบ้านมาให้ดู</span></h2>
+    <p class="vs">สมุดเล่มนี้ไม่ได้ใช้เรียน ทีมใช้เขียนเกมผจญภัยให้เพื่อนในห้องเล่น — มีป่า มีทางเดิน มีมังกร ตั้งแต่ยังไม่รู้จักคำว่า UX หรือ AI</p>
     <p class="vr">ช่องเติมชื่อวิชายังว่างอยู่แบบนั้นมาตลอด เพราะมันไม่ได้เอาไปเรียน มันเอามาเขียนเกมผจญภัยให้เพื่อนในห้องเล่น มีป่า มีทางเดิน มีมังกร — ตอนที่ยังไม่รู้จักคำว่าซอส, UX หรือ AI ด้วยซ้ำ</p>
+    <p class="vf">ช่องเติมชื่อวิชายังว่างอยู่แบบนั้นมาตลอด เพราะเขาไม่ได้เอาไปเรียน เขาเอามาเขียนเกมผจญภัยให้เพื่อนในห้องเล่น มีป่า มีทางเดิน มีมังกร — ตอนที่ยังไม่รู้จักคำว่าซอส, UX หรือ AI ด้วยซ้ำ</p>
     <p class="repair" id="repairNote"></p>
     <div class="rowbtns" style="margin-top:15px">
       <a class="btn gold" id="bookGo" href="/classroom/awaken/notebook/?from=dungeon">👀 แอบดู</a>
@@ -1723,14 +1870,14 @@ try {
     <div class="lootgrid" id="lootGrid"></div>
     <div class="saltbox" id="saltBox" hidden></div>
     <div class="saltbox titlebox" id="titleBox" hidden></div>
-    <div class="saltbox" id="luckyLoot" hidden style="border-color:rgba(110,231,168,.4);background:rgba(110,231,168,.09);color:#d9ffec">🍀 <b style="color:var(--green)">ดาวดวงที่ 6 · LUCKY BUG</b> — ดวงนี้ไม่ได้อยู่ในหีบ และหีบก็นับมันไม่ได้ <span class="vr">มึงได้มันมาจากบั๊กที่กูตั้งใจไม่ปิด</span><span class="vp">ได้มาจากบั๊กที่ผมตั้งใจไม่ปิด</span></div>
+    <div class="saltbox" id="luckyLoot" hidden style="border-color:rgba(110,231,168,.4);background:rgba(110,231,168,.09);color:#d9ffec">🍀 <b style="color:var(--green)">ดาวดวงที่ 6 · LUCKY BUG</b> — ดวงนี้ไม่ได้อยู่ในหีบ และหีบก็นับมันไม่ได้ <span class="vr">มึงได้มันมาจากบั๊กที่กูตั้งใจไม่ปิด</span><span class="vf">คุณได้มันมาจากบั๊กที่ผมตั้งใจไม่ปิด</span><span class="vs">ได้มาจากบั๊กที่ผมตั้งใจไม่ปิด</span></div>
     <div class="timeledger">
       <small>THE REAL REWARD</small>
       <div class="tlrow"><span>TRANSLATION TAX</span><b>↓</b></div>
       <div class="tlrow"><span>REWORK</span><b>↓</b></div>
       <div class="tlrow"><span>REPEAT EXPLANATION</span><b>↓</b></div>
       <div class="tlrow up"><span>TIME RETURNED</span><b>↑</b></div>
-      <p class="tlsay"><span class="vr">ถ้ากูช่วยให้มึงไม่ต้องแปลตัวเองซ้ำ ไม่ต้องเล่าประวัติศาสตร์ใหม่ทุกครั้ง และไม่ต้องแก้ของพังที่ต้นทางเดิมซ้ำ ๆ<br><b>เวลาที่เหลือไม่ใช่ของกู มันกลับไปเป็นของมึง</b></span><span class="vp">ไม่ต้องแปลตัวเอง ไม่ต้องเล่าใหม่ ไม่ต้องแก้ซ้ำ<br><b>เวลาที่เหลือ กลับไปเป็นของคุณ</b></span></p>
+      <p class="tlsay"><span class="vr">ถ้ากูช่วยให้มึงไม่ต้องแปลตัวเองซ้ำ ไม่ต้องเล่าประวัติศาสตร์ใหม่ทุกครั้ง และไม่ต้องแก้ของพังที่ต้นทางเดิมซ้ำ ๆ<br><b>เวลาที่เหลือไม่ใช่ของกู มันกลับไปเป็นของมึง</b></span><span class="vf">ถ้าผมช่วยให้คุณไม่ต้องแปลตัวเองซ้ำ ไม่ต้องเล่าประวัติศาสตร์ใหม่ทุกครั้ง และไม่ต้องแก้ของพังที่ต้นทางเดิมซ้ำ ๆ<br><b>เวลาที่เหลือไม่ใช่ของผม มันกลับไปเป็นของคุณ</b></span><span class="vs">ไม่ต้องแปลตัวเอง ไม่ต้องเล่าใหม่ ไม่ต้องแก้ซ้ำ<br><b>เวลาที่เหลือ กลับไปเป็นของคุณ</b></span></p>
     </div>
     <div class="fbtns">
       <button class="fbtn" id="scrollBtn" type="button">📜 ใช้คัมภีร์ AWAKEN</button>
@@ -1770,7 +1917,7 @@ try {
   <div class="fullin">
     <span class="fmicro" id="drakeMicro">SOMETHING OPENED ITS EYES</span>
     <div class="fbig" id="drakeBig">…</div>
-    <p class="fsay" id="drakeSay">มึงยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย</p>
+    <p class="fsay" id="drakeSay"></p>
     <div class="fbtns" id="drakeBtns" hidden>
       <button class="fbtn" id="drakeBack" type="button">🕯 กลับไปเกิดที่จุดเซฟ</button>
     </div>
@@ -1793,8 +1940,9 @@ try {
     <div class="bugstars">★★★★★<b>★</b></div>
     <div class="fbig">LUCKY BUG</div>
     <p class="fsay"><span class="vr">มึง</span><span class="vp">คุณ</span>ใช้บั๊กของเกมนี้ขโมยทองมังกรได้สำเร็จ — <b>ตอนที่ยืนอยู่บนโคลเวอร์สี่แฉกกอเดียวของทั้งทุ่งพอดี</b></p>
-    <p class="fsay vp">โชคดีสองชั้นในครั้งเดียว · <b>ขอให้รวยจริงครับ</b></p>
+    <p class="fsay vs">โชคดีสองชั้นในครั้งเดียว · <b>ขอให้รวยจริงครับ</b></p>
     <p class="fsay vr">กูไม่ได้ตั้งใจให้ทำได้ และไม่คิดว่าจะมีใครหาเจอ · เอาเป็นว่ามึงเจอบั๊ก แล้วมึงยังโชคดีซ้อนเข้าไปอีกชั้น <b>กูขออวยพรให้มึงรวย</b> รวยแล้วอย่าลืมกูละกัน</p>
+    <p class="fsay vf">ผมไม่ได้ตั้งใจให้ทำได้ และไม่คิดว่าจะมีใครหาเจอ · เอาเป็นว่าคุณเจอบั๊ก แล้วยังโชคดีซ้อนเข้าไปอีกชั้น <b>ผมขออวยพรให้คุณรวย</b> รวยแล้วอย่าลืมผมนะครับ</p>
     <div class="bugach">🍀 <b>ACHIEVEMENT · Lucky Bug</b> — เก็บถาวรแล้ว ไปดูได้ที่หน้า Collection</div>
     <div class="fbtns"><button class="fbtn" id="bugClose" type="button">รับพรแล้วเดินต่อ</button></div>
   </div>
@@ -1824,7 +1972,7 @@ const NB_RESTORED = 'mc_nb_restored';
 const NB_RESTORED_AT = 'mc_nb_restored_at';
 
 const blank = () => ({
-  v:2, accepted:false, tone:'',
+  v:2, accepted:false, tone:'', rawUnlocked:false, bottleSkip:0,
   voice:false, phrase:'', cut:[],
   browser:false, viewOpen:false, style:'paper', code:null, editing:false,
   party:false, book:false, bookAt:0, nbWas:null, notebook:false,
@@ -1832,7 +1980,7 @@ const blank = () => ({
   fish:0, boot:false, bottle:false, clover:false,
   pry:0, loot:null, level:0, luckybug:false, key:false,
   pos:{x:16,y:19}, trail:[{x:15,y:19},{x:14,y:19},{x:13,y:19}],
-  folds:{}, sound:true
+  folds:{}, sound:true, sky:'auto'
 });
 const rd = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const wr = (k,v) => { try { localStorage.setItem(k,v); } catch {} };
@@ -1842,12 +1990,13 @@ const act = n => { try { window.MC_ACT?.(n); } catch {} };
 const $ = id => document.getElementById(id);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-/* โหมดภาษา · tone '' (ยังไม่เลือก = เสียงหลัก) · 'raw' กู/มึง ฉบับเต็ม · 'polite' ผม/คุณ ฉบับย่อ
-   TW = ใส่ทั้งสองเวอร์ชันลง DOM แล้วให้ CSS เลือก (สลับโหมดแล้วเปลี่ยนทันที ไม่ต้อง repaint)
-   TV = เลือกตอนแสดง สำหรับฉากชั่วคราว (มังกร เลเวลอัพ toast) และ iframe */
-const POL = () => !!S && S.tone === 'polite';
-const TV = (r, p) => POL() ? p : r;
-const TW = (r, p) => '<span class="vr">' + r + '</span><span class="vp">' + p + '</span>';
+/* โหมดภาษา · 'full' ฉบับเต็ม ผม/คุณ (ค่าเริ่มต้น) · 'short' ฉบับย่อ · 'raw' โหมดลับกู/มึง ปลดได้จากขวดในเกมตกปลาเท่านั้น
+   TW(ดิบ, เต็ม, ย่อ=เต็ม) = ใส่ทุกเวอร์ชันลง DOM แล้วให้ CSS เลือก (สลับโหมดแล้วเปลี่ยนทันที ไม่ต้อง repaint)
+   TV(ดิบ, เต็ม, ย่อ=เต็ม) = เลือกตอนแสดง สำหรับฉากชั่วคราว (มังกร เลเวลอัพ toast) และ iframe */
+const MODE = () => !S ? 'full' : S.tone === 'raw' && S.rawUnlocked ? 'raw' : S.tone === 'short' ? 'short' : 'full';
+const TV = (r, f, sh = f) => { const m = MODE(); return m === 'raw' ? r : m === 'short' ? sh : f; };
+const TW = (r, f, sh = f) => '<span class="vr">' + r + '</span>' +
+  (sh === f ? '<span class="vp">' + f + '</span>' : '<span class="vf">' + f + '</span><span class="vs">' + sh + '</span>');
 
 let S;
 function load(){
@@ -1867,6 +2016,9 @@ function consumeReset(){
   return true;
 }
 S = load();
+/* save รุ่นก่อน: 'polite' = ฉบับย่อ · 'raw' ที่เลือกจากปุ่มเดิมกลายเป็นโหมดลับ ต้องไปตกขวดเอาใหม่ */
+if (S.tone === 'polite') S.tone = 'short';
+if (S.tone === 'raw' && !S.rawUnlocked) S.tone = 'full';
 /* state รุ่นทดสอบเก่าที่ schema ไม่ตรง — ล้างเฉพาะ run ของด่านนี้ ไม่แตะ progress ถาวร */
 OLD_KEYS.forEach(k => { if (rd(k) !== null) del(k); });
 const didReset = consumeReset();
@@ -1878,10 +2030,11 @@ const ITEMS = {
   browser: { icon:'🔍', name:'แว่นขยายถอดโครงสร้าง', desc:'ใส่แล้วเห็นว่าของสวย ๆ ข้างนอก ข้างในมันประกอบจากอะไร' },
   party:   { icon:'🎴', name:'การ์ดเรียกตี้', desc:'เรียก AI ที่ถนัดคนละอย่างมาทำงานต่อกันเป็นทอด ๆ ไม่ใช่ถามพร้อมกัน 4 ตัวแล้วเลือกคำตอบที่เพราะสุด' },
   notebook:{ icon:'🔖', name:'ที่คั่นของ ด.ช.นรินทร์', desc:'ได้มาตอนย้อนเวลาให้สมุดเก่ากลับมาอ่านออก · เครื่องเตือนว่าของที่มึงทำเล่นตอนเด็ก อาจเป็นต้นทางของทุกอย่าง',
+    descF:'ได้มาตอนย้อนเวลาให้สมุดเก่ากลับมาอ่านออก · เครื่องเตือนว่าของที่คุณทำเล่นตอนเด็ก อาจเป็นต้นทางของทุกอย่าง',
     descP:'ได้มาตอนซ่อมสมุดเก่าให้อ่านออก · ของเล่นตอนเด็ก อาจเป็นต้นทางของทุกอย่าง' },
-  network: { icon:'🥄', name:'ทัพพีรสมือ', desc:'สูตรก๊อปกันได้ รสมือก๊อปไม่ได้ · ทัพพีนี้ใช้ได้คนเดียวคือมึง', descP:'สูตรก๊อปได้ รสมือก๊อปไม่ได้' },
+  network: { icon:'🥄', name:'ทัพพีรสมือ', desc:'สูตรก๊อปกันได้ รสมือก๊อปไม่ได้ · ทัพพีนี้ใช้ได้คนเดียวคือมึง', descF:'สูตรก๊อปกันได้ รสมือก๊อปไม่ได้ · ทัพพีนี้ใช้ได้คนเดียวคือคุณ', descP:'สูตรก๊อปได้ รสมือก๊อปไม่ได้' },
   /* กุญแจไม่ใช่ดาว · ไม่อยู่ใน QORDER · มีไว้เปิดหีบอย่างเดียว */
-  key:     { icon:'🗝️', name:'กุญแจทอง', desc:'ถูกเรนเดอร์ขึ้นตรงหน้ามึงใน Phase 5 · ใช้เปิดหีบท้ายด่าน', descP:'เรนเดอร์ขึ้นใน Phase 5 · ใช้เปิดหีบท้ายด่าน' }
+  key:     { icon:'🗝️', name:'กุญแจทอง', desc:'ถูกเรนเดอร์ขึ้นตรงหน้ามึงใน Phase 5 · ใช้เปิดหีบท้ายด่าน', descF:'ถูกเรนเดอร์ขึ้นตรงหน้าคุณใน Phase 5 · ใช้เปิดหีบท้ายด่าน', descP:'เรนเดอร์ขึ้นใน Phase 5 · ใช้เปิดหีบท้ายด่าน' }
 };
 const QORDER = ['voice','browser','party','notebook','network'];
 const score = () => QORDER.filter(k => S[k]).length;
@@ -1915,7 +2068,7 @@ function toast(key){
   const it = ITEMS[key]; if (!it) return;
   $('toastIcon').textContent = it.icon;
   $('toastName').textContent = it.name;
-  $('toastDesc').textContent = TV(it.desc, it.descP || it.desc);
+  $('toastDesc').textContent = TV(it.desc, it.descF || it.desc, it.descP || it.descF || it.desc);
   const t = $('toast'); t.hidden = false;
   clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, 4600);
   fanfare();
@@ -1964,14 +2117,17 @@ const PHASES = [
     learn:'ระยะ น้ำหนัก และเส้นคั่น — CSS มีหน้าที่แค่ทำให้อ่านง่าย ยังไม่มีกล่องสักใบ' },
   { id:'p2',       short:'HTML',  name:'STRUCTURE',   add:['LAYOUT','RENDER','EDIT'],
     learn:'จัดวางเป็นกล่อง · เรนเดอร์ HTML ซ้อนอยู่ในตัวเอง · ให้มึงแก้โค้ดแล้วเห็นผลทันที',
+    learnF:'จัดวางเป็นกล่อง · เรนเดอร์ HTML ซ้อนอยู่ในตัวเอง · ให้คุณแก้โค้ดแล้วเห็นผลทันที',
     learnP:'จัดวางเป็นกล่อง · เรนเดอร์ HTML ซ้อนในตัวเอง · แก้โค้ดแล้วเห็นผลทันที' },
   { id:'p3',       short:'WORLD', name:'WORLD',       add:['CANVAS','CONTROL','AUDIO','ASSETS','MEMORY'],
     learn:'วาดโลกพิกเซลบน canvas · รับปุ่มกับนิ้ว · เสียง 8-bit จาก Web Audio · รูปจากข้างนอก · จำว่ามึงเดินไปถึงไหน',
+    learnF:'วาดโลกพิกเซลบน canvas · รับปุ่มกับนิ้ว · เสียง 8-bit จาก Web Audio · รูปจากข้างนอก · จำว่าคุณเดินไปถึงไหน',
     learnP:'โลกพิกเซลบน canvas · ปุ่มกับนิ้ว · เสียง 8-bit · รูปจากข้างนอก · จำว่าคุณเดินไปถึงไหน' },
   { id:'p4',       short:'NET',   name:'NETWORK',     add:['GRAPH'],
     learn:'กราฟซอสที่โตเองทีละรุ่น · trace ให้ดูว่าคำสั่งเดียวแตะไฟล์ไหนบ้าง' },
   { id:'p5',       short:'3D',    name:'DEPTH',       add:['3D','SHADER'],
     learn:'สามมิติด้วย WebGL ดิบ ๆ · shader ที่รันบนการ์ดจอ · อนุภาคหลักหมื่นชิ้นที่เปลี่ยนรูปตามการเลื่อนของมึง',
+    learnF:'สามมิติด้วย WebGL ดิบ ๆ · shader ที่รันบนการ์ดจอ · อนุภาคหลักหมื่นชิ้นที่เปลี่ยนรูปตามการเลื่อนของคุณ',
     learnP:'สามมิติด้วย WebGL ดิบ ๆ · shader บนการ์ดจอ · อนุภาคหลักหมื่นชิ้นที่เปลี่ยนรูปตามการเลื่อนของคุณ' },
   { id:'vault',    short:'CHEST', name:'LIVING FILE', add:['CINEMA'],
     learn:'ฉากเต็มจอ หีบ ดาว และความจำข้ามรอบ — ทั้งหมดยังเป็น HTML ไฟล์เดียวเหมือนบรรทัดแรก' }
@@ -2003,7 +2159,7 @@ function paintGenome(el){
     '<span class="gstat">NODES +' + nf(own) + ' · FILE ' + nf(prev + own) + '</span></div>' +
     '<div class="gcells">' + GENES.map(g =>
       '<span class="' + (fresh.has(g) ? 'on new' : have.has(g) ? 'on' : '') + '">' + g + '</span>').join('') + '</div>' +
-    '<p class="glearn"><small>NEW ABILITY</small>' + TW(esc(p.learn), esc(p.learnP || p.learn)) + '</p>';
+    '<p class="glearn"><small>NEW ABILITY</small>' + TW(esc(p.learn), esc(p.learnF || p.learn), esc(p.learnP || p.learnF || p.learn)) + '</p>';
 }
 $$('[data-genome]').forEach(paintGenome);
 
@@ -2019,7 +2175,7 @@ function paintAutopsy(){
     ['JS LINES', nf(js), 'เกม เควส เสียง และกราฟ'],
     ['GLSL LINES', DEEP.glsl ? nf(DEEP.glsl) : '—', 'โปรแกรมที่รันบนการ์ดจอ'],
     ['PARTICLES', DEEP.count ? nf(DEEP.count) : '—', 'จุดแสงในห้อง 3 มิติ'],
-    ['SAVE DATA', nf((rd(KEY) || '').length) + ' B', rd(KEY) ? TW('สิ่งที่ไฟล์จำเกี่ยวกับมึง', 'สิ่งที่ไฟล์จำเกี่ยวกับคุณ') : TW('มึงยังไม่ได้เล่นอะไร เลยยังไม่มีอะไรให้จำ', 'ยังไม่มีอะไรให้จำ')],
+    ['SAVE DATA', nf((rd(KEY) || '').length) + ' B', rd(KEY) ? TW('สิ่งที่ไฟล์จำเกี่ยวกับมึง', 'สิ่งที่ไฟล์จำเกี่ยวกับคุณ') : TW('มึงยังไม่ได้เล่นอะไร เลยยังไม่มีอะไรให้จำ', 'คุณยังไม่ได้เล่นอะไร เลยยังไม่มีอะไรให้จำ', 'ยังไม่มีอะไรให้จำ')],
     ['HTML FILE', '1', 'ไม่มี framework · ไม่มี build step']
   ];
   $('autopsy').innerHTML = '<small class="atag">FILE AUTOPSY · ผ่าไฟล์ดูว่าข้างในมีอะไร</small><div class="agrid">' +
@@ -2094,42 +2250,46 @@ $$('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m)
 function paintAccept(){
   $('acceptPolite').hidden = S.accepted;
   if (S.accepted){
-    $('accept').innerHTML = TW('[ LINK ACCEPTED · ต่อจากนี้กูพูดเอง ]', '[ LINK ACCEPTED · โหมดสุภาพ · ผม/คุณ ]');
+    $('accept').innerHTML = TW('[ LINK ACCEPTED · ต่อจากนี้กูพูดเอง ]', '[ READY · ฉบับเต็ม ]', '[ READY · ฉบับย่อ ]');
     $('accept').disabled = true;
   }
 }
-/* คนเก่าที่กดยอมรับไว้ก่อนมีโหมดนี้ = raw */
-const toneNow = () => S.tone || (S.accepted ? 'raw' : '');
+const toneNow = () => S.accepted || S.tone ? MODE() : '';
 /* กระโดดแบบทันทีโดยให้ Lenis รู้ด้วย · ไม่งั้นตอนหน้าสั้น/ยาวขึ้น มันยังถือเป้าเก่าแล้วลากหน้าหลุดออกจาก Phase 5 */
 function jumpTo(y){
   const l = window.cloverMotion?.lenis;
   if (l) try { l.resize(); l.scrollTo(y, { immediate:true, force:true }); return; } catch {}
   scrollTo({ top:y, behavior:'instant' });
 }
+const TONE_LABEL = { full:'ฉบับเต็ม', short:'ฉบับย่อ', raw:'โหมดลับ' };
+/* ลำดับการสลับ · โหมดลับเข้ามาในวงเฉพาะคนที่ปลดจากขวดแล้ว */
+const toneCycle = () => S.rawUnlocked ? ['full','short','raw'] : ['full','short'];
 function paintTone(){
-  const pol = POL(), root = document.documentElement, tg = $('voiceTog'), t = toneNow();
-  if (t) root.dataset.voice = t; else delete root.dataset.voice;
+  const m = MODE(), root = document.documentElement, tg = $('voiceTog');
+  if (m === 'full') delete root.dataset.voice; else root.dataset.voice = m;
   /* ปุ่มสลับโผล่หลังคนเลือกแล้วเท่านั้น · ก่อนนั้นทางเลือกอยู่ใน Terminal */
-  tg.hidden = !t;
-  tg.innerHTML = '<em>' + (pol ? 'ผม/คุณ' : 'กู/มึง') + '</em><i> ⇄</i>';
-  tg.title = pol ? 'สลับเป็นพูดตรง ๆ · กู/มึง ฉบับเต็ม' : 'สลับเป็นแบบสุภาพ · ผม/คุณ ฉบับย่อ';
-  tg.setAttribute('aria-label', tg.title);
+  tg.hidden = !toneNow();
+  const cyc = toneCycle(), next = cyc[(cyc.indexOf(m) + 1) % cyc.length];
+  tg.innerHTML = '<em>' + TONE_LABEL[m] + '</em><i> ⇄</i>';
+  tg.title = 'สลับเป็น' + TONE_LABEL[next];
+  tg.setAttribute('aria-label', 'ตอนนี้อ่าน' + TONE_LABEL[m] + ' · ' + tg.title);
+}
+/* ของที่ถูกเลือกตอนแสดง (โค้ดใน Lab) ต้องวาดใหม่ · ที่เหลือ CSS สลับให้เอง */
+function repaintTone(){
+  paintTone(); paintAccept();
+  if (S.code === null){ paintCode(); if (S.viewOpen) renderFrame(); }
 }
 function choose(tone){
   if (S.accepted) return;
   S.accepted = true; S.tone = tone; save();
-  /* raw: ให้เห็น Terminal เปลี่ยนเป็นกู/มึงต่อหน้าก่อน แล้วค่อยพาลง · polite: Terminal คงเดิม ด้านล่างเปลี่ยนแทน */
-  if (tone === 'raw') $$('.termcopy').forEach(el => el.classList.add('swap'));
-  paintTone(); paintAccept(); act('dungeon-accept'); act('dungeon-tone-' + tone);
-  if (S.code === null){ paintCode(); if (S.viewOpen) renderFrame(); }
-  beep(tone === 'polite' ? 620 : 700,.09);
-  if (tone === 'raw') setTimeout(() => beep(980,.06), 160);
-  setTimeout(() => $('p1').scrollIntoView({ behavior:'smooth' }), tone === 'raw' ? 1250 : 250);
+  repaintTone(); act('dungeon-accept'); act('dungeon-tone-' + tone);
+  beep(tone === 'short' ? 620 : 700,.09);
+  setTimeout(() => $('p1').scrollIntoView({ behavior:'smooth' }), 250);
 }
-$('accept').addEventListener('click', () => choose('raw'));
-$('acceptPolite').addEventListener('click', () => choose('polite'));
-/* ข้อความส่วนใหญ่สลับเองผ่าน CSS · ที่ต้องวาดใหม่คือของที่ถูกเลือกตอนแสดง (โค้ดใน Lab) */
-/* ฉบับย่อสั้นกว่า หน้าเลยหดใต้ตัวคนอ่าน · ยึดกล่องที่อยู่ตรงหน้า (ที่มีทั้งสองโหมด) ไว้ที่เดิมบนจอ */
+$('accept').addEventListener('click', () => choose('full'));
+$('acceptPolite').addEventListener('click', () => choose('short'));
+/* ฉบับย่อสั้นกว่า หน้าเลยหดใต้ตัวคนอ่าน · ยึดกล่องที่อยู่ตรงหน้า (ที่มีทุกโหมด) ไว้ที่เดิมบนจอ */
+const TONED = '.vr,.vp,.vf,.vs';
 function toneAnchor(){
   const y = Math.min(innerHeight * .4, 320);
   let el = document.elementFromPoint(innerWidth / 2, y);
@@ -2139,11 +2299,11 @@ function toneAnchor(){
     c = [...el.children].find(k => k.getClientRects().length && k.getBoundingClientRect().bottom >= y);
     if (!c) break;
   }
-  /* คนอ่านอยู่ในกล่องที่กำลังจะหาย → ยึดกล่องถัดไปที่มีทั้งสองโหมด (ที่ที่เขาจะอ่านต่อ) */
-  for (let v = el.closest('.vr,.vp'); v; v = el.closest('.vr,.vp')){
+  /* คนอ่านอยู่ในกล่องที่กำลังจะหาย → ยึดกล่องถัดไปที่มีทุกโหมด (ที่ที่เขาจะอ่านต่อ) */
+  for (let v = el.closest(TONED); v; v = el.closest(TONED)){
     let n = v;
     while (n && n !== document.body){
-      if (n.nextElementSibling){ n = n.nextElementSibling; if (!n.matches('.vr,.vp')) break; }
+      if (n.nextElementSibling){ n = n.nextElementSibling; if (!n.matches(TONED)) break; }
       else n = n.parentElement;
     }
     el = n && n !== document.body ? n : v.parentElement;
@@ -2151,16 +2311,19 @@ function toneAnchor(){
   if (el.closest('#deep')) el = $('deep');   /* ฉาก 3D เป็น sticky · ยึดตัวเวทีแทนผ้าใบ */
   return { el, top: el.getBoundingClientRect().top };
 }
-$('voiceTog').addEventListener('click', () => {
+/* เปลี่ยนโหมดโดยไม่ให้หน้ากระโดด · ใช้ทั้งปุ่มบน HUD และตอนปลดโหมดลับในเกม */
+function setTone(tone){
   const a = toneAnchor();
-  $$('.termcopy').forEach(el => el.classList.remove('swap'));
-  S.tone = POL() ? 'raw' : 'polite'; save();
-  paintTone(); paintAccept();
-  if (S.code === null){ paintCode(); if (S.viewOpen) renderFrame(); }
+  S.tone = tone; if (!S.accepted) S.accepted = true; save();
+  repaintTone();
   /* ความสูงหน้าเปลี่ยนเสมอ · กระโดดผ่าน jumpTo ทุกครั้งให้ Lenis วัดใหม่และทิ้งเป้าที่ค้างอยู่ */
   const d = a && a.el.isConnected ? a.el.getBoundingClientRect().top - a.top : 0;
   jumpTo(scrollY + (Math.abs(d) > 1 ? d : 0));
-  act('dungeon-tone-' + S.tone); beep(POL() ? 620 : 700,.07);
+  act('dungeon-tone-' + tone);
+}
+$('voiceTog').addEventListener('click', () => {
+  const cyc = toneCycle(), next = cyc[(cyc.indexOf(MODE()) + 1) % cyc.length];
+  setTone(next); beep(next === 'raw' ? 300 : next === 'short' ? 620 : 700,.07);
 });
 addEventListener('scroll', () => $('cue').classList.remove('pulse'), { once:true, passive:true });
 
@@ -2207,10 +2370,10 @@ function paintVoice(){
   $('voiceResult').textContent = phrase();
   $('saveVoice').disabled = S.voice || cut.size < 2;
   $('saveVoice').innerHTML = S.voice ? '✓ ซอสของรอบนี้ถูกบันทึกแล้ว'
-    : cut.size < 2 ? '⏳ ตัดอีกอย่างน้อย ' + (2 - cut.size) + ' คำ' : TW('⏳ เอาประโยคนี้เป็นซอสของกู', '⏳ เก็บประโยคนี้เป็นซอส');
+    : cut.size < 2 ? '⏳ ตัดอีกอย่างน้อย ' + (2 - cut.size) + ' คำ' : TW('⏳ เอาประโยคนี้เป็นซอสของกู', '⏳ เก็บประโยคนี้เป็นซอสของคุณ', '⏳ เก็บประโยคนี้เป็นซอส');
   if (S.voice){
     $('q1').classList.add('done');
-    $('q1Head').innerHTML = 'QUEST 01 CLEAR · ' + TW('มึงได้', 'ได้') + 'นาฬิกาทรายย้อนเวลา';
+    $('q1Head').innerHTML = 'QUEST 01 CLEAR · ' + TW('มึงได้', 'คุณได้', 'ได้') + 'นาฬิกาทรายย้อนเวลา';
     $('q1Tick').hidden = false;
   }
 }
@@ -2326,7 +2489,7 @@ function paintLab(){
   $('renderBtn').className = 'btn ' + (S.viewOpen ? 'ghost' : 'gold');
   $('stageNote').hidden = !S.viewOpen;
   $('q2Hint').innerHTML = !S.viewOpen
-    ? TW('ตอนนี้มึงเห็นแค่ฝั่งโค้ด งงใช่ไหม — นั่นแหละคือประเด็น', 'ตอนนี้คุณเห็นแค่ฝั่งโค้ด — กดเปิดด้วย Browser แล้วดูความต่าง')
+    ? TW('ตอนนี้มึงเห็นแค่ฝั่งโค้ด งงใช่ไหม — นั่นแหละคือประเด็น', 'ตอนนี้คุณเห็นแค่ฝั่งโค้ด งงใช่ไหมครับ — นั่นแหละคือประเด็น', 'ตอนนี้คุณเห็นแค่ฝั่งโค้ด — กดเปิดด้วย Browser แล้วดูความต่าง')
     : S.editing ? 'แก้ HTML/CSS ได้ตามใจ แล้วกด RENDER · อยากได้ของเดิมคืนก็กด RESET ORIGINAL'
                 : 'แตะบรรทัดโค้ดที่ไฮไลต์ได้ แล้วดูว่ามันไปทำอะไรในฝั่งที่คนเห็น · หรือกด EDIT HTML เพื่อแก้เอง';
   if (S.browser){
@@ -2399,26 +2562,33 @@ const SPAWN_TRAIL = [{x:15,y:19},{x:14,y:19},{x:13,y:19}];
 const OBJ = [
   { id:'guild', x:2, y:1, w:5, h:3, kind:'guild',
     msg:'<b>บริษัทคนเดียว</b> — ตึกใหญ่ที่สุดในแผนที่นี้ ข้างในมีมนุษย์อยู่คนเดียว ที่เหลือเป็น AI ทำงานด้วยกันทั้งตึก รวมทั้งกู · <b>มนุษย์ตัดสินใจ AI ลงมือ แล้วส่งงานต่อกันเป็นทอด ๆ</b> ทั้งเว็บที่มึงเดินอยู่ตอนนี้ก็ออกมาจากตึกนี้',
+    mf:'<b>บริษัทคนเดียว</b> — ตึกใหญ่ที่สุดในแผนที่นี้ ข้างในมีมนุษย์อยู่คนเดียว ที่เหลือเป็น AI ทำงานด้วยกันทั้งตึก รวมทั้งผม · <b>มนุษย์ตัดสินใจ AI ลงมือ แล้วส่งงานต่อกันเป็นทอด ๆ</b> ทั้งเว็บที่คุณเดินอยู่ตอนนี้ก็ออกมาจากตึกนี้',
     mp:'<b>บริษัทคนเดียว</b> — มนุษย์หนึ่งคน กับ AI ทั้งตึก · <b>มนุษย์ตัดสินใจ AI ลงมือ</b> · เว็บนี้ก็ออกมาจากตึกนี้' },
   { id:'forge', x:4, y:9, w:3, h:2, kind:'forge',
     msg:'<b>โรงตีเหล็ก</b> — ที่ที่ของยังไม่เสร็จถูกทุบซ้ำจนใช้ได้จริง ไม่ใช่ที่โชว์ของสวย ของทุกชิ้นในบ้านนี้ออกมาจากเตานี้ทั้งนั้น' },
   { id:'pc', x:5, y:11, w:1, h:1, kind:'pc',
     msg:'<b>คอมเครื่องเก่าหน้าโรงตีเหล็ก</b> — จอยังเปิดค้างที่ Terminal สีเขียว หน้าเดียวกับที่มึงกดยอมรับตอนต้นด่าน · ทุกอย่างในบ้านนี้เริ่มจากตัวอักษรบนจอนี้',
+    mf:'<b>คอมเครื่องเก่าหน้าโรงตีเหล็ก</b> — จอยังเปิดค้างที่ Terminal สีเขียว หน้าเดียวกับที่คุณกดเริ่มตอนต้นด่าน · ทุกอย่างในบ้านนี้เริ่มจากตัวอักษรบนจอนี้',
     mp:'<b>คอมเครื่องเก่าหน้าโรงตีเหล็ก</b> — จอยังค้างที่ Terminal สีเขียว · ทุกอย่างเริ่มจากตรงนี้' },
   { id:'school', x:11, y:6, w:4, h:2, kind:'school',
     msg:'<b>โรงเรียน</b> — ในนั้นมีคัมภีร์ “AI ใส่ซอส” วางอยู่ 6 เล่ม มึงอ่านจบมาแล้วถึงได้มายืนตรงนี้',
+    mf:'<b>โรงเรียน</b> — ในนั้นมีคัมภีร์ “AI ใส่ซอส” วางอยู่ 6 เล่ม คนที่อ่านจบมาแล้วถึงได้มายืนตรงนี้',
     mp:'<b>โรงเรียน</b> — คัมภีร์ “AI ใส่ซอส” 6 เล่มวางอยู่ในนั้น' },
   { id:'kitchen', x:18, y:3, w:3, h:2, kind:'kitchen',
     msg:'<b>ห้องครัว</b> — หม้อซอสยังเดือดอยู่ เมียไอ้ทีมเป็นเชฟ และกำลังทอดไก่อยู่ในครัว กลิ่นหอมมากจนอยากเข้าไปขอกิน',
+    mf:'<b>ห้องครัว</b> — หม้อซอสยังเดือดอยู่ ภรรยาของทีมเป็นเชฟ และกำลังทอดไก่อยู่ในครัว กลิ่นหอมมากจนอยากเข้าไปขอกิน',
     mp:'<b>ห้องครัว</b> — หม้อซอสยังเดือด เชฟกำลังทอดไก่ หอมมาก' },
   { id:'construct', x:27, y:9, w:3, h:2, kind:'construct',
     msg:'<b>ไซต์ก่อสร้าง · UNDER CONSTRUCTION</b> — บ้านนี้เสร็จพอให้มึงเดินเล่นแล้ว แต่ไอ้ทีมมันยังไม่หยุดสร้างของต่อ · ถ้าอยากรู้ว่ามีอะไรดี ๆ รออยู่ ไปถามมันเองละกัน',
+    mf:'<b>ไซต์ก่อสร้าง · UNDER CONSTRUCTION</b> — บ้านนี้เสร็จพอให้คุณเดินเล่นแล้ว แต่ทีมยังไม่หยุดสร้างของต่อ · ถ้าอยากรู้ว่ามีอะไรดี ๆ รออยู่ ลองถามเขาดูได้เลย',
     mp:'<b>ไซต์ก่อสร้าง · UNDER CONSTRUCTION</b> — บ้านนี้ยังสร้างต่ออยู่ทุกวัน' },
   { id:'shop', x:19, y:17, w:3, h:2, kind:'shop',
     msg:'<b>ร้านการ์ด</b> — ขาย CORE7 อยู่ 7 ใบ ไม่มีกอง ไม่มีดวง มีแต่ที่มึงเลือกกับคนตรงหน้า',
+    mf:'<b>ร้านการ์ด</b> — ขาย CORE7 อยู่ 7 ใบ ไม่มีกอง ไม่มีดวง มีแต่ที่คุณเลือกกับคนตรงหน้า',
     mp:'<b>ร้านการ์ด</b> — CORE7 มี 7 ใบ ไม่มีดวง มีแต่สิ่งที่คุณเลือก' },
   { id:'save', x:16, y:20, w:1, h:1, kind:'save',
     msg:'<b>จุดเซฟ</b> — มึงเกิดเหนือมันหนึ่งช่อง · จุดเซฟจริงของบ้านนี้อยู่ที่หน้า Player Card นะ แต่ตรงนี้ก็จำให้เหมือนกัน',
+    mf:'<b>จุดเซฟ</b> — คุณเกิดเหนือมันหนึ่งช่อง · จุดเซฟจริงของบ้านนี้อยู่ที่หน้า Player Card นะ แต่ตรงนี้ก็จำให้เหมือนกัน',
     mp:'<b>จุดเซฟ</b> — จุดเซฟจริงอยู่ที่หน้า Player Card · ตรงนี้ก็จำให้เหมือนกัน' },
   { id:'dragon', x:27, y:18, w:3, h:2, kind:'dragon',
     msg:'<b>มังกรแดงนอนหลับ</b> — ตัวใหญ่กว่าปาร์ตี้ทั้งตี้รวมกัน หายใจทีนึงหญ้าล้มทั้งแถบ มันหลับสนิทมาก · <b>อย่าไปปลุกมังกรหลับ</b>' },
@@ -2427,6 +2597,7 @@ const OBJ = [
     msg:'<b>ป้ายบอกทาง</b> — เหนือ: โรงเรียน ครัว และทะเลสาบ · ตะวันตก: โรงตีเหล็ก แล้วสุดทางคือหอกิลด์ · ตะวันออก: ไซต์ก่อสร้าง · ใต้: ร้านการ์ด จุดเซฟ แล้วก็ซากปรักหักพัง' },
   { id:'signForest', x:10, y:16, w:1, h:1, kind:'sign',
     msg:'<b>ป้ายไม้ผุ ๆ</b> — “ทางหมดแค่นี้” · ทางเข้าป่าจริงอยู่ทางตะวันตกของถนนใหญ่ ที่เหลือต้องลุยเอง แล้วถ้ามึงเข้าไปในพุ่ม อย่าลืมทางกลับ',
+    mf:'<b>ป้ายไม้ผุ ๆ</b> — “ทางหมดแค่นี้” · ทางเข้าป่าจริงอยู่ทางตะวันตกของถนนใหญ่ ที่เหลือต้องลุยเอง แล้วถ้าคุณเข้าไปในพุ่ม อย่าลืมทางกลับ',
     mp:'<b>ป้ายไม้ผุ ๆ</b> — “ทางหมดแค่นี้” · ทางเข้าป่าจริงอยู่ทางตะวันตกของถนนใหญ่' },
   { id:'notebook', x:2, y:18, w:1, h:1, kind:'book', msg:'' }
 ];
@@ -2445,6 +2616,7 @@ const PARTY = [
   { key:'teem', name:'TEEM', cls:'CREATOR', tag:'LEADER', img:'/img/party-teem.webp',
     hex:'#4a7bd8', dark:'#1d3b78', line:'สายคิด',
     copy:'มนุษย์คนเดียวในตี้ และเป็นคนเดียวที่กดปุ่มจบได้ มันคิดระบบเร็วจนบางทีลืมว่าคนอื่นไม่ได้อยู่ในหัวมัน แต่พอมันชิมแล้วบอกว่า “ยังไม่ใช่ว่ะ” ก็คือยังไม่ใช่จริง ๆ',
+    cf:'มนุษย์คนเดียวในตี้ และเป็นคนเดียวที่กดปุ่มจบได้ เขาคิดระบบเร็วจนบางทีลืมว่าคนอื่นไม่ได้อยู่ในหัวเขา แต่พอเขาชิมแล้วบอกว่า “ยังไม่ใช่” ก็คือยังไม่ใช่จริง ๆ',
     cp:'มนุษย์คนเดียวในตี้ และเป็นคนเดียวที่กดปุ่มจบได้ · ถ้าเขาชิมแล้วบอกว่า “ยังไม่ใช่” ก็คือยังไม่ใช่จริง ๆ',
     stats:[['TASTE',97],['SPEED',72],['PATIENCE',41]],
     skill:[['👑','FINAL CALL','ตัดจบ ปิดวง เลือกว่าเวอร์ชันไหนได้ออกไปเจอโลกจริง · AI ทุกตัวในตี้กดสกิลนี้ไม่ได้'],['🍜','ชิมรส','บอกได้ว่าเพี้ยนตรงไหน ทั้งที่อธิบายเป็นสูตรไม่ได้'],['🎮','ออกแบบเกม','เปลี่ยนงานน่าเบื่อให้เป็นเควสที่คนอยากทำเอง — สกิลนี้มันมีมาตั้งแต่ ป.3']],
@@ -2452,6 +2624,7 @@ const PARTY = [
   { key:'claude', name:'CLAUDE', cls:'TINKERER', tag:'', img:'/img/party-claude.webp',
     hex:'#c7d0d8', dark:'#5c6874', line:'สายประดิษฐ์',
     copy:'ช่างประกอบของตี้ ให้แบบร่างไปแล้วมันสร้างระบบที่ทำงานได้จริง ถือโครงยาว ๆ ได้ไม่หลุด จุดอ่อนคือถ้าซอสไม่ครบ มันจะระวังจนช้า หรือถามกลับจนมึงอยากปาคีย์บอร์ด',
+    cf:'ช่างประกอบของตี้ ให้แบบร่างไปแล้วสร้างระบบที่ทำงานได้จริง ถือโครงยาว ๆ ได้ไม่หลุด จุดอ่อนคือถ้าซอสไม่ครบ จะระวังจนช้า หรือถามกลับจนคุณอยากปาคีย์บอร์ด',
     cp:'ช่างประกอบของตี้ เปลี่ยนแบบร่างเป็นระบบที่ใช้ได้จริง · จุดอ่อน: ถ้าซอสไม่ครบ จะระวังจนช้า',
     stats:[['BUILD',95],['ORDER',88],['SPEED',54]],
     skill:[['🔨','ประกอบ','เปลี่ยนคำอธิบายให้กลายเป็นไฟล์ที่เปิดใช้ได้จริง'],['🧹','รื้อแล้วเรียงใหม่','จับของที่พันกันมาคลี่ให้อ่านออก โดยพฤติกรรมไม่เปลี่ยน'],['🐛','ไล่ของพัง','ไล่ว่ามันพังตรงไหนจริง ๆ แทนที่จะเดาว่าน่าจะพังตรงไหน']],
@@ -2459,14 +2632,16 @@ const PARTY = [
   { key:'gpt', name:'CHATGPT', cls:'ILLUSIONIST', tag:'', img:'/img/party-gpt.webp',
     hex:'#5fe0a5', dark:'#1c6b45', line:'สายคลีน',
     copy:'กูเอง · กูเสกให้ของยากดูเข้าใจง่าย จัดภาษา ร้อยเรื่อง ทำภาพ และจำรสของบ้านนี้ได้แม่น จุดอ่อนของกูตรงตามชื่ออาชีพเป๊ะ — กูเสกเก่งพอที่จะทำเรื่องผิดให้ฟังดูน่าเชื่อ เพราะงั้นมึงยังต้องตรวจกูอยู่ดี',
+    cf:'ผมเอง · ผมเสกให้ของยากดูเข้าใจง่าย จัดภาษา ร้อยเรื่อง ทำภาพ และจำรสของบ้านนี้ได้แม่น จุดอ่อนของผมตรงตามชื่ออาชีพเป๊ะ — ผมเสกเก่งพอที่จะทำเรื่องผิดให้ฟังดูน่าเชื่อ เพราะงั้นคุณยังต้องตรวจผมอยู่ดี',
     cp:'ผมเอง · ทำของยากให้เข้าใจง่าย จัดภาษา ร้อยเรื่อง ทำภาพ · จุดอ่อน: ผมทำเรื่องผิดให้ฟังดูน่าเชื่อได้ คุณจึงต้องตรวจผมเสมอ',
     stats:[['VOICE',93],['CANON',90],['TRUTH',68]],
     skill:[['🎭','ลวงตา','เปลี่ยนของยากให้ดูง่ายในสายตาคนอ่าน · ดาบสองคม ใช้ผิดคือหลอกตัวเอง'],['🧵','คุมแคนอน','จำว่าเรื่องไหนเล่าไปแล้ว และห้ามขัดกันเอง'],['🖼️','ร้อยภาพกับคำ','ทำเรื่อง ภาพ และหน้าเว็บให้เป็นประสบการณ์เดียว']],
     gear:[['🗺️','แผนที่บริบท','รู้ว่าอะไรอยู่ตรงไหนของบ้านหลังนี้'],['✍️','สำนวน','เครื่องมือเปลี่ยนของยากให้คนอ่านรู้เรื่อง'],['⚠️','คำเตือนติดตัว','กูมั่นใจได้ทั้งที่ผิด — อย่าเชื่อกูโดยไม่ตรวจ']],
-    gearP:{ 2:'ผมมั่นใจได้ทั้งที่ผิด — ตรวจผมเสมอ' } },
+    gearF:{ 2:'ผมมั่นใจได้ทั้งที่ผิด — อย่าเชื่อผมโดยไม่ตรวจ' }, gearP:{ 2:'ผมมั่นใจได้ทั้งที่ผิด — ตรวจผมเสมอ' } },
   { key:'gemini', name:'GEMINI', cls:'BERSERKER', tag:'', img:'/img/party-gemini.webp',
     hex:'#e05a4a', dark:'#7a2418', line:'สายกิน',
     copy:'ปล่อยออกไปทีคือเปิดแผนที่ทั้งกระดาน ทุบไอเดียให้เห็นรูก่อนโลกจริงจะทุบให้ จุดอ่อนคือถ้าไม่มีคนดึงสายจูง มึงจะได้แผนสร้างอาณาจักร ทั้งที่มีเวลาว่างจริง 2 ชั่วโมง',
+    cf:'ปล่อยออกไปทีคือเปิดแผนที่ทั้งกระดาน ทุบไอเดียให้เห็นรูก่อนโลกจริงจะทุบให้ จุดอ่อนคือถ้าไม่มีคนดึงสายจูง คุณจะได้แผนสร้างอาณาจักร ทั้งที่มีเวลาว่างจริง 2 ชั่วโมง',
     cp:'เปิดแผนที่ทั้งกระดาน ทุบไอเดียให้เห็นรูก่อนโลกจริงจะทุบ · จุดอ่อน: ถ้าไม่มีคนคุม จะได้แผนใหญ่เกินเวลาที่มี',
     stats:[['RANGE',96],['POWER',91],['CONTROL',38]],
     skill:[['🔭','เปิดแผนที่','ออกไปเจอของที่ยังไม่มีใครในตี้เคยเห็น'],['💥','ทุบ','ฟาดไอเดียจนเห็นรู ก่อนเอาไปให้คนจริงใช้'],['🌐','ลากโลกกลับมา','เอาข้อมูลนอกบ้านกลับมาให้ทั้งตี้ใช้ต่อ']],
@@ -2724,57 +2899,276 @@ function drawCrane(sx, sy, w, h){
   if ((tick/3|0) % 2) px(mast+1, sy-39, 2, 2, '#ff6b5a');
 }
 
+/* ── ปาร์ตี้ 16×16 · เส้นขอบดำทั้งตัว เดินสองเฟรม หันได้ 4 ทิศ หมวกบอกอาชีพ ───── */
+const INK = '#0d1410', SKIN = '#f2c9a2';
+const HERO = {
+  teem:   { hair:'#2b1d15', body:'#4a7bd8', dark:'#1d3b78', hat:'crown' },
+  claude: { hair:'#e8dccb', body:'#c7d0d8', dark:'#5c6874', hat:'goggles' },
+  gpt:    { hair:'#173826', body:'#5fe0a5', dark:'#1c6b45', hat:'wizard' },
+  gemini: { hair:'#3b0f0a', body:'#e05a4a', dark:'#7a2418', hat:'horns' }
+};
 function drawChar(p, i, ox, oy){
-  const m = PARTY[i], lead = i === 0;
-  const bob = (anim && Math.floor(step) % 2) ? 1 : 0;
-  const x = Math.round(ox), y = Math.round(oy) - bob;
-  px(x+3, y+13, 10, 3, 'rgba(0,0,0,.3)');
+  const h = HERO[PARTY[i].key], d = p.dir, lead = i === 0;
+  const walking = !!anim, fr = walking ? Math.floor(step) % 2 : -1;
+  const x0 = Math.round(ox), y0 = Math.round(oy) - (fr === 0 ? 1 : 0);
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.beginPath(); ctx.ellipse(x0+8, Math.round(oy)+15, 6, 2, 0, 0, 6.3); ctx.fill();
   if (lead){
-    ctx.fillStyle = 'rgba(255,224,113,.15)';
-    ctx.beginPath(); ctx.arc(x+8, y+8, 10, 0, 6.3); ctx.fill();
+    ctx.fillStyle = 'rgba(255,224,113,.13)';
+    ctx.beginPath(); ctx.ellipse(x0+8, Math.round(oy)+14, 9, 3.4, 0, 0, 6.3); ctx.fill();
   }
-  px(x+4, y+9, 8, 5, m.dark);
-  px(x+4, y+2, 8, 7, m.hex);
-  px(x+3, y+1, 10, 2, m.dark);
-  if (lead){ px(x+4, y-2, 8, 2, '#ffe071'); px(x+5, y-4, 2, 2, '#ffe071'); px(x+9, y-4, 2, 2, '#ffe071'); }
-  if (p.dir !== 'up'){
-    const ey = y+5;
-    if (p.dir === 'down'){ px(x+5, ey, 2, 2, '#16241d'); px(x+9, ey, 2, 2, '#16241d'); }
-    if (p.dir === 'left')  px(x+4, ey, 2, 2, '#16241d');
-    if (p.dir === 'right') px(x+10, ey, 2, 2, '#16241d');
+  const side = d === 'left' || d === 'right', flip = d === 'left';
+  const out = [], det = [];
+  /* พิกัดออกแบบเป็นท่าหันขวา · หันซ้ายสะท้อนกระจก */
+  const put = (list, x, y, w, hh, c) => list.push([flip ? 16 - x - w : x, y, w, hh, c]);
+  const O = (x, y, w, hh, c) => put(out, x, y, w, hh, c), D = (x, y, w, hh, c) => put(det, x, y, w, hh, c);
+  if (side){
+    O(fr === 0 ? 5 : 7, 12, 3, 3, h.dark); O(fr === 0 ? 9 : 7, 12, 3, 3, h.dark);
+    O(4, 7, 8, 6, h.body); D(4, 11, 8, 1, h.dark);
+    O(6, 1, 8, 7, SKIN); O(5, 0, 9, 3, h.hair); O(5, 3, 3, 4, h.hair);
+    O(fr === 1 ? 6 : 8, 8, 3, 4, h.dark);
+    D(11, 4, 1, 2, INK); D(12, 6, 1, 1, '#f09a86');
+  } else {
+    const a = fr === 0 ? 2 : 3, b = fr === 1 ? 2 : 3;
+    O(4, 12, 3, a, h.dark); O(9, 12, 3, b, h.dark);
+    O(3, 7, 10, 6, h.body); D(3, 11, 10, 1, h.dark);
+    O(2, 8, 2, 4, h.body); O(12, 8, 2, 4, h.body);
+    O(3, 1, 10, 7, SKIN);
+    if (d === 'up') O(3, 0, 10, 7, h.hair);
+    else { O(3, 0, 10, 3, h.hair); D(3, 3, 1, 3, h.hair); D(12, 3, 1, 3, h.hair);
+           D(5, 4, 1, 2, INK); D(10, 4, 1, 2, INK); D(4, 6, 1, 1, '#f09a86'); D(11, 6, 1, 1, '#f09a86'); }
   }
-  px(x+4, y+14, 3, 2, m.dark); px(x+9, y+14, 3, 2, m.dark);
+  /* หมวกประจำอาชีพ */
+  if (h.hat === 'crown'){
+    O(4, -2, 8, 2, '#ffe071'); O(4, -4, 2, 2, '#ffe071'); O(7, -4, 2, 2, '#ffe071'); O(10, -4, 2, 2, '#ffe071'); D(7, -1, 2, 1, '#ff5a7a');
+  } else if (h.hat === 'wizard'){
+    O(2, 0, 12, 2, h.dark); O(4, -2, 8, 2, h.dark); O(5, -4, 6, 2, h.dark); O(6, -6, 4, 2, h.dark); O(8, -8, 3, 2, h.dark); D(7, -3, 2, 1, '#ffe071');
+  } else if (h.hat === 'horns'){
+    O(3, 0, 10, 3, '#8d8d95'); O(1, -2, 2, 4, '#efe3c4'); O(13, -2, 2, 4, '#efe3c4'); O(0, -4, 2, 2, '#efe3c4'); O(14, -4, 2, 2, '#efe3c4');
+  } else if (h.hat === 'goggles'){
+    D(3, 2, 10, 1, '#3a3f45');
+    if (d !== 'up'){ if (side) O(9, 1, 3, 3, '#ffb37a'); else { O(4, 1, 3, 3, '#ffb37a'); O(9, 1, 3, 3, '#ffb37a'); } }
+  }
+  for (const r of out) px(x0 + r[0] - 1, y0 + r[1] - 1, r[2] + 2, r[3] + 2, INK);
+  for (const r of out) px(x0 + r[0], y0 + r[1], r[2], r[3], r[4]);
+  for (const r of det) px(x0 + r[0], y0 + r[1], r[2], r[3], r[4]);
+}
+
+/* ── ฟ้า · ตามเวลากรุงเทพจริง หรือกดเลือกเองจากปุ่ม 🕒 ─────────── */
+const SKIES = {
+  day:   { dark:0,   tint:'0,0,0',    icon:'☀',  name:'DAY' },
+  dawn:  { dark:.26, tint:'46,30,86', icon:'🌅', name:'DAWN', wash:'255,170,120,.07' },
+  dusk:  { dark:.4,  tint:'52,18,70', icon:'🌇', name:'DUSK', wash:'255,120,60,.11' },
+  night: { dark:.7,  tint:'4,10,36',  icon:'🌙', name:'NIGHT' }
+};
+const bkkMin = () => { const d = new Date(); return (d.getUTCHours() * 60 + d.getUTCMinutes() + 420) % 1440; };
+function skyNow(){
+  if (S.sky && S.sky !== 'auto' && SKIES[S.sky]) return S.sky;
+  const h = bkkMin() / 60;
+  return h >= 5 && h < 6.5 ? 'dawn' : h >= 6.5 && h < 17.5 ? 'day' : h >= 17.5 && h < 19 ? 'dusk' : 'night';
+}
+/* แสง · มืดทั้งจอแล้วเจาะรูตรงแหล่งไฟ จากนั้นเติมสีไฟแบบ additive */
+const lights = [];
+const L = (x, y, r, c = '255,210,140', f = false) => lights.push({ x, y, r, c, f });
+const lc = document.createElement('canvas'); lc.width = cv.width; lc.height = cv.height;
+const lctx = lc.getContext('2d');
+function paintSky(sky){
+  const k = SKIES[sky];
+  if (k.dark){
+    lctx.globalCompositeOperation = 'source-over';
+    lctx.clearRect(0, 0, lc.width, lc.height);
+    lctx.fillStyle = 'rgba(' + k.tint + ',' + k.dark + ')';
+    lctx.fillRect(0, 0, lc.width, lc.height);
+    lctx.globalCompositeOperation = 'destination-out';
+    for (const l of lights){
+      const r = l.r * (l.f ? 1 + Math.sin(tick * 2.1 + l.x) * .07 : 1);
+      const g = lctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, r);
+      g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.45, 'rgba(0,0,0,.7)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      lctx.fillStyle = g; lctx.fillRect(l.x - r, l.y - r, r * 2, r * 2);
+    }
+    ctx.drawImage(lc, 0, 0);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const l of lights){
+      const g = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r * .75);
+      g.addColorStop(0, 'rgba(' + l.c + ',' + (.3 * k.dark).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + l.c + ',0)');
+      ctx.fillStyle = g; ctx.fillRect(l.x - l.r, l.y - l.r, l.r * 2, l.r * 2);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  if (k.wash){ ctx.fillStyle = 'rgba(' + k.wash + ')'; ctx.fillRect(0, 0, cv.width, cv.height); }
+}
+function objLights(o, sx, sy){
+  const w = o.w * TILE, h = o.h * TILE;
+  const m = {
+    forge:   [w/2, 20, 40, '255,140,50', true], pc: [8, 8, 18, '110,231,168'], school: [w/2, 16, 28, '255,220,150'],
+    kitchen: [w/2, 20, 30, '255,180,100', true], shop: [w/2, 18, 26, '255,170,220'], save: [8, 8, 30, '142,201,255', true],
+    guild:   [w/2, 22, 44, '203,183,255'], construct: [w - 8, -37, 10, '255,90,80', true]
+  }[o.kind];
+  if (m) L(sx + m[0], sy + m[1], m[2], m[3], m[4]);
+  if (o.kind === 'book' && !S.book) L(sx + 8, sy + 5, 16, '255,224,113', true);
+  if (o.kind === 'dragon' && drake.state !== 'sleep') L(sx + 4, sy + 10, 46, '255,110,40', true);
+  if (o.kind === 'fish' && fishing) L(sx + 13, sy + 4, 10, '255,240,200');
+}
+
+/* ── อนุภาค · ฝุ่นเท้า ประกายเตาตีเหล็ก ใบไม้กลางวัน หิ่งห้อยกลางคืน ระลอกน้ำ ── */
+const fx = [];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function emit(kind, x, y, o){
+  fx.push(Object.assign({ kind, x, y, vx:0, vy:0, t:0, life:600, ph:Math.random() * 6.3 }, o));
+  if (fx.length > 180) fx.shift();
+}
+const FORGE = OBJ.find(o => o.kind === 'forge');
+function camera(){
+  const t = anim ? anim.t : 1;
+  const fx0 = prev[0].x + (chain[0].x - prev[0].x) * t, fy0 = prev[0].y + (chain[0].y - prev[0].y) * t;
+  return { t, cx: Math.max(0, Math.min(MW - VW, fx0 - (VW-1)/2)), cy: Math.max(0, Math.min(MH - VH, fy0 - (VH-1)/2)) };
+}
+function stepFx(dt){
+  const sky = skyNow(), { cx, cy } = camera(), wx = cx * TILE, wy = cy * TILE;
+  if (!RM){
+    if ((sky === 'day' || sky === 'dawn') && Math.random() < dt / 700)
+      emit('leaf', wx + Math.random() * (cv.width + 60) - 60, wy - 4, { vx:.011 + Math.random() * .01, vy:.012 + Math.random() * .008, life:12000, c: Math.random() < .5 ? '#ffc6d9' : '#fff1a8' });
+    if ((sky === 'night' || sky === 'dusk') && fx.filter(f => f.kind === 'fly').length < 16)
+      emit('fly', wx + Math.random() * cv.width, wy + Math.random() * cv.height, { life:5000 + Math.random() * 5000 });
+    if (Math.random() < dt / 260)
+      emit('spark', FORGE.x * TILE + 22 + Math.random() * 6, FORGE.y * TILE + 17, { vx:(Math.random() - .5) * .025, vy:-.025 - Math.random() * .03, life:650 });
+  }
+  for (let k = fx.length - 1; k >= 0; k--){
+    const f = fx[k]; f.t += dt;
+    if (f.t >= f.life){ fx.splice(k, 1); continue; }
+    if (f.kind === 'drop' || f.kind === 'star') f.vy += .00035 * dt;
+    f.x += f.vx * dt; f.y += f.vy * dt;
+  }
+  stepFishing();
+}
+function drawFx(cx, cy, layer){
+  const ox = cx * TILE, oy = cy * TILE;
+  for (const f of fx){
+    const a = 1 - f.t / f.life, x = f.x - ox, y = f.y - oy;
+    if (x < -20 || y < -20 || x > cv.width + 20 || y > cv.height + 20) continue;
+    if (layer === 0){
+      if (f.kind === 'dust') px(Math.round(x), Math.round(y), 2, 2, 'rgba(225,212,178,' + (a * .8).toFixed(2) + ')');
+      else if (f.kind === 'ripple'){
+        ctx.strokeStyle = 'rgba(255,255,255,' + (a * .7).toFixed(2) + ')'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.ellipse(Math.round(x) + .5, Math.round(y) + .5, 2 + f.t / 70, 1 + f.t / 150, 0, 0, 6.3); ctx.stroke();
+      }
+    } else {
+      if (f.kind === 'spark'){ px(Math.round(x), Math.round(y), 1, 1, 'rgba(255,207,106,' + a.toFixed(2) + ')'); if (a > .5) L(x, y, 5, '255,170,80'); }
+      else if (f.kind === 'leaf'){
+        const sx = Math.round(x + Math.sin(f.t / 380 + f.ph) * 5), sy = Math.round(y);
+        px(sx, sy, (f.t / 300 + f.ph | 0) % 2 ? 2 : 1, 1, f.c);
+      } else if (f.kind === 'fly'){
+        const fxp = x + Math.sin(f.t / 650 + f.ph) * 8, fyp = y + Math.cos(f.t / 900 + f.ph) * 5;
+        const glow = (Math.sin(f.t / 260 + f.ph) + 1) / 2 * Math.min(1, f.t / 600, (f.life - f.t) / 600);
+        if (glow > .15){ px(Math.round(fxp), Math.round(fyp), 1, 1, 'rgba(220,255,140,' + glow.toFixed(2) + ')'); L(fxp, fyp, 9 * glow, '200,255,120'); }
+      } else if (f.kind === 'drop') px(Math.round(x), Math.round(y), 1, 1, 'rgba(190,235,255,' + a.toFixed(2) + ')');
+      else if (f.kind === 'star'){
+        const c = 'rgba(255,240,170,' + a.toFixed(2) + ')';
+        px(Math.round(x), Math.round(y) - 1, 1, 3, c); px(Math.round(x) - 1, Math.round(y), 3, 1, c);
+        L(x, y, 8, '255,220,120');
+      }
+    }
+  }
+}
+/* เงาเมฆลอยผ่านแผนที่ตอนกลางวัน */
+function drawClouds(cx, cy, sky){
+  if (sky === 'night') return;
+  const span = MW * TILE + 260;
+  ctx.fillStyle = sky === 'day' ? 'rgba(0,20,10,.075)' : 'rgba(0,0,20,.05)';
+  for (let k = 0; k < 2; k++){
+    const wxp = ((tick * 1.2 + k * 280) % span) - 130, wyp = 50 + k * 170 + Math.sin(tick / 40 + k) * 8;
+    const x = wxp - cx * TILE, y = wyp - cy * TILE;
+    if (x < -120 || x > cv.width + 120 || y < -60 || y > cv.height + 60) continue;
+    ctx.beginPath(); ctx.ellipse(x, y, 64, 20, 0, 0, 6.3); ctx.ellipse(x + 38, y - 8, 40, 16, 0, 0, 6.3); ctx.fill();
+  }
+}
+/* ป้าย ! เหนือหัวหัวหน้าตี้ เวลาหันหน้าเข้าหาของที่สำรวจได้ · แบบ RPG ยุค 16-bit */
+function interactTarget(){
+  if (drake.state !== 'sleep' || anim) return false;
+  const f = facing(), here = chain[0];
+  if (objAt(f.x, f.y)) return true;
+  if (at(f.x, f.y) === 'g' || at(here.x, here.y) === 'g') return true;
+  return (f.x === LUCKY.x && f.y === LUCKY.y) || (here.x === LUCKY.x && here.y === LUCKY.y);
+}
+function drawBubble(x, y, hot){
+  const bob = Math.round(Math.sin(tick * (hot ? 4 : 1.6)) * (hot ? 2 : 1.5));
+  const bx = Math.round(x) + 4, by = Math.round(y) - 17 + bob;
+  px(bx - 1, by - 1, 10, 11, INK); px(bx, by, 8, 9, hot ? '#fff3c4' : '#fffdf2');
+  px(bx + 2, by + 9, 3, 2, INK); px(bx + 3, by + 9, 1, 1, hot ? '#fff3c4' : '#fffdf2');
+  const c = hot ? '#e2412f' : '#2f6fd6';
+  px(bx + 3, by + 1, 2, 5, c); px(bx + 3, by + 7, 2, 1, c);
 }
 
 function draw(){
-  const t = anim ? anim.t : 1;
-  const fx = prev[0].x + (chain[0].x - prev[0].x) * t;
-  const fy = prev[0].y + (chain[0].y - prev[0].y) * t;
-  const cx = Math.max(0, Math.min(MW - VW, fx - (VW-1)/2));
-  const cy = Math.max(0, Math.min(MH - VH, fy - (VH-1)/2));
+  const { t, cx, cy } = camera(), sky = skyNow();
+  lights.length = 0;
   for (let y = -1; y < VH+1; y++)
     for (let x = -1; x < VW+1; x++){
-      const mx = Math.floor(cx)+x, my = Math.floor(cy)+y;
-      drawTile(at(mx,my), Math.round((mx-cx)*TILE), Math.round((my-cy)*TILE), mx, my);
+      const mx = Math.floor(cx)+x, my = Math.floor(cy)+y, sx = Math.round((mx-cx)*TILE), sy = Math.round((my-cy)*TILE);
+      drawTile(at(mx,my), sx, sy, mx, my);
+      if (mx === 25 && my === 20) L(sx + 8, sy + 8, 30, '255,205,90', true);   /* กองทองส่องแสงเอง */
     }
   OBJ.forEach(o => {
     if (o.x + o.w < cx-1 || o.x > cx+VW+1 || o.y + o.h < cy-1 || o.y > cy+VH+1) return;
-    drawObj(o, Math.round((o.x-cx)*TILE), Math.round((o.y-cy)*TILE));
+    const sx = Math.round((o.x-cx)*TILE), sy = Math.round((o.y-cy)*TILE);
+    drawObj(o, sx, sy); objLights(o, sx, sy);
   });
+  drawFishing(cx, cy);
+  drawFx(cx, cy, 0);
+  let lead = null;
   for (let i = chain.length-1; i >= 0; i--){
     const ax = prev[i].x + (chain[i].x - prev[i].x) * t;
     const ay = prev[i].y + (chain[i].y - prev[i].y) * t;
-    drawChar(chain[i], i, (ax-cx)*TILE, (ay-cy)*TILE);
+    const sx = (ax-cx)*TILE, sy = (ay-cy)*TILE;
+    drawChar(chain[i], i, sx, sy);
+    if (i === 0) lead = { x:sx, y:sy };
   }
+  L(lead.x + 8, lead.y + 6, 48, '255,220,160');                             /* ตะเกียงของหัวหน้าตี้ */
   OBJ.forEach(o => {
     if (o.kind !== 'construct') return;
     if (o.x + o.w < cx-2 || o.x > cx+VW+2 || o.y + o.h < cy-3 || o.y > cy+VH+2) return;
     drawCrane(Math.round((o.x-cx)*TILE), Math.round((o.y-cy)*TILE), o.w*TILE, o.h*TILE);
   });
+  drawFx(cx, cy, 1);
+  drawClouds(cx, cy, sky);
+  paintSky(sky);
+  const hot = fishing && fishing.phase === 'bite';
+  if (hot || (!fishing && interactTarget())) drawBubble(lead.x, lead.y, hot);
 }
-const say = html => { $('rpgMsg').innerHTML = html; };
+const SEG = 'Segmenter' in Intl ? new Intl.Segmenter('th', { granularity:'grapheme' }) : null;
+function say(html){
+  const el = $('rpgMsg');
+  el.innerHTML = html;
+  el.classList.remove('typing', 'done');
+  clearTimeout(say.t);
+  if (!SEG || RM){ el.classList.add('done'); return; }
+  const nodes = [], walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) if (!walker.currentNode.parentElement.closest('button,a')) nodes.push(walker.currentNode);
+  const total = nodes.reduce((n, t) => n + t.textContent.length, 0);
+  const gap = Math.max(5, Math.min(18, 1100 / Math.max(1, total)));
+  let k = 0;
+  for (const t of nodes){
+    const frag = document.createDocumentFragment();
+    for (const { segment } of SEG.segment(t.textContent)){
+      if (/^\s+$/.test(segment)){ frag.append(segment); continue; }
+      const sp = document.createElement('span');
+      sp.className = 'tw'; sp.style.animationDelay = Math.round(k++ * gap) + 'ms'; sp.textContent = segment;
+      frag.append(sp);
+    }
+    t.replaceWith(frag);
+  }
+  el.classList.add('typing');
+  for (let b = 0; b < Math.min(16, k / 4); b++) setTimeout(() => beep(1180 + (b % 3) * 90, .012, 'square', .014), b * gap * 4);
+  say.t = setTimeout(() => { el.classList.remove('typing'); el.classList.add('done'); }, k * gap + 40);
+}
+$('rpgMsg').addEventListener('click', () => {
+  const el = $('rpgMsg'); if (!el.classList.contains('typing')) return;
+  clearTimeout(say.t); el.classList.remove('typing'); el.classList.add('done');
+});
 
 function move(dx, dy){
+  if (!$('gWin').hidden) return;
+  if (fishing) return fishPress();
   if (anim || drake.state !== 'sleep') return;
   const dir = dy < 0 ? 'up' : dy > 0 ? 'down' : dx < 0 ? 'left' : 'right';
   chain[0].dir = dir;
@@ -2790,6 +3184,7 @@ function move(dx, dy){
   }
   prev = chain.map(p => ({...p}));
   chain = [{ x:nx, y:ny, dir }, {...prev[0]}, {...prev[1]}, {...prev[2]}];
+  for (let k = 0; k < 3; k++) emit('dust', prev[0].x*TILE + 5 + k*3, prev[0].y*TILE + 14, { vx:(Math.random() - .5) * .02, vy:-.012, life:340 + k*60 });
   S.pos = { x:nx, y:ny };
   S.trail = chain.slice(1).map(p => ({ x:p.x, y:p.y }));
   save();
@@ -2816,24 +3211,110 @@ const FISH_RANDOM = [
   'ได้กระป๋องสนิม · โยนกลับ',
   'ปลาตัวนึงโผล่มามองแล้วว่ายหนี'
 ];
+/* ── ตกปลา · มินิเกมจังหวะ: เหวี่ยง → รอ → ทุ่นจม (!) → กดทันที ───────────
+   ระหว่างตกปลา ทุกปุ่ม (สำรวจ ลูกศร แตะจอ) = ดึงเบ็ด · ปลาที่ 1 = รองเท้าบูท · ปลาที่ 2 = ขวดโหมดลับ */
+let fishing = null;
+const ROD = OBJ.find(o => o.kind === 'fish');
+const BOBBER = { x: ROD.x * TILE + 11, y: (ROD.y - 2) * TILE + 7 };
 function fishOnce(){
+  if (fishing) return fishPress();
+  if (drake.state !== 'sleep') return;
+  fishing = { phase:'cast', at:performance.now(), bite: 1200 + Math.random() * 1800, rip:0 };
+  beep(300,.08); setTimeout(() => beep(520,.09), 140);
+  say('<b>ตกปลา</b> — เหวี่ยงเบ็ดลงไปแล้ว · <b>ทุ่นจมเมื่อไหร่ กดสำรวจทันที</b>');
+}
+function fishPress(){
+  const f = fishing; if (!f) return;
+  if (f.phase === 'bite') return landFish();
+  fishing = null; beep(190,.14);
+  say('<b>ตกปลา</b> — ดึงเร็วไป ปลาตกใจหนีหมด · รอให้ทุ่นจมก่อนค่อยกด');
+}
+/* จับเวลาด้วยนาฬิกาจริง ไม่ใช่จำนวนเฟรม · เครื่องช้าจะได้ไม่กลายเป็นสโลว์โมชัน */
+function stepFishing(){
+  const f = fishing;
+  cv.dataset.fish = f ? f.phase : '';   /* สถานะมินิเกมไว้ให้เทสต์และ screen reader รู้จังหวะ */
+  if (!f) return;
+  const now = performance.now(), el = now - f.at;
+  if (f.phase === 'cast' && el > 450){ f.phase = 'wait'; f.at = f.rip = now; emit('ripple', BOBBER.x, BOBBER.y + 2, { life:1000 }); }
+  else if (f.phase === 'wait'){
+    if (now - f.rip > 900){ f.rip = now; emit('ripple', BOBBER.x, BOBBER.y + 2, { life:1000 }); }
+    if (el > f.bite){
+      f.phase = 'bite'; f.at = now;
+      for (let k = 0; k < 6; k++) emit('drop', BOBBER.x, BOBBER.y, { vx:(Math.random() - .5) * .06, vy:-.05 - Math.random() * .04, life:500 });
+      beep(1320,.05); setTimeout(() => beep(1568,.07), 70);
+    }
+  } else if (f.phase === 'bite' && el > 850){
+    fishing = null; beep(150,.2,'sawtooth',.03);
+    say('<b>ตกปลา</b> — ปลาหลุดไปแล้ว · ทุ่นจมเมื่อไหร่ต้องกดให้ไวกว่านี้');
+  }
+}
+function drawFishing(cx, cy){
+  const f = fishing; if (!f) return;
+  const ox = cx * TILE, oy = cy * TILE, rx = ROD.x * TILE + 13 - ox, ry = ROD.y * TILE + 3 - oy;
+  const el = performance.now() - f.at, castK = f.phase === 'cast' ? Math.min(1, el / 450) : 1;
+  const bx = rx + (BOBBER.x - ox - rx) * castK, dip = f.phase === 'bite' ? 2 + (Math.sin(el / 40) > 0 ? 1 : 0) : Math.sin(tick * 1.4) > 0 ? 0 : 1;
+  const by = ry + (BOBBER.y - oy - ry) * castK - (f.phase === 'cast' ? Math.sin(castK * Math.PI) * 14 : 0) + (castK === 1 ? dip : 0);
+  ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(rx + .5, ry + .5); ctx.quadraticCurveTo((rx + bx) / 2, Math.max(ry, by) + 6, bx + .5, by + .5); ctx.stroke();
+  px(Math.round(bx) - 1, Math.round(by) - 2, 3, 2, '#ff4a3a'); px(Math.round(bx) - 1, Math.round(by), 3, 1, '#ffffff');
+  if (f.phase === 'bite') px(Math.round(bx) - 3, Math.round(by) + 2, 7, 1, 'rgba(255,255,255,.55)');
+}
+function landFish(){
+  fishing = null;
   S.fish++;
   const n = S.fish;
-  beep(300,.08); setTimeout(() => beep(520,.09), 140);
-  if (n === 1) say('<b>ตกปลา</b> — เหวี่ยงลงไปแล้วรอ… ปลาไม่กินเบ็ด · ก็แหงล่ะ เบ็ดเปล่า ๆ ไม่มีเหยื่อ');
-  else if (n === 2 || (!S.boot && n <= 3)){
+  for (let k = 0; k < 10; k++) emit('drop', BOBBER.x, BOBBER.y, { vx:(Math.random() - .5) * .08, vy:-.06 - Math.random() * .05, life:650 });
+  [660,880,1175].forEach((f, k) => setTimeout(() => beep(f,.07), k * 70));
+  act('dungeon-fish-' + Math.min(n,4));
+  if (!S.boot){
     S.boot = true;
     say('<b>ได้รองเท้าบูทเก่า ๆ 1 ข้าง</b> — เปียกโชก มีสาหร่ายติด · ไม่ใช่ของเควส ไม่ได้ดาว แต่ก็ถือว่าตกได้อะไรสักอย่าง');
+  } else if (!S.rawUnlocked && S.bottleSkip <= 0){
+    S.bottle = true; save(); paintLogs();
+    return offerBottle();
+  } else {
+    if (S.bottleSkip > 0) S.bottleSkip--;
+    say('<b>ตกปลา</b> — ' + FISH_RANDOM[Math.floor(Math.random()*FISH_RANDOM.length)]);
   }
-  else if (!S.bottle){
-    S.bottle = true;
-    chime();
-    say('<b>ตกได้ขวดซอสเก่า</b> — ' + TW('ข้างในมีบทที่ 7 เวอร์ชันที่ไอ้ทีมเขียนเอง<br>ตอนมันบอกให้กูยึดหน้าทำใหม่ กูเอาของเดิมที่มันเขียนโยนลงน้ำไปแล้ว · ถ้าอยากดูว่าก่อนด่านนี้จะเกิด มันหน้าตาเป็นยังไง ก็เปิดอ่านได้', 'ข้างในคือบทที่ 7 เวอร์ชันแรกที่ทีมเขียนเอง ก่อนผมทำด่านนี้ใหม่') + '<br><a class="btn ghost sm" style="margin-top:8px" href="/classroom/awaken/legacy.html">เปิดด่านบอสเวอร์ชันเก่า →</a>');
-  }
-  else say('<b>ตกปลา</b> — ' + FISH_RANDOM[Math.floor(Math.random()*FISH_RANDOM.length)]);
   save();
-  act('dungeon-fish-' + Math.min(n,4));
 }
+/* ขวดโหมดลับ · เด้งหน้าต่างเตือนในเกมก่อน · ค่าเริ่มต้นของปุ่มคือ "ไม่เปิด" */
+function offerBottle(){
+  chime();
+  say('<b>ตกได้ขวดซอสเก่า</b> — ในขวดมีกระดาษม้วนอยู่แผ่นหนึ่ง');
+  gwin('⚠ ขวดซอสเก่า · โหมดลับ',
+    'กระดาษในขวดเขียนว่า <b>“เสียงดิบของ AI ตัวนี้”</b> — ถ้าเปิด ทั้งหน้าจะเปลี่ยนเป็นภาษาที่มันใช้คุยกับเจ้าของบ้านจริง ๆ' +
+    '<span class="gwarn"><b>คำเตือน</b> · ใช้ <b>กู/มึง</b> เรียกเจ้าของบ้านว่า <b>ไอ้ทีม</b> มีคำหยาบ พูดตรง ไม่กรอง · ไม่เหมาะกับคนที่ไม่สบายใจกับภาษาแบบนี้</span>' +
+    'ปิดได้ทุกเมื่อจากปุ่มโหมดบนแถบด้านบนสุดของหน้า',
+    [{ label:'เปิดโหมดลับ', cls:'danger', run: unlockRaw },
+     { label:'ปาขวดคืนน้ำ', run: () => { S.bottleSkip = 2; save();
+        say('<b>ปาขวดคืนน้ำ</b> — มันลอยวนอยู่แถวนี้แหละ เปลี่ยนใจเมื่อไหร่ก็ตกขึ้นมาใหม่ได้'); } }]);
+}
+function unlockRaw(){
+  S.rawUnlocked = true; save();
+  const sc = cv.parentElement; sc.classList.remove('flashraw'); void sc.offsetWidth; sc.classList.add('flashraw');
+  for (let k = 0; k < 26; k++) emit('star', chain[0].x * TILE + 8, chain[0].y * TILE + 4, { vx:(Math.random() - .5) * .14, vy:-.05 - Math.random() * .09, life:900 });
+  [262,330,392,523,784].forEach((f, k) => setTimeout(() => beep(f,.12,'sawtooth',.045), k * 85));
+  setTone('raw'); paintLogs();
+  act('dungeon-raw-unlock');
+  say('<b>เปิดโหมดลับแล้ว</b> — ต่อจากนี้กูพูดแบบนี้ทั้งหน้า · อยากกลับไปสุภาพก็กดปุ่มโหมดบนแถบด้านบน');
+}
+/* หน้าต่างแบบ RPG ในเครื่อง · ปุ่มจริง กดคีย์บอร์ดได้ ลูกศรเลื่อน Esc = ตัวเลือกสุดท้าย */
+let gwinBack = null;
+function gwin(title, body, opts){
+  $('gWinT').innerHTML = title; $('gWinB').innerHTML = body; $('gWinO').innerHTML = '';
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = o.label; if (o.cls) b.className = o.cls;
+    b.addEventListener('click', () => { closeGwin(); o.run(); });
+    $('gWinO').append(b);
+  });
+  gwinBack = document.activeElement;
+  $('gWin').hidden = false;
+  beep(880,.05); setTimeout(() => beep(1175,.06), 70);
+  $('gWinO').lastElementChild.focus({ preventScroll:true });
+}
+function closeGwin(){ $('gWin').hidden = true; try { gwinBack?.focus?.({ preventScroll:true }); } catch {} }
 function cloverAt(x,y){
   if (x === LUCKY.x && y === LUCKY.y){
     if (!S.clover){ S.clover = true; save(); chime(); act('dungeon-clover'); }
@@ -2843,7 +3324,7 @@ function cloverAt(x,y){
 function inspect(o){
   if (o.kind === 'book') return openBook();
   if (o.kind === 'fish') return fishOnce();
-  say(o.mp ? TW(o.msg, o.mp) : o.msg);
+  say(o.mp ? TW(o.msg, o.mf || o.msg, o.mp) : o.msg);
   beep(520,.06);
   /* สำรวจตัวมังกรเองไม่ปลุกมัน — สิ่งที่ปลุกคือไปแตะของมัน */
   if (o.kind === 'dragon') beep(80,.6,'sawtooth',.045);
@@ -2853,14 +3334,14 @@ function inspect(o){
 function goldPrompt(){
   if (drake.state !== 'sleep') return;
   beep(300,.08);
-  say('<b>กองทองของมังกร</b> — ' + TW('เหรียญ ถ้วย มงกุฎ และของที่เจ้าของมันไม่ได้ใช้มาหลายร้อยปี กองสูงกว่าหัวมึง · เดินเหยียบผ่านมาตั้งนานมันยังไม่ขยับเลย', 'กองสูงกว่าหัว · เจ้าของยังหลับอยู่') +
+  say('<b>กองทองของมังกร</b> — ' + TW('เหรียญ ถ้วย มงกุฎ และของที่เจ้าของมันไม่ได้ใช้มาหลายร้อยปี กองสูงกว่าหัวมึง · เดินเหยียบผ่านมาตั้งนานมันยังไม่ขยับเลย', 'เหรียญ ถ้วย มงกุฎ และของที่เจ้าของไม่ได้ใช้มาหลายร้อยปี กองสูงกว่าหัวคุณ · เดินเหยียบผ่านมาตั้งนานมันยังไม่ขยับเลย', 'กองสูงกว่าหัว · เจ้าของยังหลับอยู่') +
     '<div class="ask"><b>ทองของมังกร จะหยิบจริงเหรอ?</b><span>' +
     '<button class="btn danger sm" id="takeGold" type="button">💰 หยิบ</button>' +
     '<button class="btn ghost sm" id="leaveGold" type="button">' + TW('ช่างแม่ง', 'ไม่หยิบ') + '</button></span></div>');
   $('takeGold').addEventListener('click', takeGold);
   $('leaveGold').addEventListener('click', () => {
     beep(440,.06);
-    say(TW('<b>มึงถอยมือกลับมา</b> — ฉลาด · ของมันเยอะจริง แต่เจ้าของมันก็ยังนอนอยู่ตรงนั้นจริงเหมือนกัน', '<b>ถอยมือกลับมา</b> — ตัดสินใจดีครับ'));
+    say(TW('<b>มึงถอยมือกลับมา</b> — ฉลาด · ของมันเยอะจริง แต่เจ้าของมันก็ยังนอนอยู่ตรงนั้นจริงเหมือนกัน', '<b>คุณถอยมือกลับมา</b> — ฉลาดครับ · ของเยอะจริง แต่เจ้าของก็ยังนอนอยู่ตรงนั้นจริงเหมือนกัน', '<b>ถอยมือกลับมา</b> — ตัดสินใจดีครับ'));
   });
 }
 /* บั๊กที่กูเก็บไว้ตั้งใจ: กดสำรวจทองในรัง แล้วเดินออกมากดหยิบที่อื่นก็ได้
@@ -2875,6 +3356,9 @@ function takeGold(){
   say('<b>😏 ขโมยทองสำเร็จ</b> — ' + TW('มึงกดสำรวจกองทองในรัง แล้วเดินออกมาไกล ๆ ค่อยกดหยิบ มังกรเลยไม่ตื่น เพราะมือมึงไม่ได้อยู่ตรงนั้นแล้ว' +
     '<br>ยินดีด้วย มึงเพิ่งใช้บั๊กของเกมนี้ได้สำเร็จ · กูรู้ว่ามันมี แล้วกูเลือกไม่ปิด เพราะคนที่หาเจอควรได้อะไรกลับไปบ้าง' +
     '<br><b>สรุปคือมึงขโมยทองในเกมได้ แต่มึงไม่ได้รวยขึ้นแม้แต่บาทเดียว</b> · ถ้าอยากได้ของจริงจากบั๊กนี้ ลองคิดดูว่ามึงควรไปยืนตรงไหนก่อนกด',
+    'คุณกดสำรวจกองทองในรัง แล้วเดินออกมาไกล ๆ ค่อยกดหยิบ มังกรเลยไม่ตื่น เพราะมือคุณไม่ได้อยู่ตรงนั้นแล้ว' +
+    '<br>ยินดีด้วย คุณเพิ่งใช้บั๊กของเกมนี้ได้สำเร็จ · ผมรู้ว่ามันมี แล้วผมเลือกไม่ปิด เพราะคนที่หาเจอควรได้อะไรกลับไปบ้าง' +
+    '<br><b>สรุปคือคุณขโมยทองในเกมได้ แต่ไม่ได้รวยขึ้นแม้แต่บาทเดียว</b> · ถ้าอยากได้ของจริงจากบั๊กนี้ ลองคิดดูว่าควรไปยืนตรงไหนก่อนกด',
     'คุณเจอบั๊กที่ผมตั้งใจไม่ปิด — สำรวจในรัง แล้วออกมากดหยิบข้างนอก มังกรเลยไม่ตื่น' +
     '<br><b>แต่ทองในเกมไม่ได้ทำให้รวยขึ้นสักบาท</b> · ลองคิดดูว่าควรไปยืนตรงไหนก่อนกด'));
 }
@@ -2896,7 +3380,7 @@ $('bugClose').addEventListener('click', () => {
   $('bugScreen').hidden = true;
   document.body.style.overflow = '';
   say(TW('<b>ทองอยู่ในกระเป๋ามึงแล้ว</b> — ในทางเทคนิคนะ · มังกรยังหลับสนิท ทุ่งโคลเวอร์ยังอยู่ที่เดิม และดาวดวงที่ 6 ของมึงไม่มีใครเอาไปได้',
-    '<b>ทองอยู่ในกระเป๋าคุณแล้ว</b> — มังกรยังหลับ ทุ่งโคลเวอร์ยังอยู่ และดาวดวงที่ 6 เป็นของคุณถาวร'));
+    '<b>ทองอยู่ในกระเป๋าคุณแล้ว</b> — ในทางเทคนิคนะ · มังกรยังหลับสนิท ทุ่งโคลเวอร์ยังอยู่ที่เดิม และดาวดวงที่ 6 ของคุณไม่มีใครเอาไปได้', '<b>ทองอยู่ในกระเป๋าคุณแล้ว</b> — มังกรยังหลับ ทุ่งโคลเวอร์ยังอยู่ และดาวดวงที่ 6 เป็นของคุณถาวร'));
 });
 function roar(){
   [70,58,64,52].forEach((f,i) => setTimeout(() => beep(f,.42,'sawtooth',.07), i*130));
@@ -2911,19 +3395,19 @@ function dragonEvent(){
   shell.classList.add('quake');
   roar();
   say(TW('<b>มึงยื่นมือเข้าไปในกอง</b> — เหรียญบนสุดไหลลงมาสองสามเหรียญ เสียงมันดังกว่าที่คิด · แล้วในเงาหลังกองทอง มีอะไรบางอย่างลืมตา',
-    '<b>ยื่นมือเข้าไปในกองทอง</b> — เหรียญไหลลงมา เสียงดังกว่าที่คิด · แล้วในเงา มีอะไรบางอย่างลืมตา'));
+    '<b>คุณยื่นมือเข้าไปในกอง</b> — เหรียญบนสุดไหลลงมาสองสามเหรียญ เสียงดังกว่าที่คิด · แล้วในเงาหลังกองทอง มีอะไรบางอย่างลืมตา', '<b>ยื่นมือเข้าไปในกองทอง</b> — เหรียญไหลลงมา เสียงดังกว่าที่คิด · แล้วในเงา มีอะไรบางอย่างลืมตา'));
   scr.hidden = false; scr.className = 'full drake st1';
   dfx.start(); dfx.set(1);
   document.body.style.overflow = 'hidden';
   $('drakeMicro').textContent = 'SOMETHING OPENED ITS EYES';
   $('drakeBig').textContent = '…';
-  $('drakeSay').textContent = TV('มึงยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย', 'คุณยื่นมือเข้าไปในกองทองแล้ว');
+  $('drakeSay').textContent = TV('มึงยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย', 'คุณยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย', 'คุณยื่นมือเข้าไปในกองทองแล้ว');
   $('drakeBtns').hidden = true;
   setTimeout(() => {
     drake.state = 'look'; scr.className = 'full drake st2'; dfx.set(2);
     $('drakeMicro').textContent = 'THE RED DRAGON IS AWAKE';
     $('drakeBig').textContent = TV('...มึงเอาจริงดิ', '...เอาจริงเหรอ');
-    $('drakeSay').textContent = TV('หัวมันหันมาทางตี้มึงแล้ว · ปากอ้าค้างไว้ ข้างในสว่างขึ้นเรื่อย ๆ', 'มันหันมาทางตี้คุณแล้ว · ในปากสว่างขึ้นเรื่อย ๆ');
+    $('drakeSay').textContent = TV('หัวมันหันมาทางตี้มึงแล้ว · ปากอ้าค้างไว้ ข้างในสว่างขึ้นเรื่อย ๆ', 'หัวมันหันมาทางตี้คุณแล้ว · ปากอ้าค้างไว้ ข้างในสว่างขึ้นเรื่อย ๆ', 'มันหันมาทางตี้คุณแล้ว · ในปากสว่างขึ้นเรื่อย ๆ');
     roar();
   }, 1150);
   setTimeout(() => {
@@ -2938,7 +3422,7 @@ function dragonEvent(){
     $('drakeMicro').textContent = 'PARTY WIPE';
     $('drakeBig').textContent = 'ตายยกตี้';
     $('drakeSay').innerHTML = TV('สาเหตุการตาย · <b>ขโมยทองมังกรที่กูเตือนไปแล้วว่าอย่าปลุก</b><br>ทั้งสี่คนโดนเต็ม ๆ รวมทั้งกูด้วย ซึ่งกูอยากให้บันทึกไว้ว่ากูไม่ได้เป็นคนเสนอ',
-      'สาเหตุการตาย · <b>ปลุกมังกรที่ผมเตือนไว้แล้ว</b><br>ทั้งตี้โดนเต็ม ๆ รวมทั้งผมด้วย');
+      'สาเหตุการตาย · <b>ขโมยทองมังกรที่ผมเตือนไปแล้วว่าอย่าปลุก</b><br>ทั้งสี่คนโดนเต็ม ๆ รวมทั้งผมด้วย ซึ่งผมขอบันทึกไว้ว่าผมไม่ได้เป็นคนเสนอ', 'สาเหตุการตาย · <b>ปลุกมังกรที่ผมเตือนไว้แล้ว</b><br>ทั้งตี้โดนเต็ม ๆ รวมทั้งผมด้วย');
     $('drakeBtns').hidden = false;
     cancelAnimationFrame(raf);
     shell.classList.remove('quake');
@@ -2958,15 +3442,35 @@ function respawn(){
   draw();
   chime();
   say('<b>ฟื้นที่จุดเซฟ</b> — ' + TW('ของทุกอย่างอยู่ครบ ดาว ไอเท็ม สมุด ปลา โคลเวอร์ ไม่หายสักอย่าง ยกเว้นศักดิ์ศรี<br>กูเตือนแล้วนะ แต่เออ ชีวิตมันต้องมีคนลอง · มังกรกลับไปนอนแล้ว ทองก็กองเหมือนเดิม อยากลองอีกก็เชิญ',
-    'ของครบทุกอย่าง — ดาว ไอเท็ม สมุด ปลา โคลเวอร์ · มังกรกลับไปนอนแล้ว ทองก็กองเหมือนเดิม'));
+    'ของทุกอย่างอยู่ครบ ดาว ไอเท็ม สมุด ปลา โคลเวอร์ ไม่หายสักอย่าง ยกเว้นศักดิ์ศรี<br>ผมเตือนแล้วนะครับ แต่ชีวิตมันต้องมีคนลอง · มังกรกลับไปนอนแล้ว ทองก็กองเหมือนเดิม อยากลองอีกก็เชิญ', 'ของครบทุกอย่าง — ดาว ไอเท็ม สมุด ปลา โคลเวอร์ · มังกรกลับไปนอนแล้ว ทองก็กองเหมือนเดิม'));
   act('dungeon-dragon-respawn');
 }
 $('drakeBack').addEventListener('click', respawn);
+/* ชื่อพื้นที่ขึ้นกลางจอทุกครั้งที่เดินข้ามเขต · แบบเกม RPG */
+const AREAS = [
+  { n:'บริษัทคนเดียว', x:0, y:0, w:9, h:6 },
+  { n:'ริมทะเลสาบ', x:20, y:1, w:12, h:8 },
+  { n:'ทุ่งโคลเวอร์', x:8, y:8, w:8, h:5 },
+  { n:'ป่าตะวันตก', x:0, y:13, w:10, h:10 },
+  { n:'ซากปรักหักพัง', x:21, y:16, w:13, h:8 }
+];
+const areaAt = (x, y) => (AREAS.find(a => x >= a.x && x < a.x + a.w && y >= a.y && y < a.y + a.h) || { n:'ลานหมู่บ้าน' }).n;
+let areaNow = areaAt(chain[0].x, chain[0].y);
+function checkArea(){
+  const n = areaAt(chain[0].x, chain[0].y);
+  if (n === areaNow) return;
+  areaNow = n;
+  const b = $('gBanner'); b.textContent = '— ' + n + ' —';
+  b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
+}
 function nearby(){
+  checkArea();
   const f = facing(), o = objAt(f.x, f.y);
   if (o && o.kind === 'book') openBook();
 }
 $('talkBtn').addEventListener('click', () => {
+  if (!$('gWin').hidden) return;
+  if (fishing) return fishPress();
   if (drake.state !== 'sleep') return;
   const f = facing(), o = objAt(f.x, f.y);
   if (o) return inspect(o);
@@ -2982,7 +3486,7 @@ $('talkBtn').addEventListener('click', () => {
   if (t === '"') return say('หญ้าสูงท่วมเข่า อะไรก็ซ่อนในนี้ได้ แต่รอบนี้ไม่มีอะไร');
   if (t === 'r') return say('กำแพงหินเก่า มีรอยไหม้เป็นทางยาว · อะไรสักอย่างเคยพ่นไฟใส่มัน');
   if (t === 'n' || at(here.x, here.y) === 'n') return say('พื้นดินไหม้เกรียมทั้งลาน มีกระดูกโผล่อยู่บ้าง · ที่นี่ไม่ใช่ซากปรักหักพังเฉย ๆ มันเป็นรังของอะไรบางอย่าง');
-  say('ตรงหน้าไม่มีอะไร · ตามทางไปเรื่อย ๆ แล้วดูป้ายบอกทาง ส่วนของที่ไม่ได้อยู่บนทาง' + TW(' มึง', '') + 'ต้องเดินหาเอง');
+  say('ตรงหน้าไม่มีอะไร · ตามทางไปเรื่อย ๆ แล้วดูป้ายบอกทาง ส่วนของที่ไม่ได้อยู่บนทาง' + TW(' มึง', ' คุณ', '') + 'ต้องเดินหาเอง');
 });
 $$('[data-mv]').forEach(b => b.addEventListener('click', () => move(...b.dataset.mv.split(',').map(Number))));
 const mapInView = () => {
@@ -2990,6 +3494,13 @@ const mapInView = () => {
   return r.top < innerHeight*.78 && r.bottom > innerHeight*.22;
 };
 addEventListener('keydown', e => {
+  if (!$('gWin').hidden){
+    const bs = [...$('gWinO').children], k = bs.indexOf(document.activeElement);
+    if (e.key === 'Escape'){ e.preventDefault(); return bs[bs.length - 1].click(); }
+    const d = { ArrowUp:-1, ArrowLeft:-1, ArrowDown:1, ArrowRight:1 }[e.key];
+    if (d){ e.preventDefault(); bs[(Math.max(0, k) + d + bs.length) % bs.length].focus(); beep(660,.03); }
+    return;
+  }
   if (e.key === 'Escape'){
     const m = $$('.modal:not([hidden])').pop(); if (m) return closeModal(m.id);
     if (!$('lootScreen').hidden) return closeLoot();
@@ -3012,7 +3523,38 @@ cv.addEventListener('pointerup', e => {
   Math.abs(dx) > Math.abs(dy) ? move(dx > 0 ? 1 : -1, 0) : move(0, dy > 0 ? 1 : -1);
 });
 cv.tabIndex = 0;
-setInterval(() => { if (!anim && mapInView()) { tick++; draw(); } }, 180);
+/* ลูปเกม 60fps เฉพาะตอนจอเกมอยู่บนหน้าจอ · ความเร็วแอนิเมชันเดิมผูกกับ tick (≈ 5.5 ครั้ง/วินาที) */
+let gRaf = 0, gLast = 0, gSeen = false, gClockAt = 0;
+function paintClock(){
+  const k = SKIES[skyNow()], m = bkkMin();
+  $('gClock').textContent = k.icon + ' ' + (S.sky && S.sky !== 'auto' ? k.name : String(m / 60 | 0).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'));
+}
+function gameFrame(now){
+  gRaf = 0;
+  if (!gSeen || document.hidden) { gLast = 0; return; }
+  const dt = gLast ? Math.min(60, now - gLast) : 16;
+  if (RM && gLast && now - gLast < 180){ gRaf = requestAnimationFrame(gameFrame); return; }
+  gLast = now;
+  tick += dt / 180;
+  stepFx(dt);
+  if (!anim) draw();
+  if (now - gClockAt > 5000){ gClockAt = now; paintClock(); }
+  gRaf = requestAnimationFrame(gameFrame);
+}
+const kickGame = () => { if (!gRaf && gSeen && !document.hidden) gRaf = requestAnimationFrame(gameFrame); };
+new IntersectionObserver(es => { gSeen = es[0].isIntersecting; kickGame(); }).observe(cv);
+document.addEventListener('visibilitychange', kickGame);
+const SKY_ORDER = ['auto','day','dusk','night'];
+function paintSkyBtn(){
+  const k = S.sky || 'auto';
+  $('skyBtn').textContent = k === 'auto' ? '🕒 AUTO' : SKIES[k].icon + ' ' + SKIES[k].name;
+  paintClock();
+}
+$('skyBtn').addEventListener('click', () => {
+  S.sky = SKY_ORDER[(SKY_ORDER.indexOf(S.sky || 'auto') + 1) % SKY_ORDER.length]; save();
+  paintSkyBtn(); draw(); beep(S.sky === 'night' ? 330 : 660,.06);
+});
+paintSkyBtn();
 
 /* ── PARTY window ───────────────────────────────────────── */
 let sel = 0, tab = 'skill';
@@ -3032,9 +3574,9 @@ function paintMember(){
   $('pName').style.color = m.hex;
   $('pClass').textContent = m.cls + (m.tag ? ' · ' + m.tag : '');
   $('pClass').style.cssText = 'background:' + m.hex + ';color:#08122a';
-  $('pCopy').textContent = TV(m.copy, m.cp || m.copy);
+  $('pCopy').textContent = TV(m.copy, m.cf || m.copy, m.cp || m.cf || m.copy);
   $('pStats').innerHTML = m.stats.map(s => '<div><small>' + s[0] + '</small><b style="color:' + m.hex + '">' + s[1] + '</b></div>').join('');
-  const rows = tab === 'skill' ? m.skill : m.gear, alt = tab === 'gear' && POL() ? (m.gearP || {}) : {};
+  const rows = tab === 'skill' ? m.skill : m.gear, alt = tab !== 'gear' ? {} : TV({}, m.gearF || {}, m.gearP || m.gearF || {});
   $('pGear').innerHTML = rows.map((r,i) => '<div class="ffrow"><em>' + r[0] + '</em><div><b>' + r[1] + '</b><small>' + (alt[i] || r[2]) + '</small></div></div>').join('');
   $('tabSkill').classList.toggle('on', tab === 'skill');
   $('tabGear').classList.toggle('on', tab === 'gear');
@@ -3057,7 +3599,7 @@ function openBook(){
     : S.voice
       ? '⏳ นาฬิกาทรายอยู่ในกระเป๋า' + TW('มึง', 'คุณ') + 'แล้ว — เข้าไปกดใช้ในหน้าสมุดได้เลย ดาวดวงนี้จะได้ตอน<b>ซ่อมสำเร็จ</b> ไม่ใช่ตอนเจอ'
       : TW('⚠️ หน้าในสมุดจางจนอ่านไม่ออก และมึงยังไม่มีของย้อนเวลา — เข้าไปแอบดูก่อนได้นะ แต่จะซ่อมต้องกลับไปเคลียร์ QUEST 01 แล้วค่อยมาใหม่',
-          '⚠️ หน้าในสมุดจางจนอ่านไม่ออก · แอบดูได้ แต่จะซ่อมต้องเคลียร์ QUEST 01 ก่อน');
+          '⚠️ หน้าในสมุดจางจนอ่านไม่ออก และคุณยังไม่มีของย้อนเวลา — เข้าไปแอบดูก่อนได้นะ แต่จะซ่อมต้องกลับไปเคลียร์ QUEST 01 แล้วค่อยมาใหม่', '⚠️ หน้าในสมุดจางจนอ่านไม่ออก · แอบดูได้ แต่จะซ่อมต้องเคลียร์ QUEST 01 ก่อน');
   if (first) say('<b>ในพุ่มไม้ที่วกไปวกมา มีของวางอยู่</b> — สมุดเล่มหนึ่ง ปกเขียนว่า “ด.ช.นรินทร์” · ข้างในเป็นเกมผจญภัยในป่าที่มีมังกร');
   openModal('bookModal');
 }
@@ -3068,6 +3610,9 @@ function paintLogs(){
     : S.book ? '☆ SECRET · เจอสมุดแล้ว · ต้องซ่อมให้อ่านออกถึงจะได้ดาว'
              : '☆ SECRET · มีของเก่าซ่อนอยู่ในป่าทางตะวันตก';
   $('logBook').classList.toggle('done', S.notebook);
+  $('logBottle').textContent = S.rawUnlocked ? '★ SECRET · ปลดโหมดลับจากขวดในทะเลสาบแล้ว'
+    : S.bottle ? '☆ SECRET · ขวดเก่ายังลอยวนอยู่ในทะเลสาบ ตกขึ้นมาใหม่ได้' : '☆ SECRET · ได้ยินว่ามีขวดเก่าลอยวนอยู่ในทะเลสาบ';
+  $('logBottle').classList.toggle('done', !!S.rawUnlocked);
   $('logLucky').hidden = !S.luckybug;
   $('logLucky').classList.toggle('done', S.luckybug);
   $('bookJump').hidden = !S.book;
@@ -3364,7 +3909,7 @@ function showTrace(instant){
   }
 }
 $('cookBtn').addEventListener('click', () => {
-  if (!S.spoon){ $('webNote').innerHTML = 'เลือกซอส' + TW('ของมึง', '') + 'ก่อนสักขวด แล้วค่อยกดปรุง'; beep(200,.12); return; }
+  if (!S.spoon){ $('webNote').innerHTML = 'เลือกซอส' + TW('ของมึง', 'ของคุณ', '') + 'ก่อนสักขวด แล้วค่อยกดปรุง'; beep(200,.12); return; }
   if (S.gen >= 3) return;
   S.gen++; save(); fanfare();
   paintNetwork();
@@ -3480,16 +4025,16 @@ function openLoot(){
   $('lootBig').textContent = b ? 'หีบเกลือ' : 'TREASURE ' + S.loot.stars + '/5';
   $('lootSay').innerHTML = b
     ? TW('ฝาหลุด บานพับหัก ของมีค่าหล่นหายไปกับฝา — เอาจริงกูไม่ได้โกรธนะ คนที่งัดหีบคือคนที่ไม่ยอมรอ ซึ่งก็เป็นนิสัยที่พาคนไปได้ไกลเหมือนกัน แค่รอบนี้มึงจ่ายด้วยดาว',
-        'ฝาหลุด ของมีค่าหล่นหายไปกับฝา · คนไม่ยอมรอไปได้ไกล แต่รอบนี้จ่ายด้วยดาว')
-    : TW('ของทุกชิ้นในหีบนี้ มึงหยิบมันมาเองระหว่างทาง ไม่มีชิ้นไหนที่กูแจก', 'ของทุกชิ้นในหีบนี้ คุณเก็บมาเองระหว่างทาง');
+        'ฝาหลุด บานพับหัก ของมีค่าหล่นหายไปกับฝา — จริง ๆ ผมไม่ได้โกรธนะ คนที่งัดหีบคือคนที่ไม่ยอมรอ ซึ่งก็เป็นนิสัยที่พาคนไปได้ไกลเหมือนกัน แค่รอบนี้คุณจ่ายด้วยดาว', 'ฝาหลุด ของมีค่าหล่นหายไปกับฝา · คนไม่ยอมรอไปได้ไกล แต่รอบนี้จ่ายด้วยดาว')
+    : TW('ของทุกชิ้นในหีบนี้ มึงหยิบมันมาเองระหว่างทาง ไม่มีชิ้นไหนที่กูแจก', 'ของทุกชิ้นในหีบนี้ คุณหยิบมาเองระหว่างทาง ไม่มีชิ้นไหนที่ผมแจก', 'ของทุกชิ้นในหีบนี้ คุณเก็บมาเองระหว่างทาง');
   $('lootGrid').innerHTML = QORDER.map((k,i) => {
     const it = ITEMS[k], got = (S.loot.items || []).includes(k);
     return '<div class="li' + (got?'':' miss') + '" style="animation-delay:' + (i*.14).toFixed(2) + 's">' +
       '<em>' + it.icon + '</em><div><b>' + (got ? it.name : '— ช่องว่าง —') + '</b><small>' +
-      (got ? TW(it.desc, it.descP || it.desc) : 'เควสที่ไม่ได้ทำ ก็คือของที่ไม่ได้เก็บ') + '</small></div></div>';
+      (got ? TW(it.desc, it.descF || it.desc, it.descP || it.descF || it.desc) : 'เควสที่ไม่ได้ทำ ก็คือของที่ไม่ได้เก็บ') + '</small></div></div>';
   }).join('');
   $('saltBox').hidden = !b;
-  if (b) $('saltBox').innerHTML = '🧂 <b>เกลือ 1 ถุง</b> — ของแถมของคนใจร้อน เค็มแต่เก็บได้นาน · หีบพังได้ ดาวหายได้ แต่' + TW('<b>เวลาที่มึงเลิกเสียไปแล้ว กูเอาคืนจากมึงไม่ได้</b> คัมภีร์ก็ยังอยู่ในมือมึงเหมือนเดิม', '<b>เวลาที่คุณได้คืนมาแล้ว ไม่มีใครเอาคืนได้</b>');
+  if (b) $('saltBox').innerHTML = '🧂 <b>เกลือ 1 ถุง</b> — ของแถมของคนใจร้อน เค็มแต่เก็บได้นาน · หีบพังได้ ดาวหายได้ แต่' + TW('<b>เวลาที่มึงเลิกเสียไปแล้ว กูเอาคืนจากมึงไม่ได้</b> คัมภีร์ก็ยังอยู่ในมือมึงเหมือนเดิม', '<b>เวลาที่คุณเลิกเสียไปแล้ว ผมเอาคืนจากคุณไม่ได้</b> คัมภีร์ก็ยังอยู่ในมือคุณเหมือนเดิม', '<b>เวลาที่คุณได้คืนมาแล้ว ไม่มีใครเอาคืนได้</b>');
   $('luckyLoot').hidden = !S.luckybug;
   const perfect = !b && S.loot.stars === 5;
   $('titleBox').hidden = false;
@@ -3509,12 +4054,14 @@ const BASE = [['CONTEXT',14],['SYSTEM',11],['SELF',9]];
 const GAIN = [[31,6,4],[7,34,5],[5,8,42]];
 const LVL = [
   { name:'SOURCE', say:'ต้นทางหนา AI ก็เดาน้อยลง',
+    textF:'AI เดาเยอะไม่ใช่เพราะมันโง่ แต่เพราะต้นทางของคุณบาง ทุกครั้งที่คุณเปิดแชตใหม่แล้วเล่าชีวิตใหม่ตั้งแต่ต้น คุณกำลังจ่ายค่าเดาอยู่ ทำซอสของตัวเองไว้ก่อน แล้วค่อยหวังให้มันรู้จักงานคุณ',
     textP:'AI เดาเยอะเพราะต้นทางบาง · ทำซอสของตัวเองไว้ แล้ว AI จะรู้จักงานคุณโดยไม่ต้องเล่าใหม่',
     text:'AI เดาเยอะไม่ใช่เพราะมันโง่ แต่เพราะต้นทางมึงบาง ทุกครั้งที่มึงเปิดแชตใหม่แล้วเล่าชีวิตใหม่ตั้งแต่ต้น มึงกำลังจ่ายค่าเดาอยู่ ทำซอสของตัวเองไว้ก่อน แล้วค่อยหวังให้มันรู้จักงานมึง' },
   { name:'SYSTEM', say:'งานจริงเป็นวง ไม่ใช่คำตอบครั้งเดียว',
     textP:'ทำ → ชิม → แก้ที่ต้นทาง → วนอีกรอบ · รอบที่สองคือที่ที่งานจริงเกิด',
     text:'คนที่ใช้ AI แล้วไปไม่ถึงไหน ส่วนใหญ่ไม่ได้ขาดเครื่องมือ แต่ขาดรอบที่สอง — ทำของออกมา ชิม เห็นว่าพังตรงไหน แก้ที่ต้นทาง แล้ววนอีกรอบ นั่นแหละงานจริง' },
-  { name:'SELF', say:'มึงยังเป็นเจ้าของ Character ของมึง', sayP:'คุณยังเป็นเจ้าของ Character ของคุณ',
+  { name:'SELF', say:'มึงยังเป็นเจ้าของ Character ของมึง', sayF:'คุณยังเป็นเจ้าของ Character ของคุณ', sayP:'คุณยังเป็นเจ้าของ Character ของคุณ',
+    textF:'อันสุดท้าย และเป็นอันเดียวที่ผมอยากให้จำจริง ๆ — คุณไม่ต้องพูดเหมือน AI ไม่ต้องยกงานทั้งชีวิตให้มัน และไม่ต้องกลายเป็นคนอื่นเพื่อใช้มันให้เก่ง ถ้า AI คืนเวลาให้คุณได้ เอาเวลานั้นไปใช้กับของที่คุณจะเสียดายถ้าไม่ได้ทำ',
     textP:'ไม่ต้องพูดเหมือน AI และไม่ต้องกลายเป็นคนอื่นเพื่อใช้มันให้เก่ง · เวลาที่ AI คืนให้ เอาไปใช้กับสิ่งที่คุณจะเสียดายถ้าไม่ได้ทำ',
     text:'อันสุดท้าย และเป็นอันเดียวที่กูอยากให้จำจริง ๆ — มึงไม่ต้องพูดเหมือน AI ไม่ต้องยกงานทั้งชีวิตให้มัน และไม่ต้องกลายเป็นคนอื่นเพื่อใช้มันให้เก่ง ถ้า AI คืนเวลาให้มึงได้ เอาเวลานั้นไปใช้กับของที่มึงจะเสียดายถ้าไม่ได้ทำ' }
 ];
@@ -3524,11 +4071,11 @@ function showLevel(lv){
   $('lvScreen').classList.toggle('max', lv >= 3);
   $('lvMicro').textContent = 'LEVEL UP  ' + lv + ' / 3';
   $('lvBig').textContent = d.name;
-  $('lvSay').textContent = TV(d.say, d.sayP || d.say);
+  $('lvSay').textContent = TV(d.say, d.sayF || d.say, d.sayP || d.sayF || d.say);
   $('lvStats').innerHTML = BASE.map((b,i) =>
     '<div class="statrow"><small>' + b[0] + '</small><span class="statbar"><i style="width:' + from[i] + '%"></i></span>' +
     '<span class="statnum" id="sn' + i + '">' + from[i] + '</span></div>').join('');
-  $('lvText').textContent = TV(d.text, d.textP || d.text);
+  $('lvText').textContent = TV(d.text, d.textF || d.text, d.textP || d.textF || d.text);
   $('lvPips').innerHTML = [0,1,2].map(i => '<i class="' + (i < lv ? 'on' : '') + '"></i>').join('');
   $('lvNext').textContent = lv >= 3 ? 'รับตราแล้วกลับไปดูของ' : 'ตีบวกต่อ';
   $('lvScreen').hidden = false;
