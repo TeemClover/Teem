@@ -474,6 +474,7 @@ code{font:500 13px/1.7 ui-monospace,Menlo,monospace;background:var(--s2);padding
     <nav class="chips" aria-label="ส่วนต่าง ๆ ของแผน">
       <a href="#leaks">ปัญหา</a>
       <a href="#model">บันได 4 ขั้น</a>
+      <a href="offer/" style="color:var(--lime)">ดูข้อเสนอ ↗</a>
       <a href="#leads">หาลูกค้า</a>
       <a href="#cashflow">จำลองเงินสด</a>
       <a href="#roadmap">90 วัน</a>
@@ -987,6 +988,7 @@ code{font:500 13px/1.7 ui-monospace,Menlo,monospace;background:var(--s2);padding
  function renderStep(n){
   var s=steps[n];
   $('mmMain').innerHTML='<span class="tag plan">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><div class="say">'+esc(s.sayit)+'</div><ul class="bul">'+s.bul.map(function(b){return '<li>'+esc(b)+'</li>'}).join('')+'</ul>';
+  if(n===0)$('mmMain').insertAdjacentHTML('beforeend','<a class="btn primary sm" style="margin-top:16px" href="offer/">ดูหน้าข้อเสนอเต็ม →</a>');
   $('mmSide').innerHTML=sideHTML(s.side);
   $('mmPanel').setAttribute('aria-labelledby','mm-'+n);
   var kp=$('kickPrice');if(kp){var upd=function(){var p=Number(kp.value);$('kickOut').textContent=fmt(p);$('kickEq').textContent=fmt(p);$('kickRes').textContent=fmt(Math.round(p/12));paintRange(kp)};kp.addEventListener('input',upd);upd()}
