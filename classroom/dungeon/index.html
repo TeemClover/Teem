@@ -268,14 +268,25 @@ html[data-voice="raw"] .tp{display:none!important}
 .screen{border-radius:10px;overflow:hidden;background:#1d5236;border:2px solid rgba(0,0,0,.4)}
 .screen canvas{display:block;width:100%;height:auto;aspect-ratio:20/12;image-rendering:pixelated;touch-action:none}
 .msg{position:relative;margin-top:8px;padding:10px 13px;border:3px double rgba(255,255,255,.72);border-radius:4px;background:rgba(3,11,7,.92);color:#fff;font-size:14px;line-height:1.7;min-height:70px}
-/* ── RETRO RPG · กล่องข้อความพิมพ์ทีละตัว + จอเกม + หน้าต่างเด้ง ── */
-.msg .tw{opacity:0;animation:twIn 1ms linear forwards}
-@keyframes twIn{to{opacity:1}}
-.msg.done .tw{animation:none;opacity:1}
-.msg.typing{cursor:pointer}
-.msg.done::after{content:"▼";position:absolute;right:9px;bottom:5px;color:#ffe071;font-size:10px;animation:blink .8s steps(1) infinite}
+/* ── RETRO RPG · จอเกม + หน้าต่างเด้ง ── */
 .rpgtools{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 @media(max-width:560px){.rpgsub{display:none}.rpgtools .snd{min-height:30px;padding:4px 8px;font-size:10px}}
+.tbM{display:none}
+@media(max-width:560px){.tbD{display:none}.tbM{display:grid;justify-items:center;line-height:1.1}.tbM b{font:900 30px/1 var(--mono)}}
+.pads,.pads button,.screen canvas{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.screen canvas{touch-action:none}
+@media(max-width:560px){
+  .rpg{margin-left:-10px;margin-right:-10px;padding:8px}
+  .pads{align-items:center;padding:12px 4px 4px}
+  .pads .dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,50px);gap:5px}
+  .pads .dpad button{font-size:18px;border-radius:12px}
+  .pads .rpgbtns{flex:none;flex-direction:column-reverse;align-items:stretch;gap:8px;width:auto}
+  .pads #talkBtn{flex:none;align-self:center;width:88px;height:88px;min-height:0;padding:0;border-radius:50%;font-size:13px;line-height:1.3;
+    background:radial-gradient(circle at 35% 30%,#ffe7a8,#f0c96c 55%,#c9932f);color:#2a1a04;border:0;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25),0 6px 18px rgba(240,201,108,.35)}
+  .pads #talkBtn:active{transform:translateY(2px);box-shadow:inset 0 -2px 0 rgba(0,0,0,.25)}
+  .pads #partyBtn{min-height:36px;padding:6px 10px;font-size:12px}
+  .msg{min-height:58px;padding:9px 11px;font-size:14.5px}
+}
 .rpg{position:relative}
 .ghud{position:absolute;left:6px;top:6px;z-index:2;padding:2px 7px;border:2px solid #f4f0e2;border-radius:4px;background:rgba(14,22,64,.82);
   box-shadow:0 0 0 1px #0b0f25,inset 0 0 0 1px rgba(0,0,0,.35);color:#fff;font:700 10px/1.5 var(--mono);letter-spacing:.06em;pointer-events:none}
@@ -301,7 +312,7 @@ html[data-voice="raw"] .tp{display:none!important}
 .gwo button.danger{color:#ffb4a4}
 .screen.flashraw::before{content:"";position:absolute;inset:0;z-index:3;background:#fff;pointer-events:none;animation:flashRaw .7s ease-out forwards}
 @keyframes flashRaw{0%{opacity:.95;background:#fff}40%{background:#ff8a5c}100%{opacity:0;background:#ff5a3a}}
-@media(prefers-reduced-motion:reduce){.msg .tw{animation:none;opacity:1}.gbanner.on{animation:none}.gwbox{animation:none}}
+@media(prefers-reduced-motion:reduce){.gbanner.on{animation:none}.gwbox{animation:none}}
 .msg b{color:var(--gold)}
 .pads{display:flex;justify-content:space-between;align-items:flex-end;gap:11px;padding:11px 2px 2px}
 .dpad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,38px);gap:4px;flex:none}
@@ -1558,7 +1569,7 @@ try {
         <div class="ghud" aria-hidden="true"><span id="gClock">☀ --:--</span></div>
         <div class="gbanner" id="gBanner" aria-hidden="true"></div>
       </div>
-      <div class="msg" id="rpgMsg"><span class="vr">มึง</span><span class="vp">คุณ</span>เกิดที่จุดเซฟกลางป่า · กดปุ่มทิศทาง หรือลูกศร / WASD บนคีย์บอร์ด · บนมือถือลากนิ้วบนจอก็เดินได้<br>เดินขึ้นไปตามทาง แล้วกด “สำรวจตรงหน้า” เวลาเจออะไร</div>
+      <div class="msg" id="rpgMsg"><span class="vr">มึง</span><span class="vp">คุณ</span>เกิดที่จุดเซฟกลางป่า · กดปุ่มทิศทาง (กดค้างเพื่อเดินต่อ) หรือลูกศร / WASD · บนมือถือปัดนิ้วบนจอก็เดินได้<br>เดินขึ้นไปตามทาง แล้วกด “สำรวจตรงหน้า” เวลาเจออะไร</div>
       <div class="pads">
         <div class="dpad">
           <button class="u" type="button" data-mv="0,-1" aria-label="ขึ้น">▲</button>
@@ -1568,7 +1579,7 @@ try {
         </div>
         <div class="rpgbtns">
           <button class="btn gold" id="partyBtn" type="button">☰ PARTY</button>
-          <button class="btn ghost" id="talkBtn" type="button">🔎 สำรวจตรงหน้า</button>
+          <button class="btn ghost" id="talkBtn" type="button" aria-label="สำรวจตรงหน้า"><span class="tbD">🔎 สำรวจตรงหน้า</span><span class="tbM" aria-hidden="true"><b>A</b>สำรวจ</span></button>
         </div>
       </div>
       <div class="gwin" id="gWin" hidden role="dialog" aria-modal="true" aria-labelledby="gWinT">
@@ -2554,7 +2565,8 @@ const MAP = [
   '#############....."""..rrrrrrrrr.#',
   '##################################'
 ];
-const MW = MAP[0].length, MH = MAP.length, TILE = 16, VW = 20, VH = 12;
+const MW = MAP[0].length, MH = MAP.length, TILE = 16;
+let VW = 20, VH = 12;   /* จอแคบซูมเข้าเหลือ 13×11 ช่อง (ดู fitView) */
 const SOLID_T = new Set(['#','~','r']);
 const SPAWN = { x:16, y:19 };
 const SPAWN_TRAIL = [{x:15,y:19},{x:14,y:19},{x:13,y:19}];
@@ -2609,7 +2621,8 @@ const objAt = (x,y) => occupied.get(x+','+y) || null;
 const blocked = (x,y) => SOLID_T.has(at(x,y)) || !!objAt(x,y);
 const LUCKY = { x:11, y:10 };   /* clover 4 แฉก · คงที่ทุกรอบ ไม่สุ่มให้หัวเสีย */
 
-const cv = $('map'), ctx = cv.getContext('2d');
+/* จอเกมเล็กแค่ 320×192 · วาดด้วย CPU ถูกกว่าส่งคำสั่ง fillRect เป็นพันไปการ์ดจอทุกเฟรม (มือถือกระตุกเพราะตรงนี้) */
+const cv = $('map'), ctx = cv.getContext('2d', { willReadFrequently:true });
 ctx.imageSmoothingEnabled = false;
 
 const PARTY = [
@@ -2971,7 +2984,15 @@ function skyNow(){
 const lights = [];
 const L = (x, y, r, c = '255,210,140', f = false) => lights.push({ x, y, r, c, f });
 const lc = document.createElement('canvas'); lc.width = cv.width; lc.height = cv.height;
-const lctx = lc.getContext('2d');
+const lctx = lc.getContext('2d', { willReadFrequently:true });
+/* สไปรต์แสงวาดครั้งเดียวแล้วยืดขนาดเอา · ถูกกว่าสร้าง gradient ใหม่ทุกเฟรมหลายสิบเท่า */
+/* สไปรต์ต้องอยู่ฝั่ง CPU เหมือนจอเกม ไม่งั้น Chrome ย้ายไปการ์ดจอหลังวาดซ้ำ ๆ แล้วทุก drawImage ต้องดึงภาพกลับ (กระตุกหนักตอนกลางคืน) */
+const sprite = (fill) => { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d', { willReadFrequently:true }); fill(g); return c; };
+const HOLE = sprite(g => { const r = g.createRadialGradient(32,32,0,32,32,32);
+  r.addColorStop(0,'rgba(0,0,0,1)'); r.addColorStop(.45,'rgba(0,0,0,.7)'); r.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0,0,64,64); });
+const GLOW = new Map();
+const glowOf = c => GLOW.get(c) || GLOW.set(c, sprite(g => { const r = g.createRadialGradient(32,32,0,32,32,32);
+  r.addColorStop(0,'rgba(' + c + ',.55)'); r.addColorStop(1,'rgba(' + c + ',0)'); g.fillStyle = r; g.fillRect(0,0,64,64); })).get(c);
 function paintSky(sky){
   const k = SKIES[sky];
   if (k.dark){
@@ -2981,19 +3002,17 @@ function paintSky(sky){
     lctx.fillRect(0, 0, lc.width, lc.height);
     lctx.globalCompositeOperation = 'destination-out';
     for (const l of lights){
-      const r = l.r * (l.f ? 1 + Math.sin(tick * 2.1 + l.x) * .07 : 1);
-      const g = lctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, r);
-      g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.45, 'rgba(0,0,0,.7)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-      lctx.fillStyle = g; lctx.fillRect(l.x - r, l.y - r, r * 2, r * 2);
+      const r = l.r * (l.f ? 1 + Math.sin(tick * 2.1 + l.x) * .06 : 1);
+      lctx.drawImage(HOLE, l.x - r, l.y - r, r * 2, r * 2);
     }
     ctx.drawImage(lc, 0, 0);
-    ctx.globalCompositeOperation = 'lighter';
-    for (const l of lights){
-      const g = ctx.createRadialGradient(l.x, l.y, 0, l.x, l.y, l.r * .75);
-      g.addColorStop(0, 'rgba(' + l.c + ',' + (.3 * k.dark).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + l.c + ',0)');
-      ctx.fillStyle = g; ctx.fillRect(l.x - l.r, l.y - l.r, l.r * 2, l.r * 2);
+    if (!LOW){
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = .55 * k.dark;
+      for (const l of lights) if (l.r >= 16) ctx.drawImage(glowOf(l.c), l.x - l.r * .75, l.y - l.r * .75, l.r * 1.5, l.r * 1.5);
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
     }
-    ctx.globalCompositeOperation = 'source-over';
   }
   if (k.wash){ ctx.fillStyle = 'rgba(' + k.wash + ')'; ctx.fillRect(0, 0, cv.width, cv.height); }
 }
@@ -3013,6 +3032,8 @@ function objLights(o, sx, sy){
 /* ── อนุภาค · ฝุ่นเท้า ประกายเตาตีเหล็ก ใบไม้กลางวัน หิ่งห้อยกลางคืน ระลอกน้ำ ── */
 const fx = [];
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* เครื่องช้า → LOW: ปิดแสงสี ปิดหิ่งห้อย เหลือ 20fps · ตัดสินจากเวลาวาดจริง ไม่เดาจากรุ่นเครื่อง */
+let LOW = RM;
 function emit(kind, x, y, o){
   fx.push(Object.assign({ kind, x, y, vx:0, vy:0, t:0, life:600, ph:Math.random() * 6.3 }, o));
   if (fx.length > 180) fx.shift();
@@ -3026,11 +3047,9 @@ function camera(){
 function stepFx(dt){
   const sky = skyNow(), { cx, cy } = camera(), wx = cx * TILE, wy = cy * TILE;
   if (!RM){
-    if ((sky === 'day' || sky === 'dawn') && Math.random() < dt / 700)
-      emit('leaf', wx + Math.random() * (cv.width + 60) - 60, wy - 4, { vx:.011 + Math.random() * .01, vy:.012 + Math.random() * .008, life:12000, c: Math.random() < .5 ? '#ffc6d9' : '#fff1a8' });
-    if ((sky === 'night' || sky === 'dusk') && fx.filter(f => f.kind === 'fly').length < 16)
+    if (!LOW && (sky === 'night' || sky === 'dusk') && fx.filter(f => f.kind === 'fly').length < 7)
       emit('fly', wx + Math.random() * cv.width, wy + Math.random() * cv.height, { life:5000 + Math.random() * 5000 });
-    if (Math.random() < dt / 260)
+    if (Math.random() < dt / 600)
       emit('spark', FORGE.x * TILE + 22 + Math.random() * 6, FORGE.y * TILE + 17, { vx:(Math.random() - .5) * .025, vy:-.025 - Math.random() * .03, life:650 });
   }
   for (let k = fx.length - 1; k >= 0; k--){
@@ -3053,33 +3072,20 @@ function drawFx(cx, cy, layer){
         ctx.beginPath(); ctx.ellipse(Math.round(x) + .5, Math.round(y) + .5, 2 + f.t / 70, 1 + f.t / 150, 0, 0, 6.3); ctx.stroke();
       }
     } else {
-      if (f.kind === 'spark'){ px(Math.round(x), Math.round(y), 1, 1, 'rgba(255,207,106,' + a.toFixed(2) + ')'); if (a > .5) L(x, y, 5, '255,170,80'); }
+      if (f.kind === 'spark') px(Math.round(x), Math.round(y), 1, 1, 'rgba(255,207,106,' + a.toFixed(2) + ')');
       else if (f.kind === 'leaf'){
         const sx = Math.round(x + Math.sin(f.t / 380 + f.ph) * 5), sy = Math.round(y);
         px(sx, sy, (f.t / 300 + f.ph | 0) % 2 ? 2 : 1, 1, f.c);
       } else if (f.kind === 'fly'){
         const fxp = x + Math.sin(f.t / 650 + f.ph) * 8, fyp = y + Math.cos(f.t / 900 + f.ph) * 5;
         const glow = (Math.sin(f.t / 260 + f.ph) + 1) / 2 * Math.min(1, f.t / 600, (f.life - f.t) / 600);
-        if (glow > .15){ px(Math.round(fxp), Math.round(fyp), 1, 1, 'rgba(220,255,140,' + glow.toFixed(2) + ')'); L(fxp, fyp, 9 * glow, '200,255,120'); }
+        if (glow > .15){ px(Math.round(fxp), Math.round(fyp), 1, 1, 'rgba(220,255,140,' + glow.toFixed(2) + ')'); L(fxp, fyp, 7, '200,255,120'); }
       } else if (f.kind === 'drop') px(Math.round(x), Math.round(y), 1, 1, 'rgba(190,235,255,' + a.toFixed(2) + ')');
       else if (f.kind === 'star'){
         const c = 'rgba(255,240,170,' + a.toFixed(2) + ')';
         px(Math.round(x), Math.round(y) - 1, 1, 3, c); px(Math.round(x) - 1, Math.round(y), 3, 1, c);
-        L(x, y, 8, '255,220,120');
       }
     }
-  }
-}
-/* เงาเมฆลอยผ่านแผนที่ตอนกลางวัน */
-function drawClouds(cx, cy, sky){
-  if (sky === 'night') return;
-  const span = MW * TILE + 260;
-  ctx.fillStyle = sky === 'day' ? 'rgba(0,20,10,.075)' : 'rgba(0,0,20,.05)';
-  for (let k = 0; k < 2; k++){
-    const wxp = ((tick * 1.2 + k * 280) % span) - 130, wyp = 50 + k * 170 + Math.sin(tick / 40 + k) * 8;
-    const x = wxp - cx * TILE, y = wyp - cy * TILE;
-    if (x < -120 || x > cv.width + 120 || y < -60 || y > cv.height + 60) continue;
-    ctx.beginPath(); ctx.ellipse(x, y, 64, 20, 0, 0, 6.3); ctx.ellipse(x + 38, y - 8, 40, 16, 0, 0, 6.3); ctx.fill();
   }
 }
 /* ป้าย ! เหนือหัวหัวหน้าตี้ เวลาหันหน้าเข้าหาของที่สำรวจได้ · แบบ RPG ยุค 16-bit */
@@ -3130,41 +3136,11 @@ function draw(){
     drawCrane(Math.round((o.x-cx)*TILE), Math.round((o.y-cy)*TILE), o.w*TILE, o.h*TILE);
   });
   drawFx(cx, cy, 1);
-  drawClouds(cx, cy, sky);
   paintSky(sky);
   const hot = fishing && fishing.phase === 'bite';
   if (hot || (!fishing && interactTarget())) drawBubble(lead.x, lead.y, hot);
 }
-const SEG = 'Segmenter' in Intl ? new Intl.Segmenter('th', { granularity:'grapheme' }) : null;
-function say(html){
-  const el = $('rpgMsg');
-  el.innerHTML = html;
-  el.classList.remove('typing', 'done');
-  clearTimeout(say.t);
-  if (!SEG || RM){ el.classList.add('done'); return; }
-  const nodes = [], walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-  while (walker.nextNode()) if (!walker.currentNode.parentElement.closest('button,a')) nodes.push(walker.currentNode);
-  const total = nodes.reduce((n, t) => n + t.textContent.length, 0);
-  const gap = Math.max(5, Math.min(18, 1100 / Math.max(1, total)));
-  let k = 0;
-  for (const t of nodes){
-    const frag = document.createDocumentFragment();
-    for (const { segment } of SEG.segment(t.textContent)){
-      if (/^\s+$/.test(segment)){ frag.append(segment); continue; }
-      const sp = document.createElement('span');
-      sp.className = 'tw'; sp.style.animationDelay = Math.round(k++ * gap) + 'ms'; sp.textContent = segment;
-      frag.append(sp);
-    }
-    t.replaceWith(frag);
-  }
-  el.classList.add('typing');
-  for (let b = 0; b < Math.min(16, k / 4); b++) setTimeout(() => beep(1180 + (b % 3) * 90, .012, 'square', .014), b * gap * 4);
-  say.t = setTimeout(() => { el.classList.remove('typing'); el.classList.add('done'); }, k * gap + 40);
-}
-$('rpgMsg').addEventListener('click', () => {
-  const el = $('rpgMsg'); if (!el.classList.contains('typing')) return;
-  clearTimeout(say.t); el.classList.remove('typing'); el.classList.add('done');
-});
+const say = html => { $('rpgMsg').innerHTML = html; };
 
 function move(dx, dy){
   if (!$('gWin').hidden) return;
@@ -3488,7 +3464,21 @@ $('talkBtn').addEventListener('click', () => {
   if (t === 'n' || at(here.x, here.y) === 'n') return say('พื้นดินไหม้เกรียมทั้งลาน มีกระดูกโผล่อยู่บ้าง · ที่นี่ไม่ใช่ซากปรักหักพังเฉย ๆ มันเป็นรังของอะไรบางอย่าง');
   say('ตรงหน้าไม่มีอะไร · ตามทางไปเรื่อย ๆ แล้วดูป้ายบอกทาง ส่วนของที่ไม่ได้อยู่บนทาง' + TW(' มึง', ' คุณ', '') + 'ต้องเดินหาเอง');
 });
-$$('[data-mv]').forEach(b => b.addEventListener('click', () => move(...b.dataset.mv.split(',').map(Number))));
+/* D-pad · แตะ = ก้าวเดียว · กดค้าง = เดินต่อเนื่อง · คีย์บอร์ด (Enter/Space บนปุ่ม) = ก้าวเดียว */
+let holdT = 0;
+const stopHold = () => { clearInterval(holdT); holdT = 0; };
+$$('[data-mv]').forEach(b => {
+  const step = () => move(...b.dataset.mv.split(',').map(Number));
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); stopHold(); step();
+    try { b.setPointerCapture(e.pointerId); } catch {}
+    holdT = setInterval(step, 165);
+  });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(t => b.addEventListener(t, stopHold));
+  b.addEventListener('click', e => { if (e.detail === 0) step(); });
+  b.addEventListener('contextmenu', e => e.preventDefault());
+});
+addEventListener('blur', stopHold);
 const mapInView = () => {
   const r = cv.getBoundingClientRect();
   return r.top < innerHeight*.78 && r.bottom > innerHeight*.22;
@@ -3529,18 +3519,39 @@ function paintClock(){
   const k = SKIES[skyNow()], m = bkkMin();
   $('gClock').textContent = k.icon + ' ' + (S.sky && S.sky !== 'auto' ? k.name : String(m / 60 | 0).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'));
 }
+let gCost = 0, gSlow = 0;
 function gameFrame(now){
   gRaf = 0;
   if (!gSeen || document.hidden) { gLast = 0; return; }
-  const dt = gLast ? Math.min(60, now - gLast) : 16;
-  if (RM && gLast && now - gLast < 180){ gRaf = requestAnimationFrame(gameFrame); return; }
+  /* วาดแค่ 30 ครั้ง/วินาที (เครื่องช้า 20 · ลดการเคลื่อนไหว ~5.5) · เกมพิกเซลไม่ต้องการมากกว่านี้ */
+  const every = RM ? 180 : LOW ? 50 : 33;
+  if (gLast && now - gLast < every - 4){ gRaf = requestAnimationFrame(gameFrame); return; }
+  const dt = gLast ? Math.min(100, now - gLast) : 16;
   gLast = now;
   tick += dt / 180;
+  const t0 = performance.now();
   stepFx(dt);
   if (!anim) draw();
+  /* เฉลี่ยเวลาวาด · เกิน 9ms ต่อเนื่องราว 2 วินาที = เครื่องรับไม่ไหว ลดคุณภาพถาวรรอบนี้ */
+  gCost = gCost * .9 + (performance.now() - t0) * .1;
+  if (!LOW && gCost > 9 && ++gSlow > 60){ LOW = true; fx.length = 0; }
   if (now - gClockAt > 5000){ gClockAt = now; paintClock(); }
   gRaf = requestAnimationFrame(gameFrame);
 }
+/* จอแคบ = ซูมเข้า (13×11 ช่อง) ให้ช่องใหญ่พอแตะ · กว้าง = เห็นแผนที่ 20×12 ช่องเท่าเดิม */
+function fitView(){
+  const narrow = cv.parentElement.clientWidth < 520;
+  const w = narrow ? 13 : 20, h = narrow ? 11 : 12;
+  if (w === VW && h === VH && cv.width === w * TILE) return;
+  VW = w; VH = h;
+  cv.width = lc.width = VW * TILE; cv.height = lc.height = VH * TILE;
+  cv.style.aspectRatio = VW + ' / ' + VH;
+  ctx.imageSmoothingEnabled = false;   /* เปลี่ยนขนาด canvas แล้ว state รีเซ็ต */
+  draw();
+}
+fitView();
+let fitT = 0;
+addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitView, 150); }, { passive:true });
 const kickGame = () => { if (!gRaf && gSeen && !document.hidden) gRaf = requestAnimationFrame(gameFrame); };
 new IntersectionObserver(es => { gSeen = es[0].isIntersecting; kickGame(); }).observe(cv);
 document.addEventListener('visibilitychange', kickGame);
