@@ -2671,7 +2671,7 @@ chain = chain.slice(0,4);
 let prev = chain.map(p => ({...p}));
 let anim = null, step = 0, tick = 0;
 /* AF = เฟรมแอนิเมชันของฉาก 0/1 (สลับทุกครึ่งวินาที แบบเกมตลับ) · held = ทิศที่กดค้างอยู่ · queued = ปุ่มที่กดระหว่างก้าว */
-let AF = 0, held = null, heldCode = '', BAKING = false;
+let AF = 0, held = null, heldCode = '', BAKING = 0, NOSHADOW = false;   /* BAKING 1 = อบฉาก · 2 = อบชั้นหน้า */
 const queued = [];
 
 /* px วาดลงบน G · ปกติคือจอเกม แต่ตอนอบฉากล่วงหน้าจะสลับไปวาดลง canvas แคช */
@@ -2679,70 +2679,140 @@ let G = ctx;
 const px = (x,y,w,h,c) => { G.fillStyle = c; G.fillRect(x,y,w,h); };
 const rnd = (x,y) => ((x*73856093) ^ (y*19349663)) >>> 0;
 
+/* ── พื้น · วาดลงฉากแคชครั้งเดียว · ขอบทาง/ขอบน้ำต่อกับหญ้าเอง (ดูช่องข้าง ๆ) ───────────
+   drawTile = ชั้นพื้นอย่างเดียว · ต้นไม้เป็นของ "สูง" วาดแยก (treeImg) จะได้บังตัวละครที่เดินอยู่ข้างหลังได้ */
+const GR = { base:'#4b9b53', dk:'#3e8948', dk2:'#336f3b', lt:'#5dae62', lt2:'#7cc777' };
+const ROADY = t => t === '=' || t === '-';
+const WET = t => t === '~';
+function speckle(sx, sy, mx, my, n, pick){
+  let r = rnd(mx, my) | 1;
+  for (let k = 0; k < n; k++){ r = (Math.imul(r, 1103515245) + 12345) >>> 0; pick((r >>> 4) % 15, (r >>> 12) % 15, (r >>> 20) % 8); }
+}
+function grass(sx, sy, mx, my, base = GR.base){
+  px(sx, sy, TILE, TILE, base);
+  speckle(sx, sy, mx, my, 7, (x, y, m) => {
+    if (m < 3) px(sx+x, sy+y, 2, 1, GR.dk);
+    else if (m < 5) px(sx+x, sy+y, 1, 1, GR.lt);
+    else if (m === 5){ px(sx+x, sy+y+1, 1, 1, GR.dk2); px(sx+x+1, sy+y, 1, 1, GR.dk2); px(sx+x+2, sy+y+1, 1, 1, GR.dk2); }   /* กอหญ้า */
+    else if (m === 6) px(sx+x, sy+y, 1, 2, GR.lt2);
+  });
+}
+/* ขอบหยัก ๆ ของหญ้าที่ล้ำเข้ามาในทาง/น้ำ + เส้นเงาด้านใน */
+function lips(sx, sy, mx, my, same, col, inner){
+  const N = [[0,-1],[0,1],[-1,0],[1,0]];
+  for (let s2 = 0; s2 < 4; s2++){
+    if (same(at(mx + N[s2][0], my + N[s2][1]))) continue;
+    for (let i = 0; i < 16; i += 2){
+      const d = 1 + (rnd(mx*16 + i + s2*5, my*16 + s2) % 3 === 0 ? 1 : 0);
+      if (s2 === 0){ px(sx+i, sy, 2, d, col); px(sx+i, sy+d, 2, 1, inner); }
+      else if (s2 === 1){ px(sx+i, sy+16-d, 2, d, col); px(sx+i, sy+15-d, 2, 1, inner); }
+      else if (s2 === 2){ px(sx, sy+i, d, 2, col); px(sx+d, sy+i, 1, 2, inner); }
+      else { px(sx+16-d, sy+i, d, 2, col); px(sx+15-d, sy+i, 1, 2, inner); }
+    }
+  }
+}
 function drawTile(t, sx, sy, mx, my){
   const seed = rnd(mx,my) % 100;
-  if (t === '~'){
-    px(sx,sy,TILE,TILE, (mx+my)%2 ? '#1f6f74' : '#26807e');
-    const w = (mx + AF) & 1;
-    px(sx+2+(seed%5), sy+4+(seed%6)+w, 6, 1, 'rgba(255,255,255,.3)');
-    px(sx+6-(seed%4), sy+11-w, 5, 1, 'rgba(255,255,255,.16)');
+  if (t === '~'){                                               /* น้ำ · คลื่นสองจังหวะ ขอบเป็นฟอง */
+    px(sx, sy, TILE, TILE, '#2b7f8e');
+    speckle(sx, sy, mx, my, 4, (x, y, m) => px(sx+x, sy+y, 3, 1, m < 4 ? '#246f7d' : '#3590a0'));
+    const w = (mx + my + AF) & 1;
+    px(sx + 2 + (seed % 5), sy + 4 + (seed % 6) + w, 5, 1, 'rgba(255,255,255,.28)');
+    px(sx + 8 - (seed % 4), sy + 11 - w, 4, 1, 'rgba(255,255,255,.16)');
+    if (seed % 9 === 0) px(sx + 4 + AF*6, sy + 7, 1, 1, '#e8fbff');
+    lips(sx, sy, mx, my, WET, GR.base, AF ? '#d9f4f6' : '#b8e6ea');
     return;
   }
-  if (t === '=' || t === '-'){
-    const narrow = t === '-';
-    px(sx,sy,TILE,TILE, narrow ? '#4c7a4f' : '#8a7346');
-    if (narrow){ px(sx+3, sy, 10, TILE, '#7d6b45'); px(sx+6, sy+7, 3, 2, '#8f7c52'); }
-    else { px(sx+(seed%4), sy+((seed>>2)%5), 2, 2, '#7a6539'); px(sx+9, sy+11, 3, 2, '#9a8253'); }
+  if (ROADY(t)){                                                /* ทางดิน · มีกรวด ขอบหญ้าล้ำเข้ามา */
+    px(sx, sy, TILE, TILE, '#a8875a');
+    speckle(sx, sy, mx, my, 6, (x, y, m) => {
+      if (m < 3) px(sx+x, sy+y, 2, 1, '#957548');
+      else if (m < 5) px(sx+x, sy+y, 1, 1, '#c0a072');
+      else if (m === 5){ px(sx+x, sy+y, 2, 2, '#8a7a66'); px(sx+x, sy+y, 1, 1, '#b8ab98'); }   /* ก้อนกรวด */
+    });
+    lips(sx, sy, mx, my, ROADY, GR.base, '#8c6d44');
     return;
   }
-  if (t === 'r'){                                  /* กำแพงหินซากปรักหักพัง */
-    px(sx,sy,TILE,TILE,'#6d6a60');
-    px(sx+1, sy+1, 6, 5, '#807d72'); px(sx+9, sy+1, 6, 5, '#7a776c');
-    px(sx+1, sy+8, 9, 6, '#87847a'); px(sx+11, sy+8, 4, 6, '#767368');
-    px(sx, sy+7, TILE, 1, 'rgba(0,0,0,.22)');
+  if (t === 'r'){                                               /* กำแพงหินซากปรักหักพัง · มีตะไคร่ */
+    px(sx, sy, TILE, TILE, '#7a766b');
+    px(sx, sy, TILE, 4, '#9c988c'); px(sx, sy, TILE, 1, '#b4b0a4');
+    px(sx, sy+4, TILE, 1, '#5a574e');
+    const o = (my % 2) * 4;
+    for (const [x, y, w] of [[0 + o, 5, 7],[8 + o, 5, 8],[0, 10, 5],[6, 10, 6],[13, 10, 3]]) { px(sx + (x % 16), sy+y, Math.min(w, 16 - (x % 16)) - 1, 4, '#86827a'); px(sx + (x % 16), sy+y, Math.min(w, 16 - (x % 16)) - 1, 1, '#97938a'); }
+    px(sx, sy+9, TILE, 1, '#5f5c53'); px(sx, sy+14, TILE, 1, '#5f5c53'); px(sx, sy+15, TILE, 1, '#3d3b35');
+    if (seed % 3 === 0){ px(sx + seed % 10, sy, 4, 2, '#5d8a4a'); px(sx + 1 + seed % 10, sy+2, 2, 1, '#4c7a3c'); }
+    if (seed % 5 === 1){ px(sx + 4 + seed % 7, sy+6, 1, 3, '#4a4740'); px(sx + 5 + seed % 7, sy+8, 1, 2, '#4a4740'); }
     return;
   }
-  if (t === 'n' || t === 'g'){                    /* พื้นรังมังกร · ดินไหม้ */
-    px(sx,sy,TILE,TILE, (mx+my)%2 ? '#3a2f28' : '#413630');
-    if (seed % 7 === 0) px(sx+3, sy+9, 4, 2, '#2a221d');
-    if (seed % 11 === 0){ px(sx+9, sy+3, 5, 1, '#8d867c'); px(sx+11, sy+4, 1, 3, '#8d867c'); }
-    if (t === 'g'){                                /* กองทอง */
-      const s2 = (mx*3 + my + AF*5) % 7;
-      px(sx+1, sy+8, 14, 6, '#8a6a1c');
-      px(sx+2, sy+6, 12, 4, '#c79a26');
-      px(sx+3, sy+4, 9, 3, '#e9bf46');
-      px(sx+5, sy+2, 5, 3, '#f5d976');
-      px(sx+2, sy+11, 3, 2, '#f0c96c'); px(sx+10, sy+11, 4, 2, '#f0c96c');
-      px(sx+6, sy+8, 3, 2, '#fff0be');
-      if (s2 < 3) px(sx+4 + s2*3, sy+3, 2, 2, '#ffffff');
+  if (t === 'n' || t === 'g'){                                  /* พื้นรังมังกร · ดินไหม้ เถ้า กระดูก ถ่านแดง */
+    px(sx, sy, TILE, TILE, '#3c3029');
+    speckle(sx, sy, mx, my, 6, (x, y, m) => {
+      if (m < 3) px(sx+x, sy+y, 3, 1, '#2e2520');
+      else if (m < 5) px(sx+x, sy+y, 1, 1, '#5a4c42');
+      else if (m === 5) px(sx+x, sy+y, 2, 1, '#6e665e');
+    });
+    if (seed % 7 === 0){ px(sx+3, sy+9, 5, 1, '#d8cfbd'); px(sx+3, sy+8, 1, 3, '#d8cfbd'); px(sx+7, sy+8, 1, 3, '#d8cfbd'); }   /* กระดูก */
+    if (seed % 11 === 3) px(sx + 10, sy + 4, 1, 1, AF ? '#ff7a3c' : '#a8401e');                                                       /* ถ่านแดง */
+    if (t === 'g'){                                             /* กองทอง · เส้นขอบเข้ม เหรียญวาว */
+      const pile = [[1,9,14,5],[2,6,12,4],[4,3,8,4],[6,1,4,3]];
+      for (const r of pile) px(sx+r[0]-1, sy+r[1]-1, r[2]+2, r[3]+2, '#4a3006');
+      px(sx+1,sy+9,14,5,'#a67a1c'); px(sx+2,sy+6,12,4,'#c99a26'); px(sx+4,sy+3,8,4,'#e6bc44'); px(sx+6,sy+1,4,3,'#f5d976');
+      px(sx+3,sy+11,3,2,'#f0c96c'); px(sx+10,sy+11,3,2,'#f0c96c'); px(sx+7,sy+8,3,2,'#fff0be'); px(sx+5,sy+5,2,1,'#fff0be');
+      px(sx+2,sy+13,12,1,'#7a5410');
+      const sp = (mx*3 + my + AF*5) % 7;
+      if (sp < 3){ px(sx+4 + sp*3, sy+2, 1, 3, '#ffffff'); px(sx+3 + sp*3, sy+3, 3, 1, '#ffffff'); }
     }
     return;
   }
-  px(sx,sy,TILE,TILE, (mx+my)%2 ? '#3f8b4d' : '#479656');
-  if (seed % 13 === 0){ px(sx+4, sy+9, 2, 3, '#59ad63'); px(sx+10, sy+5, 2, 3, '#59ad63'); }
-  if (t === ','){ px(sx+6, sy+6, 3, 3, '#f2e08a'); px(sx+7, sy+9, 1, 3, '#3f8b4d'); }
-  if (t === 'c'){                                  /* ทุ่งโคลเวอร์ */
-    const lucky = mx === LUCKY.x && my === LUCKY.y;
-    px(sx,sy,TILE,TILE,'#3d9a52');
-    const c = lucky && S.clover ? '#ffe071' : '#6fd07d';
-    px(sx+3, sy+4, 4, 4, c); px(sx+9, sy+4, 4, 4, c); px(sx+6, sy+9, 4, 4, c);
-    if (lucky && S.clover){ px(sx+6, sy+2, 4, 3, '#fff3c4'); }
+  if (t === 'c'){                                               /* ทุ่งโคลเวอร์ · ใบสามแฉก */
+    grass(sx, sy, mx, my, '#46a052');
+    const lucky = mx === LUCKY.x && my === LUCKY.y && S.clover;
+    const leaf = (x, y, c, d) => { px(sx+x, sy+y, 2, 2, c); px(sx+x+3, sy+y, 2, 2, c); px(sx+x+1, sy+y+2, 3, 2, c); px(sx+x+2, sy+y+4, 1, 2, d); px(sx+x, sy+y, 1, 1, '#b8f0b0'); };
+    if (lucky){
+      const c = '#ffe071'; px(sx+4,sy+3,3,3,c); px(sx+9,sy+3,3,3,c); px(sx+4,sy+8,3,3,c); px(sx+9,sy+8,3,3,c); px(sx+7,sy+6,2,2,'#c99a26'); px(sx+6,sy+1,4,2,'#fff3c4'); px(sx+8,sy+11,1,4,'#3a7a3a');
+    } else { leaf(1 + seed % 3, 1, '#6fd07d', '#3a8a46'); leaf(8, 4 + seed % 3, '#62c472', '#3a8a46'); leaf(3, 9, '#6fd07d', '#3a8a46'); }
     return;
   }
-  if (t === '"'){
-    const s2 = (mx + AF) & 1;
-    px(sx+2, sy+6-s2, 2, 9, '#2f7a41'); px(sx+6, sy+3, 2, 12, '#358a49');
-    px(sx+10, sy+6+s2, 2, 9, '#2f7a41'); px(sx+13, sy+4, 2, 11, '#358a49');
-    return;
+  grass(sx, sy, mx, my);
+  if (t === '#'){ px(sx+2, sy+12, 13, 3, 'rgba(0,0,0,.22)'); px(sx+4, sy+11, 9, 5, 'rgba(0,0,0,.12)'); }   /* เงาโคนต้นไม้ */
+  if (t === ','){                                               /* ดอกไม้ */
+    const pc = ['#f2e08a','#ff9fb6','#ffffff','#b8a4ff'][seed % 4], fx = 5 + seed % 4, fy = 5 + (seed >> 2) % 4;
+    px(sx+fx+1, sy+fy+3, 1, 4, '#2f7a41'); px(sx+fx+2, sy+fy+5, 2, 1, '#3f8b4d');
+    px(sx+fx+1, sy+fy-1, 1, 1, pc); px(sx+fx-1, sy+fy+1, 1, 1, pc); px(sx+fx+3, sy+fy+1, 1, 1, pc); px(sx+fx+1, sy+fy+3, 1, 1, pc);
+    px(sx+fx, sy+fy, 3, 3, pc); px(sx+fx+1, sy+fy+1, 1, 1, '#e8a23a');
   }
-  if (t === '#'){
-    px(sx+3, sy+12, 11, 3, 'rgba(0,0,0,.2)');
-    px(sx+7, sy+9, 3, 5, '#5a3a1e');
-    px(sx+3, sy+2, 10, 8, '#1f6b39');
-    px(sx+5, sy, 6, 3, '#2b8347');
-    px(sx+2, sy+4, 2, 4, '#17512b'); px(sx+12, sy+4, 2, 4, '#17512b');
-    px(sx+5, sy+3, 3, 2, '#46a862');
+  if (t === '"'){                                               /* หญ้าสูง · ไหวสองจังหวะ */
+    px(sx, sy+12, TILE, 4, GR.dk);
+    for (let i = 0; i < 6; i++){
+      const x = 1 + i * 2.6 | 0, hgt = 9 + ((seed + i * 3) % 4), sway = (i + AF) & 1;
+      px(sx+x, sy+16-hgt, 2, hgt, i % 2 ? '#2f7a41' : '#3d9150');
+      px(sx+x+sway, sy+15-hgt, 1, 2, i % 2 ? '#4fae5c' : '#63c06c');
+    }
   }
+}
+/* ต้นไม้ 3 แบบ · สูงล้ำช่องข้างบน 6 พิกเซล · วาดครั้งเดียวเก็บไว้ */
+const TREE_IMG = [];
+const treeKind = (x, y) => { const v = rnd(x, y) % 7; return v < 4 ? 0 : v < 6 ? 1 : 2; };
+function treeImg(v){
+  if (TREE_IMG[v]) return TREE_IMG[v];
+  const c = document.createElement('canvas'); c.width = 18; c.height = 22;
+  const g = c.getContext('2d', { willReadFrequently:true }), keep = G; G = g;
+  const T = (x, y, w, h, col) => px(1 + x, 6 + y, w, h, col);
+  const disc = (cx, cy, r, col) => { for (let y = -r; y <= r; y++){ const hw = Math.round(Math.sqrt(r*r - y*y) + .3); T(cx - hw, cy + y, hw * 2, 1, col); } };
+  if (v === 2){                                                 /* สน */
+    T(6,11,4,5,'#1f140c'); T(7,11,2,5,'#6b4423');
+    const tiers = [[-6,2],[-3,4],[0,6],[3,7],[6,8]];
+    for (const [y, hw] of tiers){ T(8-hw-1, y-1, hw*2+2, 4, '#0f2e1a'); }
+    for (const [y, hw] of tiers){ T(8-hw, y, hw*2, 3, '#1f6a3c'); T(8-hw, y, hw, 1, '#3c9a5a'); T(8+hw-2, y+1, 2, 2, '#164f2c'); }
+  } else {                                                      /* ต้นไม้พุ่มกลม */
+    const [dk, mid, lt, hi] = v ? ['#18502a','#2f8540','#45a052','#7ccf6e'] : ['#1a5530','#2b7a3d','#3a964c','#62c06a'];
+    T(5,9,6,7,'#24160c'); T(6,9,4,7,'#6b4423'); T(6,9,1,7,'#8a5a30'); T(5,15,1,1,'#6b4423'); T(10,15,1,1,'#6b4423');
+    disc(8, 3, 8, '#0f3019'); disc(8, 3, 7, dk); disc(7, 2, 6, mid); disc(6, 0, 4, lt); disc(5, -1, 2, hi);
+    for (const [x, y] of [[3,5],[11,1],[9,6],[12,5],[5,8]]) T(x, y, 1, 1, dk);
+    for (const [x, y] of [[8,-2],[3,1]]) T(x, y, 1, 1, hi);
+  }
+  G = keep;
+  return TREE_IMG[v] = c;
 }
 
 /* ── มังกรแดง 3×2 · ตัวโชว์ของของแผนที่นี้ ───────────────
@@ -2812,7 +2882,6 @@ function paintDragon(st, b, ox, oy){
     const z = (x, y, n, c) => { D(x,y,n,1,c); for (let k = 1; k < n - 1; k++) D(x + n - 1 - k, y + k, 1, 1, c); D(x,y+n-1,n,1,c); };
     z(-5, hy-8-b, 4, 'rgba(255,255,255,.6)'); z(-11, hy-15+b, 4, 'rgba(255,255,255,.34)');
   }
-  px(ox, oy + 27, 50, 6, 'rgba(0,0,0,.3)'); px(ox + 4, oy + 25, 40, 2, 'rgba(0,0,0,.16)');   /* เงา */
   for (const r of out) px(ox + r[0] - 1, oy + r[1] - 1, r[2] + 2, r[3] + 2, DK.ink);
   for (const r of out) px(ox + r[0], oy + r[1], r[2], r[3], r[4]);
   for (const r of det) px(ox + r[0], oy + r[1], r[2], r[3], r[4]);
@@ -2830,6 +2899,7 @@ function drakeImg(st, b){
 function drawDragon(sx, sy){
   const st = BAKING ? 'sleep' : drake.state;
   const b = st === 'sleep' ? AF : (Math.sin(tick/34) > 0 ? 1 : 0);
+  if (!NOSHADOW){ px(sx, sy + 27, 50, 6, 'rgba(0,0,0,.3)'); px(sx + 4, sy + 25, 40, 2, 'rgba(0,0,0,.16)'); }
   G.drawImage(drakeImg(st, b), sx - 12, sy - 22);
   if (st === 'fire'){
     const f = (tick/3 % 3 | 0), cy = sy + 15 + DRAKE_LIFT.fire + 10;
@@ -2847,7 +2917,7 @@ function drawDragon(sx, sy){
 const OUT = '#1d1519';
 function kit(sx, sy){
   const P = (x,y,w,h,c) => px(sx+x, sy+y, w, h, c);
-  const glow = (x,y,w,h,c) => { if (BAKING) GLOWS.push([sx+x, sy+y, w, h, c]); };
+  const glow = (x,y,w,h,c) => { if (BAKING === 1) GLOWS.push([sx+x, sy+y, w, h, c]); };
   return {
     P, glow,
     box(x,y,w,h,c){ P(x-1,y-1,w+2,h+2,OUT); P(x,y,w,h,c); },
@@ -2864,7 +2934,7 @@ function kit(sx, sy){
       glow(x,y,m-x,h,gc); glow(m+1,y,x+w-m-1,h,gc);
     },
     door(x,y,w,h,c,dk){ P(x-1,y-1,w+2,h+1,OUT); P(x,y,w,h,c); P(x+(w >> 1),y,1,h,dk); P(x,y,w,1,dk); P(x+w-2,y+(h >> 1),1,1,'#ffe071'); },
-    shadow(x,y,w,h){ P(x,y,w,h,'rgba(0,0,0,.24)'); }
+    shadow(x,y,w,h){ if (!NOSHADOW) P(x,y,w,h,'rgba(0,0,0,.24)'); }
   };
 }
 function drawObj(o, sx, sy){
@@ -3182,12 +3252,54 @@ function world(f){
   if (WORLD[f]) return WORLD[f];
   const c = document.createElement('canvas'); c.width = MW * TILE; c.height = MH * TILE;
   const g = c.getContext('2d', { willReadFrequently:true }), keepAF = AF;
-  G = g; AF = f; BAKING = true; GLOWS.length = 0;
+  G = g; AF = f; BAKING = 1; GLOWS.length = 0;
   for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) drawTile(MAP[y][x], x * TILE, y * TILE, x, y);
-  OBJ.forEach(o => { if (o !== BOOK) drawObj(o, o.x * TILE, o.y * TILE); });
-  GLOWS.push([25*TILE + 6, 20*TILE + 8, 3, 2, '#fff0be']);   /* ประกายกองทอง */
-  G = ctx; AF = keepAF; BAKING = false;
+  /* ของสูงเรียงตามแนวเท้า (แถวล่างสุด) · อันที่อยู่ใต้กว่าวาดทีหลัง เลยบังอันที่อยู่ข้างหลัง */
+  const tall = [];
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) if (MAP[y][x] === '#') tall.push([y + 1, 0, () => g.drawImage(treeImg(treeKind(x, y)), x * TILE - 1, y * TILE - 6)]);
+  OBJ.forEach(o => { if (o !== BOOK) tall.push([o.y + o.h, 1, () => drawObj(o, o.x * TILE, o.y * TILE)]); });
+  tall.sort((p, q) => p[0] - q[0] || p[1] - q[1]).forEach(d => d[2]());
+  GLOWS.push([25*TILE + 7, 20*TILE + 8, 3, 2, '#fff0be']);   /* ประกายกองทอง */
+  G = ctx; AF = keepAF; BAKING = 0;
   return WORLD[f] = c;
+}
+/* ── ชั้นหน้า · ตัวละครที่ยืนอยู่หลังตึก/ต้นไม้/มังกร ต้องโดนของพวกนั้นบัง (ไม่ใช่ไปเหยียบป้ายบนหลังคา)
+   แต่ละตึกอบรูปของตัวเองไว้ (ไม่มีเงา) · ทุกเฟรมวาดทับเฉพาะกรอบที่ซ้อนกับตัวละครจริง ๆ ─────── */
+const FP = { l:16, t:28, r:16 };
+const FRONT = new Map();
+function frontImg(o, f){
+  const key = o.id + f;
+  let c = FRONT.get(key);
+  if (c) return c;
+  c = document.createElement('canvas'); c.width = o.w * TILE + FP.l + FP.r; c.height = o.h * TILE + FP.t;
+  const g = c.getContext('2d', { willReadFrequently:true }), keep = [G, AF, BAKING, NOSHADOW];
+  G = g; AF = f; BAKING = 2; NOSHADOW = true;
+  drawObj(o, FP.l, FP.t);
+  [G, AF, BAKING, NOSHADOW] = keep;
+  FRONT.set(key, c);
+  return c;
+}
+function occluders(ppl, X, Y){
+  const out = [], seen = new Set();
+  const hit = (c, x0, y0, x1, y1) => x0 < c.x1 && x1 > c.x0 && y0 < c.y1 && y1 > c.y0;
+  for (const c of ppl){
+    const tx = Math.floor((c.sx + 8 + X) / TILE), r0 = Math.floor(c.b);
+    for (let r = r0; r <= r0 + 1; r++) for (let x = tx - 1; x <= tx + 1; x++){
+      if (at(x, r) !== '#' || seen.has(x + ',' + r) || r + 1 <= c.b) continue;
+      const x0 = x * TILE - 1 - X, y0 = r * TILE - 6 - Y;
+      if (!hit(c, x0, y0, x0 + 18, y0 + 22)) continue;
+      seen.add(x + ',' + r); out.push({ b: r + 1, img: treeImg(treeKind(x, r)), x0, y0, x1: x0 + 18, y1: y0 + 22 });
+    }
+    for (const o of OBJ){
+      if (o === BOOK || seen.has(o.id) || o.y + o.h <= c.b) continue;
+      let img, x0, y0;
+      if (o === DRAGON){ img = drakeImg(drake.state, drake.state === 'sleep' ? AF : (Math.sin(tick/34) > 0 ? 1 : 0)); x0 = o.x * TILE - 12 - X; y0 = o.y * TILE - 22 - Y; }
+      else { x0 = o.x * TILE - FP.l - X; y0 = o.y * TILE - FP.t - Y; if (!hit(c, x0, y0, x0 + o.w * TILE + FP.l + FP.r, y0 + o.h * TILE + FP.t)) continue; img = frontImg(o, AF); }
+      if (!hit(c, x0, y0, x0 + img.width, y0 + img.height)) continue;
+      seen.add(o.id); out.push({ b: o.y + o.h, img, x0, y0, x1: x0 + img.width, y1: y0 + img.height });
+    }
+  }
+  return out;
 }
 function draw(){
   const { t, X, Y, cx, cy } = camera(), sky = skyNow(), W = cv.width, H = cv.height;
@@ -3203,12 +3315,25 @@ function draw(){
   drawFishing(cx, cy);
   drawFx(cx, cy, 0);
   let lead = null;
+  const ppl = [];
   for (let i = chain.length-1; i >= 0; i--){
     const ax = prev[i].x + (chain[i].x - prev[i].x) * t;
     const ay = prev[i].y + (chain[i].y - prev[i].y) * t;
     const sx = Math.round(ax * TILE) - X, sy = Math.round(ay * TILE) - Y;
-    drawChar(chain[i], i, sx, sy);
+    ppl.push({ i, sx, sy, b: ay + 1, x0: sx - 2, y0: sy - 9, x1: sx + 18, y1: sy + 19 });
     if (i === 0) lead = { x:sx, y:sy };
+  }
+  /* เรียงตัวละครกับของที่บังตามแนวเท้า · ของบังวาดทับเฉพาะส่วนที่ซ้อนกับคนที่อยู่ข้างหลังมัน */
+  const items = ppl.map(c => ({ b: c.b, c })).concat(occluders(ppl, X, Y).map(o => ({ b: o.b, o })));
+  items.sort((p, q) => p.b - q.b || (p.c && q.c ? q.c.i - p.c.i : 0));
+  const done = [];
+  for (const it of items){
+    if (it.c){ drawChar(chain[it.c.i], it.c.i, it.c.sx, it.c.sy); done.push(it.c); continue; }
+    const o = it.o;
+    for (const c of done){
+      const x0 = Math.max(c.x0, o.x0, 0), y0 = Math.max(c.y0, o.y0, 0), x1 = Math.min(c.x1, o.x1, W), y1 = Math.min(c.y1, o.y1, H);
+      if (x1 > x0 && y1 > y0) ctx.drawImage(o.img, x0 - o.x0, y0 - o.y0, x1 - x0, y1 - y0, x0, y0, x1 - x0, y1 - y0);
+    }
   }
   if (!off(CRANE, 3)) drawCrane(CRANE.x * TILE - X, CRANE.y * TILE - Y);
   drawFx(cx, cy, 1);
@@ -3656,6 +3781,8 @@ function fitView(){
   draw();
 }
 fitView();
+/* ฉากเฟรมที่สองอบตอนเครื่องว่าง จะได้ไม่ไปอบกลางทางตอนเดิน */
+(window.requestIdleCallback || setTimeout)(() => { world(0); world(1); });
 let fitT = 0;
 addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitView, 150); }, { passive:true });
 const kickGame = () => { if (!gRaf && gSeen && !document.hidden) gRaf = requestAnimationFrame(gameFrame); };
