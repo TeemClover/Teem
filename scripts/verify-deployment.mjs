@@ -98,9 +98,15 @@ for (const path of ['/learn/', '/classroom/', '/classroom/free-ai.html', '/asset
   const r = await get(path, 'follow');
   ok(`${path} reachable`, r.status === 200, `status ${r.status}`);
 }
-const entry = await get('/api/learn?action=entry', 'follow');
-const entryType = entry.headers.get('content-type') || '';
-ok('/api/learn?action=entry answers JSON (the "ห้องเรียนของฉัน" check)', [200, 401].includes(entry.status) && entryType.includes('json'), `status ${entry.status}, ${entryType}`);
+// the whole answer, body included, within 10 s: headers alone are not enough for the student link to appear
+const entryStart = Date.now();
+const late = () => new Promise(r => setTimeout(() => r(null), 10000));
+const entry = await Promise.race([get('/api/learn?action=entry', 'follow'), late()]).catch(() => null);
+const entryType = entry?.headers.get('content-type') || '';
+const entryBody = entry ? await Promise.race([entry.text(), late()]).catch(() => null) : null;
+let entryJson = false; try { entryJson = entryBody !== null && typeof JSON.parse(entryBody) === 'object'; } catch {}
+ok('/api/learn?action=entry answers JSON (the "ห้องเรียนของฉัน" check)', [200, 401].includes(entry?.status) && entryType.includes('json') && entryJson,
+  entry ? `status ${entry.status}, ${entryType}, body ${entryBody === null ? 'not finished within 10 s' : `${entryJson ? 'JSON' : 'not JSON'} after ${Date.now() - entryStart} ms`}` : 'no response within 10 s');
 
 // 6. what ships and what does not
 for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.json', 'json'], ['/assets/fonts/site/kanit-thai-600.woff2', 'font/woff2'], ['/work/media/house-3d-cover.webp', 'image/webp'], ['/showcase/kit/erp.js', 'javascript'], ['/showcase/thumbs/menu.svg', 'image/svg+xml']]) {

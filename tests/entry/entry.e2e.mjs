@@ -225,6 +225,19 @@ await check('an enrolled student still sees "ห้องเรียนขอ�
   await guest.close();
 });
 
+await check('the "ห้องเรียนของฉัน" check gets an answer in a real browser (timing is reported as a note)', async () => {
+  const page = await open(phone);
+  const isEntry = r => r.url().includes('/api/learn?action=entry');
+  const t0 = Date.now(); let head = null, done = null;
+  page.on('response', r => { if (isEntry(r.request()) && head === null) head = `${r.status()} after ${Date.now() - t0} ms`; });
+  page.on('requestfinished', r => { if (isEntry(r) && done === null) done = Date.now() - t0; });
+  page.on('requestfailed', r => { if (isEntry(r) && done === null) done = `failed (${r.failure()?.errorText}) after ${Date.now() - t0} ms`; });
+  await openHome(page);
+  for (const until = Date.now() + 45000; done === null && Date.now() < until;) await page.waitForTimeout(250);
+  notes.add(`/api/learn?action=entry in a browser: response headers ${head ?? 'none'}; finished ${done === null ? 'not within 45 s of the page being ready' : typeof done === 'number' ? `after ${done} ms` : done}`);
+  await page.close();
+});
+
 await browser.close(); local?.server.close();
 for (const r of results) console.log(r.join(' · '));
 for (const n of notes) console.log('note · ' + n);
