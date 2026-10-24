@@ -1,0 +1,9 @@
+{
+  "note": "The one place for outbound business links (BLUEPRINT v3.0 §7). Pages built by tools/build-portfolio.mjs read it; tests check that every Fastwork link on the site appears here. Add a package link under fastwork.packages when one exists (web, app, game, course, cafe-site, coach-booking, promo-game).",
+  "fastwork": {
+    "profile": "https://fastwork.com/user/teem",
+    "packages": {}
+  },
+  "meet": "/meet/",
+  "line": "https://lin.ee/rlSlhzT"
+}

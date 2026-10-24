@@ -7,7 +7,8 @@ import {fileURLToPath} from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const read = p => readFile(root + p, 'utf8');
-const pages = ['index.html', 'tour/index.html'];
+// The house lives at /tour/ (the homepage "/" is entry/home.html and loads no 3D code).
+const pages = ['tour/index.html'];
 
 // every module tour.js reaches through static imports, as site paths
 async function moduleGraph(entry) {

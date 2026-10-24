@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "note": "Homepage demo data (BLUEPRINT v3.0 §4.6): 4 industries × 4 features × 4 styles = 64 demos. Every brand here is fictional sample data, not a client. Prices inside demos are sample numbers for the simulation only.",
+  "industries": [
+    {
+      "key": "cafe",
+      "label": "คาเฟ่ / ร้านอาหาร",
+      "short": "คาเฟ่",
+      "icon": "cup",
+      "brand": "มอสคาเฟ่",
+      "brandEn": "Moss Café",
+      "domain": "mosscafe.example",
+      "tagline": "กาแฟดี ขนมปังอบเช้า",
+      "sub": "เปิดทุกวัน 07:00–16:00 · ขนมปังออกจากเตา 06:30",
+      "hero": "cafe",
+      "items": [
+        {
+          "name": "ครัวซองต์เนยสด",
+          "desc": "อบใหม่ทุกเช้า",
+          "price": 85
+        },
+        {
+          "name": "ลาเต้มอส",
+          "desc": "นมโอ๊ต ช็อตคู่",
+          "price": 95
+        },
+        {
+          "name": "ชุดเช้าคนรีบ",
+          "desc": "ขนมปัง + กาแฟ",
+          "price": 149
+        }
+      ],
+      "sauce": [
+        "ธุรกิจ: คาเฟ่เล็ก 12 ที่นั่ง เปิด 07:00–16:00",
+        "ลูกค้าหลัก: คนทำงานที่แวะก่อนเข้าออฟฟิศ",
+        "จุดเด่น: ขนมปังออกจากเตาทุกเช้า 06:30"
+      ],
+      "rule": "ห้ามพูด: ไม่อ้างว่า \"ดีที่สุดในย่าน\" ถ้าไม่มีหลักฐาน",
+      "bookingNoun": "จองโต๊ะ"
+    },
+    {
+      "key": "coach",
+      "label": "ครู / โค้ช",
+      "short": "ครู/โค้ช",
+      "icon": "spark",
+      "brand": "เลขง่ายแล็บ",
+      "brandEn": "Lekngai Lab",
+      "domain": "lekngai.example",
+      "tagline": "เลขยาก เราทำให้ง่าย",
+      "sub": "ติวคณิต ม.ต้น ตัวต่อตัว ออนไลน์และที่บ้าน",
+      "hero": "coach",
+      "items": [
+        {
+          "name": "ทดลองเรียน 30 นาที",
+          "desc": "รู้จุดที่ติดก่อนเริ่ม",
+          "price": 0
+        },
+        {
+          "name": "คอร์ส 8 ครั้ง",
+          "desc": "ปูพื้นทีละเรื่อง",
+          "price": 3200
+        },
+        {
+          "name": "ติวก่อนสอบ",
+          "desc": "แบบฝึกตรงบทเรียน",
+          "price": 990
+        }
+      ],
+      "sauce": [
+        "ธุรกิจ: ติวคณิต ม.ต้น ตัวต่อตัว",
+        "ลูกค้าหลัก: ผู้ปกครองที่ลูกเริ่มตามไม่ทัน",
+        "จุดเด่น: ทดลองเรียน 30 นาที ดูจุดที่ติดก่อน"
+      ],
+      "rule": "ห้ามพูด: ไม่รับประกันเกรดหรือคะแนนสอบ",
+      "bookingNoun": "จองเวลาเรียน"
+    },
+    {
+      "key": "shop",
+      "label": "ร้านออนไลน์",
+      "short": "ร้านออนไลน์",
+      "icon": "bag",
+      "brand": "ถักใจ",
+      "brandEn": "Thakjai Knits",
+      "domain": "thakjai.example",
+      "tagline": "ไหมพรมถักมือ ทีละชิ้น",
+      "sub": "ผ้าพันคอ หมวก และตุ๊กตา ถักเสร็จใน 5 วัน",
+      "hero": "shop",
+      "items": [
+        {
+          "name": "ผ้าพันคอสีมอส",
+          "desc": "ไหมคอตตอนนุ่ม",
+          "price": 590
+        },
+        {
+          "name": "หมวกบีนนี่",
+          "desc": "เลือกสีได้ 6 สี",
+          "price": 390
+        },
+        {
+          "name": "ตุ๊กตาแมวถัก",
+          "desc": "สูง 15 ซม.",
+          "price": 450
+        }
+      ],
+      "sauce": [
+        "ธุรกิจ: ร้านไหมพรมถักมือ ขายออนไลน์",
+        "ลูกค้าหลัก: คนหาของขวัญที่มีเรื่องเล่า",
+        "จุดเด่น: ถักทีละชิ้น เสร็จใน 5 วัน"
+      ],
+      "rule": "ห้ามพูด: ไม่ใช้ภาพสินค้าที่ไม่ได้ถักเอง",
+      "bookingNoun": "นัดรับของ"
+    },
+    {
+      "key": "studio",
+      "label": "สตูดิโอ / ฟรีแลนซ์",
+      "short": "สตูดิโอ",
+      "icon": "frame",
+      "brand": "เฟรมสิบ สตูดิโอ",
+      "brandEn": "Frame Sip Studio",
+      "domain": "framesip.example",
+      "tagline": "ภาพที่เล่าเรื่องแบรนด์คุณ",
+      "sub": "ถ่ายสินค้า โปรไฟล์ และอีเวนต์เล็ก",
+      "hero": "studio",
+      "items": [
+        {
+          "name": "ภาพโปรไฟล์",
+          "desc": "ครึ่งวัน 20 ภาพ",
+          "price": 2500
+        },
+        {
+          "name": "ถ่ายสินค้า",
+          "desc": "10 ชิ้น พื้นหลังสะอาด",
+          "price": 3900
+        },
+        {
+          "name": "อีเวนต์เล็ก",
+          "desc": "3 ชั่วโมง",
+          "price": 6500
+        }
+      ],
+      "sauce": [
+        "ธุรกิจ: สตูดิโอถ่ายภาพ 2 คน",
+        "ลูกค้าหลัก: แบรนด์เล็กที่ต้องการภาพใช้ขายจริง",
+        "จุดเด่น: ส่งภาพพร้อมใช้ใน 3 วัน"
+      ],
+      "rule": "ห้ามพูด: ไม่ใช้ภาพลูกค้าโดยไม่ได้รับอนุญาต",
+      "bookingNoun": "จองคิวถ่าย"
+    }
+  ],
+  "features": [
+    {
+      "key": "profile",
+      "label": "หน้าแนะนำตัว",
+      "icon": "id",
+      "cta": "รู้จักเรา",
+      "sauce": "ต้องการ: หน้าแนะนำตัว สลับดูเรื่องราว บริการ และช่องทางติดต่อ",
+      "try": "ลองสลับแท็บ"
+    },
+    {
+      "key": "booking",
+      "label": "จองคิว",
+      "icon": "clock",
+      "cta": "จองคิว",
+      "sauce": "ต้องการ: ให้ลูกค้าเลือกวันและเวลาจองเองได้",
+      "try": "ลองเลือกเวลาจอง"
+    },
+    {
+      "key": "store",
+      "label": "หน้าร้าน",
+      "icon": "cart",
+      "cta": "เลือกซื้อ",
+      "sauce": "ต้องการ: หน้าร้าน หยิบใส่ตะกร้าได้ในหน้าเดียว",
+      "try": "ลองหยิบใส่ตะกร้า"
+    },
+    {
+      "key": "minigame",
+      "label": "มินิเกมโปรโมต",
+      "icon": "game",
+      "cta": "เล่นเกม",
+      "sauce": "ต้องการ: มินิเกมสั้น ๆ ให้ลูกค้าเล่นแล้วได้คูปอง",
+      "try": "ลองเก็บโคลเวอร์ 3 ใบ"
+    }
+  ],
+  "styles": [
+    {
+      "key": "warm",
+      "label": "อบอุ่น",
+      "icon": "sun",
+      "tone": "น้ำเสียง: อบอุ่น เป็นกันเอง เหมือนเพื่อนแนะนำ",
+      "font": "Anuphan",
+      "fontUrl": null,
+      "vars": {
+        "--demo-bg": "#fbf1e4",
+        "--demo-surface": "#fffaf3",
+        "--demo-text": "#3b2414",
+        "--demo-muted": "#8a6a52",
+        "--demo-accent": "#d2691e",
+        "--demo-on-accent": "#ffffff",
+        "--demo-line": "#ead7c3",
+        "--demo-font": "'Anuphan', system-ui, sans-serif",
+        "--demo-radius": "18px",
+        "--demo-hero-tint": "rgba(210,105,30,.28)"
+      }
+    },
+    {
+      "key": "luxury",
+      "label": "หรู",
+      "icon": "gem",
+      "tone": "น้ำเสียง: สุภาพ กระชับ มั่นใจ",
+      "font": "Trirong",
+      "fontUrl": "https://fonts.googleapis.com/css2?family=Trirong:wght@400;600&display=swap",
+      "vars": {
+        "--demo-bg": "#0e0d0c",
+        "--demo-surface": "#1a1816",
+        "--demo-text": "#f1e8d8",
+        "--demo-muted": "#a9997f",
+        "--demo-accent": "#c8a35a",
+        "--demo-on-accent": "#140f06",
+        "--demo-line": "#3a3228",
+        "--demo-font": "'Trirong', Georgia, serif",
+        "--demo-radius": "2px",
+        "--demo-hero-tint": "rgba(200,163,90,.22)"
+      }
+    },
+    {
+      "key": "playful",
+      "label": "สนุก",
+      "icon": "confetti",
+      "tone": "น้ำเสียง: สดใส สนุก ชวนลองเล่น",
+      "font": "Mitr",
+      "fontUrl": "https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap",
+      "vars": {
+        "--demo-bg": "#fff1fa",
+        "--demo-surface": "#ffffff",
+        "--demo-text": "#2b1660",
+        "--demo-muted": "#7d62b8",
+        "--demo-accent": "#e83e8c",
+        "--demo-on-accent": "#ffffff",
+        "--demo-line": "#f6cde6",
+        "--demo-font": "'Mitr', system-ui, sans-serif",
+        "--demo-radius": "26px",
+        "--demo-hero-tint": "rgba(232,62,140,.24)"
+      }
+    },
+    {
+      "key": "minimal",
+      "label": "มินิมอล",
+      "icon": "square",
+      "tone": "น้ำเสียง: ตรงไปตรงมา สั้น ชัด",
+      "font": "IBM Plex Sans Thai",
+      "fontUrl": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&display=swap",
+      "vars": {
+        "--demo-bg": "#f6f6f4",
+        "--demo-surface": "#ffffff",
+        "--demo-text": "#121212",
+        "--demo-muted": "#6b6b6b",
+        "--demo-accent": "#121212",
+        "--demo-on-accent": "#ffffff",
+        "--demo-line": "#e3e3e0",
+        "--demo-font": "'IBM Plex Sans Thai', system-ui, sans-serif",
+        "--demo-radius": "6px",
+        "--demo-hero-tint": "rgba(18,18,18,.12)"
+      }
+    }
+  ]
+}

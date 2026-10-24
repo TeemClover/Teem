@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06130c">
+<!-- Source of "/" (BLUEPRINT v3.0 §4). Published by tools/sync-frontdoor-root.mjs; never edit /index.html by hand. -->
+<title>Teem Clover — สร้างเว็บ แอป เกม ด้วย AI | myClover</title>
+<meta name="description" content="Teem Clover (นรินทร์ ลีลาภรณ์) สร้างเว็บไซต์ แอป และเกมด้วย AI ให้ใช้งานและส่งต่อได้จริง ลองเลือก 3 อย่างแล้วดูเว็บประกอบตัวตรงหน้า ดูผลงานที่เปิดเล่นได้ จ้างผ่าน Fastwork หรือเรียน AI ฟรี 6 ตอน">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.myclover.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="th_TH">
+<meta property="og:site_name" content="myClover">
+<meta property="og:url" content="https://www.myclover.com/">
+<meta property="og:title" content="Teem Clover — สร้างเว็บ แอป เกม ด้วย AI">
+<meta property="og:description" content="เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า · ดูผลงานจริง · จ้างผ่าน Fastwork · เรียนฟรี 6 ตอน">
+<!--slot-meta:og-home-->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Teem Clover — สร้างเว็บ แอป เกม ด้วย AI">
+<meta name="twitter:description" content="เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/assets/fonts/site/kanit-thai-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/site/kanit-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261024">
+<link rel="stylesheet" href="/entry/entry.css?v=20261024">
+<script>document.documentElement.classList.add('js')</script>
+<script type="module" src="/entry/entry.js?v=20261024"></script>
+<script type="module" src="/assets/my-learning-entry.js"></script>
+<!--entry:jsonld-->
+<!-- The shared motion layer is left out here on purpose: this page animates itself, and the layer's only job on it
+     (prefetching the next page) is done by the rule below without a render-blocking stylesheet. /tour/ is never
+     prefetched, so no 3D code moves before the visitor chooses to enter the house. -->
+<script type="speculationrules">{"prefetch":[{"source":"document","eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/tour/*"}},{"not":{"href_matches":"/api/*"}},{"not":{"selector_matches":"[target=_blank]"}}]}}]}</script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9Z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1 1.5 1 3M12 3c0 1.5 1 1.5 1 3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M4 19 15 8"/><path d="m14 4 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"/><path d="M19 13v3M17.5 14.5h3"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol>
+  <symbol id="i-frame" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></symbol>
+  <symbol id="i-id" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16a3.4 3.4 0 0 1 6.4 0M14 10h4M14 13.5h3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/><path d="M12 12.5v3l2 1.2"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.5a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></symbol>
+  <symbol id="i-game" viewBox="0 0 24 24"><path d="M7 8h10a4 4 0 0 1 4 4v1.5a3 3 0 0 1-5.4 1.8L14.5 14h-5l-1.1 1.3A3 3 0 0 1 3 13.5V12a4 4 0 0 1 4-4Z"/><path d="M8 10.5v3M6.5 12h3"/><circle cx="15.5" cy="11" r=".6"/><circle cx="17" cy="12.8" r=".6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 4h12l3 5-9 11L3 9l3-5Z"/><path d="M3 9h18M9 4l3 16 3-16"/></symbol>
+  <symbol id="i-confetti" viewBox="0 0 24 24"><path d="m4 20 5-13 8 8-13 5Z"/><path d="M14 3c.3 1.4-.4 2.4-1.6 2.6M20 10c-1.4-.3-2.4.4-2.6 1.6M17 4l.6 1.2M20 7l1-.6"/></symbol>
+  <symbol id="i-square" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 12h16"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="i-door" viewBox="0 0 24 24"><path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5V21"/><path d="M3 21h18"/><circle cx="15" cy="12.5" r=".9"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4M8.2 13.2l7.6 4"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></symbol>
+  <symbol id="i-clover" viewBox="0 0 24 24"><path d="M12 12c-3.6-.2-6-2.2-6-4.6C6 5.3 7.5 4 9.2 4 11 4 12 5.6 12 7.4 12 5.6 13 4 14.8 4 16.5 4 18 5.3 18 7.4c0 2.4-2.4 4.4-6 4.6Zm0 0c.2 3.6 2.2 6 4.6 6 2.1 0 3.4-1.5 3.4-3.2 0-1.8-1.6-2.8-3.4-2.8 1.8 0 3.4-1 3.4-2.8"/><path d="M12 12c-.2 3.6-2.2 6-4.6 6C5.3 18 4 16.5 4 14.8 4 13 5.6 12 7.4 12 5.6 12 4 11 4 9.2"/><path d="M12 12c1.5 3 3.5 6.5 6.5 8.5"/></symbol>
+</svg>
+
+<a class="skip" href="#main">ข้ามไปเนื้อหา</a>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="myClover หน้าแรก"><img src="/icons/icon-64.webp" alt="" width="32" height="32"><span>my<em>Clover</em></span></a>
+  <nav class="top-nav" aria-label="เมนูหลัก" data-my-learning-mount>
+    <a href="/work/">ผลงาน</a>
+    <a href="/hire/">จ้างงาน</a>
+    <a href="/walkthrough/">เรียนฟรี</a>
+    <a class="top-house" href="/tour/" data-enter-house aria-label="เข้าบ้าน myClover 3D"><svg><use href="#i-door"/></svg><span>เข้าบ้าน</span></a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" id="play" aria-labelledby="hero-title">
+    <div class="hero-sky" aria-hidden="true">
+      <!--slot:hero-loop-->
+      <i class="glow g1"></i><i class="glow g2"></i><i class="glow g3"></i>
+      <i class="caustic"></i><i class="grid"></i><i class="grain"></i><i class="spot"></i>
+    </div>
+
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>myClover · โดย Teem Clover</p>
+      <h1 id="hero-title"><span class="h1-a"><span class="nw">Teem Clover</span> <span class="nw">สร้างเว็บ แอป</span> <span class="nw">และเกมด้วย AI</span></span> <span class="h1-b"><span class="nw">ให้ใช้งาน</span><span class="nw">และส่งต่อได้จริง</span></span></h1>
+      <p class="motto">ใครเจอเรา คนนั้นโชคดี</p>
+      <nav class="quick" aria-label="ไปต่อได้เลยโดยไม่ต้องเล่น">
+        <a href="/work/">ดูผลงาน<svg><use href="#i-arrow"/></svg></a>
+        <a href="/hire/">จ้างงาน<svg><use href="#i-arrow"/></svg></a>
+        <a href="/walkthrough/">เรียนฟรี<svg><use href="#i-arrow"/></svg></a>
+      </nav>
+    </div>
+
+    <div class="lab" id="lab">
+      <div class="clover" id="clover" role="group" aria-label="เกมปรุงเว็บใน 3 แตะ">
+        <svg class="stem" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="stem-g" x1="0" x2="1"><stop offset="0" stop-color="#7dffb2" stop-opacity=".9"/><stop offset="1" stop-color="#0d7a3e" stop-opacity=".7"/></linearGradient></defs><path d="M100 104L100 194C100 210 104 220 116 230" fill="none" stroke="url(#stem-g)" stroke-width="5" stroke-linecap="round"/></svg>
+        <button class="leaf" type="button" data-step="0" aria-describedby="lab-hint"><span class="leaf-n">1</span><span class="leaf-q">คุณทำอะไร</span><span class="leaf-a" data-answer></span><span class="sr-only" data-sr></span></button>
+        <button class="leaf" type="button" data-step="1" aria-describedby="lab-hint"><span class="leaf-n">2</span><span class="leaf-q">อยากได้อะไร</span><span class="leaf-a" data-answer></span><span class="sr-only" data-sr></span></button>
+        <button class="leaf" type="button" data-step="2" aria-describedby="lab-hint"><span class="leaf-n">3</span><span class="leaf-q">สไตล์ไหน</span><span class="leaf-a" data-answer></span><span class="sr-only" data-sr></span></button>
+        <button class="leaf leaf-4" type="button" data-step="3" aria-describedby="lab-hint"><span class="leaf-n"><svg><use href="#i-clover"/></svg></span><span class="leaf-q">เว็บของคุณ</span><span class="leaf-a" data-answer></span><span class="sr-only" data-sr></span></button>
+        <i class="core" aria-hidden="true"></i>
+      </div>
+      <p class="lab-hint" id="lab-hint">เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า</p>
+      <fieldset class="choices" id="choices">
+        <legend id="choices-legend"><span class="step-tag">1/3</span> คุณทำอะไร</legend>
+        <div class="choice-grid" id="choice-grid"></div>
+      </fieldset>
+      <p class="sr-only" id="announce" aria-live="polite"></p>
+      <div class="finale" id="finale" hidden>
+        <p class="finale-msg"><b>ตัวอย่างนี้ประกอบจาก 3 ตัวเลือกของคุณ</b> <span>อยากเห็นของจริงทั้งหลังไหม</span></p>
+        <div class="finale-actions">
+          <a class="btn btn-door" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน</a>
+          <a class="btn btn-glass" href="/hire/">จ้างทำแบบนี้</a>
+          <a class="btn btn-glass" href="/work/">ดูผลงานจริง</a>
+          <a class="btn btn-glass" href="/walkthrough/">ทำเองได้ใน 6 ตอน</a>
+        </div>
+        <div class="finale-minor">
+          <button type="button" class="link-btn" id="share"><svg><use href="#i-share"/></svg>ส่งเว็บนี้ให้เพื่อน</button>
+          <button type="button" class="link-btn" id="replay"><svg><use href="#i-redo"/></svg>ลองชุดอื่น</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage" data-state="empty" aria-label="ตัวอย่างเว็บที่ประกอบจากตัวเลือกของคุณ">
+      <div class="hud" aria-hidden="true"><span class="hud-live"><i></i><b id="hud-status">รอซอส</b></span><span id="hud-combo">ชุด — / 64</span></div>
+      <div class="phone">
+      <i class="door-glow" aria-hidden="true"></i>
+      <div class="device" id="device">
+        <div class="device-bar"><i></i><i></i><i></i><span class="url" id="demo-url">ร่างเว็บใหม่</span></div>
+        <div class="demo" id="demo">
+          <div class="demo-empty">
+            <div class="ske ske-nav"></div>
+            <div class="ske ske-hero"></div>
+            <div class="ske ske-line"></div>
+            <div class="ske ske-line short"></div>
+            <div class="ske-row"><div class="ske ske-card"></div><div class="ske ske-card"></div><div class="ske ske-card"></div></div>
+            <p class="demo-wait">ร่างเว็บรอซอสของคุณ<br><small>แตะใบที่ 1 เพื่อเริ่ม</small></p>
+          </div>
+        </div>
+        <p class="device-note"><b>จำลอง</b> ไม่มีการจองหรือสั่งซื้อจริง · ตัวอย่างจำลองจากเทมเพลตและข้อมูลตัวอย่าง ไม่ใช่งานลูกค้า และไม่ได้สร้างด้วย AI สด ๆ ตอนนี้</p>
+        <i class="scan" aria-hidden="true"></i>
+      </div>
+      </div>
+      <aside class="sauce" id="sauce" aria-label="ซอสของเดโมนี้">
+        <div class="sauce-head">
+          <svg class="bottle" viewBox="0 0 40 64" aria-hidden="true"><defs><clipPath id="bottle-clip"><path d="M15 3h10v9l6 7v38a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V19l6-7V3Z"/></clipPath></defs><g clip-path="url(#bottle-clip)"><rect class="bottle-fill" x="0" y="64" width="40" height="64"/></g><path class="bottle-glass" d="M15 3h10v9l6 7v38a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V19l6-7V3Z"/><rect class="bottle-cap" x="14" y="1" width="12" height="5" rx="1.5"/></svg>
+          <div><b>sauce.md</b><small id="sauce-count">ข้อมูลตัวอย่างที่กำหนดเดโมนี้</small></div>
+          <button type="button" class="sauce-toggle" id="sauce-toggle" aria-expanded="false" aria-controls="sauce-body">ดูซอส</button>
+        </div>
+        <div class="sauce-body" id="sauce-body">
+          <ol class="sauce-lines" id="sauce-lines"><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+          <p class="sauce-note">ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน</p>
+        </div>
+      </aside>
+    </div>
+
+
+    <div class="nojs-demo">
+      <p>หน้านี้มีเกมสั้น ๆ: เลือกประเภทธุรกิจ สิ่งที่อยากได้ และสไตล์ แล้วหน้าเว็บตัวอย่างจะประกอบขึ้นตรงหน้า (ต้องเปิด JavaScript) ข้อมูลทั้งหมดด้านล่างอ่านได้เลย</p>
+    </div>
+    <a class="scroll-cue" href="#about" aria-label="เลื่อนลงไปรู้จักทีม"><i></i></a>
+  </section>
+
+  <section class="sec about" id="about" aria-labelledby="about-title">
+    <div class="wrap about-grid">
+      <figure class="portrait">
+        <img src="/entry/media/teem-portrait.webp" srcset="/entry/media/teem-portrait-360.webp 360w, /entry/media/teem-portrait.webp 720w" sizes="(min-width: 900px) 360px, 70vw" width="720" height="900" alt="ทีม นรินทร์ ลีลาภรณ์ (Teem Clover) ผู้สร้าง myClover" loading="lazy" decoding="async">
+        <figcaption>Teem Clover · Bangkok</figcaption>
+      </figure>
+      <div class="about-copy">
+        <p class="kicker">01 · คนที่สร้างบ้านนี้</p>
+        <h2 id="about-title">จัดความคิดให้เป็นระบบ ใช้ AI ช่วยสร้าง แล้วส่งต่อให้คนอื่นทำต่อได้</h2>
+        <p>ผมชื่อทีม — นรินทร์ ลีลาภรณ์ (Teem Clover) สร้าง myClover มาตั้งแต่ปี 2007 วันนี้ผมใช้ AI ออกแบบและสร้างเว็บ แอป และเกม พร้อมจัดข้อมูลของงานเป็น “ซอส” ให้คนหรือ AI ตัวถัดไปทำต่อได้โดยไม่ต้องเริ่มใหม่ ผลงานบนเว็บนี้เปิดดูและลองเล่นได้จริง</p>
+        <ul class="creds" aria-label="ประสบการณ์สอนและทำงาน">
+          <li><b>Lazada</b><span>เคยเป็น Trainer สอน Seller</span></li>
+          <li><b>ททบ.5</b><span>สอน Social Commerce ถ่ายทอดสดทั่วประเทศ</span></li>
+          <li><b>ม.เกษตรศาสตร์ · อัสสัมชัญ บางรัก</b><span>อาจารย์พิเศษ Livestream และ Blockchain</span></li>
+          <li><b>CSII จุฬาฯ</b><span>ร่วมงานวิจัย AI กับ Longevity</span></li>
+        </ul>
+        <a class="text-link" href="/resume/">ดูประวัติและบทบาทในแต่ละงาน<svg><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec services" id="services" aria-labelledby="services-title">
+    <div class="wrap">
+      <p class="kicker">02 · รับสร้าง</p>
+      <h2 id="services-title">3 แบบงานที่จ้างได้</h2>
+      <div class="svc-grid">
+        <a class="svc" href="/hire/#web">
+          <figure class="slot svc-art" data-slot="service-web" data-art="web" aria-hidden="true"><!--slot:service-web--><span class="art-web"><i></i><i></i><i></i></span></figure>
+          <h3>เว็บไซต์</h3>
+          <p>หน้าแนะนำธุรกิจ หน้าร้าน หน้าขายคอร์ส เปิดเร็วบนมือถือ อ่านง่าย และเขียนให้คนกับเครื่องมือค้นหาเข้าใจตรงกัน</p>
+          <span class="svc-proof">ตัวอย่าง: บ้าน myClover · หน้าแรกนี้</span>
+        </a>
+        <a class="svc" href="/hire/#app">
+          <figure class="slot svc-art" data-slot="service-app" data-art="app" aria-hidden="true"><!--slot:service-app--><span class="art-app"><i></i><i></i><i></i><i></i></span></figure>
+          <h3>แอปและระบบ</h3>
+          <p>ระบบสมาชิก ห้องเรียนออนไลน์ หลังบ้าน และเครื่องมือที่ทีมใช้ทุกวัน ส่งมอบพร้อมคู่มือและวิธีตรวจว่ายังทำงานถูก</p>
+          <span class="svc-proof">ตัวอย่าง: ห้องเรียนออนไลน์ · TeamBook</span>
+        </a>
+        <a class="svc" href="/hire/#game">
+          <figure class="slot svc-art" data-slot="service-game" data-art="game" aria-hidden="true"><!--slot:service-game--><span class="art-game"><i></i><i></i><i></i></span></figure>
+          <h3>เกมและ interactive 3D</h3>
+          <p>มินิเกมโปรโมตร้าน เกมการ์ด และประสบการณ์ 3D ที่คนอยากเล่นต่อ เล่นได้บนเบราว์เซอร์ ไม่ต้องติดตั้งแอป</p>
+          <span class="svc-proof">ตัวอย่าง: CORE7 · บ้าน myClover 3D</span>
+        </a>
+      </div>
+      <a class="btn btn-ink" href="/hire/">ดูขอบเขตงานและจ้างผ่าน Fastwork<svg><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+
+  <section class="sec work" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <p class="kicker">03 · ผลงาน</p>
+      <h2 id="work-title">ของจริงที่เปิดเล่นได้</h2>
+      <p class="lede">ทุกชิ้นด้านล่างเปิดใช้งานได้วันนี้ กดเข้าไปอ่านว่าโจทย์คืออะไร ตัดสินใจอะไร และลองเล่นเองได้</p>
+      <div class="work-grid">
+        <a class="case" href="/work/house-3d/">
+          <img src="/work/media/house-3d-cover-640.webp" srcset="/work/media/house-3d-cover-640.webp 640w, /work/media/house-3d-cover.webp 1200w" sizes="(min-width: 900px) 50vw, 100vw" width="1200" height="750" alt="บ้าน myClover แบบ 3D ผ่าผนังให้เห็นห้องนั่งเล่นและห้องทำงานชั้นบน" loading="lazy" decoding="async">
+          <span class="badge">โปรเจกต์ส่วนตัว</span>
+          <span class="case-meta">เว็บ 3D · ประสบการณ์</span>
+          <h3>บ้าน myClover 3D</h3>
+          <p>เลื่อนเดินในบ้านสองชั้นบนเบราว์เซอร์ หยิบของในห้องเพื่อไปยังส่วนต่าง ๆ ของเว็บ</p>
+        </a>
+        <a class="case" href="/work/classroom/">
+          <img src="/work/media/classroom-cover-640.webp" srcset="/work/media/classroom-cover-640.webp 640w, /work/media/classroom-cover.webp 1200w" sizes="(min-width: 900px) 50vw, 100vw" width="1200" height="750" alt="หน้าห้องเรียน AI ใส่ซอส พร้อมวิดีโอตัวอย่างและแถบรางวัลการเรียน" loading="lazy" decoding="async">
+          <span class="badge">โปรเจกต์ส่วนตัว</span>
+          <span class="case-meta">แอป · ระบบสมาชิก</span>
+          <h3>ห้องเรียนออนไลน์</h3>
+          <p>บทเรียนฟรี 6 ตอน ระบบสมาชิก การเข้าเรียนคอร์ส และหลังบ้านสำหรับผู้สอน</p>
+        </a>
+        <a class="case" href="/work/core7/">
+          <img src="/work/media/core7-cover-640.webp" srcset="/work/media/core7-cover-640.webp 640w, /work/media/core7-cover.webp 1200w" sizes="(min-width: 900px) 50vw, 100vw" width="1200" height="750" alt="หน้าแรกเกมการ์ด CORE7 พร้อมหลังการ์ดลายโคลเวอร์สี่สี" loading="lazy" decoding="async">
+          <span class="badge">โปรเจกต์ส่วนตัว</span>
+          <span class="case-meta">เกม · เล่นกับบอทหรือเพื่อน</span>
+          <h3>CORE7</h3>
+          <p>เกมการ์ด 2 ผู้เล่น ไพ่ 7 ใบ ไม่มีการจั่ว ทุกตาคือการตัดสินใจ</p>
+        </a>
+        <a class="case" href="/work/teambook/">
+          <img src="/work/media/teambook-cover-640.webp" srcset="/work/media/teambook-cover-640.webp 640w, /work/media/teambook-cover.webp 1200w" sizes="(min-width: 900px) 50vw, 100vw" width="1200" height="750" alt="หน้าเปิดสมุดเล่มแรกของ TeamBook ภาพแมวสองตัวกับสมุดที่เปิดอยู่" loading="lazy" decoding="async">
+          <span class="badge">โปรเจกต์ส่วนตัว</span>
+          <span class="case-meta">แอป · ทำด้วยกันกับเพื่อน</span>
+          <h3>TeamBook</h3>
+          <p>สมุดกลุ่มที่เพื่อนเปิดด้วยกัน แต่ละคนเลือกสิ่งที่อยากทำ แล้วกลับมาเล่าวันละนิดในเล่มเดียว</p>
+        </a>
+      </div>
+      <a class="btn btn-ink" href="/work/">ดูผลงานทั้งหมด<svg><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+
+  <section class="sec process" id="process" aria-labelledby="process-title">
+    <div class="wrap">
+      <p class="kicker">04 · วิธีทำงาน</p>
+      <h2 id="process-title">4 ขั้น จากโจทย์ถึงของที่ใช้ได้จริง</h2>
+      <ol class="steps">
+        <li><span class="step-n">01</span><h3>คุยโจทย์</h3><p>เล่าปัญหา คนที่จะใช้ และสิ่งที่อยากได้ ตกลงขอบเขตกันก่อนเริ่ม</p></li>
+        <li><span class="step-n">02</span><h3>จัดซอส</h3><p>รวมข้อมูลธุรกิจเป็นไฟล์เดียว ให้ทุกคนและ AI อ่านตรงกัน ไม่ต้องเล่าใหม่ทุกครั้ง</p></li>
+        <li><span class="step-n">03</span><h3>สร้างและให้ลองจริง</h3><p>ส่งลิงก์ให้กดลองบนมือถือจริง แล้วปรับจากการใช้งาน ไม่ใช่จากภาพนิ่ง</p></li>
+        <li><span class="step-n">04</span><h3>ส่งมอบ</h3><p>พร้อมคู่มือ และวิธีตรวจว่างานยังทำงานถูก ทีมของคุณดูแลต่อได้</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec learn" id="learn" aria-labelledby="learn-title">
+    <div class="wrap learn-grid">
+      <div>
+        <p class="kicker">05 · อยากทำเอง</p>
+        <h2 id="learn-title">เรียน AI ฟรี 6 ตอน แล้วสร้างเว็บของตัวเอง</h2>
+        <p>ภาษาไทย ไม่ต้องเขียนโค้ด ไม่ต้องสมัคร ลงมือกับงานของคุณทีละตอน จบแต่ละตอนได้ชิ้นงานหนึ่งชิ้น ตอนสุดท้ายรวมเป็นเว็บที่ส่งลิงก์ให้คนอื่นใช้ได้</p>
+        <div class="learn-cta">
+          <a class="btn btn-ink" href="/walkthrough/">ดู 6 ตอน<svg><use href="#i-arrow"/></svg></a>
+          <a class="text-link" href="/classroom/free-ai.html">เริ่มตอน 1 เลย<svg><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+      <ol class="chain" aria-label="6 ตอน 6 ชิ้นงาน">
+        <li><b>1 SOURCE</b><span>ซอส .md ขวดแรก</span></li>
+        <li><b>2 TASTE</b><span>ภาพชิมซอส</span></li>
+        <li><b>3 COOK</b><span>คลิปแนวตั้ง 10 วิ</span></li>
+        <li><b>4 SPLIT</b><span>ซอสเดียวหลายเมนู</span></li>
+        <li><b>5 SEASON</b><span>คำสั่งลัดใช้ซ้ำ</span></li>
+        <li><b>6 SERVE</b><span>เว็บของคุณเอง</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <p class="kicker">06 · คำถามที่เจอบ่อย</p>
+      <h2 id="faq-title">ก่อนจ้าง</h2>
+      <div class="faq-list">
+        <details><summary>ใช้เวลานานแค่ไหน</summary><p>ขึ้นกับขอบเขตงาน เราตกลงขอบเขตและกำหนดส่งกันก่อนเริ่มงาน</p></details>
+        <details><summary>ราคาเท่าไร</summary><p>ดูแพ็กเกจและราคาปัจจุบันใน <a href="https://fastwork.com/user/teem" rel="noopener">Fastwork</a> ราคาอยู่ที่นั่นที่เดียว</p></details>
+        <details><summary>แก้งานได้กี่รอบ</summary><p>รอบแก้และสิ่งที่นับเป็นงานเพิ่ม ตกลงกันก่อนเริ่มงาน และระบุไว้ในรายการจ้างบน Fastwork</p></details>
+        <details><summary>ดูแลหลังส่งมอบไหม</summary><p>ทุกงานส่งพร้อมคู่มือและวิธีตรวจงาน ระยะดูแลหลังส่งมอบคุยและตกลงกันก่อนเริ่ม</p></details>
+        <details><summary>ติดต่อยังไง</summary><p>จ้างผ่าน <a href="https://fastwork.com/user/teem" rel="noopener">Fastwork</a> หรือ<a href="/meet/">นัดคุยขอบเขตก่อน</a></p></details>
+        <details><summary>myClover เกี่ยวกับ Clover X ไหม</summary><p>myClover เป็นงานส่วนตัวของ Teem Clover แยกจากบริษัท Clover X</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec closing" aria-labelledby="closing-title">
+    <div class="wrap closing-box">
+      <h2 id="closing-title">อยากได้แบบนี้ หรืออยากเดินดูบ้านก่อน</h2>
+      <div class="closing-actions">
+        <a class="btn btn-leaf" href="https://fastwork.com/user/teem" rel="noopener">จ้างผ่าน Fastwork<svg><use href="#i-out"/></svg></a>
+        <a class="btn btn-glass-dark" href="/meet/">คุยขอบเขตก่อน</a>
+        <a class="btn btn-glass-dark" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน myClover</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <p class="foot-brand"><b>myClover</b> · Teem Clover (นรินทร์ ลีลาภรณ์)<br><span>ใครเจอเรา คนนั้นโชคดี</span></p>
+    <nav aria-label="ลิงก์ท้ายหน้า">
+      <a href="https://fastwork.com/user/teem" rel="noopener">Fastwork</a>
+      <a href="/meet/">นัดคุย</a>
+      <a href="/resume/">ประวัติ</a>
+      <a href="/tour/">บ้าน 3D</a>
+      <a href="/privacy/">ความเป็นส่วนตัว</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="door-overlay" id="door-overlay" hidden aria-hidden="true">
+  <div class="door-still"></div>
+  <div class="door-leaf door-l"></div><div class="door-leaf door-r"></div>
+  <p class="door-text">กำลังเปิดประตูบ้าน…</p>
+</div>
+<div class="dock" id="dock" hidden>
+  <a class="btn btn-door" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน</a>
+  <a class="btn btn-glass" href="/hire/">จ้างทำแบบนี้</a>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<!--entry:data-->
+</body>
+</html>

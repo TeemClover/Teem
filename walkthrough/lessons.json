@@ -1,0 +1,22 @@
+{
+  "note": "Content of /walkthrough/ (BLUEPRINT v3.0 §8.1). Built by tools/build-portfolio.mjs. Each benefit was checked against the lesson page's own description on 2026-10-24; if a lesson changes, change its line here. No study-time claims until measured. The previous walkthrough story is kept at /walkthrough/story/.",
+  "h1": "เรียน AI ฟรี 6 ตอน: เปลี่ยนงานที่คุณรู้ดี ให้ AI ทำต่อได้",
+  "sub": "ภาษาไทย ไม่ต้องเขียนโค้ด ไม่ต้องสมัคร ลงมือทำทีละตอน แล้วได้ชิ้นงานของตัวเอง",
+  "sauce": "ไฟล์สรุปข้อมูลงานของคุณที่ AI อ่านก่อนเริ่มทำงาน จึงไม่ต้องเล่าใหม่ทุกแชต",
+  "zero": {"href": "/classroom/lesson-0.html", "label": "ยังไม่เคยใช้ AI? เริ่มตอน 0"},
+  "lessons": [
+    {"key": "SOURCE", "work": "ซอส .md ขวดแรก", "benefit": "เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วได้ไฟล์ที่ส่งต่อให้ AI ตัวไหนก็ได้ ไม่ต้องเล่าข้อมูลเดิมใหม่ทุกแชต", "href": "/classroom/free-ai.html", "alt": "ภาพประกอบตอนที่ 1 SOURCE"},
+    {"key": "TASTE", "work": "ภาพชิมซอส", "benefit": "ใช้ภาพทดสอบเพื่อดูว่า AI เข้าใจผิดตรงไหน แล้วแก้ที่ซอสทีเดียว", "href": "/classroom/image-ai.html", "alt": "ภาพประกอบตอนที่ 2 TASTE"},
+    {"key": "COOK", "work": "คลิปสั้นไม่เกิน 10 วินาที", "benefit": "จะถ่ายเองหรือให้ AI สร้างภาพเคลื่อนไหวก็ได้ แล้วเติมเสียงของคุณเอง", "href": "/classroom/clip-ai.html", "alt": "ภาพประกอบตอนที่ 3 COOK"},
+    {"key": "SPLIT", "work": "ซอสเดียวหลายเมนู", "benefit": "เรื่องเดียว แตกเป็นภาพ สไลด์ วิดีโอ เสียง Mind Map และ Quiz", "href": "/classroom/notebooklm.html", "alt": "ภาพประกอบตอนที่ 4 SPLIT"},
+    {"key": "SEASON", "work": "คำสั่งลัดใช้ซ้ำ", "benefit": "เก็บวิธีที่ได้ผลไว้เป็นคำสั่งลัดและผู้ช่วย AI แล้วใช้ซ้ำได้ทุกครั้ง", "href": "/classroom/prompts.html", "alt": "ภาพประกอบตอนที่ 5 SEASON"},
+    {"key": "SERVE", "work": "เว็บของคุณเอง", "benefit": "รวมบทความ ภาพ วิดีโอ และเกมเป็นเว็บไฟล์เดียว ส่งลิงก์ให้คนอื่นใช้ได้จริง", "href": "/classroom/first-web.html", "alt": "ภาพประกอบตอนที่ 6 SERVE"}
+  ],
+  "why": [
+    ["ลงมือกับงานของตัวเอง", "ทุกตอนใช้ข้อมูลงานจริงของคุณ จบแล้วได้ของที่เอาไปใช้ต่อได้ทันที"],
+    ["ได้ไฟล์ที่ใช้ซ้ำได้", "ซอสและคำสั่งลัดเก็บเป็นไฟล์ของคุณ ไม่หายไปพร้อมแชต"],
+    ["ใช้กับ AI ตัวไหนก็ได้", "วิธีนี้ไม่ผูกกับเครื่องมือเดียว เปลี่ยน AI ได้โดยไม่ต้องเริ่มใหม่"]
+  ],
+  "proof": "บ้าน myClover สร้างด้วยวิธีนี้",
+  "closing": "ไม่ต้องสมัคร ไม่ต้องเขียนโค้ด ถ้าอยากให้ทำให้แทน ดูงานจ้างได้"
+}
