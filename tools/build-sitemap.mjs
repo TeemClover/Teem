@@ -18,7 +18,10 @@ import {fileURLToPath} from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.myclover.com';
 
-const work = JSON.parse(await readFile(path.join(ROOT, 'work/cases.json'), 'utf8')).cases.map(c => `/work/${c.slug}/`);
+const portfolio = JSON.parse(await readFile(path.join(ROOT, 'work/cases.json'), 'utf8'));
+const work = portfolio.cases.map(c => `/work/${c.slug}/`);
+// work done for other brands is listed on /work/ and stays searchable (owner decision 2026-10-24)
+const clients = portfolio.clients.map(c => c.live).filter(p => p.startsWith('/'));
 // every published recipe page (ako/kitchen/<slug>/index.html, built by npm run build:ako)
 const recipes = [];
 for (const e of await readdir(path.join(ROOT, 'ako/kitchen'), {withFileTypes: true})) {
@@ -27,7 +30,7 @@ for (const e of await readdir(path.join(ROOT, 'ako/kitchen'), {withFileTypes: tr
   }
 }
 export const SITEMAP_PATHS = [
-  '/', '/work/', ...work, '/showcase/', '/hire/', '/walkthrough/',
+  '/', '/work/', ...work, ...clients, '/showcase/', '/hire/', '/walkthrough/',
   '/classroom/', '/classroom/lesson-0.html', '/classroom/free-ai.html', '/classroom/image-ai.html', '/classroom/clip-ai.html',
   '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/season-commands.html', '/classroom/season-video.html',
   '/classroom/season-agent.html', '/classroom/first-web.html', '/classroom/sauce-cup/', '/classroom/dungeon/',
@@ -49,12 +52,18 @@ function lastmod(file) {
   } catch { return isoDate(new Date()); }
 }
 
+/**
+ * Does a vercel.json `source` match a request path? Vercel matches strictly: a trailing "/" is part of
+ * the path, so "/x/:path*" covers "/x" and "/x/file.webp" but not the page "/x/"; "/x/:path*\/" does.
+ * (Checked against @vercel/routing-utils for the patterns this repo uses.)
+ */
+export function vercelMatch(source, p) {
+  const re = source.replace(/\/:[a-z]+\*/gi, '(?:/[^/]+)*').replace(/\/:[a-z]+/gi, '/[^/]+');
+  return new RegExp('^' + re + '$').test(p);
+}
+
 function headerNoindex(vercel, p) {
-  return vercel.headers.some(rule => {
-    if (rule.has || !rule.headers.some(h => /x-robots-tag/i.test(h.key) && /noindex/i.test(h.value))) return false;
-    const re = new RegExp('^' + rule.source.replace(/:path\*/g, '.*').replace(/:[a-z]+/gi, '[^/]+') + '$');
-    return re.test(p) || re.test(p.replace(/\/$/, ''));
-  });
+  return vercel.headers.some(rule => !rule.has && rule.headers.some(h => /x-robots-tag/i.test(h.key) && /noindex/i.test(h.value)) && vercelMatch(rule.source, p));
 }
 
 export async function buildSitemap() {
