@@ -61,7 +61,7 @@
 | `docs/` | CORE | 74 | 683KB |  |  | 0 | 0 |  |  |
 | `eggcycle/` | AFFILIATE/LEGACY | 10 | 68KB | Eggcycle · พื้นที่เล็ก ๆ ของเรา | noindex,nofollow,noarchive + header noindex | 0 | 0 | eggcycle |  |
 | `en/` | ? | 1 | 11KB | myClover — Free AI lessons, a webtoon, and a 7-card game from Thailand | index,follow,max-image-preview:large,max-snippet:-1 | 1 | 0 |  | English pages; §0 says /en/ comes later. |
-| `entry/` | CORE | 12 | 195KB |  |  | 0 | 1 (/) |  |  |
+| `entry/` | CORE | 12 | 199KB |  |  | 0 | 1 (/) |  |  |
 | `favicon.ico` | ? | 1 | 9KB |  |  | 0 | 78 (ako, book, class, classroom, collection, compass +17) |  |  |
 | `first-class/` | AFFILIATE/LEGACY | 16 | 410KB | AI ใส่ซอส · myClover | noindex,follow | 0 | 3 (class, command, course) | first-class, first-class-review, progress |  |
 | `fitness/` | BRAND/CLIENT | 2 | 154KB | Health Me Fitness — Cash Sprint 90 วัน | noindex,nofollow | 0 | 0 |  |  |
@@ -81,7 +81,7 @@
 | `IMAGES-REQUEST.md` | ROOT DOCS | 1 | 8KB |  |  | 0 | 0 |  |  |
 | `IMAGES.md` | ROOT DOCS | 1 | 11KB |  |  | 0 | 0 |  |  |
 | `img/` | CORE | 140 | 39.4MB |  |  | 0 | 1 (home) |  |  |
-| `index.html` | ? | 1 | 44KB | Teem Clover — สร้างเว็บ แอป เกม ด้วย AI \| myClover | index,follow | 0 | 0 |  | Generated: / is rendered from a source folder by tools/sync-frontdoor-root.mjs. Never hand-edit. |
+| `index.html` | ? | 1 | 45KB | Teem Clover — สร้างเว็บ แอป เกม ด้วย AI \| myClover | index,follow | 0 | 0 |  | Generated: / is rendered from a source folder by tools/sync-frontdoor-root.mjs. Never hand-edit. |
 | `invite/` | AFFILIATE/LEGACY | 1 | 822B | กำลังพาไปยังหน้าลงทะเบียน… | noindex,nofollow | 0 | 0 |  |  |
 | `JOURNEY-FUNNEL-MASTER.md` | ROOT DOCS | 1 | 52KB |  |  | 0 | 0 |  |  |
 | `keen/` | PRIVATE | 1 | 18KB | Keen Production Desk · myClover | noindex,nofollow,noarchive | 0 | 2 (captures, command) | command, command-delivery, command-queue |  |

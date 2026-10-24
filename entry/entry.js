@@ -95,6 +95,7 @@ function renderSauce(animate) {
     }
   });
   el.sauce.style.setProperty('--fill', String(filled / 6));
+  $('#sauce-count').textContent = filled ? `เติมแล้ว ${filled}/6 บรรทัด` : 'ข้อมูลตัวอย่างที่กำหนดเดโมนี้';
 }
 
 /* ---------------- demo ---------------- */
@@ -108,7 +109,6 @@ function demoShell(ind) {
     <div class="d-hero blk" style="--i:1"><div class="d-art" data-art="${esc(ind.key)}">${art}</div>
       <div class="d-hero-text"><h3>${esc(ind.tagline)}</h3><p>${esc(ind.sub)}</p><button type="button" class="d-cta" data-cta>ปุ่มหลัก</button></div></div>
     <div class="d-widget ske-box blk" style="--i:2" data-widget>ส่วนนี้รอใบที่ 2</div>
-    <p class="d-sim blk" style="--i:3">จำลอง ไม่มีการจองหรือสั่งซื้อจริง</p>
   </div>`;
 }
 
@@ -207,6 +207,7 @@ function complete(animate) {
 function update({animate = true} = {}) {
   renderLeaves(); renderChoices(animate); renderSauce(animate); renderDemo(animate); renderHud();
   if (picks.every(Boolean)) complete(animate); else el.finale.hidden = true;
+  if (typeof paintDock === 'function') paintDock();
 }
 
 function choose(key, button, viaKeyboard) {
@@ -270,8 +271,25 @@ el.leaves.forEach((leaf, i) => leaf.addEventListener('click', e => {
   }
   if (!picks[i] && i !== step) return;
   step = i; renderLeaves(); renderChoices(true);
+  // on a phone the choices sit under the clover: a tap on a leaf must visibly lead somewhere
+  if (innerWidth < 1040) el.choices.scrollIntoView({block: 'nearest', behavior: reduced ? 'auto' : 'smooth'});
   if (e.detail === 0) $('.choice', el.grid)?.focus();
 }));
+
+/* ---------------- phones: sauce folds, next step stays in reach ---------------- */
+$('#sauce-toggle').addEventListener('click', e => {
+  const open = el.sauce.classList.toggle('is-open');
+  e.currentTarget.setAttribute('aria-expanded', String(open));
+  e.currentTarget.textContent = open ? 'ซ่อนซอส' : 'ดูซอส';
+});
+const dock = $('#dock');
+let heroSeen = true, finaleSeen = false;
+function paintDock() { dock.hidden = !(picks.every(Boolean) && innerWidth < 1040 && heroSeen && !finaleSeen); }
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(([en]) => { heroSeen = en.isIntersecting; paintDock(); }, {rootMargin: '0px 0px -40% 0px'}).observe(el.hero);
+  new IntersectionObserver(([en]) => { finaleSeen = en.isIntersecting; paintDock(); }).observe(el.finale);
+}
+addEventListener('resize', paintDock);
 
 /* ---------------- share, replay ---------------- */
 $('#share').addEventListener('click', async () => {

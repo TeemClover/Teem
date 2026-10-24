@@ -42,19 +42,28 @@ await check('64 shared demos render and respond', async () => {
   await page.close();
 });
 
-await check('three taps at 375px finish the demo', async () => {
-  const page = await browser.newPage({viewport: {width: 375, height: 740}, isMobile: true, hasTouch: true});
+await check('three taps at 375px finish the demo, with no dead end on a small phone', async () => {
+  const page = await browser.newPage({viewport: {width: 375, height: 667}, isMobile: true, hasTouch: true});
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto(base + '/', {waitUntil: 'networkidle'});
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'empty');
+  const firstChoiceBottom = await page.locator('.choice').first().evaluate(e => e.getBoundingClientRect().bottom);
+  assert.ok(firstChoiceBottom <= 667, `the first choice is on the first screen of a 375×667 phone (bottom at ${Math.round(firstChoiceBottom)}px)`);
+  await page.locator('.leaf').first().tap({force: true}); await page.waitForTimeout(600);
+  assert.ok(await page.locator('.choice').first().evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }), 'tapping the glowing leaf shows its choices');
   for (let i = 0; i < 3; i++) { await page.locator('.choice').nth(i).tap(); await page.waitForTimeout(700); }
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'done');
   assert.equal(await page.locator('.leaf-4').getAttribute('data-state'), 'bloom');
   assert.ok(await page.locator('#finale').isVisible());
+  await page.waitForTimeout(900);
+  assert.ok(await page.locator('#dock').isVisible(), 'the next step (เข้าบ้าน / จ้างทำแบบนี้) stays on screen once the demo is built');
+  assert.equal(await page.locator('#dock a[href="/tour/"][data-enter-house]').count(), 1);
+  assert.ok(!(await page.locator('.sauce-lines').isVisible()), 'the sauce card starts folded on phones');
+  await page.locator('#sauce-toggle').tap(); assert.ok(await page.locator('.sauce-lines').isVisible());
   for (const href of ['/tour/', '/hire/', '/work/', '/walkthrough/']) assert.equal(await page.locator(`#finale a[href="${href}"]`).count(), 1, href);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   assert.ok(overflow <= 0, `no sideways scroll at 375px (${overflow}px)`);
-  const small = await page.$$eval('main p, main li, main summary, main a, main button', els => els.filter(e => e.offsetParent && !e.closest('.demo, .hud, .sauce, .demo-label, .lab-hint, .badge, .case-meta, .kicker, .step-tag, .svc-proof, .creds, .portrait, .eyebrow') && parseFloat(getComputedStyle(e).fontSize) < 16).map(e => e.textContent.trim().slice(0, 30)));
+  const small = await page.$$eval('main p, main li, main summary, main a, main button', els => els.filter(e => e.offsetParent && !e.closest('.demo, .hud, .sauce, .device-note, .dock, .lab-hint, .badge, .case-meta, .kicker, .step-tag, .svc-proof, .creds, .portrait, .eyebrow') && parseFloat(getComputedStyle(e).fontSize) < 16).map(e => e.textContent.trim().slice(0, 30)));
   assert.deepEqual(small, [], 'reading text and controls are at least 16px: ' + JSON.stringify(small));
   assert.deepEqual(errors, []);
   await page.close();

@@ -136,18 +136,21 @@
             <p class="demo-wait">ร่างเว็บรอซอสของคุณ<br><small>แตะใบที่ 1 เพื่อเริ่ม</small></p>
           </div>
         </div>
+        <p class="device-note"><b>จำลอง</b> ไม่มีการจองหรือสั่งซื้อจริง · ตัวอย่างจำลองจากเทมเพลตและข้อมูลตัวอย่าง ไม่ใช่งานลูกค้า และไม่ได้สร้างด้วย AI สด ๆ ตอนนี้</p>
         <i class="scan" aria-hidden="true"></i>
       </div>
       </div>
       <aside class="sauce" id="sauce" aria-label="ซอสของเดโมนี้">
         <div class="sauce-head">
           <svg class="bottle" viewBox="0 0 40 64" aria-hidden="true"><defs><clipPath id="bottle-clip"><path d="M15 3h10v9l6 7v38a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V19l6-7V3Z"/></clipPath></defs><g clip-path="url(#bottle-clip)"><rect class="bottle-fill" x="0" y="64" width="40" height="64"/></g><path class="bottle-glass" d="M15 3h10v9l6 7v38a4 4 0 0 1-4 4H13a4 4 0 0 1-4-4V19l6-7V3Z"/><rect class="bottle-cap" x="14" y="1" width="12" height="5" rx="1.5"/></svg>
-          <div><b>sauce.md</b><small>ข้อมูลตัวอย่างที่กำหนดเดโมนี้</small></div>
+          <div><b>sauce.md</b><small id="sauce-count">ข้อมูลตัวอย่างที่กำหนดเดโมนี้</small></div>
+          <button type="button" class="sauce-toggle" id="sauce-toggle" aria-expanded="false" aria-controls="sauce-body">ดูซอส</button>
         </div>
-        <ol class="sauce-lines" id="sauce-lines"><li></li><li></li><li></li><li></li><li></li><li></li></ol>
-        <p class="sauce-note">ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน</p>
+        <div class="sauce-body" id="sauce-body">
+          <ol class="sauce-lines" id="sauce-lines"><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+          <p class="sauce-note">ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน</p>
+        </div>
       </aside>
-      <p class="demo-label">ตัวอย่างจำลองจากเทมเพลตและข้อมูลตัวอย่าง ไม่ใช่งานลูกค้า และไม่ได้สร้างด้วย AI สด ๆ ตอนนี้</p>
     </div>
 
 
@@ -324,6 +327,10 @@
   <div class="door-still"></div>
   <div class="door-leaf door-l"></div><div class="door-leaf door-r"></div>
   <p class="door-text">กำลังเปิดประตูบ้าน…</p>
+</div>
+<div class="dock" id="dock" hidden>
+  <a class="btn btn-door" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน</a>
+  <a class="btn btn-glass" href="/hire/">จ้างทำแบบนี้</a>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <!--entry:data-->

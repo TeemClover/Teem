@@ -114,11 +114,31 @@ svg:not([viewBox]) { width: 1.1em; height: 1.1em; fill: none; stroke: currentCol
 .quick a:hover svg { transform: translateX(3px); }
 
 /* ---------- the glass clover ---------- */
-/* phones: the lab's parts are hero rows (copy → clover → hint → choices → phone → finale) */
+/* phones: the first choice must be on the first screen (375×667 included).
+   Small clover beside the instruction, choices full width under them. */
+@media (max-width: 1039px) {
+  .hero { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "copy copy" "clover hint" "choices choices" "stage stage" "finale finale"; column-gap: 16px; row-gap: 18px; padding-top: max(76px, calc(env(safe-area-inset-top) + 66px)); }
+  .eyebrow { display: none; }
+  .hero h1 { margin-top: 0; font-size: clamp(27px, 7.4vw, 36px); }
+  .motto { margin-top: 8px; font-size: 16px; }
+  .quick { margin-top: 14px; }
+  .lab .clover { --size: clamp(140px, 40vw, 190px); margin: 0 0 18px; gap: 6px; justify-self: start; }
+  .leaf { padding: 12%; }
+  .leaf-q { display: none; }
+  .leaf-n { width: 22px; height: 22px; font-size: 11.5px; margin-bottom: 2px; }
+  .leaf-a { font-size: 12.5px; max-width: 8ch; line-height: 1.15; }
+  .stem path { stroke-width: 4; }
+  .lab .lab-hint { justify-self: start; align-self: center; text-align: left; margin: 0; font-size: 16px; max-width: 22ch; }
+  .lab .choices { justify-self: stretch; max-width: none; }
+  .choice { min-height: 52px; }
+  .sauce .sauce-toggle { display: inline-flex; align-items: center; }
+  .sauce:not(.is-open) .sauce-body { display: none; }
+}
+/* the lab's parts are hero rows on phones (copy → clover + hint → choices → phone → finale) */
 .lab { display: contents; }
-.lab .clover { grid-area: clover; justify-self: center; }
-.lab .lab-hint { grid-area: hint; justify-self: center; margin-top: -10px; }
-.lab .choices { grid-area: choices; justify-self: center; }
+.lab .clover { grid-area: clover; }
+.lab .lab-hint { grid-area: hint; }
+.lab .choices { grid-area: choices; }
 .finale { grid-area: finale; }
 @media (min-width: 1040px) {
   .lab { grid-area: lab; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "clover choices" "hint choices"; align-items: center; column-gap: 34px; row-gap: 4px; }
@@ -217,11 +237,10 @@ svg:not([viewBox]) { width: 1.1em; height: 1.1em; fill: none; stroke: currentCol
 .stage { grid-area: stage; position: relative; display: grid; gap: 12px; align-self: center; grid-template-columns: minmax(0, 1fr); }
 .phone { position: relative; justify-self: center; width: min(100%, 380px); container-type: inline-size; }
 @media (min-width: 1040px) {
-  .stage { grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); grid-template-areas: "phone hud" "phone sauce" "phone label"; grid-template-rows: auto auto 1fr; column-gap: 40px; row-gap: 14px; align-items: start; }
+  .stage { grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); grid-template-areas: "phone hud" "phone sauce"; grid-template-rows: auto 1fr; column-gap: 40px; row-gap: 14px; align-items: start; }
   .phone { grid-area: phone; width: 100%; }
   .hud { grid-area: hud; align-self: end; justify-self: start; margin-top: 64px; flex-direction: column; align-items: flex-start; gap: 10px; }
   .sauce { grid-area: sauce; }
-  .demo-label { grid-area: label; text-align: left !important; justify-self: start !important; }
   .sauce::before { content: ''; position: absolute; right: 100%; top: 46px; width: 40px; height: 2px; background: linear-gradient(90deg, transparent, var(--leaf-hi) 40%, transparent 60%) 0 0 / 200% 100%, rgba(147, 255, 196, .2); animation: beam 1.4s linear infinite; }
 }
 @keyframes beam { to { background-position: -200% 0, 0 0; } }
@@ -251,7 +270,7 @@ svg:not([viewBox]) { width: 1.1em; height: 1.1em; fill: none; stroke: currentCol
 .url { flex: 0 1 auto; max-width: 74%; margin: 0; font-size: 11.5px; line-height: 20px; text-align: center; }
 .scan { inset-block-start: 32px; }
 @media (min-width: 1040px) {
-  .demo { height: min(600px, calc(100svh - 250px)); min-height: 420px !important; overflow-y: auto; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--demo-muted) 50%, transparent) transparent; }
+  .demo { height: min(560px, calc(100svh - 290px)); min-height: 400px !important; overflow-y: auto; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--demo-muted) 50%, transparent) transparent; }
 }
 
 .sauce { position: relative; z-index: 3; border-radius: 18px; padding: 14px 16px 12px; color: #eafff2;
@@ -274,7 +293,15 @@ svg:not([viewBox]) { width: 1.1em; height: 1.1em; fill: none; stroke: currentCol
 .sauce-lines b { color: var(--leaf-hi); font-weight: 600; }
 .sauce-note { font-size: 12.5px; color: rgba(233, 255, 242, .62); border-top: 1px dashed rgba(190, 255, 216, .18); padding-top: 8px; }
 @keyframes shimmer { to { background-position: -200% 0; } }
-.demo-label { font-size: 12.5px; line-height: 1.5; color: rgba(233, 255, 242, .6); text-align: center; max-width: 60ch; justify-self: center; }
+/* the one simulation note lives inside the phone, under the demo */
+.device-note { margin: 0; padding: 8px 14px 10px; font-size: 11.5px; line-height: 1.45; text-align: center; color: rgba(233, 255, 242, .62); background: rgba(0, 0, 0, .35); border-top: 1px solid rgba(190, 255, 216, .1); }
+.device-note b { color: var(--gold); font-weight: 600; }
+.sauce-toggle { margin-left: auto; display: none; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(147, 255, 196, .35); background: rgba(147, 255, 196, .08); color: var(--leaf-hi); font: 600 14px/1 var(--body); cursor: pointer; }
+/* phones: the next step stays in reach once the demo is built */
+.dock { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 60; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; border-radius: 20px; background: rgba(4, 16, 10, .86); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); box-shadow: 0 20px 50px -18px #000, 0 0 0 1px rgba(147, 255, 196, .22) inset; animation: rise .5s var(--ease) both; }
+.dock[hidden] { display: none; }
+.dock .btn { min-height: 48px; padding: 0 12px; font-size: 16px; }
+@media (min-width: 1040px) { .dock { display: none !important; } }
 
 /* ---------- finale ---------- */
 .finale { display: grid; justify-items: center; gap: 16px; text-align: center; padding-top: 6px; }
