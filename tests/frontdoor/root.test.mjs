@@ -1,10 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile, readdir} from 'node:fs/promises';
-import {renderCompassPage, renderEntryRoot, entryMedia} from '../../tools/sync-frontdoor-root.mjs';
+import {readFile, stat} from 'node:fs/promises';
+import {renderCompassPage, renderEntryRoot, entryMedia, entryMediaFiles} from '../../tools/sync-frontdoor-root.mjs';
 
 const read = p => readFile(new URL('../../' + p, import.meta.url), 'utf8');
-const mediaFiles = async () => new Set(await readdir(new URL('../../entry/media/', import.meta.url)));
+const mediaFiles = () => entryMediaFiles();
 
 test('public root is the homepage "ปรุงเว็บใน 3 แตะ", rendered from entry/home.html', async () => {
   const [root, source, data] = await Promise.all(['index.html', 'entry/home.html', 'entry/data.json'].map(read));
@@ -31,28 +31,45 @@ test('the visible promises match the blueprint (§4.2–4.5): labels, simulation
   for (const step of ['คุยโจทย์', 'จัดซอส', 'สร้างและให้ลองจริง', 'ส่งมอบ']) assert.match(root, new RegExp(step));
 });
 
-test('JSON-LD states only what the page shows; the FAQ comes from the visible questions', async () => {
+test('JSON-LD states only what the page shows (no FAQ block now that the homepage is the builder)', async () => {
   const root = await read('index.html');
   const ld = JSON.parse(root.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
-  const types = ld['@graph'].map(n => n['@type']);
-  assert.deepEqual(types, ['Organization', 'WebSite', 'Person', 'FAQPage']);
-  const visible = [...root.matchAll(/<details><summary>([^<]+)<\/summary>/g)].map(m => m[1]);
-  assert.deepEqual(ld['@graph'][3].mainEntity.map(q => q.name), visible);
+  assert.deepEqual(ld['@graph'].map(n => n['@type']), ['Organization', 'WebSite', 'Person']);
+  assert.doesNotMatch(root, /<details><summary>/, 'a FAQ on the page would need its FAQPage block back');
   assert.doesNotMatch(JSON.stringify(ld), /Review|Rating|price|offers/i);
 });
 
-test('the 64 demos come from 12 data pieces, and media slots fall back to CSS until a file exists', async () => {
+test('the 64 demos come from 12 data pieces; media count only when every size exists, and the first look is in the HTML', async () => {
   const data = JSON.parse(await read('entry/data.json'));
   assert.equal(data.industries.length, 4); assert.equal(data.features.length, 4); assert.equal(data.styles.length, 4);
-  for (const s of data.styles) for (const k of ['--demo-bg', '--demo-surface', '--demo-text', '--demo-accent', '--demo-font', '--demo-radius']) assert.ok(s.vars[k], `${s.key} ${k}`);
-  for (const i of data.industries) { assert.equal(i.sauce.length, 3); assert.match(i.domain, /\.example$/, 'demo domains can never be real sites'); }
+  for (const s of data.styles) {
+    for (const k of ['--demo-bg', '--demo-surface', '--demo-text', '--demo-accent', '--demo-font', '--demo-radius']) assert.ok(s.vars[k], `${s.key} ${k}`);
+    assert.ok(['rise', 'slow', 'pop', 'wipe'].includes(s.motion), `${s.key} moves its own way`);
+  }
+  for (const i of data.industries) {
+    assert.equal(i.sauce.length, 3); assert.equal(i.items.length, 3);
+    assert.match(i.domain, /\.example$/, 'demo domains can never be real sites');
+    for (const k of ['storyTitle', 'itemsTitle', 'closing']) assert.ok(i[k], `${i.key}.${k}`);
+  }
+  for (const f of data.features) assert.ok(f.headline, f.key);
   const none = entryMedia(data, new Set());
-  assert.deepEqual(none.demo, {}); assert.equal(none.heroLoop, null);
-  const some = entryMedia(data, new Set(['demo-cafe.webp', 'hero-loop.mp4', 'service-web.webp']));
-  assert.equal(some.demo.cafe, '/entry/media/demo-cafe.webp');
-  const html = renderEntryRoot(await read('entry/home.html'), data, new Set(['hero-loop.mp4', 'service-web.webp']));
-  assert.match(html, /<video class="hero-video"[^>]+data-src="\/entry\/media\/hero-loop\.mp4"/);
-  assert.match(html, /<img src="\/entry\/media\/service-web\.webp"/);
+  assert.deepEqual(none.v4, {hero: [], detail: [], item: [], loop: []});
+  const half = entryMedia(data, new Set(['v4/hero/cafe-warm.webp', 'v4/hero/cafe-warm-1280.webp']));
+  assert.deepEqual(half.v4.hero, [], 'a hero without its 640 px size is not used');
+  const empty = renderEntryRoot(await read('entry/home.html'), data, new Set());
+  assert.doesNotMatch(empty, /rel="preload" as="image"|<img class="is-on"/);
+  const files = await entryMediaFiles();
+  const media = entryMedia(data, files);
+  assert.equal(media.v4.hero.length, 16, 'all 16 industry × style heroes ship');
+  assert.equal(media.v4.detail.length, 16); assert.equal(media.v4.item.length, 48);
+  const root = await read('index.html');
+  assert.match(root, /<link rel="preload" as="image" href="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+fetchpriority="high">/);
+  assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"/);
+  for (const name of files) if (name.startsWith('v4/')) {
+    const {size} = await stat(new URL(`../../entry/media/${name}`, import.meta.url));
+    const cap = name.endsWith('.mp4') ? 900 : /-(360|540|640)\.webp$/.test(name) ? 60 : /-1280\.webp$/.test(name) ? 110 : 200;
+    assert.ok(size < cap * 1024, `${name} is ${Math.round(size / 1024)} KB (cap ${cap} KB)`);
+  }
 });
 
 test('the house moved to /tour/ with its own canonical', async () => {
