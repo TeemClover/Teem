@@ -36,6 +36,7 @@
     "test:entry:ui": "node tests/entry/entry.e2e.mjs",
     "inventory": "node tools/repo-inventory.mjs",
     "check:urls": "node scripts/check-url-baseline.mjs",
+    "verify:deployment": "node scripts/verify-deployment.mjs",
     "test:links": "node scripts/verify-public-links.mjs",
     "test:ako": "node --test tests/ako/*.test.mjs",
     "test:ako:ui": "node tests/ako/kitchen.e2e.mjs",
@@ -74,5 +75,8 @@
     "@neondatabase/serverless": "1.1.0",
     "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.5"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
   }
 }

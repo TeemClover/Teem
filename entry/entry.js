@@ -222,6 +222,9 @@ function choose(key, button, viaKeyboard) {
     if (button) button.style.viewTransitionName = '';
     const answer = $('[data-answer]', el.leaves[at]);
     if (answer) answer.style.viewTransitionName = '';
+    // announce from the updated state: with a view transition this callback runs later than choose() returns
+    const done = picks.filter(Boolean).length;
+    el.announce.textContent = `เลือก ${opt.label} แล้ว` + (step < 3 ? ` · ${done}/3 · ต่อไป: ${STEPS[step].q}` : ' · ครบ 3 อย่างแล้ว เว็บตัวอย่างประกอบเสร็จ');
   };
   emit('pick', {step: at, key});
   if (document.startViewTransition && !reduced && button) {
@@ -233,7 +236,6 @@ function choose(key, button, viaKeyboard) {
     });
     vt.finished.finally(() => { const a = $('[data-answer]', el.leaves[at]); if (a) a.style.viewTransitionName = ''; afterPick(at, viaKeyboard); });
   } else { run(); afterPick(at, viaKeyboard); }
-  el.announce.textContent = `เลือก ${opt.label} แล้ว` + (step < 3 ? ` · ต่อไป: ${STEPS[step].q}` : ' · เว็บตัวอย่างประกอบเสร็จแล้ว');
 }
 
 function afterPick(at, viaKeyboard) {

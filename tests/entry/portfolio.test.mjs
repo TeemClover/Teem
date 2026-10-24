@@ -62,5 +62,5 @@ test('the walkthrough sells the 6 lessons and links each one; the old story is a
   assert.doesNotMatch(visible(walk), /\d+\s?(นาที|ชั่วโมง)/, 'no study-time claims until measured');
   assert.match(story, /<meta name="robots" content="noindex,follow">/);
   assert.match(story, /<link rel="canonical" href="https:\/\/www\.myclover\.com\/walkthrough\/story\/">/);
-  assert.doesNotMatch(story, /(href|src)="\.\.\//, 'archived story uses absolute links');
+  assert.doesNotMatch(story, /\.\.\//, 'the archived story has no relative ../ URL anywhere (attributes, inline CSS, scripts)');
 });

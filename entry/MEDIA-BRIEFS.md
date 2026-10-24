@@ -2,6 +2,7 @@
 
 > อัปเดต 2026-10-24 · ใช้กับหน้าแรก `entry/home.html` และหน้า `/hire/`
 > ตอนนี้ทุกช่องมี **placeholder ที่วาดด้วย CSS** (หน้าเว็บสวยครบแล้วแม้ยังไม่มีไฟล์) ไฟล์จริงจะเข้าไปแทนเองเมื่อวางชื่อไฟล์ถูก
+> **คำสั่งพร้อมวางให้ ChatGPT:** `entry/GPT-IMAGE-UPGRADE.md` (prompt ครบ 9 ช่อง โค้ดส่งออก และวิธีส่งมอบ)
 
 ## วิธีใส่ไฟล์ (3 ขั้น)
 
@@ -111,7 +112,7 @@ Deep forest-green night background, mint and gold light. No text, no logos.
 
 ## 4) `og-home.jpg` · ภาพแชร์ลิงก์
 
-**ทำ 2 ขั้น:** (1) GPT ทำพื้นหลังโดย **เว้นพื้นที่ซ้ายว่างไว้ 55%** (2) Code ใส่ข้อความไทยด้วยฟอนต์จริงทีหลัง (AI วาดตัวอักษรไทยเพี้ยนบ่อย)
+**ทำ 2 ขั้น:** (1) GPT ทำพื้นหลัง `entry/media/source/og-home-bg.png` โดย **เว้นพื้นที่ซ้ายว่างไว้ 55%** (2) Claude Code ใส่ข้อความไทยด้วยฟอนต์จริงแล้วบันทึกเป็น `entry/media/og-home.jpg` (AI วาดตัวอักษรไทยเพี้ยนบ่อย)
 ```
 Wide banner, 1200x630. Right side: a green glass four-leaf clover glowing on a deep forest-green night
 background, gentle caustic light, tiny gold sparks, a faint perspective grid floor. Left 55% of the

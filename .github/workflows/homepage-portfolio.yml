@@ -1,0 +1,135 @@
+name: Homepage and portfolio
+
+# Covers what the restructure changed: "/" (entry/), /work/, /hire/, /walkthrough/, the sitemap, llms.txt,
+# vercel.json routing, and the house's canonical move to /tour/. Three jobs:
+#   source      generated pages match their sources, unit/contract tests
+#   ui          the homepage in Chromium against the repo (static server)
+#   deployment  the same flows plus routing/header checks against the real Vercel deployment of the commit
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'entry/**'
+      - 'index.html'
+      - 'work/**'
+      - 'hire/**'
+      - 'walkthrough/**'
+      - 'tour/index.html'
+      - 'assets/site/**'
+      - 'assets/fonts/site/**'
+      - 'assets/site-links.json'
+      - 'assets/my-learning-entry.js'
+      - 'tools/sync-frontdoor-root.mjs'
+      - 'tools/build-portfolio.mjs'
+      - 'tools/build-sitemap.mjs'
+      - 'tools/motion-pages.mjs'
+      - 'sitemap.xml'
+      - 'llms.txt'
+      - 'vercel.json'
+      - '.vercelignore'
+      - 'middleware.js'
+      - 'tests/entry/**'
+      - 'tests/frontdoor/root.test.mjs'
+      - 'scripts/verify-deployment.mjs'
+      - 'scripts/find-vercel-preview.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/homepage-portfolio.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'entry/**'
+      - 'index.html'
+      - 'work/**'
+      - 'hire/**'
+      - 'walkthrough/**'
+      - 'tools/sync-frontdoor-root.mjs'
+      - 'tools/build-portfolio.mjs'
+      - 'tools/build-sitemap.mjs'
+      - 'tests/entry/**'
+      - '.github/workflows/homepage-portfolio.yml'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Also verify this deployment (e.g. https://www.myclover.com)'
+        required: false
+
+permissions:
+  contents: read
+  deployments: read
+  statuses: read
+
+concurrency:
+  group: homepage-portfolio-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source:
+    name: Source and generated pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Syntax
+        run: |
+          node --check entry/entry.js
+          for f in entry/widgets/*.js scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs; do node --check "$f"; done
+      - name: Generated pages match their sources
+        run: |
+          node tools/build-portfolio.mjs --check
+          node tools/build-sitemap.mjs --check
+          node tools/motion-pages.mjs --check
+          npm run sync:frontdoor-root
+          git diff --exit-code -- index.html compass/index.html
+      - run: npm run test:entry
+      - run: npm run test:tour
+
+  ui:
+    name: Homepage in a browser (repo)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:entry:ui
+
+  deployment:
+    name: Vercel deployment (routing, headers, flows)
+    if: github.event_name == 'pull_request' || inputs.base_url != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Find the Vercel deployment of this commit
+        id: preview
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          BRANCH: ${{ github.head_ref }}
+        run: node scripts/find-vercel-preview.mjs >> "$GITHUB_OUTPUT"
+      - name: Routing, headers and published files
+        env:
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node scripts/verify-deployment.mjs "${{ steps.preview.outputs.url || inputs.base_url }}"
+      - name: Homepage flows on the deployment
+        env:
+          ENTRY_BASE_URL: ${{ steps.preview.outputs.url || inputs.base_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: npm run test:entry:ui
