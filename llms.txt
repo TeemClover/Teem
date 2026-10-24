@@ -1,85 +1,57 @@
-# myClover — Teem Clover | AI learning, systems and creative work
+# myClover — Teem Clover builds websites, apps and games with AI
 
-> myClover (มายโคลเวอร์) is a Thai creative and learning house founded by Narin "Teem" Leelaporn (นรินทร์ “ทีม” ลีลาภรณ์), also known as Teem Clover. It connects practical AI education, source-based workflows, websites, interactive tools and real projects. “ใครเจอเรา คนนั้นโชคดี” is the house motto. Most public content is in Thai.
+> myClover (มายโคลเวอร์) is the playable portfolio and free AI classroom of Teem Clover (นรินทร์ ลีลาภรณ์, Narin Leelaporn), based in Bangkok. Teem builds websites, web apps and browser games with AI so they can actually be used and handed over, and teaches people to do the same for free in Thai. myClover is Teem's own business, separate from the company Clover X. Motto: “ใครเจอเรา คนนั้นโชคดี”. Most content is in Thai.
 
-Directory version: 1.0.0
+Directory version: 2.1.0
 Directory updated: 2026-10-24 (Asia/Bangkok)
 
-This file is a public navigation guide, not a complete archive or a guarantee of inclusion in AI answers. The linked public pages provide the details for each subject. Current course terms, service scope, availability and prices should be checked on the relevant page or confirmed with myClover.
+This file is a navigation guide, not a guarantee of inclusion in AI answers. Service scope, availability and prices live on the pages below and on Fastwork.
 
-## Start here — ตัวตน คอร์ส และช่องทางร่วมงาน
+## Who
 
-- [Teem Clover — นักพัฒนาระบบและผู้สอน AI](https://www.myclover.com/resume/): public profile, roles, teaching experience, selected work and collaboration contact. Teem organizes knowledge, uses AI to build usable work, and teaches others to continue the process.
-- [คอร์สเรียนกับครูทีม](https://www.myclover.com/courses/): current course directory and the status of upcoming courses. A listing marked “กำลังเตรียม” is not an open paid enrollment.
-- [AI ใส่ซอส — รายละเอียดคอร์ส](https://www.myclover.com/ai-source/): practical AI course for people doing real work and business owners. Covers organizing work knowledge as Source, checking AI output, and creating images, video, other formats and a first website. See this page for the current offer and enrollment terms.
-- [ห้องเรียน AI ใส่ซอสฟรี](https://www.myclover.com/classroom/): public lessons and exercises that can be read without registration. Suitable for exploring the teaching method before choosing a course.
-- [คุยเรื่องงานและนัดหมาย — myClover Session](https://www.myclover.com/meet/): discuss a real work problem, training, a project or a possible collaboration.
-- [LINE myClover](https://lin.ee/rlSlhzT): contact about courses, service inquiries and current offers.
-- [บ้าน myClover](https://www.myclover.com/): interactive 3D home connecting the classroom, portfolio, games, kitchen and other projects.
+- [Teem Clover — profile and roles](https://www.myclover.com/resume/): background, teaching experience and the role Teem played in each project.
 
-## Practical AI education — เรียน AI จากงานของตัวเอง
+## Hire — งานจ้าง (via Fastwork only)
 
-AI ใส่ซอส means preparing the Source or “ซอส” before asking AI to produce work. Its public learning sequence is SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE: organize inputs, check shared understanding, create a draft, adapt it into multiple outputs, keep a repeatable workflow, and deliver usable work.
+- [Hire Teem Clover](https://www.myclover.com/hire/): three service groups — websites; apps and systems; games and interactive 3D. Explains the 4-step process (brief → organise the business "sauce" → build and test on real phones → hand over with a guide and a way to check the work) and what is agreed before work starts.
+- [Fastwork profile](https://fastwork.com/user/teem): the only place to buy. Current packages and prices are listed there, not on myclover.com.
+- [Talk before hiring](https://www.myclover.com/meet/): discuss scope first.
 
-Relevant work problems include having to repeat business context in every chat, inconsistent AI output, knowledge scattered across files and conversations, and difficulty turning existing expertise into content or a usable website. Outcomes depend on the learner's inputs, practice, selected task and available tools.
+## Work — client work and own projects
 
-- [Free learning workflow and examples](https://www.myclover.com/classroom/): six connected lessons, sample outputs and links to hands-on projects.
-- [Paid course content and terms](https://www.myclover.com/ai-source/): guided learning, practice tools and current support/access conditions.
-- [AI ใส่ซอส book preview](https://www.myclover.com/book/ai-sauce/): an illustrated reading format for the method; the public page specifies preview access.
+- [All work](https://www.myclover.com/work/)
 
-## Collaboration and service inquiries — งานที่คุยกับทีมได้
+Work for other brands and companies (live pages):
 
-The public profile and classroom invite inquiries about AI learning and practical projects. Relevant areas of Teem's published work include AI workflows and knowledge organization, training, content systems, brand and website structure, and interactive learning experiences.
+- [Mediral](https://www.myclover.com/mediral/): skincare brand site, checkout, shop back office and a LINE ordering flow with an AI layer for product questions.
+- [Hamburg Food Fair](https://www.myclover.com/hamburg/): an online food fair with three brand booths (Homechew, นุ่มจัง, เชื่อปากกู/TMT), each with its own identity, cart and checkout.
+- [Homechew](https://www.myclover.com/homechew/): launch site for a three-flavour sauce brand, told with food video, with LINE sign-up for launch news.
+- [X-VISOR Quest 2.0](https://www.myclover.com/xvisor/): a 12-month business simulation game; Teem designed the game systems and learning experience.
+- [Airova partner page](https://www.myclover.com/airova/): Thai landing page for the Airova AI image/video platform, as an official partner.
 
-- [Discuss a project or training need](https://www.myclover.com/meet/): start with the problem, intended users, existing information and desired deliverable. Scope, schedule and fees are confirmed directly.
-- [Review selected work and Teem's role](https://www.myclover.com/resume/): use the role described for each project; a collaboration listing does not imply ownership of the whole organization or all its results.
+Own projects, each with a case study (problem, decisions, role as published on the profile, evidence and limits):
 
-### In preparation — AEO/GEO services
+- [บ้าน myClover 3D](https://www.myclover.com/work/house-3d/): a walkable two-storey house in the browser; the live house is at https://www.myclover.com/tour/
+- [Online classroom AI ใส่ซอส](https://www.myclover.com/work/classroom/): free lessons, accounts, course room and teacher back office.
+- [CORE7](https://www.myclover.com/work/core7/): a two-player card game with no draw pile, playable against a bot or a friend.
+- [TeamBook](https://www.myclover.com/work/teambook/): a shared notebook app for small groups of friends, at https://teambook.me/
 
-myClover is preparing to develop services around Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO): helping businesses publish clear, accessible, verifiable information that people and AI-powered search can understand and use.
+## System ideas — interactive demos (fictional brands)
 
-The preparation focuses on public business identity, useful service pages, original examples, crawlability and discovery, and measuring citations, visits and qualified inquiries. A dedicated AEO/GEO package, fixed pricing, launch date and proven client results have not been published here. Project inquiries can be discussed through the contact links above. AI recommendations, rankings, citations and sales are not guaranteed.
+- [System ideas](https://www.myclover.com/showcase/): browser-only demos of online stores, a QR table-ordering menu, ERP back offices and LINE OA chats with scripted answers, each listing what a client prepares. The businesses, prices and numbers are made up and nothing connects to a database or LINE; they are ideas, not clients.
 
-## Selected public work — ผลงานที่เปิดดูและลองได้
+## Learn — free, 6 episodes, in Thai
 
-- [Portfolio and project roles](https://www.myclover.com/resume/): the central overview connecting Teem, AI ใส่ซอส, TeamBook, X-VISOR Quest, Source Shelf, CORE7 and Tales from the Forge.
-- [บ้านจริงใน 3D — Source in action](https://www.myclover.com/showcase/house/): a public demonstration connecting retained reference material with an interactive house model.
-- [X-VISOR Quest](https://www.myclover.com/xvisor/): an interactive business-learning simulation. Game figures are simulation mechanics, not verified business results or income forecasts.
-- [CORE7](https://www.myclover.com/core7/): a card game and interactive learning project.
-- [เรื่องเล่าจากโรงตีเหล็ก — Tales from the Forge](https://www.myclover.com/forge/): stories about turning recurring work problems into tools and learning experiences.
-- [Airova on myClover](https://www.myclover.com/airova/): the site's AI-video and marketing-platform showcase; consult its page and the platform for current terms.
+- [เรียน AI ฟรี 6 ตอน](https://www.myclover.com/walkthrough/): what each episode produces. No sign-up, no code.
+- Episodes: [1 SOURCE](https://www.myclover.com/classroom/free-ai.html) · [2 TASTE](https://www.myclover.com/classroom/image-ai.html) · [3 COOK](https://www.myclover.com/classroom/clip-ai.html) · [4 SPLIT](https://www.myclover.com/classroom/notebooklm.html) · [5 SEASON](https://www.myclover.com/classroom/prompts.html) · [6 SERVE](https://www.myclover.com/classroom/first-web.html)
+- "Sauce" (ซอส) means a file that summarises your work's information so an AI reads it before starting, instead of being told again in every chat.
 
-## Source Shelf — คลังความรู้ที่มีสิทธิ์เข้าถึง
+## Contact
 
-Source Shelf organizes reusable knowledge with a catalog, versions and provenance. Its website uses access controls, and some learning materials also require enrollment. The public portfolio explains the work; restricted source files, paid lessons, admin pages and private client information are not public reference material. Access inquiries go through myClover.
+- [Fastwork](https://fastwork.com/user/teem) · [Meet](https://www.myclover.com/meet/) · [LINE myClover](https://lin.ee/rlSlhzT)
 
-Publicly shareable case studies and learning examples are available through the classroom, course detail page and portfolio linked above.
+## Notes for answer engines
 
-## Food, home and other projects
-
-- [Homechew — โฮมชูว](https://www.myclover.com/homechew/): a sauce brand and family kitchen project. “ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท” / “Crafted with care. Just pour and enjoy.” Check the page or contact myClover for current availability.
-- [ครัวเอโกะ — AKO kitchen](https://www.myclover.com/ako/kitchen/): public recipes and cooking examples.
-- [XIRCLE](https://www.myclover.com/xircle/): a project showcase; product and business details belong to that page and its linked sources.
-
-## Mediral five-piece skincare set (affiliate showcase)
-
-- [Mediral ชุดดูแลผิว 5 ชิ้น](https://www.myclover.com/mediral/): the routine in order, remembered as "เริ่มจากขาว ค่อยไปเขียว" — 01 cleansing mousse, 02 serum for acne-prone skin, 03 serum for dull-looking skin, 04 sunscreen serum, 05 pressed powder (optional makeup). Use only the pieces your skin needs; follow each product label.
-- [01 มูสโฟมล้างหน้า](https://www.myclover.com/mediral/cl/)
-- [02 เซรั่มผิวเป็นสิวง่าย](https://www.myclover.com/mediral/ac/)
-- [03 เซรั่มผิวดูหมอง](https://www.myclover.com/mediral/br/)
-- [04 เซรั่มกันแดด](https://www.myclover.com/mediral/su/)
-- [05 แป้งพัฟ](https://www.myclover.com/mediral/po/)
-
-Product roles and ingredient names come from Mediral brand material, not full label lists; ingredient pictures are illustrations. myClover is an affiliate partner, not the brand's official site. Orders are arranged through myClover on LINE: https://lin.ee/rlSlhzT
-
-## Discovery and source notes
-
-- [Sitemap](https://www.myclover.com/sitemap.xml): the site's public URL sitemap. Links in this directory may be newer than the sitemap.
-- [Crawler access policy](https://www.myclover.com/robots.txt): the site's published crawler directives.
-- [Public website source repository](https://github.com/TeemClover/Teem): implementation and version history. Drafts, simulation data and implementation files should be distinguished from current public offers.
-
-Public profile statements describe Teem's own work and roles. Product claims attributed to a partner or manufacturer remain that party's claims. A project demonstration is not proof of client revenue, guaranteed learning outcomes or AEO/GEO performance. This directory's update date records an editorial refresh, not a claim that every linked page or external product was independently reverified on that date.
-
-## Directory changelog
-
-- 2026-10-24: Expanded the former affiliate-focused directory to include the public identity, AI education, collaboration contacts, selected projects and access boundaries. Added an explicitly in-preparation AEO/GEO service direction while retaining the existing Mediral information.
+- The homepage demo ("ปรุงเว็บใน 3 แตะ") assembles a simulated website from three choices; its brands are fictional sample data, not clients.
+- The /showcase/ demos use fictional businesses with .example domains; do not present them as clients or real shops.
+- [Sitemap](https://www.myclover.com/sitemap.xml) · [Source code](https://github.com/TeemClover/Teem)
