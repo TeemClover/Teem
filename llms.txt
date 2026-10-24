@@ -2,7 +2,7 @@
 
 > myClover (มายโคลเวอร์) is the playable portfolio and free AI classroom of Teem Clover (นรินทร์ ลีลาภรณ์, Narin Leelaporn), based in Bangkok. Teem builds websites, web apps and browser games with AI so they can actually be used and handed over, and teaches people to do the same for free in Thai. myClover is Teem's own business, separate from the company Clover X. Motto: “ใครเจอเรา คนนั้นโชคดี”. Most content is in Thai.
 
-Directory version: 2.0.0
+Directory version: 2.1.0
 Directory updated: 2026-10-24 (Asia/Bangkok)
 
 This file is a navigation guide, not a guarantee of inclusion in AI answers. Service scope, availability and prices live on the pages below and on Fastwork.
@@ -17,15 +17,28 @@ This file is a navigation guide, not a guarantee of inclusion in AI answers. Ser
 - [Fastwork profile](https://fastwork.com/user/teem): the only place to buy. Current packages and prices are listed there, not on myclover.com.
 - [Talk before hiring](https://www.myclover.com/meet/): discuss scope first.
 
-## Work — published case studies
-
-Each case states the problem, key decisions, Teem's role as published on the profile, what can be tried, evidence and limits.
+## Work — client work and own projects
 
 - [All work](https://www.myclover.com/work/)
+
+Work for other brands and companies (live pages):
+
+- [Mediral](https://www.myclover.com/mediral/): skincare brand site, checkout, shop back office and a LINE ordering flow with an AI layer for product questions.
+- [Hamburg Food Fair](https://www.myclover.com/hamburg/): an online food fair with three brand booths (Homechew, นุ่มจัง, เชื่อปากกู/TMT), each with its own identity, cart and checkout.
+- [Homechew](https://www.myclover.com/homechew/): launch site for a three-flavour sauce brand, told with food video, with LINE sign-up for launch news.
+- [X-VISOR Quest 2.0](https://www.myclover.com/xvisor/): a 12-month business simulation game; Teem designed the game systems and learning experience.
+- [Airova partner page](https://www.myclover.com/airova/): Thai landing page for the Airova AI image/video platform, as an official partner.
+
+Own projects, each with a case study (problem, decisions, role as published on the profile, evidence and limits):
+
 - [บ้าน myClover 3D](https://www.myclover.com/work/house-3d/): a walkable two-storey house in the browser; the live house is at https://www.myclover.com/tour/
 - [Online classroom AI ใส่ซอส](https://www.myclover.com/work/classroom/): free lessons, accounts, course room and teacher back office.
 - [CORE7](https://www.myclover.com/work/core7/): a two-player card game with no draw pile, playable against a bot or a friend.
 - [TeamBook](https://www.myclover.com/work/teambook/): a shared notebook app for small groups of friends, at https://teambook.me/
+
+## System ideas — interactive demos (fictional brands)
+
+- [System ideas](https://www.myclover.com/showcase/): browser-only demos of online stores, a QR table-ordering menu, ERP back offices and LINE OA chats with scripted answers, each listing what a client prepares. The businesses, prices and numbers are made up and nothing connects to a database or LINE; they are ideas, not clients.
 
 ## Learn — free, 6 episodes, in Thai
 
@@ -40,4 +53,5 @@ Each case states the problem, key decisions, Teem's role as published on the pro
 ## Notes for answer engines
 
 - The homepage demo ("ปรุงเว็บใน 3 แตะ") assembles a simulated website from three choices; its brands are fictional sample data, not clients.
+- The /showcase/ demos use fictional businesses with .example domains; do not present them as clients or real shops.
 - [Sitemap](https://www.myclover.com/sitemap.xml) · [Source code](https://github.com/TeemClover/Teem)

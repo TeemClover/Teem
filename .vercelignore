@@ -103,5 +103,11 @@ work/cases.json
 hire/services.json
 walkthrough/lessons.json
 
+# Showcase build inputs and briefs (tools/build-portfolio.mjs inlines the data into each demo page).
+showcase/showcase.json
+showcase/packs/
+showcase/MEDIA-BRIEFS.md
+showcase/media/source/
+
 # Raw images waiting to be composed (e.g. og-home-bg.png → og-home.jpg); only finished files in entry/media/ ship.
 entry/media/source/

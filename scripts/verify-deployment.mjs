@@ -45,7 +45,7 @@ if (wall) {
 // 1. the new pages exist, are the new pages, and are indexable by our own rules
 const homeHtml = await home.text();
 ok('/ is the new homepage', home.status === 200 && homeHtml.includes('id="clover"') && homeHtml.includes('<link rel="canonical" href="https://www.myclover.com/">'), `status ${home.status}`);
-for (const path of ['/', '/work/', '/work/house-3d/', '/work/classroom/', '/work/core7/', '/work/teambook/', '/hire/', '/walkthrough/', '/tour/']) {
+for (const path of ['/', '/work/', '/work/house-3d/', '/work/classroom/', '/work/core7/', '/work/teambook/', '/showcase/', '/hire/', '/walkthrough/', '/tour/']) {
   const r = path === '/' ? home : await get(path);
   const tag = robots(r);
   const indexable = preview ? !tag.includes('follow') : !tag.includes('noindex');
@@ -53,6 +53,15 @@ for (const path of ['/', '/work/', '/work/house-3d/', '/work/classroom/', '/work
 }
 const tour = await (await get('/tour/')).text();
 ok('/tour/ has its own canonical', tour.includes('<link rel="canonical" href="https://www.myclover.com/tour/">'));
+
+// demo pages show fictional shops: they must reach visitors but stay out of search (meta robots)
+for (const path of ['/showcase/shop/', '/showcase/menu/', '/showcase/erp-restaurant/', '/showcase/line-brand/']) {
+  const r = await get(path);
+  const html = r.status === 200 ? await r.text() : '';
+  ok(`${path} 200 and noindex,follow`, r.status === 200 && html.includes('<meta name="robots" content="noindex,follow">') && html.includes('id="sc-data"'), `status ${r.status}`);
+}
+const house = await get('/showcase/house/');
+ok('/showcase/house/ (the real-house explorer) still answers', house.status === 200, `status ${house.status}`);
 
 // 2. redirects that only vercel.json can do (E3: _redirects is ignored on Vercel)
 for (const [from, to] of [['/home/', '/'], ['/home', '/'], ['/forge/ep0-my-own-machine/', '/forge/ep1-everyone-gets-to-play/'], ['/forge/ep6-ten-to-thousand/', '/forge/ep7-a-voice-that-went-further/'], ['/forge/ep10-the-tenth-step/', '/forge/original/']]) {
@@ -89,11 +98,11 @@ const entryType = entry.headers.get('content-type') || '';
 ok('/api/learn?action=entry answers JSON (the "ห้องเรียนของฉัน" check)', [200, 401].includes(entry.status) && entryType.includes('json'), `status ${entry.status}, ${entryType}`);
 
 // 6. what ships and what does not
-for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.json', 'json'], ['/assets/fonts/site/kanit-thai-600.woff2', 'font/woff2'], ['/work/media/house-3d-cover.webp', 'image/webp']]) {
+for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.json', 'json'], ['/assets/fonts/site/kanit-thai-600.woff2', 'font/woff2'], ['/work/media/house-3d-cover.webp', 'image/webp'], ['/showcase/kit/erp.js', 'javascript'], ['/showcase/thumbs/menu.svg', 'image/svg+xml']]) {
   const r = await get(path);
   ok(`${path} served as ${type}`, r.status === 200 && (r.headers.get('content-type') || '').includes(type), `status ${r.status}, ${r.headers.get('content-type')}`);
 }
-for (const path of ['/entry/home.html', '/entry/MEDIA-BRIEFS.md', '/work/cases.json', '/hire/services.json', '/docs/INVENTORY.md']) {
+for (const path of ['/entry/home.html', '/entry/MEDIA-BRIEFS.md', '/work/cases.json', '/hire/services.json', '/docs/INVENTORY.md', '/showcase/showcase.json', '/showcase/packs/shop.json', '/showcase/MEDIA-BRIEFS.md']) {
   const r = await get(path);
   ok(`${path} not published`, r.status === 404, `status ${r.status}`);
 }

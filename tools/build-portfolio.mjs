@@ -5,6 +5,7 @@
  *   /work/<slug>/       ← work/cases.json (one case study per entry)
  *   /hire/              ← hire/services.json + assets/site-links.json
  *   /walkthrough/       ← walkthrough/lessons.json   (the old story stays at /walkthrough/story/)
+ *   /showcase/, /showcase/<slug>/  ← showcase/showcase.json + showcase/packs/*.json (tools/showcase-pages.mjs)
  *
  *   node tools/build-portfolio.mjs          write the pages
  *   node tools/build-portfolio.mjs --check  exit 1 if any page is out of date
@@ -16,6 +17,7 @@ import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {motionBlock} from './motion-pages.mjs';
+import {showcaseOutputs} from './showcase-pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.myclover.com';
@@ -109,20 +111,46 @@ function caseCard(c, level = 'h2') {
     </article>`;
 }
 
-function workIndex(data) {
+function clientCard(c, level = 'h3') {
+  const ext = external(c.live);
+  return `<article class="case client">
+      <img src="/work/media/${c.cover}-cover-640.webp" srcset="/work/media/${c.cover}-cover-640.webp 640w, /work/media/${c.cover}-cover.webp 1200w" sizes="(min-width: 760px) 50vw, 100vw" width="1200" height="750" alt="${esc(c.coverAlt)}" loading="lazy" decoding="async">
+      <span class="badge">${esc(c.status)}</span>
+      <span class="case-meta">${esc(c.meta)}</span>
+      <${level}><a href="${esc(c.live)}"${ext ? ' rel="noopener"' : ''}>${esc(c.title)}</a></${level}>
+      <p>${esc(c.summary)}</p>
+      ${c.role ? `<p class="case-role"><b>ส่วนที่ Teem ทำ:</b> ${esc(c.role)}</p>` : ''}
+      <ul class="ticks case-built">${c.built.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+      <div class="case-links"><a class="text-link" href="${esc(c.live)}"${ext ? ' rel="noopener"' : ''}>${esc(c.liveLabel)}${ext ? OUT : ARROW}</a></div>
+    </article>`;
+}
+
+function workIndex(data, demoCount) {
   const body = `<section class="band">
   <div class="wrap">
     <p class="kicker">ผลงาน</p>
-    <h1>ของจริงที่เปิดเล่นได้</h1>
-    <p class="lede">เริ่มจากโปรเจกต์ของ Teem เองที่หลักฐานครบ ทุกชิ้นเปิดใช้ได้วันนี้ แต่ละเคสบอกว่าโจทย์คืออะไร ตัดสินใจอะไร และอะไรยังไม่เสร็จ</p>
-    <div class="actions"><a class="btn btn-gold" href="/hire/">อยากได้แบบนี้${ARROW}</a><a class="btn btn-glass" href="/tour/">${DOOR}เดินดูในบ้าน 3D</a></div>
+    <h1>งานจริงที่เปิดใช้ได้วันนี้</h1>
+    <p class="lede">งานที่ทำให้แบรนด์และบริษัท ${data.clients.length} ชิ้น และโปรเจกต์ของ Teem เองอีก ${data.cases.length} ชิ้น ทุกชิ้นกดเข้าไปลองได้</p>
+    <div class="actions"><a class="btn btn-gold" href="/hire/">อยากได้แบบนี้${ARROW}</a><a class="btn btn-glass" href="#clients">ดูงานให้แบรนด์</a></div>
   </div>
 </section>
-<section class="sec">
+<section class="sec" id="clients">
   <div class="wrap">
+    <p class="kicker">งานให้แบรนด์และบริษัท</p>
+    <h2>ทำให้ธุรกิจอื่นใช้งานจริง</h2>
     <div class="cases">
-    ${data.cases.map(c => caseCard(c, 'h2')).join('\n    ')}
+    ${data.clients.map(c => clientCard(c)).join('\n    ')}
     </div>
+  </div>
+</section>
+<section class="sec alt" id="own">
+  <div class="wrap">
+    <p class="kicker">โปรเจกต์ของ Teem</p>
+    <h2>สร้างเอง ใช้เอง และเปิดให้คนอื่นใช้</h2>
+    <div class="cases">
+    ${data.cases.map(c => caseCard(c, 'h3')).join('\n    ')}
+    </div>
+    <p class="ideas-link">มีไอเดียระบบเพิ่มเติมแบบกดลองได้ ${demoCount} แบบ เช่น หน้าร้านออนไลน์ เมนู QR ระบบหลังบ้าน และ LINE OA (ตัวอย่างสาธิต ใช้แบรนด์สมมติ) <a class="text-link" href="/showcase/">ดูไอเดียระบบ${ARROW}</a></p>
   </div>
 </section>
 <section class="sec mint">
@@ -131,11 +159,11 @@ function workIndex(data) {
   </div>
 </section>`;
   return layout({
-    title: 'ผลงาน — เว็บ แอป เกม ที่เปิดเล่นได้ | Teem Clover',
-    description: 'ผลงานของ Teem Clover ที่เปิดใช้งานได้จริง: บ้าน myClover 3D ห้องเรียนออนไลน์ เกมการ์ด CORE7 และ TeamBook พร้อมโจทย์ การตัดสินใจ และข้อจำกัดของแต่ละชิ้น',
-    canonical: '/work/', current: '/work/', ogImage: '/work/media/house-3d-cover.webp',
+    title: 'ผลงาน — งานให้แบรนด์และโปรเจกต์ที่เปิดใช้ได้ | Teem Clover',
+    description: `ผลงานของ Teem Clover: ${data.clients.map(c => c.title.split(' · ')[0]).join(' ')} และโปรเจกต์ของ Teem เอง บ้าน myClover 3D ห้องเรียนออนไลน์ เกมการ์ด CORE7 และ TeamBook`,
+    canonical: '/work/', current: '/work/', ogImage: '/work/media/mediral-cover.webp',
     jsonld: [{'@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ผลงานของ Teem Clover', url: `${SITE}/work/`, inLanguage: 'th', author: PERSON,
-      mainEntity: {'@type': 'ItemList', itemListElement: data.cases.map((c, i) => ({'@type': 'ListItem', position: i + 1, url: `${SITE}/work/${c.slug}/`, name: c.title}))}}],
+      mainEntity: {'@type': 'ItemList', itemListElement: [...data.clients.map(c => ({url: SITE + c.live, name: c.title})), ...data.cases.map(c => ({url: `${SITE}/work/${c.slug}/`, name: c.title}))].map((x, i) => ({'@type': 'ListItem', position: i + 1, ...x}))}}],
     body,
   });
 }
@@ -197,8 +225,9 @@ function casePage(c, i, all) {
   });
 }
 
-function hirePage(svc, cases) {
-  const byKind = Object.fromEntries(svc.services.map(s => [s.key, cases.filter(c => s.work.includes(c.slug))]));
+function hirePage(svc, cases, clients = [], demos = []) {
+  const all = [...clients.map(c => ({slug: c.slug, title: c.title.split(' · ')[0], href: c.live})), ...cases.map(c => ({slug: c.slug, title: c.title, href: `/work/${c.slug}/`}))];
+  const byKind = Object.fromEntries(svc.services.map(s => [s.key, s.work.map(slug => all.find(w => w.slug === slug)).filter(Boolean)]));
   const body = `<section class="band">
   <div class="wrap">
     <p class="kicker">จ้างงาน</p>
@@ -222,7 +251,8 @@ function hirePage(svc, cases) {
       <div class="svc-col">
         <div><h4>ตัวอย่างงานที่ทำได้</h4><ul class="ticks">${s.examples.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
         <div><h4>ส่งมอบรุ่นแรก</h4><ul class="ticks">${s.deliver.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
-        <div><h4>ดูของจริง</h4><ul class="proof-links">${byKind[s.key].map(c => `<li><a href="/work/${c.slug}/">${esc(c.title)}</a></li>`).join('')}${s.demo ? `<li><a href="${esc(s.demo[0])}">${esc(s.demo[1])}</a></li>` : ''}</ul></div>
+        <div><h4>ดูงานจริง</h4><ul class="proof-links">${byKind[s.key].map(w => `<li><a href="${esc(w.href)}"${external(w.href) ? ' rel="noopener"' : ''}>${esc(w.title)}</a></li>`).join('')}</ul></div>
+        ${demos.some(d => d.hire === s.key) ? `<p class="ideas-link small">ไอเดียระบบแบบกดลองได้ (ตัวอย่างสาธิต): ${demos.filter(d => d.hire === s.key).map(d => `<a href="/showcase/${d.slug}/">${esc(d.title)}</a>`).join(' · ')}</p>` : ''}
       </div>
     </article>`).join('\n    ')}
     </div>
@@ -233,7 +263,7 @@ function hirePage(svc, cases) {
     <p class="kicker">วิธีทำงาน</p>
     <h2>4 ขั้น จากโจทย์ถึงของที่ใช้ได้จริง</h2>
     <ol class="steps">${svc.steps.map(([h, p], i) => `<li><span class="step-n">0${i + 1}</span><h3>${esc(h)}</h3><p>${esc(p)}</p></li>`).join('')}</ol>
-    <p class="lede">${esc(svc.prepare)} <a class="text-link" href="/classroom/free-ai.html">อยากเตรียมซอสเอง: ตอนที่ 1 สอนทำขวดแรก${ARROW}</a></p>
+    <p class="lede">${esc(svc.prepare)} <a class="text-link" href="/showcase/#prepare">ดูรายการที่ลูกค้าเตรียมแยกตามระบบ${ARROW}</a> <a class="text-link" href="/classroom/free-ai.html">อยากเตรียมซอสเอง: ตอนที่ 1 สอนทำขวดแรก${ARROW}</a></p>
   </div>
 </section>
 <section class="sec">
@@ -323,9 +353,12 @@ export async function build() {
   const read = p => readFile(path.join(ROOT, p), 'utf8').then(JSON.parse);
   [links] = await Promise.all([read('assets/site-links.json')]);
   const [work, hire, walk] = await Promise.all([read('work/cases.json'), read('hire/services.json'), read('walkthrough/lessons.json')]);
-  const pages = {'work/index.html': workIndex(work), 'hire/index.html': hirePage(hire, work.cases), 'walkthrough/index.html': walkthroughPage(walk)};
+  const {out: showcase, ctx} = await showcaseOutputs(ROOT, {layout, ctaBox, ARROW, OUT, cases: work.cases, fastwork: fastworkFor, VERSION});
+  const demos = ctx.sc.demos;
+  const pages = {'work/index.html': workIndex(work, demos.length), 'hire/index.html': hirePage(hire, work.cases, work.clients, demos), 'walkthrough/index.html': walkthroughPage(walk)};
   work.cases.forEach((c, i, all) => { pages[`work/${c.slug}/index.html`] = casePage(c, i, all); });
-  for (const html of Object.values(pages)) if (/\b(OPEN|TODO|TBD)\b/.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) throw Error('unfinished marker in a generated page');
+  Object.assign(pages, showcase);
+  for (const [file, html] of Object.entries(pages)) if (/\b(OPEN|TODO|TBD)\b/.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) throw Error('unfinished marker in a generated page: ' + file);
   return pages;
 }
 

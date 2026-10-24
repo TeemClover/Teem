@@ -27,7 +27,7 @@ for (const e of await readdir(path.join(ROOT, 'ako/kitchen'), {withFileTypes: tr
   }
 }
 export const SITEMAP_PATHS = [
-  '/', '/work/', ...work, '/hire/', '/walkthrough/',
+  '/', '/work/', ...work, '/showcase/', '/hire/', '/walkthrough/',
   '/classroom/', '/classroom/lesson-0.html', '/classroom/free-ai.html', '/classroom/image-ai.html', '/classroom/clip-ai.html',
   '/classroom/notebooklm.html', '/classroom/prompts.html', '/classroom/season-commands.html', '/classroom/season-video.html',
   '/classroom/season-agent.html', '/classroom/first-web.html', '/classroom/sauce-cup/', '/classroom/dungeon/',

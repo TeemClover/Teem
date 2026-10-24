@@ -1,6 +1,6 @@
 name: Homepage and portfolio
 
-# Covers what the restructure changed: "/" (entry/), /work/, /hire/, /walkthrough/, the sitemap, llms.txt,
+# Covers what the restructure changed: "/" (entry/), /work/, /showcase/, /hire/, /walkthrough/, the sitemap, llms.txt,
 # vercel.json routing, and the house's canonical move to /tour/. Three jobs:
 #   source      generated pages match their sources, unit/contract tests
 #   ui          the homepage in Chromium against the repo (static server)
@@ -12,6 +12,8 @@ on:
       - 'entry/**'
       - 'index.html'
       - 'work/**'
+      - 'showcase/**'
+      - '!showcase/house/**'
       - 'hire/**'
       - 'walkthrough/**'
       - 'tour/index.html'
@@ -21,6 +23,7 @@ on:
       - 'assets/my-learning-entry.js'
       - 'tools/sync-frontdoor-root.mjs'
       - 'tools/build-portfolio.mjs'
+      - 'tools/showcase-pages.mjs'
       - 'tools/build-sitemap.mjs'
       - 'tools/motion-pages.mjs'
       - 'sitemap.xml'
@@ -41,10 +44,13 @@ on:
       - 'entry/**'
       - 'index.html'
       - 'work/**'
+      - 'showcase/**'
+      - '!showcase/house/**'
       - 'hire/**'
       - 'walkthrough/**'
       - 'tools/sync-frontdoor-root.mjs'
       - 'tools/build-portfolio.mjs'
+      - 'tools/showcase-pages.mjs'
       - 'tools/build-sitemap.mjs'
       - 'tests/entry/**'
       - '.github/workflows/homepage-portfolio.yml'
@@ -78,7 +84,7 @@ jobs:
       - name: Syntax
         run: |
           node --check entry/entry.js
-          for f in entry/widgets/*.js scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs; do node --check "$f"; done
+          for f in entry/widgets/*.js showcase/kit/*.js tools/showcase-pages.mjs scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs; do node --check "$f"; done
       - name: Generated pages match their sources
         run: |
           node tools/build-portfolio.mjs --check
@@ -105,6 +111,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:entry:ui
+      - run: npm run test:showcase:ui
 
   # Vercel previews of this project sit behind Deployment Protection (302 to /sso-api). The PR run needs the
   # repository secret VERCEL_AUTOMATION_BYPASS_SECRET and the variable VERCEL_PREVIEW_CHECKS=true; until both
@@ -136,8 +143,10 @@ jobs:
         env:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: node scripts/verify-deployment.mjs "${{ steps.preview.outputs.url || inputs.base_url }}"
-      - name: Homepage flows on the deployment
+      - name: Homepage and showcase flows on the deployment
         env:
           ENTRY_BASE_URL: ${{ steps.preview.outputs.url || inputs.base_url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: npm run test:entry:ui
+        run: |
+          npm run test:entry:ui
+          npm run test:showcase:ui

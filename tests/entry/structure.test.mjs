@@ -35,6 +35,8 @@ test('llms.txt is short and only about identity, hiring, published work, free le
   const links = JSON.parse(await read('assets/site-links.json'));
   assert.ok(llms.includes(links.fastwork.profile));
   for (const h of ['## Who', '## Hire', '## Work', '## Learn', '## Contact']) assert.ok(llms.includes(h), h);
-  assert.doesNotMatch(llms, /Mediral|Airova|XIRCLE|X-VISOR|skincare|affiliate/i);
+  // client work is listed (owner decision 2026-10-24); unrelated brand pages and affiliate wording stay out
+  assert.doesNotMatch(llms, /XIRCLE|RoutineX|affiliate/i);
+  for (const name of ['Mediral', 'Hamburg Food Fair', 'Homechew', 'X-VISOR', 'Airova']) assert.ok(llms.includes(name), name);
   assert.ok(llms.length < 6000, 'a guide, not a dump');
 });

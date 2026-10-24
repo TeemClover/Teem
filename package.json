@@ -32,7 +32,7 @@
     "test:forge:generator": "python3 scripts/test-forge-generator.py",
     "sync:frontdoor-root": "node tools/sync-frontdoor-root.mjs",
     "test:frontdoor:root": "node tests/frontdoor/root.e2e.mjs",
-    "test:entry": "node --test tests/frontdoor/root.test.mjs tests/entry/portfolio.test.mjs tests/entry/structure.test.mjs",
+    "test:entry": "node --test tests/frontdoor/root.test.mjs tests/entry/portfolio.test.mjs tests/entry/structure.test.mjs tests/entry/showcase.test.mjs",
     "test:entry:ui": "node tests/entry/entry.e2e.mjs",
     "inventory": "node tools/repo-inventory.mjs",
     "check:urls": "node scripts/check-url-baseline.mjs",
@@ -68,7 +68,8 @@
     "test:ai-source:showcase": "node --test tests/ai-source/showcase.test.mjs",
     "test:ai-source:showcase:ui": "node tests/ai-source/showcase.e2e.mjs",
     "test:mediral-commerce": "node --test tests/mediral-commerce/*.test.mjs",
-    "dev:mediral-commerce": "node tests/mediral-commerce/preview.mjs"
+    "dev:mediral-commerce": "node tests/mediral-commerce/preview.mjs",
+    "test:showcase:ui": "node tests/entry/showcase.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

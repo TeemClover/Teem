@@ -1,5 +1,5 @@
 {
-  "note": "Case studies for /work/ (BLUEPRINT v3.0 §6). Facts come from the repo and the owner's published /resume/. `role` quotes the role the owner published on /resume/; a case without an owner-confirmed role is not published (§12 F2). Evidence numbers were counted on 2026-10-24; recount before changing them.",
+  "note": "Case studies for /work/ (BLUEPRINT v3.0 §6). Facts come from the repo and the owner's published /resume/. `role` quotes the role the owner published on /resume/; a case without an owner-confirmed role is not published (§12 F2). Evidence numbers were counted on 2026-10-24; recount before changing them. 'clients' = work done for other brands and companies (owner-confirmed 2026-10-24). Facts come from each project's own docs in this repo; a role is shown only when /resume/ states it.",
   "updated": "2026-10-24",
   "cases": [
     {
@@ -111,6 +111,74 @@
       "evidence": ["เปิดใช้งานจริงที่ teambook.me", "ภาพในหน้านี้เป็นหน้าแรกที่ไม่มีข้อมูลผู้ใช้"],
       "limits": ["TeamBook แยกไปอยู่โดเมนของตัวเองที่ teambook.me", "เรื่องในสมุดเป็นของสมาชิกในกลุ่ม หน้านี้จึงไม่แสดงตัวอย่างสมุดจริง"],
       "hire": "app"
+    }
+  ],
+  "clients": [
+    {
+      "slug": "mediral",
+      "title": "Mediral · เว็บแบรนด์สกินแคร์และระบบขายผ่าน LINE",
+      "status": "งานให้แบรนด์",
+      "meta": "เว็บแบรนด์ · ร้านค้า · LINE OA + AI",
+      "summary": "เว็บแบรนด์ชุดดูแลผิว 5 ชิ้น พร้อมหน้าสั่งซื้อ หลังบ้านของทีมร้าน และระบบขายผ่าน LINE ตั้งแต่เลือกสินค้าจนส่งเลขพัสดุ",
+      "built": ["เว็บแบรนด์และหน้าชุดสินค้า 5 ชิ้น", "หน้าสั่งซื้อและหลังบ้านสำหรับทีมร้าน", "ระบบขายผ่าน LINE: เลือกสินค้า ขอความยินยอม สรุปออเดอร์ ตรวจสลิป และส่งเลขพัสดุ มีชั้น AI ช่วยตอบคำถามสินค้า ส่วนการชำระเงินคุมด้วยกติกาและคนตรวจ"],
+      "live": "/mediral/",
+      "liveLabel": "เปิดเว็บ Mediral",
+      "cover": "mediral",
+      "coverAlt": "หน้าแรกเว็บ Mediral ผลิตภัณฑ์ดูแลผิว 5 ชิ้นวางบนแท่นหิน",
+      "hire": "app"
+    },
+    {
+      "slug": "hamburg",
+      "title": "Hamburg Food Fair · 3 แบรนด์ในงานเดียว",
+      "status": "งานให้แบรนด์",
+      "meta": "เว็บอีเวนต์ · 3 แบรนด์ · ร้านค้า",
+      "summary": "งานแฟร์แฮมเบิร์กญี่ปุ่นออนไลน์ 3 บูธ: Homechew นุ่มจัง และเชื่อปากกู (TMT) แต่ละบูธมีตัวตนแบรนด์ เมนู ตะกร้า และหน้าสั่งซื้อของตัวเอง",
+      "built": ["ลานงานที่เลือกเดินเข้าแต่ละบูธ", "ตัวตนแบรนด์ 3 แบบ (สี ตัวอักษร ภาพ) บนระบบเดียวกัน", "ตะกร้าและหน้าสั่งซื้อของแต่ละบูธ"],
+      "live": "/hamburg/",
+      "liveLabel": "เดินงาน Hamburg Food Fair",
+      "cover": "hamburg",
+      "coverAlt": "ลานงาน Hamburg Food Fair ยามค่ำ มีบูธ Homechew นุ่มจัง และเชื่อปากกู",
+      "hire": "web"
+    },
+    {
+      "slug": "homechew",
+      "title": "Homechew · แบรนด์ซอส 3 รส",
+      "status": "งานให้แบรนด์",
+      "meta": "เว็บแบรนด์ · วิดีโอ · LINE",
+      "summary": "เว็บเปิดตัวแบรนด์ซอส 3 รส หาดใหญ่ มหาชัย เชียงคาน เล่าด้วยวิดีโออาหารทั้งหน้า แล้วพาไปรับข่าวเปิดขายทาง LINE",
+      "built": ["หน้าแบรนด์ที่เล่าด้วยวิดีโอทั้งหน้า", "หน้าแนะนำซอส 3 รสและชุดซอส", "ปุ่มรับข่าวเปิดขายทาง LINE"],
+      "live": "/homechew/",
+      "liveLabel": "เปิดเว็บ Homechew",
+      "cover": "homechew",
+      "coverAlt": "หน้าแรกเว็บ Homechew ขวดซอส 3 รสบนพื้นครีม",
+      "hire": "web"
+    },
+    {
+      "slug": "xvisor",
+      "title": "X-VISOR Quest 2.0",
+      "status": "งานให้แบรนด์",
+      "meta": "เกมจำลองธุรกิจ · เรียนผ่านการตัดสินใจ",
+      "summary": "เกมจำลองบริหารธุรกิจ X-VISOR 12 เดือน ลองหาลูกค้า สร้างทีม แล้วดูผลการตัดสินใจต่อถึงเดือนที่ 24",
+      "role": "ออกแบบระบบเกมและประสบการณ์การเรียนรู้",
+      "built": ["เกมเล่นบนเบราว์เซอร์ พร้อมเนื้อเรื่อง 12 เดือน", "ระบบตัวเลขจำลองที่ให้เห็นผลของการตัดสินใจ", "ตารางคะแนนสูงสุด"],
+      "live": "/xvisor/",
+      "liveLabel": "เล่น X-VISOR Quest",
+      "cover": "xvisor",
+      "coverAlt": "หน้าเริ่มเกม X-VISOR Quest 2.0 ตัวละครสองคนในออฟฟิศแบบพิกเซล",
+      "hire": "game"
+    },
+    {
+      "slug": "airova",
+      "title": "Airova · หน้าพาร์ทเนอร์ภาษาไทย",
+      "status": "พาร์ทเนอร์ทางการ",
+      "meta": "แลนดิ้งเพจ · วิดีโอ",
+      "summary": "หน้าแนะนำแพลตฟอร์ม AI สร้างภาพและวิดีโอ Airova สำหรับคนไทย ในฐานะพาร์ทเนอร์ทางการ พร้อมผนังวิดีโอ เทมเพลต และคอร์ส",
+      "built": ["แลนดิ้งเพจภาษาไทยพร้อมผนังวิดีโอ", "ภาพเล่าเรื่อง เรียน สร้าง เติบโต", "ภาพแชร์โซเชียลและลิงก์สมัคร"],
+      "live": "/airova/",
+      "liveLabel": "เปิดหน้า Airova",
+      "cover": "airova",
+      "coverAlt": "หน้าแรกพาร์ทเนอร์ Airova พื้นดำกับประติมากรรมแก้วโค้ง",
+      "hire": "web"
     }
   ]
 }

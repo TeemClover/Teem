@@ -27,15 +27,33 @@ test('every case role is the role the owner published on /resume/ (no invented r
   }
 });
 
+test('client work leads /work/ and the homepage, with real screenshots, live pages and no invented roles', async () => {
+  const [{clients, cases}, resume, work, home] = await Promise.all([json('work/cases.json'), read('resume/index.html'), read('work/index.html'), read('index.html')]);
+  assert.deepEqual(clients.map(c => c.slug), ['mediral', 'hamburg', 'homechew', 'xvisor', 'airova']);
+  for (const c of clients) {
+    assert.ok(['งานให้แบรนด์', 'พาร์ทเนอร์ทางการ'].includes(c.status), `${c.slug} status`);
+    await stat(new URL(c.live.slice(1) + 'index.html', root));
+    if (c.role) assert.ok(resume.includes(c.role), `${c.slug}: "${c.role}" is not on /resume/`);
+    for (const size of ['', '-640']) assert.ok((await stat(new URL(`work/media/${c.cover}-cover${size}.webp`, root))).size < 80 * 1024, `${c.cover}${size}`);
+    assert.ok(work.includes(`href="${c.live}"`), `/work/ links ${c.live}`);
+  }
+  assert.ok(work.indexOf('href="/mediral/"') < work.indexOf(`href="/work/${cases[0].slug}/"`), 'client work comes before own projects');
+  assert.ok(work.indexOf('href="/showcase/"') > work.indexOf(`href="/work/${cases.at(-1).slug}/"`), 'the demo ideas come last');
+  const workSection = home.slice(home.indexOf('id="work"'), home.indexOf('</section>', home.indexOf('id="work"')));
+  for (const slug of ['mediral', 'hamburg', 'xvisor', 'homechew']) assert.match(workSection, new RegExp(`href="/${slug}/"`), `homepage shows ${slug}`);
+  assert.doesNotMatch(workSection, /class="demo-strip"/, 'demo ideas stay quiet on the homepage');
+});
+
 test('Fastwork is the only way to pay, every Fastwork link comes from assets/site-links.json, and no price is shown', async () => {
   const links = await json('assets/site-links.json');
   const allowed = new Set([links.fastwork.profile, ...Object.values(links.fastwork.packages)]);
-  for (const file of ['index.html', 'work/index.html', 'hire/index.html', 'walkthrough/index.html', 'work/house-3d/index.html', 'work/classroom/index.html', 'work/core7/index.html', 'work/teambook/index.html']) {
+  for (const file of ['index.html', 'work/index.html', 'showcase/index.html', 'hire/index.html', 'walkthrough/index.html', 'work/house-3d/index.html', 'work/classroom/index.html', 'work/core7/index.html', 'work/teambook/index.html']) {
     const html = await read(file);
     for (const [, url] of html.matchAll(/href="(https:\/\/fastwork\.com[^"]*)"/g)) assert.ok(allowed.has(url), `${file}: ${url}`);
     assert.doesNotMatch(visible(html), /฿\s?\d|\d[\d,]*\s?บาท|THB/, `${file}: prices live on Fastwork`);
     assert.doesNotMatch(visible(html), /\b(OPEN|TODO|TBD)\b/, file);
-    assert.doesNotMatch(html, /QR|เลขบัญชี|โอนเงิน/, `${file}: no bank transfer for new buyers`);
+    // payment QR, account numbers or transfer instructions (a "เมนู QR" ordering demo is not a payment)
+    assert.doesNotMatch(html, /KBANK_QR|QR\s*(พร้อมเพย์|PromptPay|ชำระ|จ่าย|โอน)|(พร้อมเพย์|PromptPay)\s*QR|เลขบัญชี|โอนเงิน/i, `${file}: no bank transfer for new buyers`);
   }
   const hire = await read('hire/index.html');
   assert.match(hire, /ดูแพ็กเกจและราคาปัจจุบันใน Fastwork/);

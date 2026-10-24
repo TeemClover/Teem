@@ -1,0 +1,49 @@
+{
+  "title": "นวลา · หลังบ้าน",
+  "sources": {"skincare": {"label": "สกินแคร์"}, "supplement": {"label": "อาหารเสริม"}},
+  "features": {"lots": true, "b2b": true},
+  "statusLabels": {"new": "รอยืนยัน", "doing": "กำลังแพ็ก", "ready": "ส่งแล้ว", "done": "ถึงลูกค้าแล้ว", "cancel": "ยกเลิก"},
+  "channels": [
+    {"id": "web", "label": "เว็บแบรนด์", "color": "#7f5a48"},
+    {"id": "line", "label": "LINE", "color": "#2f9e62"},
+    {"id": "market", "label": "มาร์เก็ตเพลส", "color": "#e0743a", "fee": 0.12},
+    {"id": "live", "label": "ไลฟ์สด", "color": "#c94f7c", "fee": 0.08},
+    {"id": "b2b", "label": "ขายส่งร้านค้า", "color": "#4f6b8f", "price": 0.7}
+  ],
+  "history": {"days": 14, "perDay": [26, 44], "hours": [8, 23.5], "peaks": [[12.5, 1.5, 0.25], [20.5, 1.2, 0.4]], "mix": {"web": 0.26, "line": 0.16, "market": 0.36, "live": 0.17, "b2b": 0.05}, "seed": 2251, "lines": [1, 3], "b2bQty": [6, 24]},
+  "items": {
+    "gel-cleanser": {"pop": 8, "cost": 74, "reorder": 80, "lots": [{"lot": "GC-2604", "qty": 46, "exp": 4}, {"lot": "GC-2609", "qty": 180, "exp": 22}]},
+    "foam-rice": {"pop": 5, "cost": 61, "reorder": 60, "lots": [{"lot": "FR-2607", "qty": 132, "exp": 18}]},
+    "serum-niacin": {"pop": 7, "cost": 118, "reorder": 60, "lots": [{"lot": "SN-2608", "qty": 74, "exp": 20}]},
+    "serum-ha": {"pop": 9, "cost": 109, "reorder": 80, "lots": [{"lot": "HA-2603", "qty": 22, "exp": 3}, {"lot": "HA-2608", "qty": 210, "exp": 21}]},
+    "toner-cucumber": {"pop": 4, "cost": 68, "reorder": 50, "lots": [{"lot": "TC-2606", "qty": 64, "exp": 15}]},
+    "cream-gel": {"pop": 7, "cost": 96, "reorder": 70, "lots": [{"lot": "CG-2607", "qty": 58, "exp": 17}]},
+    "sun-milk": {"pop": 9, "cost": 92, "reorder": 100, "lots": [{"lot": "SM-2605", "qty": 31, "exp": 5}, {"lot": "SM-2610", "qty": 260, "exp": 24}]},
+    "set-3step": {"pop": 4, "cost": 262, "reorder": 30, "lots": [{"lot": "ST-2609", "qty": 40, "exp": 14}]},
+    "vitc": {"pop": 6, "cost": 82, "reorder": 80, "lots": [{"lot": "VC-2602", "qty": 18, "exp": 2}, {"lot": "VC-2611", "qty": 240, "exp": 26}]},
+    "zinc": {"pop": 3, "cost": 58, "reorder": 40, "lots": [{"lot": "ZN-2608", "qty": 96, "exp": 22}]},
+    "fiber": {"pop": 5, "cost": 76, "reorder": 60, "lots": [{"lot": "FB-2607", "qty": 54, "exp": 9}]},
+    "collagen": {"pop": 5, "cost": 142, "reorder": 50, "lots": [{"lot": "CL-2606", "qty": 88, "exp": 12}]},
+    "fishoil": {"pop": 4, "cost": 128, "reorder": 40, "lots": [{"lot": "FO-2605", "qty": 36, "exp": 8}]},
+    "starter-set": {"pop": 3, "cost": 236, "reorder": 25, "lots": [{"lot": "SS-2609", "qty": 27, "exp": 13}]}
+  },
+  "suppliers": [
+    {"id": "oem-skin", "name": "โรงงานผลิตเครื่องสำอาง (สมมติ)", "lead": "ผลิต 30–45 วัน", "for": ["gel-cleanser", "foam-rice", "serum-niacin", "serum-ha", "toner-cucumber", "cream-gel", "sun-milk", "set-3step"]},
+    {"id": "oem-food", "name": "โรงงานผลิตอาหารเสริม (สมมติ)", "lead": "ผลิต 30–60 วัน", "for": ["vitc", "zinc", "fiber", "collagen", "fishoil", "starter-set"]}
+  ],
+  "purchases": [
+    {"supplier": "oem-skin", "daysAgo": 9, "lines": [["sun-milk", 300], ["serum-ha", 240]]},
+    {"supplier": "oem-food", "daysAgo": 12, "lines": [["vitc", 300]]}
+  ],
+  "customers": [
+    {"id": "c1", "name": "คุณแพร ว.", "seg": "ประจำ", "consent": true, "visits": 9, "lastDays": 4, "note": "ซื้อกันแดดทุกเดือน"},
+    {"id": "c2", "name": "คุณจูน ม.", "seg": "ประจำ", "consent": true, "visits": 6, "lastDays": 11},
+    {"id": "c3", "name": "ร้านบิวตี้มุมเมือง (สมมติ)", "seg": "ร้านค้า", "consent": true, "visits": 14, "lastDays": 6, "note": "ราคาส่ง สั่งทุก 2 สัปดาห์"},
+    {"id": "c4", "name": "ร้านขายยาตัวอย่าง สาขา 2 (สมมติ)", "seg": "ร้านค้า", "consent": true, "visits": 5, "lastDays": 19},
+    {"id": "c5", "name": "คุณบิว ส.", "seg": "ใหม่", "consent": true, "visits": 1, "lastDays": 2},
+    {"id": "c6", "name": "คุณฟ้า ร.", "seg": "หายไปนาน", "consent": true, "visits": 4, "lastDays": 74},
+    {"id": "c7", "name": "คุณเมย์ ก.", "seg": "ประจำ", "consent": false, "visits": 7, "lastDays": 8},
+    {"id": "c8", "name": "คุณโอ๊ต ป.", "seg": "ใหม่", "consent": false, "visits": 1, "lastDays": 1}
+  ],
+  "costs": [["เงินเดือนทีม", 150000], ["ค่าโฆษณา", 380000], ["ค่าเช่าคลังสินค้า", 25000], ["ค่าแพ็กและส่งฟรี", 60000], ["อื่น ๆ", 20000]]
+}
