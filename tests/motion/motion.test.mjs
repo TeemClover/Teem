@@ -56,11 +56,15 @@ test('the TeamBook notebook opens the live app, not its unstyled root-relative c
   assert.match(await read('teambook/index.html'), /href="\/_shared\/xty\.css/);
 });
 
-test('generated entrances keep the block: / and /compass/ from their sources, recipes from their template', async () => {
-  for (const file of ['index.html', 'compass/index.html', 'ako/kitchen/chicken-egg-bowl/index.html']) {
+test('generated entrances keep the block: /compass/ from its source, recipes from their template', async () => {
+  for (const file of ['compass/index.html', 'ako/kitchen/chicken-egg-bowl/index.html']) {
     assert.match(await read(file), new RegExp(`clover-motion\\.js\\?v=${MOTION_VERSION}`), file);
   }
-  assert.match(await read('index.html'), /data-profile="hub"/);
+  // the homepage animates itself; its only use for the layer (prefetch) is an inline rule that never touches /tour/
+  const home = await read('index.html');
+  assert.doesNotMatch(home, /clover-motion/);
+  assert.match(home, /<script type="speculationrules">[^<]*"\/tour\/\*"/);
+  assert.match(await read('tour/index.html'), /data-profile="hub"/);
   assert.match(await read('tools/build.py'), new RegExp(`MOTION_VERSION = '${MOTION_VERSION}'`), 'the Forge generator writes the same version');
 });
 

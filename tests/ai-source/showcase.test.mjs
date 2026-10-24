@@ -35,7 +35,7 @@ test('every showcase card opens a real page and carries a light, described scree
   const cards = [...section.matchAll(/<a class="built-card" href="([^"]+)"[^>]*><img src="([^"]+)" width="(\d+)" height="(\d+)" loading="lazy" decoding="async" alt="([^"]{12,})"/g)];
   assert.ok(cards.length >= 6, `${cards.length} cards`);
   for (const [, href, src] of cards) {
-    const page = href === '/' ? 'tour/index.html' : href.replace(/^\//, '') + 'index.html';
+    const page = href.replace(/^\//, '') + 'index.html';
     assert.ok(await exists(page), href);
     assert.ok(await exists(src.replace(/^\//, '')), src);
     assert.ok((await stat(root + src.replace(/^\//, ''))).size < 80 * 1024, `${src} stays under 80KB`);
