@@ -88,6 +88,9 @@ jobs:
           git diff --exit-code -- index.html compass/index.html
       - run: npm run test:entry
       - run: npm run test:tour
+      - name: Say plainly when the Vercel preview is not being checked
+        if: github.event_name == 'pull_request' && vars.VERCEL_PREVIEW_CHECKS != 'true'
+        run: echo "::warning title=Vercel preview not verified::Previews are behind Vercel Deployment Protection. Add the secret VERCEL_AUTOMATION_BYPASS_SECRET and the variable VERCEL_PREVIEW_CHECKS=true to check routing, headers and flows on the real preview."
 
   ui:
     name: Homepage in a browser (repo)
@@ -103,9 +106,13 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:entry:ui
 
+  # Vercel previews of this project sit behind Deployment Protection (302 to /sso-api). The PR run needs the
+  # repository secret VERCEL_AUTOMATION_BYPASS_SECRET and the variable VERCEL_PREVIEW_CHECKS=true; until both
+  # exist the job is skipped (shown as skipped, never as a pass) and the source job leaves a warning.
+  # After a merge it checks the public production domain once Vercel reports the deployment done.
   deployment:
     name: Vercel deployment (routing, headers, flows)
-    if: github.event_name == 'pull_request' || inputs.base_url != ''
+    if: (github.event_name == 'pull_request' && vars.VERCEL_PREVIEW_CHECKS == 'true') || github.event_name == 'push' || inputs.base_url != ''
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -118,11 +125,12 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Find the Vercel deployment of this commit
         id: preview
-        if: github.event_name == 'pull_request'
+        if: github.event_name != 'workflow_dispatch'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SHA: ${{ github.event.pull_request.head.sha }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           BRANCH: ${{ github.head_ref }}
+          PRODUCTION_URL: ${{ github.event_name == 'push' && 'https://www.myclover.com' || '' }}
         run: node scripts/find-vercel-preview.mjs >> "$GITHUB_OUTPUT"
       - name: Routing, headers and published files
         env:

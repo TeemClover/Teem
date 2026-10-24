@@ -18,13 +18,27 @@ if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) Object.assign(headers, {'x-verc
 
 const results = [];
 const ok = (name, pass, detail = '') => results.push([pass ? 'ok' : 'FAIL', name, detail]);
-const get = (path, redirect = 'manual') => fetch(base + path, {redirect, headers});
+async function get(path, redirect = 'manual') {
+  let url = base + path;
+  for (let hop = 0; hop < 6; hop++) {
+    const r = await fetch(url, {redirect: 'manual', headers});
+    const location = r.headers.get('location');
+    if (redirect !== 'follow' || ![301, 302, 303, 307, 308].includes(r.status) || !location) return r;
+    const next = new URL(location, url);
+    if (next.origin !== new URL(base).origin || /\/sso-api/.test(next.pathname)) return r; // never follow off the deployment or into a login
+    url = next.href;
+  }
+  return fetch(url, {redirect: 'manual', headers});
+}
 const robots = r => (r.headers.get('x-robots-tag') || '').toLowerCase();
 
-// 0. reachable at all (a protected preview answers 401 to everything)
+// 0. reachable at all. Vercel Deployment Protection answers 401/403, or 302 to its SSO login (/sso-api,
+//    vercel.com/login). Nothing behind that wall can be checked, so stop instead of testing the login page.
 const home = await get('/');
-if (home.status === 401 || home.status === 403) {
-  console.error(`${base} answers ${home.status}: the deployment is protected. Set VERCEL_AUTOMATION_BYPASS_SECRET (Vercel → Settings → Deployment Protection → Protection Bypass for Automation).`);
+const wall = home.status === 401 || home.status === 403 || ([301, 302, 303, 307, 308].includes(home.status) && /\/sso-api|vercel\.com\/(login|sso)/.test(home.headers.get('location') || ''));
+if (wall) {
+  console.error(`NOT VERIFIED: ${base} is behind Vercel Deployment Protection (${home.status} ${home.headers.get('location') || ''}).`);
+  console.error('Add a Protection Bypass for Automation secret (Vercel → Project → Settings → Deployment Protection) as the GitHub secret VERCEL_AUTOMATION_BYPASS_SECRET, or run this against the production domain.');
   process.exit(3);
 }
 
