@@ -629,7 +629,7 @@ def walkthrough_card(up):
     """
     return f'''<div class="nextup" data-mc-done="forge" hidden>
     <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
-    <a class="wtcard" href="{up}walkthrough/" data-ga="go_walkthrough">
+    <a class="wtcard" href="{up}walkthrough/story/" data-ga="go_walkthrough">
       <span class="wtseal" aria-hidden="true">🗺️</span>
       <span class="wtbody">
         <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
@@ -1266,7 +1266,7 @@ CARD_GIFT = ('../../card/', 'ทำการ์ดประจำตัว',
              'บอกคนอื่นได้ใน 1 ภาพว่าคุณเป็นสายไหน และเก็บตราที่ปลดได้ไว้บนนั้น')
 CLASS_GIFT = ('../../classroom/', 'ห้องเรียน AI ทั้ง 6 บท',
               'เรียนฟรี เริ่มบทละประมาณ 10 นาที แล้วกลับมาทำต่อได้โดยไม่ต้องมีพื้นฐาน')
-WALK_GIFT = ('../../walkthrough/', 'ห้องบทสรุป 🔒',
+WALK_GIFT = ('../../walkthrough/story/', 'ห้องบทสรุป 🔒',
              'เปิดให้คนที่อ่านการ์ตูนครบทั้ง 7 ตอน — แปลภาษาเกมเป็นภาษาธุรกิจ '
              'และเปิดเบื้องหลังว่าเว็บนี้สร้างขึ้นมายังไง')
 

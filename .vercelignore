@@ -87,3 +87,18 @@ short/assets/og-background-v1.webp
 short/assets/art-prompts-v2.json
 short/docs/
 short/assets/clips/hero-*-frame.png
+
+# Homepage source and briefs: "/" is generated from entry/home.html (tools/sync-frontdoor-root.mjs);
+# the template and media briefs are not pages. entry/ assets (css, js, data, media) do ship.
+entry/home.html
+entry/*.md
+tests/entry/
+
+# Repo inventory and URL baseline are maintainer documents.
+docs/INVENTORY.md
+docs/url-baseline.txt
+
+# Portfolio build inputs (tools/build-portfolio.mjs); the generated pages ship, the JSON sources do not.
+work/cases.json
+hire/services.json
+walkthrough/lessons.json
