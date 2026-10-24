@@ -32,8 +32,28 @@ async function open(options = {}) {
   const ctx = await browser.newContext({...options, ...(bypass ? {extraHTTPHeaders: {'x-vercel-protection-bypass': bypass, 'x-vercel-set-bypass-cookie': 'true'}} : {})});
   const page = await ctx.newPage();
   page.errors = []; page.on('pageerror', e => page.errors.push(e.message));
+  page.pending = new Set(); page.on('request', r => page.pending.add(r));
+  for (const done of ['requestfinished', 'requestfailed']) page.on(done, r => page.pending.delete(r));
   page.close = () => ctx.close();
   return page;
+}
+/* Open the homepage and wait until it is ready: the load event, entry.js's ready flag, and no file from this site
+   still loading for 500 ms. Not 'networkidle': on production that never fired (every such check timed out after
+   30 s), so a connection that stays open (an API call, another site) is listed at the end instead of hanging. */
+const notes = new Set();
+async function openHome(page, path = '/') {
+  await page.goto(base + path, {waitUntil: 'load'});
+  await page.waitForFunction(() => document.documentElement.classList.contains('entry-ready'), null, {timeout: 10000});
+  const own = r => { const u = new URL(r.url()); return u.origin === origin && !u.pathname.startsWith('/api/'); };
+  const until = Date.now() + 15000; let quietSince = Date.now();
+  while (Date.now() < until) {
+    if ([...page.pending].some(own)) quietSince = Date.now();
+    else if (Date.now() - quietSince >= 500) break;
+    await page.waitForTimeout(100);
+  }
+  const left = [...page.pending].map(r => r.url());
+  if ([...page.pending].some(own)) throw new Error(`files from this site still loading after 15 s: ${left.join(', ')}`);
+  if (left.length) notes.add(`still open after ${path} was ready: ${left.join(', ')}`);
 }
 const phone = {viewport: {width: 375, height: 667}, isMobile: true, hasTouch: true};
 const inView = loc => loc.evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; });
@@ -60,7 +80,7 @@ await check('64 shared demos render and respond', async () => {
 
 await check('three taps on a 375×667 phone, with no dead end', async () => {
   const page = await open(phone);
-  await page.goto(base + '/', {waitUntil: 'networkidle'});
+  await openHome(page);
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'empty');
   const firstChoiceBottom = await page.locator('.choice').first().evaluate(e => e.getBoundingClientRect().bottom);
   assert.ok(firstChoiceBottom <= 667, `the first choice is on the first screen (bottom at ${Math.round(firstChoiceBottom)}px)`);
@@ -87,7 +107,7 @@ await check('three taps on a 375×667 phone, with no dead end', async () => {
 await check('screen readers hear the step that actually comes next, and when it is complete', async () => {
   for (const reducedMotion of ['no-preference', 'reduce']) { // with and without view transitions
     const page = await open({viewport: {width: 1280, height: 860}, reducedMotion});
-    await page.goto(base + '/', {waitUntil: 'networkidle'});
+    await openHome(page);
     const say = () => page.locator('#announce').textContent();
     await page.locator('.choice').nth(0).click(); await page.waitForTimeout(700);
     assert.match(await say(), new RegExp(`เลือก ${data.industries[0].label} แล้ว · 1/3 · ต่อไป: อยากได้อะไร`), reducedMotion);
@@ -118,7 +138,7 @@ await check('an answer can be changed after finishing, and "ลองชุด�
 await check('the share button copies a link that reopens the same demo', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], {origin});
-  await page.goto(base + '/', {waitUntil: 'networkidle'});
+  await openHome(page);
   for (let i = 0; i < 3; i++) { await page.locator('.choice').nth(i).click(); await page.waitForTimeout(700); }
   await page.locator('#share').click(); await page.waitForTimeout(300);
   const link = await page.evaluate(() => navigator.clipboard.readText());
@@ -141,7 +161,7 @@ await check('reduced motion shows the finished state at once', async () => {
 await check('/ loads no 3D code or asset before entering the house', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const paths = []; page.on('request', r => { const u = new URL(r.url()); if (u.origin === origin) paths.push(u.pathname); });
-  await page.goto(base + '/', {waitUntil: 'networkidle'});
+  await openHome(page);
   for (let i = 0; i < 3; i++) { await page.locator('.choice').nth(i).click(); await page.waitForTimeout(500); }
   await page.mouse.wheel(0, 4000); await page.waitForTimeout(800);
   assert.deepEqual(paths.filter(p => /^\/tour\/|three|\.glb$|\.gltf$|showcase\/house\/assets\/.*\.js/.test(p)), []);
@@ -151,10 +171,12 @@ await check('/ loads no 3D code or asset before entering the house', async () =>
 await check('initial JavaScript ≤ 150KB gzip', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const scripts = [];
-  page.on('response', async r => { if (r.request().resourceType() === 'script' && new URL(r.url()).origin === origin) scripts.push(await r.body().catch(() => Buffer.alloc(0))); });
-  await page.goto(base + '/', {waitUntil: 'networkidle'});
+  page.on('response', async r => { if (r.request().resourceType() === 'script' && new URL(r.url()).origin === origin) scripts.push({url: r.url(), body: await r.body().catch(() => Buffer.alloc(0))}); });
+  await openHome(page);
+  // the widget modules load once the page is idle; count them too
+  for (const until = Date.now() + 10000; scripts.filter(s => s.url.includes('/entry/widgets/')).length < data.features.length && Date.now() < until;) await page.waitForTimeout(100);
   const inline = await page.$$eval('script:not([src])', s => s.map(x => x.textContent).join(''));
-  const total = scripts.reduce((n, b) => n + gzipSync(b).length, 0) + gzipSync(Buffer.from(inline)).length;
+  const total = scripts.reduce((n, s) => n + gzipSync(s.body).length, 0) + gzipSync(Buffer.from(inline)).length;
   assert.ok(total <= 150 * 1024, `${(total / 1024).toFixed(1)}KB gzip`);
   console.log(`  initial JS: ${(total / 1024).toFixed(1)}KB gzip in ${scripts.length} files + inline`);
   await page.close();
@@ -162,7 +184,7 @@ await check('initial JavaScript ≤ 150KB gzip', async () => {
 
 await check('without JavaScript the page still informs and converts', async () => {
   const page = await open({javaScriptEnabled: false, viewport: {width: 375, height: 740}});
-  await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+  await page.goto(base + '/', {waitUntil: 'load'}); // without scripts, DOMContentLoaded can come before the stylesheet
   assert.ok(!(await page.locator('#clover').isVisible()), 'the game hides');
   assert.ok(await page.locator('.nojs-demo').isVisible());
   for (const id of ['#hero-title', '#about-title', '#services-title', '#work-title', '#faq-title']) assert.ok(await page.locator(id).isVisible(), id);
@@ -191,18 +213,19 @@ await check('the finale leads to hiring and the free lessons', async () => {
 await check('an enrolled student still sees "ห้องเรียนของฉัน" on the homepage', async () => {
   const page = await open(phone);
   await page.route('**/api/learn?action=entry', r => r.fulfill({status: 200, contentType: 'application/json', body: JSON.stringify({ok: true, hasEnrollment: true})}));
-  await page.goto(base + '/', {waitUntil: 'networkidle'});
+  await openHome(page);
   const entry = page.locator('a.my-learning-entry');
   await entry.waitFor({timeout: 5000});
   assert.equal(await entry.getAttribute('href'), '/learn/');
   await page.close();
   const guest = await open(phone);
   await guest.route('**/api/learn?action=entry', r => r.fulfill({status: 200, contentType: 'application/json', body: JSON.stringify({ok: true, hasEnrollment: false})}));
-  await guest.goto(base + '/', {waitUntil: 'networkidle'});
+  await openHome(guest);
   assert.equal(await guest.locator('a.my-learning-entry').count(), 0, 'visitors without a course see no student link');
   await guest.close();
 });
 
 await browser.close(); local?.server.close();
 for (const r of results) console.log(r.join(' · '));
+for (const n of notes) console.log('note · ' + n);
 process.exit(results.some(r => r[0] === 'FAIL') ? 1 : 0);
