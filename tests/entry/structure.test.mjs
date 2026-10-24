@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile, stat} from 'node:fs/promises';
-import {buildSitemap, SITEMAP_PATHS} from '../../tools/build-sitemap.mjs';
+import {buildSitemap, SITEMAP_PATHS, vercelMatch} from '../../tools/build-sitemap.mjs';
 
 const root = new URL('../../', import.meta.url);
 const read = p => readFile(new URL(p, root), 'utf8');
@@ -12,7 +12,9 @@ test('sitemap.xml is generated, and every URL in it is a real, indexable, self-c
   const strip = s => s.replace(/<lastmod>[^<]*<\/lastmod>/g, '');
   assert.equal(strip(await read('sitemap.xml')), strip(await buildSitemap()), 'run node tools/build-sitemap.mjs');
   for (const p of ['/', '/work/', '/hire/', '/walkthrough/', '/tour/', '/resume/', '/meet/', '/courses/']) assert.ok(SITEMAP_PATHS.includes(p), p);
-  for (const cut of ['/home/', '/airova/', '/mediral/', '/xircle/', '/routinex/absorb/', '/compass/', '/frontdoor/', '/hall.html', '/first-class/', '/guild/', '/hf/', '/ai-career/', '/fitness/']) assert.ok(!SITEMAP_PATHS.includes(cut), cut);
+  for (const cut of ['/home/', '/xircle/', '/routinex/absorb/', '/compass/', '/frontdoor/', '/hall.html', '/first-class/', '/guild/', '/hf/', '/ai-career/', '/fitness/']) assert.ok(!SITEMAP_PATHS.includes(cut), cut);
+  // client work is searchable (owner decision 2026-10-24)
+  for (const client of ['/mediral/', '/hamburg/', '/homechew/', '/xvisor/', '/airova/']) assert.ok(SITEMAP_PATHS.includes(client), client);
 });
 
 test('vercel.json carries the redirects Vercel actually needs (E3) and sends /home/ to /', async () => {
@@ -26,8 +28,11 @@ test('vercel.json carries the redirects Vercel actually needs (E3) and sends /ho
     if (await exists(source.slice(1) + 'index.html')) continue;
     assert.equal(find(source)?.destination, destination, source);
   }
-  const noindex = headers.filter(h => h.headers.some(x => x.key === 'X-Robots-Tag' && x.value === 'noindex, follow')).map(h => h.source).join(' ');
-  for (const dir of ['xircle', 'routinex', 'xvisor', 'guild', 'fitness', 'clover20', 'mediral', 'hamburg', 'ai-career', 'hf']) assert.match(noindex, new RegExp(`\\b${dir}\\b`), dir);
+  const robots = p => headers.filter(h => !h.has && vercelMatch(h.source, p)).flatMap(h => h.headers).filter(x => x.key === 'X-Robots-Tag').map(x => x.value).pop() || '';
+  // the page URL itself ends in "/": Vercel matches it strictly, so each folder needs a rule that covers "/<dir>/"
+  for (const p of ['/xircle/', '/routinex/', '/routinex/absorb/', '/guild/', '/fitness/', '/clover20/', '/ai-career/', '/hf/', '/walkthrough/story/', '/xircle/assets/x.webp']) assert.equal(robots(p), 'noindex, follow', p);
+  for (const p of ['/mediral/', '/hamburg/', '/xvisor/', '/homechew/', '/airova/', '/work/', '/showcase/', '/']) assert.doesNotMatch(robots(p), /noindex/, `${p} stays searchable`);
+  assert.equal(vercelMatch('/x/:path*', '/x/'), false, 'strict matching, as on Vercel');
 });
 
 test('llms.txt is short and only about identity, hiring, published work, free lessons and contact', async () => {

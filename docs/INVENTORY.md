@@ -28,7 +28,7 @@
 | `.env.example` | ? | 1 | 2KB |  |  | 0 | 0 |  |  |
 | `.env.mediral.example` | ? | 1 | 855B |  |  | 0 | 0 |  |  |
 | `.forge-src/` | DEAD | 0 | 0B |  |  | 0 | 0 |  |  |
-| `.github/` | ? | 9 | 30KB |  |  | 0 | 0 |  |  |
+| `.github/` | ? | 9 | 31KB |  |  | 0 | 0 |  |  |
 | `.gitignore` | ? | 1 | 1KB |  |  | 0 | 0 |  |  |
 | `.tmp/` | DEAD | 0 | 0B |  |  | 0 | 0 |  |  |
 | `.vercel-deploy-trigger` | ? | 1 | 29B |  |  | 0 | 0 |  |  |
@@ -36,7 +36,7 @@
 | `AGENTS.md` | ? | 1 | 2KB |  |  | 0 | 0 |  |  |
 | `ai-career/` | AFFILIATE/LEGACY | 8 | 2.9MB | เห็นคนอื่นรวยมาหลายรอบแล้ว รอบ AI นี้ล่ะ? \| myClover AI Career | (none = index) | 0 | 0 |  |  |
 | `ai-source/` | CORE | 31 | 10.7MB | AI ใส่ซอส \| เปลี่ยนความรู้ของคุณเป็นงานด้วย AI | index,follow | 0 | 4 (book, classroom, courses, resume) | ai-source, course-reviews, first-class-review, learn-admin, sales-behavior |  |
-| `airova/` | AFFILIATE/LEGACY | 110 | 82.4MB | AI รุ่นใหม่ระดับโลก พร้อมระบบการตลาดครบวงจรเพื่อคนไทย | (none = index) | 0 | 3 (hire, tour, work) |  |  |
+| `airova/` | AFFILIATE/LEGACY | 110 | 82.4MB | AI รุ่นใหม่ระดับโลก พร้อมระบบการตลาดครบวงจรเพื่อคนไทย | (none = index) | 1 | 3 (hire, tour, work) |  |  |
 | `ako/` | CORE | 81 | 35.6MB | ครัวสลัดเอโกะ — ทำจานธรรมดาให้อร่อย | (none = index) | 16 | 2 (ai-source, tour) |  |  |
 | `api/` | CORE | 165 | 1.5MB |  |  | 0 | 3 (card, members, teambook) | ai-source, auth, course-content, discord, learn, learn-admin, learn-foundation, learn-media, learn-toolkit, shelf, xty, xty-pet |  |
 | `asksydscience/` | SPIN-OFF | 58 | 3.6MB | AskSydScience \| บ้านของสติและสุขภาพ | noindex,nofollow + header noindex | 0 | 1 (tools) |  |  |
@@ -71,11 +71,11 @@
 | `guild/` | BRAND/CLIENT | 59 | 66.9MB | Guild X · myClover | (none = index) | 0 | 1 (class) |  |  |
 | `hall-full.html` | AFFILIATE/LEGACY | 1 | 110KB | โถงฉบับเต็ม — First Version \| myClover | noindex,follow | 0 | 0 |  |  |
 | `hall.html` | AFFILIATE/LEGACY | 1 | 27KB | บ้าน myClover — Main Quest, CORE7 และ XTY | index,follow,max-image-preview:large,max-snippet:-1 | 0 | 31 (card, classroom, club, collection, compass, core7 +9) |  |  |
-| `hamburg/` | BRAND/CLIENT | 62 | 17.8MB | Hamburg Food Fair \| แฮมเบิร์กญี่ปุ่นพร้อมซอส 3 บูธ | (none = index) + header noindex | 0 | 5 (entry, hire, /, tour, work) |  |  |
+| `hamburg/` | BRAND/CLIENT | 62 | 17.8MB | Hamburg Food Fair \| แฮมเบิร์กญี่ปุ่นพร้อมซอส 3 บูธ | (none = index) + header noindex | 1 | 5 (entry, hire, /, tour, work) |  |  |
 | `hf/` | AFFILIATE/LEGACY | 10 | 16.1MB | ทำคลิป AI แรกของคุณฟรี · Seedance 2.5 \| myClover | (none = index) | 0 | 0 |  |  |
-| `hire/` | CORE | 2 | 31KB | จ้างทำเว็บ แอป มินิเกม ด้วย AI \| Teem Clover | index,follow | 1 | 19 (entry, /, showcase, walkthrough, work) |  |  |
+| `hire/` | CORE | 2 | 30KB | จ้างทำเว็บ แอป มินิเกม ด้วย AI \| Teem Clover | index,follow | 1 | 19 (entry, /, showcase, walkthrough, work) |  |  |
 | `home/` | AFFILIATE/LEGACY | 1 | 22KB | myClover — ทางลัด AI ในไม่ถึง 1 ชั่วโมง | index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1 | 0 | 1 (tour) |  | Original /home/ (video opening). tools/sync-frontdoor-root.mjs refuses to run if it changes. |
-| `homechew/` | CORE | 80 | 15.9MB | Homechew โฮมชูว — ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท | (none = index) | 0 | 6 (ai-source, entry, hire, /, tour, work) |  |  |
+| `homechew/` | CORE | 80 | 15.9MB | Homechew โฮมชูว — ปรุงอย่างพิถีพิถัน อร่อยง่ายแค่เท | (none = index) | 1 | 6 (ai-source, entry, hire, /, tour, work) |  |  |
 | `icons/` | CORE | 7 | 460KB |  | (none = index) | 0 | 61 (ai-career, airova, ako, classroom, collection, compass +13) |  |  |
 | `IMAGE-SLOTS.md` | ROOT DOCS | 1 | 2KB |  |  | 0 | 0 |  |  |
 | `IMAGES-REQUEST.md` | ROOT DOCS | 1 | 8KB |  |  | 0 | 0 |  |  |
@@ -90,7 +90,7 @@
 | `llms.txt` | ? | 1 | 5KB |  |  | 0 | 0 |  | AI navigation file (§10). |
 | `mask-icon.svg` | ? | 1 | 366B |  |  | 0 | 0 |  |  |
 | `media/` | ? | 4 | 26.9MB |  | (none = index) | 0 | 1 (home) |  |  |
-| `mediral/` | BRAND/CLIENT | 121 | 22.5MB | Mediral ชุดดูแลผิว 5 ชิ้น — จากล้างหน้า ถึงผิวพร้อมออกจากบ้าน · myClover | (none = index) + header noindex | 0 | 5 (entry, hire, /, tour, work) | mediral-commerce |  |
+| `mediral/` | BRAND/CLIENT | 121 | 22.5MB | Mediral ชุดดูแลผิว 5 ชิ้น — จากล้างหน้า ถึงผิวพร้อมออกจากบ้าน · myClover | (none = index) + header noindex | 1 | 5 (entry, hire, /, tour, work) | mediral-commerce |  |
 | `meet/` | CORE | 13 | 554KB | myClover Session · Meet Teem &amp; Ako | (none = index) | 1 | 45 (ako, classroom, entry, hire, home, / +7) | meet |  |
 | `members/` | PRIVATE | 1 | 7KB | Member Registry · myClover | noindex,nofollow,noarchive | 0 | 1 (command) | members |  |
 | `middleware.js` | ? | 1 | 10KB |  |  | 0 | 0 | course-content, learn-foundation, learn-media | Vercel edge middleware: classroom/course auth, shelf guard, trailing-slash canonicalisation. |
@@ -105,7 +105,7 @@
 | `robots.txt` | ? | 1 | 626B |  |  | 0 | 0 |  | Already open to AI crawlers (E11). |
 | `routinex/` | BRAND/CLIENT | 50 | 20.6MB |  |  | 0 | 1 (tour) |  |  |
 | `routing/` | DEAD | 3 | 78KB |  |  | 0 | 0 |  | NOT dead: middleware.js imports routing/public-assets.js and routing/public-classroom.js. Keep. |
-| `scripts/` | CORE | 11 | 100KB |  |  | 0 | 0 | learn |  |
+| `scripts/` | CORE | 11 | 101KB |  |  | 0 | 0 | learn |  |
 | `SHA256SUMS.txt` | DEAD | 1 | 232B |  |  | 0 | 0 |  |  |
 | `shelf/` | ? | 27 | 636KB | ชั้นวางซอสของทีม — The Sauce Shelf | noindex,nofollow + header noindex | 0 | 9 (classroom, course, resume) | backoffice-auth, shelf | Source shelf (AGENTS.md). shelf/source/clover-x/ and shelf/source/thedent/ are listed PRIVATE in §9.3. |
 | `short/` | SPIN-OFF | 1867 | 542.1MB | ตอนต่อ — เรื่องสั้น ความรู้สึกยาว | noindex,nofollow + header noindex | 0 | 0 | torntor |  |
@@ -116,15 +116,15 @@
 | `stat/` | PRIVATE | 8 | 99KB | Stat Dashboard — myClover | noindex,nofollow,noarchive | 0 | 3 (members, teambook) | core7 |  |
 | `teambook/` | SPIN-OFF | 538 | 56.1MB | TeamBook — สมุดกลุ่มมีชีวิต | index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1 | 0 | 1 (tour) | auth, health, profile, teambook, teambook-card-memories, teambook-ending, teambook-ending-image, teambook-media, teambook-mine, teambook-party-finish, teambook-pet, teambook-pet-compat, teambook-profile, teambook-public-detail-v13, teambook-public-list-v13, teambook-public-seen, teambook-pulse, teambook-stars, teambook-trust-seen, teambook-v12, telemetry, telemetry-stats |  |
 | `tests/` | CORE | 162 | 1.4MB |  |  | 0 | 0 | auth, backoffice-auth, clover20-guests, clover20-rsvp, core7, course-access, course-content, course-review, course-reviews, eggcycle, house-stats, learn, learn-admin, learn-foundation, learn-media, learn-media-extra, mediral-commerce, meet, members, progress, shelf, teambook-media, teambook-v12 |  |
-| `tools/` | CORE | 54 | 888KB |  |  | 0 | 0 | auth, clover20-guests, clover20-rsvp |  |
+| `tools/` | CORE | 54 | 889KB |  |  | 0 | 0 | auth, clover20-guests, clover20-rsvp |  |
 | `tour/` | CORE | 50 | 2.3MB | บ้าน myClover — ใครเจอเรา คนนั้นโชคดี | index,follow | 1 | 13 (ai-source, en, entry, hire, /, resume +3) |  |  |
 | `UPLOAD-GUIDE-TH.md` | ROOT DOCS | 1 | 5KB |  |  | 0 | 0 |  |  |
-| `vercel.json` | ? | 1 | 27KB |  |  | 0 | 0 |  | The only redirect/header/rewrite config Vercel reads. |
+| `vercel.json` | ? | 1 | 28KB |  |  | 0 | 0 |  | The only redirect/header/rewrite config Vercel reads. |
 | `walkthrough/` | CORE | 9 | 383KB | เรียน AI ฟรี 6 ตอน ลงมือทำจริง \| myClover | index,follow + header noindex | 1 | 12 (classroom, entry, hire, /, showcase, tour +1) |  |  |
-| `work/` | CORE | 24 | 735KB | ผลงาน — งานให้แบรนด์และโปรเจกต์ที่เปิดใช้ได้ \| Teem Clover | index,follow | 5 | 15 (entry, hire, /, showcase, walkthrough) |  |  |
+| `work/` | CORE | 24 | 734KB | ผลงาน — งานให้แบรนด์และโปรเจกต์ที่เปิดใช้ได้ \| Teem Clover | index,follow | 5 | 15 (entry, hire, /, showcase, walkthrough) |  |  |
 | `xircle/` | BRAND/CLIENT | 354 | 33.2MB | XIRCLE Experience — แล้วของคุณล่ะ? | (none = index) | 0 | 23 (ako, command, routinex, tour, xty, xvisor) | meet |  |
 | `xty/` | SPIN-OFF | 474 | 43.3MB | XTY — สมุดกลุ่มมีชีวิต | index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1 | 0 | 3 (class, classroom, profile) | auth, progress, xty, xty-mine, xty-party-finish, xty-pet, xty-stars |  |
-| `xvisor/` | BRAND/CLIENT | 31 | 2.3MB | X-VISOR QUEST 2.0 — สร้างลูกค้า ทีม และรายได้ | (none = index) | 0 | 12 (ai-source, classroom, entry, hire, /, resume +3) | progress, xvisor-scores |  |
+| `xvisor/` | BRAND/CLIENT | 31 | 2.3MB | X-VISOR QUEST 2.0 — สร้างลูกค้า ทีม และรายได้ | (none = index) | 1 | 12 (ai-source, classroom, entry, hire, /, resume +3) | progress, xvisor-scores |  |
 
 ## ต้องให้เจ้าของตัดสิน (owner decisions found by R0)
 1. **D6 — PRIVATE pages that still need the website:** `/calling/` `/command/` `/captures/` `/members/` `/keen/` `/stat/` `/boss/` are public URLs today (noindex is not access control). Which ones must stay online (then they need real auth) and which can 404?

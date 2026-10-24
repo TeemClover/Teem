@@ -53,6 +53,10 @@ on:
       - 'tools/showcase-pages.mjs'
       - 'tools/build-sitemap.mjs'
       - 'tests/entry/**'
+      - 'vercel.json'
+      - 'sitemap.xml'
+      - 'llms.txt'
+      - 'scripts/verify-deployment.mjs'
       - '.github/workflows/homepage-portfolio.yml'
   workflow_dispatch:
     inputs:

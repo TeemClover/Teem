@@ -72,8 +72,13 @@ for (const [from, to] of [['/home/', '/'], ['/home', '/'], ['/forge/ep0-my-own-m
 const landed = await get('/forge/ep0-my-own-machine/', 'follow');
 ok('old Forge link lands on a page', landed.status === 200, `status ${landed.status}`);
 
-// 3. brand, client and affiliate folders are noindex,follow; the archived story too
-for (const path of ['/mediral/', '/xircle/', '/xvisor/', '/guild/', '/hf/', '/hamburg/', '/routinex/absorb/', '/walkthrough/story/']) {
+// 3. old brand and legacy folders are noindex,follow; the archived story too. Client work stays searchable.
+for (const path of ['/mediral/', '/hamburg/', '/homechew/', '/xvisor/', '/airova/']) {
+  const r = await get(path, 'follow');
+  const tag = robots(r);
+  ok(`${path} (client work) 200 and searchable`, r.status === 200 && (preview ? !/noindex, follow/.test(tag) : !tag.includes('noindex')), `status ${r.status}, "${tag}"`);
+}
+for (const path of ['/xircle/', '/guild/', '/hf/', '/routinex/absorb/', '/walkthrough/story/']) {
   const r = await get(path, 'follow');
   const tag = robots(r);
   ok(`${path} X-Robots-Tag noindex, follow`, tag.includes('noindex') && tag.includes('follow') && !tag.includes('nofollow'), `status ${r.status}, "${tag}"`);
@@ -86,7 +91,7 @@ const broken = [];
 for (const path of locs) { const r = await get(path, 'follow'); if (r.status !== 200 || (preview ? robots(r).includes('follow') : robots(r).includes('noindex'))) broken.push(`${path} ${r.status} "${robots(r)}"`); }
 ok(`sitemap: ${locs.length} URLs answer 200 and are not noindex by our rules`, locs.length >= 40 && !broken.length, broken.join('; '));
 const llms = await (await get('/llms.txt')).text();
-ok('/llms.txt is the new guide', llms.includes('fastwork.com/user/teem') && !/mediral/i.test(llms));
+ok('/llms.txt is the new guide', llms.includes('fastwork.com/user/teem') && llms.includes('/showcase/') && llms.includes('Hamburg Food Fair') && !/XIRCLE|affiliate/i.test(llms));
 
 // 5. existing students keep their way in
 for (const path of ['/learn/', '/classroom/', '/classroom/free-ai.html', '/assets/my-learning-entry.js']) {
