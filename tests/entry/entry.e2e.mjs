@@ -154,17 +154,16 @@ await check('every style is its own template; luxury is the longest, and its fil
   const page = await open({viewport: {width: 1280, height: 860}});
   const frames = []; page.on('request', r => { const u = new URL(r.url()); if (u.pathname.startsWith('/entry/media/v5/film/')) frames.push(u.pathname); });
   const shape = {};
-  for (const s of data.styles) {
-    await openHome(page, `/?r=coach-profile-${s.key}`);
-    shape[s.key] = await page.$$eval('#scenes .sc', els => els.map(e => e.className.split(' ').find(c => /^(lx|wm|pp|mn)-/.test(c))).join(' '));
-  }
+  const read = () => page.$$eval('#scenes .sc', els => els.map(e => e.className.split(' ').find(c => /^(lx|wm|pp|mn)-/.test(c))).join(' '));
+  for (const s of data.styles.filter(s => s.key !== 'luxury')) { await openHome(page, `/?r=coach-profile-${s.key}`); shape[s.key] = await read(); }
+  assert.deepEqual(frames, [], 'no film frame loads for the other styles');
+  await openHome(page, '/?r=coach-profile-luxury');
+  shape.luxury = await read();
+  assert.ok(frames.length > 0, 'picking luxury starts loading its film');
   const prefixes = Object.values(shape).map(v => v.split(' ')[0].slice(0, 3));
   assert.equal(new Set(prefixes).size, 4, 'four different templates: ' + JSON.stringify(shape));
   const len = Object.fromEntries(Object.entries(shape).map(([k, v]) => [k, v.split(' ').length]));
   for (const k of ['warm', 'playful', 'minimal']) assert.ok(len.luxury > len[k], `luxury (${len.luxury} chapters) is longer than ${k} (${len[k]})`);
-  assert.deepEqual(frames, [], 'no film frame loads before luxury is picked');
-  await openHome(page, '/?r=coach-profile-luxury');
-  assert.ok(frames.length > 0, 'picking luxury starts loading its film');
   assert.deepEqual(frames.filter(p => !p.startsWith('/entry/media/v5/film/coach/w/')), [], 'only this business, landscape frames on a wide screen');
   await scrollToScene(page, 1);
   await page.locator('.lx-film .lx-screen.has-film canvas').waitFor({timeout: 15000});
