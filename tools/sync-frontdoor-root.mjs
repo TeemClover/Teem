@@ -65,7 +65,9 @@ export async function entryMediaFiles(base=new URL('../',import.meta.url)){
 }
 
 /** Which media exist. `files` = paths inside entry/media/ (see entryMediaFiles).
-    v4 (homepage builder, generated with Higgsfield): a combination counts only when every size the page asks for is there. */
+    v4 (homepage builder, generated with Higgsfield): a combination counts only when every size the page asks for is there.
+    v5 (the luxury template): film = frames per business that exist in both sets (w = landscape, p = phone crop),
+    counted from 001 without gaps; craft = the piece loops. */
 export function entryMedia(data,files){
   const has=name=>files.has(name);
   const combos=data.industries.flatMap(i=>data.styles.map(s=>`${i.key}-${s.key}`));
@@ -75,7 +77,11 @@ export function entryMedia(data,files){
     item:combos.flatMap(c=>[1,2,3].map(n=>`${c}-${n}`)).filter(c=>['','-360'].every(w=>has(`v4/item/${c}${w}.webp`))),
     loop:combos.filter(c=>has(`v4/loop/${c}.mp4`)),
   };
-  return {v4,door:has('door.webp')?'/entry/media/door.webp':null,og:has('og-home.jpg')?'/entry/media/og-home.jpg':null};
+  const frame=(ind,set,n)=>`v5/film/${ind}/${set}/${String(n).padStart(3,'0')}.webp`;
+  const film={};
+  for(const i of data.industries){let n=0;while(has(frame(i.key,'w',n+1))&&has(frame(i.key,'p',n+1)))n++;if(n>1)film[i.key]=n;}
+  const v5={film,craft:data.industries.flatMap(i=>[1,2,3].map(n=>`${i.key}-${n}`)).filter(c=>has(`v5/craft/${c}.mp4`))};
+  return {v4,v5,door:has('door.webp')?'/entry/media/door.webp':null,og:has('og-home.jpg')?'/entry/media/og-home.jpg':null};
 }
 
 /** The studio's first backdrop is the page's largest image: in the HTML, preloaded, never waiting for the script. */
@@ -135,5 +141,5 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   await writeFile(new URL('compass/index.html',base),renderCompassPage(compass));
   await writeFile(new URL('index.html',base),renderEntryRoot(entry,JSON.parse(dataText),files));
   const media=entryMedia(JSON.parse(dataText),files);
-  console.log(`/ uses entry/home.html (media v4: ${media.v4.hero.length} heroes, ${media.v4.detail.length} details, ${media.v4.item.length} items, ${media.v4.loop.length} loops${media.door?', door':''}${media.og?', og-home':''}); /compass/ uses the Compass runtime. Original /home/ preserved.`);
+  console.log(`/ uses entry/home.html (media v4: ${media.v4.hero.length} heroes, ${media.v4.detail.length} details, ${media.v4.item.length} items, ${media.v4.loop.length} loops; v5: ${Object.keys(media.v5.film).length} films, ${media.v5.craft.length} piece loops${media.door?', door':''}${media.og?', og-home':''}); /compass/ uses the Compass runtime. Original /home/ preserved.`);
 }

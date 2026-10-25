@@ -1,5 +1,6 @@
 /**
- * Homepage v4 "ปรุงเว็บใน 3 แตะ" acceptance checks (BLUEPRINT v3.0 §12 F3, automated part; owner brief 2026-10-24).
+ * Homepage v5 "ปรุงเว็บใน 3 แตะ" acceptance checks (BLUEPRINT v3.0 §12 F3, automated part; owner briefs 2026-10-24
+ * and 2026-10-25: the builder is the page; each style is its own scroll template; luxury is a film you scroll).
  *
  *   npm run test:entry:ui                                     local copy of the repo (static server)
  *   ENTRY_BASE_URL=https://<deployment> npm run test:entry:ui  a real deployment (Vercel preview/production)
@@ -9,7 +10,8 @@
  *           VERCEL_AUTOMATION_BYPASS_SECRET opens a protected Vercel preview.
  *
  * Covers: all 64 ?r= demos; three taps on a 375×667 phone through the pinned site to the two doors; the scroll
- * that holds each scene; one page in many looks (remix, styles strip); screen-reader announcements; replay; the
+ * that holds each chapter; four different templates and the luxury film; one page in many looks (remix, styles
+ * strip); screen-reader announcements; replay; the
  * share link; reduced motion; only the chosen media load; no 3D before "เข้าบ้าน"; initial JS budget; reading
  * without JavaScript; "เข้าบ้าน" → /tour/?from=home; the profile door to /hire/ and /walkthrough/; the
  * "ห้องเรียนของฉัน" entry for enrolled students. Human testing (BLUEPRINT §12 F3) is separate.
@@ -71,6 +73,8 @@ async function scrollToScene(page, k, step = 240) {
   throw new Error(`scene ${k} never came up (at ${await page.locator('#site').getAttribute('data-pos')})`);
 }
 const active = page => page.locator('#scenes .sc:not([inert])');
+const chapters = page => page.locator('#scenes .sc').count();
+const featureAt = page => page.locator('.sc-hero [data-goto]').getAttribute('data-goto');
 
 await check('64 shared demos render and respond', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
@@ -84,8 +88,10 @@ await check('64 shared demos render and respond', async () => {
     assert.equal(await page.locator('#site').getAttribute('data-style'), s.key, combo);
     assert.equal(await page.locator('#site').evaluate(el => el.style.getPropertyValue('--demo-accent')), s.vars['--demo-accent'], combo);
     assert.equal(await page.locator('.sc-card').count(), 3, combo + ' items');
-    await page.locator('.sc-hero [data-goto="3"]').click();
-    await page.waitForFunction(() => document.querySelector('#site').dataset.scene === '3');
+    const k = await featureAt(page);
+    assert.equal(await page.locator(`.sc[data-sc="${k}"]`).getAttribute('data-role'), 'feature', combo);
+    await page.locator('.sc-hero [data-goto]').click();
+    await page.waitForFunction(k => document.querySelector('#site').dataset.scene === k, k);
     await page.waitForTimeout(400);
     await page.locator('[data-widget-body] button:not([disabled])').first().click();
     n++;
@@ -108,9 +114,9 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
   await page.waitForFunction(() => Math.abs(document.querySelector('#site').getBoundingClientRect().top) < 4, null, {timeout: 5000});
   assert.ok(await inView(page.locator('.sc-hero .sc-title')), 'the third tap lands on the new site');
   assert.match(await page.locator('.site-bar').textContent(), /ตัวอย่างสาธิต/);
-  for (let k = 1; k <= 4; k++) {
+  for (let k = 1, n = await chapters(page); k < n; k++) {
     await scrollToScene(page, k);
-    assert.equal(await active(page).getAttribute('data-sc'), String(k), `scene ${k} is the one you can use`);
+    assert.equal(await active(page).getAttribute('data-sc'), String(k), `chapter ${k} is the one you can use`);
   }
   await page.locator('#finale').scrollIntoViewIfNeeded();
   for (const sel of ['.door-profile', '.door-house[href="/tour/"][data-enter-house]']) assert.ok(await page.locator(sel).isVisible(), sel);
@@ -125,21 +131,47 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
   await page.close();
 });
 
-await check('the site holds each scene, then changes; only the scene on screen can be used', async () => {
+await check('the site holds each chapter, then changes; only the chapter on screen can be used', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   await openHome(page, '/?r=shop-store-luxury');
   await page.waitForFunction(() => document.querySelector('#site').dataset.scene === '0');
-  await scrollToScene(page, 1);
-  const d = () => page.locator('.sc[data-sc="1"]').evaluate(e => Number(e.style.getPropertyValue('--d')));
-  const facts = () => page.locator('.sc[data-sc="1"] .sc-facts li').last().evaluate(e => Number(getComputedStyle(e).opacity));
-  const before = await facts();
-  await page.mouse.wheel(0, 220); await page.waitForTimeout(150);
-  assert.ok(Math.abs(await d()) < .001, 'scrolling inside a hold does not move the scene');
-  assert.ok(await facts() >= before, 'the hold reveals the story one line at a time');
   await scrollToScene(page, 2);
-  assert.equal(await page.locator('.sc[data-sc="1"]').getAttribute('aria-hidden'), 'true', 'the scene that left is out of the reading order');
+  const v = name => page.locator('.sc[data-sc="2"]').evaluate((e, name) => Number(e.style.getPropertyValue(name)), name);
+  const before = await v('--p');
+  await page.mouse.wheel(0, 220); await page.waitForTimeout(150);
+  assert.equal(await v('--in'), 0, 'scrolling inside a hold does not move the chapter');
+  assert.equal(await v('--out'), 0);
+  assert.ok(await v('--p') > before, 'the hold moves what is inside it (the words light up)');
+  await scrollToScene(page, 3);
+  assert.equal(await page.locator('.sc[data-sc="2"]').getAttribute('aria-hidden'), 'true', 'the chapter that left is out of the reading order');
   assert.equal(await page.locator('.sc[data-sc="0"]').evaluate(e => e.inert), true);
-  assert.equal(await page.locator('.sc[data-sc="2"]').evaluate(e => e.inert), false);
+  assert.equal(await page.locator('.sc[data-sc="3"]').evaluate(e => e.inert), false);
+  assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
+await check('every style is its own template; luxury is the longest, and its film plays as you scroll', async () => {
+  const page = await open({viewport: {width: 1280, height: 860}});
+  const frames = []; page.on('request', r => { const u = new URL(r.url()); if (u.pathname.startsWith('/entry/media/v5/film/')) frames.push(u.pathname); });
+  const shape = {};
+  const read = () => page.$$eval('#scenes .sc', els => els.map(e => e.className.split(' ').find(c => /^(lx|wm|pp|mn)-/.test(c))).join(' '));
+  for (const s of data.styles.filter(s => s.key !== 'luxury')) { await openHome(page, `/?r=coach-profile-${s.key}`); shape[s.key] = await read(); }
+  assert.deepEqual(frames, [], 'no film frame loads for the other styles');
+  await openHome(page, '/?r=coach-profile-luxury');
+  shape.luxury = await read();
+  assert.ok(frames.length > 0, 'picking luxury starts loading its film');
+  const prefixes = Object.values(shape).map(v => v.split(' ')[0].slice(0, 3));
+  assert.equal(new Set(prefixes).size, 4, 'four different templates: ' + JSON.stringify(shape));
+  const len = Object.fromEntries(Object.entries(shape).map(([k, v]) => [k, v.split(' ').length]));
+  for (const k of ['warm', 'playful', 'minimal']) assert.ok(len.luxury > len[k], `luxury (${len.luxury} chapters) is longer than ${k} (${len[k]})`);
+  assert.deepEqual(frames.filter(p => !p.startsWith('/entry/media/v5/film/coach/w/')), [], 'only this business, landscape frames on a wide screen');
+  await scrollToScene(page, 1);
+  await page.locator('.lx-film .lx-screen.has-film canvas').waitFor({timeout: 15000});
+  const frame = () => page.locator('.lx-film [data-frame]').textContent();
+  const first = await frame();
+  for (let i = 0; i < 6; i++) { await page.mouse.wheel(0, 240); await page.waitForTimeout(80); }
+  await page.waitForTimeout(300);
+  assert.notEqual(await frame(), first, 'scrolling moves the film');
   assert.deepEqual(page.errors, []);
   await page.close();
 });
@@ -154,8 +186,8 @@ await check('one page, many looks: the styles strip and the remix rows change th
   await page.locator('.look[data-look="luxury"]').click();
   await page.waitForFunction(() => document.querySelector('#site').dataset.style === 'luxury');
   assert.notEqual(await font(), warm, 'the type changes with the style');
-  assert.match(await page.locator('.sc-hero .sc-media img').getAttribute('src'), /cafe-luxury/);
-  assert.equal(await page.locator('#site').getAttribute('data-motion'), 'slow', 'and so does the way it moves');
+  assert.ok(await page.locator('#scenes img[src*="cafe-luxury"]').count() > 0, 'the photos change');
+  assert.ok(await page.locator('#scenes .lx-film').count() === 1, 'and so does the whole layout: luxury has its film');
   await page.waitForFunction(() => Math.abs(document.querySelector('#site').getBoundingClientRect().top) < 4, null, {timeout: 5000});
   await page.locator('#finale').scrollIntoViewIfNeeded();
   await page.locator('.chip[data-step="0"][data-key="studio"]').click();
@@ -218,21 +250,22 @@ await check('reduced motion: no pinning, every scene readable in order', async (
   await openHome(page, '/?r=studio-minigame-minimal');
   await page.waitForSelector('.w-token');
   assert.equal(await page.locator('.site-stage').evaluate(e => getComputedStyle(e).position), 'relative');
-  for (let k = 0; k < 5; k++) assert.ok(await page.locator(`.sc[data-sc="${k}"]`).isVisible(), `scene ${k}`);
-  assert.equal(await page.locator('#scenes .sc[inert]').count(), 0, 'every scene can be used');
+  for (let k = 0, n = await chapters(page); k < n; k++) assert.ok(await page.locator(`.sc[data-sc="${k}"]`).isVisible(), `chapter ${k}`);
+  assert.equal(await page.locator('#scenes .sc[inert]').count(), 0, 'every chapter can be used');
   assert.equal(await page.locator('video').count(), 0, 'no clip plays');
   await page.close();
 });
 
 await check('only the chosen combination loads its photos and clip', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
-  const media = []; page.on('request', r => { const u = new URL(r.url()); if (u.pathname.startsWith('/entry/media/v4/')) media.push(u.pathname); });
+  const media = []; page.on('request', r => { const u = new URL(r.url()); if (/^\/entry\/media\/v[45]\//.test(u.pathname)) media.push(u.pathname); });
   await openHome(page, '/?r=coach-store-playful');
   await page.waitForTimeout(800);
   assert.ok(media.length > 0);
   const firstLook = p => p.startsWith('/entry/media/v4/hero/cafe-luxury'); // the studio's built-in backdrop, in the HTML
   assert.deepEqual(media.filter(p => !p.includes('/coach-') && !firstLook(p)), [], 'nothing from other businesses before the finale');
   assert.deepEqual(media.filter(p => /\/(hero|detail|item|loop)\/coach-(warm|luxury|minimal)/.test(p)), [], 'nothing from other styles before the finale');
+  assert.deepEqual(media.filter(p => p.startsWith('/entry/media/v5/')), [], 'no luxury film or loops for another style');
   await page.close();
 });
 
