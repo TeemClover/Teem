@@ -197,7 +197,6 @@ html.js .profile:not(.is-open) { display: none; }
 .foot { padding: 28px 0 calc(28px + env(safe-area-inset-bottom)); background: #080908; color: var(--mute); font-size: 14px; }
 .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 24px; }
 .foot-brand b { color: var(--cream); }
-.foot-brand small { font-size: 13px; }
 .foot nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
 .foot a { text-decoration: none; }
 .foot a:hover { color: #fff; }

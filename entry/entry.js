@@ -17,7 +17,7 @@ const saveData = !!navigator.connection?.saveData;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const icon = name => `<svg><use href="#i-${name}"/></svg>`;
 const emit = (type, detail = {}) => dispatchEvent(new CustomEvent('mc:entry', {detail: {type, ...detail}}));
-const V = '20261026';
+const V = '20261027';
 
 const STEPS = [
   {list: 'industries', q: 'คุณทำอะไร'},
