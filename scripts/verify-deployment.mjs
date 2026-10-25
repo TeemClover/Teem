@@ -44,7 +44,7 @@ if (wall) {
 
 // 1. the new pages exist, are the new pages, and are indexable by our own rules
 const homeHtml = await home.text();
-ok('/ is the new homepage', home.status === 200 && homeHtml.includes('id="clover"') && homeHtml.includes('<link rel="canonical" href="https://www.myclover.com/">'), `status ${home.status}`);
+ok('/ is the new homepage', home.status === 200 && homeHtml.includes('id="studio-bg"') && homeHtml.includes('<link rel="canonical" href="https://www.myclover.com/">'), `status ${home.status}`);
 for (const path of ['/', '/work/', '/work/house-3d/', '/work/classroom/', '/work/core7/', '/work/teambook/', '/showcase/', '/hire/', '/walkthrough/', '/tour/']) {
   const r = path === '/' ? home : await get(path);
   const tag = robots(r);
@@ -109,7 +109,7 @@ ok('/api/learn?action=entry answers JSON (the "ห้องเรียนขอ
   entry ? `status ${entry.status}, ${entryType}, body ${entryBody === null ? 'not finished within 10 s' : `${entryJson ? 'JSON' : 'not JSON'} after ${Date.now() - entryStart} ms`}` : 'no response within 10 s');
 
 // 6. what ships and what does not
-for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.json', 'json'], ['/assets/fonts/site/kanit-thai-600.woff2', 'font/woff2'], ['/work/media/house-3d-cover.webp', 'image/webp'], ['/showcase/kit/erp.js', 'javascript'], ['/showcase/thumbs/menu.svg', 'image/svg+xml']]) {
+for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.json', 'json'], ['/assets/fonts/site/kanit-thai-600.woff2', 'font/woff2'], ['/work/media/house-3d-cover.webp', 'image/webp'], ['/entry/media/v4/hero/cafe-luxury-1280.webp', 'image/webp'], ['/entry/media/v4/loop/cafe-warm.mp4', 'video/mp4'], ['/showcase/kit/erp.js', 'javascript'], ['/showcase/thumbs/menu.svg', 'image/svg+xml']]) {
   const r = await get(path);
   ok(`${path} served as ${type}`, r.status === 200 && (r.headers.get('content-type') || '').includes(type), `status ${r.status}, ${r.headers.get('content-type')}`);
 }

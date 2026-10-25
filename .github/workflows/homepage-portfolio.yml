@@ -63,6 +63,9 @@ on:
       base_url:
         description: 'Also verify this deployment (e.g. https://www.myclover.com)'
         required: false
+      media_manifest:
+        description: 'Only import generated media into this branch (JSON map, see scripts/import-media.mjs)'
+        required: false
 
 permissions:
   contents: read
@@ -70,12 +73,13 @@ permissions:
   statuses: read
 
 concurrency:
-  group: homepage-portfolio-${{ github.ref }}
+  group: homepage-portfolio-${{ github.ref }}${{ inputs.media_manifest && '-media' || '' }}
   cancel-in-progress: true
 
 jobs:
   source:
     name: Source and generated pages
+    if: ${{ !inputs.media_manifest }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -88,7 +92,7 @@ jobs:
       - name: Syntax
         run: |
           node --check entry/entry.js
-          for f in entry/widgets/*.js showcase/kit/*.js tools/showcase-pages.mjs scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs; do node --check "$f"; done
+          for f in entry/widgets/*.js showcase/kit/*.js tools/showcase-pages.mjs scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs scripts/import-media.mjs; do node --check "$f"; done
       - name: Generated pages match their sources
         run: |
           node tools/build-portfolio.mjs --check
@@ -104,6 +108,7 @@ jobs:
 
   ui:
     name: Homepage in a browser (repo)
+    if: ${{ !inputs.media_manifest }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -116,6 +121,35 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:entry:ui
       - run: npm run test:showcase:ui
+
+  # The cloud sandbox cannot reach the image/video generator's CDN, so generated media is fetched here,
+  # converted to small WebP/MP4 files (scripts/import-media.mjs) and committed to the branch the run was
+  # started on. Never on main: media reaches main through a reviewed PR like everything else.
+  media:
+    name: Import generated media
+    if: github.event_name == 'workflow_dispatch' && inputs.media_manifest != '' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq webp ffmpeg
+      - name: Download and convert
+        env:
+          MEDIA_MANIFEST: ${{ inputs.media_manifest }}
+        run: node scripts/import-media.mjs
+      - name: Commit to this branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git add entry/media
+          if git diff --cached --quiet; then echo 'nothing new'; exit 0; fi
+          git commit -q -m "Import generated media (run ${{ github.run_id }})"
+          git push
 
   # Vercel previews of this project sit behind Deployment Protection (302 to /sso-api). The PR run needs the
   # repository secret VERCEL_AUTOMATION_BYPASS_SECRET and the variable VERCEL_PREVIEW_CHECKS=true; until both

@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 4,
   "note": "Homepage demo data (BLUEPRINT v3.0 §4.6): 4 industries × 4 features × 4 styles = 64 demos. Every brand here is fictional sample data, not a client. Prices inside demos are sample numbers for the simulation only.",
   "industries": [
     {
@@ -36,7 +36,10 @@
         "จุดเด่น: ขนมปังออกจากเตาทุกเช้า 06:30"
       ],
       "rule": "ห้ามพูด: ไม่อ้างว่า \"ดีที่สุดในย่าน\" ถ้าไม่มีหลักฐาน",
-      "bookingNoun": "จองโต๊ะ"
+      "bookingNoun": "จองโต๊ะ",
+      "storyTitle": "ขนมปังออกจากเตาทุกเช้า 06:30",
+      "itemsTitle": "เมนูเด่นวันนี้",
+      "closing": "แวะมาก่อนเข้าออฟฟิศ กาแฟรออยู่"
     },
     {
       "key": "coach",
@@ -72,7 +75,10 @@
         "จุดเด่น: ทดลองเรียน 30 นาที ดูจุดที่ติดก่อน"
       ],
       "rule": "ห้ามพูด: ไม่รับประกันเกรดหรือคะแนนสอบ",
-      "bookingNoun": "จองเวลาเรียน"
+      "bookingNoun": "จองเวลาเรียน",
+      "storyTitle": "รู้จุดที่ติดก่อน แล้วค่อยปูพื้นทีละเรื่อง",
+      "itemsTitle": "คอร์สที่เปิดรับ",
+      "closing": "เริ่มจากทดลองเรียน 30 นาที"
     },
     {
       "key": "shop",
@@ -108,7 +114,10 @@
         "จุดเด่น: ถักทีละชิ้น เสร็จใน 5 วัน"
       ],
       "rule": "ห้ามพูด: ไม่ใช้ภาพสินค้าที่ไม่ได้ถักเอง",
-      "bookingNoun": "นัดรับของ"
+      "bookingNoun": "นัดรับของ",
+      "storyTitle": "ถักทีละชิ้น เสร็จใน 5 วัน",
+      "itemsTitle": "ชิ้นที่ถักเสร็จแล้ว",
+      "closing": "ของขวัญที่มีเรื่องเล่า ถักให้ทีละชิ้น"
     },
     {
       "key": "studio",
@@ -144,7 +153,10 @@
         "จุดเด่น: ส่งภาพพร้อมใช้ใน 3 วัน"
       ],
       "rule": "ห้ามพูด: ไม่ใช้ภาพลูกค้าโดยไม่ได้รับอนุญาต",
-      "bookingNoun": "จองคิวถ่าย"
+      "bookingNoun": "จองคิวถ่าย",
+      "storyTitle": "ภาพที่ใช้ขายได้จริง ส่งใน 3 วัน",
+      "itemsTitle": "แพ็กเกจถ่ายภาพ",
+      "closing": "เล่าแบรนด์ของคุณด้วยภาพ"
     }
   ],
   "features": [
@@ -154,7 +166,8 @@
       "icon": "id",
       "cta": "รู้จักเรา",
       "sauce": "ต้องการ: หน้าแนะนำตัว สลับดูเรื่องราว บริการ และช่องทางติดต่อ",
-      "try": "ลองสลับแท็บ"
+      "try": "ลองสลับแท็บ",
+      "headline": "ทุกอย่างที่ลูกค้าอยากรู้ ในหน้าเดียว"
     },
     {
       "key": "booking",
@@ -162,7 +175,8 @@
       "icon": "clock",
       "cta": "จองคิว",
       "sauce": "ต้องการ: ให้ลูกค้าเลือกวันและเวลาจองเองได้",
-      "try": "ลองเลือกเวลาจอง"
+      "try": "ลองเลือกเวลาจอง",
+      "headline": "ลูกค้าเลือกวันและเวลาเองได้"
     },
     {
       "key": "store",
@@ -170,7 +184,8 @@
       "icon": "cart",
       "cta": "เลือกซื้อ",
       "sauce": "ต้องการ: หน้าร้าน หยิบใส่ตะกร้าได้ในหน้าเดียว",
-      "try": "ลองหยิบใส่ตะกร้า"
+      "try": "ลองหยิบใส่ตะกร้า",
+      "headline": "หยิบใส่ตะกร้าได้ในหน้าเดียว"
     },
     {
       "key": "minigame",
@@ -178,7 +193,8 @@
       "icon": "game",
       "cta": "เล่นเกม",
       "sauce": "ต้องการ: มินิเกมสั้น ๆ ให้ลูกค้าเล่นแล้วได้คูปอง",
-      "try": "ลองเก็บโคลเวอร์ 3 ใบ"
+      "try": "ลองเก็บโคลเวอร์ 3 ใบ",
+      "headline": "เล่นสั้น ๆ แล้วได้คูปองกลับไป"
     }
   ],
   "styles": [
@@ -200,7 +216,10 @@
         "--demo-font": "'Anuphan', system-ui, sans-serif",
         "--demo-radius": "18px",
         "--demo-hero-tint": "rgba(210,105,30,.28)"
-      }
+      },
+      "motion": "rise",
+      "dark": false,
+      "hint": "แสงเช้า อบอุ่น"
     },
     {
       "key": "luxury",
@@ -220,7 +239,10 @@
         "--demo-font": "'Trirong', Georgia, serif",
         "--demo-radius": "2px",
         "--demo-hero-tint": "rgba(200,163,90,.22)"
-      }
+      },
+      "motion": "slow",
+      "dark": true,
+      "hint": "มืด หรู ทองแชมเปญ"
     },
     {
       "key": "playful",
@@ -240,7 +262,10 @@
         "--demo-font": "'Mitr', system-ui, sans-serif",
         "--demo-radius": "26px",
         "--demo-hero-tint": "rgba(232,62,140,.24)"
-      }
+      },
+      "motion": "pop",
+      "dark": false,
+      "hint": "พาสเทล สดใส"
     },
     {
       "key": "minimal",
@@ -260,7 +285,10 @@
         "--demo-font": "'IBM Plex Sans Thai', system-ui, sans-serif",
         "--demo-radius": "6px",
         "--demo-hero-tint": "rgba(18,18,18,.12)"
-      }
+      },
+      "motion": "wipe",
+      "dark": false,
+      "hint": "ขาว เรียบ ว่าง"
     }
   ]
 }
