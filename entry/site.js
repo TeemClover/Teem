@@ -294,13 +294,14 @@ export function createSite(ctx) {
     scrollTo({top: scrollFor(k), behavior: smooth ? 'smooth' : 'auto'});
   }
 
-  async function mountWidget(ind, feat, id) {
+  async function mountWidget(ind, feat, id, c) {
     if (widgetCleanup) { try { widgetCleanup(); } catch {} widgetCleanup = null; }
     const body = $('[data-widget-body]', el.scenes);
     if (!body) return;
     const mod = await widget(feat.key);
     if (id !== renderId || !body.isConnected) return; // a newer pick won
-    widgetCleanup = mod.mount(body, {industry: ind, feature: feat, toast, icon, esc}) || null;
+    const photos = [1, 2, 3].map(n => m.item(c, n)?.src).filter(Boolean); // the business's own products, for the mini-game
+    widgetCleanup = mod.mount(body, {industry: ind, feature: feat, toast, icon, esc, photos}) || null;
   }
 
   // luxury only: the film (frame sequence on WebGL), gold dust and a soft light that follows the pointer
@@ -328,7 +329,7 @@ export function createSite(ctx) {
     measure();
     if (reduced) chs.forEach(ch => { ch.el.style.setProperty('--p', String(ch.rest)); if (ch.steps) ch.el.dataset.step = String(ch.steps - 1); });
     el.site.classList.add('is-lit');
-    mountWidget(ind, feat, id);
+    mountWidget(ind, feat, id, c);
     if (sty.template === 'maison' && !reduced) startLux(ind, id);
     paint();
     // the style's web font changes the width of the sideways tracks: measure again once it is in
