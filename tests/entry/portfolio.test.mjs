@@ -71,11 +71,20 @@ test('structured data parses and only describes what the page shows', async () =
   assert.equal(course['@type'], 'Course'); assert.equal(course.isAccessibleForFree, true); assert.equal(course.inLanguage, 'th');
 });
 
-test('the walkthrough sells the 6 lessons and links each one; the old story is archived, not lost', async () => {
+test('the walkthrough sells the reward first and sends everyone to /classroom/; the old story is archived, not lost', async () => {
   const [walk, data, story] = await Promise.all([read('walkthrough/index.html'), json('walkthrough/lessons.json'), read('walkthrough/story/index.html')]);
-  assert.match(walk, /<h1>เรียน AI ฟรี 6 ตอน: เปลี่ยนงานที่คุณรู้ดี ให้ AI ทำต่อได้<\/h1>/);
+  assert.match(walk, /<h1>เรียน AI ฟรี 6 ตอน<br>จบแล้วได้ของจริง 6 ชิ้น<\/h1>/);
   assert.equal(data.lessons.length, 6);
-  for (const l of data.lessons) { assert.ok(walk.includes(`href="${l.href}"`), l.href); await stat(new URL(l.href.slice(1), root)); }
+  // what you get comes first: the six rewards are listed before the first button
+  const hero = walk.slice(walk.indexOf('<section class="band">'), walk.indexOf('</section>'));
+  for (const l of data.lessons) assert.ok(hero.includes(l.short), `the hero names the reward "${l.short}"`);
+  for (const l of data.lessons) assert.ok(walk.includes(l.loot), l.loot);
+  assert.match(walk, /ได้ตรา 🌅 ผู้ตื่นรู้/, 'the reward for finishing all six is named');
+  // every way forward goes to the classroom (its 60-second intro plays there); lessons stay in the JSON-LD
+  const links = [...walk.matchAll(/<main[\s\S]*<\/main>/g)].join('').match(/href="\/classroom\/[^"]*"/g) || [];
+  assert.ok(links.length >= 8 && links.every(h => h === 'href="/classroom/"'), `buttons and cards lead to /classroom/ (${links.length})`);
+  const course = JSON.parse(walk.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  for (const l of data.lessons) { assert.ok(course.hasPart.some(p => p.url.endsWith(l.href)), l.href); await stat(new URL(l.href.slice(1), root)); }
   assert.doesNotMatch(walk, /CORE7|X-VISOR|XTY/, 'no detours on the learning path');
   assert.doesNotMatch(visible(walk), /\d+\s?(นาที|ชั่วโมง)/, 'no study-time claims until measured');
   assert.match(story, /<meta name="robots" content="noindex,follow">/);
