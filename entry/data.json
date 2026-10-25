@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "note": "Homepage demo data (BLUEPRINT v3.0 §4.6): 4 industries × 4 features × 4 styles = 64 demos. Every brand here is fictional sample data, not a client. Prices inside demos are sample numbers for the simulation only.",
   "industries": [
     {
@@ -217,7 +217,7 @@
         "--demo-radius": "18px",
         "--demo-hero-tint": "rgba(210,105,30,.28)"
       },
-      "motion": "rise",
+      "template": "journal",
       "dark": false,
       "hint": "แสงเช้า อบอุ่น"
     },
@@ -240,7 +240,7 @@
         "--demo-radius": "2px",
         "--demo-hero-tint": "rgba(200,163,90,.22)"
       },
-      "motion": "slow",
+      "template": "maison",
       "dark": true,
       "hint": "มืด หรู ทองแชมเปญ"
     },
@@ -263,7 +263,7 @@
         "--demo-radius": "26px",
         "--demo-hero-tint": "rgba(232,62,140,.24)"
       },
-      "motion": "pop",
+      "template": "pop",
       "dark": false,
       "hint": "พาสเทล สดใส"
     },
@@ -286,7 +286,7 @@
         "--demo-radius": "6px",
         "--demo-hero-tint": "rgba(18,18,18,.12)"
       },
-      "motion": "wipe",
+      "template": "index",
       "dark": false,
       "hint": "ขาว เรียบ ว่าง"
     }

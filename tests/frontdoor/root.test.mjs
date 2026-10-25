@@ -44,8 +44,9 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   assert.equal(data.industries.length, 4); assert.equal(data.features.length, 4); assert.equal(data.styles.length, 4);
   for (const s of data.styles) {
     for (const k of ['--demo-bg', '--demo-surface', '--demo-text', '--demo-accent', '--demo-font', '--demo-radius']) assert.ok(s.vars[k], `${s.key} ${k}`);
-    assert.ok(['rise', 'slow', 'pop', 'wipe'].includes(s.motion), `${s.key} moves its own way`);
+    assert.ok(['journal', 'maison', 'pop', 'index'].includes(s.template), `${s.key} has its own scroll template`);
   }
+  assert.equal(new Set(data.styles.map(s => s.template)).size, 4, 'no two styles share a template');
   for (const i of data.industries) {
     assert.equal(i.sauce.length, 3); assert.equal(i.items.length, 3);
     assert.match(i.domain, /\.example$/, 'demo domains can never be real sites');
@@ -65,9 +66,14 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   const root = await read('index.html');
   assert.match(root, /<link rel="preload" as="image" href="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+fetchpriority="high">/);
   assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"/);
-  for (const name of files) if (name.startsWith('v4/')) {
+  // v5: the luxury film (48 frames per business, landscape and phone) and the 12 piece loops
+  assert.deepEqual(Object.keys(media.v5.film).sort(), data.industries.map(i => i.key).sort(), 'every business has its film');
+  for (const n of Object.values(media.v5.film)) assert.ok(n >= 24, `a film needs enough frames to scrub (${n})`);
+  assert.equal(media.v5.craft.length, 12);
+  assert.deepEqual(entryMedia(data, new Set(['v5/film/cafe/w/001.webp', 'v5/film/cafe/w/002.webp', 'v5/film/cafe/p/001.webp'])).v5.film, {}, 'a film without its phone frames is not used');
+  for (const name of files) if (name.startsWith('v4/') || name.startsWith('v5/')) {
     const {size} = await stat(new URL(`../../entry/media/${name}`, import.meta.url));
-    const cap = name.endsWith('.mp4') ? 900 : /-(360|540|640)\.webp$/.test(name) ? 60 : /-1280\.webp$/.test(name) ? 110 : 200;
+    const cap = name.endsWith('.mp4') ? 900 : name.startsWith('v5/film/') ? 100 : /-(360|540|640)\.webp$/.test(name) ? 60 : /-1280\.webp$/.test(name) ? 110 : 200;
     assert.ok(size < cap * 1024, `${name} is ${Math.round(size / 1024)} KB (cap ${cap} KB)`);
   }
 });
