@@ -24,7 +24,7 @@ test('public root is the homepage "ปรุงเว็บใน 3 แตะ", 
 test('the visible promises match the blueprint (§4.2–4.5): labels, simulation notes and the honest ending', async () => {
   const root = await read('index.html');
   assert.match(root, /เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า/);
-  assert.match(root, /ตัวอย่างจำลองจากเทมเพลตและข้อมูลตัวอย่าง ไม่ใช่งานลูกค้า และไม่ได้สร้างด้วย AI สด ๆ ตอนนี้/);
+  assert.match(root, /ภาพในตัวอย่างสร้างด้วย AI ธุรกิจ เมนู และราคาเป็นข้อมูลสมมติ/, 'the demo still says it is fictional');
   assert.match(root, /ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน/);
   assert.match(root, /ตัวอย่างนี้ประกอบจาก 3 ตัวเลือกของคุณ/);
   assert.doesNotMatch(root, /3 วินาที/, 'no unmeasured speed claim');

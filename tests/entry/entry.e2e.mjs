@@ -172,6 +172,13 @@ await check('every style is its own template; luxury is the longest, and its fil
   for (let i = 0; i < 6; i++) { await page.mouse.wheel(0, 240); await page.waitForTimeout(80); }
   await page.waitForTimeout(300);
   assert.notEqual(await frame(), first, 'scrolling moves the film');
+  // one scroll step plays through frames (the playhead glides) instead of jumping to the next still
+  const head = () => page.locator('.lx-film canvas').evaluate(c => Number(c.dataset.head));
+  await page.waitForTimeout(900);
+  const h0 = await head(), path = new Set();
+  await page.mouse.wheel(0, 300);
+  for (let i = 0; i < 16; i++) { await page.waitForTimeout(50); path.add(await head()); }
+  assert.ok(path.size >= 3, `the film glides after one scroll step: ${[h0, ...path].join(' → ')}`);
   assert.deepEqual(page.errors, []);
   await page.close();
 });
