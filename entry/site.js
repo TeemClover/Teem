@@ -59,9 +59,10 @@ export function createSite(ctx) {
     const html = seg(text, 'word').map(w => /^\s+$/.test(w) ? w : `<span style="--w:${n++}">${esc(w)}</span>`).join('');
     return {html, n};
   }
-  // letters bounce in one by one; a word never breaks across lines
-  const letters = text => text.split(/(\s+)/).map(part => /^\s+$/.test(part) ? part
-    : `<span class="w">${seg(part, 'grapheme').map((g, i) => `<span style="--i:${i}">${esc(g)}</span>`).join('')}</span>`).join('');
+  // the name bounces in a word at a time (Thai words, not letters: splitting Thai letters into boxes breaks how
+  // the typeface joins them); a word never breaks across lines
+  const letters = text => { let i = 0; return text.split(/(\s+)/).map(part => /^\s+$/.test(part) ? part
+    : `<span class="w">${seg(part, 'word').map(g => `<span style="--i:${i++}">${esc(g)}</span>`).join('')}</span>`).join(''); };
 
   /* ---------------- templates (data.json styles[].template picks one) ---------------- */
   const T = {};

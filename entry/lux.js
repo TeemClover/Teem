@@ -1,7 +1,7 @@
 /**
  * Luxury template extras (loaded only when the visitor picks "หรู" and motion is allowed):
  *   film   a 10-second dolly-in, stored as a WebP frame sequence (entry/media/v5/film/<business>/w|p/NNN.webp),
- *          drawn on one WebGL canvas as you scroll: the playhead glides, neighbouring frames crossfade, then a warm
+ *          drawn on one WebGL canvas as you scroll: the playhead glides, next-door frames blend briefly, then a warm
  *          grade, vignette, a gold anamorphic streak on highlights (large screens) and moving grain. Frames load
  *          coarse-to-fine and decode off the main thread near the playhead. Phones get a 9:16 crop. Without WebGL
  *          it falls back to a 2D canvas; without frames, CSS keeps the stills.
@@ -34,7 +34,7 @@ void main(){
 
 /* The film. Smooth by design:
    - the playhead glides toward the scroll position (critically damped, ~0.1 s), so a wheel tick plays frames
-     instead of jumping, and neighbouring frames always crossfade;
+     instead of jumping, and next-door frames blend briefly around their midpoint;
    - frames arrive as small encoded files (coarse to fine) and are decoded off the main thread (createImageBitmap)
      only around the playhead; a dozen decoded frames are kept, the rest are released, so memory stays flat;
    - the canvas draws at most ~2 MP (the grain hides the upscale), and only while something moves. */
@@ -151,6 +151,9 @@ function createFilm({count, url}) {
     const pk = pick(head);
     if (!pk) return;
     let [a, b, mix] = pk;
+    // blend only next-door frames, and only around the midpoint: two frames far apart (while the in-between ones
+    // are still loading), or a long blend of any two, reads as a double image
+    if (b - a > 1) { if (mix >= .5) a = b; mix = 0; } else { const q = clamp((mix - .3) / .4); mix = q * q * (3 - 2 * q); }
     const W = canvas.width, H = canvas.height;
     if (gl) {
       if (texFor[0] !== a && (texFor[1] === a || texFor[0] === b)) { tex.reverse(); texFor.reverse(); } // reuse what is uploaded
