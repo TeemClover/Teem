@@ -23,7 +23,14 @@ test('public root is the homepage "ปรุงเว็บใน 3 แตะ", 
 
 test('the visible promises match the blueprint (§4.2–4.5): labels, simulation notes and the honest ending', async () => {
   const root = await read('index.html');
-  assert.match(root, /เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า/);
+  // the first screen is the film "ใบที่ 4": its captions are HTML (readable without the canvas), sound starts off
+  assert.match(root, /<section class="film" id="film" aria-labelledby="hero-title"/);
+  assert.match(root, /<h1 id="hero-title">ปรุงเว็บใน 3 แตะ<\/h1>/);
+  assert.equal((root.match(/<p class="cap" data-c="\d">/g) || []).length, 6, 'six captions, as in the approved script');
+  for (const line of ['ใบที่ 4 จะกลายเป็นเว็บของคุณ', 'หน้าเดียว 64 แบบ', 'แตะ 3 ครั้ง ดูเว็บของคุณประกอบตรงหน้า']) assert.ok(root.includes(line), line);
+  assert.match(root, /id="film-sound" aria-pressed="false"/, 'sound is off until the visitor turns it on');
+  assert.match(root, /id="film-pause"/, 'moving content can be paused');
+  assert.match(root, /<p class="sr-only">วิดีโอสั้น 20 วินาที/, 'the film is described for screen readers');
   assert.match(root, /ภาพในตัวอย่างสร้างด้วย AI ธุรกิจ เมนู และราคาเป็นข้อมูลสมมติ/, 'the demo still says it is fictional');
   assert.match(root, /ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน/);
   assert.match(root, /ตัวอย่างนี้ประกอบจาก 3 ตัวเลือกของคุณ/);
@@ -45,10 +52,22 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   for (const s of data.styles) {
     for (const k of ['--demo-bg', '--demo-surface', '--demo-text', '--demo-accent', '--demo-font', '--demo-radius']) assert.ok(s.vars[k], `${s.key} ${k}`);
     assert.ok(['journal', 'maison', 'pop', 'index'].includes(s.template), `${s.key} has its own scroll template`);
+    // each style has its own Thai display face, self-hosted (no Google Fonts request from the demos)
+    for (const k of ['--demo-display', '--demo-display-w', '--demo-ui', '--demo-text-w']) assert.ok(s.vars[k], `${s.key} ${k}`);
+    assert.match(s.fontUrl, /^\/assets\/fonts\/site\/t-[a-z]+\.css$/, `${s.key} font file is ours`);
+    const css = await read(s.fontUrl.slice(1));
+    for (const [, file] of css.matchAll(/url\((\/assets\/fonts\/site\/[^)]+\.woff2)\)/g)) assert.ok((await stat(new URL('../..' + file, import.meta.url))).size > 1000, file);
   }
+  assert.equal(new Set(data.styles.map(s => s.vars['--demo-display'])).size, 4, 'four different display faces');
   assert.equal(new Set(data.styles.map(s => s.template)).size, 4, 'no two styles share a template');
   for (const i of data.industries) {
     assert.equal(i.sauce.length, 3); assert.equal(i.items.length, 3);
+    // what a visitor sees is written for customers; the contact chapter has an area, never a street address
+    assert.equal(i.highlights.length, 3, `${i.key} highlights`);
+    for (const h of i.highlights) assert.ok(h.k && h.t, `${i.key} highlight`);
+    for (const k of ['title', 'area', 'map', 'hours']) assert.ok(i.contact?.[k], `${i.key}.contact.${k}`);
+    assert.doesNotMatch(i.contact.area, /\d{2,}\/|เลขที่|ถนน.*\d/, 'a sample business gets an area, not a real-looking street address');
+    assert.ok(/^[A-Za-zé][A-Za-zé &]+$/.test(i.genericEn), `${i.key}.genericEn (used when a visitor types a Thai shop name)`);
     assert.match(i.domain, /\.example$/, 'demo domains can never be real sites');
     for (const k of ['storyTitle', 'itemsTitle', 'closing']) assert.ok(i[k], `${i.key}.${k}`);
   }
@@ -64,8 +83,11 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   assert.equal(media.v4.hero.length, 16, 'all 16 industry × style heroes ship');
   assert.equal(media.v4.detail.length, 16); assert.equal(media.v4.item.length, 48);
   const root = await read('index.html');
-  assert.match(root, /<link rel="preload" as="image" href="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+fetchpriority="high">/);
-  assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"/);
+  // the film is the first screen, so the studio's backdrop (second screen) is not preloaded and loads lazily
+  assert.doesNotMatch(root, /rel="preload" as="image"/);
+  assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+loading="lazy"/);
+  const atlas = await stat(new URL('../../entry/media/film/atlas.webp', import.meta.url));
+  assert.ok(atlas.size < 130 * 1024, `the film's one picture sheet stays small (${Math.round(atlas.size / 1024)} KB)`);
   // v5: the luxury film (frames per business, landscape and phone) and the piece loops that really move
   assert.deepEqual(Object.keys(media.v5.film).sort(), data.industries.map(i => i.key).sort(), 'every business has its film');
   for (const n of Object.values(media.v5.film)) assert.ok(n >= 24, `a film needs enough frames to scrub (${n})`);

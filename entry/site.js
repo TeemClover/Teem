@@ -15,11 +15,24 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = t => t * t * (3 - 2 * t);
 
 const FEATURE_KICKER = {profile: 'รู้จักเรา', booking: 'จองล่วงหน้า', store: 'สั่งออนไลน์', minigame: 'เล่นแล้วได้คูปอง'};
-const TRY_NOTE = 'ส่วนนี้ใช้ได้จริงในตัวอย่าง ลองกดดู ไม่มีการจองหรือสั่งซื้อจริง';
+const TRY_NOTE = 'ลองกดได้จริง · ไม่มีการจองหรือสั่งซื้อจริง';
 const FINE = 'ธุรกิจสมมติ ตัวอย่างสาธิตโดย myClover';
 const ROMAN = ['I', 'II', 'III'];
 const money = n => n === 0 ? 'ฟรี' : '฿' + n.toLocaleString('th-TH');
-const split = line => { const at = line.indexOf(':'); return at > 0 ? {label: line.slice(0, at).trim(), text: line.slice(at + 1).trim()} : {label: '', text: line}; };
+// Google Maps: a keyless embed, loaded only when the visitor taps it (no Google request before that)
+const MAP_EMBED = q => `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=15&hl=th&output=embed`;
+const MAP_LINK = q => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+// a street plan drawn from the business key, so every map preview is different but stable
+function streets(seed) {
+  let s = [...seed].reduce((n, ch) => (n * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const r = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const lines = [];
+  for (let i = 0; i < 5; i++) { const y = 30 + i * 60 + r() * 30; lines.push(`M-10 ${y.toFixed(0)} C120 ${(y + r() * 40 - 20).toFixed(0)} 260 ${(y + r() * 40 - 20).toFixed(0)} 410 ${(y + r() * 30 - 15).toFixed(0)}`); }
+  for (let i = 0; i < 5; i++) { const x = 30 + i * 85 + r() * 30; lines.push(`M${x.toFixed(0)} -10 L${(x + r() * 50 - 25).toFixed(0)} 310`); }
+  const park = `M${(40 + r() * 60).toFixed(0)} ${(170 + r() * 40).toFixed(0)} q60 -40 120 0 q30 40 -20 70 q-80 20 -100 -70z`;
+  const route = `M30 280 C90 230 120 250 170 200 S230 150 200 150`;
+  return `<svg class="sc-map-art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path class="park" d="${park}"/><path class="river" d="M-10 ${(110 + r() * 40).toFixed(0)} C110 ${(60 + r() * 40).toFixed(0)} 260 ${(190 + r() * 40).toFixed(0)} 410 ${(130 + r() * 40).toFixed(0)}"/>${lines.map((d, i) => `<path class="${i % 3 ? 'st' : 'st main'}" d="${d}"/>`).join('')}<path class="route" d="${route}"/></svg>`;
+}
 const seg = (text, granularity) => typeof Intl.Segmenter === 'function'
   ? [...new Intl.Segmenter('th', {granularity}).segment(text)].map(s => s.segment)
   : granularity === 'word' ? text.split(/(\s+)/) : [...text];
@@ -31,6 +44,12 @@ export function createSite(ctx) {
   const tryBox = (feat, cls) => `<div class="sc-widget ${cls}" data-widget>${cls === 'lx-frame' ? '<i class="lx-c tl"></i><i class="lx-c tr"></i><i class="lx-c bl"></i><i class="lx-c br"></i>' : ''}<p class="d-try">${esc(feat.try)}</p><div data-widget-body></div></div>`;
   const video = (src, poster) => src ? `<video muted loop playsinline preload="none" data-src="${src}"${poster ? ` poster="${poster}"` : ''} aria-hidden="true"></video>` : '';
   const heroPoster = c => m.hero(c)?.src || '';
+  // the contact chapter's parts: a map that becomes Google Maps on tap, two lines of facts, three buttons
+  const mapBox = (ind, cls = '') => `<div class="sc-map ${cls}" data-map="${esc(ind.contact.map)}">${streets(ind.key)}<i class="sc-pin" aria-hidden="true"></i>
+    <button type="button" class="sc-map-load" data-map-load aria-label="เปิดแผนที่ Google ของ ${esc(ind.contact.area)}">${icon('pin')}<span>แตะเพื่อเปิด Google Maps</span></button></div>`;
+  const facts = ind => `<dl class="sc-facts"><div><dt>ที่อยู่</dt><dd>${esc(ind.contact.area)}<small>ที่อยู่สมมติ</small></dd></div><div><dt>เวลา</dt><dd>${esc(ind.contact.hours)}</dd></div></dl>`;
+  const reach = ind => `<div class="sc-reach"><button type="button" class="sc-btn" data-sim="call">${icon('phone')}โทร</button><button type="button" class="sc-btn" data-sim="line">${icon('chat')}LINE</button><a class="sc-btn" href="${MAP_LINK(ind.contact.map)}" target="_blank" rel="noopener">${icon('route')}นำทาง</a></div>`;
+  const marks = (ind, cls) => ind.highlights.map((h, i) => `<li class="${cls}" style="--k:${i}"><b>${esc(h.k)}</b><span>${esc(h.t)}</span></li>`).join('');
   function chapter({role, cls = '', len, tr = .8, tx = 'fade', steps = 0, rest = 1, dust, label, html}) {
     return `<section class="sc sc-${role} ${cls}" data-role="${role}" data-len="${len}" data-tr="${tr}" data-tx="${tx}" data-rest="${rest}"${steps ? ` data-steps="${steps}"` : ''}${dust != null ? ` data-dust="${dust}"` : ''} aria-label="${esc(label)}"><div class="sc-in">${html}</div></section>`;
   }
@@ -79,17 +98,20 @@ export function createSite(ctx) {
         <i class="lx-ap-ring" aria-hidden="true"></i>
         <div class="lx-ap-shade" aria-hidden="true"></div>
         <div class="lx-ap-copy"><p class="sc-kicker">สิ่งที่เราตั้งใจ</p>
-          <ol class="lx-facts">${ind.sauce.map(split).map((f, i) => `<li style="--k:${i}"><span class="lx-rn">${ROMAN[i] || i + 1}</span><span>${f.label ? `<b>${esc(f.label)}</b>` : ''}${esc(f.text)}</span></li>`).join('')}</ol></div>`}),
+          <ol class="lx-facts">${ind.highlights.map((h, i) => `<li style="--k:${i}"><span class="lx-rn">${ROMAN[i] || i + 1}</span><span><b>${esc(h.k)}</b>${esc(h.t)}</span></li>`).join('')}</ol></div>`}),
       chapter({role: 'items', cls: 'lx-pc', len: 2.8, tr: .9, tx: 'rise', dust: .25, label: ind.itemsTitle, html: `
         <div class="lx-pc-track" data-pan>
-          <header class="lx-pc-head"><p class="sc-kicker en">Signature</p><h2 class="sc-h2">${esc(ind.itemsTitle)}</h2><p class="lx-pc-hint">เลื่อนต่อ ดูทีละชิ้น</p></header>
-          ${ind.items.map((it, i) => `<article class="sc-card lx-card" style="--k:${i}"><span class="lx-num" aria-hidden="true">${ROMAN[i] || i + 1}</span><figure>${img(m.item(c, i + 1), '(min-width: 760px) 32vw, 76vw', it.name, ' loading="lazy"')}${video(m.craft(ind.key, i + 1), m.item(c, i + 1)?.src)}</figure><div class="lx-card-t"><b>${esc(it.name)}</b><span>${esc(it.desc)}</span><span class="sc-price">${money(it.price)}<small>ราคาตัวอย่าง</small></span></div></article>`).join('')}
+          <header class="lx-pc-head"><p class="sc-kicker en">Signature</p><h2 class="sc-h2">${esc(ind.itemsTitle)}</h2><p class="lx-pc-hint">ราคาตัวอย่าง</p></header>
+          ${ind.items.map((it, i) => `<article class="sc-card lx-card" style="--k:${i}"><span class="lx-num" aria-hidden="true">${ROMAN[i] || i + 1}</span><figure>${img(m.item(c, i + 1), '(min-width: 760px) 32vw, 76vw', it.name, ' loading="lazy"')}${video(m.craft(ind.key, i + 1), m.item(c, i + 1)?.src)}</figure><div class="lx-card-t"><b>${esc(it.name)}</b><span>${esc(it.desc)}</span><span class="sc-price">${money(it.price)}</span></div></article>`).join('')}
         </div>
         <div class="lx-pc-bar" aria-hidden="true"><i></i></div>`}),
       chapter({role: 'feature', cls: 'lx-ft', len: 1.3, tr: .9, dust: .35, label: feat.label, html: `
         <div class="lx-ft-bg" aria-hidden="true">${img(H, '100vw', '', ' loading="lazy"')}${video(m.loop(c), heroPoster(c))}</div>
         <div class="lx-ft-copy"><p class="sc-kicker">${esc(FEATURE_KICKER[feat.key] || feat.label)}</p><h2 class="sc-h2">${esc(feat.headline)}</h2><p class="sc-sub">${TRY_NOTE}</p></div>
         ${tryBox(feat, 'lx-frame')}`}),
+      chapter({role: 'visit', cls: 'lx-vs', len: 1.3, tr: .9, dust: .5, label: ind.contact.title, html: `
+        <div class="lx-vs-copy"><p class="sc-kicker en">Rendez-vous</p><h2 class="sc-h2">${esc(ind.contact.title)}</h2>${facts(ind)}${reach(ind)}</div>
+        <div class="lx-vs-map"><i class="lx-c tl"></i><i class="lx-c tr"></i><i class="lx-c bl"></i><i class="lx-c br"></i>${mapBox(ind)}</div>`}),
       chapter({role: 'close', cls: 'lx-fin', len: 2.2, tx: 'iris', dust: 1, label: 'ท้ายเว็บ', html: `
         <div class="lx-screen" data-film="rev">${img(H, '100vw', '', ' class="lx-still" loading="lazy"')}</div>
         <div class="lx-fin-shade" aria-hidden="true"></div>
@@ -117,14 +139,17 @@ export function createSite(ctx) {
       chapter({role: 'story', cls: 'wm-story', len: 2.2, tr: .75, tx: 'deal', steps: 3, rest: 0, label: 'เรื่องของเรา', html: `
         <div class="wm-stack" aria-hidden="true">${[D, m.item(c, 1), m.item(c, 3)].map((x, i) => `<figure class="wm-print" style="--k:${i}">${img(x, '(min-width: 760px) 36vw, 60vw', '', ' loading="lazy"')}</figure>`).join('')}</div>
         <div class="wm-notes"><p class="sc-kicker">เรื่องของเรา</p><h2 class="sc-h2">${esc(ind.storyTitle)}</h2>
-          <ol class="wm-facts">${ind.sauce.map(split).map((f, i) => `<li style="--k:${i}">${f.label ? `<b>${esc(f.label)}</b>` : ''}<mark>${esc(f.text)}</mark></li>`).join('')}</ol></div>`}),
+          <ol class="wm-facts">${marks(ind, '')}</ol></div>`}),
       chapter({role: 'items', cls: 'wm-items', len: 1.8, tr: .75, tx: 'rise', label: ind.itemsTitle, html: `
-        <header class="wm-items-head"><p class="sc-kicker">${esc(ind.brand)}</p><h2 class="sc-h2">${esc(ind.itemsTitle)}</h2></header>
-        <div class="wm-cards">${ind.items.map((it, i) => `<article class="sc-card wm-card" style="--k:${i}"><i class="wm-tape" aria-hidden="true"></i><figure>${img(m.item(c, i + 1), '(min-width: 760px) 26vw, 30vw', it.name, ' loading="lazy"')}</figure><div class="wm-card-t"><b>${esc(it.name)}</b><span>${esc(it.desc)}</span></div><span class="wm-stamp sc-price">${money(it.price)}<small>ราคาตัวอย่าง</small></span></article>`).join('')}</div>`}),
+        <header class="wm-items-head"><p class="sc-kicker">${esc(ind.brand)} · ราคาตัวอย่าง</p><h2 class="sc-h2">${esc(ind.itemsTitle)}</h2></header>
+        <div class="wm-cards">${ind.items.map((it, i) => `<article class="sc-card wm-card" style="--k:${i}"><i class="wm-tape" aria-hidden="true"></i><figure>${img(m.item(c, i + 1), '(min-width: 760px) 26vw, 30vw', it.name, ' loading="lazy"')}</figure><div class="wm-card-t"><b>${esc(it.name)}</b><span>${esc(it.desc)}</span></div><span class="wm-stamp sc-price">${money(it.price)}</span></article>`).join('')}</div>`}),
       chapter({role: 'feature', cls: 'wm-feat', len: 1.3, tr: .75, tx: 'deal', label: feat.label, html: `
         <div class="wm-feat-copy"><p class="sc-kicker">${esc(FEATURE_KICKER[feat.key] || feat.label)}</p><h2 class="sc-h2">${esc(feat.headline)}</h2><p class="sc-sub">${TRY_NOTE}</p>
           <svg class="wm-arrow" viewBox="0 0 160 90" aria-hidden="true"><path d="M6 10C60 0 120 20 140 70"/><path d="M126 60l14 12 4-18"/></svg></div>
         ${tryBox(feat, 'wm-sheet')}`}),
+      chapter({role: 'visit', cls: 'wm-visit', len: 1.2, tr: .75, tx: 'deal', label: ind.contact.title, html: `
+        <figure class="wm-postcard"><i class="wm-tape" aria-hidden="true"></i>${mapBox(ind, 'is-paper')}<span class="wm-postmark" aria-hidden="true">${esc(ind.brand)}</span></figure>
+        <div class="wm-visit-copy"><p class="wm-hand">แวะมานะ!</p><h2 class="sc-h2">${esc(ind.contact.title)}</h2>${facts(ind)}${reach(ind)}</div>`}),
       chapter({role: 'close', cls: 'wm-close', len: 1, tx: 'rise', label: 'ท้ายเว็บ', html: `
         <figure class="wm-window">${img(H, '(min-width: 760px) 40vw, 70vw', '', ' loading="lazy"')}</figure>
         <div class="wm-letter"><p class="sc-kicker">ถึงคุณ</p><h2 class="sc-h2">${esc(ind.closing)}</h2><p class="wm-sign">ด้วยรัก · ทีม${esc(ind.brand)}</p><p class="sc-sign">${esc(ind.domain)} · ${esc(ind.sub)}</p>${fine(ind)}</div>`}),
@@ -149,9 +174,9 @@ export function createSite(ctx) {
         <div class="pp-marquee" aria-hidden="true"><div><span>${esc(band.repeat(3))}</span><span>${esc(band.repeat(3))}</span></div></div>
         <div class="pp-track" data-pan>
           <div class="pp-panel pp-intro"><div class="pp-bubble"><p class="sc-kicker">เรื่องของเรา</p><h2 class="sc-h2">${esc(ind.storyTitle)}</h2></div><figure class="pp-circle">${img(D, '(min-width: 760px) 26vw, 50vw', '', ' loading="lazy"')}</figure></div>
-          <div class="pp-panel pp-facts">${ind.sauce.map(split).map((f, i) => `<p class="pp-sticker" style="--k:${i}">${f.label ? `<b>${esc(f.label)}</b>` : ''}<span>${esc(f.text)}</span></p>`).join('')}</div>
-          <div class="pp-panel pp-items-head"><h3 class="sc-h2">${esc(ind.itemsTitle)}</h3><p>เลื่อนลงต่อ การ์ดจะวิ่งมาเอง</p></div>
-          ${ind.items.map((it, i) => `<article class="sc-card pp-card" style="--k:${i}"><figure>${img(m.item(c, i + 1), '(min-width: 760px) 22vw, 56vw', it.name, ' loading="lazy"')}</figure><b>${esc(it.name)}</b><span>${esc(it.desc)}</span><span class="sc-price">${money(it.price)}<small>ราคาตัวอย่าง</small></span></article>`).join('')}
+          <ul class="pp-panel pp-facts">${marks(ind, 'pp-sticker')}</ul>
+          <div class="pp-panel pp-items-head"><h3 class="sc-h2">${esc(ind.itemsTitle)}</h3><p>ราคาตัวอย่าง</p></div>
+          ${ind.items.map((it, i) => `<article class="sc-card pp-card" style="--k:${i}"><figure>${img(m.item(c, i + 1), '(min-width: 760px) 22vw, 56vw', it.name, ' loading="lazy"')}</figure><b>${esc(it.name)}</b><span>${esc(it.desc)}</span><span class="sc-price">${money(it.price)}</span></article>`).join('')}
           <div class="pp-panel pp-end" aria-hidden="true">เลือกได้เลย!</div>
         </div>
         <div class="pp-bar" aria-hidden="true"><i></i></div>`}),
@@ -159,6 +184,10 @@ export function createSite(ctx) {
         <div class="pp-confetti" aria-hidden="true"></div>
         <div class="pp-feat-copy"><p class="sc-kicker">${esc(FEATURE_KICKER[feat.key] || feat.label)}</p><h2 class="sc-h2">${esc(feat.headline)}</h2><svg class="pp-squiggle" viewBox="0 0 200 14" aria-hidden="true"><path d="M2 8c12-10 20 10 32 0s20 10 32 0 20 10 32 0 20 10 32 0 20 10 32 0 20 10 32 0"/></svg><p class="sc-sub">${TRY_NOTE}</p></div>
         ${tryBox(feat, 'pp-console')}`}),
+      chapter({role: 'visit', cls: 'pp-visit', len: 1.2, tr: .75, tx: 'pop', label: ind.contact.title, html: `
+        <div class="pp-dots" aria-hidden="true"></div>
+        <div class="pp-visit-map">${mapBox(ind, 'is-pop')}</div>
+        <div class="pp-visit-copy"><p class="sc-kicker">มาเจอกัน!</p><h2 class="sc-h2">${esc(ind.contact.title)}</h2>${facts(ind)}${reach(ind)}</div>`}),
       chapter({role: 'close', cls: 'pp-close', len: 1, tx: 'pop', label: 'ท้ายเว็บ', html: `
         <div class="pp-ribbon r1" aria-hidden="true"><span>${esc(`${ind.brand} ★ `.repeat(10))}</span></div>
         <div class="pp-ribbon r2" aria-hidden="true"><span>${esc(`${ind.brandEn} ★ `.repeat(10))}</span></div>
@@ -180,17 +209,20 @@ export function createSite(ctx) {
           <p class="sc-kicker">(02) เรื่องของเรา</p>
           <p class="mn-count" aria-hidden="true"><span>01</span><span>02</span><span>03</span></p>
           <h2 class="sc-h2">${esc(ind.storyTitle)}</h2>
-          <ol class="mn-rows">${ind.sauce.map(split).map((f, i) => `<li><span class="mn-no">0${i + 1}</span><span>${f.label ? `<b>${esc(f.label)}</b> ` : ''}${esc(f.text)}</span></li>`).join('')}</ol>
+          <ol class="mn-rows">${ind.highlights.map((h, i) => `<li><span class="mn-no">0${i + 1}</span><span><b>${esc(h.k)}</b> ${esc(h.t)}</span></li>`).join('')}</ol>
         </div>
         <div class="mn-index-r" aria-hidden="true">${[D, m.item(c, 1), m.item(c, 2)].map(x => `<figure class="mn-shot">${img(x, '(min-width: 760px) 46vw, 90vw', '', ' loading="lazy"')}</figure>`).join('')}</div>`}),
       chapter({role: 'items', cls: 'mn-items', len: 1.6, tr: .6, tx: 'wipe', label: ind.itemsTitle, html: `
-        <header class="mn-items-head"><p class="sc-kicker">(03) ${esc(ind.itemsTitle)}</p><p class="mn-items-n">${ind.items.length} รายการ</p></header>
-        <div class="mn-table">${ind.items.map((it, i) => `<article class="sc-card mn-row" style="--k:${i}"><span class="mn-no">0${i + 1}</span><figure>${img(m.item(c, i + 1), '96px', it.name, ' loading="lazy"')}</figure><b>${esc(it.name)}</b><span class="mn-desc">${esc(it.desc)}</span><span class="sc-price">${money(it.price)}<small>ราคาตัวอย่าง</small></span></article>`).join('')}</div>`}),
+        <header class="mn-items-head"><p class="sc-kicker">(03) ${esc(ind.itemsTitle)}</p><p class="mn-items-n">${ind.items.length} รายการ · ราคาตัวอย่าง</p></header>
+        <div class="mn-table">${ind.items.map((it, i) => `<article class="sc-card mn-row" style="--k:${i}"><span class="mn-no">0${i + 1}</span><figure>${img(m.item(c, i + 1), '96px', it.name, ' loading="lazy"')}</figure><b>${esc(it.name)}</b><span class="mn-desc">${esc(it.desc)}</span><span class="sc-price">${money(it.price)}</span></article>`).join('')}</div>`}),
       chapter({role: 'feature', cls: 'mn-feat', len: 1.3, tr: .6, tx: 'wipe', label: feat.label, html: `
         <div class="mn-feat-copy"><p class="sc-kicker">(04) ${esc(FEATURE_KICKER[feat.key] || feat.label)}</p><h2 class="sc-h2">${esc(feat.headline)}</h2><p class="sc-sub">${TRY_NOTE}</p></div>
         ${tryBox(feat, 'mn-box')}`}),
+      chapter({role: 'visit', cls: 'mn-visit', len: 1.2, tr: .6, tx: 'wipe', label: ind.contact.title, html: `
+        <div class="mn-visit-copy"><p class="sc-kicker">(05) ติดต่อ</p><h2 class="sc-h2">${esc(ind.contact.title)}</h2>${facts(ind)}${reach(ind)}</div>
+        ${mapBox(ind, 'is-mono')}`}),
       chapter({role: 'close', cls: 'mn-close', len: 1, tx: 'wipe', label: 'ท้ายเว็บ', html: `
-        <p class="sc-kicker">(05)</p><h2 class="mn-statement">${esc(ind.closing)}</h2>
+        <p class="sc-kicker">(06)</p><h2 class="mn-statement">${esc(ind.closing)}</h2>
         <footer class="mn-foot"><span class="sc-sign">${esc(ind.brandEn)} · ${esc(ind.domain)}</span>${fine(ind)}</footer>`}),
     ].join('');
   };
@@ -281,7 +313,20 @@ export function createSite(ctx) {
   addEventListener('scroll', queue, {passive: true});
   addEventListener('resize', () => { if (chs.length) { measure(); paint(); } });
   document.addEventListener('visibilitychange', queue);
-  el.scenes.addEventListener('click', e => { const g = e.target.closest('[data-goto]'); if (g) goto(+g.dataset.goto, {smooth: true}); });
+  el.scenes.addEventListener('click', e => {
+    const g = e.target.closest('[data-goto]'); if (g) return goto(+g.dataset.goto, {smooth: true});
+    // the map turns into the real Google Maps only when asked: no request to Google before this tap
+    const load = e.target.closest('[data-map-load]');
+    if (load) {
+      const box = load.closest('[data-map]');
+      const f = document.createElement('iframe');
+      f.src = MAP_EMBED(box.dataset.map); f.title = `แผนที่ Google · ${box.dataset.map}`; f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade'; f.allowFullscreen = true;
+      box.append(f); box.classList.add('is-live'); load.remove();
+      return;
+    }
+    const sim = e.target.closest('[data-sim]');
+    if (sim) toast(sim.dataset.sim === 'call' ? 'ตัวอย่าง · ในเว็บจริงปุ่มนี้โทรหาร้านคุณ' : 'ตัวอย่าง · ในเว็บจริงปุ่มนี้เปิดแชต LINE ของร้านคุณ');
+  });
 
   function scrollFor(k) {
     const top = el.site.getBoundingClientRect().top + scrollY;

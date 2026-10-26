@@ -118,8 +118,9 @@ export function renderEntryRoot(source,data,files=new Set()){
     .replace('<!--entry:data-->',`<script type="application/json" id="entry-data">${payload}</script>`);
   const first=media.v4.hero.includes(FIRST_LOOK)?FIRST_LOOK:media.v4.hero[0];
   const v=`/entry/media/v4/hero/${first}`, set=`${v}-640.webp 640w, ${v}-1280.webp 1280w, ${v}.webp 1920w`;
-  out=out.replace('<!--slot:lcp-preload-->',first?`<link rel="preload" as="image" href="${v}-1280.webp" imagesrcset="${set}" imagesizes="100vw" fetchpriority="high">`:'')
-    .replace('<!--slot:studio-bg-->',first?`<img class="is-on" src="${v}-1280.webp" srcset="${set}" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high" decoding="async" data-combo="${first}">`:'');
+  // the film (#film) is the first screen now; the studio's backdrop is the second, so it loads lazily
+  out=out.replace('<!--slot:lcp-preload-->','')
+    .replace('<!--slot:studio-bg-->',first?`<img class="is-on" src="${v}-1280.webp" srcset="${set}" sizes="100vw" alt="" width="1920" height="1080" loading="lazy" decoding="async" data-combo="${first}">`:'');
   // the first question's choices are in the HTML, so nothing moves when the script takes over
   const chip=o=>`<button type="button" class="choice" data-key="${attr(o.key)}" aria-pressed="false"><svg><use href="#i-${attr(o.icon)}"/></svg><span>${attr(o.label)}</span></button>`;
   out=out.replace('<div class="choice-grid" id="choice-grid"></div>',`<div class="choice-grid" id="choice-grid">${data.industries.map(chip).join('')}</div>`);
