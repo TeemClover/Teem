@@ -39,7 +39,28 @@
       "bookingNoun": "จองโต๊ะ",
       "storyTitle": "ขนมปังออกจากเตาทุกเช้า 06:30",
       "itemsTitle": "เมนูเด่นวันนี้",
-      "closing": "แวะมาก่อนเข้าออฟฟิศ กาแฟรออยู่"
+      "closing": "แวะมาก่อนเข้าออฟฟิศ กาแฟรออยู่",
+      "genericEn": "Café & Bakery",
+      "highlights": [
+        {
+          "k": "06:30",
+          "t": "ขนมปังออกจากเตา"
+        },
+        {
+          "k": "12",
+          "t": "ที่นั่งริมหน้าต่าง"
+        },
+        {
+          "k": "ฟรี",
+          "t": "เปลี่ยนเป็นนมโอ๊ต"
+        }
+      ],
+      "contact": {
+        "title": "แวะมาหาเรา",
+        "area": "ซอยอารีย์ · พญาไท กรุงเทพฯ",
+        "map": "Ari, Phaya Thai, Bangkok",
+        "hours": "ทุกวัน 07:00–16:00"
+      }
     },
     {
       "key": "coach",
@@ -78,7 +99,28 @@
       "bookingNoun": "จองเวลาเรียน",
       "storyTitle": "รู้จุดที่ติดก่อน แล้วค่อยปูพื้นทีละเรื่อง",
       "itemsTitle": "คอร์สที่เปิดรับ",
-      "closing": "เริ่มจากทดลองเรียน 30 นาที"
+      "closing": "เริ่มจากทดลองเรียน 30 นาที",
+      "genericEn": "Math Lab",
+      "highlights": [
+        {
+          "k": "30 นาที",
+          "t": "ทดลองเรียนฟรี"
+        },
+        {
+          "k": "1:1",
+          "t": "สอนตัวต่อตัว"
+        },
+        {
+          "k": "ม.1–3",
+          "t": "ปูพื้นทีละเรื่อง"
+        }
+      ],
+      "contact": {
+        "title": "นัดทดลองเรียน",
+        "area": "ย่านสยาม · ปทุมวัน กรุงเทพฯ",
+        "map": "Siam Square, Pathum Wan, Bangkok",
+        "hours": "จ.–ศ. 16:00–20:00 · ส.–อา. 09:00–17:00"
+      }
     },
     {
       "key": "shop",
@@ -117,7 +159,28 @@
       "bookingNoun": "นัดรับของ",
       "storyTitle": "ถักทีละชิ้น เสร็จใน 5 วัน",
       "itemsTitle": "ชิ้นที่ถักเสร็จแล้ว",
-      "closing": "ของขวัญที่มีเรื่องเล่า ถักให้ทีละชิ้น"
+      "closing": "ของขวัญที่มีเรื่องเล่า ถักให้ทีละชิ้น",
+      "genericEn": "Handmade Knits",
+      "highlights": [
+        {
+          "k": "5 วัน",
+          "t": "ถักเสร็จพร้อมส่ง"
+        },
+        {
+          "k": "6 สี",
+          "t": "เลือกสีไหมเองได้"
+        },
+        {
+          "k": "1 ชิ้น",
+          "t": "ถักทีละชิ้น ไม่ซ้ำใคร"
+        }
+      ],
+      "contact": {
+        "title": "นัดรับของ",
+        "area": "ย่านนิมมาน · เชียงใหม่",
+        "map": "Nimmanhaemin Road, Chiang Mai",
+        "hours": "ตอบแชตทุกวัน 10:00–20:00"
+      }
     },
     {
       "key": "studio",
@@ -156,7 +219,28 @@
       "bookingNoun": "จองคิวถ่าย",
       "storyTitle": "ภาพที่ใช้ขายได้จริง ส่งใน 3 วัน",
       "itemsTitle": "แพ็กเกจถ่ายภาพ",
-      "closing": "เล่าแบรนด์ของคุณด้วยภาพ"
+      "closing": "เล่าแบรนด์ของคุณด้วยภาพ",
+      "genericEn": "Photo Studio",
+      "highlights": [
+        {
+          "k": "3 วัน",
+          "t": "ส่งภาพพร้อมใช้"
+        },
+        {
+          "k": "20+",
+          "t": "ภาพต่อครึ่งวัน"
+        },
+        {
+          "k": "2 คน",
+          "t": "ทีมเล็ก คุยง่าย"
+        }
+      ],
+      "contact": {
+        "title": "นัดถ่ายภาพ",
+        "area": "ย่านเจริญกรุง · บางรัก กรุงเทพฯ",
+        "map": "Charoen Krung Road, Bang Rak, Bangkok",
+        "hours": "อ.–อา. นัดล่วงหน้า"
+      }
     }
   ],
   "features": [
@@ -203,8 +287,8 @@
       "label": "อบอุ่น",
       "icon": "sun",
       "tone": "น้ำเสียง: อบอุ่น เป็นกันเอง เหมือนเพื่อนแนะนำ",
-      "font": "Anuphan",
-      "fontUrl": null,
+      "font": "Pridi + Sriracha",
+      "fontUrl": "/assets/fonts/site/t-journal.css",
       "vars": {
         "--demo-bg": "#fbf1e4",
         "--demo-surface": "#fffaf3",
@@ -213,9 +297,15 @@
         "--demo-accent": "#d2691e",
         "--demo-on-accent": "#ffffff",
         "--demo-line": "#ead7c3",
-        "--demo-font": "'Anuphan', system-ui, sans-serif",
+        "--demo-font": "'Pridi', 'Anuphan', system-ui, serif",
         "--demo-radius": "18px",
-        "--demo-hero-tint": "rgba(210,105,30,.28)"
+        "--demo-hero-tint": "rgba(210,105,30,.28)",
+        "--demo-text-w": "300",
+        "--demo-display": "'Pridi', 'Anuphan', serif",
+        "--demo-display-w": "600",
+        "--demo-display-x": "100%",
+        "--demo-ui": "'Anuphan', system-ui, sans-serif",
+        "--demo-hand": "'Sriracha', 'Pridi', cursive"
       },
       "template": "journal",
       "dark": false,
@@ -226,8 +316,8 @@
       "label": "หรู",
       "icon": "gem",
       "tone": "น้ำเสียง: สุภาพ กระชับ มั่นใจ",
-      "font": "Trirong",
-      "fontUrl": "https://fonts.googleapis.com/css2?family=Trirong:wght@400;600&display=swap",
+      "font": "Chonburi + Taviraj",
+      "fontUrl": "/assets/fonts/site/t-maison.css",
       "vars": {
         "--demo-bg": "#0e0d0c",
         "--demo-surface": "#1a1816",
@@ -236,9 +326,15 @@
         "--demo-accent": "#c8a35a",
         "--demo-on-accent": "#140f06",
         "--demo-line": "#3a3228",
-        "--demo-font": "'Trirong', Georgia, serif",
+        "--demo-font": "'Taviraj', Georgia, serif",
         "--demo-radius": "2px",
-        "--demo-hero-tint": "rgba(200,163,90,.22)"
+        "--demo-hero-tint": "rgba(200,163,90,.22)",
+        "--demo-text-w": "300",
+        "--demo-display": "'Chonburi', 'Taviraj', Georgia, serif",
+        "--demo-display-w": "400",
+        "--demo-display-x": "100%",
+        "--demo-ui": "'Anuphan', system-ui, sans-serif",
+        "--demo-hand": "'Taviraj', Georgia, serif"
       },
       "template": "maison",
       "dark": true,
@@ -249,8 +345,8 @@
       "label": "สนุก",
       "icon": "confetti",
       "tone": "น้ำเสียง: สดใส สนุก ชวนลองเล่น",
-      "font": "Mitr",
-      "fontUrl": "https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap",
+      "font": "Mitr + Mali",
+      "fontUrl": "/assets/fonts/site/t-pop.css",
       "vars": {
         "--demo-bg": "#fff1fa",
         "--demo-surface": "#ffffff",
@@ -259,9 +355,15 @@
         "--demo-accent": "#e83e8c",
         "--demo-on-accent": "#ffffff",
         "--demo-line": "#f6cde6",
-        "--demo-font": "'Mitr', system-ui, sans-serif",
+        "--demo-font": "'Mali', 'Anuphan', system-ui, sans-serif",
         "--demo-radius": "26px",
-        "--demo-hero-tint": "rgba(232,62,140,.24)"
+        "--demo-hero-tint": "rgba(232,62,140,.24)",
+        "--demo-text-w": "500",
+        "--demo-display": "'Mitr', 'Mali', system-ui, sans-serif",
+        "--demo-display-w": "700",
+        "--demo-display-x": "100%",
+        "--demo-ui": "'Mali', 'Anuphan', system-ui, sans-serif",
+        "--demo-hand": "'Mali', system-ui, sans-serif"
       },
       "template": "pop",
       "dark": false,
@@ -272,8 +374,8 @@
       "label": "มินิมอล",
       "icon": "square",
       "tone": "น้ำเสียง: ตรงไปตรงมา สั้น ชัด",
-      "font": "IBM Plex Sans Thai",
-      "fontUrl": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600&display=swap",
+      "font": "Noto Sans Thai",
+      "fontUrl": "/assets/fonts/site/t-index.css",
       "vars": {
         "--demo-bg": "#f6f6f4",
         "--demo-surface": "#ffffff",
@@ -282,9 +384,15 @@
         "--demo-accent": "#121212",
         "--demo-on-accent": "#ffffff",
         "--demo-line": "#e3e3e0",
-        "--demo-font": "'IBM Plex Sans Thai', system-ui, sans-serif",
+        "--demo-font": "'Noto Sans Thai', 'Anuphan', system-ui, sans-serif",
         "--demo-radius": "6px",
-        "--demo-hero-tint": "rgba(18,18,18,.12)"
+        "--demo-hero-tint": "rgba(18,18,18,.12)",
+        "--demo-text-w": "400",
+        "--demo-display": "'Noto Sans Thai', 'Anuphan', system-ui, sans-serif",
+        "--demo-display-w": "200",
+        "--demo-display-x": "62.5%",
+        "--demo-ui": "'Noto Sans Thai', 'Anuphan', system-ui, sans-serif",
+        "--demo-hand": "'Noto Sans Thai', system-ui, sans-serif"
       },
       "template": "index",
       "dark": false,

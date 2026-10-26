@@ -23,11 +23,11 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <!--slot:lcp-preload-->
-<link rel="preload" href="/assets/fonts/site/kanit-thai-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261024">
-<link rel="stylesheet" href="/entry/entry.css?v=20261028">
+<link rel="preload" href="/assets/fonts/site/taviraj-thai-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261026">
+<link rel="stylesheet" href="/entry/entry.css?v=20261029">
 <script>document.documentElement.classList.add('js')</script>
-<script type="module" src="/entry/entry.js?v=20261028"></script>
+<script type="module" src="/entry/entry.js?v=20261029"></script>
 <script type="module" src="/assets/my-learning-entry.js"></script>
 <!--entry:jsonld-->
 <!-- The shared motion layer is left out here on purpose: this page animates itself, and the layer's only job on it
@@ -56,6 +56,14 @@
   <symbol id="i-redo" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5L8 5.5Z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.3a10 10 0 0 0 6.2 6.2l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2Z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4.5 18.5 5.7 15A7.5 7.5 0 1 1 9 18.2l-4.5.3Z"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7.5a3.5 3.5 0 0 0 0-7h-7a3.5 3.5 0 0 1 0-7H16"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4v-5Z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4v-5Z"/><path d="m16 9.5 5 5m0-5-5 5"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8.5 5.5v13M15.5 5.5v13"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="m14.5 5.5 4 4L8 20H4v-4L14.5 5.5Z"/><path d="m12.5 7.5 4 4"/></symbol>
   <symbol id="i-clover" viewBox="0 0 24 24"><path d="M12 12c-3.6-.2-6-2.2-6-4.6C6 5.3 7.5 4 9.2 4 11 4 12 5.6 12 7.4 12 5.6 13 4 14.8 4 16.5 4 18 5.3 18 7.4c0 2.4-2.4 4.4-6 4.6Zm0 0c.2 3.6 2.2 6 4.6 6 2.1 0 3.4-1.5 3.4-3.2 0-1.8-1.6-2.8-3.4-2.8 1.8 0 3.4-1 3.4-2.8"/><path d="M12 12c-.2 3.6-2.2 6-4.6 6C5.3 18 4 16.5 4 14.8 4 13 5.6 12 7.4 12 5.6 12 4 11 4 9.2"/><path d="M12 12c1.5 3 3.5 6.5 6.5 8.5"/></symbol>
 </svg>
 
@@ -67,14 +75,41 @@
 </header>
 
 <main id="main">
-  <section class="studio" id="play" aria-labelledby="hero-title" data-done="0">
+  <section class="film" id="film" aria-labelledby="hero-title" data-cap="0">
+    <canvas class="film-canvas" id="film-canvas" aria-hidden="true"></canvas>
+    <svg class="film-poster" viewBox="-60 -70 120 140" aria-hidden="true">
+      <defs><path id="fp-leaf" d="M0 0C-5-9-19-11-19-23-19-32-10-35-4.5-29.5-2.5-27.5-1-26.5 0-24.5 1-26.5 2.5-27.5 4.5-29.5 10-35 19-32 19-23 19-11 5-9 0 0Z"/></defs>
+      <path class="fp-stem" d="M0 2C3 24 2 44-6 64"/>
+      <use href="#fp-leaf" transform="rotate(-45) translate(0 -3)"/><use href="#fp-leaf" transform="rotate(45) translate(0 -3)"/><use href="#fp-leaf" transform="rotate(135) translate(0 -3)"/>
+      <use class="fp-gold" href="#fp-leaf" transform="rotate(225) translate(0 -3)"/>
+    </svg>
+    <div class="film-top">
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>myClover · โดย Teem Clover</p>
+      <h1 id="hero-title">ปรุงเว็บใน 3 แตะ</h1>
+    </div>
+    <div class="film-caps" aria-hidden="true">
+      <p class="cap" data-c="0"><b>แตะ 3 ใบ</b><span>ใบที่ 4 จะกลายเป็นเว็บของคุณ</span></p>
+      <p class="cap" data-c="1"><b>ใบที่ 4 คือเว็บของคุณ</b></p>
+      <p class="cap" data-c="2"><b>เปลี่ยนใบเดียว</b><span>ภาพ สี ตัวอักษร เลย์เอาต์ เปลี่ยนตามหมด</span></p>
+      <p class="cap" data-c="3"><b>ทุกจอ ทุกธุรกิจ</b><span>จองคิว · หน้าร้าน · มินิเกม · แนะนำตัว</span></p>
+      <p class="cap" data-c="4"><b>หน้าเดียว 64 แบบ</b><span>นี่แค่ตัวอย่าง · งานจริงออกแบบให้คุณโดยเฉพาะ</span></p>
+      <p class="cap" data-c="5"><b>ตาคุณแล้ว</b><span>แตะ 3 ครั้ง ดูเว็บของคุณประกอบตรงหน้า</span></p>
+    </div>
+    <p class="film-count" id="film-count" aria-hidden="true"></p>
+    <div class="film-ui">
+      <a class="film-go" href="#play" data-film-go>เริ่มปรุงเว็บของคุณ<svg><use href="#i-arrow"/></svg></a>
+      <button type="button" class="film-btn" id="film-sound" aria-pressed="false" hidden><svg><use href="#i-mute"/></svg><span>เปิดเสียง</span></button>
+      <button type="button" class="film-btn" id="film-pause" aria-pressed="false" hidden><svg><use href="#i-pause"/></svg><span>หยุด</span></button>
+    </div>
+    <p class="sr-only">วิดีโอสั้น 20 วินาที ทำด้วยโค้ดทั้งหมด: โคลเวอร์ 4 ใบ ใบที่ 1 ถึง 3 คือคำตอบ 3 ข้อ คุณทำอะไร อยากได้อะไร และสไตล์ไหน ใบที่ 4 สีทองกลายเป็นเว็บทั้งหน้า แล้วเว็บเปลี่ยนภาพ สี ตัวอักษร และเลย์เอาต์ทุกครั้งที่เปลี่ยนคำตอบ หน้าเดียวเปลี่ยนได้ 64 แบบ</p>
+  </section>
+
+  <section class="studio" id="play" aria-labelledby="studio-title" data-done="0">
     <div class="studio-bg" id="studio-bg" aria-hidden="true"><!--slot:studio-bg--></div>
     <div class="studio-shade" aria-hidden="true"></div>
 
     <div class="studio-in">
-      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>myClover · โดย Teem Clover</p>
-      <h1 id="hero-title">ปรุงเว็บใน 3 แตะ</h1>
-      <p class="lede">หน้าเว็บเดียว เปลี่ยนได้ <b>64 แบบ</b> เลือก 3 อย่าง แล้วเลื่อนดูเว็บที่ประกอบจากคำตอบของคุณ</p>
+      <h2 id="studio-title">เลือก 3 อย่าง</h2>
 
       <ol class="track" id="track" aria-label="ความคืบหน้า 3 ขั้น">
         <li><button type="button" class="track-step" data-step="0"><span class="track-n">1</span><span class="track-q">คุณทำอะไร</span><span class="track-a" data-answer></span><span class="sr-only" data-sr></span></button></li>
@@ -88,7 +123,6 @@
       </fieldset>
       <p class="sr-only" id="announce" aria-live="polite"></p>
 
-      <p class="studio-note">เลือก 3 อย่าง แล้วดูเว็บของคุณประกอบขึ้นตรงหน้า</p>
       <div class="nojs-demo">
         <p>หน้านี้เป็นเกมสั้น ๆ: เลือกประเภทธุรกิจ สิ่งที่อยากได้ และสไตล์ แล้วเลื่อนดูหน้าเว็บตัวอย่างที่ประกอบจากคำตอบ (ต้องเปิด JavaScript) โปรไฟล์และผลงานอ่านได้ด้านล่าง</p>
       </div>
@@ -101,6 +135,7 @@
       <div class="scenes" id="scenes"></div>
       <div class="site-bar">
         <p class="site-demo"><b>ตัวอย่างสาธิต</b> <span id="site-domain">ธุรกิจสมมติ</span></p>
+        <button type="button" class="site-remix" data-name-open><svg><use href="#i-pen"/></svg>ชื่อร้านคุณ</button>
         <button type="button" class="site-remix" data-goto-remix>เปลี่ยนสไตล์<svg><use href="#i-redo"/></svg></button>
       </div>
       <ol class="rail" id="rail" aria-hidden="true"></ol>
@@ -112,7 +147,10 @@
     <div class="wrap">
       <p class="finale-k">ตัวอย่างนี้ประกอบจาก 3 ตัวเลือกของคุณ · <span id="combo-n">ชุดที่ 1 / 64</span></p>
       <h2 id="finale-title">หน้าเดียว เปลี่ยนได้อีก 63 แบบ</h2>
-      <p class="finale-lede">แตะเปลี่ยนแค่อย่างเดียว ทั้งภาพ ตัวอักษร สี เลย์เอาต์ และจังหวะการเลื่อนจะเปลี่ยนตาม · แบบหรูเป็นหนังสั้นที่เลื่อนดูได้</p>
+      <div class="want">
+        <button type="button" class="btn-name" data-name-open><svg><use href="#i-pen"/></svg>ใส่ชื่อร้านคุณ</button>
+        <a class="btn-want" href="/hire/" id="want">อยากได้เว็บแบบนี้<svg><use href="#i-arrow"/></svg></a>
+      </div>
       <div class="looks" id="looks" role="group" aria-label="สไตล์อื่นของธุรกิจเดียวกัน"></div>
       <div class="remix" id="remix"></div>
       <div class="doors" aria-label="ไปต่อ">
@@ -124,7 +162,7 @@
         <button type="button" class="link-btn" id="shuffle"><svg><use href="#i-spark"/></svg>สุ่มชุดใหม่</button>
         <button type="button" class="link-btn" id="replay"><svg><use href="#i-redo"/></svg>ลองชุดอื่น</button>
       </div>
-      <p class="finale-note">ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน · ภาพในตัวอย่างสร้างด้วย AI ธุรกิจ เมนู และราคาเป็นข้อมูลสมมติ</p>
+      <p class="finale-note">ภาพในตัวอย่างสร้างด้วย AI ธุรกิจ เมนู และราคาเป็นข้อมูลสมมติ · ในงานจริง ซอสคือข้อมูลธุรกิจของคุณที่เราใช้สร้างงาน</p>
     </div>
   </section>
 
@@ -212,6 +250,14 @@
   <div class="door-leaf door-l"></div><div class="door-leaf door-r"></div>
   <p class="door-text">กำลังเปิดประตูบ้าน…</p>
 </div>
+<dialog class="name-dlg" id="name-dlg" aria-labelledby="name-title">
+  <form method="dialog" class="name-form">
+    <h2 id="name-title">ชื่อร้านของคุณ</h2>
+    <input id="name-input" name="name" type="text" maxlength="24" autocomplete="organization" enterkeyhint="done" placeholder="เช่น ร้านป้าแดง" aria-describedby="name-note">
+    <p class="name-note" id="name-note">ชื่อนี้อยู่ในเครื่องคุณเท่านั้น ไม่ส่งไปที่ไหน</p>
+    <div class="name-act"><button type="submit" class="btn-want" value="ok">ใส่ชื่อนี้</button><button type="submit" class="link-btn" value="reset">ใช้ชื่อตัวอย่าง</button></div>
+  </form>
+</dialog>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <!--entry:data-->
 </body>

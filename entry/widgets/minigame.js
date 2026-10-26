@@ -1,24 +1,29 @@
-// "มินิเกมโปรโมต" widget: a 25-second catch game themed on the business that was picked, drawn on a canvas in the
-// style's colours, using the business's own product photos. Win = a sample coupon ticket. No prize is real and
-// nothing leaves the page. Reduced motion gets a still "tap the right ones" board instead of falling objects.
-const DURATION = 25, GOAL = 8;
+// "มินิเกมโปรโมต" widget: "ซ้อนให้สูง", a 3D stacking game in the business's own material (owner brief 2026-10-26:
+// creative, and it should look ahead of its time). A layer slides over the tower; tap (or Space) to drop it. What hangs
+// over is cut off and falls; a perfect drop keeps the full size, and three in a row grow it back a little.
+// Stack 10 layers to win a sample coupon. Each business stacks its own thing:
+//   café → cake layers · tutor → numbered blocks · yarn shop → knitted layers · studio → photo prints of its own work
+// Drawn on a canvas in isometric 3D with neon edges in the style's colour; small synthesised sounds after the first tap.
+// No prize is real and nothing leaves the page. Reduced motion gets a still "tap the right ones" board instead.
+const GOAL = 10;
 const GAMES = {
-  cafe: {title: 'เก็บเมนูเช้า', hint: 'ลากถาดรับขนมกับกาแฟ หลบเมล็ดไหม้', good: 'photo', bad: 'bean', badName: 'เมล็ดไหม้', catcher: 'tray', bg: 'steam', coupon: 'ส่วนลด 10% เมนูเช้า', suffix: '10'},
-  coach: {title: 'เก็บคำตอบที่ถูก', hint: 'รับเฉพาะโจทย์ที่ได้คำตอบตรงป้าย', good: 'math', bad: 'math', catcher: 'book', bg: 'grid', coupon: 'ทดลองเรียนฟรีเพิ่ม 15 นาที', suffix: '15'},
-  shop: {title: 'เก็บไหมพรม', hint: 'รับไหมพรมลงตะกร้า หลบกรรไกร', good: 'yarn', bad: 'scissors', badName: 'กรรไกร', catcher: 'basket', bg: 'knit', coupon: 'ส่งฟรี 1 ชิ้น', suffix: 'SHIP'},
-  studio: {title: 'เก็บภาพคม', hint: 'รับภาพคมชัด หลบภาพเบลอ', good: 'photo', bad: 'blur', badName: 'ภาพเบลอ', catcher: 'frame', bg: 'thirds', coupon: 'ส่วนลด 10% แพ็กเกจถ่ายภาพ', suffix: '10'},
+  cafe: {title: 'ซ้อนเค้กให้สูง', hint: 'แตะให้ชั้นเค้กวางตรงกัน ตรงพอดีได้ชั้นเต็ม', skin: 'cake', coupon: 'ส่วนลด 10% เมนูเช้า', suffix: '10', good: 'photo', bad: 'bean', badName: 'เมล็ดไหม้'},
+  coach: {title: 'ซ้อนบล็อกเลข', hint: 'แตะให้บล็อกวางตรงกัน ทุกชั้นคือเลขข้อถัดไป', skin: 'blocks', coupon: 'ทดลองเรียนฟรีเพิ่ม 15 นาที', suffix: '15', good: 'math', bad: 'math'},
+  shop: {title: 'ซ้อนไหมพรม', hint: 'แตะให้ผ้าถักวางตรงกัน ตรงพอดีได้ชั้นเต็ม', skin: 'knit', coupon: 'ส่งฟรี 1 ชิ้น', suffix: 'SHIP', good: 'yarn', bad: 'scissors', badName: 'กรรไกร'},
+  studio: {title: 'ซ้อนภาพ', hint: 'แตะให้ภาพวางตรงกัน ตรงพอดีได้ภาพเต็ม', skin: 'prints', coupon: 'ส่วนลด 10% แพ็กเกจถ่ายภาพ', suffix: '10', good: 'photo', bad: 'blur', badName: 'ภาพเบลอ'},
 };
 const TARGETS = [10, 12, 15, 20, 24];
+const HUD_FONT = "'Chakra Petch', 'Anuphan', system-ui, sans-serif";
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const hex = c => { const m = /^#?([\da-f]{6})$/i.exec(String(c).trim()); if (!m) return [200, 160, 90]; const n = parseInt(m[1], 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
-const mix = (a, b, t) => { const A = hex(a), B = hex(b); return `rgb(${A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(',')})`; };
+const mix = (a, b, t) => { const A = hex(a), B = hex(b); return `#${A.map((x, i) => Math.round(x + (B[i] - x) * t).toString(16).padStart(2, '0')).join('')}`; };
 const rgba = (c, a) => { const [r, g, b] = hex(c); return `rgba(${r},${g},${b},${a})`; };
-const lum = c => { const [r, g, b] = hex(c); return (r * .299 + g * .587 + b * .114) / 255; };
+const mod = (k, m) => ((k % m) + m) % m;
 
-// sums for the tutor: `good` equals the target, anything else is off by a little
+// sums for the tutor's still board: `good` equals the target, anything else is off by a little
 function sum(target, good) {
   const v = good ? target : target + pick([-3, -2, -1, 1, 2, 3]);
   return {val: v, text: sumText(v)};
@@ -33,10 +38,11 @@ function sumText(v) {
 export function mount(root, {industry, esc, photos = []}) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const game = {key: GAMES[industry.key] ? industry.key : 'cafe', ...(GAMES[industry.key] || GAMES.cafe)};
-  const code = `${(industry.brandEn || 'DEMO').split(/\s+/)[0].toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6)}-${game.suffix}`;
+  const code = `${(industry.brandEn || 'DEMO').split(/\s+/)[0].toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6) || 'DEMO'}-${game.suffix}`;
   const ticket = `<div class="w-ticket" role="status"><span class="w-ticket-brand">${esc(industry.brand)} ให้คุณ</span><b>${esc(game.coupon)}</b><span class="w-ticket-code">${esc(code)}</span><small>คูปองจำลอง · ในเว็บจริงผูกกับร้านของคุณ</small></div>`;
   const imgs = photos.map(src => { const i = new Image(); i.decoding = 'async'; i.src = src; return i; });
-  return reduced ? board(root, {industry, esc, game, imgs, ticket}) : arcade(root, {industry, esc, game, imgs, ticket});
+  if (!document.querySelector('link[data-game-font]')) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/assets/fonts/site/game.css'; l.dataset.gameFont = ''; document.head.append(l); }
+  return reduced ? board(root, {industry, esc, game, imgs, ticket}) : stack(root, {industry, esc, game, imgs, ticket});
 }
 
 /* ---------- reduced motion: tap the right ones ---------- */
@@ -73,320 +79,272 @@ function board(root, {esc, game, imgs, ticket}) {
   return () => { root.removeEventListener('click', onClick); root.removeEventListener('click', onAgain); };
 }
 
-/* ---------- the arcade ---------- */
-function arcade(root, {industry, esc, game, imgs, ticket}) {
-  root.innerHTML = `<div class="w-game" data-game="${esc(game.key)}">
-    <canvas class="w-game-canvas" tabindex="0" aria-label="${esc(game.title)}: ใช้ปุ่มลูกศรซ้ายขวา หรือลากเพื่อเลื่อน"></canvas>
+/* ---------- "ซ้อนให้สูง": the stacking game ---------- */
+function stack(root, {industry, esc, game, imgs, ticket}) {
+  root.innerHTML = `<div class="w-game is-stack" data-game="${esc(game.key)}" data-layers="0">
+    <canvas class="w-game-canvas" tabindex="0" aria-label="${esc(game.title)}: แตะ หรือกดเว้นวรรค เพื่อวางชั้น"></canvas>
+    <button type="button" class="w-game-snd" aria-pressed="true" aria-label="เสียงในเกม">♪</button>
     <div class="w-game-cover"><span class="w-game-brand">${esc(industry.brand)}</span><b>${esc(game.title)}</b><p>${esc(game.hint)}</p>
-      <button type="button" class="w-go w-game-go">เริ่มเล่น · ${DURATION} วินาที</button><small>ชนะรับ: ${esc(game.coupon)} (คูปองจำลอง)</small></div>
+      <button type="button" class="w-go w-game-go">เริ่มเล่น</button><small>ซ้อนถึง ${GOAL} ชั้น รับ: ${esc(game.coupon)} (คูปองจำลอง)</small></div>
     <p class="sr-only" aria-live="polite" data-say></p>
   </div>`;
-  const box = root.querySelector('.w-game'), cv = box.querySelector('canvas'), cover = box.querySelector('.w-game-cover'), say = box.querySelector('[data-say]');
+  const box = root.querySelector('.w-game'), cv = box.querySelector('canvas'), cover = box.querySelector('.w-game-cover'), say = box.querySelector('[data-say]'), snd = box.querySelector('.w-game-snd');
   const ctx = cv.getContext('2d');
   const css = getComputedStyle(box);
   const v = n => css.getPropertyValue(n).trim();
-  const C = {on: v('--demo-on-accent') || '#ffffff', accent: v('--demo-accent') || '#d2691e', text: v('--demo-text') || '#222222', muted: v('--demo-muted') || '#777777', bg: v('--demo-bg') || '#ffffff', surface: v('--demo-surface') || '#ffffff', line: v('--demo-line') || '#dddddd', font: v('--demo-font') || 'system-ui, sans-serif'};
-  const dark = lum(C.bg) < .35;
-  const gold = '#f2c46b';
-  C.hi = mix(C.accent, '#ffffff', .45); C.lo = mix(C.accent, '#000000', .35);
-
-  let W = 0, H = 0, dpr = 1, R = 24, bg = null, sprites = {};
-  let raf = 0, last = 0, phase = 'idle', elapsed = 0, spawnIn = 0, score = 0, combo = 0, target = pick(TARGETS), goodSinceTarget = 0;
-  let cx = 0, tx = 0, keyDir = 0, squash = 0, shake = 0, flash = 0, outro = 0;
-  let items = [], parts = [], texts = [];
-
-  /* sprites: drawn once per size, then only moved */
-  function sprite(draw) {
-    const pad = 8, size = Math.ceil((R * 2 + pad * 2) * dpr);
-    const s = document.createElement('canvas'); s.width = s.height = size;
-    const x = s.getContext('2d'); x.scale(dpr, dpr);
-    const c = R + pad;
-    x.fillStyle = 'rgba(0,0,0,.2)'; x.beginPath(); x.ellipse(c, c + R * .86, R * .74, R * .2, 0, 0, Math.PI * 2); x.fill();
-    draw(x, c);
-    return {s, half: R + pad};
-  }
-  const rim = (x, c) => {
-    const g = x.createLinearGradient(c - R, c - R, c + R, c + R);
-    g.addColorStop(0, C.hi); g.addColorStop(.5, C.accent); g.addColorStop(1, C.lo);
-    x.lineWidth = 3; x.strokeStyle = g; x.beginPath(); x.arc(c, c, R - 1.5, 0, Math.PI * 2); x.stroke();
+  const C = {accent: v('--demo-accent') || '#d2691e', text: v('--demo-text') || '#222222', bg: v('--demo-bg') || '#ffffff'};
+  // the arena is always a dark, deep space lit by the style's accent: neon on glass
+  // a black accent (minimal) would give no light: it glows white-blue instead
+  const lum = c => { const [r, g, b] = hex(c); return (r * .299 + g * .587 + b * .114) / 255; };
+  const glowC = lum(C.accent) < .2 ? '#cfd8ff' : C.accent;
+  const neon = mix(glowC, '#ffffff', .25), deep = mix(glowC, '#05060a', .9), deep2 = mix(glowC, '#05060a', .74);
+  const SKIN = {
+    cake: k => ({top: ['#fff3df', '#f6d9a8', '#fff3df'][mod(k, 3)], left: ['#d9a46a', '#7a4a2a', '#e8c08a'][mod(k, 3)], right: ['#c38c55', '#5f3820', '#d3a771'][mod(k, 3)], deco: 'sprinkle'}),
+    blocks: k => { const c = [C.accent, '#ffd23f', '#5ce1c4', '#9b8cff', '#ff8a5c'][mod(k, 5)]; return {top: mix(c, '#ffffff', .3), left: c, right: mix(c, '#000000', .25), deco: 'digit'}; },
+    knit: k => { const c = ['#e98fb0', '#8fc9e9', '#f2c46b', '#a7dba0', '#c9a7f2'][mod(k, 5)]; return {top: mix(c, '#ffffff', .25), left: c, right: mix(c, '#000000', .18), deco: 'stitch'}; },
+    prints: k => ({top: '#ffffff', left: '#f4f4f2', right: '#dcdcd8', deco: 'photo'}),
   };
-  const gloss = (x, c) => {
-    const g = x.createLinearGradient(0, c - R, 0, c);
-    g.addColorStop(0, 'rgba(255,255,255,.42)'); g.addColorStop(1, 'rgba(255,255,255,0)');
-    x.fillStyle = g; x.beginPath(); x.ellipse(c, c - R * .46, R * .74, R * .42, 0, 0, Math.PI * 2); x.fill();
-  };
-  const photoSprite = (img, blur) => sprite((x, c) => {
-    x.save(); x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.clip();
-    let src = img;
-    if (blur) { const t = document.createElement('canvas'); t.width = t.height = 10; t.getContext('2d').drawImage(img, 0, 0, 10, 10); src = t; x.imageSmoothingQuality = 'high'; }
-    const k = Math.max(2 * R / (src.width || 1), 2 * R / (src.height || 1)), w = src.width * k, h = src.height * k;
-    x.drawImage(src, c - w / 2, c - h / 2, w, h);
-    if (blur) { x.fillStyle = 'rgba(128,128,128,.28)'; x.fillRect(c - R, c - R, 2 * R, 2 * R); }
-    gloss(x, c); x.restore();
-    if (blur) { x.setLineDash([4, 4]); x.lineWidth = 2.5; x.strokeStyle = rgba(C.muted, .9); x.beginPath(); x.arc(c, c, R - 1.5, 0, Math.PI * 2); x.stroke(); x.setLineDash([]); }
-    else rim(x, c);
-  });
-  const yarnSprite = col => sprite((x, c) => {
-    const g = x.createRadialGradient(c - R * .35, c - R * .4, R * .1, c, c, R);
-    g.addColorStop(0, mix(col, '#ffffff', .4)); g.addColorStop(1, mix(col, '#000000', .3));
-    x.fillStyle = g; x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.fill();
-    x.save(); x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.clip();
-    x.strokeStyle = 'rgba(255,255,255,.38)'; x.lineWidth = 1.6;
-    for (let k = 0; k < 6; k++) { x.beginPath(); x.ellipse(c, c, R * 1.05, R * (.2 + k * .14), .6 + k * .35, 0, Math.PI * 2); x.stroke(); }
-    x.restore();
-    x.strokeStyle = mix(col, '#000000', .15); x.lineWidth = 2.2; x.lineCap = 'round';
-    x.beginPath(); x.moveTo(c + R * .7, c + R * .6); x.quadraticCurveTo(c + R * 1.05, c + R * .9, c + R * .9, c + R * 1.15); x.stroke();
-    gloss(x, c);
-  });
-  const beanSprite = () => sprite((x, c) => {
-    x.strokeStyle = 'rgba(140,140,140,.55)'; x.lineWidth = 2; x.lineCap = 'round';
-    for (const dx of [-6, 2, 9]) { x.beginPath(); x.moveTo(c + dx, c - R * .55); x.bezierCurveTo(c + dx - 6, c - R * .85, c + dx + 6, c - R * 1.0, c + dx, c - R * 1.25); x.stroke(); }
-    x.save(); x.translate(c, c + 3); x.rotate(-.5);
-    const g = x.createRadialGradient(-R * .2, -R * .25, 2, 0, 0, R * .9);
-    g.addColorStop(0, '#5a3a24'); g.addColorStop(1, '#140b05');
-    x.fillStyle = g; x.beginPath(); x.ellipse(0, 0, R * .62, R * .82, 0, 0, Math.PI * 2); x.fill();
-    x.strokeStyle = '#000'; x.lineWidth = 2.4; x.beginPath(); x.moveTo(0, -R * .7); x.bezierCurveTo(-R * .25, -R * .2, R * .25, R * .2, 0, R * .7); x.stroke();
-    x.restore();
-  });
-  const scissorsSprite = () => sprite((x, c) => {
-    const steel = x.createLinearGradient(c - R, c - R, c + R, c + R);
-    steel.addColorStop(0, '#f4f6f8'); steel.addColorStop(.5, '#9aa3ad'); steel.addColorStop(1, '#5d6670');
-    x.lineCap = 'round';
-    for (const s of [-1, 1]) {
-      x.save(); x.translate(c, c); x.rotate(s * .35);
-      x.fillStyle = steel; x.beginPath(); x.moveTo(-3, 0); x.lineTo(3, 0); x.lineTo(1.2, -R * .95); x.lineTo(-1.2, -R * .95); x.closePath(); x.fill();
-      x.strokeStyle = '#c0392b'; x.lineWidth = 4; x.beginPath(); x.arc(0, R * .48, R * .3, 0, Math.PI * 2); x.stroke();
-      x.restore();
-    }
-    x.fillStyle = '#2c3e50'; x.beginPath(); x.arc(c, c, 2.8, 0, Math.PI * 2); x.fill();
-  });
-  const sumSprite = text => sprite((x, c) => {
-    const g = x.createRadialGradient(c - R * .3, c - R * .35, 2, c, c, R);
-    g.addColorStop(0, dark ? mix(C.surface, '#ffffff', .12) : '#ffffff'); g.addColorStop(1, C.surface);
-    x.fillStyle = g; x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.fill();
-    rim(x, c);
-    x.fillStyle = C.text; x.textAlign = 'center'; x.textBaseline = 'middle';
-    let fs = R * .66; x.font = `700 ${fs}px ${C.font}`;
-    while (x.measureText(text).width > R * 1.6 && fs > 10) { fs -= 1; x.font = `700 ${fs}px ${C.font}`; }
-    x.fillText(text, c, c + 1);
-    gloss(x, c);
-  });
+  const skinOf = SKIN[game.skin] || SKIN.cake;
+  // the three base layers are a glass pedestal, the same for every business
+  const skin = (k, base) => base ? {top: rgba(neon, .22), left: rgba(glowC, .28), right: rgba(glowC, .18), deco: 'glass'} : skinOf(k);
 
-  function buildBackground() {
-    bg = document.createElement('canvas'); bg.width = Math.round(W * dpr); bg.height = Math.round(H * dpr);
-    const x = bg.getContext('2d'); x.scale(dpr, dpr);
-    const g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, dark ? mix(C.bg, C.accent, .1) : mix(C.bg, '#ffffff', .5)); g.addColorStop(1, mix(C.bg, C.accent, dark ? .18 : .14));
-    x.fillStyle = g; x.fillRect(0, 0, W, H);
-    const s = x.createRadialGradient(W / 2, -H * .2, 10, W / 2, -H * .2, H * 1.1);
-    s.addColorStop(0, rgba(dark ? gold : '#ffffff', dark ? .2 : .6)); s.addColorStop(1, 'rgba(255,255,255,0)');
-    x.fillStyle = s; x.fillRect(0, 0, W, H);
-    x.strokeStyle = rgba(C.accent, dark ? .16 : .12); x.fillStyle = rgba(C.accent, dark ? .16 : .12); x.lineWidth = 1.2;
-    if (game.bg === 'grid') {
-      for (let gx = 0; gx < W; gx += 18) { x.beginPath(); x.moveTo(gx + .5, 0); x.lineTo(gx + .5, H); x.stroke(); }
-      for (let gy = 0; gy < H; gy += 18) { x.beginPath(); x.moveTo(0, gy + .5); x.lineTo(W, gy + .5); x.stroke(); }
-      x.font = `600 14px ${C.font}`; x.fillStyle = rgba(C.text, .12);
-      ['x+y', '÷', '×', '=?', '½', 'π'].forEach((t, i) => x.fillText(t, (i * 97 + 30) % W, 40 + (i * 53) % (H - 70)));
-    } else if (game.bg === 'knit') {
-      for (let gy = 12; gy < H; gy += 16) for (let gx = (gy / 16 % 2) * 8; gx < W; gx += 16) { x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + 4, gy + 6); x.lineTo(gx + 8, gy); x.stroke(); }
-    } else if (game.bg === 'thirds') {
-      for (const f of [1 / 3, 2 / 3]) { x.beginPath(); x.moveTo(W * f, 0); x.lineTo(W * f, H); x.moveTo(0, H * f); x.lineTo(W, H * f); x.stroke(); }
-      const m = 14, l = 16; x.lineWidth = 2;
-      for (const [a, b, sx, sy] of [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]]) { x.beginPath(); x.moveTo(a, b + sy * l); x.lineTo(a, b); x.lineTo(a + sx * l, b); x.stroke(); }
-    } else {
-      x.lineWidth = 2; x.lineCap = 'round';
-      for (let i = 0; i < 7; i++) { const sx = (i * 131 + 40) % W, sy = 30 + (i * 71) % (H - 80); x.beginPath(); x.moveTo(sx, sy + 30); x.bezierCurveTo(sx - 10, sy + 15, sx + 10, sy + 10, sx, sy - 6); x.stroke(); }
-    }
-    const fl = x.createLinearGradient(0, H - 26, 0, H);
-    fl.addColorStop(0, rgba(C.accent, 0)); fl.addColorStop(1, rgba(C.accent, dark ? .25 : .18));
-    x.fillStyle = fl; x.fillRect(0, H - 26, W, 26);
-  }
+  // world: a slab is a box [x0,x1] × [z0,z1], LH thick; the view is isometric
+  const LH = .2, BASE = 1;
+  let W = 0, H = 0, dpr = 1, S = 60;
+  let raf = 0, last = 0, phase = 'idle', layers = [], moving = null, falling = [], parts = [], rings = [], texts = [];
+  let camY = 0, combo = 0, shake = 0, glow = 0, outro = 0, t = 0, sound = true, ac = null;
 
   function resize() {
     const r = cv.getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    W = r.width; H = r.height; dpr = Math.min(devicePixelRatio || 1, 2);
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    dpr = Math.min(devicePixelRatio || 1, 2);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    R = clamp(W * .068, 21, 34);
-    buildBackground();
-    sprites = {
-      photo: imgs.filter(i => i.complete && i.naturalWidth).map(i => photoSprite(i)),
-      blur: imgs.filter(i => i.complete && i.naturalWidth).map(i => photoSprite(i, true)),
-      yarn: [C.accent, '#7a8f4a', '#c9a26b', '#b5546a'].map(yarnSprite),
-      bean: beanSprite(), scissors: scissorsSprite(),
-      orb: sprite((x, c) => { const g = x.createRadialGradient(c - R * .3, c - R * .35, 2, c, c, R); g.addColorStop(0, C.hi); g.addColorStop(1, C.lo); x.fillStyle = g; x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.fill(); gloss(x, c); }),
-      smudge: sprite((x, c) => { x.fillStyle = 'rgba(120,120,120,.55)'; x.beginPath(); x.arc(c, c, R, 0, Math.PI * 2); x.fill(); x.setLineDash([4, 4]); x.lineWidth = 2.5; x.strokeStyle = rgba(C.muted, .9); x.beginPath(); x.arc(c, c, R - 1.5, 0, Math.PI * 2); x.stroke(); }),
-    };
-    items.forEach(it => { if (it.text) it.sp = sumSprite(it.text); });
-    cx = tx = clamp(cx || W / 2, catcherW() / 2, W - catcherW() / 2);
-    draw();
+    S = Math.min(W * .3, H * .3);
+    if (phase !== 'play') draw();
   }
-  const catcherW = () => clamp(W * .22, 78, 120);
+  const iso = (x, y, z) => [W / 2 + (x - z) * S * .866, H * .8 + (x + z) * S * .5 - (y - camY) * S];
+  function poly(pts) { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); }
 
-  function spawn() {
-    const goodChance = .7;
-    const ok = Math.random() < goodChance;
-    let sp, text = '';
-    let val = 0;
-    if (game.good === 'math') { ({text, val} = sum(target, ok)); sp = sumSprite(text); }
-    else if (ok) sp = game.good === 'yarn' ? (Math.random() < .35 && sprites.photo.length ? pick(sprites.photo) : pick(sprites.yarn)) : (sprites.photo.length ? pick(sprites.photo) : sprites.orb);
-    else sp = game.bad === 'blur' ? (sprites.blur.length ? pick(sprites.blur) : sprites.smudge) : sprites[game.bad];
-    const p = elapsed / DURATION;
-    items.push({x: rnd(R + 8, W - R - 8), y: -R, v: H * rnd(.5, .62) * (1 + p * .7), rot: game.good === 'math' ? 0 : rnd(-.3, .3), spin: game.good === 'math' ? 0 : rnd(-1.2, 1.2), ok, sp, text, val});
-  }
-  function burst(x, y, n, colors, power = 1) {
-    for (let i = 0; i < n; i++) { const a = rnd(0, Math.PI * 2), s = rnd(60, 220) * power; parts.push({x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 80 * power, life: 1, r: rnd(1.8, 4), c: pick(colors), sq: Math.random() < .4}); }
-  }
-  function float(x, y, t, c) { texts.push({x: clamp(x, 56, W - 56), y, t, c, life: 1}); }
-  function speak(t) { say.textContent = t; }
-
-  function catchIt(it) {
-    if (it.ok) {
-      score++; combo++; squash = 1;
-      burst(it.x, it.y, 16, [C.accent, gold, C.hi]);
-      float(it.x, it.y - R, combo >= 3 ? `คอมโบ x${combo}` : '+1', C.accent);
-      if (game.good === 'math' && ++goodSinceTarget >= 3) { goodSinceTarget = 0; let n; do n = pick(TARGETS); while (n === target); target = n; float(W / 2, 64, `เป้าหมายใหม่ = ${target}`, C.text); items.forEach(i => { if (i.text) i.ok = i.val === target; }); }
-      if (score % 2 === 0 || score === GOAL) speak(`เก็บได้ ${score} จาก ${GOAL}`);
-    } else {
-      score = Math.max(0, score - 1); combo = 0; shake = .35; flash = .3;
-      burst(it.x, it.y, 10, ['#888888', '#555555'], .7);
-      float(it.x, it.y - R, game.good === 'math' ? 'ผิด −1' : `${game.badName} −1`, '#c0392b');
-    }
-  }
-
-  function frame(now) {
-    raf = 0;
-    if (phase !== 'play' && phase !== 'outro') return;
-    const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now;
-    if (document.hidden) { raf = requestAnimationFrame(frame); return; }
-    if (phase === 'play') {
-      elapsed += dt;
-      spawnIn -= dt;
-      if (spawnIn <= 0) { spawn(); spawnIn = clamp(.72 - elapsed / DURATION * .3, .4, .8); }
-      if (keyDir) tx = clamp(tx + keyDir * W * 1.1 * dt, catcherW() / 2, W - catcherW() / 2);
-      cx += (tx - cx) * Math.min(1, dt * 16);
-      const top = H - 38, half = catcherW() / 2;
-      for (const it of items) {
-        it.y += it.v * dt; it.rot += it.spin * dt;
-        if (!it.done && it.y + R * .6 >= top && it.y - R < top + 14 && Math.abs(it.x - cx) < half + R * .35) { it.done = true; catchIt(it); }
-        if (it.y - R > H) { it.done = true; if (it.ok && game.good !== 'math') combo = 0; }
+  /* ---------- one slab ---------- */
+  function slab(b, k, {alpha = 1, lit = 0} = {}) {
+    const {x0, x1, z0, z1, y} = b, top = y + LH;
+    const T = [iso(x0, top, z0), iso(x1, top, z0), iso(x1, top, z1), iso(x0, top, z1)];
+    const L = [iso(x0, top, z1), iso(x1, top, z1), iso(x1, y, z1), iso(x0, y, z1)];
+    const R = [iso(x1, top, z0), iso(x1, top, z1), iso(x1, y, z1), iso(x1, y, z0)];
+    const sk = skin(k, b.base);
+    ctx.save(); ctx.globalAlpha *= alpha;
+    poly(L); ctx.fillStyle = sk.left; ctx.fill();
+    poly(R); ctx.fillStyle = sk.right; ctx.fill();
+    poly(T); ctx.fillStyle = sk.top; ctx.fill();
+    // what the slab is made of
+    if (sk.deco === 'photo' && imgs.length) {
+      const im = imgs[mod(k, imgs.length)];
+      if (im.complete && im.naturalWidth) {
+        ctx.save(); poly(T); ctx.clip();
+        // map the image onto the top face (an affine transform of the unit square)
+        const [ox, oy] = T[0], [ax, ay] = T[1], [bx, by] = T[3];
+        const pad = .08;
+        ctx.transform(ax - ox, ay - oy, bx - ox, by - oy, ox, oy);
+        ctx.drawImage(im, pad, pad, 1 - pad * 2, 1 - pad * 2);
+        ctx.restore();
       }
-      items = items.filter(it => !it.done);
-      if (score >= GOAL) win();
-      else if (elapsed >= DURATION) lose();
-    } else {
-      outro -= dt;
-      if (outro <= 0) { phase = 'over'; showEnd(); draw(); return; }
     }
-    for (const p of parts) { p.vy += 380 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt * (phase === 'outro' ? .55 : 1.4); }
-    parts = parts.filter(p => p.life > 0);
-    for (const t of texts) { t.y -= 34 * dt; t.life -= dt * 1.1; }
-    texts = texts.filter(t => t.life > 0);
-    squash = Math.max(0, squash - dt * 5); shake = Math.max(0, shake - dt); flash = Math.max(0, flash - dt);
-    draw();
-    raf = requestAnimationFrame(frame);
-  }
-
-  function drawCatcher() {
-    const w = catcherW(), y = H - 38, sq = 1 + squash * .12;
-    ctx.save(); ctx.translate(cx, y); ctx.scale(sq, 2 - sq);
-    const g = ctx.createLinearGradient(0, -6, 0, 26);
-    g.addColorStop(0, C.hi); g.addColorStop(1, C.lo);
-    ctx.fillStyle = g; ctx.strokeStyle = C.lo; ctx.lineWidth = 2;
-    if (game.catcher === 'tray') {
-      ctx.beginPath(); ctx.ellipse(0, 8, w / 2, 11, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = rgba('#ffffff', .35); ctx.beginPath(); ctx.ellipse(0, 5, w / 2 - 8, 5, 0, 0, Math.PI * 2); ctx.fill();
-    } else if (game.catcher === 'book') {
-      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-w / 2, -2, w, 22, 5) : ctx.rect(-w / 2, -2, w, 22); ctx.fill();
-      ctx.fillStyle = C.surface; for (let i = -w / 2 + 10; i < w / 2 - 4; i += 11) { ctx.beginPath(); ctx.arc(i, 1, 2.6, 0, Math.PI * 2); ctx.fill(); }
-      ctx.strokeStyle = rgba('#ffffff', .4); ctx.beginPath(); ctx.moveTo(-w / 2 + 8, 11); ctx.lineTo(w / 2 - 8, 11); ctx.stroke();
-    } else if (game.catcher === 'basket') {
-      ctx.beginPath(); ctx.moveTo(-w / 2, -2); ctx.lineTo(w / 2, -2); ctx.lineTo(w / 2 - 10, 24); ctx.lineTo(-w / 2 + 10, 24); ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = rgba('#ffffff', .35); ctx.lineWidth = 1.5;
-      for (let i = -w / 2 + 8; i < w / 2; i += 10) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i - 3, 22); ctx.stroke(); }
-      for (const yy of [7, 15]) { ctx.beginPath(); ctx.moveTo(-w / 2 + 6, yy); ctx.lineTo(w / 2 - 6, yy); ctx.stroke(); }
-    } else {
-      ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.lineCap = 'round'; const l = 14, hw = w / 2, t = -6, b = 22;
-      for (const [a, c, sx, sy] of [[-hw, t, 1, 1], [hw, t, -1, 1], [-hw, b, 1, -1], [hw, b, -1, -1]]) { ctx.beginPath(); ctx.moveTo(a, c + sy * l); ctx.lineTo(a, c); ctx.lineTo(a + sx * l, c); ctx.stroke(); }
-      ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(0, 8, 3.5, 0, Math.PI * 2); ctx.fill();
-    }
+    if (sk.deco === 'sprinkle') { ctx.save(); poly(T); ctx.clip(); for (let i = 0; i < 9; i++) { const u = ((k * 7 + i * 13) % 17) / 17, w2 = ((k * 11 + i * 5) % 19) / 19; const [px, py] = iso(lerp(x0, x1, u), top, lerp(z0, z1, w2)); ctx.fillStyle = ['#ff6b8a', '#6bc5ff', '#ffd23f', '#7ad7a0'][i % 4]; ctx.fillRect(px - 1.5, py - .8, 3, 1.6); } ctx.restore(); }
+    if (sk.deco === 'stitch') { ctx.save(); poly(L); ctx.clip(); ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 1; const n = Math.max(3, Math.round((x1 - x0) * 10)); for (let i = 0; i < n; i++) { const u = (i + .5) / n; const [a1, a2] = iso(lerp(x0, x1, u - .03), top - LH * .2, z1), [b1, b2] = iso(lerp(x0, x1, u), y + LH * .25, z1), [c1, c2] = iso(lerp(x0, x1, u + .03), top - LH * .2, z1); ctx.beginPath(); ctx.moveTo(a1, a2); ctx.lineTo(b1, b2); ctx.lineTo(c1, c2); ctx.stroke(); } ctx.restore(); }
+    if (sk.deco === 'digit') { const [px, py] = iso((x0 + x1) / 2, y + LH / 2, z1); ctx.save(); ctx.translate(px, py); ctx.transform(1, .577, 0, 1, 0, 0); ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.font = `600 ${Math.max(9, LH * S * .7)}px ${HUD_FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(k), 0, 1); ctx.restore(); }
+    if (game.skin === 'cake' && !b.base) { ctx.save(); poly(L); ctx.clip(); const [a1, a2] = iso(x0, y + LH * .5, z1), [b1, b2] = iso(x1, y + LH * .5, z1); ctx.strokeStyle = 'rgba(255,248,235,.75)'; ctx.lineWidth = Math.max(1.5, LH * S * .14); ctx.beginPath(); ctx.moveTo(a1, a2); ctx.lineTo(b1, b2); ctx.stroke(); ctx.restore(); }
+    // neon edges: the look of the arena
+    ctx.lineJoin = 'round'; ctx.lineWidth = 1.4;
+    ctx.shadowColor = neon; ctx.shadowBlur = 8 + lit * 18;
+    ctx.strokeStyle = rgba(neon, .55 + lit * .45);
+    poly(T); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(...L[3]); ctx.lineTo(...L[2]); ctx.lineTo(...R[3]); ctx.moveTo(...L[2]); ctx.lineTo(...L[1]); ctx.stroke();
     ctx.restore();
   }
-  function pill(x, y, text, fill, color) {
-    ctx.font = `600 14px ${C.font}`;
-    const w = ctx.measureText(text).width + 22;
-    ctx.fillStyle = fill; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, 26, 13) : ctx.rect(x, y, w, 26); ctx.fill();
-    ctx.fillStyle = color; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText(text, x + 11, y + 13.5);
-    return w;
+  const lerp = (a, b, k) => a + (b - a) * k;
+
+  /* ---------- the arena ---------- */
+  let bgCache = null;
+  function background() {
+    if (!bgCache || bgCache.w !== W || bgCache.h !== H) {
+      const c = document.createElement('canvas'); c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+      const x = c.getContext('2d'); x.scale(dpr, dpr);
+      const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, deep); g.addColorStop(1, deep2); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      const rg = x.createRadialGradient(W / 2, H * .7, 0, W / 2, H * .7, W * .7); rg.addColorStop(0, rgba(glowC, .32)); rg.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
+      for (let i = 0; i < 60; i++) { x.fillStyle = `rgba(255,255,255,${Math.random() * .5})`; x.fillRect(Math.random() * W, Math.random() * H * .8, 1, 1); }
+      bgCache = {c, w: W, h: H};
+    }
+    ctx.drawImage(bgCache.c, 0, 0, W, H);
+    // the holographic floor grid, which sinks as the tower rises
+    ctx.save(); ctx.strokeStyle = rgba(neon, .16); ctx.lineWidth = 1;
+    for (let i = -6; i <= 6; i++) { const a = iso(i * .5, -.02, -3), b = iso(i * .5, -.02, 3), c = iso(-3, -.02, i * .5), d = iso(3, -.02, i * .5); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.moveTo(...c); ctx.lineTo(...d); ctx.stroke(); }
+    ctx.restore();
+    // a scan line
+    const sy = ((t * 60) % (H + 40)) - 20; ctx.fillStyle = rgba(neon, .05); ctx.fillRect(0, sy, W, 2);
+  }
+
+  /* ---------- the game ---------- */
+  function reset() {
+    layers = [{x0: -BASE / 2, x1: BASE / 2, z0: -BASE / 2, z1: BASE / 2, y: -LH * 3, base: true}, {x0: -BASE / 2, x1: BASE / 2, z0: -BASE / 2, z1: BASE / 2, y: -LH * 2, base: true}, {x0: -BASE / 2, x1: BASE / 2, z0: -BASE / 2, z1: BASE / 2, y: -LH, base: true}];
+    falling = []; parts = []; rings = []; texts = []; combo = 0; camY = 0; shake = 0; glow = 0;
+    next();
+  }
+  const placed = () => layers.length - 3;
+  function next() {
+    const top = layers.at(-1), axis = placed() % 2 ? 'z' : 'x';
+    const speed = Math.min(2.5, 1.15 + placed() * .09);
+    moving = {...top, y: top.y + LH, axis, off: -1.35, dir: 1, speed};
+    moving.base = false;
+  }
+  function slabAt(m) { const d = m.off; return m.axis === 'x' ? {...m, x0: m.x0 + d, x1: m.x1 + d} : {...m, z0: m.z0 + d, z1: m.z1 + d}; }
+  function drop() {
+    if (phase !== 'play' || !moving) return;
+    const prev = layers.at(-1), cur = slabAt(moving), ax = moving.axis;
+    const a0 = cur[ax + '0'], a1 = cur[ax + '1'], b0 = prev[ax + '0'], b1 = prev[ax + '1'];
+    const lo = Math.max(a0, b0), hi = Math.min(a1, b1);
+    if (hi - lo <= .01) { // missed: it all falls
+      falling.push({...cur, vy: 0, vx: 0, ax, life: 1.2, k: placed() + 1});
+      tone(110, .4, 'sawtooth', .08); buzz(60);
+      moving = null; return lose();
+    }
+    const size = a1 - a0;
+    let kept;
+    if (Math.abs(a0 - b0) < size * .055) { // perfect
+      combo++;
+      kept = {...cur, [ax + '0']: b0, [ax + '1']: b1};
+      if (combo >= 3) { const grow = Math.min(.06, BASE - (b1 - b0)); if (grow > 0) { kept[ax + '0'] -= grow / 2; kept[ax + '1'] += grow / 2; } }
+      rings.push({b: kept, life: 1});
+      texts.push({text: combo > 1 ? `PERFECT ×${combo}` : 'PERFECT', life: 1});
+      glow = 1;
+      chime(placed()); buzz(25);
+      speak(`ชั้น ${placed() + 1} ตรงพอดี${combo > 1 ? ` ${combo} ครั้งติด` : ''}`);
+    } else {
+      combo = 0;
+      kept = {...cur, [ax + '0']: lo, [ax + '1']: hi};
+      const cut = a0 < b0 ? {...cur, [ax + '0']: a0, [ax + '1']: lo} : {...cur, [ax + '0']: hi, [ax + '1']: a1};
+      falling.push({...cut, vy: 0, vx: (a0 < b0 ? -1 : 1) * .6, ax, life: 1.2, k: placed() + 1});
+      tone(220 * Math.pow(2, placed() / 12), .14, 'triangle', .07); buzz(12);
+      speak(`ชั้น ${placed() + 1}`);
+    }
+    // sparks along the new top
+    for (let i = 0; i < (combo ? 26 : 10); i++) { const [px, py] = iso(lerp(kept.x0, kept.x1, Math.random()), kept.y + LH, lerp(kept.z0, kept.z1, Math.random())); parts.push({x: px, y: py, vx: rnd(-60, 60), vy: rnd(-120, -30), life: rnd(.4, .9), c: Math.random() < .5 ? neon : '#ffffff'}); }
+    layers.push(kept);
+    box.dataset.layers = String(placed());
+    shake = combo ? .25 : .12;
+    if (placed() >= GOAL) return win();
+    next();
+  }
+  function win() {
+    phase = 'outro'; outro = 1.4; moving = null; glow = 1.5;
+    for (let i = 0; i < 90; i++) parts.push({x: W / 2 + rnd(-W * .3, W * .3), y: H * .5 + rnd(-H * .3, H * .2), vx: rnd(-140, 140), vy: rnd(-260, -40), life: rnd(.8, 1.6), c: pick([neon, '#ffffff', '#ffd23f', C.accent])});
+    [0, 4, 7, 12].forEach((s, i) => setTimeout(() => tone(523 * Math.pow(2, s / 12), .35, 'sine', .08), i * 90));
+    speak(`ชนะแล้ว ซ้อนครบ ${GOAL} ชั้น ได้คูปอง ${game.coupon}`);
+  }
+  function lose() { phase = 'outro'; outro = 1; speak(`พลาดแล้ว ซ้อนได้ ${placed()} จาก ${GOAL} ชั้น`); }
+  function showEnd() {
+    const won = placed() >= GOAL;
+    box.insertAdjacentHTML('beforeend', `<div class="w-game-end">${won ? ticket : `<p class="w-game-miss"><b>เกือบแล้ว!</b> ซ้อนได้ ${placed()}/${GOAL} ชั้น</p>`}<button type="button" class="${won ? 'w-pill' : 'w-go w-game-go'}" data-again>${won ? 'เล่นอีกครั้ง' : 'ลองอีกรอบ'}</button></div>`);
+  }
+
+  /* ---------- loop ---------- */
+  function frame(now) {
+    raf = 0;
+    if (phase === 'gone') return;
+    const dt = Math.min(.05, last ? (now - last) / 1000 : .016); last = now; t += dt;
+    if (moving && phase === 'play') {
+      moving.off += moving.dir * moving.speed * dt;
+      if (moving.off > 1.35) { moving.off = 1.35; moving.dir = -1; }
+      if (moving.off < -1.35) { moving.off = -1.35; moving.dir = 1; }
+    }
+    const want = Math.max(0, (layers.at(-1)?.y || 0) - .25);
+    camY += (want - camY) * (1 - Math.exp(-dt * 5));
+    falling.forEach(f => { f.vy -= 9 * dt; f.y += f.vy * dt; const d = f.vx * dt * .3; f[f.ax + '0'] += d; f[f.ax + '1'] += d; f.life -= dt; });
+    falling = falling.filter(f => f.life > 0);
+    parts.forEach(p => { p.vy += 300 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; });
+    parts = parts.filter(p => p.life > 0);
+    rings.forEach(r => { r.life -= dt * 1.6; }); rings = rings.filter(r => r.life > 0);
+    texts.forEach(x => { x.life -= dt * .9; }); texts = texts.filter(x => x.life > 0);
+    shake = Math.max(0, shake - dt); glow = Math.max(0, glow - dt * 1.4);
+    draw();
+    if (phase === 'outro') { outro -= dt; if (outro <= 0) { phase = 'over'; showEnd(); } }
+    if (phase === 'play' || phase === 'outro' || parts.length || falling.length) raf = requestAnimationFrame(frame);
   }
   function draw() {
     if (!W) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (shake) ctx.translate(rnd(-1, 1) * shake * 10, rnd(-1, 1) * shake * 6);
-    ctx.drawImage(bg, 0, 0, W, H);
-    for (const it of items) { ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.rot); ctx.drawImage(it.sp.s, -it.sp.half, -it.sp.half, it.sp.half * 2, it.sp.half * 2); ctx.restore(); }
-    drawCatcher();
-    for (const p of parts) { ctx.globalAlpha = clamp(p.life, 0, 1); ctx.fillStyle = p.c; if (p.sq) ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2); else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); } }
+    const sx = shake ? rnd(-3, 3) * shake * 4 : 0, sy = shake ? rnd(-3, 3) * shake * 4 : 0;
+    background();
+    ctx.save(); ctx.translate(sx, sy);
+    // the tower, then what falls in front of it, then the slab in the air
+    const first = Math.max(0, layers.length - 18);
+    for (let i = first; i < layers.length; i++) slab(layers[i], i - 2, {lit: i === layers.length - 1 ? glow : 0});
+    falling.forEach(f => slab(f, f.k, {alpha: clamp(f.life, 0, 1)}));
+    if (moving && phase === 'play') { const m = slabAt(moving); slab(m, placed() + 1, {lit: .4 + .3 * Math.sin(t * 8)}); }
+    // perfect rings
+    rings.forEach(r => { const g = 1 + (1 - r.life) * .5, b = r.b, cx = (b.x0 + b.x1) / 2, cz = (b.z0 + b.z1) / 2, hx = (b.x1 - b.x0) / 2 * g, hz = (b.z1 - b.z0) / 2 * g, y = b.y + LH; ctx.save(); ctx.strokeStyle = rgba('#ffffff', r.life); ctx.lineWidth = 2; ctx.shadowColor = neon; ctx.shadowBlur = 16; poly([iso(cx - hx, y, cz - hz), iso(cx + hx, y, cz - hz), iso(cx + hx, y, cz + hz), iso(cx - hx, y, cz + hz)]); ctx.stroke(); ctx.restore(); });
+    parts.forEach(p => { ctx.globalAlpha = clamp(p.life * 1.5, 0, 1); ctx.fillStyle = p.c; ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3); });
     ctx.globalAlpha = 1;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (const t of texts) { ctx.globalAlpha = clamp(t.life * 1.4, 0, 1); ctx.font = `700 16px ${C.font}`; ctx.lineWidth = 4; ctx.strokeStyle = rgba(dark ? '#000000' : '#ffffff', .7); ctx.strokeText(t.t, t.x, t.y); ctx.fillStyle = t.c; ctx.fillText(t.t, t.x, t.y); }
-    ctx.globalAlpha = 1;
-    // HUD: score with a bar, the goal for the tutor, a timer ring
-    const panel = rgba(C.surface, dark ? .82 : .9);
-    const w = pill(10, 10, `เก็บได้ ${score}/${GOAL}`, panel, C.text);
-    ctx.fillStyle = rgba(C.line, .9); ctx.fillRect(10, 40, w, 4);
-    ctx.fillStyle = C.accent; ctx.fillRect(10, 40, w * Math.min(1, score / GOAL), 4);
-    if (game.good === 'math') { ctx.font = `700 15px ${C.font}`; const t = `หาคำตอบ = ${target}`; const tw = ctx.measureText(t).width + 26; pill((W - tw) / 2, 10, t, C.accent, C.on); }
-    const left = Math.max(0, DURATION - elapsed), rx = W - 26, ry = 26;
-    ctx.fillStyle = panel; ctx.beginPath(); ctx.arc(rx, ry, 17, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(rx, ry, 14, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (left / DURATION)); ctx.stroke();
-    ctx.fillStyle = C.text; ctx.font = `700 13px ${C.font}`; ctx.textAlign = 'center'; ctx.fillText(String(Math.ceil(left)), rx, ry + 1);
-    if (flash) { ctx.fillStyle = `rgba(192,57,43,${flash * .35})`; ctx.fillRect(0, 0, W, H); }
+    ctx.restore();
+    // HUD
+    ctx.save();
+    ctx.font = `600 ${Math.max(15, W * .045)}px ${HUD_FONT}`; ctx.textBaseline = 'top'; ctx.fillStyle = '#ffffff'; ctx.shadowColor = neon; ctx.shadowBlur = 10;
+    ctx.fillText(`ชั้น ${Math.min(placed(), GOAL)}/${GOAL}`, 14, 12);
+    const p = Math.min(1, placed() / GOAL), bw = W * .34;
+    ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(14, 14 + Math.max(15, W * .045) * 1.3, bw, 4);
+    ctx.fillStyle = neon; ctx.fillRect(14, 14 + Math.max(15, W * .045) * 1.3, bw * p, 4);
+    texts.forEach(x => { ctx.globalAlpha = clamp(x.life * 1.4, 0, 1); ctx.font = `600 ${Math.max(18, W * .07)}px ${HUD_FONT}`; ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff'; ctx.shadowColor = neon; ctx.shadowBlur = 18; ctx.fillText(x.text, W / 2, H * .16 - (1 - x.life) * 24); });
+    ctx.restore();
   }
+
+  /* ---------- sound (small, synthesised, only after a tap) ---------- */
+  function audio() { if (!sound) return null; if (!ac) { const A = window.AudioContext || window.webkitAudioContext; ac = A ? new A() : null; } if (ac?.state === 'suspended') ac.resume(); return ac; }
+  function tone(f, d, type = 'sine', g = .06) {
+    const a = audio(); if (!a) return;
+    const o = a.createOscillator(), v = a.createGain(), w = a.currentTime;
+    o.type = type; o.frequency.setValueAtTime(f, w); v.gain.setValueAtTime(0, w); v.gain.linearRampToValueAtTime(g, w + .005); v.gain.exponentialRampToValueAtTime(.0001, w + d);
+    o.connect(v); v.connect(a.destination); o.start(w); o.stop(w + d + .02);
+  }
+  const SCALE = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21, 24];
+  const chime = k => { const f = 523 * Math.pow(2, SCALE[Math.min(k, SCALE.length - 1)] / 12); tone(f, .5, 'sine', .07); tone(f * 2, .25, 'sine', .025); };
+  const buzz = ms => { try { navigator.vibrate?.(ms); } catch {} };
+  function speak(text) { say.textContent = text; }
 
   function start() {
     cover.hidden = true; box.querySelector('.w-game-end')?.remove();
-    phase = 'play'; elapsed = 0; spawnIn = .3; score = 0; combo = 0; items = []; parts = []; texts = []; goodSinceTarget = 0; target = pick(TARGETS); last = 0;
+    phase = 'play'; last = 0; t = 0;
     if (!W) resize();
+    reset(); box.dataset.layers = '0';
     cv.focus({preventScroll: true});
-    speak(`เริ่มแล้ว ${game.hint} เก็บให้ได้ ${GOAL} ชิ้นใน ${DURATION} วินาที`);
+    audio();
+    speak(`เริ่มแล้ว ${game.hint} ซ้อนให้ถึง ${GOAL} ชั้น แตะ หรือกดเว้นวรรค เพื่อวาง`);
     raf ||= requestAnimationFrame(frame);
   }
-  function win() {
-    phase = 'outro'; outro = 1.1; items = [];
-    for (let i = 0; i < 4; i++) burst(rnd(W * .2, W * .8), rnd(H * .2, H * .5), 22, [C.accent, gold, C.hi, '#ffffff'], 1.3);
-    speak(`ชนะแล้ว ได้คูปอง ${game.coupon}`);
-  }
-  function lose() { phase = 'outro'; outro = .4; items = []; speak(`หมดเวลา เก็บได้ ${score} จาก ${GOAL}`); }
-  function showEnd() {
-    const won = score >= GOAL;
-    box.insertAdjacentHTML('beforeend', `<div class="w-game-end">${won ? ticket : `<p class="w-game-miss"><b>เกือบแล้ว!</b> เก็บได้ ${score}/${GOAL}</p>`}<button type="button" class="${won ? 'w-pill' : 'w-go w-game-go'}" data-again>${won ? 'เล่นอีกครั้ง' : 'ลองอีกรอบ'}</button></div>`);
-  }
 
-  // input: drag or tap anywhere on the board, or the arrow keys
-  const toX = e => { const r = cv.getBoundingClientRect(); tx = clamp(e.clientX - r.left, catcherW() / 2, W - catcherW() / 2); };
-  const onDown = e => { if (phase !== 'play') return; cv.setPointerCapture?.(e.pointerId); toX(e); };
-  const onMove = e => { if (phase === 'play' && (e.buttons || e.pointerType === 'mouse')) toX(e); };
+  // input: a tap on the arena, or Space / Enter / ↓
+  const onDown = e => { if (phase === 'play') { e.preventDefault(); drop(); } };
   const onKey = e => {
-    if (phase !== 'play') return;
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { keyDir = e.key === 'ArrowLeft' ? -1 : 1; e.preventDefault(); }
+    if (!(e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown')) return;
+    e.preventDefault(); // Space never scrolls the page while the game has focus
+    if (phase === 'play') drop(); else if ((phase === 'idle' || phase === 'over') && e.key !== 'ArrowDown') start();
   };
-  const onKeyUp = e => { if ((e.key === 'ArrowLeft' && keyDir < 0) || (e.key === 'ArrowRight' && keyDir > 0)) keyDir = 0; };
-  const onClick = e => { if (e.target.closest('.w-game-go, [data-again]')) start(); };
+  const onClick = e => {
+    if (e.target.closest('.w-game-go, [data-again]')) start();
+    if (e.target.closest('.w-game-snd')) { sound = !sound; snd.setAttribute('aria-pressed', String(sound)); snd.classList.toggle('is-off', !sound); }
+  };
   cv.addEventListener('pointerdown', onDown);
-  cv.addEventListener('pointermove', onMove);
   cv.addEventListener('keydown', onKey);
-  addEventListener('keyup', onKeyUp);
   root.addEventListener('click', onClick);
   const ro = 'ResizeObserver' in window ? new ResizeObserver(resize) : null;
   ro?.observe(cv);
-  imgs.forEach(i => i.decode?.().then(() => { if (W) resize(); }, () => {}));
-  requestAnimationFrame(resize);
+  reset(); requestAnimationFrame(resize);
+  imgs.forEach(i => i.decode?.().then(() => { if (phase !== 'play') draw(); }, () => {}));
 
+  // for tests: where the sliding layer is, and how many are stacked
+  box.stackGame = {get offset() { return moving ? moving.off : null; }, get placed() { return placed(); }, get phase() { return phase; }};
   return () => {
     phase = 'gone'; cancelAnimationFrame(raf);
     ro?.disconnect();
-    removeEventListener('keyup', onKeyUp);
     root.removeEventListener('click', onClick);
+    try { ac?.close(); } catch {}
   };
 }

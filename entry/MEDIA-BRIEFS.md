@@ -136,3 +136,10 @@ image: smooth dark empty space for text. Premium, cinematic. No text, no logos.
 - [ ] ไม่มีตัวหนังสือ โลโก้ หรือหน้าคนจริงในภาพ (ยกเว้น OG หลังใส่ข้อความ)
 - [ ] รัน `npm run sync:frontdoor-root` แล้วเปิดหน้าแรกดูทั้งมือถือและคอม
 - [ ] รัน `npm run test:entry` ผ่าน
+
+## ฟิล์มหน้าแรก "ใบที่ 4" (2026-10-26)
+
+- ฟิล์มจอแรกวาดด้วยโค้ดทั้งหมด (`entry/film.js`) ไม่ได้สร้างคลิปใหม่และไม่ใช้เครดิต
+- ภาพในฟิล์มมาจากภาพชุด v4 ที่มีอยู่แล้ว รวมเป็นแผ่นเดียว `entry/media/film/atlas.webp` ด้วย `node tools/build-film-atlas.mjs`
+  - ถ้าเปลี่ยนภาพ v4 ให้รันคำสั่งนี้ใหม่ ขนาดแผ่นต้องไม่เกิน 130 KB (มีเทสต์ตรวจ)
+- บทที่อนุมัติแล้วอยู่ที่ `entry/FILM-SCRIPT.md`

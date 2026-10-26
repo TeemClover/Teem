@@ -92,7 +92,7 @@ jobs:
       - name: Syntax
         run: |
           node --check entry/entry.js
-          for f in entry/site.js entry/lux.js entry/widgets/*.js showcase/kit/*.js tools/showcase-pages.mjs scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs scripts/import-media.mjs; do node --check "$f"; done
+          for f in entry/site.js entry/lux.js entry/film.js entry/widgets/*.js tools/build-film-atlas.mjs showcase/kit/*.js tools/showcase-pages.mjs scripts/verify-deployment.mjs scripts/find-vercel-preview.mjs scripts/import-media.mjs; do node --check "$f"; done
       - name: Generated pages match their sources
         run: |
           node tools/build-portfolio.mjs --check

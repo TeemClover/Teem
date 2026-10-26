@@ -9,7 +9,9 @@
  * Optional: ENTRY_CHROME=/path/to/chrome uses an existing browser build;
  *           VERCEL_AUTOMATION_BYPASS_SECRET opens a protected Vercel preview.
  *
- * Covers: all 64 ?r= demos; three taps on a 375×667 phone through the pinned site to the two doors; the scroll
+ * Covers: all 64 ?r= demos; the film on the first screen (plays, pauses, captions, sound on request, a new combination
+ * every loop); the shop-name dialog; contact chapters with Google Maps only on tap; the Thai typefaces; from the film
+ * to three taps on a 375×667 phone through the pinned site to the two doors; the scroll
  * that holds each chapter; four different templates and the luxury film; one page in many looks (remix, styles
  * strip); screen-reader announcements; replay; the
  * share link; reduced motion; only the chosen media load; no 3D before "เข้าบ้าน"; initial JS budget; reading
@@ -73,6 +75,8 @@ async function scrollToScene(page, k, step = 240) {
   throw new Error(`scene ${k} never came up (at ${await page.locator('#site').getAttribute('data-pos')})`);
 }
 const active = page => page.locator('#scenes .sc:not([inert])');
+// click inside the pinned site at the element's place on screen (a locator click would scroll the page first)
+async function visibleTap(page, sel) { const b = await page.locator(sel).boundingBox(); await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2); }
 const chapters = page => page.locator('#scenes .sc').count();
 const featureAt = page => page.locator('.sc-hero [data-goto]').getAttribute('data-goto');
 
@@ -106,8 +110,12 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
   await openHome(page);
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'empty');
   assert.ok(await page.locator('#site').isHidden(), 'no site before the three taps');
+  // the first screen is the film; its button takes you to the three choices in one tap
+  assert.ok(await inView(page.locator('#hero-title')) && await inView(page.locator('.film-go')), 'the film and its button fill the first screen');
+  await page.locator('.film-go').tap();
+  await page.waitForFunction(() => Math.abs(document.querySelector('#play').getBoundingClientRect().top) < 4, null, {timeout: 5000});
   const firstChoiceBottom = await page.locator('.choice').first().evaluate(e => e.getBoundingClientRect().bottom);
-  assert.ok(firstChoiceBottom <= 667, `the first choice is on the first screen (bottom at ${Math.round(firstChoiceBottom)}px)`);
+  assert.ok(firstChoiceBottom <= 667, `after one tap the first choice is on screen (bottom at ${Math.round(firstChoiceBottom)}px)`);
   for (const id of ['#profile', '.foot']) assert.ok(await page.locator(id).isHidden(), `${id} waits until the game is played`);
   for (let i = 0; i < 3; i++) { await page.locator('.choice').nth(i).tap(); await page.waitForTimeout(500); }
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'done');
@@ -125,7 +133,7 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
   for (const href of ['/hire/', '/work/', '/walkthrough/', 'https://fastwork.com/user/teem']) assert.ok(await page.locator(`#profile a[href="${href}"]`).count() > 0, href);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   assert.ok(overflow <= 0, `no sideways scroll at 375px (${overflow}px)`);
-  const small = await page.$$eval('.studio p, .studio button, .finale p, .finale a, .finale button, .profile p, .profile li, .profile a', els => els.filter(e => e.offsetParent && !e.closest('.studio-note, .studio-skip, .track, .eyebrow, .finale-k, .finale-note, .case-meta, .kicker, .foot') && parseFloat(getComputedStyle(e).fontSize) < 15).map(e => e.textContent.trim().slice(0, 30)));
+  const small = await page.$$eval('.film .cap span, .film-go, .studio p, .studio button, .finale p, .finale a, .finale button, .profile p, .profile li, .profile a', els => els.filter(e => e.offsetParent && !e.closest('.studio-skip, .track, .eyebrow, .finale-k, .finale-note, .case-meta, .kicker, .foot') && parseFloat(getComputedStyle(e).fontSize) < 15).map(e => e.textContent.trim().slice(0, 30)));
   assert.deepEqual(small, [], 'reading text and controls are at least 15px: ' + JSON.stringify(small));
   assert.deepEqual(page.errors, []);
   await page.close();
@@ -205,8 +213,8 @@ await check('one page, many looks: the styles strip and the remix rows change th
   await page.close();
 });
 
-await check('the mini-game is a game of the business that was picked, and it starts', async () => {
-  const titles = {cafe: 'เก็บเมนูเช้า', coach: 'เก็บคำตอบที่ถูก', shop: 'เก็บไหมพรม', studio: 'เก็บภาพคม'};
+await check('the mini-game stacks the business\'s own thing, and a well-timed drop stacks a layer', async () => {
+  const titles = {cafe: 'ซ้อนเค้กให้สูง', coach: 'ซ้อนบล็อกเลข', shop: 'ซ้อนไหมพรม', studio: 'ซ้อนภาพ'};
   const page = await open({viewport: {width: 1280, height: 860}});
   for (const i of data.industries) {
     await openHome(page, `/?r=${i.key}-minigame-${data.styles[(data.industries.indexOf(i)) % 4].key}`);
@@ -221,10 +229,97 @@ await check('the mini-game is a game of the business that was picked, and it sta
     await page.locator('.w-game-go').click();
     await page.waitForTimeout(600);
     assert.ok(await page.locator('.w-game-cover').isHidden(), 'the cover gives way to the game');
-    assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('w-game-canvas')), true, 'arrow keys work right away');
-    await page.keyboard.down('ArrowLeft'); await page.waitForTimeout(300); await page.keyboard.up('ArrowLeft');
+    assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('w-game-canvas')), true, 'the keyboard works right away');
+    await page.waitForFunction(() => { const g = document.querySelector('.w-game').stackGame; return g?.offset != null && Math.abs(g.offset) < .04; }, null, {timeout: 8000});
+    const y = await page.evaluate(() => scrollY);
+    await page.keyboard.press('Space'); await page.waitForTimeout(200);
+    assert.equal(await page.locator('.w-game').getAttribute('data-layers'), '1', `${i.key}: a drop on the middle stacks a layer`);
+    assert.equal(await page.evaluate(() => scrollY), y, 'Space does not scroll the page while playing');
   }
   assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
+await check('the film plays, pauses, keeps its captions in step, and every loop shows another combination', async () => {
+  const page = await open({viewport: {width: 1280, height: 800}});
+  await openHome(page);
+  await page.waitForFunction(() => document.querySelector('#film').classList.contains('is-live'), null, {timeout: 10000});
+  const t = () => page.locator('#film').getAttribute('data-t');
+  const t0 = await t(); await page.waitForTimeout(700);
+  assert.notEqual(await t(), t0, 'it plays on its own');
+  await page.locator('#film-pause').click();
+  assert.equal(await page.locator('#film-pause').getAttribute('aria-pressed'), 'true');
+  const held = await t(); await page.waitForTimeout(600);
+  assert.equal(await t(), held, 'pause holds the frame');
+  for (const [at, cap] of [[1.2, '0'], [5.2, '1'], [7, '2'], [15.5, '4'], [18, '5']]) {
+    await page.evaluate(at => document.querySelector('#film').film.seek(at), at);
+    assert.equal(await page.locator('#film').getAttribute('data-cap'), cap, `caption at ${at}s`);
+  }
+  await page.evaluate(() => document.querySelector('#film').film.seek(7.2));
+  assert.match(await page.locator('#film-count').textContent(), /^ชุดที่ \d+ \/ 64$/, 'the montage counts the combinations');
+  const starts = await page.evaluate(() => [0, 1, 2, 3].map(L => JSON.stringify(document.querySelector('#film').film.plan(L).start)));
+  assert.ok(new Set(starts).size >= 3, 'loops pick other combinations: ' + starts.join(' '));
+  await page.locator('#film-sound').click();
+  assert.equal(await page.locator('#film-sound').getAttribute('aria-pressed'), 'true', 'sound turns on only when asked');
+  await page.waitForTimeout(500);
+  await page.locator('.film-go').click();
+  await page.waitForFunction(() => Math.abs(document.querySelector('#play').getBoundingClientRect().top) < 4, null, {timeout: 5000});
+  assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
+await check('a visitor can put their own shop name on the whole site; it stays on their device', async () => {
+  const page = await open({viewport: {width: 1280, height: 860}});
+  const sent = []; page.on('request', r => { if (r.url().includes(encodeURIComponent('ร้านป้าแดง'))) sent.push(r.url()); });
+  await openHome(page, '/?r=cafe-booking-warm');
+  await page.locator('.site-bar [data-name-open]').click();
+  await page.locator('#name-input').fill('ร้านป้าแดง');
+  await page.locator('#name-dlg button[value="ok"]').click();
+  await page.waitForFunction(() => document.querySelector('.sc-hero .sc-title')?.textContent === 'ร้านป้าแดง');
+  assert.match(await page.locator('#site-domain').textContent(), /ร้านป้าแดง\.example/);
+  assert.deepEqual(sent, [], 'the name is not sent anywhere');
+  await page.locator('#finale').scrollIntoViewIfNeeded();
+  assert.match(await page.locator('#want').getAttribute('href'), /^\/hire\/\?from=demo&r=cafe-booking-warm$/);
+  await page.locator('.btn-name').click();
+  await page.locator('#name-dlg button[value="reset"]').click();
+  await page.waitForFunction(b => document.querySelector('.sc-hero .sc-title')?.textContent === b, data.industries[0].brand);
+  assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
+await check('every template ends with contact and a real Google Map that loads only when tapped', async () => {
+  const page = await open({viewport: {width: 1280, height: 860}});
+  const google = []; page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
+  await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
+  for (const s of data.styles) {
+    await openHome(page, `/?r=coach-booking-${s.key}`);
+    const k = await page.locator('.sc[data-role="visit"]').getAttribute('data-sc');
+    await scrollToScene(page, Number(k));
+    const visit = page.locator('.sc[data-role="visit"]');
+    assert.match(await visit.textContent(), /ที่อยู่สมมติ/, `${s.key}: the address says it is a sample`);
+    assert.match(await visit.locator('a', {hasText: 'นำทาง'}).getAttribute('href'), /^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=/);
+    assert.equal(await visit.locator('iframe').count(), 0, 'no map frame before the tap');
+  }
+  assert.deepEqual(google, [], 'nothing from Google before the tap (fonts are our own)');
+  await page.mouse.wheel(0, 240); await page.waitForTimeout(300);
+  await visibleTap(page, '.sc[data-role="visit"] [data-map-load]');
+  const src = await page.locator('.sc[data-role="visit"] iframe').getAttribute('src');
+  assert.match(src, /^https:\/\/maps\.google\.com\/maps\?q=Siam%20Square/);
+  assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
+await check('each style speaks in its own Thai typeface', async () => {
+  const page = await open({viewport: {width: 1280, height: 860}});
+  const faces = {};
+  for (const s of data.styles) {
+    await openHome(page, `/?r=shop-profile-${s.key}`);
+    await page.evaluate(() => document.fonts.ready);
+    faces[s.key] = await page.locator('.sc-hero .sc-title').evaluate(e => getComputedStyle(e).fontFamily.split(',')[0].replace(/["']/g, '').trim());
+    assert.ok(await page.evaluate(f => document.fonts.check(`40px "${f}"`, 'ถักใจ'), faces[s.key]), `${s.key}: ${faces[s.key]} is loaded`);
+  }
+  assert.deepEqual(faces, {warm: 'Pridi', luxury: 'Chonburi', playful: 'Mitr', minimal: 'Noto Sans Thai'});
+  assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('#hero-title')).fontFamily.split(',')[0].replace(/["']/g, '').trim()), 'Taviraj');
   await page.close();
 });
 

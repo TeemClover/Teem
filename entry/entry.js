@@ -17,7 +17,7 @@ const saveData = !!navigator.connection?.saveData;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const icon = name => `<svg><use href="#i-${name}"/></svg>`;
 const emit = (type, detail = {}) => dispatchEvent(new CustomEvent('mc:entry', {detail: {type, ...detail}}));
-const V = '20261028';
+const V = '20261029';
 
 const STEPS = [
   {list: 'industries', q: 'คุณทำอะไร'},
@@ -60,6 +60,17 @@ const el = {
 
 const picks = [null, null, null];
 let step = 0, started = false, completedOnce = false, opened = false;
+
+/* ---------------- your shop's name: the whole demo takes it (kept on this device only) ---------------- */
+const cleanName = v => [...String(v || '').replace(/[\u0000-\u001f<>]/g, '').replace(/\s+/g, ' ').trim()].slice(0, 24).join('');
+let shopName = cleanName(new URLSearchParams(location.search).get('n'));
+try { if (!shopName) shopName = cleanName(sessionStorage.getItem('mc_shop_name')); } catch {}
+const latin = v => /^[\x20-\x7e]+$/.test(v);
+function named(ind) {
+  if (!shopName) return ind;
+  const slug = shopName.toLowerCase().replace(/[\s'"]+/g, '').replace(/[^\p{L}\p{M}\p{N}-]/gu, '') || 'yourshop';
+  return {...ind, brand: shopName, brandEn: latin(shopName) ? shopName : ind.genericEn, domain: `${slug}.example`};
+}
 const widgetModules = {};
 const comboKey = () => `${picks[0]}-${picks[2]}`;
 const comboNumber = () => lists[0].findIndex(o => o.key === picks[0]) * 16 + lists[1].findIndex(o => o.key === picks[1]) * 4 + lists[2].findIndex(o => o.key === picks[2]) + 1;
@@ -213,11 +224,13 @@ function loadSite() {
 function renderSite() {
   const [ind, feat, sty] = picks.map((k, i) => find(i, k));
   loadFont(sty);
-  el.domain.textContent = ind.domain;
+  const own = named(ind);
+  el.domain.textContent = own.domain;
   el.combo.textContent = `ชุดที่ ${comboNumber()} / 64`;
   el.stage.dataset.state = 'done';
-  site.render({ind, feat, sty});
+  site.render({ind: own, feat, sty});
   renderFinale();
+  paperTop();
 }
 const goto = (k, o) => { if (opened) site?.goto(k, o); };
 $('[data-goto-remix]').addEventListener('click', () => el.finale.scrollIntoView({behavior: reduced ? 'auto' : 'smooth'}));
@@ -242,6 +255,7 @@ function renderFinale() {
     const m = hero(`${ind}-${s.key}`);
     return `<button type="button" class="look" data-look="${esc(s.key)}" aria-pressed="${picks[2] === s.key}">${m ? `<img src="${M}hero/${ind}-${s.key}-640.webp" alt="" loading="lazy" decoding="async" width="640" height="360">` : ''}<span>${esc(s.label)}</span></button>`;
   }).join('');
+  $('#want').href = `/hire/?from=demo&r=${picks.join('-')}`;
   el.remix.innerHTML = STEPS.map((st, i) => `<div class="remix-row" role="group" aria-label="${esc(st.q)}"><b>${esc(st.q)}</b>${lists[i].map(o => `<button type="button" class="chip" data-step="${i}" data-key="${esc(o.key)}" aria-pressed="${picks[i] === o.key}">${icon(o.icon)}${esc(o.short || o.label)}</button>`).join('')}</div>`).join('');
 }
 function remix(stepAt, key) {
@@ -266,9 +280,9 @@ $('#shuffle').addEventListener('click', () => {
 });
 $('#share').addEventListener('click', async () => {
   const combo = picks.join('-');
-  const url = `${location.origin}/?r=${combo}`;
+  const url = `${location.origin}/?r=${combo}${shopName ? `&n=${encodeURIComponent(shopName)}` : ''}`;
   emit('share', {combo});
-  const ind = find(0, picks[0]);
+  const ind = named(find(0, picks[0]));
   try {
     if (navigator.share && matchMedia('(pointer: coarse)').matches) { await navigator.share({title: `${ind.brand} · ตัวอย่างจาก myClover`, text: 'ลองดูเว็บที่ประกอบจาก 3 ตัวเลือกนี้', url}); return; }
     await navigator.clipboard.writeText(url); toast('คัดลอกลิงก์แล้ว ส่งให้เพื่อนได้เลย');
@@ -290,8 +304,14 @@ if ('IntersectionObserver' in window) {
   new IntersectionObserver(([en]) => {
     if (en.isIntersecting && opened && !completedOnce) { completedOnce = true; emit('complete', {combo: picks.join('-')}); }
   }, {threshold: .35}).observe(el.finale);
-  new IntersectionObserver(([en]) => el.top.classList.toggle('is-paper', en.isIntersecting), {rootMargin: '0px 0px -92% 0px'}).observe(el.profile);
+  // the logo turns dark over paper: the profile, and the demo site when its style is a light one
+  const band = {rootMargin: '0px 0px -92% 0px'};
+  new IntersectionObserver(([en]) => { atTop.profile = en.isIntersecting; paperTop(); }, band).observe(el.profile);
+  new IntersectionObserver(([en]) => { atTop.site = en.isIntersecting; paperTop(); }, band).observe(el.site);
 }
+
+const atTop = {profile: false, site: false};
+function paperTop() { el.top.classList.toggle('is-paper', atTop.profile || (atTop.site && opened && !!picks[2] && !find(2, picks[2])?.dark)); }
 
 /* ---------------- doors: the profile, the house ---------------- */
 function openProfile(e) {
@@ -332,6 +352,43 @@ addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => 
   for (const f of data.features) widgetModules[f.key] ||= import(`./widgets/${f.key}.js?v=${V}`);
 }, {timeout: 3000}), {once: true});
 addEventListener('load', () => (window.requestIdleCallback || setTimeout)(tease, {timeout: 2500}), {once: true});
+
+/* ---------------- the name dialog ---------------- */
+const dlg = $('#name-dlg'), nameInput = $('#name-input');
+document.addEventListener('click', e => {
+  if (!e.target.closest('[data-name-open]')) return;
+  nameInput.value = shopName;
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  setTimeout(() => nameInput.focus(), 30);
+});
+dlg.addEventListener('close', () => {
+  const v = dlg.returnValue === 'reset' ? '' : dlg.returnValue === 'ok' ? cleanName(nameInput.value) : null;
+  if (v === null || v === shopName) return;
+  shopName = v;
+  try { if (v) sessionStorage.setItem('mc_shop_name', v); else sessionStorage.removeItem('mc_shop_name'); } catch {}
+  emit('rename', {named: !!v, length: [...v].length}); // the name itself never leaves the page
+  if (opened) { renderSite(); goto(0, {smooth: true}); }
+  toast(v ? `ใส่ชื่อ “${v}” ให้ทั้งเว็บแล้ว` : 'กลับไปใช้ชื่อตัวอย่างแล้ว');
+});
+
+/* ---------------- the film (first screen): entry/film.js draws it; this only decides when ---------------- */
+const filmEl = $('#film');
+const toChoices = e => { e?.preventDefault(); el.studio.scrollIntoView({behavior: reduced ? 'auto' : 'smooth'}); setTimeout(() => $('.choice', el.grid)?.focus({preventScroll: true}), reduced ? 0 : 700); emit('film-go'); };
+$$('[data-film-go]').forEach(a => a.addEventListener('click', toChoices));
+let heroFilm = null, filmLoading = null;
+function loadFilm(autoplay) {
+  filmLoading ||= import(`./film.js?v=${V}`).then(mod => (heroFilm = mod.createFilm({
+    root: filmEl, canvas: $('#film-canvas'), data, reduced, autoplay, loadFont, emit, onLeaf: toChoices,
+    sound: $('#film-sound'), pause: $('#film-pause'), count: $('#film-count'),
+  }))).catch(() => { filmLoading = null; });
+  return filmLoading;
+}
+if (filmEl && 'IntersectionObserver' in window) {
+  // the film starts only when it is on screen; reduced motion or Save-Data shows the still and a play button
+  const calm = reduced || saveData;
+  if (calm) { const b = $('#film-pause'); b.hidden = false; b.querySelector('span').textContent = 'ดูวิดีโอ'; b.querySelector('use').setAttribute('href', '#i-play'); b.addEventListener('click', () => { if (!heroFilm) loadFilm(true); }, {once: true}); }
+  new IntersectionObserver(([en]) => { if (en.isIntersecting && !calm && !filmLoading) loadFilm(true); }, {threshold: .2}).observe(filmEl);
+}
 
 /* ---------------- start ---------------- */
 const shared = new URLSearchParams(location.search).get('r');
