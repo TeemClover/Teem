@@ -288,10 +288,14 @@ await check('a visitor can put their own shop name on the whole site; it stays o
 });
 
 await check('every template ends with contact and a real Google Map that loads only when tapped', async () => {
-  const page = await open({viewport: {width: 1280, height: 860}});
-  const google = []; page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
-  await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
+  const google = [];
+  let page = null;
+  // a fresh page per style: on a real deployment, photos still loading from the previous page would never finish
   for (const s of data.styles) {
+    await page?.close();
+    page = await open({viewport: {width: 1280, height: 860}});
+    page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
+    await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
     await openHome(page, `/?r=coach-booking-${s.key}`);
     const k = await page.locator('.sc[data-role="visit"]').getAttribute('data-sc');
     await scrollToScene(page, Number(k));
