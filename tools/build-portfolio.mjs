@@ -22,7 +22,7 @@ import {showcaseOutputs} from './showcase-pages.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://www.myclover.com';
 const REPO = 'https://github.com/TeemClover/Teem';
-const VERSION = '20261024';
+const VERSION = '20261027';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const ld = obj => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 const icon = d => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
@@ -288,35 +288,46 @@ function hirePage(svc, cases, clients = [], demos = []) {
 }
 
 function walkthroughPage(w) {
+  // owner brief 2026-10-25: sell what a learner gets first (worth the time), then send them to /classroom/,
+  // where the 60-second intro video plays. Every button goes there; lesson pages are listed in the JSON-LD.
+  const go = (cls, label = w.classroom.label) => `<a class="btn ${cls}" href="${w.classroom.href}">${esc(label)}${ARROW}</a>`;
   const body = `<section class="band">
   <div class="wrap">
     <p class="kicker">เรียนฟรี · ${w.lessons.length} ตอน</p>
-    <h1>${esc(w.h1)}</h1>
+    <h1>${w.h1.map(esc).join('<br>')}</h1>
     <p class="lede">${esc(w.sub)}</p>
-    <div class="actions"><a class="btn btn-gold" href="${w.lessons[0].href}">เริ่มตอน 1${ARROW}</a><a class="btn btn-glass" href="${w.zero.href}">${esc(w.zero.label)}</a></div>
-    <p class="sauce-def"><span><b>ซอสคืออะไร</b> · ${esc(w.sauce)}</span></p>
+    <ul class="loot-strip" aria-label="ของที่ได้เมื่อเรียนจบ">${w.lessons.map(l => `<li><span aria-hidden="true">${l.icon}</span>${esc(l.short)}</li>`).join('')}</ul>
+    <div class="actions">${go('btn-gold')}</div>
+    <p class="band-note">${esc(w.classroom.note)}</p>
   </div>
 </section>
 <section class="sec">
   <div class="wrap">
-    <p class="kicker">6 ตอน 6 ชิ้นงาน</p>
-    <h2>จบแต่ละตอน ได้ของหนึ่งชิ้น</h2>
+    <p class="kicker">ของที่ได้ ทีละตอน</p>
+    <h2>จบแต่ละตอน เก็บรางวัลหนึ่งชิ้น</h2>
+    <p class="sauce-line"><b>ซอส</b> · ${esc(w.sauce)}</p>
     <ol class="lessons">
     ${w.lessons.map((l, i) => `<li class="lesson">
       <img src="/walkthrough/media/lesson-${i + 1}.webp" width="800" height="450" alt="${esc(l.alt)}" loading="${i < 3 ? 'eager' : 'lazy'}" decoding="async">
-      <span class="ep">ตอน ${i + 1} · ${esc(l.key)}</span>
-      <h3><a href="${l.href}">${esc(l.work)}</a></h3>
+      <span class="ep">LV.${i + 1} · ${esc(l.key)}</span>
+      <h3><a href="${w.classroom.href}">${l.icon} ${esc(l.loot)}</a></h3>
       <p>${esc(l.benefit)}</p>
-      <span class="go" aria-hidden="true">เปิดตอน ${i + 1} →</span>
     </li>`).join('\n    ')}
     </ol>
-    <div class="actions"><a class="btn btn-ink" href="${w.lessons[0].href}">เริ่มตอน 1${ARROW}</a><a class="text-link" href="/classroom/">ดูห้องเรียนทั้งหมด${ARROW}</a></div>
+  </div>
+</section>
+<section class="sec night">
+  <div class="wrap">
+    <p class="kicker">เก็บครบ 6 ชิ้น</p>
+    <h2>ยิ่งเรียน ยิ่งเลื่อนขั้น</h2>
+    <ol class="ranks" aria-label="ขั้นของผู้เรียน">${w.ranks.map(([icon, name]) => `<li><span aria-hidden="true">${icon}</span>${esc(name)}</li>`).join('')}</ol>
+    <div class="boss"><span class="boss-lock" aria-hidden="true">🔒</span><div><b>${esc(w.boss.title)}</b><p>${esc(w.boss.text)}</p></div></div>
   </div>
 </section>
 <section class="sec alt">
   <div class="wrap">
-    <p class="kicker">เรียนแบบนี้ต่างยังไง</p>
-    <h2>เรียนจากงานของคุณเอง ไม่ใช่ตัวอย่างสมมติ</h2>
+    <p class="kicker">ทำไมคุ้มเวลา</p>
+    <h2>เรียนครั้งเดียว ใช้ได้กับงานต่อไปทุกงาน</h2>
     <ul class="why">${w.why.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ul>
   </div>
 </section>
@@ -326,21 +337,21 @@ function walkthroughPage(w) {
     <div>
       <p class="kicker">หลักฐาน</p>
       <h2>${esc(w.proof)}</h2>
-      <div class="actions"><a class="btn btn-ink" href="/work/house-3d/">ดูเคสบ้าน myClover${ARROW}</a></div>
+      <div class="actions"><a class="text-link" href="/work/house-3d/">ดูเคสบ้าน myClover${ARROW}</a></div>
     </div>
   </div>
 </section>
 <section class="sec mint">
   <div class="wrap">
     <div class="cta-box">
-      <div><h2>เริ่มตอน 1 ได้เลย</h2><p>${esc(w.closing)}</p></div>
-      <div class="actions"><a class="btn btn-leaf" href="${w.lessons[0].href}">เริ่มตอน 1${ARROW}</a><a class="btn btn-glass" href="/hire/">อยากให้ทำให้</a></div>
+      <div><h2>เข้าห้องเรียนได้เลย</h2><p>${esc(w.closing)}</p></div>
+      <div class="actions">${go('btn-leaf')}<a class="btn btn-glass" href="/hire/">อยากให้ทำให้</a></div>
     </div>
   </div>
 </section>`;
   return layout({
-    title: 'เรียน AI ฟรี 6 ตอน ลงมือทำจริง | myClover',
-    description: `${w.h1} ${w.sub}`,
+    title: 'เรียน AI ฟรี 6 ตอน จบแล้วได้ของจริง 6 ชิ้น | myClover',
+    description: `${w.h1.join(' ')} ${w.sub}`,
     canonical: '/walkthrough/', current: '/walkthrough/', ogImage: '/img/og-classroom.jpg',
     jsonld: [{'@context': 'https://schema.org', '@type': 'Course', name: 'AI ใส่ซอส · เรียนฟรี 6 ตอน', description: w.sub, url: `${SITE}/walkthrough/`, inLanguage: 'th', isAccessibleForFree: true,
       provider: {'@type': 'Organization', name: 'myClover', url: `${SITE}/`}, instructor: PERSON,

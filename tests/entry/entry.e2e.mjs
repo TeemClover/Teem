@@ -205,6 +205,29 @@ await check('one page, many looks: the styles strip and the remix rows change th
   await page.close();
 });
 
+await check('the mini-game is a game of the business that was picked, and it starts', async () => {
+  const titles = {cafe: 'เก็บเมนูเช้า', coach: 'เก็บคำตอบที่ถูก', shop: 'เก็บไหมพรม', studio: 'เก็บภาพคม'};
+  const page = await open({viewport: {width: 1280, height: 860}});
+  for (const i of data.industries) {
+    await openHome(page, `/?r=${i.key}-minigame-${data.styles[(data.industries.indexOf(i)) % 4].key}`);
+    const game = page.locator('[data-widget-body] .w-game');
+    await game.waitFor({state: 'attached'});
+    assert.equal(await game.getAttribute('data-game'), i.key);
+    assert.equal(await page.locator('.w-game-cover b').textContent(), titles[i.key], `${i.key} plays its own game`);
+    assert.match(await page.locator('.w-game-cover').textContent(), new RegExp(i.brand), 'the cover carries the brand');
+    await page.locator('.sc-hero [data-goto]').click();
+    await page.waitForFunction(() => document.querySelector('.sc[data-role="feature"]') && !document.querySelector('.sc[data-role="feature"]').inert);
+    await page.waitForTimeout(500);
+    await page.locator('.w-game-go').click();
+    await page.waitForTimeout(600);
+    assert.ok(await page.locator('.w-game-cover').isHidden(), 'the cover gives way to the game');
+    assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('w-game-canvas')), true, 'arrow keys work right away');
+    await page.keyboard.down('ArrowLeft'); await page.waitForTimeout(300); await page.keyboard.up('ArrowLeft');
+  }
+  assert.deepEqual(page.errors, []);
+  await page.close();
+});
+
 await check('screen readers hear the step that actually comes next, and when it is complete', async () => {
   for (const reducedMotion of ['no-preference', 'reduce']) {
     const page = await open({viewport: {width: 1280, height: 860}, reducedMotion});
