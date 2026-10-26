@@ -66,10 +66,10 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   const root = await read('index.html');
   assert.match(root, /<link rel="preload" as="image" href="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+fetchpriority="high">/);
   assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"/);
-  // v5: the luxury film (48 frames per business, landscape and phone) and the 12 piece loops
+  // v5: the luxury film (frames per business, landscape and phone) and the piece loops that really move
   assert.deepEqual(Object.keys(media.v5.film).sort(), data.industries.map(i => i.key).sort(), 'every business has its film');
   for (const n of Object.values(media.v5.film)) assert.ok(n >= 24, `a film needs enough frames to scrub (${n})`);
-  assert.equal(media.v5.craft.length, 12);
+  assert.ok(media.v5.craft.every(c => /^(cafe|coach|shop|studio)-[123]$/.test(c)), 'piece loops are named <business>-<1..3>');
   assert.deepEqual(entryMedia(data, new Set(['v5/film/cafe/w/001.webp', 'v5/film/cafe/w/002.webp', 'v5/film/cafe/p/001.webp'])).v5.film, {}, 'a film without its phone frames is not used');
   for (const name of files) if (name.startsWith('v4/') || name.startsWith('v5/')) {
     const {size} = await stat(new URL(`../../entry/media/${name}`, import.meta.url));
