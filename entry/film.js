@@ -28,7 +28,6 @@ const E = {
 const env = (t, a, b, fi = .3, fo = .3) => t < a || t > b ? 0 : Math.min(E.out((t - a) / fi), E.sine((b - t) / fo));
 function rng(seed) { let s = (seed >>> 0) || 1; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
 const hex = c => { const m = /^#?([\da-f]{6})$/i.exec(String(c).trim()); const n = m ? parseInt(m[1], 16) : 0x888888; return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
-const mixc = (a, b, t) => { const A = hex(a), B = hex(b); return `rgb(${A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(',')})`; };
 const rgba = (c, a) => { const [r, g, b] = hex(c); return `rgba(${r},${g},${b},${a})`; };
 
 // captions (HTML, index = data-c) and acts (for CSS: the title steps aside while the site plays)
@@ -36,7 +35,10 @@ const CAPS = [[.2, 4.4], [4.7, 6.4], [6.6, 9.4], [10.6, 12.4], [15, 16.9], [17.2
 const ACTS = [0, 1.5, 4.5, 6.5, 14.5, 17];
 const FLIP_KINDS = ['style', 'ind', 'feat', 'style', 'device', 'ind', 'feat', 'style'];
 const FLIP_TIMES = [6.5, 7.5, 8.5, 9.5, 10.5, 11, 11.5, 12];
-const RAPID = (() => { const out = []; let t = 12.5, dt = .26; while (t < 14.35) { out.push(+t.toFixed(3)); t += dt; dt = Math.max(.07, dt * .86); } return out; })();
+// 12.5–14.5: a reel of whole sites sliding past, faster and faster (no flashing: every site stays whole and readable)
+const REEL = {from: 12.5, to: 14.5, n: 9};
+const reelX = t => (REEL.n - 1) * (s => .35 * s + .65 * s * s)(seg(t, REEL.from, REEL.to)); // which site is centred
+const reelTimes = Array.from({length: REEL.n}, (_, k) => { const x = k / (REEL.n - 1), s = (-.35 + Math.sqrt(.35 * .35 + 4 * .65 * x)) / (2 * .65); return REEL.from + s * (REEL.to - REEL.from); });
 // photo sheet: built by tools/build-film-atlas.mjs (rows = business, columns = style)
 const ATLAS = {url: '/entry/media/film/atlas.webp', hw: 288, hh: 180, it: 96, itemsY: 720};
 // the clover leaf, pointing up from the centre (same path as the poster in entry/home.html)
@@ -61,18 +63,18 @@ function planLoop(L, n) {
     if (kind === 'ind') next.i = L === 0 ? [2, 3][k === 1 ? 0 : 1] : pick(cur.i, n.i);
     if (kind === 'feat') next.f = L === 0 ? [2, 3][k === 2 ? 0 : 1] : pick(cur.f, n.f);
     if (kind === 'device') next.d = 1 - cur.d;
-    flips.push({t: FLIP_TIMES[k], kind, from: cur, to: next, dur: .55});
+    flips.push({t: FLIP_TIMES[k], kind, from: cur, to: next, dur: .5});
     cur = next;
   });
-  RAPID.forEach((t, k) => {
-    const next = {...cur};
-    if (k === 0) next.d = 0;
-    const kind = ['s', 'i', 'f'][Math.floor(r() * 3)];
-    if (kind === 's') next.s = pick(cur.s, n.s); else if (kind === 'i') next.i = pick(cur.i, n.i); else next.f = pick(cur.f, n.f);
-    flips.push({t, kind: kind === 's' ? 'style' : kind === 'i' ? 'ind' : 'feat', from: cur, to: next, dur: Math.max(.08, (RAPID[k + 1] || t + .1) - t) * .9});
-    cur = next;
-  });
-  return {start, flips};
+  // the reel: the site as it is now, then eight more, each one answer away from the last
+  const reel = [{...cur}];
+  for (let k = 1; k < REEL.n; k++) {
+    const next = {...reel[k - 1]};
+    const kind = 'sisfsisf'[k - 1]; // the look changes every other site, so the reel reads as many sites, not one
+    if (kind === 's') next.s = pick(next.s, n.s); else if (kind === 'i') next.i = pick(next.i, n.i); else next.f = pick(next.f, n.f);
+    reel.push(next);
+  }
+  return {start, flips, reel};
 }
 
 /* ======================================================================================= the film */
@@ -173,9 +175,32 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
 
   /* ---------------- drawing helpers ---------------- */
   function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, Math.max(0, Math.min(r, w / 2, h / 2))) : ctx.rect(x, y, w, h); }
+  // a face is "ready" once the browser has it; until then (and below a readable size) a soft bar stands in, so text
+  // never flashes from a fallback face to the real one, and tiny type never turns into broken pixels
+  const readyFaces = new Map();
+  function faceReady(weight, family) {
+    const key = weight + family, v = readyFaces.get(key);
+    if (v === true) return true;
+    const now = performance.now();
+    if (typeof v === 'number' && now - v < 400) return false;
+    let ok = true; try { ok = document.fonts.check(`${weight} 16px ${family}`, 'กขค'); } catch {}
+    readyFaces.set(key, ok || now); return ok;
+  }
+  function bar(str, x, y, size, color, align, base, alpha, max) {
+    const w = Math.min(max || 1e9, [...str].length * size * .5), h = Math.max(1.5, size * .38);
+    const x0 = align === 'center' ? x - w / 2 : align === 'right' ? x - w : x;
+    const y0 = base === 'middle' ? y - h / 2 : base === 'top' ? y : y - size * .45 - h / 2;
+    ctx.save(); ctx.globalAlpha *= alpha * .32; ctx.fillStyle = color; rr(x0, y0, w, h, h / 2); ctx.fill(); ctx.restore();
+  }
   function text(str, x, y, {size, weight = 400, family, color, align = 'left', base = 'alphabetic', alpha = 1, condensed = false, max}) {
     if (alpha <= .004 || size < 3) return;
-    ctx.save(); ctx.globalAlpha *= alpha; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = base;
+    const barColor = typeof color === 'string' ? color : '#888888';
+    if (!faceReady(weight, family)) return bar(str, x, y, size, barColor, align, base, alpha, max);
+    // between 7.5 and 9.5 px the bar hands over to the letters gradually, so a page that grows never pops
+    const k = clamp((size - 7.5) / 2);
+    if (k < 1) bar(str, x, y, size, barColor, align, base, alpha * (1 - k), max);
+    if (k <= 0) return;
+    ctx.save(); ctx.globalAlpha *= alpha * k; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = base;
     ctx.font = `${weight} ${size.toFixed(1)}px ${family}`;
     if ('fontStretch' in ctx) ctx.fontStretch = condensed ? 'ultra-condensed' : 'normal';
     if (max) { const m = ctx.measureText(str).width; if (m > max) { ctx.font = `${weight} ${(size * max / m).toFixed(1)}px ${family}`; } }
@@ -191,12 +216,12 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
     else { x.fillStyle = 'rgba(232,62,140,.18)'; x.beginPath(); x.arc(d / 2, d / 2, 1.8, 0, TAU); x.fill(); }
     return (patterns[kind] = ctx.createPattern(c, 'repeat'));
   }
-  const graphemes = new Map();
-  const chars = str => { if (!graphemes.has(str)) graphemes.set(str, typeof Intl.Segmenter === 'function' ? [...new Intl.Segmenter('th', {granularity: 'grapheme'}).segment(str)].map(q => q.segment) : [...str]); return graphemes.get(str); };
-  function photo(i, s, x, y, w, h) {
+  // zoom > 1 crops into the middle of the photo (where its subject is)
+  function photo(i, s, x, y, w, h, zoom = 1) {
     if (!atlasOk) { ctx.fillStyle = rgba(ST[s].accent, .25); ctx.fillRect(x, y, w, h); return; }
     const sw = ATLAS.hw, sh = ATLAS.hh, ar = w / h, sar = sw / sh;
     let cw = sw, ch = sh; if (ar > sar) ch = sw / ar; else cw = sh * ar;
+    cw /= zoom; ch /= zoom;
     ctx.drawImage(atlas, s * sw + (sw - cw) / 2, i * sh + (sh - ch) / 2, cw, ch, x, y, w, h);
   }
   function item(i, s, n, x, y, w, h) {
@@ -230,36 +255,53 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
       const f = fill[k];
       // glass (leaves 1–3) or gold (leaf 4)
       if (k === 3 ? gold * draw > 0 : f > 0) {
-        const tipX = c.x + Math.sin(ANG[k]) * 28 * sc, tipY = c.y - Math.cos(ANG[k]) * 28 * sc;
+        const dx = Math.sin(ANG[k]), dy = -Math.cos(ANG[k]);
+        const cx2 = c.x + dx * 21 * sc, cy2 = c.y + dy * 21 * sc; // the middle of the leaf
+        const bx = c.x + dx * 3 * sc, by = c.y + dy * 3 * sc, ex = c.x + dx * 27 * sc, ey = c.y + dy * 27 * sc; // its midrib
         ctx.save(); ctx.clip(p);
+        const box = [cx2 - 26 * sc, cy2 - 26 * sc, 52 * sc, 52 * sc];
         if (k === 3) {
           ctx.globalAlpha *= clamp(gold * draw);
-          ctx.fillStyle = goldGrad(c.x - 30 * sc, c.y - 30 * sc, c.x + 30 * sc, c.y + 30 * sc, (t || 0) * .05);
-          ctx.fillRect(c.x - 40 * sc, c.y - 40 * sc, 80 * sc, 80 * sc);
-          if (glow > 0) { ctx.fillStyle = `rgba(255,246,214,${glow * .6})`; ctx.fillRect(c.x - 40 * sc, c.y - 40 * sc, 80 * sc, 80 * sc); }
+          ctx.fillStyle = goldGrad(c.x - 30 * sc, c.y - 30 * sc, c.x + 30 * sc, c.y + 30 * sc, (t || 0) * .03);
+          ctx.fillRect(...box);
+          // a slow band of light across the gold
+          const at = (((t || 0) * .35) % 1.8) - .4, sh = ctx.createLinearGradient(cx2 - 26 * sc, cy2 - 26 * sc, cx2 + 26 * sc, cy2 + 26 * sc);
+          sh.addColorStop(clamp(at - .12), 'rgba(255,250,230,0)'); sh.addColorStop(clamp(at), 'rgba(255,250,230,.55)'); sh.addColorStop(clamp(at + .12), 'rgba(255,250,230,0)');
+          ctx.fillStyle = sh; ctx.fillRect(...box);
+          if (glow > 0) { ctx.fillStyle = `rgba(255,246,214,${glow * .55})`; ctx.fillRect(...box); }
+          ctx.strokeStyle = 'rgba(110,80,30,.38)'; ctx.lineWidth = Math.max(.7, .8 * sc); ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(ex, ey); ctx.stroke();
         } else {
-          const g = ctx.createRadialGradient(c.x, c.y, 2 * sc, tipX, tipY, 34 * sc);
-          g.addColorStop(0, 'rgba(47,122,74,.95)'); g.addColorStop(.7, 'rgba(110,190,135,.92)'); g.addColorStop(1, 'rgba(190,240,205,.95)');
           ctx.globalAlpha *= E.out(f);
-          ctx.fillStyle = g; ctx.fillRect(c.x - 40 * sc, c.y - 40 * sc, 80 * sc, 80 * sc);
-          // what the answer looks like, inside the leaf
-          if (combo && f > .3) {
-            const a = clamp((f - .3) / .7), cx2 = lerp(c.x, tipX, .55), cy2 = lerp(c.y, tipY, .55), sz = 30 * sc;
-            ctx.globalAlpha *= a;
-            if (k === 0) { ctx.save(); ctx.globalAlpha *= .85; photo(combo.i, combo.s, cx2 - sz * .7, cy2 - sz * .55, sz * 1.4, sz * 1.1); ctx.restore(); }
-            if (k === 1) drawIcon(feats[combo.f].icon, cx2, cy2, sz * .62, '#0b1a10', 2.2);
-            if (k === 2) text('Aa', cx2, cy2 + sz * .02, {size: sz * .55, weight: ST[combo.s].dw, family: ST[combo.s].display, color: '#0b1a10', align: 'center', base: 'middle', condensed: ST[combo.s].condensed});
+          // deep green glass
+          const base = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, 26 * sc);
+          base.addColorStop(0, '#2f7a4a'); base.addColorStop(1, '#0c2f1e');
+          ctx.fillStyle = base; ctx.fillRect(...box);
+          // the answer, upright and filling the leaf: the business's product · the feature · the style's own photo
+          if (combo && atlasOk) {
+            const R = 25 * sc;
+            if (k === 0) item(combo.i, combo.s, 0, cx2 - R, cy2 - R, R * 2, R * 2);
+            if (k === 2) photo(combo.i, combo.s, cx2 - R, cy2 - R, R * 2, R * 2, 1.45);
           }
-          // a glass highlight
-          ctx.globalAlpha = .35 * E.out(f) * alpha;
-          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(lerp(c.x, tipX, .45) - 6 * sc, lerp(c.y, tipY, .45) - 6 * sc, 7 * sc, 3 * sc, -.6, 0, TAU); ctx.fill();
+          if (combo && k === 1) {
+            const g = ctx.createRadialGradient(cx2, cy2, 0, cx2, cy2, 15 * sc); g.addColorStop(0, 'rgba(242,215,154,.4)'); g.addColorStop(1, 'rgba(242,215,154,0)');
+            ctx.fillStyle = g; ctx.fillRect(...box);
+            if (sc > .9) drawIcon(feats[combo.f].icon, cx2, cy2, 17 * sc, '#fff4d6', 1.6);
+          }
+          // keep the picture inside the clover's light: a soft vignette and a sheen (no midrib: over a photo it reads as a scratch)
+          const v = ctx.createRadialGradient(cx2 - 3 * sc, cy2 - 5 * sc, 5 * sc, cx2, cy2, 25 * sc);
+          v.addColorStop(0, 'rgba(8,32,20,0)'); v.addColorStop(.7, 'rgba(8,32,20,.12)'); v.addColorStop(1, 'rgba(6,24,15,.6)');
+          ctx.fillStyle = v; ctx.fillRect(...box);
+          const sh = ctx.createLinearGradient(cx2 - 22 * sc, cy2 - 24 * sc, cx2 + 8 * sc, cy2 + 6 * sc);
+          sh.addColorStop(0, 'rgba(255,255,255,.3)'); sh.addColorStop(.5, 'rgba(255,255,255,.05)'); sh.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = sh; ctx.fillRect(...box);
         }
         ctx.restore();
       }
       // outline, drawn in by `draw`
       ctx.save();
-      ctx.lineWidth = Math.max(1, 1.15 * c.s); ctx.lineJoin = 'round';
-      ctx.strokeStyle = k === 3 ? '#f2d79a' : (f > .5 ? 'rgba(220,255,230,.8)' : '#8fd3a0');
+      ctx.lineWidth = clamp(1.1 * sc, 1, 2.2); ctx.lineJoin = 'round';
+      ctx.strokeStyle = k === 3 ? '#f6e2a4' : (f > .5 ? 'rgba(232,255,240,.92)' : '#8fd3a0');
+      if (k < 3 && f > .5) { ctx.shadowColor = 'rgba(143,211,160,.55)'; ctx.shadowBlur = 6; }
       const len = LEAF_LEN * sc;
       ctx.setLineDash([len * draw, len]); ctx.lineDashOffset = 0;
       if (k === 3 && glow > 0) { ctx.shadowColor = 'rgba(255,230,160,.9)'; ctx.shadowBlur = 30 * glow; }
@@ -271,10 +313,14 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
   function ripple(x, y, k) {
     if (k <= 0 || k >= 1) return;
     ctx.save();
-    ctx.strokeStyle = `rgba(242,215,154,${(1 - k) * .9})`; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(x, y, 6 + k * 34 * U * .12 + k * 20, 0, TAU); ctx.stroke();
-    ctx.fillStyle = `rgba(255,255,255,${Math.sin(k * Math.PI) * .9})`;
-    ctx.beginPath(); ctx.arc(x, y, 7 + Math.sin(k * Math.PI) * 4, 0, TAU); ctx.fill();
+    // a fingertip: a soft point of light and two thin rings, not a solid dot over the picture
+    const on = Math.sin(k * Math.PI), r = 6 + k * 34 * U * .12 + k * 20;
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = `rgba(255,244,214,${(1 - k) * .85})`; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = `rgba(255,244,214,${(1 - k) * .4})`; ctx.beginPath(); ctx.arc(x, y, r * .62, 0, TAU); ctx.stroke();
+    const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
+    g.addColorStop(0, `rgba(255,250,235,${on * .75})`); g.addColorStop(1, 'rgba(255,250,235,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - 9, y - 9, 18, 18);
     ctx.restore();
   }
   // an answer chip: icon + label on a dark glass pill
@@ -323,7 +369,7 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
     };
   }
 
-  // one page, one combination, drawn at full strength `a` (the morph draws two of them crossfading)
+  // one page, one combination, drawn at strength `a`
   function page(c, C, w, a, t, opts = {}) {
     const S = ST[c.s], ind = inds[c.i], feat = feats[c.f], tpl = S.tpl;
     const b = boxes(tpl, w, C);
@@ -359,16 +405,18 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
     // title
     const T = b.title, ta = st(2);
     const center = tpl === 'maison';
-    const shown = opts.type != null ? [...ind.brand].slice(0, Math.ceil([...ind.brand].length * opts.type)).join('') : ind.brand;
-    if (ta > 0) {
+    // the name rises in whole: never cut letter by letter (Thai would leave a vowel or tone mark hanging)
+    const shown = ind.brand, reveal = E.out(opts.type ?? 1);
+    if (ta > 0 && reveal > 0) {
+      ctx.save(); ctx.globalAlpha *= reveal;
       const color = tpl === 'maison' ? goldGrad(T.x - T.size * 3, 0, T.x + T.size * 3, 0, t * .04) : tpl === 'pop' ? S.accent : tpl === 'index' && w < .5 ? '#121212' : S.text;
       if (tpl === 'pop') {
-        // letters bounce in
-        ctx.save(); ctx.font = `${S.dw} ${T.size}px ${S.display}`; let x = T.x;
-        const gs = chars(shown);
-        gs.forEach((ch, k) => { const yy = T.y + Math.sin(t * 5 + k * .7) * T.size * .04 - (1 - E.back(seg(g, .2 + k * .03, .5 + k * .03))) * T.size * .5; text(ch, x, yy, {size: T.size, weight: S.dw, family: S.display, color, alpha: ta}); ctx.font = `${S.dw} ${T.size}px ${S.display}`; x += ctx.measureText(ch).width; });
+        const pop = E.back(seg(g, .2, .6)), bob = Math.sin(t * 2.4) * T.size * .03;
+        ctx.save(); ctx.translate(T.x, T.y + bob); ctx.scale(.6 + .4 * pop, .6 + .4 * pop);
+        text(shown, 0, 0, {size: T.size, weight: S.dw, family: S.display, color, alpha: ta, max: C.w * .9});
         ctx.restore();
-      } else text(shown, T.x, T.y + (1 - ta) * T.size * .3, {size: T.size, weight: S.dw, family: S.display, color, align: center ? 'center' : 'left', alpha: ta, condensed: S.condensed, max: C.w * (center ? .9 : .9)});
+      } else text(shown, T.x, T.y + (1 - ta) * T.size * .3, {size: T.size, weight: S.dw, family: S.display, color, align: center ? 'center' : 'left', alpha: ta, condensed: S.condensed, max: C.w * .9});
+      ctx.restore();
     }
     // tagline
     const G = b.tag;
@@ -420,7 +468,7 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
     // extras that make each template itself
     if (tpl === 'pop') { star(C.x + C.w * (w > .5 ? .82 : .47), C.y + C.h * (w > .5 ? .06 : .14), C.w * .03, t, '#ffd23f', S.text, st(2)); ring(C.x + C.w * .93, C.y + C.h * .86, C.w * .025, '#7ad7c0', st(4)); }
     if (tpl === 'journal' && w < .5) text('แวะมานะ!', C.x + C.w * .33, C.y + C.h * .56, {size: C.w * .03, weight: 400, family: S.hand, color: S.accent, alpha: st(3)});
-    if (tpl === 'maison') { ctx.fillStyle = `rgba(243,220,159,${.5 * st(1)})`; const rr2 = rng(c.i * 7 + 3); for (let k = 0; k < 26; k++) { const x = C.x + rr2() * C.w, y = C.y + ((rr2() * C.h - t * 8 * (.5 + rr2())) % C.h + C.h) % C.h; ctx.beginPath(); ctx.arc(x, y, .6 + rr2() * 1.3, 0, TAU); ctx.fill(); } }
+    if (tpl === 'maison' && !opts.lite) { ctx.fillStyle = `rgba(243,220,159,${.5 * st(1)})`; const rr2 = rng(c.i * 7 + 3); for (let k = 0; k < 26; k++) { const x = C.x + rr2() * C.w, y = C.y + ((rr2() * C.h - t * 8 * (.5 + rr2())) % C.h + C.h) % C.h; ctx.beginPath(); ctx.arc(x, y, .6 + rr2() * 1.3, 0, TAU); ctx.fill(); } }
     ctx.restore(); // clip
     ctx.restore();
   }
@@ -629,43 +677,74 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
       }
     }
     // ---- 4: one leaf at a time, the whole site changes
-    if (t >= 6.5 && t < 14.5) {
-      // the flip in progress
+    const dev = x => (x.d ? desk1 : desk0);
+    const hudAt = F => portrait ? {x: W / 2, y: F.y - c.s * 11, s: c.s * .26} : {x: F.x - c.s * 15, y: F.y + c.s * 12, s: c.s * .3};
+    if (t >= 6.5 && t < REEL.from) {
       let f = null;
       for (const q of P.flips) if (q.t <= t) f = q;
       const prev = f ? f.from : {...A, d: 0}, cur = f ? f.to : {...A, d: 0};
-      const k = f ? E.io(seg(t, f.t, f.t + f.dur)) : 1;
-      const dev = x => (x.d ? desk1 : desk0);
+      const k = f ? seg(t, f.t, f.t + f.dur) : 1, km = E.io(k);
       const dA = dev(prev) === 'phone' ? 1 : 0, dB = dev(cur) === 'phone' ? 1 : 0;
-      const F = lerpRect(frameFor(dev(prev)), frameFor(dev(cur)), k);
-      const dd = lerp(dA, dB, k);
-      device(F, dd, 1, inds[cur.i].domain);
+      const F = lerpRect(frameFor(dev(prev)), frameFor(dev(cur)), km);
+      const dd = lerp(dA, dB, km);
+      device(F, dd, 1, inds[(k < .5 ? prev : cur).i].domain);
       ctx.save(); rr(F.x, F.y, F.w, F.h, F.r); ctx.clip();
       const C = contentOf(F, dd);
-      if (k < 1 && (prev.s !== cur.s || prev.i !== cur.i || prev.f !== cur.f)) {
+      if (k < 1 && dA !== dB) {
+        // a new device: the old page dims away, the frame changes shape, then the new page comes up. One at a time,
+        // and each page dims as one picture (a dark veil over it), so its own layers never show through each other
+        const out = 1 - E.in(seg(k, 0, .4)), inn = E.out(seg(k, .55, 1)), lit = out > 0 ? out : inn;
+        if (out > 0) page(prev, C, dd, 1, t); else if (inn > 0) page(cur, C, dd, 1, t, {grow: .6 + .4 * inn});
+        ctx.fillStyle = `rgba(14,16,14,${1 - lit})`; ctx.fillRect(C.x, C.y, C.w, C.h);
+      } else if (k < 1) {
+        // the new site is drawn over the old one behind a moving edge, never through it: each pixel shows one site
+        const edge = C.y + C.h * E.io(k);
         page(prev, C, dd, 1, t);
-        // the new site arrives through a clover-shaped iris from the leaf that flipped
-        const ir = E.io(k);
-        ctx.save();
-        const ox = C.x + C.w * (f.kind === 'ind' ? .15 : f.kind === 'feat' ? .5 : .85), oy = C.y + C.h * .2;
-        const R = Math.hypot(C.w, C.h) * 1.15 * ir / 30;
-        const p = new Path2D();
-        for (let q = 0; q < 4; q++) p.addPath(leaf, new DOMMatrix().translateSelf(ox, oy).rotateSelf(q * 90 + 45 + ir * 90).scaleSelf(R, R));
-        ctx.clip(p);
-        page(cur, C, dd, 1, t);
+        ctx.save(); ctx.beginPath(); ctx.rect(C.x, C.y, C.w, edge - C.y); ctx.clip();
+        page(cur, C, dd, 1, t, {grow: .7 + .3 * k});
         ctx.restore();
+        const glow = ctx.createLinearGradient(0, edge - 14, 0, edge + 2);
+        glow.addColorStop(0, 'rgba(242,215,154,0)'); glow.addColorStop(1, 'rgba(255,240,200,.55)');
+        ctx.fillStyle = glow; ctx.fillRect(C.x, edge - 14, C.w, 16);
+        ctx.fillStyle = '#fff4d6'; ctx.fillRect(C.x, edge - 1, C.w, 1.5);
       } else page(cur, C, dd, 1, t);
       ctx.restore();
       notch(F, dd, 1);
-      // the small clover keeps score: which leaf flipped
-      const hud = {x: F.x - (portrait ? -16 : 34), y: F.y - (portrait ? 18 : -8), s: c.s * (portrait ? .3 : .34)};
+      // the small clover keeps score, beside the site: which leaf flipped
+      const hud = hudAt(F);
       const inA = E.out(seg(t, 6.5, 6.9));
       const flash = f ? env(t, f.t, f.t + .5, .05, .45) : 0;
       const which = f ? ({ind: 0, feat: 1, style: 2, device: 3})[f.kind] : -1;
       clover(hud, {draw: 1, fill: [1, 1, 1, 0], gold: 1, alpha: inA, combo: cur, t, glow: which === 3 ? flash : 0, pulse: which === 0 ? flash : 0});
-      if (flash > 0 && which >= 0 && which < 3) { const an = ANG[which]; ctx.save(); ctx.globalAlpha = flash; ctx.strokeStyle = '#fff6d6'; ctx.lineWidth = 2; ctx.stroke(leafPath(hud.x, hud.y, hud.s * (1 + flash * .3), an)); ctx.restore(); }
-      // the counter (HTML) follows the combination
+      if (flash > 0 && which >= 0 && which < 3) { ctx.save(); ctx.globalAlpha = flash; ctx.strokeStyle = '#fff6d6'; ctx.lineWidth = 1.5; ctx.stroke(leafPath(hud.x, hud.y, hud.s * (1 + flash * .25), ANG[which], 3)); ctx.restore(); }
       setCount(t >= 6.8 ? comboNo(cur) : 0);
+    } else if (t >= REEL.from && t < 14.5) {
+      // ---- the reel: whole sites slide past, faster and faster, into the silence
+      const x = reelX(t), speed = (reelX(Math.min(REEL.to, t + .02)) - x) / .02;
+      const fade = 1 - E.in(seg(t, 14.25, 14.5));
+      ctx.save();
+      for (let k = Math.floor(x) - 1; k <= Math.floor(x) + 2; k++) {
+        if (k < 0 || k >= REEL.n) continue;
+        const R2 = P.reel[k], d2 = dev(R2) === 'phone' ? 1 : 0, F0 = frameFor(dev(R2));
+        const off = (k - x) * F0.w * 1.12;
+        if (F0.x + off > W || F0.x + off + F0.w < 0) continue;
+        const sc = 1 - Math.min(.1, Math.abs(k - x) * .1);
+        const F = {...F0, x: F0.x + off + F0.w * (1 - sc) / 2, y: F0.y + F0.h * (1 - sc) / 2, w: F0.w * sc, h: F0.h * sc, r: F0.r * sc, bar: F0.bar * sc};
+        device(F, d2, 1, inds[R2.i].domain);
+        ctx.save(); rr(F.x, F.y, F.w, F.h, F.r); ctx.clip();
+        page(R2, contentOf(F, d2), d2, 1, t, {lite: true});
+        ctx.restore();
+        notch(F, d2, 1);
+      }
+      // speed lines once it is fast
+      if (speed > 2.5) { const a = clamp((speed - 2.5) / 5) * .5, r3 = rng(3); ctx.strokeStyle = `rgba(242,215,154,${a})`; ctx.lineWidth = 1; for (let q = 0; q < 14; q++) { const y = H * (.15 + r3() * .6), l = 40 + r3() * 160, x0 = ((r3() * W - t * 1400 * (.5 + r3())) % W + W) % W; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + l, y); ctx.stroke(); } }
+      // into the dark: the night closes over the sites as one picture (fading each layer would let them show through each other)
+      if (fade < 1) { ctx.globalAlpha = 1 - fade; ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H); }
+      ctx.restore();
+      const centred = P.reel[clamp(Math.round(x), 0, REEL.n - 1)];
+      const F0 = frameFor(dev(centred));
+      clover(hudAt(F0), {draw: 1, fill: [1, 1, 1, 0], gold: 1, alpha: fade, combo: centred, t, glow: .3 + .3 * Math.sin(t * 20)});
+      setCount(comboNo(centred));
     } else setCount(0);
     // ---- 5: a beat of silence, then the 64
     if (t >= 15 && t < 17) wall(t, comboNo(A));
@@ -839,7 +918,8 @@ export function createFilm({root, canvas, data, reduced, autoplay = true, loadFo
       for (let b = 0; b < 16; b++) { const t = 6.5 + b * .5; if (t >= 14.5) break; at(t - .5 + .5, w => kick(w, .4)); if (b % 2 === 1) at(t, w => clap(w)); }
       for (let e = 0; e < 32; e++) { const t = 6.25 + e * .25; if (t >= 14.5) break; at(t, w => hat(w)); }
       for (let bar = 0; bar < 4; bar++) { const t = 6 + bar * 2; if (bar) at(t, w => pad(w, CH[bar], 2, .045)); [0, .5, 1, 1.5].forEach(o => at(t + o, w => bass(w, CH[bar][0] - 12))); }
-      P.flips.forEach((f, k) => { at(f.t, w => { if (k < FLIP_KINDS.length) { FLIPSND[f.kind](w); if (f.kind === 'style') SIG[stys[f.to.s].key](w, 69 + (k % 3) * 2); } else tone(w, hz(74 + Math.round((f.t - 12.5) * 6)), .07, {gain: .08, wet: .1}); }); });
+      P.flips.forEach((f, k) => { at(f.t, w => { FLIPSND[f.kind](w); if (f.kind === 'style') SIG[stys[f.to.s].key](w, 69 + (k % 3) * 2); }); });
+      reelTimes.forEach((tt, k) => { if (k) at(tt, w => tone(w, hz(74 + k * 2), .08, {gain: .07, wet: .15})); });
       at(12.5, w => noise(w, 2, {gain: .12, f0: 300, f1: 9000, q: .8, attack: 1.9, wet: .3}));
       at(15, w => { boom(w); pad(w, [50, 57, 62, 64, 69], 2.2, .06); });
       for (let k = 0; k < 12; k++) at(15.3 + k * .09, w => tone(w, hz([74, 78, 81, 86][k % 4] + (k > 7 ? 12 : 0)), .3, {gain: .05, wet: .6}));

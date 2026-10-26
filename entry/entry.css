@@ -54,9 +54,10 @@ svg:not([viewBox]) { width: 1.1em; height: 1.1em; fill: none; stroke: currentCol
 .film[data-act="3"] .film-top, .film[data-act="4"] .film-top, .film[data-act="5"] .film-top { opacity: 0; transform: translate3d(0, -10px, 0); }
 .film-top h1 { font-size: clamp(26px, 3.6vw, 40px); line-height: 1.25; color: var(--gold-hi); text-shadow: 0 2px 20px rgba(0, 0, 0, .6); }
 .film-caps { position: absolute; left: 16px; right: 16px; bottom: calc(max(18px, env(safe-area-inset-bottom)) + 78px); z-index: 2; display: grid; justify-items: center; text-align: center; pointer-events: none; }
-.cap { grid-area: 1 / 1; align-self: end; display: grid; gap: 4px; justify-items: center; max-width: min(92vw, 940px); opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity .35s ease, transform .5s var(--ease); }
+.cap { grid-area: 1 / 1; align-self: end; display: grid; gap: 4px; justify-items: center; max-width: min(92vw, 940px); opacity: 0; transform: translate3d(0, 10px, 0); transition: opacity .18s ease, transform .18s ease; }
+/* one caption at a time: the old one is gone (.18s) before the new one starts (.2s later), so two lines never overlap */
 .film[data-cap="0"] .cap[data-c="0"], .film[data-cap="1"] .cap[data-c="1"], .film[data-cap="2"] .cap[data-c="2"], .film[data-cap="3"] .cap[data-c="3"],
-.film[data-cap="4"] .cap[data-c="4"], .film[data-cap="5"] .cap[data-c="5"] { opacity: 1; transform: none; }
+.film[data-cap="4"] .cap[data-c="4"], .film[data-cap="5"] .cap[data-c="5"] { opacity: 1; transform: none; transition: opacity .4s ease .2s, transform .55s var(--ease) .2s; }
 .cap b { font: 600 clamp(26px, 3.4vw, 46px)/1.3 var(--head); color: #fff8e8; text-wrap: balance; text-shadow: 0 2px 26px rgba(0, 0, 0, .7); }
 .cap span { font: 400 clamp(16px, 1.6vw, 20px)/1.6 var(--body); color: var(--cream2); text-wrap: balance; text-shadow: 0 1px 14px rgba(0, 0, 0, .8); }
 .film-count { position: absolute; right: 16px; top: calc(max(12px, env(safe-area-inset-top)) + 54px); z-index: 3; margin: 0; padding: 8px 12px; border-radius: 999px; background: rgba(10, 12, 10, .55); border: 1px solid rgba(242, 215, 154, .35); font: 600 13px/1 var(--body); font-variant-numeric: tabular-nums; color: var(--gold-hi); opacity: 0; transition: opacity .3s; pointer-events: none; }

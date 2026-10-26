@@ -213,8 +213,8 @@ await check('one page, many looks: the styles strip and the remix rows change th
   await page.close();
 });
 
-await check('the mini-game stacks the business\'s own thing, and a well-timed drop stacks a layer', async () => {
-  const titles = {cafe: 'ซ้อนเค้กให้สูง', coach: 'ซ้อนบล็อกเลข', shop: 'ซ้อนไหมพรม', studio: 'ซ้อนภาพ'};
+await check('each business plays its own mini-game, and one good move scores', async () => {
+  const titles = {cafe: 'ซ้อนเค้กให้สูง', coach: 'บวกให้พอดี', shop: 'ต่อไหมพรม', studio: 'กดชัตเตอร์'};
   const page = await open({viewport: {width: 1280, height: 860}});
   for (const i of data.industries) {
     await openHome(page, `/?r=${i.key}-minigame-${data.styles[(data.industries.indexOf(i)) % 4].key}`);
@@ -225,16 +225,37 @@ await check('the mini-game stacks the business\'s own thing, and a well-timed dr
     assert.match(await page.locator('.w-game-cover').textContent(), new RegExp(i.brand), 'the cover carries the brand');
     await page.locator('.sc-hero [data-goto]').click();
     await page.waitForFunction(() => document.querySelector('.sc[data-role="feature"]') && !document.querySelector('.sc[data-role="feature"]').inert);
+    await page.waitForFunction(() => !document.querySelector('.w-game-go').disabled, null, {timeout: 8000}); // its module has loaded
     await page.waitForTimeout(500);
     await page.locator('.w-game-go').click();
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(700);
     assert.ok(await page.locator('.w-game-cover').isHidden(), 'the cover gives way to the game');
     assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('w-game-canvas')), true, 'the keyboard works right away');
-    await page.waitForFunction(() => { const g = document.querySelector('.w-game').stackGame; return g?.offset != null && Math.abs(g.offset) < .04; }, null, {timeout: 8000});
     const y = await page.evaluate(() => scrollY);
-    await page.keyboard.press('Space'); await page.waitForTimeout(200);
-    assert.equal(await page.locator('.w-game').getAttribute('data-layers'), '1', `${i.key}: a drop on the middle stacks a layer`);
-    assert.equal(await page.evaluate(() => scrollY), y, 'Space does not scroll the page while playing');
+    const box = await page.locator('.w-game-canvas').boundingBox();
+    const hook = fn => page.evaluate(fn);
+    if (i.key === 'cafe') {
+      // a layer dropped over the middle of the tower stacks
+      await page.waitForFunction(() => { const g = document.querySelector('.w-game').game.hook; return g?.offset != null && Math.abs(g.offset) < .04; }, null, {timeout: 8000});
+      await page.keyboard.press('Space');
+    } else if (i.key === 'coach') {
+      // two orbs that add up to the core's number fuse
+      const pair = await hook(() => document.querySelector('.w-game').game.hook.pair());
+      for (const [x, yy] of pair) { await page.mouse.click(box.x + x, box.y + yy); await page.waitForTimeout(50); }
+    } else if (i.key === 'shop') {
+      // a thread dragged from one ball to its twin links them
+      const path = await hook(() => document.querySelector('.w-game').game.hook.solution(0));
+      await page.mouse.move(box.x + path[0][0], box.y + path[0][1]); await page.mouse.down();
+      for (const [x, yy] of path.slice(1)) await page.mouse.move(box.x + x, box.y + yy, {steps: 2});
+      await page.mouse.up();
+    } else {
+      // a shot taken while the picture is sharp and centred is a good one
+      await page.waitForFunction(() => document.querySelector('.w-game').game.hook.ready, null, {timeout: 20000, polling: 'raf'});
+      await page.keyboard.press('Space');
+    }
+    await page.waitForTimeout(250);
+    assert.equal(await game.getAttribute('data-score'), '1', `${i.key}: one good move scores`);
+    if (i.key !== 'shop') assert.equal(await page.evaluate(() => scrollY), y, 'Space does not scroll the page while playing');
   }
   assert.deepEqual(page.errors, []);
   await page.close();
@@ -288,10 +309,14 @@ await check('a visitor can put their own shop name on the whole site; it stays o
 });
 
 await check('every template ends with contact and a real Google Map that loads only when tapped', async () => {
-  const page = await open({viewport: {width: 1280, height: 860}});
-  const google = []; page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
-  await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
+  const google = [];
+  let page = null;
+  // a fresh page per style: on a real deployment, photos still loading from the previous page would never finish
   for (const s of data.styles) {
+    await page?.close();
+    page = await open({viewport: {width: 1280, height: 860}});
+    page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
+    await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
     await openHome(page, `/?r=coach-booking-${s.key}`);
     const k = await page.locator('.sc[data-role="visit"]').getAttribute('data-sc');
     await scrollToScene(page, Number(k));
