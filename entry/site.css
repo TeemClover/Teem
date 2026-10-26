@@ -17,6 +17,11 @@
 .sc figure > video, .sc .wm-photo > video, .pp-blob > video, .mn-reveal > video, .lx-ft-bg > video { position: absolute; inset: 0; opacity: 0; transition: opacity 1s var(--ease); }
 .sc video.is-on { opacity: 1; }
 
+/* stills get a slow drift (free motion; generated clips that barely moved were removed) */
+@keyframes drift { from { scale: 1; translate: 0 0; } to { scale: 1.07; translate: -1.5% -1%; } }
+.wm-photo > img, .pp-blob > img, .mn-reveal > img, .lx-ft-bg > img, .lx-card figure > img { animation: drift 16s ease-in-out infinite alternate; }
+.lx-card:nth-child(odd) figure > img { animation-delay: -7s; }
+
 /* how a chapter arrives (data-tx); the one it covers dims through --out */
 .sc[data-tx="fade"] { opacity: calc(1 - var(--in)); }
 .sc[data-tx="slit"] { clip-path: inset(calc(var(--in) * 50%) 0); }
