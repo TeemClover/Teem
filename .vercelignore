@@ -114,6 +114,11 @@ entry/media/source/
 
 # Start giveaway build inputs and QA are maintained in Git, not served to visitors.
 start/build.py
+start/ai_pack.py
+start/pdf_text.py
+start/render-pdfs.mjs
+start/print/
+start/__pycache__/
 start/README.md
 start/CHANGELOG.md
 tests/start/

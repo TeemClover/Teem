@@ -1,15 +1,17 @@
 # myClover /start
 
 Public giveaway library, with one landing page per short: `/start/mc01/` … `/start/mc30/`.
-`catalog.json` is the authoritative content and clip-to-gift map. Each topic has its own original PDF, AI starter Markdown, prompt TXT, worksheet CSV, importable JSON and a ZIP containing those five formats plus instructions.
+`catalog.json` is the authoritative content and clip-to-gift map. Each topic has a three-page AI starter PDF, full-context TXT and Markdown, plus the original one-page worksheet PDF, worksheet CSV, importable JSON and a ZIP containing all seven files.
+
+The primary action downloads the matching AI starter PDF directly. The next section explains upload → send the provided instruction → answer one question at a time. TXT is the copy-all fallback when attachment is unavailable. Additional formats are collapsed by default. The optional LINE link appears after the work and downloads; it is never a gate for receiving a gift or proof of a lesson subscription. No LINE bot or automated nurture is activated by these pages.
 
 Visitors can fill three fields, copy a prompt containing their answers, save populated TXT/CSV/JSON, and import a JSON backup for the same episode. Empty fields ask the chosen AI to clarify one question at a time. ZIPs and static downloads are blank templates; they never contain answers entered in the browser.
 
 ## Maintenance
 
-1. Update the single catalog record and the matching PDF/cover when the source short changes.
-2. Run `python3 start/build.py` from the repository root. Node.js is required to use the same prompt compiler as the browser.
-3. Run `node --test tests/start/*.test.mjs`.
+1. Update the single catalog record and the matching original worksheet/cover when the source short changes.
+2. Run `python3 start/build.py` from the repository root with Python `pypdf` and Node.js/Playwright available. Set `CHROME_PATH` to an existing Chromium executable and optionally `MYCLOVER_PLAYWRIGHT_MODULE` to the Playwright module path. It renders all 30 PDFs and repairs missing Kanit alternate-glyph ToUnicode mappings from the original named font glyphs before building ZIPs and hashes. Do not skip this step after changing prompts or fonts.
+3. Run `node --test tests/start/*.test.mjs` and `python3 tests/start/pdf-text.test.py`. The PDF check requires the complete topic prompt, fields, goal and action to survive text extraction. Render and visually inspect the PDFs as well; extraction is not visual QA.
 4. Review `/start/`, a topic page, copy/export/import, and small-screen layout.
 5. Publish the tested branch using the existing Teem release process. A GitHub commit is not proof of a live production release.
 

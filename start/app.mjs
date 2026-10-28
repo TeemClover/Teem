@@ -80,6 +80,19 @@ if(page === 'episode') {
   document.querySelector('#download-prompt').addEventListener('click', () => {
     download(preview.value, 'text/plain;charset=utf-8', `${episode.id}-my-prompt.txt`);event('prompt_download_clicked',episode.id);
   });
+  document.querySelector('#copy-upload-message')?.addEventListener('click', async () => {
+    const message=document.querySelector('#upload-message');
+    const status=document.querySelector('#upload-status');
+    try {
+      await navigator.clipboard.writeText(message.textContent);
+      status.textContent='คัดลอกแล้ว แนบ PDF แล้ววางข้อความนี้ใน AI ได้เลย';
+      event('upload_instruction_copied',episode.id);
+    } catch {
+      const selection=window.getSelection();const range=document.createRange();
+      range.selectNodeContents(message);selection.removeAllRanges();selection.addRange(range);
+      status.textContent='กดค้างหรือคัดลอกข้อความที่เลือกไว้ แล้วส่งพร้อมไฟล์ PDF';
+    }
+  });
   document.querySelector('#save-json').addEventListener('click', () => {
     download(JSON.stringify(makeBackup(episode,values()),null,2),'application/json;charset=utf-8',`${episode.id}-my-answers.json`);
     notice('เตรียมไฟล์ข้อมูลของคุณแล้ว เก็บไฟล์นี้เพื่อนำกลับมาทำต่อได้');event('answers_export_clicked',episode.id);
