@@ -111,3 +111,9 @@ showcase/media/source/
 
 # Raw images waiting to be composed (e.g. og-home-bg.png → og-home.jpg); only finished files in entry/media/ ship.
 entry/media/source/
+
+# Start giveaway build inputs and QA are maintained in Git, not served to visitors.
+start/build.py
+start/README.md
+start/CHANGELOG.md
+tests/start/

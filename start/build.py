@@ -1,0 +1,75 @@
+"""Build public /start pages and topic-specific handoff files from catalog.json."""
+import csv
+import hashlib
+import html
+import io
+import json
+import subprocess
+import zipfile
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+CATALOG = json.loads((HERE/'catalog.json').read_text())
+EPISODES = CATALOG['episodes']
+E = html.escape
+ORIGIN = 'https://www.myclover.com'
+
+def dump(value):
+    return json.dumps(value, ensure_ascii=False, indent=2)
+
+def shell(body, title, page='episode', description='', canonical='/start/'):
+    return f'''<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="{E(description,quote=True)}"><meta name="theme-color" content="#254f3b"><title>{E(title)} · myClover</title><link rel="canonical" href="{ORIGIN}{canonical}"><link rel="icon" href="/start/assets/clover.svg"><link rel="stylesheet" href="/start/style.css"></head><body data-page="{page}"><a class="skip" href="#main">ข้ามไปเนื้อหา</a><header class="top"><a class="brand" href="/start/"><img src="/start/assets/clover.svg" alt="" width="32" height="32">myClover<span>โชคดีที่หาเจอ</span></a><a href="/start/#library">ของแจกทั้งหมด ↗</a></header><main id="main">{body}</main><footer><strong>myClover · เริ่มเล็กพอให้ได้ลองจริง</strong><p>แบบฝึกเพื่อทดลองและเรียนรู้ ใช้ข้อมูลจริงและตรวจคำตอบ AI ก่อนใช้ ไม่รับประกันยอดขายหรือรายได้</p><p>คำตอบที่กรอกเก็บบนเบราว์เซอร์ของคุณเอง เก็บเป็นไฟล์เพื่อนำไปใช้กับ AI ที่คุณเลือกได้ อย่าใส่ข้อมูลส่วนตัวของลูกค้า</p><div><a href="https://www.instagram.com/myclover.ai/">Instagram</a><a href="https://www.facebook.com/people/MyClover-Good-Luck-Have-Fun/61592401004383/">Facebook</a><a href="/start/assets/fonts/OFL.txt">สิทธิ์ฟอนต์ Kanit</a></div></footer><script type="module" src="/start/app.mjs"></script></body></html>'''
+
+def static_file_links(ep):
+    base = '/start/files/'+ep['slug']+'/'
+    return ''.join(f'<a data-download download href="{base}{ep["id"]}-{name}.{ext}"><b>{label}</b><span>{detail}</span></a>' for name,ext,label,detail in [
+      ('worksheet','pdf','PDF · แบบฝึก 1 หน้า','พิมพ์หรือเปิดอ่าน แยกเฉพาะเรื่องนี้'),
+      ('ai-starter','md','Markdown · ให้ AI ช่วยเริ่ม','มีบริบท คำถาม และคำสั่งครบในไฟล์เดียว'),
+      ('prompt','txt','TXT · คำสั่งพร้อมใช้','เปิดแล้วคัดลอกไปวางใน AI'),
+      ('worksheet','csv','CSV · ตารางกรอกข้อมูล','เปิดในโปรแกรมตารางที่ใช้อยู่'),
+      ('answers','json','JSON · ข้อมูลเริ่มต้น','นำเข้าหน้านี้ แล้วเก็บคำตอบไว้ทำต่อ'),
+    ])
+
+cards=[]
+for ep in EPISODES:
+    search = ' '.join([ep['id'],str(ep['number']),ep['title'],*ep['fields']]).lower()
+    cards.append(f'''<article class="topic" id="{ep['id']}" data-topic="{ep['id']}" data-batch="{ep['batch']}" data-search="{E(search,quote=True)}"><span class="number">{ep['number']:02}</span><div><p class="tag">คู่คลิป {ep['id']}</p><h3><a href="/start/{ep['slug']}/">{E(ep['title'])}</a></h3><p>{E(ep['outcome'])}</p><small data-progress></small></div><a class="topic-arrow" href="/start/{ep['slug']}/" aria-label="เริ่มเรื่อง {E(ep['title'],quote=True)}">↗</a></article>''')
+
+index = '''<section class="hero"><div><p class="eyebrow">ของแจกสำหรับคนอยากเริ่มธุรกิจ</p><h1>เห็นเรื่องไหนในคลิป<br>มาเริ่ม<span>เรื่องนั้น</span>ที่นี่</h1><p class="lead">แบบฝึก + คำสั่ง AI + ไฟล์พร้อมใช้<br>เลือกเรื่องเดียว แล้วทำขั้นเล็ก ๆ ให้เกิดขึ้นจริง</p><a class="button" href="#library">เลือกเรื่องที่อยากเริ่ม ↓</a><p class="fine">รับฟรี · ไม่ต้องสมัคร · ไม่ต้องกรอกเบอร์หรืออีเมล</p></div><aside class="hero-note"><span>เริ่มง่ายที่สุด</span><b>01</b><h2>อย่าเริ่มที่โลโก้</h2><p>หางานเล็กที่คุณช่วยคนอื่นได้ก่อน<br>กรอก 3 ช่อง แล้วให้ AI ช่วยจับคู่</p><a href="/start/mc01/">เริ่มจากสิ่งที่ทำเป็น ↗</a></aside></section><section class="how"><div><b>1</b><p><strong>เลือกตรงกับคลิป</strong><span>แต่ละเรื่องมีหน้าและของแจกของตัวเอง</span></p></div><div><b>2</b><p><strong>เติมข้อมูลของคุณ</strong><span>ตอบเท่าที่รู้ ที่เหลือให้ AI ถามทีละข้อ</span></p></div><div><b>3</b><p><strong>คัดลอกไปใช้กับ AI</strong><span>หรือรับชุดไฟล์ไปเปิดทำต่อ</span></p></div></section><div id="incoming" class="incoming" hidden></div><section id="library"><div class="section-heading"><div><p class="eyebrow">คลังของแจก 30 เรื่อง</p><h2>เลือกปัญหาที่ติดอยู่ตอนนี้</h2></div><p>เริ่มบนหน้าเว็บได้ หรือรับไฟล์กลับไปใช้ก็ได้</p></div><label for="search">ค้นหาเลขคลิปหรือหัวข้อ</label><input id="search" type="search" placeholder="เช่น 11 · ต้นทุน · ลูกค้า" autocomplete="off"><div class="filters" aria-label="เลือกชุด"><button data-batch="0" aria-pressed="true">ทั้งหมด</button><button data-batch="1" aria-pressed="false">01–10 · หาจุดเริ่ม</button><button data-batch="2" aria-pressed="false">11–20 · ทำงานให้ชัด</button><button data-batch="3" aria-pressed="false">21–30 · ลองและปรับ</button></div><p id="result-count" class="fine" aria-live="polite">เลือกได้ 30 เรื่อง</p><div class="topics">'''+''.join(cards)+'''</div></section><section class="closing"><h2>ไม่ต้องทำครบทั้ง 30 เรื่องวันนี้</h2><p>เลือกหนึ่งเรื่อง ใช้ข้อมูลจริง ลองทำกับคนจริง<br>สิ่งที่เกิดขึ้นจะบอกเองว่ารอบต่อไปควรปรับตรงไหน</p></section>'''
+(HERE/'index.html').write_text(shell(index,'เริ่มธุรกิจทีละเรื่อง','catalog','ของแจกพร้อมแบบฝึกและคำสั่ง AI 30 เรื่อง จับคู่กับคลิป myClover เริ่มใช้ได้ทันที'))
+
+# Use the same prompt compiler for the web and every downloadable starter.
+node_code = "import fs from 'node:fs'; import {buildPrompt,makeBackup,makeCSV} from './start-domain.mjs';const c=JSON.parse(fs.readFileSync('./catalog.json','utf8'));console.log(JSON.stringify(c.episodes.map(e=>({id:e.id,prompt:buildPrompt(e,[]),backup:makeBackup(e,[]),csv:makeCSV(e,[])}))))"
+compiled = json.loads(subprocess.run(['node','--input-type=module','-e',node_code],cwd=HERE,check=True,capture_output=True,text=True).stdout)
+compiled = {x['id']:x for x in compiled}
+manifest=[]
+for ep in EPISODES:
+    folder=HERE/ep['slug'];folder.mkdir(exist_ok=True)
+    files=HERE/'files'/ep['slug'];files.mkdir(parents=True,exist_ok=True)
+    c=compiled[ep['id']]
+    (files/(ep['id']+'-prompt.txt')).write_text(c['prompt'])
+    (files/(ep['id']+'-answers.json')).write_text(dump(c['backup']))
+    (files/(ep['id']+'-worksheet.csv')).write_text(c['csv'],newline='')
+    transcript='\n'.join('- '+line for line in ep['clip_points'])
+    starter=f'''# myClover · {ep['title']}\n\nคู่คลิป: {ep['id']}\nรุ่น: {CATALOG['version']} · ปรับปรุง {CATALOG['updated_at']}\nหน้าเริ่มทำ: {ORIGIN}/start/{ep['slug']}/\n\n## ใช้ไฟล์นี้อย่างไร\nคัดลอกส่วน “คำสั่งสำหรับ AI” ไปวางใน AI ที่ใช้อยู่ หรือแนบไฟล์นี้หากบริการของคุณรองรับ\nเติมข้อมูลเท่าที่รู้จริง ถ้ายังไม่มีข้อมูล ให้ AI ถามทีละข้อ\nไม่ใส่ข้อมูลส่วนตัวของลูกค้า ตรวจร่างก่อนใช้จริง\n\n## สิ่งที่คลิปนี้ชวนคิด\n{transcript}\n\n## คำสั่งสำหรับ AI\n{c['prompt']}\n\n## หลังได้ร่าง\n{ep['action']}\nจดสิ่งที่เกิดขึ้นจริงหนึ่งอย่าง แล้วค่อยเลือกรอบถัดไป\n'''
+    (files/(ep['id']+'-ai-starter.md')).write_text(starter)
+    readme=f'''myClover · {ep['id']} · {ep['title']}\n\nอยากเริ่มเร็ว: เปิด {ep['id']}-prompt.txt แล้วคัดลอกไปวางใน AI\nอยากให้ AI มีบริบทครบ: ใช้ {ep['id']}-ai-starter.md\nอยากพิมพ์: ใช้ {ep['id']}-worksheet.pdf\nอยากกรอกเป็นตาราง: ใช้ {ep['id']}-worksheet.csv\nอยากเก็บคำตอบทำต่อบนเว็บ: นำเข้า {ep['id']}-answers.json ที่หน้า {ORIGIN}/start/{ep['slug']}/\n\nชุด ZIP นี้เป็นแบบฝึกเปล่า ไม่รวมคำตอบที่คุณกรอกบนเว็บ\nบนเว็บใช้ “เก็บข้อมูลที่กรอก” เพื่อดาวน์โหลดคำตอบของคุณเป็นไฟล์แยก\nคำตอบบนเว็บเก็บเฉพาะเบราว์เซอร์เครื่องนั้น ไม่ส่งขึ้นฐานรายชื่อหรือส่งให้ AI เอง\n\nการทดลองนี้ไม่รับประกันรายได้ ใช้ข้อมูลจริงและตรวจงานก่อนใช้\n'''
+    (files/'READ-ME.txt').write_text(readme)
+    kit=files/(ep['id']+'-starter-kit.zip')
+    names=[ep['id']+'-worksheet.pdf',ep['id']+'-ai-starter.md',ep['id']+'-prompt.txt',ep['id']+'-worksheet.csv',ep['id']+'-answers.json','READ-ME.txt']
+    with zipfile.ZipFile(kit,'w',compression=zipfile.ZIP_DEFLATED) as archive:
+        for name in names:
+            info=zipfile.ZipInfo(name,(2026,10,28,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
+            archive.writestr(info,(files/name).read_bytes())
+    fields=''.join(f'<label for="answer-{i}"><span class="field-number">{i+1:02}</span>{E(field)}</label><textarea data-answer id="answer-{i}" rows="3" maxlength="4000" placeholder="เติมเท่าที่รู้จริง ถ้ายังไม่รู้ เว้นไว้ให้ AI ถามได้"></textarea>' for i,field in enumerate(ep['fields']))
+    next_ep=EPISODES[ep['number'] % len(EPISODES)]
+    data=dump(ep).replace('<','\\u003c').replace('&','\\u0026')
+    points=''.join('<li>'+E(line)+'</li>' for line in ep['clip_points'])
+    body=f'''<nav class="breadcrumb" aria-label="ตำแหน่งหน้า"><a href="/start/">ของแจกทั้งหมด</a><span> / </span><span>{ep['id']}</span></nav><section class="episode-hero"><div><p class="eyebrow">แบบฝึกคู่คลิป {ep['id']} · รับฟรี</p><h1>{E(ep['title'])}</h1><p class="lead">{E(ep['outcome'])}</p><div class="actions"><a class="button" href="#work">เริ่มกรอกแล้วให้ AI ช่วย ↓</a><a data-download class="secondary" href="/start/files/{ep['slug']}/{ep['id']}-starter-kit.zip" download>รับชุดไฟล์ทั้งหมด ↓</a></div><p class="fine">ไม่ต้องตอบครบก่อนรับไฟล์ · เริ่มจากข้อมูลเท่าที่มี</p></div><img class="clip-cover" src="/start/assets/covers/{ep['id']}.jpg" width="1080" height="1920" alt="ภาพจากคลิป {ep['id']} · {E(ep['title'],quote=True)}"></section><section class="episode-intro"><p class="eyebrow">จากสิ่งที่ดู → สิ่งที่จะลอง</p><h2>จบรอบนี้ ลองทำเรื่องเดียว</h2><p class="action-line">{E(ep['action'])}</p><details><summary>ทบทวนสิ่งที่คลิปนี้เล่า</summary><ul>{points}</ul></details></section><section id="work" class="workspace"><div class="worksheet"><p class="eyebrow">01 · ใส่ข้อมูลของคุณ</p><h2>ตอบเท่าที่รู้จริง</h2><p class="hint">ไม่ต้องมีคำตอบสวย ๆ ที่ยังไม่รู้เว้นไว้ได้ AI จะช่วยถามต่อ</p><form onsubmit="return false">{fields}</form><div class="save-actions"><button id="save-json" type="button">เก็บข้อมูลที่กรอก (.json)</button><button id="save-csv" type="button">เก็บเป็นตาราง (.csv)</button><label class="file-import" for="import-json">นำไฟล์ข้อมูลกลับมาทำต่อ<input type="file" id="import-json" accept=".json,application/json"></label></div></div><aside class="ai-handoff"><p class="eyebrow">02 · ให้ AI ช่วยร่าง</p><h2>ข้อมูล + คำสั่ง<br>พร้อมไปด้วยกัน</h2><p>ปุ่มนี้จะรวมคำตอบที่คุณกรอกกับคำสั่งของเรื่องนี้ให้ ถ้ายังไม่ได้กรอก ใช้ให้ AI ถามทีละข้อได้เลย</p><button id="copy-prompt" class="button" type="button">คัดลอกไปใช้กับ AI</button><button id="download-prompt" class="text-button" type="button">เก็บคำสั่งที่มีข้อมูลของฉัน (.txt) ↓</button><p id="status" role="status" aria-live="polite"></p><div class="ai-links"><span>คัดลอกแล้ว เปิด AI ที่คุณใช้</span><a data-ai href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a><a data-ai href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Gemini ↗</a><a data-ai href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Claude ↗</a></div><details class="prompt-details"><summary>ดูหรือเลือกคัดลอกคำสั่งทั้งหมด</summary><label class="sr-only" for="prompt-preview">คำสั่ง AI พร้อมข้อมูลที่กรอก</label><textarea id="prompt-preview" readonly rows="15"></textarea></details><p class="fine">คำตอบอยู่บนเครื่องของคุณ เลือกคัดลอกไปใช้กับ AI เอง<br>แต่ละบริการอาจมีเงื่อนไขหรือโควตาของบัญชีต่างกัน</p></aside></section><section class="download-section"><div class="section-heading"><div><p class="eyebrow">03 · รับไฟล์ของเรื่องนี้</p><h2>เลือกแบบที่หยิบไปใช้สะดวก</h2></div><a data-download class="button" href="/start/files/{ep['slug']}/{ep['id']}-starter-kit.zip" download>รับชุดไฟล์ ZIP ↓</a></div><p class="hint">ไฟล์ด้านล่างเป็นแบบฝึกเปล่าของ {ep['id']} ถ้าต้องการข้อมูลที่กรอกไว้ ใช้ปุ่มเก็บข้อมูลด้านบน</p><div class="file-options">{static_file_links(ep)}</div></section><section class="next-action"><p class="eyebrow">พอได้ร่างจาก AI แล้ว</p><h2>กลับไปลองกับของจริง</h2><p>{E(ep['action'])}</p><button id="mark-started" type="button">ฉันเริ่มลองเรื่องนี้แล้ว ✓</button><p class="fine">เครื่องหมายนี้เก็บเฉพาะเบราว์เซอร์ของคุณ</p></section><nav class="next-topics"><a href="/start/">← กลับไปเลือกเรื่องอื่น</a><a href="/start/{next_ep['slug']}/">เรื่องถัดไป: {E(next_ep['title'])} →</a></nav><noscript><p class="notice">เปิด JavaScript เพื่อรวมข้อมูลกับคำสั่ง AI หรือรับไฟล์ TXT / Markdown ด้านบนไปเริ่มได้เลย</p></noscript><script id="episode-data" type="application/json">{data}</script>'''
+    (folder/'index.html').write_text(shell(body,ep['title'],'episode',ep['outcome'],'/start/'+ep['slug']+'/'))
+    for name in [*names,kit.name]:
+        payload=(files/name).read_bytes()
+        manifest.append({'episode_id':ep['id'],'path':'files/'+ep['slug']+'/'+name,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest()})
+(HERE/'file-manifest.json').write_text(dump({'version':CATALOG['version'],'updated_at':CATALOG['updated_at'],'files':manifest}))
+(HERE/'dm-links.csv').write_text('\ufeffepisode_id,title,instagram_dm_url,facebook_dm_url\n'+''.join(','.join(['"'+ep['id']+'"','"'+ep['title'].replace('"','""')+'"',f'"{ORIGIN}/start/{ep["slug"]}/?utm_source=instagram&utm_medium=dm"',f'"{ORIGIN}/start/{ep["slug"]}/?utm_source=facebook&utm_medium=dm"'])+'\n' for ep in EPISODES))
+print(dump({'pages':len(EPISODES)+1,'topic_kits':len(EPISODES),'files_in_manifest':len(manifest)}))

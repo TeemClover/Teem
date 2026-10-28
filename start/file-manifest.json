@@ -1,0 +1,1266 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-10-28",
+  "files": [
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-worksheet.pdf",
+      "bytes": 64049,
+      "sha256": "adf2e23650e92b29de05a7a4d10d2af7e5587e5dca84c82ea164b3179700a3af"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-ai-starter.md",
+      "bytes": 4899,
+      "sha256": "d221b7d9ea36b3dd255d73d914004e3acd50b177b1dab4e258ba0aa3c5d0da5a"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-prompt.txt",
+      "bytes": 3052,
+      "sha256": "0cec49d7af6ec5f29d66f2449f8c86edde89614b05e29aa9561b5e77bf309924"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-worksheet.csv",
+      "bytes": 308,
+      "sha256": "7f55a86fc124e181961217f3986b624eaa2b9ec52c86fb0d19d39942ae319c78"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-answers.json",
+      "bytes": 186,
+      "sha256": "d071b0c272a78fa65542e3eeb28e7e10a36f9c187df7802f75527aeaa6c787ee"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "9250c0621a5aa48737d559e2036a101daf8b01fe05101beeb580619342e428c5"
+    },
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-starter-kit.zip",
+      "bytes": 46993,
+      "sha256": "dce5426ecbe5d5ff7c4e6b709c3fb40b5317a9834072005a72d0fc46a2323a6a"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-worksheet.pdf",
+      "bytes": 64652,
+      "sha256": "4ca3203e1a6c6e6bca5d5502f4564a6f5fb4f21c94b3edf4614407c5857d7692"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-ai-starter.md",
+      "bytes": 4909,
+      "sha256": "f5e53f08c3383b047fe3c2b19b561c1c46111215fc5d780a0c3af876e9d08b75"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-prompt.txt",
+      "bytes": 3046,
+      "sha256": "75d95413e342eb0a6880b30abf441e00fa93f43a80a7ca4275cc9788f35f76df"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-worksheet.csv",
+      "bytes": 305,
+      "sha256": "67df7c5787e015073a770fe7dc4151ac6f51db1c1c0f417579e437718e953002"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-answers.json",
+      "bytes": 186,
+      "sha256": "a819eee52945be9abd30368b66d1251cfb4525cffec4e1785a1f5821bf175bc2"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "7c19b379239addd2c5a830b1f571b4e49f6eaa613fadd95869a6f19b7f51aba4"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-starter-kit.zip",
+      "bytes": 47687,
+      "sha256": "0d57861c30f6a1d763f7a28e25759274c5c8aa189030ddba0d5eea327177b01f"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-worksheet.pdf",
+      "bytes": 63687,
+      "sha256": "c32774589dd9d701a4daa8deb61b800a1aff016b89fd07b34d8505b395d558d8"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-ai-starter.md",
+      "bytes": 4836,
+      "sha256": "90eced681263984768757e7111473dfdda636e0e4603aa83f5e203b150ec3a32"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-prompt.txt",
+      "bytes": 2982,
+      "sha256": "0993176ee2a6f438a219284f1205c697f79921fc7ebb7f9b302e52abb03a6a02"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-worksheet.csv",
+      "bytes": 272,
+      "sha256": "7d769e15ae39d4a857e6e93bd2ac87e4ed3c73e89fabbc071c74d900e230ac2d"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-answers.json",
+      "bytes": 174,
+      "sha256": "ef07c3707e482b3cb1668c875c6be05a044861a5cab95979d0f0d3d645094931"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/READ-ME.txt",
+      "bytes": 1340,
+      "sha256": "27b1b434af76d0edd102112f4c1cb3ddd7d4c279991c520a4e41be738c72bf82"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-starter-kit.zip",
+      "bytes": 46522,
+      "sha256": "950268f87eb1566b1491200025c4eefe2c4fe7135ab85cee289be230e1f6fb57"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-worksheet.pdf",
+      "bytes": 63280,
+      "sha256": "8c522c155dcba314c75a3840c454cec238cb6beb4162daabda4e85883ba4c141"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-ai-starter.md",
+      "bytes": 4851,
+      "sha256": "951bf97f8387b5f6804a01ae8dceed943649eee1b71c1c1da8a2ac6ccee8a029"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-prompt.txt",
+      "bytes": 3020,
+      "sha256": "42cb47f303dbcd212c51931144d3c49951bce5251a8b3fb86efc988a03a3633e"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-worksheet.csv",
+      "bytes": 314,
+      "sha256": "b3f8d295200cafa1c8f8ec3af557115e37473ee7183a1e9e0913c3b1ab34e9b2"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-answers.json",
+      "bytes": 186,
+      "sha256": "934e66224633b5f7f63ab71006e880f996a82d3e41c1e30d1cc2106dec382c72"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "fb3f98d571672c3f9510c91861d6783c93fe04d4cfd19092bd3bf28911f08edb"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-starter-kit.zip",
+      "bytes": 46190,
+      "sha256": "9fb3aebaebe6f198c21d8ce6a695614297215872b2e4d18f75f53677c3ff3fc1"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-worksheet.pdf",
+      "bytes": 63243,
+      "sha256": "58272ccedc8d1c80bc6b2a7e66d844906bb46a72553cd569d5adefb69cdfc165"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-ai-starter.md",
+      "bytes": 4974,
+      "sha256": "ceb33a8d601793f835a920d892f3fcbb10669867ac9e6907fd0203c6e36a67a2"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-prompt.txt",
+      "bytes": 3069,
+      "sha256": "72d9feaeef3cdea494a0823a90a206ad179faf640f9da2cace8d5ced45a3fb11"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-worksheet.csv",
+      "bytes": 311,
+      "sha256": "628dd9e91c378c5b59cf64f35a9622aa026d24a68ec4c9783247f9f29142288f"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-answers.json",
+      "bytes": 201,
+      "sha256": "118084110f493458a45f5c6adb90eeb2de8df1a9d04ff4026e2b003178928612"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/READ-ME.txt",
+      "bytes": 1367,
+      "sha256": "ca9113fcc9f05f0758687aef2c930aa6fcdc2d41b2a76c1161eab99b2bc6cd69"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-starter-kit.zip",
+      "bytes": 46176,
+      "sha256": "dfe444d0d7269eed27ceac7ad2d36cd016b3cf60be1ea60edbecd776ad9b73dd"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-worksheet.pdf",
+      "bytes": 63998,
+      "sha256": "9b9f4e0280cde4fde81f2cf40fb79bcc90652816e2352f7e5c7e75902ed3eaa6"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-ai-starter.md",
+      "bytes": 4930,
+      "sha256": "c9cea780f87b63bd2937636c15e6ae1786b8c7ba4d1eee91ba765891a3a85d94"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-prompt.txt",
+      "bytes": 3073,
+      "sha256": "f106fb58fa9dda03ce43d5e3e3ea040d30853ac6252082b2775e689f3ff588bd"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-worksheet.csv",
+      "bytes": 362,
+      "sha256": "8190efe9205fcb07261984574bed47b3e80d7eeb9af9ea2773fe4d711d5e9987"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-answers.json",
+      "bytes": 201,
+      "sha256": "e70961865fe10baf0b2721f526553acb0e513920792d73f1061c7301db833c4e"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/READ-ME.txt",
+      "bytes": 1367,
+      "sha256": "92725ab4479e1b4761cc72c3ccd732d604cc22d8b57c4b72ac7a491673996a4c"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-starter-kit.zip",
+      "bytes": 46958,
+      "sha256": "3d050e72ed873c4643e1e9ff568a4523c623a51440c9f5c68195f5c01c20c6a7"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-worksheet.pdf",
+      "bytes": 63755,
+      "sha256": "e3cf49d1eba96ad8288ac40565f45a7ea6b54eec55ef2bc4f4d83ba671cc5ff1"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-ai-starter.md",
+      "bytes": 4852,
+      "sha256": "23747197cba639d79ca53f0f6d0aaa40234145f81fd075ad96bfff391824d378"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-prompt.txt",
+      "bytes": 3027,
+      "sha256": "ffb31b9b119657ccd00edefa6f5507a9dd5f40454522c22eb291f7c6389e20f4"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-worksheet.csv",
+      "bytes": 377,
+      "sha256": "b5591671ffbe612ce61f98a5f0b4a1872afde61adbef7f328f9accd336256ab3"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-answers.json",
+      "bytes": 186,
+      "sha256": "5c853f10c44842ca44901293d2304c07d4b7e45d2f21f6878f947a069dfba4ac"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "b624c3b99cdde0fb1d680fdc608cb3d34e7a41a4a6865b221eac304d3e19b866"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-starter-kit.zip",
+      "bytes": 46651,
+      "sha256": "f621bddcd8ca875034df1d2789b71d73091fd5cfda65cffde5ef421971f66098"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-worksheet.pdf",
+      "bytes": 63489,
+      "sha256": "832ae35c6d45830b1e9af267290ef8637a03e0b2f8bcb1258a1309fc8741257c"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-ai-starter.md",
+      "bytes": 4701,
+      "sha256": "775a684358f81680b3b60bac3a176310100355068f14ecbf72832a55ab503973"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-prompt.txt",
+      "bytes": 2882,
+      "sha256": "c868949ea16063bcde6eeb44d4962df6496160e6cc498f43f4338be5edae0ee8"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-worksheet.csv",
+      "bytes": 281,
+      "sha256": "c7e474c44c7b25a9f223feac0000a9c5f063f68c929702fc989c60848abc2572"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-answers.json",
+      "bytes": 183,
+      "sha256": "f89837c398863c82a2cdc8772908704cf257eec52004c837d4b5a62a770dc745"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/READ-ME.txt",
+      "bytes": 1349,
+      "sha256": "6903a1d01577a9b06e23b2f0da0a3049d7b358ce491c7303352fc3f27131241d"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-starter-kit.zip",
+      "bytes": 46380,
+      "sha256": "30122126181e16715b5e03e52771f40ac762c3ba52c5cddd7ae5c555622364b9"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-worksheet.pdf",
+      "bytes": 63062,
+      "sha256": "0c0d721e1db28ec7139978a20b9e6818de786ad2edd6d3239565c71c4100e676"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-ai-starter.md",
+      "bytes": 4797,
+      "sha256": "2d405626b23749cd9d1c64260fa74df692d1ba5a2dd606031bb199abd1906557"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-prompt.txt",
+      "bytes": 2970,
+      "sha256": "522c6028749a533abfb8a955e1b3c4e34d1ca1873afa36fa849cd234abadbc41"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-worksheet.csv",
+      "bytes": 314,
+      "sha256": "2d6c359c672e8313cb3647dac19211a0cb858aac9be8d5aaca5ddf4960e60264"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-answers.json",
+      "bytes": 183,
+      "sha256": "c4395b058c613fb0746dcda3398279e68d84b319f38f91ae77f00ba60dbeb9fa"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/READ-ME.txt",
+      "bytes": 1349,
+      "sha256": "c947314caeb396a666748c8285d75917e9b1aeba8c67ba85fdcbc61e0c65009c"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-starter-kit.zip",
+      "bytes": 45906,
+      "sha256": "020ef53b050b9103a732fafa4eb6eb46dabe3c9fc184d34be9e0bb3e4e5fad96"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-worksheet.pdf",
+      "bytes": 63100,
+      "sha256": "b6366c8372e16ae6349f0ac1d59a639459b069ed276b6295805fd306ab9c32c1"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-ai-starter.md",
+      "bytes": 4897,
+      "sha256": "673a3f45cce3eb35cad37e7b8a11c01c7240819287351a775d8e2573ddd11526"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-prompt.txt",
+      "bytes": 3003,
+      "sha256": "2a86c4e9fb56285ec7ff5e3005244d65946962202629234a1352545e49326044"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-worksheet.csv",
+      "bytes": 293,
+      "sha256": "3417382d482b4b0b409a37fd36bf08f79f8a916498db3f04b05af0b5f5583967"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-answers.json",
+      "bytes": 183,
+      "sha256": "e97ec08f27c77ad03ecee0d349136281f3ae45854c3807b9a915e72a94825128"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/READ-ME.txt",
+      "bytes": 1349,
+      "sha256": "81f698f5e2351a5a970104f2db6a82c55b2df9eafe3ab6ff0e4e32da8099f83a"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-starter-kit.zip",
+      "bytes": 46048,
+      "sha256": "57581d683e2886e06f4907e50d8b33f37a58e6526da4d41b4b128bfcbae788bf"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-worksheet.pdf",
+      "bytes": 64083,
+      "sha256": "104f47f29a2497d6862e9ae65cf6d566bbd2967e320662d35161e25694b268f1"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-ai-starter.md",
+      "bytes": 5265,
+      "sha256": "be039410a8de34ba08a24a78a476bb74d011701a176d35f43b288353ad6a13cc"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-prompt.txt",
+      "bytes": 3279,
+      "sha256": "a9285055c93d2aeede4de5482af4f16d4723eb875578fde54093c12b23a5110f"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-worksheet.csv",
+      "bytes": 404,
+      "sha256": "cf46a5c98cbf4d51acb4b6d7f8be7748ad30468aa1e298bd98b9ed7332dbcfd4"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-answers.json",
+      "bytes": 201,
+      "sha256": "5247c1961f28c56b482b94402a6001b01333d99d6ed721cc3087f7a58a6ab22b"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/READ-ME.txt",
+      "bytes": 1367,
+      "sha256": "30a37b7bf6c59ef8ca0121defc914e56dd3de13b9c3e8d355101acf87d6ebe6c"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-starter-kit.zip",
+      "bytes": 47116,
+      "sha256": "40d7880e5d3bebc07582b12957315ab9add383774f92bcafddced66f75292836"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-worksheet.pdf",
+      "bytes": 63284,
+      "sha256": "e0dc0bb07e41b2e78e14e9a9e6d74e48efa63eaadc5abe0103a1fe559235c16a"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-ai-starter.md",
+      "bytes": 4876,
+      "sha256": "87b63e15f296db78ff4d690fc0196bde432c60287d37f225601d7e78c9d13bf8"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-prompt.txt",
+      "bytes": 3064,
+      "sha256": "bf8e5e5d4d3444884a90bcac870ee0424ab9986a07533b824c5d76f4b58cdb88"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-worksheet.csv",
+      "bytes": 326,
+      "sha256": "371b885b5109bf439d2712c9a4a9816f208cd6d03346bf203cd06437da7443cf"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-answers.json",
+      "bytes": 177,
+      "sha256": "f2c5cad60223f305101e6f703c9ba8a8f43dbb676d81879ba312bb4d4a4e9672"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/READ-ME.txt",
+      "bytes": 1343,
+      "sha256": "8c5311504073a4de74c2043bba59b46fa27ed7cdd86865b6ff787cb7a7a86732"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-starter-kit.zip",
+      "bytes": 46191,
+      "sha256": "a1ebb5db4e9db23772eca7f7905176f9b96ef48c2f3bf983e5e1a110dce5401c"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-worksheet.pdf",
+      "bytes": 63551,
+      "sha256": "26663001d5c07c5ede66cc9ee8aa41ab85abc48fb9a92adf020dab4b19b56aae"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-ai-starter.md",
+      "bytes": 4908,
+      "sha256": "d5348620ded058a1d414193c6c3ab4eedb97c806c44dc79569a8d269b161462d"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-prompt.txt",
+      "bytes": 3039,
+      "sha256": "71a1a9cc2d2a499a36073dce498d934d19a2b47571e86a8afebea6ad7299a83d"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-worksheet.csv",
+      "bytes": 377,
+      "sha256": "0a5724d3dec00660ccfcf12dc3ac8b81e951d07e2a23d7524beadfa0092fc43e"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-answers.json",
+      "bytes": 213,
+      "sha256": "3d033fdacc911b7c260a89cfb77e7ca8265d88ae70b9d1c0e348d5ac06d8972b"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/READ-ME.txt",
+      "bytes": 1379,
+      "sha256": "51792935828ee1813117864886e10b65764d78b11dcc369596a72e4fc920393b"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-starter-kit.zip",
+      "bytes": 46451,
+      "sha256": "39c749c3b9dea90e2b1b80b79e147abe8d5f3c43922379e5e838713b70f628c2"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-worksheet.pdf",
+      "bytes": 63073,
+      "sha256": "7e9d3a986e97ad1a1d1a717275c88a0cea40386ab2ffabdb01caba806a50809b"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-ai-starter.md",
+      "bytes": 4981,
+      "sha256": "d42f8e7a8a59d7a5f52d6843c5e278d6fe621645f9e4ea049a4dc17eadac9676"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-prompt.txt",
+      "bytes": 3083,
+      "sha256": "a0b62719796f3a61d6fe0ed60116f442ba0ed17a384685c2073875e0295d4333"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-worksheet.csv",
+      "bytes": 338,
+      "sha256": "759f912c26c9967c7b8000550c534d02b00c8842429d7295ee81a3af69395cba"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-answers.json",
+      "bytes": 192,
+      "sha256": "7faa138e8a3f3539268c122bd12d496bf6aee17c40e3961aafefcd58130e3e47"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/READ-ME.txt",
+      "bytes": 1358,
+      "sha256": "d2423538d106c716f334ee425ced6a255a722a4b0a3ae4971e3af6f8ff06213f"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-starter-kit.zip",
+      "bytes": 46039,
+      "sha256": "aa8420bde724ab58cc3328fc856e6565619009d115bad2e51dd09ad6b63d2995"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-worksheet.pdf",
+      "bytes": 64269,
+      "sha256": "4ee2e34498a01c5d2aff5d576d20c8836b531a3a8206c6d48dd01cf37f98b229"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-ai-starter.md",
+      "bytes": 4918,
+      "sha256": "9dfa88a1fa8b05f978036e42cd33b79a2607378af8bfc0822a11014892f05ddb"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-prompt.txt",
+      "bytes": 3030,
+      "sha256": "1178ce9eadac6f9f3dbaa2ac706bdc91053f64204c4ffc330080ef4807c628e3"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-worksheet.csv",
+      "bytes": 344,
+      "sha256": "7b6b599aee41e1e6836152a63dfbffb880281ccd08858f89f60b1090ae89d5e0"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-answers.json",
+      "bytes": 207,
+      "sha256": "a0f18b4e17639312986de134e1a440753472d147e16e24d570c0591d7cc424a5"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/READ-ME.txt",
+      "bytes": 1373,
+      "sha256": "d226a47b61c923d997eacf7b0c67d0a88913a2470019918cd85d484b0b67d05f"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-starter-kit.zip",
+      "bytes": 47241,
+      "sha256": "e7edb9fd2de37672417431f81f8dd717c422de8827cd73470e8830b5d54b2835"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-worksheet.pdf",
+      "bytes": 64429,
+      "sha256": "af17071e91c467a0d81b4e2944311c2b72bbe63f1473ea491ef2da1fa87e0f79"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-ai-starter.md",
+      "bytes": 4851,
+      "sha256": "86d83ebf0489e6f15dba4da7d1b6abc03c71c7b4e06196febf56a6599fb7f55e"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-prompt.txt",
+      "bytes": 2998,
+      "sha256": "27af97312677a0e78e1271ef0dde9824adb3ba6420576f3d0eefcdcc4cca5f6c"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-worksheet.csv",
+      "bytes": 329,
+      "sha256": "76a426b0ee105ce89e0428c9124be43b633651c92eba1a85589ac4e3ea553df0"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-answers.json",
+      "bytes": 198,
+      "sha256": "e1fd410f5f584b85be73cb69cfbe76a5e6d4706dfb21b1c07e8650c38ba34010"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/READ-ME.txt",
+      "bytes": 1364,
+      "sha256": "c9d129d733b83c10a4626a7c0347656c13e6a9de9a48dbb3f10c1d6884f80554"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-starter-kit.zip",
+      "bytes": 47379,
+      "sha256": "0a0208b01899e4ec7fbd62b09b8639d7147153673c9a5e53b83eb10cc8103203"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-worksheet.pdf",
+      "bytes": 62623,
+      "sha256": "0309f4e27d3d29655d5b62f80c273cdf3895869fa23c426fc53eac3cfacf967c"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-ai-starter.md",
+      "bytes": 4887,
+      "sha256": "4e3de11b6fd8b65f95d03c7c11427074062993fa60de47c5ef11780b66b2161c"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-prompt.txt",
+      "bytes": 3061,
+      "sha256": "e87c860ad2cfd5869ec921a82ea21cb165248a39ab5c0b868ebafe8281dbb319"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-worksheet.csv",
+      "bytes": 320,
+      "sha256": "a7ed19b4d03728d337eb975d77e19855431cb9af40745abd88fc3e5ef474342f"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-answers.json",
+      "bytes": 171,
+      "sha256": "fcbbf050bb7a2cd37a16fe43a2694bb412c8853b39fd204bce3507254b35b93b"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/READ-ME.txt",
+      "bytes": 1337,
+      "sha256": "73b1c405da067bb7af4bebb39f95965053034bcfc01a19c8d2329c4cdf2af70a"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-starter-kit.zip",
+      "bytes": 45453,
+      "sha256": "ae409ad0cec6c9f02f221c63f53077a1508c4e5da0f6efad34d888f9d6bee134"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-worksheet.pdf",
+      "bytes": 63971,
+      "sha256": "38ca61eefa1a66de0a1a2fc1a4db82e61568041374ecc893c3a74a21c222bb5c"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-ai-starter.md",
+      "bytes": 4876,
+      "sha256": "95a93b483638d33b2046d35f4163c45f249b62e42208bc4b4254529941b52bb7"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-prompt.txt",
+      "bytes": 3047,
+      "sha256": "0b019cf18531b68ac6ad8b4c3af223b1214237983a7b8f88076b08c5c5a3ccd5"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-worksheet.csv",
+      "bytes": 371,
+      "sha256": "22ebe5fa0e4f41cdaa9b72b44dd1b80e39b2ae2fd2d209520c77f0c14854bdc5"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-answers.json",
+      "bytes": 219,
+      "sha256": "3596f3f79f388aec71bb3b99a4d4392758f7943eaa65b2a45dc33c0c3b18c371"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/READ-ME.txt",
+      "bytes": 1385,
+      "sha256": "da85a5a15016b2abfb1711cebdfd38237c8b99eb8b26291d15fceb67b2e0cd34"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-starter-kit.zip",
+      "bytes": 46896,
+      "sha256": "3df990757426e5d0516705b0dc91c446981328de89cdd1eb384bdf75744a5ad9"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-worksheet.pdf",
+      "bytes": 63692,
+      "sha256": "6bccc46bb36536b083697bef4f4a4475277ee8b31d221d7ab0460e52b1547f33"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-ai-starter.md",
+      "bytes": 4871,
+      "sha256": "c0fb1245497f9d0f093613a2f48e5d0ad78cf751a5be5b880cbe6e9a8c02bd5a"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-prompt.txt",
+      "bytes": 3049,
+      "sha256": "d4cc3302e159462434ae7748759dd0cb60ba91df11513276f88ffc06657b2081"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-worksheet.csv",
+      "bytes": 349,
+      "sha256": "30cab52f5f294bc6516508de7739715535f05eb4d10fdea3f3e765d994d53635"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-answers.json",
+      "bytes": 186,
+      "sha256": "791b91c6aff7a9fd5b074c613571585723e105974fdb7d4fe69b74814c5f87bf"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "f3f916a6a88390c515bb0166ae90e8310d88b6c09404aa71a8d41d50af1825d3"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-starter-kit.zip",
+      "bytes": 46611,
+      "sha256": "84d008cd30858f79cb6dc1bfdc8c6bb35221d9c111a20f04b13ff61ae24d0680"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-worksheet.pdf",
+      "bytes": 63062,
+      "sha256": "52088d43c8241aadaf4434f832581fa8bfd041d5c5ae8139d4f592d514210df5"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-ai-starter.md",
+      "bytes": 4762,
+      "sha256": "858c4584f406734cc8ce72b2db0fc7a9066d7d602754a615899a0c7bf148e726"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-prompt.txt",
+      "bytes": 2990,
+      "sha256": "d01dc19758ca74b8655e58e4a5934924b4e43a14b680123e39d2b9a860e21ca3"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-worksheet.csv",
+      "bytes": 328,
+      "sha256": "a24d7ffb0fb372a1b382494c3af0b141b7ae90a9ad5b9a5973a3aadf795b61ce"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-answers.json",
+      "bytes": 189,
+      "sha256": "749d3b52d5a5b19bd0c8bbbb67984a60ccface7721216c467630fc26682e985b"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/READ-ME.txt",
+      "bytes": 1355,
+      "sha256": "7d3d66960fc7b5f1326ef9c486dca5878b2e6ca9b117f65850c07f19bf482718"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-starter-kit.zip",
+      "bytes": 46053,
+      "sha256": "16d0202100c34b4af2fd81b29efd32146cd06b9217e01b452350e4a9c2844827"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-worksheet.pdf",
+      "bytes": 63285,
+      "sha256": "878f88bff0dfecb4f0b4151dd04d550d4cfe2e27522bd9eb00c5409447a8f70b"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-ai-starter.md",
+      "bytes": 4864,
+      "sha256": "e0c86d475fd56d621b4dab7ee9af14aa5abffdf214b28dacf9ef3fb7d0d9796d"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-prompt.txt",
+      "bytes": 3068,
+      "sha256": "9175f0f4f6360b179324c6831a43d695cd828dde2a4aea139de3da07822ad7f1"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-worksheet.csv",
+      "bytes": 341,
+      "sha256": "ae3de8a06b24cb47591f1b0d717316ad970d6d18b65b07a959ede0925bca0bf4"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-answers.json",
+      "bytes": 186,
+      "sha256": "8ba880ce86c23fda57980f753184766c9168af6645cd64c38953575cd13aa973"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/READ-ME.txt",
+      "bytes": 1352,
+      "sha256": "bc6fadbec237db5245aaf873e49df2f31b67a621bf70f63b77ce0304973b59e7"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-starter-kit.zip",
+      "bytes": 46213,
+      "sha256": "c75d913e7653e8b1eff9bd9b7efec56d0a80ba111d52e858aa9c870b42dea9e6"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-worksheet.pdf",
+      "bytes": 63165,
+      "sha256": "5b4034631a04b9cbda4093dc55828f4f1230823d145ed2a2c6e9f6658898e699"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-ai-starter.md",
+      "bytes": 4949,
+      "sha256": "92dab890d25ba71db623d85ee839f78ea72bff79271b86947457ff27e445ac71"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-prompt.txt",
+      "bytes": 3095,
+      "sha256": "1a09407e0299182a53141f960c5585f9d155e82f7164516be41922d73af3e112"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-worksheet.csv",
+      "bytes": 341,
+      "sha256": "81e5c04ca99cd4d781e975f99c2e808cfd9464c365f719825dba21975e0f7ded"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-answers.json",
+      "bytes": 204,
+      "sha256": "606febc47772c6dd4f5bb87b632fffd1ee020a9b40502eac0e56c00693b17145"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/READ-ME.txt",
+      "bytes": 1370,
+      "sha256": "ae1581f32b1615e193c91f9d91e42ee5476efaec2148b1aae84b60143f50863f"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-starter-kit.zip",
+      "bytes": 46044,
+      "sha256": "fdb656395a8ab676a90fd0e14eab430ec112c84c8f6241330f50622fd3c63717"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-worksheet.pdf",
+      "bytes": 63166,
+      "sha256": "a12ac70c0f1daa4dbf2a16b5a52afe4f2fa70c9d2b8c024d3b31cf8b1be34b8b"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-ai-starter.md",
+      "bytes": 4873,
+      "sha256": "23f09996da74123279e2503d59b174e985122e9de6dee30c2ea3406ef1c0fa38"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-prompt.txt",
+      "bytes": 3021,
+      "sha256": "b30f539d5166ae246573e9d2dd047be3238cfc0a437a033525833e499596e280"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-worksheet.csv",
+      "bytes": 332,
+      "sha256": "9125c9e37ae10712b3ec701d0e5907d2171c4ce45ad938b5d8aba37a37997d77"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-answers.json",
+      "bytes": 192,
+      "sha256": "40dac08ad529c433b3a05face3d2318dbef2d53a6f33156069a36062ef04d7de"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/READ-ME.txt",
+      "bytes": 1358,
+      "sha256": "c2ee4084785d4b2a90c91b1f49fee1af29fa5dcd5b1ba969426d72781ff14860"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-starter-kit.zip",
+      "bytes": 46192,
+      "sha256": "1f3f815c0b3ba72c04f034bc9c215b99d6c52ccf38fd5bb39859e87374aaf08c"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-worksheet.pdf",
+      "bytes": 64016,
+      "sha256": "7e8336ab420ed3b725b6d0d168c8fb07e1b4bff2ce14fd66069356d976cf2333"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-ai-starter.md",
+      "bytes": 4845,
+      "sha256": "eeac61b372d5542a39d5b9681a5fd65e44f361a97fdc7de75a2628fc52c576b7"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-prompt.txt",
+      "bytes": 3034,
+      "sha256": "1b9d027773a2bbc16b2b5b87d4bfea2157a7c62143d9b135167862117572407c"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-worksheet.csv",
+      "bytes": 341,
+      "sha256": "52f578e6fcfa4433f8382fc9f9c1dd49396baa54dc040aa7c8be715a1f358a4c"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-answers.json",
+      "bytes": 195,
+      "sha256": "609c6d615c5d39d91de227358d3424b4df7c9d8cc32ff0cdbb6819d097149a30"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/READ-ME.txt",
+      "bytes": 1361,
+      "sha256": "f053de061ff81bfbb135fe8fe250c28c601e70a76aed3ce7ca13e7bf8ae9385a"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-starter-kit.zip",
+      "bytes": 46947,
+      "sha256": "48527b36e564854fe2af926ad91b73cd0fedc93d9484bb272bcb477af11aa468"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-worksheet.pdf",
+      "bytes": 63933,
+      "sha256": "7aa872d7ccc75612f1a0d4a8d6468a005fd2f41e41b3749816a3767ee56539a7"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-ai-starter.md",
+      "bytes": 4979,
+      "sha256": "49cc188a81395a0a52b5fa0da30ff57b6817de9f6740fd931476c3cec7841068"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-prompt.txt",
+      "bytes": 3079,
+      "sha256": "01988d98dd0167fc573b55d5ba210e55d398a9cb676b3220be9e68d90ab36e38"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-worksheet.csv",
+      "bytes": 347,
+      "sha256": "9469c977fb303426ce143bf0896c6ac2d7416f688470e4b7791d2561c2e9ca4e"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-answers.json",
+      "bytes": 192,
+      "sha256": "97ee2f20a68108c6763d5de0ae5f19a42d3a1485ccc785a9dfb7f37584f24d66"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/READ-ME.txt",
+      "bytes": 1358,
+      "sha256": "48c35073300aa95bccb011dabfaff46507d20bc3ce13ee24fc4a1f7a7e4c14b5"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-starter-kit.zip",
+      "bytes": 46873,
+      "sha256": "059a3c3dad668d948ac2927d5157ea41fdc4a6fa80dde5aad9d44f2909359abd"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-worksheet.pdf",
+      "bytes": 64323,
+      "sha256": "b865ad8cbe23abf484d6fc034fff583476a918e45b2a3f98f9f4a234e95c5889"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-ai-starter.md",
+      "bytes": 4915,
+      "sha256": "d8c672194b3b68b094b6d6dbf2e84d1b9f88b3fc6bb3e699f1e7fdee7d5e93d1"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-prompt.txt",
+      "bytes": 3075,
+      "sha256": "119e086dcb699679af0b983f04674bf941de7d15da96516c9fd491c070398c00"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-worksheet.csv",
+      "bytes": 380,
+      "sha256": "573f763d6aaa9bc2a7158443c54a8570651202d2ae60492fb7a2b904be55a3a4"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-answers.json",
+      "bytes": 210,
+      "sha256": "033ce349c0a296ff273f185ba99c4b58d923c755616cb4b3d707624f5819aa37"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/READ-ME.txt",
+      "bytes": 1376,
+      "sha256": "c5432b4555ad681c5745aea2b1b0de12d62e59e77ec56a7b25ecbd25a9705cc2"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-starter-kit.zip",
+      "bytes": 47260,
+      "sha256": "7f09f6be70163d044fb1b2692f60b7b285356ca32c5a6d16e8bf633a79a2415b"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-worksheet.pdf",
+      "bytes": 64279,
+      "sha256": "c14d88ab5a64a24234129ccbd4fb5495ae848e8859756256029edb7ae2677189"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-ai-starter.md",
+      "bytes": 4921,
+      "sha256": "59bd1ec5449b28e2fe01fba3f23ecb355dfb45d8c765fcccd49685cbef2f645b"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-prompt.txt",
+      "bytes": 3093,
+      "sha256": "59c48ffe9544f2bec9c2b4319fc89770774311c776c776bf1d7c9bfbb3caa6e5"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-worksheet.csv",
+      "bytes": 392,
+      "sha256": "51f96941c66908d2ad354437716218286aa737873f6f49e2ce9cf469bfe6bb8a"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-answers.json",
+      "bytes": 201,
+      "sha256": "21e29f05d83db66fd40c5e5165c234609eaf75026b01a0fe07cbd15f84178eae"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/READ-ME.txt",
+      "bytes": 1367,
+      "sha256": "516756ac14d27a3a39775b1a08a3b9eddf507bd1ed9ed1e700c3fd699a551a26"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-starter-kit.zip",
+      "bytes": 47308,
+      "sha256": "48400170a5591ce667f53cf8dc628ffc94e645091b89cc5bdd788f60b8012301"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-worksheet.pdf",
+      "bytes": 63839,
+      "sha256": "52c2efb87e5b54ff1ed3c0add50038c8e276624fd597f315cd1809794d668c54"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-ai-starter.md",
+      "bytes": 4937,
+      "sha256": "a65823f36dca973e62ffe6de4f6dd7fba6ba649c964cf4b5ee66384b1ea79c11"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-prompt.txt",
+      "bytes": 3056,
+      "sha256": "fd5158efbc0493b9f456f54686daeb730e07e85a6708be2604f26909be34c3c7"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-worksheet.csv",
+      "bytes": 356,
+      "sha256": "cd77ed9ced8fc4afe804f3d13a203caf2b243ec00eccc5162cb5c31f5d1c332a"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-answers.json",
+      "bytes": 204,
+      "sha256": "c242f305911238a6ba201da000c8cf4b3df52e803405b03b1472bee76d2d8250"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/READ-ME.txt",
+      "bytes": 1370,
+      "sha256": "1a66cd5a1a20aa0cbc343187357410ae376ff23d0d48fd64832d34f4e93cccca"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-starter-kit.zip",
+      "bytes": 46691,
+      "sha256": "d8c2233fb84b455e9e15c3f575b16f4ae42a287ad6cd9986da07d560ba2f836a"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-worksheet.pdf",
+      "bytes": 63920,
+      "sha256": "dda5a356be8c0032561d3c06542f29b16bbd080f84fb94037973eec5a907ea34"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-ai-starter.md",
+      "bytes": 4948,
+      "sha256": "194ec537db4e11141b86a224e21099efdda1720f4b3adc748af77ee8f607fd9c"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-prompt.txt",
+      "bytes": 3087,
+      "sha256": "ac9bb39b26b0d37c5d432d7082e077db937a4254e89a54da5061a02ea6d8af3b"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-worksheet.csv",
+      "bytes": 341,
+      "sha256": "0e347385ea2bbe59682ecd75949b1f2f3b152b53f5481843b3a68a71ae7f764f"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-answers.json",
+      "bytes": 183,
+      "sha256": "394c3f309631f0f32044d7fe714487dd8d0b21834ce38f03c43091cb5c62e280"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/READ-ME.txt",
+      "bytes": 1349,
+      "sha256": "ba91f7e95122c34b88aedcf477cb0d73737928bc11b7d82c7d1b2dc5e40ab0f8"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-starter-kit.zip",
+      "bytes": 46846,
+      "sha256": "ef77a8416a8c27f8b21da4719783e87de25646769930edb898effd6ecc744ac3"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-worksheet.pdf",
+      "bytes": 64119,
+      "sha256": "90e0d32f1b844605dd43c3d124dad3a51f1c551962f0a50c75f3b33d86d9d08e"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-ai-starter.md",
+      "bytes": 5013,
+      "sha256": "9606d2cea89ae2dea2e37b2a055904b716e9d6df4f6fc81e719328742d6b0032"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-prompt.txt",
+      "bytes": 3107,
+      "sha256": "1261e9ee1d6a772017fc5cd7b345d70d462940005a3c4f6c5f2679b85983d6d0"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-worksheet.csv",
+      "bytes": 377,
+      "sha256": "66c2ceedb354d79cb2a17acaec3cc15670e6cc4e74d00fff30630c9778e1e10a"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-answers.json",
+      "bytes": 201,
+      "sha256": "5513b7a59335de332d9ac139197b5c195772e3e24d949efa7805a7d1370a2b85"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/READ-ME.txt",
+      "bytes": 1367,
+      "sha256": "316fe8a010ce0720afe5884dbb3682a54ddebff85e1f3b25279fd4e7f1818f8b"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-starter-kit.zip",
+      "bytes": 47041,
+      "sha256": "899f099b02c7a1a4f3e73c4b36f1493926eb76eda0ed70c2805b46eff703970b"
+    }
+  ]
+}
