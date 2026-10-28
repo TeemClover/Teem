@@ -22,10 +22,22 @@ test('exactly 30 stable topic paths have distinct matching covers, PDFs and kits
   }
 });
 test('every published format has a checked path, length and SHA-256',()=>{
-  assert.equal(manifest.files.length,210);
+  assert.equal(manifest.files.length,240);
   for(const entry of manifest.files){
     const file=readFileSync(path.join(dir,entry.path));
     assert.equal(file.length,entry.bytes);assert.equal(createHash('sha256').update(file).digest('hex'),entry.sha256);
+  }
+});
+test('the direct gift and upload instructions precede optional LINE, with full-text fallback',()=>{
+  for(const ep of catalog.episodes){
+    const page=readFileSync(path.join(dir,ep.slug,'index.html'),'utf8');
+    const gift=`/start/files/${ep.slug}/${ep.id}-ai-starter.pdf`;
+    assert.ok(page.indexOf(gift)<page.indexOf('id="work"'));
+    assert.ok(page.indexOf('id="work"')<page.indexOf('href="https://lin.ee/rlSlhzT"'));
+    assert.ok(page.includes('id="copy-upload-message"'));
+    assert.ok(page.includes('ถ้า AI แนบหรืออ่าน PDF ไม่ได้'));
+    const text=readFileSync(path.join(dir,'files',ep.slug,ep.id+'-prompt.txt'),'utf8');
+    for(const content of [ep.id,ep.title,ep.outcome,ep.prompt,ep.action,...ep.fields,...ep.clip_points])assert.ok(text.includes(content));
   }
 });
 test('HTML links point to existing /start files and the hub works without JS',()=>{

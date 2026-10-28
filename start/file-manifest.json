@@ -1,7 +1,13 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "updated_at": "2026-10-28",
   "files": [
+    {
+      "episode_id": "MC01",
+      "path": "files/mc01/MC01-ai-starter.pdf",
+      "bytes": 59452,
+      "sha256": "80668263128a9b661e57c4a9fb971d6e3fc8b163c44f9c2682ced4b23b088e2b"
+    },
     {
       "episode_id": "MC01",
       "path": "files/mc01/MC01-worksheet.pdf",
@@ -11,14 +17,14 @@
     {
       "episode_id": "MC01",
       "path": "files/mc01/MC01-ai-starter.md",
-      "bytes": 4899,
-      "sha256": "d221b7d9ea36b3dd255d73d914004e3acd50b177b1dab4e258ba0aa3c5d0da5a"
+      "bytes": 6169,
+      "sha256": "68dfab0b2b104feea7906cefe984dd397f750fae4bf44642e907b7f7e616d4a2"
     },
     {
       "episode_id": "MC01",
       "path": "files/mc01/MC01-prompt.txt",
-      "bytes": 3052,
-      "sha256": "0cec49d7af6ec5f29d66f2449f8c86edde89614b05e29aa9561b5e77bf309924"
+      "bytes": 6167,
+      "sha256": "4e4845091188a94ff17be9016c5b1cec3c6ef481e59a35663df6b022658b15e8"
     },
     {
       "episode_id": "MC01",
@@ -35,14 +41,20 @@
     {
       "episode_id": "MC01",
       "path": "files/mc01/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "9250c0621a5aa48737d559e2036a101daf8b01fe05101beeb580619342e428c5"
+      "bytes": 2162,
+      "sha256": "dab51e40edc6e64174e01222fe0ba45ac8e517afe1a48a40626a7e218f713089"
     },
     {
       "episode_id": "MC01",
       "path": "files/mc01/MC01-starter-kit.zip",
-      "bytes": 46993,
-      "sha256": "dce5426ecbe5d5ff7c4e6b709c3fb40b5317a9834072005a72d0fc46a2323a6a"
+      "bytes": 92119,
+      "sha256": "fa004fd724c762719f50951a42d8521ee17f9550f182ae7b2f9dfb8058a20616"
+    },
+    {
+      "episode_id": "MC02",
+      "path": "files/mc02/MC02-ai-starter.pdf",
+      "bytes": 60683,
+      "sha256": "d4e6f099bbd12843bab9b115d068a17bdfb0bf9247af5724a0f279a38037f43c"
     },
     {
       "episode_id": "MC02",
@@ -53,14 +65,14 @@
     {
       "episode_id": "MC02",
       "path": "files/mc02/MC02-ai-starter.md",
-      "bytes": 4909,
-      "sha256": "f5e53f08c3383b047fe3c2b19b561c1c46111215fc5d780a0c3af876e9d08b75"
+      "bytes": 6201,
+      "sha256": "2fd9a6c58559424880a420a058ddf37e0dcce9407ca3204fda042dce90fade04"
     },
     {
       "episode_id": "MC02",
       "path": "files/mc02/MC02-prompt.txt",
-      "bytes": 3046,
-      "sha256": "75d95413e342eb0a6880b30abf441e00fa93f43a80a7ca4275cc9788f35f76df"
+      "bytes": 6199,
+      "sha256": "3b71a1f5516250239d930987e11af26187cfd2fd7f13e3eda2b0a2e5ef97699b"
     },
     {
       "episode_id": "MC02",
@@ -77,14 +89,20 @@
     {
       "episode_id": "MC02",
       "path": "files/mc02/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "7c19b379239addd2c5a830b1f571b4e49f6eaa613fadd95869a6f19b7f51aba4"
+      "bytes": 2162,
+      "sha256": "ae31e567affd247b0007b1383cac941de0d9385e456f0b50c7bb88c81372fb92"
     },
     {
       "episode_id": "MC02",
       "path": "files/mc02/MC02-starter-kit.zip",
-      "bytes": 47687,
-      "sha256": "0d57861c30f6a1d763f7a28e25759274c5c8aa189030ddba0d5eea327177b01f"
+      "bytes": 94094,
+      "sha256": "dbac0d40375dea25322712b70c44acddf2331a04927df04746e06e6b00157157"
+    },
+    {
+      "episode_id": "MC03",
+      "path": "files/mc03/MC03-ai-starter.pdf",
+      "bytes": 59552,
+      "sha256": "1f70bda0cfb6dbd64da9713f24a1b8a2e4f69f29e63b58bac3a64e1782c1df68"
     },
     {
       "episode_id": "MC03",
@@ -95,14 +113,14 @@
     {
       "episode_id": "MC03",
       "path": "files/mc03/MC03-ai-starter.md",
-      "bytes": 4836,
-      "sha256": "90eced681263984768757e7111473dfdda636e0e4603aa83f5e203b150ec3a32"
+      "bytes": 6105,
+      "sha256": "d9ad4bdf7695dc1553ce994be090a24bf7c671b5300fb6dffd230ac6604e5ac4"
     },
     {
       "episode_id": "MC03",
       "path": "files/mc03/MC03-prompt.txt",
-      "bytes": 2982,
-      "sha256": "0993176ee2a6f438a219284f1205c697f79921fc7ebb7f9b302e52abb03a6a02"
+      "bytes": 6103,
+      "sha256": "210aba8ea8a89130567e45b4f30ef162beed82f157d585c6404e3562698ef032"
     },
     {
       "episode_id": "MC03",
@@ -119,14 +137,20 @@
     {
       "episode_id": "MC03",
       "path": "files/mc03/READ-ME.txt",
-      "bytes": 1340,
-      "sha256": "27b1b434af76d0edd102112f4c1cb3ddd7d4c279991c520a4e41be738c72bf82"
+      "bytes": 2150,
+      "sha256": "56f7f49b2c94bbf5df8ca0b462f67b20fdacbbebc7d0b603cb6fbf046fddca1c"
     },
     {
       "episode_id": "MC03",
       "path": "files/mc03/MC03-starter-kit.zip",
-      "bytes": 46522,
-      "sha256": "950268f87eb1566b1491200025c4eefe2c4fe7135ab85cee289be230e1f6fb57"
+      "bytes": 91811,
+      "sha256": "431f965ee5502325fdbc36afe06a55b02f46942746cab81fb6e38bdac60978c8"
+    },
+    {
+      "episode_id": "MC04",
+      "path": "files/mc04/MC04-ai-starter.pdf",
+      "bytes": 59629,
+      "sha256": "cc116d7e0f704237f51713f1572998747824f9c7ab8fb637195def4ff43cdbe0"
     },
     {
       "episode_id": "MC04",
@@ -137,14 +161,14 @@
     {
       "episode_id": "MC04",
       "path": "files/mc04/MC04-ai-starter.md",
-      "bytes": 4851,
-      "sha256": "951bf97f8387b5f6804a01ae8dceed943649eee1b71c1c1da8a2ac6ccee8a029"
+      "bytes": 6128,
+      "sha256": "ccfac9688ae7ec4d45b5c0a91f122484466be7880e2c4ca539a14b1f5cb74050"
     },
     {
       "episode_id": "MC04",
       "path": "files/mc04/MC04-prompt.txt",
-      "bytes": 3020,
-      "sha256": "42cb47f303dbcd212c51931144d3c49951bce5251a8b3fb86efc988a03a3633e"
+      "bytes": 6126,
+      "sha256": "0a6aa3414135c34035dbba3b934ffc3f473266264f179c2076358b977d3ed192"
     },
     {
       "episode_id": "MC04",
@@ -161,14 +185,20 @@
     {
       "episode_id": "MC04",
       "path": "files/mc04/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "fb3f98d571672c3f9510c91861d6783c93fe04d4cfd19092bd3bf28911f08edb"
+      "bytes": 2162,
+      "sha256": "636055320e9a9861a382a81057e45fc4424a9e95262ab8b9716664dead4498be"
     },
     {
       "episode_id": "MC04",
       "path": "files/mc04/MC04-starter-kit.zip",
-      "bytes": 46190,
-      "sha256": "9fb3aebaebe6f198c21d8ce6a695614297215872b2e4d18f75f53677c3ff3fc1"
+      "bytes": 91456,
+      "sha256": "bbb93439218b2ab4f0edfdb0515b4a4e23c4208566e209c76a042447d2206707"
+    },
+    {
+      "episode_id": "MC05",
+      "path": "files/mc05/MC05-ai-starter.pdf",
+      "bytes": 59782,
+      "sha256": "d77ae6538843009ae3f3e938ec1b1c89d7e48d315c4781bb925d10a47eb5153d"
     },
     {
       "episode_id": "MC05",
@@ -179,14 +209,14 @@
     {
       "episode_id": "MC05",
       "path": "files/mc05/MC05-ai-starter.md",
-      "bytes": 4974,
-      "sha256": "ceb33a8d601793f835a920d892f3fcbb10669867ac9e6907fd0203c6e36a67a2"
+      "bytes": 6245,
+      "sha256": "78e4ed6bff015f5844c70e904382d2eb891ab2481bb8f97e9a57d15a453f1aad"
     },
     {
       "episode_id": "MC05",
       "path": "files/mc05/MC05-prompt.txt",
-      "bytes": 3069,
-      "sha256": "72d9feaeef3cdea494a0823a90a206ad179faf640f9da2cace8d5ced45a3fb11"
+      "bytes": 6243,
+      "sha256": "c9101be257f6bcf32b93318419c3c34bd1e178376f5756e795872665673ce6c7"
     },
     {
       "episode_id": "MC05",
@@ -203,14 +233,20 @@
     {
       "episode_id": "MC05",
       "path": "files/mc05/READ-ME.txt",
-      "bytes": 1367,
-      "sha256": "ca9113fcc9f05f0758687aef2c930aa6fcdc2d41b2a76c1161eab99b2bc6cd69"
+      "bytes": 2177,
+      "sha256": "bab245317368e3d20f89577c1c0969fb1b6fac62b8ac40e6c186c67f2d32f225"
     },
     {
       "episode_id": "MC05",
       "path": "files/mc05/MC05-starter-kit.zip",
-      "bytes": 46176,
-      "sha256": "dfe444d0d7269eed27ceac7ad2d36cd016b3cf60be1ea60edbecd776ad9b73dd"
+      "bytes": 91579,
+      "sha256": "6f746cf3865bef17bbf0b2b9f7791f660ff4f015f8fb4821bc083a2c0fe59566"
+    },
+    {
+      "episode_id": "MC06",
+      "path": "files/mc06/MC06-ai-starter.pdf",
+      "bytes": 60172,
+      "sha256": "7955577955e849926496f92b2da522816fdeb82e67f244970385c46a3a6ebefb"
     },
     {
       "episode_id": "MC06",
@@ -221,14 +257,14 @@
     {
       "episode_id": "MC06",
       "path": "files/mc06/MC06-ai-starter.md",
-      "bytes": 4930,
-      "sha256": "c9cea780f87b63bd2937636c15e6ae1786b8c7ba4d1eee91ba765891a3a85d94"
+      "bytes": 6228,
+      "sha256": "5cfd76424e4d0699affb3dd5702e9129d452f0ce21cf15514e2e4a5ec03dc909"
     },
     {
       "episode_id": "MC06",
       "path": "files/mc06/MC06-prompt.txt",
-      "bytes": 3073,
-      "sha256": "f106fb58fa9dda03ce43d5e3e3ea040d30853ac6252082b2775e689f3ff588bd"
+      "bytes": 6226,
+      "sha256": "08eb82ea1591f6f638dd4695230c8bfe6962cdbc9f7a9775c269b51d9e5b6939"
     },
     {
       "episode_id": "MC06",
@@ -245,14 +281,20 @@
     {
       "episode_id": "MC06",
       "path": "files/mc06/READ-ME.txt",
-      "bytes": 1367,
-      "sha256": "92725ab4479e1b4761cc72c3ccd732d604cc22d8b57c4b72ac7a491673996a4c"
+      "bytes": 2177,
+      "sha256": "872aa5641a1583782eff6323c145029f427b47338a80ae4353c8cc3466df5b8c"
     },
     {
       "episode_id": "MC06",
       "path": "files/mc06/MC06-starter-kit.zip",
-      "bytes": 46958,
-      "sha256": "3d050e72ed873c4643e1e9ff568a4523c623a51440c9f5c68195f5c01c20c6a7"
+      "bytes": 92779,
+      "sha256": "6421b956a958ff5bd67be6467f1805248b8f6fd78dc93e0a915631a473cc97ed"
+    },
+    {
+      "episode_id": "MC07",
+      "path": "files/mc07/MC07-ai-starter.pdf",
+      "bytes": 59802,
+      "sha256": "431211be1f27383d43127bf488acd5a3cc0dd897a394e0e67ead3c08eadb9600"
     },
     {
       "episode_id": "MC07",
@@ -263,14 +305,14 @@
     {
       "episode_id": "MC07",
       "path": "files/mc07/MC07-ai-starter.md",
-      "bytes": 4852,
-      "sha256": "23747197cba639d79ca53f0f6d0aaa40234145f81fd075ad96bfff391824d378"
+      "bytes": 6111,
+      "sha256": "1347e657b7ba9fd9001ae98afdd94927b4a3174f31bf910389164a44479fb69a"
     },
     {
       "episode_id": "MC07",
       "path": "files/mc07/MC07-prompt.txt",
-      "bytes": 3027,
-      "sha256": "ffb31b9b119657ccd00edefa6f5507a9dd5f40454522c22eb291f7c6389e20f4"
+      "bytes": 6109,
+      "sha256": "6d5366fefa9e32d216063b524fc2df93895d103dd0a9fe6d2a4ea43714d56c5a"
     },
     {
       "episode_id": "MC07",
@@ -287,14 +329,20 @@
     {
       "episode_id": "MC07",
       "path": "files/mc07/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "b624c3b99cdde0fb1d680fdc608cb3d34e7a41a4a6865b221eac304d3e19b866"
+      "bytes": 2162,
+      "sha256": "2a8a7ca51388ada3d94ac8900210314c6a993d857cf5bc9cc9a1f124561f3a2f"
     },
     {
       "episode_id": "MC07",
       "path": "files/mc07/MC07-starter-kit.zip",
-      "bytes": 46651,
-      "sha256": "f621bddcd8ca875034df1d2789b71d73091fd5cfda65cffde5ef421971f66098"
+      "bytes": 92122,
+      "sha256": "8717a87088c82fbc0e39819cdc998c99af70086aa47771ad6eeec393b4c4b59f"
+    },
+    {
+      "episode_id": "MC08",
+      "path": "files/mc08/MC08-ai-starter.pdf",
+      "bytes": 59777,
+      "sha256": "469627e08231a0cc0443d380e681eb68e493cd7fa286aa8dd19629cae003858a"
     },
     {
       "episode_id": "MC08",
@@ -305,14 +353,14 @@
     {
       "episode_id": "MC08",
       "path": "files/mc08/MC08-ai-starter.md",
-      "bytes": 4701,
-      "sha256": "775a684358f81680b3b60bac3a176310100355068f14ecbf72832a55ab503973"
+      "bytes": 5942,
+      "sha256": "20a1a194ed0aa3854e3fc116aeeae6c8b4e3c00bc48abd49eb044bb46c325f24"
     },
     {
       "episode_id": "MC08",
       "path": "files/mc08/MC08-prompt.txt",
-      "bytes": 2882,
-      "sha256": "c868949ea16063bcde6eeb44d4962df6496160e6cc498f43f4338be5edae0ee8"
+      "bytes": 5940,
+      "sha256": "e6e45df3aac7317272b72b12d7d3206d64db34d4ecf9a912ce7a7fbe64409edd"
     },
     {
       "episode_id": "MC08",
@@ -329,14 +377,20 @@
     {
       "episode_id": "MC08",
       "path": "files/mc08/READ-ME.txt",
-      "bytes": 1349,
-      "sha256": "6903a1d01577a9b06e23b2f0da0a3049d7b358ce491c7303352fc3f27131241d"
+      "bytes": 2159,
+      "sha256": "fbd17eb722056bcae4c7496d70bb811b0f6ce100081bdfe087bc5f0b80414f81"
     },
     {
       "episode_id": "MC08",
       "path": "files/mc08/MC08-starter-kit.zip",
-      "bytes": 46380,
-      "sha256": "30122126181e16715b5e03e52771f40ac762c3ba52c5cddd7ae5c555622364b9"
+      "bytes": 91823,
+      "sha256": "d39aa351decf2a8dfeabb2263821ce9ba3e7e14e33dc71c8a6acb1f432904065"
+    },
+    {
+      "episode_id": "MC09",
+      "path": "files/mc09/MC09-ai-starter.pdf",
+      "bytes": 59469,
+      "sha256": "26116b144c318b3311eee1a112534e71bfa8d3b6abdbe47f98cbc361dfee84b4"
     },
     {
       "episode_id": "MC09",
@@ -347,14 +401,14 @@
     {
       "episode_id": "MC09",
       "path": "files/mc09/MC09-ai-starter.md",
-      "bytes": 4797,
-      "sha256": "2d405626b23749cd9d1c64260fa74df692d1ba5a2dd606031bb199abd1906557"
+      "bytes": 6055,
+      "sha256": "b7fbdfbd2072e3c59f81285e23128cef28ac133fd8002c29ff2a523f2fc78c0d"
     },
     {
       "episode_id": "MC09",
       "path": "files/mc09/MC09-prompt.txt",
-      "bytes": 2970,
-      "sha256": "522c6028749a533abfb8a955e1b3c4e34d1ca1873afa36fa849cd234abadbc41"
+      "bytes": 6053,
+      "sha256": "026009618c2bfedc3dd40174fb7ce340746a6914cd82861df42661098e670bfc"
     },
     {
       "episode_id": "MC09",
@@ -371,14 +425,20 @@
     {
       "episode_id": "MC09",
       "path": "files/mc09/READ-ME.txt",
-      "bytes": 1349,
-      "sha256": "c947314caeb396a666748c8285d75917e9b1aeba8c67ba85fdcbc61e0c65009c"
+      "bytes": 2159,
+      "sha256": "c1c3a6a80b7d79c5ca2e950858814175b66c1c4dbae578e836b7ac51d23f052d"
     },
     {
       "episode_id": "MC09",
       "path": "files/mc09/MC09-starter-kit.zip",
-      "bytes": 45906,
-      "sha256": "020ef53b050b9103a732fafa4eb6eb46dabe3c9fc184d34be9e0bb3e4e5fad96"
+      "bytes": 91067,
+      "sha256": "3279f108d25a595238c188f405fc18c49bd2b3c0d9753ecf3e43a7776d5d5941"
+    },
+    {
+      "episode_id": "MC10",
+      "path": "files/mc10/MC10-ai-starter.pdf",
+      "bytes": 59260,
+      "sha256": "d983cd31beae537c191092bccd8b797753f1c03e78629b465e29dcbfddeae67a"
     },
     {
       "episode_id": "MC10",
@@ -389,14 +449,14 @@
     {
       "episode_id": "MC10",
       "path": "files/mc10/MC10-ai-starter.md",
-      "bytes": 4897,
-      "sha256": "673a3f45cce3eb35cad37e7b8a11c01c7240819287351a775d8e2573ddd11526"
+      "bytes": 6177,
+      "sha256": "0e58c978d53c1623bb6f4f0e87a5c72adecbb8820d4cf7dc4f4ed9755c54a118"
     },
     {
       "episode_id": "MC10",
       "path": "files/mc10/MC10-prompt.txt",
-      "bytes": 3003,
-      "sha256": "2a86c4e9fb56285ec7ff5e3005244d65946962202629234a1352545e49326044"
+      "bytes": 6175,
+      "sha256": "f0a29e936b5c6500b65eab0953c3d453931289fb060b24d40303fe6dfeaf12d4"
     },
     {
       "episode_id": "MC10",
@@ -413,14 +473,20 @@
     {
       "episode_id": "MC10",
       "path": "files/mc10/READ-ME.txt",
-      "bytes": 1349,
-      "sha256": "81f698f5e2351a5a970104f2db6a82c55b2df9eafe3ab6ff0e4e32da8099f83a"
+      "bytes": 2159,
+      "sha256": "61fb3cd3f0035b4543393537867888512d07a20687e9f2f43db51be8da3ccb23"
     },
     {
       "episode_id": "MC10",
       "path": "files/mc10/MC10-starter-kit.zip",
-      "bytes": 46048,
-      "sha256": "57581d683e2886e06f4907e50d8b33f37a58e6526da4d41b4b128bfcbae788bf"
+      "bytes": 90988,
+      "sha256": "53dd3c8f222622ecefddb50aa975b97b357335559e0cdef52fdcf2f03a890c54"
+    },
+    {
+      "episode_id": "MC11",
+      "path": "files/mc11/MC11-ai-starter.pdf",
+      "bytes": 59987,
+      "sha256": "243a3dcf3de291a3280dcd3ba250df6fd8b65ad3ae3d69bc5d21b81c48df4a1c"
     },
     {
       "episode_id": "MC11",
@@ -431,14 +497,14 @@
     {
       "episode_id": "MC11",
       "path": "files/mc11/MC11-ai-starter.md",
-      "bytes": 5265,
-      "sha256": "be039410a8de34ba08a24a78a476bb74d011701a176d35f43b288353ad6a13cc"
+      "bytes": 6586,
+      "sha256": "036df73beb94f64edbdece9736b0ca04871729fb5df77828d035ccf853dcaec4"
     },
     {
       "episode_id": "MC11",
       "path": "files/mc11/MC11-prompt.txt",
-      "bytes": 3279,
-      "sha256": "a9285055c93d2aeede4de5482af4f16d4723eb875578fde54093c12b23a5110f"
+      "bytes": 6584,
+      "sha256": "41ad26d492b69cc6ef6dd7f41f207eb937e4f13299ceaab7e6fce97f0734c1bb"
     },
     {
       "episode_id": "MC11",
@@ -455,14 +521,20 @@
     {
       "episode_id": "MC11",
       "path": "files/mc11/READ-ME.txt",
-      "bytes": 1367,
-      "sha256": "30a37b7bf6c59ef8ca0121defc914e56dd3de13b9c3e8d355101acf87d6ebe6c"
+      "bytes": 2177,
+      "sha256": "deb43ffe663c67ca6eb791440dd873a8dc5d51beb14588ac5a6495fccb5c1e4b"
     },
     {
       "episode_id": "MC11",
       "path": "files/mc11/MC11-starter-kit.zip",
-      "bytes": 47116,
-      "sha256": "40d7880e5d3bebc07582b12957315ab9add383774f92bcafddced66f75292836"
+      "bytes": 92750,
+      "sha256": "ffed58b380cd64ba9ac48d85b6761d9862bc64e8af190e78c76c297b7a12b76c"
+    },
+    {
+      "episode_id": "MC12",
+      "path": "files/mc12/MC12-ai-starter.pdf",
+      "bytes": 59374,
+      "sha256": "f860fc409f831985ba3129571a54291ff476c57c138f9aa3cf6b04c205255cf3"
     },
     {
       "episode_id": "MC12",
@@ -473,14 +545,14 @@
     {
       "episode_id": "MC12",
       "path": "files/mc12/MC12-ai-starter.md",
-      "bytes": 4876,
-      "sha256": "87b63e15f296db78ff4d690fc0196bde432c60287d37f225601d7e78c9d13bf8"
+      "bytes": 6168,
+      "sha256": "6c3a628630383cd255a5ec8e03062290d53f1daa462a66c7e45ec3d3bb84ae3c"
     },
     {
       "episode_id": "MC12",
       "path": "files/mc12/MC12-prompt.txt",
-      "bytes": 3064,
-      "sha256": "bf8e5e5d4d3444884a90bcac870ee0424ab9986a07533b824c5d76f4b58cdb88"
+      "bytes": 6166,
+      "sha256": "769929ddf41baa1ae0723e08978cd342436a5b2b36e140ad054a0219a2b21ddd"
     },
     {
       "episode_id": "MC12",
@@ -497,14 +569,20 @@
     {
       "episode_id": "MC12",
       "path": "files/mc12/READ-ME.txt",
-      "bytes": 1343,
-      "sha256": "8c5311504073a4de74c2043bba59b46fa27ed7cdd86865b6ff787cb7a7a86732"
+      "bytes": 2153,
+      "sha256": "50f3caa537f10ff314e4969f07d6bc1385445c5e2298134c23d491ad8330f467"
     },
     {
       "episode_id": "MC12",
       "path": "files/mc12/MC12-starter-kit.zip",
-      "bytes": 46191,
-      "sha256": "a1ebb5db4e9db23772eca7f7905176f9b96ef48c2f3bf983e5e1a110dce5401c"
+      "bytes": 91251,
+      "sha256": "839cd2ea7e7b639290bac7c337411ae24f6cfc17703840bd732157a961e27f25"
+    },
+    {
+      "episode_id": "MC13",
+      "path": "files/mc13/MC13-ai-starter.pdf",
+      "bytes": 59414,
+      "sha256": "f63a3fc5a85a63ab1550198b022b85735fcd62b6a6df838d531e7555625e1d2f"
     },
     {
       "episode_id": "MC13",
@@ -515,14 +593,14 @@
     {
       "episode_id": "MC13",
       "path": "files/mc13/MC13-ai-starter.md",
-      "bytes": 4908,
-      "sha256": "d5348620ded058a1d414193c6c3ab4eedb97c806c44dc79569a8d269b161462d"
+      "bytes": 6158,
+      "sha256": "03bd8296f1893f0914f573f96c83240be5c19a125265cc2be71f7d7e08050eb6"
     },
     {
       "episode_id": "MC13",
       "path": "files/mc13/MC13-prompt.txt",
-      "bytes": 3039,
-      "sha256": "71a1a9cc2d2a499a36073dce498d934d19a2b47571e86a8afebea6ad7299a83d"
+      "bytes": 6156,
+      "sha256": "4d2053088ceaa809c958a491f826fd4dd63cc9d20b29fdd9216e8d707e24384a"
     },
     {
       "episode_id": "MC13",
@@ -539,14 +617,20 @@
     {
       "episode_id": "MC13",
       "path": "files/mc13/READ-ME.txt",
-      "bytes": 1379,
-      "sha256": "51792935828ee1813117864886e10b65764d78b11dcc369596a72e4fc920393b"
+      "bytes": 2189,
+      "sha256": "95d3d43dfa60a762a986457e05ee642f89faf76d4a5e7b9623cd62a6bd6cbf1b"
     },
     {
       "episode_id": "MC13",
       "path": "files/mc13/MC13-starter-kit.zip",
-      "bytes": 46451,
-      "sha256": "39c749c3b9dea90e2b1b80b79e147abe8d5f3c43922379e5e838713b70f628c2"
+      "bytes": 91412,
+      "sha256": "e7a8970f52764146aff16b07d6c81215ff3351d237f2c1b59b5f57f8f10e58b2"
+    },
+    {
+      "episode_id": "MC14",
+      "path": "files/mc14/MC14-ai-starter.pdf",
+      "bytes": 59698,
+      "sha256": "9193457aa2c24a2c052bc4193fec0cb9b2b5f3132d84c1906994fa4d09d818bd"
     },
     {
       "episode_id": "MC14",
@@ -557,14 +641,14 @@
     {
       "episode_id": "MC14",
       "path": "files/mc14/MC14-ai-starter.md",
-      "bytes": 4981,
-      "sha256": "d42f8e7a8a59d7a5f52d6843c5e278d6fe621645f9e4ea049a4dc17eadac9676"
+      "bytes": 6257,
+      "sha256": "2545461cfe7a211e766ab19a7dbeca5a0cefcf3ff6a5d3890f6874d8725c8646"
     },
     {
       "episode_id": "MC14",
       "path": "files/mc14/MC14-prompt.txt",
-      "bytes": 3083,
-      "sha256": "a0b62719796f3a61d6fe0ed60116f442ba0ed17a384685c2073875e0295d4333"
+      "bytes": 6255,
+      "sha256": "1b3010f45b97e6061e85a11ffb11c2c1aec136f608c661b091ed30b0fb2e2527"
     },
     {
       "episode_id": "MC14",
@@ -581,14 +665,20 @@
     {
       "episode_id": "MC14",
       "path": "files/mc14/READ-ME.txt",
-      "bytes": 1358,
-      "sha256": "d2423538d106c716f334ee425ced6a255a722a4b0a3ae4971e3af6f8ff06213f"
+      "bytes": 2168,
+      "sha256": "a4643d13bbe77f6a10957288241243344a7e8944a1b208130e8c6165d8b2c3d0"
     },
     {
       "episode_id": "MC14",
       "path": "files/mc14/MC14-starter-kit.zip",
-      "bytes": 46039,
-      "sha256": "aa8420bde724ab58cc3328fc856e6565619009d115bad2e51dd09ad6b63d2995"
+      "bytes": 91413,
+      "sha256": "621345eb13e4b1d15218b514fbdb95e2df5c78d8bf7ab34a1dca17d89a590abe"
+    },
+    {
+      "episode_id": "MC15",
+      "path": "files/mc15/MC15-ai-starter.pdf",
+      "bytes": 60529,
+      "sha256": "6bc5940a1c9e9a10a674c9409eee85ef3c2561e4808da3c13af8e2d016dc2cf6"
     },
     {
       "episode_id": "MC15",
@@ -599,14 +689,14 @@
     {
       "episode_id": "MC15",
       "path": "files/mc15/MC15-ai-starter.md",
-      "bytes": 4918,
-      "sha256": "9dfa88a1fa8b05f978036e42cd33b79a2607378af8bfc0822a11014892f05ddb"
+      "bytes": 6170,
+      "sha256": "fb8a548862c8de548e7fbf44a6a04200c0191f15e52f42b483d217fda93adafd"
     },
     {
       "episode_id": "MC15",
       "path": "files/mc15/MC15-prompt.txt",
-      "bytes": 3030,
-      "sha256": "1178ce9eadac6f9f3dbaa2ac706bdc91053f64204c4ffc330080ef4807c628e3"
+      "bytes": 6168,
+      "sha256": "64236e69679d49ed6bbc8c1f27a1dd4713c5c4f32e11b7b76b8e7a63a58c9cbf"
     },
     {
       "episode_id": "MC15",
@@ -623,14 +713,20 @@
     {
       "episode_id": "MC15",
       "path": "files/mc15/READ-ME.txt",
-      "bytes": 1373,
-      "sha256": "d226a47b61c923d997eacf7b0c67d0a88913a2470019918cd85d484b0b67d05f"
+      "bytes": 2183,
+      "sha256": "1120a4750437c5f733beda1f0245ca0148b6f7acd00666aec8a1a05d79d8b00a"
     },
     {
       "episode_id": "MC15",
       "path": "files/mc15/MC15-starter-kit.zip",
-      "bytes": 47241,
-      "sha256": "e7edb9fd2de37672417431f81f8dd717c422de8827cd73470e8830b5d54b2835"
+      "bytes": 93410,
+      "sha256": "90722dbec47edf7b048c1e306ea5232c709542becebbcd01d05c83cd79582145"
+    },
+    {
+      "episode_id": "MC16",
+      "path": "files/mc16/MC16-ai-starter.pdf",
+      "bytes": 60440,
+      "sha256": "72dd34f0ee403e27bef8fe0cafcb937f7bd2b4631d2f12afbab6820ae0da16b4"
     },
     {
       "episode_id": "MC16",
@@ -641,14 +737,14 @@
     {
       "episode_id": "MC16",
       "path": "files/mc16/MC16-ai-starter.md",
-      "bytes": 4851,
-      "sha256": "86d83ebf0489e6f15dba4da7d1b6abc03c71c7b4e06196febf56a6599fb7f55e"
+      "bytes": 6091,
+      "sha256": "23c2e72f11e23be4e4f4168f4ea70b0048fa78ab6292f66890b71ac52525bea1"
     },
     {
       "episode_id": "MC16",
       "path": "files/mc16/MC16-prompt.txt",
-      "bytes": 2998,
-      "sha256": "27af97312677a0e78e1271ef0dde9824adb3ba6420576f3d0eefcdcc4cca5f6c"
+      "bytes": 6089,
+      "sha256": "adc02c2d48ed796c6184c9ae76b684ee27bbb6915b7e446fc971fcebb25dc842"
     },
     {
       "episode_id": "MC16",
@@ -665,14 +761,20 @@
     {
       "episode_id": "MC16",
       "path": "files/mc16/READ-ME.txt",
-      "bytes": 1364,
-      "sha256": "c9d129d733b83c10a4626a7c0347656c13e6a9de9a48dbb3f10c1d6884f80554"
+      "bytes": 2174,
+      "sha256": "c11c14ace5d11a85b9f655df1cc2127328ac2fb1f23f0232c81b8377c2804ad6"
     },
     {
       "episode_id": "MC16",
       "path": "files/mc16/MC16-starter-kit.zip",
-      "bytes": 47379,
-      "sha256": "0a0208b01899e4ec7fbd62b09b8639d7147153673c9a5e53b83eb10cc8103203"
+      "bytes": 93448,
+      "sha256": "d55789c8ddcd120faa45884ce8913d5da0e12d9f3967918d0a69ebedbbed06a1"
+    },
+    {
+      "episode_id": "MC17",
+      "path": "files/mc17/MC17-ai-starter.pdf",
+      "bytes": 59170,
+      "sha256": "d63462e6b76ce0892dac714e96136c5aec9e05608bba9deea7d102bd8618409c"
     },
     {
       "episode_id": "MC17",
@@ -683,14 +785,14 @@
     {
       "episode_id": "MC17",
       "path": "files/mc17/MC17-ai-starter.md",
-      "bytes": 4887,
-      "sha256": "4e3de11b6fd8b65f95d03c7c11427074062993fa60de47c5ef11780b66b2161c"
+      "bytes": 6161,
+      "sha256": "822a4d2caaa4156d91bd76bf33b64aea8b78eab39c822b5b36286ed3efb663b5"
     },
     {
       "episode_id": "MC17",
       "path": "files/mc17/MC17-prompt.txt",
-      "bytes": 3061,
-      "sha256": "e87c860ad2cfd5869ec921a82ea21cb165248a39ab5c0b868ebafe8281dbb319"
+      "bytes": 6159,
+      "sha256": "6e520ff78ce521311c8bab1eb81224fee4cf4f187d83c78409fdd7ab490622a2"
     },
     {
       "episode_id": "MC17",
@@ -707,14 +809,20 @@
     {
       "episode_id": "MC17",
       "path": "files/mc17/READ-ME.txt",
-      "bytes": 1337,
-      "sha256": "73b1c405da067bb7af4bebb39f95965053034bcfc01a19c8d2329c4cdf2af70a"
+      "bytes": 2147,
+      "sha256": "64196548f9bc96b281fe8d1c2077c3a937be9514a2cf76a3f5755db5b85c53bb"
     },
     {
       "episode_id": "MC17",
       "path": "files/mc17/MC17-starter-kit.zip",
-      "bytes": 45453,
-      "sha256": "ae409ad0cec6c9f02f221c63f53077a1508c4e5da0f6efad34d888f9d6bee134"
+      "bytes": 90345,
+      "sha256": "01594f817bc8e3d6ec8a57e2d847ef417ab90b86c9793d7efdffaa703164182d"
+    },
+    {
+      "episode_id": "MC18",
+      "path": "files/mc18/MC18-ai-starter.pdf",
+      "bytes": 59910,
+      "sha256": "db188728e85938990dbc29e35447f4d5fbea55e748bf6030280291797710f3c6"
     },
     {
       "episode_id": "MC18",
@@ -725,14 +833,14 @@
     {
       "episode_id": "MC18",
       "path": "files/mc18/MC18-ai-starter.md",
-      "bytes": 4876,
-      "sha256": "95a93b483638d33b2046d35f4163c45f249b62e42208bc4b4254529941b52bb7"
+      "bytes": 6138,
+      "sha256": "ce370357cc58fa0ea28e814be4c2bfe0bf915067dd058499638b85e370068813"
     },
     {
       "episode_id": "MC18",
       "path": "files/mc18/MC18-prompt.txt",
-      "bytes": 3047,
-      "sha256": "0b019cf18531b68ac6ad8b4c3af223b1214237983a7b8f88076b08c5c5a3ccd5"
+      "bytes": 6136,
+      "sha256": "2f1be7434312831e604b7fb91a9e451d3cf48bf0f3dd52ff6ae99002d8790a19"
     },
     {
       "episode_id": "MC18",
@@ -749,14 +857,20 @@
     {
       "episode_id": "MC18",
       "path": "files/mc18/READ-ME.txt",
-      "bytes": 1385,
-      "sha256": "da85a5a15016b2abfb1711cebdfd38237c8b99eb8b26291d15fceb67b2e0cd34"
+      "bytes": 2195,
+      "sha256": "1ac22e5c50e0d6db40a8f523f0d8fdb876ee7676f39c68e579261c90636c68fb"
     },
     {
       "episode_id": "MC18",
       "path": "files/mc18/MC18-starter-kit.zip",
-      "bytes": 46896,
-      "sha256": "3df990757426e5d0516705b0dc91c446981328de89cdd1eb384bdf75744a5ad9"
+      "bytes": 92309,
+      "sha256": "03ad4147e603921a31cde21a51e5cdd0801c97ac17f92adf391a45b16f70d14e"
+    },
+    {
+      "episode_id": "MC19",
+      "path": "files/mc19/MC19-ai-starter.pdf",
+      "bytes": 59953,
+      "sha256": "4be342b3633d1d9567a80a32578a311720e967ca9873ceed38387d8ab2a50c8a"
     },
     {
       "episode_id": "MC19",
@@ -767,14 +881,14 @@
     {
       "episode_id": "MC19",
       "path": "files/mc19/MC19-ai-starter.md",
-      "bytes": 4871,
-      "sha256": "c0fb1245497f9d0f093613a2f48e5d0ad78cf751a5be5b880cbe6e9a8c02bd5a"
+      "bytes": 6133,
+      "sha256": "8bceb9e9ce9ed0e9ae9088ab890d5e7261be9a28d2864a1f94dab78800148357"
     },
     {
       "episode_id": "MC19",
       "path": "files/mc19/MC19-prompt.txt",
-      "bytes": 3049,
-      "sha256": "d4cc3302e159462434ae7748759dd0cb60ba91df11513276f88ffc06657b2081"
+      "bytes": 6131,
+      "sha256": "e4d510be331ce13c64e5a1b138a26ffa3f4f14b80e503c5e602e99ee99090a6e"
     },
     {
       "episode_id": "MC19",
@@ -791,14 +905,20 @@
     {
       "episode_id": "MC19",
       "path": "files/mc19/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "f3f916a6a88390c515bb0166ae90e8310d88b6c09404aa71a8d41d50af1825d3"
+      "bytes": 2162,
+      "sha256": "fdb1ec6a2c1e90bfc5ffbcf7a23b13c47a1dc710571cd7a9ea2b05c158972338"
     },
     {
       "episode_id": "MC19",
       "path": "files/mc19/MC19-starter-kit.zip",
-      "bytes": 46611,
-      "sha256": "84d008cd30858f79cb6dc1bfdc8c6bb35221d9c111a20f04b13ff61ae24d0680"
+      "bytes": 92228,
+      "sha256": "13b8be4ae8176b8bd8c4231778bcac20f43916b01b7ad49918f541c0823c5e6b"
+    },
+    {
+      "episode_id": "MC20",
+      "path": "files/mc20/MC20-ai-starter.pdf",
+      "bytes": 59537,
+      "sha256": "4a70e9e6b68de40817a4d5c573ac6f6157848549183197e4ccfc07ca3026cddf"
     },
     {
       "episode_id": "MC20",
@@ -809,14 +929,14 @@
     {
       "episode_id": "MC20",
       "path": "files/mc20/MC20-ai-starter.md",
-      "bytes": 4762,
-      "sha256": "858c4584f406734cc8ce72b2db0fc7a9066d7d602754a615899a0c7bf148e726"
+      "bytes": 6000,
+      "sha256": "f91e31e8f7b76aef52f007738a1cf203099fd318d41a17625be6515db7f98f21"
     },
     {
       "episode_id": "MC20",
       "path": "files/mc20/MC20-prompt.txt",
-      "bytes": 2990,
-      "sha256": "d01dc19758ca74b8655e58e4a5934924b4e43a14b680123e39d2b9a860e21ca3"
+      "bytes": 5998,
+      "sha256": "d2e889745888902f0aaf299c6a928fc45b896d5024d3f2e6e081b0811ab86b69"
     },
     {
       "episode_id": "MC20",
@@ -833,14 +953,20 @@
     {
       "episode_id": "MC20",
       "path": "files/mc20/READ-ME.txt",
-      "bytes": 1355,
-      "sha256": "7d3d66960fc7b5f1326ef9c486dca5878b2e6ca9b117f65850c07f19bf482718"
+      "bytes": 2165,
+      "sha256": "17207e61325e84389e44f551cd280b8d7496938935daa26dea8e9b55eda8d6a8"
     },
     {
       "episode_id": "MC20",
       "path": "files/mc20/MC20-starter-kit.zip",
-      "bytes": 46053,
-      "sha256": "16d0202100c34b4af2fd81b29efd32146cd06b9217e01b452350e4a9c2844827"
+      "bytes": 91228,
+      "sha256": "9e4f9f5abff0e64935b355cd154c2b84e646dc8f16677359ee81395c4d72431b"
+    },
+    {
+      "episode_id": "MC21",
+      "path": "files/mc21/MC21-ai-starter.pdf",
+      "bytes": 59329,
+      "sha256": "1ececfa7226bf4a5482001715a50b3825ecb576edd7108994c2d041599cfc4f8"
     },
     {
       "episode_id": "MC21",
@@ -851,14 +977,14 @@
     {
       "episode_id": "MC21",
       "path": "files/mc21/MC21-ai-starter.md",
-      "bytes": 4864,
-      "sha256": "e0c86d475fd56d621b4dab7ee9af14aa5abffdf214b28dacf9ef3fb7d0d9796d"
+      "bytes": 6159,
+      "sha256": "9a8df4f420a4de4c700d338b5586e5a459bd58bfb72136668587a02aad31a053"
     },
     {
       "episode_id": "MC21",
       "path": "files/mc21/MC21-prompt.txt",
-      "bytes": 3068,
-      "sha256": "9175f0f4f6360b179324c6831a43d695cd828dde2a4aea139de3da07822ad7f1"
+      "bytes": 6157,
+      "sha256": "551c5a0a4e35bf19228ee4a94a8917ceeb22162824861a086cc7ccdbe9d89375"
     },
     {
       "episode_id": "MC21",
@@ -875,14 +1001,20 @@
     {
       "episode_id": "MC21",
       "path": "files/mc21/READ-ME.txt",
-      "bytes": 1352,
-      "sha256": "bc6fadbec237db5245aaf873e49df2f31b67a621bf70f63b77ce0304973b59e7"
+      "bytes": 2162,
+      "sha256": "c3bbdbdd1654ca385a5a644845ca1e4b8f311e98147a1061088e545397cbdd65"
     },
     {
       "episode_id": "MC21",
       "path": "files/mc21/MC21-starter-kit.zip",
-      "bytes": 46213,
-      "sha256": "c75d913e7653e8b1eff9bd9b7efec56d0a80ba111d52e858aa9c870b42dea9e6"
+      "bytes": 91224,
+      "sha256": "da424664548bea770c0474310d31e453aa0dd53a8d332f86de407b5b447e159e"
+    },
+    {
+      "episode_id": "MC22",
+      "path": "files/mc22/MC22-ai-starter.pdf",
+      "bytes": 59812,
+      "sha256": "101744406c3832ec32150ac7127376b983f6698f976cb7218729bc1b90bfbe7a"
     },
     {
       "episode_id": "MC22",
@@ -893,14 +1025,14 @@
     {
       "episode_id": "MC22",
       "path": "files/mc22/MC22-ai-starter.md",
-      "bytes": 4949,
-      "sha256": "92dab890d25ba71db623d85ee839f78ea72bff79271b86947457ff27e445ac71"
+      "bytes": 6251,
+      "sha256": "bdf995fdf7dbc03b99bfdf4ec3f8703a7ec535b0f051a5452217331c8d08d5cf"
     },
     {
       "episode_id": "MC22",
       "path": "files/mc22/MC22-prompt.txt",
-      "bytes": 3095,
-      "sha256": "1a09407e0299182a53141f960c5585f9d155e82f7164516be41922d73af3e112"
+      "bytes": 6249,
+      "sha256": "afead7b35b7759ffd6b7e6b14ad14aef8d59891377c2548f94312406bcf70f8e"
     },
     {
       "episode_id": "MC22",
@@ -917,14 +1049,20 @@
     {
       "episode_id": "MC22",
       "path": "files/mc22/READ-ME.txt",
-      "bytes": 1370,
-      "sha256": "ae1581f32b1615e193c91f9d91e42ee5476efaec2148b1aae84b60143f50863f"
+      "bytes": 2180,
+      "sha256": "75167db2c154e5bbda07925b5ff24838634fad0a2df634124c4fb8c06eb2fadf"
     },
     {
       "episode_id": "MC22",
       "path": "files/mc22/MC22-starter-kit.zip",
-      "bytes": 46044,
-      "sha256": "fdb656395a8ab676a90fd0e14eab430ec112c84c8f6241330f50622fd3c63717"
+      "bytes": 91437,
+      "sha256": "652d6c65ad19ea657ca5a9556b3650bb72682eea301885ee3ce0c1c957e956ad"
+    },
+    {
+      "episode_id": "MC23",
+      "path": "files/mc23/MC23-ai-starter.pdf",
+      "bytes": 59468,
+      "sha256": "47d4ce3dd307d9eb5c85c41806a558f74ee43f790eadb73bd96db7447e908678"
     },
     {
       "episode_id": "MC23",
@@ -935,14 +1073,14 @@
     {
       "episode_id": "MC23",
       "path": "files/mc23/MC23-ai-starter.md",
-      "bytes": 4873,
-      "sha256": "23f09996da74123279e2503d59b174e985122e9de6dee30c2ea3406ef1c0fa38"
+      "bytes": 6147,
+      "sha256": "7d943424a743842073f45287ac7021936000a8c9d6443374a3efc04e2c027e0d"
     },
     {
       "episode_id": "MC23",
       "path": "files/mc23/MC23-prompt.txt",
-      "bytes": 3021,
-      "sha256": "b30f539d5166ae246573e9d2dd047be3238cfc0a437a033525833e499596e280"
+      "bytes": 6145,
+      "sha256": "ecb65a3002627a26aaad67ad450366a466a7ce38db4838234fd2bfec8b5255e2"
     },
     {
       "episode_id": "MC23",
@@ -959,14 +1097,20 @@
     {
       "episode_id": "MC23",
       "path": "files/mc23/READ-ME.txt",
-      "bytes": 1358,
-      "sha256": "c2ee4084785d4b2a90c91b1f49fee1af29fa5dcd5b1ba969426d72781ff14860"
+      "bytes": 2168,
+      "sha256": "0f07f7e42851d627c3e75d61da8247bc9aa5a087b08aa9d19bf48ad268a04304"
     },
     {
       "episode_id": "MC23",
       "path": "files/mc23/MC23-starter-kit.zip",
-      "bytes": 46192,
-      "sha256": "1f3f815c0b3ba72c04f034bc9c215b99d6c52ccf38fd5bb39859e87374aaf08c"
+      "bytes": 91314,
+      "sha256": "12f38de92492718531e696aa7715d5d181befe457d040484aa76bb87b7580f6b"
+    },
+    {
+      "episode_id": "MC24",
+      "path": "files/mc24/MC24-ai-starter.pdf",
+      "bytes": 60337,
+      "sha256": "387bda2f509db7405cf0c594537dfc9d4dae1708acd84a431cb53c8936681ee1"
     },
     {
       "episode_id": "MC24",
@@ -977,14 +1121,14 @@
     {
       "episode_id": "MC24",
       "path": "files/mc24/MC24-ai-starter.md",
-      "bytes": 4845,
-      "sha256": "eeac61b372d5542a39d5b9681a5fd65e44f361a97fdc7de75a2628fc52c576b7"
+      "bytes": 6126,
+      "sha256": "a5ba2d667f047fbd564250e1ba9cc32075aa7f188c1d2f7f741f5beddad156bf"
     },
     {
       "episode_id": "MC24",
       "path": "files/mc24/MC24-prompt.txt",
-      "bytes": 3034,
-      "sha256": "1b9d027773a2bbc16b2b5b87d4bfea2157a7c62143d9b135167862117572407c"
+      "bytes": 6124,
+      "sha256": "f3ef8001fa87d1f1d195935d998dca19797e23f2dafc8e0cfac0175cc1de3e34"
     },
     {
       "episode_id": "MC24",
@@ -1001,14 +1145,20 @@
     {
       "episode_id": "MC24",
       "path": "files/mc24/READ-ME.txt",
-      "bytes": 1361,
-      "sha256": "f053de061ff81bfbb135fe8fe250c28c601e70a76aed3ce7ca13e7bf8ae9385a"
+      "bytes": 2171,
+      "sha256": "6a60263de94adc1245507a3021c8d3f3e1d2802cd7eb4e8c5b6da85e0d46df36"
     },
     {
       "episode_id": "MC24",
       "path": "files/mc24/MC24-starter-kit.zip",
-      "bytes": 46947,
-      "sha256": "48527b36e564854fe2af926ad91b73cd0fedc93d9484bb272bcb477af11aa468"
+      "bytes": 92936,
+      "sha256": "d8e7c6e051176b84661a79f2ddb0f0a18aee428578cae45483635982818d3b3a"
+    },
+    {
+      "episode_id": "MC25",
+      "path": "files/mc25/MC25-ai-starter.pdf",
+      "bytes": 60383,
+      "sha256": "579242ff8a455701d1e783f4add1cd1dfd84a71ccac9eaa28263718c491cafcc"
     },
     {
       "episode_id": "MC25",
@@ -1019,14 +1169,14 @@
     {
       "episode_id": "MC25",
       "path": "files/mc25/MC25-ai-starter.md",
-      "bytes": 4979,
-      "sha256": "49cc188a81395a0a52b5fa0da30ff57b6817de9f6740fd931476c3cec7841068"
+      "bytes": 6256,
+      "sha256": "58b08dd1f840499385034ac4b7e2db9c9a803ca1c2c5990c6278417251096a8a"
     },
     {
       "episode_id": "MC25",
       "path": "files/mc25/MC25-prompt.txt",
-      "bytes": 3079,
-      "sha256": "01988d98dd0167fc573b55d5ba210e55d398a9cb676b3220be9e68d90ab36e38"
+      "bytes": 6254,
+      "sha256": "86a55a0354b7d2dd231d2b33e5f2be2d1b3f7b2553dd5215d9e465e7b3c30458"
     },
     {
       "episode_id": "MC25",
@@ -1043,14 +1193,20 @@
     {
       "episode_id": "MC25",
       "path": "files/mc25/READ-ME.txt",
-      "bytes": 1358,
-      "sha256": "48c35073300aa95bccb011dabfaff46507d20bc3ce13ee24fc4a1f7a7e4c14b5"
+      "bytes": 2168,
+      "sha256": "3a265f0b0797bc3e7b66b249f545371eebe6f1b853f680a9a346fa3ffde57d4a"
     },
     {
       "episode_id": "MC25",
       "path": "files/mc25/MC25-starter-kit.zip",
-      "bytes": 46873,
-      "sha256": "059a3c3dad668d948ac2927d5157ea41fdc4a6fa80dde5aad9d44f2909359abd"
+      "bytes": 92909,
+      "sha256": "6e654c4ac43cc785fe496561b0dda607b0d54824268dd6d8c9e55c5f343c869d"
+    },
+    {
+      "episode_id": "MC26",
+      "path": "files/mc26/MC26-ai-starter.pdf",
+      "bytes": 60449,
+      "sha256": "a4644229af12321a1e69239247bbdc4349d54b26670317d3978721acbbd5417a"
     },
     {
       "episode_id": "MC26",
@@ -1061,14 +1217,14 @@
     {
       "episode_id": "MC26",
       "path": "files/mc26/MC26-ai-starter.md",
-      "bytes": 4915,
-      "sha256": "d8c672194b3b68b094b6d6dbf2e84d1b9f88b3fc6bb3e699f1e7fdee7d5e93d1"
+      "bytes": 6189,
+      "sha256": "741faaf762d8257ad04b1450aa5edb52ef2f29adb159431fac43ed8985e4d2cc"
     },
     {
       "episode_id": "MC26",
       "path": "files/mc26/MC26-prompt.txt",
-      "bytes": 3075,
-      "sha256": "119e086dcb699679af0b983f04674bf941de7d15da96516c9fd491c070398c00"
+      "bytes": 6187,
+      "sha256": "8389ec7f1153b119651337eb692ea67541040920f3aed944dece3e37ec4336ad"
     },
     {
       "episode_id": "MC26",
@@ -1085,14 +1241,20 @@
     {
       "episode_id": "MC26",
       "path": "files/mc26/READ-ME.txt",
-      "bytes": 1376,
-      "sha256": "c5432b4555ad681c5745aea2b1b0de12d62e59e77ec56a7b25ecbd25a9705cc2"
+      "bytes": 2186,
+      "sha256": "689e02c7b1f6c7ccc3782cd2778dd62212efa9107ef627daba49018dbd471f49"
     },
     {
       "episode_id": "MC26",
       "path": "files/mc26/MC26-starter-kit.zip",
-      "bytes": 47260,
-      "sha256": "7f09f6be70163d044fb1b2692f60b7b285356ca32c5a6d16e8bf633a79a2415b"
+      "bytes": 93246,
+      "sha256": "181094d3fa07a3908ce0d0269f71d057703ae1f6bf2722cdad79cccfcbc35972"
+    },
+    {
+      "episode_id": "MC27",
+      "path": "files/mc27/MC27-ai-starter.pdf",
+      "bytes": 60074,
+      "sha256": "41fc05c445ce77125cd3dbe4603985e88e66d4000216bafc03f5666a112a9fbb"
     },
     {
       "episode_id": "MC27",
@@ -1103,14 +1265,14 @@
     {
       "episode_id": "MC27",
       "path": "files/mc27/MC27-ai-starter.md",
-      "bytes": 4921,
-      "sha256": "59bd1ec5449b28e2fe01fba3f23ecb355dfb45d8c765fcccd49685cbef2f645b"
+      "bytes": 6182,
+      "sha256": "ffab0fd4504445bd4a051a046b83bac4e4576c7beff428c3e09ad6e60778e195"
     },
     {
       "episode_id": "MC27",
       "path": "files/mc27/MC27-prompt.txt",
-      "bytes": 3093,
-      "sha256": "59c48ffe9544f2bec9c2b4319fc89770774311c776c776bf1d7c9bfbb3caa6e5"
+      "bytes": 6180,
+      "sha256": "0b55e5e3f5892a70b4a55b1876d9ec3ec66e4cebdc7d65c3a3d622b830ed6cc0"
     },
     {
       "episode_id": "MC27",
@@ -1127,14 +1289,20 @@
     {
       "episode_id": "MC27",
       "path": "files/mc27/READ-ME.txt",
-      "bytes": 1367,
-      "sha256": "516756ac14d27a3a39775b1a08a3b9eddf507bd1ed9ed1e700c3fd699a551a26"
+      "bytes": 2177,
+      "sha256": "dd322b0e8c7d721aeb92e4b040bc09b9d1a2c09194d2f8e34bdac23f0bae073c"
     },
     {
       "episode_id": "MC27",
       "path": "files/mc27/MC27-starter-kit.zip",
-      "bytes": 47308,
-      "sha256": "48400170a5591ce667f53cf8dc628ffc94e645091b89cc5bdd788f60b8012301"
+      "bytes": 92956,
+      "sha256": "d51553483b858ee491a5d197721454d889a0379d4f782f18f71c2971a1df046e"
+    },
+    {
+      "episode_id": "MC28",
+      "path": "files/mc28/MC28-ai-starter.pdf",
+      "bytes": 60027,
+      "sha256": "a88967aeb2e0d4307d81740b6fa20df40e27a89f39dbf8dc29c3abdf2e9c7d7d"
     },
     {
       "episode_id": "MC28",
@@ -1145,14 +1313,14 @@
     {
       "episode_id": "MC28",
       "path": "files/mc28/MC28-ai-starter.md",
-      "bytes": 4937,
-      "sha256": "a65823f36dca973e62ffe6de4f6dd7fba6ba649c964cf4b5ee66384b1ea79c11"
+      "bytes": 6208,
+      "sha256": "cb4378d17d36db3d8b9baf29af551bde0c4cf42c819fe1ba2c89a884485c0574"
     },
     {
       "episode_id": "MC28",
       "path": "files/mc28/MC28-prompt.txt",
-      "bytes": 3056,
-      "sha256": "fd5158efbc0493b9f456f54686daeb730e07e85a6708be2604f26909be34c3c7"
+      "bytes": 6206,
+      "sha256": "a7a3edcd84ab80f74cd9ed4d6915806997173d742b1d663e2b508de4db40cbe3"
     },
     {
       "episode_id": "MC28",
@@ -1169,14 +1337,20 @@
     {
       "episode_id": "MC28",
       "path": "files/mc28/READ-ME.txt",
-      "bytes": 1370,
-      "sha256": "1a66cd5a1a20aa0cbc343187357410ae376ff23d0d48fd64832d34f4e93cccca"
+      "bytes": 2180,
+      "sha256": "c555f543ab379705bb59bac63de123b1306acfb59cd10d5efeb13296fe5bdd9f"
     },
     {
       "episode_id": "MC28",
       "path": "files/mc28/MC28-starter-kit.zip",
-      "bytes": 46691,
-      "sha256": "d8c2233fb84b455e9e15c3f575b16f4ae42a287ad6cd9986da07d560ba2f836a"
+      "bytes": 92350,
+      "sha256": "9c0d8761a2f722db0900b9cac331e319ddaeea693786ecde02d9bbdce2b4dfe0"
+    },
+    {
+      "episode_id": "MC29",
+      "path": "files/mc29/MC29-ai-starter.pdf",
+      "bytes": 60297,
+      "sha256": "39db64fd41f27d26ab484b2b9a6f4f55c94778d5613044a5e1875e49db0c2801"
     },
     {
       "episode_id": "MC29",
@@ -1187,14 +1361,14 @@
     {
       "episode_id": "MC29",
       "path": "files/mc29/MC29-ai-starter.md",
-      "bytes": 4948,
-      "sha256": "194ec537db4e11141b86a224e21099efdda1720f4b3adc748af77ee8f607fd9c"
+      "bytes": 6240,
+      "sha256": "c39a2ec889a5749cb05bde27df3a08fa4e27d4623739efe03fb057667e5b3310"
     },
     {
       "episode_id": "MC29",
       "path": "files/mc29/MC29-prompt.txt",
-      "bytes": 3087,
-      "sha256": "ac9bb39b26b0d37c5d432d7082e077db937a4254e89a54da5061a02ea6d8af3b"
+      "bytes": 6238,
+      "sha256": "16afe7ff065cfb59909fe9631443b45ca4e30015cd18113ddee65fb41b72dbdc"
     },
     {
       "episode_id": "MC29",
@@ -1211,14 +1385,20 @@
     {
       "episode_id": "MC29",
       "path": "files/mc29/READ-ME.txt",
-      "bytes": 1349,
-      "sha256": "ba91f7e95122c34b88aedcf477cb0d73737928bc11b7d82c7d1b2dc5e40ab0f8"
+      "bytes": 2159,
+      "sha256": "ac0809a52e87ab0cdb297a015639e2545cf1cc4661f9051e263005e1712af8b9"
     },
     {
       "episode_id": "MC29",
       "path": "files/mc29/MC29-starter-kit.zip",
-      "bytes": 46846,
-      "sha256": "ef77a8416a8c27f8b21da4719783e87de25646769930edb898effd6ecc744ac3"
+      "bytes": 92808,
+      "sha256": "fa34786e4b69ecdbe96fc32c9e801b7b79a2c1b844d3e538d7cefe75a19c0d58"
+    },
+    {
+      "episode_id": "MC30",
+      "path": "files/mc30/MC30-ai-starter.pdf",
+      "bytes": 60195,
+      "sha256": "da1712fcdafea2bdb86316b0f04bdd0521e98bc6475c09841ab347cdd426ceb7"
     },
     {
       "episode_id": "MC30",
@@ -1229,14 +1409,14 @@
     {
       "episode_id": "MC30",
       "path": "files/mc30/MC30-ai-starter.md",
-      "bytes": 5013,
-      "sha256": "9606d2cea89ae2dea2e37b2a055904b716e9d6df4f6fc81e719328742d6b0032"
+      "bytes": 6299,
+      "sha256": "77749d74765df49eb7139293b13ad878b52b98953a24463fcd8c830a15a17dc9"
     },
     {
       "episode_id": "MC30",
       "path": "files/mc30/MC30-prompt.txt",
-      "bytes": 3107,
-      "sha256": "1261e9ee1d6a772017fc5cd7b345d70d462940005a3c4f6c5f2679b85983d6d0"
+      "bytes": 6297,
+      "sha256": "35fbe2e1218dbbed07df969234e070a11b904a2785eadcf99a39fdeef8ce3b28"
     },
     {
       "episode_id": "MC30",
@@ -1253,14 +1433,14 @@
     {
       "episode_id": "MC30",
       "path": "files/mc30/READ-ME.txt",
-      "bytes": 1367,
-      "sha256": "316fe8a010ce0720afe5884dbb3682a54ddebff85e1f3b25279fd4e7f1818f8b"
+      "bytes": 2177,
+      "sha256": "1031137ba0d6d9bbf8af7cbef097462b53511344c49c4954d9008a2544ef43b0"
     },
     {
       "episode_id": "MC30",
       "path": "files/mc30/MC30-starter-kit.zip",
-      "bytes": 47041,
-      "sha256": "899f099b02c7a1a4f3e73c4b36f1493926eb76eda0ed70c2805b46eff703970b"
+      "bytes": 92843,
+      "sha256": "75497dd87e2c1516e5c605ae5f102aac40c3145ac997ac99ab88d19a92fe51a1"
     }
   ]
 }
