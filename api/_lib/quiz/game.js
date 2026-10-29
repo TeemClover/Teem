@@ -1,6 +1,7 @@
 import { randomBytes, randomInt, randomUUID, createHash } from 'node:crypto';
 import { QUESTIONS } from './questions.js';
 import { AVATARS } from '../../../quiz/avatars.js';
+import { checkCustomQuestions } from '../../../quiz/question-set.js';
 
 export const CAPACITY = 100;
 export const AVATAR_IDS = new Set(AVATARS.map(a => a.id));
@@ -12,9 +13,11 @@ export class GameError extends Error {
 export function scoreAnswer(elapsed, duration) {
   return Math.round(1000 - 500 * Math.min(1, Math.max(0, elapsed / duration)));
 }
-export function prepareQuestions(seconds = 20) {
+export function prepareQuestions(seconds = 20, custom = null) {
   if (![10, 20, 30, 60].includes(seconds)) throw new GameError('BAD_DURATION');
-  return QUESTIONS.map(q => {
+  const checked = custom === null ? null : checkCustomQuestions(custom);
+  if (checked && !checked.ok) throw new GameError(checked.error);
+  return (checked ? checked.questions : QUESTIONS).map(q => {
     const order = [0, 1, 2, 3];
     for (let i = 3; i > 0; i--) { const j = randomInt(i + 1); [order[i], order[j]] = [order[j], order[i]]; }
     return { ...q, options: order.map(i => q.options[i]), correctIndex: order.indexOf(q.correctIndex), seconds };

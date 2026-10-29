@@ -9,17 +9,17 @@ import { createMemoryStore } from '../../api/_lib/quiz/game.js';
 const root=fileURLToPath(new URL('../../',import.meta.url));
 export function createPreview({clock=Date.now,store=createMemoryStore({clock})}={}){
  const handler=createQuizHandler({getStore:async()=>store,clock});
- const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.webp':'image/webp','.svg':'image/svg+xml'};
+ const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
  return http.createServer(async(req,res)=>{
   try{
    const url=new URL(req.url,'http://localhost');
    if(!/^127\.0\.0\.1(?::\d+)?$|^localhost(?::\d+)?$/.test(req.headers.host||'')){res.writeHead(403);return res.end();}
    if(url.pathname==='/api/quiz'){
-    if(req.method==='POST'){const chunks=[];let length=0;for await(const c of req){length+=c.length;if(length>4096){res.writeHead(413);return res.end();}chunks.push(c);}req.body=Buffer.concat(chunks).toString();}
+    if(req.method==='POST'){const chunks=[];let length=0;for await(const c of req){length+=c.length;if(length>96*1024){res.writeHead(413);return res.end();}chunks.push(c);}req.body=Buffer.concat(chunks).toString();}
     return handler(req,res);
    }
    const pathname=decodeURIComponent(url.pathname);
-   if(!/^\/(quiz(?:\/|$)|teambook\/assets\/)/.test(pathname)||pathname.split('/').some(s=>s.startsWith('.'))){res.writeHead(404);return res.end();}
+   if(!/^\/(quiz(?:\/|$)|teambook\/assets\/|icons\/icon-192\.png$)/.test(pathname)||pathname.split('/').some(s=>s.startsWith('.'))){res.writeHead(404);return res.end();}
    let file=path.resolve(root,'.'+pathname);if(!file.startsWith(root))throw Error('PATH');
    if((await stat(file)).isDirectory())file=path.join(file,'index.html');
    file=await realpath(file);if(!file.startsWith(root))throw Error('PATH');

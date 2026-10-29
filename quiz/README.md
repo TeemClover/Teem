@@ -4,12 +4,15 @@ Live multiplayer quiz for `/quiz/`; host screen at `/quiz/host/`.
 
 - Up to 100 players per room; numeric six-digit room code and locally generated QR.
 - Guest nicknames and 68 existing Rare TeamBook appearances. No membership or collectible ownership changes.
-- Twelve Clover questions imported from the supplied `คำถาม kahoot-2.xlsx`. Column B is labeled the correct answer. Each room independently shuffles choices and keeps that order for everyone.
+- **ครบรอบ 20 ปี**: twelve Clover questions imported from the supplied `คำถาม kahoot-2.xlsx`. Column B is labeled the correct answer.
+- **ตั้งคำถามเอง**: enter a question count from 5 to 20, then use numbered navigation to write each question and four choices. The first choice is the correct answer. Both modes independently shuffle choices once per room, keeping that order for everyone.
+- Custom drafts stay in this browser's local storage, including hidden questions when the count is reduced. Drafts are sent to the server only when creating a room. Question text is limited to 240 characters; each of the four distinct choices to 100. The server validates every set and ignores submitted answer indexes and IDs. The API body limit is 96 KiB to fit twenty full Thai questions.
 - Host selects 10, 20, 30 or 60 seconds. Every question starts after a shared four-second countdown.
 - Correct answer: `round(1000 - 500 × elapsed / duration)`. Incorrect/unanswered: zero. Ties: more correct answers, then less time on correct answers, then join time and stable player ID.
 - Reveal, vote distribution, top five between rounds, final podium/full results and UTF-8 CSV export.
 - Round scores count up from the previous result before rows cross into their new ranks; incoming and outgoing top-five players animate together. Motion is disabled when the device requests reduced motion.
 - The avatar picker shows one selected card with left/right arrows and a shuffle button. Shuffle always chooses a different appearance; animal names and the large gallery are omitted.
+- The TeamBook paper-and-clover theme includes floating cards, a green invitation panel, an orbiting countdown, staggered answer entrances, answer celebration, round progress, and a rising final podium. New lobby arrivals animate without replaying every existing player's entrance. Reduced motion applies to all these effects.
 - Refresh restores the host/player session in the same browser. Repeated joins and answers are idempotent. The first accepted answer is final.
 
 ## Server
@@ -31,6 +34,6 @@ node tests/quiz/preview.mjs
 
 Preview: `http://127.0.0.1:4199/quiz/` and `/quiz/host/`. Preview is loopback-only and isolated from production.
 
-The API suite simulates 100 simultaneous clients across all 12 questions (1,200 answers), rejects player 101, and checks timing, ownership, retries and score privacy. This is a functional capacity test, not a measurement of 100 real devices on an event Wi-Fi network.
+The API suite simulates 100 simultaneous clients across the original 12 questions and custom 5- and 20-question games (3,700 answers total), rejects player 101, and checks timing, ownership, retries, draft restoration, content validation and score privacy. This is a functional capacity test, not a measurement of 100 real devices on an event Wi-Fi network.
 
 QR code generator: Kazuhiko Arase, MIT license, vendored from `kazuhikoarase/qrcode-generator/js/dist/qrcode.js`; its original header is retained. The local ESM export is the only adaptation.
