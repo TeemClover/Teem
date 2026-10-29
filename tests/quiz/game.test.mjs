@@ -22,7 +22,7 @@ test('100 simultaneous joins admit exactly 100; retries do not consume seats; 10
 });
 test('speed, deadline, retries, host ownership, hidden answers and rankings',async()=>{
  const f=fixture(),{code}=await f.room(),slow=tokenHash(newToken()),fast=tokenHash(newToken());
- await join(f.store,code,slow,'คนช้า');await join(f.store,code,fast,'คนไว');
+ await join(f.store,code,slow,'คนช้า');f.advance(1);await join(f.store,code,fast,'คนไว');
  await assert.rejects(f.store.command({code,hash:slow,action:'start',payload:{version:0}}),{code:'UNAUTHORIZED'});
  await f.store.command({code,hash:f.hash,action:'start',payload:{version:0}});
  let s=await f.store.snapshot(code);assert.ok(!('correctIndex' in s.question));assert.equal(s.distribution,null);
