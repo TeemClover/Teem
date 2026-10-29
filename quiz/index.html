@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="th">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#153f35"><meta name="description" content="เปิดห้อง ชวนเพื่อน แล้วมาวัดความรู้กัน เกมตอบคำถามสดจาก myClover และ TeamBook">
+ <title>Clover Quiz · รู้จริงแค่ไหน?</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="/quiz/quiz.css"><script type="module" src="/quiz/quiz.js"></script>
+</head>
+<body>
+ <header class="topbar"><a class="brand" href="/quiz/" aria-label="Clover Quiz หน้าหลัก"><span class="brand-mark">✿</span> myClover <span class="brand-divider">/</span><strong>QUIZ</strong></a><div class="top-actions"><span id="connection" class="connection" hidden></span><button id="sound" class="icon-button" aria-pressed="false" title="เปิดหรือปิดเสียง">♫ <span>เปิดเสียง</span></button><button id="fullscreen" class="icon-button" title="เต็มหน้าจอ" aria-label="เต็มหน้าจอ">⛶</button></div></header>
+ <main id="app" aria-live="polite"></main>
+ <div id="toast" class="toast" role="status" hidden></div>
+ <dialog id="avatar-dialog" aria-labelledby="avatar-title"><div class="dialog-head"><div><span class="eyebrow">TEAMBOOK · RARE COLLECTION</span><h2 id="avatar-title">วันนี้คุณเป็นตัวไหน?</h2></div><button id="close-avatars" class="icon-button" aria-label="ปิดการ์ด">✕</button></div><div id="avatar-filters" class="filters"></div><div id="avatar-grid" class="avatar-grid"></div><p class="small-note">เลือกเป็นรูปลักษณ์สำหรับเกมนี้ได้ทุกใบ</p></dialog>
+ <footer class="site-foot">A LITTLE KNOWLEDGE. A LOT OF FUN. <span>✿</span> MADE TO PLAY TOGETHER</footer>
+</body>
+</html>
