@@ -8,6 +8,8 @@ Live multiplayer quiz for `/quiz/`; host screen at `/quiz/host/`.
 - Host selects 10, 20, 30 or 60 seconds. Every question starts after a shared four-second countdown.
 - Correct answer: `round(1000 - 500 × elapsed / duration)`. Incorrect/unanswered: zero. Ties: more correct answers, then less time on correct answers, then join time and stable player ID.
 - Reveal, vote distribution, top five between rounds, final podium/full results and UTF-8 CSV export.
+- Round scores count up from the previous result before rows cross into their new ranks; incoming and outgoing top-five players animate together. Motion is disabled when the device requests reduced motion.
+- The avatar picker shows one selected card with left/right arrows and a shuffle button. Shuffle always chooses a different appearance; animal names and the large gallery are omitted.
 - Refresh restores the host/player session in the same browser. Repeated joins and answers are idempotent. The first accepted answer is final.
 
 ## Server
@@ -23,7 +25,7 @@ SQL and memory repositories are separate. Memory exists only for an explicitly i
 ## Validation and local preview
 
 ```sh
-node --test tests/quiz/game.test.mjs
+node --test tests/quiz/*.test.mjs
 node tests/quiz/preview.mjs
 ```
 
