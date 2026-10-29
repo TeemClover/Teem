@@ -1,4 +1,4 @@
-import {buildPrompt, cleanAnswers, makeBackup, parseBackup, makeCSV, sourceLabels} from './start-domain.mjs';
+import {buildPrompt, cleanAnswers, makeBackup, parseBackup, makeCSV, sourceLabels, episodeCode, hasCompletedTopic, answersComplete} from './start-domain.mjs';
 
 const page = document.body.dataset.page;
 const status = document.querySelector('#status');
@@ -12,7 +12,36 @@ function event(name, episode = '') {
   window.dispatchEvent(new CustomEvent('myclover:start', {detail: {event: name, episode_id: episode, ...source}}));
 }
 
+
+function readProgress() {
+  try { return JSON.parse(localStorage.getItem('myclover:start:progress:v1') || '{}'); }
+  catch { return {}; }
+}
+if (page === 'claim') {
+  const form = document.querySelector('#claim-form');
+  const input = document.querySelector('#episode-code');
+  document.querySelector('#library-return').hidden = !hasCompletedTopic(readProgress());
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const id = episodeCode(input.value);
+    if (!id) {
+      document.querySelector('#claim-status').textContent = 'ใส่เลขตอน 01–30 เช่น MC02 หรือ 02';
+      input.focus(); return;
+    }
+    const destination = new URL(`/start/${id.toLowerCase()}/`, location.origin);
+    const params = new URLSearchParams(location.search);
+    for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+      const value = params.get(key);
+      if (value && /^[a-zA-Z0-9_-]{1,64}$/.test(value)) destination.searchParams.set(key, value);
+    }
+    location.assign(destination.href);
+  });
+}
+
 if(page === 'catalog') {
+  const unlocked = hasCompletedTopic(readProgress());
+  document.querySelector('#library-content').hidden = !unlocked;
+  document.querySelector('#library-gate').hidden = unlocked;
   const cards = [...document.querySelectorAll('[data-topic]')];
   const count = document.querySelector('#result-count');
   function filter() {
@@ -44,7 +73,7 @@ if(page === 'catalog') {
       if(progress[card.dataset.topic]?.started === true) card.querySelector('[data-progress]').textContent = 'คุณบันทึกว่าเริ่มแล้ว';
     });
   } catch {}
-  event('catalog_opened');
+  if(unlocked) event('catalog_opened');
 }
 
 if(page === 'episode') {
@@ -54,9 +83,13 @@ if(page === 'episode') {
   const preview = document.querySelector('#prompt-preview');
   const jsonInput = document.querySelector('#import-json');
   let saveProblem = false;
+  const finish = document.querySelector('#mark-started');
+  const libraryLink = document.querySelector('#library-unlock');
+  libraryLink.hidden = !hasCompletedTopic(readProgress());
   const values = () => cleanAnswers(fields.map(field => field.value), episode.fields.length);
   function update(save = true) {
     preview.value = buildPrompt(episode, values());
+    finish.disabled = !answersComplete(values());
     if(save) {
       try {localStorage.setItem(key, JSON.stringify(makeBackup(episode, values())));saveProblem=false;notice('เก็บคำตอบไว้บนเครื่องนี้แล้ว');}
       catch {saveProblem=true;notice('เครื่องนี้เก็บอัตโนมัติไม่ได้ กด “เก็บข้อมูลที่กรอก” เพื่อเก็บคำตอบเป็นไฟล์');}
@@ -112,11 +145,12 @@ if(page === 'episode') {
     } catch(error) {notice(error.message || 'เปิดไฟล์ไม่ได้');}
     finally {jsonInput.value='';}
   });
-  document.querySelector('#mark-started').addEventListener('click', () => {
+  finish.addEventListener('click', () => {
+    if(!answersComplete(values())) {notice('ตอบแบบฝึกทั้ง 3 ข้อก่อน แล้วค่อยเปิดคลังรวมครับ');return;}
     try {
       const progress=JSON.parse(localStorage.getItem('myclover:start:progress:v1')||'{}');
-      progress[episode.id]={started:true};localStorage.setItem('myclover:start:progress:v1',JSON.stringify(progress));
-      notice('บันทึกบนเครื่องนี้ว่าเริ่มแล้ว ครั้งหน้าหน้ารวมจะมีเครื่องหมายให้');event('started_self_reported',episode.id);
+      progress[episode.id]={started:true,completed:true};localStorage.setItem('myclover:start:progress:v1',JSON.stringify(progress));
+      libraryLink.hidden=false;finish.textContent='ทำตอนนี้แล้ว ✓';document.querySelector('#completion-status').textContent='เปิดคลังรวมจากลิงก์ด้านล่างได้แล้วครับ';notice('ทำตอนนี้แล้ว เปิดคลังรวมจากลิงก์ด้านล่างได้ครับ');event('started_self_reported',episode.id);
     } catch {notice('บันทึกบนเครื่องไม่ได้ เก็บคำตอบเป็นไฟล์แทนได้ครับ');}
   });
   document.querySelectorAll('[data-download]').forEach(a => a.addEventListener('click',()=>event('download_clicked',episode.id)));

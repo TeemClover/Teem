@@ -40,7 +40,7 @@ test('the direct gift and upload instructions precede optional LINE, with full-t
     for(const content of [ep.id,ep.title,ep.outcome,ep.prompt,ep.action,...ep.fields,...ep.clip_points])assert.ok(text.includes(content));
   }
 });
-test('HTML links point to existing /start files and the hub works without JS',()=>{
+test('topic files stay reachable and the entry does not expose the full library',()=>{
   const pages=['index.html',...catalog.episodes.map(e=>e.slug+'/index.html')];
   for(const name of pages){
     const page=readFileSync(path.join(dir,name),'utf8');
@@ -50,8 +50,18 @@ test('HTML links point to existing /start files and the hub works without JS',()
       assert.ok(existsSync(target),`${name}: ${ref}`);
     }
   }
-  const hub=readFileSync(path.join(dir,'index.html'),'utf8');
-  assert.equal((hub.match(/data-topic="MC/g)||[]).length,30);
+  const entry=readFileSync(path.join(dir,'index.html'),'utf8');
+  assert.ok(entry.includes('id="claim-form"'));
+  assert.equal((entry.match(/data-topic="MC/g)||[]).length,0);
+  const library=readFileSync(path.join(dir,'library/index.html'),'utf8');
+  assert.equal((library.match(/data-topic="MC/g)||[]).length,30);
+  assert.ok(library.includes('id="library-content" hidden'));
+  for(const ep of catalog.episodes){
+    const page=readFileSync(path.join(dir,ep.slug,'index.html'),'utf8');
+    assert.ok(page.includes('src="/icons/icon-192.png"'));
+    for(const [,slug] of page.matchAll(/href="\/start\/(mc[0-9]{2})\//g)) assert.equal(slug,ep.slug);
+    assert.ok(page.includes('id="library-unlock" href="/start/library/" hidden'));
+  }
 });
 test('blank downloads are topic-specific and have no invented user answers',()=>{
   for(const ep of catalog.episodes){
