@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { GameError, newToken, tokenHash, prepareQuestions, validateJoin } from './game.js';
 import { productionStore } from './store.js';
+import { ANNIVERSARY_TITLE } from '../../../quiz/question-set.js';
 
 const MUTATIONS=new Set(['join','answer','start','reveal','leaderboard','next','finish']);
 const TOKEN=/^[a-f0-9]{64}$/;
@@ -22,15 +23,18 @@ export function createQuizHandler({getStore=productionStore,clock=Date.now,log=c
     if(origin && new URL(origin).host!==host)throw new GameError('BAD_ORIGIN',403);
     if(!String(req.headers['content-type']||'').startsWith('application/json'))throw new GameError('JSON_REQUIRED',415);
     const raw=typeof req.body==='string'?req.body:JSON.stringify(req.body||{});
-    if(Buffer.byteLength(raw)>4096)throw new GameError('BODY_TOO_LARGE',413);
+    if(Buffer.byteLength(raw)>96*1024)throw new GameError('BODY_TOO_LARGE',413);
     try{payload=typeof req.body==='object'&&req.body!==null?req.body:JSON.parse(raw);}catch{throw new GameError('BAD_JSON');}
     if(!payload||Array.isArray(payload)||typeof payload!=='object')throw new GameError('BAD_JSON');
    }
    const action=req.method==='GET'?url.searchParams.get('action')||'state':payload.action;
    if(action==='clock'&&req.method==='GET')return send(res,{ok:true,serverNow:clock()});
    if(action==='create'&&req.method==='POST'){
-    const title=String(payload.title||'Clover · รู้จริงแค่ไหน?').trim().slice(0,80);
-    const hostToken=newToken(),questions=prepareQuestions(Number(payload.seconds||20));
+    const mode=payload.mode??'anniversary';
+    if(!['anniversary','custom'].includes(mode))throw new GameError('BAD_MODE');
+    if(mode==='custom'&&!Array.isArray(payload.questions))throw new GameError('BAD_QUESTION_COUNT');
+    const title=String(payload.title||'').trim().slice(0,80)||(mode==='custom'?'คำถามของเรา':ANNIVERSARY_TITLE);
+    const hostToken=newToken(),questions=prepareQuestions(Number(payload.seconds||20),mode==='custom'?payload.questions:null);
     const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
     const rateKey=createHash('sha256').update(ip+':'+Math.floor(clock()/3600000)).digest('hex');
     const store=await getStore();const room=await store.create({title,questions,hostHash:tokenHash(hostToken),rateKey});
