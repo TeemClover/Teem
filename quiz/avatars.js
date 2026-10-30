@@ -613,3 +613,11 @@ export const AVATARS = [
     "preview": "/quiz/assets/avatars/fox-silver-rare-002.jpg"
   }
 ];
+
+// One appearance per animal in the picker. Keep the full catalog for existing rooms.
+export const AVATAR_CHOICES = ['ORANGE_CAT', 'WHITE_POM', 'PIG', 'BUFFALO', 'CHICKEN', 'CROW', 'TURTLE', 'RABBIT', 'FOX']
+  .map(animal => AVATARS.find(avatar => avatar.id === animal + '_RED_RARE_001'));
+export function canonicalAvatar(id) {
+  const animal = String(id || '').replace(/_(RED|GREEN|BLUE|SILVER)_RARE_\d+$/, '').replace(/^WHITE_CAT$/, 'ORANGE_CAT');
+  return AVATAR_CHOICES.find(avatar => avatar.id.startsWith(animal + '_')) || AVATAR_CHOICES[0];
+}
