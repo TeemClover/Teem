@@ -9,7 +9,7 @@ import { createMemoryStore } from '../../api/_lib/quiz/game.js';
 const root=fileURLToPath(new URL('../../',import.meta.url));
 export function createPreview({clock=Date.now,store=createMemoryStore({clock})}={}){
  const handler=createQuizHandler({getStore:async()=>store,clock});
- const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
+ const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.csv':'text/csv; charset=utf-8','.css':'text/css; charset=utf-8','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
  return http.createServer(async(req,res)=>{
   try{
    const url=new URL(req.url,'http://localhost');

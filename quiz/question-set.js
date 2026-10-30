@@ -9,7 +9,7 @@ export function validQuestionCount(value) {
 }
 const clean = value => typeof value === 'string' ? value.normalize('NFC').trim().replace(/\s+/gu, ' ') : '';
 const validText = (value, limit) => !!value && [...value].length <= limit && !/[\p{Cc}\p{Cf}]/u.test(value);
-function checkQuestion(item, index) {
+export function checkQuestion(item, index = 0) {
   const text = clean(item?.text);
   if (!validText(text, QUESTION_LIMIT)) return { error: 'BAD_QUESTION_TEXT', index, field: 'text' };
   if (!Array.isArray(item?.options) || item.options.length !== 4) return { error: 'BAD_OPTIONS', index, field: '0' };
@@ -36,8 +36,8 @@ export function checkCustomQuestions(input) {
 export function restoreDraft(saved) {
   const count = validQuestionCount(saved?.count) ? saved.count : MIN_QUESTIONS;
   return { count, questions: Array.from({ length: MAX_QUESTIONS }, (_, index) => ({
-    text: typeof saved?.questions?.[index]?.text === 'string' ? saved.questions[index].text.slice(0, QUESTION_LIMIT) : '',
-    options: Array.from({ length: 4 }, (_, choice) => typeof saved?.questions?.[index]?.options?.[choice] === 'string' ? saved.questions[index].options[choice].slice(0, OPTION_LIMIT) : ''),
+    text: typeof saved?.questions?.[index]?.text === 'string' ? [...saved.questions[index].text].slice(0, QUESTION_LIMIT).join('') : '',
+    options: Array.from({ length: 4 }, (_, choice) => typeof saved?.questions?.[index]?.options?.[choice] === 'string' ? [...saved.questions[index].options[choice]].slice(0, OPTION_LIMIT).join('') : ''),
   })) };
 }
 export function questionIsComplete(question) {
