@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { stepAvatar, randomAvatar } from '../../quiz/avatar-picker.js';
+import { stepAvatar, randomAvatar, createAvatarImageLoader, mountAvatarPicker } from '../../quiz/avatar-picker.js';
 import { countValue, planStandings, animateNumber } from '../../quiz/standings-motion.js';
 
 test('left/right wraps at both ends; shuffle offers every other card without repeating the selection', () => {
@@ -16,6 +16,80 @@ test('left/right wraps at both ends; shuffle offers every other card without rep
   }
   assert.equal(randomAvatar(0, 1), 0);
   assert.equal(randomAvatar(0, 0), -1);
+});
+
+function imageFixture(limit = 12) {
+  const images = new Map(), created = [];
+  function element() {
+    return { dataset: {}, attributes: new Map(), animations: [], setAttribute(k, v) { this.attributes.set(k, v); }, animate(frames, options) {
+      const animation = { frames, options, cancelled: false, cancel() { this.cancelled = true; } };this.animations.push(animation);return animation;
+    } };
+  }
+  const load = createAvatarImageLoader({ limit, createImage() {
+    let resolve, reject;
+    const decoded = new Promise((yes, no) => { resolve = yes;reject = no; });
+    const image = Object.assign(element(), { decode: () => decoded, ready: resolve, fail: reject });
+    Object.defineProperty(image, 'src', { set(value) { this.source = value;images.set(value, this); }, get() { return this.source; } });
+    created.push(image);return image;
+  } });
+  return { load, images, created, element };
+}
+function pickerFixture(reduced = false) {
+  const f = imageFixture(), selections = [];
+  const selectors = ['.avatar-current', '.avatar-card-stack', '.avatar-stage', '[data-avatar-status]', '.avatar-peek-left', '.avatar-peek-right', '[data-avatar-prev]', '[data-avatar-next]', '[data-avatar-random]'];
+  const nodes = new Map(selectors.map(s => [s, f.element()]));
+  nodes.get('.avatar-card-stack').replaceChildren = function (...children) { this.children = children; };
+  const root = { isConnected: true, ownerDocument: { defaultView: { matchMedia: () => ({ matches: reduced }) } }, querySelector: selector => nodes.get(selector), addEventListener() {} };
+  const avatars = Array.from({ length: 5 }, (_, n) => ({ id: 'avatar' + n, image: 'full' + n, preview: 'thumb' + n }));
+  mountAvatarPicker(root, { avatars, selectedId: 'avatar0', onSelect: avatar => selections.push(avatar.id), loadImage: f.load, random: () => .75 });
+  return { ...f, root, nodes, selections, click: selector => nodes.get(selector).onclick() };
+}
+
+test('decoded preview cache deduplicates requests, promotes priority, evicts least-recent entries and retries failures', async () => {
+  const f = imageFixture(2), first = f.load('one');
+  assert.equal(f.load('one', 'high'), first);assert.equal(f.created.length, 1);assert.equal(f.images.get('one').fetchPriority, 'high');
+  f.images.get('one').ready();assert.equal(await first, f.images.get('one'));
+  const second = f.load('two');f.images.get('two').ready();await second;
+  f.load('one');const third = f.load('three');f.images.get('three').ready();await third;
+  const evicted = f.load('two');assert.equal(f.created.length, 4);f.images.get('two').ready();await evicted;
+  const failed = f.load('broken');f.images.get('broken').fail(new Error('offline'));await assert.rejects(failed);
+  const retry = f.load('broken');assert.equal(f.created.length, 6);f.images.get('broken').ready();await retry;
+});
+
+test('picker retains the visible card until decoded and rapid shuffle taps commit only the latest choice', async () => {
+  const f = pickerFixture();
+  assert.equal(f.nodes.get('.avatar-current').src, 'thumb0');
+  assert.ok(f.images.has('thumb4'), 'the next random card is prepared before the first tap');
+  assert.ok(f.created.every(image => !image.src.startsWith('full')));
+  const first = f.click('[data-avatar-random]');assert.deepEqual(f.selections, []);
+  assert.equal(f.nodes.get('.avatar-current').src, 'thumb0', 'a slow request cannot blank the current card');
+  const latest = f.click('[data-avatar-random]');
+  f.images.get('thumb3').ready();await latest;
+  assert.deepEqual(f.selections, ['avatar3']);assert.equal(f.nodes.get('.avatar-card-stack').children.at(-1), f.images.get('thumb3'));
+  f.images.get('thumb4').ready();await first;
+  assert.deepEqual(f.selections, ['avatar3'], 'late completion cannot replace the latest requested card');
+  const animation = f.images.get('thumb3').animations[0];assert.equal(animation.options.duration, 180);
+  const next = f.click('[data-avatar-prev]');f.images.get('thumb2').ready();await next;
+  assert.equal(animation.cancelled, true);assert.deepEqual(f.selections, ['avatar3', 'avatar2']);
+  assert.equal(f.nodes.get('.avatar-card-stack').children.length, 2);
+});
+
+test('failed avatar loads keep the prior selection and a retry succeeds; detached pickers cannot change selection', async () => {
+  const f = pickerFixture();const failed = f.click('[data-avatar-random]');
+  f.images.get('thumb4').fail(new Error('offline'));await failed;
+  assert.deepEqual(f.selections, []);assert.equal(f.nodes.get('.avatar-current').src, 'thumb0');
+  assert.equal(f.nodes.get('.avatar-stage').attributes.get('aria-busy'), 'false');
+  const retry = f.click('[data-avatar-random]');f.images.get('thumb4').ready();await retry;
+  assert.deepEqual(f.selections, ['avatar4']);
+  const pending = f.click('[data-avatar-prev]');f.root.isConnected = false;f.images.get('thumb3').ready();await pending;
+  assert.deepEqual(f.selections, ['avatar4']);
+});
+
+test('reduced-motion avatar selection swaps decoded layers without animations', async () => {
+  const f = pickerFixture(true), pending = f.click('[data-avatar-random]');
+  f.images.get('thumb4').ready();await pending;
+  assert.deepEqual(f.selections, ['avatar4']);assert.equal(f.images.get('thumb4').animations.length, 0);
+  assert.equal(f.nodes.get('.avatar-current').animations.length, 0);
 });
 
 test('overtake plan retains the former leaders, includes incoming players, and uses actual prior scores', () => {

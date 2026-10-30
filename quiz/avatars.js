@@ -6,7 +6,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/orange-cat-red-rare-001.webp",
     "emoji": "🐱",
-    "description": "แมวยืนบนดาดฟ้ายามเช้า ถือธงผ้าเล็ก ๆ เพื่อชวนทีมเริ่มก้าวแรก"
+    "description": "แมวยืนบนดาดฟ้ายามเช้า ถือธงผ้าเล็ก ๆ เพื่อชวนทีมเริ่มก้าวแรก",
+    "preview": "/quiz/assets/avatars/orange-cat-red-rare-001.jpg"
   },
   {
     "id": "ORANGE_CAT_GREEN_RARE_001",
@@ -14,7 +15,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/orange-cat-green-rare-001.webp",
     "emoji": "🐱",
-    "description": "แมวกางแผนที่ในสวนสมุด ชี้เส้นทางสั้นที่สุดที่ทุกคนเดินไหว"
+    "description": "แมวกางแผนที่ในสวนสมุด ชี้เส้นทางสั้นที่สุดที่ทุกคนเดินไหว",
+    "preview": "/quiz/assets/avatars/orange-cat-green-rare-001.jpg"
   },
   {
     "id": "ORANGE_CAT_BLUE_RARE_001",
@@ -22,7 +24,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/orange-cat-blue-rare-001.webp",
     "emoji": "🐱",
-    "description": "แมวใส่เสื้อกันฝน นำทีมข้ามแอ่งน้ำด้วยรอยยิ้มและร่มดินสอสี"
+    "description": "แมวใส่เสื้อกันฝน นำทีมข้ามแอ่งน้ำด้วยรอยยิ้มและร่มดินสอสี",
+    "preview": "/quiz/assets/avatars/orange-cat-blue-rare-001.jpg"
   },
   {
     "id": "ORANGE_CAT_SILVER_RARE_001",
@@ -30,7 +33,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/orange-cat-silver-rare-001.webp",
     "emoji": "🐱",
-    "description": "แมวถือโคมเงินบนทางเดินกลางคืน คอยเว้นแสงไว้ให้คนที่มาทีหลัง"
+    "description": "แมวถือโคมเงินบนทางเดินกลางคืน คอยเว้นแสงไว้ให้คนที่มาทีหลัง",
+    "preview": "/quiz/assets/avatars/orange-cat-silver-rare-001.jpg"
   },
   {
     "id": "WHITE_POM_RED_RARE_001",
@@ -38,7 +42,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/white-pom-red-rare-001.webp",
     "emoji": "🐶",
-    "description": "หมาโบกผ้าแดงที่ชานชาลา ช่วยให้ทุกคนขึ้นรถของก้าวถัดไปทันเวลา"
+    "description": "หมาโบกผ้าแดงที่ชานชาลา ช่วยให้ทุกคนขึ้นรถของก้าวถัดไปทันเวลา",
+    "preview": "/quiz/assets/avatars/white-pom-red-rare-001.jpg"
   },
   {
     "id": "WHITE_POM_GREEN_RARE_001",
@@ -46,7 +51,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/white-pom-green-rare-001.webp",
     "emoji": "🐶",
-    "description": "หมาปักป้ายทางบนเนินเขียว เขียนระยะสั้น ๆ ที่ทีมทำได้จริง"
+    "description": "หมาปักป้ายทางบนเนินเขียว เขียนระยะสั้น ๆ ที่ทีมทำได้จริง",
+    "preview": "/quiz/assets/avatars/white-pom-green-rare-001.jpg"
   },
   {
     "id": "WHITE_POM_BLUE_RARE_001",
@@ -54,7 +60,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/white-pom-blue-rare-001.webp",
     "emoji": "🐶",
-    "description": "หมาถือเข็มทิศริมทะเลสีฟ้า ชวนทีมฟังคลื่นและเลือกทางที่สบายใจ"
+    "description": "หมาถือเข็มทิศริมทะเลสีฟ้า ชวนทีมฟังคลื่นและเลือกทางที่สบายใจ",
+    "preview": "/quiz/assets/avatars/white-pom-blue-rare-001.jpg"
   },
   {
     "id": "WHITE_POM_SILVER_RARE_001",
@@ -62,7 +69,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/white-pom-silver-rare-001.webp",
     "emoji": "🐶",
-    "description": "หมาลากเส้นดาวสีเงินบนฟ้า ทำเครื่องหมายทุกก้าวที่ทีมเคยผ่าน"
+    "description": "หมาลากเส้นดาวสีเงินบนฟ้า ทำเครื่องหมายทุกก้าวที่ทีมเคยผ่าน",
+    "preview": "/quiz/assets/avatars/white-pom-silver-rare-001.jpg"
   },
   {
     "id": "WHITE_CAT_RED_RARE_001",
@@ -70,7 +78,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/white-cat-red-rare-001.webp",
     "emoji": "🐈",
-    "description": "แมวขาวนั่งจดบันทึกข้างธงงานวัด เก็บช่วงเล็ก ๆ ที่ทำให้ทีมยิ้ม"
+    "description": "แมวขาวนั่งจดบันทึกข้างธงงานวัด เก็บช่วงเล็ก ๆ ที่ทำให้ทีมยิ้ม",
+    "preview": "/quiz/assets/avatars/white-cat-red-rare-001.jpg"
   },
   {
     "id": "WHITE_CAT_GREEN_RARE_001",
@@ -78,7 +87,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/white-cat-green-rare-001.webp",
     "emoji": "🐈",
-    "description": "แมวขาวซ่อนตัวบนหอสังเกตในป่า มองเห็นรอยเท้าที่พาทีมกลับเข้าทาง"
+    "description": "แมวขาวซ่อนตัวบนหอสังเกตในป่า มองเห็นรอยเท้าที่พาทีมกลับเข้าทาง",
+    "preview": "/quiz/assets/avatars/white-cat-green-rare-001.jpg"
   },
   {
     "id": "WHITE_CAT_BLUE_RARE_001",
@@ -86,7 +96,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/white-cat-blue-rare-001.webp",
     "emoji": "🐈",
-    "description": "แมวขาวเฝ้าหน้าต่างวันฝนตก จัดโน้ตสีน้ำเงินของทุก ลงชื่อ ไว้อย่างอ่อนโยน"
+    "description": "แมวขาวเฝ้าหน้าต่างวันฝนตก จัดโน้ตสีน้ำเงินของทุก ลงชื่อ ไว้อย่างอ่อนโยน",
+    "preview": "/quiz/assets/avatars/white-cat-blue-rare-001.jpg"
   },
   {
     "id": "WHITE_CAT_SILVER_RARE_001",
@@ -94,7 +105,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/white-cat-silver-rare-001.webp",
     "emoji": "🐈",
-    "description": "แมวขาวเดินในห้องสมุดหิมะ เก็บบทเรียนเป็นดาวกระดาษสีเงิน"
+    "description": "แมวขาวเดินในห้องสมุดหิมะ เก็บบทเรียนเป็นดาวกระดาษสีเงิน",
+    "preview": "/quiz/assets/avatars/white-cat-silver-rare-001.jpg"
   },
   {
     "id": "PIG_RED_RARE_001",
@@ -102,7 +114,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/pig-red-rare-001.webp",
     "emoji": "🐷",
-    "description": "หมูนวดแป้งทำพายเบอร์รีในครัวสมุด พร้อมผ้าพันคอและชุดทำครัวสีแดง"
+    "description": "หมูนวดแป้งทำพายเบอร์รีในครัวสมุด พร้อมผ้าพันคอและชุดทำครัวสีแดง",
+    "preview": "/quiz/assets/avatars/pig-red-rare-001.jpg"
   },
   {
     "id": "PIG_RED_RARE_002",
@@ -110,7 +123,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/pig-red-rare-002.webp",
     "emoji": "🐷",
-    "description": "หมูออกแรงลากรถเข็นปิกนิกสีแดง พาของอร่อยไปแบ่งเพื่อนที่สวน"
+    "description": "หมูออกแรงลากรถเข็นปิกนิกสีแดง พาของอร่อยไปแบ่งเพื่อนที่สวน",
+    "preview": "/quiz/assets/avatars/pig-red-rare-002.jpg"
   },
   {
     "id": "PIG_GREEN_RARE_001",
@@ -118,7 +132,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/pig-green-rare-001.webp",
     "emoji": "🐷",
-    "description": "หมูคุกเข่ารดน้ำต้นอ่อนด้วยบัวรดน้ำสีเขียว เฝ้าดูใบแรกอย่างตั้งใจ"
+    "description": "หมูคุกเข่ารดน้ำต้นอ่อนด้วยบัวรดน้ำสีเขียว เฝ้าดูใบแรกอย่างตั้งใจ",
+    "preview": "/quiz/assets/avatars/pig-green-rare-001.jpg"
   },
   {
     "id": "PIG_GREEN_RARE_002",
@@ -126,7 +141,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/pig-green-rare-002.webp",
     "emoji": "🐷",
-    "description": "หมูเขย่งติดบ้านนกสีเขียวบนต้นไม้ พร้อมกระเป๋าเครื่องมือคู่ใจ"
+    "description": "หมูเขย่งติดบ้านนกสีเขียวบนต้นไม้ พร้อมกระเป๋าเครื่องมือคู่ใจ",
+    "preview": "/quiz/assets/avatars/pig-green-rare-002.jpg"
   },
   {
     "id": "PIG_BLUE_RARE_001",
@@ -134,7 +150,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/pig-blue-rare-001.webp",
     "emoji": "🐷",
-    "description": "หมูเดินขบวนตีกลองสีน้ำเงิน เติมจังหวะสนุกให้ทางเดินของทีม"
+    "description": "หมูเดินขบวนตีกลองสีน้ำเงิน เติมจังหวะสนุกให้ทางเดินของทีม",
+    "preview": "/quiz/assets/avatars/pig-blue-rare-001.jpg"
   },
   {
     "id": "PIG_BLUE_RARE_002",
@@ -142,7 +159,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/pig-blue-rare-002.webp",
     "emoji": "🐷",
-    "description": "หมูวิ่งรับลมพร้อมกังหันสีน้ำเงิน ปล่อยผ้าพันคอพลิ้วไปตามทาง"
+    "description": "หมูวิ่งรับลมพร้อมกังหันสีน้ำเงิน ปล่อยผ้าพันคอพลิ้วไปตามทาง",
+    "preview": "/quiz/assets/avatars/pig-blue-rare-002.jpg"
   },
   {
     "id": "PIG_SILVER_RARE_001",
@@ -150,7 +168,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/pig-silver-rare-001.webp",
     "emoji": "🐷",
-    "description": "หมูนั่งหมุนกล่องดนตรีสีเงิน ฟังดาวกระดาษเต้นรอบตัวอย่างสงบ"
+    "description": "หมูนั่งหมุนกล่องดนตรีสีเงิน ฟังดาวกระดาษเต้นรอบตัวอย่างสงบ",
+    "preview": "/quiz/assets/avatars/pig-silver-rare-001.jpg"
   },
   {
     "id": "PIG_SILVER_RARE_002",
@@ -158,7 +177,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/pig-silver-rare-002.webp",
     "emoji": "🐷",
-    "description": "หมูไอซ์สเกตขาเดียวด้วยผ้าพันคอและรองเท้าสีเงินบนบึงฤดูหนาว"
+    "description": "หมูไอซ์สเกตขาเดียวด้วยผ้าพันคอและรองเท้าสีเงินบนบึงฤดูหนาว",
+    "preview": "/quiz/assets/avatars/pig-silver-rare-002.jpg"
   },
   {
     "id": "BUFFALO_RED_RARE_001",
@@ -166,7 +186,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/buffalo-red-rare-001.webp",
     "emoji": "🐃",
-    "description": "ลูกควายนั่งห่อของขวัญด้วยริบบิ้นสีแดง ตั้งใจพับทุกมุมให้เรียบร้อย"
+    "description": "ลูกควายนั่งห่อของขวัญด้วยริบบิ้นสีแดง ตั้งใจพับทุกมุมให้เรียบร้อย",
+    "preview": "/quiz/assets/avatars/buffalo-red-rare-001.jpg"
   },
   {
     "id": "BUFFALO_RED_RARE_002",
@@ -174,7 +195,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/buffalo-red-rare-002.webp",
     "emoji": "🐃",
-    "description": "ลูกควายเอนตัวรับลม พลางประคองว่าวสีแดงให้ลอยสูงเหนือทุ่ง"
+    "description": "ลูกควายเอนตัวรับลม พลางประคองว่าวสีแดงให้ลอยสูงเหนือทุ่ง",
+    "preview": "/quiz/assets/avatars/buffalo-red-rare-002.jpg"
   },
   {
     "id": "BUFFALO_GREEN_RARE_001",
@@ -182,7 +204,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/buffalo-green-rare-001.webp",
     "emoji": "🐃",
-    "description": "ลูกควายคุกเข่าทาสีเก้าอี้ไม้เป็นสีเขียว เติมชีวิตใหม่ให้ของชิ้นเดิม"
+    "description": "ลูกควายคุกเข่าทาสีเก้าอี้ไม้เป็นสีเขียว เติมชีวิตใหม่ให้ของชิ้นเดิม",
+    "preview": "/quiz/assets/avatars/buffalo-green-rare-001.jpg"
   },
   {
     "id": "BUFFALO_GREEN_RARE_002",
@@ -190,7 +213,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/buffalo-green-rare-002.webp",
     "emoji": "🐃",
-    "description": "ลูกควายเขย่งเก็บแอปเปิลใส่ตะกร้าสีเขียว เลือกลูกสวยไว้แบ่งเพื่อน"
+    "description": "ลูกควายเขย่งเก็บแอปเปิลใส่ตะกร้าสีเขียว เลือกลูกสวยไว้แบ่งเพื่อน",
+    "preview": "/quiz/assets/avatars/buffalo-green-rare-002.jpg"
   },
   {
     "id": "BUFFALO_BLUE_RARE_001",
@@ -198,7 +222,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/buffalo-blue-rare-001.webp",
     "emoji": "🐃",
-    "description": "ลูกควายกระโดดเชือกสีน้ำเงินกลางลาน กะจังหวะให้เขาและกีบลอยพ้นเชือก"
+    "description": "ลูกควายกระโดดเชือกสีน้ำเงินกลางลาน กะจังหวะให้เขาและกีบลอยพ้นเชือก",
+    "preview": "/quiz/assets/avatars/buffalo-blue-rare-001.jpg"
   },
   {
     "id": "BUFFALO_BLUE_RARE_002",
@@ -206,7 +231,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/buffalo-blue-rare-002.webp",
     "emoji": "🐃",
-    "description": "ลูกควายนอนคว่ำบนสะพานไม้ ปล่อยเรือกระดาษสีน้ำเงินออกเดินทางตามลำธาร"
+    "description": "ลูกควายนอนคว่ำบนสะพานไม้ ปล่อยเรือกระดาษสีน้ำเงินออกเดินทางตามลำธาร",
+    "preview": "/quiz/assets/avatars/buffalo-blue-rare-002.jpg"
   },
   {
     "id": "BUFFALO_SILVER_RARE_001",
@@ -214,7 +240,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/buffalo-silver-rare-001.webp",
     "emoji": "🐃",
-    "description": "ลูกควายนั่งซ่อมนาฬิกาปลุกสีเงินในห้องใต้หลังคา จัดเฟืองเล็ก ๆ อย่างใจเย็น"
+    "description": "ลูกควายนั่งซ่อมนาฬิกาปลุกสีเงินในห้องใต้หลังคา จัดเฟืองเล็ก ๆ อย่างใจเย็น",
+    "preview": "/quiz/assets/avatars/buffalo-silver-rare-001.jpg"
   },
   {
     "id": "BUFFALO_SILVER_RARE_002",
@@ -222,7 +249,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/buffalo-silver-rare-002.webp",
     "emoji": "🐃",
-    "description": "ลูกควายพุ่งตัวโยนห่วงสีเงินเข้าเป้าในงานวัด สนุกกับจังหวะที่กีบปล่อยห่วง"
+    "description": "ลูกควายพุ่งตัวโยนห่วงสีเงินเข้าเป้าในงานวัด สนุกกับจังหวะที่กีบปล่อยห่วง",
+    "preview": "/quiz/assets/avatars/buffalo-silver-rare-002.jpg"
   },
   {
     "id": "CHICKEN_RED_RARE_001",
@@ -230,7 +258,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/chicken-red-rare-001.webp",
     "emoji": "🐔",
-    "description": "ไก่เอนตัวดึงเชือกสีแดง ตีระฆังรับแสงเช้าให้หมู่บ้านเริ่มวันใหม่"
+    "description": "ไก่เอนตัวดึงเชือกสีแดง ตีระฆังรับแสงเช้าให้หมู่บ้านเริ่มวันใหม่",
+    "preview": "/quiz/assets/avatars/chicken-red-rare-001.jpg"
   },
   {
     "id": "CHICKEN_RED_RARE_002",
@@ -238,7 +267,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/chicken-red-rare-002.webp",
     "emoji": "🐔",
-    "description": "ไก่หมุนเครื่องทำป๊อปคอร์นกรอบสีแดงในงานวัด พร้อมรับเมล็ดฟูใส่ถุง"
+    "description": "ไก่หมุนเครื่องทำป๊อปคอร์นกรอบสีแดงในงานวัด พร้อมรับเมล็ดฟูใส่ถุง",
+    "preview": "/quiz/assets/avatars/chicken-red-rare-002.jpg"
   },
   {
     "id": "CHICKEN_GREEN_RARE_001",
@@ -246,7 +276,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/chicken-green-rare-001.webp",
     "emoji": "🐔",
-    "description": "ไก่นั่งริมกำแพงสวน เป่าฟองสบู่จากก้านวงและถ้วยสีเขียวให้ลอยรับแดด"
+    "description": "ไก่นั่งริมกำแพงสวน เป่าฟองสบู่จากก้านวงและถ้วยสีเขียวให้ลอยรับแดด",
+    "preview": "/quiz/assets/avatars/chicken-green-rare-001.jpg"
   },
   {
     "id": "CHICKEN_GREEN_RARE_002",
@@ -254,7 +285,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/chicken-green-rare-002.webp",
     "emoji": "🐔",
-    "description": "ไก่ย่อตัวเล็งมินิกอล์ฟ จับจังหวะก่อนตีลูกสีเขียวเข้าสู่ทางโค้งในสวน"
+    "description": "ไก่ย่อตัวเล็งมินิกอล์ฟ จับจังหวะก่อนตีลูกสีเขียวเข้าสู่ทางโค้งในสวน",
+    "preview": "/quiz/assets/avatars/chicken-green-rare-002.jpg"
   },
   {
     "id": "CHICKEN_BLUE_RARE_001",
@@ -262,7 +294,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/chicken-blue-rare-001.webp",
     "emoji": "🐔",
-    "description": "ไก่ทรงตัวบนตอไม้ ส่งเสียงเชียร์ผ่านโทรโข่งสีน้ำเงินในงานกีฬากลางทุ่ง"
+    "description": "ไก่ทรงตัวบนตอไม้ ส่งเสียงเชียร์ผ่านโทรโข่งสีน้ำเงินในงานกีฬากลางทุ่ง",
+    "preview": "/quiz/assets/avatars/chicken-blue-rare-001.jpg"
   },
   {
     "id": "CHICKEN_BLUE_RARE_002",
@@ -270,7 +303,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/chicken-blue-rare-002.webp",
     "emoji": "🐔",
-    "description": "ไก่นั่งเล่นไซโลโฟนกรอบสีน้ำเงินในห้องใต้หลังคา ตีสองจังหวะสลับกันอย่างร่าเริง"
+    "description": "ไก่นั่งเล่นไซโลโฟนกรอบสีน้ำเงินในห้องใต้หลังคา ตีสองจังหวะสลับกันอย่างร่าเริง",
+    "preview": "/quiz/assets/avatars/chicken-blue-rare-002.jpg"
   },
   {
     "id": "CHICKEN_SILVER_RARE_001",
@@ -278,7 +312,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/chicken-silver-rare-001.webp",
     "emoji": "🐔",
-    "description": "ไก่หมุนตัวประคองลูกแก้วหิมะฐานสีเงิน ชมเกล็ดขาวร่วงรอบบ้านหลังจิ๋ว"
+    "description": "ไก่หมุนตัวประคองลูกแก้วหิมะฐานสีเงิน ชมเกล็ดขาวร่วงรอบบ้านหลังจิ๋ว",
+    "preview": "/quiz/assets/avatars/chicken-silver-rare-001.jpg"
   },
   {
     "id": "CHICKEN_SILVER_RARE_002",
@@ -286,7 +321,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/chicken-silver-rare-002.webp",
     "emoji": "🐔",
-    "description": "ไก่พุ่งลันจ์รับลูกแบดด้วยแร็กเก็ตสีเงินใต้แสงโคมยามเย็น"
+    "description": "ไก่พุ่งลันจ์รับลูกแบดด้วยแร็กเก็ตสีเงินใต้แสงโคมยามเย็น",
+    "preview": "/quiz/assets/avatars/chicken-silver-rare-002.jpg"
   },
   {
     "id": "CROW_RED_RARE_001",
@@ -294,7 +330,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/crow-red-rare-001.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาประทับตราสีแดงลงบนโปสการ์ดในห้องไปรษณีย์เล็ก ๆ จัดจดหมายทุกฉบับให้พร้อมออกเดินทาง"
+    "description": "อีกาประทับตราสีแดงลงบนโปสการ์ดในห้องไปรษณีย์เล็ก ๆ จัดจดหมายทุกฉบับให้พร้อมออกเดินทาง",
+    "preview": "/quiz/assets/avatars/crow-red-rare-001.jpg"
   },
   {
     "id": "CROW_RED_RARE_002",
@@ -302,7 +339,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/crow-red-rare-002.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาพุ่งตัวปล่อยลูกโบว์ลิงสีแดงไปตามลานไม้กลางสวน ลุ้นให้ล้มครบทุกพิน"
+    "description": "อีกาพุ่งตัวปล่อยลูกโบว์ลิงสีแดงไปตามลานไม้กลางสวน ลุ้นให้ล้มครบทุกพิน",
+    "preview": "/quiz/assets/avatars/crow-red-rare-002.jpg"
   },
   {
     "id": "CROW_GREEN_RARE_001",
@@ -310,7 +348,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/crow-green-rare-001.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาก้าวข้างตามแนวโดมิโนสีเขียวที่กำลังล้มต่อกันบนระเบียงสวน เฝ้าดูแผนเล็ก ๆ เดินหน้าจนครบ"
+    "description": "อีกาก้าวข้างตามแนวโดมิโนสีเขียวที่กำลังล้มต่อกันบนระเบียงสวน เฝ้าดูแผนเล็ก ๆ เดินหน้าจนครบ",
+    "preview": "/quiz/assets/avatars/crow-green-rare-001.jpg"
   },
   {
     "id": "CROW_GREEN_RARE_002",
@@ -318,7 +357,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/crow-green-rare-002.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกากระเด้งตัวบนโปโกสติ๊กสีเขียวกลางลานหมู่บ้าน ใช้จะงอยปากจับแฮนด์และกางปีกทรงตัว"
+    "description": "อีกากระเด้งตัวบนโปโกสติ๊กสีเขียวกลางลานหมู่บ้าน ใช้จะงอยปากจับแฮนด์และกางปีกทรงตัว",
+    "preview": "/quiz/assets/avatars/crow-green-rare-002.jpg"
   },
   {
     "id": "CROW_BLUE_RARE_001",
@@ -326,7 +366,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/crow-blue-rare-001.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกานั่งส่งสัญญาณด้วยเครื่องโทรเลขสีน้ำเงินในบ้านต้นไม้ ตั้งใจเคาะสารให้ไปถึงปลายทาง"
+    "description": "อีกานั่งส่งสัญญาณด้วยเครื่องโทรเลขสีน้ำเงินในบ้านต้นไม้ ตั้งใจเคาะสารให้ไปถึงปลายทาง",
+    "preview": "/quiz/assets/avatars/crow-blue-rare-001.jpg"
   },
   {
     "id": "CROW_BLUE_RARE_002",
@@ -334,7 +375,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/crow-blue-rare-002.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาใช้จะงอยปากกับเท้าควบคุมเครื่องบินของเล่นสีน้ำเงินให้โฉบเหนือทุ่งดอกไม้"
+    "description": "อีกาใช้จะงอยปากกับเท้าควบคุมเครื่องบินของเล่นสีน้ำเงินให้โฉบเหนือทุ่งดอกไม้",
+    "preview": "/quiz/assets/avatars/crow-blue-rare-002.jpg"
   },
   {
     "id": "CROW_SILVER_RARE_001",
@@ -342,7 +384,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/crow-silver-rare-001.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาคาบก้อนหินวางบนตาชั่งสีเงิน เปรียบเทียบสมบัติชิ้นเล็กกับลูกโอ๊กอย่างละเอียด"
+    "description": "อีกาคาบก้อนหินวางบนตาชั่งสีเงิน เปรียบเทียบสมบัติชิ้นเล็กกับลูกโอ๊กอย่างละเอียด",
+    "preview": "/quiz/assets/avatars/crow-silver-rare-001.jpg"
   },
   {
     "id": "CROW_SILVER_RARE_002",
@@ -350,7 +393,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/crow-silver-rare-002.webp",
     "emoji": "🐦‍⬛",
-    "description": "อีกาแสดงมายากลบนเวทีงานวัด คาบสายดาวกระดาษขึ้นจากหมวกสีเงินท่ามกลางแสงโคม"
+    "description": "อีกาแสดงมายากลบนเวทีงานวัด คาบสายดาวกระดาษขึ้นจากหมวกสีเงินท่ามกลางแสงโคม",
+    "preview": "/quiz/assets/avatars/crow-silver-rare-002.jpg"
   },
   {
     "id": "TURTLE_RED_RARE_001",
@@ -358,7 +402,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/turtle-red-rare-001.webp",
     "emoji": "🐢",
-    "description": "เต่ายืนประคองดินเหนียวบนแป้นหมุนขอบสีแดง ปั้นชามใบเล็กในห้องเครื่องปั้นดินเผาอย่างใจเย็น"
+    "description": "เต่ายืนประคองดินเหนียวบนแป้นหมุนขอบสีแดง ปั้นชามใบเล็กในห้องเครื่องปั้นดินเผาอย่างใจเย็น",
+    "preview": "/quiz/assets/avatars/turtle-red-rare-001.jpg"
   },
   {
     "id": "TURTLE_RED_RARE_002",
@@ -366,7 +411,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/turtle-red-rare-002.webp",
     "emoji": "🐢",
-    "description": "เต่าเอนตัวโยกคันปั๊มน้ำสีแดงในสวน ส่งสายน้ำใสลงถังโลหะข้างแปลงดอกไม้"
+    "description": "เต่าเอนตัวโยกคันปั๊มน้ำสีแดงในสวน ส่งสายน้ำใสลงถังโลหะข้างแปลงดอกไม้",
+    "preview": "/quiz/assets/avatars/turtle-red-rare-002.jpg"
   },
   {
     "id": "TURTLE_GREEN_RARE_001",
@@ -374,7 +420,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/turtle-green-rare-001.webp",
     "emoji": "🐢",
-    "description": "เต่าย่อตัวกางเต็นท์สีเขียวในลานป่า ยกเสาและดึงเชือกให้มุมพักพร้อมก่อนค่ำ"
+    "description": "เต่าย่อตัวกางเต็นท์สีเขียวในลานป่า ยกเสาและดึงเชือกให้มุมพักพร้อมก่อนค่ำ",
+    "preview": "/quiz/assets/avatars/turtle-green-rare-001.jpg"
   },
   {
     "id": "TURTLE_GREEN_RARE_002",
@@ -382,7 +429,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/turtle-green-rare-002.webp",
     "emoji": "🐢",
-    "description": "เต่ายืนสอดกระสวยสีเขียวผ่านเส้นด้ายบนกี่ทอผ้า ค่อย ๆ ต่อแถบลายให้เต็มผืน"
+    "description": "เต่ายืนสอดกระสวยสีเขียวผ่านเส้นด้ายบนกี่ทอผ้า ค่อย ๆ ต่อแถบลายให้เต็มผืน",
+    "preview": "/quiz/assets/avatars/turtle-green-rare-002.jpg"
   },
   {
     "id": "TURTLE_BLUE_RARE_001",
@@ -390,7 +438,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/turtle-blue-rare-001.webp",
     "emoji": "🐢",
-    "description": "เต่าย่อตัวใช้แว่นขยายด้ามสีน้ำเงินสำรวจเปลือกหอยและดาวทะเลในแอ่งน้ำริมฝั่ง"
+    "description": "เต่าย่อตัวใช้แว่นขยายด้ามสีน้ำเงินสำรวจเปลือกหอยและดาวทะเลในแอ่งน้ำริมฝั่ง",
+    "preview": "/quiz/assets/avatars/turtle-blue-rare-001.jpg"
   },
   {
     "id": "TURTLE_BLUE_RARE_002",
@@ -398,7 +447,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/turtle-blue-rare-002.webp",
     "emoji": "🐢",
-    "description": "เต่ายืนปรับกล้องโทรทรรศน์สีน้ำเงินบนหอดูดาวยอดเนิน เฝ้ามองดาวดวงแรกเหนือขอบฟ้า"
+    "description": "เต่ายืนปรับกล้องโทรทรรศน์สีน้ำเงินบนหอดูดาวยอดเนิน เฝ้ามองดาวดวงแรกเหนือขอบฟ้า",
+    "preview": "/quiz/assets/avatars/turtle-blue-rare-002.jpg"
   },
   {
     "id": "TURTLE_SILVER_RARE_001",
@@ -406,7 +456,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/turtle-silver-rare-001.webp",
     "emoji": "🐢",
-    "description": "เต่ายืนครุ่นคิดข้างกระดานหมากรุก ยกม้าเงินขึ้นพิจารณาในเรือนกระจกกลางสวน"
+    "description": "เต่ายืนครุ่นคิดข้างกระดานหมากรุก ยกม้าเงินขึ้นพิจารณาในเรือนกระจกกลางสวน",
+    "preview": "/quiz/assets/avatars/turtle-silver-rare-001.jpg"
   },
   {
     "id": "TURTLE_SILVER_RARE_002",
@@ -414,7 +465,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/turtle-silver-rare-002.webp",
     "emoji": "🐢",
-    "description": "เต่าก้าวช้า ๆ กวาดเครื่องตรวจโลหะสีเงินเหนือทุ่งใบไม้ ตามสัญญาณไปหาเหรียญที่ซ่อนอยู่"
+    "description": "เต่าก้าวช้า ๆ กวาดเครื่องตรวจโลหะสีเงินเหนือทุ่งใบไม้ ตามสัญญาณไปหาเหรียญที่ซ่อนอยู่",
+    "preview": "/quiz/assets/avatars/turtle-silver-rare-002.jpg"
   },
   {
     "id": "RABBIT_RED_RARE_001",
@@ -422,7 +474,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/rabbit-red-rare-001.webp",
     "emoji": "🐰",
-    "description": "กระต่ายยืนหมุนเครื่องทำเส้นพาสตาสีแดงในครัว รับเส้นสดที่ค่อย ๆ ไหลออกมาด้วยสองอุ้งเท้า"
+    "description": "กระต่ายยืนหมุนเครื่องทำเส้นพาสตาสีแดงในครัว รับเส้นสดที่ค่อย ๆ ไหลออกมาด้วยสองอุ้งเท้า",
+    "preview": "/quiz/assets/avatars/rabbit-red-rare-001.jpg"
   },
   {
     "id": "RABBIT_RED_RARE_002",
@@ -430,7 +483,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/rabbit-red-rare-002.webp",
     "emoji": "🐰",
-    "description": "กระต่ายทรงตัวขาเดียว เล่นโยโย่สีแดงเป็นวงโค้งบนเวทีเล็กกลางสวน"
+    "description": "กระต่ายทรงตัวขาเดียว เล่นโยโย่สีแดงเป็นวงโค้งบนเวทีเล็กกลางสวน",
+    "preview": "/quiz/assets/avatars/rabbit-red-rare-002.jpg"
   },
   {
     "id": "RABBIT_GREEN_RARE_001",
@@ -438,7 +492,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/rabbit-green-rare-001.webp",
     "emoji": "🐰",
-    "description": "กระต่ายโหนซิปไลน์ด้วยสายรัดสีเขียว ส่งตะกร้าปิกนิกข้ามลานป่าอย่างร่าเริง"
+    "description": "กระต่ายโหนซิปไลน์ด้วยสายรัดสีเขียว ส่งตะกร้าปิกนิกข้ามลานป่าอย่างร่าเริง",
+    "preview": "/quiz/assets/avatars/rabbit-green-rare-001.jpg"
   },
   {
     "id": "RABBIT_GREEN_RARE_002",
@@ -446,7 +501,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/rabbit-green-rare-002.webp",
     "emoji": "🐰",
-    "description": "กระต่ายย่อตัวใช้กรรไกรสีเขียว ตัดแต่งพุ่มไม้เป็นรูปหัวใจในสวนกระดาษ"
+    "description": "กระต่ายย่อตัวใช้กรรไกรสีเขียว ตัดแต่งพุ่มไม้เป็นรูปหัวใจในสวนกระดาษ",
+    "preview": "/quiz/assets/avatars/rabbit-green-rare-002.jpg"
   },
   {
     "id": "RABBIT_BLUE_RARE_001",
@@ -454,7 +510,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/rabbit-blue-rare-001.webp",
     "emoji": "🐰",
-    "description": "กระต่ายนั่งเล่นเชลโลสีน้ำเงินในห้องซ้อมอุ่น ๆ ลากคันชักอย่างตั้งใจ"
+    "description": "กระต่ายนั่งเล่นเชลโลสีน้ำเงินในห้องซ้อมอุ่น ๆ ลากคันชักอย่างตั้งใจ",
+    "preview": "/quiz/assets/avatars/rabbit-blue-rare-001.jpg"
   },
   {
     "id": "RABBIT_BLUE_RARE_002",
@@ -462,7 +519,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/rabbit-blue-rare-002.webp",
     "emoji": "🐰",
-    "description": "กระต่ายกระโดดด้านข้าง รับจานร่อนสีน้ำเงินเหนือทุ่งดอกไม้กลางแดด"
+    "description": "กระต่ายกระโดดด้านข้าง รับจานร่อนสีน้ำเงินเหนือทุ่งดอกไม้กลางแดด",
+    "preview": "/quiz/assets/avatars/rabbit-blue-rare-002.jpg"
   },
   {
     "id": "RABBIT_SILVER_RARE_001",
@@ -470,7 +528,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/rabbit-silver-rare-001.webp",
     "emoji": "🐰",
-    "description": "กระต่ายย่อตัวใช้กล้องสีเงิน ถ่ายแสงหิ่งห้อยในสวนยามพลบค่ำ"
+    "description": "กระต่ายย่อตัวใช้กล้องสีเงิน ถ่ายแสงหิ่งห้อยในสวนยามพลบค่ำ",
+    "preview": "/quiz/assets/avatars/rabbit-silver-rare-001.jpg"
   },
   {
     "id": "RABBIT_SILVER_RARE_002",
@@ -478,7 +537,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/rabbit-silver-rare-002.webp",
     "emoji": "🐰",
-    "description": "กระต่ายยืนบนบันไดเตี้ย แขวนโมบายลมสีเงินไว้ข้างระเบียงรับแสงเช้า"
+    "description": "กระต่ายยืนบนบันไดเตี้ย แขวนโมบายลมสีเงินไว้ข้างระเบียงรับแสงเช้า",
+    "preview": "/quiz/assets/avatars/rabbit-silver-rare-002.jpg"
   },
   {
     "id": "FOX_RED_RARE_001",
@@ -486,7 +546,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/fox-red-rare-001.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกเอนตัวพลิกแพนเค้กด้วยกระทะสีแดงในครัวเช้า จับจังหวะแพนเค้กกลางอากาศอย่างร่าเริง"
+    "description": "จิ้งจอกเอนตัวพลิกแพนเค้กด้วยกระทะสีแดงในครัวเช้า จับจังหวะแพนเค้กกลางอากาศอย่างร่าเริง",
+    "preview": "/quiz/assets/avatars/fox-red-rare-001.jpg"
   },
   {
     "id": "FOX_RED_RARE_002",
@@ -494,7 +555,8 @@ export const AVATARS = [
     "color": "red",
     "image": "/teambook/assets/cards/rare/fox-red-rare-002.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกเหยียบปั๊มลมสีแดงในลานสวน เติมลูกโป่งใบใหญ่ให้ค่อย ๆ ลอยสูงขึ้น"
+    "description": "จิ้งจอกเหยียบปั๊มลมสีแดงในลานสวน เติมลูกโป่งใบใหญ่ให้ค่อย ๆ ลอยสูงขึ้น",
+    "preview": "/quiz/assets/avatars/fox-red-rare-002.jpg"
   },
   {
     "id": "FOX_GREEN_RARE_001",
@@ -502,7 +564,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/fox-green-rare-001.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกคุกเข่าส่องรอยเท้าด้วยแว่นขยายสีเขียวบนทางป่าหลังฝน ตามเบาะแสผ่านแอ่งน้ำเล็ก ๆ"
+    "description": "จิ้งจอกคุกเข่าส่องรอยเท้าด้วยแว่นขยายสีเขียวบนทางป่าหลังฝน ตามเบาะแสผ่านแอ่งน้ำเล็ก ๆ",
+    "preview": "/quiz/assets/avatars/fox-green-rare-001.jpg"
   },
   {
     "id": "FOX_GREEN_RARE_002",
@@ -510,7 +573,8 @@ export const AVATARS = [
     "color": "green",
     "image": "/teambook/assets/cards/rare/fox-green-rare-002.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกนั่งริมลำธาร ผูกแพกิ่งไม้ด้วยเชือกสีเขียวและค่อย ๆ มัดปมให้แน่น"
+    "description": "จิ้งจอกนั่งริมลำธาร ผูกแพกิ่งไม้ด้วยเชือกสีเขียวและค่อย ๆ มัดปมให้แน่น",
+    "preview": "/quiz/assets/avatars/fox-green-rare-002.jpg"
   },
   {
     "id": "FOX_BLUE_RARE_001",
@@ -518,7 +582,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/fox-blue-rare-001.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกวิ่งผ่านทุ่งดอกไม้พร้อมสวิงสีน้ำเงิน โบกทักผีเสื้อที่บินอยู่เหนือทางเดิน"
+    "description": "จิ้งจอกวิ่งผ่านทุ่งดอกไม้พร้อมสวิงสีน้ำเงิน โบกทักผีเสื้อที่บินอยู่เหนือทางเดิน",
+    "preview": "/quiz/assets/avatars/fox-blue-rare-001.jpg"
   },
   {
     "id": "FOX_BLUE_RARE_002",
@@ -526,7 +591,8 @@ export const AVATARS = [
     "color": "blue",
     "image": "/teambook/assets/cards/rare/fox-blue-rare-002.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกวิ่งใช้ไม้สีน้ำเงินกลิ้งห่วงไปตามทางสวน รักษาห่วงให้ตั้งตรงผ่านโค้งเล็ก ๆ"
+    "description": "จิ้งจอกวิ่งใช้ไม้สีน้ำเงินกลิ้งห่วงไปตามทางสวน รักษาห่วงให้ตั้งตรงผ่านโค้งเล็ก ๆ",
+    "preview": "/quiz/assets/avatars/fox-blue-rare-002.jpg"
   },
   {
     "id": "FOX_SILVER_RARE_001",
@@ -534,7 +600,8 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/fox-silver-rare-001.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกหมุนเครื่องฉายหนังสีเงินในห้องใต้หลังคา ฉายแสงรูปดาวและพระจันทร์ลงบนผนัง"
+    "description": "จิ้งจอกหมุนเครื่องฉายหนังสีเงินในห้องใต้หลังคา ฉายแสงรูปดาวและพระจันทร์ลงบนผนัง",
+    "preview": "/quiz/assets/avatars/fox-silver-rare-001.jpg"
   },
   {
     "id": "FOX_SILVER_RARE_002",
@@ -542,6 +609,7 @@ export const AVATARS = [
     "color": "silver",
     "image": "/teambook/assets/cards/rare/fox-silver-rare-002.webp",
     "emoji": "🦊",
-    "description": "จิ้งจอกคุกเข่าใช้ไขควงประกอบหุ่นยนต์กระป๋องสีเงินบนพรมในห้องช่างยามเช้า"
+    "description": "จิ้งจอกคุกเข่าใช้ไขควงประกอบหุ่นยนต์กระป๋องสีเงินบนพรมในห้องช่างยามเช้า",
+    "preview": "/quiz/assets/avatars/fox-silver-rare-002.jpg"
   }
 ];

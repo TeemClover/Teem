@@ -12,6 +12,7 @@ Live multiplayer quiz for `/quiz/`; host screen at `/quiz/host/`.
 - Reveal, vote distribution, top five between rounds, final podium/full results and UTF-8 CSV export.
 - Round scores count up from the previous result before rows cross into their new ranks; incoming and outgoing top-five players animate together. Motion is disabled when the device requests reduced motion.
 - The avatar picker shows one selected card with left/right arrows and a shuffle button. Shuffle always chooses a different appearance; animal names and the large gallery are omitted.
+- The picker uses 252×352 JPEG previews of the Rare art, prepares the next random choice and neighboring images, and keeps a bounded cache of twelve decoded previews. The visible card stays in place until the requested image is decoded, then two layers crossfade for 180 ms. Rapid taps honor only the latest selection; a failed load preserves the previous selection and remains retryable. The original TeamBook images remain unchanged.
 - The TeamBook paper-and-clover theme includes floating cards, a green invitation panel, an orbiting countdown, staggered answer entrances, answer celebration, round progress, and a rising final podium. New lobby arrivals animate without replaying every existing player's entrance. Reduced motion applies to all these effects.
 - Refresh restores the host/player session in the same browser. Repeated joins and answers are idempotent. The first accepted answer is final.
 
