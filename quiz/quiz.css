@@ -20,8 +20,12 @@
 .avatar-current{width:108px;height:151px;object-fit:cover;border-radius:10px;position:relative;z-index:2;box-shadow:0 9px 18px #24442c24;border:2px solid #fffdf4}
 .avatar-peek{width:79px;height:111px;object-fit:cover;border-radius:8px;position:absolute;opacity:.5;z-index:1;filter:saturate(.75);border:2px solid #fffdf4}
 .avatar-peek-left{left:calc(50% - 92px);transform:rotate(-12deg)}.avatar-peek-right{right:calc(50% - 92px);transform:rotate(12deg)}
-.avatar-shuffle{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 15px;margin-top:8px;border:1px solid #c8d5b9;border-radius:30px;color:var(--ink);background:#fffdf5;font-size:11px;font-weight:700;min-height:35px;transition:background .2s,transform .2s}
-.avatar-shuffle span{font-size:24px;line-height:1;color:#64854d}.avatar-shuffle:hover{background:#e4edda;transform:rotate(-2deg)}
+.avatar-shuffle{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 15px;margin-top:8px;border:1px solid #c8d5b9;border-radius:30px;color:var(--ink);background:#fffdf5;font-size:11px;font-weight:700;min-height:44px;touch-action:manipulation;transition:background .12s,transform .08s}
+.avatar-shuffle span{font-size:24px;line-height:1;color:#64854d}.avatar-shuffle:hover{background:#e4edda}.avatar-shuffle:active{background:#d9e7cc;transform:scale(.96)}
+.avatar-arrow{touch-action:manipulation}
+.avatar-card-stack{position:relative;flex:none;width:108px;height:151px;z-index:2;isolation:isolate;contain:layout style}
+.avatar-card-stack>.avatar-current{position:absolute;inset:0;width:100%;height:100%;will-change:transform,opacity}
+.avatar-current[data-active=false]{opacity:0;z-index:1}.avatar-current[data-active=true]{opacity:1;z-index:2}
 
 /* Scores count up first; former and new leaders share the stage while crossing. */
 .rank-list{position:relative;isolation:isolate}.rank-row{animation:none;min-height:80px;transform-origin:center;position:relative}
@@ -37,7 +41,7 @@
 @keyframes gain-in{from{transform:translateY(8px) scale(.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
 @keyframes score-glow{50%{text-shadow:0 0 15px #d4a64655}}
 @keyframes leader-glow{0%,35%{background:#e4edc6;box-shadow:0 0 0 3px #d7e4b2,0 9px 28px #6a863b40}100%{background:#fffef9}}
-@media(max-width:760px){.avatar-stage{height:149px}.avatar-current{width:99px;height:139px}.avatar-peek{width:72px;height:101px}.avatar-carousel{grid-template-columns:34px minmax(0,1fr) 34px}.avatar-arrow{width:34px;height:45px}.rank-row{min-height:69px}.rank-score{min-width:66px}.rank-trend{font-size:9px;padding:1px 5px}.score-gain{font-size:10px;top:-9px}.rank-name small{gap:5px}}
+@media(max-width:760px){.avatar-stage{height:149px}.avatar-current,.avatar-card-stack{width:99px;height:139px}.avatar-peek{width:72px;height:101px}.avatar-carousel{grid-template-columns:34px minmax(0,1fr) 34px}.avatar-arrow{width:34px;height:45px}.rank-row{min-height:69px}.rank-score{min-width:66px}.rank-trend{font-size:9px;padding:1px 5px}.score-gain{font-size:10px;top:-9px}.rank-name small{gap:5px}}
 @media(prefers-reduced-motion:reduce){.avatar-current,.rank-row,.score-gain,.rank-climbing{animation:none!important;transition:none!important}}
 
 /* A playful TeamBook stage: warm paper, deep clover, a little gold. */
