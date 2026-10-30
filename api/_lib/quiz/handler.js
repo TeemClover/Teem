@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { GameError, newToken, tokenHash, prepareQuestions, validateJoin } from './game.js';
 import { productionStore } from './store.js';
 import { ANNIVERSARY_TITLE } from '../../../quiz/question-set.js';
+import { QUESTIONS } from './questions.js';
 
 const MUTATIONS=new Set(['join','answer','start','reveal','leaderboard','next','finish']);
 const TOKEN=/^[a-f0-9]{64}$/;
@@ -29,12 +30,20 @@ export function createQuizHandler({getStore=productionStore,clock=Date.now,log=c
    }
    const action=req.method==='GET'?url.searchParams.get('action')||'state':payload.action;
    if(action==='clock'&&req.method==='GET')return send(res,{ok:true,serverNow:clock()});
+   // Authoring content for the public host creator, never part of room snapshots.
+   if(action==='template'&&req.method==='POST'){
+    if(payload.template!=='anniversary')throw new GameError('BAD_MODE');
+    return send(res,{ok:true,title:ANNIVERSARY_TITLE,questions:QUESTIONS.map(q=>({
+     id:q.id,text:q.text,options:[q.options[q.correctIndex],...q.options.filter((_,i)=>i!==q.correctIndex)],correctIndex:0,
+    }))});
+   }
    if(action==='create'&&req.method==='POST'){
     const mode=payload.mode??'anniversary';
     if(!['anniversary','custom'].includes(mode))throw new GameError('BAD_MODE');
-    if(mode==='custom'&&!Array.isArray(payload.questions))throw new GameError('BAD_QUESTION_COUNT');
+    const edited=payload.questions!==undefined;
+    if((mode==='custom'||edited)&&!Array.isArray(payload.questions))throw new GameError('BAD_QUESTION_COUNT');
     const title=String(payload.title||'').trim().slice(0,80)||(mode==='custom'?'คำถามของเรา':ANNIVERSARY_TITLE);
-    const hostToken=newToken(),questions=prepareQuestions(Number(payload.seconds||20),mode==='custom'?payload.questions:null);
+    const hostToken=newToken(),questions=prepareQuestions(Number(payload.seconds||20),edited?payload.questions:null);
     const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
     const rateKey=createHash('sha256').update(ip+':'+Math.floor(clock()/3600000)).digest('hex');
     const store=await getStore();const room=await store.create({title,questions,hostHash:tokenHash(hostToken),rateKey});

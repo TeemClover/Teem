@@ -8,10 +8,10 @@ const errors = {
   DUPLICATE_OPTIONS: 'คำตอบทั้ง 4 ตัวเลือกต้องไม่ซ้ำกัน',
 };
 
-export function mountQuestionBuilder(root, { saved, onChange = () => {} } = {}) {
+export function mountQuestionBuilder(root, { saved, onChange = () => {}, heading = 'ตั้งคำถามของคุณ' } = {}) {
   const draft = restoreDraft(saved);
   let active = 0;
-  root.innerHTML = `<div class="builder-heading"><div><span class="eyebrow">YOUR QUESTIONS, YOUR GAME</span><h3>ตั้งคำถามของคุณ</h3></div><label class="question-count-label" for="question-count">จำนวนข้อ<input class="input" id="question-count" type="number" inputmode="numeric" min="${MIN_QUESTIONS}" max="${MAX_QUESTIONS}" step="1" value="${draft.count}" aria-describedby="count-hint"></label></div><p class="small-note" id="count-hint">ใส่เลข 5–20 · กดเลขข้อเพื่อสลับไปกรอก</p><nav class="question-nav" aria-label="เลือกข้อที่ต้องการแก้ไข"></nav><div class="builder-progress"><span data-builder-progress></span><span>● เก็บร่างในเครื่องนี้</span></div><div class="question-editor"></div><div class="builder-pagination"><button class="secondary" type="button" data-prev>← ข้อก่อน</button><span data-page></span><button class="secondary" type="button" data-next>ข้อถัดไป →</button></div><p class="form-error" data-builder-error role="status"></p>`;
+  root.innerHTML = `<div class="builder-heading"><div><span class="eyebrow">YOUR QUESTIONS, YOUR GAME</span><h3>${escape(heading)}</h3></div><label class="question-count-label" for="question-count">จำนวนข้อ<input class="input" id="question-count" type="number" inputmode="numeric" min="${MIN_QUESTIONS}" max="${MAX_QUESTIONS}" step="1" value="${draft.count}" aria-describedby="count-hint"></label></div><p class="small-note" id="count-hint">ใส่เลข 5–20 · กดเลขข้อเพื่อแก้ไขก่อนสร้างห้อง</p><nav class="question-nav" aria-label="เลือกข้อที่ต้องการแก้ไข"></nav><div class="builder-progress"><span data-builder-progress></span><span>● เก็บร่างในเครื่องนี้</span></div><div class="question-editor"></div><div class="builder-pagination"><button class="secondary" type="button" data-prev>← ข้อก่อน</button><span data-page></span><button class="secondary" type="button" data-next>ข้อถัดไป →</button></div><p class="form-error" data-builder-error role="status"></p>`;
   const nav = root.querySelector('.question-nav'), editor = root.querySelector('.question-editor'), count = root.querySelector('#question-count'), error = root.querySelector('[data-builder-error]');
   function persist() { onChange(draft); }
   function progress() {
