@@ -1,0 +1,21 @@
+name: Body Me Story giveaway
+on:
+  pull_request:
+    branches: [main]
+    paths: ['bodymestory/**', 'api/bodymestory.js', 'api/_lib/bodymestory-*.js', 'tests/bodymestory-*', 'migrations/20261101_bodymestory_leads.sql', '.github/workflows/bodymestory.yml']
+  push:
+    branches: [main]
+    paths: ['bodymestory/**', 'api/bodymestory.js', 'api/_lib/bodymestory-*.js', 'tests/bodymestory-*', 'migrations/20261101_bodymestory_leads.sql', '.github/workflows/bodymestory.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/bodymestory-*.test.mjs
+      - run: node --check api/bodymestory.js
+      - run: node --check bodymestory/app.js
