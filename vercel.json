@@ -118,7 +118,11 @@
     {"source": "/hamburg/noomjang", "destination": "/hamburg/noomjang/", "permanent": false},
     {"source": "/hamburg/checkout", "destination": "/hamburg/checkout/", "permanent": false},
     {"source": "/hamburg/lab", "destination": "/hamburg/lab/", "permanent": false},
-    {"source": "/hamburg/branding", "destination": "/hamburg/branding/", "permanent": false}
+    {"source": "/hamburg/branding", "destination": "/hamburg/branding/", "permanent": false},
+    {"source":"/bodymestory","destination":"/bodymestory/","permanent":false},
+    {"source":"/bodymestory/7-days","destination":"/bodymestory/7-days/","permanent":false},
+    {"source":"/bodymestory/references","destination":"/bodymestory/references/","permanent":false},
+    {"source":"/bodymestory/privacy","destination":"/bodymestory/privacy/","permanent":false}
   ],
   "headers": [
     {"source": "/(xircle|routinex|guild|fitness|clover20|ai-career|hf)", "headers": [{"key": "X-Robots-Tag", "value": "noindex, follow"}]},
@@ -172,7 +176,9 @@
     {"source": "/mediral/admin/:path*", "headers": [{"key": "Cache-Control", "value": "private, no-store"}, {"key": "X-Robots-Tag", "value": "noindex, nofollow"}, {"key": "X-Frame-Options", "value": "DENY"}, {"key": "Referrer-Policy", "value": "no-referrer"}, {"key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}]},
     {"source": "/hamburg/:path*", "headers": [{"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}]},
     {"source": "/hamburg/checkout/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]},
-    {"source": "/hamburg/lab/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]}
+    {"source": "/hamburg/lab/:path*", "headers": [{"key": "X-Robots-Tag", "value": "noindex, nofollow"}]},
+    {"source":"/bodymestory/:path*","headers":[{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"strict-origin-when-cross-origin"}]},
+    {"source":"/api/bodymestory","headers":[{"key":"Cache-Control","value":"private, no-store"},{"key":"X-Content-Type-Options","value":"nosniff"}]}
   ],
   "rewrites": [
     {"source":"/eggcycle/","destination":"/eggcycle/index.html"},
@@ -218,7 +224,11 @@
     {"source": "/hamburg/noomjang/", "destination": "/hamburg/noomjang/index.html"},
     {"source": "/hamburg/checkout/", "destination": "/hamburg/checkout/index.html"},
     {"source": "/hamburg/lab/", "destination": "/hamburg/lab/index.html"},
-    {"source": "/hamburg/branding/", "destination": "/hamburg/branding/index.html"}
+    {"source": "/hamburg/branding/", "destination": "/hamburg/branding/index.html"},
+    {"source":"/bodymestory/","destination":"/bodymestory/index.html"},
+    {"source":"/bodymestory/7-days/","destination":"/bodymestory/7-days/index.html"},
+    {"source":"/bodymestory/references/","destination":"/bodymestory/references/index.html"},
+    {"source":"/bodymestory/privacy/","destination":"/bodymestory/privacy/index.html"}
   ],
   "functions": {"api/course-content.js": {"includeFiles": "course/thedent/**"}, "api/shelf.js": {"includeFiles": "shelf/{catalog.json,source/**}"}, "api/learn-foundation.js": {"includeFiles": "classroom/**"}, "api/learn-media.js": {"maxDuration": 60}, "api/mediral-commerce.js": {"maxDuration": 60, "includeFiles": "mediral/data/details.json"}}
 }

@@ -69,7 +69,8 @@
     "test:ai-source:showcase:ui": "node tests/ai-source/showcase.e2e.mjs",
     "test:mediral-commerce": "node --test tests/mediral-commerce/*.test.mjs",
     "dev:mediral-commerce": "node tests/mediral-commerce/preview.mjs",
-    "test:showcase:ui": "node tests/entry/showcase.e2e.mjs"
+    "test:showcase:ui": "node tests/entry/showcase.e2e.mjs",
+    "test:bodymestory": "node --test tests/bodymestory-*.test.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",
