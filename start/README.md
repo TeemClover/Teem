@@ -1,6 +1,6 @@
 # myClover /start
 
-Public giveaway library, with one landing page per short: `/start/mc01/` … `/start/mc30/`.
+Public topic giveaways, with one landing page per short: `/start/mc01/` … `/start/mc30/`.
 `catalog.json` is the authoritative content and clip-to-gift map. Each topic has a three-page AI starter PDF, full-context TXT and Markdown, plus the original one-page worksheet PDF, worksheet CSV, importable JSON and a ZIP containing all seven files.
 
 The primary action downloads the matching AI starter PDF directly. The next section explains upload → send the provided instruction → answer one question at a time. TXT is the copy-all fallback when attachment is unavailable. Additional formats are collapsed by default. The optional LINE link appears after the work and downloads; it is never a gate for receiving a gift or proof of a lesson subscription. No LINE bot or automated nurture is activated by these pages.
@@ -26,3 +26,9 @@ The page dispatches `myclover:start` browser events containing only an allowlist
 Public contents are only requested shareable giveaways, clip artwork and the Kanit font with its SIL OFL notice. No voice audio, video engine, subscriber lists, credentials, personal conversation, or administrative database is included. Keep QA files and the builder out of static deployment via `.vercelignore`.
 
 The earlier ChatGPT Sites prototype remains private and is superseded by this repository as the canonical giveaway location.
+
+## Topic-first flow — 1.2.0 review
+
+`/start/` now asks for the MC number from the watched clip. It does not display the entire library. Each stable `/start/mcXX/` URL still gives its own files immediately; topic pages have no previous/next topic links. The actual `/icons/icon-192.png` brand logo and the cream, deep-green and gold classroom palette are reused.
+
+`/start/library/` starts with a learning-step screen. Filling all three answers and explicitly marking a topic complete reveals the library link and saves `completed: true` on this browser. Old `started` flags do not qualify. This is a local learning flow, not authentication or access control: the repository and downloadable gifts remain public, and someone who knows a topic URL can open it. Do not describe it as a secure member library. No new login, contact collection, paid subscription or LINE requirement is added. Library policy is awaiting owner review before production publication.

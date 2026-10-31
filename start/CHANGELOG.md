@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 — 2026-10-29 (review)
+
+- Reuse the actual myClover logo and classroom cream / deep green / gold styling.
+- Replace the public all-topics entry with MC-number lookup; remove cross-topic navigation.
+- Move the library to a separate learning-step flow, revealed after three answers and explicit completion. This is local progress, not access control.
+- Preserve all topic URLs and downloadable file bytes.
+
+
 ## 1.1.0 — 2026-10-28
 
 - Make the direct, topic-specific AI starter PDF the primary action on all 30 pages; add a copyable upload instruction and full-context TXT fallback.
