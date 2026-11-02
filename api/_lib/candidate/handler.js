@@ -1,6 +1,7 @@
 import {timingSafeEqual,createHash} from 'node:crypto';
 import {normalizeJob,normalizeProfile,sourceUrl,text,validatePdf,problem,STATUSES,COMPANY,VERSION} from './model.js';
 function tokenMatches(header,secret){if(!secret)return false;const hash=x=>createHash('sha256').update(x).digest();return timingSafeEqual(hash(String(header||'')),hash(`Bearer ${secret}`));}
+function disposition(mode,name,id,suffix){const key=String(id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80)||'document';const label=`${text(name,120)||'candidate'}-${key.slice(0,8)}-${suffix}`;return `${mode}; filename="candidate-${key}-${suffix}"; filename*=UTF-8''${encodeURIComponent(label).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}`;}
 export function createHandler({getStore,authenticate,analyze,env=process.env}){
  return async function(req,res){
   const reply=(data,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');return res.end(JSON.stringify(data));};
@@ -16,10 +17,10 @@ export function createHandler({getStore,authenticate,analyze,env=process.env}){
    const store=getStore();await store.ensure();
    const query=new URL(req.url,'https://candidate.local').searchParams;
    if(req.method==='GET'){
-    if(['raw','profile'].includes(query.get('action'))){const c=await store.detail(text(query.get('id'),80));if(!c)return reply({ok:false,error:'NOT_FOUND'},404);const raw=query.get('action')==='raw';res.setHeader('Content-Type',raw?'text/plain; charset=utf-8':'application/json; charset=utf-8');if(query.get('download')==='1')res.setHeader('Content-Disposition',`attachment; filename="${raw?'original-text.txt':'cloverx-profile.json'}"`);return res.end(raw?c.original_text:JSON.stringify(c,null,2));}
+    if(['raw','profile'].includes(query.get('action'))){const c=await store.detail(text(query.get('id'),80));if(!c)return reply({ok:false,error:'NOT_FOUND'},404);const raw=query.get('action')==='raw';res.setHeader('Content-Type',raw?'text/plain; charset=utf-8':'application/json; charset=utf-8');if(query.get('download')==='1')res.setHeader('Content-Disposition',disposition('attachment',c.profile?.name,c.id,raw?'original-text.txt':'cloverx-profile.json'));return res.end(raw?c.original_text:JSON.stringify(c,null,2));}
     if(query.get('action')==='resume'){
      const doc=await store.pdf(text(query.get('id'),80));if(!doc?.pdf_base64)return reply({ok:false,error:'RESUME_NOT_FOUND'},404);
-     const bytes=Buffer.from(doc.pdf_base64,'base64');res.setHeader('Content-Type','application/pdf');res.setHeader('Content-Length',bytes.length);res.setHeader('Content-Disposition',`${query.get('download')==='1'?'attachment':'inline'}; filename="resume.pdf"`);res.setHeader('Content-Security-Policy',"sandbox; default-src 'none'; frame-ancestors 'self'");return res.end(bytes);
+     const bytes=Buffer.from(doc.pdf_base64,'base64');res.setHeader('Content-Type','application/pdf');res.setHeader('Content-Length',bytes.length);res.setHeader('Content-Disposition',disposition(query.get('download')==='1'?'attachment':'inline',doc.name,text(query.get('id'),80),'resume.pdf'));res.setHeader('Content-Security-Policy',"sandbox; default-src 'none'; frame-ancestors 'self'");return res.end(bytes);
     }
     if(query.get('id')){const candidate=await store.detail(text(query.get('id'),80));return candidate?reply({ok:true,candidate}):reply({ok:false,error:'NOT_FOUND'},404);}
     const page=Math.max(0,Math.min(10000,Number.parseInt(query.get('page')||'0',10)||0));

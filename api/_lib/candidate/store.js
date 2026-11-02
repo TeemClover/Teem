@@ -26,7 +26,7 @@ export function createStore(sql){
    return {rows,counts,highlights,hasMore:rows.length===limit,page};
   },
   async detail(id){const r=(await sql.query('SELECT id,job_id,source_id,source_url,profile,rubric,original_text,filename,status,notes,version,created_at,updated_at,pdf_base64 IS NOT NULL AS has_pdf FROM mc_candidates WHERE id=$1',[id]))[0];return r?{...r,score:score(r.profile,r.rubric)}:null;},
-  async pdf(id){return (await sql.query('SELECT pdf_base64,filename FROM mc_candidates WHERE id=$1',[id]))[0];},
+  async pdf(id){return (await sql.query("SELECT pdf_base64,filename,profile->>'name' AS name FROM mc_candidates WHERE id=$1",[id]))[0];},
   async save(input){
    const id=randomUUID();const sourceId=input.sourceId||createHash('sha256').update(input.job.id+'|'+input.profile.name+'|'+input.originalText).digest('hex');
    const r=(await sql.query(`INSERT INTO mc_candidates(id,job_id,source_id,source_url,profile,rubric,original_text,pdf_base64,filename) VALUES($1,$2,$3,$4,$5::jsonb,$6::jsonb,$7,$8,$9) ON CONFLICT(job_id,source_id) DO UPDATE SET source_url=EXCLUDED.source_url,profile=EXCLUDED.profile,rubric=EXCLUDED.rubric,original_text=EXCLUDED.original_text,pdf_base64=COALESCE(EXCLUDED.pdf_base64,mc_candidates.pdf_base64),filename=COALESCE(EXCLUDED.filename,mc_candidates.filename),updated_at=now(),version=mc_candidates.version+1 WHERE EXCLUDED.profile->>'analysisState' IS DISTINCT FROM 'pending' OR mc_candidates.profile->>'analysisState' IS DISTINCT FROM 'ready' RETURNING id`,[id,input.job.id,sourceId,input.sourceUrl,JSON.stringify(input.profile),JSON.stringify(input.job.rubric),input.originalText,input.pdfBase64||null,input.filename||null]))[0];return r;
