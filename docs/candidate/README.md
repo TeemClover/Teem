@@ -6,12 +6,14 @@ This repository is public. Never commit applicant PDFs, names, contact details, 
 
 ## Interface
 
-- Log in with the existing myClover backoffice password.
+- Team access uses a private capability link. Its fragment token is exchanged for a scoped HttpOnly cookie, then removed from the address bar. No password prompt is needed for the team link. Anonymous access remains denied; noindex alone is not access control. The legacy backoffice login remains as an admin fallback.
 - Select the intended jobs in **ตำแหน่งและเกณฑ์**, review the JD and weights (total 100), then enable them. All jobs start disabled to respect the user's selected-position scope.
 - **เพิ่มผู้สมัคร** accepts original PDF (2.5 MB maximum) and/or original text. AI-assisted analysis is optional and requires `ANTHROPIC_API_KEY`; the scheduled assistant can organize data itself and use the structured import mode without a separate AI API key.
 - Profiles show the original PDF/text first, then standardized work history, evidence-based criterion assessments, provisional total with coverage, inferred applications to CloverX workstreams, traceable source excerpts, at most 10 prescreen questions, answers and human notes.
 - Imported scores cannot change a human's stage or notes. Simultaneous human edits use optimistic version checks.
 - All sections and configuration are available through website controls; GitHub is not required for a review.
+- Highlights rank documented professional evidence only within the same job, require at least 80% evidence coverage and a reviewed profile, and are labelled as preliminary document scores. No hiring outcome is automatic.
+- Bulk import supports up to 400 records from the website. Source IDs are required, and pending card summaries cannot replace an already reviewed profile/PDF. Original text and normalized profiles can be downloaded separately.
 
 ## API
 
