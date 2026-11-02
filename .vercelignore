@@ -122,3 +122,7 @@ start/__pycache__/
 start/README.md
 start/CHANGELOG.md
 tests/start/
+
+# Private HR code ships without synthetic preview servers or tests.
+tests/candidate/
+docs/candidate/
