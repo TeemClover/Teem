@@ -34,9 +34,9 @@ export function createHandler({getStore,authenticate,analyze,env=process.env}){
    if(action==='logout'){res.setHeader('Set-Cookie','mc_candidate_access=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return reply({ok:true});}
    if(action==='bulk'){
     if(!Array.isArray(body.records)||body.records.length>400)throw problem('BAD_BATCH');
-    const prepared=[];
-    for(const item of body.records){const job=await store.job(text(item.jobId,80));if(!job?.enabled)throw problem('JOB_NOT_ENABLED');const originalText=text(item.originalText,60000);if(!originalText||!text(item.sourceId,150))throw problem('RESUME_REQUIRED');const profile={...normalizeProfile(item.profile,job),analysisState:item.analysisState==='ready'?'ready':'pending'};prepared.push({job,profile,sourceId:text(item.sourceId,150),sourceUrl:sourceUrl(item.sourceUrl),originalText,pdfBase64:'',filename:''});}
-    let imported=0;for(const item of prepared){await store.save(item);imported++;}return reply({ok:true,imported});
+    const prepared=[],jobs=new Map((await store.jobs()).map(j=>[j.id,j]));
+    for(const item of body.records){const job=jobs.get(text(item.jobId,80));if(!job?.enabled)throw problem('JOB_NOT_ENABLED');const originalText=text(item.originalText,60000);if(!originalText||!text(item.sourceId,150))throw problem('RESUME_REQUIRED');const profile={...normalizeProfile(item.profile,job),analysisState:item.analysisState==='ready'?'ready':'pending'};prepared.push({job,profile,sourceId:text(item.sourceId,150),sourceUrl:sourceUrl(item.sourceUrl),originalText,pdfBase64:'',filename:''});}
+    for(let start=0;start<prepared.length;start+=8)await Promise.all(prepared.slice(start,start+8).map(item=>store.save(item)));return reply({ok:true,imported:prepared.length});
    }
    if(action==='job'){const job=normalizeJob(body.job);const result=await store.saveJob(job,Number(body.version));return reply({ok:true,...result});}
    if(action==='review'){if(!STATUSES.includes(body.status))throw problem('BAD_STATUS');const result=await store.review(text(body.id,80),Number(body.version),body.status,text(body.notes,12000));return reply({ok:true,...result});}
