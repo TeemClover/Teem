@@ -9,7 +9,7 @@ This repository is public. Never commit applicant PDFs, names, contact details, 
 - Team access uses a private capability link. Its fragment token is exchanged for a scoped HttpOnly cookie, then removed from the address bar. No password prompt is needed for the team link. Anonymous access remains denied; noindex alone is not access control. The legacy backoffice login remains as an admin fallback.
 - Select the intended jobs in **ตำแหน่งและเกณฑ์**, review the JD and weights (total 100), then enable them. All jobs start disabled to respect the user's selected-position scope.
 - **เพิ่มผู้สมัคร** accepts original PDF (3.2 MB maximum) and/or original text. AI-assisted analysis is optional and requires `ANTHROPIC_API_KEY`; the scheduled assistant can organize data itself and use the structured import mode without a separate AI API key.
-- Profiles show the original PDF/text first, then standardized work history, evidence-based criterion assessments, provisional total with coverage, inferred applications to CloverX workstreams, traceable source excerpts, at most 10 prescreen questions, answers and human notes.
+- Every profile starts with an evidence-linked snapshot: one professional-background sentence, exactly two strength slots and three key-skill slots. Unsupported slots explicitly show insufficient evidence. The original PDF/text follows; work history, score details, relevance, evidence and prescreen questions are collapsible. Mobile has a compact applicant picker. Original files, answers and human notes remain accessible.
 - Imported scores cannot change a human's stage or notes. Simultaneous human edits use optimistic version checks.
 - All sections and configuration are available through website controls; GitHub is not required for a review.
 - Highlights rank documented professional evidence only within the same job, require at least 80% evidence coverage and a reviewed profile, and are labelled as preliminary document scores. No hiring outcome is automatic.
@@ -29,6 +29,10 @@ Cookie-authenticated writes require a matching Origin. `POST` actions:
 
 An optional separately configured `CANDIDATE_SYNC_TOKEN` permits read/import/analyze/run actions, never human review or rubric edits. It is not created or exposed by this change. A scheduled assistant with authorized Neon access can instead use the dedicated `mc_candidate_*` tables directly; no browser authentication token needs to be published or retained.
 
+## Summary contract
+
+`profile.quickSummary` contains `sentence: {text,evidenceIds}`, exactly 2 `strengths` and exactly 3 `skills`. Each nonempty item must reference resume evidence. Missing evidence uses empty text/IDs; the UI shows an explicit unknown and never fills slots from generic skills or pending card summaries. Summaries describe documented professional work, without personality, protected characteristics or hiring recommendations. Legacy records stay readable and show their new summary as pending. The AI provider schema and server normalization share the same structure.
+
 ## Score contract
 
 The score measures professional evidence stated in the resume against the selected job's rubric. Ratings are 0–4, with a mandatory cited excerpt and reason. Missing evidence is `null`, never an automatic zero. Points = rating / 4 × criterion weight. Coverage is the sum of evaluated weights. An incomplete total is displayed as a lower bound (`≥`) with the evaluated coverage; it is not directly comparable to a complete score. Keep the rubric snapshot with each profile. Results are candidate claims until verified. Do not infer or score protected traits, appearance, personality or cultural fit. No automatic candidate rejection, selection, invitations or communications.
@@ -38,6 +42,10 @@ The score measures professional evidence stated in the resume against the select
 Existing `DATABASE_URL` and existing backoffice session authentication are reused. The isolated schema is in `api/_lib/candidate/store.js`. Test schema changes on a Neon branch before deployment. The deployed handler lazily ensures only these additive tables after authentication. PDF bytes are kept in the database for this initial bounded implementation; larger document collections should migrate to a dedicated private object store with authenticated streaming.
 
 `node --test tests/candidate/*.test.mjs` runs focused security, data integrity, score and AI adapter tests. `node tests/candidate/preview.mjs` offers a synthetic-only local preview when local listening is available. Never point that preview at real applicant data.
+
+## Resume processing and recovery
+
+Enqueue/import actions do not run a background PDF reader. A pending record remains pending until an authorized worker reads the complete resume and imports a reviewed profile. A scheduled run is separate from an active backfill. Track each application by `(job_id,source_id)` and record file hashes, page counts and completion in a private manifest outside this public repository. Preserve human status/notes. Record unreadable, unavailable, oversized or truncated files as blocked/partial with exact reasons. Extracted text or a saved PDF alone does not establish a completed review.
 
 ## Daily browser run
 

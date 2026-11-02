@@ -32,6 +32,12 @@ export function normalizeProfile(input,job){
  });
  const profile={name:text(input.name,200),summary:text(input.summary,3000),currentRole:text(input.currentRole,300),salaryExpectation:text(input.salaryExpectation,200),availability:text(input.availability,300),education:array(input.education,8).map(x=>text(x,400)),skills:array(input.skills,40).map(x=>text(x,100)),history:array(input.history,20).map(x=>({role:text(x.role,250),company:text(x.company,250),period:text(x.period,160),details:text(x.details,2000),evidenceIds:array(x.evidenceIds,8).filter(id=>ids.has(id))})),evidence,assessments,relevance:array(input.relevance,12).map(x=>({area:text(x.area,200),application:text(x.application,1500),evidenceIds:array(x.evidenceIds,10).filter(id=>ids.has(id)),caveat:text(x.caveat,1000)})),questions:array(input.questions,10).map(x=>text(x,700)),unknowns:array(input.unknowns,20).map(x=>text(x,600))};
  if(!profile.name)throw problem('MISSING_NAME');
+ if(input.quickSummary){
+  const item=x=>{const value={text:text(x?.text,500),evidenceIds:array(x?.evidenceIds,8).map(id=>text(id,60))};if(value.text&&(!value.evidenceIds.length||value.evidenceIds.some(id=>!ids.has(id))))throw problem('SUMMARY_REQUIRES_EVIDENCE');return value;};
+  const q=input.quickSummary;
+  if(!Array.isArray(q.strengths)||q.strengths.length!==2||!Array.isArray(q.skills)||q.skills.length!==3)throw problem('SUMMARY_REQUIRES_2_STRENGTHS_3_SKILLS');
+  profile.quickSummary={sentence:item(q.sentence),strengths:q.strengths.map(item),skills:q.skills.map(item)};
+ }
  // Deliberate allowlist: protected traits, photos, age, address and personality are not scored or extracted.
  return profile;
 }
