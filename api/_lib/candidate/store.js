@@ -21,8 +21,8 @@ export function createStore(sql){
    const raw=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile->>'analysisState' AS analysis_state,profile,rubric,status,created_at,updated_at,version,CASE WHEN pdf_base64 IS NULL THEN false ELSE true END AS has_pdf FROM mc_candidates WHERE ($1='' OR job_id=$1) AND ($4='' OR strpos(lower(COALESCE(profile->>'name','')||' '||COALESCE(profile->>'currentRole','')),lower($4))>0) AND ($5='' OR status=$5) ORDER BY CASE WHEN profile->>'analysisState'='ready' THEN 0 ELSE 1 END,created_at DESC,id LIMIT $2 OFFSET $3`,[jobId,limit,page*limit,search,status]);
    const rows=raw.map(({profile,rubric,...r})=>({...r,score:score(profile,rubric)}));
    const counts=await sql.query(`SELECT job_id,status,COUNT(*)::int AS count,COUNT(*) FILTER(WHERE profile->>'analysisState'='ready')::int AS ready,COUNT(*) FILTER(WHERE pdf_base64 IS NOT NULL)::int AS with_pdf,COUNT(*) FILTER(WHERE (created_at AT TIME ZONE 'Asia/Bangkok')::date=(now() AT TIME ZONE 'Asia/Bangkok')::date)::int AS today FROM mc_candidates GROUP BY job_id,status`);
-   const ranked=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile,rubric FROM mc_candidates WHERE profile->>'analysisState'='ready' LIMIT 1000`);
-   const highlights=ranked.map(({profile,rubric,...r})=>({...r,score:score(profile,rubric)})).filter(r=>r.score.coverage>=80).sort((a,b)=>b.score.points-a.score.points);
+   const ranked=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile->>'analysisState' AS analysis_state,status,profile,rubric FROM mc_candidates WHERE ($1='' OR job_id=$1) AND ($2='' OR strpos(lower(COALESCE(profile->>'name','')||' '||COALESCE(profile->>'currentRole','')),lower($2))>0) AND ($3='' OR status=$3)`,[jobId,search,status]);
+   const highlights=rankDirectory(ranked);
    return {rows,counts,highlights,hasMore:rows.length===limit,page};
   },
   async detail(id){const r=(await sql.query('SELECT id,job_id,source_id,source_url,profile,rubric,original_text,filename,status,notes,version,created_at,updated_at,pdf_base64 IS NOT NULL AS has_pdf FROM mc_candidates WHERE id=$1',[id]))[0];return r?{...r,score:score(r.profile,r.rubric)}:null;},
@@ -36,3 +36,10 @@ export function createStore(sql){
   async runs(){return sql.query('SELECT id,day,state,data,created_at FROM mc_candidate_runs ORDER BY created_at DESC LIMIT 30');}
  };
 }
+// Return only card metadata. Every application remains browsable, including
+// incomplete evidence and unread resumes; neither gets filtered out by score.
+export function rankDirectory(records){
+ return records.map(({profile,rubric,...row})=>({...row,analysis_state:profile.analysisState||'pending',score:score(profile,rubric)})).sort((a,b)=>
+  a.job_id.localeCompare(b.job_id)||Number(b.analysis_state==='ready')-Number(a.analysis_state==='ready')||b.score.points-a.score.points||b.score.coverage-a.score.coverage||a.id.localeCompare(b.id));
+}
+
