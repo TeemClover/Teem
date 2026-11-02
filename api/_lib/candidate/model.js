@@ -37,7 +37,8 @@ export function normalizeProfile(input,job){
 }
 export function score(profile,rubric){let points=0,coverage=0;const sections=rubric.map(r=>{const a=(profile.assessments||[]).find(a=>a.id===r.id);const known=a?.rating!=null;const earned=known?r.weight*a.rating/4:null;if(known){points+=earned;coverage+=r.weight;}return {...r,...a,points:earned};});return {points:Math.round(points*10)/10,coverage:Math.round(coverage),complete:coverage===100&&rubric.length>0,sections,version:VERSION};}
 export function validatePdf(input){
- const data=text(input,3600000);if(!data||!(/^[A-Za-z0-9+/]*={0,2}$/.test(data)))throw problem('BAD_PDF');
- const bytes=Buffer.from(data,'base64');if(bytes.length>2500000)throw problem('PDF_TOO_LARGE',413);if(bytes.subarray(0,5).toString()!=='%PDF-')throw problem('BAD_PDF');return bytes;
+ if(typeof input!=='string'||input.length>4300000)throw problem('PDF_TOO_LARGE',413);
+ const data=input.trim();if(!data||!(/^[A-Za-z0-9+/]*={0,2}$/.test(data)))throw problem('BAD_PDF');
+ const bytes=Buffer.from(data,'base64');if(bytes.length>3200000)throw problem('PDF_TOO_LARGE',413);if(bytes.subarray(0,5).toString()!=='%PDF-')throw problem('BAD_PDF');return bytes;
 }
 export function bangkokDay(at=new Date()){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(at);}

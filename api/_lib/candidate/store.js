@@ -16,11 +16,11 @@ export function createStore(sql){
   async jobs(){return (await sql.query('SELECT data,version FROM mc_candidate_jobs ORDER BY id')).map(r=>({...r.data,version:r.version}));},
   async job(id){const r=(await sql.query('SELECT data,version FROM mc_candidate_jobs WHERE id=$1',[id]))[0];return r?{...r.data,version:r.version}:null;},
   async saveJob(job,version){const r=(await sql.query('UPDATE mc_candidate_jobs SET data=$2::jsonb,version=version+1 WHERE id=$1 AND version=$3 RETURNING version',[job.id,JSON.stringify(job),version]))[0];if(!r)throw problem('VERSION_CONFLICT',409);return r;},
-  async list(page=0,jobId=''){
+  async list(page=0,jobId='',search='',status=''){
    const limit=100;
-   const raw=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile->>'analysisState' AS analysis_state,profile,rubric,status,created_at,updated_at,version,CASE WHEN pdf_base64 IS NULL THEN false ELSE true END AS has_pdf FROM mc_candidates WHERE ($1='' OR job_id=$1) ORDER BY CASE WHEN profile->>'analysisState'='ready' THEN 0 ELSE 1 END,created_at DESC,id LIMIT $2 OFFSET $3`,[jobId,limit,page*limit]);
+   const raw=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile->>'analysisState' AS analysis_state,profile,rubric,status,created_at,updated_at,version,CASE WHEN pdf_base64 IS NULL THEN false ELSE true END AS has_pdf FROM mc_candidates WHERE ($1='' OR job_id=$1) AND ($4='' OR strpos(lower(COALESCE(profile->>'name','')||' '||COALESCE(profile->>'currentRole','')),lower($4))>0) AND ($5='' OR status=$5) ORDER BY CASE WHEN profile->>'analysisState'='ready' THEN 0 ELSE 1 END,created_at DESC,id LIMIT $2 OFFSET $3`,[jobId,limit,page*limit,search,status]);
    const rows=raw.map(({profile,rubric,...r})=>({...r,score:score(profile,rubric)}));
-   const counts=await sql.query(`SELECT job_id,status,COUNT(*)::int AS count,COUNT(*) FILTER(WHERE (created_at AT TIME ZONE 'Asia/Bangkok')::date=(now() AT TIME ZONE 'Asia/Bangkok')::date)::int AS today FROM mc_candidates GROUP BY job_id,status`);
+   const counts=await sql.query(`SELECT job_id,status,COUNT(*)::int AS count,COUNT(*) FILTER(WHERE profile->>'analysisState'='ready')::int AS ready,COUNT(*) FILTER(WHERE pdf_base64 IS NOT NULL)::int AS with_pdf,COUNT(*) FILTER(WHERE (created_at AT TIME ZONE 'Asia/Bangkok')::date=(now() AT TIME ZONE 'Asia/Bangkok')::date)::int AS today FROM mc_candidates GROUP BY job_id,status`);
    const ranked=await sql.query(`SELECT id,job_id,profile->>'name' AS name,profile->>'currentRole' AS current_role,profile,rubric FROM mc_candidates WHERE profile->>'analysisState'='ready' LIMIT 1000`);
    const highlights=ranked.map(({profile,rubric,...r})=>({...r,score:score(profile,rubric)})).filter(r=>r.score.coverage>=80).sort((a,b)=>b.score.points-a.score.points);
    return {rows,counts,highlights,hasMore:rows.length===limit,page};

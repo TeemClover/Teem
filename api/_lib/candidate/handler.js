@@ -23,12 +23,12 @@ export function createHandler({getStore,authenticate,analyze,env=process.env}){
     }
     if(query.get('id')){const candidate=await store.detail(text(query.get('id'),80));return candidate?reply({ok:true,candidate}):reply({ok:false,error:'NOT_FOUND'},404);}
     const page=Math.max(0,Math.min(10000,Number.parseInt(query.get('page')||'0',10)||0));
-    const [jobs,list,runs]=await Promise.all([store.jobs(),store.list(page,text(query.get('job'),80)),store.runs()]);
+    const [jobs,list,runs]=await Promise.all([store.jobs(),store.list(page,text(query.get('job'),80),text(query.get('search'),200),STATUSES.includes(query.get('status'))?query.get('status'):''),store.runs()]);
     return reply({ok:true,jobs,...list,runs,company:COMPANY,version:VERSION,aiConfigured:Boolean(env.ANTHROPIC_API_KEY),syncConfigured:Boolean(env.CANDIDATE_SYNC_TOKEN)});
    }
-   if(Number(req.headers['content-length']||0)>3800000)throw problem('PAYLOAD_TOO_LARGE',413);
+   if(Number(req.headers['content-length']||0)>4400000)throw problem('PAYLOAD_TOO_LARGE',413);
    const body=typeof req.body==='string'?JSON.parse(req.body):req.body;
-   if(!body||typeof body!=='object'||Array.isArray(body)||JSON.stringify(body).length>3800000)throw problem('BAD_BODY');
+   if(!body||typeof body!=='object'||Array.isArray(body)||JSON.stringify(body).length>4400000)throw problem('BAD_BODY');
    const action=body.action;
    if(sync&&!['analyze','import','run','bulk'].includes(action))throw problem('SYNC_ACTION_FORBIDDEN',403);
    if(action==='logout'){res.setHeader('Set-Cookie','mc_candidate_access=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return reply({ok:true});}
