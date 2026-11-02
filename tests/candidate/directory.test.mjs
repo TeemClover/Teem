@@ -22,7 +22,7 @@ test('tied document scores have stable ordering across refreshes',()=>{
 test('directory uses the same server filters and is independent of sidebar pagination',async()=>{
  const calls=[];const sql={query:async(q,args)=>{calls.push({q,args});if(q.includes('COUNT(*)'))return[];if(q.includes('OFFSET'))return[];return [record('beyond-sidebar-page','pending',null)];}};
  const data=await createStore(sql).list(2,'job-a','example','new');
- const query=calls.find(x=>x.q.includes('AS analysis_state,status,profile'));
+ const query=calls.find(x=>x.q.includes('AS analysis_state,status,'));
  assert.deepEqual(query.args,['job-a','example','new']);assert.ok(!query.q.includes('LIMIT'));
  assert.equal(data.highlights.length,1);assert.equal(data.highlights[0].id,'beyond-sidebar-page');
  assert.equal(data.rows.length,0);

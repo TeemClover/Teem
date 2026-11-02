@@ -11,6 +11,6 @@ export function demoWorkspace(){
   if(body){if(body.action==='review'){const row=candidates.find(c=>c.id===body.id);Object.assign(row,{notes:body.notes,status:body.status,version:row.version+1});return{ok:true};}if(body.action==='job'){Object.assign(job,body.job,{version:job.version+1});return{ok:true};}if(body.action==='run')return{ok:true};throw new Error('ตัวอย่างนี้สาธิตการอ่านและบันทึกเท่านั้น กรุณาเข้าสู่ระบบเพื่อเพิ่มข้อมูลจริง');}
   const params=new URLSearchParams((action||'').replace(/^\?/,''));if(params.get('id'))return{ok:true,candidate:candidates.find(c=>c.id===params.get('id'))};
   const rows=candidates.map(card).filter(r=>(!params.get('job')||r.job_id===params.get('job'))&&(!params.get('status')||r.status===params.get('status'))&&`${r.name} ${r.current_role}`.toLowerCase().includes((params.get('search')||'').toLowerCase()));
-  return{ok:true,jobs:[job],rows,highlights:rows,counts:[{count:7,today:7,ready:4,status:'new'}],runs:[],page:0,hasMore:false,company:'ตัวอย่างข้อมูลบริษัท: CloverX เชื่อมสินค้า เทคโนโลยี และคอมมูนิตี้ด้านสุขภาพ',aiConfigured:false};
+  return{ok:true,jobs:[job],rows,highlights:rows,counts:[{count:7,today:7,ready:4,scored:4,status:'new'}],runs:[],page:0,hasMore:false,company:'ตัวอย่างข้อมูลบริษัท: CloverX เชื่อมสินค้า เทคโนโลยี และคอมมูนิตี้ด้านสุขภาพ',aiConfigured:false};
  };
 }

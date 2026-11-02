@@ -53,3 +53,9 @@ Read enabled jobs from the private database. Visit only their configured JobsDB 
 
 Log actual completion/partial/blocked/no-new state in `mc_candidate_runs` using Asia/Bangkok dates. Never replace previous successful data with an empty list because access failed. If no jobs are enabled, or JobsDB requires login/OTP, stop that run and report the concrete setup blocker. Do not contact, shortlist, reject, rate, or move candidates in JobsDB. All hiring actions belong to a human reviewer.
 
+
+## Scoring completeness and loading
+
+Reading a PDF and scoring it are separate operations. A reviewed profile must also have criterion assessments with reasons and valid evidence IDs; an all-null assessment is unscored, never 0/100. Use the same saved rubric and 0–4 anchors for each applicant to that job. Missing evidence remains null; related professional work can receive level 1 when the reason clearly explains the limited overlap. Never infer domain experience from an employer name. Display both documented points and coverage; a numeric zero requires an explicitly assessed criterion. The header distinguishes read resumes from scored profiles. Finish scoring from existing full-resume evidence before reporting a review as assessed.
+
+The initial list retrieves only assessment fields and rubric weights, runs independent database reads concurrently, and omits detailed score sections from card responses. Full resume/evidence text is loaded only on selection. A static loading panel and module-load fallback remain visible during startup, with a retry control after 12 seconds and a bounded API wait. Versioned modules avoid mixing old HTML and new startup code.
