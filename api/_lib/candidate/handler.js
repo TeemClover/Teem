@@ -2,7 +2,7 @@ import {timingSafeEqual,createHash} from 'node:crypto';
 import {normalizeJob,normalizeProfile,sourceUrl,text,validatePdf,problem,STATUSES,COMPANY,VERSION} from './model.js';
 function tokenMatches(header,secret){if(!secret)return false;const hash=x=>createHash('sha256').update(x).digest();return timingSafeEqual(hash(String(header||'')),hash(`Bearer ${secret}`));}
 function disposition(mode,name,id,suffix){const key=String(id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80)||'document';const label=`${text(name,120)||'candidate'}-${key.slice(0,8)}-${suffix}`;return `${mode}; filename="candidate-${key}-${suffix}"; filename*=UTF-8''${encodeURIComponent(label).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}`;}
-export function createHandler({getStore,authenticate,analyze,env=process.env}){
+export function createHandler({getStore,authenticate,analyze,fetchLibrary=globalThis.fetch,env=process.env}){
  return async function(req,res){
   const reply=(data,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');return res.end(JSON.stringify(data));};
   for(const [key,value] of Object.entries({'Cache-Control':'private, no-store, max-age=0','CDN-Cache-Control':'no-store','Vercel-CDN-Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow, noarchive','Referrer-Policy':'no-referrer'}))res.setHeader(key,value);
@@ -17,6 +17,10 @@ export function createHandler({getStore,authenticate,analyze,env=process.env}){
    const store=getStore();await store.ensure();
    const query=new URL(req.url,'https://candidate.local').searchParams;
    if(req.method==='GET'){
+    if(query.get('action')==='pdfjs'){
+     const file={display:'pdf.min.mjs',worker:'pdf.worker.min.mjs'}[query.get('asset')];if(!file)throw problem('BAD_PDF_ASSET');
+     const vendor=await fetchLibrary(`https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/${file}`,{redirect:'error'});if(!vendor.ok)throw problem('PDF_READER_UNAVAILABLE',502);const body=await vendor.text();if(body.length>4400000)throw problem('PDF_READER_UNAVAILABLE',502);res.setHeader('Content-Type','text/javascript; charset=utf-8');return res.end(body);
+    }
     if(['raw','profile'].includes(query.get('action'))){const c=await store.detail(text(query.get('id'),80));if(!c)return reply({ok:false,error:'NOT_FOUND'},404);const raw=query.get('action')==='raw';res.setHeader('Content-Type',raw?'text/plain; charset=utf-8':'application/json; charset=utf-8');if(query.get('download')==='1')res.setHeader('Content-Disposition',disposition('attachment',c.profile?.name,c.id,raw?'original-text.txt':'cloverx-profile.json'));return res.end(raw?c.original_text:JSON.stringify(c,null,2));}
     if(query.get('action')==='resume'){
      const doc=await store.pdf(text(query.get('id'),80));if(!doc?.pdf_base64)return reply({ok:false,error:'RESUME_NOT_FOUND'},404);
