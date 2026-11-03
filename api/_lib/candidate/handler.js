@@ -1,8 +1,9 @@
+import {candidatePasswordMatches,normalizePresentation} from './access.js';
 import {timingSafeEqual,createHash} from 'node:crypto';
 import {normalizeJob,normalizeProfile,sourceUrl,text,validatePdf,problem,STATUSES,COMPANY,VERSION} from './model.js';
 function tokenMatches(header,secret){if(!secret)return false;const hash=x=>createHash('sha256').update(x).digest();return timingSafeEqual(hash(String(header||'')),hash(`Bearer ${secret}`));}
 function disposition(mode,name,id,suffix){const key=String(id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80)||'document';const label=`${text(name,120)||'candidate'}-${key.slice(0,8)}-${suffix}`;return `${mode}; filename="candidate-${key}-${suffix}"; filename*=UTF-8''${encodeURIComponent(label).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}`;}
-export function createHandler({getStore,authenticate,analyze,fetchLibrary=globalThis.fetch,env=process.env}){
+export function createHandler({getStore,authenticate,analyze,fetchLibrary=globalThis.fetch,rateLimitLogin=async()=>false,env=process.env}){
  return async function(req,res){
   const reply=(data,status=200)=>{res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');return res.end(JSON.stringify(data));};
   for(const [key,value] of Object.entries({'Cache-Control':'private, no-store, max-age=0','CDN-Cache-Control':'no-store','Vercel-CDN-Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow, noarchive','Referrer-Policy':'no-referrer'}))res.setHeader(key,value);
@@ -11,12 +12,15 @@ export function createHandler({getStore,authenticate,analyze,fetchLibrary=global
    const sync=tokenMatches(req.headers.authorization,env.CANDIDATE_SYNC_TOKEN);
    if(req.method==='POST'&&!sync){const origin=req.headers.origin;const host=String(req.headers['x-forwarded-host']||req.headers.host||'').split(',')[0].trim();if(!origin||origin!==`https://${host}`&&!(env.NODE_ENV==='test'&&origin===`http://${host}`))return reply({ok:false,error:'BAD_ORIGIN'},403);}
    const accessToken=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith('mc_candidate_access='))?.slice('mc_candidate_access='.length)||'';
+   const loginRequest=req.method==='POST'&&(typeof req.body==='string'?JSON.parse(req.body):req.body)?.action==='login';
+   if(loginRequest){const body=typeof req.body==='string'?JSON.parse(req.body):req.body;if(await rateLimitLogin(req))throw problem('TOO_MANY_ATTEMPTS',429);if(!env.CANDIDATE_PASSWORD_HASH)throw problem('LOGIN_NOT_CONFIGURED',503);if(!candidatePasswordMatches(body.password,env.CANDIDATE_PASSWORD_HASH))throw problem('BAD_PASSWORD',401);const store=getStore();await store.ensure();const token=await store.issueAccess();res.setHeader('Set-Cookie',`mc_candidate_access=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`);return reply({ok:true});}
    const accessRequest=req.method==='POST'&&(typeof req.body==='string'?JSON.parse(req.body):req.body)?.action==='access';
    if(accessRequest){const body=typeof req.body==='string'?JSON.parse(req.body):req.body;const store=getStore();if(!await store.access(text(body.token,100)))return reply({ok:false,error:'INVALID_ACCESS_LINK'},401);res.setHeader('Set-Cookie',`mc_candidate_access=${body.token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=2592000`);return reply({ok:true});}
-   if(!sync&&!await authenticate(req)&&!(accessToken&&await getStore().access(accessToken)))return reply({ok:false,error:'UNAUTHORIZED'},401);
+   if(!sync&&!(accessToken&&await getStore().access(accessToken))&&!await authenticate(req))return reply({ok:false,error:'UNAUTHORIZED'},401);
    const store=getStore();await store.ensure();
    const query=new URL(req.url,'https://candidate.local').searchParams;
    if(req.method==='GET'){
+    if(query.get('action')==='portrait'){const p=await store.portrait(text(query.get('id'),80));if(!p?.portraitBase64)return reply({ok:false,error:'PORTRAIT_NOT_FOUND'},404);const verified=normalizePresentation(p);const bytes=Buffer.from(verified.portraitBase64,'base64');res.setHeader('Content-Type',verified.portraitMime);res.setHeader('Content-Length',bytes.length);return res.end(bytes);}
     if(query.get('action')==='pdfjs'){
      const file={display:'pdf.min.mjs',worker:'pdf.worker.min.mjs'}[query.get('asset')];if(!file)throw problem('BAD_PDF_ASSET');
      const vendor=await fetchLibrary(`https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/${file}`,{redirect:'error'});if(!vendor.ok)throw problem('PDF_READER_UNAVAILABLE',502);const body=await vendor.text();if(body.length>4400000)throw problem('PDF_READER_UNAVAILABLE',502);res.setHeader('Content-Type','text/javascript; charset=utf-8');return res.end(body);
@@ -36,13 +40,14 @@ export function createHandler({getStore,authenticate,analyze,fetchLibrary=global
    if(!body||typeof body!=='object'||Array.isArray(body)||JSON.stringify(body).length>4400000)throw problem('BAD_BODY');
    const action=body.action;
    if(sync&&!['analyze','import','run','bulk'].includes(action))throw problem('SYNC_ACTION_FORBIDDEN',403);
-   if(action==='logout'){res.setHeader('Set-Cookie','mc_candidate_access=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return reply({ok:true});}
+   if(action==='logout'){await store.revokeAccess?.(accessToken);res.setHeader('Set-Cookie','mc_candidate_access=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return reply({ok:true});}
    if(action==='bulk'){
     if(!Array.isArray(body.records)||body.records.length>400)throw problem('BAD_BATCH');
     const prepared=[],jobs=new Map((await store.jobs()).map(j=>[j.id,j]));
     for(const item of body.records){const job=jobs.get(text(item.jobId,80));if(!job?.enabled)throw problem('JOB_NOT_ENABLED');const originalText=text(item.originalText,60000);if(!originalText||!text(item.sourceId,150))throw problem('RESUME_REQUIRED');const profile={...normalizeProfile(item.profile,job),analysisState:item.analysisState==='ready'?'ready':'pending'};prepared.push({job,profile,sourceId:text(item.sourceId,150),sourceUrl:sourceUrl(item.sourceUrl),originalText,pdfBase64:'',filename:''});}
     for(let start=0;start<prepared.length;start+=8)await Promise.all(prepared.slice(start,start+8).map(item=>store.save(item)));return reply({ok:true,imported:prepared.length});
    }
+   if(action==='presentation'){const result=await store.savePresentation(text(body.id,80),Number(body.version),normalizePresentation(body.presentation));return reply({ok:true,...result});}
    if(action==='job'){const job=normalizeJob(body.job);const result=await store.saveJob(job,Number(body.version));return reply({ok:true,...result});}
    if(action==='review'){if(!STATUSES.includes(body.status))throw problem('BAD_STATUS');const result=await store.review(text(body.id,80),Number(body.version),body.status,text(body.notes,12000));return reply({ok:true,...result});}
    if(action==='analyze'||action==='import'||action==='enqueue'){
@@ -67,3 +72,4 @@ export function createHandler({getStore,authenticate,analyze,fetchLibrary=global
   }
  };
 }
+
