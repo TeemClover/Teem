@@ -1,9 +1,10 @@
 import {demoReview} from './review-demo.js?v=20261103';
+import {addedDay,addedDayLabel,matchesAddedDay,addedDays} from './added-date.js?v=20261104';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const demo=new URLSearchParams(location.search).get('demo')==='1';
 const demoRequest=demo?demoReview():null;
-const state={jobs:[],cards:[],counts:[],runs:[],job:'',filter:'all',page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
+const state={jobs:[],cards:[],counts:[],runs:[],job:'',filter:'all',addedDay:'',page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
 const labels={new:'ใหม่',reviewing:'กำลังตรวจ',prescreen:'เก็บไว้คุย',interview:'นัดสัมภาษณ์',hold:'พักไว้'};
 const shortJob=j=>j.id==='95545991'?'E-commerce':j.id==='95468249'?'Content / PA':j.id==='95290044'?'Graphic Designer':j.title;
 const order=['95545991','95468249','95290044'];
@@ -25,11 +26,16 @@ async function load(){
  $('#overview').textContent=`${count} ใบสมัคร · มีคะแนนเอกสารแล้ว ${scored} คน`;
  $('#demo-notice').hidden=!demo;$('#login').hidden=true;$('#workspace').hidden=false;$('#team-actions').hidden=false;
  const last=state.runs[0];$('#data-status').textContent=last?.created_at?`อัปเดต ${new Date(last.created_at).toLocaleString('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'short',timeStyle:'short'})}`:'';
- loaded();renderJobs();renderCards();
+ loaded();renderJobs();renderAddedDays();renderCards();
 }
 function renderJobs(){
  $('#job-tabs').innerHTML=state.jobs.map(j=>`<button data-job="${esc(j.id)}" aria-current="${state.job===j.id?'page':'false'}">${esc(shortJob(j))}<small>${state.counts.filter(c=>c.job_id===j.id).reduce((n,c)=>n+Number(c.count),0)}</small></button>`).join('');
- $('#job-tabs').querySelectorAll('[data-job]').forEach(el=>el.onclick=()=>{state.job=el.dataset.job;state.page=0;state.compare.clear();renderJobs();renderCards();});
+ $('#job-tabs').querySelectorAll('[data-job]').forEach(el=>el.onclick=()=>{state.job=el.dataset.job;state.page=0;state.compare.clear();renderJobs();renderAddedDays();renderCards();});
+}
+function renderAddedDays(){
+ const days=addedDays(state.cards.filter(c=>c.job_id===state.job),state.addedDay);
+ $('#added-date').innerHTML='<option value="">ทุกวัน</option>'+days.map(([day,count])=>`<option value="${esc(day)}">${esc(addedDayLabel(day))} · ${count} คน</option>`).join('');
+ $('#added-date').value=state.addedDay;$('#clear-added-date').hidden=!state.addedDay;
 }
 function portrait(c,large=false){const nickname=c.nickname||c.profile?.presentation?.nickname||'';const name=nickname||c.name||c.profile?.name||'';const initials=name.replace(/^(นาย|นางสาว|นาง)\s*/,'').trim().slice(0,2);const has=c.has_portrait||c.profile?.presentation?.hasPortrait;return `<div class="portrait${large?' portrait-large':''}">${has?`<img src="/api/candidate?action=portrait&id=${esc(c.id)}" alt="รูปจากประวัติ ${esc(name)}" loading="lazy">`:`<span>${esc(initials)}</span><small>ยังไม่มีรูปจากต้นฉบับ</small>`}</div>`;}
 function scoreMarkup(score){return score?.coverage>0?`<div class="score-number">${score.complete?'':'<i>≥</i>'}${score.points}<span>/100</span></div><span class="coverage-label">${score.complete?'ข้อมูลครบตามเกณฑ์':`ประเมินได้ ${score.coverage}%`}</span>`:'<div class="score-wait">รอประเมินเอกสาร</div>';}
@@ -41,7 +47,7 @@ function chips(c){return `<div class="skill-chips">${skills(c).map(t=>`<span tit
 function sourceNotice(c){return (c.analysis_state||c.profile?.analysisState)==='pending'?'<p class="source-notice">คะแนนเบื้องต้นจากใบสมัคร · รอยืนยัน Resume</p>':'';}
 function strengthList(c){const rows=strengths(c);return `<ul class="card-strengths">${rows.length?rows.map(x=>`<li><span>${esc(x.text)}</span></li>`).join(''):'<li><span>รอสรุปจุดเด่นจากประวัติต้นฉบับ</span></li>'}</ul>`;}
 function visibleCards(){
- const term=$('#search').value.trim().toLocaleLowerCase();let rows=state.cards.filter(c=>c.job_id===state.job);
+ const term=$('#search').value.trim().toLocaleLowerCase();let rows=state.cards.filter(c=>c.job_id===state.job&&matchesAddedDay(c,state.addedDay));
  $('#saved-count').textContent=rows.filter(c=>['prescreen','interview'].includes(c.status)).length;
  rows=rows.filter(c=>(state.filter!=='saved'||['prescreen','interview'].includes(c.status))&&(state.filter!=='pending'||!(c.score?.coverage>0)||!c.score?.complete)&&`${c.name} ${c.nickname||''} ${c.current_role||''} ${skills(c).join(' ')}`.toLocaleLowerCase().includes(term));
  const sort=$('#sort').value;
@@ -53,8 +59,8 @@ function visibleCards(){
 function renderCards(){
  const rows=visibleCards(),pages=Math.max(1,Math.ceil(rows.length/3));state.page=Math.min(state.page,pages-1);const start=state.page*3,slice=rows.slice(start,start+3);
  $('#result-title').textContent=state.filter==='saved'?'คนที่เก็บไว้คุย':state.filter==='pending'?'คนที่ต้องตรวจข้อมูลเพิ่ม':state.page===0&&$('#sort').value==='score'?'เริ่มรู้จักจากคะแนนเอกสาร':'ผู้สมัคร';
- $('#result-count').textContent=`${rows.length} คน`;
- $('#candidate-grid').innerHTML=slice.length?slice.map(c=>{const saved=['prescreen','interview'].includes(c.status);return `<article class="person-card ${state.compare.has(c.id)?'is-compared':''}"><div class="card-top">${portrait(c)}<div class="card-score"><small>คะแนนเอกสาร</small>${scoreMarkup(c.score)}</div></div><div class="name-block"><h3>${esc(c.nickname||c.name)}</h3>${c.nickname?`<div class="full-name">${esc(c.name)}</div>`:''}<div class="role-line" title="${esc(c.current_role)}">${esc(c.current_role||'')}</div></div><p class="person-summary">${esc(cardSummary(c))}</p>${chips(c)}${strengthList(c)}${sourceNotice(c)}<div class="card-meta"><span>${c.salary_expectation?`คาดหวัง ${esc(salaryLabel(c.salary_expectation))}`:''}</span>${saved?'<span class="saved-label">เก็บไว้คุยแล้ว</span>':''}</div><div class="card-actions"><button class="button primary" data-open="${esc(c.id)}">รู้จักคนนี้ <span aria-hidden="true">→</span></button><button class="save-button ${saved?'is-saved':''}" data-save="${esc(c.id)}" aria-label="${saved?'นำออกจากคนที่เก็บไว้':'เก็บไว้คุย'} ${esc(c.name)}" aria-pressed="${saved}">${saved?'♥':'♡'}</button></div><label class="compare-select"><input type="checkbox" data-compare="${esc(c.id)}" ${state.compare.has(c.id)?'checked':''}>เลือกเพื่อเปรียบเทียบ</label></article>`;}).join(''):'<div class="empty-state"><h3>ยังไม่พบคนในกลุ่มนี้</h3><p>ลองเปลี่ยนคำค้นหรือเลือกดูผู้สมัครทั้งหมด</p></div>';
+ $('#result-count').textContent=`${rows.length} คน${state.addedDay?` · เพิ่ม ${addedDayLabel(state.addedDay)}`:''}`;
+ $('#candidate-grid').innerHTML=slice.length?slice.map(c=>{const saved=['prescreen','interview'].includes(c.status);return `<article class="person-card ${state.compare.has(c.id)?'is-compared':''}"><div class="card-top">${portrait(c)}<div class="card-score"><small>คะแนนเอกสาร</small>${scoreMarkup(c.score)}</div></div><div class="name-block"><h3>${esc(c.nickname||c.name)}</h3>${c.nickname?`<div class="full-name">${esc(c.name)}</div>`:''}<div class="role-line" title="${esc(c.current_role)}">${esc(c.current_role||'')}</div></div><p class="person-summary">${esc(cardSummary(c))}</p>${chips(c)}${strengthList(c)}${sourceNotice(c)}<p class="added-on">เพิ่มเข้าระบบ ${esc(addedDayLabel(addedDay(c.created_at)||'unknown'))}</p><div class="card-meta"><span>${c.salary_expectation?`คาดหวัง ${esc(salaryLabel(c.salary_expectation))}`:''}</span>${saved?'<span class="saved-label">เก็บไว้คุยแล้ว</span>':''}</div><div class="card-actions"><button class="button primary" data-open="${esc(c.id)}">รู้จักคนนี้ <span aria-hidden="true">→</span></button><button class="save-button ${saved?'is-saved':''}" data-save="${esc(c.id)}" aria-label="${saved?'นำออกจากคนที่เก็บไว้':'เก็บไว้คุย'} ${esc(c.name)}" aria-pressed="${saved}">${saved?'♥':'♡'}</button></div><label class="compare-select"><input type="checkbox" data-compare="${esc(c.id)}" ${state.compare.has(c.id)?'checked':''}>เลือกเพื่อเปรียบเทียบ</label></article>`;}).join(''):'<div class="empty-state"><h3>ยังไม่พบคนในกลุ่มนี้</h3><p>ลองเปลี่ยนคำค้นหรือเลือกดูผู้สมัครทั้งหมด</p></div>';
  $('#page-range').textContent=rows.length?`${start+1}–${Math.min(start+3,rows.length)} จาก ${rows.length} คน`:'0 คน';$('#page-label').textContent=`${state.page+1} / ${pages}`;$('#previous').disabled=state.page===0;$('#next').disabled=state.page===pages-1;
  $('#compare-count').textContent=state.compare.size;$('#compare-button').disabled=state.compare.size<2;
  $('#candidate-grid').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openPerson(el.dataset.open));
@@ -104,6 +110,9 @@ document.addEventListener('click',e=>{const close=e.target.closest('[data-close]
 $('#person-dialog').addEventListener('cancel',e=>{if(!dirtyConfirm())e.preventDefault();else{state.dirty=false;++personSequence;}});
 $('#filter-tabs').querySelectorAll('[data-filter]').forEach(el=>el.onclick=()=>{state.filter=el.dataset.filter;state.page=0;$('#filter-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el?'true':'false'));renderCards();});
 $('#search').oninput=()=>{state.page=0;renderCards();};$('#sort').onchange=()=>{state.page=0;renderCards();};$('#previous').onclick=()=>{state.page--;renderCards();};$('#next').onclick=()=>{state.page++;renderCards();};$('#compare-button').onclick=openCompare;$('#settings-button').onclick=settings;
+function selectAddedDay(day){state.addedDay=day;state.page=0;state.compare.clear();renderAddedDays();renderCards();}
+$('#added-date').onchange=()=>selectAddedDay($('#added-date').value);
+$('#clear-added-date').onclick=()=>{selectAddedDay('');$('#added-date').focus();};
 $('#refresh').onclick=async()=>{if(!dirtyConfirm())return;$('#refresh').disabled=true;try{state.details.clear();await load();toast('อัปเดตรายชื่อแล้ว');}catch(e){toast(e.message);}finally{$('#refresh').disabled=false;}};
 $('#login-form').onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;$('#login-error').textContent='';try{await request('',{action:'login',password:$('#password').value});$('#password').value='';await load();}catch(e){$('#login-error').textContent=e.message;}finally{button.disabled=false;}};
 $('#show-password').onclick=()=>{const field=$('#password');field.type=field.type==='password'?'text':'password';$('#show-password').textContent=field.type==='password'?'แสดง':'ซ่อน';};
