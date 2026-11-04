@@ -10,6 +10,7 @@ test('a second team session reads the saved note and questions; stale saves pres
    if(record.id!==args[0]||record.version!==args[1])return [];
    Object.assign(record,{status:args[2],notes:args[3],version:record.version+1});return[{version:record.version}];
   }
+  if(sql.startsWith('SELECT id,data,created_at FROM mc_candidate_team_events'))return [];
   if(sql.startsWith('SELECT id,job_id,source_id,'))return[structuredClone(record)];
   throw new Error('Unexpected test query');
  }});

@@ -1,6 +1,7 @@
 import {candidatePasswordMatches,normalizePresentation} from './access.js';
 import {timingSafeEqual,createHash} from 'node:crypto';
 import {normalizeJob,normalizeProfile,sourceUrl,text,validatePdf,problem,STATUSES,COMPANY,VERSION} from './model.js';
+import {activityWeek,normalizeTeamNote} from './team.js';
 function tokenMatches(header,secret){if(!secret)return false;const hash=x=>createHash('sha256').update(x).digest();return timingSafeEqual(hash(String(header||'')),hash(`Bearer ${secret}`));}
 function disposition(mode,name,id,suffix){const key=String(id).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80)||'document';const label=`${text(name,120)||'candidate'}-${key.slice(0,8)}-${suffix}`;return `${mode}; filename="candidate-${key}-${suffix}"; filename*=UTF-8''${encodeURIComponent(label).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}`;}
 export function createHandler({getStore,authenticate,analyze,fetchLibrary=globalThis.fetch,rateLimitLogin=async()=>false,env=process.env}){
@@ -20,6 +21,7 @@ export function createHandler({getStore,authenticate,analyze,fetchLibrary=global
    const store=getStore();await store.ensure();
    const query=new URL(req.url,'https://candidate.local').searchParams;
    if(req.method==='GET'){
+    if(query.get('action')==='activity')return reply({ok:true,...await store.activity(activityWeek(query.get('start')))});
     if(query.get('action')==='portrait'){const p=await store.portrait(text(query.get('id'),80));if(!p?.portraitBase64)return reply({ok:false,error:'PORTRAIT_NOT_FOUND'},404);const verified=normalizePresentation(p);const bytes=Buffer.from(verified.portraitBase64,'base64');res.setHeader('Content-Type',verified.portraitMime);res.setHeader('Content-Length',bytes.length);return res.end(bytes);}
     if(query.get('action')==='pdfjs'){
      const file={display:'pdf.min.mjs',worker:'pdf.worker.min.mjs'}[query.get('asset')];if(!file)throw problem('BAD_PDF_ASSET');
@@ -49,7 +51,9 @@ export function createHandler({getStore,authenticate,analyze,fetchLibrary=global
    }
    if(action==='presentation'){const result=await store.savePresentation(text(body.id,80),Number(body.version),normalizePresentation(body.presentation));return reply({ok:true,...result});}
    if(action==='job'){const job=normalizeJob(body.job);const result=await store.saveJob(job,Number(body.version));return reply({ok:true,...result});}
-   if(action==='review'){if(!STATUSES.includes(body.status))throw problem('BAD_STATUS');const result=await store.review(text(body.id,80),Number(body.version),body.status,text(body.notes,12000));return reply({ok:true,...result});}
+   if(action==='favorite'){if(typeof body.favorite!=='boolean')throw problem('BAD_FAVORITE');const result=await store.favorite(text(body.id,80),Number(body.version),body.favorite);return reply({ok:true,...result});}
+   if(action==='note'){const result=await store.addNote(text(body.id,80),Number(body.version),normalizeTeamNote(body));return reply({ok:true,...result});}
+   if(action==='review'){if(!STATUSES.includes(body.status))throw problem('BAD_STATUS');if(typeof body.notes!=='string'||body.notes.length>12000)throw problem('NOTE_TOO_LONG',413);const result=await store.review(text(body.id,80),Number(body.version),body.status,body.notes);return reply({ok:true,...result});}
    if(action==='analyze'||action==='import'||action==='enqueue'){
     const job=await store.job(text(body.jobId,80));if(!job||!job.enabled)throw problem('JOB_NOT_ENABLED');
     const originalText=text(body.originalText,60000);const pdfBase64=body.pdfBase64?validatePdf(body.pdfBase64).toString('base64'):'';

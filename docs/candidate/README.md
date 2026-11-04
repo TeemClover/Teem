@@ -59,3 +59,18 @@ Log actual completion/partial/blocked/no-new state in `mc_candidate_runs` using 
 Reading a PDF and scoring it are separate operations. A reviewed profile must also have criterion assessments with reasons and valid evidence IDs; an all-null assessment is unscored, never 0/100. Use the same saved rubric and 0–4 anchors for each applicant to that job. Missing evidence remains null; related professional work can receive level 1 when the reason clearly explains the limited overlap. Never infer domain experience from an employer name. Display both documented points and coverage; a numeric zero requires an explicitly assessed criterion. The header distinguishes read resumes from scored profiles. Finish scoring from existing full-resume evidence before reporting a review as assessed.
 
 The initial list retrieves only assessment fields and rubric weights, runs independent database reads concurrently, and omits detailed score sections from card responses. Full resume/evidence text is loaded only on selection. A static loading panel and module-load fallback remain visible during startup, with a retry control after 12 seconds and a bounded API wait. Versioned modules avoid mixing old HTML and new startup code.
+
+
+## Weekly diary and shared calling notes
+
+The seven-day strip starts at 2026-11-01, supports previous/next weeks, and filters cards by the original SEEK application date in `profile.presentation.appliedAt`, converted to Asia/Bangkok. The first day includes applications from that date and all earlier dates as the opening balance. Exact original application timestamps remain unchanged. Missing source dates have a separate confirmation group and never inherit import, assessment or note timestamps. Salary and job filters compose with the selected day/week. The daily activity list shows timestamped imports, assessment runs, team notes and favorites separately from application-date counts.
+
+Favorite is an independent `favorite` boolean. Existing prescreen/interview selections are migrated once, only for null favorites. Changing a heart does not change the candidate stage, call state or notes.
+
+Each calling note is appended to `mc_candidate_team_events` with an author, server timestamp, owner, call outcome and optional next-contact time. Notes remain visible to the authorized team. Legacy notes and answers are retained. Edited question answers merge only the keys changed by the reviewer. Untouched calling fields are preserved on the server. Every new note has a stable request ID so a repeated request cannot duplicate it; a changed retry is rejected. Stale versions return a conflict, with a UI action that reloads current notes while retaining the reviewer's draft.
+
+The additive schema migration is serialized with a transaction advisory lock. Authentication, same-origin mutation checks, no-store/noindex controls, and the sync-token restriction on human review actions remain in place. No applicant documents, source manifests or credentials belong in the public repository.
+
+Validation: `node --test tests/candidate/*.test.mjs`. The private integration/preview harness uses synthetic tables in an isolated schema; it is excluded from publication.
+
+The canonical `/candidate` and `/candidate/` entry paths have explicit security-header rules in addition to child assets. Verify no-store, noindex and the same-origin CSP on the actual production response after deployment.
