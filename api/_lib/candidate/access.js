@@ -7,7 +7,13 @@ export function candidatePasswordMatches(password,record){
 }
 export function normalizePresentation(input={}){
  const clean=(v,n)=>typeof v==='string'?v.replace(/[\u0000-\u001f\u007f]/g,' ').trim().slice(0,n):'';
- const p={nickname:clean(input.nickname,80),nicknameSource:clean(input.nicknameSource,500),portraitSource:clean(input.portraitSource,500)};
+ const p={};
+ for(const [key,limit] of [['nickname',80],['nicknameSource',500],['portraitSource',500]])if(Object.hasOwn(input,key))p[key]=clean(input[key],limit);
+ if(Object.hasOwn(input,'appliedAt')){
+  const value=clean(input.appliedAt,80),source=clean(input.appliedAtSource,500),date=new Date(value);
+  if(!/^\d{4}-\d{2}-\d{2}T.+(?:Z|[+-]\d{2}:\d{2})$/.test(value)||!Number.isFinite(date.getTime())||!source)throw Object.assign(new Error('BAD_APPLICATION_DATE'),{code:'BAD_APPLICATION_DATE',status:400});
+  p.appliedAt=date.toISOString();p.appliedAtSource=source;
+ }
  if(p.nickname&&!p.nicknameSource)throw Object.assign(new Error('PRESENTATION_SOURCE_REQUIRED'),{code:'PRESENTATION_SOURCE_REQUIRED',status:400});
  if(input.portraitBase64){
   if(typeof input.portraitBase64!=='string'||input.portraitBase64.length>400000||!p.portraitSource)throw Object.assign(new Error('BAD_PORTRAIT'),{code:'BAD_PORTRAIT',status:400});

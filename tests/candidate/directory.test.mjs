@@ -1,8 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {rankDirectory,createStore} from '../../api/_lib/candidate/store.js';
+import {rankDirectory,createStore,cardPresentation} from '../../api/_lib/candidate/store.js';
 const rubric=[{id:'task',label:'Task',weight:60},{id:'result',label:'Results',weight:40}];
 const record=(id,state,rating,job='job-a')=>({id,job_id:job,name:id,profile:{name:id,analysisState:state,assessments:[{id:'task',rating}]},rubric});
+test('cards carry the source application timestamp without photo bytes or source document text',()=>{
+ const result=cardPresentation({presentation:{appliedAt:'2026-10-31T17:00:00Z',hasPortrait:true,portraitBase64:'private-image'},summary:'Synthetic summary'});
+ assert.equal(result.applied_at,'2026-10-31T17:00:00Z');assert.equal(result.has_portrait,true);assert.ok(!JSON.stringify(result).includes('private-image'));
+});
 test('directory retains incomplete and pending applications and sorts reviewed scores first',()=>{
  const input=[record('pending','pending',4),record('low','ready',1),record('high','ready',4),record('unknown','ready',null)];
  const result=rankDirectory(input);
