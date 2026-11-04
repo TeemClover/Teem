@@ -1,9 +1,11 @@
-import {demoReview} from './review-demo.js?v=20261103';
+import {demoReview} from './review-demo.js?v=20261104-salary';
+import {addedDayLabel,applicationDay,matchesAddedDay,addedDays} from './added-date.js?v=20261104-salary';
+import {salaryRange,declaredSalary,matchesSalary,salaryCounts,salaryFilterLabel} from './salary-filter.js?v=20261104-salary';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const demo=new URLSearchParams(location.search).get('demo')==='1';
 const demoRequest=demo?demoReview():null;
-const state={jobs:[],cards:[],counts:[],runs:[],job:'',filter:'all',page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
+const state={jobs:[],cards:[],counts:[],runs:[],job:'',filter:'all',addedDay:'',salary:{mode:'all',min:null,max:null},page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
 const labels={new:'ใหม่',reviewing:'กำลังตรวจ',prescreen:'เก็บไว้คุย',interview:'นัดสัมภาษณ์',hold:'พักไว้'};
 const shortJob=j=>j.id==='95545991'?'E-commerce':j.id==='95468249'?'Content / PA':j.id==='95290044'?'Graphic Designer':j.title;
 const order=['95545991','95468249','95290044'];
@@ -25,15 +27,29 @@ async function load(){
  $('#overview').textContent=`${count} ใบสมัคร · มีคะแนนเอกสารแล้ว ${scored} คน`;
  $('#demo-notice').hidden=!demo;$('#login').hidden=true;$('#workspace').hidden=false;$('#team-actions').hidden=false;
  const last=state.runs[0];$('#data-status').textContent=last?.created_at?`อัปเดต ${new Date(last.created_at).toLocaleString('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'short',timeStyle:'short'})}`:'';
- loaded();renderJobs();renderCards();
+ loaded();renderJobs();renderAddedDays();renderCards();
 }
 function renderJobs(){
  $('#job-tabs').innerHTML=state.jobs.map(j=>`<button data-job="${esc(j.id)}" aria-current="${state.job===j.id?'page':'false'}">${esc(shortJob(j))}<small>${state.counts.filter(c=>c.job_id===j.id).reduce((n,c)=>n+Number(c.count),0)}</small></button>`).join('');
- $('#job-tabs').querySelectorAll('[data-job]').forEach(el=>el.onclick=()=>{state.job=el.dataset.job;state.page=0;state.compare.clear();renderJobs();renderCards();});
+ $('#job-tabs').querySelectorAll('[data-job]').forEach(el=>el.onclick=()=>{state.job=el.dataset.job;state.page=0;state.compare.clear();renderJobs();renderAddedDays();renderCards();});
+}
+function renderAddedDays(){
+ const days=addedDays(state.cards.filter(c=>c.job_id===state.job),state.addedDay);
+ $('#added-date').innerHTML='<option value="">ทุกวัน</option>'+days.map(([day,count])=>`<option value="${esc(day)}">${esc(addedDayLabel(day))} · ${count} คน</option>`).join('');
+ $('#added-date').value=state.addedDay;$('#clear-added-date').hidden=!state.addedDay;
+}
+function renderSalaryFilter(){
+ const counts=salaryCounts(state.cards.filter(c=>c.job_id===state.job&&matchesAddedDay(c,state.addedDay)));
+ const choices=[['all','ทุกระดับเงินเดือน'],['known','แจ้งตัวเลขแล้ว'],['unknown','ยังไม่แจ้งตัวเลข / ต้องยืนยัน']];
+ $('#salary-mode').innerHTML=choices.map(([value,label])=>`<option value="${value}">${label} · ${counts[value]} คน</option>`).join('');
+ $('#salary-mode').value=state.salary.mode;
+ const unknown=state.salary.mode==='unknown';$('#salary-min').disabled=unknown;$('#salary-max').disabled=unknown;
+ $('#clear-salary').hidden=state.salary.mode==='all'&&state.salary.min==null&&state.salary.max==null;
+ $('#salary-active').textContent=salaryFilterLabel(state.salary);
 }
 function portrait(c,large=false){const nickname=c.nickname||c.profile?.presentation?.nickname||'';const name=nickname||c.name||c.profile?.name||'';const initials=name.replace(/^(นาย|นางสาว|นาง)\s*/,'').trim().slice(0,2);const has=c.has_portrait||c.profile?.presentation?.hasPortrait;return `<div class="portrait${large?' portrait-large':''}">${has?`<img src="/api/candidate?action=portrait&id=${esc(c.id)}" alt="รูปจากประวัติ ${esc(name)}" loading="lazy">`:`<span>${esc(initials)}</span><small>ยังไม่มีรูปจากต้นฉบับ</small>`}</div>`;}
 function scoreMarkup(score){return score?.coverage>0?`<div class="score-number">${score.complete?'':'<i>≥</i>'}${score.points}<span>/100</span></div><span class="coverage-label">${score.complete?'ข้อมูลครบตามเกณฑ์':`ประเมินได้ ${score.coverage}%`}</span>`:'<div class="score-wait">รอประเมินเอกสาร</div>';}
-function salaryLabel(value){return String(value||'').split(/\s*[—·]\s*/)[0].replace(/\s*—.*$/,'').slice(0,46);}
+function salaryLabel(value){return String(value||'').split(/[—·]\s*(?=[a-zก-๙])/i)[0].slice(0,46);}
 function cardSummary(c){return c.quick_summary?.sentence?.text||c.profile?.quickSummary?.sentence?.text||c.summary||c.profile?.summary||c.current_role||c.profile?.currentRole||'กำลังจัดข้อมูลจากต้นฉบับ';}
 function strengths(c){const q=c.quick_summary||c.profile?.quickSummary;return(q?.strengths||[]).filter(x=>x.text).slice(0,2);}
 function skills(c){const q=c.quick_summary||c.profile?.quickSummary;return(q?.skills||[]).filter(x=>x.text).map(x=>x.text).slice(0,3);}
@@ -41,20 +57,20 @@ function chips(c){return `<div class="skill-chips">${skills(c).map(t=>`<span tit
 function sourceNotice(c){return (c.analysis_state||c.profile?.analysisState)==='pending'?'<p class="source-notice">คะแนนเบื้องต้นจากใบสมัคร · รอยืนยัน Resume</p>':'';}
 function strengthList(c){const rows=strengths(c);return `<ul class="card-strengths">${rows.length?rows.map(x=>`<li><span>${esc(x.text)}</span></li>`).join(''):'<li><span>รอสรุปจุดเด่นจากประวัติต้นฉบับ</span></li>'}</ul>`;}
 function visibleCards(){
- const term=$('#search').value.trim().toLocaleLowerCase();let rows=state.cards.filter(c=>c.job_id===state.job);
+ const term=$('#search').value.trim().toLocaleLowerCase();let rows=state.cards.filter(c=>c.job_id===state.job&&matchesAddedDay(c,state.addedDay)&&matchesSalary(c,state.salary));
  $('#saved-count').textContent=rows.filter(c=>['prescreen','interview'].includes(c.status)).length;
  rows=rows.filter(c=>(state.filter!=='saved'||['prescreen','interview'].includes(c.status))&&(state.filter!=='pending'||!(c.score?.coverage>0)||!c.score?.complete)&&`${c.name} ${c.nickname||''} ${c.current_role||''} ${skills(c).join(' ')}`.toLocaleLowerCase().includes(term));
  const sort=$('#sort').value;
  if(sort==='name')rows.sort((a,b)=>(a.nickname||a.name).localeCompare(b.nickname||b.name,'th'));
- else if(sort==='latest')rows.sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))||a.id.localeCompare(b.id));
+ else if(sort==='latest')rows.sort((a,b)=>String(b.applied_at||'').localeCompare(String(a.applied_at||''))||a.id.localeCompare(b.id));
  else rows.sort((a,b)=>Number(b.score?.coverage>0)-Number(a.score?.coverage>0)||(b.score?.points??-1)-(a.score?.points??-1)||(b.score?.coverage||0)-(a.score?.coverage||0)||a.id.localeCompare(b.id));
  return rows;
 }
 function renderCards(){
- const rows=visibleCards(),pages=Math.max(1,Math.ceil(rows.length/3));state.page=Math.min(state.page,pages-1);const start=state.page*3,slice=rows.slice(start,start+3);
+ renderSalaryFilter();const rows=visibleCards(),pages=Math.max(1,Math.ceil(rows.length/3));state.page=Math.min(state.page,pages-1);const start=state.page*3,slice=rows.slice(start,start+3);
  $('#result-title').textContent=state.filter==='saved'?'คนที่เก็บไว้คุย':state.filter==='pending'?'คนที่ต้องตรวจข้อมูลเพิ่ม':state.page===0&&$('#sort').value==='score'?'เริ่มรู้จักจากคะแนนเอกสาร':'ผู้สมัคร';
- $('#result-count').textContent=`${rows.length} คน`;
- $('#candidate-grid').innerHTML=slice.length?slice.map(c=>{const saved=['prescreen','interview'].includes(c.status);return `<article class="person-card ${state.compare.has(c.id)?'is-compared':''}"><div class="card-top">${portrait(c)}<div class="card-score"><small>คะแนนเอกสาร</small>${scoreMarkup(c.score)}</div></div><div class="name-block"><h3>${esc(c.nickname||c.name)}</h3>${c.nickname?`<div class="full-name">${esc(c.name)}</div>`:''}<div class="role-line" title="${esc(c.current_role)}">${esc(c.current_role||'')}</div></div><p class="person-summary">${esc(cardSummary(c))}</p>${chips(c)}${strengthList(c)}${sourceNotice(c)}<div class="card-meta"><span>${c.salary_expectation?`คาดหวัง ${esc(salaryLabel(c.salary_expectation))}`:''}</span>${saved?'<span class="saved-label">เก็บไว้คุยแล้ว</span>':''}</div><div class="card-actions"><button class="button primary" data-open="${esc(c.id)}">รู้จักคนนี้ <span aria-hidden="true">→</span></button><button class="save-button ${saved?'is-saved':''}" data-save="${esc(c.id)}" aria-label="${saved?'นำออกจากคนที่เก็บไว้':'เก็บไว้คุย'} ${esc(c.name)}" aria-pressed="${saved}">${saved?'♥':'♡'}</button></div><label class="compare-select"><input type="checkbox" data-compare="${esc(c.id)}" ${state.compare.has(c.id)?'checked':''}>เลือกเพื่อเปรียบเทียบ</label></article>`;}).join(''):'<div class="empty-state"><h3>ยังไม่พบคนในกลุ่มนี้</h3><p>ลองเปลี่ยนคำค้นหรือเลือกดูผู้สมัครทั้งหมด</p></div>';
+ $('#result-count').textContent=`${rows.length} คน${state.addedDay?` · ${addedDayLabel(state.addedDay)}`:''}${salaryFilterLabel(state.salary)?` · ${salaryFilterLabel(state.salary)}`:''}`;
+ $('#candidate-grid').innerHTML=slice.length?slice.map(c=>{const saved=['prescreen','interview'].includes(c.status);return `<article class="person-card ${state.compare.has(c.id)?'is-compared':''}"><div class="card-top">${portrait(c)}<div class="card-score"><small>คะแนนเอกสาร</small>${scoreMarkup(c.score)}</div></div><div class="name-block"><h3>${esc(c.nickname||c.name)}</h3>${c.nickname?`<div class="full-name">${esc(c.name)}</div>`:''}<div class="role-line" title="${esc(c.current_role)}">${esc(c.current_role||'')}</div></div><p class="person-summary">${esc(cardSummary(c))}</p>${chips(c)}${strengthList(c)}${sourceNotice(c)}<p class="added-on">${applicationDay(c)?'สมัคร '+esc(addedDayLabel(applicationDay(c))):'รอยืนยันวันที่สมัคร'}</p><div class="card-meta"><span>${salaryRange(declaredSalary(c))?`คาดหวัง ${esc(salaryLabel(declaredSalary(c)))}`:'ยังไม่แจ้งตัวเลขเงินเดือน · ต้องยืนยัน'}</span>${saved?'<span class="saved-label">เก็บไว้คุยแล้ว</span>':''}</div><div class="card-actions"><button class="button primary" data-open="${esc(c.id)}">รู้จักคนนี้ <span aria-hidden="true">→</span></button><button class="save-button ${saved?'is-saved':''}" data-save="${esc(c.id)}" aria-label="${saved?'นำออกจากคนที่เก็บไว้':'เก็บไว้คุย'} ${esc(c.name)}" aria-pressed="${saved}">${saved?'♥':'♡'}</button></div><label class="compare-select"><input type="checkbox" data-compare="${esc(c.id)}" ${state.compare.has(c.id)?'checked':''}>เลือกเพื่อเปรียบเทียบ</label></article>`;}).join(''):'<div class="empty-state"><h3>ยังไม่พบคนในกลุ่มนี้</h3><p>ลองเปลี่ยนคำค้นหรือเลือกดูผู้สมัครทั้งหมด</p></div>';
  $('#page-range').textContent=rows.length?`${start+1}–${Math.min(start+3,rows.length)} จาก ${rows.length} คน`:'0 คน';$('#page-label').textContent=`${state.page+1} / ${pages}`;$('#previous').disabled=state.page===0;$('#next').disabled=state.page===pages-1;
  $('#compare-count').textContent=state.compare.size;$('#compare-button').disabled=state.compare.size<2;
  $('#candidate-grid').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openPerson(el.dataset.open));
@@ -62,23 +78,23 @@ function renderCards(){
  $('#candidate-grid').querySelectorAll('[data-compare]').forEach(el=>el.onchange=()=>{if(el.checked&&state.compare.size>=3){el.checked=false;toast('เลือกเปรียบเทียบได้ครั้งละ 3 คน');return;}if(el.checked)state.compare.add(el.dataset.compare);else state.compare.delete(el.dataset.compare);renderCards();});
  $('#candidate-grid').querySelectorAll('.portrait img').forEach(img=>img.onerror=()=>{img.parentElement.innerHTML='<small>ไม่พบรูปต้นฉบับ</small>';});
 }
-async function detail(id){if(state.details.has(id))return state.details.get(id);const data=await request('?id='+encodeURIComponent(id));state.details.set(id,data.candidate);return data.candidate;}
+async function detail(id,fresh=false){if(!fresh&&state.details.has(id))return state.details.get(id);const data=await request('?id='+encodeURIComponent(id));state.details.set(id,data.candidate);return data.candidate;}
 function refs(ids){return(ids||[]).map(id=>`<a class="ref-link" href="#source-${esc(id)}" data-source="${esc(id)}">ดูหลักฐาน ${esc(id)} ↗</a>`).join('');}
 function dirtyConfirm(){return !state.dirty||confirm('มีบันทึกที่ยังไม่ได้บันทึก ต้องการปิดหน้าผู้สมัครหรือไม่?');}
 async function openPerson(id){
  if(!dirtyConfirm())return;const seq=++personSequence;state.dirty=false;state.person=null;state.personTab='summary';$('#person-content').innerHTML='<div class="dialog-bar"><span class="kicker">กำลังเปิดประวัติ</span><button class="close-button" data-close="person-dialog" aria-label="ปิดประวัติ">✕</button></div><div class="loading-panel"><span class="spinner"></span></div>';if(!$('#person-dialog').open)$('#person-dialog').showModal();
- try{const c=await detail(id);if(seq!==personSequence||!$('#person-dialog').open)return;state.person=c;renderPerson();}catch(e){toast(e.message);$('#person-dialog').close();}
+ try{const c=await detail(id,true);if(seq!==personSequence||!$('#person-dialog').open)return;state.person=c;renderPerson();}catch(e){toast(e.message);$('#person-dialog').close();}
 }
 function serializeNotes(notes){const value=JSON.stringify(notes);if(value.length>12000)throw new Error('โน้ตและคำตอบรวมกันยาวเกิน 12,000 ตัวอักษร กรุณาย่อก่อนบันทึก');return value;}
 function parseNotes(c){let result={note:c.notes||'',answers:{}};try{const value=JSON.parse(c.notes);if(typeof value?.note==='string')result=value;}catch{}return result;}
 function captureNotes(){if(!state.person)return;const previous=state.person.draft||parseNotes(state.person);state.person.draft={note:$('#person-note')?.value??previous.note,answers:{...previous.answers,...Object.fromEntries([...document.querySelectorAll('[data-answer]')].map(x=>[x.dataset.answer,x.value]))}};}
 function renderPerson(){
  const c=state.person,p=c.profile,notes=c.draft||parseNotes(c),saved=['prescreen','interview'].includes(c.status),name=p.presentation?.nickname||c.name||p.name;
- $('#person-content').innerHTML=`<div class="dialog-bar"><span class="kicker">${esc(shortJob(state.jobs.find(j=>j.id===c.job_id)||{title:''}))} / ${esc(labels[c.status]||'ใหม่')}</span><button class="close-button" data-close="person-dialog" aria-label="ปิดประวัติ">✕</button></div><div class="person-head">${portrait(c,true)}<div><h2>${esc(name)}</h2>${p.presentation?.nickname?`<div class="full-name">${esc(p.name)}</div>`:''}<div class="role-line">${esc(p.currentRole||'')}</div><div class="card-score">${scoreMarkup(c.score)}</div></div></div><nav class="person-tabs" aria-label="ส่วนของประวัติ"><button data-tab="summary" aria-current="${state.personTab==='summary'?'page':'false'}">สรุปผู้สมัคร</button><button data-tab="resume" aria-current="${state.personTab==='resume'?'page':'false'}">Resume ต้นฉบับ</button><button data-tab="questions" aria-current="${state.personTab==='questions'?'page':'false'}">คำถามคุยต่อ</button></nav><div class="person-body">${personBody(c,notes)}</div><div class="person-note"><label for="person-note">บันทึกสั้น ๆ ของทีม</label><textarea id="person-note" maxlength="12000" placeholder="สิ่งที่อยากคุยต่อ / นัดหมาย / ผู้รับผิดชอบ">${esc(notes.note)}</textarea><div class="person-bottom-actions"><button class="button ${saved?'secondary':'primary'}" id="person-save">${saved?'นำออกจากคนที่เก็บไว้':'♡ เก็บไว้คุย'}</button><button class="button secondary" id="save-note">บันทึกโน้ต</button></div></div>`;
+ $('#person-content').innerHTML=`<div class="dialog-bar"><span class="kicker">${esc(shortJob(state.jobs.find(j=>j.id===c.job_id)||{title:''}))} / ${esc(labels[c.status]||'ใหม่')}</span><button class="close-button" data-close="person-dialog" aria-label="ปิดประวัติ">✕</button></div><div class="person-head">${portrait(c,true)}<div><h2>${esc(name)}</h2>${p.presentation?.nickname?`<div class="full-name">${esc(p.name)}</div>`:''}<div class="role-line">${esc(p.currentRole||'')}</div><div class="card-score">${scoreMarkup(c.score)}</div></div></div><nav class="person-tabs" aria-label="ส่วนของประวัติ"><button data-tab="summary" aria-current="${state.personTab==='summary'?'page':'false'}">สรุปผู้สมัคร</button><button data-tab="resume" aria-current="${state.personTab==='resume'?'page':'false'}">Resume ต้นฉบับ</button><button data-tab="questions" aria-current="${state.personTab==='questions'?'page':'false'}">คำถามคุยต่อ</button></nav><div class="person-body">${personBody(c,notes)}</div><div class="person-note"><label for="person-note">บันทึกของทีม HR / CEO / เลขา / ผู้โทรสัมภาษณ์</label><textarea id="person-note" maxlength="12000" placeholder="สิ่งที่อยากคุยต่อ / นัดหมาย / ผู้รับผิดชอบ">${esc(notes.note)}</textarea><div class="person-bottom-actions"><button class="button ${saved?'secondary':'primary'}" id="person-save">${saved?'นำออกจากคนที่เก็บไว้':'♡ เก็บไว้คุย'}</button><button class="button secondary" id="save-note">บันทึกให้ทีม</button></div><p id="note-state" class="note-state" role="status">${state.dirty?'ยังไม่ได้บันทึกให้ทีม':'บันทึกส่วนกลาง · กดบันทึกให้ทีมเพื่อให้คนที่เปิดต่ออ่านได้'}</p></div>`;
  $('#person-content').querySelectorAll('[data-tab]').forEach(el=>el.onclick=()=>{captureNotes();state.personTab=el.dataset.tab;renderPerson();});
  $('#person-save').onclick=()=>toggleSaved(c.id,$('#person-save'));$('#save-note').onclick=()=>saveNotes();
  $('#person-content').querySelectorAll('[data-score-width]').forEach(el=>el.style.width=el.dataset.scoreWidth+'%');
- $('#person-content').querySelectorAll('textarea').forEach(el=>el.oninput=()=>{state.dirty=true;});
+ $('#person-content').querySelectorAll('textarea').forEach(el=>el.oninput=()=>{state.dirty=true;$('#note-state').textContent='ยังไม่ได้บันทึกให้ทีม';});
  $('#person-content').querySelectorAll('[data-source]').forEach(el=>el.onclick=e=>{e.preventDefault();const box=$('#sources');if(box)box.open=true;document.getElementById('source-'+el.dataset.source)?.scrollIntoView({behavior:'smooth',block:'center'});});
  $('#person-content').querySelectorAll('.portrait img').forEach(img=>img.onerror=()=>{img.parentElement.innerHTML='<small>ไม่พบรูปต้นฉบับ</small>';});
 }
@@ -92,7 +108,7 @@ async function toggleSaved(id,button){
  if(button)button.disabled=true;
  try{const c=await detail(id),saved=['prescreen','interview'].includes(c.status);if(state.person?.id===id)captureNotes();const note=state.person?.id===id?(c.draft||parseNotes(c)):parseNotes(c);const status=saved?'reviewing':'prescreen';const result=await request('',{action:'review',id,version:c.version,status,notes:serializeNotes(note)});c.status=status;c.notes=JSON.stringify(note);c.version=result.version||c.version+1;delete c.draft;const card=state.cards.find(x=>x.id===id);if(card)card.status=status;if(state.person?.id===id){state.dirty=false;renderPerson();}renderCards();toast(saved?'นำออกจากคนที่เก็บไว้แล้ว':'เก็บไว้คุยแล้ว');}catch(e){state.details.delete(id);toast(e.message);}finally{if(button)button.disabled=false;}
 }
-async function saveNotes(){const c=state.person;captureNotes();const button=$('#save-note');button.disabled=true;try{const result=await request('',{action:'review',id:c.id,version:c.version,status:c.status,notes:serializeNotes(c.draft)});c.notes=JSON.stringify(c.draft);c.version=result.version||c.version+1;state.dirty=false;toast('บันทึกโน้ตและคำตอบแล้ว');}catch(e){toast(e.message);}finally{button.disabled=false;}}
+async function saveNotes(){const c=state.person;captureNotes();const button=$('#save-note');button.disabled=true;$('#note-state').textContent='กำลังบันทึกให้ทีม…';try{const result=await request('',{action:'review',id:c.id,version:c.version,status:c.status,notes:serializeNotes(c.draft)});c.notes=JSON.stringify(c.draft);c.version=result.version||c.version+1;state.dirty=false;$('#note-state').textContent='บันทึกแล้ว · คนที่เปิดต่อจะเห็นโน้ตและคำตอบนี้';toast('บันทึกโน้ตและคำตอบให้ทีมแล้ว');}catch(e){$('#note-state').textContent='ยังไม่ได้บันทึกให้ทีม · '+e.message;toast(e.message);}finally{button.disabled=false;}}
 async function openCompare(){
  const ids=[...state.compare];if(ids.length<2)return;$('#compare-content').innerHTML='<div class="loading-panel"><span class="spinner"></span></div>';$('#compare-dialog').showModal();try{const people=await Promise.all(ids.map(detail));$('#compare-content').style.setProperty('--compare-count',people.length);$('#compare-content').innerHTML=people.map(c=>`<article class="compare-column">${portrait(c)}<h3>${esc(c.profile.presentation?.nickname||c.profile.name)}</h3>${c.profile.presentation?.nickname?`<div class="full-name">${esc(c.profile.name)}</div>`:''}<div class="card-score">${scoreMarkup(c.score)}</div><p class="person-summary">${esc(cardSummary(c))}</p>${chips(c)}${strengthList(c)}<div class="quick-facts"><div><small>เงินเดือน</small><strong>${esc(c.profile.salaryExpectation||'รอยืนยัน')}</strong></div><div><small>เริ่มงาน</small><strong>${esc(c.profile.availability||'รอยืนยัน')}</strong></div></div><button class="button secondary" data-compare-open="${esc(c.id)}">เปิดประวัติ →</button></article>`).join('');$('#compare-content').querySelectorAll('[data-compare-open]').forEach(el=>el.onclick=()=>{$('#compare-dialog').close();openPerson(el.dataset.compareOpen);});}catch(e){toast(e.message);$('#compare-dialog').close();}}
 function settings(){
@@ -104,6 +120,22 @@ document.addEventListener('click',e=>{const close=e.target.closest('[data-close]
 $('#person-dialog').addEventListener('cancel',e=>{if(!dirtyConfirm())e.preventDefault();else{state.dirty=false;++personSequence;}});
 $('#filter-tabs').querySelectorAll('[data-filter]').forEach(el=>el.onclick=()=>{state.filter=el.dataset.filter;state.page=0;$('#filter-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el?'true':'false'));renderCards();});
 $('#search').oninput=()=>{state.page=0;renderCards();};$('#sort').onchange=()=>{state.page=0;renderCards();};$('#previous').onclick=()=>{state.page--;renderCards();};$('#next').onclick=()=>{state.page++;renderCards();};$('#compare-button').onclick=openCompare;$('#settings-button').onclick=settings;
+function selectAddedDay(day){state.addedDay=day;state.page=0;state.compare.clear();renderAddedDays();renderCards();}
+$('#added-date').onchange=()=>selectAddedDay($('#added-date').value);
+$('#clear-added-date').onclick=()=>{selectAddedDay('');$('#added-date').focus();};
+function applySalary(filter){state.salary=filter;state.page=0;state.compare.clear();$('#salary-error').textContent='';renderCards();}
+$('#salary-mode').onchange=()=>{
+ const mode=$('#salary-mode').value;
+ $('#salary-min').value='';$('#salary-max').value='';
+ applySalary({mode,min:null,max:null});
+};
+$('#salary-form').onsubmit=e=>{
+ e.preventDefault();
+ const mode=$('#salary-mode').value,min=$('#salary-min').value===''?null:Number($('#salary-min').value),max=$('#salary-max').value===''?null:Number($('#salary-max').value);
+ if(mode!=='unknown'&&min!=null&&max!=null&&min>max){$('#salary-error').textContent='ขั้นต่ำต้องไม่เกินขั้นสูง · ยังไม่ได้ใช้ช่วงเงินเดือนนี้';$('#salary-max').focus();return;}
+ applySalary({mode:mode==='unknown'?'unknown':min!=null||max!=null?'known':mode,min:mode==='unknown'?null:min,max:mode==='unknown'?null:max});
+};
+$('#clear-salary').onclick=()=>{$('#salary-min').value='';$('#salary-max').value='';applySalary({mode:'all',min:null,max:null});$('#salary-mode').focus();};
 $('#refresh').onclick=async()=>{if(!dirtyConfirm())return;$('#refresh').disabled=true;try{state.details.clear();await load();toast('อัปเดตรายชื่อแล้ว');}catch(e){toast(e.message);}finally{$('#refresh').disabled=false;}};
 $('#login-form').onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;$('#login-error').textContent='';try{await request('',{action:'login',password:$('#password').value});$('#password').value='';await load();}catch(e){$('#login-error').textContent=e.message;}finally{button.disabled=false;}};
 $('#show-password').onclick=()=>{const field=$('#password');field.type=field.type==='password'?'text':'password';$('#show-password').textContent=field.type==='password'?'แสดง':'ซ่อน';};

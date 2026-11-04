@@ -10,3 +10,9 @@ test('correct HR password creates only candidate-scoped cookie; wrong password c
 test('rate limit prevents password attempt from issuing a session',async()=>{const request=setup({rateLimitLogin:async()=>true,store:{issueAccess:async()=>{throw Error('must not issue');}}});assert.equal((await request({action:'login',password:'test-password'})).statusCode,429);});
 test('anonymous portrait requests are denied before accessing candidate assets',async()=>{let accessed=false;const request=setup({store:{portrait:async()=>{accessed=true;}}});const r=await request(undefined,'/api/candidate?action=portrait&id=a','GET');assert.equal(r.statusCode,401);assert.equal(accessed,false);});
 test('display metadata requires provenance and raster bytes; arbitrary remote URLs and SVG are not accepted',()=>{assert.throws(()=>normalizePresentation({nickname:'Synthetic'}),/SOURCE_REQUIRED/);assert.throws(()=>normalizePresentation({portraitBase64:Buffer.from('<svg></svg>').toString('base64'),portraitSource:'PDF page 1'}),/BAD_PORTRAIT/);const p=normalizePresentation({nickname:'Synthetic',nicknameSource:'Explicit nickname in resume',portraitUrl:'https://external.invalid/private'});assert.equal(p.portraitUrl,undefined);assert.equal(p.nickname,'Synthetic');});
+test('application timestamps require source evidence and an explicit timezone',()=>{
+ const p=normalizePresentation({appliedAt:'2026-11-01T00:00:00+07:00',appliedAtSource:'SEEK application date tooltip'});
+ assert.equal(p.appliedAt,'2026-10-31T17:00:00.000Z');
+ assert.equal(p.nickname,undefined);assert.equal(p.portraitSource,undefined);
+ for(const input of [{appliedAt:'2026-11-01'},{appliedAt:'2026-11-01T00:00:00Z'},{appliedAt:'invalid',appliedAtSource:'SEEK'}])assert.throws(()=>normalizePresentation(input),/BAD_APPLICATION_DATE/);
+});
