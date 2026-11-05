@@ -1,12 +1,12 @@
 import {resumeSizeNotice} from './resume-notice.js?v=20261105-resume-notice';
 import {demoReview} from './review-demo.js?v=20261104-salary';
-import {addedDayLabel,applicationDay,matchesAddedDay,addedDays} from './added-date.js?v=20261104-salary';
+import {addedDayLabel,applicationDay,matchesAddedDay,addedDays,hasCompleteApplicationDirectory} from './added-date.js?v=20261105-zero-dates';
 import {salaryRange,declaredSalary,matchesSalary,salaryCounts,salaryFilterLabel} from './salary-filter.js?v=20261104-salary';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const demo=new URLSearchParams(location.search).get('demo')==='1';
 const demoRequest=demo?demoReview():null;
-const state={jobs:[],cards:[],counts:[],runs:[],job:'',filter:'all',addedDay:'',salary:{mode:'all',min:null,max:null},page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
+const state={jobs:[],cards:[],counts:[],runs:[],directoryComplete:false,job:'',filter:'all',addedDay:'',salary:{mode:'all',min:null,max:null},page:0,compare:new Set(),details:new Map(),person:null,personTab:'summary',dirty:false};
 const labels={new:'ใหม่',reviewing:'กำลังตรวจ',prescreen:'เก็บไว้คุย',interview:'นัดสัมภาษณ์',hold:'พักไว้'};
 const shortJob=j=>j.id==='95545991'?'E-commerce':j.id==='95468249'?'Content / PA':j.id==='95290044'?'Graphic Designer':j.title;
 const order=['95545991','95468249','95290044'];
@@ -19,10 +19,10 @@ async function request(query='',body){
  const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),body?110000:25000);
  try{const res=await fetch('/api/candidate'+query,{method:body?'POST':'GET',credentials:'same-origin',cache:'no-store',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:ctrl.signal});let data;try{data=await res.json();}catch{throw new Error('ระบบตอบกลับไม่สมบูรณ์ กรุณาลองใหม่');}if(!res.ok){const err=new Error(errors[data.error]||'ทำรายการไม่สำเร็จ กรุณาลองใหม่');err.code=data.error;throw err;}return data;}catch(e){if(e.name==='AbortError')throw new Error('การเชื่อมต่อใช้เวลานาน กรุณากดลองใหม่');throw e;}finally{clearTimeout(timer);}
 }
-function lock(){state.cards=[];state.details.clear();state.compare.clear();$('#workspace').hidden=true;$('#team-actions').hidden=true;$('#login').hidden=false;$('#password').value='';loaded();}
+function lock(){state.cards=[];state.directoryComplete=false;state.details.clear();state.compare.clear();$('#workspace').hidden=true;$('#team-actions').hidden=true;$('#login').hidden=false;$('#password').value='';loaded();}
 async function load(){
  const seq=++loadSequence,data=await request();if(seq!==loadSequence)return;
- state.jobs=data.jobs.slice().sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));state.cards=data.highlights||[];state.counts=data.counts||[];state.runs=data.runs||[];
+ state.jobs=data.jobs.slice().sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id));state.cards=data.highlights||[];state.counts=data.counts||[];state.runs=data.runs||[];state.directoryComplete=hasCompleteApplicationDirectory(data.highlights,data.counts);
  if(!state.job||!state.jobs.some(j=>j.id===state.job))state.job=state.jobs.find(j=>j.enabled)?.id||state.jobs[0]?.id||'';
  const count=state.counts.reduce((n,x)=>n+Number(x.count),0),scored=state.counts.reduce((n,x)=>n+Number(x.scored||0),0);
  $('#overview').textContent=`${count} ใบสมัคร · มีคะแนนเอกสารแล้ว ${scored} คน`;
@@ -35,7 +35,10 @@ function renderJobs(){
  $('#job-tabs').querySelectorAll('[data-job]').forEach(el=>el.onclick=()=>{state.job=el.dataset.job;state.page=0;state.compare.clear();renderJobs();renderAddedDays();renderCards();});
 }
 function renderAddedDays(){
- const days=addedDays(state.cards.filter(c=>c.job_id===state.job),state.addedDay);
+ const days=addedDays(state.cards.filter(c=>c.job_id===state.job),state.addedDay,{complete:state.directoryComplete});
+ if(state.addedDay&&!days.some(([day])=>day===state.addedDay))state.addedDay='';
+ $('#added-date').disabled=!state.directoryComplete;
+ $('#added-date-hint').textContent=state.directoryComplete?'วันที่สมัครใน SEEK ที่ยืนยันแล้ว · วันที่ไม่ทราบแยกไว้ · เวลาไทย':'ยังยืนยันจำนวนรายวันไม่ได้ · กรุณาอัปเดตรายชื่ออีกครั้ง';
  $('#added-date').innerHTML='<option value="">ทุกวัน</option>'+days.map(([day,count])=>`<option value="${esc(day)}">${esc(addedDayLabel(day))} · ${count} คน</option>`).join('');
  $('#added-date').value=state.addedDay;$('#clear-added-date').hidden=!state.addedDay;
 }
