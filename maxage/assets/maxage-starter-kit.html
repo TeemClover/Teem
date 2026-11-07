@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5e9">
+  <title>ชาเลนจ์นอนตรงเวลา 7 วัน | นิทานอายุยืน × MaxAge</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f5e9;
+      --forest: #163b2e;
+      --muted: #4b6658;
+      --line: #abb7a4;
+      --amber: #f5bc4f;
+      --white: #fffef8;
+      font-family: "Leelawadee UI", "Thonburi", "Noto Sans Thai", Tahoma, sans-serif;
+      color: var(--forest);
+      background: #e2e6d8;
+      line-height: 1.6;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 1.5rem 0 3rem; }
+    a { color: inherit; text-underline-offset: .2em; }
+    button, input { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid #9b5604; outline-offset: 3px; }
+    .sheet {
+      width: min(100% - 2rem, 50rem);
+      margin: auto;
+      background: var(--paper);
+      border: 1px solid #d2d9c7;
+      border-radius: 1.1rem;
+      overflow: hidden;
+      box-shadow: 0 1.2rem 3rem #163b2e15;
+    }
+    header {
+      position: relative;
+      isolation: isolate;
+      padding: clamp(1.2rem, 5vw, 2.35rem);
+      background: var(--forest);
+      color: var(--white);
+    }
+    .sun {
+      position: absolute;
+      z-index: -1;
+      inset: auto .75rem -.7rem auto;
+      width: min(23%, 10rem);
+      opacity: .76;
+    }
+    .masthead, .kicker, .note, footer { font-size: .8rem; }
+    .masthead {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: .6rem 1rem;
+      padding-bottom: .85rem;
+      margin-bottom: 1.15rem;
+      border-bottom: 1px solid #f7f5e961;
+      font-weight: 700;
+    }
+    .badge, button { display: inline-block; border-radius: 99px; font-weight: 700; }
+    .badge { padding: .15rem .65rem; background: var(--amber); color: var(--forest); }
+    .kicker { margin: 0; color: var(--amber); font-weight: 700; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { max-width: 90%; margin: .25rem 0; font-size: clamp(1.85rem, 6vw, 3.25rem); line-height: 1.25; }
+    .intro { max-width: 31rem; margin-top: .55rem; font-size: clamp(.88rem, 3vw, 1.05rem); }
+    .slogan { margin-top: .85rem; font-weight: 700; font-size: .88rem; }
+    .content { padding: clamp(1.1rem, 5vw, 2.25rem); }
+    .controls { display: flex; justify-content: flex-end; margin: 0 0 .6rem; }
+    button { cursor: pointer; background: var(--amber); border: 0; padding: .47rem .92rem; }
+    button:hover { background: #edac36; }
+    section + section { margin-top: 1.35rem; }
+    h2 { margin-bottom: .35rem; font-size: 1.27rem; line-height: 1.4; }
+    .number { color: var(--muted); font: 700 .77em ui-monospace, monospace; margin-inline-end: .2rem; }
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin: .65rem 0; }
+    .steps article { padding: .65rem .75rem; background: var(--white); border: 1px solid var(--line); border-radius: .6rem; }
+    .steps article:nth-child(2) { background: #e9efe3; }
+    .steps article:nth-child(3) { background: #f8eed4; }
+    .steps p { font-size: .91rem; }
+    .steps h3 { font-size: 1rem; margin-bottom: .12rem; }
+    .note { color: var(--muted); }
+    .entry { display: flex; flex-wrap: wrap; align-items: baseline; gap: .12rem .45rem; margin-top: .65rem; font-weight: 700; font-size: .92rem; }
+    .entry input {
+      min-width: 8ch;
+      flex: 1;
+      border: 0;
+      border-bottom: 1px dotted #718373;
+      border-radius: 0;
+      background: transparent;
+      padding: .12rem .25rem;
+      font-weight: 400;
+    }
+    .entry input::placeholder { color: var(--muted); opacity: .85; }
+    table { width: 100%; margin-top: .65rem; border: 1px solid var(--line); border-collapse: collapse; font-size: .9rem; }
+    th, td { padding: .3rem .15rem; text-align: center; border: 1px solid var(--line); }
+    thead th { background: #e9efe3; }
+    th:first-child { padding-inline-start: .55rem; text-align: start; }
+    th:last-child { width: 40%; }
+    td label { display: grid; place-items: center; min-width: 1.5rem; min-height: 1.6rem; cursor: pointer; }
+    input[type="checkbox"] { margin: 0; width: .95rem; height: .95rem; accent-color: var(--forest); }
+    .daily-note input { width: 100%; border: 0; background: transparent; padding: .05rem .3rem; }
+    .invitation {
+      margin: .45rem 0 0;
+      padding: .5rem .7rem;
+      border-radius: .4rem;
+      background: #f8eed4;
+      font-size: .9rem;
+    }
+    .reflection { padding: .7rem .8rem .85rem; background: var(--white); border-left: .24rem solid #bb7e23; }
+    .reflection .entry:first-of-type { margin-top: .25rem; }
+    footer { margin-top: 1.25rem; padding-top: .65rem; color: var(--muted); border-top: 1px solid var(--line); }
+    footer p + p { margin-top: .25rem; }
+    @media (max-width: 32rem) {
+      body { padding-top: .6rem; }
+      .sheet { width: calc(100% - 1.2rem); }
+      .sun { opacity: .3; }
+      .steps { grid-template-columns: 1fr; }
+      .entry input { flex-basis: 7rem; }
+      th:last-child { width: 31%; }
+    }
+    @page { size: A4; margin: 11mm; }
+    @media print {
+      :root { background: white; font-size: 11pt; }
+      body { padding: 0; }
+      .sheet { width: 100%; border: 0; border-radius: 0; box-shadow: none; background: white; overflow: visible; }
+      header { padding: 0 0 .7rem; background: white; color: var(--forest); border-bottom: 2px solid var(--forest); }
+      .sun { opacity: .55; }
+      .masthead { margin-bottom: .45rem; padding-bottom: .35rem; border-color: var(--line); }
+      .kicker { color: var(--muted); }
+      h1 { font-size: 26pt; }
+      .slogan { margin-top: .45rem; }
+      .content { padding: .8rem 0 0; }
+      .controls { display: none; }
+      .entry input::placeholder { color: transparent; }
+      section { break-inside: avoid; }
+      section + section { margin-top: .8rem; }
+      .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .steps article { display: block; }
+      footer { margin-top: .85rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header>
+      <svg class="sun" viewBox="0 0 140 145" fill="none" aria-hidden="true">
+        <circle cx="75" cy="73" r="47" fill="#f5bc4f"/>
+        <circle cx="75" cy="73" r="58" stroke="#f5bc4f" stroke-width="1.3" stroke-dasharray="1 4"/>
+        <path d="M15 49v-14m-7 7h14m103 73v-14m-7 7h14M119 27V7m-10 10h20" stroke="#f7f5e9" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M40 104c16-6 36-6 57 0M36 94c19-6 48-6 74 0M31 84c18-7 60-7 89 0" stroke="#163b2e" stroke-opacity=".45" stroke-width="1.25"/>
+      </svg>
+      <div class="masthead"><span>นิทานอายุยืน × MaxAge</span><span class="badge">@nitanayuyuen</span></div>
+      <p class="kicker">สมุดภาคสนาม · ชวนเพื่อน 1 คน</p>
+      <h1>ชาเลนจ์นอนตรงเวลา 7 วัน</h1>
+      <p class="intro">เลือกเวลาเข้านอนที่เข้ากับชีวิต แล้วชวนเพื่อนมาลองในจังหวะของตัวเอง</p>
+      <p class="slogan">รู้ก่อน · เลื่อนได้ · ไปด้วยกัน ★</p>
+    </header>
+
+    <div class="content">
+      <div class="controls"><button type="button" onclick="window.print()">พิมพ์ตารางชาเลนจ์</button></div>
+      <section aria-labelledby="choose-title">
+        <h2 id="choose-title"><span class="number">01</span> ตั้งแผนก่อนคืนแรก</h2>
+        <div class="steps">
+          <article><h3>เลือกเวลา</h3><p>เลือกช่วงเวลาเข้านอนที่ทำได้จริงในสัปดาห์นี้</p></article>
+          <article><h3>ตั้งสัญญาณ</h3><p>ทำสิ่งเล็ก ๆ เพื่อเริ่มพัก เช่น หรี่ไฟหรือวางโทรศัพท์</p></article>
+          <article><h3>ชวนเพื่อน</h3><p>ตกลงว่าจะถามไถ่กันวันไหน แล้วต่างคนต่างลองตามแผนของตัวเอง</p></article>
+        </div>
+        <label class="entry">เวลาเข้านอนที่ฉันตั้งใจ <input type="text" maxlength="40" placeholder="เช่น ประมาณ 22.30 น."></label>
+        <label class="entry">สัญญาณที่บอกว่าถึงเวลาเตรียมนอน <input type="text" maxlength="75" placeholder="เช่น วางโทรศัพท์หลังแปรงฟัน"></label>
+      </section>
+
+      <section aria-labelledby="track-title">
+        <h2 id="track-title"><span class="number">02</span> เช็กอินทีละคืน</h2>
+        <p class="note" id="track-help">ติ๊กตามที่ได้ลองจริง คืนไหนตารางเปลี่ยน เว้นช่องไว้แล้วลองต่อคืนถัดไปได้เลย</p>
+        <table aria-labelledby="track-title" aria-describedby="track-help">
+          <thead><tr><th scope="col">คืนที่</th><th scope="col">เตรียมตัวก่อนนอน</th><th scope="col">เข้านอนใกล้เวลาที่ตั้งไว้</th><th scope="col">บันทึกสั้น ๆ</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 1"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 1"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 1"></td>
+            </tr>
+            <tr><th scope="row">2</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 2"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 2"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 2"></td>
+            </tr>
+            <tr><th scope="row">3</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 3"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 3"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 3"></td>
+            </tr>
+            <tr><th scope="row">4</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 4"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 4"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 4"></td>
+            </tr>
+            <tr><th scope="row">5</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 5"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 5"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 5"></td>
+            </tr>
+            <tr><th scope="row">6</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 6"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 6"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 6"></td>
+            </tr>
+            <tr><th scope="row">7</th>
+              <td><label><input type="checkbox" aria-label="เตรียมตัวก่อนนอน คืนที่ 7"></label></td>
+              <td><label><input type="checkbox" aria-label="เข้านอนใกล้เวลาที่ตั้งไว้ คืนที่ 7"></label></td>
+              <td class="daily-note"><input type="text" maxlength="42" aria-label="บันทึก คืนที่ 7"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="reflection" aria-labelledby="reflect-title">
+        <h2 id="reflect-title"><span class="number">03</span> ชวนเพื่อนแล้วคุยกันอีกที</h2>
+        <blockquote class="invitation">เราจะลองเข้านอนใกล้เวลาเดิม 7 วัน มาลองด้วยกันไหม เลือกเวลาที่สะดวกของตัวเอง แล้วครบสัปดาห์ค่อยเล่าให้กันฟังว่าอะไรช่วยได้บ้าง</blockquote>
+        <label class="entry">พอครบ 7 วัน อะไรช่วยให้ฉันเริ่มเตรียมนอนได้ง่ายขึ้น <input type="text" maxlength="75"></label>
+        <label class="entry">สัปดาห์หน้า ฉันอยากทำต่อหรือปรับอะไร <input type="text" maxlength="75"></label>
+      </section>
+
+      <footer>
+        <p>ปรับกิจวัตรได้ตามตารางชีวิตของคุณ หากกรอกบนหน้าจอ ให้พิมพ์เพื่อเก็บบันทึกไว้</p>
+        <p>อ่านเรื่องกิจวัตรการนอนเพิ่มเติมจาก <a href="https://anamai.moph.go.th/th/news-anamai/44860">กรมอนามัย</a> · <a href="https://www.cdc.gov/sleep/about/">CDC</a></p>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

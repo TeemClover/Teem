@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 380" fill="none" aria-hidden="true">
+  <defs>
+    <g id="leaf" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0C-9-28 6-57 51-72 54-31 31-4 0 0Z" fill="#6a9677" fill-opacity=".13" stroke="#a6bc93" stroke-width="1.25"/>
+      <path d="M0 0C18-18 31-42 51-72" stroke="#a6bc93" stroke-width="1.1"/>
+      <path d="M9-10C10-20 8-31 10-39M15-17C16-30 18-42 23-51M22-27C23-40 28-51 33-59M29-37C33-49 38-57 42-62M35-46C40-52 46-55 49-58M9-10C17-10 25-13 32-19M16-18C26-19 35-22 42-30M23-28C32-29 42-34 46-40M29-37C38-39 44-45 49-50" stroke="#a6bc93" stroke-opacity=".62" stroke-width=".75"/>
+    </g>
+    <path id="star" d="M0-12C1.7-4.2 4.2-1.7 12 0 4.2 1.7 1.7 4.2 0 12-1.7 4.2-4.2 1.7-12 0-4.2-1.7-1.7-4.2 0-12Z"/>
+  </defs>
+
+  <g stroke="#6a9677" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M314 371C282 327 269 282 267 242 265 178 280 117 320 49" stroke-width="1.75"/>
+    <path d="M279 300C294 290 308 278 321 261M268 260C253 251 234 236 218 215M267 219C285 210 301 196 314 178M272 176C255 165 239 151 231 135M283 138C297 134 314 125 326 112M298 94C296 81 287 65 280 57" stroke-width="1.2"/>
+    <path d="M281 306C265 297 246 288 232 274M277 294C289 272 291 253 289 235" stroke-width="1"/>
+  </g>
+
+  <g>
+    <use href="#leaf" transform="translate(320 49) rotate(3) scale(.56)"/>
+    <use href="#leaf" transform="translate(280 57) rotate(-75) scale(.59)"/>
+    <use href="#leaf" transform="translate(326 112) rotate(34) scale(.76)"/>
+    <use href="#leaf" transform="translate(231 135) rotate(-78) scale(.89)"/>
+    <use href="#leaf" transform="translate(314 178) rotate(39) scale(.93)"/>
+    <use href="#leaf" transform="translate(218 215) rotate(-89)"/>
+    <use href="#leaf" transform="translate(321 261) rotate(47) scale(.83)"/>
+    <use href="#leaf" transform="translate(232 274) rotate(-100) scale(.67)"/>
+    <use href="#leaf" transform="translate(289 235) rotate(-25) scale(.53)"/>
+  </g>
+
+  <g fill="#a6bc93">
+    <use href="#star" transform="translate(145 116) scale(.75)" opacity=".85"/>
+    <use href="#star" transform="translate(365 49) scale(.52)" opacity=".64"/>
+    <use href="#star" transform="translate(159 284) scale(.43)" opacity=".69"/>
+  </g>
+</svg>
