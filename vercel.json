@@ -1770,6 +1770,10 @@
       "destination": "/hamburg/branding/index.html"
     },
     {
+      "source": "/maxage/",
+      "destination": "/maxage/index.html"
+    },
+    {
       "source": "/bodymestory/",
       "destination": "/bodymestory/index.html"
     },
