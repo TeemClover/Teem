@@ -40,3 +40,11 @@ git diff --check
 ```
 
 Use the browser harness's documented browser/proof-directory options when supplied, and retain its actual report. The older `journey.e2e.mjs` station-map flows are not evidence for the new root. Automated tests that block external traffic can verify intended YouTube URLs and player cleanup, but cannot certify live YouTube delivery, app installation, sign-in or purchase completion. Safari, Firefox and physical devices require their own checks.
+
+## 2026-11-09 follow-up: faster footage and retained knowledge
+
+Both active food clips were edited locally from the original cropped/silent footage. A clean scan glimpse hard-cuts to populated ingredient results on frame16(0.533s at30fps). Full/short playback is6.234s/5.634s; full decode and faststart order were verified. The short clip holds the final actual nutrition frame1extra second. The original public clips remain unchanged; new versioned URLs serve the shortened edits.
+
+The root now exposes all4knowledge categories and the completed Absorb/Build experiences in `brand=xircle` context, while retaining the4forthcoming welcome clips. The library hub was restyled; both topic-data files, topic template and all deep-reference content are unchanged. In the two completed Routine X rooms, only the shared return-label wording and its script version were adjusted; story content is unchanged.
+
+Validation on the follow-up candidate:15node contracts passed; generated shell check passed;7landing-browser groups passed across320/390/768/1440px, now including knowledge-category and completed-room links. Library browser proof passed at all4widths with all21topic IDs,4groups, HMB search→article→Back retaining the query, empty/reset/focus, filter/reload/direct category URLs and no-JavaScript access to all21topics. Both browser runs recorded no page errors or failed local requests.

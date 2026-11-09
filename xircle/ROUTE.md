@@ -26,3 +26,7 @@ All **49 reference pages** remain directly readable, including ห้องค�
 Reduced motion removes decorative animation and skips the timed scan progression. Without JavaScript, keep the static story, example information, direct local-video links, official-channel link, reference pages and app-download links usable. The root does not require WebGL or browser storage.
 
 Run [JOURNEY_QA.md](JOURNEY_QA.md) against the current revision before delivery. Do not reuse six-station-map results as evidence for this landing, or describe a local pass as a production deployment.
+
+## Food clips and knowledge entry — 2026-11-09 follow-up
+
+Food video playback uses hard-cut, silent versions of the real captures: scan preview approximately0.53s, then populated ingredient results; total6.23s /5.63s. UI captions identify the wait-time edit. The complete knowledge content remains at its original21topic IDs and49reference routes. The library hub is reorganized into the existing4categories with search and URL filters preserved; the landing exposes category cards and a top navigation entry. Completed `/routinex/absorb/` and `/routinex/build/` rooms are linked in company context with `?brand=xircle` and remain separate from the4forthcoming welcome clips.

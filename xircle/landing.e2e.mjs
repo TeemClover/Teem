@@ -76,6 +76,9 @@ try {
     await open(page);
     await page.locator('#official-media[data-media-ready="true"]').waitFor();
     await layout(page,width);await shot(page,`${width}-landing`);
+    assert.equal(await page.locator('.knowledge-preview-grid>a').count(),4,'all existing knowledge categories remain reachable');
+    assert.equal(await page.locator('.routine-stories a[href="/routinex/absorb/?brand=xircle"]').count(),1,'completed Absorb experience is linked');
+    assert.equal(await page.locator('.routine-stories a[href="/routinex/build/?brand=xircle"]').count(),1,'completed Build experience is linked');
     assert.equal(await page.locator('.routine-episode').count(),4);
     assert.equal(await page.locator('.routine-episode .coming').count(),4);
     for(const label of await page.locator('.routine-episode .coming').allTextContents())assert.equal(label.trim(),'COMING SOON');
