@@ -1,31 +1,29 @@
-# XIRCLE journey — implementation and verification
+# XIRCLE company experience — validation
 
-Reviewed 2026-11-09. This is a repository implementation and local verification record. It does not certify a production deployment, health claim, medical result, appointment, game completion or X-VISOR qualification.
+Reviewed 2026-11-09. This records a repository implementation and local verification. It is not proof of production deployment, current promotional conditions, medical results or a purchase.
 
-## Scope
+## Delivered behavior
 
-The opening now explains three ways to start: try a fictional day, read a question, or explicitly choose the existing Meet appointment route. A shared static shell connects the root and 49 references. The V3 day, seven-night example and context variants remain the only story engine. The same artwork, product/article data, source warnings and legacy invitation adapter remain.
+The root is a company product introduction that X-VISORs can open with customers. Native scrolling changes a sticky product illustration through Sleep, Eat/Food AI, Move and Body. The page then explains App/Band/Scale, RoutineX and the White Cat knowledge room. The 7-topic presentation uses the same content, native dialog semantics, keyboard controls and browser history. Company links lead to the requested official login, never a personal appointment or external notebook.
 
-`journey.css` / `journey.js` own shared layout and navigation. `knowledge.js` owns search/filter URL state. `build/journey-shell.mjs` generates the static header, breadcrumbs and footer; its check is idempotent. No new storage key or backend endpoint is introduced. The visited-step strip uses in-memory state only.
+WebGL2 point graphics are loaded independently after the core UI; they use no third-party graphics runtime. Missing WebGL, reduced motion, data-saving and JavaScript-disabled cases retain content and navigation. Device tabs enhance three existing HTML explanations; RoutineX and FAQ use native details.
 
-The requested acquisition aliases point to `https://buy.xircle.health/login?ref=O5F3LN` in Vercel; the standalone `/invite/` fallback agrees. This does not replace the main Meet CTA. The top-level `/maxage` sleep-kit page is unchanged. The 44 deep documents retain their content; their generic old build-zone banner is hidden, with source/status details still accessible.
+All 50 active pages share generated static wayfinding. The 49 references remain direct-access. Knowledge search/category state stays in the URL, with result announcements and clear/reset states. No new storage key, health input, tracking endpoint, price or outcome claim is introduced. Existing legacy records are untouched; obsolete invitation parameters are ignored. The top-level `/maxage` page is unchanged.
 
-The portfolio adds `/work/xircle/` through `work/cases.json` and the existing generator. Its role repeats the published myClover role from `/resume/`; it adds no title or outcome claim. Four WebP files come from real local browser PNGs; see `work/media/xircle-provenance.json`.
+## Commands and scope
 
-## Checks
+- `npm run check:xircle`: shared static shell agrees across 50 pages.
+- `npm run test:xircle`: company entry/alias/privacy/reference contracts, including retired personal engines and absence of personal/game/notebook handoffs.
+- `npm run test:xircle:journey`: 6 main destinations at 320/390/768/1440px, all 44 deep documents at 390/1440px, sticky chapter sync, mobile title placement, article Back, 7-topic presentation, keyboard, Escape, Back/Forward, deep links/reload, device tabs, RoutineX, official links, storage preservation, knowledge search/filter/reset/Back, local document contents, no JavaScript and no WebGL.
+- `npm run test:entry`: portfolio data, generated pages, truthful roles, media budget and structural checks.
+- `node tools/build-portfolio.mjs --check` and `node tools/build-sitemap.mjs --check`: generated outputs agree.
+- JavaScript syntax and `git diff --check` are checked. The repository has no general lint command.
 
-- `npm run check:xircle`: static shell matches across all 50 pages.
-- `node tools/build-portfolio.mjs --check`: generated portfolio pages match their JSON.
-- `node tools/build-sitemap.mjs --check`: sitemap matches its source.
-- `npm run test:xircle`: 24 route, privacy, alias and reference-access checks pass with the local Miniflare dependency configured.
-- `npm run test:entry`: 21 portfolio, structure and source checks pass.
-- `npm run test:xircle:journey`: all 6 main destinations at 320/390/768/1440px; all 44 deep documents at 390/1440px; keyboard skip/menu/Tab/Escape; all day actions; visited-step editing; three context variants; Meet/back/refresh/restart; search/filter/no-results/reset/article Back; local document anchors; no-JavaScript opening and menu. The report records 113 layout checks, no page errors and no failed local assets.
-- `npm run test:xircle:xvisor`: 320/390/1440px story, optional game, knowledge/search/article, appointment returns, malformed handoffs and blocked storage pass. No API/write attempts, app errors or HTTP failures.
-- `npm run test:xircle:compass`: retained story/Compass/legacy-entry/appointment/storage checks pass. The proof separately records Chromium's exact native `ViewTransition opt-in disabled` cancellation messages during rapid navigation; application errors remain a failing condition. Transient photo phases are observed by MutationObserver so screenshot duration cannot race the 530ms docking state.
-- New portfolio listing, case, lazy-loaded screenshots, Xircle click-through and Back were inspected at 320/390/1440px. Browser screenshots were reviewed on desktop and mobile.
-- JavaScript syntax checks and `git diff --check` pass. The repository defines no general lint command.
+The previous V3/Compass/game browser tests certified the retired personal-service journey. They are replaced by the current company contracts and browser flows, in accordance with the updated owner direction.
 
-The broad `npm test` suite is also run. It reports 190/210 passing, with 20 failures in existing First Class/TeamBook/card/pet checks outside this change. All 20 failure names were reproduced on untouched baseline `ecfb183b` using the same dependencies and runtime. The comparison and logs are retained with delivery evidence; these areas are not changed as part of the XIRCLE upgrade.
+The broad `npm test` suite also runs. It has 20 existing failures outside this change (First Class/TeamBook/card/pet); all 20 failure names were reproduced on untouched baseline `ecfb183b` with the same dependencies/runtime. Logs and comparison are retained outside the public repository.
+
+The final local company browser report passed all 113 layout checks and all interaction checks, with zero application errors or failed local resources. The company contract suite passed 15 tests and the portfolio source suite passed 21. A real local scrolling/presentation recording confirmed the WebGL2 renderer with no page errors. The revised portfolio listing/case was checked at 320/390/1440px.
 
 ## Reproduce
 
@@ -37,20 +35,14 @@ npm run test:entry
 npm run test:xircle:journey
 ```
 
-`XIRCLE_CHROME` selects an installed Chromium executable; `XIRCLE_PROOF_DIR` selects the screenshot/report directory (default `/tmp/xircle-journey-proof`). This browser suite starts its own static server and blocks external requests and all non-GET traffic.
+Use `XIRCLE_CHROME` for an installed Chromium executable and `XIRCLE_PROOF_DIR` for local PNGs/report JSON (default `/tmp/xircle-journey-proof`). The browser test starts its own static server and blocks external traffic and non-GET requests.
 
-The older route/browser suites require Miniflare separately from the root lockfile. The validation environment used Miniflare `4.20260730.0`, Node `26.8.2`, the pinned Playwright `1.63.0`, and installed Google Chrome. One isolated setup is:
+The HTTP alias tests use the existing Miniflare preview helper, which is not in the root lockfile. An isolated setup used for validation is:
 
 ```sh
 npm install --prefix /tmp/myclover-xircle-tests miniflare@4.20260730.0
 export FRONTDOOR_MINIFLARE=/tmp/myclover-xircle-tests/node_modules/miniflare/dist/src/index.js
-export FRONTDOOR_PLAYWRIGHT="$PWD/node_modules/playwright/index.mjs"
-# Set FRONTDOOR_CHROME to an installed Chrome executable, if not using Playwright's browser.
 npm run test:xircle
-npm run test:xircle:compass
-npm run test:xircle:xvisor
 ```
 
-## Limits
-
-Chromium was tested locally. Safari, Firefox, physical phones and user research were not run. No live booking, registration, external notebook write, merge or production deployment was performed. Existing medical/product content was preserved, not reapproved or newly verified. Local proof and original PNGs are delivered outside the public repository.
+Validation used Node 26.8.2, pinned Playwright 1.63.0 and installed Chrome. Public portfolio WebPs are encoded from real browser PNGs; `work/media/xircle-provenance.json` records their source. Safari, Firefox, physical phones and user research were not tested. Existing product claims were preserved, not reapproved. No personal booking, merge or production promotion is part of this task.

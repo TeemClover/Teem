@@ -8,8 +8,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
   const server = await startPreview({ port: 0 });
   t.after(async () => { await server.close(); await rm(server.directory, { recursive: true, force: true }); });
   const canonical = await (await fetch(`${server.base}/xircle/`)).text();
-  assert.match(canonical, /experience-v3\.js/);
-  assert.match(canonical, /experience-v3\.css/);
+  assert.match(canonical, /company-story\.js/);
+  assert.match(canonical, /company-story\.css/);
   assert.doesNotMatch(canonical, /experience(?:-v[12])?\.(?:js|css)/);
 
   await t.test('case and slash variants finish in one redirect with the exact same page', async () => {
@@ -36,8 +36,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
       assert.equal((await fetch(new URL(expected, server.base), { redirect: 'manual' })).status, 200, route);
     }
     for (const [asset, type] of [
-      ['experience-v3.js?v=proof', 'text/javascript'],
-      ['experience-v3.css?v=proof', 'text/css'],
+      ['company-story.js?v=proof', 'text/javascript'],
+      ['company-story.css?v=proof', 'text/css'],
       ['_shared/typography.css', 'text/css'],
       ['assets/v3/hero-800.webp', 'image/webp'],
     ]) {
@@ -52,8 +52,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
     assert.equal((await fetch(`${server.base}/Xircle/not-a-real-page`)).status, 404);
   });
 
-  await t.test('retired V1, V2 and neutral experience engines are unavailable', async () => {
-    for(const name of ['experience','experience-v1','experience-v2']){
+  await t.test('retired personal-service experience engines are unavailable', async () => {
+    for(const name of ['experience','experience-v1','experience-v2','experience-v3']){
       for(const extension of ['js','css']){
         const asset=`${name}.${extension}`;
         assert.equal((await fetch(`${server.base}/xircle/${asset}`)).status,404,asset);
