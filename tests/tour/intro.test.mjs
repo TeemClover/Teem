@@ -2,7 +2,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -12,23 +11,29 @@ const pages = ['tour/index.html'];
 
 // every module tour.js reaches through static imports, as site paths
 async function moduleGraph(entry) {
-  const seen = new Set();
-  async function walk(file) {
-    if (seen.has(file)) return;
-    seen.add(file);
-    const src = await read(file);
-    for (const [, spec] of src.matchAll(/^\s*(?:import|export)\b[^'"]*?from\s*['"](\.[^'"]+)['"]/gm)) await walk(relative(root, join(root, dirname(file), spec)));
+  const seen = new Set(), origin = 'https://tour.test';
+  async function walk(href) {
+    const url = new URL(href, origin), identity = url.pathname + url.search + url.hash;
+    if (seen.has(identity)) return;
+    seen.add(identity);
+    // Query versions identify browser modules; filesystem reads use only their pathname.
+    const src = await read(url.pathname.replace(/^\//, ''));
+    for (const [, spec] of src.matchAll(/^\s*(?:import|export)\b[^'"]*?from\s*['"](\.[^'"]+)['"]/gm)) await walk(new URL(spec, url).href);
   }
-  await walk(entry);
-  seen.delete(entry);
-  return [...seen].map(f => '/' + f).sort();
+  const initial = new URL(entry, origin);
+  await walk(initial.href);
+  seen.delete(initial.pathname + initial.search + initial.hash);
+  return [...seen].sort();
 }
 
 test('the homepage preloads the whole house module graph, so no import waits for another to arrive', async () => {
-  const graph = await moduleGraph('tour/tour.js');
-  assert.ok(graph.includes('/tour/vendor/three.core.min.js') && graph.includes('/tour/miniature-house.js'), 'the walk reached nested imports: ' + graph);
   for (const page of pages) {
-    const preloaded = [...(await read(page)).matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map(m => m[1]).sort();
+    const html = await read(page);
+    const entries = [...html.matchAll(/<script[^>]+src="(\/tour\/tour\.js(?:\?[^"]*)?)"/g)].map(m => m[1]);
+    assert.equal(entries.length, 1, 'one house runtime entry');
+    const graph = await moduleGraph(entries[0]);
+    assert.ok(graph.includes('/tour/vendor/three.core.min.js') && graph.includes('/tour/miniature-house.js'), 'the walk reached nested imports: ' + graph);
+    const preloaded = [...html.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map(m => m[1]).sort();
     assert.deepEqual(preloaded, graph, page);
   }
 });
@@ -42,7 +47,8 @@ test('the loading intro paints from the page and tour.css alone, and runs before
     for (const [tag] of head.replace(/<noscript>[\s\S]*?<\/noscript>/g, '').matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)) {
       if (/href="https?:/.test(tag)) assert.match(tag, /media="print" onload="this\.media='all'" data-fonts/, `${page}: ${tag}`);
     }
-    assert.ok(head.indexOf('src="/tour/intro.js" defer') > 0 && head.indexOf('src="/tour/intro.js" defer') < head.indexOf('src="/tour/tour.js"'), page + ': intro.js is deferred ahead of the module');
+    const introAt = head.indexOf('src="/tour/intro.js" defer'), runtimeAt = head.search(/src="\/tour\/tour\.js(?:\?[^"]*)?"/);
+    assert.ok(introAt > 0 && introAt < runtimeAt, page + ': intro.js is deferred ahead of the module');
   }
   // without intro.js the loader still lifts by itself; with it, it is put away after the opening
   assert.match(css, /body:not\(\.is-loading\) \.loader:not\(\.intro-on\)\{opacity:0;visibility:hidden\}/);
