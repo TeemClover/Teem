@@ -17,6 +17,7 @@ const fileFor = async href => {
 };
 // Linked from the house, but deliberately without the layer (reason in the value).
 const EXEMPT = {
+  'xircle/index.html': 'XIRCLE owns its native scroll story, optional WebGL and presentation; a shared engine would duplicate motion',
   'teambook/index.html': 'TeamBook is its own app at teambook.me; on this site the entrance redirects there',
 };
 
@@ -65,6 +66,10 @@ test('generated entrances keep the block: /compass/ from its source, recipes fro
   assert.doesNotMatch(home, /clover-motion/);
   assert.match(home, /<script type="speculationrules">[^<]*"\/tour\/\*"/);
   assert.match(await read('tour/index.html'), /data-profile="hub"/);
+  const product = await read('xircle/index.html');
+  assert.match(product, /company-story\.js/);
+  assert.doesNotMatch(product, /clover-motion/);
+  assert.match(await read('xircle/company-story.js'), /prefers-reduced-motion/);
   assert.match(await read('tools/build.py'), new RegExp(`MOTION_VERSION = '${MOTION_VERSION}'`), 'the Forge generator writes the same version');
 });
 

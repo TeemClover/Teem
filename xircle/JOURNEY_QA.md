@@ -17,9 +17,12 @@ All 50 active pages share generated static wayfinding. The 49 references remain 
 - `npm run test:xircle:journey`: 6 main destinations at 320/390/768/1440px, all 44 deep documents at 390/1440px, sticky chapter sync, mobile title placement, article Back, 7-topic presentation, keyboard, Escape, Back/Forward, deep links/reload, device tabs, RoutineX, official links, storage preservation, knowledge search/filter/reset/Back, local document contents, no JavaScript and no WebGL.
 - `npm run test:entry`: portfolio data, generated pages, truthful roles, media budget and structural checks.
 - `node tools/build-portfolio.mjs --check` and `node tools/build-sitemap.mjs --check`: generated outputs agree.
+- `node tools/motion-pages.mjs --check` and `npm run test:motion`: XIRCLE owns its native story motion and is explicitly exempt from a second global motion engine; the generated portfolio case keeps the shared layer.
 - JavaScript syntax and `git diff --check` are checked. The repository has no general lint command.
 
 The previous V3/Compass/game browser tests certified the retired personal-service journey. They are replaced by the current company contracts and browser flows, in accordance with the updated owner direction.
+
+The broader `npm run test:motion` has one pre-existing house-coverage failure (the same 4 unrelated links: Hamburg, RoutineX absorb, Airova and Mediral), reproduced from the untouched baseline. Its other 5 checks pass; the registry `--check` and the XIRCLE-owned-motion assertion pass.
 
 The broad `npm test` suite also runs. It has 20 existing failures outside this change (First Class/TeamBook/card/pet); all 20 failure names were reproduced on untouched baseline `ecfb183b` with the same dependencies/runtime. Logs and comparison are retained outside the public repository.
 
