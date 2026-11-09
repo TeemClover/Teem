@@ -458,22 +458,22 @@
     },
     {
       "source": "/routinex",
-      "destination": "/xircle/routinex/",
+      "destination": "/xircle/#visit-routine",
       "permanent": false
     },
     {
       "source": "/routinex/",
-      "destination": "/xircle/routinex/",
+      "destination": "/xircle/#visit-routine",
       "permanent": false
     },
     {
       "source": "/habix",
-      "destination": "/xircle/doc/habix/",
+      "destination": "/xircle/#visit-habix",
       "permanent": false
     },
     {
       "source": "/habix/",
-      "destination": "/xircle/doc/habix/",
+      "destination": "/xircle/#visit-habix",
       "permanent": false
     },
     {
@@ -548,32 +548,32 @@
     },
     {
       "source": "/invite",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {
       "source": "/invite/",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {
       "source": "/free",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {
       "source": "/free/",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {
       "source": "/join",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {
       "source": "/join/",
-      "destination": "https://buy.xircle.health/register?ref=O5F3LN",
+      "destination": "https://buy.xircle.health/login?ref=O5F3LN",
       "permanent": false
     },
     {

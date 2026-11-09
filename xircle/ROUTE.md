@@ -1,40 +1,34 @@
-# Route Guard — /xircle/
+# Route guard — /xircle/
 
-Reviewed: **2026-09-10**. Canonical experience: **V3**, from `6fab7897` (`feat/xircle-experience-v3`), merged as `e7b533a7` into remote main (`1984724c`), with the same V3 runtime. The earlier V2 selection came from stale local remote refs and is superseded.
+Updated 2026-11-09. Current owner direction: a playable Clover X Brand Experience that the company and every X-VISOR can open with customers. This supersedes the personal-service V3 and the later scroll-only product presentation. Keep the interface concise, visual and useful to explore.
 
-## Job
+## Journey
 
-ให้ลองประกอบวันตัวอย่างสั้น ๆ เห็นว่าข้อมูลกับบริบทช่วยกันอย่างไร แล้วเลือกนัดดูเรื่องจริงกับทีม + เอโกะ
+**Choose an interest → follow a six-station map → try a sample day → connect XIRCLE / RoutineX / Habix → learn from official videos → download the app.**
 
-## Current flow
+- Root: `/xircle/`; case/slash variants reach this implementation.
+- Active runtime: `brand-experience.js` / `brand-experience.css`, bounded URL state in `brand-state.js`, catalogue in `brand-catalog.js`, official video library in `media-library.js` / `media-library.css`.
+- Stations: `hello`, `signal`, `connect`, `routine`, `habix`, `finish`. Selecting sleep, eating or movement changes the recommended order. The map shows the current stop and visited stops; visitors can jump, go back or restart.
+- Visitors can change sample moments, collect/remove three illustrative day signals, select App/Band/Scale, unfold ABCD and inspect five Habix products. Choices change the scene and its next route; they do not calculate health results or prescribe products.
+- The map and presentation use native dialogs and the same active experience state. Keyboard, Escape, focus restoration, browser history and reload must work.
+- A/B connect to the existing immersive `/routinex/absorb/` and `/routinex/build/` rooms with opt-in company context and a bounded return route. Preserve the standalone rooms outside that context.
+- `C / Control` is behavior with no purchasable product. Habix is the nutrition product brand; RoutineX is the routine system. FIVES is a framework, not a sixth product.
+- The learning destination is labelled **ห้องความรู้**. Existing cat illustration assets can remain.
+- Primary company login is `https://buy.xircle.health/login`, with no personal referral. Download destinations come from the official Xircle website. The separately requested acquisition aliases `/invite`, `/free`, `/join` retain `https://buy.xircle.health/login?ref=O5F3LN`.
+- No personal booking, Teem/Ako presentation, TeamBook handoff or personal contact destination belongs in the brand walk.
 
-**เลือกคืนตัวอย่าง → ถ่ายมื้อตัวอย่าง → เลือกการขยับ → ดูหลายวัน → เติมบริบทและเห็นข้อสังเกต → “แล้วของคุณล่ะ?” → เลือกนัดลองจริง**
+## State and media
 
-- Entry: `/xircle/`, Compass entry, or a compatibility URL in [ROUTE_INDEX.md](ROUTE_INDEX.md).
-- Main exit: `/meet/?intent=health&from=xircle&open=booking`; only a bounded subject deliberately selected before entry may accompany it.
-- Optional exits after the payoff: `/xircle/learn/` or `/xvisor/?from=xircle` (ลองเป็นคนดูแลบ้าง). The quiet header knowledge shortcut is available immediately. Meet stays the primary action; no registration or app-download CTA.
-- `#appointment` and compatibility `#start` open the appointment invitation without synthesizing a completed example.
-- `/Xircle` is a case alias of `/xircle/`, not a separate source tree or experience.
+The public showroom uses bounded URL values for station, interest, moment, device, ABCD stage, product, illustrative selections and visited stops. It does not read/write health records or migrate legacy storage. Retired invitation/notebook parameters have no role. Preserve history/reload and the official-media category/selection when moving between parts of the page.
 
-## Runtime
+Official video metadata is local in `data/official-videos.json`: 10 clips from `@CloverXOfficial`, grouped into App, Band, Scale and HabiX + RoutineX. These are on-site category queues, not newly published YouTube playlists. A `youtube-nocookie.com` iframe is created only after explicit Play and removed on close, queue change or history change. Keep a real YouTube fallback; do not claim live embedded playback is certified from metadata checks alone.
 
-- `index.html`, `experience-v3.js`, `experience-v3.css`, `_shared/typography.css`, V3 scene plates and selected existing V5 / Meet imagery.
-- V1/V2 experience engines, including the mistaken neutral `experience.js` / `experience.css`, are removed from the active source.
-- `route-contract.js` handles bounded route parameters and read-only legacy invitation compatibility; `entry.css` styles the small Compass continuation.
-- `xvisor-path.js` carries only an already-present valid handoff reference to optional onward links, even when storage is unavailable. It creates no installation, checkpoint or telemetry event.
-- No retired `_shared/state.js`, `story-v6.js`, `v5.js`, Compass overlay, or old worker is needed.
-- Original myClover logo and `/favicon.ico` remain exact assets.
+## References, fallbacks and claims
 
-## State and content boundaries
+The 49 reference pages remain directly readable. `build/journey-shell.mjs` generates the shared static header/breadcrumb/footer across 50 pages. `journey.js` / `journey.css` own shared navigation; `knowledge.js` owns URL search/filter state; `reference.js` loads artwork only.
 
-- The day, chart, sleep, food, movement and context choices are clearly marked prepared examples. They are not personal measurements or a health score.
-- Do not send fictional choices into Meet as the visitor's health data.
-- Existing progress, invitations and Front Door checkpoints remain intact. No completion flags are required or rewritten.
-- V3 choices stay in memory; `#appointment` preserves the invitation when returning from Meet, knowledge or the game invitation. No new storage key is added. Retired V1/V2 progress/session keys, including `xircle.demo.v2.resume`, stay untouched and are not used to restore V3.
-- Valid invitation links remain optional explicit actions. No automatic external navigation or health sharing.
+WebGL2 in `orb-field.js` is decorative and optional. Native scrolling, reduced motion, no-WebGL and no-JavaScript reference/download paths must remain usable. Do not add scroll interception or a second global motion engine.
 
-## Verification
+Reuse official and existing assets with real aspect ratios. The verified App Store / Google Play links are in `brand-catalog.js`; official asset provenance is in `assets/official/provenance.json`. Product details remain subject to their original sources and current labels. Avoid conflicting specs, prices, dosage, diagnosis or guaranteed outcomes. The top-level `/maxage` sleep-kit page remains outside this change.
 
-Check the full demo, editing/back/restart, Compass subject → Meet, refresh/back continuation, blocked storage, saved invitations and old URLs on mobile and desktop. Useful articles must open directly without replaying the demo.
-
-The current cross-route source is [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md); historical route guards are archived there by reference.
+Run [JOURNEY_QA.md](JOURNEY_QA.md) before delivery. A local pass or branch preview does not certify production deployment.

@@ -32,7 +32,7 @@ const DOOR = icon('<path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.
 const PERSON = {'@type': 'Person', '@id': `${SITE}/#teem`, name: 'Teem Clover', alternateName: ['นรินทร์ ลีลาภรณ์', 'Narin Leelaporn'], url: `${SITE}/resume/`};
 const external = href => /^https?:\/\//.test(href);
 
-function layout({title, description, canonical, robots = 'index,follow', ogImage = '/img/og-home-lucky-20260916-v2.jpg', current = '', jsonld = [], body}) {
+function layout({title, description, canonical, robots = 'index,follow', ogImage = '/img/og-home-lucky-20260916-v2.jpg', current = '', jsonld = [], extraStyles = [], body}) {
   const nav = [['/work/', 'ผลงาน'], ['/hire/', 'จ้างงาน'], ['/walkthrough/', 'เรียนฟรี']];
   return `<!doctype html>
 <html lang="th">
@@ -59,7 +59,7 @@ function layout({title, description, canonical, robots = 'index,follow', ogImage
 <link rel="preload" href="/assets/fonts/site/kanit-latin-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261024">
 <link rel="stylesheet" href="/assets/site/site.css?v=${VERSION}">
-${jsonld.map(ld).join('\n')}
+${extraStyles.map(href => `<link rel="stylesheet" href="${esc(href)}">\n`).join('')}${jsonld.map(ld).join('\n')}
 ${motionBlock({profile: 'story'})}
 </head>
 <body>
@@ -181,6 +181,7 @@ function casePage(c, i, all) {
   const sections = [
     ['โจทย์', `<p>${esc(c.problem)}</p>`],
     ['การตัดสินใจสำคัญ', `<ol class="decisions">${c.decisions.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ol>`],
+    ['ภาพจากการใช้งานจริง', c.screenshots?.length ? `<div class="case-proof-grid">${c.screenshots.map(s => `<figure><a href="${esc(s.src)}"><img src="${esc(s.src)}" alt="${esc(s.alt)}" width="${s.width}" height="${s.height}" loading="lazy"></a><figcaption>${esc(s.caption)}</figcaption></figure>`).join('')}</div>` : ''],
     ['สิ่งที่ Teem สร้าง', `<div class="role"><small>${esc(c.roleScope)}</small><b>${esc(c.role)}</b></div><ul class="ticks">${c.built.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`],
     ['ลองอะไรได้บ้าง', `<ul class="ticks">${c.try.map(t => `<li>${esc(t)}</li>`).join('')}</ul><div class="actions"><a class="btn btn-ink" href="${esc(c.live)}"${external(c.live) ? ' rel="noopener"' : ''}>${esc(c.liveLabel)}${external(c.live) ? OUT : ARROW}</a></div>`],
     ['หลักฐานว่าใช้ได้จริง', `<ul class="ticks">${c.evidence.map(t => `<li>${linkify(t)}</li>`).join('')}</ul>`],
@@ -216,6 +217,7 @@ function casePage(c, i, all) {
     title: `${c.title} — ผลงาน | Teem Clover`,
     description: c.summary,
     canonical: `/work/${c.slug}/`, current: '/work/', ogImage: `/work/media/${c.cover}-cover.webp`,
+    extraStyles: c.screenshots?.length ? ['/assets/site/case-proof.css?v=20261109'] : [],
     jsonld: [
       {'@context': 'https://schema.org', '@type': 'CreativeWork', name: c.title, description: c.summary, url: `${SITE}/work/${c.slug}/`, image: `${SITE}/work/media/${c.cover}-cover.webp`, inLanguage: 'th', creator: PERSON,
         ...(external(c.live) ? {sameAs: c.live} : {workExample: {'@type': 'WebPage', url: SITE + c.live}})},

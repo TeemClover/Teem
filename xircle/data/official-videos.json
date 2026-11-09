@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "verifiedDate": "2026-11-09",
+  "channel": {
+    "title": "CloverX",
+    "handle": "@CloverXOfficial",
+    "id": "UCBxSzwbiMzhFFlxHrpkP75g",
+    "url": "https://www.youtube.com/@CloverXOfficial"
+  },
+  "verification": {
+    "metadata": "Video IDs, exact titles and durations read from the official channel public videos tab; titles and official author handle independently matched using YouTube oEmbed.",
+    "embedding": "YouTube oEmbed returned iframe embed HTML for all selected videos. Actual embedded playback was not certified; availability may change.",
+    "playback": "No remote thumbnail or player is requested before the visitor explicitly presses Play."
+  },
+  "sources": [
+    "https://www.youtube.com/@CloverXOfficial/videos",
+    "https://www.youtube.com/@CloverXOfficial/playlists"
+  ],
+  "categories": [
+    {
+      "id": "app",
+      "label": "App",
+      "description": "เริ่มใช้ XIRCLE"
+    },
+    {
+      "id": "band",
+      "label": "Band",
+      "description": "เชื่อมต่อและใส่ให้พร้อม"
+    },
+    {
+      "id": "scale",
+      "label": "Scale",
+      "description": "เชื่อมต่อเครื่องชั่ง"
+    },
+    {
+      "id": "habix",
+      "label": "HabiX + RoutineX",
+      "description": "รู้จักผลิตภัณฑ์และรูทีน"
+    }
+  ],
+  "videos": [
+    {
+      "id": "Eypp369NiH4",
+      "title": "วิธีใช้งานแอปพลิเคชัน XIRCLE",
+      "duration": "2:07",
+      "category": "app",
+      "url": "https://www.youtube.com/watch?v=Eypp369NiH4",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "Ya94RJWqp1c",
+      "title": "Xircle Onboarding | App Xircle ดูค่าอะไรได้บ้าง",
+      "duration": "19:53",
+      "category": "app",
+      "url": "https://www.youtube.com/watch?v=Ya94RJWqp1c",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "L3K2DoHUCz4",
+      "title": "XIRCLE Onboarding | วิธีใช้ XIRCLE AI Food Scan",
+      "duration": "2:11",
+      "category": "app",
+      "url": "https://www.youtube.com/watch?v=L3K2DoHUCz4",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "0D8C6kEIE4c",
+      "title": "วิธี Download XIRCLE ใน Play Store (มือถือระบบ Android)",
+      "duration": "1:00",
+      "category": "app",
+      "url": "https://www.youtube.com/watch?v=0D8C6kEIE4c",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "NYJJ75-hJiQ",
+      "title": "วิธี Download XIRCLE ใน App Store",
+      "duration": "0:43",
+      "category": "app",
+      "url": "https://www.youtube.com/watch?v=NYJJ75-hJiQ",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "w31zX_f5iqI",
+      "title": "วิธีการเชื่อมต่อ XIRCLE Band",
+      "duration": "1:17",
+      "category": "band",
+      "url": "https://www.youtube.com/watch?v=w31zX_f5iqI",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "f0nCODpmSY0",
+      "title": "XIRCLE Onboarding | วิธีเปลี่ยนสาย XIRCLE Band",
+      "duration": "2:57",
+      "category": "band",
+      "url": "https://www.youtube.com/watch?v=f0nCODpmSY0",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "4WHeeCpmxuM",
+      "title": "วิธีการเชื่อมต่อ XIRCLE Scale",
+      "duration": "1:30",
+      "category": "scale",
+      "url": "https://www.youtube.com/watch?v=4WHeeCpmxuM",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "03A5LSTqh6M",
+      "title": "Live 8.8.2026 การเข้าใจการทำงานของร่างกาย | RountineX",
+      "duration": "6:26",
+      "category": "habix",
+      "url": "https://www.youtube.com/watch?v=03A5LSTqh6M",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    },
+    {
+      "id": "2ijkTj4E9Jw",
+      "title": "Live 9.8 2026 เจาะลึกผลิตภัณฑ์ HabiX และ RoutineX | HabiX",
+      "duration": "38:15",
+      "category": "habix",
+      "url": "https://www.youtube.com/watch?v=2ijkTj4E9Jw",
+      "author": "CloverX",
+      "channel": "https://www.youtube.com/@CloverXOfficial"
+    }
+  ]
+}

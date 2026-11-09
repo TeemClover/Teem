@@ -1,6 +1,6 @@
 {
   "note": "Case studies for /work/ (BLUEPRINT v3.0 §6). Facts come from the repo and the owner's published /resume/. `role` quotes the role the owner published on /resume/; a case without an owner-confirmed role is not published (§12 F2). Evidence numbers were counted on 2026-10-24; recount before changing them. 'clients' = work done for other brands and companies (owner-confirmed 2026-10-24). Facts come from each project's own docs in this repo; a role is shown only when /resume/ states it.",
-  "updated": "2026-10-24",
+  "updated": "2026-11-09",
   "cases": [
     {
       "slug": "house-3d",
@@ -29,6 +29,97 @@
       "evidence": ["เปิดใช้งานจริงที่ /tour/", "ชุดทดสอบอัตโนมัติของบ้าน 26 รายการผ่านทั้งหมด (นับวันที่ 2026-10-24)", "โค้ดเปิดดูได้ใน GitHub"],
       "limits": ["ครั้งแรกต้องโหลดไฟล์ 3D จึงเปิดช้ากว่าหน้าเว็บปกติ บ้านจึงแยกไว้ที่ /tour/ ให้คนเลือกเข้าเอง", "บนเครื่องรุ่นเก่า ภาพจะละเอียดน้อยลงเพื่อให้ยังเดินได้ลื่น"],
       "hire": "game"
+    },
+    {
+      "slug": "xircle",
+      "title": "XIRCLE Brand Experience",
+      "status": "งานร่วมพัฒนา",
+      "kind": "web",
+      "meta": "เว็บ · Interactive brand experience",
+      "summary": "พื้นที่ให้ลองกดและเดินสำรวจ Clover X ผ่าน XIRCLE, Habix และ RoutineX เลือกสิ่งที่สนใจแล้วแผนที่พาไปต่อ พร้อมคลิป official และลิงก์โหลดแอป",
+      "live": "/xircle/",
+      "liveLabel": "ลอง XIRCLE Experience",
+      "stack": [
+        "HTML · CSS · JavaScript",
+        "แผนที่และ URL state",
+        "WebGL2 แบบ optional",
+        "Official video queues"
+      ],
+      "cover": "xircle",
+      "coverAlt": "ภาพหน้าเปิดจริงของ Clover X Brand Experience",
+      "problem": "บริษัทต้องการพื้นที่กลางที่ X-VISOR ทุกคนเปิดใช้กับลูกค้าได้ คนควรลองกดแล้วเห็นความสัมพันธ์ระหว่างข้อมูล อุปกรณ์ โภชนาการและกิจวัตร โดยเลือกเดินต่อเองได้บนมือถือ",
+      "decisions": [
+        [
+          "ให้สิ่งที่เลือกเปลี่ยนเส้นทาง",
+          "เริ่มจากการพัก มื้ออาหาร หรือการขยับ แล้วจัดลำดับจุดแวะต่างกัน แผนที่บอกตำแหน่งและให้เลือกข้ามหรือย้อนกลับได้"
+        ],
+        [
+          "ใช้โค้ดอธิบายความสัมพันธ์",
+          "ลองประกอบภาพหนึ่งวัน เปลี่ยนอุปกรณ์ สำรวจ ABCD และเลือก Habix ทีละตัว เพื่อเห็นบทบาทที่ต่างกันโดยไม่คำนวณผลสุขภาพให้ผู้ชม"
+        ],
+        [
+          "เชื่อมของเดิมเป็นประสบการณ์เดียว",
+          "พาเข้าห้อง Absorb และ Build ของ RoutineX แล้วกลับแผนที่พร้อมบริบทเดิม แยกให้ชัดว่า Control คือพฤติกรรมและ FIVES คือกรอบคิด"
+        ],
+        [
+          "พร้อมเปิดอธิบายร่วมกัน",
+          "โหมดนำเสนอใช้สถานะชุดเดียวกับหน้าเว็บ ย้อนกลับและเปิดซ้ำได้ ปลายทางเป็นแอปและข้อมูลบริษัทโดยไม่มีนัดหรือบริการส่วนตัว"
+        ],
+        [
+          "ให้เรียนรู้แล้วไปใช้ต่อ",
+          "จัดคลิปจากช่อง official เป็นหมวดและคิวในหน้า โหลด player เมื่อเลือกเล่น พร้อมทางเข้าห้องความรู้และลิงก์สโตร์ที่ตรวจจากเว็บทางการ"
+        ]
+      ],
+      "role": "วางแนวคิด โครงสร้างเว็บไซต์ และประสบการณ์ที่เชื่อมถึงกัน",
+      "roleScope": "บทบาทภาพรวมใน myClover ตามประวัติ; เคสนี้แสดงงานพัฒนา Brand Experience กลางสำหรับ Clover X",
+      "built": [
+        "แผนที่หกจุดแวะและสามเส้นทางตามความสนใจ",
+        "ภาพหนึ่งวันที่ลองประกอบและเปลี่ยนได้",
+        "ตัวเลือก App / Band / Scale และ Habix ห้าผลิตภัณฑ์",
+        "RoutineX ABCD พร้อมทางเข้าห้อง Absorb / Build",
+        "โหมดนำเสนอที่ใช้สถานะเดียวกับหน้าเว็บ",
+        "คลิป official แบ่งหมวด ห้องความรู้ และลิงก์โหลดแอป"
+      ],
+      "try": [
+        "เลือกสิ่งที่สนใจ แล้วดูแผนที่เปลี่ยนลำดับ",
+        "ลองเก็บจังหวะในภาพหนึ่งวัน แล้วเปลี่ยนช่วงเวลา",
+        "สำรวจ ABCD เข้าห้อง RoutineX และกลับแผนที่",
+        "เลือกหมวดคลิป official และเปิดลิงก์ดาวน์โหลดแอป"
+      ],
+      "evidence": [
+        "ภาพหน้าจอบันทึกจาก local preview ของโค้ดจริง วันที่ 2026-11-09",
+        "มีรายงานการตรวจ layout และการเดินทางบน Chromium แยกจากผลบน production",
+        "รายการคลิปและลิงก์สโตร์ตรวจจากช่องและเว็บไซต์ทางการ"
+      ],
+      "limits": [
+        "ภาพและตัวเลือกใน showroom ใช้เพื่ออธิบาย ไม่ใช่ข้อมูลสุขภาพหรือคำแนะนำผลิตภัณฑ์เฉพาะบุคคล",
+        "การตรวจเบราว์เซอร์ใช้ Chromium ยังไม่ได้รับรอง Safari, Firefox หรือโทรศัพท์จริง",
+        "ไม่ได้รับรองผลสุขภาพ การเล่นคลิปทุกเครือข่าย การติดตั้งแอป หรือเงื่อนไขการขายในงานออกแบบนี้"
+      ],
+      "screenshots": [
+        {
+          "src": "/work/media/xircle-desktop.webp",
+          "alt": "Clover X Brand Experience บน viewport เดสก์ท็อป 1440 พิกเซล",
+          "width": 1440,
+          "height": 900,
+          "caption": "Desktop · ภาพหน้าจอจริงจาก local preview"
+        },
+        {
+          "src": "/work/media/xircle-mobile.webp",
+          "alt": "แผนที่การเดิน Clover X บน viewport มือถือ 390 พิกเซล",
+          "width": 390,
+          "height": 900,
+          "caption": "Mobile map · จุดที่อยู่ จุดที่แวะแล้ว และเส้นทางที่เลือกได้"
+        },
+        {
+          "src": "/work/media/xircle-presentation.webp",
+          "alt": "โหมดอธิบาย Clover X ที่ใช้ประสบการณ์และตัวเลือกเดียวกับหน้าเว็บ",
+          "width": 1440,
+          "height": 900,
+          "caption": "Presentation mode · ทดลอง เลือก และเดินต่อจากสถานะเดียวกับหน้าเว็บ"
+        }
+      ],
+      "hire": "web"
     },
     {
       "slug": "classroom",

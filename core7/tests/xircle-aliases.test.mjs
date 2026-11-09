@@ -8,9 +8,9 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
   const server = await startPreview({ port: 0 });
   t.after(async () => { await server.close(); await rm(server.directory, { recursive: true, force: true }); });
   const canonical = await (await fetch(`${server.base}/xircle/`)).text();
-  assert.match(canonical, /experience-v3\.js/);
-  assert.match(canonical, /experience-v3\.css/);
-  assert.doesNotMatch(canonical, /experience(?:-v[12])?\.(?:js|css)/);
+  assert.match(canonical, /brand-experience\.js/);
+  assert.match(canonical, /brand-experience\.css/);
+  assert.doesNotMatch(canonical, /\/xircle\/experience(?:-v[123])?\.(?:js|css)/);
 
   await t.test('case and slash variants finish in one redirect with the exact same page', async () => {
     for (const route of ['/Xircle', '/Xircle/', '/XIRCLE', '/XIRCLE/', '/xIrClE/', '/xircle']) {
@@ -36,8 +36,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
       assert.equal((await fetch(new URL(expected, server.base), { redirect: 'manual' })).status, 200, route);
     }
     for (const [asset, type] of [
-      ['experience-v3.js?v=proof', 'text/javascript'],
-      ['experience-v3.css?v=proof', 'text/css'],
+      ['brand-experience.js?v=proof', 'text/javascript'],
+      ['brand-experience.css?v=proof', 'text/css'],
       ['_shared/typography.css', 'text/css'],
       ['assets/v3/hero-800.webp', 'image/webp'],
     ]) {
@@ -52,8 +52,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
     assert.equal((await fetch(`${server.base}/Xircle/not-a-real-page`)).status, 404);
   });
 
-  await t.test('retired V1, V2 and neutral experience engines are unavailable', async () => {
-    for(const name of ['experience','experience-v1','experience-v2']){
+  await t.test('retired personal-service experience engines are unavailable', async () => {
+    for(const name of ['experience','experience-v1','experience-v2','experience-v3']){
       for(const extension of ['js','css']){
         const asset=`${name}.${extension}`;
         assert.equal((await fetch(`${server.base}/xircle/${asset}`)).status,404,asset);
@@ -62,14 +62,14 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
     }
   });
 
-  await t.test('invite resolves to the existing registration page without making an external request', async () => {
+  await t.test('invite retains the owner-selected login destination without making an external request', async () => {
     const redirect = await fetch(`${server.base}/invite?from=xircle`, { redirect: 'manual' });
     assert.equal(redirect.status, 307);
     assert.equal(redirect.headers.get('location'), '/invite/?from=xircle');
     const response = await fetch(`${server.base}/invite/?from=xircle`, { redirect: 'manual' });
     assert.equal(response.status, 200);
     assert.equal(response.headers.get('location'), null);
-    assert.match(await response.text(), /https:\/\/register\.xircle\.health\//);
+    assert.match(await response.text(), /https:\/\/buy\.xircle\.health\/login\?ref=O5F3LN/);
     assert.equal((await fetch(`${server.base}/frontdoor/`, { redirect: 'manual' })).status, 200);
   });
 });
@@ -88,7 +88,9 @@ test('deployment aliases target a concrete file, not a case-only redirect loop',
     // Whether a host matches case sensitively or not, the target cannot match again.
     assert.notEqual('/xircle/index.html'.toLowerCase(), source.toLowerCase());
   }
-  assert.ok(config.redirects.some(rule => rule.source === '/invite' && rule.destination === '/invite/'));
+  for (const source of ['/invite','/invite/','/free','/free/','/join','/join/']) {
+    assert.ok(config.redirects.some(rule => rule.source === source && rule.destination === 'https://buy.xircle.health/login?ref=O5F3LN'), source);
+  }
   assert.ok(redirects.includes('/invite                                  /invite/  302'));
   assert.ok(generator.includes("'/invite                                  /invite/  302'"));
 });

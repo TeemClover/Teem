@@ -1,66 +1,42 @@
-# Xircle Route Index — current consolidated experience
+# XIRCLE routes — interactive Clover X experience
 
-Reviewed: **2026-09-10**. Owner decision: **V3 only**. Source: `6fab7897` (`feat/xircle-experience-v3`), merged as `e7b533a7` into remote main (`1984724c`) with identical V3 runtime files. The prior V2 selection based on stale local refs is superseded.
+Updated 2026-11-09. Read [ROUTE.md](ROUTE.md) before changing the journey. The owner explicitly wants interaction restored and expanded into one company brand walk.
 
-Read the local `ROUTE.md` before changing a route and [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md) for connections. Current owner decisions override historical guards.
+## Main brand map
 
-## One experience
+`/xircle/` combines scrolling with a playable six-station showroom. `brand-experience.js` / `brand-experience.css` own the scene, map and shared presentation. `brand-state.js` parses and serializes bounded URL state; `brand-catalog.js` supplies product/role/download data.
 
-`/xircle/`: six actions build a cinematic fictional day, reveal a seven-night pattern, add context with Teem + Ako, and invite the visitor to try it in real life. Runtime: `experience-v3.js` / `experience-v3.css`. Main exit: `/meet/?intent=health&from=xircle&open=booking`; optional knowledge or X-VISOR practice after the payoff. No registration/download sequence, V1/V2 runtime or separate worker.
-
-`/Xircle` and `/Xircle/` are case aliases. They must resolve to the same lowercase source, never another copy.
-
-## Compatibility entries
-
-These URLs preserve old links while loading no old experience engine. Each small shell uses `legacy-entry.js` and `route-contract.js`.
-
-| Existing URL | Current destination |
+| Station fragment | What visitors can do |
 |---|---|
-| `/xircle/start/` | `/xircle/` |
-| `/xircle/ghost/` | `/xircle/` |
-| `/xircle/care/` | `/xircle/` |
-| `/xircle/opportunity/` | `/xircle/` |
-| `/xircle/routinex/` | `/xircle/` |
-| `/xircle/explore/` | `/xircle/#start` |
-| `/xircle/circle/` | `/xircle/#start` |
-| `/xircle/care/party/` | `/xircle/#start` |
+| `#visit-hello` | Choose sleep, eating or movement; see the recommended route change |
+| `#visit-signal` | Change sample time of day and collect/remove three illustrative signals |
+| `#visit-connect` | Select App, Band or Scale and see their different roles |
+| `#visit-routine` | Explore ABCD; enter the existing Absorb/Build rooms or read Control/Balance |
+| `#visit-habix` | Inspect five products and open their existing source/reference pages |
+| `#visit-finish` | Review visited stops and choose the official iOS/Android download |
 
-Bounded Compass context and valid explicit/saved invitations survive according to `route-contract.js`; the destination displays an explicit join/create link where appropriate. Do not restore old progress gates or navigate automatically to TeamBook.
+Public URL fields are `at`, `path`, `moment`, `device`, `loop`, `product`, `sample`, `trail`. The bounded `at` field retains the current station when following section anchors such as `#official-media` or `#download`. The map exposes every stop and the current position. Browser Back/Forward, reload and restart must preserve or deliberately reset the corresponding state.
 
-## Independent reference routes
+`#official-media` opens the official clip library; `category` and `watch` restore its local category/selection. `#download` is the static app download section. Neither area requires purchase or registration.
 
-These retain their existing content, artwork and article interactions; `reference.js` supplies navigation and artwork loading without progress checks or storage writes.
+## RoutineX rooms
 
-- `/xircle/learn/`: searchable short knowledge library.
-- `/xircle/learn/topic/`: one short article, with its existing topic fallback and source links.
-- `/xircle/hardware/`: device reference and linked explanations.
-- `/xircle/products/`: product reference and linked sources.
-- `/xircle/doc/`: deep-reference index.
+- `/routinex/absorb/` and `/routinex/build/` remain their existing immersive rooms.
+- The brand entry adds `brand=xircle` and a bounded `return` to the current RoutineX stop. `routinex/brand-bridge.js` / `.css` add company wayfinding and replace personal exits only in that explicit context.
+- Control and Daily Balance use existing `/xircle/doc/routinex/abcd/` references. Do not invent new product stages or an unimplemented room.
 
-References are optional. Reading or buying anything is not required to reach Meet.
+## Compatibility
 
-## Optional X-VISOR practice
+`legacy-entry.js` / `route-contract.js` keep older entry paths as aliases rather than copies. `/xircle/routinex/` reaches the RoutineX station through its legacy `#routine` alias; former `#start`, `#sleep`, `#eat`, `#move`, `#body`, `#devices` and `#experience` anchors are mapped by `brand-state.js` where supported. Personal invitation/notebook modes never resume a personal funnel.
 
-- Xircle payoff → `/xvisor/?from=xircle`; appointment remains primary.
-- `/xircle/learn/` → game or the short `xvisor-context` article.
-- Short care articles (`xvisor-context`, `care-framework`, `certification`, `privacy-boundary`) → optional game after the explanation.
-- `/xircle/doc/xvisor/` → optional game; role/claims/privacy source links remain available.
-- Game landing → existing `/xvisor/quest/`, or return to `/xircle/#appointment` / knowledge. Game entry is optional and does not grant certification or prove an appointment.
+Case variants serve the same root. `/invite`, `/free`, `/join` retain the requested acquisition login/ref; the brand navigation itself uses the plain official login.
 
-## Deep-reference groups retained
+## Independent references
 
-- Academy: `/xircle/doc/academy/`, `/xircle/doc/academy/certification/`.
-- Xircle App: `/xircle/doc/app/` plus body/community/eat/habit-score/hardware/maxage/move/sleep.
-- Commerce: `/xircle/doc/commerce/` plus glossary/revenue/roles.
-- Ecosystem: `/xircle/doc/ecosystem/`.
-- Habix: `/xircle/doc/habix/` plus astamega/fives/flavor/gus/protein-hmb/vita-matrix.
-- RoutineX: `/xircle/doc/routinex/` plus abcd/day-28.
-- Source: `/xircle/doc/source/` plus changelog/glossary/sources/unresolved.
-- XOS: `/xircle/doc/xos/` plus customers/learning/missions/team/wealth.
-- X-VISOR: `/xircle/doc/xvisor/` plus care/claims/coaching/onboarding/privacy/role.
+- `/xircle/learn/`: 21 searchable knowledge topics, category/results/reset URL state.
+- `/xircle/learn/topic/`: short explanation, sources and related topics.
+- `/xircle/hardware/`: App/Band/Scale explanations.
+- `/xircle/products/`: product roles and source links.
+- `/xircle/doc/`: 44 deep documents covering App, devices, Habix, RoutineX, care/role, source, ecosystem, commerce, Academy and XOS.
 
-These are documents, not alternate versions of the main journey. Their historical route labels do not impose a new completion gate.
-
-## Verification boundary
-
-Old links and casing reach the current experience once; invitations remain reachable; direct reference links stay readable; Meet receives only intended context. Preserve every existing localStorage key and exact brand assets. Update the affected guard whenever entry, exit or runtime changes.
+Use the label **ห้องความรู้**. These references remain directly readable; no personal appointment, notebook, game or account is a progress gate.

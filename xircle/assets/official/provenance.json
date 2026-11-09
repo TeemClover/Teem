@@ -1,0 +1,48 @@
+{
+  "retrievedOn": "2026-11-09",
+  "authorization": "Owner explicitly authorized reuse of www.xircle.health brand material for this experience.",
+  "files": [
+    {
+      "file": "app-store.svg",
+      "source": "https://www.xircle.health/images/store/app-store.svg",
+      "bytes": 9343,
+      "sha256": "530c47de8b5d828ce86fbc2d5b907928aa48c83cc6f362dbd0d52e29088d0a91",
+      "processing": "Original SVG; checked for executable/linked content"
+    },
+    {
+      "file": "google-play.svg",
+      "source": "https://www.xircle.health/images/store/google-play.svg",
+      "bytes": 6724,
+      "sha256": "9213839c8858a6a0ca41389c24e70dd078b3c4c3e7c4262f9a1dbf7774d2044e",
+      "processing": "Original SVG; checked for executable/linked content"
+    },
+    {
+      "file": "xircle-logo-light.svg",
+      "source": "https://www.xircle.health/images/xircle-logo-light.svg",
+      "bytes": 4826,
+      "sha256": "032c9247bbbf2750657c8adb8d180c84ac82c5b85c248b7d0a32df3c16ac1c2c",
+      "processing": "Original SVG; checked for executable/linked content"
+    },
+    {
+      "file": "xircle-app-icon.webp",
+      "source": "https://www.xircle.health/images/brand/xircle-app-icon.png",
+      "bytes": 2672,
+      "sha256": "eb7740aae43f9488991fc63246b5bbd5f8713576c0f5443dd3fa0a236811fc43",
+      "processing": "WebP encoding of original; no visual content invented"
+    },
+    {
+      "file": "band-onyx.webp",
+      "source": "https://www.xircle.health/assets/band-onyx.png",
+      "bytes": 26570,
+      "sha256": "345852a7dac95e4f3201e4a83adc9e6990aeba08f8d113c7950047f7349a2802",
+      "processing": "WebP encoding of original; no visual content invented"
+    },
+    {
+      "file": "scale-lifestyle.webp",
+      "source": "https://www.xircle.health/assets/eco-scale.png",
+      "bytes": 68450,
+      "sha256": "5f14a11c6e3798fb40a94a444539b599ded5dd44b2f67656f2a10b0401fcb584",
+      "processing": "WebP encoding of original; resized to 960px width; no visual content invented"
+    }
+  ]
+}

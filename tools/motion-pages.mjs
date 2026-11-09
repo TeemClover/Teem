@@ -67,7 +67,7 @@ export const MOTION_PAGES = Object.freeze({
   'ako/kitchen/index.html': story,
   'homechew/index.html': immersive,
   'homechew/privacy/index.html': read,
-  'xircle/index.html': app,
+  // XIRCLE owns its interactive brand walk, WebGL and presentation motion; do not inject a second engine.
 
   // classroom (upstairs)
   'courses/index.html': story,
@@ -91,6 +91,7 @@ export const MOTION_PAGES = Object.freeze({
   'work/index.html': story,
   'work/house-3d/index.html': story,
   'work/classroom/index.html': story,
+  'work/xircle/index.html': story,
   'work/core7/index.html': story,
   'work/teambook/index.html': story,
   'showcase/index.html': story,
