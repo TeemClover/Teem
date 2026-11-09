@@ -11,7 +11,7 @@ const args = process.argv.slice(2);
 const flag = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
 const host = flag('--host', '127.0.0.1');
 const port = Number(flag('--port', '4173'));
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.woff2': 'font/woff2', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.woff2': 'font/woff2', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.mp4': 'video/mp4' };
 
 const qaPage = `<!doctype html><html lang="en"><meta charset="utf-8"><title>XIRCLE local QA</title>
 <style>body{margin:0;background:#ddd;font:14px system-ui}header{padding:14px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}select,button{font:inherit;padding:8px}iframe{display:block;background:white;border:0;margin:0 auto;width:390px;height:844px}#checks{padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}label{display:flex;align-items:center;gap:6px}</style>
@@ -61,6 +61,16 @@ const server = createServer(async (request, response) => {
       if (fixture === 'noscript') html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
       else html = html.replace('<head>', '<head>' + fixtureScript(fixture));
       body = Buffer.from(html);
+    }
+    if (extension === '.mp4') {
+      response.setHeader('Accept-Ranges', 'bytes');
+      const range = request.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
+      if (range) {
+        const start = Number(range[1]), end = Math.min(range[2] ? Number(range[2]) : body.length - 1, body.length - 1);
+        if (start > end || start >= body.length) { response.writeHead(416, { 'Content-Range': `bytes */${body.length}` }); return response.end(); }
+        response.writeHead(206, { 'Content-Type': 'video/mp4', 'Content-Length': end - start + 1, 'Content-Range': `bytes ${start}-${end}/${body.length}` });
+        return response.end(request.method === 'HEAD' ? undefined : body.subarray(start, end + 1));
+      }
     }
     response.writeHead(200, { 'Content-Type': types[extension] || 'application/octet-stream' });
     response.end(request.method === 'HEAD' ? undefined : body);

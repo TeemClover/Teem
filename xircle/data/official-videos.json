@@ -10,7 +10,7 @@
   "verification": {
     "metadata": "Video IDs, exact titles and durations read from the official channel public videos tab; titles and official author handle independently matched using YouTube oEmbed.",
     "embedding": "YouTube oEmbed returned iframe embed HTML for all selected videos. Actual embedded playback was not certified; availability may change.",
-    "playback": "No remote thumbnail or player is requested before the visitor explicitly presses Play."
+    "playback": "Self-hosted official thumbnails are loaded with the cards. YouTube player connections begin only after an explicit Play action."
   },
   "sources": [
     "https://www.youtube.com/@CloverXOfficial/videos",

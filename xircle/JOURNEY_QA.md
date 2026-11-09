@@ -1,63 +1,42 @@
-# XIRCLE interactive brand experience — validation
+# Xircle real-app landing — validation
 
-Updated 2026-11-09. This records implementation scope and required checks. It does not certify production deployment, current sales conditions, health outcomes, embedded video playback or an app installation.
+Updated 2026-11-09. This records the redesigned root and its required checks. It does not certify production deployment, health outcomes, app installation or every external video player.
 
-## Current behavior
+## Scope
 
-The root is a company experience that every X-VISOR can open with customers. Sleep, eating and movement choices change the order of a six-station map. Visitors can build an illustrative day, select devices, explore RoutineX ABCD and five Habix products, then follow official app downloads. The map and presentation share the active state. Back/Forward, reload, restart and direct station links are part of the journey.
+The active landing uses `landing.js` / `landing.css` to tell a scrolling eat → sleep → move story with real logos, sanitized app screens, Band/Scale imagery and a clearly identified generated hero scene. The former six-station map is superseded at the root. Preserve all 49 directly readable reference pages and their shared static navigation.
 
-The existing immersive `/routinex/absorb/` and `/routinex/build/` rooms receive explicit brand context and a bounded return to the map. Personal exits are replaced only within that context. C / Control remains behavior, FIVES remains a framework, and the knowledge room is labelled ห้องความรู้.
+The scan interaction uses a fixed food example and bounded portion choices. It must not request camera access, upload an image, accept health inputs or present the sample as a visitor's measurement. Two silent, cropped real-app clips have local posters and direct fallback links. Ten official videos have local thumbnails and load a YouTube player only after Play. Routine X reserves exactly four **Coming soon** cards, without fake playback.
 
-The official media library uses 10 locally catalogued clips from `@CloverXOfficial`, grouped into App, Band, Scale and HabiX + RoutineX. These are local queues. No remote player/thumbnail is requested until the visitor explicitly presses Play; close, queue and history changes remove the iframe. External YouTube links remain available.
+Asset provenance and the real-capture / generated-scene distinction are documented in [assets/real-app/README.md](assets/real-app/README.md). Company app destinations are the official App Store and Google Play applications; personal service or referral funnels are excluded from this landing.
 
-WebGL2 is optional; reduced-motion, no-WebGL and no-JavaScript paths retain useful reference/download links. Fifty pages retain generated shared wayfinding; all 49 references remain directly accessible. No health-input form, personal booking, TeamBook handoff, new storage key or legacy record migration is introduced. The top-level `/maxage` is outside scope.
+## Current evidence status
 
-## Current execution status
+The old six-station-map browser counts and earlier scrolling-page audits are historical, not certification of this redesign. The new `landing.e2e.mjs` browser harness passed all 7 groups on 2026-11-09 (07:48:41–07:49:26 UTC) using Chrome 156.0.8078.81. Layouts at 320/390/768/1440px, all 10 thumbnail decodes, scan stages/portions/replay, mobile camera button, Band colors/menu, four Routine X cards, real local-video playback/cleanup/focus, restored video URLs, reduced motion and no-JavaScript fallbacks passed. The run recorded zero page errors, failed local requests or unsolicited external requests. The 13 node contracts and shell check also passed.
 
-The previous 15-contract / 113-layout audit at `c361bc4c` describes the superseded company scrolling implementation. It is historical evidence, not certification of this new interactive revision.
+Manual browser review observed the local scan clip playing through and the official Band tutorial playing inside the YouTube embed. Desktop/mobile hero, food results, Sleep, product color selection, media filtering and Routine X were inspected. These observations do not certify every external video or physical phone.
 
-The implemented candidate passed 18 contracts, 21 portfolio/entry tests, 26 tour tests and the full browser suite with 134 layout checks plus interaction flows, zero page errors and zero failed local resources. A separate regression pass after the final scroll/history fixes confirmed visible mobile headings, focused browser-history restoration, `at` station persistence, media history and the contextual RoutineX return. Browser proof records HEAD, dirty files and timestamps; delivered clean-commit proof is retained outside the public repository, alongside the original working-tree reports. Portfolio screenshots are refreshed from the implemented experience.
+Keep the result tied to the tested revision and working-tree state. A local or preview pass does not establish production deployment. The unrelated broad-suite failures recorded in earlier audits have not been re-certified by this change; report any newly executed broad suite from its actual output.
 
-The 134 layout checks comprise the original 112 public-route/reference combinations, 21 station/map combinations, and a mobile Habix check. The no-third-party-before-Play assertion applies to the new root/media library; older deep reference embeds are recorded separately and are not covered by that claim.
+## Required checks
 
-## Commands and expected scope
+- `npm run check:xircle`: generated shared navigation agrees on the 49 references; the real-app root retains its own header/footer.
+- `node --test xircle/route-contract.test.mjs xircle/company-boundary.test.mjs xircle/knowledge-access.test.mjs`: active landing ownership, official company links, bounded examples, thumbnail/poster presence, four Coming soon cards and readable reference routes. `npm run test:xircle` also exercises existing alias contracts when its HTTP helper is available.
+- `node xircle/landing.e2e.mjs`: responsive landing layouts; scan stages and portion totals; Band color selection; mobile menu; local-video playback setup, close/Escape and focus return; official media filters/queues/player removal; reduced-motion and no-JavaScript fallbacks. Inspect local images/posters and record browser errors or missing resources.
+- Check changed JavaScript syntax and `git diff --check`. There is no general repository lint command.
 
-- `npm run check:xircle`: generated shared shell agrees across 50 pages.
-- `npm run test:xircle`: entry/alias/company/privacy/reference contracts, official downloads, product taxonomy and bounded interactive state.
-- `npm run test:xircle:journey`: six main destinations at 320/390/768/1440px and all 44 deep references at 390/1440px; branching route, sample collection/removal, moments, devices, all ABCD stages, five product choices, map/presentation, keyboard/Escape/focus, Back/Forward/reload/restart, contextual RoutineX return, official video filters/queues/lazy player/removal, knowledge states, legacy storage and no-JS/no-WebGL fallbacks.
-- `npm run test:entry`: truthful roles, case data, generated portfolio, media budget and structural checks.
-- `node tools/build-portfolio.mjs --check`, `node tools/build-sitemap.mjs --check`, `node tools/motion-pages.mjs --check`: generated outputs agree; XIRCLE owns its motion and is exempt from a second global engine.
-- `npm run test:tour`: shared portfolio/house entry contracts.
-- JavaScript syntax and `git diff --check`. There is no general repository lint command.
+Manually inspect desktop and narrow mobile layouts, Thai headings, hero proportions, food-stage labels, every visible video cover and the four Routine X placeholders. Play the real scan clip and an official tutorial in the visible browser; distinguish actual playback observations from automated player-creation checks. Verify the official store links, reference links and direct-video/official-channel fallbacks.
 
-The local browser harness blocks external traffic and non-GET requests. It can verify creation/removal of the intended player and exact outbound URLs, but cannot certify real YouTube playback, app installation or purchase/account completion.
-
-## Broader known limitations
-
-The current broad `npm test` reports 190/210 passing and 20 failures outside this change (pet time budget, First Class, TeamBook/card contracts). All 20 ordered names, locations and first error lines were matched to untouched baseline `ecfb183b`; raw logs and comparison are outside the public repository. Do not report the broad suite as fully passing or assume a new run has the same result without checking.
-
-The current broader motion suite has 5/6 passing, with one house-coverage failure listing four baseline links: Hamburg, RoutineX absorb, Airova and Mediral. Registry checks and XIRCLE motion ownership are separate checks. Preserve this limitation until a current result establishes otherwise; do not alter unrelated pages to silence it.
-
-Safari, Firefox, physical phones and user research are not certified. Existing product claims were preserved, not reapproved. Store URLs were verified from official website HTML; a correct link does not prove installation. Video IDs/titles/official author were checked. A separate visible local Chrome check played the official Band-pairing tutorial `w31zX_f5iqI` and exposed Pause with 0:25 elapsed of 1:16. This proves one local playback observation, not all ten videos or uninterrupted embedded delivery.
+Reduced motion must reveal content without timed transitions. With JavaScript disabled, the static story, sample nutrition, reference/download links and direct media links remain usable. No camera permission prompt or health-input form should appear.
 
 ## Reproduce locally
 
 ```sh
 npm ci
-npx playwright install chromium
 npm run check:xircle
-npm run test:entry
-npm run test:xircle:journey
+node --test xircle/route-contract.test.mjs xircle/company-boundary.test.mjs xircle/knowledge-access.test.mjs
+node xircle/landing.e2e.mjs
+git diff --check
 ```
 
-Use `XIRCLE_CHROME` for an installed Chromium executable and `XIRCLE_PROOF_DIR` for local report/screenshots (default `/tmp/xircle-journey-proof`). The browser report includes run time, HEAD, dirty files, runtime/browser version and final status. Bind delivered evidence to the tested revision; do not describe a working-tree run as a clean committed run.
-
-The existing alias HTTP helper uses isolated Miniflare, which is not in the root lockfile:
-
-```sh
-npm install --prefix /tmp/myclover-xircle-tests miniflare@4.20260730.0
-export FRONTDOOR_MINIFLARE=/tmp/myclover-xircle-tests/node_modules/miniflare/dist/src/index.js
-npm run test:xircle
-```
-
-No merge, production promotion or protected-preview sharing link is authorized by this validation document.
+Use the browser harness's documented browser/proof-directory options when supplied, and retain its actual report. The older `journey.e2e.mjs` station-map flows are not evidence for the new root. Automated tests that block external traffic can verify intended YouTube URLs and player cleanup, but cannot certify live YouTube delivery, app installation, sign-in or purchase completion. Safari, Firefox and physical devices require their own checks.
