@@ -29,6 +29,7 @@ import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-con
   ];
   const fresh = () => ({ step: 0, sleep: null, food: false, move: null, context: null, editing: null, phase: 'ready' });
   let state = fresh(), generation = 0, targetArt = 'art-hero', soundEnabled = false, audioContext;
+  const visited = new Set([0]);
   const timers = new Set(), flights = new Set();
   const media = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reduced = () => media.matches;
@@ -87,6 +88,13 @@ import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-con
     if (window.scrollY > stage.offsetTop + 70) window.scrollTo({ top: stage.offsetTop, behavior: reduced() ? 'auto' : 'smooth' });
   }
   function render({ focus = false } = {}) {
+    visited.add(state.step);
+    document.querySelectorAll('[data-journey-step]').forEach(button => {
+      const step = Number(button.dataset.journeyStep);
+      button.disabled = !visited.has(step);
+      if (step === state.step) button.setAttribute('aria-current', 'step');
+      else button.removeAttribute('aria-current');
+    });
     const scene = scenes[state.step], [number, chapter, title, support, time] = headings[state.step];
     stage.dataset.scene = scene; stage.dataset.phase = state.phase;
     $('chapter-number').textContent = number; $('chapter-name').textContent = state.editing !== null ? 'ปรับวันตัวอย่าง' : chapter;
@@ -180,10 +188,15 @@ import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-con
   $('edit-sleep').addEventListener('click', () => editRecord(0)); $('edit-move').addEventListener('click', () => editRecord(2));
   $('back').addEventListener('click', () => { const destination = state.editing ?? (busy() ? state.step : Math.max(0, state.step-1)); state.editing = null; advance(destination); announce('ย้อนกลับแล้ว'); });
   $('replay').addEventListener('click', () => {
-    cancelMotion(); state = fresh();
+    cancelMotion(); state = fresh(); visited.clear(); visited.add(0);
     try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch { /* History can be unavailable. */ }
     render({ focus: true }); announce('เริ่มวันตัวอย่างใหม่');
   });
+  document.querySelectorAll('[data-journey-step]').forEach(button => button.addEventListener('click', () => {
+    const step = Number(button.dataset.journeyStep);
+    if (busy() || !visited.has(step) || step === state.step) return;
+    state.editing = null; advance(step); announce(`ย้อนดูขั้นที่ ${step + 1} จาก 7`);
+  }));
   $('sound-toggle').addEventListener('click', async () => {
     soundEnabled = !soundEnabled;
     if (soundEnabled) { try { const Audio = window.AudioContext || window.webkitAudioContext; if (!Audio) throw new Error('Audio unavailable'); audioContext ||= new Audio(); await audioContext.resume(); } catch { soundEnabled = false; announce('อุปกรณ์นี้เปิดเสียงไม่ได้ ลองต่อโดยไม่มีเสียงได้เลย'); } }
@@ -221,5 +234,9 @@ import {entryContext, FOCUS_LABELS, notebookHref, XIRCLE_HOME} from './route-con
     try { window.history.replaceState(null, '', window.location.pathname + window.location.search + '#appointment'); } catch { /* Knowledge links work without history. */ }
   });
   if (['#appointment', '#start'].includes(window.location.hash)) state.step = 6;
-  render(); document.querySelector('.skip-link').href = '#experience'; $('experience').hidden = false; $('fallback').hidden = true; $('sound-toggle').hidden = false;
+  document.querySelectorAll('[data-demo-entry]').forEach(link => { link.href = '#experience'; });
+  render(); $('experience').hidden = false; $('fallback').hidden = true; $('sound-toggle').hidden = false;
+  if (['#appointment', '#start'].includes(window.location.hash)) requestAnimationFrame(() => {
+    $('experience').scrollIntoView({block:'start', behavior:'instant'}); $('scene-title').focus({preventScroll:true});
+  });
 })();

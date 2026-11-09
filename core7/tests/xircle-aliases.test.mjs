@@ -62,14 +62,14 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
     }
   });
 
-  await t.test('invite resolves to the existing registration page without making an external request', async () => {
+  await t.test('invite retains the owner-selected login destination without making an external request', async () => {
     const redirect = await fetch(`${server.base}/invite?from=xircle`, { redirect: 'manual' });
     assert.equal(redirect.status, 307);
     assert.equal(redirect.headers.get('location'), '/invite/?from=xircle');
     const response = await fetch(`${server.base}/invite/?from=xircle`, { redirect: 'manual' });
     assert.equal(response.status, 200);
     assert.equal(response.headers.get('location'), null);
-    assert.match(await response.text(), /https:\/\/register\.xircle\.health\//);
+    assert.match(await response.text(), /https:\/\/buy\.xircle\.health\/login\?ref=O5F3LN/);
     assert.equal((await fetch(`${server.base}/frontdoor/`, { redirect: 'manual' })).status, 200);
   });
 });
@@ -88,7 +88,9 @@ test('deployment aliases target a concrete file, not a case-only redirect loop',
     // Whether a host matches case sensitively or not, the target cannot match again.
     assert.notEqual('/xircle/index.html'.toLowerCase(), source.toLowerCase());
   }
-  assert.ok(config.redirects.some(rule => rule.source === '/invite' && rule.destination === '/invite/'));
+  for (const source of ['/invite','/invite/','/free','/free/','/join','/join/']) {
+    assert.ok(config.redirects.some(rule => rule.source === source && rule.destination === 'https://buy.xircle.health/login?ref=O5F3LN'), source);
+  }
   assert.ok(redirects.includes('/invite                                  /invite/  302'));
   assert.ok(generator.includes("'/invite                                  /invite/  302'"));
 });

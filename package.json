@@ -70,7 +70,10 @@
     "test:mediral-commerce": "node --test tests/mediral-commerce/*.test.mjs",
     "dev:mediral-commerce": "node tests/mediral-commerce/preview.mjs",
     "test:showcase:ui": "node tests/entry/showcase.e2e.mjs",
-    "test:bodymestory": "node --test tests/bodymestory-*.test.mjs"
+    "test:bodymestory": "node --test tests/bodymestory-*.test.mjs",
+    "build:xircle": "node xircle/build/journey-shell.mjs",
+    "check:xircle": "node xircle/build/journey-shell.mjs --check",
+    "test:xircle:journey": "node xircle/journey.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

@@ -76,14 +76,13 @@ async function scene(page, name) {
 
 async function header(page) {
   await page.evaluate(()=>scrollTo(0,0));
-  const knowledge=page.locator('.knowledge-shortcut');
+  const menu=page.locator('.journey-menu');
+  const mobile=await menu.isVisible();
+  if(mobile) await menu.locator('summary').click();
+  const knowledge=page.locator(mobile?'.journey-menu a[href^="/xircle/learn/"]':'.journey-desktop-nav a[href^="/xircle/learn/"]');
   await knowledge.click({trial:true});
   assert.ok((await knowledge.boundingBox()).height >= 44, 'knowledge header touch target');
-  if (await page.locator('#sound-toggle').isVisible()) {
-    await page.locator('#sound-toggle').click({trial:true});
-    const [a,b]=await Promise.all([knowledge.boundingBox(),page.locator('#sound-toggle').boundingBox()]);
-    assert.ok(a.x+a.width<=b.x+.5 || b.x+b.width<=a.x+.5 || a.y+a.height<=b.y+.5 || b.y+b.height<=a.y+.5, 'header knowledge and sound targets must not overlap');
-  }
+  if(mobile) await menu.locator('summary').press('Escape');
 }
 
 async function sixActions(page) {

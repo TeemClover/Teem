@@ -181,6 +181,7 @@ function casePage(c, i, all) {
   const sections = [
     ['โจทย์', `<p>${esc(c.problem)}</p>`],
     ['การตัดสินใจสำคัญ', `<ol class="decisions">${c.decisions.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('')}</ol>`],
+    ['ภาพจากการใช้งานจริง', c.screenshots?.length ? `<div class="case-proof-grid">${c.screenshots.map(s => `<figure><a href="${esc(s.src)}"><img src="${esc(s.src)}" alt="${esc(s.alt)}" width="${s.width}" height="${s.height}" loading="lazy"></a><figcaption>${esc(s.caption)}</figcaption></figure>`).join('')}</div>` : ''],
     ['สิ่งที่ Teem สร้าง', `<div class="role"><small>${esc(c.roleScope)}</small><b>${esc(c.role)}</b></div><ul class="ticks">${c.built.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`],
     ['ลองอะไรได้บ้าง', `<ul class="ticks">${c.try.map(t => `<li>${esc(t)}</li>`).join('')}</ul><div class="actions"><a class="btn btn-ink" href="${esc(c.live)}"${external(c.live) ? ' rel="noopener"' : ''}>${esc(c.liveLabel)}${external(c.live) ? OUT : ARROW}</a></div>`],
     ['หลักฐานว่าใช้ได้จริง', `<ul class="ticks">${c.evidence.map(t => `<li>${linkify(t)}</li>`).join('')}</ul>`],

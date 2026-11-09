@@ -1,0 +1,12 @@
+{
+  "captured": "2026-11-09",
+  "source": "Local Chromium rendering of the implemented repository pages; no fabricated interface or user data",
+  "route": "/xircle/",
+  "images": [
+    {"file": "xircle-cover.webp", "viewport": {"width": 1200, "height": 750}, "encoding": "WebP from original PNG"},
+    {"file": "xircle-cover-640.webp", "source": "xircle-cover.webp", "size": {"width": 640, "height": 400}, "encoding": "Resized WebP from the same original PNG"},
+    {"file": "xircle-desktop.webp", "viewport": {"width": 1440, "height": 900}, "encoding": "WebP from original PNG"},
+    {"file": "xircle-mobile.webp", "viewport": {"width": 390, "height": 900}, "encoding": "WebP from original PNG"}
+  ],
+  "verification": "Original PNGs and browser reports were retained outside the public repository. Images depict local previews, not evidence of production deployment or health outcomes."
+}

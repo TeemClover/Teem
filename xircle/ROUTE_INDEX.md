@@ -4,6 +4,19 @@ Reviewed: **2026-09-10**. Owner decision: **V3 only**. Source: `6fab7897` (`feat
 
 Read the local `ROUTE.md` before changing a route and [XIRCLE_ROUTE_SOURCE.md](XIRCLE_ROUTE_SOURCE.md) for connections. Current owner decisions override historical guards.
 
+## Journey upgrade — 2026-11-09
+
+The V3 fictional-day engine is retained inside a new mobile-first opening. Visitors can start the example, open knowledge/reference material, or explicitly choose the existing Meet destination. The new overview does not collect health data, require registration, or mark the example complete.
+
+- A generated static header, breadcrumbs and footer connect all 50 active pages. Deep documents keep a local table of contents. Source/status content remains available; the old generic build-zone banner is not shown in the visitor flow.
+- `journey.css` / `journey.js` provide shared layout, accessible mobile navigation and native fragment history. `build/journey-shell.mjs` owns the shared static markup (`npm run build:xircle`, `npm run check:xircle`).
+- The V3 step strip opens visited steps only. Restart resets only in-memory example choices; legacy records and invitations are unchanged. `#appointment` / `#start` still open the real invitation and scroll it into view.
+- `knowledge.js` adds result announcements, selected-filter semantics, empty/reset states and bounded `q` / `part` URL state. Article Back and refresh retain the list. No new browser-storage key is added.
+- `/invite`, `/free`, `/join` (both slash forms in Vercel) retain the requested `https://buy.xircle.health/login?ref=O5F3LN` acquisition destination. This is independent of the primary Meet journey. `/maxage` is unchanged.
+- `/work/xircle/` is a generated case study with real local-preview screenshots; it makes no health or performance-outcome claim. No production deployment is implied by a local test.
+
+Validation and reproducible commands: [JOURNEY_QA.md](JOURNEY_QA.md).
+
 ## One experience
 
 `/xircle/`: six actions build a cinematic fictional day, reveal a seven-night pattern, add context with Teem + Ako, and invite the visitor to try it in real life. Runtime: `experience-v3.js` / `experience-v3.css`. Main exit: `/meet/?intent=health&from=xircle&open=booking`; optional knowledge or X-VISOR practice after the payoff. No registration/download sequence, V1/V2 runtime or separate worker.

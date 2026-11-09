@@ -10,9 +10,9 @@ const {chromium}=await import(pathToFileURL(process.env.FRONTDOOR_PLAYWRIGHT).hr
 const output=process.env.FRONTDOOR_PROOF_DIR||await mkdtemp(path.join(tmpdir(),'xircle-compass-proof-'));
 await mkdir(output,{recursive:true});
 const server=await startPreview({port:0}),{base}=server;
-const report={version:'V3',checks:[],errors:[],screenshots:[],motion:[],base};let browser;
+const report={version:'V3',checks:[],errors:[],navigationCancellations:[],screenshots:[],motion:[],base};let browser;
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
-async function shot(page,name){await page.screenshot({path:`${output}/${name}.png`,fullPage:true});report.screenshots.push(name+'.png');}
+async function shot(page,name){const demo=page.locator('#experience'); if(await demo.isVisible()) await demo.screenshot({path:`${output}/${name}.png`}); else await page.screenshot({path:`${output}/${name}.png`,fullPage:true});report.screenshots.push(name+'.png');}
 async function pageFor(options={}){
  const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce',...options});
  await context.route('**/*',route=>{
@@ -21,7 +21,13 @@ async function pageFor(options={}){
   if(/^https:\/\/fonts\./.test(request.url())||/^(data|blob):/.test(request.url()))return route.continue();
   return route.abort();
  });
- const page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
+ const page=await context.newPage();page.on('pageerror',e=>{
+   // Chromium can report a native cross-document snapshot cancellation during
+   // rapid back/refresh/context teardown. Keep it in proof, separate from app errors.
+   if(e.message==='Transition was aborted because of invalid state. ViewTransition opt-in disabled')
+     report.navigationCancellations.push({url:page.url(),message:e.message});
+   else report.errors.push(e.message);
+ });
  return {context,page};
 }
 async function scene(page,name){
@@ -44,6 +50,11 @@ async function play(page,proof){
  const meal=await page.locator('#meal-view').getAttribute('src');
  assert.match(meal,/meal-detail-800\.webp/);
  assert.equal(await page.locator('#capture-photo img').getAttribute('src'),meal);
+ if(proof)await page.evaluate(()=>{
+   window.__xircleProofPhases=[];
+   new MutationObserver(()=>window.__xircleProofPhases.push(document.querySelector('#stage').dataset.phase))
+     .observe(document.querySelector('#stage'),{attributes:true,attributeFilter:['data-phase']});
+ });
  await page.locator('#shutter').click();
  if(proof){
   await phase(page,'capturing');
@@ -55,7 +66,10 @@ async function play(page,proof){
   assert.equal(await page.locator('#capture-photo').evaluate(el=>getComputedStyle(el).opacity),'1');
   assert.equal(await page.locator('#meal-view').evaluate(el=>getComputedStyle(el).opacity),'0');
   await shot(page,`${proof}-capture`);
-  await phase(page,'docking');
+  // A screenshot may take longer than the docking animation. Observe its occurrence,
+  // then assert the durable record instead of racing a 530ms visual transition.
+  await scene(page,'move');
+  assert.ok((await page.evaluate(()=>window.__xircleProofPhases)).includes('docking'));
   assert.equal(await page.locator('#meal-stamp').isVisible(),true);
   assert.equal(await page.locator('#record-food').textContent(),'12:30');
   report.motion.push({proof,phases:['sleep-recorded','capturing','docking'],mealRecorded:'12:30'});
@@ -204,7 +218,7 @@ try{
  for(const route of ['learn','learn/topic','hardware','products','doc']){
   const {context,page}=await pageFor({viewport:{width:390,height:844}});await page.goto(base+'/xircle/');
   const original='{"firstDayCompletedV10":false,"journeyCompleted":false}';await page.evaluate(value=>localStorage.setItem('xircle.local.v1',value),original);
-  await page.goto(`${base}/xircle/${route}/`);await page.locator('.xp-nav a').filter({hasText:'นัดคุย'}).waitFor();
+  await page.goto(`${base}/xircle/${route}/`);await page.locator('.journey-header-inner > .journey-book').waitFor();
   assert.equal(new URL(page.url()).pathname,`/xircle/${route}/`);
   assert.equal(await page.evaluate(()=>localStorage.getItem('xircle.local.v1')),original);
   assert.equal((await page.locator('h1').innerText()).trim().length>0,true);

@@ -264,3 +264,6 @@ svg.i { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-wi
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 .band-sm + .sec { padding-top: 44px; }
+
+/* Optional verified screenshots in a case study. */
+.case-proof-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,.7fr);gap:20px;align-items:start}.case-proof-grid figure{margin:0;min-width:0}.case-proof-grid img{display:block;width:100%;height:auto;border:1px solid #c6c8b5;border-radius:10px}.case-proof-grid figcaption{font-size:13px;line-height:1.7;color:#59664c;margin-top:10px}@media(max-width:620px){.case-proof-grid{grid-template-columns:1fr}.case-proof-grid figure:last-child{max-width:300px}}
