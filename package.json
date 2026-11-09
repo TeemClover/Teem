@@ -71,7 +71,7 @@
     "test:bodymestory": "node --test tests/bodymestory-*.test.mjs",
     "build:xircle": "node xircle/build/journey-shell.mjs",
     "check:xircle": "node xircle/build/journey-shell.mjs --check",
-    "test:xircle:journey": "node xircle/journey.e2e.mjs"
+    "test:xircle:journey": "node xircle/landing.e2e.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

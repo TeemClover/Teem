@@ -1,31 +1,44 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,access} from 'node:fs/promises';
 const read=p=>readFile(new URL(p,import.meta.url),'utf8');
 
-test('interactive brand entry keeps company exploration separate from personal-service funnels',async()=>{
+test('real app landing keeps company exploration separate from personal-service funnels',async()=>{
  const html=await read('index.html');
- for(const id of ['brand-stage','map-dialog','brand-presentation','official-media','download'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
+ assert.match(html,/data-xircle-landing="real-app"/);
+ for(const id of ['eat','sleep','move','food-demo','video-dialog','official-media','download'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
  assert.doesNotMatch(html,/<(?:input|form)\b[^>]*(?:type="(?:email|tel)"|action="\/api\/)|นัดลอง|ทีมและเอโกะ|ทีม \+ เอโกะ|teambook\.me|\/meet\//);
  assert.doesNotMatch(html,/ห้องความรู้แมวขาว|ห้องแมวขาว/);
- const runtime=await read('brand-experience.js');
+ const runtime=await read('landing.js');
  assert.doesNotMatch(runtime,/localStorage|sessionStorage|setItem\(|XMLHttpRequest|teambook\.me|\/meet\//);
 });
 
-test('modern graphics remain decorative, optional and independent of essential controls',async()=>{
- const html=await read('index.html'),js=await read('brand-experience.js'),field=await read('orb-field.js');
- assert.match(html,/<canvas[^>]+aria-hidden="true"/);
- assert.match(js,/prefers-reduced-motion/);assert.match(js,/saveData/);assert.match(js,/orb-field\.js/);assert.match(field,/webgl2/);
- assert.match(html,/<dialog[^>]+id="map-dialog"/);assert.match(html,/<dialog[^>]+id="brand-presentation"/);
+test('scan and video enhancements preserve motion preferences and click-to-load media',async()=>{
+ const html=await read('index.html'),js=await read('landing.js');
+ assert.match(js,/prefers-reduced-motion/);
+ for(const id of ['scan-play','scan-status','portion'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
+ assert.match(html,/<dialog[^>]+id="video-dialog"/);
  assert.doesNotMatch(html,/<iframe\b/,'video connections require an explicit user action');
+});
+
+test('video demos have local posters and Routine X has four coming-soon episodes',async()=>{
+ const html=await read('index.html');
+ const posters=[...html.matchAll(/data-poster="(\/xircle\/[^"?#]+)"/g)].map(match=>match[1]);
+ assert.ok(posters.length>=2,'both real scan demos need explicit local posters');
+ for(const poster of posters)await access(new URL(poster.replace('/xircle/',''),import.meta.url));
+ const episodes=[...html.matchAll(/<article\b[^>]*class="[^"]*\broutine-episode\b[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
+ assert.equal(episodes.length,4);
+ for(const [,episode] of episodes){assert.match(episode,/COMING SOON/);assert.doesNotMatch(episode,/<button\b|data-video=/);}
 });
 
 test('company download destinations are the verified official store applications',async()=>{
  const {APP_LINKS}=await import('./brand-catalog.js');
+ const html=await read('index.html');
  assert.equal(APP_LINKS.download,'https://www.xircle.health/download');
  assert.equal(APP_LINKS.ios,'https://apps.apple.com/th/app/id6785562482');
  assert.equal(APP_LINKS.android,'https://play.google.com/store/apps/details?id=health.xircle.app');
  for(const url of Object.values(APP_LINKS))assert.equal(new URL(url).protocol,'https:');
+ for(const key of ['download','ios','android'])assert.ok(html.includes(`href="${APP_LINKS[key]}"`),`missing official app link ${APP_LINKS[key]}`);
 });
 
 test('Habix catalogue distinguishes real products from the FIVES selection framework',async()=>{

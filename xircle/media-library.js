@@ -1,4 +1,4 @@
-/** Official CloverX videos: local metadata, URL-restored queues and explicit player loading. */
+/** Official CloverX videos: local posters, URL-restored queues and explicit player loading. */
 const section = document.querySelector('#official-media');
 const mount = section?.querySelector('[data-media-library]');
 
@@ -124,7 +124,19 @@ async function initialise() {
       const label = document.createElement('span');
       label.className = 'media-card-kind';
       label.textContent = categoryLabel(video.category);
-      artwork.append(number, play, label);
+      const poster = document.createElement('img');
+      poster.src = `/xircle/assets/real-app/video-${video.id}.jpg`;
+      poster.alt = '';
+      poster.width = 480;
+      poster.height = 270;
+      poster.loading = 'lazy';
+      poster.decoding = 'async';
+      poster.addEventListener('error', () => {
+        if (poster.dataset.fallback) return;
+        poster.dataset.fallback = 'true';
+        poster.src = '/xircle/assets/real-app/band-hero.webp';
+      }, {once: true});
+      artwork.append(poster, number, play, label);
       const title = document.createElement('span');
       title.className = 'media-card-title';
       title.textContent = video.title;
