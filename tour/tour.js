@@ -318,6 +318,7 @@ async function boot() {
   const maxRatio = () => pixelRatio({width: canvas.clientWidth || innerWidth, height: canvas.clientHeight || innerHeight, dpr: devicePixelRatio, mobile, level: gov.level});
   let house = null, tex = null;
   const bursts = [], loadedRooms = new Set();
+  let pendingPictures = 0;
   async function build() {
     renderer.setPixelRatio(maxRatio());
     renderer.shadowMap.enabled = !mobile;
@@ -436,7 +437,16 @@ async function boot() {
     if (!house) return;
     const i = Math.round(p), want = new Set(['outside']);
     for (let k = i - 1; k <= i + 2; k++) { const id = order[k]; if (id === 'door' || id === 'hero') want.add('living'); if (id) want.add(id); }
-    for (const id of want) if (!loadedRooms.has(id)) { loadedRooms.add(id); for (const load of house.lazy.get(id) || []) load(); }
+    for (const id of want) if (!loadedRooms.has(id)) {
+      loadedRooms.add(id);
+      for (const load of house.lazy.get(id) || []) {
+        const picture = load();
+        if (picture?.then) {
+          pendingPictures++;
+          Promise.resolve(picture).then(() => pendingPictures--, () => pendingPictures--);
+        }
+      }
+    }
   }
 
   /* ----- the rooms are drawn (and cast shadows) only while the house is open -----
@@ -697,7 +707,7 @@ async function boot() {
   // read-only test hook: progress, scene order, quality, and where things sit on screen
   window.__tour = {
     progress, order, found, quality: () => 'sd', items: () => house.hotspots.map(h => h.id), inspecting: () => inspecting, pickAt: (x, y) => pick(x, y),
-    level: () => gov.level, music: () => musicOn, roomsShown: () => roomsShown,
+    level: () => gov.level, music: () => musicOn, roomsShown: () => roomsShown, picturesPending: () => pendingPictures,
     itemState: id => { const h = hotById(id); return h ? {opened: opened.has(id), badge: h.opened ? 'silver' : 'gold', opacity: h.beacon?.material.opacity} : null; },
     storeySeam: () => {
       const slab = new THREE.Box3().setFromObject(house.storey.slab), edge = new THREE.Box3().setFromObject(house.storey.edge);

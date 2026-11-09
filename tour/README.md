@@ -101,29 +101,23 @@ the map covers, and otherwise four times a second.
 **Music:** the myClover Instrument (the Clover Song instrumental, `/assets/audio/clover-song.mp3`,
 `preload="none"`) plays only when someone presses the music button or taps the record player.
 
-**Pictures:** each is cropped to fill its frame (never stretched). SD loads room by room (the
-current room and the next two); HD prepares all room art behind its loader, with a 4-second
-deadline so an unavailable image never blocks the house. Every picture material starts with a 1×1 placeholder map, so a
+**Pictures:** each is cropped to fill its frame (never stretched). Pictures load room by room
+(the current room and the next two), without waiting for all artwork before entering the house. Every picture material starts with a 1×1 placeholder map, so a
 picture arriving mid-scroll never recompiles a shader. The six purpose-made pictures from
 `IMAGE-PROMPTS.md` are in `art/` as WebP (resized for their frames) and mapped in
 `art/manifest.json`; `art/dungeon-screen.webp` is a capture of the Dungeon's pixel field.
 
-**SD / HD:** SD is the default and is remembered per viewer (`mc:tour:quality`). HD rebuilds
-with 2× surface textures, normal maps, soft shadows (2048 px desktop / 1024 px phones),
-anisotropy and extra room props. Ambient occlusion and bloom are optional adaptive effects.
-Desktop HD starts at DPR 1.35 with bloom; phone HD starts at DPR 1.1 without screen effects.
-A sustained fast device can reach DPR 1.5 + half-resolution GTAO; slow devices shed effects
-before going down to DPR 1.1 / 0.85. Frame buffers are capped at 2.4 million pixels on desktop
-and 1.3 million on phones, including large and high-DPI displays.
+**Rendering budget:** the visitor gets one light scene; earlier saved HD preferences are
+retired. The resolution governor adapts from 1.25 down to 0.75 DPR without rebuilding the
+house or adding post-processing. Total frame buffers stay below 1.8 million pixels on desktop
+and 1 million on phones. Desktop shadows are enabled; mobile shadows are off. SD/HD geometry
+variants remain covered by unit surface tests, but there is no public quality switch.
 
-**Smooth HD:** the governor reacts to sustained slow frames in under a second, including
-frames slower than 250 ms, and requires 10 continuous fast seconds plus cooldown to recover.
-HD surface detail and props stay enabled at every level. Static repeated furniture is batched;
-small meadow leaves use flat geometry instead of the hero clover's heavily bevelled model.
-Shadows are shared across passes and refreshed at most 24 times per second. Scene, shadow and
-post-process shaders warm behind the loader. Rebuilds pause rendering and release old image
-crops, instance buffers and post-processing resources. A real-device frame rate still depends
-on its GPU, thermal state and other browser work; browser emulation is not a physical-phone benchmark.
+The governor responds to sustained slow frames, including frames slower than 250 ms, and
+requires ten continuous fast seconds plus cooldown before recovering. Static repeated furniture
+is batched; small meadow leaves use flat geometry. Shadows refresh at most 24 times per second.
+A real device’s frame rate still depends on its GPU, thermal state and other browser work;
+browser emulation is not a physical-phone benchmark.
 
 **Art corrections:** the course illustration uses Teem's actual identity reference. X-VISOR
 uses its existing page capture; the CAIO profile is a native canvas label and XIRCLE uses
@@ -169,8 +163,8 @@ Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), neve
   same release that adds it: that pairing fails to link and the house never loads. Add the
   name first, use it a release later, or keep the two halves independent as the picture
   queue is.
-- **Budget.** SD: pixel ratio 1.25 phones / 1.5 desktop, shadows off on phones; HD as above.
-  Rendering pauses on hidden tabs. All geometry is procedural; no model downloads.
+- **Budget.** Adaptive resolution and bounded frame buffers as above; rendering pauses on
+  hidden tabs. All geometry is procedural; no model downloads.
 
 ## Professional workbench (2026-11-09)
 
@@ -221,12 +215,17 @@ change `/compass/`. Edit `tour/index.html` directly for Tour content.
 - `TOUR_PLAYWRIGHT=<playwright dir> TOUR_CHROME=<chrome> npm run test:tour:ui` — no pick through
   the walls from the garden, walks every room (stairs included), every 3D object matches a page
   link, picks up the TeamBook notebook, lesson computers → บท 1/4/5 + Dungeon, clicks a hidden
-  clover, the record player plays and stops the music, the button quest, persistence, repeated SD/HD rebuilds with GPU-resource checks, phone WebGL HD, rail names and 32×44 px targets on a phone, the no-WebGL fallback, and the blocked-module
+  clover, the record player plays and stops the music, the button quest, persistence, repeated room
+  visits with GPU-resource checks after actual picture uploads complete, phone WebGL, rail names and 32×44 px targets on a phone, the no-WebGL fallback, and the blocked-module
   fallback. It also checks the real hero/rail/Back journey, eight-work gallery at 320/390/768/1440 px,
   filters/counts, modal focus, URL/reload/Back/Forward, image decode and no-JavaScript fallback.
   Screenshots and a timestamped report go to `TOUR_PROOF_DIR` (or a temp dir).
 
 `TOUR_HARDWARE=1` runs browser verification on the installed GPU instead of SwiftShader.
+Resource assertions warm every room and await the read-only `__tour.picturesPending()` count
+to reach zero. The count follows the existing lazy image promises through GPU upload, so an
+incomplete first load is not mistaken for repeat-visit growth. The optional learning-entry API
+uses an anonymous 401 fixture on the static server; these checks do not certify its backend.
 
 ## Book preview (`/book/ai-sauce/`)
 

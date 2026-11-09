@@ -248,14 +248,23 @@ try {
     for (const id of ['teambook', 'airova', 'resume', 'teem-photo', 'ako-photo', 'mediral']) assert.equal(await page.evaluate(id => window.__tour.itemState(id).badge, id), 'silver');
 
     assert.equal(await page.locator('[data-quality]').count(),0);
+    // Warm every room and await the actual lazy-image GPU-upload promises, rather than treating cold assets as leaks.
+    for(const id of ['living','kitchen','classroom','office']){
+      await page.evaluate(id=>{const s=document.getElementById(id);scrollTo(0,s.offsetTop+s.offsetHeight/2-innerHeight/2);},id);
+      await page.waitForFunction(id=>Math.abs(window.__tour.progress()-window.__tour.order.indexOf(id))<.05,id);
+      await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    }
+    await page.waitForFunction(()=>window.__tour.picturesPending()===0,null,{timeout:60000});
+    report.textureReadiness={pending:await page.evaluate(()=>window.__tour.picturesPending()),stats:await page.evaluate(()=>window.__tour.stats())};
     const memory=[];
     for(let lap=0;lap<3;lap++) {
       for(const id of ['living','kitchen','classroom','office']) {
         await page.evaluate(id=>{const s=document.getElementById(id);scrollTo(0,s.offsetTop+s.offsetHeight/2-innerHeight/2)},id);
         await page.waitForTimeout(450);
       }
-      await page.waitForTimeout(800);memory.push(await page.evaluate(()=>window.__tour.stats()));
+      await page.waitForTimeout(800);assert.equal(await page.evaluate(()=>window.__tour.picturesPending()),0,'measured samples require completed picture uploads');memory.push(await page.evaluate(()=>window.__tour.stats()));
     }
+    report.memorySamples=memory;
     assert.ok(memory.at(-1).geometries<=memory[0].geometries+2,JSON.stringify(memory));
     assert.ok(memory.at(-1).textures<=memory[0].textures+2,JSON.stringify(memory));
     assert.ok(memory[0].batchedMeshes>100);
