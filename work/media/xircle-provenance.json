@@ -26,7 +26,8 @@
         "width": 1440,
         "height": 900
       },
-      "encoding": "WebP from original PNG"
+      "encoding": "WebP from original PNG",
+      "original": "1440-landing.png"
     },
     {
       "file": "xircle-mobile.webp",
@@ -34,7 +35,9 @@
         "width": 390,
         "height": 900
       },
-      "encoding": "WebP from original PNG"
+      "encoding": "WebP from original PNG",
+      "scene": "Expanded mobile route map",
+      "original": "390-brand-map.png"
     },
     {
       "file": "xircle-presentation.webp",
@@ -42,9 +45,11 @@
         "width": 1440,
         "height": 900
       },
-      "encoding": "WebP from original local browser PNG"
+      "encoding": "WebP from original local browser PNG",
+      "scene": "Interactive shared-state presentation and device connection station",
+      "original": "1440-brand-presentation.png"
     }
   ],
   "verification": "Original PNGs and browser reports were retained outside the public repository. Images depict local previews, not evidence of production deployment or health outcomes.",
-  "experience": "Company scrolling product experience; no personal appointment or external notebook handoff"
+  "experience": "Clover X interactive brand walk; branching map, sample day, devices, RoutineX and Habix; no personal appointment or notebook"
 }

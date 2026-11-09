@@ -8,9 +8,9 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
   const server = await startPreview({ port: 0 });
   t.after(async () => { await server.close(); await rm(server.directory, { recursive: true, force: true }); });
   const canonical = await (await fetch(`${server.base}/xircle/`)).text();
-  assert.match(canonical, /company-story\.js/);
-  assert.match(canonical, /company-story\.css/);
-  assert.doesNotMatch(canonical, /experience(?:-v[12])?\.(?:js|css)/);
+  assert.match(canonical, /brand-experience\.js/);
+  assert.match(canonical, /brand-experience\.css/);
+  assert.doesNotMatch(canonical, /\/xircle\/experience(?:-v[123])?\.(?:js|css)/);
 
   await t.test('case and slash variants finish in one redirect with the exact same page', async () => {
     for (const route of ['/Xircle', '/Xircle/', '/XIRCLE', '/XIRCLE/', '/xIrClE/', '/xircle']) {
@@ -36,8 +36,8 @@ test('XIRCLE aliases use one static experience and preserve acquisition context'
       assert.equal((await fetch(new URL(expected, server.base), { redirect: 'manual' })).status, 200, route);
     }
     for (const [asset, type] of [
-      ['company-story.js?v=proof', 'text/javascript'],
-      ['company-story.css?v=proof', 'text/css'],
+      ['brand-experience.js?v=proof', 'text/javascript'],
+      ['brand-experience.css?v=proof', 'text/css'],
       ['_shared/typography.css', 'text/css'],
       ['assets/v3/hero-800.webp', 'image/webp'],
     ]) {

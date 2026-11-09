@@ -9,7 +9,7 @@ const files=['doc/','learn/','hardware/','products/'].flatMap(dir=>htmlFiles(new
 test('all 49 references retain readable content, static navigation and official company destination',()=>{
  assert.equal(files.length,49);
  for(const file of files){const html=readFileSync(file,'utf8');
-  assert.match(html,/<main\b/);assert.match(html,/<h1\b/);assert.match(html,/class="journey-header"/);assert.match(html,/href="https:\/\/buy\.xircle\.health\/login\?ref=O5F3LN"/);
+  assert.match(html,/<main\b/);assert.match(html,/<h1\b/);assert.match(html,/class="journey-header"/);assert.match(html,/href="https:\/\/www\.xircle\.health\/download"/);
   assert.doesNotMatch(html,/<meta[^>]*http-equiv\s*=\s*["']?refresh/i);
   assert.doesNotMatch(html,/<a\b[^>]+href=["'][^"']*(?:teambook\.me|\/xty\/|\/meet\/|\/xvisor\/\?from=xircle)/);
   assert.doesNotMatch(html,/xvisor-path\.js|data-xvisor-topic-bridge|data-whitecat-(?:link|bridge)/);

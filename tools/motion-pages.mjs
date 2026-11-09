@@ -67,7 +67,7 @@ export const MOTION_PAGES = Object.freeze({
   'ako/kitchen/index.html': story,
   'homechew/index.html': immersive,
   'homechew/privacy/index.html': read,
-  // XIRCLE owns native scroll chapters, WebGL and presentation motion; do not inject a second engine.
+  // XIRCLE owns its interactive brand walk, WebGL and presentation motion; do not inject a second engine.
 
   // classroom (upstairs)
   'courses/index.html': story,

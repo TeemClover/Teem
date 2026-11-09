@@ -22,7 +22,7 @@ test('retired invitations and browser storage have no role in the company story'
 });
 test('one active company runtime and no personal-service engine',async()=>{
  const html=await readFile(new URL('index.html',import.meta.url),'utf8');
- assert.match(html,/company-story\.js/);assert.match(html,/company-story\.css/);
+ assert.match(html,/brand-experience\.js/);assert.match(html,/brand-experience\.css/);
  assert.doesNotMatch(html,/experience-v3|\/meet\/|teambook\.me|\/xty\/|xvisor-path\.js|ทีม\s*\+\s*เอโกะ|ทีมและเอโกะ/);
  for(const name of ['experience.js','experience-v1.js','experience-v2.js','experience-v3.js','experience-v3.css','entry.css'])await assert.rejects(access(new URL(name,import.meta.url)));
  for(const path of RETIRED_ENTRIES){const shell=await readFile(new URL(path+'/index.html',import.meta.url),'utf8');assert.match(shell,/legacy-entry\.js/);}

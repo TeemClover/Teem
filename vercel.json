@@ -458,22 +458,22 @@
     },
     {
       "source": "/routinex",
-      "destination": "/xircle/routinex/",
+      "destination": "/xircle/#visit-routine",
       "permanent": false
     },
     {
       "source": "/routinex/",
-      "destination": "/xircle/routinex/",
+      "destination": "/xircle/#visit-routine",
       "permanent": false
     },
     {
       "source": "/habix",
-      "destination": "/xircle/doc/habix/",
+      "destination": "/xircle/#visit-habix",
       "permanent": false
     },
     {
       "source": "/habix/",
-      "destination": "/xircle/doc/habix/",
+      "destination": "/xircle/#visit-habix",
       "permanent": false
     },
     {
