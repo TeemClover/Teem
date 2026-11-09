@@ -38,6 +38,8 @@ export const ART = {
   'screen-airova': {fallback: '/tour/art/screen-airova-cinema.webp', aspect: 16 / 9},
   'screen-resume': {fallback: '/img/og-resume.jpg', aspect: 16 / 9},
   'screen-xvisor': {fallback: '/xvisor/xvisor-intro-hero.webp', aspect: 16 / 9},
+  // A real capture of the shipped brand experience, loaded only near the office.
+  'screen-xircle': {fallback: '/work/media/xircle-presentation.webp', aspect: 16 / 9},
   'dungeon-screen': {fallback: '/tour/art/dungeon-screen.webp', aspect: 16 / 10},
 };
 
@@ -712,20 +714,58 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
     }
   }
 
-  /* ================= PROJECT ROOM (floor 2, left): X-VISOR + Resume + Airova studio, TeamBook, the house model ================= */
+  /* ================= PROJECT ROOM (floor 2, left): CAIO practice, Clover X and selected work ================= */
   {
     const g = room('office');
-    const skyMat = canvasMat(512, 320, (c, w, h) => { const gr = c.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#9fd3f0'); gr.addColorStop(1, '#fbe3b4'); c.fillStyle = gr; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(40,70,60,.35)'; for (let x = 0; x < w; x += 38) { const bh = 60 + (x * 37 % 110); c.fillRect(x, h - bh, 32, bh); } }, 0.7);
-    plane(g, [1.6, 1.3], [3.0, 2.0, BW + 0.02], skyMat);
-    rb(g, [1.76, 0.07, 0.18], [3.0, 1.3, BW + 0.09], '#ffffff', null, 0.01);
+    // Wall exhibits reuse the existing wall volume. Their fronts clear the frames by >1 cm;
+    // nothing new occupies the circulation area, adds a light or needs an animation ticker.
+    const wallExhibit = (id, width, height, position, material, frame = '#173f34') => {
+      const exhibit = group(g, ...position);
+      rb(exhibit, [width + 0.12, height + 0.12, 0.065], [0, -(height + 0.12) / 2, -0.025], M(frame, {roughness: 0.38}), null, 0.018);
+      plane(exhibit, [width, height], [0, 0, 0.021], material);
+      hot(exhibit, id);
+      return exhibit;
+    };
+    const companyMat = canvasMat(960, 576, (c, w, h) => {
+      c.fillStyle = '#f3f0e6'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#173f34'; c.fillRect(36, 34, w - 72, 7);
+      c.font = `600 29px ${FONT}`; c.fillText('COMPANY', 56, 103);
+      c.font = `700 100px ${FONT}`; c.fillText('CLOVER X', 48, 245);
+      c.fillStyle = '#668465'; c.font = `500 35px ${FONT}`; c.fillText('Connected possibilities.', 56, 323);
+      const colours = ['#cf5c59', '#5e9666', '#649fb8', '#8e9790'];
+      colours.forEach((col, i) => { c.fillStyle = col; c.fillRect(56 + i * 209, 389, 190, 9); });
+      c.fillStyle = '#173f34'; c.font = `600 28px ${FONT}`; c.fillText('EXPLORE CLOVERX.CO.TH  ↗', 56, 493);
+    });
+    wallExhibit('company-cloverx', 1.72, 1.03, [3.0, 2.36, BW + 0.07], companyMat);
+    const pressMat = canvasMat(1536, 256, (c, w, h) => {
+      c.fillStyle = '#f4efe2'; c.fillRect(0, 0, w, h);
+      c.fillStyle = '#204b3c'; c.fillRect(0, 0, 265, h);
+      c.fillStyle = '#d2e59c'; c.font = `700 70px ${FONT}`; c.fillText('depa', 38, 113);
+      c.fillStyle = '#e7ede0'; c.font = `500 22px ${FONT}`; c.fillText('IN THE NEWS', 38, 166);
+      c.fillStyle = '#173f34'; c.font = `700 48px ${FONT}`; c.fillText('CLOVER X · SLUSH 2026', 305, 78);
+      c.font = `600 33px ${FONT}`; c.fillText('1 OF 8 THAI TEAMS SELECTED', 307, 137);
+      c.fillStyle = '#5d7462'; c.font = `500 27px ${FONT}`; c.fillText('HELSINKI · 18–19 NOV 2026 · UPCOMING', 307, 201);
+    });
+    // Event dates are future-facing, not a publication date or an award claim.
+    wallExhibit('depa-news', 3.74, 0.625, [-0.26, 2.65, BW + 0.075], pressMat, '#b8a783');
+
+    const caioMat = canvasMat(1024, 576, (c, w, h) => {
+      const gr = c.createLinearGradient(0, h, w, 0); gr.addColorStop(0, '#0c241e'); gr.addColorStop(1, '#285846'); c.fillStyle = gr; c.fillRect(0, 0, w, h);
+      c.strokeStyle = '#bdd99335'; c.lineWidth = 2;
+      for (const r of [90, 145, 205]) { c.beginPath(); c.arc(874, 278, r, 0, Math.PI * 2); c.stroke(); }
+      c.fillStyle = '#bdd69f'; c.font = `600 33px ${FONT}`; c.fillText('NARIN · TEEM', 58, 88);
+      c.fillStyle = '#f6f3e5'; c.font = `700 132px ${FONT}`; c.fillText('CAIO', 51, 271);
+      c.fillStyle = '#d2e59c'; c.font = `600 51px ${FONT}`; c.fillText('CLOVER X', 58, 354);
+      c.fillStyle = '#c1d1c1'; c.font = `500 27px ${FONT}`; c.fillText('PROFILE & SELECTED WORK  ↗', 58, 491);
+    }, 0.35);
     // One continuous worktop against the back wall; the doorway at x=4 stays clear.
     rb(g, [6.4, 0.07, 0.8], [-0.25, 0.75, BW + 0.46], wood('#a8744a'), null, 0.02);
     for (const dx of [-3.3, 2.8]) rb(g, [0.08, 0.75, 0.7], [dx, 0, BW + 0.46], M('#2f3a35', {metalness: 0.4}), null, 0.01);
     rb(g, [0.62, 0.68, 0.66], [-0.25, 0, BW + 0.46], M('#ece7db'), null, 0.02);
     for (const y of [0.19, 0.4, 0.61]) rb(g, [0.18, 0.018, 0.025], [-0.25, y, BW + 0.8], M('#7d8b80'), null, 0.006);
     const screens = [
-      {id: 'xvisor', mat: artMat('screen-xvisor', true, '#223'), tag: 'X-VISOR QUEST', col: '#e9b949', x: -2.4, ry: 0.08},
-      {id: 'resume', mat: artMat('screen-resume', true, '#223'), tag: 'RESUME · ทีม', col: '#e37c5b', x: -0.25, ry: 0},
+      {id: 'office-xircle', mat: artMat('screen-xircle', true, '#ffffff'), tag: 'XIRCLE · BRAND EXPERIENCE', col: '#d3e899', x: -2.4, ry: 0.08},
+      {id: 'resume', mat: caioMat, tag: 'CAIO · CLOVER X', col: '#e37c5b', x: -0.25, ry: 0},
       {id: 'airova', mat: artMat('screen-airova', true, '#223'), tag: 'AIROVA · GEN VIDEO', col: '#c5f36b', x: 1.9, ry: -0.08},
     ];
     for (const s_ of screens) {
@@ -740,6 +780,14 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
       rb(g, [0.72, 0.018, 0.22], [x, 0.822, BW + 0.72], M('#39433e'), null, 0.008);
       rb(g, [0.1, 0.025, 0.14], [x + 0.5, 0.822, BW + 0.72], M('#e9ecef'), null, 0.012);
     }
+    // Keep the game prototype as a smaller desk exhibit; the shipped company work leads.
+    // The left/centre gap leaves the original hidden clover beside Airova unobstructed.
+    const questTablet = group(g, -1.28, 0.832, BW + 0.70); questTablet.rotation.y = -0.1;
+    rb(questTablet, [0.62, 0.41, 0.045], [0, 0.12, 0], M('#25392f'), null, 0.016);
+    plane(questTablet, [0.56, 0.315], [0, 0.325, 0.036], artMat('screen-xvisor', true, '#ffffff'));
+    cy(questTablet, [0.025, 0.03, 0.102], [0, 0.018, 0], M('#4f6555'));
+    rb(questTablet, [0.24, 0.018, 0.18], [0, 0, 0], M('#4f6555'), null, 0.005);
+    hot(questTablet, 'xvisor');
     // A shallow planning console in the front-left corner; no table in the walkway.
     const nook = group(g, -2.85, 0, 2.45);
     rb(nook, [1.45, 0.05, 0.66], [0, 0.73, 0], wood('#c49a6c'), null, 0.025);

@@ -1,11 +1,13 @@
-# บ้าน myClover — 3D house tour (homepage)
+# บ้าน myClover — CAIO portfolio tour
 
 A scroll-driven 3D walk through the myClover house. Each scroll section moves the camera to a
-room; each room sends the visitor to a real part of the site.
+room; each room sends the visitor to a real part of the site. The professional introduction and
+second-floor workbench present Narin “Teem” Leelaporn as CAIO · Clover X.
 
 Files: `tour.js` (runtime: scroll, camera, picking, quest, quality, music), `intro.js` (the
 loading intro), `house.js` (the house and its rooms), `textures.js` (procedural canvas textures + cropped image textures),
-`art/` (purpose-made pictures, WebP), `IMAGE-PROMPTS.md` (what they were generated from).
+`portfolio.js` / `portfolio.css` (the accessible workbench gallery), `art/` (purpose-made pictures,
+WebP), `IMAGE-PROMPTS.md` (what they were generated from).
 
 The house is our real two-storey home from `/showcase/house/` (outside only: two orange hip
 roofs, big dark-framed windows, a glass balcony, a carport with the family car, solar panels),
@@ -29,7 +31,7 @@ Tapping one makes it float toward you and a panel offers its page.
 | Kitchen | salad bowl → `/ako/kitchen/` · stove with a pot of simmering sauce → `/homechew/` · hamburg steak plate with a FOOD FAIR table sign on the island → `/hamburg/` · three framed dishes on the wall (pictures only, no links) · recipe book → `/ako/` · XIRCLE Scale → `/xircle/` |
 | Stair hall | floating oak stairs, fairy lights on the rail, a gallery of home photos (no links) |
 | Classroom | course easel → `/courses/` · whiteboard → `/classroom/` · four computers: บท 1 → `/classroom/free-ai.html`, บท 4 → `/classroom/notebooklm.html`, บท 5 → `/classroom/prompts.html`, one playing THE DUNGEON → `/classroom/dungeon/` |
-| Office | three screens on one rear worktop: X-VISOR QUEST → `/xvisor/` · Resume → `/resume/` · Airova → `/airova/` · TeamBook in the front-left planning nook → `/teambook/` · house model on the left sideboard → `/showcase/house/` · Mediral cabinet by the right wall → `/mediral/` |
+| Office | XIRCLE screen → `/xircle/` · CAIO profile screen → `/resume/` · Airova screen → `/airova/` · X-VISOR Quest tablet → `/xvisor/` · TeamBook notebook → `/teambook/` · house model → `/showcase/house/` · Mediral cabinet → `/mediral/` · company frame → `https://www.cloverx.co.th/th` · depa placard → the primary announcement below |
 | Outside | the big clover / finale button → `/meet/` |
 
 Gold cursor badges mark every pickable object in the current room. Opened objects keep a silver check badge, remain pickable, and retain their status in `mc:tour:opened:v1` local storage. Inspecting an object or opening its destination records it; storage denial falls back to memory. Badges stay about 30 CSS pixels across SD/HD and phone views. The original object materials and image colours stay unchanged in both states.
@@ -73,8 +75,8 @@ keeps the stages and the words, without movement, and fades out.
 **Loading order:** the Google Fonts stylesheet does not block the first paint
 (`media="print"` until loaded; `tour.js` waits for its faces before drawing canvas labels), and
 every module in the house's import graph has a `modulepreload` link, so they download together
-instead of one import level at a time. Adding an import means adding its link in both
-`/index.html` and `/tour/index.html`; the test fails until the list matches.
+instead of one import level at a time. Adding an import means adding its matching link in
+`/tour/index.html`; versioned import and preload URLs must agree. The root homepage has its own module graph.
 
 **Smooth walk:** three things used to cost frames between the garden and the rooms, and each has
 a guard in `tests/tour/smooth.test.mjs`.
@@ -123,8 +125,9 @@ post-process shaders warm behind the loader. Rebuilds pause rendering and releas
 crops, instance buffers and post-processing resources. A real-device frame rate still depends
 on its GPU, thermal state and other browser work; browser emulation is not a physical-phone benchmark.
 
-**Art corrections:** the course illustration uses Teem's actual identity reference; Resume
-and X-VISOR screens display captures of their current pages. TeamBook and Dungeon frame ratios
+**Art corrections:** the course illustration uses Teem's actual identity reference. X-VISOR
+uses its existing page capture; the CAIO profile is a native canvas label and XIRCLE uses
+the genuine `/work/media/xircle-presentation.webp` capture. TeamBook and Dungeon frame ratios
 match their art. See `art/POLISH-20260926.md` for sources and the image-edit prompt.
 Portrait room framing puts the room above the card instead of leaving a large empty sky.
 
@@ -169,23 +172,59 @@ Progress is a per-viewer `localStorage` convenience (`mc:tour:clovers:v1`), neve
 - **Budget.** SD: pixel ratio 1.25 phones / 1.5 desktop, shadows off on phones; HD as above.
   Rendering pauses on hidden tabs. All geometry is procedural; no model downloads.
 
+## Professional workbench (2026-11-09)
+
+The hero leads directly to the office or `/resume/`. Room anchors center the section at the
+camera stop, focus its heading, and restore on Back/Forward. Actual width changes preserve the
+current interpolated point in the walk; same-width phone toolbar changes do not move it.
+
+The native `#workbench` dialog holds eight inspectable works: XIRCLE, RoutineX, Mediral,
+Airova, AI ใส่ซอส, X-VISOR Quest, TeamBook and House 3D. Type badges distinguish brand work,
+partner pages, simulations and personal projects. The copy does not claim sales, user counts
+or a production launch for prototypes. All cards and images are static HTML; filters, counts
+and URL state are an enhancement in `portfolio.js`. Gallery URLs use bounded
+`?view=work&filter=all|cloverx|systems|learning#office` state. Back closes, Forward reopens,
+Escape returns focus, and Lenis pauses while the native modal owns scrolling. With JavaScript
+disabled, the opener stays hidden and `/work/` remains available.
+
+The office has 30 pickable objects across the house: all 27 older IDs plus `office-xircle`,
+`company-cloverx` and `depa-news`. New office art adds no lights, animation loops or external
+image requests. XIRCLE is lazily loaded with the office; profile, company and press labels use
+native canvas. The room retains the old links, quest, music and visited-item state.
+
+The company link is the public official `https://www.cloverx.co.th/th`. The news board links
+to [depa’s RUNWAY TO SLUSH 2026 announcement](https://www.depa.or.th/th/article-view/20260918_01),
+checked 2026-11-09. It names CloverX among eight selected Thai digital startup teams for
+SLUSH in Helsinki, 18–19 November 2026. At this change’s date the event is upcoming: the
+copy says selected to attend, not already attended, an award, technology certification or an
+individual endorsement. No publication date is inferred from the URL. The board uses native
+text artwork; no third-party news photo is copied.
+
+`art/og-caio-tour-20261109.jpg` is a 1200×630 JPEG crop of the actual local Tour hero
+(`desktop-hero-1440.png`, Chromium browser verification, 2026-11-09), not a generated UI mockup.
+It replaces the old lucky-card share image.
+
+`/resume/` uses the same user-authorized CAIO role in Thai/English copy, page metadata and
+structured data. Existing project-specific contributions stay distinct. No CAIO PDF download
+is offered because no public PDF source was supplied with this change.
+
 ## Status
 
-Promoted on 2026-09-26: `/` is rendered from `tour/index.html` by `npm run sync:frontdoor-root`
-(`index,follow`, canonical `/`). `/tour/` stays as a `noindex` review alias with canonical `/`.
-The previous Compass front door moved to `/compass/` (same runtime, same telemetry; entry path
-`/compass/`), reachable from the compass on the living-room game table. Edit `tour/index.html`,
-then re-run the sync; never edit the root `index.html` by hand.
+`/tour/` is an independent indexed page with canonical `https://www.myclover.com/tour/`.
+The root homepage is generated from `entry/home.html`; this change does not regenerate it or
+change `/compass/`. Edit `tour/index.html` directly for Tour content.
 
 ## Tests
 
-- `npm run test:tour` — every internal link and asset resolves; each room has one primary link
-  and a clover hint; no third-party script origins.
+- `npm run test:tour` — internal links/assets, exact DOM/3D item IDs, room primary links,
+  preload graph and rendering contracts, CAIO/work-type copy and official company/news allowlists.
 - `TOUR_PLAYWRIGHT=<playwright dir> TOUR_CHROME=<chrome> npm run test:tour:ui` — no pick through
   the walls from the garden, walks every room (stairs included), every 3D object matches a page
   link, picks up the TeamBook notebook, lesson computers → บท 1/4/5 + Dungeon, clicks a hidden
   clover, the record player plays and stops the music, the button quest, persistence, repeated SD/HD rebuilds with GPU-resource checks, phone WebGL HD, rail names and 32×44 px targets on a phone, the no-WebGL fallback, and the blocked-module
-  fallback. Screenshots go to `TOUR_PROOF_DIR` (or a temp dir).
+  fallback. It also checks the real hero/rail/Back journey, eight-work gallery at 320/390/768/1440 px,
+  filters/counts, modal focus, URL/reload/Back/Forward, image decode and no-JavaScript fallback.
+  Screenshots and a timestamped report go to `TOUR_PROOF_DIR` (or a temp dir).
 
 `TOUR_HARDWARE=1` runs browser verification on the installed GPU instead of SwiftShader.
 

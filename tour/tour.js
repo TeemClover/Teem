@@ -11,7 +11,8 @@ import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
 import {createGovernor, updateGovernor, pixelRatio} from './quality.js';
 import {makeTextures, FONT} from './textures.js';
-import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js';
+import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js?v=20261109-caio';
+import {initOfficePortfolio} from './portfolio.js?v=20261109-caio';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -203,6 +204,13 @@ for (const a of $$('[data-item]')) {
   a.addEventListener('blur', () => scene3d.glow?.(a.dataset.item, false));
 }
 
+/* The native workbench owns the keyboard and scroll while open. */
+initOfficePortfolio({
+  onOpen: () => { closeInspect(); lenis?.stop(); },
+  onClose: () => { lenis?.start(); if (location.hash === '#office') requestAnimationFrame(() => navigateRoom('office', {instant: true, focus: false})); },
+});
+if (document.querySelector('#workbench')?.dataset.portfolioReady) document.body.classList.add('portfolio-ready');
+
 /* ---------- cards: masked headline reveal, staggered chips; hero drifts away on scroll ---------- */
 for (const h of $$('.card h2, .hero-card h1 .line')) h.innerHTML = `<span class="rise">${h.innerHTML}</span>`;
 for (const list of $$('.items')) $$('li', list).forEach((li, i) => li.style.setProperty('--i', i));
@@ -210,6 +218,37 @@ const sections = $$('[data-scene]');
 const io = new IntersectionObserver(entries => { for (const e of entries) if (e.isIntersecting) e.target.querySelector('.card')?.classList.add('in'); }, {threshold: 0.2});
 sections.forEach(s => io.observe(s));
 function setRail(id) { for (const a of $$('[data-rail]')) { const on = a.dataset.rail === id || (id === 'door' && a.dataset.rail === 'hero') || (id === 'stairs' && a.dataset.rail === 'classroom'); a.classList.toggle('active', on); if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); } }
+// Room links land at the camera's resting position, rather than the start of a tall section.
+let lastRoomHash = location.hash;
+function navigateRoom(id, {instant = false, focus = true} = {}) {
+  const section = sections.find(s => s.id === id); if (!section) return;
+  const top = id === 'hero' ? 0 : Math.max(0, section.offsetTop + section.offsetHeight / 2 - innerHeight / 2);
+  const heading = section.querySelector('h1,h2');
+  const finish = () => { if (focus && heading) { heading.tabIndex = -1; heading.focus({preventScroll: true}); } };
+  if (lenis) lenis.scrollTo(top, {immediate: instant || reduced, duration: 1.6, onComplete: finish});
+  else { scrollTo({top, behavior: instant || reduced ? 'instant' : 'smooth'}); finish(); }
+  if (instant || reduced) finish();
+}
+for (const link of $$('a[href^="#"]')) {
+  const id = link.getAttribute('href').slice(1); if (!sections.some(s => s.id === id)) continue;
+  link.addEventListener('click', event => {
+    if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault(); event.stopPropagation();
+    try { if (location.hash !== '#' + id) history.pushState({...history.state, tourRoom: id}, '', location.pathname + location.search + '#' + id); } catch {}
+    lastRoomHash = location.hash; navigateRoom(id);
+  });
+}
+function restoreRoom(force = false) {
+  if (!force && location.hash === lastRoomHash) return;
+  lastRoomHash = location.hash;
+  const id = location.hash.slice(1); if (!sections.some(s => s.id === id) || document.querySelector('dialog[open]')) return;
+  const href = location.href;
+  setTimeout(() => { if (href === location.href && !document.querySelector('dialog[open]')) navigateRoom(id, {instant: true}); }, 0);
+}
+addEventListener('popstate', () => restoreRoom());
+addEventListener('hashchange', () => restoreRoom());
+if (document.readyState === 'complete') restoreRoom(true); else addEventListener('load', () => restoreRoom(true), {once: true});
+
 const heroCard = $('.hero-card');
 function heroDrift() { if (!heroCard || reduced) return; const k = clamp(scrollY / (innerHeight * 0.7)); heroCard.style.setProperty('--drift', k.toFixed(3)); }
 addEventListener('scroll', heroDrift, {passive: true}); heroDrift();
@@ -320,7 +359,7 @@ async function boot() {
     kitchen: {pos: [5.4, 2.65, 7.4], look: [3.9, 0.95, -1]},
     stairs: {pos: [7.6, 3.6, 9.2], look: [10.1, 2.3, -0.8], phone: [1.2, -0.6]},
     classroom: {pos: [5.4, F2 + 2.65, 7.4], look: [3.9, F2 + 1.05, -1]},
-    office: {pos: [-2.2, F2 + 2.8, 10.3], look: [-4.0, F2 + 1.1, -0.5]},
+    office: {pos: [-2.2, F2 + 2.8, 10.3], look: [-4.0, F2 + 1.1, -0.5], phone: [2.3, -0.75]},
     finale: {pos: [8, 5.6, 28], look: [1.0, 3.4, 0], phoneShot: {pos: [3.2, 4.4, 37], look: [0.4, 3.4, 0]}},
   };
   const order = sections.map(s => s.dataset.scene).filter(id => SHOTS[id]);
@@ -368,10 +407,12 @@ async function boot() {
   }
 
   /* ----- sizing: follow the canvas' CSS box (100lvh), ignore mobile toolbar jitter ----- */
-  let viewShift = 0, viewLift = 0, lastW = 0, lastH = 0, shadowSpan = 0;
+  let viewShift = 0, viewLift = 0, lastW = 0, lastH = 0, shadowSpan = 0, lastProgress = null;
   function sizeCanvas(force) {
     const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
     if (!force && w === lastW && (Math.abs(h - lastH) < 1 || (touch && Math.abs(h - lastH) < 160))) { measure(); return; }
+    // A rotation changes section heights. Keep the same point in the walk, including between rooms.
+    const preserve = !force && lastW && w !== lastW ? lastProgress : null;
     lastW = w; lastH = h;
     renderer.setPixelRatio(maxRatio());
     renderer.setSize(w, h, false); heldAt.redraw = true; // resizing empties the canvas: draw again even while the picture is held
@@ -380,6 +421,12 @@ async function boot() {
     camera.fov = aspect >= 1 ? 45 : Math.min(80, 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(30)) / aspect) * 180 / Math.PI);
     viewShift = viewLift = NaN; camera.updateProjectionMatrix();
     measure();
+    if (preserve !== null && anchors.length) {
+      const i = Math.min(Math.floor(preserve), anchors.length - 1), j = Math.min(i + 1, anchors.length - 1);
+      const top = lerp(anchors[i], anchors[j], preserve - i);
+      if (lenis) { lenis.resize(); lenis.scrollTo(top, {immediate: true, force: true}); }
+      else scrollTo({top, behavior: 'instant'});
+    }
   }
   addEventListener('resize', () => sizeCanvas(false));
   new ResizeObserver(() => measure()).observe(document.body); // late fonts or images change section heights
@@ -494,6 +541,7 @@ async function boot() {
     heldAt.redraw = false;
     const rawDt = clock.getDelta(), dt = Math.min(rawDt, 0.05), t = clock.elapsedTime, still = reduced;
     const p = progress(), fin = idx('finale'), portrait = camera.aspect < 1;
+    lastProgress = p;
 
     const sceneId = order[Math.round(p)];
     if (sceneId !== currentScene) { currentScene = sceneId; setRail(sceneId); loadRoomsNear(p); if (inspecting && sceneOfItem(inspecting) !== sceneId) closeInspect(); }

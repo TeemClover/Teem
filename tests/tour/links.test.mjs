@@ -3,9 +3,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile, stat} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
+import * as THREE from '../../tour/vendor/three.module.min.js';
+import {buildHouse} from '../../tour/house.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const html = await readFile(root + 'tour/index.html', 'utf8');
+const approvedExternalItems = new Map([
+  ['company-cloverx', 'https://www.cloverx.co.th/th'],
+  ['depa-news', 'https://www.depa.or.th/th/article-view/20260918_01'],
+]);
+const publishedItems = ['compass','aisauce-book','core7','hall','forge-book','walkthrough-book','teem-photo','ako-photo','ako-kitchen','homechew','hamburg','xircle','absorb','ako','courses','lesson-1','lesson-4','lesson-5','dungeon','classroom','xvisor','teambook','resume','airova','house3d','mediral','meet'];
+const attribute = (tag, name) => tag.match(new RegExp(`\\b${name}="([^"]*)"`))?.[1];
+
 
 async function exists(path) {
   const clean = path.split(/[?#]/)[0];
@@ -37,9 +46,43 @@ test('every pickable object has a unique id, a real link and a description', () 
   assert.ok(items.length >= 20, `only ${items.length} items`);
   const ids = items.map(m => m[1]);
   assert.equal(new Set(ids).size, ids.length, 'duplicate data-item');
+  for (const id of publishedItems) assert.ok(ids.includes(id), `published object ${id} remains available`);
   for (const [tag, id] of items) {
-    assert.match(tag, /href="\/[^"]*"/, id);
+    const href = attribute(tag, 'href');
+    if (approvedExternalItems.has(id)) assert.equal(href, approvedExternalItems.get(id), id);
+    else assert.match(href || '', /^\/(?!\/)/, `${id}: unapproved external destination`);
     assert.match(tag, /data-desc="[^"]{10,}"/, id);
+  }
+});
+
+test('the professional office leads with XIRCLE and cites the exact approved company and news pages', () => {
+  const office = html.split('data-scene="office"')[1].split('</section>')[0];
+  const primary = [...office.matchAll(/<a\b[^>]*data-primary[^>]*>/g)];
+  assert.equal(primary.length, 1);
+  assert.equal(attribute(primary[0][0], 'data-item'), 'office-xircle');
+  assert.equal(attribute(primary[0][0], 'href'), '/xircle/');
+  assert.match(office, /data-item="xvisor"[^>]*href="\/xvisor\/"/, 'the previous game remains a secondary project');
+  for (const [id, href] of approvedExternalItems) {
+    const tag = [...office.matchAll(/<a\b[^>]*>/g)].map(m => m[0]).find(tag => attribute(tag, 'data-item') === id);
+    assert.ok(tag, id + ' has a real office destination');
+    assert.equal(attribute(tag, 'href'), href);
+  }
+  const news = html.match(/<a\b[^>]*data-item="depa-news"[^>]*>[\s\S]*?<\/a>/)?.[0];
+  assert.ok(news);
+  assert.doesNotMatch(news, /<time\b|datePublished|dateModified/, 'the article URL is a reference, not an inferred publication date');
+});
+
+test('the new professional office destinations have unique 3D objects inside the office', t => {
+  t.mock.method(THREE.TextureLoader.prototype, 'load', () => new THREE.Texture());
+  const tex = new Proxy({canvasTex: () => new THREE.Texture()}, {get: (target, key) => target[key] ?? (target[key] = new THREE.Texture())});
+  const house = buildHouse({renderer: {}, hd: false, tex, found: new Set(), mobile: false});
+  const officeParts = house.areas.get('office');
+  const belongsToOffice = object => { for (let node = object; node; node = node.parent) if (officeParts.includes(node)) return true; return false; };
+  for (const id of ['office-xircle', ...approvedExternalItems.keys()]) {
+    const hotspots = house.hotspots.filter(item => item.id === id);
+    assert.equal(hotspots.length, 1, id + ' must have exactly one pickable object');
+    assert.ok(belongsToOffice(hotspots[0].root), id + ' belongs to the office, not the garden or another room');
+    assert.ok(html.includes(`data-item="${id}"`), id + ' has a readable DOM destination');
   }
 });
 

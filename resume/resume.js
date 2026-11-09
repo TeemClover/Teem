@@ -182,8 +182,8 @@
       button.classList.toggle('active', active);
     });
     document.title = state.language === 'en'
-      ? 'Narin “Teem” Leelaporn — System Builder & AI Instructor | Teem Clover'
-      : 'ทีม นรินทร์ ลีลาภรณ์ — นักพัฒนาระบบและผู้สอน AI | Teem Clover';
+      ? 'Narin “Teem” Leelaporn — CAIO · Clover X | Teem Clover'
+      : 'ทีม นรินทร์ ลีลาภรณ์ — CAIO · Clover X | Teem Clover';
     applyFilter(state.filter);
     applyDemo(state.step);
     updateCopyStatus();
