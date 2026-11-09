@@ -39,18 +39,18 @@ import { readBrandState, visitStation, brandURL } from '/xircle/brand-state.js?v
     }
     if (url.hostname === 'lin.ee' || url.hostname === 'line.me') {
       link.href = map;
-      link.textContent = 'กลับแผนที่ Clover X →';
+      link.textContent = 'กลับ Xircle →';
       link.removeAttribute('target');
       link.removeAttribute('rel');
       link.dataset.brandExit = 'map';
     }
     if (url.origin === location.origin && url.pathname === '/xircle/doc/routinex/') {
       link.href = map;
-      link.textContent = 'กลับแผนที่ RoutineX →';
+      link.textContent = 'กลับไปสำรวจ Routine X →';
     }
   }
   for (const note of document.querySelectorAll('[data-brand-note]')) {
-    note.textContent = 'เลือกห้องต่อไป หรือกลับแผนที่ Clover X เพื่อเดินต่อในแบบของคุณ';
+    note.textContent = 'เลือกห้องต่อไป หรือกลับ Xircle เพื่อสำรวจเรื่องอื่นต่อ';
   }
   for (const heading of document.querySelectorAll('[data-brand-title]')) {
     heading.textContent = heading.dataset.brandTitle;
@@ -65,7 +65,7 @@ import { readBrandState, visitStation, brandURL } from '/xircle/brand-state.js?v
   const back = document.createElement('a');
   back.href = map;
   back.className = 'routine-brand-map';
-  back.textContent = '← กลับแผนที่';
+  back.textContent = '← กลับ Xircle';
   const app = document.createElement('a');
   app.href = download;
   app.textContent = 'โหลด Xircle ↗';

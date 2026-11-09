@@ -49,3 +49,9 @@ Titles and source links are maintained in [`../../data/official-videos.json`](..
 `band-hero.webp` is an optimized version of a Higgsfield-generated product presentation scene. Generation job: `a5b28c61-541b-48e0-91ea-9fa7d06a3528`; model: `gpt_image_2_6`; requested aspect ratio: 16:9, high quality, 2K. The supplied `XIRCLE_Band 03.JPEG` was used as the product reference for a warm ivory studio setting. The rendered original is 2688 × 1520, with an optimized web copy of about 287 KB.
 
 The hero is an AI-generated presentation scene, not a documentary product photograph. The page identifies it as a simulated product scene. The phone interface shown beside it is a separate real-app capture; no generated health measurements or generated app screens are presented as actual app output.
+
+## Shortened playback cuts — 2026-11-09
+
+The active landing now plays `scan-demo-fast-v2.mp4` (6.234 seconds) and `scan-demo-short-fast-v2.mp4` (5.634 seconds). These are local editorial cuts of the existing cropped, silent captures. They retain a 0.55-second scan glimpse, then hard-cut to a stable populated ingredient sheet, removing the processing wait. The short cut holds the final real nutrition frame for 1 extra second. They preserve 444×780 H.264, actual Thai UI/values, silent audio and faststart delivery. Original versions remain unchanged for provenance. Website captions identify the waiting-time edit.
+
+Routine X story covers `routine-absorb.jpg` and `routine-build.jpg` are existing site assets from `/routinex/absorb/assets/meal-zoom-v3.jpg` and `/routinex/build/assets/build-assembly-poster.jpg`, reused for direct links to the two completed experiences.

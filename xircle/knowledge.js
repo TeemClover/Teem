@@ -8,6 +8,8 @@ const status = document.getElementById('knowledge-results');
 const reset = document.getElementById('knowledge-reset');
 let filter = 'all';
 const visible = topic => simple.topics[topic.id] || {title:topic.title,summary:topic.one};
+for (const count of document.querySelectorAll('[data-topic-count]')) count.textContent = library.topics.length;
+for (const count of document.querySelectorAll('[data-part-count]')) count.textContent = library.topics.filter(topic => topic.part === count.dataset.partCount).length;
 function element(tag, text, className) {
   const node = document.createElement(tag); node.textContent = text || '';
   if (className) node.className = className;
@@ -42,9 +44,9 @@ function render() {
     if (!topics.length) continue;
     shown += topics.length;
     const copy = simple.parts[part.id] || {label:part.th||part.label,intro:part.intro};
-    const room = element('article','','room'); room.dataset.part = part.id;
+    const room = element('article','','room'); room.dataset.part = part.id; room.id = 'knowledge-'+part.id;
     const head = element('div','','room-head'), intro = element('div');
-    intro.append(element('b',copy.label),element('h2',copy.label),element('p',copy.intro));
+    intro.append(element('b',part.label),element('h2',copy.label),element('p',copy.intro));
     head.append(intro,element('div',`${topics.length} เรื่อง`,'route'));
     const list = element('div','','topics');
     for (const topic of topics) {
