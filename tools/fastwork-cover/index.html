@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Teem Clover — Fastwork motion cover (source)</title>
+<link rel="stylesheet" href="cover.css">
+</head>
+<body>
+<!--
+  One fixed 1920×1080 stage. Every pixel is a pure function of time: cover.js exposes
+  window.__cover.seek(seconds) for the frame renderer, and plays in real time when opened in a browser.
+  Query flags: ?still=1 (static cover composition) · ?guides=1 (Fastwork crop guides) · ?t=3.2 (freeze at a time)
+-->
+<div id="fit">
+  <div id="stage" aria-label="Teem Clover — คิดเป็นระบบ ใช้ได้จริง">
+    <div class="bg"></div>
+    <div class="p3d" id="floor3d"><div class="world" id="floorWorld"></div></div>
+    <div class="p3d" id="refl3d"><div class="world" id="reflWorld"></div></div>
+    <svg id="thread" viewBox="0 0 1920 1080" width="1920" height="1080" aria-hidden="true">
+      <defs>
+        <filter id="soft" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="7"/></filter>
+        <filter id="softer" x="-20%" y="-300%" width="140%" height="700%"><feGaussianBlur stdDeviation="16"/></filter>
+        <linearGradient id="fadeX" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1920" y2="0">
+          <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+          <stop offset=".86" stop-color="#fff" stop-opacity="1"/>
+          <stop offset="1" stop-color="#fff" stop-opacity=".15"/>
+        </linearGradient>
+        <mask id="fadeMask"><rect width="1920" height="1080" fill="url(#fadeX)"/></mask>
+      </defs>
+      <g mask="url(#fadeMask)">
+        <path id="thGlow" class="th glow"/>
+        <path id="thLine" class="th line"/>
+        <path id="puHalo" class="th halo"/>
+        <path id="puTail" class="th tail"/>
+        <path id="puHead" class="th head"/>
+      </g>
+    </svg>
+    <div class="p3d" id="slab3d"><div class="world" id="slabWorld"></div></div>
+    <div class="grade"></div>
+    <div class="copy" id="copy">
+      <p class="name">TEEM CLOVER</p>
+      <p class="tag">คิดเป็นระบบ ใช้ได้จริง</p>
+      <p class="svc" id="svc"><span class="w" data-i="0">ออกแบบเว็บ</span><i>•</i><span class="w" data-i="1">วางระบบ</span><i>•</i><span class="w" data-i="2">สอน AI</span></p>
+      <div class="tab" id="tab"></div>
+    </div>
+    <div class="grain"></div>
+    <div id="guides" hidden></div>
+  </div>
+</div>
+<script src="cover.js"></script>
+</body>
+</html>

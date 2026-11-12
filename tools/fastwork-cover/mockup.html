@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Fastwork cover — simulated owner view</title>
+<!--
+  SIMULATION, not Fastwork. Rebuilds only the geometry that touches the cover in the logged-in owner's
+  mobile view, from numbers measured on the live page on 2026-11-12 (see README → "Fastwork facts"):
+    cover box  = viewport width × 200px, object-fit: cover, object-position: 50% 50%
+    info panel = starts 164px below the cover top (overlaps the last 36px), top corners radius 24px
+    avatar     = 72px circle, left 16px, top 128px from the cover top, 2px white ring
+    chrome     = 40px menu button at left 16px / top 8px, "Preview" pill 107×40 at right 16px / top 8px
+                 (from the owner's own screenshot, 428px-wide phone)
+  Query: ?w=428&src=out/teem-clover-cover-static-1920x1080.png   (src may be .png/.jpg or .mp4)
+-->
+<style>
+  @font-face { font-family: "Kanit"; font-weight: 400; src: url(assets/fonts/kanit-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Kanit"; font-weight: 600; src: url(assets/fonts/kanit-latin-600-normal.woff2) format("woff2"); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; font-family: "Kanit", system-ui, sans-serif; color: #1c1c1e; }
+  .phone { position: relative; width: var(--w, 428px); min-height: 560px; overflow: hidden; background: #fff; }
+  .cover { position: relative; width: 100%; height: 200px; overflow: hidden; background: #e9e9ea; }
+  .cover > .media { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; }
+  .chrome { position: absolute; top: 8px; left: 16px; right: 16px; display: flex; justify-content: space-between; align-items: center; z-index: 3; }
+  .chrome .btn { height: 40px; min-width: 40px; border-radius: 20px; background: rgba(255, 255, 255, .94); box-shadow: 0 2px 12px rgba(15, 20, 25, .14); display: grid; place-items: center; font-size: 15px; font-weight: 400; color: #1c1c1e; }
+  .chrome .menu span { display: block; width: 14px; height: 1.6px; background: #1c1c1e; margin: 2.6px 0; border-radius: 1px; }
+  .chrome .preview { width: 107px; gap: 8px; display: flex; align-items: center; justify-content: center; }
+  .chrome .preview i { width: 15px; height: 10px; border: 1.6px solid #1c1c1e; border-radius: 60% / 70%; position: relative; }
+  .chrome .preview i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 3.5px; height: 3.5px; margin: -1.75px; border-radius: 50%; background: #1c1c1e; }
+  .identity { position: relative; margin-top: -36px; padding: 44px 16px 0; background: #fff; border-radius: 24px 24px 0 0; z-index: 1; }
+  .avatar { position: absolute; left: 16px; top: -36px; width: 72px; height: 72px; border-radius: 50%; background: #ededee; box-shadow: 0 0 0 2px #fff; display: grid; place-items: center; font-size: 24px; color: #6b6b70; }
+  h1 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .sub { margin: 2px 0 12px; font-size: 14px; color: #8a8a8e; }
+  .line { height: 12px; border-radius: 6px; background: #eeeef0; margin: 9px 0; }
+  .note { position: absolute; right: 10px; bottom: 8px; font-size: 10px; letter-spacing: .08em; color: #b0b0b5; }
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="cover" id="cover">
+    <div class="chrome" id="chrome"><div class="btn menu"><div><span></span><span></span><span></span></div></div><div class="btn preview"><i></i>Preview</div></div>
+  </div>
+  <div class="identity">
+    <div class="avatar">TL</div>
+    <h1>Teem Narin Leelaporn</h1>
+    <p class="sub">@teem</p>
+    <div class="line" style="width:92%"></div><div class="line" style="width:86%"></div><div class="line" style="width:58%"></div>
+    <div style="height:190px"></div>
+  </div>
+  <div class="note">SIMULATED LAYOUT</div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const w = Number(q.get('w')) || 428;
+  document.getElementById('phone').style.setProperty('--w', w + 'px');
+  if (q.get('chrome') === '0') document.getElementById('chrome').remove();
+  const src = q.get('src') || 'out/teem-clover-cover-static-1920x1080.png';
+  const video = /\.(mp4|webm|mov)$/i.test(src);
+  const m = document.createElement(video ? 'video' : 'img');
+  m.className = 'media';
+  if (video) { m.muted = true; m.autoplay = true; m.loop = true; m.playsInline = true; }
+  m.src = src;
+  document.getElementById('cover').prepend(m);
+  window.__ready = new Promise((r) => { m.addEventListener(video ? 'loadeddata' : 'load', r, { once: true }); setTimeout(r, 6000); });
+</script>
+</body>
+</html>
