@@ -1,0 +1,9 @@
+{
+  "frames": 810,
+  "fps": 60,
+  "duration": 13.5,
+  "ssim_last_to_first": 0.99999,
+  "ssim_first_to_second": 1,
+  "ssim_before_seam": 1,
+  "note": "SSIM of consecutive frames. The seam (last→first) should sit in the same range as its neighbours: 1.0 means identical, i.e. the loop point falls in a rest."
+}
