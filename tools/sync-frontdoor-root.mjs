@@ -52,7 +52,7 @@ export function renderTourRoot(source, porch) {
   const legacy = `<script>(function () {
   const params = new URLSearchParams(location.search);
   const combo = params.get('r') || '';
-  const builderHash = ['#film', '#play', '#choices', '#profile'].includes(location.hash);
+  const builderHash = ['#film', '#play', '#choices', '#profile', '#work'].includes(location.hash);
   if (/^(cafe|coach|shop|studio)-(profile|booking|store|minigame)-(warm|luxury|playful|minimal)$/.test(combo) || builderHash) {
     location.replace('/builder/' + location.search + location.hash);
   }

@@ -32,13 +32,13 @@
 <link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261026">
 <link rel="stylesheet" href="/entry/entry.css?v=20261030">
 <script>document.documentElement.classList.add('js')</script>
-<script type="module" src="/entry/entry.js?v=20261115-builder"></script>
+<script type="module" src="/entry/entry.js?v=20261115-builder2"></script>
 <script type="module" src="/assets/my-learning-entry.js"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.myclover.com/#org","name":"myClover","url":"https://www.myclover.com/","logo":"https://www.myclover.com/icons/icon-512.png","founder":{"@id":"https://www.myclover.com/#teem"}},{"@type":"WebSite","@id":"https://www.myclover.com/#site","name":"myClover","url":"https://www.myclover.com/","inLanguage":"th","publisher":{"@id":"https://www.myclover.com/#org"}},{"@type":"Person","@id":"https://www.myclover.com/#teem","name":"Teem Clover","alternateName":["นรินทร์ ลีลาภรณ์","Narin Leelaporn"],"jobTitle":"นักพัฒนาระบบและผู้สอน AI","url":"https://www.myclover.com/resume/","image":"https://www.myclover.com/entry/media/teem-portrait.webp","sameAs":["https://fastwork.com/user/teem"]}]}</script>
 <!-- The shared motion layer is left out here on purpose: this page animates itself, and the layer's only job on it
-     (prefetching the next page) is done by the rule below without a render-blocking stylesheet. /tour/ is never
+     (prefetching the next page) is done by the rule below without a render-blocking stylesheet. the house is never
      prefetched, so no 3D code moves before the visitor chooses to enter the house. -->
-<script type="speculationrules">{"prefetch":[{"source":"document","eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/tour/*"}},{"not":{"href_matches":"/api/*"}},{"not":{"selector_matches":"[target=_blank]"}}]}}]}</script>
+<script type="speculationrules">{"prefetch":[{"source":"document","eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/"}},{"not":{"href_matches":"/api/*"}},{"not":{"selector_matches":"[target=_blank]"}}]}}]}</script>
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false">
@@ -160,7 +160,7 @@
       <div class="remix" id="remix"></div>
       <div class="doors" aria-label="ไปต่อ">
         <a class="door door-profile" href="#profile" data-open-profile><svg><use href="#i-id"/></svg><span><b>ดูโปรไฟล์</b><small>คนที่ทำหน้านี้ และงานจริงที่ทำให้แบรนด์</small></span></a>
-        <a class="door door-house" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg><span><b>เข้าบ้าน</b><small>เดินชมบ้าน myClover 3D</small></span></a>
+        <a class="door door-house" href="/" data-enter-house><svg><use href="#i-door"/></svg><span><b>เข้าบ้าน</b><small>เดินชมบ้าน myClover 3D</small></span></a>
       </div>
       <div class="finale-minor">
         <button type="button" class="link-btn" id="share"><svg><use href="#i-share"/></svg>ส่งเว็บนี้ให้เพื่อน</button>
@@ -231,7 +231,7 @@
 
       <div class="pro-house">
         <p>อยากเห็นทุกอย่างในที่เดียว</p>
-        <a class="btn btn-door" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน myClover 3D</a>
+        <a class="btn btn-door" href="/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน myClover 3D</a>
       </div>
     </div>
   </section>
@@ -244,7 +244,7 @@
       <a href="https://fastwork.com/user/teem" rel="noopener">Fastwork</a>
       <a href="/meet/">นัดคุย</a>
       <a href="/resume/">ประวัติ</a>
-      <a href="/tour/">บ้าน 3D</a>
+      <a href="/">บ้าน 3D</a>
       <a href="/privacy/">ความเป็นส่วนตัว</a>
     </nav>
   </div>

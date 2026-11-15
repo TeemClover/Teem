@@ -15,7 +15,7 @@
  * that holds each chapter; four different templates and the luxury film; one page in many looks (remix, styles
  * strip); screen-reader announcements; replay; the
  * share link; reduced motion; only the chosen media load; no 3D before "เข้าบ้าน"; initial JS budget; reading
- * without JavaScript; "เข้าบ้าน" → /tour/?from=home; the profile door to /hire/ and /walkthrough/; the
+ * without JavaScript; "เข้าบ้าน" → /?from=builder; the profile door to /hire/ and /walkthrough/; the
  * "ห้องเรียนของฉัน" entry for enrolled students. Human testing (BLUEPRINT §12 F3) is separate.
  */
 import assert from 'node:assert/strict';
@@ -165,7 +165,7 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
     assert.equal(await active(page).getAttribute('data-sc'), String(k), `chapter ${k} is the one you can use`);
   }
   await page.locator('#finale').scrollIntoViewIfNeeded();
-  for (const sel of ['.door-profile', '.door-house[href="/tour/"][data-enter-house]']) assert.ok(await page.locator(sel).isVisible(), sel);
+  for (const sel of ['.door-profile', '.door-house[href="/"][data-enter-house]']) assert.ok(await page.locator(sel).isVisible(), sel);
   await page.locator('.door-profile').tap();
   await page.locator('#profile-title').waitFor();
   for (const href of ['/hire/', '/work/', '/walkthrough/', 'https://fastwork.com/user/teem']) assert.ok(await page.locator(`#profile a[href="${href}"]`).count() > 0, href);
@@ -457,7 +457,7 @@ await check('only the chosen combination loads its photos and clip', async () =>
   await page.close();
 });
 
-await check('/ loads no 3D code or asset before entering the house', async () => {
+await check('/builder/ loads no 3D code or asset before entering the house', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const paths = []; page.on('request', r => { const u = new URL(r.url()); if (u.origin === origin) paths.push(u.pathname); });
   await openHome(page);
@@ -488,16 +488,16 @@ await check('without JavaScript the page still informs and converts', async () =
   assert.ok(!(await page.locator('#choices').isVisible()), 'the game hides');
   assert.ok(await page.locator('.nojs-demo').isVisible());
   for (const id of ['#profile-title', '#work-title']) assert.ok(await page.locator(id).isVisible(), id);
-  for (const href of ['/work/', '/hire/', '/walkthrough/', '/tour/', 'https://fastwork.com/user/teem']) assert.ok(await page.locator(`a[href="${href}"]:visible`).count() > 0, href);
+  for (const href of ['/work/', '/hire/', '/walkthrough/', '/', 'https://fastwork.com/user/teem']) assert.ok(await page.locator(`a[href="${href}"]:visible`).count() > 0, href);
   await page.close();
 });
 
-await check('เข้าบ้าน opens the house at /tour/?from=home', async () => {
+await check('เข้าบ้าน opens the house at /?from=builder', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
-  await page.route('**/tour/**', r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>tour</title>'}));
+  await page.route(/\/tour\/vendor\/three\.module\.min\.js$/, r => r.abort());
   await openHome(page, '/builder/?r=cafe-booking-warm');
   await page.locator('#finale').scrollIntoViewIfNeeded();
-  await Promise.all([page.waitForURL(/\/tour\/\?from=home$/), page.locator('#finale .door-house').click()]);
+  await Promise.all([page.waitForURL(url => url.pathname === '/' && url.searchParams.get('from') === 'builder'), page.locator('#finale .door-house').click()]);
   await page.close();
 });
 

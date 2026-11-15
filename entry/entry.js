@@ -334,7 +334,7 @@ document.addEventListener('click', e => {
   if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   emit('enter-house', {from: a.closest('.finale') ? 'finale' : a.closest('.profile') ? 'profile' : 'page'});
   const target = new URL(a.href, location.href);
-  target.searchParams.set('from', 'home');
+  target.searchParams.set('from', 'builder');
   if (reduced) return void (location.href = target.href);
   e.preventDefault();
   const overlay = $('#door-overlay');

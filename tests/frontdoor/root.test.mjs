@@ -27,7 +27,7 @@ test('website builder has its own direct route and keeps its original content an
   assert.match(root, /<link rel="canonical" href="https:\/\/www\.myclover\.com\/builder\/">/);
   assert.match(root, /<meta name="robots" content="index,follow">/);
   assert.match(root, /<meta property="og:url" content="https:\/\/www\.myclover\.com\/builder\/">/);
-  for (const href of ['/work/', '/hire/', '/walkthrough/', '/tour/', 'https://fastwork.com/user/teem', '/meet/', '/privacy/']) {
+  for (const href of ['/work/', '/hire/', '/walkthrough/', '/', 'https://fastwork.com/user/teem', '/meet/', '/privacy/']) {
     assert.ok(root.includes('href="' + href + '"'), href);
   }
   assert.equal((root.match(/src="\/assets\/my-learning-entry.js"/g) || []).length, 1);
@@ -52,7 +52,7 @@ test('the visible promises match the blueprint (§4.2–4.5): labels, simulation
   for (const step of ['คุยโจทย์', 'จัดซอส', 'สร้างและให้ลองจริง', 'ส่งมอบ']) assert.match(root, new RegExp(step));
 });
 
-test('JSON-LD states only what the page shows (no FAQ block now that the homepage is the builder)', async () => {
+test('JSON-LD states only what the page shows (no FAQ block on the website builder)', async () => {
   const root = await read('builder/index.html');
   const ld = JSON.parse(root.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(ld['@graph'].map(n => n['@type']), ['Organization', 'WebSite', 'Person']);
