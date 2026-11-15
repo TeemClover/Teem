@@ -66,9 +66,8 @@ export function renderTourRoot(source, porch) {
 <meta property="og:url" content="https://www.myclover.com/">
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">`)
-    .replace(/<script src="\/tour\/intro\.js" defer><\/script>\n/, '')
     .replace('<meta name="theme-color" content="#14281d">', `<meta name="theme-color" content="#14281d">\n${legacy}`)
-    .replace('</head>', `<link rel="stylesheet" href="/tour/porch.css?v=1">\n<script src="/tour/porch.js?v=1" defer></script>\n${entryJsonLd(porch)}\n</head>`)
+    .replace('</head>', `<link rel="stylesheet" href="/tour/porch.css?v=2">\n<script src="/tour/porch.js?v=1" defer></script>\n${entryJsonLd(porch)}\n</head>`)
     .replace('<body>', '<body class="front-door">')
     .replace('aria-label="myClover หน้าแรก" target="_blank" rel="noopener noreferrer"', 'aria-label="myClover หน้าแรก"')
     .replace(hero, () => porch.trim())

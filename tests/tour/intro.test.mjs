@@ -39,8 +39,8 @@ test('the homepage preloads the whole house module graph, so no import waits for
 
 test('the loading intro paints from the page and tour.css alone, and runs before the 3D module', async () => {
   const css = await read('tour/tour.css'), js = await read('tour/intro.js');
-  {
-    const page = 'tour/index.html', html = await read(page), head = html.slice(0, html.indexOf('</head>'));
+  for (const page of pages) {
+    const html = await read(page), head = html.slice(0, html.indexOf('</head>'));
     assert.match(html, /<div id="loader" class="loader" aria-hidden="true">\s*<div class="intro-core"><svg class="intro-clover"[\s\S]*?<span id="loader-text">[^<]+<\/span>/, page);
     // only this site's own stylesheets may hold up the first paint
     for (const [tag] of head.replace(/<noscript>[\s\S]*?<\/noscript>/g, '').matchAll(/<link[^>]+rel="stylesheet"[^>]*>/g)) {

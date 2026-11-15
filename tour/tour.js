@@ -687,7 +687,7 @@ async function boot() {
     renderer.info.reset();
     renderer.render(scene, camera);
     frameStats.calls = renderer.info.render.calls; frameStats.triangles = renderer.info.render.triangles;
-    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); document.body.classList.add('has-tour-frame'); finishLoading(); } else governor(rawDt);
+    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
 
