@@ -6,17 +6,19 @@ import {renderCompassPage, renderTourRoot, renderEntryRoot, entryMedia, entryMed
 const read = p => readFile(new URL('../../' + p, import.meta.url), 'utf8');
 const mediaFiles = () => entryMediaFiles();
 
-test('public root opens the house with a usable porch before 3D is ready', async () => {
+test('public root opens the house with the original clover intro', async () => {
   const [root, tour, porch] = await Promise.all(['index.html', 'tour/index.html', 'tools/house-porch.html'].map(read));
   assert.equal(root, renderTourRoot(tour, porch), 'run npm run sync:frontdoor-root');
   assert.match(root, /<link rel="canonical" href="https:\/\/www\.myclover\.com\/">/);
   assert.match(root, /<meta property="og:url" content="https:\/\/www\.myclover\.com\/">/);
   assert.match(root, /<body class="front-door">/);
-  assert.match(root, /<picture class="house-poster"/);
+  assert.match(root, /<script src="\/tour\/intro\.js" defer>/);
+  assert.match(root, /id="loader" class="loader"/);
+  assert.doesNotMatch(root, /class="house-poster"|\/showcase\/house\/media\/photos\/exterior-/);
   assert.match(root, /href="#living">เข้าบ้าน/);
   assert.match(root, /id="web-desk-trigger"[^>]+href="\/builder\/#play"/);
   assert.match(root, /<dialog id="web-desk"/);
-  assert.doesNotMatch(root, /src="\/tour\/intro\.js"|\/entry\/(?:entry|film)\.js/);
+  assert.doesNotMatch(root, /\/entry\/(?:entry|film)\.js/);
   assert.match(root, /id="workbench"/, 'the upstairs workbench stays accessible from the house');
   assert.match(root, /data-my-learning-mount/);
 });

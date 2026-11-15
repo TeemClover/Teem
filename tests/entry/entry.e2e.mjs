@@ -70,6 +70,9 @@ await check('House opens first, desk previews stay inline, and old shared URLs r
     try {
       await page.route(/\/tour\/vendor\/three\.module\.min\.js$/, route => route.abort());
       await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+      await page.locator('#loader.intro-on').waitFor({state: 'visible'});
+      assert.equal(await page.locator('.house-poster').count(), 0);
+      await page.locator('#loader').waitFor({state: 'hidden'});
       assert.equal(await page.locator('h1').textContent(), 'ใครเจอเรา คนนั้นโชคดี');
       const enter = page.getByRole('link', {name: 'เข้าบ้าน', exact: true});
       const desk = page.getByRole('link', {name: /ลองสร้างเว็บ/});
