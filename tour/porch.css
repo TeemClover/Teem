@@ -1,0 +1,90 @@
+/* The opening photo keeps the house in view while the live scene gets its first frame. */
+.front-door #stage { visibility: hidden; }
+.front-door.has-tour-frame #stage { visibility: visible; }
+.front-door .loader { display: none; }
+.front-door .scene-hero {
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: max(520px, 100svh);
+  padding: clamp(76px, 11vh, 130px) 20px 0;
+}
+.house-poster { position: absolute; inset: 0; z-index: -2; }
+.house-poster img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 43%; }
+.has-tour-frame .house-poster { display: none; }
+.no-webgl .house-poster, .has-tour-frame.no-webgl .house-poster { display: block; }
+.front-door .scene-hero::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #e6f2e6d4 0%, #e6f2e67a 20%, transparent 39%, transparent 65%, #1838283d 100%);
+}
+.porch-welcome { text-align: center; }
+.porch-welcome p { margin: 0 0 5px; font-size: clamp(14px, 1.45vw, 18px); font-weight: 700; color: #1e553a; }
+.porch-welcome h1 { margin: 0; color: #14281d; font: 600 clamp(36px, 5.2vw, 78px)/1.25 var(--display); }
+.porch-welcome h1 span { color: #215f3d; }
+.porch-door { position: absolute; bottom: max(103px, 12svh); left: 50%; translate: -50% 0; display: grid; justify-items: center; gap: 8px; }
+.porch-door .btn { min-height: 54px; padding-inline: 26px; gap: 19px; background: #19543a; }
+.porch-door > span { white-space: nowrap; border-radius: 999px; padding: 3px 11px; color: #193a2b; background: #f9f6ebe8; font-size: 13px; font-weight: 600; }
+.porch-links {
+  position: absolute; bottom: max(16px, env(safe-area-inset-bottom)); left: 50%; translate: -50% 0;
+  display: flex; justify-content: center; gap: 4px; padding: 3px; white-space: nowrap;
+  border: 1px solid #fff9; border-radius: 999px; background: #fcf8eedf; box-shadow: 0 5px 20px #18382824;
+}
+.porch-links a { padding: 9px 13px; min-height: 44px; border-radius: inherit; color: #1c4433; font-size: 14px; font-weight: 700; text-decoration: none; }
+.porch-links a:hover { background: #e5edde; }
+.web-desk-trigger {
+  position: absolute; right: clamp(46px, 10vw, 180px); bottom: max(112px, 13svh);
+  display: flex; align-items: center; gap: 11px; min-height: 62px; padding: 8px 14px 8px 9px;
+  border: 1px solid #ceae7a; border-radius: 13px; background: #fff3dd; color: #392b1d;
+  box-shadow: 0 7px 22px #32251730; text-align: left; text-decoration: none; transition: background .2s, translate .2s;
+}
+.web-desk-trigger:visited { color: #392b1d; }
+.web-desk-trigger:hover { background: #fff9ee; translate: 0 -3px; }
+.web-desk-trigger small, .web-desk-trigger strong { display: block; line-height: 1.45; }
+.web-desk-trigger small { color: #694a29; font-size: 12px; font-weight: 600; }
+.web-desk-trigger strong { font-size: 16px; }
+.web-desk-trigger strong span { padding-left: 4px; }
+.desk-icon { width: 40px; height: 39px; position: relative; flex: none; border-radius: 8px; background: #e7c493; }
+.desk-icon i { position: absolute; inset: 7px 7px 11px; border: 3px solid #253d2e; border-radius: 3px; background: linear-gradient(135deg, #d9ebc8 43%, #78a27b 44%); }
+.desk-icon i::after { content: ''; position: absolute; width: 12px; height: 3px; top: 100%; left: 50%; translate: -50% 5px; border-radius: 2px; background: #253d2e; }
+
+body:has(#web-desk[open]) { overflow: hidden; }
+.web-desk {
+  width: min(570px, calc(100% - 28px)); max-height: calc(100dvh - 28px); padding: clamp(14px, 4vw, 24px);
+  border: 1px solid #ded0ae; border-radius: 22px; background: #fbf6eb; color: #182d22;
+  box-shadow: 0 22px 70px #102b2260; overscroll-behavior: contain;
+}
+.web-desk::backdrop { background: #12271dc2; }
+.web-desk-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.web-desk-head h2 { margin: 0; font: 600 clamp(25px, 5vw, 34px)/1.3 var(--display); }
+.web-desk-head p { margin: 5px 0 0; color: #415547; font-size: 15px; }
+.desk-close, .desk-choices button { cursor: pointer; color: #204732; font: 700 14px var(--font); }
+.desk-close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: #e8ebdb; font-size: 24px; }
+.desk-choices { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 13px; }
+.desk-choices button { min-height: 44px; padding: 6px 13px; border: 1px solid #b5c2a9; border-radius: 999px; background: transparent; }
+.desk-choices button[aria-pressed="true"] { border-color: #23583d; background: #23583d; color: #fff; }
+.desk-preview { overflow: hidden; border: 1px solid #9cab94; border-radius: 12px; }
+.desk-browser { display: flex; align-items: center; gap: 9px; background: #e9ebde; color: #31503e; padding: 7px 11px; font: 600 12px var(--font); }
+.desk-browser i { width: 7px; height: 7px; border-radius: 50%; background: #6f8b74; }
+.desk-browser span:last-child { margin-left: auto; }
+.desk-page { position: relative; display: grid; align-items: end; isolation: isolate; min-height: clamp(160px, 35vw, 258px); background: #243b2a; color: #fff; text-align: left; }
+.desk-page img { position: absolute; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+.desk-page::after { content: ''; position: absolute; z-index: -1; inset: 0; background: linear-gradient(0deg, #17251af2, #12271921 82%); }
+.desk-page > div { padding: 20px; }
+.desk-page p { margin: 0 0 4px; font-size: 14px; font-weight: 700; }
+.desk-page strong { font: 600 clamp(22px, 5.2vw, 36px)/1.25 var(--display); }
+.desk-next { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-top: 15px; }
+.desk-next .btn { background: #19543a; }
+.desk-sample { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; font-weight: 700; color: #234b37; text-underline-offset: 4px; }
+.web-desk-trigger:focus-visible, .porch-links a:focus-visible, .web-desk :is(a, button):focus-visible { outline: 3px solid #a27422; outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .house-poster img { object-position: 47% center; }
+  .porch-welcome h1 { font-size: clamp(31px, 8.7vw, 57px); }
+  .porch-welcome h1 span { display: block; }
+  .porch-door { bottom: max(133px, 17svh); }
+  .porch-door .btn { min-height: 48px; }
+  .porch-door > span { display: none; }
+  .web-desk-trigger { right: auto; left: 50%; bottom: max(66px, calc(17svh - 67px)); translate: -50% 0; }
+  .web-desk-trigger:hover { translate: -50% -2px; }
+  .porch-links a { padding-inline: 10px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) { .web-desk-trigger { transition: none; } }

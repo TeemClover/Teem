@@ -88,9 +88,10 @@ short/assets/art-prompts-v2.json
 short/docs/
 short/assets/clips/hero-*-frame.png
 
-# Homepage source and briefs: "/" is generated from entry/home.html (tools/sync-frontdoor-root.mjs);
+# Templates for the generated house homepage and website builder.
 # the template and media briefs are not pages. entry/ assets (css, js, data, media) do ship.
 entry/home.html
+tools/house-porch.html
 entry/*.md
 tests/entry/
 

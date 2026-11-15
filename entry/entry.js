@@ -280,7 +280,7 @@ $('#shuffle').addEventListener('click', () => {
 });
 $('#share').addEventListener('click', async () => {
   const combo = picks.join('-');
-  const url = `${location.origin}/?r=${combo}${shopName ? `&n=${encodeURIComponent(shopName)}` : ''}`;
+  const url = `${location.origin}${location.pathname}?r=${combo}${shopName ? `&n=${encodeURIComponent(shopName)}` : ''}`;
   emit('share', {combo});
   const ind = named(find(0, picks[0]));
   try {

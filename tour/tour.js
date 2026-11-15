@@ -11,11 +11,12 @@ import {RoomEnvironment} from './vendor/RoomEnvironment.js';
 import Lenis from './vendor/lenis.mjs';
 import {createGovernor, updateGovernor, pixelRatio} from './quality.js';
 import {makeTextures, FONT} from './textures.js';
-import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js?v=20261109-caio';
+import {buildHouse, H, F2, CLOVER_ROOMS, HERO_CLOVER} from './house.js?v=porch1';
 import {initOfficePortfolio} from './portfolio.js?v=20261109-caio';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const webDeskTrigger = $('#web-desk-trigger');
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = t => t < 0.5 ? 16 * t ** 5 : 1 - (-2 * t + 2) ** 5 / 2; // quint in-out: long rest, confident glide
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -325,7 +326,7 @@ async function boot() {
     sun.castShadow = renderer.shadowMap.enabled;
     sun.shadow.mapSize.set(1024, 1024);
     tex = makeTextures(renderer, false);
-    house = buildHouse({renderer, hd: false, tex, found, mobile, opened, art});
+    house = buildHouse({renderer, hd: false, tex, found, mobile, opened, art, webDesk: Boolean(webDeskTrigger)});
     scene.add(house.root); porchY = house.porch.position.y;
     intro(3); await paint();
     loadRoomsNear(progress());
@@ -486,9 +487,13 @@ async function boot() {
     return null;
   }
   // only what belongs to the room you are standing in (the big clover belongs to the outside views)
-  const inReach = id => id === 'meet' ? ['hero', 'door', 'finale'].includes(currentScene) : sceneOfItem(id) === currentScene;
+  const inReach = id => {
+    if (id === 'web-desk') return currentScene === 'hero';
+    if (id === 'meet') return ['hero', 'door', 'finale'].includes(currentScene);
+    return sceneOfItem(id) === currentScene;
+  };
   const overUI = e => e.target !== canvas && e.target.closest?.('a,button,.card,dialog,nav,header,aside');
-  const labelOf = id => (itemLink(id)?.textContent || '').replace('→', '').trim();
+  const labelOf = id => id === 'web-desk' ? 'โต๊ะลองสร้างเว็บ' : (itemLink(id)?.textContent || '').replace('→', '').trim();
   let moveQueued = null;
   addEventListener('pointermove', e => {
     mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1;
@@ -513,6 +518,7 @@ async function boot() {
     if (!hit) return closeInspect();
     if (hit.type === 'clover') { collectFromScene(hit.id); showTip(`เก็บได้แล้ว ${found.size}/4 🍀`, e.clientX, e.clientY, 1600); }
     else if (hit.type === 'music') toggleMusic();
+    else if (hit.id === 'web-desk') webDeskTrigger?.click();
     else openInspect(hit.id);
   });
   function collectFromScene(id) { collect(id, true); flyAway(id); }
@@ -575,6 +581,7 @@ async function boot() {
     house.facade.position.y = -inside * (H + 0.6); house.facade.visible = inside < 0.995;
     house.upper.position.y = house.roof.position.y = inside * 10; house.upper.visible = house.roof.visible = inside < 0.995;
     house.flowers.visible = inside < 0.5;
+    if (house.webDesk) house.webDesk.visible = p < 0.8 || p > fin - 0.4;
     const shift = camera.aspect > 1.15 ? -0.17 * inside : 0; // desktop: room sits beside the card
     const lift = portrait ? 0.15 * inside : 0; // phone: room sits above the card, not below an empty sky
     if (Number.isNaN(viewShift) || Math.abs(shift - viewShift) > 0.0005 || Math.abs(lift - viewLift) > 0.0005) {
@@ -618,7 +625,7 @@ async function boot() {
     // hotspots: hover lift, picked-up objects float toward you, beacons near the current view
     camera.getWorldDirection(camDir);
     for (const h of house.hotspots) {
-      if (h.root === hc) continue; // the big clover animates itself above
+      if (h.root === hc || h.root === house.webDesk) continue;
       const hov = (hovered?.type === 'item' && hovered.id === h.id) || glowing.has(h.id);
       tmp.copy(h.base);
       if (h.picked) { tmp.y += 0.22 + (still ? 0 : Math.sin(t * 2) * 0.03); tmp.addScaledVector(towardCam.copy(camDir).applyQuaternion(h.invParent), -0.25); }
@@ -680,7 +687,7 @@ async function boot() {
     renderer.info.reset();
     renderer.render(scene, camera);
     frameStats.calls = renderer.info.render.calls; frameStats.triangles = renderer.info.render.triangles;
-    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); finishLoading(); } else governor(rawDt);
+    if (first) { first = false; heldAt.y = scrollY; heldAt.time = performance.now(); document.body.classList.add('has-tour-frame'); finishLoading(); } else governor(rawDt);
     requestAnimationFrame(frame);
   }
 

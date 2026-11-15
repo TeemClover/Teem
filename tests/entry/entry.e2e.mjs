@@ -1,5 +1,5 @@
 /**
- * Homepage v5 "ปรุงเว็บใน 3 แตะ" acceptance checks (BLUEPRINT v3.0 §12 F3, automated part; owner briefs 2026-10-24
+ * Website builder "ปรุงเว็บใน 3 แตะ" acceptance checks (BLUEPRINT v3.0 §12 F3, automated part; owner briefs 2026-10-24
  * and 2026-10-25: the builder is the page; each style is its own scroll template; luxury is a film you scroll).
  *
  *   npm run test:entry:ui                                     local copy of the repo (static server)
@@ -46,7 +46,7 @@ async function open(options = {}) {
    still loading for 500 ms. Not 'networkidle': on production that never fired (every such check timed out after
    30 s), so a connection that stays open (an API call, another site) is listed at the end instead of hanging. */
 const notes = new Set();
-async function openHome(page, path = '/') {
+async function openHome(page, path = '/builder/') {
   await page.goto(base + path, {waitUntil: 'load'});
   await page.waitForFunction(() => document.documentElement.classList.contains('entry-ready'), null, {timeout: 10000});
   const own = r => { const u = new URL(r.url()); return u.origin === origin && !u.pathname.startsWith('/api/'); };
@@ -63,6 +63,44 @@ async function openHome(page, path = '/') {
 const phone = {viewport: {width: 375, height: 667}, isMobile: true, hasTouch: true};
 const inView = loc => loc.evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; });
 console.log(`homepage checks against ${base}`);
+
+await check('House opens first, desk previews stay inline, and old shared URLs reach the builder', async () => {
+  for (const options of [{viewport: {width: 1440, height: 900}}, phone]) {
+    const page = await open({...options, reducedMotion: 'reduce'});
+    try {
+      await page.route(/\/tour\/vendor\/three\.module\.min\.js$/, route => route.abort());
+      await page.goto(base + '/', {waitUntil: 'domcontentloaded'});
+      assert.equal(await page.locator('h1').textContent(), 'ใครเจอเรา คนนั้นโชคดี');
+      const enter = page.getByRole('link', {name: 'เข้าบ้าน', exact: true});
+      const desk = page.getByRole('link', {name: /ลองสร้างเว็บ/});
+      assert.ok(await inView(enter), 'house entry in the first screen');
+      assert.ok(await inView(desk), 'desk in the first screen');
+      await desk.click();
+      const dialog = page.getByRole('dialog', {name: 'ลองสร้างเว็บ'});
+      assert.ok(await dialog.isVisible());
+      for (const [name, key, combo] of [
+        ['พอร์ตผลงาน', 'studio', 'studio-profile-minimal'],
+        ['หน้าขายสินค้า', 'shop', 'shop-store-playful'],
+        ['ร้านกาแฟ', 'cafe', 'cafe-booking-warm'],
+      ]) {
+        await dialog.getByRole('button', {name}).click();
+        assert.equal(await dialog.locator('.desk-preview').getAttribute('data-desk-preview'), key);
+        assert.equal(await dialog.locator('.desk-sample').getAttribute('href'), '/builder/?r=' + combo);
+        assert.equal(new URL(page.url()).pathname, '/');
+      }
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({state: 'hidden'});
+      assert.equal(await desk.evaluate(e => e === document.activeElement), true);
+      await enter.click();
+      assert.equal(new URL(page.url()).hash, '#living');
+      await page.goto(base + '/?r=shop-store-playful&n=My+Shop', {waitUntil: 'commit'});
+      await page.waitForURL('**/builder/**');
+      await page.waitForFunction(() => document.documentElement.classList.contains('entry-ready'));
+      assert.equal(new URL(page.url()).pathname, '/builder/');
+      assert.equal(new URL(page.url()).searchParams.get('n'), 'My Shop');
+    } finally { await page.close(); }
+  }
+});
 
 // scroll the pinned site the way a visitor does (wheel / swipe distance), until it shows scene k
 async function scrollToScene(page, k, step = 240) {
@@ -85,7 +123,7 @@ await check('64 shared demos render and respond', async () => {
   let n = 0;
   for (const i of data.industries) for (const f of data.features) for (const s of data.styles) {
     const combo = `${i.key}-${f.key}-${s.key}`;
-    await page.goto(`${base}/?r=${combo}`, {waitUntil: 'domcontentloaded'});
+    await page.goto(`${base}/builder/?r=${combo}`, {waitUntil: 'domcontentloaded'});
     await page.waitForSelector('[data-widget-body] button', {state: 'attached', timeout: 10000});
     assert.equal(await page.locator('#stage').getAttribute('data-state'), 'done', combo);
     assert.equal(await page.locator('.sc-hero .sc-title').textContent(), i.brand, combo);
@@ -141,7 +179,7 @@ await check('three taps on a 375×667 phone open the site; scrolling it ends at 
 
 await check('the site holds each chapter, then changes; only the chapter on screen can be used', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
-  await openHome(page, '/?r=shop-store-luxury');
+  await openHome(page, '/builder/?r=shop-store-luxury');
   await page.waitForFunction(() => document.querySelector('#site').dataset.scene === '0');
   await scrollToScene(page, 2);
   const v = name => page.locator('.sc[data-sc="2"]').evaluate((e, name) => Number(e.style.getPropertyValue(name)), name);
@@ -163,9 +201,9 @@ await check('every style is its own template; luxury is the longest, and its fil
   const frames = []; page.on('request', r => { const u = new URL(r.url()); if (u.pathname.startsWith('/entry/media/v5/film/')) frames.push(u.pathname); });
   const shape = {};
   const read = () => page.$$eval('#scenes .sc', els => els.map(e => e.className.split(' ').find(c => /^(lx|wm|pp|mn)-/.test(c))).join(' '));
-  for (const s of data.styles.filter(s => s.key !== 'luxury')) { await openHome(page, `/?r=coach-profile-${s.key}`); shape[s.key] = await read(); }
+  for (const s of data.styles.filter(s => s.key !== 'luxury')) { await openHome(page, `/builder/?r=coach-profile-${s.key}`); shape[s.key] = await read(); }
   assert.deepEqual(frames, [], 'no film frame loads for the other styles');
-  await openHome(page, '/?r=coach-profile-luxury');
+  await openHome(page, '/builder/?r=coach-profile-luxury');
   shape.luxury = await read();
   assert.ok(frames.length > 0, 'picking luxury starts loading its film');
   const prefixes = Object.values(shape).map(v => v.split(' ')[0].slice(0, 3));
@@ -193,7 +231,7 @@ await check('every style is its own template; luxury is the longest, and its fil
 
 await check('one page, many looks: the styles strip and the remix rows change the whole site', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
-  await openHome(page, '/?r=cafe-booking-warm');
+  await openHome(page, '/builder/?r=cafe-booking-warm');
   const font = () => page.locator('.sc-hero .sc-title').evaluate(e => getComputedStyle(e).fontFamily);
   const warm = await font();
   await page.locator('#finale').scrollIntoViewIfNeeded();
@@ -217,7 +255,7 @@ await check('each business plays its own mini-game, and one good move scores', a
   const titles = {cafe: 'ซ้อนเค้กให้สูง', coach: 'บวกให้พอดี', shop: 'ต่อไหมพรม', studio: 'กดชัตเตอร์'};
   const page = await open({viewport: {width: 1280, height: 860}});
   for (const i of data.industries) {
-    await openHome(page, `/?r=${i.key}-minigame-${data.styles[(data.industries.indexOf(i)) % 4].key}`);
+    await openHome(page, `/builder/?r=${i.key}-minigame-${data.styles[(data.industries.indexOf(i)) % 4].key}`);
     const game = page.locator('[data-widget-body] .w-game');
     await game.waitFor({state: 'attached'});
     assert.equal(await game.getAttribute('data-game'), i.key);
@@ -292,7 +330,7 @@ await check('the film plays, pauses, keeps its captions in step, and every loop 
 await check('a visitor can put their own shop name on the whole site; it stays on their device', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const sent = []; page.on('request', r => { if (r.url().includes(encodeURIComponent('ร้านป้าแดง'))) sent.push(r.url()); });
-  await openHome(page, '/?r=cafe-booking-warm');
+  await openHome(page, '/builder/?r=cafe-booking-warm');
   await page.locator('.site-bar [data-name-open]').click();
   await page.locator('#name-input').fill('ร้านป้าแดง');
   await page.locator('#name-dlg button[value="ok"]').click();
@@ -317,7 +355,7 @@ await check('every template ends with contact and a real Google Map that loads o
     page = await open({viewport: {width: 1280, height: 860}});
     page.on('request', r => { if (/google\.com|googleapis|gstatic/.test(new URL(r.url()).hostname)) google.push(r.url()); });
     await page.route(/maps\.google\.com/, r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>map</title>'}));
-    await openHome(page, `/?r=coach-booking-${s.key}`);
+    await openHome(page, `/builder/?r=coach-booking-${s.key}`);
     const k = await page.locator('.sc[data-role="visit"]').getAttribute('data-sc');
     await scrollToScene(page, Number(k));
     const visit = page.locator('.sc[data-role="visit"]');
@@ -338,7 +376,7 @@ await check('each style speaks in its own Thai typeface', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const faces = {};
   for (const s of data.styles) {
-    await openHome(page, `/?r=shop-profile-${s.key}`);
+    await openHome(page, `/builder/?r=shop-profile-${s.key}`);
     await page.evaluate(() => document.fonts.ready);
     faces[s.key] = await page.locator('.sc-hero .sc-title').evaluate(e => getComputedStyle(e).fontFamily.split(',')[0].replace(/["']/g, '').trim());
     assert.ok(await page.evaluate(f => document.fonts.check(`40px "${f}"`, 'ถักใจ'), faces[s.key]), `${s.key}: ${faces[s.key]} is loaded`);
@@ -365,7 +403,7 @@ await check('screen readers hear the step that actually comes next, and when it 
 
 await check('an answer can be changed after finishing, and "ลองชุดอื่น" starts over', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
-  await openHome(page, '/?r=cafe-booking-warm');
+  await openHome(page, '/builder/?r=cafe-booking-warm');
   await page.evaluate(() => scrollTo(0, 0)); await page.waitForTimeout(300);
   await page.locator('.track-step[data-step="0"]').click();
   await page.locator(`.choice[data-key="${data.industries[2].key}"]`).click(); await page.waitForTimeout(400);
@@ -388,7 +426,7 @@ await check('the share button copies a link that reopens the same demo', async (
   await page.locator('#share').click(); await page.waitForTimeout(300);
   const link = await page.evaluate(() => navigator.clipboard.readText());
   const combo = `${data.industries[0].key}-${data.features[1].key}-${data.styles[2].key}`;
-  assert.equal(link, `${origin}/?r=${combo}`);
+  assert.equal(link, `${origin}/builder/?r=${combo}`);
   await page.goto(link, {waitUntil: 'domcontentloaded'}); await page.waitForSelector('[data-widget-body] button', {state: 'attached'});
   assert.equal(await page.locator('#stage').getAttribute('data-state'), 'done');
   assert.equal(await page.locator('.sc-hero .sc-title').textContent(), data.industries[0].brand);
@@ -397,7 +435,7 @@ await check('the share button copies a link that reopens the same demo', async (
 
 await check('reduced motion: no pinning, every scene readable in order', async () => {
   const page = await open({viewport: {width: 375, height: 740}, reducedMotion: 'reduce'});
-  await openHome(page, '/?r=studio-minigame-minimal');
+  await openHome(page, '/builder/?r=studio-minigame-minimal');
   await page.waitForSelector('.w-token');
   assert.equal(await page.locator('.site-stage').evaluate(e => getComputedStyle(e).position), 'relative');
   for (let k = 0, n = await chapters(page); k < n; k++) assert.ok(await page.locator(`.sc[data-sc="${k}"]`).isVisible(), `chapter ${k}`);
@@ -409,7 +447,7 @@ await check('reduced motion: no pinning, every scene readable in order', async (
 await check('only the chosen combination loads its photos and clip', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   const media = []; page.on('request', r => { const u = new URL(r.url()); if (/^\/entry\/media\/v[45]\//.test(u.pathname)) media.push(u.pathname); });
-  await openHome(page, '/?r=coach-store-playful');
+  await openHome(page, '/builder/?r=coach-store-playful');
   await page.waitForTimeout(800);
   assert.ok(media.length > 0);
   const firstLook = p => p.startsWith('/entry/media/v4/hero/cafe-luxury'); // the studio's built-in backdrop, in the HTML
@@ -445,7 +483,7 @@ await check('initial JavaScript ≤ 150KB gzip', async () => {
 
 await check('without JavaScript the page still informs and converts', async () => {
   const page = await open({javaScriptEnabled: false, viewport: {width: 375, height: 740}});
-  await page.goto(base + '/', {waitUntil: 'load'}); // without scripts, DOMContentLoaded can come before the stylesheet
+  await page.goto(base + '/builder/', {waitUntil: 'load'}); // without scripts, DOMContentLoaded can come before the stylesheet
   assert.ok(await page.locator('#hero-title').isVisible());
   assert.ok(!(await page.locator('#choices').isVisible()), 'the game hides');
   assert.ok(await page.locator('.nojs-demo').isVisible());
@@ -457,7 +495,7 @@ await check('without JavaScript the page still informs and converts', async () =
 await check('เข้าบ้าน opens the house at /tour/?from=home', async () => {
   const page = await open({viewport: {width: 1280, height: 860}});
   await page.route('**/tour/**', r => r.fulfill({status: 200, contentType: 'text/html', body: '<title>tour</title>'}));
-  await openHome(page, '/?r=cafe-booking-warm');
+  await openHome(page, '/builder/?r=cafe-booking-warm');
   await page.locator('#finale').scrollIntoViewIfNeeded();
   await Promise.all([page.waitForURL(/\/tour\/\?from=home$/), page.locator('#finale .door-house').click()]);
   await page.close();
@@ -466,7 +504,7 @@ await check('เข้าบ้าน opens the house at /tour/?from=home', asyn
 await check('the profile door leads to hiring and the free lessons', async () => {
   for (const [href, h1] of [['/hire/', /จ้างทำเว็บ/], ['/walkthrough/', /เรียน AI ฟรี 6 ตอน/]]) {
     const page = await open(phone);
-    await openHome(page, '/?r=coach-booking-minimal');
+    await openHome(page, '/builder/?r=coach-booking-minimal');
     await page.locator('#finale').scrollIntoViewIfNeeded();
     await page.locator('#finale .door-profile').tap();
     await page.locator('#profile-title').waitFor();
