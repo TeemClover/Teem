@@ -27,7 +27,7 @@ test('every case role is the role the owner published on /resume/ (no invented r
   }
 });
 
-test('client work leads /work/ and the homepage, with real screenshots, live pages and no invented roles', async () => {
+test('client work leads /work/, and the house offers a direct portfolio link', async () => {
   const [{clients, cases}, resume, work, home] = await Promise.all([json('work/cases.json'), read('resume/index.html'), read('work/index.html'), read('index.html')]);
   assert.deepEqual(clients.map(c => c.slug), ['mediral', 'hamburg', 'homechew', 'xvisor', 'airova']);
   for (const c of clients) {
@@ -39,9 +39,10 @@ test('client work leads /work/ and the homepage, with real screenshots, live pag
   }
   assert.ok(work.indexOf('href="/mediral/"') < work.indexOf(`href="/work/${cases[0].slug}/"`), 'client work comes before own projects');
   assert.ok(work.indexOf('href="/showcase/"') > work.indexOf(`href="/work/${cases.at(-1).slug}/"`), 'the demo ideas come last');
-  const workSection = home.slice(home.indexOf('id="work"'), home.indexOf('</section>', home.indexOf('id="work"')));
-  for (const slug of ['mediral', 'hamburg', 'xvisor', 'homechew']) assert.match(workSection, new RegExp(`href="/${slug}/"`), `homepage shows ${slug}`);
-  assert.doesNotMatch(workSection, /class="demo-strip"/, 'demo ideas stay quiet on the homepage');
+  const porch = home.slice(home.indexOf('id="hero"'), home.indexOf('</section>', home.indexOf('id="hero"')));
+  assert.match(porch, /href="\/work\/">ดูผลงาน/);
+  assert.match(home, /id="workbench"/, 'selected work is also discoverable upstairs');
+  assert.doesNotMatch(porch, /class="demo-strip"/);
 });
 
 test('Fastwork is the only way to pay, every Fastwork link comes from assets/site-links.json, and no price is shown', async () => {

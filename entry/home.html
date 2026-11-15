@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b0c0b">
-<!-- Source of "/" (BLUEPRINT v3.0 §4). Published by tools/sync-frontdoor-root.mjs; never edit /index.html by hand. -->
+<!-- Source of "/builder/". Published by tools/sync-frontdoor-root.mjs. -->
 <title>Teem Clover — สร้างเว็บ แอป เกม ด้วย AI | myClover</title>
 <meta name="description" content="ปรุงเว็บใน 3 แตะ: เลือกธุรกิจ สิ่งที่อยากได้ และสไตล์ แล้วเลื่อนดูหน้าเว็บที่ประกอบจากคำตอบของคุณ หน้าเดียวเปลี่ยนได้ 64 แบบ จบแล้วดูโปรไฟล์ Teem Clover (นรินทร์ ลีลาภรณ์) หรือเข้าบ้าน myClover 3D">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://www.myclover.com/">
+<link rel="canonical" href="https://www.myclover.com/builder/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="th_TH">
 <meta property="og:site_name" content="myClover">
-<meta property="og:url" content="https://www.myclover.com/">
+<meta property="og:url" content="https://www.myclover.com/builder/">
 <meta property="og:title" content="ปรุงเว็บใน 3 แตะ · หน้าเดียว 64 แบบ — myClover">
 <meta property="og:description" content="เลือก 3 อย่าง แล้วเลื่อนดูเว็บที่ประกอบจากคำตอบของคุณ · โดย Teem Clover">
 <!--slot-meta:og-home-->
@@ -27,13 +27,13 @@
 <link rel="stylesheet" href="/assets/fonts/site/fonts.css?v=20261026">
 <link rel="stylesheet" href="/entry/entry.css?v=20261030">
 <script>document.documentElement.classList.add('js')</script>
-<script type="module" src="/entry/entry.js?v=20261030"></script>
+<script type="module" src="/entry/entry.js?v=20261115-builder2"></script>
 <script type="module" src="/assets/my-learning-entry.js"></script>
 <!--entry:jsonld-->
 <!-- The shared motion layer is left out here on purpose: this page animates itself, and the layer's only job on it
-     (prefetching the next page) is done by the rule below without a render-blocking stylesheet. /tour/ is never
+     (prefetching the next page) is done by the rule below without a render-blocking stylesheet. the house is never
      prefetched, so no 3D code moves before the visitor chooses to enter the house. -->
-<script type="speculationrules">{"prefetch":[{"source":"document","eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/tour/*"}},{"not":{"href_matches":"/api/*"}},{"not":{"selector_matches":"[target=_blank]"}}]}}]}</script>
+<script type="speculationrules">{"prefetch":[{"source":"document","eagerness":"moderate","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/"}},{"not":{"href_matches":"/api/*"}},{"not":{"selector_matches":"[target=_blank]"}}]}}]}</script>
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false">
@@ -155,7 +155,7 @@
       <div class="remix" id="remix"></div>
       <div class="doors" aria-label="ไปต่อ">
         <a class="door door-profile" href="#profile" data-open-profile><svg><use href="#i-id"/></svg><span><b>ดูโปรไฟล์</b><small>คนที่ทำหน้านี้ และงานจริงที่ทำให้แบรนด์</small></span></a>
-        <a class="door door-house" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg><span><b>เข้าบ้าน</b><small>เดินชมบ้าน myClover 3D</small></span></a>
+        <a class="door door-house" href="/" data-enter-house><svg><use href="#i-door"/></svg><span><b>เข้าบ้าน</b><small>เดินชมบ้าน myClover 3D</small></span></a>
       </div>
       <div class="finale-minor">
         <button type="button" class="link-btn" id="share"><svg><use href="#i-share"/></svg>ส่งเว็บนี้ให้เพื่อน</button>
@@ -226,7 +226,7 @@
 
       <div class="pro-house">
         <p>อยากเห็นทุกอย่างในที่เดียว</p>
-        <a class="btn btn-door" href="/tour/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน myClover 3D</a>
+        <a class="btn btn-door" href="/" data-enter-house><svg><use href="#i-door"/></svg>เข้าบ้าน myClover 3D</a>
       </div>
     </div>
   </section>
@@ -239,7 +239,7 @@
       <a href="https://fastwork.com/user/teem" rel="noopener">Fastwork</a>
       <a href="/meet/">นัดคุย</a>
       <a href="/resume/">ประวัติ</a>
-      <a href="/tour/">บ้าน 3D</a>
+      <a href="/">บ้าน 3D</a>
       <a href="/privacy/">ความเป็นส่วนตัว</a>
     </nav>
   </div>

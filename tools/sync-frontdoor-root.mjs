@@ -1,7 +1,8 @@
 /**
  * Render the public entrances from their source documents; never rewrite /home/.
- *   /          ← entry/home.html + entry/data.json + entry/media/  ("ปรุงเว็บใน 3 แตะ", BLUEPRINT v3.0 §4)
- *   /tour/     is its own page (บ้าน myClover 3D) with its own canonical; nothing is generated from it now
+ *   /          ← tour/index.html + tools/house-porch.html (บ้าน myClover 3D)
+ *   /builder/  ← entry/home.html + entry/data.json + entry/media/ (ปรุงเว็บใน 3 แตะ)
+ *   /tour/     is the CAIO tour, with its own entrance and canonical
  *   /compass/  ← frontdoor/index.html (the Compass: an older homepage)
  * Media slots: drop a file into entry/media/ under the name in entry/MEDIA-BRIEFS.md and rerun
  * `npm run sync:frontdoor-root`; the page switches from its CSS placeholder to the file.
@@ -41,15 +42,37 @@ ${SHARE}
 }
 
 /** The house tour, published at /. */
-export function renderTourRoot(source){
-  if(!source.includes('id="stage"')||!source.includes('/tour/tour.js'))throw Error('Expected the current house tour document');
-  const tour=/<!-- Candidate homepage[^>]*-->\n(?:<meta name="robots"[^>]+>\n)?<link rel="canonical"[^>]+>/;
-  if(!tour.test(source))throw Error('Expected the tour robots/canonical block');
-  return source.replace(tour,`<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://www.myclover.com/">`)
-    .replace(/<meta property="og:image" content="[^"]*">/,SHARE)
-    .replace('<meta property="og:type" content="website">\n<meta property="og:locale" content="th_TH">\n<meta property="og:site_name" content="myClover">\n','')
-    .replace('<meta property="og:title"','<meta property="og:url" content="https://www.myclover.com/">\n<meta property="og:title"');
+export function renderTourRoot(source, porch) {
+  const hero = /<section id="hero"[^>]*>[\s\S]*?<\/section>/;
+  if (!source.includes('id="stage"') || !hero.test(source) || !porch.includes('id="web-desk"')) {
+    throw Error('Expected the house tour and porch markup');
+  }
+  const title = 'บ้าน myClover — ใครเจอเรา คนนั้นโชคดี';
+  const description = 'เดินเข้าบ้าน myClover แบบ 3D สำรวจห้องเรียน AI และผลงาน ลองสร้างเว็บที่โต๊ะข้างรั้ว แล้วตามหาโคลเวอร์ที่ซ่อนอยู่ในบ้าน';
+  const legacy = `<script>(function () {
+  const params = new URLSearchParams(location.search);
+  const combo = params.get('r') || '';
+  const builderHash = ['#film', '#play', '#choices', '#profile', '#work'].includes(location.hash);
+  if (/^(cafe|coach|shop|studio)-(profile|booking|store|minigame)-(warm|luxury|playful|minimal)$/.test(combo) || builderHash) {
+    location.replace('/builder/' + location.search + location.hash);
+  }
+})();</script>`;
+  return source
+    .replace(/<!-- Source of the 3D experience[^>]*-->/, '<!-- Generated from tour/index.html and tools/house-porch.html by tools/sync-frontdoor-root.mjs. -->')
+    .replace('href="https://www.myclover.com/tour/"', 'href="https://www.myclover.com/"')
+    .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
+    .replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${description}">`)
+    .replace(/<meta property="og:type"[\s\S]*?<meta name="twitter:card"[^>]*>/, `${SHARE}
+<meta property="og:url" content="https://www.myclover.com/">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">`)
+    .replace(/<script src="\/tour\/intro\.js" defer><\/script>\n/, '')
+    .replace('<meta name="theme-color" content="#14281d">', `<meta name="theme-color" content="#14281d">\n${legacy}`)
+    .replace('</head>', `<link rel="stylesheet" href="/tour/porch.css?v=1">\n<script src="/tour/porch.js?v=1" defer></script>\n${entryJsonLd(porch)}\n</head>`)
+    .replace('<body>', '<body class="front-door">')
+    .replace('aria-label="myClover หน้าแรก" target="_blank" rel="noopener noreferrer"', 'aria-label="myClover หน้าแรก"')
+    .replace(hero, () => porch.trim())
+    .replace('ชั้นล่างมีห้องนั่งเล่นกับครัว ชั้นบนมีห้องเรียนกับห้องทำงาน</p>', 'ชั้นล่างมีห้องนั่งเล่นกับครัว ชั้นบนมีห้องเรียนกับห้องทำงาน</p>\n      <p>แตะของที่มีตราทอง แล้วลองหาโคลเวอร์ให้ครบ 4 ใบ</p>');
 }
 
 const SITE='https://www.myclover.com';
@@ -99,7 +122,7 @@ export function entryJsonLd(source){
   return `<script type="application/ld+json">${JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c')}</script>`;
 }
 
-/** The homepage, published at /. */
+/** The website builder, published at /builder/. */
 export function renderEntryRoot(source,data,files=new Set()){
   if(!source.includes('id="studio-bg"')||!source.includes('<!--entry:data-->'))throw Error('Expected entry/home.html');
   const media=entryMedia(data,files);
@@ -124,7 +147,7 @@ export function renderEntryRoot(source,data,files=new Set()){
   // the first question's choices are in the HTML, so nothing moves when the script takes over
   const chip=o=>`<button type="button" class="choice" data-key="${attr(o.key)}" aria-pressed="false"><svg><use href="#i-${attr(o.icon)}"/></svg><span>${attr(o.label)}</span></button>`;
   out=out.replace('<div class="choice-grid" id="choice-grid"></div>',`<div class="choice-grid" id="choice-grid">${data.industries.map(chip).join('')}</div>`);
-  out=out.replace('<!-- Source of "/" (BLUEPRINT v3.0 §4). Published by tools/sync-frontdoor-root.mjs; never edit /index.html by hand. -->','<!-- Generated from entry/home.html by tools/sync-frontdoor-root.mjs. Do not edit this file; edit the source and run npm run sync:frontdoor-root. -->');
+  out=out.replace('<!-- Source of "/builder/". Published by tools/sync-frontdoor-root.mjs. -->','<!-- Generated from entry/home.html by tools/sync-frontdoor-root.mjs. Do not edit this file; edit the source and run npm run sync:frontdoor-root. -->');
   if(/<!--(slot|entry|slot-meta):/.test(out))throw Error('Unfilled marker in entry/home.html');
   return out;
 }
@@ -136,11 +159,14 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   const base=new URL('../',import.meta.url);
   const home=await readFile(new URL('home/index.html',base),'utf8');
   if(!home.includes('home-opening-full.mp4')||!home.includes('content="home-open"'))throw Error('Preserve the original /home/ before promotion');
-  const [compass,entry,dataText]=await Promise.all(['frontdoor/index.html','entry/home.html','entry/data.json'].map(p=>readFile(new URL(p,base),'utf8')));
-  const files=await entryMediaFiles(base);
-  await mkdir(new URL('compass/',base),{recursive:true});
-  await writeFile(new URL('compass/index.html',base),renderCompassPage(compass));
-  await writeFile(new URL('index.html',base),renderEntryRoot(entry,JSON.parse(dataText),files));
-  const media=entryMedia(JSON.parse(dataText),files);
-  console.log(`/ uses entry/home.html (media v4: ${media.v4.hero.length} heroes, ${media.v4.detail.length} details, ${media.v4.item.length} items, ${media.v4.loop.length} loops; v5: ${Object.keys(media.v5.film).length} films, ${media.v5.craft.length} piece loops${media.door?', door':''}${media.og?', og-home':''}); /compass/ uses the Compass runtime. Original /home/ preserved.`);
+  const sources = ['frontdoor/index.html', 'tour/index.html', 'tools/house-porch.html', 'entry/home.html', 'entry/data.json'];
+  const [compass, tour, porch, entry, dataText] = await Promise.all(sources.map(p => readFile(new URL(p, base), 'utf8')));
+  const files = await entryMediaFiles(base);
+  await Promise.all(['compass/', 'builder/'].map(p => mkdir(new URL(p, base), {recursive: true})));
+  await Promise.all([
+    writeFile(new URL('compass/index.html', base), renderCompassPage(compass)),
+    writeFile(new URL('index.html', base), renderTourRoot(tour, porch)),
+    writeFile(new URL('builder/index.html', base), renderEntryRoot(entry, JSON.parse(dataText), files)),
+  ]);
+  console.log('/ uses the house tour and porch; /builder/ uses the website builder; /compass/ uses the Compass.');
 }

@@ -44,13 +44,15 @@ if (wall) {
 
 // 1. the new pages exist, are the new pages, and are indexable by our own rules
 const homeHtml = await home.text();
-ok('/ is the new homepage', home.status === 200 && homeHtml.includes('id="studio-bg"') && homeHtml.includes('<link rel="canonical" href="https://www.myclover.com/">'), `status ${home.status}`);
-for (const path of ['/', '/work/', '/work/house-3d/', '/work/classroom/', '/work/core7/', '/work/teambook/', '/showcase/', '/hire/', '/walkthrough/', '/tour/']) {
+ok('/ is the new homepage', home.status === 200 && homeHtml.includes('id="web-desk-trigger"') && homeHtml.includes('<link rel="canonical" href="https://www.myclover.com/">'), `status ${home.status}`);
+for (const path of ['/', '/builder/', '/work/', '/work/house-3d/', '/work/classroom/', '/work/core7/', '/work/teambook/', '/showcase/', '/hire/', '/walkthrough/', '/tour/']) {
   const r = path === '/' ? home : await get(path);
   const tag = robots(r);
   const indexable = preview ? !tag.includes('follow') : !tag.includes('noindex');
   ok(`${path} 200 and not noindex by our rules`, r.status === 200 && indexable, `status ${r.status}, x-robots-tag "${tag}"`);
 }
+const builder = await (await get('/builder/')).text();
+ok('/builder/ serves the full website builder', builder.includes('id="studio-bg"') && builder.includes('<link rel="canonical" href="https://www.myclover.com/builder/">'));
 const tour = await (await get('/tour/')).text();
 ok('/tour/ has its own canonical', tour.includes('<link rel="canonical" href="https://www.myclover.com/tour/">'));
 
@@ -113,7 +115,7 @@ for (const [path, type] of [['/entry/entry.js', 'javascript'], ['/entry/data.jso
   const r = await get(path);
   ok(`${path} served as ${type}`, r.status === 200 && (r.headers.get('content-type') || '').includes(type), `status ${r.status}, ${r.headers.get('content-type')}`);
 }
-for (const path of ['/entry/home.html', '/entry/MEDIA-BRIEFS.md', '/work/cases.json', '/hire/services.json', '/docs/INVENTORY.md', '/showcase/showcase.json', '/showcase/packs/shop.json', '/showcase/MEDIA-BRIEFS.md']) {
+for (const path of ['/entry/home.html', '/tools/house-porch.html', '/entry/MEDIA-BRIEFS.md', '/work/cases.json', '/hire/services.json', '/docs/INVENTORY.md', '/showcase/showcase.json', '/showcase/packs/shop.json', '/showcase/MEDIA-BRIEFS.md']) {
   const r = await get(path);
   ok(`${path} not published`, r.status === 404, `status ${r.status}`);
 }

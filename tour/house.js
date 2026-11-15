@@ -47,7 +47,7 @@ export const ART = {
  * image later never recompiles a shader mid-scroll (a recompile is a visible hitch in HD) */
 const blank = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1); blank.needsUpdate = true;
 
-export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set(), art = new Map()}) {
+export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set(), art = new Map(), webDesk = false}) {
   const root = new THREE.Group();
   const out = {root, hotspots: [], collectibles: new Map(), tickers: [], lights: [], screens: [], smoke: [], steam: [], lazy: new Map(), areas: new Map(), music: null};
   let area = 'outside'; // which room is being built: pictures load per room, as the visitor gets near
@@ -157,6 +157,27 @@ export function buildHouse({renderer, hd, tex, found, mobile, opened = new Set()
   bx(root, [4.4, 0.04, 14], [-9.9, -0.06, 3.2], paving); // driveway under the carport
   const garden = group(root);
   for (let i = 0; i < 9; i++) place(new THREE.Mesh(geo('cyl', [0.42, 0.46, 0.06]), M('#dcd5c6', {roughness: 0.95})), garden, -5.5 + Math.sin(i * 0.8) * 0.25, -0.02, 4.5 + i * 1.05);
+  if (webDesk) {
+    const desk = out.webDesk = group(garden, 6.2, 0, 9.8);
+    desk.rotation.y = -0.14;
+    const oak = wood('#b27a4f'), frame = M('#2b4234');
+    rb(desk, [2.9, 0.16, 1.34], [0, 1.24, 0], oak);
+    for (const x of [-1.22, 1.22]) for (const z of [-0.49, 0.49]) bx(desk, [0.13, 1.25, 0.13], [x, 0, z], oak);
+    bx(desk, [0.64, 0.055, 0.42], [0, 1.4, 0], frame);
+    bx(desk, [0.14, 0.34, 0.13], [0, 1.455, -0.05], frame);
+    rb(desk, [1.75, 1.03, 0.13], [0, 1.76, -0.05], frame);
+    plane(desk, [1.59, 0.87], [0, 2.275, 0.024], canvasMat(320, 175, c => {
+      c.fillStyle = '#f5e7c6'; c.fillRect(0, 0, 320, 175);
+      c.fillStyle = '#375744'; c.fillRect(0, 0, 320, 23); c.fillRect(19, 45, 142, 12);
+      c.fillStyle = '#96ac82'; c.fillRect(19, 71, 109, 7); c.fillRect(19, 88, 83, 7);
+      c.fillStyle = '#c68855'; c.fillRect(185, 42, 117, 115);
+      c.fillStyle = '#edd8ac'; c.beginPath(); c.arc(243, 101, 34, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#774d33'; c.beginPath(); c.arc(243, 101, 26, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#375744'; c.fillRect(19, 121, 84, 20);
+    }, 0.5));
+    rb(desk, [0.7, 0.037, 0.27], [0, 1.4, 0.41], '#f0e5ce');
+    hot(desk, 'web-desk');
+  }
   const TREES = [[15.2, 5.5, 1.1], [16, -1.5, 1.3], [14.2, -6.5, 1.0], [-15, -5, 1.3], [-16.5, 3, 1.1], [3, -10, 1.4], [-5, -11, 1.2], [18, 9, 0.9]];
   for (const [x, z, s] of TREES) {
     cy(garden, [0.16 * s, 0.26 * s, 1.7 * s], [x, 0, z], M('#7a5236', {roughness: 0.9}));

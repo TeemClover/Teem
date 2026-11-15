@@ -1,28 +1,42 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile, stat} from 'node:fs/promises';
-import {renderCompassPage, renderEntryRoot, entryMedia, entryMediaFiles} from '../../tools/sync-frontdoor-root.mjs';
+import {renderCompassPage, renderTourRoot, renderEntryRoot, entryMedia, entryMediaFiles} from '../../tools/sync-frontdoor-root.mjs';
 
 const read = p => readFile(new URL('../../' + p, import.meta.url), 'utf8');
 const mediaFiles = () => entryMediaFiles();
 
-test('public root is the homepage "ปรุงเว็บใน 3 แตะ", rendered from entry/home.html', async () => {
-  const [root, source, data] = await Promise.all(['index.html', 'entry/home.html', 'entry/data.json'].map(read));
-  assert.equal(root, renderEntryRoot(source, JSON.parse(data), await mediaFiles()), 'run npm run sync:frontdoor-root');
+test('public root opens the house with a usable porch before 3D is ready', async () => {
+  const [root, tour, porch] = await Promise.all(['index.html', 'tour/index.html', 'tools/house-porch.html'].map(read));
+  assert.equal(root, renderTourRoot(tour, porch), 'run npm run sync:frontdoor-root');
   assert.match(root, /<link rel="canonical" href="https:\/\/www\.myclover\.com\/">/);
-  assert.match(root, /<meta name="robots" content="index,follow">/);
   assert.match(root, /<meta property="og:url" content="https:\/\/www\.myclover\.com\/">/);
-  assert.match(root, /<title>Teem Clover — สร้างเว็บ แอป เกม ด้วย AI \| myClover<\/title>/);
-  for (const href of ['/work/', '/hire/', '/walkthrough/', '/tour/', 'https://fastwork.com/user/teem', '/meet/', '/privacy/']) assert.ok(root.includes(`href="${href}"`), href);
-  assert.equal((root.match(/src="\/assets\/my-learning-entry.js"/g) || []).length, 1, 'students still see ห้องเรียนของฉัน');
+  assert.match(root, /<body class="front-door">/);
+  assert.match(root, /<picture class="house-poster"/);
+  assert.match(root, /href="#living">เข้าบ้าน/);
+  assert.match(root, /id="web-desk-trigger"[^>]+href="\/builder\/#play"/);
+  assert.match(root, /<dialog id="web-desk"/);
+  assert.doesNotMatch(root, /src="\/tour\/intro\.js"|\/entry\/(?:entry|film)\.js/);
+  assert.match(root, /id="workbench"/, 'the upstairs workbench stays accessible from the house');
   assert.match(root, /data-my-learning-mount/);
-  assert.doesNotMatch(root, /\/tour\/(tour|house|intro|textures|vendor)|three\.(core|module)/, 'no 3D code before the visitor enters the house');
-  assert.doesNotMatch(root, /\b(OPEN|TODO|TBD)\b|<!--(slot|entry):/, 'no unfinished markers on the published page');
-  assert.doesNotMatch(root, /฿\s?\d|\d+\s?บาท/, 'no service prices on the homepage (prices live on Fastwork)');
+});
+
+test('website builder has its own direct route and keeps its original content and student shortcut', async () => {
+  const [root, source, data] = await Promise.all(['builder/index.html', 'entry/home.html', 'entry/data.json'].map(read));
+  assert.equal(root, renderEntryRoot(source, JSON.parse(data), await mediaFiles()), 'run npm run sync:frontdoor-root');
+  assert.match(root, /<link rel="canonical" href="https:\/\/www\.myclover\.com\/builder\/">/);
+  assert.match(root, /<meta name="robots" content="index,follow">/);
+  assert.match(root, /<meta property="og:url" content="https:\/\/www\.myclover\.com\/builder\/">/);
+  for (const href of ['/work/', '/hire/', '/walkthrough/', '/', 'https://fastwork.com/user/teem', '/meet/', '/privacy/']) {
+    assert.ok(root.includes('href="' + href + '"'), href);
+  }
+  assert.equal((root.match(/src="\/assets\/my-learning-entry.js"/g) || []).length, 1);
+  assert.match(root, /data-my-learning-mount/);
+  assert.doesNotMatch(root, /\/tour\/(tour|house|intro|textures|vendor)|three\.(core|module)/);
 });
 
 test('the visible promises match the blueprint (§4.2–4.5): labels, simulation notes and the honest ending', async () => {
-  const root = await read('index.html');
+  const root = await read('builder/index.html');
   // the first screen is the film "ใบที่ 4": its captions are HTML (readable without the canvas), sound starts off
   assert.match(root, /<section class="film" id="film" aria-labelledby="hero-title"/);
   assert.match(root, /<h1 id="hero-title">ปรุงเว็บใน 3 แตะ<\/h1>/);
@@ -38,8 +52,8 @@ test('the visible promises match the blueprint (§4.2–4.5): labels, simulation
   for (const step of ['คุยโจทย์', 'จัดซอส', 'สร้างและให้ลองจริง', 'ส่งมอบ']) assert.match(root, new RegExp(step));
 });
 
-test('JSON-LD states only what the page shows (no FAQ block now that the homepage is the builder)', async () => {
-  const root = await read('index.html');
+test('JSON-LD states only what the page shows (no FAQ block on the website builder)', async () => {
+  const root = await read('builder/index.html');
   const ld = JSON.parse(root.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(ld['@graph'].map(n => n['@type']), ['Organization', 'WebSite', 'Person']);
   assert.doesNotMatch(root, /<details><summary>/, 'a FAQ on the page would need its FAQPage block back');
@@ -82,7 +96,7 @@ test('the 64 demos come from 12 data pieces; media count only when every size ex
   const media = entryMedia(data, files);
   assert.equal(media.v4.hero.length, 16, 'all 16 industry × style heroes ship');
   assert.equal(media.v4.detail.length, 16); assert.equal(media.v4.item.length, 48);
-  const root = await read('index.html');
+  const root = await read('builder/index.html');
   // the film is the first screen, so the studio's backdrop (second screen) is not preloaded and loads lazily
   assert.doesNotMatch(root, /rel="preload" as="image"/);
   assert.match(root, /<div class="studio-bg" id="studio-bg" aria-hidden="true"><img class="is-on" src="\/entry\/media\/v4\/hero\/cafe-luxury-1280\.webp"[^>]+loading="lazy"/);

@@ -1,0 +1,49 @@
+<section id="hero" class="scene scene-hero" data-scene="hero">
+  <picture class="house-poster" aria-hidden="true">
+    <source media="(max-width: 760px)" srcset="/showcase/house/media/photos/exterior-01-thumb.webp 480w, /showcase/house/media/photos/exterior-01.webp 1600w" sizes="(max-width: 470px) 480px, 100vw">
+    <img src="/showcase/house/media/photos/exterior-01.webp" alt="" width="1600" height="1067" fetchpriority="high">
+  </picture>
+  <div class="porch-welcome">
+    <p>ยินดีต้อนรับสู่บ้าน myClover</p>
+    <h1>ใครเจอเรา <span>คนนั้นโชคดี</span></h1>
+  </div>
+  <div class="porch-door">
+    <a class="btn primary" href="#living">เข้าบ้าน <span aria-hidden="true">↓</span></a>
+    <span>เลื่อนลงเพื่อเดินเข้าบ้าน</span>
+  </div>
+  <a id="web-desk-trigger" class="web-desk-trigger" href="/builder/#play">
+    <span class="desk-icon" aria-hidden="true"><i></i></span>
+    <span><small>โต๊ะข้างรั้ว</small><strong>ลองสร้างเว็บ <span aria-hidden="true">↗</span></strong></span>
+  </a>
+  <nav class="porch-links" aria-label="ทางลัดจากหน้าบ้าน">
+    <a href="/work/">ดูผลงาน</a>
+    <a href="/classroom/">เรียน AI</a>
+    <a href="/hire/">จ้างงาน</a>
+  </nav>
+</section>
+
+<dialog id="web-desk" class="web-desk" aria-labelledby="web-desk-title" data-lenis-prevent>
+  <div class="web-desk-head">
+    <div>
+      <h2 id="web-desk-title">ลองสร้างเว็บ</h2>
+      <p>เลือกไอเดียแล้วดูว่าหน้าเว็บจะออกมาแบบไหน</p>
+    </div>
+    <form method="dialog"><button class="desk-close" type="submit" aria-label="ปิดโต๊ะลองสร้างเว็บ" autofocus>×</button></form>
+  </div>
+  <div class="desk-choices" role="group" aria-label="เลือกประเภทเว็บตัวอย่าง">
+    <button type="button" data-desk-demo="cafe" aria-pressed="true">ร้านกาแฟ</button>
+    <button type="button" data-desk-demo="studio" aria-pressed="false">พอร์ตผลงาน</button>
+    <button type="button" data-desk-demo="shop" aria-pressed="false">หน้าขายสินค้า</button>
+  </div>
+  <div class="desk-preview" data-desk-preview="cafe" aria-live="polite" aria-atomic="true">
+    <div class="desk-browser"><i aria-hidden="true"></i><span data-desk-address>mosscafe.example</span><span>เว็บตัวอย่าง</span></div>
+    <div class="desk-page">
+      <img data-desk-image alt="" width="640" height="360">
+      <div><p data-desk-brand>มอสคาเฟ่</p><strong data-desk-line>กาแฟดี ขนมปังอบเช้า</strong></div>
+    </div>
+  </div>
+  <div class="desk-next">
+    <a class="desk-sample" href="/builder/?r=cafe-booking-warm">ดูตัวอย่างเต็ม <span aria-hidden="true">↗</span></a>
+    <a class="btn primary" href="/builder/#play">เปิดตัวสร้างเว็บ <span aria-hidden="true">→</span></a>
+  </div>
+</dialog>
