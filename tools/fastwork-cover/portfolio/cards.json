@@ -1,0 +1,11 @@
+[
+ {"id":"homechew","shot":"homechew.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/homechew","eyebrow":"Brand website","title":"Homechew","line":"เว็บเปิดตัวแบรนด์ซอส 3 รส · Launch site for a sauce brand"},
+ {"id":"office","shot":"office.jpg","srcW":1920,"crop":[60,300,1216,760],"url":"x.myclover.com","eyebrow":"Workspace system","title":"Clover X Office","line":"พื้นที่ทำงาน 3D ของทั้งทีม · A 3D workspace for the whole team"},
+ {"id":"mediral","shot":"mediral.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/mediral","eyebrow":"Brand site + LINE commerce","title":"Mediral","line":"เว็บแบรนด์สกินแคร์และระบบขายผ่าน LINE · Skincare site with LINE ordering"},
+ {"id":"line","shot":"line.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/showcase/line-brand","eyebrow":"LINE OA + AI · Live demo","title":"LINE Shop Assistant","line":"ตอบลูกค้าและรับออเดอร์ในแชต · Replies and takes orders in chat"},
+ {"id":"erp","shot":"erp.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/showcase/erp-brand","eyebrow":"Back office · Demo data","title":"Online Brand ERP","line":"ออเดอร์ สต็อก ช่องทางขาย ในที่เดียว · Orders, stock and channels in one place"},
+ {"id":"classroom","shot":"classroom.jpg","srcW":960,"crop":[0,0,960,540],"url":"myclover.com/classroom","eyebrow":"Learning platform","title":"AI ใส่ซอส Classroom","line":"ห้องเรียนออนไลน์พร้อมระบบสมาชิก · Online course with membership"},
+ {"id":"xvisor","shot":"xvisor.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/xvisor","eyebrow":"Learning game","title":"X-VISOR Quest","line":"เกมจำลองธุรกิจ เรียนผ่านการตัดสินใจ · A business simulation game"},
+ {"id":"short","shot":"short.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/short","eyebrow":"Content platform","title":"Tontor · ตอนต่อ","line":"ศูนย์รวมละครสั้น การ์ตูน และนิยาย · A hub for short series and stories"},
+ {"id":"hamburg","shot":"hamburg.jpg","srcW":1920,"crop":[0,0,1920,1200],"url":"myclover.com/hamburg","eyebrow":"Event storefront","title":"Hamburg Food Fair","line":"3 แบรนด์ในงานเดียว พร้อมหน้าสั่งซื้อ · Three brands, one fair, with ordering"}
+]

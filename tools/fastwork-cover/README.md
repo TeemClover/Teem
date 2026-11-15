@@ -135,3 +135,9 @@ ffmpeg -y -i raw/erp-overview.png -vf "scale=1200:-1:flags=lanczos" -q:v 2 erp.j
 - Homechew เป็น "งานให้แบรนด์" ตามหน้า /work/ — การนำหน้าเว็บของแบรนด์ไปขึ้นปกโปรไฟล์รับงานบนแพลตฟอร์มอื่นควรได้รับความยินยอมจากเจ้าของแบรนด์ ถ้ายังไม่มี ให้สลับชิ้นแรกใน `PIECES` เป็นงานของตัวเองแล้วเรนเดอร์ใหม่
 - ERP เป็นตัวอย่างสาธิต ตัวเลขทั้งหมดเป็นข้อมูลสมมติ และป้ายกำกับของหน้าเว็บยังอยู่ในภาพ
 - ฟอนต์ Fraunces และ Kanit ใช้ภายใต้ SIL Open Font License 1.1 (ไฟล์ license อยู่ใน `assets/fonts/`)
+
+## Portfolio cards (`portfolio/`)
+
+ภาพโพสต์ผลงาน 9 ใบ ขนาด 1600×1200 สไตล์เดียวกับปก ทำจากภาพหน้าเว็บจริง (`portfolio/shots/`, ถ่ายเมื่อ 2026-11-15)
+ข้อความและการครอปอยู่ใน `portfolio/cards.json` · ถ่ายใหม่: `node tools/fastwork-cover/portfolio/capture.mjs` (ได้ .png ต้องแปลงเป็น .jpg) · เรนเดอร์: `node tools/fastwork-cover/portfolio/render.mjs`
+ภาพ Clover X Office ครอปเฉพาะห้อง 3D ไม่ติดรายชื่อสมาชิกทีม
