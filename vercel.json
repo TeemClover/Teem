@@ -1474,6 +1474,18 @@
   ],
   "rewrites": [
     {
+      "source": "/review/",
+      "destination": "https://cloverx-review.vercel.app/review/"
+    },
+    {
+      "source": "/review/admin/",
+      "destination": "https://cloverx-review.vercel.app/review/admin/"
+    },
+    {
+      "source": "/review/api/:name/",
+      "destination": "https://cloverx-review.vercel.app/review/api/:name/"
+    },
+    {
       "source": "/review/:path*",
       "destination": "https://cloverx-review.vercel.app/review/:path*"
     },
