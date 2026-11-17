@@ -3,6 +3,16 @@
   "crons": [],
   "redirects": [
     {
+      "source": "/review",
+      "destination": "/review/",
+      "permanent": false
+    },
+    {
+      "source": "/review/admin",
+      "destination": "/review/admin/",
+      "permanent": false
+    },
+    {
       "source": "/candidate",
       "destination": "/candidate/",
       "permanent": false
@@ -1463,6 +1473,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/review/:path*",
+      "destination": "https://cloverx-review.vercel.app/review/:path*"
+    },
     {
       "source": "/candidate/",
       "destination": "/candidate/index.html"
