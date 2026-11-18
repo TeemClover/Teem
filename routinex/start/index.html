@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เริ่มต้น RoutineX · Day 0 ถึง Day 28</title>
+<meta name="description" content="ได้รับกล่อง RoutineX แล้ว เริ่มที่หน้านี้ ดูคลิปโค้ชซิงทีละตอน Day 0 · 7 · 14 · 28 ค่อย ๆ เรียน ทำ และปรับไปด้วยกันกับ X-VISOR ของคุณ">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://www.myclover.com/routinex/start/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="th_TH">
+<meta property="og:site_name" content="RoutineX · myClover">
+<meta property="og:url" content="https://www.myclover.com/routinex/start/">
+<meta property="og:title" content="ยินดีต้อนรับสู่ RoutineX · เริ่ม Day 0 ที่นี่">
+<meta property="og:description" content="เปิดกล่องแล้วเริ่มที่หน้านี้ คลิปโค้ชซิง Day 0 · 7 · 14 · 28 พร้อมสิ่งที่ลงมือทำได้ทีละวัน">
+<meta property="og:image" content="https://www.myclover.com/routinex/assets/og-start.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="กล่อง RoutineX เปิดฝา พร้อมข้อความ One Routine. Better Habits.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#141b33">
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/routinex/routine.css?v=20261118b">
+<script defer src="/routinex/routine.js?v=20261118b"></script>
+<script defer src="/routinex/start/start.js?v=20261118b"></script>
+</head>
+<body>
+<a class="skip" href="#road">ข้ามไปที่แผน 28 วัน</a>
+
+<header class="bar">
+  <a class="bar__logo" href="/routinex/" aria-label="RoutineX กลับหน้าแรก"><img src="/routinex/assets/logo-white.webp" alt="RoutineX" width="720" height="100"></a>
+  <nav class="bar__nav" aria-label="ทางลัด">
+    <a class="pill" href="/routinex/">← หน้าแรก</a>
+    <a class="pill pill--solid" href="#road">แผน 28 วัน</a>
+  </nav>
+</header>
+
+<main>
+<!-- ============ เปิดกล่อง ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero__grid">
+    <div>
+      <p class="eyebrow">สำหรับคนที่ได้รับกล่องแล้ว</p>
+      <h1>ยินดีต้อนรับ<br>รอบนี้เปลี่ยนที่ <em>รูทีน</em></h1>
+      <p class="hero__lead">เราตั้งใจให้กล่องนี้เป็นการเริ่มลดน้ำหนักครั้งสุดท้ายของคุณ ไม่ใช่เพราะต้องอดทนมากกว่าเดิม แต่เพราะ 28 วันนี้คุณจะค่อย ๆ เรียน ทำ และปรับ โดยมีคนเดินไปด้วย</p>
+      <div class="hero__cta">
+        <button class="btn btn--go" type="button" data-open-box>เปิดกล่อง เริ่ม Day 0 <span class="arr" aria-hidden="true">→</span></button>
+        <a class="btn btn--ghost" href="#road">ดูแผน 28 วัน</a>
+      </div>
+      <p class="hero__tag">ONE ROUTINE · BETTER HABITS</p>
+    </div>
+    <div class="hero__art">
+      <button class="box float" type="button" data-open-box aria-label="เปิดกล่อง RoutineX">
+        <img class="box__closed" src="/routinex/assets/box-closed.webp" alt="" width="760" height="783" fetchpriority="high">
+        <img class="box__open" src="/routinex/assets/box-open.webp" alt="" width="680" height="958">
+        <span class="box__hint"><i aria-hidden="true"></i>แตะเพื่อเปิดกล่อง</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ นับวัน ============ -->
+<section class="band band--cream" id="today">
+  <div class="wrap wrap--narrow">
+    <p class="eyebrow rv">วันของคุณ</p>
+    <h2 class="h2 rv">วันนี้คุณอยู่วันที่เท่าไร</h2>
+    <p class="lead rv">บอกวันที่เริ่ม แล้วหน้านี้จะจำให้ว่าถึงตอนไหนแล้ว ข้อมูลเก็บไว้ในเครื่องของคุณเท่านั้น</p>
+
+    <div class="tracker rv" id="tracker">
+      <div class="tracker__set" id="trackerSet">
+        <button class="btn btn--go" type="button" id="startToday">เริ่มนับจากวันนี้</button>
+        <span class="tracker__or">หรือ</span>
+        <label class="field">เริ่มไปแล้วเมื่อ <input type="date" id="startDate" aria-label="วันที่เริ่ม RoutineX"></label>
+      </div>
+      <div class="tracker__live" id="trackerLive" hidden>
+        <div class="ring" aria-hidden="true">
+          <svg viewBox="0 0 160 160"><circle class="bg" cx="80" cy="80" r="70"/><circle class="fg" id="ringFg" cx="80" cy="80" r="70"/></svg>
+          <div class="ring__txt"><small>DAY</small><b id="ringDay">0</b><span>จาก 28</span></div>
+        </div>
+        <div class="tracker__now" aria-live="polite">
+          <p class="k" id="nowKicker">ตอนของคุณตอนนี้</p>
+          <h3 id="nowTitle"></h3>
+          <p id="nowNext"></p>
+          <p class="todaypack" id="todayPack" hidden></p>
+          <div class="tracker__act">
+            <a class="btn btn--go btn--sm" id="nowGo" href="#day0">เปิดตอนนี้ <span class="arr" aria-hidden="true">→</span></a>
+            <button class="linkbtn" type="button" id="resetStart">เปลี่ยนวันเริ่ม</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ โค้ช ============ -->
+<section class="band band--navy" id="coach">
+  <div class="wrap coach">
+    <div class="rv">
+      <div class="clip" data-yt="_k_v4xPcueM" data-title="RoutineX | โค้ชซิงพาลดน้ำหนัก">
+        <button class="clip__btn" type="button" aria-label="เล่นคลิป รู้จักโค้ชซิง ยาว 38 วินาที">
+          <img src="/routinex/assets/poster-coach.webp" alt="" width="540" height="960" loading="lazy">
+          <span class="clip__play" aria-hidden="true"></span>
+          <span class="clip__meta"><span>รู้จักโค้ชซิง</span><b>0:38</b></span>
+        </button>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow rv">คนที่จะพาคุณไป</p>
+      <h2 class="h2 rv">โค้ชของคุณ<br>เคยยืนอยู่จุดเดียวกัน</h2>
+      <p class="lead rv">โค้ชซิงเคยหนักที่สุด 104 กิโลกรัม แล้วใช้เวลาหนึ่งปีดูแลตัวเองจนเหลือ 67 จากนั้นก็ใช้สิบกว่าปีพาคนอื่นทำแบบเดียวกัน คลิปทุกตอนในหน้านี้คือสิ่งที่โค้ชอยากบอกคุณในวันนั้นพอดี</p>
+      <div class="stats rv">
+        <div class="stat"><b>104 → 67</b><span>กิโลกรัม ของโค้ชเอง</span></div>
+        <div class="stat"><b>1 ปี</b><span>ค่อย ๆ ปรับ ไม่เร่ง</span></div>
+        <div class="stat"><b>10+ ปี</b><span>ที่ดูแลคนอื่นต่อ</span></div>
+      </div>
+      <p class="sig rv"><b>ซิง ปริญ จารุกุลวนิช</b><span>Chief of Sales &amp; Training Officer · CloverX</span></p>
+      <p class="note rv" style="margin-top:18px">ตัวเลขนี้เป็นเรื่องของโค้ชเองจากการดูแลตัวเองต่อเนื่อง ผลลัพธ์ของแต่ละคนแตกต่างกัน</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ แผน 28 วัน ============ -->
+<section class="band band--cream" id="road">
+  <div class="wrap wrap--narrow" style="max-width:860px">
+    <p class="eyebrow rv">แผน 28 วัน</p>
+    <h2 class="h2 rv">หกจุดแวะ ดูทีละตอน ทำทีละเรื่อง</h2>
+    <p class="lead rv">ไม่ต้องดูรวดเดียว ถึงวันไหนค่อยเปิดตอนนั้น ดูคลิป ลงมือหนึ่งอย่าง แล้วบอก X-VISOR ของคุณ</p>
+
+    <div class="road">
+
+      <!-- Day 0 -->
+      <details class="chap rv" id="day0" data-day="0" open>
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>0</b></span>
+          <span class="chap__ttl"><h3>เปิดกล่อง รู้จัก 4 กลไก ABCD</h3><p><span class="badge" data-state hidden></span><span>คลิป 3:23</span><span>ลงมือ 5 ข้อ</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body">
+          <div class="chap__clipcol">
+            <div class="clip" data-yt="1-u_aSpZ7Jo" data-title="Day 0 | เปิดกล่อง RoutineX">
+              <button class="clip__btn" type="button" aria-label="เล่นคลิป Day 0 เปิดกล่อง ยาว 3 นาที 23 วินาที">
+                <img src="/routinex/assets/poster-day0.webp" alt="" width="540" height="960" loading="lazy">
+                <span class="clip__play" aria-hidden="true"></span>
+                <span class="clip__meta"><span>Day 0 · เปิดกล่อง</span><b>3:23</b></span>
+              </button>
+            </div>
+            <a class="clip__yt" href="https://youtu.be/1-u_aSpZ7Jo" target="_blank" rel="noopener">เปิดใน YouTube ↗</a>
+          </div>
+          <div>
+            <p class="k">ใจความของตอนนี้</p>
+            <ul class="gist">
+              <li>มีความรู้แล้วแต่ยังลดไม่ได้ มักเพราะมีบางอย่างที่ยังไม่รู้ หรือรู้แล้วแต่ทำต่อเนื่องไม่ได้</li>
+              <li>ฝากล่องเขียนไว้ 4 กลไก: A ลำไส้พร้อม · B โปรตีนถึง · C กินให้ถูก · D เติมให้ครบ</li>
+              <li>วันละ 1 ซอง Daily Routine Pack ครบมื้อ ครบหมู่ ครบสัดส่วน</li>
+            </ul>
+            <div class="do" data-checks="d0">
+              <p class="k">ลงมือวันนี้</p>
+              <h4>ตั้งต้นให้เรียบร้อย 5 ข้อ</h4>
+              <div class="checks">
+                <label class="check"><input type="checkbox" data-id="watch"><i aria-hidden="true"></i><span>ดูคลิปเปิดกล่องจนจบ</span></label>
+                <label class="check"><input type="checkbox" data-id="app"><i aria-hidden="true"></i><span>โหลดแอป XIRCLE และเชื่อมอุปกรณ์ที่มี <a href="https://www.xircle.health/download" target="_blank" rel="noopener">โหลดแอป ↗</a></span></label>
+                <label class="check"><input type="checkbox" data-id="base"><i aria-hidden="true"></i><span>จดค่าเริ่มต้นของตัวเอง เช่น น้ำหนัก และรอบเอว</span></label>
+                <label class="check"><input type="checkbox" data-id="goal"><i aria-hidden="true"></i><span>เขียนเป้าหมายของรอบนี้หนึ่งข้อ</span></label>
+                <label class="check"><input type="checkbox" data-id="tell"><i aria-hidden="true"></i><span>บอก X-VISOR ของคุณว่าเริ่มแล้ว</span></label>
+              </div>
+              <div class="meter" aria-hidden="true"><i></i></div>
+              <p class="note" data-check-note>ติ๊กได้ทีละข้อ หน้านี้จำให้</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Day 3 -->
+      <details class="chap rv" id="day3" data-day="3">
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>3</b></span>
+          <span class="chap__ttl"><h3>เริ่มได้สะดวกไหม</h3><p><span class="badge" data-state hidden></span><span>อ่าน 1 นาที</span><span>ตอบ 1 ข้อ</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body chap__body--solo">
+          <div>
+            <p>สามวันแรกยังไม่ต้องดูผล ดูแค่ว่ารูทีนเข้ากับชีวิตจริงของคุณหรือยัง</p>
+            <div class="do" data-pick="d3">
+              <p class="k">เช็กตัวเอง</p>
+              <h4>สามวันที่ผ่านมาเป็นแบบไหน</h4>
+              <div class="chips">
+                <button class="chip" type="button" data-v="all" aria-pressed="false">ทำได้ทุกวัน</button>
+                <button class="chip" type="button" data-v="some" aria-pressed="false">หลุดบ้างบางวัน</button>
+                <button class="chip" type="button" data-v="none" aria-pressed="false">ยังไม่ได้เริ่ม</button>
+              </div>
+              <p class="tip" data-tip="all" hidden>ดีมาก รักษาเวลาเดิมไว้ ยังไม่ต้องเพิ่มอะไร แล้วเจอกันใน Day 7</p>
+              <p class="tip" data-tip="some" hidden>เป็นเรื่องปกติ ลองผูกซองกับสิ่งที่ทำอยู่แล้วทุกวัน เช่น หลังแปรงฟันตอนเช้า แล้วบอก X-VISOR ว่าหลุดช่วงไหน จะได้ช่วยกันจัดเวลา</p>
+              <p class="tip" data-tip="none" hidden>ไม่เป็นไร ให้วันนี้เป็น Day 0 ใหม่ได้ กด “เปลี่ยนวันเริ่ม” ด้านบน แล้วทัก X-VISOR ให้ช่วยตั้งต้นด้วยกัน</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Day 7 -->
+      <details class="chap rv" id="day7" data-day="7">
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>7</b></span>
+          <span class="chap__ttl"><h3>ให้คะแนนตัวเอง กิน ขยับ นอน</h3><p><span class="badge" data-state hidden></span><span>คลิป 0:56</span><span>ให้คะแนน 3 เรื่อง</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body">
+          <div class="chap__clipcol">
+            <div class="clip" data-yt="T3vvinOQje8" data-title="RoutineX | Day 7">
+              <button class="clip__btn" type="button" aria-label="เล่นคลิป Day 7 ยาว 56 วินาที">
+                <img src="/routinex/assets/poster-day7.webp" alt="" width="540" height="960" loading="lazy">
+                <span class="clip__play" aria-hidden="true"></span>
+                <span class="clip__meta"><span>Day 7 · เช็กครั้งแรก</span><b>0:56</b></span>
+              </button>
+            </div>
+            <a class="clip__yt" href="https://youtube.com/shorts/T3vvinOQje8" target="_blank" rel="noopener">เปิดใน YouTube ↗</a>
+          </div>
+          <div>
+            <p class="k">ใจความของตอนนี้</p>
+            <ul class="gist">
+              <li>ถามตัวเองก่อนว่า 7 วันนี้ทำอะไรได้ดี</li>
+              <li>ถ้ายังติดขัด ไม่ต้องกังวล เพราะเพิ่งปรับตัวมาแค่ 7 วัน</li>
+              <li>เลือกแก้ทีละเรื่อง แล้วบอกโค้ชของคุณ</li>
+            </ul>
+            <div class="do" id="tool7">
+              <p class="k">ลงมือวันนี้</p>
+              <h4>ให้คะแนนตัวเอง 1 ถึง 5</h4>
+              <div class="scores">
+                <div class="score" data-score="eat"><div class="score__l"><b>EAT</b><span>กิน</span></div><div class="dots" role="group" aria-label="คะแนนการกิน"></div></div>
+                <div class="score" data-score="move"><div class="score__l"><b>MOVE</b><span>ขยับ</span></div><div class="dots" role="group" aria-label="คะแนนการขยับ"></div></div>
+                <div class="score" data-score="sleep"><div class="score__l"><b>SLEEP</b><span>นอน</span></div><div class="dots" role="group" aria-label="คะแนนการนอน"></div></div>
+              </div>
+              <h4 style="margin-top:20px">สัปดาห์นี้อยากแก้เรื่องไหนก่อน</h4>
+              <div class="chips" data-focus>
+                <button class="chip" type="button" data-v="eat" aria-pressed="false">การกิน</button>
+                <button class="chip" type="button" data-v="move" aria-pressed="false">การขยับ</button>
+                <button class="chip" type="button" data-v="sleep" aria-pressed="false">การนอน</button>
+              </div>
+              <div class="msg" data-msg hidden>
+                <small>ข้อความถึง X-VISOR ของคุณ</small>
+                <p data-msg-text></p>
+                <div class="msg__act">
+                  <button class="btn btn--go btn--sm" type="button" data-msg-send>ส่งให้ X-VISOR</button>
+                  <button class="btn btn--ghost btn--sm" type="button" data-msg-copy>คัดลอก</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Day 14 -->
+      <details class="chap rv" id="day14" data-day="14">
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>14</b></span>
+          <span class="chap__ttl"><h3>แก้ทีละเรื่อง ตั้งเป้าหนึ่งข้อ</h3><p><span class="badge" data-state hidden></span><span>คลิป 0:49</span><span>เลือกเป้า 1 ข้อ</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body">
+          <div class="chap__clipcol">
+            <div class="clip" data-yt="zsj3XwxegUg" data-title="RoutineX | Day 14">
+              <button class="clip__btn" type="button" aria-label="เล่นคลิป Day 14 ยาว 49 วินาที">
+                <img src="/routinex/assets/poster-day14.webp" alt="" width="540" height="960" loading="lazy">
+                <span class="clip__play" aria-hidden="true"></span>
+                <span class="clip__meta"><span>Day 14 · ครึ่งทาง</span><b>0:49</b></span>
+              </button>
+            </div>
+            <a class="clip__yt" href="https://youtube.com/shorts/zsj3XwxegUg" target="_blank" rel="noopener">เปิดใน YouTube ↗</a>
+          </div>
+          <div>
+            <p class="k">ใจความของตอนนี้</p>
+            <ul class="gist">
+              <li>อะไรที่ทำได้ดี ทำต่อไป</li>
+              <li>อะไรที่ยังไม่พอ ตั้งเป้าเพิ่มแค่หนึ่งเรื่อง</li>
+              <li>บอกโค้ชของคุณ แล้วมาเจอกันอีก 14 วัน</li>
+            </ul>
+            <div class="do" id="tool14">
+              <p class="k">ลงมือวันนี้</p>
+              <h4>เลือกเป้าของ 14 วันข้างหน้า หนึ่งข้อ</h4>
+              <p>ตัวอย่างจากในคลิป หรือเขียนของคุณเอง</p>
+              <div class="chips" data-goal>
+                <button class="chip" type="button" data-v="กินโปรตีนให้ถึงทุกมื้อ" aria-pressed="false"><small>EAT</small>กินโปรตีนให้ถึงทุกมื้อ</button>
+                <button class="chip" type="button" data-v="เดินให้ครบวันละ 10,000 ก้าว" aria-pressed="false"><small>MOVE</small>เดินให้ครบวันละ 10,000 ก้าว</button>
+                <button class="chip" type="button" data-v="นอนให้ครบ 8 ชั่วโมง" aria-pressed="false"><small>SLEEP</small>นอนให้ครบ 8 ชั่วโมง</button>
+              </div>
+              <input class="txt" type="text" data-goal-own maxlength="120" placeholder="หรือเขียนเป้าของคุณเอง" aria-label="เป้าหมายที่เขียนเอง">
+              <div class="msg" data-msg hidden>
+                <small>ข้อความถึง X-VISOR ของคุณ</small>
+                <p data-msg-text></p>
+                <div class="msg__act">
+                  <button class="btn btn--go btn--sm" type="button" data-msg-send>ส่งให้ X-VISOR</button>
+                  <button class="btn btn--ghost btn--sm" type="button" data-msg-copy>คัดลอก</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Day 21 -->
+      <details class="chap rv" id="day21" data-day="21">
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>21</b></span>
+          <span class="chap__ttl"><h3>รักษาจังหวะ ไม่ต้องเพิ่มอะไรใหม่</h3><p><span class="badge" data-state hidden></span><span>อ่าน 1 นาที</span><span>เช็ก 4 ข้อ</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body chap__body--solo">
+          <div>
+            <p>สัปดาห์ที่สามไม่ต้องหาอะไรใหม่ รักษาสิ่งที่ทำได้อยู่แล้วให้ครบก็พอ</p>
+            <div class="do" data-checks="d21">
+              <p class="k">เช็กตัวเอง</p>
+              <h4>สัปดาห์นี้ฉันยังทำอยู่</h4>
+              <div class="checks">
+                <label class="check"><input type="checkbox" data-id="pack"><i aria-hidden="true"></i><span>ซองรายวัน วันละ 1 ซอง</span></label>
+                <label class="check"><input type="checkbox" data-id="goal"><i aria-hidden="true"></i><span data-goal-echo>เป้าที่ตั้งไว้ตอน Day 14</span></label>
+                <label class="check"><input type="checkbox" data-id="log"><i aria-hidden="true"></i><span>บันทึกการกิน ขยับ หรือนอนในแอป</span></label>
+                <label class="check"><input type="checkbox" data-id="talk"><i aria-hidden="true"></i><span>คุยกับ X-VISOR อย่างน้อยหนึ่งครั้ง</span></label>
+              </div>
+              <div class="meter" aria-hidden="true"><i></i></div>
+              <p class="note" data-check-note>ข้อไหนหลุดไป บอก X-VISOR ได้เลย ไม่ต้องรอครบ 28 วัน</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Day 28 -->
+      <details class="chap rv" id="day28" data-day="28">
+        <summary>
+          <span class="chap__day"><small>DAY</small><b>28</b></span>
+          <span class="chap__ttl"><h3>ครบ 28 วัน ได้เรียนรู้อะไร แล้วไปต่อ</h3><p><span class="badge" data-state hidden></span><span>คลิป 1:10</span><span>ทบทวน 3 ขั้น</span></p></span>
+          <span class="chap__chev" aria-hidden="true"></span>
+        </summary>
+        <div class="chap__body">
+          <div class="chap__clipcol">
+            <div class="clip" data-yt="kpEo83KwAjE" data-title="RoutineX | Day 28">
+              <button class="clip__btn" type="button" aria-label="เล่นคลิป Day 28 ยาว 1 นาที 10 วินาที">
+                <img src="/routinex/assets/poster-day28.webp" alt="" width="540" height="960" loading="lazy">
+                <span class="clip__play" aria-hidden="true"></span>
+                <span class="clip__meta"><span>Day 28 · ทบทวน</span><b>1:10</b></span>
+              </button>
+            </div>
+            <a class="clip__yt" href="https://youtube.com/shorts/kpEo83KwAjE" target="_blank" rel="noopener">เปิดใน YouTube ↗</a>
+          </div>
+          <div>
+            <p class="k">ใจความของตอนนี้</p>
+            <ul class="gist">
+              <li>28 วันนี้ได้เรียนรู้อะไรเกี่ยวกับตัวเอง ทำอะไรได้ดี อะไรยังไม่ถึงเป้า</li>
+              <li>หาเรื่องที่คุณประทับใจจากรอบนี้ให้เจอ</li>
+              <li>เขียนเป้าของ 28 วันถัดไป แล้วปรึกษาคนที่ดูแลคุณ</li>
+            </ul>
+            <div class="do" id="tool28">
+              <p class="k">ลงมือวันนี้</p>
+              <h4>1 · รอบนี้ฉันสังเกตเห็นอะไร</h4>
+              <p>เลือกได้หลายข้อ ตามที่รู้สึกจริง</p>
+              <div class="chips" data-seen>
+                <button class="chip" type="button" data-v="น้ำหนัก" aria-pressed="false">น้ำหนัก</button>
+                <button class="chip" type="button" data-v="สัดส่วน" aria-pressed="false">สัดส่วน</button>
+                <button class="chip" type="button" data-v="การขับถ่าย" aria-pressed="false">การขับถ่าย</button>
+                <button class="chip" type="button" data-v="การนอน" aria-pressed="false">การนอน</button>
+                <button class="chip" type="button" data-v="ความรู้สึกตัวเบา" aria-pressed="false">ความรู้สึกตัวเบา</button>
+                <button class="chip" type="button" data-v="ยังไม่เห็นอะไรชัด" aria-pressed="false">ยังไม่เห็นอะไรชัด</button>
+              </div>
+              <h4 style="margin-top:20px">2 · เรื่องที่ประทับใจที่สุด</h4>
+              <textarea class="txt" data-proud rows="2" maxlength="240" placeholder="เช่น เดินได้ทุกวันโดยไม่ต้องฝืน" aria-label="เรื่องที่ประทับใจที่สุด"></textarea>
+              <h4 style="margin-top:20px">3 · อีก 28 วันข้างหน้า อยากทำอะไรให้ดีขึ้น</h4>
+              <div class="chips" data-next>
+                <button class="chip" type="button" data-v="ออกกำลังกายมากขึ้น" aria-pressed="false">ออกกำลังกายมากขึ้น</button>
+                <button class="chip" type="button" data-v="นอนให้ดีขึ้น" aria-pressed="false">นอนให้ดีขึ้น</button>
+                <button class="chip" type="button" data-v="กินให้ดีขึ้น" aria-pressed="false">กินให้ดีขึ้น</button>
+              </div>
+              <div class="msg" data-msg hidden>
+                <small>ข้อความถึง X-VISOR ของคุณ</small>
+                <p data-msg-text></p>
+                <div class="msg__act">
+                  <button class="btn btn--go btn--sm" type="button" data-msg-send>ส่งให้ X-VISOR</button>
+                  <button class="btn btn--ghost btn--sm" type="button" data-msg-copy>คัดลอก</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="nextRound">เริ่มรอบถัดไป</button>
+                </div>
+              </div>
+              <p class="note" style="margin-top:14px">Day 28 ไม่ใช่เส้นชัย เป็นจุดที่เราดูข้อมูลรอบแรก เก็บสิ่งที่ได้ผลไว้ แล้วออกแบบรอบถัดไป ผลลัพธ์ของแต่ละคนแตกต่างกัน</p>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ในซอง ============ -->
+<section class="band band--paper" id="pack">
+  <div class="wrap">
+    <p class="eyebrow rv">ในกล่องของคุณ</p>
+    <h2 class="h2 rv">วันละ 1 ซอง ข้างในมีอะไร</h2>
+    <p class="lead rv">ฝากล่องบอกว่ามีแพ็กรายวันสองแบบ สลับกันวันคี่กับวันคู่ แตะแต่ละซองเพื่อดูว่ามันอยู่ตรงไหนของ ABCD</p>
+    <div class="pack">
+      <div class="rv">
+        <div class="seg" role="group" aria-label="เลือกแบบของซอง">
+          <button type="button" data-parity="odd" aria-pressed="true">วันคี่ · G.U.S. day</button>
+          <button type="button" data-parity="even" aria-pressed="false">วันคู่ · Core day</button>
+        </div>
+        <div class="sachets" id="sachets">
+          <button class="sachet sachet--b" type="button" data-s="b" aria-pressed="true"><small>B · BUILD</small><b>Protein HMB+</b></button>
+          <button class="sachet sachet--d" type="button" data-s="d" aria-pressed="false"><small>D · DAILY BALANCE</small><b>Core Duo</b></button>
+          <button class="sachet sachet--a" type="button" data-s="a" aria-pressed="false"><small>A · ABSORB</small><b>G.U.S.+</b></button>
+        </div>
+      </div>
+      <div class="packinfo rv" aria-live="polite">
+        <div data-info="b">
+          <p class="k">B · BUILD · โปรตีนถึง</p>
+          <h3>Protein HMB+</h3>
+          <p>โปรตีนรวม 20 กรัมต่อซอง จากเวย์ ถั่วเหลือง และถั่วลันเตา พร้อม myHMB® อยู่ในซองทุกวัน เพื่อให้เรื่องโปรตีนมีที่ของมันในแต่ละวัน</p>
+          <a class="btn btn--line btn--sm" href="/routinex/build/">เข้าห้อง B ดูว่าโปรตีนไปทำอะไร <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+        <div data-info="d" hidden>
+          <p class="k">D · DAILY BALANCE · เติมให้ครบ</p>
+          <h3>Core Duo</h3>
+          <p>ซองเล็กที่รวม AstaMega+ 1 ซอฟต์เจล กับ Vita Matrix 2 แคปซูล อยู่ในซองทุกวัน เป็นส่วนของวิตามินและแร่ธาตุในรูทีน</p>
+          <span class="soon">ห้อง D · เร็ว ๆ นี้</span>
+        </div>
+        <div data-info="a" hidden>
+          <p class="k">A · ABSORB · ลำไส้พร้อม</p>
+          <h3>G.U.S.+</h3>
+          <p>ผงชงดื่มรสพีชที่มีใยอาหารหลายชนิด อยู่ในซองวันคี่ จึงได้ดื่มวันเว้นวัน เป็นส่วนของใยอาหารและการดูแลสมดุลลำไส้ในรูทีน</p>
+          <a class="btn btn--line btn--sm" href="/routinex/absorb/">เข้าห้อง A ตามอาหารหนึ่งมื้อเข้าไปข้างใน <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+        <p class="note" style="margin-top:18px"><b>C · Control ไม่มีซอง</b> เพราะคือสิ่งที่คุณเลือกเองทุกมื้อ: โปรตีนก่อน ตามด้วยผัก แล้วค่อยคาร์โบไฮเดรต · ปริมาณและวิธีรับประทานให้ยึดฉลากจริงบนซอง</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ไม่ได้ทำคนเดียว ============ -->
+<section class="band band--navy" id="together">
+  <div class="wrap">
+    <p class="eyebrow rv">ไม่ได้ทำคนเดียว</p>
+    <h2 class="h2 rv">รอบนี้มีคนเห็นความคืบหน้าของคุณ</h2>
+    <div class="cards cards--3">
+      <div class="card rv">
+        <span class="card__ico" aria-hidden="true">X</span>
+        <h3>X-VISOR ของคุณ</h3>
+        <p>คนที่ส่งหน้านี้ให้คุณ คือคนที่นัดดูข้อมูลกับคุณตามจุดแวะ Day 0 · 3 · 7 · 14 · 21 · 28 ติดตรงไหนทักได้เลย ไม่ต้องรอถึงวันนัด</p>
+      </div>
+      <a class="card rv" style="--d:.08s" href="https://www.xircle.health/download" target="_blank" rel="noopener">
+        <span class="card__ico" aria-hidden="true">◎</span>
+        <h3>แอป XIRCLE</h3>
+        <p>ที่จดการกิน การขยับ และการนอนของคุณ ให้เห็นแนวโน้มของตัวเองทีละสัปดาห์</p>
+        <span class="card__go">โหลดแอป ↗</span>
+      </a>
+      <a class="card rv" style="--d:.16s" href="https://www.myclover.com/review/">
+        <span class="card__ico" aria-hidden="true">★</span>
+        <h3>คนที่เริ่มก่อนคุณ</h3>
+        <p>ดูคลิปรีวิวจากคนที่ใช้ RoutineX และสินค้า HabiX จริง แล้ววันหนึ่งเรื่องของคุณอาจไปอยู่ตรงนั้น</p>
+        <span class="card__go">ดูรีวิวที่ myclover.com/review →</span>
+      </a>
+    </div>
+    <div class="sharebar rv">
+      <a class="btn btn--ghost" href="/routinex/">← กลับหน้าแรก RoutineX</a>
+      <button class="btn btn--ghost" type="button" data-share-page data-share-text="หน้าเริ่มต้น RoutineX ดูคลิปโค้ชซิงทีละตอน Day 0 ถึง Day 28">ส่งหน้านี้ให้คนที่เพิ่งได้กล่อง</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__row">
+      <a href="/routinex/" aria-label="RoutineX หน้าแรก"><img src="/routinex/assets/logo-white.webp" alt="RoutineX" width="720" height="100" loading="lazy"></a>
+      <nav class="foot__links" aria-label="ลิงก์ท้ายหน้า">
+        <a href="/routinex/">หน้าแรก</a>
+        <a href="/routinex/absorb/">ห้อง A · Absorb</a>
+        <a href="/routinex/build/">ห้อง B · Build</a>
+        <a href="https://www.myclover.com/review/">รีวิว</a>
+      </nav>
+    </div>
+    <p class="foot__legal">ผลิตภัณฑ์เสริมอาหาร ไม่มีผลในการป้องกันหรือรักษาโรค โปรดอ่านฉลากก่อนบริโภค · ผลลัพธ์แตกต่างกันในแต่ละบุคคล · 28 วันคือรอบการดูแลและการทบทวน ไม่ใช่การรับประกันผลภายในเวลาที่กำหนด · หากมีโรคประจำตัวหรือใช้ยาอยู่ ควรปรึกษาแพทย์ก่อนเริ่ม</p>
+  </div>
+</footer>
+</body>
+</html>
