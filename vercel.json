@@ -468,12 +468,12 @@
     },
     {
       "source": "/routinex",
-      "destination": "/xircle/#visit-routine",
+      "destination": "/routinex/",
       "permanent": false
     },
     {
-      "source": "/routinex/",
-      "destination": "/xircle/#visit-routine",
+      "source": "/routinex/start",
+      "destination": "/routinex/start/",
       "permanent": false
     },
     {
