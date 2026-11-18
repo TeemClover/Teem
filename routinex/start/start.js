@@ -52,7 +52,7 @@
       const b = $('.badge[data-state]', c);
       if (b) b.hidden = true;
     });
-    if (!has) return;
+    if (!has) { renderLocks(null); return; }
 
     const shown = Math.min(n, 28);
     $('#ringDay').textContent = n > 28 ? '28+' : String(n);
@@ -87,6 +87,84 @@
       if (day === cur && n <= 28) { c.classList.add('is-now'); if (b) { b.hidden = false; b.textContent = 'ตอนนี้'; } }
       else if (day < cur || n > 28) { c.classList.add('is-done'); if (b) { b.hidden = false; b.textContent = 'ผ่านแล้ว'; } }
       else if (b) { b.hidden = false; b.textContent = day - n === 1 ? 'พรุ่งนี้' : `อีก ${day - n} วัน`; }
+    });
+    renderLocks(n);
+  }
+
+  /* ---------- รอให้ถึงวัน และข้ามการรอ (ต้องกดยืนยัน) ----------
+     ตอนที่ยังไม่ถึงวันจะปิดเนื้อหาไว้ก่อน ข้ามได้สองแบบ:
+     ขอดูก่อน (เปิดเฉพาะตอนนั้น) หรือ ตั้งวันนี้เป็น Day นั้น (เช่น เปลี่ยนเครื่องมา) */
+  const isLocked = (day, n) => day > 0 && !(state.skip && state.skip[day]) && (n === null || n < day);
+
+  function buildGate(chap) {
+    const day = +chap.dataset.day;
+    const g = d.createElement('div');
+    g.className = 'gate';
+    g.hidden = true;
+    g.innerHTML = `
+      <p class="k">ยังไม่ถึงวัน</p>
+      <h4>ตอนนี้เปิดให้เมื่อถึง Day ${day}</h4>
+      <p data-gate-when></p>
+      <div class="gate__act" data-gate-act>
+        <button class="btn btn--line btn--sm" type="button" data-gate="skip">ข้ามการรอ ขอดูตอนนี้</button>
+        <button class="linkbtn" type="button" data-gate="move">เปลี่ยนเครื่องมา? ฉันถึง Day ${day} แล้ว</button>
+      </div>
+      <div class="gate__confirm" data-gate-confirm role="group" aria-label="ยืนยันการข้าม" hidden>
+        <p data-gate-q aria-live="polite"></p>
+        <div class="gate__act">
+          <button class="btn btn--go btn--sm" type="button" data-gate-yes></button>
+          <button class="btn btn--line btn--sm" type="button" data-gate-no>ยังไม่ข้าม</button>
+        </div>
+      </div>`;
+    const act = $('[data-gate-act]', g), confirmBox = $('[data-gate-confirm]', g);
+    const q = $('[data-gate-q]', g), yes = $('[data-gate-yes]', g);
+    let mode = '';
+    const ask = (m) => {
+      mode = m;
+      q.textContent = m === 'skip'
+        ? `ยืนยันว่าจะข้ามจริง ๆ ใช่ไหม ตอน Day ${day} ทำไว้ให้ดูเมื่อคุณทำมาถึงวันนั้น ถ้าข้าม ตัวนับวันของคุณยังเหมือนเดิม`
+        : `ยืนยันว่าวันนี้คือ Day ${day} ของคุณ ตัวนับวันจะตั้งใหม่ตามนี้ และตอนก่อนหน้าจะนับว่าผ่านแล้ว`;
+      yes.textContent = m === 'skip' ? 'ยืนยัน ข้ามจริง ๆ' : `ยืนยัน วันนี้คือ Day ${day}`;
+      act.hidden = true;
+      confirmBox.hidden = false;
+      yes.focus();
+    };
+    const back = () => { confirmBox.hidden = true; act.hidden = false; };
+    $$('[data-gate]', g).forEach((b) => b.addEventListener('click', () => ask(b.dataset.gate)));
+    $('[data-gate-no]', g).addEventListener('click', () => { back(); $('[data-gate="skip"]', g).focus(); });
+    yes.addEventListener('click', () => {
+      if (mode === 'skip') {
+        state.skip = { ...(state.skip || {}), [day]: true };
+        save();
+        renderTracker();
+        RX.toast(`เปิดตอน Day ${day} ให้แล้ว`);
+      } else {
+        const s = today();
+        s.setDate(s.getDate() - day);
+        setStart(iso(s));
+        RX.toast(`ตั้งแล้ว วันนี้คือ Day ${day} ของคุณ`);
+      }
+      chap.open = true;
+      $('summary', chap)?.focus();
+    });
+    g._reset = back;
+    $('summary', chap).after(g);
+    return g;
+  }
+
+  function renderLocks(n) {
+    $$('.chap').forEach((c) => {
+      const day = +c.dataset.day;
+      if (!day) return;
+      const g = c._gate || (c._gate = buildGate(c));
+      const lock = isLocked(day, n);
+      c.classList.toggle('is-locked', lock);
+      g.hidden = !lock;
+      g._reset();
+      $('[data-gate-when]', g).textContent = n === null
+        ? 'ตั้งวันเริ่มด้านบนก่อน แล้วแต่ละตอนจะเปิดให้เองเมื่อถึงวัน'
+        : day - n === 1 ? 'เปิดให้พรุ่งนี้ วันนี้ทำของตอนปัจจุบันให้ครบก่อน'
+        : `อีก ${day - n} วัน ระหว่างนี้ทำของตอนปัจจุบันให้ครบก่อน`;
     });
   }
 

@@ -291,6 +291,18 @@ a.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px #1c254266;b
 .chap__clipcol{display:flex;flex-direction:column;align-items:center}
 .chap__clipcol .clip__yt{color:var(--muted)}
 .k{font-size:12.5px;font-weight:700;letter-spacing:.12em;color:var(--green-ink)}
+/* ตอนที่ยังไม่ถึงวัน: ปิดเนื้อหาไว้ ข้ามได้เมื่อกดยืนยัน */
+.chap.is-locked .chap__body{display:none}
+.chap.is-locked .chap__day{opacity:.55}
+.chap.is-locked .chap__ttl h3{color:var(--muted)}
+.gate{display:grid;gap:8px;justify-items:start;margin-top:2px;padding:20px 18px 24px;border-top:1px dashed var(--line)}
+@media(min-width:760px){.gate{padding:24px 26px 28px}}
+.gate h4{margin:0;font-size:19px;line-height:1.45}
+.gate > p:not(.k){color:var(--muted);font-size:15.5px}
+.gate__act{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:8px}
+.gate__confirm{width:100%;margin-top:8px;padding:16px 18px;border-radius:16px;background:#fff6e0;border:1.5px solid #e9b949;animation:panel .35s var(--ease)}
+.gate__confirm p{font-size:15.5px;line-height:1.7;color:#4a3a0c;font-weight:600}
+.tracker__hint{flex-basis:100%}
 .gist{display:grid;gap:8px;margin-top:10px}
 .gist li{position:relative;padding-left:26px;line-height:1.7}
 .gist li::before{content:"";position:absolute;left:4px;top:.72em;width:10px;height:10px;border-radius:3px;background:var(--green);transform:rotate(45deg)}
