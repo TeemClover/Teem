@@ -272,6 +272,36 @@
       "permanent": false
     },
     {
+      "source": "/xvisor/play",
+      "destination": "/xvisor/play/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/how",
+      "destination": "/xvisor/how/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/learn",
+      "destination": "/xvisor/learn/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/learn/start",
+      "destination": "/xvisor/learn/start/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/learn/clip",
+      "destination": "/xvisor/learn/clip/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/learn/edit",
+      "destination": "/xvisor/learn/edit/",
+      "permanent": false
+    },
+    {
       "source": "/xircle",
       "destination": "/xircle/",
       "permanent": false
