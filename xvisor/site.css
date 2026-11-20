@@ -25,7 +25,7 @@ img{max-width:100%;height:auto}
 .shell{width:min(760px,calc(100% - 32px));margin-inline:auto}
 .bar{background:var(--navy);color:#fff;padding:max(10px,env(safe-area-inset-top)) 0 10px}
 .bar .shell{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{font:700 20px/1 var(--font);letter-spacing:.06em;color:#fff;text-decoration:none}
+.brand{font:700 20px/1 var(--font);letter-spacing:.06em;color:#fff;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
 .brand small{font-weight:400;opacity:.8;letter-spacing:0;margin-left:6px;font-size:14px}
 .bar nav{display:flex;gap:4px;flex-wrap:wrap}
 .bar nav a{color:#fff;text-decoration:none;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center;border-radius:10px;font-weight:600;font-size:16px}
