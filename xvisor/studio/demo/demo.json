@@ -1,0 +1,31 @@
+{
+  "renderedWith": "tests/xvisor/studio/render-demo.mjs",
+  "story": "มีรูปเครื่องชั่งเมื่อเช้า พี่ไม่อยากออกกล้อง อยากทำคลิปสั้นแบบคุยกับเพื่อน",
+  "photos": [
+    "/xircle/assets/official/scale-lifestyle.webp",
+    "/xircle/assets/real-app/scale.jpg"
+  ],
+  "clips": [
+    {
+      "style": "story",
+      "id": "5fekvu",
+      "duration": 19.75,
+      "frames": 593,
+      "file": "xvisor/studio/demo/xvisor-studio-story.mp4"
+    },
+    {
+      "style": "question",
+      "id": "85hj4w",
+      "duration": 19.75,
+      "frames": 593,
+      "file": "xvisor/studio/demo/xvisor-studio-question.mp4"
+    },
+    {
+      "style": "steps",
+      "id": "h1t3za",
+      "duration": 17.03,
+      "frames": 511,
+      "file": "xvisor/studio/demo/xvisor-studio-steps.mp4"
+    }
+  ]
+}

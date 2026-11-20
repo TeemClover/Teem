@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b3d">
+  <title>X‑VISOR Studio — จากรูปเดียว เป็นคลิปแรกของพี่</title>
+  <meta name="description" content="เลือกรูป 1–3 รูป เล่าด้วยคำของพี่เอง ได้คลิปแนวตั้งฉบับร่าง 15–30 วินาที บันทึกคลิป แล้วส่งบรีฟไปทำต่อใน Claude ไม่ต้องออกกล้อง ไม่ต้องสมัคร">
+  <link rel="canonical" href="https://www.myclover.com/xvisor/studio/">
+  <meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
+  <meta property="og:title" content="X‑VISOR Studio — จากรูปเดียว เป็นคลิปแรกของพี่">
+  <meta property="og:description" content="ไม่ต้องออกกล้อง ไม่ต้องสมัคร เลือกรูป เล่าเรื่อง ได้คลิปแนวตั้งฉบับแรก">
+  <meta property="og:url" content="https://www.myclover.com/xvisor/studio/">
+  <meta property="og:image" content="https://www.myclover.com/xvisor/studio/demo/xvisor-studio-story.jpg">
+  <link rel="preload" href="/assets/fonts/site/anuphan-thai-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/xvisor/studio/studio.css?v=20261120-1">
+  <script type="module" src="/xvisor/studio/studio.js?v=20261120-1"></script>
+</head>
+<body>
+  <a class="skip" href="#start">ข้ามไปเริ่มทำคลิป</a>
+  <header class="bar">
+    <a class="brand" href="/xvisor/" aria-label="กลับไปหน้า X‑VISOR">X‑VISOR <b>Studio</b></a>
+    <span class="bar-note">ไม่ต้องสมัคร · รูปอยู่ในเครื่องพี่</span>
+  </header>
+
+  <main id="main">
+    <section class="intro" aria-labelledby="introTitle">
+      <div class="intro-copy">
+        <p class="eyebrow">ไม่ต้องออกกล้อง</p>
+        <h1 id="introTitle">จากรูปเดียว<br>เป็นคลิปแรกของพี่</h1>
+        <p class="lead">เลือกรูป เล่าด้วยคำของพี่เอง แล้วได้คลิปแนวตั้ง 15–30 วินาที แก้ได้ บันทึกได้ และส่งต่อให้ Claude ช่วยทำต่อ</p>
+      </div>
+
+      <figure class="demo" aria-label="ตัวอย่างคลิป">
+        <div class="phone">
+          <video id="demoVideo" class="phone-screen" playsinline muted preload="metadata"
+            poster="/xvisor/studio/demo/xvisor-studio-story.jpg"
+            src="/xvisor/studio/demo/xvisor-studio-story.mp4"></video>
+          <button class="play-big" id="demoPlay" type="button" aria-label="เล่นคลิปตัวอย่าง"><span>▶</span></button>
+        </div>
+        <div class="demo-tabs" role="tablist" aria-label="ตัวอย่าง 3 แนว">
+          <button type="button" role="tab" aria-selected="true" data-demo="story">เล่าเรื่องเช้านี้</button>
+          <button type="button" role="tab" aria-selected="false" data-demo="question">ชวนตอบคำถาม</button>
+          <button type="button" role="tab" aria-selected="false" data-demo="steps">โชว์ทีละขั้น</button>
+        </div>
+        <figcaption>ตัวอย่าง · ทำจากภาพทางการ XIRCLE ด้วย Studio นี้ <a href="/xvisor/studio/demo/xvisor-studio-story.mp4" id="demoFile" download>ไฟล์คลิป</a></figcaption>
+      </figure>
+
+      <div class="choose" id="start">
+        <button class="btn primary" id="trySample" type="button">ลองด้วยภาพตัวอย่าง</button>
+        <button class="btn" id="useOwn" type="button">ใช้รูปของพี่</button>
+        <p class="tiny">รูปของพี่ไม่ถูกอัปโหลดไปที่ไหน ทุกอย่างทำในมือถือเครื่องนี้</p>
+      </div>
+    </section>
+
+    <section class="panel" id="photosPanel" hidden aria-labelledby="photosTitle">
+      <h2 id="photosTitle"><span class="num">1</span> เลือกรูป 1–3 รูป</h2>
+      <p class="hint">รูปอะไรก็ได้ที่มีอยู่แล้ว เช่น เครื่องชั่ง มื้ออาหาร มุมโต๊ะ ไม่ต้องมีหน้าพี่</p>
+      <label class="picker">
+        <input id="fileInput" type="file" accept="image/*" multiple>
+        <span class="btn primary">เลือกรูปจากมือถือ</span>
+      </label>
+      <ul class="thumbs" id="thumbs" aria-live="polite"></ul>
+      <p class="error" id="photoError" role="alert" hidden></p>
+    </section>
+
+    <section class="panel" id="tellPanel" hidden aria-labelledby="tellTitle">
+      <h2 id="tellTitle"><span class="num">2</span> อยากเล่าอะไร</h2>
+      <p class="hint">พิมพ์แบบที่พูดกับเพื่อนได้เลย</p>
+      <textarea id="story" rows="3" maxlength="300" placeholder="เช่น มีรูปเครื่องชั่งเมื่อเช้า พี่ไม่อยากออกกล้อง อยากทำคลิปสั้นแบบคุยกับเพื่อน"></textarea>
+      <details class="ideas" id="ideas">
+        <summary>ยังนึกไม่ออก? เลือกไอเดีย</summary>
+        <div class="choices" id="ideaList"></div>
+      </details>
+      <p class="understood" id="understood" aria-live="polite"></p>
+      <div id="questions"></div>
+      <button class="btn primary wide" id="makeDraft" type="button">ทำคลิปฉบับร่าง</button>
+    </section>
+
+    <section class="panel editor" id="editorPanel" hidden aria-labelledby="editorTitle">
+      <h2 id="editorTitle"><span class="num">3</span> คลิปฉบับร่าง</h2>
+      <div class="styles" role="radiogroup" aria-label="แนวการเล่า" id="styleList"></div>
+      <div class="editor-grid">
+        <div class="preview-col">
+          <div class="phone live">
+            <canvas id="preview" class="phone-screen" width="720" height="1280" aria-label="พรีวิวคลิป"></canvas>
+            <div class="loading" id="previewLoading">กำลังเตรียมพรีวิว…</div>
+          </div>
+          <div class="player">
+            <button class="round" id="playBtn" type="button" aria-label="เล่น">▶</button>
+            <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="ตำแหน่งในคลิป">
+            <output id="clock">0:00 / 0:00</output>
+          </div>
+          <label class="toggle"><input type="checkbox" id="guides"> แสดงพื้นที่ปุ่มของแอปวิดีโอ</label>
+        </div>
+
+        <div class="edit-col">
+          <label class="field" for="hook">
+            <span class="label">คำเปิด (3 วินาทีแรก)</span>
+            <textarea id="hook" rows="2" maxlength="90"></textarea>
+            <span class="meta"><span id="hookCount">0/90</span><button class="link" type="button" id="hookReset">ใช้คำแนะนำ</button></span>
+          </label>
+          <p class="warn" id="fitWarn" hidden></p>
+
+          <details class="block" id="linesBlock">
+            <summary>แก้ประโยคอื่นในคลิป</summary>
+            <div id="lineFields"></div>
+          </details>
+
+          <div class="block open">
+            <p class="label">รูปและจุดโฟกัส <span class="sub">ลากจุดไปที่ของสำคัญในรูป</span></p>
+            <div class="crops" id="crops"></div>
+            <div id="shotPhotos"></div>
+            <div class="seg" role="radiogroup" aria-label="ตำแหน่งข้อความ" id="textPos">
+              <span class="label">ข้อความ</span>
+              <button type="button" data-pos="auto" aria-pressed="true">อัตโนมัติ</button>
+              <button type="button" data-pos="top" aria-pressed="false">ด้านบน</button>
+              <button type="button" data-pos="bottom" aria-pressed="false">ด้านล่าง</button>
+            </div>
+          </div>
+
+          <p class="warn" id="claimWarn" hidden></p>
+
+          <div class="actions">
+            <button class="btn primary wide" id="saveBtn" type="button">บันทึกคลิป</button>
+            <p class="tiny" id="saveNote" aria-live="polite"></p>
+            <button class="btn claude wide" id="claudeBtn" type="button">ทำต่อใน Claude</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="claudeSheet" aria-labelledby="sheetTitle">
+    <form method="dialog" class="sheet">
+      <div class="sheet-head"><h2 id="sheetTitle">ทำต่อใน Claude</h2><button class="close" value="close" aria-label="ปิด">✕</button></div>
+      <p class="hint">อยากให้ Claude ช่วยอะไรต่อ</p>
+      <div class="choices" id="nextList"></div>
+      <textarea id="customRequest" rows="2" maxlength="200" placeholder="พิมพ์เอง เช่น ช่วยเขียนบทพากย์ให้สั้นลง" hidden></textarea>
+      <p class="label">ข้อความที่จะส่ง <span class="sub" id="briefId"></span></p>
+      <textarea id="brief" rows="10" readonly></textarea>
+      <p class="note" id="photoNote" hidden>รูปจากมือถือไม่ได้ติดไปกับข้อความ ถ้าอยากให้ Claude เห็นภาพจริง ให้แนบรูปเดิมในแชต Claude ด้วย</p>
+      <div class="sheet-actions">
+        <a class="btn claude wide" id="copyOpen" href="https://claude.ai/new" target="_blank" rel="noopener">คัดลอกแล้วเปิด Claude</a>
+        <button class="btn wide" id="copyOnly" type="button" value="">คัดลอกข้อความอย่างเดียว</button>
+      </div>
+      <p class="status" id="copyStatus" role="status"></p>
+      <p class="manual" id="copyManual" hidden>คัดลอกอัตโนมัติไม่ได้ในเบราว์เซอร์นี้ ให้แตะค้างในกล่องข้อความด้านบน เลือก “เลือกทั้งหมด” แล้ว “คัดลอก” จากนั้นเปิด Claude แล้ววาง</p>
+      <p class="tiny">ข้อความนี้มีลิงก์ชุดความรู้ X‑VISOR ให้ Claude เปิดอ่านเอง ไม่ได้ติดตั้งสกิลให้ในเครื่อง</p>
+    </form>
+  </dialog>
+  <noscript><p class="noscript">หน้านี้ต้องเปิด JavaScript เพื่อทำคลิป</p></noscript>
+</body>
+</html>
