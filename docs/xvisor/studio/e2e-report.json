@@ -1,0 +1,258 @@
+{
+  "base": "http://127.0.0.1:4400",
+  "chrome": "Chrome/157.0.8103.80",
+  "devices": {
+    "mobile": "Chrome device emulation 393×852 @3x, touch, iOS 17 Safari UA (not a real iPhone)",
+    "desktop": "1366×900"
+  },
+  "checks": [
+    {
+      "name": "1 open /xvisor/studio directly",
+      "ok": true,
+      "detail": "http://127.0.0.1:4400/xvisor/studio/"
+    },
+    {
+      "name": "1 refresh keeps the page",
+      "ok": true,
+      "detail": "X‑VISOR Studio — จากรูปเดียว เป็นคลิปแรกของพี่"
+    },
+    {
+      "name": "1 renderer not loaded before the demo is seen",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "2 demo clip plays immediately",
+      "ok": true,
+      "detail": "{\"t\":1.847396,\"d\":19.766667,\"paused\":false,\"w\":1080,\"h\":1920}"
+    },
+    {
+      "name": "2 demo clip plays to the end",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "1 no console errors on landing",
+      "ok": false,
+      "detail": "Failed to load resource: the server responded with a status of 404 (File not found)"
+    },
+    {
+      "name": "2 sample draft opens and plays",
+      "ok": true,
+      "detail": "ready in 94 ms, playhead 1.50 s"
+    },
+    {
+      "name": "2 sample plan in browser = pre-rendered demo plan",
+      "ok": true,
+      "detail": "5fekvu vs 5fekvu"
+    },
+    {
+      "name": "2 sample preview plays to the end",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "4 hook edit reaches the plan",
+      "ok": true,
+      "detail": "j9h61p"
+    },
+    {
+      "name": "4 crop focus change reaches the plan",
+      "ok": true,
+      "detail": "{\"x\":0.31999998381643585,\"y\":0.3}"
+    },
+    {
+      "name": "4 long hook fits without overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "4 copied text = brief on screen",
+      "ok": true,
+      "detail": "1964 chars"
+    },
+    {
+      "name": "4 brief has new hook, plan id and repo link",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "4 brief does not keep the old hook",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "3c \"คัดลอกแล้วเปิด Claude\" opens Claude from the tap",
+      "ok": true,
+      "detail": "https://claude.ai/new"
+    },
+    {
+      "name": "5 save button says what it saves",
+      "ok": true,
+      "detail": "บันทึกคลิป (.mp4)"
+    },
+    {
+      "name": "5 file name carries plan id and real type",
+      "ok": true,
+      "detail": "xvisor-clip-gab7un.mp4 video/mp4"
+    },
+    {
+      "name": "5 external probe: 9:16, duration matches plan",
+      "ok": true,
+      "detail": "h264 720×1280 20.641367s vs plan 20.47s, format mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    {
+      "name": "5 container matches extension",
+      "ok": true,
+      "detail": "mov,mp4,m4a,3gp,3g2,mj2"
+    },
+    {
+      "name": "5 file frames match renderer (start/middle/end)",
+      "ok": true,
+      "detail": "35.0 / 31.8 / 37.9 dB"
+    },
+    {
+      "name": "2-5 no console errors in sample flow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "3 unreadable HEIC gets a Thai explanation",
+      "ok": true,
+      "detail": "เปิดรูป “IMG_0001.HEIC” ไม่ได้ เพราะเป็นไฟล์ HEIC ที่เบราว์เซอร์นี้อ่านไม่ได้ ลองเลือกรูปผ่านแอปรูปภาพใน Safari (ระบบจะแปลงเป็น JPG ให้) หรือส่งรูปให้ตัวเองเป็น JPG ก่อน"
+    },
+    {
+      "name": "3 EXIF orientation applied (landscape file shows upright portrait)",
+      "ok": true,
+      "detail": "{\"w\":1200,\"h\":1600,\"origin\":\"device\"}"
+    },
+    {
+      "name": "3 story understood, only open questions asked",
+      "ok": true,
+      "detail": "เข้าใจว่า: ไม่ออกกล้อง ✓เรื่องเครื่องชั่ง ✓คุยแบบเพื่อน ✓เมื่อเช้า ✓ | คลิปนี้อยากให้ใครดู (ข้ามได้ ใช้ที่แนะนำ) / ดูจบแล้ว อยากให้เขาทำอะไรต่อ (ข้ามได้ ใช้ที่แนะนำ)"
+    },
+    {
+      "name": "3 draft uses that photo in every shot",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "3 draft never asks to film a face",
+      "ok": true,
+      "detail": "เลขบนเครื่องชั่ง วันเดียว บอกอะไรเราได้ไม่หมด รูปเครื่องชั่ง ถ่ายไว้เมื่อเช้า น้ำหนักวันเดียวขยับได้ ทั้งมื้อเมื่อคืน เวลานอน เวลาที่ชั่ง ลองชั่งเวลาเดิม ที่เดิม หลายวัน แล้วดูเป็นแนวโน้ม เซฟไว้ดูตอนชั่งครั้งหน้านะ"
+    },
+    {
+      "name": "3 duration 15–30 s, has start/middle/end",
+      "ok": true,
+      "detail": "19.75s"
+    },
+    {
+      "name": "3 own-photo brief says to attach the original photo",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "3 no console errors in own-photo flow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "6 no codec: button says stills + script",
+      "ok": true,
+      "detail": "บันทึกภาพรายฉาก + บท (PNG, TXT)"
+    },
+    {
+      "name": "6 no codec: one PNG per shot + script file",
+      "ok": true,
+      "detail": "xvisor-5fekvu-script.txt, xvisor-5fekvu-shot1.png, xvisor-5fekvu-shot2.png, xvisor-5fekvu-shot3.png, xvisor-5fekvu-shot4.png, xvisor-5fekvu-shot5.png"
+    },
+    {
+      "name": "6 stills are 1080×1920",
+      "ok": true,
+      "detail": "1080×1920"
+    },
+    {
+      "name": "6 script file is the brief of this version",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "6 no codec: preview still plays",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "6 clipboard blocked: manual copy shown and text selected",
+      "ok": true,
+      "detail": "selected 1880"
+    },
+    {
+      "name": "6 no console errors in fallback flow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "6 webm path: .webm with finite duration",
+      "ok": true,
+      "detail": "xvisor-clip-85hj4w.webm 19.750000s"
+    },
+    {
+      "name": "6 no console errors on desktop",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "exportSupport": {
+    "video": true,
+    "type": "video/mp4;codecs=avc1.42E01F",
+    "ext": "mp4",
+    "label": "บันทึกคลิป (.mp4)"
+  },
+  "export": {
+    "file": "xvisor-clip-gab7un.mp4",
+    "mime": "video/mp4",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 720,
+          "height": 1280
+        }
+      ],
+      "format": {
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "duration": "20.641367",
+        "size": "13573603"
+      }
+    }
+  },
+  "framePsnr": [
+    35.014734,
+    31.78464,
+    37.852892
+  ],
+  "exportWebm": {
+    "file": "xvisor-clip-85hj4w.webm",
+    "mime": "video/webm",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "vp9",
+          "width": 720,
+          "height": 1280
+        }
+      ],
+      "format": {
+        "format_name": "matroska,webm",
+        "duration": "19.750000",
+        "size": "4961793"
+      }
+    }
+  },
+  "passed": 38,
+  "failed": 1
+}
