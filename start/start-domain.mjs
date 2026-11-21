@@ -47,3 +47,17 @@ export function sourceLabels(search) {
   return {source: allowed.has(source) ? source : 'direct',
     medium: ['dm','comment','bio','video','link'].includes(params.get('utm_medium')) ? params.get('utm_medium') : 'link'};
 }
+
+// The library is a learning step stored on this device, not file access control.
+export function episodeCode(value) {
+  const text = String(value ?? '').trim().toUpperCase().replace(/[๐-๙]/g, d => String('๐๑๒๓๔๕๖๗๘๙'.indexOf(d)));
+  const match = /^(?:MC\s*)?(0?[1-9]|[12][0-9]|30)$/.exec(text);
+  return match ? `MC${String(Number(match[1])).padStart(2, '0')}` : null;
+}
+export function hasCompletedTopic(progress) {
+  if (!progress || typeof progress !== 'object' || Array.isArray(progress)) return false;
+  return Object.entries(progress).some(([id, value]) => episodeCode(id) === id && value?.completed === true);
+}
+export function answersComplete(answers) {
+  return Array.isArray(answers) && answers.length === 3 && answers.every(value => typeof value === 'string' && value.trim().length > 0);
+}
