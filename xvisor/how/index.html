@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>วิธีใช้ทีละขั้น · X-VISOR</title>
+<meta name="description" content="คัดลอกข้อความไปวางใน Claude ใช้ได้ทันที หรือติดตั้งชุดสกิล X-VISOR ไว้ใช้ซ้ำ พร้อมวิธีตรวจว่าติดตั้งสำเร็จ">
+<meta name="theme-color" content="#102b3d">
+<link rel="canonical" href="https://www.myclover.com/xvisor/how/">
+<meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
+<meta property="og:title" content="วิธีใช้ทีละขั้น · X-VISOR">
+<meta property="og:description" content="คัดลอก วาง ตอบ ก ข ค หรือติดตั้งไว้ใช้ซ้ำ ทีละขั้น">
+<meta property="og:url" content="https://www.myclover.com/xvisor/how/">
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/xvisor/site.css?v=20261120a">
+<script defer src="/xvisor/site.js?v=20261120a"></script>
+</head>
+<body>
+<a class="skip" href="#main">ข้ามไปที่เนื้อหา</a>
+<header class="bar">
+  <div class="shell">
+    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก">X-VISOR<small>ชุดสกิลของพี่</small></a>
+    <nav aria-label="เมนู">
+      <a href="/xvisor/how/" aria-current="page">วิธีใช้</a>
+      <a href="/xvisor/learn/">บทเรียน</a>
+      <a href="/xvisor/play/">เล่นเกม</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section>
+    <div class="shell">
+      <h1>วิธีใช้ทีละขั้น</h1>
+      <p class="lead">มี 2 วิธี เริ่มจากวิธีแรกก่อนได้เลย ถ้าชอบค่อยทำวิธีที่สอง</p>
+      <nav class="go" aria-label="ข้ามไปที่" style="margin-top:14px">
+        <a href="#now"><b>ก · ใช้ทันที</b>ไม่ต้องตั้งค่า</a>
+        <a href="#install"><b>ข · ติดตั้งไว้ใช้ซ้ำ</b>ทำครั้งเดียว</a>
+        <a href="#nolink"><b>เปิดลิงก์ไม่ได้</b>ใช้ไฟล์แทน</a>
+      </nav>
+    </div>
+  </section>
+
+  <section id="now">
+    <div class="shell">
+      <span class="tag">ก · ใช้ทันที</span>
+      <h2>คัดลอก วาง แล้วตอบ</h2>
+      <ol class="steps">
+        <li><b>กดปุ่มสีเขียว</b><br>ระบบคัดลอกข้อความเริ่มงานให้ ไม่ต้องพิมพ์เอง</li>
+        <li><b>เปิด Claude เริ่มแชตใหม่</b><br>ถ้าข้างล่างมีปุ่ม "เปิด Claude" แตะได้เลย</li>
+        <li><b>วางข้อความในช่องพิมพ์ แล้วกดส่ง</b><br>แตะค้างที่ช่องพิมพ์ เลือก "วาง" ถ้าอยากเริ่มด้วยโจทย์ของพี่ เพิ่มต่อท้ายได้ เช่น "พี่มีรูปเครื่องชั่ง ไม่อยากออกกล้อง"</li>
+        <li><b>ตอบ ก ข ค หรือ ง</b><br>Claude ถามทีละเรื่อง ง คือพิมพ์เอง ส่งรูปหรือวิดีโอที่มีได้เลย</li>
+      </ol>
+      <div class="btn-row" style="margin-top:18px">
+        <button class="btn" type="button" data-copy="start" data-status="#nowStatus">คัดลอกข้อความไปใช้ใน Claude</button>
+      </div>
+      <div class="status" id="nowStatus" role="status" aria-live="polite"></div>
+      <p class="note">วิธีนี้ Claude อ่านชุดความรู้ได้เฉพาะแชตนั้น เริ่มแชตใหม่ต้องวางอีกครั้ง ถ้าอยากไม่ต้องวางทุกครั้ง ใช้วิธี ข</p>
+      <details>
+        <summary>ดูข้อความที่จะถูกคัดลอก</summary>
+        <div class="inner promptbox"><textarea id="promptText" readonly rows="9" aria-label="ข้อความสำหรับเริ่มงาน">พี่เป็น X-VISOR มือใหม่ ช่วยพี่ทำคลิปแรกจากชุดความรู้นี้ https://github.com/TeemClover/xvisor ถ้าเปิดอ่านได้ ให้อ่านไฟล์ START-HERE.md แล้วใช้คู่มือและข้อมูลที่อนุมัติแล้วในนั้น ถามพี่ทีละเรื่องเฉพาะที่จำเป็น พี่ตอบ ก ข ค หรือ ง พิมพ์เองได้ ถ้าเปิดอ่านไม่ได้ บอกพี่สั้น ๆ ว่าต้องแนบไฟล์ไหน</textarea></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="shell">
+      <span class="tag">ข · ติดตั้งไว้ใช้ซ้ำ</span>
+      <h2>เพิ่มชุดสกิลใน Claude ครั้งเดียว</h2>
+      <p>ทำบน Claude เว็บ (claude.ai) หรือแอปบนคอมพิวเตอร์ ตามเอกสารทางการของ Claude หลังติดตั้ง ไม่ต้องวางข้อความเริ่มงานทุกครั้ง ขั้นตอนนี้ยังไม่ได้ยืนยันว่าอัปโหลดจากแอปมือถือได้ ถ้าใช้มือถืออย่างเดียว ให้ใช้วิธี ก ต่อไป</p>
+      <ol class="steps">
+        <li><b>ดาวน์โหลดไฟล์ชุดสกิล</b><br>ไม่ต้องแตกไฟล์ zip
+          <div class="btn-row"><a class="btn btn--small" href="/xvisor/pack/xvisor-skill.zip" download>ดาวน์โหลด xvisor-skill.zip</a></div></li>
+        <li><b>เปิด Claude แล้วไปที่ Customize &gt; Skills</b><br>กดอัปโหลด แล้วเลือกไฟล์ zip ที่เพิ่งโหลด</li>
+        <li><b>เปิดสวิตช์สกิลชื่อ xvisor</b><br>ถ้าสวิตช์เป็นสีเทาหรือกดไม่ได้ ดูหัวข้อ "ไม่เห็นเมนูหรือกดไม่ได้" ข้างล่าง</li>
+        <li><b>ตรวจว่าติดตั้งสำเร็จ</b><br>เริ่มแชตใหม่ พิมพ์แค่ "ช่วยพี่ทำคลิปแรก" โดยไม่วางข้อความอะไรเลย ถ้า Claude ถามเป็นข้อ ก ข ค ง แปลว่าใช้สกิลอยู่แล้ว ถ้าตอบทั่วไปไม่มี ก ข ค ง ให้กลับไปตรวจว่าสวิตช์เปิดอยู่</li>
+      </ol>
+      <details>
+        <summary>ไม่เห็นเมนูหรือกดไม่ได้</summary>
+        <div class="inner">
+          <ul>
+            <li>เปิด "Code execution and file creation" ที่ Settings &gt; Capabilities ก่อน สกิลต้องใช้ตัวนี้</li>
+            <li>บัญชี Team หรือ Enterprise: เจ้าของระบบต้องเปิดในหน้า Organization settings &gt; Plugins &amp; skills</li>
+            <li>ไม่เห็นเมนู Skills เลย แปลว่าบัญชีหรือแอปนี้ยังไม่รองรับ ใช้วิธี ก ได้ผลเหมือนกัน</li>
+            <li>ชื่อเมนูอาจเปลี่ยนตามเวอร์ชันแอป ดูเอกสารทางการ: <a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude" rel="noopener">Use skills in Claude</a></li>
+          </ul>
+        </div>
+      </details>
+      <details>
+        <summary>ใช้ Claude Code อยู่แล้ว</summary>
+        <div class="inner">
+          <p>คัดลอกโฟลเดอร์ <code>skills/xvisor</code> จาก <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a> ไปไว้ที่ <code>~/.claude/skills/xvisor</code> แล้วเริ่มเซสชันใหม่ ชุดนี้ไม่มีโค้ดที่ต้องติดตั้ง</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="nolink">
+    <div class="shell">
+      <span class="tag">เปิดลิงก์ไม่ได้</span>
+      <h2>ใช้ไฟล์เริ่มต้นแทน</h2>
+      <p>ถ้า Claude บอกว่าเปิดลิงก์ไม่ได้ ไม่ต้องกังวล ไฟล์เดียวนี้มีซอสพอทำคลิปแรกได้โดยไม่ต้องเปิดลิงก์อื่น</p>
+      <ol class="steps">
+        <li><b>กดคัดลอกเนื้อหาไฟล์ทั้งหมด</b>
+          <div class="btn-row"><button class="btn btn--small" type="button" data-copy="file" data-file="/xvisor/pack/X-VISOR-START.md" data-status="#fileStatus">คัดลอกเนื้อหาไฟล์เริ่มต้น</button></div>
+          <div class="status" id="fileStatus" role="status" aria-live="polite"></div></li>
+        <li><b>วางในแชต Claude แล้วพิมพ์ต่อ</b><br>"ช่วยพี่ทำคลิปแรกจากข้อความนี้" หรือกดดาวน์โหลดไฟล์ไปแนบในแชตก็ได้
+          <div class="btn-row"><a class="btn btn--ghost btn--small" href="/xvisor/pack/X-VISOR-START.md" download>ดาวน์โหลดไฟล์เริ่มต้น</a></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="go">
+        <a href="/xvisor/learn/"><b>ไปบทเรียน</b>3 บทสั้น จบแล้วมีชิ้นงาน</a>
+        <a href="/xvisor/"><b>กลับหน้าแรก</b>เริ่มทำคลิปแรก</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell">
+    <p>ชุดสกิล X-VISOR เวอร์ชัน 1.0.0 · อัปเดต 2026-11-20 · <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a></p>
+    <p>ข้อมูลสินค้าสรุปจากหน้าเว็บสาธารณะของ CloverX ก่อนโพสต์ ตรวจราคา ฉลาก และคำเตือนกับหน้าทางการทุกครั้ง AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ</p>
+  </div>
+</footer>
+</body>
+</html>

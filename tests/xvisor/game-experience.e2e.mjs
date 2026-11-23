@@ -310,7 +310,7 @@ try {
   assert.equal(await page.locator('#choiceGuide').isVisible(), false);
   check('Unclosed Month 2 tutorial folds automatically in Month 3 and after reload, while manual reopen and hide still work');
 
-  await page.goto(`${base}/xvisor/`);
+  await page.goto(`${base}/xvisor/play/`);
   assert.match(await page.locator('#playButton').textContent(), /เล่นต่อ/);
   await page.locator('#highScoreButton').click();
   await page.getByRole('button', { name: 'ลองโหลดอีกครั้ง' }).waitFor();

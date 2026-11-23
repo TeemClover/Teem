@@ -5,6 +5,8 @@ functions/
 # X-VISOR developer fixtures and review reports are not public site assets.
 tests/xvisor/
 docs/xvisor/
+# X-VISOR page templates are build inputs; the rendered pages are what ships.
+xvisor/_src/
 
 # Front Door release ships the experience, not local fixture servers or QA sources.
 tests/frontdoor/

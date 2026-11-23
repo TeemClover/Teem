@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ {{NO}} · {{TITLE}} · X-VISOR</title>
+<meta name="description" content="บทเรียน X-VISOR บทที่ {{NO}} {{TITLE}} ใช้เวลาประมาณ {{MINUTES}} นาที จบแล้วมีชิ้นงานที่ตรวจเองได้">
+<meta name="theme-color" content="#102b3d">
+<link rel="canonical" href="https://www.myclover.com/xvisor/learn/{{LESSON_ID}}/">
+<meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
+<meta property="og:title" content="บทที่ {{NO}} · {{TITLE}} · X-VISOR">
+<meta property="og:description" content="ใช้เวลาประมาณ {{MINUTES}} นาที จบแล้วมีชิ้นงานที่ตรวจเองได้">
+<meta property="og:url" content="https://www.myclover.com/xvisor/learn/{{LESSON_ID}}/">
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/xvisor/site.css?v=20261120a">
+<script defer src="/xvisor/site.js?v=20261120a"></script>
+</head>
+<body>
+<a class="skip" href="#main">ข้ามไปที่เนื้อหา</a>
+<header class="bar">
+  <div class="shell">
+    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก">X-VISOR<small>ชุดสกิลของพี่</small></a>
+    <nav aria-label="เมนู">
+      <a href="/xvisor/how/">วิธีใช้</a>
+      <a href="/xvisor/learn/" aria-current="page">บทเรียน</a>
+      <a href="/xvisor/play/">เล่นเกม</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section>
+    <div class="shell">
+      <p class="mini"><a href="/xvisor/learn/">← บทเรียนทั้งหมด</a></p>
+      <span class="tag">บทที่ {{NO}} · ประมาณ {{MINUTES}} นาที</span>
+      <h1>{{TITLE}}</h1>
+{{BODY}}
+      <div class="video-slot" data-video-slot="{{LESSON_ID}}"></div>
+      <h2 style="margin-top:28px">เริ่มบทนี้กับ Claude</h2>
+      <p>กดคัดลอก แล้ววางในแชตใหม่ของ Claude ข้อความนี้บอก Claude แล้วว่าพี่เลือกบทไหน ไม่ต้องตอบคำถามเดิมซ้ำ</p>
+      <div class="btn-row">
+        <button class="btn" type="button" data-copy="start" data-context="{{CONTEXT}}" data-status="#lessonStatus">คัดลอกข้อความสำหรับบทนี้</button>
+      </div>
+      <div class="status" id="lessonStatus" role="status" aria-live="polite"></div>
+      <details>
+        <summary>ดูข้อความเริ่มงาน</summary>
+        <div class="inner promptbox"><textarea id="promptText" readonly rows="9" aria-label="ข้อความสำหรับเริ่มงาน">{{START}}</textarea></div>
+      </details>
+      <div class="next">
+        {{NEXT}}
+        <a class="btn btn--ghost" href="/xvisor/learn/">กลับไปดูบทเรียนทั้งหมด</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell">
+    <p>ชุดสกิล X-VISOR เวอร์ชัน {{VERSION}} · อัปเดต {{UPDATED}} · <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a></p>
+    <p>AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ ห้ามส่งข้อมูลสุขภาพหรือรูปของลูกค้าให้ AI โดยไม่ได้รับอนุญาต</p>
+  </div>
+</footer>
+</body>
+</html>

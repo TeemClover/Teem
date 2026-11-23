@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>X-VISOR · ทำคลิปแรกของพี่ด้วย Claude</title>
+<meta name="description" content="ไม่ต้องติดตั้ง ไม่ต้องออกกล้อง มีรูปหรือวิดีโอในมือถือก็พอ ได้บทพูด ลำดับช็อต ข้อความบนจอ และแคปชันพร้อมถ่าย ทำกับ Claude สำหรับ X-VISOR มือใหม่">
+<meta name="theme-color" content="#102b3d">
+<link rel="canonical" href="https://www.myclover.com/xvisor/">
+<meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
+<meta property="og:title" content="X-VISOR · ทำคลิปแรกของพี่ด้วย Claude">
+<meta property="og:description" content="กดคัดลอก วางใน Claude แล้วตอบ ก ข ค ได้บทพูดและแคปชันพร้อมถ่าย ไม่ต้องติดตั้ง ไม่ต้องออกกล้อง">
+<meta property="og:url" content="https://www.myclover.com/xvisor/">
+<meta property="og:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp"><meta property="og:image:alt" content="X-VISOR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/xvisor/site.css?v=20261120a">
+<script defer src="/xvisor/site.js?v=20261120a"></script>
+<script type="module" src="/xircle/xvisor-path.js?v=20260910-1"></script>
+<script type="module" src="/assets/front-door/outcomes.js"></script>
+<!-- clover-motion -->
+<link rel="stylesheet" href="/assets/motion/clover-motion.css?v=20260927">
+<script src="/assets/motion/clover-motion.js?v=20260927" defer data-profile="story"></script>
+<!-- /clover-motion -->
+</head>
+<body>
+<a class="skip" href="#main">ข้ามไปที่เนื้อหา</a>
+<header class="bar">
+  <div class="shell">
+    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก">X-VISOR<small>ชุดสกิลของพี่</small></a>
+    <nav aria-label="เมนู">
+      <a href="/xvisor/how/">วิธีใช้</a>
+      <a href="/xvisor/learn/">บทเรียน</a>
+      <a href="/xvisor/play/">เล่นเกม</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="shell">
+      <nav class="xircle-return" data-xircle-return hidden aria-label="เดินต่อจาก XIRCLE"><p class="mini">มาจาก XIRCLE · <a href="/xircle/#appointment">กลับไปนัดลอง XIRCLE</a> · <a href="/xircle/learn/">ห้องความรู้</a></p></nav>
+      <p class="kicker">สำหรับ X-VISOR มือใหม่</p>
+      <h1>ทำคลิปแรกของพี่<br>ด้วย Claude</h1>
+      <p class="lead">ไม่ต้องติดตั้งอะไร ไม่ต้องออกกล้อง มีรูปหรือวิดีโอในมือถือก็พอ ได้บทพูด ลำดับช็อต ข้อความบนจอ และแคปชันพร้อมถ่าย</p>
+      <div class="btn-row">
+        <button class="btn" type="button" data-copy="start" data-status="#heroStatus" id="primaryCopy">คัดลอกข้อความไปใช้ใน Claude</button>
+      </div>
+      <div class="status" id="heroStatus" role="status" aria-live="polite"></div>
+      <p class="mini" style="margin-top:14px">ทำแค่ 3 ขั้น: คัดลอก · เปิด Claude แล้ววาง · ตอบ ก ข ค</p>
+      <div class="btn-row">
+        <button class="btn btn--ghost" type="button" data-copy="link" data-text="https://github.com/TeemClover/xvisor" data-status="#linkStatus">คัดลอกเฉพาะลิงก์ชุดสกิล</button>
+      </div>
+      <div class="status" id="linkStatus" role="status" aria-live="polite"></div>
+      <details>
+        <summary>ดูข้อความที่จะถูกคัดลอก</summary>
+        <div class="inner promptbox"><textarea id="promptText" readonly rows="9" aria-label="ข้อความสำหรับเริ่มงาน">{{START}}</textarea></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="steps">
+    <div class="shell">
+      <h2>3 ขั้น ใช้ได้เลย</h2>
+      <ol class="steps">
+        <li><b>กดปุ่มสีเขียวข้างบน</b><br>ข้อความเริ่มงานจะถูกคัดลอกให้ พร้อมลิงก์ชุดสกิลแล้ว ไม่ต้องพิมพ์เอง</li>
+        <li><b>เปิด Claude เริ่มแชตใหม่</b><br>แตะที่ช่องพิมพ์ค้างไว้ เลือก "วาง" แล้วกดส่ง</li>
+        <li><b>ตอบ ก ข ค หรือ ง</b><br>Claude จะถามทีละเรื่อง ง คือพิมพ์เอง จะส่งรูปหรือวิดีโอที่มีเข้าไปด้วยก็ได้</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="sample">
+    <div class="shell">
+      <h2>สุดท้ายพี่จะได้อะไร</h2>
+      <p>ตัวอย่างจากโจทย์ "มีรูปเครื่องชั่ง ไม่อยากออกกล้อง" ถามไม่เกิน 2 ข้อก็ได้ชุดพร้อมถ่าย</p>
+      <div class="sample" aria-label="ตัวอย่างคำถามและผลงาน">
+        <div class="bubble me"><span class="who">พี่พิมพ์</span>มีรูปเครื่องชั่งที่ถ่ายไว้เมื่อเช้า อยากทำคลิป แต่ไม่อยากออกกล้อง</div>
+        <div class="bubble ai"><span class="who">Claude ถาม</span>คลิปนี้อยากให้ใครดูคะ
+          <ul class="choices">
+            <li><b>ก</b> คนที่ชั่งแล้วเห็นเลขขึ้นลงแล้วสับสน (แนะนำ)</li>
+            <li><b>ข</b> คนที่ยังไม่มีเครื่องชั่ง</li>
+            <li><b>ค</b> ลูกค้าที่มีเครื่องชั่ง XIRCLE อยู่แล้ว</li>
+            <li><b>ง</b> พิมพ์เอง</li>
+          </ul>
+        </div>
+        <div class="bubble me"><span class="who">พี่ตอบ</span>ก</div>
+        <div class="bubble ai deliver"><span class="who">ชุดพร้อมถ่าย (ตัวอย่างบางส่วน)</span>
+          <dl>
+            <dt>ชื่อคลิป</dt><dd>ชั่งน้ำหนักแล้วเลขขึ้นลง อย่าเพิ่งตกใจ</dd>
+            <dt>Hook 3 วินาทีแรก</dt><dd>"ชั่งเช้านี้ขึ้น 1 โล แล้วต้องตกใจไหม"</dd>
+            <dt>ช็อต 0:03–0:10 (รูปที่ 2 ของพี่)</dt><dd>พูด: "น้ำหนักวันเดียวมีอะไรให้เปลี่ยนได้เยอะ ทั้งมื้อเมื่อคืน เวลานอน ชั่งคนละเวลา" · ข้อความบนจอ: ดูแนวโน้ม ไม่ใช่ตัวเลขวันเดียว</dd>
+            <dt>แคปชัน</dt><dd>ชั่งแล้วเลขขึ้น ไม่ได้แปลว่าแย่เสมอไป ลองดูเป็นแนวโน้มหลายวัน แล้วเลือกลองเรื่องเล็ก ๆ หนึ่งอย่าง</dd>
+            <dt>ตรวจคำเสี่ยง</dt><dd>ผ่าน ไม่มีคำรักษา รับประกัน หรือตัวเลขผลลัพธ์</dd>
+          </dl>
+        </div>
+      </div>
+      <p class="note">นี่คือตัวอย่างที่เขียนไว้ให้ดูว่างานหน้าตาแบบไหน ไม่ใช่ภาพหน้าจอจริงของ Claude ผลที่พี่ได้จะเปลี่ยนตามรูปและคำตอบของพี่</p>
+    </div>
+  </section>
+
+  <section id="start-with">
+    <div class="shell">
+      <h2>อยากเริ่มจากเรื่องไหน</h2>
+      <p>กดปุ่มไหนก็ได้ ข้อความที่คัดลอกจะบอก Claude ให้เริ่มจากเรื่องนั้นเลย ไม่ต้องตอบคำถามเดิมซ้ำ</p>
+      <div class="entries">
+{{ENTRIES}}
+      </div>
+    </div>
+  </section>
+
+  <section id="modes">
+    <div class="shell">
+      <h2>ใช้ทันที หรือติดตั้งไว้ใช้ซ้ำ</h2>
+      <div class="cards two">
+        <article class="card card--green">
+          <span class="tag">ก · ใช้ทันที</span>
+          <h3>วางข้อความในแชต</h3>
+          <p>ใช้ได้เลยไม่ต้องตั้งค่า ได้ผลสำหรับแชตนั้นแชตเดียว ถ้าเริ่มแชตใหม่ ต้องวางข้อความอีกครั้ง</p>
+        </article>
+        <article class="card card--gold">
+          <span class="tag">ข · ติดตั้งไว้ใช้ซ้ำ</span>
+          <h3>เพิ่มชุดสกิลใน Claude</h3>
+          <p>ทำครั้งเดียวบนเว็บหรือแอปคอมพิวเตอร์ แล้วครั้งต่อไปไม่ต้องวางข้อความอีก ขั้นตอนอ่านได้ที่หน้าวิธีใช้</p>
+          <div class="btn-row"><a class="btn btn--ghost btn--small" href="/xvisor/how/#install">ดูวิธีติดตั้งทีละขั้น</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="fallback">
+    <div class="shell">
+      <details id="noLink">
+        <summary>Claude เปิดลิงก์ไม่ได้ ทำยังไง</summary>
+        <div class="inner">
+          <p>บางแอปหรือบางบัญชีเปิดลิงก์ GitHub ไม่ได้ Claude จะบอกพี่เองว่าอ่านไม่ได้ ให้ใช้ไฟล์เริ่มต้นแทน ไฟล์เดียวมีทุกอย่างที่ต้องใช้ทำคลิปแรก</p>
+          <div class="btn-row">
+            <button class="btn btn--small" type="button" data-copy="file" data-file="/xvisor/pack/X-VISOR-START.md" data-status="#fileStatus">คัดลอกเนื้อหาไฟล์เริ่มต้นทั้งหมด</button>
+          </div>
+          <div class="status" id="fileStatus" role="status" aria-live="polite"></div>
+          <p>แล้วเปิด Claude วางในแชตใหม่ และพิมพ์ต่อว่า "ช่วยพี่ทำคลิปแรกจากข้อความนี้"</p>
+          <div class="btn-row"><a class="btn btn--ghost btn--small" href="/xvisor/pack/X-VISOR-START.md" download>ดาวน์โหลดไฟล์เริ่มต้น (แนบในแชตได้)</a></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="more">
+    <div class="shell">
+      <h2>ไปต่อที่ไหนดี</h2>
+      <div class="go">
+        <a href="/xvisor/how/"><b>ดูวิธีใช้ทีละขั้น</b>คัดลอก วาง ตอบ และติดตั้งไว้ใช้ซ้ำ</a>
+        <a href="/xvisor/learn/"><b>ดูบทเรียน</b>3 บทสั้น จบแล้วมีชิ้นงาน</a>
+        <a href="/xvisor/play/"><b>เล่นเกม X-VISOR</b>ลองบริหาร 12 เดือนแบบเกม</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="shell">
+    <p>ชุดสกิล X-VISOR เวอร์ชัน {{VERSION}} · อัปเดต {{UPDATED}} · <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a></p>
+    <p>ข้อมูลสินค้าสรุปจากหน้าเว็บสาธารณะของ CloverX ก่อนโพสต์ ตรวจราคา ฉลาก และคำเตือนกับหน้าทางการทุกครั้ง คู่มือตรวจคำเป็นแนวทางลดความเสี่ยง ไม่ใช่การรับรองทางกฎหมาย AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ</p>
+    <p>ตัวเลขรายได้ในเกม X-VISOR Quest เป็นตัวอย่างเพื่ออธิบาย ไม่ใช่การรับประกันรายได้</p>
+  </div>
+</footer>
+</body>
+</html>
