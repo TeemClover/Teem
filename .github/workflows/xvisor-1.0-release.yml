@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'xvisor/**'
+      - 'scripts/build-xvisor-pages.mjs'
       - 'tests/xvisor/**'
       - '.vercelignore'
       - 'api/xvisor-scores.js'
@@ -14,6 +15,7 @@ on:
     branches: [main]
     paths:
       - 'xvisor/**'
+      - 'scripts/build-xvisor-pages.mjs'
       - 'tests/xvisor/**'
       - '.vercelignore'
       - 'api/xvisor-scores.js'
@@ -35,6 +37,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: X-VISOR home pages match their sources
+        run: node scripts/build-xvisor-pages.mjs --check
       - name: Syntax check active 2.0 release modules
         run: |
           node --check xvisor/quest/game-boot.js

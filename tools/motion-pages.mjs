@@ -81,6 +81,7 @@ export const MOTION_PAGES = Object.freeze({
 
   // project room (upstairs)
   'xvisor/index.html': story,
+  'xvisor/play/index.html': story,
   'resume/index.html': story,
   'resume/first-version/index.html': story,
   'showcase/house/index.html': app,
