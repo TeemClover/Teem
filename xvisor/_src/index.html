@@ -1,168 +1,278 @@
 <!doctype html>
-<html lang="th">
+<html lang="th" class="no-motion">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>X-VISOR · ทำคลิปแรกของพี่ด้วย Claude</title>
-<meta name="description" content="ไม่ต้องติดตั้ง ไม่ต้องออกกล้อง มีรูปหรือวิดีโอในมือถือก็พอ ได้บทพูด ลำดับช็อต ข้อความบนจอ และแคปชันพร้อมถ่าย ทำกับ Claude สำหรับ X-VISOR มือใหม่">
-<meta name="theme-color" content="#102b3d">
+<title>X-VISOR · พี่ดูแลคน AI ดูแลงานที่เหลือ</title>
+<meta name="description" content="จุดเริ่มต้นของ X-VISOR ยุคใหม่ คู่หู AI ที่ CloverX เตรียมความรู้ไว้ให้ ช่วยคิดบท เตรียมถ่าย ตัดคลิป ตรวจคำ และวางแผนโพสต์ ให้พี่มีเวลาไปทำสิ่งที่พี่เก่งที่สุด">
+<meta name="theme-color" content="#050913">
 <link rel="canonical" href="https://www.myclover.com/xvisor/">
 <meta property="og:locale" content="th_TH"><meta property="og:type" content="website"><meta property="og:site_name" content="myClover">
-<meta property="og:title" content="X-VISOR · ทำคลิปแรกของพี่ด้วย Claude">
-<meta property="og:description" content="กดคัดลอก วางใน Claude แล้วตอบ ก ข ค ได้บทพูดและแคปชันพร้อมถ่าย ไม่ต้องติดตั้ง ไม่ต้องออกกล้อง">
+<meta property="og:title" content="X-VISOR · พี่ดูแลคน AI ดูแลงานที่เหลือ">
+<meta property="og:description" content="คู่หู AI ช่วยคิดบท เตรียมถ่าย ตัดคลิป และวางแผนโพสต์ ตอบแค่ ก ข ค ง">
 <meta property="og:url" content="https://www.myclover.com/xvisor/">
-<meta property="og:image" content="https://www.myclover.com/xvisor/xvisor-intro-hero.webp"><meta property="og:image:alt" content="X-VISOR">
+<meta property="og:image" content="https://www.myclover.com/xvisor/img/og.jpg"><meta property="og:image:alt" content="X-VISOR กับคู่หู AI">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/xvisor/img/hero.webp" as="image" type="image/webp">
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/xvisor/site.css?v=20261120a">
+<link rel="stylesheet" href="/xvisor/launch.css?v=20261123c">
 <script defer src="/xvisor/site.js?v=20261120a"></script>
+<script defer src="/xvisor/launch.js?v=20261123c"></script>
 <script type="module" src="/xircle/xvisor-path.js?v=20260910-1"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
-<!-- clover-motion -->
-<link rel="stylesheet" href="/assets/motion/clover-motion.css?v=20260927">
-<script src="/assets/motion/clover-motion.js?v=20260927" defer data-profile="story"></script>
-<!-- /clover-motion -->
 </head>
-<body>
-<a class="skip" href="#main">ข้ามไปที่เนื้อหา</a>
+<body class="lx">
+<a class="skip" href="#start">ข้ามไปที่ปุ่มเริ่มใช้</a>
+<div class="sky" aria-hidden="true"><i class="aur a1"></i><i class="aur a2"></i><i class="aur a3"></i></div>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
 <header class="bar">
   <div class="shell">
-    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก">X-VISOR<small>ชุดสกิลของพี่</small></a>
+    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก"><span class="logo" aria-hidden="true">X</span>X-VISOR</a>
     <nav aria-label="เมนู">
       <a href="/xvisor/how/">วิธีใช้</a>
-      <a href="/xvisor/learn/">บทเรียน</a>
-      <a href="/xvisor/play/">เล่นเกม</a>
+      <a href="/xvisor/play/">เกม</a>
+      <a class="nav-cta" href="#start">เริ่มเลย</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-  <section class="hero">
-    <div class="shell">
+  <!-- 1 · hero -->
+  <section class="hero" data-chap>
+    <div class="hero-bg" aria-hidden="true"><img src="/xvisor/img/hero.webp" alt="" width="1600" height="900" fetchpriority="high"></div>
+    <div class="shell hero-copy">
       <nav class="xircle-return" data-xircle-return hidden aria-label="เดินต่อจาก XIRCLE"><p class="mini">มาจาก XIRCLE · <a href="/xircle/#appointment">กลับไปนัดลอง XIRCLE</a> · <a href="/xircle/learn/">ห้องความรู้</a></p></nav>
-      <p class="kicker">สำหรับ X-VISOR มือใหม่</p>
-      <h1>ทำคลิปแรกของพี่<br>ด้วย Claude</h1>
-      <p class="lead">ไม่ต้องติดตั้งอะไร ไม่ต้องออกกล้อง มีรูปหรือวิดีโอในมือถือก็พอ ได้บทพูด ลำดับช็อต ข้อความบนจอ และแคปชันพร้อมถ่าย</p>
+      <p class="chip"><span class="dot" aria-hidden="true"></span>ยินดีต้อนรับสู่ X-VISOR ยุคใหม่</p>
+      <h1>พี่ดูแลคน<br><span class="grad">AI ดูแลงาน<br>ที่เหลือ</span></h1>
+      <p class="lead">คู่หู AI ที่ CloverX เตรียมความรู้ไว้ให้ ช่วยคิดบท ตัดคลิป วางแผนโพสต์ พี่มีเวลาไปทำสิ่งที่พี่เก่งที่สุด</p>
       <div class="btn-row">
-        <button class="btn" type="button" data-copy="start" data-status="#heroStatus" id="primaryCopy">คัดลอกข้อความไปใช้ใน Claude</button>
+        <button class="btn btn--glow" type="button" data-copy="start" data-status="#heroStatus">คัดลอกพรอมต์ ติดตั้งคู่หู</button>
       </div>
       <div class="status" id="heroStatus" role="status" aria-live="polite"></div>
-      <p class="mini" style="margin-top:14px">ทำแค่ 3 ขั้น: คัดลอก · เปิด Claude แล้ววาง · ตอบ ก ข ค</p>
-      <div class="btn-row">
-        <button class="btn btn--ghost" type="button" data-copy="link" data-text="https://github.com/TeemClover/xvisor" data-status="#linkStatus">คัดลอกเฉพาะลิงก์ชุดสกิล</button>
-      </div>
-      <div class="status" id="linkStatus" role="status" aria-live="polite"></div>
-      <details>
-        <summary>ดูข้อความที่จะถูกคัดลอก</summary>
-        <div class="inner promptbox"><textarea id="promptText" readonly rows="9" aria-label="ข้อความสำหรับเริ่มงาน">{{START}}</textarea></div>
-      </details>
+      <p class="scroll-hint" aria-hidden="true"><span></span>เลื่อนลงดู</p>
     </div>
   </section>
 
-  <section id="steps">
+  <!-- 2 · burden -> relief (pinned) -->
+  <section class="chap c-burden" data-chap style="--len:300vh" aria-labelledby="burdenTitle">
+    <div class="stage">
+      <img class="layer l-before" src="/xvisor/img/burden.webp" alt="" decoding="async">
+      <img class="layer l-after" src="/xvisor/img/relief.webp" alt="" decoding="async">
+      <div class="veil"></div>
+      <ul class="chips" aria-hidden="true">
+        <li style="--x:-34vw;--y:-26vh">เขียนบท</li>
+        <li style="--x:30vw;--y:-30vh">ตัดต่อ</li>
+        <li style="--x:-38vw;--y:6vh">คิดแคปชัน</li>
+        <li style="--x:36vw;--y:4vh">ตรวจคำเสี่ยง</li>
+        <li style="--x:-24vw;--y:30vh">วางแผนโพสต์</li>
+        <li style="--x:26vw;--y:28vh">ใส่ซับ</li>
+      </ul>
+      <div class="core" aria-hidden="true"><img src="/xvisor/img/companion.webp" alt="" decoding="async"></div>
+      <div class="say s-a"><h2 id="burdenTitle">ทุกคืน X-VISOR<br>ต้องเป็นทุกอย่าง</h2></div>
+      <div class="say s-b"><p class="h2">ตอนนี้งานหลังบ้าน<br><span class="grad">มีคู่หูรับไปทำ</span></p></div>
+    </div>
+  </section>
+
+  <!-- 3 · focus (pinned) -->
+  <section class="chap c-focus" data-chap style="--len:260vh" aria-labelledby="focusTitle">
+    <div class="stage">
+      <img class="layer kb" src="/xvisor/img/focus.webp" alt="" decoding="async">
+      <div class="veil v-left"></div>
+      <div class="shell focus-copy">
+        <p class="eyebrow">เวลาของพี่ กลับมาแล้ว</p>
+        <h2 id="focusTitle">พี่โฟกัส<br>สิ่งที่พี่ถนัด</h2>
+        <ol class="words">
+          <li style="--at:.12">ดูแลลูกค้า</li>
+          <li style="--at:.34">สร้างความไว้ใจ</li>
+          <li style="--at:.56">เล่าเรื่องจริงของพี่</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · skills (horizontal, pinned) -->
+  <section class="chap c-skills" data-chap data-track style="--len:420vh" aria-labelledby="skillsTitle">
+    <div class="stage">
+      <img class="layer dim" src="/xvisor/img/factory.webp" alt="" decoding="async">
+      <div class="track">
+        <div class="card intro">
+          <p class="eyebrow">ชุดสกิล X-VISOR</p>
+          <h2 id="skillsTitle">6 สกิล<br><span class="grad">ในคู่หูตัวเดียว</span></h2>
+          <p class="sub">ต่อกันเป็นสายพาน จากไอเดีย ถึงคลิปพร้อมโพสต์</p>
+        </div>
+        <article class="card"><span class="no">01</span><i class="ico i-hi" aria-hidden="true"></i><h3>คู่หูต้อนรับ</h3><p>ถาม ก ข ค ง ทีละข้อ สอนใช้ AI ไปพร้อมงานจริง</p><span class="state on">พร้อมใช้</span></article>
+        <article class="card"><span class="no">02</span><i class="ico i-pen" aria-hidden="true"></i><h3>เขียนบท</h3><p>ประโยคเปิด 3 วินาที บทพูดเป็นภาษาของพี่</p><span class="state on">พร้อมใช้</span></article>
+        <article class="card"><span class="no">03</span><i class="ico i-cam" aria-hidden="true"></i><h3>เตรียมถ่าย</h3><p>ลำดับช็อต มุมกล้อง แสง และภาพที่ต้องเก็บ</p><span class="state on">พร้อมใช้</span></article>
+        <article class="card hot"><span class="no">04</span><i class="ico i-cut" aria-hidden="true"></i><h3>ตัดคลิปเข้าธีม</h3><p>รวมคลิปพูด insert แคปแอป ใส่ซับ ฉากปิด</p><span class="state wip">กำลังทดสอบ</span></article>
+        <article class="card"><span class="no">05</span><i class="ico i-shield" aria-hidden="true"></i><h3>ตรวจคำเสี่ยง</h3><p>คำรักษา คำการันตีผล และความยินยอมลูกค้า</p><span class="state on">พร้อมใช้</span></article>
+        <article class="card"><span class="no">06</span><i class="ico i-cal" aria-hidden="true"></i><h3>แผนต่อเนื่อง</h3><p>ตารางโพสต์ จบตอนนี้ รู้เลยว่าตอนหน้าทำอะไร</p><span class="state on">พร้อมใช้</span></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · clip machine (pinned, scroll-scrubbed) -->
+  <section class="chap c-cut" data-chap data-scrub style="--len:320vh" aria-labelledby="cutTitle">
+    <div class="stage">
+      <div class="shell cut-grid">
+        <div class="cut-copy">
+          <p class="eyebrow">สกิลตัดคลิป · กำลังทดสอบ</p>
+          <h2 id="cutTitle">วัตถุดิบของพี่<br><span class="grad">กลายเป็นคลิป</span></h2>
+          <p class="sub">ใส่ไฟล์ไว้ในโฟลเดอร์เดียว แล้วบอกว่า "ตัดให้หน่อย"</p>
+          <p class="note warn-note">แคปหน้าจอของลูกค้า ต้องได้รับอนุญาต และปิดชื่อกับรูปก่อนใช้</p>
+        </div>
+        <div class="machine" aria-label="ภาพจำลองคลิปที่ตัดเสร็จ">
+          <span class="mat m1"><i class="ico i-mic" aria-hidden="true"></i>คลิปพูด</span>
+          <span class="mat m2"><i class="ico i-film" aria-hidden="true"></i>คลิป insert</span>
+          <span class="mat m3"><i class="ico i-pic" aria-hidden="true"></i>ภาพสินค้า</span>
+          <span class="mat m4"><i class="ico i-app" aria-hidden="true"></i>แคปแอป XIRCLE</span>
+          <div class="phone"><div class="scr" data-scene="0">
+            <div class="scene s0"><div class="face"></div><p class="cap"><span>ชั่ง</span><span>ทุก</span><span>เช้า</span><span class="hl">ดูกราฟ</span><span>ในแอป</span></p></div>
+            <div class="scene s1"><div class="appui"><b>XIRCLE</b><svg viewBox="0 0 160 70" aria-hidden="true"><polyline points="0,50 25,44 50,47 75,36 100,38 125,28 160,24" fill="none" stroke="#3cf0a0" stroke-width="3"/></svg><i></i><i></i><i class="short"></i></div><p class="cap"><span>ดู</span><span class="hl">แนวโน้ม</span><span>หลายวัน</span></p></div>
+            <div class="scene s2"><div class="prod"><span>XIRCLE Scale</span></div><p class="cap"><span>สนใจ</span><span class="hl">ทักมา</span><span>ได้เลย</span></p></div>
+            <div class="scene s3"><div class="end"><span class="logo">X</span><b>X-VISOR</b><small>ชื่อช่องของพี่</small></div></div>
+          </div></div>
+          <div class="tl" aria-hidden="true"><span class="seg a">พูด</span><span class="seg b">แคปแอป</span><span class="seg c">insert</span><span class="seg d">ปิด</span><i class="head"></i></div>
+          <p class="note">ภาพจำลอง ไม่ใช่ผลงานจริง</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · value -->
+  <section id="value" class="block">
     <div class="shell">
+      <p class="eyebrow">ความคุ้มค่า</p>
+      <div class="vs">
+        <div class="vs-side hire"><small>จ้างตัดต่อ</small><b>300–3,000</b><span>บาท ต่อนาที</span></div>
+        <div class="vs-mid" aria-hidden="true">VS</div>
+        <div class="vs-side me"><small>คู่หู AI บน Claude Pro</small><b>~700</b><span>บาท ต่อเดือน</span></div>
+      </div>
+      <div class="calc glass">
+        <fieldset><legend>พี่ทำคลิปเดือนละกี่คลิป</legend>
+          <div class="pills" data-calc="clips"><button type="button" data-v="4">4</button><button type="button" data-v="8" aria-pressed="true">8</button><button type="button" data-v="12">12</button><button type="button" data-v="20">20</button></div>
+        </fieldset>
+        <fieldset><legend>คลิปละยาว</legend>
+          <div class="pills" data-calc="mins"><button type="button" data-v="0.5">30 วิ</button><button type="button" data-v="1" aria-pressed="true">1 นาที</button><button type="button" data-v="2">2 นาที</button></div>
+        </fieldset>
+        <fieldset><legend>ค่าจ้างต่อนาที</legend>
+          <div class="pills" data-calc="rate"><button type="button" data-v="300" aria-pressed="true">300</button><button type="button" data-v="1000">1,000</button><button type="button" data-v="3000">3,000</button></div>
+        </fieldset>
+        <div class="bars">
+          <div class="barrow"><span>จ้างตัด</span><div class="bar-track"><i id="barHire"></i></div><b id="outHire">฿2,400</b></div>
+          <div class="barrow me"><span>คู่หู AI</span><div class="bar-track"><i id="barMe"></i></div><b>~฿700</b></div>
+        </div>
+        <p class="save">พี่ประหยัดได้เดือนละ <b id="outSave">฿1,700</b></p>
+        <p class="save-sub" id="outYear">ปีละประมาณ ฿20,400</p>
+      </div>
+      <ul class="plus">
+        <li><b>ไม่ต้องรอคิว</b>ทำตอนไหนก็ได้</li>
+        <li><b>แก้ด้วยคำพูด</b>"สั้นกว่านี้" ก็พอ</li>
+        <li><b>เก่งขึ้นทุกคลิป</b>สอนไปพร้อมงาน</li>
+      </ul>
+      <p class="note">ค่าจ้างตัดต่อเป็นช่วงราคาทั่วไปที่ทีมพบ แล้วแต่งานและคนตัด · Claude Pro คิดเป็นดอลลาร์ ตัวเลขบาทเป็นค่าประมาณ และมีโควตาการใช้ต่อช่วงเวลา · AI ทำร่าง พี่ดูและฟังก่อนโพสต์ทุกครั้ง</p>
+    </div>
+  </section>
+
+  <!-- 7 · demo -->
+  <section id="demo" class="block band">
+    <div class="shell demo-grid">
+      <div>
+        <p class="eyebrow">ลองแตะดู</p>
+        <h2>ไม่ต้องพิมพ์ยาว<br><span class="grad">แตะ ก ข ค ง</span></h2>
+        <p class="sub">คู่หูถามทีละข้อ พิมพ์เองเฉพาะเรื่องที่เป็นของพี่จริง ๆ</p>
+        <img class="demo-bot" src="/xvisor/img/companion.webp" alt="" loading="lazy" aria-hidden="true">
+      </div>
+      <div class="demo glass">
+        <div class="demo-top"><span class="led"></span><span class="led"></span><span class="led"></span><b>คู่หู X-VISOR</b><small>ออนไลน์</small></div>
+        <div class="demo-log" id="demoLog" aria-live="polite"></div>
+        <div class="demo-pick" id="demoPick"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · weapon -->
+  <section id="weapon" class="block weapon">
+    <img class="layer" src="/xvisor/img/weapon.webp" alt="" loading="lazy" aria-hidden="true">
+    <div class="veil"></div>
+    <div class="shell weapon-copy">
+      <a class="hint" href="/classroom/"><span class="hint-k">คำใบ้</span>อยากเก่ง AI ลึกกว่านี้ ห้องเรียน AI ใส่ซอส รออยู่ที่ /classroom →</a>
+      <h2>แต่อาวุธที่จะโต<br><span class="grad">ไปกับพี่ทุกวัน</span><br>คือคู่หูตัวนี้</h2>
+      <p class="lead">คัดลอกครั้งเดียว วางในแชต Claude คู่หูพร้อมทำงานทันที ทีมอัปเดตความรู้ให้เรื่อย ๆ</p>
+      <div class="btn-row">
+        <button class="btn btn--glow btn--xl" type="button" data-copy="start" data-status="#weaponStatus">คัดลอกพรอมต์ ติดตั้งคู่หู</button>
+      </div>
+      <div class="status" id="weaponStatus" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 9 · portals -->
+  <section id="world" class="block">
+    <div class="shell">
+      <p class="eyebrow">เข้าใจภาพใหญ่</p>
+      <h2>สามประตู<br><span class="grad">ก่อนออกไปเล่า</span></h2>
+      <div class="portals">
+        <a class="portal" href="/xvisor/play/"><img src="/xvisor/xvisor-intro-hero.webp" alt="" loading="lazy"><span class="kick">เกม · เข้าใจแผน</span><b>X-VISOR QUEST</b><span>ลองบริหาร 12 เดือนแบบเกม</span><em>เล่นเกม →</em></a>
+        <a class="portal" href="/xircle/"><img src="/xircle/assets/lifestyle/morning-960.webp" alt="" loading="lazy"><span class="kick">แอป · เข้าใจเครื่องมือ</span><b>XIRCLE</b><span>รู้จักแอปจริง ก่อนแคปไปเล่า</span><em>ดูแอป →</em></a>
+        <a class="portal" href="/routinex/"><img src="/routinex/assets/poster-coach.webp" alt="" loading="lazy"><span class="kick">โปรแกรม · เข้าใจลูกค้า</span><b>RoutineX</b><span>รูทีน 28 วันที่มีคนดูแล</span><em>ดูโปรแกรม →</em></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · start -->
+  <section id="start" class="block band">
+    <div class="shell">
+      <p class="eyebrow">เริ่มใน 1 นาที</p>
       <h2>3 ขั้น ใช้ได้เลย</h2>
       <ol class="steps">
-        <li><b>กดปุ่มสีเขียวข้างบน</b><br>ข้อความเริ่มงานจะถูกคัดลอกให้ พร้อมลิงก์ชุดสกิลแล้ว ไม่ต้องพิมพ์เอง</li>
-        <li><b>เปิด Claude เริ่มแชตใหม่</b><br>แตะที่ช่องพิมพ์ค้างไว้ เลือก "วาง" แล้วกดส่ง</li>
-        <li><b>ตอบ ก ข ค หรือ ง</b><br>Claude จะถามทีละเรื่อง ง คือพิมพ์เอง จะส่งรูปหรือวิดีโอที่มีเข้าไปด้วยก็ได้</li>
+        <li class="glass"><span class="big">1</span><div><b>กดคัดลอก</b><p>พรอมต์พร้อมลิงก์ชุดสกิล</p></div></li>
+        <li class="glass"><span class="big">2</span><div><b>เปิดแชต Claude</b><p>แตะค้าง เลือกวาง กดส่ง</p></div></li>
+        <li class="glass"><span class="big">3</span><div><b>ตอบ ก ข ค ง</b><p>แนบรูปหรือคลิปได้</p></div></li>
       </ol>
-    </div>
-  </section>
-
-  <section id="sample">
-    <div class="shell">
-      <h2>สุดท้ายพี่จะได้อะไร</h2>
-      <p>ตัวอย่างจากโจทย์ "มีรูปเครื่องชั่ง ไม่อยากออกกล้อง" ถามไม่เกิน 2 ข้อก็ได้ชุดพร้อมถ่าย</p>
-      <div class="sample" aria-label="ตัวอย่างคำถามและผลงาน">
-        <div class="bubble me"><span class="who">พี่พิมพ์</span>มีรูปเครื่องชั่งที่ถ่ายไว้เมื่อเช้า อยากทำคลิป แต่ไม่อยากออกกล้อง</div>
-        <div class="bubble ai"><span class="who">Claude ถาม</span>คลิปนี้อยากให้ใครดูคะ
-          <ul class="choices">
-            <li><b>ก</b> คนที่ชั่งแล้วเห็นเลขขึ้นลงแล้วสับสน (แนะนำ)</li>
-            <li><b>ข</b> คนที่ยังไม่มีเครื่องชั่ง</li>
-            <li><b>ค</b> ลูกค้าที่มีเครื่องชั่ง XIRCLE อยู่แล้ว</li>
-            <li><b>ง</b> พิมพ์เอง</li>
-          </ul>
-        </div>
-        <div class="bubble me"><span class="who">พี่ตอบ</span>ก</div>
-        <div class="bubble ai deliver"><span class="who">ชุดพร้อมถ่าย (ตัวอย่างบางส่วน)</span>
-          <dl>
-            <dt>ชื่อคลิป</dt><dd>ชั่งน้ำหนักแล้วเลขขึ้นลง อย่าเพิ่งตกใจ</dd>
-            <dt>Hook 3 วินาทีแรก</dt><dd>"ชั่งเช้านี้ขึ้น 1 โล แล้วต้องตกใจไหม"</dd>
-            <dt>ช็อต 0:03–0:10 (รูปที่ 2 ของพี่)</dt><dd>พูด: "น้ำหนักวันเดียวมีอะไรให้เปลี่ยนได้เยอะ ทั้งมื้อเมื่อคืน เวลานอน ชั่งคนละเวลา" · ข้อความบนจอ: ดูแนวโน้ม ไม่ใช่ตัวเลขวันเดียว</dd>
-            <dt>แคปชัน</dt><dd>ชั่งแล้วเลขขึ้น ไม่ได้แปลว่าแย่เสมอไป ลองดูเป็นแนวโน้มหลายวัน แล้วเลือกลองเรื่องเล็ก ๆ หนึ่งอย่าง</dd>
-            <dt>ตรวจคำเสี่ยง</dt><dd>ผ่าน ไม่มีคำรักษา รับประกัน หรือตัวเลขผลลัพธ์</dd>
-          </dl>
-        </div>
+      <div class="btn-row center">
+        <button class="btn btn--glow" type="button" data-copy="start" data-status="#startStatus" id="primaryCopy">คัดลอกพรอมต์ ติดตั้งคู่หู</button>
+        <button class="btn btn--line" type="button" data-copy="link" data-text="https://github.com/TeemClover/xvisor" data-status="#startStatus">คัดลอกเฉพาะลิงก์</button>
       </div>
-      <p class="note">นี่คือตัวอย่างที่เขียนไว้ให้ดูว่างานหน้าตาแบบไหน ไม่ใช่ภาพหน้าจอจริงของ Claude ผลที่พี่ได้จะเปลี่ยนตามรูปและคำตอบของพี่</p>
-    </div>
-  </section>
+      <div class="status center-status" id="startStatus" role="status" aria-live="polite"></div>
+      <p class="tip">เคล็ดลับ เปิดแชตอีกห้องไว้ถามเรื่องที่สงสัย คู่หูสอนพี่ไปพร้อมงาน</p>
 
-  <section id="start-with">
-    <div class="shell">
-      <h2>อยากเริ่มจากเรื่องไหน</h2>
-      <p>กดปุ่มไหนก็ได้ ข้อความที่คัดลอกจะบอก Claude ให้เริ่มจากเรื่องนั้นเลย ไม่ต้องตอบคำถามเดิมซ้ำ</p>
+      <h3 class="mt">อยากเริ่มจากเรื่องไหน</h3>
       <div class="entries">
 {{ENTRIES}}
       </div>
-    </div>
-  </section>
 
-  <section id="modes">
-    <div class="shell">
-      <h2>ใช้ทันที หรือติดตั้งไว้ใช้ซ้ำ</h2>
-      <div class="cards two">
-        <article class="card card--green">
-          <span class="tag">ก · ใช้ทันที</span>
-          <h3>วางข้อความในแชต</h3>
-          <p>ใช้ได้เลยไม่ต้องตั้งค่า ได้ผลสำหรับแชตนั้นแชตเดียว ถ้าเริ่มแชตใหม่ ต้องวางข้อความอีกครั้ง</p>
-        </article>
-        <article class="card card--gold">
-          <span class="tag">ข · ติดตั้งไว้ใช้ซ้ำ</span>
-          <h3>เพิ่มชุดสกิลใน Claude</h3>
-          <p>ทำครั้งเดียวบนเว็บหรือแอปคอมพิวเตอร์ แล้วครั้งต่อไปไม่ต้องวางข้อความอีก ขั้นตอนอ่านได้ที่หน้าวิธีใช้</p>
-          <div class="btn-row"><a class="btn btn--ghost btn--small" href="/xvisor/how/#install">ดูวิธีติดตั้งทีละขั้น</a></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="fallback">
-    <div class="shell">
-      <details id="noLink">
+      <details class="glass">
+        <summary>ดูพรอมต์ที่จะถูกคัดลอก</summary>
+        <div class="inner promptbox"><textarea id="promptText" readonly rows="8" aria-label="พรอมต์สำหรับเริ่มงาน">{{START}}</textarea></div>
+      </details>
+      <details class="glass">
+        <summary>ติดตั้งไว้ใช้ซ้ำ ไม่ต้องวางทุกครั้ง</summary>
+        <div class="inner"><p>ทำครั้งเดียวบนเว็บหรือแอป Claude บนคอมพิวเตอร์</p><a class="btn btn--line btn--small" href="/xvisor/how/#install">ดูวิธีติดตั้งทีละขั้น</a></div>
+      </details>
+      <details id="noLink" class="glass">
         <summary>Claude เปิดลิงก์ไม่ได้ ทำยังไง</summary>
         <div class="inner">
-          <p>บางแอปหรือบางบัญชีเปิดลิงก์ GitHub ไม่ได้ Claude จะบอกพี่เองว่าอ่านไม่ได้ ให้ใช้ไฟล์เริ่มต้นแทน ไฟล์เดียวมีทุกอย่างที่ต้องใช้ทำคลิปแรก</p>
+          <p>ใช้ไฟล์เริ่มต้นแทน ไฟล์เดียวมีทุกอย่างที่ต้องใช้</p>
           <div class="btn-row">
-            <button class="btn btn--small" type="button" data-copy="file" data-file="/xvisor/pack/X-VISOR-START.md" data-status="#fileStatus">คัดลอกเนื้อหาไฟล์เริ่มต้นทั้งหมด</button>
+            <button class="btn btn--line btn--small" type="button" data-copy="file" data-file="/xvisor/pack/X-VISOR-START.md" data-status="#fileStatus">คัดลอกเนื้อหาไฟล์เริ่มต้น</button>
+            <a class="btn btn--line btn--small" href="/xvisor/pack/X-VISOR-START.md" download>ดาวน์โหลดไฟล์ (แนบในแชตได้)</a>
           </div>
           <div class="status" id="fileStatus" role="status" aria-live="polite"></div>
-          <p>แล้วเปิด Claude วางในแชตใหม่ และพิมพ์ต่อว่า "ช่วยพี่ทำคลิปแรกจากข้อความนี้"</p>
-          <div class="btn-row"><a class="btn btn--ghost btn--small" href="/xvisor/pack/X-VISOR-START.md" download>ดาวน์โหลดไฟล์เริ่มต้น (แนบในแชตได้)</a></div>
+          <p>วางในแชตใหม่ แล้วพิมพ์ต่อว่า "ช่วยพี่ทำคลิปแรกจากข้อความนี้"</p>
         </div>
       </details>
-    </div>
-  </section>
-
-  <section id="more">
-    <div class="shell">
-      <h2>ไปต่อที่ไหนดี</h2>
-      <div class="go">
-        <a href="/xvisor/how/"><b>ดูวิธีใช้ทีละขั้น</b>คัดลอก วาง ตอบ และติดตั้งไว้ใช้ซ้ำ</a>
-        <a href="/xvisor/learn/"><b>ดูบทเรียน</b>3 บทสั้น จบแล้วมีชิ้นงาน</a>
-        <a href="/xvisor/play/"><b>เล่นเกม X-VISOR</b>ลองบริหาร 12 เดือนแบบเกม</a>
-      </div>
+      <p class="sub center"><a href="/xvisor/learn/">บทเรียน 3 บทสั้น</a> · <a href="/xvisor/how/">วิธีใช้ทีละขั้น</a> · <a href="/classroom/">ห้องเรียน AI</a></p>
     </div>
   </section>
 </main>
 
+<div class="dock" id="dock" hidden><button class="btn btn--glow" type="button" data-copy="start" data-status="#dockStatus">คัดลอกพรอมต์ ติดตั้งคู่หู</button><div class="status" id="dockStatus" role="status" aria-live="polite"></div></div>
+
 <footer>
   <div class="shell">
     <p>ชุดสกิล X-VISOR เวอร์ชัน {{VERSION}} · อัปเดต {{UPDATED}} · <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a></p>
-    <p>ข้อมูลสินค้าสรุปจากหน้าเว็บสาธารณะของ CloverX ก่อนโพสต์ ตรวจราคา ฉลาก และคำเตือนกับหน้าทางการทุกครั้ง คู่มือตรวจคำเป็นแนวทางลดความเสี่ยง ไม่ใช่การรับรองทางกฎหมาย AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ</p>
-    <p>ตัวเลขรายได้ในเกม X-VISOR Quest เป็นตัวอย่างเพื่ออธิบาย ไม่ใช่การรับประกันรายได้</p>
+    <p>คู่หู X-VISOR คือ Claude ที่ใช้ชุดความรู้ที่ CloverX เตรียมไว้ ไม่ใช่แพทย์หรือนักกฎหมาย ข้อมูลสินค้าสรุปจากหน้าเว็บสาธารณะของ CloverX ก่อนโพสต์ตรวจราคา ฉลาก และคำเตือนกับหน้าทางการทุกครั้ง คู่มือตรวจคำเป็นแนวทางลดความเสี่ยง ไม่ใช่การรับรองทางกฎหมาย AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ</p>
+    <p>ภาพประกอบในหน้านี้สร้างด้วย AI ไม่ใช่ภาพบุคคลจริง · ตัวเลขรายได้ในเกม X-VISOR Quest เป็นตัวอย่าง ไม่ใช่การรับประกันรายได้ · Claude เป็นเครื่องหมายการค้าของ Anthropic</p>
   </div>
 </footer>
 </body>
