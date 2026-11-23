@@ -15,9 +15,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/xvisor/img/hero.webp" as="image" type="image/webp">
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/xvisor/launch.css?v=20261123c">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&text=XVISOR%C2%B7AICMPN&display=swap">
+<link rel="stylesheet" href="/xvisor/launch.css?v=20261124b">
 <script defer src="/xvisor/site.js?v=20261120a"></script>
-<script defer src="/xvisor/launch.js?v=20261123c"></script>
+<script defer src="/xvisor/launch.js?v=20261124a"></script>
 <script type="module" src="/xircle/xvisor-path.js?v=20260910-1"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
 </head>
@@ -28,7 +30,24 @@
 
 <header class="bar">
   <div class="shell">
-    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก"><span class="logo" aria-hidden="true">X</span>X-VISOR</a>
+    <a class="brand" href="/xvisor/" aria-label="X-VISOR หน้าแรก">
+      <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <linearGradient id="xvGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6dc"/><stop offset=".35" stop-color="#e6c27a"/><stop offset=".6" stop-color="#b8893e"/><stop offset="1" stop-color="#ffe9b8"/></linearGradient>
+          <linearGradient id="xvGlass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16244a"/><stop offset="1" stop-color="#060b1a"/></linearGradient>
+          <linearGradient id="xvBladeA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#4be8ff"/></linearGradient>
+          <linearGradient id="xvBladeB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cf0a0"/><stop offset="1" stop-color="#9b7bff"/></linearGradient>
+          <clipPath id="xvClip"><path d="M32 3 57 14v20c0 13-10.5 23.5-25 27C17.5 57.5 7 47 7 34V14Z"/></clipPath>
+        </defs>
+        <path d="M32 3 57 14v20c0 13-10.5 23.5-25 27C17.5 57.5 7 47 7 34V14Z" fill="url(#xvGlass)" stroke="url(#xvGold)" stroke-width="2.6"/>
+        <path d="M32 8.5 52 17.3v16.5c0 10.4-8.3 18.9-20 21.9-11.7-3-20-11.5-20-21.9V17.3Z" fill="none" stroke="rgba(230,194,122,.35)" stroke-width=".8"/>
+        <path d="M20 19.5h6.2L44 45h-6.2Z" fill="url(#xvBladeA)"/>
+        <path d="M44 19.5h-6.2L20 45h6.2Z" fill="url(#xvBladeB)"/>
+        <g class="emblem-clover"><circle cx="30.4" cy="30.6" r="2.1"/><circle cx="33.6" cy="30.6" r="2.1"/><circle cx="30.4" cy="33.8" r="2.1"/><circle cx="33.6" cy="33.8" r="2.1"/></g>
+        <g clip-path="url(#xvClip)"><rect class="emblem-sheen" x="-40" y="-10" width="22" height="90" fill="rgba(255,255,255,.55)" transform="rotate(20 32 32)"/></g>
+      </svg>
+      <span class="wordmark"><b>X<i>·</i>VISOR</b><small>AI COMPANION</small></span>
+    </a>
     <nav aria-label="เมนู">
       <a href="/xvisor/how/">วิธีใช้</a>
       <a href="/xvisor/play/">เกม</a>
@@ -51,6 +70,61 @@
       </div>
       <div class="status" id="heroStatus" role="status" aria-live="polite"></div>
       <p class="scroll-hint" aria-hidden="true"><span></span>เลื่อนลงดู</p>
+    </div>
+    <div class="mascot" aria-hidden="true">
+      <img class="prop pr1" src="/xvisor/img/prop-1.webp" alt="" width="159" height="240">
+      <img class="prop pr2" src="/xvisor/img/prop-2.webp" alt="" width="154" height="240">
+      <img class="prop pr3" src="/xvisor/img/prop-4.webp" alt="" width="279" height="240">
+      <img class="prop pr4" src="/xvisor/img/prop-5.webp" alt="" width="236" height="240">
+      <div class="bot-wrap">
+        <p class="bot-say"><span>สวัสดีครับพี่!</span></p>
+        <div class="bot-body">
+          <img class="pose on" src="/xvisor/img/bot-1.webp" alt="" width="372" height="520">
+          <img class="pose" src="/xvisor/img/bot-2.webp" alt="" width="407" height="520">
+          <img class="pose" src="/xvisor/img/bot-3.webp" alt="" width="393" height="520">
+        </div>
+        <i class="bot-shadow"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1b · real samples -->
+  <section id="samples" class="block samples">
+    <div class="shell">
+      <p class="eyebrow">ของจริง ที่ AI ตัดได้</p>
+      <h2 data-pop>พี่เตรียม 3 อย่าง<br><span class="grad">AI ตัดเป็นคลิปให้</span></h2>
+      <ul class="recipe" aria-label="สิ่งที่พี่ใส่">
+        <li data-pop><img src="/xvisor/img/prop-1.webp" alt="" width="159" height="240"><b>คลิปพูด</b><span>พี่เล่าเอง</span></li>
+        <li class="plus-sign" aria-hidden="true">+</li>
+        <li data-pop><img src="/xvisor/img/prop-5.webp" alt="" width="236" height="240"><b>แคปหน้าจอแอป</b><span>XIRCLE ของพี่</span></li>
+        <li class="plus-sign" aria-hidden="true">+</li>
+        <li data-pop><img src="/xvisor/img/prop-4.webp" alt="" width="279" height="240"><b>ภาพไลฟ์สไตล์</b><span>ชีวิตจริงของพี่</span></li>
+      </ul>
+      <div class="reels">
+        <figure class="reel" data-pop>
+          <div class="reel-phone" role="button" tabindex="0" aria-label="เล่นหรือเปิดเสียงคลิปตัวอย่าง รีวิว XIRCLE Band">
+            <video src="/xvisor/img/reels/reel-1.mp4" poster="/xvisor/img/reels/reel-1.jpg" muted loop playsinline preload="none" width="540" height="960"></video>
+            <span class="reel-sound">แตะเพื่อฟังเสียง</span>
+          </div>
+          <figcaption>“เหมือนมีผู้ช่วยส่วนตัวดูแลสุขภาพ”<small>รีวิว XIRCLE Band · ตัดด้วย Claude</small></figcaption>
+        </figure>
+        <figure class="reel" data-pop>
+          <div class="reel-phone" role="button" tabindex="0" aria-label="เล่นหรือเปิดเสียงคลิปตัวอย่าง รีวิว HabiX">
+            <video src="/xvisor/img/reels/reel-2.mp4" poster="/xvisor/img/reels/reel-2.jpg" muted loop playsinline preload="none" width="540" height="960"></video>
+            <span class="reel-sound">แตะเพื่อฟังเสียง</span>
+          </div>
+          <figcaption>“ถ้ายังไม่ลอง คุณพลาด”<small>รีวิว HabiX · ตัดด้วย Claude</small></figcaption>
+        </figure>
+        <figure class="reel" data-pop>
+          <div class="reel-phone" role="button" tabindex="0" aria-label="เล่นหรือเปิดเสียงคลิปตัวอย่าง รีวิวรูทีน HabiX">
+            <video src="/xvisor/img/reels/reel-3.mp4" poster="/xvisor/img/reels/reel-3.jpg" muted loop playsinline preload="none" width="540" height="960"></video>
+            <span class="reel-sound">แตะเพื่อฟังเสียง</span>
+          </div>
+          <figcaption>“จากสายปาร์ตี้ สู่รูทีนที่ทำได้จริง”<small>รีวิวรูทีน HabiX · ตัดด้วย Claude</small></figcaption>
+        </figure>
+      </div>
+      <p class="tagline" data-pop>ไลฟ์สไตล์สุขภาพ <span class="grad">ที่ใครเห็นก็อยากทัก</span><br>เพราะพี่รู้จริง ทำจริง ช่วยเขาได้จริง</p>
+      <p class="note center">ตัวอย่างจริงจากรีวิวลูกค้า ที่ทีม CloverX ตัดด้วย Claude และสกิลตัดคลิปรีวิว (ซับไล่คำ การ์ดสินค้า ฉากปิด ทำให้อัตโนมัติ) สกิลนี้คือต้นแบบของสกิลตัดคลิป X-VISOR ที่กำลังทดสอบ แตะคลิปเพื่อเปิดเสียง</p>
     </div>
   </section>
 

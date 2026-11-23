@@ -68,6 +68,51 @@
   window.addEventListener('load', () => { measure(); onScroll(); });
   if (reduce && dock) dock.hidden = true;
 
+  /* ---------- mascot: cute pose swaps and speech bubble ---------- */
+  const poses = $$('.bot-body .pose');
+  const say = $('.bot-say span');
+  if (poses.length && say) {
+    const LINES = ['สวัสดีครับพี่!', 'ให้ผมช่วยคิดบทไหม', 'ตอบแค่ ก ข ค ง', 'ไปทำคลิปกัน!'];
+    let i = 0;
+    const tick = () => {
+      i = (i + 1) % poses.length;
+      poses.forEach((p, n) => p.classList.toggle('on', n === i));
+      say.textContent = LINES[(i + Math.floor(Date.now() / 7200)) % LINES.length];
+      const bubble = say.parentElement;
+      bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
+    };
+    if (!reduce) setInterval(() => { if (!document.hidden) tick(); }, 2400);
+  }
+
+  /* ---------- bouncy reveals ---------- */
+  const pops = $$('[data-pop]');
+  if ('IntersectionObserver' in window && !reduce) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.2 });
+    pops.forEach(n => io.observe(n));
+  } else pops.forEach(n => n.classList.add('in'));
+
+  /* ---------- sample reels: play only while visible, tap for sound ---------- */
+  const reels = $$('.reel-phone');
+  reels.forEach(phone => {
+    const v = $('video', phone), badge = $('.reel-sound', phone);
+    if (!v) return;
+    phone.addEventListener('click', () => {
+      const unmute = v.muted;
+      reels.forEach(other => { const ov = $('video', other); if (ov && ov !== v) { ov.muted = true; const b = $('.reel-sound', other); if (b) b.textContent = 'แตะเพื่อฟังเสียง'; } });
+      v.muted = !unmute ? true : false;
+      if (unmute) { v.currentTime = 0; v.play().catch(() => {}); }
+      if (badge) badge.textContent = v.muted ? 'แตะเพื่อฟังเสียง' : 'กำลังเล่นเสียง · แตะเพื่อปิด';
+    });
+  });
+  if ('IntersectionObserver' in window) {
+    const vio = new IntersectionObserver(es => es.forEach(e => {
+      const v = $('video', e.target);
+      if (!v) return;
+      if (e.isIntersecting) { if (!reduce) v.play().catch(() => {}); } else v.pause();
+    }), { threshold: 0.35 });
+    reels.forEach(r => vio.observe(r));
+  }
+
   /* ---------- demo chat ---------- */
   const log = $('#demoLog'), pick = $('#demoPick');
   if (log && pick) {
