@@ -324,7 +324,7 @@ footer a{color:#b7d8ff}
   .bar nav a{padding:10px 9px;font-size:15px}
   .hero{align-items:flex-end;padding:0 0 34px;min-height:auto}
   .hero-bg{bottom:auto;height:min(62vh,560px)}
-  .hero-bg img{object-position:66% 22%}
+  .hero-bg img{object-position:92% 20%}
   .hero-bg::after{background:linear-gradient(180deg,rgba(5,9,19,.35) 0,transparent 18%,transparent 55%,var(--bg) 100%)}
   .hero-copy{padding-top:min(50vh,450px)}
   .hero h1{font-size:clamp(42px,12vw,56px)}
