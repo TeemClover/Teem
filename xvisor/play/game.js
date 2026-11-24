@@ -160,8 +160,8 @@ function playScreen() {
     <div class="acts${done ? ' done' : ''}">
       ${action('clip', '🎬', 'ลงคลิปรีวิว', 'เพิ่มคลิปเข้าคลัง')}
       ${action('reply', '💬', 'ตอบคนทัก', S.dms ? `ตอบได้ ${Math.min(S.dms, G.REPLIES_PER_MOVE)} คน` : 'ยังไม่มีคนทัก', S.dms ? String(S.dms) : '', !S.dms)}
-      ${action('care', '🌿', 'ดูแลตัวเอง', `${PILLAR[low]}ต่ำสุด เติมตรงนี้`)}
-      ${action('teach', '🤝', 'สอนทีมทำคลิป', canTeach ? 'มีคนอยากทำตามพี่' : teamUp ? 'ฝึกทีมให้คลิปดีขึ้น' : S.team.length ? 'ทีมเก่งเต็มที่แล้ว' : `ต้องมีลูกค้า ${G.CUSTOMERS_PER_RECRUIT} คน`, canTeach ? 'ใหม่' : '', !canTeach && !teamUp)}
+      ${action('care', '🌿', 'ดูแลตัวเอง', `เติมเรื่อง${PILLAR[low]}`)}
+      ${action('teach', '🤝', 'สอนทีม', canTeach ? 'มีคนอยากทำคลิปตามพี่' : teamUp ? 'ฝึกให้คลิปของทีมดีขึ้น' : S.team.length ? 'ทีมเก่งเต็มที่แล้ว' : `มีลูกค้า ${G.CUSTOMERS_PER_RECRUIT} คนก่อน`, canTeach ? 'ใหม่' : '', !canTeach && !teamUp)}
       ${showShop ? action('shop', '🛒', 'ปักลิงก์สั่งซื้อ', 'ขายได้ในคลิป ไม่ต้องรอทัก', 'ครั้งเดียว') : ''}
     </div>
 
@@ -199,12 +199,15 @@ function endScreen() {
   countUp(app);
 }
 
+let shown = '';
 function render() {
   if (screen === 'play' && S && S.phase === 'done') screen = 'end';
-  if (screen === 'start' || !S) startScreen();
+  if (screen === 'start' || !S) { screen = 'start'; startScreen(); }
   else if (screen === 'end') endScreen();
   else playScreen();
-  window.scrollTo(0, 0);
+  // stay where the thumb is while playing; only a new screen starts from the top
+  if (shown !== screen + (S ? S.month : 0)) window.scrollTo(0, 0);
+  shown = screen + (S ? S.month : 0);
 }
 
 // ---------- sheets ----------
