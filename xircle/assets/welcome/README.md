@@ -20,7 +20,6 @@ Taken from the official site www.xircle.health on 2026-11-24. The owner's earlie
 | --- | --- | --- |
 | `band-onyx.webp`, `band-sand.webp`, `band-black-navy.webp`, `band-silver.webp` | `https://www.xircle.health/assets/band-{onyx,sand,black-navy,silver}.png` (302×373, transparent) | 2× Lanczos resize, light unsharp mask, WebP with alpha |
 | `band-mesh.webp` | `https://www.xircle.health/assets/band-hero-shot.png` | Cropped to the product, resized to 1100 px high, WebP with alpha |
-| `bedside.webp` | `https://www.xircle.health/assets/sleep-bedside.jpg` | Resized to 1200 px, WebP |
 | `scale-flatlay.webp` | `https://www.xircle.health/assets/eco-scale.png` | WebP |
 | `scale-top.webp` | Company Drive product folder, `XIRCLE_Scale 02` (kit copy `sources/product/xircle-scale-02.jpg`) | White background removed by flood fill from the four corners, cropped, resized to 1000 px wide, WebP with alpha |
 
@@ -40,9 +39,8 @@ Second batch, same day, asked for by the owner with a brief to make the motion m
 | File | How it was made | Processing |
 | --- | --- | --- |
 | `scale-ripple.mp4` | Higgsfield, model Seedance 2.5, job `2d581768-b7fe-4ed5-8888-4d635fe83953`: 5 s, 1080p, no audio, 80 credits. First and last frame are both `scale-hud` (so it loops). Brief: locked top-down camera; rings of light in cyan, emerald and violet spread from the scale across the floor while the glass panels glow, then everything returns to the first frame. | 1280×720, H.264 CRF 25, no audio (0.56 MB) |
-| `bedside-night.mp4`, `bedside-night.webp` | Higgsfield, model Seedance 2.5, job `74ed6914-2f05-4bbc-b4b5-e83e55e12f84`: 5 s, 1080p, 1:1, no audio, 80 credits. Last frame: the official `sleep-bedside.jpg`. First frame: the same photo graded to moonlight with the phone screen blacked out, made locally. Brief: one night turning into morning; rings of light breathe out from the band, gather into an arc that travels to the phone, and the screen wakes. | 900×900, H.264 CRF 26, no audio; the WebP is the first frame |
 
-The rings and arcs of light in these two clips are a visual metaphor for the devices reading the body and syncing to the app. Neither device emits light like this, and the page labels both cards "ภาพจำลองเพื่อการนำเสนอ". The still shown without motion on the bedside card is the real official photo (`bedside.webp`).
+The rings and arcs of light in these two clips are a visual metaphor for the devices reading the body and syncing to the app. Neither device emits light like this, and the page labels both cards "ภาพจำลองเพื่อการนำเสนอ".
 
 Third batch, same day. The owner asked for a fast montage on the Band card and for generated clips on the food-scan and Habit Score cards in place of the vertical app clips:
 
@@ -53,6 +51,14 @@ Third batch, same day. The owner asked for a fast montage on the Band card and f
 | `habit-week.mp4`, `habit-week.webp`, `habit-week-end.webp` | Start frame: seven light pillars and a faint ring, generated with GPT Image 2.6 on Higgsfield (job `664b9745-dfc4-4cb0-95d4-256dd010c85a`). Clip: Seedance 2.5, job `d36eea26-8c9a-4a2e-8612-0fa6b6fa3077`: 6 s, 1080p, 1:1, no audio, 96 credits. Brief: locked camera; each pillar releases three ribbons of light that fly up and fill the ring until it is complete. | 900×900, H.264 CRF 23, no audio; WebP stills are the first and last frames |
 
 On these three cards the words and numbers are HTML over the clip: the dish names, the macro readout (49 g, 96 g, 35 g, 895 kcal), the day initials and the score (76) are examples written for this page, not output of the app, and are labelled so. Their positions are given in the clip's own coordinates and converted for the wide and narrow layouts in `welcome.css`.
+
+Fourth batch, same day. The first sleep clip showed the Band lying on a bedside table while "tracking"; the owner pointed out it has to be on the sleeper. It was replaced, and `bedside.webp`, `bedside-night.*` were removed:
+
+| File | How it was made | Processing |
+| --- | --- | --- |
+| `sleep-night.mp4`, `sleep-night.webp`, `sleep-night-end.webp` | Higgsfield, model Seedance 2.5, job `ae58fcb3-6dd6-486c-97ff-06e40105af2e`: 8 s, 1080p, 1:1, no audio, 128 credits. Reference: the sheet of the four official Band images. Brief: a five-shot film of one night with the Band on the sleeper's wrist in every shot (falling asleep, light sleep, deep sleep, dreaming sleep, waking), each stage with its own colour and rhythm of light. | 900×900, H.264 CRF 25, no audio; WebP stills are the first and last frames |
+
+The stage names and times under that clip (22:30, 23:10, 01:40, 04:20, 06:30) are HTML, synced to the shots through `data-cues`. The times are examples and the coloured light is a visual metaphor; the Band does not emit it.
 
 The HUD on the Scale card (corner marks, scan line, the five value names and "ดูต่อได้ 9 ค่า") is HTML and CSS over that image, so the Thai text is real text. The page draws the Band sequence on a canvas by scroll position; it loads only when the night scene is near, is skipped with reduced motion or data saver, and narrow screens load every second frame. Without it the real product photo with the CSS light sweep is shown.
 

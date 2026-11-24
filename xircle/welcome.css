@@ -179,6 +179,16 @@ html:not(.js) .js-only{display:none!important}
 .hl-score span{display:block;margin-top:4px;font-size:clamp(.72rem,1.05vw,.9rem);font-weight:700;letter-spacing:.04em}
 .hl-score small{display:block;font-size:clamp(.62rem,.85vw,.74rem);color:rgba(255,255,255,.6)}
 .js:not(.rm) .hl-habit:not(.scored) .hl-score{opacity:0;transform:translate(-50%,-50%) scale(.86)}
+/* sleep card: one night as a short film; the stage that is on screen lights up in the row below */
+.hl-sleep::after{background:linear-gradient(160deg,rgba(6,10,22,.72),rgba(6,10,22,.1) 46%,transparent 62%),linear-gradient(to top,rgba(6,10,22,.82),rgba(6,10,22,.25) 24%,transparent 40%)!important}
+.stages{position:absolute;z-index:1;left:clamp(18px,3.6vw,48px);right:clamp(18px,3.6vw,48px);bottom:clamp(26px,3.6vw,40px);display:flex;gap:8px;counter-reset:none}
+.stages li{flex:1;min-width:0;padding-top:9px;border-top:3px solid var(--c);color:#fff;line-height:1.25;transition:opacity .45s,transform .5s var(--ease),flex-grow .5s var(--ease)}
+.stages time{display:block;font-family:var(--display);font-weight:800;font-size:clamp(.74rem,1.05vw,.9rem);font-variant-numeric:tabular-nums;color:var(--c)}
+.stages span{display:block;font-size:clamp(.8rem,1.3vw,1.08rem);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-in{--c:#9fb8ee}.s-light{--c:#7fd0ff}.s-deep{--c:#5b6cff}.s-rem{--c:#c77dff}.s-wake{--c:#ffc46b}
+.js:not(.rm) .hl-sleep.cued .stages li:not(.cur){opacity:.42}
+.js:not(.rm) .hl-sleep.cued .stages li.cur{transform:translateY(-4px)}
+.js:not(.rm) .hl-sleep.cued .stages li.cur span{text-shadow:0 0 18px var(--c)}
 .hl-ctrl{display:flex;justify-content:center;align-items:center;gap:18px}
 /* pinned highlights: with script and normal motion the section is tall, the stage sticks, and vertical scroll
    carries the row sideways so every card passes through the middle. Otherwise the cards are stacked. */
@@ -464,6 +474,12 @@ html.rm .hl-ctrl{display:none}
   .week li{left:calc((var(--x) - 14)*1.25%);top:79.6%}
   .hl-score{left:56.9%;top:39%}
   .legend{left:18px;bottom:30px}
+  .stages{left:14px;right:14px;bottom:30px;gap:5px}
+  .stages time{font-size:.68rem}
+  .stages span{font-size:.72rem}
+  .js:not(.rm) .hl-sleep.cued .stages li:not(.cur){flex:0 0 14px}
+  .js:not(.rm) .hl-sleep.cued .stages li:not(.cur)>*{visibility:hidden;height:0}
+  .js:not(.rm) .hl-sleep.cued .stages li.cur span{font-size:1rem}
   .hud-frame{left:5%;right:5%;top:27%;bottom:31%}
   .hud{inset:auto 12px 30px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
   .hud li{position:static;width:auto;transform:none;text-align:left;padding:7px 10px;border-radius:12px;background:rgba(6,10,22,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}

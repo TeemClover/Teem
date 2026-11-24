@@ -209,6 +209,20 @@
       v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync); v.addEventListener('ended', sync);
       sync();
     });
+    // a clip can name the moments where its chapters start; the matching label below it lights up
+    $$('video[data-cues]', track).forEach(v => {
+      const card = v.closest('.hl-card'), items = $$('.stages li', card);
+      const cues = v.dataset.cues.split(',').map(Number).filter(n => n >= 0);
+      const sync = () => {
+        if (reduce()) { card.classList.remove('cued'); return; }
+        let idx = 0;
+        cues.forEach((c, i) => { if (v.currentTime >= c) idx = i; });
+        card.classList.add('cued');
+        items.forEach((li, i) => li.classList.toggle('cur', i === idx));
+      };
+      v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync);
+      sync();
+    });
     track.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); hlGo(hlIdx - 1); } });
     new IntersectionObserver(es => { hlVisible = es[0].isIntersecting; hlRefresh(); }, { threshold: 0.4 }).observe(hlPin);
     hlSet(0);
