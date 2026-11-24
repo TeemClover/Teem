@@ -99,7 +99,7 @@ try {
       });
       const page = await context.newPage();
       page.on('pageerror', error => report.errors.push({ width, message: error.message }));
-      await page.goto(`${base}/xvisor/play/`);
+      await page.goto(`${base}/xvisor/play/classic/`);
       await page.locator('#playButton').waitFor();
       assert.equal(await page.evaluate(key => localStorage.getItem(key), SAVE_KEY), null, 'each viewport begins without a game save');
       assert.equal(await page.locator('#playButton').getAttribute('href'), questPath);
@@ -136,7 +136,7 @@ try {
       await capture(page, `entry-${width}-legacy-redirect`);
       check(`${width}px: old preview URL redirects to the real game without injecting a fixture or altering the save`);
 
-      await page.goto(`${base}/xvisor/play/`);
+      await page.goto(`${base}/xvisor/play/classic/`);
       await page.getByRole('link', { name: '▶ เล่นต่อจากที่บันทึกไว้', exact: true }).waitFor();
       assert.deepEqual(progress(await savedState(page)), expected, 'returning to the intro must preserve progress');
       await assertPlayerSurface(page, `${width}px resume intro`);
