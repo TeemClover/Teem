@@ -43,6 +43,20 @@ test('opening film and nine episodes ship in both orientations with local covers
  for(const path of new Set(local))await access(new URL(path.replace('/xircle/',''),import.meta.url));
 });
 
+test('Band scroll sequence ships every frame the runtime asks for and generated scenes are labelled',async()=>{
+ const html=await read('index.html'),js=await read('welcome.js');
+ const count=Number(js.match(/SEQ_FRAMES\s*=\s*(\d+)/)?.[1]);
+ assert.ok(count>=24,'the runtime declares how many frames it draws');
+ for(let i=0;i<count;i++)await access(new URL(`assets/welcome/band-seq/f${String(i).padStart(3,'0')}.webp`,import.meta.url));
+ await assert.rejects(access(new URL(`assets/welcome/band-seq/f${String(count).padStart(3,'0')}.webp`,import.meta.url)),'no stray frames');
+ assert.match(html,/<canvas[^>]+id="band-seq"[^>]+aria-hidden="true"/);
+ assert.match(js,/saveData/,'the sequence is skipped for data saver');
+ assert.match(html,/class="scene-note"[^>]*>[^<]*ภาพจำลอง/,'the Band sequence is labelled as a presentation scene');
+ assert.match(html,/class="hud-note"[^>]*>[^<]*ภาพจำลอง/,'the Scale image is labelled as a presentation scene');
+ const hud=[...html.matchAll(/<li class="hud-[lr]"[^>]*><b>([^<]+)<\/b>/g)].map(match=>match[1]);
+ for(const value of ['น้ำหนัก','ไขมันในร่างกาย','มวลกล้ามเนื้อ','มวลกระดูก','ปริมาณน้ำในร่างกาย'])assert.ok(hud.includes(value),`HUD names ${value}`);
+});
+
 test('company download destinations are the verified official store applications',async()=>{
  const {APP_LINKS}=await import('./brand-catalog.js');
  const html=await read('index.html');

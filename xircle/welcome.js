@@ -73,15 +73,55 @@
   /* ── Band night scene ── */
   const hero = $('#overview'), scene = $('#band-scene'), clock = $('#band-clock'), beats = $$('#band-beats .beat');
   function setBand(p) {
+    bandP = p;
     scene.style.setProperty('--p', p.toFixed(4));
+    seqDraw(p);
     scene.style.setProperty('--head', clamp(1 - p / 0.1).toFixed(3));
     scene.style.setProperty('--line', clamp((p - 0.5) / 0.24).toFixed(3));
     scene.style.setProperty('--dawn', clamp((p - 0.8) / 0.2).toFixed(3));
+    // two passes of light: one early in the night, one as dawn arrives
+    scene.style.setProperty('--sheen', (p < 0.12 ? 0 : p < 0.46 ? (p - 0.12) / 0.34 : p < 0.7 ? 0 : clamp((p - 0.7) / 0.28)).toFixed(3));
     const minutes = (22 * 60 + 30 + Math.round(p * 96) * 5) % 1440; // 22:30 → 06:30
     clock.textContent = pad(Math.floor(minutes / 60)) + ':' + pad(minutes % 60);
     const idx = p < 0.1 ? -1 : p < 0.3 ? 0 : p < 0.5 ? 1 : p < 0.78 ? 2 : 3;
     beats.forEach((b, i) => b.classList.toggle('on', i === idx));
   }
+
+  /* ── Band: scroll-driven product sequence ──
+     74 frames cut from one generated presentation clip of the real product photo. They load only when the night
+     scene is near, never with reduced motion or data saver, and narrow screens take every second frame. */
+  const SEQ_FRAMES = 74;
+  const seqCanvas = $('#band-seq');
+  let seqImgs = [], seqReady = false, seqLast = -1;
+  function seqDraw(p) {
+    if (!seqReady) return;
+    const f = clamp((p - 0.03) / 0.95) * (seqImgs.length - 1);
+    if (Math.abs(f - seqLast) < 0.01) return;
+    seqLast = f;
+    const i = Math.floor(f), t = f - i, ctx = seqCanvas.getContext('2d'), w = seqCanvas.width, h = seqCanvas.height;
+    ctx.globalAlpha = 1; ctx.drawImage(seqImgs[i], 0, 0, w, h);
+    if (t > 0.02 && seqImgs[i + 1]) { ctx.globalAlpha = t; ctx.drawImage(seqImgs[i + 1], 0, 0, w, h); ctx.globalAlpha = 1; }
+  }
+  function seqLoad() {
+    if (seqImgs.length || !seqCanvas || !scene || reduce() || (navigator.connection && navigator.connection.saveData)) return;
+    const step = narrowMq.matches ? 2 : 1, ids = [];
+    for (let i = 0; i < SEQ_FRAMES; i += step) ids.push(i);
+    if (ids[ids.length - 1] !== SEQ_FRAMES - 1) ids.push(SEQ_FRAMES - 1);
+    let left = ids.length, failed = false;
+    seqImgs = ids.map(i => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = im.onerror = e => {
+        if (e.type === 'error') failed = true;
+        if (--left > 0 || failed) return;
+        seqReady = true; scene.classList.add('has-seq'); seqDraw(bandP);
+      };
+      im.src = `${ASSET}band-seq/f${String(i).padStart(3, '0')}.webp`;
+      return im;
+    });
+  }
+  let bandP = 0;
+  if (scene && seqCanvas) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); seqLoad(); } }, { rootMargin: '160% 0px' }).observe(scene);
 
   let raf = 0;
   function frame() {

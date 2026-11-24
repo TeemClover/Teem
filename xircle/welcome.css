@@ -114,6 +114,36 @@ html:not(.js) .js-only{display:none!important}
 .hl-card.split .hl-cap b{color:var(--blue);opacity:1}
 .hl-vid{height:calc(100% - clamp(28px,5vw,56px));aspect-ratio:9/16;margin-right:clamp(18px,6vw,96px);border-radius:clamp(16px,2.4vw,28px);overflow:hidden;background:#f6e7dc;box-shadow:0 30px 60px -28px rgba(27,50,110,.5)}
 .hl-vid video{width:100%;height:100%;object-fit:cover}
+/* highlight card with a HUD: what one weigh-in tells you (labels are HTML, so they stay sharp and readable) */
+.hl-hud>img{object-position:50% 50%}
+.hl-hud .hl-cap{max-width:21.5%;left:3%;font-size:clamp(1.05rem,1.95vw,1.6rem)}
+.hl-hud::after{background:linear-gradient(150deg,rgba(6,10,22,.82),rgba(6,10,22,.2) 46%,transparent 62%),linear-gradient(to top,rgba(6,10,22,.5),transparent 30%)!important}
+.hud-frame{position:absolute;z-index:1;left:26.2%;right:26.2%;top:7.5%;bottom:8%;pointer-events:none;background:
+  linear-gradient(#8fd0ff,#8fd0ff) 0 0/26px 2px,linear-gradient(#8fd0ff,#8fd0ff) 0 0/2px 26px,
+  linear-gradient(#8fd0ff,#8fd0ff) 100% 0/26px 2px,linear-gradient(#8fd0ff,#8fd0ff) 100% 0/2px 26px,
+  linear-gradient(#8fd0ff,#8fd0ff) 0 100%/26px 2px,linear-gradient(#8fd0ff,#8fd0ff) 0 100%/2px 26px,
+  linear-gradient(#8fd0ff,#8fd0ff) 100% 100%/26px 2px,linear-gradient(#8fd0ff,#8fd0ff) 100% 100%/2px 26px;
+  background-repeat:no-repeat;opacity:.9;transition:opacity .6s,transform .9s var(--ease)}
+.hud-frame::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(143,208,255,.95),transparent);box-shadow:0 0 18px 3px rgba(143,208,255,.5);animation:hudscan 4.2s ease-in-out infinite}
+@keyframes hudscan{0%,12%{top:2%;opacity:0}20%{opacity:1}80%{opacity:1}88%,100%{top:98%;opacity:0}}
+.hud{position:absolute;inset:0;z-index:2;pointer-events:none}
+.hud li{position:absolute;top:var(--y);width:17.5%;transform:translateY(-50%);color:#fff;line-height:1.3;transition:opacity .5s calc(.25s + var(--i)*.11s),transform .7s var(--ease) calc(.25s + var(--i)*.11s)}
+.hud b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(.9rem,1.5vw,1.14rem);letter-spacing:-.005em}
+.hud span{display:block;margin-top:2px;font-size:clamp(.7rem,1vw,.82rem);color:rgba(255,255,255,.74)}
+.hud li::before{content:"";position:absolute;top:.72em;height:1px;width:34%;background:linear-gradient(90deg,rgba(143,208,255,.95),rgba(143,208,255,.25));transform-origin:0 50%;transition:transform .7s var(--ease) calc(.15s + var(--i)*.11s)}
+.hud li::after{content:"";position:absolute;top:calc(.72em - 3.5px);width:8px;height:8px;border-radius:50%;background:#8fd0ff;box-shadow:0 0 0 4px rgba(143,208,255,.22)}
+.hud-l{left:3%;text-align:right}
+.hud-l::before{left:calc(100% + 10px)}
+.hud-l::after{left:calc(134% + 10px)}
+.hud-r{right:3%}
+.hud-r::before{right:calc(100% + 10px);transform-origin:100% 50%;background:linear-gradient(270deg,rgba(143,208,255,.95),rgba(143,208,255,.25))}
+.hud-r::after{right:calc(134% + 10px)}
+.hud-more b{color:#8fd0ff}
+.hud-more::before,.hud-more::after{display:none}
+.hud-note{position:absolute;z-index:2;right:16px;bottom:10px;font-size:11px;color:rgba(255,255,255,.5)}
+.js .hl-card:not(.on) .hud li{opacity:0;transform:translateY(calc(-50% + 12px))}
+.js .hl-card:not(.on) .hud li::before{transform:scaleX(0)}
+.js .hl-card:not(.on) .hud-frame{opacity:0;transform:scale(1.06)}
 .hl-ctrl{display:flex;justify-content:center;align-items:center;gap:14px}
 .hl-dots{display:flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;background:rgba(11,18,32,.08)}
 .hl-dot{position:relative;width:8px;height:8px;padding:0;border:0;border-radius:8px;background:rgba(11,18,32,.42);cursor:pointer;overflow:hidden;transition:width .4s var(--ease)}
@@ -150,8 +180,17 @@ html:not(.js) .js-only{display:none!important}
 .scene-head h2{opacity:var(--head);transform:translateY(calc((1 - var(--head))*-18px));font-size:clamp(2rem,5.2vw,4rem)}
 .band-stage{position:absolute;inset:0;display:grid;place-items:center}
 .band-glow{position:absolute;width:min(96vw,860px);aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(72,118,236,.5),rgba(72,118,236,.14) 54%,transparent 72%);opacity:calc(.45 + var(--p)*.55)}
-.band-fig{position:relative;height:min(50svh,540px);aspect-ratio:854/1100;transform:translateY(calc(1svh + var(--head)*11svh)) scale(calc(1.02 - var(--head)*.14 - var(--p)*.06)) rotate(calc(-5deg + var(--p)*5deg));will-change:transform}
+.band-fig{position:relative;height:min(50svh,540px);aspect-ratio:854/1100;transform:translateY(calc(1svh + var(--head)*11svh)) perspective(1100px) rotateY(calc(9deg - var(--p)*18deg)) scale(calc(1.02 - var(--head)*.14 - var(--p)*.06)) rotate(calc(-5deg + var(--p)*5deg));will-change:transform}
+/* a light passes over the real product photo as the night goes by; masked to the photo, so the product itself is never redrawn */
+.band-sheen{position:absolute;inset:0;pointer-events:none;-webkit-mask:url(/xircle/assets/welcome/band-mesh.webp) center/contain no-repeat;mask:url(/xircle/assets/welcome/band-mesh.webp) center/contain no-repeat;background:linear-gradient(108deg,transparent 0 42%,rgba(150,185,255,.1) 45.5%,rgba(215,230,255,.34) 49.2%,rgba(255,255,255,.5) 50%,rgba(215,230,255,.34) 50.8%,rgba(150,185,255,.1) 54.5%,transparent 58% 100%) no-repeat;background-size:300% 100%;background-position:calc(80% - var(--sheen,0)*60%) 0;mix-blend-mode:color-dodge}
 .band-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 40px 50px rgba(0,0,0,.6)) brightness(1.08)}
+/* scroll-driven product sequence: a generated presentation clip of the real product photo, drawn frame by frame on a canvas.
+   Until it has loaded (or with less motion / data saver) the still photo with the CSS light sweep stays. */
+.band-seq{position:absolute;width:min(68svh,720px);height:auto;aspect-ratio:1;opacity:0;pointer-events:none;transition:opacity .9s;-webkit-mask-image:radial-gradient(closest-side,#000 74%,transparent 99%);mask-image:radial-gradient(closest-side,#000 74%,transparent 99%);transform:translateY(calc(1svh + var(--head)*9svh)) scale(calc(1 - var(--head)*.12));will-change:transform}
+.has-seq .band-seq{opacity:1}
+.has-seq .band-fig{opacity:0;transition:opacity .9s}
+.has-seq .band-glow{opacity:.3}
+.has-seq .sleep-line{-webkit-mask-image:radial-gradient(circle calc(min(68svh,720px)*.4) at 50% 50%,transparent 86%,#000 100%);mask-image:radial-gradient(circle calc(min(68svh,720px)*.4) at 50% 50%,transparent 86%,#000 100%)}
 .led{position:absolute;left:36.6%;top:54.6%;width:1.7%;aspect-ratio:1;border-radius:50%;background:#6dffaa;box-shadow:0 0 14px 5px rgba(90,255,160,.75);animation:led 2.6s ease-in-out infinite}
 @keyframes led{50%{opacity:.25;box-shadow:0 0 4px 1px rgba(90,255,160,.4)}}
 .sleep-line{position:absolute;left:0;right:0;top:50%;width:100%;height:min(30svh,270px);transform:translateY(-46%);opacity:calc(var(--line)*.95)}
@@ -163,7 +202,7 @@ html:not(.js) .js-only{display:none!important}
 .beat b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,3.7vw,2.7rem);line-height:1.25;letter-spacing:-.015em}
 .beat span{display:block;margin-top:.4em;font-size:clamp(.98rem,1.6vw,1.2rem);color:rgba(255,255,255,.76)}
 .dawn-light{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to top,rgba(255,170,124,.62),rgba(196,120,176,.22) 34%,transparent 62%);opacity:var(--dawn)}
-.scene-note{position:absolute;z-index:4;inset:auto 0 14px;text-align:center;font-size:11.5px;color:rgba(255,255,255,.42);opacity:var(--line)}
+.scene-note{position:absolute;z-index:4;inset:auto 0 14px;padding-inline:16px;text-align:center;font-size:11.5px;color:rgba(255,255,255,.42)}
 
 .look{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,6vw,84px);align-items:center;padding-block:clamp(60px,11vh,130px) clamp(30px,5vh,60px)}
 .look-view{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:var(--r);overflow:hidden;background:radial-gradient(closest-side at 50% 46%,#4a5d9c,#1a2450 62%,#0e1535)}
@@ -356,9 +395,21 @@ html:not(.js) .js-only{display:none!important}
   .hl-card.split .hl-cap{padding:18px 18px 0}
   .hl-vid{width:calc(100% - 36px);height:auto;aspect-ratio:auto;align-self:stretch;margin:14px 18px 0;border-radius:18px 18px 0 0}
   .hl-vid video{object-position:50% 46%}
+  .hl-hud .hl-cap{max-width:15em;left:18px;font-size:1.25rem}
+  .hud-frame{left:5%;right:5%;top:27%;bottom:31%}
+  .hud{inset:auto 12px 30px;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .hud li{position:static;width:auto;transform:none;text-align:left;padding:7px 10px;border-radius:12px;background:rgba(6,10,22,.62);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  .hud li::before,.hud li::after{display:none}
+  .hud b{font-size:.84rem}
+  .hud span{display:none}
+  .hud-more span{display:block;font-size:.7rem}
+  .js .hl-card:not(.on) .hud li{transform:translateY(10px)}
+  .hud-note{right:12px;bottom:8px;font-size:10px}
   .dusk{height:56vh}.dawn{height:48vh}
   .scene{height:420vh}
   .band-fig{height:min(44svh,440px)}
+  .band-seq{width:min(58svh,560px)}
+  .has-seq .sleep-line{-webkit-mask-image:radial-gradient(circle calc(min(58svh,560px)*.4) at 50% 50%,transparent 86%,#000 100%);mask-image:radial-gradient(circle calc(min(58svh,560px)*.4) at 50% 50%,transparent 86%,#000 100%)}
   .beats{height:8.6em}
   .sleep-keys{display:none}
   .look{grid-template-columns:1fr;text-align:center}
@@ -403,7 +454,7 @@ html:not(.js) .band-fig,html.rm .band-fig{transform:none}
 html:not(.js) .beats,html.rm .beats{position:static;height:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px;margin-top:20px}
 html:not(.js) .beat,html.rm .beat{position:static;opacity:1;transform:none;padding:0}
 html:not(.js) .scene-note,html.rm .scene-note{position:static;margin-top:20px}
-html:not(.js) .dawn-light,html.rm .dawn-light{display:none}
+html:not(.js) .dawn-light,html.rm .dawn-light,html:not(.js) .band-sheen,html.rm .band-sheen,html:not(.js) .band-seq,html.rm .band-seq{display:none}
 html:not(.js) .weigh .lcd{opacity:0}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -412,4 +463,5 @@ html:not(.js) .weigh .lcd{opacity:0}
   .js .reveal{opacity:1;transform:none}
   .js .hl-card:not(.on){opacity:1;transform:none}
   .hl-dot.on::after{animation:none;transform:scaleX(1)}
+  .hud-frame::before{animation:none;opacity:0}
 }
