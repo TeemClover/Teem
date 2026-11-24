@@ -52,6 +52,7 @@ test('opening film and nine episodes ship in both orientations with local covers
  assert.equal(live.match(/data-names="([^"]+)"/)[1].split('|').length,shots,'one feature name per montage shot');
  assert.equal([...stage.matchAll(/<i(?: class="on")?><\/i>/g)].length,shots,'one progress mark per montage shot');
  assert.match(stage,/class="film-label">[^<]*2 นาที/,'the stage itself invites the visitor to play the two-minute film');
+ assert.match(stage,/<canvas class="film-soft"[^>]*aria-hidden="true"[\s\S]*<canvas class="film-lens"[^>]*aria-hidden="true"/,'the frosted top and the pointer lens are decoration');
  const js=await read('welcome.js');
  assert.match(js,/narrowMq\.matches && !reduce\(\) && !\(navigator\.connection && navigator\.connection\.saveData\)/,'the hero montage stays off on narrow screens, with reduced motion and with data saver');
 });
@@ -79,7 +80,15 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.equal(sleep.match(/data-cues="([^"]+)"/)[1].split(',').length,[...sleep.matchAll(/<li class="s-/g)].length,'one cue per sleep stage label');
  for(const stage of ['หลับตื้น','หลับลึก','REM','ตื่น'])assert.ok(sleep.includes(stage),`sleep card names ${stage}`);
  assert.match(sleep,/เวลาเป็นตัวอย่าง/,'sleep stage times are labelled as examples');
- for(const macro of ['โปรตีน','คาร์บ','ไขมัน','พลังงาน'])assert.match(html,new RegExp(`<dt>${macro}</dt>`),`food card shows ${macro}`);
+ const food=html.match(/<article class="hl-card hl-scan"[\s\S]*?<\/article>/)?.[0]||'';
+ for(const macro of ['โปรตีน','คาร์บ','ไขมัน','พลังงาน'])assert.match(food,new RegExp(`<dt><svg[^>]*><use href="#ic-[pcfk]"/></svg>${macro}</dt>`),`food total for ${macro} carries its icon and its name`);
+ const dishes=[...food.matchAll(/<li style="[^"]*" data-p="(\d+)" data-c="(\d+)" data-f="(\d+)"><b>([^<]+)<\/b>/g)].map(m=>({p:+m[1],c:+m[2],f:+m[3],name:m[4]}));
+ assert.deepEqual(dishes.map(d=>d.name),['กะเพราไก่ไข่ดาว','ต้มยำกุ้ง','ผัดผักบุ้ง','มะละกอ','สับปะรด'],'every dish is named, and the fruit is split into papaya and pineapple');
+ const shown=key=>Number(food.match(new RegExp(`data-sum="${key}">(\\d+)<`))[1]);
+ for(const key of ['p','c','f'])assert.equal(dishes.reduce((t,d)=>t+d[key],0),shown(key),`per-dish ${key} adds up to the meal total`);
+ assert.equal(dishes.reduce((t,d)=>t+4*d.p+4*d.c+9*d.f,0),shown('k'),'energy is 4, 4 and 9 kcal per gram of the per-dish numbers');
+ for(const d of dishes)for(const key of ['p','c','f'])assert.match(food,new RegExp(`<b>${d.name}</b><span class="mm">[\\s\\S]*?<span class="m-${key}">[\\s\\S]*?</i>${d[key]}</span>`),`${d.name} shows its ${key} value`);
+ assert.match(food,/class="macro-title">รวมทั้งมื้อ</,'the totals are labelled as the sum of the meal');
  assert.match(html,/class="macro"[^>]*aria-label="[^"]*ตัวเลขตัวอย่าง/,'food numbers are labelled as examples');
  assert.equal([...html.matchAll(/<ul class="week"[^>]*>(.*?)<\/ul>/gs)][0][1].split('<li').length-1,7,'the Habit Score card shows seven days');
  assert.match(html,/class="hl-score"[^>]*>.*?ตัวอย่าง/s,'the Habit Score number is labelled as an example');

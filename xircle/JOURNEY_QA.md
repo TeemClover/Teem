@@ -17,6 +17,7 @@ Automated, run with Node 22:
 Observed in a Chromium browser pane against a local static server, at 1440×900 and 375×812:
 
 - No console errors and no failed local requests on load. No request to YouTube before Play.
+- Sixth release (checked locally before commit). Hero at 1440×900, 2000×800 and 1024×680: the film fills the first screen, the headline is readable on the frosted top, the montage plays almost in focus with the feature label following the shots, and the pointer lens shows the frame sharp; at 375×812 the cover image and caption are unchanged and the montage file is not requested. Food Scan card at 1440×900 and 375×812: the five dish labels come in one by one with their three numbers, "+n" chips travel to the totals, and the totals end at 49 / 96 / 35 g and 895 kcal; labels do not cover each other or the totals.
 - Hero stage on wide screens, fifth release (checked locally before commit at 1440×900, 2000×800 and 1024×680): the stage is 1392×580, 1480×490 and 976×415; the montage plays out of focus, the feature label and progress marks follow the shots, the pointer lens shows the frame sharp, the montage pauses while the film dialog is open or the hero is off screen and resumes after. At 375×812 the cover image and caption are unchanged and the montage file is not requested.
 - Hero film: Play opens the dialog and the film plays from `youtube-nocookie.com`; closing removes the player.
 - Highlights: five cards, dot navigation, the two clip cards play their previews when centred.

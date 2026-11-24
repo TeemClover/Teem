@@ -154,7 +154,7 @@
   if (film && stage && finePointer.matches) {
     film.addEventListener('pointermove', e => {
       if (reduce()) return;
-      const r = film.getBoundingClientRect(), k = r.width > 900 ? 0.35 : 1; // the wide stage leans less
+      const r = film.getBoundingClientRect(), k = narrowMq.matches ? 1 : 0; // the full-screen stage does not lean
       stage.style.setProperty('--ry', ((e.clientX - r.left) / r.width - 0.5) * 7 * k + 'deg');
       stage.style.setProperty('--rx', (0.5 - (e.clientY - r.top) / r.height) * 5 * k + 'deg');
     });
@@ -191,6 +191,21 @@
     narrowMq.addEventListener?.('change', liveSync);
     reduceMq.addEventListener?.('change', () => { if (reduce()) stage.classList.remove('live'); liveSync(); });
     if (heroDlg) heroDlg.addEventListener('close', liveSync);
+    // frosted top: a small copy of the frame feeds the blurred layer under the headline (the still, until the montage plays)
+    const soft = $('.film-soft', stage), sctx = soft && soft.getContext && soft.getContext('2d'), still = $('img', stage);
+    if (sctx) {
+      const softStill = () => { if (!stage.classList.contains('live') && still && still.complete && still.naturalWidth) sctx.drawImage(still, 0, 0, soft.width, soft.height); };
+      softStill();
+      if (still) still.addEventListener('load', softStill);
+      let softRaf = 0;
+      const softDraw = () => {
+        softRaf = 0;
+        if (live.paused || live.ended) return;
+        if (live.readyState >= 2) sctx.drawImage(live, 0, 0, soft.width, soft.height);
+        softRaf = requestAnimationFrame(softDraw);
+      };
+      live.addEventListener('playing', () => { if (!softRaf) softRaf = requestAnimationFrame(softDraw); });
+    }
     // the lens: while the pointer is on the stage, a canvas keeps a sharp copy of the current frame (CSS shows it only around the pointer)
     const lens = $('.film-lens', stage), lctx = lens && lens.getContext && lens.getContext('2d');
     if (lctx && finePointer.matches) {
@@ -219,11 +234,82 @@
     dotsBox.append(b);
     return b;
   });
+  /* Food Scan card: the dishes come in one by one, and each sends its protein, carbs and fat up to the meal total.
+     The per-dish numbers live in the markup (data-p / data-c / data-f, grams); energy is 4, 4 and 9 kcal per gram. */
+  const scanCard = $('.hl-scan');
+  const scanTags = scanCard ? $$('.scan-tags li', scanCard) : [];
+  const scanBox = {};
+  if (scanCard) for (const k of ['p', 'c', 'f', 'k']) scanBox[k] = $(`[data-sum="${k}"]`, scanCard);
+  const scanSteps = [];
+  scanTags.reduce((t, li) => {
+    const n = { p: +li.dataset.p || 0, c: +li.dataset.c || 0, f: +li.dataset.f || 0 };
+    const sum = { p: t.p + n.p, c: t.c + n.c, f: t.f + n.f, k: t.k + 4 * n.p + 4 * n.c + 9 * n.f };
+    scanSteps.push({ li, n, sum });
+    return sum;
+  }, { p: 0, c: 0, f: 0, k: 0 });
+  const scanShown = { p: 0, c: 0, f: 0, k: 0 };
+  let scanRun = 0, scanTimers = [];
+  function scanSettle() { // stop any run and show the finished totals
+    if (!scanCard) return;
+    scanRun++;
+    scanTimers.forEach(clearTimeout); scanTimers = [];
+    $$('.fly', scanCard).forEach(n => n.remove());
+    scanCard.classList.remove('summing');
+    scanTags.forEach(li => li.classList.remove('in'));
+    const end = scanSteps.length ? scanSteps[scanSteps.length - 1].sum : null;
+    if (end) for (const k in scanBox) if (scanBox[k]) { scanShown[k] = end[k]; scanBox[k].textContent = end[k]; }
+  }
+  function scanBump(k, to, id) {
+    const el = scanBox[k], from = scanShown[k];
+    if (!el) return;
+    tween(380, t => { if (id !== scanRun) return; scanShown[k] = from + (to - from) * t; el.textContent = Math.round(scanShown[k]); });
+    const cell = el.closest('div');
+    cell.classList.remove('bump'); void cell.offsetWidth; cell.classList.add('bump');
+  }
+  function scanFly(src, k, n, id, land) { // a "+n" chip travels from the dish to its total
+    const cell = scanBox[k] && scanBox[k].closest('div');
+    if (!src || !cell || !scanCard.animate) { land(); return; }
+    const base = scanCard.getBoundingClientRect(), a = src.getBoundingClientRect(), b = cell.getBoundingClientRect();
+    const x0 = a.left + a.width / 2 - base.left, y0 = a.top + a.height / 2 - base.top;
+    const x1 = b.left + b.width / 2 - base.left, y1 = b.top + b.height * 0.62 - base.top;
+    const chip = d.createElement('span');
+    chip.className = `fly m-${k}`; chip.textContent = `+${n}`;
+    scanCard.append(chip);
+    const at = (x, y, s) => `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-50%) scale(${s})`;
+    const anim = chip.animate([
+      { transform: at(x0, y0, 0.6), opacity: 0 },
+      { transform: at(x0, y0 - 8, 1), opacity: 1, offset: 0.2 },
+      { transform: at(x1, y1, 0.92), opacity: 1, offset: 0.88 },
+      { transform: at(x1, y1, 0.5), opacity: 0 }
+    ], { duration: 760, easing: 'cubic-bezier(.45,0,.2,1)' });
+    anim.onfinish = () => { chip.remove(); if (id === scanRun) land(); };
+  }
+  function scanStart() {
+    scanSettle();
+    if (!scanCard || !scanSteps.length || reduce()) return;
+    const id = scanRun;
+    for (const k in scanBox) if (scanBox[k]) { scanShown[k] = 0; scanBox[k].textContent = '0'; }
+    scanCard.classList.add('summing');
+    scanSteps.forEach((st, i) => {
+      scanTimers.push(setTimeout(() => {
+        if (id !== scanRun) return;
+        st.li.classList.add('in');
+        scanTimers.push(setTimeout(() => {
+          if (id !== scanRun) return;
+          let energy = false;
+          const land = k => () => { scanBump(k, st.sum[k], id); if (!energy) { energy = true; scanBump('k', st.sum.k, id); } };
+          for (const k of ['p', 'c', 'f']) if (st.n[k]) scanFly($(`.m-${k}`, st.li), k, st.n[k], id, land(k));
+        }, 280));
+      }, 700 + i * 780));
+    });
+  }
+
   function hlSet(i) {
     if (i === hlIdx) return;
     hlIdx = i;
     cards.forEach((c, k) => {
       c.classList.toggle('on', k === i);
+      if (c === scanCard) k === i ? scanStart() : scanSettle();
       const v = $('video', c);
       if (!v) return;
       if (k === i && 'once' in v.dataset && v.currentTime > 0) v.currentTime = 0; // one-shot clips start again each time their card comes forward
