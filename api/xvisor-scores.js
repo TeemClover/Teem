@@ -1,6 +1,12 @@
 import { clean, database, sameOrigin, sendJson } from './_lib/core.js';
 
 const SCORE_VERSION = '1.0b';
+// QUEST 3.0 (Clip Edition) keeps its own board in the same table. Its columns mean: best_tgv = game score,
+// organization_size = clips still running. Ask for it with ?board=clip.
+const CLIP_VERSION = '3.0-clip';
+const VERSIONS = new Set([SCORE_VERSION, CLIP_VERSION]);
+const CLIP_MAX_SCORE = 500_000;
+const CLIP_MAX_CLIPS = 12 * 4 + 12 * 4;
 // Release 1.1 shares the existing leaderboard. Never delete scores on startup.
 let schemaPromise;
 
@@ -43,8 +49,10 @@ function normalizeBody(body) {
   const organizationSize = scoreNumber(body?.organizationSize, 10_000_000);
   const completedAtNumber = Number(body?.completedAt);
   const completedAt = Number.isFinite(completedAtNumber) ? new Date(completedAtNumber) : null;
-  if (!displayName || !runId || runId.length < 6 || scoreVersion !== SCORE_VERSION) return null;
+  if (!displayName || !runId || runId.length < 6 || !VERSIONS.has(scoreVersion)) return null;
   if ([bestTgv, totalIncome, bestMonthlyIncome, organizationSize].some((value) => value == null)) return null;
+  // a twelve-month clip game cannot reach these numbers; refuse scores typed in by hand
+  if (scoreVersion === CLIP_VERSION && (bestTgv > CLIP_MAX_SCORE || organizationSize > CLIP_MAX_CLIPS)) return null;
   if (!completedAt || Number.isNaN(completedAt.getTime())) return null;
   return { displayName, runId, scoreVersion, runMode, bestTgv, totalIncome, bestMonthlyIncome, organizationSize, completedAt };
 }
@@ -71,12 +79,13 @@ export default async function handler(req, res) {
     await ensureScoreSchema(sql);
 
     if (req.method === 'GET') {
+      const board = req.query?.board === 'clip' ? CLIP_VERSION : SCORE_VERSION;
       const rows = await sql.query(`SELECT display_name,run_mode,best_tgv,total_income,best_monthly_income,organization_size,completed_at,score_version
         FROM xvisor_campaign_scores
         WHERE score_version=$1
         ORDER BY best_tgv DESC, total_income DESC, completed_at ASC
-        LIMIT 100`, [SCORE_VERSION]);
-      return sendJson(res, { ok: true, scoreVersion: SCORE_VERSION, scores: rows.map(publicRow) });
+        LIMIT 100`, [board]);
+      return sendJson(res, { ok: true, scoreVersion: board, scores: rows.map(publicRow) });
     }
 
     if (req.method === 'POST') {

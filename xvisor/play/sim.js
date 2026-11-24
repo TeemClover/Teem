@@ -1,12 +1,12 @@
 // X-VISOR QUEST 3.0 · Clip Edition: the whole game as pure functions (no DOM), so it can be tested in Node.
-// One month = 3 moves. Clips are assets: each clip keeps earning views for months; views bring chats; chats become
+// One month = 4 moves. Clips are assets: each clip keeps earning views for months; views bring chats; chats become
 // customers; customers renew. Income uses the same rules as QUEST 2.0 (game-commercial-config.js): retail tiers on
 // personal XV, and 20% direct mentoring on each team member's own commission. Figures are simulation only.
 import { TUTORIAL_OFFER, XIRCLE_STARTER, DIRECT_MENTORING_RULE, getRetailTier } from '../quest/game-commercial-config.js';
 
-export const VERSION = 3;
+export const VERSION = 4;
 export const MONTHS = 12;
-export const MOVES_PER_MONTH = 3;
+export const MOVES_PER_MONTH = 4;
 export const FIRST_ORDER = Object.freeze({ baht: TUTORIAL_OFFER.price + XIRCLE_STARTER.price, xv: TUTORIAL_OFFER.xv + XIRCLE_STARTER.xv });
 export const RENEWAL = Object.freeze({ baht: TUTORIAL_OFFER.price, xv: TUTORIAL_OFFER.xv });
 export const CUSTOMERS_PER_RECRUIT = 3;
@@ -14,6 +14,8 @@ export const MAX_TEAM = 4;
 export const REPLIES_PER_MOVE = 6;
 
 const FRESH = [1, 0.65, 0.45, 0.32, 0.25];
+const HIT_CHANCE = [0, 0.01, 0.03, 0.07, 0.13, 0.2]; // by stars: a better clip is likelier to take off, in any month
+export const TOPICS = Object.freeze(['เครื่องชั่ง', 'เช้าของพี่', 'แคปแอป', 'เรื่องเดียว', 'ชวนเซฟ', 'รูทีน', 'แสงหน้าต่าง', 'ตอนต่อ', 'ตอบคอมเมนต์', 'รีวิวลูกค้า', 'ปักลิงก์', 'ตอบคำถาม']);
 const TEAM_NAMES = ['พี่นก', 'พี่ต้น', 'พี่ฝน', 'พี่เอก'];
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -104,6 +106,31 @@ export const LESSONS = Object.freeze([
   { t: 'คลังคลิปคือทรัพย์สิน', b: 'ครบ 12 เดือน พี่มีคลิปที่ยังวิ่งอยู่ทุกวัน นี่คือของที่ติดตัวพี่ไป' },
 ]);
 
+// the short exam in the opening story: three things every X-VISOR must know before the first clip
+export const EXAM = Object.freeze([
+  { ask: 'ลูกค้าถามว่า "กินแล้วหายไหม" พี่ตอบยังไง', options: [
+    { t: 'หายแน่นอนค่ะ', ok: false }, { t: 'อาหารเสริมช่วยดูแล ไม่ใช่ยา ถ้ามีอาการให้พบแพทย์', ok: true }, { t: 'ไม่ตอบ เปลี่ยนเรื่อง', ok: false } ],
+    why: 'X-VISOR ไม่สัญญาผล และไม่วินิจฉัยโรค' },
+  { ask: 'อยากใช้แคปหน้าจอแอปของลูกค้าในคลิป', options: [
+    { t: 'ขออนุญาตเป็นข้อความ และปิดชื่อกับรูป', ok: true }, { t: 'ใช้ได้เลย เขาเป็นลูกค้าเรา', ok: false }, { t: 'ใช้ก่อน ค่อยบอกทีหลัง', ok: false } ],
+    why: 'ข้อมูลสุขภาพเป็นของลูกค้า ต้องให้เขาอนุญาตก่อนเสมอ' },
+  { ask: 'งานหลักของ X-VISOR คืออะไร', options: [
+    { t: 'ขายให้ได้มากที่สุด', ok: false }, { t: 'ชวนคนมาสมัครเยอะ ๆ', ok: false }, { t: 'ดูแลคนให้ทำนิสัยดีได้ต่อเนื่อง', ok: true } ],
+    why: 'ดูแลให้ดี ลูกค้าอยู่ต่อเอง รายได้ตามมาทีหลัง' },
+]);
+
+// something happens at the start of each month: small, human, and it nudges one number
+export const EVENTS = Object.freeze([
+  { id: 'share', t: 'เพื่อนแชร์คลิปของพี่ในกลุ่ม LINE', b: 'มีคนทักเข้ามาเพิ่ม 3 คน', apply: (s) => { s.dms += 3; } },
+  { id: 'refer', t: 'ลูกค้าประจำชวนเพื่อนมาทัก', b: 'ดูแลดี ลูกค้าบอกต่อเอง มีคนทักเพิ่ม', apply: (s) => { s.dms += s.customers >= 3 ? 3 : 1; } },
+  { id: 'busy', t: 'เดือนนี้งานประจำยุ่ง นอนดึกหลายคืน', b: 'คะแนนการนอนตก ลองดูแลตัวเองสักตา', apply: (s) => { s.habit.sleep = clamp(s.habit.sleep - 12, 0, 100); } },
+  { id: 'trend', t: 'เรื่องชั่งน้ำหนักตอนเช้ากำลังเป็นกระแส', b: 'เดือนนี้คลิปมีโอกาสปังมากกว่าปกติ', apply: (s) => { s.trend = true; } },
+  { id: 'ask', t: 'มีคนถามในคอมเมนต์เยอะกว่าทุกเดือน', b: 'มีคนทักเข้ามาเพิ่ม 2 คน', apply: (s) => { s.dms += 2; } },
+  { id: 'walk', t: 'ลูกชวนไปเดินสวนทุกเย็น', b: 'คะแนนการขยับดีขึ้น', apply: (s) => { s.habit.move = clamp(s.habit.move + 10, 0, 100); } },
+  { id: 'party', t: 'งานเลี้ยงติดกันสองคืน', b: 'คะแนนการกินตก ไม่เป็นไร เริ่มใหม่ได้', apply: (s) => { s.habit.eat = clamp(s.habit.eat - 12, 0, 100); } },
+  { id: 'quiet', t: 'เดือนนี้เงียบ ๆ ไม่มีอะไรพิเศษ', b: 'เหมาะกับการลงคลิปให้สม่ำเสมอ', apply: () => {} },
+]);
+
 export function habitScore(state) {
   const h = state.habit;
   return Math.round((h.eat + h.move + h.sleep) / 3);
@@ -112,14 +139,17 @@ export function lowestHabit(state) {
   return ['eat', 'move', 'sleep'].reduce((a, k) => (state.habit[k] < state.habit[a] ? k : a), 'eat');
 }
 
-export function newGame(seed = 20261124) {
+export function newGame(seed = 20261124, opts = {}) {
+  const exam = clamp(Number(opts.exam) || 0, 0, EXAM.length);
   return {
     v: VERSION, seed: seed | 0, month: 1, moves: MOVES_PER_MONTH, phase: 'play',
-    habit: { eat: 55, move: 45, sleep: 50 },
+    name: String(opts.name || '').slice(0, 28), exam, score: 0, trend: false,
+    event: { id: 'start', t: 'เพื่อน 2 คนเห็นพี่เริ่มใช้ ทักมาถาม', b: 'ตอบเขาได้เลย หรือลงคลิปแรกก่อน' },
+    habit: { eat: 55 + exam * 3, move: 45 + exam * 3, sleep: 50 + exam * 3 },
     clipsMade: 0, quiz: 0, nextId: 1,
     clips: [], dms: 2, customers: 0, joined: 0, shop: false,
     team: [],
-    totals: { income: 0, views: 0, dms: 0, orders: 0, sales: 0, myClips: 0, teamClips: 0, flagged: 0 },
+    totals: { income: 0, views: 0, dms: 0, orders: 0, sales: 0, myClips: 0, teamClips: 0, flagged: 0, hits: 0, oldIncome: 0 },
     best: { income: 0, views: 0 },
     history: [], last: null,
   };
@@ -139,7 +169,7 @@ export function makeClip(state, choice) {
   if (!opt) return { state, ok: false, msg: 'เลือกคำตอบก่อนนะครับ' };
   const score = habitScore(s);
   const q = clamp(2 + opt.score + skillBonus(s) + (score >= 70 ? 1 : 0) - (score < 40 ? 1 : 0), 1, 5);
-  const clip = { id: s.nextId++, by: 'me', q, age: 0, flag: Boolean(opt.risk), topic: quiz.topic, views: 0 };
+  const clip = { id: s.nextId++, by: 'me', q, age: 0, born: s.month, flag: Boolean(opt.risk), topic: quiz.topic, views: 0, hits: 0, earned: 0 };
   s.clips.push(clip);
   s.clipsMade += 1; s.quiz += 1; s.moves -= 1;
   s.totals.myClips += 1;
@@ -207,10 +237,14 @@ export function mentoringIncome(memberBaht, memberXv) {
   return Math.round(income * DIRECT_MENTORING_RULE.rate);
 }
 
+// A clip can take off in any month, old ones too. A hit multiplies this month's views and makes the clip fresh again.
 function clipViews(state, clip, habitMul) {
-  if (clip.flag) return 0;
+  if (clip.flag) return { views: 0, hit: false };
   const fresh = FRESH[Math.min(clip.age, FRESH.length - 1)];
-  return Math.round(260 * Math.pow(clip.q, 1.35) * fresh * habitMul * (0.85 + rand(state) * 0.3));
+  const base = 260 * Math.pow(clip.q, 1.35) * fresh * habitMul * (0.85 + rand(state) * 0.3);
+  const chance = (HIT_CHANCE[clip.q] + (clip.age >= 2 ? 0.02 : 0)) * (state.trend ? 2 : 1);
+  const hit = rand(state) < chance;
+  return { views: Math.round(hit ? 260 * Math.pow(clip.q, 1.35) * habitMul * (3.5 + rand(state) * 2) : base), hit };
 }
 
 export function endMonth(state) {
@@ -222,19 +256,22 @@ export function endMonth(state) {
   // the team posts its own clips this month
   const teamNew = [];
   for (const m of s.team) {
-    const clip = { id: s.nextId++, by: m.id, q: m.skill + 1, age: 0, flag: false, topic: 'คลิปของ' + m.name, views: 0 };
+    const id = s.nextId++;
+    // 7 and 12 share no factor, so clips posted side by side never get the same cover
+    const clip = { id, by: m.id, q: m.skill + 1, age: 0, born: s.month, flag: false, topic: TOPICS[(id * 7 + 3) % TOPICS.length], views: 0, hits: 0, earned: 0 };
     s.clips.push(clip); teamNew.push(clip); m.clips += 1; s.totals.teamClips += 1;
   }
 
   // every clip ever posted runs again
-  let viewsMe = 0, viewsTeam = 0;
+  let viewsMe = 0, viewsTeam = 0, viewsOld = 0, hits = 0;
   const memberViews = Object.fromEntries(s.team.map((m) => [m.id, 0]));
   const ran = [];
   for (const clip of s.clips) {
-    const v = clipViews(s, clip, habitMul);
+    const { views: v, hit } = clipViews(s, clip, habitMul);
     clip.views += v;
-    if (clip.by === 'me') viewsMe += v; else { viewsTeam += v; memberViews[clip.by] += v; }
-    if (v > 0) ran.push({ id: clip.id, by: clip.by, q: clip.q, topic: clip.topic, views: v, age: clip.age });
+    if (hit) { clip.hits += 1; hits += 1; }
+    if (clip.by === 'me') { viewsMe += v; if (clip.born < s.month) viewsOld += v; } else { viewsTeam += v; memberViews[clip.by] += v; }
+    if (v > 0) ran.push({ id: clip.id, by: clip.by, q: clip.q, topic: clip.topic, views: v, age: clip.age, old: clip.born < s.month, hit });
   }
 
   // my clips: chats, and direct orders once the shop link is on
@@ -265,25 +302,47 @@ export function endMonth(state) {
   }
 
   const income = retail.income + mentoring;
+  // which clips earned this month's retail income: shared by views, so the shelf can show what each asset has made
+  const oldIncome = viewsMe > 0 ? Math.round(retail.income * viewsOld / viewsMe) : 0;
+  for (const r of ran) {
+    if (r.by !== 'me' || viewsMe === 0) continue;
+    const clip = s.clips.find((c) => c.id === r.id);
+    r.earned = Math.round(retail.income * r.views / viewsMe);
+    clip.earned += r.earned;
+  }
+  const scoreGain = Math.round(income / 50) + Math.round((viewsMe + viewsTeam) / 10) + joined * 100 + hits * 300 + teamNew.length * 50 + (score >= 70 ? 100 : 0);
   const report = {
     month: s.month, habit: score, clips: ran.sort((a, b) => b.views - a.views),
     teamNewClips: teamNew.length, viewsMe, viewsTeam, dmsNew, online, joined, renewed, lost,
     personalBaht, personalXv, tier: retail.tier.label, retail: retail.income, mentoring, income,
     teamBaht, teamRows, lesson: LESSONS[(s.month - 1) % LESSONS.length],
+    hits, oldIncome, viewsOld, scoreGain, scoreTotal: s.score + scoreGain, clipCount: s.clips.filter((c) => !c.flag).length,
     dmsExpired: Math.floor(s.dms / 2),
   };
 
   s.customers = renewed + joined; s.joined = 0;
   s.dms = s.dms - report.dmsExpired + dmsNew;
-  for (const clip of s.clips) clip.age += 1;
+  for (const clip of s.clips) {
+    const r = ran.find((x) => x.id === clip.id);
+    clip.hot = Boolean(r && r.hit);
+    clip.age = clip.hot ? 0 : clip.age + 1; // a hit puts the clip back in front of new people
+  }
+  s.score += scoreGain; s.trend = false;
+  s.totals.hits += hits; s.totals.oldIncome += oldIncome;
   for (const k of ['eat', 'move', 'sleep']) s.habit[k] = clamp(s.habit[k] - 6, 0, 100);
   s.totals.income += income; s.totals.views += viewsMe + viewsTeam; s.totals.dms += dmsNew;
   s.totals.orders += joined + renewed + teamOrders; s.totals.sales += personalBaht + teamBaht;
   s.best.income = Math.max(s.best.income, income); s.best.views = Math.max(s.best.views, viewsMe + viewsTeam);
   s.history.push({ month: s.month, income, views: viewsMe + viewsTeam, customers: s.customers, clips: s.clips.length, habit: score });
   s.last = report;
-  if (s.month >= MONTHS) s.phase = 'done';
-  else { s.month += 1; s.moves = MOVES_PER_MONTH; }
+  if (s.month >= MONTHS) { s.phase = 'done'; s.event = null; }
+  else {
+    s.month += 1; s.moves = MOVES_PER_MONTH;
+    const pool = EVENTS.filter((e) => (e.id !== 'refer' || s.customers > 0) && e.id !== s.event?.id);
+    const ev = pool[Math.floor(rand(s) * pool.length)];
+    ev.apply(s);
+    s.event = { id: ev.id, t: ev.t, b: ev.b };
+  }
   return { state: s, ok: true, report };
 }
 
@@ -293,6 +352,7 @@ export function advice(state) {
   const score = habitScore(state);
   if (state.moves === 0) return 'ใช้เวลาครบแล้วครับ กด "จบเดือน" ให้คลิปออกไปวิ่ง';
   if (state.clips.length === 0) return 'เริ่มที่คลิปแรกเลยครับ คลิปคือของที่ทำงานแทนพี่';
+  if (state.trend && state.moves >= 2) return 'เดือนนี้มีกระแสครับ ลงคลิปตอนนี้มีโอกาสปังกว่าปกติ';
   if (state.dms >= 3) return `มีคนทักรออยู่ ${state.dms} คนครับ ตอบก่อนเขาหาย`;
   if (score < 45) return 'คะแนนนิสัยของพี่ตกแล้วครับ ดูแลตัวเองสักตา คลิปจะน่าเชื่อขึ้น';
   if (recruitable(state) > 0) return 'มีลูกค้าอยากทำตามพี่แล้วครับ สอนเขาทำคลิป คลังคลิปจะโตเป็นทีม';
@@ -304,8 +364,8 @@ export function advice(state) {
 export function finalRank(state) {
   const clips = state.clips.filter((c) => !c.flag).length;
   const income = state.totals.income;
-  if (income >= 250000 && state.team.length >= 2) return { title: 'ผู้นำคลังคลิป', note: 'พี่สร้างทั้งคลังคลิปและทีมที่ทำคลิปเองได้' };
-  if (income >= 120000) return { title: 'นักเล่าเรื่องมือโปร', note: 'คลิปของพี่ทำงานแทนพี่ได้จริงทุกเดือน' };
+  if (income >= 400000 && state.team.length >= 2) return { title: 'ผู้นำคลังคลิป', note: 'พี่สร้างทั้งคลังคลิปและทีมที่ทำคลิปเองได้' };
+  if (income >= 200000) return { title: 'นักเล่าเรื่องมือโปร', note: 'คลิปของพี่ทำงานแทนพี่ได้จริงทุกเดือน' };
   if (clips >= 10) return { title: 'เจ้าของคลังคลิป', note: 'คลังคลิปของพี่ใหญ่แล้ว รอบหน้าลองตอบคนทักให้ไวขึ้น' };
   return { title: 'นักเล่าเรื่องฝึกหัด', note: 'เริ่มได้แล้ว รอบหน้าลองลงคลิปให้สม่ำเสมอขึ้น' };
 }
