@@ -74,7 +74,7 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.match(allday,/24\/7/,'the 24/7 card says the Band can stay on');
  assert.match(allday,/ชาร์จสัปดาห์ละครั้ง/,'the 24/7 card carries the owner\'s weekly-charge line');
  assert.doesNotMatch(html,/แบตเตอรี่[^<]{0,40}\d+\s*วัน/,'no battery-day figure is printed while the official pages disagree');
- for(const clip of ['band-montage.mp4','sleep-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
+ for(const clip of ['band-move.mp4','sleep-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
  const sleep=html.match(/<article class="hl-card hl-sleep"[\s\S]*?<\/article>/)?.[0]||'';
  assert.match(sleep,/<video[^>]+data-once[^>]+data-cues="[\d.,]+"/,'the sleep film plays once and names where each stage starts');
  const sleepRows=new Set([...sleep.matchAll(/data-row="(\w+)"/g)].map(m=>m[1]));
