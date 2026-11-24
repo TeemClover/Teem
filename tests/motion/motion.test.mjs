@@ -19,6 +19,7 @@ const fileFor = async href => {
 const EXEMPT = {
   'xircle/index.html': 'XIRCLE owns its interactive brand story, optional WebGL and presentation; a shared engine would duplicate motion',
   'teambook/index.html': 'TeamBook is its own app at teambook.me; on this site the entrance redirects there',
+  'xvisor/index.html': 'the X-VISOR home is built from xvisor/_src and runs its own scroll story (xvisor/launch.js); it has shipped without the layer since the premium home',
 };
 
 test('every registered page carries one current block with its profile', async () => {

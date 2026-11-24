@@ -28,6 +28,7 @@ let pose = 1;
 let flash = null;      // { html } shown once above the moves
 let freshClip = 0;
 let intro = null;      // { step, exam, picked }
+let lead = null;       // the X-LEAD exam in progress: { step, picked, correct }
 let shown = '';
 
 const save = () => store.set(KEY, JSON.stringify(S));
@@ -229,6 +230,8 @@ function playScreen() {
       <div class="chip${S.dms ? ' hot' : ''}"><small>คนทักรออยู่</small><b>${num(S.dms)}</b></div>
     </div>
 
+    <ol class="path" aria-label="เส้นทางของพี่">${G.path(S).map((p, i, all) => `<li class="${p.done ? 'done' : (i === 0 || all[i - 1].done) ? 'now' : 'lock'}"><i>${p.done ? '✓' : (i === 0 || all[i - 1].done) ? (p.of ? p.n + '/' + p.of : '!') : '🔒'}</i><span>${esc(p.t)}</span></li>`).join('')}</ol>
+
     <div class="shelf-head"><b>คลังคลิป <span>${num(S.clips.length)} คลิป</span></b><button data-act="stats" type="button">สถิติทั้งทีม ›</button></div>
     ${shelf.length ? `<ul class="shelf">${shelf.map((c) => clipCard(c, c.id === freshClip)).join('')}${S.clips.length > shelf.length ? `<li class="more">+${S.clips.length - shelf.length}</li>` : ''}</ul>`
       : '<p class="shelf-empty">ยังไม่มีคลิป ลงคลิปแรกได้เลย</p>'}
@@ -241,7 +244,10 @@ function playScreen() {
       ${action('clip', '🎬', 'ลงคลิปรีวิว', 'เพิ่มคลิปเข้าคลัง', S.trend ? '🔥' : '')}
       ${action('reply', '💬', 'ตอบคนทัก', S.dms ? `ตอบได้ ${Math.min(S.dms, G.REPLIES_PER_MOVE)} คน` : 'ยังไม่มีคนทัก', S.dms ? String(S.dms) : '', !S.dms)}
       ${action('care', '🌿', 'ดูแลตัวเอง', `เติมเรื่อง${PILLAR[low]}`)}
-      ${action('teach', '🤝', 'สอนทีม', canTeach ? 'มีคนอยากทำคลิปตามพี่' : teamUp ? 'ฝึกให้คลิปของทีมดีขึ้น' : S.team.length ? 'ทีมเก่งเต็มที่แล้ว' : `มีลูกค้า ${G.CUSTOMERS_PER_RECRUIT} คนก่อน`, canTeach ? 'ใหม่' : '', !canTeach && !teamUp)}
+      ${S.lead
+        ? action('teach', '🤝', canTeach ? 'ชวนทีม' : 'สอนทีม', canTeach ? 'ลูกค้าอยากเป็น X-VISOR' : teamUp ? 'ฝึกให้คลิปของทีมดีขึ้น' : S.team.length >= G.MAX_TEAM ? 'ทีมเก่งเต็มที่แล้ว' : `ลูกค้าประจำ ${G.CUSTOMERS_PER_RECRUIT} คน ต่อทีม 1 คน`, canTeach ? 'ใหม่' : '', !canTeach && !teamUp)
+        : G.canLead(S) ? action('lead', '🛡️', 'สอบ X‑LEAD', 'ปลดล็อกทีม', 'พร้อมสอบ')
+        : action('lead', '🔒', 'สอบ X‑LEAD', `ลูกค้าประจำ ${Math.min(S.customers, G.LEAD_CUSTOMERS)}/${G.LEAD_CUSTOMERS} คน`, '', true)}
       ${showShop ? action('shop', '🛒', 'ปักลิงก์สั่งซื้อ', 'ขายได้ในคลิป ไม่ต้องรอทัก', 'ครั้งเดียว') : ''}
     </div>
 
@@ -304,7 +310,7 @@ function endScreen() {
   app.innerHTML = `
   <section class="endgame">
     <img class="bot big" src="/xvisor/img/bot-2.webp" alt="" width="407" height="520">
-    <p class="tag">ครบ 12 เดือน${S.name ? ' · พี่' + esc(S.name) : ''}</p>
+    <p class="tag">ครบ 12 เดือน${S.name ? ' · พี่' + esc(S.name) : ''} · ${S.lead ? 'X-LEAD' : 'X-VISOR'}</p>
     <h1><span class="grad">${esc(rank.title)}</span></h1>
     <p class="lead">${esc(rank.note)}</p>
     <div class="total"><small>คะแนนสะสม</small><b data-count="${S.score}">0</b>${S.score > prev && prev ? '<em>สถิติใหม่ของพี่</em>' : ''}<span>รายได้รวม ${baht(S.totals.income)}</span></div>
@@ -349,8 +355,42 @@ function howSheet() {
       <li><b>เดือนละ ${G.MOVES_PER_MONTH} ตา</b>แตะการ์ดด้านล่าง ตาละ 1 อย่าง</li>
       <li><b>ลงคลิปรีวิว</b>เลือกคำตอบ 1 ข้อ คลิปดีได้ดาวเยอะ</li>
       <li><b>กดจบเดือน</b>คลิปทุกตัวออกวิ่ง คลิปเก่าก็ยังทำเงิน</li>
+      <li><b>ปลดล็อกทีละขั้น</b>ลูกค้าประจำ 3 คน → สอบ X-LEAD → ชวนทีม</li>
     </ol>
     <button class="btn glow" data-close type="button">เข้าใจแล้ว เริ่มเลย</button>`, 'center');
+}
+
+// the X-LEAD exam: three questions in a sheet. Closing early costs nothing; finishing costs one move.
+const LEAD_BADGE = SHIELD.replace('class="shield"', 'class="shield lead"').replace('</svg>', '<path d="m32 6.5 1.9 3.9 4.3.6-3.1 3 .7 4.3-3.8-2-3.8 2 .7-4.3-3.1-3 4.3-.6Z" fill="url(#sg)"/></svg>');
+function leadSheet() {
+  if (lead.step >= G.LEAD_EXAM.length) {
+    const r = G.takeLeadExam(S, lead.correct);
+    if (!r.ok) { lead = null; closeSheet(); return toast(r.msg); }
+    S = r.state; save(); pose = 2;
+    openSheet(`
+      <div class="result lead-pass">
+        <div class="cert-glow small">${LEAD_BADGE}</div>
+        <p class="tag">ตอบถูก ${r.correct} จาก ${G.LEAD_EXAM.length}</p>
+        <h2>พี่คือ <span class="gold">X-LEAD</span> แล้ว</h2>
+        <ul class="unlock">
+          <li><span aria-hidden="true">🤝</span><b>ปลดล็อก ชวนทีม</b><em>ลูกค้าประจำทุก ${G.CUSTOMERS_PER_RECRUIT} คน ชวนเป็น X-VISOR ได้ 1 คน</em></li>
+          <li><span aria-hidden="true">💰</span><b>ปลดล็อก รายได้ทีม</b><em>ได้ 20% ของคอมมิชชันที่คนในทีมทำได้</em></li>
+        </ul>
+      </div>
+      <button class="btn glow" data-close type="button">ไปชวนทีมกัน</button>`, 'center');
+    burst(sheet.querySelector('.result'));
+    lead = null;
+    return;
+  }
+  const q = G.LEAD_EXAM[lead.step], picked = lead.picked, n = G.LEAD_EXAM.length;
+  openSheet(`
+    <p class="tag">สอบ X-LEAD · ข้อ ${lead.step + 1} จาก ${n}</p>
+    <div class="exam-dots">${G.LEAD_EXAM.map((_, i) => `<i class="${i < lead.step ? 'd' : i === lead.step ? 'c' : ''}"></i>`).join('')}</div>
+    <h2>${esc(q.ask)}</h2>
+    <div class="opts">${q.options.map((o, i) => `<button class="opt${picked != null ? (o.ok ? ' right' : i === picked ? ' wrong' : ' dim') : ''}" data-lead="${i}" type="button" ${picked != null ? 'disabled' : ''}><b>${'กขค'[i]}</b><span>${esc(o.t)}</span></button>`).join('')}</div>
+    ${picked != null ? `<p class="exam-why ${q.options[picked].ok ? 'ok' : 'no'}"><b>${q.options[picked].ok ? '✓ ถูกต้อง' : '✗ ยังไม่ใช่'}</b>${esc(q.why)}</p>
+      <button class="btn glow" data-leadnext type="button">${lead.step === n - 1 ? 'ดูผลสอบ ›' : 'ข้อต่อไป ›'}</button>`
+      : '<button class="btn ghost" data-close="stay" type="button">ยังไม่สอบ (ไม่เสียตา)</button>'}`, 'quiz');
 }
 
 function quizSheet() {
@@ -390,7 +430,7 @@ function statsSheet() {
       <div><b>${baht(S.totals.oldIncome)}</b><small>เงินจากคลิปเก่า</small></div>
     </div>
     ${S.team.length ? `<table class="team"><thead><tr><th>ทีม</th><th>คลิป</th><th>ยอดวิว</th><th>ลูกค้า</th></tr></thead><tbody>${S.team.map((m) => `<tr><td>${esc(m.name)} ${stars(m.skill + 1)}</td><td>${num(m.clips)}</td><td>${num(m.views)}</td><td>${num(m.customers)}</td></tr>`).join('')}</tbody></table>`
-      : '<p class="note">ยังไม่มีทีม มีลูกค้าประจำครบ 3 คน จะมีคนอยากทำคลิปตามพี่</p>'}
+      : `<p class="note">${S.lead ? 'ยังไม่มีทีม ลูกค้าประจำทุก 3 คน ชวนเป็น X-VISOR ได้ 1 คน' : 'ยังไม่มีทีม มีลูกค้าประจำ 3 คน แล้วสอบ X-LEAD ก่อน ถึงจะชวนทีมได้'}</p>`}
     ${top.length ? `<p class="sub-h">คลิปของพี่ที่ทำเงินมากที่สุด</p><ul class="toplist">${top.map((c) => `<li><span>${c.hits ? '🔥 ' : ''}${esc(c.topic)}</span><small>👁 ${num(c.views)}</small><b>${baht(c.earned)}</b></li>`).join('')}</ul>` : ''}
     ${S.history.length ? `<p class="sub-h">รายได้แต่ละเดือน</p>${bars(S.history)}` : ''}
     <button class="btn glow" data-close type="button">กลับไปเล่นต่อ</button>`, 'stats');
@@ -418,7 +458,8 @@ function reportSheet(r, before) {
     <div class="income step" style="--d:1.1s">
       <div class="row"><span>ขายส่วนตัว ${baht(r.personalBaht)} · ขั้น ${esc(r.tier)}</span><b>${baht(r.retail)}</b></div>
       ${r.oldIncome ? `<div class="row old"><span>↳ ในนี้มาจากคลิปเก่า</span><b>${baht(r.oldIncome)}</b></div>` : ''}
-      <div class="row"><span>จากทีมที่พี่สอน</span><b>${baht(r.mentoring)}</b></div>
+      ${S.lead ? `<div class="row"><span>รายได้ทีม (20% ของทีมที่พี่สอน)</span><b>${baht(r.mentoring)}</b></div>`
+        : '<div class="row locked"><span>🔒 รายได้ทีม</span><b>สอบ X-LEAD ก่อน</b></div>'}
       <div class="row sum"><span>รายได้เดือนนี้</span><b data-count="${r.income}" data-pre="฿" data-delay="1200">฿0</b></div>
     </div>
     <div class="scorebox step" style="--d:1.35s"><span>คะแนนเดือนนี้ <b>+${num(r.scoreGain)}</b></span><div><small>คะแนนสะสม</small><b data-count="${r.scoreTotal}" data-from="${before}" data-delay="1500">${num(before)}</b></div></div>
@@ -456,6 +497,11 @@ function act(id) {
     const r = G.selfCare(S);
     return did(r, r.ok ? `<b>🌿 ดูแลเรื่อง${PILLAR[r.pillar]}</b>คะแนนนิสัย +${r.gain} คลิปของพี่น่าเชื่อขึ้น` : '');
   }
+  if (id === 'lead') {
+    if (!G.canLead(S)) return toast(`มีลูกค้าประจำครบ ${G.LEAD_CUSTOMERS} คนก่อน ถึงจะสอบ X-LEAD ได้ครับ`);
+    lead = { step: 0, picked: null, correct: 0 };
+    return leadSheet();
+  }
   if (id === 'teach') {
     const r = G.teachTeam(S);
     return did(r, r.ok ? (r.kind === 'new' ? `<b>🤝 ${esc(r.member.name)} เข้าทีม</b>จะลงคลิปเองทุกเดือนจากนี้` : `<b>🤝 ${esc(r.member.name)} เก่งขึ้น</b>คลิปของเขาได้ ${r.member.skill + 1} ดาว`) : '');
@@ -481,7 +527,7 @@ function introStep(kind) {
 }
 
 document.addEventListener('click', (e) => {
-  const t = e.target.closest('[data-go],[data-act],[data-opt],[data-close],[data-intro],[data-exam]');
+  const t = e.target.closest('[data-go],[data-act],[data-opt],[data-close],[data-intro],[data-exam],[data-lead],[data-leadnext]');
   if (!t) return;
   if (t.dataset.go) {
     e.preventDefault();
@@ -499,6 +545,12 @@ document.addEventListener('click', (e) => {
     if (G.EXAM[intro.step - 2].options[intro.picked].ok) intro.exam += 1;
     return render();
   }
+  if (t.dataset.lead != null && lead && lead.picked == null) {
+    lead.picked = Number(t.dataset.lead);
+    if (G.LEAD_EXAM[lead.step].options[lead.picked].ok) lead.correct += 1;
+    return leadSheet();
+  }
+  if (t.hasAttribute('data-leadnext') && lead) { lead.step += 1; lead.picked = null; return leadSheet(); }
   if (t.dataset.opt != null) {
     const r = G.makeClip(S, Number(t.dataset.opt));
     if (!r.ok) return toast(r.msg);
@@ -508,6 +560,7 @@ document.addEventListener('click', (e) => {
   }
   if (t.hasAttribute('data-close')) {
     closeSheet();
+    lead = null;
     if (t.dataset.close === 'stay') return;
     if (t.dataset.close === 'next' && S.phase === 'done') screen = 'end';
     return render();

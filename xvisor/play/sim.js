@@ -4,12 +4,13 @@
 // personal XV, and 20% direct mentoring on each team member's own commission. Figures are simulation only.
 import { TUTORIAL_OFFER, XIRCLE_STARTER, DIRECT_MENTORING_RULE, getRetailTier } from '../quest/game-commercial-config.js';
 
-export const VERSION = 4;
+export const VERSION = 5;
 export const MONTHS = 12;
 export const MOVES_PER_MONTH = 4;
 export const FIRST_ORDER = Object.freeze({ baht: TUTORIAL_OFFER.price + XIRCLE_STARTER.price, xv: TUTORIAL_OFFER.xv + XIRCLE_STARTER.xv });
 export const RENEWAL = Object.freeze({ baht: TUTORIAL_OFFER.price, xv: TUTORIAL_OFFER.xv });
 export const CUSTOMERS_PER_RECRUIT = 3;
+export const LEAD_CUSTOMERS = 3; // regular customers needed before the X-LEAD exam
 export const MAX_TEAM = 4;
 export const REPLIES_PER_MOVE = 6;
 
@@ -119,6 +120,19 @@ export const EXAM = Object.freeze([
     why: 'ดูแลให้ดี ลูกค้าอยู่ต่อเอง รายได้ตามมาทีหลัง' },
 ]);
 
+// the X-LEAD exam: taken once, costs one move, opens the team. Three things a leader must get right.
+export const LEAD_EXAM = Object.freeze([
+  { ask: 'ลูกค้าประจำอยากทำตามพี่ พี่เริ่มยังไง', options: [
+    { t: 'ให้เขาไปชวนเพื่อนมาสมัครเยอะ ๆ', ok: false }, { t: 'สอนเขาทำคลิปแรกจากเรื่องจริงของเขาเอง', ok: true }, { t: 'ให้เขาซื้อของตุนไว้ก่อน', ok: false } ],
+    why: 'ทีมของ X-LEAD โตจากคนที่ใช้จริงและเล่าเรื่องของตัวเอง ไม่ใช่การชวนสมัครหรือให้ตุนของ' },
+  { ask: 'คนในทีมถามว่า "ทำแล้วได้เดือนละเท่าไหร่" พี่ตอบยังไง', options: [
+    { t: 'รายได้ขึ้นกับงานที่ทำจริง แต่ละคนไม่เท่ากัน', ok: true }, { t: 'ได้แน่นอนเดือนละหลายหมื่น', ok: false }, { t: 'บอกว่าเขาจะได้เท่ากับพี่', ok: false } ],
+    why: 'X-LEAD ไม่สัญญารายได้ เล่าได้แค่สิ่งที่ทำจริงและผลของตัวเอง' },
+  { ask: 'คลิปของคนในทีมพูดเกินจริง พี่ทำยังไง', options: [
+    { t: 'ปล่อยไป ยอดวิวดีก็พอ', ok: false }, { t: 'ลบเขาออกจากทีมทันที', ok: false }, { t: 'ชวนเขาแก้คำพูดก่อนลง และอธิบายเหตุผล', ok: true } ],
+    why: 'ผู้นำดูแลคำพูดของทีม คลิปที่พูดเกินจริงทำให้ทั้งทีมเสียความน่าเชื่อ' },
+]);
+
 // something happens at the start of each month: small, human, and it nudges one number
 export const EVENTS = Object.freeze([
   { id: 'share', t: 'เพื่อนแชร์คลิปของพี่ในกลุ่ม LINE', b: 'มีคนทักเข้ามาเพิ่ม 3 คน', apply: (s) => { s.dms += 3; } },
@@ -144,6 +158,7 @@ export function newGame(seed = 20261124, opts = {}) {
   return {
     v: VERSION, seed: seed | 0, month: 1, moves: MOVES_PER_MONTH, phase: 'play',
     name: String(opts.name || '').slice(0, 28), exam, score: 0, trend: false,
+    lead: false, leadExam: 0, bonus: 0,
     event: { id: 'start', t: 'เพื่อน 2 คนเห็นพี่เริ่มใช้ ทักมาถาม', b: 'ตอบเขาได้เลย หรือลงคลิปแรกก่อน' },
     habit: { eat: 55 + exam * 3, move: 45 + exam * 3, sleep: 50 + exam * 3 },
     clipsMade: 0, quiz: 0, nextId: 1,
@@ -199,11 +214,35 @@ export function selfCare(state) {
   return { state: s, ok: true, pillar: low, gain: habitScore(s) - before };
 }
 
+// ---- the path: X-VISOR -> three regular customers -> X-LEAD exam -> team ----
+export function canLead(state) { return !state.lead && state.customers >= LEAD_CUSTOMERS; }
+// One move, once. Passing opens the team and its income; every right answer adds to this month's score.
+export function takeLeadExam(state, correct = 0) {
+  if (!canPlay(state)) return { state, ok: false, msg: 'เดือนนี้ใช้เวลาครบแล้ว กดจบเดือนได้เลย' };
+  if (state.lead) return { state, ok: false, msg: 'พี่เป็น X-LEAD แล้วครับ' };
+  if (state.customers < LEAD_CUSTOMERS) return { state, ok: false, msg: `ต้องมีลูกค้าประจำ ${LEAD_CUSTOMERS} คนก่อน ถึงจะสอบ X-LEAD ได้` };
+  const s = copy(state);
+  s.lead = true; s.leadExam = clamp(Math.round(Number(correct) || 0), 0, LEAD_EXAM.length);
+  s.bonus += 200 + s.leadExam * 100; s.moves -= 1;
+  return { state: s, ok: true, correct: s.leadExam };
+}
+// where the player is on the path, for the progress strip
+export function path(state) {
+  return [
+    { id: 'xvisor', t: 'X-VISOR', done: true },
+    { id: 'customers', t: 'ลูกค้า', done: state.lead || state.customers >= LEAD_CUSTOMERS, n: Math.min(state.customers, LEAD_CUSTOMERS), of: LEAD_CUSTOMERS },
+    { id: 'lead', t: 'X-LEAD', done: state.lead },
+    { id: 'team', t: 'ทีม', done: state.team.length >= MAX_TEAM, n: state.team.length, of: MAX_TEAM },
+  ];
+}
+
 export function recruitable(state) {
+  if (!state.lead) return 0;
   return Math.min(MAX_TEAM, Math.floor(state.customers / CUSTOMERS_PER_RECRUIT)) - state.team.length;
 }
 export function teachTeam(state) {
   if (!canPlay(state)) return { state, ok: false, msg: 'เดือนนี้ใช้เวลาครบแล้ว กดจบเดือนได้เลย' };
+  if (!state.lead) return { state, ok: false, msg: 'สอบ X-LEAD ก่อนนะครับ ถึงจะชวนลูกค้ามาเป็น X-VISOR ได้' };
   const s = copy(state);
   if (recruitable(s) > 0) {
     const member = { id: 't' + (s.team.length + 1), name: TEAM_NAMES[s.team.length], skill: 1, customers: 0, clips: 0, views: 0 };
@@ -216,7 +255,7 @@ export function teachTeam(state) {
     return { state: s, ok: true, kind: 'up', member };
   }
   if (member) return { state, ok: false, msg: 'ทีมเก่งเต็มที่แล้ว หาลูกค้าประจำเพิ่ม จะมีคนอยากเป็น X-VISOR ตามพี่อีก' };
-  return { state, ok: false, msg: `ต้องมีลูกค้าประจำ ${CUSTOMERS_PER_RECRUIT} คนก่อน ถึงจะมีคนอยากทำตามพี่` };
+  return { state, ok: false, msg: `มีลูกค้าประจำ ${CUSTOMERS_PER_RECRUIT} คนต่อทีม 1 คน หาลูกค้าประจำเพิ่มก่อนนะครับ` };
 }
 
 export function openShop(state) {
@@ -310,13 +349,13 @@ export function endMonth(state) {
     r.earned = Math.round(retail.income * r.views / viewsMe);
     clip.earned += r.earned;
   }
-  const scoreGain = Math.round(income / 50) + Math.round((viewsMe + viewsTeam) / 10) + joined * 100 + hits * 300 + teamNew.length * 50 + (score >= 70 ? 100 : 0);
+  const scoreGain = Math.round(income / 50) + Math.round((viewsMe + viewsTeam) / 10) + joined * 100 + hits * 300 + teamNew.length * 50 + (score >= 70 ? 100 : 0) + s.bonus;
   const report = {
     month: s.month, habit: score, clips: ran.sort((a, b) => b.views - a.views),
     teamNewClips: teamNew.length, viewsMe, viewsTeam, dmsNew, online, joined, renewed, lost,
     personalBaht, personalXv, tier: retail.tier.label, retail: retail.income, mentoring, income,
     teamBaht, teamRows, lesson: LESSONS[(s.month - 1) % LESSONS.length],
-    hits, oldIncome, viewsOld, scoreGain, scoreTotal: s.score + scoreGain, clipCount: s.clips.filter((c) => !c.flag).length,
+    hits, oldIncome, viewsOld, bonus: s.bonus, scoreGain, scoreTotal: s.score + scoreGain, clipCount: s.clips.filter((c) => !c.flag).length,
     dmsExpired: Math.floor(s.dms / 2),
   };
 
@@ -327,7 +366,7 @@ export function endMonth(state) {
     clip.hot = Boolean(r && r.hit);
     clip.age = clip.hot ? 0 : clip.age + 1; // a hit puts the clip back in front of new people
   }
-  s.score += scoreGain; s.trend = false;
+  s.score += scoreGain; s.trend = false; s.bonus = 0;
   s.totals.hits += hits; s.totals.oldIncome += oldIncome;
   for (const k of ['eat', 'move', 'sleep']) s.habit[k] = clamp(s.habit[k] - 6, 0, 100);
   s.totals.income += income; s.totals.views += viewsMe + viewsTeam; s.totals.dms += dmsNew;
@@ -355,6 +394,7 @@ export function advice(state) {
   if (state.trend && state.moves >= 2) return 'เดือนนี้มีกระแสครับ ลงคลิปตอนนี้มีโอกาสปังกว่าปกติ';
   if (state.dms >= 3) return `มีคนทักรออยู่ ${state.dms} คนครับ ตอบก่อนเขาหาย`;
   if (score < 45) return 'คะแนนนิสัยของพี่ตกแล้วครับ ดูแลตัวเองสักตา คลิปจะน่าเชื่อขึ้น';
+  if (canLead(state)) return 'พี่มีลูกค้าประจำครบ 3 คนแล้วครับ สอบ X-LEAD ได้เลย จะได้ชวนลูกค้ามาเป็น X-VISOR';
   if (recruitable(state) > 0) return 'มีลูกค้าอยากทำตามพี่แล้วครับ สอนเขาทำคลิป คลังคลิปจะโตเป็นทีม';
   if (!state.shop && state.month >= 3 && state.clips.length >= 3) return 'ปักลิงก์สั่งซื้อในคลิปได้แล้วครับ คนพร้อมซื้อจะไม่ต้องรอทัก';
   if (state.dms > 0) return `มีคนทัก ${state.dms} คนครับ ตอบเลยก็ได้ หรือลงคลิปเพิ่มก่อน`;

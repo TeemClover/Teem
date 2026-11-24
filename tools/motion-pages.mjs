@@ -80,8 +80,8 @@ export const MOTION_PAGES = Object.freeze({
   'classroom/sauce-cup/index.html': story,
 
   // project room (upstairs)
-  'xvisor/index.html': story,
-  // QUEST 2.0 entry page. The 3.0 game at xvisor/play/index.html runs its own motion and stays out of this registry.
+  // /xvisor/ (built by scripts/build-xvisor-pages.mjs) runs its own scroll story in xvisor/launch.js, and the 3.0 game at
+  // xvisor/play/index.html runs its own motion, so neither loads this layer (see EXEMPT in tests/motion). QUEST 2.0 entry page:
   'xvisor/play/classic/index.html': story,
   'resume/index.html': story,
   'resume/first-version/index.html': story,
