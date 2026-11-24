@@ -20,7 +20,6 @@ Taken from the official site www.xircle.health on 2026-11-24. The owner's earlie
 | --- | --- | --- |
 | `band-onyx.webp`, `band-sand.webp`, `band-black-navy.webp`, `band-silver.webp` | `https://www.xircle.health/assets/band-{onyx,sand,black-navy,silver}.png` (302×373, transparent) | 2× Lanczos resize, light unsharp mask, WebP with alpha |
 | `band-mesh.webp` | `https://www.xircle.health/assets/band-hero-shot.png` | Cropped to the product, resized to 1100 px high, WebP with alpha |
-| `band-day.webp` | `https://www.xircle.health/assets/eco-app.jpg` | WebP |
 | `bedside.webp` | `https://www.xircle.health/assets/sleep-bedside.jpg` | Resized to 1200 px, WebP |
 | `scale-flatlay.webp` | `https://www.xircle.health/assets/eco-scale.png` | WebP |
 | `scale-top.webp` | Company Drive product folder, `XIRCLE_Scale 02` (kit copy `sources/product/xircle-scale-02.jpg`) | White background removed by flood fill from the four corners, cropped, resized to 1000 px wide, WebP with alpha |
@@ -44,6 +43,16 @@ Second batch, same day, asked for by the owner with a brief to make the motion m
 | `bedside-night.mp4`, `bedside-night.webp` | Higgsfield, model Seedance 2.5, job `74ed6914-2f05-4bbc-b4b5-e83e55e12f84`: 5 s, 1080p, 1:1, no audio, 80 credits. Last frame: the official `sleep-bedside.jpg`. First frame: the same photo graded to moonlight with the phone screen blacked out, made locally. Brief: one night turning into morning; rings of light breathe out from the band, gather into an arc that travels to the phone, and the screen wakes. | 900×900, H.264 CRF 26, no audio; the WebP is the first frame |
 
 The rings and arcs of light in these two clips are a visual metaphor for the devices reading the body and syncing to the app. Neither device emits light like this, and the page labels both cards "ภาพจำลองเพื่อการนำเสนอ". The still shown without motion on the bedside card is the real official photo (`bedside.webp`).
+
+Third batch, same day. The owner asked for a fast montage on the Band card and for generated clips on the food-scan and Habit Score cards in place of the vertical app clips:
+
+| File | How it was made | Processing |
+| --- | --- | --- |
+| `band-montage.mp4`, `band-montage.webp` | Higgsfield, model Seedance 2.5, job `3e87984a-eb7f-44a5-9484-cdfcf5014043`: 6 s, 1080p, 1:1, no audio, 96 credits. Reference: a sheet of the four official Band images. Brief: match-cut montage, a different person and place about every half second with the wrist held in the centre (run, office, kitchen, pool, garden, gym, train, parent and child, yoga, sleep). | 900×900, H.264 CRF 27, no audio (0.86 MB); the WebP is the first frame. In several shots the model drew the X mark on the module as a lit green X; on the real product the X is not lit and the status LED is a separate small dot. |
+| `food-scan.mp4`, `food-scan.webp` | Start and end frame: a top-down meal generated with GPT Image 2.6 on Higgsfield (job `6786bb9f-c493-4676-bb4e-fe9b83617b7e`). Clip: Seedance 2.5, job `14ebc1bf-1818-4be1-bf66-ac7939f45463`: 5 s, 1080p, 1:1, no audio, 80 credits. Brief: locked camera; a scan line leaves the phone, each dish gets a glowing outline, points of green, amber and coral light lift from the food, then everything returns to the first frame (it loops). | 900×900, H.264 CRF 25, no audio (0.41 MB); the WebP is the first frame |
+| `habit-week.mp4`, `habit-week.webp`, `habit-week-end.webp` | Start frame: seven light pillars and a faint ring, generated with GPT Image 2.6 on Higgsfield (job `664b9745-dfc4-4cb0-95d4-256dd010c85a`). Clip: Seedance 2.5, job `d36eea26-8c9a-4a2e-8612-0fa6b6fa3077`: 6 s, 1080p, 1:1, no audio, 96 credits. Brief: locked camera; each pillar releases three ribbons of light that fly up and fill the ring until it is complete. | 900×900, H.264 CRF 23, no audio; WebP stills are the first and last frames |
+
+On these three cards the words and numbers are HTML over the clip: the dish names, the macro readout (49 g, 96 g, 35 g, 895 kcal), the day initials and the score (76) are examples written for this page, not output of the app, and are labelled so. Their positions are given in the clip's own coordinates and converted for the wide and narrow layouts in `welcome.css`.
 
 The HUD on the Scale card (corner marks, scan line, the five value names and "ดูต่อได้ 9 ค่า") is HTML and CSS over that image, so the Thai text is real text. The page draws the Band sequence on a canvas by scroll position; it loads only when the night scene is near, is skipped with reduced motion or data saver, and narrow screens load every second frame. Without it the real product photo with the CSS light sweep is shown.
 

@@ -53,21 +53,12 @@
   }, { rootMargin: '-45% 0px -54% 0px' });
   $$('[data-now]').forEach(s => chapterIO.observe(s));
 
-  /* ── manifesto: words light up as they pass ── */
-  const scrub = $('[data-scrub]');
-  let words = [];
-  if (scrub) {
-    // phrases (split at the spaces in the copy) stay whole; words inside them light up one by one
-    const phrases = scrub.textContent.trim().split(/\s+/);
-    let seg = null;
-    try { seg = new Intl.Segmenter('th', { granularity: 'word' }); } catch { seg = null; }
-    scrub.textContent = '';
-    phrases.forEach((phrase, i) => {
-      const ph = d.createElement('span'); ph.className = 'ph';
-      const parts = seg ? Array.from(seg.segment(phrase), s => s.segment) : [phrase];
-      for (const part of parts) { const w = d.createElement('span'); w.className = 'w'; w.textContent = part; ph.append(w); words.push(w); }
-      scrub.append(ph); if (i < phrases.length - 1) scrub.append(' ');
-    });
+  /* ── manifesto: three short lines, one at a time ── */
+  const manifesto = $('#first-day'), lines = $$('#lines span');
+  function setLines(p) {
+    const idx = p < 0.3 ? 0 : p < 0.6 ? 1 : 2;
+    lines.forEach((l, i) => { l.classList.toggle('on', i === idx); l.classList.toggle('past', i < idx); });
+    manifesto.classList.toggle('end', p > 0.72);
   }
 
   /* ── Band night scene ── */
@@ -124,18 +115,17 @@
   if (scene && seqCanvas) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); seqLoad(); } }, { rootMargin: '160% 0px' }).observe(scene);
 
   let raf = 0;
+  const onFrame = []; // later sections add their own scroll work here
   function frame() {
     raf = 0;
     const vh = innerHeight, y = scrollY, max = root.scrollHeight - vh;
     if (navBar) navBar.style.transform = `scaleX(${max > 0 ? clamp(y / max).toFixed(4) : 0})`;
     if (hero && y < vh * 1.3) hero.style.setProperty('--hp', (reduce() ? 0 : clamp(y / (vh * 0.9))).toFixed(3));
-    if (words.length) {
-      const r = scrub.getBoundingClientRect();
-      if (r.bottom > -80 && r.top < vh + 80) {
-        const f = (reduce() ? 1 : clamp((vh * 0.84 - r.top) / (r.height + vh * 0.3))) * (words.length + 8);
-        words.forEach((s, i) => { s.style.opacity = (0.16 + 0.84 * clamp(f - i)).toFixed(2); });
-      }
+    if (manifesto && lines.length && !reduce()) {
+      const r = manifesto.getBoundingClientRect(), total = r.height - vh;
+      if (total > 0 && r.top < vh && r.bottom > 0) setLines(clamp(-r.top / total));
     }
+    for (const fn of onFrame) fn(vh);
     if (scene && !reduce()) {
       const r = scene.getBoundingClientRect(), total = r.height - vh;
       if (total > 0 && r.top < vh && r.bottom > 0) setBand(clamp(-r.top / total));
@@ -158,10 +148,12 @@
     film.addEventListener('pointerleave', () => { stage.style.setProperty('--rx', '0deg'); stage.style.setProperty('--ry', '0deg'); });
   }
 
-  /* ── highlights gallery ── */
-  const track = $('#hl-track'), hlCtrl = $('.hl-ctrl'), dotsBox = $('#hl-dots'), hlToggle = $('#hl-toggle');
+  /* ── highlights: scroll down and the cards pass one by one ──
+     The section is tall and its stage is pinned. Vertical scroll moves the row sideways: it rests on each card long
+     enough for the clip to play, then glides to the next. With reduced motion the cards are stacked instead. */
+  const hlScroll = $('#hl-scroll'), hlPin = $('#hl-pin'), track = $('#hl-track'), hlCtrl = $('.hl-ctrl'), dotsBox = $('#hl-dots'), hlCount = $('#hl-count');
   const cards = track ? $$('.hl-card', track) : [];
-  let hlIdx = -1, hlVisible = false, hlPaused = reduce(), hlRaf = 0;
+  let hlIdx = -1, hlVisible = false;
   const dots = cards.map((_, i) => {
     const b = d.createElement('button');
     b.type = 'button'; b.className = 'hl-dot'; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', `ไฮไลต์ ${i + 1} จาก ${cards.length}`);
@@ -177,38 +169,51 @@
       const v = $('video', c);
       if (!v) return;
       if (k === i && 'once' in v.dataset && v.currentTime > 0) v.currentTime = 0; // one-shot clips start again each time their card comes forward
-      (k === i && hlVisible && !hlPaused) ? play(v) : stop(v);
+      (k === i && hlVisible) ? play(v) : stop(v);
     });
     dots.forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
-  }
-  function hlGo(i) {
-    const c = cards[(i + cards.length) % cards.length];
-    track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.clientWidth) / 2, behavior: reduce() ? 'auto' : 'smooth' });
-  }
-  function hlSync() {
-    hlRaf = 0;
-    const mid = track.scrollLeft + track.clientWidth / 2;
-    let best = 0, dist = Infinity;
-    cards.forEach((c, k) => { const dd = Math.abs(c.offsetLeft + c.clientWidth / 2 - mid); if (dd < dist) { dist = dd; best = k; } });
-    hlSet(best);
+    if (hlCount) hlCount.textContent = `${i + 1} / ${cards.length}`;
+    if (hlCtrl) hlCtrl.classList.toggle('last', i === cards.length - 1);
   }
   function hlRefresh() {
-    hlCtrl.classList.toggle('paused', hlPaused);
-    hlCtrl.classList.toggle('idle', !hlVisible);
-    hlToggle.setAttribute('aria-pressed', hlPaused ? 'true' : 'false');
-    hlToggle.setAttribute('aria-label', hlPaused ? 'เล่นอัตโนมัติต่อ' : 'หยุดเล่นอัตโนมัติ');
     const v = cards[hlIdx] && $('video', cards[hlIdx]);
-    if (v) (hlVisible && !hlPaused) ? play(v) : stop(v);
+    if (v) hlVisible ? play(v) : stop(v);
   }
-  if (track && cards.length) {
+  function hlGo(i) { // bring card i to rest by scrolling the page to its place in the section
+    const k = clamp(i, 0, cards.length - 1), span = hlScroll.offsetHeight - innerHeight;
+    scrollTo({ top: scrollY + hlScroll.getBoundingClientRect().top + span * (k + 0.2) / cards.length, behavior: reduce() ? 'auto' : 'smooth' });
+  }
+  function hlMove(vh) {
+    if (reduce()) { track.style.transform = ''; return; }
+    const r = hlScroll.getBoundingClientRect(), span = r.height - vh, n = cards.length;
+    if (span <= 0 || r.bottom < -vh || r.top > vh * 2) return;
+    const P = clamp(-r.top / span) * n, i = Math.min(n - 1, Math.floor(P)), f = P - i;
+    const g = i < n - 1 && f > 0.62 ? (f - 0.62) / 0.38 : 0, e = g * g * (3 - 2 * g); // rest, then glide
+    const x = k => cards[k].offsetLeft - (track.clientWidth - cards[k].clientWidth) / 2;
+    track.style.transform = `translate3d(${-(x(i) + (i < n - 1 ? (x(i + 1) - x(i)) * e : 0)).toFixed(1)}px,0,0)`;
+    hlSet(e > 0.5 ? i + 1 : i);
+    dots.forEach((b, k) => b.style.setProperty('--f', k === i ? Math.min(1, f / 0.62).toFixed(3) : '0'));
+  }
+  if (hlScroll && track && cards.length) {
     // one-shot clips open on their first frame when motion is allowed; the still in the markup stays for everyone else
     if (!reduce()) $$('video[data-poster-motion]', track).forEach(v => { v.poster = v.dataset.posterMotion; });
-    track.addEventListener('scroll', () => { if (!hlRaf) hlRaf = requestAnimationFrame(hlSync); }, { passive: true });
-    dotsBox.addEventListener('animationend', e => { if (e.animationName === 'dotfill' && !hlPaused && hlVisible) hlGo(hlIdx + 1); });
-    hlToggle.addEventListener('click', () => { hlPaused = !hlPaused; hlRefresh(); });
-    track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); hlGo(hlIdx - 1); } });
-    new IntersectionObserver(es => { hlVisible = es[0].isIntersecting; hlRefresh(); }, { threshold: 0.45 }).observe(track);
-    hlSync(); hlRefresh();
+    // a clip can mark the moment its headline number belongs on screen (the Habit Score ring closing)
+    $$('video[data-mark]', track).forEach(v => {
+      const card = v.closest('.hl-card'), mark = +v.dataset.mark || 1;
+      let counted = false;
+      const sync = () => {
+        const scored = reduce() || (v.duration > 0 && v.currentTime >= v.duration * mark);
+        card.classList.toggle('scored', scored);
+        if (scored && !counted) { counted = true; countUp(card); } else if (!scored) counted = false;
+      };
+      v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync); v.addEventListener('ended', sync);
+      sync();
+    });
+    track.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); hlGo(hlIdx - 1); } });
+    new IntersectionObserver(es => { hlVisible = es[0].isIntersecting; hlRefresh(); }, { threshold: 0.4 }).observe(hlPin);
+    hlSet(0);
+    onFrame.push(hlMove);
+    requestFrame();
   }
 
   /* ── Band colours ── */

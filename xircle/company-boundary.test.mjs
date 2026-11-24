@@ -52,9 +52,13 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.match(html,/<canvas[^>]+id="band-seq"[^>]+aria-hidden="true"/);
  assert.match(js,/saveData/,'the sequence is skipped for data saver');
  assert.match(html,/class="scene-note"[^>]*>[^<]*ภาพจำลอง/,'the Band sequence is labelled as a presentation scene');
- assert.equal([...html.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,2,'both generated highlight cards are labelled as presentation scenes');
- for(const clip of ['scale-ripple.mp4','bedside-night.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
+ assert.equal([...html.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,5,'all five highlight cards use generated scenes and each is labelled');
+ for(const clip of ['band-montage.mp4','bedside-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
  assert.match(html,/<video[^>]+poster="\/xircle\/assets\/welcome\/bedside\.webp"[^>]+data-once/,'the night-to-morning clip keeps the real photo as its still');
+ for(const macro of ['โปรตีน','คาร์บ','ไขมัน','พลังงาน'])assert.match(html,new RegExp(`<dt>${macro}</dt>`),`food card shows ${macro}`);
+ assert.match(html,/class="macro"[^>]*aria-label="[^"]*ตัวเลขตัวอย่าง/,'food numbers are labelled as examples');
+ assert.equal([...html.matchAll(/<ul class="week"[^>]*>(.*?)<\/ul>/gs)][0][1].split('<li').length-1,7,'the Habit Score card shows seven days');
+ assert.match(html,/class="hl-score"[^>]*>.*?ตัวอย่าง/s,'the Habit Score number is labelled as an example');
  const hud=[...html.matchAll(/<li class="hud-[lr]"[^>]*><b>([^<]+)<\/b>/g)].map(match=>match[1]);
  for(const value of ['น้ำหนัก','ไขมันในร่างกาย','มวลกล้ามเนื้อ','มวลกระดูก','ปริมาณน้ำในร่างกาย'])assert.ok(hud.includes(value),`HUD names ${value}`);
 });
