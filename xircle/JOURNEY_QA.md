@@ -20,6 +20,8 @@ Observed in a Chromium browser pane against a local static server, at 1440×900 
 - Hero film: Play opens the dialog and the film plays from `youtube-nocookie.com`; closing removes the player.
 - Highlights: five cards, dot navigation, the two clip cards play their previews when centred.
 - Band scene: clock runs 22:30 → 06:30, four captions in turn, sleep line draws, dawn light rises. Colour picker swaps all four colours.
+- Band scroll sequence and Scale HUD card (second release, checked locally at both widths before commit): all 74 frames load at 1440 px and 38 at 375 px, the product turns and the light and dawn pass with scroll, the still photo shows until the frames are ready; the HUD card shows the five values with leader lines (wide) or as a grid of chips (narrow). No console errors, no horizontal scroll.
+- Band light sweep (added after the first release, checked locally at both widths): two passes of light cross the product during the night scene and none shows at rest, with reduced motion or without script.
 - Scale: the display counts up to the sample value, footprints and the five value cards appear, "ชั่งอีกครั้ง" replays.
 - App chapter: the phone changes screen with each part of the story (wide); each part carries its own screen (narrow).
 - Tour: wide layout previews advance through the list and the stage opens the 16:9 upload with previous/next; narrow layout plays the centred card's 9:16 preview and opens the 9:16 upload in a vertical player. EP.8 and EP.9 were opened from story links and next/previous; EP.1 and EP.4 from the narrow rail.

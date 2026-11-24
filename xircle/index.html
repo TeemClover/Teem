@@ -7,8 +7,8 @@
 <link rel="canonical" href="https://www.myclover.com/xircle/"><link rel="icon" href="/favicon.ico">
 <meta property="og:type" content="website"><meta property="og:locale" content="th_TH"><meta property="og:url" content="https://www.myclover.com/xircle/"><meta property="og:title" content="เริ่มต้นกับ Xircle — วันแรกของคุณ"><meta property="og:description" content="ดูภาพรวมใน 2 นาที รู้จัก Band และ Scale แล้วทัวร์แอป 9 ตอน ตอนละ 1 นาที"><meta property="og:image" content="https://www.myclover.com/xircle/assets/welcome/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/xircle/_shared/typography.css?v=3"><link rel="stylesheet" href="/xircle/welcome.css?v=welcome-1">
-<script src="/xircle/welcome.js?v=welcome-1" defer></script>
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=3"><link rel="stylesheet" href="/xircle/welcome.css?v=welcome-3">
+<script src="/xircle/welcome.js?v=welcome-3" defer></script>
 </head>
 <body data-xircle-landing="welcome">
 <a class="skip" href="#content">ข้ามไปเนื้อหา</a>
@@ -55,9 +55,19 @@
    <img src="/xircle/assets/welcome/bedside.webp" alt="Xircle Band วางข้างโทรศัพท์ที่เปิดแอป Xircle บนโต๊ะข้างเตียงยามเช้า" width="1200" height="1200" loading="lazy" style="object-position:50% 62%">
    <p class="hl-cap"><b>การนอน</b>ตื่นมา เห็นว่าเมื่อคืน<br>พักได้แค่ไหน</p>
   </article>
-  <article class="hl-card" data-tone="dark">
-   <img src="/xircle/assets/welcome/scale-step.webp" alt="เท้าเปล่ากำลังก้าวขึ้น Xircle Scale สีขาว" width="1200" height="1200" loading="lazy" style="object-position:50% 70%">
-   <p class="hl-cap"><b>Xircle Scale</b>ชั่งครั้งเดียว<br>เห็นมากกว่าตัวเลขน้ำหนัก</p>
+  <article class="hl-card hl-hud" data-tone="dark">
+   <img src="/xircle/assets/welcome/scale-hud.webp" alt="เท้าเปล่ายืนบน Xircle Scale สีขาว มองจากด้านบน" width="1600" height="900" loading="lazy">
+   <p class="hl-cap"><b>Xircle Scale</b>ชั่งครั้งเดียว<br>เห็นมากกว่า<br>ตัวเลขน้ำหนัก</p>
+   <i class="hud-frame" aria-hidden="true"></i>
+   <ul class="hud" aria-label="ห้าค่าที่ Xircle Scale บอกจากการชั่งครั้งเดียว">
+    <li class="hud-l" style="--i:0;--y:53%"><b>น้ำหนัก</b><span>ค่าพื้นฐานไว้เทียบระยะยาว</span></li>
+    <li class="hud-l" style="--i:1;--y:67%"><b>ไขมันในร่างกาย</b><span>สิ่งที่น้ำหนักอย่างเดียวบอกไม่ได้</span></li>
+    <li class="hud-l" style="--i:2;--y:81%"><b>มวลกล้ามเนื้อ</b><span>เห็นผลของการออกกำลัง</span></li>
+    <li class="hud-r" style="--i:3;--y:31%"><b>มวลกระดูก</b><span>ให้เห็นองค์ประกอบร่างกายครบขึ้น</span></li>
+    <li class="hud-r" style="--i:4;--y:47%"><b>ปริมาณน้ำในร่างกาย</b><span>ขยับตามการดื่มน้ำและกิจวัตร</span></li>
+    <li class="hud-r hud-more" style="--i:5;--y:66%"><b>ดูต่อได้ 9 ค่า</b><span>ในหน้า My Body ของแอป</span></li>
+   </ul>
+   <p class="hud-note">ภาพจำลองเพื่อการนำเสนอ</p>
   </article>
   <article class="hl-card split" data-tone="light">
    <p class="hl-cap"><b>AI Food Scan</b>ถ่ายรูปมื้อนี้<br>ให้ AI ช่วยแยกส่วนประกอบ</p>
@@ -94,7 +104,8 @@
      <path pathLength="1" d="M0 36H70V110H150V232H262V110H330V172H424V110H486V232H604V110H664V172H772V110H834V232H904V110H984V172H1082V110H1142V36H1200" fill="none" stroke="url(#slg)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
     </svg>
     <ul class="sleep-keys" aria-hidden="true"><li>ตื่น</li><li>หลับตื้น</li><li>REM</li><li>หลับลึก</li></ul>
-    <div class="band-fig"><img class="band-img" src="/xircle/assets/welcome/band-mesh.webp" alt="Xircle Band สีดำ ตัวเรือนไม่มีหน้าจอ มีไฟ LED สีเขียวดวงเล็ก" width="854" height="1100" loading="lazy"><i class="led" aria-hidden="true"></i></div>
+    <canvas class="band-seq" id="band-seq" width="720" height="720" aria-hidden="true"></canvas>
+    <div class="band-fig"><img class="band-img" src="/xircle/assets/welcome/band-mesh.webp" alt="Xircle Band สีดำ ตัวเรือนไม่มีหน้าจอ มีไฟ LED สีเขียวดวงเล็ก" width="854" height="1100" loading="lazy"><i class="band-sheen" aria-hidden="true"></i><i class="led" aria-hidden="true"></i></div>
    </div>
    <ol class="beats" id="band-beats">
     <li class="beat"><b>เบาเพียง 19 กรัม</b><span>เบาจนใส่นอนได้ทั้งคืน<br>ไม่ต้องถอดก่อนเข้านอน</span></li>
@@ -103,7 +114,7 @@
     <li class="beat"><b>เช้ามา ข้อมูลรออยู่ในแอป</b><span>เปิดแอป แล้วดูว่าเมื่อคืนเป็นอย่างไร<br>คุณไม่ต้องจดอะไรเลย</span></li>
    </ol>
    <i class="dawn-light" aria-hidden="true"></i>
-   <p class="scene-note">เส้นกราฟเป็นภาพตัวอย่างเพื่อการอธิบาย</p>
+   <p class="scene-note">ภาพเคลื่อนไหวของ Band เป็นภาพจำลองจากภาพสินค้าจริง · เส้นกราฟเป็นตัวอย่างเพื่อการอธิบาย</p>
   </div>
  </div>
 

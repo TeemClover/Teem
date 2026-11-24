@@ -1,6 +1,6 @@
 # Welcome page assets — sources
 
-Prepared 2026-11-24 for the `/xircle/` welcome page ("วันแรกของคุณกับ Xircle"). Everything here is a web-sized copy; originals stay where they came from. No AI-generated image or video was added in this revision.
+Prepared 2026-11-24 for the `/xircle/` welcome page ("วันแรกของคุณกับ Xircle"). Everything here is a web-sized copy; originals stay where they came from. Two assets are AI-generated presentation scenes made from real product photos; they are listed under "Generated presentation scenes" and labelled on the page.
 
 ## Videos
 
@@ -22,15 +22,25 @@ Taken from the official site www.xircle.health on 2026-11-24. The owner's earlie
 | `band-mesh.webp` | `https://www.xircle.health/assets/band-hero-shot.png` | Cropped to the product, resized to 1100 px high, WebP with alpha |
 | `band-day.webp` | `https://www.xircle.health/assets/eco-app.jpg` | WebP |
 | `bedside.webp` | `https://www.xircle.health/assets/sleep-bedside.jpg` | Resized to 1200 px, WebP |
-| `scale-step.webp` | `https://www.xircle.health/assets/scale-app-step-on.jpg` | Resized to 1200 px, WebP |
 | `scale-flatlay.webp` | `https://www.xircle.health/assets/eco-scale.png` | WebP |
 | `scale-top.webp` | Company Drive product folder, `XIRCLE_Scale 02` (kit copy `sources/product/xircle-scale-02.jpg`) | White background removed by flood fill from the four corners, cropped, resized to 1000 px wide, WebP with alpha |
 
 App screens on the phone reuse the existing sanitized crops in [`../real-app/`](../real-app/README.md).
 
+## Generated presentation scenes
+
+Both were made on 2026-11-24 at the owner's request, from real product photos, and the page labels each as "ภาพจำลอง". They show the product in a staged scene; they are not documentary photographs and add no product claim.
+
+| File | How it was made | Processing |
+| --- | --- | --- |
+| `band-seq/f000.webp` … `f073.webp` | Higgsfield, model Seedance 2.5, job `a2fef204-55ad-4f89-8494-9bdf9e91c769`: 5 s, 1080p, no audio, 80 credits. Reference frame: the official `band-hero-shot.png` placed on the page's night background. Brief: keep the product identical, slow 25° orbit, one pass of light over the mesh strap, then warm dawn light. | Frames 47–120 of 121 only. The first 47 frames are left out because the model drew a glowing blue edge on the module that the real product does not have. Cropped to the centre 1080×1080, resized to 720×720, WebP q56 (1.8 MB for 74 frames). |
+| `scale-hud.webp` | ChatGPT image generation with the real product photo (`XIRCLE_Scale 02`) as reference: top-down, two bare feet on the scale, dark slate floor, no text. | Centre-cropped to 16:9, 1600×900, WebP q80. The generated centre button shows the X mark without the small "XIRCLE" wordmark of the real one. |
+
+The HUD on the Scale card (corner marks, scan line, the five value names and "ดูต่อได้ 9 ค่า") is HTML and CSS over that image, so the Thai text is real text. The page draws the Band sequence on a canvas by scroll position; it loads only when the night scene is near, is skipped with reduced motion or data saver, and narrow screens load every second frame. Without it the real product photo with the CSS light sweep is shown.
+
 ## Drawn in code, labelled as examples
 
-The sleep line behind the Band, the scale display digits and footprints, the five value cards (61.4 kg, 24.8 %, 43.2 kg, 2.6 kg, 54.1 %), the Habit Score rings (76) and the MaxAge trend line are illustrations made in HTML/CSS/SVG. The page labels them as sample numbers; none is a visitor's measurement or a product result.
+The light that passes over the Band in the night scene is a CSS gradient masked to the product photo and tied to scroll; the photo itself is not altered or regenerated, and the slight turn is a CSS 3D transform of the same flat image. The sleep line behind the Band, the scale display digits and footprints, the five value cards (61.4 kg, 24.8 %, 43.2 kg, 2.6 kg, 54.1 %), the Habit Score rings (76) and the MaxAge trend line are illustrations made in HTML/CSS/SVG. The page labels them as sample numbers; none is a visitor's measurement or a product result.
 
 ## Product facts used in the copy
 
