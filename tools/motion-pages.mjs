@@ -81,7 +81,8 @@ export const MOTION_PAGES = Object.freeze({
 
   // project room (upstairs)
   'xvisor/index.html': story,
-  'xvisor/play/index.html': story,
+  // QUEST 2.0 entry page. The 3.0 game at xvisor/play/index.html runs its own motion and stays out of this registry.
+  'xvisor/play/classic/index.html': story,
   'resume/index.html': story,
   'resume/first-version/index.html': story,
   'showcase/house/index.html': app,
