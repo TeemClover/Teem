@@ -63,7 +63,9 @@ Fourth batch, same day. The first sleep clip showed the Band lying on a bedside 
 
 The app screen on the phone in `band-sync` is drawn by the model and is not a real screenshot; the card is labelled "ภาพจำลองเพื่อการนำเสนอ".
 
-The stage names and times under the sleep clip (22:30, 23:10, 01:40, 04:20, 06:30) are HTML, synced to the shots through `data-cues`. The times are examples and the coloured light is a visual metaphor; the Band does not emit it.
+Beside the sleep clip the card shows the app's sleep screen, redrawn in HTML after the overview film (0:15 to 0:21): last night 00:29 to 08:07, 7:36 asleep, score 78, the four rows Awake 0:21 / Light 3:43 / REM 1:50 / Deep 1:44, and REM + Deep = Restorative 3:34. Those are the film's own sample numbers. The line in the rows is a simplified single cycle drawn to follow the five shots of the clip (`data-cues` and `data-rows`), not a real night. The coloured light in the clip is a visual metaphor; the Band does not emit it.
+
+The last card keeps the seven-day clip and its sample Habit Score of 76, then shows a MaxAge panel redrawn in HTML after the overview film at 1:36 to 1:49: Habit Score + Body Composition + health values, and a ruler with actual age, Bio Age, the Thai average and Max Age. Like the film, it prints no age figures, and it carries the film's line that these are estimates from device data and not a medical diagnosis.
 
 The HUD on the Scale card (corner marks, scan line, the five value names and "ดูต่อได้ 9 ค่า") is HTML and CSS over that image, so the Thai text is real text. The page draws the Band sequence on a canvas by scroll position; it loads only when the night scene is near, is skipped with reduced motion or data saver, and narrow screens load every second frame. Without it the real product photo with the CSS light sweep is shown.
 
