@@ -52,7 +52,9 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.match(html,/<canvas[^>]+id="band-seq"[^>]+aria-hidden="true"/);
  assert.match(js,/saveData/,'the sequence is skipped for data saver');
  assert.match(html,/class="scene-note"[^>]*>[^<]*ภาพจำลอง/,'the Band sequence is labelled as a presentation scene');
- assert.match(html,/class="hud-note"[^>]*>[^<]*ภาพจำลอง/,'the Scale image is labelled as a presentation scene');
+ assert.equal([...html.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,2,'both generated highlight cards are labelled as presentation scenes');
+ for(const clip of ['scale-ripple.mp4','bedside-night.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
+ assert.match(html,/<video[^>]+poster="\/xircle\/assets\/welcome\/bedside\.webp"[^>]+data-once/,'the night-to-morning clip keeps the real photo as its still');
  const hud=[...html.matchAll(/<li class="hud-[lr]"[^>]*><b>([^<]+)<\/b>/g)].map(match=>match[1]);
  for(const value of ['น้ำหนัก','ไขมันในร่างกาย','มวลกล้ามเนื้อ','มวลกระดูก','ปริมาณน้ำในร่างกาย'])assert.ok(hud.includes(value),`HUD names ${value}`);
 });
