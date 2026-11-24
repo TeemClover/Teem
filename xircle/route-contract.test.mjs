@@ -22,9 +22,10 @@ test('retired invitations and browser storage have no role in the company story'
 });
 test('one active company runtime and no personal-service engine',async()=>{
  const html=await readFile(new URL('index.html',import.meta.url),'utf8');
- assert.match(html,/data-xircle-landing="real-app"/);
- assert.match(html,/landing\.js/);assert.match(html,/landing\.css/);
- assert.doesNotMatch(html,/brand-experience\.js|brand-experience\.css|id="brand-stage"/);
+ assert.match(html,/data-xircle-landing="welcome"/);
+ assert.match(html,/welcome\.js/);assert.match(html,/welcome\.css/);
+ assert.doesNotMatch(html,/landing\.js|landing\.css|media-library\.js|brand-experience\.js|brand-experience\.css|id="brand-stage"/);
+ for(const anchor of ['start','routine'])assert.ok(html.includes(`id="${anchor}"`),`legacy entries land on #${anchor}`);
  assert.doesNotMatch(html,/experience-v3|\/meet\/|teambook\.me|\/xty\/|xvisor-path\.js|ทีม\s*\+\s*เอโกะ|ทีมและเอโกะ/);
  for(const name of ['experience.js','experience-v1.js','experience-v2.js','experience-v3.js','experience-v3.css','entry.css'])await assert.rejects(access(new URL(name,import.meta.url)));
  for(const path of RETIRED_ENTRIES){const shell=await readFile(new URL(path+'/index.html',import.meta.url),'utf8');assert.match(shell,/legacy-entry\.js/);}

@@ -1,0 +1,345 @@
+/* Xircle welcome page runtime.
+   - No browser storage, no network calls. A YouTube player is created only after a visitor presses Play,
+     and removed when the dialog closes.
+   - Episodes play the 16:9 upload on wide screens and the 9:16 upload on narrow ones.
+   - Everything here is an enhancement: without this file every clip is still a plain YouTube link. */
+(() => {
+  'use strict';
+  const d = document, root = d.documentElement;
+  const $ = (s, r = d) => r.querySelector(s);
+  const $$ = (s, r = d) => Array.from(r.querySelectorAll(s));
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const reduceMq = matchMedia('(prefers-reduced-motion: reduce)');
+  const narrowMq = matchMedia('(max-width: 820px)');
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const reduce = () => reduceMq.matches;
+  const ASSET = '/xircle/assets/welcome/';
+  const YT_ID = /^[\w-]{11}$/;
+  const pad = n => String(n).padStart(2, '0');
+
+  root.classList.add('js');
+  root.classList.toggle('rm', reduce());
+  reduceMq.addEventListener?.('change', () => { root.classList.toggle('rm', reduce()); if (reduce()) pauseAll(); });
+
+  /* ── small helpers ── */
+  const arm = v => { if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src; };
+  const play = v => { if (!v || reduce()) return; arm(v); const p = v.play(); if (p) p.catch(() => {}); };
+  const stop = v => { if (v && !v.paused) v.pause(); };
+  const pauseAll = () => $$('video').forEach(stop);
+  function tween(ms, fn, done) {
+    const t0 = performance.now();
+    const step = t => { const k = clamp((t - t0) / ms); fn(1 - Math.pow(1 - k, 3)); if (k < 1) requestAnimationFrame(step); else if (done) done(); };
+    requestAnimationFrame(step);
+  }
+  function countUp(scope) {
+    if (reduce()) return;
+    $$('[data-count]', scope).forEach(b => { const to = +b.dataset.count; if (!(to > 0)) return; tween(1100, k => { b.textContent = Math.round(to * k); }); });
+  }
+
+  /* ── reveal on scroll ── */
+  const revealIO = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); countUp(e.target); }
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+  $$('.reveal').forEach(el => revealIO.observe(el));
+
+  /* ── nav: current chapter + progress ── */
+  const navNow = $('#nav-now'), navBar = $('#nav-bar'), navLinks = $$('.nav-links a');
+  const chapterIO = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      if (navNow) navNow.textContent = e.target.dataset.now;
+      navLinks.forEach(a => a.getAttribute('href') === '#' + e.target.id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+    }
+  }, { rootMargin: '-45% 0px -54% 0px' });
+  $$('[data-now]').forEach(s => chapterIO.observe(s));
+
+  /* ── manifesto: words light up as they pass ── */
+  const scrub = $('[data-scrub]');
+  let words = [];
+  if (scrub) {
+    // phrases (split at the spaces in the copy) stay whole; words inside them light up one by one
+    const phrases = scrub.textContent.trim().split(/\s+/);
+    let seg = null;
+    try { seg = new Intl.Segmenter('th', { granularity: 'word' }); } catch { seg = null; }
+    scrub.textContent = '';
+    phrases.forEach((phrase, i) => {
+      const ph = d.createElement('span'); ph.className = 'ph';
+      const parts = seg ? Array.from(seg.segment(phrase), s => s.segment) : [phrase];
+      for (const part of parts) { const w = d.createElement('span'); w.className = 'w'; w.textContent = part; ph.append(w); words.push(w); }
+      scrub.append(ph); if (i < phrases.length - 1) scrub.append(' ');
+    });
+  }
+
+  /* ── Band night scene ── */
+  const hero = $('#overview'), scene = $('#band-scene'), clock = $('#band-clock'), beats = $$('#band-beats .beat');
+  function setBand(p) {
+    scene.style.setProperty('--p', p.toFixed(4));
+    scene.style.setProperty('--head', clamp(1 - p / 0.1).toFixed(3));
+    scene.style.setProperty('--line', clamp((p - 0.5) / 0.24).toFixed(3));
+    scene.style.setProperty('--dawn', clamp((p - 0.8) / 0.2).toFixed(3));
+    const minutes = (22 * 60 + 30 + Math.round(p * 96) * 5) % 1440; // 22:30 → 06:30
+    clock.textContent = pad(Math.floor(minutes / 60)) + ':' + pad(minutes % 60);
+    const idx = p < 0.1 ? -1 : p < 0.3 ? 0 : p < 0.5 ? 1 : p < 0.78 ? 2 : 3;
+    beats.forEach((b, i) => b.classList.toggle('on', i === idx));
+  }
+
+  let raf = 0;
+  function frame() {
+    raf = 0;
+    const vh = innerHeight, y = scrollY, max = root.scrollHeight - vh;
+    if (navBar) navBar.style.transform = `scaleX(${max > 0 ? clamp(y / max).toFixed(4) : 0})`;
+    if (hero && y < vh * 1.3) hero.style.setProperty('--hp', (reduce() ? 0 : clamp(y / (vh * 0.9))).toFixed(3));
+    if (words.length) {
+      const r = scrub.getBoundingClientRect();
+      if (r.bottom > -80 && r.top < vh + 80) {
+        const f = (reduce() ? 1 : clamp((vh * 0.84 - r.top) / (r.height + vh * 0.3))) * (words.length + 8);
+        words.forEach((s, i) => { s.style.opacity = (0.16 + 0.84 * clamp(f - i)).toFixed(2); });
+      }
+    }
+    if (scene && !reduce()) {
+      const r = scene.getBoundingClientRect(), total = r.height - vh;
+      if (total > 0 && r.top < vh && r.bottom > 0) setBand(clamp(-r.top / total));
+    }
+  }
+  const requestFrame = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  addEventListener('scroll', requestFrame, { passive: true });
+  addEventListener('resize', requestFrame);
+  frame();
+
+  /* ── hero film: gentle tilt toward the pointer ── */
+  const film = $('#film'), stage = $('.film-stage');
+  if (film && stage && finePointer.matches) {
+    film.addEventListener('pointermove', e => {
+      if (reduce()) return;
+      const r = film.getBoundingClientRect();
+      stage.style.setProperty('--ry', ((e.clientX - r.left) / r.width - 0.5) * 7 + 'deg');
+      stage.style.setProperty('--rx', (0.5 - (e.clientY - r.top) / r.height) * 5 + 'deg');
+    });
+    film.addEventListener('pointerleave', () => { stage.style.setProperty('--rx', '0deg'); stage.style.setProperty('--ry', '0deg'); });
+  }
+
+  /* ── highlights gallery ── */
+  const track = $('#hl-track'), hlCtrl = $('.hl-ctrl'), dotsBox = $('#hl-dots'), hlToggle = $('#hl-toggle');
+  const cards = track ? $$('.hl-card', track) : [];
+  let hlIdx = -1, hlVisible = false, hlPaused = reduce(), hlRaf = 0;
+  const dots = cards.map((_, i) => {
+    const b = d.createElement('button');
+    b.type = 'button'; b.className = 'hl-dot'; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', `ไฮไลต์ ${i + 1} จาก ${cards.length}`);
+    b.addEventListener('click', () => hlGo(i));
+    dotsBox.append(b);
+    return b;
+  });
+  function hlSet(i) {
+    if (i === hlIdx) return;
+    hlIdx = i;
+    cards.forEach((c, k) => { c.classList.toggle('on', k === i); const v = $('video', c); if (v) (k === i && hlVisible && !hlPaused) ? play(v) : stop(v); });
+    dots.forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+  }
+  function hlGo(i) {
+    const c = cards[(i + cards.length) % cards.length];
+    track.scrollTo({ left: c.offsetLeft - (track.clientWidth - c.clientWidth) / 2, behavior: reduce() ? 'auto' : 'smooth' });
+  }
+  function hlSync() {
+    hlRaf = 0;
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    cards.forEach((c, k) => { const dd = Math.abs(c.offsetLeft + c.clientWidth / 2 - mid); if (dd < dist) { dist = dd; best = k; } });
+    hlSet(best);
+  }
+  function hlRefresh() {
+    hlCtrl.classList.toggle('paused', hlPaused);
+    hlCtrl.classList.toggle('idle', !hlVisible);
+    hlToggle.setAttribute('aria-pressed', hlPaused ? 'true' : 'false');
+    hlToggle.setAttribute('aria-label', hlPaused ? 'เล่นอัตโนมัติต่อ' : 'หยุดเล่นอัตโนมัติ');
+    const v = cards[hlIdx] && $('video', cards[hlIdx]);
+    if (v) (hlVisible && !hlPaused) ? play(v) : stop(v);
+  }
+  if (track && cards.length) {
+    track.addEventListener('scroll', () => { if (!hlRaf) hlRaf = requestAnimationFrame(hlSync); }, { passive: true });
+    dotsBox.addEventListener('animationend', e => { if (e.animationName === 'dotfill' && !hlPaused && hlVisible) hlGo(hlIdx + 1); });
+    hlToggle.addEventListener('click', () => { hlPaused = !hlPaused; hlRefresh(); });
+    track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); hlGo(hlIdx - 1); } });
+    new IntersectionObserver(es => { hlVisible = es[0].isIntersecting; hlRefresh(); }, { threshold: 0.45 }).observe(track);
+    hlSync(); hlRefresh();
+  }
+
+  /* ── Band colours ── */
+  const swatches = $$('.sw'), lookImg = $('#look-img'), lookName = $('#look-name');
+  function pick(b) {
+    swatches.forEach(x => { x.setAttribute('aria-checked', x === b ? 'true' : 'false'); x.tabIndex = x === b ? 0 : -1; });
+    const src = `${ASSET}band-${b.dataset.color}.webp`;
+    lookName.textContent = b.dataset.name;
+    lookImg.classList.add('swap');
+    const pre = new Image();
+    const done = () => { lookImg.src = src; lookImg.alt = `Xircle Band สี ${b.dataset.name}`; requestAnimationFrame(() => lookImg.classList.remove('swap')); };
+    pre.onload = () => setTimeout(done, reduce() ? 0 : 180); pre.onerror = done; pre.src = src;
+  }
+  swatches.forEach((b, i) => {
+    b.tabIndex = i === 0 ? 0 : -1;
+    b.addEventListener('click', () => pick(b));
+    b.addEventListener('keydown', e => {
+      const dir = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
+      if (!dir) return;
+      e.preventDefault();
+      const next = swatches[(i + dir + swatches.length) % swatches.length]; next.focus(); pick(next);
+    });
+  });
+
+  /* ── Scale: step on (sample numbers only) ── */
+  const weigh = $('#weigh'), weighBtn = $('#weigh-btn'), lcdNum = $('#lcd-num'), lcdPct = $('#lcd-pct');
+  const vals = $$('#vals b');
+  let weighing = false;
+  function weighDone() {
+    weigh.dataset.state = 'done'; lcdNum.textContent = '61.4'; lcdPct.textContent = '24.8';
+    weighBtn.textContent = 'ชั่งอีกครั้ง'; weighing = false;
+  }
+  function runWeigh() {
+    if (weighing) return;
+    weighing = true;
+    if (reduce()) { vals.forEach(b => { b.textContent = b.dataset.to; }); weighDone(); return; }
+    weigh.dataset.state = 'on'; lcdNum.textContent = '0.0'; lcdPct.textContent = '--.-';
+    vals.forEach(b => { b.textContent = '0.0'; });
+    setTimeout(() => tween(1500, k => { lcdNum.textContent = Math.max(0, 61.4 * k + Math.sin(k * 20) * (1 - k) * 1.8).toFixed(1); }, () => {
+      weighDone();
+      vals.forEach((b, i) => setTimeout(() => tween(750, k => { b.textContent = (+b.dataset.to * k).toFixed(1); }), i * 90));
+    }), 480);
+  }
+  if (weigh && weighBtn) {
+    weighBtn.addEventListener('click', runWeigh);
+    const weighIO = new IntersectionObserver(es => { if (es[0].isIntersecting) { weighIO.disconnect(); if (!reduce()) runWeigh(); } }, { threshold: 0.55 });
+    weighIO.observe($('.weigh-stage', weigh));
+  }
+
+  /* ── app day: the phone follows the story ── */
+  const screens = $$('#phone-screen > *'), dayBeats = $$('.day-beat');
+  if (dayBeats.length) {
+    dayBeats[0].classList.add('on');
+    const dayIO = new IntersectionObserver(es => {
+      for (const e of es) {
+        if (!e.isIntersecting) continue;
+        const key = e.target.dataset.screen;
+        dayBeats.forEach(b => b.classList.toggle('on', b === e.target));
+        screens.forEach(s => { const on = s.dataset.screen === key; s.classList.toggle('on', on); if (s.tagName === 'VIDEO') (on && !narrowMq.matches) ? play(s) : stop(s); });
+      }
+    }, { rootMargin: '-46% 0px -46% 0px' });
+    dayBeats.forEach(b => dayIO.observe(b));
+  }
+
+  /* ── tour: nine one-minute episodes ── */
+  const list = $('#tour-list'), tourUi = $('#tour-ui'), tv = $('#tour-video'), segBox = $('#tour-segs');
+  const eps = $$('.ep', list || d).map(a => ({ a, n: +a.dataset.ep, h: a.dataset.h, v: a.dataset.v, title: $('.ep-t', a).textContent, blurb: a.dataset.blurb || '' }))
+    .filter(e => YT_ID.test(e.h) && YT_ID.test(e.v));
+  let cur = 0, auto = true, tourVisible = false;
+  const railVid = d.createElement('video');
+  railVid.muted = true; railVid.playsInline = true; railVid.loop = true; railVid.preload = 'none'; railVid.setAttribute('aria-hidden', 'true'); railVid.tabIndex = -1;
+
+  function markEp(i) {
+    cur = (i + eps.length) % eps.length;
+    eps.forEach((x, k) => { x.a.classList.toggle('on', k === cur); k === cur ? x.a.setAttribute('aria-current', 'true') : x.a.removeAttribute('aria-current'); });
+    return eps[cur];
+  }
+  function setEp(i) { // wide layout: stage + list
+    const e = markEp(i);
+    $('#tour-ep').textContent = `EP.${e.n}`; $('#tour-name').textContent = e.title; $('#tour-blurb').textContent = e.blurb;
+    Array.from(segBox.children).forEach((s, k) => s.style.setProperty('--w', k < cur ? '100%' : '0%'));
+    if (narrowMq.matches) return;
+    stop(tv);
+    tv.poster = `${ASSET}tour/ep${pad(e.n)}-h.webp`; tv.dataset.src = `${ASSET}tour/ep${pad(e.n)}-h.mp4`;
+    tv.removeAttribute('src'); tv.load();
+    if (tourVisible && !dlg.open) play(tv);
+  }
+  function setRail(i) { // narrow layout: swipeable vertical cards
+    const e = markEp(i), media = $('.ep-media', e.a);
+    if (railVid.parentNode !== media) {
+      stop(railVid);
+      railVid.poster = `${ASSET}tour/ep${pad(e.n)}-v.webp`; railVid.dataset.src = `${ASSET}tour/ep${pad(e.n)}-v.mp4`;
+      railVid.removeAttribute('src'); railVid.load();
+      media.insertBefore(railVid, $('.ep-go', media));
+    }
+    if (tourVisible && !dlg.open) play(railVid);
+  }
+  const tourLayout = () => { if (!eps.length) return; if (narrowMq.matches) { stop(tv); setRail(cur); } else { stop(railVid); railVid.remove(); setEp(cur); } };
+
+  /* ── player ── */
+  const dlg = $('#video-dialog'), pFrame = $('#player-frame'), pTitle = $('#player-title'), pYt = $('#player-yt'), pNav = $('#player-nav'), pPos = $('#player-pos');
+  let lastFocus = null, playingEp = -1;
+  const canDialog = !!(dlg && typeof dlg.showModal === 'function');
+  function openVideo(id, title, vertical) {
+    if (!canDialog || !YT_ID.test(id)) return false;
+    if (!dlg.open) lastFocus = d.activeElement;
+    pauseAll();
+    pFrame.textContent = '';
+    const f = d.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+    f.title = title; f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    pFrame.append(f);
+    pTitle.textContent = title; pYt.href = `https://www.youtube.com/watch?v=${id}`;
+    dlg.classList.toggle('is-vertical', !!vertical);
+    if (!dlg.open) dlg.showModal();
+    return true;
+  }
+  function openEpisode(i) {
+    if (!eps.length) return false;
+    playingEp = (i + eps.length) % eps.length;
+    const e = eps[playingEp], vertical = narrowMq.matches;
+    auto = false;
+    pNav.hidden = false; pPos.textContent = `${e.n} / ${eps.length}`;
+    narrowMq.matches ? markEp(playingEp) : setEp(playingEp);
+    return openVideo(vertical ? e.v : e.h, `EP.${e.n} ${e.title}`, vertical);
+  }
+  if (canDialog) {
+    dlg.addEventListener('close', () => {
+      pFrame.textContent = ''; playingEp = -1;
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+      hlRefresh(); tourLayout();
+    });
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+    $('#player-close').addEventListener('click', () => dlg.close());
+    $('#player-prev').addEventListener('click', () => openEpisode(playingEp - 1));
+    $('#player-next').addEventListener('click', () => openEpisode(playingEp + 1));
+    d.addEventListener('click', e => {
+      const a = e.target.closest('[data-ep],[data-play]');
+      if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const ok = a.dataset.ep ? openEpisode(+a.dataset.ep - 1) : (pNav.hidden = true, openVideo(a.dataset.play, a.dataset.title || 'วิดีโอ', false));
+      if (ok) e.preventDefault();
+    });
+  }
+
+  if (eps.length && tv) {
+    eps.forEach(() => segBox.append(d.createElement('i')));
+    tv.addEventListener('timeupdate', () => { if (tv.duration) segBox.children[cur]?.style.setProperty('--w', (tv.currentTime / tv.duration * 100).toFixed(1) + '%'); });
+    tv.addEventListener('ended', () => { if (auto && tourVisible) setEp(cur + 1); else { tv.currentTime = 0; play(tv); } });
+    eps.forEach((e, k) => {
+      const preview = () => { if (narrowMq.matches || k === cur) return; auto = false; setEp(k); };
+      e.a.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') preview(); });
+      e.a.addEventListener('focus', preview);
+    });
+    $('#tour-open').addEventListener('click', () => openEpisode(cur));
+    // narrow layout: the card nearest the middle of the rail becomes the live one
+    const railIO = new IntersectionObserver(es => {
+      for (const en of es) { if (!narrowMq.matches || !en.isIntersecting || en.intersectionRatio < 0.7) continue; const k = eps.findIndex(x => x.a === en.target); if (k > -1) setRail(k); }
+    }, { root: list, threshold: [0.7] });
+    eps.forEach(e => railIO.observe(e.a));
+    new IntersectionObserver(es => {
+      tourVisible = es[0].isIntersecting;
+      const active = narrowMq.matches ? railVid : tv;
+      (tourVisible && !dlg.open) ? play(active) : (stop(tv), stop(railVid));
+    }, { threshold: 0.3 }).observe(tourUi);
+    narrowMq.addEventListener?.('change', tourLayout);
+
+    // deep link: /xircle/?ep=4 selects that episode and brings the tour into view
+    const params = new URLSearchParams(location.search), asked = params.getAll('ep');
+    const want = asked.length === 1 && /^[1-9]$/.test(asked[0]) ? +asked[0] : 0;
+    if (want && want <= eps.length) { cur = want - 1; auto = false; }
+    tourLayout();
+    if (want && !location.hash) {
+      try { history.scrollRestoration = 'manual'; } catch { /* older browsers keep their own position */ }
+      const bring = () => {
+        (narrowMq.matches ? $('#tour') : tourUi).scrollIntoView({ behavior: 'instant', block: narrowMq.matches ? 'start' : 'center' });
+        if (narrowMq.matches) { const li = eps[cur].a.parentNode; list.scrollLeft = li.offsetLeft - (list.clientWidth - li.clientWidth) / 2; }
+      };
+      if (d.readyState === 'complete') bring(); else addEventListener('load', bring, { once: true });
+    }
+  }
+})();
