@@ -112,6 +112,19 @@
     });
   }
   let bandP = 0;
+  /* ── 24/7 card: the dawn clip plays once each time the card comes into view ── */
+  const allday = $('#allday'), alldayVid = allday && $('video', allday);
+  if (alldayVid) {
+    if (!reduce() && alldayVid.dataset.posterMotion) alldayVid.poster = alldayVid.dataset.posterMotion;
+    new IntersectionObserver(es => {
+      const seen = es[0].isIntersecting;
+      allday.classList.toggle('on', seen);
+      if (!seen) { stop(alldayVid); return; }
+      if (alldayVid.currentTime > 0) alldayVid.currentTime = 0;
+      play(alldayVid);
+    }, { threshold: 0.5 }).observe(allday);
+  }
+
   if (scene && seqCanvas) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); seqLoad(); } }, { rootMargin: '160% 0px' }).observe(scene);
 
   let raf = 0;

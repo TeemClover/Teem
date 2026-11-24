@@ -270,6 +270,19 @@ html.rm .hl-ctrl{display:none}
 .dawn-light{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to top,rgba(255,170,124,.62),rgba(196,120,176,.22) 34%,transparent 62%);opacity:var(--dawn)}
 .scene-note{position:absolute;z-index:4;inset:auto 0 14px;padding-inline:16px;text-align:center;font-size:11.5px;color:rgba(255,255,255,.42)}
 
+/* 24/7 card: the dawn clip (data arcs from the Band into the phone) beside the wear-and-charge line */
+.allday{position:relative;margin:clamp(48px,9vh,110px) auto 0;width:min(1040px,100%);aspect-ratio:16/9.4;border-radius:var(--r);overflow:hidden;background:#0a0f1f;color:#fff}
+.allday>video{position:absolute;right:0;top:-23%;width:auto;height:135%;aspect-ratio:1;object-fit:cover;-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%);mask-image:linear-gradient(90deg,transparent,#000 16%)}
+.allday-txt{position:absolute;z-index:1;left:clamp(22px,4.4vw,56px);top:50%;transform:translateY(-50%);max-width:31%}
+.allday-txt h3{margin-top:.25em;font-family:var(--display);font-weight:800;font-size:clamp(2rem,4.6vw,3.5rem);line-height:1.15;letter-spacing:-.02em;white-space:nowrap}
+.allday-txt h3 b{font-weight:800;background:linear-gradient(100deg,#8fd2ff,#c9a6ff 55%,#ffc98a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.allday-line{margin-top:.7em;font-size:clamp(1rem,1.55vw,1.22rem);font-weight:700;line-height:1.5;color:rgba(255,255,255,.92)}
+.week7{display:flex;align-items:center;gap:6px;margin-top:20px;padding:0;list-style:none}
+.week7 li{width:22px;height:6px;border-radius:3px;background:rgba(255,255,255,.78);transition:background .4s calc(.5s + var(--i)*.13s),box-shadow .4s calc(.5s + var(--i)*.13s),color .4s calc(.5s + var(--i)*.13s)}
+.week7 li.chg{display:grid;place-items:center;width:26px;height:18px;border-radius:9px;background:#6dffaa;color:#06301a;box-shadow:0 0 16px rgba(90,255,160,.6)}
+.js:not(.rm) .allday:not(.on) .week7 li{background:rgba(255,255,255,.16);box-shadow:none}
+.js:not(.rm) .allday:not(.on) .week7 li.chg{color:rgba(255,255,255,.4)}
+
 .look{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,6vw,84px);align-items:center;padding-block:clamp(60px,11vh,130px) clamp(30px,5vh,60px)}
 .look-view{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:var(--r);overflow:hidden;background:radial-gradient(closest-side at 50% 46%,#4a5d9c,#1a2450 62%,#0e1535)}
 .look-glow{position:absolute;inset:12%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.16),transparent);animation:breathe 5s ease-in-out infinite alternate}
@@ -496,6 +509,11 @@ html.rm .hl-ctrl{display:none}
   .has-seq .sleep-line{-webkit-mask-image:radial-gradient(circle calc(min(58svh,560px)*.4) at 50% 50%,transparent 86%,#000 100%);mask-image:radial-gradient(circle calc(min(58svh,560px)*.4) at 50% 50%,transparent 86%,#000 100%)}
   .beats{height:8.6em}
   .sleep-keys{display:none}
+  .allday{display:flex;flex-direction:column;aspect-ratio:auto;border-radius:22px}
+  .allday-txt{position:relative;left:auto;top:auto;transform:none;max-width:none;padding:24px 22px 0}
+  .allday-txt h3{font-size:2.3rem}
+  .allday-line{font-size:1.02rem}
+  .allday>video{position:relative;right:auto;top:auto;width:100%;height:auto;margin-top:-7%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%);mask-image:linear-gradient(to bottom,transparent,#000 22%)}
   .look{grid-template-columns:1fr;text-align:center}
   .swatches,.tracks{justify-content:center}
   .stats{grid-template-columns:1fr 1fr;row-gap:26px}

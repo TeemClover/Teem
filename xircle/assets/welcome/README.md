@@ -52,13 +52,17 @@ Third batch, same day. The owner asked for a fast montage on the Band card and f
 
 On these three cards the words and numbers are HTML over the clip: the dish names, the macro readout (49 g, 96 g, 35 g, 895 kcal), the day initials and the score (76) are examples written for this page, not output of the app, and are labelled so. Their positions are given in the clip's own coordinates and converted for the wide and narrow layouts in `welcome.css`.
 
-Fourth batch, same day. The first sleep clip showed the Band lying on a bedside table while "tracking"; the owner pointed out it has to be on the sleeper. It was replaced, and `bedside.webp`, `bedside-night.*` were removed:
+Fourth batch, same day. The first sleep clip showed the Band lying on a bedside table while "tracking"; the owner pointed out it has to be on the sleeper. It was replaced on the sleep card, and `bedside.webp`, `bedside-night.*` were removed. The owner then asked for that clip to be kept somewhere it fits, so its morning half came back as `band-sync.*` on the 24/7 card in the Band chapter, where it only shows data arriving in the app:
 
 | File | How it was made | Processing |
 | --- | --- | --- |
 | `sleep-night.mp4`, `sleep-night.webp`, `sleep-night-end.webp` | Higgsfield, model Seedance 2.5, job `ae58fcb3-6dd6-486c-97ff-06e40105af2e`: 8 s, 1080p, 1:1, no audio, 128 credits. Reference: the sheet of the four official Band images. Brief: a five-shot film of one night with the Band on the sleeper's wrist in every shot (falling asleep, light sleep, deep sleep, dreaming sleep, waking), each stage with its own colour and rhythm of light. | 900×900, H.264 CRF 25, no audio; WebP stills are the first and last frames |
 
-The stage names and times under that clip (22:30, 23:10, 01:40, 04:20, 06:30) are HTML, synced to the shots through `data-cues`. The times are examples and the coloured light is a visual metaphor; the Band does not emit it.
+| `band-sync.mp4`, `band-sync.webp`, `band-sync-end.webp` | Cut from the earlier bedside clip (Higgsfield, Seedance 2.5, job `74ed6914-2f05-4bbc-b4b5-e83e55e12f84`, 5 s, 80 credits; its last frame is the official `sleep-bedside.jpg`). Only the part from 1.75 s is used: morning light, an arc of light travels from the Band to the phone and the app screen wakes. No new generation. | 900×900, H.264 CRF 25, no audio, 3.3 s; WebP stills are the first and last frames |
+
+The app screen on the phone in `band-sync` is drawn by the model and is not a real screenshot; the card is labelled "ภาพจำลองเพื่อการนำเสนอ".
+
+The stage names and times under the sleep clip (22:30, 23:10, 01:40, 04:20, 06:30) are HTML, synced to the shots through `data-cues`. The times are examples and the coloured light is a visual metaphor; the Band does not emit it.
 
 The HUD on the Scale card (corner marks, scan line, the five value names and "ดูต่อได้ 9 ค่า") is HTML and CSS over that image, so the Thai text is real text. The page draws the Band sequence on a canvas by scroll position; it loads only when the night scene is near, is skipped with reduced motion or data saver, and narrow screens load every second frame. Without it the real product photo with the CSS light sweep is shown.
 
@@ -76,4 +80,6 @@ The light that passes over the Band in the night scene is a CSS gradient masked 
 | Nine values on My Body · weigh once a week · estimates, read as a trend | Series EP.8 narration |
 | Habit Score from eating, sleep and movement · MaxAge is a direction, not a prediction | Series EP.2 and EP.9 descriptions |
 
-Left out on purpose: **battery life**. The official home page says 10 days, the Band page says up to 15 days and its spec list says about 15 days in normal use. Add a figure only after the owner confirms which one to print.
+**Wear and charging line.** The 24/7 card in the Band chapter says "ใส่ได้ 24/7 · ชาร์จสัปดาห์ละครั้ง โดยไม่ต้องถอดจากข้อมือ". The wording was given by the owner on 24 Nov 2026. What the official site says, read the same day: the home page has "แบตเตอรี่ 10 วัน · ชาร์จครั้งเดียวใช้ได้ทั้งสัปดาห์ ไม่ต้องถอดบ่อย", the Band page has "ใส่ได้ทั้งวันทั้งคืน", wireless charging and a charging case with its own 210 mAh battery, and the support page has "ชาร์จ Band ด้วยแท่นชาร์จไร้สาย". None of those pages says in so many words that the Band charges while it is on the wrist, so that part rests on the owner's word.
+
+Still left out on purpose: a **battery-day figure**. The official home page says 10 days, the Band page says up to 15 days and its spec list says about 15 days in normal use. A test keeps a day figure off the page until the owner confirms which one to print.

@@ -52,7 +52,14 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.match(html,/<canvas[^>]+id="band-seq"[^>]+aria-hidden="true"/);
  assert.match(js,/saveData/,'the sequence is skipped for data saver');
  assert.match(html,/class="scene-note"[^>]*>[^<]*ภาพจำลอง/,'the Band sequence is labelled as a presentation scene');
- assert.equal([...html.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,5,'all five highlight cards use generated scenes and each is labelled');
+ const highlights=html.match(/<section class="hl"[\s\S]*?<\/section>/)?.[0]||'';
+ assert.equal([...highlights.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,5,'all five highlight cards use generated scenes and each is labelled');
+ const allday=html.match(/<figure class="allday[\s\S]*?<\/figure>/)?.[0]||'';
+ assert.match(allday,/data-src="\/xircle\/assets\/welcome\/band-sync\.mp4"/,'the 24/7 card plays the dawn sync clip');
+ assert.match(allday,/class="hud-note"[^>]*>[^<]*ภาพจำลอง/,'the 24/7 clip is labelled as a presentation scene');
+ assert.match(allday,/24\/7/,'the 24/7 card says the Band can stay on');
+ assert.match(allday,/ชาร์จสัปดาห์ละครั้ง/,'the 24/7 card carries the owner\'s weekly-charge line');
+ assert.doesNotMatch(html,/แบตเตอรี่[^<]{0,40}\d+\s*วัน/,'no battery-day figure is printed while the official pages disagree');
  for(const clip of ['band-montage.mp4','sleep-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
  const sleep=html.match(/<article class="hl-card hl-sleep"[\s\S]*?<\/article>/)?.[0]||'';
  assert.match(sleep,/<video[^>]+data-once[^>]+data-cues="[\d.,]+"/,'the sleep film plays once and names where each stage starts');

@@ -19,7 +19,7 @@ The page is told as the visitor's first day. The background moves with it: dayli
 
 ## Assets, facts and destinations
 
-Sources for every image and preview, and the official page each product statement came from, are in [assets/welcome/README.md](assets/welcome/README.md). Battery life is deliberately not printed: the official pages give two different figures.
+Sources for every image and preview, and the official page each product statement came from, are in [assets/welcome/README.md](assets/welcome/README.md). A battery-day figure is deliberately not printed: the official pages give two different figures. The 24/7 card in the Band chapter carries the owner's line instead (wear it day and night, charge once a week without taking it off the wrist).
 
 App links are unchanged: `https://apps.apple.com/th/app/id6785562482`, `https://play.google.com/store/apps/details?id=health.xircle.app` and `https://www.xircle.health/download`. Buying goes to the official product page's purchase section. The review wall (`/review/`), ห้องความรู้ (`/xircle/learn/`), hardware reference (`/xircle/hardware/`), `/routinex/` and the official site are linked from "go deeper".
 
