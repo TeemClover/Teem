@@ -112,6 +112,19 @@
     });
   }
   let bandP = 0;
+  /* ── 24/7 card: the dawn clip plays once each time the card comes into view ── */
+  const allday = $('#allday'), alldayVid = allday && $('video', allday);
+  if (alldayVid) {
+    if (!reduce() && alldayVid.dataset.posterMotion) alldayVid.poster = alldayVid.dataset.posterMotion;
+    new IntersectionObserver(es => {
+      const seen = es[0].isIntersecting;
+      allday.classList.toggle('on', seen);
+      if (!seen) { stop(alldayVid); return; }
+      if (alldayVid.currentTime > 0) alldayVid.currentTime = 0;
+      play(alldayVid);
+    }, { threshold: 0.5 }).observe(allday);
+  }
+
   if (scene && seqCanvas) new IntersectionObserver((es, io) => { if (es.some(e => e.isIntersecting)) { io.disconnect(); seqLoad(); } }, { rootMargin: '160% 0px' }).observe(scene);
 
   let raf = 0;
@@ -141,11 +154,56 @@
   if (film && stage && finePointer.matches) {
     film.addEventListener('pointermove', e => {
       if (reduce()) return;
-      const r = film.getBoundingClientRect();
-      stage.style.setProperty('--ry', ((e.clientX - r.left) / r.width - 0.5) * 7 + 'deg');
-      stage.style.setProperty('--rx', (0.5 - (e.clientY - r.top) / r.height) * 5 + 'deg');
+      const r = film.getBoundingClientRect(), k = r.width > 900 ? 0.35 : 1; // the wide stage leans less
+      stage.style.setProperty('--ry', ((e.clientX - r.left) / r.width - 0.5) * 7 * k + 'deg');
+      stage.style.setProperty('--rx', (0.5 - (e.clientY - r.top) / r.height) * 5 * k + 'deg');
     });
     film.addEventListener('pointerleave', () => { stage.style.setProperty('--rx', '0deg'); stage.style.setProperty('--ry', '0deg'); });
+    // the pointer is a lens: the out-of-focus montage is sharp around it
+    stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      stage.style.setProperty('--lx', (e.clientX - r.left).toFixed(0) + 'px');
+      stage.style.setProperty('--ly', (e.clientY - r.top).toFixed(0) + 'px');
+      stage.style.setProperty('--lr', Math.round(clamp(r.height * 0.42, 150, 260)) + 'px');
+    });
+    stage.addEventListener('pointerleave', () => stage.style.setProperty('--lr', '0px'));
+  }
+
+  /* ── hero film, wide screens: a montage cut from the film itself plays out of focus behind Play ── */
+  const live = stage && $('.film-live', stage);
+  if (live) {
+    const nowName = $('#film-now'), ticks = $$('.film-ticks i', stage), heroDlg = $('#video-dialog');
+    const names = (live.dataset.names || '').split('|'), cues = (live.dataset.cues || '').split(',').map(Number);
+    let stageSeen = false, loaded = d.readyState === 'complete';
+    const liveSync = () => {
+      const ok = loaded && stageSeen && !narrowMq.matches && !reduce() && !(navigator.connection && navigator.connection.saveData) && !(heroDlg && heroDlg.open);
+      ok ? play(live) : stop(live);
+    };
+    live.addEventListener('playing', () => stage.classList.add('live'));
+    live.addEventListener('timeupdate', () => {
+      let k = 0;
+      cues.forEach((c, i) => { if (live.currentTime >= c) k = i; });
+      if (nowName && names[k] && nowName.textContent !== names[k]) nowName.textContent = names[k];
+      ticks.forEach((t, i) => t.classList.toggle('on', i === k));
+    });
+    new IntersectionObserver(es => { stageSeen = es[0].isIntersecting; liveSync(); }, { threshold: 0.2 }).observe(stage);
+    if (!loaded) addEventListener('load', () => { loaded = true; liveSync(); }, { once: true });
+    narrowMq.addEventListener?.('change', liveSync);
+    reduceMq.addEventListener?.('change', () => { if (reduce()) stage.classList.remove('live'); liveSync(); });
+    if (heroDlg) heroDlg.addEventListener('close', liveSync);
+    // the lens: while the pointer is on the stage, a canvas keeps a sharp copy of the current frame (CSS shows it only around the pointer)
+    const lens = $('.film-lens', stage), lctx = lens && lens.getContext && lens.getContext('2d');
+    if (lctx && finePointer.matches) {
+      let lensOn = false, lensTail = 0, lensRaf = 0;
+      const lensDraw = () => {
+        lensRaf = 0;
+        if (!stage.classList.contains('live')) return;
+        if (live.readyState >= 2) lctx.drawImage(live, 0, 0, lens.width, lens.height);
+        if (lensOn || performance.now() < lensTail) lensRaf = requestAnimationFrame(lensDraw);
+      };
+      stage.addEventListener('pointermove', () => { lensOn = true; if (!lensRaf) lensRaf = requestAnimationFrame(lensDraw); });
+      stage.addEventListener('pointerleave', () => { lensOn = false; lensTail = performance.now() + 600; });
+    }
   }
 
   /* ── highlights: scroll down and the cards pass one by one ──
@@ -207,6 +265,20 @@
         if (scored && !counted) { counted = true; countUp(card); } else if (!scored) counted = false;
       };
       v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync); v.addEventListener('ended', sync);
+      sync();
+    });
+    // a clip can name the moments where its chapters start; the matching label below it lights up
+    $$('video[data-cues]', track).forEach(v => {
+      const card = v.closest('.hl-card'), items = $$('.stages li', card);
+      const cues = v.dataset.cues.split(',').map(Number).filter(n => n >= 0);
+      const sync = () => {
+        if (reduce()) { card.classList.remove('cued'); return; }
+        let idx = 0;
+        cues.forEach((c, i) => { if (v.currentTime >= c) idx = i; });
+        card.classList.add('cued');
+        items.forEach((li, i) => li.classList.toggle('cur', i === idx));
+      };
+      v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync);
       sync();
     });
     track.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); hlGo(hlIdx - 1); } });

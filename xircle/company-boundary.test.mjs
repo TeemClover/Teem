@@ -41,6 +41,19 @@ test('opening film and nine episodes ship in both orientations with local covers
  const local=[...html.matchAll(/(?:src|poster|data-src)="(\/xircle\/[^"?#]+)/g)].map(match=>match[1]);
  assert.ok(new Set(local).size>=25,'covers, previews and product images are self-hosted');
  for(const path of new Set(local))await access(new URL(path.replace('/xircle/',''),import.meta.url));
+ const stage=html.match(/<a class="film-stage"[\s\S]*?<\/a>/)?.[0]||'';
+ assert.match(stage,/<source media="\(min-width:821px\)" srcset="\/xircle\/assets\/welcome\/film-live\.webp"/,'wide screens get the montage still behind Play');
+ await access(new URL('assets/welcome/film-live.webp',import.meta.url));
+ const live=stage.match(/<video class="film-live"[^>]*>/)?.[0]||'';
+ assert.match(live,/data-src="\/xircle\/assets\/welcome\/film-live\.mp4"/,'the hero montage is self-hosted');
+ assert.match(live,/\bmuted\b[^>]*\bloop\b/,'the hero montage is silent');
+ assert.match(live,/aria-hidden="true"/,'the hero montage is decoration; the link text carries the meaning');
+ const shots=live.match(/data-cues="([^"]+)"/)[1].split(',').length;
+ assert.equal(live.match(/data-names="([^"]+)"/)[1].split('|').length,shots,'one feature name per montage shot');
+ assert.equal([...stage.matchAll(/<i(?: class="on")?><\/i>/g)].length,shots,'one progress mark per montage shot');
+ assert.match(stage,/class="film-label">[^<]*2 นาที/,'the stage itself invites the visitor to play the two-minute film');
+ const js=await read('welcome.js');
+ assert.match(js,/narrowMq\.matches && !reduce\(\) && !\(navigator\.connection && navigator\.connection\.saveData\)/,'the hero montage stays off on narrow screens, with reduced motion and with data saver');
 });
 
 test('Band scroll sequence ships every frame the runtime asks for and generated scenes are labelled',async()=>{
@@ -52,9 +65,20 @@ test('Band scroll sequence ships every frame the runtime asks for and generated 
  assert.match(html,/<canvas[^>]+id="band-seq"[^>]+aria-hidden="true"/);
  assert.match(js,/saveData/,'the sequence is skipped for data saver');
  assert.match(html,/class="scene-note"[^>]*>[^<]*ภาพจำลอง/,'the Band sequence is labelled as a presentation scene');
- assert.equal([...html.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,5,'all five highlight cards use generated scenes and each is labelled');
- for(const clip of ['band-montage.mp4','bedside-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
- assert.match(html,/<video[^>]+poster="\/xircle\/assets\/welcome\/bedside\.webp"[^>]+data-once/,'the night-to-morning clip keeps the real photo as its still');
+ const highlights=html.match(/<section class="hl"[\s\S]*?<\/section>/)?.[0]||'';
+ assert.equal([...highlights.matchAll(/class="hud-note"[^>]*>[^<]*ภาพจำลอง/g)].length,5,'all five highlight cards use generated scenes and each is labelled');
+ const allday=html.match(/<figure class="allday[\s\S]*?<\/figure>/)?.[0]||'';
+ assert.match(allday,/data-src="\/xircle\/assets\/welcome\/band-sync\.mp4"/,'the 24/7 card plays the dawn sync clip');
+ assert.match(allday,/class="hud-note"[^>]*>[^<]*ภาพจำลอง/,'the 24/7 clip is labelled as a presentation scene');
+ assert.match(allday,/24\/7/,'the 24/7 card says the Band can stay on');
+ assert.match(allday,/ชาร์จสัปดาห์ละครั้ง/,'the 24/7 card carries the owner\'s weekly-charge line');
+ assert.doesNotMatch(html,/แบตเตอรี่[^<]{0,40}\d+\s*วัน/,'no battery-day figure is printed while the official pages disagree');
+ for(const clip of ['band-montage.mp4','sleep-night.mp4','scale-ripple.mp4','food-scan.mp4','habit-week.mp4'])assert.ok(html.includes(`data-src="/xircle/assets/welcome/${clip}"`),`highlight clip ${clip}`);
+ const sleep=html.match(/<article class="hl-card hl-sleep"[\s\S]*?<\/article>/)?.[0]||'';
+ assert.match(sleep,/<video[^>]+data-once[^>]+data-cues="[\d.,]+"/,'the sleep film plays once and names where each stage starts');
+ assert.equal(sleep.match(/data-cues="([^"]+)"/)[1].split(',').length,[...sleep.matchAll(/<li class="s-/g)].length,'one cue per sleep stage label');
+ for(const stage of ['หลับตื้น','หลับลึก','REM','ตื่น'])assert.ok(sleep.includes(stage),`sleep card names ${stage}`);
+ assert.match(sleep,/เวลาเป็นตัวอย่าง/,'sleep stage times are labelled as examples');
  for(const macro of ['โปรตีน','คาร์บ','ไขมัน','พลังงาน'])assert.match(html,new RegExp(`<dt>${macro}</dt>`),`food card shows ${macro}`);
  assert.match(html,/class="macro"[^>]*aria-label="[^"]*ตัวเลขตัวอย่าง/,'food numbers are labelled as examples');
  assert.equal([...html.matchAll(/<ul class="week"[^>]*>(.*?)<\/ul>/gs)][0][1].split('<li').length-1,7,'the Habit Score card shows seven days');
