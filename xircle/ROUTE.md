@@ -1,32 +1,33 @@
 # Route guard — /xircle/
 
-Updated 2026-11-09. The current owner request is a complete redesign of the customer-facing landing page: an Apple Watch-inspired scrolling product story using the real Xircle logo, product artwork and app screens. This replaces the six-station map as the root experience.
+Updated 2026-11-24. The owner asked for the root to become the **welcome page for Xircle customers** (and for people still deciding): open with the two-minute overview film, tell the story in the Apple Watch product-page manner, keep the focus on the real Xircle Band and Xircle Scale, and tour the app through the nine one-minute episodes. This replaces the 2026-11-09 real-app landing as the root experience.
 
 ## Current journey
 
-**Meet Xircle → eat / AI Food Scan → sleep → move → App, Band and Scale → HabiX / Routine X → official tutorials → download the app.**
+**Welcome + overview film → highlights → tonight: Xircle Band → tomorrow morning: Xircle Scale → through the day: the app → nine one-minute episodes → start in 3 steps → go deeper.**
 
-- Root: `/xircle/`; preserve existing case/slash aliases. Active root files are `index.html`, `landing.js` and `landing.css`, with `media-library.js` / `media-library.css` for official tutorials. The retired `brand-experience` map is not loaded by this page.
-- Use native scrolling, section anchors, a concise mobile menu and progressive enhancement. The visual story must work on desktop and mobile without scroll interception or another global motion engine.
-- The food interaction is a canned example: play the capture/ingredient/nutrition stages and change a bounded portion multiplier. It does not open a camera, upload photos, collect health inputs or run live food analysis. Label the example clearly and keep nutrition estimates distinguishable from actual visitor measurements.
-- Show the two supplied app recordings with visible local posters and native playback controls. Their status/account-points and operating-system navigation areas are cropped, and audio is removed. Opening/closing a dialog must manage playback, Escape and focus correctly.
-- Preserve all 10 official tutorials from `@CloverXOfficial`, their category queues, local metadata and self-hosted thumbnail images. Create the `youtube-nocookie.com` player only after Play; closing or changing the queue removes it. Keep real YouTube fallback links.
-- Routine X has **four non-playable Coming soon episode cards**. They reserve space for future welcome clips and must not imply those clips are already available.
+The page is told as the visitor's first day. The background moves with it: daylight at the top, dusk into a night scene for the Band, dawn for the Scale, daylight again for the app.
 
-## Assets and destinations
+- Root: `/xircle/`; preserve existing case/slash aliases. Active root files are `index.html`, `welcome.js` and `welcome.css`, with assets in `assets/welcome/`. The retired `landing.*`, `media-library.*` and `brand-experience.*` files are not loaded by this page.
+- Legacy entries still resolve through `route-contract.js`: `#start` is the three-step setup section and `#routine` sits on the "go deeper" section that links to `/routinex/`.
+- `?ep=1`…`?ep=9` (one value only) selects that episode and brings the tour into view. It never starts playback.
+- Native scrolling throughout. One pinned scene (the Band at night) reads its own scroll progress; everything else is ordinary flow with reveal-on-scroll. No scroll interception, no motion library, no browser storage, no network calls from the runtime.
+- Videos: the opening film `MU9jlnp__pg`, the nine episodes and the official setup tutorials are plain YouTube links in the HTML. With JavaScript, a `youtube-nocookie.com` player is created inside `#video-dialog` only after Play and removed on close. Episodes use the 16:9 upload on wide screens and the 9:16 upload at 820 px and below. Muted local previews (`assets/welcome/tour/`) load only when their card is on screen.
+- The Band night scene, the scale "step on" demo, the Habit Score rings and the MaxAge line are illustrations with sample numbers and are labelled so on the page. The scale demo does not read a device, ask for input or store anything.
+- No personal booking, referral funnel, Teem/Ako presentation, TeamBook handoff, form or personal contact belongs here. Device copy stays inside the communication boundary (`doc/xvisor/claims/`) and carries the official "not a medical device" line.
 
-Use the actual Xircle and Routine X logos, product images and sanitized real-app crops. Asset sources, thumbnail IDs, video processing and the Higgsfield hero generation are recorded in [assets/real-app/README.md](assets/real-app/README.md). Identify the generated hero as a presentation scene; the displayed phone interface is a separate real-app capture.
+## Assets, facts and destinations
 
-The primary app links are `https://apps.apple.com/th/app/id6785562482` and `https://play.google.com/store/apps/details?id=health.xircle.app`. Keep `https://www.xircle.health/download` and the official Xircle site as company destinations. No personal booking, referral funnel, Teem/Ako presentation, TeamBook handoff or personal contact belongs in this landing. Separately requested acquisition aliases remain outside this redesign.
+Sources for every image and preview, and the official page each product statement came from, are in [assets/welcome/README.md](assets/welcome/README.md). Battery life is deliberately not printed: the official pages give two different figures.
 
-All **49 reference pages** remain directly readable, including ห้องความรู้, hardware, products and detailed sources. `build/journey-shell.mjs` maintains their shared static navigation and skips the root because the landing owns its header/footer. Existing reference scripts and product taxonomy remain independent of the new root. The top-level `/maxage` page is outside this change.
+App links are unchanged: `https://apps.apple.com/th/app/id6785562482`, `https://play.google.com/store/apps/details?id=health.xircle.app` and `https://www.xircle.health/download`. Buying goes to the official product page's purchase section. The review wall (`/review/`), ห้องความรู้ (`/xircle/learn/`), hardware reference (`/xircle/hardware/`), `/routinex/` and the official site are linked from "go deeper".
+
+All **49 reference pages** remain directly readable. `build/journey-shell.mjs` maintains their shared navigation and skips the root because the welcome page owns its header and footer.
+
+## What the previous landing had that this page does not
+
+The interactive food-scan example, the ten-clip official media library with category queues, the HabiX product strip and the four "Coming soon" Routine X episode cards were part of the 2026-11-09 landing and are not on the welcome page. Their files remain in the repository. The official setup tutorials for the app, Band and Scale are linked from the three-step section; the food-scan recording plays inside the phone in the app chapter.
 
 ## Fallbacks and verification
 
-Reduced motion removes decorative animation and skips the timed scan progression. Without JavaScript, keep the static story, example information, direct local-video links, official-channel link, reference pages and app-download links usable. The root does not require WebGL or browser storage.
-
-Run [JOURNEY_QA.md](JOURNEY_QA.md) against the current revision before delivery. Do not reuse six-station-map results as evidence for this landing, or describe a local pass as a production deployment.
-
-## Food clips and knowledge entry — 2026-11-09 follow-up
-
-Food video playback uses hard-cut, silent versions of the real captures: scan preview approximately0.53s, then populated ingredient results; total6.23s /5.63s. UI captions identify the wait-time edit. The complete knowledge content remains at its original21topic IDs and49reference routes. The library hub is reorganized into the existing4categories with search and URL filters preserved; the landing exposes category cards and a top navigation entry. Completed `/routinex/absorb/` and `/routinex/build/` rooms are linked in company context with `?brand=xircle` and remain separate from the4forthcoming welcome clips.
+Reduced motion lays the Band scene out flat, stops previews and timed galleries, and shows the scale values without the animation. Without JavaScript the same flat layout applies and every video is a normal YouTube link. Run [JOURNEY_QA.md](JOURNEY_QA.md) against the current revision before delivery, and do not describe a local pass as a production deployment.

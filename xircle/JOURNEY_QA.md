@@ -1,50 +1,43 @@
-# Xircle real-app landing — validation
+# Xircle welcome page — validation
 
-Updated 2026-11-09. This records the redesigned root and its required checks. It does not certify production deployment, health outcomes, app installation or every external video player.
+Updated 2026-11-24. This records what was checked for the welcome page at `/xircle/`. It does not certify production deployment, health outcomes, app installation or every external video player.
 
 ## Scope
 
-The active landing uses `landing.js` / `landing.css` to tell a scrolling eat → sleep → move story with real logos, sanitized app screens, Band/Scale imagery and a clearly identified generated hero scene. The former six-station map is superseded at the root. Preserve all 49 directly readable reference pages and their shared static navigation.
+`index.html`, `welcome.js`, `welcome.css` and `assets/welcome/`. The 49 reference pages and their shared navigation are unchanged.
 
-The scan interaction uses a fixed food example and bounded portion choices. It must not request camera access, upload an image, accept health inputs or present the sample as a visitor's measurement. Two silent, cropped real-app clips have local posters and direct fallback links. Ten official videos have local thumbnails and load a YouTube player only after Play. Routine X reserves exactly four **Coming soon** cards, without fake playback.
+## Evidence on 2026-11-24 (local, working tree, before commit)
 
-Asset provenance and the real-capture / generated-scene distinction are documented in [assets/real-app/README.md](assets/real-app/README.md). Company app destinations are the official App Store and Google Play applications; personal service or referral funnels are excluded from this landing.
+Automated, run with Node 22:
 
-## Current evidence status
+- `node --test xircle/route-contract.test.mjs xircle/company-boundary.test.mjs xircle/knowledge-access.test.mjs` — 13 of 13 passed. These now assert the welcome runtime, the legacy `#start` / `#routine` anchors, no form or personal funnel, no browser storage or network call in the runtime, no `<iframe>` or autoplay in the HTML, the opening film, nine episodes with distinct 16:9 and 9:16 IDs, matching story links, and that every local cover, preview and image exists.
+- `node xircle/build/journey-shell.mjs --check` — "50 pages" verified; the root is skipped.
+- `node --check xircle/welcome.js` and `git diff --check` — clean.
 
-The old six-station-map browser counts and earlier scrolling-page audits are historical, not certification of this redesign. The new `landing.e2e.mjs` browser harness passed all 7 groups on 2026-11-09 (07:48:41–07:49:26 UTC) using Chrome 156.0.8078.81. Layouts at 320/390/768/1440px, all 10 thumbnail decodes, scan stages/portions/replay, mobile camera button, Band colors/menu, four Routine X cards, real local-video playback/cleanup/focus, restored video URLs, reduced motion and no-JavaScript fallbacks passed. The run recorded zero page errors, failed local requests or unsolicited external requests. The 13 node contracts and shell check also passed.
+Observed in a Chromium browser pane against a local static server, at 1440×900 and 375×812:
 
-Manual browser review observed the local scan clip playing through and the official Band tutorial playing inside the YouTube embed. Desktop/mobile hero, food results, Sleep, product color selection, media filtering and Routine X were inspected. These observations do not certify every external video or physical phone.
+- No console errors and no failed local requests on load. No request to YouTube before Play.
+- Hero film: Play opens the dialog and the film plays from `youtube-nocookie.com`; closing removes the player.
+- Highlights: five cards, dot navigation, the two clip cards play their previews when centred.
+- Band scene: clock runs 22:30 → 06:30, four captions in turn, sleep line draws, dawn light rises. Colour picker swaps all four colours.
+- Scale: the display counts up to the sample value, footprints and the five value cards appear, "ชั่งอีกครั้ง" replays.
+- App chapter: the phone changes screen with each part of the story (wide); each part carries its own screen (narrow).
+- Tour: wide layout previews advance through the list and the stage opens the 16:9 upload with previous/next; narrow layout plays the centred card's 9:16 preview and opens the 9:16 upload in a vertical player. EP.8 and EP.9 were opened from story links and next/previous; EP.1 and EP.4 from the narrow rail.
+- `?ep=3` lands on the tour with EP.3 selected; `?ep=3&ep=5` is ignored.
+- Narrow layout has no horizontal page scroll (`scrollWidth` equals the viewport width).
+- With the `js` class removed, the Band scene lays out flat with all four captions visible.
 
-Keep the result tied to the tested revision and working-tree state. A local or preview pass does not establish production deployment. The unrelated broad-suite failures recorded in earlier audits have not been re-certified by this change; report any newly executed broad suite from its actual output.
+Not done: no run with the operating system's reduced-motion setting switched on (only the flat layout it shares with the no-script path was inspected), no Safari, Firefox or physical phone, no production check. `landing.e2e.mjs` belongs to the retired landing and will fail against this root; a browser harness for the welcome page has not been written yet, so `npm run test:xircle:journey` is not evidence for this page.
 
-## Required checks
-
-- `npm run check:xircle`: generated shared navigation agrees on the 49 references; the real-app root retains its own header/footer.
-- `node --test xircle/route-contract.test.mjs xircle/company-boundary.test.mjs xircle/knowledge-access.test.mjs`: active landing ownership, official company links, bounded examples, thumbnail/poster presence, four Coming soon cards and readable reference routes. `npm run test:xircle` also exercises existing alias contracts when its HTTP helper is available.
-- `node xircle/landing.e2e.mjs`: responsive landing layouts; scan stages and portion totals; Band color selection; mobile menu; local-video playback setup, close/Escape and focus return; official media filters/queues/player removal; reduced-motion and no-JavaScript fallbacks. Inspect local images/posters and record browser errors or missing resources.
-- Check changed JavaScript syntax and `git diff --check`. There is no general repository lint command.
-
-Manually inspect desktop and narrow mobile layouts, Thai headings, hero proportions, food-stage labels, every visible video cover and the four Routine X placeholders. Play the real scan clip and an official tutorial in the visible browser; distinguish actual playback observations from automated player-creation checks. Verify the official store links, reference links and direct-video/official-channel fallbacks.
-
-Reduced motion must reveal content without timed transitions. With JavaScript disabled, the static story, sample nutrition, reference/download links and direct media links remain usable. No camera permission prompt or health-input form should appear.
-
-## Reproduce locally
+## Required checks before delivery
 
 ```sh
-npm ci
-npm run check:xircle
 node --test xircle/route-contract.test.mjs xircle/company-boundary.test.mjs xircle/knowledge-access.test.mjs
-node xircle/landing.e2e.mjs
+node xircle/build/journey-shell.mjs --check
+node --check xircle/welcome.js
 git diff --check
 ```
 
-Use the browser harness's documented browser/proof-directory options when supplied, and retain its actual report. The older `journey.e2e.mjs` station-map flows are not evidence for the new root. Automated tests that block external traffic can verify intended YouTube URLs and player cleanup, but cannot certify live YouTube delivery, app installation, sign-in or purchase completion. Safari, Firefox and physical devices require their own checks.
+Then, in a visible browser at a wide and a narrow width: play the opening film; open one episode from the tour and one from a story link; check the narrow tour opens the vertical upload; run the scale demo; pick each Band colour; confirm the store links, the three setup tutorials and the "go deeper" links. Automated tests cannot certify live YouTube delivery, app installation, sign-in or purchase.
 
-## 2026-11-09 follow-up: faster footage and retained knowledge
-
-Both active food clips were edited locally from the original cropped/silent footage. A clean scan glimpse hard-cuts to populated ingredient results on frame16(0.533s at30fps). Full/short playback is6.234s/5.634s; full decode and faststart order were verified. The short clip holds the final actual nutrition frame1extra second. The original public clips remain unchanged; new versioned URLs serve the shortened edits.
-
-The root now exposes all4knowledge categories and the completed Absorb/Build experiences in `brand=xircle` context, while retaining the4forthcoming welcome clips. The library hub was restyled; both topic-data files, topic template and all deep-reference content are unchanged. In the two completed Routine X rooms, only the shared return-label wording and its script version were adjusted; story content is unchanged.
-
-Validation on the follow-up candidate:15node contracts passed; generated shell check passed;7landing-browser groups passed across320/390/768/1440px, now including knowledge-category and completed-room links. Library browser proof passed at all4widths with all21topic IDs,4groups, HMB search→article→Back retaining the query, empty/reset/focus, filter/reload/direct category URLs and no-JavaScript access to all21topics. Both browser runs recorded no page errors or failed local requests.
+Keep any result tied to the tested revision. A local or preview pass does not establish production deployment.

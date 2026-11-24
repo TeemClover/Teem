@@ -13,7 +13,7 @@ let stale = 0;
 for (const file of files) {
   const url = new URL(file, root), before = await readFile(url, 'utf8');
   // The product landing owns its header and footer; reference pages use the shared shell.
-  if (file === 'index.html' && before.includes('data-xircle-landing="real-app"')) continue;
+  if (file === 'index.html' && /data-xircle-landing="(?:real-app|welcome)"/.test(before)) continue;
   let html = before;
   const route = '/xircle/'+file.replace(/index\.html$/,'');
   const current = route === '/xircle/' ? links[0] : links.slice(1).find(([href]) => route.startsWith(href));

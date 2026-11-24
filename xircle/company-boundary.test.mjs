@@ -3,32 +3,44 @@ import assert from 'node:assert/strict';
 import {readFile,access} from 'node:fs/promises';
 const read=p=>readFile(new URL(p,import.meta.url),'utf8');
 
-test('real app landing keeps company exploration separate from personal-service funnels',async()=>{
+test('welcome page keeps company exploration separate from personal-service funnels',async()=>{
  const html=await read('index.html');
- assert.match(html,/data-xircle-landing="real-app"/);
- for(const id of ['eat','sleep','move','food-demo','video-dialog','official-media','download'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
- assert.doesNotMatch(html,/<(?:input|form)\b[^>]*(?:type="(?:email|tel)"|action="\/api\/)|นัดลอง|ทีมและเอโกะ|ทีม \+ เอโกะ|teambook\.me|\/meet\//);
+ assert.match(html,/data-xircle-landing="welcome"/);
+ for(const id of ['overview','highlights','band','scale','app','tour','start','more','routine','video-dialog'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
+ assert.doesNotMatch(html,/<(?:input|form)\b|นัดลอง|ทีมและเอโกะ|ทีม \+ เอโกะ|teambook\.me|\/meet\//);
  assert.doesNotMatch(html,/ห้องความรู้แมวขาว|ห้องแมวขาว/);
- const runtime=await read('landing.js');
- assert.doesNotMatch(runtime,/localStorage|sessionStorage|setItem\(|XMLHttpRequest|teambook\.me|\/meet\//);
+ assert.doesNotMatch(html,/รักษาโรค|หายขาด|รับประกันผล|ดีท็อกซ์|ลด\s*\d+\s*กิโล/,'device copy stays inside the communication boundary');
+ assert.match(html,/ไม่ใช่เครื่องมือแพทย์/);
+ const runtime=await read('welcome.js');
+ assert.doesNotMatch(runtime,/localStorage|sessionStorage|setItem\(|XMLHttpRequest|\bfetch\(|sendBeacon|teambook\.me|\/meet\//);
 });
 
-test('scan and video enhancements preserve motion preferences and click-to-load media',async()=>{
- const html=await read('index.html'),js=await read('landing.js');
- assert.match(js,/prefers-reduced-motion/);
- for(const id of ['scan-play','scan-status','portion'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
+test('motion is optional and video players load only after a visitor presses Play',async()=>{
+ const html=await read('index.html'),js=await read('welcome.js'),css=await read('welcome.css');
+ assert.match(js,/prefers-reduced-motion/);assert.match(css,/prefers-reduced-motion/);
  assert.match(html,/<dialog[^>]+id="video-dialog"/);
  assert.doesNotMatch(html,/<iframe\b/,'video connections require an explicit user action');
+ assert.doesNotMatch(html,/<video\b[^>]*\bautoplay\b/,'previews start from the runtime, never before motion preferences are known');
+ for(const video of html.matchAll(/<video\b[^>]*>/g)){assert.match(video[0],/\bmuted\b/);assert.match(video[0],/preload="none"/);}
+ assert.match(js,/youtube-nocookie\.com\/embed\//);
+ for(const id of ['weigh-btn','weigh-status'])assert.ok(html.includes(`id="${id}"`),`missing ${id}`);
+ assert.match(html,/id="weigh-status"[^>]*>[^<]*ตัวเลขตัวอย่าง/,'the scale demo is labelled as sample numbers');
 });
 
-test('video demos have local posters and Routine X has four coming-soon episodes',async()=>{
+test('opening film and nine episodes ship in both orientations with local covers and previews',async()=>{
  const html=await read('index.html');
- const posters=[...html.matchAll(/data-poster="(\/xircle\/[^"?#]+)"/g)].map(match=>match[1]);
- assert.ok(posters.length>=2,'both real scan demos need explicit local posters');
- for(const poster of posters)await access(new URL(poster.replace('/xircle/',''),import.meta.url));
- const episodes=[...html.matchAll(/<article\b[^>]*class="[^"]*\broutine-episode\b[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
- assert.equal(episodes.length,4);
- for(const [,episode] of episodes){assert.match(episode,/COMING SOON/);assert.doesNotMatch(episode,/<button\b|data-video=/);}
+ assert.ok(html.includes('data-play="MU9jlnp__pg"'),'opening film');
+ for(const list of ['PLLpWLuBth_ZU','PLbi96bODWmCo'])assert.ok(html.includes(`https://www.youtube.com/playlist?list=${list}`),`playlist ${list}`);
+ const episodes=[...html.matchAll(/<a class="ep"[^>]*href="https:\/\/youtu\.be\/([\w-]{11})"[^>]*data-ep="(\d)"[^>]*data-h="([\w-]{11})"[^>]*data-v="([\w-]{11})"/g)];
+ assert.equal(episodes.length,9);
+ const ids=new Set();
+ episodes.forEach(([,href,n,wide,tall],index)=>{assert.equal(Number(n),index+1);assert.equal(href,wide,'the no-script link is the 16:9 upload');assert.notEqual(wide,tall);ids.add(wide).add(tall);});
+ assert.equal(ids.size,18,'every upload is listed once');
+ for(const chip of html.matchAll(/class="ep-chip"[^>]*href="https:\/\/youtu\.be\/([\w-]{11})"[^>]*data-ep="(\d)"/g))assert.equal(chip[1],episodes[Number(chip[2])-1][3],`story link for EP.${chip[2]} matches the tour`);
+ for(let n=1;n<=9;n++)for(const kind of ['h','v'])for(const type of ['mp4','webp'])await access(new URL(`assets/welcome/tour/ep0${n}-${kind}.${type}`,import.meta.url));
+ const local=[...html.matchAll(/(?:src|poster|data-src)="(\/xircle\/[^"?#]+)/g)].map(match=>match[1]);
+ assert.ok(new Set(local).size>=25,'covers, previews and product images are self-hosted');
+ for(const path of new Set(local))await access(new URL(path.replace('/xircle/',''),import.meta.url));
 });
 
 test('company download destinations are the verified official store applications',async()=>{
