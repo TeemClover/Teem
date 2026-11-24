@@ -277,6 +277,11 @@
       "permanent": false
     },
     {
+      "source": "/xvisor/play/classic",
+      "destination": "/xvisor/play/classic/",
+      "permanent": false
+    },
+    {
       "source": "/xvisor/how",
       "destination": "/xvisor/how/",
       "permanent": false
