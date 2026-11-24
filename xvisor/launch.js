@@ -15,6 +15,7 @@
   const chaps = $$('[data-chap]');
   const bar = $('#progress');
   const dock = $('#dock');
+  const topbar = $('.bar');
   const hero = $('.hero');
   const start = $('#start');
   const copies = $$('main [data-copy="start"]');
@@ -34,6 +35,7 @@
     const doc = document.documentElement;
     const max = doc.scrollHeight - vh;
     if (bar) bar.style.transform = `scaleX(${max > 0 ? clamp(window.scrollY / max) : 0})`;
+    if (topbar) topbar.classList.toggle('scrolled', window.scrollY > 24);
     if (reduce) return;
     for (const c of chaps) {
       const r = c.getBoundingClientRect();

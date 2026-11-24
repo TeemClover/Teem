@@ -17,9 +17,9 @@
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&text=XVISOR%C2%B7AICMPN&display=swap">
-<link rel="stylesheet" href="/xvisor/launch.css?v=20261124d">
+<link rel="stylesheet" href="/xvisor/launch.css?v=20261124p">
 <script defer src="/xvisor/site.js?v=20261120a"></script>
-<script defer src="/xvisor/launch.js?v=20261124a"></script>
+<script defer src="/xvisor/launch.js?v=20261124p"></script>
 <script type="module" src="/xircle/xvisor-path.js?v=20260910-1"></script>
 <script type="module" src="/assets/front-door/outcomes.js"></script>
 </head>
@@ -69,6 +69,11 @@
         <button class="btn btn--glow" type="button" data-copy="start" data-status="#heroStatus">คัดลอกพรอมต์ ติดตั้งคู่หู</button>
       </div>
       <div class="status" id="heroStatus" role="status" aria-live="polite"></div>
+      <ul class="trust" aria-label="สิ่งที่พี่ควรรู้ก่อนเริ่ม">
+        <li>ไม่ต้องติดตั้ง</li>
+        <li>ใช้บนมือถือได้</li>
+        <li>แตะเลือก ไม่ต้องพิมพ์ยาว</li>
+      </ul>
       <p class="scroll-hint" aria-hidden="true"><span></span>เลื่อนลงดู</p>
     </div>
     <div class="mascot" aria-hidden="true">
@@ -240,9 +245,9 @@
         <p class="save-sub" id="outYear">ปีละประมาณ ฿20,400</p>
       </div>
       <ul class="plus">
-        <li><b>ไม่ต้องรอคิว</b>ทำตอนไหนก็ได้</li>
-        <li><b>แก้ด้วยคำพูด</b>"สั้นกว่านี้" ก็พอ</li>
-        <li><b>เก่งขึ้นทุกคลิป</b>สอนไปพร้อมงาน</li>
+        <li><i class="ico i-clock" aria-hidden="true"></i><span><b>ไม่ต้องรอคิว</b>ทำตอนไหนก็ได้</span></li>
+        <li><i class="ico i-mic" aria-hidden="true"></i><span><b>แก้ด้วยคำพูด</b>"สั้นกว่านี้" ก็พอ</span></li>
+        <li><i class="ico i-up" aria-hidden="true"></i><span><b>เก่งขึ้นทุกคลิป</b>สอนไปพร้อมงาน</span></li>
       </ul>
       <p class="note">ค่าจ้างตัดต่อเป็นช่วงราคาทั่วไปที่ทีมพบ แล้วแต่งานและคนตัด · Claude Pro คิดเป็นดอลลาร์ ตัวเลขบาทเป็นค่าประมาณ และมีโควตาการใช้ต่อช่วงเวลา · AI ทำร่าง พี่ดูและฟังก่อนโพสต์ทุกครั้ง</p>
     </div>
@@ -284,11 +289,13 @@
   <section id="world" class="block">
     <div class="shell">
       <p class="eyebrow">เข้าใจภาพใหญ่</p>
-      <h2>สามประตู<br><span class="grad">ก่อนออกไปเล่า</span></h2>
+      <h2>สี่ประตู<br><span class="grad">ก่อนออกไปเล่า</span></h2>
+      <p class="sub">รู้จริงก่อน แล้วเรื่องที่พี่เล่าจะมีน้ำหนัก</p>
       <div class="portals">
-        <a class="portal" href="/xvisor/play/"><img src="/xvisor/xvisor-intro-hero.webp" alt="" loading="lazy"><span class="kick">เกม · เข้าใจแผน</span><b>X-VISOR QUEST</b><span>ลองบริหาร 12 เดือนแบบเกม</span><em>เล่นเกม →</em></a>
-        <a class="portal" href="/xircle/"><img src="/xircle/assets/lifestyle/morning-960.webp" alt="" loading="lazy"><span class="kick">แอป · เข้าใจเครื่องมือ</span><b>XIRCLE</b><span>รู้จักแอปจริง ก่อนแคปไปเล่า</span><em>ดูแอป →</em></a>
-        <a class="portal" href="/routinex/"><img src="/routinex/assets/poster-coach.webp" alt="" loading="lazy"><span class="kick">โปรแกรม · เข้าใจลูกค้า</span><b>RoutineX</b><span>รูทีน 28 วันที่มีคนดูแล</span><em>ดูโปรแกรม →</em></a>
+        <a class="portal" href="/xircle/" data-pop><img src="/xvisor/img/portal-xircle.webp" alt="" loading="lazy" width="900" height="900"><span class="kick">แอป · เข้าใจเครื่องมือ</span><b>XIRCLE</b><span>รู้จักแอปจริง ก่อนแคปไปเล่า</span><em>ดูแอป<i aria-hidden="true">→</i></em></a>
+        <a class="portal" href="/routinex/" data-pop><img src="/xvisor/img/portal-routinex.webp" alt="" loading="lazy" width="900" height="900"><span class="kick">โปรแกรม · เข้าใจลูกค้า</span><b>RoutineX</b><span>รูทีน 28 วันที่มีคนดูแล</span><em>ดูโปรแกรม<i aria-hidden="true">→</i></em></a>
+        <a class="portal" href="/xircle/doc/xvisor/" data-pop><img src="/xvisor/img/portal-library.webp" alt="" loading="lazy" width="900" height="900"><span class="kick">ความรู้ · เข้าใจบทบาท</span><b>คลังความรู้ X-VISOR</b><span>บทบาท การดูแล และคำที่พูดได้</span><em>เปิดคลัง<i aria-hidden="true">→</i></em></a>
+        <a class="portal" href="/xvisor/play/" data-pop><img src="/xvisor/xvisor-intro-hero.webp" alt="" loading="lazy" style="object-position:50% 0"><span class="kick">เกม · เข้าใจแผน</span><b>X-VISOR QUEST</b><span>ลองบริหาร 12 เดือนแบบเกม</span><em>เล่นเกม<i aria-hidden="true">→</i></em></a>
       </div>
     </div>
   </section>
@@ -301,7 +308,7 @@
       <ol class="steps">
         <li class="glass"><span class="big">1</span><div><b>กดคัดลอก</b><p>พรอมต์พร้อมลิงก์ชุดสกิล</p></div></li>
         <li class="glass"><span class="big">2</span><div><b>เปิดแชต Claude</b><p>แตะค้าง เลือกวาง กดส่ง</p></div></li>
-        <li class="glass"><span class="big">3</span><div><b>ตอบ ก ข ค ง</b><p>แนบรูปหรือคลิปได้</p></div></li>
+        <li class="glass"><span class="big">3</span><div><b>แตะเลือกคำตอบ</b><p>หรือพิมพ์ ก ข ค ง แนบรูปได้</p></div></li>
       </ol>
       <div class="btn-row center">
         <button class="btn btn--glow" type="button" data-copy="start" data-status="#startStatus" id="primaryCopy">คัดลอกพรอมต์ ติดตั้งคู่หู</button>
@@ -313,26 +320,31 @@
       <h3 class="mt">อยากเริ่มจากเรื่องไหน</h3>
       <div class="entries">
         <div class="entry">
+          <i class="ico i-film" aria-hidden="true"></i>
           <b>ทำคลิป</b>
           <span>จากรูปหรือวิดีโอในมือถือ ไม่ต้องออกกล้อง</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="วันนี้พี่อยากทำคลิป ให้เริ่มจากงานทำคลิปเลย">คัดลอกเพื่อทำคลิป</button>
         </div>
         <div class="entry">
+          <i class="ico i-cal" aria-hidden="true"></i>
           <b>วางแผนช่อง</b>
           <span>ได้แผน 1 หน้า กับตารางสัปดาห์แรก</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="วันนี้พี่อยากวางแผนช่องของพี่ ให้เริ่มจากงานวางแผนช่องเลย">คัดลอกเพื่อวางแผนช่อง</button>
         </div>
         <div class="entry">
+          <i class="ico i-app" aria-hidden="true"></i>
           <b>หาข้อมูลสินค้า</b>
           <span>ข้อมูลที่อนุมัติแล้ว พร้อมลิงก์ให้ตรวจ</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="วันนี้พี่อยากหาข้อมูลสินค้าไปตอบลูกค้า ให้เริ่มจากงานข้อมูลสินค้าเลย">คัดลอกเพื่อหาข้อมูลสินค้า</button>
         </div>
         <div class="entry">
+          <i class="ico i-pic" aria-hidden="true"></i>
           <b>หาโลโก้และภาพ</b>
           <span>โลโก้ ภาพสินค้า ลิงก์ตรงให้โหลด</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="วันนี้พี่อยากหาโลโก้และภาพสินค้าไปใช้ ให้เริ่มจากงานหาโลโก้และภาพเลย">คัดลอกเพื่อหาโลโก้และภาพ</button>
         </div>
         <div class="entry">
+          <i class="ico i-hi" aria-hidden="true"></i>
           <b>ฝึกใช้ AI</b>
           <span>บทเรียนสั้น 3 บท จบแล้วมีชิ้นงาน</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="วันนี้พี่อยากฝึกใช้ AI ให้เริ่มจากบทเรียนเลย">คัดลอกเพื่อฝึกใช้ AI</button>
@@ -368,6 +380,7 @@
 
 <footer>
   <div class="shell">
+    <p class="foot-brand" aria-hidden="true"><b>X<i>·</i>VISOR</b><small>AI COMPANION</small></p>
     <p>ชุดสกิล X-VISOR เวอร์ชัน 1.1.0 · อัปเดต 2026-11-23 · <a href="https://github.com/TeemClover/xvisor" rel="noopener">github.com/TeemClover/xvisor</a></p>
     <p>คู่หู X-VISOR คือ Claude ที่ใช้ชุดความรู้ที่ CloverX เตรียมไว้ ไม่ใช่แพทย์หรือนักกฎหมาย ข้อมูลสินค้าสรุปจากหน้าเว็บสาธารณะของ CloverX ก่อนโพสต์ตรวจราคา ฉลาก และคำเตือนกับหน้าทางการทุกครั้ง คู่มือตรวจคำเป็นแนวทางลดความเสี่ยง ไม่ใช่การรับรองทางกฎหมาย AI อาจผิดพลาดได้ อ่านงานก่อนโพสต์เสมอ</p>
     <p>ภาพประกอบในหน้านี้สร้างด้วย AI ไม่ใช่ภาพบุคคลจริง · ตัวเลขรายได้ในเกม X-VISOR Quest เป็นตัวอย่าง ไม่ใช่การรับประกันรายได้ · Claude เป็นเครื่องหมายการค้าของ Anthropic</p>

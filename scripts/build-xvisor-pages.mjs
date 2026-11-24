@@ -16,7 +16,9 @@ const X = join(ROOT, 'xvisor');
 const manifest = JSON.parse(await readFile(join(X, 'pack', 'manifest.json'), 'utf8'));
 const esc = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+const entryIcon = { clip: 'film', channel: 'cal', product: 'app', assets: 'pic', learn: 'hi' };
 const entries = manifest.entries.map(entry => `        <div class="entry">
+          <i class="ico i-${entryIcon[entry.id] || 'hi'}" aria-hidden="true"></i>
           <b>${esc(entry.label)}</b>
           <span>${esc(entry.hint)}</span>
           <button class="btn btn--small" type="button" data-copy="start" data-context="${esc(entry.context)}">คัดลอกเพื่อ${esc(entry.label)}</button>
