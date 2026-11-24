@@ -172,7 +172,13 @@
   function hlSet(i) {
     if (i === hlIdx) return;
     hlIdx = i;
-    cards.forEach((c, k) => { c.classList.toggle('on', k === i); const v = $('video', c); if (v) (k === i && hlVisible && !hlPaused) ? play(v) : stop(v); });
+    cards.forEach((c, k) => {
+      c.classList.toggle('on', k === i);
+      const v = $('video', c);
+      if (!v) return;
+      if (k === i && 'once' in v.dataset && v.currentTime > 0) v.currentTime = 0; // one-shot clips start again each time their card comes forward
+      (k === i && hlVisible && !hlPaused) ? play(v) : stop(v);
+    });
     dots.forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
   }
   function hlGo(i) {
@@ -195,6 +201,8 @@
     if (v) (hlVisible && !hlPaused) ? play(v) : stop(v);
   }
   if (track && cards.length) {
+    // one-shot clips open on their first frame when motion is allowed; the still in the markup stays for everyone else
+    if (!reduce()) $$('video[data-poster-motion]', track).forEach(v => { v.poster = v.dataset.posterMotion; });
     track.addEventListener('scroll', () => { if (!hlRaf) hlRaf = requestAnimationFrame(hlSync); }, { passive: true });
     dotsBox.addEventListener('animationend', e => { if (e.animationName === 'dotfill' && !hlPaused && hlVisible) hlGo(hlIdx + 1); });
     hlToggle.addEventListener('click', () => { hlPaused = !hlPaused; hlRefresh(); });

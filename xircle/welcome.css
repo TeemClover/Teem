@@ -105,7 +105,7 @@ html:not(.js) .js-only{display:none!important}
 .hl-track::-webkit-scrollbar{display:none}
 .hl-card{position:relative;flex:0 0 min(1040px,86vw);aspect-ratio:16/9.4;border-radius:var(--r);overflow:hidden;scroll-snap-align:center;background:#0d1326;transition:opacity .5s,transform .6s var(--ease)}
 .js .hl-card:not(.on){opacity:.5;transform:scale(.965)}
-.hl-card>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hl-card>img,.hl-card>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hl-card[data-tone=dark]::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(6,10,22,.74),rgba(6,10,22,.12) 52%,transparent 70%)}
 .hl-cap{position:absolute;z-index:1;left:clamp(18px,3.6vw,48px);top:clamp(16px,3.2vw,40px);max-width:15em;font-family:var(--display);font-size:clamp(1.25rem,2.9vw,2.3rem);font-weight:800;line-height:1.3;letter-spacing:-.01em;color:#fff}
 .hl-cap b{display:block;margin-bottom:.45em;font-size:.5em;font-weight:700;letter-spacing:.04em;opacity:.86}
@@ -115,7 +115,7 @@ html:not(.js) .js-only{display:none!important}
 .hl-vid{height:calc(100% - clamp(28px,5vw,56px));aspect-ratio:9/16;margin-right:clamp(18px,6vw,96px);border-radius:clamp(16px,2.4vw,28px);overflow:hidden;background:#f6e7dc;box-shadow:0 30px 60px -28px rgba(27,50,110,.5)}
 .hl-vid video{width:100%;height:100%;object-fit:cover}
 /* highlight card with a HUD: what one weigh-in tells you (labels are HTML, so they stay sharp and readable) */
-.hl-hud>img{object-position:50% 50%}
+.hl-hud>img,.hl-hud>video{object-position:50% 50%}
 .hl-hud .hl-cap{max-width:21.5%;left:3%;font-size:clamp(1.05rem,1.95vw,1.6rem)}
 .hl-hud::after{background:linear-gradient(150deg,rgba(6,10,22,.82),rgba(6,10,22,.2) 46%,transparent 62%),linear-gradient(to top,rgba(6,10,22,.5),transparent 30%)!important}
 .hud-frame{position:absolute;z-index:1;left:26.2%;right:26.2%;top:7.5%;bottom:8%;pointer-events:none;background:
