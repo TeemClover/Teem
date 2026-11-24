@@ -7,6 +7,7 @@ Prepared 2026-11-24 for the `/xircle/` welcome page ("วันแรกขอ�
 | File | Source | Processing |
 | --- | --- | --- |
 | `film.webp`, `og.jpg` | Cover of the opening film [MU9jlnp__pg](https://youtu.be/MU9jlnp__pg) on the CloverX channel (`i.ytimg.com/vi/MU9jlnp__pg/maxresdefault.jpg`) | WebP 1280×720; `og.jpg` is a 1200×630 centre crop |
+| `film-live.mp4`, `film-live.webp` | Cut from the opening film itself. Source: the local master of the same film (`ref2-Xircle-explainer-original.mp4` in the website handoff references, 1920×1080, 131 s; the YouTube upload `MU9jlnp__pg` reports the same length and title). Nine shots of 1.75 s with 0.25 s dissolves, starting at 11.4, 19.2, 34.3, 45.0, 53.7, 62.2, 70.5, 86.5 and 100.4 s: Habit Tracker, Sleep, AI Food Scan, Metabolic Balance, Move, Heart Rate, Habit Score, Body Composition, MaxAge. Cropped to 1600×900 at (96, 84) so the logo strip and the burned-in subtitle pill are left out. Nothing generated. | 1280×720, 30 fps, H.264 CRF 28, no audio, 13.8 s, 1.1 MB; the WebP is the frame at 1.0 s |
 | `tour/epNN-h.mp4`, `tour/epNN-v.mp4` | Series masters "เริ่มต้นกับ Xircle" EP.1–9, `xircle-tNN-*_16x9_1920x1080_60fps.mp4` and `…_9x16_1080x1920_60fps.mp4` | Silent 6.7 s preview: three 2.2 s pieces starting at 1.0 s, 18 s and 38 s; 960×540 or 540×960, 30 fps, H.264 CRF 29, faststart, no audio |
 | `tour/epNN-h.webp`, `tour/epNN-v.webp` | First frame of the matching preview | WebP q76 |
 

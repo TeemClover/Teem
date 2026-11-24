@@ -31,12 +31,17 @@
  <div class="hero-copy">
   <p class="eyebrow">เริ่มต้นกับ XIRCLE</p>
   <h1 id="hero-title"><span>ยินดีต้อนรับ</span> <span class="grad">สู่วันแรกของคุณ</span></h1>
-  <p class="lead">คุณเลือกดูแลตัวเองแล้ว<br>ที่เหลือ เราพาเริ่มไปด้วยกัน ทีละวัน</p>
+  <p class="lead">คุณเลือกดูแลตัวเองแล้ว <br>ที่เหลือ เราพาเริ่มไปด้วยกัน ทีละวัน</p>
  </div>
  <div class="film" id="film">
   <a class="film-stage" href="https://youtu.be/MU9jlnp__pg" data-play="MU9jlnp__pg" data-title="XIRCLE ดูอะไรได้บ้าง? ครบทุกฟังก์ชันใน 2 นาที" target="_blank" rel="noopener">
-   <img src="/xircle/assets/welcome/film.webp" alt="ปกวิดีโอ แอป XIRCLE ดูอะไรได้บ้าง ครบทุกฟังก์ชันใน 2 นาที" width="1280" height="720" fetchpriority="high">
+   <picture><source media="(min-width:821px)" srcset="/xircle/assets/welcome/film-live.webp" width="1280" height="720"><img src="/xircle/assets/welcome/film.webp" alt="ปกวิดีโอ แอป XIRCLE ดูอะไรได้บ้าง ครบทุกฟังก์ชันใน 2 นาที" width="1280" height="720" fetchpriority="high"></picture>
+   <video class="film-live" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true" width="1280" height="720" data-src="/xircle/assets/welcome/film-live.mp4" data-cues="0,1.62,3.12,4.62,6.12,7.62,9.12,10.62,12.12" data-names="Habit Tracker|Sleep|AI Food Scan|Metabolic Balance|Move|Heart Rate|Habit Score|Body Composition|MaxAge"></video>
+   <i class="film-veil" aria-hidden="true"></i>
+   <canvas class="film-lens" width="1280" height="720" aria-hidden="true"></canvas>
    <span class="film-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11.3-6.8a1 1 0 0 0 0-1.72L9.5 4.34A1 1 0 0 0 8 5.2z" fill="currentColor"/></svg></span>
+   <span class="film-label">ดูภาพรวมทั้งหมดใน 2 นาที</span>
+   <span class="film-now" aria-hidden="true"><small>ในฟิล์มนี้</small><b id="film-now">Habit Tracker</b><span class="film-ticks"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
   </a>
   <p class="film-cap"><b>เริ่มจากตรงนี้</b>ดูภาพรวมทั้งหมดใน 2 นาที</p>
  </div>

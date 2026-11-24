@@ -84,8 +84,40 @@ html:not(.js) .js-only{display:none!important}
 .film{width:min(1000px,100%,max(320px,(100svh - 400px)*16/9));margin-top:clamp(18px,3.6vh,40px);perspective:1500px}
 .film-stage{position:relative;display:block;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:#f3e9dc;box-shadow:0 46px 90px -34px rgba(27,50,110,.5),0 0 0 1px rgba(11,18,32,.06);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(calc(1 + var(--hp,0)*.05));transition:transform .3s var(--ease),box-shadow .3s;will-change:transform}
 .film-stage:hover{box-shadow:0 56px 110px -34px rgba(27,50,110,.6),0 0 0 1px rgba(11,18,32,.06)}
+.film-stage picture{display:contents}
 .film-stage img{width:100%;height:100%;object-fit:cover}
-.film-play{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:clamp(68px,9vw,96px);aspect-ratio:1;margin:calc(clamp(68px,9vw,96px)/-2) 0 0 calc(clamp(68px,9vw,96px)/-2);border-radius:50%;background:#fff;color:var(--blue);box-shadow:0 14px 40px -8px rgba(11,18,32,.5);transition:transform .3s var(--ease)}
+.film-stage{--s:clamp(68px,9vw,96px)}
+.film-play{position:absolute;z-index:2;left:50%;top:50%;display:grid;place-items:center;width:var(--s);aspect-ratio:1;margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:#fff;color:var(--blue);box-shadow:0 14px 40px -8px rgba(11,18,32,.5);transition:transform .3s var(--ease)}
+.film-live,.film-veil,.film-lens,.film-label,.film-now{display:none}
+/* wide screens: the stage fills the rest of the first screen, and a montage of the film's own moments plays out of focus behind Play */
+@property --lr{syntax:"<length>";inherits:true;initial-value:0px}
+@media (min-width:821px){
+  .hero{justify-content:center;padding:calc(var(--nav) + clamp(14px,3.2vh,38px)) 24px clamp(14px,2.6vh,28px)}
+  .hero h1{font-size:clamp(2.3rem,min(4.8vw,8.6svh),4.3rem);margin-top:.1em}
+  .hero h1 span{display:inline}
+  .hero .lead{margin-top:.4em}
+  .hero .lead br{display:none}
+  .film{flex:1 1 auto;display:flex;flex-direction:column;width:min(1480px,100%);min-height:300px;max-height:calc(min(1480px,100vw - 48px)*.5625);margin-top:clamp(14px,2.8vh,30px)}
+  .film-stage{--s:clamp(86px,7.6vw,122px);flex:1 1 auto;min-height:0;aspect-ratio:auto;border-radius:clamp(24px,2.4vw,36px);background:#141a2c;transition:transform .3s var(--ease),box-shadow .3s,--lr .5s var(--ease)}
+  .film-stage img,.film-live,.film-lens{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.05)}
+  .film-stage img,.film-live{filter:blur(10px) saturate(1.2)}
+  .film-live{display:block;opacity:0;transition:opacity .9s}
+  .film-stage.live .film-live{opacity:1}
+  .film-veil{display:block;position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(11,18,32,.56),rgba(11,18,32,.08) 40%,rgba(255,255,255,.06))}
+  /* the pointer is a lens: a sharp copy of the current frame shows only around it */
+  .film-stage.live .film-lens{display:block;z-index:1;-webkit-mask-image:radial-gradient(circle at var(--lx,50%) var(--ly,50%),#000 calc(var(--lr)*.55),transparent var(--lr));mask-image:radial-gradient(circle at var(--lx,50%) var(--ly,50%),#000 calc(var(--lr)*.55),transparent var(--lr))}
+  .film-play{top:calc(50% - 22px);box-shadow:0 18px 60px -8px rgba(11,18,32,.6),0 0 0 10px rgba(255,255,255,.16)}
+  .film-play svg{width:38px;height:38px}
+  .film-label{display:block;position:absolute;z-index:2;left:50%;top:calc(50% - 22px + var(--s)/2 + 20px);transform:translateX(-50%);padding:.6em 1.3em;border-radius:999px;background:rgba(11,18,32,.66);color:#fff;font-size:clamp(.98rem,1.3vw,1.14rem);font-weight:700;white-space:nowrap;box-shadow:0 10px 30px -10px rgba(11,18,32,.6)}
+  .film-stage.live .film-now{display:flex;flex-direction:column;align-items:flex-start;gap:3px;position:absolute;z-index:2;left:clamp(20px,2.6vw,36px);bottom:clamp(16px,2.2vw,28px);color:#fff;text-align:left;text-shadow:0 1px 14px rgba(11,18,32,.55)}
+  .film-now small{font-size:12px;font-weight:600;letter-spacing:.05em;opacity:.82}
+  .film-now b{font-family:var(--display);font-size:clamp(1.15rem,1.8vw,1.6rem);font-weight:800;letter-spacing:-.01em}
+  .film-ticks{display:flex;gap:5px;margin-top:8px}
+  .film-ticks i{width:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.32);transition:background .3s}
+  .film-ticks i.on{background:#fff}
+  .film-cap{display:none}
+  .hero-next{margin-top:clamp(10px,1.8vh,18px)}
+}
 .film-play svg{margin-left:4px}
 .film-play::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid #fff;animation:ping 2.6s ease-out infinite}
 .film-stage:hover .film-play{transform:scale(1.08)}

@@ -41,6 +41,19 @@ test('opening film and nine episodes ship in both orientations with local covers
  const local=[...html.matchAll(/(?:src|poster|data-src)="(\/xircle\/[^"?#]+)/g)].map(match=>match[1]);
  assert.ok(new Set(local).size>=25,'covers, previews and product images are self-hosted');
  for(const path of new Set(local))await access(new URL(path.replace('/xircle/',''),import.meta.url));
+ const stage=html.match(/<a class="film-stage"[\s\S]*?<\/a>/)?.[0]||'';
+ assert.match(stage,/<source media="\(min-width:821px\)" srcset="\/xircle\/assets\/welcome\/film-live\.webp"/,'wide screens get the montage still behind Play');
+ await access(new URL('assets/welcome/film-live.webp',import.meta.url));
+ const live=stage.match(/<video class="film-live"[^>]*>/)?.[0]||'';
+ assert.match(live,/data-src="\/xircle\/assets\/welcome\/film-live\.mp4"/,'the hero montage is self-hosted');
+ assert.match(live,/\bmuted\b[^>]*\bloop\b/,'the hero montage is silent');
+ assert.match(live,/aria-hidden="true"/,'the hero montage is decoration; the link text carries the meaning');
+ const shots=live.match(/data-cues="([^"]+)"/)[1].split(',').length;
+ assert.equal(live.match(/data-names="([^"]+)"/)[1].split('|').length,shots,'one feature name per montage shot');
+ assert.equal([...stage.matchAll(/<i(?: class="on")?><\/i>/g)].length,shots,'one progress mark per montage shot');
+ assert.match(stage,/class="film-label">[^<]*2 นาที/,'the stage itself invites the visitor to play the two-minute film');
+ const js=await read('welcome.js');
+ assert.match(js,/narrowMq\.matches && !reduce\(\) && !\(navigator\.connection && navigator\.connection\.saveData\)/,'the hero montage stays off on narrow screens, with reduced motion and with data saver');
 });
 
 test('Band scroll sequence ships every frame the runtime asks for and generated scenes are labelled',async()=>{
