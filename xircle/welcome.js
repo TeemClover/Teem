@@ -353,18 +353,21 @@
       v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync); v.addEventListener('ended', sync);
       sync();
     });
-    // a clip can name the moments where its chapters start; the matching label below it lights up
+    // a clip can name the moments where its chapters start: the matching row of the app screen beside it lights up,
+    // the sleep line is drawn up to "now", and the totals arrive with the last chapter (morning)
     $$('video[data-cues]', track).forEach(v => {
-      const card = v.closest('.hl-card'), items = $$('.stages li', card);
-      const cues = v.dataset.cues.split(',').map(Number).filter(n => n >= 0);
+      const card = v.closest('.hl-card'), rows = $$('[data-row]', card);
+      const cues = v.dataset.cues.split(',').map(Number).filter(n => n >= 0), names = (v.dataset.rows || '').split(',');
       const sync = () => {
-        if (reduce()) { card.classList.remove('cued'); return; }
+        if (reduce()) { card.classList.remove('cued', 'woke'); return; }
         let idx = 0;
         cues.forEach((c, i) => { if (v.currentTime >= c) idx = i; });
         card.classList.add('cued');
-        items.forEach((li, i) => li.classList.toggle('cur', i === idx));
+        card.classList.toggle('woke', idx === cues.length - 1);
+        card.style.setProperty('--p', (v.duration > 0 ? clamp(v.currentTime / v.duration) : 0).toFixed(3));
+        rows.forEach(li => li.classList.toggle('cur', li.dataset.row === names[idx]));
       };
-      v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync);
+      v.addEventListener('timeupdate', sync); v.addEventListener('seeked', sync); v.addEventListener('ended', sync);
       sync();
     });
     track.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); hlGo(hlIdx + 1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); hlGo(hlIdx - 1); } });
