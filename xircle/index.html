@@ -7,8 +7,8 @@
 <link rel="canonical" href="https://www.myclover.com/xircle/"><link rel="icon" href="/favicon.ico">
 <meta property="og:type" content="website"><meta property="og:locale" content="th_TH"><meta property="og:url" content="https://www.myclover.com/xircle/"><meta property="og:title" content="เริ่มต้นกับ Xircle — วันแรกของคุณ"><meta property="og:description" content="ดูภาพรวมใน 2 นาที รู้จัก Band และ Scale แล้วทัวร์แอป 9 ตอน ตอนละ 1 นาที"><meta property="og:image" content="https://www.myclover.com/xircle/assets/welcome/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-600.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/xircle/_shared/typography.css?v=3"><link rel="stylesheet" href="/xircle/welcome.css?v=welcome-6">
-<script src="/xircle/welcome.js?v=welcome-6" defer></script>
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=3"><link rel="stylesheet" href="/xircle/welcome.css?v=welcome-7">
+<script src="/xircle/welcome.js?v=welcome-7" defer></script>
 </head>
 <body data-xircle-landing="welcome">
 <a class="skip" href="#content">ข้ามไปเนื้อหา</a>
@@ -37,8 +37,9 @@
   <a class="film-stage" href="https://youtu.be/MU9jlnp__pg" data-play="MU9jlnp__pg" data-title="XIRCLE ดูอะไรได้บ้าง? ครบทุกฟังก์ชันใน 2 นาที" target="_blank" rel="noopener">
    <picture><source media="(min-width:821px)" srcset="/xircle/assets/welcome/film-live.webp" width="1280" height="720"><img src="/xircle/assets/welcome/film.webp" alt="ปกวิดีโอ แอป XIRCLE ดูอะไรได้บ้าง ครบทุกฟังก์ชันใน 2 นาที" width="1280" height="720" fetchpriority="high"></picture>
    <video class="film-live" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true" width="1280" height="720" data-src="/xircle/assets/welcome/film-live.mp4" data-cues="0,1.62,3.12,4.62,6.12,7.62,9.12,10.62,12.12" data-names="Habit Tracker|Sleep|AI Food Scan|Metabolic Balance|Move|Heart Rate|Habit Score|Body Composition|MaxAge"></video>
-   <i class="film-veil" aria-hidden="true"></i>
+   <canvas class="film-soft" width="256" height="144" aria-hidden="true"></canvas>
    <canvas class="film-lens" width="1280" height="720" aria-hidden="true"></canvas>
+   <i class="film-veil" aria-hidden="true"></i>
    <span class="film-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11.3-6.8a1 1 0 0 0 0-1.72L9.5 4.34A1 1 0 0 0 8 5.2z" fill="currentColor"/></svg></span>
    <span class="film-label">ดูภาพรวมทั้งหมดใน 2 นาที</span>
    <span class="film-now" aria-hidden="true"><small>ในฟิล์มนี้</small><b id="film-now">Habit Tracker</b><span class="film-ticks"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
@@ -94,18 +95,28 @@
     <i style="--x:62.5;--y:52;--r:9.9;--i:2"></i>
     <i style="--x:74.6;--y:40.2;--r:6.8;--i:3"></i>
    </div>
-   <ul class="scan-tags" aria-label="อาหารในมื้อนี้ (ตัวอย่าง)">
-    <li style="--x:20.5;--y:67.6;--mx:21;--i:0">กะเพราไก่ไข่ดาว</li>
-    <li style="--x:43.5;--y:64;--i:1">ต้มยำกุ้ง</li>
-    <li style="--x:62.5;--y:66.4;--i:2">ผัดผักบุ้ง</li>
-    <li style="--x:74.6;--y:30.4;--i:3">ผลไม้</li>
+   <svg class="vh" aria-hidden="true" width="0" height="0"><defs>
+    <symbol id="ic-p" viewBox="0 0 16 16"><circle cx="10" cy="6" r="4.4"/><path d="M7 9 3.7 12.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="3" cy="11.5" r="1.35"/><circle cx="4.5" cy="13" r="1.35"/></symbol>
+    <symbol id="ic-c" viewBox="0 0 16 16"><path d="M4 7C2.7 6.6 2 5.7 2 4.6 2 2.8 3.9 2 8 2s6 .8 6 2.6c0 1.1-.7 2-2 2.4v5.8a1.2 1.2 0 0 1-1.2 1.2H5.2A1.2 1.2 0 0 1 4 12.8z"/></symbol>
+    <symbol id="ic-f" viewBox="0 0 16 16"><path d="M8 1.4c2.7 3.3 4.6 5.7 4.6 8.2a4.6 4.6 0 0 1-9.2 0c0-2.5 1.9-4.9 4.6-8.2z"/></symbol>
+    <symbol id="ic-k" viewBox="0 0 16 16"><path d="M9.2 1 3.4 9h3.9l-.9 6L12.6 7H8.5z"/></symbol>
+   </defs></svg>
+   <ul class="scan-tags" aria-label="อาหารในมื้อนี้ แต่ละอย่างมีโปรตีน คาร์บ และไขมันโดยประมาณ หน่วยกรัม (ตัวเลขตัวอย่าง)">
+    <li style="--x:20.5;--y:68.4;--mx:21;--my:69.6;--i:0" data-p="30" data-c="60" data-f="22"><b>กะเพราไก่ไข่ดาว</b><span class="mm"><span class="m-p"><svg aria-hidden="true"><use href="#ic-p"/></svg><i class="vh">โปรตีน</i>30</span><span class="m-c"><svg aria-hidden="true"><use href="#ic-c"/></svg><i class="vh">คาร์บ</i>60</span><span class="m-f"><svg aria-hidden="true"><use href="#ic-f"/></svg><i class="vh">ไขมัน</i>22</span></span></li>
+    <li style="--x:43.5;--y:64.8;--my:60.6;--i:1" data-p="14" data-c="8" data-f="4"><b>ต้มยำกุ้ง</b><span class="mm"><span class="m-p"><svg aria-hidden="true"><use href="#ic-p"/></svg><i class="vh">โปรตีน</i>14</span><span class="m-c"><svg aria-hidden="true"><use href="#ic-c"/></svg><i class="vh">คาร์บ</i>8</span><span class="m-f"><svg aria-hidden="true"><use href="#ic-f"/></svg><i class="vh">ไขมัน</i>4</span></span></li>
+    <li style="--x:62.5;--y:67.2;--my:69.6;--i:2" data-p="4" data-c="8" data-f="9"><b>ผัดผักบุ้ง</b><span class="mm"><span class="m-p"><svg aria-hidden="true"><use href="#ic-p"/></svg><i class="vh">โปรตีน</i>4</span><span class="m-c"><svg aria-hidden="true"><use href="#ic-c"/></svg><i class="vh">คาร์บ</i>8</span><span class="m-f"><svg aria-hidden="true"><use href="#ic-f"/></svg><i class="vh">ไขมัน</i>9</span></span></li>
+    <li style="--x:89.6;--y:34.6;--mx:78;--my:18.4;--i:3;--dot:#ff9d4d" data-p="1" data-c="10" data-f="0"><b>มะละกอ</b><span class="mm"><span class="m-p"><svg aria-hidden="true"><use href="#ic-p"/></svg><i class="vh">โปรตีน</i>1</span><span class="m-c"><svg aria-hidden="true"><use href="#ic-c"/></svg><i class="vh">คาร์บ</i>10</span><span class="m-f"><svg aria-hidden="true"><use href="#ic-f"/></svg><i class="vh">ไขมัน</i>0</span></span></li>
+    <li style="--x:89.6;--y:42.2;--mx:78;--my:28.9;--i:4;--dot:#ffd84d" data-p="0" data-c="10" data-f="0"><b>สับปะรด</b><span class="mm"><span class="m-p"><svg aria-hidden="true"><use href="#ic-p"/></svg><i class="vh">โปรตีน</i>0</span><span class="m-c"><svg aria-hidden="true"><use href="#ic-c"/></svg><i class="vh">คาร์บ</i>10</span><span class="m-f"><svg aria-hidden="true"><use href="#ic-f"/></svg><i class="vh">ไขมัน</i>0</span></span></li>
    </ul>
-   <dl class="macro" aria-label="สารอาหารของมื้อนี้โดยประมาณ (ตัวเลขตัวอย่าง)">
-    <div class="m-p" style="--i:0"><dt>โปรตีน</dt><dd><b data-count="49">49</b> g</dd></div>
-    <div class="m-c" style="--i:1"><dt>คาร์บ</dt><dd><b data-count="96">96</b> g</dd></div>
-    <div class="m-f" style="--i:2"><dt>ไขมัน</dt><dd><b data-count="35">35</b> g</dd></div>
-    <div class="m-k" style="--i:3"><dt>พลังงาน</dt><dd><b data-count="895">895</b> kcal</dd></div>
-   </dl>
+   <div class="macro-box">
+    <p class="macro-title">รวมทั้งมื้อ</p>
+    <dl class="macro" aria-label="สารอาหารรวมของมื้อนี้โดยประมาณ (ตัวเลขตัวอย่าง)">
+     <div class="m-p" style="--i:0"><dt><svg aria-hidden="true"><use href="#ic-p"/></svg>โปรตีน</dt><dd><b data-sum="p">49</b> g</dd></div>
+     <div class="m-c" style="--i:1"><dt><svg aria-hidden="true"><use href="#ic-c"/></svg>คาร์บ</dt><dd><b data-sum="c">96</b> g</dd></div>
+     <div class="m-f" style="--i:2"><dt><svg aria-hidden="true"><use href="#ic-f"/></svg>ไขมัน</dt><dd><b data-sum="f">35</b> g</dd></div>
+     <div class="m-k" style="--i:3"><dt><svg aria-hidden="true"><use href="#ic-k"/></svg>พลังงาน</dt><dd><b data-sum="k">895</b> kcal</dd></div>
+    </dl>
+   </div>
    <p class="hud-note">ภาพจำลอง · ตัวเลขตัวอย่าง เป็นค่าประมาณ</p>
   </article>
   <article class="hl-card hl-habit" data-tone="dark">
