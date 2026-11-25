@@ -22,12 +22,12 @@
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/routinex/routine.css?v=20261125">
-<link rel="stylesheet" href="/routinex/inbox.css?v=20261125">
+<link rel="stylesheet" href="/routinex/inbox.css?v=20261125c">
 <script defer src="/routinex/routine.js?v=20261125"></script>
 <script defer src="/routinex/home.js?v=20261125"></script>
-<script defer src="/routinex/inbox.js?v=20261125"></script>
+<script defer src="/routinex/inbox.js?v=20261125c"></script>
 </head>
-<body>
+<body class="has-inbox">
 <a class="skip" href="#why">ข้ามส่วนเปิดกล่อง</a>
 
 <header class="bar">
@@ -43,7 +43,7 @@
 <section class="inbox" id="inbox" aria-label="เปิดกล่อง RoutineX ดูของข้างในทีละชิ้น">
   <div class="inbox__pin">
 
-    <div class="stage stage--box" data-len="1.6" id="top">
+    <div class="stage stage--box" data-len="2" id="top">
       <div class="boxtxt">
         <div class="boxtxt__a">
           <p class="eyebrow">One Routine · Better Habits</p>
@@ -55,18 +55,22 @@
           </div>
         </div>
         <div class="boxtxt__b">
-          <p class="eyebrow">เปิดกล่อง</p>
+          <ol class="boxsteps" aria-label="ลำดับของในกล่อง">
+            <li>กล่อง</li><li>ซองรายวัน</li><li>3 ซองข้างใน</li>
+          </ol>
           <h2 class="boxh"><span class="w">ในกล่องนี้</span><br><span class="w" style="--i:1">รวมของดี</span><br><span class="w hl" style="--i:2">4 กลไก</span></h2>
+          <p class="boxnote" data-box-note>ในกล่องมีซองรายวัน และในซองรายวันมี 3 ซองเล็ก</p>
         </div>
       </div>
-      <div class="boxart" aria-hidden="true">
+      <button class="boxart" type="button" data-box-open aria-label="เปิดกล่อง RoutineX ดูของข้างใน">
         <img class="bx bx--closed" src="/routinex/assets/box-closed.webp" alt="" width="760" height="783" fetchpriority="high">
         <img class="bx bx--open" src="/routinex/assets/box-open.webp" alt="" width="680" height="958">
+        <img class="pk" src="/routinex/assets/pack-daily.webp" alt="" width="549" height="900">
         <img class="fly fly--b" src="/routinex/assets/sachet-protein.webp" alt="" width="513" height="960">
         <img class="fly fly--d" src="/routinex/assets/sachet-coreduo.webp" alt="" width="722" height="720">
         <img class="fly fly--a" src="/routinex/assets/sachet-gus.webp" alt="" width="346" height="960">
-      </div>
-      <p class="boxsub"><i aria-hidden="true"></i>เลื่อนลง เปิดกล่อง</p>
+      </button>
+      <button class="boxsub" type="button" data-box-open><i aria-hidden="true"></i><span data-box-hint>กดกล่องเพื่อเปิด</span></button>
     </div>
 
     <article class="stage course course--a" data-len="1.15" id="abcd">

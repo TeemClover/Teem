@@ -12,6 +12,9 @@
 
   const ENTER = 0.45;                      // ช่วงที่ฉากถัดไปเลื่อนขึ้นมาทับ
   const UNIT = 74;                         // 1 หน่วยของฉาก = กี่ vh ของการเลื่อน
+  const PACK_AT = 0.56;                    // กดครั้งแรก: ฝาเปิด ซองรวมลอยขึ้นมา
+  const OPEN_AT = 0.93;                    // กดครั้งที่สอง: ซองรวมแตกเป็น 3 ซองเล็ก
+  const STEP_NOTE = ['เปิดฝา ข้างในคือซองรายวันเรียงกัน', 'Daily Routine Pack วันละ 1 ซอง', 'ในซองรายวัน มี 3 ซองเล็ก'];
   const len = stages.map((s) => parseFloat(s.dataset.len) || 1);
   const start = len.map((_, i) => len.slice(0, i).reduce((a, b) => a + b, 0));
   const total = len.reduce((a, b) => a + b, 0);
@@ -76,9 +79,21 @@
 
       if (i === 0) {                         // กล่อง: ข้อความสลับ เปิดฝา แล้วซองลอยออกมา
         st.setProperty('--swap', smooth((p - 0.06) / 0.16).toFixed(4));
-        st.setProperty('--open', smooth((p - 0.14) / 0.2).toFixed(4));
-        st.setProperty('--fly', smooth((p - 0.36) / 0.46).toFixed(4));
+        const packV = smooth((p - 0.3) / 0.2), flyV = smooth((p - 0.62) / 0.26);
+        st.setProperty('--open', smooth((p - 0.12) / 0.16).toFixed(4));
+        st.setProperty('--pack', packV.toFixed(4));      // ซองรวมลอยขึ้นจากกล่อง
+        st.setProperty('--fly', flyV.toFixed(4));        // ซองเล็ก 3 ซองแตกออกจากซองรวม
+        const step = flyV > 0.5 ? 2 : packV > 0.5 ? 1 : 0;
+        if (s._step !== step) {
+          s._step = step;
+          s.querySelectorAll('.boxsteps li').forEach((li, k) => { li.classList.toggle('on', k === step); li.classList.toggle('done', k < step); });
+          const note = s.querySelector('[data-box-note]');
+          if (note) note.textContent = STEP_NOTE[step];
+        }
         s.classList.toggle('is-swap', p > 0.16);
+        const hint = s.querySelector('[data-box-hint]');
+        const say = p > OPEN_AT - 0.1 ? 'กดอีกครั้ง ดูทีละชิ้น' : p > PACK_AT - 0.1 ? 'กดอีกครั้ง แกะซอง' : 'กดกล่องเพื่อเปิด';
+        if (hint && hint.textContent !== say) hint.textContent = say;
         s.classList.toggle('is-on', inView ? x < 0.6 : true);   // ส่วนหัว: เปิดไว้ตั้งแต่โหลดหน้า
       }
       if (last) {                            // ฉากปิด: สามคำขึ้นทีละคำ แล้วซองมารวมกัน
@@ -101,6 +116,35 @@
     scrollTo({ top: scrollY + r.top + ((start[i] + 0.04) / total) * span, behavior: 'smooth' });
   }
   railBtns.forEach((b) => b.addEventListener('click', () => goTo(+b.dataset.go)));
+
+  /* กดกล่อง: เลื่อนให้เองช้า ๆ จนฝาเปิดและซองลอยออกมา · กดอีกครั้ง: ไปการ์ด A
+     ผู้ใช้เลื่อนเองหรือแตะจอระหว่างนั้น = หยุดทันที ให้เขาคุมต่อ */
+  let glide = 0;
+  function glideTo(top, ms) {
+    cancelAnimationFrame(glide);
+    const from = scrollY, t0 = performance.now();
+    const stop = () => {
+      cancelAnimationFrame(glide); glide = 0;
+      ['wheel', 'touchstart', 'keydown'].forEach((ev) => removeEventListener(ev, stop));
+    };
+    ['wheel', 'touchstart', 'keydown'].forEach((ev) => addEventListener(ev, stop, { passive: true }));
+    const step = (t) => {
+      const k = clamp((t - t0) / ms);
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      scrollTo({ top: from + (top - from) * e, behavior: 'instant' });
+      if (k < 1) glide = requestAnimationFrame(step); else stop();
+    };
+    glide = requestAnimationFrame(step);
+  }
+  document.querySelectorAll('[data-box-open]').forEach((b) => b.addEventListener('click', () => {
+    if (!pinned) { document.getElementById('abcd')?.scrollIntoView({ behavior: 'smooth' }); return; }
+    const r = wrap.getBoundingClientRect(), span = r.height - innerHeight, base = scrollY + r.top;
+    const rest = len[0] - ENTER;
+    const p = clamp(((-r.top / span) * total) / rest);
+    if (p < PACK_AT - 0.1) glideTo(base + ((PACK_AT * rest) / total) * span, 1700);
+    else if (p < OPEN_AT - 0.1) glideTo(base + ((OPEN_AT * rest) / total) * span, 1300);
+    else glideTo(base + ((start[1] + 0.04) / total) * span, 1000);
+  }));
   document.querySelectorAll('[data-inbox-go]').forEach((a) => a.addEventListener('click', (e) => {
     if (!pinned) return;                     // ไม่ปักหมุด: ปล่อยให้ลิงก์ #inbox ทำงานปกติ
     e.preventDefault();
