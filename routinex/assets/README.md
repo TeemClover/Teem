@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | `sachet-gus.webp` `sachet-protein.webp` `sachet-coreduo.webp` | ซองสินค้าจริง พื้นโปร่ง | Source ของ CloverX (`habix-*-sachet.png` ชุด Product) ครอปและย่อเท่านั้น ไม่ได้แก้ภาพ |
 | `box-closed.webp` `box-open.webp` | กล่อง RoutineX ปิดและเปิด | Source `pd-03-routinex` ไดคัตเอาลายตารางออก |
+| `pack-daily.webp` | ซองรวม Daily Routine Pack พื้นโปร่ง | ตัดจาก `routinex-dicut-03.png` (Source `pd-03-routinex`) ตามขอบซองซึ่งเป็นสี่เหลี่ยมตรง ซ่อมสองจุดด้วยเนื้อซองข้างเคียง: มุมล่างซ้ายที่ซอง Protein บัง (กว้างสุด ~13px) และขอบขวาช่วงล่างที่มีเงากับแสงสะท้อนของซอง G.U.S.+ ขยาย 1.5 เท่า ต้นทางซองสูงแค่ 600px ถ้าได้ไฟล์ใหญ่กว่านี้ควรเปลี่ยน |
 | `scene-a.webp` `scene-b.webp` `scene-c.webp` `scene-d.webp` | ฉากหลังของการ์ด A B C D ในส่วน "เปิดกล่อง" | สร้างด้วย ChatGPT (Create image) 25 พ.ย. 2026 ในภาพไม่มีบรรจุภัณฑ์ ไม่มีโลโก้ ไม่มีตัวหนังสือ |
 | `poster-*.webp` | ปกคลิปโค้ชซิง | เฟรมจากคลิปทางการบน YouTube |
 | `logo-*.webp` `og-*.jpg` | โลโก้และภาพแชร์ | Source `lg-03-routinex` |

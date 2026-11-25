@@ -12,7 +12,9 @@
 
   const ENTER = 0.45;                      // ช่วงที่ฉากถัดไปเลื่อนขึ้นมาทับ
   const UNIT = 74;                         // 1 หน่วยของฉาก = กี่ vh ของการเลื่อน
-  const OPEN_AT = 0.9;                     // กดกล่องแล้วพาไปถึงจุดนี้ของฉากกล่อง (ฝาเปิด ซองออกครบ)
+  const PACK_AT = 0.56;                    // กดครั้งแรก: ฝาเปิด ซองรวมลอยขึ้นมา
+  const OPEN_AT = 0.93;                    // กดครั้งที่สอง: ซองรวมแตกเป็น 3 ซองเล็ก
+  const STEP_NOTE = ['เปิดฝา ข้างในคือซองรายวันเรียงกัน', 'Daily Routine Pack วันละ 1 ซอง', 'ในซองรายวัน มี 3 ซองเล็ก'];
   const len = stages.map((s) => parseFloat(s.dataset.len) || 1);
   const start = len.map((_, i) => len.slice(0, i).reduce((a, b) => a + b, 0));
   const total = len.reduce((a, b) => a + b, 0);
@@ -77,11 +79,20 @@
 
       if (i === 0) {                         // กล่อง: ข้อความสลับ เปิดฝา แล้วซองลอยออกมา
         st.setProperty('--swap', smooth((p - 0.06) / 0.16).toFixed(4));
-        st.setProperty('--open', smooth((p - 0.14) / 0.2).toFixed(4));
-        st.setProperty('--fly', smooth((p - 0.36) / 0.46).toFixed(4));
+        const packV = smooth((p - 0.3) / 0.2), flyV = smooth((p - 0.62) / 0.26);
+        st.setProperty('--open', smooth((p - 0.12) / 0.16).toFixed(4));
+        st.setProperty('--pack', packV.toFixed(4));      // ซองรวมลอยขึ้นจากกล่อง
+        st.setProperty('--fly', flyV.toFixed(4));        // ซองเล็ก 3 ซองแตกออกจากซองรวม
+        const step = flyV > 0.5 ? 2 : packV > 0.5 ? 1 : 0;
+        if (s._step !== step) {
+          s._step = step;
+          s.querySelectorAll('.boxsteps li').forEach((li, k) => { li.classList.toggle('on', k === step); li.classList.toggle('done', k < step); });
+          const note = s.querySelector('[data-box-note]');
+          if (note) note.textContent = STEP_NOTE[step];
+        }
         s.classList.toggle('is-swap', p > 0.16);
         const hint = s.querySelector('[data-box-hint]');
-        const say = p > OPEN_AT - 0.1 ? 'กดอีกครั้ง ดูทีละชิ้น' : 'กดกล่องเพื่อเปิด';
+        const say = p > OPEN_AT - 0.1 ? 'กดอีกครั้ง ดูทีละชิ้น' : p > PACK_AT - 0.1 ? 'กดอีกครั้ง แกะซอง' : 'กดกล่องเพื่อเปิด';
         if (hint && hint.textContent !== say) hint.textContent = say;
         s.classList.toggle('is-on', inView ? x < 0.6 : true);   // ส่วนหัว: เปิดไว้ตั้งแต่โหลดหน้า
       }
@@ -130,7 +141,8 @@
     const r = wrap.getBoundingClientRect(), span = r.height - innerHeight, base = scrollY + r.top;
     const rest = len[0] - ENTER;
     const p = clamp(((-r.top / span) * total) / rest);
-    if (p < OPEN_AT - 0.1) glideTo(base + ((OPEN_AT * rest) / total) * span, 1800);
+    if (p < PACK_AT - 0.1) glideTo(base + ((PACK_AT * rest) / total) * span, 1700);
+    else if (p < OPEN_AT - 0.1) glideTo(base + ((OPEN_AT * rest) / total) * span, 1300);
     else glideTo(base + ((start[1] + 0.04) / total) * span, 1000);
   }));
   document.querySelectorAll('[data-inbox-go]').forEach((a) => a.addEventListener('click', (e) => {
