@@ -21,38 +21,166 @@
 <meta name="theme-color" content="#141b33">
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/routinex/absorb/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/routinex/routine.css?v=20261118c">
-<script defer src="/routinex/routine.js?v=20261118c"></script>
-<script defer src="/routinex/home.js?v=20261118c"></script>
+<link rel="stylesheet" href="/routinex/routine.css?v=20261125">
+<link rel="stylesheet" href="/routinex/inbox.css?v=20261125">
+<script defer src="/routinex/routine.js?v=20261125"></script>
+<script defer src="/routinex/home.js?v=20261125"></script>
+<script defer src="/routinex/inbox.js?v=20261125"></script>
 </head>
 <body>
-<a class="skip" href="#why">ข้ามไปที่เนื้อหา</a>
+<a class="skip" href="#why">ข้ามส่วนเปิดกล่อง</a>
 
 <header class="bar">
   <a class="bar__logo" href="/routinex/" aria-label="RoutineX"><img src="/routinex/assets/logo-white.webp" alt="RoutineX" width="720" height="100"></a>
   <nav class="bar__nav" aria-label="ทางลัด">
-    <a class="pill" href="#abcd">ABCD</a>
+    <a class="pill" href="#inbox" data-inbox-go="1">ในกล่อง</a>
     <a class="pill pill--solid" href="/routinex/start/">ได้กล่องแล้ว เริ่มที่นี่</a>
   </nav>
 </header>
 
 <main>
-<!-- ============ เปิดเรื่อง ============ -->
-<section class="hero" id="top">
-  <div class="wrap hero__grid">
-    <div>
-      <p class="eyebrow">One Routine · Better Habits</p>
-      <h1>ลดน้ำหนักครั้งนี้<br>ให้เป็น <em>ครั้งสุดท้าย</em></h1>
-      <p class="hero__lead">RoutineX ไม่ได้ขอให้คุณอดทนมากขึ้น แต่จัดสิ่งที่ควรทำในแต่ละวันให้ง่ายพอจะทำซ้ำ มีจังหวะ 28 วัน และมีคนคอยดูไปด้วยกัน</p>
-      <div class="hero__cta">
-        <a class="btn btn--go" href="/routinex/start/">ได้รับกล่องแล้ว เริ่มที่นี่ <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn--ghost" href="#why">ยังตัดสินใจอยู่ ขอดูก่อน</a>
+<!-- ============ เปิดกล่อง: ของข้างในทีละชิ้น ============ -->
+<section class="inbox" id="inbox" aria-label="เปิดกล่อง RoutineX ดูของข้างในทีละชิ้น">
+  <div class="inbox__pin">
+
+    <div class="stage stage--box" data-len="1.6" id="top">
+      <div class="boxtxt">
+        <div class="boxtxt__a">
+          <p class="eyebrow">One Routine · Better Habits</p>
+          <h1>ลดน้ำหนักครั้งนี้<br>ให้เป็น <em>ครั้งสุดท้าย</em></h1>
+          <p class="boxlead">RoutineX ไม่ได้ขอให้คุณอดทนมากขึ้น แต่จัดสิ่งที่ควรทำในแต่ละวันให้ง่ายพอจะทำซ้ำ มีจังหวะ 28 วัน และมีคนคอยดูไปด้วยกัน</p>
+          <div class="boxcta">
+            <a class="btn btn--go" href="/routinex/start/">ได้รับกล่องแล้ว เริ่มที่นี่ <span class="arr" aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost" href="#why">ยังตัดสินใจอยู่ ขอดูก่อน</a>
+          </div>
+        </div>
+        <div class="boxtxt__b">
+          <p class="eyebrow">เปิดกล่อง</p>
+          <h2 class="boxh"><span class="w">ในกล่องนี้</span><br><span class="w" style="--i:1">รวมของดี</span><br><span class="w hl" style="--i:2">4 กลไก</span></h2>
+        </div>
       </div>
-      <p class="hero__tag">ABSORB · BUILD · CONTROL · DAILY BALANCE</p>
+      <div class="boxart" aria-hidden="true">
+        <img class="bx bx--closed" src="/routinex/assets/box-closed.webp" alt="" width="760" height="783" fetchpriority="high">
+        <img class="bx bx--open" src="/routinex/assets/box-open.webp" alt="" width="680" height="958">
+        <img class="fly fly--b" src="/routinex/assets/sachet-protein.webp" alt="" width="513" height="960">
+        <img class="fly fly--d" src="/routinex/assets/sachet-coreduo.webp" alt="" width="722" height="720">
+        <img class="fly fly--a" src="/routinex/assets/sachet-gus.webp" alt="" width="346" height="960">
+      </div>
+      <p class="boxsub"><i aria-hidden="true"></i>เลื่อนลง เปิดกล่อง</p>
     </div>
-    <div class="hero__art">
-      <img class="float" src="/routinex/assets/box-closed.webp" alt="กล่อง RoutineX สีน้ำเงินเข้ม" width="760" height="783" fetchpriority="high">
+
+    <article class="stage course course--a" data-len="1.15" id="abcd">
+      <span class="course__letter" aria-hidden="true">A</span>
+      <div class="course__txt">
+        <p class="course__k fade"><b>A</b>ABSORB</p>
+        <h3 class="course__h"><span class="w">ลำไส้</span><span class="w" style="--i:1">พร้อม</span></h3>
+        <p class="course__sub fade" style="--i:2">G.U.S.+ รสพีช เสริมใยอาหารให้ทุกวัน</p>
+        <ul class="facts">
+          <li class="fact fade" style="--i:3"><b data-count="2">2</b><span>กีวี<small>Livaux® · Actazin®</small></span></li>
+          <li class="fact fade" style="--i:4"><b data-count="3">3</b><span>ใยอาหาร<small>Gofos™ · Fibruline® · PHGG</small></span></li>
+          <li class="fact fade" style="--i:5"><span>Bacillus coagulans<small>No Maltodextrin</small></span></li>
+        </ul>
+        <a class="course__go fade" style="--i:6" href="/routinex/absorb/">เข้าห้อง A <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="course__art">
+        <img class="course__scene" src="/routinex/assets/scene-a.webp" alt="แก้วเครื่องดื่มสีพีช วางคู่กับลูกพีช กีวีทอง และกีวีเขียว" width="1254" height="1254" loading="lazy">
+        <img class="course__pack" src="/routinex/assets/sachet-gus.webp" alt="ซอง HabiX G.U.S.+ รสพีช" width="346" height="960" loading="lazy">
+        <span class="hud" style="--x:47%;--y:64%"><span>กีวีทอง<small>Livaux®</small></span></span>
+        <span class="hud hud--l" style="--x:90%;--y:74%;--i:1"><span>กีวีเขียว<small>Actazin®</small></span></span>
+        <span class="hud hud--l" style="--x:64%;--y:34%;--i:2"><span>รสพีช<small>Light &amp; Refreshing</small></span></span>
+        <small class="course__cap">ฉากหลังสร้างด้วย AI · ซองคือภาพสินค้าจริง</small>
+      </div>
+      <div class="tick" aria-hidden="true"><div><span>LIVAUX®</span>•<span>ACTAZIN®</span>•<span>GOFOS™</span>•<span>FIBRULINE®</span>•<span>BACILLUS COAGULANS</span>•<span>MONK FRUIT &amp; STEVIA</span>•<span>NO MALTODEXTRIN</span>•<span>PEACH FLAVOR</span>•<span>LIVAUX®</span>•<span>ACTAZIN®</span>•<span>GOFOS™</span>•<span>FIBRULINE®</span>•<span>BACILLUS COAGULANS</span>•<span>MONK FRUIT &amp; STEVIA</span>•<span>NO MALTODEXTRIN</span>•<span>PEACH FLAVOR</span>•</div></div>
+    </article>
+
+    <article class="stage course course--b" data-len="1.15">
+      <span class="course__letter" aria-hidden="true">B</span>
+      <div class="course__txt">
+        <p class="course__k fade"><b>B</b>BUILD</p>
+        <h3 class="course__h"><span class="w">โปรตีน</span><span class="w" style="--i:1">ถึง</span></h3>
+        <p class="course__sub fade" style="--i:2">Protein HMB+ รส Hokkaido Milk Malt นุ่ม ดื่มง่าย</p>
+        <ul class="facts">
+          <li class="fact fade" style="--i:3"><b data-count="20">20</b><span>กรัม<small>โปรตีนต่อซอง</small></span></li>
+          <li class="fact fade" style="--i:4"><b data-count="750">750</b><span>มก. myHMB®<small>+ Vitamin D3</small></span></li>
+        </ul>
+        <p class="bar3 fade" style="--i:5" aria-label="โปรตีนจาก 3 แหล่ง: เวย์ 10 กรัม ถั่วเหลือง 5 กรัม ถั่วลันเตา 5 กรัม"><span style="--i:0">เวย์ 10</span><span style="--i:1">ถั่วเหลือง 5</span><span style="--i:2">ถั่วลันเตา 5</span></p>
+        <a class="course__go fade" style="--i:6" href="/routinex/build/">เข้าห้อง B <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+      <div class="course__art">
+        <img class="course__scene" src="/routinex/assets/scene-b.webp" alt="แก้วนมมอลต์เนื้อนุ่ม มีน้ำนมสาดเป็นริบบิ้นรอบแก้ว" width="1254" height="1254" loading="lazy">
+        <img class="course__pack" src="/routinex/assets/sachet-protein.webp" alt="ซอง HabiX Protein HMB+ รส Hokkaido Milk Malt" width="513" height="960" loading="lazy">
+        <span class="hud hud--l" style="--x:60%;--y:44%"><span>Hokkaido Milk Malt<small>Smooth &amp; Creamy</small></span></span>
+        <span class="hud hud--l" style="--x:88%;--y:76%;--i:1"><span>โปรตีน 3 แหล่ง<small>Tri-Protein</small></span></span>
+        <small class="course__cap">ฉากหลังสร้างด้วย AI · ซองคือภาพสินค้าจริง</small>
+      </div>
+      <div class="tick" aria-hidden="true"><div><span>TRI-PROTEIN</span>•<span>WHEY ISOLATE</span>•<span>SOY ISOLATE</span>•<span>PEA PROTEIN</span>•<span>myHMB®</span>•<span>VITAMIN D3</span>•<span>MCT OIL</span>•<span>MONK FRUIT &amp; STEVIA</span>•<span>HOKKAIDO MILK MALT</span>•<span>TRI-PROTEIN</span>•<span>WHEY ISOLATE</span>•<span>SOY ISOLATE</span>•<span>PEA PROTEIN</span>•<span>myHMB®</span>•<span>VITAMIN D3</span>•<span>MCT OIL</span>•<span>MONK FRUIT &amp; STEVIA</span>•<span>HOKKAIDO MILK MALT</span>•</div></div>
+    </article>
+
+    <article class="stage course course--c" data-len="1.15">
+      <span class="course__letter" aria-hidden="true">C</span>
+      <div class="course__txt">
+        <p class="course__k fade"><b>C</b>CONTROL</p>
+        <h3 class="course__h"><span class="w">กิน</span><span class="w" style="--i:1">ให้ถูก</span></h3>
+        <p class="course__sub fade" style="--i:2">ข้อเดียวที่ไม่มีในกล่อง เพราะคุณเลือกเองทุกมื้อ</p>
+        <ul class="facts">
+          <li class="fact fade" style="--i:3"><b>1</b><span>โปรตีนก่อน</span></li>
+          <li class="fact fade" style="--i:4"><b>2</b><span>ตามด้วยผัก</span></li>
+          <li class="fact fade" style="--i:5"><b>3</b><span>แล้วค่อยคาร์โบไฮเดรต</span></li>
+        </ul>
+      </div>
+      <div class="course__art">
+        <img class="course__scene" src="/routinex/assets/scene-c.webp" alt="จานอาหารมองจากด้านบน อกไก่ย่างกับไข่ต้ม ผักหลากสี และข้าวกล้อง เรียงจากซ้ายไปขวา" width="1254" height="1254" loading="lazy">
+        <span class="hud" style="--x:24%;--y:57%"><span><b>1</b>โปรตีน</span></span>
+        <span class="hud" style="--x:50%;--y:75%;--i:1"><span><b>2</b>ผัก</span></span>
+        <span class="hud hud--l" style="--x:74%;--y:33%;--i:2"><span><b>3</b>คาร์โบไฮเดรต</span></span>
+        <small class="course__cap">ภาพประกอบสร้างด้วย AI</small>
+      </div>
+      <div class="tick" aria-hidden="true"><div><span>โปรตีนก่อน</span>•<span>ตามด้วยผัก</span>•<span>แล้วค่อยคาร์โบไฮเดรต</span>•<span>เลือกเองทุกมื้อ</span>•<span>โปรตีนก่อน</span>•<span>ตามด้วยผัก</span>•<span>แล้วค่อยคาร์โบไฮเดรต</span>•<span>เลือกเองทุกมื้อ</span>•<span>โปรตีนก่อน</span>•<span>ตามด้วยผัก</span>•<span>แล้วค่อยคาร์โบไฮเดรต</span>•<span>เลือกเองทุกมื้อ</span>•</div></div>
+    </article>
+
+    <article class="stage course course--d" data-len="1.15">
+      <span class="course__letter" aria-hidden="true">D</span>
+      <div class="course__txt">
+        <p class="course__k fade"><b>D</b>DAILY BALANCE</p>
+        <h3 class="course__h"><span class="w">เติม</span><span class="w" style="--i:1">ให้ครบ</span></h3>
+        <p class="course__sub fade" style="--i:2">Core Duo ซองเดียว มีทั้งฝั่งน้ำมันและฝั่งน้ำ</p>
+        <ul class="facts">
+          <li class="fact fade" style="--i:3"><b data-count="1">1</b><span>ซอฟต์เจล AstaMega+<small>Omega-3 · Astaxanthin · D3 · E · K2</small></span></li>
+          <li class="fact fade" style="--i:4"><b data-count="2">2</b><span>แคปซูล Vita Matrix<small>Vitamin + Mineral Complex</small></span></li>
+        </ul>
+      </div>
+      <div class="course__art">
+        <img class="course__scene" src="/routinex/assets/scene-d.webp" alt="หยดน้ำมันสีทองและสีแดงลอยในน้ำใส ข้างส้มและเลมอนฝาน" width="1254" height="1254" loading="lazy">
+        <img class="course__pack" src="/routinex/assets/sachet-coreduo.webp" alt="ซอง HabiX Core Duo: AstaMega+ และ Vita Matrix" width="722" height="720" loading="lazy">
+        <span class="hud hud--l" style="--x:66%;--y:17%"><span>ฝั่งน้ำมัน<small>Omega-3</small></span></span>
+        <span class="hud hud--l" style="--x:55%;--y:45%;--i:1"><span>สีแดงของ Astaxanthin</span></span>
+        <span class="hud hud--l" style="--x:84%;--y:66%;--i:2"><span>ฝั่งน้ำ<small>วิตามินและแร่ธาตุ</small></span></span>
+        <small class="course__cap">ฉากหลังสร้างด้วย AI · ซองคือภาพสินค้าจริง</small>
+      </div>
+      <div class="tick" aria-hidden="true"><div><span>OMEGA-3</span>•<span>ASTAXANTHIN</span>•<span>D3</span>•<span>E</span>•<span>K2 MK-7</span>•<span>VITAMIN + MINERAL COMPLEX</span>•<span>1 SOFTGEL + 2 CAPSULES</span>•<span>OMEGA-3</span>•<span>ASTAXANTHIN</span>•<span>D3</span>•<span>E</span>•<span>K2 MK-7</span>•<span>VITAMIN + MINERAL COMPLEX</span>•<span>1 SOFTGEL + 2 CAPSULES</span>•</div></div>
+    </article>
+
+    <div class="stage stage--all" data-len="1">
+      <p class="eyebrow fade">โค้ชซิงสรุปไว้ในคลิป Day 0</p>
+      <p class="all3"><span>ครบมื้อ</span><span>ครบหมู่</span><span>ครบสัดส่วน</span></p>
+      <div class="allrow" aria-hidden="true">
+        <img src="/routinex/assets/sachet-protein.webp" alt="" width="513" height="960" loading="lazy">
+        <img src="/routinex/assets/sachet-coreduo.webp" alt="" width="722" height="720" loading="lazy">
+        <img src="/routinex/assets/sachet-gus.webp" alt="" width="346" height="960" loading="lazy">
+      </div>
+      <p class="alleq fade" style="--i:2">ทั้งหมดนี้ คือวันละ 1 ซอง<small>วันคี่มี G.U.S.+ วันคู่ไม่มี สลับกันไปตลอดรอบ</small></p>
+      <div class="allcta fade" style="--i:3">
+        <a class="btn btn--go" href="/routinex/start/">ได้กล่องแล้ว เริ่ม Day 0 <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn--line" href="#why">ยังตัดสินใจอยู่ อ่านต่อ</a>
+      </div>
     </div>
+
+    <nav class="rail" aria-label="ไปที่กลไก" data-off="true">
+      <button type="button" data-go="1" aria-label="A Absorb">A</button>
+      <button type="button" data-go="2" aria-label="B Build">B</button>
+      <button type="button" data-go="3" aria-label="C Control">C</button>
+      <button type="button" data-go="4" aria-label="D Daily Balance">D</button>
+    </nav>
   </div>
 </section>
 
@@ -108,50 +236,6 @@
       </div>
       <p class="sig rv"><b>ซิง ปริญ จารุกุลวนิช</b><span>Chief of Sales &amp; Training Officer · CloverX</span></p>
       <p class="note rv" style="margin-top:18px">ตัวเลขนี้เป็นเรื่องของโค้ชเองจากการดูแลตัวเองต่อเนื่อง ผลลัพธ์ของแต่ละคนแตกต่างกัน</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ABCD ============ -->
-<section class="band band--cream" id="abcd">
-  <div class="wrap">
-    <p class="eyebrow rv">เขียนไว้บนฝากล่อง</p>
-    <h2 class="h2 rv">4 กลไก จำง่ายแค่ A B C D</h2>
-    <p class="lead rv">แตะทีละกลีบ แล้วเข้าไปดูต่อในห้องที่เปิดแล้ว</p>
-    <div class="abcd rv">
-      <div class="clover" role="tablist" aria-label="4 กลไก ABCD">
-        <button class="petal" type="button" role="tab" id="tab-a" aria-controls="panel-a" aria-selected="true"><b>A</b><span>Absorb</span><small>ลำไส้พร้อม</small></button>
-        <button class="petal" type="button" role="tab" id="tab-b" aria-controls="panel-b" aria-selected="false" tabindex="-1"><b>B</b><span>Build</span><small>โปรตีนถึง</small></button>
-        <button class="petal" type="button" role="tab" id="tab-c" aria-controls="panel-c" aria-selected="false" tabindex="-1"><b>C</b><span>Control</span><small>กินให้ถูก</small></button>
-        <button class="petal" type="button" role="tab" id="tab-d" aria-controls="panel-d" aria-selected="false" tabindex="-1"><b>D</b><span>Daily Balance</span><small>เติมให้ครบ</small></button>
-      </div>
-      <div>
-        <div class="abcd__panel" role="tabpanel" id="panel-a" aria-labelledby="tab-a">
-          <p class="k">A · ABSORB</p>
-          <h3>เริ่มจากข้างใน ให้ลำไส้พร้อม</h3>
-          <p>ทุกมื้อที่กินต้องผ่านลำไส้ก่อนไปถึงส่วนอื่นของร่างกาย RoutineX จึงวางเรื่องใยอาหารและการดูแลสมดุลลำไส้ไว้เป็นขั้นแรก โดยเชื่อมกับ G.U.S.+</p>
-          <a class="btn btn--line" href="/routinex/absorb/">เข้าห้อง A · หนึ่งมื้อของคุณเดินทางไปไหน <span class="arr" aria-hidden="true">→</span></a>
-        </div>
-        <div class="abcd__panel" role="tabpanel" id="panel-b" aria-labelledby="tab-b" hidden>
-          <p class="k">B · BUILD</p>
-          <h3>กินโปรตีนให้ถึงในแต่ละวัน</h3>
-          <p>ระหว่างปรับการกิน สิ่งที่อยากรักษาไว้คือกล้ามเนื้อ ขั้นนี้จึงให้ความสำคัญกับโปรตีนและการดูแลมวลกล้ามเนื้อ โดยเชื่อมกับ Protein HMB+</p>
-          <a class="btn btn--line" href="/routinex/build/">เข้าห้อง B · แรงของวันพรุ่งนี้เริ่มจากสิ่งที่กินวันนี้ <span class="arr" aria-hidden="true">→</span></a>
-        </div>
-        <div class="abcd__panel" role="tabpanel" id="panel-c" aria-labelledby="tab-c" hidden>
-          <p class="k">C · CONTROL</p>
-          <h3>ข้อนี้ซื้อไม่ได้ ต้องเลือกเอง</h3>
-          <p>C คือพฤติกรรม ไม่ใช่สินค้า ทุกอย่างในกล่องมีไว้ช่วยให้ข้อนี้ทำซ้ำง่ายขึ้น เริ่มจากลำดับในจานที่โค้ชซิงสอนในคลิป Day 0</p>
-          <p class="order"><span>โปรตีน</span><i>→</i><span>ผัก</span><i>→</i><span>คาร์โบไฮเดรต</span></p>
-          <span class="soon">ห้อง C · เร็ว ๆ นี้</span>
-        </div>
-        <div class="abcd__panel" role="tabpanel" id="panel-d" aria-labelledby="tab-d" hidden>
-          <p class="k">D · DAILY BALANCE</p>
-          <h3>เติมส่วนที่มื้อจริงมักขาด</h3>
-          <p>ต่อให้ตั้งใจกินดี วิตามินและแร่ธาตุบางอย่างก็ยังไม่ครบได้ ขั้นนี้จัดส่วนนั้นเข้ามาในรูทีนประจำวัน โดยเชื่อมกับ AstaMega+ และ Vita Matrix ในซอง Core Duo</p>
-          <span class="soon">ห้อง D · เร็ว ๆ นี้</span>
-        </div>
-      </div>
     </div>
   </div>
 </section>

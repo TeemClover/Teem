@@ -357,8 +357,8 @@
   function setParity(p) {
     sachets?.classList.toggle('is-even', p === 'even');
     $$('[data-parity]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.parity === p)));
-    const a = $('.sachet--a');
-    if (a) a.setAttribute('aria-label', p === 'even' ? 'G.U.S.+ ไม่อยู่ในซองวันคู่' : 'G.U.S.+');
+    const a = $('.sachet--a img');
+    if (a) a.alt = p === 'even' ? 'G.U.S.+ ไม่อยู่ในซองวันคู่' : 'G.U.S.+ (A · Absorb)';
   }
   function showSachet(k) {
     $$('.sachet').forEach((s) => s.setAttribute('aria-pressed', String(s.dataset.s === k)));
