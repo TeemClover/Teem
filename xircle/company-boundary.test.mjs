@@ -157,3 +157,30 @@ test('URL choices are bounded, legacy context is safe, and product paths round-t
   assert.deepEqual(readBrandState(href),state);
  }
 });
+
+test('English is a dictionary over the Thai page: every visible Thai text has a translation, the tour is hidden and Play opens the English film',async()=>{
+ const html=await read('index.html'),css=await read('welcome.css'),js=await read('welcome.js'),src=await read('welcome.en.js');
+ const win={};new Function('window',src)(win);
+ const EN=win.XIRCLE_EN;
+ assert.ok(EN&&EN.t&&EN.rules&&EN.title,'the dictionary loads');
+ assert.ok(html.indexOf('welcome.en.js')<html.indexOf('welcome.js?'),'the dictionary loads before the runtime');
+ assert.match(html,/<button class="lang" id="lang" type="button"[^>]*hidden>EN<\/button>/,'the switch is a button that stays hidden until the runtime is ready');
+ assert.match(html,/data-play="MU9jlnp__pg"[^>]*data-play-en="SKO2pAW8xMs"[^>]*data-title-en="[^"]+"/,'the film link carries the English upload');
+ assert.equal(EN.film.id,'SKO2pAW8xMs');
+ assert.match(css,/html\[lang=en\] #tour,html\[lang=en\] \.ep-chip,html\[lang=en\] \.nav-links a\[href="#tour"\]\{display:none!important\}/,'the Thai-only tour and its links are hidden in English');
+ assert.match(js,/history\.replaceState/,'the language choice lives in the address');
+ assert.doesNotMatch(js,/localStorage|sessionStorage|document\.cookie/,'the language choice is not stored on the device');
+ const thai=/[\u0E00-\u0E7F]/,norm=text=>text.replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
+ const known=text=>Object.prototype.hasOwnProperty.call(EN.t,text)||EN.rules.some(([re])=>re.test(text));
+ const body=html.slice(html.indexOf('<body'))
+  .replace(/<section class="tour"[\s\S]*?<\/section>/,'')
+  .replace(/<a class="ep-chip"[\s\S]*?<\/a>/g,'')
+  .replace(/<script[\s\S]*?<\/script>/g,'');
+ const missing=new Set();
+ for(const match of body.matchAll(/>([^<>]+)</g)){const text=norm(match[1]);if(text&&thai.test(text)&&!known(text))missing.add(text);}
+ for(const match of body.matchAll(/\s(?:aria-label|alt|title)="([^"]+)"/g)){const text=norm(match[1]);if(thai.test(text)&&!known(text))missing.add(text);}
+ for(const name of ['data-now','data-title']){for(const match of body.matchAll(new RegExp(`\\s${name}="([^"]+)"`,'g'))){const text=norm(match[1]);if(thai.test(text)&&text!=='ทัวร์ 9 ตอน'&&text!=='XIRCLE ดูอะไรได้บ้าง? ครบทุกฟังก์ชันใน 2 นาที'&&!known(text))missing.add(text);}}
+ missing.delete('ทัวร์ 9 ตอน');
+ assert.deepEqual([...missing],[],'Thai texts on the page without an English line in welcome.en.js');
+ for(const [th,en] of Object.entries(EN.t))assert.ok(!thai.test(en),`the English for "${th}" has no Thai left in it`);
+});

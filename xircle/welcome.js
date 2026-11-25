@@ -21,6 +21,8 @@
   root.classList.toggle('rm', reduce());
   reduceMq.addEventListener?.('change', () => { root.classList.toggle('rm', reduce()); if (reduce()) pauseAll(); });
 
+  let lang = 'th'; // 'en' while the English dictionary is applied (see the language block at the end)
+
   /* ── small helpers ── */
   const arm = v => { if (!v.getAttribute('src') && v.dataset.src) v.src = v.dataset.src; };
   const play = v => { if (!v || reduce()) return; arm(v); const p = v.play(); if (p) p.catch(() => {}); };
@@ -515,7 +517,8 @@
     d.addEventListener('click', e => {
       const a = e.target.closest('[data-ep],[data-play]');
       if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const ok = a.dataset.ep ? openEpisode(+a.dataset.ep - 1) : (pNav.hidden = true, openVideo(a.dataset.play, a.dataset.title || 'วิดีโอ', false));
+      const en = lang === 'en'; // the episodes are Thai-only and hidden in English; the film has an English upload
+      const ok = a.dataset.ep ? (!en && openEpisode(+a.dataset.ep - 1)) : (pNav.hidden = true, openVideo((en && a.dataset.playEn) || a.dataset.play, (en && a.dataset.titleEn) || a.dataset.title || 'วิดีโอ', false));
       if (ok) e.preventDefault();
     });
   }
@@ -544,7 +547,7 @@
 
     // deep link: /xircle/?ep=4 selects that episode and brings the tour into view
     const params = new URLSearchParams(location.search), asked = params.getAll('ep');
-    const want = asked.length === 1 && /^[1-9]$/.test(asked[0]) ? +asked[0] : 0;
+    const want = params.get('lang') !== 'en' && asked.length === 1 && /^[1-9]$/.test(asked[0]) ? +asked[0] : 0;
     if (want && want <= eps.length) { cur = want - 1; auto = false; }
     tourLayout();
     if (want && !location.hash) {
@@ -555,5 +558,91 @@
       };
       if (d.readyState === 'complete') bring(); else addEventListener('load', bring, { once: true });
     }
+  }
+
+  /* ── language ──
+     The page is Thai. English is a dictionary (welcome.en.js) from each Thai text to English, applied to text nodes
+     and to aria-label / alt / title. While English is on, a MutationObserver translates whatever the page writes
+     later (the chapter name in the bar, the weigh button, the player title). Nothing is stored: the choice lives in
+     the address as ?lang=en. In English the nine-episode tour is hidden by CSS and Play opens the English film. */
+  const EN = window.XIRCLE_EN, langBtn = $('#lang'), filmLink = $('.film-stage');
+  const THAI = /[\u0E00-\u0E7F]/, LANG_ATTRS = ['aria-label', 'alt', 'title'];
+  const thTitle = d.title;
+  let langMO = null;
+  const toEn = th => {
+    const key = th.replace(/\s+/g, ' ').trim();
+    if (Object.prototype.hasOwnProperty.call(EN.t, key)) return EN.t[key];
+    for (const [re, out] of EN.rules) if (re.test(key)) return key.replace(re, out);
+    return null;
+  };
+  function langText(node) {
+    if (lang === 'en') {
+      const src = THAI.test(node.nodeValue) ? node.nodeValue : node.__th; // fresh Thai from the page wins over what we kept
+      if (src == null) return;
+      const en = toEn(src);
+      if (en == null) return;
+      const out = src.match(/^\s*/)[0] + en + src.match(/\s*$/)[0];
+      node.__th = src; node.__en = out;
+      if (node.nodeValue !== out) node.nodeValue = out;
+    } else if (node.__th != null) {
+      if (node.nodeValue === node.__en) node.nodeValue = node.__th;
+      node.__th = node.__en = null;
+    }
+  }
+  function langAttrs(el) {
+    for (const a of LANG_ATTRS) {
+      const cur = el.getAttribute(a);
+      if (cur == null) continue;
+      const kept = el.__thA || (el.__thA = {});
+      if (lang === 'en') {
+        const src = THAI.test(cur) ? cur : kept[a];
+        if (src == null) continue;
+        const en = toEn(src);
+        if (en == null) continue;
+        kept[a] = src;
+        if (cur !== en) el.setAttribute(a, en);
+      } else if (kept[a] != null) { el.setAttribute(a, kept[a]); kept[a] = null; }
+    }
+  }
+  function langSweep(from) {
+    const w = d.createTreeWalker(from, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+    for (let n = w.currentNode; n; n = w.nextNode()) {
+      if (n.nodeType === 1) langAttrs(n);
+      else if (n.parentNode && !/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName)) langText(n);
+    }
+  }
+  function setLang(next, record) {
+    if (!EN || next === lang) return;
+    lang = next;
+    const en = next === 'en';
+    if (langMO) { langMO.disconnect(); langMO = null; }
+    root.lang = next;
+    d.title = en ? EN.title : thTitle;
+    langSweep(d.body);
+    if (en) {
+      langMO = new MutationObserver(list => {
+        for (const m of list) {
+          if (m.type === 'characterData') langText(m.target);
+          else if (m.type === 'attributes') langAttrs(m.target);
+          else m.addedNodes.forEach(n => { if (n.nodeType === 3) langText(n); else if (n.nodeType === 1) langSweep(n); });
+        }
+      });
+      langMO.observe(d.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: LANG_ATTRS });
+    }
+    if (filmLink) filmLink.href = `https://youtu.be/${en ? EN.film.id : filmLink.dataset.play}`;
+    if (langBtn) {
+      langBtn.textContent = en ? 'ไทย' : 'EN';
+      langBtn.lang = en ? 'th' : 'en';
+      langBtn.setAttribute('aria-label', en ? 'เปลี่ยนเป็นภาษาไทย' : 'Switch to English');
+    }
+    if (record) {
+      try { history.replaceState(null, '', (en ? '?lang=en' : location.pathname) + location.hash); } catch { /* the address stays as it was */ }
+    }
+    requestFrame();
+  }
+  if (langBtn && EN) {
+    langBtn.hidden = false;
+    langBtn.addEventListener('click', () => setLang(lang === 'en' ? 'th' : 'en', true));
+    if (new URLSearchParams(location.search).get('lang') === 'en') setLang('en', false);
   }
 })();

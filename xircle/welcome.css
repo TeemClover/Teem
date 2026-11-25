@@ -47,6 +47,13 @@ html:not(.js) .js-only{display:none!important}
 .nav-links a{position:relative;padding:6px 0;text-decoration:none;opacity:.72;transition:opacity .2s}
 .nav-links a:hover,.nav-links a[aria-current]{opacity:1}
 .nav-links a[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:#fff}
+.lang{flex:none;min-width:38px;min-height:30px;padding:.3em .7em;border:1px solid rgba(255,255,255,.34);border-radius:999px;background:none;color:#fff;font:inherit;font-size:12.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:background .2s,border-color .2s}
+.lang:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.6)}
+.lang[hidden]{display:none}
+/* English: the nine-episode tour and its links are Thai-only */
+html[lang=en] #tour,html[lang=en] .ep-chip,html[lang=en] .nav-links a[href="#tour"]{display:none!important}
+/* English runs longer in a few tight spots */
+html[lang=en] .allday-txt h3{font-size:clamp(1.7rem,3.5vw,2.75rem)}
 .nav-cta{flex:none;min-height:30px;padding:.35em 1.05em;font-size:13.5px}
 .nav-bar{position:absolute;inset:auto 0 0;height:2px;overflow:hidden}
 .nav-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));transform-origin:0 50%;transform:scaleX(0)}
@@ -588,6 +595,7 @@ html.rm .hl-ctrl{display:none}
   .scan i{left:calc((var(--x) - 10)*1.25%);top:calc(var(--y)*1%);width:calc(var(--r)*2.5%)}
   .scan-tags li{left:calc(var(--mx,(var(--x) - 10)*1.25)*1%);top:calc(var(--my,var(--y))*1%);font-size:.7rem;padding:.34em .62em .4em .52em;border-radius:12px}
   .mm{gap:.55em}
+  html[lang=en] .scan-tags li:nth-child(2){top:59.2%}
   .macro-box{left:12px;right:12px;top:auto;bottom:26px;display:block}
   .macro-title{margin:0 0 4px 3px;font-size:.68rem}
   .macro{grid-template-columns:repeat(4,1fr);gap:5px}
