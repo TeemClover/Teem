@@ -3,7 +3,7 @@
    - ตอนนี้ใช้ภาพนิ่ง (เลื่อน = ซูมช้า ๆ แล้วละลายเข้าภาพถัดไป) · พอมีคลิป Seedance แล้ว ใส่ frames ในฉาก
      แล้ววางเฟรม webp ที่ /welcome/film/<scene>/001.webp … ระบบจะเล่นเฟรมจริงแทนเอง
    - การ์ดคำถามสร้างจาก questions.js ตัวเดียวกับที่ API ใช้ตรวจ */
-import { QUESTIONS } from './questions.js?v=20261126f';
+import { QUESTIONS } from './questions.js?v=20261126g';
 
 const KEYS = ['k0', 'k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8'];
 // จุดที่ต้องไม่โดนครอปเมื่อจอแคบกว่า 2:3 (0 = ซ้ายสุด, 1 = ขวาสุด)
@@ -48,7 +48,12 @@ function post(body) {
 const imgs = KEYS.map(() => null);
 const frameCache = new Map();
 function load(src) {
-  return new Promise(res => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+  // ถอดรหัสภาพให้เสร็จก่อนใช้ ไม่งั้น drawImage จะถอดรหัสกลางเฟรมแล้วจอสะดุด
+  return new Promise(res => {
+    const im = new Image(); im.decoding = 'async';
+    im.onload = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(() => res(im));
+    im.onerror = () => res(null); im.src = src;
+  });
 }
 const loader = document.getElementById('loader');
 const bar = document.getElementById('loader-bar');
@@ -67,17 +72,20 @@ function preloadScene(k) {
   const scene = SCENES[k];
   if (!scene || !scene.frames || preloaded.has(k)) return;
   preloaded.add(k);
-  const order = [];
-  for (let step = 8; step >= 1; step = Math.floor(step / 2)) for (let i = 0; i < scene.frames; i += step) if (!order.includes(i)) order.push(i);
-  (async () => {
-    for (const i of order) {
+  const order = [], seenIdx = new Set();
+  for (let step = 8; step >= 1; step = Math.floor(step / 2)) for (let i = 0; i < scene.frames; i += step) if (!seenIdx.has(i)) { seenIdx.add(i); order.push(i); }
+  let next = 0;
+  const worker = async () => {
+    while (next < order.length) {
+      const i = order[next++];
       const key = `${scene.id}/${String(i + 1).padStart(3, '0')}`;
-      const im = await load(`/welcome/film/${key}.webp`);
-      frameCache.set(key, im);
-      if (i % 8 === 0) draw(true);
+      frameCache.set(key, await load(`/welcome/film/${key}.webp`));
+      if (i % 8 === 0) kick(true);
     }
-  })();
+  };
+  for (let w = 0; w < 4; w++) worker();
 }
+function exact(scene, i) { return frameCache.get(`${scene.id}/${String(i + 1).padStart(3, '0')}`) || null; }
 function frame(scene, i) {
   for (let d = 0; d < scene.frames; d++) {
     for (const j of [i - d, i + d]) {
@@ -120,7 +128,15 @@ function paint(scene, p) {
   const c = octx, cw = off.width, ch = off.height;
   c.fillStyle = '#05070f'; c.fillRect(0, 0, cw, ch);
   if (scene.frames) {
-    const f = frame(scene, Math.round(p * (scene.frames - 1)));
+    const pos = p * (scene.frames - 1), i0 = Math.floor(pos), t = pos - i0;
+    const a = exact(scene, i0), b = exact(scene, Math.min(scene.frames - 1, i0 + 1));
+    if (a) {
+      cover(c, a, cw, ch, 1, 0);
+      // ผสมเฟรมถัดไปตามเศษ ภาพจึงไหลต่อเนื่องแม้เลื่อนช้ากว่าความถี่เฟรม
+      if (b && b !== a && t > .02) { c.globalAlpha = t; cover(c, b, cw, ch, 1, 0); c.globalAlpha = 1; }
+      return;
+    }
+    const f = frame(scene, Math.round(pos));
     if (f) { cover(c, f, cw, ch, 1, 0); return; }
   }
   const A = imgs[scene.a], B = imgs[scene.b];
@@ -175,8 +191,11 @@ function measure() {
     return { top, len: Math.max(1, t.offsetHeight - vh) };
   });
 }
+// ตำแหน่งที่ฟิล์มเล่นอยู่ ไล่ตามตำแหน่งเลื่อนจริงแบบมีแรงหน่วง (ล้อเมาส์เลื่อนทีละขั้นก็ยังลื่น)
+let ys = scrollY;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function current() {
-  const y = scrollY;
+  const y = ys;
   let i = 0;
   for (let k = 0; k < spans.length; k++) if (y >= spans[k].top - 1) i = k;
   const s = spans[i] || { top: 0, len: 1 };
@@ -213,11 +232,26 @@ function countUp(el) {
   requestAnimationFrame(tick);
 }
 
-let queued = false;
-function onScroll() {
-  if (queued) return; queued = true;
-  requestAnimationFrame(() => { queued = false; const c = current(); preloadScene(c.index); preloadScene(c.index + 1); beatsFor(c.index, c.p); draw(); });
+let running = false, lastT = 0, force = false;
+function tick(t) {
+  const dt = Math.min(64, t - (lastT || t)); lastT = t;
+  const target = scrollY;
+  const k = reduceMotion ? 1 : 1 - Math.exp(-dt / 95);
+  ys += (target - ys) * k;
+  if (Math.abs(target - ys) < .4) ys = target;
+  try {
+    const c = current();
+    preloadScene(c.index); preloadScene(c.index + 1);
+    beatsFor(c.index, c.p); draw(force); force = false;
+  } finally {
+    if (ys !== target) requestAnimationFrame(tick); else { running = false; lastT = 0; }
+  }
 }
+function kick(redraw) {
+  if (redraw) force = true;
+  if (running) return; running = true; requestAnimationFrame(tick);
+}
+function onScroll() { kick(); }
 addEventListener('scroll', onScroll, { passive: true });
 addEventListener('resize', () => { size(); onScroll(); });
 
