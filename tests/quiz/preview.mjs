@@ -29,5 +29,5 @@ export function createPreview({clock=Date.now,store=createMemoryStore({clock})}=
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  const port=Number(process.env.QUIZ_PREVIEW_PORT||4199);
- createPreview().listen(port,'127.0.0.1',()=>console.log(`Clover Quiz local preview: http://127.0.0.1:${port}/quiz/ | Host: /quiz/host/ | isolated test data`));
+ createPreview().listen(port,'127.0.0.1',()=>console.log(`myClover Quiz local preview: http://127.0.0.1:${port}/quiz/ | Host: /quiz/host/ | isolated test data`));
 }

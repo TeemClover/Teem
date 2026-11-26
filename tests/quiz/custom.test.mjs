@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { checkCustomQuestions, restoreDraft, questionIsComplete, validQuestionCount, ANNIVERSARY_TITLE } from '../../quiz/question-set.js';
+import { checkCustomQuestions, restoreDraft, questionIsComplete, validQuestionCount } from '../../quiz/question-set.js';
 import { prepareQuestions, createMemoryStore, newToken } from '../../api/_lib/quiz/game.js';
 import { createQuizHandler } from '../../api/_lib/quiz/handler.js';
 import { AVATARS } from '../../quiz/avatars.js';
@@ -60,11 +60,11 @@ test('draft restoration preserves hidden questions when reducing then increasing
   }
 });
 
-test('API names the original pack, validates custom requests before saving, and accepts 20 full Thai questions', async () => {
+test('API requires host-written questions, validates custom requests before saving, and accepts 20 full Thai questions', async () => {
   const f = fixture();
-  const standard = await f.request('create');assert.equal(standard.status, 201);
-  assert.equal(f.store.inspect(standard.code).room.title, ANNIVERSARY_TITLE);
-  assert.equal(f.store.inspect(standard.code).room.questions.length, 12);
+  const empty = await f.request('create');assert.equal(empty.status, 400);assert.equal(empty.error, 'BAD_QUESTION_COUNT');
+  const untitled = await f.request('create', { questions: questions(5) });assert.equal(untitled.status, 201);
+  assert.equal(f.store.inspect(untitled.code).room.title, 'คำถามของเรา');
   for (const data of [{ mode: 'other' }, { mode: 'custom' }, { mode: 'custom', questions: questions(4) }, { mode: 'custom', questions: questions(21) }, { mode: 'custom', questions: questions(5).map(q => ({ ...q, options: ['same', 'same', 'same', 'same'] })) }]) {
     const response = await f.request('create', data);assert.equal(response.status, 400);assert.equal(response.hostToken, undefined);
   }

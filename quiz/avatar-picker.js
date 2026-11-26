@@ -39,14 +39,14 @@ export function createAvatarImageLoader({ createImage = () => new Image(), limit
   };
 }
 const loadAvatarImage = createAvatarImageLoader();
-const imageSource = avatar => avatar.preview || avatar.image;
+const imageSource = avatar => avatar.face || avatar.preview || avatar.image;
 
 export function mountAvatarPicker(container, { avatars, selectedId, onSelect, random = Math.random, loadImage = loadAvatarImage }) {
   if (!avatars.length) return;
   let index = Math.max(0, avatars.findIndex(a => a.id === selectedId));
   let displayed = index, request = 0, plannedRandom = randomAvatar(index, avatars.length, random), animations = [];
   const view = container.ownerDocument.defaultView;
-  container.innerHTML = `<div class="avatar-carousel"><button class="avatar-arrow" type="button" data-avatar-prev aria-label="รูปก่อนหน้า">‹</button><div class="avatar-stage"><img class="avatar-peek avatar-peek-left" alt="" aria-hidden="true" decoding="async"><div class="avatar-card-stack"><img class="avatar-current" alt="รูปประจำตัวที่เลือก" data-active="true" width="252" height="352" decoding="async"></div><img class="avatar-peek avatar-peek-right" alt="" aria-hidden="true" decoding="async"></div><button class="avatar-arrow" type="button" data-avatar-next aria-label="รูปถัดไป">›</button></div><button class="avatar-shuffle" type="button" data-avatar-random><span aria-hidden="true">⚄</span> สุ่มให้หน่อย</button><span class="screen-reader" data-avatar-status role="status"></span>`;
+  container.innerHTML = `<div class="avatar-carousel"><button class="avatar-arrow" type="button" data-avatar-prev aria-label="รูปก่อนหน้า">‹</button><div class="avatar-stage"><img class="avatar-peek avatar-peek-left" alt="" aria-hidden="true" decoding="async"><div class="avatar-card-stack"><img class="avatar-current" alt="รูปประจำตัวที่เลือก" data-active="true" width="256" height="256" decoding="async"></div><img class="avatar-peek avatar-peek-right" alt="" aria-hidden="true" decoding="async"></div><button class="avatar-arrow" type="button" data-avatar-next aria-label="รูปถัดไป">›</button></div><button class="avatar-shuffle" type="button" data-avatar-random><span aria-hidden="true">⚄</span> สุ่มให้หน่อย</button><span class="screen-reader" data-avatar-status role="status"></span>`;
   const stack = container.querySelector('.avatar-card-stack'), stage = container.querySelector('.avatar-stage'), status = container.querySelector('[data-avatar-status]');
   let current = container.querySelector('.avatar-current');
   current.src = imageSource(avatars[index]);
@@ -83,7 +83,7 @@ export function mountAvatarPicker(container, { avatars, selectedId, onSelect, ra
       if (ticket !== request || !container.isConnected) return;
       animations.forEach(animation => animation.cancel());animations = [];
       incoming.className = 'avatar-current';incoming.alt = 'รูปประจำตัวที่เลือก';
-      incoming.width = 252;incoming.height = 352;incoming.dataset.active = 'true';incoming.setAttribute('aria-hidden', 'false');
+      incoming.width = 256;incoming.height = 256;incoming.dataset.active = 'true';incoming.setAttribute('aria-hidden', 'false');
       if (incoming !== current) {
         current.dataset.active = 'false';current.setAttribute('aria-hidden', 'true');
         stack.replaceChildren(current, incoming);

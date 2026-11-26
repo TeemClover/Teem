@@ -616,7 +616,9 @@ export const AVATARS = [
 
 // One appearance per animal in the picker. Keep the full catalog for existing rooms.
 export const AVATAR_CHOICES = ['ORANGE_CAT', 'WHITE_POM', 'PIG', 'BUFFALO', 'CHICKEN', 'CROW', 'TURTLE', 'RABBIT', 'FOX']
-  .map(animal => AVATARS.find(avatar => avatar.id === animal + '_RED_RARE_001'));
+  .map(animal => AVATARS.find(avatar => avatar.id === animal + '_RED_RARE_001'))
+  // Square close-ups of each animal's face, shown as round profile pictures.
+  .map(avatar => ({ ...avatar, face: '/quiz/assets/faces/' + avatar.id.replace(/_RED_RARE_001$/, '').toLowerCase().replace(/_/g, '-') + '.jpg' }));
 export function canonicalAvatar(id) {
   const animal = String(id || '').replace(/_(RED|GREEN|BLUE|SILVER)_RARE_\d+$/, '').replace(/^WHITE_CAT$/, 'ORANGE_CAT');
   return AVATAR_CHOICES.find(avatar => avatar.id.startsWith(animal + '_')) || AVATAR_CHOICES[0];

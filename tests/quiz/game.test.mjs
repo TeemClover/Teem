@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createMemoryStore, tokenHash, newToken, prepareQuestions, validateJoin, scoreAnswer, publicState } from '../../api/_lib/quiz/game.js';
-import { QUESTIONS } from '../../api/_lib/quiz/questions.js';
+import { QUESTIONS } from './sample-questions.mjs';
 import { AVATARS } from '../../quiz/avatars.js';
 import { createQuizHandler } from '../../api/_lib/quiz/handler.js';
 
-function fixture(){let time=1800000000000;const store=createMemoryStore({clock:()=>time});const host=newToken(),hash=tokenHash(host);return {store,host,hash,clock:()=>time,advance(ms){time+=ms;},async room(){return store.create({title:'Clover',questions:prepareQuestions(),hostHash:hash});}};}
+function fixture(){let time=1800000000000;const store=createMemoryStore({clock:()=>time});const host=newToken(),hash=tokenHash(host);return {store,host,hash,clock:()=>time,advance(ms){time+=ms;},async room(){return store.create({title:'Quiz',questions:prepareQuestions(20,QUESTIONS),hostHash:hash});}};}
 const join=(store,code,hash,name='ทีม')=>store.command({code,hash,action:'join',payload:validateJoin({name,avatar:AVATARS[0].id})});
 test('source has exactly twelve four-choice questions; shuffled answer stays attached to text',()=>{
  assert.equal(QUESTIONS.length,12);assert.equal(AVATARS.length,68);
- for(let n=0;n<40;n++)for(const [i,q] of prepareQuestions().entries()){assert.equal(q.options.length,4);assert.equal(q.options[q.correctIndex],QUESTIONS[i].options[0]);assert.equal(new Set(q.options).size,4);}
- assert.throws(()=>prepareQuestions(15));assert.throws(()=>validateJoin({name:'  ',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'<script>',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'ok',avatar:'fake'}));
+ for(let n=0;n<40;n++)for(const [i,q] of prepareQuestions(20,QUESTIONS).entries()){assert.equal(q.options.length,4);assert.equal(q.options[q.correctIndex],QUESTIONS[i].options[0]);assert.equal(new Set(q.options).size,4);}
+ assert.throws(()=>prepareQuestions(15,QUESTIONS));assert.throws(()=>prepareQuestions(20),/BAD_QUESTION_COUNT/);assert.throws(()=>validateJoin({name:'  ',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'<script>',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'ok',avatar:'fake'}));
  assert.equal(scoreAnswer(0,20000),1000);assert.equal(scoreAnswer(10000,20000),750);assert.equal(scoreAnswer(20000,20000),500);
 });
 test('100 simultaneous joins admit exactly 100; retries do not consume seats; 101st fails',async()=>{
@@ -53,7 +53,7 @@ test('100 API clients play all twelve rounds; immutable answer, final leaderboar
   const headers=new Map();let result;
   await handler(req,{statusCode:200,setHeader(k,v){headers.set(k.toLowerCase(),v);},end(body){result={status:this.statusCode,data:JSON.parse(body),headers};}});return result;
  }
- const created=await request('create',{seconds:20});assert.equal(created.status,201);const {code,hostToken}=created.data;
+ const created=await request('create',{seconds:20,questions:QUESTIONS});assert.equal(created.status,201);const {code,hostToken}=created.data;
  const players=Array.from({length:100},(_,i)=>({token:newToken(),name:'ผู้เล่น '+String(i+1).padStart(3,'0')}));
  const joined=await Promise.all(players.map(p=>request('join',{code,name:p.name,avatar:AVATARS[0].id},p.token)));
  assert.ok(joined.every(r=>r.status===200));assert.equal((await request('join',{code,name:'101',avatar:AVATARS[0].id},newToken())).data.error,'ROOM_FULL');
