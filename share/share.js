@@ -17,6 +17,15 @@
 
   var buy = document.getElementById('buy');
   if (buy) buy.href = S.buyUrl(ref);
+  S.track('view', 'share', '', ref);
+
+  /* 4 ปุ่มเปิดแท็บใหม่เสมอ หน้านี้จึงยังอยู่ให้ลูกค้ากลับมากดปุ่มอื่น
+     ปุ่ม รูทีน เซอเคิล รีวิว พกรหัสไปด้วย ทุกทางจึงจบที่หน้าสั่งซื้อใต้รหัสของคนส่ง */
+  document.querySelectorAll('.tile[data-go]').forEach(function (tile) {
+    var go = tile.getAttribute('data-go');
+    if (go !== 'buy') tile.href = S.withRef(tile.getAttribute('href'), ref);
+    tile.addEventListener('click', function () { S.track('click', 'share', go, ref); });
+  });
 
   var tag = document.getElementById('buy-tag');
   if (tag && ref) {
@@ -35,6 +44,7 @@
     var label = fwdText.textContent;
     var timer = 0;
     fwd.addEventListener('click', function () {
+      S.track('click', 'share', 'forward', ref);
       var url = S.shareUrl(location.origin, ref);
       function copied() {
         fwdText.textContent = 'คัดลอกลิงก์แล้ว';
@@ -52,11 +62,16 @@
     });
   }
 
-  /* กดแล้วปุ่มยุบลงเล็กน้อยก่อนเปลี่ยนหน้า ให้รู้ว่ากดติด */
-  document.querySelectorAll('.tile').forEach(function (tile) {
-    tile.addEventListener('click', function () { tile.classList.add('is-going'); });
-  });
-  window.addEventListener('pageshow', function () {
+  /* กดแล้วปุ่มยุบลงเล็กน้อย ให้รู้ว่ากดติด แล้วคืนรูปเมื่อกลับมาที่แท็บนี้ */
+  function settle() {
     document.querySelectorAll('.tile.is-going').forEach(function (t) { t.classList.remove('is-going'); });
+  }
+  document.querySelectorAll('.tile').forEach(function (tile) {
+    tile.addEventListener('click', function () {
+      tile.classList.add('is-going');
+      setTimeout(settle, 900);
+    });
   });
+  window.addEventListener('pageshow', settle);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) settle(); });
 })();

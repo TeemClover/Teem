@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>สถิติหน้าแชร์ · myClover</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.ico">
+<meta name="theme-color" content="#f6f9ff">
+<link rel="stylesheet" href="/share/share.css?v=20261126d">
+<link rel="stylesheet" href="/share/stat/stat.css?v=20261126d">
+<script defer src="/share/stat/stat.js?v=20261126d"></script>
+</head>
+<body class="stat">
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<main class="board">
+  <header class="head board__head">
+    <div>
+      <p class="brand"><img src="/share/assets/cloverx-logo.png" alt="Clover X" width="900" height="181"><span lang="en">Share Stat</span></p>
+      <h1>สถิติ <span class="grad">หน้าแชร์</span></h1>
+    </div>
+    <div class="range" id="range" role="group" aria-label="ช่วงเวลา" hidden>
+      <button type="button" data-days="1">วันนี้</button>
+      <button type="button" data-days="7" aria-pressed="true">7 วัน</button>
+      <button type="button" data-days="30">30 วัน</button>
+      <button type="button" data-days="90">90 วัน</button>
+      <button type="button" data-days="0">ทั้งหมด</button>
+    </div>
+  </header>
+
+  <form class="card login" id="login" hidden>
+    <label class="field" for="password">รหัสหลังบ้าน</label>
+    <input class="code code--pw" id="password" type="password" autocomplete="current-password" required>
+    <button class="cta" type="submit">เข้าดู</button>
+    <p class="msg" id="login-msg" role="alert" hidden></p>
+  </form>
+
+  <p class="note" id="status" role="status">กำลังโหลด…</p>
+
+  <div id="dash" hidden>
+    <section class="kpis" aria-label="ภาพรวม">
+      <article class="kpi"><p>เปิดหน้าแชร์</p><b id="k-views">0</b><span id="k-visitors">0 คน</span></article>
+      <article class="kpi kpi--buy"><p>กดสั่งซื้อ</p><b id="k-buy">0</b><span id="k-buyrate">ทุกหน้า</span></article>
+      <article class="kpi"><p>สร้างลิงก์</p><b id="k-gens">0</b><span id="k-codes">0 รหัส</span></article>
+      <article class="kpi"><p>รหัสที่มีคนเปิด</p><b id="k-refs">0</b><span id="k-dest">0 เปิดหน้าปลายทาง</span></article>
+    </section>
+
+    <section class="card block">
+      <h2>กดเมนูไหน</h2>
+      <div class="bars" id="menu"></div>
+    </section>
+
+    <section class="card block">
+      <h2>เข้าผ่านรหัสไหน</h2>
+      <div class="scroll"><table id="refs">
+        <thead><tr><th>รหัส</th><th>เปิด</th><th>คน</th><th>รูทีน</th><th>เซอเคิล</th><th>รีวิว</th><th>สั่งซื้อ</th><th>ล่าสุด</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="card block">
+      <h2>สร้างลิงก์รหัสไหน</h2>
+      <div class="scroll"><table id="gens">
+        <thead><tr><th>รหัส</th><th>ครั้ง</th><th>เครื่อง</th><th>ครั้งแรก</th><th>ล่าสุด</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+
+    <section class="card block">
+      <h2>รายวัน</h2>
+      <div class="scroll"><table id="daily">
+        <thead><tr><th>วันที่</th><th>เปิด</th><th>กดเมนู</th><th>สั่งซื้อ</th><th>สร้างลิงก์</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+
+    <div class="pair">
+      <section class="card block">
+        <h2>เปิดจากที่ไหน</h2>
+        <div class="bars" id="devices"></div>
+      </section>
+      <section class="card block">
+        <h2>ทุกหน้าที่ถูกเปิด</h2>
+        <div class="bars" id="pages"></div>
+      </section>
+    </div>
+
+    <p class="note foot" id="foot"></p>
+    <p class="foot-actions"><button class="btn" id="logout" type="button">ออกจากระบบ</button></p>
+  </div>
+</main>
+</body>
+</html>

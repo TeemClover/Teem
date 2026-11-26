@@ -62,16 +62,21 @@
     input.value = code;
     input.blur();
     show(code, true);
+    S.track('gen', 'code', '', code);
   });
   input.addEventListener('input', function () { msg.hidden = true; });
 
+  var mine = function () { try { return S.fromInput(localStorage.getItem(KEY)); } catch (e) { return ''; } };
+  open.addEventListener('click', function () { S.track('click', 'code', 'open', mine()); });
   copy.addEventListener('click', function () {
+    S.track('click', 'code', 'copy', mine());
     copyText(url).then(function () { flash(copy, 'คัดลอกแล้ว'); }, function () { flash(copy, 'กดค้างที่ลิงก์'); });
   });
 
   if (typeof navigator.share === 'function') {
     send.hidden = false;
     send.addEventListener('click', function () {
+      S.track('click', 'code', 'send', mine());
       navigator.share({ url: url }).catch(function () {});
     });
   }
@@ -81,4 +86,5 @@
   try { start = S.fromInput(new URLSearchParams(location.search).get('ref')); } catch (e) {}
   if (!start) { try { start = S.fromInput(localStorage.getItem(KEY)); } catch (e) {} }
   if (start) { input.value = start; show(start, false); }
+  S.track('view', 'code', '', start);
 })();
