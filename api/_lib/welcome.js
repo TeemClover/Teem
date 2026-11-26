@@ -1,7 +1,7 @@
 // /api/welcome · เก็บคำตอบระหว่างทาง ฉากที่คนดูไปถึง และช่องทางติดต่อของคนที่สนใจเป็น X-PLORER
 // POST {kind:'answer'|'scene'|'lead', ...} จากหน้า /welcome/ · GET สรุปผล ต้องมี header x-admin-key = MEET_ADMIN_KEY
 import { createHash, randomUUID } from 'node:crypto';
-import { QUESTIONS, SCENES, CONSENT_VERSION, cleanAnswer, cleanContact } from '../../welcome/questions.js';
+import { QUESTIONS, SCENES, ACTIONS, CONSENT_VERSION, cleanAnswer, cleanContact } from '../../welcome/questions.js';
 import { adminAccess } from './ai-source-domain.js';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -43,7 +43,7 @@ export function validate(body) {
   if (!UUID.test(body.visitor || '')) return { error: 'กรุณาโหลดหน้าใหม่แล้วลองอีกครั้ง' };
   const base = { visitor: body.visitor, ref: cleanRef(body.ref), device: ['mobile', 'tablet', 'desktop'].includes(body.device) ? body.device : '' };
   if (body.kind === 'scene') {
-    if (!SCENES.includes(body.step)) return { error: 'ฉากไม่ถูกต้อง' };
+    if (!SCENES.includes(body.step) && !ACTIONS.includes(body.step)) return { error: 'ฉากไม่ถูกต้อง' };
     return { value: { ...base, kind: 'scene', id: randomUUID(), step: body.step, answer: [] } };
   }
   if (body.kind === 'answer') {
@@ -124,7 +124,7 @@ export function createWelcomeHandler({ getStore, salt = 'local-preview', env = p
       if (req.method === 'GET') {
         if (!adminAccess(req, env)) return send(401, { ok: false });
         const store = await getStore();
-        return send(200, { ok: true, questions: QUESTIONS, scenes: SCENES, ...(await store.summary()) });
+        return send(200, { ok: true, questions: QUESTIONS, scenes: SCENES, actions: ACTIONS, ...(await store.summary()) });
       }
       if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return send(405, { ok: false }); }
       const host = String(req.headers.host || '');

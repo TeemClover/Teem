@@ -166,6 +166,29 @@ main{position:relative;z-index:2}
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));z-index:30;transform:translate(-50%,20px);opacity:0;padding:10px 16px;border-radius:99px;background:rgba(65,183,85,.92);color:var(--night);font-weight:700;font-size:14px;transition:opacity .3s,transform .3s;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+/* ---------- Why Health Tech · Attraction · ระบบ · คำแนะนำ ---------- */
+.points,.loop,.advice{display:grid;gap:12px;counter-reset:n}
+.points li{position:relative;padding:0 0 0 40px;color:var(--soft);font-size:16px;counter-increment:n}
+.points li::before{content:counter(n);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font:800 15px var(--display);background:linear-gradient(140deg,var(--green),var(--green2));color:var(--night)}
+.points b{display:block;color:#fff;font-size:18px}
+.loop li{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);position:relative}
+.loop li+li::before{content:"";position:absolute;left:31px;top:-13px;width:2px;height:13px;background:var(--green2)}
+.loop b{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:800 17px var(--display);background:rgba(65,183,85,.22);color:var(--green2);border:1px solid rgba(134,235,148,.5)}
+.loop span{color:var(--soft);font-size:15px}
+.loop strong{display:block;color:#fff;font-size:17px}
+.fix{display:grid;gap:8px}
+.fix li{border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);overflow:hidden}
+.fix s{display:block;padding:8px 14px 0;color:#8f98b5;font-size:13px;text-decoration-color:var(--red);text-decoration-thickness:2px}
+.fix a,.fix span{display:block;padding:2px 14px 10px;color:var(--soft);font-size:15px;text-decoration:none}
+.fix a{position:relative;padding-right:36px}
+.fix a::after{content:"→";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--green2)}
+.fix b{display:block;color:var(--green2);font-size:17px}
+.advice li{position:relative;padding:12px 14px 12px 46px;border-radius:14px;background:rgba(65,183,85,.1);border:1px solid rgba(134,235,148,.35);font-size:16px;line-height:1.5;counter-increment:n}
+.advice li::before{content:counter(n);position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font:800 14px var(--display);background:var(--green2);color:var(--night)}
+.msg{white-space:pre-line;margin:14px 0;padding:14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px dashed var(--line);color:#dfe4f2;font-size:15px;line-height:1.6}
+.btn--line{background:#06c755;color:#fff;box-shadow:0 14px 34px -12px rgba(6,199,85,.6);margin-bottom:10px}
+.btn--line span{font-family:var(--display)}
+
 /* ---------- คอม: ฟิล์มแนวตั้งกลางจอ ฉากหลังเบลอ ข้อความสลับข้าง ---------- */
 @media (min-width:900px) and (min-aspect-ratio:1/1){
   .ambient{display:block;filter:blur(36px) saturate(1.3) brightness(.5);transform:scale(1.15)}
