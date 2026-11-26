@@ -1,16 +1,18 @@
-# /welcome · ต้อนรับ X-PLORER
+# /welcome · ต้อนรับ X-PLORER (scroll film)
 
-หน้าต้อนรับคนที่เพิ่งเข้ามาเป็นตัวแทน CloverX ขั้นแรก (X-PLORER) บอกความหมายของชื่อ แผนใหม่ และทางไปสอบเป็น X-VISOR
-`noindex` ส่งเป็นลิงก์เท่านั้น · `https://www.myclover.com/welcome/?ref=CODE` จะขึ้นรหัสคนชวนในส่วน "เริ่มวันนี้"
+จดหมายต้อนรับจากพี่ทอม เล่าตามสคริปต์ยาวเป็นฟิล์มที่เดินตามการเลื่อนจอ 8 ฉาก มีคำถามระหว่างทาง 5 ข้อ และฟอร์มฝากชื่อท้ายเรื่อง
+`noindex` ส่งเป็นลิงก์เท่านั้น · `https://www.myclover.com/welcome/?ref=CODE` จำรหัสคนชวนและแนบไปกับคำตอบ
 
-## ตั้งค่าใน `index.html` (ไม่ต้องแก้ JS)
-- LINE ของทีม: ใส่ `data-line="https://lin.ee/..."` ที่ `#cta-line` ปุ่ม LINE จะขึ้นเอง (รับเฉพาะ lin.ee / line.me)
-- คลิปพี่ทอม: ใส่ id YouTube 11 ตัวที่ `#film data-youtube="..."` กรอบคลิปจะขึ้นใต้ Reach · Read · Result
-- เปลี่ยนชื่อขั้นแรก: ค้นแทนที่ `X-PLORER` ใน `index.html` เทสต์ และ `assets/og-welcome.jpg` (ภาพพรีวิวลิงก์ต้องทำใหม่)
+## ไฟล์
+- `index.html` ฉากและข้อความ (แต่ละฉาก = `.track` ราง + `.pin` จอที่ติด + `.beat` ข้อความทีละจังหวะ + `.rest` การ์ดบนเฟรมนิ่ง)
+- `welcome.js` วาดฟิล์มบน canvas, ข้อความตามการเลื่อน, การ์ดคำถาม, ฟอร์ม
+- `questions.js` คำถามและตัวเลือก ใช้ร่วมกับ `api/_lib/welcome.js` (แก้ตัวเลือก: id ห้ามเปลี่ยนหลังเปิดใช้)
+- `film/k0.webp … k8.webp` ภาพหลัก (ChatGPT, การ์ตูนแนว Pixar, 960×1440) · `film/PLAN.md` แผนคลิป Seedance
+- `admin/` หน้าดูผล ใส่รหัส `MEET_ADMIN_KEY` แล้วเห็นฉากที่คนไปถึง คำตอบ และรายชื่อที่ฝากไว้ (ดาวน์โหลด CSV ได้)
 
-## ภาพ
-`assets/*.webp` ภาพการ์ตูนแนว Pixar ตัวละครเดียวกันทุกภาพ เจนด้วย ChatGPT (26 พ.ย. 2026) 1536×1024 webp q74
-`assets/og-welcome.jpg` 1200×630 จัดจาก `hero.webp` + ข้อความ HTML แล้วจับภาพด้วย Chrome
+## ข้อมูลที่เก็บ (`/api/welcome`, Neon `DATABASE_URL`)
+- `mc_welcome_events` ฉากที่ไปถึง (ไม่เก็บถ้าเบราว์เซอร์ปิดการติดตาม) และคำตอบระหว่างทาง ผูกกับรหัสสุ่มในเครื่อง ไม่ใช่ตัวตน
+- `mc_welcome_leads` ชื่อ เบอร์หรือ LINE ID รหัสคนชวน คำตอบ และเวอร์ชันข้อความยินยอม (`welcome-contact-v1`) ต้องกดยินยอมก่อนส่ง
 
 ## ตรวจ
-`node --test tests/welcome/welcome.test.mjs`
+`node --test tests/welcome/welcome.test.mjs tests/welcome/api.test.mjs`

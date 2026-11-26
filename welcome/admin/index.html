@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ผลหน้า /welcome</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{--bg:#0b0f1e;--card:#141a30;--line:rgba(255,255,255,.12);--soft:#aab3cc;--green:#6ad67b;--gold:#f2c66d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font:16px/1.5 "IBM Plex Sans Thai",system-ui,sans-serif;padding:20px 16px 60px}
+main{max-width:980px;margin:0 auto}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:18px;margin:28px 0 10px}
+p{margin:0}.soft{color:var(--soft);font-size:14px}
+form{display:flex;gap:8px;margin:16px 0}
+input{flex:1;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:#fff1;color:#fff;font:inherit}
+button{height:46px;padding:0 18px;border:0;border-radius:12px;background:var(--green);color:#071;font:700 16px inherit;cursor:pointer}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin-top:8px;font-size:14px}
+.track{grid-column:1/-1;height:8px;border-radius:4px;background:#fff1;overflow:hidden}
+.track i{display:block;height:100%;background:linear-gradient(90deg,#41b755,var(--gold))}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--soft);font-weight:600}
+.wrap{overflow-x:auto}
+</style>
+</head>
+<body>
+<main>
+  <h1>ผลจากหน้า /welcome</h1>
+  <p class="soft">นับคนจากเบราว์เซอร์ ไม่ใช่จำนวนคนแน่นอน · 90 วันล่าสุด · ข้อมูลติดต่อใช้เพื่อทักกลับเรื่องการเป็นตัวแทนเท่านั้น</p>
+  <form id="f"><input id="key" type="password" placeholder="รหัสผู้ดูแล" autocomplete="current-password"><button>ดูผล</button></form>
+  <p class="soft" id="msg"></p>
+  <section id="out" hidden>
+    <h2>คนดูไปถึงฉากไหน</h2><div class="card" id="scenes"></div>
+    <h2>คำตอบระหว่างทาง</h2><div class="grid" id="answers"></div>
+    <h2>คนที่ฝากชื่อ <button type="button" id="csv" style="height:32px;font-size:13px;margin-left:8px">ดาวน์โหลด CSV</button></h2>
+    <div class="card wrap"><table><thead><tr><th>เวลา</th><th>ชื่อ</th><th>ติดต่อ</th><th>คนชวน</th><th>คำตอบ</th><th>อ้างอิง</th></tr></thead><tbody id="leads"></tbody></table></div>
+  </section>
+</main>
+<script type="module">
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const NAMES = { hook: 'เปิดเรื่อง', tom: 'ผมเป็นใคร', pain: 'คำถาม 1', why: 'คำถาม 2', product: 'สินค้า', story: 'คำถาม 3 + แผนใหม่', ai: 'เครื่องมือ AI', start: 'สองทาง + ฝากชื่อ' };
+let data;
+try { $('key').value = sessionStorage.getItem('welcome.admin') || ''; } catch {}
+$('f').addEventListener('submit', async e => {
+  e.preventDefault(); $('msg').textContent = 'กำลังโหลด…';
+  const key = $('key').value.trim();
+  const r = await fetch('/api/welcome', { headers: { 'x-admin-key': key } }).catch(() => null);
+  if (!r || !r.ok) { $('msg').textContent = r && r.status === 401 ? 'รหัสไม่ถูก' : 'โหลดไม่ได้'; return; }
+  try { sessionStorage.setItem('welcome.admin', key); } catch {}
+  data = await r.json(); $('msg').textContent = ''; render();
+});
+function bars(rows) {
+  const max = Math.max(1, ...rows.map(r => r[1]));
+  return rows.map(([t, n]) => `<div class="row"><span>${esc(t)}</span><b>${n}</b><span class="track"><i style="width:${(n / max) * 100}%"></i></span></div>`).join('');
+}
+function label(qid, oid) { const q = data.questions.find(x => x.id === qid); return q?.options.find(o => o.id === oid)?.t || oid; }
+function render() {
+  $('out').hidden = false;
+  const sc = Object.fromEntries(data.scenes.map(s => [s.step, s.people]));
+  $('scenes').innerHTML = bars(Object.keys(NAMES).map(k => [NAMES[k], sc[k] || 0]));
+  $('answers').innerHTML = data.questions.map(q => {
+    const rows = q.options.map(o => [o.t, data.answers.find(a => a.step === q.id && a.option === o.id)?.people || 0]);
+    return `<div class="card"><p><b>${esc(q.ask)}</b></p>${bars(rows)}</div>`;
+  }).join('');
+  $('leads').innerHTML = data.leads.map(l => `<tr><td>${new Date(l.created_at).toLocaleString('th-TH')}</td><td>${esc(l.name)}</td><td>${esc(l.contact_kind === 'phone' ? '📞 ' : 'LINE ')}${esc(l.contact)}</td><td>${esc(l.ref)}</td>
+    <td>${Object.entries(l.answers || {}).map(([q, v]) => esc(v.map(o => label(q, o)).join(', '))).join('<br>')}</td><td>${esc(l.reference)}</td></tr>`).join('') || '<tr><td colspan="6" class="soft">ยังไม่มี</td></tr>';
+}
+$('csv').addEventListener('click', () => {
+  const cell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const rows = [['เวลา', 'ชื่อ', 'ช่องทาง', 'ติดต่อ', 'คนชวน', ...data.questions.map(q => q.ask), 'อ้างอิง']].concat(
+    data.leads.map(l => [l.created_at, l.name, l.contact_kind, l.contact, l.ref, ...data.questions.map(q => (l.answers?.[q.id] || []).map(o => label(q.id, o)).join(' / ')), l.reference]));
+  const blob = new Blob(['﻿' + rows.map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'welcome-leads.csv'; a.click();
+});
+</script>
+</body>
+</html>
