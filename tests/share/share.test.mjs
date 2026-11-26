@@ -61,9 +61,9 @@ test('หน้า /share/code/ ใช้ได้แม้ไม่มี JavaS
   assert.match(html, /name="robots" content="noindex,nofollow"/);
 });
 
-test('vercel.json พา /share และ /share/code ไปที่อยู่ที่มี / ปิดท้าย', async () => {
+test('vercel.json พา /share /share/code /share/slide ไปที่อยู่ที่มี / ปิดท้าย', async () => {
   const config = JSON.parse(await read('vercel.json'));
-  for (const [source, destination] of [['/share', '/share/'], ['/share/code', '/share/code/']]) {
+  for (const [source, destination] of [['/share', '/share/'], ['/share/code', '/share/code/'], ['/share/slide', '/share/slide/']]) {
     assert.ok(config.redirects.some(rule => rule.source === source && rule.destination === destination && rule.permanent === false), source);
   }
 });
@@ -74,4 +74,20 @@ test('ไฟล์ที่หน้าเรียกใช้มีอยู�
   assert.ok(local.size >= 6);
   for (const path of local) await readFile(new URL('.' + path, root));
   await readFile(new URL('share/assets/og-share.jpg', root));
+});
+
+test('หน้า /share/slide/ มีสไลด์ 10 ภาพ ภาพใหญ่ ภาพย่อ และไฟล์ให้บันทึกครบ', async () => {
+  const html = await read('share/slide/index.html');
+  const thumbs = [...html.matchAll(/<a class="thumb" href="\/share\/slide\/img\/slide-(\d\d)\.jpg" data-i="(\d+)"><img src="\/share\/slide\/img\/thumb-(\d\d)\.webp" alt="สไลด์ (\d+): [^"]+"/g)];
+  assert.equal(thumbs.length, 10);
+  thumbs.forEach((m, i) => {
+    const n = String(i + 1).padStart(2, '0');
+    assert.deepEqual([m[1], m[2], m[3], m[4]], [n, String(i + 1), n, String(i + 1)]);
+  });
+  for (let i = 1; i <= 10; i++) {
+    const n = String(i).padStart(2, '0');
+    for (const f of [`slide-${n}.webp`, `slide-${n}.jpg`, `thumb-${n}.webp`]) await readFile(new URL(`share/slide/img/${f}`, root));
+  }
+  assert.match(html, /name="robots" content="noindex,nofollow"/);
+  assert.match(html, /href="\/share\/code\/"/);
 });

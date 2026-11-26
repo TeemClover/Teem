@@ -2,6 +2,7 @@
 
 - `/share/?ref=CODE` ปุ่ม 2x2: รูทีน (`/routinex/`) · เซอเคิล (`/xircle/`) · รวมรีวิว (`/review/`) · สั่งซื้อ (`https://buy.xircle.health/?ref=CODE&openExternalBrowser=1`)
 - `/share/code/` X-VISOR ใส่ Code แล้วกด "สร้าง Link" ได้ลิงก์ `/share/?ref=CODE` พร้อมปุ่มคัดลอก ส่งต่อ และเปิดดู
+- `/share/slide/` สไลด์วิธีใช้ 10 ภาพ กดปุ่ม ลูกศรคีย์บอร์ด ปัด หรือแตะครึ่งจอเพื่อเปลี่ยน ลิงก์ตรงด้วย `#3` มีปุ่มบันทึกภาพ (JPG 1920×1080) และเต็มจอ ภาพอยู่ใน `slide/img/` ต้นฉบับ HTML ของสไลด์อยู่นอก repo ที่ `~/Claude/share-launch-slides/source/slides.html` บนเครื่อง M2 ของ Teem
 
 ## กติกาของรหัส (`ref.js`)
 
