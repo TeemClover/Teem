@@ -522,6 +522,11 @@
       "permanent": false
     },
     {
+      "source": "/share/slide",
+      "destination": "/share/slide/",
+      "permanent": false
+    },
+    {
       "source": "/welcome",
       "destination": "/welcome/",
       "permanent": false
