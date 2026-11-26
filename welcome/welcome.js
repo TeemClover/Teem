@@ -1,0 +1,299 @@
+/* /welcome · scroll film
+   - ฟิล์มวาดบนแคนวาสเดียว ตามตำแหน่งการเลื่อน ฉากละ 1 ช่วง: ภาพหลัก A → B
+   - ตอนนี้ใช้ภาพนิ่ง (เลื่อน = ซูมช้า ๆ แล้วละลายเข้าภาพถัดไป) · พอมีคลิป Seedance แล้ว ใส่ frames ในฉาก
+     แล้ววางเฟรม webp ที่ /welcome/film/<scene>/001.webp … ระบบจะเล่นเฟรมจริงแทนเอง
+   - การ์ดคำถามสร้างจาก questions.js ตัวเดียวกับที่ API ใช้ตรวจ */
+import { QUESTIONS } from './questions.js?v=20261126d';
+
+const KEYS = ['k0', 'k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8'];
+// จุดที่ต้องไม่โดนครอปเมื่อจอแคบกว่า 2:3 (0 = ซ้ายสุด, 1 = ขวาสุด)
+const FOCUS = [.5, .45, .45, .5, .45, .4, .5, .5, .58];
+// a/b = ภาพหลักต้น/ท้ายฉาก · frames = จำนวนเฟรมของคลิปจริง (0 = ยังใช้ภาพนิ่ง)
+const SCENES = [
+  { id: 'hook', a: 0, b: 1, frames: 0 },
+  { id: 'tom', a: 1, b: 2, frames: 0 },
+  { id: 'pain', a: 2, b: 3, frames: 0 },
+  { id: 'why', a: 3, b: 4, frames: 0 },
+  { id: 'product', a: 4, b: 5, frames: 0 },
+  { id: 'story', a: 5, b: 6, frames: 0 },
+  { id: 'ai', a: 6, b: 7, frames: 0 },
+  { id: 'start', a: 7, b: 8, frames: 0 }
+];
+const API = '/api/welcome';
+const root = document.documentElement;
+root.classList.add('js');
+
+/* ---------- ตัวตนผู้เข้าชม (สุ่ม ไม่ผูกกับใคร) + รหัสคนชวน ---------- */
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* โหมดส่วนตัว */ } }
+};
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 15); return (c === 'x' ? r : (r & 3) | 8).toString(16);
+}));
+let visitor = store.get('welcome.visitor');
+if (!/^[0-9a-f-]{36}$/i.test(visitor || '')) { visitor = uuid(); store.set('welcome.visitor', visitor); }
+const cleanRef = v => String(v || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 32);
+let ref = cleanRef(new URLSearchParams(location.search).get('ref'));
+if (ref) store.set('welcome.ref', ref); else ref = cleanRef(store.get('welcome.ref'));
+const device = matchMedia('(min-width:900px)').matches ? 'desktop' : matchMedia('(min-width:600px)').matches ? 'tablet' : 'mobile';
+let answers = {};
+try { answers = JSON.parse(store.get('welcome.answers') || '{}') || {}; } catch { answers = {}; }
+
+function post(body) {
+  return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ visitor, ref, device, ...body }), keepalive: true });
+}
+
+/* ---------- โหลดภาพหลัก ---------- */
+const imgs = KEYS.map(() => null);
+const frameCache = new Map();
+function load(src) {
+  return new Promise(res => { const im = new Image(); im.decoding = 'async'; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+}
+const loader = document.getElementById('loader');
+const bar = document.getElementById('loader-bar');
+async function boot() {
+  let n = 0;
+  const first = [0, 1].map(i => load(`/welcome/film/${KEYS[i]}.webp`).then(im => { imgs[i] = im; bar.style.width = `${(++n / 2) * 100}%`; }));
+  await Promise.all(first);
+  loader.classList.add('done');
+  draw(true);
+  for (let i = 2; i < KEYS.length; i++) imgs[i] = await load(`/welcome/film/${KEYS[i]}.webp`);
+  draw(true);
+}
+// เฟรมคลิปจริง: โหลดทั้งฉากล่วงหน้าเมื่อเข้าใกล้ (ฉากนี้ + ฉากถัดไป) ระหว่างโหลดใช้เฟรมที่ใกล้ที่สุดที่มีแล้ว
+const preloaded = new Set();
+function preloadScene(k) {
+  const scene = SCENES[k];
+  if (!scene || !scene.frames || preloaded.has(k)) return;
+  preloaded.add(k);
+  const order = [];
+  for (let step = 8; step >= 1; step = Math.floor(step / 2)) for (let i = 0; i < scene.frames; i += step) if (!order.includes(i)) order.push(i);
+  (async () => {
+    for (const i of order) {
+      const key = `${scene.id}/${String(i + 1).padStart(3, '0')}`;
+      const im = await load(`/welcome/film/${key}.webp`);
+      frameCache.set(key, im);
+      if (i % 8 === 0) draw(true);
+    }
+  })();
+}
+function frame(scene, i) {
+  for (let d = 0; d < scene.frames; d++) {
+    for (const j of [i - d, i + d]) {
+      const im = frameCache.get(`${scene.id}/${String(j + 1).padStart(3, '0')}`);
+      if (im) return im;
+    }
+  }
+  return null;
+}
+
+/* ---------- แคนวาส ---------- */
+const cv = document.getElementById('film');
+const ctx = cv.getContext('2d');
+const amb = document.getElementById('ambient');
+const actx = amb.getContext('2d');
+const off = document.createElement('canvas'); // ฟิล์มแนวตั้งก่อนวางลงจอ
+const octx = off.getContext('2d');
+off.width = 720; off.height = 1080;
+amb.width = 48; amb.height = 30;
+let W = 0, H = 0, wide = false;
+function size() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (Math.abs(w - W) < 1 && Math.abs(h - H) < 140 && W) return; // แถบ URL ของมือถือยุบ/ขยาย ไม่ต้องวาดใหม่ทั้งหมด
+  W = w; H = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  wide = matchMedia('(min-width:900px) and (min-aspect-ratio:1/1)').matches;
+  measure(); draw(true);
+}
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+function cover(c, im, cw, ch, zoom, dy) {
+  const s = Math.max(cw / im.width, ch / im.height) * zoom;
+  const w = im.width * s, h = im.height * s;
+  c.drawImage(im, (cw - w) / 2, (ch - h) / 2 + dy, w, h);
+}
+// ฟิล์ม 2:3 ลงจอมือถือ (แคบกว่า) ครอปข้างโดยเลื่อนไปหาจุดโฟกัสของภาพหลักที่กำลังเด่น
+let focus = .5;
+// วาดฉากลงแคนวาสแนวตั้ง: ภาพจริงถ้ามีเฟรม ไม่งั้นภาพนิ่ง A ซูมเข้า แล้ว B ละลายเข้ามาและนิ่งพอดีที่ p = 1
+function paint(scene, p) {
+  const c = octx, cw = off.width, ch = off.height;
+  c.fillStyle = '#05070f'; c.fillRect(0, 0, cw, ch);
+  if (scene.frames) {
+    const f = frame(scene, Math.round(p * (scene.frames - 1)));
+    if (f) { cover(c, f, cw, ch, 1, 0); return; }
+  }
+  const A = imgs[scene.a], B = imgs[scene.b];
+  if (A) { c.globalAlpha = 1; cover(c, A, cw, ch, 1 + .14 * ease(Math.min(1, p / .6)), -ch * .025 * Math.min(1, p / .6)); }
+  const t = smooth(.2, .58, p);
+  if (B && t > 0) { c.globalAlpha = t; cover(c, B, cw, ch, 1.1 - .1 * smooth(.2, .96, p), ch * .02 * (1 - smooth(.2, .96, p))); }
+  c.globalAlpha = 1;
+}
+let last = '';
+function draw(force) {
+  const { scene, p } = current();
+  const key = scene.id + ':' + p.toFixed(4) + ':' + W + 'x' + H;
+  if (!force && key === last) return;
+  last = key;
+  focus = FOCUS[scene.a] + (FOCUS[scene.b] - FOCUS[scene.a]) * smooth(.2, .58, p);
+  paint(scene, p);
+  const dpr = cv.width / Math.max(1, W);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  if (wide) ctx.clearRect(0, 0, cv.width, cv.height); // ให้ฉากหลังเบลอ (canvas ambient) โผล่ข้างฟิล์ม
+  else { ctx.fillStyle = '#05070f'; ctx.fillRect(0, 0, cv.width, cv.height); }
+  if (wide) {
+    // ฟิล์มแนวตั้งสูงเต็มจอ ขอบจางเข้าหาฉากหลัง
+    const h = cv.height, w = h * off.width / off.height, x = (cv.width - w) / 2;
+    ctx.drawImage(off, x, 0, w, h);
+    const edge = 40 * dpr;
+    for (const [x0, x1] of [[x, x + edge], [x + w, x + w - edge]]) {
+      const g = ctx.createLinearGradient(x0, 0, x1, 0);
+      g.addColorStop(0, 'rgba(5,7,15,.9)'); g.addColorStop(1, 'rgba(5,7,15,0)');
+      ctx.fillStyle = g; ctx.fillRect(Math.min(x0, x1), 0, edge, h);
+    }
+    actx.drawImage(off, 0, 0, amb.width, amb.height);
+  } else {
+    const [x, y, w, h] = fitCover(off.width, off.height, cv.width, cv.height);
+    const spare = w - cv.width;
+    ctx.drawImage(off, 0, 0, off.width, off.height, spare > 0 ? -spare * focus : x, y, w, h);
+  }
+}
+function fitCover(iw, ih, cw, ch) {
+  const s = Math.max(cw / iw, ch / ih); const w = iw * s, h = ih * s;
+  return [(cw - w) / 2, (ch - h) / 2, w, h];
+}
+
+/* ---------- ตำแหน่งการเลื่อน → ฉาก + ความคืบหน้า ---------- */
+const sections = [...document.querySelectorAll('.scene')];
+const tracks = sections.map(s => s.querySelector('.track'));
+let spans = [];
+function measure() {
+  const vh = window.innerHeight;
+  tracks.forEach(t => { t.style.height = `${Number(t.dataset.len || 2.4) * vh}px`; });
+  spans = tracks.map(t => {
+    const top = t.getBoundingClientRect().top + scrollY;
+    return { top, len: Math.max(1, t.offsetHeight - vh) };
+  });
+}
+function current() {
+  const y = scrollY;
+  let i = 0;
+  for (let k = 0; k < spans.length; k++) if (y >= spans[k].top - 1) i = k;
+  const s = spans[i] || { top: 0, len: 1 };
+  return { scene: SCENES[i], index: i, p: Math.min(1, Math.max(0, (y - s.top) / s.len)) };
+}
+
+/* ---------- ข้อความทีละจังหวะ ---------- */
+const beats = sections.map(s => [...s.querySelectorAll('.beat')].map(el => ({
+  el, from: Number(el.dataset.from), to: Number(el.dataset.to),
+  words: (() => { const w = el.querySelector('.words'); if (!w) return null; w.innerHTML = w.textContent.trim().split(/\s+/).map(t => `<span class="w">${t}</span>`).join(' '); return [...w.children]; })(),
+  rrr: [...el.querySelectorAll('.rrr li')],
+  count: el.querySelector('[data-count]'), counted: false
+})));
+const dots = [...document.querySelectorAll('#dots li')];
+const seen = new Set();
+function beatsFor(i, p) {
+  beats.forEach((list, k) => list.forEach(b => {
+    if (k !== i) { b.el.style.opacity = 0; return; }
+    const fade = .07;
+    const o = Math.min(b.from <= 0 ? 1 : smooth(b.from, b.from + fade, p), b.to >= 1 ? 1 : 1 - smooth(b.to - fade, b.to, p));
+    b.el.style.opacity = o.toFixed(3);
+    b.el.style.transform = `translateY(${((1 - o) * (p < b.from + fade ? 24 : -24)).toFixed(1)}px)`;
+    const local = Math.min(1, Math.max(0, (p - b.from) / Math.max(.01, b.to - b.from - fade)));
+    if (b.words) { const n = Math.ceil(local * 1.25 * b.words.length); b.words.forEach((w, j) => w.classList.toggle('lit', j < n)); }
+    b.rrr.forEach(li => li.classList.toggle('lit', p >= Number(li.dataset.at)));
+    if (b.count && o > .5 && !b.counted) { b.counted = true; countUp(b.count); }
+  }));
+  dots.forEach((d, k) => { d.classList.toggle('on', k < i); d.classList.toggle('now', k === i); });
+  if (p > .3 && !seen.has(i)) { seen.add(i); post({ kind: 'scene', step: SCENES[i].id }).catch(() => {}); }
+}
+function countUp(el) {
+  const to = Number(el.dataset.count) || 0; let t0;
+  const tick = t => { t0 ??= t; const k = Math.min(1, (t - t0) / 1100); el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+
+let queued = false;
+function onScroll() {
+  if (queued) return; queued = true;
+  requestAnimationFrame(() => { queued = false; const c = current(); preloadScene(c.index); preloadScene(c.index + 1); beatsFor(c.index, c.p); draw(); });
+}
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', () => { size(); onScroll(); });
+
+/* ---------- การ์ดคำถาม ---------- */
+const toast = document.getElementById('toast');
+function say(text) { toast.textContent = text; toast.classList.add('show'); clearTimeout(say.t); say.t = setTimeout(() => toast.classList.remove('show'), 1800); }
+document.querySelectorAll('[data-q]').forEach(card => {
+  const q = QUESTIONS.find(x => x.id === card.dataset.q);
+  if (!q) return;
+  card.classList.add('q');
+  if (q.multi) card.classList.add('q--multi');
+  card.innerHTML = `<p class="q__ask">${q.ask}</p>${q.hint ? `<p class="q__hint">${q.hint}</p>` : ''}
+    <div class="q__opts">${q.options.map(o => `<button type="button" class="opt" data-v="${o.id}" aria-pressed="false">${o.t}</button>`).join('')}</div>
+    ${q.multi ? '<button type="button" class="btn q__send" disabled>ตอบแล้ว ไปต่อ</button>' : ''}
+    <p class="q__reply" hidden></p><p class="q__thanks" hidden>บันทึกคำตอบแล้ว</p>`;
+  const opts = [...card.querySelectorAll('.opt')];
+  const sendBtn = card.querySelector('.q__send');
+  const id = store.get(`welcome.a.${q.id}`) || uuid();
+  store.set(`welcome.a.${q.id}`, id);
+  const picked = () => opts.filter(o => o.getAttribute('aria-pressed') === 'true').map(o => o.dataset.v);
+  function done() {
+    const value = picked();
+    if (!value.length) return;
+    answers[q.id] = value; store.set('welcome.answers', JSON.stringify(answers));
+    const reply = card.querySelector('.q__reply');
+    if (card.dataset.reply) { reply.textContent = card.dataset.reply; reply.hidden = false; }
+    post({ kind: 'answer', id, step: q.id, value })
+      .then(r => { if (r.ok) { card.querySelector('.q__thanks').hidden = false; say('บันทึกคำตอบแล้ว'); } })
+      .catch(() => {});
+  }
+  (answers[q.id] || []).forEach(v => { const b = opts.find(o => o.dataset.v === v); if (b) b.setAttribute('aria-pressed', 'true'); });
+  if (sendBtn) sendBtn.disabled = !picked().length;
+  opts.forEach(b => b.addEventListener('click', () => {
+    if (q.multi) {
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      sendBtn.disabled = !picked().length;
+    } else {
+      opts.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+      done();
+    }
+  }));
+  if (sendBtn) sendBtn.addEventListener('click', done);
+});
+
+/* การ์ดค่อย ๆ ลอยขึ้นเมื่อเลื่อนถึง */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .18 });
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+const ladderCount = document.querySelector('.card--plan [data-count]');
+if (ladderCount) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); countUp(ladderCount); } }, { threshold: .4 }).observe(ladderCount);
+
+/* ---------- ฟอร์มฝากชื่อ ---------- */
+if (ref) { document.getElementById('ref-code').textContent = ref; document.getElementById('ref').hidden = false; }
+const form = document.getElementById('lead');
+const msg = document.getElementById('lead-msg');
+const requestId = store.get('welcome.request') || uuid();
+store.set('welcome.request', requestId);
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = new FormData(form);
+  const name = String(f.get('name') || '').trim();
+  const contact = String(f.get('contact') || '').trim();
+  if (!name) { msg.textContent = 'กรอกชื่อที่ให้ทีมเรียกคุณ'; return form.name.focus(); }
+  if (!contact) { msg.textContent = 'กรอกเบอร์มือถือ หรือ LINE ID'; return form.contact.focus(); }
+  if (!form.consent.checked) { msg.textContent = 'กดยินยอมให้ทีมติดต่อกลับก่อนส่ง'; return; }
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true; msg.textContent = 'กำลังส่ง…';
+  try {
+    const r = await post({ kind: 'lead', requestId, name, contact, consent: true, answers, website: String(f.get('website') || '') });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data.ok) { msg.textContent = data.message || 'ยังส่งไม่ได้ ลองใหม่อีกครั้งนะ'; btn.disabled = false; return; }
+    document.getElementById('done-ref').textContent = data.reference;
+    form.hidden = true; const d = document.getElementById('done'); d.hidden = false; d.classList.add('in');
+    store.set('welcome.request', uuid());
+  } catch {
+    msg.textContent = 'เน็ตหลุด ยังส่งไม่ได้ ลองใหม่อีกครั้งนะ'; btn.disabled = false;
+  }
+});
+
+size(); onScroll(); boot();
