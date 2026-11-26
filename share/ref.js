@@ -4,6 +4,8 @@
   'use strict';
   var BUY = 'https://buy.xircle.health/';
   var MAX = 32;
+  /* ลูกค้าที่เปิดมาโดยไม่มีรหัสผู้แนะนำ สั่งซื้อใต้รหัสของบริษัท */
+  var DEFAULT_REF = 'CLOVERX';
 
   /* เก็บเฉพาะตัวอักษรอังกฤษ ตัวเลข ขีดกลาง ขีดล่าง ไม่แก้ตัวพิมพ์ */
   function clean(value) {
@@ -21,8 +23,8 @@
   }
 
   function buyUrl(ref) {
-    var code = clean(ref);
-    return BUY + '?' + (code ? 'ref=' + encodeURIComponent(code) + '&' : '') + 'openExternalBrowser=1';
+    var code = clean(ref) || DEFAULT_REF;
+    return BUY + '?ref=' + encodeURIComponent(code) + '&openExternalBrowser=1';
   }
 
   function shareUrl(origin, ref) {
@@ -30,5 +32,5 @@
     return String(origin || '').replace(/\/+$/, '') + '/share/' + (code ? '?ref=' + encodeURIComponent(code) : '');
   }
 
-  root.MyCloverShare = { clean: clean, fromInput: fromInput, buyUrl: buyUrl, shareUrl: shareUrl };
+  root.MyCloverShare = { DEFAULT_REF: DEFAULT_REF, clean: clean, fromInput: fromInput, buyUrl: buyUrl, shareUrl: shareUrl };
 })(typeof window !== 'undefined' ? window : globalThis);
