@@ -1,0 +1,180 @@
+/* Teem Clover — Fastwork motion cover. Stage is a fixed 1920×1080 canvas; nothing here animates on its own. */
+@font-face { font-family: "Fraunces"; font-weight: 100 900; font-style: normal; src: url(assets/fonts/fraunces-latin-full-normal.woff2) format("woff2"); }
+@font-face { font-family: "Kanit"; font-weight: 400; src: url(assets/fonts/kanit-thai-400-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Kanit"; font-weight: 400; src: url(assets/fonts/kanit-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+2022, U+20AC, U+2122; }
+@font-face { font-family: "Kanit"; font-weight: 500; src: url(assets/fonts/kanit-thai-500-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Kanit"; font-weight: 500; src: url(assets/fonts/kanit-latin-500-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+2022, U+20AC, U+2122; }
+@font-face { font-family: "Kanit"; font-weight: 600; src: url(assets/fonts/kanit-thai-600-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+@font-face { font-family: "Kanit"; font-weight: 600; src: url(assets/fonts/kanit-latin-600-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2000-206F, U+2022, U+20AC, U+2122; }
+
+:root {
+  --ink: #04110b;
+  --deep: #071a11;
+  --green: #0d2c1e;
+  --moss: #17492f;
+  --ivory: #f6efdd;
+  --ivory-2: #d9d2bd;
+  --lime: #cdf564;
+  --lime-hot: #eeffb0;
+  /* camera: perspective distance, vanishing point, and where the world origin (floor, cluster centre) sits */
+  --persp: 2200px;
+  --ox: 1424px;
+  --oy: 400px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #020806; overflow: hidden; }
+#fit { position: fixed; inset: 0; display: grid; place-items: center; }
+#stage {
+  position: relative; flex: none; width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--deep); color: var(--ivory);
+  transform: scale(var(--fit, 1)); transform-origin: center;
+  -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+}
+#stage > * { position: absolute; inset: 0; }
+
+/* ── backdrop: deep green room, one soft key light behind the work ───────────────────────────── */
+.bg {
+  background:
+    radial-gradient(760px 430px at 1420px 395px, rgba(72, 148, 88, .50), rgba(40, 104, 66, .22) 46%, transparent 74%),
+    radial-gradient(1300px 620px at 1500px 520px, rgba(26, 84, 54, .55), transparent 70%),
+    radial-gradient(900px 520px at 260px 180px, rgba(20, 62, 42, .55), transparent 72%),
+    linear-gradient(180deg, #0a2317 0%, #071a11 44%, #04110b 100%);
+}
+.grade {
+  background:
+    linear-gradient(90deg, rgba(4, 17, 11, .50) 0%, rgba(4, 17, 11, .16) 38%, transparent 55%),
+    radial-gradient(1500px 900px at 58% 46%, transparent 52%, rgba(2, 9, 6, .62) 100%);
+  pointer-events: none;
+}
+.grain {
+  opacity: .11; mix-blend-mode: overlay; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.1 -.1'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+}
+
+/* ── shared camera ────────────────────────────────────────────────────────────────────────── */
+.p3d { perspective: var(--persp); perspective-origin: var(--ox) var(--oy); pointer-events: none; }
+/* pieces riding the back of the ring pass behind the sentence: they stay ghosts there and only
+   become solid once they are clear of it, so the copy never loses contrast */
+#slab3d, #refl3d {
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, .10) 0, rgba(0, 0, 0, .10) 700px, rgba(0, 0, 0, .34) 850px, #000 968px);
+          mask-image: linear-gradient(90deg, rgba(0, 0, 0, .10) 0, rgba(0, 0, 0, .10) 700px, rgba(0, 0, 0, .34) 850px, #000 968px);
+}
+.world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-style: preserve-3d; }
+.world > * { position: absolute; }
+
+/* ── floor ────────────────────────────────────────────────────────────────────────────────── */
+.floor {
+  left: -1700px; top: -1700px; width: 3400px; height: 3400px;
+  transform: rotateX(90deg);
+  background:
+    radial-gradient(closest-side at 50% 50%, rgba(86, 160, 100, .30), rgba(40, 100, 64, .14) 34%, transparent 66%);
+}
+.floor::before { /* faint measured ground: gives the perspective something to hold on to */
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(214, 245, 150, .075) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, rgba(214, 245, 150, .075) 1.5px, transparent 1.5px);
+  background-size: 130px 130px; background-position: 50% 50%;
+  -webkit-mask-image: radial-gradient(closest-side at 50% 52%, #000 0, rgba(0, 0, 0, .55) 34%, transparent 64%);
+          mask-image: radial-gradient(closest-side at 50% 52%, #000 0, rgba(0, 0, 0, .55) 34%, transparent 64%);
+}
+.shadow {
+  left: 0; top: 0; width: 760px; height: 300px; margin: -150px 0 0 -380px;
+  background: radial-gradient(closest-side, rgba(1, 8, 5, .78), rgba(1, 8, 5, .42) 46%, transparent 100%);
+}
+.pool { /* light the awake piece throws on the floor */
+  left: 0; top: 0; width: 900px; height: 420px; margin: -210px 0 0 -450px;
+  background: radial-gradient(closest-side, rgba(205, 245, 100, .34), rgba(205, 245, 100, .10) 50%, transparent 100%);
+  mix-blend-mode: screen;
+}
+
+/* ── the thread ───────────────────────────────────────────────────────────────────────────── */
+#thread { overflow: visible; }
+.th { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.th.glow { stroke: var(--lime); stroke-width: 9; opacity: .20; filter: url(#soft); }
+.th.line { stroke: var(--lime); stroke-width: 2.6; opacity: .58; }
+.th.halo { stroke: var(--lime); stroke-width: 26; opacity: .0; filter: url(#softer); }
+.th.tail { stroke: var(--lime); stroke-width: 5; opacity: 0; }
+.th.head { stroke: var(--lime-hot); stroke-width: 6.5; opacity: 0; }
+
+/* ── slabs: real pages as physical objects ────────────────────────────────────────────────── */
+.slab, .edge, .refl { transform-origin: 50% 100%; border-radius: 20px; backface-visibility: hidden; }
+.slab { overflow: hidden; background: #efe7d3; }
+.edge { background: linear-gradient(180deg, #cfc6ad, #8d866f); }
+.edge.far { background: linear-gradient(180deg, #a59d86, #5d5847); }
+.bar {
+  position: absolute; left: 0; right: 0; top: 0; height: 44px; display: flex; align-items: center; gap: 9px; padding: 0 18px;
+  background: linear-gradient(180deg, #fbf6e9, #ece4cf); border-bottom: 1px solid rgba(60, 50, 30, .16);
+}
+.bar i { width: 11px; height: 11px; border-radius: 50%; background: #cfc5ab; }
+.bar i:first-child { background: #d98f6a; } .bar i:nth-child(2) { background: #dcc177; } .bar i:nth-child(3) { background: #9bbf7c; }
+.bar .url {
+  margin-left: 14px; height: 25px; padding: 0 18px; border-radius: 13px; background: rgba(70, 60, 36, .09);
+  font: 400 14.5px/25px "Kanit", sans-serif; letter-spacing: .01em; color: #6b624c; white-space: nowrap;
+}
+.screen { position: absolute; left: 0; right: 0; top: 44px; bottom: 0; overflow: hidden; background: #111; }
+.screen > * { position: absolute; left: 0; top: 0; }
+.screen img, .screen canvas { display: block; width: 600px; }
+.glass { /* fixed studio light on the face + rim */
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(118deg, rgba(255, 255, 255, .13) 0%, rgba(255, 255, 255, 0) 26%, rgba(0, 0, 0, 0) 62%, rgba(2, 14, 8, .22) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .34), inset 0 1px 0 1px rgba(255, 255, 255, .5);
+}
+.sheen {
+  position: absolute; top: -10%; bottom: -10%; left: 0; width: 46%; pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, .0) 20%, rgba(250, 255, 225, .42) 50%, rgba(255, 255, 255, 0) 80%, transparent 100%);
+  mix-blend-mode: screen;
+}
+.wake { /* lime rim when the thread reaches the piece */
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  box-shadow: inset 0 0 0 2px rgba(214, 248, 120, .82), inset 0 -30px 50px -22px rgba(205, 245, 100, .5);
+}
+.dim { position: absolute; inset: 0; border-radius: inherit; background: #051610; opacity: 0; pointer-events: none; }
+
+/* in-screen pieces */
+.focus { /* ERP: attention walking through the system */
+  border-radius: 12px; opacity: 0;
+  box-shadow: 0 0 0 2.5px rgba(205, 245, 100, .98), 0 0 26px 4px rgba(205, 245, 100, .45), 0 0 0 1400px rgba(6, 24, 15, .34);
+}
+.flash { inset: 0; width: 100%; height: 100%; background: radial-gradient(closest-side, rgba(255, 236, 170, .9), rgba(255, 236, 170, 0)); opacity: 0; mix-blend-mode: screen; }
+
+/* reflections on the polished floor */
+.refl { overflow: hidden; background: #efe7d3; opacity: .2; filter: blur(5px);
+  -webkit-mask-image: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, .35) 26%, transparent 58%);
+          mask-image: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, .35) 26%, transparent 58%); }
+.refl img { position: absolute; left: 0; bottom: 0; width: 600px; display: block; }
+
+/* CORE7 card: a real object from the game, standing with the classroom */
+.card { transform-origin: 50% 100%; transform-style: preserve-3d; }
+.card .face { position: absolute; inset: 0; border-radius: 13px; overflow: hidden; backface-visibility: hidden; background: #0c2a1c; }
+.card .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card .back img { object-position: 50% 38%; }
+.card .face::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 34%, rgba(0, 0, 0, .25));
+  box-shadow: inset 0 0 0 1px rgba(255, 236, 170, .5); }
+.card .face .dim { border-radius: inherit; }
+.card .back { transform: rotateY(180deg); }
+
+/* ── copy: the message layer, inside the area every Fastwork layout shows ─────────────────── */
+.copy { left: 112px !important; top: 325px !important; right: auto !important; bottom: auto !important; width: 800px; }
+.copy p { margin: 0; white-space: nowrap; }
+.name {
+  font: 600 90px/1 "Fraunces", serif; font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0; letter-spacing: .045em;
+  color: var(--ivory); text-shadow: 0 2px 26px rgba(2, 12, 7, .6);
+}
+.tag { margin-top: 8px !important; font: 600 90px/1.22 "Kanit", sans-serif; color: var(--ivory); text-shadow: 0 2px 26px rgba(2, 12, 7, .6); }
+.svc { margin-top: 0 !important; font: 400 47px/1.3 "Kanit", sans-serif; color: rgba(246, 239, 221, .64); }
+.svc .w { position: relative; display: inline-block; }
+.svc .w::after { /* lit state is a second glyph layer so the crossfade never reflows */
+  content: attr(data-text); position: absolute; left: 0; top: 0; color: var(--lime); opacity: var(--on, 0);
+  text-shadow: 0 0 26px rgba(205, 245, 100, .45);
+}
+.svc i { font-style: normal; color: rgba(205, 245, 100, .55); margin: 0 .34em; font-size: .8em; position: relative; top: -.06em; }
+.tab { position: absolute; left: 0; top: 0; height: 5px; border-radius: 3px; background: var(--lime); box-shadow: 0 0 18px 2px rgba(205, 245, 100, .55); }
+
+/* still cover: all three services read equally */
+.is-still .svc { color: rgba(246, 239, 221, .86); }
+.is-still .tab { display: none; }
+
+/* ── crop guides (?guides=1 only; never rendered into deliverables) ───────────────────────── */
+#guides { pointer-events: none; font: 500 21px/1.2 "Kanit", sans-serif; text-shadow: 0 1px 6px #000, 0 0 2px #000; }

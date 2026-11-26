@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Fastwork portfolio card</title>
+<!-- One 1600×1200 (4:3) portfolio card per work: ?id=homechew. Real page captures only; see cards.json. -->
+<style>
+@font-face{font-family:Fraunces;font-weight:100 900;src:url(../assets/fonts/fraunces-latin-full-normal.woff2) format("woff2")}
+@font-face{font-family:Kanit;font-weight:400;src:url(../assets/fonts/kanit-thai-400-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Kanit;font-weight:400;src:url(../assets/fonts/kanit-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2022}
+@font-face{font-family:Kanit;font-weight:500;src:url(../assets/fonts/kanit-thai-500-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Kanit;font-weight:500;src:url(../assets/fonts/kanit-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2022}
+*{box-sizing:border-box}html,body{margin:0;background:#04110b}
+#card{position:relative;width:1600px;height:1200px;overflow:hidden;color:#f6efdd;-webkit-font-smoothing:antialiased;
+ background:radial-gradient(900px 560px at 62% 40%,rgba(72,148,88,.46),rgba(40,104,66,.18) 48%,transparent 76%),linear-gradient(180deg,#0a2317,#071a11 46%,#04110b)}
+#card::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(1300px 950px at 55% 42%,transparent 55%,rgba(2,9,6,.6))}
+.stage{position:absolute;inset:0;perspective:2400px;perspective-origin:50% 38%}
+.slab{position:absolute;left:170px;top:110px;width:1260px;border-radius:26px;overflow:hidden;background:#efe7d3;transform:rotateY(-9deg) rotateX(3deg);transform-origin:50% 60%;
+ box-shadow:0 60px 90px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.28) inset}
+.bar{height:58px;display:flex;align-items:center;gap:12px;padding:0 24px;background:linear-gradient(180deg,#fbf6e9,#ece4cf);border-bottom:1px solid rgba(60,50,30,.16)}
+.bar i{width:14px;height:14px;border-radius:50%}.bar i:nth-child(1){background:#d98f6a}.bar i:nth-child(2){background:#dcc177}.bar i:nth-child(3){background:#9bbf7c}
+.bar span{margin-left:16px;height:32px;padding:0 22px;border-radius:16px;background:rgba(70,60,36,.09);font:400 19px/32px Kanit,sans-serif;color:#6b624c}
+.screen{position:relative;width:1260px;overflow:hidden;background:#111}.screen img{position:absolute;display:block}
+.slab::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.12),rgba(255,255,255,0) 28%,rgba(0,0,0,0) 64%,rgba(2,14,8,.2))}
+.refl{position:absolute;left:170px;top:968px;width:1260px;height:200px;border-radius:26px;overflow:hidden;transform:rotateY(-9deg) rotateX(3deg) scaleY(-1);transform-origin:50% -40%;opacity:.16;filter:blur(7px);
+ -webkit-mask-image:linear-gradient(0deg,#000,transparent 70%);mask-image:linear-gradient(0deg,#000,transparent 70%)}
+.copy{position:absolute;left:96px;right:96px;bottom:78px;z-index:2}
+.eyebrow{font:500 26px/1 Kanit,sans-serif;letter-spacing:.2em;color:#cdf564;text-transform:uppercase}
+.title{margin-top:16px;font:600 76px/1.05 Fraunces,serif;font-variation-settings:"opsz" 144,"SOFT" 50;letter-spacing:.01em;text-shadow:0 2px 30px rgba(2,12,7,.8)}
+.line{margin-top:14px;font:400 36px/1.3 Kanit,sans-serif;color:rgba(246,239,221,.82)}
+.rule{position:absolute;left:96px;bottom:52px;width:150px;height:4px;border-radius:2px;background:#cdf564;box-shadow:0 0 16px 2px rgba(205,245,100,.5)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:520px;background:linear-gradient(0deg,rgba(4,17,11,.96) 30%,rgba(4,17,11,0));z-index:1}
+</style></head><body>
+<div id="card"><div class="stage"><div class="slab"><div class="bar"><i></i><i></i><i></i><span id="url"></span></div><div class="screen" id="screen"><img id="img"></div></div></div>
+<div class="shade"></div><div class="copy"><div class="eyebrow" id="eyebrow"></div><div class="title" id="title"></div><div class="line" id="line"></div></div><div class="rule"></div></div>
+<script>
+const id=new URLSearchParams(location.search).get('id')||'homechew';
+window.__ready=fetch('cards.json').then(r=>r.json()).then(async cards=>{const c=cards.find(x=>x.id===id);
+ const [cx,cy,cw,ch]=c.crop; const k=1260/cw; const img=document.getElementById('img');
+ document.getElementById('screen').style.height=(ch*k)+'px'; img.src='shots/'+c.shot; img.style.width=(c.srcW*k)+'px'; img.style.left=(-cx*k)+'px'; img.style.top=(-cy*k)+'px';
+ url.textContent=c.url; eyebrow.textContent=c.eyebrow; title.textContent=c.title; line.textContent=c.line;
+ await img.decode().catch(()=>{}); await document.fonts.ready;});
+</script></body></html>
