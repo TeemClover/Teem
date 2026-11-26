@@ -135,6 +135,6 @@ tests/share/
 
 # /welcome checks run locally; the test file is not a public asset.
 tests/welcome/
-welcome/film/PLAN.md
+welcome/film/CLIPS.md
 welcome/README.md
 tools/welcome-frames.mjs

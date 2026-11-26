@@ -35,7 +35,7 @@ test('หน้านี้ไม่ขึ้นผลค้นหา มี red
   const vercel = JSON.parse(await read('vercel.json'));
   assert.ok(vercel.redirects.some(r => r.source === '/welcome' && r.destination === '/welcome/'));
   const ignore = await read('.vercelignore');
-  for (const p of ['tests/welcome/', 'welcome/film/PLAN.md', 'tools/welcome-frames.mjs']) assert.ok(ignore.split('\n').includes(p), p);
+  for (const p of ['tests/welcome/', 'welcome/film/CLIPS.md', 'tools/welcome-frames.mjs']) assert.ok(ignore.split('\n').includes(p), p);
 });
 
 test('เล่าครบตามสคริปต์ และแผนใหม่ครบ', () => {
@@ -57,4 +57,13 @@ test('ฟอร์มฝากชื่อต้องขอความยิ�
   assert.match(html, /class="hp"[^>]*aria-hidden="true"/);
   assert.match(html, /href="\/privacy\/"/);
   assert.match(js, /consent: true/);
+});
+
+test('ฉากที่ตั้ง frames ไว้ ต้องมีเฟรม webp ครบทุกเฟรม', () => {
+  for (const [, id, n] of js.matchAll(/\{ id: '([a-z]+)', a: \d, b: \d, frames: (\d+) \}/g)) {
+    for (let i = 1; i <= Number(n); i++) {
+      const path = `welcome/film/${id}/${String(i).padStart(3, '0')}.webp`;
+      assert.ok(existsSync(new URL(path, root)), path);
+    }
+  }
 });
