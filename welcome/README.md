@@ -7,7 +7,7 @@
 - `index.html` ฉากและข้อความ (แต่ละฉาก = `.track` ราง + `.pin` จอที่ติด + `.beat` ข้อความทีละจังหวะ + `.rest` การ์ดบนเฟรมนิ่ง)
 - `welcome.js` วาดฟิล์มบน canvas, ข้อความตามการเลื่อน, การ์ดคำถาม, ฟอร์ม
 - `questions.js` คำถามและตัวเลือก ใช้ร่วมกับ `api/_lib/welcome.js` (แก้ตัวเลือก: id ห้ามเปลี่ยนหลังเปิดใช้)
-- `film/k0.webp … k8.webp` ภาพหลัก (ChatGPT, การ์ตูนแนว Pixar, 960×1440) · `film/PLAN.md` แผนคลิป Seedance
+- `film/k0.webp … k8.webp` ภาพหลัก (ChatGPT, การ์ตูนแนว Pixar, 960×1440) · `film/CLIPS.md` แผนคลิป Seedance
 - `admin/` หน้าดูผล ใส่รหัส `MEET_ADMIN_KEY` แล้วเห็นฉากที่คนไปถึง คำตอบ และรายชื่อที่ฝากไว้ (ดาวน์โหลด CSV ได้)
 
 ## ข้อมูลที่เก็บ (`/api/welcome`, Neon `DATABASE_URL`)

@@ -3,14 +3,14 @@
    - ตอนนี้ใช้ภาพนิ่ง (เลื่อน = ซูมช้า ๆ แล้วละลายเข้าภาพถัดไป) · พอมีคลิป Seedance แล้ว ใส่ frames ในฉาก
      แล้ววางเฟรม webp ที่ /welcome/film/<scene>/001.webp … ระบบจะเล่นเฟรมจริงแทนเอง
    - การ์ดคำถามสร้างจาก questions.js ตัวเดียวกับที่ API ใช้ตรวจ */
-import { QUESTIONS } from './questions.js?v=20261126d';
+import { QUESTIONS } from './questions.js?v=20261126e';
 
 const KEYS = ['k0', 'k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8'];
 // จุดที่ต้องไม่โดนครอปเมื่อจอแคบกว่า 2:3 (0 = ซ้ายสุด, 1 = ขวาสุด)
 const FOCUS = [.5, .45, .45, .5, .45, .4, .5, .5, .58];
 // a/b = ภาพหลักต้น/ท้ายฉาก · frames = จำนวนเฟรมของคลิปจริง (0 = ยังใช้ภาพนิ่ง)
 const SCENES = [
-  { id: 'hook', a: 0, b: 1, frames: 0 },
+  { id: 'hook', a: 0, b: 1, frames: 96 },
   { id: 'tom', a: 1, b: 2, frames: 0 },
   { id: 'pain', a: 2, b: 3, frames: 0 },
   { id: 'why', a: 3, b: 4, frames: 0 },

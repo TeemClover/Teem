@@ -22,7 +22,7 @@ try {
   execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', clip, '-vf', `fps=${fps},scale=720:1080:force_original_aspect_ratio=increase,crop=720:1080`, join(tmp, '%03d.png')], { stdio: 'inherit' });
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
-  const py = `import sys,os\nfrom PIL import Image\nsrc,dst=sys.argv[1],sys.argv[2]\nfor f in sorted(os.listdir(src)):\n    Image.open(os.path.join(src,f)).convert('RGB').save(os.path.join(dst,f[:-4]+'.webp'),'WEBP',quality=62,method=5)\n`;
+  const py = `import sys,os\nfrom PIL import Image\nsrc,dst=sys.argv[1],sys.argv[2]\nfor f in sorted(os.listdir(src)):\n    Image.open(os.path.join(src,f)).convert('RGB').save(os.path.join(dst,f[:-4]+'.webp'),'WEBP',quality=58,method=5)\n`;
   execFileSync('uv', ['run', '-q', '--with', 'pillow', 'python', '-I', '-c', py, tmp, out], { stdio: 'inherit' });
   const n = readdirSync(out).filter(f => f.endsWith('.webp')).length;
   console.log(`${out}: ${n} เฟรม → ตั้ง { id: '${scene}', …, frames: ${n} } ใน welcome/welcome.js`);
