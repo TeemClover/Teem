@@ -2,7 +2,6 @@ export const MIN_QUESTIONS = 5;
 export const MAX_QUESTIONS = 20;
 export const QUESTION_LIMIT = 240;
 export const OPTION_LIMIT = 100;
-export const ANNIVERSARY_TITLE = 'ครบรอบ 20 ปี';
 
 export function validQuestionCount(value) {
   return Number.isInteger(value) && value >= MIN_QUESTIONS && value <= MAX_QUESTIONS;
