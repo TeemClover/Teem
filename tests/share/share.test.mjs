@@ -49,6 +49,7 @@ test('หน้า /share/ มีปุ่ม 4 ใบตามลำดับ �
     ['review', '/review/', 'รวมรีวิว'],
     ['buy', 'https://buy.xircle.health/?ref=CLOVERX&openExternalBrowser=1', 'สั่งซื้อ'],
   ]);
+  assert.equal([...html.matchAll(/<a class="tile [^>]*target="_blank" rel="noopener"/g)].length, 4, 'ปุ่มทั้ง 4 เปิดแท็บใหม่');
   assert.match(html, /<script defer src="\/share\/ref\.js[^"]*"><\/script>\s*<script defer src="\/share\/share\.js/);
   assert.match(html, /property="og:image" content="https:\/\/www\.myclover\.com\/share\/assets\/og-share\.jpg"/);
 });
@@ -63,13 +64,13 @@ test('หน้า /share/code/ ใช้ได้แม้ไม่มี JavaS
 
 test('vercel.json พา /share /share/code /share/slide ไปที่อยู่ที่มี / ปิดท้าย', async () => {
   const config = JSON.parse(await read('vercel.json'));
-  for (const [source, destination] of [['/share', '/share/'], ['/share/code', '/share/code/'], ['/share/slide', '/share/slide/']]) {
+  for (const [source, destination] of [['/share', '/share/'], ['/share/code', '/share/code/'], ['/share/slide', '/share/slide/'], ['/share/stat', '/share/stat/']]) {
     assert.ok(config.redirects.some(rule => rule.source === source && rule.destination === destination && rule.permanent === false), source);
   }
 });
 
 test('ไฟล์ที่หน้าเรียกใช้มีอยู่จริง', async () => {
-  const pages = [await read('share/index.html'), await read('share/code/index.html')].join('\n');
+  const pages = [await read('share/index.html'), await read('share/code/index.html'), await read('share/stat/index.html'), await read('xircle/index.html'), await read('routinex/index.html')].join('\n');
   const local = new Set([...pages.matchAll(/(?:src|href)="(\/share\/[^"?#]+\.[a-z0-9]+)/g)].map(m => m[1]));
   assert.ok(local.size >= 6);
   for (const path of local) await readFile(new URL('.' + path, root));
@@ -90,4 +91,50 @@ test('หน้า /share/slide/ มีสไลด์ 10 ภาพ ภาพใ
   }
   assert.match(html, /name="robots" content="noindex,nofollow"/);
   assert.match(html, /href="\/share\/code\/"/);
+});
+
+test('ปุ่ม รูทีน เซอเคิล รีวิว พกรหัสไปด้วย ไม่มีรหัสก็บอกว่ามาจากหน้าแชร์', async () => {
+  const S = await loadRef();
+  assert.equal(S.withRef('/xircle/', 'ABC123'), '/xircle/?ref=ABC123');
+  assert.equal(S.withRef('/review/', ''), '/review/?from=share');
+  assert.equal(S.withRef('/routinex/?a=1#top', 'x&y'), '/routinex/?a=1&ref=xy#top');
+  assert.equal(typeof S.track, 'function');
+});
+
+test('หน้า รูทีน และ เซอเคิล มีปุ่มสั่งซื้อเล็กที่ใช้รหัสผู้แนะนำ', async () => {
+  for (const page of ['xircle', 'routinex']) {
+    const html = await read(`${page}/index.html`);
+    assert.match(html, new RegExp(`<script defer src="/share/ref\\.js[^"]*"></script>\\s*<script defer src="/share/carry\\.js[^"]*" data-page="${page}"></script>\\s*</body>`), page);
+  }
+  const carry = await read('share/carry.js');
+  assert.match(carry, /S\.buyUrl\(/);
+  assert.match(carry, /target="_blank"/);
+});
+
+test('หน้า /share/stat/ ไม่ให้ค้นเจอ และอ่านข้อมูลผ่านล็อกอินหลังบ้าน', async () => {
+  const html = await read('share/stat/index.html');
+  assert.match(html, /name="robots" content="noindex,nofollow"/);
+  const js = await read('share/stat/stat.js');
+  assert.match(js, /\/api\/share-stat\?days=/);
+  assert.match(js, /\/api\/backoffice-auth/);
+});
+
+test('API เก็บสถิติรับเฉพาะเหตุการณ์ที่รู้จัก และไม่เก็บรหัสเครื่องตรง ๆ', async () => {
+  const { validateEvent, cleanRef, deviceOf, sameOrigin } = await import(new URL('api/_lib/share-stat.js', root));
+  assert.deepEqual(Object.keys(validateEvent({ kind: 'view', page: 'share', ref: 'ab-1', vid: 'abcdef12-3456' })), ['kind', 'page', 'target', 'ref', 'visitor']);
+  const event = validateEvent({ kind: 'click', page: 'share', target: 'buy', ref: 'x"<y>', vid: 'abcdef12-3456' });
+  assert.equal(event.ref, 'XY');
+  assert.notEqual(event.visitor, 'abcdef12-3456');
+  assert.equal(event.visitor.length, 32);
+  for (const bad of [null, [], { kind: 'drop', page: 'share' }, { kind: 'view', page: 'evil' }, { kind: 'click', page: 'share' },
+    { kind: 'click', page: 'share', target: 'hack' }, { kind: 'gen', page: 'code' }, { kind: 'view', page: 'share', target: 'buy' }])
+    assert.equal(validateEvent(bad), null, JSON.stringify(bad));
+  assert.equal(cleanRef(' o5f3ln '), 'O5F3LN');
+  assert.equal(deviceOf('Mozilla/5.0 (iPhone) Line/14.1.0'), 'line');
+  assert.equal(deviceOf('Mozilla/5.0 (Linux; Android 14) [FBAN/FB4A]'), 'facebook');
+  assert.equal(deviceOf('Mozilla/5.0 (Macintosh)'), 'desktop');
+  const req = (headers, method = 'POST') => ({ method, headers: { host: 'www.myclover.com', 'x-forwarded-proto': 'https', ...headers } });
+  assert.equal(sameOrigin(req({ origin: 'https://www.myclover.com', 'sec-fetch-site': 'same-origin' })), true);
+  assert.equal(sameOrigin(req({ origin: 'https://evil.example', 'sec-fetch-site': 'cross-site' })), false);
+  assert.equal(sameOrigin(req({})), false);
 });

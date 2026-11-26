@@ -527,6 +527,11 @@
       "permanent": false
     },
     {
+      "source": "/share/stat",
+      "destination": "/share/stat/",
+      "permanent": false
+    },
+    {
       "source": "/welcome",
       "destination": "/welcome/",
       "permanent": false

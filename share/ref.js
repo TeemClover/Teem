@@ -32,5 +32,44 @@
     return String(origin || '').replace(/\/+$/, '') + '/share/' + (code ? '?ref=' + encodeURIComponent(code) : '');
   }
 
-  root.MyCloverShare = { DEFAULT_REF: DEFAULT_REF, clean: clean, fromInput: fromInput, buyUrl: buyUrl, shareUrl: shareUrl };
+  /* ลิงก์ไปหน้า รูทีน เซอเคิล รีวิว พกรหัสไปด้วย หน้าเหล่านั้นจะได้ทำปุ่มสั่งซื้อใต้รหัสเดิม
+     ไม่มีรหัสก็บอกแค่ว่ามาจากหน้าแชร์ ปลายทางใช้รหัสที่จำไว้ หรือ CLOVERX */
+  function withRef(path, ref) {
+    var code = clean(ref);
+    var parts = String(path).split('#');
+    var param = code ? 'ref=' + encodeURIComponent(code) : 'from=share';
+    return parts[0] + (parts[0].indexOf('?') < 0 ? '?' : '&') + param + (parts.length > 1 ? '#' + parts.slice(1).join('#') : '');
+  }
+
+  /* รหัสเครื่องแบบสุ่ม ใช้นับคนไม่ซ้ำในหน้าสถิติเท่านั้น */
+  function visitor() {
+    try {
+      var id = localStorage.getItem('myclover.share.vid') || '';
+      if (!/^[A-Za-z0-9-]{8,64}$/.test(id)) {
+        id = root.crypto && root.crypto.randomUUID ? root.crypto.randomUUID()
+          : 'v' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+        localStorage.setItem('myclover.share.vid', id);
+      }
+      return id;
+    } catch (e) { return ''; }
+  }
+
+  /* ส่งเหตุการณ์ไปเก็บที่ /api/share-stat ไม่รอผล ไม่ทำให้หน้าเว็บช้า */
+  function track(kind, page, target, ref) {
+    try {
+      if (!root.fetch || !root.location || !/^https?:$/.test(root.location.protocol)) return;
+      root.fetch('/api/share-stat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: kind, page: page, target: target || '', ref: clean(ref).toUpperCase(), vid: visitor() }),
+        keepalive: true,
+        credentials: 'omit',
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  root.MyCloverShare = {
+    DEFAULT_REF: DEFAULT_REF, clean: clean, fromInput: fromInput, buyUrl: buyUrl, shareUrl: shareUrl,
+    withRef: withRef, track: track,
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

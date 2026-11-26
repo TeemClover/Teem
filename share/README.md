@@ -23,3 +23,14 @@
 - ตัวอักษรใช้ไฟล์ของ `/xircle/assets/fonts/`
 
 ตรวจ: `node --test tests/share/share.test.mjs` · แก้ CSS หรือ JS แล้วเปลี่ยนเลข `?v=` ในทั้งสองหน้า
+
+## สถิติ /share/stat/ (26 พ.ย. 2026)
+
+- หน้า `share/stat/` ล็อกอินด้วยรหัสหลังบ้านเดียวกับ `/shelf/admin/` (`/api/backoffice-auth`) แล้วอ่าน `/api/share-stat?days=1|7|30|90|0`
+- เก็บที่ `api/share-stat.js` + `api/_lib/share-stat.js` ตาราง `mc_share_events` (Neon) สร้างเองตอนเรียกครั้งแรก เก็บ 400 วัน
+  ชนิด `view` (เปิดหน้า) · `click` (กดปุ่ม) · `gen` (กดสร้าง Link) · หน้า share / code / routinex / xircle / review
+  ไม่เก็บ IP ไม่เก็บข้อมูลส่วนตัว รหัสเครื่องสุ่มใน localStorage ถูก hash ก่อนเก็บ ใช้นับคนไม่ซ้ำเท่านั้น
+- 4 ปุ่มในหน้าแชร์เปิดแท็บใหม่ ปุ่ม รูทีน เซอเคิล รีวิว พก `?ref=CODE` ไปด้วย (ไม่มีรหัสใส่ `?from=share`)
+- ปุ่มสั่งซื้อเล็กมุมขวาล่าง: `share/carry.js` ใส่ท้ายหน้าแบบ
+  `<script defer src="/share/ref.js"></script><script defer src="/share/carry.js" data-page="xircle"></script>`
+  ใช้แล้วใน `/xircle/` `/routinex/` และหน้ารีวิว (repo TomThanet/cloverx-office โฟลเดอร์ review-site, deploy ด้วย vercel CLI)
