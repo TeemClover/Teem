@@ -13,11 +13,12 @@ async function loadRef() {
   return sandbox.MyCloverShare;
 }
 
-test('ลิงก์สั่งซื้อใส่รหัสก่อน openExternalBrowser=1', async () => {
+test('ลิงก์สั่งซื้อใส่รหัสก่อน openExternalBrowser=1 และไม่มีรหัสใช้ CLOVERX', async () => {
   const S = await loadRef();
+  assert.equal(S.DEFAULT_REF, 'CLOVERX');
   assert.equal(S.buyUrl('O5F3LN'), 'https://buy.xircle.health/?ref=O5F3LN&openExternalBrowser=1');
-  assert.equal(S.buyUrl(''), 'https://buy.xircle.health/?openExternalBrowser=1');
-  assert.equal(S.buyUrl(null), 'https://buy.xircle.health/?openExternalBrowser=1');
+  for (const empty of ['', null, undefined, '  ', '&#'])
+    assert.equal(S.buyUrl(empty), 'https://buy.xircle.health/?ref=CLOVERX&openExternalBrowser=1', String(empty));
 });
 
 test('รหัสจากลิงก์ถูกกรองเหลือตัวอักษรที่ปลอดภัย และไม่ถูกแก้ตัวพิมพ์', async () => {
@@ -46,7 +47,7 @@ test('หน้า /share/ มีปุ่ม 4 ใบตามลำดับ �
     ['routinex', '/routinex/', 'รูทีน'],
     ['xircle', '/xircle/', 'เซอเคิล'],
     ['review', '/review/', 'รวมรีวิว'],
-    ['buy', 'https://buy.xircle.health/?openExternalBrowser=1', 'สั่งซื้อ'],
+    ['buy', 'https://buy.xircle.health/?ref=CLOVERX&openExternalBrowser=1', 'สั่งซื้อ'],
   ]);
   assert.match(html, /<script defer src="\/share\/ref\.js[^"]*"><\/script>\s*<script defer src="\/share\/share\.js/);
   assert.match(html, /property="og:image" content="https:\/\/www\.myclover\.com\/share\/assets\/og-share\.jpg"/);
