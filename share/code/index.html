@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>สร้าง Link ของคุณ · X-VISOR</title>
+<meta name="description" content="ใส่ Code ของคุณ แล้วกดสร้าง Link เพื่อส่งให้ลูกค้า">
+<meta name="robots" content="noindex,nofollow">
+<link rel="canonical" href="https://www.myclover.com/share/code/">
+<link rel="icon" href="/favicon.ico">
+<meta name="theme-color" content="#060a16">
+<link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/share/share.css?v=20261126">
+<script defer src="/share/ref.js?v=20261126"></script>
+<script defer src="/share/code/code.js?v=20261126"></script>
+</head>
+<body>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<main class="maker">
+  <header class="head">
+    <p class="eyebrow">X-VISOR</p>
+    <h1>สร้าง Link <span class="grad">ของคุณ</span></h1>
+  </header>
+
+  <!-- ไม่มี JavaScript ก็ยังใช้ได้: ฟอร์มพาไปที่ /share/?ref=CODE ซึ่งคือลิงก์ที่ต้องส่งให้ลูกค้า -->
+  <form class="card" id="form" action="/share/" method="get" novalidate>
+    <label class="field" for="code">Code ของคุณ</label>
+    <input class="code" id="code" name="ref" type="text" inputmode="text" placeholder="ABC123" maxlength="64"
+           autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="go" required>
+    <button class="cta" type="submit">สร้าง Link</button>
+    <p class="msg" id="msg" role="alert" hidden>ใส่ Code ก่อนนะ</p>
+  </form>
+
+  <section class="card out" id="out" aria-live="polite" hidden>
+    <p class="out__label">Link ของคุณ ส่งให้ลูกค้าได้เลย</p>
+    <a class="out__link" id="link" href="/share/"></a>
+    <div class="out__row">
+      <button class="btn btn--main" id="copy" type="button">คัดลอก</button>
+      <button class="btn" id="send" type="button" hidden>ส่งต่อ</button>
+      <a class="btn" id="open" href="/share/">เปิดดู</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -129,3 +129,6 @@ tests/start/
 # Private HR code ships without synthetic preview servers or tests.
 tests/candidate/
 docs/candidate/
+
+# /share link-builder checks run locally; the test file is not a public asset.
+tests/share/

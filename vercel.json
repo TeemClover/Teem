@@ -512,6 +512,16 @@
       "permanent": false
     },
     {
+      "source": "/share",
+      "destination": "/share/",
+      "permanent": false
+    },
+    {
+      "source": "/share/code",
+      "destination": "/share/code/",
+      "permanent": false
+    },
+    {
       "source": "/habix",
       "destination": "/xircle/#visit-habix",
       "permanent": false
