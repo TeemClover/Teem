@@ -202,6 +202,15 @@ a.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px #1c254266;b
 
 .doors{display:grid;gap:16px;margin-top:36px}
 @media(min-width:760px){.doors{grid-template-columns:1fr 1fr}}
+/* การ์ดเขียว: คลิป Day 0 เล่นได้ในการ์ด แตะส่วนอื่นของการ์ดเข้าหน้า Day 0 */
+.door.door--clip{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:center}
+.door--clip .clip{position:relative;z-index:2;max-width:220px;justify-self:center;border-radius:22px;box-shadow:0 20px 40px -18px #0e2a1680,0 0 0 1px #ffffff40}
+.door__txt{display:flex;flex-direction:column;gap:10px;min-width:0}
+.door__link{color:inherit;text-decoration:none}
+.door__link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+.door__link:focus-visible{outline:none}
+.door__link:focus-visible::after{outline:3px solid var(--navy-2);outline-offset:-6px}
+@media(min-width:560px){.door.door--clip{grid-template-columns:minmax(150px,200px) minmax(0,1fr);gap:26px}.door--clip .clip{max-width:none;justify-self:stretch}}
 .door{position:relative;display:flex;flex-direction:column;gap:10px;padding:30px 28px;border-radius:28px;text-decoration:none;overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s}
 .door:hover{transform:translateY(-6px)}
 .door--go{background:var(--green);color:var(--navy-2);box-shadow:0 26px 50px -28px #41b755}
