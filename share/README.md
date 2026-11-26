@@ -14,6 +14,8 @@
 
 `index.html` `share.css` `share.js` `ref.js` `code/index.html` `code/code.js` `assets/`
 
+โทนสี: ขาวฟ้าของ Clover X (ฟ้าโลโก้ `#4388FD`, น้ำเงินเข้ม `#0E1B3D`) ตาม Teem 26 พ.ย. · `assets/cloverx-logo.png` ไดคัตจาก Source `cloverx-logo-01.jpg`
+
 - `assets/routinex-box.webp` `assets/routinex-logo.webp` ย่อจาก `/routinex/assets/`
 - `assets/xircle-band.webp` `assets/xircle-logo.svg` ย่อจาก `/xircle/assets/`
 - `assets/og-share.jpg` ภาพพรีวิวตอนส่งลิงก์ 1200×630 จัดวางด้วย HTML จากภาพสองชุดข้างบน
