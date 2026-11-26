@@ -75,11 +75,11 @@ test('API requires host-written questions, validates custom requests before savi
   assert.equal((await f.request('create', { title: 'x'.repeat(100000) })).status, 413);
 });
 
-for (const count of [5, 20]) test(`${count}-question custom game finishes all rounds with 100 players, private answer keys and speed scores`, async () => {
+for (const count of [5, 20]) test(`${count}-question custom game finishes all rounds with 200 players, private answer keys and speed scores`, async () => {
   const f = fixture(), source = questions(count);
   const created = await f.request('create', { mode: 'custom', questions: source, seconds: 10 });assert.equal(created.status, 201);
   const { code, hostToken } = created;
-  const players = Array.from({ length: 100 }, (_, i) => ({ name: 'คนเล่น ' + i, token: newToken() }));
+  const players = Array.from({ length: 200 }, (_, i) => ({ name: 'คนเล่น ' + i, token: newToken() }));
   const joined = await Promise.all(players.map(p => f.request('join', { code, name: p.name, avatar: AVATARS[0].id }, p.token)));
   assert.ok(joined.every(r => r.status === 200));
   assert.equal((await f.request('join', { code, name: 'คนเกิน', avatar: AVATARS[0].id }, newToken())).error, 'ROOM_FULL');
@@ -92,7 +92,7 @@ for (const count of [5, 20]) test(`${count}-question custom game finishes all ro
     await Promise.all(players.slice(0, 50).map(p => f.request('answer', { code, index, choice: q.correctIndex }, p.token)));
     f.advance(5000);
     await Promise.all(players.slice(50).map(p => f.request('answer', { code, index, choice: q.correctIndex }, p.token)));
-    const masked = await f.request('state', { code }, '', 'GET');assert.equal(masked.answered, 100);assert.equal(masked.players[0].score, index * 1000);
+    const masked = await f.request('state', { code }, '', 'GET');assert.equal(masked.answered, 200);assert.equal(masked.players[0].score, index * 1000);
     f.advance(5000);
     const reveal = await f.request('state', { code }, '', 'GET');assert.equal(reveal.question.correctIndex, q.correctIndex);assert.equal(reveal.players[0].score, (index + 1) * 1000);assert.equal(reveal.players.at(-1).score, (index + 1) * 750);
     response = await f.request('leaderboard', { code, version }, hostToken);assert.equal(response.status, 200);version = response.state.version;

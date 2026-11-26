@@ -13,10 +13,10 @@ test('source has exactly twelve four-choice questions; shuffled answer stays att
  assert.throws(()=>prepareQuestions(15,QUESTIONS));assert.throws(()=>prepareQuestions(20),/BAD_QUESTION_COUNT/);assert.throws(()=>validateJoin({name:'  ',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'<script>',avatar:AVATARS[0].id}));assert.throws(()=>validateJoin({name:'ok',avatar:'fake'}));
  assert.equal(scoreAnswer(0,20000),1000);assert.equal(scoreAnswer(10000,20000),750);assert.equal(scoreAnswer(20000,20000),500);
 });
-test('100 simultaneous joins admit exactly 100; retries do not consume seats; 101st fails',async()=>{
- const f=fixture(),{code}=await f.room(),tokens=Array.from({length:100},()=>newToken());
+test('200 simultaneous joins admit exactly 200; retries do not consume seats; 201st fails',async()=>{
+ const f=fixture(),{code}=await f.room(),tokens=Array.from({length:200},()=>newToken());
  const players=await Promise.all(tokens.map((t,i)=>join(f.store,code,tokenHash(t),'คนที่ '+i)));
- assert.equal(new Set(players.map(p=>p.playerId)).size,100);assert.equal((await f.store.snapshot(code)).playerCount,100);
+ assert.equal(new Set(players.map(p=>p.playerId)).size,200);assert.equal((await f.store.snapshot(code)).playerCount,200);
  const retry=await join(f.store,code,tokenHash(tokens[0]),'คนที่ 0');assert.equal(retry.playerId,players[0].playerId);
  await assert.rejects(join(f.store,code,tokenHash(newToken()),'เกิน'),{code:'ROOM_FULL'});
 });
@@ -46,7 +46,7 @@ test('duplicate names are normalized, expired rooms cannot resume',async()=>{
  await assert.rejects(join(f.store,code,tokenHash(newToken()),'  TEAM  '),{code:'NAME_TAKEN'});
  f.advance(12*3600000);await assert.rejects(f.store.snapshot(code),{code:'ROOM_NOT_FOUND'});
 });
-test('100 API clients play all twelve rounds; immutable answer, final leaderboard, API isolation',async()=>{
+test('200 API clients play all twelve rounds; immutable answer, final leaderboard, API isolation',async()=>{
  const f=fixture(),handler=createQuizHandler({getStore:async()=>f.store,clock:f.clock}),origin='https://www.myclover.com';
  async function request(action,data={},token='',method='POST'){
   const req={url:'/api/quiz'+(method==='GET'?'?'+new URLSearchParams({action,...data}):''),method,headers:{'content-type':'application/json',origin,host:'www.myclover.com',...(token?{authorization:'Bearer '+token}:{})},...(method==='POST'?{body:JSON.stringify({action,...data})}:{})};
@@ -54,23 +54,23 @@ test('100 API clients play all twelve rounds; immutable answer, final leaderboar
   await handler(req,{statusCode:200,setHeader(k,v){headers.set(k.toLowerCase(),v);},end(body){result={status:this.statusCode,data:JSON.parse(body),headers};}});return result;
  }
  const created=await request('create',{seconds:20,questions:QUESTIONS});assert.equal(created.status,201);const {code,hostToken}=created.data;
- const players=Array.from({length:100},(_,i)=>({token:newToken(),name:'ผู้เล่น '+String(i+1).padStart(3,'0')}));
+ const players=Array.from({length:200},(_,i)=>({token:newToken(),name:'ผู้เล่น '+String(i+1).padStart(3,'0')}));
  const joined=await Promise.all(players.map(p=>request('join',{code,name:p.name,avatar:AVATARS[0].id},p.token)));
- assert.ok(joined.every(r=>r.status===200));assert.equal((await request('join',{code,name:'101',avatar:AVATARS[0].id},newToken())).data.error,'ROOM_FULL');
+ assert.ok(joined.every(r=>r.status===200));assert.equal((await request('join',{code,name:'201',avatar:AVATARS[0].id},newToken())).data.error,'ROOM_FULL');
  const start=await request('start',{code,version:0},hostToken);assert.equal(start.status,200);let version=start.data.state.version;
  for(let index=0;index<12;index++){
   f.advance(4000);const correct=f.store.inspect(code).room.questions[index].correctIndex;
   const answers=await Promise.all(players.map((p,i)=>request('answer',{code,index,choice:i%5===0?(correct+1)%4:correct},p.token)));
   assert.ok(answers.every(r=>r.status===200));assert.ok(answers.every(r=>!('points' in r.data)&&!('correct' in r.data)));
   const duplicate=await request('answer',{code,index,choice:(correct+2)%4},players[1].token);assert.equal(duplicate.data.choice,correct);
-  const current=await request('state',{code},'','GET');assert.equal(current.data.answered,100);assert.ok(!('correctIndex' in current.data.question));assert.equal(current.headers.get('vercel-cdn-cache-control'),'public, s-maxage=1');assert.ok(!JSON.stringify(current.data).includes('host_hash'));assert.ok(!JSON.stringify(current.data).includes('token_hash'));
-  f.advance(20000);const revealed=await request('state',{code},'','GET');assert.equal(revealed.data.phase,'reveal');assert.equal(revealed.data.distribution.reduce((a,b)=>a+b),100);
+  const current=await request('state',{code},'','GET');assert.equal(current.data.answered,200);assert.ok(!('correctIndex' in current.data.question));assert.equal(current.headers.get('vercel-cdn-cache-control'),'public, s-maxage=1');assert.ok(!JSON.stringify(current.data).includes('host_hash'));assert.ok(!JSON.stringify(current.data).includes('token_hash'));
+  f.advance(20000);const revealed=await request('state',{code},'','GET');assert.equal(revealed.data.phase,'reveal');assert.equal(revealed.data.distribution.reduce((a,b)=>a+b),200);
   const board=await request('leaderboard',{code,version},hostToken);assert.equal(board.status,200);version=board.data.state.version;
   const next=await request('next',{code,version},hostToken);assert.equal(next.status,200);version=next.data.state.version;
  }
  const final=await request('state',{code},'','GET');assert.equal(final.data.phase,'finished');assert.equal(final.data.players[0].score,12000);assert.equal(final.data.players[0].correct,12);assert.equal(final.data.players.at(-1).score,0);
- const winner=final.data.players[0];assert.equal(winner.correct,12);assert.equal(final.data.players.filter(p=>p.score===12000).length,80);
+ const winner=final.data.players[0];assert.equal(winner.correct,12);assert.equal(final.data.players.filter(p=>p.score===12000).length,160);
  let evilStatus;await handler({url:'/api/quiz',method:'POST',headers:{'content-type':'application/json',origin:'https://evil.example',host:'www.myclover.com'},body:'{"action":"create"}'},{setHeader(){},end(){evilStatus=this.statusCode;}});assert.equal(evilStatus,403);
  assert.equal((await request('start',{code,version},players[0].token)).status,401);
- console.log('Verified 100 clients, 1,200 scored answers, all 12 rounds, final podium and rejected 101st player.');
+ console.log('Verified 200 clients, 2,400 scored answers, all 12 rounds, final podium and rejected 201st player.');
 });

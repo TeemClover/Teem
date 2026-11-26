@@ -126,6 +126,16 @@ button,input,select,textarea{font:inherit}textarea{resize:vertical}textarea:focu
 @media(max-width:760px){.question-import{padding:16px 12px;margin-top:22px}.import-heading h3{font-size:15px}.import-heading .eyebrow{font-size:6px}.import-columns{gap:4px}.import-columns>span{font-size:7px;padding:4px 6px}.import-actions{gap:11px}.import-actions .secondary{font-size:9px;padding:8px 11px}.import-actions>a{font-size:8px}.import-settings>label{min-width:120px}.import-settings{gap:9px}.import-detection,.import-first-row{font-size:8px}.import-review .primary{font-size:10px}}
 .import-cancel{font:inherit;font-size:9px;border:0;background:transparent;padding:5px 0;color:#9c7656;text-decoration:underline;cursor:pointer}
 
+/* Big rooms (up to 200): denser name cards so the host screen shows many more names at once */
+.roster.crowd{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:min(62vh,560px)}
+.roster.crowd .player-chip{min-height:0;padding:5px 8px;gap:7px;font-size:13px;border-radius:10px}
+.roster.crowd .player-chip img{width:30px;height:30px;border-width:1px}
+.roster.crowd .player-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.roster.packed{grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:5px}
+.roster.packed .player-chip{font-size:12px;padding:4px 7px}
+.roster.packed .player-chip img{width:24px;height:24px}
+@media(max-width:760px){.roster.crowd,.roster.packed{grid-template-columns:repeat(2,minmax(0,1fr));max-height:50vh}}
+
 /* Round face profiles: every player picture is a circle cropped to the animal's face, shown larger. */
 .avatar-face,.avatar-current,.avatar-peek{aspect-ratio:1;object-fit:cover;border-radius:50%;background:#f4efd9}
 .player-chip{gap:12px}
@@ -190,3 +200,16 @@ button,input,select,textarea{font:inherit}textarea{resize:vertical}textarea:focu
 .guide-actions a.primary{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
 .guide-actions>*{min-width:0}
 @media(max-width:640px){.guide-dialog{padding:16px}.guide-steps{grid-template-columns:1fr}.guide-head h3{font-size:18px}.guide-actions>*{flex:1;justify-content:center}}
+
+/* Create-room bar: stays in view at the bottom of the host form; muted until every question is complete */
+.create-bar{position:sticky;bottom:12px;z-index:5;margin-top:20px;padding:12px;border-radius:18px;background:#fffef9ee;backdrop-filter:blur(8px);box-shadow:0 -2px 0 #e7ecde,0 14px 30px #153f3524;border:1px solid #dfe6d2}
+.create-status{display:block;text-align:center;font-size:12px;font-weight:700;color:#7a6a3a;margin-bottom:8px}
+.create-bar .create-room{margin-top:0;min-height:62px;font-size:18px;font-weight:800;letter-spacing:.01em}
+.create-bar[data-ready=false] .create-room{background:#e9eee0;border-color:#cfd9c2;color:#5b6a52;box-shadow:0 4px 0 #cfd9c2}
+.create-bar[data-ready=true] .create-status{color:#3f7d55}
+.create-bar[data-ready=true] .create-room{background:linear-gradient(135deg,#2f7a52,#153f35);border-color:#153f35;color:#fff;box-shadow:0 5px 0 #092b23,0 0 0 0 #3f7d5566;animation:create-ready 1.8s ease-out infinite}
+@keyframes create-ready{0%{box-shadow:0 5px 0 #092b23,0 0 0 0 #3f7d5566}70%{box-shadow:0 5px 0 #092b23,0 0 0 14px #3f7d5500}100%{box-shadow:0 5px 0 #092b23,0 0 0 0 #3f7d5500}}
+@media(prefers-reduced-motion:reduce){.create-bar[data-ready=true] .create-room{animation:none}}
+@media(max-width:760px){.create-bar{bottom:8px;padding:10px}.create-bar .create-room{min-height:56px;font-size:17px}}
+/* keep messages clear of the create bar on the host form */
+body.is-host:has(.create-bar) .toast{bottom:auto;top:84px;width:max-content;max-width:min(92vw,520px);text-align:center}

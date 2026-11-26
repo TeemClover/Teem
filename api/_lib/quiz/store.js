@@ -19,7 +19,7 @@ export function createPostgresStore(sql) {
       throw new GameError('TRY_AGAIN',503);
     },
     async command({code,hash,action,payload={}}){
-      try{const [r]=await query('SELECT mc_quiz_command_v1($1,$2,$3,$4::jsonb) AS result',[code,hash,action,JSON.stringify(payload)]);return r.result;}
+      try{const [r]=await query('SELECT mc_quiz_command_v2($1,$2,$3,$4::jsonb) AS result',[code,hash,action,JSON.stringify(payload)]);return r.result;}
       catch(e){const known=['ROOM_NOT_FOUND','ROOM_FINISHED','ROOM_FULL','NAME_TAKEN','UNAUTHORIZED','QUESTION_CHANGED','ANSWER_CLOSED','BAD_CHOICE','STATE_CHANGED','NO_PLAYERS','BAD_TRANSITION'];const code=known.find(c=>e.message?.includes(c));if(code)throw new GameError(code,code==='UNAUTHORIZED'?401:code==='ROOM_NOT_FOUND'?404:409);throw e;}
     },
     async snapshot(code){
