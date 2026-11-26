@@ -25,6 +25,10 @@ Seedance 2.5 · mode `omni_reference` · start_image = kN · end_image = kN+1 ·
   ภาพเริ่ม = ภาพเปิดใหม่จาก GPT (ครอป 9:16) · ภาพจบ = k1 ครอป 9:16 · แตกเฟรม 12 fps = 96 เฟรม (4.8 MB)
   k0 = ภาพเปิดเดียวกัน k1 = เฟรมสุดท้ายของคลิป (รอยต่อกับฉาก tom ตรงพอดี) · ต้นฉบับอยู่ ~/Claude/welcome-flow/
 
+- อีก 7 ฉาก (26 พ.ย. 2026): Google Flow แบบเดียวกัน 7 × 24 = 168 เครดิต Flow · ภาพเริ่ม/จบ = kN ครอป 9:16 ตามจุดโฟกัส
+  แตกเฟรม 10 fps = 80 เฟรม/ฉาก · k2–k8 = เฟรมสุดท้ายของแต่ละคลิป · ทั้งเรื่องรวม ~30 MB โหลดทีละฉากตอนเลื่อนถึง
+  ต้นฉบับ `~/Claude/welcome-flow/<scene>-flow.mp4`
+
 ## เอาคลิปมาใส่หน้า
 1. `node tools/welcome-frames.mjs <scene> <clip.mp4>` → `welcome/film/<scene>/001.webp…`
 2. ใส่จำนวนเฟรมที่ `frames` ของฉากนั้นใน `welcome/welcome.js`

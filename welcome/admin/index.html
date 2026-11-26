@@ -35,14 +35,14 @@ th{color:var(--soft);font-weight:600}
   <section id="out" hidden>
     <h2>คนดูไปถึงฉากไหน</h2><div class="card" id="scenes"></div>
     <h2>คำตอบระหว่างทาง</h2><div class="grid" id="answers"></div>
-    <h2>คนที่ฝากชื่อ <button type="button" id="csv" style="height:32px;font-size:13px;margin-left:8px">ดาวน์โหลด CSV</button></h2>
+    <h2>รายชื่อเดิมที่ฝากไว้ (ปิดฟอร์มแล้ว) <button type="button" id="csv" style="height:32px;font-size:13px;margin-left:8px">ดาวน์โหลด CSV</button></h2>
     <div class="card wrap"><table><thead><tr><th>เวลา</th><th>ชื่อ</th><th>ติดต่อ</th><th>คนชวน</th><th>คำตอบ</th><th>อ้างอิง</th></tr></thead><tbody id="leads"></tbody></table></div>
   </section>
 </main>
 <script type="module">
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const NAMES = { hook: 'เปิดเรื่อง', tom: 'ผมเป็นใคร', pain: 'คำถาม 1', why: 'คำถาม 2', product: 'สินค้า', story: 'คำถาม 3 + แผนใหม่', ai: 'เครื่องมือ AI', start: 'สองทาง + ฝากชื่อ' };
+const NAMES = { hook: 'เปิดเรื่อง', tom: 'ผมเป็นใคร', pain: 'คำถาม 1', why: 'คำถาม 2', product: 'สินค้า', story: 'คำถาม 3 + แผนใหม่', ai: 'เครื่องมือ AI', start: 'สองทาง + คำแนะนำ', message_line: 'กดส่ง LINE หาคนชวน', message_copy: 'กดคัดลอกข้อความ' };
 let data;
 try { $('key').value = sessionStorage.getItem('welcome.admin') || ''; } catch {}
 $('f').addEventListener('submit', async e => {

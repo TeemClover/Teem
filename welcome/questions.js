@@ -36,6 +36,8 @@ export const QUESTIONS = Object.freeze([
 
 // ฉากของฟิล์ม: ใช้นับว่าคนดูไปถึงฉากไหน (ไม่ใช่ข้อมูลส่วนตัว)
 export const SCENES = Object.freeze(['hook', 'tom', 'pain', 'why', 'product', 'story', 'ai', 'start']);
+// สิ่งที่กดท้ายเรื่อง (นับแบบเดียวกับฉาก ไม่มีข้อมูลส่วนตัว)
+export const ACTIONS = Object.freeze(['message_line', 'message_copy']);
 
 export const CONSENT_VERSION = 'welcome-contact-v1';
 

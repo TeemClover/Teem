@@ -3,7 +3,7 @@
    - ตอนนี้ใช้ภาพนิ่ง (เลื่อน = ซูมช้า ๆ แล้วละลายเข้าภาพถัดไป) · พอมีคลิป Seedance แล้ว ใส่ frames ในฉาก
      แล้ววางเฟรม webp ที่ /welcome/film/<scene>/001.webp … ระบบจะเล่นเฟรมจริงแทนเอง
    - การ์ดคำถามสร้างจาก questions.js ตัวเดียวกับที่ API ใช้ตรวจ */
-import { QUESTIONS } from './questions.js?v=20261126e';
+import { QUESTIONS } from './questions.js?v=20261126f';
 
 const KEYS = ['k0', 'k1', 'k2', 'k3', 'k4', 'k5', 'k6', 'k7', 'k8'];
 // จุดที่ต้องไม่โดนครอปเมื่อจอแคบกว่า 2:3 (0 = ซ้ายสุด, 1 = ขวาสุด)
@@ -11,13 +11,13 @@ const FOCUS = [.5, .45, .45, .5, .45, .4, .5, .5, .58];
 // a/b = ภาพหลักต้น/ท้ายฉาก · frames = จำนวนเฟรมของคลิปจริง (0 = ยังใช้ภาพนิ่ง)
 const SCENES = [
   { id: 'hook', a: 0, b: 1, frames: 96 },
-  { id: 'tom', a: 1, b: 2, frames: 0 },
-  { id: 'pain', a: 2, b: 3, frames: 0 },
-  { id: 'why', a: 3, b: 4, frames: 0 },
-  { id: 'product', a: 4, b: 5, frames: 0 },
-  { id: 'story', a: 5, b: 6, frames: 0 },
-  { id: 'ai', a: 6, b: 7, frames: 0 },
-  { id: 'start', a: 7, b: 8, frames: 0 }
+  { id: 'tom', a: 1, b: 2, frames: 80 },
+  { id: 'pain', a: 2, b: 3, frames: 80 },
+  { id: 'why', a: 3, b: 4, frames: 80 },
+  { id: 'product', a: 4, b: 5, frames: 80 },
+  { id: 'story', a: 5, b: 6, frames: 80 },
+  { id: 'ai', a: 6, b: 7, frames: 80 },
+  { id: 'start', a: 7, b: 8, frames: 80 }
 ];
 const API = '/api/welcome';
 const root = document.documentElement;
@@ -242,6 +242,7 @@ document.querySelectorAll('[data-q]').forEach(card => {
     const value = picked();
     if (!value.length) return;
     answers[q.id] = value; store.set('welcome.answers', JSON.stringify(answers));
+    document.dispatchEvent(new Event('welcome:answer'));
     const reply = card.querySelector('.q__reply');
     if (card.dataset.reply) { reply.textContent = card.dataset.reply; reply.hidden = false; }
     post({ kind: 'answer', id, step: q.id, value })
@@ -268,32 +269,65 @@ document.querySelectorAll('.card').forEach(c => io.observe(c));
 const ladderCount = document.querySelector('.card--plan [data-count]');
 if (ladderCount) new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); countUp(ladderCount); } }, { threshold: .4 }).observe(ladderCount);
 
-/* ---------- ฟอร์มฝากชื่อ ---------- */
-if (ref) { document.getElementById('ref-code').textContent = ref; document.getElementById('ref').hidden = false; }
-const form = document.getElementById('lead');
-const msg = document.getElementById('lead-msg');
-const requestId = store.get('welcome.request') || uuid();
-store.set('welcome.request', requestId);
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  const f = new FormData(form);
-  const name = String(f.get('name') || '').trim();
-  const contact = String(f.get('contact') || '').trim();
-  if (!name) { msg.textContent = 'กรอกชื่อที่ให้ทีมเรียกคุณ'; return form.name.focus(); }
-  if (!contact) { msg.textContent = 'กรอกเบอร์มือถือ หรือ LINE ID'; return form.contact.focus(); }
-  if (!form.consent.checked) { msg.textContent = 'กดยินยอมให้ทีมติดต่อกลับก่อนส่ง'; return; }
-  const btn = form.querySelector('button[type=submit]');
-  btn.disabled = true; msg.textContent = 'กำลังส่ง…';
-  try {
-    const r = await post({ kind: 'lead', requestId, name, contact, consent: true, answers, website: String(f.get('website') || '') });
-    const data = await r.json().catch(() => ({}));
-    if (!r.ok || !data.ok) { msg.textContent = data.message || 'ยังส่งไม่ได้ ลองใหม่อีกครั้งนะ'; btn.disabled = false; return; }
-    document.getElementById('done-ref').textContent = data.reference;
-    form.hidden = true; const d = document.getElementById('done'); d.hidden = false; d.classList.add('in');
-    store.set('welcome.request', uuid());
-  } catch {
-    msg.textContent = 'เน็ตหลุด ยังส่งไม่ได้ ลองใหม่อีกครั้งนะ'; btn.disabled = false;
+/* ---------- ท้ายเรื่อง: คำแนะนำจากคำตอบ + ข้อความถึงคนที่ส่งลิงก์ ---------- */
+// ไม่มีฟอร์มให้ทีมทักกลับ: คนที่ส่งลิงก์คือคนที่ดูแลเขา หน้าเลยช่วยร่างข้อความให้ส่งหาคนนั้นเอง
+const label = (qid, oid) => QUESTIONS.find(q => q.id === qid)?.options.find(o => o.id === oid)?.t || '';
+const has = (qid, oid) => (answers[qid] || []).includes(oid);
+function advice() {
+  const tips = [];
+  let head = 'ก้าวแรกของ X-PLORER';
+  if (has('start_with', 'xvisor')) {
+    head = 'คุณพร้อมไปถึง X-VISOR';
+    tips.push('บอกคนที่ส่งลิงก์ว่าอยากสอบ X-VISOR สอบผ่านก่อนสิ้นเดือน ยอดเดือนนั้นคิดตาม Tier');
+  } else if (has('start_with', 'think')) {
+    head = 'เริ่มจากสำรวจให้มั่นใจก่อน';
+    tips.push('ขอให้คนที่ส่งลิงก์พาลองใช้ Band · Scale แล้วดูตัวเลขของคุณเองสักสองสัปดาห์');
+  } else {
+    tips.push('ขอรหัส X-PLORER จากคนที่ส่งลิงก์นี้ให้คุณ แล้วเริ่มขายได้ทันทีที่ 15%');
   }
+  if (has('channel', 'affiliate') || has('channel', 'live') || has('channel', 'shop'))
+    tips.push('คุณขายเป็นอยู่แล้ว สิ่งที่เพิ่มคือระบบที่ทำให้ลูกค้าอยู่กับคุณ ใช้ My Customer กับ XOS ตั้งแต่ลูกค้าคนแรก');
+  else if (has('channel', 'direct'))
+    tips.push('ประสบการณ์ขายตรงของคุณใช้ได้เลย คราวนี้มีตัวเลขสุขภาพของลูกค้าเป็นหลักฐานแทนคำพูด');
+  else
+    tips.push('ให้ผลลัพธ์ของตัวคุณเองเป็นป้ายโฆษณาแรก ใช้กับตัวเองก่อน แล้วเล่าสิ่งที่เปลี่ยน');
+  if (has('reach_back', 'almost_none') || has('reach_back', 'some'))
+    tips.push('ลูกค้าที่ซื้อแล้วต้องทักกลับได้ทุกคน ข้อมูลอยู่ในแอป ความสัมพันธ์จึงอยู่กับคุณ');
+  const ai = answers.ai_help || [];
+  if (ai.includes('content') || ai.includes('clip')) tips.push('เปิดคู่หู X-VISOR ให้ช่วยคิดหัวข้อและเขียนบทคลิปแรกของคุณ');
+  else if (ai.includes('follow') || ai.includes('chat')) tips.push('ให้ XOS เตือนทุกเช้าว่าวันนี้ต้องดูแลใคร');
+  else tips.push('สร้างลิงก์ขายของคุณที่หน้า /share/code แล้วส่งให้คนรอบตัว');
+  return { head, tips: tips.slice(0, 3) };
+}
+function message() {
+  const want = has('start_with', 'xvisor') ? 'อยากสอบเป็น X-VISOR' : has('start_with', 'think') ? 'อยากลองใช้และคุยรายละเอียดก่อน' : 'อยากเริ่มเป็น X-PLORER';
+  const lines = [`สวัสดีครับ/ค่ะ ดูหน้าต้อนรับ X-PLORER ของ CloverX แล้ว ${want}`];
+  const ch = (answers.channel || []).map(o => label('channel', o)).filter(Boolean);
+  if (ch.length) lines.push(`ตอนนี้ขายทาง: ${ch.join(', ')}`);
+  const asked = (answers.asked_about || []).map(o => label('asked_about', o)).filter(Boolean);
+  if (asked.length) lines.push(`คนรอบตัวถามเรื่อง: ${asked.join(', ')}`);
+  if (ref) lines.push(`(รหัสผู้ชวน ${ref})`);
+  lines.push('ช่วยแนะนำขั้นต่อไปหน่อยครับ/ค่ะ');
+  return lines.join('\n');
+}
+const msgEl = document.getElementById('msg');
+const lineBtn = document.getElementById('send-line');
+function renderEnd() {
+  const a = advice();
+  document.getElementById('advice-head').textContent = a.head;
+  document.getElementById('advice-list').innerHTML = a.tips.map(t => `<li>${t}</li>`).join('');
+  const m = message();
+  msgEl.textContent = m;
+  lineBtn.href = 'https://line.me/R/share?text=' + encodeURIComponent(m);
+}
+if (ref) { document.getElementById('ref-code').textContent = ref; document.getElementById('ref').hidden = false; }
+renderEnd();
+document.addEventListener('welcome:answer', renderEnd);
+lineBtn.addEventListener('click', () => post({ kind: 'scene', step: 'message_line' }).catch(() => {}));
+document.getElementById('copy-msg').addEventListener('click', async () => {
+  post({ kind: 'scene', step: 'message_copy' }).catch(() => {});
+  try { await navigator.clipboard.writeText(message()); say('คัดลอกแล้ว ไปวางในแชตได้เลย'); }
+  catch { const r = document.createRange(); r.selectNodeContents(msgEl); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); say('เลือกข้อความแล้ว กดคัดลอกได้เลย'); }
 });
 
 size(); onScroll(); boot();

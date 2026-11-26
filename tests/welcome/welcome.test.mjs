@@ -39,7 +39,7 @@ test('หน้านี้ไม่ขึ้นผลค้นหา มี red
 });
 
 test('เล่าครบตามสคริปต์ และแผนใหม่ครบ', () => {
-  for (const must of ['ลูกค้าคนนั้น', 'ผมทอม ธเนศ', 'บนที่ดินของคนอื่น', 'Reach', 'Read', 'Result', 'RoutineX', 'กลายเป็นคนดูแล', 'AI ดูแลงานที่เหลือ', 'คนนั้นโชคดี',
+  for (const must of ['ธุรกิจสุขภาพ', 'ลูกค้าคนนั้น', 'ผมทอม ธเนศ', 'บนที่ดินของคนอื่น', 'Health Tech', 'วัดได้ด้วยตัวเลข', 'Reach', 'Read', 'Result', 'RoutineX', 'ป้ายโฆษณา', 'Attraction Marketing', 'กลายเป็นคนดูแล', 'แก้ให้หมดแล้ว', 'ระบบดูแลงานที่เหลือ', 'คนนั้นโชคดี',
     'X-PLORER', 'ใช้สินค้าเองครบ 14 วันก่อน', 'ซื้อสินค้าก่อน', 'ก่อนสิ้นเดือน', 'X-VISOR', 'X-LEAD', 'ไปหา X-VISOR ที่ใกล้คุณที่สุด'])
     assert.ok(text.includes(must), must);
   assert.match(html, /data-count="15"/);
@@ -52,11 +52,12 @@ test('ไม่มีข้อความเสี่ยงจากสคร�
   assert.ok(text.includes('ผลลัพธ์ของแต่ละบุคคลไม่เหมือนกัน'));
 });
 
-test('ฟอร์มฝากชื่อต้องขอความยินยอม มีกับดักบอท และลิงก์นโยบายความเป็นส่วนตัว', () => {
-  assert.match(html, /name="consent" required/);
-  assert.match(html, /class="hp"[^>]*aria-hidden="true"/);
-  assert.match(html, /href="\/privacy\/"/);
-  assert.match(js, /consent: true/);
+test('ท้ายเรื่องไม่มีฟอร์มให้ทีมทักกลับ ไม่มีปุ่มโทร แต่มีคำแนะนำและข้อความส่งหาคนที่ส่งลิงก์', () => {
+  assert.ok(!/<form|tel:|ทีมจะทักกลับ|ส่งให้ทีมทักกลับ/.test(html));
+  assert.match(html, /id="advice-list"/);
+  assert.match(html, /href="https:\/\/line\.me\/R\/share\?text="/);
+  assert.match(js, /encodeURIComponent\(m\)/);
+  assert.match(js, /message_line/);
 });
 
 test('ฉากที่ตั้ง frames ไว้ ต้องมีเฟรม webp ครบทุกเฟรม', () => {
