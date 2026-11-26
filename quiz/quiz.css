@@ -126,6 +126,16 @@ button,input,select,textarea{font:inherit}textarea{resize:vertical}textarea:focu
 @media(max-width:760px){.question-import{padding:16px 12px;margin-top:22px}.import-heading h3{font-size:15px}.import-heading .eyebrow{font-size:6px}.import-columns{gap:4px}.import-columns>span{font-size:7px;padding:4px 6px}.import-actions{gap:11px}.import-actions .secondary{font-size:9px;padding:8px 11px}.import-actions>a{font-size:8px}.import-settings>label{min-width:120px}.import-settings{gap:9px}.import-detection,.import-first-row{font-size:8px}.import-review .primary{font-size:10px}}
 .import-cancel{font:inherit;font-size:9px;border:0;background:transparent;padding:5px 0;color:#9c7656;text-decoration:underline;cursor:pointer}
 
+/* Big rooms (up to 200): denser name cards so the host screen shows many more names at once */
+.roster.crowd{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;max-height:min(62vh,560px)}
+.roster.crowd .player-chip{min-height:0;padding:5px 8px;gap:7px;font-size:13px;border-radius:10px}
+.roster.crowd .player-chip img{width:30px;height:30px;border-width:1px}
+.roster.crowd .player-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.roster.packed{grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:5px}
+.roster.packed .player-chip{font-size:12px;padding:4px 7px}
+.roster.packed .player-chip img{width:24px;height:24px}
+@media(max-width:760px){.roster.crowd,.roster.packed{grid-template-columns:repeat(2,minmax(0,1fr));max-height:50vh}}
+
 /* Round face profiles: every player picture is a circle cropped to the animal's face, shown larger. */
 .avatar-face,.avatar-current,.avatar-peek{aspect-ratio:1;object-fit:cover;border-radius:50%;background:#f4efd9}
 .player-chip{gap:12px}

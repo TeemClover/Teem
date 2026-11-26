@@ -5,7 +5,7 @@ export const SCHEMA = [
  title TEXT NOT NULL, questions JSONB NOT NULL, phase TEXT NOT NULL DEFAULT 'lobby',
  question_index INT NOT NULL DEFAULT -1, version INT NOT NULL DEFAULT 0,
  starts_at BIGINT, ends_at BIGINT, expires_at BIGINT NOT NULL,
- player_count INT NOT NULL DEFAULT 0 CHECK(player_count BETWEEN 0 AND 100)
+ player_count INT NOT NULL DEFAULT 0 CHECK(player_count BETWEEN 0 AND 200)
 )`,
 `CREATE TABLE IF NOT EXISTS mc_quiz_players (
  room_code TEXT NOT NULL REFERENCES mc_quiz_rooms(code), id TEXT NOT NULL,
@@ -20,9 +20,17 @@ export const SCHEMA = [
  PRIMARY KEY(room_code,player_id,question_index),
  FOREIGN KEY(room_code,player_id) REFERENCES mc_quiz_players(room_code,id)
 )`,
+// Rooms created before the 200-player limit carry a CHECK of 0..100; widen it once (safe to run again).
+`DO $$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_constraint WHERE conrelid='mc_quiz_rooms'::regclass AND conname='mc_quiz_rooms_player_count_check'
+   AND pg_get_constraintdef(oid) NOT LIKE '%200%') THEN
+  ALTER TABLE mc_quiz_rooms DROP CONSTRAINT mc_quiz_rooms_player_count_check;
+  ALTER TABLE mc_quiz_rooms ADD CONSTRAINT mc_quiz_rooms_player_count_check CHECK(player_count BETWEEN 0 AND 200);
+ END IF;
+END $$`,
 `CREATE INDEX IF NOT EXISTS mc_quiz_answers_round ON mc_quiz_answers(room_code,question_index)`,
 `CREATE TABLE IF NOT EXISTS mc_quiz_create_limits (bucket TEXT PRIMARY KEY, hits INT NOT NULL DEFAULT 1)`,
-`CREATE OR REPLACE FUNCTION mc_quiz_command_v1(p_code TEXT,p_hash TEXT,p_action TEXT,p JSONB)
+`CREATE OR REPLACE FUNCTION mc_quiz_command_v2(p_code TEXT,p_hash TEXT,p_action TEXT,p JSONB)
 RETURNS JSONB LANGUAGE plpgsql AS $$
 DECLARE r mc_quiz_rooms%ROWTYPE; u mc_quiz_players%ROWTYPE; a mc_quiz_answers%ROWTYPE;
  t BIGINT; e INT; pts INT; yes BOOLEAN; idx INT;
@@ -40,7 +48,7 @@ BEGIN
  IF p_action='join' THEN
   IF u.id IS NOT NULL THEN RETURN jsonb_build_object('playerId',u.id); END IF;
   IF r.phase='finished' THEN RAISE EXCEPTION 'ROOM_FINISHED'; END IF;
-  IF r.player_count>=100 THEN RAISE EXCEPTION 'ROOM_FULL'; END IF;
+  IF r.player_count>=200 THEN RAISE EXCEPTION 'ROOM_FULL'; END IF;
   IF EXISTS(SELECT 1 FROM mc_quiz_players WHERE room_code=p_code AND name_key=p->>'nameKey') THEN RAISE EXCEPTION 'NAME_TAKEN'; END IF;
   INSERT INTO mc_quiz_players(room_code,id,token_hash,name,name_key,avatar,joined_at)
    VALUES(p_code,p->>'playerId',p_hash,p->>'name',p->>'nameKey',p->>'avatar',t);
