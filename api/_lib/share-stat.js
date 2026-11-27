@@ -72,8 +72,8 @@ export async function ensureShareStatSchema(sql) {
   return schemas.get(sql);
 }
 
-// ถามใหม่เมื่อไหร่: ชื่อจริง 7 วัน · รหัสผิด 6 ชั่วโมง (เผื่อเพิ่งสมัคร) · ถามไม่สำเร็จ 10 นาที
-const FRESH_SECONDS = { valid: 7 * 86400, not_found: 6 * 3600, error: 600 };
+// ถามใหม่เมื่อไหร่: ชื่อจริง 7 วัน · รหัสผิดไม่ถามซ้ำ (คนใส่มั่ว) · ถามไม่สำเร็จ 10 นาที
+const FRESH_SECONDS = { valid: 7 * 86400, not_found: Infinity, error: 600 };
 const LOOKUP_BUDGET_MS = 5000;
 const LOOKUP_MAX = 40;
 const LOOKUP_PARALLEL = 6;

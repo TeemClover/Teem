@@ -158,7 +158,8 @@ test('ถามชื่อเจ้าของรหัสจาก buy.xircle
 
 test('หน้าสถิติจำชื่อรหัสไว้ ถามเฉพาะรหัสใหม่ และรหัสผิดขึ้นว่า รหัสผิด', async () => {
   const { createShareStatStore } = await import(new URL('api/_lib/share-stat.js', root));
-  const saved = new Map([['OLD1', { ref: 'OLD1', status: 'valid', first_name: 'เก่า', last_name: 'ชื่อ', role: 'X_VISOR', age: 60 }]]);
+  const saved = new Map([['OLD1', { ref: 'OLD1', status: 'valid', first_name: 'เก่า', last_name: 'ชื่อ', role: 'X_VISOR', age: 60 }],
+    ['OLDBAD', { ref: 'OLDBAD', status: 'not_found', first_name: '', last_name: '', role: '', age: 400 * 86400 }]]);
   const sql = { query: async (q, p) => {
     if (/^SELECT ref,status/.test(q)) return p[0].map(code => saved.get(code)).filter(Boolean);
     if (/^INSERT INTO mc_share_ref_names/.test(q)) { saved.set(p[0], { ref: p[0], status: p[1], first_name: p[2], last_name: p[3], role: p[4], age: 0 }); return []; }
@@ -166,11 +167,12 @@ test('หน้าสถิติจำชื่อรหัสไว้ ถา�
   } };
   const asked = [];
   const lookup = async code => { asked.push(code); return code === 'BAD9' ? { status: 'not_found' } : { status: 'valid', first_name: 'ใหม่', last_name: '', role: 'X_LEAD' }; };
-  const names = await createShareStatStore(sql, { lookup }).names(['old1', 'NEW1', 'BAD9', 'NEW1', '']);
+  const names = await createShareStatStore(sql, { lookup }).names(['old1', 'NEW1', 'BAD9', 'NEW1', '', 'OLDBAD']);
   assert.deepEqual(asked.sort(), ['BAD9', 'NEW1']);
   assert.deepEqual(names.OLD1, { status: 'valid', name: 'เก่า ชื่อ', role: 'X_VISOR' });
   assert.deepEqual(names.NEW1, { status: 'valid', name: 'ใหม่', role: 'X_LEAD' });
   assert.equal(names.BAD9.status, 'not_found');
+  assert.equal(names.OLDBAD.status, 'not_found'); // รหัสผิดไม่ถามซ้ำ
   const js = await read('share/stat/stat.js');
   assert.match(js, /รหัสผิด/);
 });
