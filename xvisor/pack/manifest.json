@@ -1,7 +1,7 @@
 {
   "name": "xvisor",
   "title": "ชุดสกิล X-VISOR",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "updated": "2026-11-25",
   "repo": "https://github.com/TeemClover/xvisor",
   "rawBase": "https://raw.githubusercontent.com/TeemClover/xvisor/main/",
