@@ -2,6 +2,7 @@
    เก็บแค่เหตุการณ์ (ชนิด หน้า ปุ่ม รหัส เครื่องแบบย่อ) ไม่เก็บ IP ไม่เก็บข้อมูลส่วนตัว
    รหัสเครื่องถูก hash ก่อนเก็บ ใช้นับจำนวนคนไม่ซ้ำเท่านั้น */
 import { createHash } from 'node:crypto';
+import { lookupReferral } from './xircle-referral.js';
 
 export const KINDS = ['view', 'click', 'gen'];
 export const PAGES = ['share', 'code', 'slide', 'routinex', 'xircle', 'review'];
@@ -62,12 +63,55 @@ export async function ensureShareStatSchema(sql) {
     )`);
     await sql.query('CREATE INDEX IF NOT EXISTS mc_share_events_at ON mc_share_events(at)');
     await sql.query('CREATE TABLE IF NOT EXISTS mc_share_stat_limits (bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL DEFAULT 1, expires_at TIMESTAMPTZ NOT NULL)');
+    // ชื่อเจ้าของรหัส ถามจาก buy.xircle.health แล้วจำไว้ (ไม่ต้องถามซ้ำทุกครั้งที่เปิดหน้าสถิติ)
+    await sql.query(`CREATE TABLE IF NOT EXISTS mc_share_ref_names (
+      ref TEXT PRIMARY KEY, status TEXT NOT NULL, first_name TEXT NOT NULL DEFAULT '', last_name TEXT NOT NULL DEFAULT '',
+      role TEXT NOT NULL DEFAULT '', checked_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    )`);
   })().catch(error => { schemas.delete(sql); throw error; }));
   return schemas.get(sql);
 }
 
-export function createShareStatStore(sql) {
+// ถามใหม่เมื่อไหร่: ชื่อจริง 7 วัน · รหัสผิดไม่ถามซ้ำ (คนใส่มั่ว) · ถามไม่สำเร็จ 10 นาที
+const FRESH_SECONDS = { valid: 7 * 86400, not_found: Infinity, error: 600 };
+const LOOKUP_BUDGET_MS = 5000;
+const LOOKUP_MAX = 40;
+const LOOKUP_PARALLEL = 6;
+
+export function createShareStatStore(sql, { lookup = lookupReferral, now = () => Date.now() } = {}) {
+  /* ชื่อของรหัสในรายงาน: ใช้ที่จำไว้ ถ้ายังไม่มีหรือเก่าแล้วค่อยถามทีละรหัส มีเวลาจำกัด ที่เหลือถามรอบหน้า */
+  async function names(codes) {
+    const list = [...new Set(codes.map(cleanRef).filter(Boolean))];
+    if (!list.length) return {};
+    const rows = await sql.query(`SELECT ref,status,first_name,last_name,role,
+        extract(epoch FROM now()-checked_at)::int age FROM mc_share_ref_names WHERE ref = ANY($1::text[])`, [list]);
+    const known = Object.fromEntries(rows.map(r => [r.ref, r]));
+    const stale = list.filter(code => !known[code] || Number(known[code].age) > (FRESH_SECONDS[known[code].status] ?? 0)).slice(0, LOOKUP_MAX);
+    const started = now();
+    let next = 0;
+    const worker = async () => {
+      while (next < stale.length && now() - started < LOOKUP_BUDGET_MS) {
+        const code = stale[next++];
+        const found = await lookup(code);
+        if (found.status === 'error' && known[code] && known[code].status !== 'error') continue; // ชื่อเดิมยังใช้ได้
+        const row = { ref: code, status: found.status, first_name: found.first_name || '', last_name: found.last_name || '', role: found.role || '' };
+        await sql.query(`INSERT INTO mc_share_ref_names(ref,status,first_name,last_name,role,checked_at) VALUES($1,$2,$3,$4,$5,now())
+          ON CONFLICT(ref) DO UPDATE SET status=$2,first_name=$3,last_name=$4,role=$5,checked_at=now()`,
+        [row.ref, row.status, row.first_name, row.last_name, row.role]);
+        known[code] = row;
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(LOOKUP_PARALLEL, stale.length) }, worker));
+    const out = {};
+    for (const code of list) {
+      const r = known[code];
+      out[code] = r ? { status: r.status, name: `${r.first_name} ${r.last_name}`.trim(), role: r.role } : { status: 'pending', name: '', role: '' };
+    }
+    return out;
+  }
+
   return {
+    names,
     async accept(req, event) {
       // ถังกันยิงรัว หมุนทุกชั่วโมง เก็บแค่ hash ของ IP ไว้ 2 ชั่วโมง ไม่อยู่ในตารางสถิติ
       const hour = new Date().toISOString().slice(0, 13);
@@ -129,7 +173,11 @@ export function createShareStatStore(sql) {
       };
       const entries = await Promise.all(Object.entries(queries).map(async ([key, query]) => [key, await sql.query(query, [days])]));
       const result = Object.fromEntries(entries);
-      return { ...result, summary: result.summary[0], coverage: result.coverage[0], days, timezone: 'Asia/Bangkok', generatedAt: new Date().toISOString() };
+      let refNames = {};
+      try { refNames = await names([...result.refs.map(r => r.ref), ...result.gens.map(r => r.code)]); } catch (error) {
+        console.error(JSON.stringify({ route: 'share-stat', event: 'names-error', code: error?.code || error?.name || 'ERROR' }));
+      }
+      return { ...result, names: refNames, summary: result.summary[0], coverage: result.coverage[0], days, timezone: 'Asia/Bangkok', generatedAt: new Date().toISOString() };
     },
   };
 }

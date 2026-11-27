@@ -138,3 +138,41 @@ test('API เก็บสถิติรับเฉพาะเหตุกา�
   assert.equal(sameOrigin(req({ origin: 'https://evil.example', 'sec-fetch-site': 'cross-site' })), false);
   assert.equal(sameOrigin(req({})), false);
 });
+
+test('ถามชื่อเจ้าของรหัสจาก buy.xircle.health: มีชื่อ · รหัสผิด · ถามไม่สำเร็จ', async () => {
+  const { lookupReferral, REFERRAL_URL } = await import(new URL('api/_lib/xircle-referral.js', root));
+  const reply = (body, ok = true) => async (url, init) => {
+    assert.equal(url, REFERRAL_URL);
+    assert.equal(init.method, 'POST');
+    assert.deepEqual(JSON.parse(init.body), { code: 'O5F3LN' });
+    return { ok, json: async () => body };
+  };
+  assert.deepEqual(await lookupReferral('O5F3LN', { fetchImpl: reply({ valid: true, status: 'VALID', referralOwner: { firstName: 'นรินทร์', lastName: 'ลีลาภรณ์', role: 'X_LEAD' } }) }),
+    { status: 'valid', first_name: 'นรินทร์', last_name: 'ลีลาภรณ์', role: 'X_LEAD' });
+  assert.deepEqual(await lookupReferral('O5F3LN', { fetchImpl: reply({ valid: false, status: 'NOT_FOUND', error: 'referralCodeNotFound', referralOwner: null }) }), { status: 'not_found' });
+  assert.deepEqual(await lookupReferral('O5F3LN', { fetchImpl: reply({}, false) }), { status: 'error' });
+  assert.deepEqual(await lookupReferral('O5F3LN', { fetchImpl: async () => { throw new Error('down'); } }), { status: 'error' });
+  const slow = (_url, init) => new Promise((_ok, fail) => init.signal.addEventListener('abort', () => fail(new Error('abort'))));
+  assert.deepEqual(await lookupReferral('O5F3LN', { fetchImpl: slow, timeoutMs: 20 }), { status: 'error' });
+});
+
+test('หน้าสถิติจำชื่อรหัสไว้ ถามเฉพาะรหัสใหม่ และรหัสผิดขึ้นว่า รหัสผิด', async () => {
+  const { createShareStatStore } = await import(new URL('api/_lib/share-stat.js', root));
+  const saved = new Map([['OLD1', { ref: 'OLD1', status: 'valid', first_name: 'เก่า', last_name: 'ชื่อ', role: 'X_VISOR', age: 60 }],
+    ['OLDBAD', { ref: 'OLDBAD', status: 'not_found', first_name: '', last_name: '', role: '', age: 400 * 86400 }]]);
+  const sql = { query: async (q, p) => {
+    if (/^SELECT ref,status/.test(q)) return p[0].map(code => saved.get(code)).filter(Boolean);
+    if (/^INSERT INTO mc_share_ref_names/.test(q)) { saved.set(p[0], { ref: p[0], status: p[1], first_name: p[2], last_name: p[3], role: p[4], age: 0 }); return []; }
+    throw new Error('unexpected ' + q);
+  } };
+  const asked = [];
+  const lookup = async code => { asked.push(code); return code === 'BAD9' ? { status: 'not_found' } : { status: 'valid', first_name: 'ใหม่', last_name: '', role: 'X_LEAD' }; };
+  const names = await createShareStatStore(sql, { lookup }).names(['old1', 'NEW1', 'BAD9', 'NEW1', '', 'OLDBAD']);
+  assert.deepEqual(asked.sort(), ['BAD9', 'NEW1']);
+  assert.deepEqual(names.OLD1, { status: 'valid', name: 'เก่า ชื่อ', role: 'X_VISOR' });
+  assert.deepEqual(names.NEW1, { status: 'valid', name: 'ใหม่', role: 'X_LEAD' });
+  assert.equal(names.BAD9.status, 'not_found');
+  assert.equal(names.OLDBAD.status, 'not_found'); // รหัสผิดไม่ถามซ้ำ
+  const js = await read('share/stat/stat.js');
+  assert.match(js, /รหัสผิด/);
+});

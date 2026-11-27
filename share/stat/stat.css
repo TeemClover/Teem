@@ -39,6 +39,12 @@ th{padding:8px 10px;text-align:right;font-size:12px;font-weight:600;color:var(--
 td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid #0e1b3d0d}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fffffff2}
 td:first-child{font-family:var(--display);font-weight:800;letter-spacing:.04em;color:var(--navy)}
+td:first-child .who{display:grid;gap:2px}
+.who__code{display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;letter-spacing:.04em;color:var(--navy)}
+.who__name{font-family:var(--thai);font-weight:600;font-size:13px;letter-spacing:0;color:var(--ink)}
+.who__name.is-wait{font-weight:400;color:var(--ink2);font-size:12.5px}
+.who__role{flex:none;padding:1px 6px;border-radius:99px;background:#4388fd1a;color:var(--blue3);font-family:var(--display);font-size:10.5px;font-weight:700;letter-spacing:.04em}
+.who__bad{justify-self:start;padding:2px 9px;border-radius:99px;background:#fde8ea;color:#c62f3b;font-family:var(--thai);font-size:12.5px;font-weight:700;letter-spacing:0}
 td.is-none{font-family:var(--thai);font-weight:600;letter-spacing:0;color:var(--ink2)}
 td.buy{color:var(--blue3);font-weight:700}
 td.muted{color:var(--ink2);font-size:12.5px}
