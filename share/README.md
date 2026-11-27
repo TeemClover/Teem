@@ -28,6 +28,7 @@
 
 - หน้า `share/stat/` ล็อกอินด้วยรหัสหลังบ้านเดียวกับ `/shelf/admin/` (`/api/backoffice-auth`) แล้วอ่าน `/api/share-stat?days=1|7|30|90|0`
 - เก็บที่ `api/share-stat.js` + `api/_lib/share-stat.js` ตาราง `mc_share_events` (Neon) สร้างเองตอนเรียกครั้งแรก เก็บ 400 วัน
+- ชื่อเจ้าของรหัส (27 พ.ย.): ถาม `POST https://buy.xircle.health/api/register/referral {code}` ทีละรหัส (ช่องเดียวกับหน้าสมัคร buy.xircle.health/register ไม่มีแบบดึงทั้งหมด) ใน `api/_lib/xircle-referral.js` จำไว้ในตาราง `mc_share_ref_names` (ชื่อจริงถามใหม่ทุก 7 วัน · รหัสผิด 6 ชั่วโมง · ถามไม่สำเร็จ 10 นาที) แต่ละครั้งที่เปิดหน้าถามได้ไม่เกิน 40 รหัส / 5 วินาที ที่เหลือหน้าโหลดซ้ำเอง · หาไม่เจอขึ้นป้าย "รหัสผิด"
   ชนิด `view` (เปิดหน้า) · `click` (กดปุ่ม) · `gen` (กดสร้าง Link) · หน้า share / code / routinex / xircle / review
   ไม่เก็บ IP ไม่เก็บข้อมูลส่วนตัว รหัสเครื่องสุ่มใน localStorage ถูก hash ก่อนเก็บ ใช้นับคนไม่ซ้ำเท่านั้น
 - 4 ปุ่มในหน้าแชร์เปิดแท็บใหม่ ปุ่ม รูทีน เซอเคิล รีวิว พก `?ref=CODE` ไปด้วย (ไม่มีรหัสใส่ `?from=share`)

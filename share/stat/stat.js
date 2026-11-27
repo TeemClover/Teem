@@ -75,15 +75,37 @@
     }
     rows.forEach(function (r) {
       var tr = el('tr');
-      cells(r).forEach(function (c) { tr.appendChild(el('td', c[1] || '', c[0])); });
+      cells(r).forEach(function (c) {
+        if (c[0] && c[0].nodeType) { var cell = el('td', c[1] || ''); cell.appendChild(c[0]); tr.appendChild(cell); }
+        else tr.appendChild(el('td', c[1] || '', c[0]));
+      });
       body.appendChild(tr);
     });
+  }
+
+  /* รหัส + ชื่อเจ้าของรหัสจากหน้าสมัคร buy.xircle.health · หาไม่เจอ = รหัสผิด */
+  var ROLES = { X_LEAD: 'X-LEAD', X_VISOR: 'X-VISOR', X_GEN: 'X-GEN', X_PLORER: 'X-PLORER' };
+  var names = {};
+  function who(code) {
+    var box = el('span', 'who');
+    var top = el('span', 'who__code', code);
+    box.appendChild(top);
+    var info = names[code];
+    if (!info || info.status === 'pending') box.appendChild(el('span', 'who__name is-wait', 'กำลังตรวจรหัส…'));
+    else if (info.status === 'not_found') box.appendChild(el('span', 'who__bad', 'รหัสผิด'));
+    else if (info.status === 'error') box.appendChild(el('span', 'who__name is-wait', 'ตรวจรหัสไม่ได้ ลองใหม่ภายหลัง'));
+    else {
+      if (info.role) top.appendChild(el('small', 'who__role', ROLES[info.role] || info.role.replace(/_/g, '-')));
+      box.appendChild(el('span', 'who__name', info.name || (code === 'CLOVERX' ? 'CloverX (รหัสกลาง)' : 'รหัสถูก ไม่มีชื่อ')));
+    }
+    return box;
   }
 
   function short(at) { return at ? at.slice(5).replace('-', '/') : ''; }
 
   function render(d) {
     var s = d.summary || {};
+    names = d.names || {};
     $('k-views').textContent = n(s.share_views);
     $('k-visitors').textContent = n(s.share_visitors) + ' คน';
     $('k-buy').textContent = n(s.buy_clicks);
@@ -100,12 +122,12 @@
 
     table('refs', d.refs || [], function (r) {
       return [
-        [r.ref || 'ไม่มีรหัส (CLOVERX)', r.ref ? '' : 'is-none'], [n(r.views)], [n(r.visitors)],
+        r.ref ? [who(r.ref)] : ['ไม่มีรหัส (CLOVERX)', 'is-none'], [n(r.views)], [n(r.visitors)],
         [n(r.routinex)], [n(r.xircle)], [n(r.review)], [n(r.buy), 'buy'], [short(r.last_at), 'muted'],
       ];
     }, 8);
     table('gens', d.gens || [], function (r) {
-      return [[r.code], [n(r.gens)], [n(r.devices)], [short(r.first_at), 'muted'], [short(r.last_at), 'muted']];
+      return [[who(r.code)], [n(r.gens)], [n(r.devices)], [short(r.first_at), 'muted'], [short(r.last_at), 'muted']];
     }, 5);
     table('daily', d.daily || [], function (r) {
       return [[r.day.slice(8) + '/' + r.day.slice(5, 7) + '/' + r.day.slice(2, 4)], [n(r.views)], [n(r.clicks)], [n(r.buy), 'buy'], [n(r.gens)]];
@@ -117,6 +139,7 @@
     $('foot').textContent = 'เวลาไทย · เริ่มเก็บ ' + (first || '-') + ' · อัปเดต ' + new Date(d.generatedAt || Date.now()).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
   }
 
+  var retry = 0, tries = 0;
   function load() {
     status('กำลังโหลด…');
     return request('/api/share-stat?days=' + days).then(function (data) {
@@ -125,6 +148,10 @@
       $('dash').hidden = false;
       status('');
       render(data);
+      /* รหัสใหม่หลายตัวถามชื่อไม่ทันในรอบเดียว โหลดซ้ำให้เองอีกครั้ง */
+      var waiting = Object.keys(data.names || {}).some(function (k) { return data.names[k].status === 'pending'; });
+      clearTimeout(retry);
+      if (waiting && tries < 5) { tries++; retry = setTimeout(load, 1500); } else if (!waiting) tries = 0;
     }, function (err) {
       if (err.status === 401) { showLogin(); return; }
       status('โหลดไม่สำเร็จ (' + err.code + ') ลองใหม่อีกครั้ง', true);
