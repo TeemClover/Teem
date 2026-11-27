@@ -75,7 +75,7 @@ export async function ensureShareStatSchema(sql) {
 // ถามใหม่เมื่อไหร่: ชื่อจริง 7 วัน · รหัสผิดไม่ถามซ้ำ (คนใส่มั่ว) · ถามไม่สำเร็จ 10 นาที
 const FRESH_SECONDS = { valid: 7 * 86400, not_found: Infinity, error: 600 };
 const LOOKUP_BUDGET_MS = 5000;
-const LOOKUP_MAX = 40;
+const LOOKUP_MAX = 60;
 const LOOKUP_PARALLEL = 6;
 
 export function createShareStatStore(sql, { lookup = lookupReferral, now = () => Date.now() } = {}) {
@@ -153,11 +153,11 @@ export function createShareStatStore(sql, { lookup = lookupReferral, now = () =>
             count(*) FILTER(WHERE kind='view' AND page IN ('routinex','xircle','review'))::int dest_views,
             to_char(max(at) AT TIME ZONE 'Asia/Bangkok','YYYY-MM-DD HH24:MI') last_at
           FROM mc_share_events WHERE kind<>'gen' AND page NOT IN ('code','slide') AND ${filter}
-          GROUP BY ref ORDER BY views DESC, buy DESC, ref LIMIT 300`,
+          GROUP BY ref ORDER BY views DESC, buy DESC, ref LIMIT 3000`,
         gens: `SELECT ref code,count(*)::int gens,count(DISTINCT visitor) FILTER(WHERE visitor<>'')::int devices,
             to_char(min(at) AT TIME ZONE 'Asia/Bangkok','YYYY-MM-DD HH24:MI') first_at,
             to_char(max(at) AT TIME ZONE 'Asia/Bangkok','YYYY-MM-DD HH24:MI') last_at
-          FROM mc_share_events WHERE kind='gen' AND ${filter} GROUP BY ref ORDER BY gens DESC, last_at DESC LIMIT 300`,
+          FROM mc_share_events WHERE kind='gen' AND ${filter} GROUP BY ref ORDER BY gens DESC, last_at DESC LIMIT 3000`,
         clicks: `SELECT page,target,count(*)::int clicks,count(DISTINCT visitor) FILTER(WHERE visitor<>'')::int visitors
           FROM mc_share_events WHERE kind='click' AND ${filter} GROUP BY page,target ORDER BY clicks DESC`,
         pages: `SELECT page,count(*)::int views,count(DISTINCT visitor) FILTER(WHERE visitor<>'')::int visitors
@@ -169,6 +169,13 @@ export function createShareStatStore(sql, { lookup = lookupReferral, now = () =>
             count(*) FILTER(WHERE kind='click' AND target='buy')::int buy,
             count(*) FILTER(WHERE kind='gen')::int gens
           FROM mc_share_events WHERE ${filter} GROUP BY day ORDER BY day DESC LIMIT 120`,
+        hourly: `SELECT to_char(at AT TIME ZONE 'Asia/Bangkok','YYYY-MM-DD') AS day,
+            extract(hour FROM at AT TIME ZONE 'Asia/Bangkok')::int AS hour,
+            count(*) FILTER(WHERE ${shareView})::int views,
+            count(*) FILTER(WHERE kind='click' AND page='share')::int clicks,
+            count(*) FILTER(WHERE kind='click' AND target='buy')::int buy,
+            count(*) FILTER(WHERE kind='gen')::int gens
+          FROM mc_share_events WHERE ${filter} GROUP BY day,hour ORDER BY day,hour LIMIT 12000`,
         coverage: `SELECT to_char(min(at) AT TIME ZONE 'Asia/Bangkok','YYYY-MM-DD HH24:MI') first_at FROM mc_share_events WHERE $1::int>=0`,
       };
       const entries = await Promise.all(Object.entries(queries).map(async ([key, query]) => [key, await sql.query(query, [days])]));

@@ -8,8 +8,8 @@
 <link rel="icon" href="/favicon.ico">
 <meta name="theme-color" content="#f6f9ff">
 <link rel="stylesheet" href="/share/share.css?v=20261126d">
-<link rel="stylesheet" href="/share/stat/stat.css?v=20261127">
-<script defer src="/share/stat/stat.js?v=20261127"></script>
+<link rel="stylesheet" href="/share/stat/stat.css?v=20261127b">
+<script defer src="/share/stat/stat.js?v=20261127b"></script>
 </head>
 <body class="stat">
 <div class="sky" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -46,6 +46,29 @@
       <article class="kpi"><p>รหัสที่มีคนเปิด</p><b id="k-refs">0</b><span id="k-dest">0 เปิดหน้าปลายทาง</span></article>
     </section>
 
+    <section class="card block trend">
+      <div class="trend__head">
+        <h2 id="trend-title">การแชร์รายวัน</h2>
+        <div class="seg" id="trend-view" role="group" aria-label="ดูแบบ"><button type="button" data-view="day" aria-pressed="true">รายวัน</button><button type="button" data-view="hour" aria-pressed="false">ช่วงเวลา</button></div>
+      </div>
+      <div class="chips" id="trend-metric" role="group" aria-label="ตัวเลขที่ดู">
+        <button class="chip" type="button" data-metric="views" aria-pressed="true">เปิดหน้าแชร์</button>
+        <button class="chip" type="button" data-metric="clicks" aria-pressed="false">กดเมนู</button>
+        <button class="chip" type="button" data-metric="buy" aria-pressed="false">กดสั่งซื้อ</button>
+        <button class="chip" type="button" data-metric="gens" aria-pressed="false">สร้างลิงก์</button>
+      </div>
+      <p class="trend__note" id="trend-note"></p>
+      <div class="chart" id="chart" role="img"></div>
+      <p class="trend__hint" id="trend-hint">แตะแท่งของวันไหน เพื่อดูว่าวันนั้นคนแชร์ช่วงกี่โมง</p>
+      <details class="trend__table">
+        <summary>ดูเป็นตาราง</summary>
+        <div class="scroll"><table id="daily">
+          <thead><tr><th>วันที่</th><th>เปิด</th><th>กดเมนู</th><th>สั่งซื้อ</th><th>สร้างลิงก์</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </details>
+    </section>
+
     <section class="card block">
       <h2>กดเมนูไหน</h2>
       <div class="bars" id="menu"></div>
@@ -53,27 +76,30 @@
 
     <section class="card block">
       <h2>เข้าผ่านรหัสไหน</h2>
+      <div class="tools" data-for="refs">
+        <button class="chip chip--bad" type="button" data-hide-bad aria-pressed="false">ซ่อนรหัสผิด <b data-bad-count>0</b></button>
+        <div class="size" role="group" aria-label="แสดงกี่แถว"><span>แสดง</span><button type="button" data-size="10">10</button><button type="button" data-size="25">25</button><button type="button" data-size="50">50</button><button type="button" data-size="100">100</button></div>
+      </div>
       <div class="scroll"><table id="refs">
         <thead><tr><th>รหัส · ชื่อ</th><th>เปิด</th><th>คน</th><th>รูทีน</th><th>เซอเคิล</th><th>รีวิว</th><th>สั่งซื้อ</th><th>ล่าสุด</th></tr></thead>
         <tbody></tbody>
       </table></div>
+      <nav class="pager" data-pager="refs" aria-label="เลื่อนหน้า"><button type="button" data-step="-1" aria-label="หน้าก่อน">‹</button><span data-page-label>1 / 1</span><button type="button" data-step="1" aria-label="หน้าถัดไป">›</button></nav>
     </section>
 
     <section class="card block">
       <h2>สร้างลิงก์รหัสไหน</h2>
+      <div class="tools" data-for="gens">
+        <button class="chip chip--bad" type="button" data-hide-bad aria-pressed="false">ซ่อนรหัสผิด <b data-bad-count>0</b></button>
+        <div class="size" role="group" aria-label="แสดงกี่แถว"><span>แสดง</span><button type="button" data-size="10">10</button><button type="button" data-size="25">25</button><button type="button" data-size="50">50</button><button type="button" data-size="100">100</button></div>
+      </div>
       <div class="scroll"><table id="gens">
         <thead><tr><th>รหัส · ชื่อ</th><th>ครั้ง</th><th>เครื่อง</th><th>ครั้งแรก</th><th>ล่าสุด</th></tr></thead>
         <tbody></tbody>
       </table></div>
+      <nav class="pager" data-pager="gens" aria-label="เลื่อนหน้า"><button type="button" data-step="-1" aria-label="หน้าก่อน">‹</button><span data-page-label>1 / 1</span><button type="button" data-step="1" aria-label="หน้าถัดไป">›</button></nav>
     </section>
 
-    <section class="card block">
-      <h2>รายวัน</h2>
-      <div class="scroll"><table id="daily">
-        <thead><tr><th>วันที่</th><th>เปิด</th><th>กดเมนู</th><th>สั่งซื้อ</th><th>สร้างลิงก์</th></tr></thead>
-        <tbody></tbody>
-      </table></div>
-    </section>
 
     <div class="pair">
       <section class="card block">
