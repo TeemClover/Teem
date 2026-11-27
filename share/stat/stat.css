@@ -57,3 +57,52 @@ tr:last-child td{border-bottom:0}
 .foot-actions{margin:0}
 .foot-actions .btn{display:inline-flex;min-height:40px;padding:6px 14px}
 @media (prefers-reduced-motion:reduce){.bar__fill{animation:none}}
+
+/* ตาราง: ปุ่มซ่อนรหัสผิด + แสดงกี่แถว + เลื่อนหน้า */
+.tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:-4px 0 10px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:6px 12px;border-radius:99px;border:1px solid #4388fd33;background:#fff;color:var(--ink2);font:600 13.5px/1 var(--thai);cursor:pointer}
+.chip[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip b{font-family:var(--display);font-weight:800}
+.chip--bad b{padding:1px 7px;border-radius:99px;background:#fde8ea;color:#c62f3b}
+.chip--bad[aria-pressed=true]{background:#c62f3b;border-color:#c62f3b}
+.chip--bad[aria-pressed=true] b{background:#ffffff33;color:#fff}
+.chip[hidden]{display:none}
+.size{display:flex;align-items:center;gap:2px;margin-left:auto;padding:3px;border-radius:14px;background:#4388fd12;font-size:13px;color:var(--ink2)}
+.size span{padding:0 6px 0 4px}
+.size button,.seg button{min-width:38px;min-height:32px;padding:4px 8px;border:0;border-radius:10px;background:transparent;color:var(--ink2);font:700 13.5px/1 var(--display);cursor:pointer}
+.size button[aria-pressed=true],.seg button[aria-pressed=true]{background:#fff;color:var(--blue3);box-shadow:0 2px 8px -4px #1e4fc466}
+.pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:13.5px;color:var(--ink2)}
+.pager[hidden]{display:none}
+.pager button{width:40px;height:36px;border-radius:12px;border:1px solid #4388fd33;background:#fff;color:var(--blue3);font-size:20px;line-height:1;cursor:pointer}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager span{min-width:9em;text-align:center;font-variant-numeric:tabular-nums}
+
+/* กราฟรายวัน / ช่วงเวลา (ทีละตัวเลข สีฟ้าเดียว แท่งสูงสุดเข้ม) */
+.trend__head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.trend__head h2{margin:0}
+.seg{display:flex;gap:2px;padding:3px;border-radius:14px;background:#4388fd12}
+.seg button{font-family:var(--thai);font-weight:600;padding:4px 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.chips .chip{flex:none}
+.trend__note{margin:0 0 10px;font-size:13.5px;color:var(--ink2);min-height:1.4em}
+.linkish{border:0;padding:0;background:none;color:var(--blue3);font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.chart{position:relative;padding-left:30px}
+.chart__plot{position:relative;height:190px;margin-top:18px}
+.chart__grid{position:absolute;left:0;right:0;height:0;border-top:1px solid #0e1b3d10}
+.chart__grid span{position:absolute;right:calc(100% + 6px);top:-.7em;font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chart__cols{position:absolute;inset:0;display:flex;align-items:flex-end;gap:2px}
+.col{position:relative;flex:1 1 0;min-width:0;height:100%;padding:0;border:0;background:transparent;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;border-radius:6px}
+.col:hover,.col:focus-visible{background:#4388fd0f;outline:none}
+.col__bar{position:relative;display:block;width:min(100%,26px);border-radius:4px 4px 0 0;background:var(--blue);transform-origin:bottom;animation:colrise .6s var(--ease) both}
+.col:hover .col__bar,.col:focus-visible .col__bar{background:var(--blue2)}
+.col.is-peak .col__bar{background:#1c46b0}
+.col__val{position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);font:800 12px/1 var(--display);color:var(--navy);white-space:nowrap}
+.chart__axis{display:flex;gap:2px;margin-top:6px}
+.chart__axis span{flex:1 1 0;min-width:0;font-size:11px;color:var(--ink2);text-align:left;white-space:nowrap;overflow:visible;font-variant-numeric:tabular-nums}
+.chart__tip{position:absolute;top:0;transform:translate(-50%,-6px);z-index:3;width:max-content;max-width:100%;padding:8px 10px;border-radius:12px;background:#0e1b3df0;color:#fff;font-size:12.5px;line-height:1.5;white-space:pre-line;pointer-events:none;box-shadow:0 12px 30px -12px #0e1b3d99}
+.chart__tip[hidden]{display:none}
+.trend__hint{margin:10px 0 0;font-size:12.5px;color:var(--ink2)}
+.trend__table{margin-top:10px}
+.trend__table summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--blue3);padding:4px 0}
+@keyframes colrise{from{transform:scaleY(0)}}
+@media (prefers-reduced-motion:reduce){.col__bar{animation:none}}

@@ -176,3 +176,21 @@ test('หน้าสถิติจำชื่อรหัสไว้ ถา�
   const js = await read('share/stat/stat.js');
   assert.match(js, /รหัสผิด/);
 });
+
+test('หน้าสถิติ: ตารางรหัสแสดงทีละ 10 25 50 100 มีปุ่มซ่อนรหัสผิด และกราฟรายวัน/ช่วงเวลา', async () => {
+  const html = await read('share/stat/index.html');
+  for (const id of ['refs', 'gens']) {
+    assert.match(html, new RegExp(`class="tools" data-for="${id}"`));
+    assert.match(html, new RegExp(`data-pager="${id}"`));
+  }
+  assert.deepEqual([...html.matchAll(/data-size="(\d+)"/g)].map(m => m[1]).slice(0, 4), ['10', '25', '50', '100']);
+  assert.match(html, /data-hide-bad/);
+  assert.match(html, /data-view="day"/);
+  assert.match(html, /data-view="hour"/);
+  const js = await read('share/stat/stat.js');
+  assert.match(js, /size: 10/);
+  assert.match(js, /d\.hourly/);
+  const api = await read('api/_lib/share-stat.js');
+  assert.match(api, /hourly:/);
+  assert.match(api, /extract\(hour FROM at AT TIME ZONE 'Asia\/Bangkok'\)/);
+});
